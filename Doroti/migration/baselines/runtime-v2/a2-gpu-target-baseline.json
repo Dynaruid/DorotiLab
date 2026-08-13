@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "doroti.runtime-v2-baseline/v1",
+  "status": "verified-current-machine",
+  "evidenceRole": "historical-baseline-not-current-run-gate",
+  "capturedAtUtc": "2026-08-02T23:57:39.133597+00:00",
+  "sourceRevision": "bc586ebbe2028f9340a82585dabb9dc6fa8065237d69067e15212b221118e602",
+  "environment": {
+    "id": "labo-x64",
+    "operatingSystem": "Microsoft Windows NT 10.0.26200.0",
+    "architecture": "X64",
+    "refreshRateHz": 60,
+    "observedPresentationRateHz": 163.8088499165953,
+    "gpuDevice": "AMD Radeon 780M Graphics",
+    "gpuBackend": "WGL/OpenGL",
+    "gpuContext": "4.6.0 Compatibility Profile Context 25.3.1.250220"
+  },
+  "scenario": {
+    "id": "a2-gpu-target",
+    "continuousScrollSeconds": 30.0044839,
+    "presentedFrames": 4915,
+    "supersededFrames": 3,
+    "textPipeline": "SkiaSharp.HarfBuzz.SKShaper"
+  },
+  "measurements": {
+    "activeGpuContext": true,
+    "softwareFallbackUsed": false,
+    "activeGpuResourcesDuringFrame": 2,
+    "visualAverageByteDelta": 0.000036214192708333336,
+    "terminalAckCoverage": true,
+    "presentIntervalP95Milliseconds": 8.9619,
+    "missedFrameRatio": 0.000407000407000407,
+    "inputToPresentP95Milliseconds": 7.9669,
+    "queueHighWatermark": 2,
+    "fullFrameCopyBytesPerFrame": 0,
+    "managedFramebufferAllocations": 0,
+    "writeableBitmapAllocations": 0,
+    "uiThreadSynchronousWaits": 0
+  },
+  "currentRunEvidence": {
+    "report": "artifacts/runtime-v2/labo-x64/a2-gpu-target/gpu-target-target-report.json",
+    "verification": "artifacts/runtime-v2/target-verifier/gpu-target-verification.json",
+    "note": "Ignored machine evidence must be regenerated and verified for a current gate decision."
+  }
+}

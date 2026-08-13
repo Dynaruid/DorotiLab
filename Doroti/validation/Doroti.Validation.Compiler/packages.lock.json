@@ -1,0 +1,100 @@
+{
+  "version": 2,
+  "dependencies": {
+    "net10.0": {
+      "Microsoft.CodeAnalysis.Analyzers": {
+        "type": "Transitive",
+        "resolved": "3.11.0",
+        "contentHash": "v/EW3UE8/lbEYHoC2Qq7AR/DnmvpgdtAMndfQNmpuIMx/Mto8L5JnuCfdBYtgvalQOtfNCnxFejxuRrryvUTsg=="
+      },
+      "Microsoft.CodeAnalysis.Common": {
+        "type": "Transitive",
+        "resolved": "4.14.0",
+        "contentHash": "PC3tuwZYnC+idaPuoC/AZpEdwrtX7qFpmnrfQkgobGIWiYmGi5MCRtl5mx6QrfMGQpK78X2lfIEoZDLg/qnuHg==",
+        "dependencies": {
+          "Microsoft.CodeAnalysis.Analyzers": "3.11.0"
+        }
+      },
+      "doroti.darttocsharp": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
+          "Doroti.Flutter.Ui": "[0.2.0-beta, )",
+          "Doroti.Tooling": "[0.2.0-beta, )",
+          "Microsoft.CodeAnalysis.CSharp": "[4.14.0, )"
+        }
+      },
+      "doroti.flutter.framework.foundation": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
+          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.flutter.framework.physics": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Framework.Foundation": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Scheduler": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Services": "[0.2.0-beta, )",
+          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
+          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.flutter.framework.scheduler": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Framework.Foundation": "[0.2.0-beta, )",
+          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
+          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.flutter.framework.services": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Framework.Foundation": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Scheduler": "[0.2.0-beta, )",
+          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
+          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.flutter.runtime": {
+        "type": "Project",
+        "dependencies": {
+          "MaterialColorUtilities": "[0.3.0, )"
+        }
+      },
+      "doroti.flutter.ui": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Runtime": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.sourcetools": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Tooling": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.tooling": {
+        "type": "Project"
+      },
+      "MaterialColorUtilities": {
+        "type": "CentralTransitive",
+        "requested": "[0.3.0, )",
+        "resolved": "0.3.0",
+        "contentHash": "KxXxwL8SJoI63rb7onZKL7rBZmoWQj2aVLNf7ZMNzq6mvfEzR8XInvIAi+hj6NGDm9IvcQ0YJ2SWTUHoPjTABg=="
+      },
+      "Microsoft.CodeAnalysis.CSharp": {
+        "type": "CentralTransitive",
+        "requested": "[4.14.0, )",
+        "resolved": "4.14.0",
+        "contentHash": "568a6wcTivauIhbeWcCwfWwIn7UV7MeHEBvFB2uzGIpM2OhJ4eM/FZ8KS0yhPoNxnSpjGzz7x7CIjTxhslojQA==",
+        "dependencies": {
+          "Microsoft.CodeAnalysis.Analyzers": "3.11.0",
+          "Microsoft.CodeAnalysis.Common": "[4.14.0]"
+        }
+      }
+    }
+  }
+}

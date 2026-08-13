@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "doroti.converter-selection/v4",
+  "converterVersion": "2.0.0",
+  "migrationIrVersion": "2.0.0",
+  "generationMode": "nuget-generated-package",
+  "compatibilityProfile": "flutter-aware-c5",
+  "outputNamespace": "Doroti.Generated.VectorMath",
+  "outputAssemblyName": "Doroti.Generated.VectorMath",
+  "flutterBaseline": "../flutter-compat/baseline.json",
+  "packageRoot": "../fixtures/c5_package_pilots",
+  "packageId": "Doroti.Generated.VectorMath",
+  "packageVersion": "0.2.0-beta",
+  "packageTier": "A",
+  "sourcePackage": "vector_math",
+  "sourceVersion": "2.2.0",
+  "sourceLicense": "BSD-3-Clause",
+  "inputs": [
+    {
+      "path": "package:vector_math/src/vector_math/utilities.dart",
+      "symbols": ["mix"]
+    }
+  ]
+}

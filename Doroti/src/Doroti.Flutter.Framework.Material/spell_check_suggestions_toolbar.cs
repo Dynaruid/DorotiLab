@@ -1,0 +1,145 @@
+// <doroti-reviewed-product-source milestone="G6-3" />
+#nullable enable
+#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+// Doroti typed semantic compiler 3.0.0; source: ../../../flutter-master/packages/flutter/lib/src/material/spell_check_suggestions_toolbar.dart
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using Doroti.Flutter.Runtime;
+using Doroti.Flutter.Ui;
+using static Doroti.Flutter.Runtime.FoundationRuntimePorts;
+using Match = Doroti.Flutter.Runtime.DartMatch;
+
+namespace Doroti.Generated.Framework.Material;
+
+public static partial class Spell_check_suggestions_toolbarLibrary
+{
+    internal static double _kDefaultToolbarHeight = 193.0;
+}
+
+public static partial class Spell_check_suggestions_toolbarLibrary
+{
+    internal static long _kMaxSuggestions = 3L;
+}
+
+public class SpellCheckSuggestionsToolbar : global::Doroti.Generated.Framework.Widgets.StatelessWidget
+{
+    public virtual Offset anchor { get; private set; } = default!;
+    public virtual List<global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem> buttonItems { get; private set; } = default!;
+
+    public SpellCheckSuggestionsToolbar(global::Doroti.Generated.Framework.Foundation.Key? key = null, Offset anchor = default!, List<global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem> buttonItems = default!) : base(key: key)
+    {
+        this.anchor = anchor;
+        this.buttonItems = buttonItems;
+        System.Diagnostics.Debug.Assert((checked((long)(buttonItems.Count)) <= (Spell_check_suggestions_toolbarLibrary._kMaxSuggestions + 1L)));
+    }
+
+    public static SpellCheckSuggestionsToolbar CreateEditableText(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Widgets.EditableTextState editableTextState = default!)
+    {
+        var __instance = new SpellCheckSuggestionsToolbar(key: key, anchor: default!, buttonItems: default!);
+        __instance.buttonItems = (SpellCheckSuggestionsToolbar.buildButtonItems(editableTextState) ?? new List<global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem>());
+        __instance.anchor = SpellCheckSuggestionsToolbar.getToolbarAnchor(((global::Doroti.Generated.Framework.Widgets.EditableTextState)editableTextState).contextMenuAnchors);
+        return __instance;
+    }
+
+    public static List<global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem>? buildButtonItems(global::Doroti.Generated.Framework.Widgets.EditableTextState editableTextState)
+    {
+        global::Doroti.Generated.Framework.Services.SuggestionSpan? spanAtCursorIndex__3301 = ((global::Doroti.Generated.Framework.Services.SuggestionSpan?)(object?)editableTextState.findSuggestionSpanAtCursorIndex(((global::Doroti.Generated.Framework.Widgets.EditableTextState)editableTextState).currentTextEditingValue.selection.baseOffset));
+        if ((spanAtCursorIndex__3301 is null))
+        {
+            return null;
+        }
+        var buttonItems__3523 = new List<global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem>();
+        foreach (string suggestion__3620 in ((global::Doroti.Generated.Framework.Services.SuggestionSpan)spanAtCursorIndex__3301).suggestions.take(Spell_check_suggestions_toolbarLibrary._kMaxSuggestions))
+        {
+            buttonItems__3523.Add(new global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem(onPressed: ((global::System.Action)(() => {
+if (!editableTextState.mounted)
+{
+    return;
+}
+SpellCheckSuggestionsToolbar._replaceText(editableTextState, suggestion__3620, ((global::Doroti.Generated.Framework.Services.SuggestionSpan)spanAtCursorIndex__3301).range);
+})), label: suggestion__3620));
+        }
+        var deleteButton__4041 = new global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem(onPressed: ((global::System.Action)(() => {
+if (!editableTextState.mounted)
+{
+    return;
+}
+SpellCheckSuggestionsToolbar._replaceText(editableTextState, "", ((global::Doroti.Generated.Framework.Widgets.EditableTextState)editableTextState).currentTextEditingValue.composing);
+})), type: global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.delete);
+        buttonItems__3523.Add(deleteButton__4041);
+        return buttonItems__3523;
+        throw new InvalidOperationException("Dart control flow completed without a value.");
+    }
+
+    internal static void _replaceText(global::Doroti.Generated.Framework.Widgets.EditableTextState editableTextState, string text, TextRange replacementRange)
+    {
+        DartRuntimePrimitives.Assert(() => (!editableTextState.widget.readOnly && !editableTextState.widget.obscureText));
+        global::Doroti.Generated.Framework.Services.TextEditingValue newValue__4710 = ((global::Doroti.Generated.Framework.Services.TextEditingValue)(object?)((global::Doroti.Generated.Framework.Widgets.EditableTextState)editableTextState).textEditingValue.replaced(replacementRange, text));
+        editableTextState.userUpdateTextEditingValue(newValue__4710, global::Doroti.Generated.Framework.Services.SelectionChangedCause.toolbar);
+        global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) => {
+if (editableTextState.mounted)
+{
+    editableTextState.bringIntoView(((global::Doroti.Generated.Framework.Widgets.EditableTextState)editableTextState).textEditingValue.selection.extent);
+}
+})), debugLabel: "SpellCheckerSuggestionsToolbar.bringIntoView");
+        editableTextState.hideToolbar();
+    }
+
+    public static global::Doroti.Flutter.Ui.Offset getToolbarAnchor(global::Doroti.Generated.Framework.Widgets.TextSelectionToolbarAnchors anchors)
+    {
+        return ((((global::Doroti.Generated.Framework.Widgets.TextSelectionToolbarAnchors)anchors).secondaryAnchor is null) ? ((global::Doroti.Generated.Framework.Widgets.TextSelectionToolbarAnchors)anchors).primaryAnchor : DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Widgets.TextSelectionToolbarAnchors)anchors).secondaryAnchor));
+        throw new InvalidOperationException("Dart control flow completed without a value.");
+    }
+
+    internal virtual List<global::Doroti.Generated.Framework.Widgets.Widget> _buildToolbarButtons(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    {
+        return this.buttonItems.map<global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem, global::Doroti.Generated.Framework.Widgets.Widget>(((buttonItem) => {
+var button__5837 = new TextSelectionToolbarTextButton(padding: new global::Doroti.Generated.Framework.Painting.EdgeInsets(20, 0, 0, 0), onPressed: () => ((global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem)buttonItem).onPressed(), alignment: global::Doroti.Generated.Framework.Painting.Alignment.centerLeft, child: new global::Doroti.Generated.Framework.Widgets.Text(AdaptiveTextSelectionToolbar.getButtonLabel(context, buttonItem), style: ((object.Equals(((global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem)buttonItem).type, global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.delete)) ? new global::Doroti.Generated.Framework.Painting.TextStyle(color: Colors.blue) : null)));
+if ((!object.Equals(((global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem)buttonItem).type, global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.delete)))
+{
+    return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)button__5837);
+}
+return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.DecoratedBox(decoration: new global::Doroti.Generated.Framework.Painting.BoxDecoration(border: new global::Doroti.Generated.Framework.Painting.Border(top: new global::Doroti.Generated.Framework.Painting.BorderSide(color: Colors.grey))), child: button__5837));
+throw new InvalidOperationException("Dart closure completed without a value.");
+})).ToList();
+        throw new InvalidOperationException("Dart control flow completed without a value.");
+    }
+
+    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    {
+        if (!System.Linq.Enumerable.Any(this.buttonItems))
+        {
+            return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)global::Doroti.Generated.Framework.Widgets.SizedBox.CreateShrink());
+        }
+        double spellCheckSuggestionsToolbarHeight__6746 = (Spell_check_suggestions_toolbarLibrary._kDefaultToolbarHeight - ((48.0 * ((4L - checked((long)(this.buttonItems.Count)))))));
+        global::Doroti.Generated.Framework.Widgets.MediaQueryData mediaQueryData__6949 = ((global::Doroti.Generated.Framework.Widgets.MediaQueryData)(object?)MediaQuery.of(context));
+        double softKeyboardViewInsetsBottom__7007 = ((global::Doroti.Generated.Framework.Widgets.MediaQueryData)mediaQueryData__6949).viewInsets.bottom;
+        double paddingAbove__7089 = (((global::Doroti.Generated.Framework.Widgets.MediaQueryData)mediaQueryData__6949).padding.top + CupertinoTextSelectionToolbar.kToolbarScreenPadding);
+        var localAdjustment__7237 = new global::Doroti.Flutter.Ui.Offset(CupertinoTextSelectionToolbar.kToolbarScreenPadding, paddingAbove__7089);
+        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Padding(padding: new global::Doroti.Generated.Framework.Painting.EdgeInsets(CupertinoTextSelectionToolbar.kToolbarScreenPadding, paddingAbove__7089, CupertinoTextSelectionToolbar.kToolbarScreenPadding, (CupertinoTextSelectionToolbar.kToolbarScreenPadding + softKeyboardViewInsetsBottom__7007)), child: new global::Doroti.Generated.Framework.Widgets.CustomSingleChildLayout(@delegate: new SpellCheckSuggestionsToolbarLayoutDelegate(anchor: (this.anchor - localAdjustment__7237)), child: new global::Doroti.Generated.Framework.Widgets.AnimatedSize(duration: Duration.Create(milliseconds: 140L), child: new _SpellCheckSuggestionsToolbarContainer__spell_check_suggestions_toolbar(height: spellCheckSuggestionsToolbarHeight__6746, children: ((Func<List<global::Doroti.Generated.Framework.Widgets.Widget>>)(() => { var __collection8142 = new List<global::Doroti.Generated.Framework.Widgets.Widget>(); __collection8142.AddRange(_buildToolbarButtons(context)); return __collection8142; }))())))));
+        throw new InvalidOperationException("Dart control flow completed without a value.");
+    }
+
+}
+
+internal class _SpellCheckSuggestionsToolbarContainer__spell_check_suggestions_toolbar : global::Doroti.Generated.Framework.Widgets.StatelessWidget
+{
+    public virtual double height { get; private set; } = default!;
+    public virtual List<global::Doroti.Generated.Framework.Widgets.Widget> children { get; private set; } = default!;
+
+    internal _SpellCheckSuggestionsToolbarContainer__spell_check_suggestions_toolbar(double height, List<global::Doroti.Generated.Framework.Widgets.Widget> children)
+    {
+        this.height = height;
+        this.children = children;
+    }
+
+    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    {
+        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new Material(elevation: 2.0, type: MaterialType.card, child: new global::Doroti.Generated.Framework.Widgets.SizedBox(width: 165.0, height: this.height, child: new global::Doroti.Generated.Framework.Widgets.Column(mainAxisSize: global::Doroti.Generated.Framework.Rendering.MainAxisSize.min, crossAxisAlignment: global::Doroti.Generated.Framework.Rendering.CrossAxisAlignment.stretch, children: this.children))));
+        throw new InvalidOperationException("Dart control flow completed without a value.");
+    }
+
+}

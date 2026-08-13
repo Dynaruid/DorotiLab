@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "doroti.port/v1",
+  "mode": "regeneratable-package",
+  "source": {
+    "kind": "flutter-or-dart-package",
+    "revision": "provider@6.1.5",
+    "license": "MIT"
+  },
+  "compilerProfile": "flutter-aware-c5",
+  "compilerSelection": "../../selections/c5-provider.json",
+  "inputs": [
+    {
+      "library": "package:provider/src/reassemble_handler.dart",
+      "symbols": ["ReassembleHandler"]
+    }
+  ],
+  "customizations": {
+    "mappingFiles": [],
+    "replacementManifest": "replacements/replacements.json",
+    "extensionRoots": [],
+    "platformPortRoots": []
+  },
+  "requiredFixtures": ["p4-provider-reassemble-behavior"]
+}

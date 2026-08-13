@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "doroti.r10-release-evidence/v1",
+  "release": "0.2.0-beta",
+  "promotionStatus": "candidate-not-published",
+  "compiler": {
+    "profile": "flutter-aware-c5",
+    "ruleSet": "c5.0",
+    "emitter": "csharp-net10.4-package",
+    "releaseReport": "doroti.package-release/v1"
+  },
+  "sdkPackages": [
+    "Doroti",
+    "Doroti.Backends.Skia",
+    "Doroti.Composition",
+    "Doroti.Core",
+    "Doroti.Engine",
+    "Doroti.FlutterCompat",
+    "Doroti.Graphics",
+    "Doroti.Host.Avalonia",
+    "Doroti.Platform",
+    "Doroti.Rendering",
+    "Doroti.Vendor.Avalonia.Skia",
+    "Doroti.Widgets",
+    "Doroti.Templates"
+  ],
+  "generatedPackages": [
+    "Doroti.Generated.Collection",
+    "Doroti.Generated.VectorMath",
+    "Doroti.Generated.Provider",
+    "Doroti.Generated.RealApp",
+    "Doroti.Generated.SharedPreferences"
+  ],
+  "validations": [
+    {
+      "id": "c5-clean-cache-determinism",
+      "status": "pass",
+      "evidence": "tests/Doroti.Tooling.Tests"
+    },
+    {
+      "id": "sdk-and-generated-nuget-pack",
+      "status": "pass",
+      "evidence": "eng/doroti.ps1 release"
+    },
+    {
+      "id": "external-restore-build-run",
+      "status": "pass",
+      "evidence": "tests/fixtures/R10.ExternalConsumer"
+    },
+    {
+      "id": "trimmed-single-file-readytorun",
+      "status": "pass",
+      "evidence": "eng/doroti.ps1 release"
+    },
+    {
+      "id": "template-install-avalonia-run-uninstall",
+      "status": "pass",
+      "evidence": "eng/doroti.ps1 release"
+    },
+    {
+      "id": "package-content-and-avalonia-dependency-audit",
+      "status": "pass",
+      "evidence": "eng/doroti.ps1 release"
+    },
+    {
+      "id": "native-win32-package-absent",
+      "status": "pass",
+      "evidence": "clean release package directory contains Doroti.Host.Avalonia and no Doroti.Backends.Win32 or Doroti.Vendor.Avalonia.Win32 package"
+    },
+    {
+      "id": "clean-windows-vm-install-run-uninstall",
+      "status": "not-verified",
+      "reason": "No disposable clean Windows VM was attached to this workspace."
+    },
+    {
+      "id": "mapped-crash-source-link-runtime-trace",
+      "status": "not-verified",
+      "reason": "PDB, symbol package, and Dart source map are packaged; an injected external-consumer crash still requires a clean-machine trace capture."
+    },
+    {
+      "id": "cold-start-first-present-memory-handle-gpu-baseline",
+      "status": "not-verified",
+      "reason": "The local template GPU smoke passed, but the release performance/resource measurement run is not captured yet."
+    }
+  ]
+}

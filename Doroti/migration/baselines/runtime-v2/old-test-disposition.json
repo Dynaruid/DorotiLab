@@ -1,0 +1,116 @@
+{
+  "schemaVersion": "doroti.runtime-v2-old-test-disposition/v2",
+  "createdAt": "2026-08-03",
+  "updatedAt": "2026-08-03",
+  "policy": "T0 resolves every historical test into a behavior contract, a current-run target verifier, or an explicitly isolated history-only entry.",
+  "entries": [
+    {
+      "test": "Doroti.Architecture.Tests/TestProjectGraph",
+      "disposition": "rewritten",
+      "t0Status": "resolved",
+      "reason": "The exact project-name set blocked source-port projects.",
+      "replacementId": "source-port-boundary-manifest",
+      "replacement": "Manifest-driven layer direction, forbidden-edge, cycle, and transition-package validation.",
+      "suite": "shell-source-audit"
+    },
+    {
+      "test": "Doroti.Architecture.Tests/TestAvaloniaHostDependencyMatrix",
+      "disposition": "isolated-as-history",
+      "t0Status": "resolved",
+      "reason": "It protected the superseded Avalonia.Desktop package-host decision.",
+      "replacementId": "source-port-boundary-manifest",
+      "replacement": "Source-port project classification with an explicit A1-expiring comparison-host package allowance.",
+      "suite": "shell-source-audit"
+    },
+    {
+      "test": "Doroti.Architecture.Tests/TestAvaloniaH1Evidence",
+      "disposition": "replaced",
+      "t0Status": "resolved",
+      "reason": "Committed verified text is pre-runtime-v2 evidence.",
+      "replacementId": "runtime-v2-target-verifier",
+      "replacement": "Fresh gpu-target and dpi-input-target reports verify shell lifecycle gates and measurements.",
+      "suite": "gpu-target,dpi-input-target"
+    },
+    {
+      "test": "Doroti.Architecture.Tests/TestAvaloniaH2Evidence",
+      "disposition": "replaced",
+      "t0Status": "resolved",
+      "reason": "Hardware/software equality currently proves the shared CPU upload path.",
+      "replacementId": "gpu-target-contract",
+      "replacement": "Current-run backend identity, active GPU context, fallback, visual tolerance, ACK, timing, copy, and wait counters.",
+      "suite": "gpu-target"
+    },
+    {
+      "test": "Doroti.Architecture.Tests/TestAvaloniaH3Evidence",
+      "disposition": "replaced",
+      "t0Status": "resolved",
+      "reason": "Event presence alone does not prove wheel direction, fractional input, hit testing, or cadence.",
+      "replacementId": "dpi-input-target-contract",
+      "replacement": "Current-run DPI marker, wheel direction, fractional delta, duplicate delivery, hit-test, caret, and frame cadence measurements.",
+      "suite": "dpi-input-target"
+    },
+    {
+      "test": "Doroti.Architecture.Tests/TestAvaloniaH4Distribution",
+      "disposition": "split",
+      "t0Status": "resolved",
+      "reason": "Package and consumer boundaries remain useful but historical execution cannot promote runtime-v2 quality.",
+      "replacementId": "distribution-contract-and-cross-platform-target",
+      "replacement": "Static consumer isolation stays in shell-source-audit; fresh Windows, Linux, and macOS results are required by cross-platform.",
+      "suite": "shell-source-audit,cross-platform"
+    },
+    {
+      "test": "Doroti.Architecture.Tests/TestH6ProductUiEvidence",
+      "disposition": "split",
+      "t0Status": "resolved",
+      "reason": "Historical generated-product runs do not establish runtime-v2 visual or input quality.",
+      "replacementId": "product-ui-contract-and-dpi-input-target",
+      "replacement": "API and behavior coverage stays static; H6 product UI target quality requires a fresh dpi-input-target report.",
+      "suite": "shell-source-audit,dpi-input-target"
+    },
+    {
+      "test": "Doroti.Host.Avalonia.Tests/TestSupportedScene",
+      "disposition": "retained",
+      "t0Status": "resolved",
+      "reason": "DisplayList command acceptance remains a valid behavior boundary.",
+      "replacementId": "runtime-display-list-contract",
+      "replacement": "Retained as a unit behavior test without target claims.",
+      "suite": "runtime"
+    },
+    {
+      "test": "Doroti.Host.Avalonia.Tests/TestFrameFixture",
+      "disposition": "retained-as-contract",
+      "t0Status": "resolved",
+      "reason": "ACK and target identifiers remain useful but a fixture is not renderer or shell evidence.",
+      "replacementId": "runtime-ack-contract",
+      "replacement": "Fixture validates ACK vocabulary only; current target completion is delegated to gpu-target.",
+      "suite": "runtime,gpu-target"
+    },
+    {
+      "test": "Doroti.R5.Tests/mock-surface frame tests",
+      "disposition": "retained-as-unit",
+      "t0Status": "resolved",
+      "reason": "Mailbox, generation, resource, and terminal ACK invariants are backend-neutral.",
+      "replacementId": "runtime-mailbox-contract",
+      "replacement": "Retained in runtime and never used as GPU, DPI, or visual completion evidence.",
+      "suite": "runtime"
+    },
+    {
+      "test": "eng/verify-h1-avalonia.ps1 through verify-h6-product-ui.ps1",
+      "disposition": "isolated-as-history",
+      "t0Status": "resolved",
+      "reason": "Their committed reports use pre-runtime-v2 milestone schemas.",
+      "replacementId": "runtime-v2-target-verifier",
+      "replacement": "The three target suites consume a fresh versioned runtime-v2 report and emit not-verified when evidence is absent or stale.",
+      "suite": "gpu-target,dpi-input-target,cross-platform"
+    },
+    {
+      "test": "DorotiDemoApp --smoke --duration-ms",
+      "disposition": "retained-as-startup-smoke",
+      "t0Status": "resolved",
+      "reason": "One presented frame is useful for startup only and is not a quality gate.",
+      "replacementId": "runtime-v2-diagnostic-and-target-reports",
+      "replacement": "DorotiDemoApp --runtime-v2 supplies diagnostic artifacts; promotion requires the matching fresh target report thresholds.",
+      "suite": "runtime,gpu-target,dpi-input-target"
+    }
+  ]
+}

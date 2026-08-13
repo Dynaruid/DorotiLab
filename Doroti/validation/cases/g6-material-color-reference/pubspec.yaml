@@ -1,0 +1,6 @@
+name: doroti_g6_material_color_reference
+publish_to: none
+environment:
+  sdk: ^3.8.0
+dependencies:
+  material_color_utilities: 0.13.0

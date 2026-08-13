@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "doroti.g6-2-widgets-reference/v1",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "referenceSource": "packages/flutter/lib/src/widgets/binding.dart and framework.dart lifecycle ordering",
+  "requiredOrderedTrace": [
+    "root:init",
+    "root:build:0",
+    "dependency:0",
+    "tile:A:init",
+    "tile:B:init",
+    "root:setState:1",
+    "root:build:1",
+    "single:update:1",
+    "dependency:1",
+    "tile:A:update:1",
+    "tile:B:update:1",
+    "root:setState:2",
+    "root:build:2",
+    "tile:B:update:2",
+    "tile:A:update:2",
+    "root:setState:3",
+    "root:build:3",
+    "tile:A:deactivate",
+    "tile:A:dispose",
+    "root:setState:4",
+    "root:build:4",
+    "dependency:4",
+    "root:dispose"
+  ],
+  "layoutPaintTolerance": {
+    "logicalPixelTolerance": 1,
+    "initialAccentBounds": { "x": 24, "y": 102, "width": 160, "height": 60 },
+    "resizedAccentBounds": { "x": 24, "y": 76, "width": 160, "height": 60 },
+    "minimumBackgroundCoverage": 0.9
+  }
+}

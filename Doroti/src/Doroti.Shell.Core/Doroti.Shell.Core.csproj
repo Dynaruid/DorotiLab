@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Shell.Core</AssemblyName>
+    <IsDorotiProduct>true</IsDorotiProduct>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Doroti.Graphics\Doroti.Graphics.csproj" />
+  </ItemGroup>
+</Project>

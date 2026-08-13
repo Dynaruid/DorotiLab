@@ -1,0 +1,131 @@
+# Doroti workspace ignore rules
+
+# Local upstream/reference source snapshots
+# Keep Doroti-owned source and future tools/* projects tracked.
+/Avalonia-main/
+/flutter-master/
+
+# .NET build output
+# Project-local temporary workspaces and reusable caches. See
+# Doroti/eng/LOCAL_STORAGE.md and Doroti/eng/clean-local-state.ps1.
+**/.doroti/
+**/[Bb]in/[Dd]ebug/
+**/[Bb]in/[Rr]elease/
+**/[Oo]bj/
+**/[Tt]est[Rr]esults/
+**/[Bb]enchmark[Dd]ot[Nn]et.[Aa]rtifacts/
+**/[Aa]rtifacts/
+/Regolith/migration/generated/
+/Regolith/migration/promotions/
+/Doroti/migration/generated-candidates/
+
+# Local converter/migration scratch and regenerable IR dumps.
+/.tmp/
+/migration/generated/.cache/
+**/migration-ir.json
+
+*.nupkg
+*.snupkg
+
+# Coverage and test-run output
+**/[Cc]overage/
+**/coverage.xml
+**/coverage.cobertura.xml
+**/*.trx
+**/*.coverage
+**/*.coveragexml
+
+# Visual Studio and MSBuild user state
+**/.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.csproj.user
+*.fsproj.user
+*.vbproj.user
+*.vcxproj.user
+*.publishproj.user
+
+# JetBrains Rider / ReSharper
+**/.idea/
+*.sln.iml
+_ReSharper*/
+*.DotSettings.user
+
+# Local editor state
+/.vscode/
+*.code-workspace
+*.swp
+*.swo
+*~
+
+# Dart / Flutter generated state
+**/.dart_tool/
+**/.pub/
+**/.pub-cache/
+**/.packages
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/doc/api/
+
+# JavaScript tooling, if used by docs or diagnostics frontends
+**/node_modules/
+**/.npm/
+**/.yarn/cache/
+**/.yarn/unplugged/
+**/.pnpm-store/
+
+# CMake and native build-system output
+**/CMakeFiles/
+**/CMakeCache.txt
+**/cmake_install.cmake
+**/compile_commands.json
+**/Testing/Temporary/
+*.ilk
+*.exp
+
+# Logs, traces, crash dumps, and profiling sessions
+**/[Ll]ogs/
+*.log
+*.binlog
+*.trace
+*.etl
+*.dmp
+*.mdmp
+*.vsp
+*.vspx
+*.diagsession
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pfx
+*.p12
+*.jks
+*.keystore
+*.mobileprovision
+appsettings.Local.json
+appsettings.*.local.json
+
+# Generated local packaging/publish directories
+**/[Pp]ublish/
+**/[Aa]pp[Pp]ackages/
+**/[Pp]ackage[Ss]tore/
+
+# Operating-system metadata
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Temporary and backup files
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+*.pid

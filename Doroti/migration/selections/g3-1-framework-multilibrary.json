@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "doroti.converter-selection/v4",
+  "converterVersion": "3.0.0",
+  "migrationIrVersion": "3.0.0",
+  "generationMode": "framework-semantic",
+  "compatibilityProfile": "flutter-framework",
+  "frameworkMilestone": "G3-1",
+  "outputNamespace": "Doroti.Generated.Framework",
+  "outputAssemblyName": "Doroti.Generated.Framework",
+  "flutterBaseline": "../flutter-compat/baseline.json",
+  "inputs": [
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/object.dart",
+      "library": "package:flutter/src/foundation/object.dart",
+      "symbols": [
+        "objectRuntimeType"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/annotations.dart",
+      "library": "package:flutter/src/foundation/annotations.dart",
+      "symbols": [
+        "Category",
+        "DocumentationIcon",
+        "Summary"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/physics/tolerance.dart",
+      "library": "package:flutter/src/physics/tolerance.dart",
+      "symbols": [
+        "Tolerance"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/bitfield.dart",
+      "library": "package:flutter/src/foundation/bitfield.dart",
+      "symbols": [],
+      "emissionMode": "graph-only"
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/_bitfield_io.dart",
+      "library": "package:flutter/src/foundation/_bitfield_io.dart",
+      "symbols": [],
+      "emissionMode": "graph-only"
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/material/animated_icons.dart",
+      "library": "package:flutter/src/material/animated_icons.dart",
+      "symbols": [],
+      "emissionMode": "graph-only"
+    }
+  ]
+}

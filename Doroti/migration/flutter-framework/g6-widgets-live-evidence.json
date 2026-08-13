@@ -1,0 +1,209 @@
+{
+  "schemaVersion": "doroti.g6-2-widgets-live-evidence/v1",
+  "milestone": "G6-2",
+  "capturedAtUtc": "2026-08-12T12:56:24.079598+00:00",
+  "status": "verified-windows-x64-strict-gpu",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "target": "actual HWND / skia-wgl-opengl-gpu",
+  "durationMs": 30000,
+  "requestedCadenceFrames": 300,
+  "totalElapsedMs": 31055.7616,
+  "firstPixels": {
+    "frameId": 1,
+    "width": 1280,
+    "height": 840,
+    "nonTransparent": 1075200,
+    "backgroundCount": 1029302,
+    "accentCount": 38400,
+    "accentBounds": {
+      "x": 48,
+      "y": 204,
+      "width": 320,
+      "height": 120
+    }
+  },
+  "resizedPixels": {
+    "frameId": 7,
+    "width": 1520,
+    "height": 1000,
+    "nonTransparent": 1520000,
+    "backgroundCount": 1474979,
+    "accentCount": 38400,
+    "accentBounds": {
+      "x": 48,
+      "y": 152,
+      "width": 320,
+      "height": 120
+    }
+  },
+  "treeTrace": [
+    "root:init",
+    "root:build:0",
+    "dependency:0",
+    "tile:A:init",
+    "tile:B:init",
+    "root:setState:1",
+    "root:build:1",
+    "single:update:1",
+    "dependency:1",
+    "tile:A:update:1",
+    "tile:B:update:1",
+    "root:setState:2",
+    "root:build:2",
+    "single:update:2",
+    "dependency:2",
+    "tile:B:update:2",
+    "tile:A:update:2",
+    "root:setState:3",
+    "root:build:3",
+    "single:update:3",
+    "dependency:3",
+    "tile:B:update:3",
+    "tile:A:deactivate",
+    "tile:A:dispose",
+    "root:setState:4",
+    "root:build:4",
+    "tile:B:deactivate",
+    "dependency:4",
+    "tile:B:init",
+    "tile:B:dispose",
+    "tile:B:deactivate",
+    "tile:B:dispose",
+    "root:dispose"
+  ],
+  "semantics": {
+    "semanticsTapCount": 1,
+    "semanticsFocusCount": 2
+  },
+  "activeDiagnostics": {
+    "schemaVersion": "doroti.desktop-flutter-target-diagnostics/v1",
+    "targetIdentity": "win-x64/win32-wgl",
+    "capabilityIds": [
+      "accessibility.semantics",
+      "graphics.image",
+      "graphics.scene",
+      "graphics.text",
+      "input.events",
+      "platform.environment",
+      "platform.messaging",
+      "platform.services",
+      "text.input",
+      "view.frame-dispatch",
+      "view.lifecycle-metrics",
+      "window.lifecycle"
+    ],
+    "frame": {
+      "submitted": 308,
+      "presented": 307,
+      "superseded": 0,
+      "stale": 1,
+      "failed": 0,
+      "cancelled": 0,
+      "queueDepth": 0,
+      "queueHighWatermark": 1,
+      "activeContexts": 1,
+      "activeFrames": 0,
+      "surfaceGeneration": 2,
+      "recoveryCount": 0,
+      "softwareFallbackUsed": false,
+      "backendIdentity": "skia-wgl-opengl-gpu"
+    },
+    "input": {
+      "capabilities": {
+        "mouse": true,
+        "touch": false,
+        "pen": false,
+        "wheel": true,
+        "pointerCapture": true,
+        "physicalKeys": true,
+        "textInput": true
+      },
+      "pointerPackets": 0,
+      "keyPackets": 0,
+      "focusChanges": 3,
+      "metricsChanges": 4
+    },
+    "automation": {
+      "generation": 1,
+      "nodeCount": 7
+    },
+    "coordinates": {
+      "generation": 9,
+      "logicalClientSize": {
+        "width": 760,
+        "height": 500,
+        "isFinite": true,
+        "isEmpty": false
+      },
+      "physicalClientSize": {
+        "width": 1520,
+        "height": 1000,
+        "isFinite": true,
+        "isEmpty": false
+      },
+      "lastPointerLogical": null,
+      "lastPointerPhysical": null,
+      "caretLogical": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "width": 0,
+        "height": 0,
+        "size": {
+          "width": 0,
+          "height": 0,
+          "isFinite": true,
+          "isEmpty": true
+        },
+        "isFinite": true,
+        "isEmpty": true
+      },
+      "caretPhysical": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "width": 0,
+        "height": 0,
+        "size": {
+          "width": 0,
+          "height": 0,
+          "isFinite": true,
+          "isEmpty": true
+        },
+        "isFinite": true,
+        "isEmpty": true
+      }
+    },
+    "resources": {
+      "activeWindows": 1,
+      "windowsCreated": 1,
+      "windowsReleased": 0,
+      "activeOpenGlContexts": 1,
+      "openGlContextsCreated": 1,
+      "openGlContextsReleased": 0,
+      "isBalanced": false
+    }
+  },
+  "resourceClosure": {
+    "activeWindows": 0,
+    "windowsCreated": 1,
+    "windowsReleased": 1,
+    "activeOpenGlContexts": 0,
+    "openGlContextsCreated": 1,
+    "openGlContextsReleased": 1,
+    "isBalanced": true
+  },
+  "gates": {
+    "baseWidgets": "Directionality -\u003E ColoredBox -\u003E Container -\u003E Flex -\u003E Text",
+    "cumulative": [
+      "SingleChildScrollView(restorationId)",
+      "Focus",
+      "Semantics",
+      "ticker/animation via RawScrollbar"
+    ],
+    "reference": "g6-widgets-reference.json exact lifecycle trace plus pixel bounds/color tolerance"
+  },
+  "failures": []
+}

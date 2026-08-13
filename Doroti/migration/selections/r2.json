@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "doroti.converter-selection/v4",
+  "converterVersion": "2.0.0",
+  "migrationIrVersion": "2.0.0",
+  "generationMode": "review-draft",
+  "compatibilityProfile": "flutter-aware-bootstrap",
+  "outputNamespace": "Doroti.MigrationDrafts.R2",
+  "outputAssemblyName": "Doroti.Generated.R2",
+  "flutterBaseline": "../flutter-compat/baseline.json",
+  "inputs": [
+    {
+      "path": "../fixtures/r2-pilot.dart",
+      "symbols": [
+        "GeometryPoint",
+        "BoxConstraints",
+        "LayerContract"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+    "schemaVersion":  "doroti.g6-runtime-error-taxonomy/v1",
+    "milestone":  "G6-2",
+    "flutterGitRevision":  "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+    "generatedDigest":  "faa404f1e44650e9d12ea2d0aa14d07363a10332263b049f89bd66977f65aadf",
+    "current":  {
+                    "id":  "framework.material.app-bar.build.null-reference",
+                    "category":  "framework-material-build",
+                    "phase":  "build",
+                    "exceptionType":  "System.NullReferenceException",
+                    "message":  "Object reference not set to an instance of an object.",
+                    "widget":  "AppBar",
+                    "library":  "package:flutter/src/material/app_bar.dart",
+                    "firstStackFrame":  "at Doroti.Generated.Framework.Material._AppBarState__app_bar.build(BuildContext context) in Doroti/migration/generated-candidates/g5-4-reviewed/projects/Material/app_bar.g.cs:line 277",
+                    "frameTimeout":  false,
+                    "presentedFrames":  0,
+                    "status":  "historical-g6-0-blocker-reverify-in-g6-3",
+                    "reproductionCount":  2
+                },
+    "priorKnownFamilies":  [
+                               {
+                                   "id":  "language-runtime",
+                                   "status":  "baseline-known-not-reclassified-as-live"
+                               },
+                               {
+                                   "id":  "constructor-initialization",
+                                   "status":  "baseline-known-not-reclassified-as-live"
+                               },
+                               {
+                                   "id":  "widgets-tree",
+                                   "status":  "baseline-known-not-reclassified-as-live"
+                               },
+                               {
+                                   "id":  "animation-rendering",
+                                   "status":  "baseline-known-not-reclassified-as-live"
+                               },
+                               {
+                                   "id":  "material-default-resolution",
+                                   "status":  "current-blocker"
+                               }
+                           ],
+    "widgetsLiveClosure":  {
+                                "status":  "PASS",
+                                "evidence":  "g6-widgets-live-evidence.json",
+                                "target":  "actual HWND / skia-wgl-opengl-gpu",
+                                "resolvedFamilies":  [
+                                                         "constructor-body-lowering",
+                                                         "binding-build-finalize-frame",
+                                                         "nullable-framework-values",
+                                                         "single-child-layout",
+                                                         "colored-box-paint-dispatch",
+                                                         "incremental-semantics-tree",
+                                                         "focus-scope-notification-serialization",
+                                                         "scroll-position-initialization",
+                                                         "resize-terminal-ack",
+                                                         "shutdown-resource-closure"
+                                                     ],
+                                "materialCoverage":  "notVerified"
+                            },
+    "reproduction":  {
+                         "command":  "Doroti/eng/validate-g6-baseline.ps1 -Shard LiveWindows",
+                         "rawEvidence":  "migration/flutter-framework/g6-live-smoke.json",
+                         "expectedExitCode":  1
+                     }
+}

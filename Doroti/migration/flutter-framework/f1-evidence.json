@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "doroti.flutter-framework-evidence/v2",
+  "milestone": "F1",
+  "status": "implementation-blocked",
+  "flutterGitRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "closure": "migration/flutter-framework/f1-closure.json",
+  "resolvedInventory": {
+    "libraries": 120,
+    "declarations": 742,
+    "members": 4262,
+    "analyzerErrors": 0,
+    "unclassifiedDeclarations": 0,
+    "unclassifiedMembers": 0,
+    "unsupportedBlockers": 0
+  },
+  "mechanicalGenerated": {
+    "disposition": "mechanical-generated",
+    "declarations": 1,
+    "members": 0,
+    "symbolTargets": [
+      {
+        "elementId": "package:flutter/src/foundation/object.dart#objectRuntimeType",
+        "kind": "declaration",
+        "source": "src/foundation/object.dart",
+        "target": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/foundation/object.g.cs",
+        "targetSha256": "92b5c4d9987e2fb62435577d8bf9381fa8f25361e379c1229974ec6760606b5c",
+        "compilerProfile": "flutter-framework-f0"
+      }
+    ]
+  },
+  "reviewedGeneratedCs": {
+    "disposition": "reviewed-generated-cs",
+    "declarations": 0,
+    "members": 0,
+    "symbolTargets": []
+  },
+  "reviewedSourcePortCs": {
+    "disposition": "reviewed-source-port-cs",
+    "declarations": 0,
+    "members": 0,
+    "symbolTargets": []
+  },
+  "runtimeBound": {
+    "disposition": "runtime-binding",
+    "declarations": 0,
+    "members": 0,
+    "symbolTargets": []
+  },
+  "compiled": {
+    "mechanicalGenerated": false,
+    "reviewedGeneratedCs": false,
+    "reviewedSourcePortCs": false,
+    "runtimeBound": false,
+    "evidence": []
+  },
+  "behaviorVerified": {
+    "verifiedDeclarations": 0,
+    "verifiedMembers": 0,
+    "evidence": []
+  },
+  "legacyClassification": {
+    "includedInImplementation": false,
+    "excludedDispositions": [
+      "generated",
+      "manual-adaptation",
+      "runtime-binding"
+    ],
+    "migrationRule": "The v1 closure disposition and owner fields are resolved-inventory annotations only. They never contribute to Goal3 implementation coverage."
+  },
+  "historicalEvidence": {
+    "acceptedAsCompletionInput": false,
+    "removedInputs": [
+      "doroti.flutter-f1-evidence/v1"
+    ]
+  },
+  "compilerGate": {
+    "registeredProfiles": [
+      "flutter-framework-f0"
+    ],
+    "milestoneGeneratedDeclarations": 0,
+    "milestoneGeneratedMembers": 0
+  },
+  "blockers": {
+    "missingMechanicalDeclarations": 741,
+    "missingMechanicalMembers": 4262,
+    "missingCompletedDeclarations": 742,
+    "missingCompletedMembers": 4262,
+    "implementationBlockers": 5004,
+    "unsupportedBlockers": 0
+  },
+  "milestoneComplete": false
+}

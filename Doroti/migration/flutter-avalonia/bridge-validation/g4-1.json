@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "doroti.flutter-avalonia-bridge-validation/v1",
+  "milestone": "G4-1",
+  "success": true,
+  "summary": {
+    "runtimeHostReferenceCount": 0,
+    "uiHostReferenceCount": 0,
+    "twoViewIsolation": true,
+    "failClosedDiagnostic": true,
+    "bootstrapShutdown": true,
+    "desktopPublicTypeLeakCount": 0,
+    "compilerDartUiBinding": true
+  },
+  "findings": []
+}

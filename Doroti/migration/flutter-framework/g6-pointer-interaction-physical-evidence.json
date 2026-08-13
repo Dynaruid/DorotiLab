@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "doroti.g6-pointer-interaction-evidence/v1",
+  "milestone": "G6-5R-I",
+  "capturedAtUtc": "2026-08-13T16:06:48.4511105+00:00",
+  "status": "verified-windows-x64-strict-gpu-physical-input",
+  "fixture": {
+    "locale": "en-US",
+    "month": "2026-08",
+    "activeDate": "2026-08-14",
+    "window": {
+      "width": 900,
+      "height": 720
+    },
+    "nativeScale": {
+      "x": 2,
+      "y": 2
+    }
+  },
+  "result": {
+    "callbackCount": 1,
+    "selectedDate": "2026-08-14",
+    "operatorObservation": {
+      "hoverOverlayVisible": true,
+      "activeDateClickSucceeded": true,
+      "confirmedAtLocalDate": "2026-08-14"
+    },
+    "screenshot": "Doroti/migration/flutter-framework/g6-pointer-interaction-physical-artifacts/physical-active-click.png",
+    "screenshotSha256": "011d29970252010b335b3ee1c1aa33c3f083f08c7e0148d29fd7aee60d5163a7",
+    "cursor": {
+      "requests": 1,
+      "lastRequested": 0
+    },
+    "nativeInput": {
+      "capabilities": {
+        "mouse": true,
+        "touch": false,
+        "pen": false,
+        "wheel": true,
+        "pointerCapture": true,
+        "physicalKeys": true,
+        "textInput": true
+      },
+      "pointerPackets": 310,
+      "keyPackets": 0,
+      "focusChanges": 2,
+      "metricsChanges": 2
+    },
+    "frame": {
+      "submitted": 215,
+      "presented": 215,
+      "superseded": 0,
+      "stale": 0,
+      "failed": 0,
+      "cancelled": 0,
+      "queueDepth": 0,
+      "queueHighWatermark": 2,
+      "activeContexts": 1,
+      "activeFrames": 0,
+      "surfaceGeneration": 1,
+      "recoveryCount": 0,
+      "softwareFallbackUsed": false,
+      "backendIdentity": "skia-wgl-opengl-gpu"
+    },
+    "resourceClosure": {
+      "activeWindows": 0,
+      "windowsCreated": 1,
+      "windowsReleased": 1,
+      "activeOpenGlContexts": 0,
+      "openGlContextsCreated": 1,
+      "openGlContextsReleased": 1,
+      "isBalanced": true
+    }
+  },
+  "boundaries": {
+    "automatedWindowsX64": "separateGate",
+    "physicalHover": "verified-user-observed",
+    "physicalClick": "verified",
+    "avaloniaBackend": "notVerified",
+    "linux": "notVerified",
+    "macOS": "notVerified"
+  }
+}

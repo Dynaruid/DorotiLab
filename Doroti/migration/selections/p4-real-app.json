@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "doroti.converter-selection/v4",
+  "converterVersion": "2.0.0",
+  "migrationIrVersion": "2.0.0",
+  "generationMode": "nuget-generated-package",
+  "compatibilityProfile": "flutter-aware-c5",
+  "outputNamespace": "Doroti.Generated.RealApp",
+  "outputAssemblyName": "Doroti.Generated.RealApp",
+  "flutterBaseline": "../flutter-compat/baseline.json",
+  "packageRoot": "../fixtures/p4_real_app",
+  "entryPoint": "main",
+  "packageId": "Doroti.Generated.RealApp",
+  "packageVersion": "0.2.0-beta",
+  "packageTier": "B",
+  "sourcePackage": "doroti_p4_real_app",
+  "sourceVersion": "1.0.0",
+  "sourceLicense": "LicenseRef-Doroti-Test-Fixture",
+  "inputs": [
+    {
+      "path": "package:doroti_p4_real_app/generated_package_app.dart",
+      "symbols": ["GeneratedPackageApp"]
+    }
+  ]
+}

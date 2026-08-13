@@ -1,0 +1,750 @@
+{
+  "schemaVersion": "doroti.framework-promotion/v2",
+  "candidateRoot": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "productRoot": "src",
+  "upstreamRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "compilerIdentity": {
+    "migrationIrVersion": "3.0.0",
+    "loweringRuleSetVersion": "framework-g3.1-multilibrary-typed",
+    "emitterVersion": "csharp-net10.g3.1-project-graph"
+  },
+  "items": [
+    {
+      "elementId": "package:flutter/src/foundation/annotations.dart#Category",
+      "symbol": "Category",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/annotations.dart",
+      "sourceSpan": {
+        "offset": 207,
+        "length": 1643
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-1/projects/Foundation/annotations.g.cs",
+      "candidateSha256": "7c79d50db35647d0541bd82f94bb9bee40f76f86f1d5ea55cec7b990699f2dc1",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-1/projects/Foundation/annotations.g.cs",
+      "baseCandidateSha256": "7c79d50db35647d0541bd82f94bb9bee40f76f86f1d5ea55cec7b990699f2dc1",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/annotations.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-2-api",
+        "g3-2-compile",
+        "g3-2-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/annotations.dart#DocumentationIcon",
+      "symbol": "DocumentationIcon",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/annotations.dart",
+      "sourceSpan": {
+        "offset": 1852,
+        "length": 918
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-1/projects/Foundation/annotations.g.cs",
+      "candidateSha256": "7c79d50db35647d0541bd82f94bb9bee40f76f86f1d5ea55cec7b990699f2dc1",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-1/projects/Foundation/annotations.g.cs",
+      "baseCandidateSha256": "7c79d50db35647d0541bd82f94bb9bee40f76f86f1d5ea55cec7b990699f2dc1",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/annotations.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-2-api",
+        "g3-2-compile",
+        "g3-2-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/annotations.dart#Summary",
+      "symbol": "Summary",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/annotations.dart",
+      "sourceSpan": {
+        "offset": 2772,
+        "length": 1149
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-1/projects/Foundation/annotations.g.cs",
+      "candidateSha256": "7c79d50db35647d0541bd82f94bb9bee40f76f86f1d5ea55cec7b990699f2dc1",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-1/projects/Foundation/annotations.g.cs",
+      "baseCandidateSha256": "7c79d50db35647d0541bd82f94bb9bee40f76f86f1d5ea55cec7b990699f2dc1",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/annotations.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-2-api",
+        "g3-2-compile",
+        "g3-2-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/object.dart#objectRuntimeType",
+      "symbol": "objectRuntimeType",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/object.dart",
+      "sourceSpan": {
+        "offset": 165,
+        "length": 578
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-1/projects/Foundation/object.g.cs",
+      "candidateSha256": "92b5c4d9987e2fb62435577d8bf9381fa8f25361e379c1229974ec6760606b5c",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-1/projects/Foundation/object.g.cs",
+      "baseCandidateSha256": "92b5c4d9987e2fb62435577d8bf9381fa8f25361e379c1229974ec6760606b5c",
+      "candidateAliases": [
+        {
+          "selection": "F0",
+          "path": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/foundation/object.g.cs",
+          "sha256": "92b5c4d9987e2fb62435577d8bf9381fa8f25361e379c1229974ec6760606b5c"
+        }
+      ],
+      "target": "src/Doroti.Flutter.Framework.Foundation/object.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "f0-behavior",
+        "g3-2-api",
+        "g3-2-compile",
+        "g3-2-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/physics/tolerance.dart#Tolerance",
+      "symbol": "Tolerance",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/physics/tolerance.dart",
+      "sourceSpan": {
+        "offset": 208,
+        "length": 1670
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-1/projects/Physics/tolerance.g.cs",
+        "candidateSha256": "b17e91eb00d0df79e27ffe6bb78a7babd23be99d9224e76bf00ece53747917c5",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-1/projects/Physics/tolerance.g.cs",
+        "baseCandidateSha256": "b17e91eb00d0df79e27ffe6bb78a7babd23be99d9224e76bf00ece53747917c5",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Physics/tolerance.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-2-api",
+        "g3-2-behavior",
+        "g3-2-compile",
+        "g3-2-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/change_notifier.dart#Listenable",
+      "symbol": "Listenable",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
+      "sourceSpan": {
+        "offset": 488,
+        "length": 2948
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/change_notifier.g.cs",
+      "candidateSha256": "e3f44288d059123d60e9cff383aca173dddc4144a2c4a20d2ab2c9ea5faa6aa9",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/change_notifier.g.cs",
+      "baseCandidateSha256": "e3f44288d059123d60e9cff383aca173dddc4144a2c4a20d2ab2c9ea5faa6aa9",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/change_notifier.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/change_notifier.dart#ValueListenable",
+      "symbol": "ValueListenable",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
+      "sourceSpan": {
+        "offset": 3438,
+        "length": 836
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/change_notifier.g.cs",
+      "candidateSha256": "e3f44288d059123d60e9cff383aca173dddc4144a2c4a20d2ab2c9ea5faa6aa9",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/change_notifier.g.cs",
+      "baseCandidateSha256": "e3f44288d059123d60e9cff383aca173dddc4144a2c4a20d2ab2c9ea5faa6aa9",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/change_notifier.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/change_notifier.dart#ChangeNotifier",
+      "symbol": "ChangeNotifier",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
+      "sourceSpan": {
+        "offset": 4276,
+        "length": 15401
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/change_notifier.g.cs",
+      "candidateSha256": "e3f44288d059123d60e9cff383aca173dddc4144a2c4a20d2ab2c9ea5faa6aa9",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/change_notifier.g.cs",
+      "baseCandidateSha256": "e3f44288d059123d60e9cff383aca173dddc4144a2c4a20d2ab2c9ea5faa6aa9",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/change_notifier.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/change_notifier.dart#_MergingListenable",
+      "symbol": "_MergingListenable",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
+      "sourceSpan": {
+        "offset": 19679,
+        "length": 534
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/change_notifier.g.cs",
+      "candidateSha256": "e3f44288d059123d60e9cff383aca173dddc4144a2c4a20d2ab2c9ea5faa6aa9",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/change_notifier.g.cs",
+      "baseCandidateSha256": "e3f44288d059123d60e9cff383aca173dddc4144a2c4a20d2ab2c9ea5faa6aa9",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/change_notifier.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/change_notifier.dart#ValueNotifier",
+      "symbol": "ValueNotifier",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
+      "sourceSpan": {
+        "offset": 20215,
+        "length": 1753
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/change_notifier.g.cs",
+      "candidateSha256": "e3f44288d059123d60e9cff383aca173dddc4144a2c4a20d2ab2c9ea5faa6aa9",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/change_notifier.g.cs",
+      "baseCandidateSha256": "e3f44288d059123d60e9cff383aca173dddc4144a2c4a20d2ab2c9ea5faa6aa9",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/change_notifier.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/collections.dart#setEquals",
+      "symbol": "setEquals",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "sourceSpan": {
+        "offset": 300,
+        "length": 989
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "candidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "baseCandidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/collections.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/collections.dart#listEquals",
+      "symbol": "listEquals",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "sourceSpan": {
+        "offset": 1291,
+        "length": 1014
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "candidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "baseCandidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/collections.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/collections.dart#mapEquals",
+      "symbol": "mapEquals",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "sourceSpan": {
+        "offset": 2307,
+        "length": 1028
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "candidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "baseCandidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/collections.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/collections.dart#binarySearch",
+      "symbol": "binarySearch",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "sourceSpan": {
+        "offset": 3337,
+        "length": 643
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "candidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "baseCandidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/collections.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/collections.dart#_kMergeSortLimit",
+      "symbol": "_kMergeSortLimit",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "sourceSpan": {
+        "offset": 3982,
+        "length": 93
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "candidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "baseCandidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/collections.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/collections.dart#mergeSort",
+      "symbol": "mergeSort",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "sourceSpan": {
+        "offset": 4077,
+        "length": 2176
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "candidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "baseCandidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/collections.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/collections.dart#_defaultCompare",
+      "symbol": "_defaultCompare",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "sourceSpan": {
+        "offset": 6255,
+        "length": 402
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "candidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "baseCandidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/collections.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/collections.dart#_insertionSort",
+      "symbol": "_insertionSort",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "sourceSpan": {
+        "offset": 6659,
+        "length": 1547
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "candidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "baseCandidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/collections.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/collections.dart#_movingInsertionSort",
+      "symbol": "_movingInsertionSort",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "sourceSpan": {
+        "offset": 8208,
+        "length": 827
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "candidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "baseCandidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/collections.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/collections.dart#_mergeSort",
+      "symbol": "_mergeSort",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "sourceSpan": {
+        "offset": 9037,
+        "length": 1299
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "candidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "baseCandidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/collections.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/collections.dart#_merge",
+      "symbol": "_merge",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "sourceSpan": {
+        "offset": 10338,
+        "length": 1613
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "candidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/collections.g.cs",
+      "baseCandidateSha256": "ca0a7029a138ad3ff10de61f4c23f7e5fe3f9ff3b9d6003e54e2ef11be513e09",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/collections.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/key.dart#Key",
+      "symbol": "Key",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/key.dart",
+      "sourceSpan": {
+        "offset": 333,
+        "length": 1590
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/key.g.cs",
+      "candidateSha256": "42645e826df7abb915894ecc27198fa748baa6354085dccbb3e226691e17e8fc",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/key.g.cs",
+      "baseCandidateSha256": "42645e826df7abb915894ecc27198fa748baa6354085dccbb3e226691e17e8fc",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/key.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/key.dart#LocalKey",
+      "symbol": "LocalKey",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/key.dart",
+      "sourceSpan": {
+        "offset": 1925,
+        "length": 459
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/key.g.cs",
+      "candidateSha256": "42645e826df7abb915894ecc27198fa748baa6354085dccbb3e226691e17e8fc",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/key.g.cs",
+      "baseCandidateSha256": "42645e826df7abb915894ecc27198fa748baa6354085dccbb3e226691e17e8fc",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/key.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/key.dart#UniqueKey",
+      "symbol": "UniqueKey",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/key.dart",
+      "sourceSpan": {
+        "offset": 2386,
+        "length": 631
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/key.g.cs",
+      "candidateSha256": "42645e826df7abb915894ecc27198fa748baa6354085dccbb3e226691e17e8fc",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/key.g.cs",
+      "baseCandidateSha256": "42645e826df7abb915894ecc27198fa748baa6354085dccbb3e226691e17e8fc",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/key.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/key.dart#ValueKey",
+      "symbol": "ValueKey",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/key.dart",
+      "sourceSpan": {
+        "offset": 3019,
+        "length": 3266
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/key.g.cs",
+      "candidateSha256": "42645e826df7abb915894ecc27198fa748baa6354085dccbb3e226691e17e8fc",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/key.g.cs",
+      "baseCandidateSha256": "42645e826df7abb915894ecc27198fa748baa6354085dccbb3e226691e17e8fc",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/key.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/observer_list.dart#ObserverList",
+      "symbol": "ObserverList",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/observer_list.dart",
+      "sourceSpan": {
+        "offset": 192,
+        "length": 2359
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/observer_list.g.cs",
+      "candidateSha256": "180303831637200f9d0524b4ce3c37c58fea1e08cd98154f9deaa15e3bc85723",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/observer_list.g.cs",
+      "baseCandidateSha256": "180303831637200f9d0524b4ce3c37c58fea1e08cd98154f9deaa15e3bc85723",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/observer_list.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    },
+    {
+      "elementId": "package:flutter/src/foundation/observer_list.dart#HashedObserverList",
+      "symbol": "HashedObserverList",
+      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/observer_list.dart",
+      "sourceSpan": {
+        "offset": 2553,
+        "length": 2045
+      },
+      "candidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/observer_list.g.cs",
+      "candidateSha256": "180303831637200f9d0524b4ce3c37c58fea1e08cd98154f9deaa15e3bc85723",
+      "baseCandidate": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/projects/Foundation/observer_list.g.cs",
+      "baseCandidateSha256": "180303831637200f9d0524b4ce3c37c58fea1e08cd98154f9deaa15e3bc85723",
+      "candidateAliases": [],
+      "target": "src/Doroti.Flutter.Framework.Foundation/observer_list.cs",
+      "targetBaseSha256": "missing",
+      "reviewer": "Doroti framework review",
+      "reviewState": "approved",
+      "issues": [],
+      "fixOwner": null,
+      "patch": null,
+      "basePatch": null,
+      "validationCases": [
+        "g3-b0-api",
+        "g3-b0-compile",
+        "g3-b0-determinism"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "doroti.g6-material-demo-reference/v1",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "logicalSize": {
+    "width": 720,
+    "height": 640
+  },
+  "layoutPaintTolerance": {
+    "logicalPixelTolerance": 3,
+    "minimumChangedPixels": 100,
+    "minimumBlackInkPixelsAt1x": 2000,
+    "minimumPrimaryControlPixelsAt1x": 200,
+    "cardSurfaceBounds": {
+      "x": 20,
+      "y": 103,
+      "width": 680,
+      "height": 64
+    },
+    "initialStackBounds": {
+      "x": 171,
+      "y": 377,
+      "width": 260,
+      "height": 56
+    },
+    "blackInkBounds": {
+      "x": 17,
+      "y": 75,
+      "width": 663,
+      "height": 525
+    }
+  }
+}

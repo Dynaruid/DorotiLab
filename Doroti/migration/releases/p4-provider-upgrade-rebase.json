@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "doroti.rebase-report/v1",
+  "previousSource": {
+    "kind": "flutter-or-dart-package",
+    "revision": "provider@6.1.5",
+    "license": "MIT"
+  },
+  "currentSource": {
+    "kind": "flutter-or-dart-package",
+    "revision": "provider@6.1.6-review",
+    "license": "MIT"
+  },
+  "sourceGraphChange": "none-in-pinned-review-fixture",
+  "manualInputsChange": "none",
+  "entries": [
+    {
+      "library": "package:provider/src/reassemble_handler.dart",
+      "symbol": "ReassembleHandler",
+      "status": "clean",
+      "previousGeneratedBaseSha256": "bf86980ee394b7cc3bbc4acd4743a8c876a2f1e9bf65b0c32b9c5d6407ac6ee2",
+      "currentGeneratedBaseSha256": "bf86980ee394b7cc3bbc4acd4743a8c876a2f1e9bf65b0c32b9c5d6407ac6ee2"
+    },
+    {
+      "library": "package:provider/src/reassemble_handler.dart",
+      "symbol": "ReassembleHandler",
+      "member": "reassemble",
+      "status": "clean",
+      "previousGeneratedBaseSha256": "bf86980ee394b7cc3bbc4acd4743a8c876a2f1e9bf65b0c32b9c5d6407ac6ee2",
+      "currentGeneratedBaseSha256": "bf86980ee394b7cc3bbc4acd4743a8c876a2f1e9bf65b0c32b9c5d6407ac6ee2"
+    }
+  ],
+  "requiredFixtures": ["p4-provider-reassemble-behavior"],
+  "hasBlockingChanges": false,
+  "verification": "eng/doroti.ps1 release reruns the rebase against the effective provider workspace"
+}

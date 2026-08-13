@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Flutter.Framework.Services</AssemblyName>
+    <PackageId>Doroti.Flutter.Framework.Services</PackageId>
+    <IsDorotiProduct>true</IsDorotiProduct>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Doroti.Generated.Framework.Widgets.Widgets" />
+    <InternalsVisibleTo Include="Doroti.Flutter.Framework.Widgets" />
+    <ProjectReference Include="..\Doroti.Flutter.Runtime\Doroti.Flutter.Runtime.csproj" />
+    <ProjectReference Include="..\Doroti.Flutter.Ui\Doroti.Flutter.Ui.csproj" />
+    <ProjectReference Include="..\Doroti.Flutter.Framework.Foundation\Doroti.Flutter.Framework.Foundation.csproj" />
+    <ProjectReference Include="..\Doroti.Flutter.Framework.Scheduler\Doroti.Flutter.Framework.Scheduler.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "doroti.replacements/v1",
+  "replacements": [
+    {
+      "library": "package:c0_language_fixture/counter_model.dart",
+      "symbol": "CounterModel",
+      "generatedBaseSha256": "2fa8d67258a3b395d4019ccb9a35118f32c041a33191e03ea27db579bf7e95a2",
+      "source": "replacements/CounterModel.next.cs",
+      "member": "next"
+    }
+  ]
+}

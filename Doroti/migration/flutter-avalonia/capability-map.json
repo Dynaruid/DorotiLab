@@ -1,0 +1,238 @@
+{
+  "schemaVersion": "doroti.flutter-avalonia-capability-map/v1",
+  "milestone": "G4-1",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "avaloniaRevision": "f159423f691946e713f454447a780d4677d8a0d2",
+  "bindingRule": "Every avalonia-binding occurrence in source-boundary.json names exactly one capability below. Planned local targets are not implementation evidence until their owning milestone validates them.",
+  "capabilities": [
+    {
+      "id": "window.lifecycle",
+      "contractOwner": "Doroti.Flutter.Ui view/window capability",
+      "flutterElementPatterns": ["package:flutter/src/widgets/_window*.dart#*", "dart:ffi#*"],
+      "dartUiMembers": ["FlutterView", "Display"],
+      "avaloniaUpstreamSymbols": ["Avalonia.Platform.IWindowImpl", "Avalonia.Win32.WindowImpl", "Avalonia.Native.WindowImpl"],
+      "implementations": [
+        {
+          "os": ["windows"],
+          "status": "source-ported",
+          "avaloniaSourcePaths": ["src/Windows/Avalonia.Win32/WindowImpl.cs", "src/Windows/Avalonia.Win32/WindowImpl.AppWndProc.cs"],
+          "localTargets": ["src/Doroti.Vendor.Avalonia.Win32/SimpleWindow.cs", "src/Doroti.Vendor.Avalonia.Win32/Win32ShellRuntime.cs", "src/Doroti.Host.Desktop/DesktopWindowBackend.cs", "src/Doroti.Host.Desktop.Flutter/DesktopFlutterHost.cs"],
+          "validationOwner": "A1 window lifecycle target evidence + G4-1 view binding fixture"
+        },
+        {
+          "os": ["linux-x11", "linux-wayland", "macos"],
+          "status": "not-verified",
+          "avaloniaSourcePaths": ["src/Avalonia.X11/X11Platform.cs", "src/Avalonia.Wayland/WaylandPlatform.cs", "src/Avalonia.Native/WindowImpl.cs"],
+          "localTargets": ["src/Doroti.Vendor.Avalonia.X11", "src/Doroti.Vendor.Avalonia.Wayland", "src/Doroti.Vendor.Avalonia.Native"],
+          "validationOwner": "G4-X0/G4-X1 physical target validation"
+        }
+      ]
+    },
+    {
+      "id": "view.lifecycle-metrics",
+      "contractOwner": "Doroti.Flutter.Ui per-view metrics/lifecycle contract",
+      "flutterElementPatterns": ["dart:ui#FlutterView", "dart:ui#Display", "dart:ui#ViewConfiguration", "dart:ui#ViewPadding", "dart:ui#AppLifecycleState"],
+      "dartUiMembers": ["FlutterView", "Display", "ViewConfiguration", "ViewPadding", "AppLifecycleState"],
+      "avaloniaUpstreamSymbols": ["Avalonia.Platform.ITopLevelImpl", "Avalonia.Win32.ScreenImpl"],
+      "implementations": [
+        {
+          "os": ["windows"],
+          "status": "source-ported-bound-g4-1",
+          "avaloniaSourcePaths": ["src/Windows/Avalonia.Win32/WindowImpl.cs", "src/Windows/Avalonia.Win32/ScreenImpl.cs"],
+          "localTargets": ["src/Doroti.Vendor.Avalonia.Win32/SimpleWindow.cs", "src/Doroti.Host.Desktop/DesktopAdapterBoundary.cs", "src/Doroti.Host.Desktop/DesktopWindowBackend.cs", "src/Doroti.Flutter.Ui/ViewContracts.cs", "src/Doroti.Flutter.Ui/PlatformDispatcher.cs", "src/Doroti.Host.Desktop.Flutter/DesktopFlutterHost.cs"],
+          "validationOwner": "G4-1 two-view metrics fixture; G4-3 resize/DPI/lifecycle trace"
+        }
+      ]
+    },
+    {
+      "id": "view.frame-dispatch",
+      "contractOwner": "Flutter Scheduler + Doroti.Flutter.Ui PlatformDispatcher contract",
+      "flutterElementPatterns": ["dart:ui#PlatformDispatcher", "dart:ui#FrameTiming", "dart:ui#TimingsCallback", "dart:ui#SingletonFlutterWindow"],
+      "dartUiMembers": ["PlatformDispatcher", "FrameTiming", "TimingsCallback", "SingletonFlutterWindow"],
+      "avaloniaUpstreamSymbols": ["Avalonia.Rendering.IRenderTimer", "Avalonia.Rendering.SleepLoopRenderTimer", "Avalonia.Threading.Dispatcher"],
+      "implementations": [
+        {
+          "os": ["windows"],
+          "status": "g4-3-scheduler-bound-validated",
+          "avaloniaSourcePaths": ["src/Avalonia.Base/Rendering/IRenderTimer.cs", "src/Avalonia.Base/Rendering/SleepLoopRenderTimer.cs", "src/Windows/Avalonia.Win32/Win32DispatcherImpl.cs"],
+          "localTargets": ["src/Doroti.Vendor.Avalonia.Base/SleepLoopRenderTimer.cs", "src/Doroti.Vendor.Avalonia.Win32/Win32ShellRuntime.cs", "src/Doroti.Host.Desktop/DesktopWindowBackend.cs", "src/Doroti.Flutter.Ui/PlatformDispatcher.cs", "src/Doroti.Flutter.Framework.Scheduler/binding.cs", "src/Doroti.Host.Desktop.Flutter/DesktopFlutterHost.cs"],
+          "validationOwner": "G4-3 begin-frame/draw-frame ordering trace (bridge-validation/g4-3.json)"
+        }
+      ]
+    },
+    {
+      "id": "input.events",
+      "contractOwner": "Doroti.Flutter.Ui raw packet contract; Flutter Services/Gestures state",
+      "flutterElementPatterns": ["dart:ui#PointerData*", "dart:ui#KeyData*", "dart:ui#PointerChange", "dart:ui#PointerDeviceKind"],
+      "dartUiMembers": ["PointerData", "PointerDataPacket", "KeyData", "KeyEventType", "PointerChange", "PointerDeviceKind"],
+      "avaloniaUpstreamSymbols": ["Avalonia.Win32.WindowImpl.AppWndProc", "Avalonia.Input.Raw.RawInputEventArgs"],
+      "implementations": [
+        {
+          "os": ["windows"],
+          "status": "g4-3-services-bound-validated",
+          "avaloniaSourcePaths": ["src/Windows/Avalonia.Win32/WindowImpl.AppWndProc.cs", "src/Windows/Avalonia.Win32/WindowImpl.cs"],
+          "localTargets": ["src/Doroti.Vendor.Avalonia.Win32/WindowEventTranslator.cs", "src/Doroti.Vendor.Avalonia.Win32/SimpleWindow.cs", "src/Doroti.Platform/InputContracts.cs", "src/Doroti.Flutter.Ui/ViewContracts.cs", "src/Doroti.Flutter.Framework.Services/hardware_keyboard.cs", "src/Doroti.Host.Desktop.Flutter/DesktopFlutterHost.cs"],
+          "validationOwner": "G4-3 pointer/key/focus loss-and-duplication trace (bridge-validation/g4-3.json)"
+        }
+      ]
+    },
+    {
+      "id": "input.cursor",
+      "contractOwner": "Flutter Services mouse cursor protocol",
+      "flutterElementPatterns": ["platform-channel:flutter/mousecursor@*"],
+      "dartUiMembers": [],
+      "avaloniaUpstreamSymbols": ["Avalonia.Win32.CursorFactory"],
+      "implementations": [
+        {
+          "os": ["windows"],
+          "status": "g4-3-services-adapter-validated",
+          "avaloniaSourcePaths": ["src/Windows/Avalonia.Win32/CursorFactory.cs"],
+          "localTargets": ["src/Doroti.Vendor.Avalonia.Win32/NativeInterop.cs", "src/Doroti.Host.Desktop/DesktopWindowBackend.cs", "src/Doroti.Flutter.Framework.Services/platform_services.cs", "src/Doroti.Host.Desktop.Flutter/DesktopFlutterHost.cs"],
+          "validationOwner": "G4-3 cursor service trace (bridge-validation/g4-3.json)"
+        }
+      ]
+    },
+    {
+      "id": "text.input",
+      "contractOwner": "Flutter Services text editing protocol + Doroti.Flutter.Ui transport",
+      "flutterElementPatterns": ["platform-channel:flutter/textinput@*"],
+      "dartUiMembers": ["TextRange", "TextPosition", "TextAffinity"],
+      "avaloniaUpstreamSymbols": ["Avalonia.Win32.Input.Imm32InputMethod"],
+      "implementations": [
+        {
+          "os": ["windows"],
+          "status": "g4-3-services-adapter-validated",
+          "avaloniaSourcePaths": ["src/Windows/Avalonia.Win32/Input/Imm32InputMethod.cs"],
+          "localTargets": ["src/Doroti.Vendor.Avalonia.Win32/Win32ImeInterop.cs", "src/Doroti.Vendor.Avalonia.Win32/SimpleWindow.cs", "src/Doroti.Host.Desktop/DesktopWindowBackend.cs", "src/Doroti.Flutter.Ui/PlatformMessaging.cs", "src/Doroti.Flutter.Framework.Services/text_input.cs", "src/Doroti.Host.Desktop.Flutter/DesktopFlutterHost.cs"],
+          "validationOwner": "G4-3 IME composition/selection/caret-scale trace (bridge-validation/g4-3.json)"
+        }
+      ]
+    },
+    {
+      "id": "platform.services",
+      "contractOwner": "Flutter Services API/channel codecs + host capability registry",
+      "flutterElementPatterns": ["platform-channel:*"],
+      "dartUiMembers": [],
+      "avaloniaUpstreamSymbols": ["Avalonia.Win32.ClipboardImpl", "Avalonia.Win32.CursorFactory", "Avalonia.Platform.IPlatformSettings"],
+      "implementations": [
+        {
+          "os": ["windows"],
+          "status": "g4-3-services-registry-validated",
+          "avaloniaSourcePaths": ["src/Windows/Avalonia.Win32/ClipboardImpl.cs", "src/Windows/Avalonia.Win32/CursorFactory.cs"],
+          "localTargets": ["src/Doroti.Vendor.Avalonia.Win32/Win32ClipboardInterop.cs", "src/Doroti.Host.Desktop/DesktopWindowBackend.cs", "src/Doroti.Flutter.Ui/PlatformMessaging.cs", "src/Doroti.Flutter.Framework.Services/platform_services.cs", "src/Doroti.Host.Desktop.Flutter/DesktopFlutterHost.cs"],
+          "validationOwner": "G4-3 clipboard/cursor/platform-service error trace (bridge-validation/g4-3.json)"
+        }
+      ]
+    },
+    {
+      "id": "platform.environment",
+      "contractOwner": "Doroti.Flutter.Ui locale/brightness/platform capability",
+      "flutterElementPatterns": ["dart:io#Platform", "dart:ui#Locale", "dart:ui#Brightness", "dart:ui#PlatformConfiguration"],
+      "dartUiMembers": ["Locale", "Brightness", "PlatformConfiguration"],
+      "avaloniaUpstreamSymbols": ["Avalonia.Platform.IPlatformSettings", "Avalonia.Win32.ScreenImpl"],
+      "implementations": [
+        {
+          "os": ["windows"],
+          "status": "g4-1-contract-bound-awaiting-foundation-query-parity",
+          "avaloniaSourcePaths": ["src/Windows/Avalonia.Win32/ScreenImpl.cs", "src/Windows/Avalonia.Win32/Win32Platform.cs"],
+          "localTargets": ["src/Doroti.Vendor.Avalonia.Win32/SimpleWindow.cs", "src/Doroti.Flutter.Ui/ViewContracts.cs", "src/Doroti.Host.Desktop.Flutter/DesktopFlutterHost.cs"],
+          "validationOwner": "G4-1 capability failure fixture; G4-2 platform query parity"
+        }
+      ]
+    },
+    {
+      "id": "platform.messaging",
+      "contractOwner": "Flutter Services binary messenger/codec + Doroti.Flutter.Ui platform message ABI",
+      "flutterElementPatterns": ["dart:ui#ChannelBuffers", "dart:ui#RootIsolateToken", "dart:ui#PlatformMessageResponseCallback"],
+      "dartUiMembers": ["ChannelBuffers", "RootIsolateToken", "PlatformMessageResponseCallback"],
+      "avaloniaUpstreamSymbols": ["Avalonia.Threading.Dispatcher"],
+      "implementations": [
+        {
+          "os": ["windows", "linux-x11", "linux-wayland", "macos"],
+          "status": "g4-3-codec-channel-validated",
+          "avaloniaSourcePaths": ["src/Avalonia.Base/Threading/Dispatcher.cs"],
+          "localTargets": ["src/Doroti.Flutter.Ui/PlatformMessaging.cs", "src/Doroti.Flutter.Framework.Services/message_codecs.cs", "src/Doroti.Flutter.Framework.Services/platform_channel.cs", "src/Doroti.Host.Desktop.Flutter/DesktopFlutterHost.cs"],
+          "validationOwner": "G4-1 two-view response/lifetime fixture; G4-3 channel trace (bridge-validation/g4-3.json)"
+        }
+      ]
+    },
+    {
+      "id": "graphics.scene",
+      "contractOwner": "Doroti.Flutter.Ui Canvas/Scene contract + host-neutral frame/resource protocol",
+      "flutterElementPatterns": ["dart:ui#Canvas", "dart:ui#Paint", "dart:ui#Path", "dart:ui#Picture*", "dart:ui#Scene*", "dart:ui#Shader", "dart:ui#Gradient", "dart:ui#ImageFilter", "dart:ui#ColorFilter", "dart:ui#FragmentProgram"],
+      "dartUiMembers": ["Canvas", "Paint", "Path", "Picture", "PictureRecorder", "Scene", "SceneBuilder", "Shader", "Gradient", "ImageFilter", "ColorFilter", "FragmentProgram"],
+      "avaloniaUpstreamSymbols": ["Avalonia.Skia.GlRenderTarget"],
+      "implementations": [
+        {
+          "os": ["windows"],
+          "status": "g5-2-source-ported-strict-gpu-validated",
+          "avaloniaSourcePaths": ["src/Skia/Avalonia.Skia/Gpu/OpenGl/GlRenderTarget.cs"],
+          "localTargets": ["src/Doroti.Vendor.Avalonia.Skia/OpenGlRenderTarget.cs", "src/Doroti.Host.Desktop/DesktopGpuFrameSink.cs", "src/Doroti.Host.Desktop.Flutter/DesktopGraphicsAndSemanticsCapabilities.cs", "src/Doroti.Composition/FrameLifecycle.cs", "src/Doroti.Flutter.Ui/GraphicsAndSemanticsContracts.cs"],
+          "validationOwner": "G5-2 strict GPU submit/terminal-ACK/device-loss trace"
+        }
+      ]
+    },
+    {
+      "id": "graphics.text",
+      "contractOwner": "Doroti.Flutter.Ui paragraph API contract",
+      "flutterElementPatterns": ["dart:ui#Paragraph*", "dart:ui#TextStyle", "dart:ui#LineMetrics", "dart:ui#Font*"],
+      "dartUiMembers": ["Paragraph", "ParagraphBuilder", "ParagraphStyle", "TextStyle", "LineMetrics", "FontWeight", "FontFeature", "FontVariation"],
+      "avaloniaUpstreamSymbols": ["Avalonia.Skia.DrawingContextImpl.CreateGlyphRun"],
+      "implementations": [
+        {
+          "os": ["windows"],
+          "status": "g5-2-harfbuzz-paragraph-adapter-validated",
+          "avaloniaSourcePaths": ["src/Skia/Avalonia.Skia/DrawingContextImpl.cs", "src/Skia/Avalonia.Skia/Helpers/SkiaSharpExtensions.cs"],
+          "localTargets": ["src/Doroti.Vendor.Avalonia.Skia/OpenGlRenderTarget.cs", "src/Doroti.Vendor.Avalonia.Skia/FramebufferRenderTarget.cs", "src/Doroti.Backends.Skia/SkiaTextMeasurer.cs", "src/Doroti.Host.Desktop.Flutter/DesktopGraphicsAndSemanticsCapabilities.cs", "src/Doroti.Flutter.Ui/GraphicsAndSemanticsContracts.cs"],
+          "validationOwner": "G5-2 paragraph shaping/fallback native graphics evidence"
+        }
+      ]
+    },
+    {
+      "id": "graphics.image",
+      "contractOwner": "Doroti.Flutter.Ui image/codec/resource lifetime contract",
+      "flutterElementPatterns": ["dart:ui#Image", "dart:ui#Codec", "dart:ui#FrameInfo", "dart:ui#ImmutableBuffer", "dart:ui#ImageDescriptor"],
+      "dartUiMembers": ["Image", "Codec", "FrameInfo", "ImmutableBuffer", "ImageDescriptor"],
+      "avaloniaUpstreamSymbols": ["Avalonia.Skia.SkiaPlatform"],
+      "implementations": [
+        {
+          "os": ["windows", "linux-x11", "linux-wayland", "macos"],
+          "status": "g5-2-image-resource-adapter-validated",
+          "avaloniaSourcePaths": ["src/Skia/Avalonia.Skia/SkiaPlatform.cs", "src/Skia/Avalonia.Skia/ImmutableBitmap.cs"],
+          "localTargets": ["src/Doroti.Backends.Skia/SkiaImageDecoder.cs", "src/Doroti.Composition/Resources.cs", "src/Doroti.Host.Desktop.Flutter/DesktopGraphicsAndSemanticsCapabilities.cs", "src/Doroti.Flutter.Ui/GraphicsAndSemanticsContracts.cs"],
+          "validationOwner": "G5-2 image decode/resource lifetime native graphics evidence"
+        }
+      ]
+    },
+    {
+      "id": "accessibility.semantics",
+      "contractOwner": "Flutter Semantics tree + Doroti.Flutter.Ui semantics transport",
+      "flutterElementPatterns": ["dart:ui#Semantics*", "dart:ui#AccessibilityFeatures"],
+      "dartUiMembers": ["SemanticsUpdate", "SemanticsUpdateBuilder", "SemanticsAction", "SemanticsActionEvent", "AccessibilityFeatures", "SemanticsRole"],
+      "avaloniaUpstreamSymbols": ["Avalonia.Win32.Automation.RootAutomationNode"],
+      "implementations": [
+        {
+          "os": ["windows"],
+          "status": "g5-2-native-uia-roundtrip-validated",
+          "avaloniaSourcePaths": ["src/Windows/Avalonia.Win32.Automation/RootAutomationNode.cs", "src/Windows/Avalonia.Win32.Automation/Interop/UiaCoreProviderApi.cs"],
+          "localTargets": ["src/Doroti.Host.Desktop/Win32AutomationProvider.cs", "src/Doroti.Host.Desktop/DesktopWindowBackend.cs", "src/Doroti.Host.Desktop.Flutter/DesktopGraphicsAndSemanticsCapabilities.cs", "src/Doroti.Flutter.Ui/GraphicsAndSemanticsContracts.cs", "src/Doroti.Flutter.Ui/PlatformDispatcher.cs"],
+          "validationOwner": "G5-2 external System.Windows.Automation focus/invoke/toggle/text/scroll round trip"
+        }
+      ]
+    }
+  ],
+  "unsupportedBlockers": [
+    {
+      "id": "platform-views-embedder",
+      "flutterElementPattern": "platform-channel:flutter/platform_views@*",
+      "reason": "Flutter platform view embedder/native implementation is outside scope and cannot be imported from Flutter Engine.",
+      "resolutionOwner": "A future explicitly approved host-neutral external-surface capability; no completion credit in G4-0"
+    }
+  ],
+  "summary": {
+    "capabilityCount": 13,
+    "unmappedAvaloniaBindingCount": 0,
+    "verifiedOperatingSystems": ["windows"],
+    "notVerifiedOperatingSystems": ["linux-x11", "linux-wayland", "macos"]
+  }
+}

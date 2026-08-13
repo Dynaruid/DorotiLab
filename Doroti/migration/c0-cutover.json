@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "doroti.c0-cutover/v1",
+  "milestone": "C0",
+  "status": "implementation-verified-target-open",
+  "productGraph": {
+    "solution": "Doroti.Product.slnx",
+    "host": "Doroti.Host.Desktop",
+    "framework": "Doroti.Flutter.Framework",
+    "publicCompatibilityNamespace": "Doroti.FlutterCompat",
+    "forbiddenAvaloniaPackages": 0,
+    "avaloniaControlTreeHosts": 0,
+    "writeableBitmapFrameBridges": 0,
+    "defaultManagedCpuRasterOwners": 0
+  },
+  "activeEngineeringGraph": {
+    "comparisonHostProjects": 0,
+    "historicalH1H6Projects": 0,
+    "historicalFixtureReleaseSteps": 0,
+    "releaseConsumer": "template-source-ported-desktop",
+    "cleanRestoreBuildRunPublish": "verified-windows-strict-gpu"
+  },
+  "frameworkOwnership": {
+    "generatedAdoptedAssembly": "Doroti.Flutter.Framework",
+    "compatibilityAliases": "namespace-only-with-provenance",
+    "selectedClosureOwnersPerEntry": 1,
+    "handwrittenComponentAlgorithmDuplicates": 0
+  },
+  "verificationPolicy": {
+    "sourceAndArtifactHashComparisonGates": "removed",
+    "retainedGates": [
+      "resolved dependency closure",
+      "symbol ownership",
+      "semantic markers",
+      "behavior",
+      "visual tolerance",
+      "external runtime"
+    ]
+  },
+  "openGates": [
+    {
+      "id": "next-revision-rebase",
+      "status": "not-verified",
+      "reason": "A distinct next Avalonia and Flutter snapshot has not been supplied and executed."
+    },
+    {
+      "id": "external-dpi-scroll-performance",
+      "status": "not-verified",
+      "reason": "Clean restore, build, smoke run and publish are automated, but physical DPI, scroll and sustained performance remain target-suite evidence."
+    },
+    {
+      "id": "x0-linux-macos",
+      "status": "not-verified",
+      "reason": "Physical Linux and macOS shell acceptance remains X0 work."
+    }
+  ],
+  "milestoneComplete": false
+}

@@ -1,0 +1,618 @@
+{
+    "schemaVersion": "doroti.converter-selection/v4",
+    "converterVersion":  "3.0.0",
+    "migrationIrVersion":  "3.0.0",
+    "generationMode":  "framework-semantic",
+    "compatibilityProfile":  "flutter-framework",
+    "frameworkMilestone":  "G4-4",
+    "outputNamespace":  "Doroti.Generated.Framework",
+    "outputAssemblyName":  "Doroti.Generated.Framework.PhysicsAnimationGestures",
+    "flutterBaseline":  "../flutter-compat/baseline.json",
+    "inputs":  [
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/physics/clamped_simulation.dart",
+                       "library":  "package:flutter/src/physics/clamped_simulation.dart",
+                       "symbols":  [
+                                       "ClampedSimulation"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/physics/friction_simulation.dart",
+                       "library":  "package:flutter/src/physics/friction_simulation.dart",
+                       "symbols":  [
+                                       "_newtonsMethod",
+                                       "FrictionSimulation",
+                                       "BoundedFrictionSimulation"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/physics/gravity_simulation.dart",
+                       "library":  "package:flutter/src/physics/gravity_simulation.dart",
+                       "symbols":  [
+                                       "GravitySimulation"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/physics/simulation.dart",
+                       "library":  "package:flutter/src/physics/simulation.dart",
+                       "symbols":  [
+                                       "Simulation"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/physics/spring_simulation.dart",
+                       "library":  "package:flutter/src/physics/spring_simulation.dart",
+                       "symbols":  [
+                                       "SpringDescription",
+                                       "SpringType",
+                                       "SpringSimulation",
+                                       "ScrollSpringSimulation",
+                                       "_SpringSolution",
+                                       "_CriticalSolution",
+                                       "_OverdampedSolution",
+                                       "_UnderdampedSolution"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/physics/tolerance.dart",
+                       "library":  "package:flutter/src/physics/tolerance.dart",
+                       "symbols":  [
+                                       "Tolerance"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/physics/utils.dart",
+                       "library":  "package:flutter/src/physics/utils.dart",
+                       "symbols":  [
+                                       "nearEqual",
+                                       "nearZero"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/animation/animation.dart",
+                       "library":  "package:flutter/src/animation/animation.dart",
+                       "symbols":  [
+                                       "AnimationStatus",
+                                       "AnimationStatusListener",
+                                       "ValueListenableTransformer",
+                                       "Animation",
+                                       "_ValueListenableDelegateAnimation"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/animation/animation_controller.dart",
+                       "library":  "package:flutter/src/animation/animation_controller.dart",
+                       "symbols":  [
+                                       "_AnimationDirection",
+                                       "_kFlingSpringDescription",
+                                       "_kFlingTolerance",
+                                       "AnimationBehavior",
+                                       "AnimationController",
+                                       "_InterpolationSimulation",
+                                       "_DirectionSetter",
+                                       "_RepeatingSimulation"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/animation/animation_style.dart",
+                       "library":  "package:flutter/src/animation/animation_style.dart",
+                       "symbols":  [
+                                       "AnimationStyle",
+                                       "_LerpedCurve"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/animation/animations.dart",
+                       "library":  "package:flutter/src/animation/animations.dart",
+                       "symbols":  [
+                                       "_AlwaysCompleteAnimation",
+                                       "kAlwaysCompleteAnimation",
+                                       "_AlwaysDismissedAnimation",
+                                       "kAlwaysDismissedAnimation",
+                                       "AlwaysStoppedAnimation",
+                                       "AnimationWithParentMixin",
+                                       "ProxyAnimation",
+                                       "ReverseAnimation",
+                                       "CurvedAnimation",
+                                       "_TrainHoppingMode",
+                                       "TrainHoppingAnimation",
+                                       "CompoundAnimation",
+                                       "AnimationMean",
+                                       "AnimationMax",
+                                       "AnimationMin"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/animation/curves.dart",
+                       "library":  "package:flutter/src/animation/curves.dart",
+                       "symbols":  [
+                                       "ParametricCurve",
+                                       "Curve",
+                                       "_Linear",
+                                       "SawTooth",
+                                       "Interval",
+                                       "Split",
+                                       "Threshold",
+                                       "Cubic",
+                                       "ThreePointCubic",
+                                       "Curve2D",
+                                       "Curve2DSample",
+                                       "CatmullRomSpline",
+                                       "CatmullRomCurve",
+                                       "FlippedCurve",
+                                       "_DecelerateCurve",
+                                       "_bounce",
+                                       "_BounceInCurve",
+                                       "_BounceOutCurve",
+                                       "_BounceInOutCurve",
+                                       "ElasticInCurve",
+                                       "ElasticOutCurve",
+                                       "ElasticInOutCurve",
+                                       "Curves"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/animation/listener_helpers.dart",
+                       "library":  "package:flutter/src/animation/listener_helpers.dart",
+                       "symbols":  [
+                                       "AnimationLazyListenerMixin",
+                                       "AnimationEagerListenerMixin",
+                                       "AnimationLocalListenersMixin",
+                                       "AnimationLocalStatusListenersMixin"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/animation/tween.dart",
+                       "library":  "package:flutter/src/animation/tween.dart",
+                       "symbols":  [
+                                       "AnimatableCallback",
+                                       "Animatable",
+                                       "_CallbackAnimatable",
+                                       "_AnimatedEvaluation",
+                                       "_ChainedEvaluation",
+                                       "Tween",
+                                       "ReverseTween",
+                                       "ColorTween",
+                                       "SizeTween",
+                                       "RectTween",
+                                       "IntTween",
+                                       "StepTween",
+                                       "ConstantTween",
+                                       "CurveTween"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/animation/tween_sequence.dart",
+                       "library":  "package:flutter/src/animation/tween_sequence.dart",
+                       "symbols":  [
+                                       "TweenSequence",
+                                       "FlippedTweenSequence",
+                                       "TweenSequenceItem",
+                                       "_Interval"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/arena.dart",
+                       "library":  "package:flutter/src/gestures/arena.dart",
+                       "symbols":  [
+                                       "GestureDisposition",
+                                       "GestureArenaMember",
+                                       "GestureArenaEntry",
+                                       "_GestureArena",
+                                       "GestureArenaManager"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/binding.dart",
+                       "library":  "package:flutter/src/gestures/binding.dart",
+                       "symbols":  [
+                                       "_HandleSampleTimeChangedCallback",
+                                       "SamplingClock",
+                                       "_Resampler",
+                                       "_defaultSamplingOffset",
+                                       "_samplingInterval",
+                                       "GestureBinding",
+                                       "FlutterErrorDetailsForPointerEventDispatcher"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/constants.dart",
+                       "library":  "package:flutter/src/gestures/constants.dart",
+                       "symbols":  [
+                                       "kPressTimeout",
+                                       "kHoverTapTimeout",
+                                       "kHoverTapSlop",
+                                       "kLongPressTimeout",
+                                       "kDoubleTapTimeout",
+                                       "kDoubleTapMinTime",
+                                       "kDoubleTapTouchSlop",
+                                       "kDoubleTapSlop",
+                                       "kZoomControlsTimeout",
+                                       "kTouchSlop",
+                                       "kPagingTouchSlop",
+                                       "kPanSlop",
+                                       "kScaleSlop",
+                                       "kWindowTouchSlop",
+                                       "kMinFlingVelocity",
+                                       "kMaxFlingVelocity",
+                                       "kJumpTapTimeout",
+                                       "kPrecisePointerHitSlop",
+                                       "kPrecisePointerPanSlop",
+                                       "kPrecisePointerScaleSlop"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/converter.dart",
+                       "library":  "package:flutter/src/gestures/converter.dart",
+                       "symbols":  [
+                                       "_synthesiseDownButtons",
+                                       "DevicePixelRatioGetter",
+                                       "PointerEventConverter"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/debug.dart",
+                       "library":  "package:flutter/src/gestures/debug.dart",
+                       "symbols":  [
+                                       "debugPrintHitTestResults",
+                                       "debugPrintMouseHoverEvents",
+                                       "debugPrintGestureArenaDiagnostics",
+                                       "debugPrintRecognizerCallbacksTrace",
+                                       "debugPrintResamplingMargin",
+                                       "debugAssertAllGesturesVarsUnset"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/drag.dart",
+                       "library":  "package:flutter/src/gestures/drag.dart",
+                       "symbols":  [
+                                       "Drag"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/drag_details.dart",
+                       "library":  "package:flutter/src/gestures/drag_details.dart",
+                       "symbols":  [
+                                       "DragDownDetails",
+                                       "GestureDragDownCallback",
+                                       "DragStartDetails",
+                                       "GestureDragStartCallback",
+                                       "DragUpdateDetails",
+                                       "GestureDragUpdateCallback",
+                                       "DragEndDetails"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/eager.dart",
+                       "library":  "package:flutter/src/gestures/eager.dart",
+                       "symbols":  [
+                                       "EagerGestureRecognizer"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/events.dart",
+                       "library":  "package:flutter/src/gestures/events.dart",
+                       "symbols":  [
+                                       "kPrimaryButton",
+                                       "kSecondaryButton",
+                                       "kPrimaryMouseButton",
+                                       "kSecondaryMouseButton",
+                                       "kStylusContact",
+                                       "kPrimaryStylusButton",
+                                       "kTertiaryButton",
+                                       "kMiddleMouseButton",
+                                       "kSecondaryStylusButton",
+                                       "kBackMouseButton",
+                                       "kForwardMouseButton",
+                                       "kTouchContact",
+                                       "nthMouseButton",
+                                       "nthStylusButton",
+                                       "smallestButton",
+                                       "isSingleButton",
+                                       "PointerEvent",
+                                       "_PointerEventDescription",
+                                       "_AbstractPointerEvent",
+                                       "_TransformedPointerEvent",
+                                       "_CopyPointerAddedEvent",
+                                       "PointerAddedEvent",
+                                       "_TransformedPointerAddedEvent",
+                                       "_CopyPointerRemovedEvent",
+                                       "PointerRemovedEvent",
+                                       "_TransformedPointerRemovedEvent",
+                                       "_CopyPointerHoverEvent",
+                                       "PointerHoverEvent",
+                                       "_TransformedPointerHoverEvent",
+                                       "_CopyPointerEnterEvent",
+                                       "PointerEnterEvent",
+                                       "_TransformedPointerEnterEvent",
+                                       "_CopyPointerExitEvent",
+                                       "PointerExitEvent",
+                                       "_TransformedPointerExitEvent",
+                                       "_CopyPointerDownEvent",
+                                       "PointerDownEvent",
+                                       "_TransformedPointerDownEvent",
+                                       "_CopyPointerMoveEvent",
+                                       "PointerMoveEvent",
+                                       "_TransformedPointerMoveEvent",
+                                       "_CopyPointerUpEvent",
+                                       "PointerUpEvent",
+                                       "_TransformedPointerUpEvent",
+                                       "PointerSignalEvent",
+                                       "RespondPointerEventCallback",
+                                       "_RespondablePointerEvent",
+                                       "_CopyPointerScrollEvent",
+                                       "PointerScrollEvent",
+                                       "_TransformedPointerScrollEvent",
+                                       "_CopyPointerScrollInertiaCancelEvent",
+                                       "PointerScrollInertiaCancelEvent",
+                                       "_TransformedPointerScrollInertiaCancelEvent",
+                                       "_CopyPointerScaleEvent",
+                                       "PointerScaleEvent",
+                                       "_TransformedPointerScaleEvent",
+                                       "_CopyPointerPanZoomStartEvent",
+                                       "PointerPanZoomStartEvent",
+                                       "_TransformedPointerPanZoomStartEvent",
+                                       "_CopyPointerPanZoomUpdateEvent",
+                                       "PointerPanZoomUpdateEvent",
+                                       "_TransformedPointerPanZoomUpdateEvent",
+                                       "_CopyPointerPanZoomEndEvent",
+                                       "PointerPanZoomEndEvent",
+                                       "_TransformedPointerPanZoomEndEvent",
+                                       "_CopyPointerCancelEvent",
+                                       "PointerCancelEvent",
+                                       "computeHitSlop",
+                                       "computePanSlop",
+                                       "computeScaleSlop",
+                                       "_TransformedPointerCancelEvent"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/force_press.dart",
+                       "library":  "package:flutter/src/gestures/force_press.dart",
+                       "symbols":  [
+                                       "_ForceState",
+                                       "ForcePressDetails",
+                                       "GestureForcePressStartCallback",
+                                       "GestureForcePressPeakCallback",
+                                       "GestureForcePressUpdateCallback",
+                                       "GestureForcePressEndCallback",
+                                       "GestureForceInterpolation",
+                                       "ForcePressGestureRecognizer"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/gesture_details.dart",
+                       "library":  "package:flutter/src/gestures/gesture_details.dart",
+                       "symbols":  [
+                                       "PositionedGestureDetails"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/gesture_settings.dart",
+                       "library":  "package:flutter/src/gestures/gesture_settings.dart",
+                       "symbols":  [
+                                       "DeviceGestureSettings"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/hit_test.dart",
+                       "library":  "package:flutter/src/gestures/hit_test.dart",
+                       "symbols":  [
+                                       "HitTestable",
+                                       "HitTestDispatcher",
+                                       "HitTestTarget",
+                                       "NativeHitTestTarget",
+                                       "HitTestEntry",
+                                       "_TransformPart",
+                                       "_MatrixTransformPart",
+                                       "_OffsetTransformPart",
+                                       "HitTestResult"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/long_press.dart",
+                       "library":  "package:flutter/src/gestures/long_press.dart",
+                       "symbols":  [
+                                       "GestureLongPressDownCallback",
+                                       "GestureLongPressCancelCallback",
+                                       "GestureLongPressCallback",
+                                       "GestureLongPressUpCallback",
+                                       "GestureLongPressStartCallback",
+                                       "GestureLongPressMoveUpdateCallback",
+                                       "GestureLongPressEndCallback",
+                                       "LongPressDownDetails",
+                                       "LongPressStartDetails",
+                                       "LongPressMoveUpdateDetails",
+                                       "LongPressEndDetails",
+                                       "LongPressGestureRecognizer"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/lsq_solver.dart",
+                       "library":  "package:flutter/src/gestures/lsq_solver.dart",
+                       "symbols":  [
+                                       "_Vector",
+                                       "_Matrix",
+                                       "PolynomialFit",
+                                       "LeastSquaresSolver"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/monodrag.dart",
+                       "library":  "package:flutter/src/gestures/monodrag.dart",
+                       "symbols":  [
+                                       "_DragState",
+                                       "GestureDragEndCallback",
+                                       "GestureDragCancelCallback",
+                                       "GestureVelocityTrackerBuilder",
+                                       "DragGestureRecognizer",
+                                       "VerticalDragGestureRecognizer",
+                                       "HorizontalDragGestureRecognizer",
+                                       "PanGestureRecognizer",
+                                       "_DragDirection"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/multidrag.dart",
+                       "library":  "package:flutter/src/gestures/multidrag.dart",
+                       "symbols":  [
+                                       "GestureMultiDragStartCallback",
+                                       "MultiDragPointerState",
+                                       "MultiDragGestureRecognizer",
+                                       "_ImmediatePointerState",
+                                       "ImmediateMultiDragGestureRecognizer",
+                                       "_HorizontalPointerState",
+                                       "HorizontalMultiDragGestureRecognizer",
+                                       "_VerticalPointerState",
+                                       "VerticalMultiDragGestureRecognizer",
+                                       "_DelayedPointerState",
+                                       "DelayedMultiDragGestureRecognizer"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/multitap.dart",
+                       "library":  "package:flutter/src/gestures/multitap.dart",
+                       "symbols":  [
+                                       "GestureDoubleTapCallback",
+                                       "GestureMultiTapDownCallback",
+                                       "GestureMultiTapUpCallback",
+                                       "GestureMultiTapCallback",
+                                       "GestureMultiTapCancelCallback",
+                                       "_CountdownZoned",
+                                       "_TapTracker",
+                                       "DoubleTapGestureRecognizer",
+                                       "_TapGesture",
+                                       "MultiTapGestureRecognizer",
+                                       "GestureSerialTapDownCallback",
+                                       "SerialTapDownDetails",
+                                       "GestureSerialTapCancelCallback",
+                                       "SerialTapCancelDetails",
+                                       "GestureSerialTapUpCallback",
+                                       "SerialTapUpDetails",
+                                       "SerialTapGestureRecognizer"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/pointer_router.dart",
+                       "library":  "package:flutter/src/gestures/pointer_router.dart",
+                       "symbols":  [
+                                       "PointerRoute",
+                                       "PointerRouter"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/pointer_signal_resolver.dart",
+                       "library":  "package:flutter/src/gestures/pointer_signal_resolver.dart",
+                       "symbols":  [
+                                       "PointerSignalResolvedCallback",
+                                       "_isSameEvent",
+                                       "PointerSignalResolver"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/recognizer.dart",
+                       "library":  "package:flutter/src/gestures/recognizer.dart",
+                       "symbols":  [
+                                       "RecognizerCallback",
+                                       "DragStartBehavior",
+                                       "MultitouchDragStrategy",
+                                       "AllowedButtonsFilter",
+                                       "GestureRecognizer",
+                                       "OneSequenceGestureRecognizer",
+                                       "GestureRecognizerState",
+                                       "_unsetTouchSlop",
+                                       "PrimaryPointerGestureRecognizer",
+                                       "OffsetPair",
+                                       "_RecognizerEventData"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/resampler.dart",
+                       "library":  "package:flutter/src/gestures/resampler.dart",
+                       "symbols":  [
+                                       "HandleEventCallback",
+                                       "PointerEventResampler"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/scale.dart",
+                       "library":  "package:flutter/src/gestures/scale.dart",
+                       "symbols":  [
+                                       "kDefaultMouseScrollToScaleFactor",
+                                       "kDefaultTrackpadScrollToScaleFactor",
+                                       "_ScaleState",
+                                       "_PointerPanZoomData",
+                                       "ScaleStartDetails",
+                                       "ScaleUpdateDetails",
+                                       "ScaleEndDetails",
+                                       "GestureScaleStartCallback",
+                                       "GestureScaleUpdateCallback",
+                                       "GestureScaleEndCallback",
+                                       "_isFlingGesture",
+                                       "_LineBetweenPointers",
+                                       "ScaleGestureRecognizer"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/tap.dart",
+                       "library":  "package:flutter/src/gestures/tap.dart",
+                       "symbols":  [
+                                       "TapDownDetails",
+                                       "GestureTapDownCallback",
+                                       "TapUpDetails",
+                                       "TapMoveDetails",
+                                       "GestureTapUpCallback",
+                                       "GestureTapCallback",
+                                       "GestureTapMoveCallback",
+                                       "GestureTapCancelCallback",
+                                       "BaseTapGestureRecognizer",
+                                       "TapGestureRecognizer"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/tap_and_drag.dart",
+                       "library":  "package:flutter/src/gestures/tap_and_drag.dart",
+                       "symbols":  [
+                                       "_getGlobalDistance",
+                                       "_DragState",
+                                       "GestureTapDragDownCallback",
+                                       "TapDragDownDetails",
+                                       "GestureTapDragUpCallback",
+                                       "TapDragUpDetails",
+                                       "GestureTapDragStartCallback",
+                                       "TapDragStartDetails",
+                                       "GestureTapDragUpdateCallback",
+                                       "TapDragUpdateDetails",
+                                       "GestureTapDragEndCallback",
+                                       "TapDragEndDetails",
+                                       "GestureCancelCallback",
+                                       "_TapStatusTrackerMixin",
+                                       "BaseTapAndDragGestureRecognizer",
+                                       "TapAndHorizontalDragGestureRecognizer",
+                                       "TapAndPanGestureRecognizer",
+                                       "TapAndDragGestureRecognizer"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/team.dart",
+                       "library":  "package:flutter/src/gestures/team.dart",
+                       "symbols":  [
+                                       "_CombiningGestureArenaEntry",
+                                       "_CombiningGestureArenaMember",
+                                       "GestureArenaTeam"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/velocity_tracker.dart",
+                       "library":  "package:flutter/src/gestures/velocity_tracker.dart",
+                       "symbols":  [
+                                       "Velocity",
+                                       "VelocityEstimate",
+                                       "_PointAtTime",
+                                       "VelocityTracker",
+                                       "IOSScrollViewFlingVelocityTracker",
+                                       "MacOSScrollViewFlingVelocityTracker"
+                                   ]
+                   }
+               ]
+}

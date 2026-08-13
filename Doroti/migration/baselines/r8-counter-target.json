@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "doroti.r8-target-baseline/v2",
+  "capturedOn": "2026-08-01",
+  "environment": {
+    "operatingSystem": "Microsoft Windows NT 10.0.26200.0",
+    "framework": "10.0.8",
+    "processor": "AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD",
+    "gpu": "AMD Radeon 780M Graphics",
+    "graphicsApi": "WGL/OpenGL 4.6.0 Compatibility Profile",
+    "displayScales": [
+      1.25,
+      2
+    ]
+  },
+  "modes": [
+    {
+      "mode": "generated",
+      "configuration": "Release",
+      "finalState": 25,
+      "presentedFrames": 10
+    },
+    {
+      "mode": "hand-written",
+      "configuration": "Release",
+      "finalState": 25,
+      "presentedFrames": 10
+    }
+  ],
+  "verifications": [
+    {
+      "id": "actual-window-gpu-present",
+      "status": "pass",
+      "evidence": "Both modes presented through the WGL/OpenGL Skia GPU backend."
+    },
+    {
+      "id": "native-pointer-keyboard-counter",
+      "status": "pass",
+      "evidence": "Both modes reached state 25 through native pointer and keyboard input."
+    },
+    {
+      "id": "rapid-input-coalescing",
+      "status": "pass",
+      "evidence": "Twenty pointer activations preserved twenty state changes and produced one follow-up frame."
+    },
+    {
+      "id": "resize-minimize-restore",
+      "status": "pass",
+      "evidence": "Both modes preserved the hit target across resize, minimize, and restore."
+    },
+    {
+      "id": "multi-dpi-hit-target",
+      "status": "pass",
+      "evidence": "Two displays at 125% and 200% produced two DPI transitions and valid taps."
+    },
+    {
+      "id": "generated-hand-written-state-render-trace",
+      "status": "pass",
+      "evidence": "Doroti.Tooling.Tests compares state sequences, raster-command SHA-256 fingerprints, and normalized frame/ACK traces."
+    },
+    {
+      "id": "post-dispose-native-gpu-resource-balance",
+      "status": "pass",
+      "evidence": "Both modes completed five fixed-raster-thread GPU cycles with HWND 5/5, WGL 5/5, Skia context 5/5, GPU frame 5/5, handle delta 0, and thread delta 0."
+    }
+  ],
+  "resourceBalance": {
+    "cyclesPerMode": 5,
+    "handWritten": {
+      "windowsCreatedReleased": "5/5",
+      "wglContextsCreatedReleased": "5/5",
+      "skiaContextsCreatedReleased": "5/5",
+      "gpuFramesCreatedReleased": "5/5",
+      "handleDelta": 0,
+      "threadDelta": 0
+    },
+    "generated": {
+      "windowsCreatedReleased": "5/5",
+      "wglContextsCreatedReleased": "5/5",
+      "skiaContextsCreatedReleased": "5/5",
+      "gpuFramesCreatedReleased": "5/5",
+      "handleDelta": 0,
+      "threadDelta": 0
+    }
+  }
+}

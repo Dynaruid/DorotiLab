@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "doroti.interactive-counter-fixture/v1",
+  "id": "r8-counter",
+  "logicalSize": { "width": 640, "height": 360 },
+  "input": [
+    { "kind": "pointer-tap", "x": 320, "y": 210, "repeat": 20 },
+    { "kind": "keyboard-activation", "logicalKey": 13, "repeat": 1 },
+    { "kind": "wheel", "x": 320, "y": 210, "deltaY": -1, "repeat": 1 }
+  ],
+  "expected": {
+    "stateSequence": [0, 20, 21, 21],
+    "rapidInputFollowUpFrames": 1,
+    "terminalAck": "presented",
+    "duplicateActivationFromWheelOrKeyRepeat": 0
+  }
+}
+

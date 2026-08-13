@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "doroti.converter-selection/v4",
+  "converterVersion": "3.0.0",
+  "migrationIrVersion": "3.0.0",
+  "generationMode": "framework-semantic",
+  "compatibilityProfile": "flutter-framework-f0",
+  "outputNamespace": "Doroti.Validation.Generated.Negative",
+  "outputAssemblyName": "Doroti.Validation.Generated.Negative",
+  "flutterBaseline": "../flutter-source.lock.json",
+  "inputs": [
+    {
+      "path": "unsupported-syntax.dart",
+      "library": "package:doroti_validation/unsupported_syntax.dart",
+      "symbols": [
+        "unsupportedBootstrap"
+      ]
+    }
+  ]
+}

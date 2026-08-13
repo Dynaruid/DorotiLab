@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "doroti.vendor-provenance/v1",
+  "items": [
+    {
+      "targetPath": "src/Doroti.Vendor.Avalonia.Skia/FramebufferRenderTarget.cs",
+      "sourcePath": "src/Skia/Avalonia.Skia/FramebufferRenderTarget.cs",
+      "sourceRevision": "git:f159423f691946e713f454447a780d4677d8a0d2",
+      "license": "licence.md",
+      "localChanges": "Retains Skia BGRA surface allocation, drawing and lifecycle behavior; replaces Avalonia render contracts with an internal generation-aware frame, backend-neutral primitive entrypoints, presenter delegate and top-down BGRA8888 readback. DisplayList ordering and frame ACK remain outside the vendor assembly.",
+      "patchFiles": [
+        "migration/vendor/avalonia-platform/patches/r4-adaptations.md",
+        "migration/vendor/avalonia-platform/patches/r5-raster-canvas.md",
+        "migration/vendor/avalonia-platform/patches/r6-target-validation.md"
+      ]
+    },
+    {
+      "targetPath": "src/Doroti.Vendor.Avalonia.Skia/OpenGlRenderTarget.cs",
+      "sourcePath": "src/Skia/Avalonia.Skia/Gpu/OpenGl/GlRenderTarget.cs",
+      "sourceRevision": "git:f159423f691946e713f454447a780d4677d8a0d2",
+      "license": "licence.md",
+      "localChanges": "Retains the Skia GRContext and default-framebuffer render target lifetime pattern; replaces Avalonia OpenGL and render-session contracts with internal delegates, generation checks, explicit raster-thread ownership, device-loss diagnostics and raster-thread BGRA8888 readback.",
+      "patchFiles": [
+        "migration/vendor/avalonia-platform/patches/r5-wgl-gpu.md",
+        "migration/vendor/avalonia-platform/patches/r6-target-validation.md"
+      ]
+    }
+  ]
+}

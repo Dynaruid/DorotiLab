@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "doroti.port/v1",
+  "mode": "runtime-adoption",
+  "source": {
+    "kind": "flutter-or-dart-package",
+    "revision": "c0-language-fixture/v1",
+    "license": "LicenseRef-Doroti-Test-Fixture"
+  },
+  "compilerProfile": "flutter-aware-c0",
+  "compilerSelection": "../../selections/c0.json",
+  "inputs": [
+    {
+      "library": "package:c0_language_fixture/counter_model.dart",
+      "symbols": [
+        "CounterModel"
+      ]
+    }
+  ],
+  "customizations": {
+    "mappingFiles": [],
+    "replacementManifest": null,
+    "extensionRoots": [],
+    "platformPortRoots": []
+  },
+  "requiredFixtures": [
+    "c0-language"
+  ]
+}

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Doroti.Validation.Compiler</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\tools\Doroti.DartToCSharp\Doroti.DartToCSharp.csproj" />
+    <ProjectReference Include="..\..\tools\Doroti.SourceTools\Doroti.SourceTools.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Flutter.Framework.Foundation\Doroti.Flutter.Framework.Foundation.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Flutter.Framework.Physics\Doroti.Flutter.Framework.Physics.csproj" />
+  </ItemGroup>
+</Project>

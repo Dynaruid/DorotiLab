@@ -1,0 +1,119 @@
+{
+  "schemaVersion": "doroti.g6-material-gallery-evidence/v1",
+  "milestone": "G6-5",
+  "capturedAtUtc": "2026-08-13T16:06:24.1849351+00:00",
+  "status": "verified-windows-x64-strict-gpu",
+  "waves": [
+    {
+      "wave": "M0",
+      "status": "verified-windows-x64-strict-gpu",
+      "presented": 9,
+      "interactive": 1,
+      "presentedFrames": 8,
+      "changedPixels": 2194855,
+      "semanticsNodes": 13,
+      "resourceBalanced": true
+    },
+    {
+      "wave": "M1",
+      "status": "verified-windows-x64-strict-gpu",
+      "presented": 10,
+      "interactive": 2,
+      "presentedFrames": 8,
+      "changedPixels": 1968874,
+      "semanticsNodes": 15,
+      "resourceBalanced": true
+    },
+    {
+      "wave": "M2",
+      "status": "verified-windows-x64-strict-gpu",
+      "presented": 7,
+      "interactive": 6,
+      "presentedFrames": 8,
+      "changedPixels": 2388513,
+      "semanticsNodes": 21,
+      "resourceBalanced": true
+    },
+    {
+      "wave": "M3",
+      "status": "verified-windows-x64-strict-gpu",
+      "presented": 7,
+      "interactive": 6,
+      "presentedFrames": 9,
+      "changedPixels": 2265680,
+      "semanticsNodes": 21,
+      "resourceBalanced": true
+    },
+    {
+      "wave": "M4",
+      "status": "verified-windows-x64-strict-gpu",
+      "presented": 7,
+      "interactive": 3,
+      "presentedFrames": 8,
+      "changedPixels": 1520410,
+      "semanticsNodes": 19,
+      "resourceBalanced": true
+    },
+    {
+      "wave": "M5",
+      "status": "verified-windows-x64-strict-gpu",
+      "presented": 8,
+      "interactive": 4,
+      "presentedFrames": 8,
+      "changedPixels": 2043283,
+      "semanticsNodes": 20,
+      "resourceBalanced": true
+    },
+    {
+      "wave": "M6",
+      "status": "verified-windows-x64-strict-gpu",
+      "presented": 6,
+      "interactive": 2,
+      "presentedFrames": 10,
+      "changedPixels": 1818933,
+      "semanticsNodes": 77,
+      "resourceBalanced": true
+    }
+  ],
+  "coverage": {
+    "presented": 54,
+    "scopedFamilies": 60,
+    "coveragePercent": 90.0,
+    "unsupported": 6,
+    "unsupportedPercent": 10.0,
+    "tierAPresented": 22,
+    "tierATotal": 22,
+    "interactiveTested": 1,
+    "interactiveTotal": 24
+  },
+  "aggregateSmoke": {
+    "wave": "M6",
+    "requestedMs": 30000.0,
+    "actualMs": 30085.9626,
+    "cadencePresented": 885,
+    "backend": "skia-wgl-opengl-gpu",
+    "failed": 0,
+    "cancelled": 0,
+    "softwareFallback": false,
+    "resourceBalanced": true
+  },
+  "visualEvidence": {
+    "wave": "M6",
+    "capture": "strict-gpu-first-frame-readback",
+    "path": "Doroti/artifacts/g6-material-gallery/win-x64/M6/visual.png",
+    "sha256": "e5e110cbec0922c6d8773c7cd4a9962a4d4cea00c19935c1eb66c4df8140df74"
+  },
+  "contracts": {
+    "materialPublicApiDiff": 0,
+    "directAvaloniaControlsThemeXamlDependencies": 0,
+    "unsupportedSilentSuccess": 0
+  },
+  "boundaries": {
+    "automatedNative": "verified-windows-x64",
+    "physicalIme": "notVerified",
+    "physicalAccessibility": "notVerified",
+    "linux": "notVerified",
+    "macOS": "notVerified",
+    "otherRids": "notVerified"
+  }
+}

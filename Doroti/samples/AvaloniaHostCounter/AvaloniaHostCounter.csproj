@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Doroti.Samples.AvaloniaHostCounter</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Doroti.Composition\Doroti.Composition.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Core\Doroti.Core.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Graphics\Doroti.Graphics.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Host.Avalonia\Doroti.Host.Avalonia.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Platform\Doroti.Platform.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Rendering\Doroti.Rendering.csproj" />
+  </ItemGroup>
+</Project>

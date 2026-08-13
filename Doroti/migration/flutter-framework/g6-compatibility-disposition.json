@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "doroti.g6-compatibility-disposition/v1",
+  "milestone": "G6-1",
+  "source": "tools/Doroti.DartToCSharp/src/Backend/CSharp/Lowering/FrameworkCSharpLowerer.G53Compatibility.cs",
+  "measurement": "active source transformation statement lines containing Replace or Regex.Replace",
+  "classificationPolicy": [
+    {
+      "category": "structural",
+      "selector": "transformations before the first library EndsWith guard",
+      "count": 9,
+      "owner": "typed Dart erasure and callback boundary",
+      "removalMilestone": null
+    },
+    {
+      "category": "temporary",
+      "selector": "library-scoped transformations from the first library EndsWith guard plus the widget-inspector helper",
+      "count": 374,
+      "owner": "named Flutter library compatibility debt",
+      "removalMilestone": "G6-2 through G6-7 structural closure"
+    },
+    {
+      "category": "obsolete",
+      "selector": "active transformations retained after review",
+      "count": 0,
+      "owner": "none",
+      "removalMilestone": "removed immediately"
+    }
+  ],
+  "active": {
+    "total": 383,
+    "classified": 383,
+    "unclassified": 0,
+    "structural": 9,
+    "temporary": 374,
+    "obsolete": 0
+  },
+  "temporaryTrend": {
+    "previousStage": "G6-0 inherited G5-3 compatibility surface",
+    "previousCount": 375,
+    "currentStage": "G6-1",
+    "currentCount": 374,
+    "decreased": true
+  },
+  "removed": [
+    {
+      "id": "cupertino-theme-nullable-brightness-constructor-argument",
+      "category": "obsolete",
+      "previousImplementation": "library-specific generated C# string replacement",
+      "replacedBy": "typed nullable argument lowering in FrameworkCSharpLowerer.Invocations.cs",
+      "fixture": "nullable_super_defaults.dart",
+      "removalMilestone": "G6-1"
+    }
+  ]
+}

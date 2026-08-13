@@ -1,0 +1,69 @@
+{
+  "schemaVersion": "doroti.g6-live-smoke/v1",
+  "milestone": "G6-0",
+  "mode": "deterministic-material-live-baseline",
+  "outcome": "frameworkError",
+  "source": {
+    "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+    "avaloniaRevision": "f159423f691946e713f454447a780d4677d8a0d2",
+    "flutterSourceLockSha256": "9bec4d2f9158f3989d8a42b245919e20a81ed81ee5074401f18bc3991d225c6f",
+    "generatedDigest": "faa404f1e44650e9d12ea2d0aa14d07363a10332263b049f89bd66977f65aadf"
+  },
+  "fixture": {
+    "dart": "Doroti/validation/cases/g6-live-baseline/main.dart",
+    "reviewedCSharp": "DorotiDemoApp/Program.cs",
+    "frameworkPath": [
+      "MaterialApp.builder",
+      "Scaffold",
+      "AppBar",
+      "Card",
+      "Text",
+      "FloatingActionButton"
+    ],
+    "rootWidget": "Doroti.Generated.Framework.Material.MaterialApp"
+  },
+  "firstFlutterError": {
+    "exceptionType": "System.NullReferenceException",
+    "message": "Object reference not set to an instance of an object.",
+    "library": "widgets library",
+    "context": "building Doroti.Generated.Framework.Widgets.StatefulElement",
+    "widget": "AppBar",
+    "sourceLibrary": "package:flutter/src/material/app_bar.dart",
+    "stack": [
+      "at Doroti.Generated.Framework.Material._AppBarState__app_bar.build(BuildContext context) in Doroti/migration/generated-candidates/g5-4-reviewed/projects/Material/app_bar.g.cs:line 277",
+      "at Doroti.Generated.Framework.Widgets.StatefulElement.build() in Doroti/src/Doroti.Flutter.Framework.Widgets/framework.cs:line 2765",
+      "at Doroti.Generated.Framework.Widgets.ComponentElement.performRebuild() in Doroti/src/Doroti.Flutter.Framework.Widgets/framework.cs:line 2682"
+    ]
+  },
+  "unhandledException": null,
+  "frame": {
+    "submitted": 0,
+    "presented": 0,
+    "superseded": 0,
+    "stale": 0,
+    "failed": 0,
+    "cancelled": 0,
+    "queueDepth": 0,
+    "queueHighWatermark": 0,
+    "activeContexts": 0,
+    "activeFrames": 0,
+    "surfaceGeneration": 1,
+    "recoveryCount": 0,
+    "softwareFallbackUsed": false,
+    "backendIdentity": "skia-wgl-opengl-gpu"
+  },
+  "backend": "skia-wgl-opengl-gpu",
+  "nonEmptyPixelBounds": null,
+  "nonEmptyPixelCount": 0,
+  "resources": {
+    "activeWindows": 1,
+    "windowsCreated": 1,
+    "windowsReleased": 0,
+    "activeOpenGlContexts": 0,
+    "openGlContextsCreated": 0,
+    "openGlContextsReleased": 0,
+    "isBalanced": false
+  },
+  "activeResourceCount": 1,
+  "frameTimeout": false
+}

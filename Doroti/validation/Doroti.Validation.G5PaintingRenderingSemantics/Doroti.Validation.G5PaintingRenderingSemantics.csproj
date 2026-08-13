@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" />
+    <ProjectReference Include="..\..\src\Doroti.Backends.Skia\Doroti.Backends.Skia.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Flutter.Framework.Painting\Doroti.Flutter.Framework.Painting.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Flutter.Framework.Rendering\Doroti.Flutter.Framework.Rendering.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Flutter.Framework.Semantics\Doroti.Flutter.Framework.Semantics.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Flutter.Ui\Doroti.Flutter.Ui.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Host.Desktop\Doroti.Host.Desktop.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Host.Desktop.Flutter\Doroti.Host.Desktop.Flutter.csproj" />
+  </ItemGroup>
+</Project>

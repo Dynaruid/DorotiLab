@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "doroti.flutter-f2-reference-timeline/v1",
+  "flutterGitRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "gestureArena": [
+    "second:reject:7",
+    "first:accept:7"
+  ],
+  "pointerSignalWinner": "first",
+  "clampingSimulation": {
+    "xAt16ms": 409.270456,
+    "xAt100ms": 447.567585,
+    "dxAt100ms": 356.866129,
+    "doneAt1s": true
+  },
+  "curve": {
+    "at25": 0.236986,
+    "at50": 0.77558,
+    "at75": 0.95956
+  },
+  "animation": {
+    "statuses": [
+      "forward",
+      "completed"
+    ],
+    "quarter": 0.25,
+    "end": 1.0
+  },
+  "fixedExtentScroll": {
+    "wheelOffset": 53.0,
+    "dragOffset": 133.0,
+    "settledOffset": 133.0
+  }
+}

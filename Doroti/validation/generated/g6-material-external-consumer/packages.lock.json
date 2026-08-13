@@ -1,0 +1,208 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "Doroti.Flutter.Hosting": {
+        "type": "Direct",
+        "requested": "[0.2.0-beta, )",
+        "resolved": "0.2.0-beta",
+        "contentHash": "BLDOQOMNLbKXqTX4W7WtsyBoktMt5I+SnfHjkJeiBr7jsIbquEpQWvXA5EUA/kc8rcTHr1ZWQBYzmtHDbuObrg==",
+        "dependencies": {
+          "Doroti.Flutter.Runtime": "0.2.0-beta",
+          "Doroti.Flutter.Ui": "0.2.0-beta"
+        }
+      },
+      "Doroti.Target.Windows.win-x64": {
+        "type": "Direct",
+        "requested": "[0.2.0-beta, )",
+        "resolved": "0.2.0-beta",
+        "contentHash": "Dwb/d9wc1z9YS835bUBFBE+gs7ELxHrdqKEonMrnLkhzKpBh5LnoxfMjdtsd5qJlfbUJYF/EZX8ih7BC8iD4hA==",
+        "dependencies": {
+          "Doroti.Flutter.Hosting": "0.2.0-beta",
+          "Doroti.Flutter.Ui": "0.2.0-beta",
+          "Doroti.Host.Desktop": "0.2.0-beta",
+          "Doroti.Host.Desktop.Flutter": "0.2.0-beta"
+        }
+      },
+      "Doroti.Backends.Skia": {
+        "type": "Transitive",
+        "resolved": "0.2.0-beta",
+        "contentHash": "cckgSpBY0AiLFi1+itmVL5hy+uQhlEjBa+mcPTXQVHM67TPpwyKqXfgMkkvnqaCbdiYe6Z02jelF7xAd1V2p3Q==",
+        "dependencies": {
+          "Doroti.Composition": "0.2.0-beta",
+          "Doroti.Core": "0.2.0-beta",
+          "Doroti.Graphics": "0.2.0-beta",
+          "Doroti.Platform": "0.2.0-beta",
+          "Doroti.Vendor.Avalonia.Skia": "0.2.0-beta"
+        }
+      },
+      "Doroti.Composition": {
+        "type": "Transitive",
+        "resolved": "0.2.0-beta",
+        "contentHash": "vbqGeK7Orbkquszhc2U+2x424m6LV8PQ9e8UA75eJuA52DEu8+jz4VW+VzG8IOzwuB2N6JW328OXqrShKsIzvw==",
+        "dependencies": {
+          "Doroti.Core": "0.2.0-beta",
+          "Doroti.Graphics": "0.2.0-beta"
+        }
+      },
+      "Doroti.Core": {
+        "type": "Transitive",
+        "resolved": "0.2.0-beta",
+        "contentHash": "L0aes/TTJ/P38RRxf/U1PqK/IsfbGVqtcukbPXVwfIyymSfg2IVrwIVx8k0L3JrtdKVHM1+fI/eP5nJOOAA/UA=="
+      },
+      "Doroti.Engine": {
+        "type": "Transitive",
+        "resolved": "0.2.0-beta",
+        "contentHash": "kVy7pQps2BbVqDO2gci6zyj1xj/Crx0UAwvK3g5AOUq+h0hN74jpl6kRlLYKM2l1MaErvQn+k0C+Ahg753x8Ig==",
+        "dependencies": {
+          "Doroti.Composition": "0.2.0-beta",
+          "Doroti.Graphics": "0.2.0-beta",
+          "Doroti.Platform": "0.2.0-beta",
+          "Doroti.Rendering": "0.2.0-beta",
+          "Doroti.Widgets": "0.2.0-beta"
+        }
+      },
+      "Doroti.Flutter.Runtime": {
+        "type": "Transitive",
+        "resolved": "0.2.0-beta",
+        "contentHash": "9LhO7rbaCxsB8hB9uwe56gEUPjpSMKzGTy1m+h0+juzvNyE0j5+49gY+PdTe3zj2CvHScGiIUs4OC+FR+RU9/g=="
+      },
+      "Doroti.Flutter.Ui": {
+        "type": "Transitive",
+        "resolved": "0.2.0-beta",
+        "contentHash": "EZti8OYFnusimqQv/T2fdtCTZTwZ3P8omxMyhuIZFfMnqbKKyc2F47rVEQykc2dSNLYyTNB72jUTkNvC9O1r0w==",
+        "dependencies": {
+          "Doroti.Flutter.Runtime": "0.2.0-beta"
+        }
+      },
+      "Doroti.Graphics": {
+        "type": "Transitive",
+        "resolved": "0.2.0-beta",
+        "contentHash": "V3Wpz0tjWn8lLUW2KIejcbve2yfP7twMocdeoxo0bYtp169Y+8AQnwSG6r4Jb9Qs6ZVC9BA1taB8bIhDcAc1lA==",
+        "dependencies": {
+          "Doroti.Core": "0.2.0-beta"
+        }
+      },
+      "Doroti.Host.Desktop": {
+        "type": "Transitive",
+        "resolved": "0.2.0-beta",
+        "contentHash": "0T5wB3D9zbZVaAl6EQldQJ0L/UImzt1VK+6UbsWUYawhc0MU2LpfYzQ6NQuX3x8sqJKWgSUvK2lEexTtElyOZw==",
+        "dependencies": {
+          "Doroti.Backends.Skia": "0.2.0-beta",
+          "Doroti.Composition": "0.2.0-beta",
+          "Doroti.Core": "0.2.0-beta",
+          "Doroti.Engine": "0.2.0-beta",
+          "Doroti.Graphics": "0.2.0-beta",
+          "Doroti.Platform": "0.2.0-beta",
+          "Doroti.Rendering": "0.2.0-beta",
+          "Doroti.Shell.Core": "0.2.0-beta",
+          "Doroti.Vendor.Avalonia.Base": "0.2.0-beta",
+          "Doroti.Vendor.Avalonia.Win32": "0.2.0-beta"
+        }
+      },
+      "Doroti.Host.Desktop.Flutter": {
+        "type": "Transitive",
+        "resolved": "0.2.0-beta",
+        "contentHash": "D8oDwdoxCFOW0UA7xsGPNeNNa0Ip/GpJJF/yd3Cz4rlGpykm09tiOkmY/RKjVN9X35otMZumGL63jAVygsYMtQ==",
+        "dependencies": {
+          "Doroti.Backends.Skia": "0.2.0-beta",
+          "Doroti.Composition": "0.2.0-beta",
+          "Doroti.Core": "0.2.0-beta",
+          "Doroti.Engine": "0.2.0-beta",
+          "Doroti.Flutter.Hosting": "0.2.0-beta",
+          "Doroti.Flutter.Ui": "0.2.0-beta",
+          "Doroti.Graphics": "0.2.0-beta",
+          "Doroti.Host.Desktop": "0.2.0-beta",
+          "Doroti.Platform": "0.2.0-beta",
+          "Doroti.Rendering": "0.2.0-beta"
+        }
+      },
+      "Doroti.Platform": {
+        "type": "Transitive",
+        "resolved": "0.2.0-beta",
+        "contentHash": "kMdMA97bV1DOdBAfnk61L0FV4LmZNwx/K93waMxnNiojv+a90w05ebAKNHm1xp6eqA1gjeeFWEgn5xJIzSZPjQ==",
+        "dependencies": {
+          "Doroti.Core": "0.2.0-beta",
+          "Doroti.Graphics": "0.2.0-beta"
+        }
+      },
+      "Doroti.Rendering": {
+        "type": "Transitive",
+        "resolved": "0.2.0-beta",
+        "contentHash": "tCfbxrnLh4UxPJMW4neGSUAtgQZVTJ/RbeLHX9I9qyrX/8wk2Ikiq0xdWkbt7fdPwQkaH+RxbkszeTpgNEeMgw==",
+        "dependencies": {
+          "Doroti.Composition": "0.2.0-beta",
+          "Doroti.Core": "0.2.0-beta",
+          "Doroti.Graphics": "0.2.0-beta"
+        }
+      },
+      "Doroti.Shell.Core": {
+        "type": "Transitive",
+        "resolved": "0.2.0-beta",
+        "contentHash": "94v0Ji3QuZCQf/4/mRAQOLxqQT93/k9goDLChQuFQ7jNSU7CSmjPZXThtdCOEoUpsvtlQ1iQyVHF8ckLq0CZ0Q==",
+        "dependencies": {
+          "Doroti.Graphics": "0.2.0-beta"
+        }
+      },
+      "Doroti.Vendor.Avalonia.Base": {
+        "type": "Transitive",
+        "resolved": "0.2.0-beta",
+        "contentHash": "p60JjdRDXIrEy5VJC/F7TeLzUHiD8+aOTmsWTVsD8EWxJgoYDiAMpMs+G0CZLbie4KPqrVI7MocYuOAa+skGOA=="
+      },
+      "Doroti.Vendor.Avalonia.Skia": {
+        "type": "Transitive",
+        "resolved": "0.2.0-beta",
+        "contentHash": "h3h26Ba9QV+bB0AWglovfpzRBZNGBZYt/jnavNZ5lfVayfz4v3swjvWIbCp5/CoCnuzZP1e6yebPvTIKYJXFWA==",
+        "dependencies": {
+          "SkiaSharp": "3.119.4",
+          "SkiaSharp.NativeAssets.Win32": "3.119.4"
+        }
+      },
+      "Doroti.Vendor.Avalonia.Win32": {
+        "type": "Transitive",
+        "resolved": "0.2.0-beta",
+        "contentHash": "hebgOOWzoRSudtpF8jrvoeTnupJI1R8iGXXTS/9siL84F7M3LhEdXPOJU8AcZIDviPXvgAW1oNZpq5bwDHLFQw=="
+      },
+      "Doroti.Widgets": {
+        "type": "Transitive",
+        "resolved": "0.2.0-beta",
+        "contentHash": "U3ULnYIqYW19NryCHcnC3BWAaa4BNbRF5pfDVkh8kWV/C7hbk6JEA8K45HbX/xGEQZYWRrz3ryTI/e0Ys2o30A==",
+        "dependencies": {
+          "Doroti.Core": "0.2.0-beta",
+          "Doroti.Rendering": "0.2.0-beta"
+        }
+      },
+      "SkiaSharp": {
+        "type": "Transitive",
+        "resolved": "3.119.4",
+        "contentHash": "53NOSUZ1Us+91Sm0uCkIivh/k7jOowRErZT2sIWwPFN9mLUvdxnE6rS4sWo4255+Rd2MWUSF+j0NMZHD6Cke+Q==",
+        "dependencies": {
+          "SkiaSharp.NativeAssets.Win32": "3.119.4",
+          "SkiaSharp.NativeAssets.macOS": "3.119.4"
+        }
+      },
+      "SkiaSharp.NativeAssets.macOS": {
+        "type": "Transitive",
+        "resolved": "3.119.4",
+        "contentHash": "fgBOWEqbY012x7gMfJU4ezgz6dfhJb30Z6YdW35h85Zoe39+a8YNbAAwL29ihPfWoppg5AjvyKNzD1oCvlqWwA=="
+      },
+      "SkiaSharp.NativeAssets.Win32": {
+        "type": "Transitive",
+        "resolved": "3.119.4",
+        "contentHash": "XOpbx/4CReO2wYsq2s6rbvdauc6dntG4Zv499sHGTJ87bwZaFXszFkwql3+FIZMc8kUPeaj3Mx2ezIJmo8a1Kg=="
+      }
+    },
+    "net10.0/win-x64": {
+      "SkiaSharp.NativeAssets.macOS": {
+        "type": "Transitive",
+        "resolved": "3.119.4",
+        "contentHash": "fgBOWEqbY012x7gMfJU4ezgz6dfhJb30Z6YdW35h85Zoe39+a8YNbAAwL29ihPfWoppg5AjvyKNzD1oCvlqWwA=="
+      },
+      "SkiaSharp.NativeAssets.Win32": {
+        "type": "Transitive",
+        "resolved": "3.119.4",
+        "contentHash": "XOpbx/4CReO2wYsq2s6rbvdauc6dntG4Zv499sHGTJ87bwZaFXszFkwql3+FIZMc8kUPeaj3Mx2ezIJmo8a1Kg=="
+      }
+    }
+  }
+}

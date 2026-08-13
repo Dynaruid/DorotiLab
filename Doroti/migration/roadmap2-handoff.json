@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "doroti.roadmap2-handoff/v1",
+  "release": {
+    "version": "0.1.0-alpha.1",
+    "flutterGitRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+    "compilerStages": [
+      "C0",
+      "C1",
+      "C2",
+      "C3"
+    ]
+  },
+  "trackedEvidence": [
+    "migration/flutter-compat/flutter-api.json",
+    "migration/compiler-support.json",
+    "migration/package-pilots.json",
+    "migration/baselines/r8-counter-target.json",
+    "migration/behavior/r8-counter.json",
+    "docs/architecture/r8-interactive-counter.md"
+  ],
+  "runtimeEvidence": {
+    "command": "dotnet run -c Release --project samples/Doroti.Samples.Counter -- --verify-target",
+    "artifactPattern": "artifacts/r8/runtime-report-{hand-written|generated}.json",
+    "trackedSummary": "migration/baselines/r8-counter-target.json",
+    "status": "pass",
+    "notVerified": []
+  },
+  "knownLimitations": [
+    {
+      "id": "focus-traversal-command-routing",
+      "status": "not-supported",
+      "roadmap3Milestone": "R9A"
+    },
+    {
+      "id": "editable-text-ime-composition",
+      "status": "not-supported",
+      "roadmap3Milestone": "R9B"
+    },
+    {
+      "id": "image-decode-cache-upload",
+      "status": "not-supported",
+      "roadmap3Milestone": "R9B"
+    },
+    {
+      "id": "semantics-platform-bridge",
+      "status": "not-supported",
+      "roadmap3Milestone": "R9B"
+    },
+    {
+      "id": "touch-pen-input",
+      "status": "not-supported",
+      "roadmap3Milestone": "R11"
+    }
+  ],
+  "roadmap3Ports": [
+    {
+      "id": "raw-input",
+      "contract": "Doroti.Platform.IRawInputSource",
+      "status": "available"
+    },
+    {
+      "id": "text-input",
+      "contract": "Doroti.Platform.ITextInputConnection",
+      "status": "contract-only"
+    },
+    {
+      "id": "cursor",
+      "contract": "Doroti.Platform.ICursorController",
+      "status": "available"
+    },
+    {
+      "id": "frame-lifecycle",
+      "contract": "Doroti.Rendering.IFrameLifecyclePort",
+      "status": "available"
+    },
+    {
+      "id": "image-codec-upload",
+      "contract": null,
+      "status": "not-implemented"
+    },
+    {
+      "id": "semantics-platform-bridge",
+      "contract": null,
+      "status": "not-implemented"
+    },
+    {
+      "id": "focus-command-routing",
+      "contract": null,
+      "status": "not-implemented"
+    }
+  ],
+  "vendorCandidates": [
+    {
+      "capability": "windows-ime",
+      "source": "src/Windows/Avalonia.Win32/Input/Imm32InputMethod.cs",
+      "approvalStatus": "not-approved"
+    },
+    {
+      "capability": "windows-keyboard",
+      "source": "src/Windows/Avalonia.Win32/Input/WindowsKeyboardDevice.cs",
+      "approvalStatus": "not-approved"
+    },
+    {
+      "capability": "windows-accessibility",
+      "source": "src/Windows/Avalonia.Win32.Automation/",
+      "approvalStatus": "not-approved"
+    }
+  ],
+  "roadmap3Blockers": []
+}

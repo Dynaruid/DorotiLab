@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\migration\generated-candidates\g5-4-reviewed\projects\Material\Doroti.Generated.Framework.G54.Material.csproj" />
+    <ProjectReference Include="..\..\migration\generated-candidates\g5-4-reviewed\projects\Cupertino\Doroti.Generated.Framework.G54.Cupertino.csproj" />
+  </ItemGroup>
+</Project>

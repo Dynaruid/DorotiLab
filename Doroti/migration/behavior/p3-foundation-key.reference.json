@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "doroti.foundation-key-result/v1",
+  "runner": "flutter-reference",
+  "flutterGitRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "results": [
+    {
+      "id": "unique-key-distinct",
+      "value": false
+    },
+    {
+      "id": "unique-key-same-instance",
+      "value": true
+    },
+    {
+      "id": "value-key-different",
+      "value": false
+    },
+    {
+      "id": "value-key-equal",
+      "value": true
+    },
+    {
+      "id": "value-key-generic-type",
+      "value": false
+    },
+    {
+      "id": "value-key-hash",
+      "value": true
+    },
+    {
+      "id": "value-key-private-subclass",
+      "value": false
+    }
+  ]
+}

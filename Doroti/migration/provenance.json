@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "doroti.provenance/v1",
+  "items": [
+    {
+      "target": "src/Doroti.Graphics/Color.cs",
+      "sourceId": "flutter",
+      "sourcePath": "engine/src/flutter/lib/ui/painting.dart",
+      "revision": "selected-content-sha256:2460afce25c8f204469e823488339d7f461c37c008ed265f071e2028e8b09859",
+      "license": "LICENSE",
+      "decision": "Rewrite the public 32-bit ARGB value shape as an immutable backend-neutral Doroti type."
+    }
+  ]
+}

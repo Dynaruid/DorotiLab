@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "doroti.converter-selection/v4",
+  "converterVersion": "3.0.0",
+  "migrationIrVersion": "3.0.0",
+  "generationMode": "framework-semantic",
+  "compatibilityProfile": "flutter-framework",
+  "frameworkMilestone": "G3-B0",
+  "outputNamespace": "Doroti.Generated.Framework",
+  "outputAssemblyName": "Doroti.Generated.Framework.Foundation",
+  "flutterBaseline": "../flutter-compat/baseline.json",
+  "inputs": [
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/annotations.dart",
+      "library": "package:flutter/src/foundation/annotations.dart",
+      "symbols": [
+        "Category",
+        "DocumentationIcon",
+        "Summary"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/object.dart",
+      "library": "package:flutter/src/foundation/object.dart",
+      "symbols": [
+        "objectRuntimeType"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/key.dart",
+      "library": "package:flutter/src/foundation/key.dart",
+      "symbols": [
+        "Key",
+        "LocalKey",
+        "UniqueKey",
+        "ValueKey"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
+      "library": "package:flutter/src/foundation/change_notifier.dart",
+      "symbols": [
+        "Listenable",
+        "ValueListenable",
+        "ChangeNotifier",
+        "_MergingListenable",
+        "ValueNotifier"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "library": "package:flutter/src/foundation/collections.dart",
+      "symbols": [
+        "setEquals",
+        "listEquals",
+        "mapEquals",
+        "binarySearch",
+        "_kMergeSortLimit",
+        "mergeSort",
+        "_defaultCompare",
+        "_insertionSort",
+        "_movingInsertionSort",
+        "_mergeSort",
+        "_merge"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/observer_list.dart",
+      "library": "package:flutter/src/foundation/observer_list.dart",
+      "symbols": [
+        "ObserverList",
+        "HashedObserverList"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "doroti.avalonia-a1-target-evidence/v1",
+  "recordedAtUtc": "2026-08-02T23:11:26.8581191Z",
+  "status": "pass",
+  "environment": {
+    "operatingSystem": "Microsoft Windows NT 10.0.26200.0",
+    "architecture": "x64",
+    "physicalDisplayScalesObserved": [1.25, 2.0]
+  },
+  "runs": [
+    {
+      "id": "source-port",
+      "command": "dotnet run --project samples/ShellHostComparison/ShellHostComparison.csproj -- --host source-port --output artifacts/a1-shell",
+      "result": "pass",
+      "avaloniaBinaryDependency": false,
+      "lifecycle": ["startup", "resize", "minimize", "restore", "monitor-move", "close-requested", "closed"]
+    },
+    {
+      "id": "package-comparison",
+      "command": "dotnet run --project samples/ShellHostComparison/ShellHostComparison.csproj --no-build -- --host package --output artifacts/a1-shell",
+      "result": "pass",
+      "avaloniaBinaryDependency": true,
+      "lifecycle": ["startup", "resize", "minimize", "restore", "monitor-move", "close-requested", "closed"]
+    },
+    {
+      "id": "a1-runtime-tests",
+      "command": "dotnet run --project tests/Doroti.Shell.Win32.Tests/Doroti.Shell.Win32.Tests.csproj",
+      "result": "pass",
+      "tests": "3/3",
+      "nativeAutomation": {
+        "message": "WM_GETOBJECT",
+        "client": "external powershell.exe UIAutomationClient",
+        "verified": ["window-discovery", "fragment-navigation", "name", "automation-id", "control-type", "enabled", "bounds", "InvokePattern", "Doroti-action-delegate"]
+      }
+    }
+  ],
+  "dpiGates": [
+    { "dpi": 96, "scale": 1.0, "contract": "pass", "physicalTarget": "not-required" },
+    { "dpi": 120, "scale": 1.25, "contract": "pass", "physicalTarget": "pass" },
+    { "dpi": 144, "scale": 1.5, "contract": "pass", "physicalTarget": "not-required" },
+    { "dpi": 192, "scale": 2.0, "contract": "pass", "physicalTarget": "pass" }
+  ],
+  "openGates": []
+}

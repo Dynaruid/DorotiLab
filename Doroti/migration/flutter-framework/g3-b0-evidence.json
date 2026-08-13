@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "doroti.g3-b0-evidence/v1",
+  "milestone": "G3-B0",
+  "milestoneComplete": false,
+  "pilotComplete": true,
+  "upstreamRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "ledger": {
+    "sourceInventory": "pass",
+    "semanticGeneration": "pass",
+    "candidateCompile": "pass",
+    "reviewPromotion": "pass",
+    "promotedCompile": "pass",
+    "publicApiParity": "partial",
+    "behaviorParity": "partial",
+    "visualParity": "not-applicable",
+    "semanticsParity": "not-applicable",
+    "inputParity": "not-applicable",
+    "runtimeTarget": "not-verified",
+    "packageConsumer": "pass",
+    "upstreamRebase": "not-verified"
+  },
+  "pilot": {
+    "selection": "migration/selections/g3-b0-foundation-pilot.json",
+    "libraries": 6,
+    "declarationCount": 26,
+    "converterSuccess": true,
+    "converterDiagnostics": 3,
+    "promotedSymbols": 26,
+    "consumer": "validation/generated/g3-b0-foundation-consumer",
+    "consumerResult": "G3-B0-FOUNDATION-CONSUMER-PASS"
+  },
+  "fullFoundationCensus": {
+    "libraryCount": 30,
+    "declarationCount": 193,
+    "memberCount": 658,
+    "pilotDeclarations": 26,
+    "remainingDeclarationsBlocked": 167,
+    "selection": "migration/selections/g3-b0-foundation.json"
+  },
+  "dispositions": {
+    "reviewed-generated-cs": 26,
+    "runtime-binding": 1,
+    "blocked": 167,
+    "deferred": 1
+  },
+  "parityTable": "migration/flutter-framework/g3-b0-parity.json",
+  "artifacts": [
+    {
+      "path": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g3-b0/converter-report.json",
+      "sha256": "67df0ee58120d6d225875100297b5230799b7be6bc67f5aa208b840e22176529"
+    },
+    {
+      "path": "migration/selections/g3-b0-foundation-pilot.json",
+      "sha256": "759bea6a7ecb26f8ceab1a9d07091ac67de3f11ae32336b81b069885bdbca0e5"
+    },
+    {
+      "path": "migration/selections/g3-b0-foundation.json",
+      "sha256": "2d631d80b8f74900b9b1d42772f18f52b22f0ef3693bf6c62eb5b4adaa4b87cd"
+    },
+    {
+      "path": "migration/flutter-framework/g3-b0-parity.json",
+      "sha256": "450e6ee49154544b08dd7390791ff001d677847e7ab2027d1281dc6a8238a22b"
+    },
+    {
+      "path": "src/Doroti.Flutter.Framework.Foundation/key.cs",
+      "sha256": "67cf88dc3a64a2f11d40a74f85476227692a6591c2ca5b42935b3c39d89ff61e"
+    },
+    {
+      "path": "src/Doroti.Flutter.Framework.Foundation/change_notifier.cs",
+      "sha256": "b3f0adce259521c9b337552111a9d90bc0cb92463ec25df330cb762ab3a95885"
+    },
+    {
+      "path": "src/Doroti.Flutter.Framework.Foundation/collections.cs",
+      "sha256": "9f4cd154009c02cd8d1ea17294a0ce6ec537e06aa341cd7145dfc47ecb73a5a7"
+    },
+    {
+      "path": "src/Doroti.Flutter.Framework.Foundation/observer_list.cs",
+      "sha256": "cac2a47c48bbbaded99fc3dbe080cef32c564794dfceb2bc5e415d244794bb45"
+    }
+  ],
+  "notes": [
+    "Pilot batch covers annotations/object/key/change_notifier/collections/observer_list.",
+    "Full foundation.dart public API 100% remains blocked for remaining libraries.",
+    "Core Listenable/collections remain host adapters pending Core↔Foundation layering fix."
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "doroti.converter-selection/v4",
+  "converterVersion": "2.0.0",
+  "migrationIrVersion": "2.0.0",
+  "generationMode": "isolated-generated-solution",
+  "compatibilityProfile": "flutter-aware-c1",
+  "outputNamespace": "Doroti.Generated.C1",
+  "outputAssemblyName": "Doroti.Generated.C1",
+  "flutterBaseline": "../flutter-compat/baseline.json",
+  "packageRoot": "../fixtures/c1_render",
+  "inputs": [
+    {
+      "path": "../fixtures/c1_render/lib/generated_render_fixture.dart",
+      "symbols": [
+        "RenderFixtureBase",
+        "Identity",
+        "GeneratedRenderFixture"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "doroti.g5-0-truth-reset/v2",
+  "milestone": "G4-3",
+  "previousBaseline": {
+    "schemaVersion": "doroti.g4-scheduler-services-evidence/v1",
+    "claimedSuccess": true,
+    "knownApiDrift": {
+      "missing": 205,
+      "extra": 24
+    }
+  },
+  "currentRun": {
+    "timeoutMilliseconds": 900000,
+    "candidate": {
+      "status": "verified",
+      "root": "migration/generated-candidates/flutter-framework/56b8e1a851a594b1a154f8ea93270807dab22b9a/g4-3",
+      "outputs": 58,
+      "declarations": 287,
+      "members": 2426,
+      "warnings": 0,
+      "errors": 0,
+      "regenerationDeterminism": "verified"
+    },
+    "aggregate": {
+      "status": "verified",
+      "warnings": 0,
+      "errors": 0
+    },
+    "promotion": {
+      "status": "verified",
+      "missingApi": 0,
+      "extraApi": 0,
+      "unownedDisposition": 0,
+      "generatedProductSources": 0
+    },
+    "productBehavior": {
+      "status": "verified",
+      "validationScript": "eng/validate-g4-3.ps1",
+      "gates": [
+        "frame-ordering",
+        "metrics-lifecycle",
+        "input-text-ime",
+        "clipboard-cursor-channel",
+        "package-only-consumer"
+      ]
+    },
+    "nativeEvidence": {
+      "status": "not-verified",
+      "reasons": [
+        "No physical device or target-machine native run is part of G5-0."
+      ]
+    }
+  }
+}

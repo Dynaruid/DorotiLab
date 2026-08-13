@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>14.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\generated\material-assets\projects\Framework\Doroti.Generated.Application.G55MaterialAssets.Framework.csproj" />
+    <ProjectReference Include="..\generated\material-plugin\projects\Framework\Doroti.Generated.Application.G55MaterialPlugin.Framework.csproj" />
+    <ProjectReference Include="..\generated\cupertino-localized\projects\Framework\Doroti.Generated.Application.G55CupertinoLocalized.Framework.csproj" />
+    <ProjectReference Include="..\generated\widgets-base\projects\Framework\Doroti.Generated.Application.G55WidgetsBase.Framework.csproj" />
+    <PackageReference Include="Doroti.Plugin.G55Echo.win-x64" Version="[1.0.0-beta]" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "doroti.converter-selection/v4",
+  "converterVersion": "2.0.0",
+  "migrationIrVersion": "2.0.0",
+  "generationMode": "nuget-generated-package",
+  "compatibilityProfile": "flutter-aware-c5",
+  "outputNamespace": "Doroti.Generated.SharedPreferences",
+  "outputAssemblyName": "Doroti.Generated.SharedPreferences",
+  "flutterBaseline": "../flutter-compat/baseline.json",
+  "packageRoot": "../fixtures/c5_package_pilots",
+  "packageId": "Doroti.Generated.SharedPreferences",
+  "packageVersion": "0.2.0-beta",
+  "packageTier": "C",
+  "sourcePackage": "shared_preferences",
+  "sourceVersion": "2.5.3",
+  "sourceLicense": "BSD-3-Clause",
+  "inputs": [
+    {
+      "path": "package:shared_preferences/src/shared_preferences_legacy.dart",
+      "symbols": ["SharedPreferences"]
+    }
+  ]
+}

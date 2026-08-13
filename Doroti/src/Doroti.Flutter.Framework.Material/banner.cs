@@ -1,0 +1,260 @@
+// <doroti-reviewed-product-source milestone="G6-3" />
+#nullable enable
+#pragma warning disable CS0108, CS0114, CS0162, CS0168, CS0659, CS0675, CS0693, CS4014, CS8321, CS8600, CS8601, CS8602, CS8603, CS8604, CS8605, CS8609, CS8613, CS8619, CS8620, CS8622, CS8625, CS8629, CS8714, CS8765, CS8767, CS8981
+// Doroti typed semantic compiler 3.0.0; source: ../../../flutter-master/packages/flutter/lib/src/material/banner.dart
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using Doroti.Flutter.Runtime;
+using Doroti.Flutter.Ui;
+using static Doroti.Flutter.Runtime.FoundationRuntimePorts;
+using Match = Doroti.Flutter.Runtime.DartMatch;
+
+namespace Doroti.Generated.Framework.Material;
+
+public static partial class BannerLibrary
+{
+    internal static Duration _materialBannerTransitionDuration = Duration.Create(milliseconds: 250L);
+}
+
+public static partial class BannerLibrary
+{
+    internal static global::Doroti.Generated.Framework.Animation.Curve _materialBannerHeightCurve = ((global::Doroti.Generated.Framework.Animation.Curve)(object?)global::Doroti.Generated.Framework.Animation.Curves.fastOutSlowIn);
+}
+
+public static partial class BannerLibrary
+{
+    internal static double _kMaxContentTextScaleFactor = 1.5;
+}
+
+public enum MaterialBannerClosedReason
+{
+    dismiss,
+    swipe,
+    hide,
+    remove
+}
+
+public class MaterialBanner : global::Doroti.Generated.Framework.Widgets.StatefulWidget
+{
+    public virtual global::Doroti.Generated.Framework.Widgets.Widget content { get; private set; } = default!;
+    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? contentTextStyle { get; private set; }
+    public virtual List<global::Doroti.Generated.Framework.Widgets.Widget> actions { get; private set; } = default!;
+    public virtual double? elevation { get; private set; }
+    public virtual global::Doroti.Generated.Framework.Widgets.Widget? leading { get; private set; }
+    public virtual double minActionBarHeight { get; private set; } = default!;
+    public virtual Color? backgroundColor { get; private set; }
+    public virtual Color? surfaceTintColor { get; private set; }
+    public virtual Color? shadowColor { get; private set; }
+    public virtual Color? dividerColor { get; private set; }
+    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
+    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? margin { get; private set; }
+    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? leadingPadding { get; private set; }
+    public virtual bool forceActionsBelow { get; private set; } = default!;
+    public virtual global::Doroti.Generated.Framework.Widgets.OverflowBarAlignment overflowAlignment { get; private set; } = default!;
+    public virtual global::Doroti.Generated.Framework.Animation.Animation<double>? animation { get; private set; }
+    public virtual global::System.Action? onVisible { get; private set; }
+
+    public MaterialBanner(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Widgets.Widget content = default!, global::Doroti.Generated.Framework.Painting.TextStyle? contentTextStyle = null, List<global::Doroti.Generated.Framework.Widgets.Widget> actions = default!, double? elevation = null, global::Doroti.Generated.Framework.Widgets.Widget? leading = null, Color? backgroundColor = null, Color? surfaceTintColor = null, Color? shadowColor = null, Color? dividerColor = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? margin = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? leadingPadding = null, bool forceActionsBelow = false, global::Doroti.Generated.Framework.Widgets.OverflowBarAlignment overflowAlignment = global::Doroti.Generated.Framework.Widgets.OverflowBarAlignment.end, global::Doroti.Generated.Framework.Animation.Animation<double>? animation = null, global::System.Action? onVisible = null, double minActionBarHeight = 52.0) : base(key: key)
+    {
+        this.content = content;
+        this.contentTextStyle = contentTextStyle;
+        this.actions = actions;
+        this.elevation = elevation;
+        this.leading = leading;
+        this.backgroundColor = backgroundColor;
+        this.surfaceTintColor = surfaceTintColor;
+        this.shadowColor = shadowColor;
+        this.dividerColor = dividerColor;
+        this.padding = padding;
+        this.margin = margin;
+        this.leadingPadding = leadingPadding;
+        this.forceActionsBelow = forceActionsBelow;
+        this.overflowAlignment = overflowAlignment;
+        this.animation = animation;
+        this.onVisible = onVisible;
+        this.minActionBarHeight = minActionBarHeight;
+        System.Diagnostics.Debug.Assert(((elevation is null) || (elevation >= 0.0)));
+    }
+
+    public static global::Doroti.Generated.Framework.Animation.AnimationController createAnimationController(global::Doroti.Generated.Framework.Scheduler.TickerProvider vsync)
+    {
+        return new global::Doroti.Generated.Framework.Animation.AnimationController(duration: BannerLibrary._materialBannerTransitionDuration, debugLabel: "MaterialBanner", vsync: vsync);
+        throw new InvalidOperationException("Dart control flow completed without a value.");
+    }
+
+    public virtual MaterialBanner withAnimation(global::Doroti.Generated.Framework.Animation.Animation<double> newAnimation, global::Doroti.Generated.Framework.Foundation.Key? fallbackKey = null)
+    {
+        return new MaterialBanner(key: (this.key ?? fallbackKey), content: this.content, contentTextStyle: this.contentTextStyle, actions: this.actions, elevation: this.elevation, leading: this.leading, minActionBarHeight: this.minActionBarHeight, backgroundColor: this.backgroundColor, surfaceTintColor: this.surfaceTintColor, shadowColor: this.shadowColor, dividerColor: this.dividerColor, padding: this.padding, margin: this.margin, leadingPadding: this.leadingPadding, forceActionsBelow: this.forceActionsBelow, overflowAlignment: this.overflowAlignment, animation: newAnimation, onVisible: () => this.onVisible());
+        throw new InvalidOperationException("Dart control flow completed without a value.");
+    }
+
+    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _MaterialBannerState__banner());
+}
+
+internal class _MaterialBannerState__banner : global::Doroti.Generated.Framework.Widgets.State<MaterialBanner>
+{
+    internal virtual bool _wasVisible { get; set; } = false;
+    internal virtual global::Doroti.Generated.Framework.Animation.CurvedAnimation? _heightAnimation { get; set; } = default;
+    internal virtual global::Doroti.Generated.Framework.Animation.CurvedAnimation? _slideOutCurvedAnimation { get; set; } = default;
+
+    public override void initState()
+    {
+        base.initState();
+        ((MaterialBanner)this.widget).animation?.addStatusListener((AnimationStatusListener)this._onAnimationStatusChanged);
+        _setCurvedAnimations();
+    }
+
+    public override void didUpdateWidget(MaterialBanner oldWidget)
+    {
+        base.didUpdateWidget(oldWidget);
+        if ((!object.Equals(((MaterialBanner)this.widget).animation, ((MaterialBanner)oldWidget).animation)))
+        {
+            ((MaterialBanner)oldWidget).animation?.removeStatusListener((AnimationStatusListener)this._onAnimationStatusChanged);
+            ((MaterialBanner)this.widget).animation?.addStatusListener((AnimationStatusListener)this._onAnimationStatusChanged);
+            _setCurvedAnimations();
+        }
+    }
+
+    internal virtual void _setCurvedAnimations()
+    {
+        this._heightAnimation?.dispose();
+        this._slideOutCurvedAnimation?.dispose();
+        if ((((MaterialBanner)this.widget).animation is not null))
+        {
+            _heightAnimation = new global::Doroti.Generated.Framework.Animation.CurvedAnimation(parent: ((MaterialBanner)this.widget).animation!, curve: BannerLibrary._materialBannerHeightCurve);
+            _slideOutCurvedAnimation = new global::Doroti.Generated.Framework.Animation.CurvedAnimation(parent: ((MaterialBanner)this.widget).animation!, curve: new global::Doroti.Generated.Framework.Animation.Threshold(0.0));
+        }
+        else
+        {
+            _heightAnimation = null;
+            _slideOutCurvedAnimation = null;
+        }
+    }
+
+    public override void dispose()
+    {
+        ((MaterialBanner)this.widget).animation?.removeStatusListener((AnimationStatusListener)this._onAnimationStatusChanged);
+        this._heightAnimation?.dispose();
+        this._slideOutCurvedAnimation?.dispose();
+        base.dispose();
+    }
+
+    internal virtual void _onAnimationStatusChanged(global::Doroti.Generated.Framework.Animation.AnimationStatus status)
+    {
+        if (global::Doroti.Generated.Framework.Animation.AnimationStatusMembers.isCompleted(status))
+        {
+            if (((((MaterialBanner)this.widget).onVisible is not null) && !this._wasVisible))
+            {
+                ((MaterialBanner)this.widget).onVisible!();
+            }
+            _wasVisible = true;
+        }
+    }
+
+    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    {
+        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
+        bool accessibleNavigation__11676 = MediaQuery.accessibleNavigationOf(context);
+        DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(((MaterialBanner)this.widget).actions));
+        ThemeData theme__11804 = Theme.of(context);
+        MaterialBannerThemeData bannerTheme__11865 = MaterialBannerTheme.of(context);
+        MaterialBannerThemeData defaults__11946 = (theme__11804.useMaterial3 ? new _BannerDefaultsM3__banner(context) : new _BannerDefaultsM2__banner(context));
+        bool isSingleRow__12067 = ((checked((long)(((MaterialBanner)this.widget).actions.Count)) == 1L) && !((MaterialBanner)this.widget).forceActionsBelow);
+        global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry padding__12167 = ((((MaterialBanner)this.widget).padding ?? bannerTheme__11865.padding) ?? ((isSingleRow__12067 ? global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: 16.0, top: 2.0) : global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: 16.0, top: 24.0, end: 16.0, bottom: 4.0))));
+        global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry leadingPadding__12451 = ((((MaterialBanner)this.widget).leadingPadding ?? bannerTheme__11865.leadingPadding) ?? global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional.CreateOnly(end: 16.0));
+        global::Doroti.Generated.Framework.Widgets.Widget actionsBar__12610 = ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Generated.Framework.Rendering.BoxConstraints(minHeight: ((MaterialBanner)this.widget).minActionBarHeight), child: new global::Doroti.Generated.Framework.Widgets.Padding(padding: global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8), child: new global::Doroti.Generated.Framework.Widgets.Align(alignment: global::Doroti.Generated.Framework.Painting.AlignmentDirectional.centerEnd, child: new global::Doroti.Generated.Framework.Widgets.OverflowBar(overflowAlignment: ((MaterialBanner)this.widget).overflowAlignment, spacing: 8, children: ((MaterialBanner)this.widget).actions)))));
+        double elevation__13076 = ((((MaterialBanner)this.widget).elevation ?? bannerTheme__11865.elevation) ?? 0.0);
+        global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry margin__13167 = (((MaterialBanner)this.widget).margin ?? global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateOnly(bottom: ((elevation__13076 > 0L) ? 10.0 : 0.0)));
+        global::Doroti.Flutter.Ui.Color backgroundColor__13270 = ((global::Doroti.Flutter.Ui.Color)(object?)((((MaterialBanner)this.widget).backgroundColor ?? bannerTheme__11865.backgroundColor) ?? defaults__11946.backgroundColor!));
+        global::Doroti.Flutter.Ui.Color? surfaceTintColor__13397 = ((global::Doroti.Flutter.Ui.Color?)(object?)((((MaterialBanner)this.widget).surfaceTintColor ?? bannerTheme__11865.surfaceTintColor) ?? defaults__11946.surfaceTintColor));
+        global::Doroti.Flutter.Ui.Color? shadowColor__13527 = ((global::Doroti.Flutter.Ui.Color?)(object?)(((MaterialBanner)this.widget).shadowColor ?? bannerTheme__11865.shadowColor));
+        global::Doroti.Flutter.Ui.Color? dividerColor__13605 = ((global::Doroti.Flutter.Ui.Color?)(object?)((((MaterialBanner)this.widget).dividerColor ?? bannerTheme__11865.dividerColor) ?? defaults__11946.dividerColor));
+        global::Doroti.Generated.Framework.Painting.TextStyle? textStyle__13723 = ((((MaterialBanner)this.widget).contentTextStyle ?? bannerTheme__11865.contentTextStyle) ?? defaults__11946.contentTextStyle);
+        global::Doroti.Generated.Framework.Widgets.Widget materialBanner__13841 = ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Padding(padding: margin__13167, child: new Material(elevation: elevation__13076, color: backgroundColor__13270, surfaceTintColor: surfaceTintColor__13397, shadowColor: shadowColor__13527, child: new global::Doroti.Generated.Framework.Widgets.Column(mainAxisSize: global::Doroti.Generated.Framework.Rendering.MainAxisSize.min, children: ((Func<List<global::Doroti.Generated.Framework.Widgets.Widget>>)(() => { var __collection14138 = new List<global::Doroti.Generated.Framework.Widgets.Widget>(); __collection14138.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.Padding(padding: padding__12167, child: new global::Doroti.Generated.Framework.Widgets.Row(children: ((Func<List<global::Doroti.Generated.Framework.Widgets.Widget>>)(() => { var __collection14253 = new List<global::Doroti.Generated.Framework.Widgets.Widget>(); if ((((MaterialBanner)this.widget).leading is not null)) { __collection14253.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.Padding(padding: leadingPadding__12451, child: ((MaterialBanner)this.widget).leading))); } __collection14253.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(MediaQuery.withClampedTextScaling(maxScaleFactor: BannerLibrary._kMaxContentTextScaleFactor, child: new global::Doroti.Generated.Framework.Widgets.Expanded(child: new global::Doroti.Generated.Framework.Widgets.DefaultTextStyle(style: textStyle__13723!, child: ((MaterialBanner)this.widget).content))))); if (isSingleRow__12067) { __collection14253.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(MediaQuery.withClampedTextScaling(maxScaleFactor: BannerLibrary._kMaxContentTextScaleFactor, child: actionsBar__12610))); } return __collection14253; }))())))); if (!isSingleRow__12067) { __collection14138.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(actionsBar__12610)); } if ((elevation__13076 == 0L)) { __collection14138.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new Divider(height: 0, color: dividerColor__13605))); } return __collection14138; }))()))));
+        if ((((MaterialBanner)this.widget).animation is null))
+        {
+            return materialBanner__13841;
+        }
+        materialBanner__13841 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.SafeArea(child: materialBanner__13841));
+        global::Doroti.Generated.Framework.Animation.Animation<global::Doroti.Flutter.Ui.Offset> slideOutAnimation__15758 = ((global::Doroti.Generated.Framework.Animation.Animation<global::Doroti.Flutter.Ui.Offset>)(object?)new global::Doroti.Generated.Framework.Animation.Tween<global::Doroti.Flutter.Ui.Offset>(begin: new global::Doroti.Flutter.Ui.Offset(0.0, -1.0), end: Offset.zero).animate(this._slideOutCurvedAnimation!));
+        materialBanner__13841 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.Semantics(container: true, liveRegion: true, onDismiss: ((global::System.Action)(() => {
+ScaffoldMessenger.of(context).removeCurrentMaterialBanner(reason: MaterialBannerClosedReason.dismiss);
+})), child: (accessibleNavigation__11676 ? materialBanner__13841 : new global::Doroti.Generated.Framework.Widgets.SlideTransition(position: slideOutAnimation__15758, child: materialBanner__13841))));
+        global::Doroti.Generated.Framework.Widgets.Widget materialBannerTransition__16307 = default!;
+        if (accessibleNavigation__11676)
+        {
+            materialBannerTransition__16307 = materialBanner__13841;
+        }
+        else
+        {
+            materialBannerTransition__16307 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.AnimatedBuilder(animation: this._heightAnimation!, builder: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>)((context, child) => {
+return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Align(alignment: global::Doroti.Generated.Framework.Painting.AlignmentDirectional.bottomStart, heightFactor: this._heightAnimation!.value, child: child));
+throw new InvalidOperationException("Dart closure completed without a value.");
+})), child: materialBanner__13841));
+        }
+        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Hero(tag: $"<MaterialBanner Hero tag - {((MaterialBanner)this.widget).content}>", child: new global::Doroti.Generated.Framework.Widgets.ClipRect(child: materialBannerTransition__16307)));
+        throw new InvalidOperationException("Dart control flow completed without a value.");
+    }
+
+}
+
+internal class _BannerDefaultsM2__banner : MaterialBannerThemeData
+{
+    public virtual global::Doroti.Generated.Framework.Widgets.BuildContext context { get; private set; } = default!;
+    internal virtual ThemeData _theme { get; private set; } = default!;
+
+    internal _BannerDefaultsM2__banner(global::Doroti.Generated.Framework.Widgets.BuildContext context) : base(elevation: 0.0)
+    {
+        this.context = context;
+        this._theme = Theme.of(context);
+    }
+
+    public virtual global::Doroti.Flutter.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Flutter.Ui.Color>(this._theme.colorScheme.surface);
+    public override global::Doroti.Generated.Framework.Painting.TextStyle? contentTextStyle => this._theme.textTheme.bodyMedium;
+}
+
+internal class _BannerDefaultsM3__banner : MaterialBannerThemeData
+{
+    public virtual global::Doroti.Generated.Framework.Widgets.BuildContext context { get; private set; } = default!;
+    private bool __late__colors_initialized;
+    private ColorScheme __late__colors = default!;
+    internal virtual ColorScheme _colors
+    {
+        get
+        {
+            if (!__late__colors_initialized)
+            {
+                __late__colors = Theme.of(this.context).colorScheme;
+                __late__colors_initialized = true;
+            }
+            return __late__colors;
+        }
+    }
+    private bool __late__textTheme_initialized;
+    private TextTheme __late__textTheme = default!;
+    internal virtual TextTheme _textTheme
+    {
+        get
+        {
+            if (!__late__textTheme_initialized)
+            {
+                __late__textTheme = Theme.of(this.context).textTheme;
+                __late__textTheme_initialized = true;
+            }
+            return __late__textTheme;
+        }
+    }
+
+    internal _BannerDefaultsM3__banner(global::Doroti.Generated.Framework.Widgets.BuildContext context) : base(elevation: 1.0)
+    {
+        this.context = context;
+    }
+
+    public virtual global::Doroti.Flutter.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Flutter.Ui.Color>(this._colors.surfaceContainerLow);
+    public virtual global::Doroti.Flutter.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Flutter.Ui.Color>(Colors.transparent);
+    public virtual global::Doroti.Flutter.Ui.Color? dividerColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Flutter.Ui.Color>(this._colors.outlineVariant);
+    public override global::Doroti.Generated.Framework.Painting.TextStyle? contentTextStyle => this._textTheme.bodyMedium;
+}

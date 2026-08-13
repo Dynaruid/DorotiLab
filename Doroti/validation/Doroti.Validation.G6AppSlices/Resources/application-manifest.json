@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "doroti.application-capabilities/v1",
+  "applicationId": "doroti.validation.g6-app-slices",
+  "targetRid": "win-x64",
+  "resources": [],
+  "plugins": [
+    {
+      "id": "g6.echo",
+      "channel": "g6/app-slices",
+      "codec": "standard",
+      "capabilityId": "platform-plugins",
+      "nativePackage": {
+        "rid": "win-x64",
+        "packageId": "Doroti.Validation.G6AppSlices.Echo",
+        "version": "1.0.0",
+        "abiVersion": "1",
+        "handlerType": "EchoPlugin"
+      }
+    }
+  ]
+}

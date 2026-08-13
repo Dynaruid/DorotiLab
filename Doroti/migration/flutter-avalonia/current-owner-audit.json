@@ -1,0 +1,3321 @@
+{
+  "schemaVersion": "doroti.current-owner-audit/v1",
+  "milestone": "G4-0",
+  "scope": "Declared C# type/delegate symbols at every explicit visibility in the six pre-cutover owner projects; methods inherit their declaring type decision unless a later promotion manifest records a narrower cutover.",
+  "auditedProjects": [
+    "Doroti.Core",
+    "Doroti.Platform",
+    "Doroti.Rendering",
+    "Doroti.Widgets",
+    "Doroti.Engine",
+    "Doroti.Flutter.Runtime"
+  ],
+  "summary": {
+    "auditedSymbolCount": 366,
+    "duplicateSymbolCount": 0,
+    "unclassifiedCount": 0,
+    "dispositions": {
+      "keep-bridge": 164,
+      "move-to-framework": 186,
+      "move-to-ui-contract": 0,
+      "replace-by-avalonia": 0,
+      "remove-after-cutover": 16
+    }
+  },
+  "symbols": [
+    {
+      "symbol": "Doroti.Core.IClock",
+      "currentProject": "Doroti.Core",
+      "sourcePath": "src/Doroti.Core/Clock.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime or host-neutral scheduling contracts",
+      "cutoverMilestone": "G4-3",
+      "reason": "Clock/dispatcher abstractions remain neutral only after Scheduler owns frame policy."
+    },
+    {
+      "symbol": "Doroti.Core.IFrameDispatcher",
+      "currentProject": "Doroti.Core",
+      "sourcePath": "src/Doroti.Core/Clock.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime or host-neutral scheduling contracts",
+      "cutoverMilestone": "G4-3",
+      "reason": "Clock/dispatcher abstractions remain neutral only after Scheduler owns frame policy."
+    },
+    {
+      "symbol": "Doroti.Core.IUiDispatcher",
+      "currentProject": "Doroti.Core",
+      "sourcePath": "src/Doroti.Core/Clock.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime or host-neutral scheduling contracts",
+      "cutoverMilestone": "G4-3",
+      "reason": "Clock/dispatcher abstractions remain neutral only after Scheduler owns frame policy."
+    },
+    {
+      "symbol": "Doroti.Core.QueuedUiDispatcher",
+      "currentProject": "Doroti.Core",
+      "sourcePath": "src/Doroti.Core/Clock.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime or host-neutral scheduling contracts",
+      "cutoverMilestone": "G4-3",
+      "reason": "Clock/dispatcher abstractions remain neutral only after Scheduler owns frame policy."
+    },
+    {
+      "symbol": "Doroti.Engine.Frame",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/ManagedBgraRenderSurface.cs",
+      "disposition": "remove-after-cutover",
+      "targetOwner": "Avalonia.Skia strict GPU surface",
+      "cutoverMilestone": "G4-5",
+      "reason": "Managed full-frame software rendering is not a product fallback."
+    },
+    {
+      "symbol": "Doroti.Engine.FrameLifecyclePort",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/FrameLifecyclePort.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.FramePixelReadback",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/RasterPipeline.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.FrameTiming",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/RasterPipeline.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.FrameTraceDocument",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/RasterPipeline.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.FrameTraceEnvironment",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/RasterPipeline.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.FrameTraceEvent",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/RasterPipeline.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.FrameTraceRecorder",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/RasterPipeline.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.IAsyncInteractiveFrameSink",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/InteractiveFrameContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.IEngineFactory",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/EngineContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.IEngineHost",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/EngineContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.IInteractiveFrameSink",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/InteractiveFrameContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.IInteractiveImageHost",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/InteractiveFrameContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.InputDispatcher",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/InteractiveApplication.cs",
+      "disposition": "remove-after-cutover",
+      "targetOwner": "Doroti.Flutter.Hosting \u002B host composition",
+      "cutoverMilestone": "G4-6",
+      "reason": "The handwritten Widget composition root is removed during product cutover."
+    },
+    {
+      "symbol": "Doroti.Engine.InteractiveApplication",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/InteractiveApplication.cs",
+      "disposition": "remove-after-cutover",
+      "targetOwner": "Doroti.Flutter.Hosting \u002B host composition",
+      "cutoverMilestone": "G4-6",
+      "reason": "The handwritten Widget composition root is removed during product cutover."
+    },
+    {
+      "symbol": "Doroti.Engine.InteractiveFrameTiming",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/InteractiveApplication.cs",
+      "disposition": "remove-after-cutover",
+      "targetOwner": "Doroti.Flutter.Hosting \u002B host composition",
+      "cutoverMilestone": "G4-6",
+      "reason": "The handwritten Widget composition root is removed during product cutover."
+    },
+    {
+      "symbol": "Doroti.Engine.InteractiveTraceDocument",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/InteractiveApplication.cs",
+      "disposition": "remove-after-cutover",
+      "targetOwner": "Doroti.Flutter.Hosting \u002B host composition",
+      "cutoverMilestone": "G4-6",
+      "reason": "The handwritten Widget composition root is removed during product cutover."
+    },
+    {
+      "symbol": "Doroti.Engine.InteractiveTraceEvent",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/InteractiveApplication.cs",
+      "disposition": "remove-after-cutover",
+      "targetOwner": "Doroti.Flutter.Hosting \u002B host composition",
+      "cutoverMilestone": "G4-6",
+      "reason": "The handwritten Widget composition root is removed during product cutover."
+    },
+    {
+      "symbol": "Doroti.Engine.InteractiveTraceRecorder",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/InteractiveApplication.cs",
+      "disposition": "remove-after-cutover",
+      "targetOwner": "Doroti.Flutter.Hosting \u002B host composition",
+      "cutoverMilestone": "G4-6",
+      "reason": "The handwritten Widget composition root is removed during product cutover."
+    },
+    {
+      "symbol": "Doroti.Engine.ManagedBgraRenderSurface",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/ManagedBgraRenderSurface.cs",
+      "disposition": "remove-after-cutover",
+      "targetOwner": "Avalonia.Skia strict GPU surface",
+      "cutoverMilestone": "G4-5",
+      "reason": "Managed full-frame software rendering is not a product fallback."
+    },
+    {
+      "symbol": "Doroti.Engine.ManagedRasterCanvas",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/ManagedBgraRenderSurface.cs",
+      "disposition": "remove-after-cutover",
+      "targetOwner": "Avalonia.Skia strict GPU surface",
+      "cutoverMilestone": "G4-5",
+      "reason": "Managed full-frame software rendering is not a product fallback."
+    },
+    {
+      "symbol": "Doroti.Engine.PendingCompletion",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/InteractiveApplication.cs",
+      "disposition": "remove-after-cutover",
+      "targetOwner": "Doroti.Flutter.Hosting \u002B host composition",
+      "cutoverMilestone": "G4-6",
+      "reason": "The handwritten Widget composition root is removed during product cutover."
+    },
+    {
+      "symbol": "Doroti.Engine.PendingFrame",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/InteractiveApplication.cs",
+      "disposition": "remove-after-cutover",
+      "targetOwner": "Doroti.Flutter.Hosting \u002B host composition",
+      "cutoverMilestone": "G4-6",
+      "reason": "The handwritten Widget composition root is removed during product cutover."
+    },
+    {
+      "symbol": "Doroti.Engine.RasterCache",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/RasterPipeline.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.RasterCompositor",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/RasterPipeline.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.RasterInteractiveFrameSink",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/RasterInteractiveFrameSink.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.RasterStage",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/RasterPipeline.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.RouteEntry",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/InteractiveApplication.cs",
+      "disposition": "remove-after-cutover",
+      "targetOwner": "Doroti.Flutter.Hosting \u002B host composition",
+      "cutoverMilestone": "G4-6",
+      "reason": "The handwritten Widget composition root is removed during product cutover."
+    },
+    {
+      "symbol": "Doroti.Engine.RuntimeReportInput",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/RuntimeReport.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.RuntimeReportWriter",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/RuntimeReport.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.RuntimeVerification",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/RuntimeReport.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.ScheduledTask",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/FrameLifecyclePort.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Engine.State",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/ManagedBgraRenderSurface.cs",
+      "disposition": "remove-after-cutover",
+      "targetOwner": "Avalonia.Skia strict GPU surface",
+      "cutoverMilestone": "G4-5",
+      "reason": "Managed full-frame software rendering is not a product fallback."
+    },
+    {
+      "symbol": "Doroti.Engine.SurfaceSession",
+      "currentProject": "Doroti.Engine",
+      "sourcePath": "src/Doroti.Engine/RasterPipeline.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti host-neutral frame/resource protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.AssertionError",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartRuntimePrimitives.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Base64Encoder",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.ByteBuffer",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartTypedData.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.ByteData",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartTypedData.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.CharacterRange",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCoreAdapters.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Characters",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCoreAdapters.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Completer",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartAsync.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.CreationLocation",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartDeveloperPorts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartArgumentError",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCoreAdapters.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartAsyncRuntime",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartAsync.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartCollectionRuntime",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartCoreExtensions",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCoreAdapters.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartDeveloperTimeline",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartDeveloperPorts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartFile",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartIo.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartHttpHeaders",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartLinkedList",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartLinkedListAndInvocation.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartLinkedListEntry",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartLinkedListAndInvocation.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartMap",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartMatch",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartMicrotaskQueue",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartAsync.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartNullRuntimeType",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartRuntimePrimitives.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartPatternRuntime",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartRandom",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCoreAdapters.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartRuntimePrimitives",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartRuntimePrimitives.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartTimelineEvent",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartDeveloperPorts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartTimelineEventKind",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartDeveloperPorts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartTypedList",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartTypedData.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DartUri",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Dart_convertLibrary",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Dart_coreLibrary",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCoreAdapters.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Dart_developerLibrary",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartDeveloperPorts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Dart_ioLibrary",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Dart_mathLibrary",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartMathLibrary.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.DeepCollectionEquality",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartLinkedListAndInvocation.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Duration",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCoreAdapters.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Expando",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartTypedData.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Float32List",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartTypedData.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Float64List",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartTypedData.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Flow",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartDeveloperPorts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.FoundationRuntimePorts",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/FoundationRuntimePorts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Foundation",
+      "cutoverMilestone": "G4-2",
+      "reason": "Flutter diagnostics and error objects are framework behavior, not Dart runtime primitives."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Future",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartAsync.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.FutureMethodBuilder",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartAsync.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.GZipCodec",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.HeapPriorityQueue",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCoreAdapters.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Holder",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartTypedData.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.HttpClient",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.HttpClientRequest",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.HttpClientResponse",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.HttpStatus",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.IDartMap",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.IPointerEvent",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/PointerEventContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.IPointerRemovedEvent",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/PointerEventContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Int32List",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartTypedData.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Int64List",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartTypedData.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Invocation",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartLinkedListAndInvocation.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.JsonCodec",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.LiteralPattern",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.MapEntry",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.MapEquality",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.MicrotaskSchedulerScope",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartAsync.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.NoSuchMethodError",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartRuntimePrimitives.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.NonGenericEnumerator",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Pattern",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.PriorityQueue",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCoreAdapters.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.ReceivePort",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartTypedData.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.RegExp",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.SendPort",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartTypedData.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Stream",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartAsync.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.StreamController",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartAsync.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.StreamSubscription",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartAsync.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.StringBuffer",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCoreAdapters.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Timeline",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartDeveloperPorts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.TimelineTask",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartDeveloperPorts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Timer",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartAsync.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.TypeError",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartRuntimePrimitives.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Uint8List",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartTypedData.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.Utf8Decoder",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.base64",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Flutter.Runtime.utf8",
+      "currentProject": "Doroti.Flutter.Runtime",
+      "sourcePath": "src/Doroti.Flutter.Runtime/DartCollectionsAndConvert.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Flutter.Runtime",
+      "cutoverMilestone": "G4-1",
+      "reason": "Dart async/stream/language primitives remain host neutral with zero host references."
+    },
+    {
+      "symbol": "Doroti.Platform.ClipboardResult",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/ClipboardContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.CursorKind",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/TextAndCursorContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.DisplayId",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/WindowContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.DisplayInfo",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/WindowContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.IAccessibilityBridge",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/AccessibilityContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.IAccessibilityDiagnostics",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/AccessibilityContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.IBgra8888FramebufferTarget",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/WindowContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.IClipboard",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/ClipboardContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.ICursorController",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/TextAndCursorContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.INativeResourceDiagnostics",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/WindowContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.INativeWindowHandleDiagnostics",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/WindowContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.IOpenGlWindowContext",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/WindowContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.IOpenGlWindowTarget",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/WindowContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.IRawInputSink",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/InputContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.IRawInputSource",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/InputContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.ITextInputClient",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/TextAndCursorContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.ITextInputConnection",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/TextAndCursorContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.ITextInputGeometry",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/TextAndCursorContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.IWindow",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/WindowContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.IWindowBackend",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/WindowContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.IWindowCoordinateDiagnostics",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/WindowContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.IWindowEventSink",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/WindowContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.IWindowFocusController",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/WindowContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.IWindowInputTestController",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/WindowContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.IWindowPlacementController",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/WindowContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.InputCapabilities",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/InputContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.InputModifiers",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/InputContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.KeyPhase",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/InputContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.NativeResourceSnapshot",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/WindowContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.PlatformScrollConvention",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/InputContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.PointerDeviceKind",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/InputContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.PointerPhase",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/InputContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.PointerScrollNormalizer",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/InputContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.RawFocusEvent",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/InputContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.RawKeyEvent",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/InputContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.RawPointerEvent",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/InputContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.SemanticsAction",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/AccessibilityContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Semantics",
+      "cutoverMilestone": "G4-5",
+      "reason": "Semantics vocabulary and state are Flutter-owned."
+    },
+    {
+      "symbol": "Doroti.Platform.SemanticsActionRequest",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/AccessibilityContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.SemanticsNodeSnapshot",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/AccessibilityContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.SemanticsRole",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/AccessibilityContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Semantics",
+      "cutoverMilestone": "G4-5",
+      "reason": "Semantics vocabulary and state are Flutter-owned."
+    },
+    {
+      "symbol": "Doroti.Platform.SemanticsState",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/AccessibilityContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Semantics",
+      "cutoverMilestone": "G4-5",
+      "reason": "Semantics vocabulary and state are Flutter-owned."
+    },
+    {
+      "symbol": "Doroti.Platform.SemanticsTreeSnapshot",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/AccessibilityContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.TextEditingState",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/TextAndCursorContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Services",
+      "cutoverMilestone": "G4-3",
+      "reason": "Text editing state/protocol semantics are Flutter Services behavior."
+    },
+    {
+      "symbol": "Doroti.Platform.TextEditingStateReducer",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/TextAndCursorContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Services",
+      "cutoverMilestone": "G4-3",
+      "reason": "Text editing state/protocol semantics are Flutter Services behavior."
+    },
+    {
+      "symbol": "Doroti.Platform.TextInputAction",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/TextAndCursorContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Services",
+      "cutoverMilestone": "G4-3",
+      "reason": "Text editing state/protocol semantics are Flutter Services behavior."
+    },
+    {
+      "symbol": "Doroti.Platform.TextSelection",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/TextAndCursorContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Services",
+      "cutoverMilestone": "G4-3",
+      "reason": "Text editing state/protocol semantics are Flutter Services behavior."
+    },
+    {
+      "symbol": "Doroti.Platform.UnsupportedClipboard",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/ClipboardContracts.cs",
+      "disposition": "remove-after-cutover",
+      "targetOwner": "typed Doroti.Flutter.Ui capability failure",
+      "cutoverMilestone": "G4-1",
+      "reason": "Ad-hoc unsupported implementations are replaced by typed capability errors."
+    },
+    {
+      "symbol": "Doroti.Platform.UnsupportedCursorController",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/TextAndCursorContracts.cs",
+      "disposition": "remove-after-cutover",
+      "targetOwner": "typed Doroti.Flutter.Ui capability failure",
+      "cutoverMilestone": "G4-1",
+      "reason": "Ad-hoc unsupported implementations are replaced by typed capability errors."
+    },
+    {
+      "symbol": "Doroti.Platform.UnsupportedTextInputConnection",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/TextAndCursorContracts.cs",
+      "disposition": "remove-after-cutover",
+      "targetOwner": "typed Doroti.Flutter.Ui capability failure",
+      "cutoverMilestone": "G4-1",
+      "reason": "Ad-hoc unsupported implementations are replaced by typed capability errors."
+    },
+    {
+      "symbol": "Doroti.Platform.WindowConfiguration",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/WindowContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.WindowCoordinateSnapshot",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/WindowContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.WindowId",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/WindowContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Platform.WindowMetrics",
+      "currentProject": "Doroti.Platform",
+      "sourcePath": "src/Doroti.Platform/WindowContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti.Platform raw DTO/capability contracts",
+      "cutoverMilestone": "G4-1",
+      "reason": "Raw native DTOs and capability seams remain host neutral."
+    },
+    {
+      "symbol": "Doroti.Rendering.Alignment",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.Axis",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.BoxConstraints",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/BoxConstraints.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.BoxParentData",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.ClipRectCommand",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/DisplayList.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti rendering/frame protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Immutable display/resource submission is a host-neutral bridge protocol."
+    },
+    {
+      "symbol": "Doroti.Rendering.ClipRectLayer",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/LayerTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.ClipRectLayerSnapshot",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/LayerTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.CommittedScene",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/SceneCommitter.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti rendering/frame protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Immutable display/resource submission is a host-neutral bridge protocol."
+    },
+    {
+      "symbol": "Doroti.Rendering.ContainerLayer",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/LayerTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.ContainerLayerSnapshot",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/LayerTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.ContainerRenderBox",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.CrossAxisAlignment",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.DisplayCommand",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/DisplayList.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti rendering/frame protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Immutable display/resource submission is a host-neutral bridge protocol."
+    },
+    {
+      "symbol": "Doroti.Rendering.DisplayList",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/DisplayList.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti rendering/frame protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Immutable display/resource submission is a host-neutral bridge protocol."
+    },
+    {
+      "symbol": "Doroti.Rendering.DisplayListBuilder",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/DisplayList.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti rendering/frame protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Immutable display/resource submission is a host-neutral bridge protocol."
+    },
+    {
+      "symbol": "Doroti.Rendering.DrawColorCommand",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/DisplayList.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti rendering/frame protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Immutable display/resource submission is a host-neutral bridge protocol."
+    },
+    {
+      "symbol": "Doroti.Rendering.DrawImageCommand",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/DisplayList.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti rendering/frame protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Immutable display/resource submission is a host-neutral bridge protocol."
+    },
+    {
+      "symbol": "Doroti.Rendering.DrawPathCommand",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/DisplayList.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti rendering/frame protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Immutable display/resource submission is a host-neutral bridge protocol."
+    },
+    {
+      "symbol": "Doroti.Rendering.DrawRectCommand",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/DisplayList.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti rendering/frame protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Immutable display/resource submission is a host-neutral bridge protocol."
+    },
+    {
+      "symbol": "Doroti.Rendering.DrawTextCommand",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/DisplayList.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti rendering/frame protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Immutable display/resource submission is a host-neutral bridge protocol."
+    },
+    {
+      "symbol": "Doroti.Rendering.EdgeInsets",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/BoxConstraints.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.FlexFit",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.FlexParentData",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.HitTestEntry",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.HitTestResult",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.IFrameLifecyclePort",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderingContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti rendering/frame protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Immutable display/resource submission is a host-neutral bridge protocol."
+    },
+    {
+      "symbol": "Doroti.Rendering.IParagraphLayout",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.IRenderNode",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderingContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti rendering/frame protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Immutable display/resource submission is a host-neutral bridge protocol."
+    },
+    {
+      "symbol": "Doroti.Rendering.IRenderObjectChildContainer",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.ISceneBuilder",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderingContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti rendering/frame protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Immutable display/resource submission is a host-neutral bridge protocol."
+    },
+    {
+      "symbol": "Doroti.Rendering.IdGenerator",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/Semantics.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.ImmutableParagraphSnapshot",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.Layer",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/LayerTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.LayerSnapshot",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/LayerTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.LayerTreeSnapshot",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/LayerTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.MainAxisAlignment",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.MonospaceParagraphLayout",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.OpacityLayer",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/LayerTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.OpacityLayerSnapshot",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/LayerTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.PaintBoundsBox",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/PaintingContext.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.PaintingContext",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/PaintingContext.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.ParagraphLayoutRequest",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.ParagraphLineMetric",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.ParentData",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.PictureLayer",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/LayerTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.PictureLayerSnapshot",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/LayerTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.PipelineOwner",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.PipelinePhase",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.RenderBox",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.RenderColoredBox",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.RenderFlex",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.RenderObject",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.RenderPadding",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.RenderParagraph",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.RenderPipelineException",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.RenderPipelineFrame",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/FrameContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.RenderPipelineTiming",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.RenderPositionedBox",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.RenderProxyBox",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.RenderRepaintBoundary",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.RenderStack",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.RenderTraceEvent",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.RenderView",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.RenderViewConfiguration",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/FrameContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.RestoreCommand",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/DisplayList.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti rendering/frame protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Immutable display/resource submission is a host-neutral bridge protocol."
+    },
+    {
+      "symbol": "Doroti.Rendering.SaveCommand",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/DisplayList.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti rendering/frame protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Immutable display/resource submission is a host-neutral bridge protocol."
+    },
+    {
+      "symbol": "Doroti.Rendering.SceneCommitter",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/SceneCommitter.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti rendering/frame protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Immutable display/resource submission is a host-neutral bridge protocol."
+    },
+    {
+      "symbol": "Doroti.Rendering.SchedulerPhase",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderingContracts.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti rendering/frame protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Immutable display/resource submission is a host-neutral bridge protocol."
+    },
+    {
+      "symbol": "Doroti.Rendering.SemanticsConfiguration",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/Semantics.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.SemanticsOwner",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/Semantics.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.SingleChildLayerSnapshot",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/LayerTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.StackParentData",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.TransformCommand",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/DisplayList.cs",
+      "disposition": "keep-bridge",
+      "targetOwner": "Doroti rendering/frame protocol",
+      "cutoverMilestone": "G4-5",
+      "reason": "Immutable display/resource submission is a host-neutral bridge protocol."
+    },
+    {
+      "symbol": "Doroti.Rendering.TransformLayer",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/LayerTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.TransformLayerSnapshot",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/LayerTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Rendering.UnicodeParagraphLayout",
+      "currentProject": "Doroti.Rendering",
+      "sourcePath": "src/Doroti.Rendering/RenderBoxes.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Rendering",
+      "cutoverMilestone": "G4-5",
+      "reason": "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior."
+    },
+    {
+      "symbol": "Doroti.Widgets.ActivateIntent",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FocusAndActions.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.AsyncImage",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/ImageWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.AsyncImageState",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/ImageWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.BallisticScrollActivity",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Scrolling.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.BoundedFrictionSimulation",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FlutterF2Generated.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.BuildContext",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/WidgetContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.BuildOwner",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/ElementTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.BuildPhase",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/ElementTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.CallbackAction",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FocusAndActions.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.Center",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.ClampingScrollPhysics",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Scrolling.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.ClampingScrollSimulation",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Scrolling.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.ColoredBox",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.Column",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.ComponentElement",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/ElementTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.CubicCurve",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FlutterF2Generated.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.DragScrollActivity",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Scrolling.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.EditableText",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/EditableText.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.Element",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/ElementTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.ElementLifecycle",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/ElementTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.FlutterArenaAdapter",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.FlutterClampingScrollSimulation",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FlutterF2Generated.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.FlutterCurves",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FlutterF2Generated.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.FlutterF3DirtyElementOrder",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FlutterF3Generated.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.FlutterF3ElementDiff",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FlutterF3Generated.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.FlutterInputAdapter",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.FlutterPointerEventAdapter",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.Focus",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FocusAndActions.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.FocusManager",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FocusAndActions.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.FocusNode",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FocusAndActions.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.FrictionSimulation",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FlutterF2Generated.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.GestureDetector",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-4",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.GlobalKey",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/WidgetContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.HostTapBinding",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.HostVerticalDragBinding",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.IFlutterArenaTarget",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.IFocusableKeyboardTarget",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FocusAndActions.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.IFrameDrivenScrollTarget",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.IHostArenaBinding",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.IKeyboardEventTarget",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.IPointerEventTarget",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.IPointerSignalTarget",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.IWidget",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/WidgetContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.IWidgetAction",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FocusAndActions.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.IWidgetHost",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/WidgetContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.IdleScrollActivity",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Scrolling.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.IndexedListItem",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Scrolling.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.IndexedWidgetBuilder",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Scrolling.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.InheritedElement",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/ElementTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.InheritedWidget",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/WidgetContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.Intent",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FocusAndActions.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.Key",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/WidgetContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.KeyboardEvent",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.KeyboardEventPhase",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.KeyboardModifiers",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FocusAndActions.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.LeafRenderObjectWidget",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/WidgetContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.ListView",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/ListView.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.LocalKey",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/WidgetContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.ModalBarrier",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Overlay.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.MultiChildRenderObjectWidget",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/WidgetContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.NextFocusIntent",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FocusAndActions.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.Opacity",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Overlay.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.Overlay",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Overlay.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.OverlayController",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Overlay.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.OverlayEntry",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Overlay.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.OverlayState",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Overlay.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.Padding",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.PointerEvent",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.PointerEventPhase",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.PointerEventResampler",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FlutterF2Generated.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.PointerRouter",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.PointerScrollEvent",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.PointerSignalEvent",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.PointerSignalResolver",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.PointerVelocityTracker",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FlutterF2Generated.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.ProxyWidget",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/WidgetContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.RawImage",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/ImageWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.RenderEditableText",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/EditableText.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.RenderFocus",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FocusAndActions.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.RenderGestureDetector",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-4",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.RenderIndexedListItem",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Scrolling.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.RenderListView",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/ListView.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.RenderObjectElement",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/ElementTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.RenderObjectWidget",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/WidgetContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.RenderOpacity",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Overlay.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.RenderRawImage",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/ImageWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.RenderSemantics",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Semantics.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.RenderSliverFixedExtentViewport",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Scrolling.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.ResampledPointerSample",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FlutterF2Generated.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.Row",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.ScrollActivity",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Scrolling.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.ScrollMetrics",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Scrolling.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.ScrollPhysics",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Scrolling.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.ScrollPosition",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Scrolling.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.ScrollSimulation",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Scrolling.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.Semantics",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Semantics.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.ShortcutActivator",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FocusAndActions.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.ShortcutMap",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FocusAndActions.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.Simulation",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FlutterF2Generated.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.SimulationTolerance",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FlutterF2Generated.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.SingleChildRenderObjectWidget",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/WidgetContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.SliverFixedExtentViewport",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Scrolling.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.SliverScrollController",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Scrolling.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.Stack",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.State",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/WidgetContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.StatefulElement",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/ElementTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.StatefulWidget",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/WidgetContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.StatelessElement",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/ElementTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.StatelessWidget",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/WidgetContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.Text",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/InputAndBasicWidgets.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.TextEditingController",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/EditableText.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.Tolerance",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Scrolling.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.UniqueKey",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/WidgetContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.ValueKey",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/WidgetContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.VelocityEstimate",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/FlutterF2Generated.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.VirtualListView",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Scrolling.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.VirtualListViewState",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/Scrolling.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.Widget",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/WidgetContracts.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.WidgetBuildException",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/ElementTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    },
+    {
+      "symbol": "Doroti.Widgets.WidgetTraceEvent",
+      "currentProject": "Doroti.Widgets",
+      "sourcePath": "src/Doroti.Widgets/ElementTree.cs",
+      "disposition": "move-to-framework",
+      "targetOwner": "Doroti.Flutter.Framework.Widgets/Gestures/Animation",
+      "cutoverMilestone": "G4-6",
+      "reason": "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source."
+    }
+  ]
+}

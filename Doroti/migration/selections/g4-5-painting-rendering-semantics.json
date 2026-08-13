@@ -1,0 +1,1282 @@
+{
+    "schemaVersion":  "doroti.converter-selection/v4",
+    "converterVersion":  "3.0.0",
+    "migrationIrVersion":  "3.0.0",
+    "generationMode":  "framework-semantic",
+    "compatibilityProfile":  "flutter-framework",
+    "frameworkMilestone":  "G4-5",
+    "outputNamespace":  "Doroti.Generated.Framework",
+    "outputAssemblyName":  "Doroti.Generated.Framework.PaintingRenderingSemantics",
+    "flutterBaseline":  "../flutter-compat/baseline.json",
+    "inputs":  [
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/_network_image_io.dart",
+                       "library":  "package:flutter/src/painting/_network_image_io.dart",
+                       "symbols":  [
+                                       "_SimpleDecoderCallback",
+                                       "NetworkImage"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/_network_image_web.dart",
+                       "library":  "package:flutter/src/painting/_network_image_web.dart",
+                       "symbols":  [
+                                       "HttpRequestFactory",
+                                       "HtmlElementFactory",
+                                       "_SimpleDecoderCallback",
+                                       "_httpClient",
+                                       "httpRequestFactory",
+                                       "debugRestoreHttpRequestFactory",
+                                       "_imgElementFactory",
+                                       "imgElementFactory",
+                                       "debugRestoreImgElementFactory",
+                                       "NetworkImage",
+                                       "_ForwardingImageStreamCompleter"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/_web_image_info_io.dart",
+                       "library":  "package:flutter/src/painting/_web_image_info_io.dart",
+                       "symbols":  [
+                                       "WebImageInfo"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/_web_image_info_web.dart",
+                       "library":  "package:flutter/src/painting/_web_image_info_web.dart",
+                       "symbols":  [
+                                       "WebImageInfo"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/alignment.dart",
+                       "library":  "package:flutter/src/painting/alignment.dart",
+                       "symbols":  [
+                                       "AlignmentGeometry",
+                                       "Alignment",
+                                       "AlignmentDirectional",
+                                       "_MixedAlignment",
+                                       "TextAlignVertical"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/basic_types.dart",
+                       "library":  "package:flutter/src/painting/basic_types.dart",
+                       "symbols":  [
+                                       "RenderComparison",
+                                       "Axis",
+                                       "flipAxis",
+                                       "VerticalDirection",
+                                       "AxisDirection",
+                                       "axisDirectionToAxis",
+                                       "textDirectionToAxisDirection",
+                                       "flipAxisDirection",
+                                       "axisDirectionIsReversed"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/beveled_rectangle_border.dart",
+                       "library":  "package:flutter/src/painting/beveled_rectangle_border.dart",
+                       "symbols":  [
+                                       "BeveledRectangleBorder"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/binding.dart",
+                       "library":  "package:flutter/src/painting/binding.dart",
+                       "symbols":  [
+                                       "PaintingBinding",
+                                       "_SystemFontsNotifier",
+                                       "imageCache"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/border_radius.dart",
+                       "library":  "package:flutter/src/painting/border_radius.dart",
+                       "symbols":  [
+                                       "BorderRadiusGeometry",
+                                       "BorderRadius",
+                                       "BorderRadiusDirectional",
+                                       "_MixedBorderRadius"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/borders.dart",
+                       "library":  "package:flutter/src/painting/borders.dart",
+                       "symbols":  [
+                                       "BorderStyle",
+                                       "BorderSide",
+                                       "ShapeBorder",
+                                       "OutlinedBorder",
+                                       "_CompoundBorder",
+                                       "paintBorder"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/box_border.dart",
+                       "library":  "package:flutter/src/painting/box_border.dart",
+                       "symbols":  [
+                                       "BoxShape",
+                                       "BoxBorder",
+                                       "Border",
+                                       "BorderDirectional"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/box_decoration.dart",
+                       "library":  "package:flutter/src/painting/box_decoration.dart",
+                       "symbols":  [
+                                       "BoxDecoration",
+                                       "_BoxDecorationPainter"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/box_fit.dart",
+                       "library":  "package:flutter/src/painting/box_fit.dart",
+                       "symbols":  [
+                                       "BoxFit",
+                                       "FittedSizes",
+                                       "applyBoxFit"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/box_shadow.dart",
+                       "library":  "package:flutter/src/painting/box_shadow.dart",
+                       "symbols":  [
+                                       "BoxShadow"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/circle_border.dart",
+                       "library":  "package:flutter/src/painting/circle_border.dart",
+                       "symbols":  [
+                                       "CircleBorder"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/clip.dart",
+                       "library":  "package:flutter/src/painting/clip.dart",
+                       "symbols":  [
+                                       "ClipContext"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/colors.dart",
+                       "library":  "package:flutter/src/painting/colors.dart",
+                       "symbols":  [
+                                       "_getHue",
+                                       "_colorFromHue",
+                                       "HSVColor",
+                                       "HSLColor",
+                                       "ColorSwatch",
+                                       "ColorProperty"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/continuous_rectangle_border.dart",
+                       "library":  "package:flutter/src/painting/continuous_rectangle_border.dart",
+                       "symbols":  [
+                                       "ContinuousRectangleBorder"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/debug.dart",
+                       "library":  "package:flutter/src/painting/debug.dart",
+                       "symbols":  [
+                                       "debugDisableShadows",
+                                       "HttpClientProvider",
+                                       "debugNetworkImageHttpClientProvider",
+                                       "PaintImageCallback",
+                                       "ImageSizeInfo",
+                                       "debugOnPaintImage",
+                                       "debugInvertOversizedImages",
+                                       "_imageOverheadAllowanceDefault",
+                                       "debugImageOverheadAllowance",
+                                       "debugAssertAllPaintingVarsUnset",
+                                       "ShaderWarmUpPictureCallback",
+                                       "ShaderWarmUpImageCallback",
+                                       "debugCaptureShaderWarmUpPicture",
+                                       "_defaultPictureCapture",
+                                       "debugCaptureShaderWarmUpImage",
+                                       "_defaultImageCapture",
+                                       "debugCheckCanResolveTextDirection"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/decoration.dart",
+                       "library":  "package:flutter/src/painting/decoration.dart",
+                       "symbols":  [
+                                       "Decoration",
+                                       "BoxPainter"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/decoration_image.dart",
+                       "library":  "package:flutter/src/painting/decoration_image.dart",
+                       "symbols":  [
+                                       "ImageRepeat",
+                                       "DecorationImage",
+                                       "DecorationImagePainter",
+                                       "_DecorationImagePainter",
+                                       "_pendingImageSizeInfo",
+                                       "_lastFrameImageSizeInfo",
+                                       "debugFlushLastFrameImageSizeInfo",
+                                       "paintImage",
+                                       "_generateImageTileRects",
+                                       "_scaleRect",
+                                       "_BlendedDecorationImage",
+                                       "_BlendedDecorationImagePainter"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/edge_insets.dart",
+                       "library":  "package:flutter/src/painting/edge_insets.dart",
+                       "symbols":  [
+                                       "EdgeInsetsGeometry",
+                                       "EdgeInsets",
+                                       "EdgeInsetsDirectional",
+                                       "_MixedEdgeInsets"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/flutter_logo.dart",
+                       "library":  "package:flutter/src/painting/flutter_logo.dart",
+                       "symbols":  [
+                                       "FlutterLogoStyle",
+                                       "FlutterLogoDecoration",
+                                       "_FlutterLogoPainter"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/fractional_offset.dart",
+                       "library":  "package:flutter/src/painting/fractional_offset.dart",
+                       "symbols":  [
+                                       "FractionalOffset"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/geometry.dart",
+                       "library":  "package:flutter/src/painting/geometry.dart",
+                       "symbols":  [
+                                       "positionDependentBox"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/gradient.dart",
+                       "library":  "package:flutter/src/painting/gradient.dart",
+                       "symbols":  [
+                                       "_ColorsAndStops",
+                                       "_sample",
+                                       "_interpolateColorsAndStops",
+                                       "GradientTransform",
+                                       "GradientRotation",
+                                       "Gradient",
+                                       "LinearGradient",
+                                       "RadialGradient",
+                                       "SweepGradient"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/image_cache.dart",
+                       "library":  "package:flutter/src/painting/image_cache.dart",
+                       "symbols":  [
+                                       "_kDefaultSize",
+                                       "_kDefaultSizeBytes",
+                                       "ImageCache",
+                                       "ImageCacheStatus",
+                                       "_CachedImageBase",
+                                       "_CachedImage",
+                                       "_LiveImage",
+                                       "_PendingImage"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/image_decoder.dart",
+                       "library":  "package:flutter/src/painting/image_decoder.dart",
+                       "symbols":  [
+                                       "decodeImageFromList"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/image_provider.dart",
+                       "library":  "package:flutter/src/painting/image_provider.dart",
+                       "symbols":  [
+                                       "_KeyAndErrorHandlerCallback",
+                                       "_AsyncKeyErrorHandler",
+                                       "ImageConfiguration",
+                                       "DecoderBufferCallback",
+                                       "_SimpleDecoderCallback",
+                                       "ImageDecoderCallback",
+                                       "ImageProvider",
+                                       "_AbstractImageStreamCompleter",
+                                       "AssetBundleImageKey",
+                                       "AssetBundleImageProvider",
+                                       "ResizeImageKey",
+                                       "ResizeImagePolicy",
+                                       "ResizeImage",
+                                       "WebHtmlElementStrategy",
+                                       "NetworkImage",
+                                       "FileImage",
+                                       "MemoryImage",
+                                       "ExactAssetImage",
+                                       "_ErrorImageCompleter",
+                                       "NetworkImageLoadException"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/image_resolution.dart",
+                       "library":  "package:flutter/src/painting/image_resolution.dart",
+                       "symbols":  [
+                                       "_kLowDprLimit",
+                                       "AssetImage"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/image_stream.dart",
+                       "library":  "package:flutter/src/painting/image_stream.dart",
+                       "symbols":  [
+                                       "ImageInfo",
+                                       "ImageStreamListener",
+                                       "ImageListener",
+                                       "ImageChunkListener",
+                                       "ImageErrorListener",
+                                       "ImageChunkEvent",
+                                       "ImageStream",
+                                       "ImageStreamCompleterHandle",
+                                       "ImageStreamCompleter",
+                                       "OneFrameImageStreamCompleter",
+                                       "MultiFrameImageStreamCompleter"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/inline_span.dart",
+                       "library":  "package:flutter/src/painting/inline_span.dart",
+                       "symbols":  [
+                                       "Accumulator",
+                                       "InlineSpanVisitor",
+                                       "InlineSpanSemanticsInformation",
+                                       "combineSemanticsInfo",
+                                       "InlineSpan"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/linear_border.dart",
+                       "library":  "package:flutter/src/painting/linear_border.dart",
+                       "symbols":  [
+                                       "LinearBorderEdge",
+                                       "LinearBorder"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/matrix_utils.dart",
+                       "library":  "package:flutter/src/painting/matrix_utils.dart",
+                       "symbols":  [
+                                       "MatrixUtils",
+                                       "debugDescribeTransform",
+                                       "TransformProperty"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/notched_shapes.dart",
+                       "library":  "package:flutter/src/painting/notched_shapes.dart",
+                       "symbols":  [
+                                       "NotchedShape",
+                                       "CircularNotchedRectangle",
+                                       "AutomaticNotchedShape"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/oval_border.dart",
+                       "library":  "package:flutter/src/painting/oval_border.dart",
+                       "symbols":  [
+                                       "OvalBorder"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/paint_utilities.dart",
+                       "library":  "package:flutter/src/painting/paint_utilities.dart",
+                       "symbols":  [
+                                       "paintZigZag"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/placeholder_span.dart",
+                       "library":  "package:flutter/src/painting/placeholder_span.dart",
+                       "symbols":  [
+                                       "PlaceholderSpan"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/rounded_rectangle_border.dart",
+                       "library":  "package:flutter/src/painting/rounded_rectangle_border.dart",
+                       "symbols":  [
+                                       "_RRectLikeBorder",
+                                       "RoundedRectangleBorder",
+                                       "_RoundedRectangleToCircleBorder",
+                                       "RoundedSuperellipseBorder",
+                                       "_RoundedSuperellipseToCircleBorder",
+                                       "_ShapeToCircleBorder"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/shader_warm_up.dart",
+                       "library":  "package:flutter/src/painting/shader_warm_up.dart",
+                       "symbols":  [
+                                       "ShaderWarmUp"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/shape_decoration.dart",
+                       "library":  "package:flutter/src/painting/shape_decoration.dart",
+                       "symbols":  [
+                                       "ShapeDecoration",
+                                       "_ShapeDecorationPainter"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/stadium_border.dart",
+                       "library":  "package:flutter/src/painting/stadium_border.dart",
+                       "symbols":  [
+                                       "StadiumBorder",
+                                       "_StadiumToCircleBorder",
+                                       "_StadiumToRoundedRectangleBorder"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/star_border.dart",
+                       "library":  "package:flutter/src/painting/star_border.dart",
+                       "symbols":  [
+                                       "_kRadToDeg",
+                                       "_kDegToRad",
+                                       "StarBorder",
+                                       "_PointInfo",
+                                       "_StarGenerator"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/strut_style.dart",
+                       "library":  "package:flutter/src/painting/strut_style.dart",
+                       "symbols":  [
+                                       "StrutStyle"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/text_painter.dart",
+                       "library":  "package:flutter/src/painting/text_painter.dart",
+                       "symbols":  [
+                                       "kDefaultFontSize",
+                                       "TextOverflow",
+                                       "PlaceholderDimensions",
+                                       "TextWidthBasis",
+                                       "WordBoundary",
+                                       "_UntilTextBoundary",
+                                       "_TextLayout",
+                                       "_TextPainterLayoutCacheWithOffset",
+                                       "_LineCaretMetrics",
+                                       "TextPainter",
+                                       "_UnspecifiedTextScaler"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/text_scaler.dart",
+                       "library":  "package:flutter/src/painting/text_scaler.dart",
+                       "symbols":  [
+                                       "TextScaler",
+                                       "_LinearTextScaler",
+                                       "_ClampedTextScaler"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/text_span.dart",
+                       "library":  "package:flutter/src/painting/text_span.dart",
+                       "symbols":  [
+                                       "TextSpan"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/painting/text_style.dart",
+                       "library":  "package:flutter/src/painting/text_style.dart",
+                       "symbols":  [
+                                       "_kDefaultDebugLabel",
+                                       "_kColorForegroundWarning",
+                                       "_kColorBackgroundWarning",
+                                       "_kTextStyleHeightNaNWarning",
+                                       "TextStyle",
+                                       "lerpFontVariations"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/animated_size.dart",
+                       "library":  "package:flutter/src/rendering/animated_size.dart",
+                       "symbols":  [
+                                       "RenderAnimatedSizeState",
+                                       "RenderAnimatedSize"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/binding.dart",
+                       "library":  "package:flutter/src/rendering/binding.dart",
+                       "symbols":  [
+                                       "RendererBinding",
+                                       "_debugCollectRenderTrees",
+                                       "debugDumpRenderTree",
+                                       "_debugCollectLayerTrees",
+                                       "debugDumpLayerTree",
+                                       "_debugCollectSemanticsTrees",
+                                       "debugDumpSemanticsTree",
+                                       "debugDumpPipelineOwnerTree",
+                                       "RenderingFlutterBinding",
+                                       "_BindingPipelineManifold",
+                                       "_DefaultRootPipelineOwner",
+                                       "_ReusableRenderView"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/box.dart",
+                       "library":  "package:flutter/src/rendering/box.dart",
+                       "symbols":  [
+                                       "_DebugSize",
+                                       "BoxConstraints",
+                                       "BoxHitTest",
+                                       "BoxHitTestWithOutOfBandPosition",
+                                       "BoxHitTestResult",
+                                       "BoxHitTestEntry",
+                                       "BoxParentData",
+                                       "ContainerBoxParentData",
+                                       "BaselineOffset",
+                                       "_CachedLayoutCalculation",
+                                       "_DryLayout",
+                                       "_Baseline",
+                                       "_IntrinsicDimension",
+                                       "_LayoutCacheStorage",
+                                       "RenderBox",
+                                       "RenderBoxContainerDefaultsMixin"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/custom_layout.dart",
+                       "library":  "package:flutter/src/rendering/custom_layout.dart",
+                       "symbols":  [
+                                       "MultiChildLayoutParentData",
+                                       "MultiChildLayoutDelegate",
+                                       "RenderCustomMultiChildLayoutBox"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/custom_paint.dart",
+                       "library":  "package:flutter/src/rendering/custom_paint.dart",
+                       "symbols":  [
+                                       "SemanticsBuilderCallback",
+                                       "CustomPainter",
+                                       "CustomPainterSemantics",
+                                       "RenderCustomPaint"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/debug.dart",
+                       "library":  "package:flutter/src/rendering/debug.dart",
+                       "symbols":  [
+                                       "_kDebugDefaultRepaintColor",
+                                       "debugPaintSizeEnabled",
+                                       "debugPaintBaselinesEnabled",
+                                       "debugPaintTextLayoutBoxes",
+                                       "debugPaintLayerBordersEnabled",
+                                       "debugPaintPointersEnabled",
+                                       "debugRepaintRainbowEnabled",
+                                       "debugRepaintTextRainbowEnabled",
+                                       "debugCurrentRepaintColor",
+                                       "debugPrintMarkNeedsLayoutStacks",
+                                       "debugPrintMarkNeedsPaintStacks",
+                                       "debugPrintLayouts",
+                                       "debugCheckIntrinsicSizes",
+                                       "debugProfileLayoutsEnabled",
+                                       "debugProfilePaintsEnabled",
+                                       "debugEnhanceLayoutTimelineArguments",
+                                       "debugEnhancePaintTimelineArguments",
+                                       "ProfilePaintCallback",
+                                       "debugOnProfilePaint",
+                                       "debugDisableClipLayers",
+                                       "debugDisablePhysicalShapeLayers",
+                                       "debugDisableOpacityLayers",
+                                       "_debugDrawDoubleRect",
+                                       "debugPaintPadding",
+                                       "debugAssertAllRenderVarsUnset",
+                                       "debugCheckHasBoundedAxis"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/debug_overflow_indicator.dart",
+                       "library":  "package:flutter/src/rendering/debug_overflow_indicator.dart",
+                       "symbols":  [
+                                       "_OverflowSide",
+                                       "_OverflowRegionData",
+                                       "DebugOverflowIndicatorMixin"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/decorated_sliver.dart",
+                       "library":  "package:flutter/src/rendering/decorated_sliver.dart",
+                       "symbols":  [
+                                       "RenderDecoratedSliver"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/editable.dart",
+                       "library":  "package:flutter/src/rendering/editable.dart",
+                       "symbols":  [
+                                       "_kCaretGap",
+                                       "_kCaretHeightOffset",
+                                       "_kFloatingCursorSizeIncrease",
+                                       "_kFloatingCursorRadius",
+                                       "_kShortestDistanceSquaredWithFloatingAndRegularCursors",
+                                       "TextSelectionPoint",
+                                       "VerticalCaretMovementRun",
+                                       "RenderEditable",
+                                       "_RenderEditableCustomPaint",
+                                       "RenderEditablePainter",
+                                       "_TextHighlightPainter",
+                                       "_CaretPainter",
+                                       "_CompositeRenderEditablePainter"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/error.dart",
+                       "library":  "package:flutter/src/rendering/error.dart",
+                       "symbols":  [
+                                       "_kMaxWidth",
+                                       "_kMaxHeight",
+                                       "RenderErrorBox"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/flex.dart",
+                       "library":  "package:flutter/src/rendering/flex.dart",
+                       "symbols":  [
+                                       "_AxisSize",
+                                       "_AscentDescent",
+                                       "_ChildSizingFunction",
+                                       "_NextChild",
+                                       "_LayoutSizes",
+                                       "FlexFit",
+                                       "FlexParentData",
+                                       "MainAxisSize",
+                                       "MainAxisAlignment",
+                                       "CrossAxisAlignment",
+                                       "RenderFlex"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/flow.dart",
+                       "library":  "package:flutter/src/rendering/flow.dart",
+                       "symbols":  [
+                                       "FlowPaintingContext",
+                                       "FlowDelegate",
+                                       "FlowParentData",
+                                       "RenderFlow"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/image.dart",
+                       "library":  "package:flutter/src/rendering/image.dart",
+                       "symbols":  [
+                                       "RenderImage"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/image_filter_config.dart",
+                       "library":  "package:flutter/src/rendering/image_filter_config.dart",
+                       "symbols":  [
+                                       "ImageFilterContext",
+                                       "ImageFilterConfig",
+                                       "_DirectImageFilterConfig",
+                                       "_BlurImageFilterConfig",
+                                       "_ComposeImageFilterConfig"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/layer.dart",
+                       "library":  "package:flutter/src/rendering/layer.dart",
+                       "symbols":  [
+                                       "AnnotationEntry",
+                                       "AnnotationResult",
+                                       "Layer",
+                                       "LayerHandle",
+                                       "PictureLayer",
+                                       "TextureLayer",
+                                       "PlatformViewLayer",
+                                       "PerformanceOverlayLayer",
+                                       "CompositionCallback",
+                                       "ContainerLayer",
+                                       "OffsetLayer",
+                                       "ClipRectLayer",
+                                       "ClipRRectLayer",
+                                       "ClipRSuperellipseLayer",
+                                       "ClipPathLayer",
+                                       "ColorFilterLayer",
+                                       "ImageFilterLayer",
+                                       "TransformLayer",
+                                       "OpacityLayer",
+                                       "ShaderMaskLayer",
+                                       "BackdropKey",
+                                       "BackdropFilterLayer",
+                                       "LayerLink",
+                                       "LeaderLayer",
+                                       "FollowerLayer",
+                                       "AnnotatedRegionLayer"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/layout_helper.dart",
+                       "library":  "package:flutter/src/rendering/layout_helper.dart",
+                       "symbols":  [
+                                       "ChildLayouter",
+                                       "ChildBaselineGetter",
+                                       "ChildLayoutHelper"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/list_body.dart",
+                       "library":  "package:flutter/src/rendering/list_body.dart",
+                       "symbols":  [
+                                       "ListBodyParentData",
+                                       "_ChildSizingFunction",
+                                       "RenderListBody"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/list_wheel_viewport.dart",
+                       "library":  "package:flutter/src/rendering/list_wheel_viewport.dart",
+                       "symbols":  [
+                                       "_ChildSizingFunction",
+                                       "ListWheelChildManager",
+                                       "ListWheelParentData",
+                                       "RenderListWheelViewport"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/mouse_tracker.dart",
+                       "library":  "package:flutter/src/rendering/mouse_tracker.dart",
+                       "symbols":  [
+                                       "MouseTrackerHitTest",
+                                       "_MouseState",
+                                       "_MouseTrackerUpdateDetails",
+                                       "MouseTracker"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/object.dart",
+                       "library":  "package:flutter/src/rendering/object.dart",
+                       "symbols":  [
+                                       "ParentData",
+                                       "PaintingContextCallback",
+                                       "_TransformRect",
+                                       "PaintingContext",
+                                       "Constraints",
+                                       "RenderObjectVisitor",
+                                       "LayoutCallback",
+                                       "_LocalSemanticsHandle",
+                                       "PipelineOwner",
+                                       "PipelineOwnerVisitor",
+                                       "PipelineManifold",
+                                       "RenderObject",
+                                       "RenderObjectWithChildMixin",
+                                       "RenderObjectWithLayoutCallbackMixin",
+                                       "ContainerParentDataMixin",
+                                       "ContainerRenderObjectMixin",
+                                       "RelayoutWhenSystemFontsChangeMixin",
+                                       "SemanticsAnnotationsMixin",
+                                       "_SemanticsParentData",
+                                       "_SemanticsConfigurationProvider",
+                                       "_SemanticsFragment",
+                                       "_IncompleteSemanticsFragment",
+                                       "_MergeUpAndSiblingMergeGroups",
+                                       "_RenderObjectSemantics",
+                                       "debugDumpRenderObjectSemanticsTree",
+                                       "_debugCollectRenderObjectSemanticsTrees",
+                                       "_SemanticsGeometry",
+                                       "DiagnosticsDebugCreator"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/paragraph.dart",
+                       "library":  "package:flutter/src/rendering/paragraph.dart",
+                       "symbols":  [
+                                       "_TextBoundaryRecord",
+                                       "_TextBoundaryAtPosition",
+                                       "_TextBoundaryAtPositionInText",
+                                       "_kEllipsis",
+                                       "PlaceholderSpanIndexSemanticsTag",
+                                       "TextParentData",
+                                       "RenderInlineChildrenContainerDefaults",
+                                       "_UnspecifiedTextScaler",
+                                       "RenderParagraph",
+                                       "_SelectableFragment"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/performance_overlay.dart",
+                       "library":  "package:flutter/src/rendering/performance_overlay.dart",
+                       "symbols":  [
+                                       "PerformanceOverlayOption",
+                                       "RenderPerformanceOverlay"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/platform_view.dart",
+                       "library":  "package:flutter/src/rendering/platform_view.dart",
+                       "symbols":  [
+                                       "PlatformViewHitTestBehavior",
+                                       "_PlatformViewState",
+                                       "_factoryTypesSetEquals",
+                                       "_factoriesTypeSet",
+                                       "RenderAndroidView",
+                                       "RenderDarwinPlatformView",
+                                       "RenderUiKitView",
+                                       "RenderAppKitView",
+                                       "_UiKitViewGestureRecognizer",
+                                       "_HandlePointerEvent",
+                                       "_PlatformViewGestureRecognizer",
+                                       "PlatformViewRenderBox",
+                                       "_PlatformViewGestureMixin"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/proxy_box.dart",
+                       "library":  "package:flutter/src/rendering/proxy_box.dart",
+                       "symbols":  [
+                                       "RenderProxyBox",
+                                       "RenderProxyBoxMixin",
+                                       "HitTestBehavior",
+                                       "RenderProxyBoxWithHitTestBehavior",
+                                       "RenderConstrainedBox",
+                                       "RenderLimitedBox",
+                                       "RenderAspectRatio",
+                                       "RenderIntrinsicWidth",
+                                       "RenderIntrinsicHeight",
+                                       "RenderIgnoreBaseline",
+                                       "RenderOpacity",
+                                       "RenderAnimatedOpacityMixin",
+                                       "RenderAnimatedOpacity",
+                                       "ShaderCallback",
+                                       "RenderShaderMask",
+                                       "RenderBackdropFilter",
+                                       "CustomClipper",
+                                       "ShapeBorderClipper",
+                                       "_RenderCustomClip",
+                                       "RenderClipRect",
+                                       "RenderClipRRect",
+                                       "RenderClipRSuperellipse",
+                                       "RenderClipOval",
+                                       "RenderClipPath",
+                                       "_RenderPhysicalModelBase",
+                                       "RenderPhysicalModel",
+                                       "RenderPhysicalShape",
+                                       "DecorationPosition",
+                                       "RenderDecoratedBox",
+                                       "RenderTransform",
+                                       "RenderFittedBox",
+                                       "RenderFractionalTranslation",
+                                       "PointerDownEventListener",
+                                       "PointerMoveEventListener",
+                                       "PointerUpEventListener",
+                                       "PointerCancelEventListener",
+                                       "PointerPanZoomStartEventListener",
+                                       "PointerPanZoomUpdateEventListener",
+                                       "PointerPanZoomEndEventListener",
+                                       "PointerSignalEventListener",
+                                       "RenderPointerListener",
+                                       "RenderMouseRegion",
+                                       "RenderRepaintBoundary",
+                                       "RenderIgnorePointer",
+                                       "RenderOffstage",
+                                       "RenderAbsorbPointer",
+                                       "RenderMetaData",
+                                       "RenderSemanticsGestureHandler",
+                                       "RenderSemanticsAnnotations",
+                                       "RenderBlockSemantics",
+                                       "RenderMergeSemantics",
+                                       "RenderExcludeSemantics",
+                                       "RenderIndexedSemantics",
+                                       "RenderLeaderLayer",
+                                       "RenderFollowerLayer",
+                                       "RenderAnnotatedRegion"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/proxy_sliver.dart",
+                       "library":  "package:flutter/src/rendering/proxy_sliver.dart",
+                       "symbols":  [
+                                       "RenderProxySliver",
+                                       "RenderSliverOpacity",
+                                       "RenderSliverIgnorePointer",
+                                       "RenderSliverOffstage",
+                                       "RenderSliverAnimatedOpacity",
+                                       "RenderSliverConstrainedCrossAxis",
+                                       "RenderSliverSemanticsAnnotations"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/rotated_box.dart",
+                       "library":  "package:flutter/src/rendering/rotated_box.dart",
+                       "symbols":  [
+                                       "_kQuarterTurnsInRadians",
+                                       "RenderRotatedBox"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/selection.dart",
+                       "library":  "package:flutter/src/rendering/selection.dart",
+                       "symbols":  [
+                                       "SelectionResult",
+                                       "SelectionHandler",
+                                       "SelectedContentRange",
+                                       "SelectedContent",
+                                       "Selectable",
+                                       "SelectionRegistrant",
+                                       "SelectionUtils",
+                                       "SelectionEventType",
+                                       "TextGranularity",
+                                       "SelectionEvent",
+                                       "SelectAllSelectionEvent",
+                                       "ClearSelectionEvent",
+                                       "SelectWordSelectionEvent",
+                                       "SelectParagraphSelectionEvent",
+                                       "SelectionEdgeUpdateEvent",
+                                       "GranularlyExtendSelectionEvent",
+                                       "SelectionExtendDirection",
+                                       "DirectionallyExtendSelectionEvent",
+                                       "SelectionRegistrar",
+                                       "SelectionStatus",
+                                       "SelectionGeometry",
+                                       "SelectionPoint",
+                                       "TextSelectionHandleType"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/service_extensions.dart",
+                       "library":  "package:flutter/src/rendering/service_extensions.dart",
+                       "symbols":  [
+                                       "RenderingServiceExtensions"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/shifted_box.dart",
+                       "library":  "package:flutter/src/rendering/shifted_box.dart",
+                       "symbols":  [
+                                       "BoxConstraintsTransform",
+                                       "RenderShiftedBox",
+                                       "RenderPadding",
+                                       "RenderAligningShiftedBox",
+                                       "RenderPositionedBox",
+                                       "OverflowBoxFit",
+                                       "RenderConstrainedOverflowBox",
+                                       "RenderConstraintsTransformBox",
+                                       "RenderSizedOverflowBox",
+                                       "RenderFractionallySizedOverflowBox",
+                                       "SingleChildLayoutDelegate",
+                                       "RenderCustomSingleChildLayoutBox",
+                                       "RenderBaseline"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/sliver.dart",
+                       "library":  "package:flutter/src/rendering/sliver.dart",
+                       "symbols":  [
+                                       "ItemExtentBuilder",
+                                       "SliverLayoutDimensions",
+                                       "GrowthDirection",
+                                       "applyGrowthDirectionToAxisDirection",
+                                       "applyGrowthDirectionToScrollDirection",
+                                       "SliverConstraints",
+                                       "SliverGeometry",
+                                       "SliverHitTest",
+                                       "SliverHitTestResult",
+                                       "SliverHitTestEntry",
+                                       "SliverLogicalParentData",
+                                       "SliverLogicalContainerParentData",
+                                       "SliverPhysicalParentData",
+                                       "SliverPhysicalContainerParentData",
+                                       "_debugCompareFloats",
+                                       "RenderSliver",
+                                       "RenderSliverHelpers",
+                                       "RenderSliverSingleBoxAdapter",
+                                       "RenderSliverToBoxAdapter"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/sliver_fill.dart",
+                       "library":  "package:flutter/src/rendering/sliver_fill.dart",
+                       "symbols":  [
+                                       "RenderSliverFillViewport",
+                                       "RenderSliverFillRemainingWithScrollable",
+                                       "RenderSliverFillRemaining",
+                                       "RenderSliverFillRemainingAndOverscroll"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/sliver_fixed_extent_list.dart",
+                       "library":  "package:flutter/src/rendering/sliver_fixed_extent_list.dart",
+                       "symbols":  [
+                                       "RenderSliverFixedExtentBoxAdaptor",
+                                       "RenderSliverFixedExtentList",
+                                       "RenderSliverVariedExtentList"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/sliver_grid.dart",
+                       "library":  "package:flutter/src/rendering/sliver_grid.dart",
+                       "symbols":  [
+                                       "SliverGridGeometry",
+                                       "SliverGridLayout",
+                                       "SliverGridRegularTileLayout",
+                                       "SliverGridDelegate",
+                                       "SliverGridDelegateWithFixedCrossAxisCount",
+                                       "SliverGridDelegateWithMaxCrossAxisExtent",
+                                       "SliverGridParentData",
+                                       "RenderSliverGrid"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/sliver_group.dart",
+                       "library":  "package:flutter/src/rendering/sliver_group.dart",
+                       "symbols":  [
+                                       "RenderSliverCrossAxisGroup",
+                                       "_assertOutOfExtent",
+                                       "RenderSliverMainAxisGroup"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/sliver_list.dart",
+                       "library":  "package:flutter/src/rendering/sliver_list.dart",
+                       "symbols":  [
+                                       "RenderSliverList"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/sliver_multi_box_adaptor.dart",
+                       "library":  "package:flutter/src/rendering/sliver_multi_box_adaptor.dart",
+                       "symbols":  [
+                                       "RenderSliverBoxChildManager",
+                                       "KeepAliveParentDataMixin",
+                                       "RenderSliverWithKeepAliveMixin",
+                                       "SliverMultiBoxAdaptorParentData",
+                                       "RenderSliverMultiBoxAdaptor"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/sliver_padding.dart",
+                       "library":  "package:flutter/src/rendering/sliver_padding.dart",
+                       "symbols":  [
+                                       "RenderSliverEdgeInsetsPadding",
+                                       "RenderSliverPadding"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/sliver_persistent_header.dart",
+                       "library":  "package:flutter/src/rendering/sliver_persistent_header.dart",
+                       "symbols":  [
+                                       "_trim",
+                                       "OverScrollHeaderStretchConfiguration",
+                                       "PersistentHeaderShowOnScreenConfiguration",
+                                       "RenderSliverPersistentHeader",
+                                       "RenderSliverScrollingPersistentHeader",
+                                       "RenderSliverPinnedPersistentHeader",
+                                       "FloatingHeaderSnapConfiguration",
+                                       "RenderSliverFloatingPersistentHeader",
+                                       "RenderSliverFloatingPinnedPersistentHeader"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/sliver_tree.dart",
+                       "library":  "package:flutter/src/rendering/sliver_tree.dart",
+                       "symbols":  [
+                                       "TreeSliverNodesAnimation",
+                                       "TreeSliverNodeParentData",
+                                       "TreeSliverIndentationType",
+                                       "_PaintSegment",
+                                       "RenderTreeSliver"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/stack.dart",
+                       "library":  "package:flutter/src/rendering/stack.dart",
+                       "symbols":  [
+                                       "RelativeRect",
+                                       "StackParentData",
+                                       "StackFit",
+                                       "RenderStack",
+                                       "RenderIndexedStack"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/table.dart",
+                       "library":  "package:flutter/src/rendering/table.dart",
+                       "symbols":  [
+                                       "TableCellParentData",
+                                       "TableColumnWidth",
+                                       "IntrinsicColumnWidth",
+                                       "FixedColumnWidth",
+                                       "FractionColumnWidth",
+                                       "FlexColumnWidth",
+                                       "MaxColumnWidth",
+                                       "MinColumnWidth",
+                                       "TableCellVerticalAlignment",
+                                       "RenderTable",
+                                       "_Index"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/table_border.dart",
+                       "library":  "package:flutter/src/rendering/table_border.dart",
+                       "symbols":  [
+                                       "TableBorder"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/texture.dart",
+                       "library":  "package:flutter/src/rendering/texture.dart",
+                       "symbols":  [
+                                       "TextureBox"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/tweens.dart",
+                       "library":  "package:flutter/src/rendering/tweens.dart",
+                       "symbols":  [
+                                       "FractionalOffsetTween",
+                                       "AlignmentTween",
+                                       "AlignmentGeometryTween"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/view.dart",
+                       "library":  "package:flutter/src/rendering/view.dart",
+                       "symbols":  [
+                                       "ViewConfiguration",
+                                       "RenderView",
+                                       "DebugPaintCallback"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/viewport.dart",
+                       "library":  "package:flutter/src/rendering/viewport.dart",
+                       "symbols":  [
+                                       "ScrollCacheExtent",
+                                       "_PixelScrollCacheExtent",
+                                       "_ViewportScrollCacheExtent",
+                                       "CacheExtentStyle",
+                                       "SliverPaintOrder",
+                                       "RenderAbstractViewport",
+                                       "RevealedOffset",
+                                       "RenderViewportBase",
+                                       "RenderViewport",
+                                       "RenderShrinkWrappingViewport"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/viewport_offset.dart",
+                       "library":  "package:flutter/src/rendering/viewport_offset.dart",
+                       "symbols":  [
+                                       "ScrollDirection",
+                                       "flipScrollDirection",
+                                       "ViewportOffset",
+                                       "_FixedViewportOffset"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/rendering/wrap.dart",
+                       "library":  "package:flutter/src/rendering/wrap.dart",
+                       "symbols":  [
+                                       "_NextChild",
+                                       "_PositionChild",
+                                       "_GetChildSize",
+                                       "_AxisSize",
+                                       "WrapAlignment",
+                                       "WrapCrossAlignment",
+                                       "_RunMetrics",
+                                       "WrapParentData",
+                                       "RenderWrap"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/semantics/binding.dart",
+                       "library":  "package:flutter/src/semantics/binding.dart",
+                       "symbols":  [
+                                       "SemanticsBinding",
+                                       "SemanticsHandle"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/semantics/debug.dart",
+                       "library":  "package:flutter/src/semantics/debug.dart",
+                       "symbols":  [
+                                       "debugSemanticsDisableAnimations"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/semantics/semantics.dart",
+                       "library":  "package:flutter/src/semantics/semantics.dart",
+                       "symbols":  [
+                                       "SemanticsNodeVisitor",
+                                       "MoveCursorHandler",
+                                       "SetSelectionHandler",
+                                       "SetTextHandler",
+                                       "ScrollToOffsetHandler",
+                                       "SemanticsActionHandler",
+                                       "SemanticsUpdateCallback",
+                                       "ChildSemanticsConfigurationsDelegate",
+                                       "AccessibilityFocusBlockType",
+                                       "_kUnblockedUserActions",
+                                       "_DebugSemanticsRoleChecks",
+                                       "SemanticsTag",
+                                       "ChildSemanticsConfigurationsResult",
+                                       "ChildSemanticsConfigurationsResultBuilder",
+                                       "CustomSemanticsAction",
+                                       "AttributedString",
+                                       "AttributedStringProperty",
+                                       "_LabelPart",
+                                       "SemanticsLabelBuilder",
+                                       "SemanticsData",
+                                       "_SemanticsDiagnosticableNode",
+                                       "SemanticsHintOverrides",
+                                       "SemanticsProperties",
+                                       "debugResetSemanticsIdCounter",
+                                       "SemanticsNode",
+                                       "_BoxEdge",
+                                       "_SemanticsSortGroup",
+                                       "_pointInParentCoordinates",
+                                       "_childrenInDefaultOrder",
+                                       "_TraversalSortNode",
+                                       "SemanticsOwner",
+                                       "SemanticsConfiguration",
+                                       "DebugSemanticsDumpOrder",
+                                       "_concatAttributedString",
+                                       "SemanticsSortKey",
+                                       "OrdinalSortKey",
+                                       "_mergeHeadingLevels",
+                                       "_tristateFromBoolOrNull",
+                                       "_toBitMask"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/semantics/semantics_event.dart",
+                       "library":  "package:flutter/src/semantics/semantics_event.dart",
+                       "symbols":  [
+                                       "Assertiveness",
+                                       "SemanticsEvent",
+                                       "AnnounceSemanticsEvent",
+                                       "TooltipSemanticsEvent",
+                                       "LongPressSemanticsEvent",
+                                       "TapSemanticEvent",
+                                       "FocusSemanticEvent"
+                                   ]
+                   },
+                   {
+                       "path":  "../../../flutter-master/packages/flutter/lib/src/semantics/semantics_service.dart",
+                       "library":  "package:flutter/src/semantics/semantics_service.dart",
+                       "symbols":  [
+                                       "SemanticsService"
+                                   ]
+                   }
+               ]
+}

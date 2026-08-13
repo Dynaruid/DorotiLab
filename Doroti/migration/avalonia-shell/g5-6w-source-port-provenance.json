@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "doroti.g5-6w-source-port-provenance/v1",
+  "rid": "win-x64",
+  "upstreamRepository": "https://github.com/AvaloniaUI/Avalonia",
+  "upstreamRevision": "git:f159423f691946e713f454447a780d4677d8a0d2",
+  "license": "licence.md",
+  "inputs": [
+    {
+      "path": "migration/avalonia-shell/a1-source-port-provenance.json",
+      "sha256": "dd4b93c1b82ef11e66e0be91a354e4c77055aa0ceaefaf54f5e119e2cc2bef9f",
+      "closure": "Win32 lifecycle, dispatcher, monitor/DPI, cursor, clipboard, IMM32 input and UI Automation"
+    },
+    {
+      "path": "migration/avalonia-shell/a2-source-port-provenance.json",
+      "sha256": "16f815dbed4c6710d230e3b2b0f2817a2501ba3efc911d95a05cced1d6fa52c5",
+      "closure": "render timer, strict WGL/OpenGL Skia surfaces, frame ACK and recovery"
+    },
+    {
+      "path": "migration/vendor/avalonia-platform/provenance.json",
+      "sha256": "19be53ff93fac7f1be8fbf2e68bb6c6e5adda42adbaf8487e4e2e9f69b91b1ab",
+      "closure": "reviewed vendor surface adaptation and patch ownership"
+    }
+  ],
+  "releasePolicy": {
+    "officialAvaloniaBinaryDependencies": 0,
+    "sourceSelection": "migration/avalonia-shell/port-selection.json",
+    "physicalValidation": "notVerified until G5-8 DorotiDemoApp"
+  }
+}

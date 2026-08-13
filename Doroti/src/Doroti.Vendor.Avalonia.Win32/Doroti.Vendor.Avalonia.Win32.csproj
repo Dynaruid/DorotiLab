@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Vendor.Avalonia.Win32</AssemblyName>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Doroti.Shell.Core\Doroti.Shell.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Doroti.Host.Desktop" />
+  </ItemGroup>
+</Project>

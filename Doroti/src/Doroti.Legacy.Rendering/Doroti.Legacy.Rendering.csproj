@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Legacy.Rendering</AssemblyName>
+    <IsDorotiProduct>false</IsDorotiProduct>
+    <IsPackable>false</IsPackable>
+    <Description>Pre-G5 Flutter layout, painting, and semantics compatibility owner retained outside the product graph until G5-3.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Doroti.Rendering\BoxConstraints.cs" Link="BoxConstraints.cs" />
+    <Compile Include="..\Doroti.Rendering\PaintingContext.cs" Link="PaintingContext.cs" />
+    <Compile Include="..\Doroti.Rendering\RenderBoxes.cs" Link="RenderBoxes.cs" />
+    <Compile Include="..\Doroti.Rendering\RenderTree.cs" Link="RenderTree.cs" />
+    <Compile Include="..\Doroti.Rendering\Semantics.cs" Link="Semantics.cs" />
+    <ProjectReference Include="..\Doroti.Composition\Doroti.Composition.csproj" />
+    <ProjectReference Include="..\Doroti.Core\Doroti.Core.csproj" />
+    <ProjectReference Include="..\Doroti.Graphics\Doroti.Graphics.csproj" />
+    <ProjectReference Include="..\Doroti.Platform\Doroti.Platform.csproj" />
+    <ProjectReference Include="..\Doroti.Rendering\Doroti.Rendering.csproj" />
+  </ItemGroup>
+</Project>

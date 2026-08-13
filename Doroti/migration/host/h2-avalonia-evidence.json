@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "doroti.h2-avalonia-evidence/v1",
+  "status": "verified",
+  "verifiedAt": "2026-08-02",
+  "environment": {
+    "operatingSystem": "Microsoft Windows NT 10.0.26200.0",
+    "framework": "10.0.8",
+    "avalonia": "12.1.0"
+  },
+  "command": "eng/verify-h2-avalonia.ps1",
+  "fixture": "migration/host/h2-frame-fixture.json",
+  "frameTraceSchema": "doroti.frame-trace/v1",
+  "modes": [
+    {
+      "id": "hardware",
+      "strictAvaloniaRenderingMode": "angle-egl",
+      "status": "pass",
+      "readbackPixelSize": [948, 622],
+      "readbackSha256": "f28eefc404c3968166a99afec9e5d291740951f4024639e73f01ae4f785ddb86",
+      "screenshotSha256": "336ee5471899e60bc869a272ddbe262d64c8fdeeeae32a7fb2a1416bcbb4431c",
+      "queueHighWatermark": 2,
+      "supersededFrames": 1,
+      "ackStatuses": ["presented", "stale", "superseded", "failed"],
+      "resourceCycles": 5,
+      "activeResourceLeases": 0,
+      "activeGpuResources": 0,
+      "activeAvaloniaBitmaps": 0,
+      "surfaceThreadOwnership": "pass",
+      "uploadThreadOwnership": "pass",
+      "runtimeReport": "artifacts/h2-avalonia/hardware/runtime-report.json",
+      "frameTrace": "artifacts/h2-avalonia/hardware/frame-trace.json",
+      "hostTrace": "artifacts/h2-avalonia/hardware/avalonia-host-trace.json",
+      "screenshot": "artifacts/h2-avalonia/hardware/display-list-scene.png"
+    },
+    {
+      "id": "software",
+      "strictAvaloniaRenderingMode": "software",
+      "status": "pass",
+      "readbackPixelSize": [948, 622],
+      "readbackSha256": "f28eefc404c3968166a99afec9e5d291740951f4024639e73f01ae4f785ddb86",
+      "screenshotSha256": "336ee5471899e60bc869a272ddbe262d64c8fdeeeae32a7fb2a1416bcbb4431c",
+      "queueHighWatermark": 2,
+      "supersededFrames": 1,
+      "ackStatuses": ["presented", "stale", "superseded", "failed"],
+      "resourceCycles": 5,
+      "activeResourceLeases": 0,
+      "activeGpuResources": 0,
+      "activeAvaloniaBitmaps": 0,
+      "surfaceThreadOwnership": "pass",
+      "uploadThreadOwnership": "pass",
+      "runtimeReport": "artifacts/h2-avalonia/software/runtime-report.json",
+      "frameTrace": "artifacts/h2-avalonia/software/frame-trace.json",
+      "hostTrace": "artifacts/h2-avalonia/software/avalonia-host-trace.json",
+      "screenshot": "artifacts/h2-avalonia/software/display-list-scene.png"
+    }
+  ],
+  "hardwareSoftwareAverageByteDelta": 0.0,
+  "hardwareSoftwareAverageByteDeltaTolerance": 0.0,
+  "targets": [
+    { "id": "windows", "status": "verified" },
+    { "id": "linux", "status": "not-verified" },
+    { "id": "macos", "status": "not-verified" }
+  ],
+  "limitations": [
+    "Linux and macOS reuse the same fixture and sample but have not been executed on real targets.",
+    "Input, IME, clipboard and accessibility remain H3 work."
+  ]
+}

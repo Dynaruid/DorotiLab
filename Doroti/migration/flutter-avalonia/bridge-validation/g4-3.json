@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "doroti.g5-0-truth-reset/v2",
+  "milestone": "G4-3",
+  "previousBaseline": {
+    "artifactSchema": "doroti.g4-scheduler-services-evidence/v1",
+    "claimedSuccess": true,
+    "knownApiDrift": {
+      "missing": 205,
+      "extra": 24
+    }
+  },
+  "currentRun": {
+    "capturedAtUtc": "2026-08-11T15:54:20.7995932+00:00",
+    "timeoutMilliseconds": 900000,
+    "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+    "sourceInventory": {
+      "libraries": 58,
+      "declarations": 287,
+      "members": 2426
+    },
+    "candidate": {
+      "status": "verified",
+      "generatedProductSources": 0
+    },
+    "aggregate": {
+      "status": "verified",
+      "warnings": 0,
+      "errors": 0
+    },
+    "promotion": {
+      "status": "verified",
+      "missingCount": 0,
+      "extraCount": 0,
+      "missingApi": [],
+      "extraApi": [],
+      "dispositions": 287,
+      "unowned": 0
+    },
+    "productBehavior": {
+      "status": "verified",
+      "trace": [
+        "frame:transient",
+        "frame:persistent",
+        "frame:post",
+        "frame:ticker-complete-cancel-mute-resume",
+        "metrics:1:2",
+        "metrics:2:3",
+        "input:pointer",
+        "input:key-focus-text-ime",
+        "service:codec-channel-clipboard-cursor"
+      ],
+      "failures": []
+    },
+    "nativeEvidence": {
+      "status": "not-verified",
+      "reasons": [
+        "No physical input device or target-machine native run is part of G5-0."
+      ]
+    }
+  }
+}

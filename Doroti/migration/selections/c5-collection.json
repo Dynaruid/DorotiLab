@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "doroti.converter-selection/v4",
+  "converterVersion": "2.0.0",
+  "migrationIrVersion": "2.0.0",
+  "generationMode": "nuget-generated-package",
+  "compatibilityProfile": "flutter-aware-c5",
+  "outputNamespace": "Doroti.Generated.Collection",
+  "outputAssemblyName": "Doroti.Generated.Collection",
+  "flutterBaseline": "../flutter-compat/baseline.json",
+  "packageRoot": "../fixtures/c5_package_pilots",
+  "packageId": "Doroti.Generated.Collection",
+  "packageVersion": "0.2.0-beta",
+  "packageTier": "A",
+  "sourcePackage": "collection",
+  "sourceVersion": "1.19.1",
+  "sourceLicense": "BSD-3-Clause",
+  "inputs": [
+    {
+      "path": "package:collection/src/utils.dart",
+      "symbols": ["identity"]
+    }
+  ]
+}

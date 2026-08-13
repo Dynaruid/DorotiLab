@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Flutter.Runtime</AssemblyName>
+    <PackageId>Doroti.Flutter.Runtime</PackageId>
+    <IsDorotiProduct>true</IsDorotiProduct>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MaterialColorUtilities" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,218 @@
+{
+  "schemaVersion": "doroti.g6-pointer-interaction-evidence/v1",
+  "milestone": "G6-5R-I",
+  "capturedAtUtc": "2026-08-13T15:54:50.307382+00:00",
+  "status": "verified-windows-x64-strict-gpu-native-input",
+  "fixture": {
+    "locale": "en-US",
+    "window": {
+      "width": 900,
+      "height": 720
+    },
+    "nativeScale": {
+      "x": 2,
+      "y": 2
+    },
+    "month": "2026-08",
+    "initialDate": "2026-08-13",
+    "activeDate": "2026-08-14",
+    "disabledDate": "2026-08-15"
+  },
+  "causalSteps": [
+    {
+      "causalId": "p0-outside",
+      "coordinate": {
+        "x": 20,
+        "y": 690
+      },
+      "pointerPacketsBefore": 0,
+      "pointerPacketsAfter": 3,
+      "cursorRequests": 1,
+      "cursor": "basic",
+      "callbackCount": 0,
+      "selectedDate": "2026-08-13",
+      "screenshot": "C:/Users/parti/Labo/DorotiLab/Doroti/artifacts/g6-pointer-interaction/win-x64/p0-outside.png",
+      "screenshotSha256": "384d3ba7c3013b24603d4df97929178d053e8909275d890828ee55df6392a667"
+    },
+    {
+      "causalId": "p1-active-hover",
+      "coordinate": {
+        "x": 536,
+        "y": 390
+      },
+      "pointerPacketsBefore": 3,
+      "pointerPacketsAfter": 5,
+      "cursorRequests": 1,
+      "cursor": "basic",
+      "callbackCount": 0,
+      "selectedDate": "2026-08-13",
+      "screenshot": "C:/Users/parti/Labo/DorotiLab/Doroti/artifacts/g6-pointer-interaction/win-x64/p1-active-hover.png",
+      "screenshotSha256": "6bcbaf0b5e2021ad3e90c8fd8ab54c71a2284bccfe9ca4052ecf9e486282cce9"
+    },
+    {
+      "causalId": "p1b-active-leave",
+      "coordinate": {
+        "x": 20,
+        "y": 690
+      },
+      "pointerPacketsBefore": 5,
+      "pointerPacketsAfter": 7,
+      "cursorRequests": 1,
+      "cursor": "basic",
+      "callbackCount": 0,
+      "selectedDate": "2026-08-13",
+      "screenshot": "C:/Users/parti/Labo/DorotiLab/Doroti/artifacts/g6-pointer-interaction/win-x64/p1b-active-leave.png",
+      "screenshotSha256": "384d3ba7c3013b24603d4df97929178d053e8909275d890828ee55df6392a667"
+    },
+    {
+      "causalId": "p1c-active-reenter",
+      "coordinate": {
+        "x": 536,
+        "y": 390
+      },
+      "pointerPacketsBefore": 7,
+      "pointerPacketsAfter": 9,
+      "cursorRequests": 1,
+      "cursor": "basic",
+      "callbackCount": 0,
+      "selectedDate": "2026-08-13",
+      "screenshot": "C:/Users/parti/Labo/DorotiLab/Doroti/artifacts/g6-pointer-interaction/win-x64/p1c-active-reenter.png",
+      "screenshotSha256": "384d3ba7c3013b24603d4df97929178d053e8909275d890828ee55df6392a667"
+    },
+    {
+      "causalId": "p2-active-down-up",
+      "coordinate": {
+        "x": 536,
+        "y": 390
+      },
+      "pointerPacketsBefore": 9,
+      "pointerPacketsAfter": 12,
+      "cursorRequests": 1,
+      "cursor": "basic",
+      "callbackCount": 1,
+      "selectedDate": "2026-08-14",
+      "screenshot": "C:/Users/parti/Labo/DorotiLab/Doroti/artifacts/g6-pointer-interaction/win-x64/p2-active-down-up.png",
+      "screenshotSha256": "554e1ede811793185baca1a6fb3f7870cffa33b48e836c054e92078552dfa3b1"
+    },
+    {
+      "causalId": "p3-disabled-hover",
+      "coordinate": {
+        "x": 584,
+        "y": 390
+      },
+      "pointerPacketsBefore": 12,
+      "pointerPacketsAfter": 13,
+      "cursorRequests": 1,
+      "cursor": "basic",
+      "callbackCount": 1,
+      "selectedDate": "2026-08-14",
+      "screenshot": "C:/Users/parti/Labo/DorotiLab/Doroti/artifacts/g6-pointer-interaction/win-x64/p3-disabled-hover.png",
+      "screenshotSha256": "0fab6f4a34014372806a7f6b32a7863fcc91c46e98ba882225675e2cd72ef14e"
+    },
+    {
+      "causalId": "p4-disabled-down-up",
+      "coordinate": {
+        "x": 584,
+        "y": 390
+      },
+      "pointerPacketsBefore": 13,
+      "pointerPacketsAfter": 16,
+      "cursorRequests": 1,
+      "cursor": "basic",
+      "callbackCount": 1,
+      "selectedDate": "2026-08-14",
+      "screenshot": "C:/Users/parti/Labo/DorotiLab/Doroti/artifacts/g6-pointer-interaction/win-x64/p4-disabled-down-up.png",
+      "screenshotSha256": "3cb2f33a43e3e739a2c0e9f5e06cfd80eff2e31633f3be6d138fdb84d19735a0"
+    },
+    {
+      "causalId": "p5-leave",
+      "coordinate": {
+        "x": 20,
+        "y": 690
+      },
+      "pointerPacketsBefore": 16,
+      "pointerPacketsAfter": 18,
+      "cursorRequests": 1,
+      "cursor": "basic",
+      "callbackCount": 1,
+      "selectedDate": "2026-08-14",
+      "screenshot": "C:/Users/parti/Labo/DorotiLab/Doroti/artifacts/g6-pointer-interaction/win-x64/p5-leave.png",
+      "screenshotSha256": "343c709871d2c6e95dc43f8ce49850e1ac5df9b81f03ca1a56708f36850e534d"
+    }
+  ],
+  "result": {
+    "directCallbackInvocationCount": 0,
+    "callbackCount": 1,
+    "selectedDate": "2026-08-14",
+    "selectedSemantic": {
+      "id": 55,
+      "label": "14, Friday, August 14, 2026",
+      "value": "",
+      "state": 5
+    },
+    "activeHoverChangedPixels": 5430,
+    "activeHoverMaxChannelDelta": 15,
+    "selectedChangedPixels": 11399,
+    "leaveChangedPixels": 5430,
+    "stress": {
+      "iterations": 100,
+      "mouseEnter": 100,
+      "mouseExit": 100,
+      "pointerDown": 100,
+      "pointerUp": 100,
+      "callbackDelta": 0,
+      "stuckHoverOrCapture": 0
+    },
+    "cursor": {
+      "requests": 1,
+      "lastRequested": 0
+    },
+    "nativeInput": {
+      "capabilities": {
+        "mouse": true,
+        "touch": false,
+        "pen": false,
+        "wheel": true,
+        "pointerCapture": true,
+        "physicalKeys": true,
+        "textInput": true
+      },
+      "pointerPackets": 718,
+      "keyPackets": 0,
+      "focusChanges": 2,
+      "metricsChanges": 2
+    },
+    "frame": {
+      "submitted": 429,
+      "presented": 398,
+      "superseded": 30,
+      "stale": 0,
+      "failed": 0,
+      "cancelled": 0,
+      "queueDepth": 1,
+      "queueHighWatermark": 2,
+      "activeContexts": 1,
+      "activeFrames": 1,
+      "surfaceGeneration": 1,
+      "recoveryCount": 0,
+      "softwareFallbackUsed": false,
+      "backendIdentity": "skia-wgl-opengl-gpu"
+    },
+    "resourceClosure": {
+      "activeWindows": 0,
+      "windowsCreated": 1,
+      "windowsReleased": 1,
+      "activeOpenGlContexts": 0,
+      "openGlContextsCreated": 1,
+      "openGlContextsReleased": 1,
+      "isBalanced": true
+    }
+  },
+  "boundaries": {
+    "automatedWindowsX64": "verified",
+    "physical": "notVerified",
+    "avaloniaBackend": "notVerified",
+    "linux": "notVerified",
+    "macOS": "notVerified"
+  }
+}

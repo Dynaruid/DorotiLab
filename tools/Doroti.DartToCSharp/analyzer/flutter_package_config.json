@@ -1,0 +1,29 @@
+{
+  "configVersion": 2,
+  "packages": [
+    {
+      "name": "flutter",
+      "rootUri": "../../../flutter-master/packages/flutter",
+      "packageUri": "lib/",
+      "languageVersion": "3.11"
+    },
+    {
+      "name": "meta",
+      "rootUri": "./stubs/meta",
+      "packageUri": "lib/",
+      "languageVersion": "3.11"
+    },
+    {
+      "name": "material_color_utilities",
+      "rootUri": "./stubs/material_color_utilities",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "sky_engine",
+      "rootUri": "./stubs/sky_engine",
+      "packageUri": "lib/",
+      "languageVersion": "3.11"
+    }
+  ]
+}

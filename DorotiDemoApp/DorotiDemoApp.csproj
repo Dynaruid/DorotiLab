@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>14.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AssemblyName>DorotiDemoApp</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Doroti\src\Doroti.Flutter.Hosting\Doroti.Flutter.Hosting.csproj" />
+    <ProjectReference Include="..\Doroti\src\Doroti.Flutter.Framework.Widgets\Doroti.Flutter.Framework.Widgets.csproj" />
+    <ProjectReference Include="..\Doroti\src\Doroti.Flutter.Framework.Material\Doroti.Flutter.Framework.Material.csproj" />
+    <ProjectReference Include="..\Doroti\src\Doroti.Target.Windows.win-x64\Doroti.Target.Windows.win-x64.csproj" />
+  </ItemGroup>
+</Project>

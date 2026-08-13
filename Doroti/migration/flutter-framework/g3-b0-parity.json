@@ -1,0 +1,98 @@
+{
+  "schemaVersion": "doroti.g3-b0-parity/v1",
+  "milestone": "G3-B0",
+  "pilot": true,
+  "notes": [
+    "Flutter public API behavior owner is Doroti.Flutter.Framework.Foundation (reviewed .cs).",
+    "Doroti.Core Listenable/ObserverList/FoundationCollections remain host compatibility adapters because Core cannot reference Foundation without a project cycle (Foundation→Runtime→Platform→Core).",
+    "Doroti.Widgets Key/GlobalKey hierarchy remains the widget-tree adapter; Foundation Key/ValueKey/UniqueKey are the Flutter API owners.",
+    "FlutterError/diagnostics in assertions.dart are out of pilot scope and stay deferred in Core/Runtime ports."
+  ],
+  "symbols": [
+    {
+      "elementId": "package:flutter/src/foundation/key.dart#Key",
+      "disposition": "reviewed-generated-cs",
+      "flutterOwner": "src/Doroti.Flutter.Framework.Foundation/key.cs",
+      "previousOwner": "src/Doroti.Widgets/WidgetContracts.cs",
+      "hostAdapter": "src/Doroti.Widgets/WidgetContracts.cs",
+      "duplicateFullBehaviorOwner": false
+    },
+    {
+      "elementId": "package:flutter/src/foundation/key.dart#LocalKey",
+      "disposition": "reviewed-generated-cs",
+      "flutterOwner": "src/Doroti.Flutter.Framework.Foundation/key.cs",
+      "previousOwner": "src/Doroti.Widgets/WidgetContracts.cs",
+      "hostAdapter": "src/Doroti.Widgets/WidgetContracts.cs",
+      "duplicateFullBehaviorOwner": false
+    },
+    {
+      "elementId": "package:flutter/src/foundation/key.dart#UniqueKey",
+      "disposition": "reviewed-generated-cs",
+      "flutterOwner": "src/Doroti.Flutter.Framework.Foundation/key.cs",
+      "previousOwner": "src/Doroti.Widgets/WidgetContracts.cs",
+      "hostAdapter": "src/Doroti.Widgets/WidgetContracts.cs",
+      "duplicateFullBehaviorOwner": false
+    },
+    {
+      "elementId": "package:flutter/src/foundation/key.dart#ValueKey",
+      "disposition": "reviewed-generated-cs",
+      "flutterOwner": "src/Doroti.Flutter.Framework.Foundation/key.cs",
+      "previousOwner": "src/Doroti.Widgets/WidgetContracts.cs",
+      "hostAdapter": "src/Doroti.Widgets/WidgetContracts.cs",
+      "duplicateFullBehaviorOwner": false
+    },
+    {
+      "elementId": "package:flutter/src/foundation/change_notifier.dart#Listenable",
+      "disposition": "reviewed-generated-cs",
+      "flutterOwner": "src/Doroti.Flutter.Framework.Foundation/change_notifier.cs",
+      "previousOwner": "src/Doroti.Core/Listenable.cs",
+      "hostAdapter": "src/Doroti.Core/Listenable.cs",
+      "duplicateFullBehaviorOwner": false,
+      "hostAdapterRole": "compatibility-shim-pending-layering-fix"
+    },
+    {
+      "elementId": "package:flutter/src/foundation/change_notifier.dart#ChangeNotifier",
+      "disposition": "reviewed-generated-cs",
+      "flutterOwner": "src/Doroti.Flutter.Framework.Foundation/change_notifier.cs",
+      "previousOwner": "src/Doroti.Core/Listenable.cs",
+      "hostAdapter": "src/Doroti.Core/Listenable.cs",
+      "duplicateFullBehaviorOwner": false,
+      "hostAdapterRole": "compatibility-shim-pending-layering-fix"
+    },
+    {
+      "elementId": "package:flutter/src/foundation/change_notifier.dart#ValueNotifier",
+      "disposition": "reviewed-generated-cs",
+      "flutterOwner": "src/Doroti.Flutter.Framework.Foundation/change_notifier.cs",
+      "previousOwner": "src/Doroti.Core/Listenable.cs",
+      "hostAdapter": "src/Doroti.Core/Listenable.cs",
+      "duplicateFullBehaviorOwner": false,
+      "hostAdapterRole": "compatibility-shim-pending-layering-fix"
+    },
+    {
+      "elementId": "package:flutter/src/foundation/observer_list.dart#ObserverList",
+      "disposition": "reviewed-generated-cs",
+      "flutterOwner": "src/Doroti.Flutter.Framework.Foundation/observer_list.cs",
+      "previousOwner": "src/Doroti.Core/FoundationCollections.cs",
+      "hostAdapter": "src/Doroti.Core/FoundationCollections.cs",
+      "duplicateFullBehaviorOwner": false,
+      "hostAdapterRole": "compatibility-shim-pending-layering-fix"
+    },
+    {
+      "elementId": "package:flutter/src/foundation/collections.dart#setEquals",
+      "disposition": "reviewed-generated-cs",
+      "flutterOwner": "src/Doroti.Flutter.Framework.Foundation/collections.cs",
+      "previousOwner": "src/Doroti.Core/FoundationCollections.cs",
+      "hostAdapter": "src/Doroti.Core/FoundationCollections.cs",
+      "duplicateFullBehaviorOwner": false,
+      "hostAdapterRole": "compatibility-shim-pending-layering-fix"
+    },
+    {
+      "elementId": "package:flutter/src/foundation/assertions.dart#FlutterError",
+      "disposition": "deferred",
+      "flutterOwner": null,
+      "runtimeBinding": "src/Doroti.Flutter.Runtime/FoundationRuntimePorts.cs",
+      "previousOwner": "src/Doroti.Core/FoundationDiagnostics.cs",
+      "reason": "assertions.dart not in G3-B0 pilot selection"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "doroti.behavior-fixture/v1",
+  "flutterGitRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "cases": [
+    {
+      "id": "constraints.deflate",
+      "operation": "deflate-constrain",
+      "constraints": { "minWidth": 20, "maxWidth": 100, "minHeight": 10, "maxHeight": 80 },
+      "width": 200,
+      "height": 4,
+      "insetLeft": 5,
+      "insetTop": 2,
+      "insetRight": 7,
+      "insetBottom": 4
+    },
+    {
+      "id": "constraints.loosen",
+      "operation": "loosen-constrain",
+      "constraints": { "minWidth": 20, "maxWidth": 100, "minHeight": 10, "maxHeight": 80 },
+      "width": 2,
+      "height": 90
+    },
+    {
+      "id": "constraints.normalize",
+      "operation": "constrain",
+      "constraints": { "minWidth": 20, "maxWidth": 100, "minHeight": 10, "maxHeight": 80 },
+      "width": 200,
+      "height": 4
+    },
+    {
+      "id": "constraints.tight",
+      "operation": "constrain",
+      "constraints": { "minWidth": 48, "maxWidth": 48, "minHeight": 24, "maxHeight": 24 },
+      "width": 8,
+      "height": 90
+    }
+  ]
+}

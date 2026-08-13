@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "doroti.application-plugins/v1",
+  "plugins": [
+    {
+      "id": "g55.echo",
+      "channel": "g55/echo",
+      "codec": "StandardMethodCodec",
+      "capabilityId": "plugin.g55.echo",
+      "nativePackages": [
+        {
+          "rid": "win-x64",
+          "packageId": "Doroti.Plugin.G55Echo.win-x64",
+          "version": "1.0.0-beta",
+          "abiVersion": "doroti.plugin-abi/v1",
+          "handlerType": "Doroti.Plugin.G55Echo.WinX64.EchoPluginHandler"
+        }
+      ]
+    }
+  ]
+}

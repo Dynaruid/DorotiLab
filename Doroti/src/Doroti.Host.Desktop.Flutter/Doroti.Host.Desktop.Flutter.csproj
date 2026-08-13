@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Host.Desktop.Flutter</AssemblyName>
+    <PackageId>Doroti.Host.Desktop.Flutter</PackageId>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Doroti.Backends.Skia\Doroti.Backends.Skia.csproj" />
+    <ProjectReference Include="..\Doroti.Composition\Doroti.Composition.csproj" />
+    <ProjectReference Include="..\Doroti.Core\Doroti.Core.csproj" />
+    <ProjectReference Include="..\Doroti.Engine\Doroti.Engine.csproj" />
+    <ProjectReference Include="..\Doroti.Flutter.Ui\Doroti.Flutter.Ui.csproj" />
+    <ProjectReference Include="..\Doroti.Flutter.Hosting\Doroti.Flutter.Hosting.csproj" />
+    <ProjectReference Include="..\Doroti.Graphics\Doroti.Graphics.csproj" />
+    <ProjectReference Include="..\Doroti.Host.Desktop\Doroti.Host.Desktop.csproj" />
+    <ProjectReference Include="..\Doroti.Platform\Doroti.Platform.csproj" />
+    <ProjectReference Include="..\Doroti.Rendering\Doroti.Rendering.csproj" />
+  </ItemGroup>
+</Project>

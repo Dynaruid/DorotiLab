@@ -1,0 +1,670 @@
+{
+  "schemaVersion": "doroti.g6-app-slices/v1",
+  "milestone": "G6-4",
+  "capturedAtUtc": "2026-08-13T10:18:45.1460930Z",
+  "status": "verified-windows-x64-strict-gpu",
+  "reference": {
+    "path": "Doroti/validation/Doroti.Validation.G6AppSlices/Resources/g6-reference-traces.json",
+    "sha256": "b583a1f718b1f2154afb69470b8816e4e3da26433800ff76fd289aac42e25efe"
+  },
+  "slices": [
+    {
+      "schemaVersion": "doroti.g6-app-slice-evidence/v1",
+      "milestone": "G6-4",
+      "slice": "N0",
+      "capturedAtUtc": "2026-08-13T19:18:23.189895+09:00",
+      "status": "verified-windows-x64-strict-gpu",
+      "reference": {
+        "schemaVersion": "doroti.g6-app-slice-reference/v1",
+        "expectedTrace": [
+          "push",
+          "pushNamed:/details",
+          "pop",
+          "transition",
+          "back",
+          "focusRestored"
+        ],
+        "actualTrace": [
+          "push",
+          "pushNamed:/details",
+          "pop",
+          "transition",
+          "back",
+          "focusRestored"
+        ],
+        "pass": true
+      },
+      "managed": {
+        "status": "verified",
+        "checks": [
+          "push",
+          "pushNamed:/details",
+          "pop",
+          "transition",
+          "back",
+          "focusRestored"
+        ]
+      },
+      "live": {
+        "nativeWindow": true,
+        "hwnd": "actual",
+        "backend": "skia-wgl-opengl-gpu",
+        "presented": 121,
+        "failed": 0,
+        "cancelled": 0,
+        "softwareFallback": false,
+        "semanticsNodes": 11,
+        "input": {
+          "capabilities": {
+            "mouse": true,
+            "touch": true,
+            "pen": false,
+            "wheel": true,
+            "pointerCapture": true,
+            "physicalKeys": true,
+            "textInput": true
+          },
+          "pointerPackets": 0,
+          "keyPackets": 0,
+          "focusChanges": 2,
+          "metricsChanges": 2
+        },
+        "interactionCount": 4,
+        "scrollOffset": -1,
+        "changedPixels": 1582997,
+        "state": "slice=N0;revision=6;toggle=True;text=initial;locale=en-US;lazy=0;scroll=-1",
+        "nativeInputTrace": [],
+        "externalAutomation": [],
+        "resourceClosure": {
+          "activeWindows": 0,
+          "windowsCreated": 1,
+          "windowsReleased": 1,
+          "activeOpenGlContexts": 0,
+          "openGlContextsCreated": 1,
+          "openGlContextsReleased": 1,
+          "isBalanced": true
+        }
+      },
+      "boundaries": {
+        "automatedNative": "verified-windows-x64",
+        "physicalIme": "notVerified",
+        "physicalAccessibility": "notVerified",
+        "linux": "notVerified",
+        "macOS": "notVerified",
+        "otherRids": "notVerified"
+      },
+      "unsupportedSilentSuccessCount": 0
+    },
+    {
+      "schemaVersion": "doroti.g6-app-slice-evidence/v1",
+      "milestone": "G6-4",
+      "slice": "O0",
+      "capturedAtUtc": "2026-08-13T19:18:29.0168958+09:00",
+      "status": "verified-windows-x64-strict-gpu",
+      "reference": {
+        "schemaVersion": "doroti.g6-app-slice-reference/v1",
+        "expectedTrace": [
+          "dialog",
+          "snackBar",
+          "tooltip",
+          "popupMenu",
+          "modalBottomSheet",
+          "persistentBottomSheet"
+        ],
+        "actualTrace": [
+          "dialog",
+          "snackBar",
+          "tooltip",
+          "popupMenu",
+          "modalBottomSheet",
+          "persistentBottomSheet"
+        ],
+        "pass": true
+      },
+      "managed": {
+        "status": "verified",
+        "checks": [
+          "dialog",
+          "snackBar",
+          "tooltip",
+          "popupMenu",
+          "modalBottomSheet",
+          "persistentBottomSheet"
+        ]
+      },
+      "live": {
+        "nativeWindow": true,
+        "hwnd": "actual",
+        "backend": "skia-wgl-opengl-gpu",
+        "presented": 173,
+        "failed": 0,
+        "cancelled": 0,
+        "softwareFallback": false,
+        "semanticsNodes": 14,
+        "input": {
+          "capabilities": {
+            "mouse": true,
+            "touch": true,
+            "pen": false,
+            "wheel": true,
+            "pointerCapture": true,
+            "physicalKeys": true,
+            "textInput": true
+          },
+          "pointerPackets": 0,
+          "keyPackets": 0,
+          "focusChanges": 2,
+          "metricsChanges": 2
+        },
+        "interactionCount": 9,
+        "scrollOffset": -1,
+        "changedPixels": 26501,
+        "state": "slice=O0;revision=10;toggle=False;text=initial;locale=en-US;lazy=0;scroll=-1",
+        "nativeInputTrace": [],
+        "externalAutomation": [],
+        "resourceClosure": {
+          "activeWindows": 0,
+          "windowsCreated": 1,
+          "windowsReleased": 1,
+          "activeOpenGlContexts": 0,
+          "openGlContextsCreated": 1,
+          "openGlContextsReleased": 1,
+          "isBalanced": true
+        }
+      },
+      "boundaries": {
+        "automatedNative": "verified-windows-x64",
+        "physicalIme": "notVerified",
+        "physicalAccessibility": "notVerified",
+        "linux": "notVerified",
+        "macOS": "notVerified",
+        "otherRids": "notVerified"
+      },
+      "unsupportedSilentSuccessCount": 0
+    },
+    {
+      "schemaVersion": "doroti.g6-app-slice-evidence/v1",
+      "milestone": "G6-4",
+      "slice": "F0",
+      "capturedAtUtc": "2026-08-13T19:18:31.9680075+09:00",
+      "status": "verified-windows-x64-strict-gpu",
+      "reference": {
+        "schemaVersion": "doroti.g6-app-slice-reference/v1",
+        "expectedTrace": [
+          "textField",
+          "formInvalid",
+          "formValid",
+          "selection",
+          "clipboard",
+          "keyboard",
+          "imeComposition"
+        ],
+        "actualTrace": [
+          "textField",
+          "formInvalid",
+          "formValid",
+          "selection",
+          "clipboard",
+          "keyboard",
+          "imeComposition"
+        ],
+        "pass": true
+      },
+      "managed": {
+        "status": "verified",
+        "text": "한글",
+        "selection": [
+          2,
+          2
+        ],
+        "composition": [
+          0,
+          2
+        ],
+        "clipboard": "verified-live-win32-round-trip-and-restored",
+        "physicalIme": "notVerified"
+      },
+      "live": {
+        "nativeWindow": true,
+        "hwnd": "actual",
+        "backend": "skia-wgl-opengl-gpu",
+        "presented": 37,
+        "failed": 0,
+        "cancelled": 0,
+        "softwareFallback": false,
+        "semanticsNodes": 11,
+        "input": {
+          "capabilities": {
+            "mouse": true,
+            "touch": true,
+            "pen": false,
+            "wheel": true,
+            "pointerCapture": true,
+            "physicalKeys": true,
+            "textInput": true
+          },
+          "pointerPackets": 5,
+          "keyPackets": 2,
+          "focusChanges": 2,
+          "metricsChanges": 2
+        },
+        "interactionCount": 3,
+        "scrollOffset": -1,
+        "changedPixels": 12750,
+        "state": "slice=F0;revision=6;toggle=False;text=Doroti 한글한글\t;locale=en-US;lazy=0;scroll=-1",
+        "nativeInputTrace": [
+          "win32-pointer-focus",
+          "win32-wm-char:한글",
+          "win32-keyboard:tab"
+        ],
+        "externalAutomation": [],
+        "resourceClosure": {
+          "activeWindows": 0,
+          "windowsCreated": 1,
+          "windowsReleased": 1,
+          "activeOpenGlContexts": 0,
+          "openGlContextsCreated": 1,
+          "openGlContextsReleased": 1,
+          "isBalanced": true
+        }
+      },
+      "boundaries": {
+        "automatedNative": "verified-windows-x64",
+        "physicalIme": "notVerified",
+        "physicalAccessibility": "notVerified",
+        "linux": "notVerified",
+        "macOS": "notVerified",
+        "otherRids": "notVerified"
+      },
+      "unsupportedSilentSuccessCount": 0
+    },
+    {
+      "schemaVersion": "doroti.g6-app-slice-evidence/v1",
+      "milestone": "G6-4",
+      "slice": "S0",
+      "capturedAtUtc": "2026-08-13T19:18:33.9933253+09:00",
+      "status": "verified-windows-x64-strict-gpu",
+      "reference": {
+        "schemaVersion": "doroti.g6-app-slice-reference/v1",
+        "expectedTrace": [
+          "listView:1000",
+          "gridView",
+          "customScrollView",
+          "lazyLifecycle",
+          "wheel",
+          "drag",
+          "keyboardScroll"
+        ],
+        "actualTrace": [
+          "listView:1000",
+          "gridView",
+          "customScrollView",
+          "lazyLifecycle",
+          "wheel",
+          "drag",
+          "keyboardScroll"
+        ],
+        "pass": true
+      },
+      "managed": {
+        "status": "verified",
+        "checks": [
+          "listView:1000",
+          "gridView",
+          "customScrollView",
+          "lazyLifecycle",
+          "wheel",
+          "drag",
+          "keyboardScroll"
+        ]
+      },
+      "live": {
+        "nativeWindow": true,
+        "hwnd": "actual",
+        "backend": "skia-wgl-opengl-gpu",
+        "presented": 26,
+        "failed": 0,
+        "cancelled": 0,
+        "softwareFallback": false,
+        "semanticsNodes": 49,
+        "input": {
+          "capabilities": {
+            "mouse": true,
+            "touch": true,
+            "pen": false,
+            "wheel": true,
+            "pointerCapture": true,
+            "physicalKeys": true,
+            "textInput": true
+          },
+          "pointerPackets": 10,
+          "keyPackets": 2,
+          "focusChanges": 2,
+          "metricsChanges": 2
+        },
+        "interactionCount": 1,
+        "scrollOffset": 100,
+        "changedPixels": 31003,
+        "state": "slice=S0;revision=3;toggle=False;text=initial;locale=en-US;lazy=25;scroll=100",
+        "nativeInputTrace": [
+          "win32-pointer-focus",
+          "win32-wheel",
+          "win32-drag",
+          "win32-keyboard:page-down"
+        ],
+        "externalAutomation": [],
+        "resourceClosure": {
+          "activeWindows": 0,
+          "windowsCreated": 1,
+          "windowsReleased": 1,
+          "activeOpenGlContexts": 0,
+          "openGlContextsCreated": 1,
+          "openGlContextsReleased": 1,
+          "isBalanced": true
+        }
+      },
+      "boundaries": {
+        "automatedNative": "verified-windows-x64",
+        "physicalIme": "notVerified",
+        "physicalAccessibility": "notVerified",
+        "linux": "notVerified",
+        "macOS": "notVerified",
+        "otherRids": "notVerified"
+      },
+      "unsupportedSilentSuccessCount": 0
+    },
+    {
+      "schemaVersion": "doroti.g6-app-slice-evidence/v1",
+      "milestone": "G6-4",
+      "slice": "R0",
+      "capturedAtUtc": "2026-08-13T19:18:35.8861987+09:00",
+      "status": "verified-windows-x64-strict-gpu",
+      "reference": {
+        "schemaVersion": "doroti.g6-app-slice-reference/v1",
+        "expectedTrace": [
+          "assetImage",
+          "networkError",
+          "fileError",
+          "bundledFont",
+          "localization:en-US",
+          "localization:ko-KR"
+        ],
+        "actualTrace": [
+          "assetImage",
+          "networkError",
+          "fileError",
+          "bundledFont",
+          "localization:en-US",
+          "localization:ko-KR"
+        ],
+        "pass": true
+      },
+      "managed": {
+        "status": "verified",
+        "resources": [
+          {
+            "name": "G6.AppSlices.Asset",
+            "length": 93,
+            "sha256": "7d3363a1a467b98174155c190e6d4b4c3e37226ec51f910b818b8e3bb8267e61"
+          },
+          {
+            "name": "G6.AppSlices.Localization.ko",
+            "length": 57,
+            "sha256": "0224cafdf6cd5741ab639f6685456de801e98b48c99f84b887ebbca1302d49bb"
+          },
+          {
+            "name": "G6.AppSlices.Font.SegoeUI",
+            "length": 959752,
+            "sha256": "8134dbcd09e7b123c9a7f229d49cffbcb01352cc72ea5e1076b65d0dca9f73cd"
+          }
+        ],
+        "koreanFallbackFamilies": [
+          "Malgun Gothic",
+          "Segoe UI"
+        ],
+        "koreanGlyphFallback": "verified-skia-system-match-and-harfbuzz-render-path",
+        "localeSwitch": "en-US->ko-KR",
+        "exactErrorPaths": [
+          "network-unavailable",
+          "file-not-found"
+        ],
+        "exactErrorTypes": {
+          "network": "System.Net.Http.HttpRequestException",
+          "file": "System.IO.FileNotFoundException"
+        }
+      },
+      "live": {
+        "nativeWindow": true,
+        "hwnd": "actual",
+        "backend": "skia-wgl-opengl-gpu",
+        "presented": 17,
+        "failed": 0,
+        "cancelled": 0,
+        "softwareFallback": false,
+        "semanticsNodes": 12,
+        "input": {
+          "capabilities": {
+            "mouse": true,
+            "touch": true,
+            "pen": false,
+            "wheel": true,
+            "pointerCapture": true,
+            "physicalKeys": true,
+            "textInput": true
+          },
+          "pointerPackets": 0,
+          "keyPackets": 0,
+          "focusChanges": 2,
+          "metricsChanges": 2
+        },
+        "interactionCount": 1,
+        "scrollOffset": -1,
+        "changedPixels": 1600457,
+        "state": "slice=R0;revision=3;toggle=True;text=Doroti 한글;locale=ko-KR;lazy=0;scroll=-1",
+        "nativeInputTrace": [],
+        "externalAutomation": [],
+        "resourceClosure": {
+          "activeWindows": 0,
+          "windowsCreated": 1,
+          "windowsReleased": 1,
+          "activeOpenGlContexts": 0,
+          "openGlContextsCreated": 1,
+          "openGlContextsReleased": 1,
+          "isBalanced": true
+        }
+      },
+      "boundaries": {
+        "automatedNative": "verified-windows-x64",
+        "physicalIme": "notVerified",
+        "physicalAccessibility": "notVerified",
+        "linux": "notVerified",
+        "macOS": "notVerified",
+        "otherRids": "notVerified"
+      },
+      "unsupportedSilentSuccessCount": 0
+    },
+    {
+      "schemaVersion": "doroti.g6-app-slice-evidence/v1",
+      "milestone": "G6-4",
+      "slice": "A0",
+      "capturedAtUtc": "2026-08-13T19:18:43.005623+09:00",
+      "status": "verified-windows-x64-strict-gpu",
+      "reference": {
+        "schemaVersion": "doroti.g6-app-slice-reference/v1",
+        "expectedTrace": [
+          "focus",
+          "invoke",
+          "toggle",
+          "setText",
+          "scroll"
+        ],
+        "actualTrace": [
+          "focus",
+          "invoke",
+          "toggle",
+          "setText",
+          "scroll"
+        ],
+        "pass": true
+      },
+      "managed": {
+        "status": "verified",
+        "checks": [
+          "focus",
+          "invoke",
+          "toggle",
+          "setText",
+          "scroll"
+        ]
+      },
+      "live": {
+        "nativeWindow": true,
+        "hwnd": "actual",
+        "backend": "skia-wgl-opengl-gpu",
+        "presented": 45,
+        "failed": 0,
+        "cancelled": 0,
+        "softwareFallback": false,
+        "semanticsNodes": 38,
+        "input": {
+          "capabilities": {
+            "mouse": true,
+            "touch": true,
+            "pen": false,
+            "wheel": true,
+            "pointerCapture": true,
+            "physicalKeys": true,
+            "textInput": true
+          },
+          "pointerPackets": 0,
+          "keyPackets": 0,
+          "focusChanges": 2,
+          "metricsChanges": 2
+        },
+        "interactionCount": 8,
+        "scrollOffset": -1,
+        "changedPixels": 1836577,
+        "state": "slice=A0;revision=8;toggle=False;text=external-uia-text;locale=ko-KR;lazy=0;scroll=-1",
+        "nativeInputTrace": [],
+        "externalAutomation": [
+          "focus:G6 A0 invoke",
+          "invoke:G6 A0 invoke",
+          "toggle:G6 A0 toggle",
+          "setText:G6 A0 text",
+          "scroll:G6 A0 scroll"
+        ],
+        "resourceClosure": {
+          "activeWindows": 0,
+          "windowsCreated": 1,
+          "windowsReleased": 1,
+          "activeOpenGlContexts": 0,
+          "openGlContextsCreated": 1,
+          "openGlContextsReleased": 1,
+          "isBalanced": true
+        }
+      },
+      "boundaries": {
+        "automatedNative": "verified-windows-x64",
+        "physicalIme": "notVerified",
+        "physicalAccessibility": "notVerified",
+        "linux": "notVerified",
+        "macOS": "notVerified",
+        "otherRids": "notVerified"
+      },
+      "unsupportedSilentSuccessCount": 0
+    },
+    {
+      "schemaVersion": "doroti.g6-app-slice-evidence/v1",
+      "milestone": "G6-4",
+      "slice": "P0",
+      "capturedAtUtc": "2026-08-13T19:18:44.987043+09:00",
+      "status": "verified-windows-x64-strict-gpu",
+      "reference": {
+        "schemaVersion": "doroti.g6-app-slice-reference/v1",
+        "expectedTrace": [
+          "channel:g6/app-slices",
+          "echo",
+          "unsupported:g6/unsupported",
+          "exactFailure"
+        ],
+        "actualTrace": [
+          "channel:g6/app-slices",
+          "echo",
+          "unsupported:g6/unsupported",
+          "exactFailure"
+        ],
+        "pass": true
+      },
+      "managed": {
+        "status": "verified",
+        "channel": "g6/app-slices",
+        "codec": "standard",
+        "echoed": "doroti-g6-4",
+        "unsupported": {
+          "exception": "Doroti.Flutter.Ui.FlutterCapabilityException",
+          "capabilityId": "platform.plugins",
+          "viewId": null,
+          "target": "win-x64",
+          "channel": "g6/unsupported"
+        }
+      },
+      "live": {
+        "nativeWindow": true,
+        "hwnd": "actual",
+        "backend": "skia-wgl-opengl-gpu",
+        "presented": 19,
+        "failed": 0,
+        "cancelled": 0,
+        "softwareFallback": false,
+        "semanticsNodes": 11,
+        "input": {
+          "capabilities": {
+            "mouse": true,
+            "touch": true,
+            "pen": false,
+            "wheel": true,
+            "pointerCapture": true,
+            "physicalKeys": true,
+            "textInput": true
+          },
+          "pointerPackets": 0,
+          "keyPackets": 0,
+          "focusChanges": 2,
+          "metricsChanges": 2
+        },
+        "interactionCount": 1,
+        "scrollOffset": -1,
+        "changedPixels": 1600548,
+        "state": "slice=P0;revision=3;toggle=True;text=Doroti 한글;locale=ko-KR;lazy=0;scroll=-1",
+        "nativeInputTrace": [],
+        "externalAutomation": [],
+        "resourceClosure": {
+          "activeWindows": 0,
+          "windowsCreated": 1,
+          "windowsReleased": 1,
+          "activeOpenGlContexts": 0,
+          "openGlContextsCreated": 1,
+          "openGlContextsReleased": 1,
+          "isBalanced": true
+        }
+      },
+      "boundaries": {
+        "automatedNative": "verified-windows-x64",
+        "physicalIme": "notVerified",
+        "physicalAccessibility": "notVerified",
+        "linux": "notVerified",
+        "macOS": "notVerified",
+        "otherRids": "notVerified"
+      },
+      "unsupportedSilentSuccessCount": 0
+    }
+  ],
+  "boundaries": {
+    "automatedNative": "verified-windows-x64",
+    "physicalIme": "notVerified",
+    "physicalAccessibility": "notVerified",
+    "linux": "notVerified",
+    "macOS": "notVerified",
+    "otherRids": "notVerified"
+  }
+}

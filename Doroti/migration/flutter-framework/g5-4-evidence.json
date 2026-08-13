@@ -1,0 +1,276 @@
+{
+  "schemaVersion": "doroti.g5-4-evidence/v1",
+  "milestone": "G5-4",
+  "capturedAtUtc": "2026-08-13T13:15:32.0348675+00:00",
+  "status": "verified-automated-current-machine",
+  "flutterGitRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "census": {
+    "publicRoots": 13,
+    "sourceClosureFiles": 695,
+    "resolvedLibraries": 694,
+    "declarations": 5355,
+    "members": 49007,
+    "analyzerErrors": 0,
+    "unclassifiedDeclarations": 0,
+    "unclassifiedMembers": 0,
+    "unsupportedBlockers": 0,
+    "currentSourceHashMismatches": 0,
+    "unownedLibraries": 0,
+    "censusCoveragePercent": 100
+  },
+  "generation": {
+    "batches": [
+      {
+        "id": "M3-components-a-m",
+        "libraries": 80,
+        "declarations": 699,
+        "outputs": 78,
+        "diagnostics": 1730,
+        "errors": 0,
+        "unclassified": 0,
+        "silentOmissions": 0,
+        "compilerIdentity": {
+          "converterVersion": "3.0.0",
+          "dartSdkVersion": "3.12.2",
+          "dartAnalyzerVersion": "9.0.0",
+          "flutterGitRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+          "irSchemaVersion": "doroti.migration-ir/v3",
+          "irVersion": "3.0.0",
+          "loweringRuleSetVersion": "framework-g3.1-multilibrary-typed",
+          "emitterVersion": "csharp-net10.g3.1-project-graph",
+          "runtimeBindingVersion": "0.2.0-beta",
+          "workspaceId": "86b9351d66548b15796a3a7e9131f09beedd3a2a3022b95b6547aa6c28367eac"
+        }
+      },
+      {
+        "id": "M1-theme",
+        "libraries": 56,
+        "declarations": 156,
+        "outputs": 56,
+        "diagnostics": 1630,
+        "errors": 0,
+        "unclassified": 0,
+        "silentOmissions": 0,
+        "compilerIdentity": {
+          "converterVersion": "3.0.0",
+          "dartSdkVersion": "3.12.2",
+          "dartAnalyzerVersion": "9.0.0",
+          "flutterGitRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+          "irSchemaVersion": "doroti.migration-ir/v3",
+          "irVersion": "3.0.0",
+          "loweringRuleSetVersion": "framework-g3.1-multilibrary-typed",
+          "emitterVersion": "csharp-net10.g3.1-project-graph",
+          "runtimeBindingVersion": "0.2.0-beta",
+          "workspaceId": "fd18e42b38c9385cfc18066d645cb6855e7e4436ae770c1c3edac2852d3da7a5"
+        }
+      },
+      {
+        "id": "M4-components-n-z",
+        "libraries": 50,
+        "declarations": 500,
+        "outputs": 50,
+        "diagnostics": 1836,
+        "errors": 0,
+        "unclassified": 0,
+        "silentOmissions": 0,
+        "compilerIdentity": {
+          "converterVersion": "3.0.0",
+          "dartSdkVersion": "3.12.2",
+          "dartAnalyzerVersion": "9.0.0",
+          "flutterGitRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+          "irSchemaVersion": "doroti.migration-ir/v3",
+          "irVersion": "3.0.0",
+          "loweringRuleSetVersion": "framework-g3.1-multilibrary-typed",
+          "emitterVersion": "csharp-net10.g3.1-project-graph",
+          "runtimeBindingVersion": "0.2.0-beta",
+          "workspaceId": "419bc90e71ec119316749a7dc9cf6fe3129fe1c3792abfb76096b4ba3d9e502a"
+        }
+      },
+      {
+        "id": "M2-shape-ink",
+        "libraries": 12,
+        "declarations": 84,
+        "outputs": 12,
+        "diagnostics": 1448,
+        "errors": 0,
+        "unclassified": 0,
+        "silentOmissions": 0,
+        "compilerIdentity": {
+          "converterVersion": "3.0.0",
+          "dartSdkVersion": "3.12.2",
+          "dartAnalyzerVersion": "9.0.0",
+          "flutterGitRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+          "irSchemaVersion": "doroti.migration-ir/v3",
+          "irVersion": "3.0.0",
+          "loweringRuleSetVersion": "framework-g3.1-multilibrary-typed",
+          "emitterVersion": "csharp-net10.g3.1-project-graph",
+          "runtimeBindingVersion": "0.2.0-beta",
+          "workspaceId": "470448f2d3262d8c04699ba7b259f2e7987f965b9c9c1cfda0d35a71ef83c831"
+        }
+      },
+      {
+        "id": "C3-dialog-selection",
+        "libraries": 21,
+        "declarations": 327,
+        "outputs": 21,
+        "diagnostics": 1470,
+        "errors": 0,
+        "unclassified": 0,
+        "silentOmissions": 0,
+        "compilerIdentity": {
+          "converterVersion": "3.0.0",
+          "dartSdkVersion": "3.12.2",
+          "dartAnalyzerVersion": "9.0.0",
+          "flutterGitRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+          "irSchemaVersion": "doroti.migration-ir/v3",
+          "irVersion": "3.0.0",
+          "loweringRuleSetVersion": "framework-g3.1-multilibrary-typed",
+          "emitterVersion": "csharp-net10.g3.1-project-graph",
+          "runtimeBindingVersion": "0.2.0-beta",
+          "workspaceId": "3b0b4e8a7bebc3c7b347fe89bdd254c0e8ab11fb775e4e026262e2ffd00f2d15"
+        }
+      },
+      {
+        "id": "C2-form-text",
+        "libraries": 19,
+        "declarations": 190,
+        "outputs": 19,
+        "diagnostics": 1458,
+        "errors": 0,
+        "unclassified": 0,
+        "silentOmissions": 0,
+        "compilerIdentity": {
+          "converterVersion": "3.0.0",
+          "dartSdkVersion": "3.12.2",
+          "dartAnalyzerVersion": "9.0.0",
+          "flutterGitRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+          "irSchemaVersion": "doroti.migration-ir/v3",
+          "irVersion": "3.0.0",
+          "loweringRuleSetVersion": "framework-g3.1-multilibrary-typed",
+          "emitterVersion": "csharp-net10.g3.1-project-graph",
+          "runtimeBindingVersion": "0.2.0-beta",
+          "workspaceId": "758a33b41543f5571d0a654641701d61bb2dc5279d1a630a43106d0960de8af3"
+        }
+      },
+      {
+        "id": "C1-navigation",
+        "libraries": 7,
+        "declarations": 102,
+        "outputs": 7,
+        "diagnostics": 1441,
+        "errors": 0,
+        "unclassified": 0,
+        "silentOmissions": 0,
+        "compilerIdentity": {
+          "converterVersion": "3.0.0",
+          "dartSdkVersion": "3.12.2",
+          "dartAnalyzerVersion": "9.0.0",
+          "flutterGitRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+          "irSchemaVersion": "doroti.migration-ir/v3",
+          "irVersion": "3.0.0",
+          "loweringRuleSetVersion": "framework-g3.1-multilibrary-typed",
+          "emitterVersion": "csharp-net10.g3.1-project-graph",
+          "runtimeBindingVersion": "0.2.0-beta",
+          "workspaceId": "04b210808010e9e65d43f2eb03798e7bf785c68ce315d62a0283a8babb4c9260"
+        }
+      },
+      {
+        "id": "C0-theme",
+        "libraries": 5,
+        "declarations": 24,
+        "outputs": 5,
+        "diagnostics": 1432,
+        "errors": 0,
+        "unclassified": 0,
+        "silentOmissions": 0,
+        "compilerIdentity": {
+          "converterVersion": "3.0.0",
+          "dartSdkVersion": "3.12.2",
+          "dartAnalyzerVersion": "9.0.0",
+          "flutterGitRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+          "irSchemaVersion": "doroti.migration-ir/v3",
+          "irVersion": "3.0.0",
+          "loweringRuleSetVersion": "framework-g3.1-multilibrary-typed",
+          "emitterVersion": "csharp-net10.g3.1-project-graph",
+          "runtimeBindingVersion": "0.2.0-beta",
+          "workspaceId": "1f20534841d667c8a5a5965707f6f1aab9e2c1225c1f21604c847004fe8d605b"
+        }
+      },
+      {
+        "id": "P0-widget-previews",
+        "libraries": 2,
+        "declarations": 9,
+        "outputs": 1,
+        "diagnostics": 1429,
+        "errors": 0,
+        "unclassified": 0,
+        "silentOmissions": 0,
+        "compilerIdentity": {
+          "converterVersion": "3.0.0",
+          "dartSdkVersion": "3.12.2",
+          "dartAnalyzerVersion": "9.0.0",
+          "flutterGitRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+          "irSchemaVersion": "doroti.migration-ir/v3",
+          "irVersion": "3.0.0",
+          "loweringRuleSetVersion": "framework-g3.1-multilibrary-typed",
+          "emitterVersion": "csharp-net10.g3.1-project-graph",
+          "runtimeBindingVersion": "0.2.0-beta",
+          "workspaceId": "691a58eb0fd0b380c38147108c98e65ef03f31eddb9dcc716daadb23ac6f67e0"
+        }
+      }
+    ],
+    "productLibraries": 252,
+    "productDeclarations": 2091,
+    "stagedGeneratedFiles": 249,
+    "reviewedAdaptedFiles": 193,
+    "declarationOrFileRemovals": 0,
+    "buildWarnings": 0,
+    "buildErrors": 0
+  },
+  "publicApi": {
+    "material": {
+      "exportedLibraries": 181,
+      "declarations": 521,
+      "diff": 0
+    },
+    "cupertino": {
+      "exportedLibraries": 52,
+      "declarations": 121,
+      "diff": 0
+    }
+  },
+  "gallery": {
+    "status": "PASS",
+    "evidenceClass": "syntheticContract",
+    "eligibleForLivePass": false,
+    "liveWidgetLifecycle": "notVerified",
+    "shell": "one shared SourcePortedGalleryShell factory with Material and Cupertino branches",
+    "dimensions": [
+      "behavior",
+      "visual",
+      "input",
+      "semantics"
+    ],
+    "evidence": "migration/flutter-framework/g5-4-gallery-differential.json"
+  },
+  "dependencyAudit": {
+    "scannedFiles": 293,
+    "avaloniaControlsThemeXamlReferences": 0,
+    "xamlFiles": 0
+  },
+  "evidence": {
+    "closure": "migration/flutter-framework/g5-4-closure.json",
+    "batches": "migration/flutter-framework/g5-4-batches.json",
+    "materialApi": "migration/flutter-framework/g5-4-material-api-manifest.json",
+    "cupertinoApi": "migration/flutter-framework/g5-4-cupertino-api-manifest.json",
+    "gallery": "migration/flutter-framework/g5-4-gallery-differential.json",
+    "reviewedBuildLog": "artifacts/g5-4-reviewed-build.log"
+  },
+  "notVerified": [
+    "physical Windows IME",
+    "physical accessibility",
+    "physical sustained GPU",
+    "physical cross-monitor DPI"
+  ],
+  "deferredTo": "G5-8 DorotiDemoApp"
+}

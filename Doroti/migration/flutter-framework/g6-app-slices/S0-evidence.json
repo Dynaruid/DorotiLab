@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "doroti.g6-app-slice-evidence/v1",
+  "milestone": "G6-4",
+  "slice": "S0",
+  "capturedAtUtc": "2026-08-13T10:18:33.9933253+00:00",
+  "status": "verified-windows-x64-strict-gpu",
+  "reference": {
+    "schemaVersion": "doroti.g6-app-slice-reference/v1",
+    "expectedTrace": [
+      "listView:1000",
+      "gridView",
+      "customScrollView",
+      "lazyLifecycle",
+      "wheel",
+      "drag",
+      "keyboardScroll"
+    ],
+    "actualTrace": [
+      "listView:1000",
+      "gridView",
+      "customScrollView",
+      "lazyLifecycle",
+      "wheel",
+      "drag",
+      "keyboardScroll"
+    ],
+    "pass": true
+  },
+  "managed": {
+    "status": "verified",
+    "checks": [
+      "listView:1000",
+      "gridView",
+      "customScrollView",
+      "lazyLifecycle",
+      "wheel",
+      "drag",
+      "keyboardScroll"
+    ]
+  },
+  "live": {
+    "nativeWindow": true,
+    "hwnd": "actual",
+    "backend": "skia-wgl-opengl-gpu",
+    "presented": 26,
+    "failed": 0,
+    "cancelled": 0,
+    "softwareFallback": false,
+    "semanticsNodes": 49,
+    "input": {
+      "capabilities": {
+        "mouse": true,
+        "touch": true,
+        "pen": false,
+        "wheel": true,
+        "pointerCapture": true,
+        "physicalKeys": true,
+        "textInput": true
+      },
+      "pointerPackets": 10,
+      "keyPackets": 2,
+      "focusChanges": 2,
+      "metricsChanges": 2
+    },
+    "interactionCount": 1,
+    "scrollOffset": 100,
+    "changedPixels": 31003,
+    "state": "slice=S0;revision=3;toggle=False;text=initial;locale=en-US;lazy=25;scroll=100",
+    "nativeInputTrace": [
+      "win32-pointer-focus",
+      "win32-wheel",
+      "win32-drag",
+      "win32-keyboard:page-down"
+    ],
+    "externalAutomation": [],
+    "resourceClosure": {
+      "activeWindows": 0,
+      "windowsCreated": 1,
+      "windowsReleased": 1,
+      "activeOpenGlContexts": 0,
+      "openGlContextsCreated": 1,
+      "openGlContextsReleased": 1,
+      "isBalanced": true
+    }
+  },
+  "boundaries": {
+    "automatedNative": "verified-windows-x64",
+    "physicalIme": "notVerified",
+    "physicalAccessibility": "notVerified",
+    "linux": "notVerified",
+    "macOS": "notVerified",
+    "otherRids": "notVerified"
+  },
+  "unsupportedSilentSuccessCount": 0
+}

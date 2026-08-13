@@ -1,0 +1,299 @@
+{
+  "version": 2,
+  "dependencies": {
+    "net10.0": {
+      "HarfBuzzSharp": {
+        "type": "Transitive",
+        "resolved": "8.3.1.5",
+        "contentHash": "K0+U7592Ne10BCuHZrZYIbaYUQy20CsYM9A3+Xjz3UpLPjs6nosbQtDYp2PueWJ7AQ5/htbyO8WqnUe+uf8AAQ==",
+        "dependencies": {
+          "HarfBuzzSharp.NativeAssets.Win32": "8.3.1.5",
+          "HarfBuzzSharp.NativeAssets.macOS": "8.3.1.5"
+        }
+      },
+      "HarfBuzzSharp.NativeAssets.macOS": {
+        "type": "Transitive",
+        "resolved": "8.3.1.5",
+        "contentHash": "TWSbMOIBiGvCTnR2MUlmhnP92L7qwYmpDXSNOkYQUh6Iuc7W7Y3z/Q+X3N6scvbZbDmfbZjqbNUqDEz/JzpwBg=="
+      },
+      "HarfBuzzSharp.NativeAssets.Win32": {
+        "type": "Transitive",
+        "resolved": "8.3.1.5",
+        "contentHash": "p95FW4SwP50qD4cq6e2/P5DP7As6c6aQU5qHvsdCKorX5GFLHUMIx/zQgiLvB871xQrhdN24sZyMbCufnTHvsQ=="
+      },
+      "SkiaSharp.NativeAssets.macOS": {
+        "type": "Transitive",
+        "resolved": "3.119.4",
+        "contentHash": "fgBOWEqbY012x7gMfJU4ezgz6dfhJb30Z6YdW35h85Zoe39+a8YNbAAwL29ihPfWoppg5AjvyKNzD1oCvlqWwA=="
+      },
+      "SkiaSharp.NativeAssets.Win32": {
+        "type": "Transitive",
+        "resolved": "3.119.4",
+        "contentHash": "XOpbx/4CReO2wYsq2s6rbvdauc6dntG4Zv499sHGTJ87bwZaFXszFkwql3+FIZMc8kUPeaj3Mx2ezIJmo8a1Kg=="
+      },
+      "doroti.backends.skia": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Composition": "[0.2.0-beta, )",
+          "Doroti.Core": "[0.2.0-beta, )",
+          "Doroti.Graphics": "[0.2.0-beta, )",
+          "Doroti.Platform": "[0.2.0-beta, )",
+          "Doroti.Vendor.Avalonia.Skia": "[0.2.0-beta, )",
+          "SkiaSharp": "[3.119.4, )"
+        }
+      },
+      "doroti.composition": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Core": "[0.2.0-beta, )",
+          "Doroti.Graphics": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.core": {
+        "type": "Project"
+      },
+      "doroti.engine": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Composition": "[0.2.0-beta, )",
+          "Doroti.Graphics": "[0.2.0-beta, )",
+          "Doroti.Platform": "[0.2.0-beta, )",
+          "Doroti.Rendering": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.flutter.framework.animation": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Framework.Foundation": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Physics": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Scheduler": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Services": "[0.2.0-beta, )",
+          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
+          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.flutter.framework.foundation": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
+          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.flutter.framework.gestures": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Framework.Foundation": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Scheduler": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Services": "[0.2.0-beta, )",
+          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
+          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.flutter.framework.painting": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Framework.Animation": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Foundation": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Gestures": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Physics": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Scheduler": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Services": "[0.2.0-beta, )",
+          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
+          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.flutter.framework.physics": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Framework.Foundation": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Scheduler": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Services": "[0.2.0-beta, )",
+          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
+          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.flutter.framework.rendering": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Framework.Animation": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Foundation": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Gestures": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Painting": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Physics": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Scheduler": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Semantics": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Services": "[0.2.0-beta, )",
+          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
+          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.flutter.framework.scheduler": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Framework.Foundation": "[0.2.0-beta, )",
+          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
+          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.flutter.framework.semantics": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Framework.Animation": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Foundation": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Gestures": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Painting": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Physics": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Scheduler": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Services": "[0.2.0-beta, )",
+          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
+          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.flutter.framework.services": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Framework.Foundation": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Scheduler": "[0.2.0-beta, )",
+          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
+          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.flutter.framework.widgets": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Framework.Animation": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Foundation": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Gestures": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Painting": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Physics": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Rendering": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Scheduler": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Semantics": "[0.2.0-beta, )",
+          "Doroti.Flutter.Framework.Services": "[0.2.0-beta, )",
+          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
+          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.flutter.hosting": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
+          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.flutter.runtime": {
+        "type": "Project"
+      },
+      "doroti.flutter.ui": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Runtime": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.graphics": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Core": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.host.desktop": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Backends.Skia": "[0.2.0-beta, )",
+          "Doroti.Composition": "[0.2.0-beta, )",
+          "Doroti.Core": "[0.2.0-beta, )",
+          "Doroti.Engine": "[0.2.0-beta, )",
+          "Doroti.Graphics": "[0.2.0-beta, )",
+          "Doroti.Platform": "[0.2.0-beta, )",
+          "Doroti.Rendering": "[0.2.0-beta, )",
+          "Doroti.Shell.Core": "[0.2.0-beta, )",
+          "Doroti.Vendor.Avalonia.Base": "[0.2.0-beta, )",
+          "Doroti.Vendor.Avalonia.Win32": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.host.desktop.flutter": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Backends.Skia": "[0.2.0-beta, )",
+          "Doroti.Composition": "[0.2.0-beta, )",
+          "Doroti.Core": "[0.2.0-beta, )",
+          "Doroti.Engine": "[0.2.0-beta, )",
+          "Doroti.Flutter.Hosting": "[0.2.0-beta, )",
+          "Doroti.Flutter.Ui": "[0.2.0-beta, )",
+          "Doroti.Graphics": "[0.2.0-beta, )",
+          "Doroti.Host.Desktop": "[0.2.0-beta, )",
+          "Doroti.Platform": "[0.2.0-beta, )",
+          "Doroti.Rendering": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.platform": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Core": "[0.2.0-beta, )",
+          "Doroti.Graphics": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.rendering": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Composition": "[0.2.0-beta, )",
+          "Doroti.Core": "[0.2.0-beta, )",
+          "Doroti.Graphics": "[0.2.0-beta, )",
+          "Doroti.Platform": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.shell.core": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Graphics": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.target.windows.win-x64": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Hosting": "[0.2.0-beta, )",
+          "Doroti.Flutter.Ui": "[0.2.0-beta, )",
+          "Doroti.Host.Desktop": "[0.2.0-beta, )",
+          "Doroti.Host.Desktop.Flutter": "[0.2.0-beta, )",
+          "Doroti.Platform": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.vendor.avalonia.base": {
+        "type": "Project"
+      },
+      "doroti.vendor.avalonia.skia": {
+        "type": "Project",
+        "dependencies": {
+          "SkiaSharp": "[3.119.4, )",
+          "SkiaSharp.HarfBuzz": "[3.119.4, )"
+        }
+      },
+      "doroti.vendor.avalonia.win32": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Shell.Core": "[0.2.0-beta, )"
+        }
+      },
+      "SkiaSharp": {
+        "type": "CentralTransitive",
+        "requested": "[3.119.4, )",
+        "resolved": "3.119.4",
+        "contentHash": "53NOSUZ1Us+91Sm0uCkIivh/k7jOowRErZT2sIWwPFN9mLUvdxnE6rS4sWo4255+Rd2MWUSF+j0NMZHD6Cke+Q==",
+        "dependencies": {
+          "SkiaSharp.NativeAssets.Win32": "3.119.4",
+          "SkiaSharp.NativeAssets.macOS": "3.119.4"
+        }
+      },
+      "SkiaSharp.HarfBuzz": {
+        "type": "CentralTransitive",
+        "requested": "[3.119.4, )",
+        "resolved": "3.119.4",
+        "contentHash": "YkN+X5fW9hXFlkoYaxDfYHuSE7SzIHlYMdWarmk03WOad1Rur8zJqGp1dkYp69FGpFxBVgnd/euiJnDPfr3WZQ==",
+        "dependencies": {
+          "HarfBuzzSharp": "8.3.1.5",
+          "SkiaSharp": "3.119.4"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "doroti.converter-selection/v4",
+  "converterVersion": "3.0.0",
+  "migrationIrVersion": "3.0.0",
+  "generationMode": "framework-semantic",
+  "compatibilityProfile": "flutter-framework",
+  "frameworkMilestone": "G5-5",
+  "outputNamespace": "Doroti.Generated.Application.G55MaterialPlugin",
+  "outputAssemblyName": "Doroti.Generated.Application.G55MaterialPlugin",
+  "flutterBaseline": "../flutter-compat/baseline.json",
+  "packageRoot": "../../validation/cases/g5-5-apps",
+  "entryPoint": "package:g55_apps/apps/material_plugin.dart",
+  "inputs": [],
+  "application": {
+    "resourceManifest": "manifests/resources.json",
+    "pluginManifest": "manifests/plugins-echo.json",
+    "targetRid": "win-x64",
+    "frameworkPackages": ["Material"],
+    "hostBootstrapPackage": "Doroti.Flutter.Hosting"
+  }
+}

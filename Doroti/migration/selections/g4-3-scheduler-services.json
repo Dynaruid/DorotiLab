@@ -1,0 +1,648 @@
+{
+  "schemaVersion": "doroti.converter-selection/v4",
+  "converterVersion": "3.0.0",
+  "migrationIrVersion": "3.0.0",
+  "generationMode": "framework-semantic",
+  "compatibilityProfile": "flutter-framework",
+  "frameworkMilestone": "G4-3",
+  "outputNamespace": "Doroti.Generated.Framework",
+  "outputAssemblyName": "Doroti.Generated.Framework.SchedulerServices",
+  "flutterBaseline": "../flutter-compat/baseline.json",
+  "inputs": [
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/scheduler/binding.dart",
+      "library": "package:flutter/src/scheduler/binding.dart",
+      "symbols": [
+        "timeDilation",
+        "_timeDilation",
+        "timeDilation",
+        "FrameCallback",
+        "TaskCallback",
+        "SchedulingStrategy",
+        "_TaskEntry",
+        "_FrameCallbackEntry",
+        "SchedulerPhase",
+        "_PerformanceModeCleanupCallback",
+        "PerformanceModeRequestHandle",
+        "SchedulerBinding",
+        "defaultSchedulingStrategy"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/scheduler/debug.dart",
+      "library": "package:flutter/src/scheduler/debug.dart",
+      "symbols": [
+        "debugPrintBeginFrameBanner",
+        "debugPrintEndFrameBanner",
+        "debugPrintScheduleFrameStacks",
+        "debugTracePostFrameCallbacks",
+        "debugAssertAllSchedulerVarsUnset"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/scheduler/priority.dart",
+      "library": "package:flutter/src/scheduler/priority.dart",
+      "symbols": [
+        "Priority"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/scheduler/service_extensions.dart",
+      "library": "package:flutter/src/scheduler/service_extensions.dart",
+      "symbols": [
+        "SchedulerServiceExtensions"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/scheduler/ticker.dart",
+      "library": "package:flutter/src/scheduler/ticker.dart",
+      "symbols": [
+        "TickerCallback",
+        "TickerProvider",
+        "Ticker",
+        "TickerFuture",
+        "TickerCanceled"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/_background_isolate_binary_messenger_io.dart",
+      "library": "package:flutter/src/services/_background_isolate_binary_messenger_io.dart",
+      "symbols": [
+        "BackgroundIsolateBinaryMessenger"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/_background_isolate_binary_messenger_web.dart",
+      "library": "package:flutter/src/services/_background_isolate_binary_messenger_web.dart",
+      "symbols": [
+        "BackgroundIsolateBinaryMessenger"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/app_version.dart",
+      "library": "package:flutter/src/services/app_version.dart",
+      "symbols": [
+        "appBuildName",
+        "appBuildNumber"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/asset_bundle.dart",
+      "library": "package:flutter/src/services/asset_bundle.dart",
+      "symbols": [
+        "AssetBundle",
+        "NetworkAssetBundle",
+        "CachingAssetBundle",
+        "PlatformAssetBundle",
+        "_initRootBundle",
+        "_errorSummaryWithKey",
+        "rootBundle"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/asset_manifest.dart",
+      "library": "package:flutter/src/services/asset_manifest.dart",
+      "symbols": [
+        "_kAssetManifestFilename",
+        "_kAssetManifestWebFilename",
+        "AssetManifest",
+        "_AssetManifestBin",
+        "AssetMetadata"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/autofill.dart",
+      "library": "package:flutter/src/services/autofill.dart",
+      "symbols": [
+        "AutofillHints",
+        "AutofillConfiguration",
+        "AutofillClient",
+        "AutofillScope",
+        "_AutofillScopeTextInputConfiguration",
+        "AutofillScopeMixin"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/binary_messenger.dart",
+      "library": "package:flutter/src/services/binary_messenger.dart",
+      "symbols": [
+        "MessageHandler",
+        "BinaryMessenger"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/binding.dart",
+      "library": "package:flutter/src/services/binding.dart",
+      "symbols": [
+        "ServicesBinding",
+        "SystemUiChangeCallback",
+        "_DefaultBinaryMessenger",
+        "SystemContextMenuClient"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/browser_context_menu.dart",
+      "library": "package:flutter/src/services/browser_context_menu.dart",
+      "symbols": [
+        "BrowserContextMenu"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/clipboard.dart",
+      "library": "package:flutter/src/services/clipboard.dart",
+      "symbols": [
+        "ClipboardData",
+        "Clipboard"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/debug.dart",
+      "library": "package:flutter/src/services/debug.dart",
+      "symbols": [
+        "debugKeyEventSimulatorTransitModeOverride",
+        "debugPrintKeyboardEvents",
+        "debugAssertAllServicesVarsUnset",
+        "debugProfilePlatformChannels"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/deferred_component.dart",
+      "library": "package:flutter/src/services/deferred_component.dart",
+      "symbols": [
+        "DeferredComponent"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/flavor.dart",
+      "library": "package:flutter/src/services/flavor.dart",
+      "symbols": [
+        "appFlavor"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/flutter_version.dart",
+      "library": "package:flutter/src/services/flutter_version.dart",
+      "symbols": [
+        "FlutterVersion"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/font_loader.dart",
+      "library": "package:flutter/src/services/font_loader.dart",
+      "symbols": [
+        "FontLoader"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/haptic_feedback.dart",
+      "library": "package:flutter/src/services/haptic_feedback.dart",
+      "symbols": [
+        "HapticFeedback"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/hardware_keyboard.dart",
+      "library": "package:flutter/src/services/hardware_keyboard.dart",
+      "symbols": [
+        "_keyboardDebug",
+        "KeyboardLockMode",
+        "KeyEvent",
+        "KeyDownEvent",
+        "KeyUpEvent",
+        "KeyRepeatEvent",
+        "KeyEventCallback",
+        "HardwareKeyboard",
+        "KeyDataTransitMode",
+        "KeyMessage",
+        "KeyMessageHandler",
+        "KeyEventManager"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/keyboard_inserted_content.dart",
+      "library": "package:flutter/src/services/keyboard_inserted_content.dart",
+      "symbols": [
+        "KeyboardInsertedContent"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/keyboard_key.g.dart",
+      "library": "package:flutter/src/services/keyboard_key.g.dart",
+      "symbols": [
+        "KeyboardKey",
+        "LogicalKeyboardKey",
+        "PhysicalKeyboardKey"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/keyboard_maps.g.dart",
+      "library": "package:flutter/src/services/keyboard_maps.g.dart",
+      "symbols": [
+        "kAndroidToLogicalKey",
+        "kAndroidToPhysicalKey",
+        "kAndroidNumPadMap",
+        "kFuchsiaToLogicalKey",
+        "kFuchsiaToPhysicalKey",
+        "kMacOsToPhysicalKey",
+        "kMacOsNumPadMap",
+        "kMacOsFunctionKeyMap",
+        "kMacOsToLogicalKey",
+        "kIosToPhysicalKey",
+        "kIosSpecialLogicalMap",
+        "kIosNumPadMap",
+        "kIosToLogicalKey",
+        "kGlfwToLogicalKey",
+        "kGlfwNumpadMap",
+        "kGtkToLogicalKey",
+        "kGtkNumpadMap",
+        "kLinuxToPhysicalKey",
+        "kWebToLogicalKey",
+        "kWebToPhysicalKey",
+        "kWebNumPadMap",
+        "kWebLocationMap",
+        "kWindowsToLogicalKey",
+        "kWindowsToPhysicalKey",
+        "kWindowsNumPadMap"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/live_text.dart",
+      "library": "package:flutter/src/services/live_text.dart",
+      "symbols": [
+        "LiveText"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/message_codec.dart",
+      "library": "package:flutter/src/services/message_codec.dart",
+      "symbols": [
+        "MessageCodec",
+        "MethodCall",
+        "MethodCodec",
+        "PlatformException",
+        "MissingPluginException"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/message_codecs.dart",
+      "library": "package:flutter/src/services/message_codecs.dart",
+      "symbols": [
+        "_writeBufferStartCapacity",
+        "BinaryCodec",
+        "StringCodec",
+        "JSONMessageCodec",
+        "JSONMethodCodec",
+        "StandardMessageCodec",
+        "StandardMethodCodec"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/mouse_cursor.dart",
+      "library": "package:flutter/src/services/mouse_cursor.dart",
+      "symbols": [
+        "MouseCursorManager",
+        "MouseCursorSession",
+        "MouseCursor",
+        "_DeferringMouseCursor",
+        "_NoopMouseCursorSession",
+        "_NoopMouseCursor",
+        "_SystemMouseCursorSession",
+        "SystemMouseCursor",
+        "SystemMouseCursors"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/mouse_tracking.dart",
+      "library": "package:flutter/src/services/mouse_tracking.dart",
+      "symbols": [
+        "PointerEnterEventListener",
+        "PointerExitEventListener",
+        "PointerHoverEventListener",
+        "MouseTrackerAnnotation"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/platform_channel.dart",
+      "library": "package:flutter/src/services/platform_channel.dart",
+      "symbols": [
+        "shouldProfilePlatformChannels",
+        "kProfilePlatformChannels",
+        "_profilePlatformChannelsIsRunning",
+        "_profilePlatformChannelsRate",
+        "_profiledBinaryMessengers",
+        "_ProfiledBinaryMessenger",
+        "_PlatformChannelStats",
+        "_profilePlatformChannelsStats",
+        "_debugLaunchProfilePlatformChannels",
+        "_debugRecordUpStream",
+        "_debugRecordDownStream",
+        "_findBinaryMessenger",
+        "BasicMessageChannel",
+        "MethodChannel",
+        "OptionalMethodChannel",
+        "EventChannel"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/platform_views.dart",
+      "library": "package:flutter/src/services/platform_views.dart",
+      "symbols": [
+        "PointTransformer",
+        "platformViewsRegistry",
+        "PlatformViewsRegistry",
+        "PlatformViewCreatedCallback",
+        "PlatformViewsService",
+        "AndroidPointerProperties",
+        "AndroidPointerCoords",
+        "AndroidMotionEvent",
+        "_AndroidViewState",
+        "_AndroidMotionEventConverter",
+        "_CreationParams",
+        "AndroidViewController",
+        "SurfaceAndroidViewController",
+        "ExpensiveAndroidViewController",
+        "HybridAndroidViewController",
+        "TextureAndroidViewController",
+        "_AndroidViewControllerInternals",
+        "_TextureAndroidViewControllerInternals",
+        "_HybridAndroidViewControllerInternals",
+        "_Hybrid2AndroidViewControllerInternals",
+        "DarwinPlatformViewController",
+        "UiKitViewGestureBlockingPolicy",
+        "UiKitViewController",
+        "AppKitViewController",
+        "PlatformViewController"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/predictive_back_event.dart",
+      "library": "package:flutter/src/services/predictive_back_event.dart",
+      "symbols": [
+        "SwipeEdge",
+        "PredictiveBackEvent"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/process_text.dart",
+      "library": "package:flutter/src/services/process_text.dart",
+      "symbols": [
+        "ProcessTextAction",
+        "ProcessTextService",
+        "DefaultProcessTextService"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/raw_keyboard.dart",
+      "library": "package:flutter/src/services/raw_keyboard.dart",
+      "symbols": [
+        "KeyboardSide",
+        "ModifierKey",
+        "RawKeyEventData",
+        "RawKeyEvent",
+        "RawKeyDownEvent",
+        "RawKeyUpEvent",
+        "RawKeyEventHandler",
+        "RawKeyboard",
+        "_ModifierSidePair"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/raw_keyboard_android.dart",
+      "library": "package:flutter/src/services/raw_keyboard_android.dart",
+      "symbols": [
+        "_kCombiningCharacterMask",
+        "RawKeyEventDataAndroid"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/raw_keyboard_fuchsia.dart",
+      "library": "package:flutter/src/services/raw_keyboard_fuchsia.dart",
+      "symbols": [
+        "RawKeyEventDataFuchsia"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/raw_keyboard_ios.dart",
+      "library": "package:flutter/src/services/raw_keyboard_ios.dart",
+      "symbols": [
+        "RawKeyEventDataIos"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/raw_keyboard_linux.dart",
+      "library": "package:flutter/src/services/raw_keyboard_linux.dart",
+      "symbols": [
+        "RawKeyEventDataLinux",
+        "KeyHelper",
+        "GLFWKeyHelper",
+        "GtkKeyHelper"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/raw_keyboard_macos.dart",
+      "library": "package:flutter/src/services/raw_keyboard_macos.dart",
+      "symbols": [
+        "runeToLowerCase",
+        "RawKeyEventDataMacOs"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/raw_keyboard_web.dart",
+      "library": "package:flutter/src/services/raw_keyboard_web.dart",
+      "symbols": [
+        "_unicodeChar",
+        "RawKeyEventDataWeb"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/raw_keyboard_windows.dart",
+      "library": "package:flutter/src/services/raw_keyboard_windows.dart",
+      "symbols": [
+        "_vkProcessKey",
+        "RawKeyEventDataWindows"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/restoration.dart",
+      "library": "package:flutter/src/services/restoration.dart",
+      "symbols": [
+        "_BucketVisitor",
+        "RestorationManager",
+        "RestorationBucket",
+        "debugIsSerializableForRestoration"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/scribe.dart",
+      "library": "package:flutter/src/services/scribe.dart",
+      "symbols": [
+        "Scribe"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/sensitive_content.dart",
+      "library": "package:flutter/src/services/sensitive_content.dart",
+      "symbols": [
+        "ContentSensitivity",
+        "SensitiveContentService"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/service_extensions.dart",
+      "library": "package:flutter/src/services/service_extensions.dart",
+      "symbols": [
+        "ServicesServiceExtensions"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/spell_check.dart",
+      "library": "package:flutter/src/services/spell_check.dart",
+      "symbols": [
+        "SuggestionSpan",
+        "SpellCheckResults",
+        "SpellCheckService",
+        "DefaultSpellCheckService"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/system_channels.dart",
+      "library": "package:flutter/src/services/system_channels.dart",
+      "symbols": [
+        "SystemChannels"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/system_chrome.dart",
+      "library": "package:flutter/src/services/system_chrome.dart",
+      "symbols": [
+        "DeviceOrientation",
+        "ApplicationSwitcherDescription",
+        "SystemUiOverlay",
+        "SystemUiMode",
+        "SystemUiOverlayStyle",
+        "_stringify",
+        "SystemChrome"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/system_navigator.dart",
+      "library": "package:flutter/src/services/system_navigator.dart",
+      "symbols": [
+        "SystemNavigator"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/system_sound.dart",
+      "library": "package:flutter/src/services/system_sound.dart",
+      "symbols": [
+        "SystemSoundType",
+        "SystemSound"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/text_boundary.dart",
+      "library": "package:flutter/src/services/text_boundary.dart",
+      "symbols": [
+        "UntilPredicate",
+        "TextBoundary",
+        "CharacterBoundary",
+        "LineBoundary",
+        "ParagraphBoundary",
+        "DocumentBoundary"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/text_editing.dart",
+      "library": "package:flutter/src/services/text_editing.dart",
+      "symbols": [
+        "TextSelection"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/text_editing_delta.dart",
+      "library": "package:flutter/src/services/text_editing_delta.dart",
+      "symbols": [
+        "_toTextAffinity",
+        "_replace",
+        "_debugTextRangeIsValid",
+        "TextEditingDelta",
+        "TextEditingDeltaInsertion",
+        "TextEditingDeltaDeletion",
+        "TextEditingDeltaReplacement",
+        "TextEditingDeltaNonTextUpdate"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/text_formatter.dart",
+      "library": "package:flutter/src/services/text_formatter.dart",
+      "symbols": [
+        "MaxLengthEnforcement",
+        "TextInputFormatter",
+        "TextInputFormatFunction",
+        "_SimpleTextInputFormatter",
+        "_MutableTextRange",
+        "_TextEditingValueAccumulator",
+        "FilteringTextInputFormatter",
+        "LengthLimitingTextInputFormatter"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/text_input.dart",
+      "library": "package:flutter/src/services/text_input.dart",
+      "symbols": [
+        "SmartDashesType",
+        "SmartQuotesType",
+        "TextInputType",
+        "TextInputAction",
+        "TextCapitalization",
+        "TextInputConfiguration",
+        "_toTextAffinity",
+        "FloatingCursorDragState",
+        "RawFloatingCursorPoint",
+        "TextEditingValue",
+        "SelectionChangedCause",
+        "TextSelectionDelegate",
+        "TextInputClient",
+        "ScribbleClient",
+        "SelectionRect",
+        "DeltaTextInputClient",
+        "TextInputStyle",
+        "TextInputConnection",
+        "_toTextInputAction",
+        "_toTextCursorAction",
+        "_toTextPoint",
+        "_reportError",
+        "TextInput",
+        "TextInputControl",
+        "_PlatformTextInputControl",
+        "SystemContextMenuController",
+        "IOSSystemContextMenuItemData",
+        "IOSSystemContextMenuItemDataCopy",
+        "IOSSystemContextMenuItemDataCut",
+        "IOSSystemContextMenuItemDataPaste",
+        "IOSSystemContextMenuItemDataSelectAll",
+        "IOSSystemContextMenuItemDataLookUp",
+        "IOSSystemContextMenuItemDataSearchWeb",
+        "IOSSystemContextMenuItemDataShare",
+        "IOSSystemContextMenuItemDataLiveText",
+        "IOSSystemContextMenuItemDataCustom"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/text_layout_metrics.dart",
+      "library": "package:flutter/src/services/text_layout_metrics.dart",
+      "symbols": [
+        "TextLayoutMetrics"
+      ]
+    },
+    {
+      "path": "../../../flutter-master/packages/flutter/lib/src/services/undo_manager.dart",
+      "library": "package:flutter/src/services/undo_manager.dart",
+      "symbols": [
+        "UndoDirection",
+        "UndoManager",
+        "UndoManagerClient"
+      ]
+    }
+  ]
+}

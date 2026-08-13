@@ -1,0 +1,61 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Doroti/Doroti.csproj" />
+    <Project Path="src/Doroti.Backends.Skia/Doroti.Backends.Skia.csproj" />
+    <Project Path="src/Doroti.Composition/Doroti.Composition.csproj" />
+    <Project Path="src/Doroti.Core/Doroti.Core.csproj" />
+    <Project Path="src/Doroti.Engine/Doroti.Engine.csproj" />
+    <Project Path="src/Doroti.Flutter.Runtime/Doroti.Flutter.Runtime.csproj" />
+    <Project Path="src/Doroti.Flutter.Ui/Doroti.Flutter.Ui.csproj" />
+    <Project Path="src/Doroti.Flutter.Hosting/Doroti.Flutter.Hosting.csproj" />
+    <Project Path="src/Doroti.Flutter.Framework.Foundation/Doroti.Flutter.Framework.Foundation.csproj" />
+    <Project Path="src/Doroti.Flutter.Framework.Scheduler/Doroti.Flutter.Framework.Scheduler.csproj" />
+    <Project Path="src/Doroti.Flutter.Framework.Services/Doroti.Flutter.Framework.Services.csproj" />
+    <Project Path="src/Doroti.Flutter.Framework.Widgets/Doroti.Flutter.Framework.Widgets.csproj" />
+    <Project Path="src/Doroti.Flutter.Framework.Physics/Doroti.Flutter.Framework.Physics.csproj" />
+    <Project Path="src/Doroti.Flutter.Framework.Animation/Doroti.Flutter.Framework.Animation.csproj" />
+    <Project Path="src/Doroti.Flutter.Framework.Gestures/Doroti.Flutter.Framework.Gestures.csproj" />
+    <Project Path="src/Doroti.Flutter.Framework.Painting/Doroti.Flutter.Framework.Painting.csproj" />
+    <Project Path="src/Doroti.Flutter.Framework.Semantics/Doroti.Flutter.Framework.Semantics.csproj" />
+    <Project Path="src/Doroti.Flutter.Framework.Rendering/Doroti.Flutter.Framework.Rendering.csproj" />
+    <Project Path="src/Doroti.Graphics/Doroti.Graphics.csproj" />
+    <Project Path="src/Doroti.Host.Desktop/Doroti.Host.Desktop.csproj" />
+    <Project Path="src/Doroti.Host.Desktop.Flutter/Doroti.Host.Desktop.Flutter.csproj" />
+    <Project Path="src/Doroti.Legacy.Engine/Doroti.Legacy.Engine.csproj" />
+    <Project Path="src/Doroti.Legacy.Rendering/Doroti.Legacy.Rendering.csproj" />
+    <Project Path="src/Doroti.Platform/Doroti.Platform.csproj" />
+    <Project Path="src/Doroti.Rendering/Doroti.Rendering.csproj" />
+    <Project Path="src/Doroti.Shell.Core/Doroti.Shell.Core.csproj" />
+    <Project Path="src/Doroti.Target.Windows.win-x64/Doroti.Target.Windows.win-x64.csproj" />
+    <Project Path="src/Doroti.Vendor.Avalonia.Skia/Doroti.Vendor.Avalonia.Skia.csproj" />
+    <Project Path="src/Doroti.Vendor.Avalonia.Base/Doroti.Vendor.Avalonia.Base.csproj" />
+    <Project Path="src/Doroti.Vendor.Avalonia.Win32/Doroti.Vendor.Avalonia.Win32.csproj" />
+    <Project Path="src/Doroti.Widgets/Doroti.Widgets.csproj" />
+  </Folder>
+  <Project Path="src/Doroti.Analyzers/Doroti.Analyzers.csproj" />
+  <Folder Name="/samples/">
+    <Project Path="../DorotiDemoApp/DorotiDemoApp.csproj" />
+  </Folder>
+  <Project Path="../tools/Doroti.DartToCSharp/Doroti.DartToCSharp.csproj" />
+  <Project Path="tools/Doroti.BehaviorRunner/Doroti.BehaviorRunner.csproj" />
+  <Project Path="tools/Doroti.AvaloniaPort/Doroti.AvaloniaPort.csproj" />
+  <Project Path="tools/Doroti.SceneLab/Doroti.SceneLab.csproj" />
+  <Project Path="tools/Doroti.SourceTools/Doroti.SourceTools.csproj" />
+  <Project Path="tools/Doroti.Tooling/Doroti.Tooling.csproj" />
+  <Folder Name="/validation/">
+    <Project Path="validation/Doroti.Validation.G6MaterialFidelity/Doroti.Validation.G6MaterialFidelity.csproj" />
+    <Project Path="validation/Doroti.Validation.G5Widgets/Doroti.Validation.G5Widgets.csproj" />
+    <Project Path="validation/Doroti.Validation.G5PlatformFoundation/Doroti.Validation.G5PlatformFoundation.csproj" />
+    <Project Path="validation/Doroti.Validation.G5PaintingRenderingSemantics/Doroti.Validation.G5PaintingRenderingSemantics.csproj" />
+    <Project Path="validation/Doroti.Validation.G5WidgetsTextInput/Doroti.Validation.G5WidgetsTextInput.csproj" />
+    <Project Path="validation/Doroti.Validation.G5NativeInput/Doroti.Validation.G5NativeInput.csproj" />
+    <Project Path="validation/Doroti.Validation.G4PhysicsAnimationGestures/Doroti.Validation.G4PhysicsAnimationGestures.csproj" />
+    <Project Path="validation/Doroti.Validation.Compiler/Doroti.Validation.Compiler.csproj" />
+    <Project Path="validation/Doroti.Validation.G4Ui/Doroti.Validation.G4Ui.csproj" />
+    <Project Path="validation/Doroti.Validation.G4Foundation/Doroti.Validation.G4Foundation.csproj" />
+    <Project Path="validation/Doroti.Validation.G4SchedulerServices/Doroti.Validation.G4SchedulerServices.csproj" />
+  </Folder>
+  <Folder Name="/templates/">
+    <Project Path="templates/Doroti.Templates/Doroti.Templates.csproj" />
+  </Folder>
+</Solution>

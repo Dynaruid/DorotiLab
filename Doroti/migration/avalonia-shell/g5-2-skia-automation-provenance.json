@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "doroti.g5-2-skia-automation-provenance/v1",
+  "upstreamRepository": "https://github.com/AvaloniaUI/Avalonia",
+  "upstreamRevision": "git:f159423f691946e713f454447a780d4677d8a0d2",
+  "license": "../../../Avalonia-main/licence.md",
+  "adaptationPolicy": "copy-adapt behind Doroti host-neutral scene and accessibility contracts; no Avalonia binary reference in the product graph",
+  "upstreamInputs": [
+    { "path": "src/Skia/Avalonia.Skia/Gpu/OpenGl/GlRenderTarget.cs", "sha256": "3025031277d33385487a80ede69c018575be2c5176b5ccf03cede5e6c2baab4b", "localOwners": ["src/Doroti.Vendor.Avalonia.Skia/OpenGlRenderTarget.cs", "src/Doroti.Backends.Skia/SkiaRenderSurface.cs"] },
+    { "path": "src/Skia/Avalonia.Skia/DrawingContextImpl.cs", "sha256": "b494d81291e39e959b4a676bf7fa7c75a625bee7db0accedebeffa084fa2f19a", "localOwners": ["src/Doroti.Vendor.Avalonia.Skia/OpenGlRenderTarget.cs", "src/Doroti.Vendor.Avalonia.Skia/FramebufferRenderTarget.cs", "src/Doroti.Backends.Skia/SkiaTextMeasurer.cs"] },
+    { "path": "src/Skia/Avalonia.Skia/SkiaPlatform.cs", "sha256": "16850cba6e65c14f51144568eec5a10016657a49c82972e4812078cd650e4453", "localOwners": ["src/Doroti.Backends.Skia/SkiaImageDecoder.cs"] },
+    { "path": "src/Skia/Avalonia.Skia/ImmutableBitmap.cs", "sha256": "c52a052b90031e61e64e64e44b6d334ee516065e0cc54b72710ca3086f0a9431", "localOwners": ["src/Doroti.Composition/Resources.cs", "src/Doroti.Backends.Skia/SkiaImageDecoder.cs"] },
+    { "path": "src/Windows/Avalonia.Win32.Automation/RootAutomationNode.cs", "sha256": "a28113ed054a2bf3d0d9b0be209e398583c5d7667fda12715a5a55b9071d0b48", "localOwners": ["src/Doroti.Host.Desktop/Win32AutomationProvider.cs"] },
+    { "path": "src/Windows/Avalonia.Win32.Automation/Interop/IValueProvider.cs", "sha256": "9b9ac95fe8cbf04ee69ae4bf1b67105fa25a814295d7400de9ede9e863feef8e", "localOwners": ["src/Doroti.Host.Desktop/Win32AutomationProvider.cs"] },
+    { "path": "src/Windows/Avalonia.Win32.Automation/Interop/IToggleProvider.cs", "sha256": "fee47728926caa1647d2287e2506a25c15baac66d6d2fa7d6c8732c55fb25e47", "localOwners": ["src/Doroti.Host.Desktop/Win32AutomationProvider.cs"] },
+    { "path": "src/Windows/Avalonia.Win32.Automation/Interop/IScrollProvider.cs", "sha256": "c76af6d4c02052012c48e94d899a2c7c9af53ce0db052acd944c782c532f98fc", "localOwners": ["src/Doroti.Host.Desktop/Win32AutomationProvider.cs"] }
+  ],
+  "runtimeOwners": {
+    "fontShaping": "SkiaSharp.HarfBuzz SKShaper in Doroti.Vendor.Avalonia.Skia",
+    "fontFallback": "SKFontManager default/typeface selection in Doroti.Backends.Skia",
+    "imageDecode": "SkiaImageDecoder",
+    "gpuResourceLifetime": "GpuResourceTracker + ResourceRegistry/ImageCache leases",
+    "nativeAutomation": "Win32AutomationProvider over WM_GETOBJECT/UIAutomationCore"
+  }
+}

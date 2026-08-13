@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "doroti.converter-selection/v4",
+  "converterVersion": "2.0.0",
+  "migrationIrVersion": "2.0.0",
+  "generationMode": "isolated-generated-solution",
+  "compatibilityProfile": "flutter-aware-c4",
+  "outputNamespace": "Doroti.Generated.C4.Platform",
+  "outputAssemblyName": "Doroti.Generated.C4.Platform",
+  "flutterBaseline": "../flutter-compat/baseline.json",
+  "packageRoot": "../fixtures/c4_async_navigation",
+  "entryPoint": null,
+  "inputs": [
+    {
+      "path": "../fixtures/c4_async_navigation/lib/platform_channel_fixture.dart",
+      "symbols": [
+        "BatteryPlugin"
+      ]
+    }
+  ]
+}

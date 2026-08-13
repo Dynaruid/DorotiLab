@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "doroti.g5-3-text-input/v1",
+  "milestone": "G5-3",
+  "capturedAtUtc": "2026-08-12T04:54:45.0082457+00:00",
+  "success": true,
+  "boundary": "Flutter Services -\u003E ITextInputHostCapability -\u003E native host",
+  "verified": [
+    "attach",
+    "editing-state",
+    "selection",
+    "composition",
+    "caret",
+    "action",
+    "detach"
+  ],
+  "physicalIme": "notVerified",
+  "failures": []
+}

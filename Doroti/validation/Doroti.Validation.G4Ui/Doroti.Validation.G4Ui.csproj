@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Doroti.Validation.G4Ui</AssemblyName>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Doroti.Flutter.Hosting\Doroti.Flutter.Hosting.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Flutter.Runtime\Doroti.Flutter.Runtime.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Flutter.Ui\Doroti.Flutter.Ui.csproj" />
+  </ItemGroup>
+</Project>

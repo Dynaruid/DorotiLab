@@ -1,0 +1,219 @@
+{
+    "schemaVersion":  "doroti.g5-6w-evidence/v1",
+    "milestone":  "G5-6W",
+    "capturedAtUtc":  "2026-08-12T04:25:42.6067858+00:00",
+    "status":  "verified-automated-current-machine",
+    "targetPackage":  {
+                          "id":  "Doroti.Target.Windows.win-x64",
+                          "version":  "0.2.0-beta",
+                          "rid":  "win-x64",
+                          "sha256":  "c1ee52a3354ba5125ed598eec8b4f748dba50e139190e0758259798582370220",
+                          "artifact":  "artifacts/g5-6w/windows-package/Doroti.Target.Windows.win-x64.0.2.0-beta.nupkg",
+                          "sourcePortSelectionSha256":  "e3e9269d9a152bfaaaf1d696f34dd63738d0fa8c7eac27ffda6f2553ecb40ff5",
+                          "sourcePortProvenanceSha256":  "5a885276033999a2bdc4cf8598ea8c6ab019b259dc10a08a8b732b60c188278a",
+                          "packagedReleaseInputs":  [
+                                                        "target manifest",
+                                                        "source-port selection",
+                                                        "source-port provenance",
+                                                        "third-party notices"
+                                                    ],
+                          "officialAvaloniaBinaryDependencies":  0
+                      },
+    "hostSwap":  {
+                     "frameworkPackage":  "Doroti.Flutter.Framework.Widgets/0.2.0-beta",
+                     "beforeSha256":  "9b6bc10a7ca4ee66b95fcbe0e43e87c25057c64d181a660c2ec8a614ca6f9f6b",
+                     "afterSha256":  "9b6bc10a7ca4ee66b95fcbe0e43e87c25057c64d181a660c2ec8a614ca6f9f6b",
+                     "frameworkRegenerated":  false
+                 },
+    "contracts":  {
+                      "targetIdentitySchema":  "doroti.target-identity/v1",
+                      "diagnosticSchema":  "doroti.desktop-flutter-target-diagnostics/v1",
+                      "capabilitySchema":  "doroti.flutter-capabilities/v1",
+                      "capabilityIds":  [
+                                            "window.lifecycle",
+                                            "view.lifecycle-metrics",
+                                            "view.frame-dispatch",
+                                            "input.events",
+                                            "text.input",
+                                            "platform.services",
+                                            "platform.environment",
+                                            "platform.messaging",
+                                            "graphics.scene",
+                                            "graphics.text",
+                                            "graphics.image",
+                                            "accessibility.semantics"
+                                        ],
+                      "hooks":  [
+                                    "frame",
+                                    "input",
+                                    "automation",
+                                    "resource"
+                                ]
+                  },
+    "publish":  {
+                    "rid":  "win-x64",
+                    "selfContained":  false,
+                    "artifact":  "artifacts/g5-6w/windows-publish/win-x64",
+                    "digest":  "1198371daf446a11fe67e0a3eda565f01b1e319175a8cb30ee55141008d73683",
+                    "restore":  "PASS-isolated-package-cache",
+                    "build":  "PASS",
+                    "publish":  "PASS",
+                    "syntheticSmoke":  "PASS",
+                    "repositoryPrivateFallbacks":  0,
+                    "officialAvaloniaBinaryDependencies":  0,
+                    "marker":  "G5-6W-WINDOWS-TARGET-PACKAGE-SMOKE-PASS"
+                },
+    "automatedDiagnostics":  {
+                                 "schemaVersion":  "doroti.desktop-flutter-target-diagnostics/v1",
+                                 "targetIdentity":  "win-x64/win32-wgl",
+                                 "capabilityIds":  [
+                                                       "accessibility.semantics",
+                                                       "graphics.image",
+                                                       "graphics.scene",
+                                                       "graphics.text",
+                                                       "input.events",
+                                                       "platform.environment",
+                                                       "platform.messaging",
+                                                       "platform.services",
+                                                       "text.input",
+                                                       "view.frame-dispatch",
+                                                       "view.lifecycle-metrics",
+                                                       "window.lifecycle"
+                                                   ],
+                                 "frame":  {
+                                               "submitted":  3,
+                                               "presented":  2,
+                                               "superseded":  0,
+                                               "stale":  0,
+                                               "failed":  1,
+                                               "cancelled":  0,
+                                               "queueDepth":  0,
+                                               "queueHighWatermark":  1,
+                                               "activeContexts":  1,
+                                               "activeFrames":  0,
+                                               "surfaceGeneration":  2,
+                                               "recoveryCount":  1,
+                                               "softwareFallbackUsed":  false,
+                                               "backendIdentity":  "skia-wgl-opengl-gpu"
+                                           },
+                                 "input":  {
+                                               "capabilities":  {
+                                                                    "mouse":  true,
+                                                                    "touch":  false,
+                                                                    "pen":  false,
+                                                                    "wheel":  true,
+                                                                    "pointerCapture":  true,
+                                                                    "physicalKeys":  true,
+                                                                    "textInput":  true
+                                                                },
+                                               "pointerPackets":  5,
+                                               "keyPackets":  2,
+                                               "focusChanges":  2,
+                                               "metricsChanges":  2
+                                           },
+                                 "automation":  {
+                                                    "generation":  7,
+                                                    "nodeCount":  2
+                                                },
+                                 "coordinates":  {
+                                                     "generation":  7,
+                                                     "logicalClientSize":  {
+                                                                               "width":  420,
+                                                                               "height":  280,
+                                                                               "isFinite":  true,
+                                                                               "isEmpty":  false
+                                                                           },
+                                                     "physicalClientSize":  {
+                                                                                "width":  840,
+                                                                                "height":  560,
+                                                                                "isFinite":  true,
+                                                                                "isEmpty":  false
+                                                                            },
+                                                     "lastPointerLogical":  {
+                                                                                "x":  21,
+                                                                                "y":  22,
+                                                                                "isFinite":  true
+                                                                            },
+                                                     "lastPointerPhysical":  {
+                                                                                 "x":  42,
+                                                                                 "y":  44,
+                                                                                 "isFinite":  true
+                                                                             },
+                                                     "caretLogical":  {
+                                                                          "left":  0,
+                                                                          "top":  0,
+                                                                          "right":  0,
+                                                                          "bottom":  0,
+                                                                          "width":  0,
+                                                                          "height":  0,
+                                                                          "size":  {
+                                                                                       "width":  0,
+                                                                                       "height":  0,
+                                                                                       "isFinite":  true,
+                                                                                       "isEmpty":  true
+                                                                                   },
+                                                                          "isFinite":  true,
+                                                                          "isEmpty":  true
+                                                                      },
+                                                     "caretPhysical":  {
+                                                                           "left":  0,
+                                                                           "top":  0,
+                                                                           "right":  0,
+                                                                           "bottom":  0,
+                                                                           "width":  0,
+                                                                           "height":  0,
+                                                                           "size":  {
+                                                                                        "width":  0,
+                                                                                        "height":  0,
+                                                                                        "isFinite":  true,
+                                                                                        "isEmpty":  true
+                                                                                    },
+                                                                           "isFinite":  true,
+                                                                           "isEmpty":  true
+                                                                       }
+                                                 },
+                                 "resources":  {
+                                                   "activeWindows":  1,
+                                                   "windowsCreated":  1,
+                                                   "windowsReleased":  0,
+                                                   "activeOpenGlContexts":  1,
+                                                   "openGlContextsCreated":  2,
+                                                   "openGlContextsReleased":  1,
+                                                   "isBalanced":  false
+                                               }
+                             },
+    "targetIdentity":  {
+                           "schemaVersion":  "doroti.target-identity/v1",
+                           "rid":  "win-x64",
+                           "operatingSystem":  "windows",
+                           "operatingSystemDescription":  "Microsoft Windows 10.0.26200",
+                           "processArchitecture":  "x64",
+                           "frameworkDescription":  ".NET 10.0.8",
+                           "windowBackend":  "win32",
+                           "graphicsBackend":  "wgl-opengl-skia",
+                           "packageId":  "Doroti.Target.Windows.win-x64",
+                           "packageVersion":  "0.2.0-beta",
+                           "flutterRevision":  "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+                           "avaloniaRevision":  "f159423f691946e713f454447a780d4677d8a0d2",
+                           "sourcePortSelectionSha256":  "e3e9269d9a152bfaaaf1d696f34dd63738d0fa8c7eac27ffda6f2553ecb40ff5",
+                           "sourcePortProvenanceSha256":  "5a885276033999a2bdc4cf8598ea8c6ab019b259dc10a08a8b732b60c188278a"
+                       },
+    "predecessor":  {
+                        "g5_3bPlatformFoundation":  "PASS",
+                        "avaloniaPortAudit":  "PASS"
+                    },
+    "physical":  {
+                     "status":  "notVerified",
+                     "successfulResultsUsedForMilestone":  0,
+                     "deferredTo":  "G5-8 DorotiDemoApp",
+                     "items":  [
+                                   "physical mouse",
+                                   "precision touchpad",
+                                   "touch",
+                                   "Korean IME",
+                                   "cross-monitor DPI",
+                                   "external physical accessibility",
+                                   "sustained GPU"
+                               ]
+                 }
+}

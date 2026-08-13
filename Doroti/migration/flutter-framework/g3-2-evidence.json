@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "doroti.g3-2-evidence/v1",
+  "milestone": "G3-2",
+  "status": "complete",
+  "upstreamRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "promotionManifest": {
+    "path": "migration/promotion.json",
+    "sha256": "006c3ffb4f2cda608df02abb63ea358c81e80a20ceaffd1e90e1a3652fada11d",
+    "reviewedSymbols": 5,
+    "promotedFiles": 3
+  },
+  "promotedSources": [
+    {
+      "path": "src/Doroti.Flutter.Framework.Foundation/annotations.cs",
+      "sha256": "d55dc8fc61d23e4eb52b3bddc4effc99add7e32b85d6754c5aa155249f2b97b0"
+    },
+    {
+      "path": "src/Doroti.Flutter.Framework.Foundation/object.cs",
+      "sha256": "766dcce9182aed6a4c6e59a7bc4c07ccd3e59ad30e9509dab3fd90e9fb0f4ee3"
+    },
+    {
+      "path": "src/Doroti.Flutter.Framework.Physics/tolerance.cs",
+      "sha256": "abad98d5d0fd107e87dfa7c02043c320d3f850828dea4e3fd98af014df0e5ba7"
+    }
+  ],
+  "gates": {
+    "f0AndMultiLibraryReviewed": true,
+    "ordinaryProductCsOnly": true,
+    "candidateAndProductRootsSeparated": true,
+    "productCompileAndApiEquivalent": true,
+    "behaviorEquivalent": true,
+    "productFrameworkPackagesCreated": 2,
+    "mechanicalCandidatePackageEntries": 0,
+    "warnings": 0,
+    "errors": 0,
+    "simultaneousMechanicalAndProductOwners": 0,
+    "compilerGeneralManualOverwrites": 0,
+    "cleanIncrementalMirrorByteIdentical": true,
+    "intentionalConflictBlockedWithoutOverwrite": true,
+    "unmanifestedSourceRejected": true
+  },
+  "validation": {
+    "command": ".\\eng\\doroti.ps1 validate -ValidationSuite compiler",
+    "timeoutMinutes": 15,
+    "result": "pass",
+    "report": "artifacts/validation/g3-1-compiler-gate.json"
+  },
+  "milestoneComplete": true
+}

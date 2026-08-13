@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Rendering</AssemblyName>
+    <IsDorotiProduct>true</IsDorotiProduct>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="BoxConstraints.cs" />
+    <Compile Remove="PaintingContext.cs" />
+    <Compile Remove="RenderBoxes.cs" />
+    <Compile Remove="RenderTree.cs" />
+    <Compile Remove="Semantics.cs" />
+    <ProjectReference Include="..\Doroti.Core\Doroti.Core.csproj" />
+    <ProjectReference Include="..\Doroti.Graphics\Doroti.Graphics.csproj" />
+    <ProjectReference Include="..\Doroti.Platform\Doroti.Platform.csproj" />
+    <ProjectReference Include="..\Doroti.Composition\Doroti.Composition.csproj" />
+  </ItemGroup>
+</Project>

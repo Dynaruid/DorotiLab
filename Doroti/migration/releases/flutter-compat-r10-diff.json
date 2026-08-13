@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "doroti.flutter-compat-release-diff/v1",
+  "baselineRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "previousRelease": "0.1.0-alpha.1",
+  "candidateRelease": "0.2.0-beta",
+  "baselineChanged": false,
+  "publicApiManifest": "migration/flutter-compat/flutter-api.json",
+  "compilerSupportMatrix": "migration/compiler-support.json",
+  "packagePilotMatrix": "migration/package-pilots.json",
+  "changes": [
+    {
+      "area": "compiler",
+      "status": "added",
+      "detail": "C5 package URI resolution, package emission, release report, and generated platform ports"
+    },
+    {
+      "area": "FlutterCompat",
+      "status": "unchanged-baseline",
+      "detail": "C5 uses the pinned C4 Future, Stream, Widget, and navigation public facade"
+    }
+  ],
+  "revisionUpdatePolicy": "manual-approval-required"
+}

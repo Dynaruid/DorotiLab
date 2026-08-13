@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "doroti.port/v1",
+  "mode": "regeneratable-package",
+  "source": {
+    "kind": "flutter-or-dart-package",
+    "revision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+    "license": "BSD-3-Clause"
+  },
+  "compilerProfile": "flutter-aware-c2",
+  "compilerSelection": "../../selections/p3-foundation-key.json",
+  "inputs": [
+    {
+      "library": "package:flutter/foundation.dart",
+      "symbols": [
+        "Key",
+        "LocalKey",
+        "UniqueKey",
+        "ValueKey"
+      ]
+    }
+  ],
+  "customizations": {
+    "mappingFiles": [],
+    "replacementManifest": "replacements/replacements.json",
+    "extensionRoots": [],
+    "platformPortRoots": []
+  },
+  "requiredFixtures": [
+    "p3-foundation-key"
+  ]
+}

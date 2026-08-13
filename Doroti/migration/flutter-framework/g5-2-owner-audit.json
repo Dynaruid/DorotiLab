@@ -1,0 +1,39 @@
+{
+    "schemaVersion":  "doroti.g5-2-owner-audit/v1",
+    "capturedAtUtc":  "2026-08-10T13:16:27.7739684Z",
+    "productSolution":  "Doroti.Product.slnx",
+    "success":  true,
+    "productProjectCount":  24,
+    "renderingBoundaryCompileInputs":  [
+                                           "DisplayList.cs",
+                                           "FrameContracts.cs",
+                                           "LayerTree.cs",
+                                           "RenderingContracts.cs",
+                                           "SceneCommitter.cs"
+                                       ],
+    "duplicateHandwrittenRenderingOwnerInputs":  [
+
+                                                 ],
+    "forbiddenEngineInputs":  [
+
+                              ],
+    "forbiddenProductReferences":  [
+
+                                   ],
+    "forbiddenProductSolutionEntries":  [
+
+                                        ],
+    "generatedProductSources":  [
+
+                                ],
+    "legacyCompatibility":  {
+                                "productCompile":  false,
+                                "removalMilestone":  "G5-3",
+                                "projects":  [
+                                                 "Doroti.Legacy.Rendering",
+                                                 "Doroti.Legacy.Engine",
+                                                 "Doroti.Widgets"
+                                             ],
+                                "reason":  "Historical C# Widget/render behavior remains available only to root regression and comparison projects."
+                            }
+}

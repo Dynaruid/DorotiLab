@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Doroti.Flutter.Framework.Services" Version="0.2.0-beta" />
+  </ItemGroup>
+</Project>

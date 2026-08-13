@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "doroti.application-plugins/v1",
+  "plugins": [
+    {
+      "id": "g55.unsupported",
+      "channel": "g55/unsupported",
+      "codec": "StandardMethodCodec",
+      "capabilityId": "plugin.g55.unsupported",
+      "nativePackages": []
+    }
+  ]
+}

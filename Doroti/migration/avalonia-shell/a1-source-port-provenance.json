@@ -1,0 +1,103 @@
+{
+  "schemaVersion": "doroti.avalonia-a1-source-port-provenance/v1",
+  "upstreamRepository": "https://github.com/AvaloniaUI/Avalonia",
+  "upstreamRevision": "git:f159423f691946e713f454447a780d4677d8a0d2",
+  "license": "../../../Avalonia-main/licence.md",
+  "adaptationPolicy": "copy-adapt-with-Doroti shell DTO boundary; no Avalonia binary reference",
+  "upstreamInputs": [
+    {
+      "path": "src/Windows/Avalonia.Win32/Interop/UnmanagedMethods.cs",
+      "sha256": "722dfdec7b377c4ee363df8595fe6a35c5c146c79a5bed84858dc6d00d79bc27",
+      "owner": "NativeInterop.cs"
+    },
+    {
+      "path": "src/Windows/Avalonia.Win32/WindowImpl.cs",
+      "sha256": "2cf9c0c3e640b6018eca5fde534fcdfb23993df3a8495a16692828f92edbf830",
+      "owner": "SimpleWindow.cs and Win32ShellRuntime.cs"
+    },
+    {
+      "path": "src/Windows/Avalonia.Win32/WindowImpl.AppWndProc.cs",
+      "sha256": "7850b9683037efadc099e888891b59b231e6762a8d07e2075636b76692f3454d",
+      "owner": "WindowEventTranslator.cs and SimpleWindow.cs"
+    },
+    {
+      "path": "src/Windows/Avalonia.Win32/Win32DispatcherImpl.cs",
+      "sha256": "b61ecc13104052c51ffea6a73990a1306bea07c7633eff26465ab5e97dafc1d3",
+      "owner": "Win32ShellRuntime.cs"
+    },
+    {
+      "path": "src/Windows/Avalonia.Win32/ScreenImpl.cs",
+      "sha256": "edf98d336f571d87a2acec3fcbc917874c9007693a6de2eba7c61016b68dba04",
+      "owner": "SimpleWindow.cs"
+    },
+    {
+      "path": "src/Windows/Avalonia.Win32/CursorFactory.cs",
+      "sha256": "c08dc8bc92303b42cb6e502b7e62c9031fdbd70c192b5e5bfce8ed2be4f7da86",
+      "owner": "NativeInterop.cs and DesktopWindowBackend.cs"
+    },
+    {
+      "path": "src/Windows/Avalonia.Win32/ClipboardImpl.cs",
+      "sha256": "7d93e7ac5043c8d4f62298ef0d1f88b73bd2ad93dd8367af6fe97f5685985029",
+      "owner": "Win32ClipboardInterop.cs"
+    },
+    {
+      "path": "src/Windows/Avalonia.Win32/Input/Imm32InputMethod.cs",
+      "sha256": "7a07d7f702a4e1a1090f0796b8b951c7cee00ba29a6ab85418c0a9737ee71f16",
+      "owner": "SimpleWindow.cs and Win32ImeInterop.cs"
+    },
+    {
+      "path": "src/Windows/Avalonia.Win32.Automation/RootAutomationNode.cs",
+      "sha256": "a28113ed054a2bf3d0d9b0be209e398583c5d7667fda12715a5a55b9071d0b48",
+      "owner": "Win32AutomationProvider.cs"
+    },
+    {
+      "path": "src/Windows/Avalonia.Win32.Automation/Interop/UiaCoreProviderApi.cs",
+      "sha256": "30eda49fb88dbd4fdfc6e57e0a2b9c41fccc34b8808f26ab1a603a372bff50df",
+      "owner": "Win32AutomationProvider.cs and NativeInterop.cs"
+    },
+    {
+      "path": "src/Windows/Avalonia.Win32.Automation/Interop/IRawElementProviderSimple.cs",
+      "sha256": "b0af432519052cdfd4cfbc43f78d9bfd517c1f27f7ba0480eea0d3681c39d175",
+      "owner": "Win32AutomationProvider.cs"
+    },
+    {
+      "path": "src/Windows/Avalonia.Win32.Automation/Interop/IRawElementProviderFragment.cs",
+      "sha256": "22cfad88b1f0b279c69a1c2b48116c10a9d33d083bba665919831739dab7f917",
+      "owner": "Win32AutomationProvider.cs"
+    },
+    {
+      "path": "src/Windows/Avalonia.Win32.Automation/Interop/IRawElementProviderFragmentRoot.cs",
+      "sha256": "eb1e8766b30740ae5d55a18d643956a7d0b9427359b65fba7f71468d56c1eea6",
+      "owner": "Win32AutomationProvider.cs"
+    },
+    {
+      "path": "src/Windows/Avalonia.Win32.Automation/Interop/IInvokeProvider.cs",
+      "sha256": "44763d2f3470125bf733dc553cc509b38a141a6eae941a1b1bf89c87e37ee33b",
+      "owner": "Win32AutomationProvider.cs"
+    },
+    {
+      "path": "src/Windows/Avalonia.Win32/FramebufferManager.cs",
+      "sha256": "b9b2d92734f8667180a4b0a16c3a88effeda53e0f2862c1af2a79c3daa9519bd",
+      "owner": "FramebufferPresenter.cs temporary pre-A2 surface"
+    },
+    {
+      "path": "src/Windows/Avalonia.Win32/OpenGl/WglContext.cs",
+      "sha256": "c3fea65ed8ae24625e2c66238a00b22a01fa17dd3a0d3f6fc877accf03b121c3",
+      "owner": "WglContext.cs temporary pre-A2 context"
+    },
+    {
+      "path": "src/Windows/Avalonia.Win32/OpenGl/WglDisplay.cs",
+      "sha256": "090d8312eecd966ca25b75b983ce06f2be73b8bf49116dccc7abe507cc261ea8",
+      "owner": "WglContext.cs temporary pre-A2 display setup"
+    }
+  ],
+  "localProjects": [
+    "src/Doroti.Shell.Core/Doroti.Shell.Core.csproj",
+    "src/Doroti.Vendor.Avalonia.Win32/Doroti.Vendor.Avalonia.Win32.csproj",
+    "src/Doroti.Host.Desktop/Doroti.Host.Desktop.csproj"
+  ],
+  "publicBoundary": {
+    "allowed": ["Doroti.Graphics", "Doroti.Platform", "Doroti.Shell.Core"],
+    "forbidden": ["Avalonia", "Doroti.Vendor", "Windows.Win32", "SkiaSharp"]
+  }
+}

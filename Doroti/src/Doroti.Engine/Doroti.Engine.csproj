@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Engine</AssemblyName>
+    <IsDorotiProduct>true</IsDorotiProduct>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="EngineContracts.cs" />
+    <Compile Remove="InteractiveApplication.cs" />
+    <Compile Remove="ManagedBgraRenderSurface.cs" />
+    <ProjectReference Include="..\Doroti.Platform\Doroti.Platform.csproj" />
+    <ProjectReference Include="..\Doroti.Graphics\Doroti.Graphics.csproj" />
+    <ProjectReference Include="..\Doroti.Composition\Doroti.Composition.csproj" />
+    <ProjectReference Include="..\Doroti.Rendering\Doroti.Rendering.csproj" />
+  </ItemGroup>
+</Project>

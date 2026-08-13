@@ -1,0 +1,181 @@
+{
+    "schemaVersion":  "doroti.g6-language-runtime-evidence/v1",
+    "milestone":  "G6-1",
+    "status":  "PASS",
+    "flutterGitRevision":  "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+    "scope":  "Dart semantic, constructor, typed runtime, and structural compiler closure; no live Widgets presentation claim",
+    "baselineTaxonomy":  {
+                             "requiredFamilies":  [
+                                                      "language-runtime",
+                                                      "constructor-initialization"
+                                                  ],
+                             "coveredFamilies":  [
+                                                     "language-runtime",
+                                                     "constructor-initialization"
+                                                 ],
+                             "coveragePercent":  100
+                         },
+    "differential":  {
+                         "dartSdkVersion":  "3.12.2",
+                         "analyzerVersion":  "9.0.0",
+                         "generatedDigest":  "5d601f7f1930def7e70bc43ac25ce49b6b21f9ca91fc1798759e2ec281b49be9",
+                         "cleanIncrementalByteIdentity":  true,
+                         "outputCount":  8,
+                         "diagnosticCount":  0,
+                         "unclassifiedAstNodeCount":  0,
+                         "silentOmissionCount":  0,
+                         "generatedCompileErrorCount":  0,
+                         "families":  [
+                                          {
+                                              "id":  "nullable-super-defaults",
+                                              "fixture":  "nullable_super_defaults.dart",
+                                              "semantics":  [
+                                                                "nullable parameter",
+                                                                "super formal",
+                                                                "inherited default argument"
+                                                            ],
+                                              "reference":  "null:derived:true|7:set:false",
+                                              "generated":  "null:derived:true|7:set:false",
+                                              "status":  "PASS"
+                                          },
+                                          {
+                                              "id":  "constructors-initializers",
+                                              "fixture":  "constructors_initializers.dart",
+                                              "semantics":  [
+                                                                "generative",
+                                                                "factory redirect",
+                                                                "named constructor",
+                                                                "field initializer",
+                                                                "mixin late initializer"
+                                                            ],
+                                              "reference":  "4:8|5:10:6:9|7:7",
+                                              "generated":  "4:8|5:10:6:9|7:7",
+                                              "status":  "PASS"
+                                          },
+                                          {
+                                              "id":  "generic-variance",
+                                              "fixture":  "generic_variance.dart",
+                                              "semantics":  [
+                                                                "Dart covariance",
+                                                                "CLR invariant boundary",
+                                                                "erased runtime type"
+                                                            ],
+                                              "reference":  "dot,ori|runtime|true",
+                                              "generated":  "dot,ori|runtime|true",
+                                              "status":  "PASS"
+                                          },
+                                          {
+                                              "id":  "future-typed-values",
+                                              "fixture":  "future_typed_values.dart",
+                                              "semantics":  [
+                                                                "Future\u003cT\u003e",
+                                                                "async await",
+                                                                "then typed callback"
+                                                            ],
+                                              "reference":  "40:42:2",
+                                              "generated":  "40:42:2",
+                                              "status":  "PASS"
+                                          },
+                                          {
+                                              "id":  "null-aware-late-required",
+                                              "fixture":  "null_aware_late_required.dart",
+                                              "semantics":  [
+                                                                "null-aware call",
+                                                                "nullable return",
+                                                                "cascade",
+                                                                "late",
+                                                                "required named"
+                                                            ],
+                                              "reference":  "fallback|DOROTI",
+                                              "generated":  "fallback|DOROTI",
+                                              "status":  "PASS"
+                                          },
+                                          {
+                                              "id":  "member-resolution",
+                                              "fixture":  "member_resolution.dart",
+                                              "semantics":  [
+                                                                "override",
+                                                                "base dispatch",
+                                                                "mixin member",
+                                                                "extension method"
+                                                            ],
+                                              "reference":  "base+derived|[mixin:base+derived]|accent",
+                                              "generated":  "base+derived|[mixin:base+derived]|accent",
+                                              "status":  "PASS"
+                                          },
+                                          {
+                                              "id":  "tearoffs-callbacks",
+                                              "fixture":  "tearoffs_callbacks.dart",
+                                              "semantics":  [
+                                                                "constructor tear-off",
+                                                                "method tear-off",
+                                                                "delegate adaptation",
+                                                                "optional named callback"
+                                                            ],
+                                              "reference":  "8:12",
+                                              "generated":  "8:12",
+                                              "status":  "PASS"
+                                          },
+                                          {
+                                              "id":  "collections-patterns-dynamic",
+                                              "fixture":  "collections_patterns_dynamic.dart",
+                                              "semantics":  [
+                                                                "collection spread",
+                                                                "collection if",
+                                                                "collection for",
+                                                                "record pattern switch",
+                                                                "dynamic invocation"
+                                                            ],
+                                              "reference":  "0,1,2,3,4,5,7,8,9|count:9|dynamic:9",
+                                              "generated":  "0,1,2,3,4,5,7,8,9|count:9|dynamic:9",
+                                              "status":  "PASS"
+                                          }
+                                      ]
+                     },
+    "compatibility":  {
+                          "structural":  9,
+                          "temporary":  374,
+                          "obsolete":  0,
+                          "unclassified":  0,
+                          "previousTemporary":  375,
+                          "removed":  [
+                                          "cupertino-theme-nullable-brightness-constructor-argument"
+                                      ]
+                      },
+    "regression":  {
+                       "compilerBuild":  "PASS",
+                       "compilerRefactor":  "PASS",
+                       "g5Predecessor":  "PASS",
+                       "productBuild":  "PASS"
+                   },
+    "forbiddenImplementation":  {
+                                    "demoWidgetNameCompilerSpecialCases":  0,
+                                    "directGeneratedHotfixes":  0,
+                                    "generatedProductSourcesCommitted":  0
+                                },
+    "validationShards":  [
+                             {
+                                 "name":  "Fixtures",
+                                 "command":  "validate-g6-language-runtime.ps1 -Shard Fixtures",
+                                 "maxMinutes":  20,
+                                 "status":  "PASS"
+                             },
+                             {
+                                 "name":  "Compatibility",
+                                 "command":  "validate-g6-language-runtime.ps1 -Shard Compatibility",
+                                 "maxMinutes":  20,
+                                 "status":  "PASS"
+                             },
+                             {
+                                 "name":  "Regression",
+                                 "command":  "validate-g6-language-runtime.ps1 -Shard Regression",
+                                 "maxMinutes":  20,
+                                 "status":  "PASS"
+                             }
+                         ],
+    "notVerified":  [
+                        "base Widgets native first frame",
+                        "Material native presentation",
+                        "physical target"
+                    ]
+}

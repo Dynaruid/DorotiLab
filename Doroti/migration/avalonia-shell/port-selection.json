@@ -1,0 +1,270 @@
+{
+  "schemaVersion": "doroti.avalonia-port-selection/v1",
+  "sourceId": "avalonia",
+  "sourceRoot": "../../../Avalonia-main",
+  "license": "licence.md",
+  "upstreamRepository": "https://github.com/AvaloniaUI/Avalonia",
+  "upstreamRef": "main@2026-07-31",
+  "pinnedRevision": "git:f159423f691946e713f454447a780d4677d8a0d2",
+  "graphPath": "migration/avalonia-shell/shell-dependency-graph.json",
+  "namespaceRewrites": [
+    {
+      "from": "Avalonia",
+      "to": "Doroti.Vendor.Avalonia"
+    }
+  ],
+  "patchFiles": [],
+  "sourceSets": [
+    {
+      "id": "shell-contracts",
+      "platforms": ["windows", "linux", "macos"],
+      "paths": [
+        "src/Avalonia.Base/Platform",
+        "src/Avalonia.Base/Threading",
+        "src/Avalonia.Base/Rendering",
+        "src/Avalonia.Controls/Platform"
+      ],
+      "extensions": [".cs"],
+      "disposition": "adapt",
+      "owner": "Doroti.Shell.Core",
+      "targetProject": "Doroti.Vendor.Avalonia.Base",
+      "reason": "Dispatcher, render timer/loop, top-level, window, screen, cursor, clipboard, text-input and surface contracts form the shared shell seam."
+    },
+    {
+      "id": "skia-opengl-surfaces",
+      "platforms": ["windows", "linux", "macos"],
+      "paths": [
+        "src/Avalonia.OpenGL",
+        "src/Skia/Avalonia.Skia"
+      ],
+      "extensions": [".cs"],
+      "disposition": "adapt",
+      "owner": "Doroti.Backends.Skia",
+      "targetProject": "Doroti.Vendor.Avalonia.Skia",
+      "reason": "Platform surface/context creation is retained while Avalonia drawing/composition contracts are replaced by Doroti-owned DisplayList and frame contracts."
+    },
+    {
+      "id": "windows-win32",
+      "platforms": ["windows"],
+      "paths": ["src/Windows/Avalonia.Win32"],
+      "extensions": [".cs", ".idl"],
+      "disposition": "adapt",
+      "owner": "Doroti.Vendor.Avalonia.Win32",
+      "targetProject": "Doroti.Vendor.Avalonia.Win32",
+      "reason": "WindowImpl, WndProc, dispatcher, DPI, screen, cursor, clipboard, IMM32 input and WGL/ANGLE/DXGI lifecycle are the first product shell closure."
+    },
+    {
+      "id": "windows-automation",
+      "platforms": ["windows"],
+      "paths": ["src/Windows/Avalonia.Win32.Automation"],
+      "extensions": [".cs"],
+      "disposition": "adapt",
+      "owner": "Doroti.Vendor.Avalonia.Win32",
+      "targetProject": "Doroti.Vendor.Avalonia.Win32",
+      "reason": "UI Automation provider and COM marshalling source remain adjacent to the Win32 shell and translate to Doroti semantics nodes."
+    },
+    {
+      "id": "linux-freedesktop",
+      "platforms": ["linux"],
+      "paths": [
+        "src/Avalonia.FreeDesktop",
+        "src/Avalonia.FreeDesktop.AtSpi"
+      ],
+      "extensions": [".cs"],
+      "disposition": "adapt",
+      "owner": "Doroti.Vendor.Avalonia.FreeDesktop",
+      "targetProject": "Doroti.Vendor.Avalonia.FreeDesktop",
+      "reason": "DBus, clipboard, input-method and AT-SPI services are shared by the Linux window-system ports."
+    },
+    {
+      "id": "linux-x11",
+      "platforms": ["linux"],
+      "paths": ["src/Avalonia.X11"],
+      "extensions": [".cs"],
+      "disposition": "adapt",
+      "owner": "Doroti.Vendor.Avalonia.X11",
+      "targetProject": "Doroti.Vendor.Avalonia.X11",
+      "reason": "X11 is the initial Linux lifecycle/input/accessibility target."
+    },
+    {
+      "id": "linux-wayland",
+      "platforms": ["linux"],
+      "paths": ["src/Avalonia.Wayland"],
+      "extensions": [".cs"],
+      "disposition": "adapt",
+      "owner": "Doroti.Vendor.Avalonia.Wayland",
+      "targetProject": "Doroti.Vendor.Avalonia.Wayland",
+      "reason": "Wayland is retained as an explicit second Linux closure, not silently treated as covered by X11."
+    },
+    {
+      "id": "macos-managed",
+      "platforms": ["macos"],
+      "paths": ["src/Avalonia.Native"],
+      "extensions": [".cs", ".idl"],
+      "disposition": "adapt",
+      "owner": "Doroti.Vendor.Avalonia.Native",
+      "targetProject": "Doroti.Vendor.Avalonia.Native",
+      "reason": "Managed Native bridge, dispatcher, window, clipboard, input, screen and surface code are selected together."
+    },
+    {
+      "id": "macos-libavalonia",
+      "platforms": ["macos"],
+      "paths": ["native/Avalonia.Native"],
+      "extensions": [".h", ".mm", ".sh", ".pbxproj", ".plist", ".xcconfig"],
+      "disposition": "import",
+      "owner": "Doroti.Vendor.Avalonia.Native",
+      "targetProject": "Doroti.Vendor.Avalonia.Native",
+      "reason": "libAvalonia native source and Xcode build inputs are a required part of the macOS shell, not an undeclared binary asset."
+    }
+  ],
+  "dependencyRules": [
+    {
+      "id": "avalonia-composition-cut",
+      "prefixes": ["Avalonia.Rendering.Composition"],
+      "disposition": "exclude-with-owner",
+      "owner": "A2 Doroti direct frame pipeline",
+      "reason": "Avalonia composition is replaced by Doroti DisplayList, LayerTree, mailbox and terminal ACK contracts."
+    },
+    {
+      "id": "avalonia-ui-cut",
+      "prefixes": ["Avalonia.Controls", "Avalonia.Styling", "Avalonia.VisualTree", "Avalonia.Markup"],
+      "disposition": "exclude-with-owner",
+      "owner": "Doroti.Shell.Core compatibility seam",
+      "reason": "Only platform-facing contracts cross the shell seam; Control, styling, XAML and Avalonia visual-tree semantics remain outside the product framework."
+    },
+    {
+      "id": "avalonia-automation-port",
+      "prefixes": ["Avalonia.Automation"],
+      "disposition": "Doroti-port",
+      "owner": "Doroti semantics bridge",
+      "reason": "Native providers consume Doroti-owned semantics and automation DTOs."
+    },
+    {
+      "id": "avalonia-core-port",
+      "prefixes": ["Avalonia"],
+      "disposition": "Doroti-port",
+      "owner": "Doroti.Shell.Core",
+      "reason": "Geometry, property notifications, input DTOs, service lookup and lifetime primitives are explicit internal compatibility ports."
+    },
+    {
+      "id": "dotnet-and-generators",
+      "prefixes": ["System", "Microsoft", "MicroCom", "SharpGen", "Silk", "Windows.Win32"],
+      "disposition": "Doroti-port",
+      "owner": "Doroti vendor build",
+      "reason": "BCL, interop generators and native bindings are build/runtime dependencies rather than copied Avalonia symbols."
+    },
+    {
+      "id": "graphics-runtime",
+      "prefixes": ["SkiaSharp", "OpenTK", "NWayland", "Tmds", "HarfBuzzSharp"],
+      "disposition": "Doroti-port",
+      "owner": "Doroti platform and graphics adapters",
+      "reason": "External graphics, Wayland and DBus APIs are pinned independently at the vendor adapter boundary."
+    }
+  ],
+  "seedSymbols": [
+    { "platform": "shared", "symbol": "Avalonia.Platform.IWindowImpl", "sourcePath": "src/Avalonia.Controls/Platform/IWindowImpl.cs" },
+    { "platform": "shared", "symbol": "Avalonia.Platform.ITopLevelImpl", "sourcePath": "src/Avalonia.Controls/Platform/ITopLevelImpl.cs" },
+    { "platform": "shared", "symbol": "Avalonia.Platform.IWindowingPlatform", "sourcePath": "src/Avalonia.Controls/Platform/IWindowingPlatform.cs" },
+    { "platform": "shared", "symbol": "Avalonia.Threading.Dispatcher", "sourcePath": "src/Avalonia.Base/Threading/Dispatcher.cs" },
+    { "platform": "shared", "symbol": "Avalonia.Rendering.IRenderTimer", "sourcePath": "src/Avalonia.Base/Rendering/IRenderTimer.cs" },
+    { "platform": "shared", "symbol": "Avalonia.Rendering.IRenderLoop", "sourcePath": "src/Avalonia.Base/Rendering/IRenderLoop.cs" },
+    { "platform": "windows", "symbol": "Avalonia.Win32.Win32Platform", "sourcePath": "src/Windows/Avalonia.Win32/Win32Platform.cs" },
+    { "platform": "windows", "symbol": "Avalonia.Win32.WindowImpl", "sourcePath": "src/Windows/Avalonia.Win32/WindowImpl.cs" },
+    { "platform": "windows", "symbol": "Avalonia.Win32.ScreenImpl", "sourcePath": "src/Windows/Avalonia.Win32/ScreenImpl.cs" },
+    { "platform": "windows", "symbol": "Avalonia.Win32.CursorFactory", "sourcePath": "src/Windows/Avalonia.Win32/CursorFactory.cs" },
+    { "platform": "windows", "symbol": "Avalonia.Win32.ClipboardImpl", "sourcePath": "src/Windows/Avalonia.Win32/ClipboardImpl.cs" },
+    { "platform": "windows", "symbol": "Avalonia.Win32.Input.Imm32InputMethod", "sourcePath": "src/Windows/Avalonia.Win32/Input/Imm32InputMethod.cs" },
+    { "platform": "windows", "symbol": "Avalonia.Win32.Automation.RootAutomationNode", "sourcePath": "src/Windows/Avalonia.Win32.Automation/RootAutomationNode.cs" },
+    { "platform": "linux-x11", "symbol": "Avalonia.X11.AvaloniaX11Platform", "sourcePath": "src/Avalonia.X11/X11Platform.cs" },
+    { "platform": "linux-wayland", "symbol": "Avalonia.Wayland.WaylandPlatform", "sourcePath": "src/Avalonia.Wayland/WaylandPlatform.cs" },
+    { "platform": "macos", "symbol": "Avalonia.Native.AvaloniaNativePlatform", "sourcePath": "src/Avalonia.Native/AvaloniaNativePlatform.cs" },
+    { "platform": "macos", "symbol": "Avalonia.Native.WindowImpl", "sourcePath": "src/Avalonia.Native/WindowImpl.cs" }
+  ],
+  "platformDecisions": [
+    {
+      "id": "windows-first",
+      "platforms": ["windows"],
+      "decision": "select-complete-first-closure",
+      "owner": "A1",
+      "reason": "Win32 lifecycle, input/IME, automation and WGL/ANGLE surfaces form the first independently compiled vertical slice."
+    },
+    {
+      "id": "linux-dual-window-system",
+      "platforms": ["linux"],
+      "decision": "x11-first-wayland-explicit-follow-on",
+      "owner": "X0",
+      "reason": "X11 is first, but Wayland has its own selected closure and cannot inherit X11 verification."
+    },
+    {
+      "id": "macos-managed-and-native",
+      "platforms": ["macos"],
+      "decision": "managed-bridge-plus-libavalonia-source",
+      "owner": "X0",
+      "reason": "The C# bridge and libAvalonia native source/build are versioned and rebased together."
+    }
+  ],
+  "nativeAssets": [
+    {
+      "id": "libAvalonia-macos",
+      "platforms": ["macos"],
+      "paths": [
+        "native/Avalonia.Native/inc",
+        "native/Avalonia.Native/src/OSX",
+        "native/Avalonia.Native/generate-headers.sh"
+      ],
+      "license": "licence.md",
+      "build": "Build native/Avalonia.Native/src/OSX/Avalonia.Native.OSX.xcodeproj on macOS and package the produced libAvalonia asset with the managed bridge.",
+      "rebaseOwner": "Doroti.Vendor.Avalonia.Native"
+    }
+  ],
+  "compileStages": [
+    {
+      "id": "A0-W0-contracts",
+      "projects": ["Doroti.Shell.Core", "Doroti.Vendor.Avalonia.Base"],
+      "sourceSets": ["shell-contracts"],
+      "dorotiPorts": ["geometry/input DTOs", "service registry", "property notification compatibility"],
+      "avaloniaBinaryPackages": [],
+      "completion": "Shared shell contracts compile without Avalonia NuGet binaries."
+    },
+    {
+      "id": "A0-W1-services",
+      "projects": ["Doroti.Vendor.Avalonia.Win32"],
+      "sourceSets": ["windows-automation", "windows-win32"],
+      "dorotiPorts": ["semantics provider bridge", "native resource diagnostics", "Windows interop generation"],
+      "avaloniaBinaryPackages": [],
+      "completion": "Win32 window, DPI, screen, cursor, clipboard, IMM32 and automation source compiles over A0-W0."
+    },
+    {
+      "id": "A0-W2-surfaces",
+      "projects": ["Doroti.Vendor.Avalonia.Skia", "Doroti.Vendor.Avalonia.Win32"],
+      "sourceSets": ["skia-opengl-surfaces", "windows-win32"],
+      "dorotiPorts": ["DisplayList canvas", "surface generation", "frame submission and terminal ACK"],
+      "avaloniaBinaryPackages": [],
+      "completion": "WGL/ANGLE/DXGI and Skia surface closure compiles without Avalonia composition or Control assemblies."
+    },
+    {
+      "id": "A0-W3-shell-closure",
+      "projects": ["Doroti.Shell.Core", "Doroti.Vendor.Avalonia.Base", "Doroti.Vendor.Avalonia.Win32", "Doroti.Vendor.Avalonia.Skia"],
+      "sourceSets": ["shell-contracts", "windows-win32", "windows-automation", "skia-opengl-surfaces"],
+      "dorotiPorts": ["all classified A0-W0 through A0-W2 ports"],
+      "avaloniaBinaryPackages": [],
+      "completion": "The complete Windows source closure is independently buildable and ready for A1 lifecycle integration."
+    },
+    {
+      "id": "A0-X0-linux",
+      "projects": ["Doroti.Vendor.Avalonia.X11", "Doroti.Vendor.Avalonia.Wayland", "Doroti.Vendor.Avalonia.FreeDesktop", "Doroti.Vendor.Avalonia.Skia"],
+      "sourceSets": ["linux-x11", "linux-wayland", "linux-freedesktop", "skia-opengl-surfaces"],
+      "dorotiPorts": ["DBus bindings", "AT-SPI semantics bridge", "window-system input DTOs"],
+      "avaloniaBinaryPackages": [],
+      "completion": "Linux closures are classified; physical X11 and Wayland runtime proof remains X0."
+    },
+    {
+      "id": "A0-X0-macos",
+      "projects": ["Doroti.Vendor.Avalonia.Native", "Doroti.Vendor.Avalonia.Skia"],
+      "sourceSets": ["macos-managed", "macos-libavalonia", "skia-opengl-surfaces"],
+      "dorotiPorts": ["MicroCom generation", "Doroti semantics and input bridge", "native packaging"],
+      "avaloniaBinaryPackages": [],
+      "completion": "Managed/native macOS source and build ownership are classified; physical runtime proof remains X0."
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "doroti.foundation-key-fixture/v1",
+  "flutterGitRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "cases": [
+    {
+      "id": "value-key-equal",
+      "operation": "value-equal"
+    },
+    {
+      "id": "value-key-different",
+      "operation": "value-different"
+    },
+    {
+      "id": "value-key-generic-type",
+      "operation": "generic-type-isolation"
+    },
+    {
+      "id": "value-key-private-subclass",
+      "operation": "subclass-isolation"
+    },
+    {
+      "id": "value-key-hash",
+      "operation": "equal-hash"
+    },
+    {
+      "id": "unique-key-same-instance",
+      "operation": "unique-same-instance"
+    },
+    {
+      "id": "unique-key-distinct",
+      "operation": "unique-distinct"
+    }
+  ]
+}

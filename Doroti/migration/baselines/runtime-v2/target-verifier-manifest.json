@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "doroti.runtime-v2-target-verifier/v1",
+  "reportSchemaVersion": "doroti.runtime-v2-target-report/v1",
+  "maximumReportAgeHours": 24,
+  "requiredIdentityFields": [
+    "runId",
+    "sourceRevision",
+    "capturedAtUtc",
+    "environment.id",
+    "environment.operatingSystem",
+    "environment.architecture",
+    "artifacts.path"
+  ],
+  "suites": [
+    {
+      "id": "gpu-target",
+      "requiredGates": [
+        "H1-shell-lifecycle",
+        "H2-frame-lifecycle",
+        "H5-product-runtime"
+      ],
+      "measurements": [
+        { "id": "active-gpu-context", "comparison": "equals", "threshold": true },
+        { "id": "software-fallback-used", "comparison": "equals", "threshold": false },
+        { "id": "active-gpu-resources-during-frame", "comparison": "minimum", "threshold": 1 },
+        { "id": "visual-average-byte-delta", "comparison": "maximum", "threshold": 2 },
+        { "id": "terminal-ack-coverage", "comparison": "equals", "threshold": true },
+        { "id": "present-interval-p95-ms", "comparison": "maximum", "threshold": 16.667 },
+        { "id": "missed-frame-ratio", "comparison": "maximum", "threshold": 0.01 },
+        { "id": "input-to-present-p95-ms", "comparison": "maximum", "threshold": 50 },
+        { "id": "queue-high-watermark", "comparison": "maximum", "threshold": 2 },
+        { "id": "full-frame-copy-bytes-per-frame", "comparison": "maximum", "threshold": 0 },
+        { "id": "managed-framebuffer-allocations", "comparison": "maximum", "threshold": 0 },
+        { "id": "writeable-bitmap-allocations", "comparison": "maximum", "threshold": 0 },
+        { "id": "ui-thread-synchronous-waits", "comparison": "maximum", "threshold": 0 }
+      ]
+    },
+    {
+      "id": "dpi-input-target",
+      "requiredGates": [
+        "H1-shell-lifecycle",
+        "H3-input-services",
+        "H5-product-runtime",
+        "H6-product-ui"
+      ],
+      "measurements": [
+        { "id": "dpi-scales-captured", "comparison": "minimum", "threshold": 4 },
+        { "id": "marker-mismatch-count", "comparison": "maximum", "threshold": 0 },
+        { "id": "wheel-up-direction-correct", "comparison": "equals", "threshold": true },
+        { "id": "wheel-down-direction-correct", "comparison": "equals", "threshold": true },
+        { "id": "fractional-wheel-preserved", "comparison": "equals", "threshold": true },
+        { "id": "input-double-delivery-count", "comparison": "maximum", "threshold": 0 },
+        { "id": "hit-test-error-px", "comparison": "maximum", "threshold": 2 },
+        { "id": "caret-error-px", "comparison": "maximum", "threshold": 2 },
+        { "id": "p99-end-to-end-ms", "comparison": "maximum", "threshold": 16.667 }
+      ]
+    },
+    {
+      "id": "cross-platform",
+      "requiredGates": [
+        "H4-distribution"
+      ],
+      "measurements": [
+        { "id": "windows-source-shell-compile", "comparison": "equals", "threshold": true },
+        { "id": "linux-source-shell-compile", "comparison": "equals", "threshold": true },
+        { "id": "macos-source-shell-compile", "comparison": "equals", "threshold": true },
+        { "id": "windows-target-run", "comparison": "equals", "threshold": true },
+        { "id": "linux-target-run", "comparison": "equals", "threshold": true },
+        { "id": "macos-target-run", "comparison": "equals", "threshold": true },
+        { "id": "avalonia-binary-package-count", "comparison": "maximum", "threshold": 0 }
+      ]
+    }
+  ]
+}

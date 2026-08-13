@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "doroti.converter-selection/v4",
+  "converterVersion": "2.0.0",
+  "migrationIrVersion": "2.0.0",
+  "generationMode": "isolated-generated-solution",
+  "compatibilityProfile": "flutter-aware-c4",
+  "outputNamespace": "Doroti.Generated.C4",
+  "outputAssemblyName": "Doroti.Generated.C4",
+  "flutterBaseline": "../flutter-compat/baseline.json",
+  "packageRoot": "../fixtures/c4_async_navigation",
+  "entryPoint": "main",
+  "inputs": [
+    {
+      "path": "../fixtures/c4_async_navigation/lib/generated_async_navigation_app.dart",
+      "symbols": [
+        "RouteLabelMixin",
+        "RouteNameExtension",
+        "DetailsRoute",
+        "GeneratedAsyncNavigationApp",
+        "GeneratedAsyncNavigationAppState"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "doroti.g5-4-gallery-differential/v1",
+  "milestone": "G5-4",
+  "capturedAtUtc": "2026-08-13T13:15:31.7436842+00:00",
+  "status": "PASS",
+  "evidenceClass": "syntheticContract",
+  "eligibleForLivePass": false,
+  "liveWidgetLifecycle": "notVerified",
+  "reference": "Flutter 56b8e1a8 public constructor, property, callback, input and semantics contracts",
+  "shell": "one shared SourcePortedGalleryShell factory with Material and Cupertino branches",
+  "dimensions": [
+    "behavior",
+    "visual",
+    "input",
+    "semantics"
+  ],
+  "traces": {
+    "visual:material": [
+      "G5-4 Material",
+      "ff6750a4",
+      "Text"
+    ],
+    "visual:cupertino": [
+      "G5-4 Cupertino",
+      "ff007aff",
+      "Text"
+    ],
+    "behavior": [
+      "material:1/True",
+      "cupertino:1/True"
+    ],
+    "input": [
+      "material:doroti/False",
+      "cupertino:doroti/False"
+    ],
+    "semantics": [
+      "Material action/True",
+      "Cupertino action/True"
+    ]
+  },
+  "failures": []
+}

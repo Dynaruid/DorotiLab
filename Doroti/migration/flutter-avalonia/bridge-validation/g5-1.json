@@ -1,0 +1,76 @@
+{
+    "schemaVersion":  "doroti.g5-1-closure/v1",
+    "milestone":  "G5-1",
+    "capturedAtUtc":  "2026-08-10T11:38:49.6993692Z",
+    "status":  "partial-not-verified",
+    "compilerAndPromotion":  {
+                                 "publicApiManifestDiff":  0,
+                                 "packageConsumer":  "verified",
+                                 "validateG4_4":  "verified",
+                                 "aggregateGates":  {
+                                                        "g4_3Regression":  true,
+                                                        "compilerCandidate":  true,
+                                                        "productBuild":  true,
+                                                        "externalPackageConsumer":  true
+                                                    }
+                             },
+    "ownership":  {
+                      "nonFrameworkRecognizerAnimationPolicyOwnerCount":  0,
+                      "compatibilityRecognizerSymbolCount":  0,
+                      "adapterCount":  5,
+                      "status":  "verified"
+                  },
+    "behavior":  {
+                     "gestureArenaHoldReleaseSweep":  "verified",
+                     "cancelCaptureLossExactlyOnce":  "verified",
+                     "timestampLogicalCoordinate":  "verified-managed-and-native-synthetic",
+                     "scrollDeltaExactlyOnce":  "verified-native-synthetic",
+                     "tickerCompleteCancelMuteResume":  "verified-managed",
+                     "sustainedNativeFramePacing":  "verified",
+                     "nativeFrameMetrics":  {
+                                                "frameCount":  180,
+                                                "durationMilliseconds":  2563.2456,
+                                                "intervalP50Milliseconds":  14.1551,
+                                                "intervalP95Milliseconds":  18.9492,
+                                                "intervalP99Milliseconds":  19.2764
+                                            }
+                 },
+    "deviceEvidence":  {
+                           "mouse":  {
+                                         "status":  "not-verified",
+                                         "availableDevices":  [
+                                                                  {
+                                                                      "name":  "Bluetooth Mouse M336/M337/M535",
+                                                                      "status":  "OK",
+                                                                      "instanceId":  "BTHENUM\\DEV_34885DEA85EC\\9\u0026BFCBF6\u00260\u0026BLUETOOTHDEVICE_34885DEA85EC"
+                                                                  }
+                                                              ],
+                                         "syntheticNativeWindowRun":  true,
+                                         "reason":  "Actual physical mouse event was not distinguished from injected target-controller input."
+                                     },
+                           "trackpad":  {
+                                            "status":  "not-verified",
+                                            "availableDevices":  [
+                                                                     {
+                                                                         "name":  "ASUS Precision Touchpad",
+                                                                         "status":  "OK",
+                                                                         "instanceId":  "HID\\ASUP1208\u0026COL02\\4\u0026124A69F3\u00260\u00260001"
+                                                                     }
+                                                                 ],
+                                            "syntheticWheelRun":  true,
+                                            "reason":  "Precision touchpad hardware is present, but no physical trackpad recording was captured."
+                                        },
+                           "touch":  {
+                                         "status":  "not-verified",
+                                         "deviceAvailable":  false,
+                                         "reason":  "This target reports no touch digitizer."
+                                     }
+                       },
+    "nativeWindowEvidence":  "artifacts/g5-1/native-input.json",
+    "ownerAuditEvidence":  "artifacts/g5-1/owner-audit.json",
+    "remainingGates":  [
+                           "Physical mouse recording through the native source-port window.",
+                           "Physical precision-trackpad recording through the native source-port window.",
+                           "Physical touch recording on a target with a touch digitizer."
+                       ]
+}

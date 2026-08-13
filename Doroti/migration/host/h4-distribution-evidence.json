@@ -1,0 +1,89 @@
+{
+  "schemaVersion": "doroti.h4-distribution-evidence/v1",
+  "status": "local-windows-and-wsl-linux-verified-clean-windows-vm-not-verified",
+  "verifiedAtUtc": "2026-08-02T11:31:36.7124232+00:00",
+  "entrypoints": [
+    {
+      "id": "counter",
+      "project": "samples/AvaloniaHostCounter/AvaloniaHostCounter.csproj",
+      "defaultHost": "Doroti.Host.Avalonia",
+      "status": "verified"
+    },
+    {
+      "id": "virtual-list-product-demo",
+      "project": "../DorotiDemoApp/DorotiDemoApp.csproj",
+      "defaultHost": "Doroti.Host.Avalonia",
+      "status": "verified"
+    },
+    {
+      "id": "doroti-counter-template",
+      "project": "templates/Doroti.Templates/content/doroti-counter/DorotiCounter.csproj",
+      "defaultHost": "Doroti.Host.Avalonia",
+      "status": "verified"
+    }
+  ],
+  "generatedPackageBoundary": {
+    "status": "pass",
+    "allowedRuntimeSurface": "public Doroti and Doroti.FlutterCompat APIs",
+    "hostOrAvaloniaReferences": 0,
+    "repositoryProjectReferences": 0
+  },
+  "localFeed": {
+    "status": "pass",
+    "packageCount": 13,
+    "templatePackage": "Doroti.Templates.0.2.0-beta.nupkg"
+  },
+  "consumer": {
+    "template": "doroti-counter",
+    "publicSourceHashes": {
+      "project": "374570d51e3cb438793641b99a0a8ad15d065cd5d708441181367810759cf270",
+      "program": "0a42f9405f13f1691455338bf00007ce3688b83037cbdc56ad0051e0f62ec6f7"
+    },
+    "templateInstall": "pass",
+    "templateUninstall": "pass",
+    "repositoryProjectReferences": 0
+  },
+  "targets": [
+    {
+      "id": "windows-win-x64",
+      "environment": "Windows 10.0.26200, .NET SDK 10.0.300",
+      "status": "verified",
+      "restore": "pass",
+      "build": "pass",
+      "windowRun": "pass",
+      "publish": "pass",
+      "packagedRun": "pass"
+    },
+    {
+      "id": "ubuntu-wsl2-linux-x64",
+      "environment": "Ubuntu 26.04 WSL2, Linux 6.18.33.1-microsoft-standard-WSL2, .NET SDK 10.0.300, Xvfb",
+      "status": "verified",
+      "restore": "pass",
+      "build": "pass",
+      "windowRun": "pass",
+      "publish": "pass",
+      "packagedRun": "pass",
+      "scope": "H4 packaging and non-Windows process/window startup only; this does not promote Linux H1-H3 input, DPI, accessibility, or physical compositor gates."
+    },
+    {
+      "id": "macos",
+      "status": "not-verified",
+      "reason": "No macOS target was attached."
+    }
+  ],
+  "cleanWindowsVm": {
+    "status": "not-verified",
+    "reason": "Windows used isolated package/template caches and an external workspace on the development machine; no disposable clean Windows VM was attached."
+  },
+  "validation": {
+    "doctor": "pass",
+    "runtimeTests": "pass, host 7/7 and R5-R9 suites",
+    "architectureTests": "16/16 pass",
+    "productBuild": "0 warnings, 0 errors",
+    "sourceAudit": "3 sources, 0 findings",
+    "format": "pass",
+    "release": "pass, including generated packages, external consumer, template window run, win-x64 publish, published run, and uninstall"
+  },
+  "command": "eng/verify-h4-distribution.ps1",
+  "runtimeReport": "artifacts/h4-distribution/distribution-report.json"
+}

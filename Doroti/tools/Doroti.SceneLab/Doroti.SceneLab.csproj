@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Doroti.SceneLab</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Doroti.Tooling\Doroti.Tooling.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Legacy.Rendering\Doroti.Legacy.Rendering.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Rendering\Doroti.Rendering.csproj" />
+  </ItemGroup>
+</Project>
