@@ -37,13 +37,13 @@ Doroti는 두 기술을 연결하는 조금 엉뚱하지만 신나는 질문에�
 
 그래서 Doroti는 겉모습만 비슷하게 재구현하기보다 Flutter upstream source를 동작의 기준으로 삼습니다. 이를 위해 semantic compiler, runtime, rendering pipeline과 native host를 함께 개발합니다.
 
-## Avalonia는 어디에 쓰이나요?
+## 플랫폼 셸은 어떻게 구성되어 있나요?
 
-Avalonia는 Doroti의 Windows desktop platform host를 만드는 중요한 기반입니다. Avalonia upstream의 Win32 window lifecycle, dispatcher, pointer와 keyboard input, IME, clipboard, cursor 관련 구현을 선별해 Doroti의 platform contract에 맞게 이식했습니다. 이 소스들은 upstream revision과 변경 이력을 추적할 수 있도록 provenance manifest로 관리합니다.
+플랫폼 셸은 Doroti runtime과 운영체제를 잇는 계층입니다. window lifecycle, dispatcher, pointer와 keyboard input, IME, clipboard, cursor, accessibility와 rendering surface를 담당합니다. 화면의 widget tree, layout, paint와 state lifecycle은 C#으로 옮긴 Flutter framework와 Doroti runtime이 소유합니다.
 
-다만 Doroti 앱의 UI를 Avalonia `Control`이나 XAML로 구성하는 것은 아닙니다. 화면의 widget tree, layout, paint와 state lifecycle은 C#으로 옮긴 Flutter framework와 Doroti runtime이 담당하고, Avalonia에서 가져온 platform 구현은 그 결과를 native window 및 운영체제 기능과 이어 주는 역할을 합니다.
+현재 Windows 제품 셸은 공통 platform contract 위에 구성됩니다. 기본 host가 native HWND를 만들고 OS 서비스를 연결하며, Avalonia upstream에서 선별한 Win32 window, dispatcher, input, IME, clipboard, cursor 구현을 그 contract에 맞게 이식합니다. 이 소스들은 upstream revision과 변경 이력을 추적할 수 있도록 provenance manifest로 관리합니다. Doroti 앱의 UI를 Avalonia `Control`이나 XAML로 구성하는 것은 아닙니다.
 
-공식 `Avalonia.Desktop` package를 사용하는 host도 별도로 유지합니다. 이 경로는 현재 기본 제품 host가 아니라, 소스 이식 host와 동작을 비교하고 rendering·input·window lifecycle을 검증하는 A/B reference입니다.
+공식 `Avalonia.Desktop` package를 사용하는 host도 별도로 유지합니다. 이 경로는 기본 제품 셸이 아니라, 소스 이식 host와 동작을 비교하고 rendering·input·window lifecycle을 검증하는 A/B reference입니다.
 
 ## 작동 방식
 

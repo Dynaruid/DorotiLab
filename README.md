@@ -37,13 +37,13 @@ Doroti began with a slightly unconventional but exciting question that connects 
 
 Instead of building something that merely resembles Flutter, Doroti treats the upstream Flutter source as the behavioral reference. To make that possible, the semantic compiler, runtime, rendering pipeline, and native host are developed together.
 
-## Where does Avalonia fit?
+## How the platform shell is structured
 
-Avalonia is an important foundation for Doroti's Windows desktop platform host. Selected implementations for the Win32 window lifecycle, dispatcher, pointer and keyboard input, IME, clipboard, and cursor are ported from Avalonia upstream and adapted to Doroti's platform contracts. A provenance manifest tracks their upstream revisions and change history.
+The platform shell is the layer that connects the Doroti runtime to the operating system. It owns the window lifecycle, dispatcher, pointer and keyboard input, IME, clipboard, cursor, accessibility, and rendering surface. The C# port of the Flutter framework and the Doroti runtime keep ownership of the widget tree, layout, painting, and state lifecycle.
 
-Doroti applications are not composed from Avalonia `Control` objects or XAML. The C# port of the Flutter framework and the Doroti runtime own the widget tree, layout, painting, and state lifecycle. The platform implementations sourced from Avalonia connect that output to native windows and operating system services.
+The current Windows product shell sits on shared platform contracts. The primary host creates a native HWND and wires operating system services. Selected Avalonia upstream implementations for the Win32 window, dispatcher, input, IME, clipboard, and cursor are ported behind those contracts and tracked with a provenance manifest. Doroti applications are not composed from Avalonia `Control` objects or XAML.
 
-A separate host based on the official `Avalonia.Desktop` package is also maintained. It is not the primary product host; it serves as an A/B reference for comparing the source-port host and validating rendering, input, and window lifecycle behavior.
+A separate host based on the official `Avalonia.Desktop` package is also maintained. It is not the default product shell; it serves as an A/B reference for comparing the source-port host and validating rendering, input, and window lifecycle behavior.
 
 ## How it works
 
