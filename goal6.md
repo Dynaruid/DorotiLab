@@ -1,6 +1,6 @@
 # Doroti 6차 목표 — live Flutter framework bring-up과 DemoApp component coverage
 
-> 상태: G6-5R 🚧 진행 중 — G6-5 시각/생성 품질과 native interaction/cursor 재개방, G6-6 진입 보류
+> 상태: G6-5R 🚧 진행 중 — G6-5 시각/생성 품질, native interaction/cursor와 scene/compositing 효과 계약 재개방, G6-6 진입 보류
 > 작성일: 2026-08-12
 > 선행 상태: Goal5 종료. compiler/API/build/synthetic 산출물은 입력으로 재사용하되 runtime readiness는 재검증
 > Flutter source pin: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
@@ -31,6 +31,7 @@ Goal6의 1차 목표는 Doroti framework만으로 일반적인 데스크톱 Demo
 
 - app/theme: `MaterialApp`, light/dark theme, inherited theme, localization
 - layout/display: `Scaffold`, `AppBar`, `Text`, `Icon`, `Card`, `ListTile`, `Divider`, `Row`, `Column`, `Stack`, `Container`, `Padding`, `Align`, `Center`
+- effects/compositing: group opacity, `saveLayer`, clipped `BackdropFilter`, foreground `ImageFiltered`, color filter와 shader mask의 지원 범위/명시적 unsupported
 - action/selection: FAB, Material button variants, icon button, menu, checkbox, radio, switch, slider
 - navigation/overlay: named and imperative navigation, route transition, dialog, snack bar, bottom sheet, tooltip
 - input/form: `TextField`, `Form`, validation, keyboard/focus, clipboard, Windows IME
@@ -423,9 +424,97 @@ public manifest를 다음 wave로 자동 분류한다.
 - 100회 hover enter/leave/down/up 스트레스에서 enter/exit/down/up 각 100, callback delta 0, stuck hover/capture 0이다. cursor/chrome 100회 stress와 8회 programmatic resize도 failed/cancelled/software fallback 0 및 HWND/WGL resource balance를 유지했다.
 - component matrix의 direct-callback-only 23개 항목은 `notVerified-native-input`으로 내렸고 실제 native input 집계는 `CalendarDatePicker` 1/24만 verified다. physical hover overlay와 click은 사용자 수동 입력으로 별도 확인했다. 실제 border drag resize, pinned Flutter desktop differential, Avalonia/Linux/macOS는 아직 `notVerified`이므로 G6-5R-I 전체 상태는 진행 중으로 유지한다.
 
+#### G6-5R-C 🚧 — scene/compositing/paint effect 계약 복구
+
+진입 조건: G6-5 coverage gate 완료. G6-5R 및 G6-5R-I와 독립적으로 진행할 수 있지만 세 재개방 gate가 모두 닫히기 전에는 G6-6에 진입하지 않는다.
+
+재개방 사유와 확인된 공용 결함 (2026-08-14):
+
+- `BackdropFilter` widget과 `BackdropFilterLayer.addToScene()`은 존재하고 `SceneBuilder.pushBackdropFilter()`도 `backdropFilter` command를 기록한다. 그러나 typed `HostPayload`가 없고 desktop `TranslateScene()`에 mapping이 없어 strict-GPU 첫 frame에서 `NotSupportedException`이 발생한다.
+- 이 문제는 backdrop blur 하나로 끝나지 않는다. scene producer가 내보내는 `clipRSuperellipse`, `colorFilter`, `imageFilter`, `shaderMask`, `backdropFilter`, `retained`, `performanceOverlay`, `platformView`, `texture`도 현재 desktop mapping이 없으며, payload가 없는 operation은 host가 의미를 복구할 수도 없다.
+- `opacity` scene operation은 예외 없이 translation되지만 alpha를 적용하지 않고 offset transform만 남긴다. 더구나 opacity를 각 primitive에 곱하는 방식은 겹치는 child를 하나의 offscreen group으로 합성하는 Flutter 의미와 다르다. throw보다 위험한 silent semantic loss이므로 기존 `presented` 증거만으로 PASS 처리할 수 없다.
+- `Canvas.saveLayer(bounds, paint)`는 bounds와 paint를 버린 채 일반 `save`로 기록되고 host에서도 일반 `Save()`로 축약된다. Material `Chip` 등의 `srcATop` layer, anti-aliased save-layer clip과 후처리 효과가 화면은 떠도 다르게 그려질 수 있다.
+- `Paint`의 `blendMode`, `shader`, `colorFilter`, `maskFilter`, `filterQuality`, `invertColors`, stroke cap/join과 anti-alias 설정은 backend-neutral `RasterPaint`로 보존되지 않는다. `drawColor`의 blend mode도 버려진다. `Gradient`는 colors/stops/matrix를, `ColorFilter`와 `MaskFilter`는 생성 인자를 현재 값 객체에 보존하지 않아 host 단계만 고쳐서는 복구할 수 없다.
+- picture translation에는 `skew`, `clipRSuperellipse`, `drawRSuperellipse`, points/raw points, vertices, atlas/raw atlas와 image-nine mapping이 없다. `Path`의 quadratic/cubic/conic verb도 현재 endpoint 위주로 축약되므로 기존 rounded-rect 회귀는 일반 path fidelity를 증명하지 않는다.
+- backend-neutral `IRasterCanvas`에는 offscreen `saveLayer`, backdrop sampling, image/color filter와 blend group 계약이 없다. Skia target의 `SKImageFilter.CreateBlur`는 개별 path shadow paint에만 쓰이며, 현재 surface의 뒤 픽셀을 clip 안에서 샘플하는 backdrop blur가 아니다.
+- `EngineLayer`는 retained subtree의 immutable content/generation을 소유하지 않고 `addRetained`도 mapping되지 않는다. 정지한 두 번째 frame에서 재사용되는 scene이 첫 frame과 동일하다는 보장이 없다.
+- Cupertino nav bar, tab bar, dialog/action sheet/context menu는 backdrop blur, composed color filter와 superellipse clip을 실제로 사용한다. 따라서 이 계약을 G6-6 중 개별 Cupertino widget workaround로 넘기지 않는다.
+
+범위와 우선순위:
+
+- C0 blocking core: typed operation payload, balanced effect scope, group opacity, `saveLayer`, clipped Gaussian backdrop blur(`sigmaX`, `sigmaY`, tile/bounds, `srcOver`)와 explicit unsupported diagnostic
+- C1 G6-6 prerequisite: retained layer replay, `ClipRSuperellipse`, foreground blur/matrix `ImageFilter`, color matrix/mode, compose, Material/Cupertino가 실제 사용하는 blend mode, gradient/image shader와 shader mask
+- C2 application/resource closure: image-nine, atlas/vertices/points, performance overlay와 texture/platform-view external composition. C2 중 G6-7/G6-8 소유 항목은 owner와 진입 milestone을 matrix에 남기고 실행 전까지 `notVerified`; silent no-op 또는 일반 draw로의 축약은 금지한다.
+- fragment shader와 임의 custom runtime effect는 engine/backend capability가 준비되기 전까지 명시적 `unsupported`로 유지한다. `ImageFilter.isShaderFilterSupported`를 거짓으로 유지하는 것은 허용되지만 지원한 것처럼 빈 payload를 만들 수는 없다.
+
+작업:
+
+1. scene/canvas/paint operation census와 상태 모델을 만든다.
+   - pinned Flutter UI/Rendering producer에서 scene push/add operation과 Canvas draw/save operation을 자동 추출한다.
+   - 각 operation에 `declared`, `payloadPreserved`, `translated`, `grouped`, `gpuRasterized`, `managedRasterized`, `referenceDifferential`, `retainedReplayed`, `physical` 상태를 독립 기록한다.
+   - framework consumer library/component, 필요한 backend와 disposition(`exact`, `boundedFallback`, `explicitUnsupported`, `notVerified`)을 연결한다. runtime switch에 새 operation이 도달할 때만 발견되는 방식을 금지하고 evidence validator가 unknown/silent downgrade를 실패시킨다.
+
+2. UI 값과 scene payload를 typed immutable contract로 복구한다.
+   - `SceneBackdropFilterPayload(filter, blendMode, backdropId)`, `SceneImageFilterPayload`, `SceneColorFilterPayload`, `SceneShaderMaskPayload`, `SceneClipRSuperellipsePayload`와 `CanvasSaveLayerPayload(bounds, paintSnapshot)`를 도입한다.
+   - `ImageFilter` blur/matrix/compose/color-filter와 `ColorFilter` mode/matrix/gamma, gradient colors/stops/tile/matrix, mask filter와 shader 입력을 생성 시점에 보존한다. mutable `Paint` 참조를 나중에 읽지 않고 command record 시 deep snapshot한다.
+   - finite sigma/matrix/bounds, color-matrix length, stop ordering, supported blend/tile mode를 producer boundary에서 검증한다. 허용되지 않는 조합은 최초 unsupported family와 widget/library를 포함해 frame submit 전에 실패한다.
+
+3. push/pop을 backend-neutral effect tree로 번역한다.
+   - `TranslateScene()`의 flat save/transform loop를 balanced scope parser로 교체해 transform, shaped clip, opacity, foreground image/color filter, shader mask와 backdrop filter가 child group을 소유하게 한다.
+   - `LayerTree`/`DisplayList`에 typed effect node 또는 동등한 balanced `BeginLayer/EndLayer` command를 추가하고 effective clip, local transform, filter outset와 offscreen bounds를 계산한다.
+   - group opacity는 child를 offscreen에 한 번 합성한 뒤 alpha를 적용한다. paint alpha, group opacity와 backdrop blend alpha를 서로 중복 적용하지 않는다.
+   - foreground `ImageFilter`는 child 결과를 filter하고, `BackdropFilter`는 effect 진입 전 destination을 샘플한 뒤 clip 안에 합성한다. 두 경로를 하나의 paint blur로 합치지 않는다.
+   - `Clip.antiAliasWithSaveLayer`, nested transform/clip/filter, empty/infinite bounds, device-pixel expansion과 premultiplied alpha 순서를 pinned Flutter/Skia 의미로 고정한다.
+
+4. strict-GPU와 managed reference를 같은 contract에 연결한다.
+   - `INativeRasterFrame`/`IRasterCanvas`에 bounded offscreen layer와 typed filter/blend capability를 추가한다. Skia OpenGL path는 GPU surface에서 save-layer/backdrop filter를 실행하고 CPU full-frame readback/upload를 만들지 않는다.
+   - managed raster는 최소 C0의 separable Gaussian blur, anisotropic sigma, premultiplied BGRA, clip mask와 tile edge를 결정적으로 구현한다. 구현하지 않은 C1/C2 effect는 명확한 capability error를 내며 no-op하지 않는다.
+   - OpenGL, framebuffer/managed와 Avalonia host adapter의 지원 상태를 별도 기록한다. 한 backend의 PASS를 다른 backend로 환산하지 않으며 software fallback이 strict-GPU PASS를 만들지 못하게 한다.
+   - offscreen surface/filter/cache는 frame ACK, resize/surface generation, device/context loss와 함께 해제한다. 최대 intermediate pixel/byte와 effect pass count를 evidence에 남긴다.
+
+5. retained rendering과 repaint correctness를 복구한다.
+   - `EngineLayer`가 immutable translated subtree, generation/owner와 disposal 상태를 보존하게 하고 `addRetained`가 같은 view/surface generation에서만 재사용되게 한다.
+   - filter/sigma/clip/blend/backdrop key 또는 뒤 content가 변하면 필요한 scope가 dirty/recomposite된다. 같은 backdrop key 최적화는 정확성 gate 뒤에만 허용한다.
+   - first frame, unchanged retained frame, 뒤 ListView만 scroll된 frame, filter toggle frame과 resize 후 frame을 비교해 stale backdrop/cache를 검출한다.
+
+6. `DorotiDemoApp`에 C0 제품 scenario를 추가한다.
+   - 기존 `ListView`를 `Stack`으로 감싸고 list 영역 안에 `ClipRect` 또는 `ClipRRect -> BackdropFilter(ImageFilter blur) -> translucent Container/text` panel을 올린다. list 높이는 blur 차이가 보이는 범위로 늘린다.
+   - `MaterialGalleryState`에 기본 ON인 blur bool과 별도 checkbox를 추가하되 기존 `InteractiveLabels`, `ExerciseAll`, `StateSignature`와 6개 control contract는 변경하지 않는다. effect 전용 label/state/counter를 별도 evidence field로 기록한다.
+   - 기존 `(80, 200)` native interaction과 필수 raster color ROI를 가리지 않도록 panel/control 좌표를 고정한다. panel이 pointer를 불필요하게 막지 않게 hit-test 정책을 명시하고 panel 밖/효과 OFF 상태의 list scroll을 검증한다.
+   - 실제 native checkbox down/up으로 ON -> OFF -> ON을 전환하고 같은 clip ROI의 edge energy/고주파 감소, tint, clip 밖 불변, on/off 복귀를 pixel로 판정한다. 설명 문자열이나 widget state만으로 blur PASS를 만들지 않는다.
+
+7. 독립 differential fixture를 누적한다.
+   - 겹치는 두 translucent child의 group opacity, `saveLayer + srcATop`, `sigmaX != sigmaY`, rect/rounded/path clip, nested transform, DPI 1.0/1.25/2.0과 scroll-under-backdrop fixture를 둔다.
+   - pinned Flutter reference와 동일한 color space, premultiplied alpha, window size와 capture ROI를 사용해 center/edge/clip halo를 비교한다. blur는 단일 screenshot hash가 아니라 blur extent, edge energy와 최대/평균 channel tolerance를 함께 판정한다.
+   - C1은 color matrix, compose order, gradient stops, shader mask/blend, superellipse와 foreground-vs-backdrop 분리를 family별 reference differential로 닫는다.
+   - static analyzer/test가 `Paint`/filter payload를 버리는 빈 factory, `saveLayer -> Save`, `opacity -> transform only`와 알려진 operation downgrade pattern의 재도입을 막는다.
+
+완료 gate:
+
+- scene/canvas/paint operation census 100%; producer operation, consumer reachability, owner/disposition 또는 상태 누락 0
+- C0 operation의 `payloadPreserved -> translated -> grouped -> gpuRasterized -> managedRasterized -> referenceDifferential` 전 상태 PASS; unknown op와 silent no-op/downgrade 0
+- group opacity overlap, paint alpha 중복, `saveLayer` bounds/paint/blend와 foreground/backdrop 구분 differential PASS
+- strict-GPU clipped anisotropic backdrop blur가 CPU readback/full-frame copy/software fallback 0으로 PASS; managed C0 reference도 동일 tolerance PASS
+- 실제 native blur checkbox ON/OFF/ON callback 각 1회, ROI blur 감소/복귀, clip 밖 pixel 변화 0 tolerance 안, 뒤 list scroll 뒤 새 backdrop 반영 PASS
+- rect/RRect/path clip, nested transform와 DPI 1.0/1.25/2.0에서 blur halo/edge clipping 및 device bounds PASS
+- unchanged second frame의 retained replay가 first frame과 일치하고 filter/backdrop/resize mutation 뒤 stale reuse 0; invalid cross-generation reuse 0
+- C1의 Cupertino prerequisite effect family가 reference differential PASS. C2 deferred operation은 `notVerified`와 owner/milestone이 명시되고 G6-6 consumer가 필요로 하는 deferred 항목 0
+- 30초/300 frame 및 100회 ON/OFF + scroll + resize stress에서 failed/cancelled frame 0, intermediate surface/cache/HWND/WGL resource balance와 memory upper bound PASS
+- 기존 G6-3 Material smoke, G6-5 M0~M6, G6-5R visual, G6-5R-I pointer/cursor regression PASS; 기존 6개 interaction contract와 evidence schema 의미 변경 0
+- physical GPU driver/device, Avalonia, Linux/macOS는 실제 실행 전까지 `notVerified`
+
+산출물:
+
+- `Doroti/migration/flutter-framework/g6-scene-operation-matrix.json`
+- `Doroti/migration/flutter-framework/g6-paint-effect-contract.json`
+- `Doroti/migration/flutter-framework/g6-compositing-effects-evidence.json`
+- `Doroti/artifacts/g6-compositing/win-x64/backdrop-on.png`
+- `Doroti/artifacts/g6-compositing/win-x64/backdrop-off.png`
+- `Doroti/eng/validate-g6-compositing-effects.ps1 -Shard <Contracts|Managed|LiveWindows|Reference|Evidence>`
+
 ### G6-6 — Cupertino, adaptive와 Widget Previews live coverage
 
-진입 조건: G6-5R 완료.
+진입 조건: G6-5R visual/generation 본체, G6-5R-I native input/cursor와 G6-5R-C compositing/effects gate 모두 완료.
 
 작업:
 
@@ -514,7 +603,9 @@ G6-0 truth reset
   -> G6-4 app-essential slices
   -> G6-5 Material majority coverage
   -> G6-5R Material visual/generation fidelity audit
-  -> G6-5R-I native pointer/cursor and Win32 chrome closure
+       +-> G6-5R-I native pointer/cursor and Win32 chrome closure
+       +-> G6-5R-C scene/compositing/paint effect closure
+       +-> all three reopened gates join
   -> G6-6 Cupertino/adaptive/previews
   -> G6-7 generated Dart app/package/performance
   -> G6-8 cross-target physical verification
@@ -522,6 +613,7 @@ G6-0 truth reset
 
 - 새 component crash가 lower layer 공용 의미 문제이면 해당 lower milestone fixture와 regression을 먼저 보강한다.
 - component별 임시 수정으로 다음 wave를 진행하지 않는다.
+- G6-5R visual/generation, G6-5R-I input/cursor와 G6-5R-C compositing/effects는 독립 조사·구현할 수 있지만 세 gate가 모두 완료되기 전에는 G6-6으로 합류하지 않는다.
 - completed milestone의 live gate가 깨지면 후속 wave를 중단하고 최초 regression부터 복구한다.
 - Windows live first frame 전에는 Linux/macOS target 작업을 시작하지 않는다.
 - physical 장치가 없는 항목은 `notVerified`로 유지하되 automated native gate를 대신 실패시키지는 않는다.
@@ -546,6 +638,8 @@ G6-0 truth reset
 ./Doroti/eng/validate-g6-material-fidelity.ps1
 ./Doroti/eng/validate-g6-pointer-interaction.ps1
 ./Doroti/eng/validate-g6-win32-cursor-chrome.ps1
+./Doroti/eng/validate-g6-compositing-effects.ps1 -Shard Contracts
+./Doroti/eng/validate-g6-compositing-effects.ps1 -Shard LiveWindows
 ./Doroti/eng/validate-g6-cupertino-wave.ps1 -Wave C0
 
 # generated external app/package
@@ -562,6 +656,7 @@ git diff --check
 - native window, target/RID와 backend identity
 - strict GPU와 software fallback 여부
 - build/layout/paint/present counter 및 non-empty pixel bounds
+- scene/canvas operation payload, effect scope와 backend capability. 지원한 operation의 silent no-op/downgrade 0
 - component/state/interaction/semantics scenario 결과. interaction은 실제 native input 좌표, target hit, callback과 state/raster 변화의 인과 trace가 모두 있을 때만 PASS
 - frame terminal ACK, window/context/resource/ticker/listener count
 - compiler/source/candidate/product/package digest
@@ -572,6 +667,8 @@ git diff --check
 - Flutter source가 framework behavior의 단일 owner다. Avalonia source-port는 native window/input/text/accessibility/GPU capability만 소유한다.
 - generated `.g.cs` 직접 수정은 원인 확인용 실험에만 허용하며 제품 수정으로 인정하지 않는다. 최종 변경은 analyzer/IR/lowerer/runtime 또는 reviewed promotion source에서 재생성되어야 한다.
 - filename/local-number 기반 문자열 치환은 새 공용 해법이 아니다. 불가피한 temporary rule에는 fixture, owner, 제거 milestone과 failure diagnostic을 둔다.
+- scene/canvas/paint operation은 typed payload를 끝까지 보존하고 `exact`, 검증된 `boundedFallback`, 명시적 `unsupported` 중 하나여야 한다. opacity/filter/saveLayer/blend를 일반 save/transform/draw로 조용히 축약하지 않는다.
+- strict-GPU effect는 GPU surface에서 실행하며 CPU full-frame readback/upload를 fallback으로 숨기지 않는다. managed reference와 Avalonia/다른 target 결과는 backend별로 분리한다.
 - API census와 build 0 errors는 유지하되 runtime coverage와 분리한다.
 - synthetic shell/property trace는 `syntheticContract`로만 기록한다. 실제 mount/layout/paint/present를 거치지 않으면 gallery behavior/visual PASS로 부르지 않는다.
 - normal build/run은 빠르게 유지한다. architecture, full census, clean regeneration과 physical suite는 명시적 validator로 분리한다.
@@ -586,6 +683,7 @@ Goal6는 다음이 모두 사실일 때 완료한다.
 - 최소 DemoApp Tier A component가 모두 `presented`이고 상호작용/semantics가 필요한 항목은 각각 `interactive`/`semantic`이다.
 - platform 비의존 public Material 및 Cupertino UI component library의 90% 이상이 실제 `presented` 상태다.
 - navigation, overlay, form/text/IME, scrolling, resource, accessibility와 plugin vertical slice가 누적 PASS다.
+- scene/canvas/paint operation matrix가 payload/translation/group/GPU/managed/reference/retained 상태를 분리하며, group opacity, saveLayer, clipped backdrop/foreground filter와 G6-6 prerequisite effect가 실제 raster differential을 통과한다.
 - component coverage matrix가 compile/API/synthetic/live/physical 상태를 분리하고 미지원 항목을 숨기지 않는다.
 - analyzer/IR/lowerer/runtime의 공용 의미 수정으로 clean regenerate가 가능하며 direct generated hotfix가 0이다.
 - Windows와 최소 한 개 physical non-Windows target에서 packaged app 핵심 scenario와 lifecycle이 PASS다.
