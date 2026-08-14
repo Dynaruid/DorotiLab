@@ -93,7 +93,7 @@ dotnet run --project ./DorotiDemoApp -- --smoke --entry builder --frames 3 --dur
 | [`Doroti/src/Doroti.Host.Avalonia/`](Doroti/src/Doroti.Host.Avalonia/) | Comparison and validation host based on the official `Avalonia.Desktop` package |
 | [`DorotiDemoApp/`](DorotiDemoApp/) | Demo app that displays a real Material widget tree |
 | [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | Semantic compiler that translates Dart into C# |
-| [`goal6.md`](goal6.md) | Roadmap covering the current development status and next steps |
+| [`goal7.md`](goal7.md) | Roadmap covering the current development status, Web build, and next release gates |
 
 For detailed build and validation instructions and architecture records, see [`Doroti/README.md`](Doroti/README.md) and [`Doroti/docs/`](Doroti/docs/).
 

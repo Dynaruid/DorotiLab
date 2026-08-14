@@ -14,7 +14,7 @@ The validated slice includes `MaterialApp`, `Theme`, `Navigator`, `Scaffold`, `A
 
 Linux, macOS, Web, Android, iOS, and physical-device validation remain roadmap work. A project or package compiling for a target is not treated as proof that native presentation and interaction work there.
 
-See the repository [Goal 6 roadmap](../goal6.md) for the current milestone and evidence requirements.
+See the repository [Goal 7 roadmap](../goal7.md) for the current milestone, Web build, and evidence requirements.
 
 ## Architecture
 

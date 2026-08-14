@@ -2,7 +2,7 @@
 
 > 문서 상태: 역사 기록 — active 계획이 아님
 > 정리일: 2026-08-10
-> 후속 계획: [`goal5-summary.md`](../26-08-12/goal5-summary.md). 현재 active 계획은 [`goal6.md`](../../goal6.md)
+> 후속 계획: [`goal5-summary.md`](../26-08-12/goal5-summary.md). 현재 active 계획은 [`goal7.md`](../../goal7.md)
 > Flutter source pin: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
 > Avalonia source pin: `f159423f691946e713f454447a780d4677d8a0d2`
 
@@ -180,4 +180,4 @@ warm G4-5는 cache hit 101/101, Dart process/context 0이었다. 전체 `j1/2/4/
 - compiler performance는 elapsed time을 차단 기준으로 사용하고 memory는 회귀 관찰 지표로 기록한다.
 - 제품 promotion 전에 API manifest, duplicate owner와 product `.g.cs` 유입을 반드시 다시 감사한다.
 
-Goal4의 장기 설명과 세션별 인계는 이 문서로 종료했다. 후속 Goal5도 [`goal5-summary.md`](../26-08-12/goal5-summary.md)로 종료·보존했으며, 현재 active roadmap은 [`goal6.md`](../../goal6.md)다.
+Goal4의 장기 설명과 세션별 인계는 이 문서로 종료했다. 후속 Goal5는 [`goal5-summary.md`](../26-08-12/goal5-summary.md), Goal6는 [`goal6-summary.md`](../26-08-14/goal6-summary.md)로 종료·보존했으며, 현재 active roadmap은 [`goal7.md`](../../goal7.md)다.

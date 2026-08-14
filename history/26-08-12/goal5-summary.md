@@ -4,7 +4,7 @@
 > 종료 판정: reviewed framework의 compile/API coverage와 synthetic gallery가 실제 `DorotiDemoApp` Material frame 실행 가능성을 증명하지 못함
 > 작성일: 2026-08-10
 > 종료일: 2026-08-12
-> 후속 계획: [`goal6.md`](../../goal6.md) — live framework bring-up과 component runtime coverage를 우선 수행
+> 후속 기록: [`goal6-summary.md`](../26-08-14/goal6-summary.md) — live framework bring-up과 component runtime coverage
 > 기준 Doroti revision: `b94daa9e255536de7c8c774c97b31ac963ba0132` + 현재 compiler 작업 트리
 > Flutter source pin: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
 > Avalonia source pin: `f159423f691946e713f454447a780d4677d8a0d2`
@@ -21,10 +21,10 @@ Goal5는 2026-08-12 기준으로 더 진행하지 않는다. G5-0~G5-6W에서 �
 - G5-4 gallery differential은 constructor/property/callback contract 기반 synthetic trace이며 실제 native widget mount/layout/paint/present 증거가 아니다.
 - G5-6L, G5-6M, G5-7과 G5-8은 실행하지 않았다. 이 항목과 모든 physical `notVerified` ledger는 Goal6 후반부로 이관한다.
 - Goal5 최종 완료 정의는 충족되지 않았다. 실패를 성공으로 바꾸지 않고 역사적 계획과 산출물만 보존한다.
-- 이후 작업은 [`goal6.md`](../../goal6.md)의 live-first gate를 따른다. 실제 DemoApp 첫 프레임이 통과하기 전에는 full framework, gallery behavior 또는 application-ready를 완료로 기록하지 않는다.
+- 이후 작업은 당시 Goal6의 live-first gate를 따랐으며, 결과는 [`goal6-summary.md`](../26-08-14/goal6-summary.md)에 보존한다. 실제 DemoApp 첫 프레임이 통과하기 전에는 full framework, gallery behavior 또는 application-ready를 완료로 기록하지 않는다.
 
 > 이전 역사 기록: [`goal4-summary.md`](../26-08-10/goal4-summary.md)
-> 문서 성격: 종료된 roadmap과 당시 산출물의 역사 기록. 현재 active roadmap은 [`goal6.md`](../../goal6.md)
+> 문서 성격: 종료된 roadmap과 당시 산출물의 역사 기록. 현재 active roadmap은 [`goal7.md`](../../goal7.md)
 
 Goal5는 Goal4에서 만든 Flutter/Avalonia 경계를 제품 전체에 끝까지 적용한다. 목표는 compiler가 많은 파일을 생성하는 것이 아니라, reviewed Flutter framework가 UI 의미의 유일한 owner가 되고 Avalonia source-port가 native/platform 실행의 유일한 owner가 되는 배포 가능한 제품 경로다.
 

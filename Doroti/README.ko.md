@@ -14,7 +14,7 @@ Doroti는 Flutter를 WebView에 넣어 실행하지 않으며 Avalonia control�
 
 Linux, macOS, Web, Android, iOS와 physical device 검증은 아직 roadmap에 있습니다. 특정 target에서 project나 package가 compile된 사실만으로 native 표시와 상호작용까지 지원한다고 판단하지 않습니다.
 
-현재 milestone과 증거 기준은 repository의 [Goal 6 roadmap](../goal6.md)에서 확인할 수 있습니다.
+현재 milestone, Web 빌드와 증거 기준은 repository의 [Goal 7 roadmap](../goal7.md)에서 확인할 수 있습니다.
 
 ## Architecture
 
