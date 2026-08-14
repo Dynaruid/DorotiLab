@@ -36,7 +36,7 @@ internal sealed record CompilerProfile(
 {
     public bool IsC5 => false;
     public bool IsFrameworkGraph => CompatibilityProfile == CompilerProfiles.Framework;
-    public bool IsApplication => Id == "G5-5";
+    public bool IsApplication => Id is "G5-5" or "G6-7";
 }
 
 internal static class CompilerProfileRegistry
@@ -61,9 +61,9 @@ internal static class CompilerProfileRegistry
             throw new InvalidDataException("The general flutter-framework profile requires an explicit frameworkMilestone selection.");
         }
 
-        if (manifest.Application is not null && manifest.FrameworkMilestone != "G5-5")
+        if (manifest.Application is not null && manifest.FrameworkMilestone is not ("G5-5" or "G6-7"))
         {
-            throw new InvalidDataException("Application compilation requires frameworkMilestone G5-5.");
+            throw new InvalidDataException("Application compilation requires a registered application milestone (G5-5 or G6-7).");
         }
 
         var isGeneral = manifest.CompatibilityProfile == CompilerProfiles.Framework;

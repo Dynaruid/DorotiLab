@@ -37,11 +37,11 @@ internal static partial class ApplicationGraphResolver
             ?? throw new InvalidDataException("Application graph expansion requires an application manifest.");
         if (string.IsNullOrWhiteSpace(manifest.PackageRoot) || string.IsNullOrWhiteSpace(manifest.EntryPoint))
         {
-            throw new InvalidDataException("G5-5 application compilation requires packageRoot and entryPoint.");
+            throw new InvalidDataException("Application compilation requires packageRoot and entryPoint.");
         }
         if (manifest.Inputs.Length != 0)
         {
-            throw new InvalidDataException("G5-5 discovers its package closure from entryPoint; fixture-specific inputs are not allowed.");
+            throw new InvalidDataException("Application compilation discovers its package closure from entryPoint; fixture-specific inputs are not allowed.");
         }
 
         var packageRoot = Path.GetFullPath(manifest.PackageRoot, manifestDirectory);
@@ -146,7 +146,7 @@ internal static partial class ApplicationGraphResolver
     {
         if (!library.StartsWith("package:", StringComparison.Ordinal))
         {
-            throw new InvalidDataException($"G5-5 application libraries must use package URIs: {library}");
+            throw new InvalidDataException($"Application libraries must use package URIs: {library}");
         }
         using var config = JsonDocument.Parse(File.ReadAllText(packageConfigPath));
         var slash = library.IndexOf('/', "package:".Length);

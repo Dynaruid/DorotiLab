@@ -1,0 +1,158 @@
+{
+  "schemaVersion": "doroti.g6-generated-demo-evidence/v1",
+  "milestone": "G6-7",
+  "capturedAtUtc": "2026-08-14T13:59:00.8773743+00:00",
+  "status": "partial-prerequisites-and-differential-open",
+  "source": {
+    "dartPackage": "DorotiDemoApp/dart",
+    "entryPoint": "package:doroti_demo_app/main.dart",
+    "generatedAssembly": "Doroti.Generated.Application.G6Demo.Framework",
+    "handwrittenFixture": "DorotiDemoApp/Program.cs"
+  },
+  "compiler": {
+    "schemaVersion": "doroti.g6-generated-demo-compiler/v1",
+    "cleanElapsedMs": 18353.307,
+    "incrementalElapsedMs": 1421.926,
+    "cleanDigest": "397d08b898f943235c67f3342e17dcdd24ebcfb92e4286f364863a5da5597c22",
+    "incrementalDigest": "397d08b898f943235c67f3342e17dcdd24ebcfb92e4286f364863a5da5597c22",
+    "outputCount": 1,
+    "noChangeReusedOutputs": 1,
+    "directReferences": [
+      "Doroti.Flutter.Framework.Material",
+      "Doroti.Flutter.Hosting"
+    ],
+    "unsupportedSyntaxErrors": 1,
+    "unsupportedPluginDiagnostic": "DOTAPP005",
+    "silentSuccesses": 0
+  },
+  "package": {
+    "schemaVersion": "doroti.g6-generated-demo-package/v1",
+    "externalRoot": "outside-repository-isolated",
+    "restoreElapsedMs": 6442.856,
+    "buildElapsedMs": 7506.49,
+    "publishElapsedMs": 994.747,
+    "repositoryPrivateFallbacks": 0,
+    "repositoryPrivateProjectReferences": 0,
+    "packageCount": 30,
+    "publishedEntry": "publish/win-x64/G6.GeneratedDemo.Consumer.exe"
+  },
+  "liveWindows": {
+    "outcome": "presented",
+    "backend": "skia-wgl-opengl-gpu",
+    "softwareFallbackUsed": false,
+    "firstFrameMs": 2468.8799,
+    "interactionChangedPixels": 22492,
+    "semanticsNodeCount": 18,
+    "sustained": {
+      "requestedFrames": 60,
+      "presentedFrames": 60,
+      "elapsedMs": 1512.6297
+    },
+    "memory": {
+      "initialWorkingSetBytes": 26337280,
+      "peakWorkingSetBytes": 273002496,
+      "finalWorkingSetBytes": 257921024
+    },
+    "handles": {
+      "initial": 223,
+      "final": 469
+    },
+    "resourceClosure": {
+      "ActiveWindows": 0,
+      "WindowsCreated": 1,
+      "WindowsReleased": 1,
+      "ActiveOpenGlContexts": 0,
+      "OpenGlContextsCreated": 1,
+      "OpenGlContextsReleased": 1,
+      "IsBalanced": true
+    }
+  },
+  "applicationPipeline": {
+    "asset": "PASS",
+    "font": "PASS",
+    "localization": "PASS",
+    "pluginManifest": "PASS-win-x64-echo-ABI",
+    "echoPluginPassed": true,
+    "missingResourceRejected": true,
+    "missingPluginRejected": true,
+    "silentSuccesses": 0
+  },
+  "tooling": {
+    "dartFormat": "PASS",
+    "compilerAnalyzer": "PASS-0-diagnostics",
+    "customPackageStandaloneDartAnalyze": "not-run-invalid-minimal-embedder-sdk-config",
+    "flutterAnalyze": "PASS-real-Flutter-SDK-package-config-0-diagnostics",
+    "flutterAnalyzeMetrics": {
+      "schemaVersion": "doroti.g6-generated-demo-dart-analyze/v1",
+      "command": "flutter analyze --no-pub lib/main.dart",
+      "packageConfig": "real-flutter-sdk-generated-isolated-copy",
+      "customPackageConfigUsed": false,
+      "skyEngineRoot": "flutter-sdk-cache",
+      "pubGetElapsedMs": 1716.947,
+      "analyzeElapsedMs": 3370.694,
+      "diagnostics": 0,
+      "analysisServerInternalErrorFailFast": "PASS",
+      "failFastProbeElapsedMs": 845.004,
+      "maxMinutes": 20
+    }
+  },
+  "differential": {
+    "behavior": "partial-generated-native-button-state-raster-PASS",
+    "semantics": "partial-generated-tree-PASS-handwritten-full-family-comparison-notVerified",
+    "visual": "notVerified-no-pinned-generated-vs-handwritten-pixel-differential"
+  },
+  "compatibility": {
+    "disposition": "explicit-blocker",
+    "source": "migration/flutter-framework/g6-compatibility-disposition.json",
+    "temporaryRules": 440,
+    "blocker": "named Flutter library compatibility rules remain; G6-7 removal gate is not closed"
+  },
+  "entryConditions": {
+    "g6_3_through_g6_6_complete": false,
+    "blocker": "G6-5R/G6-5R-I/G6-5R-C and G6-6 reference/stress gates remain open"
+  },
+  "artifacts": {
+    "release": "artifacts/g6-release/0.2.0-beta",
+    "manifest": "artifacts/g6-release/0.2.0-beta/release-manifest.json",
+    "runEvidence": "artifacts/g6-release/0.2.0-beta/run-evidence.json"
+  },
+  "validationShards": [
+    {
+      "name": "Compiler",
+      "command": "validate-g6-generated-demo.ps1 -Shard Compiler",
+      "maxMinutes": 20,
+      "status": "PASS"
+    },
+    {
+      "name": "DartAnalyze",
+      "command": "validate-g6-generated-demo.ps1 -Shard DartAnalyze",
+      "maxMinutes": 20,
+      "status": "PASS"
+    },
+    {
+      "name": "Package",
+      "command": "validate-g6-generated-demo.ps1 -Shard Package",
+      "maxMinutes": 20,
+      "status": "PASS"
+    },
+    {
+      "name": "LiveWindows",
+      "command": "validate-g6-generated-demo.ps1 -Shard LiveWindows",
+      "maxMinutes": 20,
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence",
+      "command": "validate-g6-generated-demo.ps1 -Shard Evidence",
+      "maxMinutes": 20,
+      "status": "PASS"
+    }
+  ],
+  "notVerified": [
+    "G6-7 entry condition G6-3 through G6-6 complete",
+    "handwritten/generated full behavior visual semantics differential",
+    "temporary compatibility rule removal (440 remain)",
+    "100+ repeated launch/toggle resource stability",
+    "physical input and cross-target package execution"
+  ]
+}

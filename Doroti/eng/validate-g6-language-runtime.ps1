@@ -161,8 +161,14 @@ function Invoke-CompatibilityShard {
     Assert-Equal $disposition.active.unclassified 0 'G6-1 unclassified compatibility rules'
     Assert-Equal $disposition.active.obsolete 0 'G6-1 active obsolete compatibility rules'
     Assert-Equal $disposition.active.classified $disposition.active.total 'G6-1 classified compatibility rules'
-    Assert-True ([bool]$disposition.temporaryTrend.decreased) 'G6-1 temporary compatibility decrease status'
-    Assert-True ([int]$disposition.temporaryTrend.currentCount -lt [int]$disposition.temporaryTrend.previousCount) 'G6-1 temporary compatibility count decrease'
+    if ([string]$disposition.milestone -eq 'G6-1') {
+        Assert-True ([bool]$disposition.temporaryTrend.decreased) 'G6-1 temporary compatibility decrease status'
+        Assert-True ([int]$disposition.temporaryTrend.currentCount -lt [int]$disposition.temporaryTrend.previousCount) 'G6-1 temporary compatibility count decrease'
+    }
+    else {
+        Assert-Equal ([string]$disposition.g6_7.disposition) 'explicit-blocker' 'G6-7 compatibility disposition'
+        Assert-Equal ([bool]$disposition.g6_7.silentSuccessAllowed) $false 'G6-7 compatibility silent-success policy'
+    }
     Assert-Equal @($disposition.removed).Count 1 'G6-1 removed obsolete compatibility rule count'
     $script:g6CompatibilityEvidence = [ordered]@{
         structural = $inventory.structural
@@ -172,7 +178,8 @@ function Invoke-CompatibilityShard {
         previousTemporary = [int]$disposition.temporaryTrend.previousCount
         removed = @($disposition.removed | ForEach-Object { $_.id })
     }
-    Write-Output "G6-1 compatibility disposition: PASS ($($inventory.temporary) temporary, down from $($disposition.temporaryTrend.previousCount))"
+    $trend = if ([bool]$disposition.temporaryTrend.decreased) { "down from $($disposition.temporaryTrend.previousCount)" } else { 'explicit G6-7 blocker' }
+    Write-Output "G6 compatibility disposition: PASS ($($inventory.temporary) temporary, $trend)"
 }
 
 function Invoke-RegressionShard {

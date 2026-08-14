@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "doroti.native-plugin-capabilities/v1",
+  "rid": "win-x64",
+  "packageId": "Doroti.Plugin.G6GeneratedDemoEcho.win-x64",
+  "abiVersion": "doroti.plugin-abi/v1",
+  "plugins": [
+    {
+      "id": "g6.generated-demo.echo",
+      "channel": "g6/generated-demo/echo",
+      "codec": "StandardMethodCodec",
+      "capabilityId": "plugin.g6.generated-demo.echo",
+      "handlerType": "Doroti.Plugin.G6GeneratedDemoEcho.WinX64.EchoPluginHandler"
+    }
+  ]
+}

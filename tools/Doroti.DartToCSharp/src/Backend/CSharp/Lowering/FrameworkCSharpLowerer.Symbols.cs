@@ -859,6 +859,7 @@ internal sealed partial class FrameworkCSharpLowerer
             {
                 "StatelessWidget" => member.Name == "build",
                 "StatefulWidget" => member.Name == "createState",
+                "State" => member.Name == "build",
                 "BindingBase" when HasOverrideAnnotation(member.Ast) => member.Name is "initInstances" or "initServiceExtensions" or "unlocked" or "performReassemble" or "debugCheckZone" or "reassembleApplication",
                 "GestureRecognizer" when HasOverrideAnnotation(member.Ast) => member.Name is "debugDescription" or "dispose" or "acceptGesture" or "rejectGesture",
                 "OneSequenceGestureRecognizer" when HasOverrideAnnotation(member.Ast) => member.Name is "debugDescription" or "addAllowedPointer" or "didStopTrackingLastPointer" or "handleEvent" or "acceptGesture" or "rejectGesture" or "stopTrackingPointer" or "dispose",

@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "doroti.application-resources/v1",
+  "resources": [
+    { "key": "assets/brand.txt", "path": "assets/brand.txt", "kind": "asset" },
+    { "key": "fonts/DorotiSans", "path": "assets/DorotiSans.font", "kind": "font", "fontFamily": "Doroti Sans" },
+    { "key": "l10n/en", "path": "l10n/en.json", "kind": "localization", "locale": "en" }
+  ]
+}

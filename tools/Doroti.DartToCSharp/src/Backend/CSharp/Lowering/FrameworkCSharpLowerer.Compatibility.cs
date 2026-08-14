@@ -1464,6 +1464,14 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             builder.Append("Duration.Create(");
         }
+        else if (constructor == "all" && typeName.EndsWith("EdgeInsetsGeometry", StringComparison.Ordinal))
+        {
+            builder.Append(typeName[..^"Geometry".Length]).Append(".CreateAll(");
+        }
+        else if (constructor == "all" && typeName.EndsWith("EdgeInsets", StringComparison.Ordinal))
+        {
+            builder.Append(typeName).Append(".CreateAll(");
+        }
         else if (constructor == "fromLTRB" && typeName.EndsWith("EdgeInsetsGeometry", StringComparison.Ordinal))
         {
             builder.Append("new ").Append(typeName[..^"Geometry".Length]).Append('(');

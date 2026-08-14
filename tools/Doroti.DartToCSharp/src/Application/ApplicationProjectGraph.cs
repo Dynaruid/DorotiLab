@@ -186,11 +186,7 @@ internal static partial class ConverterEngine
             throw new InvalidDataException("Application frameworkPackages contains an unsupported or empty package selection.");
         return string.Join('\n', packages.Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).Select(package =>
         {
-            var project = package switch
-            {
-                "Material" or "Cupertino" => $"$(DorotiRepositoryRoot)\\migration\\generated-candidates\\g5-4-reviewed\\projects\\{package}\\Doroti.Generated.Framework.G54.{package}.csproj",
-                _ => $"$(DorotiRepositoryRoot)\\src\\Doroti.Flutter.Framework.{package}\\Doroti.Flutter.Framework.{package}.csproj",
-            };
+            var project = $"$(DorotiRepositoryRoot)\\src\\Doroti.Flutter.Framework.{package}\\Doroti.Flutter.Framework.{package}.csproj";
             return $"    <ProjectReference Include=\"{project}\" Condition=\"'$(DorotiRepositoryRoot)' != ''\" />\n" +
                 $"    <PackageReference Include=\"Doroti.Flutter.Framework.{package}\" Version=\"[{version}]\" Condition=\"'$(DorotiRepositoryRoot)' == ''\" />";
         }));

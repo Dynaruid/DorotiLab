@@ -567,6 +567,7 @@ public manifest를 다음 wave로 자동 분류한다.
 작업:
 
 - Goal6 DemoApp 화면을 Dart source package로 두고 일반 package/import/asset/font/localization/plugin pipeline으로 생성한다.
+- compiler 전용 custom package config에서는 standalone `dart analyze`를 실행하지 않는다. Dart SDK 분석은 실제 Flutter SDK가 생성한 격리 package config에서 `flutter analyze --no-pub`로 분리하고, analysis server 내부 오류는 즉시 실패시킨다.
 - generated app은 promoted `Doroti.Flutter.Framework.*`, Hosting과 target package만 참조한다.
 - repository 밖 isolated restore/build/publish/run에서 같은 component/interaction scenario를 실행한다.
 - clean/incremental compiler, startup, first frame, steady frame, memory/handle/ticker/listener를 수치화한다.
@@ -579,6 +580,7 @@ public manifest를 다음 wave로 자동 분류한다.
 - fresh package-only consumer의 strict-GPU first frame와 app-essential scenario PASS
 - clean/incremental output identity PASS
 - compiler/test shard 각각 20분 이내, first-frame과 sustained budget 수치 기록
+- compiler analyzer와 실제 Flutter SDK `flutter analyze --no-pub` diagnostics 0
 - unsupported syntax/plugin/capability silent success 0
 
 산출물:
@@ -587,6 +589,16 @@ public manifest를 다음 wave로 자동 분류한다.
 - `Doroti/migration/flutter-framework/g6-generated-demo-evidence.json`
 - `Doroti/artifacts/g6-release/<version>/`
 - `Doroti/eng/validate-g6-generated-demo.ps1`
+
+현재 결과 (2026-08-14, partial):
+
+- `DorotiDemoApp/dart`에 일반 Dart package 기반 Material DemoApp을 추가하고 application compiler의 G6-7 profile을 열었다. app project emitter는 더 이상 G5-4 reviewed candidate를 참조하지 않고 promoted `Doroti.Flutter.Framework.Material`과 `Doroti.Flutter.Hosting`만 직접 참조한다. 이 과정에서 일반 app state의 `State<T>.build` override, `EdgeInsets.all` factory, `System.Diagnostics.Switch` 이름 충돌을 공용 lowerer에서 복구했다.
+- asset/font/localization manifest와 win-x64 echo plugin ABI를 생성 application boundary로 통과시켰다. 등록되지 않은 resource/channel은 `FlutterCapabilityException`으로 실패하고 unsupported syntax는 typed error, RID가 없는 plugin은 `DOTAPP005`를 내며 silent success는 0이다.
+- clean/incremental 생성 digest는 `397d08b898f943235c67f3342e17dcdd24ebcfb92e4286f364863a5da5597c22`로 동일하고 no-change output 1/1을 재사용했다. clean 18,353ms, incremental 1,422ms, 저장소 밖 isolated restore 6,443ms/build 7,506ms/publish 995ms이며 repository-private fallback/project reference는 0이다.
+- publish된 package-only `G6.GeneratedDemo.Consumer.exe`는 actual HWND의 `skia-wgl-opengl-gpu`에서 first frame 2,469ms, native `(80, 200)` button state/raster 변화 22,492 pixels, semantics 18 nodes, sustained 60/60 frames 1,513ms, failed/cancelled/software fallback 0과 HWND/WGL resource balance를 PASS했다. working set은 initial 26,337,280 / peak 273,002,496 / final 257,921,024 bytes로 기록했다.
+- `validate-g6-generated-demo.ps1 -Shard All`의 Compiler/DartAnalyze/Package/LiveWindows/Evidence는 PASS하고 `artifacts/g6-release/0.2.0-beta`에 generated source, 30 packages, published app, run evidence와 hash manifest를 만들었다.
+- Dart format과 compiler analyzer diagnostics 0을 유지했다. compiler 전용 minimal `sky_engine` package config는 `dart:core`가 없는 EmbedderSdk이므로 standalone `dart analyze` 대상에서 제외했다. 별도 `DartAnalyze` shard는 `.dotori/tmp` 격리 복사본에서 실제 Flutter SDK로 `flutter pub get` 1,717ms 후 `flutter analyze --no-pub lib/main.dart`를 실행해 3,371ms, diagnostics 0으로 PASS했다. analysis server의 internal error/`SERVER_ERROR` 출력은 200ms 간격으로 감지해 프로세스 트리를 즉시 종료하며, 합성 회귀 probe에서 845ms로 PASS해 20분 timeout까지 대기하지 않는다.
+- 다만 G6-3~G6-6 선행 완료 조건이 아직 열려 있고, handwritten fixture와 generated app의 전체 behavior/visual/semantics pinned differential, 현재 source inventory의 440개 temporary compatibility rule 제거, 100회 반복 launch/toggle 안정성은 `notVerified`다. 따라서 G6-7 전체 완료나 G6-8 진입으로 승격하지 않는다.
 
 ### G6-8 — target 확장과 physical final verification
 
