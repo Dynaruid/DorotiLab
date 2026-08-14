@@ -164,6 +164,12 @@ internal sealed class NativeOpenGlFrame : INativeRasterFrame
         _canvas.Save();
     }
 
+    public void SaveLayer(NativeLayerOptions options)
+    {
+        ThrowIfDisposed();
+        NativeLayerSupport.SaveLayer(_canvas, options);
+    }
+
     public void Restore()
     {
         ThrowIfDisposed();

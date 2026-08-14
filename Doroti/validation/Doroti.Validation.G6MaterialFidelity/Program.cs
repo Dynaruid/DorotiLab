@@ -14,8 +14,12 @@ if (options.Contains("--colors", StringComparer.Ordinal))
 }
 
 RunManagedRasterContracts();
+RunCompositingEffectContracts();
+RunRetainedLayerContracts();
 RunBundledFontContracts();
 Console.WriteLine("G6-5R managed path/clip/fill/stroke/shadow contracts: PASS");
+Console.WriteLine("G6-5R-C managed group-opacity/saveLayer/backdrop contracts: PASS");
+Console.WriteLine("G6-5R-C retained subtree ownership/replay contracts: PASS");
 Console.WriteLine("G6-5R Roboto/Material Icons glyph contracts: PASS");
 
 static void WriteColorReference()
@@ -105,6 +109,132 @@ static void RunManagedRasterContracts()
         AssertPixelChanged(pixels, 24, 6, 12, "blurred path must extend outside geometry bounds");
         AssertPixel(pixels, 24, 1, 1, black: false, "blur extent must remain bounded");
     }
+}
+
+static void RunCompositingEffectContracts()
+{
+    const int width = 24;
+    const int height = 24;
+
+    {
+        var pixels = new byte[width * height * 4];
+        Clear(pixels);
+        var canvas = new SoftwareRasterCanvas(pixels, width, height);
+        canvas.SaveLayer(new RasterLayerOptions(Bounds: new Rect(1, 1, 23, 23), Opacity: 0.5));
+        canvas.DrawRect(new Rect(2, 2, 15, 20), new RasterPaint(Color.FromArgb(255, 255, 0, 0)));
+        canvas.DrawRect(new Rect(8, 4, 21, 22), new RasterPaint(Color.FromArgb(255, 0, 0, 255)));
+        canvas.Restore();
+        AssertChannels(pixels, width, 10, 10, 255, 128, 128, 255, 2,
+            "group opacity must composite overlapping children once");
+    }
+
+    {
+        var pixels = new byte[width * height * 4];
+        for (var y = 0; y < height; y++)
+        for (var x = 0; x < width; x++)
+        {
+            var value = (x / 2) % 2 == 0 ? (byte)0 : (byte)255;
+            var offset = ((y * width) + x) * 4;
+            pixels[offset] = pixels[offset + 1] = pixels[offset + 2] = value;
+            pixels[offset + 3] = 255;
+        }
+        var before = pixels.ToArray();
+        var canvas = new SoftwareRasterCanvas(pixels, width, height);
+        canvas.SaveLayer(new RasterLayerOptions(
+            Bounds: new Rect(4, 4, 20, 20),
+            BackdropFilter: new RasterImageFilter(RasterImageFilterKind.Blur, 3, 1, RasterTileMode.Clamp)));
+        canvas.Restore();
+        if (PixelDelta(before, pixels, width, 1, 1) != 0)
+            throw new InvalidDataException("Backdrop blur changed pixels outside its layer bounds.");
+        var beforeEnergy = HorizontalEnergy(before, width, 4, 20, 10);
+        var afterEnergy = HorizontalEnergy(pixels, width, 4, 20, 10);
+        if (afterEnergy >= beforeEnergy * 0.7)
+            throw new InvalidDataException($"Anisotropic backdrop blur did not reduce horizontal edge energy: {beforeEnergy} -> {afterEnergy}.");
+    }
+
+    {
+        var pixels = new byte[width * height * 4];
+        var canvas = new SoftwareRasterCanvas(pixels, width, height);
+        canvas.DrawColor(Color.FromArgb(255, 0, 255, 0));
+        var before = pixels.ToArray();
+        canvas.SaveLayer(new RasterLayerOptions(
+            Bounds: new Rect(6, 6, 18, 18),
+            BlendMode: RasterBlendMode.SourceAtop));
+        canvas.DrawColor(Color.FromArgb(255, 255, 0, 0));
+        canvas.Restore();
+        AssertChannels(pixels, width, 10, 10, 0, 0, 255, 255, 1, "saveLayer srcATop interior");
+        if (PixelDelta(before, pixels, width, 2, 2) != 0)
+            throw new InvalidDataException("saveLayer bounds did not isolate the blend group.");
+    }
+}
+
+static void RunRetainedLayerContracts()
+{
+    var recorder = new Doroti.Flutter.Ui.PictureRecorder();
+    var canvas = new Doroti.Flutter.Ui.Canvas(recorder);
+    canvas.drawRect(Doroti.Flutter.Ui.Rect.fromLTWH(0, 0, 12, 12), new Doroti.Flutter.Ui.Paint
+    {
+        color = new Doroti.Flutter.Ui.Color(0xff6750a4L),
+    });
+    var picture = recorder.endRecording();
+    var first = new Doroti.Flutter.Ui.SceneBuilder(73);
+    var retained = first.pushOffset(4, 5);
+    first.addPicture(Doroti.Flutter.Ui.Offset.zero, picture);
+    first.pop();
+    using var firstScene = first.build();
+    var second = new Doroti.Flutter.Ui.SceneBuilder(73);
+    second.addRetained(retained);
+    using var secondScene = second.build();
+    if (secondScene.Commands is not [{ Operation: "retained" }])
+        throw new InvalidDataException("Retained subtree was not recorded as one immutable replay command.");
+
+    var crossViewRejected = false;
+    try { new Doroti.Flutter.Ui.SceneBuilder(74).addRetained(retained); }
+    catch (InvalidOperationException) { crossViewRejected = true; }
+    if (!crossViewRejected) throw new InvalidDataException("Cross-view retained replay was not rejected.");
+
+    retained.dispose();
+    var disposedRejected = false;
+    try { new Doroti.Flutter.Ui.SceneBuilder(73).addRetained(retained); }
+    catch (ObjectDisposedException) { disposedRejected = true; }
+    if (!disposedRejected) throw new InvalidDataException("Disposed retained replay was not rejected.");
+
+    var unbalancedRejected = false;
+    try
+    {
+        var unbalanced = new Doroti.Flutter.Ui.SceneBuilder(73);
+        unbalanced.pushOffset(1, 1);
+        _ = unbalanced.build();
+    }
+    catch (InvalidOperationException) { unbalancedRejected = true; }
+    if (!unbalancedRejected) throw new InvalidDataException("Unbalanced scene effect scopes were not rejected.");
+}
+
+static int HorizontalEnergy(byte[] pixels, int width, int left, int right, int y)
+{
+    var energy = 0;
+    for (var x = left + 1; x < right; x++)
+    {
+        var current = ((y * width) + x) * 4;
+        var previous = current - 4;
+        energy += Math.Abs(pixels[current] - pixels[previous]);
+    }
+    return energy;
+}
+
+static int PixelDelta(byte[] before, byte[] after, int width, int x, int y)
+{
+    var offset = ((y * width) + x) * 4;
+    return Enumerable.Range(0, 4).Sum(channel => Math.Abs(before[offset + channel] - after[offset + channel]));
+}
+
+static void AssertChannels(byte[] pixels, int width, int x, int y, int blue, int green, int red, int alpha, int tolerance, string name)
+{
+    var offset = ((y * width) + x) * 4;
+    var expected = new[] { blue, green, red, alpha };
+    for (var channel = 0; channel < 4; channel++)
+        if (Math.Abs(pixels[offset + channel] - expected[channel]) > tolerance)
+            throw new InvalidDataException($"{name} failed at ({x},{y}) channel {channel}: expected {expected[channel]}, actual {pixels[offset + channel]}.");
 }
 
 static void RunBundledFontContracts()

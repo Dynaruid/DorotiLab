@@ -114,11 +114,26 @@ public abstract class Shader;
 
 public sealed class Gradient : Shader
 {
-    private Gradient(Offset? begin = null, Offset? end = null, Offset? center = null, double radius = 0, Offset? focal = null, double focalRadius = 0, double startAngle = 0, double endAngle = Math.PI * 2, TileMode tileMode = TileMode.clamp)
-    { this.begin = begin; this.end = end; this.center = center; this.radius = radius; this.focal = focal; this.focalRadius = focalRadius; this.startAngle = startAngle; this.endAngle = endAngle; this.tileMode = tileMode; }
-    public Gradient(Offset from, Offset to, IReadOnlyList<Color> colors, IReadOnlyList<double>? colorStops = null, TileMode tileMode = TileMode.clamp, IReadOnlyList<double>? matrix4 = null) : this(begin: from, end: to, tileMode: tileMode) { }
-    public Gradient(Offset center, double radius, IReadOnlyList<Color> colors, IReadOnlyList<double>? colorStops = null, TileMode tileMode = TileMode.clamp, IReadOnlyList<double>? matrix4 = null, Offset? focal = null, double focalRadius = 0) : this(center: center, radius: radius, focal: focal, focalRadius: focalRadius, tileMode: tileMode) { }
-    public Gradient(Offset center, IReadOnlyList<Color> colors, IReadOnlyList<double>? colorStops = null, TileMode tileMode = TileMode.clamp, double startAngle = 0, double endAngle = Math.PI * 2, IReadOnlyList<double>? matrix4 = null) : this(center: center, startAngle: startAngle, endAngle: endAngle, tileMode: tileMode) { }
+    private enum GradientKind { Linear, Radial, Sweep }
+    private Gradient(GradientKind kind, Offset? begin = null, Offset? end = null, Offset? center = null, double radius = 0, Offset? focal = null, double focalRadius = 0, double startAngle = 0, double endAngle = Math.PI * 2, TileMode tileMode = TileMode.clamp, IReadOnlyList<Color>? colors = null, IReadOnlyList<double>? colorStops = null, IReadOnlyList<double>? matrix4 = null)
+    {
+        this.kind = kind;
+        this.begin = begin; this.end = end; this.center = center; this.radius = radius; this.focal = focal;
+        this.focalRadius = focalRadius; this.startAngle = startAngle; this.endAngle = endAngle; this.tileMode = tileMode;
+        this.colors = Array.AsReadOnly((colors ?? throw new ArgumentNullException(nameof(colors))).ToArray());
+        if (this.colors.Count < 2) throw new ArgumentException("A gradient requires at least two colors.", nameof(colors));
+        var stops = colorStops?.ToArray() ?? Enumerable.Range(0, this.colors.Count).Select(index => index / (double)(this.colors.Count - 1)).ToArray();
+        if (stops.Length != this.colors.Count || stops.Any(value => !double.IsFinite(value)) || stops.Zip(stops.Skip(1)).Any(pair => pair.First > pair.Second))
+            throw new ArgumentException("Gradient stops must be finite, ordered, and match the color count.", nameof(colorStops));
+        this.colorStops = Array.AsReadOnly(stops);
+        if (matrix4 is not null && (matrix4.Count != 16 || matrix4.Any(value => !double.IsFinite(value))))
+            throw new ArgumentException("A gradient matrix must contain 16 finite values.", nameof(matrix4));
+        this.matrix4 = matrix4 is null ? null : Array.AsReadOnly(matrix4.ToArray());
+    }
+    public Gradient(Offset from, Offset to, IReadOnlyList<Color> colors, IReadOnlyList<double>? colorStops = null, TileMode tileMode = TileMode.clamp, IReadOnlyList<double>? matrix4 = null) : this(GradientKind.Linear, begin: from, end: to, tileMode: tileMode, colors: colors, colorStops: colorStops, matrix4: matrix4) { }
+    public Gradient(Offset center, double radius, IReadOnlyList<Color> colors, IReadOnlyList<double>? colorStops = null, TileMode tileMode = TileMode.clamp, IReadOnlyList<double>? matrix4 = null, Offset? focal = null, double focalRadius = 0) : this(GradientKind.Radial, center: center, radius: radius, focal: focal, focalRadius: focalRadius, tileMode: tileMode, colors: colors, colorStops: colorStops, matrix4: matrix4) { }
+    public Gradient(Offset center, IReadOnlyList<Color> colors, IReadOnlyList<double>? colorStops = null, TileMode tileMode = TileMode.clamp, double startAngle = 0, double endAngle = Math.PI * 2, IReadOnlyList<double>? matrix4 = null) : this(GradientKind.Sweep, center: center, startAngle: startAngle, endAngle: endAngle, tileMode: tileMode, colors: colors, colorStops: colorStops, matrix4: matrix4) { }
+    private GradientKind kind { get; }
     public Offset? begin { get; }
     public Offset? end { get; }
     public Offset? center { get; }
@@ -128,6 +143,9 @@ public sealed class Gradient : Shader
     public double startAngle { get; }
     public double endAngle { get; }
     public TileMode tileMode { get; }
+    public IReadOnlyList<Color> colors { get; }
+    public IReadOnlyList<double> colorStops { get; }
+    public IReadOnlyList<double>? matrix4 { get; }
     public static Gradient linear(Offset from, Offset to, IReadOnlyList<Color> colors, IReadOnlyList<double>? colorStops = null, TileMode tileMode = TileMode.clamp, IReadOnlyList<double>? matrix4 = null) => new(from, to, colors, colorStops, tileMode, matrix4);
     public static Gradient radial(Offset center, double radius, IReadOnlyList<Color> colors, IReadOnlyList<double>? colorStops = null, TileMode tileMode = TileMode.clamp, IReadOnlyList<double>? matrix4 = null, Offset? focal = null, double focalRadius = 0) => new(center, radius, colors, colorStops, tileMode, matrix4, focal, focalRadius);
     public static Gradient sweep(Offset center, IReadOnlyList<Color> colors, IReadOnlyList<double>? colorStops = null, TileMode tileMode = TileMode.clamp, double startAngle = 0, double endAngle = Math.PI * 2, IReadOnlyList<double>? matrix4 = null) => new(center, colors, colorStops, tileMode, startAngle, endAngle, matrix4);
@@ -142,12 +160,27 @@ public sealed class ImageShader(Image image, TileMode tmx, TileMode tmy, Matrix4
     public FilterQuality? filterQuality { get; } = filterQuality;
 }
 
+public enum ColorFilterKind { mode, matrix, linearToSrgbGamma, srgbToLinearGamma }
+
 public sealed record ColorFilter
 {
-    public static ColorFilter mode(Color color, BlendMode blendMode) => new();
-    public static ColorFilter matrix(IReadOnlyList<double> matrix) => new();
-    public static ColorFilter linearToSrgbGamma() => new();
-    public static ColorFilter srgbToLinearGamma() => new();
+    private ColorFilter(ColorFilterKind kind, Color? color = null, BlendMode blendMode = BlendMode.srcOver, IReadOnlyList<double>? values = null)
+    {
+        this.kind = kind;
+        this.color = color;
+        this.blendMode = blendMode;
+        if (kind == ColorFilterKind.matrix && (values is not { Count: 20 } || values.Any(value => !double.IsFinite(value))))
+            throw new ArgumentException("A color matrix must contain 20 finite values.", nameof(values));
+        matrixValues = values is null ? null : Array.AsReadOnly(values.ToArray());
+    }
+    public ColorFilterKind kind { get; }
+    public Color? color { get; }
+    public BlendMode blendMode { get; }
+    public IReadOnlyList<double>? matrixValues { get; }
+    public static ColorFilter mode(Color color, BlendMode blendMode) => new(ColorFilterKind.mode, color ?? throw new ArgumentNullException(nameof(color)), blendMode);
+    public static ColorFilter matrix(IReadOnlyList<double> matrix) => new(ColorFilterKind.matrix, values: matrix);
+    public static ColorFilter linearToSrgbGamma() => new(ColorFilterKind.linearToSrgbGamma);
+    public static ColorFilter srgbToLinearGamma() => new(ColorFilterKind.srgbToLinearGamma);
 }
 
 public sealed record ImageFilter
@@ -207,7 +240,15 @@ public sealed record ImageFilter
 
 public sealed record MaskFilter
 {
-    public static MaskFilter blur(BlurStyle style, double sigma) => new();
+    private MaskFilter(BlurStyle style, double sigma)
+    {
+        if (!double.IsFinite(sigma) || sigma < 0) throw new ArgumentOutOfRangeException(nameof(sigma));
+        this.style = style;
+        this.sigma = sigma;
+    }
+    public BlurStyle style { get; }
+    public double sigma { get; }
+    public static MaskFilter blur(BlurStyle style, double sigma) => new(style, sigma);
 }
 
 public class Shadow(Color color, Offset offset, double blurRadius)

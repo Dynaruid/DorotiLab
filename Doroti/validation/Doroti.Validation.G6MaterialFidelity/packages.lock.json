@@ -58,6 +58,12 @@
           "MaterialColorUtilities": "[0.3.0, )"
         }
       },
+      "doroti.flutter.ui": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Flutter.Runtime": "[0.2.0-beta, )"
+        }
+      },
       "doroti.graphics": {
         "type": "Project",
         "dependencies": {

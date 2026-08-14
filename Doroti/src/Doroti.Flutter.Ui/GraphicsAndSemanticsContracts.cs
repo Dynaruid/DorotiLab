@@ -322,22 +322,131 @@ internal sealed record ScenePicturePayload(Offset Offset, Picture Picture);
 internal sealed record SceneOffsetPayload(double Dx, double Dy);
 internal sealed record SceneClipRectPayload(Rect Rect);
 internal sealed record SceneClipRRectPayload(RRect RRect);
+internal sealed record SceneClipRSuperellipsePayload(RSuperellipse RSuperellipse);
 internal sealed record SceneClipPathPayload(Path Path);
 internal sealed record SceneTransformPayload(IReadOnlyList<double> Matrix4);
 internal sealed record SceneOpacityPayload(double Opacity, Offset Offset);
-internal sealed record CanvasPathPayload(Path Path, Paint Paint);
-internal sealed record CanvasRectPayload(Rect Rect, Paint Paint);
-internal sealed record CanvasRRectPayload(RRect RRect, Paint Paint);
-internal sealed record CanvasDRRectPayload(RRect Outer, RRect Inner, Paint Paint);
+internal sealed record SceneColorFilterPayload(ColorFilterSnapshot Filter);
+internal sealed record SceneImageFilterPayload(ImageFilterSnapshot Filter, Offset Offset);
+internal sealed record SceneShaderMaskPayload(ShaderSnapshot Shader, Rect MaskRect, BlendMode BlendMode);
+internal sealed record SceneBackdropFilterPayload(ImageFilterSnapshot Filter, BlendMode BlendMode, object? BackdropId);
+internal sealed record SceneRetainedPayload(IReadOnlyList<SceneCommand> Commands, ulong ViewId, long Generation);
+internal sealed record CanvasSaveLayerPayload(Rect? Bounds, PaintSnapshot Paint);
+internal sealed record CanvasPathPayload(Path Path, PaintSnapshot Paint);
+internal sealed record CanvasRectPayload(Rect Rect, PaintSnapshot Paint);
+internal sealed record CanvasRRectPayload(RRect RRect, PaintSnapshot Paint);
+internal sealed record CanvasDRRectPayload(RRect Outer, RRect Inner, PaintSnapshot Paint);
 internal sealed record CanvasClipRRectPayload(RRect RRect);
 internal sealed record CanvasClipPathPayload(Path Path);
-internal sealed record CanvasImagePayload(Image Image, Rect Source, Rect Destination, Paint Paint);
+internal sealed record CanvasImagePayload(Image Image, Rect Source, Rect Destination, PaintSnapshot Paint);
 internal sealed record CanvasParagraphPayload(Paragraph Paragraph, Offset Offset);
 internal sealed record CanvasShadowPayload(Path Path, Color Color, double Elevation, bool TransparentOccluder);
-internal sealed record CanvasCirclePayload(Offset Center, double Radius, Paint Paint);
-internal sealed record CanvasLinePayload(Offset Start, Offset End, Paint Paint);
-internal sealed record CanvasOvalPayload(Rect Rect, Paint Paint);
-internal sealed record CanvasArcPayload(Rect Rect, double StartAngle, double SweepAngle, bool UseCenter, Paint Paint);
+internal sealed record CanvasCirclePayload(Offset Center, double Radius, PaintSnapshot Paint);
+internal sealed record CanvasLinePayload(Offset Start, Offset End, PaintSnapshot Paint);
+internal sealed record CanvasOvalPayload(Rect Rect, PaintSnapshot Paint);
+internal sealed record CanvasArcPayload(Rect Rect, double StartAngle, double SweepAngle, bool UseCenter, PaintSnapshot Paint);
+internal sealed record CanvasColorPayload(Color Color, BlendMode BlendMode);
+internal sealed record PaintSnapshot(
+    Color Color,
+    PaintingStyle Style,
+    double StrokeWidth,
+    StrokeCap StrokeCap,
+    StrokeJoin StrokeJoin,
+    bool IsAntiAlias,
+    BlendMode BlendMode,
+    ShaderSnapshot? Shader,
+    ColorFilterSnapshot? ColorFilter,
+    MaskFilter? MaskFilter,
+    FilterQuality FilterQuality,
+    bool InvertColors)
+{
+    internal static PaintSnapshot Capture(Paint paint)
+    {
+        ArgumentNullException.ThrowIfNull(paint);
+        return new(
+            paint.color,
+            paint.style,
+            paint.strokeWidth,
+            paint.strokeCap,
+            paint.strokeJoin,
+            paint.isAntiAlias,
+            paint.blendMode,
+            paint.shader is null ? null : ShaderSnapshot.Capture(paint.shader),
+            paint.colorFilter is null ? null : ColorFilterSnapshot.Capture(paint.colorFilter),
+            paint.maskFilter,
+            paint.filterQuality,
+            paint.invertColors);
+    }
+}
+
+internal abstract record ShaderSnapshot
+{
+    internal static ShaderSnapshot Capture(Shader shader) => shader switch
+    {
+        Gradient gradient => new GradientShaderSnapshot(
+            gradient.begin, gradient.end, gradient.center, gradient.radius, gradient.focal, gradient.focalRadius,
+            gradient.startAngle, gradient.endAngle, gradient.tileMode,
+            Array.AsReadOnly(gradient.colors.ToArray()), Array.AsReadOnly(gradient.colorStops.ToArray()),
+            gradient.matrix4 is null ? null : Array.AsReadOnly(gradient.matrix4.ToArray())),
+        ImageShader image => new ImageShaderSnapshot(image.image, image.tmx, image.tmy,
+            Array.AsReadOnly(image.matrix4.storage.ToArray()), image.filterQuality),
+        FragmentShader => new UnsupportedShaderSnapshot("fragmentShader"),
+        _ => new UnsupportedShaderSnapshot(shader.GetType().FullName ?? shader.GetType().Name),
+    };
+}
+
+internal sealed record GradientShaderSnapshot(
+    Offset? Begin, Offset? End, Offset? Center, double Radius, Offset? Focal, double FocalRadius,
+    double StartAngle, double EndAngle, TileMode TileMode, IReadOnlyList<Color> Colors,
+    IReadOnlyList<double> Stops, IReadOnlyList<double>? Matrix4) : ShaderSnapshot;
+internal sealed record ImageShaderSnapshot(
+    Image Image, TileMode TileModeX, TileMode TileModeY, IReadOnlyList<double> Matrix4,
+    FilterQuality? FilterQuality) : ShaderSnapshot;
+internal sealed record UnsupportedShaderSnapshot(string Family) : ShaderSnapshot;
+
+internal sealed record ColorFilterSnapshot(
+    ColorFilterKind Kind,
+    Color? Color,
+    BlendMode BlendMode,
+    IReadOnlyList<double>? Matrix)
+{
+    internal static ColorFilterSnapshot Capture(ColorFilter filter) => new(
+        filter.kind,
+        filter.color,
+        filter.blendMode,
+        filter.matrixValues is null ? null : Array.AsReadOnly(filter.matrixValues.ToArray()));
+}
+
+internal sealed record ImageFilterSnapshot(
+    double SigmaX,
+    double SigmaY,
+    TileMode TileMode,
+    Rect? Bounds,
+    ImageFilterSnapshot? Outer,
+    ImageFilterSnapshot? Inner,
+    ColorFilterSnapshot? ColorFilter,
+    IReadOnlyList<double>? Matrix4,
+    FilterQuality FilterQuality,
+    bool IsShader)
+{
+    internal static ImageFilterSnapshot Capture(ImageFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+        if (filter.shader is not null)
+            return new(0, 0, TileMode.clamp, null, null, null, null, null, FilterQuality.none, true);
+        return new(
+            filter.sigmaX,
+            filter.sigmaY,
+            filter.tileMode,
+            filter.bounds,
+            filter.outer is null ? null : Capture(filter.outer),
+            filter.inner is null ? null : Capture(filter.inner),
+            filter.colorFilter is null ? null : ColorFilterSnapshot.Capture(filter.colorFilter),
+            filter.matrix4 is null ? null : Array.AsReadOnly(filter.matrix4.ToArray()),
+            filter.filterQuality,
+            false);
+    }
+}
 internal interface IFlutterImageHandle
 {
     IFlutterImageHandle Clone();
@@ -348,6 +457,10 @@ internal interface IFlutterImageHandle
 public class EngineLayer : IDisposable
 {
     private int _disposed;
+    internal string? Operation { get; set; }
+    internal IReadOnlyList<SceneCommand>? RetainedCommands { get; set; }
+    internal ulong OwnerViewId { get; set; }
+    internal long Generation { get; set; }
     public bool debugDisposed => Volatile.Read(ref _disposed) != 0;
     public void Dispose() => Interlocked.Exchange(ref _disposed, 1);
     public void dispose() => Dispose();
@@ -369,6 +482,8 @@ public sealed class SceneBuilder
 {
     private readonly ulong _viewId;
     private readonly List<SceneCommand> _commands = [];
+    private readonly Stack<(EngineLayer Layer, int Start)> _scopes = [];
+    private long _generation;
 
     public SceneBuilder(ulong viewId = 0) => _viewId = viewId;
 
@@ -388,23 +503,37 @@ public sealed class SceneBuilder
     public ClipRRectEngineLayer pushClipRRect(RRect rrect, Clip clipBehavior = Clip.antiAlias, ClipRRectEngineLayer? oldLayer = null) =>
         Push(oldLayer, "clipRRect", new { rrect, clipBehavior }, new SceneClipRRectPayload(rrect));
     public ClipRSuperellipseEngineLayer pushClipRSuperellipse(RSuperellipse rse, Clip clipBehavior = Clip.antiAlias, ClipRSuperellipseEngineLayer? oldLayer = null) =>
-        Push(oldLayer, "clipRSuperellipse", new { rse, clipBehavior });
+        Push(oldLayer, "clipRSuperellipse", new { rse, clipBehavior }, new SceneClipRSuperellipsePayload(rse));
     public ClipPathEngineLayer pushClipPath(Path path, Clip clipBehavior = Clip.antiAlias, ClipPathEngineLayer? oldLayer = null) =>
         Push(oldLayer, "clipPath", new { path, clipBehavior }, new SceneClipPathPayload(path));
     public ColorFilterEngineLayer pushColorFilter(ColorFilter filter, ColorFilterEngineLayer? oldLayer = null) =>
-        Push(oldLayer, "colorFilter", filter);
+        Push(oldLayer, "colorFilter", filter, new SceneColorFilterPayload(ColorFilterSnapshot.Capture(filter)));
     public ImageFilterEngineLayer pushImageFilter(ImageFilter filter, Offset offset = default, ImageFilterEngineLayer? oldLayer = null) =>
-        Push(oldLayer, "imageFilter", new { filter, offset });
+        Push(oldLayer, "imageFilter", new { filter, offset }, new SceneImageFilterPayload(ImageFilterSnapshot.Capture(filter), offset));
     public TransformEngineLayer pushTransform(IReadOnlyList<double> matrix4, TransformEngineLayer? oldLayer = null) =>
         Push(oldLayer, "transform", matrix4, new SceneTransformPayload(matrix4));
     public OpacityEngineLayer pushOpacity(long alpha, Offset offset = default, OpacityEngineLayer? oldLayer = null) =>
         Push(oldLayer, "opacity", new { alpha, offset }, new SceneOpacityPayload(Math.Clamp(alpha, 0, 255) / 255d, offset));
     public ShaderMaskEngineLayer pushShaderMask(Shader shader, Rect maskRect, BlendMode blendMode, ShaderMaskEngineLayer? oldLayer = null) =>
-        Push(oldLayer, "shaderMask", new { shader, maskRect, blendMode });
+        Push(oldLayer, "shaderMask", new { shader, maskRect, blendMode }, new SceneShaderMaskPayload(ShaderSnapshot.Capture(shader), maskRect, blendMode));
     public BackdropFilterEngineLayer pushBackdropFilter(ImageFilter filter, BlendMode blendMode = BlendMode.srcOver, BackdropFilterEngineLayer? oldLayer = null, object? backdropId = null) =>
-        Push(oldLayer, "backdropFilter", new { filter, blendMode, backdropId });
-    public void pop() => _commands.Add(new("pop", null));
-    public void addRetained(EngineLayer layer) => _commands.Add(new("retained", layer));
+        Push(oldLayer, "backdropFilter", new { filter, blendMode, backdropId }, new SceneBackdropFilterPayload(ImageFilterSnapshot.Capture(filter), blendMode, backdropId));
+    public void pop()
+    {
+        if (_scopes.Count == 0) throw new InvalidOperationException("SceneBuilder pop is unbalanced.");
+        _commands.Add(new("pop", null));
+        var (layer, start) = _scopes.Pop();
+        layer.RetainedCommands = Array.AsReadOnly(_commands.Skip(start).ToArray());
+        layer.Generation = ++_generation;
+    }
+    public void addRetained(EngineLayer layer)
+    {
+        ArgumentNullException.ThrowIfNull(layer);
+        ObjectDisposedException.ThrowIf(layer.debugDisposed, layer);
+        if (layer.RetainedCommands is null || layer.OwnerViewId != _viewId)
+            throw new InvalidOperationException("A retained layer must be complete and owned by the same Flutter view.");
+        _commands.Add(new SceneCommand("retained", layer) { HostPayload = new SceneRetainedPayload(layer.RetainedCommands, layer.OwnerViewId, layer.Generation) });
+    }
     public void addPerformanceOverlay(long enabledOptions, Rect bounds) => _commands.Add(new("performanceOverlay", new { enabledOptions, bounds }));
     public void addPlatformView(long viewId, Offset offset = default, double width = 0, double height = 0) =>
         _commands.Add(new("platformView", new { viewId, offset, width, height }));
@@ -413,11 +542,20 @@ public sealed class SceneBuilder
 
     private T Push<T>(T? oldLayer, string operation, object? payload, object? hostPayload = null) where T : EngineLayer, new()
     {
+        var layer = oldLayer is { debugDisposed: false } && oldLayer.Operation == operation ? oldLayer : new T();
+        layer.Operation = operation;
+        layer.OwnerViewId = _viewId;
+        var start = _commands.Count;
         _commands.Add(new SceneCommand(operation, payload) { HostPayload = hostPayload });
-        return oldLayer is { debugDisposed: false } ? oldLayer : new T();
+        _scopes.Push((layer, start));
+        return layer;
     }
 
-    public Scene build() => new(_viewId, _commands.ToArray());
+    public Scene build()
+    {
+        if (_scopes.Count != 0) throw new InvalidOperationException($"SceneBuilder has {_scopes.Count} unclosed effect scope(s).");
+        return new(_viewId, _commands.ToArray());
+    }
 }
 
 public class Canvas
@@ -434,7 +572,7 @@ public class Canvas
         ArgumentNullException.ThrowIfNull(paint);
         _commands.Add(new PathCommand("drawPath", [path.Commands.Count, paint.color.value, paint.strokeWidth])
         {
-            HostPayload = new CanvasPathPayload(path, paint),
+            HostPayload = new CanvasPathPayload(path, PaintSnapshot.Capture(paint)),
         });
     }
 
@@ -443,7 +581,11 @@ public class Canvas
         throw new MissingMethodException($"Canvas does not implement the requested Dart invocation: {invocation}.");
     public void save() { _saveCount++; _commands.Add(new("save", [])); }
     public void restore() { if (_saveCount > 1) _saveCount--; _commands.Add(new("restore", [])); }
-    public void saveLayer(Rect? bounds, Paint paint) { _saveCount++; _commands.Add(new("saveLayer", [])); }
+    public void saveLayer(Rect? bounds, Paint paint)
+    {
+        _saveCount++;
+        _commands.Add(new PathCommand("saveLayer", []) { HostPayload = new CanvasSaveLayerPayload(bounds, PaintSnapshot.Capture(paint)) });
+    }
     public long getSaveCount() => _saveCount;
     public void translate(double dx, double dy) => _commands.Add(new("translate", [dx, dy]));
     public void scale(double sx, double? sy = null) => _commands.Add(new("scale", [sx, sy ?? sx]));
@@ -465,34 +607,34 @@ public class Canvas
     });
     public void drawRect(Rect rect, Paint paint) => _commands.Add(new PathCommand("drawRect", [rect.left, rect.top, rect.right, rect.bottom, paint.color.value])
     {
-        HostPayload = new CanvasRectPayload(rect, paint),
+        HostPayload = new CanvasRectPayload(rect, PaintSnapshot.Capture(paint)),
     });
     public void drawRRect(RRect rrect, Paint paint) => _commands.Add(new PathCommand("drawRRect", [rrect.left, rrect.top, rrect.right, rrect.bottom])
     {
-        HostPayload = new CanvasRRectPayload(rrect, paint),
+        HostPayload = new CanvasRRectPayload(rrect, PaintSnapshot.Capture(paint)),
     });
     public void drawRSuperellipse(RSuperellipse rse, Paint paint) => _commands.Add(new("drawRSuperellipse", [rse.outerRect.left, rse.outerRect.top, rse.outerRect.right, rse.outerRect.bottom]));
     public void drawDRRect(RRect outer, RRect inner, Paint paint) =>
         _commands.Add(new PathCommand("drawDRRect", [outer.left, outer.top, outer.right, outer.bottom, inner.left, inner.top, inner.right, inner.bottom])
         {
-            HostPayload = new CanvasDRRectPayload(outer, inner, paint),
+            HostPayload = new CanvasDRRectPayload(outer, inner, PaintSnapshot.Capture(paint)),
         });
     public void drawCircle(Offset center, double radius, Paint paint) => _commands.Add(new PathCommand("drawCircle", [center.dx, center.dy, radius])
     {
-        HostPayload = new CanvasCirclePayload(center, radius, paint),
+        HostPayload = new CanvasCirclePayload(center, radius, PaintSnapshot.Capture(paint)),
     });
     public void drawArc(Rect rect, double startAngle, double sweepAngle, bool useCenter, Paint paint) =>
         _commands.Add(new PathCommand("drawArc", [rect.left, rect.top, rect.right, rect.bottom, startAngle, sweepAngle, useCenter ? 1 : 0])
         {
-            HostPayload = new CanvasArcPayload(rect, startAngle, sweepAngle, useCenter, paint),
+            HostPayload = new CanvasArcPayload(rect, startAngle, sweepAngle, useCenter, PaintSnapshot.Capture(paint)),
         });
     public void drawLine(Offset point1, Offset point2, Paint paint) => _commands.Add(new PathCommand("drawLine", [point1.dx, point1.dy, point2.dx, point2.dy])
     {
-        HostPayload = new CanvasLinePayload(point1, point2, paint),
+        HostPayload = new CanvasLinePayload(point1, point2, PaintSnapshot.Capture(paint)),
     });
     public void drawPaint(Paint paint) => _commands.Add(new PathCommand("drawPaint", [paint.color.value])
     {
-        HostPayload = paint,
+        HostPayload = PaintSnapshot.Capture(paint),
     });
     public void drawShadow(Path path, Color color, double elevation, bool transparentOccluder) =>
         _commands.Add(new PathCommand("drawShadow", [path.Commands.Count, color.value, elevation, transparentOccluder ? 1 : 0])
@@ -500,12 +642,12 @@ public class Canvas
             HostPayload = new CanvasShadowPayload(path, color, elevation, transparentOccluder),
         });
     public void drawColor(Color color, BlendMode blendMode) =>
-        _commands.Add(new("drawColor", [color.value, (double)blendMode]));
+        _commands.Add(new PathCommand("drawColor", [color.value, (double)blendMode]) { HostPayload = new CanvasColorPayload(color, blendMode) });
     public void drawImage(Image image, Offset offset, Paint paint) =>
         _commands.Add(new PathCommand("drawImage", [image.width, image.height, offset.dx, offset.dy])
         {
             HostPayload = new CanvasImagePayload(image, Rect.fromLTWH(0, 0, image.width, image.height),
-                Rect.fromLTWH(offset.dx, offset.dy, image.width, image.height), paint),
+                Rect.fromLTWH(offset.dx, offset.dy, image.width, image.height), PaintSnapshot.Capture(paint)),
         });
     public void drawPicture(Picture picture) => _commands.AddRange(picture.Commands);
     public void drawPoints(PointMode pointMode, IReadOnlyList<Offset> points, Paint paint) =>
@@ -522,11 +664,11 @@ public class Canvas
         _commands.Add(new("drawRawAtlas", [atlas.width, atlas.height, rstTransforms.Count, rects.Count, colors?.Count ?? 0]));
     public void drawOval(Rect rect, Paint paint) => _commands.Add(new PathCommand("drawOval", [rect.left, rect.top, rect.right, rect.bottom])
     {
-        HostPayload = new CanvasOvalPayload(rect, paint),
+        HostPayload = new CanvasOvalPayload(rect, PaintSnapshot.Capture(paint)),
     });
     public void drawImageRect(Image image, Rect src, Rect dst, Paint paint) => _commands.Add(new PathCommand("drawImageRect", [image.width, image.height, src.left, src.top, src.right, src.bottom, dst.left, dst.top, dst.right, dst.bottom])
     {
-        HostPayload = new CanvasImagePayload(image, src, dst, paint),
+        HostPayload = new CanvasImagePayload(image, src, dst, PaintSnapshot.Capture(paint)),
     });
     public void drawImageNine(Image image, Rect center, Rect dst, Paint paint) => _commands.Add(new("drawImageNine", [image.width, image.height, center.left, center.top, center.right, center.bottom, dst.left, dst.top, dst.right, dst.bottom]));
     public void drawParagraph(Paragraph paragraph, Offset offset) => _commands.Add(new PathCommand("drawParagraph", [offset.dx, offset.dy, paragraph.width, paragraph.height])

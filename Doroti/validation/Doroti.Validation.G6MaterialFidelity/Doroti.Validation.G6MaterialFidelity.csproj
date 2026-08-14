@@ -8,6 +8,7 @@
     <ProjectReference Include="..\..\src\Doroti.Composition\Doroti.Composition.csproj" />
     <ProjectReference Include="..\..\src\Doroti.Backends.Skia\Doroti.Backends.Skia.csproj" />
     <ProjectReference Include="..\..\src\Doroti.Flutter.Runtime\Doroti.Flutter.Runtime.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Flutter.Ui\Doroti.Flutter.Ui.csproj" />
     <ProjectReference Include="..\..\src\Doroti.Graphics\Doroti.Graphics.csproj" />
     <ProjectReference Include="..\..\src\Doroti.Platform\Doroti.Platform.csproj" />
   </ItemGroup>

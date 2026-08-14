@@ -254,8 +254,7 @@ internal sealed class OpacityLayerSnapshot(Rect bounds, double opacity, LayerSna
 {
     internal override void Paint(IRasterCanvas canvas, IReadOnlyDictionary<ResourceId, IResourceSnapshot> resources)
     {
-        canvas.Save();
-        canvas.MultiplyOpacity(opacity);
+        canvas.SaveLayer(new RasterLayerOptions(Bounds: Bounds, Opacity: opacity));
         Child.Paint(canvas, resources);
         canvas.Restore();
     }

@@ -82,9 +82,52 @@ internal static class Program
                     entrypoint.RequestFrame();
                     WaitUntil(() => target.CaptureDiagnostics(DemoViewId).Frame.Presented > beforeInitialCapture,
                         target, entrypoint, TimeSpan.FromSeconds(10));
+                    WaitUntil(() => initialReadbackTask.IsCompleted,
+                        target, entrypoint, TimeSpan.FromSeconds(10));
                     entrypoint.InitialReadback = initialReadbackTask.WaitAsync(TimeSpan.FromSeconds(10))
                         .GetAwaiter().GetResult();
                     entrypoint.InitialStateSignature = entrypoint.GalleryState.StateSignature;
+                    var blurPoint = entrypoint.GalleryState.BlurToggleCenter();
+                    entrypoint.NativeEffectTogglePoint = blurPoint;
+                    entrypoint.NativeEffectPanelBounds = entrypoint.BackdropPanelPhysicalBounds();
+                    entrypoint.NativeEffectHitTestTargets = entrypoint.HitTestTargetsAt(blurPoint.dx, blurPoint.dy);
+                    var beforeEffectOff = entrypoint.GalleryState.EffectInteractionCount;
+                    var beforeEffectOffBuild = entrypoint.GalleryState.BuildCount;
+                    target.PostPointerMoveForValidation(DemoViewId, blurPoint.dx, blurPoint.dy);
+                    PumpInputTurn(target);
+                    target.PostPointerDownForValidation(DemoViewId, blurPoint.dx, blurPoint.dy);
+                    PumpInputTurn(target);
+                    target.PostPointerUpForValidation(DemoViewId, blurPoint.dx, blurPoint.dy);
+                    WaitUntil(() => entrypoint.GalleryState.EffectInteractionCount == beforeEffectOff + 1 &&
+                            !entrypoint.GalleryState.BlurEnabled && entrypoint.GalleryState.BuildCount > beforeEffectOffBuild,
+                        target, entrypoint, TimeSpan.FromSeconds(10));
+                    var offReadbackTask = target.CaptureNextFrameAsync(DemoViewId);
+                    var beforeOffCapture = target.CaptureDiagnostics(DemoViewId).Frame.Presented;
+                    entrypoint.RequestFrame();
+                    WaitUntil(() => target.CaptureDiagnostics(DemoViewId).Frame.Presented > beforeOffCapture,
+                        target, entrypoint, TimeSpan.FromSeconds(10));
+                    WaitUntil(() => offReadbackTask.IsCompleted,
+                        target, entrypoint, TimeSpan.FromSeconds(10));
+                    entrypoint.BackdropOffReadback = offReadbackTask.WaitAsync(TimeSpan.FromSeconds(10)).GetAwaiter().GetResult();
+                    var beforeEffectOn = entrypoint.GalleryState.EffectInteractionCount;
+                    var beforeEffectOnBuild = entrypoint.GalleryState.BuildCount;
+                    target.PostPointerMoveForValidation(DemoViewId, blurPoint.dx, blurPoint.dy);
+                    PumpInputTurn(target);
+                    target.PostPointerDownForValidation(DemoViewId, blurPoint.dx, blurPoint.dy);
+                    PumpInputTurn(target);
+                    target.PostPointerUpForValidation(DemoViewId, blurPoint.dx, blurPoint.dy);
+                    WaitUntil(() => entrypoint.GalleryState.EffectInteractionCount == beforeEffectOn + 1 &&
+                            entrypoint.GalleryState.BlurEnabled && entrypoint.GalleryState.BuildCount > beforeEffectOnBuild,
+                        target, entrypoint, TimeSpan.FromSeconds(10));
+                    var onReadbackTask = target.CaptureNextFrameAsync(DemoViewId);
+                    var beforeOnCapture = target.CaptureDiagnostics(DemoViewId).Frame.Presented;
+                    entrypoint.RequestFrame();
+                    WaitUntil(() => target.CaptureDiagnostics(DemoViewId).Frame.Presented > beforeOnCapture,
+                        target, entrypoint, TimeSpan.FromSeconds(10));
+                    WaitUntil(() => onReadbackTask.IsCompleted,
+                        target, entrypoint, TimeSpan.FromSeconds(10));
+                    entrypoint.BackdropOnReadback = onReadbackTask.WaitAsync(TimeSpan.FromSeconds(10)).GetAwaiter().GetResult();
+                    WriteArtifacts(options, null, null, entrypoint.BackdropOnReadback, entrypoint.BackdropOffReadback);
                     entrypoint.NativePointerHitTestTargets = entrypoint.HitTestTargetsAt(80, 200);
                     var beforeNativePointerInteraction = entrypoint.GalleryState.InteractionCount;
                     target.PostPointerTapForValidation(DemoViewId, 80, 200);
@@ -150,8 +193,9 @@ internal static class Program
                         return frame.QueueDepth == 0 && frame.ActiveFrames == 0 && frame.Submitted == terminal;
                     }, target, entrypoint, TimeSpan.FromSeconds(10));
                     diagnostics = target.CaptureDiagnostics(DemoViewId);
+                    WriteArtifacts(options, entrypoint.InitialReadback, readback,
+                        entrypoint.BackdropOnReadback, entrypoint.BackdropOffReadback);
                     ValidateMaterialSmoke(entrypoint, diagnostics, readback);
-                    WriteArtifacts(options, entrypoint.InitialReadback, readback);
                     session.DetachView(view);
                     session.Shutdown();
                     view.Dispose();
@@ -213,6 +257,16 @@ internal static class Program
         }
     }
 
+    private static void PumpInputTurn(WindowsFlutterTarget target)
+    {
+        var deadline = Stopwatch.StartNew();
+        while (deadline.Elapsed < TimeSpan.FromMilliseconds(40))
+        {
+            target.PumpPendingMessages();
+            Thread.Sleep(1);
+        }
+    }
+
     private static void ValidateMaterialSmoke(
         MaterialDemoEntrypoint entrypoint,
         DesktopFlutterTargetDiagnostics diagnostics,
@@ -259,6 +313,14 @@ internal static class Program
         {
             throw new InvalidDataException("Material interaction did not produce a measurable raster change.");
         }
+        if (entrypoint.GalleryState?.EffectInteractionCount != 2 || !entrypoint.GalleryState.BlurEnabled ||
+            entrypoint.BackdropOnReadback is null || entrypoint.BackdropOffReadback is null ||
+            entrypoint.NativeEffectPanelBounds is not { } panelBounds ||
+            CountChangedPixels(entrypoint.BackdropOnReadback, entrypoint.BackdropOffReadback, panelBounds) < 100 ||
+            !entrypoint.NativeEffectHitTestTargets.Any(target => target.EndsWith("RenderPointerListener", StringComparison.Ordinal)))
+        {
+            throw new InvalidDataException("The native backdrop checkbox did not complete ON -> OFF -> ON with a raster differential.");
+        }
         var initialColors = MeasurePixels(entrypoint.InitialReadback).Colors;
         var changedColors = MeasurePixels(readback).Colors;
         foreach (var required in new[] { "appBarAndFab", "cardSurface", "primaryControls", "initialStack", "blackInk" })
@@ -294,13 +356,17 @@ internal static class Program
     private static void WriteArtifacts(
         DemoOptions options,
         DesktopFlutterPixelReadback? initial,
-        DesktopFlutterPixelReadback changed)
+        DesktopFlutterPixelReadback? changed,
+        DesktopFlutterPixelReadback? backdropOn,
+        DesktopFlutterPixelReadback? backdropOff)
     {
-        if (options.ArtifactDirectory is null || initial is null) return;
+        if (options.ArtifactDirectory is null) return;
         var directory = IOPath.GetFullPath(options.ArtifactDirectory);
         Directory.CreateDirectory(directory);
-        WriteBmp(IOPath.Combine(directory, "material-initial.bmp"), initial);
-        WriteBmp(IOPath.Combine(directory, "material-changed.bmp"), changed);
+        if (initial is not null) WriteBmp(IOPath.Combine(directory, "material-initial.bmp"), initial);
+        if (changed is not null) WriteBmp(IOPath.Combine(directory, "material-changed.bmp"), changed);
+        if (backdropOn is not null) WriteBmp(IOPath.Combine(directory, "backdrop-on.bmp"), backdropOn);
+        if (backdropOff is not null) WriteBmp(IOPath.Combine(directory, "backdrop-off.bmp"), backdropOff);
     }
 
     private static void WriteBmp(string path, DesktopFlutterPixelReadback readback)
@@ -324,6 +390,28 @@ internal static class Program
         long changed = 0;
         for (var index = 0; index < before.Bgra8888Pixels.Length; index += 4)
         {
+            if (!before.Bgra8888Pixels.AsSpan(index, 4).SequenceEqual(after.Bgra8888Pixels.AsSpan(index, 4)))
+                changed++;
+        }
+        return changed;
+    }
+
+    private static long CountChangedPixels(
+        DesktopFlutterPixelReadback before,
+        DesktopFlutterPixelReadback after,
+        Rect physicalBounds)
+    {
+        if (before.Width != after.Width || before.Height != after.Height || before.RowBytes != after.RowBytes)
+            return long.MaxValue;
+        var left = Math.Clamp((int)Math.Floor(physicalBounds.left), 0, before.Width);
+        var top = Math.Clamp((int)Math.Floor(physicalBounds.top), 0, before.Height);
+        var right = Math.Clamp((int)Math.Ceiling(physicalBounds.right), left, before.Width);
+        var bottom = Math.Clamp((int)Math.Ceiling(physicalBounds.bottom), top, before.Height);
+        long changed = 0;
+        for (var y = top; y < bottom; y++)
+        for (var x = left; x < right; x++)
+        {
+            var index = (y * before.RowBytes) + (x * 4);
             if (!before.Bgra8888Pixels.AsSpan(index, 4).SequenceEqual(after.Bgra8888Pixels.AsSpan(index, 4)))
                 changed++;
         }
@@ -390,6 +478,23 @@ internal static class Program
                 beforeState = entrypoint?.InitialStateSignature,
                 afterState = entrypoint?.ChangedStateSignature,
                 changedPixelCount = entrypoint?.InitialReadback is null || readback is null ? 0 : CountChangedPixels(entrypoint.InitialReadback, readback),
+                compositing = new
+                {
+                    effectState = entrypoint?.GalleryState?.EffectStateSignature,
+                    nativeToggleCount = entrypoint?.GalleryState?.EffectInteractionCount ?? 0,
+                    togglePoint = entrypoint?.NativeEffectTogglePoint is { } point
+                        ? new { x = point.dx, y = point.dy }
+                        : null,
+                    panelPhysicalBounds = entrypoint?.NativeEffectPanelBounds is { } bounds
+                        ? new { left = bounds.left, top = bounds.top, right = bounds.right, bottom = bounds.bottom }
+                        : null,
+                    hitTestTargets = entrypoint?.NativeEffectHitTestTargets ?? [],
+                    onOffChangedPixelCount = entrypoint?.BackdropOnReadback is null || entrypoint.BackdropOffReadback is null
+                        ? 0 : CountChangedPixels(entrypoint.BackdropOnReadback, entrypoint.BackdropOffReadback),
+                    panelChangedPixelCount = entrypoint?.BackdropOnReadback is null ||
+                        entrypoint.BackdropOffReadback is null || entrypoint.NativeEffectPanelBounds is not { } panelBounds
+                        ? 0 : CountChangedPixels(entrypoint.BackdropOnReadback, entrypoint.BackdropOffReadback, panelBounds),
+                },
             },
             cadence = new
             {
@@ -612,12 +717,17 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
     internal bool RequireExternalUia { get; } = requireExternalUia;
     internal DesktopFlutterPixelReadback? InitialReadback { get; set; }
     internal DesktopFlutterPixelReadback? ChangedReadback { get; set; }
+    internal DesktopFlutterPixelReadback? BackdropOnReadback { get; set; }
+    internal DesktopFlutterPixelReadback? BackdropOffReadback { get; set; }
     internal string? InitialStateSignature { get; set; }
     internal string? ChangedStateSignature { get; set; }
     internal long CadencePresented { get; set; }
     internal TimeSpan CadenceDuration { get; set; }
     internal int NativePointerInteractionCount { get; set; }
     internal IReadOnlyList<string> NativePointerHitTestTargets { get; set; } = [];
+    internal Offset? NativeEffectTogglePoint { get; set; }
+    internal Rect? NativeEffectPanelBounds { get; set; }
+    internal IReadOnlyList<string> NativeEffectHitTestTargets { get; set; } = [];
 
     private Material.MaterialApp? _rootApp;
 
@@ -677,6 +787,15 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
             new Offset(x, y),
             checked((long)(_view ?? throw new InvalidOperationException("The Flutter view is not attached.")).viewId));
         return result.path.Select(entry => entry.target.GetType().FullName ?? entry.target.GetType().Name).ToArray();
+    }
+
+    internal Rect BackdropPanelPhysicalBounds()
+    {
+        var view = _view ?? throw new InvalidOperationException("The Flutter view is not attached.");
+        var logical = (GalleryState ?? throw new InvalidOperationException("The Material gallery State is not mounted."))
+            .BackdropPanelBounds();
+        var scale = view.devicePixelRatio;
+        return new Rect(logical.left * scale, logical.top * scale, logical.right * scale, logical.bottom * scale);
     }
 
     public void Shutdown()
@@ -741,11 +860,17 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
     private bool _switched;
     private double _slider = 0.2;
     private int _fabCount;
+    private bool _blurEnabled = true;
+    private readonly GlobalKey<IState> _blurToggleKey = new("g6-backdrop-blur-toggle");
+    private readonly GlobalKey<IState> _backdropPanelKey = new("g6-backdrop-blur-panel");
 
     internal int InteractionCount { get; private set; }
+    internal int EffectInteractionCount { get; private set; }
+    internal bool BlurEnabled => _blurEnabled;
     internal int BuildCount { get; private set; }
     internal string StateSignature =>
         $"button={_buttonCount};checked={_checked};radio={_radio};switch={_switched};slider={_slider:F1};fab={_fabCount}";
+    internal string EffectStateSignature => $"backdropBlur={_blurEnabled};effectInteractions={EffectInteractionCount}";
 
     public override void initState()
     {
@@ -765,6 +890,29 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
     });
 
     internal void PulseFrame() => setState(() => { });
+
+    internal Offset BlurToggleCenter()
+    {
+        var context = _blurToggleKey.currentContext ?? throw new InvalidOperationException("Backdrop blur toggle is not mounted.");
+        var box = context.findRenderObject() as Doroti.Generated.Framework.Rendering.RenderBox
+            ?? throw new InvalidOperationException("Backdrop blur toggle does not own a RenderBox.");
+        return box.localToGlobal(box.size.center(Offset.zero));
+    }
+
+    internal Rect BackdropPanelBounds()
+    {
+        var context = _backdropPanelKey.currentContext ?? throw new InvalidOperationException("Backdrop panel is not mounted.");
+        var box = context.findRenderObject() as Doroti.Generated.Framework.Rendering.RenderBox
+            ?? throw new InvalidOperationException("Backdrop panel does not own a RenderBox.");
+        var origin = box.localToGlobal(Offset.zero);
+        return Rect.fromLTWH(origin.dx, origin.dy, box.size.width, box.size.height);
+    }
+
+    private void ToggleBlur() => setState(() =>
+    {
+        _blurEnabled = !_blurEnabled;
+        EffectInteractionCount++;
+    });
 
     private void Mutate(System.Action mutation) => setState(() =>
     {
@@ -853,7 +1001,54 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
             primary: false,
             itemCount: 12,
             itemExtent: 30,
-            itemBuilder: (_, index) => new Text($"Lazy item {index + 1}"));
+            itemBuilder: (_, index) => new Container(
+                color: new UiColor(index % 2 == 0 ? 0xff6750a4L : 0xfff4b400L),
+                child: new Text($"Lazy item {index + 1}",
+                    style: new Doroti.Generated.Framework.Painting.TextStyle(color: new UiColor(0xff000000L)))));
+        var blurToggle = new Semantics(
+            key: _blurToggleKey,
+            container: true,
+            excludeSemantics: true,
+            identifier: "g6-backdrop-blur-toggle",
+            label: "G6 backdrop blur",
+            value: _blurEnabled ? "on" : "off",
+            toggled: _blurEnabled,
+            child: new Material.ElevatedButton(
+                onPressed: ToggleBlur,
+                child: new Row(spacing: 6, children:
+                [
+                    new IgnorePointer(child: new Material.Checkbox(value: _blurEnabled, onChanged: _ => { })),
+                    new Text(_blurEnabled ? "Blur ON" : "Blur OFF"),
+                ])));
+        var effectPanel = new SizedBox(height: 180, child: new Stack(
+            children:
+            [
+                new Positioned(left: 0, top: 0, right: 0, height: 170, child: lazyList),
+                new Positioned(left: 64, top: 30, width: 560, height: 100, child: new SizedBox(
+                    key: _backdropPanelKey,
+                    width: 560,
+                    height: 100,
+                    child: new Stack(children:
+                    [
+                        new Positioned(left: 0, top: 0, right: 0, bottom: 0, child: new IgnorePointer(
+                            child: new BackdropFilter(
+                                filterConfig: Doroti.Generated.Framework.Rendering.ImageFilterConfig.CreateBlur(
+                                    sigmaX: 12, sigmaY: 6, tileMode: TileMode.clamp, bounded: true),
+                                enabled: _blurEnabled,
+                                child: new Container(color: new UiColor(0x01ffffffL))))),
+                        new Positioned(left: 0, top: 0, right: 0, bottom: 0, child: new IgnorePointer(
+                            child: new Container(
+                                color: new UiColor(0x55ffffffL),
+                                padding: EdgeInsets.CreateAll(12),
+                                child: new Column(
+                                    crossAxisAlignment: Doroti.Generated.Framework.Rendering.CrossAxisAlignment.start,
+                                    children:
+                                    [
+                                        new Text("FROSTED GLASS · BACKDROP BLUR"),
+                                        new Text("ListView rows continue behind this overlay"),
+                                    ])))),
+                    ]))),
+            ]));
 
         var scaffold = new Material.Scaffold(
             appBar: new Material.AppBar(
@@ -888,8 +1083,9 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                                     new Container(width: 260, height: 56, color: new UiColor(_switched ? 0xffd0bcffL : 0xffb3261eL)),
                                     new Text($"Stack state · {StateSignature}"),
                                 ])),
-                            new Text("Lazy ListView.builder"),
-                            new SizedBox(height: 100, child: lazyList),
+                            new Row(spacing: 8, children: [blurToggle, new Text("Backdrop blur (native effect gate)")]),
+                            new Text("Lazy ListView.builder + clipped backdrop panel"),
+                            effectPanel,
                         ]))),
             floatingActionButton: ActionSemantics(InteractiveLabels[5], new Material.FloatingActionButton(
                 tooltip: "Material action",

@@ -7,19 +7,47 @@ namespace Doroti.Backends.Skia;
 internal sealed class NativeRasterCanvas(INativeRasterFrame frame) : IRasterCanvas
 {
     private readonly Stack<double> _opacities = [];
+    private readonly Stack<bool> _boundedLayers = [];
     private double _opacity = 1;
 
-    public int SaveCount => frame.SaveCount;
+    public int SaveCount => _opacities.Count + 1;
 
     public void Save()
     {
         _opacities.Push(_opacity);
+        _boundedLayers.Push(false);
         frame.Save();
+    }
+
+    public void SaveLayer(RasterLayerOptions options)
+    {
+        options.Validate();
+        _opacities.Push(_opacity);
+        var bounds = options.Bounds;
+        if (bounds is { } layerBounds)
+        {
+            frame.Save();
+            frame.ClipRect(layerBounds.Left, layerBounds.Top, layerBounds.Right, layerBounds.Bottom);
+        }
+        _boundedLayers.Push(bounds.HasValue);
+        frame.SaveLayer(new NativeLayerOptions(
+            bounds.HasValue, bounds?.Left ?? 0, bounds?.Top ?? 0, bounds?.Right ?? 0, bounds?.Bottom ?? 0,
+            options.Opacity, (int)options.BlendMode, ConvertImageFilter(options.ImageFilter),
+            ConvertImageFilter(options.BackdropFilter), ConvertColorFilter(options.ColorFilter)));
+
+        static NativeImageFilterOptions? ConvertImageFilter(RasterImageFilter? filter) => filter is null ? null : new(
+            (int)filter.Kind, filter.SigmaX, filter.SigmaY, (int)filter.TileMode,
+            filter.Matrix?.ToArray(), ConvertImageFilter(filter.Outer), ConvertImageFilter(filter.Inner),
+            ConvertColorFilter(filter.ColorFilter));
+        static NativeColorFilterOptions? ConvertColorFilter(RasterColorFilter? filter) => filter is null ? null : new(
+            (int)filter.Kind, filter.Color?.Value ?? 0, (int)filter.BlendMode,
+            filter.Matrix?.Select(value => (float)value).ToArray());
     }
 
     public void Restore()
     {
         frame.Restore();
+        if (_boundedLayers.Pop()) frame.Restore();
         _opacity = _opacities.Pop();
     }
 
@@ -114,6 +142,7 @@ internal sealed class SoftwareRasterCanvas : IRasterCanvas
     private readonly int _width;
     private readonly int _height;
     private readonly Stack<State> _states = [];
+    private readonly Stack<LayerState?> _layers = [];
     private State _state;
 
     internal SoftwareRasterCanvas(byte[] pixels, int width, int height)
@@ -126,7 +155,26 @@ internal sealed class SoftwareRasterCanvas : IRasterCanvas
 
     public int SaveCount => _states.Count + 1;
 
-    public void Save() => _states.Push(_state);
+    public void Save()
+    {
+        _states.Push(_state);
+        _layers.Push(null);
+    }
+
+    public void SaveLayer(RasterLayerOptions options)
+    {
+        options.Validate();
+        _states.Push(_state);
+        var bounds = options.Bounds is { } requested
+            ? _state.Transform.TransformBounds(requested).Intersect(_state.ClipBounds)
+            : _state.ClipBounds;
+        var original = _pixels.ToArray();
+        _layers.Push(new LayerState(options, original, bounds, _state.ClipPaths));
+        _pixels.AsSpan().Clear();
+        if (options.BackdropFilter is { } backdrop)
+            BgraRasterEffects.ApplyImageFilter(original, _width, _height, backdrop).CopyTo(_pixels, 0);
+        _state = _state with { ClipBounds = bounds };
+    }
 
     public void Restore()
     {
@@ -134,7 +182,21 @@ internal sealed class SoftwareRasterCanvas : IRasterCanvas
         {
             throw new InvalidOperationException("Raster canvas restore is unbalanced.");
         }
-        _state = _states.Pop();
+        var layer = _layers.Pop();
+        var restored = _states.Pop();
+        if (layer is not null)
+        {
+            var source = _pixels.ToArray();
+            if (layer.Options.ImageFilter is { } imageFilter)
+                source = BgraRasterEffects.ApplyImageFilter(source, _width, _height, imageFilter);
+            if (layer.Options.ColorFilter is { } colorFilter)
+                source = BgraRasterEffects.ApplyColorFilter(source, colorFilter);
+            MaskOutsideClip(source, layer);
+            layer.Destination.CopyTo(_pixels, 0);
+            BgraRasterEffects.Composite(_pixels, source, _width, _height, layer.Bounds,
+                layer.Options.Opacity, layer.Options.BlendMode);
+        }
+        _state = restored;
     }
 
     public void Transform(Matrix transform)
@@ -393,6 +455,26 @@ internal sealed class SoftwareRasterCanvas : IRasterCanvas
         }
     }
 
+    private void MaskOutsideClip(byte[] pixels, LayerState layer)
+    {
+        if (layer.ClipPaths.Count == 0) return;
+        var left = Math.Clamp((int)Math.Floor(layer.Bounds.Left), 0, _width);
+        var top = Math.Clamp((int)Math.Floor(layer.Bounds.Top), 0, _height);
+        var right = Math.Clamp((int)Math.Ceiling(layer.Bounds.Right), 0, _width);
+        var bottom = Math.Clamp((int)Math.Ceiling(layer.Bounds.Bottom), 0, _height);
+        for (var y = top; y < bottom; y++)
+        for (var x = left; x < right; x++)
+        {
+            if (layer.ClipPaths.All(path => Contains(path.Points, x + 0.5, y + 0.5, path.FillRule))) continue;
+            pixels.AsSpan(((y * _width) + x) * 4, 4).Clear();
+        }
+    }
+
     private sealed record ClipMask(IReadOnlyList<Offset> Points, PathFillRule FillRule);
+    private sealed record LayerState(
+        RasterLayerOptions Options,
+        byte[] Destination,
+        Rect Bounds,
+        IReadOnlyList<ClipMask> ClipPaths);
     private readonly record struct State(Matrix Transform, Rect ClipBounds, IReadOnlyList<ClipMask> ClipPaths, double Opacity = 1);
 }

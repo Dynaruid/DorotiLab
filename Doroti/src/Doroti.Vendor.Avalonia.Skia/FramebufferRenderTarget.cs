@@ -94,6 +94,8 @@ internal interface INativeRasterFrame : IDisposable
 
     void Save();
 
+    void SaveLayer(NativeLayerOptions options);
+
     void Restore();
 
     void Transform(double[] values);
@@ -165,6 +167,12 @@ internal sealed class NativeFramebufferFrame : INativeRasterFrame
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         _canvas.Save();
+    }
+
+    public void SaveLayer(NativeLayerOptions options)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        NativeLayerSupport.SaveLayer(_canvas, options);
     }
 
     public void Restore()
@@ -315,4 +323,87 @@ internal sealed class NativeFramebufferFrame : INativeRasterFrame
     }
 
     private static byte OpacityByte(double opacity) => (byte)Math.Round(255 * opacity);
+}
+
+internal sealed record NativeColorFilterOptions(int Kind, uint Color, int BlendMode, float[]? Matrix);
+internal sealed record NativeImageFilterOptions(
+    int Kind, double SigmaX, double SigmaY, int TileMode, double[]? Matrix,
+    NativeImageFilterOptions? Outer, NativeImageFilterOptions? Inner, NativeColorFilterOptions? ColorFilter);
+internal sealed record NativeLayerOptions(
+    bool HasBounds, double Left, double Top, double Right, double Bottom,
+    double Opacity, int BlendMode, NativeImageFilterOptions? ImageFilter,
+    NativeImageFilterOptions? BackdropFilter, NativeColorFilterOptions? ColorFilter);
+
+internal static class NativeLayerSupport
+{
+    internal static void SaveLayer(SKCanvas canvas, NativeLayerOptions options)
+    {
+        if (!double.IsFinite(options.Opacity) || options.Opacity is < 0 or > 1)
+            throw new ArgumentOutOfRangeException(nameof(options));
+
+        using var paint = new SKPaint
+        {
+            Color = new SKColor(255, 255, 255, (byte)Math.Round(options.Opacity * 255)),
+            BlendMode = (SKBlendMode)options.BlendMode,
+            IsAntialias = true,
+        };
+        using var imageFilter = CreateImageFilter(options.ImageFilter);
+        using var backdropFilter = CreateImageFilter(options.BackdropFilter);
+        using var colorFilter = CreateColorFilter(options.ColorFilter);
+        paint.ImageFilter = imageFilter;
+        paint.ColorFilter = colorFilter;
+
+        var bounds = options.HasBounds
+            ? new SKRect((float)options.Left, (float)options.Top, (float)options.Right, (float)options.Bottom)
+            : (SKRect?)null;
+        var record = new SKCanvasSaveLayerRec
+        {
+            Bounds = bounds,
+            Paint = paint,
+            Backdrop = backdropFilter,
+            Flags = SKCanvasSaveLayerRecFlags.None,
+        };
+        canvas.SaveLayer(record);
+    }
+
+    private static SKImageFilter? CreateImageFilter(NativeImageFilterOptions? filter)
+    {
+        if (filter is null) return null;
+        switch (filter.Kind)
+        {
+            case 0:
+                return SKImageFilter.CreateBlur((float)filter.SigmaX, (float)filter.SigmaY, (SKShaderTileMode)filter.TileMode);
+            case 1:
+                var values = filter.Matrix!;
+                var matrix = new SKMatrix(
+                    (float)values[0], (float)values[4], (float)values[12],
+                    (float)values[1], (float)values[5], (float)values[13],
+                    (float)values[3], (float)values[7], (float)values[15]);
+                return SKImageFilter.CreateMatrix(matrix);
+            case 2:
+                using (var outer = CreateImageFilter(filter.Outer)!)
+                using (var inner = CreateImageFilter(filter.Inner)!)
+                    return SKImageFilter.CreateCompose(outer, inner);
+            case 3:
+                using (var color = CreateColorFilter(filter.ColorFilter)!)
+                    return SKImageFilter.CreateColorFilter(color);
+            default:
+                throw new NotSupportedException($"Native image-filter kind '{filter.Kind}' is unsupported.");
+        }
+    }
+
+    private static SKColorFilter? CreateColorFilter(NativeColorFilterOptions? filter)
+    {
+        if (filter is null) return null;
+        return filter.Kind switch
+        {
+            0 => SKColorFilter.CreateBlendMode(
+                new SKColor((byte)(filter.Color >> 16), (byte)(filter.Color >> 8), (byte)filter.Color, (byte)(filter.Color >> 24)),
+                (SKBlendMode)filter.BlendMode),
+            1 => SKColorFilter.CreateColorMatrix(filter.Matrix!),
+            2 => SKColorFilter.CreateLinearToSrgbGamma(),
+            3 => SKColorFilter.CreateSrgbToLinearGamma(),
+            _ => throw new NotSupportedException($"Native color-filter kind '{filter.Kind}' is unsupported."),
+        };
+    }
 }

@@ -7,6 +7,8 @@ public abstract record DisplayCommand;
 
 public sealed record SaveCommand : DisplayCommand;
 
+public sealed record SaveLayerCommand(RasterLayerOptions Options) : DisplayCommand;
+
 public sealed record RestoreCommand : DisplayCommand;
 
 public sealed record TransformCommand(Matrix Transform) : DisplayCommand;
@@ -57,6 +59,9 @@ public sealed class DisplayList
             {
                 case SaveCommand:
                     canvas.Save();
+                    break;
+                case SaveLayerCommand layer:
+                    canvas.SaveLayer(layer.Options);
                     break;
                 case RestoreCommand:
                     canvas.Restore();
@@ -123,6 +128,13 @@ public sealed class DisplayListBuilder
         EnsureMutable();
         _saveDepth++;
         _commands.Add(new SaveCommand());
+    }
+
+    public void SaveLayer(RasterLayerOptions options)
+    {
+        EnsureMutable();
+        _saveDepth++;
+        _commands.Add(new SaveLayerCommand(options.Validate()));
     }
 
     public void Restore()
@@ -232,6 +244,7 @@ public sealed class DisplayListBuilder
             switch (command)
             {
                 case SaveCommand:
+                case SaveLayerCommand:
                     stack.Push((matrix, clip));
                     break;
                 case RestoreCommand:
@@ -278,6 +291,7 @@ public sealed class DisplayListBuilder
     private int EstimateByteSize() => _commands.Sum(command => command switch
     {
         SaveCommand or RestoreCommand => 1,
+        SaveLayerCommand => 1 + (5 * sizeof(double)),
         TransformCommand => 1 + (16 * sizeof(double)),
         ClipRectCommand or DrawRectCommand => 1 + (4 * sizeof(double)) + sizeof(uint) + sizeof(double),
         ClipPathCommand path => 1 + (path.Path.Points.Count * 2 * sizeof(double)),

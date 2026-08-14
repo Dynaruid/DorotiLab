@@ -512,6 +512,17 @@ public manifest를 다음 wave로 자동 분류한다.
 - `Doroti/artifacts/g6-compositing/win-x64/backdrop-off.png`
 - `Doroti/eng/validate-g6-compositing-effects.ps1 -Shard <Contracts|Managed|LiveWindows|Reference|Evidence>`
 
+현재 결과 (2026-08-14, partial):
+
+- pinned Flutter `compositing.dart`/`painting.dart`에서 scene/canvas operation 52개를 자동 census하고 각 항목의 tier, owner, consumer와 disposition을 `g6-scene-operation-matrix.json`에 기록했다. owner/disposition 누락과 unknown은 0이며 validator가 `saveLayer -> Save`, `opacity -> transform only`, unknown scene no-op 재도입을 실패시킨다.
+- `PaintSnapshot`, filter/shader snapshot과 typed scene/canvas payload를 도입하고 `TranslateScene()`을 balanced scope translator로 교체했다. group opacity와 `Canvas.saveLayer(bounds, paint)`는 offscreen group으로 합성하며 backdrop/foreground image filter, color filter, blend와 `clipRSuperellipse` sampled path를 분리한다. 지원하지 않는 shader mask, gradient/image shader와 C2 operation은 정상 draw/no-op으로 축약하지 않고 명시적으로 실패한다.
+- backend-neutral `SaveLayer(RasterLayerOptions)`와 managed premultiplied-BGRA 효과 경로를 구현했다. managed fixture에서 overlapping group opacity, bounded `srcATop` saveLayer, `sigmaX != sigmaY` backdrop blur와 clip 밖 불변, same-view retained replay 및 disposed/cross-view/unbalanced scope 거부가 PASS했다.
+- Skia framebuffer/OpenGL frame에 bounded save-layer, backdrop/foreground blur, matrix/compose/color filter와 blend payload를 연결했다. vendor가 framework assembly를 역참조하지 않도록 내부 native DTO boundary를 사용하며 desktop Flutter host 빌드는 warning/error 0이다.
+- `DorotiDemoApp`의 기존 6개 interaction contract와 `(80, 200)` native path는 유지하고 별도 effect state/counter를 추가했다. ListView 위에 560x100 frosted-glass panel을 실제 overlay로 두고 bounded blur bounds를 native clip으로 강제했다. 기존 내부 `ClipRect`가 strict-GPU에서 0x0 device clip이 되어 필터가 보이지 않던 문제와, saveLayer bounds를 clip으로 오해해 화면 전체가 흐려지던 문제를 함께 수정했다. 실제 native 좌표 down/up ON -> OFF -> ON에서 callback 2, direct callback 0, 전체 changed pixel 194,200 중 panel ROI 168,063, presented 630, failed/cancelled/software fallback 0, HWND/WGL resource balance PASS다.
+- `validate-g6-compositing-effects.ps1 -Shard Contracts|Managed|LiveWindows|Evidence`는 PASS한다. `-Shard Reference`는 pinned Flutter pixel differential fixture가 아직 없어 의도대로 `notVerified`로 실패한다. unchanged retained second frame/cross-surface generation, rect/RRect/path 및 DPI 1.25/2 differential, 100회 toggle/scroll/resize stress, physical/Avalonia/Linux/macOS도 `notVerified`다.
+- 기존 `validate-g6-material-demo.ps1 -Shard Regression` 묶음은 이번 effect 경로 이전의 `Doroti.Validation.G5Widgets` managed focus fixture가 `view.frame-dispatch` capability를 등록하지 않아 중단된다. strict-GPU Material product scenario 자체는 위 gate에서 PASS했지만 이 선행 회귀 실패를 성공으로 환산하지 않는다.
+- 따라서 C0 producer/translation/managed/Windows strict-GPU bounded slice는 복구됐지만 C0 reference differential과 C1/C2/retained-generation/stress/cross-target 완료 gate는 열려 있다. G6-5R-C 전체는 진행 중이며 G6-6 진입 조건은 아직 충족하지 않는다.
+
 ### G6-6 — Cupertino, adaptive와 Widget Previews live coverage
 
 진입 조건: G6-5R visual/generation 본체, G6-5R-I native input/cursor와 G6-5R-C compositing/effects gate 모두 완료.

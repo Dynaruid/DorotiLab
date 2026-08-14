@@ -218,56 +218,90 @@ internal sealed class DesktopGraphicsAndSemanticsCapabilities :
     {
         var builder = new DisplayListBuilder(GraphicsRect.FromLeftTopWidthHeight(0, 0, logicalSize.Width, logicalSize.Height));
         var saveDepth = 0;
-        foreach (var command in scene.Commands)
+        TranslateCommands(scene.Commands);
+        if (saveDepth != 0)
+            throw new InvalidDataException($"Flutter scene ended with {saveDepth} unclosed effect scope(s).");
+        return new PictureLayer(GraphicsOffset.Zero, builder.Build());
+
+        void TranslateCommands(IReadOnlyList<SceneCommand> commands)
         {
-            switch (command.Operation)
+            foreach (var command in commands)
             {
-                case "picture" when command.HostPayload is ScenePicturePayload picture:
-                    builder.Save();
-                    builder.Transform(GraphicsMatrix.CreateTranslation(picture.Offset.dx, picture.Offset.dy));
-                    TranslatePicture(picture.Picture, builder);
-                    builder.Restore();
-                    break;
-                case "offset" when command.HostPayload is SceneOffsetPayload offset:
-                    builder.Save();
-                    saveDepth++;
-                    builder.Transform(GraphicsMatrix.CreateTranslation(offset.Dx, offset.Dy));
-                    break;
-                case "clipRect" when command.HostPayload is SceneClipRectPayload clip:
-                    builder.Save();
-                    saveDepth++;
-                    builder.ClipRect(Convert(clip.Rect));
-                    break;
-                case "clipRRect" when command.HostPayload is SceneClipRRectPayload clip:
-                    builder.Save();
-                    saveDepth++;
-                    builder.ClipPath(Convert(clip.RRect));
-                    break;
-                case "clipPath" when command.HostPayload is SceneClipPathPayload clip:
-                    builder.Save();
-                    saveDepth++;
-                    builder.ClipPath(Convert(clip.Path));
-                    break;
-                case "transform" when command.HostPayload is SceneTransformPayload transform:
-                    builder.Save();
-                    saveDepth++;
-                    builder.Transform(Convert(transform.Matrix4));
-                    break;
-                case "opacity" when command.HostPayload is SceneOpacityPayload opacity:
-                    builder.Save();
-                    saveDepth++;
-                    builder.Transform(GraphicsMatrix.CreateTranslation(opacity.Offset.dx, opacity.Offset.dy));
-                    break;
-                case "pop" when saveDepth > 0:
-                    builder.Restore();
-                    saveDepth--;
-                    break;
-                default:
-                    throw new NotSupportedException($"Flutter scene operation '{command.Operation}' has no strict-GPU mapping.");
+                switch (command.Operation)
+                {
+                    case "picture" when command.HostPayload is ScenePicturePayload picture:
+                        builder.Save();
+                        builder.Transform(GraphicsMatrix.CreateTranslation(picture.Offset.dx, picture.Offset.dy));
+                        TranslatePicture(picture.Picture, builder);
+                        builder.Restore();
+                        break;
+                    case "offset" when command.HostPayload is SceneOffsetPayload offset:
+                        BeginSave();
+                        builder.Transform(GraphicsMatrix.CreateTranslation(offset.Dx, offset.Dy));
+                        break;
+                    case "clipRect" when command.HostPayload is SceneClipRectPayload clip:
+                        BeginSave();
+                        builder.ClipRect(Convert(clip.Rect));
+                        break;
+                    case "clipRRect" when command.HostPayload is SceneClipRRectPayload clip:
+                        BeginSave();
+                        builder.ClipPath(Convert(clip.RRect));
+                        break;
+                    case "clipRSuperellipse" when command.HostPayload is SceneClipRSuperellipsePayload clip:
+                        BeginSave();
+                        builder.ClipPath(Convert(clip.RSuperellipse));
+                        break;
+                    case "clipPath" when command.HostPayload is SceneClipPathPayload clip:
+                        BeginSave();
+                        builder.ClipPath(Convert(clip.Path));
+                        break;
+                    case "transform" when command.HostPayload is SceneTransformPayload transform:
+                        BeginSave();
+                        builder.Transform(Convert(transform.Matrix4));
+                        break;
+                    case "opacity" when command.HostPayload is SceneOpacityPayload opacity:
+                        builder.SaveLayer(new RasterLayerOptions(Opacity: opacity.Opacity));
+                        saveDepth++;
+                        builder.Transform(GraphicsMatrix.CreateTranslation(opacity.Offset.dx, opacity.Offset.dy));
+                        break;
+                    case "colorFilter" when command.HostPayload is SceneColorFilterPayload color:
+                        builder.SaveLayer(new RasterLayerOptions(ColorFilter: Convert(color.Filter)));
+                        saveDepth++;
+                        break;
+                    case "imageFilter" when command.HostPayload is SceneImageFilterPayload image:
+                        builder.SaveLayer(new RasterLayerOptions(ImageFilter: Convert(image.Filter)));
+                        saveDepth++;
+                        builder.Transform(GraphicsMatrix.CreateTranslation(image.Offset.dx, image.Offset.dy));
+                        break;
+                    case "backdropFilter" when command.HostPayload is SceneBackdropFilterPayload backdrop:
+                        builder.SaveLayer(new RasterLayerOptions(
+                            Bounds: backdrop.Filter.Bounds is { } backdropBounds ? Convert(backdropBounds) : null,
+                            BlendMode: Convert(backdrop.BlendMode),
+                            BackdropFilter: Convert(backdrop.Filter)));
+                        saveDepth++;
+                        break;
+                    case "retained" when command.HostPayload is SceneRetainedPayload retained:
+                        if (retained.ViewId != scene.viewId)
+                            throw new InvalidOperationException("Retained scene subtree belongs to a different Flutter view.");
+                        TranslateCommands(retained.Commands);
+                        break;
+                    case "pop" when saveDepth > 0:
+                        builder.Restore();
+                        saveDepth--;
+                        break;
+                    case "shaderMask":
+                        throw new NotSupportedException("Flutter scene operation 'shaderMask' reached a backend without shader-mask raster capability.");
+                    default:
+                        throw new NotSupportedException($"Flutter scene operation '{command.Operation}' has no strict-GPU mapping; silent downgrade is forbidden.");
+                }
+            }
+
+            void BeginSave()
+            {
+                builder.Save();
+                saveDepth++;
             }
         }
-        while (saveDepth-- > 0) builder.Restore();
-        return new PictureLayer(GraphicsOffset.Zero, builder.Build());
     }
 
     private static void TranslatePicture(Picture picture, DisplayListBuilder builder)
@@ -277,7 +311,14 @@ internal sealed class DesktopGraphicsAndSemanticsCapabilities :
         {
             switch (command.Operation)
             {
-                case "save" or "saveLayer": builder.Save(); break;
+                case "save": builder.Save(); break;
+                case "saveLayer" when command.HostPayload is CanvasSaveLayerPayload layer:
+                    builder.SaveLayer(new RasterLayerOptions(
+                        Bounds: layer.Bounds is null ? null : Convert(layer.Bounds.Value),
+                        Opacity: layer.Paint.Color.alpha / 255d,
+                        BlendMode: Convert(layer.Paint.BlendMode),
+                        ColorFilter: Convert(layer.Paint.ColorFilter)));
+                    break;
                 case "restore": builder.Restore(); break;
                 case "translate": builder.Transform(GraphicsMatrix.CreateTranslation(command.Arguments[0], command.Arguments[1])); break;
                 case "scale": builder.Transform(GraphicsMatrix.CreateScale(command.Arguments[0], command.Arguments[1])); break;
@@ -306,8 +347,8 @@ internal sealed class DesktopGraphicsAndSemanticsCapabilities :
                 case "drawPath" when command.HostPayload is CanvasPathPayload path:
                     builder.DrawPath(Convert(path.Path), Convert(path.Paint));
                     break;
-                case "drawPaint" when command.HostPayload is Paint paint:
-                    builder.DrawColor(Convert(paint.color));
+                case "drawPaint" when command.HostPayload is PaintSnapshot paint:
+                    builder.DrawRect(GraphicsRect.FromLeftTopWidthHeight(0, 0, builder.CullSize.Width, builder.CullSize.Height), Convert(paint));
                     break;
                 case "drawImageRect" when command.HostPayload is CanvasImagePayload image && image.Image.HostHandle is DesktopImageHandle handle:
                     builder.DrawImage(handle.Resource, Convert(image.Source), Convert(image.Destination), Alpha(image.Paint));
@@ -332,8 +373,10 @@ internal sealed class DesktopGraphicsAndSemanticsCapabilities :
                 case "drawArc" when command.HostPayload is CanvasArcPayload arc:
                     builder.DrawPath(Arc(arc), Convert(arc.Paint));
                     break;
-                case "drawColor":
-                    builder.DrawColor(new GraphicsColor(checked((uint)command.Arguments[0])));
+                case "drawColor" when command.HostPayload is CanvasColorPayload color:
+                    builder.SaveLayer(new RasterLayerOptions(BlendMode: Convert(color.BlendMode)));
+                    builder.DrawColor(Convert(color.Color));
+                    builder.Restore();
                     break;
                 case "drawImage" when command.HostPayload is CanvasImagePayload image && image.Image.HostHandle is DesktopImageHandle handle:
                     builder.DrawImage(handle.Resource, Convert(image.Source), Convert(image.Destination), Alpha(image.Paint));
@@ -465,12 +508,102 @@ internal sealed class DesktopGraphicsAndSemanticsCapabilities :
 
     private static GraphicsRect Convert(Rect value) => new(value.left, value.top, value.right, value.bottom);
     private static GraphicsColor Convert(Color value) => new(value.value);
-    private static RasterPaint Convert(Paint value) => new(
-        Convert(value.color ?? new Color(0xFF000000L)),
+    private static RasterPaint Convert(PaintSnapshot value)
+    {
+        if (value.Shader is not null)
+            throw new NotSupportedException($"Flutter paint shader '{value.Shader.GetType().Name}' reached a backend without shader raster capability.");
+        if (value.InvertColors)
+            throw new NotSupportedException("Flutter Paint.invertColors reached a backend without invert-color capability.");
+        return new(
+        Convert(value.Color),
         1,
-        Style: value.style == PaintingStyle.stroke ? RasterPaintStyle.Stroke : RasterPaintStyle.Fill,
-        StrokeWidth: value.strokeWidth);
-    private static double Alpha(Paint value) => (value.color ?? new Color(0xFF000000L)).alpha / 255d;
+        BlurSigma: value.MaskFilter?.sigma ?? 0,
+        Style: value.Style == PaintingStyle.stroke ? RasterPaintStyle.Stroke : RasterPaintStyle.Fill,
+        StrokeWidth: value.StrokeWidth,
+        BlendMode: Convert(value.BlendMode),
+        IsAntiAlias: value.IsAntiAlias,
+        ColorFilter: Convert(value.ColorFilter));
+    }
+
+    private static double Alpha(PaintSnapshot value) => value.Color.alpha / 255d;
+
+    private static RasterBlendMode Convert(BlendMode value) => value switch
+    {
+        BlendMode.clear => RasterBlendMode.Clear,
+        BlendMode.src => RasterBlendMode.Source,
+        BlendMode.dst => RasterBlendMode.Destination,
+        BlendMode.srcOver => RasterBlendMode.SourceOver,
+        BlendMode.dstOver => RasterBlendMode.DestinationOver,
+        BlendMode.srcIn => RasterBlendMode.SourceIn,
+        BlendMode.dstIn => RasterBlendMode.DestinationIn,
+        BlendMode.srcOut => RasterBlendMode.SourceOut,
+        BlendMode.dstOut => RasterBlendMode.DestinationOut,
+        BlendMode.srcATop => RasterBlendMode.SourceAtop,
+        BlendMode.dstATop => RasterBlendMode.DestinationAtop,
+        BlendMode.xor => RasterBlendMode.Xor,
+        BlendMode.plus => RasterBlendMode.Plus,
+        BlendMode.modulate => RasterBlendMode.Modulate,
+        BlendMode.screen => RasterBlendMode.Screen,
+        BlendMode.overlay => RasterBlendMode.Overlay,
+        BlendMode.darken => RasterBlendMode.Darken,
+        BlendMode.lighten => RasterBlendMode.Lighten,
+        BlendMode.colorDodge => RasterBlendMode.ColorDodge,
+        BlendMode.colorBurn => RasterBlendMode.ColorBurn,
+        BlendMode.hardLight => RasterBlendMode.HardLight,
+        BlendMode.softLight => RasterBlendMode.SoftLight,
+        BlendMode.difference => RasterBlendMode.Difference,
+        BlendMode.exclusion => RasterBlendMode.Exclusion,
+        BlendMode.multiply => RasterBlendMode.Multiply,
+        BlendMode.hue => RasterBlendMode.Hue,
+        BlendMode.saturation => RasterBlendMode.Saturation,
+        BlendMode.color => RasterBlendMode.Color,
+        BlendMode.luminosity => RasterBlendMode.Luminosity,
+        _ => throw new NotSupportedException($"Unsupported Flutter blend mode '{value}'."),
+    };
+
+    private static RasterTileMode Convert(TileMode value) => value switch
+    {
+        TileMode.clamp => RasterTileMode.Clamp,
+        TileMode.repeated => RasterTileMode.Repeat,
+        TileMode.mirror => RasterTileMode.Mirror,
+        TileMode.decal => RasterTileMode.Decal,
+        _ => throw new NotSupportedException($"Unsupported Flutter tile mode '{value}'."),
+    };
+
+    private static RasterColorFilter? Convert(ColorFilterSnapshot? value)
+    {
+        if (value is null) return null;
+        return value.Kind switch
+        {
+            ColorFilterKind.mode => new RasterColorFilter(RasterColorFilterKind.Mode,
+                value.Color is null ? throw new InvalidDataException("Mode color filter has no color.") : Convert(value.Color),
+                Convert(value.BlendMode)).Validate(),
+            ColorFilterKind.matrix => new RasterColorFilter(RasterColorFilterKind.Matrix,
+                Matrix: value.Matrix is null ? null : Array.AsReadOnly(value.Matrix.ToArray())).Validate(),
+            ColorFilterKind.linearToSrgbGamma => new RasterColorFilter(RasterColorFilterKind.LinearToSrgbGamma).Validate(),
+            ColorFilterKind.srgbToLinearGamma => new RasterColorFilter(RasterColorFilterKind.SrgbToLinearGamma).Validate(),
+            _ => throw new NotSupportedException($"Unsupported Flutter color filter '{value.Kind}'."),
+        };
+    }
+
+    private static RasterImageFilter Convert(ImageFilterSnapshot value)
+    {
+        if (value.IsShader)
+            throw new NotSupportedException("Fragment shader image filters are explicitly unsupported by the current backend.");
+        if (value.Outer is not null && value.Inner is not null)
+            return new RasterImageFilter(RasterImageFilterKind.Compose,
+                Outer: Convert(value.Outer), Inner: Convert(value.Inner)).Validate();
+        if (value.ColorFilter is not null && value.Inner is not null)
+            return new RasterImageFilter(RasterImageFilterKind.Compose,
+                Outer: new RasterImageFilter(RasterImageFilterKind.ColorFilter, ColorFilter: Convert(value.ColorFilter)),
+                Inner: Convert(value.Inner)).Validate();
+        if (value.ColorFilter is not null)
+            return new RasterImageFilter(RasterImageFilterKind.ColorFilter, ColorFilter: Convert(value.ColorFilter)).Validate();
+        if (value.Matrix4 is not null)
+            return new RasterImageFilter(RasterImageFilterKind.Matrix,
+                Matrix: Array.AsReadOnly(value.Matrix4.ToArray())).Validate();
+        return new RasterImageFilter(RasterImageFilterKind.Blur, value.SigmaX, value.SigmaY, Convert(value.TileMode)).Validate();
+    }
 
     private static GraphicsPath Convert(UiPath value)
     {
@@ -609,6 +742,37 @@ internal sealed class DesktopGraphicsAndSemanticsCapabilities :
             {
                 var angle = start + ((end - start) * index / steps);
                 points.Add(new GraphicsOffset(centerX + Math.Cos(angle) * radiusX, centerY + Math.Sin(angle) * radiusY));
+            }
+        }
+    }
+
+    private static GraphicsPath Convert(RSuperellipse value)
+    {
+        // Flutter's rounded superellipse uses a continuous high-order corner.
+        // Sample each corner independently so it never degrades to a bounds rectangle.
+        const int steps = 12;
+        const double exponent = 4;
+        var points = new List<GraphicsOffset>(steps * 4);
+        AddCorner(value.outerRect.right - value.trRadiusX, value.outerRect.top + value.trRadiusY,
+            value.trRadiusX, value.trRadiusY, -Math.PI / 2, 0);
+        AddCorner(value.outerRect.right - value.brRadiusX, value.outerRect.bottom - value.brRadiusY,
+            value.brRadiusX, value.brRadiusY, 0, Math.PI / 2);
+        AddCorner(value.outerRect.left + value.blRadiusX, value.outerRect.bottom - value.blRadiusY,
+            value.blRadiusX, value.blRadiusY, Math.PI / 2, Math.PI);
+        AddCorner(value.outerRect.left + value.tlRadiusX, value.outerRect.top + value.tlRadiusY,
+            value.tlRadiusX, value.tlRadiusY, Math.PI, Math.PI * 1.5);
+        return new GraphicsPath(points, true, Doroti.Graphics.PathFillRule.NonZero);
+
+        void AddCorner(double centerX, double centerY, double radiusX, double radiusY, double start, double end)
+        {
+            for (var index = 0; index <= steps; index++)
+            {
+                var angle = start + ((end - start) * index / steps);
+                var cosine = Math.Cos(angle);
+                var sine = Math.Sin(angle);
+                var x = Math.Sign(cosine) * Math.Pow(Math.Abs(cosine), 2 / exponent);
+                var y = Math.Sign(sine) * Math.Pow(Math.Abs(sine), 2 / exponent);
+                points.Add(new(centerX + (x * radiusX), centerY + (y * radiusY)));
             }
         }
     }
