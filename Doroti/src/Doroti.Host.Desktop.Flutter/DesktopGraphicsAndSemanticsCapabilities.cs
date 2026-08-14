@@ -332,6 +332,9 @@ internal sealed class DesktopGraphicsAndSemanticsCapabilities :
                 case "clipRRect" when command.HostPayload is CanvasClipRRectPayload roundedClip:
                     builder.ClipPath(Convert(roundedClip.RRect));
                     break;
+                case "clipRSuperellipse" when command.HostPayload is CanvasClipRSuperellipsePayload superellipseClip:
+                    builder.ClipPath(Convert(superellipseClip.RSuperellipse));
+                    break;
                 case "clipPath" when command.HostPayload is CanvasClipPathPayload pathClip:
                     builder.ClipPath(Convert(pathClip.Path));
                     break;
@@ -340,6 +343,9 @@ internal sealed class DesktopGraphicsAndSemanticsCapabilities :
                     break;
                 case "drawRRect" when command.HostPayload is CanvasRRectPayload rounded:
                     builder.DrawPath(Convert(rounded.RRect), Convert(rounded.Paint));
+                    break;
+                case "drawRSuperellipse" when command.HostPayload is CanvasRSuperellipsePayload superellipse:
+                    builder.DrawPath(Convert(superellipse.RSuperellipse), Convert(superellipse.Paint));
                     break;
                 case "drawDRRect" when command.HostPayload is CanvasDRRectPayload doubleRounded:
                     DrawDoubleRoundedRect(builder, doubleRounded);
@@ -649,8 +655,16 @@ internal sealed class DesktopGraphicsAndSemanticsCapabilities :
             }
         }
         if (points.Count < 2) throw new NotSupportedException($"Strict-GPU path mapping requires at least two path vertices; operations={string.Join(',', value.Commands.Select(item => item.Operation))}.");
-        return new(points, value.Commands.Any(item => item.Operation == "close"),
+        const double finitePathExtent = 1_000_000;
+        var finitePoints = points.Select(point => new GraphicsOffset(
+            Normalize(point.X),
+            Normalize(point.Y))).ToList();
+        return new(finitePoints, value.Commands.Any(item => item.Operation == "close"),
             value.fillType == PathFillType.evenOdd ? Doroti.Graphics.PathFillRule.EvenOdd : Doroti.Graphics.PathFillRule.NonZero);
+
+        static double Normalize(double coordinate) => double.IsFinite(coordinate)
+            ? Math.Clamp(coordinate, -finitePathExtent, finitePathExtent)
+            : 0;
 
         void AddOval(double left, double top, double right, double bottom)
         {
@@ -753,15 +767,36 @@ internal sealed class DesktopGraphicsAndSemanticsCapabilities :
         const int steps = 12;
         const double exponent = 4;
         var points = new List<GraphicsOffset>(steps * 4);
-        AddCorner(value.outerRect.right - value.trRadiusX, value.outerRect.top + value.trRadiusY,
-            value.trRadiusX, value.trRadiusY, -Math.PI / 2, 0);
-        AddCorner(value.outerRect.right - value.brRadiusX, value.outerRect.bottom - value.brRadiusY,
-            value.brRadiusX, value.brRadiusY, 0, Math.PI / 2);
-        AddCorner(value.outerRect.left + value.blRadiusX, value.outerRect.bottom - value.blRadiusY,
-            value.blRadiusX, value.blRadiusY, Math.PI / 2, Math.PI);
-        AddCorner(value.outerRect.left + value.tlRadiusX, value.outerRect.top + value.tlRadiusY,
-            value.tlRadiusX, value.tlRadiusY, Math.PI, Math.PI * 1.5);
+        // Rect.largest is a valid Flutter painting primitive. Sampling its
+        // enormous coordinates directly can overflow the corner arithmetic,
+        // so cap only non-finite/overflowing geometry to a viewport-dominating
+        // finite extent. Normal finite superellipses remain unchanged.
+        const double finiteExtent = 1_000_000;
+        var left = Finite(value.outerRect.left, -finiteExtent);
+        var top = Finite(value.outerRect.top, -finiteExtent);
+        var right = Finite(value.outerRect.right, finiteExtent);
+        var bottom = Finite(value.outerRect.bottom, finiteExtent);
+        var maxRadiusX = Math.Max(0, (right - left) / 2);
+        var maxRadiusY = Math.Max(0, (bottom - top) / 2);
+        var trX = Radius(value.trRadiusX, maxRadiusX);
+        var trY = Radius(value.trRadiusY, maxRadiusY);
+        var brX = Radius(value.brRadiusX, maxRadiusX);
+        var brY = Radius(value.brRadiusY, maxRadiusY);
+        var blX = Radius(value.blRadiusX, maxRadiusX);
+        var blY = Radius(value.blRadiusY, maxRadiusY);
+        var tlX = Radius(value.tlRadiusX, maxRadiusX);
+        var tlY = Radius(value.tlRadiusY, maxRadiusY);
+        AddCorner(right - trX, top + trY, trX, trY, -Math.PI / 2, 0);
+        AddCorner(right - brX, bottom - brY, brX, brY, 0, Math.PI / 2);
+        AddCorner(left + blX, bottom - blY, blX, blY, Math.PI / 2, Math.PI);
+        AddCorner(left + tlX, top + tlY, tlX, tlY, Math.PI, Math.PI * 1.5);
         return new GraphicsPath(points, true, Doroti.Graphics.PathFillRule.NonZero);
+
+        static double Finite(double candidate, double fallback) =>
+            double.IsFinite(candidate) && Math.Abs(candidate) <= finiteExtent ? candidate : fallback;
+
+        static double Radius(double candidate, double maximum) =>
+            double.IsFinite(candidate) ? Math.Clamp(Math.Abs(candidate), 0, maximum) : 0;
 
         void AddCorner(double centerX, double centerY, double radiusX, double radiusY, double start, double end)
         {

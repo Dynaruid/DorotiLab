@@ -123,6 +123,18 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (field.IsStatic)
         {
+            if (field.IsConst && initializer is { Kind: CoreNodeKind.SimpleIdentifier } &&
+                FindGlobalMember(initializer.ElementId) is { IsStatic: true })
+            {
+                // Dart const aliases are canonical compile-time values and do
+                // not observe textual static initialization order. A CLR field
+                // alias can read a later field as null, so retain the dependency
+                // as an expression-bodied static property.
+                builder.Append($"    {visibility} static {type} {name} => ");
+                EmitFieldInitializer(builder, type, initializer, declaration, package, library, inputPath, diagnostics);
+                builder.AppendLine(";");
+                return;
+            }
             var modifier = field.IsConst && IsCSharpConstant(initializer) ? "const" : "static";
             builder.Append($"    {visibility} {modifier} {type} {name}");
             if (initializer is not null)
@@ -654,6 +666,14 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             returnType = "global::Doroti.Generated.Framework.Rendering.RenderObject";
         }
+        if (method.Name == "createState")
+        {
+            // Dart permits covariant State<DerivedWidget> return types through
+            // intermediate StatefulWidget subclasses. Closed CLR State<T>
+            // types are invariant, so every createState override crosses the
+            // framework boundary through the common IState contract.
+            returnType = "IState";
+        }
         // Contract canonicalization above may replace a Dart-covariant getter
         // with an intermediate mixin type. These CLR contracts are invariant,
         // so apply the reviewed G5-3 surface type last.
@@ -837,6 +857,10 @@ internal sealed partial class FrameworkCSharpLowerer
         if (method.Name == "createRenderObject")
         {
             returnType = "global::Doroti.Generated.Framework.Rendering.RenderObject";
+        }
+        if (method.Name == "createState")
+        {
+            returnType = "IState";
         }
         if (method.Name == "renderObject")
         {

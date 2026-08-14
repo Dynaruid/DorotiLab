@@ -36,11 +36,21 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
     internal virtual Size _currentSize { get; set; } = default!;
     internal virtual LayerHandle<ClipRectLayer> _clipRectLayer { get; private set; } = new LayerHandle<ClipRectLayer>();
 
-    public RenderAnimatedSize(TickerProvider vsync, Duration duration, Duration? reverseDuration = null, Curve curve = default!, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, RenderBox? child = null, Clip clipBehavior = Clip.hardEdge, Action? onEnd = null) : base(alignment: alignment ?? global::Doroti.Generated.Framework.Painting.Alignment.center, textDirection: DartRuntimePrimitives.RequireValue(textDirection), child: child)
+    public RenderAnimatedSize(TickerProvider vsync, Duration duration, Duration? reverseDuration = null, Curve curve = default!, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, RenderBox? child = null, Clip clipBehavior = Clip.hardEdge, Action? onEnd = null) : base(alignment: alignment ?? global::Doroti.Generated.Framework.Painting.Alignment.center, textDirection: textDirection, child: child)
     {
         Curve __curve = curve ?? Curves.linear;
         this._vsync = vsync;
         this._clipBehavior = clipBehavior;
+        this._onEnd = onEnd;
+        this._controller = new AnimationController(
+            duration: duration,
+            reverseDuration: reverseDuration,
+            vsync: vsync);
+        this._controller.addListener(() =>
+        {
+            if (this._controller.value != this._lastValue) markNeedsLayout();
+        });
+        this._animation = new CurvedAnimation(parent: this._controller, curve: __curve);
     }
 
     public virtual AnimationController? debugController
@@ -394,4 +404,3 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
     }
 
 }
-

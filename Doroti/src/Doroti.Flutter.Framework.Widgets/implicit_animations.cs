@@ -193,6 +193,7 @@ if (global::Doroti.Generated.Framework.Animation.AnimationStatusMembers.isComple
             forEachTween(((global::System.Func<global::Doroti.Generated.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Generated.Framework.Animation.IDartTween>, global::Doroti.Generated.Framework.Animation.IDartTween?>)((tween, targetValue, constructor) => {
 return ((Func<global::Doroti.Generated.Framework.Animation.IDartTween?>)(() =>
 {            var __cascade = tween;
+            if (__cascade is null) return null;
             __cascade.begin = tween.evaluate(this._animation);
             __cascade.end = targetValue;
             return __cascade;        }))();

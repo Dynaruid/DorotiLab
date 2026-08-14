@@ -247,14 +247,14 @@ internal class _CupertinoSwitchState__switch : global::Doroti.Generated.Framewor
     {
         get
         {
-            return ((global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>)(object?)WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, CupertinoSwitch>)((states) => {
+            return WidgetStateProperty.resolveWith<Color?>((states) => {
 if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected))
 {
-    return ((CupertinoSwitch)(object?)((CupertinoSwitch)this.widget).thumbColor);
+    return ((CupertinoSwitch)this.widget).thumbColor;
 }
-return ((CupertinoSwitch)(object?)((CupertinoSwitch)this.widget).inactiveThumbColor);
+return ((CupertinoSwitch)this.widget).inactiveThumbColor;
 throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+});
             return default!;
         }
     }
@@ -262,14 +262,14 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return ((global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>)(object?)WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, CupertinoSwitch>)((states) => {
+            return WidgetStateProperty.resolveWith<Color?>((states) => {
 if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected))
 {
-    return ((CupertinoSwitch)(object?)((CupertinoSwitch)this.widget).activeTrackColor);
+    return ((CupertinoSwitch)this.widget).activeTrackColor;
 }
-return ((CupertinoSwitch)(object?)((CupertinoSwitch)this.widget).inactiveTrackColor);
+return ((CupertinoSwitch)this.widget).inactiveTrackColor;
 throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+});
             return default!;
         }
     }

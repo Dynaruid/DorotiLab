@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Doroti.Validation.G6Cupertino</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Doroti.Backends.Skia\Doroti.Backends.Skia.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Flutter.Hosting\Doroti.Flutter.Hosting.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Flutter.Framework.Cupertino\Doroti.Flutter.Framework.Cupertino.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Flutter.Framework.WidgetPreviews\Doroti.Flutter.Framework.WidgetPreviews.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Target.Windows.win-x64\Doroti.Target.Windows.win-x64.csproj" />
+  </ItemGroup>
+</Project>

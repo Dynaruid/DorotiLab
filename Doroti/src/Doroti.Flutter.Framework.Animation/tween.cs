@@ -203,7 +203,7 @@ public class ColorTween : Tween<Color?>
 
 public class SizeTween : Tween<Size?>
 {
-    public SizeTween(Size? begin = null, Size? end = null) : base(begin: DartRuntimePrimitives.RequireValue(begin), end: DartRuntimePrimitives.RequireValue(end))
+    public SizeTween(Size? begin = null, Size? end = null) : base(begin: begin, end: end)
     {
     }
 
@@ -212,7 +212,7 @@ public class SizeTween : Tween<Size?>
 
 public class RectTween : Tween<Rect?>
 {
-    public RectTween(Rect? begin = null, Rect? end = null) : base(begin: DartRuntimePrimitives.RequireValue(begin), end: DartRuntimePrimitives.RequireValue(end))
+    public RectTween(Rect? begin = null, Rect? end = null) : base(begin: begin, end: end)
     {
     }
 

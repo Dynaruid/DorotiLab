@@ -7,8 +7,10 @@
     <InternalsVisibleTo Include="Doroti.Backends.Skia" />
     <PackageReference Include="SkiaSharp" />
     <PackageReference Include="SkiaSharp.HarfBuzz" />
+    <EmbeddedResource Include="Assets\CupertinoIcons.ttf" />
     <EmbeddedResource Include="Assets\MaterialIcons-Regular.otf" />
     <EmbeddedResource Include="Assets\Roboto-Regular.ttf" />
+    <None Update="Assets\CupertinoIcons_LICENSE.txt" Pack="true" PackagePath="licenses\CupertinoIcons_LICENSE.txt" />
     <None Update="Assets\MaterialIcons_LICENSE.txt" Pack="true" PackagePath="licenses\MaterialIcons_LICENSE.txt" />
     <None Update="Assets\Roboto_LICENSE.txt" Pack="true" PackagePath="licenses\Roboto_LICENSE.txt" />
   </ItemGroup>

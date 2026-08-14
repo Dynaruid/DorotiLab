@@ -73,7 +73,7 @@ public class CupertinoScrollbar : global::Doroti.Generated.Framework.Widgets.Raw
         System.Diagnostics.Debug.Assert((__thicknessWhileDragging < double.PositiveInfinity));
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.RawScrollbarState<global::Doroti.Generated.Framework.Widgets.RawScrollbar> createState() => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.RawScrollbarState<global::Doroti.Generated.Framework.Widgets.RawScrollbar>>(new _CupertinoScrollbarState__scrollbar());
+    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoScrollbarState__scrollbar());
 }
 
 internal class _CupertinoScrollbarState__scrollbar : global::Doroti.Generated.Framework.Widgets.RawScrollbarState<CupertinoScrollbar>

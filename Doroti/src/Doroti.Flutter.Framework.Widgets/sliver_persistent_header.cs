@@ -207,7 +207,7 @@ _updateChild(((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_head
     {
         var __child = (global::Doroti.Generated.Framework.Rendering.RenderBox)(object)child;
         DartRuntimePrimitives.Assert(() => ((bool)((dynamic)this.renderObject).debugValidateChild(__child)));
-        ((dynamic)this.renderObject).child = DartRuntimePrimitives.ConvertValue<Element>(__child);
+        ((dynamic)this.renderObject).child = __child;
     }
 
     public override void moveRenderObjectChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
@@ -442,4 +442,3 @@ public class _RenderSliverFloatingPersistentHeaderForWidgets__sliver_persistent_
     }
 
 }
-

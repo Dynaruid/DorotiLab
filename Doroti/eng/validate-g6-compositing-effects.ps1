@@ -73,12 +73,12 @@ function Invoke-Contracts {
             $tier = if ($name -in $c0) { 'C0' } elseif ($name -in $c1) { 'C1' } else { 'C2' }
             $declared = [regex]::IsMatch($family.Source, "(?m)\b$([regex]::Escape($name))\s*\(")
             $payload = if ($tier -eq 'C0') { $true } elseif ($tier -eq 'C1') {
-                $name -in @('pushClipRSuperellipse','pushColorFilter','pushImageFilter','pushShaderMask','addRetained')
+                $name -in @('pushClipRSuperellipse','clipRSuperellipse','drawRSuperellipse','pushColorFilter','pushImageFilter','pushShaderMask','addRetained')
             } else { $false }
-            $translated = if ($tier -eq 'C2') { $false } else { [regex]::IsMatch($translator, "`"$($name -replace '^push','' -replace '^add','' -replace '^draw','draw')", [Text.RegularExpressions.RegexOptions]::IgnoreCase) -or $name -in @('save','restore','saveLayer','translate','scale','rotate','transform','getSaveCount','addRetained') }
-            $gpu = $tier -eq 'C0' -or $name -in @('pushClipRSuperellipse','addRetained')
+            $translated = if ($tier -eq 'C2') { $false } else { [regex]::IsMatch($translator, "`"$($name -replace '^push','' -replace '^add','' -replace '^draw','draw')", [Text.RegularExpressions.RegexOptions]::IgnoreCase) -or $name -in @('save','restore','saveLayer','translate','scale','rotate','transform','getSaveCount','addRetained','clipRSuperellipse','drawRSuperellipse') }
+            $gpu = $tier -eq 'C0' -or $name -in @('pushClipRSuperellipse','clipRSuperellipse','drawRSuperellipse','addRetained')
             $managed = $tier -eq 'C0' -or $name -in @('pushColorFilter','pushImageFilter','addRetained')
-            $disposition = if ($tier -eq 'C0') { 'exact' } elseif ($tier -eq 'C1' -and $gpu -and $managed) { 'boundedFallback' } elseif ($tier -eq 'C1') { 'explicitUnsupported' } else { 'notVerified' }
+            $disposition = if ($tier -eq 'C0') { 'exact' } elseif ($name -match 'RSuperellipse' -and $gpu) { 'boundedFallback' } elseif ($tier -eq 'C1' -and $gpu -and $managed) { 'boundedFallback' } elseif ($tier -eq 'C1') { 'explicitUnsupported' } else { 'notVerified' }
             $rows.Add([ordered]@{
                 family=$family.Name; operation=$name; tier=$tier; declared=$declared
                 payloadPreserved=$payload; translated=$translated; grouped=($tier -eq 'C0' -or $name -in @('pushColorFilter','pushImageFilter','addRetained'))
@@ -94,6 +94,10 @@ function Invoke-Contracts {
     $missing = @($rows | Where-Object { -not $_.declared -or [string]::IsNullOrWhiteSpace($_.owner) -or [string]::IsNullOrWhiteSpace($_.disposition) })
     Assert-True ($missing.Count -eq 0) 'scene/canvas census declaration and ownership coverage'
     Assert-True ($producer -match 'CanvasSaveLayerPayload\(bounds, PaintSnapshot\.Capture\(paint\)\)') 'Canvas.saveLayer immutable bounds/paint payload'
+    Assert-True ($producer -match 'CanvasClipRSuperellipsePayload\(rse, doAntiAlias\)') 'Canvas.clipRSuperellipse typed shape/anti-alias payload'
+    Assert-True ($producer -match 'CanvasRSuperellipsePayload\(rse, PaintSnapshot\.Capture\(paint\)\)') 'Canvas.drawRSuperellipse typed shape/paint payload'
+    Assert-True ($translator -match 'CanvasClipRSuperellipsePayload superellipseClip') 'Canvas.clipRSuperellipse strict-GPU translation'
+    Assert-True ($translator -match 'CanvasRSuperellipsePayload superellipse') 'Canvas.drawRSuperellipse strict-GPU translation'
     Assert-True ($translator -match 'case "opacity"[\s\S]{0,300}SaveLayer') 'scene opacity group translation'
     Assert-True ($translator -notmatch 'case "save" or "saveLayer"') 'saveLayer must not downgrade to Save'
     Assert-True ($translator -match 'silent downgrade is forbidden') 'unknown operation explicit diagnostic'
@@ -106,7 +110,7 @@ function Invoke-Contracts {
     })
     Write-Json $paintPath ([ordered]@{
         schemaVersion='doroti.g6-paint-effect-contract/v1'; milestone='G6-5R-C'; capturedAtUtc=[DateTimeOffset]::UtcNow; status='partial'
-        immutableSnapshots=@('PaintSnapshot','ColorFilterSnapshot','ImageFilterSnapshot','CanvasSaveLayerPayload','SceneBackdropFilterPayload','SceneImageFilterPayload','SceneColorFilterPayload','SceneShaderMaskPayload','SceneClipRSuperellipsePayload')
+        immutableSnapshots=@('PaintSnapshot','ColorFilterSnapshot','ImageFilterSnapshot','CanvasSaveLayerPayload','CanvasRSuperellipsePayload','CanvasClipRSuperellipsePayload','SceneBackdropFilterPayload','SceneImageFilterPayload','SceneColorFilterPayload','SceneShaderMaskPayload','SceneClipRSuperellipsePayload')
         producerValidation=[ordered]@{finiteSigma=$true;finiteMatrix=$true;colorMatrixLength=20;gradientStopOrdering=$true;unsupportedShaderFilter='explicit'}
         c0=[ordered]@{groupOpacity='implemented';saveLayerBoundsPaintBlend='implemented';anisotropicBackdropBlur='implemented';foregroundBackdropSeparated='implemented';managedPremultipliedBgra='implemented';strictGpuSaveLayerBackdrop='implemented'}
         c1=[ordered]@{retainedReplay='implemented-view-owned';clipRSuperellipse='bounded-sampled';groupColorFilter='implemented-managed-native';foregroundImageFilter='implemented-managed-native-blur-matrix-compose-colorFilter';shaderMask='explicitUnsupported';gradientShader='payloadPreserved-explicitUnsupported'}

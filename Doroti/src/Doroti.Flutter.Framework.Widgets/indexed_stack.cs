@@ -52,7 +52,7 @@ public class _RawIndexedStack__indexed_stack : Stack
 {
     public virtual long? index { get; private set; }
 
-    internal _RawIndexedStack__indexed_stack(global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Generated.Framework.Rendering.StackFit sizing = global::Doroti.Generated.Framework.Rendering.StackFit.loose, long? index = 0, List<Widget> children = default!) : base(alignment: alignment ?? global::Doroti.Generated.Framework.Painting.AlignmentDirectional.topStart, textDirection: DartRuntimePrimitives.RequireValue(textDirection), clipBehavior: clipBehavior, children: children ?? new List<Widget>(), fit: sizing)
+    internal _RawIndexedStack__indexed_stack(global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Generated.Framework.Rendering.StackFit sizing = global::Doroti.Generated.Framework.Rendering.StackFit.loose, long? index = 0, List<Widget> children = default!) : base(alignment: alignment ?? global::Doroti.Generated.Framework.Painting.AlignmentDirectional.topStart, textDirection: textDirection, clipBehavior: clipBehavior, children: children ?? new List<Widget>(), fit: sizing)
     {
         this.index = index;
         System.Diagnostics.Debug.Assert((((index is null) || (((DartRuntimePrimitives.RequireValue(index) == 0L) && (checked((long)(children.Count)) == 0L)))) || (((index >= 0L) && (DartRuntimePrimitives.RequireValue(index) < checked((long)(children.Count)))))));
@@ -500,4 +500,3 @@ public class _RenderSliverVisibility__indexed_stack : global::Doroti.Generated.F
     }
 
 }
-

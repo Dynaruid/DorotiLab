@@ -111,6 +111,7 @@ internal static class FontFallbackTextRenderer
     {
         var resourceName = requested switch
         {
+            "CupertinoIcons" or "packages/cupertino_icons/CupertinoIcons" => "Doroti.Vendor.Avalonia.Skia.Assets.CupertinoIcons.ttf",
             "MaterialIcons" => "Doroti.Vendor.Avalonia.Skia.Assets.MaterialIcons-Regular.otf",
             "Roboto" => "Doroti.Vendor.Avalonia.Skia.Assets.Roboto-Regular.ttf",
             _ => null,

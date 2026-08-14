@@ -207,15 +207,23 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
             if ((this._shadowCount is null))
             {
                 _shadowCount = checked((long)(((ShapeDecoration)this._decoration).shadows!.Count));
-                _shadowPaints = new List<global::Doroti.Flutter.Ui.Paint>();
+                _shadowPaints = ((ShapeDecoration)this._decoration).shadows!
+                    .Select(shadow => shadow.toPaint())
+                    .ToList();
             }
             if (((ShapeDecoration)this._decoration).shape.preferPaintInterior)
             {
-                _shadowBounds = new List<global::Doroti.Flutter.Ui.Rect>();
+                _shadowBounds = ((ShapeDecoration)this._decoration).shadows!
+                    .Select(shadow => rect.shift(shadow.offset).inflate(shadow.spreadRadius))
+                    .ToList();
             }
             else
             {
-                _shadowPaths = new List<global::Doroti.Flutter.Ui.Path>();
+                _shadowPaths = ((ShapeDecoration)this._decoration).shadows!
+                    .Select(shadow => ((ShapeDecoration)this._decoration).shape.getOuterPath(
+                        rect.shift(shadow.offset).inflate(shadow.spreadRadius),
+                        textDirection: textDirection))
+                    .ToList();
             }
         }
         if ((!((ShapeDecoration)this._decoration).shape.preferPaintInterior && (((this._interiorPaint is not null) || (this._shadowCount is not null)))))
@@ -337,4 +345,3 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
     }
 
 }
-

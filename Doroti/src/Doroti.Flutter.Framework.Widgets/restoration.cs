@@ -414,7 +414,14 @@ public abstract class RestorableProperty<T> : global::Doroti.Generated.Framework
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => ChangeNotifier.debugAssertNotDisposed(this));
-        ((dynamic)this._owner)?._unregister(this);
+        if (this._owner is RestorationPropertyOwner owner)
+        {
+            owner._unregister(this);
+        }
+        else
+        {
+            ((dynamic)this._owner)?._unregister(this);
+        }
         base.dispose();
         _disposed = true;
     }
@@ -456,7 +463,12 @@ public abstract class RestorableProperty<T> : global::Doroti.Generated.Framework
     }
 }
 
-public interface RestorationMixin<S> where S : StatefulWidget
+public interface RestorationPropertyOwner
+{
+    public void _unregister(dynamic property);
+}
+
+public interface RestorationMixin<S> : RestorationPropertyOwner where S : StatefulWidget
 {
     global::Doroti.Generated.Framework.Services.RestorationBucket? _bucket { get; set; }
     DartMap<dynamic, global::System.Action> _properties { get; }

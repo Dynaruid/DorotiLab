@@ -335,8 +335,10 @@ internal sealed record CanvasSaveLayerPayload(Rect? Bounds, PaintSnapshot Paint)
 internal sealed record CanvasPathPayload(Path Path, PaintSnapshot Paint);
 internal sealed record CanvasRectPayload(Rect Rect, PaintSnapshot Paint);
 internal sealed record CanvasRRectPayload(RRect RRect, PaintSnapshot Paint);
+internal sealed record CanvasRSuperellipsePayload(RSuperellipse RSuperellipse, PaintSnapshot Paint);
 internal sealed record CanvasDRRectPayload(RRect Outer, RRect Inner, PaintSnapshot Paint);
 internal sealed record CanvasClipRRectPayload(RRect RRect);
+internal sealed record CanvasClipRSuperellipsePayload(RSuperellipse RSuperellipse, bool DoAntiAlias);
 internal sealed record CanvasClipPathPayload(Path Path);
 internal sealed record CanvasImagePayload(Image Image, Rect Source, Rect Destination, PaintSnapshot Paint);
 internal sealed record CanvasParagraphPayload(Paragraph Paragraph, Offset Offset);
@@ -600,7 +602,10 @@ public class Canvas
     {
         HostPayload = new CanvasClipRRectPayload(rrect),
     });
-    public void clipRSuperellipse(RSuperellipse rse, bool doAntiAlias = true) => _commands.Add(new("clipRSuperellipse", [rse.outerRect.left, rse.outerRect.top, rse.outerRect.right, rse.outerRect.bottom]));
+    public void clipRSuperellipse(RSuperellipse rse, bool doAntiAlias = true) => _commands.Add(new PathCommand("clipRSuperellipse", [rse.outerRect.left, rse.outerRect.top, rse.outerRect.right, rse.outerRect.bottom])
+    {
+        HostPayload = new CanvasClipRSuperellipsePayload(rse, doAntiAlias),
+    });
     public void clipPath(Path path, bool doAntiAlias = true) => _commands.Add(new PathCommand("clipPath", [path.Commands.Count])
     {
         HostPayload = new CanvasClipPathPayload(path),
@@ -613,7 +618,10 @@ public class Canvas
     {
         HostPayload = new CanvasRRectPayload(rrect, PaintSnapshot.Capture(paint)),
     });
-    public void drawRSuperellipse(RSuperellipse rse, Paint paint) => _commands.Add(new("drawRSuperellipse", [rse.outerRect.left, rse.outerRect.top, rse.outerRect.right, rse.outerRect.bottom]));
+    public void drawRSuperellipse(RSuperellipse rse, Paint paint) => _commands.Add(new PathCommand("drawRSuperellipse", [rse.outerRect.left, rse.outerRect.top, rse.outerRect.right, rse.outerRect.bottom])
+    {
+        HostPayload = new CanvasRSuperellipsePayload(rse, PaintSnapshot.Capture(paint)),
+    });
     public void drawDRRect(RRect outer, RRect inner, Paint paint) =>
         _commands.Add(new PathCommand("drawDRRect", [outer.left, outer.top, outer.right, outer.bottom, inner.left, inner.top, inner.right, inner.bottom])
         {

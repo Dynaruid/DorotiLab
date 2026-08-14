@@ -44,10 +44,21 @@ public sealed class PlatformDispatcher : IDisposable
 
     private void EnqueueMicrotask(Action callback)
     {
-        _microtasks.enqueue(callback);
-        if (Volatile.Read(ref _dispatchDepth) == 0)
+        FlutterView[] registered;
+        lock (_gate)
         {
-            scheduleFrame();
+            // A Dart timer can race the final framework unmount. Its captured
+            // scheduler belongs to this dispatcher, so callbacks arriving after
+            // disposal/detach must not escape on a ThreadPool thread or revive a
+            // closed view.
+            if (_disposed || _views.Count == 0) return;
+            _microtasks.enqueue(callback);
+            if (Volatile.Read(ref _dispatchDepth) != 0) return;
+            registered = _views.Values.ToArray();
+        }
+        foreach (var view in registered)
+        {
+            view.ScheduleFrame(DartUiInvocation.Managed("dart:ui#PlatformDispatcher.microtask"));
         }
     }
 
@@ -396,15 +407,20 @@ public sealed class PlatformDispatcher : IDisposable
     private void DispatchWithEnvironment(FlutterView view, Action callback)
     {
         using var dispatcherScope = EnterScope();
+        if (view.environmentConfiguration is { } configuration)
+        {
+            using var environmentScope = PlatformEnvironmentContext.Enter(configuration);
+            DispatchAndDrainMicrotasks(callback);
+            return;
+        }
+        DispatchAndDrainMicrotasks(callback);
+    }
+
+    private void DispatchAndDrainMicrotasks(Action callback)
+    {
         _dispatchDepth++;
         try
         {
-            if (view.environmentConfiguration is { } configuration)
-            {
-                using var environmentScope = PlatformEnvironmentContext.Enter(configuration);
-                callback();
-                return;
-            }
             callback();
         }
         finally

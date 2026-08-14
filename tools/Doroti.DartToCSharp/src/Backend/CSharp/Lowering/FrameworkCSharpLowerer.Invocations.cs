@@ -2397,6 +2397,17 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             var methodArguments = invocation.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.TypeArgumentList)?
                 .Children.Where(item => item.Category == "type").Select(MapTypeFromAst).ToArray() ?? [];
+            if (methodArguments.Length == 0 && methodName == "resolveWith" &&
+                _session.ActiveFunctionReturnType is { } contextualReturn &&
+                TryGetGenericTypeArguments(contextualReturn.TrimEnd('?'), out var contextualArguments) &&
+                contextualArguments.Length == 1 &&
+                contextualReturn.Contains("WidgetStateProperty<", StringComparison.Ordinal))
+            {
+                // The analyzer can report the enclosing StatefulWidget as the
+                // inferred T for a context-inferred resolveWith closure. The
+                // getter/method return contract is the authoritative Dart type.
+                methodArguments = contextualArguments;
+            }
             if (methodArguments.Length == 0 && methodTypeParameters.Length == 1 &&
                 TryGetGenericTypeArguments(MapType(invocation.StaticType ?? string.Empty).TrimEnd('?'), out var inferredReturnArguments) &&
                 inferredReturnArguments.Length == 1)

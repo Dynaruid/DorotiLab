@@ -174,18 +174,18 @@ internal class _CupertinoCheckboxState__checkbox : global::Doroti.Generated.Fram
     {
         get
         {
-            return ((global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, CupertinoCheckbox>)((states) => {
+            return WidgetStateProperty.resolveWith<Color>((states) => {
 if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled))
 {
-    return ((CupertinoCheckbox)(object?)CupertinoColors.white.withOpacity(0.5));
+    return CupertinoColors.white.withOpacity(0.5);
 }
 if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected))
 {
-    return ((CupertinoCheckbox)(object?)(((CupertinoCheckbox)this.widget).activeColor ?? CupertinoDynamicColor.resolve(CheckboxLibrary._kDefaultFillColor, this.context)));
+    return ((CupertinoCheckbox)this.widget).activeColor ?? CupertinoDynamicColor.resolve(CheckboxLibrary._kDefaultFillColor, this.context);
 }
-return ((CupertinoCheckbox)(object?)CupertinoColors.white);
+return CupertinoColors.white;
 throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+});
             return default!;
         }
     }
@@ -193,18 +193,18 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return ((global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, CupertinoCheckbox>)((states) => {
+            return WidgetStateProperty.resolveWith<Color>((states) => {
 if ((states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled) && states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected)))
 {
-    return ((CupertinoCheckbox)(object?)(((CupertinoCheckbox)this.widget).checkColor ?? CupertinoDynamicColor.resolve(CheckboxLibrary._kDisabledCheckColor, this.context)));
+    return ((CupertinoCheckbox)this.widget).checkColor ?? CupertinoDynamicColor.resolve(CheckboxLibrary._kDisabledCheckColor, this.context);
 }
 if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected))
 {
-    return ((CupertinoCheckbox)(object?)(((CupertinoCheckbox)this.widget).checkColor ?? CupertinoDynamicColor.resolve(CheckboxLibrary._kDefaultCheckColor, this.context)));
+    return ((CupertinoCheckbox)this.widget).checkColor ?? CupertinoDynamicColor.resolve(CheckboxLibrary._kDefaultCheckColor, this.context);
 }
-return ((CupertinoCheckbox)(object?)CupertinoColors.white);
+return CupertinoColors.white;
 throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+});
             return default!;
         }
     }
@@ -212,18 +212,18 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return ((global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Painting.BorderSide>)(object?)WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, CupertinoCheckbox>)((states) => {
+            return WidgetStateProperty.resolveWith<global::Doroti.Generated.Framework.Painting.BorderSide>((states) => {
 if ((((states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected) || states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.focused))) && !states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled)))
 {
-    return ((CupertinoCheckbox)(object?)new global::Doroti.Generated.Framework.Painting.BorderSide(width: 0.0, color: CupertinoColors.transparent));
+    return new global::Doroti.Generated.Framework.Painting.BorderSide(width: 0.0, color: CupertinoColors.transparent);
 }
 if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled))
 {
-    return ((CupertinoCheckbox)(object?)new global::Doroti.Generated.Framework.Painting.BorderSide(color: CupertinoDynamicColor.resolve(CheckboxLibrary._kDisabledBorderColor, this.context)));
+    return new global::Doroti.Generated.Framework.Painting.BorderSide(color: CupertinoDynamicColor.resolve(CheckboxLibrary._kDisabledBorderColor, this.context));
 }
-return ((CupertinoCheckbox)(object?)new global::Doroti.Generated.Framework.Painting.BorderSide(color: CupertinoDynamicColor.resolve(CheckboxLibrary._kDefaultBorderColor, this.context)));
+return new global::Doroti.Generated.Framework.Painting.BorderSide(color: CupertinoDynamicColor.resolve(CheckboxLibrary._kDefaultBorderColor, this.context));
 throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+});
             return default!;
         }
     }

@@ -549,6 +549,15 @@ public manifest를 다음 wave로 자동 분류한다.
 - `Doroti/migration/flutter-framework/g6-adaptive-preview-evidence.json`
 - `Doroti/eng/validate-g6-cupertino-wave.ps1 -Wave <C0..C4>`
 
+현재 결과 (2026-08-14, partial):
+
+- 제품 `Doroti.Flutter.Framework.WidgetPreviews` 계약과 Windows strict-GPU `Doroti.Validation.G6Cupertino`를 추가했다. C0~C4를 화면 높이에 의존하는 단일 gallery가 아니라 21개 component-family 실제 프레임으로 분리하며, 각 실행은 actual HWND, `skia-wgl-opengl-gpu`, software fallback 0, native pointer down/up, framework rebuild, semantics tree, terminal frame ACK와 HWND/WGL resource balance를 검사한다.
+- public Cupertino component candidate 55개 전부가 construct/mount/layout/paint/presented PASS다. `g6-cupertino-component-matrix.json`의 presented coverage는 55/55(100%)이고 Cupertino public API diff도 0이다. 다만 component별 native interaction/semantics 증거는 대표 `CupertinoButton`만 PASS이므로 Tier A interactive 100%로 환산하지 않는다.
+- selected Widget Preview는 제품 metadata의 wrapper를 거쳐 실제 `CupertinoButton`을 mount/layout/paint했고 actual strict-GPU frame PASS다. `g6-adaptive-preview-evidence.json`에 metadata package, layout size와 frame evidence를 기록했다.
+- C0~C4 실행에서 드러난 공통 결함을 producer/product 양쪽에 반영했다: typed `drawRSuperellipse`/`clipRSuperellipse`, nullable super-formal, `createState` CLR invariance, `WidgetStateProperty.resolveWith<T>` 추론, static const alias 초기화 순서, restoration owner dispatch, dispatcher microtask/environment lifetime, sliver header RenderBox ownership, menu GlobalKey invariance, `RenderAnimatedSize` 초기화, ShapeDecoration shadow cache, nullable implicit tween을 복구했다. `CupertinoNavigationBarBackButton` 등의 icon이 tofu(□)로 보이던 문제는 Cupertino Icons 1.0.9 font/license를 raster backend에 번들하고 요청 family를 embedded typeface로 해석하도록 수정했으며 대표 back/home/search/doc glyph contract가 PASS한다.
+- `validate-g6-cupertino-wave.ps1 -Wave All`은 build warning/error 0과 C0~C4 21개 실제 frame, selected preview frame, 55/55 matrix, API diff 0을 PASS한다. Flutter reference adaptive differential, 같은 session의 Material/Cupertino 100회 전환 및 component별 native interaction/semantics는 아직 `notVerified`다.
+- G6-5R, G6-5R-I, G6-5R-C 선행 gate가 아직 완료되지 않았고 adaptive reference/switch stress도 열려 있으므로 G6-6 전체 완료나 G6-7 진입으로 승격하지 않는다.
+
 ### G6-7 — 일반 Dart DemoApp cutover, package와 performance
 
 진입 조건: G6-3~G6-6 완료.

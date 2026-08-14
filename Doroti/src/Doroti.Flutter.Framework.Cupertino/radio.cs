@@ -234,18 +234,18 @@ internal class _RadioPaintState__radio : global::Doroti.Generated.Framework.Widg
     {
         get
         {
-            return ((global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, _RadioPaint__radio>)((states) => {
+            return WidgetStateProperty.resolveWith<Color>((states) => {
 if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled))
 {
-    return ((_RadioPaint__radio)(object?)CupertinoDynamicColor.resolve(RadioLibrary._kDisabledOuterColor, this.context));
+    return CupertinoDynamicColor.resolve(RadioLibrary._kDisabledOuterColor, this.context);
 }
 if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected))
 {
-    return ((_RadioPaint__radio)(object?)(((_RadioPaint__radio)(object)this.widget).activeColor ?? CupertinoDynamicColor.resolve(RadioLibrary._kDefaultOuterColor, this.context)));
+    return widget.activeColor ?? CupertinoDynamicColor.resolve(RadioLibrary._kDefaultOuterColor, this.context);
 }
-return ((_RadioPaint__radio)(object?)(((_RadioPaint__radio)(object)this.widget).inactiveColor ?? CupertinoColors.white));
+return widget.inactiveColor ?? CupertinoColors.white;
 throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+});
             return default!;
         }
     }
@@ -253,18 +253,18 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return ((global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, _RadioPaint__radio>)((states) => {
+            return WidgetStateProperty.resolveWith<Color>((states) => {
 if ((states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled) && states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected)))
 {
-    return ((_RadioPaint__radio)(object?)(((_RadioPaint__radio)(object)this.widget).fillColor ?? CupertinoDynamicColor.resolve(RadioLibrary._kDisabledInnerColor, this.context)));
+    return widget.fillColor ?? CupertinoDynamicColor.resolve(RadioLibrary._kDisabledInnerColor, this.context);
 }
 if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected))
 {
-    return ((_RadioPaint__radio)(object?)(((_RadioPaint__radio)(object)this.widget).fillColor ?? CupertinoDynamicColor.resolve(RadioLibrary._kDefaultInnerColor, this.context)));
+    return widget.fillColor ?? CupertinoDynamicColor.resolve(RadioLibrary._kDefaultInnerColor, this.context);
 }
-return ((_RadioPaint__radio)(object?)CupertinoColors.white);
+return CupertinoColors.white;
 throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+});
             return default!;
         }
     }
@@ -272,18 +272,18 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return ((global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, _RadioPaint__radio>)((states) => {
+            return WidgetStateProperty.resolveWith<Color>((states) => {
 if ((((states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected) || states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.focused))) && !states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled)))
 {
-    return ((_RadioPaint__radio)(object?)CupertinoColors.transparent);
+    return CupertinoColors.transparent;
 }
 if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled))
 {
-    return ((_RadioPaint__radio)(object?)CupertinoDynamicColor.resolve(CheckboxLibrary._kDisabledBorderColor, this.context));
+    return CupertinoDynamicColor.resolve(CheckboxLibrary._kDisabledBorderColor, this.context);
 }
-return ((_RadioPaint__radio)(object?)CupertinoDynamicColor.resolve(CheckboxLibrary._kDefaultBorderColor, this.context));
+return CupertinoDynamicColor.resolve(CheckboxLibrary._kDefaultBorderColor, this.context);
 throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+});
             return default!;
         }
     }

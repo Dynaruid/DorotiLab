@@ -16,9 +16,9 @@ namespace Doroti.Generated.Framework.Cupertino;
 
 public abstract class CupertinoColors
 {
-    public static CupertinoDynamicColor activeBlue = systemBlue;
-    public static CupertinoDynamicColor activeGreen = systemGreen;
-    public static CupertinoDynamicColor activeOrange = systemOrange;
+    public static CupertinoDynamicColor activeBlue => systemBlue;
+    public static CupertinoDynamicColor activeGreen => systemGreen;
+    public static CupertinoDynamicColor activeOrange => systemOrange;
     public static Color white = new global::Doroti.Flutter.Ui.Color(4294967295L);
     public static Color black = new global::Doroti.Flutter.Ui.Color(4278190080L);
     public static Color transparent = new global::Doroti.Flutter.Ui.Color(0L);
@@ -26,7 +26,7 @@ public abstract class CupertinoColors
     public static Color extraLightBackgroundGray = new global::Doroti.Flutter.Ui.Color(4293914612L);
     public static Color darkBackgroundGray = new global::Doroti.Flutter.Ui.Color(4279703319L);
     public static CupertinoDynamicColor inactiveGray = CupertinoDynamicColor.CreateWithBrightness(debugLabel: "inactiveGray", color: new global::Doroti.Flutter.Ui.Color(4288256409L), darkColor: new global::Doroti.Flutter.Ui.Color(4285887861L));
-    public static CupertinoDynamicColor destructiveRed = systemRed;
+    public static CupertinoDynamicColor destructiveRed => systemRed;
     public static CupertinoDynamicColor systemBlue = CupertinoDynamicColor.CreateWithBrightnessAndContrast(debugLabel: "systemBlue", color: global::Doroti.Flutter.Ui.Color.fromARGB(255L, 0L, 122L, 255L), darkColor: global::Doroti.Flutter.Ui.Color.fromARGB(255L, 10L, 132L, 255L), highContrastColor: global::Doroti.Flutter.Ui.Color.fromARGB(255L, 0L, 64L, 221L), darkHighContrastColor: global::Doroti.Flutter.Ui.Color.fromARGB(255L, 64L, 156L, 255L));
     public static CupertinoDynamicColor systemGreen = CupertinoDynamicColor.CreateWithBrightnessAndContrast(debugLabel: "systemGreen", color: global::Doroti.Flutter.Ui.Color.fromARGB(255L, 52L, 199L, 89L), darkColor: global::Doroti.Flutter.Ui.Color.fromARGB(255L, 48L, 209L, 88L), highContrastColor: global::Doroti.Flutter.Ui.Color.fromARGB(255L, 36L, 138L, 61L), darkHighContrastColor: global::Doroti.Flutter.Ui.Color.fromARGB(255L, 48L, 219L, 91L));
     public static CupertinoDynamicColor systemMint = CupertinoDynamicColor.CreateWithBrightnessAndContrast(debugLabel: "systemMint", color: global::Doroti.Flutter.Ui.Color.fromARGB(255L, 0L, 199L, 190L), darkColor: global::Doroti.Flutter.Ui.Color.fromARGB(255L, 99L, 230L, 226L), highContrastColor: global::Doroti.Flutter.Ui.Color.fromARGB(255L, 12L, 129L, 123L), darkHighContrastColor: global::Doroti.Flutter.Ui.Color.fromARGB(255L, 102L, 212L, 207L));
@@ -80,7 +80,18 @@ public class CupertinoDynamicColor : Color, global::Doroti.Generated.Framework.F
     public virtual Color highContrastElevatedColor { get; private set; } = default!;
     public virtual Color darkHighContrastElevatedColor { get; private set; } = default!;
 
-    public CupertinoDynamicColor(string? debugLabel = null, Color color = default!, Color darkColor = default!, Color highContrastColor = default!, Color darkHighContrastColor = default!, Color elevatedColor = default!, Color darkElevatedColor = default!, Color highContrastElevatedColor = default!, Color darkHighContrastElevatedColor = default!) : this(color, color, darkColor, highContrastColor, darkHighContrastColor, elevatedColor, darkElevatedColor, highContrastElevatedColor, darkHighContrastElevatedColor, null, debugLabel)
+    public CupertinoDynamicColor(string? debugLabel = null, Color color = default!, Color darkColor = default!, Color? highContrastColor = null, Color? darkHighContrastColor = null, Color? elevatedColor = null, Color? darkElevatedColor = null, Color? highContrastElevatedColor = null, Color? darkHighContrastElevatedColor = null) : this(
+        color,
+        color,
+        darkColor,
+        highContrastColor ?? color,
+        darkHighContrastColor ?? darkColor,
+        elevatedColor ?? color,
+        darkElevatedColor ?? darkColor,
+        highContrastElevatedColor ?? highContrastColor ?? elevatedColor ?? color,
+        darkHighContrastElevatedColor ?? darkHighContrastColor ?? darkElevatedColor ?? darkColor,
+        null,
+        debugLabel)
     {
     }
 

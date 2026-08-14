@@ -1132,6 +1132,58 @@ internal static class MaterialDynamicColors
             source = source.Replace("public abstract class ThemeExtension<T> where T : ThemeExtension<T>", "public abstract class ThemeExtension<T>", StringComparison.Ordinal);
         }
 
+        if (library.EndsWith("/rendering/animated_size.dart", StringComparison.Ordinal))
+        {
+            source = source.Replace(
+                "this._clipBehavior = clipBehavior;",
+                "this._clipBehavior = clipBehavior;\n        this._onEnd = onEnd;\n        this._controller = new AnimationController(duration: duration, reverseDuration: reverseDuration, vsync: vsync);\n        this._controller.addListener(() => { if (this._controller.value != this._lastValue) markNeedsLayout(); });\n        this._animation = new CurvedAnimation(parent: this._controller, curve: __curve);",
+                StringComparison.Ordinal);
+        }
+
+        if (library.EndsWith("/painting/shape_decoration.dart", StringComparison.Ordinal))
+        {
+            source = source
+                .Replace("_shadowPaints = new List<global::Doroti.Flutter.Ui.Paint>();", "_shadowPaints = ((ShapeDecoration)this._decoration).shadows!.Select(shadow => shadow.toPaint()).ToList();", StringComparison.Ordinal)
+                .Replace("_shadowBounds = new List<global::Doroti.Flutter.Ui.Rect>();", "_shadowBounds = ((ShapeDecoration)this._decoration).shadows!.Select(shadow => rect.shift(shadow.offset).inflate(shadow.spreadRadius)).ToList();", StringComparison.Ordinal)
+                .Replace("_shadowPaths = new List<global::Doroti.Flutter.Ui.Path>();", "_shadowPaths = ((ShapeDecoration)this._decoration).shadows!.Select(shadow => ((ShapeDecoration)this._decoration).shape.getOuterPath(rect.shift(shadow.offset).inflate(shadow.spreadRadius), textDirection: textDirection)).ToList();", StringComparison.Ordinal);
+        }
+
+        if (library.EndsWith("/widgets/restoration.dart", StringComparison.Ordinal))
+        {
+            source = source
+                .Replace(
+                    "((dynamic)this._owner)?._unregister(this);",
+                    "if (this._owner is RestorationPropertyOwner owner)\n        {\n            owner._unregister(this);\n        }\n        else\n        {\n            ((dynamic)this._owner)?._unregister(this);\n        }",
+                    StringComparison.Ordinal)
+                .Replace(
+                    "public interface RestorationMixin<S> where S : StatefulWidget",
+                    "public interface RestorationPropertyOwner\n{\n    public void _unregister(dynamic property);\n}\n\npublic interface RestorationMixin<S> : RestorationPropertyOwner where S : StatefulWidget",
+                    StringComparison.Ordinal);
+        }
+
+        if (library.EndsWith("/cupertino/colors.dart", StringComparison.Ordinal))
+        {
+            source = source.Replace(
+                "public CupertinoDynamicColor(string? debugLabel = null, Color color = default!, Color darkColor = default!, Color highContrastColor = default!, Color darkHighContrastColor = default!, Color elevatedColor = default!, Color darkElevatedColor = default!, Color highContrastElevatedColor = default!, Color darkHighContrastElevatedColor = default!) : this(color, color, darkColor, highContrastColor, darkHighContrastColor, elevatedColor, darkElevatedColor, highContrastElevatedColor, darkHighContrastElevatedColor, null, debugLabel)",
+                "public CupertinoDynamicColor(string? debugLabel = null, Color color = default!, Color darkColor = default!, Color? highContrastColor = null, Color? darkHighContrastColor = null, Color? elevatedColor = null, Color? darkElevatedColor = null, Color? highContrastElevatedColor = null, Color? darkHighContrastElevatedColor = null) : this(\n        color,\n        color,\n        darkColor,\n        highContrastColor ?? color,\n        darkHighContrastColor ?? darkColor,\n        elevatedColor ?? color,\n        darkElevatedColor ?? darkColor,\n        highContrastElevatedColor ?? highContrastColor ?? elevatedColor ?? color,\n        darkHighContrastElevatedColor ?? darkHighContrastColor ?? darkElevatedColor ?? darkColor,\n        null,\n        debugLabel)",
+                StringComparison.Ordinal);
+        }
+
+        if (library.EndsWith("/widgets/implicit_animations.dart", StringComparison.Ordinal))
+        {
+            source = source.Replace(
+                "{            var __cascade = tween;\n            __cascade.begin = tween.evaluate(this._animation);",
+                "{            var __cascade = tween;\n            if (__cascade is null) return null;\n            __cascade.begin = tween.evaluate(this._animation);",
+                StringComparison.Ordinal);
+        }
+
+        if (library.EndsWith("/cupertino/spell_check_suggestions_toolbar.dart", StringComparison.Ordinal))
+        {
+            source = source
+                .Replace("return ((List<global::Doroti.Generated.Framework.Widgets.Widget>)(object?)this.buttonItems.map<global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem, CupertinoTextSelectionToolbarButton>", "return this.buttonItems.map<global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem, CupertinoTextSelectionToolbarButton>", StringComparison.Ordinal)
+                .Replace("})).ToList());", "})).Cast<global::Doroti.Generated.Framework.Widgets.Widget>().ToList();", StringComparison.Ordinal);
+        }
+
         // Nullable callback properties are Dart tear-offs, not always-present
         // forwarding closures. Preserving null here is required so losing
         // recognizers do not invoke a wrapper whose delegate target is null.
@@ -1161,6 +1213,8 @@ internal static class MaterialDynamicColors
             .Replace("return ((T?)(object?)scope__22436?.localizationsState.resourcesFor<T?>(type));", "return scope__22436 is null ? default : scope__22436.localizationsState.resourcesFor<T>(type);", StringComparison.Ordinal)
             .Replace("this._childElements.Remove(((Element)child).slot)", "this._childElements.Remove(DartRuntimePrimitives.ConvertValue<long>(((Element)child).slot))", StringComparison.Ordinal)
             .Replace("this._childElements.ContainsKey(((Element)child).slot)", "this._childElements.ContainsKey(DartRuntimePrimitives.ConvertValue<long>(((Element)child).slot))", StringComparison.Ordinal)
+            .Replace("((dynamic)this.renderObject).child = DartRuntimePrimitives.ConvertValue<Element>(__child)", "((dynamic)this.renderObject).child = __child", StringComparison.Ordinal)
+            .Replace("internal virtual GlobalKey<IState> _anchorKey { get; private set; } = ((GlobalKey<IState>)(object?)GlobalKey<_RawMenuAnchorState__raw_menu_anchor>.Create(debugLabel: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : \"MenuAnchor\")));", "internal virtual GlobalKey<_RawMenuAnchorState__raw_menu_anchor> _anchorKey { get; private set; } = GlobalKey<_RawMenuAnchorState__raw_menu_anchor>.Create(debugLabel: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : \"MenuAnchor\"));", StringComparison.Ordinal)
             .Replace("onPopInvoked ?? _defaultPopInvokedHandler", "onPopInvoked ?? ((didPop, result) => _defaultPopInvokedHandler(didPop, result))", StringComparison.Ordinal)
             .Replace("createInnerBallisticScrollActivity(this.@delegate, this.velocity)", "createInnerBallisticScrollActivity(DartRuntimePrimitives.ConvertValue<_NestedScrollPosition__nested_scroll_view>(this.@delegate), this.velocity)", StringComparison.Ordinal)
             .Replace("nestOffset(value, this.@delegate)", "nestOffset(value, DartRuntimePrimitives.ConvertValue<_NestedScrollPosition__nested_scroll_view>(this.@delegate))", StringComparison.Ordinal)

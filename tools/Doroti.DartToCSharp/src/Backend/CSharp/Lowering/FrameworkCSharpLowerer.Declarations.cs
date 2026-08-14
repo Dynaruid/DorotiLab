@@ -1633,6 +1633,13 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             return $"{name} ?? {MapInheritedDefaultExpression(parameter.DefaultValue!, baseDeclaration, library)}";
         }
+        if (parameter.Type.EndsWith("?", StringComparison.Ordinal))
+        {
+            // A nullable super-formal is a nullable base-constructor argument
+            // in Dart. Do not let erased/generic contract lookup turn omission
+            // into an eager null assertion (for example Stack.textDirection).
+            return name;
+        }
         var baseParameter = baseDeclaration?.Members
             .Where(member => member.Kind == "constructor" && !member.IsFactory)
             .SelectMany(member => member.Element.Parameters ?? [])

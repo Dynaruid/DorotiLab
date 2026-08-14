@@ -172,7 +172,7 @@ internal interface _RawMenuAnchorBaseMixin__raw_menu_anchor<T> where T : Statefu
 
 internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _RawMenuAnchorBaseMixin__raw_menu_anchor<RawMenuAnchor>
 {
-    internal virtual GlobalKey<IState> _anchorKey { get; private set; } = ((GlobalKey<IState>)(object?)GlobalKey<_RawMenuAnchorState__raw_menu_anchor>.Create(debugLabel: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : "MenuAnchor")));
+    internal virtual GlobalKey<_RawMenuAnchorState__raw_menu_anchor> _anchorKey { get; private set; } = GlobalKey<_RawMenuAnchorState__raw_menu_anchor>.Create(debugLabel: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : "MenuAnchor"));
     internal virtual OverlayPortalController _overlayController { get; private set; } = new OverlayPortalController(debugLabel: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : "MenuAnchor controller"));
     internal virtual Offset? _menuPosition { get; set; } = default;
     public virtual List<dynamic> _anchorChildren { get; set; } = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor<StatefulWidget>>().Cast<dynamic>().ToList();
@@ -791,4 +791,3 @@ public static partial class Raw_menu_anchorLibrary
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
-

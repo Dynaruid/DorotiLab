@@ -83,10 +83,10 @@ if (editableTextState.mounted)
 
     internal virtual List<global::Doroti.Generated.Framework.Widgets.Widget> _buildToolbarButtons(global::Doroti.Generated.Framework.Widgets.BuildContext context)
     {
-        return ((List<global::Doroti.Generated.Framework.Widgets.Widget>)(object?)this.buttonItems.map<global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem, CupertinoTextSelectionToolbarButton>(((buttonItem) => {
+        return this.buttonItems.map<global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem, CupertinoTextSelectionToolbarButton>(((buttonItem) => {
 return CupertinoTextSelectionToolbarButton.CreateButtonItem(buttonItem: buttonItem);
 throw new InvalidOperationException("Dart closure completed without a value.");
-})).ToList());
+})).Cast<global::Doroti.Generated.Framework.Widgets.Widget>().ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

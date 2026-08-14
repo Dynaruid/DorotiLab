@@ -12,6 +12,7 @@
     <Project Path="src/Doroti.Flutter.Framework.Scheduler/Doroti.Flutter.Framework.Scheduler.csproj" />
     <Project Path="src/Doroti.Flutter.Framework.Services/Doroti.Flutter.Framework.Services.csproj" />
     <Project Path="src/Doroti.Flutter.Framework.Widgets/Doroti.Flutter.Framework.Widgets.csproj" />
+    <Project Path="src/Doroti.Flutter.Framework.WidgetPreviews/Doroti.Flutter.Framework.WidgetPreviews.csproj" />
     <Project Path="src/Doroti.Flutter.Framework.Physics/Doroti.Flutter.Framework.Physics.csproj" />
     <Project Path="src/Doroti.Flutter.Framework.Animation/Doroti.Flutter.Framework.Animation.csproj" />
     <Project Path="src/Doroti.Flutter.Framework.Gestures/Doroti.Flutter.Framework.Gestures.csproj" />
@@ -44,6 +45,7 @@
   <Project Path="tools/Doroti.Tooling/Doroti.Tooling.csproj" />
   <Folder Name="/validation/">
     <Project Path="validation/Doroti.Validation.G6MaterialFidelity/Doroti.Validation.G6MaterialFidelity.csproj" />
+    <Project Path="validation/Doroti.Validation.G6Cupertino/Doroti.Validation.G6Cupertino.csproj" />
     <Project Path="validation/Doroti.Validation.G5Widgets/Doroti.Validation.G5Widgets.csproj" />
     <Project Path="validation/Doroti.Validation.G5PlatformFoundation/Doroti.Validation.G5PlatformFoundation.csproj" />
     <Project Path="validation/Doroti.Validation.G5PaintingRenderingSemantics/Doroti.Validation.G5PaintingRenderingSemantics.csproj" />

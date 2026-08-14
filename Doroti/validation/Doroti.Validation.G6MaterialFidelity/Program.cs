@@ -20,7 +20,7 @@ RunBundledFontContracts();
 Console.WriteLine("G6-5R managed path/clip/fill/stroke/shadow contracts: PASS");
 Console.WriteLine("G6-5R-C managed group-opacity/saveLayer/backdrop contracts: PASS");
 Console.WriteLine("G6-5R-C retained subtree ownership/replay contracts: PASS");
-Console.WriteLine("G6-5R Roboto/Material Icons glyph contracts: PASS");
+Console.WriteLine("G6-5R Roboto/Material/Cupertino Icons glyph contracts: PASS");
 
 static void WriteColorReference()
 {
@@ -243,13 +243,16 @@ static void RunBundledFontContracts()
     var assetRoot = Path.Combine(root, "Doroti", "src", "Doroti.Vendor.Avalonia.Skia", "Assets");
     var robotoPath = Path.Combine(assetRoot, "Roboto-Regular.ttf");
     var iconsPath = Path.Combine(assetRoot, "MaterialIcons-Regular.otf");
-    foreach (var path in new[] { robotoPath, iconsPath, Path.Combine(assetRoot, "Roboto_LICENSE.txt"), Path.Combine(assetRoot, "MaterialIcons_LICENSE.txt") })
+    var cupertinoIconsPath = Path.Combine(assetRoot, "CupertinoIcons.ttf");
+    foreach (var path in new[] { robotoPath, iconsPath, cupertinoIconsPath, Path.Combine(assetRoot, "Roboto_LICENSE.txt"), Path.Combine(assetRoot, "MaterialIcons_LICENSE.txt"), Path.Combine(assetRoot, "CupertinoIcons_LICENSE.txt") })
         if (!File.Exists(path) || new FileInfo(path).Length == 0) throw new InvalidDataException($"Bundled font asset is missing: {path}");
 
     using var roboto = SKTypeface.FromFile(robotoPath) ?? throw new InvalidDataException("Roboto typeface could not be loaded.");
     using var icons = SKTypeface.FromFile(iconsPath) ?? throw new InvalidDataException("Material Icons typeface could not be loaded.");
+    using var cupertinoIcons = SKTypeface.FromFile(cupertinoIconsPath) ?? throw new InvalidDataException("Cupertino Icons typeface could not be loaded.");
     using var robotoFont = new SKFont(roboto, 16);
     using var iconFont = new SKFont(icons, 24);
+    using var cupertinoIconFont = new SKFont(cupertinoIcons, 24);
     if (robotoFont.GetGlyphs("August 2026").Any(glyph => glyph == 0))
         throw new InvalidDataException("Roboto does not cover the calendar reference text.");
     foreach (var codepoint in new[] { 0xe5c5, 0xe5cb, 0xe5cc, 0xe5c8 })
@@ -258,6 +261,17 @@ static void RunBundledFontContracts()
         if (iconFont.GetGlyphs(text) is not [var glyph] || glyph == 0)
             throw new InvalidDataException($"Material Icons codepoint U+{codepoint:X4} resolved to tofu.");
     }
+    foreach (var codepoint in new[] { 0xf3cf, 0xf447, 0xf4a5, 0xf62d })
+    {
+        var text = char.ConvertFromUtf32(codepoint);
+        if (cupertinoIconFont.GetGlyphs(text) is not [var glyph] || glyph == 0)
+            throw new InvalidDataException($"Cupertino Icons codepoint U+{codepoint:X4} resolved to tofu.");
+    }
+    var qualifiedFamilies = SkiaTextMeasurer.ResolveFallbackFamilies(
+        char.ConvertFromUtf32(0xf3cf),
+        fontFamily: "packages/cupertino_icons/CupertinoIcons");
+    if (!qualifiedFamilies.Contains("CupertinoIcons", StringComparer.OrdinalIgnoreCase))
+        throw new InvalidDataException($"Package-qualified Cupertino icon family resolved through {string.Join(", ", qualifiedFamilies)}.");
 }
 
 static string FindRepositoryRoot()
