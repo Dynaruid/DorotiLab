@@ -1,0 +1,133 @@
+{
+  "schemaVersion": "doroti.g7-compatibility-debt/v1",
+  "milestone": "G7-0",
+  "status": "release-blocker-open",
+  "aggregationPolicy": "Signals overlap and are not summed into a synthetic total.",
+  "sourceQueries": [
+    {
+      "id": "worktree-generated-file-edit",
+      "selector": "git diff and git ls-files for modified, staged, or untracked *.g.cs",
+      "source": "current worktree and index"
+    },
+    {
+      "id": "reviewed-generated-adaptation",
+      "selector": "changedFiles and changes",
+      "source": "Doroti/migration/generated-candidates/g5-4-reviewed/g5-4-reviewed-adaptations.json"
+    },
+    {
+      "id": "review-rewrite-rule",
+      "selector": "Update-GeneratedFile invocation",
+      "source": "Doroti/eng/review-g5-4-generated.ps1"
+    },
+    {
+      "id": "numeric-generated-local",
+      "selector": "(?:__|counter__) followed by digits",
+      "source": [
+        "Doroti/eng/review-g5-4-generated.ps1",
+        "tools/Doroti.DartToCSharp/src/Backend/CSharp/Lowering/FrameworkCSharpLowerer*.cs"
+      ]
+    },
+    {
+      "id": "widget-type-substitution",
+      "selector": "Ink and DecoratedBox substitution on one review-script line",
+      "source": "Doroti/eng/review-g5-4-generated.ps1"
+    },
+    {
+      "id": "promoted-product-direct-diff",
+      "selector": "reviewed generated source differs from promoted Material/Cupertino product source after the allowed Dotori-to-Doroti namespace normalization",
+      "source": "reviewed candidate and promoted product trees"
+    }
+  ],
+  "forbiddenPatterns": {
+    "worktreeGeneratedFileEdits": {
+      "count": 0,
+      "status": "pass",
+      "matches": null
+    },
+    "reviewedGeneratedAdaptations": {
+      "count": 193,
+      "status": "open",
+      "owner": "Doroti DartToCSharp compiler",
+      "followUpMilestone": "G7-1V"
+    },
+    "numericGeneratedLocalDependencies": {
+      "count": 74,
+      "review": 48,
+      "lowerer": 26,
+      "status": "open",
+      "owner": "typed IR and common lowering",
+      "followUpMilestone": "G7-1V"
+    },
+    "widgetTypeSubstitutions": {
+      "count": 0,
+      "status": "pass",
+      "owner": "Flutter framework source semantics",
+      "followUpMilestone": "G7-1V"
+    },
+    "promotedProductDirectDiffs": {
+      "count": 8,
+      "status": "open",
+      "owner": "Doroti framework promotion",
+      "followUpMilestone": "G7-1V",
+      "matches": [
+        {
+          "project": "Material",
+          "file": "ink_well.cs",
+          "reviewed": "Doroti/migration/generated-candidates/g5-4-reviewed/projects/Material/ink_well.g.cs",
+          "product": "Doroti/src/Doroti.Flutter.Framework.Material/ink_well.cs"
+        },
+        {
+          "project": "Material",
+          "file": "material.cs",
+          "reviewed": "Doroti/migration/generated-candidates/g5-4-reviewed/projects/Material/material.g.cs",
+          "product": "Doroti/src/Doroti.Flutter.Framework.Material/material.cs"
+        },
+        {
+          "project": "Cupertino",
+          "file": "checkbox.cs",
+          "reviewed": "Doroti/migration/generated-candidates/g5-4-reviewed/projects/Cupertino/checkbox.g.cs",
+          "product": "Doroti/src/Doroti.Flutter.Framework.Cupertino/checkbox.cs"
+        },
+        {
+          "project": "Cupertino",
+          "file": "colors.cs",
+          "reviewed": "Doroti/migration/generated-candidates/g5-4-reviewed/projects/Cupertino/colors.g.cs",
+          "product": "Doroti/src/Doroti.Flutter.Framework.Cupertino/colors.cs"
+        },
+        {
+          "project": "Cupertino",
+          "file": "radio.cs",
+          "reviewed": "Doroti/migration/generated-candidates/g5-4-reviewed/projects/Cupertino/radio.g.cs",
+          "product": "Doroti/src/Doroti.Flutter.Framework.Cupertino/radio.cs"
+        },
+        {
+          "project": "Cupertino",
+          "file": "scrollbar.cs",
+          "reviewed": "Doroti/migration/generated-candidates/g5-4-reviewed/projects/Cupertino/scrollbar.g.cs",
+          "product": "Doroti/src/Doroti.Flutter.Framework.Cupertino/scrollbar.cs"
+        },
+        {
+          "project": "Cupertino",
+          "file": "spell_check_suggestions_toolbar.cs",
+          "reviewed": "Doroti/migration/generated-candidates/g5-4-reviewed/projects/Cupertino/spell_check_suggestions_toolbar.g.cs",
+          "product": "Doroti/src/Doroti.Flutter.Framework.Cupertino/spell_check_suggestions_toolbar.cs"
+        },
+        {
+          "project": "Cupertino",
+          "file": "switch.cs",
+          "reviewed": "Doroti/migration/generated-candidates/g5-4-reviewed/projects/Cupertino/switch.g.cs",
+          "product": "Doroti/src/Doroti.Flutter.Framework.Cupertino/switch.cs"
+        }
+      ]
+    }
+  },
+  "informational": {
+    "reviewRewriteRules": 81,
+    "lowererSourceRewriteRules": 528,
+    "reviewedAdaptationEntries": 193
+  },
+  "reproduction": {
+    "command": "Doroti/eng/validate-g7-baseline.ps1 -Shard Compatibility",
+    "maxMinutes": 20
+  }
+}

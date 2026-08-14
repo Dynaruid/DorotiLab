@@ -1,13 +1,13 @@
 using System.Text;
 using System.Text.Json;
+using Doroti.Flutter.Runtime;
+using Doroti.Flutter.Ui;
 using Doroti.Generated.Framework.Foundation;
 using Doroti.Generated.Framework.Gestures;
 using Doroti.Generated.Framework.Painting;
 using Doroti.Generated.Framework.Rendering;
 using Doroti.Generated.Framework.Services;
 using Doroti.Generated.Framework.Widgets;
-using Doroti.Flutter.Runtime;
-using Doroti.Flutter.Ui;
 using Path = System.IO.Path;
 
 var failures = new List<string>();
@@ -19,6 +19,57 @@ using var view = dispatcher.RegisterView(533, new FlutterViewCapabilities("g5-3-
     .Register<IViewHostCapability>(FlutterCapabilityIds.ViewLifecycleMetrics, fixtureHost)
     .Register<IPlatformMessageHostCapability>(FlutterCapabilityIds.PlatformMessaging, fixtureHost));
 using var binding = new WidgetsFlutterBinding(dispatcher);
+
+if (args.Length >= 1 && string.Equals(args[0], "--g7-focus-frame-dispatch-probe", StringComparison.Ordinal))
+{
+    var probeEvidencePath = args.Length >= 2
+        ? Path.GetFullPath(args[1])
+        : Path.Combine(FindDorotiRoot(Environment.CurrentDirectory), "migration", "flutter-framework", "g7-managed-regression.json");
+    FlutterCapabilityException? blocker = null;
+    try
+    {
+        RunFocusShortcutAction(traces, failures);
+    }
+    catch (FlutterCapabilityException exception)
+    {
+        blocker = exception;
+    }
+
+    var reproduced = blocker is not null &&
+        blocker.CapabilityId == FlutterCapabilityIds.ViewFrameDispatch &&
+        blocker.ViewId == 533 &&
+        blocker.TargetIdentity == "g5-3-widgets-managed" &&
+        blocker.ElementId == "dart:ui#PlatformDispatcher.microtask";
+    WriteJson(probeEvidencePath, new
+    {
+        schemaVersion = "doroti.g7-managed-regression/v1",
+        milestone = "G7-0",
+        capturedAtUtc = DateTimeOffset.UtcNow,
+        status = reproduced ? "reproduced-release-blocker" : "unexpected-result",
+        fixture = "G5 Widgets focus request on the existing managed view without view.frame-dispatch",
+        expected = new
+        {
+            capabilityId = FlutterCapabilityIds.ViewFrameDispatch,
+            viewId = 533,
+            targetIdentity = "g5-3-widgets-managed",
+            elementId = "dart:ui#PlatformDispatcher.microtask",
+        },
+        actual = blocker is null ? null : new
+        {
+            blocker.CapabilityId,
+            blocker.ViewId,
+            blocker.TargetIdentity,
+            blocker.ElementId,
+            sourceSpan = blocker.SourceSpan.ToString(),
+            exceptionType = blocker.GetType().FullName,
+            blocker.Message,
+        },
+        owner = "managed view bootstrap and per-view frame-dispatch capability",
+        followUpMilestone = "G7-1C",
+    });
+    Console.WriteLine($"G7-0 focus/frame-dispatch managed regression probe: {(reproduced ? "REPRODUCED" : "UNEXPECTED")}");
+    return reproduced ? 0 : 1;
+}
 
 RunStatelessLifecycle(traces, failures);
 RunStatefulLifecycle(traces, failures);

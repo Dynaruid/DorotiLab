@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "doroti.g7-target-matrix/v1",
+  "milestone": "G7-0",
+  "requiredTargets": [
+    "win-x64",
+    "browser-wasm"
+  ],
+  "targets": [
+    {
+      "id": "win-x64",
+      "requiredForGoal7": true,
+      "host": "Win32 window",
+      "backend": "skia-wgl-opengl-gpu",
+      "source": "implemented",
+      "build": "verified-predecessor",
+      "packaged": "verified-predecessor",
+      "live": "verified-current-product-smoke",
+      "input": "partial-capability-gate-open",
+      "semantics": "verified-predecessor-minimum",
+      "physical": "notVerified",
+      "followUpMilestones": [
+        "G7-1I",
+        "G7-5",
+        "G7-6"
+      ]
+    },
+    {
+      "id": "browser-wasm",
+      "requiredForGoal7": true,
+      "host": "browser document and canvas",
+      "backend": "browser-gpu-required",
+      "source": "absent",
+      "build": "notVerified",
+      "packaged": "notVerified",
+      "live": "notVerified",
+      "input": "notVerified",
+      "semantics": "notVerified",
+      "physical": "notVerified",
+      "followUpMilestones": [
+        "G7-3",
+        "G7-4",
+        "G7-5",
+        "G7-6"
+      ]
+    }
+  ],
+  "deferred": [
+    {
+      "id": "linux-desktop",
+      "requiredForGoal7": false,
+      "status": "notVerified",
+      "promotionRule": "becomes blocking only when selected as a supported release target"
+    },
+    {
+      "id": "macos-desktop",
+      "requiredForGoal7": false,
+      "status": "notVerified",
+      "promotionRule": "becomes blocking only when selected as a supported release target"
+    },
+    {
+      "id": "firefox",
+      "requiredForGoal7": false,
+      "status": "notVerified",
+      "promotionRule": "becomes blocking only when selected as a supported browser"
+    },
+    {
+      "id": "webkit",
+      "requiredForGoal7": false,
+      "status": "notVerified",
+      "promotionRule": "becomes blocking only when selected as a supported browser"
+    }
+  ],
+  "inferencePolicy": "No PASS is transferred across target, backend, browser, automation, or physical boundaries."
+}

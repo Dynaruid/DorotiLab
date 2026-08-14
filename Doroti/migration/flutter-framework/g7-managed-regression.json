@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "doroti.g7-managed-regression/v1",
+  "milestone": "G7-0",
+  "capturedAtUtc": "2026-08-14T18:57:52.8360078+00:00",
+  "status": "reproduced-release-blocker",
+  "fixture": "G5 Widgets focus request on the existing managed view without view.frame-dispatch",
+  "expected": {
+    "capabilityId": "view.frame-dispatch",
+    "viewId": 533,
+    "targetIdentity": "g5-3-widgets-managed",
+    "elementId": "dart:ui#PlatformDispatcher.microtask"
+  },
+  "actual": {
+    "capabilityId": "view.frame-dispatch",
+    "viewId": 533,
+    "targetIdentity": "g5-3-widgets-managed",
+    "elementId": "dart:ui#PlatformDispatcher.microtask",
+    "sourceSpan": "\u003Cmanaged-bootstrap\u003E:0\u002B0",
+    "exceptionType": "Doroti.Flutter.Ui.FlutterCapabilityException",
+    "message": "Flutter capability \u0027view.frame-dispatch\u0027 is unavailable for view 533 at \u003Cmanaged-bootstrap\u003E:0\u002B0 (dart:ui#PlatformDispatcher.microtask) on target \u0027g5-3-widgets-managed\u0027: the active host did not register it"
+  },
+  "owner": "managed view bootstrap and per-view frame-dispatch capability",
+  "followUpMilestone": "G7-1C"
+}
