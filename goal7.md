@@ -1,13 +1,14 @@
-# Doroti 7차 목표 — 제품 정확성 closure와 Windows/Web release
+# Doroti 7차 목표 — 제품 정확성 closure와 Windows/macOS shell·Web release
 
-> 상태: G7-2 ✅ 완료 — G7-3 Web build/publish 진행 가능
+> 상태: G7-2 ✅ 완료 — G7-3M macOS shell과 G7-3 Web build/publish 진행 가능
 > 작성일: 2026-08-14
 > 측정 핵심화: 2026-08-15
+> 범위 추가: 2026-08-15 — Apple Silicon macOS shell(`osx-arm64`)을 필수 target으로 승격
 > 선행 기록: [`history/26-08-14/goal6-summary.md`](history/26-08-14/goal6-summary.md)
 > 기준 Doroti revision: `5379137447162adb2957212ea2f336894effe05e` + 현재 작업 트리
 > Flutter source pin: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
 > Flutter toolchain: repository-local `flutter-master` SDK만 사용하며 global/PATH Flutter·Dart fallback 금지
-> 최우선 제품 gate: 동일한 일반 Dart `DorotiDemoApp`이 promoted package만 사용해 Windows와 Web `browser-wasm`에서 build/publish되고, 실제 GPU frame과 app-essential input·semantics·resource 경계를 통과할 것
+> 최우선 제품 gate: 동일한 일반 Dart `DorotiDemoApp`이 promoted package만 사용해 Windows, macOS와 Web `browser-wasm`에서 build/publish되고, 실제 GPU frame과 app-essential input·semantics·resource 경계를 통과할 것
 
 ## 0. Goal6에서 이어받는 기준선
 
@@ -32,17 +33,18 @@ Goal6의 54/60, 55/55, 771, 193, 74, 440 같은 수치는 당시 범위를 설�
 
 ## 1. 목표와 범위
 
-Goal7의 목표는 동일한 generated Dart app을 공용 Flutter framework 의미로 Windows와 Web에 build·publish·실행하는 것이다.
+Goal7의 목표는 동일한 generated Dart app을 공용 Flutter framework 의미로 Windows, macOS와 Web에 build·publish·실행하는 것이다.
 
 필수 범위:
 
 - shared correctness: compiler/IR/lowerer/runtime, Material 대표 visual fidelity, scene/compositing과 retained rendering
 - interaction capability: pointer, capture/drag, wheel, keyboard, text/composition, semantics action의 target 인과 trace
 - product app: 일반 Dart source, promoted packages, resource/localization/plugin과 deterministic publish
+- macOS shell: source-ported AppKit/libAvalonia window·dispatcher·surface와 input/text/clipboard/accessibility bridge, `osx-arm64` package-only publish
 - Web build/runtime: `browser-wasm`, GPU canvas, browser host, static artifact, app-essential lifecycle
-- release acceptance: Windows와 Chromium Web의 자동화, 실제 Windows와 Web의 최소 physical 확인
+- release acceptance: Windows, macOS와 Chromium Web의 자동화 및 최소 physical 확인
 
-이번 Goal의 필수 target은 `win-x64`와 `browser-wasm`이다. Linux/macOS, Firefox/WebKit, 장시간 soak와 모든 device 조합은 capability matrix에 남기되, 별도 지원 target으로 결정되기 전에는 Goal7 완료를 막지 않는다.
+이번 Goal의 필수 target은 `win-x64`, `osx-arm64`와 `browser-wasm`이다. Linux, Intel macOS(`osx-x64`), Firefox/WebKit, 장시간 soak와 모든 device 조합은 capability matrix에 남기되, 별도 지원 target으로 결정되기 전에는 Goal7 완료를 막지 않는다. macOS shell은 Flutter framework policy를 복제하지 않고 `Doroti.Shell.Core`와 공용 desktop host 아래에서 AppKit/libAvalonia capability만 소유한다.
 
 Web은 Flutter framework policy를 JavaScript/DOM에 다시 구현하는 별도 UI가 아니다. 공용 generated framework가 widget/build/layout/paint/state를 소유하고, browser adapter는 canvas/scheduler/input/text/clipboard/accessibility/resource/GPU capability만 제공한다.
 
@@ -53,9 +55,9 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 | Gate | 확인하는 것 | 적용 범위 |
 | --- | --- | --- |
 | `structural` | analyzer/typed contract, 금지 패턴, clean build와 artifact identity | 변경된 공용 producer와 target graph |
-| `live` | 실제 GPU first frame과 app-essential input/semantics/resource 왕복 | Windows, Chromium Web 각 1개 제품 scenario |
+| `live` | 실제 GPU first frame과 app-essential input/semantics/resource 왕복 | Windows, macOS, Chromium Web 각 1개 제품 scenario |
 | `reference` | 자체 구현만으로 옳음을 판정할 수 없는 visual/effect/platform 의미 | CalendarDatePicker, compositing 대표 fixture, adaptive 선택 |
-| `acceptance` | 자동화가 대신할 수 없는 실제 IME/accessibility/input | Windows와 Chromium Web의 짧은 수동 checklist |
+| `acceptance` | 자동화가 대신할 수 없는 실제 IME/accessibility/input | Windows, macOS와 Chromium Web의 짧은 수동 checklist |
 
 공통 규칙:
 
@@ -75,20 +77,20 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 - milestone마다 별도로 수행하는 100회 toggle/launch/resize와 30초/300-frame smoke
 - 모든 effect × path × DPI의 곱집합 differential
 - handwritten/generated app 전체 화면의 중복 raster differential
-- Firefox/WebKit, Linux/macOS와 30분 GPU soak의 선행 완료 요구
+- Firefox/WebKit, Linux, Intel macOS와 30분 GPU soak의 선행 완료 요구
 
 ## 3. Roadmap
 
 ### G7-0 — carry-over blocker reset과 재현 가능한 baseline
 
-목적: Goal6 자산은 보존하고, 현재 Windows/Web release를 실제로 막는 항목만 machine-readable ledger로 고정한다.
+목적: Goal6 자산은 보존하고, 당시 Windows/Web release를 실제로 막는 항목만 machine-readable ledger로 고정한다.
 
 작업:
 
 - carry-over를 `verified-predecessor`, `release-blocker`, `deferred`, `stale`로 재분류한다.
 - compatibility 수치의 포함 관계를 다시 세지 않고, generated hotfix/widget 대체/local-number rewrite 등 금지 패턴을 source query로 고정한다.
 - predecessor managed focus/frame-dispatch regression을 최소 재현 fixture로 격리한다.
-- 필수 target(`win-x64`, `browser-wasm`)과 후속 target을 분리한다.
+- 당시 필수 target(`win-x64`, `browser-wasm`)과 후속 target을 분리한다. 이후 추가된 `osx-arm64` 승격은 G7-3M이 소유한다.
 
 완료 gate:
 
@@ -111,7 +113,7 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 - compatibility source query `PASS`: worktree `.g.cs` 직접 수정 0, reviewed adaptation 193, 숫자 local 의존 74, widget type 대체 0, namespace 정규화 뒤 promoted product direct diff 8
 - managed regression 최소 fixture `PASS`: focus microtask가 기존 managed view의 `view.frame-dispatch` 미등록을 정확히 재현했으며 G7-1C blocker로 고정
 - Windows 대표 product smoke `PASS`: actual HWND, `skia-wgl-opengl-gpu`, requested 3 frame 이상 presented, native pointer/state-raster 변화, failed/cancelled/software fallback 0, HWND/WGL resource balance
-- target matrix: `win-x64` implemented/current smoke PASS, 필수 `browser-wasm` absent/release blocker, Linux/macOS/Firefox/WebKit은 non-blocking `notVerified`
+- 당시 target matrix: `win-x64` implemented/current smoke PASS, 필수 `browser-wasm` absent/release blocker, Linux/macOS/Firefox/WebKit은 non-blocking `notVerified`. G7-2 완료 뒤 추가된 `osx-arm64` 필수 범위는 G7-3M에서 ledger를 승격하고 새 evidence로 검증하며 이 과거 결과를 macOS PASS로 소급 해석하지 않는다.
 - `validate-g7-baseline.ps1 -Shard All`, `Doroti.slnx` Release build(경고 0/오류 0)와 `git diff --check` PASS
 - full-solution `dotnet format --verify-no-changes`는 기존 committed whitespace 진단을 재현해 별도 release blocker로 기록했으며, G7-0에서 unrelated source를 일괄 수정하지 않음
 
@@ -213,8 +215,44 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 - Tier A 제품 경로 `PASS`: Cupertino 55/55 presented와 실제 Windows Cupertino button pointer predecessor를 보존하고, G7-1의 native key/semantics causal capability를 재사용했다. managed adaptive fixture의 직접 callback은 native PASS로 세지 않았다.
 - generated Dart 제품 `PASS`: Flutter widget test에서 `home → details → home`, `pressed=0 → 1 → 1`, 두 semantics tap action을 검증했고, handwritten `DorotiDemoApp`의 route push/pop, state mutation, semantics tree와 같은 대표 contract로 정규화해 비교했다. Flutter analyze와 compiler analyzer 진단은 모두 0건이다.
 - package-only 경계 `PASS`: application compiler가 conditional repository `ProjectReference`를 더 이상 생성하지 않으며, 저장소 밖 소비자가 승격 NuGet package만으로 restore/build 및 `win-x64` publish를 통과했다. repository-private/candidate fallback은 0건이다.
-- 현재 호스트가 macOS이므로 Win32 실행을 가장하지 않았다. 현재 source의 compiler/package 경계는 macOS에서 재검증하고, 변경되지 않은 초기화·대표 toggle의 actual HWND strict-GPU 실행은 G6 Windows predecessor evidence를 명시적으로 계승했다. macOS desktop target 자체는 Goal7 비필수 target이므로 `notVerified`를 유지한다.
+- 현재 호스트가 macOS이므로 Win32 실행을 가장하지 않았다. 현재 source의 compiler/package 경계는 macOS에서 재검증하고, 변경되지 않은 초기화·대표 toggle의 actual HWND strict-GPU 실행은 G6 Windows predecessor evidence를 명시적으로 계승했다. 이 실행 시점에는 macOS desktop target이 비필수였으므로 shell/runtime은 `notVerified`였고, 이후 추가된 필수 `osx-arm64` 검증은 G7-3M이 새 evidence로 소유한다.
 - macOS 전환 지원으로 repository-local Flutter/Dart launcher 선택과 Windows checkout의 SDK CRLF 정규화를 추가했다. 재현 명령은 `validate-g7-product.ps1 -Gate Cupertino|Generated`이다.
+
+### G7-3M — macOS source-ported shell과 `osx-arm64` package baseline
+
+진입 조건: G7-1과 G7-2 완료. G7-3 Web과 병렬로 진행할 수 있다.
+
+목적: A0에서 분류만 완료한 Avalonia.Native managed bridge와 libAvalonia AppKit source를 `Doroti.Shell.Core` 아래의 실제 macOS shell로 닫고, 동일한 generated 제품을 `osx-arm64`에서 실행한다.
+
+작업:
+
+- Win32 concrete native host에 묶인 pointer/key/text, surface/GL, clipboard/cursor와 accessibility 서비스를 `Doroti.Shell.Core`의 backend-neutral typed capability로 올리고 native type은 각 vendor project 내부에 유지한다.
+- `Doroti.Host.Desktop`의 Win32 직접 구성과 project dependency를 `IShellWindowingPlatform` 및 typed service 주입 경계로 옮기고 기존 Windows 동작과 package identity를 보존한다.
+- 고정 Avalonia revision의 `macos-managed`와 `macos-libavalonia` source set을 `Doroti.Vendor.Avalonia.Native`로 포팅하며, managed/native source와 생성 header의 provenance를 함께 고정한다.
+- AppKit main-thread dispatcher, NSWindow/NSView lifecycle, NSScreen scale, resize/minimize/activate/close, surface generation과 실제 GPU present를 공용 frame contract에 연결한다.
+- pointer/hover/drag/capture, precise trackpad wheel, key, macOS text input/composition, clipboard, cursor와 NSAccessibility action을 target causal trace로 연결한다.
+- `Doroti.Target.macOS.osx-arm64` composition root와 target manifest를 추가하고, libAvalonia 및 GPU native asset의 architecture/hash/license를 NuGet package에 포함한다.
+- repository 밖 package-only consumer에서 clean restore/build/publish/launch하고 generated `DorotiDemoApp`의 대표 navigation/toggle/semantics 경로를 실행한다.
+- `g7-target-matrix.json`의 `macos-desktop` deferred 항목을 `osx-arm64` 필수 target으로 승격한다. `osx-x64`에 검증을 전이하지 않는다.
+
+완료 gate:
+
+- AppKit/libAvalonia graph의 Avalonia UI/Control/Composition binary dependency와 repository-private fallback 0
+- `osx-arm64` clean build, native asset architecture/hash와 repeat publish identity PASS
+- 실제 NSWindow에서 strict-GPU non-empty first frame과 terminal frame ACK PASS; CPU full-frame/software fallback 0
+- lifecycle/scale/resize와 필수 input/text/clipboard/semantics action의 target → state/semantics/raster causal trace PASS
+- 종료 후 window/surface/dispatcher/native resource가 기준 상태로 복귀하고 unhandled exception 0
+- repository 밖 promoted package-only consumer launch PASS
+- 자동화로 대신할 수 없는 Korean IME/VoiceOver/trackpad 확인은 G7-6 전까지 `notVerified`
+
+산출물:
+
+- `Doroti/src/Doroti.Vendor.Avalonia.Native/`
+- `Doroti/src/Doroti.Target.macOS.osx-arm64/`
+- `Doroti/migration/targets/osx-arm64.json`
+- `Doroti/migration/avalonia-shell/g7-macos-source-port-provenance.json`
+- `Doroti/migration/macos/g7-macos-shell-evidence.json`
+- `Doroti/eng/validate-g7-macos-shell.ps1 -Shard <Source|Build|Live|Package>`
 
 ### G7-3 — Web toolchain, browser host와 publish baseline
 
@@ -277,13 +315,13 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 
 ### G7-5 — 통합 release integrity, stability와 performance baseline
 
-진입 조건: G7-2와 G7-4 완료.
+진입 조건: G7-2, G7-3M과 G7-4 완료.
 
 이 단계만 반복·시간 기반 자동 측정을 소유한다.
 
 작업:
 
-- 동일 source/app identity의 Windows package와 Web static artifact를 하나의 release manifest에 묶는다.
+- 동일 source/app identity의 Windows/macOS package와 Web static artifact를 하나의 release manifest에 묶는다.
 - target별 한 번의 통합 scenario에서 launch/reload, navigation, toggle, resize/DPR와 종료를 반복한다.
 - warm-up 뒤 first-frame/steady-frame, memory/heap과 handle/surface/listener balance를 함께 기록한다.
 - crash, failed frame, unbounded resource growth와 기존 승인 budget 위반만 blocking으로 판정한다.
@@ -291,16 +329,16 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 
 완료 gate:
 
-- Windows/Web 통합 stability scenario에서 crash, terminal frame failure와 단조 resource 증가 0
+- Windows/macOS/Web 통합 stability scenario에서 crash, terminal frame failure와 단조 resource 증가 0
 - first-frame, steady-frame, artifact size와 memory/resource baseline이 기록됨
-- repository 밖 Windows/Web consumer가 동일 release manifest로 실행됨
+- repository 밖 Windows/macOS/Web consumer가 동일 release manifest로 실행됨
 - static hosting contract와 artifact hash/license/provenance/independent rebuild PASS
 
 산출물:
 
 - `Doroti/artifacts/g7-release/<version>/`
 - `Doroti/migration/releases/g7-release-evidence.json`
-- `Doroti/eng/validate-g7-release.ps1 -Target <win-x64|browser-wasm>`
+- `Doroti/eng/validate-g7-release.ps1 -Target <win-x64|osx-arm64|browser-wasm>`
 
 ### G7-6 — 최소 physical release acceptance
 
@@ -309,13 +347,15 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 작업:
 
 - packaged Windows DemoApp에서 mouse, keyboard, Korean IME와 대표 accessibility action을 짧은 checklist로 확인한다.
+- packaged macOS DemoApp에서 mouse/trackpad, keyboard, Korean IME와 대표 VoiceOver action을 짧은 checklist로 확인한다.
 - Chromium Web artifact에서 mouse, keyboard, Korean IME/clipboard와 대표 screen-reader action을 같은 형식으로 확인한다.
 - 자동화 evidence와 user-observed evidence를 별도 필드로 기록한다.
-- Linux/macOS, Firefox/WebKit, touch, multi-monitor와 장시간 GPU는 후속 target matrix에서 `notVerified`로 유지한다.
+- Linux, Intel macOS, Firefox/WebKit, touch, multi-monitor와 장시간 GPU는 후속 target matrix에서 `notVerified`로 유지한다.
 
 완료 gate:
 
 - Windows physical input/IME/accessibility checklist PASS
+- macOS physical input/trackpad/IME/VoiceOver checklist PASS
 - Chromium Web physical input/IME/clipboard/accessibility checklist PASS
 - 자동화 결과를 physical 결과로 환산한 항목 0
 - 필수 release artifact의 provenance/license/hash와 target matrix PASS
@@ -324,7 +364,7 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 
 - `Doroti/migration/targets/g7-target-matrix.json`
 - `Doroti/artifacts/g7-physical/<target>/`
-- `Doroti/eng/validate-g7-acceptance.ps1 -Target <win-x64|browser-wasm>`
+- `Doroti/eng/validate-g7-acceptance.ps1 -Target <win-x64|osx-arm64|browser-wasm>`
 
 ## 4. 단계 의존성과 중단 규칙
 
@@ -334,13 +374,15 @@ G7-0 carry-over blocker reset
   +-> G7-3 Web build/publish
 
 G7-1 -> G7-2 Cupertino/adaptive/generated product
+G7-1 + G7-2 -> G7-3M macOS live product
 G7-1 + G7-2 + G7-3 -> G7-4 Web live product
-G7-2 + G7-4 -> G7-5 integrated release
+G7-2 + G7-3M + G7-4 -> G7-5 integrated release
 G7-5 -> G7-6 physical acceptance
 ```
 
 - lower layer 공용 의미 결함은 해당 compiler/runtime/scene fixture에서 먼저 수정한다.
 - generated product, Web bootstrap 또는 target adapter의 widget-specific patch로 framework 결함을 숨기지 않는다.
+- macOS shell 결함을 Avalonia Control/visual tree 재도입이나 generated product patch로 숨기지 않는다.
 - Web build PASS는 browser first frame 또는 interaction PASS가 아니다.
 - browser automated ARIA는 physical screen-reader PASS가 아니다.
 - completed predecessor gate가 영향 범위 회귀에서 깨지면 최초 regression부터 복구한다.
@@ -360,13 +402,23 @@ G7-5 -> G7-6 physical acceptance
 ./Doroti/eng/validate-g7-product.ps1 -Gate Cupertino
 ./Doroti/eng/validate-g7-product.ps1 -Gate Generated
 
+./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Source
+./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Build
+./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Live
+./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Package
+
 ./Doroti/eng/validate-g7-web-build.ps1 -Shard Toolchain
 ./Doroti/eng/validate-g7-web-build.ps1 -Shard Publish
 ./Doroti/eng/validate-g7-web-live.ps1 -Shard Smoke
 ./Doroti/eng/validate-g7-web-live.ps1 -Shard Interaction
 
 ./Doroti/eng/validate-g7-release.ps1 -Target win-x64
+./Doroti/eng/validate-g7-release.ps1 -Target osx-arm64
 ./Doroti/eng/validate-g7-release.ps1 -Target browser-wasm
+
+./Doroti/eng/validate-g7-acceptance.ps1 -Target win-x64
+./Doroti/eng/validate-g7-acceptance.ps1 -Target osx-arm64
+./Doroti/eng/validate-g7-acceptance.ps1 -Target browser-wasm
 
 dotnet build Doroti/Doroti.slnx --configuration Release --nologo
 dotnet format Doroti/Doroti.slnx --verify-no-changes --no-restore --verbosity minimal
@@ -379,6 +431,8 @@ git diff --check
 
 - Flutter source가 widget/build/layout/paint/state/semantics policy의 단일 owner다.
 - target host는 window/document, scheduler, surface/GPU, input/text/clipboard/accessibility/resource capability만 소유한다.
+- Windows와 macOS desktop host는 같은 `Doroti.Shell.Core` 계약을 사용하며 target-specific native handle, event loop와 service 구현만 갈라진다.
+- libAvalonia는 macOS shell의 versioned native build input이며 사전 빌드된 출처 불명 binary나 Avalonia UI/Control graph를 제품 의존성으로 허용하지 않는다.
 - browser DOM은 canvas host와 accessibility bridge이며 두 번째 visual widget tree가 아니다.
 - scene/canvas/paint payload는 typed immutable contract로 backend까지 보존한다.
 - generated `.g.cs` 직접 수정, filename/local-number rewrite와 widget type 대체는 제품 수정으로 인정하지 않는다.
@@ -390,14 +444,16 @@ git diff --check
 
 Goal7은 다음이 모두 사실일 때 완료한다.
 
-- 일반 Dart `DorotiDemoApp`이 promoted package만 사용해 Windows와 Web `browser-wasm` artifact로 reproducible build된다.
-- Windows strict-GPU와 browser GPU에서 실제 first frame, app-essential interaction와 semantics가 target별로 PASS한다.
+- 일반 Dart `DorotiDemoApp`이 promoted package만 사용해 Windows, macOS `osx-arm64`와 Web `browser-wasm` artifact로 reproducible build된다.
+- Windows/macOS strict-GPU와 browser GPU에서 실제 first frame, app-essential interaction와 semantics가 target별로 PASS한다.
 - Material 대표 visual, native input capability와 scene/compositing/retained gate가 필요한 pinned reference와 함께 닫힌다.
 - Cupertino/adaptive와 generated product의 대표 behavior/semantics가 PASS한다.
-- Windows/Web release artifact에 hash, provenance, license, capability matrix와 단일 통합 stability/performance baseline이 포함된다.
-- Windows와 Chromium Web의 physical input/IME/accessibility checklist가 자동화 결과와 분리되어 기록된다.
+- Windows/macOS/Web release artifact에 hash, provenance, license, capability matrix와 단일 통합 stability/performance baseline이 포함된다.
+- Windows, macOS와 Chromium Web의 physical input/IME/accessibility checklist가 자동화 결과와 분리되어 기록된다.
 - 필수 target의 미실행 항목을 성공으로 기록한 경우가 0이다.
 
-Linux/macOS, Firefox/WebKit, 모든 component별 native 전수 검사, 모든 DPI/effect 곱집합과 장시간 soak는 Goal7 완료 정의에 포함하지 않는다. 해당 target을 실제 지원 대상으로 선택하는 후속 Goal에서 그 target의 release gate로 승격한다.
+Linux, Intel macOS(`osx-x64`), Firefox/WebKit, 모든 component별 native 전수 검사, 모든 DPI/effect 곱집합과 장시간 soak는 Goal7 완료 정의에 포함하지 않는다. 해당 target을 실제 지원 대상으로 선택하는 후속 Goal에서 그 target의 release gate로 승격한다.
+
+Goal7의 macOS 성공 기준은 “managed project와 libAvalonia가 컴파일된다”가 아니다. 동일한 generated Flutter framework app이 실제 NSWindow의 GPU surface에서 frame을 내고, AppKit 입력·텍스트·접근성 action이 같은 widget state까지 왕복하며, provenance가 고정된 `osx-arm64` package로 저장소 밖에서 실행되어야 한다.
 
 Goal7의 Web 성공 기준은 “WASM 파일이 생성된다”가 아니다. 동일한 generated Flutter framework app이 브라우저의 실제 GPU canvas에서 frame을 내고, Web input과 accessibility action이 같은 widget state까지 왕복하며, 재현 가능한 static release artifact로 배포될 수 있어야 한다.
