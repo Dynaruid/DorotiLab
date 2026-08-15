@@ -68,6 +68,7 @@ _ReSharper*/
 **/.flutter-plugins
 **/.flutter-plugins-dependencies
 **/doc/api/
+/Doroti/validation/cases/**/build/
 
 # JavaScript tooling, if used by docs or diagnostics frontends
 **/node_modules/
