@@ -5,7 +5,7 @@
 > 적용 기간: 2026-08-04 ~ 2026-08-06  
 > 처리: 루트 `goal3.md`는 제거하고, 완료 결과와 미완료 범위를 이 문서에 보존한다.  
 > Goal4 역사 기록: [`goal4-summary.md`](../26-08-10/goal4-summary.md)
-> 후속 Goal5 기록: [`goal5-summary.md`](../26-08-12/goal5-summary.md). 현재 active 계획은 [`goal7.md`](../../goal7.md)
+> 후속 Goal5 기록: [`goal5-summary.md`](../26-08-12/goal5-summary.md). Goal7 종료 기록은 [`goal7-summary.md`](../26-08-16/goal7-summary.md)
 
 ## 1. 당시 목표
 
@@ -162,4 +162,4 @@ Goal3는 Flutter framework와 저수준 실행 계층 사이의 source ownership
 - broad `runtime-binding` disposition
 - Flutter Scheduler/Services/Rendering과 Avalonia source-ported shell/GPU의 실제 연결
 
-이 역사 문서는 Goal3의 작업 지시서가 아니다. Goal4까지의 이력은 [`goal4-summary.md`](../26-08-10/goal4-summary.md), Goal5의 종료 기록은 [`goal5-summary.md`](../26-08-12/goal5-summary.md), Goal6의 종료 기록은 [`goal6-summary.md`](../26-08-14/goal6-summary.md)에 보존하며, 현재 구현 기준선과 다음 단계는 루트 [`goal7.md`](../../goal7.md)를 따른다.
+이 역사 문서는 Goal3의 작업 지시서가 아니다. Goal4까지의 이력은 [`goal4-summary.md`](../26-08-10/goal4-summary.md), Goal5의 종료 기록은 [`goal5-summary.md`](../26-08-12/goal5-summary.md), Goal6의 종료 기록은 [`goal6-summary.md`](../26-08-14/goal6-summary.md), Goal7의 종료 기록은 [`goal7-summary.md`](../26-08-16/goal7-summary.md)에 보존한다.

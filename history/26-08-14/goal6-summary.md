@@ -3,7 +3,7 @@
 > 상태: **종료(미완료 항목 Goal7 이관)** — G6-0~G6-5의 검증된 기반은 보존하고, 재개방된 fidelity/input/compositing 및 후속 release gate는 완료로 주장하지 않음
 > 작성일: 2026-08-12
 > 종료일: 2026-08-14
-> 후속 계획: [`goal7.md`](../../goal7.md) — 제품 정확성 closure, Web build와 multi-target release
+> 후속 기록: [`goal7-summary.md`](../26-08-16/goal7-summary.md) — 제품 정확성 closure, Web build와 multi-target release
 > 기준 Doroti revision: `21ebdbbe36691d8e30d66114f39e8a00aa339c43` + 문서 이관 작업 트리
 > Flutter source pin: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
 > Avalonia source pin: `f159423f691946e713f454447a780d4677d8a0d2`
@@ -21,7 +21,7 @@ Goal6는 Goal5의 compile/API/synthetic 성공을 실제 framework runtime 성�
 - callback 직접 호출은 native pointer interaction 증거가 아니다.
 - Windows automated 결과를 physical Windows, Avalonia backend, Linux/macOS 또는 Web 결과로 확대하지 않는다.
 - 실행하지 않은 reference differential, browser, physical device, IME/accessibility와 cross-target 항목은 `notVerified`다.
-- 남은 작업은 [`goal7.md`](../../goal7.md)의 새 dependency graph와 evidence gate로 이관한다.
+- 남은 작업은 Goal7의 새 dependency graph와 evidence gate로 이관했으며, 종료 상태는 [`goal7-summary.md`](../26-08-16/goal7-summary.md)에 보존한다.
 
 ## 완료로 보존하는 범위
 
@@ -167,4 +167,4 @@ Goal6는 Goal5의 compile/API/synthetic 성공을 실제 framework runtime 성�
 - `Doroti/eng/validate-g6-generated-demo.ps1`
 
 > 이전 역사 기록: [`goal5-summary.md`](../26-08-12/goal5-summary.md)
-> 문서 성격: Goal6의 종료 시점 요약과 증거 경계. 현재 active roadmap은 [`goal7.md`](../../goal7.md)다.
+> 문서 성격: Goal6의 종료 시점 요약과 증거 경계. Goal7 종료 상태는 [`goal7-summary.md`](../26-08-16/goal7-summary.md)에 보존한다.

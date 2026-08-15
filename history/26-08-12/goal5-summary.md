@@ -24,7 +24,7 @@ Goal5는 2026-08-12 기준으로 더 진행하지 않는다. G5-0~G5-6W에서 �
 - 이후 작업은 당시 Goal6의 live-first gate를 따랐으며, 결과는 [`goal6-summary.md`](../26-08-14/goal6-summary.md)에 보존한다. 실제 DemoApp 첫 프레임이 통과하기 전에는 full framework, gallery behavior 또는 application-ready를 완료로 기록하지 않는다.
 
 > 이전 역사 기록: [`goal4-summary.md`](../26-08-10/goal4-summary.md)
-> 문서 성격: 종료된 roadmap과 당시 산출물의 역사 기록. 현재 active roadmap은 [`goal7.md`](../../goal7.md)
+> 문서 성격: 종료된 roadmap과 당시 산출물의 역사 기록. Goal7 종료 기록은 [`goal7-summary.md`](../26-08-16/goal7-summary.md)
 
 Goal5는 Goal4에서 만든 Flutter/Avalonia 경계를 제품 전체에 끝까지 적용한다. 목표는 compiler가 많은 파일을 생성하는 것이 아니라, reviewed Flutter framework가 UI 의미의 유일한 owner가 되고 Avalonia source-port가 native/platform 실행의 유일한 owner가 되는 배포 가능한 제품 경로다.
 

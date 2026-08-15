@@ -14,7 +14,7 @@ The validated slice includes `MaterialApp`, `Theme`, `Navigator`, `Scaffold`, `A
 
 The `osx-arm64` gate includes an actual AppKit window, Apple M1 GPU presentation, native input/text/clipboard/accessibility traces, balanced resource shutdown, repeat publish identity, and a repository-external package-only launch. Physical Korean IME candidate-window placement, VoiceOver navigation, precise trackpad gestures, `osx-x64`, Linux, Web, Android, and iOS retain separate gates. A project or package compiling for a target is never treated as proof of native behavior by itself.
 
-See the repository [Goal 7 roadmap](../goal7.md) for the current milestone, Web build, and evidence requirements.
+See the archived [Goal 7 summary](../history/26-08-16/goal7-summary.md) for its completed milestones, remaining Web/release gates, and evidence boundaries. No successor active roadmap is designated there.
 
 ## Architecture
 

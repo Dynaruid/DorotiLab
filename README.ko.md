@@ -103,7 +103,7 @@ dotnet publish ./DorotiDemoApp/DorotiDemoApp.Web.csproj -c Release -r browser-wa
 | [`Doroti/src/Doroti.Host.Avalonia/`](Doroti/src/Doroti.Host.Avalonia/) | 공식 `Avalonia.Desktop` package 기반 비교·검증용 host |
 | [`DorotiDemoApp/`](DorotiDemoApp/) | 실제 Material widget tree를 띄우는 데모 앱 |
 | [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | Dart를 C#으로 변환하는 semantic compiler |
-| [`goal7.md`](goal7.md) | 현재 개발 상태, Web 빌드와 다음 release gate를 정리한 로드맵 |
+| [`history/26-08-16/goal7-summary.md`](history/26-08-16/goal7-summary.md) | Goal7 결과와 남은 Web/release gate, 증거 경계를 보존한 역사 요약 |
 
 더 깊은 빌드·검증 방법과 아키텍처 기록은 [`Doroti/README.md`](Doroti/README.md)와 [`Doroti/docs/`](Doroti/docs/)에 모아두었습니다.
 

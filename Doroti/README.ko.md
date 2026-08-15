@@ -14,7 +14,7 @@ Doroti는 Flutter를 WebView에 넣어 실행하지 않으며 Avalonia control�
 
 `osx-arm64` gate는 실제 AppKit window, Apple M1 GPU present, native input/text/clipboard/accessibility trace, 균형 잡힌 resource 종료, repeat publish identity와 저장소 밖 package-only launch를 포함합니다. 물리 Korean IME candidate window, VoiceOver 탐색, precise trackpad gesture, `osx-x64`, Linux, Web, Android와 iOS에는 별도 gate가 남아 있습니다. 특정 target에서 project나 package가 compile된 사실만으로 native 동작까지 증명되었다고 판단하지 않습니다.
 
-현재 milestone, Web 빌드와 증거 기준은 repository의 [Goal 7 roadmap](../goal7.md)에서 확인할 수 있습니다.
+Goal7의 완료 milestone, 남은 Web/release gate와 증거 경계는 역사 기록인 [Goal7 요약](../history/26-08-16/goal7-summary.md)에서 확인할 수 있습니다. 이 문서는 후속 active roadmap을 지정하지 않습니다.
 
 ## Architecture
 
