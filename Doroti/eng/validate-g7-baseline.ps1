@@ -292,7 +292,7 @@ function New-ReleaseBlocker(
 function Invoke-EvidenceShard {
     if (Test-Path -LiteralPath $carryoverPath -PathType Leaf) {
         $currentCarryover = Read-Json $carryoverPath
-        if ($currentCarryover.milestone -eq 'G7-1') {
+        if ($currentCarryover.milestone -in @('G7-1', 'G7-2')) {
             $material = Read-Json (Join-Path $migrationRoot 'g7-material-reference-evidence.json')
             $interaction = Read-Json (Join-Path $migrationRoot 'g7-native-interaction-evidence.json')
             $managed = Read-Json $managedRegressionPath
@@ -305,17 +305,40 @@ function Invoke-EvidenceShard {
             }
             Assert-Equal $compatibility.status 'pass-owned-transitions' 'G7-1 compatibility boundary'
 
-            $closedIds = @('material-reference-and-generation', 'windows-input-capabilities', 'managed-focus-frame-dispatch', 'compositing-reference-retained-c1')
+            $closedIds = [Collections.Generic.List[string]]::new()
+            @('material-reference-and-generation', 'windows-input-capabilities', 'managed-focus-frame-dispatch', 'compositing-reference-retained-c1') |
+                ForEach-Object { $closedIds.Add($_) }
+            $cupertinoProductPath = Join-Path $migrationRoot 'g7-cupertino-adaptive-evidence.json'
+            $generatedProductPath = Join-Path $migrationRoot 'g7-generated-demo-evidence.json'
+            $productClosed = (Test-Path -LiteralPath $cupertinoProductPath -PathType Leaf) -and
+                (Test-Path -LiteralPath $generatedProductPath -PathType Leaf)
+            if ($productClosed) {
+                $cupertinoProduct = Read-Json $cupertinoProductPath
+                $generatedProduct = Read-Json $generatedProductPath
+                Assert-Equal $cupertinoProduct.status 'pass' 'G7-2 Cupertino/adaptive evidence'
+                Assert-Equal $generatedProduct.status 'pass' 'G7-2 generated product evidence'
+                $productBlocker = @($currentCarryover.releaseBlockers | Where-Object id -eq 'cupertino-adaptive-generated-parity')
+                Assert-Equal $productBlocker.Count 1 'G7-2 carry-over blocker count'
+                $productBlocker[0].state = 'closed'
+                $productBlocker[0].reproduction.command = 'Doroti/eng/validate-g7-product.ps1 -Gate Cupertino; Doroti/eng/validate-g7-product.ps1 -Gate Generated'
+                $productBlocker[0].evidence = 'g7-cupertino-adaptive-evidence.json and g7-generated-demo-evidence.json'
+                $currentCarryover.milestone = 'G7-2'
+                $currentCarryover.scope = 'G7-2 Cupertino/adaptive and generated Dart product closure complete; remaining release blockers are assigned to G7-3 through G7-6'
+                $currentCarryover.consistency.activeReleaseBlockers = 4
+                $closedIds.Add('cupertino-adaptive-generated-parity')
+                Write-Json $carryoverPath $currentCarryover
+            }
             foreach ($id in $closedIds) {
                 $blocker = @($currentCarryover.releaseBlockers | Where-Object id -eq $id)
                 Assert-Equal $blocker.Count 1 "G7-1 carry-over blocker $id count"
                 Assert-Equal $blocker[0].state 'closed' "G7-1 carry-over blocker $id state"
             }
             $active = @($currentCarryover.releaseBlockers | Where-Object state -ne 'closed')
-            Assert-Equal $active.Count 5 'G7-1 active release blocker count'
-            Assert-Equal ([long]$currentCarryover.consistency.activeReleaseBlockers) 5 'G7-1 carry-over consistency count'
+            $expectedActive = if ($productClosed) { 4 } else { 5 }
+            Assert-Equal $active.Count $expectedActive 'current active release blocker count'
+            Assert-Equal ([long]$currentCarryover.consistency.activeReleaseBlockers) $expectedActive 'current carry-over consistency count'
             Assert-Equal ([long]$currentCarryover.consistency.blockersMissingOwnerCommandOrMilestone) 0 'G7-1 blocker metadata omissions'
-            Write-Output 'G7-1 carry-over evidence: PASS (4 shared-correctness blockers closed; 5 later-milestone boundaries preserved)'
+            Write-Output "G7 carry-over evidence: PASS ($($closedIds.Count) blockers closed; $expectedActive later-milestone boundaries preserved)"
             return
         }
     }

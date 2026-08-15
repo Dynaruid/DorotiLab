@@ -44,6 +44,7 @@
   <Project Path="tools/Doroti.SourceTools/Doroti.SourceTools.csproj" />
   <Project Path="tools/Doroti.Tooling/Doroti.Tooling.csproj" />
   <Folder Name="/validation/">
+    <Project Path="validation/Doroti.Validation.G7Product/Doroti.Validation.G7Product.csproj" />
     <Project Path="validation/Doroti.Validation.G7Shared/Doroti.Validation.G7Shared.csproj" />
     <Project Path="validation/Doroti.Validation.G6MaterialFidelity/Doroti.Validation.G6MaterialFidelity.csproj" />
     <Project Path="validation/Doroti.Validation.G6Cupertino/Doroti.Validation.G6Cupertino.csproj" />

@@ -1,6 +1,6 @@
 # Doroti 7차 목표 — 제품 정확성 closure와 Windows/Web release
 
-> 상태: G7-1 ✅ 완료 — G7-2 Cupertino/product와 G7-3 Web build/publish 착수 가능
+> 상태: G7-2 ✅ 완료 — G7-3 Web build/publish 진행 가능
 > 작성일: 2026-08-14
 > 측정 핵심화: 2026-08-15
 > 선행 기록: [`history/26-08-14/goal6-summary.md`](history/26-08-14/goal6-summary.md)
@@ -206,6 +206,15 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 - `Doroti/migration/flutter-framework/g7-cupertino-adaptive-evidence.json`
 - `Doroti/migration/flutter-framework/g7-generated-demo-evidence.json`
 - `Doroti/eng/validate-g7-product.ps1 -Gate <Cupertino|Generated>`
+
+실행 결과(2026-08-15, macOS 검증 호스트):
+
+- Cupertino/adaptive `PASS`: 고정 Flutter trace와 승격 Doroti 제품을 Windows/macOS platform policy로 비교했다. Windows는 Checkbox/Switch/Slider/Progress가 Material을 선택하고, macOS는 Checkbox/Slider/Progress가 Cupertino를 선택하며 `Switch.adaptive`는 고정 Flutter 구현과 같이 Material render object에 Cupertino 색상 정책을 적용한다. 양쪽 모두 callback/state와 semantics action contract를 통과했다.
+- Tier A 제품 경로 `PASS`: Cupertino 55/55 presented와 실제 Windows Cupertino button pointer predecessor를 보존하고, G7-1의 native key/semantics causal capability를 재사용했다. managed adaptive fixture의 직접 callback은 native PASS로 세지 않았다.
+- generated Dart 제품 `PASS`: Flutter widget test에서 `home → details → home`, `pressed=0 → 1 → 1`, 두 semantics tap action을 검증했고, handwritten `DorotiDemoApp`의 route push/pop, state mutation, semantics tree와 같은 대표 contract로 정규화해 비교했다. Flutter analyze와 compiler analyzer 진단은 모두 0건이다.
+- package-only 경계 `PASS`: application compiler가 conditional repository `ProjectReference`를 더 이상 생성하지 않으며, 저장소 밖 소비자가 승격 NuGet package만으로 restore/build 및 `win-x64` publish를 통과했다. repository-private/candidate fallback은 0건이다.
+- 현재 호스트가 macOS이므로 Win32 실행을 가장하지 않았다. 현재 source의 compiler/package 경계는 macOS에서 재검증하고, 변경되지 않은 초기화·대표 toggle의 actual HWND strict-GPU 실행은 G6 Windows predecessor evidence를 명시적으로 계승했다. macOS desktop target 자체는 Goal7 비필수 target이므로 `notVerified`를 유지한다.
+- macOS 전환 지원으로 repository-local Flutter/Dart launcher 선택과 Windows checkout의 SDK CRLF 정규화를 추가했다. 재현 명령은 `validate-g7-product.ps1 -Gate Cupertino|Generated`이다.
 
 ### G7-3 — Web toolchain, browser host와 publish baseline
 

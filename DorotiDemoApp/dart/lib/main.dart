@@ -45,6 +45,14 @@ class _DorotiGeneratedDemoHomeState extends State<DorotiGeneratedDemoHome> {
               onPressed: () => setState(() => _pressCount++),
               child: const Text('G6 generated button'),
             ),
+            OutlinedButton(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<Object?>(
+                  builder: (context) => const DorotiGeneratedDetailsPage(),
+                ),
+              ),
+              child: const Text('Open generated details'),
+            ),
             Row(
               spacing: 12,
               children: [
@@ -79,6 +87,23 @@ class _DorotiGeneratedDemoHomeState extends State<DorotiGeneratedDemoHome> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() => _pressCount++),
         child: const Text('+'),
+      ),
+    );
+  }
+}
+
+class DorotiGeneratedDetailsPage extends StatelessWidget {
+  const DorotiGeneratedDetailsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Generated details')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Back to generated home'),
+        ),
       ),
     );
   }

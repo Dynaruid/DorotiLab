@@ -1,7 +1,7 @@
 {
   "schemaVersion": "doroti.g5-4-gallery-differential/v1",
   "milestone": "G5-4",
-  "capturedAtUtc": "2026-08-13T13:15:31.7436842+00:00",
+  "capturedAtUtc": "2026-08-15T04:20:55.721412+00:00",
   "status": "PASS",
   "evidenceClass": "syntheticContract",
   "eligibleForLivePass": false,

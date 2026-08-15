@@ -55,7 +55,12 @@ function Get-ProcessLog([string] $Path) {
 
 function Stop-ProcessTree([int] $ProcessId) {
     if (-not (Get-Process -Id $ProcessId -ErrorAction SilentlyContinue)) { return }
-    & taskkill.exe /PID $ProcessId /T /F 2>&1 | Out-Null
+    if ($IsWindows -or $env:OS -eq 'Windows_NT') {
+        & taskkill.exe /PID $ProcessId /T /F 2>&1 | Out-Null
+    }
+    else {
+        Stop-Process -Id $ProcessId -Force -ErrorAction SilentlyContinue
+    }
 }
 
 function Invoke-LoggedProcess(
@@ -69,7 +74,16 @@ function Invoke-LoggedProcess(
     $stdoutPath = Join-Path $temporaryRoot "$LogName.stdout.log"
     $stderrPath = Join-Path $temporaryRoot "$LogName.stderr.log"
     $timer = [Diagnostics.Stopwatch]::StartNew()
-    $process = Start-Process -FilePath $FilePath -ArgumentList $Arguments -WorkingDirectory $WorkingDirectory -WindowStyle Hidden -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath -PassThru
+    $startArguments = @{
+        FilePath = $FilePath
+        ArgumentList = $Arguments
+        WorkingDirectory = $WorkingDirectory
+        RedirectStandardOutput = $stdoutPath
+        RedirectStandardError = $stderrPath
+        PassThru = $true
+    }
+    if ($IsWindows -or $env:OS -eq 'Windows_NT') { $startArguments.WindowStyle = 'Hidden' }
+    $process = Start-Process @startArguments
     try {
         while (-not $process.HasExited) {
             Start-Sleep -Milliseconds 200
@@ -135,9 +149,11 @@ function Assert-GeneratedBoundary {
     $project = @(Get-ChildItem -LiteralPath (Join-Path $generatedRoot 'projects/Framework') -Filter '*.csproj' -File)
     Assert-True ($project.Count -eq 1) 'one generated application project'
     [xml]$xml = Get-Content -LiteralPath $project[0].FullName -Raw
-    $projectReferences = @($xml.Project.ItemGroup.ProjectReference | ForEach-Object { [string]$_.Include })
-    $packageReferences = @($xml.Project.ItemGroup.PackageReference | ForEach-Object { [string]$_.Include })
-    Assert-True (@($projectReferences | Where-Object { $_ -match 'generated-candidates|validation|DorotiDemoApp' }).Count -eq 0) 'repository-private generated project references'
+    $projectReferences = @($xml.Project.ItemGroup.ProjectReference |
+        ForEach-Object { [string]$_.Include } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+    $packageReferences = @($xml.Project.ItemGroup.PackageReference |
+        ForEach-Object { [string]$_.Include } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+    Assert-True ($projectReferences.Count -eq 0) 'repository-private generated project references'
     Assert-True ((($packageReferences | Sort-Object) -join '|') -ceq 'Doroti.Flutter.Framework.Material|Doroti.Flutter.Hosting') 'generated package-only direct references'
     $source = Get-Content -LiteralPath (Join-Path $generatedRoot 'projects/Framework/doroti_demo_app_main.g.cs') -Raw
     Assert-True ($source -notmatch 'Avalonia|Win32|Doroti\.Host\.|Doroti\.Vendor') 'generated source platform/vendor boundary'
@@ -293,8 +309,13 @@ function Invoke-PackageShard {
     $restoreTimer.Stop()
     $assetsPath = Join-Path $externalRunner 'obj/project.assets.json'
     $assetsText = Get-Content -LiteralPath $assetsPath -Raw
-    Assert-True (-not $assetsText.Contains($repoRoot, [StringComparison]::OrdinalIgnoreCase)) 'repository-private restore fallback'
     $assets = $assetsText | ConvertFrom-Json
+    # The expected local NuGet feed lives under the repository and therefore
+    # appears in restore.sources/packageFolders. Inspect the resolved graph,
+    # not that feed metadata. JSON escaping had hidden this distinction on
+    # Windows while macOS forward-slash paths exposed the false positive.
+    $resolvedGraphText = @($assets.targets, $assets.libraries) | ConvertTo-Json -Depth 64
+    Assert-True (-not $resolvedGraphText.Contains($repoRoot, [StringComparison]::OrdinalIgnoreCase)) 'repository-private restore fallback'
     $nonPackages = @($assets.libraries.PSObject.Properties | Where-Object { $_.Value.type -ne 'package' })
     Assert-True ($nonPackages.Count -eq 1 -and $nonPackages[0].Name -like 'Doroti.Generated.Application.G6Demo.Framework/*') 'isolated dependency graph'
     $buildTimer = [Diagnostics.Stopwatch]::StartNew()
@@ -465,3 +486,7 @@ finally {
         if (Test-Path -LiteralPath $temporaryRoot) { Remove-DorotiTemporaryItem -DorotiRoot $dorotiRoot -Path $temporaryRoot }
     }
 }
+
+# Negative compiler probes intentionally return non-zero. Do not leak their
+# handled exit code to a parent PowerShell gate after this shard has passed.
+$global:LASTEXITCODE = 0

@@ -1,0 +1,176 @@
+{
+  "schemaVersion": "doroti.g7-cupertino-adaptive-evidence/v1",
+  "milestone": "G7-2",
+  "capturedAtUtc": "2026-08-15T04:17:34.978903+00:00",
+  "status": "pass",
+  "validationHost": "macos-arm64",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "tierA": {
+    "presented": {
+      "status": "pass-predecessor",
+      "count": 55,
+      "evidence": "g6-cupertino-component-matrix.json"
+    },
+    "pointer": {
+      "status": "pass-predecessor-cupertino-button",
+      "directCallbackNativePasses": 0,
+      "evidence": "g6-cupertino-waves/C0-evidence.json"
+    },
+    "key": {
+      "status": "pass-capability-reuse",
+      "evidence": "g7-native-interaction-evidence.json#g7i-key"
+    },
+    "semantics": {
+      "status": "pass-managed-cupertino-and-native-capability-reuse",
+      "managedActions": 3,
+      "evidence": "g7-native-interaction-evidence.json#g7i-semantics-action"
+    }
+  },
+  "adaptive": {
+    "status": "pass",
+    "reference": {
+      "windows": {
+        "selection": {
+          "checkbox": "material",
+          "switch": "material",
+          "slider": "material",
+          "progress": "material"
+        },
+        "controls": [
+          "checkbox",
+          "switch",
+          "slider",
+          "progress"
+        ],
+        "callbackCount": 2,
+        "checkboxValue": true,
+        "switchValue": true,
+        "semanticsTap": true
+      },
+      "macOS": {
+        "selection": {
+          "checkbox": "cupertino",
+          "switch": "material-cupertino-colors",
+          "slider": "cupertino",
+          "progress": "cupertino"
+        },
+        "controls": [
+          "checkbox",
+          "switch",
+          "slider",
+          "progress"
+        ],
+        "callbackCount": 2,
+        "checkboxValue": true,
+        "switchValue": true,
+        "semanticsTap": true
+      }
+    },
+    "doroti": [
+      {
+        "platform": "windows",
+        "selection": {
+          "checkbox": "material",
+          "switch": "material",
+          "slider": "material",
+          "progress": "material"
+        },
+        "controls": [
+          "checkbox",
+          "switch",
+          "slider",
+          "progress"
+        ],
+        "callbackCount": 3,
+        "checkboxValue": true,
+        "switchValue": true,
+        "sliderValue": 0.75,
+        "semantics": [
+          {
+            "label": "adaptive checkbox",
+            "hasAction": true
+          },
+          {
+            "label": "adaptive progress",
+            "hasAction": false
+          },
+          {
+            "label": "adaptive slider",
+            "hasAction": true
+          },
+          {
+            "label": "adaptive switch",
+            "hasAction": true
+          }
+        ],
+        "selectedWidgetTypes": [
+          "Checkbox",
+          "CircularProgressIndicator",
+          "CupertinoTheme",
+          "Slider",
+          "Switch"
+        ]
+      },
+      {
+        "platform": "macOS",
+        "selection": {
+          "checkbox": "cupertino",
+          "switch": "material-cupertino-colors",
+          "slider": "cupertino",
+          "progress": "cupertino"
+        },
+        "controls": [
+          "checkbox",
+          "switch",
+          "slider",
+          "progress"
+        ],
+        "callbackCount": 3,
+        "checkboxValue": true,
+        "switchValue": true,
+        "sliderValue": 0.75,
+        "semantics": [
+          {
+            "label": "adaptive checkbox",
+            "hasAction": true
+          },
+          {
+            "label": "adaptive progress",
+            "hasAction": false
+          },
+          {
+            "label": "adaptive slider",
+            "hasAction": true
+          },
+          {
+            "label": "adaptive switch",
+            "hasAction": true
+          }
+        ],
+        "selectedWidgetTypes": [
+          "Checkbox",
+          "CircularProgressIndicator",
+          "CupertinoActivityIndicator",
+          "CupertinoCheckbox",
+          "CupertinoSlider",
+          "CupertinoTheme",
+          "Slider",
+          "Switch"
+        ]
+      }
+    ],
+    "selectionContract": "ThemeData.platform; Switch.adaptive retains Material rendering and applies Cupertino colors on macOS"
+  },
+  "promotion": {
+    "status": "pass",
+    "generatedDirectHotfixes": 0,
+    "productIdentityDiffs": 0,
+    "candidate": "migration/generated-candidates/g5-4-reviewed/projects/Cupertino"
+  },
+  "boundaries": {
+    "windowsLive": "verified-predecessor",
+    "physical": "notVerified-G7-6",
+    "macosDesktopTarget": "notVerified-nonblocking",
+    "validationOnMacOS": "supported"
+  }
+}

@@ -50,7 +50,7 @@ Doroti.DartToCSharp ──► reviewed C# framework packages
 - repository root의 pinned 전용 `flutter-master` SDK와 `Avalonia-main` reference checkout
 - native demo와 live UI Automation gate 실행을 위한 Windows x64
 
-로컬 Flutter SDK는 최초 한 번 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 준비합니다. Doroti workflow는 이 SDK의 `flutter`와 bundled `dart` 실행 파일을 직접 사용하며 `PATH` 또는 사용자 profile의 Flutter 설치로 fallback하지 않습니다. 두 reference checkout은 source와 동작의 입력이며 제품 runtime dependency가 아닙니다.
+로컬 Flutter SDK는 최초 한 번 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 준비합니다. Doroti workflow는 host에 맞는 repository-local launcher(`flutter.bat`/`dart.bat` 또는 `flutter`/`dart`)를 직접 사용하며 `PATH` 또는 사용자 profile의 Flutter 설치로 fallback하지 않습니다. Windows에서 만든 checkout을 macOS로 옮긴 경우 pinned Flutter source와 shell script의 CRLF는 SDK resolver가 LF로 정규화합니다. macOS에서는 reference/compiler/package build gate를 실행할 수 있지만 Win32 live 결과를 대신하지는 않습니다. 두 reference checkout은 source와 동작의 입력이며 제품 runtime dependency가 아닙니다.
 
 ## 빠른 시작
 

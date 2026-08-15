@@ -1,7 +1,7 @@
 {
   "schemaVersion": "doroti.g5-4-evidence/v1",
   "milestone": "G5-4",
-  "capturedAtUtc": "2026-08-13T13:15:32.0348675+00:00",
+  "capturedAtUtc": "2026-08-15T04:20:55.9335790+00:00",
   "status": "verified-automated-current-machine",
   "flutterGitRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "census": {
@@ -39,7 +39,7 @@
           "loweringRuleSetVersion": "framework-g3.1-multilibrary-typed",
           "emitterVersion": "csharp-net10.g3.1-project-graph",
           "runtimeBindingVersion": "0.2.0-beta",
-          "workspaceId": "86b9351d66548b15796a3a7e9131f09beedd3a2a3022b95b6547aa6c28367eac"
+          "workspaceId": "c8f5293b2e80f1c2c29d08f60165bba56f9864d5c296c2dc46ff7abd0afc3e7d"
         }
       },
       {
@@ -61,7 +61,7 @@
           "loweringRuleSetVersion": "framework-g3.1-multilibrary-typed",
           "emitterVersion": "csharp-net10.g3.1-project-graph",
           "runtimeBindingVersion": "0.2.0-beta",
-          "workspaceId": "fd18e42b38c9385cfc18066d645cb6855e7e4436ae770c1c3edac2852d3da7a5"
+          "workspaceId": "3deca18a1275a66eb2f5c2f75983eaaa6401f7220ea4b1fefe480a7e012a3822"
         }
       },
       {
@@ -83,7 +83,7 @@
           "loweringRuleSetVersion": "framework-g3.1-multilibrary-typed",
           "emitterVersion": "csharp-net10.g3.1-project-graph",
           "runtimeBindingVersion": "0.2.0-beta",
-          "workspaceId": "419bc90e71ec119316749a7dc9cf6fe3129fe1c3792abfb76096b4ba3d9e502a"
+          "workspaceId": "92f6771224e5ba89b5d3b2de7b318d8c82e32cdff9031963dd1fe06f5cddd2fe"
         }
       },
       {
@@ -105,7 +105,7 @@
           "loweringRuleSetVersion": "framework-g3.1-multilibrary-typed",
           "emitterVersion": "csharp-net10.g3.1-project-graph",
           "runtimeBindingVersion": "0.2.0-beta",
-          "workspaceId": "470448f2d3262d8c04699ba7b259f2e7987f965b9c9c1cfda0d35a71ef83c831"
+          "workspaceId": "daf96360815ddbf0b40b0c9076cf026a345dde5aeaef4d134520745d1cb1984a"
         }
       },
       {
@@ -127,7 +127,7 @@
           "loweringRuleSetVersion": "framework-g3.1-multilibrary-typed",
           "emitterVersion": "csharp-net10.g3.1-project-graph",
           "runtimeBindingVersion": "0.2.0-beta",
-          "workspaceId": "3b0b4e8a7bebc3c7b347fe89bdd254c0e8ab11fb775e4e026262e2ffd00f2d15"
+          "workspaceId": "e9834392bd477eec79cb8c73480879e45447e443fd38e4e2905b63e80b1aade2"
         }
       },
       {
@@ -149,7 +149,7 @@
           "loweringRuleSetVersion": "framework-g3.1-multilibrary-typed",
           "emitterVersion": "csharp-net10.g3.1-project-graph",
           "runtimeBindingVersion": "0.2.0-beta",
-          "workspaceId": "758a33b41543f5571d0a654641701d61bb2dc5279d1a630a43106d0960de8af3"
+          "workspaceId": "9262458935d5d03907af85494f045fbac34f141c34aa3f650389d26f102ef3b4"
         }
       },
       {
@@ -171,7 +171,7 @@
           "loweringRuleSetVersion": "framework-g3.1-multilibrary-typed",
           "emitterVersion": "csharp-net10.g3.1-project-graph",
           "runtimeBindingVersion": "0.2.0-beta",
-          "workspaceId": "04b210808010e9e65d43f2eb03798e7bf785c68ce315d62a0283a8babb4c9260"
+          "workspaceId": "ebce9270e01e234bd018887cd4e94df54d63b48e2f1e770ae0f42ef2961a7def"
         }
       },
       {
@@ -193,7 +193,7 @@
           "loweringRuleSetVersion": "framework-g3.1-multilibrary-typed",
           "emitterVersion": "csharp-net10.g3.1-project-graph",
           "runtimeBindingVersion": "0.2.0-beta",
-          "workspaceId": "1f20534841d667c8a5a5965707f6f1aab9e2c1225c1f21604c847004fe8d605b"
+          "workspaceId": "53ae051ed0a49798fcbb2725c27641fd735832552f37b9db7bfcddeafdb72764"
         }
       },
       {
@@ -215,14 +215,14 @@
           "loweringRuleSetVersion": "framework-g3.1-multilibrary-typed",
           "emitterVersion": "csharp-net10.g3.1-project-graph",
           "runtimeBindingVersion": "0.2.0-beta",
-          "workspaceId": "691a58eb0fd0b380c38147108c98e65ef03f31eddb9dcc716daadb23ac6f67e0"
+          "workspaceId": "978855e9676acb7c474e767c39e83bc3f13687fbd9f013b76e60901d91f0b6fb"
         }
       }
     ],
     "productLibraries": 252,
     "productDeclarations": 2091,
     "stagedGeneratedFiles": 249,
-    "reviewedAdaptedFiles": 193,
+    "reviewedAdaptedFiles": 313,
     "declarationOrFileRemovals": 0,
     "buildWarnings": 0,
     "buildErrors": 0
@@ -254,7 +254,7 @@
     "evidence": "migration/flutter-framework/g5-4-gallery-differential.json"
   },
   "dependencyAudit": {
-    "scannedFiles": 293,
+    "scannedFiles": 286,
     "avaloniaControlsThemeXamlReferences": 0,
     "xamlFiles": 0
   },

@@ -185,18 +185,13 @@ internal static partial class ConverterEngine
         if (packages.Length == 0 || packages.Any(package => !allowed.Contains(package)))
             throw new InvalidDataException("Application frameworkPackages contains an unsupported or empty package selection.");
         return string.Join('\n', packages.Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).Select(package =>
-        {
-            var project = $"$(DorotiRepositoryRoot)\\src\\Doroti.Flutter.Framework.{package}\\Doroti.Flutter.Framework.{package}.csproj";
-            return $"    <ProjectReference Include=\"{project}\" Condition=\"'$(DorotiRepositoryRoot)' != ''\" />\n" +
-                $"    <PackageReference Include=\"Doroti.Flutter.Framework.{package}\" Version=\"[{version}]\" Condition=\"'$(DorotiRepositoryRoot)' == ''\" />";
-        }));
+            $"    <PackageReference Include=\"Doroti.Flutter.Framework.{package}\" Version=\"[{version}]\" />"));
     }
 
     private static string BuildApplicationPackageReference(string package, string version)
     {
         if (package != "Doroti.Flutter.Hosting")
             throw new InvalidDataException($"Unsupported host bootstrap package: {package}");
-        return $"    <ProjectReference Include=\"$(DorotiRepositoryRoot)\\src\\{package}\\{package}.csproj\" Condition=\"'$(DorotiRepositoryRoot)' != ''\" />\n" +
-            $"    <PackageReference Include=\"{package}\" Version=\"[{version}]\" Condition=\"'$(DorotiRepositoryRoot)' == ''\" />";
+        return $"    <PackageReference Include=\"{package}\" Version=\"[{version}]\" />";
     }
 }

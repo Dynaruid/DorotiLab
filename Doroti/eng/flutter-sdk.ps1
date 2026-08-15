@@ -4,6 +4,34 @@ $script:DorotiFlutterRevision = '56b8e1a851a594b1a154f8ea93270807dab22b9a'
 $script:DorotiFlutterVersionAnchor = '3.33.0-0.0.pre'
 $script:DorotiFlutterHistoryDepth = 6579
 
+function Repair-DorotiFlutterSdkLineEndings {
+    param([Parameter(Mandatory = $true)][string] $SdkRoot)
+
+    if ($IsWindows -or $env:OS -eq 'Windows_NT') { return }
+    if (-not (Test-Path -LiteralPath $SdkRoot -PathType Container)) { return }
+
+    $trackedRows = @(& git -C $SdkRoot ls-files --eol -- '*.sh' 'bin/flutter' 'bin/dart' 'packages/flutter/lib/*.dart')
+    if ($LASTEXITCODE -ne 0) {
+        throw "Repository-local Flutter SDK text files could not be enumerated at $SdkRoot."
+    }
+    $trackedTextFiles = @($trackedRows | Where-Object { $_ -match '\bw/crlf\b.*\t(?<path>.+)$' } |
+        ForEach-Object { [string]$Matches.path })
+    foreach ($relative in $trackedTextFiles) {
+        $path = Join-Path $SdkRoot $relative
+        if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { continue }
+        $bytes = [IO.File]::ReadAllBytes($path)
+        if ([Array]::IndexOf($bytes, [byte]13) -lt 0) { continue }
+        $normalized = [Collections.Generic.List[byte]]::new($bytes.Length)
+        for ($index = 0; $index -lt $bytes.Length; $index++) {
+            if ($bytes[$index] -eq 13 -and $index + 1 -lt $bytes.Length -and $bytes[$index + 1] -eq 10) {
+                continue
+            }
+            $normalized.Add($bytes[$index])
+        }
+        [IO.File]::WriteAllBytes($path, $normalized.ToArray())
+    }
+}
+
 function Resolve-DorotiFlutterSdk {
     [CmdletBinding()]
     param(
@@ -13,12 +41,14 @@ function Resolve-DorotiFlutterSdk {
 
     $repositoryRootPath = [IO.Path]::GetFullPath($RepositoryRoot)
     $sdkRoot = [IO.Path]::GetFullPath((Join-Path $repositoryRootPath 'flutter-master'))
-    $flutterCommand = Join-Path $sdkRoot 'bin/flutter.bat'
-    $dartCommand = Join-Path $sdkRoot 'bin/dart.bat'
+    Repair-DorotiFlutterSdkLineEndings -SdkRoot $sdkRoot
+    $commandSuffix = if ($IsWindows -or $env:OS -eq 'Windows_NT') { '.bat' } else { '' }
+    $flutterCommand = Join-Path $sdkRoot "bin/flutter$commandSuffix"
+    $dartCommand = Join-Path $sdkRoot "bin/dart$commandSuffix"
 
     if (-not (Test-Path -LiteralPath $flutterCommand -PathType Leaf) -or
         -not (Test-Path -LiteralPath $dartCommand -PathType Leaf)) {
-        throw "Repository-local Flutter SDK is missing at $sdkRoot. Run Doroti/eng/prepare-flutter-sdk.ps1."
+        throw "Repository-local Flutter SDK commands for the current host are missing at $sdkRoot. Run Doroti/eng/prepare-flutter-sdk.ps1."
     }
 
     $global:LASTEXITCODE = 0

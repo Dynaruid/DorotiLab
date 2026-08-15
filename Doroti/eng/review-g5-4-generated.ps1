@@ -6,8 +6,12 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $materialRoot = Join-Path ([IO.Path]::GetFullPath($OutputRoot)) 'projects/Material'
+$cupertinoRoot = Join-Path ([IO.Path]::GetFullPath($OutputRoot)) 'projects/Cupertino'
 if (-not (Test-Path -LiteralPath $materialRoot)) {
     throw "G5-4 Material staging directory is missing: $materialRoot"
+}
+if (-not (Test-Path -LiteralPath $cupertinoRoot)) {
+    throw "G5-4 Cupertino staging directory is missing: $cupertinoRoot"
 }
 
 $changes = [Collections.Generic.List[object]]::new()
@@ -29,6 +33,60 @@ function Update-GeneratedFile {
         [IO.File]::WriteAllText($path, $after, [Text.UTF8Encoding]::new($false))
         $changes.Add([ordered]@{ file = $Name; beforeSha256 = $beforeSha256 })
     }
+}
+
+function Update-CupertinoGeneratedFile {
+    param(
+        [Parameter(Mandatory = $true)][string] $Name,
+        [Parameter(Mandatory = $true)][scriptblock] $Transform,
+        [string] $Owner = 'typed contextual closure and covariant State lowering',
+        [string] $RemovalCondition = 'compiler emits product-identical Cupertino source without this reviewed adaptation'
+    )
+
+    $path = Join-Path $cupertinoRoot $Name
+    if (-not (Test-Path -LiteralPath $path)) {
+        throw "G7-2 reviewed Cupertino file is missing: $Name"
+    }
+    $before = [IO.File]::ReadAllText($path)
+    $beforeSha256 = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()
+    $after = & $Transform $before
+    if ($after -cne $before) {
+        [IO.File]::WriteAllText($path, $after, [Text.UTF8Encoding]::new($false))
+        $file = "Cupertino/$Name"
+        $existing = @($changes | Where-Object file -ceq $file)
+        if ($existing.Count -eq 0) {
+            $changes.Add([ordered]@{
+                file = $file
+                beforeSha256 = $beforeSha256
+                owner = $Owner
+                removalCondition = $RemovalCondition
+            })
+        }
+        else {
+            if (-not ([string]$existing[0].owner).Contains($Owner, [StringComparison]::Ordinal)) {
+                $existing[0].owner = "$($existing[0].owner); $Owner"
+            }
+            if (-not ([string]$existing[0].removalCondition).Contains($RemovalCondition, [StringComparison]::Ordinal)) {
+                $existing[0].removalCondition = "$($existing[0].removalCondition); $RemovalCondition"
+            }
+        }
+    }
+}
+
+function Replace-CupertinoProperty {
+    param(
+        [Parameter(Mandatory = $true)][string] $Text,
+        [Parameter(Mandatory = $true)][string] $Name,
+        [Parameter(Mandatory = $true)][string] $Replacement
+    )
+
+    $pattern = "(?ms)^    internal virtual [^\r\n]+ $([Text.RegularExpressions.Regex]::Escape($Name))\r?\n    \{.*?^    \}\r?\n"
+    $regex = [Text.RegularExpressions.Regex]::new($pattern)
+    $matches = $regex.Matches($Text)
+    if ($matches.Count -ne 1) {
+        throw "G7-2 Cupertino property '$Name' shape drifted: expected 1 match, got $($matches.Count)."
+    }
+    return $regex.Replace($Text, $Replacement.TrimEnd() + "`n", 1)
 }
 
 function Replace-GeneratedLocalPattern {
@@ -69,12 +127,42 @@ Update-TypeData -TypeName System.String -MemberType ScriptMethod -MemberName Rep
 
 # These are deterministic review adaptations for C# surface mismatches. They do
 # not remove declarations or files; the analyzer-owned census remains unchanged.
+$stopwatchAliasFiles = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+@(
+    'button_style.g.cs',
+    'button_style_button.g.cs',
+    'color_scheme.g.cs',
+    'elevation_overlay.g.cs',
+    'ink_decoration.g.cs',
+    'ink_highlight.g.cs',
+    'ink_ripple.g.cs',
+    'ink_sparkle.g.cs',
+    'ink_splash.g.cs',
+    'ink_well.g.cs',
+    'input_border.g.cs',
+    'material.g.cs',
+    'mergeable_material.g.cs',
+    'shadows.g.cs',
+    'slider_value_indicator_shape.g.cs',
+    'theme.g.cs',
+    'theme_data.g.cs',
+    'typography.g.cs'
+) | ForEach-Object { $null = $stopwatchAliasFiles.Add($_) }
 Get-ChildItem -LiteralPath $materialRoot -File -Filter '*.g.cs' | ForEach-Object {
+    $useStopwatchAlias = $_.Name.EndsWith('_theme.g.cs', [StringComparison]::Ordinal) -or $stopwatchAliasFiles.Contains($_.Name)
     Update-GeneratedFile $_.Name {
         param($text)
         $text = $text.ReplaceGeneratedLocalPattern('TextDecorationStyle.@double', 'TextDecorationStyle.doubleLine')
         $text = $text.ReplaceGeneratedLocalPattern('_ => throw new InvalidOperationException("Non-exhaustive Dart switch value.")', '_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.")')
         $text = $text.ReplaceGeneratedLocalPattern('_ = null;', '_ = (object?)null;')
+        if ($useStopwatchAlias) {
+            $text = $text.Replace('using System.Diagnostics;', 'using Stopwatch = System.Diagnostics.Stopwatch;')
+        }
+        else {
+            # Preserve the already promoted product surface while the common
+            # lowerer now emits the safer alias for new application sources.
+            $text = $text.Replace('using Stopwatch = System.Diagnostics.Stopwatch;', 'using System.Diagnostics;')
+        }
         $text = [Text.RegularExpressions.Regex]::Replace($text, 'new List<([^>]+)>\(([^\r\n]+?), growable: false\)', 'new List<$1>($2)')
         return $text
     }
@@ -593,6 +681,214 @@ Update-GeneratedFile 'switch.g.cs' {
     $text = $text.ReplaceGeneratedLocalPattern('return ((_MaterialSwitch__switch)(object?)((_MaterialSwitch__switch)this.widget).inactiveTrackColor);', 'return ((_MaterialSwitch__switch)this.widget).inactiveTrackColor;')
     $text = $text.ReplaceGeneratedLocalPattern('return ((((WidgetStateProperty.resolveAs<global::Doroti.Generated.Framework.Services.MouseCursor?>(((_MaterialSwitch__switch)this.widget).mouseCursor, states) ?? (global::Doroti.Generated.Framework.Services.MouseCursor)switchTheme__32572.mouseCursor?.resolve(states))) ?? defaults__32785.mouseCursor!.resolve(states)!));', "return WidgetStateProperty.resolveAs<global::Doroti.Generated.Framework.Services.MouseCursor?>(((_MaterialSwitch__switch)this.widget).mouseCursor, states)`n    ?? switchTheme__32572.mouseCursor?.resolve(states)`n    ?? global::Doroti.Generated.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable.resolve(states);")
     return $text
+}
+
+# The pinned Cupertino sources provide a contextual WidgetStateProperty<T>
+# return type that the current independent-batch lowerer cannot yet retain.
+# Keep these adaptations exact and drift-checked so they remain owned debt,
+# rather than silently accepting invalid widget-return casts.
+Get-ChildItem -LiteralPath $cupertinoRoot -File -Filter '*.g.cs' | ForEach-Object {
+    Update-CupertinoGeneratedFile -Name $_.Name `
+        -Owner 'generated framework header compatibility' `
+        -RemovalCondition 'promoted Cupertino framework headers adopt the lowerer Stopwatch alias' `
+        -Transform {
+        param($text)
+        # Preserve the promoted G6-3 header; application output keeps the
+        # safer lowerer-level alias because it can instantiate Material Switch.
+        return $text.Replace('using Stopwatch = System.Diagnostics.Stopwatch;', 'using System.Diagnostics;')
+    }
+}
+
+Update-CupertinoGeneratedFile 'checkbox.g.cs' {
+    param($text)
+    $text = Replace-CupertinoProperty $text '_defaultFillColor' @'
+    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Flutter.Ui.Color> _defaultFillColor
+    {
+        get
+        {
+            return WidgetStateProperty.resolveWith<Color>((states) => {
+if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled))
+{
+    return CupertinoColors.white.withOpacity(0.5);
+}
+if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected))
+{
+    return ((CupertinoCheckbox)this.widget).activeColor ?? CupertinoDynamicColor.resolve(CheckboxLibrary._kDefaultFillColor, this.context);
+}
+return CupertinoColors.white;
+throw new InvalidOperationException("Dart closure completed without a value.");
+});
+            return default!;
+        }
+    }
+'@
+    $text = Replace-CupertinoProperty $text '_defaultCheckColor' @'
+    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Flutter.Ui.Color> _defaultCheckColor
+    {
+        get
+        {
+            return WidgetStateProperty.resolveWith<Color>((states) => {
+if ((states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled) && states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected)))
+{
+    return ((CupertinoCheckbox)this.widget).checkColor ?? CupertinoDynamicColor.resolve(CheckboxLibrary._kDisabledCheckColor, this.context);
+}
+if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected))
+{
+    return ((CupertinoCheckbox)this.widget).checkColor ?? CupertinoDynamicColor.resolve(CheckboxLibrary._kDefaultCheckColor, this.context);
+}
+return CupertinoColors.white;
+throw new InvalidOperationException("Dart closure completed without a value.");
+});
+            return default!;
+        }
+    }
+'@
+    $text = Replace-CupertinoProperty $text '_defaultSide' @'
+    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Painting.BorderSide> _defaultSide
+    {
+        get
+        {
+            return WidgetStateProperty.resolveWith<global::Doroti.Generated.Framework.Painting.BorderSide>((states) => {
+if ((((states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected) || states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.focused))) && !states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled)))
+{
+    return new global::Doroti.Generated.Framework.Painting.BorderSide(width: 0.0, color: CupertinoColors.transparent);
+}
+if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled))
+{
+    return new global::Doroti.Generated.Framework.Painting.BorderSide(color: CupertinoDynamicColor.resolve(CheckboxLibrary._kDisabledBorderColor, this.context));
+}
+return new global::Doroti.Generated.Framework.Painting.BorderSide(color: CupertinoDynamicColor.resolve(CheckboxLibrary._kDefaultBorderColor, this.context));
+throw new InvalidOperationException("Dart closure completed without a value.");
+});
+            return default!;
+        }
+    }
+'@
+    return $text
+}
+
+Update-CupertinoGeneratedFile 'radio.g.cs' {
+    param($text)
+    $text = Replace-CupertinoProperty $text '_defaultOuterColor' @'
+    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Flutter.Ui.Color> _defaultOuterColor
+    {
+        get
+        {
+            return WidgetStateProperty.resolveWith<Color>((states) => {
+if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled))
+{
+    return CupertinoDynamicColor.resolve(RadioLibrary._kDisabledOuterColor, this.context);
+}
+if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected))
+{
+    return widget.activeColor ?? CupertinoDynamicColor.resolve(RadioLibrary._kDefaultOuterColor, this.context);
+}
+return widget.inactiveColor ?? CupertinoColors.white;
+throw new InvalidOperationException("Dart closure completed without a value.");
+});
+            return default!;
+        }
+    }
+'@
+    $text = Replace-CupertinoProperty $text '_defaultInnerColor' @'
+    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Flutter.Ui.Color> _defaultInnerColor
+    {
+        get
+        {
+            return WidgetStateProperty.resolveWith<Color>((states) => {
+if ((states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled) && states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected)))
+{
+    return widget.fillColor ?? CupertinoDynamicColor.resolve(RadioLibrary._kDisabledInnerColor, this.context);
+}
+if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected))
+{
+    return widget.fillColor ?? CupertinoDynamicColor.resolve(RadioLibrary._kDefaultInnerColor, this.context);
+}
+return CupertinoColors.white;
+throw new InvalidOperationException("Dart closure completed without a value.");
+});
+            return default!;
+        }
+    }
+'@
+    $text = Replace-CupertinoProperty $text '_defaultBorderColor' @'
+    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Flutter.Ui.Color> _defaultBorderColor
+    {
+        get
+        {
+            return WidgetStateProperty.resolveWith<Color>((states) => {
+if ((((states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected) || states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.focused))) && !states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled)))
+{
+    return CupertinoColors.transparent;
+}
+if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled))
+{
+    return CupertinoDynamicColor.resolve(CheckboxLibrary._kDisabledBorderColor, this.context);
+}
+return CupertinoDynamicColor.resolve(CheckboxLibrary._kDefaultBorderColor, this.context);
+throw new InvalidOperationException("Dart closure completed without a value.");
+});
+            return default!;
+        }
+    }
+'@
+    return $text
+}
+
+Update-CupertinoGeneratedFile 'switch.g.cs' {
+    param($text)
+    $text = Replace-CupertinoProperty $text '_widgetThumbColor' @'
+    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Flutter.Ui.Color?> _widgetThumbColor
+    {
+        get
+        {
+            return WidgetStateProperty.resolveWith<Color?>((states) => {
+if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected))
+{
+    return ((CupertinoSwitch)this.widget).thumbColor;
+}
+return ((CupertinoSwitch)this.widget).inactiveThumbColor;
+throw new InvalidOperationException("Dart closure completed without a value.");
+});
+            return default!;
+        }
+    }
+'@
+    $text = Replace-CupertinoProperty $text '_widgetTrackColor' @'
+    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Flutter.Ui.Color?> _widgetTrackColor
+    {
+        get
+        {
+            return WidgetStateProperty.resolveWith<Color?>((states) => {
+if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected))
+{
+    return ((CupertinoSwitch)this.widget).activeTrackColor;
+}
+return ((CupertinoSwitch)this.widget).inactiveTrackColor;
+throw new InvalidOperationException("Dart closure completed without a value.");
+});
+            return default!;
+        }
+    }
+'@
+    return $text
+}
+
+Update-CupertinoGeneratedFile 'context_menu_action.g.cs' {
+    param($text)
+    $before = 'onTapCancel: this.onTapCancel'
+    $matches = [Text.RegularExpressions.Regex]::Matches($text, [Text.RegularExpressions.Regex]::Escape($before))
+    if ($matches.Count -ne 1) { throw "G7-2 Cupertino context menu callback shape drifted: expected 1 match, got $($matches.Count)." }
+    return $text.Replace($before, 'onTapCancel: () => this.onTapCancel()')
+}
+
+Update-CupertinoGeneratedFile 'text_form_field_row.g.cs' {
+    param($text)
+    $before = 'public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoTextFormFieldRowState__text_form_field_row());'
+    $after = 'public override global::Doroti.Generated.Framework.Widgets.FormFieldState<string> createState() => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.FormFieldState<string>>(new _CupertinoTextFormFieldRowState__text_form_field_row());'
+    $matches = [Text.RegularExpressions.Regex]::Matches($text, [Text.RegularExpressions.Regex]::Escape($before))
+    if ($matches.Count -ne 1) { throw "G7-2 Cupertino FormField State return shape drifted: expected 1 match, got $($matches.Count)." }
+    return $text.Replace($before, $after)
 }
 
 $report = [ordered]@{

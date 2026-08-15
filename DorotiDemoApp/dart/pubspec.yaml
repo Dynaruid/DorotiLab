@@ -1,10 +1,13 @@
 name: doroti_demo_app
-description: Goal6 generated Dart DemoApp package for Doroti.
+description: Goal7 generated Dart DemoApp package for Doroti.
 version: 0.2.0
 environment:
   sdk: ^3.11.0
 dependencies:
   flutter:
+    sdk: flutter
+dev_dependencies:
+  flutter_test:
     sdk: flutter
 
 flutter:

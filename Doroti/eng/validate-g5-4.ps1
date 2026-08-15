@@ -201,6 +201,7 @@ Assert-Equal ([int]$materialApi.counts.diff) 0 'Material API manifest diff'
 Assert-Equal ([int]$cupertinoApi.counts.diff) 0 'Cupertino API manifest diff'
 
 $buildLogPath = Join-Path $dorotiRoot 'artifacts/g5-4-reviewed-build.log'
+[IO.Directory]::CreateDirectory((Split-Path $buildLogPath -Parent)) | Out-Null
 $buildLines = @(& dotnet build (Join-Path $reviewedRoot 'Doroti.Generated.Framework.slnx') --configuration Release --nologo "-p:DorotiRepositoryRoot=$dorotiRoot" 2>&1)
 $buildExitCode = $LASTEXITCODE
 [IO.File]::WriteAllLines($buildLogPath, @($buildLines | ForEach-Object { [string]$_ }), [Text.UTF8Encoding]::new($false))

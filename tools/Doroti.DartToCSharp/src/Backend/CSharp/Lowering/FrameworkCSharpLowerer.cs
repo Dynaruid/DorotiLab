@@ -45,7 +45,10 @@ internal sealed partial class FrameworkCSharpLowerer
         if (!preservesG31Artifact)
         {
             builder.AppendLine("using System.Collections.Generic;");
-            builder.AppendLine("using System.Diagnostics;");
+            // Import only the runtime type emitted by the lowerer. Importing
+            // the namespace makes Flutter's Material Switch ambiguous with
+            // System.Diagnostics.Switch in generated application sources.
+            builder.AppendLine("using Stopwatch = System.Diagnostics.Stopwatch;");
             builder.AppendLine("using System.Linq;");
             builder.AppendLine("using System.Threading.Tasks;");
         }
