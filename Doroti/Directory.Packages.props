@@ -7,5 +7,8 @@
     <PackageVersion Include="MaterialColorUtilities" Version="0.3.0" />
     <PackageVersion Include="SkiaSharp" Version="3.119.4" />
     <PackageVersion Include="SkiaSharp.HarfBuzz" Version="3.119.4" />
+    <PackageVersion Include="SkiaSharp.Views.Blazor" Version="3.119.4" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="3.119.4" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
   </ItemGroup>
 </Project>

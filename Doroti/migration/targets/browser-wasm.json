@@ -11,15 +11,27 @@
   "javaScriptPluginAbi": "doroti.browser-js-plugin/v1",
   "resourcePolicy": "deployment-base-relative URL resolution",
   "staticArtifact": "artifacts/g7-web/0.2.0-beta/wwwroot",
+  "primaryProduct": {
+    "desktopProject": "DorotiDemoApp/DorotiDemoApp.csproj",
+    "browserProject": "DorotiDemoApp/DorotiDemoApp.Web.csproj",
+    "sharedWidgetSource": "DorotiDemoApp/Program.cs",
+    "status": "verified-build-and-repeat-publish"
+  },
+  "externalAcceptance": {
+    "template": "doroti-app",
+    "source": "promoted NuGet packages only",
+    "createRestoreBuildPublish": "verified"
+  },
   "publishModes": [
     {
       "mode": "interpreter",
-      "status": "verified"
+      "status": "verified-g7-3-product",
+      "scope": "DorotiDemoApp and external template/package-only product"
     },
     {
-      "mode": "aot-build-probe",
-      "status": "verified",
-      "scope": "target package build probe; not generated product trimming acceptance"
+      "mode": "wasm-aot-product",
+      "status": "notVerified",
+      "blocker": "G7-3 validates the native-linked interpreter product; generated-framework AOT and trimming require a separate closure."
     }
   ],
   "unsupportedModes": [
@@ -30,9 +42,8 @@
     }
   ],
   "deferredToG7_4": [
-    "framework scene to browser GPU presentation",
-    "browser input and composition",
-    "DOM/ARIA semantics action bridge",
-    "Chromium live product launch"
+    "Chromium non-empty GPU presentation",
+    "live browser pointer, keyboard, composition, clipboard and resize behavior",
+    "live DOM/ARIA semantics action bridge"
   ]
 }

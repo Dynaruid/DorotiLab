@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'DorotiDemoApp.Web'">
+    <BaseOutputPath>bin\Web\</BaseOutputPath>
+    <BaseIntermediateOutputPath>obj\Web\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>obj\Web\</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+</Project>

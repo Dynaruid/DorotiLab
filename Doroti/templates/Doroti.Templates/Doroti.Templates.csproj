@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>Doroti.Templates</AssemblyName>
+    <PackageId>Doroti.Templates</PackageId>
+    <IsDorotiProduct>false</IsDorotiProduct>
+    <IsPackable>true</IsPackable>
+    <Authors>Doroti contributors</Authors>
+    <Description>Standard .NET templates for C# Doroti applications.</Description>
+    <PackageTags>doroti;templates;blazor;webassembly</PackageTags>
+    <PackageType>Template</PackageType>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <IncludeSymbols>false</IncludeSymbols>
+    <NoDefaultExcludes>true</NoDefaultExcludes>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultItems>false</EnableDefaultItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="content\doroti-app\**\*"
+             Exclude="content\doroti-app\**\bin\**;content\doroti-app\**\obj\**"
+             Pack="true"
+             PackagePath="content\doroti-app\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

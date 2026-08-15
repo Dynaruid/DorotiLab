@@ -10,6 +10,7 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="WebHost\**\*.cs" />
     <ProjectReference Include="..\Doroti\src\Doroti.Hosting\Doroti.Hosting.csproj" />
     <ProjectReference Include="..\Doroti\src\Doroti.Framework.Widgets\Doroti.Framework.Widgets.csproj" />
     <ProjectReference Include="..\Doroti\src\Doroti.Framework.Material\Doroti.Framework.Material.csproj" />

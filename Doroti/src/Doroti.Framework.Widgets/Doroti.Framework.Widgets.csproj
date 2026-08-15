@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Doroti.Runtime\Doroti.Runtime.csproj" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
+    <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
     <ProjectReference Include="..\Doroti.Framework.Foundation\Doroti.Framework.Foundation.csproj" />
     <ProjectReference Include="..\Doroti.Framework.Scheduler\Doroti.Framework.Scheduler.csproj" />
     <ProjectReference Include="..\Doroti.Framework.Services\Doroti.Framework.Services.csproj" />

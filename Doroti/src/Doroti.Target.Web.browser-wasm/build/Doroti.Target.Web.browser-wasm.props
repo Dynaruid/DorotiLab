@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <DorotiWebTarget>true</DorotiWebTarget>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">browser-wasm</RuntimeIdentifier>
+    <WasmBuildNative>true</WasmBuildNative>
+    <PublishTrimmed>false</PublishTrimmed>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <BlazorEnableTimeZoneSupport>true</BlazorEnableTimeZoneSupport>
+  </PropertyGroup>
+  <ItemGroup>
+    <DorotiApplicationAsset Include="wwwroot\assets\**\*" Condition="Exists('wwwroot\assets')" />
+    <DorotiLocalizationResource Include="wwwroot\locales\**\*.json" Condition="Exists('wwwroot\locales')" />
+    <DorotiFont Include="wwwroot\fonts\**\*" Condition="Exists('wwwroot\fonts')" />
+  </ItemGroup>
+</Project>

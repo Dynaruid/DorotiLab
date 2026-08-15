@@ -128,6 +128,14 @@
           "Doroti.Framework.Scheduler": "[0.2.0-beta, )",
           "Doroti.Framework.Semantics": "[0.2.0-beta, )",
           "Doroti.Framework.Services": "[0.2.0-beta, )",
+          "Doroti.Hosting": "[0.2.0-beta, )",
+          "Doroti.Runtime": "[0.2.0-beta, )",
+          "Doroti.Ui": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.hosting": {
+        "type": "Project",
+        "dependencies": {
           "Doroti.Runtime": "[0.2.0-beta, )",
           "Doroti.Ui": "[0.2.0-beta, )"
         }

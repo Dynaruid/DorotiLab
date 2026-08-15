@@ -1,8 +1,8 @@
-using System.Text.Json;
 using System.Reflection;
+using System.Text.Json;
+using Doroti.Host.Web;
 using Doroti.Hosting;
 using Doroti.Ui;
-using Doroti.Host.Web;
 
 namespace Doroti.Target.Web;
 
@@ -33,7 +33,7 @@ public sealed record BrowserTargetIdentity(
 
 /// <summary>Package composition root for the required browser-wasm target.</summary>
 [System.Runtime.Versioning.SupportedOSPlatform("browser")]
-public sealed class BrowserWasmTarget : IDisposable
+public sealed class BrowserWasmTarget : IDorotiBrowserTarget
 {
     private readonly BrowserFrameworkHost _host;
     private bool _disposed;
@@ -68,6 +68,24 @@ public sealed class BrowserWasmTarget : IDisposable
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         return _host.CaptureSnapshot(viewId);
+    }
+
+    public BrowserFrameDiagnostics CaptureFrameDiagnostics(ulong viewId)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return _host.CaptureFrameDiagnostics(viewId);
+    }
+
+    public void AttachSkiaSurface(ulong viewId, Action invalidate)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        _host.AttachSkiaSurface(viewId, invalidate);
+    }
+
+    public void PaintSkiaSurface(ulong viewId, SkiaSharp.SKSurface surface, int pixelWidth, int pixelHeight)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        _host.PaintSkiaSurface(viewId, surface, pixelWidth, pixelHeight);
     }
 
     public string ResolveResourceUrl(ulong viewId, string relativeUrl)

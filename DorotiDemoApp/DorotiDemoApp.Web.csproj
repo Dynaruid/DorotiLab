@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>DorotiDemoApp.Web</AssemblyName>
+    <RootNamespace>DorotiDemoApp.Web</RootNamespace>
+    <LangVersion>14.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Deterministic>true</Deterministic>
+    <PublishTrimmed>false</PublishTrimmed>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <DefineConstants>$(DefineConstants);DOROTI_BROWSER</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="WebHost\Program.cs" />
+    <ProjectReference Include="..\Doroti\src\Doroti.Hosting\Doroti.Hosting.csproj" />
+    <ProjectReference Include="..\Doroti\src\Doroti.Framework.Widgets\Doroti.Framework.Widgets.csproj" />
+    <ProjectReference Include="..\Doroti\src\Doroti.Framework.Material\Doroti.Framework.Material.csproj" />
+    <ProjectReference Include="..\Doroti\src\Doroti.Target.Web.browser-wasm\Doroti.Target.Web.browser-wasm.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="WebHost\wwwroot\**" Link="wwwroot\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <DorotiJavaScriptPlugin Include="echo" Channel="doroti.example/echo" ExportName="invoke" ModuleUrl="./plugins/echo.js" />
+  </ItemGroup>
+</Project>

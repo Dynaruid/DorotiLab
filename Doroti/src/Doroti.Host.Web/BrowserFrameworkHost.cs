@@ -7,7 +7,7 @@ namespace Doroti.Host.Web;
 public sealed class BrowserFrameworkHost : IDisposable
 {
     private readonly string _targetIdentity;
-    private readonly Dictionary<ulong, (DorotiView View, BrowserHostAdapter Host)> _views = [];
+    private readonly Dictionary<ulong, (DorotiView View, BrowserHostAdapter Host, BrowserSkiaCapabilities Graphics)> _views = [];
     private readonly Dictionary<ulong, DorotiHostSession> _sessions = [];
     private bool _disposed;
 
@@ -25,15 +25,23 @@ public sealed class BrowserFrameworkHost : IDisposable
         ArgumentNullException.ThrowIfNull(configuration);
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (session.state != DorotiHostSessionState.running)
-            throw new InvalidOperationException("The Flutter host session must be running before a browser view is created.");
+            throw new InvalidOperationException("The Doroti host session must be running before a browser view is created.");
 
-        var host = new BrowserHostAdapter(canvasId, configuration.logicalSize);
+        var host = new BrowserHostAdapter(viewId, canvasId, configuration.logicalSize);
+        var graphics = new BrowserSkiaCapabilities(viewId, host);
         var messages = new BrowserPlatformMessageCapability(_targetIdentity);
         var capabilities = new DorotiViewCapabilities(_targetIdentity)
             .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
             .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
             .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, host)
-            .Register<IPlatformEnvironmentHostCapability>(DorotiCapabilityIds.PlatformEnvironment, host);
+            .Register<IInputHostCapability>(DorotiCapabilityIds.InputEvents, host)
+            .Register<ITextInputHostCapability>(DorotiCapabilityIds.TextInput, host)
+            .Register<IPlatformServicesHostCapability>(DorotiCapabilityIds.PlatformServices, host)
+            .Register<IPlatformEnvironmentHostCapability>(DorotiCapabilityIds.PlatformEnvironment, host)
+            .Register<ISceneHostCapability>(DorotiCapabilityIds.GraphicsScene, graphics)
+            .Register<IParagraphHostCapability>(DorotiCapabilityIds.GraphicsText, graphics)
+            .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, graphics)
+            .Register<ISemanticsHostCapability>(DorotiCapabilityIds.AccessibilitySemantics, graphics);
         if (application is null)
             capabilities.Register<IPlatformMessageHostCapability>(DorotiCapabilityIds.PlatformMessaging, messages);
         else
@@ -44,7 +52,7 @@ public sealed class BrowserFrameworkHost : IDisposable
         {
             view = session.dispatcher.RegisterView(viewId, capabilities);
             session.AttachView(view);
-            _views.Add(viewId, (view, host));
+            _views.Add(viewId, (view, host, graphics));
             _sessions.Add(viewId, session);
             return view;
         }
@@ -59,12 +67,31 @@ public sealed class BrowserFrameworkHost : IDisposable
     public BrowserHostSnapshot CaptureSnapshot(ulong viewId) =>
         _views.TryGetValue(viewId, out var value)
             ? value.Host.Snapshot
-            : throw new KeyNotFoundException($"Browser Flutter view {viewId} is not registered.");
+            : throw new KeyNotFoundException($"Browser Doroti view {viewId} is not registered.");
+
+    public BrowserFrameDiagnostics CaptureFrameDiagnostics(ulong viewId) =>
+        _views.TryGetValue(viewId, out var value)
+            ? value.Graphics.Diagnostics
+            : throw new KeyNotFoundException($"Browser Doroti view {viewId} is not registered.");
+
+    public void AttachSkiaSurface(ulong viewId, Action invalidate)
+    {
+        if (!_views.TryGetValue(viewId, out var value))
+            throw new KeyNotFoundException($"Browser Doroti view {viewId} is not registered.");
+        value.Graphics.AttachSurface(invalidate);
+    }
+
+    public void PaintSkiaSurface(ulong viewId, SkiaSharp.SKSurface surface, int pixelWidth, int pixelHeight)
+    {
+        if (!_views.TryGetValue(viewId, out var value))
+            throw new KeyNotFoundException($"Browser Doroti view {viewId} is not registered.");
+        value.Graphics.Paint(surface, pixelWidth, pixelHeight);
+    }
 
     public string ResolveResourceUrl(ulong viewId, string relativeUrl) =>
         _views.TryGetValue(viewId, out var value)
             ? value.Host.ResolveResourceUrl(relativeUrl)
-            : throw new KeyNotFoundException($"Browser Flutter view {viewId} is not registered.");
+            : throw new KeyNotFoundException($"Browser Doroti view {viewId} is not registered.");
 
     public void Dispose()
     {

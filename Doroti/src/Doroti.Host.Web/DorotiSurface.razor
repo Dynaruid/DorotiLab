@@ -1,0 +1,66 @@
+@using Doroti.Hosting
+@using Doroti.Ui
+@using SkiaSharp.Views.Blazor
+@implements IAsyncDisposable
+@inject IDorotiBrowserTarget BrowserTarget
+
+<main class="doroti-root" data-doroti-host="canvas-only">
+    <SKGLView @ref="_skiaView"
+              AdditionalAttributes="_canvasAttributes"
+              EnableRenderLoop="false"
+              IgnorePixelScaling="false"
+              OnPaintSurface="PaintSurface" />
+    <textarea id="@TextInputId" class="doroti-ime" aria-hidden="true" tabindex="-1"></textarea>
+    <div id="@SemanticsId" class="doroti-semantics" role="application" aria-label="@Application.ViewConfiguration.title"></div>
+</main>
+
+@code {
+    private const ulong ViewId = DorotiWebApplication.DefaultViewId;
+    private readonly IReadOnlyDictionary<string, object> _canvasAttributes =
+        new Dictionary<string, object> { ["id"] = CanvasId, ["tabindex"] = "0", ["aria-label"] = "Doroti GPU surface" };
+    private SKGLView? _skiaView;
+    private IDorotiBrowserTarget? _target;
+    private DorotiHostSession? _session;
+    private DorotiView? _view;
+    private bool _started;
+
+    [Parameter, EditorRequired]
+    public required DorotiWebApplication Application { get; set; }
+
+    private static string CanvasId => "doroti-surface";
+    private static string TextInputId => "doroti-ime";
+    private static string SemanticsId => "doroti-semantics";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender || _started) return;
+        _started = true;
+        await BrowserHostRuntime.EnsureInitializedAsync();
+        _target = BrowserTarget;
+        _session = new DorotiHostSession(Application.EntrypointFactory());
+        _session.Start(deferFrameworkBootstrap: true);
+        var boundary = _target.LoadApplicationBoundary(Application.ApplicationAssembly, Application.PluginDescriptors);
+        _view = _target.CreateView(_session, ViewId, CanvasId, Application.ViewConfiguration, boundary);
+        _target.AttachSkiaSurface(ViewId, () => _ = InvokeAsync(() => _skiaView?.Invalidate()));
+        _view.Show();
+        _session.dispatcher.setSemanticsTreeEnabled(true);
+    }
+
+    private void PaintSurface(SKPaintGLSurfaceEventArgs args)
+    {
+        if (_target is null) return;
+        var bounds = args.Surface.Canvas.DeviceClipBounds;
+        _target.PaintSkiaSurface(ViewId, args.Surface, Math.Max(1, bounds.Width), Math.Max(1, bounds.Height));
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        _view?.Dispose();
+        _target?.Dispose();
+        _session?.Dispose();
+        _view = null;
+        _target = null;
+        _session = null;
+        return ValueTask.CompletedTask;
+    }
+}

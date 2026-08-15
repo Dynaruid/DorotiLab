@@ -1,94 +1,233 @@
 {
-  "schemaVersion": "doroti.g7-web-build-evidence/v1",
+  "schemaVersion": "doroti.g7-web-build-evidence/v2",
   "milestone": "G7-3",
   "status": "pass",
   "target": "browser-wasm",
   "shards": {
     "toolchain": {
       "status": "pass",
-      "sdkVersion": "10.0.302",
-      "workloadVersion": "10.0.303.1",
+      "sdkVersion": "10.0.300",
+      "targetFramework": "net10.0",
       "rid": "browser-wasm",
+      "blazorWebAssemblySdk": "available",
       "webAssemblySdk": "available",
-      "interpreterPublish": "supported",
-      "wasmToolsInstalled": true,
-      "aotToolchain": "available",
-      "trimming": {
-        "status": "notVerified",
-        "blocker": "generated framework reflection roots have not been audited; PublishTrimmed=false"
-      }
+      "wasmTools": "available",
+      "commands": [
+        "dotnet --version",
+        "dotnet --list-sdks",
+        "dotnet workload list"
+      ],
+      "flutterOrDartCommands": 0
+    },
+    "reference": {
+      "status": "pass",
+      "upstream": "AvaloniaUI/Avalonia",
+      "revision": "f159423f691946e713f454447a780d4677d8a0d2",
+      "snapshotMode": "exact-git-object-reference",
+      "selectedSourceCount": 11,
+      "selectedCapabilityCount": 5,
+      "license": "MIT",
+      "copiedSources": 0,
+      "runtimeDependencies": 0,
+      "productCompileGraphIncluded": false
+    },
+    "hosting": {
+      "status": "pass",
+      "razorComponents": [
+        "DorotiRoot.razor",
+        "DorotiSurface.razor"
+      ],
+      "visibleWidgetDomNodes": 0,
+      "domOwners": [
+        "canvas",
+        "hidden-text-input",
+        "accessibility-bridge"
+      ],
+      "gpuChain": [
+        "SKGLView WebGL2 context",
+        "SkiaSharp SKSurface",
+        "Doroti scene draw",
+        "explicit invalidate",
+        "terminal frame diagnostics"
+      ],
+      "inputChain": [
+        "DOM pointer/key/focus",
+        "JSImport/JSExport primitive bridge",
+        "BrowserHostAdapter normalization",
+        "IInputHostCapability",
+        "Doroti gesture/state"
+      ],
+      "softwareFallbacks": 0,
+      "canvasKitDependencies": 0
     },
     "graph": {
       "status": "pass",
-      "requiredFiles": 6,
+      "packageVersions": {
+        "blazor": "10.0.0",
+        "skiaSharp": "3.119.4"
+      },
       "desktopNativeDependencies": 0,
-      "lifecycle": [
-        "document",
-        "canvas",
-        "requestAnimationFrame",
-        "visibility",
-        "resize",
-        "devicePixelRatio"
-      ],
-      "gpuPolicy": "hardware-webgl2-fail-closed",
-      "cpu2dFallbacks": 0,
-      "managedCallbackAbi": "doroti.browser-managed-callbacks/v1",
-      "javaScriptPluginAbi": "doroti.browser-js-plugin/v1",
-      "unsupportedCapabilitySilentSuccesses": 0
+      "avaloniaDependencies": 0,
+      "canvasKitDependencies": 0,
+      "userRazorFiles": 0,
+      "flutterDartScaffoldFiles": 0,
+      "productFacingFlutterIdentifiers": 0,
+      "targetManifest": {
+        "schemaVersion": "doroti.target-package/v1",
+        "packageId": "Doroti.Target.Web.browser-wasm",
+        "packageVersion": "0.2.0-beta",
+        "rid": "browser-wasm",
+        "host": "document-canvas",
+        "graphicsBackend": "webgl2-browser-gpu-required",
+        "blazorWebAssemblyVersion": "10.0.0",
+        "skiaSharpVersion": "3.119.4",
+        "skiaSharpViewsPackage": "SkiaSharp.Views.Blazor",
+        "skiaSharpNativePackage": "SkiaSharp.NativeAssets.WebAssembly",
+        "bootLoader": "_framework/blazor.webassembly.js",
+        "hostComponents": [
+          "Doroti.Host.Web.DorotiRoot",
+          "Doroti.Host.Web.DorotiSurface"
+        ],
+        "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+        "managedCallbackAbi": "doroti.browser-managed-callbacks/v1",
+        "javaScriptPluginAbi": "doroti.browser-js-plugin/v1",
+        "resourceBasePolicy": "document-base-uri",
+        "resourceKinds": [
+          "asset",
+          "font",
+          "localization"
+        ],
+        "supportedPublishModes": [
+          "interpreter",
+          "aot-build-probe"
+        ],
+        "requiredCapabilities": [
+          "window.lifecycle",
+          "view.lifecycle-metrics",
+          "view.frame-dispatch",
+          "input.events",
+          "text.input",
+          "platform.services",
+          "platform.environment",
+          "platform.messaging",
+          "graphics.scene",
+          "graphics.text",
+          "graphics.image",
+          "accessibility.semantics"
+        ],
+        "unsupportedModes": [
+          "software-canvas-2d",
+          "software-webgl-renderer",
+          "native-desktop-plugin",
+          "trimmed-generated-product"
+        ]
+      }
+    },
+    "template": {
+      "status": "pass",
+      "command": "dotnet new doroti-app --name G7WebProduct",
+      "source": "package-only",
+      "externalRoot": "repository-outside-source-tree",
+      "packageCount": 18,
+      "generatedFlutterDartFiles": 0,
+      "generatedPlatformDirectories": 0,
+      "userAuthoredRazorFiles": 0,
+      "flutterOrDartCommands": 0,
+      "sharedApplication": "App/G7WebProduct.App.csproj",
+      "browserHost": "G7WebProduct.csproj"
     },
     "compile": {
       "status": "pass",
-      "rid": "browser-wasm",
-      "configuration": "Release",
-      "publishMode": "interpreter",
-      "publishTrimmed": false,
-      "repeatPublishIdentity": "pass",
-      "aggregateSha256": "b886879bc441805d258a4cfda96b4efa9b36433793584389234de5616e1a393f",
-      "staticFileCount": 567,
-      "aot": {
-        "status": "pass",
-        "runAotCompilation": true,
-        "wasmBuildNative": true,
-        "publishTrimmed": true,
-        "nativeBytes": 67963582,
-        "nativeSha256": "34008bece8cf36c0d12b12ce24bf54c8f2c3ec61844476a5a5ebd69a8f43353a",
-        "interpreterNativeBytes": 3002094,
-        "staticFileCount": 567,
-        "aggregateSha256": "bf9d68cd4eec5c40e09132c8a0dae62015cf81b063c842f1ceb1aba49053d2fc"
+      "browser": {
+        "target": "browser-wasm",
+        "configuration": "Release",
+        "diagnostics": 0,
+        "applicationAssembly": "DorotiDemoApp.Web.a1t8r7pqvg.wasm",
+        "applicationSha256": "023441fe5c296eaaedeb981190f6a909cca25e109413d9a51fae61b701a300cb"
       },
-      "artifactRoot": "artifacts/g7-web/0.2.0-beta/wwwroot",
-      "missingStaticArtifacts": 0,
-      "staticArtifactHashMismatches": 0,
-      "diagnostics": 0
+      "sharedSource": {
+        "path": "DorotiDemoApp/Program.cs",
+        "desktopCompile": "win-x64-pass",
+        "browserCompile": "browser-wasm-pass",
+        "compileItemIdentity": "same-file"
+      },
+      "externalAcceptance": {
+        "project": "template-created-G7WebProduct",
+        "build": "pass",
+        "source": "promoted-packages-only"
+      },
+      "invalidTarget": {
+        "status": "fail-closed-as-expected",
+        "diagnostic": "DOROTIWEB002"
+      },
+      "nativeSkiaLink": "pass",
+      "flutterOrDartCommands": 0
     },
     "publish": {
       "status": "pass",
-      "package": "Doroti.Target.Web.browser-wasm.0.2.0-beta.nupkg",
-      "packageSha256": "d918ee83a3167a407c7cbb56fe54224f443b01b1876e53d37f5b1a2ced7c3b6e",
-      "externalConsumer": "repository-outside-temporary-root",
+      "primaryProduct": "DorotiDemoApp",
+      "source": "same Program.cs compiled for desktop and browser-wasm",
+      "create": "pass",
       "restore": "clean",
+      "build": "pass",
       "publish": "pass",
-      "rid": "browser-wasm",
-      "publishMode": "interpreter",
-      "staticFileCount": 567,
-      "aggregateSha256": "1bbdfadcac47c4c8b867c86abf6685dde97d2ae5103b6acc1021a777fe37ff2a",
+      "repeatPublishIdentity": "pass",
+      "externalAcceptance": {
+        "consumer": "repository-outside-source-tree",
+        "source": "template-and-promoted-packages-only",
+        "create": "pass",
+        "restore": "clean",
+        "build": "pass",
+        "publish": "pass"
+      },
+      "staticFileCount": 717,
+      "aggregateSha256": "b8b8a1d6dccbe6ed275a77b632f27b2219e0d13b9bc259d0260b70a2b7550dc7",
+      "repeatAggregateSha256": "b8b8a1d6dccbe6ed275a77b632f27b2219e0d13b9bc259d0260b70a2b7550dc7",
+      "bootLoader": "_framework/blazor.webassembly.js",
+      "nativeWasm": {
+        "name": "dotnet.native.1ldp4fmce8.wasm",
+        "sha256": "fb6e239762804a8189f1df911929bacb7438706a07d545a6f331a1d043ffd4db"
+      },
+      "skiaWasmCount": 2,
+      "appAssembly": "DorotiDemoApp.Web.a1t8r7pqvg.wasm",
+      "resources": [
+        "assets/doroti-mark.txt",
+        "locales/en-US.json"
+      ],
+      "plugin": "plugins/echo.js",
       "repositoryPrivateFallbacks": 0,
       "desktopNativeDependencies": 0,
+      "avaloniaDependencies": 0,
+      "canvasKitArtifacts": 0,
       "missingStaticArtifacts": 0,
-      "staticArtifactHashMismatches": 0
+      "staticArtifactHashMismatches": 0,
+      "flutterOrDartCommands": 0,
+      "artifactRoot": "artifacts/g7-web/0.2.0-beta/wwwroot"
     }
   },
   "closure": {
+    "avaloniaProductDependencies": 0,
     "desktopNativeDependencies": 0,
+    "canvasKitArtifacts": 0,
     "repositoryPrivateFallbacks": 0,
     "unsupportedCapabilitySilentSuccesses": 0,
     "missingStaticArtifacts": 0,
-    "staticArtifactHashMismatches": 0
+    "staticArtifactHashMismatches": 0,
+    "flutterOrDartProductCommands": 0
   },
   "notVerified": [
     {
       "mode": "trimmed-generated-product",
-      "blocker": "generated framework reflection roots have not been audited; the interpreter release baseline remains PublishTrimmed=false"
+      "blocker": "generated framework reflection roots have not been audited; the G7-3 product baseline pins PublishTrimmed=false"
+    },
+    {
+      "mode": "wasm-aot-product",
+      "blocker": "G7-3 validates the native-linked interpreter product; product AOT and trimming require their own generated-framework closure"
+    },
+    {
+      "mode": "chromium-live-product",
+      "owner": "G7-4",
+      "blocker": "GPU pixels, browser input, IME, clipboard and ARIA actions require the isolated Chromium live gate"
     }
   ]
 }

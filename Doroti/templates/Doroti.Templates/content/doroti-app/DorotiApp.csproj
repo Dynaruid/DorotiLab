@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>DorotiApp.Web</AssemblyName>
+    <RootNamespace>DorotiApp.Web</RootNamespace>
+    <LangVersion>14.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Deterministic>true</Deterministic>
+    <PublishTrimmed>false</PublishTrimmed>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <DefaultItemExcludes>$(DefaultItemExcludes);App\**;BrowserHost\**;.template.config\**</DefaultItemExcludes>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="BrowserHost\**\*.cs" />
+    <ProjectReference Include="App\DorotiApp.App.csproj" />
+    <PackageReference Include="Doroti.Target.Web.browser-wasm" Version="0.2.0-beta" />
+  </ItemGroup>
+  <ItemGroup>
+    <DorotiJavaScriptPlugin Include="echo" Channel="doroti.example/echo" ExportName="invoke" ModuleUrl="./plugins/echo.js" />
+  </ItemGroup>
+</Project>

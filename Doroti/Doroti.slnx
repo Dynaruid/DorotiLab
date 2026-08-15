@@ -36,6 +36,10 @@
   <Project Path="src/Doroti.Analyzers/Doroti.Analyzers.csproj" />
   <Folder Name="/samples/">
     <Project Path="../DorotiDemoApp/DorotiDemoApp.csproj" />
+    <Project Path="../DorotiDemoApp/DorotiDemoApp.Web.csproj" />
+  </Folder>
+  <Folder Name="/templates/">
+    <Project Path="templates/Doroti.Templates/Doroti.Templates.csproj" />
   </Folder>
   <Project Path="../tools/Doroti.DartToCSharp/Doroti.DartToCSharp.csproj" />
   <Project Path="tools/Doroti.AvaloniaPort/Doroti.AvaloniaPort.csproj" />

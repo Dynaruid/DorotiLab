@@ -8,6 +8,8 @@
     <AddRazorSupportForMvc>false</AddRazorSupportForMvc>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="SkiaSharp.Views.Blazor" />
+    <PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
   </ItemGroup>

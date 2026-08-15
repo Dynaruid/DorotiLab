@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -8,11 +9,14 @@ using Doroti.Ui;
 using Doroti.Generated.Framework.Foundation;
 using Doroti.Generated.Framework.Painting;
 using Doroti.Generated.Framework.Widgets;
+#if !DOROTI_BROWSER
 using Doroti.Host.Desktop.Framework;
+#endif
 using Material = Doroti.Generated.Framework.Material;
 using IOPath = System.IO.Path;
 using UiColor = Doroti.Ui.Color;
 
+#if !DOROTI_BROWSER
 internal static class Program
 {
     private const ulong DemoViewId = 580;
@@ -64,6 +68,7 @@ internal static class Program
             view.Show();
             session.dispatcher.setSemanticsTreeEnabled(true);
             var deadline = DateTime.UtcNow + options.Timeout;
+            var conditionTimeout = options.Timeout;
 
             while (session.dispatcher.views.Any(candidate => candidate.viewId == DemoViewId))
             {
@@ -90,10 +95,10 @@ internal static class Program
                     var initialReadbackTask = target.CaptureNextFrameAsync(DemoViewId);
                     entrypoint.RequestFrame();
                     WaitUntil(() => target.CaptureDiagnostics(DemoViewId).Frame.Presented > beforeInitialCapture,
-                        target, entrypoint, TimeSpan.FromSeconds(10));
+                        target, entrypoint, conditionTimeout);
                     WaitUntil(() => initialReadbackTask.IsCompleted,
-                        target, entrypoint, TimeSpan.FromSeconds(10));
-                    entrypoint.InitialReadback = initialReadbackTask.WaitAsync(TimeSpan.FromSeconds(10))
+                        target, entrypoint, conditionTimeout);
+                    entrypoint.InitialReadback = initialReadbackTask.WaitAsync(conditionTimeout)
                         .GetAwaiter().GetResult();
                     entrypoint.InitialStateSignature = entrypoint.GalleryState.StateSignature;
                     var blurPoint = entrypoint.GalleryState.BlurToggleCenter();
@@ -109,15 +114,15 @@ internal static class Program
                     target.PostPointerUpForValidation(DemoViewId, blurPoint.dx, blurPoint.dy);
                     WaitUntil(() => entrypoint.GalleryState.EffectInteractionCount == beforeEffectOff + 1 &&
                             !entrypoint.GalleryState.BlurEnabled && entrypoint.GalleryState.BuildCount > beforeEffectOffBuild,
-                        target, entrypoint, TimeSpan.FromSeconds(10));
+                        target, entrypoint, conditionTimeout);
                     var offReadbackTask = target.CaptureNextFrameAsync(DemoViewId);
                     var beforeOffCapture = target.CaptureDiagnostics(DemoViewId).Frame.Presented;
                     entrypoint.RequestFrame();
                     WaitUntil(() => target.CaptureDiagnostics(DemoViewId).Frame.Presented > beforeOffCapture,
-                        target, entrypoint, TimeSpan.FromSeconds(10));
+                        target, entrypoint, conditionTimeout);
                     WaitUntil(() => offReadbackTask.IsCompleted,
-                        target, entrypoint, TimeSpan.FromSeconds(10));
-                    entrypoint.BackdropOffReadback = offReadbackTask.WaitAsync(TimeSpan.FromSeconds(10)).GetAwaiter().GetResult();
+                        target, entrypoint, conditionTimeout);
+                    entrypoint.BackdropOffReadback = offReadbackTask.WaitAsync(conditionTimeout).GetAwaiter().GetResult();
                     var beforeEffectOn = entrypoint.GalleryState.EffectInteractionCount;
                     var beforeEffectOnBuild = entrypoint.GalleryState.BuildCount;
                     target.PostPointerMoveForValidation(DemoViewId, blurPoint.dx, blurPoint.dy);
@@ -127,33 +132,33 @@ internal static class Program
                     target.PostPointerUpForValidation(DemoViewId, blurPoint.dx, blurPoint.dy);
                     WaitUntil(() => entrypoint.GalleryState.EffectInteractionCount == beforeEffectOn + 1 &&
                             entrypoint.GalleryState.BlurEnabled && entrypoint.GalleryState.BuildCount > beforeEffectOnBuild,
-                        target, entrypoint, TimeSpan.FromSeconds(10));
+                        target, entrypoint, conditionTimeout);
                     var onReadbackTask = target.CaptureNextFrameAsync(DemoViewId);
                     var beforeOnCapture = target.CaptureDiagnostics(DemoViewId).Frame.Presented;
                     entrypoint.RequestFrame();
                     WaitUntil(() => target.CaptureDiagnostics(DemoViewId).Frame.Presented > beforeOnCapture,
-                        target, entrypoint, TimeSpan.FromSeconds(10));
+                        target, entrypoint, conditionTimeout);
                     WaitUntil(() => onReadbackTask.IsCompleted,
-                        target, entrypoint, TimeSpan.FromSeconds(10));
-                    entrypoint.BackdropOnReadback = onReadbackTask.WaitAsync(TimeSpan.FromSeconds(10)).GetAwaiter().GetResult();
+                        target, entrypoint, conditionTimeout);
+                    entrypoint.BackdropOnReadback = onReadbackTask.WaitAsync(conditionTimeout).GetAwaiter().GetResult();
                     WriteArtifacts(options, null, null, entrypoint.BackdropOnReadback, entrypoint.BackdropOffReadback);
                     entrypoint.NativePointerHitTestTargets = entrypoint.HitTestTargetsAt(80, 200);
                     var beforeNativePointerInteraction = entrypoint.GalleryState.InteractionCount;
                     target.PostPointerTapForValidation(DemoViewId, 80, 200);
                     WaitUntil(() => entrypoint.GalleryState.InteractionCount > beforeNativePointerInteraction,
-                        target, entrypoint, TimeSpan.FromSeconds(10));
+                        target, entrypoint, conditionTimeout);
                     entrypoint.NativePointerInteractionCount =
                         entrypoint.GalleryState.InteractionCount - beforeNativePointerInteraction;
                     var beforeInteractionBuild = entrypoint.GalleryState.BuildCount;
                     entrypoint.ExerciseAll();
                     entrypoint.RequestFrame();
                     WaitUntil(() => entrypoint.GalleryState.BuildCount > beforeInteractionBuild,
-                        target, entrypoint, TimeSpan.FromSeconds(10));
+                        target, entrypoint, conditionTimeout);
                     var changedReadbackTask = target.CaptureNextFrameAsync(DemoViewId);
                     entrypoint.RequestFrame();
                     WaitUntil(() => changedReadbackTask.IsCompleted,
-                        target, entrypoint, TimeSpan.FromSeconds(10));
-                    readback = changedReadbackTask.WaitAsync(TimeSpan.FromSeconds(10)).GetAwaiter().GetResult();
+                        target, entrypoint, conditionTimeout);
+                    readback = changedReadbackTask.WaitAsync(conditionTimeout).GetAwaiter().GetResult();
                     entrypoint.ChangedReadback = readback;
                     entrypoint.ChangedStateSignature = entrypoint.GalleryState.StateSignature;
                     var beforeExternalUiaFrame = target.CaptureDiagnostics(DemoViewId).Frame.Presented;
@@ -186,7 +191,7 @@ internal static class Program
                         var beforeFrame = target.CaptureDiagnostics(DemoViewId).Frame.Presented;
                         entrypoint.RequestFrame();
                         WaitUntil(() => target.CaptureDiagnostics(DemoViewId).Frame.Presented > beforeFrame,
-                            target, entrypoint, TimeSpan.FromSeconds(5));
+                            target, entrypoint, conditionTimeout);
                     }
                     while (cadenceRun.Elapsed < options.CadenceDuration)
                     {
@@ -200,7 +205,7 @@ internal static class Program
                         var frame = target.CaptureDiagnostics(DemoViewId).Frame;
                         var terminal = frame.Presented + frame.Superseded + frame.Stale + frame.Failed + frame.Cancelled;
                         return frame.QueueDepth == 0 && frame.ActiveFrames == 0 && frame.Submitted == terminal;
-                    }, target, entrypoint, TimeSpan.FromSeconds(10));
+                    }, target, entrypoint, conditionTimeout);
                     diagnostics = target.CaptureDiagnostics(DemoViewId);
                     WriteArtifacts(options, entrypoint.InitialReadback, readback,
                         entrypoint.BackdropOnReadback, entrypoint.BackdropOffReadback);
@@ -252,7 +257,8 @@ internal static class Program
         Func<bool> predicate,
         IDesktopFrameworkTarget target,
         MaterialDemoEntrypoint entrypoint,
-        TimeSpan timeout)
+        TimeSpan timeout,
+        [CallerArgumentExpression(nameof(predicate))] string? condition = null)
     {
         var elapsed = Stopwatch.StartNew();
         while (!predicate())
@@ -260,7 +266,14 @@ internal static class Program
             if (entrypoint.FirstFrameworkError is { } error)
                 throw new InvalidOperationException("Material framework error.", error.exceptionThrown);
             if (elapsed.Elapsed > timeout)
-                throw new TimeoutException($"Material frame condition timed out after {timeout}.");
+            {
+                var frame = target.CaptureDiagnostics(DemoViewId).Frame;
+                var state = entrypoint.GalleryState;
+                throw new TimeoutException(
+                    $"Material smoke condition timed out after {timeout}: {condition}; " +
+                    $"frame={frame}; interactions={state?.InteractionCount}; " +
+                    $"effects={state?.EffectInteractionCount}; builds={state?.BuildCount}.");
+            }
             target.PumpPendingMessages();
             Thread.Sleep(1);
         }
@@ -420,12 +433,12 @@ internal static class Program
         var bottom = Math.Clamp((int)Math.Ceiling(physicalBounds.bottom), top, before.Height);
         long changed = 0;
         for (var y = top; y < bottom; y++)
-        for (var x = left; x < right; x++)
-        {
-            var index = (y * before.RowBytes) + (x * 4);
-            if (!before.Bgra8888Pixels.AsSpan(index, 4).SequenceEqual(after.Bgra8888Pixels.AsSpan(index, 4)))
-                changed++;
-        }
+            for (var x = left; x < right; x++)
+            {
+                var index = (y * before.RowBytes) + (x * 4);
+                if (!before.Bgra8888Pixels.AsSpan(index, 4).SequenceEqual(after.Bgra8888Pixels.AsSpan(index, 4)))
+                    changed++;
+            }
         return changed;
     }
 
@@ -715,6 +728,7 @@ internal static class Program
             new Dictionary<string, ColorEvidence>(StringComparer.Ordinal));
     }
 }
+#endif
 
 internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requireExternalUia) : IDorotiViewEntrypoint
 {
@@ -726,10 +740,12 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
     internal Widget RootApp => _rootApp ??= CreateRootApp();
     internal DemoEntryMode EntryMode { get; } = entryMode;
     internal bool RequireExternalUia { get; } = requireExternalUia;
+#if !DOROTI_BROWSER
     internal DesktopFrameworkPixelReadback? InitialReadback { get; set; }
     internal DesktopFrameworkPixelReadback? ChangedReadback { get; set; }
     internal DesktopFrameworkPixelReadback? BackdropOnReadback { get; set; }
     internal DesktopFrameworkPixelReadback? BackdropOffReadback { get; set; }
+#endif
     internal string? InitialStateSignature { get; set; }
     internal string? ChangedStateSignature { get; set; }
     internal long CadencePresented { get; set; }
@@ -758,7 +774,7 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
         }
         if (_view is not null)
         {
-            throw new InvalidOperationException("DorotiDemoApp owns exactly one Flutter view.");
+            throw new InvalidOperationException("DorotiDemoApp owns exactly one Doroti view.");
         }
 
         _view = view;
@@ -796,13 +812,13 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
         binding.hitTestInView(
             result,
             new Offset(x, y),
-            checked((long)(_view ?? throw new InvalidOperationException("The Flutter view is not attached.")).viewId));
+            checked((long)(_view ?? throw new InvalidOperationException("The Doroti view is not attached.")).viewId));
         return result.path.Select(entry => entry.target.GetType().FullName ?? entry.target.GetType().Name).ToArray();
     }
 
     internal Rect BackdropPanelPhysicalBounds()
     {
-        var view = _view ?? throw new InvalidOperationException("The Flutter view is not attached.");
+        var view = _view ?? throw new InvalidOperationException("The Doroti view is not attached.");
         var logical = (GalleryState ?? throw new InvalidOperationException("The Material gallery State is not mounted."))
             .BackdropPanelBounds();
         var scale = view.devicePixelRatio;
@@ -1111,6 +1127,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
 
 internal enum DemoEntryMode { Builder, Home }
 
+#if !DOROTI_BROWSER
 internal sealed record DemoOptions(
     bool Smoke,
     TimeSpan Timeout,
@@ -1197,3 +1214,4 @@ internal sealed record DemoOptions(
             artifactDirectory, readyPath, requireExternalUia, packageOnlyConsumer);
     }
 }
+#endif

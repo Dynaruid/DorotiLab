@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "doroti.g7-csharp-web-fixture/v1",
+  "primaryProduct": {
+    "desktopProject": "DorotiDemoApp/DorotiDemoApp.csproj",
+    "browserProject": "DorotiDemoApp/DorotiDemoApp.Web.csproj",
+    "sharedWidgetSource": "DorotiDemoApp/Program.cs",
+    "applicationAssembly": "DorotiDemoApp.Web.dll"
+  },
+  "externalAcceptance": {
+    "template": "doroti-app",
+    "applicationAssembly": "G7WebProduct.App.dll",
+    "rootWidgetSource": "App/DorotiApplication.cs",
+    "visibleState": "Count",
+    "resource": "assets/doroti-mark.txt",
+    "localization": "locales/en-US.json",
+    "plugin": "doroti.example/echo"
+  },
+  "requiredDomOwners": ["canvas", "hidden-text-input", "accessibility-bridge"],
+  "forbiddenDomOwners": ["component-per-widget", "dom-layout", "dom-paint", "canvaskit"]
+}

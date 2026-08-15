@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "doroti.browser-reference-selection/v1",
+  "revision": "f159423f691946e713f454447a780d4677d8a0d2",
+  "policy": "behavior-reference-only-no-source-copy",
+  "capabilities": [
+    {
+      "id": "dispatcher-frame",
+      "upstreamSymbols": ["BrowserDispatcherImpl.Signal", "BrowserDispatcherImpl.UpdateTimer"],
+      "behavior": "coalesce a pending signal and schedule browser-clock work with a bounded minimum delay",
+      "dorotiOwner": "Doroti.Host.Web.BrowserHostAdapter.ScheduleFrame",
+      "contract": "Doroti.Ui.IFrameHostCapability",
+      "independentImplementation": ["requestAnimationFrame", "typed callback id registry", "terminal frame diagnostics"]
+    },
+    {
+      "id": "canvas-dpr-lifecycle",
+      "upstreamSymbols": ["BrowserTopLevelImpl.OnSizeChanged", "BrowserTopLevelImpl.OnScalingChanged", "CanvasHelper"],
+      "behavior": "separate logical size, device scale and surface generation and recreate after context loss",
+      "dorotiOwner": "Doroti.Host.Web.BrowserHostAdapter",
+      "contract": "Doroti.Ui.IViewHostCapability",
+      "independentImplementation": ["ResizeObserver", "devicePixelRatio", "webglcontextlost", "webglcontextrestored"]
+    },
+    {
+      "id": "pointer-key-focus",
+      "upstreamSymbols": ["BrowserInputHandler.OnPointerMove", "BrowserInputHandler.OnPointerDown", "BrowserInputHandler.OnWheel", "BrowserInputHandler.OnKeyDown"],
+      "behavior": "normalize pointer kind, phase, buttons, coordinates, wheel and timestamps; batch coalesced moves",
+      "dorotiOwner": "Doroti.Host.Web.BrowserHostAdapter",
+      "contract": "Doroti.Ui.IInputHostCapability",
+      "independentImplementation": ["Blazor canvas focus", "pointer capture", "primitive sample batch", "PointerDataPacket", "KeyData", "RawFocusData"]
+    },
+    {
+      "id": "text-composition-caret",
+      "upstreamSymbols": ["BrowserTextInputMethod.SetClient", "BrowserTextInputMethod.SetCursorRect", "BrowserTextInputMethod.OnCompositionEnd"],
+      "behavior": "keep hidden input text, selection, composition and caret geometry synchronized with the framework client",
+      "dorotiOwner": "Doroti.Host.Web.BrowserHostAdapter",
+      "contract": "Doroti.Ui.ITextInputHostCapability",
+      "independentImplementation": ["hidden textarea", "composition events", "DorotiTextEditingState", "logical caret rect"]
+    },
+    {
+      "id": "clipboard-cursor",
+      "upstreamSymbols": ["ClipboardImpl.TryGetDataAsync", "ClipboardImpl.SetDataAsync", "CssCursor.ToKeyword"],
+      "behavior": "fail when browser clipboard permission/capability is absent and map framework cursors to CSS cursor names",
+      "dorotiOwner": "Doroti.Host.Web.BrowserHostAdapter",
+      "contract": "Doroti.Ui.IPlatformServicesHostCapability",
+      "independentImplementation": ["navigator.clipboard", "DorotiMouseCursorKind", "CSS cursor mapping"]
+    }
+  ],
+  "forbiddenUpstreamOwners": [
+    "BrowserAppBuilder",
+    "AvaloniaView",
+    "Avalonia.Controls",
+    "Avalonia composition",
+    "Software2D"
+  ]
+}

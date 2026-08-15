@@ -45,11 +45,31 @@ function gpuIdentity(canvas) {
 }
 
 export function configureManagedCallbacks(callbacks) {
-  if (!callbacks || typeof callbacks.dispatchAnimationFrame !== "function" ||
-      typeof callbacks.dispatchSnapshot !== "function") {
+  const required = ["dispatchAnimationFrame", "dispatchSnapshot", "dispatchPointerBatch",
+    "dispatchWheel", "dispatchKey", "dispatchFocus", "dispatchTextEditing", "dispatchTextAction"];
+  if (!callbacks || required.some(name => typeof callbacks[name] !== "function")) {
     throw new Error("Doroti browser managed callback ABI v1 is incomplete.");
   }
   managed = callbacks;
+}
+
+export async function initializeManagedCallbacks() {
+  if (managed) return "ready";
+  const runtime = globalThis.getDotnetRuntime?.(0);
+  if (!runtime) throw new Error("Doroti could not resolve the active Blazor WebAssembly runtime.");
+  const exports = await runtime.getAssemblyExports("Doroti.Host.Web.dll");
+  const interop = exports.Doroti.Host.Web.BrowserInterop;
+  configureManagedCallbacks({
+    dispatchAnimationFrame: interop.DispatchAnimationFrame,
+    dispatchSnapshot: interop.DispatchSnapshot,
+    dispatchPointerBatch: interop.DispatchPointerBatch,
+    dispatchWheel: interop.DispatchWheel,
+    dispatchKey: interop.DispatchKey,
+    dispatchFocus: interop.DispatchFocus,
+    dispatchTextEditing: interop.DispatchTextEditing,
+    dispatchTextAction: interop.DispatchTextAction,
+  });
+  return "ready";
 }
 
 export function createHost(hostId, canvasId, logicalWidth, logicalHeight) {
@@ -57,10 +77,15 @@ export function createHost(hostId, canvasId, logicalWidth, logicalHeight) {
   if (hosts.has(hostId)) throw new Error(`Doroti browser host ${hostId} already exists.`);
   const canvas = document.getElementById(canvasId);
   if (!(canvas instanceof HTMLCanvasElement)) throw new Error(`Canvas '#${canvasId}' was not found.`);
+  const input = document.getElementById("doroti-ime");
+  const semantics = document.getElementById("doroti-semantics");
+  if (!(input instanceof HTMLTextAreaElement)) throw new Error("Doroti hidden text input was not found.");
+  if (!(semantics instanceof HTMLElement)) throw new Error("Doroti semantics host was not found.");
   const host = {
-    id: hostId, canvas, logicalWidth, logicalHeight,
+    id: hostId, canvas, input, semantics, logicalWidth, logicalHeight,
     generation: 0, surfaceGeneration: 1,
     gpu: gpuIdentity(canvas), observers: [], listeners: [],
+    composing: false, compositionStart: -1,
   };
   const observe = (target, name, handler) => {
     target.addEventListener(name, handler);
@@ -70,6 +95,49 @@ export function createHost(hostId, canvasId, logicalWidth, logicalHeight) {
   observe(globalThis, "focus", () => emit(host));
   observe(globalThis, "blur", () => emit(host));
   observe(globalThis, "resize", () => { host.surfaceGeneration++; emit(host); });
+  const pointerKind = type => type === "touch" ? 1 : type === "pen" ? 2 : 0;
+  const pointerSamples = event => {
+    const source = event.type === "pointermove" && typeof event.getCoalescedEvents === "function"
+      ? event.getCoalescedEvents() : [event];
+    const samples = [];
+    for (const point of source.length ? source : [event]) {
+      samples.push(point.offsetX, point.offsetY, point.pressure || (point.buttons ? 0.5 : 0),
+        point.tiltX || 0, point.tiltY || 0, point.twist || 0, point.timeStamp);
+    }
+    return samples;
+  };
+  const pointer = phase => event => {
+    event.preventDefault();
+    if (phase === 1) canvas.setPointerCapture(event.pointerId);
+    managed.dispatchPointerBatch(host.id, phase, pointerKind(event.pointerType), event.pointerId,
+      event.buttons, modifierMask(event), pointerSamples(event));
+    if ((phase === 2 || phase === 3) && canvas.hasPointerCapture(event.pointerId))
+      canvas.releasePointerCapture(event.pointerId);
+  };
+  observe(canvas, "pointermove", pointer(0));
+  observe(canvas, "pointerdown", pointer(1));
+  observe(canvas, "pointerup", pointer(2));
+  observe(canvas, "pointercancel", pointer(3));
+  observe(canvas, "wheel", event => {
+    event.preventDefault();
+    managed.dispatchWheel(host.id, event.offsetX, event.offsetY, event.deltaX, event.deltaY, event.timeStamp);
+  });
+  observe(canvas, "keydown", event => {
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " ", "Tab"].includes(event.key)) event.preventDefault();
+    managed.dispatchKey(host.id, true, event.repeat, event.code, event.key, event.timeStamp);
+  });
+  observe(canvas, "keyup", event => managed.dispatchKey(host.id, false, false, event.code, event.key, event.timeStamp));
+  observe(canvas, "focus", event => managed.dispatchFocus(host.id, true, event.timeStamp));
+  observe(canvas, "blur", event => managed.dispatchFocus(host.id, false, event.timeStamp));
+  observe(input, "compositionstart", () => { host.composing = true; host.compositionStart = input.selectionStart; emitText(host); });
+  observe(input, "compositionupdate", () => emitText(host));
+  observe(input, "compositionend", () => { host.composing = false; host.compositionStart = -1; emitText(host); });
+  observe(input, "input", () => emitText(host));
+  observe(input, "keydown", event => {
+    if (event.key === "Enter" && !event.shiftKey) managed.dispatchTextAction(host.id, 1);
+  });
+  observe(canvas, "webglcontextlost", event => { event.preventDefault(); host.surfaceGeneration++; emit(host); });
+  observe(canvas, "webglcontextrestored", () => { host.surfaceGeneration++; host.gpu = gpuIdentity(canvas); emit(host); });
   if (globalThis.ResizeObserver) {
     const observer = new ResizeObserver(entries => {
       const rect = entries[0]?.contentRect;
@@ -125,6 +193,65 @@ export function resolveResourceUrl(relativeUrl) {
   return new URL(relativeUrl, document.baseURI).href;
 }
 
+export function setCursor(hostId, cursor) {
+  requireHost(hostId).canvas.style.cursor = cursor;
+}
+
+export function setTextInputState(hostId, text, selectionBase, selectionExtent) {
+  const host = requireHost(hostId);
+  host.input.value = text;
+  host.input.hidden = false;
+  host.input.setSelectionRange(selectionBase, selectionExtent);
+  host.input.focus({ preventScroll: true });
+}
+
+export function setCaretRect(hostId, left, top, width, height) {
+  const input = requireHost(hostId).input;
+  input.style.left = `${left}px`;
+  input.style.top = `${top}px`;
+  input.style.width = `${Math.max(1, width)}px`;
+  input.style.height = `${Math.max(1, height)}px`;
+  input.focus({ preventScroll: true });
+}
+
+export function clearTextInput(hostId) {
+  const host = requireHost(hostId);
+  host.input.value = "";
+  host.input.hidden = true;
+  host.canvas.focus({ preventScroll: true });
+}
+
+export async function readClipboardText() {
+  if (!navigator.clipboard?.readText) throw new Error("Doroti clipboard read capability is unavailable.");
+  return await navigator.clipboard.readText();
+}
+
+export async function writeClipboardText(text) {
+  if (!navigator.clipboard?.writeText) throw new Error("Doroti clipboard write capability is unavailable.");
+  await navigator.clipboard.writeText(text);
+  return "written";
+}
+
+export function updateSemantics(hostId, json) {
+  const host = requireHost(hostId);
+  const update = JSON.parse(json);
+  host.semantics.replaceChildren();
+  host.semantics.dataset.generation = String(update.generation);
+  for (const node of update.nodes || []) {
+    const element = document.createElement("div");
+    element.dataset.dorotiSemanticsId = String(node.id);
+    element.setAttribute("role", semanticsRole(node.role));
+    if (node.label) element.setAttribute("aria-label", node.label);
+    if (node.value) element.setAttribute("aria-valuetext", node.value);
+    element.style.position = "absolute";
+    element.style.left = `${node.rect[0]}px`;
+    element.style.top = `${node.rect[1]}px`;
+    element.style.width = `${Math.max(0, node.rect[2] - node.rect[0])}px`;
+    element.style.height = `${Math.max(0, node.rect[3] - node.rect[1])}px`;
+    host.semantics.append(element);
+  }
+}
+
 export async function invokePlugin(moduleUrl, exportName, channel, codec, payloadBase64) {
   const resolved = new URL(moduleUrl, document.baseURI).href;
   const pluginModule = await import(resolved);
@@ -147,4 +274,28 @@ function requireHost(hostId) {
   const host = hosts.get(hostId);
   if (!host) throw new Error(`Doroti browser host ${hostId} is not active.`);
   return host;
+}
+
+function modifierMask(event) {
+  return (event.shiftKey ? 1 : 0) | (event.ctrlKey ? 2 : 0) |
+    (event.altKey ? 4 : 0) | (event.metaKey ? 8 : 0);
+}
+
+function emitText(host) {
+  const start = host.input.selectionStart ?? 0;
+  const end = host.input.selectionEnd ?? start;
+  const composingBase = host.composing ? Math.max(0, host.compositionStart) : -1;
+  const composingExtent = host.composing ? end : -1;
+  managed.dispatchTextEditing(host.id, host.input.value, start, end, composingBase, composingExtent);
+}
+
+function semanticsRole(role) {
+  const key = String(role || "").toLowerCase();
+  if (key.includes("button")) return "button";
+  if (key.includes("textfield")) return "textbox";
+  if (key.includes("slider")) return "slider";
+  if (key.includes("listitem")) return "listitem";
+  if (key.includes("list")) return "list";
+  if (key.includes("image")) return "img";
+  return "group";
 }

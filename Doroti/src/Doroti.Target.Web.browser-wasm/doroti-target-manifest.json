@@ -5,6 +5,15 @@
   "rid": "browser-wasm",
   "host": "document-canvas",
   "graphicsBackend": "webgl2-browser-gpu-required",
+  "blazorWebAssemblyVersion": "10.0.0",
+  "skiaSharpVersion": "3.119.4",
+  "skiaSharpViewsPackage": "SkiaSharp.Views.Blazor",
+  "skiaSharpNativePackage": "SkiaSharp.NativeAssets.WebAssembly",
+  "bootLoader": "_framework/blazor.webassembly.js",
+  "hostComponents": [
+    "Doroti.Host.Web.DorotiRoot",
+    "Doroti.Host.Web.DorotiSurface"
+  ],
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "managedCallbackAbi": "doroti.browser-managed-callbacks/v1",
   "javaScriptPluginAbi": "doroti.browser-js-plugin/v1",
@@ -22,8 +31,15 @@
     "window.lifecycle",
     "view.lifecycle-metrics",
     "view.frame-dispatch",
+    "input.events",
+    "text.input",
+    "platform.services",
     "platform.environment",
-    "platform.messaging"
+    "platform.messaging",
+    "graphics.scene",
+    "graphics.text",
+    "graphics.image",
+    "accessibility.semantics"
   ],
   "unsupportedModes": [
     "software-canvas-2d",

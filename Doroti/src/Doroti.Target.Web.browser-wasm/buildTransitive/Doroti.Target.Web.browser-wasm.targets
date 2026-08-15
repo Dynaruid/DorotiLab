@@ -1,0 +1,36 @@
+<Project>
+  <Target Name="DorotiValidateBrowserProductContract" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <DorotiBrowserContractTargetFramework Condition="'$(DorotiBrowserContractTargetFramework)' == ''">$(TargetFramework)</DorotiBrowserContractTargetFramework>
+      <DorotiBrowserContractRuntimeIdentifier Condition="'$(DorotiBrowserContractRuntimeIdentifier)' == ''">$(RuntimeIdentifier)</DorotiBrowserContractRuntimeIdentifier>
+    </PropertyGroup>
+    <Error Code="DOROTIWEB001" Condition="'$(DorotiBrowserContractTargetFramework)' != 'net10.0'"
+           Text="Doroti Web requires TargetFramework net10.0; found '$(DorotiBrowserContractTargetFramework)'." />
+    <Error Code="DOROTIWEB002" Condition="'$(DorotiBrowserContractRuntimeIdentifier)' != 'browser-wasm'"
+           Text="Doroti Web requires RuntimeIdentifier browser-wasm; found '$(DorotiBrowserContractRuntimeIdentifier)'." />
+    <Error Code="DOROTIWEB003" Condition="'$(UsingMicrosoftNETSdkBlazorWebAssembly)' != 'true'"
+           Text="Doroti Web host projects must use Microsoft.NET.Sdk.BlazorWebAssembly." />
+    <Error Code="DOROTIWEB004" Condition="'$(PublishTrimmed)' == 'true'"
+           Text="Doroti Web trimming is not released for the generated framework graph; set PublishTrimmed=false." />
+    <Error Code="DOROTIWEB005" Condition="'@(DorotiJavaScriptPlugin)' != '' and '%(DorotiJavaScriptPlugin.Channel)' == ''"
+           Text="DorotiJavaScriptPlugin '%(DorotiJavaScriptPlugin.Identity)' must declare Channel metadata." />
+    <Error Code="DOROTIWEB006" Condition="'@(DorotiJavaScriptPlugin)' != '' and '%(DorotiJavaScriptPlugin.ExportName)' == ''"
+           Text="DorotiJavaScriptPlugin '%(DorotiJavaScriptPlugin.Identity)' must declare ExportName metadata." />
+    <ItemGroup>
+      <_DorotiForbiddenCanvasKit Include="@(Content)" Condition="$([System.String]::Copy('%(Content.Identity)').ToLowerInvariant().Contains('canvaskit'))" />
+    </ItemGroup>
+    <Error Code="DOROTIWEB007" Condition="'@(_DorotiForbiddenCanvasKit)' != ''"
+           Text="Doroti Web uses statically linked SkiaSharp WebAssembly; CanvasKit content is forbidden: @(_DorotiForbiddenCanvasKit)." />
+  </Target>
+
+  <Target Name="DorotiValidatePublishedBrowserProduct" AfterTargets="Publish">
+    <PropertyGroup>
+      <_DorotiPublishRoot>$([System.IO.Path]::Combine('$(PublishDir)', 'wwwroot'))</_DorotiPublishRoot>
+    </PropertyGroup>
+    <Error Code="DOROTIWEB008"
+           Condition="!Exists('$(_DorotiPublishRoot)\index.html') or !Exists('$(_DorotiPublishRoot)\_framework\dotnet.js')"
+           Text="Doroti Web publish is missing the standard Blazor WebAssembly boot contract (index.html and _framework/dotnet.js)." />
+    <Error Code="DOROTIWEB009" Condition="!Exists('$(_DorotiPublishRoot)\_content\Doroti.Host.Web\doroti.web.js')"
+           Text="Doroti Web publish is missing the Doroti browser capability module." />
+  </Target>
+</Project>

@@ -1,6 +1,6 @@
 # Doroti 7차 목표 — 제품 정확성 closure와 Windows/macOS shell·Web release
 
-> 상태: G7-3V/A/B/C Doroti 자체 Web app 생성 경로 진행 예정
+> 상태: G7-3V/A/B/C PASS, G7-4 Chromium live product parity 진행 예정
 > 작성일: 2026-08-14
 > 측정 핵심화: 2026-08-15
 > 범위 추가: 2026-08-15 — Apple Silicon macOS shell(`osx-arm64`)을 필수 target으로 승격
@@ -97,128 +97,9 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 | G7-2 | `PASS` | Cupertino/adaptive와 generated Dart product parity, package-only Windows consumer — `g7-cupertino-adaptive-evidence.json`, `g7-generated-demo-evidence.json` |
 | G7-3M | `PASS` | Apple Silicon NSWindow strict-GPU live, input/text/clipboard/NSAccessibility, repeat `osx-arm64` package publish — `g7-macos-shell-evidence.json` |
 | G7-3N | `PASS` | 17개 project/package 및 27개 owned type naming closure, 전 target producer/consumer graph, Windows representative live — `g7-doroti-naming-evidence.json` |
-| G7-3I | `verified-infrastructure` | standalone WebAssembly toolchain, browser adapter와 static publish 기반만 승계. C# widget/Skia product PASS로 사용하지 않음 — `g7-web-build-evidence.json` |
+| G7-3V/A/B/C | `PASS` | Avalonia Browser exact behavior provenance, 독립 Blazor/Skia capability, 동일 `DorotiDemoApp/Program.cs` desktop/browser build, `doroti-app` package-only acceptance와 717-file repeat publish identity — `g7-web-build-evidence.json` |
 
-완료 범위의 상세 이력은 각 machine-readable evidence와 [Goal6 요약](history/26-08-14/goal6-summary.md)에 보존한다. 미실행 physical·browser product 결과는 아래 active milestone에서 계속 `notVerified`다.
-
-### G7-3 — C# + Skia Blazor WebAssembly `browser-wasm` application closure
-
-진입 조건인 G7-3N은 완료됐고 G7-3I infrastructure를 재사용한다. G7-3은 저장소 밖에서 일반 C# Doroti app을 생성하고, 같은 C# widget tree가 Skia GPU browser canvas에 그려지는 전체 제품 경로를 소유한다.
-
-#### G7-3V — pinned Avalonia Browser behavior reference와 Blazor capability 구현
-
-작업:
-
-- Avalonia revision `f159423f691946e713f454447a780d4677d8a0d2`의 `src/Browser/Avalonia.Browser`를 exact detached reference snapshot으로 확보하고 license, selected source hash와 reference provenance를 고정한다. 이 snapshot은 동작 분석·비교·추적 입력이며 product compile graph에 포함하지 않는다.
-- `BrowserDispatcherImpl`, canvas resize/DPR, pointer/capture/coalescing/wheel/key, text/composition/caret, clipboard/cursor와 필요한 JavaScript/TypeScript module에서 참고할 동작을 capability 단위로 선택하고, upstream symbol → browser behavior → Doroti owner/contract mapping을 기록한다.
-- 선택 source를 product code로 copy/adapt하거나 `Doroti.Vendor.Avalonia.Browser` project를 만들지 않는다. 실제 구현은 `Doroti.Host.Web`의 `DorotiRoot`/`DorotiSurface` Blazor component, C# browser capability와 최소 `[JSImport]` module이 소유하며 Avalonia type/source/binary를 참조하지 않는다.
-- Avalonia `BrowserAppBuilder`, `AvaloniaView`, Controls/property/styling/visual tree, Avalonia composition owner와 `Software2D` fallback은 포함하지 않는다.
-- 표준 pointer/key/focus는 Blazor event callback으로 받고, DOM event 등록/해제, `preventDefault`, pointer capture, `getCoalescedEvents`, IME와 browser object 분해처럼 동기 DOM 접근이 필요한 경계만 작은 JS module에 남긴다. Avalonia에서 확인한 pointer kind/phase/button/modifier, 좌표·DPR, wheel, timestamp와 batching 동작은 Avalonia 코드를 이식하지 않고 C# `BrowserInputSource`로 새로 구현한다.
-- GPU surface는 Avalonia renderer나 CanvasKit이 아니라 pinned `SkiaSharp.Views.Blazor`/`SkiaSharp.NativeAssets.WebAssembly`의 `SKGLView`를 사용한다. Doroti가 frame scheduler, invalidation, context generation/loss와 terminal ACK를 감싸고 scene/widget/state policy는 생성된 C# Doroti framework가 계속 소유한다.
-- Doroti browser interop은 별도 JavaScript build toolchain 없이 표준 ES module source로 유지하고 Blazor static web asset으로 패키징한다.
-
-완료 gate:
-
-- selected upstream file/symbol마다 source hash, 참고한 behavior, Blazor/C# local owner, 독립 구현 증거와 reference 제거 조건이 있음
-- product source/compile/publish graph의 Avalonia-derived copied source와 `Avalonia`, `Avalonia.Controls`, Avalonia composition binary/package reference 0
-- Blazor `SKGLView` WebGL2 context → SkiaSharp surface → Doroti scene draw → invalidate/present/terminal ACK typed chain PASS
-- software/Canvas2D fallback과 unclassified browser source dependency 0
-- DOM pointer → Blazor/JSImport bridge → C# normalization → `IInputHostCapability.PointerData` → Doroti gesture/state의 typed chain PASS
-- dispatcher/input/text/clipboard/cursor capability가 Blazor/C# owner에서 Doroti host-neutral contract에만 연결되고 Avalonia source/runtime dependency 0
-
-#### G7-3A — C# Doroti app/template contract
-
-작업:
-
-- `Doroti.Templates`에 일반 C# app template을 추가하고 `dotnet new doroti-app --name <name>` 또는 동등한 표준 .NET template UX를 제공한다.
-- template은 공용 C# Doroti app project와 `Microsoft.NET.Sdk.BlazorWebAssembly` 기반 browser host project를 함께 제공한다. browser host는 `net10.0`/`browser-wasm`을 사용하고 desktop target과 같은 C# app assembly/widget tree를 참조한다.
-- G7-3N에서 승격한 `Doroti.Framework.*`, `DorotiHostSession`, `DorotiView`와 `DorotiCapabilityIds`를 사용하고, G7-3에서 새로 만드는 public namespace, type, Razor component, template source와 진단에도 `Doroti` 제품 이름만 사용한다. `DorotiRoot`와 `DorotiSurface`가 Blazor 공개 component 계약을 소유한다.
-- template의 `Program.cs`가 `Doroti.Framework.*`의 생성·승격된 C# API로 root widget을 구성한다. 사용자 앱은 Dart source, `pubspec.yaml`, `doroti.yaml`이나 Flutter platform scaffold를 포함하지 않는다.
-- target package의 `build`/`buildTransitive` MSBuild props/targets가 Blazor boot resource, static web assets, resource/font/localization과 plugin declaration을 표준 `ItemGroup`/property 계약으로 제공한다.
-- template의 allowlist된 `DorotiRoot.razor`/`DorotiSurface.razor`는 canvas host만 구성하며 사용자가 수정할 필요가 없다. `Microsoft.AspNetCore.Components.WebAssembly`는 .NET 10 host와 함께 pin하고, `SkiaSharp.Views.Blazor`/`SkiaSharp.NativeAssets.WebAssembly`는 현재 공용 `SkiaSharp` `3.119.4` baseline과 같은 version set으로 pin한다. version 변경은 WebGL/input/text live evidence를 함께 갱신할 때만 허용한다.
-- Blazor router, forms와 component UI library는 기본 graph에 포함하지 않는다. 사용자-visible Doroti widget마다 Razor component/DOM node를 생성하거나 C# widget policy를 Blazor render tree에 복제하지 않는다.
-- `dotnet restore`, `dotnet build`와 `dotnet publish` 외 별도 Flutter/Dart command 없이 app을 build할 수 있게 한다.
-
-완료 gate:
-
-- clean 임시 디렉터리에서 배포된 template/package만으로 C# Doroti app 생성 PASS
-- generated project의 `.dart`, `pubspec.yaml`, `.metadata`와 Flutter platform directory 0
-- product build process tree의 `flutter`, `flutter.bat`, Dart analyzer/compiler 실행 0
-- allowlist 밖 `.razor`와 Blazor router/form/component UI dependency 0
-- `blazor.webassembly.js`, host component와 SkiaSharp WASM dependency의 version/hash/provenance가 manifest에 고정됨
-- Blazor render tree의 user-visible Doroti widget/scene node 0; canvas와 hidden input/accessibility host만 존재
-- template source, public Web API, Razor component, manifest와 product diagnostic의 product-facing `Flutter*` identifier 0
-- 동일한 C# root widget source가 desktop 및 browser target에 compile됨
-- 잘못된 target/resource/plugin 계약은 stable MSBuild 또는 Doroti diagnostic으로 fail-closed
-
-#### G7-3B — C# widget tree to Skia `browser-wasm` product build
-
-작업:
-
-- `Doroti.Target.Web.browser-wasm` composition root가 C# app entrypoint를 `DorotiHostSession`/`DorotiView`에 attach하고 공용 build/layout/paint/state/semantics pipeline을 시작한다.
-- `DorotiSurface.razor`가 `SKGLView`를 만들고 `EnableRenderLoop=false`의 명시적 frame invalidation으로 Doroti scene을 `OnPaintSurface`에 제출한다. context generation, resize/DPR, loss/recovery와 terminal frame 상태를 공용 frame contract로 기록한다.
-- `DorotiSurface.razor`는 표준 pointer/key/focus event를 C# host로 전달한다. pointer capture, coalesced high-rate move, IME와 context-loss처럼 DOM callback에서 즉시 처리해야 하는 경계만 `[JSImport]`/`JSHost.ImportAsync` module을 사용하고, object-per-event 직렬화 대신 primitive batch/shared buffer 경로를 제공한다.
-- `BrowserHostAdapter`가 `IInputHostCapability`를 구현하고 `DorotiCapabilityIds.InputEvents`로 등록된다. Avalonia behavior reference를 기준으로 Blazor용으로 새로 구현한 C# normalization이 `PointerDataPacket`/`KeyData`/`RawFocusData`를 만들어 Doroti gesture binding과 같은 C# widget state에 전달한다.
-- Blazor boot loader가 `blazor.webassembly.js`로 managed host를 시작하고 target package가 `index.html`, root/surface component, Skia/input module과 plugin JavaScript module을 static web assets로 제공한다. base path/fingerprinting/hash manifest는 MSBuild publish 단계에서 확정하며 사용자는 runtime bootstrap을 직접 유지하지 않는다.
-- `dotnet publish <project> -c Release -r browser-wasm`이 `net10.0` C# app assembly, Doroti framework/target assemblies, Blazor host assemblies, statically linked SkiaSharp WASM native asset, resource와 hash manifest가 있는 deployment-neutral `wwwroot`를 만든다. `canvaskit.js`/`canvaskit.wasm`은 포함하지 않는다.
-- app assembly/type, C# source/project identity, target/browser-reference provenance와 static artifact hash를 하나의 release chain으로 기록한다.
-
-완료 gate:
-
-- fixture 문자열이나 target 생성만이 아니라 C# root widget/state/resource가 최종 app assembly와 static artifact에 포함됨
-- 실제 Skia GPU draw가 non-empty browser frame을 만들 수 있는 publish graph PASS
-- `blazor.webassembly.js` → allowlist된 root/surface component → C# Doroti root mount → SkiaSharp GPU paint의 bootstrap call graph PASS
-- Blazor DOM에는 canvas/hidden input/accessibility bridge만 있고 component-per-widget, DOM layout/paint와 CanvasKit runtime 0
-- pointer down/move/up/cancel/wheel → C# normalization → `PointerDataPacket` → hit test/gesture/state → 다음 Skia frame의 causal trace가 build fixture에서 연결됨
-- `browser-wasm` clean/repeat output identity PASS
-- browser graph의 Win32/AppKit/Avalonia UI/native desktop dependency 0
-- unsupported plugin/capability silent success, static artifact 누락/hash 불일치와 repository-private fallback 0
-- trimming/AOT는 실제 Doroti C# product graph 기준으로 검증하거나 정확한 blocker와 `notVerified`를 유지함
-
-#### G7-3C — external C# product acceptance
-
-작업:
-
-- 저장소 밖 clean root에 `Doroti.Templates`와 promoted NuGet package를 설치하고 template으로 새 C# app을 만든다.
-- C# widget source에 사용자-visible state 변화, asset, localization과 Web plugin을 넣고 표준 `dotnet publish -r browser-wasm`을 수행한다.
-- 같은 C# app을 두 번 clean publish해 deployment-neutral static artifact와 hash manifest identity를 비교한다.
-- output을 isolated static server에 올릴 수 있는 구조인지 검사하되 실제 Chromium GPU/input/ARIA 실행은 G7-4에서 수행한다.
-
-완료 gate:
-
-- repository 밖 C# Doroti project create/restore/build/publish PASS
-- Flutter/Dart SDK 또는 CLI 설치 없이 package-only static Web artifact 생성 PASS
-- 별도 `dotnet new blazorwasm`, 사용자의 Razor/JavaScript 작성이나 수동 Blazor package 설치 없이 Doroti template 하나로 Blazor WebAssembly host publish PASS
-- 사용자가 직접 작성해야 하는 `index.html`, runtime bootstrap JavaScript와 내부 Web host `.csproj` 0
-- repository-private/candidate fallback과 source checkout 절대경로 0
-- 최종 artifact가 사용자 C# app assembly, Doroti framework, Skia Web backend와 application/resource manifest를 포함함
-
-산출물:
-
-- `Doroti/migration/web/g7-browser-reference-selection.json`
-- `Doroti/migration/web/g7-browser-reference-provenance.json`
-- `Doroti/templates/Doroti.Templates/content/doroti-app/`
-- `Doroti/src/Doroti.Host.Web/`
-- `Doroti/src/Doroti.Target.Web.browser-wasm/`
-- `Doroti/src/Doroti.Target.Web.browser-wasm/build/` 및 `buildTransitive/` Blazor host/static asset targets
-- `Doroti/validation/cases/g7-csharp-web-app/`
-- `Doroti/migration/targets/browser-wasm.json`
-- `Doroti/migration/web/g7-web-build-evidence.json`
-- `Doroti/artifacts/g7-web/<version>/`
-- `Doroti/eng/validate-g7-web-build.ps1 -Shard <Toolchain|Reference|Hosting|Graph|Template|Compile|Publish>`
-
-현재 상태(2026-08-15):
-
-- G7-3N naming closure는 `PASS`, G7-3I standalone WebAssembly baseline은 `verified-infrastructure`다.
-- 기존 Web evidence는 toolchain/browser adapter/static publish 기반만 증명한다. C# Doroti widget mount, SkiaSharp Blazor GPU frame과 실제 product app은 아직 증명하지 않으므로 G7-3V/A/B/C가 `notVerified`를 소유한다.
-- G7-3V/A/B/C가 모두 PASS하기 전에는 G7-4 Chromium live validation에 진입하지 않는다.
-
-구현 순서:
-
-1. G7-3V: Avalonia Browser reference/provenance를 고정하고 Blazor/C# browser capability를 독립 구현한다.
-2. G7-3A: 공용 C# app과 내부 Blazor host를 생성하는 `doroti-app` template/package 계약을 닫는다.
-3. G7-3B: 같은 C# widget tree를 `SKGLView` WebGL2 surface에 mount/draw/present하고 입력 인과 trace를 연결한다.
-4. G7-3C: 저장소 밖 package-only app의 create/restore/build/repeat publish와 artifact identity를 통과한 뒤 G7-4로 넘긴다.
+완료 범위의 상세 이력은 각 machine-readable evidence와 [Goal6 요약](history/26-08-14/goal6-summary.md)에 보존한다. 미실행 browser live·physical 결과는 아래 active milestone에서 계속 `notVerified`다.
 
 ### G7-4 — Web live product parity
 
@@ -304,13 +185,10 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 
 ## 4. 단계 의존성과 중단 규칙
 
-완료된 선행 조건은 G7-0, G7-1, G7-2, G7-3M, G7-3N이며 G7-3I는 Web infrastructure baseline으로만 승계한다.
+완료된 선행 조건은 G7-0, G7-1, G7-2, G7-3M, G7-3N, G7-3V/A/B/C다. G7-4는 G7-3 static product artifact를 Chromium live 결과로 확장한다.
 
 ```text
-G7-3V browser reference/capability + G7-3A C# app/template
-  -> G7-3B C# widget tree + Skia Web build
-  -> G7-3C external C# product publish
-  -> G7-4 Chromium live product
+G7-4 Chromium live product
   -> G7-5 integrated release
   -> G7-6 physical acceptance
 ```
@@ -327,13 +205,6 @@ G7-3V browser reference/capability + G7-3A C# app/template
 모든 명령은 `.github/copilot-instructions.md`에 따라 20분 timeout 이내의 shard로 구성한다. 완료 milestone validator는 영향 범위 회귀가 생긴 경우에만 다시 실행한다.
 
 ```powershell
-./Doroti/eng/validate-g7-web-build.ps1 -Shard Reference
-./Doroti/eng/validate-g7-web-build.ps1 -Shard Hosting
-./Doroti/eng/validate-g7-web-build.ps1 -Shard Graph
-./Doroti/eng/validate-g7-web-build.ps1 -Shard Template
-./Doroti/eng/validate-g7-web-build.ps1 -Shard Compile
-./Doroti/eng/validate-g7-web-build.ps1 -Shard Publish
-
 ./Doroti/eng/validate-g7-web-live.ps1 -Shard Smoke
 ./Doroti/eng/validate-g7-web-live.ps1 -Shard Interaction
 ./Doroti/eng/validate-g7-web-live.ps1 -Shard Reference

@@ -2,7 +2,7 @@
 
 [English](README.md) | **한국어**
 
-DorotiDemoApp은 C#으로 옮긴 Flutter framework를 실제 native desktop 환경에서 검증하는 앱입니다. 실제 Material widget tree를 구성하고 Win32/WGL target 또는 AppKit/NSOpenGL `osx-arm64` target으로 표시하며 framework state와 accessibility 동작을 end-to-end로 실행합니다.
+DorotiDemoApp은 Doroti C# framework 제품의 cross-target 검증 앱입니다. 동일한 `Program.cs` Material widget tree를 Win32/WGL, AppKit/NSOpenGL `osx-arm64`, SkiaSharp/Blazor `browser-wasm` host로 컴파일합니다.
 
 직접 실행할 수 있는 gallery인 동시에 Windows와 G7-3M macOS native gate가 공유하는 generated 제품 scenario입니다.
 
@@ -20,12 +20,23 @@ DorotiDemoApp은 C#으로 옮긴 Flutter framework를 실제 native desktop 환�
 
 ## 요구 사항
 
-- Windows x64 또는 Apple Silicon macOS(`osx-arm64`)
+- Windows x64, Apple Silicon macOS(`osx-arm64`) 또는 static Web build를 위한 `browser-wasm` workload
 - .NET SDK 10.0.300 또는 호환되는 최신 patch
 - `Doroti` project를 포함한 전체 DorotiLab checkout
 - 전체 validation gate를 위한 PowerShell 7
 
 Project는 host OS 또는 명시한 RID에 따라 정확히 하나의 target composition root를 선택합니다. Linux, Intel macOS, mobile과 physical-device acceptance는 별도 target evidence가 없는 한 `notVerified`입니다.
+
+## Web 앱 빌드
+
+`DorotiDemoApp.Web.csproj`는 desktop target dependency 없이 내부 Blazor host와 동일한 `Program.cs` widget/state source를 컴파일합니다.
+
+```powershell
+dotnet build ./DorotiDemoApp/DorotiDemoApp.Web.csproj -c Release
+dotnet publish ./DorotiDemoApp/DorotiDemoApp.Web.csproj -c Release -r browser-wasm -o ./publish/doroti-demo-web
+```
+
+배포 root는 `publish/doroti-demo-web/wwwroot`입니다. 표준 Blazor loader, fingerprint된 Doroti/SkiaSharp WASM assembly, statically linked native runtime, asset, localization과 예제 Web plugin이 포함됩니다. Chromium GPU/input/ARIA runtime acceptance는 G7-4 소유이며 G7-3은 build/static artifact graph까지만 증명합니다.
 
 ## 앱 실행
 
@@ -84,6 +95,7 @@ macOS gate는 실제 NSWindow, AppKit lifecycle/focus, pointer와 fractional whe
 
 - Commit되는 통합 evidence: [`../Doroti/migration/flutter-framework/g6-material-demo-evidence.json`](../Doroti/migration/flutter-framework/g6-material-demo-evidence.json)
 - G7-3M macOS 통합 evidence: [`../Doroti/migration/macos/g7-macos-shell-evidence.json`](../Doroti/migration/macos/g7-macos-shell-evidence.json)
+- G7-3 browser build evidence: [`../Doroti/migration/web/g7-web-build-evidence.json`](../Doroti/migration/web/g7-web-build-evidence.json)
 - Screenshot/layout reference: [`g6-material-reference.json`](g6-material-reference.json)
 - 임시 실행 output: `../Doroti/artifacts/g6-material-demo/win-x64/`
 
@@ -93,8 +105,10 @@ macOS gate는 실제 NSWindow, AppKit lifecycle/focus, pointer와 fractional whe
 
 | 파일 | 역할 |
 | --- | --- |
-| [`Program.cs`](Program.cs) | Material gallery, native host loop, smoke interaction과 evidence writer |
+| [`Program.cs`](Program.cs) | 공용 Material gallery/state source와 desktop 전용 host loop/evidence writer |
 | [`DorotiDemoApp.csproj`](DorotiDemoApp.csproj) | 제품 framework, hosting과 OS/RID 조건부 desktop target reference |
+| [`DorotiDemoApp.Web.csproj`](DorotiDemoApp.Web.csproj) | 동일한 `Program.cs`를 `browser-wasm`으로 컴파일하는 Blazor WebAssembly host |
+| [`WebHost/`](WebHost/) | 내부 Web composition root와 static deployment asset |
 | [`g6-material-reference.json`](g6-material-reference.json) | 예상 logical geometry, color와 pixel tolerance |
 
 Runtime architecture와 개발 명령은 [Doroti runtime README](../Doroti/README.ko.md)를 참고하세요. Doroti는 repository의 [BSD 3-Clause license](../LICENSE)로 배포됩니다.

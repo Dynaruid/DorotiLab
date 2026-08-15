@@ -1,5 +1,6 @@
-using System.Text.Json;
+using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
+using System.Text.Json;
 using Doroti.Hosting;
 using Doroti.Ui;
 
@@ -45,6 +46,10 @@ internal static partial class BrowserInterop
         double logicalWidth,
         double logicalHeight);
 
+    [JSImport("initializeManagedCallbacks", Module)]
+    [return: JSMarshalAs<JSType.Promise<JSType.String>>]
+    internal static partial Task<string> InitializeManagedCallbacksAsync();
+
     [System.Runtime.InteropServices.JavaScript.JSImport("showHost", Module)]
     internal static partial string ShowHost(int hostId);
 
@@ -59,6 +64,29 @@ internal static partial class BrowserInterop
 
     [System.Runtime.InteropServices.JavaScript.JSImport("resolveResourceUrl", Module)]
     internal static partial string ResolveResourceUrl(string relativeUrl);
+
+    [JSImport("setCursor", Module)]
+    internal static partial void SetCursor(int hostId, string cursor);
+
+    [JSImport("setTextInputState", Module)]
+    internal static partial void SetTextInputState(int hostId, string text, int selectionBase, int selectionExtent);
+
+    [JSImport("setCaretRect", Module)]
+    internal static partial void SetCaretRect(int hostId, double left, double top, double width, double height);
+
+    [JSImport("clearTextInput", Module)]
+    internal static partial void ClearTextInput(int hostId);
+
+    [JSImport("readClipboardText", Module)]
+    [return: JSMarshalAs<JSType.Promise<JSType.String>>]
+    internal static partial Task<string> ReadClipboardTextAsync();
+
+    [JSImport("writeClipboardText", Module)]
+    [return: JSMarshalAs<JSType.Promise<JSType.String>>]
+    internal static partial Task<string> WriteClipboardTextAsync(string text);
+
+    [JSImport("updateSemantics", Module)]
+    internal static partial void UpdateSemantics(int hostId, string json);
 
     [System.Runtime.InteropServices.JavaScript.JSImport("invokePlugin", Module)]
     [return: System.Runtime.InteropServices.JavaScript.JSMarshalAs<System.Runtime.InteropServices.JavaScript.JSType.Promise<System.Runtime.InteropServices.JavaScript.JSType.String>>]
@@ -77,6 +105,35 @@ internal static partial class BrowserInterop
     internal static void DispatchSnapshot(int hostId, string json) =>
         BrowserHostAdapter.DispatchSnapshot(hostId, json);
 
+    [JSExport]
+    internal static void DispatchPointerBatch(
+        int hostId, int phase, int kind, int pointerId, int buttons, int modifiers,
+        [JSMarshalAs<JSType.Array<JSType.Number>>] double[] samples) =>
+        BrowserHostAdapter.DispatchPointerBatch(hostId, phase, kind, pointerId, buttons, modifiers, samples);
+
+    [JSExport]
+    internal static void DispatchWheel(
+        int hostId, double x, double y, double deltaX, double deltaY, double timestampMilliseconds) =>
+        BrowserHostAdapter.DispatchWheel(hostId, x, y, deltaX, deltaY, timestampMilliseconds);
+
+    [JSExport]
+    internal static void DispatchKey(
+        int hostId, bool down, bool repeat, string code, string key, double timestampMilliseconds) =>
+        BrowserHostAdapter.DispatchKey(hostId, down, repeat, code, key, timestampMilliseconds);
+
+    [JSExport]
+    internal static void DispatchFocus(int hostId, bool focused, double timestampMilliseconds) =>
+        BrowserHostAdapter.DispatchFocus(hostId, focused, timestampMilliseconds);
+
+    [JSExport]
+    internal static void DispatchTextEditing(
+        int hostId, string text, int selectionBase, int selectionExtent, int composingBase, int composingExtent) =>
+        BrowserHostAdapter.DispatchTextEditing(hostId, text, selectionBase, selectionExtent, composingBase, composingExtent);
+
+    [JSExport]
+    internal static void DispatchTextAction(int hostId, int action) =>
+        BrowserHostAdapter.DispatchTextAction(hostId, action);
+
     internal static BrowserHostSnapshot ParseSnapshot(string json) =>
         JsonSerializer.Deserialize<BrowserHostSnapshot>(json, new JsonSerializerOptions
         {
@@ -85,10 +142,37 @@ internal static partial class BrowserInterop
 }
 
 [SupportedOSPlatform("browser")]
+public static class BrowserHostRuntime
+{
+    private static readonly SemaphoreSlim InitializationGate = new(1, 1);
+    private static bool _initialized;
+
+    public static async ValueTask EnsureInitializedAsync()
+    {
+        if (_initialized) return;
+        await InitializationGate.WaitAsync();
+        try
+        {
+            if (_initialized) return;
+            await JSHost.ImportAsync("doroti.web", "./_content/Doroti.Host.Web/doroti.web.js");
+            await BrowserInterop.InitializeManagedCallbacksAsync();
+            _initialized = true;
+        }
+        finally
+        {
+            InitializationGate.Release();
+        }
+    }
+}
+
+[SupportedOSPlatform("browser")]
 public sealed class BrowserHostAdapter :
     IViewHostCapability,
     IFrameHostCapability,
-    IPlatformEnvironmentHostCapability
+    IPlatformEnvironmentHostCapability,
+    IInputHostCapability,
+    IPlatformServicesHostCapability,
+    ITextInputHostCapability
 {
     private static readonly object RegistryGate = new();
     private static readonly Dictionary<int, WeakReference<BrowserHostAdapter>> Registry = [];
@@ -96,12 +180,14 @@ public sealed class BrowserHostAdapter :
 
     private readonly object _gate = new();
     private readonly Dictionary<int, Action<TimeSpan>> _pendingFrames = [];
+    private readonly Dictionary<ulong, (double X, double Y)> _pointerPositions = [];
+    private readonly ulong _viewId;
     private int _nextCallbackId;
     private BrowserHostSnapshot _snapshot;
     private PlatformConfiguration _configuration;
     private bool _disposed;
 
-    public BrowserHostAdapter(string canvasId, Size logicalSize)
+    public BrowserHostAdapter(ulong viewId, string canvasId, Size logicalSize)
     {
         if (!OperatingSystem.IsBrowser())
             throw new PlatformNotSupportedException("Doroti.Host.Web requires a browser-wasm process.");
@@ -110,6 +196,7 @@ public sealed class BrowserHostAdapter :
         if (!logicalSize.IsFinite || logicalSize.IsEmpty)
             throw new ArgumentOutOfRangeException(nameof(logicalSize));
 
+        _viewId = viewId;
         HostId = Interlocked.Increment(ref _nextHostId);
         lock (RegistryGate) Registry.Add(HostId, new(this));
         try
@@ -136,6 +223,11 @@ public sealed class BrowserHostAdapter :
     public event Action? CloseRequested;
     public event Action? Closed;
     public event Action<PlatformConfiguration>? ConfigurationChanged;
+    public event Action<PointerDataPacket>? PointerData;
+    public event Action<KeyData>? KeyData;
+    public event Action<RawFocusData>? FocusData;
+    public event Action<DorotiTextEditingState>? EditingStateChanged;
+    public event Action<DorotiTextInputAction>? ActionPerformed;
 
     public string ResolveResourceUrl(string relativeUrl)
     {
@@ -143,6 +235,39 @@ public sealed class BrowserHostAdapter :
         ArgumentException.ThrowIfNullOrWhiteSpace(relativeUrl);
         return BrowserInterop.ResolveResourceUrl(relativeUrl);
     }
+
+    internal void UpdateSemantics(string json)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        BrowserInterop.UpdateSemantics(HostId, json);
+    }
+
+    public async ValueTask<string?> GetClipboardTextAsync(CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        var value = await BrowserInterop.ReadClipboardTextAsync();
+        cancellationToken.ThrowIfCancellationRequested();
+        return value;
+    }
+
+    public async ValueTask SetClipboardTextAsync(string text, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        await BrowserInterop.WriteClipboardTextAsync(text ?? string.Empty);
+        cancellationToken.ThrowIfCancellationRequested();
+    }
+
+    public void SetCursor(DorotiMouseCursorKind cursor) => BrowserInterop.SetCursor(HostId, CursorName(cursor));
+
+    public void SetClient(DorotiTextEditingState initialState) => UpdateState(initialState);
+
+    public void UpdateState(DorotiTextEditingState state) => BrowserInterop.SetTextInputState(
+        HostId, state.text, state.selection.baseOffset, state.selection.extentOffset);
+
+    public void SetCaretRect(Rect logicalRect) => BrowserInterop.SetCaretRect(
+        HostId, logicalRect.left, logicalRect.top, logicalRect.width, logicalRect.height);
+
+    public void ClearClient() => BrowserInterop.ClearTextInput(HostId);
 
     public void Show()
     {
@@ -204,6 +329,96 @@ public sealed class BrowserHostAdapter :
     internal static void DispatchSnapshot(int hostId, string json)
     {
         if (TryGet(hostId, out var host)) host.ApplySnapshot(BrowserInterop.ParseSnapshot(json));
+    }
+
+    internal static void DispatchPointerBatch(
+        int hostId, int phase, int kind, int pointerId, int buttons, int modifiers, double[] samples)
+    {
+        if (!TryGet(hostId, out var host) || samples.Length == 0 || samples.Length % 7 != 0) return;
+        var ratio = host._snapshot.DevicePixelRatio;
+        var pointer = checked((ulong)Math.Max(0, pointerId));
+        var data = new List<PointerData>(samples.Length / 7);
+        for (var index = 0; index < samples.Length; index += 7)
+        {
+            var x = samples[index] * ratio;
+            var y = samples[index + 1] * ratio;
+            host._pointerPositions.TryGetValue(pointer, out var previous);
+            var change = phase switch
+            {
+                1 => PointerChange.down,
+                2 => PointerChange.up,
+                3 => PointerChange.cancel,
+                _ => PointerChange.move,
+            };
+            data.Add(new(
+                host._viewId,
+                TimeSpan.FromMilliseconds(samples[index + 6]),
+                change,
+                kind switch { 1 => PointerDeviceKind.touch, 2 => PointerDeviceKind.stylus, _ => PointerDeviceKind.mouse },
+                pointer,
+                x,
+                y,
+                previous == default ? 0 : x - previous.X,
+                previous == default ? 0 : y - previous.Y,
+                buttons,
+                pointerIdentifier: pointer,
+                pressure: samples[index + 2],
+                pressureMin: 0,
+                pressureMax: 1,
+                orientation: samples[index + 5],
+                tilt: Math.Sqrt((samples[index + 3] * samples[index + 3]) + (samples[index + 4] * samples[index + 4]))));
+            host._pointerPositions[pointer] = (x, y);
+            if (change is PointerChange.up or PointerChange.cancel) host._pointerPositions.Remove(pointer);
+        }
+        host.PointerData?.Invoke(new(data));
+    }
+
+    internal static void DispatchWheel(
+        int hostId, double x, double y, double deltaX, double deltaY, double timestampMilliseconds)
+    {
+        if (!TryGet(hostId, out var host)) return;
+        var ratio = host._snapshot.DevicePixelRatio;
+        host.PointerData?.Invoke(new([
+            new(host._viewId, TimeSpan.FromMilliseconds(timestampMilliseconds), PointerChange.hover,
+                PointerDeviceKind.mouse, 0, x * ratio, y * ratio, 0, 0, 0,
+                deltaX * ratio, deltaY * ratio, PointerSignalKind.scroll),
+        ]));
+    }
+
+    internal static void DispatchKey(
+        int hostId, bool down, bool repeat, string code, string key, double timestampMilliseconds)
+    {
+        if (!TryGet(hostId, out var host)) return;
+        host.KeyData?.Invoke(new(
+            host._viewId,
+            TimeSpan.FromMilliseconds(timestampMilliseconds),
+            down ? (repeat ? KeyEventType.repeat : KeyEventType.down) : KeyEventType.up,
+            StableKey(code),
+            StableKey(key),
+            false,
+            key.Length == 1 ? key : null));
+    }
+
+    internal static void DispatchFocus(int hostId, bool focused, double timestampMilliseconds)
+    {
+        if (TryGet(hostId, out var host))
+            host.FocusData?.Invoke(new(host._viewId, focused, TimeSpan.FromMilliseconds(timestampMilliseconds)));
+    }
+
+    internal static void DispatchTextEditing(
+        int hostId, string text, int selectionBase, int selectionExtent, int composingBase, int composingExtent)
+    {
+        if (!TryGet(hostId, out var host)) return;
+        DorotiTextSelection? composing = composingBase >= 0 && composingExtent >= composingBase
+            ? new DorotiTextSelection(composingBase, composingExtent)
+            : null;
+        host.EditingStateChanged?.Invoke(new(text, new(selectionBase, selectionExtent), composing));
+    }
+
+    internal static void DispatchTextAction(int hostId, int action)
+    {
+        if (TryGet(hostId, out var host) && Enum.IsDefined(typeof(DorotiTextInputAction), action))
+            host.ActionPerformed?.Invoke((DorotiTextInputAction)action);
     }
 
     private static bool TryGet(int hostId, out BrowserHostAdapter host)
@@ -268,6 +483,36 @@ public sealed class BrowserHostAdapter :
         return new([locale], snapshot.Brightness == "dark" ? Brightness.dark : Brightness.light,
             false, false, HostOperatingSystem.web);
     }
+
+    private static long StableKey(string value)
+    {
+        unchecked
+        {
+            long result = 1469598103934665603;
+            foreach (var character in value) result = (result ^ character) * 1099511628211;
+            return result;
+        }
+    }
+
+    private static string CursorName(DorotiMouseCursorKind cursor) => cursor switch
+    {
+        DorotiMouseCursorKind.click => "pointer",
+        DorotiMouseCursorKind.forbidden or DorotiMouseCursorKind.noDrop => "not-allowed",
+        DorotiMouseCursorKind.wait => "wait",
+        DorotiMouseCursorKind.progress => "progress",
+        DorotiMouseCursorKind.text => "text",
+        DorotiMouseCursorKind.verticalText => "vertical-text",
+        DorotiMouseCursorKind.precise => "crosshair",
+        DorotiMouseCursorKind.move or DorotiMouseCursorKind.allScroll => "move",
+        DorotiMouseCursorKind.grab => "grab",
+        DorotiMouseCursorKind.grabbing => "grabbing",
+        DorotiMouseCursorKind.resizeLeftRight => "ew-resize",
+        DorotiMouseCursorKind.resizeUpDown => "ns-resize",
+        DorotiMouseCursorKind.resizeUpLeftDownRight => "nwse-resize",
+        DorotiMouseCursorKind.resizeUpRightDownLeft => "nesw-resize",
+        DorotiMouseCursorKind.none => "none",
+        _ => "default",
+    };
 }
 
 [SupportedOSPlatform("browser")]

@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Doroti.Host.Desktop.Framework" />
+    <InternalsVisibleTo Include="Doroti.Host.Web" />
     <ProjectReference Include="..\Doroti.Runtime\Doroti.Runtime.csproj" />
   </ItemGroup>
 </Project>

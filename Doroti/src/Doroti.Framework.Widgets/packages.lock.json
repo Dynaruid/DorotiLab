@@ -99,6 +99,13 @@
           "Doroti.Ui": "[0.2.0-beta, )"
         }
       },
+      "doroti.hosting": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Runtime": "[0.2.0-beta, )",
+          "Doroti.Ui": "[0.2.0-beta, )"
+        }
+      },
       "doroti.runtime": {
         "type": "Project",
         "dependencies": {
