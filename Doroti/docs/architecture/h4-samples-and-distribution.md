@@ -1,5 +1,7 @@
 # H4 samples and distribution
 
+> Historical evidence only. The comparison samples, `doroti-counter` template and H4 verifier described below have been removed; G7-3C owns their future C# template replacement.
+
 H4 originally made `Doroti.Host.Avalonia` the default shell for runnable product entrypoints. `samples/AvaloniaHostCounter` preserves that host/frame fixture, while the current `DorotiDemoApp` uses the source-ported desktop shell and runs the F2 interactive 1,000-item fixed-extent sliver slice. Both projects remain non-packable and outside the lean `Doroti.Product.slnx` package build.
 
 Generated packages remain host-neutral. Their checked-in C# and project files do not reference Avalonia or `Doroti.Host.Avalonia`, and the release package inspection continues to require their declared public Doroti/FlutterCompat dependency surface. The external application owns the platform shell and consumes those packages through public APIs.

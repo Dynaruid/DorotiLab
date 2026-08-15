@@ -1,5 +1,7 @@
 # ADR-014: Element inactive tree and Key lifecycle boundary
 
+Status: superseded by the reviewed G5-3 Widgets implementation; the handwritten `Doroti.Widgets` owner has been removed.
+
 ## Decision
 
 R6 does not introduce Element identity into RenderObject. R7 owns inactive Elements, local/global Key reservations and reconciliation rollback in `Doroti.Widgets`; RenderObject keeps only parent/order, ParentData and geometry state.

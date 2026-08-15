@@ -6,7 +6,6 @@ using Doroti.Generated.Framework.Animation;
 using Doroti.Generated.Framework.Gestures;
 using Doroti.Generated.Framework.Physics;
 using Path = System.IO.Path;
-using WidgetCompat = Doroti.Widgets;
 
 var dorotiRoot = FindDorotiRoot(Environment.CurrentDirectory);
 var failures = new List<string>();
@@ -17,8 +16,6 @@ ValidateRuntimeIdentity(failures, trace);
 ValidateArena(failures, trace);
 ValidatePointerSignals(failures, trace);
 ValidatePhysicsAndAnimation(failures, trace);
-ValidateCompatibilityCutover(failures, trace);
-ValidateRecognizerPolicyCutover(failures, trace);
 
 var success = failures.Count == 0;
 var evidenceDirectory = Path.Combine(dorotiRoot, "migration", "flutter-avalonia", "bridge-validation");
@@ -187,80 +184,6 @@ static void ValidatePhysicsAndAnimation(List<string> failures, List<string> trac
     var interval = new Interval(0.25, 0.75);
     Require(interval.transform(0.25) == 0 && interval.transform(0.75) == 1, "motion: interval endpoints drifted.", failures);
     trace.Add($"motion:spring-x0={x0:R},x1={x1:R},x10={x10:R};linear=0.375");
-}
-
-static void ValidateCompatibilityCutover(List<string> failures, List<string> trace)
-{
-    var routed = 0;
-    var router = new WidgetCompat.PointerRouter();
-    Action<WidgetCompat.PointerEvent> route = observed =>
-    {
-        routed++;
-        Require(observed.DeviceId == 72 && observed.Position == new Doroti.Graphics.Offset(3, 4), "cutover: pointer router changed the compatibility event.", failures);
-    };
-    router.AddRoute(72, route);
-    router.Route(new WidgetCompat.PointerEvent(72, WidgetCompat.PointerEventPhase.Move, new Doroti.Graphics.Offset(3, 4), new Doroti.Graphics.Offset(3, 4), 1, default, TimeSpan.FromMilliseconds(9)));
-    router.RemoveRoute(72, route);
-    Require(routed == 1, "cutover: Widgets pointer router did not dispatch exactly once.", failures);
-
-    var resolved = 0;
-    var resolver = new WidgetCompat.PointerSignalResolver();
-    var signal = new WidgetCompat.PointerScrollEvent(73, new Doroti.Graphics.Offset(5, 6), new Doroti.Graphics.Offset(0, 12), TimeSpan.FromMilliseconds(10));
-    resolver.Register(signal, _ => resolved++);
-    Require(resolver.Resolve(signal) && resolved == 1, "cutover: Widgets signal resolver did not preserve first-handler resolution.", failures);
-    trace.Add("compat-cutover:pointer-router,pointer-signal=generated-owner;arena-policy=reviewed-framework");
-}
-
-static void ValidateRecognizerPolicyCutover(List<string> failures, List<string> trace)
-{
-    var arena = new WidgetCompat.FlutterArenaAdapter();
-    var taps = 0;
-    var tap = new WidgetCompat.RenderGestureDetector(() => taps++);
-    tap.BindFlutterArena(arena);
-    tap.HandlePointerEvent(new WidgetCompat.PointerEvent(81, WidgetCompat.PointerEventPhase.Down, new Doroti.Graphics.Offset(10, 10), new Doroti.Graphics.Offset(3, 4), 1, default, TimeSpan.FromMilliseconds(1)));
-    arena.Close(81);
-    arena.FlushMicrotasks();
-    tap.HandlePointerEvent(new WidgetCompat.PointerEvent(81, WidgetCompat.PointerEventPhase.Up, new Doroti.Graphics.Offset(10, 10), new Doroti.Graphics.Offset(3, 4), 0, default, TimeSpan.FromMilliseconds(9)));
-    arena.Sweep(81);
-    arena.FlushMicrotasks();
-    Require(taps == 1, "recognizer-cutover: generated TapGestureRecognizer policy did not invoke exactly once.", failures);
-
-    var cancelTrace = new List<string>();
-    var canceledTaps = 0;
-    var cancelTap = new WidgetCompat.RenderGestureDetector(() => canceledTaps++);
-    cancelTap.BindFlutterArena(arena, cancelTrace.Add);
-    cancelTap.HandlePointerEvent(new WidgetCompat.PointerEvent(83, WidgetCompat.PointerEventPhase.Down, new Doroti.Graphics.Offset(12, 13), new Doroti.Graphics.Offset(2, 3), 1, default, TimeSpan.FromMilliseconds(30)));
-    arena.Close(83);
-    arena.FlushMicrotasks();
-    cancelTap.HandlePointerEvent(new WidgetCompat.PointerEvent(83, WidgetCompat.PointerEventPhase.Cancelled, new Doroti.Graphics.Offset(12, 13), new Doroti.Graphics.Offset(2, 3), 0, default, TimeSpan.FromMilliseconds(31)));
-    arena.FlushMicrotasks();
-    Require(canceledTaps == 0 && cancelTrace.Count(item => item == "tap:cancel") == 1,
-        "recognizer-cutover: capture loss did not cancel the reviewed tap recognizer exactly once.", failures);
-
-    using var controller = new WidgetCompat.SliverScrollController();
-    using var drag = new WidgetCompat.RenderSliverFixedExtentViewport(20, 20, controller);
-    drag.Layout(Doroti.Rendering.BoxConstraints.TightFor(width: 100, height: 100));
-    drag.BindFlutterArena(arena);
-    drag.HandlePointerEvent(new WidgetCompat.PointerEvent(82, WidgetCompat.PointerEventPhase.Down, new Doroti.Graphics.Offset(40, 40), new Doroti.Graphics.Offset(4, 4), 1, default, TimeSpan.FromMilliseconds(2)));
-    arena.Close(82);
-    arena.FlushMicrotasks();
-    drag.HandlePointerEvent(new WidgetCompat.PointerEvent(82, WidgetCompat.PointerEventPhase.Move, new Doroti.Graphics.Offset(40, 16), new Doroti.Graphics.Offset(4, -20), 1, default, TimeSpan.FromMilliseconds(12)));
-    drag.HandlePointerEvent(new WidgetCompat.PointerEvent(82, WidgetCompat.PointerEventPhase.Up, new Doroti.Graphics.Offset(40, 14), new Doroti.Graphics.Offset(4, -22), 0, default, TimeSpan.FromMilliseconds(20)));
-    arena.Sweep(82);
-    arena.FlushMicrotasks();
-    Require(Math.Abs(controller.Offset - 24) < 1e-9,
-        $"recognizer-cutover: reviewed VerticalDragGestureRecognizer changed logical delta semantics (offset={controller.Offset:R}).", failures);
-
-    var widgetAssembly = typeof(WidgetCompat.RenderGestureDetector).Assembly;
-    Require(widgetAssembly.GetType("Doroti.Widgets.TapGestureRecognizer") is null,
-        "recognizer-cutover: compatibility TapGestureRecognizer symbol still exists.", failures);
-    Require(widgetAssembly.GetType("Doroti.Widgets.VerticalDragGestureRecognizer") is null,
-        "recognizer-cutover: compatibility VerticalDragGestureRecognizer symbol still exists.", failures);
-    var tapField = typeof(WidgetCompat.RenderGestureDetector).GetField("_recognizer", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-    var dragField = typeof(WidgetCompat.RenderSliverFixedExtentViewport).GetField("_drag", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-    Require(tapField?.FieldType == typeof(TapGestureRecognizer), "recognizer-cutover: RenderGestureDetector does not directly own the reviewed recognizer type.", failures);
-    Require(dragField?.FieldType == typeof(VerticalDragGestureRecognizer), "recognizer-cutover: viewport does not directly own the reviewed recognizer type.", failures);
-    trace.Add("recognizer-cutover:tap,vertical-drag=direct-reviewed-types;timestamp-logical-coordinate=managed-preserved");
 }
 
 static string FindDorotiRoot(string start)

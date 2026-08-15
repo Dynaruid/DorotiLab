@@ -1,5 +1,7 @@
 # R3 contract map
 
+> Historical roadmap evidence. The handwritten `Doroti.Widgets` and root `Doroti` facade listed below were removed after the G5-3 reviewed framework cutover.
+
 R3 fixes ownership and dependency direction; it does not implement a native window or rasterizer.
 
 | Contract area | Assembly | R3 types | Next implementation |

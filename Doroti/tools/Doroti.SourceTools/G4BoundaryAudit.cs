@@ -19,7 +19,6 @@ public static partial class G4BoundaryAudit
         "Doroti.Core",
         "Doroti.Platform",
         "Doroti.Rendering",
-        "Doroti.Widgets",
         "Doroti.Engine",
         "Doroti.Flutter.Runtime",
     };
@@ -129,7 +128,7 @@ public static partial class G4BoundaryAudit
         return new(
             OwnerAuditSchema,
             "G4-0",
-            "Declared C# type/delegate symbols at every explicit visibility in the six pre-cutover owner projects; methods inherit their declaring type decision unless a later promotion manifest records a narrower cutover.",
+            "Declared C# type/delegate symbols in the current host-neutral owner projects after the handwritten Widgets cutover; methods inherit their declaring type decision unless a later promotion manifest records a narrower cutover.",
             AuditedProjects,
             new(symbols.Count, duplicateCount, unclassified, counts),
             symbols.ToArray());
@@ -180,21 +179,8 @@ public static partial class G4BoundaryAudit
             return new("move-to-framework", "Doroti.Flutter.Framework.Rendering", "G4-5", "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior.");
         }
 
-        if (project == "Doroti.Widgets")
-        {
-            return new("move-to-framework", "Doroti.Flutter.Framework.Widgets/Gestures/Animation", symbol.Contains("Gesture", StringComparison.Ordinal) ? "G4-4" : "G4-6", "Handwritten Widget, Element, gesture and animation owners are replaced by reviewed Flutter source.");
-        }
-
         if (project == "Doroti.Engine")
         {
-            if (file == "InteractiveApplication.cs")
-            {
-                return new("remove-after-cutover", "Doroti.Flutter.Hosting + host composition", "G4-6", "The handwritten Widget composition root is removed during product cutover.");
-            }
-            if (file == "ManagedBgraRenderSurface.cs")
-            {
-                return new("remove-after-cutover", "Avalonia.Skia strict GPU surface", "G4-5", "Managed full-frame software rendering is not a product fallback.");
-            }
             return new("keep-bridge", "Doroti host-neutral frame/resource protocol", "G4-5", "Mailbox, ACK, surface generation and diagnostics may remain if symbol parity proves no duplicated framework/platform behavior.");
         }
 

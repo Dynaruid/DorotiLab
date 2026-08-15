@@ -6,6 +6,5 @@
     <ProjectReference Include="..\..\src\Doroti.Flutter.Framework.Physics\Doroti.Flutter.Framework.Physics.csproj" />
     <ProjectReference Include="..\..\src\Doroti.Flutter.Framework.Animation\Doroti.Flutter.Framework.Animation.csproj" />
     <ProjectReference Include="..\..\src\Doroti.Flutter.Framework.Gestures\Doroti.Flutter.Framework.Gestures.csproj" />
-    <ProjectReference Include="..\..\src\Doroti.Widgets\Doroti.Widgets.csproj" />
   </ItemGroup>
 </Project>

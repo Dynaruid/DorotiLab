@@ -40,7 +40,6 @@ Doroti.DartToCSharp ──► reviewed C# framework packages
 - `Doroti.Engine`, `Doroti.Rendering`, and `Doroti.Graphics` own frame scheduling, display output, and graphics contracts.
 - `Doroti.Shell.Core` and `Doroti.Host.Desktop` define and consume backend-neutral typed desktop capabilities.
 - `Doroti.Target.Windows.win-x64` and `Doroti.Target.macOS.osx-arm64` inject the Win32/WGL or AppKit/NSOpenGL implementation.
-- `Doroti.Host.Avalonia` is a comparison host, not the default product composition root.
 
 Selected Avalonia platform code is adapted behind Doroti contracts and tracked by provenance manifests. Applications do not take a runtime dependency on Avalonia controls.
 
@@ -80,7 +79,7 @@ dotnet run --project ./DorotiDemoApp -- --smoke --entry builder --frames 3 --dur
 | `validate` | Run the compiler validation suite |
 | `audit` | Run storage, source/provenance, and compiler audits |
 | `format` | Verify product formatting without modifying files |
-| `release` | Build, audit, pack, and test the package-only external consumer |
+| `release` | Build, audit, and inspect product packages; fail closed until the G7-3C application template acceptance is implemented |
 | `clean` | Remove Doroti build output, artifacts, and temporary local state |
 
 Examples:

@@ -117,11 +117,20 @@ $candidateReport = Get-Content -LiteralPath (Join-Path $CandidateRoot 'converter
 $candidateCoverage = Get-Content -LiteralPath (Join-Path $CandidateRoot 'framework-coverage.json') -Raw | ConvertFrom-Json
 $appReport = Get-Content -LiteralPath (Join-Path $AppCandidateRoot 'converter-report.json') -Raw | ConvertFrom-Json
 $productSolution = Get-Content -LiteralPath (Join-Path $dorotiRoot 'Doroti.Product.slnx') -Raw
-$legacyProject = Get-Content -LiteralPath (Join-Path $dorotiRoot 'src/Doroti.Widgets/Doroti.Widgets.csproj') -Raw
+$remainingLegacyPaths = @(
+    'src/Doroti.Legacy.Rendering/Doroti.Legacy.Rendering.csproj',
+    'src/Doroti.Legacy.Engine/Doroti.Legacy.Engine.csproj',
+    'src/Doroti.Widgets/Doroti.Widgets.csproj',
+    'src/Doroti/Doroti.csproj',
+    'src/Doroti/DorotiApp.cs',
+    'src/Doroti.Engine/InteractiveApplication.cs',
+    'src/Doroti.Engine/ManagedBgraRenderSurface.cs',
+    'src/Doroti.Rendering/RenderBoxes.cs'
+) | Where-Object { Test-Path -LiteralPath (Join-Path $dorotiRoot $_) }
 $engineOwners = @(Get-ChildItem -LiteralPath (Join-Path $dorotiRoot 'src/Doroti.Engine') -Filter '*.cs' -File -Recurse | Select-String -Pattern '\bclass\s+(Widget|Element|BuildOwner)\b')
 $handwrittenOwnerCount = @(
     if ($productSolution -match 'Doroti\.Widgets') { 'product-solution-legacy-reference' }
-    if ($legacyProject -match '<IsDorotiProduct>true</IsDorotiProduct>') { 'legacy-project-product-flag' }
+    $remainingLegacyPaths
     $engineOwners
 ).Count
 if ($handwrittenOwnerCount -ne 0) { throw "Handwritten Widget/Element product owner audit failed: $handwrittenOwnerCount." }

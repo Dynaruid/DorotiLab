@@ -6,7 +6,7 @@
 
 `Doroti.Host.Desktop` converts the internal source-port events to `Doroti.Platform` window, pointer, key, text, clipboard, cursor and semantics contracts. Its UI Automation provider maps the immutable Doroti semantics tree to `IRawElementProviderFragmentRoot`/fragment nodes and `InvokePattern`; the source-ported WndProc returns that provider from `WM_GETOBJECT`. `WindowMetrics.Generation` and `IWindowCoordinateDiagnostics` allow the A1 target test to prove that native client size, logical pointer position, physical pointer position and IME caret derive from the same metrics generation. A2/D0 may refine the surface-generation and rounding policy without exposing HWND or vendor types.
 
-The default template now selects `Doroti.Host.Desktop`. It still selects `Doroti.Backends.Skia` explicitly as a temporary pre-A2 surface; A2 owns the direct GPU surface and asynchronous frame-pipeline cutover. The old `Doroti.Host.Avalonia` remains only in the full solution and `ShellHostComparison` A/B harness.
+The historical default template selected `Doroti.Host.Desktop` and `Doroti.Backends.Skia` as a temporary pre-A2 surface. A2 completed the direct GPU surface and asynchronous frame-pipeline cutover; the old `Doroti.Host.Avalonia`, `ShellHostComparison` harness and handwritten template were subsequently removed.
 
 ## Verification
 

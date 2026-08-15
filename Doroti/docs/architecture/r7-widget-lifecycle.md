@@ -1,5 +1,7 @@
 # R7 Widget lifecycle and Compiler C2
 
+> Historical roadmap evidence. The handwritten `Doroti.Widgets` implementation and FlutterCompat adapters described below were removed after G5-3.
+
 R7 adds the backend-neutral Widget/Element tree in `Doroti.Widgets`. Widgets are immutable configuration, Elements own identity and reconciliation, State belongs to a `StatefulElement`, and RenderObjects remain the only layout/paint owners. `BuildOwner` pins the UI thread, processes dirty Elements by depth and stable schedule sequence, restores `Idle` after faults, and retains failed dirty work for an explicit retry.
 
 Identity is `Widget.IdentityType + Key` within a parent. Unkeyed children prefer the current slot; local keyed children can reorder within their parent without replacing State. `RenderObjectElement` derives the direct RenderObject descendants from the reconciled Element order and applies that order through `RenderProxyBox` or `IRenderObjectChildContainer`. Widget configuration never enters `Doroti.Rendering`.

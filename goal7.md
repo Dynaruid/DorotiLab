@@ -8,8 +8,9 @@
 > 기준 Doroti revision: `5379137447162adb2957212ea2f336894effe05e` + 현재 작업 트리
 > Flutter source pin: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
 > Flutter reference toolchain: pinned 비교·호환성 검증에서만 repository-local `flutter-master` SDK를 사용하며 global/PATH Flutter·Dart fallback 금지
-> Doroti 제품 toolchain: 앱 생성·분석·컴파일·Web publish는 Flutter SDK, Flutter CLI와 별도 Flutter project 없이 배포된 Doroti SDK/CLI와 promoted package만으로 수행
-> 최우선 제품 gate: 새 Doroti-owned Dart app을 `doroti create`/`doroti build web` 경로로 생성해 Windows, macOS와 Web `browser-wasm` artifact로 build/publish하고, 실제 GPU frame과 app-essential input·semantics·resource 경계를 통과할 것
+> Doroti 제품 toolchain: 사용자 앱은 C#으로 작성하고 표준 .NET SDK와 배포된 Doroti template/package만으로 build한다. Flutter SDK, Flutter CLI, Dart app project와 별도 Flutter platform project는 제품 생성·publish 경로에서 사용하지 않는다.
+> Web host model: Blazor WebAssembly를 browser host shell로 채택한다. allowlist된 root/surface Razor component가 canvas·host lifecycle·browser event bridge만 소유하고, Doroti widget/build/layout/paint/state/semantics와 visual tree는 공용 C# framework 및 Skia surface가 계속 소유한다.
+> 최우선 제품 gate: 동일한 일반 C# `DorotiDemoApp`을 Blazor WebAssembly `net10.0`/`browser-wasm`과 desktop target으로 build/publish하고, Doroti가 source-port한 platform shell 위에서 Skia GPU frame과 app-essential input·semantics·resource 경계를 통과할 것
 
 ## 0. Goal6에서 이어받는 기준선
 
@@ -34,13 +35,13 @@ Goal6의 54/60, 55/55, 771, 193, 74, 440 같은 수치는 당시 범위를 설�
 
 ## 1. 목표와 범위
 
-Goal7의 목표는 동일한 generated Dart app을 공용 Flutter framework 의미로 Windows, macOS와 Web에 build·publish·실행하는 것이다.
+Goal7의 목표는 Flutter source에서 생성·승격한 C# framework API를 사용해 작성한 동일한 C# app을 Windows, macOS와 Web에 build·publish·실행하는 것이다. Dart→C# compiler는 framework/package 생성 도구이며 사용자 app의 제품 언어는 C#이다.
 
 필수 범위:
 
 - shared correctness: compiler/IR/lowerer/runtime, Material 대표 visual fidelity, scene/compositing과 retained rendering
 - interaction capability: pointer, capture/drag, wheel, keyboard, text/composition, semantics action의 target 인과 trace
-- product app: Doroti-owned project manifest와 일반 Dart source, promoted packages, resource/localization/plugin과 deterministic publish
+- product app: 일반 C# project/source, promoted Doroti framework/target packages, resource/localization/plugin과 deterministic publish
 - macOS shell: source-ported AppKit/libAvalonia window·dispatcher·surface와 input/text/clipboard/accessibility bridge, `osx-arm64` package-only publish
 - Web build/runtime: `browser-wasm`, GPU canvas, browser host, static artifact, app-essential lifecycle
 - release acceptance: Windows, macOS와 Chromium Web의 자동화 및 최소 physical 확인
@@ -49,7 +50,9 @@ Goal7의 목표는 동일한 generated Dart app을 공용 Flutter framework 의�
 
 Web은 Flutter framework policy를 JavaScript/DOM에 다시 구현하는 별도 UI가 아니다. 공용 generated framework가 widget/build/layout/paint/state를 소유하고, browser adapter는 canvas/scheduler/input/text/clipboard/accessibility/resource/GPU capability만 제공한다.
 
-Doroti Web 제품은 Flutter Web project의 wrapper도 아니다. 사용자 project는 `doroti.yaml`과 `lib/main.dart`를 소유하며, `web/`, `.metadata`, `android/`, `ios/` 같은 Flutter platform scaffold를 생성하거나 요구하지 않는다. `pubspec.yaml` 입력은 기존 Dart/Flutter package 이식 호환성을 위해 선택적으로 읽을 수 있지만, 새 Doroti app의 생성·build·publish 계약은 Flutter CLI에 의존하지 않는다. pinned Flutter SDK는 reference fixture와 differential에만 사용하며 제품 artifact 생성 과정에는 참여하지 않는다.
+Doroti Web 제품은 Flutter Web project의 wrapper도, Dart app transpilation 결과도 아니다. 사용자 project는 C# source와 SDK-style `.csproj`를 소유하고 `Doroti.Framework.*`의 생성·승격된 C# API를 직접 사용한다. browser host project는 표준 Blazor WebAssembly TFM `net10.0`과 RID `browser-wasm`을 사용하며 `SkiaSharp.Views.Blazor.SKGLView`, `SkiaSharp.NativeAssets.WebAssembly`와 Emscripten WebGL2를 통해 canvas에 그린다. 별도 CanvasKit runtime/JS API는 포함하지 않는다. Flutter/Dart source와 pinned Flutter SDK는 framework regeneration 및 reference differential에만 사용하며 사용자 app 생성과 제품 artifact build에는 참여하지 않는다.
+
+Web hosting은 Blazor WebAssembly host 계약을 따른다. `Microsoft.NET.Sdk.BlazorWebAssembly`, `Microsoft.AspNetCore.Components.WebAssembly`, `blazor.webassembly.js`, static web assets, Emscripten native linking과 deployment-neutral `wwwroot` publish를 사용한다. `DorotiRoot`/`DorotiSurface` 같은 allowlist된 host component만 root mount, `SKGLView`, canvas focus·pointer event와 host disposal을 담당한다. Blazor router/form/component library를 Doroti app UI로 사용하거나 Doroti widget을 Razor/DOM node로 투영하지 않으며, browser DOM은 canvas, hidden text/IME와 accessibility bridge만 소유한다. 고빈도 pointer/coalescing, pointer capture, IME와 context-loss처럼 DOM callback 안에서 즉시 처리해야 하는 기능은 작은 `[JSImport]` module에 남기고 입력 정규화·routing·gesture/state policy는 C#에 둔다.
 
 ## 2. 검증 핵심화 원칙
 
@@ -195,7 +198,7 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 
 - Cupertino는 component별 native 전수 측정 대신 Tier A 대표 control로 pointer/key/semantics 능력군을 재사용한다.
 - adaptive constructor의 platform 선택과 대표 behavior를 pinned Flutter trace와 비교한다.
-- Doroti compiler가 읽는 Dart app source와 handwritten fixture는 source/app identity 및 대표 behavior/semantics를 비교한다. Flutter project는 reference 실행에만 사용하고 Doroti 제품 project나 publish 입력으로 승격하지 않는다. 전체 화면 raster 중복 비교는 하지 않는다.
+- Doroti compiler가 읽는 Dart fixture와 handwritten C# product fixture는 framework 변환 identity 및 대표 behavior/semantics를 비교한다. Dart/Flutter project는 compiler/reference 실행에만 사용하고 Doroti 사용자 app project나 publish 입력으로 승격하지 않는다. 전체 화면 raster 중복 비교는 하지 않는다.
 - promoted framework/hosting/target package만 사용하는 repository 밖 Windows consumer를 launch하고 대표 toggle을 수행한다.
 
 완료 gate:
@@ -220,7 +223,7 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 - package-only 경계 `PASS`: application compiler가 conditional repository `ProjectReference`를 더 이상 생성하지 않으며, 저장소 밖 소비자가 승격 NuGet package만으로 restore/build 및 `win-x64` publish를 통과했다. repository-private/candidate fallback은 0건이다.
 - 현재 호스트가 macOS이므로 Win32 실행을 가장하지 않았다. 현재 source의 compiler/package 경계는 macOS에서 재검증하고, 변경되지 않은 초기화·대표 toggle의 actual HWND strict-GPU 실행은 G6 Windows predecessor evidence를 명시적으로 계승했다. 이 실행 시점에는 macOS desktop target이 비필수였으므로 shell/runtime은 `notVerified`였고, 이후 추가된 필수 `osx-arm64` 검증은 G7-3M이 새 evidence로 소유한다.
 - macOS 전환 지원으로 repository-local Flutter/Dart launcher 선택과 Windows checkout의 SDK CRLF 정규화를 추가했다. 재현 명령은 `validate-g7-product.ps1 -Gate Cupertino|Generated`이다.
-- 범위 정정(2026-08-15): 당시 `DorotiDemoApp/dart`의 `pubspec.yaml`과 Flutter widget test는 compiler 입력의 Flutter 호환 의미를 비교하기 위한 reference fixture였다. 이는 Doroti 자체 app 생성/build/publish UX의 증거가 아니며, 삭제된 Flutter fixture를 제품 project로 복구하지 않는다. G7-2의 behavior/semantics 결과는 predecessor reference로만 보존하고, 현재 Doroti-owned app source와 Web product closure는 G7-3이 새로 소유한다.
+- 범위 정정(2026-08-15): 당시 `DorotiDemoApp/dart`의 `pubspec.yaml`과 Flutter widget test는 compiler 입력의 Flutter 호환 의미를 비교하기 위한 reference fixture였다. 이는 Doroti C# app 생성/build/publish UX의 증거가 아니며, 삭제된 Flutter fixture를 제품 project로 복구하지 않는다. G7-2의 behavior/semantics 결과는 predecessor reference로만 보존하고, 현재 C# app template와 Web product closure는 G7-3이 새로 소유한다.
 
 ### G7-3M — macOS source-ported shell과 `osx-arm64` package baseline
 
@@ -267,111 +270,182 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 - `g7-target-matrix.json`에서 `macos-desktop` deferred 항목을 제거하고 `osx-arm64`를 필수 target으로 승격했다. Korean IME candidate window, VoiceOver 물리 탐색, 실제 precise trackpad와 `osx-x64`는 전이하지 않고 G7-6까지 `notVerified`다.
 - 재현 명령은 `validate-g7-macos-shell.ps1 -Shard Source|Build|Live|Package`이며 종합 evidence의 status는 `pass`다.
 
-### G7-3 — Doroti-owned Web application build/publish closure
+### G7-3N — 전 target Doroti-owned product naming closure
 
-진입 조건: G7-0 완료. G7-1과 병렬 착수할 수 있으나 shared semantics를 Web workaround로 복제하지 않는다. G7-3은 Web host library가 publish되는 것만으로 완료하지 않으며, 저장소 밖에서 새 Doroti app을 만들고 그 Dart app이 실제 Web artifact에 포함되는 전체 제품 경로를 소유한다.
+진입 조건: G7-1, G7-2, G7-3M과 G7-3I `verified-infrastructure` 완료. 기존 Windows/macOS/Web 동작 증거는 rename 전 predecessor evidence로 보존하고, 새 package/API identity와 target별 실행은 이 gate에서 다시 검증한다.
 
-#### G7-3I — Web host/toolchain infrastructure baseline (`verified-infrastructure`)
+작업:
+
+- product source/assembly/package/public API의 Doroti-owned infrastructure 이름을 전 target에서 하나의 naming map으로 교체한다. 최소 범위는 `Doroti.Flutter.Hosting` → `Doroti.Hosting`, `Doroti.Flutter.Ui` → `Doroti.Ui`, `Doroti.Flutter.Runtime` → `Doroti.Runtime`, `Doroti.Flutter.Framework.*` → `Doroti.Framework.*`, `Doroti.Host.Desktop.Flutter` → `Doroti.Host.Desktop.Framework`이다. native shell의 `Doroti.Host.Desktop`과 framework integration 경계는 계속 분리한다.
+- `FlutterHostSession`, `FlutterView`, `FlutterViewCapabilities`, `FlutterCapabilityIds`, `FlutterCapabilityException`, `FlutterApplicationBoundary`, `DesktopFlutterHost`, `BrowserFlutterHost`, `WindowsFlutterTarget`와 `MacOsFlutterTarget` 같은 Doroti-owned type/file을 각각 `Doroti*` 또는 역할 기반 중립 이름으로 원자적으로 rename한다. Windows, macOS, Web producer/consumer, template, validation과 문서를 같은 변경에서 동기화한다.
+- `Flutter` 명칭은 pinned upstream source/SDK, reference fixture/provenance와 Flutter 호환 API의 exact symbol처럼 실제 원본 의미가 있는 항목에만 manifest allowlist로 남긴다. Doroti-owned infrastructure를 예외로 등록하거나 새 public forwarding alias로 보존하지 않는다.
+- package id, assembly name, namespace, XML documentation, diagnostic, target manifest, static asset metadata와 generated namespace owner를 새 이름으로 갱신한다. 이전 package/assembly/namespace에 대한 conditional fallback과 type forwarding은 두지 않는다.
+- rename 뒤 promoted package만 사용하는 동일한 C# `DorotiDemoApp`을 Windows, macOS `osx-arm64`와 Web `browser-wasm`에 build/publish하고, Windows/macOS 대표 strict-GPU launch와 Web product graph를 다시 검증한다.
+
+완료 gate:
+
+- machine-readable old → new project/assembly/package/namespace/type/file mapping에 owner, consumer closure와 제거 상태가 있음
+- allowlist 밖 product source, public API, assembly/package id, template, manifest와 diagnostic의 `Doroti.Flutter`, `Host.Desktop.Flutter` 및 Doroti-owned `Flutter*` identifier 0
+- 이전 package/assembly/namespace reference, public compatibility alias, type forwarding과 repository-private fallback 0
+- `Doroti.slnx` Release build와 영향 validator PASS, package lock/target manifest/architecture inventory가 새 identity와 일치
+- repository 밖 package-only 동일 C# app의 `win-x64`, `osx-arm64`, `browser-wasm` restore/build/publish PASS
+- rename 뒤 Windows/macOS 대표 strict-GPU first frame·input/state와 Web host/graph smoke PASS
+
+산출물:
+
+- `Doroti/migration/product-naming/g7-doroti-naming-map.json`
+- `Doroti/migration/product-naming/g7-doroti-naming-evidence.json`
+- `Doroti/eng/validate-g7-product-naming.ps1 -Shard <Inventory|Build|Package|Live>`
+
+현재 상태(2026-08-15): `notVerified`. 선행 product graph에는 `Doroti.Flutter.*`, `Doroti.Host.Desktop.Flutter`, `FlutterHostSession`, `FlutterView`, `FlutterCapabilityIds`와 target별 `*FlutterHost`/`*FlutterTarget` 이름이 남아 있다. 기존 G7-1/G7-2/G7-3M PASS를 naming closure로 소급하지 않으며 G7-3N 완료 전 새 Web public API를 확정하지 않는다.
+
+### G7-3 — C# + Skia Blazor WebAssembly `browser-wasm` application closure
+
+진입 조건: G7-0 완료. G7-3I는 기존 `verified-infrastructure` baseline으로 보존하며, 신규 G7-3V/G7-3A/G7-3B/G7-3C 구현은 G7-3N 완료 뒤에 시작한다. shared Flutter framework 의미를 Web workaround나 Avalonia Control로 복제하지 않는다. G7-3은 Web host library 또는 빈 WASM app이 publish되는 것만으로 완료하지 않으며, 저장소 밖에서 일반 C# Doroti app을 생성하고 같은 C# widget tree가 Skia GPU로 browser canvas에 그려지는 전체 제품 경로를 소유한다.
+
+#### G7-3I — 기존 standalone .NET WebAssembly host/toolchain baseline (`verified-infrastructure`)
 
 기존 구현과 증거는 다음 범위로만 보존한다.
 
-- .NET WebAssembly SDK/`wasm-tools`, `Doroti.Host.Web`, `Doroti.Target.Web.browser-wasm`, browser-only dependency graph와 static artifact hash pipeline
+- `Microsoft.NET.Sdk.WebAssembly`/`wasm-tools`, `_framework/dotnet.js`, `Doroti.Host.Web`, `Doroti.Target.Web.browser-wasm`, browser-only dependency graph와 static artifact hash pipeline
 - document/canvas lifecycle, `requestAnimationFrame`, visibility/focus, resize, `devicePixelRatio`, WebGL2 fail-closed policy와 JavaScript callback/plugin ABI
-- package-only 빈 consumer에서 target package restore와 interpreter/AOT probe publish가 가능하다는 구조 증거
+- package-only 빈 C# consumer에서 target package restore와 interpreter/AOT probe publish가 가능하다는 구조 증거
 
-이 baseline은 실제 Dart application compile, generated application assembly 포함, root widget mount 또는 Doroti app 생성 UX를 증명하지 않는다. `BrowserWasmTarget`만 생성하는 probe, 검증 스크립트가 직접 작성한 `Program.cs`/`index.html`/`main.js`, 빈 canvas publish는 product PASS로 집계하지 않는다.
+이 baseline은 standalone .NET WebAssembly runtime이 뜨고 static asset을 publish할 수 있다는 증거일 뿐, 최종 Blazor host shell, Doroti C# root widget mount, SkiaSharp WebGL draw/present 또는 실제 product app을 증명하지 않는다. `_framework/dotnet.js`를 직접 조립한 기존 bootstrap은 재사용 가능한 toolchain 증거이지 최종 제품 host 계약이 아니다. `BrowserWasmTarget`만 생성하는 probe와 빈 canvas publish는 product PASS로 집계하지 않는다.
 
-#### G7-3A — Doroti project authoring contract
-
-작업:
-
-- 사용자-facing project root를 `doroti.yaml`, `lib/main.dart`, 선택적 `assets/`, `l10n/`, plugin declaration으로 고정한다.
-- `doroti create <path>`가 Flutter platform scaffold 없이 최소 실행 가능한 Doroti app을 생성한다. 생성 결과에 `.metadata`, Flutter-generated `web/`, `android/`, `ios/`, `macos/`, `windows/` project를 포함하지 않는다.
-- `doroti.yaml`은 application id, entrypoint, target, framework package, resource/font/localization/plugin을 typed schema로 소유한다. compiler용 selection JSON과 MSBuild project는 사용자 source가 아니라 Doroti 내부 intermediate output으로 생성한다.
-- 기존 Flutter-compatible Dart package를 가져오는 import 경로와 새 Doroti project 생성을 구분한다. 선택적 `pubspec.yaml` import를 지원하더라도 `flutter create`, `flutter pub get`, `flutter build web`을 제품 build 단계에서 실행하지 않는다.
-- release Doroti SDK/CLI가 자체 analyzer/package-resolution 구성요소를 제공해 시스템 Flutter SDK나 global/PATH Dart가 없는 환경에서도 project 진단과 compile을 수행한다.
-
-완료 gate:
-
-- clean 임시 디렉터리에서 배포된 Doroti SDK/CLI만으로 새 project 생성 PASS
-- 생성된 project의 사용자 소유 source/manifest와 Doroti 내부 intermediate 경계가 명확함
-- product command process tree의 `flutter`, `flutter.bat`, global/PATH `dart` 실행 0
-- 생성·build 전후 Flutter project/platform scaffold 0
-- malformed manifest, 미지원 target/plugin/resource는 stable diagnostic으로 fail-closed
-
-#### G7-3B — Dart application to `browser-wasm` product compilation
+#### G7-3V — pinned Avalonia Browser behavior reference와 Blazor capability 구현
 
 작업:
 
-- application compiler가 `target: browser-wasm`을 해석해 Dart entrypoint와 transitive library를 generated application assembly로 만든다.
-- generated application assembly를 `Doroti.Target.Web.browser-wasm` composition root에 연결하고, browser startup이 실제 generated root widget을 `FlutterHostSession`/`FlutterView`에 attach하도록 한다.
-- compiler가 conditional import/environment, asset/font/localization URL과 JavaScript plugin ABI를 target-aware application manifest로 생성한다.
-- Web SDK가 내부 WASM entry project와 `index.html`/bootstrap module을 생성한다. 이 C#/MSBuild/JavaScript workspace는 deterministic intermediate이며 사용자가 직접 작성하거나 유지하지 않는다.
-- `doroti build web --project <path> --output <path>` 한 명령이 analyze → generate → restore → `browser-wasm` publish → static manifest까지 수행한다.
-- generated app assembly/type, source entrypoint, target manifest와 static artifact hash를 하나의 provenance chain으로 기록한다.
+- Avalonia revision `f159423f691946e713f454447a780d4677d8a0d2`의 `src/Browser/Avalonia.Browser`를 exact detached reference snapshot으로 확보하고 license, selected source hash와 reference provenance를 고정한다. 이 snapshot은 동작 분석·비교·추적 입력이며 product compile graph에 포함하지 않는다.
+- `BrowserDispatcherImpl`, canvas resize/DPR, pointer/capture/coalescing/wheel/key, text/composition/caret, clipboard/cursor와 필요한 JavaScript/TypeScript module에서 참고할 동작을 capability 단위로 선택하고, upstream symbol → browser behavior → Doroti owner/contract mapping을 기록한다.
+- 선택 source를 product code로 copy/adapt하거나 `Doroti.Vendor.Avalonia.Browser` project를 만들지 않는다. 실제 구현은 `Doroti.Host.Web`의 `DorotiRoot`/`DorotiSurface` Blazor component, C# browser capability와 최소 `[JSImport]` module이 소유하며 Avalonia type/source/binary를 참조하지 않는다.
+- Avalonia `BrowserAppBuilder`, `AvaloniaView`, Controls/property/styling/visual tree, Avalonia composition owner와 `Software2D` fallback은 포함하지 않는다.
+- 표준 pointer/key/focus는 Blazor event callback으로 받고, DOM event 등록/해제, `preventDefault`, pointer capture, `getCoalescedEvents`, IME와 browser object 분해처럼 동기 DOM 접근이 필요한 경계만 작은 JS module에 남긴다. Avalonia에서 확인한 pointer kind/phase/button/modifier, 좌표·DPR, wheel, timestamp와 batching 동작은 Avalonia 코드를 이식하지 않고 C# `BrowserInputSource`로 새로 구현한다.
+- GPU surface는 Avalonia renderer나 CanvasKit이 아니라 pinned `SkiaSharp.Views.Blazor`/`SkiaSharp.NativeAssets.WebAssembly`의 `SKGLView`를 사용한다. Doroti가 frame scheduler, invalidation, context generation/loss와 terminal ACK를 감싸고 scene/widget/state policy는 생성된 C# Doroti framework가 계속 소유한다.
+- Doroti browser interop은 별도 JavaScript build toolchain 없이 표준 ES module source로 유지하고 Blazor static web asset으로 패키징한다.
 
 완료 gate:
 
-- fixture 이름 출력이나 `BrowserWasmTarget` 생성만이 아니라 Dart source의 root widget/state/resource가 최종 assembly와 static artifact에 포함됨
+- selected upstream file/symbol마다 source hash, 참고한 behavior, Blazor/C# local owner, 독립 구현 증거와 reference 제거 조건이 있음
+- product source/compile/publish graph의 Avalonia-derived copied source와 `Avalonia`, `Avalonia.Controls`, Avalonia composition binary/package reference 0
+- Blazor `SKGLView` WebGL2 context → SkiaSharp surface → Doroti scene draw → invalidate/present/terminal ACK typed chain PASS
+- software/Canvas2D fallback과 unclassified browser source dependency 0
+- DOM pointer → Blazor/JSImport bridge → C# normalization → `IInputHostCapability.PointerData` → Doroti gesture/state의 typed chain PASS
+- dispatcher/input/text/clipboard/cursor capability가 Blazor/C# owner에서 Doroti host-neutral contract에만 연결되고 Avalonia source/runtime dependency 0
+
+#### G7-3A — C# Doroti app/template contract
+
+작업:
+
+- `Doroti.Templates`에 일반 C# app template을 추가하고 `dotnet new doroti-app --name <name>` 또는 동등한 표준 .NET template UX를 제공한다.
+- template은 공용 C# Doroti app project와 `Microsoft.NET.Sdk.BlazorWebAssembly` 기반 browser host project를 함께 제공한다. browser host는 `net10.0`/`browser-wasm`을 사용하고 desktop target과 같은 C# app assembly/widget tree를 참조한다.
+- G7-3N에서 승격한 `Doroti.Framework.*`, `DorotiHostSession`, `DorotiView`와 `DorotiCapabilityIds`를 사용하고, G7-3에서 새로 만드는 public namespace, type, Razor component, template source와 진단에도 `Doroti` 제품 이름만 사용한다. `DorotiRoot`와 `DorotiSurface`가 Blazor 공개 component 계약을 소유한다.
+- template의 `Program.cs`가 `Doroti.Framework.*`의 생성·승격된 C# API로 root widget을 구성한다. 사용자 앱은 Dart source, `pubspec.yaml`, `doroti.yaml`이나 Flutter platform scaffold를 포함하지 않는다.
+- target package의 `build`/`buildTransitive` MSBuild props/targets가 Blazor boot resource, static web assets, resource/font/localization과 plugin declaration을 표준 `ItemGroup`/property 계약으로 제공한다.
+- template의 allowlist된 `DorotiRoot.razor`/`DorotiSurface.razor`는 canvas host만 구성하며 사용자가 수정할 필요가 없다. `Microsoft.AspNetCore.Components.WebAssembly`는 .NET 10 host와 함께 pin하고, `SkiaSharp.Views.Blazor`/`SkiaSharp.NativeAssets.WebAssembly`는 현재 공용 `SkiaSharp` `3.119.4` baseline과 같은 version set으로 pin한다. version 변경은 WebGL/input/text live evidence를 함께 갱신할 때만 허용한다.
+- Blazor router, forms와 component UI library는 기본 graph에 포함하지 않는다. 사용자-visible Doroti widget마다 Razor component/DOM node를 생성하거나 C# widget policy를 Blazor render tree에 복제하지 않는다.
+- `dotnet restore`, `dotnet build`와 `dotnet publish` 외 별도 Flutter/Dart command 없이 app을 build할 수 있게 한다.
+
+완료 gate:
+
+- clean 임시 디렉터리에서 배포된 template/package만으로 C# Doroti app 생성 PASS
+- generated project의 `.dart`, `pubspec.yaml`, `.metadata`와 Flutter platform directory 0
+- product build process tree의 `flutter`, `flutter.bat`, Dart analyzer/compiler 실행 0
+- allowlist 밖 `.razor`와 Blazor router/form/component UI dependency 0
+- `blazor.webassembly.js`, host component와 SkiaSharp WASM dependency의 version/hash/provenance가 manifest에 고정됨
+- Blazor render tree의 user-visible Doroti widget/scene node 0; canvas와 hidden input/accessibility host만 존재
+- template source, public Web API, Razor component, manifest와 product diagnostic의 product-facing `Flutter*` identifier 0
+- 동일한 C# root widget source가 desktop 및 browser target에 compile됨
+- 잘못된 target/resource/plugin 계약은 stable MSBuild 또는 Doroti diagnostic으로 fail-closed
+
+#### G7-3B — C# widget tree to Skia `browser-wasm` product build
+
+작업:
+
+- `Doroti.Target.Web.browser-wasm` composition root가 C# app entrypoint를 `DorotiHostSession`/`DorotiView`에 attach하고 공용 build/layout/paint/state/semantics pipeline을 시작한다.
+- `DorotiSurface.razor`가 `SKGLView`를 만들고 `EnableRenderLoop=false`의 명시적 frame invalidation으로 Doroti scene을 `OnPaintSurface`에 제출한다. context generation, resize/DPR, loss/recovery와 terminal frame 상태를 공용 frame contract로 기록한다.
+- `DorotiSurface.razor`는 표준 pointer/key/focus event를 C# host로 전달한다. pointer capture, coalesced high-rate move, IME와 context-loss처럼 DOM callback에서 즉시 처리해야 하는 경계만 `[JSImport]`/`JSHost.ImportAsync` module을 사용하고, object-per-event 직렬화 대신 primitive batch/shared buffer 경로를 제공한다.
+- `BrowserHostAdapter`가 `IInputHostCapability`를 구현하고 `DorotiCapabilityIds.InputEvents`로 등록된다. Avalonia behavior reference를 기준으로 Blazor용으로 새로 구현한 C# normalization이 `PointerDataPacket`/`KeyData`/`RawFocusData`를 만들어 Doroti gesture binding과 같은 C# widget state에 전달한다.
+- Blazor boot loader가 `blazor.webassembly.js`로 managed host를 시작하고 target package가 `index.html`, root/surface component, Skia/input module과 plugin JavaScript module을 static web assets로 제공한다. base path/fingerprinting/hash manifest는 MSBuild publish 단계에서 확정하며 사용자는 runtime bootstrap을 직접 유지하지 않는다.
+- `dotnet publish <project> -c Release -r browser-wasm`이 `net10.0` C# app assembly, Doroti framework/target assemblies, Blazor host assemblies, statically linked SkiaSharp WASM native asset, resource와 hash manifest가 있는 deployment-neutral `wwwroot`를 만든다. `canvaskit.js`/`canvaskit.wasm`은 포함하지 않는다.
+- app assembly/type, C# source/project identity, target/browser-reference provenance와 static artifact hash를 하나의 release chain으로 기록한다.
+
+완료 gate:
+
+- fixture 문자열이나 target 생성만이 아니라 C# root widget/state/resource가 최종 app assembly와 static artifact에 포함됨
+- 실제 Skia GPU draw가 non-empty browser frame을 만들 수 있는 publish graph PASS
+- `blazor.webassembly.js` → allowlist된 root/surface component → C# Doroti root mount → SkiaSharp GPU paint의 bootstrap call graph PASS
+- Blazor DOM에는 canvas/hidden input/accessibility bridge만 있고 component-per-widget, DOM layout/paint와 CanvasKit runtime 0
+- pointer down/move/up/cancel/wheel → C# normalization → `PointerDataPacket` → hit test/gesture/state → 다음 Skia frame의 causal trace가 build fixture에서 연결됨
 - `browser-wasm` clean/repeat output identity PASS
-- browser graph의 Win32/AppKit/Avalonia/native desktop dependency 0
-- unsupported plugin/capability silent success 0
-- static artifact 누락/hash 불일치와 repository-private project fallback 0
-- 미지원 trimming/AOT mode는 generated product 기준의 정확한 blocker와 `notVerified` 상태를 가짐
+- browser graph의 Win32/AppKit/Avalonia UI/native desktop dependency 0
+- unsupported plugin/capability silent success, static artifact 누락/hash 불일치와 repository-private fallback 0
+- trimming/AOT는 실제 Doroti C# product graph 기준으로 검증하거나 정확한 blocker와 `notVerified`를 유지함
 
-#### G7-3C — external Doroti SDK product acceptance
+#### G7-3C — external C# product acceptance
 
 작업:
 
-- 저장소 밖 clean root에 배포 패키지/SDK를 설치하고 `doroti create`로 새 app을 만든다.
-- 생성된 `lib/main.dart`를 사용자-visible state 변화, asset, localization과 Web plugin이 있는 대표 app으로 수정한 뒤 `doroti build web`을 수행한다.
-- 같은 app을 두 번 clean build해 deployment-neutral static artifact와 hash manifest identity를 비교한다.
+- 저장소 밖 clean root에 `Doroti.Templates`와 promoted NuGet package를 설치하고 template으로 새 C# app을 만든다.
+- C# widget source에 사용자-visible state 변화, asset, localization과 Web plugin을 넣고 표준 `dotnet publish -r browser-wasm`을 수행한다.
+- 같은 C# app을 두 번 clean publish해 deployment-neutral static artifact와 hash manifest identity를 비교한다.
 - output을 isolated static server에 올릴 수 있는 구조인지 검사하되 실제 Chromium GPU/input/ARIA 실행은 G7-4에서 수행한다.
 
 완료 gate:
 
-- repository 밖 Doroti project create/analyze/build/publish PASS
-- Flutter SDK/CLI 설치 없이 package-only restore와 static Web artifact 생성 PASS
-- 사용자가 직접 작성한 C# `Program.cs`, `.csproj`, `index.html`, runtime bootstrap JavaScript 0
+- repository 밖 C# Doroti project create/restore/build/publish PASS
+- Flutter/Dart SDK 또는 CLI 설치 없이 package-only static Web artifact 생성 PASS
+- 별도 `dotnet new blazorwasm`, 사용자의 Razor/JavaScript 작성이나 수동 Blazor package 설치 없이 Doroti template 하나로 Blazor WebAssembly host publish PASS
+- 사용자가 직접 작성해야 하는 `index.html`, runtime bootstrap JavaScript와 내부 Web host `.csproj` 0
 - repository-private/candidate fallback과 source checkout 절대경로 0
-- 최종 artifact가 generated Dart application assembly와 application manifest를 포함함
+- 최종 artifact가 사용자 C# app assembly, Doroti framework, Skia Web backend와 application/resource manifest를 포함함
 
 산출물:
 
-- Doroti CLI/SDK의 `create`와 `build web` command 및 Web project template
+- `Doroti/migration/web/g7-browser-reference-selection.json`
+- `Doroti/migration/web/g7-browser-reference-provenance.json`
+- `Doroti/templates/Doroti.Templates/content/doroti-app/`
 - `Doroti/src/Doroti.Host.Web/`
 - `Doroti/src/Doroti.Target.Web.browser-wasm/`
-- `Doroti/validation/cases/g7-doroti-web-app/`
+- `Doroti/src/Doroti.Target.Web.browser-wasm/build/` 및 `buildTransitive/` Blazor host/static asset targets
+- `Doroti/validation/cases/g7-csharp-web-app/`
 - `Doroti/migration/targets/browser-wasm.json`
 - `Doroti/migration/web/g7-web-build-evidence.json`
 - `Doroti/artifacts/g7-web/<version>/`
-- `Doroti/eng/validate-g7-web-build.ps1 -Shard <Toolchain|Graph|Authoring|Compile|Publish>`
+- `Doroti/eng/validate-g7-web-build.ps1 -Shard <Toolchain|Reference|Hosting|Graph|Template|Compile|Publish>`
 
 현재 상태와 정정(2026-08-15):
 
 - G7-3I `verified-infrastructure`: `Doroti.Host.Web`/`Doroti.Target.Web.browser-wasm`, browser-only graph, WebGL2 fail-closed, lifecycle/ABI, interpreter/AOT probe와 static hash pipeline은 재사용한다.
-- 기존 `Compile`/`Publish` shard는 `Doroti.Validation.G7WebBuild` 및 검증 스크립트가 만든 임시 .NET consumer만 publish했고 Dart app compiler를 호출하지 않았다. 따라서 기존 `g7-web-build-evidence.json`의 전체 `pass`는 product closure로 사용하지 않으며 다음 validator 실행에서 `partial`로 교정한다.
-- `DorotiDemoApp/dart` Flutter project와 Flutter widget test는 G7-2 reference fixture였고 Doroti Web product input으로 복구하거나 재사용하지 않는다.
-- G7-3A/G7-3B/G7-3C는 `notVerified`다. 세 sub-gate가 모두 PASS하고 실제 generated Dart app이 artifact에 포함되기 전까지 G7-4에 진입하지 않는다.
+- G7-3I의 선행 인프라는 G7-3N rename 전 이름으로 검증된 predecessor evidence다. G7-3에서는 rename된 Doroti package/API identity만 사용하며 기존 `BrowserFlutterHost`, `FlutterHostSession`, `FlutterView`와 `FlutterCapabilityIds` 이름에 대한 adapter/fallback을 추가하지 않는다.
+- 현재 `Doroti.Host.Web`은 static asset packaging 편의를 위해 `Microsoft.NET.Sdk.Razor`를 사용하지만 Razor component나 Blazor runtime package를 참조하지 않는다. 제품 closure에서는 이를 `DorotiRoot`/`DorotiSurface`와 static asset을 제공하는 intentional Razor component library 경계로 승격한다. template이 생성한 별도 `Microsoft.NET.Sdk.BlazorWebAssembly` Web project가 이 package와 공용 C# Doroti app assembly를 참조해 실제 host가 된다.
+- 기존 `Compile`/`Publish` shard는 임시 C# consumer에서 `BrowserWasmTarget`만 생성했으며 Doroti C# widget tree를 mount하거나 Skia로 그리지 않았다. 따라서 기존 `g7-web-build-evidence.json`의 전체 `pass`는 product closure로 사용하지 않으며 다음 validator 실행에서 `partial`로 교정한다.
+- `DorotiDemoApp/dart` Flutter project와 Flutter widget test는 G7-2 compiler/reference fixture였고 C# Web product input으로 복구하거나 재사용하지 않는다.
+- G5-3 이전 handwritten `Doroti`/`Doroti.Widgets`/Legacy Engine·Rendering과 비교 전용 `Doroti.Host.Avalonia`, A/B sample, 구형 `doroti-counter` template은 제거했다. 새 `Doroti.Templates`는 이 경로를 복구하지 않고 G7-3A/G7-3C의 promoted C# framework/target package 계약으로 새로 만든다.
+- G7-3N/G7-3V/G7-3A/G7-3B/G7-3C는 `notVerified`다. 다섯 gate가 모두 PASS하고 실제 C# Doroti app과 Skia backend가 artifact에 포함되기 전까지 G7-4에 진입하지 않는다.
 
 구현 순서:
 
-1. `g7-web-build-evidence.json`, `g7-target-matrix.json`과 carry-over ledger에서 기존 Web `pass`를 `verified-infrastructure`/`partial`로 재분류하고, 실제 Dart app 미포함 blocker를 machine-readable 항목으로 추가한다.
-2. Doroti project schema와 template을 먼저 고정하고 `doroti create`/manifest diagnostics를 구현한다. 이 단계에서 제품 command와 reference-only Flutter toolchain을 분리하고, `doctor`도 product profile에서 Flutter 설치를 요구하지 않게 한다.
-3. application graph/compiler에 `browser-wasm` target을 추가해 Dart source, resources, localization과 plugin declaration을 generated application assembly/manifest로 만든다.
-4. Web target SDK가 generated app entrypoint를 실제 browser host에 mount하고 내부 WASM project/bootstrap/static manifest를 생성하도록 연결한다.
-5. `doroti build web`을 end-to-end로 묶고, 저장소 밖 clean environment에서 Flutter executable 0, 수동 host source 0, repeat artifact identity를 검증한다.
-6. G7-3A/G7-3B/G7-3C evidence를 모두 PASS로 갱신한 뒤에만 G7-4 Chromium live validation을 착수한다.
+1. G7-3N에서 공용 framework/hosting/UI와 Windows/macOS/Web target의 Doroti-owned 이름을 원자적으로 rename하고 package/live evidence를 갱신한다.
+2. `g7-web-build-evidence.json`, `g7-target-matrix.json`과 carry-over ledger에서 기존 Web `pass`를 `verified-infrastructure`/`partial`로 재분류하고, C# widget mount와 Skia draw 미검증 blocker를 추가한다.
+3. pinned Avalonia Browser reference snapshot과 behavior selection/provenance를 고정하고, 같은 동작을 `Doroti.Host.Web`의 Blazor component와 C# browser capability로 독립 구현한다. DOM 즉시 처리만 최소 JS module로 남긴다.
+4. `Doroti.Host.Web`을 root/surface Razor component library로 승격하고 template Web project에 Blazor WebAssembly composition root를 둔다. pinned `SkiaSharp.Views.Blazor`/`SkiaSharp.NativeAssets.WebAssembly`, `blazor.webassembly.js`와 static asset bootstrap을 함께 닫는다.
+5. `Doroti.Templates`에 공용 C# app + 내부 Blazor browser host template을 추가하고 사용자의 Flutter/Dart/Razor/JavaScript 작성 없는 clean 생성/build를 검증한다.
+6. Web composition root가 같은 C# widget tree를 `SKGLView`에 mount/draw/present하고 Blazor pointer event가 C# gesture/state까지 왕복하도록 연결한다.
+7. 저장소 밖에서 `dotnet new` → C# source build → `dotnet publish -r browser-wasm` → repeat static artifact identity를 한 제품 scenario로 검증한다.
+8. G7-3N/G7-3V/G7-3A/G7-3B/G7-3C evidence를 모두 PASS로 갱신한 뒤에만 G7-4 Chromium live validation을 착수한다.
 
 ### G7-4 — Web live product parity
 
-진입 조건: G7-1, G7-2와 G7-3A/G7-3B/G7-3C 완료. G7-3I 인프라 probe만으로는 진입할 수 없다.
+진입 조건: G7-1, G7-2와 G7-3N/G7-3V/G7-3A/G7-3B/G7-3C 완료. G7-3I 인프라 probe만으로는 진입할 수 없다.
 
 작업:
 
-- `doroti create`/`doroti build web`으로 만든 generated Doroti app을 isolated static server의 Chromium에서 로드한다.
+- `dotnet new doroti-app`과 `dotnet publish -r browser-wasm`으로 만든 C# Doroti app을 isolated static server의 Chromium에서 로드한다.
 - canvas attach → framework mount/layout/paint → GPU present → terminal frame ACK를 trace한다.
 - Windows와 같은 대표 product scenario에서 pointer, wheel, keyboard, composition, clipboard, resize/DPR와 semantics action을 실행한다.
+- click/tap은 표준 Blazor pointer event 경로로, drag/capture와 coalesced high-rate move는 최소 JS fast path로 실행하되 두 경로가 같은 C# normalization과 `IInputHostCapability` 계약에 합류하는지 검증한다.
 - semantics tree는 DOM/ARIA action bridge로 노출하되 별도 visual DOM widget tree를 만들지 않는다.
 - pinned Flutter Web 비교는 geometry/behavior가 target 의미에 민감한 대표 scenario에만 적용한다.
 
@@ -453,10 +527,12 @@ G7-0 carry-over blocker reset
 
 G7-1 -> G7-2 Cupertino/adaptive/generated product
 G7-1 + G7-2 -> G7-3M macOS live product
-G7-3I -> G7-3A Doroti project authoring
-G7-3A -> G7-3B Dart application Web compile
-G7-3B -> G7-3C external Doroti SDK publish
-G7-1 + G7-2 + G7-3C -> G7-4 Web live product
+G7-1 + G7-2 + G7-3M + G7-3I -> G7-3N all-target Doroti naming
+G7-3I + G7-3N -> G7-3V Avalonia Browser reference + Blazor capability
+G7-3I + G7-3N -> G7-3A C# Doroti app/template
+G7-3V + G7-3A -> G7-3B C# widget tree + Skia Web build
+G7-3B -> G7-3C external C# product publish
+G7-1 + G7-2 + G7-3N + G7-3C -> G7-4 Web live product
 G7-2 + G7-3M + G7-4 -> G7-5 integrated release
 G7-5 -> G7-6 physical acceptance
 ```
@@ -488,9 +564,16 @@ G7-5 -> G7-6 physical acceptance
 ./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Live
 ./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Package
 
+./Doroti/eng/validate-g7-product-naming.ps1 -Shard Inventory
+./Doroti/eng/validate-g7-product-naming.ps1 -Shard Build
+./Doroti/eng/validate-g7-product-naming.ps1 -Shard Package
+./Doroti/eng/validate-g7-product-naming.ps1 -Shard Live
+
 ./Doroti/eng/validate-g7-web-build.ps1 -Shard Toolchain
+./Doroti/eng/validate-g7-web-build.ps1 -Shard Reference
+./Doroti/eng/validate-g7-web-build.ps1 -Shard Hosting
 ./Doroti/eng/validate-g7-web-build.ps1 -Shard Graph
-./Doroti/eng/validate-g7-web-build.ps1 -Shard Authoring
+./Doroti/eng/validate-g7-web-build.ps1 -Shard Template
 ./Doroti/eng/validate-g7-web-build.ps1 -Shard Compile
 ./Doroti/eng/validate-g7-web-build.ps1 -Shard Publish
 ./Doroti/eng/validate-g7-web-live.ps1 -Shard Smoke
@@ -514,10 +597,13 @@ git diff --check
 ## 6. 공통 구현 원칙
 
 - Flutter source가 widget/build/layout/paint/state/semantics policy의 단일 owner다.
+- Windows/macOS/Web의 Doroti-owned product project, assembly, package, namespace, type와 component는 `Doroti` 또는 역할 기반 중립 이름을 사용한다. `Flutter` 명칭은 upstream/reference/provenance와 exact Flutter compatibility API allowlist 밖으로 노출하지 않는다.
 - target host는 window/document, scheduler, surface/GPU, input/text/clipboard/accessibility/resource capability만 소유한다.
 - Windows와 macOS desktop host는 같은 `Doroti.Shell.Core` 계약을 사용하며 target-specific native handle, event loop와 service 구현만 갈라진다.
 - libAvalonia는 macOS shell의 versioned native build input이며 사전 빌드된 출처 불명 binary나 Avalonia UI/Control graph를 제품 의존성으로 허용하지 않는다.
 - browser DOM은 canvas host와 accessibility bridge이며 두 번째 visual widget tree가 아니다.
+- Web host는 Blazor WebAssembly runtime/bootstrap/static asset 계약을 사용한다. allowlist된 root/surface component와 `SKGLView`는 canvas·host lifecycle·browser event bridge만 소유하며 Blazor render tree/DOM diff는 Doroti 제품 UI owner가 될 수 없다.
+- 표준 Blazor event는 pointer/key/focus를 C# host로 전달하고, `[JSImport]`/`[JSExport]` module은 pointer capture/coalescing, IME, context-loss와 browser capability bridge만 소유한다. widget/build/layout/paint/state/gesture policy를 JavaScript나 Razor에 옮기지 않는다.
 - scene/canvas/paint payload는 typed immutable contract로 backend까지 보존한다.
 - generated `.g.cs` 직접 수정, filename/local-number rewrite와 widget type 대체는 제품 수정으로 인정하지 않는다.
 - strict GPU gate에서 CPU full-frame readback/upload나 2D canvas fallback을 숨기지 않는다.
@@ -528,8 +614,10 @@ git diff --check
 
 Goal7은 다음이 모두 사실일 때 완료한다.
 
-- Flutter SDK/CLI와 별도 Flutter project 없이 새 Doroti-owned Dart app을 생성할 수 있고, 배포된 Doroti SDK/CLI와 promoted package만 사용해 Windows, macOS `osx-arm64`와 Web `browser-wasm` artifact로 reproducible build된다.
-- `doroti build web`의 최종 static artifact가 실제 generated Dart application assembly, application manifest, resource와 browser bootstrap을 포함하며 사용자가 C#/MSBuild/JavaScript host project를 직접 작성하지 않는다.
+- Flutter/Dart SDK·CLI와 Flutter project 없이 일반 C# Doroti app을 template으로 생성할 수 있고, 표준 .NET SDK와 promoted Doroti package만 사용해 Windows, macOS `osx-arm64`와 Blazor WebAssembly `net10.0`/`browser-wasm` artifact로 reproducible build된다.
+- 전 target의 product graph와 사용자-facing API가 G7-3N naming map으로 전환되고, allowlist 밖 `Doroti.Flutter`, `Host.Desktop.Flutter`와 Doroti-owned `Flutter*` identifier 및 이전 identity fallback이 0이다.
+- `dotnet publish -r browser-wasm`의 최종 static artifact가 사용자 C# app assembly, generated C# Doroti framework, SkiaSharp WebAssembly backend, Avalonia behavior를 참고해 Blazor/C#으로 독립 구현한 browser input capability, resource와 browser bootstrap을 포함하며 사용자가 내부 Web host나 runtime JavaScript를 직접 작성하지 않는다.
+- Web artifact는 pinned Blazor WebAssembly host, `blazor.webassembly.js`, allowlist된 root/surface component, `SkiaSharp.Views.Blazor`와 `SkiaSharp.NativeAssets.WebAssembly` static/native asset을 포함한다. 별도 CanvasKit runtime, component-per-Doroti-widget DOM tree와 Blazor UI policy는 포함하지 않는다.
 - Windows/macOS strict-GPU와 browser GPU에서 실제 first frame, app-essential interaction와 semantics가 target별로 PASS한다.
 - Material 대표 visual, native input capability와 scene/compositing/retained gate가 필요한 pinned reference와 함께 닫힌다.
 - Cupertino/adaptive와 generated product의 대표 behavior/semantics가 PASS한다.
@@ -539,6 +627,6 @@ Goal7은 다음이 모두 사실일 때 완료한다.
 
 Linux, Intel macOS(`osx-x64`), Firefox/WebKit, 모든 component별 native 전수 검사, 모든 DPI/effect 곱집합과 장시간 soak는 Goal7 완료 정의에 포함하지 않는다. 해당 target을 실제 지원 대상으로 선택하는 후속 Goal에서 그 target의 release gate로 승격한다.
 
-Goal7의 macOS 성공 기준은 “managed project와 libAvalonia가 컴파일된다”가 아니다. 동일한 generated Flutter framework app이 실제 NSWindow의 GPU surface에서 frame을 내고, AppKit 입력·텍스트·접근성 action이 같은 widget state까지 왕복하며, provenance가 고정된 `osx-arm64` package로 저장소 밖에서 실행되어야 한다.
+Goal7의 macOS 성공 기준은 “managed project와 libAvalonia가 컴파일된다”가 아니다. 동일한 generated Doroti framework app이 실제 NSWindow의 GPU surface에서 frame을 내고, AppKit 입력·텍스트·접근성 action이 같은 widget state까지 왕복하며, provenance가 고정된 `osx-arm64` package로 저장소 밖에서 실행되어야 한다.
 
-Goal7의 Web 성공 기준은 “WASM 파일이 생성된다” 또는 “빈 .NET consumer가 Web target package를 참조한다”가 아니다. 사용자가 Doroti project의 Dart source만 작성하고 Doroti SDK/CLI로 생성·build·publish할 수 있어야 한다. 그 동일한 generated app이 브라우저의 실제 GPU canvas에서 frame을 내고, Web input과 accessibility action이 같은 widget state까지 왕복하며, 재현 가능한 static release artifact로 배포되어야 한다.
+Goal7의 Web 성공 기준은 “WASM 파일이 생성된다”, “빈 .NET consumer가 Web target package를 참조한다” 또는 “Blazor host component가 canvas를 만들었다”가 아니다. 사용자가 일반 C#으로 Doroti widget tree를 작성하고 별도 Razor/JavaScript 작성 없이 표준 `dotnet` 명령으로 Blazor WebAssembly `net10.0`/`browser-wasm`에 publish할 수 있어야 한다. Blazor WebAssembly는 runtime, root/surface component와 browser event bridge를 담당하고, 동일한 C# app이 SkiaSharp WebAssembly backend를 통해 브라우저의 실제 GPU canvas에서 frame을 내며 DOM pointer → C# normalization → Doroti gesture/state → Skia frame과 accessibility action이 같은 widget state까지 왕복해야 한다.

@@ -1,5 +1,7 @@
 # R6 RenderObject and Compiler C1
 
+> Historical roadmap evidence. The handwritten RenderObject sources and `Doroti.BehaviorRunner` described below were removed after their reviewed framework replacements became the current product owners.
+
 R6 adds a backend-neutral, headless RenderObject tree to `Doroti.Rendering`. `BoxConstraints`, `RenderObject`, `RenderBox`, `RenderView` and `PipelineOwner` enforce ownership, normalized constraints, finite sizes, depth-ordered dirty work, phase recovery and immutable commit. `PaintingContext` records DisplayLists and builds reusable Layers. DPI scaling is applied at the RenderView-to-LayerTree commit boundary.
 
 The basic render set is `RenderColoredBox`, `RenderPadding`, `RenderPositionedBox`, `RenderFlex`, `RenderStack` and `RenderParagraph`. Transform-aware hit paths and `localToGlobal`/`globalToLocal` reject singular transforms explicitly. Paragraph layout, paint and hit testing share one `ImmutableParagraphSnapshot`.

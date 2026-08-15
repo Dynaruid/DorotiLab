@@ -1,5 +1,7 @@
 # H2 Avalonia frame, surface and resource lifecycle
 
+> Historical evidence only. The comparison host and `AvaloniaHostCounter` sample described below have been removed.
+
 `Doroti.Host.Avalonia` now exposes one `IFrameDispatcher` and one `IAvaloniaFramePipeline` per window. Repeated engine invalidations enter the same Avalonia render-priority clock, while committed scenes enter the existing one-in-flight plus one-latest `FrameMailbox`. The host does not add an Avalonia-owned Widget tree, frame ACK meaning or resource registry.
 
 The pipeline commits backend-neutral `DisplayList` and immutable image snapshots through `SceneCommitter`, `SurfaceSession` and `RasterCompositor`. Resize/DPI generation changes and adapter-detected size races end as `Stale`; a present/device failure ends as `Failed` with `RecoverableSurfaceLoss`, advances the logical generation and permits a replacement frame. Shutdown blocks commits, cancels pending work, waits for the in-flight terminal ACK, then releases every resource lease.

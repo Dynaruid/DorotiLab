@@ -1,6 +1,6 @@
 # ADR-016: Official Avalonia host boundary
 
-Status: superseded for the product/default-template path by ADR-017 and goal2 A1. `Doroti.Host.Avalonia` remains comparison/history code.
+Status: superseded by ADR-017 and removed after the A2 replacement gate. The remaining text and evidence describe the historical H0-H4 implementation only.
 
 - Status: Accepted
 - Date: 2026-08-02
@@ -11,22 +11,22 @@ Doroti owns its Widget/Element/RenderObject lifecycle, DisplayList, frame/resour
 
 ## Decision
 
-The only product platform shell is an official package dependency isolated behind `Doroti.Host.Avalonia`. H0 pins the stable `Avalonia.Desktop` package and release to `12.1.0` through central package management and the host lock file. The machine-readable `migration/host/avalonia-dependency-matrix.json` records the direct package, complete resolved closure, license and per-host distribution policy.
+H0 isolated the official `Avalonia.Desktop` 12.1.0 package behind `Doroti.Host.Avalonia`. The historical `migration/host/avalonia-dependency-matrix.json` records that direct package, resolved closure, license and distribution policy; it is not a current dependency manifest.
 
-Only `Doroti.Host.Avalonia` may reference official `Avalonia` assemblies in product code. Its internal implementation may use Avalonia types, but its public API must expose only Doroti-owned or BCL types. Dedicated host tests and samples consume the host project rather than adding their own Avalonia package references. Host-neutral runtime, backend-neutral raster assemblies and generated consumer packages retain zero official Avalonia package dependencies. Doroti does not ship a separate native Win32 host, template option or fallback package.
+During H0-H4 only `Doroti.Host.Avalonia` could reference official `Avalonia` assemblies. That exception, its tests and samples have been removed. Current product, validation and tooling projects must retain zero official Avalonia binary dependencies.
 
-`Doroti.Host.Avalonia` was added in H0 as a package/architecture boundary. H1 implemented the application/window lifecycle and DisplayList presentation vertical slice. H2 now connects the official host to Doroti's single frame clock, bounded mailbox, surface generation, immutable image resource and terminal ACK contracts while retaining the same public boundary.
+`Doroti.Host.Avalonia` was added in H0 as a package/architecture boundary. H1 implemented the application/window lifecycle and DisplayList presentation vertical slice. H2 connected the official host to Doroti's frame clock, bounded mailbox, surface generation, immutable image resource and terminal ACK contracts before the path was superseded.
 
 ## Relationship to ADR-001 and ADR-008
 
-This decision supersedes ADR-001's statement that Avalonia can only be a reference source for the new default host: the official package is now an intentional runtime dependency of `Doroti.Host.Avalonia`. ADR-001's provenance rules still govern copied or adapted source.
+This decision temporarily superseded ADR-001 by allowing an official package runtime dependency. ADR-017 and A2 ended that exception; ADR-001 provenance rules continue to govern copied or adapted source.
 
 This decision supersedes ADR-008's Win32 vendor/backend path. `Doroti.Backends.Win32` and `Doroti.Vendor.Avalonia.Win32` are removed rather than retained as conformance or fallback products. Historical evidence is preserved, while reusable golden/trace contracts move to host-neutral or Avalonia-host tests. The backend-neutral Skia framebuffer slice remains internal for raster/headless verification; it is not a platform shell. A new vendor-source exception requires evidence that the pinned official host API cannot satisfy the capability and a separate ADR/review, and may not recreate a dedicated Win32 host.
 
 ## Consequences
 
-- `DOTARCH008` rejects official Avalonia assembly references outside `Doroti.Host.Avalonia`.
+- `DOTARCH008` rejects every official Avalonia binary assembly reference.
 - The existing public API scan includes the host assembly and rejects Avalonia, Skia, vendor and native types.
-- Release package inspection uses the host dependency matrix: `Doroti.Host.Avalonia` must depend only on the approved direct Avalonia package, while all other Doroti and generated packages must retain zero Avalonia dependencies.
+- Release package inspection requires every current Doroti and generated package to retain zero official Avalonia binary dependencies; the old host dependency matrix is historical evidence only.
 - Architecture tests reject reintroduction of the removed Win32 backend/vendor project or package references.
 - Avalonia upgrades must update the central pin, host lock file, dependency matrix, license record and architecture tests together.

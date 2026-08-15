@@ -1,5 +1,0 @@
-<Project>
-  <PropertyGroup>
-    <RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
-  </PropertyGroup>
-</Project>

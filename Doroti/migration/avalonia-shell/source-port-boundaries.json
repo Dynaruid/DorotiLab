@@ -59,38 +59,38 @@
     {
       "id": "engine-transition",
       "assemblyPattern": "Doroti.Engine",
-      "allowedReferencePatterns": ["Doroti.Core", "Doroti.Graphics", "Doroti.Platform", "Doroti.Composition", "Doroti.Rendering", "Doroti.Widgets"],
-      "responsibility": "Legacy bridge/mailbox owner pending G4-5/G4-6 symbol cutover."
+      "allowedReferencePatterns": ["Doroti.Core", "Doroti.Graphics", "Doroti.Platform", "Doroti.Composition", "Doroti.Rendering"],
+      "responsibility": "Host-neutral frame, mailbox and raster-pipeline owner after framework cutover."
     },
     {
       "id": "neutral-contracts",
       "assemblyPattern": "Doroti*",
-      "allowedReferencePatterns": ["Doroti.Core", "Doroti.Graphics", "Doroti.Platform", "Doroti.Composition", "Doroti.Rendering", "Doroti.Widgets", "Doroti.Flutter*", "Doroti.Engine"],
-      "responsibility": "Fallback rule for current neutral/legacy projects; earlier rules take precedence."
+      "allowedReferencePatterns": ["Doroti.Core", "Doroti.Graphics", "Doroti.Platform", "Doroti.Composition", "Doroti.Rendering", "Doroti.Flutter*", "Doroti.Engine"],
+      "responsibility": "Fallback rule for current neutral projects; earlier rules take precedence."
     }
   ],
   "forbiddenEdges": [
     {
       "fromPattern": "Doroti.Vendor.Avalonia.*",
-      "toPatterns": ["Doroti.Backends.*", "Doroti.Engine", "Doroti.Flutter*", "Doroti.Host.*", "Doroti.Rendering", "Doroti.Widgets"],
+      "toPatterns": ["Doroti.Backends.*", "Doroti.Engine", "Doroti.Flutter*", "Doroti.Host.*", "Doroti.Rendering"],
       "diagnostic": "DOTARCH007",
       "reason": "Imported platform source stays below product adapters and never references Flutter-owned layers."
     },
     {
       "fromPattern": "Doroti.Flutter.Runtime*",
-      "toPatterns": ["Doroti.Core", "Doroti.Platform", "Doroti.Graphics", "Doroti.Composition", "Doroti.Rendering", "Doroti.Widgets", "Doroti.Engine", "Doroti.Backends.*", "Doroti.Host.*", "Doroti.Shell.*", "Doroti.Vendor.*", "Avalonia*", "SkiaSharp*", "Windows.Win32"],
+      "toPatterns": ["Doroti.Core", "Doroti.Platform", "Doroti.Graphics", "Doroti.Composition", "Doroti.Rendering", "Doroti.Engine", "Doroti.Backends.*", "Doroti.Host.*", "Doroti.Shell.*", "Doroti.Vendor.*", "Avalonia*", "SkiaSharp*", "Windows.Win32"],
       "diagnostic": "DOTARCH009",
       "reason": "The Dart runtime owns language semantics and has no host/platform reference."
     },
     {
       "fromPattern": "Doroti.Flutter.Ui*",
-      "toPatterns": ["Doroti.Core", "Doroti.Platform", "Doroti.Graphics", "Doroti.Composition", "Doroti.Rendering", "Doroti.Widgets", "Doroti.Engine", "Doroti.Backends.*", "Doroti.Host.*", "Doroti.Shell.*", "Doroti.Vendor.*", "Avalonia*", "SkiaSharp*", "Windows.Win32"],
+      "toPatterns": ["Doroti.Core", "Doroti.Platform", "Doroti.Graphics", "Doroti.Composition", "Doroti.Rendering", "Doroti.Engine", "Doroti.Backends.*", "Doroti.Host.*", "Doroti.Shell.*", "Doroti.Vendor.*", "Avalonia*", "SkiaSharp*", "Windows.Win32"],
       "diagnostic": "DOTARCH009",
       "reason": "dart:ui contracts do not select a concrete host."
     },
     {
       "fromPattern": "Doroti.Flutter.Framework*",
-      "toPatterns": ["Doroti.Core", "Doroti.Platform", "Doroti.Graphics", "Doroti.Composition", "Doroti.Rendering", "Doroti.Widgets", "Doroti.Engine", "Doroti.Backends.*", "Doroti.Host.*", "Doroti.Shell.*", "Doroti.Vendor.*", "Avalonia*", "SkiaSharp*", "Windows.Win32"],
+      "toPatterns": ["Doroti.Core", "Doroti.Platform", "Doroti.Graphics", "Doroti.Composition", "Doroti.Rendering", "Doroti.Engine", "Doroti.Backends.*", "Doroti.Host.*", "Doroti.Shell.*", "Doroti.Vendor.*", "Avalonia*", "SkiaSharp*", "Windows.Win32"],
       "diagnostic": "DOTARCH009",
       "reason": "Reviewed Flutter framework code depends only on Flutter Runtime, Ui, and framework peers."
     },
@@ -107,18 +107,10 @@
       "reason": "Rendering bridge contracts do not select a platform implementation."
     }
   ],
-  "transitionEdges": [
-    {
-      "from": "Doroti.Engine",
-      "to": "Doroti.Widgets",
-      "expiresAt": "G4-6",
-      "ownerAuditSymbols": ["Doroti.Engine.InteractiveApplication"],
-      "reason": "The handwritten composition root remains only until generated Widgets product cutover."
-    }
-  ],
+  "transitionEdges": [],
   "avaloniaPackagePolicy": {
     "default": "forbidden",
-    "comparisonOnlyProjects": ["Doroti.Host.Avalonia"],
+    "comparisonOnlyProjects": [],
     "productTransitionAllowances": []
   },
   "publicApiForbiddenPrefixes": ["Avalonia", "Doroti.Backends.", "Doroti.Vendor.", "SkiaSharp", "Windows.Win32"],

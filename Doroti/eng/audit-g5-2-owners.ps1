@@ -16,6 +16,28 @@ $projectPaths = @($solution.SelectNodes('//Project') | ForEach-Object {
     [IO.Path]::GetFullPath((Join-Path $dorotiRoot $_.Path))
 })
 $forbiddenProductProjects = @('Doroti.Legacy.Rendering', 'Doroti.Legacy.Engine', 'Doroti.Widgets', 'Doroti\Doroti.csproj')
+$legacyPaths = @(
+    'src/Doroti.Legacy.Rendering/Doroti.Legacy.Rendering.csproj',
+    'src/Doroti.Legacy.Engine/Doroti.Legacy.Engine.csproj',
+    'src/Doroti.Widgets/Doroti.Widgets.csproj',
+    'src/Doroti/Doroti.csproj',
+    'src/Doroti/DorotiApp.cs',
+    'src/Doroti.Engine/EngineContracts.cs',
+    'src/Doroti.Engine/InteractiveApplication.cs',
+    'src/Doroti.Engine/ManagedBgraRenderSurface.cs',
+    'src/Doroti.Rendering/BoxConstraints.cs',
+    'src/Doroti.Rendering/PaintingContext.cs',
+    'src/Doroti.Rendering/RenderBoxes.cs',
+    'src/Doroti.Rendering/RenderTree.cs',
+    'src/Doroti.Rendering/Semantics.cs',
+    'src/Doroti.Host.Avalonia/Doroti.Host.Avalonia.csproj',
+    'samples/AvaloniaHostCounter/AvaloniaHostCounter.csproj',
+    'samples/ShellHostComparison/ShellHostComparison.csproj',
+    'tools/Doroti.BehaviorRunner/Doroti.BehaviorRunner.csproj',
+    'tools/Doroti.SceneLab/Doroti.SceneLab.csproj',
+    'templates/Doroti.Templates/Doroti.Templates.csproj'
+)
+$remainingLegacyPaths = @($legacyPaths | Where-Object { Test-Path -LiteralPath (Join-Path $dorotiRoot $_) })
 $forbiddenReferences = @()
 $compileInputs = [ordered]@{}
 
@@ -48,6 +70,7 @@ $success = $renderingOwnerInputs.Count -eq 0 -and
     $forbiddenEngineInputs.Count -eq 0 -and
     $forbiddenReferences.Count -eq 0 -and
     $forbiddenSolutionEntries.Count -eq 0 -and
+    $remainingLegacyPaths.Count -eq 0 -and
     @($generatedSources).Count -eq 0
 
 $evidence = [ordered]@{
@@ -62,11 +85,12 @@ $evidence = [ordered]@{
     forbiddenProductReferences = $forbiddenReferences
     forbiddenProductSolutionEntries = $forbiddenSolutionEntries
     generatedProductSources = @($generatedSources | ForEach-Object { $_.FullName })
-    legacyCompatibility = [ordered]@{
-        productCompile = $false
+    legacyRemoval = [ordered]@{
+        completed = ($remainingLegacyPaths.Count -eq 0)
         removalMilestone = 'G5-3'
-        projects = @('Doroti.Legacy.Rendering', 'Doroti.Legacy.Engine', 'Doroti.Widgets')
-        reason = 'Historical C# Widget/render behavior remains available only to root regression and comparison projects.'
+        removedPaths = $legacyPaths
+        remainingPaths = $remainingLegacyPaths
+        reason = 'Reviewed framework and host packages replaced the handwritten Widget/render compatibility island.'
     }
 }
 [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($OutputPath)) | Out-Null

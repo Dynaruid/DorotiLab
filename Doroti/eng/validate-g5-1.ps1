@@ -58,13 +58,6 @@ try {
             }
         }
     }
-    $adapterEntries = @(
-        [ordered]@{ symbol = 'Doroti.Widgets.FlutterArenaAdapter'; role = 'lifetime-handoff'; policy = $false },
-        [ordered]@{ symbol = 'Doroti.Widgets.FlutterInputAdapter'; role = 'raw-packet-and-recognizer-binding'; policy = $false },
-        [ordered]@{ symbol = 'Doroti.Widgets.FlutterPointerEventAdapter'; role = 'raw-packet-conversion'; policy = $false },
-        [ordered]@{ symbol = 'Doroti.Widgets.HostTapBinding'; role = 'arena-and-tracking-lifetime-handoff'; policy = $false },
-        [ordered]@{ symbol = 'Doroti.Widgets.HostVerticalDragBinding'; role = 'arena-and-tracking-lifetime-handoff'; policy = $false }
-    )
     $ownerAudit = [ordered]@{
         schemaVersion = 'doroti.g5-1-policy-owner-audit/v1'
         capturedAtUtc = [DateTime]::UtcNow.ToString('O')
@@ -73,7 +66,8 @@ try {
             'Doroti.Flutter.Framework.Animation',
             'Doroti.Flutter.Framework.Physics'
         )
-        hostNeutralAdapters = $adapterEntries
+        hostNeutralAdapters = @()
+        legacyCompatibilityProjectRemoved = -not (Test-Path -LiteralPath "$dorotiRoot/src/Doroti.Widgets/Doroti.Widgets.csproj")
         nonFrameworkPolicyOwners = $policyOwners
         compatibilitySymbols = [ordered]@{
             tapGestureRecognizer = $false

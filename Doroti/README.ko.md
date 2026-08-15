@@ -40,7 +40,6 @@ Doroti.DartToCSharp ──► reviewed C# framework packages
 - `Doroti.Engine`, `Doroti.Rendering`, `Doroti.Graphics`는 frame scheduling, display output과 graphics contract를 담당합니다.
 - `Doroti.Shell.Core`와 `Doroti.Host.Desktop`은 backend-neutral typed desktop capability를 정의하고 소비합니다.
 - `Doroti.Target.Windows.win-x64`와 `Doroti.Target.macOS.osx-arm64`가 Win32/WGL 또는 AppKit/NSOpenGL 구현을 주입합니다.
-- `Doroti.Host.Avalonia`는 비교용 host이며 기본 제품 composition root가 아닙니다.
 
 선별한 Avalonia platform source는 Doroti contract 뒤에 이식하고 provenance manifest로 추적합니다. Doroti app은 Avalonia control에 runtime dependency를 갖지 않습니다.
 
@@ -80,7 +79,7 @@ dotnet run --project ./DorotiDemoApp -- --smoke --entry builder --frames 3 --dur
 | `validate` | compiler validation suite 실행 |
 | `audit` | local storage, source/provenance와 compiler audit 실행 |
 | `format` | 파일을 수정하지 않고 제품 formatting 확인 |
-| `release` | build, audit, package 생성과 package-only 외부 consumer 검증 |
+| `release` | 제품 package를 build/audit/검사하고 G7-3C app template acceptance 구현 전에는 fail-closed |
 | `clean` | Doroti build output, artifact와 임시 local state 정리 |
 
 예시:

@@ -196,33 +196,6 @@ function Invoke-Release {
         Where-Object { $_.Extension -in @('.nupkg', '.snupkg') } |
         Remove-Item -Force
     Invoke-Checked 'dotnet' @('pack', $productSolution, '--configuration', 'Release', '--output', $packageDirectory, '--nologo')
-    $templatePackage = Join-Path $packageDirectory 'Doroti.Templates.0.2.0-beta.nupkg'
-    $templateTarget = Join-Path $artifacts "c0/external-consumer-$([guid]::NewGuid().ToString('N'))"
-    $consumerConfig = Join-Path $dorotiRoot 'eng/c0-nuget.config'
-    $consumerPackages = Join-Path $artifacts "c0/consumer-packages-$([guid]::NewGuid().ToString('N'))"
-    $templateInstalled = $false
-    try {
-        Invoke-Checked 'dotnet' @('new', 'install', $templatePackage, '--force')
-        $templateInstalled = $true
-        Invoke-Checked 'dotnet' @('new', 'doroti-counter', '--name', 'C0ExternalConsumer', '--output', $templateTarget)
-        $templateProject = Join-Path $templateTarget 'C0ExternalConsumer.csproj'
-        Invoke-Checked 'dotnet' @(
-            'restore', $templateProject, '--configfile', $consumerConfig, '--packages', $consumerPackages,
-            '--force-evaluate', '--no-cache', '--runtime', 'win-x64',
-            '-p:PublishReadyToRun=true')
-        Invoke-Checked 'dotnet' @('build', $templateProject, '--configuration', 'Release', '--no-restore', '--nologo')
-        Invoke-Checked 'dotnet' @('run', '--project', $templateProject, '--configuration', 'Release', '--no-build', '--', '--smoke')
-        $templatePublish = Join-Path $artifacts 'c0/external-publish-win-x64'
-        Invoke-Checked 'dotnet' @(
-            'publish', $templateProject, '--configuration', 'Release', '--output', $templatePublish,
-            '--no-restore', '--runtime', 'win-x64', '--self-contained', 'true',
-            '-p:PublishSingleFile=true', '-p:PublishReadyToRun=true')
-        Invoke-Checked (Join-Path $templatePublish 'C0ExternalConsumer.exe') @('--smoke')
-    }
-    finally {
-        if ($templateInstalled) { Invoke-Checked 'dotnet' @('new', 'uninstall', 'Doroti.Templates') }
-    }
-
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     foreach ($packagePath in (Get-ChildItem -LiteralPath $packageDirectory -Filter '*.nupkg' -File)) {
         $archive = [System.IO.Compression.ZipFile]::OpenRead($packagePath.FullName)
@@ -243,7 +216,7 @@ function Invoke-Release {
             $archive.Dispose()
         }
     }
-    Write-Host "Release: PASS ($packageDirectory)"
+    throw 'Package build and inspection passed, but external application-template acceptance remains notVerified until Goal7 G7-3C replaces the removed legacy template.'
 }
 
 function Invoke-Clean {

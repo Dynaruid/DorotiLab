@@ -44,7 +44,7 @@ Source inventory deliberately does not enumerate or hash an entire reference che
 | Dart-to-C# diagnostics/report | `doroti.converter-report/v2` |
 | Resolved Dart package dependency graph | `doroti.package-graph/v1` |
 | Dart span to generated C# line mapping | `doroti.source-map/v1` |
-| SceneLab manifest | `doroti.scene-result/v1` |
+| Retired SceneLab manifest (historical evidence only) | `doroti.scene-result/v1` |
 | Doctor report | `doroti.doctor/v1` |
 | Flutter revision, input hash and symbol selection baseline | `doroti.flutter-baseline/v1` |
 | Deterministic member-level Flutter public API selection | `doroti.flutter-api/v2` |

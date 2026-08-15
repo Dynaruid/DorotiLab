@@ -5,7 +5,7 @@
 - Flutter revision: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
 - Avalonia revision: `f159423f691946e713f454447a780d4677d8a0d2`
 
-Current-status note: the platform-verification statements below describe the G4-0 decision date. G7-3M later added independent `osx-arm64` source, build, live NSWindow, and package-only evidence without transferring Windows results; Linux remains unverified.
+Current-status note: the platform-verification statements below describe the G4-0 decision date. G5-3 completed the handwritten Widgets/Rendering transition and the retired owners were subsequently deleted. G7-3M later added independent `osx-arm64` source, build, live NSWindow, and package-only evidence without transferring Windows results; Linux remains unverified.
 
 ## Context
 
@@ -60,7 +60,7 @@ Doroti.Vendor.Avalonia.*   -> Doroti.Shell.Core + approved vendor peers
 Two existing edges are debt, not accepted final architecture:
 
 - `Doroti.Flutter.Runtime -> Doroti.Platform` expires at G4-1 when clipboard/channel behavior moves to Flutter Services, `dart:ui`, and the host binding.
-- `Doroti.Engine -> Doroti.Widgets` expires at G4-6 when the generated Widgets composition root replaces `InteractiveApplication`.
+- The former `Doroti.Engine -> Doroti.Widgets` transition expired at G4-6; `InteractiveApplication` and the handwritten Widgets project have been removed.
 
 Only the exact current `Doroti.Flutter.Runtime` assembly receives the direct transition allowance. Existing Foundation/Physics assemblies receive its unavoidable transitive `Core`/`Graphics`/`Platform` compiler metadata closure, but no direct project-reference permission; a new runtime/framework assembly cannot copy either allowance. G4-1 removes the direct edge and these transitive references together. Both transitions remain visible in the project manifest and current-owner audit.
 
