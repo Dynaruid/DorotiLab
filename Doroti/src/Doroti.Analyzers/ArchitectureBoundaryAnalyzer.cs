@@ -434,9 +434,7 @@ public sealed class ArchitectureBoundaryAnalyzer : DiagnosticAnalyzer
         (string.Equals(assemblyName, "Doroti.Host.Windows", StringComparison.Ordinal) &&
          string.Equals(referenceName, "Doroti.Vendor.Avalonia.Win32", StringComparison.Ordinal)) ||
         (string.Equals(assemblyName, "Doroti.Host.macOS", StringComparison.Ordinal) &&
-         string.Equals(referenceName, "Doroti.Vendor.Avalonia.Native", StringComparison.Ordinal)) ||
-        (assemblyName.StartsWith("Doroti.Validation.", StringComparison.Ordinal) &&
-         referenceName is "Doroti.Vendor.Avalonia.Win32" or "Doroti.Vendor.Avalonia.Native");
+         string.Equals(referenceName, "Doroti.Vendor.Avalonia.Native", StringComparison.Ordinal));
 
     private static bool IsForbiddenVendorLayer(string assemblyName) =>
         assemblyName is

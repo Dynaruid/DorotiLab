@@ -6,7 +6,7 @@ The historical C0-C5 compatibility profiles and `Converter` facade are no longer
 
 ## Bootstrap validation
 
-`Doroti/validation/flutter-source.lock.json` pins Flutter revision `56b8e1a851a594b1a154f8ea93270807dab22b9a` to a canonical SHA-256 over every normalized Dart path and file hash under `packages/flutter/lib`.
+The pinned Flutter revision `56b8e1a851a594b1a154f8ea93270807dab22b9a` is the census identity for every normalized Dart path and file hash under `packages/flutter/lib`.
 
 The compiler validation checks all of the following in one run:
 
@@ -16,13 +16,7 @@ The compiler validation checks all of the following in one run:
 - absence of the removed source directory, namespace, project, and references from active source/build/compiler files;
 - a real analyzer/compiler negative selection that must fail with typed `DOTF0001`, a non-empty source span, symbol, and required action.
 
-Run the gate with the repository-required 15-minute timeout:
-
-```powershell
-./eng/doroti.ps1 validate -ValidationSuite compiler
-```
-
-The run writes `artifacts/validation/g3-t0-bootstrap.json`. `./eng/doroti.ps1 audit` also executes this validation after the source and vendor provenance audits.
+The historical compiler validation wrote `artifacts/validation/g3-t0-bootstrap.json`. `./eng/doroti.ps1 audit` still runs source and vendor provenance audits.
 
 ## Completion evidence
 

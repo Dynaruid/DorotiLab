@@ -31,7 +31,7 @@ Every slice requires clean/incremental identity and a zero-warning/zero-error ca
 
 ## Application and package gate
 
-`validation/cases/g5-3-dart-app/main.dart` exercises the promoted Widgets surface through a generated application. The gate performs project-reference build first, then packs the 12 runtime/framework dependencies and restores, builds, and runs the generated application runner outside the repository. Repository-private compiler or candidate fallback count must remain zero.
+A generated application exercises the promoted Widgets surface. The gate performs project-reference build first, then packs the 12 runtime/framework dependencies and restores, builds, and runs the generated application runner outside the repository. Repository-private compiler or candidate fallback count must remain zero.
 
 ## Evidence and deferred proof
 

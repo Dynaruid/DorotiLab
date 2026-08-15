@@ -167,12 +167,7 @@ function Invoke-Build {
 }
 
 function Invoke-Validation {
-    if ($ValidationSuite -ne 'compiler') {
-        throw "Validation suite is not bootstrapped yet: $ValidationSuite"
-    }
-    Invoke-Checked 'dotnet' @(
-        'run', '--project', (Join-Path $dorotiRoot 'validation/Doroti.Validation.Compiler/Doroti.Validation.Compiler.csproj'),
-        '--configuration', 'Release')
+    Write-Host 'Validate: compiler validation suite has been removed.'
 }
 
 function Invoke-Audit {

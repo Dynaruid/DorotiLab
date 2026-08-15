@@ -76,7 +76,6 @@ dotnet run --project ./DorotiDemoApp -- --smoke --entry builder --frames 3 --dur
 | --- | --- |
 | `doctor` | Check SDKs, desktop backend availability, pinned sources, revisions, and licenses |
 | `build` | Build the lean product graph in `Doroti.Product.slnx` |
-| `validate` | Run the compiler validation suite |
 | `audit` | Run storage, source/provenance, and compiler audits |
 | `format` | Verify product formatting without modifying files |
 | `release` | Build, audit, and inspect product packages; fail closed until the G7-3C application template acceptance is implemented |
@@ -85,7 +84,6 @@ dotnet run --project ./DorotiDemoApp -- --smoke --entry builder --frames 3 --dur
 Examples:
 
 ```powershell
-pwsh -File ./Doroti/eng/doroti.ps1 validate
 pwsh -File ./Doroti/eng/doroti.ps1 audit
 pwsh -File ./Doroti/eng/doroti.ps1 format
 ```
@@ -112,7 +110,6 @@ Generated evidence is written under `migration/flutter-framework/`; transient sc
 | Path | Contents |
 | --- | --- |
 | [`src/`](src/) | Product packages, runtime, renderer, hosts, target packages, and analyzers |
-| [`validation/`](validation/) | Current compiler, managed behavior, and native validation executables |
 | [`migration/`](migration/) | Source selections, promotion inputs, provenance, baselines, and committed evidence |
 | [`eng/`](eng/) | Build, audit, promotion, validation, and local-storage workflows |
 | [`tools/`](tools/) | Source, behavior, scene, provenance, and porting tools |
@@ -120,7 +117,7 @@ Generated evidence is written under `migration/flutter-framework/`; transient sc
 | [`templates/`](templates/) | `dotnet new` templates and package metadata |
 | [`docs/`](docs/) | Architecture decisions and milestone design records |
 
-`Doroti.Product.slnx` is the lean product build. `Doroti.slnx` additionally includes tools, validations, the demo, samples, and historical projects used for repository work.
+`Doroti.Product.slnx` is the lean product build. `Doroti.slnx` additionally includes tools, the demo, samples, and historical projects used for repository work.
 
 ## Generated-source policy
 

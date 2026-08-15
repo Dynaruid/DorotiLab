@@ -129,7 +129,6 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 
 산출물:
 
-- `Doroti/validation/Doroti.Validation.G7Web/`
 - `Doroti/migration/web/g7-web-live-evidence.json`
 - `Doroti/migration/web/g7-web-browser-matrix.json`
 - `Doroti/eng/validate-g7-web-live.ps1 -Shard <Smoke|Interaction|Reference>`

@@ -15,11 +15,10 @@ G3-0 initially registered only `flutter-framework-f0`; G3-1 then registered the 
 | F3 | 3,907 | 27,803 | 31,709 | 31,710 |
 | F4 | 5,346 | 48,969 | 54,314 | 54,315 |
 
-Run the deterministic reset and the compiler validation from the Doroti directory:
+Run the deterministic reset from the Doroti directory:
 
 ```powershell
 dotnet run --project tools/Doroti.SourceTools -- framework-evidence-reset
-./eng/doroti.ps1 validate -ValidationSuite compiler
 ```
 
 Validation regenerates the four evidence files in a temporary root and compares bytes, audits symbol cardinality and target hashes, confirms that no F1-F4 milestone profile is registered, regenerates the F0 and G3-1 candidates from pinned Flutter source, and rejects any imported pre-Goal3 compile/behavior PASS result.

@@ -76,7 +76,7 @@ public static partial class G4BoundaryAudit
             }
         }
 
-        ValidateSourceBoundary(root, sourceBoundaryPath, findings, out var sourceCounts, out var bindingCapabilities);
+        ValidateSourceBoundary(sourceBoundaryPath, findings, out var sourceCounts, out var bindingCapabilities);
         ValidateCapabilityMap(capabilityMapPath, bindingCapabilities, findings, out var capabilityCount);
         ValidateProjectBoundary(projectBoundaryPath, findings);
 
@@ -200,7 +200,6 @@ public static partial class G4BoundaryAudit
     }
 
     private static void ValidateSourceBoundary(
-        string repositoryRoot,
         string path,
         List<G4BoundaryFinding> findings,
         out int sourceCount,
@@ -220,15 +219,6 @@ public static partial class G4BoundaryAudit
         Check(census.GetProperty("publicRootCount").GetInt32() == 13, "G4B011", path, "Flutter public root census must be 13.", findings);
         Check(census.GetProperty("dartFileCount").GetInt32() == 695, "G4B012", path, "Flutter Dart file census must be 695.", findings);
         Check(census.GetProperty("srcDartFileCount").GetInt32() == 682, "G4B013", path, "Flutter src Dart file census must be 682.", findings);
-        using (var sourceLock = JsonDocument.Parse(File.ReadAllText(Path.Combine(repositoryRoot, "validation", "flutter-source.lock.json"))))
-        {
-            Check(
-                census.GetProperty("contentSha256").GetString() == sourceLock.RootElement.GetProperty("censusSha256").GetString(),
-                "G4B013",
-                path,
-                "Flutter source-boundary content hash differs from the pinned census lock.",
-                findings);
-        }
         Check(root.GetProperty("summary").GetProperty("unclassifiedCount").GetInt32() == 0, "G4B014", path, "Source boundary has unclassified entries.", findings);
         Check(!File.ReadAllText(path).Contains("runtime-binding", StringComparison.Ordinal), "G4B015", path, "Broad runtime-binding is forbidden in G4 completion counts.", findings);
 

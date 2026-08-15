@@ -29,7 +29,7 @@ The public API audit starts from the `material.dart` and `cupertino.dart` export
 - Material: 181 exported libraries, 521 public declaration occurrences, diff 0.
 - Cupertino: 52 exported libraries, 121 public declaration occurrences, diff 0.
 
-`Doroti.Validation.G5Gallery` uses one source-ported shell factory with Material and Cupertino branches. It constructs and executes `MaterialApp` and `CupertinoApp` contracts and compares:
+The gallery gate uses one source-ported shell factory with Material and Cupertino branches. It constructs and executes `MaterialApp` and `CupertinoApp` contracts and compares:
 
 - visual shell title, home widget, and application color;
 - button and switch callback behavior;

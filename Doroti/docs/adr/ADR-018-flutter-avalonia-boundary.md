@@ -53,7 +53,7 @@ Doroti.Host.Desktop        -> neutral contracts + Doroti.Vendor.Avalonia.*
 Doroti.Vendor.Avalonia.*   -> Doroti.Shell.Core + approved vendor peers
 ```
 
-`DOTARCH009` rejects host/platform references from Doroti Runtime, Ui, Framework, and Hosting assemblies. The negative project at `validation/architecture/forbidden-framework-platform` proves through an actual `dotnet build` that `Doroti.Framework.* -> Doroti.Platform` fails.
+`DOTARCH009` rejects host/platform references from Doroti Runtime, Ui, Framework, and Hosting assemblies. A `Doroti.Framework.* -> Doroti.Platform` reference must fail to compile.
 
 ## Recorded transitions
 

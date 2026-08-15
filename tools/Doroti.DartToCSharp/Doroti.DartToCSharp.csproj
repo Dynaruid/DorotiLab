@@ -19,7 +19,4 @@
     <ProjectReference Include="..\..\Doroti\src\Doroti.Ui\Doroti.Ui.csproj" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
   </ItemGroup>
-  <ItemGroup>
-    <InternalsVisibleTo Include="Doroti.Validation.Compiler" />
-  </ItemGroup>
 </Project>

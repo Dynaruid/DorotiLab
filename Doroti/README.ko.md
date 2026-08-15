@@ -76,7 +76,6 @@ dotnet run --project ./DorotiDemoApp -- --smoke --entry builder --frames 3 --dur
 | --- | --- |
 | `doctor` | SDK, desktop backend, pinned source, revision과 license 확인 |
 | `build` | `Doroti.Product.slnx`의 간결한 제품 graph build |
-| `validate` | compiler validation suite 실행 |
 | `audit` | local storage, source/provenance와 compiler audit 실행 |
 | `format` | 파일을 수정하지 않고 제품 formatting 확인 |
 | `release` | 제품 package를 build/audit/검사하고 G7-3C app template acceptance 구현 전에는 fail-closed |
@@ -85,7 +84,6 @@ dotnet run --project ./DorotiDemoApp -- --smoke --entry builder --frames 3 --dur
 예시:
 
 ```powershell
-pwsh -File ./Doroti/eng/doroti.ps1 validate
 pwsh -File ./Doroti/eng/doroti.ps1 audit
 pwsh -File ./Doroti/eng/doroti.ps1 format
 ```
@@ -112,7 +110,6 @@ pwsh -File ./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Package
 | 경로 | 내용 |
 | --- | --- |
 | [`src/`](src/) | 제품 package, runtime, renderer, host, target package와 analyzer |
-| [`validation/`](validation/) | 현재 compiler, managed behavior와 native validation executable |
 | [`migration/`](migration/) | source selection, promotion input, provenance, baseline과 commit되는 evidence |
 | [`eng/`](eng/) | build, audit, promotion, validation과 local-storage workflow |
 | [`tools/`](tools/) | source, behavior, scene, provenance와 porting 도구 |
@@ -120,7 +117,7 @@ pwsh -File ./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Package
 | [`templates/`](templates/) | `dotnet new` template과 package metadata |
 | [`docs/`](docs/) | architecture decision과 milestone 설계 문서 |
 
-`Doroti.Product.slnx`는 제품만 포함하는 간결한 build입니다. `Doroti.slnx`에는 repository 작업에 필요한 tool, validation, demo, sample과 historical project도 포함됩니다.
+`Doroti.Product.slnx`는 제품만 포함하는 간결한 build입니다. `Doroti.slnx`에는 repository 작업에 필요한 tool, demo, sample과 historical project도 포함됩니다.
 
 ## 생성 source 원칙
 

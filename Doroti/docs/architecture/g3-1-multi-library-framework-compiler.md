@@ -10,7 +10,7 @@ The analyzer still emits `doroti.dart-analyzer-output/v3`, but its resolved grap
 
 Unsupported semantic visitors do not emit obsolete placeholder declarations or `default` expression fallbacks. They produce `DOTF0001` with the pinned source, library, canonical symbol dependency, non-empty span, and manual action; the compiler CLI returns exit code 2. The committed negative selection uses the upstream `BitField` redirecting factory constructors.
 
-The compiler validation runs with the repository 15-minute timeout and requires:
+The G3-1 compiler gate required:
 
 - current F0 output to match its committed candidate;
 - two clean/cache runs of G3-1 to match each other and the committed project graph byte-for-byte;

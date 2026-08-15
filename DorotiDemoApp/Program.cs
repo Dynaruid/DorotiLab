@@ -481,7 +481,7 @@ internal static class Program
             {
                 flutterRevision = FlutterRevision,
                 avaloniaRevision = AvaloniaRevision,
-                flutterSourceLockSha256 = root is null ? null : HashFile(IOPath.Combine(root, "Doroti", "validation", "flutter-source.lock.json")),
+                flutterSourceLockSha256 = (string?)null,
                 reviewedFrameworkDigest = root is null ? null : HashReviewedFramework(root),
                 materialProductAssembly = typeof(Material.MaterialApp).Assembly.GetName().Name,
                 consumer = root is null ? "clean-package-only-external" : "repository-product-project",
@@ -671,9 +671,6 @@ internal static class Program
         }
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }
-
-    private static string HashFile(string path) =>
-        Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path))).ToLowerInvariant();
 
     private static string? TryFindRepositoryRoot()
     {

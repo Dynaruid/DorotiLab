@@ -41,7 +41,7 @@ if (Test-Shard 'Inventory') {
     $oldIdentities = @($mapping.projectMappings | ForEach-Object old)
     $oldTypes = @($mapping.typeMappings | ForEach-Object old)
     $activeRoots = @(
-        'src', 'validation', 'eng', 'tools'
+        'src', 'eng', 'tools'
     ) | ForEach-Object { Join-Path $dorotiRoot $_ }
     $activeRoots += Join-Path $repoRoot 'DorotiDemoApp'
     $activeRoots += Join-Path $repoRoot 'tools/Doroti.DartToCSharp/src'

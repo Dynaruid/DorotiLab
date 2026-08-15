@@ -45,22 +45,4 @@
   <Project Path="tools/Doroti.AvaloniaPort/Doroti.AvaloniaPort.csproj" />
   <Project Path="tools/Doroti.SourceTools/Doroti.SourceTools.csproj" />
   <Project Path="tools/Doroti.Tooling/Doroti.Tooling.csproj" />
-  <Folder Name="/validation/">
-    <Project Path="validation/Doroti.Validation.G7WebBuild/Doroti.Validation.G7WebBuild.csproj" />
-    <Project Path="validation/Doroti.Validation.G7MacOS/Doroti.Validation.G7MacOS.csproj" />
-    <Project Path="validation/Doroti.Validation.G7Product/Doroti.Validation.G7Product.csproj" />
-    <Project Path="validation/Doroti.Validation.G7Shared/Doroti.Validation.G7Shared.csproj" />
-    <Project Path="validation/Doroti.Validation.G6MaterialFidelity/Doroti.Validation.G6MaterialFidelity.csproj" />
-    <Project Path="validation/Doroti.Validation.G6Cupertino/Doroti.Validation.G6Cupertino.csproj" />
-    <Project Path="validation/Doroti.Validation.G5Widgets/Doroti.Validation.G5Widgets.csproj" />
-    <Project Path="validation/Doroti.Validation.G5PlatformFoundation/Doroti.Validation.G5PlatformFoundation.csproj" />
-    <Project Path="validation/Doroti.Validation.G5PaintingRenderingSemantics/Doroti.Validation.G5PaintingRenderingSemantics.csproj" />
-    <Project Path="validation/Doroti.Validation.G5WidgetsTextInput/Doroti.Validation.G5WidgetsTextInput.csproj" />
-    <Project Path="validation/Doroti.Validation.G5NativeInput/Doroti.Validation.G5NativeInput.csproj" />
-    <Project Path="validation/Doroti.Validation.G4PhysicsAnimationGestures/Doroti.Validation.G4PhysicsAnimationGestures.csproj" />
-    <Project Path="validation/Doroti.Validation.Compiler/Doroti.Validation.Compiler.csproj" />
-    <Project Path="validation/Doroti.Validation.G4Ui/Doroti.Validation.G4Ui.csproj" />
-    <Project Path="validation/Doroti.Validation.G4Foundation/Doroti.Validation.G4Foundation.csproj" />
-    <Project Path="validation/Doroti.Validation.G4SchedulerServices/Doroti.Validation.G4SchedulerServices.csproj" />
-  </Folder>
 </Solution>

@@ -154,14 +154,6 @@ dart format --output=none --set-exit-if-changed .
 dart analyze
 dart test
 Pop-Location
-
-dotnet run --project ./Doroti/validation/Doroti.Validation.Compiler -- --refactor-only
-```
-
-Repository-level compiler suite는 다음 명령으로도 실행할 수 있습니다.
-
-```powershell
-pwsh -File ./Doroti/eng/doroti.ps1 validate
 ```
 
 상세 설계는 [typed framework compilation](../../Doroti/docs/architecture/f0-typed-framework-compiler.md), [multi-library compilation](../../Doroti/docs/architecture/g3-1-multi-library-framework-compiler.md), [port ownership](../../Doroti/docs/architecture/p0-port-ownership.md), [adoption/rebase state](../../Doroti/docs/architecture/p2-port-state-adoption-rebase.md)를 참고하세요.

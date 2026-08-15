@@ -14,7 +14,6 @@ $forbiddenPatterns = @(
 )
 $searchRoots = @(
     (Join-Path $dorotiRoot 'eng'),
-    (Join-Path $dorotiRoot 'validation'),
     (Join-Path $dorotiRoot 'tools'),
     (Join-Path $workspaceRoot 'tools/Doroti.DartToCSharp'),
     (Join-Path $workspaceRoot 'DorotiDemoApp')

@@ -4,7 +4,6 @@
     <IsDorotiProduct>true</IsDorotiProduct>
   </PropertyGroup>
   <ItemGroup>
-    <InternalsVisibleTo Include="Doroti.Validation.G6MaterialFidelity" />
     <PackageReference Include="SkiaSharp" />
     <ProjectReference Include="..\Doroti.Core\Doroti.Core.csproj" />
     <ProjectReference Include="..\Doroti.Platform\Doroti.Platform.csproj" />
