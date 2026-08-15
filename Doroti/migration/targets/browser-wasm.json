@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "doroti.target-manifest/v1",
+  "milestone": "G7-3",
+  "id": "browser-wasm",
+  "requiredForGoal7": true,
+  "packageId": "Doroti.Target.Web.browser-wasm",
+  "compositionRoot": "Doroti.Target.Web.BrowserWasmTarget",
+  "host": "document and HTMLCanvasElement",
+  "graphicsBackend": "hardware WebGL2 required",
+  "managedCallbackAbi": "doroti.browser-managed-callbacks/v1",
+  "javaScriptPluginAbi": "doroti.browser-js-plugin/v1",
+  "resourcePolicy": "deployment-base-relative URL resolution",
+  "staticArtifact": "artifacts/g7-web/0.2.0-beta/wwwroot",
+  "publishModes": [
+    {
+      "mode": "interpreter",
+      "status": "verified"
+    },
+    {
+      "mode": "aot-build-probe",
+      "status": "verified",
+      "scope": "target package build probe; not generated product trimming acceptance"
+    }
+  ],
+  "unsupportedModes": [
+    {
+      "mode": "trimmed generated product",
+      "status": "notVerified",
+      "blocker": "Generated framework reflection roots have not been audited; PublishTrimmed is explicitly false."
+    }
+  ],
+  "deferredToG7_4": [
+    "framework scene to browser GPU presentation",
+    "browser input and composition",
+    "DOM/ARIA semantics action bridge",
+    "Chromium live product launch"
+  ]
+}

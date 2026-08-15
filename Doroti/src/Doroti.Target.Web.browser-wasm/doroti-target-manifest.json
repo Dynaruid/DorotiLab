@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "doroti.target-package/v1",
+  "packageId": "Doroti.Target.Web.browser-wasm",
+  "packageVersion": "0.2.0-beta",
+  "rid": "browser-wasm",
+  "host": "document-canvas",
+  "graphicsBackend": "webgl2-browser-gpu-required",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "managedCallbackAbi": "doroti.browser-managed-callbacks/v1",
+  "javaScriptPluginAbi": "doroti.browser-js-plugin/v1",
+  "resourceBasePolicy": "document-base-uri",
+  "resourceKinds": [
+    "asset",
+    "font",
+    "localization"
+  ],
+  "supportedPublishModes": [
+    "interpreter",
+    "aot-build-probe"
+  ],
+  "requiredCapabilities": [
+    "window.lifecycle",
+    "view.lifecycle-metrics",
+    "view.frame-dispatch",
+    "platform.environment",
+    "platform.messaging"
+  ],
+  "unsupportedModes": [
+    "software-canvas-2d",
+    "software-webgl-renderer",
+    "native-desktop-plugin",
+    "trimmed-generated-product"
+  ]
+}

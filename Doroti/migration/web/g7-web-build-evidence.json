@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "doroti.g7-web-build-evidence/v1",
+  "milestone": "G7-3",
+  "status": "pass",
+  "target": "browser-wasm",
+  "shards": {
+    "toolchain": {
+      "status": "pass",
+      "sdkVersion": "10.0.302",
+      "workloadVersion": "10.0.303.1",
+      "rid": "browser-wasm",
+      "webAssemblySdk": "available",
+      "interpreterPublish": "supported",
+      "wasmToolsInstalled": true,
+      "aotToolchain": "available",
+      "trimming": {
+        "status": "notVerified",
+        "blocker": "generated framework reflection roots have not been audited; PublishTrimmed=false"
+      }
+    },
+    "graph": {
+      "status": "pass",
+      "requiredFiles": 6,
+      "desktopNativeDependencies": 0,
+      "lifecycle": [
+        "document",
+        "canvas",
+        "requestAnimationFrame",
+        "visibility",
+        "resize",
+        "devicePixelRatio"
+      ],
+      "gpuPolicy": "hardware-webgl2-fail-closed",
+      "cpu2dFallbacks": 0,
+      "managedCallbackAbi": "doroti.browser-managed-callbacks/v1",
+      "javaScriptPluginAbi": "doroti.browser-js-plugin/v1",
+      "unsupportedCapabilitySilentSuccesses": 0
+    },
+    "compile": {
+      "status": "pass",
+      "rid": "browser-wasm",
+      "configuration": "Release",
+      "publishMode": "interpreter",
+      "publishTrimmed": false,
+      "repeatPublishIdentity": "pass",
+      "aggregateSha256": "b886879bc441805d258a4cfda96b4efa9b36433793584389234de5616e1a393f",
+      "staticFileCount": 567,
+      "aot": {
+        "status": "pass",
+        "runAotCompilation": true,
+        "wasmBuildNative": true,
+        "publishTrimmed": true,
+        "nativeBytes": 67963582,
+        "nativeSha256": "34008bece8cf36c0d12b12ce24bf54c8f2c3ec61844476a5a5ebd69a8f43353a",
+        "interpreterNativeBytes": 3002094,
+        "staticFileCount": 567,
+        "aggregateSha256": "bf9d68cd4eec5c40e09132c8a0dae62015cf81b063c842f1ceb1aba49053d2fc"
+      },
+      "artifactRoot": "artifacts/g7-web/0.2.0-beta/wwwroot",
+      "missingStaticArtifacts": 0,
+      "staticArtifactHashMismatches": 0,
+      "diagnostics": 0
+    },
+    "publish": {
+      "status": "pass",
+      "package": "Doroti.Target.Web.browser-wasm.0.2.0-beta.nupkg",
+      "packageSha256": "d918ee83a3167a407c7cbb56fe54224f443b01b1876e53d37f5b1a2ced7c3b6e",
+      "externalConsumer": "repository-outside-temporary-root",
+      "restore": "clean",
+      "publish": "pass",
+      "rid": "browser-wasm",
+      "publishMode": "interpreter",
+      "staticFileCount": 567,
+      "aggregateSha256": "1bbdfadcac47c4c8b867c86abf6685dde97d2ae5103b6acc1021a777fe37ff2a",
+      "repositoryPrivateFallbacks": 0,
+      "desktopNativeDependencies": 0,
+      "missingStaticArtifacts": 0,
+      "staticArtifactHashMismatches": 0
+    }
+  },
+  "closure": {
+    "desktopNativeDependencies": 0,
+    "repositoryPrivateFallbacks": 0,
+    "unsupportedCapabilitySilentSuccesses": 0,
+    "missingStaticArtifacts": 0,
+    "staticArtifactHashMismatches": 0
+  },
+  "notVerified": [
+    {
+      "mode": "trimmed-generated-product",
+      "blocker": "generated framework reflection roots have not been audited; the interpreter release baseline remains PublishTrimmed=false"
+    }
+  ]
+}

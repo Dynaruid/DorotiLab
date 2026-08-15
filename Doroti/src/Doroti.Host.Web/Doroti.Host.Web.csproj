@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Host.Web</AssemblyName>
+    <PackageId>Doroti.Host.Web</PackageId>
+    <Description>Doroti browser document, canvas, lifecycle, and requestAnimationFrame host capabilities.</Description>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AddRazorSupportForMvc>false</AddRazorSupportForMvc>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Doroti.Flutter.Hosting\Doroti.Flutter.Hosting.csproj" />
+    <ProjectReference Include="..\Doroti.Flutter.Ui\Doroti.Flutter.Ui.csproj" />
+  </ItemGroup>
+</Project>

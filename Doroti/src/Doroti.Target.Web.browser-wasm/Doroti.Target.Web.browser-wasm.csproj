@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Target.Web</AssemblyName>
+    <RootNamespace>Doroti.Target.Web</RootNamespace>
+    <PackageId>Doroti.Target.Web.browser-wasm</PackageId>
+    <Description>Doroti browser-wasm composition root and target-aware web manifest.</Description>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Doroti.Flutter.Hosting\Doroti.Flutter.Hosting.csproj" />
+    <ProjectReference Include="..\Doroti.Flutter.Ui\Doroti.Flutter.Ui.csproj" />
+    <ProjectReference Include="..\Doroti.Host.Web\Doroti.Host.Web.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" />
+    <None Include="doroti-target-manifest.json" Pack="true" PackagePath="doroti/" />
+  </ItemGroup>
+</Project>

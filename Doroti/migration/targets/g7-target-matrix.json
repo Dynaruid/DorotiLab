@@ -1,6 +1,6 @@
 {
   "schemaVersion": "doroti.g7-target-matrix/v1",
-  "milestone": "G7-0",
+  "milestone": "G7-3",
   "requiredTargets": [
     "win-x64",
     "browser-wasm",
@@ -29,16 +29,19 @@
       "id": "browser-wasm",
       "requiredForGoal7": true,
       "host": "browser document and canvas",
-      "backend": "browser-gpu-required",
-      "source": "absent",
-      "build": "notVerified",
-      "packaged": "notVerified",
-      "live": "notVerified",
-      "input": "notVerified",
-      "semantics": "notVerified",
+      "backend": "webgl2-browser-gpu-required",
+      "source": "implemented-browser-adapter",
+      "build": "verified-current-interpreter-publish",
+      "packaged": "verified-package-only-consumer",
+      "live": "notVerified-G7-4",
+      "input": "notVerified-G7-4",
+      "semantics": "notVerified-G7-4",
       "physical": "notVerified",
+      "unsupportedModes": {
+        "wasmAotBuildProbe": "verified-current",
+        "trimmedGeneratedProduct": "notVerified-reflection-roots-not-audited"
+      },
       "followUpMilestones": [
-        "G7-3",
         "G7-4",
         "G7-5",
         "G7-6"

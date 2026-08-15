@@ -22,6 +22,7 @@
     <Project Path="src/Doroti.Graphics/Doroti.Graphics.csproj" />
     <Project Path="src/Doroti.Host.Desktop/Doroti.Host.Desktop.csproj" />
     <Project Path="src/Doroti.Host.Desktop.Flutter/Doroti.Host.Desktop.Flutter.csproj" />
+    <Project Path="src/Doroti.Host.Web/Doroti.Host.Web.csproj" />
     <Project Path="src/Doroti.Legacy.Engine/Doroti.Legacy.Engine.csproj" />
     <Project Path="src/Doroti.Legacy.Rendering/Doroti.Legacy.Rendering.csproj" />
     <Project Path="src/Doroti.Platform/Doroti.Platform.csproj" />
@@ -29,6 +30,7 @@
     <Project Path="src/Doroti.Shell.Core/Doroti.Shell.Core.csproj" />
     <Project Path="src/Doroti.Target.Windows.win-x64/Doroti.Target.Windows.win-x64.csproj" />
     <Project Path="src/Doroti.Target.macOS.osx-arm64/Doroti.Target.macOS.osx-arm64.csproj" />
+    <Project Path="src/Doroti.Target.Web.browser-wasm/Doroti.Target.Web.browser-wasm.csproj" />
     <Project Path="src/Doroti.Vendor.Avalonia.Skia/Doroti.Vendor.Avalonia.Skia.csproj" />
     <Project Path="src/Doroti.Vendor.Avalonia.Base/Doroti.Vendor.Avalonia.Base.csproj" />
     <Project Path="src/Doroti.Vendor.Avalonia.Win32/Doroti.Vendor.Avalonia.Win32.csproj" />
@@ -46,6 +48,7 @@
   <Project Path="tools/Doroti.SourceTools/Doroti.SourceTools.csproj" />
   <Project Path="tools/Doroti.Tooling/Doroti.Tooling.csproj" />
   <Folder Name="/validation/">
+    <Project Path="validation/Doroti.Validation.G7WebBuild/Doroti.Validation.G7WebBuild.csproj" />
     <Project Path="validation/Doroti.Validation.G7MacOS/Doroti.Validation.G7MacOS.csproj" />
     <Project Path="validation/Doroti.Validation.G7Product/Doroti.Validation.G7Product.csproj" />
     <Project Path="validation/Doroti.Validation.G7Shared/Doroti.Validation.G7Shared.csproj" />

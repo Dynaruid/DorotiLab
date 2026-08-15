@@ -165,6 +165,7 @@ public enum Brightness
 public enum HostOperatingSystem
 {
     unknown,
+    web,
     android,
     fuchsia,
     iOS,

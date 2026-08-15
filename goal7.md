@@ -1,6 +1,6 @@
 # Doroti 7차 목표 — 제품 정확성 closure와 Windows/macOS shell·Web release
 
-> 상태: G7-3M ✅ 완료 — G7-3 Web build/publish 진행 가능
+> 상태: G7-3 ✅ 완료 — G7-4 Web live parity 진행 가능
 > 작성일: 2026-08-14
 > 측정 핵심화: 2026-08-15
 > 범위 추가: 2026-08-15 — Apple Silicon macOS shell(`osx-arm64`)을 필수 target으로 승격
@@ -293,6 +293,15 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 - `Doroti/migration/web/g7-web-build-evidence.json`
 - `Doroti/artifacts/g7-web/<version>/`
 - `Doroti/eng/validate-g7-web-build.ps1 -Shard <Toolchain|Graph|Compile|Publish>`
+
+실행 결과(2026-08-15):
+
+- G7-3 `PASS`: `Doroti.Host.Web`의 browser-only adapter가 document/canvas lifecycle, visibility/focus, resize, `devicePixelRatio`와 `requestAnimationFrame`을 공용 `FlutterView` lifecycle/metrics/frame/environment capability에 연결했다.
+- browser graph `PASS`: Win32/AppKit/Avalonia/native desktop dependency는 0이며, WebGL2 context가 없거나 software renderer이면 fail-closed한다. Canvas 2D/CPU fallback과 미등록 JavaScript plugin의 silent success는 0이다.
+- `Doroti.Target.Web.browser-wasm` composition root와 target-aware managed callback/plugin/resource ABI manifest를 추가했다. asset/font/localization URL은 document base URI 기준으로 해석한다.
+- .NET 10 interpreter 방식의 clean/repeat `browser-wasm` publish identity와 deployment-neutral static artifact hash manifest가 일치했다. 저장소 밖 소비자도 격리 package cache에서 promoted NuGet package만으로 restore/publish했고 repository-private fallback과 정적 파일 누락/hash 불일치는 0이다.
+- `wasm-tools` 설치 후 AOT build probe도 `PASS`: 180개 assembly AOT, Emscripten native link와 `wasm-opt -O2`를 거쳐 native WebAssembly artifact를 생성했다. AOT가 요구하는 trimming은 이 target build probe에서만 통과했으며, generated framework reflection root audit 전이므로 전체 generated product trimming은 계속 `notVerified`다. 실제 Chromium GPU frame/input/ARIA 실행은 범위를 전이하지 않고 G7-4가 소유한다.
+- 재현 명령은 `validate-g7-web-build.ps1 -Shard Toolchain|Graph|Compile|Publish`이며 종합 evidence의 status는 `pass`다.
 
 ### G7-4 — Web live product parity
 
