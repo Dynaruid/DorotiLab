@@ -10,14 +10,14 @@
   "flutterBaseline": "../flutter-compat/baseline.json",
   "inputs": [
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/_error_dumper_io.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/_error_dumper_io.dart",
       "library": "package:flutter/src/foundation/_error_dumper_io.dart",
       "symbols": [
         "ErrorToConsoleDumper"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/annotations.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/annotations.dart",
       "library": "package:flutter/src/foundation/annotations.dart",
       "symbols": [
         "Category",
@@ -26,7 +26,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/assertions.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/assertions.dart",
       "library": "package:flutter/src/foundation/assertions.dart",
       "symbols": [
         "DiagnosticPropertiesTransformer",
@@ -49,7 +49,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/basic_types.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/basic_types.dart",
       "library": "package:flutter/src/foundation/basic_types.dart",
       "symbols": [
         "AsyncCallback",
@@ -66,7 +66,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/binding.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/binding.dart",
       "library": "package:flutter/src/foundation/binding.dart",
       "symbols": [
         "BindingBase",
@@ -75,7 +75,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/bitfield.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/bitfield.dart",
       "library": "package:flutter/src/foundation/bitfield.dart",
       "symbols": [
         "BitField",
@@ -83,7 +83,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/capabilities.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/capabilities.dart",
       "library": "package:flutter/src/foundation/capabilities.dart",
       "symbols": [
         "isCanvasKit",
@@ -92,7 +92,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
       "library": "package:flutter/src/foundation/change_notifier.dart",
       "symbols": [
         "ChangeNotifier",
@@ -103,7 +103,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/collections.dart",
       "library": "package:flutter/src/foundation/collections.dart",
       "symbols": [
         "_defaultCompare",
@@ -120,7 +120,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/consolidate_response.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/consolidate_response.dart",
       "library": "package:flutter/src/foundation/consolidate_response.dart",
       "symbols": [
         "BytesReceivedCallback",
@@ -129,7 +129,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/constants.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/constants.dart",
       "library": "package:flutter/src/foundation/constants.dart",
       "symbols": [
         "kDebugMode",
@@ -141,7 +141,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/debug.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/debug.dart",
       "library": "package:flutter/src/foundation/debug.dart",
       "symbols": [
         "activeDevToolsServerAddress",
@@ -157,7 +157,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/diagnostics.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/diagnostics.dart",
       "library": "package:flutter/src/foundation/diagnostics.dart",
       "symbols": [
         "ComputePropertyValueCallback",
@@ -210,12 +210,12 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/error_dumper.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/error_dumper.dart",
       "library": "package:flutter/src/foundation/error_dumper.dart",
       "symbols": []
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/isolates.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/isolates.dart",
       "library": "package:flutter/src/foundation/isolates.dart",
       "symbols": [
         "ComputeCallback",
@@ -224,7 +224,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/key.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/key.dart",
       "library": "package:flutter/src/foundation/key.dart",
       "symbols": [
         "Key",
@@ -234,7 +234,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/licenses.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/licenses.dart",
       "library": "package:flutter/src/foundation/licenses.dart",
       "symbols": [
         "LicenseEntry",
@@ -246,7 +246,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/memory_allocations.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/memory_allocations.dart",
       "library": "package:flutter/src/foundation/memory_allocations.dart",
       "symbols": [
         "FlutterMemoryAllocations",
@@ -262,21 +262,21 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/node.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/node.dart",
       "library": "package:flutter/src/foundation/node.dart",
       "symbols": [
         "AbstractNode"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/object.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/object.dart",
       "library": "package:flutter/src/foundation/object.dart",
       "symbols": [
         "objectRuntimeType"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/observer_list.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/observer_list.dart",
       "library": "package:flutter/src/foundation/observer_list.dart",
       "symbols": [
         "HashedObserverList",
@@ -284,7 +284,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/persistent_hash_map.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/persistent_hash_map.dart",
       "library": "package:flutter/src/foundation/persistent_hash_map.dart",
       "symbols": [
         "PersistentHashMap",
@@ -299,7 +299,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/platform.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/platform.dart",
       "library": "package:flutter/src/foundation/platform.dart",
       "symbols": [
         "TargetPlatform",
@@ -309,7 +309,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/print.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/print.dart",
       "library": "package:flutter/src/foundation/print.dart",
       "symbols": [
         "DebugPrintCallback",
@@ -331,7 +331,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/serialization.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/serialization.dart",
       "library": "package:flutter/src/foundation/serialization.dart",
       "symbols": [
         "ReadBuffer",
@@ -339,28 +339,28 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/service_extensions.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/service_extensions.dart",
       "library": "package:flutter/src/foundation/service_extensions.dart",
       "symbols": [
         "FoundationServiceExtensions"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/stack_frame.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/stack_frame.dart",
       "library": "package:flutter/src/foundation/stack_frame.dart",
       "symbols": [
         "StackFrame"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/synchronous_future.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/synchronous_future.dart",
       "library": "package:flutter/src/foundation/synchronous_future.dart",
       "symbols": [
         "SynchronousFuture"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/timeline.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/timeline.dart",
       "library": "package:flutter/src/foundation/timeline.dart",
       "symbols": [
         "AggregatedTimedBlock",
@@ -374,7 +374,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/unicode.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/unicode.dart",
       "library": "package:flutter/src/foundation/unicode.dart",
       "symbols": [
         "Unicode"

@@ -31,7 +31,7 @@ if (@($libraries | Where-Object { $_.analyzerErrors -ne 0 }).Count -ne 0) {
 
 function New-Input([object] $Library, [string] $EmissionMode) {
     return [ordered]@{
-        path = "../../../flutter-master/packages/flutter/lib/$($Library.path)"
+        path = "../../../reference/flutter-master/packages/flutter/lib/$($Library.path)"
         library = "package:flutter/$($Library.path)"
         symbols = @($Library.declarations | ForEach-Object { [string]$_.name })
         emissionMode = $EmissionMode

@@ -103,6 +103,7 @@ A manual Chromium smoke of the official publish artifact confirmed a non-empty G
 | [`Doroti/src/Doroti.Host.Avalonia/`](Doroti/src/Doroti.Host.Avalonia/) | Comparison and validation host based on the official `Avalonia.Desktop` package |
 | [`DorotiDemoApp/`](DorotiDemoApp/) | Demo app that displays a real Material widget tree |
 | [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | Semantic compiler that translates Dart into C# |
+| `reference/` | Local, ignored pinned source trees: `reference/flutter-master` and `reference/Avalonia-main` |
 | [`history/26-08-16/goal7-summary.md`](history/26-08-16/goal7-summary.md) | Archived Goal 7 results, remaining Web/release gates, and evidence boundaries |
 
 For detailed build and validation instructions and architecture records, see [`Doroti/README.md`](Doroti/README.md) and [`Doroti/docs/`](Doroti/docs/).

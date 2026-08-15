@@ -2,7 +2,7 @@
   "schemaVersion": "doroti.avalonia-a1-source-port-provenance/v1",
   "upstreamRepository": "https://github.com/AvaloniaUI/Avalonia",
   "upstreamRevision": "git:f159423f691946e713f454447a780d4677d8a0d2",
-  "license": "../../../Avalonia-main/licence.md",
+  "license": "../../../reference/Avalonia-main/licence.md",
   "adaptationPolicy": "copy-adapt-with-Doroti shell DTO boundary; no Avalonia binary reference",
   "upstreamInputs": [
     {

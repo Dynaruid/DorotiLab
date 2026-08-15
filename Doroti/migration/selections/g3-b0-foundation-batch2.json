@@ -10,14 +10,14 @@
   "flutterBaseline": "../flutter-compat/baseline.json",
   "inputs": [
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/unicode.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/unicode.dart",
       "library": "package:flutter/src/foundation/unicode.dart",
       "symbols": [
         "Unicode"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/constants.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/constants.dart",
       "library": "package:flutter/src/foundation/constants.dart",
       "symbols": [
         "kReleaseMode",
@@ -29,14 +29,14 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/service_extensions.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/service_extensions.dart",
       "library": "package:flutter/src/foundation/service_extensions.dart",
       "symbols": [
         "FoundationServiceExtensions"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/capabilities.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/capabilities.dart",
       "library": "package:flutter/src/foundation/capabilities.dart",
       "symbols": [
         "isCanvasKit",
@@ -45,7 +45,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/_capabilities_io.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/_capabilities_io.dart",
       "library": "package:flutter/src/foundation/_capabilities_io.dart",
       "symbols": [
         "isCanvasKit",
@@ -53,14 +53,14 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/node.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/node.dart",
       "library": "package:flutter/src/foundation/node.dart",
       "symbols": [
         "AbstractNode"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/bitfield.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/bitfield.dart",
       "library": "package:flutter/src/foundation/bitfield.dart",
       "symbols": [
         "BitField",
@@ -68,7 +68,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/_bitfield_io.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/_bitfield_io.dart",
       "library": "package:flutter/src/foundation/_bitfield_io.dart",
       "symbols": [
         "BitField",

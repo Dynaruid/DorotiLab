@@ -847,7 +847,7 @@ Future<String> materializeFrameworkPackageConfig(String packagesPath) async {
       continue;
     }
     if (name == 'sky_engine' && useHostSkyEngine) {
-      // Host Flutter caches can lag the pinned flutter-master dart:ui surface
+      // Host Flutter caches can lag the pinned reference/flutter-master dart:ui surface
       // (e.g. HitTestRequest/Response). Overlay missing symbols into a temp
       // sky_engine so G4-4 Gestures resolves without requiring a Flutter upgrade.
       package['rootUri'] = (await _materializeSkyEngineWithHitTestOverlay(
@@ -937,7 +937,7 @@ Future<String> materializeFrameworkPackageConfig(String packagesPath) async {
 
 /// Returns a sky_engine root that exposes HitTestRequest/Response/onHitTest.
 ///
-/// When the host Flutter cache lags pinned flutter-master, patch only
+/// When the host Flutter cache lags pinned reference/flutter-master, patch only
 /// `platform_dispatcher.dart` into a content-addressed overlay directory and
 /// copy the rest of host sky_engine into one deterministic local cache entry.
 Future<Directory> _materializeSkyEngineWithHitTestOverlay(

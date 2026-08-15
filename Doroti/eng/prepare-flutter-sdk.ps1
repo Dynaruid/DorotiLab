@@ -8,7 +8,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $dorotiRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $repositoryRoot = (Resolve-Path (Join-Path $dorotiRoot '..')).Path
-$sdkRoot = [IO.Path]::GetFullPath((Join-Path $repositoryRoot 'flutter-master'))
+$sdkRoot = [IO.Path]::GetFullPath((Join-Path $repositoryRoot 'reference/flutter-master'))
 . (Join-Path $PSScriptRoot 'flutter-sdk.ps1')
 
 if (Test-Path -LiteralPath $sdkRoot) {
@@ -49,7 +49,7 @@ try {
 catch {
     if ($createdSdkRoot -and (Test-Path -LiteralPath $sdkRoot)) {
         $resolvedSdkRoot = [IO.Path]::GetFullPath($sdkRoot)
-        $expectedSdkRoot = [IO.Path]::GetFullPath((Join-Path $repositoryRoot 'flutter-master'))
+        $expectedSdkRoot = [IO.Path]::GetFullPath((Join-Path $repositoryRoot 'reference/flutter-master'))
         if ($resolvedSdkRoot -ceq $expectedSdkRoot) {
             Remove-Item -LiteralPath $resolvedSdkRoot -Recurse -Force -ErrorAction SilentlyContinue
         }

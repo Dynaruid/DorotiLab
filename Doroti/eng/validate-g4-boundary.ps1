@@ -17,7 +17,7 @@ try {
     try {
         Invoke-Checked {
             dart run tool/boundary/extract_g4_boundary.dart `
-                (Join-Path $workspaceRoot 'flutter-master/packages/flutter/lib') `
+                (Join-Path $workspaceRoot 'reference/flutter-master/packages/flutter/lib') `
                 (Join-Path $dorotiRoot 'migration/flutter-compat/flutter-api.json') `
                 (Join-Path $temporaryRoot 'source-boundary.json')
         }

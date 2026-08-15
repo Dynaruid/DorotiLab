@@ -7,7 +7,7 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 - Upstream: https://github.com/flutter/flutter
 - Pinned R3 API baseline: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
 - Use: read-only API and behavior reference
-- License: BSD 3-Clause; see `../flutter-master/LICENSE`
+- License: BSD 3-Clause; see `../reference/flutter-master/LICENSE`
 - Copyright: Copyright 2014 The Flutter Authors
 
 ## Avalonia
@@ -15,7 +15,7 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 - Upstream: https://github.com/AvaloniaUI/Avalonia
 - Source-port pin: upstream `main@2026-07-31`, commit `f159423f691946e713f454447a780d4677d8a0d2`; selected closure hashes are recorded in `migration/avalonia-shell/shell-dependency-graph.json`
 - Selected-source use: A0 selects shared platform/dispatcher/render contracts, Win32/automation, X11/Wayland/FreeDesktop, macOS managed/native and Skia/OpenGL closure. A1 adapts the pinned Win32 window/dispatcher/input/IME/clipboard/cursor lifecycle into `Doroti.Vendor.Avalonia.Win32`; exact inputs and hashes are recorded in `migration/avalonia-shell/a1-source-port-provenance.json`. G7-3M adapts the managed C ABI and AppKit/libAvalonia source into `Doroti.Vendor.Avalonia.Native`; its source mapping, generated header, local hashes, dependency closure and license identity are recorded in `migration/avalonia-shell/g7-macos-source-port-provenance.json`
-- License: MIT; official release text is at https://github.com/AvaloniaUI/Avalonia/blob/12.1.0/licence.md and the selected-source snapshot is at `../Avalonia-main/licence.md`
+- License: MIT; official release text is at https://github.com/AvaloniaUI/Avalonia/blob/12.1.0/licence.md and the selected-source snapshot is at `../reference/Avalonia-main/licence.md`
 - Copyright: Copyright AvaloniaUI OÜ
 
 ## SkiaSharp

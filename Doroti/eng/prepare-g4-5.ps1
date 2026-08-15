@@ -33,7 +33,7 @@ $inputs = foreach ($library in $libraries) {
         throw "G4-5 library has no selected declarations: $($library.path)"
     }
     [ordered]@{
-        path = "../../../flutter-master/packages/flutter/lib/$($library.path)"
+        path = "../../../reference/flutter-master/packages/flutter/lib/$($library.path)"
         library = "package:flutter/$($library.path)"
         symbols = $symbols
     }

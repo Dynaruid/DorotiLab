@@ -8,7 +8,7 @@ Regenerate the source inventory independently when pinned Flutter source changes
 
 ```powershell
 Push-Location ../tools/Doroti.DartToCSharp/analyzer
-dart run tool/closure/extract_f1_closure.dart ../../../flutter-master/packages/flutter/lib ../../../Doroti/migration/flutter-framework/f1-closure.json
+dart run tool/closure/extract_f1_closure.dart ../../../reference/flutter-master/packages/flutter/lib ../../../Doroti/migration/flutter-framework/f1-closure.json
 Pop-Location
 dotnet run --project tools/Doroti.SourceTools -- framework-evidence-reset
 ```

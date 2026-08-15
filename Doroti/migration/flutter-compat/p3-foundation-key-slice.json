@@ -5,9 +5,9 @@
     "repository": "https://github.com/flutter/flutter",
     "revision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
     "license": "BSD-3-Clause",
-    "licensePath": "../flutter-master/LICENSE",
+    "licensePath": "../reference/flutter-master/LICENSE",
     "licenseSha256": "a598db94b6290ffbe10b5ecf911057b6a943351c727fdda9e5f2891d68700a20",
-    "sourcePath": "../flutter-master/packages/flutter/lib/src/foundation/key.dart",
+    "sourcePath": "../reference/flutter-master/packages/flutter/lib/src/foundation/key.dart",
     "sourceSha256": "cacb3d4e87ddc6cb90d5bbf7597df4600d8f89e99a2587f64aab2670c0fbc2dc"
   },
   "library": "package:flutter/foundation.dart",

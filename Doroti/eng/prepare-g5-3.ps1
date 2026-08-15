@@ -62,7 +62,7 @@ $widgetInputs = foreach ($library in $libraries) {
     $excluded = @($boundarySymbols[$library.path])
     $symbols = @($library.declarations | ForEach-Object { [string]$_.name })
     [ordered]@{
-        path = "../../../flutter-master/packages/flutter/lib/$($library.path)"
+        path = "../../../reference/flutter-master/packages/flutter/lib/$($library.path)"
         library = "package:flutter/$($library.path)"
         symbols = $symbols
         emissionMode = if ($symbols.Count -eq 0) { 'graph-only' } else { 'generate' }

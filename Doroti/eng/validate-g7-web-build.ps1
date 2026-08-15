@@ -145,14 +145,15 @@ if ($Shard -eq 'Reference') {
     $selectionPath = Join-Path $migrationRoot 'g7-browser-reference-selection.json'
     $provenance = Read-Json $provenancePath
     $selection = Read-Json $selectionPath
-    $avaloniaRepo = Join-Path $repoRoot 'Avalonia-main'
+    $avaloniaRepo = Join-Path $repoRoot 'reference/Avalonia-main'
     Assert-Equal $provenance.revision 'f159423f691946e713f454447a780d4677d8a0d2' 'Avalonia Browser reference revision'
-    Invoke-Checked { git -C $avaloniaRepo cat-file -e "$($provenance.revision)^{commit}" } 'Avalonia reference commit object lookup'
     $selected = @($provenance.selectedSources)
     Assert-True ($selected.Count -ge 10) 'selected Avalonia behavior reference files'
     foreach ($source in @($selected + $provenance.license)) {
-        $actual = (& git -C $avaloniaRepo rev-parse "$($provenance.revision):$($source.path)").Trim()
-        Assert-Equal $LASTEXITCODE 0 "reference blob lookup $($source.path)"
+        $sourcePath = Join-Path $avaloniaRepo $source.path
+        Assert-True (Test-Path -LiteralPath $sourcePath -PathType Leaf) "reference source exists $($source.path)"
+        $actual = (& git hash-object -- $sourcePath).Trim()
+        Assert-Equal $LASTEXITCODE 0 "reference blob hash $($source.path)"
         Assert-Equal $actual $source.gitBlobSha1 "reference blob $($source.path)"
     }
     Assert-Equal $provenance.productCompileGraphIncluded $false 'reference compile exclusion'

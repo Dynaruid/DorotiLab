@@ -3,7 +3,7 @@
   "repository": "https://github.com/flutter/flutter",
   "flutterGitRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "dartSdkRange": ">=3.11.0-0 <4.0.0",
-  "sourceRoot": "../../../flutter-master",
+  "sourceRoot": "../../../reference/flutter-master",
   "inputs": [
     {
       "library": "dart:ui",

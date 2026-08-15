@@ -10,14 +10,14 @@
     "flutterBaseline":  "../flutter-compat/baseline.json",
     "inputs":  [
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/physics/clamped_simulation.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/physics/clamped_simulation.dart",
                        "library":  "package:flutter/src/physics/clamped_simulation.dart",
                        "symbols":  [
                                        "ClampedSimulation"
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/physics/friction_simulation.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/physics/friction_simulation.dart",
                        "library":  "package:flutter/src/physics/friction_simulation.dart",
                        "symbols":  [
                                        "_newtonsMethod",
@@ -26,21 +26,21 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/physics/gravity_simulation.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/physics/gravity_simulation.dart",
                        "library":  "package:flutter/src/physics/gravity_simulation.dart",
                        "symbols":  [
                                        "GravitySimulation"
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/physics/simulation.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/physics/simulation.dart",
                        "library":  "package:flutter/src/physics/simulation.dart",
                        "symbols":  [
                                        "Simulation"
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/physics/spring_simulation.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/physics/spring_simulation.dart",
                        "library":  "package:flutter/src/physics/spring_simulation.dart",
                        "symbols":  [
                                        "SpringDescription",
@@ -54,14 +54,14 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/physics/tolerance.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/physics/tolerance.dart",
                        "library":  "package:flutter/src/physics/tolerance.dart",
                        "symbols":  [
                                        "Tolerance"
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/physics/utils.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/physics/utils.dart",
                        "library":  "package:flutter/src/physics/utils.dart",
                        "symbols":  [
                                        "nearEqual",
@@ -69,7 +69,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/animation/animation.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/animation/animation.dart",
                        "library":  "package:flutter/src/animation/animation.dart",
                        "symbols":  [
                                        "AnimationStatus",
@@ -80,7 +80,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/animation/animation_controller.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/animation/animation_controller.dart",
                        "library":  "package:flutter/src/animation/animation_controller.dart",
                        "symbols":  [
                                        "_AnimationDirection",
@@ -94,7 +94,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/animation/animation_style.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/animation/animation_style.dart",
                        "library":  "package:flutter/src/animation/animation_style.dart",
                        "symbols":  [
                                        "AnimationStyle",
@@ -102,7 +102,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/animation/animations.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/animation/animations.dart",
                        "library":  "package:flutter/src/animation/animations.dart",
                        "symbols":  [
                                        "_AlwaysCompleteAnimation",
@@ -123,7 +123,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/animation/curves.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/animation/curves.dart",
                        "library":  "package:flutter/src/animation/curves.dart",
                        "symbols":  [
                                        "ParametricCurve",
@@ -152,7 +152,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/animation/listener_helpers.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/animation/listener_helpers.dart",
                        "library":  "package:flutter/src/animation/listener_helpers.dart",
                        "symbols":  [
                                        "AnimationLazyListenerMixin",
@@ -162,7 +162,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/animation/tween.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/animation/tween.dart",
                        "library":  "package:flutter/src/animation/tween.dart",
                        "symbols":  [
                                        "AnimatableCallback",
@@ -182,7 +182,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/animation/tween_sequence.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/animation/tween_sequence.dart",
                        "library":  "package:flutter/src/animation/tween_sequence.dart",
                        "symbols":  [
                                        "TweenSequence",
@@ -192,7 +192,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/arena.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/arena.dart",
                        "library":  "package:flutter/src/gestures/arena.dart",
                        "symbols":  [
                                        "GestureDisposition",
@@ -203,7 +203,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/binding.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/binding.dart",
                        "library":  "package:flutter/src/gestures/binding.dart",
                        "symbols":  [
                                        "_HandleSampleTimeChangedCallback",
@@ -216,7 +216,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/constants.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/constants.dart",
                        "library":  "package:flutter/src/gestures/constants.dart",
                        "symbols":  [
                                        "kPressTimeout",
@@ -242,7 +242,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/converter.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/converter.dart",
                        "library":  "package:flutter/src/gestures/converter.dart",
                        "symbols":  [
                                        "_synthesiseDownButtons",
@@ -251,7 +251,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/debug.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/debug.dart",
                        "library":  "package:flutter/src/gestures/debug.dart",
                        "symbols":  [
                                        "debugPrintHitTestResults",
@@ -263,14 +263,14 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/drag.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/drag.dart",
                        "library":  "package:flutter/src/gestures/drag.dart",
                        "symbols":  [
                                        "Drag"
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/drag_details.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/drag_details.dart",
                        "library":  "package:flutter/src/gestures/drag_details.dart",
                        "symbols":  [
                                        "DragDownDetails",
@@ -283,14 +283,14 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/eager.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/eager.dart",
                        "library":  "package:flutter/src/gestures/eager.dart",
                        "symbols":  [
                                        "EagerGestureRecognizer"
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/events.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/events.dart",
                        "library":  "package:flutter/src/gestures/events.dart",
                        "symbols":  [
                                        "kPrimaryButton",
@@ -367,7 +367,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/force_press.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/force_press.dart",
                        "library":  "package:flutter/src/gestures/force_press.dart",
                        "symbols":  [
                                        "_ForceState",
@@ -381,21 +381,21 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/gesture_details.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/gesture_details.dart",
                        "library":  "package:flutter/src/gestures/gesture_details.dart",
                        "symbols":  [
                                        "PositionedGestureDetails"
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/gesture_settings.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/gesture_settings.dart",
                        "library":  "package:flutter/src/gestures/gesture_settings.dart",
                        "symbols":  [
                                        "DeviceGestureSettings"
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/hit_test.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/hit_test.dart",
                        "library":  "package:flutter/src/gestures/hit_test.dart",
                        "symbols":  [
                                        "HitTestable",
@@ -410,7 +410,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/long_press.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/long_press.dart",
                        "library":  "package:flutter/src/gestures/long_press.dart",
                        "symbols":  [
                                        "GestureLongPressDownCallback",
@@ -428,7 +428,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/lsq_solver.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/lsq_solver.dart",
                        "library":  "package:flutter/src/gestures/lsq_solver.dart",
                        "symbols":  [
                                        "_Vector",
@@ -438,7 +438,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/monodrag.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/monodrag.dart",
                        "library":  "package:flutter/src/gestures/monodrag.dart",
                        "symbols":  [
                                        "_DragState",
@@ -453,7 +453,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/multidrag.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/multidrag.dart",
                        "library":  "package:flutter/src/gestures/multidrag.dart",
                        "symbols":  [
                                        "GestureMultiDragStartCallback",
@@ -470,7 +470,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/multitap.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/multitap.dart",
                        "library":  "package:flutter/src/gestures/multitap.dart",
                        "symbols":  [
                                        "GestureDoubleTapCallback",
@@ -493,7 +493,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/pointer_router.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/pointer_router.dart",
                        "library":  "package:flutter/src/gestures/pointer_router.dart",
                        "symbols":  [
                                        "PointerRoute",
@@ -501,7 +501,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/pointer_signal_resolver.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/pointer_signal_resolver.dart",
                        "library":  "package:flutter/src/gestures/pointer_signal_resolver.dart",
                        "symbols":  [
                                        "PointerSignalResolvedCallback",
@@ -510,7 +510,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/recognizer.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/recognizer.dart",
                        "library":  "package:flutter/src/gestures/recognizer.dart",
                        "symbols":  [
                                        "RecognizerCallback",
@@ -527,7 +527,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/resampler.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/resampler.dart",
                        "library":  "package:flutter/src/gestures/resampler.dart",
                        "symbols":  [
                                        "HandleEventCallback",
@@ -535,7 +535,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/scale.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/scale.dart",
                        "library":  "package:flutter/src/gestures/scale.dart",
                        "symbols":  [
                                        "kDefaultMouseScrollToScaleFactor",
@@ -554,7 +554,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/tap.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/tap.dart",
                        "library":  "package:flutter/src/gestures/tap.dart",
                        "symbols":  [
                                        "TapDownDetails",
@@ -570,7 +570,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/tap_and_drag.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/tap_and_drag.dart",
                        "library":  "package:flutter/src/gestures/tap_and_drag.dart",
                        "symbols":  [
                                        "_getGlobalDistance",
@@ -594,7 +594,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/team.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/team.dart",
                        "library":  "package:flutter/src/gestures/team.dart",
                        "symbols":  [
                                        "_CombiningGestureArenaEntry",
@@ -603,7 +603,7 @@
                                    ]
                    },
                    {
-                       "path":  "../../../flutter-master/packages/flutter/lib/src/gestures/velocity_tracker.dart",
+                       "path":  "../../../reference/flutter-master/packages/flutter/lib/src/gestures/velocity_tracker.dart",
                        "library":  "package:flutter/src/gestures/velocity_tracker.dart",
                        "symbols":  [
                                        "Velocity",

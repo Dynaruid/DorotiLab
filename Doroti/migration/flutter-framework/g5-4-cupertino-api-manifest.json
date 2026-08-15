@@ -16,7 +16,7 @@
       "library": "package:flutter/src/cupertino/activity_indicator.dart",
       "name": "CupertinoActivityIndicator",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/activity_indicator.dart#CupertinoActivityIndicator",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/activity_indicator.dart#CupertinoActivityIndicator",
       "members": [
         "new",
         "partiallyRevealed",
@@ -31,7 +31,7 @@
       "library": "package:flutter/src/cupertino/activity_indicator.dart",
       "name": "CupertinoLinearActivityIndicator",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/activity_indicator.dart#CupertinoLinearActivityIndicator",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/activity_indicator.dart#CupertinoLinearActivityIndicator",
       "members": [
         "new",
         "progress",
@@ -44,7 +44,7 @@
       "library": "package:flutter/src/cupertino/adaptive_text_selection_toolbar.dart",
       "name": "CupertinoAdaptiveTextSelectionToolbar",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/adaptive_text_selection_toolbar.dart#CupertinoAdaptiveTextSelectionToolbar",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/adaptive_text_selection_toolbar.dart#CupertinoAdaptiveTextSelectionToolbar",
       "members": [
         "new",
         "buttonItems",
@@ -62,7 +62,7 @@
       "library": "package:flutter/src/cupertino/app.dart",
       "name": "CupertinoApp",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/app.dart#CupertinoApp",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/app.dart#CupertinoApp",
       "members": [
         "new",
         "router",
@@ -108,7 +108,7 @@
       "library": "package:flutter/src/cupertino/app.dart",
       "name": "CupertinoScrollBehavior",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/app.dart#CupertinoScrollBehavior",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/app.dart#CupertinoScrollBehavior",
       "members": [
         "new",
         "buildScrollbar",
@@ -121,7 +121,7 @@
       "library": "package:flutter/src/cupertino/bottom_tab_bar.dart",
       "name": "CupertinoTabBar",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/bottom_tab_bar.dart#CupertinoTabBar",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/bottom_tab_bar.dart#CupertinoTabBar",
       "members": [
         "new",
         "items",
@@ -146,7 +146,7 @@
       "library": "package:flutter/src/cupertino/button.dart",
       "name": "CupertinoButtonSize",
       "kind": "EnumDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/button.dart#CupertinoButtonSize",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/button.dart#CupertinoButtonSize",
       "members": [
         "small",
         "medium",
@@ -157,7 +157,7 @@
       "library": "package:flutter/src/cupertino/button.dart",
       "name": "CupertinoButton",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/button.dart#CupertinoButton",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/button.dart#CupertinoButton",
       "members": [
         "new",
         "tinted",
@@ -191,7 +191,7 @@
       "library": "package:flutter/src/cupertino/checkbox.dart",
       "name": "CupertinoCheckbox",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/checkbox.dart#CupertinoCheckbox",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/checkbox.dart#CupertinoCheckbox",
       "members": [
         "new",
         "value",
@@ -217,7 +217,7 @@
       "library": "package:flutter/src/cupertino/colors.dart",
       "name": "CupertinoColors",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/colors.dart#CupertinoColors",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/colors.dart#CupertinoColors",
       "members": [
         "activeBlue",
         "activeGreen",
@@ -272,7 +272,7 @@
       "library": "package:flutter/src/cupertino/colors.dart",
       "name": "CupertinoDynamicColor",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/colors.dart#CupertinoDynamicColor",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/colors.dart#CupertinoDynamicColor",
       "members": [
         "new",
         "withBrightnessAndContrast",
@@ -324,91 +324,91 @@
       "library": "package:flutter/src/cupertino/colors.dart",
       "name": "createCupertinoColorProperty",
       "kind": "FunctionDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/colors.dart#createCupertinoColorProperty",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/colors.dart#createCupertinoColorProperty",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/constants.dart",
       "name": "kMinInteractiveDimensionCupertino",
       "kind": "TopLevelVariableDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kMinInteractiveDimensionCupertino",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kMinInteractiveDimensionCupertino",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/constants.dart",
       "name": "kCupertinoFocusColorOpacity",
       "kind": "TopLevelVariableDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoFocusColorOpacity",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoFocusColorOpacity",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/constants.dart",
       "name": "kCupertinoFocusColorBrightness",
       "kind": "TopLevelVariableDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoFocusColorBrightness",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoFocusColorBrightness",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/constants.dart",
       "name": "kCupertinoFocusColorSaturation",
       "kind": "TopLevelVariableDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoFocusColorSaturation",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoFocusColorSaturation",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/constants.dart",
       "name": "kCupertinoButtonTintedOpacityLight",
       "kind": "TopLevelVariableDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoButtonTintedOpacityLight",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoButtonTintedOpacityLight",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/constants.dart",
       "name": "kCupertinoButtonTintedOpacityDark",
       "kind": "TopLevelVariableDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoButtonTintedOpacityDark",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoButtonTintedOpacityDark",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/constants.dart",
       "name": "kCupertinoButtonDefaultIconSize",
       "kind": "TopLevelVariableDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoButtonDefaultIconSize",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoButtonDefaultIconSize",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/constants.dart",
       "name": "kCupertinoButtonPadding",
       "kind": "TopLevelVariableDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoButtonPadding",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoButtonPadding",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/constants.dart",
       "name": "kCupertinoButtonSizeBorderRadius",
       "kind": "TopLevelVariableDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoButtonSizeBorderRadius",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoButtonSizeBorderRadius",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/constants.dart",
       "name": "kCupertinoButtonMinSize",
       "kind": "TopLevelVariableDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoButtonMinSize",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoButtonMinSize",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/constants.dart",
       "name": "kCupertinoButtonTapMoveSlop",
       "kind": "TopLevelVariableDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoButtonTapMoveSlop",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/constants.dart#kCupertinoButtonTapMoveSlop",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/context_menu_action.dart",
       "name": "CupertinoContextMenuAction",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/context_menu_action.dart#CupertinoContextMenuAction",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/context_menu_action.dart#CupertinoContextMenuAction",
       "members": [
         "new",
         "child",
@@ -423,14 +423,14 @@
       "library": "package:flutter/src/cupertino/context_menu.dart",
       "name": "CupertinoContextMenuBuilder",
       "kind": "GenericTypeAlias",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/context_menu.dart#CupertinoContextMenuBuilder",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/context_menu.dart#CupertinoContextMenuBuilder",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/context_menu.dart",
       "name": "CupertinoContextMenu",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/context_menu.dart#CupertinoContextMenu",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/context_menu.dart#CupertinoContextMenu",
       "members": [
         "new",
         "builder",
@@ -449,7 +449,7 @@
       "library": "package:flutter/src/cupertino/cupertino_focus_halo.dart",
       "name": "CupertinoFocusHalo",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/cupertino_focus_halo.dart#CupertinoFocusHalo",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/cupertino_focus_halo.dart#CupertinoFocusHalo",
       "members": [
         "withRect",
         "withRRect",
@@ -464,14 +464,14 @@
       "library": "package:flutter/src/cupertino/date_picker.dart",
       "name": "SelectionOverlayBuilder",
       "kind": "GenericTypeAlias",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/date_picker.dart#SelectionOverlayBuilder",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/date_picker.dart#SelectionOverlayBuilder",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/date_picker.dart",
       "name": "CupertinoDatePickerMode",
       "kind": "EnumDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/date_picker.dart#CupertinoDatePickerMode",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/date_picker.dart#CupertinoDatePickerMode",
       "members": [
         "time",
         "date",
@@ -483,7 +483,7 @@
       "library": "package:flutter/src/cupertino/date_picker.dart",
       "name": "CupertinoDatePicker",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/date_picker.dart#CupertinoDatePicker",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/date_picker.dart#CupertinoDatePicker",
       "members": [
         "new",
         "mode",
@@ -512,7 +512,7 @@
       "library": "package:flutter/src/cupertino/date_picker.dart",
       "name": "CupertinoTimerPickerMode",
       "kind": "EnumDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/date_picker.dart#CupertinoTimerPickerMode",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/date_picker.dart#CupertinoTimerPickerMode",
       "members": [
         "hm",
         "ms",
@@ -523,7 +523,7 @@
       "library": "package:flutter/src/cupertino/date_picker.dart",
       "name": "CupertinoTimerPicker",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/date_picker.dart#CupertinoTimerPicker",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/date_picker.dart#CupertinoTimerPicker",
       "members": [
         "new",
         "mode",
@@ -543,14 +543,14 @@
       "library": "package:flutter/src/cupertino/debug.dart",
       "name": "debugCheckHasCupertinoLocalizations",
       "kind": "FunctionDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/debug.dart#debugCheckHasCupertinoLocalizations",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/debug.dart#debugCheckHasCupertinoLocalizations",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/desktop_text_selection_toolbar_button.dart",
       "name": "CupertinoDesktopTextSelectionToolbarButton",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/desktop_text_selection_toolbar_button.dart#CupertinoDesktopTextSelectionToolbarButton",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/desktop_text_selection_toolbar_button.dart#CupertinoDesktopTextSelectionToolbarButton",
       "members": [
         "new",
         "text",
@@ -566,7 +566,7 @@
       "library": "package:flutter/src/cupertino/desktop_text_selection_toolbar.dart",
       "name": "CupertinoDesktopTextSelectionToolbar",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/desktop_text_selection_toolbar.dart#CupertinoDesktopTextSelectionToolbar",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/desktop_text_selection_toolbar.dart#CupertinoDesktopTextSelectionToolbar",
       "members": [
         "new",
         "_matrixWithSaturation",
@@ -580,7 +580,7 @@
       "library": "package:flutter/src/cupertino/desktop_text_selection.dart",
       "name": "CupertinoDesktopTextSelectionControls",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/desktop_text_selection.dart#CupertinoDesktopTextSelectionControls",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/desktop_text_selection.dart#CupertinoDesktopTextSelectionControls",
       "members": [
         "getHandleSize",
         "buildToolbar",
@@ -593,21 +593,21 @@
       "library": "package:flutter/src/cupertino/desktop_text_selection.dart",
       "name": "cupertinoDesktopTextSelectionHandleControls",
       "kind": "TopLevelVariableDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/desktop_text_selection.dart#cupertinoDesktopTextSelectionHandleControls",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/desktop_text_selection.dart#cupertinoDesktopTextSelectionHandleControls",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/desktop_text_selection.dart",
       "name": "cupertinoDesktopTextSelectionControls",
       "kind": "TopLevelVariableDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/desktop_text_selection.dart#cupertinoDesktopTextSelectionControls",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/desktop_text_selection.dart#cupertinoDesktopTextSelectionControls",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/dialog.dart",
       "name": "CupertinoAlertDialog",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/dialog.dart#CupertinoAlertDialog",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/dialog.dart#CupertinoAlertDialog",
       "members": [
         "new",
         "title",
@@ -624,7 +624,7 @@
       "library": "package:flutter/src/cupertino/dialog.dart",
       "name": "CupertinoPopupSurface",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/dialog.dart#CupertinoPopupSurface",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/dialog.dart#CupertinoPopupSurface",
       "members": [
         "new",
         "blurSigma",
@@ -643,7 +643,7 @@
       "library": "package:flutter/src/cupertino/dialog.dart",
       "name": "CupertinoActionSheet",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/dialog.dart#CupertinoActionSheet",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/dialog.dart#CupertinoActionSheet",
       "members": [
         "new",
         "title",
@@ -659,7 +659,7 @@
       "library": "package:flutter/src/cupertino/dialog.dart",
       "name": "CupertinoActionSheetAction",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/dialog.dart#CupertinoActionSheetAction",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/dialog.dart#CupertinoActionSheetAction",
       "members": [
         "new",
         "onPressed",
@@ -676,7 +676,7 @@
       "library": "package:flutter/src/cupertino/dialog.dart",
       "name": "CupertinoDialogAction",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/dialog.dart#CupertinoDialogAction",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/dialog.dart#CupertinoDialogAction",
       "members": [
         "new",
         "onPressed",
@@ -692,7 +692,7 @@
       "library": "package:flutter/src/cupertino/expansion_tile.dart",
       "name": "ExpansionTileTransitionMode",
       "kind": "EnumDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/expansion_tile.dart#ExpansionTileTransitionMode",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/expansion_tile.dart#ExpansionTileTransitionMode",
       "members": [
         "fade",
         "scroll"
@@ -702,7 +702,7 @@
       "library": "package:flutter/src/cupertino/expansion_tile.dart",
       "name": "CupertinoExpansionTile",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/expansion_tile.dart#CupertinoExpansionTile",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/expansion_tile.dart#CupertinoExpansionTile",
       "members": [
         "new",
         "title",
@@ -716,7 +716,7 @@
       "library": "package:flutter/src/cupertino/form_row.dart",
       "name": "CupertinoFormRow",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/form_row.dart#CupertinoFormRow",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/form_row.dart#CupertinoFormRow",
       "members": [
         "new",
         "prefix",
@@ -731,7 +731,7 @@
       "library": "package:flutter/src/cupertino/form_section.dart",
       "name": "CupertinoFormSection",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/form_section.dart#CupertinoFormSection",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/form_section.dart#CupertinoFormSection",
       "members": [
         "new",
         "insetGrouped",
@@ -750,7 +750,7 @@
       "library": "package:flutter/src/cupertino/icon_theme_data.dart",
       "name": "CupertinoIconThemeData",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/icon_theme_data.dart#CupertinoIconThemeData",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/icon_theme_data.dart#CupertinoIconThemeData",
       "members": [
         "new",
         "resolve",
@@ -762,7 +762,7 @@
       "library": "package:flutter/src/cupertino/icons.dart",
       "name": "CupertinoIcons",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/icons.dart#CupertinoIcons",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/icons.dart#CupertinoIcons",
       "members": [
         "iconFont",
         "iconFontPackage",
@@ -2094,7 +2094,7 @@
       "library": "package:flutter/src/cupertino/interface_level.dart",
       "name": "CupertinoUserInterfaceLevelData",
       "kind": "EnumDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/interface_level.dart#CupertinoUserInterfaceLevelData",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/interface_level.dart#CupertinoUserInterfaceLevelData",
       "members": [
         "base",
         "elevated"
@@ -2104,7 +2104,7 @@
       "library": "package:flutter/src/cupertino/interface_level.dart",
       "name": "CupertinoUserInterfaceLevel",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/interface_level.dart#CupertinoUserInterfaceLevel",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/interface_level.dart#CupertinoUserInterfaceLevel",
       "members": [
         "new",
         "_data",
@@ -2118,7 +2118,7 @@
       "library": "package:flutter/src/cupertino/list_section.dart",
       "name": "CupertinoListSectionType",
       "kind": "EnumDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/list_section.dart#CupertinoListSectionType",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/list_section.dart#CupertinoListSectionType",
       "members": [
         "base",
         "insetGrouped"
@@ -2128,7 +2128,7 @@
       "library": "package:flutter/src/cupertino/list_section.dart",
       "name": "CupertinoListSection",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/list_section.dart#CupertinoListSection",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/list_section.dart#CupertinoListSection",
       "members": [
         "new",
         "insetGrouped",
@@ -2151,7 +2151,7 @@
       "library": "package:flutter/src/cupertino/list_tile.dart",
       "name": "CupertinoListTile",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/list_tile.dart#CupertinoListTile",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/list_tile.dart#CupertinoListTile",
       "members": [
         "new",
         "notched",
@@ -2174,7 +2174,7 @@
       "library": "package:flutter/src/cupertino/list_tile.dart",
       "name": "CupertinoListTileChevron",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/list_tile.dart#CupertinoListTileChevron",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/list_tile.dart#CupertinoListTileChevron",
       "members": [
         "new",
         "build"
@@ -2184,7 +2184,7 @@
       "library": "package:flutter/src/cupertino/localizations.dart",
       "name": "DatePickerDateTimeOrder",
       "kind": "EnumDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/localizations.dart#DatePickerDateTimeOrder",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/localizations.dart#DatePickerDateTimeOrder",
       "members": [
         "date_time_dayPeriod",
         "date_dayPeriod_time",
@@ -2196,7 +2196,7 @@
       "library": "package:flutter/src/cupertino/localizations.dart",
       "name": "DatePickerDateOrder",
       "kind": "EnumDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/localizations.dart#DatePickerDateOrder",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/localizations.dart#DatePickerDateOrder",
       "members": [
         "dmy",
         "mdy",
@@ -2208,7 +2208,7 @@
       "library": "package:flutter/src/cupertino/localizations.dart",
       "name": "CupertinoLocalizations",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/localizations.dart#CupertinoLocalizations",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/localizations.dart#CupertinoLocalizations",
       "members": [
         "datePickerYear",
         "datePickerMonth",
@@ -2262,7 +2262,7 @@
       "library": "package:flutter/src/cupertino/localizations.dart",
       "name": "DefaultCupertinoLocalizations",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/localizations.dart#DefaultCupertinoLocalizations",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/localizations.dart#DefaultCupertinoLocalizations",
       "members": [
         "new",
         "_shortWeekdays",
@@ -2321,7 +2321,7 @@
       "library": "package:flutter/src/cupertino/magnifier.dart",
       "name": "CupertinoTextMagnifier",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/magnifier.dart#CupertinoTextMagnifier",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/magnifier.dart#CupertinoTextMagnifier",
       "members": [
         "new",
         "animationCurve",
@@ -2338,7 +2338,7 @@
       "library": "package:flutter/src/cupertino/magnifier.dart",
       "name": "CupertinoMagnifier",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/magnifier.dart#CupertinoMagnifier",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/magnifier.dart#CupertinoMagnifier",
       "members": [
         "new",
         "shadows",
@@ -2359,7 +2359,7 @@
       "library": "package:flutter/src/cupertino/menu_anchor.dart",
       "name": "CupertinoMenuEntry",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/menu_anchor.dart#CupertinoMenuEntry",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/menu_anchor.dart#CupertinoMenuEntry",
       "members": [
         "hasLeading",
         "isDivider"
@@ -2369,14 +2369,14 @@
       "library": "package:flutter/src/cupertino/menu_anchor.dart",
       "name": "CupertinoMenuAnimationStatusChangedCallback",
       "kind": "GenericTypeAlias",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/menu_anchor.dart#CupertinoMenuAnimationStatusChangedCallback",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/menu_anchor.dart#CupertinoMenuAnimationStatusChangedCallback",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/menu_anchor.dart",
       "name": "CupertinoMenuAnchor",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/menu_anchor.dart#CupertinoMenuAnchor",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/menu_anchor.dart#CupertinoMenuAnchor",
       "members": [
         "new",
         "controller",
@@ -2404,7 +2404,7 @@
       "library": "package:flutter/src/cupertino/menu_anchor.dart",
       "name": "CupertinoMenuDivider",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/menu_anchor.dart#CupertinoMenuDivider",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/menu_anchor.dart#CupertinoMenuDivider",
       "members": [
         "new",
         "color",
@@ -2419,7 +2419,7 @@
       "library": "package:flutter/src/cupertino/menu_anchor.dart",
       "name": "CupertinoMenuItem",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/menu_anchor.dart#CupertinoMenuItem",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/menu_anchor.dart#CupertinoMenuItem",
       "members": [
         "new",
         "child",
@@ -2466,7 +2466,7 @@
       "library": "package:flutter/src/cupertino/nav_bar.dart",
       "name": "NavigationBarBottomMode",
       "kind": "EnumDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/nav_bar.dart#NavigationBarBottomMode",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/nav_bar.dart#NavigationBarBottomMode",
       "members": [
         "automatic",
         "always"
@@ -2476,7 +2476,7 @@
       "library": "package:flutter/src/cupertino/nav_bar.dart",
       "name": "CupertinoNavigationBar",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/nav_bar.dart#CupertinoNavigationBar",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/nav_bar.dart#CupertinoNavigationBar",
       "members": [
         "new",
         "large",
@@ -2505,7 +2505,7 @@
       "library": "package:flutter/src/cupertino/nav_bar.dart",
       "name": "CupertinoSliverNavigationBar",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/nav_bar.dart#CupertinoSliverNavigationBar",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/nav_bar.dart#CupertinoSliverNavigationBar",
       "members": [
         "new",
         "search",
@@ -2539,7 +2539,7 @@
       "library": "package:flutter/src/cupertino/nav_bar.dart",
       "name": "CupertinoNavigationBarBackButton",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/nav_bar.dart#CupertinoNavigationBarBackButton",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/nav_bar.dart#CupertinoNavigationBarBackButton",
       "members": [
         "new",
         "_assemble",
@@ -2555,7 +2555,7 @@
       "library": "package:flutter/src/cupertino/page_scaffold.dart",
       "name": "CupertinoPageScaffold",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/page_scaffold.dart#CupertinoPageScaffold",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/page_scaffold.dart#CupertinoPageScaffold",
       "members": [
         "new",
         "navigationBar",
@@ -2569,7 +2569,7 @@
       "library": "package:flutter/src/cupertino/page_scaffold.dart",
       "name": "CupertinoPageScaffoldBackgroundColor",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/page_scaffold.dart#CupertinoPageScaffoldBackgroundColor",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/page_scaffold.dart#CupertinoPageScaffoldBackgroundColor",
       "members": [
         "new",
         "color",
@@ -2582,7 +2582,7 @@
       "library": "package:flutter/src/cupertino/page_scaffold.dart",
       "name": "ObstructingPreferredSizeWidget",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/page_scaffold.dart#ObstructingPreferredSizeWidget",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/page_scaffold.dart#ObstructingPreferredSizeWidget",
       "members": [
         "shouldFullyObstruct"
       ]
@@ -2591,7 +2591,7 @@
       "library": "package:flutter/src/cupertino/picker.dart",
       "name": "CupertinoPicker",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/picker.dart#CupertinoPicker",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/picker.dart#CupertinoPicker",
       "members": [
         "new",
         "builder",
@@ -2614,7 +2614,7 @@
       "library": "package:flutter/src/cupertino/picker.dart",
       "name": "CupertinoPickerDefaultSelectionOverlay",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/picker.dart#CupertinoPickerDefaultSelectionOverlay",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/picker.dart#CupertinoPickerDefaultSelectionOverlay",
       "members": [
         "new",
         "capStartEdge",
@@ -2629,7 +2629,7 @@
       "library": "package:flutter/src/cupertino/radio.dart",
       "name": "CupertinoRadio",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/radio.dart#CupertinoRadio",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/radio.dart#CupertinoRadio",
       "members": [
         "new",
         "value",
@@ -2653,7 +2653,7 @@
       "library": "package:flutter/src/cupertino/refresh.dart",
       "name": "RefreshIndicatorMode",
       "kind": "EnumDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/refresh.dart#RefreshIndicatorMode",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/refresh.dart#RefreshIndicatorMode",
       "members": [
         "inactive",
         "drag",
@@ -2666,21 +2666,21 @@
       "library": "package:flutter/src/cupertino/refresh.dart",
       "name": "RefreshControlIndicatorBuilder",
       "kind": "GenericTypeAlias",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/refresh.dart#RefreshControlIndicatorBuilder",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/refresh.dart#RefreshControlIndicatorBuilder",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/refresh.dart",
       "name": "RefreshCallback",
       "kind": "GenericTypeAlias",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/refresh.dart#RefreshCallback",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/refresh.dart#RefreshCallback",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/refresh.dart",
       "name": "CupertinoSliverRefreshControl",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/refresh.dart#CupertinoSliverRefreshControl",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/refresh.dart#CupertinoSliverRefreshControl",
       "members": [
         "new",
         "refreshTriggerPullDistance",
@@ -2699,14 +2699,14 @@
       "library": "package:flutter/src/cupertino/route.dart",
       "name": "kCupertinoModalBarrierColor",
       "kind": "TopLevelVariableDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/route.dart#kCupertinoModalBarrierColor",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/route.dart#kCupertinoModalBarrierColor",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/route.dart",
       "name": "CupertinoRouteTransitionMixin",
       "kind": "MixinDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/route.dart#CupertinoRouteTransitionMixin",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/route.dart#CupertinoRouteTransitionMixin",
       "members": [
         "buildContent",
         "title",
@@ -2730,7 +2730,7 @@
       "library": "package:flutter/src/cupertino/route.dart",
       "name": "CupertinoPageRoute",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/route.dart#CupertinoPageRoute",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/route.dart#CupertinoPageRoute",
       "members": [
         "new",
         "delegatedTransition",
@@ -2745,7 +2745,7 @@
       "library": "package:flutter/src/cupertino/route.dart",
       "name": "CupertinoPage",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/route.dart#CupertinoPage",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/route.dart#CupertinoPage",
       "members": [
         "new",
         "child",
@@ -2760,7 +2760,7 @@
       "library": "package:flutter/src/cupertino/route.dart",
       "name": "CupertinoPageTransition",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/route.dart#CupertinoPageTransition",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/route.dart#CupertinoPageTransition",
       "members": [
         "new",
         "child",
@@ -2775,7 +2775,7 @@
       "library": "package:flutter/src/cupertino/route.dart",
       "name": "CupertinoFullscreenDialogTransition",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/route.dart#CupertinoFullscreenDialogTransition",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/route.dart#CupertinoFullscreenDialogTransition",
       "members": [
         "new",
         "primaryRouteAnimation",
@@ -2789,7 +2789,7 @@
       "library": "package:flutter/src/cupertino/route.dart",
       "name": "CupertinoModalPopupRoute",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/route.dart#CupertinoModalPopupRoute",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/route.dart#CupertinoModalPopupRoute",
       "members": [
         "new",
         "builder",
@@ -2811,21 +2811,21 @@
       "library": "package:flutter/src/cupertino/route.dart",
       "name": "showCupertinoModalPopup",
       "kind": "FunctionDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/route.dart#showCupertinoModalPopup",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/route.dart#showCupertinoModalPopup",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/route.dart",
       "name": "showCupertinoDialog",
       "kind": "FunctionDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/route.dart#showCupertinoDialog",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/route.dart#showCupertinoDialog",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/route.dart",
       "name": "CupertinoDialogRoute",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/route.dart#CupertinoDialogRoute",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/route.dart#CupertinoDialogRoute",
       "members": [
         "new",
         "transitionBuilder",
@@ -2840,7 +2840,7 @@
       "library": "package:flutter/src/cupertino/route.dart",
       "name": "CupertinoPageTransitionsBuilder",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/route.dart#CupertinoPageTransitionsBuilder",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/route.dart#CupertinoPageTransitionsBuilder",
       "members": [
         "new",
         "transitionDuration",
@@ -2852,7 +2852,7 @@
       "library": "package:flutter/src/cupertino/scrollbar.dart",
       "name": "CupertinoScrollbar",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/scrollbar.dart#CupertinoScrollbar",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/scrollbar.dart#CupertinoScrollbar",
       "members": [
         "new",
         "defaultThickness",
@@ -2868,7 +2868,7 @@
       "library": "package:flutter/src/cupertino/search_field.dart",
       "name": "CupertinoSearchTextField",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/search_field.dart#CupertinoSearchTextField",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/search_field.dart#CupertinoSearchTextField",
       "members": [
         "new",
         "controller",
@@ -2911,7 +2911,7 @@
       "library": "package:flutter/src/cupertino/segmented_control.dart",
       "name": "CupertinoSegmentedControl",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/segmented_control.dart#CupertinoSegmentedControl",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/segmented_control.dart#CupertinoSegmentedControl",
       "members": [
         "new",
         "children",
@@ -2932,14 +2932,14 @@
       "library": "package:flutter/src/cupertino/sheet.dart",
       "name": "showCupertinoSheet",
       "kind": "FunctionDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/sheet.dart#showCupertinoSheet",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/sheet.dart#showCupertinoSheet",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/sheet.dart",
       "name": "CupertinoSheetTransition",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/sheet.dart#CupertinoSheetTransition",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/sheet.dart#CupertinoSheetTransition",
       "members": [
         "new",
         "primaryRouteAnimation",
@@ -2956,7 +2956,7 @@
       "library": "package:flutter/src/cupertino/sheet.dart",
       "name": "CupertinoSheetRoute",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/sheet.dart#CupertinoSheetRoute",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/sheet.dart#CupertinoSheetRoute",
       "members": [
         "new",
         "builder",
@@ -2982,7 +2982,7 @@
       "library": "package:flutter/src/cupertino/slider.dart",
       "name": "CupertinoSlider",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/slider.dart#CupertinoSlider",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/slider.dart#CupertinoSlider",
       "members": [
         "new",
         "value",
@@ -3002,7 +3002,7 @@
       "library": "package:flutter/src/cupertino/sliding_segmented_control.dart",
       "name": "CupertinoSlidingSegmentedControl",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/sliding_segmented_control.dart#CupertinoSlidingSegmentedControl",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/sliding_segmented_control.dart#CupertinoSlidingSegmentedControl",
       "members": [
         "new",
         "children",
@@ -3021,7 +3021,7 @@
       "library": "package:flutter/src/cupertino/spell_check_suggestions_toolbar.dart",
       "name": "CupertinoSpellCheckSuggestionsToolbar",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/spell_check_suggestions_toolbar.dart#CupertinoSpellCheckSuggestionsToolbar",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/spell_check_suggestions_toolbar.dart#CupertinoSpellCheckSuggestionsToolbar",
       "members": [
         "new",
         "editableText",
@@ -3037,7 +3037,7 @@
       "library": "package:flutter/src/cupertino/switch.dart",
       "name": "CupertinoSwitch",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/switch.dart#CupertinoSwitch",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/switch.dart#CupertinoSwitch",
       "members": [
         "new",
         "value",
@@ -3072,7 +3072,7 @@
       "library": "package:flutter/src/cupertino/tab_scaffold.dart",
       "name": "CupertinoTabController",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/tab_scaffold.dart#CupertinoTabController",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/tab_scaffold.dart#CupertinoTabController",
       "members": [
         "new",
         "_isDisposed",
@@ -3086,7 +3086,7 @@
       "library": "package:flutter/src/cupertino/tab_scaffold.dart",
       "name": "CupertinoTabScaffold",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/tab_scaffold.dart#CupertinoTabScaffold",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/tab_scaffold.dart#CupertinoTabScaffold",
       "members": [
         "new",
         "tabBar",
@@ -3102,7 +3102,7 @@
       "library": "package:flutter/src/cupertino/tab_scaffold.dart",
       "name": "RestorableCupertinoTabController",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/tab_scaffold.dart#RestorableCupertinoTabController",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/tab_scaffold.dart#RestorableCupertinoTabController",
       "members": [
         "new",
         "_initialIndex",
@@ -3115,7 +3115,7 @@
       "library": "package:flutter/src/cupertino/tab_view.dart",
       "name": "CupertinoTabView",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/tab_view.dart#CupertinoTabView",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/tab_view.dart#CupertinoTabView",
       "members": [
         "new",
         "builder",
@@ -3133,7 +3133,7 @@
       "library": "package:flutter/src/cupertino/text_field.dart",
       "name": "OverlayVisibilityMode",
       "kind": "EnumDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/text_field.dart#OverlayVisibilityMode",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/text_field.dart#OverlayVisibilityMode",
       "members": [
         "never",
         "editing",
@@ -3145,7 +3145,7 @@
       "library": "package:flutter/src/cupertino/text_field.dart",
       "name": "CupertinoTextField",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/text_field.dart#CupertinoTextField",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/text_field.dart#CupertinoTextField",
       "members": [
         "new",
         "borderless",
@@ -3236,7 +3236,7 @@
       "library": "package:flutter/src/cupertino/text_form_field_row.dart",
       "name": "CupertinoTextFormFieldRow",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/text_form_field_row.dart#CupertinoTextFormFieldRow",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/text_form_field_row.dart#CupertinoTextFormFieldRow",
       "members": [
         "new",
         "prefix",
@@ -3251,7 +3251,7 @@
       "library": "package:flutter/src/cupertino/text_selection_toolbar_button.dart",
       "name": "CupertinoTextSelectionToolbarButton",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/text_selection_toolbar_button.dart#CupertinoTextSelectionToolbarButton",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/text_selection_toolbar_button.dart#CupertinoTextSelectionToolbarButton",
       "members": [
         "new",
         "text",
@@ -3268,14 +3268,14 @@
       "library": "package:flutter/src/cupertino/text_selection_toolbar.dart",
       "name": "CupertinoToolbarBuilder",
       "kind": "GenericTypeAlias",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/text_selection_toolbar.dart#CupertinoToolbarBuilder",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/text_selection_toolbar.dart#CupertinoToolbarBuilder",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/text_selection_toolbar.dart",
       "name": "CupertinoTextSelectionToolbar",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/text_selection_toolbar.dart#CupertinoTextSelectionToolbar",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/text_selection_toolbar.dart#CupertinoTextSelectionToolbar",
       "members": [
         "new",
         "anchorAbove",
@@ -3291,14 +3291,14 @@
       "library": "package:flutter/src/cupertino/text_selection.dart",
       "name": "CupertinoTextSelectionHandleControls",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/text_selection.dart#CupertinoTextSelectionHandleControls",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/text_selection.dart#CupertinoTextSelectionHandleControls",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/text_selection.dart",
       "name": "CupertinoTextSelectionControls",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/text_selection.dart#CupertinoTextSelectionControls",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/text_selection.dart#CupertinoTextSelectionControls",
       "members": [
         "getHandleSize",
         "buildToolbar",
@@ -3310,21 +3310,21 @@
       "library": "package:flutter/src/cupertino/text_selection.dart",
       "name": "cupertinoTextSelectionHandleControls",
       "kind": "TopLevelVariableDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/text_selection.dart#cupertinoTextSelectionHandleControls",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/text_selection.dart#cupertinoTextSelectionHandleControls",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/text_selection.dart",
       "name": "cupertinoTextSelectionControls",
       "kind": "TopLevelVariableDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/text_selection.dart#cupertinoTextSelectionControls",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/text_selection.dart#cupertinoTextSelectionControls",
       "members": []
     },
     {
       "library": "package:flutter/src/cupertino/text_theme.dart",
       "name": "CupertinoTextThemeData",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/text_theme.dart#CupertinoTextThemeData",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/text_theme.dart#CupertinoTextThemeData",
       "members": [
         "new",
         "_raw",
@@ -3359,7 +3359,7 @@
       "library": "package:flutter/src/cupertino/theme.dart",
       "name": "CupertinoTheme",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/theme.dart#CupertinoTheme",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/theme.dart#CupertinoTheme",
       "members": [
         "new",
         "data",
@@ -3375,7 +3375,7 @@
       "library": "package:flutter/src/cupertino/theme.dart",
       "name": "InheritedCupertinoTheme",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/theme.dart#InheritedCupertinoTheme",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/theme.dart#InheritedCupertinoTheme",
       "members": [
         "new",
         "theme",
@@ -3387,7 +3387,7 @@
       "library": "package:flutter/src/cupertino/theme.dart",
       "name": "CupertinoThemeData",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/theme.dart#CupertinoThemeData",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/theme.dart#CupertinoThemeData",
       "members": [
         "new",
         "raw",
@@ -3412,7 +3412,7 @@
       "library": "package:flutter/src/cupertino/theme.dart",
       "name": "NoDefaultCupertinoThemeData",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/theme.dart#NoDefaultCupertinoThemeData",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/theme.dart#NoDefaultCupertinoThemeData",
       "members": [
         "new",
         "brightness",
@@ -3434,7 +3434,7 @@
       "library": "package:flutter/src/cupertino/thumb_painter.dart",
       "name": "CupertinoThumbPainter",
       "kind": "ClassDeclaration",
-      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/flutter-master/packages/flutter/lib/src/cupertino/thumb_painter.dart#CupertinoThumbPainter",
+      "elementId": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/cupertino/thumb_painter.dart#CupertinoThumbPainter",
       "members": [
         "new",
         "switchThumb",

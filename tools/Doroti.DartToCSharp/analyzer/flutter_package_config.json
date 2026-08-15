@@ -3,7 +3,7 @@
   "packages": [
     {
       "name": "flutter",
-      "rootUri": "../../../flutter-master/packages/flutter",
+      "rootUri": "../../../reference/flutter-master/packages/flutter",
       "packageUri": "lib/",
       "languageVersion": "3.11"
     },

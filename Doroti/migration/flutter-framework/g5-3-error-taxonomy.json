@@ -20,7 +20,7 @@
                         "id":  "G53E-9aac483e86c8",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/_accessibility_evaluations.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/_accessibility_evaluations.dart",
                                            "symbol":  "_ContrastEvaluation",
                                            "sourceOffset":  7521
                                        },
@@ -44,7 +44,7 @@
                         "id":  "G53E-6e5b7343c8ca",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/_accessibility_evaluations.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/_accessibility_evaluations.dart",
                                            "symbol":  "_ContrastEvaluation",
                                            "sourceOffset":  7521
                                        },
@@ -68,7 +68,7 @@
                         "id":  "G53E-dd6b3b1a5107",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/_accessibility_evaluations.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/_accessibility_evaluations.dart",
                                            "symbol":  "MinimumTextContrastEvaluation",
                                            "sourceOffset":  10176
                                        },
@@ -92,7 +92,7 @@
                         "id":  "G53E-225c17e6a952",
                         "category":  "dart-ui-contract",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/app_lifecycle_listener.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/app_lifecycle_listener.dart",
                                            "symbol":  "AppLifecycleListener",
                                            "sourceOffset":  534
                                        },
@@ -116,7 +116,7 @@
                         "id":  "G53E-412a1882fa92",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/async.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/async.dart",
                                            "symbol":  "AsyncSnapshot",
                                            "sourceOffset":  6381
                                        },
@@ -140,7 +140,7 @@
                         "id":  "G53E-cfc371d9d95d",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/async.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/async.dart",
                                            "symbol":  "AsyncSnapshot",
                                            "sourceOffset":  6381
                                        },
@@ -164,7 +164,7 @@
                         "id":  "G53E-e655ab48b74e",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/async.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/async.dart",
                                            "symbol":  "AsyncSnapshot",
                                            "sourceOffset":  6381
                                        },
@@ -188,7 +188,7 @@
                         "id":  "G53E-1bdb50316b25",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/async.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/async.dart",
                                            "symbol":  "_FutureBuilderState",
                                            "sourceOffset":  23691
                                        },
@@ -212,7 +212,7 @@
                         "id":  "G53E-9914c0512b2f",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/async.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/async.dart",
                                            "symbol":  "_FutureBuilderState",
                                            "sourceOffset":  23691
                                        },
@@ -236,7 +236,7 @@
                         "id":  "G53E-8074b82bce86",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/autocomplete.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/autocomplete.dart",
                                            "symbol":  "RawAutocomplete",
                                            "sourceOffset":  4188
                                        },
@@ -260,7 +260,7 @@
                         "id":  "G53E-a09a71cf44c8",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/autocomplete.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/autocomplete.dart",
                                            "symbol":  "_RawAutocompleteState",
                                            "sourceOffset":  12927
                                        },
@@ -284,7 +284,7 @@
                         "id":  "G53E-dcdc40e7b913",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/autocomplete.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/autocomplete.dart",
                                            "symbol":  "_RawAutocompleteState",
                                            "sourceOffset":  12927
                                        },
@@ -308,7 +308,7 @@
                         "id":  "G53E-22f1fb0c4661",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/autocomplete.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/autocomplete.dart",
                                            "symbol":  "_RawAutocompleteState",
                                            "sourceOffset":  12927
                                        },
@@ -332,7 +332,7 @@
                         "id":  "G53E-b14f7cb05a94",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/automatic_keep_alive.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/automatic_keep_alive.dart",
                                            "symbol":  "_AutomaticKeepAliveState",
                                            "sourceOffset":  3476
                                        },
@@ -356,7 +356,7 @@
                         "id":  "G53E-9af2cf6732ec",
                         "category":  "host-capability/avalonia-port",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/binding.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/binding.dart",
                                            "symbol":  "WidgetsFlutterBinding",
                                            "sourceOffset":  79059
                                        },
@@ -380,7 +380,7 @@
                         "id":  "G53E-afecf77179db",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/binding.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/binding.dart",
                                            "symbol":  "WidgetsFlutterBinding",
                                            "sourceOffset":  79059
                                        },
@@ -404,7 +404,7 @@
                         "id":  "G53E-c710e24f53c6",
                         "category":  "dart-ui-contract",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/binding.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/binding.dart",
                                            "symbol":  "WidgetsFlutterBinding",
                                            "sourceOffset":  79059
                                        },
@@ -428,7 +428,7 @@
                         "id":  "G53E-fa7913fd07a8",
                         "category":  "dart-model-representation",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/disposable_build_context.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/disposable_build_context.dart",
                                            "symbol":  "DisposableBuildContext",
                                            "sourceOffset":  234
                                        },
@@ -452,7 +452,7 @@
                         "id":  "G53E-e8ab13c5cc6e",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/drag_target.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/drag_target.dart",
                                            "symbol":  "Draggable",
                                            "sourceOffset":  5323
                                        },
@@ -476,7 +476,7 @@
                         "id":  "G53E-30f9922e8445",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/drag_target.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/drag_target.dart",
                                            "symbol":  "LongPressDraggable",
                                            "sourceOffset":  16274
                                        },
@@ -500,7 +500,7 @@
                         "id":  "G53E-1a9cf9bd7497",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/drag_target.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/drag_target.dart",
                                            "symbol":  "_DraggableState",
                                            "sourceOffset":  18073
                                        },
@@ -524,7 +524,7 @@
                         "id":  "G53E-38b9e495a11c",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/drag_target.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/drag_target.dart",
                                            "symbol":  "_DragAvatar",
                                            "sourceOffset":  31538
                                        },
@@ -548,7 +548,7 @@
                         "id":  "G53E-61a368506e06",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/editable_text.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/editable_text.dart",
                                            "symbol":  "EditableTextState",
                                            "sourceOffset":  108935
                                        },
@@ -572,7 +572,7 @@
                         "id":  "G53E-bb7cad4951e9",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/editable_text.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/editable_text.dart",
                                            "symbol":  "EditableTextState",
                                            "sourceOffset":  108935
                                        },
@@ -596,7 +596,7 @@
                         "id":  "G53E-d00faa727f3f",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/editable_text.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/editable_text.dart",
                                            "symbol":  "EditableTextState",
                                            "sourceOffset":  108935
                                        },
@@ -620,7 +620,7 @@
                         "id":  "G53E-07fbf77d9243",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/editable_text.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/editable_text.dart",
                                            "symbol":  "EditableTextState",
                                            "sourceOffset":  108935
                                        },
@@ -644,7 +644,7 @@
                         "id":  "G53E-de9b12f8cd8c",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/editable_text.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/editable_text.dart",
                                            "symbol":  "EditableTextState",
                                            "sourceOffset":  108935
                                        },
@@ -668,7 +668,7 @@
                         "id":  "G53E-22cefeac812a",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/editable_text.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/editable_text.dart",
                                            "symbol":  "EditableTextState",
                                            "sourceOffset":  108935
                                        },
@@ -692,7 +692,7 @@
                         "id":  "G53E-1aadaf9344c3",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/editable_text.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/editable_text.dart",
                                            "symbol":  "_Editable",
                                            "sourceOffset":  249003
                                        },
@@ -720,7 +720,7 @@
                         "id":  "G53E-66c815032202",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/focus_manager.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/focus_manager.dart",
                                            "symbol":  "FocusNode",
                                            "sourceOffset":  12690
                                        },
@@ -744,7 +744,7 @@
                         "id":  "G53E-ad5b5c284b46",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/focus_manager.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/focus_manager.dart",
                                            "symbol":  "_HighlightModeManager",
                                            "sourceOffset":  83678
                                        },
@@ -768,7 +768,7 @@
                         "id":  "G53E-a6ecf821b2a9",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/focus_manager.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/focus_manager.dart",
                                            "symbol":  "_HighlightModeManager",
                                            "sourceOffset":  83678
                                        },
@@ -792,7 +792,7 @@
                         "id":  "G53E-9e383666f7e0",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/focus_scope.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/focus_scope.dart",
                                            "symbol":  "_FocusState",
                                            "sourceOffset":  22754
                                        },
@@ -816,7 +816,7 @@
                         "id":  "G53E-7eed6abb7337",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/focus_traversal.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/focus_traversal.dart",
                                            "symbol":  "WidgetOrderTraversalPolicy",
                                            "sourceOffset":  55799
                                        },
@@ -840,7 +840,7 @@
                         "id":  "G53E-f17d4f1f5365",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/focus_traversal.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/focus_traversal.dart",
                                            "symbol":  "ReadingOrderTraversalPolicy",
                                            "sourceOffset":  62746
                                        },
@@ -864,7 +864,7 @@
                         "id":  "G53E-4065602f8650",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/focus_traversal.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/focus_traversal.dart",
                                            "symbol":  "OrderedTraversalPolicy",
                                            "sourceOffset":  75536
                                        },
@@ -888,7 +888,7 @@
                         "id":  "G53E-dc6384071445",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/focus_traversal.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/focus_traversal.dart",
                                            "symbol":  "NextFocusAction",
                                            "sourceOffset":  95599
                                        },
@@ -912,7 +912,7 @@
                         "id":  "G53E-9fcdf36e0a9a",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/focus_traversal.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/focus_traversal.dart",
                                            "symbol":  "PreviousFocusAction",
                                            "sourceOffset":  96878
                                        },
@@ -936,7 +936,7 @@
                         "id":  "G53E-92c6caa440d0",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/form.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/form.dart",
                                            "symbol":  "FormState",
                                            "sourceOffset":  7885
                                        },
@@ -960,7 +960,7 @@
                         "id":  "G53E-3ed464458dd6",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/form.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/form.dart",
                                            "symbol":  "FormFieldState",
                                            "sourceOffset":  22050
                                        },
@@ -984,7 +984,7 @@
                         "id":  "G53E-152dd62fae12",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/form.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/form.dart",
                                            "symbol":  "FormFieldState",
                                            "sourceOffset":  22050
                                        },
@@ -1008,7 +1008,7 @@
                         "id":  "G53E-08f5b5b45b3c",
                         "category":  "dart-model-representation",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/framework.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/framework.dart",
                                            "symbol":  "GlobalKey",
                                            "sourceOffset":  4124
                                        },
@@ -1032,7 +1032,7 @@
                         "id":  "G53E-ec34169d4e15",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/framework.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/framework.dart",
                                            "symbol":  "State",
                                            "sourceOffset":  34648
                                        },
@@ -1056,7 +1056,7 @@
                         "id":  "G53E-ee97926365df",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/framework.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/framework.dart",
                                            "symbol":  "StatefulElement",
                                            "sourceOffset":  249035
                                        },
@@ -1080,7 +1080,7 @@
                         "id":  "G53E-c82b00168d78",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/framework.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/framework.dart",
                                            "symbol":  "StatefulElement",
                                            "sourceOffset":  249035
                                        },
@@ -1104,7 +1104,7 @@
                         "id":  "G53E-e26a8fb4257a",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/framework.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/framework.dart",
                                            "symbol":  "ParentDataElement",
                                            "sourceOffset":  259396
                                        },
@@ -1128,7 +1128,7 @@
                         "id":  "G53E-1bfde144469e",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/framework.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/framework.dart",
                                            "symbol":  "MultiChildRenderObjectElement",
                                            "sourceOffset":  297518
                                        },
@@ -1152,7 +1152,7 @@
                         "id":  "G53E-5043e26a29dc",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/framework.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/framework.dart",
                                            "symbol":  "MultiChildRenderObjectElement",
                                            "sourceOffset":  297518
                                        },
@@ -1176,7 +1176,7 @@
                         "id":  "G53E-f45b68e55ac9",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/framework.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/framework.dart",
                                            "symbol":  "MultiChildRenderObjectElement",
                                            "sourceOffset":  297518
                                        },
@@ -1200,7 +1200,7 @@
                         "id":  "G53E-6592753ddc04",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/framework.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/framework.dart",
                                            "symbol":  "IndexedSlot",
                                            "sourceOffset":  306419
                                        },
@@ -1224,7 +1224,7 @@
                         "id":  "G53E-3cee1c459d19",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/framework.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/framework.dart",
                                            "symbol":  "IndexedSlot",
                                            "sourceOffset":  306419
                                        },
@@ -1248,7 +1248,7 @@
                         "id":  "G53E-00c219b4d069",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/gesture_detector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/gesture_detector.dart",
                                            "symbol":  "RawGestureDetector",
                                            "sourceOffset":  51133
                                        },
@@ -1272,7 +1272,7 @@
                         "id":  "G53E-a4eb8a8543ec",
                         "category":  "dart-model-representation",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/heroes.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/heroes.dart",
                                            "symbol":  "Hero",
                                            "sourceOffset":  2505
                                        },
@@ -1296,7 +1296,7 @@
                         "id":  "G53E-49cb4da79242",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/heroes.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/heroes.dart",
                                            "symbol":  "_HeroFlightManifest",
                                            "sourceOffset":  18056
                                        },
@@ -1320,7 +1320,7 @@
                         "id":  "G53E-796ed1a4d8b5",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/heroes.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/heroes.dart",
                                            "symbol":  "_HeroFlight",
                                            "sourceOffset":  21683
                                        },
@@ -1344,7 +1344,7 @@
                         "id":  "G53E-ca50df9aa96a",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/icon_theme_data.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/icon_theme_data.dart",
                                            "symbol":  "IconThemeData",
                                            "sourceOffset":  506
                                        },
@@ -1368,7 +1368,7 @@
                         "id":  "G53E-e6f0ae84962d",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/image.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/image.dart",
                                            "symbol":  "_ImageState",
                                            "sourceOffset":  45862
                                        },
@@ -1392,7 +1392,7 @@
                         "id":  "G53E-3b1d824f7fdc",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/image.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/image.dart",
                                            "symbol":  "_ImageState",
                                            "sourceOffset":  45862
                                        },
@@ -1416,7 +1416,7 @@
                         "id":  "G53E-9c1b66501db1",
                         "category":  "dart-ui-contract",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/implicit_animations.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/implicit_animations.dart",
                                            "symbol":  "_AnimatedSlideState",
                                            "sourceOffset":  63457
                                        },
@@ -1440,7 +1440,7 @@
                         "id":  "G53E-da1504d92c8f",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/layout_builder.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/layout_builder.dart",
                                            "symbol":  "_LayoutBuilderElement",
                                            "sourceOffset":  4768
                                        },
@@ -1464,7 +1464,7 @@
                         "id":  "G53E-ef9e6d74126a",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/list_wheel_scroll_view.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/list_wheel_scroll_view.dart",
                                            "symbol":  "ListWheelElement",
                                            "sourceOffset":  30987
                                        },
@@ -1488,7 +1488,7 @@
                         "id":  "G53E-0c78ec6ef445",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/list_wheel_scroll_view.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/list_wheel_scroll_view.dart",
                                            "symbol":  "ListWheelElement",
                                            "sourceOffset":  30987
                                        },
@@ -1512,7 +1512,7 @@
                         "id":  "G53E-150f42d1e6b6",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/list_wheel_scroll_view.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/list_wheel_scroll_view.dart",
                                            "symbol":  "ListWheelElement",
                                            "sourceOffset":  30987
                                        },
@@ -1536,7 +1536,7 @@
                         "id":  "G53E-6919b9ea617c",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/list_wheel_scroll_view.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/list_wheel_scroll_view.dart",
                                            "symbol":  "ListWheelElement",
                                            "sourceOffset":  30987
                                        },
@@ -1560,7 +1560,7 @@
                         "id":  "G53E-9867df20568c",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/localizations.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/localizations.dart",
                                            "symbol":  "Localizations",
                                            "sourceOffset":  12452
                                        },
@@ -1584,7 +1584,7 @@
                         "id":  "G53E-ae6b87d1c15f",
                         "category":  "dart-model-representation",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/localizations.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/localizations.dart",
                                            "symbol":  "Localizations",
                                            "sourceOffset":  12452
                                        },
@@ -1608,7 +1608,7 @@
                         "id":  "G53E-a141b6378df2",
                         "category":  "dart-ui-contract",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/localizations.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/localizations.dart",
                                            "symbol":  "LocalizationsResolver",
                                            "sourceOffset":  26695
                                        },
@@ -1632,7 +1632,7 @@
                         "id":  "G53E-7edcb0843cf1",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/localizations.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/localizations.dart",
                                            "symbol":  "LocalizationsResolver",
                                            "sourceOffset":  26695
                                        },
@@ -1660,7 +1660,7 @@
                         "id":  "G53E-370a1ad5f20f",
                         "category":  "dart-ui-contract",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/media_query.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/media_query.dart",
                                            "symbol":  "MediaQueryData",
                                            "sourceOffset":  4436
                                        },
@@ -1684,7 +1684,7 @@
                         "id":  "G53E-bfae5baa6e55",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
                                            "symbol":  "RouteSettings",
                                            "sourceOffset":  26702
                                        },
@@ -1708,7 +1708,7 @@
                         "id":  "G53E-cca3ea971ae9",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
                                            "symbol":  "RouteSettings",
                                            "sourceOffset":  26702
                                        },
@@ -1732,7 +1732,7 @@
                         "id":  "G53E-ae41fef26c1e",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
                                            "symbol":  "RouteSettings",
                                            "sourceOffset":  26702
                                        },
@@ -1756,7 +1756,7 @@
                         "id":  "G53E-1d5ff0b78253",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
                                            "symbol":  "RouteSettings",
                                            "sourceOffset":  26702
                                        },
@@ -1780,7 +1780,7 @@
                         "id":  "G53E-8ac617c9f421",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
                                            "symbol":  "RouteSettings",
                                            "sourceOffset":  26702
                                        },
@@ -1804,7 +1804,7 @@
                         "id":  "G53E-a3cb146012ff",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
                                            "symbol":  "RouteSettings",
                                            "sourceOffset":  26702
                                        },
@@ -1828,7 +1828,7 @@
                         "id":  "G53E-e59c958b64d7",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
                                            "symbol":  "RouteSettings",
                                            "sourceOffset":  26702
                                        },
@@ -1852,7 +1852,7 @@
                         "id":  "G53E-39286359bffc",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
                                            "symbol":  "RouteSettings",
                                            "sourceOffset":  26702
                                        },
@@ -1876,7 +1876,7 @@
                         "id":  "G53E-4f8f9f3e3b8c",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
                                            "symbol":  "RouteSettings",
                                            "sourceOffset":  26702
                                        },
@@ -1900,7 +1900,7 @@
                         "id":  "G53E-c6ee471e43f8",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/navigator.dart",
                                            "symbol":  "RouteSettings",
                                            "sourceOffset":  26702
                                        },
@@ -1924,7 +1924,7 @@
                         "id":  "G53E-033a850ff7db",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/nested_scroll_view.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/nested_scroll_view.dart",
                                            "symbol":  "_NestedInnerBallisticScrollActivity",
                                            "sourceOffset":  55136
                                        },
@@ -1948,7 +1948,7 @@
                         "id":  "G53E-056e300a6478",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/nested_scroll_view.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/nested_scroll_view.dart",
                                            "symbol":  "_NestedInnerBallisticScrollActivity",
                                            "sourceOffset":  55136
                                        },
@@ -1972,7 +1972,7 @@
                         "id":  "G53E-2c7f2ccafcf5",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/nested_scroll_view.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/nested_scroll_view.dart",
                                            "symbol":  "_NestedInnerBallisticScrollActivity",
                                            "sourceOffset":  55136
                                        },
@@ -1996,7 +1996,7 @@
                         "id":  "G53E-6ac79d1c4cd1",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/overlay.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/overlay.dart",
                                            "symbol":  "_OverlayEntryWidgetState",
                                            "sourceOffset":  12144
                                        },
@@ -2020,7 +2020,7 @@
                         "id":  "G53E-478f31ea14e7",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/overlay.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/overlay.dart",
                                            "symbol":  "OverlayState",
                                            "sourceOffset":  25510
                                        },
@@ -2044,7 +2044,7 @@
                         "id":  "G53E-911955f0f6f5",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/overlay.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/overlay.dart",
                                            "symbol":  "_Theater",
                                            "sourceOffset":  36243
                                        },
@@ -2068,7 +2068,7 @@
                         "id":  "G53E-eac38557e256",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/overlay.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/overlay.dart",
                                            "symbol":  "_RenderDeferredLayoutBox",
                                            "sourceOffset":  93979
                                        },
@@ -2092,7 +2092,7 @@
                         "id":  "G53E-6ddd99f5a831",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/overlay.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/overlay.dart",
                                            "symbol":  "_RenderLayoutSurrogateProxyBox",
                                            "sourceOffset":  99872
                                        },
@@ -2116,7 +2116,7 @@
                         "id":  "G53E-f868b5bbd554",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/overlay.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/overlay.dart",
                                            "symbol":  "_RenderLayoutBuilder",
                                            "sourceOffset":  104302
                                        },
@@ -2140,7 +2140,7 @@
                         "id":  "G53E-e94554f0d178",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/overscroll_indicator.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/overscroll_indicator.dart",
                                            "symbol":  "_GlowingOverscrollIndicatorState",
                                            "sourceOffset":  6774
                                        },
@@ -2164,7 +2164,7 @@
                         "id":  "G53E-3f9889e1a2a9",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/overscroll_indicator.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/overscroll_indicator.dart",
                                            "symbol":  "_StretchingOverscrollIndicatorState",
                                            "sourceOffset":  26337
                                        },
@@ -2188,7 +2188,7 @@
                         "id":  "G53E-37c1beb5d470",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/overscroll_indicator.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/overscroll_indicator.dart",
                                            "symbol":  "_StretchController",
                                            "sourceOffset":  31387
                                        },
@@ -2212,7 +2212,7 @@
                         "id":  "G53E-e5afe12e7fec",
                         "category":  "dart-model-representation",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/platform_view.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/platform_view.dart",
                                            "symbol":  "_UiKitViewState",
                                            "sourceOffset":  39010
                                        },
@@ -2236,7 +2236,7 @@
                         "id":  "G53E-751bf1c3c4bd",
                         "category":  "dart-model-representation",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/platform_view.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/platform_view.dart",
                                            "symbol":  "_UiKitViewState",
                                            "sourceOffset":  39010
                                        },
@@ -2260,7 +2260,7 @@
                         "id":  "G53E-53c91be9753a",
                         "category":  "dart-model-representation",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/platform_view.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/platform_view.dart",
                                            "symbol":  "_AppKitViewState",
                                            "sourceOffset":  39858
                                        },
@@ -2284,7 +2284,7 @@
                         "id":  "G53E-6b278591198c",
                         "category":  "dart-model-representation",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/platform_view.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/platform_view.dart",
                                            "symbol":  "_AppKitViewState",
                                            "sourceOffset":  39858
                                        },
@@ -2308,7 +2308,7 @@
                         "id":  "G53E-a231383117de",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/radio_group.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/radio_group.dart",
                                            "symbol":  "_RadioGroupStateScope",
                                            "sourceOffset":  8455
                                        },
@@ -2332,7 +2332,7 @@
                         "id":  "G53E-4c5a1388a1f1",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/raw_menu_anchor.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/raw_menu_anchor.dart",
                                            "symbol":  "_RawMenuAnchorState",
                                            "sourceOffset":  25661
                                        },
@@ -2356,7 +2356,7 @@
                         "id":  "G53E-39561887c209",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/raw_menu_anchor.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/raw_menu_anchor.dart",
                                            "symbol":  "_RawMenuAnchorState",
                                            "sourceOffset":  25661
                                        },
@@ -2380,7 +2380,7 @@
                         "id":  "G53E-91a0434a780f",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/raw_menu_anchor.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/raw_menu_anchor.dart",
                                            "symbol":  "_RawMenuAnchorState",
                                            "sourceOffset":  25661
                                        },
@@ -2404,7 +2404,7 @@
                         "id":  "G53E-1d920e5b1f83",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/raw_menu_anchor.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/raw_menu_anchor.dart",
                                            "symbol":  "_RawMenuAnchorGroupState",
                                            "sourceOffset":  33337
                                        },
@@ -2428,7 +2428,7 @@
                         "id":  "G53E-d3d30c441428",
                         "category":  "dart-model-representation",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/raw_radio.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/raw_radio.dart",
                                            "symbol":  "_RawRadioState",
                                            "sourceOffset":  4607
                                        },
@@ -2452,7 +2452,7 @@
                         "id":  "G53E-fbc3c4a178b4",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/raw_radio.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/raw_radio.dart",
                                            "symbol":  "_RawRadioState",
                                            "sourceOffset":  4607
                                        },
@@ -2476,7 +2476,7 @@
                         "id":  "G53E-6e61f0037542",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/raw_radio.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/raw_radio.dart",
                                            "symbol":  "_RawRadioState",
                                            "sourceOffset":  4607
                                        },
@@ -2500,7 +2500,7 @@
                         "id":  "G53E-2ad633573da9",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/raw_radio.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/raw_radio.dart",
                                            "symbol":  "_RawRadioState",
                                            "sourceOffset":  4607
                                        },
@@ -2524,7 +2524,7 @@
                         "id":  "G53E-e52454479d60",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/raw_tooltip.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/raw_tooltip.dart",
                                            "symbol":  "RawTooltip",
                                            "sourceOffset":  7210
                                        },
@@ -2548,7 +2548,7 @@
                         "id":  "G53E-ace79cf9af28",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/raw_tooltip.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/raw_tooltip.dart",
                                            "symbol":  "RawTooltipState",
                                            "sourceOffset":  19078
                                        },
@@ -2572,7 +2572,7 @@
                         "id":  "G53E-bcb76cbd9f83",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/raw_tooltip.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/raw_tooltip.dart",
                                            "symbol":  "RawTooltipState",
                                            "sourceOffset":  19078
                                        },
@@ -2596,7 +2596,7 @@
                         "id":  "G53E-eb638e1288fc",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/router.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/router.dart",
                                            "symbol":  "Router",
                                            "sourceOffset":  6005
                                        },
@@ -2620,7 +2620,7 @@
                         "id":  "G53E-c3a335b3393a",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/router.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/router.dart",
                                            "symbol":  "Router",
                                            "sourceOffset":  6005
                                        },
@@ -2644,7 +2644,7 @@
                         "id":  "G53E-045b36cf9fc3",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/router.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/router.dart",
                                            "symbol":  "_RouterState",
                                            "sourceOffset":  27777
                                        },
@@ -2668,7 +2668,7 @@
                         "id":  "G53E-752863263200",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/router.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/router.dart",
                                            "symbol":  "_RouterState",
                                            "sourceOffset":  27777
                                        },
@@ -2692,7 +2692,7 @@
                         "id":  "G53E-e56fd1c2c5f0",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/router.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/router.dart",
                                            "symbol":  "_RouterState",
                                            "sourceOffset":  27777
                                        },
@@ -2716,7 +2716,7 @@
                         "id":  "G53E-6511b5d3e204",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/router.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/router.dart",
                                            "symbol":  "_RouterState",
                                            "sourceOffset":  27777
                                        },
@@ -2740,7 +2740,7 @@
                         "id":  "G53E-897f4e176d56",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/router.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/router.dart",
                                            "symbol":  "BackButtonDispatcher",
                                            "sourceOffset":  40302
                                        },
@@ -2764,7 +2764,7 @@
                         "id":  "G53E-8e7265ee6cc5",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/scroll_activity.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/scroll_activity.dart",
                                            "symbol":  "DrivenScrollActivity",
                                            "sourceOffset":  22551
                                        },
@@ -2788,7 +2788,7 @@
                         "id":  "G53E-253ffcb8b77b",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/scroll_aware_image_provider.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/scroll_aware_image_provider.dart",
                                            "symbol":  "ScrollAwareImageProvider",
                                            "sourceOffset":  397
                                        },
@@ -2812,7 +2812,7 @@
                         "id":  "G53E-e2f2375f1c84",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/scroll_aware_image_provider.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/scroll_aware_image_provider.dart",
                                            "symbol":  "ScrollAwareImageProvider",
                                            "sourceOffset":  397
                                        },
@@ -2836,7 +2836,7 @@
                         "id":  "G53E-ec30f2747847",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/scroll_configuration.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/scroll_configuration.dart",
                                            "symbol":  "ScrollBehavior",
                                            "sourceOffset":  1621
                                        },
@@ -2860,7 +2860,7 @@
                         "id":  "G53E-d47a54d815b8",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/scroll_configuration.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/scroll_configuration.dart",
                                            "symbol":  "ScrollBehavior",
                                            "sourceOffset":  1621
                                        },
@@ -2884,7 +2884,7 @@
                         "id":  "G53E-4bd0b45780c4",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/scroll_delegate.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/scroll_delegate.dart",
                                            "symbol":  "SliverChildBuilderDelegate",
                                            "sourceOffset":  10484
                                        },
@@ -2908,7 +2908,7 @@
                         "id":  "G53E-bb2e0a09d562",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/scroll_delegate.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/scroll_delegate.dart",
                                            "symbol":  "SliverChildListDelegate",
                                            "sourceOffset":  23832
                                        },
@@ -2932,7 +2932,7 @@
                         "id":  "G53E-ace923a66f6e",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/scroll_delegate.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/scroll_delegate.dart",
                                            "symbol":  "SliverChildListDelegate",
                                            "sourceOffset":  23832
                                        },
@@ -2956,7 +2956,7 @@
                         "id":  "G53E-598c1c14a2fe",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/scroll_view.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/scroll_view.dart",
                                            "symbol":  "ScrollView",
                                            "sourceOffset":  1468
                                        },
@@ -2980,7 +2980,7 @@
                         "id":  "G53E-dc52fa450fcb",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/scrollable.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/scrollable.dart",
                                            "symbol":  "ScrollableState",
                                            "sourceOffset":  22881
                                        },
@@ -3004,7 +3004,7 @@
                         "id":  "G53E-fe401eae9768",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/scrollbar.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/scrollbar.dart",
                                            "symbol":  "ScrollbarPainter",
                                            "sourceOffset":  1758
                                        },
@@ -3032,7 +3032,7 @@
                         "id":  "G53E-a5b82d388a24",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/scrollbar.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/scrollbar.dart",
                                            "symbol":  "RawScrollbarState",
                                            "sourceOffset":  50064
                                        },
@@ -3056,7 +3056,7 @@
                         "id":  "G53E-b1f365c1e4b8",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/scrollbar.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/scrollbar.dart",
                                            "symbol":  "RawScrollbarState",
                                            "sourceOffset":  50064
                                        },
@@ -3080,7 +3080,7 @@
                         "id":  "G53E-cfa868fc04a0",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/scrollbar.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/scrollbar.dart",
                                            "symbol":  "RawScrollbarState",
                                            "sourceOffset":  50064
                                        },
@@ -3104,7 +3104,7 @@
                         "id":  "G53E-266fe6437104",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/scrollbar.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/scrollbar.dart",
                                            "symbol":  "RawScrollbarState",
                                            "sourceOffset":  50064
                                        },
@@ -3128,7 +3128,7 @@
                         "id":  "G53E-d646ac6bcd21",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/scrollbar.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/scrollbar.dart",
                                            "symbol":  "RawScrollbarState",
                                            "sourceOffset":  50064
                                        },
@@ -3152,7 +3152,7 @@
                         "id":  "G53E-0c87e4b54e21",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/scrollbar.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/scrollbar.dart",
                                            "symbol":  "RawScrollbarState",
                                            "sourceOffset":  50064
                                        },
@@ -3176,7 +3176,7 @@
                         "id":  "G53E-9168bc531595",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/selectable_region.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/selectable_region.dart",
                                            "symbol":  "SelectableRegionState",
                                            "sourceOffset":  14776
                                        },
@@ -3200,7 +3200,7 @@
                         "id":  "G53E-84c9ad590b5f",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/selectable_region.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/selectable_region.dart",
                                            "symbol":  "SelectableRegionState",
                                            "sourceOffset":  14776
                                        },
@@ -3224,7 +3224,7 @@
                         "id":  "G53E-6c757692ac2a",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/selectable_region.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/selectable_region.dart",
                                            "symbol":  "SelectableRegionState",
                                            "sourceOffset":  14776
                                        },
@@ -3248,7 +3248,7 @@
                         "id":  "G53E-6ec7f354f792",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/selectable_region.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/selectable_region.dart",
                                            "symbol":  "_NonOverrideAction",
                                            "sourceOffset":  80582
                                        },
@@ -3272,7 +3272,7 @@
                         "id":  "G53E-3e498642d446",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/selectable_region.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/selectable_region.dart",
                                            "symbol":  "MultiSelectableSelectionContainerDelegate",
                                            "sourceOffset":  94614
                                        },
@@ -3296,7 +3296,7 @@
                         "id":  "G53E-50c46d501598",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/selectable_region.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/selectable_region.dart",
                                            "symbol":  "MultiSelectableSelectionContainerDelegate",
                                            "sourceOffset":  94614
                                        },
@@ -3320,7 +3320,7 @@
                         "id":  "G53E-776f3b6bc847",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/selectable_region.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/selectable_region.dart",
                                            "symbol":  "MultiSelectableSelectionContainerDelegate",
                                            "sourceOffset":  94614
                                        },
@@ -3344,7 +3344,7 @@
                         "id":  "G53E-59a6def9d50a",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/selection_container.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/selection_container.dart",
                                            "symbol":  "_SelectionContainerState",
                                            "sourceOffset":  3789
                                        },
@@ -3368,7 +3368,7 @@
                         "id":  "G53E-3dccd4af9843",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/selection_container.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/selection_container.dart",
                                            "symbol":  "_SelectionContainerState",
                                            "sourceOffset":  3789
                                        },
@@ -3392,7 +3392,7 @@
                         "id":  "G53E-8721d060178f",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/semantics_debugger.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/semantics_debugger.dart",
                                            "symbol":  "SemanticsDebugger",
                                            "sourceOffset":  477
                                        },
@@ -3416,7 +3416,7 @@
                         "id":  "G53E-cf9d3c290561",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sensitive_content.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sensitive_content.dart",
                                            "symbol":  "SensitiveContentHost",
                                            "sourceOffset":  4509
                                        },
@@ -3440,7 +3440,7 @@
                         "id":  "G53E-9080f0bb750e",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sensitive_content.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sensitive_content.dart",
                                            "symbol":  "SensitiveContentHost",
                                            "sourceOffset":  4509
                                        },
@@ -3464,7 +3464,7 @@
                         "id":  "G53E-4e8bd101c4fb",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sensitive_content.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sensitive_content.dart",
                                            "symbol":  "SensitiveContentHost",
                                            "sourceOffset":  4509
                                        },
@@ -3488,7 +3488,7 @@
                         "id":  "G53E-89682e26ab11",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sensitive_content.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sensitive_content.dart",
                                            "symbol":  "SensitiveContentHost",
                                            "sourceOffset":  4509
                                        },
@@ -3512,7 +3512,7 @@
                         "id":  "G53E-2872072ae00d",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sensitive_content.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sensitive_content.dart",
                                            "symbol":  "SensitiveContentHost",
                                            "sourceOffset":  4509
                                        },
@@ -3536,7 +3536,7 @@
                         "id":  "G53E-23089542ac90",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sensitive_content.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sensitive_content.dart",
                                            "symbol":  "_SensitiveContentState",
                                            "sourceOffset":  15521
                                        },
@@ -3560,7 +3560,7 @@
                         "id":  "G53E-577bc673d51e",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/shortcuts.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/shortcuts.dart",
                                            "symbol":  "ShortcutManager",
                                            "sourceOffset":  31634
                                        },
@@ -3584,7 +3584,7 @@
                         "id":  "G53E-b39001f4c4c8",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/shortcuts.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/shortcuts.dart",
                                            "symbol":  "ShortcutManager",
                                            "sourceOffset":  31634
                                        },
@@ -3608,7 +3608,7 @@
                         "id":  "G53E-e8a6c866d420",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/shortcuts.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/shortcuts.dart",
                                            "symbol":  "ShortcutManager",
                                            "sourceOffset":  31634
                                        },
@@ -3632,7 +3632,7 @@
                         "id":  "G53E-c1d4f3b477e1",
                         "category":  "dart-model-representation",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/single_child_scroll_view.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/single_child_scroll_view.dart",
                                            "symbol":  "_RenderSingleChildViewport",
                                            "sourceOffset":  14066
                                        },
@@ -3656,7 +3656,7 @@
                         "id":  "G53E-52673e34a884",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sliver.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sliver.dart",
                                            "symbol":  "SliverMultiBoxAdaptorElement",
                                            "sourceOffset":  35486
                                        },
@@ -3680,7 +3680,7 @@
                         "id":  "G53E-5ad30bcc4ffe",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sliver.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sliver.dart",
                                            "symbol":  "SliverMultiBoxAdaptorElement",
                                            "sourceOffset":  35486
                                        },
@@ -3704,7 +3704,7 @@
                         "id":  "G53E-7a2be80019d6",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sliver.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sliver.dart",
                                            "symbol":  "SliverMultiBoxAdaptorElement",
                                            "sourceOffset":  35486
                                        },
@@ -3728,7 +3728,7 @@
                         "id":  "G53E-9e6b2afc4a7f",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sliver.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sliver.dart",
                                            "symbol":  "SliverMultiBoxAdaptorElement",
                                            "sourceOffset":  35486
                                        },
@@ -3752,7 +3752,7 @@
                         "id":  "G53E-56034cc40833",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sliver.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sliver.dart",
                                            "symbol":  "SliverMultiBoxAdaptorElement",
                                            "sourceOffset":  35486
                                        },
@@ -3776,7 +3776,7 @@
                         "id":  "G53E-0908b7acacdd",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sliver.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sliver.dart",
                                            "symbol":  "SliverMultiBoxAdaptorElement",
                                            "sourceOffset":  35486
                                        },
@@ -3800,7 +3800,7 @@
                         "id":  "G53E-fb99fd5a3427",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sliver.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sliver.dart",
                                            "symbol":  "SliverMultiBoxAdaptorElement",
                                            "sourceOffset":  35486
                                        },
@@ -3824,7 +3824,7 @@
                         "id":  "G53E-2dec649e97d5",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sliver.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sliver.dart",
                                            "symbol":  "SliverMultiBoxAdaptorElement",
                                            "sourceOffset":  35486
                                        },
@@ -3848,7 +3848,7 @@
                         "id":  "G53E-16296c7814bd",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sliver_persistent_header.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sliver_persistent_header.dart",
                                            "symbol":  "_SliverPersistentHeaderElement",
                                            "sourceOffset":  9600
                                        },
@@ -3872,7 +3872,7 @@
                         "id":  "G53E-3d11d496514f",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sliver_resizing_header.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sliver_resizing_header.dart",
                                            "symbol":  "_RenderSliverResizingHeader",
                                            "sourceOffset":  4360
                                        },
@@ -3896,7 +3896,7 @@
                         "id":  "G53E-005ac4fb0e4e",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sliver_resizing_header.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sliver_resizing_header.dart",
                                            "symbol":  "_RenderSliverResizingHeader",
                                            "sourceOffset":  4360
                                        },
@@ -3920,7 +3920,7 @@
                         "id":  "G53E-761b3c847881",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sliver_tree.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sliver_tree.dart",
                                            "symbol":  "TreeSliver",
                                            "sourceOffset":  13285
                                        },
@@ -3944,7 +3944,7 @@
                         "id":  "G53E-6091e8095167",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sliver_tree.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sliver_tree.dart",
                                            "symbol":  "TreeSliver",
                                            "sourceOffset":  13285
                                        },
@@ -3968,7 +3968,7 @@
                         "id":  "G53E-5c78a2c8036e",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sliver_tree.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sliver_tree.dart",
                                            "symbol":  "_TreeSliverState",
                                            "sourceOffset":  22346
                                        },
@@ -3992,7 +3992,7 @@
                         "id":  "G53E-f1a2f008483a",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/sliver_tree.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/sliver_tree.dart",
                                            "symbol":  "_TreeSliverState",
                                            "sourceOffset":  22346
                                        },
@@ -4016,7 +4016,7 @@
                         "id":  "G53E-8bba2dc599f9",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/slotted_render_object_widget.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/slotted_render_object_widget.dart",
                                            "symbol":  "SlottedMultiChildRenderObjectWidget",
                                            "sourceOffset":  333
                                        },
@@ -4040,7 +4040,7 @@
                         "id":  "G53E-1748eca7c3d5",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/slotted_render_object_widget.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/slotted_render_object_widget.dart",
                                            "symbol":  "SlottedRenderObjectElement",
                                            "sourceOffset":  8479
                                        },
@@ -4064,7 +4064,7 @@
                         "id":  "G53E-9953b4805b57",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/slotted_render_object_widget.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/slotted_render_object_widget.dart",
                                            "symbol":  "SlottedRenderObjectElement",
                                            "sourceOffset":  8479
                                        },
@@ -4088,7 +4088,7 @@
                         "id":  "G53E-a2905a44ed93",
                         "category":  "dart-model-representation",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/slotted_render_object_widget.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/slotted_render_object_widget.dart",
                                            "symbol":  "SlottedRenderObjectElement",
                                            "sourceOffset":  8479
                                        },
@@ -4112,7 +4112,7 @@
                         "id":  "G53E-fcf8d90cfef0",
                         "category":  "dart-ui-contract",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/stretch_effect.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/stretch_effect.dart",
                                            "symbol":  "_StretchOverscrollEffectState",
                                            "sourceOffset":  5116
                                        },
@@ -4136,7 +4136,7 @@
                         "id":  "G53E-2f8ae6f3b5a7",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/tap_region.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/tap_region.dart",
                                            "symbol":  "RenderTapRegionSurface",
                                            "sourceOffset":  6177
                                        },
@@ -4160,7 +4160,7 @@
                         "id":  "G53E-69def1da8178",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/tap_region.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/tap_region.dart",
                                            "symbol":  "RenderTapRegionSurface",
                                            "sourceOffset":  6177
                                        },
@@ -4184,7 +4184,7 @@
                         "id":  "G53E-8a503cd9dd1a",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/text.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/text.dart",
                                            "symbol":  "_SelectableTextContainerDelegate",
                                            "sourceOffset":  36383
                                        },
@@ -4208,7 +4208,7 @@
                         "id":  "G53E-be1b8cd69ffd",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/text_selection.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/text_selection.dart",
                                            "symbol":  "TextSelectionGestureDetectorBuilder",
                                            "sourceOffset":  83039
                                        },
@@ -4232,7 +4232,7 @@
                         "id":  "G53E-8c450fbdb03c",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/ticker_provider.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/ticker_provider.dart",
                                            "symbol":  "TickerMode",
                                            "sourceOffset":  472
                                        },
@@ -4256,7 +4256,7 @@
                         "id":  "G53E-1513a0385828",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/ticker_provider.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/ticker_provider.dart",
                                            "symbol":  "TickerMode",
                                            "sourceOffset":  472
                                        },
@@ -4280,7 +4280,7 @@
                         "id":  "G53E-61e8c7658a6b",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/two_dimensional_viewport.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/two_dimensional_viewport.dart",
                                            "symbol":  "_TwoDimensionalViewportElement",
                                            "sourceOffset":  9982
                                        },
@@ -4304,7 +4304,7 @@
                         "id":  "G53E-6c53715ea43b",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/two_dimensional_viewport.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/two_dimensional_viewport.dart",
                                            "symbol":  "RenderTwoDimensionalViewport",
                                            "sourceOffset":  19909
                                        },
@@ -4328,7 +4328,7 @@
                         "id":  "G53E-0d2569fd766d",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/view.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/view.dart",
                                            "symbol":  "_RawViewElement",
                                            "sourceOffset":  19627
                                        },
@@ -4352,7 +4352,7 @@
                         "id":  "G53E-d630c231c818",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/view.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/view.dart",
                                            "symbol":  "_RawViewElement",
                                            "sourceOffset":  19627
                                        },
@@ -4376,7 +4376,7 @@
                         "id":  "G53E-95ec63778209",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_followDiagnosticableChain",
                                            "sourceOffset":  21881
                                        },
@@ -4400,7 +4400,7 @@
                         "id":  "G53E-a75f6f111ff5",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorService",
                                            "sourceOffset":  23870
                                        },
@@ -4424,7 +4424,7 @@
                         "id":  "G53E-b071a4e27f9b",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorService",
                                            "sourceOffset":  23870
                                        },
@@ -4448,7 +4448,7 @@
                         "id":  "G53E-03eb7ff1856d",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorService",
                                            "sourceOffset":  23870
                                        },
@@ -4472,7 +4472,7 @@
                         "id":  "G53E-f7e98006e7a9",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorService",
                                            "sourceOffset":  23870
                                        },
@@ -4496,7 +4496,7 @@
                         "id":  "G53E-38a850fec9b7",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorService",
                                            "sourceOffset":  23870
                                        },
@@ -4520,7 +4520,7 @@
                         "id":  "G53E-8f90cee8b96a",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorService",
                                            "sourceOffset":  23870
                                        },
@@ -4544,7 +4544,7 @@
                         "id":  "G53E-9ce06fd68ef9",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorService",
                                            "sourceOffset":  23870
                                        },
@@ -4568,7 +4568,7 @@
                         "id":  "G53E-49a314b19852",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorService",
                                            "sourceOffset":  23870
                                        },
@@ -4592,7 +4592,7 @@
                         "id":  "G53E-6804b921ec09",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorService",
                                            "sourceOffset":  23870
                                        },
@@ -4616,7 +4616,7 @@
                         "id":  "G53E-3e42fe16c9b2",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorService",
                                            "sourceOffset":  23870
                                        },
@@ -4640,7 +4640,7 @@
                         "id":  "G53E-62a694924ed7",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorService",
                                            "sourceOffset":  23870
                                        },
@@ -4664,7 +4664,7 @@
                         "id":  "G53E-b3287ff61339",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorService",
                                            "sourceOffset":  23870
                                        },
@@ -4688,7 +4688,7 @@
                         "id":  "G53E-74d4a56ed06e",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorService",
                                            "sourceOffset":  23870
                                        },
@@ -4712,7 +4712,7 @@
                         "id":  "G53E-15273010ec76",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorService",
                                            "sourceOffset":  23870
                                        },
@@ -4736,7 +4736,7 @@
                         "id":  "G53E-8784a4933eb6",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorService",
                                            "sourceOffset":  23870
                                        },
@@ -4760,7 +4760,7 @@
                         "id":  "G53E-9c61efb43c8c",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorService",
                                            "sourceOffset":  23870
                                        },
@@ -4784,7 +4784,7 @@
                         "id":  "G53E-2342565de6c7",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorService",
                                            "sourceOffset":  23870
                                        },
@@ -4808,7 +4808,7 @@
                         "id":  "G53E-158a972e950a",
                         "category":  "predecessor-framework",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorService",
                                            "sourceOffset":  23870
                                        },
@@ -4832,7 +4832,7 @@
                         "id":  "G53E-2c442e7e6773",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorService",
                                            "sourceOffset":  23870
                                        },
@@ -4856,7 +4856,7 @@
                         "id":  "G53E-59b1e22e1476",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_WidgetInspectorButtonGroupState",
                                            "sourceOffset":  135526
                                        },
@@ -4880,7 +4880,7 @@
                         "id":  "G53E-45f676a883f2",
                         "category":  "dart-runtime",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_describeRelevantUserCode",
                                            "sourceOffset":  147442
                                        },
@@ -4904,7 +4904,7 @@
                         "id":  "G53E-b5a83c40bf16",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_describeRelevantUserCode",
                                            "sourceOffset":  147442
                                        },
@@ -4928,7 +4928,7 @@
                         "id":  "G53E-499a1b22e905",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "_locationIdMapToJson",
                                            "sourceOffset":  153001
                                        },
@@ -4952,7 +4952,7 @@
                         "id":  "G53E-0f66558a6e9d",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "InspectorSerializationDelegate",
                                            "sourceOffset":  153855
                                        },
@@ -4976,7 +4976,7 @@
                         "id":  "G53E-453e9859c791",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_inspector.dart",
                                            "symbol":  "InspectorSerializationDelegate",
                                            "sourceOffset":  153855
                                        },
@@ -5000,7 +5000,7 @@
                         "id":  "G53E-db304843c514",
                         "category":  "dart-model-representation",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_state.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_state.dart",
                                            "symbol":  "_LerpProperties",
                                            "sourceOffset":  34207
                                        },
@@ -5024,7 +5024,7 @@
                         "id":  "G53E-5a670700854a",
                         "category":  "dart-model-representation",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_state.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_state.dart",
                                            "symbol":  "_LerpProperties",
                                            "sourceOffset":  34207
                                        },
@@ -5048,7 +5048,7 @@
                         "id":  "G53E-8b14b1db8321",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_state.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_state.dart",
                                            "symbol":  "WidgetStatePropertyAll",
                                            "sourceOffset":  40234
                                        },
@@ -5072,7 +5072,7 @@
                         "id":  "G53E-6bf432ca8173",
                         "category":  "compiler-lowering",
                         "dartSource":  {
-                                           "path":  "flutter-master/packages/flutter/lib/src/widgets/widget_state.dart",
+                                           "path":  "reference/flutter-master/packages/flutter/lib/src/widgets/widget_state.dart",
                                            "symbol":  "WidgetStatePropertyAll",
                                            "sourceOffset":  40234
                                        },

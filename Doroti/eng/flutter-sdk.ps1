@@ -40,7 +40,7 @@ function Resolve-DorotiFlutterSdk {
     )
 
     $repositoryRootPath = [IO.Path]::GetFullPath($RepositoryRoot)
-    $sdkRoot = [IO.Path]::GetFullPath((Join-Path $repositoryRootPath 'flutter-master'))
+    $sdkRoot = [IO.Path]::GetFullPath((Join-Path $repositoryRootPath 'reference/flutter-master'))
     Repair-DorotiFlutterSdkLineEndings -SdkRoot $sdkRoot
     $commandSuffix = if ($IsWindows -or $env:OS -eq 'Windows_NT') { '.bat' } else { '' }
     $flutterCommand = Join-Path $sdkRoot "bin/flutter$commandSuffix"

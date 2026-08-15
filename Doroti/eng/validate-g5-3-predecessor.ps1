@@ -167,7 +167,7 @@ try {
             id = 'G53E-' + (Get-Sha256Text $location.Name).Substring(0, 12)
             category = $category
             dartSource = [ordered]@{
-                path = ([string]$mapping.source -replace '^\.\./\.\./\.\./flutter-master/', 'flutter-master/')
+                path = ([string]$mapping.source -replace '^\.\./\.\./\.\./reference/flutter-master/', 'reference/flutter-master/')
                 symbol = [string]$mapping.symbol
                 sourceOffset = [int]$mapping.sourceOffset
             }

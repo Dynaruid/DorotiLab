@@ -10,7 +10,7 @@
   "flutterBaseline": "../flutter-compat/baseline.json",
   "inputs": [
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/annotations.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/annotations.dart",
       "library": "package:flutter/src/foundation/annotations.dart",
       "symbols": [
         "Category",
@@ -19,14 +19,14 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/object.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/object.dart",
       "library": "package:flutter/src/foundation/object.dart",
       "symbols": [
         "objectRuntimeType"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/key.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/key.dart",
       "library": "package:flutter/src/foundation/key.dart",
       "symbols": [
         "Key",
@@ -36,7 +36,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
       "library": "package:flutter/src/foundation/change_notifier.dart",
       "symbols": [
         "Listenable",
@@ -47,7 +47,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/collections.dart",
       "library": "package:flutter/src/foundation/collections.dart",
       "symbols": [
         "setEquals",
@@ -64,7 +64,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/observer_list.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/observer_list.dart",
       "library": "package:flutter/src/foundation/observer_list.dart",
       "symbols": [
         "ObserverList",

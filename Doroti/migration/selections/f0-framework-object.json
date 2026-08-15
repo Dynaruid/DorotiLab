@@ -9,7 +9,7 @@
   "flutterBaseline": "../flutter-compat/baseline.json",
   "inputs": [
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/object.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/object.dart",
       "library": "package:flutter/src/foundation/object.dart",
       "symbols": [
         "objectRuntimeType"

@@ -53,7 +53,7 @@ foreach ($partition in $projectTargets.Keys) {
         $target = Join-Path $targetRoot $targetName
         $content = Get-Content $source.FullName -Raw
         if ($source.Name -notlike '*GlobalUsings.g.cs') {
-            $relativeFlutterSource = [regex]::Match($content, 'source: \.\./\.\./\.\./flutter-master/(.+)$', 'Multiline').Groups[1].Value.Trim()
+            $relativeFlutterSource = [regex]::Match($content, 'source: \.\./\.\./\.\./reference/flutter-master/(.+)$', 'Multiline').Groups[1].Value.Trim()
             if ([string]::IsNullOrWhiteSpace($relativeFlutterSource)) {
                 throw "Candidate source metadata is missing: $($source.FullName)"
             }

@@ -40,8 +40,8 @@ function Relative-Path([string] $Path) {
 }
 
 function Invoke-Contracts {
-    $flutterScenePath = Join-Path $repoRoot 'flutter-master/engine/src/flutter/lib/ui/compositing.dart'
-    $flutterCanvasPath = Join-Path $repoRoot 'flutter-master/engine/src/flutter/lib/ui/painting.dart'
+    $flutterScenePath = Join-Path $repoRoot 'reference/flutter-master/engine/src/flutter/lib/ui/compositing.dart'
+    $flutterCanvasPath = Join-Path $repoRoot 'reference/flutter-master/engine/src/flutter/lib/ui/painting.dart'
     $producerPath = Join-Path $dorotiRoot 'src/Doroti.Ui/GraphicsAndSemanticsContracts.cs'
     $translatorPath = Join-Path $dorotiRoot 'src/Doroti.Host.Desktop.Framework/DesktopGraphicsAndSemanticsCapabilities.cs'
     $flutterScene = Get-Content -LiteralPath $flutterScenePath -Raw

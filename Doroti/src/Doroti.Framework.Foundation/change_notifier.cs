@@ -1,6 +1,6 @@
 // <doroti-reviewed-framework-source />
 #nullable enable
-// Doroti typed semantic compiler 3.0.0; source: ../../../flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart
+// Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart
 using System;
 using System.Collections.Generic;
 using System.Linq;

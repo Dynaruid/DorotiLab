@@ -1,7 +1,7 @@
 {
   "schemaVersion": "doroti.avalonia-port-selection/v1",
   "sourceId": "avalonia",
-  "sourceRoot": "../../../Avalonia-main",
+  "sourceRoot": "../../../reference/Avalonia-main",
   "license": "licence.md",
   "upstreamRepository": "https://github.com/AvaloniaUI/Avalonia",
   "upstreamRef": "main@2026-07-31",

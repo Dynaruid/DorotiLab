@@ -10,7 +10,7 @@ trap 'remove_doroti_temporary_directory "$doroti_root" "$temporary_root"' EXIT
 
 cd "$workspace_root/tools/Doroti.DartToCSharp/analyzer"
 dart run tool/boundary/extract_g4_boundary.dart \
-  "$workspace_root/flutter-master/packages/flutter/lib" \
+  "$workspace_root/reference/flutter-master/packages/flutter/lib" \
   "$doroti_root/migration/flutter-compat/flutter-api.json" \
   "$temporary_root/source-boundary.json"
 cmp "$temporary_root/source-boundary.json" "$doroti_root/migration/flutter-avalonia/source-boundary.json"

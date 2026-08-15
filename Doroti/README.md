@@ -47,7 +47,7 @@ Selected Avalonia platform code is adapted behind Doroti contracts and tracked b
 
 - .NET SDK **10.0.300** or a compatible latest patch, as pinned in [`global.json`](global.json)
 - PowerShell 7 (`pwsh`) for the repository workflows
-- The pinned repository-local `flutter-master` SDK and `Avalonia-main` reference checkout at the repository root
+- The pinned repository-local `reference/flutter-master` SDK and `reference/Avalonia-main` reference checkout at the repository root
 - Windows x64 for the Win32/UI Automation gate, or Apple Silicon macOS for the G7-3M AppKit gate
 
 Prepare the local Flutter SDK once with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`. Doroti workflows select the host-appropriate repository-local launchers (`flutter.bat`/`dart.bat` or `flutter`/`dart`) and never fall back to a Flutter installation on `PATH` or under the user profile. If a checkout created on Windows is moved to macOS, the SDK resolver normalizes CRLF in pinned Flutter sources and shell scripts to LF. Each native gate proves only its own target: the AppKit run does not replace Win32 UI Automation evidence, and Windows evidence does not transfer to macOS. The reference checkouts are source and behavior inputs; they are not product runtime dependencies.

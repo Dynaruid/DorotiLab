@@ -28,7 +28,7 @@ typed Dart IR ──► Core IR ──► structured C# IR
 
 - .NET SDK 10.0.300 또는 호환되는 최신 patch
 - Compiler-owned analyzer package와 호환되는 Dart SDK
-- Flutter selection을 위한 repository의 pinned `flutter-master` checkout
+- Flutter selection을 위한 repository의 pinned `reference/flutter-master` checkout
 - Shared runtime과 tooling project를 포함한 전체 DorotiLab checkout
 
 Selection과 source path가 일관되게 해석되도록 repository root에서 명령을 실행합니다.

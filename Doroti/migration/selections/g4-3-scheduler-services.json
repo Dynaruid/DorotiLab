@@ -10,7 +10,7 @@
   "flutterBaseline": "../flutter-compat/baseline.json",
   "inputs": [
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/scheduler/binding.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/scheduler/binding.dart",
       "library": "package:flutter/src/scheduler/binding.dart",
       "symbols": [
         "timeDilation",
@@ -29,7 +29,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/scheduler/debug.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/scheduler/debug.dart",
       "library": "package:flutter/src/scheduler/debug.dart",
       "symbols": [
         "debugPrintBeginFrameBanner",
@@ -40,21 +40,21 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/scheduler/priority.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/scheduler/priority.dart",
       "library": "package:flutter/src/scheduler/priority.dart",
       "symbols": [
         "Priority"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/scheduler/service_extensions.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/scheduler/service_extensions.dart",
       "library": "package:flutter/src/scheduler/service_extensions.dart",
       "symbols": [
         "SchedulerServiceExtensions"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/scheduler/ticker.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/scheduler/ticker.dart",
       "library": "package:flutter/src/scheduler/ticker.dart",
       "symbols": [
         "TickerCallback",
@@ -65,21 +65,21 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/_background_isolate_binary_messenger_io.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/_background_isolate_binary_messenger_io.dart",
       "library": "package:flutter/src/services/_background_isolate_binary_messenger_io.dart",
       "symbols": [
         "BackgroundIsolateBinaryMessenger"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/_background_isolate_binary_messenger_web.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/_background_isolate_binary_messenger_web.dart",
       "library": "package:flutter/src/services/_background_isolate_binary_messenger_web.dart",
       "symbols": [
         "BackgroundIsolateBinaryMessenger"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/app_version.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/app_version.dart",
       "library": "package:flutter/src/services/app_version.dart",
       "symbols": [
         "appBuildName",
@@ -87,7 +87,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/asset_bundle.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/asset_bundle.dart",
       "library": "package:flutter/src/services/asset_bundle.dart",
       "symbols": [
         "AssetBundle",
@@ -100,7 +100,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/asset_manifest.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/asset_manifest.dart",
       "library": "package:flutter/src/services/asset_manifest.dart",
       "symbols": [
         "_kAssetManifestFilename",
@@ -111,7 +111,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/autofill.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/autofill.dart",
       "library": "package:flutter/src/services/autofill.dart",
       "symbols": [
         "AutofillHints",
@@ -123,7 +123,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/binary_messenger.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/binary_messenger.dart",
       "library": "package:flutter/src/services/binary_messenger.dart",
       "symbols": [
         "MessageHandler",
@@ -131,7 +131,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/binding.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/binding.dart",
       "library": "package:flutter/src/services/binding.dart",
       "symbols": [
         "ServicesBinding",
@@ -141,14 +141,14 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/browser_context_menu.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/browser_context_menu.dart",
       "library": "package:flutter/src/services/browser_context_menu.dart",
       "symbols": [
         "BrowserContextMenu"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/clipboard.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/clipboard.dart",
       "library": "package:flutter/src/services/clipboard.dart",
       "symbols": [
         "ClipboardData",
@@ -156,7 +156,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/debug.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/debug.dart",
       "library": "package:flutter/src/services/debug.dart",
       "symbols": [
         "debugKeyEventSimulatorTransitModeOverride",
@@ -166,42 +166,42 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/deferred_component.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/deferred_component.dart",
       "library": "package:flutter/src/services/deferred_component.dart",
       "symbols": [
         "DeferredComponent"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/flavor.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/flavor.dart",
       "library": "package:flutter/src/services/flavor.dart",
       "symbols": [
         "appFlavor"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/flutter_version.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/flutter_version.dart",
       "library": "package:flutter/src/services/flutter_version.dart",
       "symbols": [
         "FlutterVersion"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/font_loader.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/font_loader.dart",
       "library": "package:flutter/src/services/font_loader.dart",
       "symbols": [
         "FontLoader"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/haptic_feedback.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/haptic_feedback.dart",
       "library": "package:flutter/src/services/haptic_feedback.dart",
       "symbols": [
         "HapticFeedback"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/hardware_keyboard.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/hardware_keyboard.dart",
       "library": "package:flutter/src/services/hardware_keyboard.dart",
       "symbols": [
         "_keyboardDebug",
@@ -219,14 +219,14 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/keyboard_inserted_content.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/keyboard_inserted_content.dart",
       "library": "package:flutter/src/services/keyboard_inserted_content.dart",
       "symbols": [
         "KeyboardInsertedContent"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/keyboard_key.g.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/keyboard_key.g.dart",
       "library": "package:flutter/src/services/keyboard_key.g.dart",
       "symbols": [
         "KeyboardKey",
@@ -235,7 +235,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/keyboard_maps.g.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/keyboard_maps.g.dart",
       "library": "package:flutter/src/services/keyboard_maps.g.dart",
       "symbols": [
         "kAndroidToLogicalKey",
@@ -266,14 +266,14 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/live_text.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/live_text.dart",
       "library": "package:flutter/src/services/live_text.dart",
       "symbols": [
         "LiveText"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/message_codec.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/message_codec.dart",
       "library": "package:flutter/src/services/message_codec.dart",
       "symbols": [
         "MessageCodec",
@@ -284,7 +284,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/message_codecs.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/message_codecs.dart",
       "library": "package:flutter/src/services/message_codecs.dart",
       "symbols": [
         "_writeBufferStartCapacity",
@@ -297,7 +297,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/mouse_cursor.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/mouse_cursor.dart",
       "library": "package:flutter/src/services/mouse_cursor.dart",
       "symbols": [
         "MouseCursorManager",
@@ -312,7 +312,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/mouse_tracking.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/mouse_tracking.dart",
       "library": "package:flutter/src/services/mouse_tracking.dart",
       "symbols": [
         "PointerEnterEventListener",
@@ -322,7 +322,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/platform_channel.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/platform_channel.dart",
       "library": "package:flutter/src/services/platform_channel.dart",
       "symbols": [
         "shouldProfilePlatformChannels",
@@ -344,7 +344,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/platform_views.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/platform_views.dart",
       "library": "package:flutter/src/services/platform_views.dart",
       "symbols": [
         "PointTransformer",
@@ -375,7 +375,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/predictive_back_event.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/predictive_back_event.dart",
       "library": "package:flutter/src/services/predictive_back_event.dart",
       "symbols": [
         "SwipeEdge",
@@ -383,7 +383,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/process_text.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/process_text.dart",
       "library": "package:flutter/src/services/process_text.dart",
       "symbols": [
         "ProcessTextAction",
@@ -392,7 +392,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/raw_keyboard.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/raw_keyboard.dart",
       "library": "package:flutter/src/services/raw_keyboard.dart",
       "symbols": [
         "KeyboardSide",
@@ -407,7 +407,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/raw_keyboard_android.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/raw_keyboard_android.dart",
       "library": "package:flutter/src/services/raw_keyboard_android.dart",
       "symbols": [
         "_kCombiningCharacterMask",
@@ -415,21 +415,21 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/raw_keyboard_fuchsia.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/raw_keyboard_fuchsia.dart",
       "library": "package:flutter/src/services/raw_keyboard_fuchsia.dart",
       "symbols": [
         "RawKeyEventDataFuchsia"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/raw_keyboard_ios.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/raw_keyboard_ios.dart",
       "library": "package:flutter/src/services/raw_keyboard_ios.dart",
       "symbols": [
         "RawKeyEventDataIos"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/raw_keyboard_linux.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/raw_keyboard_linux.dart",
       "library": "package:flutter/src/services/raw_keyboard_linux.dart",
       "symbols": [
         "RawKeyEventDataLinux",
@@ -439,7 +439,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/raw_keyboard_macos.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/raw_keyboard_macos.dart",
       "library": "package:flutter/src/services/raw_keyboard_macos.dart",
       "symbols": [
         "runeToLowerCase",
@@ -447,7 +447,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/raw_keyboard_web.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/raw_keyboard_web.dart",
       "library": "package:flutter/src/services/raw_keyboard_web.dart",
       "symbols": [
         "_unicodeChar",
@@ -455,7 +455,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/raw_keyboard_windows.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/raw_keyboard_windows.dart",
       "library": "package:flutter/src/services/raw_keyboard_windows.dart",
       "symbols": [
         "_vkProcessKey",
@@ -463,7 +463,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/restoration.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/restoration.dart",
       "library": "package:flutter/src/services/restoration.dart",
       "symbols": [
         "_BucketVisitor",
@@ -473,14 +473,14 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/scribe.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/scribe.dart",
       "library": "package:flutter/src/services/scribe.dart",
       "symbols": [
         "Scribe"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/sensitive_content.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/sensitive_content.dart",
       "library": "package:flutter/src/services/sensitive_content.dart",
       "symbols": [
         "ContentSensitivity",
@@ -488,14 +488,14 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/service_extensions.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/service_extensions.dart",
       "library": "package:flutter/src/services/service_extensions.dart",
       "symbols": [
         "ServicesServiceExtensions"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/spell_check.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/spell_check.dart",
       "library": "package:flutter/src/services/spell_check.dart",
       "symbols": [
         "SuggestionSpan",
@@ -505,14 +505,14 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/system_channels.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/system_channels.dart",
       "library": "package:flutter/src/services/system_channels.dart",
       "symbols": [
         "SystemChannels"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/system_chrome.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/system_chrome.dart",
       "library": "package:flutter/src/services/system_chrome.dart",
       "symbols": [
         "DeviceOrientation",
@@ -525,14 +525,14 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/system_navigator.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/system_navigator.dart",
       "library": "package:flutter/src/services/system_navigator.dart",
       "symbols": [
         "SystemNavigator"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/system_sound.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/system_sound.dart",
       "library": "package:flutter/src/services/system_sound.dart",
       "symbols": [
         "SystemSoundType",
@@ -540,7 +540,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/text_boundary.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/text_boundary.dart",
       "library": "package:flutter/src/services/text_boundary.dart",
       "symbols": [
         "UntilPredicate",
@@ -552,14 +552,14 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/text_editing.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/text_editing.dart",
       "library": "package:flutter/src/services/text_editing.dart",
       "symbols": [
         "TextSelection"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/text_editing_delta.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/text_editing_delta.dart",
       "library": "package:flutter/src/services/text_editing_delta.dart",
       "symbols": [
         "_toTextAffinity",
@@ -573,7 +573,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/text_formatter.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/text_formatter.dart",
       "library": "package:flutter/src/services/text_formatter.dart",
       "symbols": [
         "MaxLengthEnforcement",
@@ -587,7 +587,7 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/text_input.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/text_input.dart",
       "library": "package:flutter/src/services/text_input.dart",
       "symbols": [
         "SmartDashesType",
@@ -629,14 +629,14 @@
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/text_layout_metrics.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/text_layout_metrics.dart",
       "library": "package:flutter/src/services/text_layout_metrics.dart",
       "symbols": [
         "TextLayoutMetrics"
       ]
     },
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/services/undo_manager.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/services/undo_manager.dart",
       "library": "package:flutter/src/services/undo_manager.dart",
       "symbols": [
         "UndoDirection",

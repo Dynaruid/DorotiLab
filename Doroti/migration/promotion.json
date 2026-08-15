@@ -12,7 +12,7 @@
     {
       "elementId": "package:flutter/src/foundation/annotations.dart#Category",
       "symbol": "Category",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/annotations.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/annotations.dart",
       "sourceSpan": {
         "offset": 207,
         "length": 1643
@@ -39,7 +39,7 @@
     {
       "elementId": "package:flutter/src/foundation/annotations.dart#DocumentationIcon",
       "symbol": "DocumentationIcon",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/annotations.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/annotations.dart",
       "sourceSpan": {
         "offset": 1852,
         "length": 918
@@ -66,7 +66,7 @@
     {
       "elementId": "package:flutter/src/foundation/annotations.dart#Summary",
       "symbol": "Summary",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/annotations.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/annotations.dart",
       "sourceSpan": {
         "offset": 2772,
         "length": 1149
@@ -93,7 +93,7 @@
     {
       "elementId": "package:flutter/src/foundation/object.dart#objectRuntimeType",
       "symbol": "objectRuntimeType",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/object.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/object.dart",
       "sourceSpan": {
         "offset": 165,
         "length": 578
@@ -127,7 +127,7 @@
     {
       "elementId": "package:flutter/src/physics/tolerance.dart#Tolerance",
       "symbol": "Tolerance",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/physics/tolerance.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/physics/tolerance.dart",
       "sourceSpan": {
         "offset": 208,
         "length": 1670
@@ -155,7 +155,7 @@
     {
       "elementId": "package:flutter/src/foundation/change_notifier.dart#Listenable",
       "symbol": "Listenable",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
       "sourceSpan": {
         "offset": 488,
         "length": 2948
@@ -182,7 +182,7 @@
     {
       "elementId": "package:flutter/src/foundation/change_notifier.dart#ValueListenable",
       "symbol": "ValueListenable",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
       "sourceSpan": {
         "offset": 3438,
         "length": 836
@@ -209,7 +209,7 @@
     {
       "elementId": "package:flutter/src/foundation/change_notifier.dart#ChangeNotifier",
       "symbol": "ChangeNotifier",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
       "sourceSpan": {
         "offset": 4276,
         "length": 15401
@@ -236,7 +236,7 @@
     {
       "elementId": "package:flutter/src/foundation/change_notifier.dart#_MergingListenable",
       "symbol": "_MergingListenable",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
       "sourceSpan": {
         "offset": 19679,
         "length": 534
@@ -263,7 +263,7 @@
     {
       "elementId": "package:flutter/src/foundation/change_notifier.dart#ValueNotifier",
       "symbol": "ValueNotifier",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/change_notifier.dart",
       "sourceSpan": {
         "offset": 20215,
         "length": 1753
@@ -290,7 +290,7 @@
     {
       "elementId": "package:flutter/src/foundation/collections.dart#setEquals",
       "symbol": "setEquals",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/collections.dart",
       "sourceSpan": {
         "offset": 300,
         "length": 989
@@ -317,7 +317,7 @@
     {
       "elementId": "package:flutter/src/foundation/collections.dart#listEquals",
       "symbol": "listEquals",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/collections.dart",
       "sourceSpan": {
         "offset": 1291,
         "length": 1014
@@ -344,7 +344,7 @@
     {
       "elementId": "package:flutter/src/foundation/collections.dart#mapEquals",
       "symbol": "mapEquals",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/collections.dart",
       "sourceSpan": {
         "offset": 2307,
         "length": 1028
@@ -371,7 +371,7 @@
     {
       "elementId": "package:flutter/src/foundation/collections.dart#binarySearch",
       "symbol": "binarySearch",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/collections.dart",
       "sourceSpan": {
         "offset": 3337,
         "length": 643
@@ -398,7 +398,7 @@
     {
       "elementId": "package:flutter/src/foundation/collections.dart#_kMergeSortLimit",
       "symbol": "_kMergeSortLimit",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/collections.dart",
       "sourceSpan": {
         "offset": 3982,
         "length": 93
@@ -425,7 +425,7 @@
     {
       "elementId": "package:flutter/src/foundation/collections.dart#mergeSort",
       "symbol": "mergeSort",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/collections.dart",
       "sourceSpan": {
         "offset": 4077,
         "length": 2176
@@ -452,7 +452,7 @@
     {
       "elementId": "package:flutter/src/foundation/collections.dart#_defaultCompare",
       "symbol": "_defaultCompare",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/collections.dart",
       "sourceSpan": {
         "offset": 6255,
         "length": 402
@@ -479,7 +479,7 @@
     {
       "elementId": "package:flutter/src/foundation/collections.dart#_insertionSort",
       "symbol": "_insertionSort",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/collections.dart",
       "sourceSpan": {
         "offset": 6659,
         "length": 1547
@@ -506,7 +506,7 @@
     {
       "elementId": "package:flutter/src/foundation/collections.dart#_movingInsertionSort",
       "symbol": "_movingInsertionSort",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/collections.dart",
       "sourceSpan": {
         "offset": 8208,
         "length": 827
@@ -533,7 +533,7 @@
     {
       "elementId": "package:flutter/src/foundation/collections.dart#_mergeSort",
       "symbol": "_mergeSort",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/collections.dart",
       "sourceSpan": {
         "offset": 9037,
         "length": 1299
@@ -560,7 +560,7 @@
     {
       "elementId": "package:flutter/src/foundation/collections.dart#_merge",
       "symbol": "_merge",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/collections.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/collections.dart",
       "sourceSpan": {
         "offset": 10338,
         "length": 1613
@@ -587,7 +587,7 @@
     {
       "elementId": "package:flutter/src/foundation/key.dart#Key",
       "symbol": "Key",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/key.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/key.dart",
       "sourceSpan": {
         "offset": 333,
         "length": 1590
@@ -614,7 +614,7 @@
     {
       "elementId": "package:flutter/src/foundation/key.dart#LocalKey",
       "symbol": "LocalKey",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/key.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/key.dart",
       "sourceSpan": {
         "offset": 1925,
         "length": 459
@@ -641,7 +641,7 @@
     {
       "elementId": "package:flutter/src/foundation/key.dart#UniqueKey",
       "symbol": "UniqueKey",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/key.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/key.dart",
       "sourceSpan": {
         "offset": 2386,
         "length": 631
@@ -668,7 +668,7 @@
     {
       "elementId": "package:flutter/src/foundation/key.dart#ValueKey",
       "symbol": "ValueKey",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/key.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/key.dart",
       "sourceSpan": {
         "offset": 3019,
         "length": 3266
@@ -695,7 +695,7 @@
     {
       "elementId": "package:flutter/src/foundation/observer_list.dart#ObserverList",
       "symbol": "ObserverList",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/observer_list.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/observer_list.dart",
       "sourceSpan": {
         "offset": 192,
         "length": 2359
@@ -722,7 +722,7 @@
     {
       "elementId": "package:flutter/src/foundation/observer_list.dart#HashedObserverList",
       "symbol": "HashedObserverList",
-      "dartSource": "../flutter-master/packages/flutter/lib/src/foundation/observer_list.dart",
+      "dartSource": "../reference/flutter-master/packages/flutter/lib/src/foundation/observer_list.dart",
       "sourceSpan": {
         "offset": 2553,
         "length": 2045

@@ -1,12 +1,12 @@
 {
   "schemaVersion": "doroti.g6-scene-operation-matrix/v1",
   "milestone": "G6-5R-C",
-  "capturedAtUtc": "2026-08-15T00:39:48.3071901+00:00",
+  "capturedAtUtc": "2026-08-15T23:09:09.9427519+00:00",
   "flutterGitRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "status": "partial",
   "sources": [
-    "flutter-master/engine/src/flutter/lib/ui/compositing.dart",
-    "flutter-master/engine/src/flutter/lib/ui/painting.dart"
+    "reference/flutter-master/engine/src/flutter/lib/ui/compositing.dart",
+    "reference/flutter-master/engine/src/flutter/lib/ui/painting.dart"
   ],
   "coverage": {
     "declared": 52,

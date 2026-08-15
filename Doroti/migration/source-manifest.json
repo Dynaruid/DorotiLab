@@ -3,7 +3,7 @@
   "sources": [
     {
       "id": "avalonia",
-      "path": "../../Avalonia-main",
+      "path": "../../reference/Avalonia-main",
       "license": "licence.md",
       "role": "Pinned Avalonia shell source closure for reviewed copy/adapt/port selection",
       "upstreamRepository": "https://github.com/AvaloniaUI/Avalonia",
@@ -23,7 +23,7 @@
     },
     {
       "id": "flutter",
-      "path": "../../flutter-master",
+      "path": "../../reference/flutter-master",
       "license": "LICENSE",
       "role": "Flutter API and behavior reference; exact compatibility revision is pinned in R3",
       "auditFiles": [

@@ -18,7 +18,7 @@
   "reference": {
     "path": "Doroti/validation/cases/g7-material-calendar-reference/test/goldens/flutter-calendar.png",
     "sha256": "808c11357032ccb400e10bc3080a2ec4ebfcb2447e9c81d50f982934c4c56881",
-    "runner": "flutter-master"
+    "runner": "reference/flutter-master"
   },
   "doroti": {
     "path": "Doroti/artifacts/g7-shared-closure/calendar-doroti.png",

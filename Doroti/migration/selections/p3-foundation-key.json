@@ -10,7 +10,7 @@
   "analysisMode": "syntax-only",
   "inputs": [
     {
-      "path": "../../../flutter-master/packages/flutter/lib/src/foundation/key.dart",
+      "path": "../../../reference/flutter-master/packages/flutter/lib/src/foundation/key.dart",
       "library": "package:flutter/foundation.dart",
       "symbols": [
         "Key",
