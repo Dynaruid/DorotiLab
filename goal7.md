@@ -6,6 +6,7 @@
 > 선행 기록: [`history/26-08-14/goal6-summary.md`](history/26-08-14/goal6-summary.md)
 > 기준 Doroti revision: `5379137447162adb2957212ea2f336894effe05e` + 현재 작업 트리
 > Flutter source pin: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
+> Flutter toolchain: repository-local `flutter-master` SDK만 사용하며 global/PATH Flutter·Dart fallback 금지
 > 최우선 제품 gate: 동일한 일반 Dart `DorotiDemoApp`이 promoted package만 사용해 Windows와 Web `browser-wasm`에서 build/publish되고, 실제 GPU frame과 app-essential input·semantics·resource 경계를 통과할 것
 
 ## 0. Goal6에서 이어받는 기준선

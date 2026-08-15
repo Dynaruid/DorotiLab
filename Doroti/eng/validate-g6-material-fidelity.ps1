@@ -10,6 +10,8 @@ $env:DOTNET_CLI_DO_NOT_USE_MSBUILD_SERVER = '1'
 $env:MSBUILDDISABLENODEREUSE = '1'
 $dorotiRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $repoRoot = (Resolve-Path (Join-Path $dorotiRoot '..')).Path
+. (Join-Path $PSScriptRoot 'flutter-sdk.ps1')
+$dartCommand = (Resolve-DorotiFlutterSdk -RepositoryRoot $repoRoot).DartCommand
 $migrationRoot = Join-Path $dorotiRoot 'migration/flutter-framework'
 $auditPath = Join-Path $migrationRoot 'g6-compatibility-audit.json'
 $visualPath = Join-Path $migrationRoot 'g6-material-visual-differential.json'
@@ -164,8 +166,8 @@ function Invoke-Color {
     Invoke-Checked { dotnet build $fidelityProject --configuration Release --nologo } 'G6-5R fidelity validation build failed'
     Push-Location $dartFixture
     try {
-        Invoke-Checked { dart pub get --offline } 'Pinned material_color_utilities restore failed'
-        $dart = (& dart run bin/reference.dart | Out-String | ConvertFrom-Json)
+        Invoke-Checked { & $dartCommand pub get --offline } 'Pinned material_color_utilities restore failed'
+        $dart = (& $dartCommand run bin/reference.dart | Out-String | ConvertFrom-Json)
     }
     finally { Pop-Location }
     $managed = (& dotnet $fidelityDll --colors | Out-String | ConvertFrom-Json)

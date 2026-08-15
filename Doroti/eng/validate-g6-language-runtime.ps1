@@ -8,6 +8,8 @@ $ErrorActionPreference = 'Stop'
 $dorotiRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $repoRoot = (Resolve-Path (Join-Path $dorotiRoot '..')).Path
 . (Join-Path $PSScriptRoot 'local-storage.ps1')
+. (Join-Path $PSScriptRoot 'flutter-sdk.ps1')
+$dartCommand = (Resolve-DorotiFlutterSdk -RepositoryRoot $repoRoot).DartCommand
 $fixtureRoot = Join-Path $dorotiRoot 'validation/fixtures/g6-language-runtime'
 $manifestPath = Join-Path $fixtureRoot 'g6-language-runtime.selection.json'
 $compilerProject = Join-Path $repoRoot 'tools/Doroti.DartToCSharp/Doroti.DartToCSharp.csproj'
@@ -73,11 +75,11 @@ function Get-CompatibilityInventory {
 }
 
 function Invoke-FixturesShard {
-    Invoke-Checked { dart format --output=none --set-exit-if-changed $fixtureRoot } 'G6-1 Dart fixture formatting failed'
-    Invoke-Checked { dart analyze $fixtureRoot } 'G6-1 Dart fixture analysis failed'
+    Invoke-Checked { & $dartCommand format --output=none --set-exit-if-changed $fixtureRoot } 'G6-1 Dart fixture formatting failed'
+    Invoke-Checked { & $dartCommand analyze $fixtureRoot } 'G6-1 Dart fixture analysis failed'
     Invoke-Checked { dotnet build $compilerProject --configuration Release --nologo } 'G6-1 compiler build failed'
 
-    $referenceOutput = @(& dart run (Join-Path $fixtureRoot 'reference_runner.dart') 2>&1)
+    $referenceOutput = @(& $dartCommand run (Join-Path $fixtureRoot 'reference_runner.dart') 2>&1)
     Assert-Equal $LASTEXITCODE 0 'Dart reference runner exit code'
     $referenceJson = Get-JsonLine $referenceOutput 'Dart reference runner'
     $reference = $referenceJson | ConvertFrom-Json

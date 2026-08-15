@@ -13,6 +13,8 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $dorotiRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+$repositoryRoot = [System.IO.Path]::GetFullPath((Join-Path $dorotiRoot '..'))
+. (Join-Path $PSScriptRoot 'flutter-sdk.ps1')
 $solution = Join-Path $dorotiRoot 'Doroti.slnx'
 $productSolution = Join-Path $dorotiRoot 'Doroti.Product.slnx'
 $artifacts = Join-Path $dorotiRoot 'artifacts'
@@ -91,7 +93,15 @@ function Get-SelectedContentRevision {
 
 function Invoke-Doctor {
     $dotnet = Get-CommandResult 'dotnet' @('--version')
-    $dart = Get-CommandResult 'dart' @('--version')
+    try {
+        $flutterSdk = Resolve-DorotiFlutterSdk -RepositoryRoot $repositoryRoot
+        $flutter = Get-CommandResult $flutterSdk.FlutterCommand @('--version')
+        $dart = Get-CommandResult $flutterSdk.DartCommand @('--version')
+    }
+    catch {
+        $flutter = [ordered]@{ available = $false; output = $_.Exception.Message }
+        $dart = [ordered]@{ available = $false; output = $_.Exception.Message }
+    }
     $runtimeInformation = [System.Runtime.InteropServices.RuntimeInformation]
     $isDesktop = $runtimeInformation::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows) -or
         $runtimeInformation::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Linux) -or
@@ -120,12 +130,13 @@ function Invoke-Doctor {
         }
     }
 
-    $success = $dotnet.available -and $dart.available -and $backendAvailable -and
+    $success = $dotnet.available -and $flutter.available -and $dart.available -and $backendAvailable -and
         (@($sources | Where-Object { -not $_.pathExists -or -not $_.licenseExists -or -not $_.revision }).Count -eq 0)
     $report = [ordered]@{
-        schemaVersion = 'doroti.doctor/v1'
+        schemaVersion = 'doroti.doctor/v2'
         success = $success
         dotnet = $dotnet
+        flutter = $flutter
         dart = $dart
         backend = [ordered]@{ selected = $selectedBackend; available = $backendAvailable; operatingSystem = [System.Environment]::OSVersion.VersionString }
         sources = $sources
@@ -141,7 +152,8 @@ function Invoke-Doctor {
         "Status: **$(if ($success) { 'PASS' } else { 'FAIL' })**",
         '',
         "- .NET SDK: $($dotnet.output)",
-        "- Dart SDK: $($dart.output)",
+        "- Repository-local Flutter SDK: $($flutter.output)",
+        "- Repository-local Dart SDK: $($dart.output)",
         "- Backend: $selectedBackend (available: $backendAvailable)",
         "- Reference sources: $($sources.Count)"
     ) -join "`n"

@@ -11,6 +11,10 @@ $env:MSBUILDDISABLENODEREUSE = '1'
 $dorotiRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $repoRoot = (Resolve-Path (Join-Path $dorotiRoot '..')).Path
 . (Join-Path $PSScriptRoot 'local-storage.ps1')
+. (Join-Path $PSScriptRoot 'flutter-sdk.ps1')
+$flutterSdk = Resolve-DorotiFlutterSdk -RepositoryRoot $repoRoot
+$flutterCommand = $flutterSdk.FlutterCommand
+$dartCommand = $flutterSdk.DartCommand
 $compilerProject = Join-Path $repoRoot 'tools/Doroti.DartToCSharp/Doroti.DartToCSharp.csproj'
 $compilerDll = Join-Path $repoRoot 'tools/Doroti.DartToCSharp/bin/Release/net10.0/Doroti.DartToCSharp.dll'
 $selection = Join-Path $dorotiRoot 'migration/selections/g6-generated-demo.json'
@@ -178,7 +182,7 @@ function Prepare-ExternalConsumer {
 
 function Invoke-CompilerShard {
     & (Join-Path $PSScriptRoot 'prepare-g6-generated-demo.ps1') | Write-Output
-    Invoke-Checked { dart format --output=none --set-exit-if-changed (Join-Path $repoRoot 'DorotiDemoApp/dart/lib/main.dart') } 'G6-7 Dart source formatting failed'
+    Invoke-Checked { & $dartCommand format --output=none --set-exit-if-changed (Join-Path $repoRoot 'DorotiDemoApp/dart/lib/main.dart') } 'G6-7 Dart source formatting failed'
     Invoke-Checked { dotnet build $compilerProject --configuration Release --nologo } 'G6-7 compiler build failed'
     if (Test-Path -LiteralPath $releaseRoot) {
         $resolved = [IO.Path]::GetFullPath($releaseRoot)
@@ -238,8 +242,7 @@ function Invoke-DartAnalyzeShard {
     foreach ($name in @('pubspec.yaml', 'lib', 'assets', 'l10n', 'manifests')) {
         Copy-Item -LiteralPath (Join-Path $sourcePackage $name) -Destination $analysisPackage -Recurse
     }
-    $flutter = (Get-Command flutter -ErrorAction Stop).Source
-    $pubGet = Invoke-LoggedProcess -FilePath $flutter -Arguments @('pub', 'get') -WorkingDirectory $analysisPackage -LogName 'g6-7-flutter-pub-get'
+    $pubGet = Invoke-LoggedProcess -FilePath $flutterCommand -Arguments @('pub', 'get') -WorkingDirectory $analysisPackage -LogName 'g6-7-flutter-pub-get'
     $packageConfigPath = Join-Path $analysisPackage '.dart_tool/package_config.json'
     Assert-True (Test-Path -LiteralPath $packageConfigPath) 'real Flutter package config'
     $packageConfig = Get-Content -LiteralPath $packageConfigPath -Raw | ConvertFrom-Json
@@ -249,7 +252,7 @@ function Invoke-DartAnalyzeShard {
     $skyEngineRoot = [Uri]::new($packageConfigUri, ([string]$skyEngine[0].rootUri).TrimEnd('/') + '/').LocalPath
     $customSkyEngine = [IO.Path]::GetFullPath((Join-Path $repoRoot 'tools/Doroti.DartToCSharp/analyzer/stubs/sky_engine'))
     Assert-True (-not [IO.Path]::GetFullPath($skyEngineRoot).StartsWith($customSkyEngine, [StringComparison]::OrdinalIgnoreCase)) 'Flutter analyze must not use custom sky_engine stub'
-    $analysis = Invoke-LoggedProcess -FilePath $flutter -Arguments @('analyze', '--no-pub', 'lib/main.dart') -WorkingDirectory $analysisPackage -LogName 'g6-7-flutter-analyze'
+    $analysis = Invoke-LoggedProcess -FilePath $flutterCommand -Arguments @('analyze', '--no-pub', 'lib/main.dart') -WorkingDirectory $analysisPackage -LogName 'g6-7-flutter-analyze'
     Assert-True ($analysis.stdout -match 'No issues found') 'real Flutter analyzer zero diagnostics'
     $failFastProbeSource = "[Console]::Error.WriteLine('An unexpected error was encountered by the Analysis Server.'); Start-Sleep -Seconds 30"
     $failFastProbeEncoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($failFastProbeSource))

@@ -12,6 +12,8 @@ $ErrorActionPreference = 'Stop'
 $dorotiRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $repositoryRoot = (Resolve-Path (Join-Path $dorotiRoot '..')).Path
 . (Join-Path $PSScriptRoot 'local-storage.ps1')
+. (Join-Path $PSScriptRoot 'flutter-sdk.ps1')
+$dartCommand = (Resolve-DorotiFlutterSdk -RepositoryRoot $repositoryRoot).DartCommand
 $compiler = Join-Path $repositoryRoot 'tools/Doroti.DartToCSharp/bin/Release/net10.0/Doroti.DartToCSharp.dll'
 $timeoutMilliseconds = 15 * 60 * 1000
 $temporaryRoot = New-DorotiTemporaryDirectory -DorotiRoot $dorotiRoot -Name 'dart-to-csharp-performance'
@@ -166,7 +168,7 @@ try {
             os = [Environment]::OSVersion.VersionString
             logicalProcessors = [Environment]::ProcessorCount
             dotnet = (& dotnet --version).Trim()
-            dart = (& dart --version 2>&1 | Out-String).Trim()
+            dart = (& $dartCommand --version 2>&1 | Out-String).Trim()
         }
         policy = [ordered]@{
             warmupRuns = 1

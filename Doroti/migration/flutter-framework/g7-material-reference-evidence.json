@@ -1,7 +1,7 @@
 {
   "schemaVersion": "doroti.g7-material-reference-evidence/v1",
   "milestone": "G7-1V",
-  "capturedAtUtc": "2026-08-15T00:35:46.6604361+00:00",
+  "capturedAtUtc": "2026-08-15T02:36:03.6429305+00:00",
   "status": "pass",
   "fixture": {
     "locale": "en-US",
@@ -18,7 +18,7 @@
   "reference": {
     "path": "Doroti/validation/cases/g7-material-calendar-reference/test/goldens/flutter-calendar.png",
     "sha256": "808c11357032ccb400e10bc3080a2ec4ebfcb2447e9c81d50f982934c4c56881",
-    "runner": "C:\\g7fp"
+    "runner": "flutter-master"
   },
   "doroti": {
     "path": "Doroti/artifacts/g7-shared-closure/calendar-doroti.png",
@@ -92,8 +92,8 @@
     "widgetTypeSubstitutions": 0,
     "numericLocalSemanticRewrites": 0,
     "numericRuleMode": "suffix-agnostic semantic pattern",
-    "cleanCompilerHash": "72d581d33f51b9967a51882e061bf4e73bb0f6aaeaaccd36285af484aad6b008",
-    "incrementalCompilerHash": "72d581d33f51b9967a51882e061bf4e73bb0f6aaeaaccd36285af484aad6b008",
+    "cleanCompilerHash": "ac9ba999ec85763d40f8ad4e5548d848951062539aa1e0948dbf92e189eb21f0",
+    "incrementalCompilerHash": "ac9ba999ec85763d40f8ad4e5548d848951062539aa1e0948dbf92e189eb21f0",
     "compilerIdentity": "pass",
     "independentCandidateRuns": {
       "M3": {

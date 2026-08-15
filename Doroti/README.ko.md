@@ -47,11 +47,10 @@ Doroti.DartToCSharp ──► reviewed C# framework packages
 
 - [`global.json`](global.json)에 고정된 .NET SDK **10.0.300** 또는 호환되는 최신 patch
 - repository workflow 실행을 위한 PowerShell 7 (`pwsh`)
-- compiler와 source audit workflow를 위한 Dart SDK
-- repository root의 `flutter-master`, `Avalonia-main` reference checkout
+- repository root의 pinned 전용 `flutter-master` SDK와 `Avalonia-main` reference checkout
 - native demo와 live UI Automation gate 실행을 위한 Windows x64
 
-두 reference checkout은 source와 동작의 입력이며 제품 runtime dependency가 아닙니다.
+로컬 Flutter SDK는 최초 한 번 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 준비합니다. Doroti workflow는 이 SDK의 `flutter`와 bundled `dart` 실행 파일을 직접 사용하며 `PATH` 또는 사용자 profile의 Flutter 설치로 fallback하지 않습니다. 두 reference checkout은 source와 동작의 입력이며 제품 runtime dependency가 아닙니다.
 
 ## 빠른 시작
 

@@ -47,11 +47,10 @@ Selected Avalonia platform code is adapted behind Doroti contracts and tracked b
 
 - .NET SDK **10.0.300** or a compatible latest patch, as pinned in [`global.json`](global.json)
 - PowerShell 7 (`pwsh`) for the repository workflows
-- Dart SDK for compiler and source-audit workflows
-- The pinned `flutter-master` and `Avalonia-main` reference checkouts at the repository root
+- The pinned repository-local `flutter-master` SDK and `Avalonia-main` reference checkout at the repository root
 - Windows x64 for the native demo and live UI Automation gates
 
-The reference checkouts are source and behavior inputs; they are not product runtime dependencies.
+Prepare the local Flutter SDK once with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`. Doroti workflows use its `flutter` and bundled `dart` executables directly and never fall back to a Flutter installation on `PATH` or under the user profile. The reference checkouts are source and behavior inputs; they are not product runtime dependencies.
 
 ## Quick start
 

@@ -2,8 +2,7 @@
 param(
     [Parameter(Mandatory = $true)]
     [ValidateSet('Visual', 'Input', 'Compositing')]
-    [string] $Gate,
-    [string] $PinnedFlutterRoot
+    [string] $Gate
 )
 
 $ErrorActionPreference = 'Stop'
@@ -11,10 +10,12 @@ $env:DOTNET_CLI_DO_NOT_USE_MSBUILD_SERVER = '1'
 $env:MSBUILDDISABLENODEREUSE = '1'
 $dorotiRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $repoRoot = (Resolve-Path (Join-Path $dorotiRoot '..')).Path
+. (Join-Path $PSScriptRoot 'flutter-sdk.ps1')
+$flutter = Resolve-DorotiFlutterSdk -RepositoryRoot $repoRoot
 $migrationRoot = Join-Path $dorotiRoot 'migration/flutter-framework'
 $artifactRoot = Join-Path $dorotiRoot 'artifacts/g7-shared-closure'
 $tmpRoot = Join-Path $dorotiRoot '.doroti/tmp/g7-shared-closure'
-$flutterRevision = '56b8e1a851a594b1a154f8ea93270807dab22b9a'
+$flutterRevision = $flutter.Revision
 [IO.Directory]::CreateDirectory($artifactRoot) | Out-Null
 [IO.Directory]::CreateDirectory($tmpRoot) | Out-Null
 
@@ -41,20 +42,6 @@ function Relative-Path([string] $Path) {
 function Read-Json([string] $Path) {
     Assert-True (Test-Path -LiteralPath $Path -PathType Leaf) "evidence $Path"
     return Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json
-}
-
-function Resolve-PinnedFlutter {
-    $candidates = @($PinnedFlutterRoot, $env:DOROTI_FLUTTER_PIN_ROOT, 'C:\g7fp', (Join-Path $env:USERPROFILE 'flutter')) |
-        Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
-    foreach ($candidate in $candidates) {
-        $flutter = Join-Path $candidate 'bin/flutter.bat'
-        if (-not (Test-Path -LiteralPath $flutter -PathType Leaf)) { continue }
-        $revision = (& git -C $candidate rev-parse HEAD).Trim()
-        if ($LASTEXITCODE -eq 0 -and $revision -eq $flutterRevision) {
-            return [pscustomobject]@{ Root=[IO.Path]::GetFullPath($candidate); Command=$flutter; Revision=$revision }
-        }
-    }
-    throw "Pinned Flutter $flutterRevision was not found. Set DOROTI_FLUTTER_PIN_ROOT or pass -PinnedFlutterRoot."
 }
 
 function Compare-Bitmap([string] $ExpectedPath, [string] $ActualPath, [int] $Threshold, [Drawing.Rectangle] $Roi, [switch] $HalfScaleActual) {
@@ -125,10 +112,9 @@ function Get-PurpleBounds([string] $Path, [switch] $HalfScale) {
 }
 
 function Invoke-Visual {
-    $flutter = Resolve-PinnedFlutter
     $referenceFixture = Join-Path $dorotiRoot 'validation/cases/g7-material-calendar-reference'
     Push-Location $referenceFixture
-    try { Invoke-Checked { & $flutter.Command test test/calendar_reference_test.dart --reporter compact } 'Pinned Flutter reference fixture failed' }
+    try { Invoke-Checked { & $flutter.FlutterCommand test test/calendar_reference_test.dart --reporter compact } 'Pinned Flutter reference fixture failed' }
     finally { Pop-Location }
 
     $galleryProject = Join-Path $dorotiRoot 'validation/Doroti.Validation.G6MaterialGallery/Doroti.Validation.G6MaterialGallery.csproj'
@@ -180,8 +166,8 @@ function Invoke-Visual {
     $evidencePath = Join-Path $migrationRoot 'g7-material-reference-evidence.json'
     Write-Json $evidencePath ([ordered]@{
         schemaVersion='doroti.g7-material-reference-evidence/v1';milestone='G7-1V';capturedAtUtc=[DateTimeOffset]::UtcNow;status='pass'
-        fixture=[ordered]@{locale='en-US';date='2026-08-13';month='2026-08';logicalViewport=@{width=900;height=720};devicePixelRatio=2;theme='Material3 seed 0xff6750a4';flutterRevision=$flutter.Revision}
-        reference=[ordered]@{path=Relative-Path $reference;sha256=(Get-FileHash $reference -Algorithm SHA256).Hash.ToLowerInvariant();runner=$flutter.Root}
+        fixture=[ordered]@{locale='en-US';date='2026-08-13';month='2026-08';logicalViewport=[ordered]@{width=900;height=720};devicePixelRatio=2;theme='Material3 seed 0xff6750a4';flutterRevision=$flutter.Revision}
+        reference=[ordered]@{path=Relative-Path $reference;sha256=(Get-FileHash $reference -Algorithm SHA256).Hash.ToLowerInvariant();runner=Relative-Path $flutter.Root}
         doroti=[ordered]@{path=Relative-Path $dorotiCapture;sha256=(Get-FileHash $dorotiCapture -Algorithm SHA256).Hash.ToLowerInvariant();backend=$run.live.backend;failed=[long]$run.live.failed;cancelled=[long]$run.live.cancelled;softwareFallback=[bool]$run.live.softwareFallback}
         differential=[ordered]@{
             glyph=[ordered]@{status='pass';fontSha256=(Get-FileHash (Join-Path $referenceFixture 'assets/Roboto-Regular.ttf') -Algorithm SHA256).Hash.ToLowerInvariant();missing=0;boundedRaster=$raster}
@@ -240,10 +226,9 @@ function Invoke-Input {
 }
 
 function Invoke-Compositing {
-    $flutter = Resolve-PinnedFlutter
     $referenceFixture = Join-Path $dorotiRoot 'validation/cases/g7-material-calendar-reference'
     Push-Location $referenceFixture
-    try { Invoke-Checked { & $flutter.Command test test/calendar_reference_test.dart --reporter compact } 'Pinned Flutter compositing reference failed' }
+    try { Invoke-Checked { & $flutter.FlutterCommand test test/calendar_reference_test.dart --reporter compact } 'Pinned Flutter compositing reference failed' }
     finally { Pop-Location }
     Invoke-Checked { & (Join-Path $PSScriptRoot 'validate-g6-compositing-effects.ps1') -Shard Contracts } 'G7-1C typed compositing contracts failed'
     Invoke-Checked { & (Join-Path $PSScriptRoot 'validate-g6-compositing-effects.ps1') -Shard Managed } 'G7-1C managed compositing consumer failed'
