@@ -1,14 +1,15 @@
 # Doroti 7차 목표 — 제품 정확성 closure와 Windows/macOS shell·Web release
 
-> 상태: G7-3 ✅ 완료 — G7-4 Web live parity 진행 가능
+> 상태: G7-3 🔄 재정의/진행 중 — Web host 인프라는 확인됐으나 Doroti 자체 Web app 생성 경로는 미완료
 > 작성일: 2026-08-14
 > 측정 핵심화: 2026-08-15
 > 범위 추가: 2026-08-15 — Apple Silicon macOS shell(`osx-arm64`)을 필수 target으로 승격
 > 선행 기록: [`history/26-08-14/goal6-summary.md`](history/26-08-14/goal6-summary.md)
 > 기준 Doroti revision: `5379137447162adb2957212ea2f336894effe05e` + 현재 작업 트리
 > Flutter source pin: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
-> Flutter toolchain: repository-local `flutter-master` SDK만 사용하며 global/PATH Flutter·Dart fallback 금지
-> 최우선 제품 gate: 동일한 일반 Dart `DorotiDemoApp`이 promoted package만 사용해 Windows, macOS와 Web `browser-wasm`에서 build/publish되고, 실제 GPU frame과 app-essential input·semantics·resource 경계를 통과할 것
+> Flutter reference toolchain: pinned 비교·호환성 검증에서만 repository-local `flutter-master` SDK를 사용하며 global/PATH Flutter·Dart fallback 금지
+> Doroti 제품 toolchain: 앱 생성·분석·컴파일·Web publish는 Flutter SDK, Flutter CLI와 별도 Flutter project 없이 배포된 Doroti SDK/CLI와 promoted package만으로 수행
+> 최우선 제품 gate: 새 Doroti-owned Dart app을 `doroti create`/`doroti build web` 경로로 생성해 Windows, macOS와 Web `browser-wasm` artifact로 build/publish하고, 실제 GPU frame과 app-essential input·semantics·resource 경계를 통과할 것
 
 ## 0. Goal6에서 이어받는 기준선
 
@@ -39,7 +40,7 @@ Goal7의 목표는 동일한 generated Dart app을 공용 Flutter framework 의�
 
 - shared correctness: compiler/IR/lowerer/runtime, Material 대표 visual fidelity, scene/compositing과 retained rendering
 - interaction capability: pointer, capture/drag, wheel, keyboard, text/composition, semantics action의 target 인과 trace
-- product app: 일반 Dart source, promoted packages, resource/localization/plugin과 deterministic publish
+- product app: Doroti-owned project manifest와 일반 Dart source, promoted packages, resource/localization/plugin과 deterministic publish
 - macOS shell: source-ported AppKit/libAvalonia window·dispatcher·surface와 input/text/clipboard/accessibility bridge, `osx-arm64` package-only publish
 - Web build/runtime: `browser-wasm`, GPU canvas, browser host, static artifact, app-essential lifecycle
 - release acceptance: Windows, macOS와 Chromium Web의 자동화 및 최소 physical 확인
@@ -47,6 +48,8 @@ Goal7의 목표는 동일한 generated Dart app을 공용 Flutter framework 의�
 이번 Goal의 필수 target은 `win-x64`, `osx-arm64`와 `browser-wasm`이다. Linux, Intel macOS(`osx-x64`), Firefox/WebKit, 장시간 soak와 모든 device 조합은 capability matrix에 남기되, 별도 지원 target으로 결정되기 전에는 Goal7 완료를 막지 않는다. macOS shell은 Flutter framework policy를 복제하지 않고 `Doroti.Shell.Core`와 공용 desktop host 아래에서 AppKit/libAvalonia capability만 소유한다.
 
 Web은 Flutter framework policy를 JavaScript/DOM에 다시 구현하는 별도 UI가 아니다. 공용 generated framework가 widget/build/layout/paint/state를 소유하고, browser adapter는 canvas/scheduler/input/text/clipboard/accessibility/resource/GPU capability만 제공한다.
+
+Doroti Web 제품은 Flutter Web project의 wrapper도 아니다. 사용자 project는 `doroti.yaml`과 `lib/main.dart`를 소유하며, `web/`, `.metadata`, `android/`, `ios/` 같은 Flutter platform scaffold를 생성하거나 요구하지 않는다. `pubspec.yaml` 입력은 기존 Dart/Flutter package 이식 호환성을 위해 선택적으로 읽을 수 있지만, 새 Doroti app의 생성·build·publish 계약은 Flutter CLI에 의존하지 않는다. pinned Flutter SDK는 reference fixture와 differential에만 사용하며 제품 artifact 생성 과정에는 참여하지 않는다.
 
 ## 2. 검증 핵심화 원칙
 
@@ -192,7 +195,7 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 
 - Cupertino는 component별 native 전수 측정 대신 Tier A 대표 control로 pointer/key/semantics 능력군을 재사용한다.
 - adaptive constructor의 platform 선택과 대표 behavior를 pinned Flutter trace와 비교한다.
-- 일반 Dart DemoApp과 handwritten fixture는 source/app identity 및 대표 behavior/semantics를 비교한다. 전체 화면 raster 중복 비교는 하지 않는다.
+- Doroti compiler가 읽는 Dart app source와 handwritten fixture는 source/app identity 및 대표 behavior/semantics를 비교한다. Flutter project는 reference 실행에만 사용하고 Doroti 제품 project나 publish 입력으로 승격하지 않는다. 전체 화면 raster 중복 비교는 하지 않는다.
 - promoted framework/hosting/target package만 사용하는 repository 밖 Windows consumer를 launch하고 대표 toggle을 수행한다.
 
 완료 gate:
@@ -217,6 +220,7 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 - package-only 경계 `PASS`: application compiler가 conditional repository `ProjectReference`를 더 이상 생성하지 않으며, 저장소 밖 소비자가 승격 NuGet package만으로 restore/build 및 `win-x64` publish를 통과했다. repository-private/candidate fallback은 0건이다.
 - 현재 호스트가 macOS이므로 Win32 실행을 가장하지 않았다. 현재 source의 compiler/package 경계는 macOS에서 재검증하고, 변경되지 않은 초기화·대표 toggle의 actual HWND strict-GPU 실행은 G6 Windows predecessor evidence를 명시적으로 계승했다. 이 실행 시점에는 macOS desktop target이 비필수였으므로 shell/runtime은 `notVerified`였고, 이후 추가된 필수 `osx-arm64` 검증은 G7-3M이 새 evidence로 소유한다.
 - macOS 전환 지원으로 repository-local Flutter/Dart launcher 선택과 Windows checkout의 SDK CRLF 정규화를 추가했다. 재현 명령은 `validate-g7-product.ps1 -Gate Cupertino|Generated`이다.
+- 범위 정정(2026-08-15): 당시 `DorotiDemoApp/dart`의 `pubspec.yaml`과 Flutter widget test는 compiler 입력의 Flutter 호환 의미를 비교하기 위한 reference fixture였다. 이는 Doroti 자체 app 생성/build/publish UX의 증거가 아니며, 삭제된 Flutter fixture를 제품 project로 복구하지 않는다. G7-2의 behavior/semantics 결과는 predecessor reference로만 보존하고, 현재 Doroti-owned app source와 Web product closure는 G7-3이 새로 소유한다.
 
 ### G7-3M — macOS source-ported shell과 `osx-arm64` package baseline
 
@@ -263,53 +267,109 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 - `g7-target-matrix.json`에서 `macos-desktop` deferred 항목을 제거하고 `osx-arm64`를 필수 target으로 승격했다. Korean IME candidate window, VoiceOver 물리 탐색, 실제 precise trackpad와 `osx-x64`는 전이하지 않고 G7-6까지 `notVerified`다.
 - 재현 명령은 `validate-g7-macos-shell.ps1 -Shard Source|Build|Live|Package`이며 종합 evidence의 status는 `pass`다.
 
-### G7-3 — Web toolchain, browser host와 publish baseline
+### G7-3 — Doroti-owned Web application build/publish closure
 
-진입 조건: G7-0 완료. G7-1과 병렬 착수할 수 있으나 shared semantics를 Web workaround로 복제하지 않는다.
+진입 조건: G7-0 완료. G7-1과 병렬 착수할 수 있으나 shared semantics를 Web workaround로 복제하지 않는다. G7-3은 Web host library가 publish되는 것만으로 완료하지 않으며, 저장소 밖에서 새 Doroti app을 만들고 그 Dart app이 실제 Web artifact에 포함되는 전체 제품 경로를 소유한다.
+
+#### G7-3I — Web host/toolchain infrastructure baseline (`verified-infrastructure`)
+
+기존 구현과 증거는 다음 범위로만 보존한다.
+
+- .NET WebAssembly SDK/`wasm-tools`, `Doroti.Host.Web`, `Doroti.Target.Web.browser-wasm`, browser-only dependency graph와 static artifact hash pipeline
+- document/canvas lifecycle, `requestAnimationFrame`, visibility/focus, resize, `devicePixelRatio`, WebGL2 fail-closed policy와 JavaScript callback/plugin ABI
+- package-only 빈 consumer에서 target package restore와 interpreter/AOT probe publish가 가능하다는 구조 증거
+
+이 baseline은 실제 Dart application compile, generated application assembly 포함, root widget mount 또는 Doroti app 생성 UX를 증명하지 않는다. `BrowserWasmTarget`만 생성하는 probe, 검증 스크립트가 직접 작성한 `Program.cs`/`index.html`/`main.js`, 빈 canvas publish는 product PASS로 집계하지 않는다.
+
+#### G7-3A — Doroti project authoring contract
 
 작업:
 
-- .NET WebAssembly toolchain과 browser package compatibility를 검사하고 desktop native dependency 유입을 차단한다.
-- `Doroti.Target.Web.browser-wasm` target identity와 `Doroti.Host.Web` adapter를 추가한다.
-- document/canvas lifecycle, `requestAnimationFrame`, visibility, resize와 `devicePixelRatio`를 공용 view/frame capability로 연결한다.
-- 실제 browser GPU backend identity를 기록한다. CPU/2D fallback은 browser GPU PASS로 세지 않는다.
-- conditional import/environment, resource URL, font/localization과 JavaScript plugin ABI를 target-aware manifest로 생성한다.
-- repository 밖 package-only consumer에서 clean build/publish하고 deployment-neutral static artifact와 hash manifest를 만든다.
+- 사용자-facing project root를 `doroti.yaml`, `lib/main.dart`, 선택적 `assets/`, `l10n/`, plugin declaration으로 고정한다.
+- `doroti create <path>`가 Flutter platform scaffold 없이 최소 실행 가능한 Doroti app을 생성한다. 생성 결과에 `.metadata`, Flutter-generated `web/`, `android/`, `ios/`, `macos/`, `windows/` project를 포함하지 않는다.
+- `doroti.yaml`은 application id, entrypoint, target, framework package, resource/font/localization/plugin을 typed schema로 소유한다. compiler용 selection JSON과 MSBuild project는 사용자 source가 아니라 Doroti 내부 intermediate output으로 생성한다.
+- 기존 Flutter-compatible Dart package를 가져오는 import 경로와 새 Doroti project 생성을 구분한다. 선택적 `pubspec.yaml` import를 지원하더라도 `flutter create`, `flutter pub get`, `flutter build web`을 제품 build 단계에서 실행하지 않는다.
+- release Doroti SDK/CLI가 자체 analyzer/package-resolution 구성요소를 제공해 시스템 Flutter SDK나 global/PATH Dart가 없는 환경에서도 project 진단과 compile을 수행한다.
 
 완료 gate:
 
-- browser graph의 Win32/Avalonia/native desktop dependency 0
-- `browser-wasm` clean output과 repeat build identity PASS
-- repository 밖 package-only Web consumer build/publish PASS
-- unsupported plugin/capability silent success 0
-- static artifact 누락/hash 불일치 0
-- 미지원 trimming/AOT mode는 정확한 blocker와 `notVerified` 상태를 가짐
+- clean 임시 디렉터리에서 배포된 Doroti SDK/CLI만으로 새 project 생성 PASS
+- 생성된 project의 사용자 소유 source/manifest와 Doroti 내부 intermediate 경계가 명확함
+- product command process tree의 `flutter`, `flutter.bat`, global/PATH `dart` 실행 0
+- 생성·build 전후 Flutter project/platform scaffold 0
+- malformed manifest, 미지원 target/plugin/resource는 stable diagnostic으로 fail-closed
 
-산출물:
-
-- `Doroti/src/Doroti.Host.Web/`
-- `Doroti/src/Doroti.Target.Web.browser-wasm/`
-- `Doroti/migration/targets/browser-wasm.json`
-- `Doroti/migration/web/g7-web-build-evidence.json`
-- `Doroti/artifacts/g7-web/<version>/`
-- `Doroti/eng/validate-g7-web-build.ps1 -Shard <Toolchain|Graph|Compile|Publish>`
-
-실행 결과(2026-08-15):
-
-- G7-3 `PASS`: `Doroti.Host.Web`의 browser-only adapter가 document/canvas lifecycle, visibility/focus, resize, `devicePixelRatio`와 `requestAnimationFrame`을 공용 `FlutterView` lifecycle/metrics/frame/environment capability에 연결했다.
-- browser graph `PASS`: Win32/AppKit/Avalonia/native desktop dependency는 0이며, WebGL2 context가 없거나 software renderer이면 fail-closed한다. Canvas 2D/CPU fallback과 미등록 JavaScript plugin의 silent success는 0이다.
-- `Doroti.Target.Web.browser-wasm` composition root와 target-aware managed callback/plugin/resource ABI manifest를 추가했다. asset/font/localization URL은 document base URI 기준으로 해석한다.
-- .NET 10 interpreter 방식의 clean/repeat `browser-wasm` publish identity와 deployment-neutral static artifact hash manifest가 일치했다. 저장소 밖 소비자도 격리 package cache에서 promoted NuGet package만으로 restore/publish했고 repository-private fallback과 정적 파일 누락/hash 불일치는 0이다.
-- `wasm-tools` 설치 후 AOT build probe도 `PASS`: 180개 assembly AOT, Emscripten native link와 `wasm-opt -O2`를 거쳐 native WebAssembly artifact를 생성했다. AOT가 요구하는 trimming은 이 target build probe에서만 통과했으며, generated framework reflection root audit 전이므로 전체 generated product trimming은 계속 `notVerified`다. 실제 Chromium GPU frame/input/ARIA 실행은 범위를 전이하지 않고 G7-4가 소유한다.
-- 재현 명령은 `validate-g7-web-build.ps1 -Shard Toolchain|Graph|Compile|Publish`이며 종합 evidence의 status는 `pass`다.
-
-### G7-4 — Web live product parity
-
-진입 조건: G7-1, G7-2와 G7-3 완료.
+#### G7-3B — Dart application to `browser-wasm` product compilation
 
 작업:
 
-- generated `DorotiDemoApp`을 isolated static server의 Chromium에서 로드한다.
+- application compiler가 `target: browser-wasm`을 해석해 Dart entrypoint와 transitive library를 generated application assembly로 만든다.
+- generated application assembly를 `Doroti.Target.Web.browser-wasm` composition root에 연결하고, browser startup이 실제 generated root widget을 `FlutterHostSession`/`FlutterView`에 attach하도록 한다.
+- compiler가 conditional import/environment, asset/font/localization URL과 JavaScript plugin ABI를 target-aware application manifest로 생성한다.
+- Web SDK가 내부 WASM entry project와 `index.html`/bootstrap module을 생성한다. 이 C#/MSBuild/JavaScript workspace는 deterministic intermediate이며 사용자가 직접 작성하거나 유지하지 않는다.
+- `doroti build web --project <path> --output <path>` 한 명령이 analyze → generate → restore → `browser-wasm` publish → static manifest까지 수행한다.
+- generated app assembly/type, source entrypoint, target manifest와 static artifact hash를 하나의 provenance chain으로 기록한다.
+
+완료 gate:
+
+- fixture 이름 출력이나 `BrowserWasmTarget` 생성만이 아니라 Dart source의 root widget/state/resource가 최종 assembly와 static artifact에 포함됨
+- `browser-wasm` clean/repeat output identity PASS
+- browser graph의 Win32/AppKit/Avalonia/native desktop dependency 0
+- unsupported plugin/capability silent success 0
+- static artifact 누락/hash 불일치와 repository-private project fallback 0
+- 미지원 trimming/AOT mode는 generated product 기준의 정확한 blocker와 `notVerified` 상태를 가짐
+
+#### G7-3C — external Doroti SDK product acceptance
+
+작업:
+
+- 저장소 밖 clean root에 배포 패키지/SDK를 설치하고 `doroti create`로 새 app을 만든다.
+- 생성된 `lib/main.dart`를 사용자-visible state 변화, asset, localization과 Web plugin이 있는 대표 app으로 수정한 뒤 `doroti build web`을 수행한다.
+- 같은 app을 두 번 clean build해 deployment-neutral static artifact와 hash manifest identity를 비교한다.
+- output을 isolated static server에 올릴 수 있는 구조인지 검사하되 실제 Chromium GPU/input/ARIA 실행은 G7-4에서 수행한다.
+
+완료 gate:
+
+- repository 밖 Doroti project create/analyze/build/publish PASS
+- Flutter SDK/CLI 설치 없이 package-only restore와 static Web artifact 생성 PASS
+- 사용자가 직접 작성한 C# `Program.cs`, `.csproj`, `index.html`, runtime bootstrap JavaScript 0
+- repository-private/candidate fallback과 source checkout 절대경로 0
+- 최종 artifact가 generated Dart application assembly와 application manifest를 포함함
+
+산출물:
+
+- Doroti CLI/SDK의 `create`와 `build web` command 및 Web project template
+- `Doroti/src/Doroti.Host.Web/`
+- `Doroti/src/Doroti.Target.Web.browser-wasm/`
+- `Doroti/validation/cases/g7-doroti-web-app/`
+- `Doroti/migration/targets/browser-wasm.json`
+- `Doroti/migration/web/g7-web-build-evidence.json`
+- `Doroti/artifacts/g7-web/<version>/`
+- `Doroti/eng/validate-g7-web-build.ps1 -Shard <Toolchain|Graph|Authoring|Compile|Publish>`
+
+현재 상태와 정정(2026-08-15):
+
+- G7-3I `verified-infrastructure`: `Doroti.Host.Web`/`Doroti.Target.Web.browser-wasm`, browser-only graph, WebGL2 fail-closed, lifecycle/ABI, interpreter/AOT probe와 static hash pipeline은 재사용한다.
+- 기존 `Compile`/`Publish` shard는 `Doroti.Validation.G7WebBuild` 및 검증 스크립트가 만든 임시 .NET consumer만 publish했고 Dart app compiler를 호출하지 않았다. 따라서 기존 `g7-web-build-evidence.json`의 전체 `pass`는 product closure로 사용하지 않으며 다음 validator 실행에서 `partial`로 교정한다.
+- `DorotiDemoApp/dart` Flutter project와 Flutter widget test는 G7-2 reference fixture였고 Doroti Web product input으로 복구하거나 재사용하지 않는다.
+- G7-3A/G7-3B/G7-3C는 `notVerified`다. 세 sub-gate가 모두 PASS하고 실제 generated Dart app이 artifact에 포함되기 전까지 G7-4에 진입하지 않는다.
+
+구현 순서:
+
+1. `g7-web-build-evidence.json`, `g7-target-matrix.json`과 carry-over ledger에서 기존 Web `pass`를 `verified-infrastructure`/`partial`로 재분류하고, 실제 Dart app 미포함 blocker를 machine-readable 항목으로 추가한다.
+2. Doroti project schema와 template을 먼저 고정하고 `doroti create`/manifest diagnostics를 구현한다. 이 단계에서 제품 command와 reference-only Flutter toolchain을 분리하고, `doctor`도 product profile에서 Flutter 설치를 요구하지 않게 한다.
+3. application graph/compiler에 `browser-wasm` target을 추가해 Dart source, resources, localization과 plugin declaration을 generated application assembly/manifest로 만든다.
+4. Web target SDK가 generated app entrypoint를 실제 browser host에 mount하고 내부 WASM project/bootstrap/static manifest를 생성하도록 연결한다.
+5. `doroti build web`을 end-to-end로 묶고, 저장소 밖 clean environment에서 Flutter executable 0, 수동 host source 0, repeat artifact identity를 검증한다.
+6. G7-3A/G7-3B/G7-3C evidence를 모두 PASS로 갱신한 뒤에만 G7-4 Chromium live validation을 착수한다.
+
+### G7-4 — Web live product parity
+
+진입 조건: G7-1, G7-2와 G7-3A/G7-3B/G7-3C 완료. G7-3I 인프라 probe만으로는 진입할 수 없다.
+
+작업:
+
+- `doroti create`/`doroti build web`으로 만든 generated Doroti app을 isolated static server의 Chromium에서 로드한다.
 - canvas attach → framework mount/layout/paint → GPU present → terminal frame ACK를 trace한다.
 - Windows와 같은 대표 product scenario에서 pointer, wheel, keyboard, composition, clipboard, resize/DPR와 semantics action을 실행한다.
 - semantics tree는 DOM/ARIA action bridge로 노출하되 별도 visual DOM widget tree를 만들지 않는다.
@@ -389,11 +449,14 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 ```text
 G7-0 carry-over blocker reset
   +-> G7-1 shared correctness
-  +-> G7-3 Web build/publish
+  +-> G7-3I Web infrastructure (verified-infrastructure)
 
 G7-1 -> G7-2 Cupertino/adaptive/generated product
 G7-1 + G7-2 -> G7-3M macOS live product
-G7-1 + G7-2 + G7-3 -> G7-4 Web live product
+G7-3I -> G7-3A Doroti project authoring
+G7-3A -> G7-3B Dart application Web compile
+G7-3B -> G7-3C external Doroti SDK publish
+G7-1 + G7-2 + G7-3C -> G7-4 Web live product
 G7-2 + G7-3M + G7-4 -> G7-5 integrated release
 G7-5 -> G7-6 physical acceptance
 ```
@@ -426,6 +489,9 @@ G7-5 -> G7-6 physical acceptance
 ./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Package
 
 ./Doroti/eng/validate-g7-web-build.ps1 -Shard Toolchain
+./Doroti/eng/validate-g7-web-build.ps1 -Shard Graph
+./Doroti/eng/validate-g7-web-build.ps1 -Shard Authoring
+./Doroti/eng/validate-g7-web-build.ps1 -Shard Compile
 ./Doroti/eng/validate-g7-web-build.ps1 -Shard Publish
 ./Doroti/eng/validate-g7-web-live.ps1 -Shard Smoke
 ./Doroti/eng/validate-g7-web-live.ps1 -Shard Interaction
@@ -462,7 +528,8 @@ git diff --check
 
 Goal7은 다음이 모두 사실일 때 완료한다.
 
-- 일반 Dart `DorotiDemoApp`이 promoted package만 사용해 Windows, macOS `osx-arm64`와 Web `browser-wasm` artifact로 reproducible build된다.
+- Flutter SDK/CLI와 별도 Flutter project 없이 새 Doroti-owned Dart app을 생성할 수 있고, 배포된 Doroti SDK/CLI와 promoted package만 사용해 Windows, macOS `osx-arm64`와 Web `browser-wasm` artifact로 reproducible build된다.
+- `doroti build web`의 최종 static artifact가 실제 generated Dart application assembly, application manifest, resource와 browser bootstrap을 포함하며 사용자가 C#/MSBuild/JavaScript host project를 직접 작성하지 않는다.
 - Windows/macOS strict-GPU와 browser GPU에서 실제 first frame, app-essential interaction와 semantics가 target별로 PASS한다.
 - Material 대표 visual, native input capability와 scene/compositing/retained gate가 필요한 pinned reference와 함께 닫힌다.
 - Cupertino/adaptive와 generated product의 대표 behavior/semantics가 PASS한다.
@@ -474,4 +541,4 @@ Linux, Intel macOS(`osx-x64`), Firefox/WebKit, 모든 component별 native 전수
 
 Goal7의 macOS 성공 기준은 “managed project와 libAvalonia가 컴파일된다”가 아니다. 동일한 generated Flutter framework app이 실제 NSWindow의 GPU surface에서 frame을 내고, AppKit 입력·텍스트·접근성 action이 같은 widget state까지 왕복하며, provenance가 고정된 `osx-arm64` package로 저장소 밖에서 실행되어야 한다.
 
-Goal7의 Web 성공 기준은 “WASM 파일이 생성된다”가 아니다. 동일한 generated Flutter framework app이 브라우저의 실제 GPU canvas에서 frame을 내고, Web input과 accessibility action이 같은 widget state까지 왕복하며, 재현 가능한 static release artifact로 배포될 수 있어야 한다.
+Goal7의 Web 성공 기준은 “WASM 파일이 생성된다” 또는 “빈 .NET consumer가 Web target package를 참조한다”가 아니다. 사용자가 Doroti project의 Dart source만 작성하고 Doroti SDK/CLI로 생성·build·publish할 수 있어야 한다. 그 동일한 generated app이 브라우저의 실제 GPU canvas에서 frame을 내고, Web input과 accessibility action이 같은 widget state까지 왕복하며, 재현 가능한 static release artifact로 배포되어야 한다.
