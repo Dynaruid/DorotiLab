@@ -17,6 +17,7 @@ using var scope = dispatcher.EnterScope();
 var fixtureHost = new FixtureHost();
 using var view = dispatcher.RegisterView(533, new FlutterViewCapabilities("g5-3-widgets-managed")
     .Register<IViewHostCapability>(FlutterCapabilityIds.ViewLifecycleMetrics, fixtureHost)
+    .Register<IFrameHostCapability>(FlutterCapabilityIds.ViewFrameDispatch, fixtureHost)
     .Register<IPlatformMessageHostCapability>(FlutterCapabilityIds.PlatformMessaging, fixtureHost));
 using var binding = new WidgetsFlutterBinding(dispatcher);
 
@@ -35,40 +36,37 @@ if (args.Length >= 1 && string.Equals(args[0], "--g7-focus-frame-dispatch-probe"
         blocker = exception;
     }
 
-    var reproduced = blocker is not null &&
-        blocker.CapabilityId == FlutterCapabilityIds.ViewFrameDispatch &&
-        blocker.ViewId == 533 &&
-        blocker.TargetIdentity == "g5-3-widgets-managed" &&
-        blocker.ElementId == "dart:ui#PlatformDispatcher.microtask";
+    traces.TryGetValue("W4", out var focusTrace);
+    var passed = blocker is null &&
+        failures.Count == 0 &&
+        focusTrace is not null &&
+        focusTrace.SequenceEqual(["focus:editor", "shortcut:accepted", "intent:invoked", "focus:root"]);
     WriteJson(probeEvidencePath, new
     {
         schemaVersion = "doroti.g7-managed-regression/v1",
-        milestone = "G7-0",
+        milestone = "G7-1C",
         capturedAtUtc = DateTimeOffset.UtcNow,
-        status = reproduced ? "reproduced-release-blocker" : "unexpected-result",
-        fixture = "G5 Widgets focus request on the existing managed view without view.frame-dispatch",
+        status = passed ? "pass" : "failed",
+        fixture = "G5 Widgets focus request on a managed view with an explicit per-view frame dispatcher",
         expected = new
         {
             capabilityId = FlutterCapabilityIds.ViewFrameDispatch,
             viewId = 533,
             targetIdentity = "g5-3-widgets-managed",
             elementId = "dart:ui#PlatformDispatcher.microtask",
+            registration = "per-view fixture frame dispatcher",
         },
-        actual = blocker is null ? null : new
+        actual = new
         {
-            blocker.CapabilityId,
-            blocker.ViewId,
-            blocker.TargetIdentity,
-            blocker.ElementId,
-            sourceSpan = blocker.SourceSpan.ToString(),
-            exceptionType = blocker.GetType().FullName,
-            blocker.Message,
+            frameDispatchCount = fixtureHost.FrameDispatchCount,
+            focusTrace,
+            exception = blocker?.ToString(),
         },
         owner = "managed view bootstrap and per-view frame-dispatch capability",
-        followUpMilestone = "G7-1C",
+        followUpMilestone = (string?)null,
     });
-    Console.WriteLine($"G7-0 focus/frame-dispatch managed regression probe: {(reproduced ? "REPRODUCED" : "UNEXPECTED")}");
-    return reproduced ? 0 : 1;
+    Console.WriteLine($"G7-1C focus/frame-dispatch managed regression: {(passed ? "PASS" : "FAIL")}");
+    return passed ? 0 : 1;
 }
 
 RunStatelessLifecycle(traces, failures);
@@ -522,8 +520,9 @@ sealed class TraceImageCompleter(Future<ImageInfo> image) : OneFrameImageStreamC
     public override void onDisposed() => Disposed = true;
 }
 
-sealed class FixtureHost : IViewHostCapability, IPlatformMessageHostCapability
+sealed class FixtureHost : IViewHostCapability, IFrameHostCapability, IPlatformMessageHostCapability
 {
+    public int FrameDispatchCount { get; private set; }
     public ViewMetrics Metrics { get; } = new(new Size(800, 600), 1, ViewPadding.zero, ViewPadding.zero, ViewPadding.zero, AppLifecycleState.resumed, 0, 0);
     public event System.Action<ViewMetrics>? MetricsChanged { add { } remove { } }
     public event System.Action<AppLifecycleState>? LifecycleChanged { add { } remove { } }
@@ -532,6 +531,11 @@ sealed class FixtureHost : IViewHostCapability, IPlatformMessageHostCapability
     public ValueTask<ReadOnlyMemory<byte>?> SendAsync(string channel, ReadOnlyMemory<byte>? data, CancellationToken cancellationToken = default) =>
         ValueTask.FromResult<ReadOnlyMemory<byte>?>(null);
     public void SetMessageHandler(string channel, PlatformMessageHandler? handler) { }
+    public void ScheduleFrame(System.Action<TimeSpan> callback)
+    {
+        FrameDispatchCount++;
+        callback(TimeSpan.FromMilliseconds(FrameDispatchCount * 16));
+    }
     public void Show() { }
     public void Resize(Size logicalSize) { }
     public void Close() { }

@@ -105,6 +105,12 @@ public sealed class WindowsFlutterTarget : IDisposable
         return _host.GetTargetDiagnostics(viewId);
     }
 
+    public DesktopFlutterRetainedDiagnostics CaptureRetainedDiagnosticsForValidation(ulong viewId)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return _host.GetRetainedDiagnosticsForValidation(viewId);
+    }
+
     public SemanticsTreeSnapshot? GetSemanticsSnapshotForValidation(ulong viewId)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);

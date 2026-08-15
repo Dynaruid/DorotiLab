@@ -2,6 +2,7 @@
 param(
     [ValidateSet('All', 'N0', 'O0', 'F0', 'S0', 'R0', 'A0', 'P0')]
     [string] $Slice = 'All',
+    [switch] $Exact,
     [switch] $KeepTemporary
 )
 
@@ -146,6 +147,8 @@ try {
 
     $selected = if ($Slice -eq 'All') {
         $orderedSlices
+    } elseif ($Exact) {
+        @($Slice)
     } else {
         $orderedSlices[0..[Array]::IndexOf($orderedSlices, $Slice)]
     }

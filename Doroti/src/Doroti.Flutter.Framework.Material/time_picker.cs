@@ -1178,7 +1178,7 @@ DartRuntimePrimitives.Ignore(((Func<global::Doroti.Generated.Framework.Animation
         return new _TappableLabel__time_picker(value: value, inner: inner, painter: ((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
 {            var __cascade = new global::Doroti.Generated.Framework.Painting.TextPainter(text: new global::Doroti.Generated.Framework.Painting.TextSpan(style: textStyle, text: label), textDirection: TextDirection.ltr, textScaler: MediaQuery.textScalerOf(this.context).clamp(maxScaleFactor: 2.0));
             __cascade.layout();
-            return __cascade;        }))(), onTap: () => onTap());
+            return __cascade;        }))(), onTap: onTap);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

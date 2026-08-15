@@ -809,7 +809,7 @@ public class RefreshProgressIndicator : CircularProgressIndicator
     }
 
     public override Color? backgroundColor => base.backgroundColor;
-    public override global::Doroti.Generated.Framework.Widgets.State<CircularProgressIndicator> createState() => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.State<CircularProgressIndicator>>(new _RefreshProgressIndicatorState__progress_indicator());
+    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _RefreshProgressIndicatorState__progress_indicator());
 }
 
 internal class _RefreshProgressIndicatorState__progress_indicator : _CircularProgressIndicatorState__progress_indicator

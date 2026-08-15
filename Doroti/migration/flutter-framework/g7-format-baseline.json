@@ -1,11 +1,11 @@
 {
   "schemaVersion": "doroti.g7-format-baseline/v1",
   "milestone": "G7-0",
-  "capturedAtUtc": "2026-08-14T18:59:06.8396276+00:00",
+  "capturedAtUtc": "2026-08-15T00:42:37.5910079+00:00",
   "status": "reproduced-release-blocker",
   "command": "dotnet format Doroti/Doroti.slnx --verify-no-changes --no-restore --verbosity minimal",
   "exitCode": 2,
-  "diagnosticCount": 13963,
+  "diagnosticCount": 14038,
   "representativeDiagnostics": [
     "<repo>\\tools\\Doroti.DartToCSharp\\src\\Backend\\CSharp\\Lowering\\FrameworkCSharpLowerer.Types.cs(185,49): error WHITESPACE: 공백 서식을 수정하세요. 1 문자를 '\\r\\n\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s'(으)로 대체합니다. [<repo>\\tools\\Doroti.DartToCSharp\\Doroti.DartToCSharp.csproj]",
     "<repo>\\tools\\Doroti.DartToCSharp\\src\\Backend\\CSharp\\Lowering\\FrameworkCSharpLowerer.Types.cs(185,51): error WHITESPACE: 공백 서식을 수정하세요. 1 문자를 '\\r\\n\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s\\s'(으)로 대체합니다. [<repo>\\tools\\Doroti.DartToCSharp\\Doroti.DartToCSharp.csproj]",

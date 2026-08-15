@@ -12,6 +12,11 @@ if (options.Contains("--colors", StringComparer.Ordinal))
     WriteColorReference();
     return;
 }
+if (options is ["--compositing-raster", var compositingOutput])
+{
+    WriteCompositingRaster(compositingOutput);
+    return;
+}
 
 RunManagedRasterContracts();
 RunCompositingEffectContracts();
@@ -21,6 +26,53 @@ Console.WriteLine("G6-5R managed path/clip/fill/stroke/shadow contracts: PASS");
 Console.WriteLine("G6-5R-C managed group-opacity/saveLayer/backdrop contracts: PASS");
 Console.WriteLine("G6-5R-C retained subtree ownership/replay contracts: PASS");
 Console.WriteLine("G6-5R Roboto/Material/Cupertino Icons glyph contracts: PASS");
+
+static void WriteCompositingRaster(string output)
+{
+    const int width = 256;
+    const int height = 160;
+    var pixels = new byte[width * height * 4];
+    var canvas = new SoftwareRasterCanvas(pixels, width, height);
+    for (var y = 0; y < height; y += 16)
+    for (var x = 0; x < width; x += 16)
+    {
+        var color = (((x / 16) + (y / 16)) & 1) == 0
+            ? Color.FromArgb(255, 245, 241, 247)
+            : Color.FromArgb(255, 73, 69, 79);
+        canvas.DrawRect(Rect.FromLeftTopWidthHeight(x, y, 16, 16), new RasterPaint(color));
+    }
+
+    var panel = Rect.FromLeftTopWidthHeight(32, 32, 192, 96);
+    canvas.Save();
+    canvas.ClipRect(panel);
+    canvas.SaveLayer(new RasterLayerOptions(
+        Bounds: panel,
+        BackdropFilter: new RasterImageFilter(RasterImageFilterKind.Blur, 6, 2, RasterTileMode.Clamp)));
+    canvas.DrawRect(panel, new RasterPaint(Color.FromArgb(107, 255, 255, 255)));
+    canvas.Restore();
+    canvas.Restore();
+
+    var foreground = Rect.FromLeftTopWidthHeight(52, 52, 44, 32);
+    canvas.SaveLayer(new RasterLayerOptions(
+        Bounds: Rect.FromLeftTopWidthHeight(46, 46, 56, 44),
+        ImageFilter: new RasterImageFilter(RasterImageFilterKind.Blur, 2, 2, RasterTileMode.Clamp)));
+    canvas.DrawRect(foreground, new RasterPaint(Color.FromArgb(255, 179, 38, 30)));
+    canvas.Restore();
+
+    var opacity = Rect.FromLeftTopWidthHeight(168, 80, 40, 36);
+    canvas.SaveLayer(new RasterLayerOptions(Bounds: opacity, Opacity: 0.65));
+    canvas.DrawRect(opacity, new RasterPaint(Color.FromArgb(255, 103, 80, 164)));
+    canvas.Restore();
+
+    output = Path.GetFullPath(output);
+    Directory.CreateDirectory(Path.GetDirectoryName(output)!);
+    using var bitmap = new SKBitmap(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
+    System.Runtime.InteropServices.Marshal.Copy(pixels, 0, bitmap.GetPixels(), pixels.Length);
+    using var image = SKImage.FromBitmap(bitmap);
+    using var encoded = image.Encode(SKEncodedImageFormat.Png, 100);
+    using var stream = File.Create(output);
+    encoded.SaveTo(stream);
+}
 
 static void WriteColorReference()
 {
@@ -277,7 +329,9 @@ static void RunBundledFontContracts()
 static string FindRepositoryRoot()
 {
     for (var directory = new DirectoryInfo(AppContext.BaseDirectory); directory is not null; directory = directory.Parent)
-        if (File.Exists(Path.Combine(directory.FullName, "goal6.md"))) return directory.FullName;
+        if (File.Exists(Path.Combine(directory.FullName, "goal7.md")) &&
+            File.Exists(Path.Combine(directory.FullName, "Doroti", "Doroti.slnx")))
+            return directory.FullName;
     throw new DirectoryNotFoundException("Could not locate the DorotiLab repository root.");
 }
 

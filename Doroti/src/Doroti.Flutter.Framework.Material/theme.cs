@@ -4,7 +4,7 @@
 // Doroti typed semantic compiler 3.0.0; source: ../../../flutter-master/packages/flutter/lib/src/material/theme.dart
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using Stopwatch = System.Diagnostics.Stopwatch;
 using System.Linq;
 using System.Threading.Tasks;
 using Doroti.Flutter.Runtime;
@@ -122,7 +122,7 @@ public class AnimatedTheme : global::Doroti.Generated.Framework.Widgets.Implicit
         this.child = child;
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.AnimatedWidgetBaseState<AnimatedTheme> createState() => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.AnimatedWidgetBaseState<AnimatedTheme>>(new _AnimatedThemeState__theme());
+    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _AnimatedThemeState__theme());
 }
 
 internal class _AnimatedThemeState__theme : global::Doroti.Generated.Framework.Widgets.AnimatedWidgetBaseState<AnimatedTheme>

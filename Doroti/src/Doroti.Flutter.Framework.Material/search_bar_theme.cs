@@ -4,7 +4,7 @@
 // Doroti typed semantic compiler 3.0.0; source: ../../../flutter-master/packages/flutter/lib/src/material/search_bar_theme.dart
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using Stopwatch = System.Diagnostics.Stopwatch;
 using System.Linq;
 using System.Threading.Tasks;
 using Doroti.Flutter.Runtime;

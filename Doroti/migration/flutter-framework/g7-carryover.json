@@ -1,8 +1,8 @@
 {
   "schemaVersion": "doroti.g7-carryover/v1",
-  "milestone": "G7-0",
+  "milestone": "G7-1",
   "status": "PASS",
-  "scope": "carry-over classification and reproducible Windows/Web release baseline; open blockers remain assigned to G7-1 through G7-6",
+  "scope": "G7-1 shared correctness closed; remaining release blockers are assigned to G7-2 through G7-6",
   "sourcePins": {
     "dorotiCommit": "5379137447162adb2957212ea2f336894effe05e",
     "worktreeDirty": true,
@@ -24,7 +24,7 @@
     {
       "id": "managed-focus-frame-dispatch",
       "evidence": "g7-managed-regression.json",
-      "selectionReason": "first current failure in the predecessor managed Widgets regression",
+      "selectionReason": "closed predecessor regression proving focus microtask through registered per-view frame dispatch",
       "capabilities": [
         "focus-request",
         "microtask",
@@ -33,7 +33,7 @@
     },
     {
       "id": "calendar-date-picker",
-      "evidence": "g6-material-visual-differential.json",
+      "evidence": "g7-material-reference-evidence.json",
       "selectionReason": "existing fidelity-risk fixture spanning glyph, baseline, grid, state, corner, and shadow",
       "capabilities": [
         "material-reference"
@@ -93,47 +93,47 @@
   "releaseBlockers": [
     {
       "id": "material-reference-and-generation",
-      "state": "open",
+      "state": "closed",
       "owner": "compiler/lowerer and Material fidelity",
       "followUpMilestone": "G7-1V",
       "reproduction": {
-        "command": "Doroti/eng/validate-g6-material-fidelity.ps1 -Shard Visual",
+        "command": "Doroti/eng/validate-g7-shared-closure.ps1 -Gate Visual",
         "maxMinutes": 20
       },
-      "evidence": "g6-material-visual-differential.json and g7-compatibility-debt.json"
+      "evidence": "g7-material-reference-evidence.json and g7-compatibility-debt.json"
     },
     {
       "id": "windows-input-capabilities",
-      "state": "open",
+      "state": "closed",
       "owner": "Windows host input and shared gesture/semantics pipeline",
       "followUpMilestone": "G7-1I",
       "reproduction": {
-        "command": "Doroti/eng/validate-g6-pointer-interaction.ps1",
+        "command": "Doroti/eng/validate-g7-shared-closure.ps1 -Gate Input",
         "maxMinutes": 20
       },
-      "evidence": "g6-pointer-interaction-evidence.json"
+      "evidence": "g7-native-interaction-evidence.json"
     },
     {
       "id": "managed-focus-frame-dispatch",
-      "state": "open",
+      "state": "closed",
       "owner": "managed view bootstrap and per-view frame dispatcher",
       "followUpMilestone": "G7-1C",
       "reproduction": {
-        "command": "Doroti/eng/validate-g7-baseline.ps1 -Shard ManagedRegression",
+        "command": "Doroti/eng/validate-g7-shared-closure.ps1 -Gate Compositing",
         "maxMinutes": 20
       },
       "evidence": "g7-managed-regression.json"
     },
     {
       "id": "compositing-reference-retained-c1",
-      "state": "open",
+      "state": "closed",
       "owner": "scene/raster retained effect pipeline",
       "followUpMilestone": "G7-1C",
       "reproduction": {
-        "command": "Doroti/eng/validate-g6-compositing-effects.ps1 -Shard Evidence",
+        "command": "Doroti/eng/validate-g7-shared-closure.ps1 -Gate Compositing",
         "maxMinutes": 20
       },
-      "evidence": "g6-compositing-effects-evidence.json"
+      "evidence": "g7-compositing-evidence.json"
     },
     {
       "id": "cupertino-adaptive-generated-parity",
@@ -161,7 +161,7 @@
       "id": "solution-format-baseline",
       "state": "open",
       "owner": "source owners of the committed formatting baseline",
-      "followUpMilestone": "G7-1 before integrated release",
+      "followUpMilestone": "G7-5 integrated release cleanup",
       "reproduction": {
         "command": "Doroti/eng/validate-g7-baseline.ps1 -Shard FormatBaseline",
         "maxMinutes": 20
@@ -221,7 +221,7 @@
     "long-duration-gpu-soak"
   ],
   "consistency": {
-    "activeReleaseBlockers": 9,
+    "activeReleaseBlockers": 5,
     "blockersMissingOwnerCommandOrMilestone": 0,
     "stalePassesInActiveReleaseGate": 0,
     "historicalCountsReaggregated": false
@@ -237,7 +237,7 @@
       "name": "ManagedRegression",
       "command": "validate-g7-baseline.ps1 -Shard ManagedRegression",
       "maxMinutes": 20,
-      "status": "PASS-blocker-reproduced"
+      "status": "PASS"
     },
     {
       "name": "Product",

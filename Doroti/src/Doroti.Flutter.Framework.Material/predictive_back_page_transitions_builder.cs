@@ -404,7 +404,7 @@ internal class _PredictiveBackFullscreenPageTransitionState__predictive_back_pag
     internal const double _kOpacityFullyOpened = 1.0;
     internal const double _kOpacityStartTransition = 0.95;
     internal const double _kCommitAt = 0.65;
-    internal static double _kWeightPreCommit = _kCommitAt;
+    internal static double _kWeightPreCommit => _kCommitAt;
     internal static double _kWeightPostCommit = (1L - _kWeightPreCommit);
     internal const double _kScreenWidthDivisionFactor = 20.0;
     internal const double _kXShiftAdjustment = 8.0;

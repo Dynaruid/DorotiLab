@@ -92,7 +92,7 @@ internal class _MaterialScrollbar__scrollbar : global::Doroti.Generated.Framewor
     {
     }
 
-    public override _MaterialScrollbarState__scrollbar createState() => new _MaterialScrollbarState__scrollbar();
+    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _MaterialScrollbarState__scrollbar());
 }
 
 internal class _MaterialScrollbarState__scrollbar : global::Doroti.Generated.Framework.Widgets.RawScrollbarState<_MaterialScrollbar__scrollbar>

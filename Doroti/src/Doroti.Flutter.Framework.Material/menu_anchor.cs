@@ -1559,7 +1559,7 @@ internal class _MenuBarAnchor__menu_anchor : MenuAnchor
     {
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.State<MenuAnchor> createState() => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.State<MenuAnchor>>(new _MenuBarAnchorState__menu_anchor());
+    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _MenuBarAnchorState__menu_anchor());
 }
 
 internal class _MenuBarAnchorState__menu_anchor : _MenuAnchorState__menu_anchor

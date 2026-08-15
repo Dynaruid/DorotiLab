@@ -87,7 +87,7 @@ public class MaterialBanner : global::Doroti.Generated.Framework.Widgets.Statefu
 
     public virtual MaterialBanner withAnimation(global::Doroti.Generated.Framework.Animation.Animation<double> newAnimation, global::Doroti.Generated.Framework.Foundation.Key? fallbackKey = null)
     {
-        return new MaterialBanner(key: (this.key ?? fallbackKey), content: this.content, contentTextStyle: this.contentTextStyle, actions: this.actions, elevation: this.elevation, leading: this.leading, minActionBarHeight: this.minActionBarHeight, backgroundColor: this.backgroundColor, surfaceTintColor: this.surfaceTintColor, shadowColor: this.shadowColor, dividerColor: this.dividerColor, padding: this.padding, margin: this.margin, leadingPadding: this.leadingPadding, forceActionsBelow: this.forceActionsBelow, overflowAlignment: this.overflowAlignment, animation: newAnimation, onVisible: () => this.onVisible());
+        return new MaterialBanner(key: (this.key ?? fallbackKey), content: this.content, contentTextStyle: this.contentTextStyle, actions: this.actions, elevation: this.elevation, leading: this.leading, minActionBarHeight: this.minActionBarHeight, backgroundColor: this.backgroundColor, surfaceTintColor: this.surfaceTintColor, shadowColor: this.shadowColor, dividerColor: this.dividerColor, padding: this.padding, margin: this.margin, leadingPadding: this.leadingPadding, forceActionsBelow: this.forceActionsBelow, overflowAlignment: this.overflowAlignment, animation: newAnimation, onVisible: this.onVisible);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

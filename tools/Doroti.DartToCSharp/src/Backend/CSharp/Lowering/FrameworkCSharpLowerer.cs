@@ -45,7 +45,7 @@ internal sealed partial class FrameworkCSharpLowerer
         if (!preservesG31Artifact)
         {
             builder.AppendLine("using System.Collections.Generic;");
-            builder.AppendLine("using Stopwatch = System.Diagnostics.Stopwatch;");
+            builder.AppendLine("using System.Diagnostics;");
             builder.AppendLine("using System.Linq;");
             builder.AppendLine("using System.Threading.Tasks;");
         }

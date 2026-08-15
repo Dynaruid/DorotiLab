@@ -4,7 +4,7 @@
 // Doroti typed semantic compiler 3.0.0; source: ../../../flutter-master/packages/flutter/lib/src/material/material.dart
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using Stopwatch = System.Diagnostics.Stopwatch;
 using System.Linq;
 using System.Threading.Tasks;
 using Doroti.Flutter.Runtime;
@@ -298,7 +298,7 @@ public class _RenderInkFeatures__material : global::Doroti.Generated.Framework.R
     public override bool hitTestSelf(Offset position) => this.absorbHitTest;
     public override void paint(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        List<InkFeature>? inkFeatures__23989 = this._inkFeatures;
+        List<InkFeature>? inkFeatures__23989 = this._inkFeatures?.ToList();
         if (((inkFeatures__23989 is not null) && System.Linq.Enumerable.Any(inkFeatures__23989)))
         {
             global::Doroti.Flutter.Ui.Canvas canvas__24093 = ((global::Doroti.Flutter.Ui.Canvas)(object?)((global::Doroti.Generated.Framework.Rendering.PaintingContext)context).canvas);
@@ -481,7 +481,7 @@ internal class _MaterialInterior__material : global::Doroti.Generated.Framework.
         System.Diagnostics.Debug.Assert((elevation >= 0.0));
     }
 
-    public override _MaterialInteriorState__material createState() => new _MaterialInteriorState__material();
+    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _MaterialInteriorState__material());
     public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);

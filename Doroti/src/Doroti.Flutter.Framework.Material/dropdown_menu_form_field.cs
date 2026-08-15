@@ -43,7 +43,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         this.dropdownMenuEntries = dropdownMenuEntries;
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.FormFieldState<T> createState() => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.FormFieldState<T>>(new _DropdownMenuFormFieldState__dropdown_menu_form_field<T>());
+    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _DropdownMenuFormFieldState__dropdown_menu_form_field<T>());
 }
 
 internal class _DropdownMenuFormFieldState__dropdown_menu_form_field<T> : global::Doroti.Generated.Framework.Widgets.FormFieldState<T>

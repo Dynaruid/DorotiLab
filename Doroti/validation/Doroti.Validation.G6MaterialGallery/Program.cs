@@ -127,15 +127,41 @@ internal static partial class Program
                     ("topLeft", 13, 32642), ("bottomRight", 17, 32642),
                     ("topRight", 14, 32643), ("bottomLeft", 16, 32643),
                 };
+                if (!GetWindowRect(hwnd, out var windowRect))
+                    throw new InvalidOperationException("Win32 window rectangle was unavailable for coordinate cursor validation.");
                 foreach (var chromeCase in chromeCases)
                 {
+                    var coordinate = chromeCase.Name switch
+                    {
+                        "left" => (windowRect.Left + 1, (windowRect.Top + windowRect.Bottom) / 2),
+                        "right" => (windowRect.Right - 2, (windowRect.Top + windowRect.Bottom) / 2),
+                        "top" => ((windowRect.Left + windowRect.Right) / 2, windowRect.Top + 1),
+                        "bottom" => ((windowRect.Left + windowRect.Right) / 2, windowRect.Bottom - 2),
+                        "topLeft" => (windowRect.Left + 1, windowRect.Top + 1),
+                        "bottomRight" => (windowRect.Right - 2, windowRect.Bottom - 2),
+                        "topRight" => (windowRect.Right - 2, windowRect.Top + 1),
+                        "bottomLeft" => (windowRect.Left + 1, windowRect.Bottom - 2),
+                        _ => throw new ArgumentOutOfRangeException(),
+                    };
+                    var coordinatePayload = PackPoint(coordinate.Item1, coordinate.Item2);
+                    var coordinateHit = (int)SendMessage(hwnd, 0x0084, 0, coordinatePayload);
+                    if (coordinateHit != chromeCase.HitTest)
+                        throw new InvalidDataException($"Non-client {chromeCase.Name} coordinate hit mismatch: actual={coordinateHit}, expected={chromeCase.HitTest}, coordinate={coordinate}.");
                     _ = SendMessage(hwnd, 0x0020, hwnd,
-                        (nint)((0x0200 << 16) | (chromeCase.HitTest & 0xffff)));
+                        (nint)((0x0200 << 16) | (coordinateHit & 0xffff)));
                     var actual = GetCursor();
                     var expected = LoadCursor(0, chromeCase.Cursor);
                     if (actual != expected)
                         throw new InvalidDataException($"Non-client {chromeCase.Name} cursor mismatch: actual=0x{actual:X}, expected=0x{expected:X}.");
-                    chromeMappings.Add(new { chromeCase.Name, chromeCase.HitTest, cursorIdentifier = chromeCase.Cursor, actualHandle = $"0x{actual:X}" });
+                    chromeMappings.Add(new
+                    {
+                        chromeCase.Name,
+                        chromeCase.HitTest,
+                        coordinate = new { screenX = coordinate.Item1, screenY = coordinate.Item2 },
+                        coordinateEvent = "WM_NCHITTEST->WM_SETCURSOR",
+                        cursorIdentifier = chromeCase.Cursor,
+                        actualHandle = $"0x{actual:X}",
+                    });
                 }
 
                 var surfaceBefore = target.CaptureDiagnostics(ViewId).Frame.SurfaceGeneration;
@@ -237,6 +263,21 @@ internal static partial class Program
 
     [DllImport("user32.dll", EntryPoint = "SendMessageW")]
     private static extern nint SendMessage(nint window, uint message, nint wParam, nint lParam);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GetWindowRect(nint window, out NativeRect rect);
+
+    private static nint PackPoint(int x, int y) => (nint)(((long)(ushort)y << 16) | (ushort)x);
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct NativeRect
+    {
+        internal int Left;
+        internal int Top;
+        internal int Right;
+        internal int Bottom;
+    }
 
     [DllImport("user32.dll")]
     private static extern nint GetCursor();

@@ -1,8 +1,8 @@
 {
   "schemaVersion": "doroti.g6-app-slices/v1",
   "milestone": "G6-4",
-  "capturedAtUtc": "2026-08-13T10:18:45.1460930Z",
-  "status": "verified-windows-x64-strict-gpu",
+  "capturedAtUtc": "2026-08-15T00:39:32.9637514Z",
+  "status": "partial",
   "reference": {
     "path": "Doroti/validation/Doroti.Validation.G6AppSlices/Resources/g6-reference-traces.json",
     "sha256": "b583a1f718b1f2154afb69470b8816e4e3da26433800ff76fd289aac42e25efe"
@@ -12,7 +12,7 @@
       "schemaVersion": "doroti.g6-app-slice-evidence/v1",
       "milestone": "G6-4",
       "slice": "N0",
-      "capturedAtUtc": "2026-08-13T19:18:23.189895+09:00",
+      "capturedAtUtc": "2026-08-15T08:59:38.548128+09:00",
       "status": "verified-windows-x64-strict-gpu",
       "reference": {
         "schemaVersion": "doroti.g6-app-slice-reference/v1",
@@ -49,7 +49,7 @@
         "nativeWindow": true,
         "hwnd": "actual",
         "backend": "skia-wgl-opengl-gpu",
-        "presented": 121,
+        "presented": 202,
         "failed": 0,
         "cancelled": 0,
         "softwareFallback": false,
@@ -57,7 +57,7 @@
         "input": {
           "capabilities": {
             "mouse": true,
-            "touch": true,
+            "touch": false,
             "pen": false,
             "wheel": true,
             "pointerCapture": true,
@@ -99,94 +99,19 @@
       "schemaVersion": "doroti.g6-app-slice-evidence/v1",
       "milestone": "G6-4",
       "slice": "O0",
-      "capturedAtUtc": "2026-08-13T19:18:29.0168958+09:00",
-      "status": "verified-windows-x64-strict-gpu",
-      "reference": {
-        "schemaVersion": "doroti.g6-app-slice-reference/v1",
-        "expectedTrace": [
-          "dialog",
-          "snackBar",
-          "tooltip",
-          "popupMenu",
-          "modalBottomSheet",
-          "persistentBottomSheet"
-        ],
-        "actualTrace": [
-          "dialog",
-          "snackBar",
-          "tooltip",
-          "popupMenu",
-          "modalBottomSheet",
-          "persistentBottomSheet"
-        ],
-        "pass": true
-      },
-      "managed": {
-        "status": "verified",
-        "checks": [
-          "dialog",
-          "snackBar",
-          "tooltip",
-          "popupMenu",
-          "modalBottomSheet",
-          "persistentBottomSheet"
-        ]
-      },
-      "live": {
-        "nativeWindow": true,
-        "hwnd": "actual",
-        "backend": "skia-wgl-opengl-gpu",
-        "presented": 173,
-        "failed": 0,
-        "cancelled": 0,
-        "softwareFallback": false,
-        "semanticsNodes": 14,
-        "input": {
-          "capabilities": {
-            "mouse": true,
-            "touch": true,
-            "pen": false,
-            "wheel": true,
-            "pointerCapture": true,
-            "physicalKeys": true,
-            "textInput": true
-          },
-          "pointerPackets": 0,
-          "keyPackets": 0,
-          "focusChanges": 2,
-          "metricsChanges": 2
-        },
-        "interactionCount": 9,
-        "scrollOffset": -1,
-        "changedPixels": 26501,
-        "state": "slice=O0;revision=10;toggle=False;text=initial;locale=en-US;lazy=0;scroll=-1",
-        "nativeInputTrace": [],
-        "externalAutomation": [],
-        "resourceClosure": {
-          "activeWindows": 0,
-          "windowsCreated": 1,
-          "windowsReleased": 1,
-          "activeOpenGlContexts": 0,
-          "openGlContextsCreated": 1,
-          "openGlContextsReleased": 1,
-          "isBalanced": true
-        }
-      },
-      "boundaries": {
-        "automatedNative": "verified-windows-x64",
-        "physicalIme": "notVerified",
-        "physicalAccessibility": "notVerified",
-        "linux": "notVerified",
-        "macOS": "notVerified",
-        "otherRids": "notVerified"
-      },
-      "unsupportedSilentSuccessCount": 0
+      "status": "failed",
+      "capturedAtUtc": "2026-08-15T08:59:41.286229+09:00",
+      "exception": {
+        "type": "System.InvalidOperationException",
+        "message": "Flutter framework error.",
+        "stackTrace": "   at Program.WaitUntil(Func`1 predicate, WindowsFlutterTarget target, SliceEntrypoint entrypoint, TimeSpan timeout) in C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\Doroti.Validation.G6AppSlices\\Program.cs:line 457\r\n   at Program.Run(SliceOptions options) in C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\Doroti.Validation.G6AppSlices\\Program.cs:line 95\r\n   at Program.Main(String[] args) in C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\Doroti.Validation.G6AppSlices\\Program.cs:line 44"
+      }
     },
     {
       "schemaVersion": "doroti.g6-app-slice-evidence/v1",
       "milestone": "G6-4",
       "slice": "F0",
-      "capturedAtUtc": "2026-08-13T19:18:31.9680075+09:00",
+      "capturedAtUtc": "2026-08-15T09:39:11.8555317+09:00",
       "status": "verified-windows-x64-strict-gpu",
       "reference": {
         "schemaVersion": "doroti.g6-app-slice-reference/v1",
@@ -228,7 +153,7 @@
         "nativeWindow": true,
         "hwnd": "actual",
         "backend": "skia-wgl-opengl-gpu",
-        "presented": 37,
+        "presented": 46,
         "failed": 0,
         "cancelled": 0,
         "softwareFallback": false,
@@ -236,21 +161,21 @@
         "input": {
           "capabilities": {
             "mouse": true,
-            "touch": true,
+            "touch": false,
             "pen": false,
             "wheel": true,
             "pointerCapture": true,
             "physicalKeys": true,
             "textInput": true
           },
-          "pointerPackets": 5,
+          "pointerPackets": 4,
           "keyPackets": 2,
           "focusChanges": 2,
           "metricsChanges": 2
         },
         "interactionCount": 3,
         "scrollOffset": -1,
-        "changedPixels": 12750,
+        "changedPixels": 19174,
         "state": "slice=F0;revision=6;toggle=False;text=Doroti 한글한글\t;locale=en-US;lazy=0;scroll=-1",
         "nativeInputTrace": [
           "win32-pointer-focus",
@@ -282,7 +207,7 @@
       "schemaVersion": "doroti.g6-app-slice-evidence/v1",
       "milestone": "G6-4",
       "slice": "S0",
-      "capturedAtUtc": "2026-08-13T19:18:33.9933253+09:00",
+      "capturedAtUtc": "2026-08-15T09:39:19.8434194+09:00",
       "status": "verified-windows-x64-strict-gpu",
       "reference": {
         "schemaVersion": "doroti.g6-app-slice-reference/v1",
@@ -330,21 +255,21 @@
         "input": {
           "capabilities": {
             "mouse": true,
-            "touch": true,
+            "touch": false,
             "pen": false,
             "wheel": true,
             "pointerCapture": true,
             "physicalKeys": true,
             "textInput": true
           },
-          "pointerPackets": 10,
+          "pointerPackets": 9,
           "keyPackets": 2,
           "focusChanges": 2,
           "metricsChanges": 2
         },
         "interactionCount": 1,
         "scrollOffset": 100,
-        "changedPixels": 31003,
+        "changedPixels": 213881,
         "state": "slice=S0;revision=3;toggle=False;text=initial;locale=en-US;lazy=25;scroll=100",
         "nativeInputTrace": [
           "win32-pointer-focus",
@@ -487,7 +412,7 @@
       "schemaVersion": "doroti.g6-app-slice-evidence/v1",
       "milestone": "G6-4",
       "slice": "A0",
-      "capturedAtUtc": "2026-08-13T19:18:43.005623+09:00",
+      "capturedAtUtc": "2026-08-15T09:39:32.8024492+09:00",
       "status": "verified-windows-x64-strict-gpu",
       "reference": {
         "schemaVersion": "doroti.g6-app-slice-reference/v1",
@@ -521,7 +446,7 @@
         "nativeWindow": true,
         "hwnd": "actual",
         "backend": "skia-wgl-opengl-gpu",
-        "presented": 45,
+        "presented": 89,
         "failed": 0,
         "cancelled": 0,
         "softwareFallback": false,
@@ -529,21 +454,21 @@
         "input": {
           "capabilities": {
             "mouse": true,
-            "touch": true,
+            "touch": false,
             "pen": false,
             "wheel": true,
             "pointerCapture": true,
             "physicalKeys": true,
             "textInput": true
           },
-          "pointerPackets": 0,
+          "pointerPackets": 54,
           "keyPackets": 0,
-          "focusChanges": 2,
+          "focusChanges": 14,
           "metricsChanges": 2
         },
         "interactionCount": 8,
         "scrollOffset": -1,
-        "changedPixels": 1836577,
+        "changedPixels": 1836570,
         "state": "slice=A0;revision=8;toggle=False;text=external-uia-text;locale=ko-KR;lazy=0;scroll=-1",
         "nativeInputTrace": [],
         "externalAutomation": [

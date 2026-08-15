@@ -1,6 +1,6 @@
 # Doroti 7차 목표 — 제품 정확성 closure와 Windows/Web release
 
-> 상태: G7-0 ✅ 완료 — G7-1 shared correctness와 G7-3 Web build/publish 착수 가능
+> 상태: G7-1 ✅ 완료 — G7-2 Cupertino/product와 G7-3 Web build/publish 착수 가능
 > 작성일: 2026-08-14
 > 측정 핵심화: 2026-08-15
 > 선행 기록: [`history/26-08-14/goal6-summary.md`](history/26-08-14/goal6-summary.md)
@@ -170,6 +170,16 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 - `Doroti/migration/flutter-framework/g7-native-interaction-evidence.json`
 - `Doroti/migration/flutter-framework/g7-compositing-evidence.json`
 - `Doroti/eng/validate-g7-shared-closure.ps1 -Gate <Visual|Input|Compositing>`
+
+실행 결과(2026-08-15):
+
+- G7-1V `PASS`: Flutter `56b8e1a851a594b1a154f8ea93270807dab22b9a` 고정 fixture에서 CalendarDatePicker glyph/baseline/grid/selected/corner/shadow differential을 통과했다. M3/M4 독립 재생성은 각각 83/55개 `.g.cs`에서 hash diff 0이었고, 9 batch/249 file review stage와 Material candidate build를 통과한 뒤 202개 Material 제품 소스를 승격해 identity diff 0으로 닫았다.
+- generation 금지 패턴 `PASS`: worktree `.g.cs` 직접 수정 0, widget type 대체 0, 숫자 local semantic rewrite 0이다. 기존 193개 review adaptation은 suffix-agnostic semantic pattern과 owner/removal condition이 있는 review stage로 분류했고, 남은 promoted diff 23개는 모두 G7-2 소유 Cupertino 전환이다.
+- G7-1I `PASS`: hover/click, drag/capture, wheel, key, text/composition, semantics action 여섯 능력군이 실제 HWND strict-GPU causal trace를 남겼다. Win32 client/non-client cursor는 실제 `WM_NCHITTEST -> WM_SETCURSOR` 좌표로 검증했고 direct callback native PASS와 stuck hover/capture는 0이다.
+- 입력 live 과정에서 드러난 nullable callback/collection 강제 실행과 `TextSelectionOverlay` 초기화 누락을 공용 lowerer 및 승격 제품에 함께 복구했다. F0/S0/A0와 외부 UI Automation이 모두 통과한다.
+- G7-1C `PASS`: 52/52 scene/canvas operation owner coverage, pinned foreground/backdrop differential, managed group/saveLayer/filter, strict-GPU retained first/unchanged/changed/resize cache invalidation, focus/frame-dispatch 회귀와 resource balance를 통과했다. C2는 owner가 있고 현재 제품 consumer blocker는 0이다.
+- 재현 명령은 `validate-g7-shared-closure.ps1 -Gate Visual|Input|Compositing`이며 세 evidence의 `status`는 모두 `pass`다. physical input/IME/accessibility는 계획대로 G7-6 `notVerified`로 유지한다.
+- 현재 승격 제품 기준 `validate-g7-baseline.ps1 -Shard All`, Windows strict-GPU 제품 smoke, `Doroti.slnx` Release build(경고 0/오류 0), carry-over 일관성과 `git diff --check`도 통과했다. G7-1 blocker 4개는 `closed`, 후속 milestone blocker 5개는 상태를 승계한다.
 
 ### G7-2 — Cupertino/adaptive와 generated Dart product closure
 

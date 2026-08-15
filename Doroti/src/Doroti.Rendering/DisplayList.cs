@@ -27,6 +27,8 @@ public sealed record DrawImageCommand(ResourceId Resource, Rect Source, Rect Des
 
 public sealed record DrawTextCommand(string Text, Offset Origin, double FontSize, RasterPaint Paint, string? FontFamily) : DisplayCommand;
 
+public sealed record ReplayDisplayListCommand(DisplayList DisplayList) : DisplayCommand;
+
 public sealed class DisplayList
 {
     private readonly IReadOnlyList<DisplayCommand> _commands;
@@ -93,6 +95,9 @@ public sealed class DisplayList
                     break;
                 case DrawTextCommand text:
                     canvas.DrawText(text.Text, text.Origin, text.FontSize, text.Paint, text.FontFamily);
+                    break;
+                case ReplayDisplayListCommand replay:
+                    replay.DisplayList.Execute(canvas, resources);
                     break;
                 default:
                     throw new InvalidOperationException($"Unknown display command {command.GetType().Name}.");
@@ -217,6 +222,13 @@ public sealed class DisplayListBuilder
         _commands.Add(new DrawTextCommand(text, origin, fontSize, paint.Validate(), fontFamily));
     }
 
+    public void Replay(DisplayList displayList)
+    {
+        EnsureMutable();
+        ArgumentNullException.ThrowIfNull(displayList);
+        _commands.Add(new ReplayDisplayListCommand(displayList));
+    }
+
     public DisplayList Build()
     {
         EnsureMutable();
@@ -225,8 +237,12 @@ public sealed class DisplayListBuilder
             throw new InvalidOperationException($"DisplayList has {_saveDepth} unmatched save command(s).");
         }
         _built = true;
-        var resources = _commands.OfType<DrawImageCommand>()
-            .Select(command => command.Resource)
+        var resources = _commands.SelectMany(command => command switch
+            {
+                DrawImageCommand image => [image.Resource],
+                ReplayDisplayListCommand replay => replay.DisplayList.Resources,
+                _ => [],
+            })
             .Distinct()
             .ToArray();
         return new(_commands.ToArray(), resources, ComputeBounds(), EstimateByteSize());
@@ -279,6 +295,9 @@ public sealed class DisplayListBuilder
                         text.FontSize);
                     drawn = matrix.TransformBounds(textRect).Intersect(clip);
                     break;
+                case ReplayDisplayListCommand replay:
+                    drawn = matrix.TransformBounds(replay.DisplayList.Bounds).Intersect(clip);
+                    break;
             }
             if (drawn is { IsEmpty: false } value)
             {
@@ -299,6 +318,7 @@ public sealed class DisplayListBuilder
         DrawPathCommand path => 1 + (path.Path.Points.Count * 2 * sizeof(double)) + sizeof(uint) + sizeof(double),
         DrawImageCommand => 1 + sizeof(ulong) + (8 * sizeof(double)) + sizeof(double),
         DrawTextCommand text => 1 + ((text.Text.Length + (text.FontFamily?.Length ?? 0)) * sizeof(char)) + (3 * sizeof(double)) + sizeof(uint),
+        ReplayDisplayListCommand replay => 1 + replay.DisplayList.ByteSize,
         _ => 1,
     });
 

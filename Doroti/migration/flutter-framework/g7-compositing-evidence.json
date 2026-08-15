@@ -1,0 +1,123 @@
+{
+  "schemaVersion": "doroti.g7-compositing-evidence/v1",
+  "milestone": "G7-1C",
+  "capturedAtUtc": "2026-08-15T00:40:10.5412178+00:00",
+  "status": "pass",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "chain": {
+    "typedPayload": "pass",
+    "translation": "pass",
+    "managedConsumer": "pass",
+    "strictGpuConsumer": "pass",
+    "unknown": 0,
+    "silentNoOp": 0,
+    "downgrade": 0,
+    "cpuFullFrameFallback": 0
+  },
+  "reference": {
+    "status": "pass",
+    "flutter": "Doroti/validation/cases/g7-material-calendar-reference/test/goldens/flutter-compositing.png",
+    "doroti": "Doroti/artifacts/g7-shared-closure/compositing-doroti.png",
+    "differential": {
+      "pixels": 40960,
+      "changedOverThreshold": 6,
+      "changedPercent": 0.0146,
+      "meanMaxChannelDelta": 0.6559,
+      "maxChannelDelta": 9
+    },
+    "fixture": "group opacity, clipped anisotropic backdrop, foreground blur, blend"
+  },
+  "retained": {
+    "first": {
+      "generation": 1,
+      "cache": {
+        "hits": 2,
+        "misses": 1,
+        "surfaceInvalidations": 0,
+        "entries": 1,
+        "surfaceGeneration": 1
+      }
+    },
+    "unchanged": {
+      "sameGeneration": 1,
+      "identicalPixels": true,
+      "cache": {
+        "hits": 3,
+        "misses": 1,
+        "surfaceInvalidations": 0,
+        "entries": 1,
+        "surfaceGeneration": 1
+      }
+    },
+    "changed": {
+      "generation": 2,
+      "changedPixels": 21600,
+      "cache": {
+        "hits": 3,
+        "misses": 2,
+        "surfaceInvalidations": 0,
+        "entries": 2,
+        "surfaceGeneration": 1
+      }
+    },
+    "resize": {
+      "width": 720,
+      "height": 520,
+      "cache": {
+        "hits": 4,
+        "misses": 3,
+        "surfaceInvalidations": 1,
+        "entries": 1,
+        "surfaceGeneration": 2
+      }
+    }
+  },
+  "frame": {
+    "submitted": 7,
+    "presented": 5,
+    "superseded": 1,
+    "stale": 1,
+    "failed": 0,
+    "cancelled": 0,
+    "queueDepth": 0,
+    "queueHighWatermark": 2,
+    "activeContexts": 1,
+    "activeFrames": 0,
+    "surfaceGeneration": 2,
+    "recoveryCount": 0,
+    "softwareFallbackUsed": false,
+    "backendIdentity": "skia-wgl-opengl-gpu"
+  },
+  "resourceClosure": {
+    "activeWindows": 0,
+    "windowsCreated": 1,
+    "windowsReleased": 1,
+    "activeOpenGlContexts": 0,
+    "openGlContextsCreated": 1,
+    "openGlContextsReleased": 1,
+    "isBalanced": true
+  },
+  "regression": {
+    "focusFrameDispatch": {
+      "frameDispatchCount": 2,
+      "focusTrace": [
+        "focus:editor",
+        "shortcut:accepted",
+        "intent:invoked",
+        "focus:root"
+      ],
+      "exception": null
+    },
+    "status": "pass"
+  },
+  "c2": {
+    "status": "deferred-owned-no-current-product-blocker",
+    "owner": "post-G7 product capability matrix",
+    "items": [
+      "texture/platformView",
+      "imageNine",
+      "atlas/vertices/points",
+      "performanceOverlay"
+    ]
+  }
+}

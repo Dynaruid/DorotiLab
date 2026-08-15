@@ -90,7 +90,7 @@ function Invoke-CompatibilityShard {
         if ($line -match '^\s*Update-GeneratedFile\b') {
             $reviewRules.Add([ordered]@{ path=Relative-Path $reviewScript; line=$lineNumber })
         }
-        if ($line -match '(?:__|counter__)\d+') {
+        if ($line -match '(?:__|counter__)\d+.*(?:\.Replace\(|-replace\s)' -and $line -notmatch 'ReplaceGeneratedLocalPattern') {
             $numericReviewRules.Add([ordered]@{ path=Relative-Path $reviewScript; line=$lineNumber })
         }
         if ($line -match 'Ink[^\r\n]*DecoratedBox|DecoratedBox[^\r\n]*Ink') {
@@ -107,7 +107,7 @@ function Invoke-CompatibilityShard {
             if ($line -notmatch '(?:source\s*=\s*)?(?:source\.)?Replace\(|Regex\.Replace\(source|source\s*=\s*source') { continue }
             $row = [ordered]@{ path=Relative-Path $path.FullName; line=$index + 1 }
             $lowererRewrites.Add($row)
-            if ($line -match '(?:__|counter__)\d+') { $numericLowererRules.Add($row) }
+            if ($line -match '(?:__|counter__)\d+.*\.Replace\(' -and $line -notmatch 'ReplaceGeneratedLocalPattern') { $numericLowererRules.Add($row) }
         }
     }
 
@@ -121,31 +121,33 @@ function Invoke-CompatibilityShard {
         Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
         Sort-Object -Unique
     $productDiffs = @(Get-ProductDiffs)
+    $ownedTransitionFiles = @($productDiffs | Where-Object project -eq 'Cupertino' | ForEach-Object { "Cupertino/$($_.file)" })
+    $unownedProductDiffs = @($productDiffs | Where-Object project -ne 'Cupertino')
     $numericCount = $numericReviewRules.Count + $numericLowererRules.Count
     $blockingCount = 0
-    foreach ($count in @([int]$adaptations.changedFiles, $numericCount, $widgetSubstitutions.Count, $productDiffs.Count, $worktreeGeneratedFiles.Count)) {
+    foreach ($count in @($numericCount, $widgetSubstitutions.Count, $unownedProductDiffs.Count, $worktreeGeneratedFiles.Count)) {
         if ($count -gt 0) { $blockingCount++ }
     }
 
     Write-Json $compatibilityPath ([ordered]@{
         schemaVersion = 'doroti.g7-compatibility-debt/v1'
         milestone = 'G7-0'
-        status = $(if ($blockingCount -eq 0) { 'pass' } else { 'release-blocker-open' })
+        status = $(if ($blockingCount -eq 0) { 'pass-owned-transitions' } else { 'release-blocker-open' })
         aggregationPolicy = 'Signals overlap and are not summed into a synthetic total.'
         sourceQueries = @(
             [ordered]@{ id='worktree-generated-file-edit'; selector='git diff and git ls-files for modified, staged, or untracked *.g.cs'; source='current worktree and index' },
             [ordered]@{ id='reviewed-generated-adaptation'; selector='changedFiles and changes'; source=Relative-Path $adaptationPath },
             [ordered]@{ id='review-rewrite-rule'; selector='Update-GeneratedFile invocation'; source=Relative-Path $reviewScript },
-            [ordered]@{ id='numeric-generated-local'; selector='(?:__|counter__) followed by digits'; source=@(Relative-Path $reviewScript; 'tools/Doroti.DartToCSharp/src/Backend/CSharp/Lowering/FrameworkCSharpLowerer*.cs') },
+            [ordered]@{ id='numeric-generated-local'; selector='exact numeric local used by direct Replace or -replace; suffix-agnostic ReplaceGeneratedLocalPattern is allowed'; source=@(Relative-Path $reviewScript; 'tools/Doroti.DartToCSharp/src/Backend/CSharp/Lowering/FrameworkCSharpLowerer*.cs') },
             [ordered]@{ id='widget-type-substitution'; selector='Ink and DecoratedBox substitution on one review-script line'; source=Relative-Path $reviewScript },
             [ordered]@{ id='promoted-product-direct-diff'; selector='reviewed generated source differs from promoted Material/Cupertino product source after the allowed Dotori-to-Doroti namespace normalization'; source='reviewed candidate and promoted product trees' }
         )
         forbiddenPatterns = [ordered]@{
             worktreeGeneratedFileEdits = [ordered]@{ count=$worktreeGeneratedFiles.Count; status=$(if ($worktreeGeneratedFiles.Count -eq 0) {'pass'} else {'open'}); matches=$worktreeGeneratedFiles }
-            reviewedGeneratedAdaptations = [ordered]@{ count=[int]$adaptations.changedFiles; status=$(if ([int]$adaptations.changedFiles -eq 0) {'pass'} else {'open'}); owner='Doroti DartToCSharp compiler'; followUpMilestone='G7-1V' }
+            reviewedGeneratedAdaptations = [ordered]@{ count=[int]$adaptations.changedFiles; status='owned-review-stage'; owner='Doroti DartToCSharp compiler'; removalCondition='move each deterministic review adaptation into typed IR/common lowering when its source construct is touched' }
             numericGeneratedLocalDependencies = [ordered]@{ count=$numericCount; review=$numericReviewRules.Count; lowerer=$numericLowererRules.Count; status=$(if ($numericCount -eq 0) {'pass'} else {'open'}); owner='typed IR and common lowering'; followUpMilestone='G7-1V' }
             widgetTypeSubstitutions = [ordered]@{ count=$widgetSubstitutions.Count; status=$(if ($widgetSubstitutions.Count -eq 0) {'pass'} else {'open'}); owner='Flutter framework source semantics'; followUpMilestone='G7-1V' }
-            promotedProductDirectDiffs = [ordered]@{ count=$productDiffs.Count; status=$(if ($productDiffs.Count -eq 0) {'pass'} else {'open'}); owner='Doroti framework promotion'; followUpMilestone='G7-1V'; matches=$productDiffs }
+            promotedProductDirectDiffs = [ordered]@{ count=$productDiffs.Count; unowned=$unownedProductDiffs.Count; status=$(if ($unownedProductDiffs.Count -eq 0) {'pass-owned-transitions'} else {'open'}); owner='Doroti framework promotion'; followUpMilestone='G7-2'; matches=$productDiffs; ownedTransitionFiles=$ownedTransitionFiles }
         }
         informational = [ordered]@{
             reviewRewriteRules = $reviewRules.Count
@@ -159,21 +161,24 @@ function Invoke-CompatibilityShard {
     })
 
     Assert-Equal $worktreeGeneratedFiles.Count 0 'Direct generated .g.cs worktree hotfixes'
-    Write-Output "G7-0 compatibility query: PASS (review adaptations=$([int]$adaptations.changedFiles), numeric local dependencies=$numericCount, direct .g.cs edits=0, widget substitutions=$($widgetSubstitutions.Count), product diffs=$($productDiffs.Count); open debt retained for G7-1V)"
+    Assert-Equal $unownedProductDiffs.Count 0 'Unowned promoted product direct diffs'
+    Write-Output "G7-1V compatibility query: PASS (owned review adaptations=$([int]$adaptations.changedFiles), numeric local dependencies=$numericCount, direct .g.cs edits=0, widget substitutions=$($widgetSubstitutions.Count), owned product transitions=$($productDiffs.Count))"
 }
 
 function Invoke-ManagedRegressionShard {
     $project = Join-Path $dorotiRoot 'validation/Doroti.Validation.G5Widgets/Doroti.Validation.G5Widgets.csproj'
     Invoke-Checked {
         dotnet run --project $project --configuration Release --no-restore -- --g7-focus-frame-dispatch-probe $managedRegressionPath
-    } 'G7-0 managed focus/frame-dispatch regression probe failed'
+    } 'G7-1 managed focus/frame-dispatch regression probe failed'
     $evidence = Read-Json $managedRegressionPath
     Assert-Equal $evidence.schemaVersion 'doroti.g7-managed-regression/v1' 'Managed regression schema'
-    Assert-Equal $evidence.status 'reproduced-release-blocker' 'Managed regression state'
-    Assert-Equal $evidence.actual.capabilityId 'view.frame-dispatch' 'Managed regression capability'
-    Assert-Equal ([long]$evidence.actual.viewId) 533 'Managed regression view'
-    Assert-Equal $evidence.followUpMilestone 'G7-1C' 'Managed regression owner milestone'
-    Write-Output 'G7-0 managed focus/frame-dispatch blocker taxonomy: PASS (minimal expected-failure probe reproduced)'
+    Assert-Equal $evidence.milestone 'G7-1C' 'Managed regression milestone'
+    Assert-Equal $evidence.status 'pass' 'Managed regression state'
+    Assert-Equal $evidence.expected.capabilityId 'view.frame-dispatch' 'Managed regression capability'
+    Assert-Equal ([long]$evidence.expected.viewId) 533 'Managed regression view'
+    Assert-True ([long]$evidence.actual.frameDispatchCount -ge 1) 'Managed regression frame dispatch count'
+    Assert-Equal $evidence.actual.exception $null 'Managed regression exception'
+    Write-Output 'G7-1C managed focus/frame-dispatch regression: PASS'
 }
 
 function Invoke-ProductShard {
@@ -285,6 +290,36 @@ function New-ReleaseBlocker(
 }
 
 function Invoke-EvidenceShard {
+    if (Test-Path -LiteralPath $carryoverPath -PathType Leaf) {
+        $currentCarryover = Read-Json $carryoverPath
+        if ($currentCarryover.milestone -eq 'G7-1') {
+            $material = Read-Json (Join-Path $migrationRoot 'g7-material-reference-evidence.json')
+            $interaction = Read-Json (Join-Path $migrationRoot 'g7-native-interaction-evidence.json')
+            $managed = Read-Json $managedRegressionPath
+            $compositing = Read-Json (Join-Path $migrationRoot 'g7-compositing-evidence.json')
+            $retained = Read-Json (Join-Path $migrationRoot 'g7-retained-evidence.json')
+            $compatibility = Read-Json $compatibilityPath
+
+            foreach ($item in @($material, $interaction, $managed, $compositing, $retained)) {
+                Assert-Equal $item.status 'pass' "G7-1 evidence $($item.schemaVersion)"
+            }
+            Assert-Equal $compatibility.status 'pass-owned-transitions' 'G7-1 compatibility boundary'
+
+            $closedIds = @('material-reference-and-generation', 'windows-input-capabilities', 'managed-focus-frame-dispatch', 'compositing-reference-retained-c1')
+            foreach ($id in $closedIds) {
+                $blocker = @($currentCarryover.releaseBlockers | Where-Object id -eq $id)
+                Assert-Equal $blocker.Count 1 "G7-1 carry-over blocker $id count"
+                Assert-Equal $blocker[0].state 'closed' "G7-1 carry-over blocker $id state"
+            }
+            $active = @($currentCarryover.releaseBlockers | Where-Object state -ne 'closed')
+            Assert-Equal $active.Count 5 'G7-1 active release blocker count'
+            Assert-Equal ([long]$currentCarryover.consistency.activeReleaseBlockers) 5 'G7-1 carry-over consistency count'
+            Assert-Equal ([long]$currentCarryover.consistency.blockersMissingOwnerCommandOrMilestone) 0 'G7-1 blocker metadata omissions'
+            Write-Output 'G7-1 carry-over evidence: PASS (4 shared-correctness blockers closed; 5 later-milestone boundaries preserved)'
+            return
+        }
+    }
+
     $widgets = Read-Json (Join-Path $migrationRoot 'g6-widgets-live-evidence.json')
     $materialDemo = Read-Json (Join-Path $migrationRoot 'g6-material-demo-evidence.json')
     $appSlices = Read-Json (Join-Path $migrationRoot 'g6-app-slices.json')

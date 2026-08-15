@@ -217,7 +217,10 @@
         }
       },
       "doroti.flutter.runtime": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "MaterialColorUtilities": "[0.3.0, )"
+        }
       },
       "doroti.flutter.ui": {
         "type": "Project",
@@ -308,6 +311,12 @@
         "dependencies": {
           "Doroti.Shell.Core": "[0.2.0-beta, )"
         }
+      },
+      "MaterialColorUtilities": {
+        "type": "CentralTransitive",
+        "requested": "[0.3.0, )",
+        "resolved": "0.3.0",
+        "contentHash": "KxXxwL8SJoI63rb7onZKL7rBZmoWQj2aVLNf7ZMNzq6mvfEzR8XInvIAi+hj6NGDm9IvcQ0YJ2SWTUHoPjTABg=="
       },
       "SkiaSharp": {
         "type": "CentralTransitive",

@@ -463,6 +463,7 @@ public class EngineLayer : IDisposable
     internal IReadOnlyList<SceneCommand>? RetainedCommands { get; set; }
     internal ulong OwnerViewId { get; set; }
     internal long Generation { get; set; }
+    public long debugGeneration => Generation;
     public bool debugDisposed => Volatile.Read(ref _disposed) != 0;
     public void Dispose() => Interlocked.Exchange(ref _disposed, 1);
     public void dispose() => Dispose();
@@ -482,10 +483,10 @@ public sealed class BackdropFilterEngineLayer : EngineLayer;
 
 public sealed class SceneBuilder
 {
+    private static long _nextRetainedGeneration;
     private readonly ulong _viewId;
     private readonly List<SceneCommand> _commands = [];
     private readonly Stack<(EngineLayer Layer, int Start)> _scopes = [];
-    private long _generation;
 
     public SceneBuilder(ulong viewId = 0) => _viewId = viewId;
 
@@ -526,7 +527,7 @@ public sealed class SceneBuilder
         _commands.Add(new("pop", null));
         var (layer, start) = _scopes.Pop();
         layer.RetainedCommands = Array.AsReadOnly(_commands.Skip(start).ToArray());
-        layer.Generation = ++_generation;
+        layer.Generation = Interlocked.Increment(ref _nextRetainedGeneration);
     }
     public void addRetained(EngineLayer layer)
     {

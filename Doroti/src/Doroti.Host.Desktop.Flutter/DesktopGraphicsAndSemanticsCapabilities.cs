@@ -36,6 +36,13 @@ public sealed record DesktopFlutterFrameDiagnostics(
     bool SoftwareFallbackUsed,
     string BackendIdentity);
 
+public sealed record DesktopFlutterRetainedDiagnostics(
+    long Hits,
+    long Misses,
+    long SurfaceInvalidations,
+    int Entries,
+    long SurfaceGeneration);
+
 internal sealed class DesktopGraphicsAndSemanticsCapabilities :
     ISceneHostCapability,
     IParagraphHostCapability,
@@ -50,6 +57,7 @@ internal sealed class DesktopGraphicsAndSemanticsCapabilities :
     private readonly object _gate = new();
     private readonly HashSet<Task<FrameAckResult>> _pending = [];
     private readonly Dictionary<int, SemanticsNodeUpdate> _semanticsNodes = [];
+    private readonly Dictionary<(long Generation, long SurfaceGeneration, double Width, double Height), DisplayList> _retained = [];
     private int? _semanticsRootId;
     private long _nextFrame;
     private long _submitted;
@@ -59,6 +67,10 @@ internal sealed class DesktopGraphicsAndSemanticsCapabilities :
     private long _failed;
     private long _cancelled;
     private bool _semanticsEnabled;
+    private long _retainedHits;
+    private long _retainedMisses;
+    private long _retainedSurfaceInvalidations;
+    private long _retainedSurfaceGeneration;
     private bool _disposed;
 
     internal DesktopGraphicsAndSemanticsCapabilities(ulong viewId, IWindow window)
@@ -108,6 +120,15 @@ internal sealed class DesktopGraphicsAndSemanticsCapabilities :
 
     internal void FailNextFrameForValidation() => _sink.FailNextFrameForValidation();
 
+    internal DesktopFlutterRetainedDiagnostics RetainedDiagnostics
+    {
+        get
+        {
+            lock (_gate)
+                return new(_retainedHits, _retainedMisses, _retainedSurfaceInvalidations, _retained.Count, _retainedSurfaceGeneration);
+        }
+    }
+
     internal async Task<DesktopFlutterPixelReadback> CaptureNextFrameAsync()
     {
         var readback = await _sink.CaptureNextFrameAsync().ConfigureAwait(false);
@@ -128,7 +149,7 @@ internal sealed class DesktopGraphicsAndSemanticsCapabilities :
         }
 
         var metrics = _window.Metrics;
-        var root = TranslateScene(scene, metrics.LogicalSize);
+        var root = TranslateScene(scene, metrics);
         var sequence = Interlocked.Increment(ref _nextFrame);
         var snapshot = LayerTreeSnapshot.Create(root);
         var frame = new RenderPipelineFrame(
@@ -212,82 +233,99 @@ internal sealed class DesktopGraphicsAndSemanticsCapabilities :
             throw new TimeoutException("Flutter scene terminal ACKs did not drain within 15 seconds.");
         }
         _sink.Dispose();
+        lock (_gate) _retained.Clear();
     }
 
-    private Layer TranslateScene(Scene scene, Doroti.Graphics.Size logicalSize)
+    private Layer TranslateScene(Scene scene, WindowMetrics metrics)
     {
+        var logicalSize = metrics.LogicalSize;
+        lock (_gate)
+        {
+            if (_retainedSurfaceGeneration != 0 && _retainedSurfaceGeneration != metrics.SurfaceGeneration)
+            {
+                _retained.Clear();
+                _retainedSurfaceInvalidations++;
+            }
+            _retainedSurfaceGeneration = metrics.SurfaceGeneration;
+        }
         var builder = new DisplayListBuilder(GraphicsRect.FromLeftTopWidthHeight(0, 0, logicalSize.Width, logicalSize.Height));
         var saveDepth = 0;
-        TranslateCommands(scene.Commands);
+        TranslateCommands(scene.Commands, builder, ref saveDepth);
         if (saveDepth != 0)
             throw new InvalidDataException($"Flutter scene ended with {saveDepth} unclosed effect scope(s).");
         return new PictureLayer(GraphicsOffset.Zero, builder.Build());
 
-        void TranslateCommands(IReadOnlyList<SceneCommand> commands)
+        void TranslateCommands(IReadOnlyList<SceneCommand> commands, DisplayListBuilder target, ref int depth)
         {
             foreach (var command in commands)
             {
                 switch (command.Operation)
                 {
                     case "picture" when command.HostPayload is ScenePicturePayload picture:
-                        builder.Save();
-                        builder.Transform(GraphicsMatrix.CreateTranslation(picture.Offset.dx, picture.Offset.dy));
-                        TranslatePicture(picture.Picture, builder);
-                        builder.Restore();
+                        target.Save();
+                        target.Transform(GraphicsMatrix.CreateTranslation(picture.Offset.dx, picture.Offset.dy));
+                        TranslatePicture(picture.Picture, target);
+                        target.Restore();
                         break;
                     case "offset" when command.HostPayload is SceneOffsetPayload offset:
-                        BeginSave();
-                        builder.Transform(GraphicsMatrix.CreateTranslation(offset.Dx, offset.Dy));
+                        target.Save();
+                        depth++;
+                        target.Transform(GraphicsMatrix.CreateTranslation(offset.Dx, offset.Dy));
                         break;
                     case "clipRect" when command.HostPayload is SceneClipRectPayload clip:
-                        BeginSave();
-                        builder.ClipRect(Convert(clip.Rect));
+                        target.Save();
+                        depth++;
+                        target.ClipRect(Convert(clip.Rect));
                         break;
                     case "clipRRect" when command.HostPayload is SceneClipRRectPayload clip:
-                        BeginSave();
-                        builder.ClipPath(Convert(clip.RRect));
+                        target.Save();
+                        depth++;
+                        target.ClipPath(Convert(clip.RRect));
                         break;
                     case "clipRSuperellipse" when command.HostPayload is SceneClipRSuperellipsePayload clip:
-                        BeginSave();
-                        builder.ClipPath(Convert(clip.RSuperellipse));
+                        target.Save();
+                        depth++;
+                        target.ClipPath(Convert(clip.RSuperellipse));
                         break;
                     case "clipPath" when command.HostPayload is SceneClipPathPayload clip:
-                        BeginSave();
-                        builder.ClipPath(Convert(clip.Path));
+                        target.Save();
+                        depth++;
+                        target.ClipPath(Convert(clip.Path));
                         break;
                     case "transform" when command.HostPayload is SceneTransformPayload transform:
-                        BeginSave();
-                        builder.Transform(Convert(transform.Matrix4));
+                        target.Save();
+                        depth++;
+                        target.Transform(Convert(transform.Matrix4));
                         break;
                     case "opacity" when command.HostPayload is SceneOpacityPayload opacity:
-                        builder.SaveLayer(new RasterLayerOptions(Opacity: opacity.Opacity));
-                        saveDepth++;
-                        builder.Transform(GraphicsMatrix.CreateTranslation(opacity.Offset.dx, opacity.Offset.dy));
+                        target.SaveLayer(new RasterLayerOptions(Opacity: opacity.Opacity));
+                        depth++;
+                        target.Transform(GraphicsMatrix.CreateTranslation(opacity.Offset.dx, opacity.Offset.dy));
                         break;
                     case "colorFilter" when command.HostPayload is SceneColorFilterPayload color:
-                        builder.SaveLayer(new RasterLayerOptions(ColorFilter: Convert(color.Filter)));
-                        saveDepth++;
+                        target.SaveLayer(new RasterLayerOptions(ColorFilter: Convert(color.Filter)));
+                        depth++;
                         break;
                     case "imageFilter" when command.HostPayload is SceneImageFilterPayload image:
-                        builder.SaveLayer(new RasterLayerOptions(ImageFilter: Convert(image.Filter)));
-                        saveDepth++;
-                        builder.Transform(GraphicsMatrix.CreateTranslation(image.Offset.dx, image.Offset.dy));
+                        target.SaveLayer(new RasterLayerOptions(ImageFilter: Convert(image.Filter)));
+                        depth++;
+                        target.Transform(GraphicsMatrix.CreateTranslation(image.Offset.dx, image.Offset.dy));
                         break;
                     case "backdropFilter" when command.HostPayload is SceneBackdropFilterPayload backdrop:
-                        builder.SaveLayer(new RasterLayerOptions(
+                        target.SaveLayer(new RasterLayerOptions(
                             Bounds: backdrop.Filter.Bounds is { } backdropBounds ? Convert(backdropBounds) : null,
                             BlendMode: Convert(backdrop.BlendMode),
                             BackdropFilter: Convert(backdrop.Filter)));
-                        saveDepth++;
+                        depth++;
                         break;
                     case "retained" when command.HostPayload is SceneRetainedPayload retained:
                         if (retained.ViewId != scene.viewId)
                             throw new InvalidOperationException("Retained scene subtree belongs to a different Flutter view.");
-                        TranslateCommands(retained.Commands);
+                        target.Replay(GetRetainedDisplayList(retained));
                         break;
-                    case "pop" when saveDepth > 0:
-                        builder.Restore();
-                        saveDepth--;
+                    case "pop" when depth > 0:
+                        target.Restore();
+                        depth--;
                         break;
                     case "shaderMask":
                         throw new NotSupportedException("Flutter scene operation 'shaderMask' reached a backend without shader-mask raster capability.");
@@ -296,11 +334,34 @@ internal sealed class DesktopGraphicsAndSemanticsCapabilities :
                 }
             }
 
-            void BeginSave()
+        }
+
+        DisplayList GetRetainedDisplayList(SceneRetainedPayload retained)
+        {
+            var key = (retained.Generation, metrics.SurfaceGeneration, logicalSize.Width, logicalSize.Height);
+            lock (_gate)
             {
-                builder.Save();
-                saveDepth++;
+                if (_retained.TryGetValue(key, out var cached))
+                {
+                    _retainedHits++;
+                    return cached;
+                }
+                _retainedMisses++;
             }
+
+            var retainedBuilder = new DisplayListBuilder(
+                GraphicsRect.FromLeftTopWidthHeight(0, 0, logicalSize.Width, logicalSize.Height));
+            var retainedDepth = 0;
+            TranslateCommands(retained.Commands, retainedBuilder, ref retainedDepth);
+            if (retainedDepth != 0)
+                throw new InvalidDataException($"Retained Flutter scene ended with {retainedDepth} unclosed effect scope(s).");
+            var translated = retainedBuilder.Build();
+            lock (_gate)
+            {
+                _retained[key] = translated;
+                while (_retained.Count > 16) _retained.Remove(_retained.Keys.First());
+            }
+            return translated;
         }
     }
 

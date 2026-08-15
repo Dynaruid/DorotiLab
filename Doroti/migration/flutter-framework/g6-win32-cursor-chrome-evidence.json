@@ -1,7 +1,7 @@
 {
   "schemaVersion": "doroti.g6-win32-cursor-chrome-evidence/v1",
   "milestone": "G6-5R-I",
-  "capturedAtUtc": "2026-08-13T15:55:04.6767663+00:00",
+  "capturedAtUtc": "2026-08-15T00:39:00.8172019+00:00",
   "status": "verified-windows-x64-strict-gpu",
   "cursorMappings": [
     {
@@ -226,48 +226,88 @@
     {
       "name": "left",
       "hitTest": 10,
+      "coordinate": {
+        "screenX": 246,
+        "screenY": 1000
+      },
+      "coordinateEvent": "WM_NCHITTEST-\u003EWM_SETCURSOR",
       "cursorIdentifier": 32644,
       "actualHandle": "0x10011"
     },
     {
       "name": "right",
       "hitTest": 11,
+      "coordinate": {
+        "screenX": 2069,
+        "screenY": 1000
+      },
+      "coordinateEvent": "WM_NCHITTEST-\u003EWM_SETCURSOR",
       "cursorIdentifier": 32644,
       "actualHandle": "0x10011"
     },
     {
       "name": "top",
       "hitTest": 12,
+      "coordinate": {
+        "screenX": 1158,
+        "screenY": 246
+      },
+      "coordinateEvent": "WM_NCHITTEST-\u003EWM_SETCURSOR",
       "cursorIdentifier": 32645,
       "actualHandle": "0x10013"
     },
     {
       "name": "bottom",
       "hitTest": 15,
+      "coordinate": {
+        "screenX": 1158,
+        "screenY": 1754
+      },
+      "coordinateEvent": "WM_NCHITTEST-\u003EWM_SETCURSOR",
       "cursorIdentifier": 32645,
       "actualHandle": "0x10013"
     },
     {
       "name": "topLeft",
       "hitTest": 13,
+      "coordinate": {
+        "screenX": 246,
+        "screenY": 246
+      },
+      "coordinateEvent": "WM_NCHITTEST-\u003EWM_SETCURSOR",
       "cursorIdentifier": 32642,
       "actualHandle": "0x1000D"
     },
     {
       "name": "bottomRight",
       "hitTest": 17,
+      "coordinate": {
+        "screenX": 2069,
+        "screenY": 1754
+      },
+      "coordinateEvent": "WM_NCHITTEST-\u003EWM_SETCURSOR",
       "cursorIdentifier": 32642,
       "actualHandle": "0x1000D"
     },
     {
       "name": "topRight",
       "hitTest": 14,
+      "coordinate": {
+        "screenX": 2069,
+        "screenY": 246
+      },
+      "coordinateEvent": "WM_NCHITTEST-\u003EWM_SETCURSOR",
       "cursorIdentifier": 32643,
       "actualHandle": "0x1000F"
     },
     {
       "name": "bottomLeft",
       "hitTest": 16,
+      "coordinate": {
+        "screenX": 246,
+        "screenY": 1754
+      },
+      "coordinateEvent": "WM_NCHITTEST-\u003EWM_SETCURSOR",
       "cursorIdentifier": 32643,
       "actualHandle": "0x1000F"
     }

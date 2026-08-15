@@ -2,7 +2,7 @@
   "schemaVersion": "doroti.g6-app-slice-evidence/v1",
   "milestone": "G6-4",
   "slice": "F0",
-  "capturedAtUtc": "2026-08-13T10:18:31.9680075+00:00",
+  "capturedAtUtc": "2026-08-15T00:39:11.8555317+00:00",
   "status": "verified-windows-x64-strict-gpu",
   "reference": {
     "schemaVersion": "doroti.g6-app-slice-reference/v1",
@@ -44,7 +44,7 @@
     "nativeWindow": true,
     "hwnd": "actual",
     "backend": "skia-wgl-opengl-gpu",
-    "presented": 37,
+    "presented": 46,
     "failed": 0,
     "cancelled": 0,
     "softwareFallback": false,
@@ -52,21 +52,21 @@
     "input": {
       "capabilities": {
         "mouse": true,
-        "touch": true,
+        "touch": false,
         "pen": false,
         "wheel": true,
         "pointerCapture": true,
         "physicalKeys": true,
         "textInput": true
       },
-      "pointerPackets": 5,
+      "pointerPackets": 4,
       "keyPackets": 2,
       "focusChanges": 2,
       "metricsChanges": 2
     },
     "interactionCount": 3,
     "scrollOffset": -1,
-    "changedPixels": 12750,
+    "changedPixels": 19174,
     "state": "slice=F0;revision=6;toggle=False;text=Doroti \uD55C\uAE00\uD55C\uAE00\t;locale=en-US;lazy=0;scroll=-1",
     "nativeInputTrace": [
       "win32-pointer-focus",

@@ -236,7 +236,7 @@ public class CheckedPopupMenuItem<T> : PopupMenuItem<T>
     }
 
     public override global::Doroti.Generated.Framework.Widgets.Widget? child => ((global::Doroti.Generated.Framework.Widgets.Widget?)base.child);
-    public override PopupMenuItemState<T, PopupMenuItem<T>> createState() => DartRuntimePrimitives.ConvertValue<PopupMenuItemState<T, PopupMenuItem<T>>>(new _CheckedPopupMenuItemState__popup_menu<T>());
+    public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CheckedPopupMenuItemState__popup_menu<T>());
 }
 
 internal class _CheckedPopupMenuItemState__popup_menu<T> : PopupMenuItemState<T, CheckedPopupMenuItem<T>>, global::Doroti.Generated.Framework.Widgets.SingleTickerProviderStateMixin<CheckedPopupMenuItem<T>>

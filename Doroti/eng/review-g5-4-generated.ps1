@@ -31,14 +31,50 @@ function Update-GeneratedFile {
     }
 }
 
+function Replace-GeneratedLocalPattern {
+    param(
+        [Parameter(Mandatory = $true)][string] $Text,
+        [Parameter(Mandatory = $true)][AllowEmptyString()][string] $Before,
+        [Parameter(Mandatory = $true)][AllowEmptyString()][string] $After
+    )
+
+    $locals = @([Text.RegularExpressions.Regex]::Matches($Before, '\b[A-Za-z_][A-Za-z0-9_]*__\d+\b') |
+        ForEach-Object Value | Select-Object -Unique)
+    if ($locals.Count -eq 0) { return $Text.Replace($Before, $After) }
+    $pattern = [Text.RegularExpressions.Regex]::Escape($Before)
+    $groups = [ordered]@{}
+    for ($index = 0; $index -lt $locals.Count; $index++) {
+        $local = [string]$locals[$index]
+        $baseName = $local.Substring(0, $local.LastIndexOf('__', [StringComparison]::Ordinal))
+        $group = "local$index"
+        $groups[$local] = $group
+        $pattern = $pattern.Replace(
+            [Text.RegularExpressions.Regex]::Escape($local),
+            "(?<$group>$([Text.RegularExpressions.Regex]::Escape($baseName))__\d+)")
+    }
+    return [Text.RegularExpressions.Regex]::Replace($Text, $pattern, {
+        param($match)
+        $replacement = $After
+        foreach ($entry in $groups.GetEnumerator()) {
+            $replacement = $replacement.Replace([string]$entry.Key, [string]$match.Groups[[string]$entry.Value].Value)
+        }
+        return $replacement
+    })
+}
+
+Update-TypeData -TypeName System.String -MemberType ScriptMethod -MemberName ReplaceGeneratedLocalPattern -Force -Value {
+    param([string] $Before, [string] $After)
+    Replace-GeneratedLocalPattern -Text ([string]$this) -Before $Before -After $After
+}
+
 # These are deterministic review adaptations for C# surface mismatches. They do
 # not remove declarations or files; the analyzer-owned census remains unchanged.
 Get-ChildItem -LiteralPath $materialRoot -File -Filter '*.g.cs' | ForEach-Object {
     Update-GeneratedFile $_.Name {
         param($text)
-        $text = $text.Replace('TextDecorationStyle.@double', 'TextDecorationStyle.doubleLine')
-        $text = $text.Replace('_ => throw new InvalidOperationException("Non-exhaustive Dart switch value.")', '_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.")')
-        $text = $text.Replace('_ = null;', '_ = (object?)null;')
+        $text = $text.ReplaceGeneratedLocalPattern('TextDecorationStyle.@double', 'TextDecorationStyle.doubleLine')
+        $text = $text.ReplaceGeneratedLocalPattern('_ => throw new InvalidOperationException("Non-exhaustive Dart switch value.")', '_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.")')
+        $text = $text.ReplaceGeneratedLocalPattern('_ = null;', '_ = (object?)null;')
         $text = [Text.RegularExpressions.Regex]::Replace($text, 'new List<([^>]+)>\(([^\r\n]+?), growable: false\)', 'new List<$1>($2)')
         return $text
     }
@@ -148,120 +184,120 @@ Update-GeneratedFile 'about.g.cs' {
         'public virtual Future<_LicenseData__about> licenses { get; private set; } = Future<_LicenseData__about>.value(new _LicenseData__about());',
         [Text.RegularExpressions.RegexOptions]::None,
         [TimeSpan]::FromSeconds(1))
-    $text = $text.Replace('(global::System.Func<bool, List<global::Doroti.Generated.Framework.Foundation.LicenseParagraph>>)((_) => ((global::Doroti.Generated.Framework.Foundation.LicenseEntry)license__34391).paragraphs.toList())', '(global::System.Func<object>)(() => ((global::Doroti.Generated.Framework.Foundation.LicenseEntry)license__34391).paragraphs.toList())')
+    $text = $text.ReplaceGeneratedLocalPattern('(global::System.Func<bool, List<global::Doroti.Generated.Framework.Foundation.LicenseParagraph>>)((_) => ((global::Doroti.Generated.Framework.Foundation.LicenseEntry)license__34391).paragraphs.toList())', '(global::System.Func<object>)(() => ((global::Doroti.Generated.Framework.Foundation.LicenseEntry)license__34391).paragraphs.toList())')
     return $text
 }
 
 Update-GeneratedFile 'action_buttons.g.cs' {
     param($text)
-    $text.Replace('StandardComponentTypeMembers.key(this.standardComponent)', 'StandardComponentTypeMembers.key(DartRuntimePrimitives.RequireValue(this.standardComponent))')
+    $text.ReplaceGeneratedLocalPattern('StandardComponentTypeMembers.key(this.standardComponent)', 'StandardComponentTypeMembers.key(DartRuntimePrimitives.RequireValue(this.standardComponent))')
 }
 
 Update-GeneratedFile 'app_bar.g.cs' {
     param($text)
-    $text.Replace('(preferredSize is _PreferredAppBarSize__app_bar) && (preferredSize.toolbarHeight is null)', '(preferredSize is _PreferredAppBarSize__app_bar preferredAppBarSize) && (preferredAppBarSize.toolbarHeight is null)')
+    $text.ReplaceGeneratedLocalPattern('(preferredSize is _PreferredAppBarSize__app_bar) && (preferredSize.toolbarHeight is null)', '(preferredSize is _PreferredAppBarSize__app_bar preferredAppBarSize) && (preferredAppBarSize.toolbarHeight is null)')
 }
 
 Update-GeneratedFile 'bottom_app_bar.g.cs' {
     param($text)
-    $text.Replace('return (((Offset)((dynamic)box__9764)?.localToGlobal(Offset.zero)).dy ?? 0);', 'return ((Offset)((dynamic)box__9764)?.localToGlobal(Offset.zero)).dy;')
+    $text.ReplaceGeneratedLocalPattern('return (((Offset)((dynamic)box__9764)?.localToGlobal(Offset.zero)).dy ?? 0);', 'return ((Offset)((dynamic)box__9764)?.localToGlobal(Offset.zero)).dy;')
 }
 
 Update-GeneratedFile 'bottom_sheet.g.cs' {
     param($text)
-    $text.Replace('(global::System.Action<global::Doroti.Generated.Framework.Gestures.DragEndDetails, bool?>)this.handleDragEnd', '(BottomSheetDragEndHandler)((details, isClosing) => this.handleDragEnd(details, isClosing))')
+    $text.ReplaceGeneratedLocalPattern('(global::System.Action<global::Doroti.Generated.Framework.Gestures.DragEndDetails, bool?>)this.handleDragEnd', '(BottomSheetDragEndHandler)((details, isClosing) => this.handleDragEnd(details, isClosing))')
 }
 
 Update-GeneratedFile 'button.g.cs' {
     param($text)
-    $text.Replace('(isSet ? addMaterialState(state) : removeMaterialState(state));', 'if (isSet) { addMaterialState(state); } else { removeMaterialState(state); }')
+    $text.ReplaceGeneratedLocalPattern('(isSet ? addMaterialState(state) : removeMaterialState(state));', 'if (isSet) { addMaterialState(state); } else { removeMaterialState(state); }')
 }
 
 Update-GeneratedFile 'button_bar.g.cs' {
     param($text)
-    $text = $text.Replace('new ButtonTheme(data: buttonTheme__8820, child:', 'ButtonTheme.CreateFromButtonThemeData(data: buttonTheme__8820, child:')
-    $text = $text.Replace('size__14749 = this.constraints.constrain(', 'this.size = this.constraints.constrain(')
+    $text = $text.ReplaceGeneratedLocalPattern('new ButtonTheme(data: buttonTheme__8820, child:', 'ButtonTheme.CreateFromButtonThemeData(data: buttonTheme__8820, child:')
+    $text = $text.ReplaceGeneratedLocalPattern('size__14749 = this.constraints.constrain(', 'this.size = this.constraints.constrain(')
     return $text
 }
 
 foreach ($name in @('checkbox.g.cs', 'switch.g.cs')) {
     Update-GeneratedFile $name {
         param($text)
-        $text.Replace('Size size = default!, global::Doroti.Generated.Framework.Rendering.CustomPainter painter = default!)', 'Size size = default!, global::Doroti.Generated.Framework.Widgets.ToggleablePainter painter = default!)')
+        $text.ReplaceGeneratedLocalPattern('Size size = default!, global::Doroti.Generated.Framework.Rendering.CustomPainter painter = default!)', 'Size size = default!, global::Doroti.Generated.Framework.Widgets.ToggleablePainter painter = default!)')
     }
 }
 
 Update-GeneratedFile 'checkbox.g.cs' {
     param($text)
-    $text.Replace('MaterialTapTargetSize effectiveMaterialTapTargetSize__17999 = ((((Checkbox)this.widget).materialTapTargetSize ?? checkboxTheme__17775.materialTapTargetSize) ?? defaults__17846.materialTapTargetSize!);', 'MaterialTapTargetSize effectiveMaterialTapTargetSize__17999 = DartRuntimePrimitives.RequireValue(((Checkbox)this.widget).materialTapTargetSize ?? checkboxTheme__17775.materialTapTargetSize ?? defaults__17846.materialTapTargetSize);')
+    $text.ReplaceGeneratedLocalPattern('MaterialTapTargetSize effectiveMaterialTapTargetSize__17999 = ((((Checkbox)this.widget).materialTapTargetSize ?? checkboxTheme__17775.materialTapTargetSize) ?? defaults__17846.materialTapTargetSize!);', 'MaterialTapTargetSize effectiveMaterialTapTargetSize__17999 = DartRuntimePrimitives.RequireValue(((Checkbox)this.widget).materialTapTargetSize ?? checkboxTheme__17775.materialTapTargetSize ?? defaults__17846.materialTapTargetSize);')
 }
 
 Update-GeneratedFile 'color_scheme.g.cs' {
     param($text)
-    $text = $text.Replace('((global::Doroti.Generated.Framework.Widgets.Image)image__84575).width', 'image__84575.width')
-    $text = $text.Replace('((global::Doroti.Generated.Framework.Widgets.Image)image__84575).height', 'image__84575.height')
-    $text = $text.Replace('((global::System.Action<global::Doroti.Generated.Framework.Painting.ImageInfo, bool>)((info, sync) => {', '((global::System.Action<global::Doroti.Generated.Framework.Painting.ImageInfo, bool>)(async (info, sync) => {')
+    $text = $text.ReplaceGeneratedLocalPattern('((global::Doroti.Generated.Framework.Widgets.Image)image__84575).width', 'image__84575.width')
+    $text = $text.ReplaceGeneratedLocalPattern('((global::Doroti.Generated.Framework.Widgets.Image)image__84575).height', 'image__84575.height')
+    $text = $text.ReplaceGeneratedLocalPattern('((global::System.Action<global::Doroti.Generated.Framework.Painting.ImageInfo, bool>)((info, sync) => {', '((global::System.Action<global::Doroti.Generated.Framework.Painting.ImageInfo, bool>)(async (info, sync) => {')
     return $text
 }
 
 Update-GeneratedFile 'dropdown.g.cs' {
     param($text)
-    $text = $text.Replace('itemHeight ?? kMinInteractiveDimension', 'itemHeight ?? ConstantsLibrary.kMinInteractiveDimension')
-    $text = $text.Replace('children: (((DropdownButton<T>)(object)this.widget).isDense ? items__56033 : items__56033.map<global::Doroti.Generated.Framework.Widgets.Widget, global::Doroti.Generated.Framework.Widgets.RenderObjectWidget>', 'children: (((DropdownButton<T>)(object)this.widget).isDense ? items__56033 : items__56033.map<global::Doroti.Generated.Framework.Widgets.Widget, global::Doroti.Generated.Framework.Widgets.RenderObjectWidget>')
-    $text = $text.Replace('})).ToList())));', '})).Cast<global::Doroti.Generated.Framework.Widgets.Widget>().ToList())));')
+    $text = $text.ReplaceGeneratedLocalPattern('itemHeight ?? kMinInteractiveDimension', 'itemHeight ?? ConstantsLibrary.kMinInteractiveDimension')
+    $text = $text.ReplaceGeneratedLocalPattern('children: (((DropdownButton<T>)(object)this.widget).isDense ? items__56033 : items__56033.map<global::Doroti.Generated.Framework.Widgets.Widget, global::Doroti.Generated.Framework.Widgets.RenderObjectWidget>', 'children: (((DropdownButton<T>)(object)this.widget).isDense ? items__56033 : items__56033.map<global::Doroti.Generated.Framework.Widgets.Widget, global::Doroti.Generated.Framework.Widgets.RenderObjectWidget>')
+    $text = $text.ReplaceGeneratedLocalPattern('})).ToList())));', '})).Cast<global::Doroti.Generated.Framework.Widgets.Widget>().ToList())));')
     return $text
 }
 
 Update-GeneratedFile 'elevated_button.g.cs' {
     param($text)
-    $text = $text.Replace('[global::Doroti.Generated.Framework.Widgets.WidgetState.disabled] = 0', '[global::Doroti.Generated.Framework.Widgets.WidgetState.disabled.asConstraint()] = 0')
-    $text = $text.Replace('ButtonStyleButton.allOrNull<double>(iconSize)', 'ButtonStyleButton.allOrNull<double?>(iconSize)')
-    $text = $text.Replace('elevation: elevationValue__8130', 'elevation: DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<double?>>(elevationValue__8130)')
+    $text = $text.ReplaceGeneratedLocalPattern('[global::Doroti.Generated.Framework.Widgets.WidgetState.disabled] = 0', '[global::Doroti.Generated.Framework.Widgets.WidgetState.disabled.asConstraint()] = 0')
+    $text = $text.ReplaceGeneratedLocalPattern('ButtonStyleButton.allOrNull<double>(iconSize)', 'ButtonStyleButton.allOrNull<double?>(iconSize)')
+    $text = $text.ReplaceGeneratedLocalPattern('elevation: elevationValue__8130', 'elevation: DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<double?>>(elevationValue__8130)')
     return $text
 }
 
 Update-GeneratedFile 'expansion_panel.g.cs' {
     param($text)
-    $text = $text.Replace('List<ExpansionPanel> __children = children ?? new List<ExpansionPanelRadio>();', 'List<ExpansionPanel> __children = children ?? new List<ExpansionPanel>();')
-    $text = $text.Replace('searchPanelByValue(((ExpansionPanelList)this.widget).children.cast<ExpansionPanelRadio>(),', 'searchPanelByValue(((ExpansionPanelList)this.widget).children.cast<ExpansionPanelRadio>().ToList(),')
-    $text = $text.Replace('ContainsKey(((ExpansionPanelList)this.widget).elevation)', 'ContainsKey(checked((long)((ExpansionPanelList)this.widget).elevation))')
+    $text = $text.ReplaceGeneratedLocalPattern('List<ExpansionPanel> __children = children ?? new List<ExpansionPanelRadio>();', 'List<ExpansionPanel> __children = children ?? new List<ExpansionPanel>();')
+    $text = $text.ReplaceGeneratedLocalPattern('searchPanelByValue(((ExpansionPanelList)this.widget).children.cast<ExpansionPanelRadio>(),', 'searchPanelByValue(((ExpansionPanelList)this.widget).children.cast<ExpansionPanelRadio>().ToList(),')
+    $text = $text.ReplaceGeneratedLocalPattern('ContainsKey(((ExpansionPanelList)this.widget).elevation)', 'ContainsKey(checked((long)((ExpansionPanelList)this.widget).elevation))')
     return $text
 }
 
 Update-GeneratedFile 'ink_sparkle.g.cs' {
     param($text)
-    $text.Replace('this._center).value.x', 'this._center).value.X').Replace('this._center).value.y', 'this._center).value.Y')
+    $text.ReplaceGeneratedLocalPattern('this._center).value.x', 'this._center).value.X').ReplaceGeneratedLocalPattern('this._center).value.y', 'this._center).value.Y')
 }
 
 foreach ($name in @('input_decorator.g.cs', 'menu_anchor.g.cs', 'search_anchor.g.cs', 'segmented_button.g.cs', 'toggle_buttons.g.cs')) {
     Update-GeneratedFile $name {
         param($text)
-        $text.Replace('new global::Doroti.Generated.Framework.Widgets.WidgetStatePropertyAll<double>(', 'new global::Doroti.Generated.Framework.Widgets.WidgetStatePropertyAll<double?>(')
+        $text.ReplaceGeneratedLocalPattern('new global::Doroti.Generated.Framework.Widgets.WidgetStatePropertyAll<double>(', 'new global::Doroti.Generated.Framework.Widgets.WidgetStatePropertyAll<double?>(')
     }
 }
 
-Update-GeneratedFile 'dropdown_menu.g.cs' { param($text) $text.Replace('((DropdownMenu<T>)(object)this.widget).enabled switch', '((object)((DropdownMenu<T>)(object)this.widget).enabled) switch') }
-Update-GeneratedFile 'progress_indicator.g.cs' { param($text) $text.Replace('Theme.of(context).useMaterial3 switch', '((object)Theme.of(context).useMaterial3) switch') }
-Update-GeneratedFile 'slider.g.cs' { param($text) $text.Replace('theme__30400.useMaterial3 switch', '((object)theme__30400.useMaterial3) switch') }
-Update-GeneratedFile 'slider_parts.g.cs' { param($text) $text.Replace('isLTR__43752 switch', '((object)isLTR__43752) switch') }
-Update-GeneratedFile 'tabs.g.cs' { param($text) $text.Replace('isMovingRight__25282 switch', '((object)isMovingRight__25282) switch').Replace('((TabBar)(object)this.widget)._isPrimary switch', '((object)((TabBar)(object)this.widget)._isPrimary) switch') }
+Update-GeneratedFile 'dropdown_menu.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('((DropdownMenu<T>)(object)this.widget).enabled switch', '((object)((DropdownMenu<T>)(object)this.widget).enabled) switch') }
+Update-GeneratedFile 'progress_indicator.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('Theme.of(context).useMaterial3 switch', '((object)Theme.of(context).useMaterial3) switch') }
+Update-GeneratedFile 'slider.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('theme__30400.useMaterial3 switch', '((object)theme__30400.useMaterial3) switch') }
+Update-GeneratedFile 'slider_parts.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('isLTR__43752 switch', '((object)isLTR__43752) switch') }
+Update-GeneratedFile 'tabs.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('isMovingRight__25282 switch', '((object)isMovingRight__25282) switch').ReplaceGeneratedLocalPattern('((TabBar)(object)this.widget)._isPrimary switch', '((object)((TabBar)(object)this.widget)._isPrimary) switch') }
 
 Update-GeneratedFile 'selectable_text.g.cs' {
     param($text)
-    $text.Replace('Text_selectionLibrary.cupertinoTextSelectionHandleControls', 'Text_selectionLibrary.materialTextSelectionHandleControls').Replace('Desktop_text_selectionLibrary.cupertinoDesktopTextSelectionHandleControls', 'Desktop_text_selectionLibrary.desktopTextSelectionHandleControls')
+    $text.ReplaceGeneratedLocalPattern('Text_selectionLibrary.cupertinoTextSelectionHandleControls', 'Text_selectionLibrary.materialTextSelectionHandleControls').ReplaceGeneratedLocalPattern('Desktop_text_selectionLibrary.cupertinoDesktopTextSelectionHandleControls', 'Desktop_text_selectionLibrary.desktopTextSelectionHandleControls')
 }
 
 foreach ($name in @('slider.g.cs', 'range_slider.g.cs')) {
     Update-GeneratedFile $name {
         param($text)
-        $text.Replace('global::System.Func<double, string>', 'SemanticFormatterCallback')
+        $text.ReplaceGeneratedLocalPattern('global::System.Func<double, string>', 'SemanticFormatterCallback')
     }
 }
 
 Update-GeneratedFile 'input_border.g.cs' {
     param($text)
-    $text = $text.Replace('global::Doroti.Generated.Framework.Painting.BorderRadius __borderRadius = borderRadius ?? global::Doroti.Generated.Framework.Painting.BorderRadius.CreateOnly(topLeft: Radius.circular(4.0), topRight: Radius.circular(4.0));', 'global::Doroti.Generated.Framework.Painting.BorderRadius __borderRadius = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Painting.BorderRadius>(borderRadius ?? global::Doroti.Generated.Framework.Painting.BorderRadius.CreateOnly(topLeft: Radius.circular(4.0), topRight: Radius.circular(4.0)));')
-    $text = $text.Replace('(global::Doroti.Generated.Framework.Painting.OutlinedBorder)shape', 'DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Painting.OutlinedBorder>(shape)')
+    $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Generated.Framework.Painting.BorderRadius __borderRadius = borderRadius ?? global::Doroti.Generated.Framework.Painting.BorderRadius.CreateOnly(topLeft: Radius.circular(4.0), topRight: Radius.circular(4.0));', 'global::Doroti.Generated.Framework.Painting.BorderRadius __borderRadius = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Painting.BorderRadius>(borderRadius ?? global::Doroti.Generated.Framework.Painting.BorderRadius.CreateOnly(topLeft: Radius.circular(4.0), topRight: Radius.circular(4.0)));')
+    $text = $text.ReplaceGeneratedLocalPattern('(global::Doroti.Generated.Framework.Painting.OutlinedBorder)shape', 'DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Painting.OutlinedBorder>(shape)')
     return $text
 }
 
@@ -271,7 +307,7 @@ Update-GeneratedFile 'input_decorator.g.cs' {
         $text,
         '\(DartRuntimePrimitives\.RequireValue\((?<baseline>counter__\d+\?\.getDistanceToBaseline\(TextBaseline\.alphabetic\))\) \?\? 0\.0\)',
         '(${baseline} ?? 0.0)')
-    $text = $text.Replace(
+    $text = $text.ReplaceGeneratedLocalPattern(
         'DartRuntimePrimitives.RequireValue(((_InputBorderGap__input_decorator)this.gap).start)',
         '(((_InputBorderGap__input_decorator)this.gap).start ?? 0.0)')
     return $text
@@ -279,178 +315,181 @@ Update-GeneratedFile 'input_decorator.g.cs' {
 
 Update-GeneratedFile 'menu_anchor.g.cs' {
     param($text)
-    $text.Replace('characters__112982.GetRange(index, (index + 1L)).ToString()', 'characters__112982.skip(index).take(1L).ToString()')
+    $text.ReplaceGeneratedLocalPattern('characters__112982.GetRange(index, (index + 1L)).ToString()', 'characters__112982.skip(index).take(1L).ToString()')
 }
 
 Update-GeneratedFile 'page_transitions_theme.g.cs' {
     param($text)
-    $text.Replace('((global::Doroti.Generated.Framework.Widgets.Image)image).width', 'image.width').Replace('((global::Doroti.Generated.Framework.Widgets.Image)image).height', 'image.height')
+    $text.ReplaceGeneratedLocalPattern('((global::Doroti.Generated.Framework.Widgets.Image)image).width', 'image.width').ReplaceGeneratedLocalPattern('((global::Doroti.Generated.Framework.Widgets.Image)image).height', 'image.height')
 }
 
 Update-GeneratedFile 'paginated_data_table.g.cs' {
     param($text)
-    $text = $text.Replace('new DataRow(index: index, cells:', 'DataRow.CreateByIndex(index: index, cells:')
-    $text = $text.Replace('items: availableRowsPerPage__18245.cast<DropdownMenuItem<long>>()', 'items: availableRowsPerPage__18245.cast<DropdownMenuItem<long>>().ToList()')
-    $text = $text.Replace('onChanged: ((PaginatedDataTable)this.widget).onRowsPerPageChanged', 'onChanged: (value => ((PaginatedDataTable)this.widget).onRowsPerPageChanged?.Invoke(value))')
+    $text = $text.ReplaceGeneratedLocalPattern('new DataRow(index: index, cells:', 'DataRow.CreateByIndex(index: index, cells:')
+    $text = $text.ReplaceGeneratedLocalPattern('items: availableRowsPerPage__18245.cast<DropdownMenuItem<long>>()', 'items: availableRowsPerPage__18245.cast<DropdownMenuItem<long>>().ToList()')
+    $text = $text.ReplaceGeneratedLocalPattern('onChanged: ((PaginatedDataTable)this.widget).onRowsPerPageChanged', 'onChanged: (value => ((PaginatedDataTable)this.widget).onRowsPerPageChanged?.Invoke(value))')
     return $text
 }
 
 Update-GeneratedFile 'radio.g.cs' {
     param($text)
-    $text = $text.Replace('WidgetStateProperty.resolveAs<global::Doroti.Generated.Framework.Painting.BorderSide?>(side__as22874, states)', 'DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Painting.BorderSide?>(WidgetStateProperty.resolveAs<object>(side__as22874, states))')
-    $text = $text.Replace('MaterialTapTargetSize effectiveMaterialTapTargetSize__26610 = ((((_RadioPaint__radio)(object)this.widget).materialTapTargetSize ?? radioTheme__23155.materialTapTargetSize) ?? defaults__23217.materialTapTargetSize!);', 'MaterialTapTargetSize effectiveMaterialTapTargetSize__26610 = DartRuntimePrimitives.RequireValue(((_RadioPaint__radio)(object)this.widget).materialTapTargetSize ?? radioTheme__23155.materialTapTargetSize ?? defaults__23217.materialTapTargetSize);')
-    $text = $text.Replace('((double)radioTheme__23155.innerRadius?.resolve(activeStates__23484))', 'DartRuntimePrimitives.RequireValue(radioTheme__23155.innerRadius?.resolve(activeStates__23484))')
+    $text = $text.ReplaceGeneratedLocalPattern('WidgetStateProperty.resolveAs<global::Doroti.Generated.Framework.Painting.BorderSide?>(side__as22874, states)', 'DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Painting.BorderSide?>(WidgetStateProperty.resolveAs<object>(side__as22874, states))')
+    $text = $text.ReplaceGeneratedLocalPattern('MaterialTapTargetSize effectiveMaterialTapTargetSize__26610 = ((((_RadioPaint__radio)(object)this.widget).materialTapTargetSize ?? radioTheme__23155.materialTapTargetSize) ?? defaults__23217.materialTapTargetSize!);', 'MaterialTapTargetSize effectiveMaterialTapTargetSize__26610 = DartRuntimePrimitives.RequireValue(((_RadioPaint__radio)(object)this.widget).materialTapTargetSize ?? radioTheme__23155.materialTapTargetSize ?? defaults__23217.materialTapTargetSize);')
+    $text = $text.ReplaceGeneratedLocalPattern('((double)radioTheme__23155.innerRadius?.resolve(activeStates__23484))', 'DartRuntimePrimitives.RequireValue(radioTheme__23155.innerRadius?.resolve(activeStates__23484))')
     return $text
 }
 
 Update-GeneratedFile 'range_slider.g.cs' {
     param($text)
-    $text = $text.Replace('_buildValueIndicator(sliderTheme__24755.showValueIndicator!)', '_buildValueIndicator(DartRuntimePrimitives.RequireValue(sliderTheme__24755.showValueIndicator))')
-    $text = $text.Replace('__cascade.Values = this.values;', '__cascade.values = this.values;')
-    $text = $text.Replace('_updateLabelPainter(this._lastThumbSelection!)', '_updateLabelPainter(DartRuntimePrimitives.RequireValue(this._lastThumbSelection))')
+    $text = $text.ReplaceGeneratedLocalPattern('_buildValueIndicator(sliderTheme__24755.showValueIndicator!)', '_buildValueIndicator(DartRuntimePrimitives.RequireValue(sliderTheme__24755.showValueIndicator))')
+    $text = $text.ReplaceGeneratedLocalPattern('__cascade.Values = this.values;', '__cascade.values = this.values;')
+    $text = $text.ReplaceGeneratedLocalPattern('_updateLabelPainter(this._lastThumbSelection!)', '_updateLabelPainter(DartRuntimePrimitives.RequireValue(this._lastThumbSelection))')
     return $text
 }
 
 Update-GeneratedFile 'range_slider_parts.g.cs' {
     param($text)
-    $text = $text.Replace('(isOnTop ?? false)', 'isOnTop')
-    $text = $text.Replace('((textScaleFactor is not null) && (textScaleFactor >= 0L))', '(textScaleFactor >= 0L)')
-    $text = $text.Replace('(textScaleFactor is not null)', 'true')
+    $text = $text.ReplaceGeneratedLocalPattern('(isOnTop ?? false)', 'isOnTop')
+    $text = $text.ReplaceGeneratedLocalPattern('((textScaleFactor is not null) && (textScaleFactor >= 0L))', '(textScaleFactor >= 0L)')
+    $text = $text.ReplaceGeneratedLocalPattern('(textScaleFactor is not null)', 'true')
     return $text
 }
 
 foreach ($name in @('filled_button.g.cs', 'icon_button.g.cs', 'outlined_button.g.cs', 'text_button.g.cs')) {
     Update-GeneratedFile $name {
         param($text)
-        $text.Replace('ButtonStyleButton.allOrNull<double>(', 'ButtonStyleButton.allOrNull<double?>(')
+        $text.ReplaceGeneratedLocalPattern('ButtonStyleButton.allOrNull<double>(', 'ButtonStyleButton.allOrNull<double?>(')
     }
 }
 
 Update-GeneratedFile 'scrollbar.g.cs' {
     param($text)
-    $text = $text.Replace('((this.widget.thumbVisibility ?? (bool)this._scrollbarTheme.thumbVisibility?.resolve(this._states))) ?? false', '(this.widget.thumbVisibility ?? DartRuntimePrimitives.RequireValue(this._scrollbarTheme.thumbVisibility?.resolve(this._states)))')
-    $text = $text.Replace('((this.widget.trackVisibility ?? (bool)this._scrollbarTheme.trackVisibility?.resolve(states))) ?? false', '(this.widget.trackVisibility ?? DartRuntimePrimitives.RequireValue(this._scrollbarTheme.trackVisibility?.resolve(states)))')
-    $text = $text.Replace('((this.widget.thickness ?? (double)this._scrollbarTheme.thickness?.resolve(states))) ?? ScrollbarLibrary._kScrollbarThicknessWithTrack', '(this.widget.thickness ?? DartRuntimePrimitives.RequireValue(this._scrollbarTheme.thickness?.resolve(states)))')
-    $text = $text.Replace('((this.widget.thickness ?? (double)this._scrollbarTheme.thickness?.resolve(states))) ?? ((ScrollbarLibrary._kScrollbarThickness / ((this._useAndroidScrollbar ? 2L : 1L))))', '(this.widget.thickness ?? DartRuntimePrimitives.RequireValue(this._scrollbarTheme.thickness?.resolve(states)))')
-    $text = $text.Replace('global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, _MaterialScrollbar__scrollbar>)((states) => {' + "`n" + 'return ((this.widget.trackVisibility', 'global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, bool>)((states) => {' + "`n" + 'return ((this.widget.trackVisibility')
-    $text = $text.Replace('global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, _MaterialScrollbar__scrollbar>)((states) => {' + "`n" + 'if ((states.Contains', 'global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, double>)((states) => {' + "`n" + 'if ((states.Contains')
+    $text = $text.ReplaceGeneratedLocalPattern('((this.widget.thumbVisibility ?? (bool)this._scrollbarTheme.thumbVisibility?.resolve(this._states))) ?? false', '(this.widget.thumbVisibility ?? DartRuntimePrimitives.RequireValue(this._scrollbarTheme.thumbVisibility?.resolve(this._states)))')
+    $text = $text.ReplaceGeneratedLocalPattern('((this.widget.trackVisibility ?? (bool)this._scrollbarTheme.trackVisibility?.resolve(states))) ?? false', '(this.widget.trackVisibility ?? DartRuntimePrimitives.RequireValue(this._scrollbarTheme.trackVisibility?.resolve(states)))')
+    $text = $text.ReplaceGeneratedLocalPattern('((this.widget.thickness ?? (double)this._scrollbarTheme.thickness?.resolve(states))) ?? ScrollbarLibrary._kScrollbarThicknessWithTrack', '(this.widget.thickness ?? DartRuntimePrimitives.RequireValue(this._scrollbarTheme.thickness?.resolve(states)))')
+    $text = $text.ReplaceGeneratedLocalPattern('((this.widget.thickness ?? (double)this._scrollbarTheme.thickness?.resolve(states))) ?? ((ScrollbarLibrary._kScrollbarThickness / ((this._useAndroidScrollbar ? 2L : 1L))))', '(this.widget.thickness ?? DartRuntimePrimitives.RequireValue(this._scrollbarTheme.thickness?.resolve(states)))')
+    $text = $text.ReplaceGeneratedLocalPattern('global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, _MaterialScrollbar__scrollbar>)((states) => {' + "`n" + 'return ((this.widget.trackVisibility', 'global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, bool>)((states) => {' + "`n" + 'return ((this.widget.trackVisibility')
+    $text = $text.ReplaceGeneratedLocalPattern('global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, _MaterialScrollbar__scrollbar>)((states) => {' + "`n" + 'if ((states.Contains', 'global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, double>)((states) => {' + "`n" + 'if ((states.Contains')
     return $text
 }
 
 Update-GeneratedFile 'snack_bar.g.cs' {
     param($text)
-    $text = $text.Replace('SnackBarBehavior snackBarBehavior__24128 = ((((SnackBar)this.widget).behavior ?? snackBarTheme__22722.behavior) ?? defaults__22943.behavior!);', 'SnackBarBehavior snackBarBehavior__24128 = DartRuntimePrimitives.RequireValue(((SnackBar)this.widget).behavior ?? snackBarTheme__22722.behavior ?? defaults__22943.behavior);')
-    $text = $text.Replace('new ThemeData(useMaterial3: this._theme.useMaterial3, brightness:', 'ThemeData.Create(useMaterial3: this._theme.useMaterial3, brightness:')
+    $text = $text.ReplaceGeneratedLocalPattern('SnackBarBehavior snackBarBehavior__24128 = ((((SnackBar)this.widget).behavior ?? snackBarTheme__22722.behavior) ?? defaults__22943.behavior!);', 'SnackBarBehavior snackBarBehavior__24128 = DartRuntimePrimitives.RequireValue(((SnackBar)this.widget).behavior ?? snackBarTheme__22722.behavior ?? defaults__22943.behavior);')
+    $text = $text.ReplaceGeneratedLocalPattern('new ThemeData(useMaterial3: this._theme.useMaterial3, brightness:', 'ThemeData.Create(useMaterial3: this._theme.useMaterial3, brightness:')
     return $text
 }
 
-Update-GeneratedFile 'text_field.g.cs' { param($text) $text.Replace('selectAllOnFocus: ((TextField)this.widget).selectAllOnFocus', 'selectAllOnFocus: ((TextField)this.widget).selectAllOnFocus ?? false').Replace('cursorOpacityAnimates: cursorOpacityAnimates__59910', 'cursorOpacityAnimates: cursorOpacityAnimates__59910 ?? false') }
-Update-GeneratedFile 'tab_controller.g.cs' { param($text) $text.Replace('Memory_allocationsLibrary', 'MemoryAllocationsLibrary') }
-Update-GeneratedFile 'time_picker.g.cs' { param($text) $text.Replace('long? newHour__61598 = Dart_coreLibrary.tryParse(value);', 'long? newHour__61598 = DartRuntimePrimitives.ConvertValue<long?>(Dart_coreLibrary.tryParse(value));').Replace('long? newMinute__62274 = Dart_coreLibrary.tryParse(value);', 'long? newMinute__62274 = DartRuntimePrimitives.ConvertValue<long?>(Dart_coreLibrary.tryParse(value));') }
-Update-GeneratedFile 'tooltip.g.cs' { param($text) $text.Replace('defaultValue: ((this.message is null) ? null : global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue)', 'defaultValue: ((this.message is null) ? null : global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue.ToString())').Replace('defaultValue: ((this.richMessage is null) ? null : global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue)', 'defaultValue: ((this.richMessage is null) ? null : global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue.ToString())') }
+Update-GeneratedFile 'text_field.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('selectAllOnFocus: ((TextField)this.widget).selectAllOnFocus', 'selectAllOnFocus: ((TextField)this.widget).selectAllOnFocus ?? false').ReplaceGeneratedLocalPattern('cursorOpacityAnimates: cursorOpacityAnimates__59910', 'cursorOpacityAnimates: cursorOpacityAnimates__59910 ?? false') }
+Update-GeneratedFile 'tab_controller.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('Memory_allocationsLibrary', 'MemoryAllocationsLibrary') }
+Update-GeneratedFile 'time_picker.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('long? newHour__61598 = Dart_coreLibrary.tryParse(value);', 'long? newHour__61598 = DartRuntimePrimitives.ConvertValue<long?>(Dart_coreLibrary.tryParse(value));').ReplaceGeneratedLocalPattern('long? newMinute__62274 = Dart_coreLibrary.tryParse(value);', 'long? newMinute__62274 = DartRuntimePrimitives.ConvertValue<long?>(Dart_coreLibrary.tryParse(value));') }
+Update-GeneratedFile 'tooltip.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('defaultValue: ((this.message is null) ? null : global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue)', 'defaultValue: ((this.message is null) ? null : global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue.ToString())').ReplaceGeneratedLocalPattern('defaultValue: ((this.richMessage is null) ? null : global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue)', 'defaultValue: ((this.richMessage is null) ? null : global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue.ToString())') }
 
 Update-GeneratedFile 'app.g.cs' {
     param($text)
-    $text = $text.Replace('return new MaterialPageRoute<MaterialApp>(settings: settings, builder: builder);', 'return (global::Doroti.Generated.Framework.Widgets.Route<object>)(object)new MaterialPageRoute<MaterialApp>(settings: settings, builder: builder);')
-    $text = $text.Replace('_exitWidgetSelectionButtonBuilder(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::System.Action onPressed, string semanticsLabel, global::Doroti.Generated.Framework.Widgets.GlobalKey<IState> key)', '_exitWidgetSelectionButtonBuilder(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Widgets.GlobalKey<IState> key, global::System.Action onPressed, string semanticsLabel)')
-    $text = $text.Replace('_tapBehaviorButtonBuilder(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::System.Action onPressed, string semanticsLabel, bool selectionOnTapEnabled)', '_tapBehaviorButtonBuilder(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::System.Action onPressed, bool selectionOnTapEnabled, string semanticsLabel)')
+    $text = $text.ReplaceGeneratedLocalPattern('return new MaterialPageRoute<MaterialApp>(settings: settings, builder: builder);', 'return (global::Doroti.Generated.Framework.Widgets.Route<object>)(object)new MaterialPageRoute<MaterialApp>(settings: settings, builder: builder);')
+    $text = $text.ReplaceGeneratedLocalPattern('_exitWidgetSelectionButtonBuilder(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::System.Action onPressed, string semanticsLabel, global::Doroti.Generated.Framework.Widgets.GlobalKey<IState> key)', '_exitWidgetSelectionButtonBuilder(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Widgets.GlobalKey<IState> key, global::System.Action onPressed, string semanticsLabel)')
+    $text = $text.ReplaceGeneratedLocalPattern('_tapBehaviorButtonBuilder(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::System.Action onPressed, string semanticsLabel, bool selectionOnTapEnabled)', '_tapBehaviorButtonBuilder(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::System.Action onPressed, bool selectionOnTapEnabled, string semanticsLabel)')
     return $text
 }
 
 foreach ($name in @('checkbox.g.cs', 'radio.g.cs', 'switch.g.cs')) {
     Update-GeneratedFile $name {
         param($text)
-        $text.Replace('new Semantics(', 'new global::Doroti.Generated.Framework.Widgets.Semantics(')
+        $text.ReplaceGeneratedLocalPattern('new Semantics(', 'new global::Doroti.Generated.Framework.Widgets.Semantics(')
     }
 }
 
 foreach ($name in @('date_picker_theme.g.cs', 'dropdown_menu_theme.g.cs', 'time_picker_theme.g.cs')) {
     Update-GeneratedFile $name {
         param($text)
-        $text = $text.Replace('return ((this._inputDecorationTheme is InputDecorationTheme) ? this._inputDecorationTheme.data : ((InputDecorationThemeData?)(object?)this._inputDecorationTheme)!);', 'return DartRuntimePrimitives.ConvertValue<InputDecorationThemeData>(this._inputDecorationTheme);')
-        $text = $text.Replace('(inputDecorationTheme ?? this.inputDecorationTheme)', 'DartRuntimePrimitives.ConvertValue<InputDecorationThemeData>((object?)inputDecorationTheme ?? this.inputDecorationTheme)')
+        $text = $text.ReplaceGeneratedLocalPattern('return ((this._inputDecorationTheme is InputDecorationTheme) ? this._inputDecorationTheme.data : ((InputDecorationThemeData?)(object?)this._inputDecorationTheme)!);', 'return DartRuntimePrimitives.ConvertValue<InputDecorationThemeData>(this._inputDecorationTheme);')
+        $text = $text.ReplaceGeneratedLocalPattern('(inputDecorationTheme ?? this.inputDecorationTheme)', 'DartRuntimePrimitives.ConvertValue<InputDecorationThemeData>((object?)inputDecorationTheme ?? this.inputDecorationTheme)')
         return $text
     }
 }
 
 Update-GeneratedFile 'page.g.cs' {
     param($text)
-    $text = $text.Replace('MaterialRouteTransitionMixin._delegatedTransition', 'MaterialRouteTransitionMixin<T>._delegatedTransition')
-    $text = $text.Replace('Page._defaultPopInvokedHandler', 'Page<T>._defaultPopInvokedHandler')
+    $text = $text.ReplaceGeneratedLocalPattern('MaterialRouteTransitionMixin._delegatedTransition', 'MaterialRouteTransitionMixin<T>._delegatedTransition')
+    $text = $text.ReplaceGeneratedLocalPattern('Page._defaultPopInvokedHandler', 'Page<T>._defaultPopInvokedHandler')
     return $text
 }
 
 Update-GeneratedFile 'adaptive_text_selection_toolbar.g.cs' {
     param($text)
-    $text = $text.Replace('new CupertinoTextSelectionToolbarButton(buttonItem: buttonItem)', 'CupertinoTextSelectionToolbarButton.CreateButtonItem(buttonItem: buttonItem)')
-    $text = $text.Replace('new CupertinoDesktopTextSelectionToolbarButton(onPressed: ((global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem)buttonItem).onPressed, text: AdaptiveTextSelectionToolbar.getButtonLabel(context, buttonItem))', 'CupertinoDesktopTextSelectionToolbarButton.CreateText(onPressed: ((global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem)buttonItem).onPressed, text: AdaptiveTextSelectionToolbar.getButtonLabel(context, buttonItem))')
-    $text = $text.Replace('if (((((((object?)this.children ?? (object?)this.buttonItems))) is { } __items12476 ? !System.Linq.Enumerable.Any(__items12476) : (bool?)null) ?? true))', 'if ((this.children is null || !this.children.Any()) && (this.buttonItems is null || !this.buttonItems.Any()))')
-    $text = $text.Replace('if (((((this.children ?? this.buttonItems)) is { } __items12476 ? !System.Linq.Enumerable.Any(__items12476) : (bool?)null) ?? true))', 'if ((this.children is null || !this.children.Any()) && (this.buttonItems is null || !this.buttonItems.Any()))')
+    $text = $text.ReplaceGeneratedLocalPattern('new CupertinoTextSelectionToolbarButton(buttonItem: buttonItem)', 'CupertinoTextSelectionToolbarButton.CreateButtonItem(buttonItem: buttonItem)')
+    $text = $text.ReplaceGeneratedLocalPattern('new CupertinoDesktopTextSelectionToolbarButton(onPressed: ((global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem)buttonItem).onPressed, text: AdaptiveTextSelectionToolbar.getButtonLabel(context, buttonItem))', 'CupertinoDesktopTextSelectionToolbarButton.CreateText(onPressed: ((global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem)buttonItem).onPressed, text: AdaptiveTextSelectionToolbar.getButtonLabel(context, buttonItem))')
+    $text = $text.ReplaceGeneratedLocalPattern('if (((((((object?)this.children ?? (object?)this.buttonItems))) is { } __items12476 ? !System.Linq.Enumerable.Any(__items12476) : (bool?)null) ?? true))', 'if ((this.children is null || !this.children.Any()) && (this.buttonItems is null || !this.buttonItems.Any()))')
+    $text = $text.ReplaceGeneratedLocalPattern('if (((((this.children ?? this.buttonItems)) is { } __items12476 ? !System.Linq.Enumerable.Any(__items12476) : (bool?)null) ?? true))', 'if ((this.children is null || !this.children.Any()) && (this.buttonItems is null || !this.buttonItems.Any()))')
     return $text
 }
 
-Update-GeneratedFile 'autocomplete.g.cs' { param($text) $text.Replace('global::Doroti.Generated.Framework.Widgets.RawAutocomplete<object>.defaultStringForOption', '(__option => global::Doroti.Generated.Framework.Widgets.RawAutocomplete<T>.defaultStringForOption(__option))') }
-Update-GeneratedFile 'chip.g.cs' { param($text) $text.Replace('secondaryColor:', 'secondarySelectedColor:') }
-Update-GeneratedFile 'dropdown_menu.g.cs' { param($text) $text.Replace('return ((this._inputDecorationTheme is InputDecorationTheme) ? this._inputDecorationTheme.data : ((InputDecorationThemeData?)(object?)this._inputDecorationTheme)!);', 'return DartRuntimePrimitives.ConvertValue<InputDecorationThemeData>(this._inputDecorationTheme);') }
-Update-GeneratedFile 'material.g.cs' { param($text) $text.Replace('?? kThemeChangeDuration', '?? ConstantsLibrary.kThemeChangeDuration') }
-Update-GeneratedFile 'magnifier.g.cs' { param($text) $text.Replace('offset: Offset(0.0, 2.0)', 'offset: new Offset(0.0, 2.0)') }
-Update-GeneratedFile 'navigation_drawer.g.cs' { param($text) $text.Replace('selectedAnimation: animation', 'selectedAnimation: new global::Doroti.Generated.Framework.Animation.AlwaysStoppedAnimation<double>((this.selectedIndex == index) ? 1.0 : 0.0)') }
-Update-GeneratedFile 'page.g.cs' { param($text) $text.Replace('onPopInvoked: onPopInvoked ?? Page<T>._defaultPopInvokedHandler', 'onPopInvoked: onPopInvoked ?? ((didPop, result) => Page<T>._defaultPopInvokedHandler(didPop, result))') }
-Update-GeneratedFile 'popup_menu.g.cs' { param($text) $text.Replace('((dynamic)base).child', 'base.child') }
-Update-GeneratedFile 'progress_indicator.g.cs' { param($text) $text.Replace('new CupertinoActivityIndicator(key: this.widget.key, color: tickColor__44701, progress:', 'CupertinoActivityIndicator.CreatePartiallyRevealed(key: this.widget.key, color: tickColor__44701, progress:') }
-Update-GeneratedFile 'radio_list_tile.g.cs' { param($text) $text.Replace('RadioGroup.maybeOf(this.context)', 'RadioGroup.maybeOf<T>(this.context)') }
+Update-GeneratedFile 'autocomplete.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('global::Doroti.Generated.Framework.Widgets.RawAutocomplete<object>.defaultStringForOption', '(__option => global::Doroti.Generated.Framework.Widgets.RawAutocomplete<T>.defaultStringForOption(__option))') }
+Update-GeneratedFile 'chip.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('secondaryColor:', 'secondarySelectedColor:') }
+Update-GeneratedFile 'dropdown_menu.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('return ((this._inputDecorationTheme is InputDecorationTheme) ? this._inputDecorationTheme.data : ((InputDecorationThemeData?)(object?)this._inputDecorationTheme)!);', 'return DartRuntimePrimitives.ConvertValue<InputDecorationThemeData>(this._inputDecorationTheme);') }
+Update-GeneratedFile 'material.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('?? kThemeChangeDuration', '?? ConstantsLibrary.kThemeChangeDuration') }
+Update-GeneratedFile 'magnifier.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('offset: Offset(0.0, 2.0)', 'offset: new Offset(0.0, 2.0)') }
+Update-GeneratedFile 'navigation_drawer.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('selectedAnimation: animation', 'selectedAnimation: new global::Doroti.Generated.Framework.Animation.AlwaysStoppedAnimation<double>((this.selectedIndex == index) ? 1.0 : 0.0)') }
+Update-GeneratedFile 'page.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('onPopInvoked: onPopInvoked ?? Page<T>._defaultPopInvokedHandler', 'onPopInvoked: onPopInvoked ?? ((didPop, result) => Page<T>._defaultPopInvokedHandler(didPop, result))') }
+Update-GeneratedFile 'popup_menu.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('((dynamic)base).child', 'base.child') }
+Update-GeneratedFile 'progress_indicator.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('new CupertinoActivityIndicator(key: this.widget.key, color: tickColor__44701, progress:', 'CupertinoActivityIndicator.CreatePartiallyRevealed(key: this.widget.key, color: tickColor__44701, progress:') }
+Update-GeneratedFile 'radio_list_tile.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('RadioGroup.maybeOf(this.context)', 'RadioGroup.maybeOf<T>(this.context)') }
 
 Update-GeneratedFile 'reorderable_list.g.cs' {
     param($text)
-    $text = $text.Replace('_ReorderableListViewChildGlobalKey__reorderable_list.Create(((global::Doroti.Generated.Framework.Widgets.Widget)item__14081).key!, this)', 'new _ReorderableListViewChildGlobalKey__reorderable_list(((global::Doroti.Generated.Framework.Widgets.Widget)item__14081).key!, this)')
-    $text = $text.Replace('global::Doroti.Generated.Framework.Widgets.ReorderableDelayedDragStartListener.Create(key:', 'new global::Doroti.Generated.Framework.Widgets.ReorderableDelayedDragStartListener(key:')
-    $text = $text.Replace('global::Doroti.Generated.Framework.Widgets.KeyedSubtree.Create(key:', 'new global::Doroti.Generated.Framework.Widgets.KeyedSubtree(key:')
+    $text = $text.ReplaceGeneratedLocalPattern('_ReorderableListViewChildGlobalKey__reorderable_list.Create(((global::Doroti.Generated.Framework.Widgets.Widget)item__14081).key!, this)', 'new _ReorderableListViewChildGlobalKey__reorderable_list(((global::Doroti.Generated.Framework.Widgets.Widget)item__14081).key!, this)')
+    $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Generated.Framework.Widgets.ReorderableDelayedDragStartListener.Create(key:', 'new global::Doroti.Generated.Framework.Widgets.ReorderableDelayedDragStartListener(key:')
+    $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Generated.Framework.Widgets.KeyedSubtree.Create(key:', 'new global::Doroti.Generated.Framework.Widgets.KeyedSubtree(key:')
     return $text
 }
 
 Update-GeneratedFile 'scaffold.g.cs' {
     param($text)
-    $text = $text.Replace('.diagnostics.First().toDescription()', '.diagnostics[0].toDescription()')
-    $text = [Text.RegularExpressions.Regex]::Replace($text, 'bool showAboveFab__46654 = .*?;\r?\n', "bool showAboveFab__46654 = this.currentFloatingActionButtonLocation is not null;`n")
-    $text = $text.Replace('((widget is FloatingActionButton) && widget.isExtended)', '(widget is FloatingActionButton floatingActionButton && floatingActionButton.isExtended)')
-    $text = $text.Replace('        base.handleStatusBarTap();' + "`n", '')
-    $text = $text.Replace('key: this._endDrawerKey', 'key: (global::Doroti.Generated.Framework.Widgets.GlobalKey<IState>)(object)this._endDrawerKey')
-    $text = $text.Replace('key: this._drawerKey', 'key: (global::Doroti.Generated.Framework.Widgets.GlobalKey<IState>)(object)this._drawerKey')
-    $text = $text.Replace('child: ((Scaffold)(object)this.widget).appBar!', 'child: (global::Doroti.Generated.Framework.Widgets.Widget)(object)((Scaffold)(object)this.widget).appBar!')
-    $text = $text.Replace('onDragEnd: this._handleDragEnd', 'onDragEnd: ((details, isClosing) => this._handleDragEnd(details, isClosing))')
+    $text = $text.ReplaceGeneratedLocalPattern('.diagnostics.First().toDescription()', '.diagnostics[0].toDescription()')
+    $text = [Text.RegularExpressions.Regex]::Replace(
+        $text,
+        'bool (?<local>showAboveFab__\d+) = .*?;\r?\n',
+        { param($match) "bool $($match.Groups['local'].Value) = this.currentFloatingActionButtonLocation is not null;`n" })
+    $text = $text.ReplaceGeneratedLocalPattern('((widget is FloatingActionButton) && widget.isExtended)', '(widget is FloatingActionButton floatingActionButton && floatingActionButton.isExtended)')
+    $text = $text.ReplaceGeneratedLocalPattern('        base.handleStatusBarTap();' + "`n", '')
+    $text = $text.ReplaceGeneratedLocalPattern('key: this._endDrawerKey', 'key: (global::Doroti.Generated.Framework.Widgets.GlobalKey<IState>)(object)this._endDrawerKey')
+    $text = $text.ReplaceGeneratedLocalPattern('key: this._drawerKey', 'key: (global::Doroti.Generated.Framework.Widgets.GlobalKey<IState>)(object)this._drawerKey')
+    $text = $text.ReplaceGeneratedLocalPattern('child: ((Scaffold)(object)this.widget).appBar!', 'child: (global::Doroti.Generated.Framework.Widgets.Widget)(object)((Scaffold)(object)this.widget).appBar!')
+    $text = $text.ReplaceGeneratedLocalPattern('onDragEnd: this._handleDragEnd', 'onDragEnd: ((details, isClosing) => this._handleDragEnd(details, isClosing))')
     return $text
 }
 
-Update-GeneratedFile 'search_anchor.g.cs' { param($text) $text.Replace('padding: (((object?)barPadding ?? (object?)new global::Doroti.Generated.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Generated.Framework.Painting.EdgeInsets>(global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16.0))))', 'padding: DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry?>>((object?)barPadding ?? new global::Doroti.Generated.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry?>(global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16.0)))') }
-Update-GeneratedFile 'segmented_button.g.cs' { param($text) $text.Replace('.selected.union(pressedSegment__17895)', '.selected.Union(pressedSegment__17895).ToHashSet()') }
+Update-GeneratedFile 'search_anchor.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('padding: (((object?)barPadding ?? (object?)new global::Doroti.Generated.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Generated.Framework.Painting.EdgeInsets>(global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16.0))))', 'padding: DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry?>>((object?)barPadding ?? new global::Doroti.Generated.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry?>(global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16.0)))') }
+Update-GeneratedFile 'segmented_button.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('.selected.union(pressedSegment__17895)', '.selected.Union(pressedSegment__17895).ToHashSet()') }
 
 Update-GeneratedFile 'slider.g.cs' {
     param($text)
-    $text = $text.Replace('ObjectFlagProperty<global::System.Action<double>>.CreateHas("semanticFormatterCallback"', 'ObjectFlagProperty<SemanticFormatterCallback>.CreateHas("semanticFormatterCallback"')
-    $text = $text.Replace('(shouldIncrease__27851 ? slider__28139.increaseAction() : slider__28139.decreaseAction());', 'if (shouldIncrease__27851) { slider__28139.increaseAction(); } else { slider__28139.decreaseAction(); }')
-    $text = $text.Replace('_buildValueIndicator(sliderTheme__30447.showValueIndicator!)', '_buildValueIndicator(DartRuntimePrimitives.RequireValue(sliderTheme__30447.showValueIndicator))')
-    $text = $text.Replace('DartRuntimePrimitives.ConvertValue<(double, double?)>(((1.0 - controllerValue__62172), null))', '((1.0 - controllerValue__62172), (double?)null)')
-    $text = $text.Replace('DartRuntimePrimitives.ConvertValue<_RangeSliderState__range_slider>(this.state)', 'DartRuntimePrimitives.ConvertValue<_SliderState__slider>(this.state)')
+    $text = $text.ReplaceGeneratedLocalPattern('ObjectFlagProperty<global::System.Action<double>>.CreateHas("semanticFormatterCallback"', 'ObjectFlagProperty<SemanticFormatterCallback>.CreateHas("semanticFormatterCallback"')
+    $text = $text.ReplaceGeneratedLocalPattern('(shouldIncrease__27851 ? slider__28139.increaseAction() : slider__28139.decreaseAction());', 'if (shouldIncrease__27851) { slider__28139.increaseAction(); } else { slider__28139.decreaseAction(); }')
+    $text = $text.ReplaceGeneratedLocalPattern('_buildValueIndicator(sliderTheme__30447.showValueIndicator!)', '_buildValueIndicator(DartRuntimePrimitives.RequireValue(sliderTheme__30447.showValueIndicator))')
+    $text = $text.ReplaceGeneratedLocalPattern('DartRuntimePrimitives.ConvertValue<(double, double?)>(((1.0 - controllerValue__62172), null))', '((1.0 - controllerValue__62172), (double?)null)')
+    $text = $text.ReplaceGeneratedLocalPattern('DartRuntimePrimitives.ConvertValue<_RangeSliderState__range_slider>(this.state)', 'DartRuntimePrimitives.ConvertValue<_SliderState__slider>(this.state)')
     return $text
 }
 
-Update-GeneratedFile 'range_slider.g.cs' { param($text) $text.Replace('ObjectFlagProperty<global::System.Action<double>>.CreateHas("semanticFormatterCallback"', 'ObjectFlagProperty<SemanticFormatterCallback>.CreateHas("semanticFormatterCallback"') }
-Update-GeneratedFile 'slider_parts.g.cs' { param($text) $text.Replace('(center.dx - DartRuntimePrimitives.RequireValue(secondaryOffset).dx)', '(center.dx - thumbCenter.dx)').Replace('DartRuntimePrimitives.RequireValue(sliderTheme.trackGap).isNegative', 'DartRuntimePrimitives.RequireValue(sliderTheme.trackGap).isNegative()') }
-Update-GeneratedFile 'switch.g.cs' { param($text) $text.Replace('((double)switchTheme__32572.trackOutlineWidth?.resolve(activeStates__34504))', 'DartRuntimePrimitives.RequireValue(switchTheme__32572.trackOutlineWidth?.resolve(activeStates__34504))').Replace('((double)switchTheme__32572.trackOutlineWidth?.resolve(inactiveStates__34581))', 'DartRuntimePrimitives.RequireValue(switchTheme__32572.trackOutlineWidth?.resolve(inactiveStates__34581))').Replace('((double)defaults__32785.trackOutlineWidth?.resolve(activeStates__34504))', 'DartRuntimePrimitives.RequireValue(defaults__32785.trackOutlineWidth?.resolve(activeStates__34504))').Replace('((double)defaults__32785.trackOutlineWidth?.resolve(inactiveStates__34581))', 'DartRuntimePrimitives.RequireValue(defaults__32785.trackOutlineWidth?.resolve(inactiveStates__34581))').Replace('createBoxPainter(() => this._handleDecorationChanged())', 'createBoxPainter((global::System.Action)(() => this._handleDecorationChanged()))') }
+Update-GeneratedFile 'range_slider.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('ObjectFlagProperty<global::System.Action<double>>.CreateHas("semanticFormatterCallback"', 'ObjectFlagProperty<SemanticFormatterCallback>.CreateHas("semanticFormatterCallback"') }
+Update-GeneratedFile 'slider_parts.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('(center.dx - DartRuntimePrimitives.RequireValue(secondaryOffset).dx)', '(center.dx - thumbCenter.dx)').ReplaceGeneratedLocalPattern('DartRuntimePrimitives.RequireValue(sliderTheme.trackGap).isNegative', 'DartRuntimePrimitives.RequireValue(sliderTheme.trackGap).isNegative()') }
+Update-GeneratedFile 'switch.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('((double)switchTheme__32572.trackOutlineWidth?.resolve(activeStates__34504))', 'DartRuntimePrimitives.RequireValue(switchTheme__32572.trackOutlineWidth?.resolve(activeStates__34504))').ReplaceGeneratedLocalPattern('((double)switchTheme__32572.trackOutlineWidth?.resolve(inactiveStates__34581))', 'DartRuntimePrimitives.RequireValue(switchTheme__32572.trackOutlineWidth?.resolve(inactiveStates__34581))').ReplaceGeneratedLocalPattern('((double)defaults__32785.trackOutlineWidth?.resolve(activeStates__34504))', 'DartRuntimePrimitives.RequireValue(defaults__32785.trackOutlineWidth?.resolve(activeStates__34504))').ReplaceGeneratedLocalPattern('((double)defaults__32785.trackOutlineWidth?.resolve(inactiveStates__34581))', 'DartRuntimePrimitives.RequireValue(defaults__32785.trackOutlineWidth?.resolve(inactiveStates__34581))').ReplaceGeneratedLocalPattern('createBoxPainter(() => this._handleDecorationChanged())', 'createBoxPainter((global::System.Action)(() => this._handleDecorationChanged()))') }
 
-Update-GeneratedFile 'tab_indicator.g.cs' { param($text) $text.Replace('DartRuntimePrimitives.ConvertValue<global::System.Action<Canvas, Offset, global::Doroti.Generated.Framework.Painting.ImageConfiguration>>(((Func<Paint>)(() =>', '((Func<Paint>)(() =>').Replace('return __cascade;        }))());', 'return __cascade;        }))();') }
-Update-GeneratedFile 'theme_data.g.cs' { param($text) $text.Replace('base.toStringShort()', '(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))') }
-Update-GeneratedFile 'ink_sparkle.g.cs' { param($text) $text.Replace(').value.x', ').value.X').Replace(').value.y', ').value.Y') }
-Update-GeneratedFile 'radio.g.cs' { param($text) $text.Replace('(double)radioTheme__23155.innerRadius?.resolve(activeStates__23484)', 'radioTheme__23155.innerRadius?.resolve(activeStates__23484)') }
-Update-GeneratedFile 'scaffold.g.cs' { param($text) $text.Replace('.diagnostics[0].toDescription()', '.diagnostics.toDescription()') }
-Update-GeneratedFile 'search.g.cs' { param($text) $text.Replace('__cascade.pop();', '__cascade.pop<object>(null);') }
-Update-GeneratedFile 'switch.g.cs' { param($text) $text.Replace('(double)switchTheme__32572.trackOutlineWidth?.resolve(activeStates__34504)', 'switchTheme__32572.trackOutlineWidth?.resolve(activeStates__34504)').Replace('(double)defaults__32785.trackOutlineWidth?.resolve(activeStates__34504)', 'defaults__32785.trackOutlineWidth?.resolve(activeStates__34504)').Replace('(double)switchTheme__32572.trackOutlineWidth?.resolve(inactiveStates__34581)', 'switchTheme__32572.trackOutlineWidth?.resolve(inactiveStates__34581)').Replace('(double)defaults__32785.trackOutlineWidth?.resolve(inactiveStates__34581)', 'defaults__32785.trackOutlineWidth?.resolve(inactiveStates__34581)') }
+Update-GeneratedFile 'tab_indicator.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('DartRuntimePrimitives.ConvertValue<global::System.Action<Canvas, Offset, global::Doroti.Generated.Framework.Painting.ImageConfiguration>>(((Func<Paint>)(() =>', '((Func<Paint>)(() =>').ReplaceGeneratedLocalPattern('return __cascade;        }))());', 'return __cascade;        }))();') }
+Update-GeneratedFile 'theme_data.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('base.toStringShort()', '(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))') }
+Update-GeneratedFile 'ink_sparkle.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern(').value.x', ').value.X').ReplaceGeneratedLocalPattern(').value.y', ').value.Y') }
+Update-GeneratedFile 'radio.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('(double)radioTheme__23155.innerRadius?.resolve(activeStates__23484)', 'radioTheme__23155.innerRadius?.resolve(activeStates__23484)') }
+Update-GeneratedFile 'scaffold.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('.diagnostics[0].toDescription()', '.diagnostics.toDescription()') }
+Update-GeneratedFile 'search.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('__cascade.pop();', '__cascade.pop<object>(null);') }
+Update-GeneratedFile 'switch.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('(double)switchTheme__32572.trackOutlineWidth?.resolve(activeStates__34504)', 'switchTheme__32572.trackOutlineWidth?.resolve(activeStates__34504)').ReplaceGeneratedLocalPattern('(double)defaults__32785.trackOutlineWidth?.resolve(activeStates__34504)', 'defaults__32785.trackOutlineWidth?.resolve(activeStates__34504)').ReplaceGeneratedLocalPattern('(double)switchTheme__32572.trackOutlineWidth?.resolve(inactiveStates__34581)', 'switchTheme__32572.trackOutlineWidth?.resolve(inactiveStates__34581)').ReplaceGeneratedLocalPattern('(double)defaults__32785.trackOutlineWidth?.resolve(inactiveStates__34581)', 'defaults__32785.trackOutlineWidth?.resolve(inactiveStates__34581)') }
 
 # G6-3 live Material adaptations. Keep these in the reviewed producer so a
 # clean promotion cannot overwrite the runtime-proven product sources.
 Update-GeneratedFile 'app.g.cs' {
     param($text)
-    $text.Replace('return (global::Doroti.Generated.Framework.Widgets.Route<object>)(object)new MaterialPageRoute<MaterialApp>(settings: settings, builder: builder);', 'return new MaterialPageRoute<object>(settings: settings, builder: builder);')
+    $text.ReplaceGeneratedLocalPattern('return (global::Doroti.Generated.Framework.Widgets.Route<object>)(object)new MaterialPageRoute<MaterialApp>(settings: settings, builder: builder);', 'return new MaterialPageRoute<object>(settings: settings, builder: builder);')
 }
 
 Update-GeneratedFile 'app_bar.g.cs' {
@@ -473,7 +512,7 @@ Update-GeneratedFile 'material.g.cs' {
     if ($matches.Count -ne 1) {
         throw "G6 Material ink renderer paint override shape drifted: expected 1 match, got $($matches.Count)."
     }
-    $text = $text.Replace($signature, 'public override void paint(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset offset)')
+    $text = $text.ReplaceGeneratedLocalPattern($signature, 'public override void paint(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset offset)')
     $snapshotPattern = '(?<target>List<InkFeature>\? inkFeatures__\d+ = this\._inkFeatures)\.ToList\(\);'
     $snapshotMatches = [Text.RegularExpressions.Regex]::Matches($text, $snapshotPattern)
     if ($snapshotMatches.Count -ne 1) {
@@ -489,17 +528,17 @@ Update-GeneratedFile 'button_style_button.g.cs' {
     param($text)
     $text = [Text.RegularExpressions.Regex]::Replace(
         $text,
-        '(?s)        Color\? effectiveIconColor\(\)\r?\n        \{.*?\r?\n        \}\r?\n        double\? resolvedElevation__15501',
-        "        Color? effectiveIconColor()`n        {`n            // Icon color is optional for text-only buttons. Avoid eagerly`n            // resolving nullable style properties; IconTheme below supplies`n            // the foreground fallback when an icon is actually present.`n            return null;`n            throw new InvalidOperationException(`"Dart control flow completed without a value.`");`n        }`n        double? resolvedElevation__15501")
-    $text = $text.Replace('double? resolvedElevation__15501 = resolve<double?>(((style) => style?.elevation));', 'double? resolvedElevation__15501 = resolve<double?>(((style) => style?.elevation)) ?? 0.0;')
-    $text = $text.Replace('global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? resolvedPadding__16187 = resolve<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry?>(((style) => style?.padding));', 'global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? resolvedPadding__16187 = resolve<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry?>(((style) => style?.padding)) ?? global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16, vertical: 8);')
-    $text = $text.Replace('global::Doroti.Flutter.Ui.Size? resolvedMinimumSize__16304 = ((global::Doroti.Flutter.Ui.Size?)(object?)resolve<global::Doroti.Flutter.Ui.Size?>(((style) => style?.minimumSize)));', 'global::Doroti.Flutter.Ui.Size? resolvedMinimumSize__16304 = ((global::Doroti.Flutter.Ui.Size?)(object?)resolve<global::Doroti.Flutter.Ui.Size?>(((style) => style?.minimumSize))) ?? new global::Doroti.Flutter.Ui.Size(64, 40);')
-    $text = $text.Replace('global::Doroti.Flutter.Ui.Size? resolvedMaximumSize__16496 = ((global::Doroti.Flutter.Ui.Size?)(object?)resolve<global::Doroti.Flutter.Ui.Size?>(((style) => style?.maximumSize)));', 'global::Doroti.Flutter.Ui.Size? resolvedMaximumSize__16496 = ((global::Doroti.Flutter.Ui.Size?)(object?)resolve<global::Doroti.Flutter.Ui.Size?>(((style) => style?.maximumSize))) ?? new global::Doroti.Flutter.Ui.Size(double.PositiveInfinity, double.PositiveInfinity);')
-    $text = $text.Replace('global::Doroti.Generated.Framework.Painting.OutlinedBorder? resolvedShape__16855 = resolve<global::Doroti.Generated.Framework.Painting.OutlinedBorder?>(((style) => style?.shape));', 'global::Doroti.Generated.Framework.Painting.OutlinedBorder? resolvedShape__16855 = resolve<global::Doroti.Generated.Framework.Painting.OutlinedBorder?>(((style) => style?.shape)) ?? new global::Doroti.Generated.Framework.Painting.RoundedRectangleBorder();')
-    $text = $text.Replace('VisualDensity? resolvedVisualDensity__17390 = effectiveValue(((style) => style?.visualDensity));', 'VisualDensity? resolvedVisualDensity__17390 = effectiveValue(((style) => style?.visualDensity)) ?? theme__14153.visualDensity;')
-    $text = $text.Replace('MaterialTapTargetSize? resolvedTapTargetSize__17522 = effectiveValue(((style) => style?.tapTargetSize));', 'MaterialTapTargetSize? resolvedTapTargetSize__17522 = effectiveValue(((style) => style?.tapTargetSize)) ?? MaterialTapTargetSize.padded;')
-    $text = $text.Replace('Duration? resolvedAnimationDuration__17641 = effectiveValue(((style) => style?.animationDuration));', 'Duration? resolvedAnimationDuration__17641 = effectiveValue(((style) => style?.animationDuration)) ?? Duration.Create(milliseconds: 200);')
-    $text = $text.Replace('global::Doroti.Generated.Framework.Painting.AlignmentGeometry? resolvedAlignment__17896 = effectiveValue(((style) => style?.alignment));', 'global::Doroti.Generated.Framework.Painting.AlignmentGeometry? resolvedAlignment__17896 = effectiveValue(((style) => style?.alignment)) ?? global::Doroti.Generated.Framework.Painting.Alignment.center;')
+        '(?s)        Color\? effectiveIconColor\(\)\r?\n        \{.*?\r?\n        \}\r?\n        double\? (?<local>resolvedElevation__\d+)',
+        { param($match) "        Color? effectiveIconColor()`n        {`n            // Icon color is optional for text-only buttons. Avoid eagerly`n            // resolving nullable style properties; IconTheme below supplies`n            // the foreground fallback when an icon is actually present.`n            return null;`n            throw new InvalidOperationException(`"Dart control flow completed without a value.`");`n        }`n        double? $($match.Groups['local'].Value)" })
+    $text = $text.ReplaceGeneratedLocalPattern('double? resolvedElevation__15501 = resolve<double?>(((style) => style?.elevation));', 'double? resolvedElevation__15501 = resolve<double?>(((style) => style?.elevation)) ?? 0.0;')
+    $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? resolvedPadding__16187 = resolve<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry?>(((style) => style?.padding));', 'global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? resolvedPadding__16187 = resolve<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry?>(((style) => style?.padding)) ?? global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16, vertical: 8);')
+    $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Flutter.Ui.Size? resolvedMinimumSize__16304 = ((global::Doroti.Flutter.Ui.Size?)(object?)resolve<global::Doroti.Flutter.Ui.Size?>(((style) => style?.minimumSize)));', 'global::Doroti.Flutter.Ui.Size? resolvedMinimumSize__16304 = ((global::Doroti.Flutter.Ui.Size?)(object?)resolve<global::Doroti.Flutter.Ui.Size?>(((style) => style?.minimumSize))) ?? new global::Doroti.Flutter.Ui.Size(64, 40);')
+    $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Flutter.Ui.Size? resolvedMaximumSize__16496 = ((global::Doroti.Flutter.Ui.Size?)(object?)resolve<global::Doroti.Flutter.Ui.Size?>(((style) => style?.maximumSize)));', 'global::Doroti.Flutter.Ui.Size? resolvedMaximumSize__16496 = ((global::Doroti.Flutter.Ui.Size?)(object?)resolve<global::Doroti.Flutter.Ui.Size?>(((style) => style?.maximumSize))) ?? new global::Doroti.Flutter.Ui.Size(double.PositiveInfinity, double.PositiveInfinity);')
+    $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Generated.Framework.Painting.OutlinedBorder? resolvedShape__16855 = resolve<global::Doroti.Generated.Framework.Painting.OutlinedBorder?>(((style) => style?.shape));', 'global::Doroti.Generated.Framework.Painting.OutlinedBorder? resolvedShape__16855 = resolve<global::Doroti.Generated.Framework.Painting.OutlinedBorder?>(((style) => style?.shape)) ?? new global::Doroti.Generated.Framework.Painting.RoundedRectangleBorder();')
+    $text = $text.ReplaceGeneratedLocalPattern('VisualDensity? resolvedVisualDensity__17390 = effectiveValue(((style) => style?.visualDensity));', 'VisualDensity? resolvedVisualDensity__17390 = effectiveValue(((style) => style?.visualDensity)) ?? theme__14153.visualDensity;')
+    $text = $text.ReplaceGeneratedLocalPattern('MaterialTapTargetSize? resolvedTapTargetSize__17522 = effectiveValue(((style) => style?.tapTargetSize));', 'MaterialTapTargetSize? resolvedTapTargetSize__17522 = effectiveValue(((style) => style?.tapTargetSize)) ?? MaterialTapTargetSize.padded;')
+    $text = $text.ReplaceGeneratedLocalPattern('Duration? resolvedAnimationDuration__17641 = effectiveValue(((style) => style?.animationDuration));', 'Duration? resolvedAnimationDuration__17641 = effectiveValue(((style) => style?.animationDuration)) ?? Duration.Create(milliseconds: 200);')
+    $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Generated.Framework.Painting.AlignmentGeometry? resolvedAlignment__17896 = effectiveValue(((style) => style?.alignment));', 'global::Doroti.Generated.Framework.Painting.AlignmentGeometry? resolvedAlignment__17896 = effectiveValue(((style) => style?.alignment)) ?? global::Doroti.Generated.Framework.Painting.Alignment.center;')
     return $text
 }
 
@@ -514,30 +553,30 @@ foreach ($name in @('checkbox.g.cs', 'radio.g.cs', 'scrollbar.g.cs', 'switch.g.c
     }
 }
 
-Update-GeneratedFile 'checkbox.g.cs' { param($text) $text.Replace('return ((Checkbox)(object?)((Checkbox)this.widget).activeColor);', 'return ((Checkbox)this.widget).activeColor;') }
-Update-GeneratedFile 'radio.g.cs' { param($text) $text.Replace('return ((_RadioPaint__radio)(object?)((_RadioPaint__radio)(object)this.widget).activeColor);', 'return ((_RadioPaint__radio)(object)this.widget).activeColor;') }
+Update-GeneratedFile 'checkbox.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('return ((Checkbox)(object?)((Checkbox)this.widget).activeColor);', 'return ((Checkbox)this.widget).activeColor;') }
+Update-GeneratedFile 'radio.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('return ((_RadioPaint__radio)(object?)((_RadioPaint__radio)(object)this.widget).activeColor);', 'return ((_RadioPaint__radio)(object)this.widget).activeColor;') }
 Update-GeneratedFile 'list_tile.g.cs' {
     param($text)
-    $text = $text.Replace('global::Doroti.Flutter.Ui.Color backgroundColor__31721 = ((global::Doroti.Flutter.Ui.Color)(object?)(((this.tileColor ?? tileTheme__31390.tileColor) ?? theme__31258.listTileTheme.tileColor) ?? defaults__31582.tileColor!));', 'global::Doroti.Flutter.Ui.Color backgroundColor__31721 = ((this.tileColor ?? tileTheme__31390.tileColor) ?? theme__31258.listTileTheme.tileColor) ?? defaults__31582.tileColor ?? new global::Doroti.Flutter.Ui.Color(0L);')
-    $text = $text.Replace('global::Doroti.Flutter.Ui.Color selectedBackgroundColor__31853 = ((global::Doroti.Flutter.Ui.Color)(object?)(((this.selectedTileColor ?? tileTheme__31390.selectedTileColor) ?? theme__31258.listTileTheme.selectedTileColor) ?? defaults__31582.tileColor!));', 'global::Doroti.Flutter.Ui.Color selectedBackgroundColor__31853 = ((this.selectedTileColor ?? tileTheme__31390.selectedTileColor) ?? theme__31258.listTileTheme.selectedTileColor) ?? defaults__31582.tileColor ?? new global::Doroti.Flutter.Ui.Color(0L);')
+    $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Flutter.Ui.Color backgroundColor__31721 = ((global::Doroti.Flutter.Ui.Color)(object?)(((this.tileColor ?? tileTheme__31390.tileColor) ?? theme__31258.listTileTheme.tileColor) ?? defaults__31582.tileColor!));', 'global::Doroti.Flutter.Ui.Color backgroundColor__31721 = ((this.tileColor ?? tileTheme__31390.tileColor) ?? theme__31258.listTileTheme.tileColor) ?? defaults__31582.tileColor ?? new global::Doroti.Flutter.Ui.Color(0L);')
+    $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Flutter.Ui.Color selectedBackgroundColor__31853 = ((global::Doroti.Flutter.Ui.Color)(object?)(((this.selectedTileColor ?? tileTheme__31390.selectedTileColor) ?? theme__31258.listTileTheme.selectedTileColor) ?? defaults__31582.tileColor!));', 'global::Doroti.Flutter.Ui.Color selectedBackgroundColor__31853 = ((this.selectedTileColor ?? tileTheme__31390.selectedTileColor) ?? theme__31258.listTileTheme.selectedTileColor) ?? defaults__31582.tileColor ?? new global::Doroti.Flutter.Ui.Color(0L);')
     return $text
 }
 Update-GeneratedFile 'scrollbar.g.cs' {
     param($text)
-    $text = $text.Replace('return ((_MaterialScrollbar__scrollbar)(object?', 'return (')
-    $text = $text.Replace('public override bool showScrollbar => DartRuntimePrimitives.ConvertValue<bool>(((this.widget.thumbVisibility ?? DartRuntimePrimitives.RequireValue(this._scrollbarTheme.thumbVisibility?.resolve(this._states)))));', 'public override bool showScrollbar => this.widget.thumbVisibility ?? this._scrollbarTheme.thumbVisibility?.resolve(this._states) ?? false;')
-    $text = $text.Replace('return ((this.widget.trackVisibility ?? DartRuntimePrimitives.RequireValue(this._scrollbarTheme.trackVisibility?.resolve(states))));', 'return this.widget.trackVisibility ?? this._scrollbarTheme.trackVisibility?.resolve(states) ?? false;')
-    $text = $text.Replace('return ()(this._scrollbarTheme.thumbColor?.resolve(states) ?? dragColor__9008));', 'return this._scrollbarTheme.thumbColor?.resolve(states) ?? dragColor__9008;')
-    $text = $text.Replace('return ()(this._scrollbarTheme.thumbColor?.resolve(states) ?? hoverColor__9034));', 'return this._scrollbarTheme.thumbColor?.resolve(states) ?? hoverColor__9034;')
-    $text = $text.Replace('return ()Dart_uiLibrary.Color.lerp((this._scrollbarTheme.thumbColor?.resolve(states) ?? idleColor__9061), (this._scrollbarTheme.thumbColor?.resolve(states) ?? hoverColor__9034), ((global::Doroti.Generated.Framework.Animation.AnimationController)this._hoverAnimationController).value)!);', 'return Dart_uiLibrary.Color.lerp((this._scrollbarTheme.thumbColor?.resolve(states) ?? idleColor__9061), (this._scrollbarTheme.thumbColor?.resolve(states) ?? hoverColor__9034), ((global::Doroti.Generated.Framework.Animation.AnimationController)this._hoverAnimationController).value)!;')
+    $text = $text.ReplaceGeneratedLocalPattern('return ((_MaterialScrollbar__scrollbar)(object?', 'return (')
+    $text = $text.ReplaceGeneratedLocalPattern('public override bool showScrollbar => DartRuntimePrimitives.ConvertValue<bool>(((this.widget.thumbVisibility ?? DartRuntimePrimitives.RequireValue(this._scrollbarTheme.thumbVisibility?.resolve(this._states)))));', 'public override bool showScrollbar => this.widget.thumbVisibility ?? this._scrollbarTheme.thumbVisibility?.resolve(this._states) ?? false;')
+    $text = $text.ReplaceGeneratedLocalPattern('return ((this.widget.trackVisibility ?? DartRuntimePrimitives.RequireValue(this._scrollbarTheme.trackVisibility?.resolve(states))));', 'return this.widget.trackVisibility ?? this._scrollbarTheme.trackVisibility?.resolve(states) ?? false;')
+    $text = $text.ReplaceGeneratedLocalPattern('return ()(this._scrollbarTheme.thumbColor?.resolve(states) ?? dragColor__9008));', 'return this._scrollbarTheme.thumbColor?.resolve(states) ?? dragColor__9008;')
+    $text = $text.ReplaceGeneratedLocalPattern('return ()(this._scrollbarTheme.thumbColor?.resolve(states) ?? hoverColor__9034));', 'return this._scrollbarTheme.thumbColor?.resolve(states) ?? hoverColor__9034;')
+    $text = $text.ReplaceGeneratedLocalPattern('return ()Dart_uiLibrary.Color.lerp((this._scrollbarTheme.thumbColor?.resolve(states) ?? idleColor__9061), (this._scrollbarTheme.thumbColor?.resolve(states) ?? hoverColor__9034), ((global::Doroti.Generated.Framework.Animation.AnimationController)this._hoverAnimationController).value)!);', 'return Dart_uiLibrary.Color.lerp((this._scrollbarTheme.thumbColor?.resolve(states) ?? idleColor__9061), (this._scrollbarTheme.thumbColor?.resolve(states) ?? hoverColor__9034), ((global::Doroti.Generated.Framework.Animation.AnimationController)this._hoverAnimationController).value)!;')
     $text = [Text.RegularExpressions.Regex]::Replace($text, 'return \(\)\((this\._scrollbarTheme\.track(?:Border)?Color\?\.resolve\(states\) \?\? .*?)\)\);', 'return $1;')
-    $text = $text.Replace('return ()new global::Doroti.Flutter.Ui.Color(0L));', 'return new global::Doroti.Flutter.Ui.Color(0L);')
-    $text = $text.Replace('return ((this.widget.thickness ?? DartRuntimePrimitives.RequireValue(this._scrollbarTheme.thickness?.resolve(states))));', 'return this.widget.thickness ?? this._scrollbarTheme.thickness?.resolve(states) ?? ScrollbarLibrary._kScrollbarThicknessWithTrack;')
-    $text = $text.Replace("    return this.widget.thickness ?? this._scrollbarTheme.thickness?.resolve(states) ?? ScrollbarLibrary._kScrollbarThicknessWithTrack;`n}`nreturn this.widget.thickness ?? this._scrollbarTheme.thickness?.resolve(states) ?? ScrollbarLibrary._kScrollbarThicknessWithTrack;", "    return this.widget.thickness ?? this._scrollbarTheme.thickness?.resolve(states) ?? ScrollbarLibrary._kScrollbarThicknessWithTrack;`n}`nreturn this.widget.thickness ?? this._scrollbarTheme.thickness?.resolve(states) ?? ScrollbarLibrary._kScrollbarThickness;")
+    $text = $text.ReplaceGeneratedLocalPattern('return ()new global::Doroti.Flutter.Ui.Color(0L));', 'return new global::Doroti.Flutter.Ui.Color(0L);')
+    $text = $text.ReplaceGeneratedLocalPattern('return ((this.widget.thickness ?? DartRuntimePrimitives.RequireValue(this._scrollbarTheme.thickness?.resolve(states))));', 'return this.widget.thickness ?? this._scrollbarTheme.thickness?.resolve(states) ?? ScrollbarLibrary._kScrollbarThicknessWithTrack;')
+    $text = $text.ReplaceGeneratedLocalPattern("    return this.widget.thickness ?? this._scrollbarTheme.thickness?.resolve(states) ?? ScrollbarLibrary._kScrollbarThicknessWithTrack;`n}`nreturn this.widget.thickness ?? this._scrollbarTheme.thickness?.resolve(states) ?? ScrollbarLibrary._kScrollbarThicknessWithTrack;", "    return this.widget.thickness ?? this._scrollbarTheme.thickness?.resolve(states) ?? ScrollbarLibrary._kScrollbarThicknessWithTrack;`n}`nreturn this.widget.thickness ?? this._scrollbarTheme.thickness?.resolve(states) ?? ScrollbarLibrary._kScrollbarThickness;")
     return $text
 }
-Update-GeneratedFile 'shadows.g.cs' { param($text) $text.Replace('public static DartMap<long, List<global::Doroti.Generated.Framework.Painting.BoxShadow>> kElevationToShadow = ShadowsLibrary._elevationToShadow;', 'public static DartMap<long, List<global::Doroti.Generated.Framework.Painting.BoxShadow>> kElevationToShadow => ShadowsLibrary._elevationToShadow;') }
-Update-GeneratedFile 'slider.g.cs' { param($text) $text.Replace('SliderThemeData defaults__30587 = (((object)theme__30400.useMaterial3) switch { true => (year2023__30501 ? new _SliderDefaultsM3Year2023__slider(context) : new _SliderDefaultsM3__slider(context)), false => DartRuntimePrimitives.ConvertValue<SliderThemeData>(new _SliderDefaultsM2__slider(context)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });', 'dynamic defaults__30587 = (((object)theme__30400.useMaterial3) switch { true => (year2023__30501 ? new _SliderDefaultsM3Year2023__slider(context) : new _SliderDefaultsM3__slider(context)), false => new _SliderDefaultsM2__slider(context), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });') }
+Update-GeneratedFile 'shadows.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('public static DartMap<long, List<global::Doroti.Generated.Framework.Painting.BoxShadow>> kElevationToShadow = ShadowsLibrary._elevationToShadow;', 'public static DartMap<long, List<global::Doroti.Generated.Framework.Painting.BoxShadow>> kElevationToShadow => ShadowsLibrary._elevationToShadow;') }
+Update-GeneratedFile 'slider.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('SliderThemeData defaults__30587 = (((object)theme__30400.useMaterial3) switch { true => (year2023__30501 ? new _SliderDefaultsM3Year2023__slider(context) : new _SliderDefaultsM3__slider(context)), false => DartRuntimePrimitives.ConvertValue<SliderThemeData>(new _SliderDefaultsM2__slider(context)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });', 'dynamic defaults__30587 = (((object)theme__30400.useMaterial3) switch { true => (year2023__30501 ? new _SliderDefaultsM3Year2023__slider(context) : new _SliderDefaultsM3__slider(context)), false => new _SliderDefaultsM2__slider(context), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });') }
 Update-GeneratedFile 'switch.g.cs' {
     param($text)
     $defaultsName = [Text.RegularExpressions.Regex]::Match($text, 'dynamic (?<name>defaults__\d+) = default!;')
@@ -545,14 +584,14 @@ Update-GeneratedFile 'switch.g.cs' {
         throw 'G6 Switch defaults declaration shape drifted.'
     }
     $name = $defaultsName.Groups['name'].Value
-    $text = $text.Replace(
+    $text = $text.ReplaceGeneratedLocalPattern(
         "(Color)$name.trackOutlineColor?.resolve",
         "(Color)((global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>)$name.trackOutlineColor).resolve")
-    $text = $text.Replace('return ((_MaterialSwitch__switch)(object?)((_MaterialSwitch__switch)this.widget).inactiveThumbColor);', 'return ((_MaterialSwitch__switch)this.widget).inactiveThumbColor;')
-    $text = $text.Replace('return ((_MaterialSwitch__switch)(object?)((_MaterialSwitch__switch)this.widget).activeThumbColor);', 'return ((_MaterialSwitch__switch)this.widget).activeThumbColor;')
-    $text = $text.Replace('return ((_MaterialSwitch__switch)(object?)((_MaterialSwitch__switch)this.widget).activeTrackColor);', 'return ((_MaterialSwitch__switch)this.widget).activeTrackColor;')
-    $text = $text.Replace('return ((_MaterialSwitch__switch)(object?)((_MaterialSwitch__switch)this.widget).inactiveTrackColor);', 'return ((_MaterialSwitch__switch)this.widget).inactiveTrackColor;')
-    $text = $text.Replace('return ((((WidgetStateProperty.resolveAs<global::Doroti.Generated.Framework.Services.MouseCursor?>(((_MaterialSwitch__switch)this.widget).mouseCursor, states) ?? (global::Doroti.Generated.Framework.Services.MouseCursor)switchTheme__32572.mouseCursor?.resolve(states))) ?? defaults__32785.mouseCursor!.resolve(states)!));', "return WidgetStateProperty.resolveAs<global::Doroti.Generated.Framework.Services.MouseCursor?>(((_MaterialSwitch__switch)this.widget).mouseCursor, states)`n    ?? switchTheme__32572.mouseCursor?.resolve(states)`n    ?? global::Doroti.Generated.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable.resolve(states);")
+    $text = $text.ReplaceGeneratedLocalPattern('return ((_MaterialSwitch__switch)(object?)((_MaterialSwitch__switch)this.widget).inactiveThumbColor);', 'return ((_MaterialSwitch__switch)this.widget).inactiveThumbColor;')
+    $text = $text.ReplaceGeneratedLocalPattern('return ((_MaterialSwitch__switch)(object?)((_MaterialSwitch__switch)this.widget).activeThumbColor);', 'return ((_MaterialSwitch__switch)this.widget).activeThumbColor;')
+    $text = $text.ReplaceGeneratedLocalPattern('return ((_MaterialSwitch__switch)(object?)((_MaterialSwitch__switch)this.widget).activeTrackColor);', 'return ((_MaterialSwitch__switch)this.widget).activeTrackColor;')
+    $text = $text.ReplaceGeneratedLocalPattern('return ((_MaterialSwitch__switch)(object?)((_MaterialSwitch__switch)this.widget).inactiveTrackColor);', 'return ((_MaterialSwitch__switch)this.widget).inactiveTrackColor;')
+    $text = $text.ReplaceGeneratedLocalPattern('return ((((WidgetStateProperty.resolveAs<global::Doroti.Generated.Framework.Services.MouseCursor?>(((_MaterialSwitch__switch)this.widget).mouseCursor, states) ?? (global::Doroti.Generated.Framework.Services.MouseCursor)switchTheme__32572.mouseCursor?.resolve(states))) ?? defaults__32785.mouseCursor!.resolve(states)!));', "return WidgetStateProperty.resolveAs<global::Doroti.Generated.Framework.Services.MouseCursor?>(((_MaterialSwitch__switch)this.widget).mouseCursor, states)`n    ?? switchTheme__32572.mouseCursor?.resolve(states)`n    ?? global::Doroti.Generated.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable.resolve(states);")
     return $text
 }
 

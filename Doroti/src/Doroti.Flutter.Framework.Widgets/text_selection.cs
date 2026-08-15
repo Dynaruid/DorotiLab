@@ -126,6 +126,22 @@ public class TextSelectionOverlay
         this.contextMenuBuilder = contextMenuBuilder;
         this._handlesVisible = handlesVisible;
         this._value = value;
+        this.renderObject.selectionStartInViewport.addListener(this._updateTextSelectionOverlayVisibilities);
+        this.renderObject.selectionEndInViewport.addListener(this._updateTextSelectionOverlayVisibilities);
+        this._updateTextSelectionOverlayVisibilities();
+        this._selectionOverlay = new SelectionOverlay(
+            magnifierConfiguration: magnifierConfiguration, context: context, debugRequiredFor: debugRequiredFor,
+            startHandleType: global::Doroti.Generated.Framework.Rendering.TextSelectionHandleType.collapsed,
+            startHandlesVisible: this._effectiveStartHandleVisibility, lineHeightAtStart: 0.0,
+            onStartHandleDragStart: this._handleSelectionStartHandleDragStart, onStartHandleDragUpdate: this._handleSelectionStartHandleDragUpdate,
+            onStartHandleDragEnd: this._handleAnyDragEnd, endHandleType: global::Doroti.Generated.Framework.Rendering.TextSelectionHandleType.collapsed,
+            endHandlesVisible: this._effectiveEndHandleVisibility, lineHeightAtEnd: 0.0,
+            onEndHandleDragStart: this._handleSelectionEndHandleDragStart, onEndHandleDragUpdate: this._handleSelectionEndHandleDragUpdate,
+            onEndHandleDragEnd: this._handleAnyDragEnd, toolbarVisible: this._effectiveToolbarVisibility,
+            selectionEndpoints: new List<global::Doroti.Generated.Framework.Rendering.TextSelectionPoint>(), selectionControls: selectionControls,
+            selectionDelegate: selectionDelegate, clipboardStatus: clipboardStatus, startHandleLayerLink: startHandleLayerLink,
+            endHandleLayerLink: endHandleLayerLink, toolbarLayerLink: toolbarLayerLink, onSelectionHandleTapped: onSelectionHandleTapped,
+            dragStartBehavior: dragStartBehavior, toolbarLocation: renderObject.lastSecondaryTapDownPosition);
     }
 
     public virtual global::Doroti.Generated.Framework.Services.TextEditingValue value => this._value;
@@ -2713,4 +2729,3 @@ public abstract class TextSelectionHandleControls : TextSelectionControls
     }
 
 }
-

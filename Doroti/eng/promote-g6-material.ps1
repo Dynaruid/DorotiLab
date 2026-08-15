@@ -1,14 +1,29 @@
 #Requires -Version 5.1
-param()
+param(
+    [string] $ReviewedRoot,
+    [ValidateSet('All', 'Material', 'Cupertino')]
+    [string] $ProjectName = 'All'
+)
 
 $ErrorActionPreference = 'Stop'
 $dorotiRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
-$reviewedRoot = Join-Path $dorotiRoot 'migration/generated-candidates/g5-4-reviewed/projects'
+if ([string]::IsNullOrWhiteSpace($ReviewedRoot)) {
+    $reviewedRoot = Join-Path $dorotiRoot 'migration/generated-candidates/g5-4-reviewed/projects'
+} elseif ([IO.Path]::IsPathRooted($ReviewedRoot)) {
+    $reviewedRoot = [IO.Path]::GetFullPath($ReviewedRoot)
+} else {
+    $reviewedRoot = [IO.Path]::GetFullPath((Join-Path $dorotiRoot $ReviewedRoot))
+}
+$candidateBase = [IO.Path]::GetFullPath((Join-Path $dorotiRoot 'migration/generated-candidates'))
+if (-not $reviewedRoot.StartsWith($candidateBase, [StringComparison]::OrdinalIgnoreCase)) {
+    throw "Reviewed promotion source must remain under $candidateBase."
+}
 $artifactRoot = Join-Path $dorotiRoot 'artifacts/g6-material-demo'
 $projects = @(
     [pscustomobject]@{ Name = 'Cupertino'; Target = 'Doroti.Flutter.Framework.Cupertino' },
     [pscustomobject]@{ Name = 'Material'; Target = 'Doroti.Flutter.Framework.Material' }
 )
+if ($ProjectName -ne 'All') { $projects = @($projects | Where-Object Name -eq $ProjectName) }
 
 $entries = [Collections.Generic.List[object]]::new()
 foreach ($project in $projects) {
@@ -48,7 +63,7 @@ New-Item -ItemType Directory -Path $artifactRoot -Force | Out-Null
 $manifest = [ordered]@{
     schemaVersion = 'doroti.g6-material-product-promotion/v1'
     milestone = 'G6-3'
-    source = 'migration/generated-candidates/g5-4-reviewed/projects'
+    source = [IO.Path]::GetRelativePath($dorotiRoot, $reviewedRoot).Replace('\', '/')
     destination = 'src'
     generatedFiles = $entries.Count
     files = $entries

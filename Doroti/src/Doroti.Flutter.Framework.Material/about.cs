@@ -361,7 +361,7 @@ internal class _PackageListTile__about : global::Doroti.Generated.Framework.Widg
 
     public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new Ink(color: (this.isSelected ? Theme.of(context).highlightColor : Theme.of(context).cardColor), child: new ListTile(title: new global::Doroti.Generated.Framework.Widgets.Text(this.packageName), subtitle: new global::Doroti.Generated.Framework.Widgets.Text(MaterialLocalizations.of(context).licensesPackageDetailText(this.numberLicenses)), selected: this.isSelected, onTap: () => this.onTap())));
+        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new Ink(color: (this.isSelected ? Theme.of(context).highlightColor : Theme.of(context).cardColor), child: new ListTile(title: new global::Doroti.Generated.Framework.Widgets.Text(this.packageName), subtitle: new global::Doroti.Generated.Framework.Widgets.Text(MaterialLocalizations.of(context).licensesPackageDetailText(this.numberLicenses)), selected: this.isSelected, onTap: this.onTap)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -1,0 +1,24 @@
+name: g7_material_calendar_reference
+description: Pinned Flutter CalendarDatePicker raster reference for Doroti G7-1V.
+publish_to: none
+
+environment:
+  sdk: ">=3.8.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/Roboto-Regular.ttf
+    - family: MaterialIcons
+      fonts:
+        - asset: assets/MaterialIcons-Regular.otf

@@ -230,7 +230,7 @@ public class SnackBar : global::Doroti.Generated.Framework.Widgets.StatefulWidge
 
     public virtual SnackBar withAnimation(global::Doroti.Generated.Framework.Animation.Animation<double> newAnimation, global::Doroti.Generated.Framework.Foundation.Key? fallbackKey = null)
     {
-        return new SnackBar(key: (this.key ?? fallbackKey), content: this.content, backgroundColor: this.backgroundColor, elevation: this.elevation, margin: this.margin, padding: this.padding, width: this.width, shape: this.shape, hitTestBehavior: this.hitTestBehavior, behavior: this.behavior, action: this.action, actionOverflowThreshold: this.actionOverflowThreshold, showCloseIcon: this.showCloseIcon, closeIconColor: this.closeIconColor, duration: DartRuntimePrimitives.RequireValue(this.duration), persist: this.persist, animation: newAnimation, onVisible: () => this.onVisible(), dismissDirection: this.dismissDirection, clipBehavior: this.clipBehavior);
+        return new SnackBar(key: (this.key ?? fallbackKey), content: this.content, backgroundColor: this.backgroundColor, elevation: this.elevation, margin: this.margin, padding: this.padding, width: this.width, shape: this.shape, hitTestBehavior: this.hitTestBehavior, behavior: this.behavior, action: this.action, actionOverflowThreshold: this.actionOverflowThreshold, showCloseIcon: this.showCloseIcon, closeIconColor: this.closeIconColor, duration: DartRuntimePrimitives.RequireValue(this.duration), persist: this.persist, animation: newAnimation, onVisible: this.onVisible, dismissDirection: this.dismissDirection, clipBehavior: this.clipBehavior);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

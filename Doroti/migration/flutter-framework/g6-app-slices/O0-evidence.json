@@ -2,86 +2,11 @@
   "schemaVersion": "doroti.g6-app-slice-evidence/v1",
   "milestone": "G6-4",
   "slice": "O0",
-  "capturedAtUtc": "2026-08-13T10:18:29.0168958+00:00",
-  "status": "verified-windows-x64-strict-gpu",
-  "reference": {
-    "schemaVersion": "doroti.g6-app-slice-reference/v1",
-    "expectedTrace": [
-      "dialog",
-      "snackBar",
-      "tooltip",
-      "popupMenu",
-      "modalBottomSheet",
-      "persistentBottomSheet"
-    ],
-    "actualTrace": [
-      "dialog",
-      "snackBar",
-      "tooltip",
-      "popupMenu",
-      "modalBottomSheet",
-      "persistentBottomSheet"
-    ],
-    "pass": true
-  },
-  "managed": {
-    "status": "verified",
-    "checks": [
-      "dialog",
-      "snackBar",
-      "tooltip",
-      "popupMenu",
-      "modalBottomSheet",
-      "persistentBottomSheet"
-    ]
-  },
-  "live": {
-    "nativeWindow": true,
-    "hwnd": "actual",
-    "backend": "skia-wgl-opengl-gpu",
-    "presented": 173,
-    "failed": 0,
-    "cancelled": 0,
-    "softwareFallback": false,
-    "semanticsNodes": 14,
-    "input": {
-      "capabilities": {
-        "mouse": true,
-        "touch": true,
-        "pen": false,
-        "wheel": true,
-        "pointerCapture": true,
-        "physicalKeys": true,
-        "textInput": true
-      },
-      "pointerPackets": 0,
-      "keyPackets": 0,
-      "focusChanges": 2,
-      "metricsChanges": 2
-    },
-    "interactionCount": 9,
-    "scrollOffset": -1,
-    "changedPixels": 26501,
-    "state": "slice=O0;revision=10;toggle=False;text=initial;locale=en-US;lazy=0;scroll=-1",
-    "nativeInputTrace": [],
-    "externalAutomation": [],
-    "resourceClosure": {
-      "activeWindows": 0,
-      "windowsCreated": 1,
-      "windowsReleased": 1,
-      "activeOpenGlContexts": 0,
-      "openGlContextsCreated": 1,
-      "openGlContextsReleased": 1,
-      "isBalanced": true
-    }
-  },
-  "boundaries": {
-    "automatedNative": "verified-windows-x64",
-    "physicalIme": "notVerified",
-    "physicalAccessibility": "notVerified",
-    "linux": "notVerified",
-    "macOS": "notVerified",
-    "otherRids": "notVerified"
-  },
-  "unsupportedSilentSuccessCount": 0
+  "status": "failed",
+  "capturedAtUtc": "2026-08-14T23:59:41.286229+00:00",
+  "exception": {
+    "type": "System.InvalidOperationException",
+    "message": "Flutter framework error.",
+    "stackTrace": "   at Program.WaitUntil(Func\u00601 predicate, WindowsFlutterTarget target, SliceEntrypoint entrypoint, TimeSpan timeout) in C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\Doroti.Validation.G6AppSlices\\Program.cs:line 457\r\n   at Program.Run(SliceOptions options) in C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\Doroti.Validation.G6AppSlices\\Program.cs:line 95\r\n   at Program.Main(String[] args) in C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\Doroti.Validation.G6AppSlices\\Program.cs:line 44"
+  }
 }

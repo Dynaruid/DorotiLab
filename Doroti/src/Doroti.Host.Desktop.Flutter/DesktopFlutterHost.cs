@@ -117,6 +117,11 @@ public sealed class DesktopFlutterHost : IDisposable
         return window.CaptureDiagnostics(graphics.Diagnostics, view.targetIdentity, view.registeredCapabilityIds);
     }
 
+    public DesktopFlutterRetainedDiagnostics GetRetainedDiagnosticsForValidation(ulong viewId) =>
+        _graphics.TryGetValue(viewId, out var graphics)
+            ? graphics.RetainedDiagnostics
+            : throw new KeyNotFoundException($"Flutter view {viewId} is not registered with this host.");
+
     public nint GetNativeWindowHandle(ulong viewId) =>
         _graphics.TryGetValue(viewId, out var graphics)
             ? graphics.NativeWindowHandle
