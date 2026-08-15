@@ -55,17 +55,17 @@ try {
     Invoke-Checked { & "$dorotiRoot/eng/validate-g5-2-automation.ps1" }
 
     $projects = @(
-        'Doroti.Flutter.Runtime',
-        'Doroti.Flutter.Ui',
-        'Doroti.Flutter.Framework.Foundation',
-        'Doroti.Flutter.Framework.Scheduler',
-        'Doroti.Flutter.Framework.Services',
-        'Doroti.Flutter.Framework.Physics',
-        'Doroti.Flutter.Framework.Animation',
-        'Doroti.Flutter.Framework.Gestures',
-        'Doroti.Flutter.Framework.Painting',
-        'Doroti.Flutter.Framework.Semantics',
-        'Doroti.Flutter.Framework.Rendering'
+        'Doroti.Runtime',
+        'Doroti.Ui',
+        'Doroti.Framework.Foundation',
+        'Doroti.Framework.Scheduler',
+        'Doroti.Framework.Services',
+        'Doroti.Framework.Physics',
+        'Doroti.Framework.Animation',
+        'Doroti.Framework.Gestures',
+        'Doroti.Framework.Painting',
+        'Doroti.Framework.Semantics',
+        'Doroti.Framework.Rendering'
     )
     foreach ($project in $projects) {
         Invoke-Checked {

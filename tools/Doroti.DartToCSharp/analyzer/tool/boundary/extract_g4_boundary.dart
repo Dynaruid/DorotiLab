@@ -192,7 +192,7 @@ Future<void> main(List<String> arguments) async {
               ? 'dart-runtime'
               : 'tooling-only',
           'owner': value == 'vm:entry-point'
-              ? 'Doroti.Flutter.Runtime entry-point metadata'
+              ? 'Doroti.Runtime entry-point metadata'
               : 'compiler metadata; no product implementation',
         });
       }
@@ -417,7 +417,7 @@ _Classification _classify(String uri, String symbol, String path) {
     }
     return const _Classification(
       'dart-ui-contract',
-      'Doroti.Flutter.Ui managed value/API contract',
+      'Doroti.Ui managed value/API contract',
     );
   }
   if (uri == 'dart:ffi') {
@@ -437,7 +437,7 @@ _Classification _classify(String uri, String symbol, String path) {
   if (uri.startsWith('dart:')) {
     return const _Classification(
       'dart-runtime',
-      'Doroti.Flutter.Runtime / .NET runtime adapter',
+      'Doroti.Runtime / .NET runtime adapter',
     );
   }
   if (uri.startsWith('package:ffi') || uri.startsWith('package:web')) {

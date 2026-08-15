@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Framework.Services</AssemblyName>
+    <PackageId>Doroti.Framework.Services</PackageId>
+    <IsDorotiProduct>true</IsDorotiProduct>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Doroti.Generated.Framework.Widgets.Widgets" />
+    <InternalsVisibleTo Include="Doroti.Framework.Widgets" />
+    <ProjectReference Include="..\Doroti.Runtime\Doroti.Runtime.csproj" />
+    <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Foundation\Doroti.Framework.Foundation.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Scheduler\Doroti.Framework.Scheduler.csproj" />
+  </ItemGroup>
+</Project>

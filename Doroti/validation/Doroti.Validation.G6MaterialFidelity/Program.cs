@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Doroti.Composition;
 using Doroti.Backends.Skia;
-using Doroti.Flutter.Runtime;
+using Doroti.Runtime;
 using Doroti.Graphics;
 using Doroti.Platform;
 using SkiaSharp;
@@ -222,39 +222,39 @@ static void RunCompositingEffectContracts()
 
 static void RunRetainedLayerContracts()
 {
-    var recorder = new Doroti.Flutter.Ui.PictureRecorder();
-    var canvas = new Doroti.Flutter.Ui.Canvas(recorder);
-    canvas.drawRect(Doroti.Flutter.Ui.Rect.fromLTWH(0, 0, 12, 12), new Doroti.Flutter.Ui.Paint
+    var recorder = new Doroti.Ui.PictureRecorder();
+    var canvas = new Doroti.Ui.Canvas(recorder);
+    canvas.drawRect(Doroti.Ui.Rect.fromLTWH(0, 0, 12, 12), new Doroti.Ui.Paint
     {
-        color = new Doroti.Flutter.Ui.Color(0xff6750a4L),
+        color = new Doroti.Ui.Color(0xff6750a4L),
     });
     var picture = recorder.endRecording();
-    var first = new Doroti.Flutter.Ui.SceneBuilder(73);
+    var first = new Doroti.Ui.SceneBuilder(73);
     var retained = first.pushOffset(4, 5);
-    first.addPicture(Doroti.Flutter.Ui.Offset.zero, picture);
+    first.addPicture(Doroti.Ui.Offset.zero, picture);
     first.pop();
     using var firstScene = first.build();
-    var second = new Doroti.Flutter.Ui.SceneBuilder(73);
+    var second = new Doroti.Ui.SceneBuilder(73);
     second.addRetained(retained);
     using var secondScene = second.build();
     if (secondScene.Commands is not [{ Operation: "retained" }])
         throw new InvalidDataException("Retained subtree was not recorded as one immutable replay command.");
 
     var crossViewRejected = false;
-    try { new Doroti.Flutter.Ui.SceneBuilder(74).addRetained(retained); }
+    try { new Doroti.Ui.SceneBuilder(74).addRetained(retained); }
     catch (InvalidOperationException) { crossViewRejected = true; }
     if (!crossViewRejected) throw new InvalidDataException("Cross-view retained replay was not rejected.");
 
     retained.dispose();
     var disposedRejected = false;
-    try { new Doroti.Flutter.Ui.SceneBuilder(73).addRetained(retained); }
+    try { new Doroti.Ui.SceneBuilder(73).addRetained(retained); }
     catch (ObjectDisposedException) { disposedRejected = true; }
     if (!disposedRejected) throw new InvalidDataException("Disposed retained replay was not rejected.");
 
     var unbalancedRejected = false;
     try
     {
-        var unbalanced = new Doroti.Flutter.Ui.SceneBuilder(73);
+        var unbalanced = new Doroti.Ui.SceneBuilder(73);
         unbalanced.pushOffset(1, 1);
         _ = unbalanced.build();
     }

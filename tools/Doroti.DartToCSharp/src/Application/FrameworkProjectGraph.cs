@@ -129,10 +129,10 @@ internal static partial class ConverterEngine
                     <AssemblyName>{assemblyName}</AssemblyName>
                   </PropertyGroup>
                   <ItemGroup>
-                    <ProjectReference Include="$(DorotiRepositoryRoot)\src\Doroti.Flutter.Runtime\Doroti.Flutter.Runtime.csproj" Condition="'$(DorotiRepositoryRoot)' != ''" />
-                    <ProjectReference Include="$(DorotiRepositoryRoot)\src\Doroti.Flutter.Ui\Doroti.Flutter.Ui.csproj" Condition="'$(DorotiRepositoryRoot)' != ''" />
-                    <PackageReference Include="Doroti.Flutter.Runtime" Version="[{identity.RuntimeBindingVersion}]" Condition="'$(DorotiRepositoryRoot)' == ''" />
-                    <PackageReference Include="Doroti.Flutter.Ui" Version="[{identity.RuntimeBindingVersion}]" Condition="'$(DorotiRepositoryRoot)' == ''" />
+                    <ProjectReference Include="$(DorotiRepositoryRoot)\src\Doroti.Runtime\Doroti.Runtime.csproj" Condition="'$(DorotiRepositoryRoot)' != ''" />
+                    <ProjectReference Include="$(DorotiRepositoryRoot)\src\Doroti.Ui\Doroti.Ui.csproj" Condition="'$(DorotiRepositoryRoot)' != ''" />
+                    <PackageReference Include="Doroti.Runtime" Version="[{identity.RuntimeBindingVersion}]" Condition="'$(DorotiRepositoryRoot)' == ''" />
+                    <PackageReference Include="Doroti.Ui" Version="[{identity.RuntimeBindingVersion}]" Condition="'$(DorotiRepositoryRoot)' == ''" />
                 {promotedFrameworkReferences}
                 {projectReferences}
                 {inactiveCompileItems}
@@ -149,7 +149,7 @@ internal static partial class ConverterEngine
             {
                 ArtifactFiles.WriteUtf8(
                     Path.Combine(directory, "SchedulerServices.GlobalUsings.g.cs"),
-                    "global using Doroti.Generated.Framework.Scheduler;\nglobal using Doroti.Generated.Framework.Services;\nglobal using Timer = Doroti.Flutter.Runtime.Timer;\n");
+                    "global using Doroti.Generated.Framework.Scheduler;\nglobal using Doroti.Generated.Framework.Services;\nglobal using Timer = Doroti.Runtime.Timer;\n");
             }
             if (manifest.FrameworkMilestone is "G4-5" or "G5-3" or "G5-4")
             {
@@ -158,7 +158,7 @@ internal static partial class ConverterEngine
                     "global using Doroti.Generated.Framework.Physics;\n" +
                     "global using Doroti.Generated.Framework.Animation;\n" +
                     "global using Doroti.Generated.Framework.Gestures;\n" +
-                    "global using Path = Doroti.Flutter.Ui.Path;\n" +
+                    "global using Path = Doroti.Ui.Path;\n" +
                     "global using PointerEvent = Doroti.Generated.Framework.Gestures.PointerEvent;\n" +
                     "global using PointerDownEvent = Doroti.Generated.Framework.Gestures.PointerDownEvent;\n" +
                     "global using PointerEnterEvent = Doroti.Generated.Framework.Gestures.PointerEnterEvent;\n" +
@@ -249,8 +249,8 @@ internal static partial class ConverterEngine
                     $"{manifest.OutputNamespace}.{partition}",
                     partitionDependencies.Where(item => item.From == partition).Select(item => item.To).ToArray(),
                     [
-                        new("Doroti.Flutter.Runtime", identity.RuntimeBindingVersion, "project-when-sdk-root-package-otherwise"),
-                        new("Doroti.Flutter.Ui", identity.RuntimeBindingVersion, "project-when-sdk-root-package-otherwise"),
+                        new("Doroti.Runtime", identity.RuntimeBindingVersion, "project-when-sdk-root-package-otherwise"),
+                        new("Doroti.Ui", identity.RuntimeBindingVersion, "project-when-sdk-root-package-otherwise"),
                     ]))
                     .ToArray(),
                 partitionDependencies,
@@ -388,8 +388,8 @@ internal static partial class ConverterEngine
         }
 
         return string.Join('\n', packages.Select(package =>
-            $"    <ProjectReference Include=\"$(DorotiRepositoryRoot)\\src\\Doroti.Flutter.Framework.{package}\\Doroti.Flutter.Framework.{package}.csproj\" Condition=\"'$(DorotiRepositoryRoot)' != ''\" />\n" +
-            $"    <PackageReference Include=\"Doroti.Flutter.Framework.{package}\" Version=\"[{runtimeBindingVersion}]\" Condition=\"'$(DorotiRepositoryRoot)' == ''\" />"));
+            $"    <ProjectReference Include=\"$(DorotiRepositoryRoot)\\src\\Doroti.Framework.{package}\\Doroti.Framework.{package}.csproj\" Condition=\"'$(DorotiRepositoryRoot)' != ''\" />\n" +
+            $"    <PackageReference Include=\"Doroti.Framework.{package}\" Version=\"[{runtimeBindingVersion}]\" Condition=\"'$(DorotiRepositoryRoot)' == ''\" />"));
     }
 
     private static string PascalCase(string value) => string.Concat(

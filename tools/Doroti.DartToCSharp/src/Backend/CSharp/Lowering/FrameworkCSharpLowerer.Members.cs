@@ -697,11 +697,11 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (declaration.Name == "_WidgetInspectorService" && method.Name == "screenshot")
         {
-            returnType = "Future<global::Doroti.Flutter.Ui.Image?>";
+            returnType = "Future<global::Doroti.Ui.Image?>";
         }
         if (declaration.Name == "_WidgetInspectorService" && method.Name == "_getSelectedWidgetLocation")
         {
-            returnType = "global::Doroti.Flutter.Runtime.CreationLocation?";
+            returnType = "global::Doroti.Runtime.CreationLocation?";
         }
         if (declaration.Name == "_UnspecifiedTextScaler" && method.Name is "scale" or "textScaleFactor")
         {
@@ -727,11 +727,11 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (declaration.Name == "_WidgetInspectorService" && method.Name == "screenshot")
         {
-            returnType = "Future<global::Doroti.Flutter.Ui.Image?>";
+            returnType = "Future<global::Doroti.Ui.Image?>";
         }
         if (declaration.Name == "_WidgetInspectorService" && method.Name == "_getSelectedWidgetLocation")
         {
-            returnType = "global::Doroti.Flutter.Runtime.CreationLocation?";
+            returnType = "global::Doroti.Runtime.CreationLocation?";
         }
         if (declaration.Name == "_UnspecifiedTextScaler" && method.Name is "scale" or "textScaleFactor")
         {
@@ -758,11 +758,11 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (declaration.Name == "_WidgetInspectorService" && method.Name == "screenshot")
         {
-            returnType = "Future<global::Doroti.Flutter.Ui.Image?>";
+            returnType = "Future<global::Doroti.Ui.Image?>";
         }
         if (declaration.Name == "_WidgetInspectorService" && method.Name == "_getSelectedWidgetLocation")
         {
-            returnType = "global::Doroti.Flutter.Runtime.CreationLocation?";
+            returnType = "global::Doroti.Runtime.CreationLocation?";
         }
         if (method.IsGetter && method.Name == "renderObject")
         {
@@ -882,11 +882,11 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (declaration.Name == "_WidgetInspectorService" && method.Name == "screenshot")
         {
-            returnType = "Future<global::Doroti.Flutter.Ui.Image?>";
+            returnType = "Future<global::Doroti.Ui.Image?>";
         }
         if (declaration.Name == "_WidgetInspectorService" && method.Name == "_getSelectedWidgetLocation")
         {
-            returnType = "global::Doroti.Flutter.Runtime.CreationLocation?";
+            returnType = "global::Doroti.Runtime.CreationLocation?";
         }
         if (declaration.Name == "_UnspecifiedTextScaler" && method.Name is "scale" or "textScaleFactor")
         {
@@ -1803,7 +1803,7 @@ internal sealed partial class FrameworkCSharpLowerer
         if (declaration.Name == "_getCreationLocation" &&
             library.EndsWith("/widget_inspector.dart", StringComparison.Ordinal))
         {
-            returnType = "global::Doroti.Flutter.Runtime.CreationLocation?";
+            returnType = "global::Doroti.Runtime.CreationLocation?";
         }
         var parameters = declaration.Element.Parameters ?? [];
         var relevantTypes = new List<string>();

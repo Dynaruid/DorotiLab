@@ -154,7 +154,7 @@ function Assert-GeneratedBoundary {
     $packageReferences = @($xml.Project.ItemGroup.PackageReference |
         ForEach-Object { [string]$_.Include } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
     Assert-True ($projectReferences.Count -eq 0) 'repository-private generated project references'
-    Assert-True ((($packageReferences | Sort-Object) -join '|') -ceq 'Doroti.Flutter.Framework.Material|Doroti.Flutter.Hosting') 'generated package-only direct references'
+    Assert-True ((($packageReferences | Sort-Object) -join '|') -ceq 'Doroti.Framework.Material|Doroti.Hosting') 'generated package-only direct references'
     $source = Get-Content -LiteralPath (Join-Path $generatedRoot 'projects/Framework/doroti_demo_app_main.g.cs') -Raw
     Assert-True ($source -notmatch 'Avalonia|Win32|Doroti\.Host\.|Doroti\.Vendor') 'generated source platform/vendor boundary'
 }

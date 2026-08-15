@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "doroti.g7-product-naming-evidence/v1",
+  "milestone": "G7-3N",
+  "capturedAtUtc": "2026-08-15T12:11:23.3152866+00:00",
+  "status": "pass-windows-validated",
+  "mapping": "migration/product-naming/g7-doroti-naming-map.json",
+  "shards": {
+    "inventory": {
+      "status": "pass",
+      "projectMappings": 17,
+      "typeMappings": 27,
+      "oldIdentityHits": 0,
+      "oldOwnedTypeHits": 0,
+      "oldPackageLockHits": 0,
+      "compatibilityForwarders": 0
+    },
+    "build": {
+      "status": "pass",
+      "configuration": "Release",
+      "warnings": 0,
+      "errors": 0
+    },
+    "package": {
+      "status": "pass",
+      "packages": 17,
+      "oldPackageArtifacts": 0,
+      "repositoryPrivateFallbacks": 0
+    },
+    "live": {
+      "status": "pass",
+      "target": "win-x64",
+      "graphicsBackend": "skia-wgl-opengl-gpu",
+      "evidence": "migration/flutter-framework/g7-windows-product-smoke.json"
+    }
+  },
+  "targetValidation": {
+    "win-x64": "pass",
+    "osx-arm64": "notVerified",
+    "browser-wasm": "notVerified"
+  },
+  "deferred": [
+    "osx-arm64 post-rename package/live verification",
+    "browser-wasm post-rename package/product graph verification"
+  ]
+}

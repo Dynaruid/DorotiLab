@@ -1,7 +1,7 @@
 using System.Text;
 using System.Text.Json;
-using Doroti.Flutter.Runtime;
-using Doroti.Flutter.Ui;
+using Doroti.Runtime;
+using Doroti.Ui;
 using Doroti.Generated.Framework.Animation;
 using Doroti.Generated.Framework.Gestures;
 using Doroti.Generated.Framework.Physics;

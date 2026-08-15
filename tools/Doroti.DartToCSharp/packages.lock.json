@@ -30,20 +30,20 @@
           "Microsoft.CodeAnalysis.Analyzers": "3.11.0"
         }
       },
-      "doroti.flutter.runtime": {
+      "doroti.runtime": {
         "type": "Project",
         "dependencies": {
           "MaterialColorUtilities": "[0.3.0, )"
         }
       },
-      "doroti.flutter.ui": {
-        "type": "Project",
-        "dependencies": {
-          "Doroti.Flutter.Runtime": "[0.2.0-beta, )"
-        }
-      },
       "doroti.tooling": {
         "type": "Project"
+      },
+      "doroti.ui": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Runtime": "[0.2.0-beta, )"
+        }
       }
     }
   }

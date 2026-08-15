@@ -1,13 +1,13 @@
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
-using Doroti.Flutter.Hosting;
-using Doroti.Flutter.Ui;
+using Doroti.Hosting;
+using Doroti.Ui;
 using Doroti.Generated.Application.G6Demo.Framework;
 using Doroti.Generated.Framework.Foundation;
 using Doroti.Generated.Framework.Gestures;
 using Doroti.Generated.Framework.Widgets;
-using Doroti.Host.Desktop.Flutter;
+using Doroti.Host.Desktop.Framework;
 using Doroti.Platform;
 using Doroti.Plugin.G6GeneratedDemoEcho.WinX64;
 using Doroti.Target.Windows;
@@ -28,9 +28,9 @@ internal static class Program
         var initialHandles = process.HandleCount;
         var peakWorkingSet = initialWorkingSet;
         var entrypoint = new GeneratedDemoEntrypoint();
-        DesktopFlutterTargetDiagnostics? diagnostics = null;
-        DesktopFlutterPixelReadback? initial = null;
-        DesktopFlutterPixelReadback? changed = null;
+        DesktopFrameworkTargetDiagnostics? diagnostics = null;
+        DesktopFrameworkPixelReadback? initial = null;
+        DesktopFrameworkPixelReadback? changed = null;
         NativeResourceSnapshot? resourceClosure = null;
         Exception? failure = null;
         var firstFrameMs = 0d;
@@ -45,12 +45,12 @@ internal static class Program
         try
         {
             applicationBoundary = ValidateApplicationBoundary();
-            using var target = new WindowsFlutterTarget();
-            using var session = new FlutterHostSession(entrypoint);
+            using var target = new WindowsTarget();
+            using var session = new DorotiHostSession(entrypoint);
             using var scope = session.dispatcher.EnterScope();
             session.Start(deferFrameworkBootstrap: true);
             var view = target.CreateView(session, ViewId,
-                new FlutterViewConfiguration("Doroti Generated Dart Demo", new Size(720, 640)));
+                new DorotiViewConfiguration("Doroti Generated Dart Demo", new Size(720, 640)));
             view.Show();
             session.dispatcher.setSemanticsTreeEnabled(true);
 
@@ -181,7 +181,7 @@ internal static class Program
         return 0;
     }
 
-    private static DesktopFlutterPixelReadback CaptureFrame(WindowsFlutterTarget target, GeneratedDemoEntrypoint entrypoint)
+    private static DesktopFrameworkPixelReadback CaptureFrame(WindowsTarget target, GeneratedDemoEntrypoint entrypoint)
     {
         var capture = target.CaptureNextFrameAsync(ViewId);
         entrypoint.RequestFrame();
@@ -191,12 +191,12 @@ internal static class Program
 
     private static ApplicationBoundaryEvidence ValidateApplicationBoundary()
     {
-        using var boundary = FlutterApplicationBoundary.Load(
+        using var boundary = DorotiApplicationBoundary.Load(
             typeof(DorotiGeneratedDemoApp).Assembly, "win-x64", [new EchoPluginHandler()]);
-        var capabilities = new FlutterViewCapabilities("win-x64/g6-7-generated-demo");
+        var capabilities = new DorotiViewCapabilities("win-x64/g6-7-generated-demo");
         boundary.Configure(capabilities);
         var resources = capabilities.Require<IApplicationResourceHostCapability>(
-            ViewId, FlutterCapabilityIds.ApplicationResources, DartUiInvocation.Managed("g6-7-generated-demo"));
+            ViewId, DorotiCapabilityIds.ApplicationResources, DartUiInvocation.Managed("g6-7-generated-demo"));
         var brand = resources.LoadAsync("assets/brand.txt").AsTask().GetAwaiter().GetResult();
         if (!Encoding.UTF8.GetString(brand.Span).Contains("Doroti generated Dart DemoApp", StringComparison.Ordinal))
             throw new InvalidDataException("Generated DemoApp asset payload drifted.");
@@ -212,12 +212,12 @@ internal static class Program
         {
             _ = resources.LoadAsync("assets/missing.txt").AsTask().GetAwaiter().GetResult();
         }
-        catch (FlutterCapabilityException exception) when (exception.CapabilityId == FlutterCapabilityIds.ApplicationResources)
+        catch (DorotiCapabilityException exception) when (exception.CapabilityId == DorotiCapabilityIds.ApplicationResources)
         {
             missingResourceRejected = true;
         }
         var messaging = capabilities.Require<IPlatformMessageHostCapability>(
-            ViewId, FlutterCapabilityIds.PlatformMessaging, DartUiInvocation.Managed("g6-7-generated-demo"));
+            ViewId, DorotiCapabilityIds.PlatformMessaging, DartUiInvocation.Managed("g6-7-generated-demo"));
         var echo = messaging.SendAsync("g6/generated-demo/echo", Encoding.UTF8.GetBytes("doroti"))
             .AsTask().GetAwaiter().GetResult();
         var echoPassed = echo is not null && Encoding.UTF8.GetString(echo.Value.Span) == "win-x64:doroti";
@@ -227,7 +227,7 @@ internal static class Program
         {
             _ = messaging.SendAsync("g6/missing", null).AsTask().GetAwaiter().GetResult();
         }
-        catch (FlutterCapabilityException exception) when (exception.CapabilityId == FlutterCapabilityIds.PlatformPlugins)
+        catch (DorotiCapabilityException exception) when (exception.CapabilityId == DorotiCapabilityIds.PlatformPlugins)
         {
             missingPluginRejected = true;
         }
@@ -237,7 +237,7 @@ internal static class Program
             echoPassed, missingResourceRejected, missingPluginRejected);
     }
 
-    private static void WaitUntil(Func<bool> predicate, WindowsFlutterTarget target, GeneratedDemoEntrypoint entrypoint, TimeSpan timeout)
+    private static void WaitUntil(Func<bool> predicate, WindowsTarget target, GeneratedDemoEntrypoint entrypoint, TimeSpan timeout)
     {
         var elapsed = Stopwatch.StartNew();
         while (!predicate())
@@ -257,7 +257,7 @@ internal static class Program
             yield return node;
     }
 
-    private static long CountChangedPixels(DesktopFlutterPixelReadback before, DesktopFlutterPixelReadback after)
+    private static long CountChangedPixels(DesktopFrameworkPixelReadback before, DesktopFrameworkPixelReadback after)
     {
         if (before.Width != after.Width || before.Height != after.Height) return long.MaxValue;
         long changed = 0;
@@ -285,10 +285,10 @@ internal sealed record ApplicationBoundaryEvidence(
     bool MissingResourceRejected,
     bool MissingPluginRejected);
 
-internal sealed class GeneratedDemoEntrypoint : IFlutterViewEntrypoint
+internal sealed class GeneratedDemoEntrypoint : IDorotiViewEntrypoint
 {
     private WidgetsFlutterBinding? _binding;
-    private FlutterView? _view;
+    private DorotiView? _view;
     internal FlutterErrorDetails? FirstFrameworkError { get; private set; }
 
     public void Bootstrap(PlatformDispatcher dispatcher)
@@ -297,7 +297,7 @@ internal sealed class GeneratedDemoEntrypoint : IFlutterViewEntrypoint
         _binding = new WidgetsFlutterBinding(dispatcher);
     }
 
-    public void AttachView(FlutterView view)
+    public void AttachView(DorotiView view)
     {
         if (_binding is null) throw new InvalidOperationException("Generated framework binding was not bootstrapped.");
         _view = view;
@@ -305,7 +305,7 @@ internal sealed class GeneratedDemoEntrypoint : IFlutterViewEntrypoint
             _binding.attachRootWidget(_binding.wrapWithDefaultView(new DorotiGeneratedDemoApp())));
     }
 
-    public void DetachView(FlutterView view)
+    public void DetachView(DorotiView view)
     {
         if (ReferenceEquals(_view, view)) _view = null;
     }

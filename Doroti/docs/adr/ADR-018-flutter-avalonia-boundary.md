@@ -9,7 +9,7 @@ Current-status note: the platform-verification statements below describe the G4-
 
 ## Context
 
-Doroti previously grouped many Flutter external dependencies under `runtime-binding` and retained handwritten Flutter-like behavior in `Doroti.Core`, `Doroti.Platform`, `Doroti.Rendering`, `Doroti.Widgets`, `Doroti.Engine`, and `Doroti.Flutter.Runtime`. That grouping did not distinguish Dart language semantics, managed `dart:ui` API, Flutter framework behavior, concrete native platform behavior, or narrow adaptation. It could therefore report apparent coverage without identifying an executable owner.
+Doroti previously grouped many Flutter external dependencies under `runtime-binding` and retained handwritten Flutter-like behavior in `Doroti.Core`, `Doroti.Platform`, `Doroti.Rendering`, `Doroti.Widgets`, `Doroti.Engine`, and `Doroti.Runtime`. That grouping did not distinguish Dart language semantics, managed `dart:ui` API, Flutter framework behavior, concrete native platform behavior, or narrow adaptation. It could therefore report apparent coverage without identifying an executable owner.
 
 The product already has a Windows shell and strict Skia/OpenGL surface adapted from pinned Avalonia source. It does not yet have the managed `dart:ui` contract or the composition adapter that lets reviewed Flutter Scheduler, Services, Rendering, and Widgets use those capabilities.
 
@@ -46,23 +46,23 @@ The boundary audit regenerates the current-owner inventory, rejects stale or unc
 The target dependency direction is:
 
 ```text
-Doroti.Flutter.Framework.* -> Doroti.Flutter.Runtime + Doroti.Flutter.Ui
-Doroti.Flutter.Hosting     -> Doroti.Flutter.Framework.* + Doroti.Flutter.Ui
-Doroti.Host.Desktop.Flutter -> Flutter.Hosting + Host.Desktop + neutral contracts
+Doroti.Framework.* -> Doroti.Runtime + Doroti.Ui
+Doroti.Hosting     -> Doroti.Framework.* + Doroti.Ui
+Doroti.Host.Desktop.Framework -> Flutter.Hosting + Host.Desktop + neutral contracts
 Doroti.Host.Desktop        -> neutral contracts + Doroti.Vendor.Avalonia.*
 Doroti.Vendor.Avalonia.*   -> Doroti.Shell.Core + approved vendor peers
 ```
 
-`DOTARCH009` rejects host/platform references from new Flutter Runtime, Ui, Framework, and Hosting assemblies. The negative project at `validation/architecture/forbidden-flutter-host` proves through an actual `dotnet build` that `Doroti.Flutter.Framework.* -> Doroti.Platform` fails.
+`DOTARCH009` rejects host/platform references from Doroti Runtime, Ui, Framework, and Hosting assemblies. The negative project at `validation/architecture/forbidden-framework-platform` proves through an actual `dotnet build` that `Doroti.Framework.* -> Doroti.Platform` fails.
 
 ## Recorded transitions
 
 Two existing edges are debt, not accepted final architecture:
 
-- `Doroti.Flutter.Runtime -> Doroti.Platform` expires at G4-1 when clipboard/channel behavior moves to Flutter Services, `dart:ui`, and the host binding.
+- `Doroti.Runtime -> Doroti.Platform` expires at G4-1 when clipboard/channel behavior moves to Flutter Services, `dart:ui`, and the host binding.
 - The former `Doroti.Engine -> Doroti.Widgets` transition expired at G4-6; `InteractiveApplication` and the handwritten Widgets project have been removed.
 
-Only the exact current `Doroti.Flutter.Runtime` assembly receives the direct transition allowance. Existing Foundation/Physics assemblies receive its unavoidable transitive `Core`/`Graphics`/`Platform` compiler metadata closure, but no direct project-reference permission; a new runtime/framework assembly cannot copy either allowance. G4-1 removes the direct edge and these transitive references together. Both transitions remain visible in the project manifest and current-owner audit.
+Only the exact current `Doroti.Runtime` assembly receives the direct transition allowance. Existing Foundation/Physics assemblies receive its unavoidable transitive `Core`/`Graphics`/`Platform` compiler metadata closure, but no direct project-reference permission; a new runtime/framework assembly cannot copy either allowance. G4-1 removes the direct edge and these transitive references together. Both transitions remain visible in the project manifest and current-owner audit.
 
 ## Consequences
 

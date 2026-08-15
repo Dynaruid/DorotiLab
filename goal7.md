@@ -1,6 +1,6 @@
 # Doroti 7차 목표 — 제품 정확성 closure와 Windows/macOS shell·Web release
 
-> 상태: G7-3 🔄 재정의/진행 중 — Web host 인프라는 확인됐으나 Doroti 자체 Web app 생성 경로는 미완료
+> 상태: G7-3N 🔄 naming cutover와 Windows 검증 완료 — macOS/Web post-rename 검증 및 Doroti 자체 Web app 생성 경로는 미완료
 > 작성일: 2026-08-14
 > 측정 핵심화: 2026-08-15
 > 범위 추가: 2026-08-15 — Apple Silicon macOS shell(`osx-arm64`)을 필수 target으로 승격
@@ -297,7 +297,7 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 - `Doroti/migration/product-naming/g7-doroti-naming-evidence.json`
 - `Doroti/eng/validate-g7-product-naming.ps1 -Shard <Inventory|Build|Package|Live>`
 
-현재 상태(2026-08-15): `notVerified`. 선행 product graph에는 `Doroti.Flutter.*`, `Doroti.Host.Desktop.Flutter`, `FlutterHostSession`, `FlutterView`, `FlutterCapabilityIds`와 target별 `*FlutterHost`/`*FlutterTarget` 이름이 남아 있다. 기존 G7-1/G7-2/G7-3M PASS를 naming closure로 소급하지 않으며 G7-3N 완료 전 새 Web public API를 확정하지 않는다.
+현재 상태(2026-08-15): `partial-windows-validated`. `g7-doroti-naming-map.json`에 17개 project/assembly/package/namespace와 27개 Doroti-owned type mapping을 고정하고, Runtime/UI/Hosting, 13개 Framework package, Desktop framework integration과 Windows/macOS/Web producer/consumer를 이전 identity alias·type forwarding 없이 원자적으로 전환했다. 활성 source/project/lock/validator의 이전 identity와 owned `Flutter*` type은 0건이며 17개 새 `.nupkg`, `Doroti.slnx` Release build(경고 0/오류 0), G7 baseline All과 Windows actual HWND `skia-wgl-opengl-gpu` product smoke가 PASS했다. 이번 실행에서 macOS와 Web post-rename package/live 검증은 요청 범위에 따라 생략해 `notVerified`로 유지하므로 G7-3N 전체 완료로 기록하지 않는다. 재현 명령은 `validate-g7-product-naming.ps1 -Shard Inventory|Build|Package|Live`이며, `Live`는 Windows host에서만 실행한다.
 
 ### G7-3 — C# + Skia Blazor WebAssembly `browser-wasm` application closure
 

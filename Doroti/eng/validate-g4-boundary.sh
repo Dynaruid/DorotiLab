@@ -22,7 +22,7 @@ dotnet tools/Doroti.SourceTools/bin/Debug/net10.0/Doroti.SourceTools.dll \
   --output "$doroti_root/artifacts/flutter-avalonia/g4-0-boundary-audit.json"
 
 fixture_log="$temporary_root/forbidden-fixture.log"
-if dotnet build validation/architecture/forbidden-flutter-host/Doroti.Flutter.Framework.ForbiddenFixture.csproj \
+if dotnet build validation/architecture/forbidden-framework-platform/Doroti.Framework.ForbiddenFixture.csproj \
   --nologo >"$fixture_log" 2>&1; then
   echo "The forbidden Flutter -> Platform fixture unexpectedly built successfully." >&2
   exit 2

@@ -28,7 +28,7 @@ $boundaryRoots = @(
     "$dorotiRoot/src/Doroti.Vendor.Avalonia.Base",
     "$dorotiRoot/src/Doroti.Vendor.Avalonia.Skia",
     "$dorotiRoot/src/Doroti.Vendor.Avalonia.Win32",
-    "$dorotiRoot/src/Doroti.Host.Desktop.Flutter"
+    "$dorotiRoot/src/Doroti.Host.Desktop.Framework"
 )
 $boundaryFiles = Get-ChildItem -Path $boundaryRoots -Recurse -File -Include *.cs,*.csproj |
     Where-Object { $_.FullName -notmatch '[\\/](bin|obj)[\\/]' }

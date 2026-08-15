@@ -43,7 +43,7 @@ $buildProps = $buildProps.Replace(
     '</PropertyGroup>',
     "  <NoWarn>`$(NoWarn);CS0219;CS8524;CS8846</NoWarn>`n" +
     "    <DorotiRepositoryRoot`n" +
-    "      Condition=`"'`$(DorotiRepositoryRoot)' == '' and Exists('`$(MSBuildThisFileDirectory)..\..\..\src\Doroti.Flutter.Runtime\Doroti.Flutter.Runtime.csproj')`">" +
+    "      Condition=`"'`$(DorotiRepositoryRoot)' == '' and Exists('`$(MSBuildThisFileDirectory)..\..\..\src\Doroti.Runtime\Doroti.Runtime.csproj')`">" +
     "`$([System.IO.Path]::GetFullPath('`$(MSBuildThisFileDirectory)..\..\..'))</DorotiRepositoryRoot>`n" +
     '  </PropertyGroup>')
 [IO.File]::WriteAllText($buildPropsPath, $buildProps, [Text.UTF8Encoding]::new($false))
@@ -59,7 +59,7 @@ foreach ($partition in @('Material', 'Cupertino', 'WidgetPreviews')) {
         $projectText,
         '<AssemblyName>[^<]+</AssemblyName>',
         "<AssemblyName>Doroti.Generated.Framework.G54.$partition</AssemblyName>")
-    $packageId = "Doroti.Flutter.Framework.$partition"
+    $packageId = "Doroti.Framework.$partition"
     $projectText = $projectText.Replace(
         "<AssemblyName>Doroti.Generated.Framework.G54.$partition</AssemblyName>",
         "<AssemblyName>Doroti.Generated.Framework.G54.$partition</AssemblyName>`n    <PackageId>$packageId</PackageId>`n    <Version>0.2.0-beta</Version>`n    <IsPackable>true</IsPackable>")

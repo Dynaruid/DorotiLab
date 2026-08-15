@@ -1,9 +1,9 @@
 using System.Text;
-using Doroti.Flutter.Hosting;
+using Doroti.Hosting;
 
 namespace Doroti.Plugin.G6GeneratedDemoEcho.WinX64;
 
-public sealed class EchoPluginHandler : IFlutterNativePluginHandler
+public sealed class EchoPluginHandler : IDorotiNativePluginHandler
 {
     public string PluginId => "g6.generated-demo.echo";
 

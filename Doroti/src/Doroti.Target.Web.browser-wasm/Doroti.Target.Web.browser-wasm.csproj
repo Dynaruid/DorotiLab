@@ -8,8 +8,8 @@
     <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Doroti.Flutter.Hosting\Doroti.Flutter.Hosting.csproj" />
-    <ProjectReference Include="..\Doroti.Flutter.Ui\Doroti.Flutter.Ui.csproj" />
+    <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
+    <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
     <ProjectReference Include="..\Doroti.Host.Web\Doroti.Host.Web.csproj" />
   </ItemGroup>
   <ItemGroup>

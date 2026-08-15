@@ -4,19 +4,19 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using Doroti.Flutter.Hosting;
-using Doroti.Flutter.Runtime;
-using Doroti.Flutter.Ui;
+using Doroti.Hosting;
+using Doroti.Runtime;
+using Doroti.Ui;
 using Doroti.Backends.Skia;
 using Doroti.Generated.Framework.Foundation;
 using Doroti.Generated.Framework.Painting;
 using Doroti.Generated.Framework.Rendering;
 using Doroti.Generated.Framework.Services;
 using Doroti.Generated.Framework.Widgets;
-using Doroti.Host.Desktop.Flutter;
+using Doroti.Host.Desktop.Framework;
 using Doroti.Target.Windows;
 using Material = Doroti.Generated.Framework.Material;
-using UiColor = Doroti.Flutter.Ui.Color;
+using UiColor = Doroti.Ui.Color;
 using IOPath = System.IO.Path;
 
 internal static class Program
@@ -56,22 +56,22 @@ internal static class Program
     private static void Run(SliceOptions options)
     {
         var entrypoint = new SliceEntrypoint(options.Slice);
-        DesktopFlutterTargetDiagnostics diagnostics;
-        DesktopFlutterPixelReadback initial;
-        DesktopFlutterPixelReadback changed;
+        DesktopFrameworkTargetDiagnostics diagnostics;
+        DesktopFrameworkPixelReadback initial;
+        DesktopFrameworkPixelReadback changed;
         object resourceClosure;
         object managed;
         var nativeInputTrace = new List<string>();
         var externalAutomation = new List<string>();
 
         using (var application = CreateApplicationBoundary(options.Slice))
-        using (var target = new WindowsFlutterTarget())
-        using (var session = new FlutterHostSession(entrypoint, new ValidationPerformanceModeCapability()))
+        using (var target = new WindowsTarget())
+        using (var session = new DorotiHostSession(entrypoint, new ValidationPerformanceModeCapability()))
         using (var scope = session.dispatcher.EnterScope())
         {
             session.Start(deferFrameworkBootstrap: true);
             var view = target.CreateView(session, ViewId,
-                new FlutterViewConfiguration($"Doroti G6-4 {options.Slice}", new Size(720, 640)), application);
+                new DorotiViewConfiguration($"Doroti G6-4 {options.Slice}", new Size(720, 640)), application);
             var firstReadback = target.CaptureNextFrameAsync(ViewId);
             view.Show();
             session.dispatcher.setSemanticsTreeEnabled(true);
@@ -176,12 +176,12 @@ internal static class Program
         WriteJson(options.EvidencePath, evidence);
     }
 
-    private static FlutterApplicationBoundary? CreateApplicationBoundary(SliceId slice) =>
+    private static DorotiApplicationBoundary? CreateApplicationBoundary(SliceId slice) =>
         slice == SliceId.P0
-            ? FlutterApplicationBoundary.Load(Assembly.GetExecutingAssembly(), "win-x64", [new EchoPlugin()])
+            ? DorotiApplicationBoundary.Load(Assembly.GetExecutingAssembly(), "win-x64", [new EchoPlugin()])
             : null;
 
-    private static DesktopFlutterPixelReadback CaptureFrame(WindowsFlutterTarget target, SliceEntrypoint entrypoint)
+    private static DesktopFrameworkPixelReadback CaptureFrame(WindowsTarget target, SliceEntrypoint entrypoint)
     {
         var before = target.CaptureDiagnostics(ViewId).Frame.Presented;
         var task = target.CaptureNextFrameAsync(ViewId);
@@ -206,7 +206,7 @@ internal static class Program
 
     private static void ExerciseNativeInput(
         SliceId slice,
-        WindowsFlutterTarget target,
+        WindowsTarget target,
         SliceEntrypoint entrypoint,
         List<string> trace)
     {
@@ -247,7 +247,7 @@ internal static class Program
         PumpFor(target, TimeSpan.FromMilliseconds(420));
     }
 
-    private static object RunManagedContract(SliceId slice, WindowsFlutterTarget target)
+    private static object RunManagedContract(SliceId slice, WindowsTarget target)
     {
         return slice switch
         {
@@ -258,7 +258,7 @@ internal static class Program
         };
     }
 
-    private static object ManagedTextInputContract(WindowsFlutterTarget target)
+    private static object ManagedTextInputContract(WindowsTarget target)
     {
         var value = new TextEditingValue("한글", new TextSelection(2, 2), new TextRange(0, 2));
         var valid = value.text == "한글" && value.selection.baseOffset == 2 &&
@@ -360,7 +360,7 @@ internal static class Program
         var channel = new MethodChannel("g6/app-slices");
         var echoed = channel.invokeMethod<string>("echo", payload).asTask().GetAwaiter().GetResult();
         if (echoed != payload) throw new InvalidDataException("MethodChannel happy path did not echo the payload.");
-        FlutterCapabilityException? exactFailure = null;
+        DorotiCapabilityException? exactFailure = null;
         try
         {
             var unsupportedEnvelope = new StandardMethodCodec().encodeMethodCall(new MethodCall("echo", payload));
@@ -371,12 +371,12 @@ internal static class Program
                     DartUiInvocation.Managed("g6-4:P0:unsupported"))
                 .AsTask().GetAwaiter().GetResult();
         }
-        catch (FlutterCapabilityException exception)
+        catch (DorotiCapabilityException exception)
         {
             exactFailure = exception;
         }
         var failure = exactFailure ?? throw new InvalidDataException("Unsupported platform channel silently succeeded.");
-        if (failure.CapabilityId != FlutterCapabilityIds.PlatformPlugins ||
+        if (failure.CapabilityId != DorotiCapabilityIds.PlatformPlugins ||
             !failure.Message.Contains("g6/unsupported", StringComparison.Ordinal))
             throw new InvalidDataException("Unsupported plugin capability diagnostic lost exact identity.");
         return new
@@ -399,9 +399,9 @@ internal static class Program
     private static void ValidateLive(
         SliceId slice,
         SliceEntrypoint entrypoint,
-        DesktopFlutterTargetDiagnostics diagnostics,
-        DesktopFlutterPixelReadback initial,
-        DesktopFlutterPixelReadback changed,
+        DesktopFrameworkTargetDiagnostics diagnostics,
+        DesktopFrameworkPixelReadback initial,
+        DesktopFrameworkPixelReadback changed,
         IReadOnlyList<string> externalAutomation)
     {
         if (entrypoint.FirstFrameworkError is { } error)
@@ -438,7 +438,7 @@ internal static class Program
             ?? throw new InvalidDataException("The G6-4 reference trace resource is invalid.");
     }
 
-    private static long CountChangedPixels(DesktopFlutterPixelReadback before, DesktopFlutterPixelReadback after)
+    private static long CountChangedPixels(DesktopFrameworkPixelReadback before, DesktopFrameworkPixelReadback after)
     {
         if (before.Width != after.Width || before.Height != after.Height || before.RowBytes != after.RowBytes)
             return long.MaxValue;
@@ -448,7 +448,7 @@ internal static class Program
         return changed;
     }
 
-    private static void WaitUntil(Func<bool> predicate, WindowsFlutterTarget target, SliceEntrypoint entrypoint, TimeSpan timeout)
+    private static void WaitUntil(Func<bool> predicate, WindowsTarget target, SliceEntrypoint entrypoint, TimeSpan timeout)
     {
         var elapsed = Stopwatch.StartNew();
         while (!predicate())
@@ -461,7 +461,7 @@ internal static class Program
         }
     }
 
-    private static void PumpFor(WindowsFlutterTarget target, TimeSpan duration)
+    private static void PumpFor(WindowsTarget target, TimeSpan duration)
     {
         var elapsed = Stopwatch.StartNew();
         while (elapsed.Elapsed < duration)
@@ -491,10 +491,10 @@ internal static class Program
     }
 }
 
-internal sealed class SliceEntrypoint(SliceId slice) : IFlutterViewEntrypoint
+internal sealed class SliceEntrypoint(SliceId slice) : IDorotiViewEntrypoint
 {
     private WidgetsFlutterBinding? _binding;
-    private FlutterView? _view;
+    private DorotiView? _view;
     private Material.MaterialApp? _app;
 
     internal AppSliceState? State { get; private set; }
@@ -506,14 +506,14 @@ internal sealed class SliceEntrypoint(SliceId slice) : IFlutterViewEntrypoint
         _binding = new WidgetsFlutterBinding(dispatcher);
     }
 
-    public void AttachView(FlutterView view)
+    public void AttachView(DorotiView view)
     {
         _view = view;
         var binding = _binding ?? throw new InvalidOperationException("Binding was not bootstrapped.");
         binding.scheduleFrameCallback(_ => binding.attachRootWidget(binding.wrapWithDefaultView(CreateApp())));
     }
 
-    public void DetachView(FlutterView view)
+    public void DetachView(DorotiView view)
     {
         if (ReferenceEquals(view, _view)) _view = null;
     }
@@ -914,7 +914,7 @@ internal sealed class AppSliceState : State<AppSliceSurface>
 
 }
 
-internal sealed class EchoPlugin : IFlutterNativePluginHandler
+internal sealed class EchoPlugin : IDorotiNativePluginHandler
 {
     public string PluginId => "g6.echo";
     public string AbiVersion => "1";

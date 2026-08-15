@@ -35,5 +35,5 @@ public sealed record ApplicationCompilation(
     string PluginManifest,
     string TargetRid,
     string[] FrameworkPackages,
-    string HostBootstrapPackage = "Doroti.Flutter.Hosting",
+    string HostBootstrapPackage = "Doroti.Hosting",
     Dictionary<string, bool>? Conditions = null);

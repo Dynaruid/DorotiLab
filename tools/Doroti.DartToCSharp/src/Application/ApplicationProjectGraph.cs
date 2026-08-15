@@ -125,7 +125,7 @@ internal static partial class ConverterEngine
                 "Painting", "Semantics", "Rendering", "Widgets",
             }.Concat(application.FrameworkPackages).Distinct(StringComparer.Ordinal).Select(package =>
                 $"global using Doroti.Generated.Framework.{package};")) + "\n" +
-            "global using Doroti.Flutter.Hosting;\n");
+            "global using Doroti.Hosting;\n");
         ArtifactFiles.WriteUtf8(
             Path.Combine(outputDirectory, "Directory.Build.props"),
             "<Project>\n  <PropertyGroup>\n    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>\n    <RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>\n  </PropertyGroup>\n</Project>\n");
@@ -164,7 +164,7 @@ internal static partial class ConverterEngine
             },
             resources = embeddedResources,
             plugins = pluginEntries,
-            directReferences = application.FrameworkPackages.Select(package => $"Doroti.Flutter.Framework.{package}")
+            directReferences = application.FrameworkPackages.Select(package => $"Doroti.Framework.{package}")
                 .Append(application.HostBootstrapPackage).Order(StringComparer.Ordinal).ToArray(),
         });
     }
@@ -185,12 +185,12 @@ internal static partial class ConverterEngine
         if (packages.Length == 0 || packages.Any(package => !allowed.Contains(package)))
             throw new InvalidDataException("Application frameworkPackages contains an unsupported or empty package selection.");
         return string.Join('\n', packages.Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).Select(package =>
-            $"    <PackageReference Include=\"Doroti.Flutter.Framework.{package}\" Version=\"[{version}]\" />"));
+            $"    <PackageReference Include=\"Doroti.Framework.{package}\" Version=\"[{version}]\" />"));
     }
 
     private static string BuildApplicationPackageReference(string package, string version)
     {
-        if (package != "Doroti.Flutter.Hosting")
+        if (package != "Doroti.Hosting")
             throw new InvalidDataException($"Unsupported host bootstrap package: {package}");
         return $"    <PackageReference Include=\"{package}\" Version=\"[{version}]\" />";
     }

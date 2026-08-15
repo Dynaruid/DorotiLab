@@ -95,7 +95,7 @@ if ($Shard -eq 'Toolchain') {
 
 if ($Shard -eq 'Graph') {
     $required = @(
-        'src/Doroti.Host.Web/BrowserHostContracts.cs','src/Doroti.Host.Web/BrowserFlutterHost.cs',
+        'src/Doroti.Host.Web/BrowserHostContracts.cs','src/Doroti.Host.Web/BrowserFrameworkHost.cs',
         'src/Doroti.Host.Web/wwwroot/doroti.web.js','src/Doroti.Target.Web.browser-wasm/BrowserWasmTarget.cs',
         'src/Doroti.Target.Web.browser-wasm/doroti-target-manifest.json','migration/targets/browser-wasm.json')
     foreach ($relative in $required) { Assert-True (Test-Path (Join-Path $dorotiRoot $relative) -PathType Leaf) $relative }
@@ -105,8 +105,8 @@ if ($Shard -eq 'Graph') {
     $script = Get-Content (Join-Path $dorotiRoot 'src/Doroti.Host.Web/wwwroot/doroti.web.js') -Raw
     Assert-True ($script -match 'requestAnimationFrame' -and $script -match 'visibilitychange' -and $script -match 'ResizeObserver' -and $script -match 'devicePixelRatio') 'browser lifecycle bridge'
     Assert-True ($script -match 'getContext\("webgl2"' -and $script -notmatch 'getContext\("2d"') 'strict browser GPU bridge'
-    $hostSource = Get-Content (Join-Path $dorotiRoot 'src/Doroti.Host.Web/BrowserFlutterHost.cs') -Raw
-    Assert-True ($hostSource -match 'FlutterCapabilityException' -and $hostSource -match 'no target-manifest JavaScript plugin') 'unsupported plugin fail-closed path'
+    $hostSource = Get-Content (Join-Path $dorotiRoot 'src/Doroti.Host.Web/BrowserFrameworkHost.cs') -Raw
+    Assert-True ($hostSource -match 'DorotiCapabilityException' -and $hostSource -match 'no target-manifest JavaScript plugin') 'unsupported plugin fail-closed path'
     $hostContracts = Get-Content (Join-Path $dorotiRoot 'src/Doroti.Host.Web/BrowserHostContracts.cs') -Raw
     Assert-True ($script -match 'export async function invokePlugin' -and $hostContracts -match 'BrowserJavaScriptPluginHandler') 'JavaScript plugin ABI bridge'
     $manifest = Read-Json (Join-Path $dorotiRoot 'src/Doroti.Target.Web.browser-wasm/doroti-target-manifest.json')

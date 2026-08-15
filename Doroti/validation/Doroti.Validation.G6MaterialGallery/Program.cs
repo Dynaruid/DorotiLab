@@ -2,16 +2,16 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text.Json;
-using Doroti.Flutter.Hosting;
-using Doroti.Flutter.Runtime;
-using Doroti.Flutter.Ui;
+using Doroti.Hosting;
+using Doroti.Runtime;
+using Doroti.Ui;
 using Doroti.Generated.Framework.Foundation;
 using Doroti.Generated.Framework.Painting;
 using Doroti.Generated.Framework.Widgets;
-using Doroti.Host.Desktop.Flutter;
+using Doroti.Host.Desktop.Framework;
 using Doroti.Target.Windows;
 using Material = Doroti.Generated.Framework.Material;
-using UiColor = Doroti.Flutter.Ui.Color;
+using UiColor = Doroti.Ui.Color;
 using PaintingTextStyle = Doroti.Generated.Framework.Painting.TextStyle;
 using SkiaSharp;
 
@@ -52,19 +52,19 @@ internal static partial class Program
     private static void RunWin32CursorChrome(GalleryOptions options)
     {
         var entrypoint = new GalleryEntrypoint(MaterialWave.M0);
-        DesktopFlutterTargetDiagnostics diagnostics;
+        DesktopFrameworkTargetDiagnostics diagnostics;
         object resourceClosure;
         var cursorMappings = new List<object>();
         var chromeMappings = new List<object>();
         var resizeResults = new List<object>();
 
-        using (var target = new WindowsFlutterTarget())
-        using (var session = new FlutterHostSession(entrypoint))
+        using (var target = new WindowsTarget())
+        using (var session = new DorotiHostSession(entrypoint))
         using (var scope = session.dispatcher.EnterScope())
         {
             session.Start(deferFrameworkBootstrap: true);
             var view = target.CreateView(session, ViewId,
-                new FlutterViewConfiguration("Doroti G6-5R-I cursor chrome", new Size(900, 720)));
+                new DorotiViewConfiguration("Doroti G6-5R-I cursor chrome", new Size(900, 720)));
             view.Show();
             WaitUntil(() => target.CaptureDiagnostics(ViewId).Frame.Presented >= 1 && entrypoint.State is not null,
                 target, entrypoint, TimeSpan.FromSeconds(20));
@@ -78,8 +78,8 @@ internal static partial class Program
                     .Where(field => field.FieldType == typeof(Doroti.Generated.Framework.Services.SystemMouseCursor))
                     .OrderBy(field => field.Name, StringComparer.Ordinal)
                     .ToArray();
-                if (fields.Length != Enum.GetValues<Doroti.Flutter.Ui.FlutterMouseCursorKind>().Length)
-                    throw new InvalidDataException($"Flutter cursor declaration/mapping mismatch: {fields.Length}/{Enum.GetValues<Doroti.Flutter.Ui.FlutterMouseCursorKind>().Length}.");
+                if (fields.Length != Enum.GetValues<Doroti.Ui.DorotiMouseCursorKind>().Length)
+                    throw new InvalidDataException($"Flutter cursor declaration/mapping mismatch: {fields.Length}/{Enum.GetValues<Doroti.Ui.DorotiMouseCursorKind>().Length}.");
 
                 foreach (var field in fields)
                 {
@@ -293,7 +293,7 @@ internal static partial class Program
             ?? throw new ArgumentException("--artifact-dir is required with --native-pointer.");
         Directory.CreateDirectory(artifactDirectory);
         var entrypoint = new GalleryEntrypoint(MaterialWave.M6);
-        DesktopFlutterTargetDiagnostics diagnostics;
+        DesktopFrameworkTargetDiagnostics diagnostics;
         object resourceClosure;
         var steps = new List<object>();
         const double logicalActiveX = 536;
@@ -303,13 +303,13 @@ internal static partial class Program
         const double logicalOutsideX = 20;
         const double logicalOutsideY = 690;
 
-        using (var target = new WindowsFlutterTarget())
-        using (var session = new FlutterHostSession(entrypoint))
+        using (var target = new WindowsTarget())
+        using (var session = new DorotiHostSession(entrypoint))
         using (var scope = session.dispatcher.EnterScope())
         {
             session.Start(deferFrameworkBootstrap: true);
             var view = target.CreateView(session, ViewId,
-                new FlutterViewConfiguration("Doroti G6-5R-I pointer", new Size(900, 720)));
+                new DorotiViewConfiguration("Doroti G6-5R-I pointer", new Size(900, 720)));
             var first = target.CaptureNextFrameAsync(ViewId);
             view.Show();
             WaitUntil(() =>
@@ -423,12 +423,12 @@ internal static partial class Program
                 return;
             }
 
-            DesktopFlutterPixelReadback Step(
+            DesktopFrameworkPixelReadback Step(
                 string id,
                 double x,
                 double y,
                 Action inject,
-                Func<DesktopFlutterTargetDiagnostics, bool> observed,
+                Func<DesktopFrameworkTargetDiagnostics, bool> observed,
                 Func<bool>? settled = null)
             {
                 var before = target.CaptureDiagnostics(ViewId);
@@ -715,20 +715,20 @@ internal static partial class Program
     private static void Run(GalleryOptions options)
     {
         var entrypoint = new GalleryEntrypoint(options.Wave);
-        DesktopFlutterTargetDiagnostics diagnostics;
-        DesktopFlutterPixelReadback initial;
-        DesktopFlutterPixelReadback changed;
+        DesktopFrameworkTargetDiagnostics diagnostics;
+        DesktopFrameworkPixelReadback initial;
+        DesktopFrameworkPixelReadback changed;
         object resourceClosure;
         var cadence = Stopwatch.StartNew();
         long cadencePresented;
 
-        using (var target = new WindowsFlutterTarget())
-        using (var session = new FlutterHostSession(entrypoint))
+        using (var target = new WindowsTarget())
+        using (var session = new DorotiHostSession(entrypoint))
         using (var scope = session.dispatcher.EnterScope())
         {
             session.Start(deferFrameworkBootstrap: true);
             var view = target.CreateView(session, ViewId,
-                new FlutterViewConfiguration($"Doroti G6-5 {options.Wave}", new Size(900, 720)));
+                new DorotiViewConfiguration($"Doroti G6-5 {options.Wave}", new Size(900, 720)));
             var first = target.CaptureNextFrameAsync(ViewId);
             view.Show();
             WaitUntil(() =>
@@ -844,8 +844,8 @@ internal static partial class Program
         });
     }
 
-    private static DesktopFlutterPixelReadback CaptureFrame(
-        WindowsFlutterTarget target,
+    private static DesktopFrameworkPixelReadback CaptureFrame(
+        WindowsTarget target,
         GalleryEntrypoint entrypoint,
         bool forceRepaint = false)
     {
@@ -863,7 +863,7 @@ internal static partial class Program
         return task.GetAwaiter().GetResult();
     }
 
-    private static long CountNonLightPixels(DesktopFlutterPixelReadback frame)
+    private static long CountNonLightPixels(DesktopFrameworkPixelReadback frame)
     {
         long count = 0;
         for (var offset = 0; offset < frame.Bgra8888Pixels.Length; offset += 4)
@@ -876,7 +876,7 @@ internal static partial class Program
         return count;
     }
 
-    private static void WritePng(string path, DesktopFlutterPixelReadback pixels)
+    private static void WritePng(string path, DesktopFrameworkPixelReadback pixels)
     {
         var directory = System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(path));
         if (!string.IsNullOrEmpty(directory)) Directory.CreateDirectory(directory);
@@ -891,9 +891,9 @@ internal static partial class Program
 
     private static void Validate(
         GalleryEntrypoint entrypoint,
-        DesktopFlutterTargetDiagnostics diagnostics,
-        DesktopFlutterPixelReadback initial,
-        DesktopFlutterPixelReadback changed,
+        DesktopFrameworkTargetDiagnostics diagnostics,
+        DesktopFrameworkPixelReadback initial,
+        DesktopFrameworkPixelReadback changed,
         GalleryOptions options,
         long cadencePresented,
         TimeSpan cadenceActual)
@@ -913,7 +913,7 @@ internal static partial class Program
             throw new InvalidDataException("Gallery cadence did not meet the requested frame/duration gate.");
     }
 
-    private static void WaitUntil(Func<bool> predicate, WindowsFlutterTarget target,
+    private static void WaitUntil(Func<bool> predicate, WindowsTarget target,
         GalleryEntrypoint entrypoint, TimeSpan timeout)
     {
         var elapsed = Stopwatch.StartNew();
@@ -927,7 +927,7 @@ internal static partial class Program
         }
     }
 
-    private static long CountChangedPixels(DesktopFlutterPixelReadback before, DesktopFlutterPixelReadback after)
+    private static long CountChangedPixels(DesktopFrameworkPixelReadback before, DesktopFrameworkPixelReadback after)
     {
         if (before.Width != after.Width || before.Height != after.Height) return long.MaxValue;
         long changed = 0;
@@ -939,7 +939,7 @@ internal static partial class Program
         return changed;
     }
 
-    private static int MaxChannelDelta(DesktopFlutterPixelReadback before, DesktopFlutterPixelReadback after)
+    private static int MaxChannelDelta(DesktopFrameworkPixelReadback before, DesktopFrameworkPixelReadback after)
     {
         if (before.Width != after.Width || before.Height != after.Height) return byte.MaxValue;
         var maximum = 0;
@@ -955,10 +955,10 @@ internal static partial class Program
     }
 }
 
-internal sealed class GalleryEntrypoint(MaterialWave wave) : IFlutterViewEntrypoint
+internal sealed class GalleryEntrypoint(MaterialWave wave) : IDorotiViewEntrypoint
 {
     private WidgetsFlutterBinding? _binding;
-    private FlutterView? _view;
+    private DorotiView? _view;
     private Material.MaterialApp? _app;
 
     internal GalleryState? State { get; private set; }
@@ -970,13 +970,13 @@ internal sealed class GalleryEntrypoint(MaterialWave wave) : IFlutterViewEntrypo
         _binding = new WidgetsFlutterBinding(dispatcher);
     }
 
-    public void AttachView(FlutterView view)
+    public void AttachView(DorotiView view)
     {
         _view = view;
         _binding!.scheduleFrameCallback(_ => _binding.attachRootWidget(_binding.wrapWithDefaultView(CreateApp())));
     }
 
-    public void DetachView(FlutterView view) { if (ReferenceEquals(_view, view)) _view = null; }
+    public void DetachView(DorotiView view) { if (ReferenceEquals(_view, view)) _view = null; }
 
     internal void RequestFrame(bool forceRepaint = false)
     {
@@ -1074,7 +1074,7 @@ internal sealed class GalleryState : State<GallerySurface>
     internal int NativePointerHoverCount { get; private set; }
     internal int NativePointerDownCount { get; private set; }
     internal int NativePointerUpCount { get; private set; }
-    internal Doroti.Flutter.Ui.PointerDeviceKind? LastPointerKind { get; private set; }
+    internal Doroti.Ui.PointerDeviceKind? LastPointerKind { get; private set; }
 
     internal IReadOnlyList<string> PresentedComponents => GalleryManifest.Presented(widget.Wave);
     internal IReadOnlyList<string> InteractiveComponents => GalleryManifest.Interactive(widget.Wave);

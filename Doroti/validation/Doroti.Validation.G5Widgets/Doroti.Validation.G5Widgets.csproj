@@ -3,6 +3,6 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Doroti.Flutter.Framework.Widgets\Doroti.Flutter.Framework.Widgets.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Framework.Widgets\Doroti.Framework.Widgets.csproj" />
   </ItemGroup>
 </Project>

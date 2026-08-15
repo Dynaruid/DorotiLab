@@ -10,7 +10,7 @@ G7-3M promotes `osx-arm64` from deferred desktop work to a required Goal 7 targe
 
 ```text
 DorotiDemoApp
-    -> Doroti.Host.Desktop.Flutter
+    -> Doroti.Host.Desktop.Framework
     -> Doroti.Host.Desktop
     -> Doroti.Shell.Core
 
@@ -20,7 +20,7 @@ Doroti.Target.macOS.osx-arm64
     -> AppKit / NSOpenGL / CoreGraphics
 ```
 
-`Doroti.Target.Windows.win-x64` remains the Windows composition root and injects `Win32ShellPlatformFactory`. The demo chooses one target project from the host OS or explicit RID, so an `osx-arm64` publish does not import the Win32 target graph. Both targets implement the shared `IDesktopFlutterTarget` managed contract.
+`Doroti.Target.Windows.win-x64` remains the Windows composition root and injects `Win32ShellPlatformFactory`. The demo chooses one target project from the host OS or explicit RID, so an `osx-arm64` publish does not import the Win32 target graph. Both targets implement the shared `IDesktopFrameworkTarget` managed contract.
 
 ## Managed/native boundary
 

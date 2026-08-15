@@ -78,15 +78,15 @@ done
 ) >"$temporary_root/determinism-b.sha256"
 cmp "$temporary_root/determinism-a.sha256" "$temporary_root/determinism-b.sha256"
 
-dotnet build "$doroti_root/src/Doroti.Host.Desktop.Flutter/Doroti.Host.Desktop.Flutter.csproj" --nologo
+dotnet build "$doroti_root/src/Doroti.Host.Desktop.Framework/Doroti.Host.Desktop.Framework.csproj" --nologo
 dotnet run --project "$doroti_root/validation/Doroti.Validation.G4SchedulerServices/Doroti.Validation.G4SchedulerServices.csproj" --no-restore
 
 package_root="$temporary_root/packages"
 mkdir -p "$package_root"
 for project in \
-  Doroti.Flutter.Runtime \
-  Doroti.Flutter.Ui \
-  Doroti.Flutter.Framework.Foundation
+  Doroti.Runtime \
+  Doroti.Ui \
+  Doroti.Framework.Foundation
 do
   dotnet pack "$doroti_root/src/$project/$project.csproj" \
     --configuration Debug --nologo --no-build --output "$package_root"
@@ -99,7 +99,7 @@ dotnet restore "$candidate_solution" \
   --nologo
 dotnet build "$candidate_solution" --no-restore --nologo
 
-for project in Doroti.Flutter.Framework.Scheduler Doroti.Flutter.Framework.Services; do
+for project in Doroti.Framework.Scheduler Doroti.Framework.Services; do
   dotnet pack "$doroti_root/src/$project/$project.csproj" \
     --configuration Debug --nologo --no-build --output "$package_root"
 done

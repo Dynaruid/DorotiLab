@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Runtime.Versioning;
-using Doroti.Flutter.Hosting;
-using Doroti.Flutter.Ui;
+using Doroti.Hosting;
+using Doroti.Ui;
 
 namespace Doroti.Host.Web;
 
@@ -271,7 +271,7 @@ public sealed class BrowserHostAdapter :
 }
 
 [SupportedOSPlatform("browser")]
-public sealed class BrowserJavaScriptPluginHandler : IFlutterNativePluginHandler
+public sealed class BrowserJavaScriptPluginHandler : IDorotiNativePluginHandler
 {
     private sealed record PluginResponse(bool HasValue, string Base64);
 

@@ -17,7 +17,7 @@ internal static class FlutterBindingRegistry
         new Dictionary<SymbolId, FlutterBinding>
         {
             [SymbolId.Parse("dart:ui#PlatformDispatcher")] = FlutterBinding.PlatformDispatcher,
-            [SymbolId.Parse("dart:ui#FlutterView")] = FlutterBinding.Window,
+            [SymbolId.Parse("dart:ui#DorotiView")] = FlutterBinding.Window,
             [SymbolId.Parse("dart:ui#Locale")] = FlutterBinding.Locale,
             [SymbolId.Parse("package:flutter/scheduler.dart#SchedulerBinding")] = FlutterBinding.SchedulerBinding,
             [SymbolId.Parse("package:flutter/services.dart#ServicesBinding")] = FlutterBinding.ServicesBinding,

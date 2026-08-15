@@ -96,7 +96,7 @@ function Invoke-Audit {
     $productDiffs = [Collections.Generic.List[object]]::new()
     foreach ($project in @('Material', 'Cupertino')) {
         $reviewedRoot = Join-Path $dorotiRoot "migration/generated-candidates/g5-4-reviewed/projects/$project"
-        $productRoot = Join-Path $dorotiRoot "src/Doroti.Flutter.Framework.$project"
+        $productRoot = Join-Path $dorotiRoot "src/Doroti.Framework.$project"
         foreach ($reviewed in Get-ChildItem -LiteralPath $reviewedRoot -File -Filter '*.g.cs') {
             $productName = $reviewed.Name -replace '(\.g)+\.cs$', '.cs'
             $product = Join-Path $productRoot $productName
@@ -199,7 +199,7 @@ function Invoke-Visual {
     Assert-True ((Test-Path -LiteralPath $m6Visual) -and (Get-Item -LiteralPath $m6Visual).Length -gt 10000) 'M6 strict-GPU visual artifact'
     $galleryEvidence = Get-Content (Join-Path $migrationRoot 'g6-material-gallery-evidence.json') -Raw | ConvertFrom-Json
     $sourceRevision = [string](Get-Content (Join-Path $migrationRoot 'g5-4-evidence.json') -Raw | ConvertFrom-Json).flutterGitRevision
-    $productFiles = @(Get-ChildItem (Join-Path $dorotiRoot 'src/Doroti.Flutter.Framework.Material') -File -Filter '*.cs')
+    $productFiles = @(Get-ChildItem (Join-Path $dorotiRoot 'src/Doroti.Framework.Material') -File -Filter '*.cs')
     $compilerFiles = @(Get-ChildItem (Join-Path $repoRoot 'tools/Doroti.DartToCSharp/src') -File -Recurse -Filter '*.cs')
     Write-Json $visualPath ([ordered]@{
         schemaVersion = 'doroti.g6-material-visual-differential/v1'

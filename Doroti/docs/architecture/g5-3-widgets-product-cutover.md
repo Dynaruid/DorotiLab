@@ -4,7 +4,7 @@ G5-3 closes the base Flutter Widgets vertical path on the pinned Flutter and Ava
 
 ## Product boundary
 
-- `Doroti.Flutter.Framework.Widgets` is the reviewed product package for the full G5-3 Widgets selection.
+- `Doroti.Framework.Widgets` is the reviewed product package for the full G5-3 Widgets selection.
 - Generated application projects bind to reviewed framework packages through the framework project graph. They do not compile repository-private framework candidates into the application assembly.
 - The product graph contains no official Avalonia package and no Avalonia Controls, Visual, Layout, Styling, or XAML mirror tree.
 - Each attached Flutter view receives typed capabilities. Missing capabilities fail with capability ID, view ID, target identity, and the calling Flutter symbol.

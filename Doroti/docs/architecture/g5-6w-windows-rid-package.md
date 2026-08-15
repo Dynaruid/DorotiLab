@@ -1,6 +1,6 @@
 # G5-6W Windows RID package boundary
 
-G5-6W fixes the already validated G5-3B Windows source-port closure as the `Doroti.Target.Windows.win-x64` NuGet package. It does not move Flutter framework policy into the target. A selected framework package still talks only to `Doroti.Flutter.Hosting` and the typed `dart:ui` capability surface; the RID package composes that host with the Win32/WGL implementation.
+G5-6W fixes the already validated G5-3B Windows source-port closure as the `Doroti.Target.Windows.win-x64` NuGet package. It does not move Flutter framework policy into the target. A selected framework package still talks only to `Doroti.Hosting` and the typed `dart:ui` capability surface; the RID package composes that host with the Win32/WGL implementation.
 
 ## Package and release inputs
 
@@ -14,16 +14,16 @@ The package graph contains no official `Avalonia` binary package. `Doroti.Vendor
 
 ## Stable runtime contracts
 
-`WindowsFlutterTarget` is the win-x64 composition entrypoint. Its target identity uses `doroti.target-identity/v1` and records runtime RID/OS/architecture, Win32 and WGL/OpenGL/Skia backend IDs, package version, Flutter/Avalonia revisions and source-port hashes.
+`WindowsTarget` is the win-x64 composition entrypoint. Its target identity uses `doroti.target-identity/v1` and records runtime RID/OS/architecture, Win32 and WGL/OpenGL/Skia backend IDs, package version, Flutter/Avalonia revisions and source-port hashes.
 
-`DesktopFlutterHost.GetTargetDiagnostics` exposes `doroti.desktop-flutter-target-diagnostics/v1` for `DorotiDemoApp` and package validation. One snapshot contains:
+`DesktopFrameworkHost.GetTargetDiagnostics` exposes `doroti.desktop-flutter-target-diagnostics/v1` for `DorotiDemoApp` and package validation. One snapshot contains:
 
 - frame submission/terminal ACK/mailbox/backend/fallback/recovery counters;
 - native input capabilities and normalized pointer/key/focus/metrics counters;
 - Flutter semantics generation and native automation node count;
 - logical/physical coordinate state and native window/OpenGL resource counts.
 
-The registered capability IDs are read from the actual attached Flutter view, not duplicated in the RID package. The shared required list is `FlutterCapabilityIds.RequiredDesktop`.
+The registered capability IDs are read from the actual attached Flutter view, not duplicated in the RID package. The shared required list is `DorotiCapabilityIds.RequiredDesktop`.
 
 ## Validation
 

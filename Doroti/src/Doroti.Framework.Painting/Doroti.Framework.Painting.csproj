@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Framework.Painting</AssemblyName>
+    <PackageId>Doroti.Framework.Painting</PackageId>
+    <IsDorotiProduct>true</IsDorotiProduct>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Doroti.Runtime\Doroti.Runtime.csproj" />
+    <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Foundation\Doroti.Framework.Foundation.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Scheduler\Doroti.Framework.Scheduler.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Services\Doroti.Framework.Services.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Physics\Doroti.Framework.Physics.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Animation\Doroti.Framework.Animation.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Gestures\Doroti.Framework.Gestures.csproj" />
+    <Compile Remove="_network_image_web.cs" />
+    <Compile Remove="_web_image_info_web.cs" />
+  </ItemGroup>
+</Project>

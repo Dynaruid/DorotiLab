@@ -9,7 +9,7 @@ function Invoke-Checked {
     if ($LASTEXITCODE -ne 0) { throw "Command failed with exit code $LASTEXITCODE." }
 }
 
-Invoke-Checked { dotnet build "$dorotiRoot/src/Doroti.Host.Desktop.Flutter/Doroti.Host.Desktop.Flutter.csproj" --nologo }
+Invoke-Checked { dotnet build "$dorotiRoot/src/Doroti.Host.Desktop.Framework/Doroti.Host.Desktop.Framework.csproj" --nologo }
 Invoke-Checked { dotnet build "$dorotiRoot/../tools/Doroti.DartToCSharp/Doroti.DartToCSharp.csproj" --nologo }
 Invoke-Checked { dotnet run --project "$dorotiRoot/validation/Doroti.Validation.G4Ui/Doroti.Validation.G4Ui.csproj" }
 

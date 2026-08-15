@@ -6,7 +6,7 @@ Win32 owns message normalization, device capability reporting and native capture
 
 A pointer-down freezes the ordered target route and local coordinates for that device until all buttons are up or the route is cancelled. Tree mutation during dispatch therefore cannot retarget the corresponding up/cancel event. Window focus/capture loss, minimize and close terminate every captured route with cancel before disposal.
 
-Reviewed `Doroti.Flutter.Framework.Gestures` source owns arena winner selection, tap/vertical-drag recognition, cancellation and drag thresholds. During the G5-1 transition, handwritten `FlutterArenaAdapter`, `FlutterInputAdapter` and `FlutterPointerEventAdapter` handed off arena lifetime and converted host-neutral packets. The entire `Doroti.Widgets` compatibility project, including those adapters and the former public recognizer types, was removed after G5-3.
+Reviewed `Doroti.Framework.Gestures` source owns arena winner selection, tap/vertical-drag recognition, cancellation and drag thresholds. During the G5-1 transition, handwritten `FlutterArenaAdapter`, `FlutterInputAdapter` and `FlutterPointerEventAdapter` handed off arena lifetime and converted host-neutral packets. The entire `Doroti.Widgets` compatibility project, including those adapters and the former public recognizer types, was removed after G5-3.
 
 The Win32 source-port accepts mouse messages and `WM_POINTER` touch/pen packets. Touch capability is reported from the current digitizer state; pen is supported by the packet converter and neither device is silently reclassified as mouse. Capture loss updates the retained packet before releasing Win32 capture so re-entrant `WM_CAPTURECHANGED` cannot emit a second cancel.
 

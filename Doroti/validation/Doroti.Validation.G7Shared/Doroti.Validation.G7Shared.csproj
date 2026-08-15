@@ -5,7 +5,7 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Doroti.Flutter.Hosting\Doroti.Flutter.Hosting.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Hosting\Doroti.Hosting.csproj" />
     <ProjectReference Include="..\..\src\Doroti.Target.Windows.win-x64\Doroti.Target.Windows.win-x64.csproj" />
   </ItemGroup>
 </Project>

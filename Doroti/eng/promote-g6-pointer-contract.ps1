@@ -35,11 +35,11 @@ $materialReport = Assert-SuccessfulCandidate $materialRoot 'Material'
 $candidateAnnotationPath = Join-Path $servicesRoot 'projects/Services/mouse_tracking.g.cs'
 $candidateProxyPath = Join-Path $renderingRoot 'projects/Rendering/proxy_box.g.cs'
 $candidateTrackerPath = Join-Path $renderingRoot 'projects/Rendering/mouse_tracker.g.cs'
-$productAnnotationPath = Join-Path $dorotiRoot 'src/Doroti.Flutter.Framework.Services/mouse_tracking.cs'
-$productProxyPath = Join-Path $dorotiRoot 'src/Doroti.Flutter.Framework.Rendering/proxy_box.cs'
-$productTrackerPath = Join-Path $dorotiRoot 'src/Doroti.Flutter.Framework.Rendering/mouse_tracker.cs'
+$productAnnotationPath = Join-Path $dorotiRoot 'src/Doroti.Framework.Services/mouse_tracking.cs'
+$productProxyPath = Join-Path $dorotiRoot 'src/Doroti.Framework.Rendering/proxy_box.cs'
+$productTrackerPath = Join-Path $dorotiRoot 'src/Doroti.Framework.Rendering/mouse_tracker.cs'
 $candidateInkWellPath = Join-Path $materialRoot 'projects/Material/ink_well.g.cs'
-$productInkWellPath = Join-Path $dorotiRoot 'src/Doroti.Flutter.Framework.Material/ink_well.cs'
+$productInkWellPath = Join-Path $dorotiRoot 'src/Doroti.Framework.Material/ink_well.cs'
 
 $candidateAnnotation = Get-Content -LiteralPath $candidateAnnotationPath -Raw
 $annotationMatch = [regex]::Match($candidateAnnotation, '(?s)public interface IMouseTrackerAnnotation\s*\{.*?public class MouseTrackerAnnotation[^\r\n]*IMouseTrackerAnnotation[^\r\n]*\s*\{.*?\}\s*$')

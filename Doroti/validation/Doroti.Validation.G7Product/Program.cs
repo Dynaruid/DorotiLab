@@ -1,6 +1,6 @@
 using System.Text;
 using System.Text.Json;
-using Doroti.Flutter.Ui;
+using Doroti.Ui;
 using Doroti.Generated.Framework.Foundation;
 using Doroti.Generated.Framework.Rendering;
 using Doroti.Generated.Framework.Widgets;
@@ -18,10 +18,10 @@ FlutterError.onError = details => firstFrameworkError ??= details;
 using var dispatcher = new PlatformDispatcher();
 using var dispatcherScope = dispatcher.EnterScope();
 var fixtureHost = new FixtureHost();
-using var view = dispatcher.RegisterView(720, new FlutterViewCapabilities("g7-product-managed")
-    .Register<IViewHostCapability>(FlutterCapabilityIds.ViewLifecycleMetrics, fixtureHost)
-    .Register<IFrameHostCapability>(FlutterCapabilityIds.ViewFrameDispatch, fixtureHost)
-    .Register<IPlatformMessageHostCapability>(FlutterCapabilityIds.PlatformMessaging, fixtureHost));
+using var view = dispatcher.RegisterView(720, new DorotiViewCapabilities("g7-product-managed")
+    .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, fixtureHost)
+    .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, fixtureHost)
+    .Register<IPlatformMessageHostCapability>(DorotiCapabilityIds.PlatformMessaging, fixtureHost));
 using var binding = new WidgetsFlutterBinding(dispatcher);
 
 foreach (var platform in new[] { TargetPlatform.windows, TargetPlatform.macOS })

@@ -59,10 +59,10 @@ if ($Shard -eq 'Source') {
     $required = @(
         'src/Doroti.Vendor.Avalonia.Native/MacOsShellRuntime.cs','src/Doroti.Vendor.Avalonia.Native/NativeInterop.cs',
         'src/Doroti.Vendor.Avalonia.Native/native/src/DorotiAvnAppKit.mm','src/Doroti.Vendor.Avalonia.Native/native/include/doroti-avalonia-native.h',
-        'src/Doroti.Target.macOS.osx-arm64/MacOsFlutterTarget.cs','migration/avalonia-shell/g7-macos-source-port-provenance.json',
+        'src/Doroti.Target.macOS.osx-arm64/MacOsTarget.cs','migration/avalonia-shell/g7-macos-source-port-provenance.json',
         'migration/targets/osx-arm64.json')
     foreach ($relative in $required) { Assert-True (Test-Path (Join-Path $dorotiRoot $relative) -PathType Leaf) $relative }
-    $graphRoots = @('Doroti.Shell.Core','Doroti.Host.Desktop','Doroti.Host.Desktop.Flutter','Doroti.Vendor.Avalonia.Native','Doroti.Target.macOS.osx-arm64')
+    $graphRoots = @('Doroti.Shell.Core','Doroti.Host.Desktop','Doroti.Host.Desktop.Framework','Doroti.Vendor.Avalonia.Native','Doroti.Target.macOS.osx-arm64')
     $productFiles = @($graphRoots | ForEach-Object { Get-ChildItem (Join-Path $dorotiRoot "src/$_") -Include *.csproj,*.cs -File -Recurse })
     $officialAvaloniaReferences = @($productFiles | Select-String -Pattern '<PackageReference Include="Avalonia(\.|\")|using Avalonia(\.|;)' -CaseSensitive)
     Assert-True ($officialAvaloniaReferences.Count -eq 0) 'official Avalonia UI/Control/Composition binary dependency scan'
@@ -110,7 +110,7 @@ if ($Shard -eq 'Package') {
     Copy-Item (Join-Path $dorotiRoot 'artifacts/g6-release/0.2.0-beta/packages/*.nupkg') $feed -Force
     $packProjects = @(
         'src/Doroti.Shell.Core/Doroti.Shell.Core.csproj','src/Doroti.Host.Desktop/Doroti.Host.Desktop.csproj',
-        'src/Doroti.Host.Desktop.Flutter/Doroti.Host.Desktop.Flutter.csproj','src/Doroti.Vendor.Avalonia.Native/Doroti.Vendor.Avalonia.Native.csproj',
+        'src/Doroti.Host.Desktop.Framework/Doroti.Host.Desktop.Framework.csproj','src/Doroti.Vendor.Avalonia.Native/Doroti.Vendor.Avalonia.Native.csproj',
         'src/Doroti.Target.macOS.osx-arm64/Doroti.Target.macOS.osx-arm64.csproj')
     foreach ($relative in $packProjects) { Invoke-Checked { dotnet pack (Join-Path $dorotiRoot $relative) -c Release --nologo --no-restore -o $feed } "pack $relative" }
     $packagePath = Join-Path $feed 'Doroti.Target.macOS.osx-arm64.0.2.0-beta.nupkg'; Assert-True (Test-Path $packagePath) 'macOS target package'
@@ -119,7 +119,7 @@ if ($Shard -eq 'Package') {
     Copy-Item (Join-Path $repoRoot 'DorotiDemoApp/Program.cs') (Join-Path $external 'Program.cs')
     $projectText = @"
 <Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><RuntimeIdentifier>osx-arm64</RuntimeIdentifier><RestorePackagesPath>`$(MSBuildProjectDirectory)/.nuget/packages</RestorePackagesPath><LangVersion>14.0</LangVersion><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><TreatWarningsAsErrors>true</TreatWarningsAsErrors></PropertyGroup><ItemGroup>
-<PackageReference Include="Doroti.Flutter.Hosting" Version="0.2.0-beta" /><PackageReference Include="Doroti.Flutter.Framework.Widgets" Version="0.2.0-beta" /><PackageReference Include="Doroti.Flutter.Framework.Material" Version="0.2.0-beta" /><PackageReference Include="Doroti.Target.macOS.osx-arm64" Version="0.2.0-beta" />
+<PackageReference Include="Doroti.Hosting" Version="0.2.0-beta" /><PackageReference Include="Doroti.Framework.Widgets" Version="0.2.0-beta" /><PackageReference Include="Doroti.Framework.Material" Version="0.2.0-beta" /><PackageReference Include="Doroti.Target.macOS.osx-arm64" Version="0.2.0-beta" />
 </ItemGroup></Project>
 "@
     [IO.File]::WriteAllText((Join-Path $external 'G7.MacOS.PackageConsumer.csproj'), $projectText, [Text.UTF8Encoding]::new($false))

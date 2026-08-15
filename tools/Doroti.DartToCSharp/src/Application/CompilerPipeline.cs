@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using Doroti.Flutter.Runtime;
+using Doroti.Runtime;
 using Doroti.Tooling;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -1199,15 +1199,15 @@ internal static partial class ConverterEngine
             ? IsPinnedF0ObjectSelection(manifest)
               ? string.Join('\n',
                     "  <ItemGroup>",
-                    "    <ProjectReference Include=\"$(DorotiRepositoryRoot)\\src\\Doroti.Flutter.Runtime\\Doroti.Flutter.Runtime.csproj\" />",
+                    "    <ProjectReference Include=\"$(DorotiRepositoryRoot)\\src\\Doroti.Runtime\\Doroti.Runtime.csproj\" />",
                     "  </ItemGroup>",
                     "  <Target Name=\"RequireDorotiRepositoryRoot\" BeforeTargets=\"PrepareForBuild\" Condition=\"'$(DorotiRepositoryRoot)' == ''\">",
                     "    <Error Text=\"Generated framework projects require -p:DorotiRepositoryRoot=&lt;Doroti SDK root&gt;.\" />",
                     "  </Target>")
               : """
                 <ItemGroup>
-                  <ProjectReference Include="$(DorotiRepositoryRoot)\src\Doroti.Flutter.Runtime\Doroti.Flutter.Runtime.csproj" />
-                  <ProjectReference Include="$(DorotiRepositoryRoot)\src\Doroti.Flutter.Ui\Doroti.Flutter.Ui.csproj" />
+                  <ProjectReference Include="$(DorotiRepositoryRoot)\src\Doroti.Runtime\Doroti.Runtime.csproj" />
+                  <ProjectReference Include="$(DorotiRepositoryRoot)\src\Doroti.Ui\Doroti.Ui.csproj" />
                 </ItemGroup>
                 <Target Name="RequireDorotiRepositoryRoot" BeforeTargets="PrepareForBuild" Condition="'$(DorotiRepositoryRoot)' == ''">
                   <Error Text="Generated framework projects require -p:DorotiRepositoryRoot=&lt;Doroti SDK root&gt;." />
@@ -1234,7 +1234,7 @@ internal static partial class ConverterEngine
         var packageReferences = isC5
             ? $"""
                 <ItemGroup>
-                {(string.Equals(manifest.PackageTier, "A", StringComparison.Ordinal) ? string.Empty : $"  <PackageReference Include=\"Doroti.Flutter.Runtime\" Version=\"[{identity.RuntimeBindingVersion}]\" Condition=\"'$(DorotiRepositoryRoot)' == ''\" />\n  <PackageReference Include=\"Doroti.Flutter.Ui\" Version=\"[{identity.RuntimeBindingVersion}]\" Condition=\"'$(DorotiRepositoryRoot)' == ''\" />\n  <ProjectReference Include=\"$(DorotiRepositoryRoot)\\src\\Doroti.Flutter.Runtime\\Doroti.Flutter.Runtime.csproj\" Condition=\"'$(DorotiRepositoryRoot)' != ''\" />\n  <ProjectReference Include=\"$(DorotiRepositoryRoot)\\src\\Doroti.Flutter.Ui\\Doroti.Flutter.Ui.csproj\" Condition=\"'$(DorotiRepositoryRoot)' != ''\" />")}
+                {(string.Equals(manifest.PackageTier, "A", StringComparison.Ordinal) ? string.Empty : $"  <PackageReference Include=\"Doroti.Runtime\" Version=\"[{identity.RuntimeBindingVersion}]\" Condition=\"'$(DorotiRepositoryRoot)' == ''\" />\n  <PackageReference Include=\"Doroti.Ui\" Version=\"[{identity.RuntimeBindingVersion}]\" Condition=\"'$(DorotiRepositoryRoot)' == ''\" />\n  <ProjectReference Include=\"$(DorotiRepositoryRoot)\\src\\Doroti.Runtime\\Doroti.Runtime.csproj\" Condition=\"'$(DorotiRepositoryRoot)' != ''\" />\n  <ProjectReference Include=\"$(DorotiRepositoryRoot)\\src\\Doroti.Ui\\Doroti.Ui.csproj\" Condition=\"'$(DorotiRepositoryRoot)' != ''\" />")}
                 </ItemGroup>
                 <ItemGroup>
                   <None Include="README.md" Pack="true" PackagePath="/" />
@@ -1347,7 +1347,7 @@ internal static partial class ConverterEngine
         builder.AppendLine("using System.Threading.Tasks;");
         if (profile.EnableCollectionLowering)
         {
-            builder.AppendLine("using Doroti.Flutter.Runtime;");
+            builder.AppendLine("using Doroti.Runtime;");
         }
         builder.AppendLine();
         builder.AppendLine($"namespace {outputNamespace};");

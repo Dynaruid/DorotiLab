@@ -21,14 +21,14 @@ try {
     Invoke-Checked { dotnet run --project "$dorotiRoot/validation/Doroti.Validation.G4PhysicsAnimationGestures/Doroti.Validation.G4PhysicsAnimationGestures.csproj" }
 
     foreach ($project in @(
-        'Doroti.Flutter.Runtime',
-        'Doroti.Flutter.Ui',
-        'Doroti.Flutter.Framework.Foundation',
-        'Doroti.Flutter.Framework.Scheduler',
-        'Doroti.Flutter.Framework.Services',
-        'Doroti.Flutter.Framework.Physics',
-        'Doroti.Flutter.Framework.Animation',
-        'Doroti.Flutter.Framework.Gestures')) {
+        'Doroti.Runtime',
+        'Doroti.Ui',
+        'Doroti.Framework.Foundation',
+        'Doroti.Framework.Scheduler',
+        'Doroti.Framework.Services',
+        'Doroti.Framework.Physics',
+        'Doroti.Framework.Animation',
+        'Doroti.Framework.Gestures')) {
         Invoke-Checked {
             dotnet pack "$dorotiRoot/src/$project/$project.csproj" `
                 --configuration Debug --nologo --no-build --output $packageRoot

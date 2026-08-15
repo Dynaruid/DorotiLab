@@ -1,7 +1,7 @@
 using System.Text;
 using System.Text.Json;
-using Doroti.Flutter.Runtime;
-using Doroti.Flutter.Ui;
+using Doroti.Runtime;
+using Doroti.Ui;
 using Doroti.Generated.Framework.Foundation;
 using Doroti.Generated.Framework.Gestures;
 using Doroti.Generated.Framework.Painting;
@@ -15,10 +15,10 @@ var traces = new Dictionary<string, List<string>>(StringComparer.Ordinal);
 using var dispatcher = new PlatformDispatcher();
 using var scope = dispatcher.EnterScope();
 var fixtureHost = new FixtureHost();
-using var view = dispatcher.RegisterView(533, new FlutterViewCapabilities("g5-3-widgets-managed")
-    .Register<IViewHostCapability>(FlutterCapabilityIds.ViewLifecycleMetrics, fixtureHost)
-    .Register<IFrameHostCapability>(FlutterCapabilityIds.ViewFrameDispatch, fixtureHost)
-    .Register<IPlatformMessageHostCapability>(FlutterCapabilityIds.PlatformMessaging, fixtureHost));
+using var view = dispatcher.RegisterView(533, new DorotiViewCapabilities("g5-3-widgets-managed")
+    .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, fixtureHost)
+    .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, fixtureHost)
+    .Register<IPlatformMessageHostCapability>(DorotiCapabilityIds.PlatformMessaging, fixtureHost));
 using var binding = new WidgetsFlutterBinding(dispatcher);
 
 if (args.Length >= 1 && string.Equals(args[0], "--g7-focus-frame-dispatch-probe", StringComparison.Ordinal))
@@ -26,12 +26,12 @@ if (args.Length >= 1 && string.Equals(args[0], "--g7-focus-frame-dispatch-probe"
     var probeEvidencePath = args.Length >= 2
         ? Path.GetFullPath(args[1])
         : Path.Combine(FindDorotiRoot(Environment.CurrentDirectory), "migration", "flutter-framework", "g7-managed-regression.json");
-    FlutterCapabilityException? blocker = null;
+    DorotiCapabilityException? blocker = null;
     try
     {
         RunFocusShortcutAction(traces, failures);
     }
-    catch (FlutterCapabilityException exception)
+    catch (DorotiCapabilityException exception)
     {
         blocker = exception;
     }
@@ -50,7 +50,7 @@ if (args.Length >= 1 && string.Equals(args[0], "--g7-focus-frame-dispatch-probe"
         fixture = "G5 Widgets focus request on a managed view with an explicit per-view frame dispatcher",
         expected = new
         {
-            capabilityId = FlutterCapabilityIds.ViewFrameDispatch,
+            capabilityId = DorotiCapabilityIds.ViewFrameDispatch,
             viewId = 533,
             targetIdentity = "g5-3-widgets-managed",
             elementId = "dart:ui#PlatformDispatcher.microtask",
@@ -280,7 +280,7 @@ static async Task RunScrollingAndImageAsync(Dictionary<string, List<string>> tra
     stream.addListener(listener);
     stream.setCompleter(completer);
     var keepAlive = completer.keepAlive();
-    completion.SetResult(new ImageInfo(new Doroti.Flutter.Ui.Image(533, 2, 2), debugLabel: "g5-3"));
+    completion.SetResult(new ImageInfo(new Doroti.Ui.Image(533, 2, 2), debugLabel: "g5-3"));
     await received.Task.WaitAsync(TimeSpan.FromSeconds(5));
     stream.removeListener(listener);
     if (completer.Disposed) failures.Add("W6: image completer disposed while keepAlive was held.");

@@ -7,14 +7,14 @@ export DOROTI_LOCAL_ROOT="$(doroti_local_root "$doroti_root")"
 temporary_root="$(new_doroti_temporary_directory "$doroti_root" "g4-2")"
 trap 'remove_doroti_temporary_directory "$doroti_root" "$temporary_root"' EXIT
 
-dotnet build "$doroti_root/src/Doroti.Flutter.Framework.Foundation/Doroti.Flutter.Framework.Foundation.csproj" --nologo
+dotnet build "$doroti_root/src/Doroti.Framework.Foundation/Doroti.Framework.Foundation.csproj" --nologo
 dotnet run --project "$doroti_root/validation/Doroti.Validation.G4Foundation/Doroti.Validation.G4Foundation.csproj" --no-restore
 
 package_root="$temporary_root/packages"
 mkdir -p "$package_root"
-dotnet pack "$doroti_root/src/Doroti.Flutter.Runtime/Doroti.Flutter.Runtime.csproj" --configuration Debug --nologo --no-build --output "$package_root"
-dotnet pack "$doroti_root/src/Doroti.Flutter.Ui/Doroti.Flutter.Ui.csproj" --configuration Debug --nologo --no-build --output "$package_root"
-dotnet pack "$doroti_root/src/Doroti.Flutter.Framework.Foundation/Doroti.Flutter.Framework.Foundation.csproj" --configuration Debug --nologo --no-build --output "$package_root"
+dotnet pack "$doroti_root/src/Doroti.Runtime/Doroti.Runtime.csproj" --configuration Debug --nologo --no-build --output "$package_root"
+dotnet pack "$doroti_root/src/Doroti.Ui/Doroti.Ui.csproj" --configuration Debug --nologo --no-build --output "$package_root"
+dotnet pack "$doroti_root/src/Doroti.Framework.Foundation/Doroti.Framework.Foundation.csproj" --configuration Debug --nologo --no-build --output "$package_root"
 
 consumer_root="$temporary_root/external-consumer"
 cp -R "$doroti_root/validation/generated/g4-2-foundation-package-consumer" "$consumer_root"

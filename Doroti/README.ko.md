@@ -35,8 +35,8 @@ Doroti.DartToCSharp ──► reviewed C# framework packages
        (Windows: Win32/WGL · macOS: AppKit/NSOpenGL)
 ```
 
-- `Doroti.Flutter.Framework.*`에는 생성·검토된 framework library가 들어 있습니다.
-- `Doroti.Flutter.Runtime`, `Doroti.Flutter.Ui`, `Doroti.Flutter.Hosting`은 Dart/Flutter runtime 의미와 app bootstrap을 제공합니다.
+- `Doroti.Framework.*`에는 생성·검토된 framework library가 들어 있습니다.
+- `Doroti.Runtime`, `Doroti.Ui`, `Doroti.Hosting`은 Dart/Flutter runtime 의미와 app bootstrap을 제공합니다.
 - `Doroti.Engine`, `Doroti.Rendering`, `Doroti.Graphics`는 frame scheduling, display output과 graphics contract를 담당합니다.
 - `Doroti.Shell.Core`와 `Doroti.Host.Desktop`은 backend-neutral typed desktop capability를 정의하고 소비합니다.
 - `Doroti.Target.Windows.win-x64`와 `Doroti.Target.macOS.osx-arm64`가 Win32/WGL 또는 AppKit/NSOpenGL 구현을 주입합니다.

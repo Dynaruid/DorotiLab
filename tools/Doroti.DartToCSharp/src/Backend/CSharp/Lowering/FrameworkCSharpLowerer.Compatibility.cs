@@ -106,7 +106,7 @@ internal sealed partial class FrameworkCSharpLowerer
         if (target is not null && methodName == "of" &&
             DescendantsAndSelf(target).Any(candidate => candidate.Text(CoreProperty.name) == "CreationLocation"))
         {
-            builder.Append("global::Doroti.Flutter.Runtime.CreationLocation.of(");
+            builder.Append("global::Doroti.Runtime.CreationLocation.of(");
             EmitArguments(builder, invocationArguments, declaration, package, library, inputPath, diagnostics);
             builder.Append(')');
             return;
@@ -188,7 +188,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (methodName == "debugGetOpenHandleStackTraces" && node.ElementId?.Contains("dart:ui#Image.", StringComparison.Ordinal) == true)
         {
-            builder.Append("global::Doroti.Flutter.Ui.Image.debugGetOpenHandleStackTraces(");
+            builder.Append("global::Doroti.Ui.Image.debugGetOpenHandleStackTraces(");
             EmitArguments(builder, invocationArguments, declaration, package, library, inputPath, diagnostics);
             builder.Append(')');
             return;
@@ -511,7 +511,7 @@ internal sealed partial class FrameworkCSharpLowerer
             {
                 ("dart:developer", "Timeline") => "Timeline",
                 ("dart:developer", "Flow") => "Flow",
-                ("dart:async", "Timer") => "global::Doroti.Flutter.Runtime.Timer",
+                ("dart:async", "Timer") => "global::Doroti.Runtime.Timer",
                 ("dart:ui", { } dartUiOwner) when owner is not null => "Dart_uiLibrary." + SafeIdentifier(dartUiOwner),
                 _ => MapDartLibraryStaticClass(dartLibrary),
             };
@@ -1458,7 +1458,7 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             builder.Append("KeyHelper.Create(");
         }
-        else if ((typeName is "Duration" or "global::Doroti.Flutter.Runtime.Duration") &&
+        else if ((typeName is "Duration" or "global::Doroti.Runtime.Duration") &&
             (constructor is null or "new") &&
             argumentList.Any(item => item.Kind == CoreNodeKind.NamedExpression))
         {

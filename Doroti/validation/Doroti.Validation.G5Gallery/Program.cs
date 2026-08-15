@@ -1,6 +1,6 @@
 using System.Text.Json;
-using Doroti.Flutter.Runtime;
-using Doroti.Flutter.Ui;
+using Doroti.Runtime;
+using Doroti.Ui;
 using Cupertino = Doroti.Generated.Framework.Cupertino;
 using Foundation = Doroti.Generated.Framework.Foundation;
 using Material = Doroti.Generated.Framework.Material;

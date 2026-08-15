@@ -11,9 +11,9 @@
     <AssemblyName>G6.Material.ExternalConsumer</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Doroti.Flutter.Hosting" Version="0.2.0-beta" />
-    <PackageReference Include="Doroti.Flutter.Framework.Widgets" Version="0.2.0-beta" />
-    <PackageReference Include="Doroti.Flutter.Framework.Material" Version="0.2.0-beta" />
+    <PackageReference Include="Doroti.Hosting" Version="0.2.0-beta" />
+    <PackageReference Include="Doroti.Framework.Widgets" Version="0.2.0-beta" />
+    <PackageReference Include="Doroti.Framework.Material" Version="0.2.0-beta" />
     <PackageReference Include="Doroti.Target.Windows.win-x64" Version="0.2.0-beta" />
   </ItemGroup>
 </Project>

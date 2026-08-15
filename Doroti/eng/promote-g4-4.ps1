@@ -42,9 +42,9 @@ function Get-ProjectName {
 }
 
 $projectTargets = [ordered]@{
-    Physics = Join-Path $dorotiRoot 'src/Doroti.Flutter.Framework.Physics'
-    Animation = Join-Path $dorotiRoot 'src/Doroti.Flutter.Framework.Animation'
-    Gestures = Join-Path $dorotiRoot 'src/Doroti.Flutter.Framework.Gestures'
+    Physics = Join-Path $dorotiRoot 'src/Doroti.Framework.Physics'
+    Animation = Join-Path $dorotiRoot 'src/Doroti.Framework.Animation'
+    Gestures = Join-Path $dorotiRoot 'src/Doroti.Framework.Gestures'
 }
 
 foreach ($project in $projectTargets.Keys) {
@@ -89,7 +89,7 @@ $publicMembers = [Collections.Generic.List[object]]::new()
 foreach ($input in @($migrationIr.inputs)) {
     $project = Get-ProjectName $input.library
     $sourcePath = [IO.Path]::GetFileName($input.path)
-    $target = "src/Doroti.Flutter.Framework.$project/$([IO.Path]::GetFileNameWithoutExtension($sourcePath)).cs"
+    $target = "src/Doroti.Framework.$project/$([IO.Path]::GetFileNameWithoutExtension($sourcePath)).cs"
     foreach ($declaration in @($input.declarations)) {
         $dispositionEntries.Add([ordered]@{
             elementId = $declaration.element.canonicalId

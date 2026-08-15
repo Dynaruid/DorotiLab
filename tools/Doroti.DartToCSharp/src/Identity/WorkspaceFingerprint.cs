@@ -33,12 +33,12 @@ internal static class WorkspaceFingerprint
             .OrderBy(path => ArtifactFiles.NormalizePath(Path.GetRelativePath(compilerRoot, path)), StringComparer.Ordinal)
             .Select(path => $"compiler-source:{ArtifactFiles.NormalizePath(Path.GetRelativePath(compilerRoot, path))}:{ArtifactFiles.Sha256(path)}"));
 
-        var runtimeRoot = Path.Combine(repositoryRoot, "src", "Doroti.Flutter.Runtime");
+        var runtimeRoot = Path.Combine(repositoryRoot, "src", "Doroti.Runtime");
         inputs.AddRange(Directory.GetFiles(runtimeRoot, "*", SearchOption.TopDirectoryOnly)
             .Where(path => Path.GetExtension(path) is ".cs" or ".csproj")
             .OrderBy(path => path, StringComparer.Ordinal)
             .Select(path => $"runtime-binding:{ArtifactFiles.NormalizePath(Path.GetRelativePath(repositoryRoot, path))}:{ArtifactFiles.Sha256(path)}"));
-        var uiContractRoot = Path.Combine(repositoryRoot, "src", "Doroti.Flutter.Ui");
+        var uiContractRoot = Path.Combine(repositoryRoot, "src", "Doroti.Ui");
         inputs.AddRange(Directory.GetFiles(uiContractRoot, "*", SearchOption.TopDirectoryOnly)
             .Where(path => Path.GetExtension(path) is ".cs" or ".csproj")
             .OrderBy(path => path, StringComparer.Ordinal)

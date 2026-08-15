@@ -20,8 +20,8 @@ if (-not $reviewedRoot.StartsWith($candidateBase, [StringComparison]::OrdinalIgn
 }
 $artifactRoot = Join-Path $dorotiRoot 'artifacts/g6-material-demo'
 $projects = @(
-    [pscustomobject]@{ Name = 'Cupertino'; Target = 'Doroti.Flutter.Framework.Cupertino' },
-    [pscustomobject]@{ Name = 'Material'; Target = 'Doroti.Flutter.Framework.Material' }
+    [pscustomobject]@{ Name = 'Cupertino'; Target = 'Doroti.Framework.Cupertino' },
+    [pscustomobject]@{ Name = 'Material'; Target = 'Doroti.Framework.Material' }
 )
 if ($ProjectName -ne 'All') { $projects = @($projects | Where-Object Name -eq $ProjectName) }
 

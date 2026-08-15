@@ -35,8 +35,8 @@ Doroti.DartToCSharp ──► reviewed C# framework packages
        (Windows: Win32/WGL · macOS: AppKit/NSOpenGL)
 ```
 
-- `Doroti.Flutter.Framework.*` contains generated and reviewed framework libraries.
-- `Doroti.Flutter.Runtime`, `Doroti.Flutter.Ui`, and `Doroti.Flutter.Hosting` provide Dart/Flutter runtime semantics and application bootstrap.
+- `Doroti.Framework.*` contains generated and reviewed framework libraries.
+- `Doroti.Runtime`, `Doroti.Ui`, and `Doroti.Hosting` provide Dart/Flutter runtime semantics and application bootstrap.
 - `Doroti.Engine`, `Doroti.Rendering`, and `Doroti.Graphics` own frame scheduling, display output, and graphics contracts.
 - `Doroti.Shell.Core` and `Doroti.Host.Desktop` define and consume backend-neutral typed desktop capabilities.
 - `Doroti.Target.Windows.win-x64` and `Doroti.Target.macOS.osx-arm64` inject the Win32/WGL or AppKit/NSOpenGL implementation.

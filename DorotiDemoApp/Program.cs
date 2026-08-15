@@ -2,16 +2,16 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using Doroti.Flutter.Hosting;
-using Doroti.Flutter.Runtime;
-using Doroti.Flutter.Ui;
+using Doroti.Hosting;
+using Doroti.Runtime;
+using Doroti.Ui;
 using Doroti.Generated.Framework.Foundation;
 using Doroti.Generated.Framework.Painting;
 using Doroti.Generated.Framework.Widgets;
-using Doroti.Host.Desktop.Flutter;
+using Doroti.Host.Desktop.Framework;
 using Material = Doroti.Generated.Framework.Material;
 using IOPath = System.IO.Path;
-using UiColor = Doroti.Flutter.Ui.Color;
+using UiColor = Doroti.Ui.Color;
 
 internal static class Program
 {
@@ -32,35 +32,35 @@ internal static class Program
         return Run(options);
     }
 
-    private static IDesktopFlutterTarget CreateTarget()
+    private static IDesktopFrameworkTarget CreateTarget()
     {
         var (assemblyName, typeName) = OperatingSystem.IsMacOS()
-            ? ("Doroti.Host.macOS", "Doroti.Target.macOS.MacOsFlutterTarget")
-            : ("Doroti.Host.Windows", "Doroti.Target.Windows.WindowsFlutterTarget");
+            ? ("Doroti.Host.macOS", "Doroti.Target.macOS.MacOsTarget")
+            : ("Doroti.Host.Windows", "Doroti.Target.Windows.WindowsTarget");
         var type = System.Reflection.Assembly.Load(assemblyName).GetType(typeName, throwOnError: true)!;
-        return (IDesktopFlutterTarget)(Activator.CreateInstance(type)
+        return (IDesktopFrameworkTarget)(Activator.CreateInstance(type)
             ?? throw new InvalidOperationException($"Could not create {typeName}."));
     }
 
     private static int Run(DemoOptions options)
     {
         var entrypoint = new MaterialDemoEntrypoint(options.EntryMode, options.RequireExternalUia);
-        DesktopFlutterTargetDiagnostics? diagnostics = null;
-        DesktopFlutterPixelReadback? readback = null;
+        DesktopFrameworkTargetDiagnostics? diagnostics = null;
+        DesktopFrameworkPixelReadback? readback = null;
         Exception? unhandled = null;
         var timedOut = false;
 
         try
         {
             using var target = CreateTarget();
-            using var session = new FlutterHostSession(entrypoint);
+            using var session = new DorotiHostSession(entrypoint);
             using var scope = session.dispatcher.EnterScope();
 
             session.Start(deferFrameworkBootstrap: true);
             var view = target.CreateView(
                 session,
                 DemoViewId,
-                new FlutterViewConfiguration("Doroti Material Demo", new Size(720, 640)));
+                new DorotiViewConfiguration("Doroti Material Demo", new Size(720, 640)));
             view.Show();
             session.dispatcher.setSemanticsTreeEnabled(true);
             var deadline = DateTime.UtcNow + options.Timeout;
@@ -250,7 +250,7 @@ internal static class Program
 
     private static void WaitUntil(
         Func<bool> predicate,
-        IDesktopFlutterTarget target,
+        IDesktopFrameworkTarget target,
         MaterialDemoEntrypoint entrypoint,
         TimeSpan timeout)
     {
@@ -266,7 +266,7 @@ internal static class Program
         }
     }
 
-    private static void PumpInputTurn(IDesktopFlutterTarget target)
+    private static void PumpInputTurn(IDesktopFrameworkTarget target)
     {
         var deadline = Stopwatch.StartNew();
         while (deadline.Elapsed < TimeSpan.FromMilliseconds(40))
@@ -278,8 +278,8 @@ internal static class Program
 
     private static void ValidateMaterialSmoke(
         MaterialDemoEntrypoint entrypoint,
-        DesktopFlutterTargetDiagnostics diagnostics,
-        DesktopFlutterPixelReadback readback)
+        DesktopFrameworkTargetDiagnostics diagnostics,
+        DesktopFrameworkPixelReadback readback)
     {
         if (entrypoint.RootApp is not Material.MaterialApp materialApp ||
             entrypoint.RootScaffold is null ||
@@ -294,7 +294,7 @@ internal static class Program
             throw new InvalidDataException(
                 $"The Material demo did not use strict GPU rendering: {diagnostics.Frame.BackendIdentity}.");
         }
-        if (!FlutterCapabilityIds.RequiredDesktop.All(
+        if (!DorotiCapabilityIds.RequiredDesktop.All(
                 id => diagnostics.CapabilityIds.Contains(id, StringComparer.Ordinal)))
         {
             throw new InvalidDataException("The Material demo target capability closure is incomplete.");
@@ -351,7 +351,7 @@ internal static class Program
         }
     }
 
-    private static void WriteReady(DemoOptions options, IDesktopFlutterTarget target)
+    private static void WriteReady(DemoOptions options, IDesktopFrameworkTarget target)
     {
         if (options.ReadyPath is null) return;
         WriteJson(options.ReadyPath, new
@@ -366,10 +366,10 @@ internal static class Program
 
     private static void WriteArtifacts(
         DemoOptions options,
-        DesktopFlutterPixelReadback? initial,
-        DesktopFlutterPixelReadback? changed,
-        DesktopFlutterPixelReadback? backdropOn,
-        DesktopFlutterPixelReadback? backdropOff)
+        DesktopFrameworkPixelReadback? initial,
+        DesktopFrameworkPixelReadback? changed,
+        DesktopFrameworkPixelReadback? backdropOn,
+        DesktopFrameworkPixelReadback? backdropOff)
     {
         if (options.ArtifactDirectory is null) return;
         var directory = IOPath.GetFullPath(options.ArtifactDirectory);
@@ -380,7 +380,7 @@ internal static class Program
         if (backdropOff is not null) WriteBmp(IOPath.Combine(directory, "backdrop-off.bmp"), backdropOff);
     }
 
-    private static void WriteBmp(string path, DesktopFlutterPixelReadback readback)
+    private static void WriteBmp(string path, DesktopFrameworkPixelReadback readback)
     {
         var pixelBytes = checked(readback.Width * readback.Height * 4);
         using var stream = File.Create(path);
@@ -394,7 +394,7 @@ internal static class Program
             writer.Write(readback.Bgra8888Pixels, y * readback.RowBytes, readback.Width * 4);
     }
 
-    private static long CountChangedPixels(DesktopFlutterPixelReadback before, DesktopFlutterPixelReadback after)
+    private static long CountChangedPixels(DesktopFrameworkPixelReadback before, DesktopFrameworkPixelReadback after)
     {
         if (before.Width != after.Width || before.Height != after.Height || before.RowBytes != after.RowBytes)
             return long.MaxValue;
@@ -408,8 +408,8 @@ internal static class Program
     }
 
     private static long CountChangedPixels(
-        DesktopFlutterPixelReadback before,
-        DesktopFlutterPixelReadback after,
+        DesktopFrameworkPixelReadback before,
+        DesktopFrameworkPixelReadback after,
         Rect physicalBounds)
     {
         if (before.Width != after.Width || before.Height != after.Height || before.RowBytes != after.RowBytes)
@@ -431,10 +431,10 @@ internal static class Program
 
     private static void WriteSmokeEvidence(
         DemoOptions options,
-        IDesktopFlutterTarget? target,
+        IDesktopFrameworkTarget? target,
         MaterialDemoEntrypoint? entrypoint,
-        DesktopFlutterTargetDiagnostics? diagnostics,
-        DesktopFlutterPixelReadback? readback,
+        DesktopFrameworkTargetDiagnostics? diagnostics,
+        DesktopFrameworkPixelReadback? readback,
         Exception? unhandled,
         bool timedOut,
         object? resourceClosure = null)
@@ -561,7 +561,7 @@ internal static class Program
         WriteJson(fullPath, evidence);
     }
 
-    private static PixelEvidence MeasurePixels(DesktopFlutterPixelReadback readback)
+    private static PixelEvidence MeasurePixels(DesktopFrameworkPixelReadback readback)
     {
         var expectedColors = new Dictionary<uint, string>
         {
@@ -716,20 +716,20 @@ internal static class Program
     }
 }
 
-internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requireExternalUia) : IFlutterViewEntrypoint
+internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requireExternalUia) : IDorotiViewEntrypoint
 {
     private WidgetsFlutterBinding? _binding;
-    private FlutterView? _view;
+    private DorotiView? _view;
 
     internal Material.Scaffold? RootScaffold { get; private set; }
     internal MaterialGalleryState? GalleryState { get; private set; }
     internal Widget RootApp => _rootApp ??= CreateRootApp();
     internal DemoEntryMode EntryMode { get; } = entryMode;
     internal bool RequireExternalUia { get; } = requireExternalUia;
-    internal DesktopFlutterPixelReadback? InitialReadback { get; set; }
-    internal DesktopFlutterPixelReadback? ChangedReadback { get; set; }
-    internal DesktopFlutterPixelReadback? BackdropOnReadback { get; set; }
-    internal DesktopFlutterPixelReadback? BackdropOffReadback { get; set; }
+    internal DesktopFrameworkPixelReadback? InitialReadback { get; set; }
+    internal DesktopFrameworkPixelReadback? ChangedReadback { get; set; }
+    internal DesktopFrameworkPixelReadback? BackdropOnReadback { get; set; }
+    internal DesktopFrameworkPixelReadback? BackdropOffReadback { get; set; }
     internal string? InitialStateSignature { get; set; }
     internal string? ChangedStateSignature { get; set; }
     internal long CadencePresented { get; set; }
@@ -750,7 +750,7 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
         _binding = new WidgetsFlutterBinding(dispatcher);
     }
 
-    public void AttachView(FlutterView view)
+    public void AttachView(DorotiView view)
     {
         if (_binding is null)
         {
@@ -768,7 +768,7 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
         });
     }
 
-    public void DetachView(FlutterView view)
+    public void DetachView(DorotiView view)
     {
         if (ReferenceEquals(_view, view))
         {

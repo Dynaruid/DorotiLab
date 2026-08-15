@@ -39,9 +39,9 @@ function Get-Partition {
 }
 
 $projectTargets = [ordered]@{
-    Painting = Join-Path $dorotiRoot 'src/Doroti.Flutter.Framework.Painting'
-    Semantics = Join-Path $dorotiRoot 'src/Doroti.Flutter.Framework.Semantics'
-    Rendering = Join-Path $dorotiRoot 'src/Doroti.Flutter.Framework.Rendering'
+    Painting = Join-Path $dorotiRoot 'src/Doroti.Framework.Painting'
+    Semantics = Join-Path $dorotiRoot 'src/Doroti.Framework.Semantics'
+    Rendering = Join-Path $dorotiRoot 'src/Doroti.Framework.Rendering'
 }
 
 foreach ($partition in $projectTargets.Keys) {
@@ -65,7 +65,7 @@ foreach ($partition in $projectTargets.Keys) {
 }
 
 foreach ($partition in $projectTargets.Keys) {
-    $projectPath = Join-Path $projectTargets[$partition] "Doroti.Flutter.Framework.$partition.csproj"
+    $projectPath = Join-Path $projectTargets[$partition] "Doroti.Framework.$partition.csproj"
     foreach ($pass in 1..2) {
         & dotnet format $projectPath --no-restore --verbosity quiet
         if ($LASTEXITCODE -ne 0) {
@@ -84,7 +84,7 @@ $publicMembers = [Collections.Generic.List[object]]::new()
 foreach ($input in @($migrationIr.inputs)) {
     $partition = Get-Partition $input.library
     $sourcePath = [IO.Path]::GetFileName($input.path)
-    $target = "src/Doroti.Flutter.Framework.$partition/$([IO.Path]::GetFileNameWithoutExtension($sourcePath)).cs"
+    $target = "src/Doroti.Framework.$partition/$([IO.Path]::GetFileNameWithoutExtension($sourcePath)).cs"
     foreach ($declaration in @($input.declarations)) {
         $dispositionEntries.Add([ordered]@{
             elementId = $declaration.element.canonicalId

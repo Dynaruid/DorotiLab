@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Framework.Widgets</AssemblyName>
+    <PackageId>Doroti.Framework.Widgets</PackageId>
+    <IsDorotiProduct>true</IsDorotiProduct>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Doroti.Runtime\Doroti.Runtime.csproj" />
+    <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Foundation\Doroti.Framework.Foundation.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Scheduler\Doroti.Framework.Scheduler.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Services\Doroti.Framework.Services.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Physics\Doroti.Framework.Physics.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Animation\Doroti.Framework.Animation.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Gestures\Doroti.Framework.Gestures.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Painting\Doroti.Framework.Painting.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Semantics\Doroti.Framework.Semantics.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Rendering\Doroti.Framework.Rendering.csproj" />
+    <Compile Remove="_html_element_view_web.cs" />
+    <Compile Remove="_platform_selectable_region_context_menu_web.cs" />
+    <Compile Remove="_web_browser_detection_web.cs" />
+    <Compile Remove="_web_image_web.cs" />
+    <Compile Remove="_window_linux.cs" />
+    <Compile Remove="_window_macos.cs" />
+    <Compile Remove="_window_web.cs" />
+    <Compile Remove="_window_win32.cs" />
+  </ItemGroup>
+</Project>

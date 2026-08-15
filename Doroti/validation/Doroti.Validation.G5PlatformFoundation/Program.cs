@@ -3,13 +3,13 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
-using Doroti.Flutter.Hosting;
-using Doroti.Flutter.Runtime;
-using Doroti.Flutter.Ui;
+using Doroti.Hosting;
+using Doroti.Runtime;
+using Doroti.Ui;
 using Doroti.Generated.Framework.Services;
 using Doroti.Host.Desktop;
-using Doroti.Host.Desktop.Flutter;
-using UiColor = Doroti.Flutter.Ui.Color;
+using Doroti.Host.Desktop.Framework;
+using UiColor = Doroti.Ui.Color;
 using Path = System.IO.Path;
 
 if (!OperatingSystem.IsWindows())
@@ -24,8 +24,8 @@ var outputPath = args.Length > 0
 var failures = new List<string>();
 var trace = new List<string>();
 var entrypoint = new FoundationEntrypoint(trace);
-DesktopFlutterFrameDiagnostics frameDiagnostics;
-DesktopFlutterFoundationDiagnostics foundationDiagnostics;
+DesktopFrameworkFrameDiagnostics frameDiagnostics;
+DesktopFrameworkFoundationDiagnostics foundationDiagnostics;
 string targetIdentity;
 ulong viewId;
 long nativeHandle;
@@ -41,9 +41,9 @@ bool accessibilityNativeEntrypoint = false;
 string? clipboardBefore = null;
 
 using (var backend = new DesktopWindowBackend())
-using (var session = new FlutterHostSession(entrypoint))
+using (var session = new DorotiHostSession(entrypoint))
 using (var scope = session.dispatcher.EnterScope())
-using (var host = new DesktopFlutterHost(backend))
+using (var host = new DesktopFrameworkHost(backend))
 {
     session.Start(deferFrameworkBootstrap: true);
     var view = host.CreateView(session, 530, new("Doroti G5-3 platform foundation", new(480, 320)));
@@ -86,7 +86,7 @@ using (var host = new DesktopFlutterHost(backend))
     view.Resize(new(540, 360));
     PumpUntil(backend, () => view.metrics.generation > initialMetricsGeneration, TimeSpan.FromSeconds(3));
     resizedMetricsGeneration = view.metrics.generation;
-    Require(resizedMetricsGeneration > initialMetricsGeneration && view.metrics.logicalSize == new Doroti.Flutter.Ui.Size(540, 360),
+    Require(resizedMetricsGeneration > initialMetricsGeneration && view.metrics.logicalSize == new Doroti.Ui.Size(540, 360),
         "metrics: resize did not round-trip on the attached view identity.", failures);
 
     var hwnd = (nint)nativeHandle;
@@ -104,7 +104,7 @@ using (var host = new DesktopFlutterHost(backend))
     var invocation = new DartUiInvocation(
         "package:flutter/src/widgets/binding.dart#WidgetsBinding",
         new("packages/flutter/lib/src/widgets/binding.dart", 0, 0));
-    var platform = view.RequireCapability<IPlatformServicesHostCapability>(FlutterCapabilityIds.PlatformServices, invocation);
+    var platform = view.RequireCapability<IPlatformServicesHostCapability>(DorotiCapabilityIds.PlatformServices, invocation);
     try
     {
         clipboardBefore = await platform.GetClipboardTextAsync();
@@ -116,12 +116,12 @@ using (var host = new DesktopFlutterHost(backend))
     {
         await platform.SetClipboardTextAsync(clipboardBefore ?? string.Empty);
     }
-    platform.SetCursor(FlutterMouseCursorKind.text);
-    platform.SetCursor(FlutterMouseCursorKind.basic);
+    platform.SetCursor(DorotiMouseCursorKind.text);
+    platform.SetCursor(DorotiMouseCursorKind.basic);
     cursorRoundTrip = true;
 
-    var textInput = view.RequireCapability<ITextInputHostCapability>(FlutterCapabilityIds.TextInput, invocation);
-    var editing = new FlutterTextEditingState("Doroti 한글", new(6, 6), new FlutterTextSelection(0, 6));
+    var textInput = view.RequireCapability<ITextInputHostCapability>(DorotiCapabilityIds.TextInput, invocation);
+    var editing = new DorotiTextEditingState("Doroti 한글", new(6, 6), new DorotiTextSelection(0, 6));
     textInput.SetClient(editing);
     textInput.UpdateState(editing with { selection = new(8, 8), composingRange = null });
     textInput.SetCaretRect(Rect.fromLTWH(18, 24, 2, 22));
@@ -141,23 +141,23 @@ using (var host = new DesktopFlutterHost(backend))
 
     var requiredCapabilities = new[]
     {
-        FlutterCapabilityIds.WindowLifecycle,
-        FlutterCapabilityIds.ViewLifecycleMetrics,
-        FlutterCapabilityIds.ViewFrameDispatch,
-        FlutterCapabilityIds.InputEvents,
-        FlutterCapabilityIds.TextInput,
-        FlutterCapabilityIds.PlatformServices,
-        FlutterCapabilityIds.PlatformMessaging,
-        FlutterCapabilityIds.PlatformEnvironment,
-        FlutterCapabilityIds.GraphicsScene,
-        FlutterCapabilityIds.GraphicsText,
-        FlutterCapabilityIds.GraphicsImage,
-        FlutterCapabilityIds.AccessibilitySemantics,
+        DorotiCapabilityIds.WindowLifecycle,
+        DorotiCapabilityIds.ViewLifecycleMetrics,
+        DorotiCapabilityIds.ViewFrameDispatch,
+        DorotiCapabilityIds.InputEvents,
+        DorotiCapabilityIds.TextInput,
+        DorotiCapabilityIds.PlatformServices,
+        DorotiCapabilityIds.PlatformMessaging,
+        DorotiCapabilityIds.PlatformEnvironment,
+        DorotiCapabilityIds.GraphicsScene,
+        DorotiCapabilityIds.GraphicsText,
+        DorotiCapabilityIds.GraphicsImage,
+        DorotiCapabilityIds.AccessibilitySemantics,
     };
     Require(requiredCapabilities.All(id => view.registeredCapabilityIds.Contains(id, StringComparer.Ordinal)),
         "capability: one or more G5-3B capability IDs are missing from the attached view.", failures);
     foundationDiagnostics = host.GetFoundationDiagnostics();
-    Require(foundationDiagnostics.RegisteredViews == 1 && foundationDiagnostics.FlutterSurfaces == 1 && foundationDiagnostics.SessionAttachedViews == 1,
+    Require(foundationDiagnostics.RegisteredViews == 1 && foundationDiagnostics.FrameworkSurfaces == 1 && foundationDiagnostics.SessionAttachedViews == 1,
         $"surface: expected 1/1/1 view, surface and session attachment, got {foundationDiagnostics}.", failures);
 
     host.Dispose();
@@ -170,21 +170,21 @@ Require(trace.Contains("attach:530") && trace.Contains("detach:530") && trace.La
 Require(trace.Count(item => item == "attach:530") == 1 && trace.Count(item => item == "detach:530") == 1 && trace.Count(item => item == "shutdown") == 1,
     "lifecycle: attach/detach/shutdown was duplicated.", failures);
 
-var missingCapabilities = new FlutterViewCapabilities("win-x64/missing-capability-fixture")
-    .Register<IViewHostCapability>(FlutterCapabilityIds.ViewLifecycleMetrics, new MissingCapabilityViewHost());
+var missingCapabilities = new DorotiViewCapabilities("win-x64/missing-capability-fixture")
+    .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, new MissingCapabilityViewHost());
 using (var dispatcher = new PlatformDispatcher())
 using (var view = dispatcher.RegisterView(531, missingCapabilities))
 {
     try
     {
         _ = view.RequireCapability<IPlatformServicesHostCapability>(
-            FlutterCapabilityIds.PlatformServices,
+            DorotiCapabilityIds.PlatformServices,
             DartUiInvocation.Managed("package:flutter/src/widgets/binding.dart#missingCapabilityFixture"));
         failures.Add("capability: missing platform.services silently succeeded.");
     }
-    catch (FlutterCapabilityException exception)
+    catch (DorotiCapabilityException exception)
     {
-        Require(exception.CapabilityId == FlutterCapabilityIds.PlatformServices &&
+        Require(exception.CapabilityId == DorotiCapabilityIds.PlatformServices &&
             exception.ViewId == 531 &&
             exception.TargetIdentity == "win-x64/missing-capability-fixture" &&
             exception.ElementId.Contains("missingCapabilityFixture", StringComparison.Ordinal),
@@ -219,7 +219,7 @@ var evidence = new
     },
     application = new
     {
-        entrypointContract = typeof(IFlutterViewEntrypoint).FullName,
+        entrypointContract = typeof(IDorotiViewEntrypoint).FullName,
         predecessorBinding = typeof(ServicesBinding).FullName,
         targetIdentity,
         viewId,
@@ -256,7 +256,7 @@ foreach (var failure in failures) Console.Error.WriteLine(failure);
 Console.WriteLine($"Evidence: {outputPath}");
 return failures.Count == 0 ? 0 : 1;
 
-static long Terminal(DesktopFlutterFrameDiagnostics value) =>
+static long Terminal(DesktopFrameworkFrameDiagnostics value) =>
     value.Presented + value.Superseded + value.Stale + value.Failed + value.Cancelled;
 
 static nint MakeLParam(short x, short y) => (nint)((ushort)x | (y << 16));
@@ -300,11 +300,11 @@ static extern nint SetFocus(nint window);
 [DllImport("user32.dll")]
 static extern nint SendMessage(nint window, uint message, nint wParam, nint lParam);
 
-sealed class FoundationEntrypoint(List<string> trace) : IFlutterViewEntrypoint
+sealed class FoundationEntrypoint(List<string> trace) : IDorotiViewEntrypoint
 {
     private readonly List<string> _trace = trace;
     private FoundationBinding? _binding;
-    private FlutterView? _view;
+    private DorotiView? _view;
     private bool _persistentCallbackRegistered;
 
     public void Bootstrap(PlatformDispatcher dispatcher)
@@ -313,7 +313,7 @@ sealed class FoundationEntrypoint(List<string> trace) : IFlutterViewEntrypoint
         _binding = new FoundationBinding(dispatcher, _trace);
     }
 
-    public void AttachView(FlutterView view)
+    public void AttachView(DorotiView view)
     {
         if (_binding is null) throw new InvalidOperationException("Framework binding was not bootstrapped.");
         if (_view is not null) throw new InvalidOperationException("The G5-3B entrypoint owns exactly one Flutter surface.");
@@ -328,7 +328,7 @@ sealed class FoundationEntrypoint(List<string> trace) : IFlutterViewEntrypoint
         _binding.scheduleFrame();
     }
 
-    public void DetachView(FlutterView view)
+    public void DetachView(DorotiView view)
     {
         if (ReferenceEquals(_view, view))
         {
@@ -395,7 +395,7 @@ sealed class MissingCapabilityViewHost : IViewHostCapability
     public event Action? CloseRequested { add { } remove { } }
     public event Action? Closed { add { } remove { } }
     public void Show() { }
-    public void Resize(Doroti.Flutter.Ui.Size logicalSize) { }
+    public void Resize(Doroti.Ui.Size logicalSize) { }
     public void Close() { }
     public void Dispose() { }
 }

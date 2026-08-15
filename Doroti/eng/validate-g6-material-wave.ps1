@@ -94,7 +94,7 @@ if ($lastWaveIndex -eq 6) {
     Assert-True ([long]$api.counts.diff -eq 0) 'Material public API diff'
 
     $forbiddenPattern = 'Avalonia\.Controls|Avalonia\.Themes|Avalonia\.Markup\.Xaml|x:Class'
-    $directDependencies = @(Get-ChildItem -LiteralPath (Join-Path $dorotiRoot 'src/Doroti.Flutter.Framework.Material') -File -Filter '*.cs' |
+    $directDependencies = @(Get-ChildItem -LiteralPath (Join-Path $dorotiRoot 'src/Doroti.Framework.Material') -File -Filter '*.cs' |
         Select-String -Pattern $forbiddenPattern)
     Assert-True ($directDependencies.Count -eq 0) 'direct Avalonia Controls/theme/XAML dependency count'
 

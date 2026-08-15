@@ -20,7 +20,7 @@ public static partial class G4BoundaryAudit
         "Doroti.Platform",
         "Doroti.Rendering",
         "Doroti.Engine",
-        "Doroti.Flutter.Runtime",
+        "Doroti.Runtime",
     };
 
     private static readonly HashSet<string> AllowedOwnerDispositions = new(StringComparer.Ordinal)
@@ -139,33 +139,33 @@ public static partial class G4BoundaryAudit
         if (project == "Doroti.Core")
         {
             return file == "Clock.cs"
-                ? new("keep-bridge", "Doroti.Flutter.Runtime or host-neutral scheduling contracts", "G4-3", "Clock/dispatcher abstractions remain neutral only after Scheduler owns frame policy.")
-                : new("move-to-framework", "Doroti.Flutter.Framework.Foundation", "G4-2", "Foundation behavior is owned by reviewed Flutter source.");
+                ? new("keep-bridge", "Doroti.Runtime or host-neutral scheduling contracts", "G4-3", "Clock/dispatcher abstractions remain neutral only after Scheduler owns frame policy.")
+                : new("move-to-framework", "Doroti.Framework.Foundation", "G4-2", "Foundation behavior is owned by reviewed Flutter source.");
         }
 
         if (project == "Doroti.Platform")
         {
             if (file == "HardwareKeyboard.cs")
             {
-                return new("move-to-framework", "Doroti.Flutter.Framework.Services", "G4-3", "Pressed-key state is Flutter Services behavior.");
+                return new("move-to-framework", "Doroti.Framework.Services", "G4-3", "Pressed-key state is Flutter Services behavior.");
             }
             if (file == "ChannelContracts.cs")
             {
                 return symbol is "IBinaryMessenger" or "PlatformMessageHandler"
-                    ? new("move-to-ui-contract", "Doroti.Flutter.Ui platform message ABI", "G4-1", "The host-neutral message ABI moves beside dart:ui.")
-                    : new("move-to-framework", "Doroti.Flutter.Framework.Services", "G4-3", "Messenger implementation and channel semantics are Flutter Services behavior.");
+                    ? new("move-to-ui-contract", "Doroti.Ui platform message ABI", "G4-1", "The host-neutral message ABI moves beside dart:ui.")
+                    : new("move-to-framework", "Doroti.Framework.Services", "G4-3", "Messenger implementation and channel semantics are Flutter Services behavior.");
             }
             if (file == "AccessibilityContracts.cs" && symbol is "SemanticsRole" or "SemanticsState" or "SemanticsAction")
             {
-                return new("move-to-framework", "Doroti.Flutter.Framework.Semantics", "G4-5", "Semantics vocabulary and state are Flutter-owned.");
+                return new("move-to-framework", "Doroti.Framework.Semantics", "G4-5", "Semantics vocabulary and state are Flutter-owned.");
             }
             if (file == "TextAndCursorContracts.cs" && symbol is "TextSelection" or "TextEditingState" or "TextEditingStateReducer" or "TextInputAction")
             {
-                return new("move-to-framework", "Doroti.Flutter.Framework.Services", "G4-3", "Text editing state/protocol semantics are Flutter Services behavior.");
+                return new("move-to-framework", "Doroti.Framework.Services", "G4-3", "Text editing state/protocol semantics are Flutter Services behavior.");
             }
             if (symbol.StartsWith("Unsupported", StringComparison.Ordinal))
             {
-                return new("remove-after-cutover", "typed Doroti.Flutter.Ui capability failure", "G4-1", "Ad-hoc unsupported implementations are replaced by typed capability errors.");
+                return new("remove-after-cutover", "typed Doroti.Ui capability failure", "G4-1", "Ad-hoc unsupported implementations are replaced by typed capability errors.");
             }
             return new("keep-bridge", "Doroti.Platform raw DTO/capability contracts", "G4-1", "Raw native DTOs and capability seams remain host neutral.");
         }
@@ -176,7 +176,7 @@ public static partial class G4BoundaryAudit
             {
                 return new("keep-bridge", "Doroti rendering/frame protocol", "G4-5", "Immutable display/resource submission is a host-neutral bridge protocol.");
             }
-            return new("move-to-framework", "Doroti.Flutter.Framework.Rendering", "G4-5", "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior.");
+            return new("move-to-framework", "Doroti.Framework.Rendering", "G4-5", "Layout, layer, painting and semantics algorithms are Flutter Rendering behavior.");
         }
 
         if (project == "Doroti.Engine")
@@ -190,13 +190,13 @@ public static partial class G4BoundaryAudit
             {
                 return new("replace-by-avalonia", "Flutter Services clipboard API + Avalonia platform.services binding", "G4-3", "Runtime cannot own a concrete platform service.");
             }
-            return new("move-to-framework", "Doroti.Flutter.Framework.Services", "G4-3", "Codec, MethodChannel and platform exceptions are Flutter Services behavior.");
+            return new("move-to-framework", "Doroti.Framework.Services", "G4-3", "Codec, MethodChannel and platform exceptions are Flutter Services behavior.");
         }
         if (file == "FoundationRuntimePorts.cs")
         {
-            return new("move-to-framework", "Doroti.Flutter.Framework.Foundation", "G4-2", "Flutter diagnostics and error objects are framework behavior, not Dart runtime primitives.");
+            return new("move-to-framework", "Doroti.Framework.Foundation", "G4-2", "Flutter diagnostics and error objects are framework behavior, not Dart runtime primitives.");
         }
-        return new("keep-bridge", "Doroti.Flutter.Runtime", "G4-1", "Dart async/stream/language primitives remain host neutral with zero host references.");
+        return new("keep-bridge", "Doroti.Runtime", "G4-1", "Dart async/stream/language primitives remain host neutral with zero host references.");
     }
 
     private static void ValidateSourceBoundary(

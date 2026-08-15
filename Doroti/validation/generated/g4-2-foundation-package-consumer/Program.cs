@@ -1,5 +1,5 @@
 using Doroti.Generated.Framework.Foundation;
-using Doroti.Flutter.Ui;
+using Doroti.Ui;
 
 var notifier = new ChangeNotifier();
 var notifications = 0;

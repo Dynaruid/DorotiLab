@@ -2,17 +2,17 @@ using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
 using System.Text.Json;
-using Doroti.Flutter.Ui;
+using Doroti.Ui;
 using Doroti.Host.Desktop;
-using Doroti.Host.Desktop.Flutter;
+using Doroti.Host.Desktop.Framework;
 using Doroti.Platform;
 using SkiaSharp;
 using Path = System.IO.Path;
-using UiColor = Doroti.Flutter.Ui.Color;
-using UiImage = Doroti.Flutter.Ui.Image;
-using UiPath = Doroti.Flutter.Ui.Path;
-using UiSemanticsAction = Doroti.Flutter.Ui.SemanticsAction;
-using UiSemanticsRole = Doroti.Flutter.Ui.SemanticsRole;
+using UiColor = Doroti.Ui.Color;
+using UiImage = Doroti.Ui.Image;
+using UiPath = Doroti.Ui.Path;
+using UiSemanticsAction = Doroti.Ui.SemanticsAction;
+using UiSemanticsRole = Doroti.Ui.SemanticsRole;
 
 if (!OperatingSystem.IsWindows())
 {
@@ -70,7 +70,7 @@ static object ValidatePromotionApi(string root, List<string> failures)
     var publicMembers = counts.GetProperty("publicMembers").GetInt32();
     var generatedProductSources = new[] { "Painting", "Rendering", "Semantics" }
         .Sum(partition => Directory.EnumerateFiles(
-            Path.Combine(root, "src", $"Doroti.Flutter.Framework.{partition}"), "*.g.cs", SearchOption.TopDirectoryOnly).Count());
+            Path.Combine(root, "src", $"Doroti.Framework.{partition}"), "*.g.cs", SearchOption.TopDirectoryOnly).Count());
 
     var candidateRoot = Path.Combine(root, "migration", "generated-candidates", "flutter-framework", "56b8e1a851a594b1a154f8ea93270807dab22b9a", "g4-5", "projects");
     var candidateAssemblies = new[]
@@ -112,7 +112,7 @@ static object ValidateNativeGraphics(List<string> failures)
     using var backend = new DesktopWindowBackend();
     using var dispatcher = new PlatformDispatcher();
     using var dispatcherScope = dispatcher.EnterScope();
-    using var host = new DesktopFlutterHost(backend);
+    using var host = new DesktopFrameworkHost(backend);
     using var view = host.CreateView(dispatcher, 52, new("Doroti G5-2 strict GPU", new(420, 280)));
     view.Show();
     PumpFor(backend, TimeSpan.FromMilliseconds(100));
@@ -229,7 +229,7 @@ static object ValidateNativeGraphics(List<string> failures)
     };
 }
 
-static void SubmitProbe(FlutterView view, ulong viewId, int index, Paragraph paragraph, UiImage image, double width, double height)
+static void SubmitProbe(DorotiView view, ulong viewId, int index, Paragraph paragraph, UiImage image, double width, double height)
 {
     var recorder = new PictureRecorder();
     var canvas = new Canvas(recorder, Rect.fromLTWH(0, 0, width, height));
@@ -259,7 +259,7 @@ static int RunAutomationTarget(string[] args)
     using var backend = new DesktopWindowBackend();
     using var dispatcher = new PlatformDispatcher();
     using var scope = dispatcher.EnterScope();
-    using var host = new DesktopFlutterHost(backend);
+    using var host = new DesktopFrameworkHost(backend);
     using var view = host.CreateView(dispatcher, 53, new("Doroti G5-2 Automation Target", new(520, 360)));
     var actions = new List<object>();
     dispatcher.onSemanticsActionEvent = action =>
@@ -293,7 +293,7 @@ static int RunAutomationTarget(string[] args)
     return File.Exists(stopPath) ? 0 : 3;
 }
 
-static long Terminal(DesktopFlutterFrameDiagnostics value) =>
+static long Terminal(DesktopFrameworkFrameDiagnostics value) =>
     value.Presented + value.Superseded + value.Stale + value.Failed + value.Cancelled;
 
 static void PumpUntil(DesktopWindowBackend backend, Func<bool> completed, TimeSpan timeout)

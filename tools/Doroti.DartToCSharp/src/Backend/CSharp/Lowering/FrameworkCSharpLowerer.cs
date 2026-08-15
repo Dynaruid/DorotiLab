@@ -52,12 +52,12 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.AppendLine("using System.Linq;");
             builder.AppendLine("using System.Threading.Tasks;");
         }
-        builder.AppendLine("using Doroti.Flutter.Runtime;");
+        builder.AppendLine("using Doroti.Runtime;");
         if (!preservesG31Artifact)
         {
-            builder.AppendLine("using Doroti.Flutter.Ui;");
-            builder.AppendLine("using static Doroti.Flutter.Runtime.FoundationRuntimePorts;");
-            builder.AppendLine("using Match = Doroti.Flutter.Runtime.DartMatch;");
+            builder.AppendLine("using Doroti.Ui;");
+            builder.AppendLine("using static Doroti.Runtime.FoundationRuntimePorts;");
+            builder.AppendLine("using Match = Doroti.Runtime.DartMatch;");
             if (library.EndsWith("/rendering/binding.dart", StringComparison.Ordinal))
             {
                 builder.AppendLine("using SemanticsBinding = global::Doroti.Generated.Framework.Semantics.SemanticsBinding;");
@@ -141,7 +141,7 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.AppendLine("    {");
             builder.AppendLine("        public static class CreationLocation");
             builder.AppendLine("        {");
-            builder.AppendLine("            public static global::Doroti.Flutter.Runtime.CreationLocation? of(object? value) => global::Doroti.Flutter.Runtime.CreationLocation.of(value);");
+            builder.AppendLine("            public static global::Doroti.Runtime.CreationLocation? of(object? value) => global::Doroti.Runtime.CreationLocation.of(value);");
             builder.AppendLine("        }");
             builder.AppendLine("    }");
             builder.AppendLine("}");

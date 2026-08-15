@@ -69,7 +69,7 @@ function Get-FirstSlice {
 function Get-Category {
     param([string] $File, [string] $Symbol, [object[]] $Diagnostics)
     $text = ($File + ' ' + $Symbol + ' ' + (($Diagnostics | ForEach-Object { $_.code + ' ' + $_.message }) -join ' '))
-    if ($File -eq 'binding.g.cs' -and $text -match 'PlatformDispatcher|FlutterView|ViewFocus|SemanticsAction') {
+    if ($File -eq 'binding.g.cs' -and $text -match 'PlatformDispatcher|DorotiView|ViewFocus|SemanticsAction') {
         return 'host-capability/avalonia-port'
     }
     if ($text -match 'Doroti\.Flutter\.Ui|AppLifecycleState|DisplayFeature|ViewFocus|SemanticsActionEvent|IReadOnlyList<Doroti\.Flutter\.Ui') {
@@ -91,11 +91,11 @@ function Get-FixOwner {
     param([string] $Category)
     switch ($Category) {
         'compiler-lowering' { 'tools/Doroti.DartToCSharp/src/Backend/CSharp/Lowering' }
-        'dart-runtime' { 'src/Doroti.Flutter.Runtime' }
-        'dart-ui-contract' { 'src/Doroti.Flutter.Ui' }
-        'predecessor-framework' { 'src/Doroti.Flutter.Framework.* predecessor package' }
+        'dart-runtime' { 'src/Doroti.Runtime' }
+        'dart-ui-contract' { 'src/Doroti.Ui' }
+        'predecessor-framework' { 'src/Doroti.Framework.* predecessor package' }
         'dart-model-representation' { 'tools/Doroti.DartToCSharp typed Core/CSharp IR' }
-        'host-capability/avalonia-port' { 'src/Doroti.Host.Desktop.Flutter + Doroti.Vendor.Avalonia.*' }
+        'host-capability/avalonia-port' { 'src/Doroti.Host.Desktop.Framework + Doroti.Vendor.Avalonia.*' }
         default { throw "Unclassified G5-3 category: $Category" }
     }
 }

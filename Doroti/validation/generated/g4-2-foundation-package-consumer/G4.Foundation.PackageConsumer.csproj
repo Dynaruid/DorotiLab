@@ -9,6 +9,6 @@
     <RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Doroti.Flutter.Framework.Foundation" Version="0.2.0-beta" />
+    <PackageReference Include="Doroti.Framework.Foundation" Version="0.2.0-beta" />
   </ItemGroup>
 </Project>

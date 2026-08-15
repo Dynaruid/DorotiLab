@@ -8,6 +8,6 @@
     <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Doroti.Flutter.Framework.Foundation\Doroti.Flutter.Framework.Foundation.csproj" />
+    <ProjectReference Include="..\..\..\src\Doroti.Framework.Foundation\Doroti.Framework.Foundation.csproj" />
   </ItemGroup>
 </Project>

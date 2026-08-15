@@ -360,10 +360,10 @@ internal sealed partial class FrameworkCSharpLowerer
 
     private string MapDartLibraryStaticClass(string libraryUri) => libraryUri switch
     {
-        "dart:math" => "global::Doroti.Flutter.Runtime.Dart_mathLibrary",
+        "dart:math" => "global::Doroti.Runtime.Dart_mathLibrary",
         "dart:ui" => "Dart_uiLibrary",
-        "dart:async" => "global::Doroti.Flutter.Runtime.DartAsyncRuntime",
-        "dart:convert" => "global::Doroti.Flutter.Runtime.Dart_convertLibrary",
+        "dart:async" => "global::Doroti.Runtime.DartAsyncRuntime",
+        "dart:convert" => "global::Doroti.Runtime.Dart_convertLibrary",
         _ => LibraryStaticClassName(libraryUri),
     };
 

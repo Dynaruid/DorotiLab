@@ -620,8 +620,8 @@ Update-GeneratedFile 'button_style_button.g.cs' {
         { param($match) "        Color? effectiveIconColor()`n        {`n            // Icon color is optional for text-only buttons. Avoid eagerly`n            // resolving nullable style properties; IconTheme below supplies`n            // the foreground fallback when an icon is actually present.`n            return null;`n            throw new InvalidOperationException(`"Dart control flow completed without a value.`");`n        }`n        double? $($match.Groups['local'].Value)" })
     $text = $text.ReplaceGeneratedLocalPattern('double? resolvedElevation__15501 = resolve<double?>(((style) => style?.elevation));', 'double? resolvedElevation__15501 = resolve<double?>(((style) => style?.elevation)) ?? 0.0;')
     $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? resolvedPadding__16187 = resolve<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry?>(((style) => style?.padding));', 'global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? resolvedPadding__16187 = resolve<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry?>(((style) => style?.padding)) ?? global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16, vertical: 8);')
-    $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Flutter.Ui.Size? resolvedMinimumSize__16304 = ((global::Doroti.Flutter.Ui.Size?)(object?)resolve<global::Doroti.Flutter.Ui.Size?>(((style) => style?.minimumSize)));', 'global::Doroti.Flutter.Ui.Size? resolvedMinimumSize__16304 = ((global::Doroti.Flutter.Ui.Size?)(object?)resolve<global::Doroti.Flutter.Ui.Size?>(((style) => style?.minimumSize))) ?? new global::Doroti.Flutter.Ui.Size(64, 40);')
-    $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Flutter.Ui.Size? resolvedMaximumSize__16496 = ((global::Doroti.Flutter.Ui.Size?)(object?)resolve<global::Doroti.Flutter.Ui.Size?>(((style) => style?.maximumSize)));', 'global::Doroti.Flutter.Ui.Size? resolvedMaximumSize__16496 = ((global::Doroti.Flutter.Ui.Size?)(object?)resolve<global::Doroti.Flutter.Ui.Size?>(((style) => style?.maximumSize))) ?? new global::Doroti.Flutter.Ui.Size(double.PositiveInfinity, double.PositiveInfinity);')
+    $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Ui.Size? resolvedMinimumSize__16304 = ((global::Doroti.Ui.Size?)(object?)resolve<global::Doroti.Ui.Size?>(((style) => style?.minimumSize)));', 'global::Doroti.Ui.Size? resolvedMinimumSize__16304 = ((global::Doroti.Ui.Size?)(object?)resolve<global::Doroti.Ui.Size?>(((style) => style?.minimumSize))) ?? new global::Doroti.Ui.Size(64, 40);')
+    $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Ui.Size? resolvedMaximumSize__16496 = ((global::Doroti.Ui.Size?)(object?)resolve<global::Doroti.Ui.Size?>(((style) => style?.maximumSize)));', 'global::Doroti.Ui.Size? resolvedMaximumSize__16496 = ((global::Doroti.Ui.Size?)(object?)resolve<global::Doroti.Ui.Size?>(((style) => style?.maximumSize))) ?? new global::Doroti.Ui.Size(double.PositiveInfinity, double.PositiveInfinity);')
     $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Generated.Framework.Painting.OutlinedBorder? resolvedShape__16855 = resolve<global::Doroti.Generated.Framework.Painting.OutlinedBorder?>(((style) => style?.shape));', 'global::Doroti.Generated.Framework.Painting.OutlinedBorder? resolvedShape__16855 = resolve<global::Doroti.Generated.Framework.Painting.OutlinedBorder?>(((style) => style?.shape)) ?? new global::Doroti.Generated.Framework.Painting.RoundedRectangleBorder();')
     $text = $text.ReplaceGeneratedLocalPattern('VisualDensity? resolvedVisualDensity__17390 = effectiveValue(((style) => style?.visualDensity));', 'VisualDensity? resolvedVisualDensity__17390 = effectiveValue(((style) => style?.visualDensity)) ?? theme__14153.visualDensity;')
     $text = $text.ReplaceGeneratedLocalPattern('MaterialTapTargetSize? resolvedTapTargetSize__17522 = effectiveValue(((style) => style?.tapTargetSize));', 'MaterialTapTargetSize? resolvedTapTargetSize__17522 = effectiveValue(((style) => style?.tapTargetSize)) ?? MaterialTapTargetSize.padded;')
@@ -645,8 +645,8 @@ Update-GeneratedFile 'checkbox.g.cs' { param($text) $text.ReplaceGeneratedLocalP
 Update-GeneratedFile 'radio.g.cs' { param($text) $text.ReplaceGeneratedLocalPattern('return ((_RadioPaint__radio)(object?)((_RadioPaint__radio)(object)this.widget).activeColor);', 'return ((_RadioPaint__radio)(object)this.widget).activeColor;') }
 Update-GeneratedFile 'list_tile.g.cs' {
     param($text)
-    $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Flutter.Ui.Color backgroundColor__31721 = ((global::Doroti.Flutter.Ui.Color)(object?)(((this.tileColor ?? tileTheme__31390.tileColor) ?? theme__31258.listTileTheme.tileColor) ?? defaults__31582.tileColor!));', 'global::Doroti.Flutter.Ui.Color backgroundColor__31721 = ((this.tileColor ?? tileTheme__31390.tileColor) ?? theme__31258.listTileTheme.tileColor) ?? defaults__31582.tileColor ?? new global::Doroti.Flutter.Ui.Color(0L);')
-    $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Flutter.Ui.Color selectedBackgroundColor__31853 = ((global::Doroti.Flutter.Ui.Color)(object?)(((this.selectedTileColor ?? tileTheme__31390.selectedTileColor) ?? theme__31258.listTileTheme.selectedTileColor) ?? defaults__31582.tileColor!));', 'global::Doroti.Flutter.Ui.Color selectedBackgroundColor__31853 = ((this.selectedTileColor ?? tileTheme__31390.selectedTileColor) ?? theme__31258.listTileTheme.selectedTileColor) ?? defaults__31582.tileColor ?? new global::Doroti.Flutter.Ui.Color(0L);')
+    $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Ui.Color backgroundColor__31721 = ((global::Doroti.Ui.Color)(object?)(((this.tileColor ?? tileTheme__31390.tileColor) ?? theme__31258.listTileTheme.tileColor) ?? defaults__31582.tileColor!));', 'global::Doroti.Ui.Color backgroundColor__31721 = ((this.tileColor ?? tileTheme__31390.tileColor) ?? theme__31258.listTileTheme.tileColor) ?? defaults__31582.tileColor ?? new global::Doroti.Ui.Color(0L);')
+    $text = $text.ReplaceGeneratedLocalPattern('global::Doroti.Ui.Color selectedBackgroundColor__31853 = ((global::Doroti.Ui.Color)(object?)(((this.selectedTileColor ?? tileTheme__31390.selectedTileColor) ?? theme__31258.listTileTheme.selectedTileColor) ?? defaults__31582.tileColor!));', 'global::Doroti.Ui.Color selectedBackgroundColor__31853 = ((this.selectedTileColor ?? tileTheme__31390.selectedTileColor) ?? theme__31258.listTileTheme.selectedTileColor) ?? defaults__31582.tileColor ?? new global::Doroti.Ui.Color(0L);')
     return $text
 }
 Update-GeneratedFile 'scrollbar.g.cs' {
@@ -658,7 +658,7 @@ Update-GeneratedFile 'scrollbar.g.cs' {
     $text = $text.ReplaceGeneratedLocalPattern('return ()(this._scrollbarTheme.thumbColor?.resolve(states) ?? hoverColor__9034));', 'return this._scrollbarTheme.thumbColor?.resolve(states) ?? hoverColor__9034;')
     $text = $text.ReplaceGeneratedLocalPattern('return ()Dart_uiLibrary.Color.lerp((this._scrollbarTheme.thumbColor?.resolve(states) ?? idleColor__9061), (this._scrollbarTheme.thumbColor?.resolve(states) ?? hoverColor__9034), ((global::Doroti.Generated.Framework.Animation.AnimationController)this._hoverAnimationController).value)!);', 'return Dart_uiLibrary.Color.lerp((this._scrollbarTheme.thumbColor?.resolve(states) ?? idleColor__9061), (this._scrollbarTheme.thumbColor?.resolve(states) ?? hoverColor__9034), ((global::Doroti.Generated.Framework.Animation.AnimationController)this._hoverAnimationController).value)!;')
     $text = [Text.RegularExpressions.Regex]::Replace($text, 'return \(\)\((this\._scrollbarTheme\.track(?:Border)?Color\?\.resolve\(states\) \?\? .*?)\)\);', 'return $1;')
-    $text = $text.ReplaceGeneratedLocalPattern('return ()new global::Doroti.Flutter.Ui.Color(0L));', 'return new global::Doroti.Flutter.Ui.Color(0L);')
+    $text = $text.ReplaceGeneratedLocalPattern('return ()new global::Doroti.Ui.Color(0L));', 'return new global::Doroti.Ui.Color(0L);')
     $text = $text.ReplaceGeneratedLocalPattern('return ((this.widget.thickness ?? DartRuntimePrimitives.RequireValue(this._scrollbarTheme.thickness?.resolve(states))));', 'return this.widget.thickness ?? this._scrollbarTheme.thickness?.resolve(states) ?? ScrollbarLibrary._kScrollbarThicknessWithTrack;')
     $text = $text.ReplaceGeneratedLocalPattern("    return this.widget.thickness ?? this._scrollbarTheme.thickness?.resolve(states) ?? ScrollbarLibrary._kScrollbarThicknessWithTrack;`n}`nreturn this.widget.thickness ?? this._scrollbarTheme.thickness?.resolve(states) ?? ScrollbarLibrary._kScrollbarThicknessWithTrack;", "    return this.widget.thickness ?? this._scrollbarTheme.thickness?.resolve(states) ?? ScrollbarLibrary._kScrollbarThicknessWithTrack;`n}`nreturn this.widget.thickness ?? this._scrollbarTheme.thickness?.resolve(states) ?? ScrollbarLibrary._kScrollbarThickness;")
     return $text
@@ -702,7 +702,7 @@ Get-ChildItem -LiteralPath $cupertinoRoot -File -Filter '*.g.cs' | ForEach-Objec
 Update-CupertinoGeneratedFile 'checkbox.g.cs' {
     param($text)
     $text = Replace-CupertinoProperty $text '_defaultFillColor' @'
-    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Flutter.Ui.Color> _defaultFillColor
+    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> _defaultFillColor
     {
         get
         {
@@ -723,7 +723,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     }
 '@
     $text = Replace-CupertinoProperty $text '_defaultCheckColor' @'
-    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Flutter.Ui.Color> _defaultCheckColor
+    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> _defaultCheckColor
     {
         get
         {
@@ -770,7 +770,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 Update-CupertinoGeneratedFile 'radio.g.cs' {
     param($text)
     $text = Replace-CupertinoProperty $text '_defaultOuterColor' @'
-    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Flutter.Ui.Color> _defaultOuterColor
+    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> _defaultOuterColor
     {
         get
         {
@@ -791,7 +791,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     }
 '@
     $text = Replace-CupertinoProperty $text '_defaultInnerColor' @'
-    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Flutter.Ui.Color> _defaultInnerColor
+    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> _defaultInnerColor
     {
         get
         {
@@ -812,7 +812,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     }
 '@
     $text = Replace-CupertinoProperty $text '_defaultBorderColor' @'
-    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Flutter.Ui.Color> _defaultBorderColor
+    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> _defaultBorderColor
     {
         get
         {
@@ -838,7 +838,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 Update-CupertinoGeneratedFile 'switch.g.cs' {
     param($text)
     $text = Replace-CupertinoProperty $text '_widgetThumbColor' @'
-    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Flutter.Ui.Color?> _widgetThumbColor
+    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> _widgetThumbColor
     {
         get
         {
@@ -855,7 +855,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     }
 '@
     $text = Replace-CupertinoProperty $text '_widgetTrackColor' @'
-    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Flutter.Ui.Color?> _widgetTrackColor
+    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> _widgetTrackColor
     {
         get
         {

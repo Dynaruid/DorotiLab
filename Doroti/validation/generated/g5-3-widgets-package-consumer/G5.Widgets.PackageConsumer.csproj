@@ -8,6 +8,6 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Doroti.Flutter.Framework.Widgets" Version="[0.2.0-beta]" />
+    <PackageReference Include="Doroti.Framework.Widgets" Version="[0.2.0-beta]" />
   </ItemGroup>
 </Project>

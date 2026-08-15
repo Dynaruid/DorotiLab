@@ -12,7 +12,7 @@
     <Description>G6-7 generated DemoApp RID-specific native plugin ABI fixture.</Description>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Doroti.Flutter.Hosting\Doroti.Flutter.Hosting.csproj" />
+    <ProjectReference Include="..\..\..\src\Doroti.Hosting\Doroti.Hosting.csproj" />
     <None Include="doroti-plugin-capabilities.json" Pack="true" PackagePath="doroti/" />
   </ItemGroup>
 </Project>

@@ -7,6 +7,6 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Doroti.Flutter.Framework.Services" />
+    <PackageReference Include="Doroti.Framework.Services" />
   </ItemGroup>
 </Project>

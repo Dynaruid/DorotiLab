@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Framework.Gestures</AssemblyName>
+    <PackageId>Doroti.Framework.Gestures</PackageId>
+    <IsDorotiProduct>true</IsDorotiProduct>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Doroti.Generated.Framework.Widgets.Widgets" />
+    <InternalsVisibleTo Include="Doroti.Framework.Widgets" />
+    <ProjectReference Include="..\Doroti.Runtime\Doroti.Runtime.csproj" />
+    <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Foundation\Doroti.Framework.Foundation.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Scheduler\Doroti.Framework.Scheduler.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Services\Doroti.Framework.Services.csproj" />
+  </ItemGroup>
+</Project>

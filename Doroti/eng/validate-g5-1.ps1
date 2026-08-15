@@ -62,9 +62,9 @@ try {
         schemaVersion = 'doroti.g5-1-policy-owner-audit/v1'
         capturedAtUtc = [DateTime]::UtcNow.ToString('O')
         reviewedOwners = @(
-            'Doroti.Flutter.Framework.Gestures',
-            'Doroti.Flutter.Framework.Animation',
-            'Doroti.Flutter.Framework.Physics'
+            'Doroti.Framework.Gestures',
+            'Doroti.Framework.Animation',
+            'Doroti.Framework.Physics'
         )
         hostNeutralAdapters = @()
         legacyCompatibilityProjectRemoved = -not (Test-Path -LiteralPath "$dorotiRoot/src/Doroti.Widgets/Doroti.Widgets.csproj")

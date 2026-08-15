@@ -82,7 +82,7 @@ try {
     $targetPackages = @(Get-ChildItem -LiteralPath $packageRoot -Filter 'Doroti.Target.Windows.win-x64.0.2.0-beta.nupkg')
     if ($targetPackages.Count -ne 1) { throw "Expected one Windows RID package, got $($targetPackages.Count)." }
     $targetPackage = $targetPackages[0].FullName
-    $frameworkPackage = Join-Path $packageRoot 'Doroti.Flutter.Framework.Widgets.0.2.0-beta.nupkg'
+    $frameworkPackage = Join-Path $packageRoot 'Doroti.Framework.Widgets.0.2.0-beta.nupkg'
     if (-not (Test-Path -LiteralPath $frameworkPackage)) { throw 'The framework package used for host-swap identity is missing.' }
     $frameworkDigestBefore = (Get-FileHash -LiteralPath $frameworkPackage -Algorithm SHA256).Hash.ToLowerInvariant()
     Invoke-Checked { dotnet pack $targetProject --configuration Release --nologo --output $packageRoot --no-build } 'Independent Windows RID package repack failed.'
@@ -202,7 +202,7 @@ try {
             officialAvaloniaBinaryDependencies = 0
         }
         hostSwap = [ordered]@{
-            frameworkPackage = 'Doroti.Flutter.Framework.Widgets/0.2.0-beta'
+            frameworkPackage = 'Doroti.Framework.Widgets/0.2.0-beta'
             beforeSha256 = $frameworkDigestBefore
             afterSha256 = $frameworkDigestAfter
             frameworkRegenerated = $false

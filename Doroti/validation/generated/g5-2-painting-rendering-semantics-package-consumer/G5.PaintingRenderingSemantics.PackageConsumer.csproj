@@ -8,8 +8,8 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Doroti.Flutter.Framework.Painting" Version="[0.2.0-beta]" />
-    <PackageReference Include="Doroti.Flutter.Framework.Rendering" Version="[0.2.0-beta]" />
-    <PackageReference Include="Doroti.Flutter.Framework.Semantics" Version="[0.2.0-beta]" />
+    <PackageReference Include="Doroti.Framework.Painting" Version="[0.2.0-beta]" />
+    <PackageReference Include="Doroti.Framework.Rendering" Version="[0.2.0-beta]" />
+    <PackageReference Include="Doroti.Framework.Semantics" Version="[0.2.0-beta]" />
   </ItemGroup>
 </Project>

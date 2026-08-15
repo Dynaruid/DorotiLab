@@ -12,20 +12,20 @@ Generation is graph-driven rather than fixture-name-driven. The resolver compute
 
 `ApplicationProjectGraph` emits one application project and solution. Its only direct dependencies are:
 
-- the selected reviewed `Doroti.Flutter.Framework.*` package or project;
-- `Doroti.Flutter.Hosting`, which is the application bootstrap and host-capability seam.
+- the selected reviewed `Doroti.Framework.*` package or project;
+- `Doroti.Hosting`, which is the application bootstrap and host-capability seam.
 
 Generated application source is audited for concrete platform, host, Avalonia, Skia, and vendor references. Target implementation remains behind capabilities rather than entering generated Dart application code.
 
 ## Resources and localization
 
-The compiler converts the application resource manifest into an embedded `doroti-application-capabilities.json` manifest and embeds declared asset, font, and localization files with stable logical names. `FlutterApplicationBoundary` loads that manifest from the generated assembly and verifies every resource's declared byte length and SHA-256 digest before exposing it through `IApplicationResourceHostCapability`.
+The compiler converts the application resource manifest into an embedded `doroti-application-capabilities.json` manifest and embeds declared asset, font, and localization files with stable logical names. `DorotiApplicationBoundary` loads that manifest from the generated assembly and verifies every resource's declared byte length and SHA-256 digest before exposing it through `IApplicationResourceHostCapability`.
 
 The host registers the application resource capability together with the platform-message capability. Assets, fonts, and locale payloads therefore cross one typed UI/host boundary and do not depend on checkout paths at runtime.
 
 ## Platform channel and RID plugin boundary
 
-The Dart-facing API and codec stay in framework application code. The native side is a RID-specific package with a `doroti.plugin-abi/v1` capability manifest and an `IFlutterNativePluginHandler` implementation. At startup, the hosting boundary verifies plugin ID, channel, codec, ABI version, and target RID before dispatching a platform message.
+The Dart-facing API and codec stay in framework application code. The native side is a RID-specific package with a `doroti.plugin-abi/v1` capability manifest and an `IDorotiNativePluginHandler` implementation. At startup, the hosting boundary verifies plugin ID, channel, codec, ABI version, and target RID before dispatching a platform message.
 
 An application plugin without a native package for the selected RID produces `DOTAPP005` and fails compilation. A missing handler, mismatched ABI, or unregistered channel also throws a typed capability failure at runtime; none of these cases can silently succeed.
 

@@ -2,40 +2,40 @@
   "version": 2,
   "dependencies": {
     "net10.0": {
-      "doroti.flutter.framework.foundation": {
+      "doroti.framework.foundation": {
         "type": "Project",
         "dependencies": {
-          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
-          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+          "Doroti.Runtime": "[0.2.0-beta, )",
+          "Doroti.Ui": "[0.2.0-beta, )"
         }
       },
-      "doroti.flutter.framework.scheduler": {
+      "doroti.framework.scheduler": {
         "type": "Project",
         "dependencies": {
-          "Doroti.Flutter.Framework.Foundation": "[0.2.0-beta, )",
-          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
-          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+          "Doroti.Framework.Foundation": "[0.2.0-beta, )",
+          "Doroti.Runtime": "[0.2.0-beta, )",
+          "Doroti.Ui": "[0.2.0-beta, )"
         }
       },
-      "doroti.flutter.framework.services": {
+      "doroti.framework.services": {
         "type": "Project",
         "dependencies": {
-          "Doroti.Flutter.Framework.Foundation": "[0.2.0-beta, )",
-          "Doroti.Flutter.Framework.Scheduler": "[0.2.0-beta, )",
-          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
-          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+          "Doroti.Framework.Foundation": "[0.2.0-beta, )",
+          "Doroti.Framework.Scheduler": "[0.2.0-beta, )",
+          "Doroti.Runtime": "[0.2.0-beta, )",
+          "Doroti.Ui": "[0.2.0-beta, )"
         }
       },
-      "doroti.flutter.runtime": {
+      "doroti.runtime": {
         "type": "Project",
         "dependencies": {
           "MaterialColorUtilities": "[0.3.0, )"
         }
       },
-      "doroti.flutter.ui": {
+      "doroti.ui": {
         "type": "Project",
         "dependencies": {
-          "Doroti.Flutter.Runtime": "[0.2.0-beta, )"
+          "Doroti.Runtime": "[0.2.0-beta, )"
         }
       },
       "MaterialColorUtilities": {

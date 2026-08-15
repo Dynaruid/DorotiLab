@@ -74,10 +74,10 @@ Invoke-Checked { dotnet run --project (Join-Path $dorotiRoot 'validation/Doroti.
 Invoke-Checked { dotnet run --project (Join-Path $dorotiRoot 'validation/Doroti.Validation.G5WidgetsTextInput/Doroti.Validation.G5WidgetsTextInput.csproj') --configuration Release } 'Text-input bridge validation failed.'
 
 $packageProjects = @(
-    'Doroti.Flutter.Runtime', 'Doroti.Flutter.Ui', 'Doroti.Flutter.Framework.Foundation',
-    'Doroti.Flutter.Framework.Scheduler', 'Doroti.Flutter.Framework.Services', 'Doroti.Flutter.Framework.Physics',
-    'Doroti.Flutter.Framework.Animation', 'Doroti.Flutter.Framework.Gestures', 'Doroti.Flutter.Framework.Painting',
-    'Doroti.Flutter.Framework.Semantics', 'Doroti.Flutter.Framework.Rendering', 'Doroti.Flutter.Framework.Widgets'
+    'Doroti.Runtime', 'Doroti.Ui', 'Doroti.Framework.Foundation',
+    'Doroti.Framework.Scheduler', 'Doroti.Framework.Services', 'Doroti.Framework.Physics',
+    'Doroti.Framework.Animation', 'Doroti.Framework.Gestures', 'Doroti.Framework.Painting',
+    'Doroti.Framework.Semantics', 'Doroti.Framework.Rendering', 'Doroti.Framework.Widgets'
 )
 foreach ($project in $packageProjects) {
     Invoke-Checked { dotnet pack (Join-Path $dorotiRoot "src/$project/$project.csproj") --configuration Release --nologo --no-build --output $packageRoot } "Package build failed: $project."
@@ -152,7 +152,7 @@ $evidence = [ordered]@{
         cleanIncrementalDigest = $candidateIncrementalDigest
     }
     promotion = [ordered]@{
-        package = 'Doroti.Flutter.Framework.Widgets'
+        package = 'Doroti.Framework.Widgets'
         widgetsDartExportedLibraries = [int]$api.counts.exportedWidgetLibraries
         publicDeclarationOccurrences = [int]$api.counts.declarationOccurrences
         apiMissing = [int]$api.counts.missing; apiExtra = [int]$api.counts.extra

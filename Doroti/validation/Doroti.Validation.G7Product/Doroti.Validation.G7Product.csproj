@@ -4,7 +4,7 @@
     <AssemblyName>Doroti.Validation.G7Product</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Doroti.Flutter.Framework.Material\Doroti.Flutter.Framework.Material.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Framework.Material\Doroti.Framework.Material.csproj" />
   </ItemGroup>
 </Project>
 

@@ -4,7 +4,7 @@
   "id": "osx-arm64",
   "requiredForGoal7": true,
   "packageId": "Doroti.Target.macOS.osx-arm64",
-  "compositionRoot": "Doroti.Target.macOS.MacOsFlutterTarget",
+  "compositionRoot": "Doroti.Target.macOS.MacOsTarget",
   "windowBackend": "AppKit NSWindow via source-ported libAvalonia",
   "graphicsBackend": "Skia NSOpenGL strict GPU",
   "nativeAssets": [

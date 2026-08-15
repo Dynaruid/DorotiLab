@@ -459,7 +459,7 @@ static FrameworkGraphResult ValidateFrameworkGraph(string repositoryRoot, string
         var projectGraphValid = partitions.Length == 2 &&
             references.Any(item => item.GetProperty("from").GetString() == "Physics" && item.GetProperty("to").GetString() == "Foundation") &&
             partitions.All(item => item.GetProperty("packageReferences").EnumerateArray()
-                .Any(reference => reference.GetProperty("package").GetString() == "Doroti.Flutter.Runtime"));
+                .Any(reference => reference.GetProperty("package").GetString() == "Doroti.Runtime"));
         var generatedShape = File.ReadAllText(Path.Combine(first, "projects", "Foundation", "annotations.g.cs"));
         var genericConstructorGenerated = generatedShape.Contains("IReadOnlyList<string> sections", StringComparison.Ordinal) &&
             generatedShape.Contains("public Category(IReadOnlyList<string> sections)", StringComparison.Ordinal);

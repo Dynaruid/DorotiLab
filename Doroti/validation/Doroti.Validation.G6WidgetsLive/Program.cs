@@ -2,13 +2,13 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
-using Doroti.Flutter.Hosting;
-using Doroti.Flutter.Ui;
+using Doroti.Hosting;
+using Doroti.Ui;
 using Doroti.Generated.Framework.Foundation;
 using Doroti.Generated.Framework.Painting;
 using Doroti.Generated.Framework.Widgets;
 using Doroti.Target.Windows;
-using UiColor = Doroti.Flutter.Ui.Color;
+using UiColor = Doroti.Ui.Color;
 using Path = System.IO.Path;
 
 const ulong ViewId = 620;
@@ -28,8 +28,8 @@ if (!OperatingSystem.IsWindows())
     return 2;
 }
 
-using (var target = new WindowsFlutterTarget())
-using (var session = new FlutterHostSession(entrypoint))
+using (var target = new WindowsTarget())
+using (var session = new DorotiHostSession(entrypoint))
 using (session.dispatcher.EnterScope())
 {
     session.Start(deferFrameworkBootstrap: true);
@@ -187,14 +187,14 @@ Console.WriteLine($"G6-2 Widgets live: {(failures.Count == 0 ? "PASS" : "FAIL")}
 foreach (var failure in failures) Console.Error.WriteLine(failure);
 return failures.Count == 0 ? 0 : 1;
 
-static void WaitForNextPresented(WindowsFlutterTarget target, WidgetsLiveEntrypoint entrypoint)
+static void WaitForNextPresented(WindowsTarget target, WidgetsLiveEntrypoint entrypoint)
 {
     var before = target.CaptureDiagnostics(ViewId).Frame.Presented;
     entrypoint.RequestFrame();
     WaitUntil(() => target.CaptureDiagnostics(ViewId).Frame.Presented > before, target, entrypoint, TimeSpan.FromSeconds(5));
 }
 
-static void WaitUntil(Func<bool> predicate, WindowsFlutterTarget target, WidgetsLiveEntrypoint entrypoint, TimeSpan timeout)
+static void WaitUntil(Func<bool> predicate, WindowsTarget target, WidgetsLiveEntrypoint entrypoint, TimeSpan timeout)
 {
     var deadline = Stopwatch.StartNew();
     while (!predicate())
@@ -211,7 +211,7 @@ static void WaitUntil(Func<bool> predicate, WindowsFlutterTarget target, Widgets
     target.PumpPendingMessages();
 }
 
-static object AnalyzePixels(Doroti.Host.Desktop.Flutter.DesktopFlutterPixelReadback frame, uint background, uint accent)
+static object AnalyzePixels(Doroti.Host.Desktop.Framework.DesktopFrameworkPixelReadback frame, uint background, uint accent)
 {
     var nonTransparent = 0L;
     var backgroundCount = 0L;
@@ -293,7 +293,7 @@ sealed class WidgetsLiveProbe(List<string> events)
     public void Event(string value) => events.Add(value);
 }
 
-sealed class WidgetsLiveEntrypoint(List<string> events) : IFlutterViewEntrypoint
+sealed class WidgetsLiveEntrypoint(List<string> events) : IDorotiViewEntrypoint
 {
     public const string SemanticsLabel = "Doroti G6-2 live action";
     private WidgetsFlutterBinding? _binding;
@@ -307,13 +307,13 @@ sealed class WidgetsLiveEntrypoint(List<string> events) : IFlutterViewEntrypoint
         _binding = new WidgetsFlutterBinding(dispatcher);
     }
 
-    public void AttachView(FlutterView view)
+    public void AttachView(DorotiView view)
     {
         var binding = _binding ?? throw new InvalidOperationException("Widgets binding is not initialized.");
         binding.scheduleFrameCallback(_ => binding.attachRootWidget(binding.wrapWithDefaultView(new LiveRoot(Probe, state => _state = state))));
     }
 
-    public void DetachView(FlutterView view) { }
+    public void DetachView(DorotiView view) { }
     public void Advance(int phase) => (_state ?? throw new InvalidOperationException("Root State is not mounted.")).Advance(phase);
     public void RequestFrame() => (_binding ?? throw new InvalidOperationException("Widgets binding is not initialized.")).scheduleFrame();
 

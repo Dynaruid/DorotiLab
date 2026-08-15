@@ -12,14 +12,14 @@ function Invoke-Checked {
 }
 
 try {
-    Invoke-Checked { dotnet build "$dorotiRoot/src/Doroti.Flutter.Framework.Foundation/Doroti.Flutter.Framework.Foundation.csproj" --nologo }
+    Invoke-Checked { dotnet build "$dorotiRoot/src/Doroti.Framework.Foundation/Doroti.Framework.Foundation.csproj" --nologo }
     Invoke-Checked { dotnet run --project "$dorotiRoot/validation/Doroti.Validation.G4Foundation/Doroti.Validation.G4Foundation.csproj" }
 
     $packageRoot = Join-Path $temporaryRoot 'packages'
     New-Item -ItemType Directory -Path $packageRoot | Out-Null
-    Invoke-Checked { dotnet pack "$dorotiRoot/src/Doroti.Flutter.Runtime/Doroti.Flutter.Runtime.csproj" --configuration Debug --nologo --no-build --output $packageRoot }
-    Invoke-Checked { dotnet pack "$dorotiRoot/src/Doroti.Flutter.Ui/Doroti.Flutter.Ui.csproj" --configuration Debug --nologo --no-build --output $packageRoot }
-    Invoke-Checked { dotnet pack "$dorotiRoot/src/Doroti.Flutter.Framework.Foundation/Doroti.Flutter.Framework.Foundation.csproj" --configuration Debug --nologo --no-build --output $packageRoot }
+    Invoke-Checked { dotnet pack "$dorotiRoot/src/Doroti.Runtime/Doroti.Runtime.csproj" --configuration Debug --nologo --no-build --output $packageRoot }
+    Invoke-Checked { dotnet pack "$dorotiRoot/src/Doroti.Ui/Doroti.Ui.csproj" --configuration Debug --nologo --no-build --output $packageRoot }
+    Invoke-Checked { dotnet pack "$dorotiRoot/src/Doroti.Framework.Foundation/Doroti.Framework.Foundation.csproj" --configuration Debug --nologo --no-build --output $packageRoot }
 
     $consumerRoot = Join-Path $temporaryRoot 'external-consumer'
     Copy-Item -Recurse "$dorotiRoot/validation/generated/g4-2-foundation-package-consumer" $consumerRoot

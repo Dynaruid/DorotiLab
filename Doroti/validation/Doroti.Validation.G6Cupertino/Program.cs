@@ -2,8 +2,8 @@ using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using Doroti.Backends.Skia;
-using Doroti.Flutter.Hosting;
-using Doroti.Flutter.Ui;
+using Doroti.Hosting;
+using Doroti.Ui;
 using Doroti.Generated.Framework.Foundation;
 using Doroti.Generated.Framework.Painting;
 using Doroti.Generated.Framework.Widgets;
@@ -11,7 +11,7 @@ using Doroti.Target.Windows;
 using Cupertino = Doroti.Generated.Framework.Cupertino;
 using WidgetPreviews = Doroti.Generated.Framework.WidgetPreviews;
 using Path = System.IO.Path;
-using UiColor = Doroti.Flutter.Ui.Color;
+using UiColor = Doroti.Ui.Color;
 
 const ulong ViewId = 660;
 var options = ValidationOptions.Parse(args);
@@ -40,8 +40,8 @@ if (!OperatingSystem.IsWindows())
 
 try
 {
-    using var target = new WindowsFlutterTarget();
-    using var session = new FlutterHostSession(entrypoint);
+    using var target = new WindowsTarget();
+    using var session = new DorotiHostSession(entrypoint);
     using var scope = session.dispatcher.EnterScope();
     session.Start(deferFrameworkBootstrap: true);
     var view = target.CreateView(session, ViewId, new("Doroti G6-6 Cupertino", new(720, 640)));
@@ -140,7 +140,7 @@ Console.WriteLine($"G6-6 Cupertino {options.Wave}: {(failures.Count == 0 ? "PASS
 foreach (var failure in failures) Console.Error.WriteLine(failure);
 return failures.Count == 0 ? 0 : 1;
 
-static void WaitUntil(Func<bool> predicate, WindowsFlutterTarget target, CupertinoEntrypoint entrypoint, TimeSpan timeout)
+static void WaitUntil(Func<bool> predicate, WindowsTarget target, CupertinoEntrypoint entrypoint, TimeSpan timeout)
 {
     var elapsed = Stopwatch.StartNew();
     while (!predicate())
@@ -156,7 +156,7 @@ static void WaitUntil(Func<bool> predicate, WindowsFlutterTarget target, Cuperti
 }
 
 static void WaitForQuiescence(
-    WindowsFlutterTarget target,
+    WindowsTarget target,
     CupertinoEntrypoint entrypoint,
     TimeSpan timeout,
     TimeSpan stableDuration)
@@ -180,7 +180,7 @@ static void WaitForQuiescence(
     }
 }
 
-static object AnalyzePixels(Doroti.Host.Desktop.Flutter.DesktopFlutterPixelReadback frame)
+static object AnalyzePixels(Doroti.Host.Desktop.Framework.DesktopFrameworkPixelReadback frame)
 {
     long nonTransparent = 0, nonWhite = 0, blue = 0;
     for (var y = 0; y < frame.Height; y++)
@@ -215,10 +215,10 @@ static void WriteJson(string path, object value)
     File.Move(temporary, path, true);
 }
 
-internal sealed class CupertinoEntrypoint(CupertinoWave wave, string? componentCase) : IFlutterViewEntrypoint
+internal sealed class CupertinoEntrypoint(CupertinoWave wave, string? componentCase) : IDorotiViewEntrypoint
 {
     private WidgetsFlutterBinding? _binding;
-    private FlutterView? _view;
+    private DorotiView? _view;
     internal CupertinoGalleryState? State { get; private set; }
     internal FlutterErrorDetails? FirstFrameworkError { get; private set; }
     internal bool Disposed { get; private set; }
@@ -229,14 +229,14 @@ internal sealed class CupertinoEntrypoint(CupertinoWave wave, string? componentC
         _binding = new WidgetsFlutterBinding(dispatcher);
     }
 
-    public void AttachView(FlutterView view)
+    public void AttachView(DorotiView view)
     {
         _view = view;
         var binding = _binding ?? throw new InvalidOperationException("Cupertino binding was not bootstrapped.");
         binding.scheduleFrameCallback(_ => binding.attachRootWidget(binding.wrapWithDefaultView(CreateRoot())));
     }
 
-    public void DetachView(FlutterView view)
+    public void DetachView(DorotiView view)
     {
         if (ReferenceEquals(_view, view)) _view = null;
     }
@@ -384,7 +384,7 @@ internal sealed class CupertinoGalleryState : State<CupertinoGallery>
                 ? "verified-selected-preview-actual-frame"
                 : "failed",
             selected = "G6 Cupertino Preview",
-            metadataPackage = "Doroti.Flutter.Framework.WidgetPreviews",
+            metadataPackage = "Doroti.Framework.WidgetPreviews",
             mounted = context is not null,
             laidOut = box?.hasSize == true,
             size = box?.hasSize == true ? new { box.size.width, box.size.height } : null,
@@ -441,7 +441,7 @@ internal sealed class CupertinoGalleryState : State<CupertinoGallery>
             var componentCase = widget.ComponentCase;
             bool Include(string name) => string.IsNullOrWhiteSpace(componentCase) ||
                 string.Equals(componentCase, name, StringComparison.OrdinalIgnoreCase);
-            var segments = new Doroti.Flutter.Runtime.DartMap<long, Widget>
+            var segments = new Doroti.Runtime.DartMap<long, Widget>
             {
                 [0] = new Text("One"),
                 [1] = new Text("Two"),
@@ -545,7 +545,7 @@ internal sealed class CupertinoGalleryState : State<CupertinoGallery>
                     initialDateTime: new DateTime(2026, 8, 14, 12, 0, 0),
                     onDateTimeChanged: _ => { })),
                 new SizedBox(height: 180, child: new Cupertino.CupertinoTimerPicker(
-                    initialTimerDuration: Doroti.Flutter.Runtime.Duration.Create(minutes: 5),
+                    initialTimerDuration: Doroti.Runtime.Duration.Create(minutes: 5),
                     onTimerDurationChanged: _ => { })),
             ]);
             if (Include("navigation")) children.AddRange(

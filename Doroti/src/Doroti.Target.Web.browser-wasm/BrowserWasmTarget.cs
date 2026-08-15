@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Reflection;
-using Doroti.Flutter.Hosting;
-using Doroti.Flutter.Ui;
+using Doroti.Hosting;
+using Doroti.Ui;
 using Doroti.Host.Web;
 
 namespace Doroti.Target.Web;
@@ -35,7 +35,7 @@ public sealed record BrowserTargetIdentity(
 [System.Runtime.Versioning.SupportedOSPlatform("browser")]
 public sealed class BrowserWasmTarget : IDisposable
 {
-    private readonly BrowserFlutterHost _host;
+    private readonly BrowserFrameworkHost _host;
     private bool _disposed;
 
     public BrowserWasmTarget()
@@ -53,12 +53,12 @@ public sealed class BrowserWasmTarget : IDisposable
     public string Rid => Identity.Rid;
     public string GraphicsBackend => Identity.GraphicsBackend;
 
-    public FlutterView CreateView(
-        FlutterHostSession session,
+    public DorotiView CreateView(
+        DorotiHostSession session,
         ulong viewId,
         string canvasId,
-        FlutterViewConfiguration configuration,
-        FlutterApplicationBoundary? application = null)
+        DorotiViewConfiguration configuration,
+        DorotiApplicationBoundary? application = null)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         return _host.CreateView(session, viewId, canvasId, configuration, application);
@@ -76,12 +76,12 @@ public sealed class BrowserWasmTarget : IDisposable
         return _host.ResolveResourceUrl(viewId, relativeUrl);
     }
 
-    public FlutterApplicationBoundary LoadApplicationBoundary(
+    public DorotiApplicationBoundary LoadApplicationBoundary(
         Assembly applicationAssembly,
         IEnumerable<BrowserJavaScriptPluginDescriptor>? plugins = null)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        return FlutterApplicationBoundary.Load(
+        return DorotiApplicationBoundary.Load(
             applicationAssembly,
             Rid,
             (plugins ?? []).Select(descriptor => new BrowserJavaScriptPluginHandler(descriptor)));

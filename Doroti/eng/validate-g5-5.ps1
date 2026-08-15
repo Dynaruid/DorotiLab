@@ -51,8 +51,8 @@ function Assert-ApplicationProjectBoundary([string] $Candidate, [string[]] $Expe
     [xml]$xml = Get-Content -LiteralPath $project[0].FullName -Raw
     $references = @($xml.Project.ItemGroup.ProjectReference | ForEach-Object {
         $include = [string]$_.Include
-        if ($include -match 'Doroti\.Flutter\.Framework\.([A-Za-z]+)') { "Doroti.Flutter.Framework.$($Matches[1])" }
-        elseif ($include -match 'g5-4-reviewed\\projects\\(Material|Cupertino)\\') { "Doroti.Flutter.Framework.$($Matches[1])" }
+        if ($include -match 'Doroti\.Flutter\.Framework\.([A-Za-z]+)') { "Doroti.Framework.$($Matches[1])" }
+        elseif ($include -match 'g5-4-reviewed\\projects\\(Material|Cupertino)\\') { "Doroti.Framework.$($Matches[1])" }
         elseif ($include -match 'src\\(Doroti\.Flutter\.Hosting)') { $Matches[1] }
         else { "unexpected:$include" }
     }) + @($xml.Project.ItemGroup.PackageReference | ForEach-Object { [string]$_.Include })
@@ -90,7 +90,7 @@ try {
         $incrementalGraph = Get-Content -LiteralPath (Join-Path $candidate 'application-graph.json') -Raw | ConvertFrom-Json
         if ($cleanDigest -cne $incrementalDigest) { throw "$($app.id) clean/incremental product bytes drifted." }
         if (@($incrementalGraph.incremental.changedAndDependentSccLibraries).Count -ne 0) { throw "$($app.id) no-change incremental build regenerated libraries." }
-        Assert-ApplicationProjectBoundary $candidate @("Doroti.Flutter.Framework.$($app.surface)", 'Doroti.Flutter.Hosting')
+        Assert-ApplicationProjectBoundary $candidate @("Doroti.Framework.$($app.surface)", 'Doroti.Hosting')
         Invoke-Checked { dotnet build (Join-Path $candidate 'Doroti.Generated.Application.slnx') --configuration Release --nologo "-p:DorotiRepositoryRoot=$dorotiRoot" } "$($app.id) generated application build failed."
         $report = Get-Content -LiteralPath (Join-Path $candidate 'converter-report.json') -Raw | ConvertFrom-Json
         $applicationEvidence.Add([ordered]@{
@@ -137,11 +137,11 @@ try {
     if ($unsupportedDiagnostics.Count -ne 1) { throw 'Unsupported plugin did not emit exactly one DOTAPP005 diagnostic.' }
 
     $packageProjects = @(
-        'Doroti.Flutter.Runtime', 'Doroti.Flutter.Ui', 'Doroti.Flutter.Hosting',
-        'Doroti.Flutter.Framework.Foundation', 'Doroti.Flutter.Framework.Scheduler', 'Doroti.Flutter.Framework.Services',
-        'Doroti.Flutter.Framework.Physics', 'Doroti.Flutter.Framework.Animation', 'Doroti.Flutter.Framework.Gestures',
-        'Doroti.Flutter.Framework.Painting', 'Doroti.Flutter.Framework.Semantics', 'Doroti.Flutter.Framework.Rendering',
-        'Doroti.Flutter.Framework.Widgets'
+        'Doroti.Runtime', 'Doroti.Ui', 'Doroti.Hosting',
+        'Doroti.Framework.Foundation', 'Doroti.Framework.Scheduler', 'Doroti.Framework.Services',
+        'Doroti.Framework.Physics', 'Doroti.Framework.Animation', 'Doroti.Framework.Gestures',
+        'Doroti.Framework.Painting', 'Doroti.Framework.Semantics', 'Doroti.Framework.Rendering',
+        'Doroti.Framework.Widgets'
     )
     foreach ($project in $packageProjects) {
         Invoke-Checked { dotnet pack (Join-Path $dorotiRoot "src/$project/$project.csproj") --configuration Release --nologo --output $packageRoot } "Package failed: $project"
@@ -216,7 +216,7 @@ try {
             silentSuccesses = 0
         }
         dependencyAudit = [ordered]@{
-            generatedApplicationDirectReferences = @('selected Doroti.Flutter.Framework package', 'Doroti.Flutter.Hosting')
+            generatedApplicationDirectReferences = @('selected Doroti.Framework package', 'Doroti.Hosting')
             platformVendorConcreteReferences = 0
             repositoryPrivateFallbacks = $privateFallbacks
         }

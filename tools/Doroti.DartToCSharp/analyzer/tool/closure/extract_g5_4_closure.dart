@@ -50,14 +50,14 @@ String _disposition(String path) =>
 
 String _owner(String path) {
   if (path.startsWith('src/material/')) {
-    return 'Doroti.Flutter.Framework.Material';
+    return 'Doroti.Framework.Material';
   }
   if (path.startsWith('src/cupertino/')) {
-    return 'Doroti.Flutter.Framework.Cupertino';
+    return 'Doroti.Framework.Cupertino';
   }
   if (path == 'widget_previews.dart' ||
       path.startsWith('src/widget_previews/')) {
-    return 'Doroti.Flutter.Framework.WidgetPreviews';
+    return 'Doroti.Framework.WidgetPreviews';
   }
-  return 'Doroti.Flutter.Framework.Predecessor';
+  return 'Doroti.Framework.Predecessor';
 }

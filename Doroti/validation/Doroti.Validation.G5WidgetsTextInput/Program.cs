@@ -1,6 +1,6 @@
 using System.Text;
 using System.Text.Json;
-using Doroti.Flutter.Ui;
+using Doroti.Ui;
 using Doroti.Generated.Framework.Services;
 using Path = System.IO.Path;
 
@@ -8,10 +8,10 @@ var failures = new List<string>();
 using var dispatcher = new PlatformDispatcher();
 using var scope = dispatcher.EnterScope();
 var host = new TextInputFixtureHost();
-using var view = dispatcher.RegisterView(53, new FlutterViewCapabilities()
-    .Register<IViewHostCapability>(FlutterCapabilityIds.ViewLifecycleMetrics, host)
-    .Register<IPlatformMessageHostCapability>(FlutterCapabilityIds.PlatformMessaging, host)
-    .Register<ITextInputHostCapability>(FlutterCapabilityIds.TextInput, host));
+using var view = dispatcher.RegisterView(53, new DorotiViewCapabilities()
+    .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
+    .Register<IPlatformMessageHostCapability>(DorotiCapabilityIds.PlatformMessaging, host)
+    .Register<ITextInputHostCapability>(DorotiCapabilityIds.TextInput, host));
 using var services = new TextInputFixtureServicesBinding(dispatcher);
 
 var client = new TextInputFixtureClient();
@@ -28,11 +28,11 @@ connection.setEditingState(new TextEditingValue(
     TextRange.empty));
 connection.setCaretRect(new Rect(11, 13, 2, 17));
 
-host.EmitEditingState(new FlutterTextEditingState(
+host.EmitEditingState(new DorotiTextEditingState(
     "한글",
-    new FlutterTextSelection(2, 2),
-    new FlutterTextSelection(0, 2)));
-host.EmitAction(FlutterTextInputAction.done);
+    new DorotiTextSelection(2, 2),
+    new DorotiTextSelection(0, 2)));
+host.EmitAction(DorotiTextInputAction.done);
 
 Require(host.ClientSetCount == 1, "host client was not attached exactly once", failures);
 Require(host.LastState.text == "initial" && host.LastState.selection.baseOffset == 7,
@@ -99,7 +99,7 @@ internal sealed class TextInputFixtureClient : TextInputClient
     public AutofillScope? currentAutofillScope => null;
     public void updateEditingValue(TextEditingValue value) => Value = value;
     public void performAction(TextInputAction action) => Action = action;
-    public void performPrivateCommand(string action, Doroti.Flutter.Runtime.DartMap<string, object> data) { }
+    public void performPrivateCommand(string action, Doroti.Runtime.DartMap<string, object> data) { }
     public void updateFloatingCursor(RawFloatingCursorPoint point) { }
     public void showAutocorrectionPromptRect(long start, long end) { }
     public void connectionClosed() { }
@@ -116,7 +116,7 @@ internal sealed class TextInputFixtureServicesBinding : ServicesBinding
 internal sealed class TextInputFixtureHost : IViewHostCapability, ITextInputHostCapability, IPlatformMessageHostCapability
 {
     public ViewMetrics Metrics { get; } = new(new Size(800, 600), 1, ViewPadding.zero, ViewPadding.zero, ViewPadding.zero, AppLifecycleState.resumed, 0, 0);
-    public FlutterTextEditingState LastState { get; private set; }
+    public DorotiTextEditingState LastState { get; private set; }
     public Rect CaretRect { get; private set; }
     public int ClientSetCount { get; private set; }
     public int ClientClearCount { get; private set; }
@@ -124,14 +124,14 @@ internal sealed class TextInputFixtureHost : IViewHostCapability, ITextInputHost
     public event Action<AppLifecycleState>? LifecycleChanged { add { } remove { } }
     public event Action? CloseRequested { add { } remove { } }
     public event Action? Closed { add { } remove { } }
-    public event Action<FlutterTextEditingState>? EditingStateChanged;
-    public event Action<FlutterTextInputAction>? ActionPerformed;
-    public void SetClient(FlutterTextEditingState initialState) { ClientSetCount++; LastState = initialState; }
-    public void UpdateState(FlutterTextEditingState state) => LastState = state;
+    public event Action<DorotiTextEditingState>? EditingStateChanged;
+    public event Action<DorotiTextInputAction>? ActionPerformed;
+    public void SetClient(DorotiTextEditingState initialState) { ClientSetCount++; LastState = initialState; }
+    public void UpdateState(DorotiTextEditingState state) => LastState = state;
     public void SetCaretRect(Rect logicalRect) => CaretRect = logicalRect;
     public void ClearClient() => ClientClearCount++;
-    public void EmitEditingState(FlutterTextEditingState state) => EditingStateChanged?.Invoke(state);
-    public void EmitAction(FlutterTextInputAction action) => ActionPerformed?.Invoke(action);
+    public void EmitEditingState(DorotiTextEditingState state) => EditingStateChanged?.Invoke(state);
+    public void EmitAction(DorotiTextInputAction action) => ActionPerformed?.Invoke(action);
     public ValueTask<ReadOnlyMemory<byte>?> SendAsync(string channel, ReadOnlyMemory<byte>? data, CancellationToken cancellationToken = default) =>
         ValueTask.FromResult<ReadOnlyMemory<byte>?>(null);
     public void SetMessageHandler(string channel, PlatformMessageHandler? handler) { }

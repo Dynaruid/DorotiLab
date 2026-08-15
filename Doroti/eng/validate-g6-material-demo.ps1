@@ -52,7 +52,7 @@ function Assert-MaterialRun([string] $Path, [string] $Entry, [bool] $LongCadence
     $reference = Get-Content -LiteralPath $referencePath -Raw | ConvertFrom-Json
     Assert-True ($actual.outcome -eq 'presented') "$Entry presented outcome"
     Assert-True ($actual.source.flutterRevision -eq $reference.flutterRevision) "$Entry Flutter source pin"
-    Assert-True ($actual.source.materialProductAssembly -eq 'Doroti.Flutter.Framework.Material') "$Entry promoted Material assembly"
+    Assert-True ($actual.source.materialProductAssembly -eq 'Doroti.Framework.Material') "$Entry promoted Material assembly"
     Assert-True ($actual.fixture.entryMode -eq $Entry) "$Entry entry mode"
     Assert-True ($actual.frame.backendIdentity -eq 'skia-wgl-opengl-gpu') "$Entry strict GPU backend"
     Assert-True (-not [bool]$actual.frame.softwareFallbackUsed) "$Entry software fallback blocked"

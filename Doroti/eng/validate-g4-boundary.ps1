@@ -42,7 +42,7 @@ try {
         }
 
         $fixtureLog = Join-Path $temporaryRoot 'forbidden-fixture.log'
-        dotnet build validation/architecture/forbidden-flutter-host/Doroti.Flutter.Framework.ForbiddenFixture.csproj `
+        dotnet build validation/architecture/forbidden-framework-platform/Doroti.Framework.ForbiddenFixture.csproj `
             --nologo *> $fixtureLog
         if ($LASTEXITCODE -eq 0) {
             throw "The forbidden Flutter -> Platform fixture unexpectedly built successfully."

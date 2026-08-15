@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using System.Text.Json;
-using Doroti.Flutter.Hosting;
-using Doroti.Flutter.Ui;
-using Doroti.Host.Desktop.Flutter;
+using Doroti.Hosting;
+using Doroti.Ui;
+using Doroti.Host.Desktop.Framework;
 using Doroti.Target.Windows;
 using IOPath = System.IO.Path;
 
@@ -16,8 +16,8 @@ var entrypoint = new RetainedEntrypoint();
 object resourceClosure;
 object frameHealth;
 object retainedResult;
-using (var target = new WindowsFlutterTarget())
-using (var session = new FlutterHostSession(entrypoint))
+using (var target = new WindowsTarget())
+using (var session = new DorotiHostSession(entrypoint))
 using (var scope = session.dispatcher.EnterScope())
 {
     session.Start();
@@ -102,7 +102,7 @@ static EngineLayer BuildLayer(ulong viewId, long color)
     return layer;
 }
 
-static DesktopFlutterPixelReadback RenderRetained(WindowsFlutterTarget target, FlutterView view, EngineLayer layer)
+static DesktopFrameworkPixelReadback RenderRetained(WindowsTarget target, DorotiView view, EngineLayer layer)
 {
     var capture = target.CaptureNextFrameAsync(ViewId);
     var builder = new SceneBuilder(ViewId);
@@ -126,7 +126,7 @@ static DesktopFlutterPixelReadback RenderRetained(WindowsFlutterTarget target, F
     return capture.GetAwaiter().GetResult();
 }
 
-static long CountChanged(DesktopFlutterPixelReadback before, DesktopFlutterPixelReadback after)
+static long CountChanged(DesktopFrameworkPixelReadback before, DesktopFrameworkPixelReadback after)
 {
     if (before.Width != after.Width || before.Height != after.Height) return long.MaxValue;
     long changed = 0;
@@ -135,7 +135,7 @@ static long CountChanged(DesktopFlutterPixelReadback before, DesktopFlutterPixel
     return changed;
 }
 
-static void WaitUntil(Func<bool> predicate, WindowsFlutterTarget target, TimeSpan timeout)
+static void WaitUntil(Func<bool> predicate, WindowsTarget target, TimeSpan timeout)
 {
     var elapsed = Stopwatch.StartNew();
     while (!predicate())
@@ -146,7 +146,7 @@ static void WaitUntil(Func<bool> predicate, WindowsFlutterTarget target, TimeSpa
     }
 }
 
-static void PumpFor(WindowsFlutterTarget target, TimeSpan duration)
+static void PumpFor(WindowsTarget target, TimeSpan duration)
 {
     var elapsed = Stopwatch.StartNew();
     while (elapsed.Elapsed < duration)
@@ -167,10 +167,10 @@ static void WriteJson(string path, object value)
     }) + "\n");
 }
 
-sealed class RetainedEntrypoint : IFlutterViewEntrypoint
+sealed class RetainedEntrypoint : IDorotiViewEntrypoint
 {
     public void Bootstrap(PlatformDispatcher dispatcher) { }
-    public void AttachView(FlutterView view) { }
-    public void DetachView(FlutterView view) { }
+    public void AttachView(DorotiView view) { }
+    public void DetachView(DorotiView view) { }
     public void Shutdown() { }
 }

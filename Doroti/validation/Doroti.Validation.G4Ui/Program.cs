@@ -1,9 +1,9 @@
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
-using Doroti.Flutter.Hosting;
-using Doroti.Flutter.Runtime;
-using Doroti.Flutter.Ui;
+using Doroti.Hosting;
+using Doroti.Runtime;
+using Doroti.Ui;
 using Path = System.IO.Path;
 
 var dorotiRoot = FindDorotiRoot(Environment.CurrentDirectory);
@@ -63,10 +63,10 @@ static void ValidateAssemblyBoundaries(string dorotiRoot, List<string> failures)
         failures.Add($"ui-boundary: host references found: {string.Join(", ", uiReferences)}");
     }
 
-    var runtimeProject = File.ReadAllText(Path.Combine(dorotiRoot, "src", "Doroti.Flutter.Runtime", "Doroti.Flutter.Runtime.csproj"));
+    var runtimeProject = File.ReadAllText(Path.Combine(dorotiRoot, "src", "Doroti.Runtime", "Doroti.Runtime.csproj"));
     if (runtimeProject.Contains("ProjectReference", StringComparison.Ordinal))
     {
-        failures.Add("runtime-boundary: Doroti.Flutter.Runtime must have zero project references.");
+        failures.Add("runtime-boundary: Doroti.Runtime must have zero project references.");
     }
 }
 
@@ -86,8 +86,8 @@ static void ValidateFailClosed(List<string> failures)
 {
     using var dispatcher = new PlatformDispatcher();
     var host = new FakeViewHost(1, new(new(800, 600), 1, ViewPadding.zero, ViewPadding.zero, ViewPadding.zero, AppLifecycleState.resumed, 1, 1));
-    using var view = dispatcher.RegisterView(1, new FlutterViewCapabilities()
-        .Register<IViewHostCapability>(FlutterCapabilityIds.ViewLifecycleMetrics, host));
+    using var view = dispatcher.RegisterView(1, new DorotiViewCapabilities()
+        .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host));
     var invocation = new DartUiInvocation(
         "dart:ui#PlatformDispatcher.scheduleFrame",
         new("packages/flutter/lib/src/scheduler/binding.dart", 412, 13));
@@ -96,9 +96,9 @@ static void ValidateFailClosed(List<string> failures)
         view.ScheduleFrame(invocation);
         failures.Add("fail-closed: a missing frame capability silently succeeded.");
     }
-    catch (FlutterCapabilityException exception)
+    catch (DorotiCapabilityException exception)
     {
-        if (exception.CapabilityId != FlutterCapabilityIds.ViewFrameDispatch ||
+        if (exception.CapabilityId != DorotiCapabilityIds.ViewFrameDispatch ||
             exception.ViewId != 1 ||
             exception.ElementId != invocation.ElementId ||
             exception.SourceSpan != invocation.SourceSpan)
@@ -166,21 +166,21 @@ static async Task ValidateTwoViewsAsync(List<string> failures)
     }
 }
 
-static FlutterViewCapabilities Capabilities(FakeViewHost host, FakeMessages messages) => new FlutterViewCapabilities()
-    .Register<IViewHostCapability>(FlutterCapabilityIds.WindowLifecycle, host)
-    .Register<IViewHostCapability>(FlutterCapabilityIds.ViewLifecycleMetrics, host)
-    .Register<IInputHostCapability>(FlutterCapabilityIds.InputEvents, host)
-    .Register<IFrameHostCapability>(FlutterCapabilityIds.ViewFrameDispatch, host)
-    .Register<IPlatformMessageHostCapability>(FlutterCapabilityIds.PlatformMessaging, messages);
+static DorotiViewCapabilities Capabilities(FakeViewHost host, FakeMessages messages) => new DorotiViewCapabilities()
+    .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
+    .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
+    .Register<IInputHostCapability>(DorotiCapabilityIds.InputEvents, host)
+    .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, host)
+    .Register<IPlatformMessageHostCapability>(DorotiCapabilityIds.PlatformMessaging, messages);
 
 static void ValidateBootstrap(List<string> failures)
 {
     var entrypoint = new FakeEntrypoint();
-    using var session = new FlutterHostSession(entrypoint);
+    using var session = new DorotiHostSession(entrypoint);
     session.Start();
     session.Shutdown();
     session.Shutdown();
-    if (entrypoint.BootstrapCount != 1 || entrypoint.ShutdownCount != 1 || session.state != FlutterHostSessionState.shutDown)
+    if (entrypoint.BootstrapCount != 1 || entrypoint.ShutdownCount != 1 || session.state != DorotiHostSessionState.shutDown)
     {
         failures.Add("bootstrap: bootstrap/shutdown was not exactly once.");
     }
@@ -188,7 +188,7 @@ static void ValidateBootstrap(List<string> failures)
 
 static void ValidateDesktopPublicApi(string dorotiRoot, List<string> failures)
 {
-    var assemblyPath = Path.Combine(dorotiRoot, "src", "Doroti.Host.Desktop.Flutter", "bin", "Debug", "net10.0", "Doroti.Host.Desktop.Flutter.dll");
+    var assemblyPath = Path.Combine(dorotiRoot, "src", "Doroti.Host.Desktop.Framework", "bin", "Debug", "net10.0", "Doroti.Host.Desktop.Framework.dll");
     if (!File.Exists(assemblyPath))
     {
         failures.Add("desktop-public-api: desktop Flutter adapter assembly was not built.");
@@ -242,13 +242,13 @@ static void ValidateCompilerBinding(string dorotiRoot, List<string> failures)
         .Select(File.ReadAllText));
     var graph = File.ReadAllText(Path.Combine(repositoryRoot, "tools", "Doroti.DartToCSharp", "src", "Application", "FrameworkProjectGraph.cs"));
     var fingerprint = File.ReadAllText(Path.Combine(repositoryRoot, "tools", "Doroti.DartToCSharp", "src", "Identity", "WorkspaceFingerprint.cs"));
-    if (!lowerer.Contains("using Doroti.Flutter.Ui;", StringComparison.Ordinal) ||
-        !lowerer.Contains("global::Doroti.Flutter.Ui.", StringComparison.Ordinal) ||
-        !graph.Contains("Doroti.Flutter.Ui.csproj", StringComparison.Ordinal) ||
-        !graph.Contains("Doroti.Flutter.Ui\"", StringComparison.Ordinal) ||
+    if (!lowerer.Contains("using Doroti.Ui;", StringComparison.Ordinal) ||
+        !lowerer.Contains("global::Doroti.Ui.", StringComparison.Ordinal) ||
+        !graph.Contains("Doroti.Ui.csproj", StringComparison.Ordinal) ||
+        !graph.Contains("Doroti.Ui\"", StringComparison.Ordinal) ||
         !fingerprint.Contains("dart-ui-contract:", StringComparison.Ordinal))
     {
-        failures.Add("compiler-binding: generated framework code/project graph is not bound to Doroti.Flutter.Ui.");
+        failures.Add("compiler-binding: generated framework code/project graph is not bound to Doroti.Ui.");
     }
 }
 
@@ -322,7 +322,7 @@ internal sealed class FakeMessages(byte value) : IPlatformMessageHostCapability
     public void SetMessageHandler(string channel, PlatformMessageHandler? handler) { }
 }
 
-internal sealed class FakeEntrypoint : IFlutterFrameworkEntrypoint
+internal sealed class FakeEntrypoint : IDorotiFrameworkEntrypoint
 {
     public int BootstrapCount { get; private set; }
     public int ShutdownCount { get; private set; }

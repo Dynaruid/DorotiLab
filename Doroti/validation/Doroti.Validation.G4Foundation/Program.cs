@@ -2,8 +2,8 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using Doroti.Flutter.Runtime;
-using Doroti.Flutter.Ui;
+using Doroti.Runtime;
+using Doroti.Ui;
 using Doroti.Generated.Framework.Foundation;
 using Path = System.IO.Path;
 
@@ -49,7 +49,7 @@ WriteJson(Path.Combine(artifactDirectory, "g4-2-evidence.json"), new
         behaviorDifferential = failures.All(item => !item.StartsWith("behavior:", StringComparison.Ordinal)),
         packageConsumer = packageConsumerPass,
     },
-    reviewedSources = Directory.GetFiles(Path.Combine(dorotiRoot, "src", "Doroti.Flutter.Framework.Foundation"), "*.cs")
+    reviewedSources = Directory.GetFiles(Path.Combine(dorotiRoot, "src", "Doroti.Framework.Foundation"), "*.cs")
         .Select(path => Path.GetRelativePath(dorotiRoot, path).Replace('\\', '/')).Order(StringComparer.Ordinal).ToArray(),
     failures,
 }, options);
@@ -78,7 +78,7 @@ static List<FoundationDisposition> ValidateDisposition(string root, List<string>
             "_error_dumper_io.dart" or "error_dumper.dart" => "error_dumper.cs",
             _ => Path.ChangeExtension(sourcePath, ".cs"),
         };
-        var target = Path.Combine(root, "src", "Doroti.Flutter.Framework.Foundation", targetName);
+        var target = Path.Combine(root, "src", "Doroti.Framework.Foundation", targetName);
         var content = File.Exists(target) ? File.ReadAllText(target) : string.Empty;
         foreach (var symbolElement in input.GetProperty("symbols").EnumerateArray())
         {
@@ -93,8 +93,8 @@ static List<FoundationDisposition> ValidateDisposition(string root, List<string>
                 sourcePath,
                 symbol,
                 disposition,
-                $"src/Doroti.Flutter.Framework.Foundation/{targetName}",
-                disposition == "dart-ui-contract" ? FlutterCapabilityIds.PlatformEnvironment : null,
+                $"src/Doroti.Framework.Foundation/{targetName}",
+                disposition == "dart-ui-contract" ? DorotiCapabilityIds.PlatformEnvironment : null,
                 "g4-2-foundation"));
         }
     }
@@ -166,10 +166,10 @@ static void ValidateBoundaries(string root, List<string> failures)
     {
         if (runtimeTypes.Contains(removed))
         {
-            failures.Add($"boundary: Doroti.Flutter.Runtime still owns Foundation behavior type {removed}.");
+            failures.Add($"boundary: Doroti.Runtime still owns Foundation behavior type {removed}.");
         }
     }
-    var foundationProject = File.ReadAllText(Path.Combine(root, "src", "Doroti.Flutter.Framework.Foundation", "Doroti.Flutter.Framework.Foundation.csproj"));
+    var foundationProject = File.ReadAllText(Path.Combine(root, "src", "Doroti.Framework.Foundation", "Doroti.Framework.Foundation.csproj"));
     foreach (var forbidden in new[] { "Doroti.Host", "Doroti.Shell", "Doroti.Vendor", "SkiaSharp", "Avalonia" })
     {
         if (foundationProject.Contains(forbidden, StringComparison.Ordinal))
@@ -287,7 +287,7 @@ static async Task ValidateBehaviorAsync(List<string> failures)
         _ = PlatformLibrary.defaultTargetPlatform;
         failures.Add("platform: platform query silently succeeded without an active host capability.");
     }
-    catch (FlutterCapabilityException exception) when (exception.CapabilityId == FlutterCapabilityIds.PlatformEnvironment)
+    catch (DorotiCapabilityException exception) when (exception.CapabilityId == DorotiCapabilityIds.PlatformEnvironment)
     {
     }
 

@@ -334,7 +334,7 @@ internal sealed partial class FrameworkCSharpLowerer
                         if ((nonNullableTargetType == "Size" || nonNullableTargetType.EndsWith(".Size", StringComparison.Ordinal)) &&
                             (sourceType == "Offset" || sourceType.EndsWith(".Offset", StringComparison.Ordinal)))
                         {
-                            builder.Append("global::Doroti.Flutter.Ui.Size.fromOffset(DartRuntimePrimitives.RequireValue(");
+                            builder.Append("global::Doroti.Ui.Size.fromOffset(DartRuntimePrimitives.RequireValue(");
                             LowerExpression(builder, expression, declaration, package, library, inputPath, diagnostics);
                             builder.Append("))");
                             return;
@@ -342,7 +342,7 @@ internal sealed partial class FrameworkCSharpLowerer
                         if ((nonNullableTargetType == "Offset" || nonNullableTargetType.EndsWith(".Offset", StringComparison.Ordinal)) &&
                             (sourceType == "Size" || sourceType.EndsWith(".Size", StringComparison.Ordinal)))
                         {
-                            builder.Append("global::Doroti.Flutter.Ui.Offset.fromSize(DartRuntimePrimitives.RequireReference(");
+                            builder.Append("global::Doroti.Ui.Offset.fromSize(DartRuntimePrimitives.RequireReference(");
                             LowerExpression(builder, expression, declaration, package, library, inputPath, diagnostics);
                             builder.Append("))");
                             return;
@@ -789,7 +789,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (name is "PluginUtilities" or "ViewFocusState" or "ViewFocusDirection")
         {
-            builder.Append("global::Doroti.Flutter.Ui.").Append(name);
+            builder.Append("global::Doroti.Ui.").Append(name);
             return;
         }
         if (name == "hashCode")
@@ -902,7 +902,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (name == "Timer" && string.Equals(LibraryUriFromElementId(elementId), "dart:async", StringComparison.Ordinal))
         {
-            builder.Append("global::Doroti.Flutter.Runtime.Timer");
+            builder.Append("global::Doroti.Runtime.Timer");
             return;
         }
         if (name == "Uri" && node.StaticType == "Type")
@@ -917,7 +917,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (name == "utf8")
         {
-            builder.Append("global::Doroti.Flutter.Runtime.Dart_convertLibrary.utf8");
+            builder.Append("global::Doroti.Runtime.Dart_convertLibrary.utf8");
             return;
         }
         if (name == "fromStandardMessageCodecMessage" && elementId is not null)

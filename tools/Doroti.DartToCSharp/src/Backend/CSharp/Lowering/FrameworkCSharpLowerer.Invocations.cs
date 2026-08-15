@@ -100,13 +100,13 @@ internal sealed partial class FrameworkCSharpLowerer
         var prefix = node.Text(CoreProperty.prefix) ?? "missing";
         if (prefix == "developer" && name == "CreationLocation")
         {
-            builder.Append("global::Doroti.Flutter.Runtime.CreationLocation");
+            builder.Append("global::Doroti.Runtime.CreationLocation");
             return;
         }
         if (name == "dispatchPointerEvent")
         {
             builder.Append("((__event) => ").Append(SafeIdentifier(prefix))
-                .Append(".dispatchPointerEvent(global::Doroti.Flutter.Ui.PointerEvent.FromFrameworkEvent(")
+                .Append(".dispatchPointerEvent(global::Doroti.Ui.PointerEvent.FromFrameworkEvent(")
                 .Append("__event is global::Doroti.Generated.Framework.Gestures.PointerDownEvent ? 1L : ")
                 .Append("__event is global::Doroti.Generated.Framework.Gestures.PointerUpEvent ? 2L : ")
                 .Append("__event is global::Doroti.Generated.Framework.Gestures.PointerCancelEvent ? 3L : ")
@@ -329,7 +329,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (prefixNode?.Text(CoreProperty.name) == "TextAlign")
         {
-            builder.Append("global::Doroti.Flutter.Ui.TextAlign.").Append(SafeIdentifier(name));
+            builder.Append("global::Doroti.Ui.TextAlign.").Append(SafeIdentifier(name));
             return;
         }
         if (prefixNode is not null && TryEmitEnumGetter(builder, prefixNode, prefixType, name, declaration, package, library, inputPath, diagnostics))
@@ -357,7 +357,7 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.Append('.').Append(SafeIdentifier(name)).Append(')');
             return;
         }
-        if (prefixNode is not null && prefixType == "FlutterView" && name == "viewId")
+        if (prefixNode is not null && prefixType == "DorotiView" && name == "viewId")
         {
             builder.Append("checked((long)");
             LowerExpression(builder, prefixNode, declaration, package, library, inputPath, diagnostics);
@@ -439,7 +439,7 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             if (prefix == "FontWeight")
             {
-                builder.Append("global::Doroti.Flutter.Ui.FontWeight.values");
+                builder.Append("global::Doroti.Ui.FontWeight.values");
                 return;
             }
             builder.Append("System.Enum.GetValues<").Append(MapType(prefix)).Append(">().ToList()");
@@ -760,7 +760,7 @@ internal sealed partial class FrameworkCSharpLowerer
         if (target is not null && name == "of" &&
             DescendantsAndSelf(target).Any(candidate => candidate.Text(CoreProperty.name) == "CreationLocation"))
         {
-            builder.Append("global::Doroti.Flutter.Runtime.CreationLocation.of");
+            builder.Append("global::Doroti.Runtime.CreationLocation.of");
             return;
         }
         if ((target?.StaticType == "Type" || target?.Kind == CoreNodeKind.TypeLiteral) &&
@@ -835,7 +835,7 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             builder.Append("((__event) => ");
             LowerExpression(builder, target, declaration, package, library, inputPath, diagnostics);
-            builder.Append(".dispatchPointerEvent(global::Doroti.Flutter.Ui.PointerEvent.FromFrameworkEvent(")
+            builder.Append(".dispatchPointerEvent(global::Doroti.Ui.PointerEvent.FromFrameworkEvent(")
                 .Append("__event is global::Doroti.Generated.Framework.Gestures.PointerDownEvent ? 1L : ")
                 .Append("__event is global::Doroti.Generated.Framework.Gestures.PointerUpEvent ? 2L : ")
                 .Append("__event is global::Doroti.Generated.Framework.Gestures.PointerCancelEvent ? 3L : ")
@@ -902,7 +902,7 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.Append('.').Append(SafeIdentifier(name)).Append(')');
             return;
         }
-        if (target is not null && targetType == "FlutterView" && name == "viewId")
+        if (target is not null && targetType == "DorotiView" && name == "viewId")
         {
             builder.Append("checked((long)");
             LowerExpression(builder, target, declaration, package, library, inputPath, diagnostics);
@@ -964,7 +964,7 @@ internal sealed partial class FrameworkCSharpLowerer
             var enumName = target.Text(CoreProperty.name) ?? "object";
             if (enumName == "FontWeight")
             {
-                builder.Append("global::Doroti.Flutter.Ui.FontWeight.values");
+                builder.Append("global::Doroti.Ui.FontWeight.values");
                 return;
             }
             builder.Append("System.Enum.GetValues<").Append(MapType(enumName)).Append(">().ToList()");

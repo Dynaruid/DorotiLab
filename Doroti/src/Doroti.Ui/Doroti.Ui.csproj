@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Ui</AssemblyName>
+    <PackageId>Doroti.Ui</PackageId>
+    <IsDorotiProduct>true</IsDorotiProduct>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Doroti.Host.Desktop.Framework" />
+    <ProjectReference Include="..\Doroti.Runtime\Doroti.Runtime.csproj" />
+  </ItemGroup>
+</Project>

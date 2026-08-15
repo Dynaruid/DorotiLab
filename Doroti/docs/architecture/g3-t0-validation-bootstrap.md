@@ -1,6 +1,6 @@
 # G3-T0 Flutter validation bootstrap
 
-G3-T0 removes the handwritten Flutter compatibility assembly instead of preserving it as an alias, bridge, or legacy project. The active product and compiler graph now use `Doroti.Flutter.Runtime` only for host-neutral Dart async primitives and engine/platform ports. Flutter Widget, Material, Cupertino, navigation, layout, and lifecycle behavior was not moved into Runtime.
+G3-T0 removes the handwritten Flutter compatibility assembly instead of preserving it as an alias, bridge, or legacy project. The active product and compiler graph now use `Doroti.Runtime` only for host-neutral Dart async primitives and engine/platform ports. Flutter Widget, Material, Cupertino, navigation, layout, and lifecycle behavior was not moved into Runtime.
 
 The historical C0-C5 compatibility profiles and `Converter` facade are no longer compiler entrypoints. `DartCompiler` accepts only `framework-semantic` / `flutter-framework-f0` until G3-1 replaces the single-library selection with the resolved multi-library graph.
 

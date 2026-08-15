@@ -1,6 +1,6 @@
 # R9 product UI foundations
 
-> Historical roadmap evidence. Ownership rows naming `Doroti.Widgets` describe the pre-G5 implementation; current ownership is in the reviewed `Doroti.Flutter.Framework.*` graph.
+> Historical roadmap evidence. Ownership rows naming `Doroti.Widgets` describe the pre-G5 implementation; current ownership is in the reviewed `Doroti.Framework.*` graph.
 
 R9 adds the design-system-neutral services that Material and Cupertino must consume. It does not add either design system, and it does not move backend, HWND, Skia, or Dart types into the public widget/render contracts.
 

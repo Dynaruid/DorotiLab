@@ -9,10 +9,10 @@
     <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Doroti.Flutter.Hosting\Doroti.Flutter.Hosting.csproj" />
-    <ProjectReference Include="..\Doroti.Flutter.Ui\Doroti.Flutter.Ui.csproj" />
+    <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
+    <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
     <ProjectReference Include="..\Doroti.Host.Desktop\Doroti.Host.Desktop.csproj" />
-    <ProjectReference Include="..\Doroti.Host.Desktop.Flutter\Doroti.Host.Desktop.Flutter.csproj" />
+    <ProjectReference Include="..\Doroti.Host.Desktop.Framework\Doroti.Host.Desktop.Framework.csproj" />
     <ProjectReference Include="..\Doroti.Platform\Doroti.Platform.csproj" />
     <ProjectReference Include="..\Doroti.Shell.Core\Doroti.Shell.Core.csproj" />
     <ProjectReference Include="..\Doroti.Vendor.Avalonia.Native\Doroti.Vendor.Avalonia.Native.csproj" />

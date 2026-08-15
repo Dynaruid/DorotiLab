@@ -62,7 +62,7 @@ $renderingOwnerInputs = @($renderingFiles | Where-Object { $_ -notin $allowedRen
 $engineFiles = @($compileInputs['Doroti.Engine'] | ForEach-Object { [IO.Path]::GetFileName($_) } | Sort-Object)
 $forbiddenEngineInputs = @($engineFiles | Where-Object { $_ -in @('EngineContracts.cs', 'InteractiveApplication.cs', 'ManagedBgraRenderSurface.cs') })
 $generatedSources = @('Painting', 'Rendering', 'Semantics') | ForEach-Object {
-    Get-ChildItem -LiteralPath (Join-Path $dorotiRoot "src/Doroti.Flutter.Framework.$_") -Filter '*.g.cs' -File -ErrorAction SilentlyContinue
+    Get-ChildItem -LiteralPath (Join-Path $dorotiRoot "src/Doroti.Framework.$_") -Filter '*.g.cs' -File -ErrorAction SilentlyContinue
 }
 $productSolutionText = Get-Content -LiteralPath $solutionPath -Raw
 $forbiddenSolutionEntries = @($forbiddenProductProjects | Where-Object { $productSolutionText -like "*$_*" })

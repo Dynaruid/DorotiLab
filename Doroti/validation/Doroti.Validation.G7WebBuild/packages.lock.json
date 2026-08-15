@@ -8,38 +8,38 @@
         "resolved": "10.0.8",
         "contentHash": "xQ05xw4t8wjFxwD7a/Nye/IPEihIyUkZIbRzTytVFqko6Ows3UvjqHIEjk3gCOIZloNFOLykYPsTyKRCvEs6ng=="
       },
-      "doroti.flutter.hosting": {
+      "doroti.host.web": {
         "type": "Project",
         "dependencies": {
-          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
-          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+          "Doroti.Hosting": "[0.2.0-beta, )",
+          "Doroti.Ui": "[0.2.0-beta, )"
         }
       },
-      "doroti.flutter.runtime": {
+      "doroti.hosting": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Runtime": "[0.2.0-beta, )",
+          "Doroti.Ui": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.runtime": {
         "type": "Project",
         "dependencies": {
           "MaterialColorUtilities": "[0.3.0, )"
         }
       },
-      "doroti.flutter.ui": {
-        "type": "Project",
-        "dependencies": {
-          "Doroti.Flutter.Runtime": "[0.2.0-beta, )"
-        }
-      },
-      "doroti.host.web": {
-        "type": "Project",
-        "dependencies": {
-          "Doroti.Flutter.Hosting": "[0.2.0-beta, )",
-          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
-        }
-      },
       "doroti.target.web.browser-wasm": {
         "type": "Project",
         "dependencies": {
-          "Doroti.Flutter.Hosting": "[0.2.0-beta, )",
-          "Doroti.Flutter.Ui": "[0.2.0-beta, )",
-          "Doroti.Host.Web": "[0.2.0-beta, )"
+          "Doroti.Host.Web": "[0.2.0-beta, )",
+          "Doroti.Hosting": "[0.2.0-beta, )",
+          "Doroti.Ui": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.ui": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Runtime": "[0.2.0-beta, )"
         }
       },
       "MaterialColorUtilities": {

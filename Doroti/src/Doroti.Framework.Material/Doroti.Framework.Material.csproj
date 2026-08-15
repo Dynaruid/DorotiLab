@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Framework.Material</AssemblyName>
+    <PackageId>Doroti.Framework.Material</PackageId>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <NoWarn>$(NoWarn);CS0219;CS8524;CS8846</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Doroti.Runtime\Doroti.Runtime.csproj" />
+    <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Foundation\Doroti.Framework.Foundation.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Scheduler\Doroti.Framework.Scheduler.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Services\Doroti.Framework.Services.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Physics\Doroti.Framework.Physics.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Animation\Doroti.Framework.Animation.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Gestures\Doroti.Framework.Gestures.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Painting\Doroti.Framework.Painting.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Semantics\Doroti.Framework.Semantics.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Rendering\Doroti.Framework.Rendering.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Widgets\Doroti.Framework.Widgets.csproj" />
+    <ProjectReference Include="..\Doroti.Framework.Cupertino\Doroti.Framework.Cupertino.csproj" />
+  </ItemGroup>
+</Project>

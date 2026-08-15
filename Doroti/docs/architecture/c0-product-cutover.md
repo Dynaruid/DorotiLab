@@ -1,6 +1,6 @@
 # C0 product cutover
 
-C0 now uses `Doroti.Host.Desktop` and `Doroti.Flutter.Framework` as the active product and package identities. The public C# namespace remains `Doroti.FlutterCompat` so generated Dart bindings do not need a namespace-only rewrite; it is no longer the package or assembly owner. Generated/adopted Material and Cupertino algorithms and their compatibility aliases therefore compile into one framework assembly.
+C0 now uses `Doroti.Host.Desktop` and `Doroti.Framework` as the active product and package identities. The public C# namespace remains `Doroti.FlutterCompat` so generated Dart bindings do not need a namespace-only rewrite; it is no longer the package or assembly owner. Generated/adopted Material and Cupertino algorithms and their compatibility aliases therefore compile into one framework assembly.
 
 `Doroti.Product.slnx` and the default runtime solution no longer include `Doroti.Host.Avalonia`, `Avalonia.Desktop`, the Avalonia control-tree upload bridge, H6, or the old C0-C5/P4 package release. The comparison host source, samples and runnable verification scripts were removed after replacement evidence existed; historical evidence remains readable. Release packages reject every direct Avalonia binary dependency. The old handwritten `doroti-counter` template was also removed, so `eng/doroti.ps1 release` fails closed after package inspection until G7-3C supplies and validates the new C# application template.
 

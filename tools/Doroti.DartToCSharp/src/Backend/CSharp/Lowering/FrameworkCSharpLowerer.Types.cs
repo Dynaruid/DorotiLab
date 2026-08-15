@@ -129,19 +129,19 @@ internal sealed partial class FrameworkCSharpLowerer
             arguments = Regex.Replace(
                 arguments,
                 @"(?<!new\s)(?<![\w.])Color\(",
-                "new global::Doroti.Flutter.Ui.Color(",
+                "new global::Doroti.Ui.Color(",
                 RegexOptions.CultureInvariant);
             arguments = Regex.Replace(
                 arguments,
                 @"\bkTouchSlop\b",
                 "global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kTouchSlop",
                 RegexOptions.CultureInvariant);
-            if (type is "Color" or "global::Doroti.Flutter.Ui.Color" &&
+            if (type is "Color" or "global::Doroti.Ui.Color" &&
                 arguments.Trim() == "_kColorDefault")
             {
                 return $"new {type}(0xFF000000L)";
             }
-            var factory = type is "Duration" or "global::Doroti.Flutter.Runtime.Duration" ? ".Create" : string.Empty;
+            var factory = type is "Duration" or "global::Doroti.Runtime.Duration" ? ".Create" : string.Empty;
             return factory.Length > 0
                 ? $"{type}{factory}({arguments})"
                 : $"new {type}({arguments})";
@@ -723,20 +723,20 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (type.StartsWith("dart:ui.", StringComparison.Ordinal))
         {
-            var uiType = "global::Doroti.Flutter.Ui." + type["dart:ui.".Length..];
+            var uiType = "global::Doroti.Ui." + type["dart:ui.".Length..];
             return nullable ? uiType + "?" : uiType;
         }
         if (type.StartsWith("ui.", StringComparison.Ordinal))
         {
-            var uiType = "global::Doroti.Flutter.Ui." + type["ui.".Length..];
+            var uiType = "global::Doroti.Ui." + type["ui.".Length..];
             return nullable ? uiType + "?" : uiType;
         }
         if (type is "developer.CreationLocation" or "dart:developer.CreationLocation")
         {
-            const string creationLocation = "global::Doroti.Flutter.Runtime.CreationLocation";
+            const string creationLocation = "global::Doroti.Runtime.CreationLocation";
             return nullable ? creationLocation + "?" : creationLocation;
         }
-        if (type.StartsWith("Doroti.Flutter.Ui.", StringComparison.Ordinal))
+        if (type.StartsWith("Doroti.Ui.", StringComparison.Ordinal))
         {
             var uiType = "global::" + type;
             return nullable ? uiType + "?" : uiType;
@@ -764,7 +764,7 @@ internal sealed partial class FrameworkCSharpLowerer
              imageLibrary.EndsWith("/widget_inspector.dart", StringComparison.Ordinal) ||
              imageLibrary.EndsWith("/_accessibility_evaluations.dart", StringComparison.Ordinal)))
         {
-            const string uiImage = "global::Doroti.Flutter.Ui.Image";
+            const string uiImage = "global::Doroti.Ui.Image";
             return nullable ? uiImage + "?" : uiImage;
         }
         type = StripLibraryPrefix(type);
@@ -1029,22 +1029,22 @@ internal sealed partial class FrameworkCSharpLowerer
                 "void" => "void",
                 "Type" => "Type",
                 "Vector4" => "global::System.Numerics.Vector4",
-                "Quad" => "global::Doroti.Flutter.Ui.Quad",
-                "ClipOp" => "global::Doroti.Flutter.Ui.ClipOp",
-                "RSTransform" => "global::Doroti.Flutter.Ui.RSTransform",
-                "PointMode" => "global::Doroti.Flutter.Ui.PointMode",
-                "Vertices" => "global::Doroti.Flutter.Ui.Vertices",
-                "FragmentShader" => "global::Doroti.Flutter.Ui.FragmentShader",
-                "FragmentProgram" => "global::Doroti.Flutter.Ui.FragmentProgram",
-                "DisplayFeature" => "global::Doroti.Flutter.Ui.DisplayFeature",
+                "Quad" => "global::Doroti.Ui.Quad",
+                "ClipOp" => "global::Doroti.Ui.ClipOp",
+                "RSTransform" => "global::Doroti.Ui.RSTransform",
+                "PointMode" => "global::Doroti.Ui.PointMode",
+                "Vertices" => "global::Doroti.Ui.Vertices",
+                "FragmentShader" => "global::Doroti.Ui.FragmentShader",
+                "FragmentProgram" => "global::Doroti.Ui.FragmentProgram",
+                "DisplayFeature" => "global::Doroti.Ui.DisplayFeature",
                 "ViewConfiguration" => "global::Doroti.Generated.Framework.Rendering.ViewConfiguration",
                 "Map" => "System.Collections.IDictionary",
                 "List" => "System.Collections.IList",
                 "Uri" => "DartUri",
-                "HttpClient" => "global::Doroti.Flutter.Runtime.HttpClient",
-                "HttpClientRequest" => "global::Doroti.Flutter.Runtime.HttpClientRequest",
-                "HttpClientResponse" => "global::Doroti.Flutter.Runtime.HttpClientResponse",
-                "File" => "global::Doroti.Flutter.Runtime.DartFile",
+                "HttpClient" => "global::Doroti.Runtime.HttpClient",
+                "HttpClientRequest" => "global::Doroti.Runtime.HttpClientRequest",
+                "HttpClientResponse" => "global::Doroti.Runtime.HttpClientResponse",
+                "File" => "global::Doroti.Runtime.DartFile",
                 // Dart Never is the bottom type. `dynamic` preserves its ability
                 // to inhabit every expression context while the emitted body
                 // still terminates by throwing.
@@ -1059,8 +1059,8 @@ internal sealed partial class FrameworkCSharpLowerer
                     "global::System.Action<global::Doroti.Generated.Framework.Gestures.DragUpdateDetails>",
                 "Function" => "Delegate",
                 "pragma" => "object",
-                "Invocation" => "global::Doroti.Flutter.Runtime.Invocation",
-                "CreationLocation" => "global::Doroti.Flutter.Runtime.CreationLocation",
+                "Invocation" => "global::Doroti.Runtime.Invocation",
+                "CreationLocation" => "global::Doroti.Runtime.CreationLocation",
                 "Comparator" or "Comparison" => "Comparison",
                 "UnimplementedError" => "NotImplementedException",
                 "UnsupportedError" => "NotSupportedException",
@@ -1528,7 +1528,7 @@ internal sealed partial class FrameworkCSharpLowerer
             {
                 return "global::System.Action";
             }
-            return "global::Doroti.Flutter.Ui." + SafeIdentifier(uiTypeName);
+            return "global::Doroti.Ui." + SafeIdentifier(uiTypeName);
         }
         if (library.StartsWith("dart:", StringComparison.Ordinal))
         {

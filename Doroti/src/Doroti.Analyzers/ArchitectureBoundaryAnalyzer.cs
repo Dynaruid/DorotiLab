@@ -107,10 +107,10 @@ public sealed class ArchitectureBoundaryAnalyzer : DiagnosticAnalyzer
         "Doroti.Composition",
         "Doroti.Rendering",
         "Doroti.Widgets",
-        "Doroti.Flutter.Runtime",
-        "Doroti.Flutter.Ui",
-        "Doroti.Flutter.Framework",
-        "Doroti.Flutter.Hosting",
+        "Doroti.Runtime",
+        "Doroti.Ui",
+        "Doroti.Framework",
+        "Doroti.Hosting",
         "Doroti.Engine",
         "Doroti",
     };
@@ -368,32 +368,32 @@ public sealed class ArchitectureBoundaryAnalyzer : DiagnosticAnalyzer
 
     private static bool IsForbiddenG4LayerReference(string assemblyName, string referenceName)
     {
-        if (string.Equals(assemblyName, "Doroti.Flutter.Runtime", StringComparison.Ordinal))
+        if (string.Equals(assemblyName, "Doroti.Runtime", StringComparison.Ordinal))
         {
             return IsDorotiHostLayer(referenceName);
         }
 
-        if (assemblyName.StartsWith("Doroti.Flutter.Runtime.", StringComparison.Ordinal))
+        if (assemblyName.StartsWith("Doroti.Runtime.", StringComparison.Ordinal))
         {
             return IsDorotiHostLayer(referenceName);
         }
 
-        if (string.Equals(assemblyName, "Doroti.Flutter.Ui", StringComparison.Ordinal) ||
-            assemblyName.StartsWith("Doroti.Flutter.Ui.", StringComparison.Ordinal))
+        if (string.Equals(assemblyName, "Doroti.Ui", StringComparison.Ordinal) ||
+            assemblyName.StartsWith("Doroti.Ui.", StringComparison.Ordinal))
         {
-            return IsDorotiHostLayer(referenceName) && !string.Equals(referenceName, "Doroti.Flutter.Runtime", StringComparison.Ordinal);
+            return IsDorotiHostLayer(referenceName) && !string.Equals(referenceName, "Doroti.Runtime", StringComparison.Ordinal);
         }
 
-        if (assemblyName.StartsWith("Doroti.Flutter.Framework", StringComparison.Ordinal))
+        if (assemblyName.StartsWith("Doroti.Framework", StringComparison.Ordinal))
         {
             return IsDorotiHostLayer(referenceName) &&
-                !referenceName.StartsWith("Doroti.Flutter.Framework", StringComparison.Ordinal) &&
-                !string.Equals(referenceName, "Doroti.Flutter.Runtime", StringComparison.Ordinal) &&
-                !string.Equals(referenceName, "Doroti.Flutter.Ui", StringComparison.Ordinal);
+                !referenceName.StartsWith("Doroti.Framework", StringComparison.Ordinal) &&
+                !string.Equals(referenceName, "Doroti.Runtime", StringComparison.Ordinal) &&
+                !string.Equals(referenceName, "Doroti.Ui", StringComparison.Ordinal);
         }
 
-        if (string.Equals(assemblyName, "Doroti.Flutter.Hosting", StringComparison.Ordinal) ||
-            assemblyName.StartsWith("Doroti.Flutter.Hosting.", StringComparison.Ordinal))
+        if (string.Equals(assemblyName, "Doroti.Hosting", StringComparison.Ordinal) ||
+            assemblyName.StartsWith("Doroti.Hosting.", StringComparison.Ordinal))
         {
             return referenceName.StartsWith("Doroti.Host.", StringComparison.Ordinal) ||
                 referenceName.StartsWith("Doroti.Shell.", StringComparison.Ordinal) ||
@@ -443,7 +443,7 @@ public sealed class ArchitectureBoundaryAnalyzer : DiagnosticAnalyzer
             "Doroti.Composition" or
             "Doroti.Rendering" or
             "Doroti.Widgets" or
-            "Doroti.Flutter.Runtime" or
+            "Doroti.Runtime" or
             "Doroti.Engine" or
             "Avalonia.Base" or
             "Avalonia.Controls";

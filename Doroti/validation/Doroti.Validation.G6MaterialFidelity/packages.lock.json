@@ -52,18 +52,6 @@
       "doroti.core": {
         "type": "Project"
       },
-      "doroti.flutter.runtime": {
-        "type": "Project",
-        "dependencies": {
-          "MaterialColorUtilities": "[0.3.0, )"
-        }
-      },
-      "doroti.flutter.ui": {
-        "type": "Project",
-        "dependencies": {
-          "Doroti.Flutter.Runtime": "[0.2.0-beta, )"
-        }
-      },
       "doroti.graphics": {
         "type": "Project",
         "dependencies": {
@@ -75,6 +63,18 @@
         "dependencies": {
           "Doroti.Core": "[0.2.0-beta, )",
           "Doroti.Graphics": "[0.2.0-beta, )"
+        }
+      },
+      "doroti.runtime": {
+        "type": "Project",
+        "dependencies": {
+          "MaterialColorUtilities": "[0.3.0, )"
+        }
+      },
+      "doroti.ui": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Runtime": "[0.2.0-beta, )"
         }
       },
       "doroti.vendor.avalonia.skia": {

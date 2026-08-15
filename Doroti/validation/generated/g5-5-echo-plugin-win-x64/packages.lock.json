@@ -5,8 +5,8 @@
       "doroti.flutter.hosting": {
         "type": "Project",
         "dependencies": {
-          "Doroti.Flutter.Runtime": "[0.2.0-beta, )",
-          "Doroti.Flutter.Ui": "[0.2.0-beta, )"
+          "Doroti.Runtime": "[0.2.0-beta, )",
+          "Doroti.Ui": "[0.2.0-beta, )"
         }
       },
       "doroti.flutter.runtime": {
@@ -15,7 +15,7 @@
       "doroti.flutter.ui": {
         "type": "Project",
         "dependencies": {
-          "Doroti.Flutter.Runtime": "[0.2.0-beta, )"
+          "Doroti.Runtime": "[0.2.0-beta, )"
         }
       }
     }

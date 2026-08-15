@@ -2,8 +2,8 @@ using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
 using System.Text.Json;
-using Doroti.Flutter.Runtime;
-using Doroti.Flutter.Ui;
+using Doroti.Runtime;
+using Doroti.Ui;
 using Doroti.Generated.Framework.Scheduler;
 using Doroti.Generated.Framework.Services;
 using Path = System.IO.Path;
@@ -15,15 +15,15 @@ var trace = new List<string>();
 using var dispatcher = new PlatformDispatcher();
 using var dispatcherScope = dispatcher.EnterScope();
 var host = new FixtureHost();
-var capabilities = new FlutterViewCapabilities()
-    .Register<IViewHostCapability>(FlutterCapabilityIds.WindowLifecycle, host)
-    .Register<IViewHostCapability>(FlutterCapabilityIds.ViewLifecycleMetrics, host)
-    .Register<IFrameHostCapability>(FlutterCapabilityIds.ViewFrameDispatch, host)
-    .Register<IInputHostCapability>(FlutterCapabilityIds.InputEvents, host)
-    .Register<IPlatformMessageHostCapability>(FlutterCapabilityIds.PlatformMessaging, host)
-    .Register<IPlatformServicesHostCapability>(FlutterCapabilityIds.PlatformServices, host)
-    .Register<ITextInputHostCapability>(FlutterCapabilityIds.TextInput, host)
-    .Register<IPlatformEnvironmentHostCapability>(FlutterCapabilityIds.PlatformEnvironment, host);
+var capabilities = new DorotiViewCapabilities()
+    .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
+    .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
+    .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, host)
+    .Register<IInputHostCapability>(DorotiCapabilityIds.InputEvents, host)
+    .Register<IPlatformMessageHostCapability>(DorotiCapabilityIds.PlatformMessaging, host)
+    .Register<IPlatformServicesHostCapability>(DorotiCapabilityIds.PlatformServices, host)
+    .Register<ITextInputHostCapability>(DorotiCapabilityIds.TextInput, host)
+    .Register<IPlatformEnvironmentHostCapability>(DorotiCapabilityIds.PlatformEnvironment, host);
 using var view = dispatcher.RegisterView(43, capabilities);
 using var environmentScope = PlatformEnvironmentContext.Enter(host.Configuration);
 using var services = new FixtureServicesBinding(dispatcher);
@@ -161,8 +161,8 @@ static PromotionResult ValidatePromotion(string root, List<string> failures)
     var declarationOccurrences = counts.GetProperty("declarationOccurrences").GetInt32();
     var uniqueDeclarationNames = counts.GetProperty("uniqueDeclarationNames").GetInt32();
     var publicMembers = counts.GetProperty("publicMembers").GetInt32();
-    var generatedProductSources = Directory.EnumerateFiles(Path.Combine(root, "src", "Doroti.Flutter.Framework.Scheduler"), "*.g.cs", SearchOption.TopDirectoryOnly)
-        .Concat(Directory.EnumerateFiles(Path.Combine(root, "src", "Doroti.Flutter.Framework.Services"), "*.g.cs", SearchOption.TopDirectoryOnly))
+    var generatedProductSources = Directory.EnumerateFiles(Path.Combine(root, "src", "Doroti.Framework.Scheduler"), "*.g.cs", SearchOption.TopDirectoryOnly)
+        .Concat(Directory.EnumerateFiles(Path.Combine(root, "src", "Doroti.Framework.Services"), "*.g.cs", SearchOption.TopDirectoryOnly))
         .Count();
 
     var candidateRoot = Environment.GetEnvironmentVariable("DOROTI_G4_3_CANDIDATE_ROOT");
@@ -317,7 +317,7 @@ static void ValidateFrameOrdering(
 static void ValidateMetricsAndLifecycle(
     PlatformDispatcher dispatcher,
     FixtureHost host,
-    FlutterView view,
+    DorotiView view,
     SchedulerBinding scheduler,
     List<string> trace,
     List<string> failures)
@@ -349,7 +349,7 @@ static void ValidateMetricsAndLifecycle(
 static void ValidateInput(
     PlatformDispatcher dispatcher,
     FixtureHost host,
-    FlutterView view,
+    DorotiView view,
     ServicesBinding services,
     List<string> trace,
     List<string> failures)
@@ -388,9 +388,9 @@ static void ValidateInput(
     connection.setCaretRect(new(2, 3, 4, 8));
     host.EmitEditingState(new(
         "한",
-        new FlutterTextSelection(1, 1),
-        new FlutterTextSelection(0, 1)));
-    host.EmitTextAction(FlutterTextInputAction.done);
+        new DorotiTextSelection(1, 1),
+        new DorotiTextSelection(0, 1)));
+    host.EmitTextAction(DorotiTextInputAction.done);
     if (host.LastTextState.text != "a" || host.LastTextState.selection.baseOffset != 1 ||
         host.CaretRect != new Rect(2, 3, 4, 8) ||
         client.LastValue.text != "한" || client.LastValue.selection.baseOffset != 1 ||
@@ -405,7 +405,7 @@ static void ValidateInput(
 
 static async Task ValidateChannelsAndServicesAsync(
     FixtureHost host,
-    FlutterView view,
+    DorotiView view,
     ServicesBinding services,
     List<string> trace,
     List<string> failures)
@@ -446,13 +446,13 @@ static async Task ValidateChannelsAndServicesAsync(
         _ = cancellationToken;
         var call = standardCodec.decodeMethodCall((ByteData)message!.Value);
         _ = DartPatternRuntime.TryGetMapValue(call.arguments, "kind", out var kindValue);
-        host.SetCursor(Enum.Parse<FlutterMouseCursorKind>((string)kindValue!));
+        host.SetCursor(Enum.Parse<DorotiMouseCursorKind>((string)kindValue!));
         return ValueTask.FromResult<ReadOnlyMemory<byte>?>(standardCodec.encodeSuccessEnvelope(null).asMemory());
     });
     await Clipboard.setData(new("doroti"));
     var clipboard = await Clipboard.getData(Clipboard.kTextPlain);
     await SystemMouseCursors.text.createSession(1).activate();
-    if (clipboard?.text != "doroti" || host.Cursor != FlutterMouseCursorKind.text)
+    if (clipboard?.text != "doroti" || host.Cursor != DorotiMouseCursorKind.text)
     {
         failures.Add("service: clipboard/cursor capability round trip failed.");
     }
@@ -490,27 +490,27 @@ static void ValidateAssetsAndRestoration(List<string> failures)
 static void ValidateFailClosed(PlatformDispatcher dispatcher, List<string> failures)
 {
     var isolatedHost = new FixtureHost();
-    var capabilities = new FlutterViewCapabilities()
-        .Register<IViewHostCapability>(FlutterCapabilityIds.ViewLifecycleMetrics, isolatedHost);
+    var capabilities = new DorotiViewCapabilities()
+        .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, isolatedHost);
     using var isolatedView = dispatcher.RegisterView(99, capabilities);
     try
     {
         _ = isolatedView.RequireCapability<IPlatformServicesHostCapability>(
-            FlutterCapabilityIds.PlatformServices,
+            DorotiCapabilityIds.PlatformServices,
             DartUiInvocation.Managed("package:flutter/src/services/clipboard.dart#Clipboard.getData"));
         failures.Add("fail-closed: missing platform.services silently succeeded.");
     }
-    catch (FlutterCapabilityException exception) when (exception.CapabilityId == FlutterCapabilityIds.PlatformServices)
+    catch (DorotiCapabilityException exception) when (exception.CapabilityId == DorotiCapabilityIds.PlatformServices)
     {
     }
     try
     {
         _ = isolatedView.RequireCapability<ITextInputHostCapability>(
-            FlutterCapabilityIds.TextInput,
+            DorotiCapabilityIds.TextInput,
             DartUiInvocation.Managed("package:flutter/src/services/text_input.dart#TextInput.attach"));
         failures.Add("fail-closed: missing text.input silently succeeded.");
     }
-    catch (FlutterCapabilityException exception) when (exception.CapabilityId == FlutterCapabilityIds.TextInput)
+    catch (DorotiCapabilityException exception) when (exception.CapabilityId == DorotiCapabilityIds.TextInput)
     {
     }
 }
@@ -552,9 +552,9 @@ internal sealed class FixtureHost :
 
     public string? ClipboardText { get; private set; }
 
-    public FlutterMouseCursorKind Cursor { get; private set; }
+    public DorotiMouseCursorKind Cursor { get; private set; }
 
-    public FlutterTextEditingState LastTextState { get; private set; }
+    public DorotiTextEditingState LastTextState { get; private set; }
 
     public Rect CaretRect { get; private set; }
 
@@ -574,9 +574,9 @@ internal sealed class FixtureHost :
 
     public event Action<RawFocusData>? FocusData;
 
-    public event Action<FlutterTextEditingState>? EditingStateChanged;
+    public event Action<DorotiTextEditingState>? EditingStateChanged;
 
-    public event Action<FlutterTextInputAction>? ActionPerformed;
+    public event Action<DorotiTextInputAction>? ActionPerformed;
 
     public event Action<PlatformConfiguration>? ConfigurationChanged
     {
@@ -622,11 +622,11 @@ internal sealed class FixtureHost :
         return ValueTask.CompletedTask;
     }
 
-    public void SetCursor(FlutterMouseCursorKind cursor) => Cursor = cursor;
+    public void SetCursor(DorotiMouseCursorKind cursor) => Cursor = cursor;
 
-    public void SetClient(FlutterTextEditingState initialState) => LastTextState = initialState;
+    public void SetClient(DorotiTextEditingState initialState) => LastTextState = initialState;
 
-    public void UpdateState(FlutterTextEditingState state) => LastTextState = state;
+    public void UpdateState(DorotiTextEditingState state) => LastTextState = state;
 
     public void SetCaretRect(Rect logicalRect) => CaretRect = logicalRect;
 
@@ -666,9 +666,9 @@ internal sealed class FixtureHost :
 
     internal void EmitFocus(RawFocusData data) => FocusData?.Invoke(data);
 
-    internal void EmitEditingState(FlutterTextEditingState state) => EditingStateChanged?.Invoke(state);
+    internal void EmitEditingState(DorotiTextEditingState state) => EditingStateChanged?.Invoke(state);
 
-    internal void EmitTextAction(FlutterTextInputAction action) => ActionPerformed?.Invoke(action);
+    internal void EmitTextAction(DorotiTextInputAction action) => ActionPerformed?.Invoke(action);
 }
 
 internal sealed class FixtureTextClient : TextInputClient
@@ -685,7 +685,7 @@ internal sealed class FixtureTextClient : TextInputClient
 
     public void performAction(TextInputAction action) => LastAction = action;
 
-    public void performPrivateCommand(string action, Doroti.Flutter.Runtime.DartMap<string, object> data) { }
+    public void performPrivateCommand(string action, Doroti.Runtime.DartMap<string, object> data) { }
 
     public void updateFloatingCursor(RawFloatingCursorPoint point) { }
 

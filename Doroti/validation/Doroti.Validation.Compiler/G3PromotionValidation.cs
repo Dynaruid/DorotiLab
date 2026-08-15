@@ -198,7 +198,7 @@ internal static class G3PromotionValidation
                 break;
             case JsonValueKind.String:
                 var value = Normalize(element.GetString()!);
-                if (value.StartsWith("src/Doroti.Flutter.Framework.", StringComparison.Ordinal) &&
+                if (value.StartsWith("src/Doroti.Framework.", StringComparison.Ordinal) &&
                     value.EndsWith(".cs", StringComparison.Ordinal))
                 {
                     owned.Add(value);

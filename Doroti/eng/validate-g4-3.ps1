@@ -128,7 +128,7 @@ try {
             --nologo
     }
 
-    Invoke-Checked { dotnet build "$dorotiRoot/src/Doroti.Host.Desktop.Flutter/Doroti.Host.Desktop.Flutter.csproj" --nologo }
+    Invoke-Checked { dotnet build "$dorotiRoot/src/Doroti.Host.Desktop.Framework/Doroti.Host.Desktop.Framework.csproj" --nologo }
     # Promotion must follow the current compiler output. The pinned candidate is
     # retained as historical compiler evidence and is deliberately not treated
     # as the current reviewed product contract.
@@ -137,7 +137,7 @@ try {
 
     $packageRoot = Join-Path $temporaryRoot 'packages'
     New-Item -ItemType Directory -Path $packageRoot | Out-Null
-    foreach ($project in @('Doroti.Flutter.Runtime', 'Doroti.Flutter.Ui', 'Doroti.Flutter.Framework.Foundation')) {
+    foreach ($project in @('Doroti.Runtime', 'Doroti.Ui', 'Doroti.Framework.Foundation')) {
         Invoke-Checked {
             dotnet pack "$dorotiRoot/src/$project/$project.csproj" `
                 --configuration Debug --nologo --no-build --output $packageRoot
@@ -153,7 +153,7 @@ try {
     }
     Invoke-Checked { dotnet build $candidateSolution --no-restore --nologo }
 
-    foreach ($project in @('Doroti.Flutter.Framework.Scheduler', 'Doroti.Flutter.Framework.Services')) {
+    foreach ($project in @('Doroti.Framework.Scheduler', 'Doroti.Framework.Services')) {
         Invoke-Checked {
             dotnet pack "$dorotiRoot/src/$project/$project.csproj" `
                 --configuration Debug --nologo --no-build --output $packageRoot

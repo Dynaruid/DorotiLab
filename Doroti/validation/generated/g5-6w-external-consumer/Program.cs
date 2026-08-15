@@ -1,13 +1,13 @@
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
-using Doroti.Flutter.Hosting;
-using Doroti.Flutter.Ui;
+using Doroti.Hosting;
+using Doroti.Ui;
 using Doroti.Generated.Framework.Services;
-using Doroti.Host.Desktop.Flutter;
+using Doroti.Host.Desktop.Framework;
 using Doroti.Target.Windows;
 using Path = System.IO.Path;
-using UiColor = Doroti.Flutter.Ui.Color;
+using UiColor = Doroti.Ui.Color;
 
 if (!OperatingSystem.IsWindows())
 {
@@ -18,11 +18,11 @@ if (!OperatingSystem.IsWindows())
 var evidencePath = ReadEvidencePath(args);
 var trace = new List<string>();
 var entrypoint = new SmokeEntrypoint(trace);
-DesktopFlutterTargetDiagnostics diagnostics;
+DesktopFrameworkTargetDiagnostics diagnostics;
 WindowsTargetIdentity identity;
 
-using (var target = new WindowsFlutterTarget())
-using (var session = new FlutterHostSession(entrypoint))
+using (var target = new WindowsTarget())
+using (var session = new DorotiHostSession(entrypoint))
 using (var scope = session.dispatcher.EnterScope())
 {
     identity = target.Identity;
@@ -66,7 +66,7 @@ using (var scope = session.dispatcher.EnterScope())
 
     Require(diagnostics.SchemaVersion == target.Manifest.DiagnosticSchema, "Diagnostic schema drifted from the RID manifest.");
     Require(diagnostics.TargetIdentity.EndsWith("/win32-wgl", StringComparison.Ordinal), "Runtime target identity is not Win32/WGL.");
-    Require(FlutterCapabilityIds.RequiredDesktop.All(id => diagnostics.CapabilityIds.Contains(id, StringComparer.Ordinal)), "The packaged target capability closure is incomplete.");
+    Require(DorotiCapabilityIds.RequiredDesktop.All(id => diagnostics.CapabilityIds.Contains(id, StringComparer.Ordinal)), "The packaged target capability closure is incomplete.");
     Require(diagnostics.Frame.BackendIdentity == "skia-wgl-opengl-gpu", "Strict WGL/OpenGL was not selected.");
     Require(!diagnostics.Frame.SoftwareFallbackUsed, "The packaged target silently used software rendering.");
     Require(diagnostics.Frame.RecoveryCount >= 1, "The packaged target did not recover from injected GPU failure.");
@@ -117,7 +117,7 @@ static string? ReadEvidencePath(string[] arguments)
     return Path.GetFullPath(arguments[1]);
 }
 
-static void PumpUntil(WindowsFlutterTarget target, Func<bool> completed, TimeSpan timeout)
+static void PumpUntil(WindowsTarget target, Func<bool> completed, TimeSpan timeout)
 {
     var deadline = DateTime.UtcNow + timeout;
     while (!completed() && DateTime.UtcNow < deadline)
@@ -151,11 +151,11 @@ static extern nint SetFocus(nint window);
 [DllImport("user32.dll")]
 static extern nint SendMessage(nint window, uint message, nint wParam, nint lParam);
 
-sealed class SmokeEntrypoint(List<string> trace) : IFlutterViewEntrypoint
+sealed class SmokeEntrypoint(List<string> trace) : IDorotiViewEntrypoint
 {
     private readonly List<string> _trace = trace;
     private SmokeBinding? _binding;
-    private FlutterView? _view;
+    private DorotiView? _view;
 
     public void Bootstrap(PlatformDispatcher dispatcher)
     {
@@ -163,14 +163,14 @@ sealed class SmokeEntrypoint(List<string> trace) : IFlutterViewEntrypoint
         _binding = new(dispatcher, DrawFrame);
     }
 
-    public void AttachView(FlutterView view)
+    public void AttachView(DorotiView view)
     {
         _view = view;
         _trace.Add($"attach:{view.viewId}");
         RequestFrame();
     }
 
-    public void DetachView(FlutterView view)
+    public void DetachView(DorotiView view)
     {
         if (ReferenceEquals(_view, view))
         {

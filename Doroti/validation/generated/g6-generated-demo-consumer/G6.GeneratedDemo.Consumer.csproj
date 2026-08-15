@@ -13,7 +13,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\generated\projects\Framework\Doroti.Generated.Application.G6Demo.Framework.csproj" />
-    <PackageReference Include="Doroti.Flutter.Hosting" Version="[0.2.0-beta]" />
+    <PackageReference Include="Doroti.Hosting" Version="[0.2.0-beta]" />
     <PackageReference Include="Doroti.Target.Windows.win-x64" Version="[0.2.0-beta]" />
     <PackageReference Include="Doroti.Plugin.G6GeneratedDemoEcho.win-x64" Version="[0.2.0-beta]" />
   </ItemGroup>

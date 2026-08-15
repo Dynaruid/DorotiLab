@@ -392,7 +392,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (declaration.Name == "PointerEvent")
         {
-            bases.Add("global::Doroti.Flutter.Runtime.IPointerEvent");
+            bases.Add("global::Doroti.Runtime.IPointerEvent");
         }
         if (declaration.Name == "State")
         {
@@ -818,7 +818,7 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.AppendLine("    void scheduleWarmUpFrame();");
             builder.AppendLine("    IEnumerable<global::Doroti.Generated.Framework.Rendering.RenderView> renderViews { get; }");
             builder.AppendLine("    void hitTestInView(global::Doroti.Generated.Framework.Gestures.HitTestResult result, Offset position, long viewId);");
-            builder.AppendLine("    FlutterView window => platformDispatcher.implicitView ?? throw new InvalidOperationException(\"WidgetsBinding.window requires exactly one Flutter view.\");");
+            builder.AppendLine("    DorotiView window => platformDispatcher.implicitView ?? throw new InvalidOperationException(\"WidgetsBinding.window requires exactly one Flutter view.\");");
             builder.AppendLine("    Future endOfFrame => global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.endOfFrame;");
             builder.AppendLine("    void cancelPointer(long pointer) => global::Doroti.Generated.Framework.Gestures.GestureBinding.instance.cancelPointer(pointer);");
         }
@@ -866,7 +866,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (!isInterface && declaration.Name == "RenderingFlutterBinding")
         {
-            builder.AppendLine("    public void handleMetricsChanged(FlutterView _) => handleMetricsChanged();");
+            builder.AppendLine("    public void handleMetricsChanged(DorotiView _) => handleMetricsChanged();");
         }
         if (!isInterface && declaration.Name == "MultiChildRenderObjectWidget")
         {
@@ -923,7 +923,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (!isInterface && declaration.Name is "PointerEnterEvent" or "PointerExitEvent")
         {
-            var uiEventType = $"global::Doroti.Flutter.Ui.{declaration.Name}";
+            var uiEventType = $"global::Doroti.Ui.{declaration.Name}";
             builder.AppendLine($"    public static implicit operator {uiEventType}({declaration.Name} value) => new()");
             builder.AppendLine("    {");
             builder.AppendLine("        pointer = value.pointer,");

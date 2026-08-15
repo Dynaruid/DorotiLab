@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Runtime</AssemblyName>
+    <PackageId>Doroti.Runtime</PackageId>
+    <IsDorotiProduct>true</IsDorotiProduct>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MaterialColorUtilities" />
+  </ItemGroup>
+</Project>
