@@ -7,5 +7,6 @@
     <ProjectReference Include="..\..\src\Doroti.Graphics\Doroti.Graphics.csproj" />
     <ProjectReference Include="..\..\src\Doroti.Host.Desktop\Doroti.Host.Desktop.csproj" />
     <ProjectReference Include="..\..\src\Doroti.Platform\Doroti.Platform.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Vendor.Avalonia.Win32\Doroti.Vendor.Avalonia.Win32.csproj" />
   </ItemGroup>
 </Project>

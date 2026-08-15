@@ -5,6 +5,8 @@
 - Flutter revision: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
 - Avalonia revision: `f159423f691946e713f454447a780d4677d8a0d2`
 
+Current-status note: the platform-verification statements below describe the G4-0 decision date. G7-3M later added independent `osx-arm64` source, build, live NSWindow, and package-only evidence without transferring Windows results; Linux remains unverified.
+
 ## Context
 
 Doroti previously grouped many Flutter external dependencies under `runtime-binding` and retained handwritten Flutter-like behavior in `Doroti.Core`, `Doroti.Platform`, `Doroti.Rendering`, `Doroti.Widgets`, `Doroti.Engine`, and `Doroti.Flutter.Runtime`. That grouping did not distinguish Dart language semantics, managed `dart:ui` API, Flutter framework behavior, concrete native platform behavior, or narrow adaptation. It could therefore report apparent coverage without identifying an executable owner.
@@ -33,7 +35,7 @@ Flutter Engine source may be consulted read-only for API shape or ordering. It c
 ## Machine-readable records
 
 - `migration/flutter-avalonia/source-boundary.json` is generated from all 13 public roots and all 695 Dart files. It records external URI symbols, dependency paths from public roots, conditional branches, VM pragmas, native/external declarations, and platform channels. Wildcard `dart:ui` imports are narrowed with the pinned `flutter-api.json` symbol inventory.
-- `migration/flutter-avalonia/capability-map.json` connects every `avalonia-binding` capability to pinned Avalonia upstream and local target ownership. Windows is the only currently verified platform; Linux and macOS remain `not-verified` until G4-X0/G4-X1.
+- `migration/flutter-avalonia/capability-map.json` connects every `avalonia-binding` capability to pinned Avalonia upstream and local target ownership. At G4-0, Windows was the only verified platform and Linux/macOS remained `not-verified`; the later G7-3M macOS promotion is tracked by its own provenance and evidence rather than rewriting this historical manifest.
 - `migration/flutter-avalonia/current-owner-audit.json` classifies every declared C# type/delegate in the six pre-cutover owner projects as `keep-bridge`, `move-to-framework`, `move-to-ui-contract`, `replace-by-avalonia`, or `remove-after-cutover`.
 - `migration/avalonia-shell/source-port-boundaries.json` v2 is the project dependency policy.
 

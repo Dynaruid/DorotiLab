@@ -430,7 +430,13 @@ public sealed class ArchitectureBoundaryAnalyzer : DiagnosticAnalyzer
         (string.Equals(assemblyName, "Doroti.Backends.Skia", StringComparison.Ordinal) &&
          string.Equals(referenceName, "Doroti.Vendor.Avalonia.Skia", StringComparison.Ordinal)) ||
         (string.Equals(assemblyName, "Doroti.Host.Desktop", StringComparison.Ordinal) &&
-         referenceName is "Doroti.Vendor.Avalonia.Base" or "Doroti.Vendor.Avalonia.Skia" or "Doroti.Vendor.Avalonia.Win32");
+         referenceName is "Doroti.Vendor.Avalonia.Base" or "Doroti.Vendor.Avalonia.Skia") ||
+        (string.Equals(assemblyName, "Doroti.Host.Windows", StringComparison.Ordinal) &&
+         string.Equals(referenceName, "Doroti.Vendor.Avalonia.Win32", StringComparison.Ordinal)) ||
+        (string.Equals(assemblyName, "Doroti.Host.macOS", StringComparison.Ordinal) &&
+         string.Equals(referenceName, "Doroti.Vendor.Avalonia.Native", StringComparison.Ordinal)) ||
+        (assemblyName.StartsWith("Doroti.Validation.", StringComparison.Ordinal) &&
+         referenceName is "Doroti.Vendor.Avalonia.Win32" or "Doroti.Vendor.Avalonia.Native");
 
     private static bool IsForbiddenVendorLayer(string assemblyName) =>
         assemblyName is

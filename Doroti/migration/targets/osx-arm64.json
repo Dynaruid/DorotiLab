@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "doroti.target-manifest/v1",
+  "milestone": "G7-3M",
+  "id": "osx-arm64",
+  "requiredForGoal7": true,
+  "packageId": "Doroti.Target.macOS.osx-arm64",
+  "compositionRoot": "Doroti.Target.macOS.MacOsFlutterTarget",
+  "windowBackend": "AppKit NSWindow via source-ported libAvalonia",
+  "graphicsBackend": "Skia NSOpenGL strict GPU",
+  "nativeAssets": [
+    {
+      "path": "runtimes/osx-arm64/native/libAvalonia.dylib",
+      "architecture": "arm64",
+      "installName": "@rpath/libAvalonia.dylib",
+      "license": "licenses/Avalonia-LICENSE.md"
+    }
+  ],
+  "unsupportedInference": [
+    "osx-x64",
+    "Korean IME physical acceptance",
+    "VoiceOver physical acceptance",
+    "precise trackpad physical acceptance"
+  ]
+}

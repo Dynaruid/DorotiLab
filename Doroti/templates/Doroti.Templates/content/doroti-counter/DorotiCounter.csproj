@@ -8,5 +8,6 @@
   <ItemGroup>
     <PackageReference Include="Doroti" Version="0.2.0-beta" />
     <PackageReference Include="Doroti.Host.Desktop" Version="0.2.0-beta" />
+    <PackageReference Include="Doroti.Target.Windows.win-x64" Version="0.2.0-beta" />
   </ItemGroup>
 </Project>

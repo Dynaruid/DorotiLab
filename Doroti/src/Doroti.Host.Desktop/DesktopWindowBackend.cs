@@ -3,17 +3,24 @@ using Doroti.Graphics;
 using Doroti.Platform;
 using Doroti.Shell.Core;
 using Doroti.Vendor.Avalonia.Base;
-using Doroti.Vendor.Avalonia.Win32;
 
 namespace Doroti.Host.Desktop;
 
-/// <summary>Creates native HWND windows without an Avalonia application or visual tree.</summary>
+/// <summary>Creates native desktop windows through an injected source-ported shell.</summary>
 public sealed class DesktopWindowBackend : IWindowBackend, IDisposable
 {
     private readonly List<DesktopWindow> _windows = [];
     private readonly NativeResourceTracker _resources = new();
-    private readonly Win32ShellPlatform _shell = Win32ShellBootstrap.Create();
+    private readonly IShellWindowingPlatform _shell;
     private bool _disposed;
+
+    public DesktopWindowBackend()
+        : this(CreateCurrentPlatform())
+    {
+    }
+
+    public DesktopWindowBackend(IShellWindowingPlatform shell) =>
+        _shell = shell ?? throw new ArgumentNullException(nameof(shell));
 
     public void Post(Action callback) => _shell.Dispatcher.Post(callback);
 
@@ -38,12 +45,12 @@ public sealed class DesktopWindowBackend : IWindowBackend, IDisposable
         return window;
     }
 
-    /// <summary>Dispatches every currently queued Win32 message and rethrows callback failures on the UI thread.</summary>
-    public void PumpPendingMessages() => _shell.PumpOnce();
+    /// <summary>Dispatches currently queued native messages and rethrows callback failures on the UI thread.</summary>
+    public void PumpPendingMessages() => _shell.EventLoop.PumpOnce();
 
-    public void RunEventLoop(CancellationToken cancellationToken = default) => _shell.Run(cancellationToken);
+    public void RunEventLoop(CancellationToken cancellationToken = default) => _shell.EventLoop.Run(cancellationToken);
 
-    public void RequestExit() => _shell.RequestExit();
+    public void RequestExit() => _shell.EventLoop.RequestExit();
 
     public void Dispose()
     {
@@ -57,10 +64,25 @@ public sealed class DesktopWindowBackend : IWindowBackend, IDisposable
             window.Dispose();
         }
         _windows.Clear();
-        _shell.Dispose();
+        if (_shell is IDisposable disposable)
+        {
+            disposable.Dispose();
+        }
     }
 
     private void RemoveWindow(DesktopWindow window) => _windows.Remove(window);
+
+    private static IShellWindowingPlatform CreateCurrentPlatform()
+    {
+        var (assemblyName, typeName) = OperatingSystem.IsWindows()
+            ? ("Doroti.Vendor.Avalonia.Win32", "Doroti.Vendor.Avalonia.Win32.Win32ShellPlatformFactory")
+            : OperatingSystem.IsMacOS()
+                ? ("Doroti.Vendor.Avalonia.Native", "Doroti.Vendor.Avalonia.Native.MacOsShellPlatformFactory")
+                : throw new PlatformNotSupportedException("Doroti desktop supports Windows and macOS source-ported shells.");
+        var type = System.Reflection.Assembly.Load(assemblyName).GetType(typeName, throwOnError: true)!;
+        return (IShellWindowingPlatform)(type.GetMethod("Create", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)?.Invoke(null, null)
+            ?? throw new MissingMethodException(typeName, "Create"));
+    }
 }
 
 internal sealed class DesktopWindow : IWindow, IRawInputSource, ITextInputConnection, ITextInputGeometry, ICursorController, IClipboard, IBgra8888FramebufferTarget, IOpenGlWindowTarget, IWindowPlacementController, IWindowFocusController, IWindowInputTestController, IWindowCoordinateDiagnostics, INativeResourceDiagnostics, INativeWindowHandleDiagnostics, IAccessibilityBridge, IAccessibilityDiagnostics
@@ -68,10 +90,16 @@ internal sealed class DesktopWindow : IWindow, IRawInputSource, ITextInputConnec
     private readonly IWindowEventSink _windowSink;
     private readonly Action<DesktopWindow> _onClosed;
     private readonly List<IRawInputSink> _rawInputSinks = [];
-    private readonly NativeWindowHost _host;
-    private readonly Win32ShellWindow _shellWindow;
+    private readonly IShellWindow _shellWindow;
+    private readonly IShellInputService _input;
+    private readonly IShellTextInputService _text;
+    private readonly IShellClipboardService _clipboard;
+    private readonly IShellCursorService _cursor;
+    private readonly IShellGraphicsService _graphics;
+    private readonly IShellFocusService _focus;
+    private readonly IShellInputTestService _inputTest;
+    private readonly IShellAccessibilityService _accessibility;
     private readonly NativeResourceTracker _resources;
-    private readonly Win32AutomationRootProvider _automationProvider;
     private readonly DesktopFrameDispatcher _frameDispatcher;
     private ITextInputClient? _textClient;
     private TextEditingState _editingState = new(string.Empty, new(0, 0), null);
@@ -84,7 +112,7 @@ internal sealed class DesktopWindow : IWindow, IRawInputSource, ITextInputConnec
     private bool _disposed;
 
     internal DesktopWindow(
-        Win32ShellPlatform shell,
+        IShellWindowingPlatform shell,
         WindowConfiguration configuration,
         IWindowEventSink windowSink,
         Action<DesktopWindow> onClosed,
@@ -93,37 +121,35 @@ internal sealed class DesktopWindow : IWindow, IRawInputSource, ITextInputConnec
         _windowSink = windowSink;
         _onClosed = onClosed;
         _resources = resources;
-        _shellWindow = (Win32ShellWindow)shell.CreateWindow(configuration.Title, configuration.InitialSize);
-        _host = _shellWindow.NativeHost;
+        _shellWindow = shell.CreateWindow(configuration.Title, configuration.InitialSize);
+        _input = _shellWindow.Services.GetRequired<IShellInputService>();
+        _text = _shellWindow.Services.GetRequired<IShellTextInputService>();
+        _clipboard = _shellWindow.Services.GetRequired<IShellClipboardService>();
+        _cursor = _shellWindow.Services.GetRequired<IShellCursorService>();
+        _graphics = _shellWindow.Services.GetRequired<IShellGraphicsService>();
+        _focus = _shellWindow.Services.GetRequired<IShellFocusService>();
+        _inputTest = _shellWindow.Services.GetRequired<IShellInputTestService>();
+        _accessibility = _shellWindow.Services.GetRequired<IShellAccessibilityService>();
         _frameDispatcher = new(shell.Dispatcher);
-        _automationProvider = new(_host, configuration.Title);
-        _host.AutomationRequested = _automationProvider.HandleGetObject;
         _shellWindow.WindowEvent += OnWindowEvent;
-        _shellWindow.Pointer += OnPointer;
-        _shellWindow.Key += OnKey;
-        _shellWindow.Text += OnText;
+        _input.Pointer += OnPointer;
+        _input.Key += OnKey;
+        _text.Text += OnText;
         _resources.WindowCreated();
         _windowCounted = 1;
     }
 
     public WindowId Id => new(_shellWindow.Id);
 
-    public nint Handle => _host.Handle;
+    public nint Handle => _shellWindow.NativeHandle.Value;
 
     public WindowMetrics Metrics => DesktopAdapterBoundary.Convert(_shellWindow.Metrics);
 
-    public bool IsClosed => _shellWindow.IsClosed;
+    public bool IsClosed => _shellWindow.Metrics.State == ShellWindowState.Closed;
 
     public IRawInputSource RawInput => this;
 
-    public InputCapabilities Capabilities { get; } = new(
-        Mouse: true,
-        Touch: VendorBoundary.TouchDigitizerPresent,
-        Pen: VendorBoundary.PenDigitizerPresent,
-        Wheel: true,
-        PointerCapture: true,
-        PhysicalKeys: true,
-        TextInput: true);
+    public InputCapabilities Capabilities => _input.Capabilities;
 
     public ITextInputConnection TextInput => this;
 
@@ -167,7 +193,7 @@ internal sealed class DesktopWindow : IWindow, IRawInputSource, ITextInputConnec
 
     public void MoveToDisplay(DisplayId display) => _shellWindow.MoveToScreen(display.Value);
 
-    public void RequestFocus(bool focused) => _host.RequestFocus(focused);
+    public void RequestFocus(bool focused) => _focus.RequestFocus(focused);
 
     public void PostPointerTap(Offset logicalPosition)
     {
@@ -175,31 +201,31 @@ internal sealed class DesktopWindow : IWindow, IRawInputSource, ITextInputConnec
         {
             throw new ArgumentException("Pointer validation position must be finite.", nameof(logicalPosition));
         }
-        _host.PostPointerTap(logicalPosition.X, logicalPosition.Y);
+        _inputTest.PostPointerTap(logicalPosition);
     }
 
     public void PostPointerMove(Offset logicalPosition)
     {
         RequireFinite(logicalPosition);
-        _host.PostPointerMove(logicalPosition.X, logicalPosition.Y);
+        _inputTest.PostPointerMove(logicalPosition);
     }
 
     public void PostPointerLeave(Offset logicalPosition)
     {
         RequireFinite(logicalPosition);
-        _host.PostPointerLeave(logicalPosition.X, logicalPosition.Y);
+        _inputTest.PostPointerLeave(logicalPosition);
     }
 
     public void PostPointerDown(Offset logicalPosition)
     {
         RequireFinite(logicalPosition);
-        _host.PostPointerDown(logicalPosition.X, logicalPosition.Y);
+        _inputTest.PostPointerDown(logicalPosition);
     }
 
     public void PostPointerUp(Offset logicalPosition)
     {
         RequireFinite(logicalPosition);
-        _host.PostPointerUp(logicalPosition.X, logicalPosition.Y);
+        _inputTest.PostPointerUp(logicalPosition);
     }
 
     public void PostPointerDrag(Offset logicalStart, Offset logicalEnd)
@@ -208,7 +234,7 @@ internal sealed class DesktopWindow : IWindow, IRawInputSource, ITextInputConnec
         {
             throw new ArgumentException("Pointer validation positions must be finite.");
         }
-        _host.PostPointerDrag(logicalStart.X, logicalStart.Y, logicalEnd.X, logicalEnd.Y);
+        _inputTest.PostPointerDrag(logicalStart, logicalEnd);
     }
 
     public void PostPointerWheel(Offset logicalPosition, Offset wheelDelta)
@@ -217,7 +243,7 @@ internal sealed class DesktopWindow : IWindow, IRawInputSource, ITextInputConnec
         {
             throw new ArgumentException("Pointer validation position and delta must be finite.");
         }
-        _host.PostPointerWheel(logicalPosition.X, logicalPosition.Y, wheelDelta.X, wheelDelta.Y);
+        _inputTest.PostPointerWheel(logicalPosition, wheelDelta);
     }
 
     public void PostPointerCaptureLoss(Offset logicalPosition)
@@ -226,19 +252,19 @@ internal sealed class DesktopWindow : IWindow, IRawInputSource, ITextInputConnec
         {
             throw new ArgumentException("Pointer validation position must be finite.", nameof(logicalPosition));
         }
-        _host.PostPointerCaptureLoss(logicalPosition.X, logicalPosition.Y);
+        _inputTest.PostPointerCaptureLoss(logicalPosition);
     }
 
-    public void PostKeyboardActivation(uint logicalKey) => _host.PostKeyboardActivation(logicalKey);
+    public void PostKeyboardActivation(uint logicalKey) => _inputTest.PostKeyboardActivation(logicalKey);
 
-    public void PostTextInput(string text) => _host.PostTextInput(text);
+    public void PostTextInput(string text) => _inputTest.PostTextInput(text);
 
     public void Close() => _shellWindow.Close();
 
     public bool TryGetFeature<TFeature>(out TFeature? feature)
         where TFeature : class
     {
-        feature = this as TFeature ?? _frameDispatcher as TFeature;
+        feature = this as TFeature ?? _frameDispatcher as TFeature ?? _graphics as TFeature;
         return feature is not null;
     }
 
@@ -279,35 +305,26 @@ internal sealed class DesktopWindow : IWindow, IRawInputSource, ITextInputConnec
             throw new ArgumentException("Caret rectangle must be finite.", nameof(logicalRect));
         }
         _caretRect = logicalRect;
-        var caretPixels = PixelExtentPolicy.ToPixelRect(logicalRect, Metrics.ScaleFactor);
-        Win32ImeInterop.SetCandidatePosition(
-            _host.Handle,
-            caretPixels.Left,
-            caretPixels.Bottom);
+        _text.SetCaretRect(logicalRect);
     }
 
     public void Update(SemanticsTreeSnapshot snapshot, Func<SemanticsActionRequest, bool> performAction)
     {
         LastSnapshot = snapshot ?? throw new ArgumentNullException(nameof(snapshot));
-        _automationProvider.Update(snapshot, performAction);
+        _accessibility.Update(snapshot, performAction);
     }
 
     public bool InvokeAction(int nodeId, SemanticsAction action, object? arguments = null) =>
-        _automationProvider.Invoke(new(nodeId, action, arguments));
+        _accessibility.InvokeAction(nodeId, action, arguments);
 
     public ValueTask<ClipboardResult> GetTextAsync(CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-        var result = Win32ClipboardInterop.GetText(_host.Handle);
-        return ValueTask.FromResult(new ClipboardResult(result.Success, result.Text, result.Diagnostic));
+        return _clipboard.GetTextAsync(cancellationToken);
     }
 
     public ValueTask<ClipboardResult> SetTextAsync(string text, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(text);
-        cancellationToken.ThrowIfCancellationRequested();
-        var result = Win32ClipboardInterop.SetText(_host.Handle, text);
-        return ValueTask.FromResult(new ClipboardResult(result.Success, result.Text, result.Diagnostic));
+        return _clipboard.SetTextAsync(text, cancellationToken);
     }
 
     public void SetCursor(WindowId window, CursorKind cursor)
@@ -316,33 +333,7 @@ internal sealed class DesktopWindow : IWindow, IRawInputSource, ITextInputConnec
         {
             throw new ArgumentException("The cursor target does not belong to this window.", nameof(window));
         }
-        var cursorIdentifier = cursor switch
-        {
-            CursorKind.Basic => NativeInterop.CursorArrow,
-            CursorKind.Click => NativeInterop.CursorHand,
-            CursorKind.Forbidden => NativeInterop.CursorNo,
-            CursorKind.Wait => NativeInterop.CursorWait,
-            CursorKind.Progress => NativeInterop.CursorAppStarting,
-            CursorKind.ContextMenu => NativeInterop.CursorArrow,
-            CursorKind.Help => NativeInterop.CursorHelp,
-            CursorKind.Text or CursorKind.VerticalText => NativeInterop.CursorIBeam,
-            CursorKind.Cell or CursorKind.Precise => NativeInterop.CursorCross,
-            CursorKind.Move or CursorKind.Grab or CursorKind.Grabbing or CursorKind.AllScroll => NativeInterop.CursorSizeAll,
-            CursorKind.NoDrop => NativeInterop.CursorNo,
-            CursorKind.Alias or CursorKind.Copy or CursorKind.Disappearing => NativeInterop.CursorArrow,
-            CursorKind.ResizeLeftRight or CursorKind.ResizeLeft or CursorKind.ResizeRight or
-                CursorKind.ResizeColumn => NativeInterop.CursorSizeWestEast,
-            CursorKind.ResizeUpDown or CursorKind.ResizeUp or CursorKind.ResizeDown or
-                CursorKind.ResizeRow => NativeInterop.CursorSizeNorthSouth,
-            CursorKind.ResizeUpLeftDownRight or CursorKind.ResizeUpLeft or
-                CursorKind.ResizeDownRight => NativeInterop.CursorSizeNorthWestSouthEast,
-            CursorKind.ResizeUpRightDownLeft or CursorKind.ResizeUpRight or
-                CursorKind.ResizeDownLeft => NativeInterop.CursorSizeNorthEastSouthWest,
-            CursorKind.ZoomIn or CursorKind.ZoomOut => NativeInterop.CursorCross,
-            CursorKind.Hidden => 0,
-            _ => throw new ArgumentOutOfRangeException(nameof(cursor)),
-        };
-        _host.SetCursor(cursorIdentifier);
+        _cursor.SetCursor(cursor);
     }
 
     private static void RequireFinite(Offset logicalPosition)
@@ -354,9 +345,9 @@ internal sealed class DesktopWindow : IWindow, IRawInputSource, ITextInputConnec
     }
 
     public void Present(ReadOnlySpan<byte> pixels, int width, int height, int rowBytes) =>
-        _host.Present(pixels, width, height, rowBytes);
+        _graphics.Present(pixels, width, height, rowBytes);
 
-    public IOpenGlWindowContext CreateContext() => new Win32OpenGlContext(new NativeOpenGlContext(_host.Handle), _resources);
+    public IOpenGlWindowContext CreateContext() => new ResourceTrackingOpenGlContext(_graphics.CreateOpenGlContext(), _resources);
 
     public void Dispose()
     {
@@ -366,12 +357,11 @@ internal sealed class DesktopWindow : IWindow, IRawInputSource, ITextInputConnec
         }
         _disposed = true;
         _shellWindow.WindowEvent -= OnWindowEvent;
-        _shellWindow.Pointer -= OnPointer;
-        _shellWindow.Key -= OnKey;
-        _shellWindow.Text -= OnText;
-        _automationProvider.Clear();
+        _input.Pointer -= OnPointer;
+        _input.Key -= OnKey;
+        _text.Text -= OnText;
+        _accessibility.Clear();
         _frameDispatcher.Dispose();
-        _host.AutomationRequested = null;
         _shellWindow.Dispose();
         ReleaseWindowCount();
         _rawInputSinks.Clear();
@@ -422,89 +412,46 @@ internal sealed class DesktopWindow : IWindow, IRawInputSource, ITextInputConnec
         }
     }
 
-    private void OnPointer(NativePointerEvent native)
+    private void OnPointer(RawPointerEvent input)
     {
-        if (native.Phase is not (NativePointerPhase.Removed or NativePointerPhase.Cancelled))
+        if (input.Phase is not (PointerPhase.Removed or PointerPhase.Cancelled))
         {
-            _lastPointer = new(native.LogicalX, native.LogicalY);
+            _lastPointer = input.Position;
         }
-        var phase = native.Phase switch
-        {
-            NativePointerPhase.Added => PointerPhase.Added,
-            NativePointerPhase.Hover => PointerPhase.Hover,
-            NativePointerPhase.Down => PointerPhase.Down,
-            NativePointerPhase.Move => PointerPhase.Move,
-            NativePointerPhase.Up => PointerPhase.Up,
-            NativePointerPhase.Wheel => PointerPhase.Hover,
-            NativePointerPhase.Removed => PointerPhase.Removed,
-            _ => PointerPhase.Cancelled,
-        };
-        var input = new RawPointerEvent(
-            new(native.WindowId),
-            native.DeviceId,
-            native.DeviceKind switch
-            {
-                NativePointerDeviceKind.Touch => PointerDeviceKind.Touch,
-                NativePointerDeviceKind.Pen => PointerDeviceKind.Pen,
-                _ => PointerDeviceKind.Mouse,
-            },
-            phase,
-            new(native.LogicalX, native.LogicalY),
-            native.Buttons,
-            TimeSpan.FromMilliseconds(native.TimestampMilliseconds),
-            PointerScrollNormalizer.Normalize(
-                new(native.WheelDeltaX, native.WheelDeltaY),
-                PlatformScrollConvention.WindowsWheel,
-                VendorBoundary.ReadWheelScrollLines()),
-            (InputModifiers)native.Modifiers);
         foreach (var sink in _rawInputSinks.ToArray())
         {
             sink.OnPointer(input);
         }
     }
 
-    private void OnKey(NativeKeyEvent native)
+    private void OnKey(RawKeyEvent input)
     {
-        var phase = native.Phase switch
-        {
-            NativeKeyPhase.Down => KeyPhase.Down,
-            NativeKeyPhase.Repeat => KeyPhase.Repeat,
-            NativeKeyPhase.Up => KeyPhase.Up,
-            _ => throw new InvalidOperationException($"Unknown native key phase: {native.Phase}"),
-        };
-        var input = new RawKeyEvent(
-            new(native.WindowId),
-            native.ScanCode,
-            native.VirtualKey,
-            phase,
-            TimeSpan.FromMilliseconds(native.TimestampMilliseconds),
-            (InputModifiers)native.Modifiers);
         foreach (var sink in _rawInputSinks.ToArray())
         {
             sink.OnKey(input);
         }
     }
 
-    private void OnText(NativeTextEvent native)
+    private void OnText(ShellTextEvent native)
     {
         if (_textClient is null)
         {
             return;
         }
-        if (native.Kind is NativeTextEventKind.CompositionStarted)
+        if (native.Kind is ShellTextEventKind.CompositionStarted)
         {
             _compositionBaseState = _editingState;
             _editingState = TextEditingStateReducer.BeginComposition(_editingState);
             _compositionActive = true;
             _compositionCommitted = false;
         }
-        else if (native.Kind is NativeTextEventKind.Text && native.Text.Length > 0)
+        else if (native.Kind is ShellTextEventKind.Text && native.Text.Length > 0)
         {
             _editingState = TextEditingStateReducer.CommitText(_editingState, native.Text);
             _compositionCommitted = _compositionActive;
             _textClient.UpdateEditingState(_editingState);
         }
-        else if (native.Kind is NativeTextEventKind.CompositionUpdated)
+        else if (native.Kind is ShellTextEventKind.CompositionUpdated)
         {
             if (!_compositionActive)
             {
@@ -515,7 +462,7 @@ internal sealed class DesktopWindow : IWindow, IRawInputSource, ITextInputConnec
             _editingState = TextEditingStateReducer.UpdateComposition(_editingState, native.Text);
             _textClient.UpdateEditingState(_editingState);
         }
-        else if (native.Kind is NativeTextEventKind.CompositionEnded)
+        else if (native.Kind is ShellTextEventKind.CompositionEnded)
         {
             _editingState = _compositionActive && !_compositionCommitted
                 ? TextEditingStateReducer.CancelComposition(_compositionBaseState)
@@ -621,13 +568,13 @@ internal sealed class DesktopFrameDispatcher : IFrameDispatcher, IDisposable
     }
 }
 
-internal sealed class Win32OpenGlContext : IOpenGlWindowContext
+internal sealed class ResourceTrackingOpenGlContext : IOpenGlWindowContext
 {
-    private readonly NativeOpenGlContext _context;
+    private readonly IOpenGlWindowContext _context;
     private readonly NativeResourceTracker _resources;
     private int _counted = 1;
 
-    internal Win32OpenGlContext(NativeOpenGlContext context, NativeResourceTracker resources)
+    internal ResourceTrackingOpenGlContext(IOpenGlWindowContext context, NativeResourceTracker resources)
     {
         _context = context;
         _resources = resources;

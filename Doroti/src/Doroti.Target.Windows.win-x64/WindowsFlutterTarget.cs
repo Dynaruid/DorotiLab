@@ -5,6 +5,7 @@ using Doroti.Flutter.Ui;
 using Doroti.Host.Desktop;
 using Doroti.Host.Desktop.Flutter;
 using Doroti.Platform;
+using Doroti.Vendor.Avalonia.Win32;
 
 namespace Doroti.Target.Windows;
 
@@ -41,7 +42,7 @@ public sealed record WindowsTargetIdentity(
     string SourcePortProvenanceSha256);
 
 /// <summary>Packaged win-x64 composition root. Framework packages remain independent of this RID choice.</summary>
-public sealed class WindowsFlutterTarget : IDisposable
+public sealed class WindowsFlutterTarget : IDesktopFlutterTarget
 {
     private readonly DesktopWindowBackend _backend;
     private readonly DesktopFlutterHost _host;
@@ -54,8 +55,8 @@ public sealed class WindowsFlutterTarget : IDisposable
             throw new PlatformNotSupportedException("Doroti.Target.Windows.win-x64 requires a Windows x64 process.");
         }
         Manifest = LoadManifest();
-        _backend = new();
-        _host = new(_backend);
+        _backend = new(Win32ShellPlatformFactory.Create());
+        _host = new(_backend, $"{RuntimeInformation.RuntimeIdentifier}/win32-wgl");
         Identity = new(
             Manifest.TargetIdentitySchema,
             RuntimeInformation.RuntimeIdentifier,
@@ -76,6 +77,10 @@ public sealed class WindowsFlutterTarget : IDisposable
     public WindowsTargetPackageManifest Manifest { get; }
 
     public WindowsTargetIdentity Identity { get; }
+
+    public string Rid => Identity.Rid;
+
+    public string GraphicsBackend => Identity.GraphicsBackend;
 
     public FlutterView CreateView(
         FlutterHostSession session,

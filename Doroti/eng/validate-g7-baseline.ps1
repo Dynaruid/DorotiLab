@@ -378,7 +378,7 @@ function Invoke-EvidenceShard {
     Write-Json $targetMatrixPath ([ordered]@{
         schemaVersion = 'doroti.g7-target-matrix/v1'
         milestone = 'G7-0'
-        requiredTargets = @('win-x64', 'browser-wasm')
+        requiredTargets = @('win-x64', 'browser-wasm', 'osx-arm64')
         targets = @(
             [ordered]@{
                 id = 'win-x64'; requiredForGoal7=$true; host='Win32 window'; backend='skia-wgl-opengl-gpu'
@@ -389,11 +389,15 @@ function Invoke-EvidenceShard {
                 id = 'browser-wasm'; requiredForGoal7=$true; host='browser document and canvas'; backend='browser-gpu-required'
                 source=$(if ($webSourcePresent) {'present-unverified'} else {'absent'}); build='notVerified'; packaged='notVerified'; live='notVerified'
                 input='notVerified'; semantics='notVerified'; physical='notVerified'; followUpMilestones=@('G7-3','G7-4','G7-5','G7-6')
+            },
+            [ordered]@{
+                id='osx-arm64';requiredForGoal7=$true;host='AppKit NSWindow';backend='skia-nsopengl-opengl-gpu'
+                source='implemented-source-port';build='verified-current-arm64';packaged='verified-package-only-consumer';live='verified-current-nswindow-strict-gpu'
+                input='verified-automated-causal-capabilities';semantics='verified-nsaccessibility-action-bridge';physical='notVerified-G7-6';followUpMilestones=@('G7-5','G7-6')
             }
         )
         deferred = @(
             [ordered]@{ id='linux-desktop'; requiredForGoal7=$false; status='notVerified'; promotionRule='becomes blocking only when selected as a supported release target' },
-            [ordered]@{ id='macos-desktop'; requiredForGoal7=$false; status='notVerified'; promotionRule='becomes blocking only when selected as a supported release target' },
             [ordered]@{ id='firefox'; requiredForGoal7=$false; status='notVerified'; promotionRule='becomes blocking only when selected as a supported browser' },
             [ordered]@{ id='webkit'; requiredForGoal7=$false; status='notVerified'; promotionRule='becomes blocking only when selected as a supported browser' }
         )
@@ -450,7 +454,7 @@ function Invoke-EvidenceShard {
             [ordered]@{ id='g6-appbar-runtime-taxonomy'; evidence='g6-runtime-error-taxonomy.json'; reason='historical G6-0 blocker; its reproduction command is no longer an active G7 gate'; allowedAsActivePass=$false },
             [ordered]@{ id='g6-initial-component-lifecycle-counts'; evidence='g6-component-coverage.json'; reason='initial notVerified lifecycle census was superseded by later live matrices'; allowedAsActivePass=$false }
         )
-        deferred = @('linux-desktop','macos-desktop','firefox','webkit','touch','multi-monitor','long-duration-gpu-soak')
+        deferred = @('linux-desktop','firefox','webkit','touch','multi-monitor','long-duration-gpu-soak')
         consistency = [ordered]@{
             activeReleaseBlockers = $blockers.Count
             blockersMissingOwnerCommandOrMilestone = $missingMetadata

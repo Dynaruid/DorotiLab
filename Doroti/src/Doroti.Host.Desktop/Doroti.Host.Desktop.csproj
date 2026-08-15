@@ -13,6 +13,8 @@
     <ProjectReference Include="..\Doroti.Rendering\Doroti.Rendering.csproj" />
     <ProjectReference Include="..\Doroti.Shell.Core\Doroti.Shell.Core.csproj" />
     <ProjectReference Include="..\Doroti.Vendor.Avalonia.Base\Doroti.Vendor.Avalonia.Base.csproj" />
-    <ProjectReference Include="..\Doroti.Vendor.Avalonia.Win32\Doroti.Vendor.Avalonia.Win32.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Win32AutomationProvider.cs" />
   </ItemGroup>
 </Project>

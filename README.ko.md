@@ -4,7 +4,7 @@
 
 ### C#과 .NET으로 만드는 멀티플랫폼 UI runtime.
 
-**Doroti**는 하나의 C# UI codebase를 Web·Desktop·Mobile로 확장하기 위한 실험적인 멀티플랫폼 UI 프로젝트입니다. Flutter framework의 구조와 동작을 .NET으로 옮기고, Windows desktop에서는 **Avalonia의 검증된 platform 구현을 기반 기술로 활용**해 native window와 운영체제 서비스를 연결합니다.
+**Doroti**는 하나의 C# UI codebase를 Web·Desktop·Mobile로 확장하기 위한 실험적인 멀티플랫폼 UI 프로젝트입니다. Flutter framework의 구조와 동작을 .NET으로 옮기고, Windows와 macOS desktop에서는 provenance가 고정된 **Avalonia platform source**를 선별 이식해 native window와 운영체제 서비스를 연결합니다. 앱 UI를 Avalonia control로 구성하지는 않습니다.
 
 Dart로 작성된 Flutter framework의 의미를 C#으로 변환해 `MaterialApp`, `Scaffold`, `Text`, `Button` 같은 익숙한 위젯을 여러 실행 환경에서 사용할 수 있도록 만들고 있습니다. 목표 플랫폼은 **Web, Windows, Linux, macOS, Android와 iOS**입니다.
 
@@ -13,7 +13,7 @@ Dart로 작성된 Flutter framework의 의미를 C#으로 변환해 `MaterialApp
 
 ## 지금 Doroti에서는
 
-멀티플랫폼 목표를 향한 첫 번째 제품 검증은 Windows desktop에서 진행하고 있습니다. Flutter의 widget tree가 C# 위에서 생성되고, mount되고, layout과 paint를 거쳐 실제 native window에 표시됩니다.
+Native 제품 검증은 이제 Windows x64와 Apple Silicon macOS에서 실행됩니다. Flutter widget tree가 C# 위에서 생성되고 mount·layout·paint를 거쳐 실제 HWND 또는 NSWindow에 표시됩니다.
 
 현재 데모 앱에서는 다음 요소들이 함께 동작합니다.
 
@@ -22,8 +22,8 @@ Dart로 작성된 Flutter framework의 의미를 C#으로 변환해 `MaterialApp
 - button, FAB, checkbox, radio, switch, slider
 - `Row`, `Column`, `Stack`, scroll view, lazy list
 - pointer interaction, state update, semantics
-- Avalonia에서 선별 이식한 Win32 window, dispatcher, input, IME, clipboard, cursor lifecycle
-- Skia WGL/OpenGL 기반 strict GPU rendering
+- Avalonia에서 선별 이식한 Win32 및 AppKit/libAvalonia window, dispatcher, input, text, clipboard, cursor, accessibility 구현
+- Windows의 Skia WGL/OpenGL과 `osx-arm64`의 NSOpenGL 기반 strict GPU rendering
 
 `MaterialApp.builder`뿐 아니라 `MaterialApp.home`과 Navigator를 거치는 앱 시작 경로도 실제 native frame으로 검증하고 있습니다.
 
@@ -41,7 +41,7 @@ Doroti는 두 기술을 연결하는 조금 엉뚱하지만 신나는 질문에�
 
 플랫폼 셸은 Doroti runtime과 운영체제를 잇는 계층입니다. window lifecycle, dispatcher, pointer와 keyboard input, IME, clipboard, cursor, accessibility와 rendering surface를 담당합니다. 화면의 widget tree, layout, paint와 state lifecycle은 C#으로 옮긴 Flutter framework와 Doroti runtime이 소유합니다.
 
-현재 Windows 제품 셸은 공통 platform contract 위에 구성됩니다. 기본 host가 native HWND를 만들고 OS 서비스를 연결하며, Avalonia upstream에서 선별한 Win32 window, dispatcher, input, IME, clipboard, cursor 구현을 그 contract에 맞게 이식합니다. 이 소스들은 upstream revision과 변경 이력을 추적할 수 있도록 provenance manifest로 관리합니다. Doroti 앱의 UI를 Avalonia `Control`이나 XAML로 구성하는 것은 아닙니다.
+Desktop 제품 셸은 공통 `Doroti.Shell.Core` capability 위에 구성됩니다. `Doroti.Host.Desktop`은 `IShellWindowingPlatform`을 주입받고, `win-x64`와 `osx-arm64` composition root가 각각 Win32 또는 AppKit 구현을 연결합니다. 선별한 upstream source와 local adaptation은 provenance manifest로 추적합니다. Doroti 앱의 UI를 Avalonia `Control`이나 XAML로 구성하는 것은 아닙니다.
 
 공식 `Avalonia.Desktop` package를 사용하는 host도 별도로 유지합니다. 이 경로는 기본 제품 셸이 아니라, 소스 이식 host와 동작을 비교하고 rendering·input·window lifecycle을 검증하는 A/B reference입니다.
 
@@ -55,21 +55,21 @@ C# framework packages
 Doroti runtime + widget/rendering pipeline
       ↓
 platform host + rendering surface
-(Windows: Avalonia-derived platform source port)
+(Windows: Win32/WGL · macOS: AppKit/NSOpenGL)
       ↓
 Web / Windows / Linux / macOS / Android / iOS
 ```
 
 - **Semantic compiler**가 Dart/Flutter의 타입과 언어 의미를 분석해 C#으로 변환합니다.
 - **Doroti runtime**이 Flutter의 scheduler, widget, element, rendering lifecycle을 연결합니다.
-- **Platform host**가 각 target의 window 또는 view, input, accessibility와 rendering surface를 연결합니다. 현재 Windows host에는 Avalonia에서 선별 이식한 platform source가 사용됩니다.
+- **Platform host**가 각 target의 window 또는 view, input, accessibility와 rendering surface를 연결합니다. Windows와 macOS host는 같은 typed shell 경계 뒤에 target별 source port를 둡니다.
 - 변환 결과는 검토 가능한 C# source와 .NET package가 됩니다.
 
 생성된 코드를 몰래 손보는 방식 대신, 문제가 생기면 compiler와 runtime의 공통 의미를 고치고 다시 생성하는 것을 원칙으로 합니다.
 
 ## 실행해 보기
 
-현재 공개된 데모와 live validation은 **Windows x64**에서 실행할 수 있습니다. .NET SDK 10과 PowerShell 7이 필요합니다.
+현재 데모와 자동 native smoke validation은 **Windows x64**와 **Apple Silicon macOS(`osx-arm64`)**에서 실행할 수 있습니다. .NET SDK 10과 PowerShell 7이 필요합니다.
 
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 build
@@ -82,14 +82,15 @@ dotnet run --project ./DorotiDemoApp
 dotnet run --project ./DorotiDemoApp -- --smoke --entry builder --frames 3 --duration-ms 15000
 ```
 
-> Windows x64는 현재 구현과 검증의 출발 target이며 Doroti의 전체 지원 범위를 뜻하지 않습니다. Web, Linux, macOS, Android와 iOS는 후속 단계에서 구현하고 검증할 예정입니다.
+> Windows x64와 `osx-arm64`는 구현된 native desktop target입니다. 물리 Korean IME candidate placement, VoiceOver 탐색, precise trackpad gesture, Intel macOS, Web, Linux, Android와 iOS에는 각각 후속 acceptance 또는 구현 gate가 남아 있습니다.
 
 ## 프로젝트 구성
 
 | 경로 | 내용 |
 | --- | --- |
 | [`Doroti/`](Doroti/) | compiler가 만든 framework, runtime, renderer와 platform host |
-| [`Doroti/src/Doroti.Host.Desktop/`](Doroti/src/Doroti.Host.Desktop/) | Avalonia-derived Win32 source port를 사용하는 기본 Windows host |
+| [`Doroti/src/Doroti.Host.Desktop/`](Doroti/src/Doroti.Host.Desktop/) | Windows와 macOS composition root가 함께 사용하는 typed desktop host |
+| [`Doroti/src/Doroti.Target.macOS.osx-arm64/`](Doroti/src/Doroti.Target.macOS.osx-arm64/) | Apple Silicon AppKit/NSOpenGL target package |
 | [`Doroti/src/Doroti.Host.Avalonia/`](Doroti/src/Doroti.Host.Avalonia/) | 공식 `Avalonia.Desktop` package 기반 비교·검증용 host |
 | [`DorotiDemoApp/`](DorotiDemoApp/) | 실제 Material widget tree를 띄우는 데모 앱 |
 | [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | Dart를 C#으로 변환하는 semantic compiler |
@@ -101,7 +102,7 @@ dotnet run --project ./DorotiDemoApp -- --smoke --entry builder --frames 3 --dur
 
 지금의 목표는 단순히 “Flutter 파일이 C#으로 빌드된다”가 아닙니다. 일반적인 앱이 실제로 화면을 전환하고, 입력받고, 스크롤하고, 접근성 도구와 연동할 수 있는 멀티플랫폼 UI runtime을 만드는 것입니다.
 
-앞으로는 navigation과 dialog, form과 IME, 대규모 scrolling, assets와 localization, 더 많은 Material/Cupertino component를 구현합니다. 현재 Windows 검증을 기반으로 **Web, Linux, macOS, Android와 iOS**까지 지원 범위를 확대할 계획입니다.
+앞으로는 navigation과 dialog, form과 물리 IME acceptance, 대규모 scrolling, assets와 localization, 더 많은 Material/Cupertino component를 구현합니다. 현재 Windows와 Apple Silicon macOS 검증을 기반으로 **Web, Linux, Intel macOS, Android와 iOS**까지 지원 범위를 확대할 계획입니다.
 
 Doroti는 아직 개발 중인 실험적 프로젝트입니다. compiler, runtime, rendering과 UI framework가 만나는 기술에 관심이 있다면 프로젝트의 다음 업데이트도 함께 지켜봐 주세요!
 
@@ -116,7 +117,7 @@ Doroti를 바탕으로 직접 실험하거나 새로운 방향으로 발전시�
 Doroti는 다음 프로젝트의 소스와 설계에서 많은 도움을 받고 있습니다.
 
 - [Flutter](https://github.com/flutter/flutter) — framework 구조와 동작의 기준
-- [Avalonia](https://github.com/AvaloniaUI/Avalonia) — Windows desktop platform 구현의 기반
+- [Avalonia](https://github.com/AvaloniaUI/Avalonia) — 선별한 Windows/macOS desktop platform 구현의 source 기반
 
 ## License
 

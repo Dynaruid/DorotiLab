@@ -1,4 +1,5 @@
 using Doroti.Graphics;
+using Doroti.Platform;
 
 namespace Doroti.Shell.Core;
 
@@ -99,6 +100,85 @@ public interface IShellWindowingPlatform
     IShellEventLoop EventLoop { get; }
 
     IShellWindow CreateWindow(string title, Size initialLogicalClientSize);
+}
+
+/// <summary>Backend-neutral native input emitted by a shell top level.</summary>
+public interface IShellInputService
+{
+    InputCapabilities Capabilities { get; }
+
+    event Action<RawPointerEvent>? Pointer;
+
+    event Action<RawKeyEvent>? Key;
+}
+
+public enum ShellTextEventKind
+{
+    Text,
+    CompositionStarted,
+    CompositionUpdated,
+    CompositionEnded,
+}
+
+public readonly record struct ShellTextEvent(ShellTextEventKind Kind, string Text);
+
+/// <summary>Native text-system bridge. Native IME objects never escape the vendor assembly.</summary>
+public interface IShellTextInputService
+{
+    event Action<ShellTextEvent>? Text;
+
+    void SetCaretRect(Rect logicalRect);
+}
+
+public interface IShellClipboardService
+{
+    ValueTask<ClipboardResult> GetTextAsync(CancellationToken cancellationToken = default);
+
+    ValueTask<ClipboardResult> SetTextAsync(string text, CancellationToken cancellationToken = default);
+}
+
+public interface IShellCursorService
+{
+    void SetCursor(CursorKind cursor);
+}
+
+/// <summary>Framebuffer/OpenGL service shared by WGL and AppKit without exposing either native API.</summary>
+public interface IShellGraphicsService
+{
+    string BackendIdentity { get; }
+
+    void Present(ReadOnlySpan<byte> pixels, int width, int height, int rowBytes);
+
+    IOpenGlWindowContext CreateOpenGlContext();
+}
+
+public interface IShellFocusService
+{
+    void RequestFocus(bool focused);
+}
+
+/// <summary>Posts validation input through the target's real native event path.</summary>
+public interface IShellInputTestService
+{
+    void PostPointerMove(Offset logicalPosition);
+    void PostPointerLeave(Offset logicalPosition);
+    void PostPointerDown(Offset logicalPosition);
+    void PostPointerUp(Offset logicalPosition);
+    void PostPointerTap(Offset logicalPosition);
+    void PostPointerDrag(Offset logicalStart, Offset logicalEnd);
+    void PostPointerWheel(Offset logicalPosition, Offset wheelDelta);
+    void PostPointerCaptureLoss(Offset logicalPosition);
+    void PostKeyboardActivation(uint logicalKey);
+    void PostTextInput(string text);
+}
+
+public interface IShellAccessibilityService
+{
+    void Update(SemanticsTreeSnapshot snapshot, Func<SemanticsActionRequest, bool> performAction);
+
+    bool InvokeAction(int nodeId, SemanticsAction action, object? arguments = null);
+
+    void Clear();
 }
 
 public sealed class ShellPlatformServiceRegistry

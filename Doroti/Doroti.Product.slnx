@@ -26,9 +26,11 @@
     <Project Path="src/Doroti.Rendering/Doroti.Rendering.csproj" />
     <Project Path="src/Doroti.Shell.Core/Doroti.Shell.Core.csproj" />
     <Project Path="src/Doroti.Target.Windows.win-x64/Doroti.Target.Windows.win-x64.csproj" />
+    <Project Path="src/Doroti.Target.macOS.osx-arm64/Doroti.Target.macOS.osx-arm64.csproj" />
     <Project Path="src/Doroti.Vendor.Avalonia.Skia/Doroti.Vendor.Avalonia.Skia.csproj" />
     <Project Path="src/Doroti.Vendor.Avalonia.Base/Doroti.Vendor.Avalonia.Base.csproj" />
     <Project Path="src/Doroti.Vendor.Avalonia.Win32/Doroti.Vendor.Avalonia.Win32.csproj" />
+    <Project Path="src/Doroti.Vendor.Avalonia.Native/Doroti.Vendor.Avalonia.Native.csproj" />
   </Folder>
   <Project Path="src/Doroti.Analyzers/Doroti.Analyzers.csproj" />
 </Solution>

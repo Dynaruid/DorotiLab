@@ -14,6 +14,8 @@
     <ProjectReference Include="..\Doroti.Host.Desktop\Doroti.Host.Desktop.csproj" />
     <ProjectReference Include="..\Doroti.Host.Desktop.Flutter\Doroti.Host.Desktop.Flutter.csproj" />
     <ProjectReference Include="..\Doroti.Platform\Doroti.Platform.csproj" />
+    <ProjectReference Include="..\Doroti.Shell.Core\Doroti.Shell.Core.csproj" />
+    <ProjectReference Include="..\Doroti.Vendor.Avalonia.Win32\Doroti.Vendor.Avalonia.Win32.csproj" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" />

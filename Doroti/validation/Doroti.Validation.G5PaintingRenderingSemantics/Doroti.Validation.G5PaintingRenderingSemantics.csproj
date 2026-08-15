@@ -11,5 +11,6 @@
     <ProjectReference Include="..\..\src\Doroti.Flutter.Ui\Doroti.Flutter.Ui.csproj" />
     <ProjectReference Include="..\..\src\Doroti.Host.Desktop\Doroti.Host.Desktop.csproj" />
     <ProjectReference Include="..\..\src\Doroti.Host.Desktop.Flutter\Doroti.Host.Desktop.Flutter.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Vendor.Avalonia.Win32\Doroti.Vendor.Avalonia.Win32.csproj" />
   </ItemGroup>
 </Project>

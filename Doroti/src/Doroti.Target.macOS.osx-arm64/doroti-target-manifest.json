@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "doroti.target-package/v1",
+  "packageId": "Doroti.Target.macOS.osx-arm64",
+  "packageVersion": "0.2.0-beta",
+  "rid": "osx-arm64",
+  "operatingSystem": "macos",
+  "windowBackend": "appkit-libavalonia-source-port",
+  "graphicsBackend": "nsopengl-skia-strict-gpu",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "avaloniaRevision": "f159423f691946e713f454447a780d4677d8a0d2",
+  "nativeAsset": "runtimes/osx-arm64/native/libAvalonia.dylib",
+  "nativeArchitecture": "arm64",
+  "capabilitySchema": "doroti.flutter-capabilities/v1",
+  "diagnosticSchema": "doroti.desktop-flutter-target-diagnostics/v1",
+  "targetIdentitySchema": "doroti.target-identity/v1"
+}

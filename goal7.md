@@ -1,6 +1,6 @@
 # Doroti 7차 목표 — 제품 정확성 closure와 Windows/macOS shell·Web release
 
-> 상태: G7-2 ✅ 완료 — G7-3M macOS shell과 G7-3 Web build/publish 진행 가능
+> 상태: G7-3M ✅ 완료 — G7-3 Web build/publish 진행 가능
 > 작성일: 2026-08-14
 > 측정 핵심화: 2026-08-15
 > 범위 추가: 2026-08-15 — Apple Silicon macOS shell(`osx-arm64`)을 필수 target으로 승격
@@ -253,6 +253,15 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 - `Doroti/migration/avalonia-shell/g7-macos-source-port-provenance.json`
 - `Doroti/migration/macos/g7-macos-shell-evidence.json`
 - `Doroti/eng/validate-g7-macos-shell.ps1 -Shard <Source|Build|Live|Package>`
+
+실행 결과(2026-08-15, Apple Silicon macOS 검증 호스트):
+
+- G7-3M `PASS`: `Doroti.Host.Desktop`의 Win32 concrete type/구성 의존을 `IShellWindowingPlatform`과 Shell.Core typed input/text/clipboard/cursor/graphics/focus/accessibility service 주입으로 옮겼다. Windows composition root와 package identity는 `Doroti.Target.Windows.win-x64`에 유지한다.
+- 고정 Avalonia revision의 `macos-managed`/`macos-libavalonia` owner를 `Doroti.Vendor.Avalonia.Native`의 reviewed managed C ABI 및 AppKit Objective-C++ source port로 닫았다. 생성 header, source mapping, license, architecture와 hash는 `g7-macos-source-port-provenance.json`에 고정했다.
+- 실제 NSWindow/AppKit live `PASS`: Apple M1 NSOpenGL/Skia strict-GPU non-empty frame, generated `DorotiDemoApp`의 제출 frame 전부 terminal ACK, software fallback 0, pointer/drag/fractional wheel/key/text/clipboard/NSAccessibility causal trace, resize/minimize/activate/close와 resource balance를 통과했다.
+- `osx-arm64` build/repeat publish/package `PASS`: arm64 `libAvalonia.dylib`의 `@rpath` install name과 hash를 검증했고, 저장소 밖 clean package-only consumer가 격리된 package cache로 restore/publish/launch하여 제출 frame 전부 ACK, native toggle, semantics와 종료 resource balance를 통과했다. repository-private fallback과 Avalonia UI/Control/Composition binary dependency는 0이다.
+- `g7-target-matrix.json`에서 `macos-desktop` deferred 항목을 제거하고 `osx-arm64`를 필수 target으로 승격했다. Korean IME candidate window, VoiceOver 물리 탐색, 실제 precise trackpad와 `osx-x64`는 전이하지 않고 G7-6까지 `notVerified`다.
+- 재현 명령은 `validate-g7-macos-shell.ps1 -Shard Source|Build|Live|Package`이며 종합 evidence의 status는 `pass`다.
 
 ### G7-3 — Web toolchain, browser host와 publish baseline
 

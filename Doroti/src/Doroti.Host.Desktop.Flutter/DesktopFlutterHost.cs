@@ -19,14 +19,18 @@ namespace Doroti.Host.Desktop.Flutter;
 public sealed class DesktopFlutterHost : IDisposable
 {
     private readonly DesktopWindowBackend _backend;
+    private readonly string _targetIdentity;
     private readonly HashSet<FlutterView> _views = [];
     private readonly Dictionary<ulong, DesktopGraphicsAndSemanticsCapabilities> _graphics = [];
     private readonly Dictionary<ulong, DesktopFlutterViewCapability> _windows = [];
     private readonly Dictionary<ulong, FlutterHostSession> _sessions = [];
     private bool _disposed;
 
-    public DesktopFlutterHost(DesktopWindowBackend backend) =>
+    public DesktopFlutterHost(DesktopWindowBackend backend, string? targetIdentity = null)
+    {
         _backend = backend ?? throw new ArgumentNullException(nameof(backend));
+        _targetIdentity = targetIdentity ?? $"{RuntimeInformation.RuntimeIdentifier}/desktop-opengl";
+    }
 
     public FlutterView CreateView(
         PlatformDispatcher dispatcher,
@@ -47,8 +51,7 @@ public sealed class DesktopFlutterHost : IDisposable
         var hasPlatformServices = window.TryCreatePlatformServicesCapability(out var platformServices);
         var platformMessages = new DesktopPlatformMessageCapability(
             hasPlatformServices ? platformServices : null);
-        var targetIdentity = $"{RuntimeInformation.RuntimeIdentifier}/win32-wgl";
-        var capabilities = new FlutterViewCapabilities(targetIdentity)
+        var capabilities = new FlutterViewCapabilities(_targetIdentity)
             .Register<IViewHostCapability>(FlutterCapabilityIds.WindowLifecycle, window)
             .Register<IViewHostCapability>(FlutterCapabilityIds.ViewLifecycleMetrics, window)
             .Register<IInputHostCapability>(FlutterCapabilityIds.InputEvents, window)
@@ -883,7 +886,7 @@ internal sealed class DesktopPlatformEnvironmentCapability : IPlatformEnvironmen
         Brightness.light,
         CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains('H', StringComparison.Ordinal),
         nativeSpellCheckServiceDefined: false,
-        operatingSystem: HostOperatingSystem.windows);
+        operatingSystem: OperatingSystem.IsMacOS() ? HostOperatingSystem.macOS : HostOperatingSystem.windows);
 
     public event Action<PlatformConfiguration>? ConfigurationChanged
     {

@@ -4,6 +4,7 @@ using Doroti.Engine;
 using Doroti.Graphics;
 using Doroti.Platform;
 using Doroti.Rendering;
+using Doroti.Shell.Core;
 
 namespace Doroti.Host.Desktop;
 
@@ -23,6 +24,7 @@ public sealed class DesktopGpuFrameSink : IAsyncInteractiveFrameSink, IInteracti
 {
     private readonly SurfaceCreationResult _selection;
     private readonly RasterInteractiveFrameSink _inner;
+    private readonly string _backendIdentity;
     private bool _disposed;
 
     public DesktopGpuFrameSink(IWindow window, FrameTraceRecorder? trace = null)
@@ -30,11 +32,14 @@ public sealed class DesktopGpuFrameSink : IAsyncInteractiveFrameSink, IInteracti
         ArgumentNullException.ThrowIfNull(window);
         _selection = SkiaSurfaceFactory.CreateHardware(window);
         _inner = new(_selection.Surface, trace);
+        _backendIdentity = window.TryGetFeature<IShellGraphicsService>(out var graphics) && graphics is not null
+            ? graphics.BackendIdentity
+            : "skia-opengl-gpu";
     }
 
     public ImageCache Images => _inner.Images;
 
-    public string BackendIdentity => "skia-wgl-opengl-gpu";
+    public string BackendIdentity => _backendIdentity;
 
     public string Diagnostic => _selection.Diagnostic;
 

@@ -9,7 +9,6 @@ using Doroti.Generated.Framework.Foundation;
 using Doroti.Generated.Framework.Painting;
 using Doroti.Generated.Framework.Widgets;
 using Doroti.Host.Desktop.Flutter;
-using Doroti.Target.Windows;
 using Material = Doroti.Generated.Framework.Material;
 using IOPath = System.IO.Path;
 using UiColor = Doroti.Flutter.Ui.Color;
@@ -24,13 +23,23 @@ internal static class Program
     public static int Main(string[] args)
     {
         var options = DemoOptions.Parse(args);
-        if (!OperatingSystem.IsWindows())
+        if (!OperatingSystem.IsWindows() && !OperatingSystem.IsMacOS())
         {
             return FailBeforeTarget(options, new PlatformNotSupportedException(
-                "DorotiDemoApp currently requires the G5-6W Windows target package."));
+                "DorotiDemoApp requires a promoted Windows or macOS desktop target package."));
         }
 
         return Run(options);
+    }
+
+    private static IDesktopFlutterTarget CreateTarget()
+    {
+        var (assemblyName, typeName) = OperatingSystem.IsMacOS()
+            ? ("Doroti.Host.macOS", "Doroti.Target.macOS.MacOsFlutterTarget")
+            : ("Doroti.Host.Windows", "Doroti.Target.Windows.WindowsFlutterTarget");
+        var type = System.Reflection.Assembly.Load(assemblyName).GetType(typeName, throwOnError: true)!;
+        return (IDesktopFlutterTarget)(Activator.CreateInstance(type)
+            ?? throw new InvalidOperationException($"Could not create {typeName}."));
     }
 
     private static int Run(DemoOptions options)
@@ -43,7 +52,7 @@ internal static class Program
 
         try
         {
-            using var target = new WindowsFlutterTarget();
+            using var target = CreateTarget();
             using var session = new FlutterHostSession(entrypoint);
             using var scope = session.dispatcher.EnterScope();
 
@@ -205,7 +214,7 @@ internal static class Program
                         throw new InvalidDataException($"Material native resource closure is not balanced: {resourceClosure}.");
                     WriteSmokeEvidence(options, target, entrypoint, diagnostics, readback, null, false, resourceClosure);
                     Console.WriteLine(
-                        $"DorotiDemoApp Material: PASS ({target.Identity.Rid}; {entrypoint.RootApp.GetType().FullName})");
+                        $"DorotiDemoApp Material: PASS ({target.Rid}; {entrypoint.RootApp.GetType().FullName})");
                     return 0;
                 }
 
@@ -220,7 +229,7 @@ internal static class Program
 
             session.Shutdown();
             Console.WriteLine(
-                $"DorotiDemoApp Material: PASS ({target.Identity.Rid}; {entrypoint.RootApp.GetType().FullName})");
+                $"DorotiDemoApp Material: PASS ({target.Rid}; {entrypoint.RootApp.GetType().FullName})");
             return 0;
         }
         catch (Exception exception)
@@ -241,7 +250,7 @@ internal static class Program
 
     private static void WaitUntil(
         Func<bool> predicate,
-        WindowsFlutterTarget target,
+        IDesktopFlutterTarget target,
         MaterialDemoEntrypoint entrypoint,
         TimeSpan timeout)
     {
@@ -257,7 +266,7 @@ internal static class Program
         }
     }
 
-    private static void PumpInputTurn(WindowsFlutterTarget target)
+    private static void PumpInputTurn(IDesktopFlutterTarget target)
     {
         var deadline = Stopwatch.StartNew();
         while (deadline.Elapsed < TimeSpan.FromMilliseconds(40))
@@ -279,7 +288,7 @@ internal static class Program
         {
             throw new InvalidDataException("The demo root is not a reviewed MaterialApp/Scaffold tree.");
         }
-        if (diagnostics.Frame.BackendIdentity != "skia-wgl-opengl-gpu" ||
+        if (diagnostics.Frame.BackendIdentity is not ("skia-wgl-opengl-gpu" or "skia-nsopengl-opengl-gpu") ||
             diagnostics.Frame.SoftwareFallbackUsed)
         {
             throw new InvalidDataException(
@@ -316,7 +325,9 @@ internal static class Program
         if (entrypoint.GalleryState?.EffectInteractionCount != 2 || !entrypoint.GalleryState.BlurEnabled ||
             entrypoint.BackdropOnReadback is null || entrypoint.BackdropOffReadback is null ||
             entrypoint.NativeEffectPanelBounds is not { } panelBounds ||
-            CountChangedPixels(entrypoint.BackdropOnReadback, entrypoint.BackdropOffReadback, panelBounds) < 100 ||
+            (OperatingSystem.IsWindows()
+                ? CountChangedPixels(entrypoint.BackdropOnReadback, entrypoint.BackdropOffReadback, panelBounds)
+                : CountChangedPixels(entrypoint.BackdropOnReadback, entrypoint.BackdropOffReadback)) < 100 ||
             !entrypoint.NativeEffectHitTestTargets.Any(target => target.EndsWith("RenderPointerListener", StringComparison.Ordinal)))
         {
             throw new InvalidDataException("The native backdrop checkbox did not complete ON -> OFF -> ON with a raster differential.");
@@ -340,7 +351,7 @@ internal static class Program
         }
     }
 
-    private static void WriteReady(DemoOptions options, WindowsFlutterTarget target)
+    private static void WriteReady(DemoOptions options, IDesktopFlutterTarget target)
     {
         if (options.ReadyPath is null) return;
         WriteJson(options.ReadyPath, new
@@ -420,7 +431,7 @@ internal static class Program
 
     private static void WriteSmokeEvidence(
         DemoOptions options,
-        WindowsFlutterTarget? target,
+        IDesktopFlutterTarget? target,
         MaterialDemoEntrypoint? entrypoint,
         DesktopFlutterTargetDiagnostics? diagnostics,
         DesktopFlutterPixelReadback? readback,
@@ -521,7 +532,7 @@ internal static class Program
             },
             frame = diagnostics?.Frame,
             automation = diagnostics?.Automation,
-            backend = diagnostics?.Frame.BackendIdentity ?? target?.Identity.GraphicsBackend,
+            backend = diagnostics?.Frame.BackendIdentity ?? target?.GraphicsBackend,
             initialPixels = new
             {
                 width = entrypoint?.InitialReadback?.Width ?? 0,

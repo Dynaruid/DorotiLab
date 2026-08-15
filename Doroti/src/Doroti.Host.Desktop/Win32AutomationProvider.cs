@@ -1,9 +1,7 @@
 using System.Runtime.InteropServices;
 using Doroti.Graphics;
 using Doroti.Platform;
-using Doroti.Vendor.Avalonia.Win32;
-
-namespace Doroti.Host.Desktop;
+namespace Doroti.Vendor.Avalonia.Win32;
 
 // Adapted from the A0-pinned Avalonia Win32 automation provider seam. Doroti owns
 // the semantics-to-UIA mapping while the source-ported window owns WM_GETOBJECT.

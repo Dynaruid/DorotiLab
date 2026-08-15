@@ -10,6 +10,13 @@
         "dependencies": {
           "Doroti.Core": "[0.2.0-beta, )"
         }
+      },
+      "doroti.platform": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Core": "[0.2.0-beta, )",
+          "Doroti.Graphics": "[0.2.0-beta, )"
+        }
       }
     }
   }

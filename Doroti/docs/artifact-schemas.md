@@ -78,6 +78,11 @@ Source inventory deliberately does not enumerate or hash an entire reference che
 | G5-1 policy owner audit | `doroti.g5-1-policy-owner-audit/v1` |
 | G5-1 closure summary | `doroti.g5-1-closure/v1` |
 | G5-5 application compiler, resources, plugins, and external consumer evidence | `doroti.g5-5-evidence/v1` |
+| G7-3M macOS source-port provenance | `doroti.g7-macos-source-port-provenance/v1` |
+| G7-3M actual AppKit/GPU/input/resource probe | `doroti.g7-macos-live-probe/v1` |
+| G7-3M Source/Build/Live/Package aggregate | `doroti.g7-macos-shell-evidence/v1` |
+| RID target capability manifest | `doroti.target-manifest/v1` |
+| RID target package manifest | `doroti.target-package/v1` |
 | Roadmap 2 to Roadmap 3 handoff contract | `doroti.roadmap2-handoff/v1` |
 | R9 product-foundation implementation and release-gate evidence | `doroti.r9-foundation-evidence/v1` |
 

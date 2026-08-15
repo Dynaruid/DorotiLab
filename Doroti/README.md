@@ -8,11 +8,11 @@ Doroti does not embed Flutter in a WebView and does not build its UI with Avalon
 
 ## Current status
 
-The current product gate is an automated **Windows x64** native run. A reviewed Material widget tree can construct, mount, lay out, paint, present, and respond to input in an actual HWND using the strict `skia-wgl-opengl-gpu` backend.
+The current native product gates cover **Windows x64** and **Apple Silicon macOS**. A reviewed Material widget tree can construct, mount, lay out, paint, present, and respond to input in an actual HWND or NSWindow using the strict `skia-wgl-opengl-gpu` or `skia-nsopengl-opengl-gpu` backend.
 
 The validated slice includes `MaterialApp`, `Theme`, `Navigator`, `Scaffold`, `AppBar`, `Card`, `ListTile`, buttons and selection controls, common layout widgets, scrolling, a lazy list, local state updates, and native accessibility actions. Both `MaterialApp.builder` and `MaterialApp.home` entry paths are covered.
 
-Linux, macOS, Web, Android, iOS, and physical-device validation remain roadmap work. A project or package compiling for a target is not treated as proof that native presentation and interaction work there.
+The `osx-arm64` gate includes an actual AppKit window, Apple M1 GPU presentation, native input/text/clipboard/accessibility traces, balanced resource shutdown, repeat publish identity, and a repository-external package-only launch. Physical Korean IME candidate-window placement, VoiceOver navigation, precise trackpad gestures, `osx-x64`, Linux, Web, Android, and iOS retain separate gates. A project or package compiling for a target is never treated as proof of native behavior by itself.
 
 See the repository [Goal 7 roadmap](../goal7.md) for the current milestone, Web build, and evidence requirements.
 
@@ -32,13 +32,14 @@ Doroti.DartToCSharp ──► reviewed C# framework packages
                               │
                               ▼
               target package and native host
-        (Windows: Avalonia-derived platform source)
+       (Windows: Win32/WGL · macOS: AppKit/NSOpenGL)
 ```
 
 - `Doroti.Flutter.Framework.*` contains generated and reviewed framework libraries.
 - `Doroti.Flutter.Runtime`, `Doroti.Flutter.Ui`, and `Doroti.Flutter.Hosting` provide Dart/Flutter runtime semantics and application bootstrap.
 - `Doroti.Engine`, `Doroti.Rendering`, and `Doroti.Graphics` own frame scheduling, display output, and graphics contracts.
-- `Doroti.Host.Desktop` and `Doroti.Target.Windows.win-x64` connect the product to Win32 and strict GPU presentation.
+- `Doroti.Shell.Core` and `Doroti.Host.Desktop` define and consume backend-neutral typed desktop capabilities.
+- `Doroti.Target.Windows.win-x64` and `Doroti.Target.macOS.osx-arm64` inject the Win32/WGL or AppKit/NSOpenGL implementation.
 - `Doroti.Host.Avalonia` is a comparison host, not the default product composition root.
 
 Selected Avalonia platform code is adapted behind Doroti contracts and tracked by provenance manifests. Applications do not take a runtime dependency on Avalonia controls.
@@ -48,9 +49,9 @@ Selected Avalonia platform code is adapted behind Doroti contracts and tracked b
 - .NET SDK **10.0.300** or a compatible latest patch, as pinned in [`global.json`](global.json)
 - PowerShell 7 (`pwsh`) for the repository workflows
 - The pinned repository-local `flutter-master` SDK and `Avalonia-main` reference checkout at the repository root
-- Windows x64 for the native demo and live UI Automation gates
+- Windows x64 for the Win32/UI Automation gate, or Apple Silicon macOS for the G7-3M AppKit gate
 
-Prepare the local Flutter SDK once with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`. Doroti workflows select the host-appropriate repository-local launchers (`flutter.bat`/`dart.bat` or `flutter`/`dart`) and never fall back to a Flutter installation on `PATH` or under the user profile. If a checkout created on Windows is moved to macOS, the SDK resolver normalizes CRLF in pinned Flutter sources and shell scripts to LF. macOS can run the reference, compiler, and package-build gates, but those runs do not replace Win32 live evidence. The reference checkouts are source and behavior inputs; they are not product runtime dependencies.
+Prepare the local Flutter SDK once with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`. Doroti workflows select the host-appropriate repository-local launchers (`flutter.bat`/`dart.bat` or `flutter`/`dart`) and never fall back to a Flutter installation on `PATH` or under the user profile. If a checkout created on Windows is moved to macOS, the SDK resolver normalizes CRLF in pinned Flutter sources and shell scripts to LF. Each native gate proves only its own target: the AppKit run does not replace Win32 UI Automation evidence, and Windows evidence does not transfer to macOS. The reference checkouts are source and behavior inputs; they are not product runtime dependencies.
 
 ## Quick start
 
@@ -62,7 +63,7 @@ pwsh -File ./Doroti/eng/doroti.ps1 build
 dotnet run --project ./DorotiDemoApp
 ```
 
-For a short deterministic smoke run on Windows x64:
+For a short deterministic smoke run on either supported native desktop host:
 
 ```powershell
 dotnet run --project ./DorotiDemoApp -- --smoke --entry builder --frames 3 --duration-ms 15000
@@ -96,6 +97,15 @@ The complete G6-3 Material gate is Windows-only and includes both app entry path
 pwsh -File ./Doroti/eng/validate-g6-material-demo.ps1 -Shard All
 ```
 
+On Apple Silicon macOS, G7-3M separates source, reproducible build, actual AppKit live behavior, and repository-external package consumption:
+
+```powershell
+pwsh -File ./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Source
+pwsh -File ./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Build
+pwsh -File ./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Live
+pwsh -File ./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Package
+```
+
 Generated evidence is written under `migration/flutter-framework/`; transient screenshots and run artifacts are written under `artifacts/`.
 
 ## Directory guide
@@ -123,10 +133,10 @@ Generated output is reviewable evidence, not a place for hidden fixes. Shared se
 - Promoted source must retain its source map, provenance, source revision, and license trail.
 - All repository JSON uses `System.Text.Json`; do not introduce `Newtonsoft.Json`.
 
-Start with [typed framework compiler](docs/architecture/f0-typed-framework-compiler.md), [multi-library compilation](docs/architecture/g3-1-multi-library-framework-compiler.md), [Windows RID packaging](docs/architecture/g5-6w-windows-rid-package.md), and [port ownership](docs/architecture/p0-port-ownership.md) for deeper design context.
+Start with [typed framework compiler](docs/architecture/f0-typed-framework-compiler.md), [multi-library compilation](docs/architecture/g3-1-multi-library-framework-compiler.md), [Windows RID packaging](docs/architecture/g5-6w-windows-rid-package.md), [macOS RID packaging](docs/architecture/g7-3m-macos-rid-package.md), and [port ownership](docs/architecture/p0-port-ownership.md) for deeper design context.
 
 ## Related projects and license
 
-Doroti uses [Flutter](https://github.com/flutter/flutter) as its framework behavior reference and selected [Avalonia](https://github.com/AvaloniaUI/Avalonia) platform implementations as the basis of the Windows host.
+Doroti uses [Flutter](https://github.com/flutter/flutter) as its framework behavior reference and selected [Avalonia](https://github.com/AvaloniaUI/Avalonia) platform implementations as the source basis of the Windows and macOS hosts.
 
 Doroti is distributed under the repository's [BSD 3-Clause license](../LICENSE). See [third-party notices](THIRD-PARTY-NOTICES.md) for upstream source, package, revision, and license details.

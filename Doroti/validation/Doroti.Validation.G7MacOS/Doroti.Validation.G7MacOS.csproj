@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><AssemblyName>G7.MacOS.LiveProbe</AssemblyName><IsPackable>false</IsPackable><RuntimeIdentifier>osx-arm64</RuntimeIdentifier></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Doroti.Backends.Skia\Doroti.Backends.Skia.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Composition\Doroti.Composition.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Host.Desktop\Doroti.Host.Desktop.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Platform\Doroti.Platform.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Vendor.Avalonia.Native\Doroti.Vendor.Avalonia.Native.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,391 @@
+{
+  "schemaVersion": "doroti.g6-material-demo-run/v1",
+  "milestone": "G6-3",
+  "mode": "reviewed-promoted-material-gallery",
+  "outcome": "presented",
+  "source": {
+    "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+    "avaloniaRevision": "f159423f691946e713f454447a780d4677d8a0d2",
+    "flutterSourceLockSha256": null,
+    "reviewedFrameworkDigest": null,
+    "materialProductAssembly": "Doroti.Flutter.Framework.Material",
+    "consumer": "clean-package-only-external"
+  },
+  "fixture": {
+    "reviewedCSharp": "DorotiDemoApp/Program.cs",
+    "entryMode": "builder",
+    "frameworkPath": [
+      "MaterialApp",
+      "Theme",
+      "Navigator",
+      "Scaffold",
+      "AppBar",
+      "Card",
+      "ListTile",
+      "ElevatedButton",
+      "Checkbox",
+      "Radio",
+      "Switch",
+      "Slider",
+      "FloatingActionButton",
+      "Row",
+      "Column",
+      "Stack",
+      "SingleChildScrollView",
+      "ListView.builder"
+    ],
+    "rootWidget": "Doroti.Generated.Framework.Material.MaterialApp"
+  },
+  "interaction": {
+    "controls": [
+      "G6 Material button",
+      "G6 Material checkbox",
+      "G6 Material radio",
+      "G6 Material switch",
+      "G6 Material slider",
+      "G6 Material FAB"
+    ],
+    "count": 7,
+    "nativePointerCount": 1,
+    "nativePointerHitTestTargets": [
+      "Doroti.Generated.Framework.Painting.TextSpan",
+      "Doroti.Generated.Framework.Rendering.RenderParagraph",
+      "Doroti.Generated.Framework.Rendering.RenderPositionedBox",
+      "Doroti.Generated.Framework.Rendering.RenderPadding",
+      "Doroti.Generated.Framework.Rendering.RenderPointerListener",
+      "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+      "Doroti.Generated.Framework.Rendering.RenderMouseRegion",
+      "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+      "Doroti.Generated.Framework.Material._RenderInkFeatures__material",
+      "Doroti.Generated.Framework.Rendering.RenderCustomPaint",
+      "Doroti.Generated.Framework.Rendering.RenderClipPath",
+      "Doroti.Generated.Framework.Rendering.RenderConstrainedBox",
+      "Doroti.Generated.Framework.Material._RenderInputPadding__button_style_button",
+      "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+      "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+      "Doroti.Generated.Framework.Rendering.RenderFlex",
+      "Doroti.Generated.Framework.Rendering.RenderFlex",
+      "Doroti.Generated.Framework.Rendering.RenderPadding",
+      "Doroti.Generated.Framework.Widgets._RenderSingleChildViewport__single_child_scroll_view",
+      "Doroti.Generated.Framework.Rendering.RenderIgnorePointer",
+      "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+      "Doroti.Generated.Framework.Rendering.RenderPointerListener",
+      "Doroti.Generated.Framework.Rendering.RenderSemanticsGestureHandler",
+      "Doroti.Generated.Framework.Rendering.RenderPointerListener",
+      "Doroti.Generated.Framework.Widgets._RenderScrollSemantics__scrollable",
+      "Doroti.Generated.Framework.Rendering.RenderRepaintBoundary",
+      "Doroti.Generated.Framework.Rendering.RenderCustomPaint",
+      "Doroti.Generated.Framework.Rendering.RenderMouseRegion",
+      "Doroti.Generated.Framework.Rendering.RenderPointerListener",
+      "Doroti.Generated.Framework.Rendering.RenderSemanticsGestureHandler",
+      "Doroti.Generated.Framework.Rendering.RenderPointerListener",
+      "Doroti.Generated.Framework.Rendering.RenderRepaintBoundary",
+      "Doroti.Generated.Framework.Rendering.RenderCustomMultiChildLayoutBox",
+      "Doroti.Generated.Framework.Material._RenderInkFeatures__material",
+      "Doroti.Generated.Framework.Rendering.RenderPhysicalModel",
+      "Doroti.Generated.Framework.Widgets._RenderTheater__overlay",
+      "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+      "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+      "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+      "Doroti.Generated.Framework.Widgets.RenderTapRegionSurface",
+      "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+      "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+      "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+      "Doroti.Generated.Framework.Rendering._ReusableRenderView__binding",
+      "Doroti.Generated.Framework.Widgets.WidgetsFlutterBinding"
+    ],
+    "beforeState": "button=0;checked=False;radio=0;switch=False;slider=0.2;fab=0",
+    "afterState": "button=2;checked=True;radio=1;switch=True;slider=0.8;fab=1",
+    "changedPixelCount": 97823,
+    "compositing": {
+      "effectState": "backdropBlur=True;effectInteractions=2",
+      "nativeToggleCount": 2,
+      "togglePoint": {
+        "x": 81.95,
+        "y": 466.8
+      },
+      "panelPhysicalBounds": {
+        "left": 160,
+        "top": 1107.2,
+        "right": 1280,
+        "bottom": 1307.2
+      },
+      "hitTestTargets": [
+        "Doroti.Generated.Framework.Rendering.RenderParagraph",
+        "Doroti.Generated.Framework.Rendering.RenderFlex",
+        "Doroti.Generated.Framework.Rendering.RenderPositionedBox",
+        "Doroti.Generated.Framework.Rendering.RenderPadding",
+        "Doroti.Generated.Framework.Rendering.RenderPointerListener",
+        "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+        "Doroti.Generated.Framework.Rendering.RenderMouseRegion",
+        "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+        "Doroti.Generated.Framework.Material._RenderInkFeatures__material",
+        "Doroti.Generated.Framework.Rendering.RenderCustomPaint",
+        "Doroti.Generated.Framework.Rendering.RenderClipPath",
+        "Doroti.Generated.Framework.Rendering.RenderConstrainedBox",
+        "Doroti.Generated.Framework.Material._RenderInputPadding__button_style_button",
+        "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+        "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+        "Doroti.Generated.Framework.Rendering.RenderFlex",
+        "Doroti.Generated.Framework.Rendering.RenderFlex",
+        "Doroti.Generated.Framework.Rendering.RenderPadding",
+        "Doroti.Generated.Framework.Widgets._RenderSingleChildViewport__single_child_scroll_view",
+        "Doroti.Generated.Framework.Rendering.RenderIgnorePointer",
+        "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+        "Doroti.Generated.Framework.Rendering.RenderPointerListener",
+        "Doroti.Generated.Framework.Rendering.RenderSemanticsGestureHandler",
+        "Doroti.Generated.Framework.Rendering.RenderPointerListener",
+        "Doroti.Generated.Framework.Widgets._RenderScrollSemantics__scrollable",
+        "Doroti.Generated.Framework.Rendering.RenderRepaintBoundary",
+        "Doroti.Generated.Framework.Rendering.RenderCustomPaint",
+        "Doroti.Generated.Framework.Rendering.RenderMouseRegion",
+        "Doroti.Generated.Framework.Rendering.RenderPointerListener",
+        "Doroti.Generated.Framework.Rendering.RenderSemanticsGestureHandler",
+        "Doroti.Generated.Framework.Rendering.RenderPointerListener",
+        "Doroti.Generated.Framework.Rendering.RenderRepaintBoundary",
+        "Doroti.Generated.Framework.Rendering.RenderCustomMultiChildLayoutBox",
+        "Doroti.Generated.Framework.Material._RenderInkFeatures__material",
+        "Doroti.Generated.Framework.Rendering.RenderPhysicalModel",
+        "Doroti.Generated.Framework.Widgets._RenderTheater__overlay",
+        "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+        "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+        "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+        "Doroti.Generated.Framework.Widgets.RenderTapRegionSurface",
+        "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+        "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+        "Doroti.Generated.Framework.Rendering.RenderSemanticsAnnotations",
+        "Doroti.Generated.Framework.Rendering._ReusableRenderView__binding",
+        "Doroti.Generated.Framework.Widgets.WidgetsFlutterBinding"
+      ],
+      "onOffChangedPixelCount": 193866,
+      "panelChangedPixelCount": 166627
+    }
+  },
+  "cadence": {
+    "requestedFrames": 2,
+    "requestedDurationMs": 80,
+    "presented": 6,
+    "actualDurationMs": 83.7768
+  },
+  "firstFlutterError": null,
+  "unhandledException": null,
+  "frame": {
+    "submitted": 24,
+    "presented": 24,
+    "superseded": 0,
+    "stale": 0,
+    "failed": 0,
+    "cancelled": 0,
+    "queueDepth": 0,
+    "queueHighWatermark": 2,
+    "activeContexts": 1,
+    "activeFrames": 0,
+    "surfaceGeneration": 1,
+    "recoveryCount": 0,
+    "softwareFallbackUsed": false,
+    "backendIdentity": "skia-nsopengl-opengl-gpu"
+  },
+  "automation": {
+    "generation": 1,
+    "nodeCount": 40
+  },
+  "backend": "skia-nsopengl-opengl-gpu",
+  "initialPixels": {
+    "width": 1440,
+    "height": 1280,
+    "nonEmptyPixelBounds": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 1280
+    },
+    "nonEmptyPixelCount": 1843200,
+    "colors": {
+      "background": {
+        "bounds": {
+          "x": 0,
+          "y": 112,
+          "width": 1440,
+          "height": 1168
+        },
+        "count": 1071720
+      },
+      "appBarAndFab": {
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 1248
+        },
+        "count": 172696
+      },
+      "cardSurface": {
+        "bounds": {
+          "x": 40,
+          "y": 206,
+          "width": 1360,
+          "height": 127
+        },
+        "count": 165982
+      },
+      "primaryControls": {
+        "bounds": {
+          "x": 32,
+          "y": 682,
+          "width": 1376,
+          "height": 545
+        },
+        "count": 87539
+      },
+      "initialStack": {
+        "bounds": {
+          "x": 342,
+          "y": 754,
+          "width": 519,
+          "height": 111
+        },
+        "count": 52287
+      },
+      "changedStackAndSwitch": {
+        "bounds": null,
+        "count": 0
+      },
+      "darkInk": {
+        "bounds": {
+          "x": 34,
+          "y": 150,
+          "width": 898,
+          "height": 1047
+        },
+        "count": 20238
+      },
+      "appBarInk": {
+        "bounds": {
+          "x": 1346,
+          "y": 1187,
+          "width": 14,
+          "height": 14
+        },
+        "count": 52
+      },
+      "blackInk": {
+        "bounds": {
+          "x": 35,
+          "y": 1053,
+          "width": 125,
+          "height": 206
+        },
+        "count": 2174
+      }
+    }
+  },
+  "changedPixels": {
+    "width": 1440,
+    "height": 1280,
+    "nonEmptyPixelBounds": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 1280
+    },
+    "nonEmptyPixelCount": 1843200,
+    "colors": {
+      "background": {
+        "bounds": {
+          "x": 0,
+          "y": 112,
+          "width": 1440,
+          "height": 1168
+        },
+        "count": 1037066
+      },
+      "appBarAndFab": {
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 1248
+        },
+        "count": 172696
+      },
+      "cardSurface": {
+        "bounds": {
+          "x": 40,
+          "y": 206,
+          "width": 1360,
+          "height": 127
+        },
+        "count": 165982
+      },
+      "primaryControls": {
+        "bounds": {
+          "x": 32,
+          "y": 682,
+          "width": 1376,
+          "height": 545
+        },
+        "count": 87539
+      },
+      "initialStack": {
+        "bounds": null,
+        "count": 0
+      },
+      "changedStackAndSwitch": {
+        "bounds": {
+          "x": 327,
+          "y": 754,
+          "width": 519,
+          "height": 111
+        },
+        "count": 52343
+      },
+      "darkInk": {
+        "bounds": {
+          "x": 34,
+          "y": 150,
+          "width": 863,
+          "height": 1047
+        },
+        "count": 20000
+      },
+      "appBarInk": {
+        "bounds": {
+          "x": 1346,
+          "y": 1187,
+          "width": 14,
+          "height": 14
+        },
+        "count": 52
+      },
+      "blackInk": {
+        "bounds": {
+          "x": 35,
+          "y": 1053,
+          "width": 125,
+          "height": 206
+        },
+        "count": 2174
+      }
+    }
+  },
+  "resources": {
+    "activeWindows": 1,
+    "windowsCreated": 1,
+    "windowsReleased": 0,
+    "activeOpenGlContexts": 1,
+    "openGlContextsCreated": 1,
+    "openGlContextsReleased": 0,
+    "isBalanced": false
+  },
+  "resourceClosure": {
+    "activeWindows": 0,
+    "windowsCreated": 1,
+    "windowsReleased": 1,
+    "activeOpenGlContexts": 0,
+    "openGlContextsCreated": 1,
+    "openGlContextsReleased": 1,
+    "isBalanced": true
+  },
+  "activeResourceCount": 2,
+  "frameTimeout": false
+}

@@ -1,0 +1,169 @@
+{
+  "schemaVersion": "doroti.g7-macos-shell-evidence/v1",
+  "milestone": "G7-3M",
+  "capturedAtUtc": "2026-08-15T05:37:46.79288+00:00",
+  "status": "pass",
+  "target": "osx-arm64",
+  "shards": {
+    "source": {
+      "status": "pass",
+      "requiredFiles": 7,
+      "officialAvaloniaBinaryDependencies": 0,
+      "nativeTypesOutsideVendor": 0,
+      "repositoryPrivateFallbacks": 0,
+      "revision": "git:f159423f691946e713f454447a780d4677d8a0d2"
+    },
+    "build": {
+      "status": "pass",
+      "rid": "osx-arm64",
+      "architecture": "arm64",
+      "nativeSha256": "a9b5c1fbc3ef203ab10b5fba00a3032a694c293c43d88d6c31ccbdd8bafc75df",
+      "installName": "@rpath/libAvalonia.dylib",
+      "repeatPublishIdentity": "pass",
+      "publishFiles": 39,
+      "diagnostics": 0
+    },
+    "live": {
+      "status": "pass",
+      "native": {
+        "schemaVersion": "doroti.g7-macos-live-probe/v1",
+        "milestone": "G7-3M",
+        "capturedAtUtc": "2026-08-15T14:24:26.546709+09:00",
+        "status": "pass",
+        "target": {
+          "rid": "osx-arm64",
+          "nativeHandle": "NSWindow",
+          "scale": 2,
+          "metricsGeneration": 6
+        },
+        "gpu": {
+          "backend": "skia-nsopengl-opengl-gpu",
+          "renderer": "Apple M1",
+          "version": "4.1 Metal - 90.5",
+          "hardware": true,
+          "softwareFallbackUsed": false,
+          "nonEmptyPixels": 614400,
+          "terminalPresent": true
+        },
+        "lifecycle": {
+          "metricsChanges": 5,
+          "focusChanges": 4,
+          "closed": true
+        },
+        "input": {
+          "events": [
+            "pointer-hover",
+            "pointer-down",
+            "pointer-move",
+            "pointer-up",
+            "pointer-wheel",
+            "pointer-cancelled",
+            "key-down",
+            "key-up"
+          ],
+          "lastScrollDelta": {
+            "x": 0.5,
+            "y": -1.25,
+            "isFinite": true
+          },
+          "textStates": [
+            {
+              "text": "Doroti 한글",
+              "selection": {
+                "baseOffset": 9,
+                "extentOffset": 9
+              },
+              "composingRange": null
+            }
+          ]
+        },
+        "clipboard": {
+          "write": true,
+          "read": true,
+          "restored": true
+        },
+        "accessibility": {
+          "nodeId": 7,
+          "action": "tap",
+          "invoked": true
+        },
+        "resources": {
+          "activeWindows": 0,
+          "windowsCreated": 1,
+          "windowsReleased": 1,
+          "activeOpenGlContexts": 0,
+          "openGlContextsCreated": 2,
+          "openGlContextsReleased": 2,
+          "isBalanced": true
+        },
+        "trace": [
+          "metrics",
+          "metrics",
+          "focus",
+          "metrics",
+          "pointer-hover",
+          "pointer-down",
+          "pointer-move",
+          "pointer-up",
+          "pointer-wheel",
+          "pointer-cancelled",
+          "key-down",
+          "key-up",
+          "text-state",
+          "blur",
+          "metrics",
+          "focus",
+          "metrics",
+          "semantics-action",
+          "strict-gpu-present",
+          "close-requested",
+          "closed",
+          "blur"
+        ],
+        "notVerified": [
+          "Korean IME physical candidate-window placement",
+          "VoiceOver physical navigation",
+          "precise trackpad physical gesture"
+        ],
+        "failures": []
+      },
+      "generated": {
+        "outcome": "presented",
+        "backend": "skia-nsopengl-opengl-gpu",
+        "submitted": 23,
+        "presented": 23,
+        "failed": 0,
+        "queueDepth": 0,
+        "softwareFallbackUsed": false,
+        "nativePointerCount": 1,
+        "semanticsNodeCount": 40,
+        "changedPixelCount": 82341
+      }
+    },
+    "package": {
+      "status": "pass",
+      "package": "Doroti.Target.macOS.osx-arm64.0.2.0-beta.nupkg",
+      "packageSha256": "432f0358b812cfa7555734c39963b77f1facce3bdfdddc140706b97594590808",
+      "nativeAssetSha256": "a9b5c1fbc3ef203ab10b5fba00a3032a694c293c43d88d6c31ccbdd8bafc75df",
+      "externalRoot": "/var/folders/g2/w1lbfj592h51kv75lh9n7fh40000gn/T/doroti-g7-macos-c081d3e2c43d4cda94f2cae8ae0fe202",
+      "restore": "clean",
+      "publish": "pass",
+      "launch": "presented",
+      "repositoryPrivateFallbacks": 0,
+      "softwareFallbackUsed": false,
+      "resourceClosure": "pass"
+    }
+  },
+  "closure": {
+    "avaloniaUiControlCompositionBinaryDependencies": 0,
+    "repositoryPrivateFallbacks": 0,
+    "cpuFullFrameFallbacks": 0,
+    "unhandledExceptions": 0
+  },
+  "notVerified": [
+    "Korean IME physical candidate-window placement",
+    "VoiceOver physical navigation",
+    "precise trackpad physical gesture",
+    "osx-x64"
+  ]
+}

@@ -4,7 +4,7 @@
 
 ### A cross-platform UI runtime built with C# and .NET.
 
-**Doroti** is an experimental cross-platform UI project for bringing a single C# UI codebase to the web, desktop, and mobile. It ports the structure and behavior of the Flutter framework to .NET. On Windows desktop, it uses **Avalonia's proven platform implementation as its foundation** to connect native windows and operating system services.
+**Doroti** is an experimental cross-platform UI project for bringing a single C# UI codebase to the web, desktop, and mobile. It ports the structure and behavior of the Flutter framework to .NET. Its Windows and macOS desktop shells use selected, provenance-pinned **Avalonia platform source** to connect native windows and operating-system services without composing the application from Avalonia controls.
 
 Doroti translates the semantics of the Dart-based Flutter framework into C#, making familiar widgets such as `MaterialApp`, `Scaffold`, `Text`, and `Button` available across different runtime environments. The target platforms are **Web, Windows, Linux, macOS, Android, and iOS**.
 
@@ -13,7 +13,7 @@ Doroti translates the semantics of the Dart-based Flutter framework into C#, mak
 
 ## What works today
 
-The first product validation on the path to cross-platform support is taking place on Windows desktop. A Flutter widget tree is created in C#, mounted, laid out, painted, and displayed in a real native window.
+Native product validation now runs on Windows x64 and Apple Silicon macOS. A Flutter widget tree is created in C#, mounted, laid out, painted, and displayed in a real HWND or NSWindow.
 
 The current demo app brings the following pieces together:
 
@@ -22,8 +22,8 @@ The current demo app brings the following pieces together:
 - Buttons, FABs, checkboxes, radio buttons, switches, and sliders
 - `Row`, `Column`, `Stack`, scroll views, and lazy lists
 - Pointer interaction, state updates, and semantics
-- Selectively ported Avalonia Win32 window, dispatcher, input, IME, clipboard, and cursor lifecycle implementations
-- Strict GPU rendering with Skia over WGL/OpenGL
+- Selectively ported Avalonia Win32 and AppKit/libAvalonia window, dispatcher, input, text, clipboard, cursor, and accessibility implementations
+- Strict GPU rendering with Skia over WGL/OpenGL on Windows and NSOpenGL on `osx-arm64`
 
 In addition to `MaterialApp.builder`, the application startup path through `MaterialApp.home` and Navigator is validated against actual native frames.
 
@@ -41,7 +41,7 @@ Instead of building something that merely resembles Flutter, Doroti treats the u
 
 The platform shell is the layer that connects the Doroti runtime to the operating system. It owns the window lifecycle, dispatcher, pointer and keyboard input, IME, clipboard, cursor, accessibility, and rendering surface. The C# port of the Flutter framework and the Doroti runtime keep ownership of the widget tree, layout, painting, and state lifecycle.
 
-The current Windows product shell sits on shared platform contracts. The primary host creates a native HWND and wires operating system services. Selected Avalonia upstream implementations for the Win32 window, dispatcher, input, IME, clipboard, and cursor are ported behind those contracts and tracked with a provenance manifest. Doroti applications are not composed from Avalonia `Control` objects or XAML.
+The desktop product shells sit on shared `Doroti.Shell.Core` capabilities. `Doroti.Host.Desktop` receives an `IShellWindowingPlatform`; the `win-x64` and `osx-arm64` composition roots inject their Win32 or AppKit implementation. Selected upstream source and local adaptations are tracked with provenance manifests. Doroti applications are not composed from Avalonia `Control` objects or XAML.
 
 A separate host based on the official `Avalonia.Desktop` package is also maintained. It is not the default product shell; it serves as an A/B reference for comparing the source-port host and validating rendering, input, and window lifecycle behavior.
 
@@ -55,21 +55,21 @@ C# framework packages
 Doroti runtime + widget/rendering pipeline
       ↓
 platform host + rendering surface
-(Windows: Avalonia-derived platform source port)
+(Windows: Win32/WGL · macOS: AppKit/NSOpenGL)
       ↓
 Web / Windows / Linux / macOS / Android / iOS
 ```
 
 - The **semantic compiler** analyzes Dart and Flutter types and language semantics, then translates them into C#.
 - The **Doroti runtime** connects Flutter's scheduler, widget, element, and rendering lifecycles.
-- The **platform host** connects each target's window or view, input, accessibility, and rendering surface. The current Windows host uses selected platform source ported from Avalonia.
+- The **platform host** connects each target's window or view, input, accessibility, and rendering surface. The Windows and macOS hosts use target-specific source ports behind the same typed shell boundary.
 - The output is reviewable C# source code and .NET packages.
 
 Rather than quietly patching generated code, the project fixes shared semantics in the compiler and runtime, then regenerates the output.
 
 ## Try it
 
-The currently available demo and live validation run on **Windows x64**. They require .NET SDK 10 and PowerShell 7.
+The demo and automated native smoke validation run on **Windows x64** and **Apple Silicon macOS (`osx-arm64`)**. They require .NET SDK 10 and PowerShell 7.
 
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 build
@@ -82,14 +82,15 @@ A short automated smoke run is also available:
 dotnet run --project ./DorotiDemoApp -- --smoke --entry builder --frames 3 --duration-ms 15000
 ```
 
-> Windows x64 is the starting point for the current implementation and validation, not the full extent of Doroti's intended platform support. Web, Linux, macOS, Android, and iOS will be implemented and validated in later stages.
+> Windows x64 and `osx-arm64` are implemented native desktop targets. Physical Korean IME candidate placement, VoiceOver navigation, precise trackpad gestures, Intel macOS, Web, Linux, Android, and iOS retain their own later acceptance or implementation gates.
 
 ## Repository layout
 
 | Path | Description |
 | --- | --- |
 | [`Doroti/`](Doroti/) | Compiler-generated framework, runtime, renderer, and platform hosts |
-| [`Doroti/src/Doroti.Host.Desktop/`](Doroti/src/Doroti.Host.Desktop/) | Primary Windows host using the Avalonia-derived Win32 source port |
+| [`Doroti/src/Doroti.Host.Desktop/`](Doroti/src/Doroti.Host.Desktop/) | Shared typed desktop host used by the Windows and macOS composition roots |
+| [`Doroti/src/Doroti.Target.macOS.osx-arm64/`](Doroti/src/Doroti.Target.macOS.osx-arm64/) | Apple Silicon AppKit/NSOpenGL target package |
 | [`Doroti/src/Doroti.Host.Avalonia/`](Doroti/src/Doroti.Host.Avalonia/) | Comparison and validation host based on the official `Avalonia.Desktop` package |
 | [`DorotiDemoApp/`](DorotiDemoApp/) | Demo app that displays a real Material widget tree |
 | [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | Semantic compiler that translates Dart into C# |
@@ -101,7 +102,7 @@ For detailed build and validation instructions and architecture records, see [`D
 
 The goal is not merely to make “Flutter files compile as C#.” It is to build a cross-platform UI runtime where real applications can navigate, accept input, scroll, and integrate with accessibility tools.
 
-Planned work includes navigation and dialogs, forms and IME, large-scale scrolling, assets and localization, and additional Material and Cupertino components. Building on the current Windows validation, support will expand to **Web, Linux, macOS, Android, and iOS**.
+Planned work includes navigation and dialogs, forms and physical IME acceptance, large-scale scrolling, assets and localization, and additional Material and Cupertino components. Building on the current Windows and Apple Silicon macOS validation, support will expand to **Web, Linux, Intel macOS, Android, and iOS**.
 
 Doroti is still an experimental project under active development. If you are interested in the intersection of compilers, runtimes, rendering, and UI frameworks, follow along as the project evolves.
 
@@ -116,7 +117,7 @@ You are also welcome to fork Doroti, experiment with it, and take it in new dire
 Doroti draws heavily from the source code and design of the following projects:
 
 - [Flutter](https://github.com/flutter/flutter) — the reference for framework structure and behavior
-- [Avalonia](https://github.com/AvaloniaUI/Avalonia) — the foundation of the Windows desktop platform implementation
+- [Avalonia](https://github.com/AvaloniaUI/Avalonia) — the source foundation for selected Windows and macOS desktop platform implementations
 
 ## License
 

@@ -2,13 +2,14 @@
 // Source identity and selected closure are pinned in migration/avalonia-shell/port-selection.json.
 using System.Collections.Concurrent;
 using Doroti.Graphics;
+using Doroti.Platform;
 using Doroti.Shell.Core;
 
 namespace Doroti.Vendor.Avalonia.Win32;
 
-internal static class Win32ShellBootstrap
+public static class Win32ShellPlatformFactory
 {
-    internal static Win32ShellPlatform Create() => new();
+    public static IShellWindowingPlatform Create() => new Win32ShellPlatform();
 }
 
 internal sealed class Win32ShellPlatform : IShellWindowingPlatform, IShellDispatcher, IShellEventLoop, IDisposable
@@ -121,7 +122,9 @@ internal sealed class Win32ShellPlatform : IShellWindowingPlatform, IShellDispat
     }
 }
 
-internal sealed class Win32ShellWindow : IShellWindow
+internal sealed class Win32ShellWindow : IShellWindow, IShellInputService, IShellTextInputService,
+    IShellClipboardService, IShellCursorService, IShellGraphicsService, IShellFocusService,
+    IShellInputTestService, IShellAccessibilityService
 {
     private readonly Win32ShellPlatform _platform;
     private readonly NativeWindowHost _native;
@@ -129,6 +132,7 @@ internal sealed class Win32ShellWindow : IShellWindow
     private long _scaleGeneration;
     private long _surfaceGeneration;
     private ShellWindowMetrics _metrics;
+    private readonly Win32AutomationRootProvider _automationProvider;
     private bool _disposed;
 
     internal Win32ShellWindow(Win32ShellPlatform platform, string title, Size initialLogicalClientSize)
@@ -142,19 +146,40 @@ internal sealed class Win32ShellWindow : IShellWindow
             initialLogicalClientSize.Width,
             initialLogicalClientSize.Height,
             OnNativeWindow,
-            input => Pointer?.Invoke(input),
-            input => Key?.Invoke(input),
-            input => Text?.Invoke(input));
+            OnNativePointer,
+            OnNativeKey,
+            input => Text?.Invoke(new((ShellTextEventKind)input.Kind, input.Text)));
         _metrics = Convert(_native.Metrics, ShellWindowState.Normal, ++_generation);
+        _automationProvider = new(_native, title);
+        _native.AutomationRequested = _automationProvider.HandleGetObject;
+        Services.Add<IShellInputService>(this);
+        Services.Add<IShellTextInputService>(this);
+        Services.Add<IShellClipboardService>(this);
+        Services.Add<IShellCursorService>(this);
+        Services.Add<IShellGraphicsService>(this);
+        Services.Add<IShellFocusService>(this);
+        Services.Add<IShellInputTestService>(this);
+        Services.Add<IShellAccessibilityService>(this);
     }
 
     public event Action<ShellWindowEvent>? WindowEvent;
 
-    internal event Action<NativePointerEvent>? Pointer;
+    public event Action<RawPointerEvent>? Pointer;
 
-    internal event Action<NativeKeyEvent>? Key;
+    public event Action<RawKeyEvent>? Key;
 
-    internal event Action<NativeTextEvent>? Text;
+    public event Action<ShellTextEvent>? Text;
+
+    public InputCapabilities Capabilities { get; } = new(
+        Mouse: true,
+        Touch: VendorBoundary.TouchDigitizerPresent,
+        Pen: VendorBoundary.PenDigitizerPresent,
+        Wheel: true,
+        PointerCapture: true,
+        PhysicalKeys: true,
+        TextInput: true);
+
+    public string BackendIdentity => "skia-wgl-opengl-gpu";
 
     public ulong Id => _native.WindowId;
 
@@ -208,6 +233,72 @@ internal sealed class Win32ShellWindow : IShellWindow
         _native.Close();
     }
 
+    public void RequestFocus(bool focused) => _native.RequestFocus(focused);
+
+    public void SetCaretRect(Rect logicalRect)
+    {
+        var caret = PixelExtentPolicy.ToPixelRect(logicalRect, Metrics.ScaleFactor);
+        Win32ImeInterop.SetCandidatePosition(_native.Handle, caret.Left, caret.Bottom);
+    }
+
+    public ValueTask<ClipboardResult> GetTextAsync(CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        var result = Win32ClipboardInterop.GetText(_native.Handle);
+        return ValueTask.FromResult(new ClipboardResult(result.Success, result.Text, result.Diagnostic));
+    }
+
+    public ValueTask<ClipboardResult> SetTextAsync(string text, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        cancellationToken.ThrowIfCancellationRequested();
+        var result = Win32ClipboardInterop.SetText(_native.Handle, text);
+        return ValueTask.FromResult(new ClipboardResult(result.Success, result.Text, result.Diagnostic));
+    }
+
+    public void SetCursor(CursorKind cursor) => _native.SetCursor(cursor switch
+    {
+        CursorKind.Basic => NativeInterop.CursorArrow,
+        CursorKind.Click => NativeInterop.CursorHand,
+        CursorKind.Forbidden or CursorKind.NoDrop => NativeInterop.CursorNo,
+        CursorKind.Wait => NativeInterop.CursorWait,
+        CursorKind.Progress => NativeInterop.CursorAppStarting,
+        CursorKind.Help => NativeInterop.CursorHelp,
+        CursorKind.Text or CursorKind.VerticalText => NativeInterop.CursorIBeam,
+        CursorKind.Cell or CursorKind.Precise or CursorKind.ZoomIn or CursorKind.ZoomOut => NativeInterop.CursorCross,
+        CursorKind.Move or CursorKind.Grab or CursorKind.Grabbing or CursorKind.AllScroll => NativeInterop.CursorSizeAll,
+        CursorKind.ResizeLeftRight or CursorKind.ResizeLeft or CursorKind.ResizeRight or CursorKind.ResizeColumn => NativeInterop.CursorSizeWestEast,
+        CursorKind.ResizeUpDown or CursorKind.ResizeUp or CursorKind.ResizeDown or CursorKind.ResizeRow => NativeInterop.CursorSizeNorthSouth,
+        CursorKind.ResizeUpLeftDownRight or CursorKind.ResizeUpLeft or CursorKind.ResizeDownRight => NativeInterop.CursorSizeNorthWestSouthEast,
+        CursorKind.ResizeUpRightDownLeft or CursorKind.ResizeUpRight or CursorKind.ResizeDownLeft => NativeInterop.CursorSizeNorthEastSouthWest,
+        CursorKind.Hidden => 0,
+        _ => NativeInterop.CursorArrow,
+    });
+
+    public void Present(ReadOnlySpan<byte> pixels, int width, int height, int rowBytes) =>
+        _native.Present(pixels, width, height, rowBytes);
+
+    public IOpenGlWindowContext CreateOpenGlContext() => new Win32ShellOpenGlContext(new NativeOpenGlContext(_native.Handle));
+
+    public void PostPointerMove(Offset value) => _native.PostPointerMove(value.X, value.Y);
+    public void PostPointerLeave(Offset value) => _native.PostPointerLeave(value.X, value.Y);
+    public void PostPointerDown(Offset value) => _native.PostPointerDown(value.X, value.Y);
+    public void PostPointerUp(Offset value) => _native.PostPointerUp(value.X, value.Y);
+    public void PostPointerTap(Offset value) => _native.PostPointerTap(value.X, value.Y);
+    public void PostPointerDrag(Offset start, Offset end) => _native.PostPointerDrag(start.X, start.Y, end.X, end.Y);
+    public void PostPointerWheel(Offset value, Offset delta) => _native.PostPointerWheel(value.X, value.Y, delta.X, delta.Y);
+    public void PostPointerCaptureLoss(Offset value) => _native.PostPointerCaptureLoss(value.X, value.Y);
+    public void PostKeyboardActivation(uint logicalKey) => _native.PostKeyboardActivation(logicalKey);
+    public void PostTextInput(string text) => _native.PostTextInput(text);
+
+    public void Update(SemanticsTreeSnapshot snapshot, Func<SemanticsActionRequest, bool> performAction) =>
+        _automationProvider.Update(snapshot, performAction);
+
+    public bool InvokeAction(int nodeId, SemanticsAction action, object? arguments = null) =>
+        _automationProvider.Invoke(new(nodeId, action, arguments));
+
+    public void Clear() => _automationProvider.Clear();
+
     internal void PumpPendingMessages() => _native.PumpPendingMessages();
 
     public void Dispose()
@@ -218,6 +309,8 @@ internal sealed class Win32ShellWindow : IShellWindow
         }
         VerifyAccess();
         _disposed = true;
+        _automationProvider.Clear();
+        _native.AutomationRequested = null;
         _native.Dispose();
     }
 
@@ -239,6 +332,32 @@ internal sealed class Win32ShellWindow : IShellWindow
         _metrics = Convert(notification.Metrics, state, ++_generation);
         WindowEvent?.Invoke(new(kind, _metrics));
     }
+
+    private void OnNativePointer(NativePointerEvent native)
+    {
+        var phase = native.Phase switch
+        {
+            NativePointerPhase.Added => PointerPhase.Added,
+            NativePointerPhase.Hover => PointerPhase.Hover,
+            NativePointerPhase.Down => PointerPhase.Down,
+            NativePointerPhase.Move => PointerPhase.Move,
+            NativePointerPhase.Up => PointerPhase.Up,
+            NativePointerPhase.Removed => PointerPhase.Removed,
+            NativePointerPhase.Cancelled => PointerPhase.Cancelled,
+            NativePointerPhase.Wheel => PointerPhase.Hover,
+            _ => throw new InvalidOperationException($"Unknown pointer phase {native.Phase}."),
+        };
+        Pointer?.Invoke(new(
+            new(native.WindowId), native.DeviceId, (PointerDeviceKind)native.DeviceKind, phase,
+            new(native.LogicalX, native.LogicalY), native.Buttons,
+            TimeSpan.FromMilliseconds(native.TimestampMilliseconds),
+            PointerScrollNormalizer.Normalize(new(native.WheelDeltaX, native.WheelDeltaY), PlatformScrollConvention.WindowsWheel, VendorBoundary.ReadWheelScrollLines()),
+            (InputModifiers)native.Modifiers));
+    }
+
+    private void OnNativeKey(NativeKeyEvent native) => Key?.Invoke(new(
+        new(native.WindowId), native.ScanCode, native.VirtualKey, (KeyPhase)native.Phase,
+        TimeSpan.FromMilliseconds(native.TimestampMilliseconds), (InputModifiers)native.Modifiers));
 
     private ShellWindowMetrics Convert(NativeWindowEvent value, ShellWindowState state, long generation)
     {
@@ -270,4 +389,14 @@ internal sealed class Win32ShellWindow : IShellWindow
         ObjectDisposedException.ThrowIf(_disposed, this);
         _platform.VerifyAccess();
     }
+}
+
+internal sealed class Win32ShellOpenGlContext(NativeOpenGlContext inner) : IOpenGlWindowContext
+{
+    public string Renderer => inner.Renderer;
+    public string Version => inner.Version;
+    public bool IsHardwareAccelerated => inner.IsHardwareAccelerated;
+    public IDisposable MakeCurrent() => inner.MakeCurrent();
+    public void Present() => inner.Present();
+    public void Dispose() => inner.Dispose();
 }

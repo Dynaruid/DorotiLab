@@ -13,6 +13,9 @@
     <ProjectReference Include="..\Doroti\src\Doroti.Flutter.Hosting\Doroti.Flutter.Hosting.csproj" />
     <ProjectReference Include="..\Doroti\src\Doroti.Flutter.Framework.Widgets\Doroti.Flutter.Framework.Widgets.csproj" />
     <ProjectReference Include="..\Doroti\src\Doroti.Flutter.Framework.Material\Doroti.Flutter.Framework.Material.csproj" />
-    <ProjectReference Include="..\Doroti\src\Doroti.Target.Windows.win-x64\Doroti.Target.Windows.win-x64.csproj" />
+    <ProjectReference Include="..\Doroti\src\Doroti.Target.Windows.win-x64\Doroti.Target.Windows.win-x64.csproj"
+                      Condition="('$(RuntimeIdentifier)' == '' And $([MSBuild]::IsOSPlatform('Windows'))) Or '$(RuntimeIdentifier)' == 'win-x64'" />
+    <ProjectReference Include="..\Doroti\src\Doroti.Target.macOS.osx-arm64\Doroti.Target.macOS.osx-arm64.csproj"
+                      Condition="('$(RuntimeIdentifier)' == '' And $([MSBuild]::IsOSPlatform('OSX'))) Or '$(RuntimeIdentifier)' == 'osx-arm64'" />
   </ItemGroup>
 </Project>

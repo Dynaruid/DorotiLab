@@ -3,7 +3,8 @@
   "milestone": "G7-0",
   "requiredTargets": [
     "win-x64",
-    "browser-wasm"
+    "browser-wasm",
+    "osx-arm64"
   ],
   "targets": [
     {
@@ -42,17 +43,28 @@
         "G7-5",
         "G7-6"
       ]
+    },
+    {
+      "id": "osx-arm64",
+      "requiredForGoal7": true,
+      "host": "AppKit NSWindow",
+      "backend": "skia-nsopengl-opengl-gpu",
+      "source": "implemented-source-port",
+      "build": "verified-current-arm64",
+      "packaged": "verified-package-only-consumer",
+      "live": "verified-current-nswindow-strict-gpu",
+      "input": "verified-automated-causal-capabilities",
+      "semantics": "verified-nsaccessibility-action-bridge",
+      "physical": "notVerified-G7-6",
+      "followUpMilestones": [
+        "G7-5",
+        "G7-6"
+      ]
     }
   ],
   "deferred": [
     {
       "id": "linux-desktop",
-      "requiredForGoal7": false,
-      "status": "notVerified",
-      "promotionRule": "becomes blocking only when selected as a supported release target"
-    },
-    {
-      "id": "macos-desktop",
       "requiredForGoal7": false,
       "status": "notVerified",
       "promotionRule": "becomes blocking only when selected as a supported release target"
