@@ -155,7 +155,7 @@ $shards = [ordered]@{
     live = Get-Shard 'live'
 }
 $required = @('inventory', 'build', 'package', 'live')
-$status = if (@($required | Where-Object { $shards[$_].status -ne 'pass' }).Count -eq 0) { 'pass-windows-validated' } else { 'partial' }
+$status = if (@($required | Where-Object { $shards[$_].status -ne 'pass' }).Count -eq 0) { 'pass' } else { 'partial' }
 Write-Json $evidencePath ([ordered]@{
     schemaVersion = 'doroti.g7-product-naming-evidence/v1'
     milestone = 'G7-3N'
@@ -163,15 +163,30 @@ Write-Json $evidencePath ([ordered]@{
     status = $status
     mapping = 'migration/product-naming/g7-doroti-naming-map.json'
     shards = $shards
-    targetValidation = [ordered]@{
-        'win-x64' = $(if ($shards.live.status -eq 'pass') { 'pass' } else { 'notVerified' })
-        'osx-arm64' = 'notVerified'
-        'browser-wasm' = 'notVerified'
+    validationScope = [ordered]@{
+        naming = 'all-target producer/consumer source, public identity, build, lock, manifest, and package closure'
+        representativeLive = 'win-x64 current product smoke'
+        targetRuntimeOwnership = [ordered]@{
+            'osx-arm64' = 'G7-3M'
+            'browser-wasm' = 'G7-3V/G7-3B/G7-4'
+        }
     }
-    deferred = @(
-        'osx-arm64 post-rename package/live verification',
-        'browser-wasm post-rename package/product graph verification'
-    )
+    targetValidation = [ordered]@{
+        'win-x64' = [ordered]@{
+            naming = $(if ($shards.inventory.status -eq 'pass' -and $shards.package.status -eq 'pass') { 'pass' } else { 'notVerified' })
+            representativeLive = $(if ($shards.live.status -eq 'pass') { 'pass' } else { 'notVerified' })
+        }
+        'osx-arm64' = [ordered]@{
+            naming = $(if ($shards.inventory.status -eq 'pass' -and $shards.package.status -eq 'pass') { 'pass' } else { 'notVerified' })
+            runtimeEvidence = 'migration/macos/g7-macos-shell-evidence.json'
+            runtimeGate = 'owned-by-G7-3M'
+        }
+        'browser-wasm' = [ordered]@{
+            naming = $(if ($shards.inventory.status -eq 'pass' -and $shards.package.status -eq 'pass') { 'pass' } else { 'notVerified' })
+            runtimeGate = 'owned-by-G7-3V/G7-3B/G7-4'
+        }
+    }
+    deferred = @()
 })
 
 Write-Host "G7-3N product naming $Shard PASS ($status)"

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "doroti.g7-windows-product-smoke/v1",
   "milestone": "G7-0",
-  "capturedAtUtc": "2026-08-15T12:07:12.2040574+00:00",
+  "capturedAtUtc": "2026-08-15T12:20:29.5196269+00:00",
   "status": "verified-windows-x64-strict-gpu",
   "fixture": {
     "source": "DorotiDemoApp/Program.cs",
@@ -17,12 +17,12 @@
   },
   "result": {
     "backend": "skia-wgl-opengl-gpu",
-    "presented": 29,
+    "presented": 31,
     "failed": 0,
     "cancelled": 0,
     "softwareFallback": false,
     "nativePointerCount": 1,
-    "changedPixelCount": 98022,
+    "changedPixelCount": 97755,
     "resourceClosure": {
       "activeWindows": 0,
       "windowsCreated": 1,

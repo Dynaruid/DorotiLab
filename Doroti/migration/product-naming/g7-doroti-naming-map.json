@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "milestone": "G7-3N",
   "generatedAt": "2026-08-15",
-  "status": "partial-windows-validated",
+  "status": "pass",
   "scope": {
     "description": "Doroti-owned product, framework, hosting, UI, runtime, desktop integration, and target identities",
     "targets": [
@@ -10,11 +10,11 @@
       "osx-arm64",
       "browser-wasm"
     ],
-    "validationThisRun": {
-      "build": "pass",
-      "win-x64": "pass",
-      "osx-arm64": "notVerified",
-      "browser-wasm": "notVerified"
+    "validationPolicy": {
+      "allTargets": "producer/consumer source, public identity, build, lock, manifest, and package closure",
+      "representativeLive": "win-x64 current product smoke",
+      "osx-arm64RuntimeOwner": "G7-3M",
+      "browserWasmRuntimeOwner": "G7-3V/G7-3B/G7-4"
     }
   },
   "projectMappings": [

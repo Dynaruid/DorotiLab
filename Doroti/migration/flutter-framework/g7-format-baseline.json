@@ -1,7 +1,7 @@
 {
   "schemaVersion": "doroti.g7-format-baseline/v1",
   "milestone": "G7-0",
-  "capturedAtUtc": "2026-08-15T12:08:19.1594476+00:00",
+  "capturedAtUtc": "2026-08-15T12:21:36.1113383+00:00",
   "status": "reproduced-release-blocker",
   "command": "dotnet format Doroti/Doroti.slnx --verify-no-changes --no-restore --verbosity minimal",
   "exitCode": 2,

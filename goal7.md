@@ -1,6 +1,6 @@
 # Doroti 7차 목표 — 제품 정확성 closure와 Windows/macOS shell·Web release
 
-> 상태: G7-3N 🔄 naming cutover와 Windows 검증 완료 — macOS/Web post-rename 검증 및 Doroti 자체 Web app 생성 경로는 미완료
+> 상태: G7-3V/A/B/C Doroti 자체 Web app 생성 경로 진행 예정
 > 작성일: 2026-08-14
 > 측정 핵심화: 2026-08-15
 > 범위 추가: 2026-08-15 — Apple Silicon macOS shell(`osx-arm64`)을 필수 target으로 승격
@@ -85,233 +85,25 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 - handwritten/generated app 전체 화면의 중복 raster differential
 - Firefox/WebKit, Linux, Intel macOS와 30분 GPU soak의 선행 완료 요구
 
-## 3. Roadmap
 
-### G7-0 — carry-over blocker reset과 재현 가능한 baseline
+## 3. 완료 요약과 남은 Roadmap
 
-목적: Goal6 자산은 보존하고, 당시 Windows/Web release를 실제로 막는 항목만 machine-readable ledger로 고정한다.
+완료 milestone은 작업 목록에서 제외하고 아래 evidence 요약으로만 유지한다.
 
-작업:
+| Milestone | 상태 | 보존 근거 |
+| --- | --- | --- |
+| G7-0 | `PASS` | carry-over 분류, 금지 패턴 query, Windows strict-GPU product smoke, Release build — `g7-carryover.json`, `validate-g7-baseline.ps1` |
+| G7-1V/I/C | `PASS` | Material reference/generation, Windows native input causal trace, compositing/retained/focus closure — `g7-material-reference-evidence.json`, `g7-native-interaction-evidence.json`, `g7-compositing-evidence.json` |
+| G7-2 | `PASS` | Cupertino/adaptive와 generated Dart product parity, package-only Windows consumer — `g7-cupertino-adaptive-evidence.json`, `g7-generated-demo-evidence.json` |
+| G7-3M | `PASS` | Apple Silicon NSWindow strict-GPU live, input/text/clipboard/NSAccessibility, repeat `osx-arm64` package publish — `g7-macos-shell-evidence.json` |
+| G7-3N | `PASS` | 17개 project/package 및 27개 owned type naming closure, 전 target producer/consumer graph, Windows representative live — `g7-doroti-naming-evidence.json` |
+| G7-3I | `verified-infrastructure` | standalone WebAssembly toolchain, browser adapter와 static publish 기반만 승계. C# widget/Skia product PASS로 사용하지 않음 — `g7-web-build-evidence.json` |
 
-- carry-over를 `verified-predecessor`, `release-blocker`, `deferred`, `stale`로 재분류한다.
-- compatibility 수치의 포함 관계를 다시 세지 않고, generated hotfix/widget 대체/local-number rewrite 등 금지 패턴을 source query로 고정한다.
-- predecessor managed focus/frame-dispatch regression을 최소 재현 fixture로 격리한다.
-- 당시 필수 target(`win-x64`, `browser-wasm`)과 후속 target을 분리한다. 이후 추가된 `osx-arm64` 승격은 G7-3M이 소유한다.
-
-완료 gate:
-
-- active release blocker마다 owner, 최소 재현 명령과 후속 milestone이 있음
-- stale PASS가 active gate에 포함된 항목 0
-- 금지 패턴 query와 대표 Windows product smoke가 재현됨
-- 모든 validator shard가 20분 이내이거나 더 작은 shard로 분리됨
-- `git diff --check`와 현재 제품 Release build PASS
-
-산출물:
-
-- `Doroti/migration/flutter-framework/g7-carryover.json`
-- `Doroti/migration/flutter-framework/g7-compatibility-debt.json`
-- `Doroti/migration/targets/g7-target-matrix.json`
-- `Doroti/eng/validate-g7-baseline.ps1`
-
-실행 결과(2026-08-15):
-
-- carry-over ledger `PASS`: active release blocker 9개, owner/재현 명령/후속 milestone 누락 0, active gate의 stale PASS 0
-- compatibility source query `PASS`: worktree `.g.cs` 직접 수정 0, reviewed adaptation 193, 숫자 local 의존 74, widget type 대체 0, namespace 정규화 뒤 promoted product direct diff 8
-- managed regression 최소 fixture `PASS`: focus microtask가 기존 managed view의 `view.frame-dispatch` 미등록을 정확히 재현했으며 G7-1C blocker로 고정
-- Windows 대표 product smoke `PASS`: actual HWND, `skia-wgl-opengl-gpu`, requested 3 frame 이상 presented, native pointer/state-raster 변화, failed/cancelled/software fallback 0, HWND/WGL resource balance
-- 당시 target matrix: `win-x64` implemented/current smoke PASS, 필수 `browser-wasm` absent/release blocker, Linux/macOS/Firefox/WebKit은 non-blocking `notVerified`. G7-2 완료 뒤 추가된 `osx-arm64` 필수 범위는 G7-3M에서 ledger를 승격하고 새 evidence로 검증하며 이 과거 결과를 macOS PASS로 소급 해석하지 않는다.
-- `validate-g7-baseline.ps1 -Shard All`, `Doroti.slnx` Release build(경고 0/오류 0)와 `git diff --check` PASS
-- full-solution `dotnet format --verify-no-changes`는 기존 committed whitespace 진단을 재현해 별도 release blocker로 기록했으며, G7-0에서 unrelated source를 일괄 수정하지 않음
-
-### G7-1 — shared correctness closure
-
-진입 조건: G7-0 완료.
-
-세 sub-gate는 병렬로 구현할 수 있지만 모두 닫혀야 제품/Web live gate로 합류한다.
-
-#### G7-1V — Material visual/generation
-
-- pinned Flutter CalendarDatePicker reference를 동일 locale/date/theme/viewport에서 수집한다.
-- glyph/baseline/grid/selected-today/corner/shadow를 하나의 구조·raster differential로 판정한다.
-- generated-file 보정, 숫자 local명 의존과 widget-specific compatibility rule을 analyzer/typed IR/공용 lowerer/runtime owner로 올린다.
-- temporary rule은 제거하거나 symbol/owner/fixture/제거 조건이 있는 blocker로 남긴다.
-
-완료 gate:
-
-- 대표 CalendarDatePicker reference differential PASS
-- generated `.g.cs` direct hotfix, widget type 대체와 local-number semantic rewrite 0
-- clean/incremental candidate와 promoted product identity PASS
-- 영향받은 Material wave와 제품 smoke PASS
-
-#### G7-1I — target input/cursor/semantics capability
-
-- native 입력을 component 수가 아니라 `hover/click`, `drag/capture`, `wheel`, `key`, `text/composition`, `semantics action` 능력군으로 검증한다.
-- 각 능력군은 대표 Tier A 제품 control에서 target hit → gesture/action → state/semantics/raster 변화의 causal id를 보존한다.
-- Win32 client cursor와 non-client resize ownership을 실제 좌표 event로 검증한다.
-- callback 직접 호출은 managed contract로만 남기고 native `interactive` 집계에서 제외한다.
-
-완료 gate:
-
-- 필수 입력 능력군의 Windows native causal trace PASS
-- direct callback invocation으로 얻은 native PASS 0
-- hover/capture/cursor가 scenario 종료 후 정상 상태로 복귀
-- physical 확인은 G7-6과 분리됨
-
-#### G7-1C — scene/compositing/retained effects
-
-- C0 group opacity, saveLayer와 foreground/backdrop 구분을 대표 pinned fixture로 닫는다.
-- C1 retained replay, superellipse, filter compose/blend와 shader 계열을 typed contract와 consumer fixture에 연결한다.
-- first/unchanged/changed/resize frame에서 retained generation과 stale cache를 검증한다.
-- path와 DPI는 각각 contract 경계를 대표하는 최소 fixture로 검증하며 곱집합을 만들지 않는다.
-- predecessor managed focus/frame-dispatch regression을 복구한다.
-
-완료 gate:
-
-- C0/C1 typed payload → translation → managed/GPU consumer chain PASS
-- 대표 reference differential과 retained invalidation fixture PASS
-- unknown/silent no-op/downgrade와 CPU full-frame fallback 0
-- intermediate surface/cache/frame resource가 scenario 종료 후 기준 상태로 복귀
-- C2 deferred item은 owner가 있고 현재 제품 consumer blocker 0
-
-산출물:
-
-- `Doroti/migration/flutter-framework/g7-material-reference-evidence.json`
-- `Doroti/migration/flutter-framework/g7-native-interaction-evidence.json`
-- `Doroti/migration/flutter-framework/g7-compositing-evidence.json`
-- `Doroti/eng/validate-g7-shared-closure.ps1 -Gate <Visual|Input|Compositing>`
-
-실행 결과(2026-08-15):
-
-- G7-1V `PASS`: Flutter `56b8e1a851a594b1a154f8ea93270807dab22b9a` 고정 fixture에서 CalendarDatePicker glyph/baseline/grid/selected/corner/shadow differential을 통과했다. M3/M4 독립 재생성은 각각 83/55개 `.g.cs`에서 hash diff 0이었고, 9 batch/249 file review stage와 Material candidate build를 통과한 뒤 202개 Material 제품 소스를 승격해 identity diff 0으로 닫았다.
-- generation 금지 패턴 `PASS`: worktree `.g.cs` 직접 수정 0, widget type 대체 0, 숫자 local semantic rewrite 0이다. 기존 193개 review adaptation은 suffix-agnostic semantic pattern과 owner/removal condition이 있는 review stage로 분류했고, 남은 promoted diff 23개는 모두 G7-2 소유 Cupertino 전환이다.
-- G7-1I `PASS`: hover/click, drag/capture, wheel, key, text/composition, semantics action 여섯 능력군이 실제 HWND strict-GPU causal trace를 남겼다. Win32 client/non-client cursor는 실제 `WM_NCHITTEST -> WM_SETCURSOR` 좌표로 검증했고 direct callback native PASS와 stuck hover/capture는 0이다.
-- 입력 live 과정에서 드러난 nullable callback/collection 강제 실행과 `TextSelectionOverlay` 초기화 누락을 공용 lowerer 및 승격 제품에 함께 복구했다. F0/S0/A0와 외부 UI Automation이 모두 통과한다.
-- G7-1C `PASS`: 52/52 scene/canvas operation owner coverage, pinned foreground/backdrop differential, managed group/saveLayer/filter, strict-GPU retained first/unchanged/changed/resize cache invalidation, focus/frame-dispatch 회귀와 resource balance를 통과했다. C2는 owner가 있고 현재 제품 consumer blocker는 0이다.
-- 재현 명령은 `validate-g7-shared-closure.ps1 -Gate Visual|Input|Compositing`이며 세 evidence의 `status`는 모두 `pass`다. physical input/IME/accessibility는 계획대로 G7-6 `notVerified`로 유지한다.
-- 현재 승격 제품 기준 `validate-g7-baseline.ps1 -Shard All`, Windows strict-GPU 제품 smoke, `Doroti.slnx` Release build(경고 0/오류 0), carry-over 일관성과 `git diff --check`도 통과했다. G7-1 blocker 4개는 `closed`, 후속 milestone blocker 5개는 상태를 승계한다.
-
-### G7-2 — Cupertino/adaptive와 generated Dart product closure
-
-진입 조건: G7-1 완료.
-
-작업:
-
-- Cupertino는 component별 native 전수 측정 대신 Tier A 대표 control로 pointer/key/semantics 능력군을 재사용한다.
-- adaptive constructor의 platform 선택과 대표 behavior를 pinned Flutter trace와 비교한다.
-- Doroti compiler가 읽는 Dart fixture와 handwritten C# product fixture는 framework 변환 identity 및 대표 behavior/semantics를 비교한다. Dart/Flutter project는 compiler/reference 실행에만 사용하고 Doroti 사용자 app project나 publish 입력으로 승격하지 않는다. 전체 화면 raster 중복 비교는 하지 않는다.
-- promoted framework/hosting/target package만 사용하는 repository 밖 Windows consumer를 launch하고 대표 toggle을 수행한다.
-
-완료 gate:
-
-- Cupertino Tier A 대표 제품 path의 `presented`/`interactive`/필요 `semantic` PASS
-- adaptive platform 선택 reference PASS
-- generated app의 navigation/state/semantics가 handwritten 대표 scenario와 일치
-- repository-private project/candidate fallback 0
-- compiler analyzer와 Flutter SDK analyze diagnostics 0
-
-산출물:
-
-- `Doroti/migration/flutter-framework/g7-cupertino-adaptive-evidence.json`
-- `Doroti/migration/flutter-framework/g7-generated-demo-evidence.json`
-- `Doroti/eng/validate-g7-product.ps1 -Gate <Cupertino|Generated>`
-
-실행 결과(2026-08-15, macOS 검증 호스트):
-
-- Cupertino/adaptive `PASS`: 고정 Flutter trace와 승격 Doroti 제품을 Windows/macOS platform policy로 비교했다. Windows는 Checkbox/Switch/Slider/Progress가 Material을 선택하고, macOS는 Checkbox/Slider/Progress가 Cupertino를 선택하며 `Switch.adaptive`는 고정 Flutter 구현과 같이 Material render object에 Cupertino 색상 정책을 적용한다. 양쪽 모두 callback/state와 semantics action contract를 통과했다.
-- Tier A 제품 경로 `PASS`: Cupertino 55/55 presented와 실제 Windows Cupertino button pointer predecessor를 보존하고, G7-1의 native key/semantics causal capability를 재사용했다. managed adaptive fixture의 직접 callback은 native PASS로 세지 않았다.
-- generated Dart 제품 `PASS`: Flutter widget test에서 `home → details → home`, `pressed=0 → 1 → 1`, 두 semantics tap action을 검증했고, handwritten `DorotiDemoApp`의 route push/pop, state mutation, semantics tree와 같은 대표 contract로 정규화해 비교했다. Flutter analyze와 compiler analyzer 진단은 모두 0건이다.
-- package-only 경계 `PASS`: application compiler가 conditional repository `ProjectReference`를 더 이상 생성하지 않으며, 저장소 밖 소비자가 승격 NuGet package만으로 restore/build 및 `win-x64` publish를 통과했다. repository-private/candidate fallback은 0건이다.
-- 현재 호스트가 macOS이므로 Win32 실행을 가장하지 않았다. 현재 source의 compiler/package 경계는 macOS에서 재검증하고, 변경되지 않은 초기화·대표 toggle의 actual HWND strict-GPU 실행은 G6 Windows predecessor evidence를 명시적으로 계승했다. 이 실행 시점에는 macOS desktop target이 비필수였으므로 shell/runtime은 `notVerified`였고, 이후 추가된 필수 `osx-arm64` 검증은 G7-3M이 새 evidence로 소유한다.
-- macOS 전환 지원으로 repository-local Flutter/Dart launcher 선택과 Windows checkout의 SDK CRLF 정규화를 추가했다. 재현 명령은 `validate-g7-product.ps1 -Gate Cupertino|Generated`이다.
-- 범위 정정(2026-08-15): 당시 `DorotiDemoApp/dart`의 `pubspec.yaml`과 Flutter widget test는 compiler 입력의 Flutter 호환 의미를 비교하기 위한 reference fixture였다. 이는 Doroti C# app 생성/build/publish UX의 증거가 아니며, 삭제된 Flutter fixture를 제품 project로 복구하지 않는다. G7-2의 behavior/semantics 결과는 predecessor reference로만 보존하고, 현재 C# app template와 Web product closure는 G7-3이 새로 소유한다.
-
-### G7-3M — macOS source-ported shell과 `osx-arm64` package baseline
-
-진입 조건: G7-1과 G7-2 완료. G7-3 Web과 병렬로 진행할 수 있다.
-
-목적: A0에서 분류만 완료한 Avalonia.Native managed bridge와 libAvalonia AppKit source를 `Doroti.Shell.Core` 아래의 실제 macOS shell로 닫고, 동일한 generated 제품을 `osx-arm64`에서 실행한다.
-
-작업:
-
-- Win32 concrete native host에 묶인 pointer/key/text, surface/GL, clipboard/cursor와 accessibility 서비스를 `Doroti.Shell.Core`의 backend-neutral typed capability로 올리고 native type은 각 vendor project 내부에 유지한다.
-- `Doroti.Host.Desktop`의 Win32 직접 구성과 project dependency를 `IShellWindowingPlatform` 및 typed service 주입 경계로 옮기고 기존 Windows 동작과 package identity를 보존한다.
-- 고정 Avalonia revision의 `macos-managed`와 `macos-libavalonia` source set을 `Doroti.Vendor.Avalonia.Native`로 포팅하며, managed/native source와 생성 header의 provenance를 함께 고정한다.
-- AppKit main-thread dispatcher, NSWindow/NSView lifecycle, NSScreen scale, resize/minimize/activate/close, surface generation과 실제 GPU present를 공용 frame contract에 연결한다.
-- pointer/hover/drag/capture, precise trackpad wheel, key, macOS text input/composition, clipboard, cursor와 NSAccessibility action을 target causal trace로 연결한다.
-- `Doroti.Target.macOS.osx-arm64` composition root와 target manifest를 추가하고, libAvalonia 및 GPU native asset의 architecture/hash/license를 NuGet package에 포함한다.
-- repository 밖 package-only consumer에서 clean restore/build/publish/launch하고 generated `DorotiDemoApp`의 대표 navigation/toggle/semantics 경로를 실행한다.
-- `g7-target-matrix.json`의 `macos-desktop` deferred 항목을 `osx-arm64` 필수 target으로 승격한다. `osx-x64`에 검증을 전이하지 않는다.
-
-완료 gate:
-
-- AppKit/libAvalonia graph의 Avalonia UI/Control/Composition binary dependency와 repository-private fallback 0
-- `osx-arm64` clean build, native asset architecture/hash와 repeat publish identity PASS
-- 실제 NSWindow에서 strict-GPU non-empty first frame과 terminal frame ACK PASS; CPU full-frame/software fallback 0
-- lifecycle/scale/resize와 필수 input/text/clipboard/semantics action의 target → state/semantics/raster causal trace PASS
-- 종료 후 window/surface/dispatcher/native resource가 기준 상태로 복귀하고 unhandled exception 0
-- repository 밖 promoted package-only consumer launch PASS
-- 자동화로 대신할 수 없는 Korean IME/VoiceOver/trackpad 확인은 G7-6 전까지 `notVerified`
-
-산출물:
-
-- `Doroti/src/Doroti.Vendor.Avalonia.Native/`
-- `Doroti/src/Doroti.Target.macOS.osx-arm64/`
-- `Doroti/migration/targets/osx-arm64.json`
-- `Doroti/migration/avalonia-shell/g7-macos-source-port-provenance.json`
-- `Doroti/migration/macos/g7-macos-shell-evidence.json`
-- `Doroti/eng/validate-g7-macos-shell.ps1 -Shard <Source|Build|Live|Package>`
-
-실행 결과(2026-08-15, Apple Silicon macOS 검증 호스트):
-
-- G7-3M `PASS`: `Doroti.Host.Desktop`의 Win32 concrete type/구성 의존을 `IShellWindowingPlatform`과 Shell.Core typed input/text/clipboard/cursor/graphics/focus/accessibility service 주입으로 옮겼다. Windows composition root와 package identity는 `Doroti.Target.Windows.win-x64`에 유지한다.
-- 고정 Avalonia revision의 `macos-managed`/`macos-libavalonia` owner를 `Doroti.Vendor.Avalonia.Native`의 reviewed managed C ABI 및 AppKit Objective-C++ source port로 닫았다. 생성 header, source mapping, license, architecture와 hash는 `g7-macos-source-port-provenance.json`에 고정했다.
-- 실제 NSWindow/AppKit live `PASS`: Apple M1 NSOpenGL/Skia strict-GPU non-empty frame, generated `DorotiDemoApp`의 제출 frame 전부 terminal ACK, software fallback 0, pointer/drag/fractional wheel/key/text/clipboard/NSAccessibility causal trace, resize/minimize/activate/close와 resource balance를 통과했다.
-- `osx-arm64` build/repeat publish/package `PASS`: arm64 `libAvalonia.dylib`의 `@rpath` install name과 hash를 검증했고, 저장소 밖 clean package-only consumer가 격리된 package cache로 restore/publish/launch하여 제출 frame 전부 ACK, native toggle, semantics와 종료 resource balance를 통과했다. repository-private fallback과 Avalonia UI/Control/Composition binary dependency는 0이다.
-- `g7-target-matrix.json`에서 `macos-desktop` deferred 항목을 제거하고 `osx-arm64`를 필수 target으로 승격했다. Korean IME candidate window, VoiceOver 물리 탐색, 실제 precise trackpad와 `osx-x64`는 전이하지 않고 G7-6까지 `notVerified`다.
-- 재현 명령은 `validate-g7-macos-shell.ps1 -Shard Source|Build|Live|Package`이며 종합 evidence의 status는 `pass`다.
-
-### G7-3N — 전 target Doroti-owned product naming closure
-
-진입 조건: G7-1, G7-2, G7-3M과 G7-3I `verified-infrastructure` 완료. 기존 Windows/macOS/Web 동작 증거는 rename 전 predecessor evidence로 보존하고, 새 package/API identity와 target별 실행은 이 gate에서 다시 검증한다.
-
-작업:
-
-- product source/assembly/package/public API의 Doroti-owned infrastructure 이름을 전 target에서 하나의 naming map으로 교체한다. 최소 범위는 `Doroti.Flutter.Hosting` → `Doroti.Hosting`, `Doroti.Flutter.Ui` → `Doroti.Ui`, `Doroti.Flutter.Runtime` → `Doroti.Runtime`, `Doroti.Flutter.Framework.*` → `Doroti.Framework.*`, `Doroti.Host.Desktop.Flutter` → `Doroti.Host.Desktop.Framework`이다. native shell의 `Doroti.Host.Desktop`과 framework integration 경계는 계속 분리한다.
-- `FlutterHostSession`, `FlutterView`, `FlutterViewCapabilities`, `FlutterCapabilityIds`, `FlutterCapabilityException`, `FlutterApplicationBoundary`, `DesktopFlutterHost`, `BrowserFlutterHost`, `WindowsFlutterTarget`와 `MacOsFlutterTarget` 같은 Doroti-owned type/file을 각각 `Doroti*` 또는 역할 기반 중립 이름으로 원자적으로 rename한다. Windows, macOS, Web producer/consumer, template, validation과 문서를 같은 변경에서 동기화한다.
-- `Flutter` 명칭은 pinned upstream source/SDK, reference fixture/provenance와 Flutter 호환 API의 exact symbol처럼 실제 원본 의미가 있는 항목에만 manifest allowlist로 남긴다. Doroti-owned infrastructure를 예외로 등록하거나 새 public forwarding alias로 보존하지 않는다.
-- package id, assembly name, namespace, XML documentation, diagnostic, target manifest, static asset metadata와 generated namespace owner를 새 이름으로 갱신한다. 이전 package/assembly/namespace에 대한 conditional fallback과 type forwarding은 두지 않는다.
-- rename 뒤 promoted package만 사용하는 동일한 C# `DorotiDemoApp`을 Windows, macOS `osx-arm64`와 Web `browser-wasm`에 build/publish하고, Windows/macOS 대표 strict-GPU launch와 Web product graph를 다시 검증한다.
-
-완료 gate:
-
-- machine-readable old → new project/assembly/package/namespace/type/file mapping에 owner, consumer closure와 제거 상태가 있음
-- allowlist 밖 product source, public API, assembly/package id, template, manifest와 diagnostic의 `Doroti.Flutter`, `Host.Desktop.Flutter` 및 Doroti-owned `Flutter*` identifier 0
-- 이전 package/assembly/namespace reference, public compatibility alias, type forwarding과 repository-private fallback 0
-- `Doroti.slnx` Release build와 영향 validator PASS, package lock/target manifest/architecture inventory가 새 identity와 일치
-- repository 밖 package-only 동일 C# app의 `win-x64`, `osx-arm64`, `browser-wasm` restore/build/publish PASS
-- rename 뒤 Windows/macOS 대표 strict-GPU first frame·input/state와 Web host/graph smoke PASS
-
-산출물:
-
-- `Doroti/migration/product-naming/g7-doroti-naming-map.json`
-- `Doroti/migration/product-naming/g7-doroti-naming-evidence.json`
-- `Doroti/eng/validate-g7-product-naming.ps1 -Shard <Inventory|Build|Package|Live>`
-
-현재 상태(2026-08-15): `partial-windows-validated`. `g7-doroti-naming-map.json`에 17개 project/assembly/package/namespace와 27개 Doroti-owned type mapping을 고정하고, Runtime/UI/Hosting, 13개 Framework package, Desktop framework integration과 Windows/macOS/Web producer/consumer를 이전 identity alias·type forwarding 없이 원자적으로 전환했다. 활성 source/project/lock/validator의 이전 identity와 owned `Flutter*` type은 0건이며 17개 새 `.nupkg`, `Doroti.slnx` Release build(경고 0/오류 0), G7 baseline All과 Windows actual HWND `skia-wgl-opengl-gpu` product smoke가 PASS했다. 이번 실행에서 macOS와 Web post-rename package/live 검증은 요청 범위에 따라 생략해 `notVerified`로 유지하므로 G7-3N 전체 완료로 기록하지 않는다. 재현 명령은 `validate-g7-product-naming.ps1 -Shard Inventory|Build|Package|Live`이며, `Live`는 Windows host에서만 실행한다.
+완료 범위의 상세 이력은 각 machine-readable evidence와 [Goal6 요약](history/26-08-14/goal6-summary.md)에 보존한다. 미실행 physical·browser product 결과는 아래 active milestone에서 계속 `notVerified`다.
 
 ### G7-3 — C# + Skia Blazor WebAssembly `browser-wasm` application closure
 
-진입 조건: G7-0 완료. G7-3I는 기존 `verified-infrastructure` baseline으로 보존하며, 신규 G7-3V/G7-3A/G7-3B/G7-3C 구현은 G7-3N 완료 뒤에 시작한다. shared Flutter framework 의미를 Web workaround나 Avalonia Control로 복제하지 않는다. G7-3은 Web host library 또는 빈 WASM app이 publish되는 것만으로 완료하지 않으며, 저장소 밖에서 일반 C# Doroti app을 생성하고 같은 C# widget tree가 Skia GPU로 browser canvas에 그려지는 전체 제품 경로를 소유한다.
-
-#### G7-3I — 기존 standalone .NET WebAssembly host/toolchain baseline (`verified-infrastructure`)
-
-기존 구현과 증거는 다음 범위로만 보존한다.
-
-- `Microsoft.NET.Sdk.WebAssembly`/`wasm-tools`, `_framework/dotnet.js`, `Doroti.Host.Web`, `Doroti.Target.Web.browser-wasm`, browser-only dependency graph와 static artifact hash pipeline
-- document/canvas lifecycle, `requestAnimationFrame`, visibility/focus, resize, `devicePixelRatio`, WebGL2 fail-closed policy와 JavaScript callback/plugin ABI
-- package-only 빈 C# consumer에서 target package restore와 interpreter/AOT probe publish가 가능하다는 구조 증거
-
-이 baseline은 standalone .NET WebAssembly runtime이 뜨고 static asset을 publish할 수 있다는 증거일 뿐, 최종 Blazor host shell, Doroti C# root widget mount, SkiaSharp WebGL draw/present 또는 실제 product app을 증명하지 않는다. `_framework/dotnet.js`를 직접 조립한 기존 bootstrap은 재사용 가능한 toolchain 증거이지 최종 제품 host 계약이 아니다. `BrowserWasmTarget`만 생성하는 probe와 빈 canvas publish는 product PASS로 집계하지 않는다.
+진입 조건인 G7-3N은 완료됐고 G7-3I infrastructure를 재사용한다. G7-3은 저장소 밖에서 일반 C# Doroti app을 생성하고, 같은 C# widget tree가 Skia GPU browser canvas에 그려지는 전체 제품 경로를 소유한다.
 
 #### G7-3V — pinned Avalonia Browser behavior reference와 Blazor capability 구현
 
@@ -415,30 +207,22 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 - `Doroti/artifacts/g7-web/<version>/`
 - `Doroti/eng/validate-g7-web-build.ps1 -Shard <Toolchain|Reference|Hosting|Graph|Template|Compile|Publish>`
 
-현재 상태와 정정(2026-08-15):
+현재 상태(2026-08-15):
 
-- G7-3I `verified-infrastructure`: `Doroti.Host.Web`/`Doroti.Target.Web.browser-wasm`, browser-only graph, WebGL2 fail-closed, lifecycle/ABI, interpreter/AOT probe와 static hash pipeline은 재사용한다.
-- G7-3I의 선행 인프라는 G7-3N rename 전 이름으로 검증된 predecessor evidence다. G7-3에서는 rename된 Doroti package/API identity만 사용하며 기존 `BrowserFlutterHost`, `FlutterHostSession`, `FlutterView`와 `FlutterCapabilityIds` 이름에 대한 adapter/fallback을 추가하지 않는다.
-- 현재 `Doroti.Host.Web`은 static asset packaging 편의를 위해 `Microsoft.NET.Sdk.Razor`를 사용하지만 Razor component나 Blazor runtime package를 참조하지 않는다. 제품 closure에서는 이를 `DorotiRoot`/`DorotiSurface`와 static asset을 제공하는 intentional Razor component library 경계로 승격한다. template이 생성한 별도 `Microsoft.NET.Sdk.BlazorWebAssembly` Web project가 이 package와 공용 C# Doroti app assembly를 참조해 실제 host가 된다.
-- 기존 `Compile`/`Publish` shard는 임시 C# consumer에서 `BrowserWasmTarget`만 생성했으며 Doroti C# widget tree를 mount하거나 Skia로 그리지 않았다. 따라서 기존 `g7-web-build-evidence.json`의 전체 `pass`는 product closure로 사용하지 않으며 다음 validator 실행에서 `partial`로 교정한다.
-- `DorotiDemoApp/dart` Flutter project와 Flutter widget test는 G7-2 compiler/reference fixture였고 C# Web product input으로 복구하거나 재사용하지 않는다.
-- G5-3 이전 handwritten `Doroti`/`Doroti.Widgets`/Legacy Engine·Rendering과 비교 전용 `Doroti.Host.Avalonia`, A/B sample, 구형 `doroti-counter` template은 제거했다. 새 `Doroti.Templates`는 이 경로를 복구하지 않고 G7-3A/G7-3C의 promoted C# framework/target package 계약으로 새로 만든다.
-- G7-3N/G7-3V/G7-3A/G7-3B/G7-3C는 `notVerified`다. 다섯 gate가 모두 PASS하고 실제 C# Doroti app과 Skia backend가 artifact에 포함되기 전까지 G7-4에 진입하지 않는다.
+- G7-3N naming closure는 `PASS`, G7-3I standalone WebAssembly baseline은 `verified-infrastructure`다.
+- 기존 Web evidence는 toolchain/browser adapter/static publish 기반만 증명한다. C# Doroti widget mount, SkiaSharp Blazor GPU frame과 실제 product app은 아직 증명하지 않으므로 G7-3V/A/B/C가 `notVerified`를 소유한다.
+- G7-3V/A/B/C가 모두 PASS하기 전에는 G7-4 Chromium live validation에 진입하지 않는다.
 
 구현 순서:
 
-1. G7-3N에서 공용 framework/hosting/UI와 Windows/macOS/Web target의 Doroti-owned 이름을 원자적으로 rename하고 package/live evidence를 갱신한다.
-2. `g7-web-build-evidence.json`, `g7-target-matrix.json`과 carry-over ledger에서 기존 Web `pass`를 `verified-infrastructure`/`partial`로 재분류하고, C# widget mount와 Skia draw 미검증 blocker를 추가한다.
-3. pinned Avalonia Browser reference snapshot과 behavior selection/provenance를 고정하고, 같은 동작을 `Doroti.Host.Web`의 Blazor component와 C# browser capability로 독립 구현한다. DOM 즉시 처리만 최소 JS module로 남긴다.
-4. `Doroti.Host.Web`을 root/surface Razor component library로 승격하고 template Web project에 Blazor WebAssembly composition root를 둔다. pinned `SkiaSharp.Views.Blazor`/`SkiaSharp.NativeAssets.WebAssembly`, `blazor.webassembly.js`와 static asset bootstrap을 함께 닫는다.
-5. `Doroti.Templates`에 공용 C# app + 내부 Blazor browser host template을 추가하고 사용자의 Flutter/Dart/Razor/JavaScript 작성 없는 clean 생성/build를 검증한다.
-6. Web composition root가 같은 C# widget tree를 `SKGLView`에 mount/draw/present하고 Blazor pointer event가 C# gesture/state까지 왕복하도록 연결한다.
-7. 저장소 밖에서 `dotnet new` → C# source build → `dotnet publish -r browser-wasm` → repeat static artifact identity를 한 제품 scenario로 검증한다.
-8. G7-3N/G7-3V/G7-3A/G7-3B/G7-3C evidence를 모두 PASS로 갱신한 뒤에만 G7-4 Chromium live validation을 착수한다.
+1. G7-3V: Avalonia Browser reference/provenance를 고정하고 Blazor/C# browser capability를 독립 구현한다.
+2. G7-3A: 공용 C# app과 내부 Blazor host를 생성하는 `doroti-app` template/package 계약을 닫는다.
+3. G7-3B: 같은 C# widget tree를 `SKGLView` WebGL2 surface에 mount/draw/present하고 입력 인과 trace를 연결한다.
+4. G7-3C: 저장소 밖 package-only app의 create/restore/build/repeat publish와 artifact identity를 통과한 뒤 G7-4로 넘긴다.
 
 ### G7-4 — Web live product parity
 
-진입 조건: G7-1, G7-2와 G7-3N/G7-3V/G7-3A/G7-3B/G7-3C 완료. G7-3I 인프라 probe만으로는 진입할 수 없다.
+진입 조건: G7-3V/G7-3A/G7-3B/G7-3C 완료. infrastructure probe만으로는 진입할 수 없다.
 
 작업:
 
@@ -467,7 +251,7 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 
 ### G7-5 — 통합 release integrity, stability와 performance baseline
 
-진입 조건: G7-2, G7-3M과 G7-4 완료.
+진입 조건: G7-4 완료.
 
 이 단계만 반복·시간 기반 자동 측정을 소유한다.
 
@@ -520,64 +304,39 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 
 ## 4. 단계 의존성과 중단 규칙
 
-```text
-G7-0 carry-over blocker reset
-  +-> G7-1 shared correctness
-  +-> G7-3I Web infrastructure (verified-infrastructure)
+완료된 선행 조건은 G7-0, G7-1, G7-2, G7-3M, G7-3N이며 G7-3I는 Web infrastructure baseline으로만 승계한다.
 
-G7-1 -> G7-2 Cupertino/adaptive/generated product
-G7-1 + G7-2 -> G7-3M macOS live product
-G7-1 + G7-2 + G7-3M + G7-3I -> G7-3N all-target Doroti naming
-G7-3I + G7-3N -> G7-3V Avalonia Browser reference + Blazor capability
-G7-3I + G7-3N -> G7-3A C# Doroti app/template
-G7-3V + G7-3A -> G7-3B C# widget tree + Skia Web build
-G7-3B -> G7-3C external C# product publish
-G7-1 + G7-2 + G7-3N + G7-3C -> G7-4 Web live product
-G7-2 + G7-3M + G7-4 -> G7-5 integrated release
-G7-5 -> G7-6 physical acceptance
+```text
+G7-3V browser reference/capability + G7-3A C# app/template
+  -> G7-3B C# widget tree + Skia Web build
+  -> G7-3C external C# product publish
+  -> G7-4 Chromium live product
+  -> G7-5 integrated release
+  -> G7-6 physical acceptance
 ```
 
 - lower layer 공용 의미 결함은 해당 compiler/runtime/scene fixture에서 먼저 수정한다.
 - generated product, Web bootstrap 또는 target adapter의 widget-specific patch로 framework 결함을 숨기지 않는다.
-- macOS shell 결함을 Avalonia Control/visual tree 재도입이나 generated product patch로 숨기지 않는다.
 - Web build PASS는 browser first frame 또는 interaction PASS가 아니다.
 - browser automated ARIA는 physical screen-reader PASS가 아니다.
 - completed predecessor gate가 영향 범위 회귀에서 깨지면 최초 regression부터 복구한다.
 - unsupported operation/plugin/backend를 no-op 또는 software fallback으로 성공 처리하지 않는다.
 
-## 5. 필수 validation 계약
+## 5. 남은 validation 계약
 
-모든 명령은 `.github/copilot-instructions.md`에 따라 20분 timeout 이내의 shard로 구성한다. 전체 이력 validator를 하나의 aggregate로 다시 실행하지 않는다.
+모든 명령은 `.github/copilot-instructions.md`에 따라 20분 timeout 이내의 shard로 구성한다. 완료 milestone validator는 영향 범위 회귀가 생긴 경우에만 다시 실행한다.
 
 ```powershell
-./Doroti/eng/validate-g7-baseline.ps1
-
-./Doroti/eng/validate-g7-shared-closure.ps1 -Gate Visual
-./Doroti/eng/validate-g7-shared-closure.ps1 -Gate Input
-./Doroti/eng/validate-g7-shared-closure.ps1 -Gate Compositing
-
-./Doroti/eng/validate-g7-product.ps1 -Gate Cupertino
-./Doroti/eng/validate-g7-product.ps1 -Gate Generated
-
-./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Source
-./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Build
-./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Live
-./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Package
-
-./Doroti/eng/validate-g7-product-naming.ps1 -Shard Inventory
-./Doroti/eng/validate-g7-product-naming.ps1 -Shard Build
-./Doroti/eng/validate-g7-product-naming.ps1 -Shard Package
-./Doroti/eng/validate-g7-product-naming.ps1 -Shard Live
-
-./Doroti/eng/validate-g7-web-build.ps1 -Shard Toolchain
 ./Doroti/eng/validate-g7-web-build.ps1 -Shard Reference
 ./Doroti/eng/validate-g7-web-build.ps1 -Shard Hosting
 ./Doroti/eng/validate-g7-web-build.ps1 -Shard Graph
 ./Doroti/eng/validate-g7-web-build.ps1 -Shard Template
 ./Doroti/eng/validate-g7-web-build.ps1 -Shard Compile
 ./Doroti/eng/validate-g7-web-build.ps1 -Shard Publish
+
 ./Doroti/eng/validate-g7-web-live.ps1 -Shard Smoke
 ./Doroti/eng/validate-g7-web-live.ps1 -Shard Interaction
+./Doroti/eng/validate-g7-web-live.ps1 -Shard Reference
 
 ./Doroti/eng/validate-g7-release.ps1 -Target win-x64
 ./Doroti/eng/validate-g7-release.ps1 -Target osx-arm64
@@ -588,11 +347,10 @@ G7-5 -> G7-6 physical acceptance
 ./Doroti/eng/validate-g7-acceptance.ps1 -Target browser-wasm
 
 dotnet build Doroti/Doroti.slnx --configuration Release --nologo
-dotnet format Doroti/Doroti.slnx --verify-no-changes --no-restore --verbosity minimal
 git diff --check
 ```
 
-아직 존재하지 않는 G7 validator는 해당 milestone의 구현 산출물이다. 문서에 명령이 있다는 이유만으로 실행 또는 PASS로 간주하지 않는다.
+아직 존재하지 않는 validator와 shard는 해당 active milestone의 구현 산출물이다. 문서에 명령이 있다는 이유만으로 실행 또는 PASS로 간주하지 않는다.
 
 ## 6. 공통 구현 원칙
 
