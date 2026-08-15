@@ -1,9 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Doroti.Framework.Scheduler\Doroti.Framework.Scheduler.csproj" />
-    <ProjectReference Include="..\..\src\Doroti.Framework.Services\Doroti.Framework.Services.csproj" />
-  </ItemGroup>
-</Project>

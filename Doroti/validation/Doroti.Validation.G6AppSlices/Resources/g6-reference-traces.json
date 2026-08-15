@@ -1,9 +1,0 @@
-{
-  "N0": ["push", "pushNamed:/details", "pop", "transition", "back", "focusRestored"],
-  "O0": ["dialog", "snackBar", "tooltip", "popupMenu", "modalBottomSheet", "persistentBottomSheet"],
-  "F0": ["textField", "formInvalid", "formValid", "selection", "clipboard", "keyboard", "imeComposition"],
-  "S0": ["listView:1000", "gridView", "customScrollView", "lazyLifecycle", "wheel", "drag", "keyboardScroll"],
-  "R0": ["assetImage", "networkError", "fileError", "bundledFont", "localization:en-US", "localization:ko-KR"],
-  "A0": ["focus", "invoke", "toggle", "setText", "scroll"],
-  "P0": ["channel:g6/app-slices", "echo", "unsupported:g6/unsupported", "exactFailure"]
-}
