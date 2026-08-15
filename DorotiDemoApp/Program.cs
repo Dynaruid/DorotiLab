@@ -762,7 +762,13 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
 
     public void Bootstrap(PlatformDispatcher dispatcher)
     {
-        FlutterError.onError = details => FirstFrameworkError ??= details;
+        FlutterError.onError = details =>
+        {
+            FirstFrameworkError ??= details;
+#if DOROTI_BROWSER
+            Console.Error.WriteLine(details.exceptionThrown);
+#endif
+        };
         _binding = new WidgetsFlutterBinding(dispatcher);
     }
 

@@ -1,6 +1,6 @@
 # Doroti 7차 목표 — 제품 정확성 closure와 Windows/macOS shell·Web release
 
-> 상태: G7-3V/A/B/C PASS, G7-4 Chromium live product parity 진행 예정
+> 상태: G7-3V/A/B/C PASS, G7-4 Chromium 수동 제품 smoke PASS / 자동화 live parity gate 진행 예정
 > 작성일: 2026-08-14
 > 측정 핵심화: 2026-08-15
 > 범위 추가: 2026-08-15 — Apple Silicon macOS shell(`osx-arm64`)을 필수 target으로 승격
@@ -97,13 +97,17 @@ Goal7의 blocking evidence는 아래 네 종류만 둔다.
 | G7-2 | `PASS` | Cupertino/adaptive와 generated Dart product parity, package-only Windows consumer — `g7-cupertino-adaptive-evidence.json`, `g7-generated-demo-evidence.json` |
 | G7-3M | `PASS` | Apple Silicon NSWindow strict-GPU live, input/text/clipboard/NSAccessibility, repeat `osx-arm64` package publish — `g7-macos-shell-evidence.json` |
 | G7-3N | `PASS` | 17개 project/package 및 27개 owned type naming closure, 전 target producer/consumer graph, Windows representative live — `g7-doroti-naming-evidence.json` |
-| G7-3V/A/B/C | `PASS` | Avalonia Browser exact behavior provenance, 독립 Blazor/Skia capability, 동일 `DorotiDemoApp/Program.cs` desktop/browser build, `doroti-app` package-only acceptance와 717-file repeat publish identity — `g7-web-build-evidence.json` |
+| G7-3V/A/B/C | `PASS` | Avalonia Browser exact behavior provenance, 독립 Blazor/Skia capability, 동일 `DorotiDemoApp/Program.cs` desktop/browser build, `doroti-app` package-only acceptance와 720-file repeat publish identity — `g7-web-build-evidence.json` |
 
 완료 범위의 상세 이력은 각 machine-readable evidence와 [Goal6 요약](history/26-08-14/goal6-summary.md)에 보존한다. 미실행 browser live·physical 결과는 아래 active milestone에서 계속 `notVerified`다.
+
+2026-08-15 G7-4 선행 수동 smoke에서는 G7-3 공식 `browser-wasm` publish artifact를 Chromium에 로드해 실제 non-empty GPU canvas, Flutter식 logical size/physical backing-store DPR 적용, bounded backdrop blur(`sigmaX=12`, `sigmaY=6`), desktop과 같은 ambient/spot 2-pass shadow, semantics tree와 pointer 상태 변화(FAB `24 → 27`)를 확인했다. 해당 origin의 console error는 0이었다. 이 결과는 `presented`와 기본 pointer 경로의 수동 관찰이며, wheel/keyboard/composition/clipboard, resize·DPR lifecycle 회복, ARIA action, Flutter Web differential과 physical IME/screen-reader를 완료로 승격하지 않는다.
 
 ### G7-4 — Web live product parity
 
 진입 조건: G7-3V/G7-3A/G7-3B/G7-3C 완료. infrastructure probe만으로는 진입할 수 없다.
+
+현재 상태: 공식 publish artifact의 수동 Chromium `presented`/기본 pointer smoke는 확인했다. 아래 자동화 causal trace와 reference/acceptance 항목은 아직 `notVerified`다.
 
 작업:
 

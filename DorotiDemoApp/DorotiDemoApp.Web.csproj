@@ -16,6 +16,7 @@
     <DefineConstants>$(DefineConstants);DOROTI_BROWSER</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
     <Compile Include="Program.cs" />
     <Compile Include="WebHost\Program.cs" />
     <ProjectReference Include="..\Doroti\src\Doroti.Hosting\Doroti.Hosting.csproj" />
@@ -25,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="WebHost\wwwroot\**" Link="wwwroot\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="WebHost\application-manifest.json" LogicalName="Doroti.Application.Manifest" />
     <DorotiJavaScriptPlugin Include="echo" Channel="doroti.example/echo" ExportName="invoke" ModuleUrl="./plugins/echo.js" />
   </ItemGroup>
 </Project>

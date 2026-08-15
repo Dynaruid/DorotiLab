@@ -1,3 +1,3 @@
 export function invoke(message) {
-  return String(message ?? "");
+  return message.payloadBase64;
 }

@@ -38,6 +38,8 @@ dotnet publish ./DorotiDemoApp/DorotiDemoApp.Web.csproj -c Release -r browser-wa
 
 배포 root는 `publish/doroti-demo-web/wwwroot`입니다. 표준 Blazor loader, fingerprint된 Doroti/SkiaSharp WASM assembly, statically linked native runtime, asset, localization과 예제 Web plugin이 포함됩니다. Chromium GPU/input/ARIA runtime acceptance는 G7-4 소유이며 G7-3은 build/static artifact graph까지만 증명합니다.
 
+2026-08-15 수동 Chromium smoke에서 공식 publish artifact의 non-empty GPU canvas, logical/physical DPR 분리, bounded `sigmaX=12`/`sigmaY=6` backdrop blur, desktop과 같은 2-pass shadow, semantics tree와 pointer 상태 변화를 확인했으며 해당 origin의 console error는 0이었습니다. 이는 `presented`와 기본 pointer 확인이며 G7-4의 wheel/keyboard/IME/clipboard/resize/ARIA/reference 자동화 또는 physical acceptance를 대신하지 않습니다.
+
 ## 앱 실행
 
 Repository root에서 실행합니다.
@@ -95,7 +97,7 @@ macOS gate는 실제 NSWindow, AppKit lifecycle/focus, pointer와 fractional whe
 
 - Commit되는 통합 evidence: [`../Doroti/migration/flutter-framework/g6-material-demo-evidence.json`](../Doroti/migration/flutter-framework/g6-material-demo-evidence.json)
 - G7-3M macOS 통합 evidence: [`../Doroti/migration/macos/g7-macos-shell-evidence.json`](../Doroti/migration/macos/g7-macos-shell-evidence.json)
-- G7-3 browser build evidence: [`../Doroti/migration/web/g7-web-build-evidence.json`](../Doroti/migration/web/g7-web-build-evidence.json)
+- G7-3 browser build evidence(`doroti.g7-web-build-evidence/v2`): [`../Doroti/migration/web/g7-web-build-evidence.json`](../Doroti/migration/web/g7-web-build-evidence.json)
 - Screenshot/layout reference: [`g6-material-reference.json`](g6-material-reference.json)
 - 임시 실행 output: `../Doroti/artifacts/g6-material-demo/win-x64/`
 

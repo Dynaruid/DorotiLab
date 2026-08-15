@@ -326,7 +326,7 @@ if ($Shard -eq 'Publish') {
     Assert-Equal $hashA $hashB 'repeat deployment-neutral static identity'
     $index = Get-Content -LiteralPath (Join-Path $staticA 'index.html') -Raw
     Assert-True ($index -match '_framework/blazor\.webassembly\.js') 'standard Blazor WebAssembly loader URL'
-    foreach ($relative in @('_framework/dotnet.js','_content/Doroti.Host.Web/doroti.web.js','_content/Doroti.Host.Web/doroti.web.css','assets/doroti-mark.txt','locales/en-US.json','plugins/echo.js','doroti-app-manifest.json')) {
+    foreach ($relative in @('_framework/blazor.webassembly.js','_framework/dotnet.js','_content/Doroti.Host.Web/doroti.web.js','_content/Doroti.Host.Web/doroti.web.css','assets/doroti-mark.txt','locales/en-US.json','plugins/echo.js','doroti-app-manifest.json')) {
         Assert-True (Test-Path -LiteralPath (Join-Path $staticA $relative) -PathType Leaf) "published static asset $relative"
     }
     $native = @(Get-ChildItem (Join-Path $staticA '_framework') -File -Filter 'dotnet.native.*.wasm' | Where-Object Name -notmatch '\.(br|gz)$')

@@ -3,8 +3,10 @@ let managed = null;
 
 function snapshot(host) {
   const ratio = Math.max(1, globalThis.devicePixelRatio || 1);
-  host.canvas.width = Math.max(1, Math.round(host.logicalWidth * ratio));
-  host.canvas.height = Math.max(1, Math.round(host.logicalHeight * ratio));
+  const pixelWidth = Math.max(1, Math.round(host.logicalWidth * ratio));
+  const pixelHeight = Math.max(1, Math.round(host.logicalHeight * ratio));
+  if (host.canvas.width !== pixelWidth) host.canvas.width = pixelWidth;
+  if (host.canvas.height !== pixelHeight) host.canvas.height = pixelHeight;
   const visible = document.visibilityState !== "hidden";
   const focused = document.hasFocus();
   return JSON.stringify({
@@ -16,10 +18,21 @@ function snapshot(host) {
     focused,
     languageTag: navigator.language || "en-US",
     brightness: globalThis.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light",
+    operatingSystem: browserOperatingSystem(),
     generation: ++host.generation,
     surfaceGeneration: host.surfaceGeneration,
     gpu: host.gpu,
   });
+}
+
+function browserOperatingSystem() {
+  const platform = String(navigator.userAgentData?.platform || navigator.platform || navigator.userAgent || "").toLowerCase();
+  if (/android/.test(platform)) return "android";
+  if (/iphone|ipad|ipod/.test(platform) || (platform.includes("mac") && navigator.maxTouchPoints > 1)) return "iOS";
+  if (/win/.test(platform)) return "windows";
+  if (/mac/.test(platform)) return "macOS";
+  if (/linux|x11|cros/.test(platform)) return "linux";
+  return "web";
 }
 
 function emit(host) {
@@ -114,10 +127,12 @@ export function createHost(hostId, canvasId, logicalWidth, logicalHeight) {
     if ((phase === 2 || phase === 3) && canvas.hasPointerCapture(event.pointerId))
       canvas.releasePointerCapture(event.pointerId);
   };
-  observe(canvas, "pointermove", pointer(0));
+  observe(canvas, "pointerenter", pointer(5));
+  observe(canvas, "pointermove", event => pointer(event.buttons ? 0 : 4)(event));
   observe(canvas, "pointerdown", pointer(1));
   observe(canvas, "pointerup", pointer(2));
   observe(canvas, "pointercancel", pointer(3));
+  observe(canvas, "pointerleave", pointer(6));
   observe(canvas, "wheel", event => {
     event.preventDefault();
     managed.dispatchWheel(host.id, event.offsetX, event.offsetY, event.deltaX, event.deltaY, event.timeStamp);
@@ -161,6 +176,13 @@ export function showHost(hostId) {
   host.canvas.hidden = false;
   host.canvas.tabIndex = host.canvas.tabIndex < 0 ? 0 : host.canvas.tabIndex;
   host.canvas.focus({ preventScroll: true });
+  return snapshot(host);
+}
+
+export function requestFocus(hostId, focused) {
+  const host = requireHost(hostId);
+  if (focused) host.canvas.focus({ preventScroll: true });
+  else host.canvas.blur();
   return snapshot(host);
 }
 

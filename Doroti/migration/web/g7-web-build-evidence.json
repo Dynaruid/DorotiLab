@@ -142,8 +142,8 @@
         "target": "browser-wasm",
         "configuration": "Release",
         "diagnostics": 0,
-        "applicationAssembly": "DorotiDemoApp.Web.a1t8r7pqvg.wasm",
-        "applicationSha256": "023441fe5c296eaaedeb981190f6a909cca25e109413d9a51fae61b701a300cb"
+        "applicationAssembly": "DorotiDemoApp.Web.yqlcqcgxre.wasm",
+        "applicationSha256": "e6bcf2098e4d5108fa759e8774904cbc89faed1a93c1ce4b36990492eb41ebcb"
       },
       "sharedSource": {
         "path": "DorotiDemoApp/Program.cs",
@@ -180,16 +180,16 @@
         "build": "pass",
         "publish": "pass"
       },
-      "staticFileCount": 717,
-      "aggregateSha256": "b8b8a1d6dccbe6ed275a77b632f27b2219e0d13b9bc259d0260b70a2b7550dc7",
-      "repeatAggregateSha256": "b8b8a1d6dccbe6ed275a77b632f27b2219e0d13b9bc259d0260b70a2b7550dc7",
+      "staticFileCount": 720,
+      "aggregateSha256": "358ac6d54545ef4b8538f80194607dda63665b649f478c3a70f41327563f1309",
+      "repeatAggregateSha256": "358ac6d54545ef4b8538f80194607dda63665b649f478c3a70f41327563f1309",
       "bootLoader": "_framework/blazor.webassembly.js",
       "nativeWasm": {
-        "name": "dotnet.native.1ldp4fmce8.wasm",
-        "sha256": "fb6e239762804a8189f1df911929bacb7438706a07d545a6f331a1d043ffd4db"
+        "name": "dotnet.native.knkuhb387f.wasm",
+        "sha256": "10b1b0bbc05e3ba20d6ac599d7ffb5cc9d3c5b64f9fbef3f9fb003f5332597a2"
       },
       "skiaWasmCount": 2,
-      "appAssembly": "DorotiDemoApp.Web.a1t8r7pqvg.wasm",
+      "appAssembly": "DorotiDemoApp.Web.yqlcqcgxre.wasm",
       "resources": [
         "assets/doroti-mark.txt",
         "locales/en-US.json"

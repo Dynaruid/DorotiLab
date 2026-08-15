@@ -13,7 +13,7 @@ Doroti translates the semantics of the Dart-based Flutter framework into C#, mak
 
 ## What works today
 
-Native product validation now runs on Windows x64 and Apple Silicon macOS. A Flutter widget tree is created in C#, mounted, laid out, painted, and displayed in a real HWND or NSWindow.
+Native product validation runs on Windows x64 and Apple Silicon macOS. The same C# `DorotiDemoApp` also builds and publishes for Blazor WebAssembly `browser-wasm`, where it has been confirmed on an actual Chromium GPU canvas.
 
 The current demo app brings the following pieces together:
 
@@ -24,6 +24,7 @@ The current demo app brings the following pieces together:
 - Pointer interaction, state updates, and semantics
 - Selectively ported Avalonia Win32 and AppKit/libAvalonia window, dispatcher, input, text, clipboard, cursor, and accessibility implementations
 - Strict GPU rendering with Skia over WGL/OpenGL on Windows and NSOpenGL on `osx-arm64`
+- A Blazor WebAssembly host, SkiaSharp WebGL2 surface, separated logical/physical DPR sizing, and bounded backdrop blur on the Web
 
 In addition to `MaterialApp.builder`, the application startup path through `MaterialApp.home` and Navigator is validated against actual native frames.
 
@@ -55,21 +56,21 @@ C# framework packages
 Doroti runtime + widget/rendering pipeline
       ↓
 platform host + rendering surface
-(Windows: Win32/WGL · macOS: AppKit/NSOpenGL)
+(Windows: Win32/WGL · macOS: AppKit/NSOpenGL · Web: Blazor WASM/WebGL2)
       ↓
 Web / Windows / Linux / macOS / Android / iOS
 ```
 
 - The **semantic compiler** analyzes Dart and Flutter types and language semantics, then translates them into C#.
 - The **Doroti runtime** connects Flutter's scheduler, widget, element, and rendering lifecycles.
-- The **platform host** connects each target's window or view, input, accessibility, and rendering surface. The Windows and macOS hosts use target-specific source ports behind the same typed shell boundary.
+- The **platform host** connects each target's window or view, input, accessibility, and rendering surface. The Windows and macOS hosts use target-specific source ports behind the same typed shell boundary, while the Web host provides the canvas and browser capability bridge.
 - The output is reviewable C# source code and .NET packages.
 
 Rather than quietly patching generated code, the project fixes shared semantics in the compiler and runtime, then regenerates the output.
 
 ## Try it
 
-The demo and automated native smoke validation run on **Windows x64** and **Apple Silicon macOS (`osx-arm64`)**. They require .NET SDK 10 and PowerShell 7.
+The demo and automated native smoke validation run on **Windows x64** and **Apple Silicon macOS (`osx-arm64`)**. The same app can be built as a **Blazor WebAssembly `browser-wasm`** artifact. These workflows require .NET SDK 10 and PowerShell 7.
 
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 build
@@ -82,7 +83,15 @@ A short automated smoke run is also available:
 dotnet run --project ./DorotiDemoApp -- --smoke --entry builder --frames 3 --duration-ms 15000
 ```
 
-> Windows x64 and `osx-arm64` are implemented native desktop targets. Physical Korean IME candidate placement, VoiceOver navigation, precise trackpad gestures, Intel macOS, Web, Linux, Android, and iOS retain their own later acceptance or implementation gates.
+Publish the Web app with the following command. Its deployment root is `publish/doroti-demo-web/wwwroot`.
+
+```powershell
+dotnet publish ./DorotiDemoApp/DorotiDemoApp.Web.csproj -c Release -r browser-wasm -o ./publish/doroti-demo-web
+```
+
+A manual Chromium smoke of the official publish artifact confirmed a non-empty GPU canvas, Flutter-style DPR sizing, bounded `sigmaX=12`/`sigmaY=6` backdrop blur, the same two-pass shadow model as desktop, a semantics tree, a pointer-driven state change, and zero console errors.
+
+> Windows x64 and `osx-arm64` are implemented native desktop targets. Web build/publish and manual `presented`/basic-pointer behavior are confirmed; automated wheel, keyboard, IME, clipboard, and ARIA coverage plus physical acceptance remain open. Intel macOS, Linux, Android, and iOS retain later implementation gates.
 
 ## Repository layout
 
@@ -102,7 +111,7 @@ For detailed build and validation instructions and architecture records, see [`D
 
 The goal is not merely to make “Flutter files compile as C#.” It is to build a cross-platform UI runtime where real applications can navigate, accept input, scroll, and integrate with accessibility tools.
 
-Planned work includes navigation and dialogs, forms and physical IME acceptance, large-scale scrolling, assets and localization, and additional Material and Cupertino components. Building on the current Windows and Apple Silicon macOS validation, support will expand to **Web, Linux, Intel macOS, Android, and iOS**.
+Planned work includes closing automated and physical Web release acceptance, navigation and dialogs, forms and physical IME acceptance, large-scale scrolling, assets and localization, and additional Material and Cupertino components. Building on the current Windows, Apple Silicon macOS, and Web implementations, support will expand to **Linux, Intel macOS, Android, and iOS**.
 
 Doroti is still an experimental project under active development. If you are interested in the intersection of compilers, runtimes, rendering, and UI frameworks, follow along as the project evolves.
 

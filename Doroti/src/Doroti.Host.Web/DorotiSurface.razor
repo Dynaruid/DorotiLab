@@ -38,6 +38,7 @@
         await BrowserHostRuntime.EnsureInitializedAsync();
         _target = BrowserTarget;
         _session = new DorotiHostSession(Application.EntrypointFactory());
+        using var dispatcherScope = _session.dispatcher.EnterScope();
         _session.Start(deferFrameworkBootstrap: true);
         var boundary = _target.LoadApplicationBoundary(Application.ApplicationAssembly, Application.PluginDescriptors);
         _view = _target.CreateView(_session, ViewId, CanvasId, Application.ViewConfiguration, boundary);
@@ -55,6 +56,7 @@
 
     public ValueTask DisposeAsync()
     {
+        using var dispatcherScope = _session?.dispatcher.EnterScope();
         _view?.Dispose();
         _target?.Dispose();
         _session?.Dispose();

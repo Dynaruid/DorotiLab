@@ -81,7 +81,7 @@ Source inventory deliberately does not enumerate or hash an entire reference che
 | G7-3M macOS source-port provenance | `doroti.g7-macos-source-port-provenance/v1` |
 | G7-3M actual AppKit/GPU/input/resource probe | `doroti.g7-macos-live-probe/v1` |
 | G7-3M Source/Build/Live/Package aggregate | `doroti.g7-macos-shell-evidence/v1` |
-| G7-3 browser toolchain/graph/compile/package aggregate | `doroti.g7-web-build-evidence/v1` |
+| G7-3 browser toolchain/graph/compile/package aggregate | `doroti.g7-web-build-evidence/v2` |
 | G7-3 deployment-neutral browser static artifact hashes | `doroti.static-artifact-manifest/v1` |
 | RID target capability manifest | `doroti.target-manifest/v1` |
 | RID target package manifest | `doroti.target-package/v1` |

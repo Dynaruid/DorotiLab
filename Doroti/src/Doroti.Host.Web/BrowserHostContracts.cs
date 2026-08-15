@@ -22,6 +22,7 @@ public sealed record BrowserHostSnapshot(
     bool Focused,
     string LanguageTag,
     string Brightness,
+    string OperatingSystem,
     long Generation,
     long SurfaceGeneration,
     BrowserGpuIdentity Gpu);
@@ -67,6 +68,9 @@ internal static partial class BrowserInterop
 
     [JSImport("setCursor", Module)]
     internal static partial void SetCursor(int hostId, string cursor);
+
+    [JSImport("requestFocus", Module)]
+    internal static partial string RequestFocus(int hostId, bool focused);
 
     [JSImport("setTextInputState", Module)]
     internal static partial void SetTextInputState(int hostId, string text, int selectionBase, int selectionExtent);
@@ -154,7 +158,7 @@ public static class BrowserHostRuntime
         try
         {
             if (_initialized) return;
-            await JSHost.ImportAsync("doroti.web", "./_content/Doroti.Host.Web/doroti.web.js");
+            await JSHost.ImportAsync("doroti.web", "../_content/Doroti.Host.Web/doroti.web.js");
             await BrowserInterop.InitializeManagedCallbacksAsync();
             _initialized = true;
         }
@@ -171,6 +175,7 @@ public sealed class BrowserHostAdapter :
     IFrameHostCapability,
     IPlatformEnvironmentHostCapability,
     IInputHostCapability,
+    IViewFocusRequestCapability,
     IPlatformServicesHostCapability,
     ITextInputHostCapability
 {
@@ -259,6 +264,14 @@ public sealed class BrowserHostAdapter :
 
     public void SetCursor(DorotiMouseCursorKind cursor) => BrowserInterop.SetCursor(HostId, CursorName(cursor));
 
+    public void RequestFocus(ViewFocusState state, ViewFocusDirection direction)
+    {
+        _ = direction;
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ApplySnapshot(BrowserInterop.ParseSnapshot(
+            BrowserInterop.RequestFocus(HostId, state == ViewFocusState.focused)));
+    }
+
     public void SetClient(DorotiTextEditingState initialState) => UpdateState(initialState);
 
     public void UpdateState(DorotiTextEditingState state) => BrowserInterop.SetTextInputState(
@@ -342,12 +355,15 @@ public sealed class BrowserHostAdapter :
         {
             var x = samples[index] * ratio;
             var y = samples[index + 1] * ratio;
-            host._pointerPositions.TryGetValue(pointer, out var previous);
+            var hasPrevious = host._pointerPositions.TryGetValue(pointer, out var previous);
             var change = phase switch
             {
                 1 => PointerChange.down,
                 2 => PointerChange.up,
                 3 => PointerChange.cancel,
+                4 => PointerChange.hover,
+                5 => PointerChange.add,
+                6 => PointerChange.remove,
                 _ => PointerChange.move,
             };
             data.Add(new(
@@ -358,8 +374,8 @@ public sealed class BrowserHostAdapter :
                 pointer,
                 x,
                 y,
-                previous == default ? 0 : x - previous.X,
-                previous == default ? 0 : y - previous.Y,
+                !hasPrevious || change is PointerChange.add or PointerChange.remove or PointerChange.cancel ? 0 : x - previous.X,
+                !hasPrevious || change is PointerChange.add or PointerChange.remove or PointerChange.cancel ? 0 : y - previous.Y,
                 buttons,
                 pointerIdentifier: pointer,
                 pressure: samples[index + 2],
@@ -367,8 +383,8 @@ public sealed class BrowserHostAdapter :
                 pressureMax: 1,
                 orientation: samples[index + 5],
                 tilt: Math.Sqrt((samples[index + 3] * samples[index + 3]) + (samples[index + 4] * samples[index + 4]))));
-            host._pointerPositions[pointer] = (x, y);
-            if (change is PointerChange.up or PointerChange.cancel) host._pointerPositions.Remove(pointer);
+            if (change is PointerChange.remove or PointerChange.cancel) host._pointerPositions.Remove(pointer);
+            else host._pointerPositions[pointer] = (x, y);
         }
         host.PointerData?.Invoke(new(data));
     }
@@ -480,8 +496,17 @@ public sealed class BrowserHostAdapter :
             2 => new Locale(pieces[0], pieces[1]),
             _ => new Locale(pieces[0], pieces[^1], pieces[1]),
         };
+        var operatingSystem = snapshot.OperatingSystem switch
+        {
+            "android" => HostOperatingSystem.android,
+            "iOS" => HostOperatingSystem.iOS,
+            "linux" => HostOperatingSystem.linux,
+            "macOS" => HostOperatingSystem.macOS,
+            "windows" => HostOperatingSystem.windows,
+            _ => HostOperatingSystem.web,
+        };
         return new([locale], snapshot.Brightness == "dark" ? Brightness.dark : Brightness.light,
-            false, false, HostOperatingSystem.web);
+            false, false, operatingSystem);
     }
 
     private static long StableKey(string value)

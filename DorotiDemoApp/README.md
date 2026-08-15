@@ -38,6 +38,8 @@ dotnet publish ./DorotiDemoApp/DorotiDemoApp.Web.csproj -c Release -r browser-wa
 
 The deployment root is `publish/doroti-demo-web/wwwroot`. It contains the standard Blazor loader, the fingerprinted Doroti and SkiaSharp WASM assemblies, the statically linked native runtime, assets, localization, and the example Web plugin. Chromium GPU/input/ARIA runtime acceptance belongs to G7-4; G7-3 proves the build and static artifact graph only.
 
+A manual Chromium smoke on 2026-08-15 confirmed a non-empty GPU canvas from the official publish artifact, separated logical/physical DPR sizing, bounded `sigmaX=12`/`sigmaY=6` backdrop blur, the same two-pass shadow model as desktop, a semantics tree, a pointer-driven state change, and zero console errors for the artifact origin. This is `presented` plus basic-pointer evidence; it does not replace G7-4 automation for wheel, keyboard, IME, clipboard, resize, ARIA actions, references, or physical acceptance.
+
 ## Run the app
 
 From the repository root:
@@ -96,7 +98,7 @@ The macOS gate verifies an actual NSWindow, AppKit lifecycle/focus, pointer and 
 
 - Committed aggregate evidence: [`../Doroti/migration/flutter-framework/g6-material-demo-evidence.json`](../Doroti/migration/flutter-framework/g6-material-demo-evidence.json)
 - G7-3M macOS aggregate evidence: [`../Doroti/migration/macos/g7-macos-shell-evidence.json`](../Doroti/migration/macos/g7-macos-shell-evidence.json)
-- G7-3 browser build evidence: [`../Doroti/migration/web/g7-web-build-evidence.json`](../Doroti/migration/web/g7-web-build-evidence.json)
+- G7-3 browser build evidence (`doroti.g7-web-build-evidence/v2`): [`../Doroti/migration/web/g7-web-build-evidence.json`](../Doroti/migration/web/g7-web-build-evidence.json)
 - Screenshot/layout reference: [`g6-material-reference.json`](g6-material-reference.json)
 - Transient run output: `../Doroti/artifacts/g6-material-demo/win-x64/`
 

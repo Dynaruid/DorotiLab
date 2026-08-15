@@ -14,7 +14,7 @@ public static class ConstantsLibrary
 
     public const double precisionErrorTolerance = 1e-10;
 
-    public const bool kIsWeb = false;
+    public static bool kIsWeb => OperatingSystem.IsBrowser();
 
-    public const bool kIsWasm = false;
+    public static bool kIsWasm => OperatingSystem.IsBrowser();
 }

@@ -91,11 +91,9 @@ internal sealed class BrowserSkiaCapabilities :
         if (scene is null) return;
         try
         {
-            var scale = _host.Metrics.devicePixelRatio;
-            canvas.Save();
-            canvas.Scale((float)scale);
+            // RenderView's root transform has already converted logical coordinates
+            // into physical pixels. Applying the browser DPR here would scale twice.
             DrawScene(canvas, scene.Commands);
-            canvas.Restore();
             canvas.Flush();
             lock (_gate) _presented++;
         }
@@ -168,9 +166,10 @@ internal sealed class BrowserSkiaCapabilities :
 
     private static void DrawScene(SKCanvas canvas, IReadOnlyList<SceneCommand> commands)
     {
-        var depth = 0;
+        var restoreCounts = new Stack<int>();
         DrawCommands(commands);
-        if (depth != 0) throw new InvalidDataException($"Doroti browser scene has {depth} unclosed scopes.");
+        if (restoreCounts.Count != 0)
+            throw new InvalidDataException($"Doroti browser scene has {restoreCounts.Count} unclosed scopes.");
 
         void DrawCommands(IReadOnlyList<SceneCommand> source)
         {
@@ -185,33 +184,52 @@ internal sealed class BrowserSkiaCapabilities :
                         canvas.Restore();
                         break;
                     case "offset" when command.HostPayload is SceneOffsetPayload offset:
-                        canvas.Save(); depth++; canvas.Translate((float)offset.Dx, (float)offset.Dy); break;
+                        canvas.Save(); restoreCounts.Push(1); canvas.Translate((float)offset.Dx, (float)offset.Dy); break;
                     case "clipRect" when command.HostPayload is SceneClipRectPayload clip:
-                        canvas.Save(); depth++; canvas.ClipRect(ToRect(clip.Rect), SKClipOperation.Intersect, true); break;
+                        canvas.Save(); restoreCounts.Push(1); canvas.ClipRect(ToRect(clip.Rect), SKClipOperation.Intersect, true); break;
                     case "clipRRect" when command.HostPayload is SceneClipRRectPayload clip:
-                        canvas.Save(); depth++; canvas.ClipPath(ToPath(clip.RRect), SKClipOperation.Intersect, true); break;
+                        canvas.Save(); restoreCounts.Push(1); canvas.ClipPath(ToPath(clip.RRect), SKClipOperation.Intersect, true); break;
                     case "clipRSuperellipse" when command.HostPayload is SceneClipRSuperellipsePayload clip:
-                        canvas.Save(); depth++; canvas.ClipRect(ToRect(clip.RSuperellipse.outerRect), SKClipOperation.Intersect, true); break;
+                        canvas.Save(); restoreCounts.Push(1); canvas.ClipRect(ToRect(clip.RSuperellipse.outerRect), SKClipOperation.Intersect, true); break;
                     case "clipPath" when command.HostPayload is SceneClipPathPayload clip:
-                        canvas.Save(); depth++; canvas.ClipPath(ToPath(clip.Path), SKClipOperation.Intersect, true); break;
+                        canvas.Save(); restoreCounts.Push(1); canvas.ClipPath(ToPath(clip.Path), SKClipOperation.Intersect, true); break;
                     case "transform" when command.HostPayload is SceneTransformPayload transform:
-                        canvas.Save(); depth++; Concat(canvas, transform.Matrix4); break;
+                        canvas.Save(); restoreCounts.Push(1); Concat(canvas, transform.Matrix4); break;
                     case "opacity" when command.HostPayload is SceneOpacityPayload opacity:
                         using (var paint = new SKPaint { Color = SKColors.White.WithAlpha((byte)Math.Clamp(Math.Round(opacity.Opacity * 255), 0, 255)) })
                             canvas.SaveLayer(paint);
-                        depth++; canvas.Translate((float)opacity.Offset.dx, (float)opacity.Offset.dy); break;
+                        restoreCounts.Push(1); canvas.Translate((float)opacity.Offset.dx, (float)opacity.Offset.dy); break;
                     case "colorFilter" when command.HostPayload is SceneColorFilterPayload:
-                        canvas.SaveLayer(); depth++; break;
+                        canvas.SaveLayer(); restoreCounts.Push(1); break;
                     case "imageFilter" when command.HostPayload is SceneImageFilterPayload image:
                         using (var paint = FilterPaint(image.Filter)) canvas.SaveLayer(paint);
-                        depth++; canvas.Translate((float)image.Offset.dx, (float)image.Offset.dy); break;
+                        restoreCounts.Push(1); canvas.Translate((float)image.Offset.dx, (float)image.Offset.dy); break;
                     case "backdropFilter" when command.HostPayload is SceneBackdropFilterPayload backdrop:
-                        using (var paint = FilterPaint(backdrop.Filter)) canvas.SaveLayer(paint);
-                        depth++; break;
+                        using (var filter = ToImageFilter(backdrop.Filter))
+                        using (var paint = new SKPaint { BlendMode = ToBlend(backdrop.BlendMode) })
+                        {
+                            var restoreCount = 1;
+                            if (backdrop.Filter.Bounds is { } clipBounds)
+                            {
+                                canvas.Save();
+                                canvas.ClipRect(ToRect(clipBounds), SKClipOperation.Intersect, true);
+                                restoreCount++;
+                            }
+                            var layer = new SKCanvasSaveLayerRec
+                            {
+                                Backdrop = filter,
+                                Bounds = backdrop.Filter.Bounds is { } bounds ? ToRect(bounds) : null,
+                                Paint = paint,
+                            };
+                            canvas.SaveLayer(layer);
+                            restoreCounts.Push(restoreCount);
+                        }
+                        break;
                     case "retained" when command.HostPayload is SceneRetainedPayload retained:
                         DrawCommands(retained.Commands); break;
-                    case "pop" when depth > 0:
-                        canvas.Restore(); depth--; break;
+                    case "pop" when restoreCounts.Count > 0:
+                        for (var count = restoreCounts.Pop(); count > 0; count--) canvas.Restore();
+                        break;
                     default:
                         throw new NotSupportedException($"Doroti browser scene operation '{command.Operation}' has no Skia GPU mapping.");
                 }
@@ -262,8 +280,7 @@ internal sealed class BrowserSkiaCapabilities :
                 case "drawImageRect" or "drawImage" when command.HostPayload is CanvasImagePayload draw && draw.Image.HostHandle is BrowserImageHandle handle:
                     using (var paint = ToPaint(draw.Paint)) canvas.DrawImage(handle.Image, ToRect(draw.Source), ToRect(draw.Destination), paint); break;
                 case "drawShadow" when command.HostPayload is CanvasShadowPayload draw:
-                    using (var paint = new SKPaint { Color = ToColor(draw.Color).WithAlpha(72), ImageFilter = SKImageFilter.CreateBlur((float)Math.Max(1, draw.Elevation * .45), (float)Math.Max(1, draw.Elevation * .45)) })
-                        canvas.DrawPath(ToPath(draw.Path), paint);
+                    DrawShadow(canvas, draw);
                     break;
                 default: throw new NotSupportedException($"Doroti browser canvas operation '{command.Operation}' has no Skia GPU mapping.");
             }
@@ -289,12 +306,49 @@ internal sealed class BrowserSkiaCapabilities :
         return paint;
     }
 
-    private static SKPaint FilterPaint(ImageFilterSnapshot filter) => new()
+    private static SKPaint FilterPaint(ImageFilterSnapshot filter) => new() { ImageFilter = ToImageFilter(filter) };
+
+    private static SKImageFilter ToImageFilter(ImageFilterSnapshot filter)
     {
-        ImageFilter = filter.SigmaX > 0 || filter.SigmaY > 0
-            ? SKImageFilter.CreateBlur((float)filter.SigmaX, (float)filter.SigmaY)
-            : null,
-    };
+        if (filter.IsShader || filter.Outer is not null || filter.Inner is not null ||
+            filter.ColorFilter is not null || filter.Matrix4 is not null)
+        {
+            throw new NotSupportedException("The Doroti browser backend currently supports blur image filters only.");
+        }
+        return SKImageFilter.CreateBlur(
+            (float)filter.SigmaX,
+            (float)filter.SigmaY,
+            filter.TileMode switch
+            {
+                TileMode.repeated => SKShaderTileMode.Repeat,
+                TileMode.mirror => SKShaderTileMode.Mirror,
+                TileMode.decal => SKShaderTileMode.Decal,
+                _ => SKShaderTileMode.Clamp,
+            });
+    }
+
+    private static void DrawShadow(SKCanvas canvas, CanvasShadowPayload shadow)
+    {
+        using var path = ToPath(shadow.Path);
+        var elevation = Math.Max(0, shadow.Elevation);
+        DrawPass(elevation * .2, .18, .24, Math.Max(.75, elevation * .45));
+        DrawPass(elevation * .55, .24, .32, Math.Max(1, elevation * .8));
+
+        void DrawPass(double offsetY, double transparentOpacity, double opaqueOpacity, double sigma)
+        {
+            var opacity = shadow.TransparentOccluder ? transparentOpacity : opaqueOpacity;
+            using var paint = new SKPaint
+            {
+                Color = ToColor(shadow.Color).WithAlpha((byte)Math.Clamp(Math.Round(shadow.Color.alpha * opacity), 0, 255)),
+                ImageFilter = SKImageFilter.CreateBlur((float)sigma, (float)sigma),
+                IsAntialias = true,
+            };
+            canvas.Save();
+            canvas.Translate(0, (float)offsetY);
+            canvas.DrawPath(path, paint);
+            canvas.Restore();
+        }
+    }
 
     private static SKPath ToPath(UiPath path)
     {

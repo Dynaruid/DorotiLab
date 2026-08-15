@@ -15,4 +15,7 @@
     <PackageReference Include="Doroti.Framework.Widgets" Version="0.2.0-beta" />
     <PackageReference Include="Doroti.Framework.Material" Version="0.2.0-beta" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="application-manifest.json" LogicalName="Doroti.Application.Manifest" />
+  </ItemGroup>
 </Project>

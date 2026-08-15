@@ -29,7 +29,7 @@ public sealed class BrowserFrameworkHost : IDisposable
 
         var host = new BrowserHostAdapter(viewId, canvasId, configuration.logicalSize);
         var graphics = new BrowserSkiaCapabilities(viewId, host);
-        var messages = new BrowserPlatformMessageCapability(_targetIdentity);
+        var messages = new BrowserPlatformMessageCapability();
         var capabilities = new DorotiViewCapabilities(_targetIdentity)
             .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
             .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
@@ -105,18 +105,41 @@ public sealed class BrowserFrameworkHost : IDisposable
         _views.Clear();
     }
 
-    private sealed class BrowserPlatformMessageCapability(string targetIdentity) : IPlatformMessageHostCapability
+    private sealed class BrowserPlatformMessageCapability : IPlatformMessageHostCapability
     {
+        private readonly object _gate = new();
+        private readonly Dictionary<string, PlatformMessageHandler> _handlers = new(StringComparer.Ordinal);
+
         public ValueTask<ReadOnlyMemory<byte>?> SendAsync(
             string channel,
             ReadOnlyMemory<byte>? data,
-            CancellationToken cancellationToken = default) =>
-            ValueTask.FromException<ReadOnlyMemory<byte>?>(new DorotiCapabilityException(
-                DorotiCapabilityIds.PlatformPlugins, null,
-                DartUiInvocation.Managed($"platform-channel:{channel}"),
-                "no target-manifest JavaScript plugin implements this channel", targetIdentity));
+            CancellationToken cancellationToken = default)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(channel);
+            PlatformMessageHandler? handler;
+            lock (_gate)
+            {
+                _handlers.TryGetValue(channel, out handler);
+            }
+            return handler is null
+                ? ValueTask.FromResult<ReadOnlyMemory<byte>?>(null)
+                : handler(data, cancellationToken);
+        }
 
-        public void SetMessageHandler(string channel, PlatformMessageHandler? handler) =>
-            throw new NotSupportedException("Browser framework channel handlers are owned by the G7-4 live adapter.");
+        public void SetMessageHandler(string channel, PlatformMessageHandler? handler)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(channel);
+            lock (_gate)
+            {
+                if (handler is null)
+                {
+                    _handlers.Remove(channel);
+                }
+                else
+                {
+                    _handlers[channel] = handler;
+                }
+            }
+        }
     }
 }
