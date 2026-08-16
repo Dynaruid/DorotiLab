@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Physics;
+namespace Doroti.Framework.Physics;
 
 public static partial class Friction_simulationLibrary
 {
@@ -112,7 +112,7 @@ public class FrictionSimulation : Simulation
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FrictionSimulation"))}(cₓ: {this._drag.toStringAsFixed(1L)}, x₀: {this._x.toStringAsFixed(1L)}, dx₀: {this._v.toStringAsFixed(1L)})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FrictionSimulation"))}(cₓ: {this._drag.toStringAsFixed(1L)}, x₀: {this._x.toStringAsFixed(1L)}, dx₀: {this._v.toStringAsFixed(1L)})";
 }
 
 public class BoundedFrictionSimulation : FrictionSimulation
@@ -139,6 +139,6 @@ public class BoundedFrictionSimulation : FrictionSimulation
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "BoundedFrictionSimulation"))}(cₓ: {_drag.toStringAsFixed(1L)}, x₀: {_x.toStringAsFixed(1L)}, dx₀: {_v.toStringAsFixed(1L)}, x: {this._minX.toStringAsFixed(1L)}..{this._maxX.toStringAsFixed(1L)})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "BoundedFrictionSimulation"))}(cₓ: {_drag.toStringAsFixed(1L)}, x₀: {_x.toStringAsFixed(1L)}, dx₀: {_v.toStringAsFixed(1L)}, x: {this._minX.toStringAsFixed(1L)}..{this._maxX.toStringAsFixed(1L)})";
 }
 

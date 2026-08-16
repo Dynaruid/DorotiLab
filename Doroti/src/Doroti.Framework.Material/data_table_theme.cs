@@ -12,27 +12,27 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
-public class DataTableThemeData : global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class DataTableThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 {
-    public virtual global::Doroti.Generated.Framework.Painting.Decoration? decoration { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? dataRowColor { get; private set; }
+    public virtual global::Doroti.Framework.Painting.Decoration? decoration { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dataRowColor { get; private set; }
     public virtual double? dataRowMinHeight { get; private set; }
     public virtual double? dataRowMaxHeight { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? dataTextStyle { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? headingRowColor { get; private set; }
+    public virtual global::Doroti.Framework.Painting.TextStyle? dataTextStyle { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? headingRowColor { get; private set; }
     public virtual double? headingRowHeight { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? headingTextStyle { get; private set; }
+    public virtual global::Doroti.Framework.Painting.TextStyle? headingTextStyle { get; private set; }
     public virtual double? horizontalMargin { get; private set; }
     public virtual double? columnSpacing { get; private set; }
     public virtual double? dividerThickness { get; private set; }
     public virtual double? checkboxHorizontalMargin { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>? headingCellCursor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>? dataRowCursor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Rendering.MainAxisAlignment? headingRowAlignment { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? headingCellCursor { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? dataRowCursor { get; private set; }
+    public virtual global::Doroti.Framework.Rendering.MainAxisAlignment? headingRowAlignment { get; private set; }
 
-    public DataTableThemeData(global::Doroti.Generated.Framework.Painting.Decoration? decoration = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? dataRowColor = null, double? dataRowHeight = null, double? dataRowMinHeight = null, double? dataRowMaxHeight = null, global::Doroti.Generated.Framework.Painting.TextStyle? dataTextStyle = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? headingRowColor = null, double? headingRowHeight = null, global::Doroti.Generated.Framework.Painting.TextStyle? headingTextStyle = null, double? horizontalMargin = null, double? columnSpacing = null, double? dividerThickness = null, double? checkboxHorizontalMargin = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>? headingCellCursor = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>? dataRowCursor = null, global::Doroti.Generated.Framework.Rendering.MainAxisAlignment? headingRowAlignment = null)
+    public DataTableThemeData(global::Doroti.Framework.Painting.Decoration? decoration = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dataRowColor = null, double? dataRowHeight = null, double? dataRowMinHeight = null, double? dataRowMaxHeight = null, global::Doroti.Framework.Painting.TextStyle? dataTextStyle = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? headingRowColor = null, double? headingRowHeight = null, global::Doroti.Framework.Painting.TextStyle? headingTextStyle = null, double? horizontalMargin = null, double? columnSpacing = null, double? dividerThickness = null, double? checkboxHorizontalMargin = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? headingCellCursor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? dataRowCursor = null, global::Doroti.Framework.Rendering.MainAxisAlignment? headingRowAlignment = null)
     {
         this.decoration = decoration;
         this.dataRowColor = dataRowColor;
@@ -54,7 +54,7 @@ public class DataTableThemeData : global::Doroti.Generated.Framework.Foundation.
     }
 
     public virtual double? dataRowHeight => ((this.dataRowMinHeight == this.dataRowMaxHeight) ? this.dataRowMinHeight : null);
-    public virtual DataTableThemeData copyWith(global::Doroti.Generated.Framework.Painting.Decoration? decoration = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? dataRowColor = null, double? dataRowHeight = null, double? dataRowMinHeight = null, double? dataRowMaxHeight = null, global::Doroti.Generated.Framework.Painting.TextStyle? dataTextStyle = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? headingRowColor = null, double? headingRowHeight = null, global::Doroti.Generated.Framework.Painting.TextStyle? headingTextStyle = null, double? horizontalMargin = null, double? columnSpacing = null, double? dividerThickness = null, double? checkboxHorizontalMargin = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>? headingCellCursor = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>? dataRowCursor = null, global::Doroti.Generated.Framework.Rendering.MainAxisAlignment? headingRowAlignment = null)
+    public virtual DataTableThemeData copyWith(global::Doroti.Framework.Painting.Decoration? decoration = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dataRowColor = null, double? dataRowHeight = null, double? dataRowMinHeight = null, double? dataRowMaxHeight = null, global::Doroti.Framework.Painting.TextStyle? dataTextStyle = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? headingRowColor = null, double? headingRowHeight = null, global::Doroti.Framework.Painting.TextStyle? headingTextStyle = null, double? horizontalMargin = null, double? columnSpacing = null, double? dividerThickness = null, double? checkboxHorizontalMargin = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? headingCellCursor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? dataRowCursor = null, global::Doroti.Framework.Rendering.MainAxisAlignment? headingRowAlignment = null)
     {
         DartRuntimePrimitives.Assert(() => ((dataRowHeight is null) || (((dataRowMinHeight is null) && (dataRowMaxHeight is null)))), () => (object?)$"dataRowHeight ({DartRuntimePrimitives.RequireValue(dataRowHeight)}) must not be set if dataRowMinHeight ({dataRowMinHeight}) or dataRowMaxHeight ({dataRowMaxHeight}) are set.");
         dataRowMinHeight = (dataRowHeight ?? dataRowMinHeight);
@@ -89,26 +89,26 @@ public class DataTableThemeData : global::Doroti.Generated.Framework.Foundation.
         return ((((((((((((((((__other is DataTableThemeData) && (object.Equals(((DataTableThemeData)((DataTableThemeData)__other)).decoration, this.decoration))) && (object.Equals(((DataTableThemeData)((DataTableThemeData)__other)).dataRowColor, this.dataRowColor))) && (((DataTableThemeData)((DataTableThemeData)__other)).dataRowMinHeight == this.dataRowMinHeight)) && (((DataTableThemeData)((DataTableThemeData)__other)).dataRowMaxHeight == this.dataRowMaxHeight)) && (object.Equals(((DataTableThemeData)((DataTableThemeData)__other)).dataTextStyle, this.dataTextStyle))) && (object.Equals(((DataTableThemeData)((DataTableThemeData)__other)).headingRowColor, this.headingRowColor))) && (((DataTableThemeData)((DataTableThemeData)__other)).headingRowHeight == this.headingRowHeight)) && (object.Equals(((DataTableThemeData)((DataTableThemeData)__other)).headingTextStyle, this.headingTextStyle))) && (((DataTableThemeData)((DataTableThemeData)__other)).horizontalMargin == this.horizontalMargin)) && (((DataTableThemeData)((DataTableThemeData)__other)).columnSpacing == this.columnSpacing)) && (((DataTableThemeData)((DataTableThemeData)__other)).dividerThickness == this.dividerThickness)) && (((DataTableThemeData)((DataTableThemeData)__other)).checkboxHorizontalMargin == this.checkboxHorizontalMargin)) && (object.Equals(((DataTableThemeData)((DataTableThemeData)__other)).headingCellCursor, this.headingCellCursor))) && (object.Equals(((DataTableThemeData)((DataTableThemeData)__other)).dataRowCursor, this.dataRowCursor))) && (object.Equals(((DataTableThemeData)((DataTableThemeData)__other)).headingRowAlignment, this.headingRowAlignment)));
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.Decoration>("decoration", this.decoration, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("dataRowColor", this.dataRowColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("dataRowMinHeight", this.dataRowMinHeight, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("dataRowMaxHeight", this.dataRowMaxHeight, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.TextStyle>("dataTextStyle", this.dataTextStyle, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("headingRowColor", this.headingRowColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("headingRowHeight", this.headingRowHeight, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.TextStyle>("headingTextStyle", this.headingTextStyle, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("horizontalMargin", this.horizontalMargin, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("columnSpacing", this.columnSpacing, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("dividerThickness", this.dividerThickness, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("checkboxHorizontalMargin", this.checkboxHorizontalMargin, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>?>("headingCellCursor", this.headingCellCursor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>?>("dataRowCursor", this.dataRowCursor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.EnumProperty<global::Doroti.Generated.Framework.Rendering.MainAxisAlignment>("headingRowAlignment", this.headingRowAlignment, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>("decoration", this.decoration, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("dataRowColor", this.dataRowColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("dataRowMinHeight", this.dataRowMinHeight, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("dataRowMaxHeight", this.dataRowMaxHeight, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("dataTextStyle", this.dataTextStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("headingRowColor", this.headingRowColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("headingRowHeight", this.headingRowHeight, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("headingTextStyle", this.headingTextStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("horizontalMargin", this.horizontalMargin, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("columnSpacing", this.columnSpacing, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("dividerThickness", this.dividerThickness, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("checkboxHorizontalMargin", this.checkboxHorizontalMargin, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>?>("headingCellCursor", this.headingCellCursor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>?>("dataRowCursor", this.dataRowCursor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.MainAxisAlignment>("headingRowAlignment", this.headingRowAlignment, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;
@@ -129,21 +129,21 @@ public class DataTableThemeData : global::Doroti.Generated.Framework.Foundation.
 
 }
 
-public class DataTableTheme : global::Doroti.Generated.Framework.Widgets.InheritedWidget
+public class DataTableTheme : global::Doroti.Framework.Widgets.InheritedWidget
 {
     public virtual DataTableThemeData data { get; private set; } = default!;
 
-    public DataTableTheme(global::Doroti.Generated.Framework.Foundation.Key? key = null, DataTableThemeData data = default!, global::Doroti.Generated.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public DataTableTheme(global::Doroti.Framework.Foundation.Key? key = null, DataTableThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static DataTableThemeData of(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static DataTableThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DataTableTheme? dataTableTheme__13030 = ((DataTableTheme?)(object?)context.dependOnInheritedWidgetOfExactType<DataTableTheme>());
         return (dataTableTheme__13030?.data ?? Theme.of(context).dataTableTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Generated.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((DataTableTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((DataTableTheme)oldWidget).data)));
 }

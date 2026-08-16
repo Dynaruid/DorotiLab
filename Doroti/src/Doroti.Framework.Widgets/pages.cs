@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public abstract class PageRoute<T> : ModalRoute<T>
 {
@@ -45,7 +45,7 @@ public abstract class PageRoute<T> : ModalRoute<T>
 
 public static partial class PagesLibrary
 {
-    internal static Widget _defaultTransitionsBuilder(BuildContext context, global::Doroti.Generated.Framework.Animation.Animation<double> animation, global::Doroti.Generated.Framework.Animation.Animation<double> secondaryAnimation, Widget child)
+    internal static Widget _defaultTransitionsBuilder(BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, Widget child)
     {
         return child;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -54,8 +54,8 @@ public static partial class PagesLibrary
 
 public class PageRouteBuilder<T> : PageRoute<T>
 {
-    public virtual global::System.Func<BuildContext, global::Doroti.Generated.Framework.Animation.Animation<double>, global::Doroti.Generated.Framework.Animation.Animation<double>, Widget> pageBuilder { get; private set; } = default!;
-    public virtual global::System.Func<BuildContext, global::Doroti.Generated.Framework.Animation.Animation<double>, global::Doroti.Generated.Framework.Animation.Animation<double>, Widget, Widget> transitionsBuilder { get; private set; } = default!;
+    public virtual global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, Widget> pageBuilder { get; private set; } = default!;
+    public virtual global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, Widget, Widget> transitionsBuilder { get; private set; } = default!;
     private Duration __field_transitionDuration = default!;
     public override Duration transitionDuration { get => __field_transitionDuration; }
     private Duration __field_reverseTransitionDuration = default!;
@@ -71,9 +71,9 @@ public class PageRouteBuilder<T> : PageRoute<T>
     private bool __field_maintainState = default!;
     public override bool maintainState { get => __field_maintainState; }
 
-    public PageRouteBuilder(RouteSettings? settings = null, bool? requestFocus = null, global::System.Func<BuildContext, global::Doroti.Generated.Framework.Animation.Animation<double>, global::Doroti.Generated.Framework.Animation.Animation<double>, Widget> pageBuilder = default!, global::System.Func<BuildContext, global::Doroti.Generated.Framework.Animation.Animation<double>, global::Doroti.Generated.Framework.Animation.Animation<double>, Widget, Widget> transitionsBuilder = default!, Duration? transitionDuration = null, Duration? reverseTransitionDuration = null, bool opaque = true, bool barrierDismissible = false, Color? barrierColor = null, string? barrierLabel = null, bool maintainState = true, bool fullscreenDialog = false, bool allowSnapshotting = true) : base(settings: settings, requestFocus: requestFocus, fullscreenDialog: fullscreenDialog, allowSnapshotting: allowSnapshotting)
+    public PageRouteBuilder(RouteSettings? settings = null, bool? requestFocus = null, global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, Widget> pageBuilder = default!, global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, Widget, Widget> transitionsBuilder = default!, Duration? transitionDuration = null, Duration? reverseTransitionDuration = null, bool opaque = true, bool barrierDismissible = false, Color? barrierColor = null, string? barrierLabel = null, bool maintainState = true, bool fullscreenDialog = false, bool allowSnapshotting = true) : base(settings: settings, requestFocus: requestFocus, fullscreenDialog: fullscreenDialog, allowSnapshotting: allowSnapshotting)
     {
-        global::System.Func<BuildContext, global::Doroti.Generated.Framework.Animation.Animation<double>, global::Doroti.Generated.Framework.Animation.Animation<double>, Widget, Widget> __transitionsBuilder = transitionsBuilder ?? PagesLibrary._defaultTransitionsBuilder;
+        global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, Widget, Widget> __transitionsBuilder = transitionsBuilder ?? PagesLibrary._defaultTransitionsBuilder;
         Duration __transitionDuration = transitionDuration ?? Duration.Create(milliseconds: 300);
         Duration __reverseTransitionDuration = reverseTransitionDuration ?? Duration.Create(milliseconds: 300);
         this.pageBuilder = pageBuilder;
@@ -87,13 +87,13 @@ public class PageRouteBuilder<T> : PageRoute<T>
         this.__field_maintainState = maintainState;
     }
 
-    public override Widget buildPage(BuildContext context, global::Doroti.Generated.Framework.Animation.Animation<double> animation, global::Doroti.Generated.Framework.Animation.Animation<double> secondaryAnimation)
+    public override Widget buildPage(BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation)
     {
         return this.pageBuilder(context, animation, secondaryAnimation);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override Widget buildTransitions(BuildContext context, global::Doroti.Generated.Framework.Animation.Animation<double> animation, global::Doroti.Generated.Framework.Animation.Animation<double> secondaryAnimation, Widget child)
+    public override Widget buildTransitions(BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, Widget child)
     {
         return this.transitionsBuilder(context, animation, secondaryAnimation, child);
         throw new InvalidOperationException("Dart control flow completed without a value.");

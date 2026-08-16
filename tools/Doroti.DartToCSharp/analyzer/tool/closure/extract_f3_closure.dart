@@ -61,7 +61,7 @@ String _disposition(String path) {
 String _owner(String path) {
   final disposition = _disposition(path);
   if (disposition == 'generated') {
-    return 'Doroti.Generated.Framework.F3';
+    return 'Doroti.Framework.F3';
   }
   if (disposition == 'runtime-binding') {
     return 'Doroti.Rendering+Doroti.Composition+Doroti.Platform';

@@ -12,13 +12,13 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class AutomaticKeepAlive : StatefulWidget
 {
     public virtual Widget child { get; private set; } = default!;
 
-    public AutomaticKeepAlive(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key)
+    public AutomaticKeepAlive(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key)
     {
         this.child = child;
     }
@@ -28,7 +28,7 @@ public class AutomaticKeepAlive : StatefulWidget
 
 internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticKeepAlive>
 {
-    internal virtual DartMap<global::Doroti.Generated.Framework.Foundation.Listenable, global::System.Action>? _handles { get; set; } = default;
+    internal virtual DartMap<global::Doroti.Framework.Foundation.Listenable, global::System.Action>? _handles { get; set; } = default;
     internal virtual Widget _child { get; set; } = default!;
     internal virtual bool _keepingAlive { get; set; } = false;
 
@@ -53,7 +53,7 @@ internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticK
     {
         if ((this._handles is not null))
         {
-            foreach (global::Doroti.Generated.Framework.Foundation.Listenable handle__4211 in this._handles!.Keys)
+            foreach (global::Doroti.Framework.Foundation.Listenable handle__4211 in this._handles!.Keys)
             {
                 handle__4211.removeListener(this._handles!.GetValueOrDefault(handle__4211)!);
             }
@@ -63,27 +63,27 @@ internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticK
 
     internal virtual bool _addClient(KeepAliveNotification notification)
     {
-        global::Doroti.Generated.Framework.Foundation.Listenable handle__4407 = ((KeepAliveNotification)notification).handle;
-        _handles ??= new DartMap<global::Doroti.Generated.Framework.Foundation.Listenable, global::System.Action>();
+        global::Doroti.Framework.Foundation.Listenable handle__4407 = ((KeepAliveNotification)notification).handle;
+        _handles ??= new DartMap<global::Doroti.Framework.Foundation.Listenable, global::System.Action>();
         DartRuntimePrimitives.Assert(() => !this._handles!.ContainsKey(handle__4407));
         this._handles![handle__4407] = (global::System.Action)_createCallback(handle__4407);
         handle__4407.addListener(this._handles!.GetValueOrDefault(handle__4407)!);
         if (!this._keepingAlive)
         {
             _keepingAlive = true;
-            ParentDataElement<global::Doroti.Generated.Framework.Rendering.KeepAliveParentDataMixin>? childElement__4732 = ((ParentDataElement<global::Doroti.Generated.Framework.Rendering.KeepAliveParentDataMixin>?)(object?)_getChildElement());
+            ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>? childElement__4732 = ((ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>?)(object?)_getChildElement());
             if ((childElement__4732 is not null))
             {
                 _updateParentDataOfChild(childElement__4732);
             }
             else
             {
-                global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) => {
+                global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) => {
 if (!this.mounted)
 {
     return;
 }
-ParentDataElement<global::Doroti.Generated.Framework.Rendering.KeepAliveParentDataMixin>? childElement__5346 = ((ParentDataElement<global::Doroti.Generated.Framework.Rendering.KeepAliveParentDataMixin>?)(object?)_getChildElement());
+ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>? childElement__5346 = ((ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>?)(object?)_getChildElement());
 DartRuntimePrimitives.Assert(() => (childElement__5346 is not null));
 _updateParentDataOfChild(childElement__5346!);
 })), debugLabel: "AutomaticKeepAlive.updateParentData");
@@ -93,7 +93,7 @@ _updateParentDataOfChild(childElement__5346!);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual ParentDataElement<global::Doroti.Generated.Framework.Rendering.KeepAliveParentDataMixin>? _getChildElement()
+    internal virtual ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>? _getChildElement()
     {
         DartRuntimePrimitives.Assert(() => this.mounted);
         var element__5871 = ((Element?)(object?)this.context)!;
@@ -101,17 +101,17 @@ _updateParentDataOfChild(childElement__5346!);
         element__5871.visitChildren(((global::System.Action<Element>)((child) => {
 childElement__5914 = child;
 })));
-        DartRuntimePrimitives.Assert(() => ((childElement__5914 is null) || (childElement__5914 is ParentDataElement<global::Doroti.Generated.Framework.Rendering.KeepAliveParentDataMixin>)));
-        return ((ParentDataElement<global::Doroti.Generated.Framework.Rendering.KeepAliveParentDataMixin>?)(object?)childElement__5914)!;
+        DartRuntimePrimitives.Assert(() => ((childElement__5914 is null) || (childElement__5914 is ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>)));
+        return ((ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>?)(object?)childElement__5914)!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _updateParentDataOfChild(ParentDataElement<global::Doroti.Generated.Framework.Rendering.KeepAliveParentDataMixin> childElement)
+    internal virtual void _updateParentDataOfChild(ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin> childElement)
     {
-        childElement.applyWidgetOutOfTurn(((ParentDataWidget<global::Doroti.Generated.Framework.Rendering.KeepAliveParentDataMixin>?)(object?)build(this.context))!);
+        childElement.applyWidgetOutOfTurn(((ParentDataWidget<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>?)(object?)build(this.context))!);
     }
 
-    internal virtual global::System.Action _createCallback(global::Doroti.Generated.Framework.Foundation.Listenable handle)
+    internal virtual global::System.Action _createCallback(global::Doroti.Framework.Foundation.Listenable handle)
     {
         global::System.Action callback__7626 = default!;
         return callback__7626 = (global::System.Action)(() => {
@@ -119,7 +119,7 @@ DartRuntimePrimitives.Assert(() =>
     {
         if (!this.mounted)
         {
-            throw DartRuntimePrimitives.AsException(global::Doroti.Generated.Framework.Foundation.FlutterError.Create("AutomaticKeepAlive handle triggered after AutomaticKeepAlive was disposed.\n" + "Widgets should always trigger their KeepAliveNotification handle when they are " + "deactivated, so that they (or their handle) do not send spurious events later " + "when they are no longer in the tree."));
+            throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("AutomaticKeepAlive handle triggered after AutomaticKeepAlive was disposed.\n" + "Widgets should always trigger their KeepAliveNotification handle when they are " + "deactivated, so that they (or their handle) do not send spurious events later " + "when they are no longer in the tree."));
         }
         return true;
         throw new InvalidOperationException("Dart closure completed without a value.");
@@ -128,7 +128,7 @@ this._handles!.remove(handle);
 handle.removeListener(() => callback__7626());
 if (!System.Linq.Enumerable.Any(this._handles!))
 {
-    if ((FoundationRuntimePorts.EnumIndex(global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase) < FoundationRuntimePorts.EnumIndex(global::Doroti.Generated.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
+    if ((FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase) < FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
     {
         setState(((global::System.Action)(() => {
 _keepingAlive = false;
@@ -157,27 +157,27 @@ DartRuntimePrimitives.Assert(() => !this._keepingAlive);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder description)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("_keepingAlive", value: this._keepingAlive, ifTrue: "keeping subtree alive"));
-        description.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<DartMap<global::Doroti.Generated.Framework.Foundation.Listenable, global::System.Action>>("handles", this._handles, description: ((this._handles is not null) ? $"{checked((long)(this._handles!.Count))} active client{((checked((long)(this._handles!.Count)) == 1L) ? "" : "s")}" : null), ifNull: "no notifications ever received"));
+        description.add(new global::Doroti.Framework.Foundation.FlagProperty("_keepingAlive", value: this._keepingAlive, ifTrue: "keeping subtree alive"));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DartMap<global::Doroti.Framework.Foundation.Listenable, global::System.Action>>("handles", this._handles, description: ((this._handles is not null) ? $"{checked((long)(this._handles!.Count))} active client{((checked((long)(this._handles!.Count)) == 1L) ? "" : "s")}" : null), ifNull: "no notifications ever received"));
     }
 
 }
 
 public class KeepAliveNotification : Notification
 {
-    public virtual global::Doroti.Generated.Framework.Foundation.Listenable handle { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Foundation.Listenable handle { get; private set; } = default!;
 
-    public KeepAliveNotification(global::Doroti.Generated.Framework.Foundation.Listenable handle)
+    public KeepAliveNotification(global::Doroti.Framework.Foundation.Listenable handle)
     {
         this.handle = handle;
     }
 
 }
 
-public class KeepAliveHandle : global::Doroti.Generated.Framework.Foundation.ChangeNotifier
+public class KeepAliveHandle : global::Doroti.Framework.Foundation.ChangeNotifier
 {
     public virtual void dispose()
     {
@@ -208,7 +208,7 @@ internal class _NullWidget__automatic_keep_alive : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        throw DartRuntimePrimitives.AsException(global::Doroti.Generated.Framework.Foundation.FlutterError.Create("Widgets that mix AutomaticKeepAliveClientMixin into their State must " + "call super.build() but must ignore the return value of the superclass."));
+        throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Widgets that mix AutomaticKeepAliveClientMixin into their State must " + "call super.build() but must ignore the return value of the superclass."));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

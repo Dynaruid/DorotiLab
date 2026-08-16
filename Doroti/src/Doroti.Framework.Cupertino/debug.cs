@@ -12,17 +12,17 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Cupertino;
+namespace Doroti.Framework.Cupertino;
 
 public static partial class DebugLibrary
 {
-    public static bool debugCheckHasCupertinoLocalizations(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static bool debugCheckHasCupertinoLocalizations(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((Localizations.of<CupertinoLocalizations>(context, typeof(CupertinoLocalizations)) is null))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(((Func<List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>>)(() => { var __collection1052 = new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>(); __collection1052.Add(new global::Doroti.Generated.Framework.Foundation.ErrorSummary("No CupertinoLocalizations found.")); __collection1052.Add(new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"{(DartRuntimePrimitives.RuntimeType(((global::Doroti.Generated.Framework.Widgets.BuildContext)context).widget))} widgets require CupertinoLocalizations " + "to be provided by a Localizations widget ancestor.")); __collection1052.Add(new global::Doroti.Generated.Framework.Foundation.ErrorDescription("The cupertino library uses Localizations to generate messages, " + "labels, and abbreviations.")); __collection1052.Add(new global::Doroti.Generated.Framework.Foundation.ErrorHint("To introduce a CupertinoLocalizations, either use a " + "CupertinoApp at the root of your application to include them " + "automatically, or add a Localization widget with a " + "CupertinoLocalizations delegate.")); __collection1052.AddRange(context.describeMissingAncestor(expectedAncestorType: typeof(CupertinoLocalizations))); return __collection1052; }))()));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() => { var __collection1052 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>(); __collection1052.Add(new global::Doroti.Framework.Foundation.ErrorSummary("No CupertinoLocalizations found.")); __collection1052.Add(new global::Doroti.Framework.Foundation.ErrorDescription($"{(DartRuntimePrimitives.RuntimeType(((global::Doroti.Framework.Widgets.BuildContext)context).widget))} widgets require CupertinoLocalizations " + "to be provided by a Localizations widget ancestor.")); __collection1052.Add(new global::Doroti.Framework.Foundation.ErrorDescription("The cupertino library uses Localizations to generate messages, " + "labels, and abbreviations.")); __collection1052.Add(new global::Doroti.Framework.Foundation.ErrorHint("To introduce a CupertinoLocalizations, either use a " + "CupertinoApp at the root of your application to include them " + "automatically, or add a Localization widget with a " + "CupertinoLocalizations delegate.")); __collection1052.AddRange(context.describeMissingAncestor(expectedAncestorType: typeof(CupertinoLocalizations))); return __collection1052; }))()));
                 }
                 return true;
             });

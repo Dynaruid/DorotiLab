@@ -12,22 +12,22 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class SelectionContainer : StatefulWidget
 {
-    public virtual global::Doroti.Generated.Framework.Rendering.SelectionRegistrar? registrar { get; private set; }
+    public virtual global::Doroti.Framework.Rendering.SelectionRegistrar? registrar { get; private set; }
     public virtual Widget child { get; private set; } = default!;
     public virtual SelectionContainerDelegate? @delegate { get; private set; }
 
-    public SelectionContainer(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Rendering.SelectionRegistrar? registrar = null, SelectionContainerDelegate @delegate = default!, Widget child = default!) : base(key: key)
+    public SelectionContainer(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Rendering.SelectionRegistrar? registrar = null, SelectionContainerDelegate @delegate = default!, Widget child = default!) : base(key: key)
     {
         this.registrar = registrar;
         this.@delegate = @delegate;
         this.child = child;
     }
 
-    public static SelectionContainer CreateDisabled(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!)
+    public static SelectionContainer CreateDisabled(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!)
     {
         var __instance = new SelectionContainer(default!, default!, default!, default!);
         __instance.child = child;
@@ -36,7 +36,7 @@ public class SelectionContainer : StatefulWidget
         return __instance;
     }
 
-    public static global::Doroti.Generated.Framework.Rendering.SelectionRegistrar? maybeOf(BuildContext context)
+    public static global::Doroti.Framework.Rendering.SelectionRegistrar? maybeOf(BuildContext context)
     {
         SelectionRegistrarScope? scope__3536 = ((SelectionRegistrarScope?)(object?)context.dependOnInheritedWidgetOfExactType<SelectionRegistrarScope>());
         return scope__3536?.registrar;
@@ -47,10 +47,10 @@ public class SelectionContainer : StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SelectionContainerState__selection_container());
 }
 
-internal class _SelectionContainerState__selection_container : State<SelectionContainer>, global::Doroti.Generated.Framework.Rendering.Selectable, global::Doroti.Generated.Framework.Rendering.SelectionRegistrant
+internal class _SelectionContainerState__selection_container : State<SelectionContainer>, global::Doroti.Framework.Rendering.Selectable, global::Doroti.Framework.Rendering.SelectionRegistrant
 {
     internal virtual HashSet<global::System.Action> _listeners { get; private set; } = new HashSet<global::System.Action>();
-    internal static global::Doroti.Generated.Framework.Rendering.SelectionGeometry _disabledGeometry = new global::Doroti.Generated.Framework.Rendering.SelectionGeometry(status: global::Doroti.Generated.Framework.Rendering.SelectionStatus.none, hasContent: true);
+    internal static global::Doroti.Framework.Rendering.SelectionGeometry _disabledGeometry = new global::Doroti.Framework.Rendering.SelectionGeometry(status: global::Doroti.Framework.Rendering.SelectionStatus.none, hasContent: true);
     public virtual SelectionRegistrar? _registrar { get; set; } = default;
     public virtual bool _subscribedToSelectionRegistrar { get; set; } = false;
 
@@ -82,7 +82,7 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
                 ((SelectionContainer)this.widget).@delegate!._selectionContainerContext = this.context;
                 this._listeners.forEach((__arg0) => ((global::System.Action<global::System.Action>)((global::System.Action<global::System.Action>)((dynamic)((SelectionContainer)this.widget).@delegate!).addListener))(__arg0));
             }
-            if ((!object.Equals(((global::Doroti.Generated.Framework.Rendering.SelectionGeometry?)((dynamic)((SelectionContainer)oldWidget).@delegate)?.value), ((global::Doroti.Generated.Framework.Rendering.SelectionGeometry?)((dynamic)((SelectionContainer)this.widget).@delegate)?.value))))
+            if ((!object.Equals(((global::Doroti.Framework.Rendering.SelectionGeometry?)((dynamic)((SelectionContainer)oldWidget).@delegate)?.value), ((global::Doroti.Framework.Rendering.SelectionGeometry?)((dynamic)((SelectionContainer)this.widget).@delegate)?.value))))
             {
                 foreach (global::System.Action listener__4952 in this._listeners.ToList())
                 {
@@ -127,34 +127,34 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
         this._listeners.Remove(listener);
     }
 
-    public virtual void pushHandleLayers(global::Doroti.Generated.Framework.Rendering.LayerLink? startHandle, global::Doroti.Generated.Framework.Rendering.LayerLink? endHandle)
+    public virtual void pushHandleLayers(global::Doroti.Framework.Rendering.LayerLink? startHandle, global::Doroti.Framework.Rendering.LayerLink? endHandle)
     {
         DartRuntimePrimitives.Assert(() => !((SelectionContainer)this.widget)._disabled);
         ((SelectionContainer)this.widget).@delegate!.pushHandleLayers(startHandle, endHandle);
     }
 
-    public virtual global::Doroti.Generated.Framework.Rendering.SelectedContent? getSelectedContent()
+    public virtual global::Doroti.Framework.Rendering.SelectedContent? getSelectedContent()
     {
         DartRuntimePrimitives.Assert(() => !((SelectionContainer)this.widget)._disabled);
-        return ((global::Doroti.Generated.Framework.Rendering.SelectedContent?)(object?)((SelectionContainer)this.widget).@delegate!.getSelectedContent());
+        return ((global::Doroti.Framework.Rendering.SelectedContent?)(object?)((SelectionContainer)this.widget).@delegate!.getSelectedContent());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Rendering.SelectedContentRange? getSelection()
+    public virtual global::Doroti.Framework.Rendering.SelectedContentRange? getSelection()
     {
         DartRuntimePrimitives.Assert(() => !((SelectionContainer)this.widget)._disabled);
-        return ((global::Doroti.Generated.Framework.Rendering.SelectedContentRange?)(object?)((SelectionContainer)this.widget).@delegate!.getSelection());
+        return ((global::Doroti.Framework.Rendering.SelectedContentRange?)(object?)((SelectionContainer)this.widget).@delegate!.getSelection());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Rendering.SelectionResult dispatchSelectionEvent(global::Doroti.Generated.Framework.Rendering.SelectionEvent @event)
+    public virtual global::Doroti.Framework.Rendering.SelectionResult dispatchSelectionEvent(global::Doroti.Framework.Rendering.SelectionEvent @event)
     {
         DartRuntimePrimitives.Assert(() => !((SelectionContainer)this.widget)._disabled);
         return ((SelectionContainer)this.widget).@delegate!.dispatchSelectionEvent(@event);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Rendering.SelectionGeometry value
+    public virtual global::Doroti.Framework.Rendering.SelectionGeometry value
     {
         get
         {
@@ -162,11 +162,11 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
             {
                 return _SelectionContainerState__selection_container._disabledGeometry;
             }
-            return ((global::Doroti.Generated.Framework.Rendering.SelectionGeometry)((dynamic)((SelectionContainer)this.widget).@delegate!).value);
+            return ((global::Doroti.Framework.Rendering.SelectionGeometry)((dynamic)((SelectionContainer)this.widget).@delegate!).value);
             return default!;
         }
     }
-    public virtual Matrix4 getTransformTo(global::Doroti.Generated.Framework.Rendering.RenderObject? ancestor)
+    public virtual Matrix4 getTransformTo(global::Doroti.Framework.Rendering.RenderObject? ancestor)
     {
         DartRuntimePrimitives.Assert(() => !((SelectionContainer)this.widget)._disabled);
         return ((Matrix4)(object?)((Matrix4)((dynamic)this.context.findRenderObject()!).getTransformTo(ancestor)));
@@ -174,8 +174,8 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
     }
 
     public virtual long contentLength => ((long)((dynamic)((SelectionContainer)this.widget).@delegate!).contentLength);
-    public virtual Size size => (((global::Doroti.Generated.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!).size;
-    public virtual List<Rect> boundingBoxes => new List<global::Doroti.Ui.Rect> { (((global::Doroti.Generated.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!).paintBounds };
+    public virtual Size size => (((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!).size;
+    public virtual List<Rect> boundingBoxes => new List<global::Doroti.Ui.Rect> { (((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!).paintBounds };
     public override void dispose()
     {
         if (!((SelectionContainer)this.widget)._disabled)
@@ -258,9 +258,9 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
 
 public class SelectionRegistrarScope : InheritedWidget
 {
-    public virtual global::Doroti.Generated.Framework.Rendering.SelectionRegistrar? registrar { get; private set; }
+    public virtual global::Doroti.Framework.Rendering.SelectionRegistrar? registrar { get; private set; }
 
-    public SelectionRegistrarScope(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Rendering.SelectionRegistrar registrar = default!, Widget child = default!) : base(key: key, child: child)
+    public SelectionRegistrarScope(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Rendering.SelectionRegistrar registrar = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.registrar = registrar;
     }
@@ -281,29 +281,29 @@ public class SelectionRegistrarScope : InheritedWidget
 
 }
 
-public abstract class SelectionContainerDelegate : global::Doroti.Generated.Framework.Rendering.SelectionHandler, global::Doroti.Generated.Framework.Rendering.SelectionRegistrar
+public abstract class SelectionContainerDelegate : global::Doroti.Framework.Rendering.SelectionHandler, global::Doroti.Framework.Rendering.SelectionRegistrar
 {
     internal virtual BuildContext? _selectionContainerContext { get; set; } = default;
 
-    public virtual void pushHandleLayers(global::Doroti.Generated.Framework.Rendering.LayerLink? startHandle, global::Doroti.Generated.Framework.Rendering.LayerLink? endHandle) => throw new NotSupportedException();
-    public virtual global::Doroti.Generated.Framework.Rendering.SelectedContent? getSelectedContent() => throw new NotSupportedException();
-    public virtual global::Doroti.Generated.Framework.Rendering.SelectedContentRange? getSelection() => throw new NotSupportedException();
-    public virtual global::Doroti.Generated.Framework.Rendering.SelectionResult dispatchSelectionEvent(global::Doroti.Generated.Framework.Rendering.SelectionEvent @event) => throw new NotSupportedException();
+    public virtual void pushHandleLayers(global::Doroti.Framework.Rendering.LayerLink? startHandle, global::Doroti.Framework.Rendering.LayerLink? endHandle) => throw new NotSupportedException();
+    public virtual global::Doroti.Framework.Rendering.SelectedContent? getSelectedContent() => throw new NotSupportedException();
+    public virtual global::Doroti.Framework.Rendering.SelectedContentRange? getSelection() => throw new NotSupportedException();
+    public virtual global::Doroti.Framework.Rendering.SelectionResult dispatchSelectionEvent(global::Doroti.Framework.Rendering.SelectionEvent @event) => throw new NotSupportedException();
     public virtual long contentLength => throw new NotSupportedException();
-    public virtual global::Doroti.Generated.Framework.Rendering.SelectionGeometry value => throw new NotSupportedException();
-    public virtual void add(global::Doroti.Generated.Framework.Rendering.Selectable selectable) => throw new NotSupportedException();
-    public virtual void remove(global::Doroti.Generated.Framework.Rendering.Selectable selectable) => throw new NotSupportedException();
-    public virtual Matrix4 getTransformFrom(global::Doroti.Generated.Framework.Rendering.Selectable child)
+    public virtual global::Doroti.Framework.Rendering.SelectionGeometry value => throw new NotSupportedException();
+    public virtual void add(global::Doroti.Framework.Rendering.Selectable selectable) => throw new NotSupportedException();
+    public virtual void remove(global::Doroti.Framework.Rendering.Selectable selectable) => throw new NotSupportedException();
+    public virtual Matrix4 getTransformFrom(global::Doroti.Framework.Rendering.Selectable child)
     {
         DartRuntimePrimitives.Assert(() => (this._selectionContainerContext?.findRenderObject() is not null), () => (object?)"getTransformFrom cannot be called before SelectionContainer is laid out.");
-        return ((Matrix4)(object?)child.getTransformTo(((global::Doroti.Generated.Framework.Rendering.RenderBox?)(object?)this._selectionContainerContext!.findRenderObject()!)!));
+        return ((Matrix4)(object?)child.getTransformTo(((global::Doroti.Framework.Rendering.RenderBox?)(object?)this._selectionContainerContext!.findRenderObject()!)!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Matrix4 getTransformTo(global::Doroti.Generated.Framework.Rendering.RenderObject? ancestor)
+    public virtual Matrix4 getTransformTo(global::Doroti.Framework.Rendering.RenderObject? ancestor)
     {
         DartRuntimePrimitives.Assert(() => (this._selectionContainerContext?.findRenderObject() is not null), () => (object?)"getTransformTo cannot be called before SelectionContainer is laid out.");
-        var box__10212 = ((global::Doroti.Generated.Framework.Rendering.RenderBox?)(object?)this._selectionContainerContext!.findRenderObject()!)!;
+        var box__10212 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this._selectionContainerContext!.findRenderObject()!)!;
         return ((Matrix4)(object?)box__10212.getTransformTo(ancestor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -313,8 +313,8 @@ public abstract class SelectionContainerDelegate : global::Doroti.Generated.Fram
         get
         {
             DartRuntimePrimitives.Assert(() => (this._selectionContainerContext?.findRenderObject() is not null), () => (object?)"The _selectionContainerContext must have a renderObject, such as after the first build has completed.");
-            var box__10724 = ((global::Doroti.Generated.Framework.Rendering.RenderBox?)(object?)this._selectionContainerContext!.findRenderObject()!)!;
-            return ((global::Doroti.Generated.Framework.Rendering.RenderBox)box__10724).hasSize;
+            var box__10724 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this._selectionContainerContext!.findRenderObject()!)!;
+            return ((global::Doroti.Framework.Rendering.RenderBox)box__10724).hasSize;
             return default!;
         }
     }
@@ -323,8 +323,8 @@ public abstract class SelectionContainerDelegate : global::Doroti.Generated.Fram
         get
         {
             DartRuntimePrimitives.Assert(() => this.hasSize, () => (object?)"containerSize cannot be called before SelectionContainer is laid out.");
-            var box__11089 = ((global::Doroti.Generated.Framework.Rendering.RenderBox?)(object?)this._selectionContainerContext!.findRenderObject()!)!;
-            return ((global::Doroti.Generated.Framework.Rendering.RenderBox)box__11089).size;
+            var box__11089 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this._selectionContainerContext!.findRenderObject()!)!;
+            return ((global::Doroti.Framework.Rendering.RenderBox)box__11089).size;
             return default!;
         }
     }

@@ -1,20 +1,16 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet('doctor', 'build', 'validate', 'audit', 'format', 'release', 'clean')]
+    [ValidateSet('doctor', 'build', 'validate', 'audit', 'migration-audit', 'release', 'clean')]
     [string] $Command = 'doctor',
 
-    [ValidateSet('auto', 'software', 'avalonia')]
-    [string] $Backend = 'auto',
-
-    [ValidateSet('compiler')]
-    [string] $ValidationSuite = 'compiler'
+    [ValidateSet('Source', 'Build', 'Targets', 'Developer', 'Release')]
+    [string] $ValidationSuite = 'Developer'
 )
 
 $ErrorActionPreference = 'Stop'
 $dorotiRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $repositoryRoot = [System.IO.Path]::GetFullPath((Join-Path $dorotiRoot '..'))
-. (Join-Path $PSScriptRoot 'flutter-sdk.ps1')
 $solution = Join-Path $dorotiRoot 'Doroti.slnx'
 $productSolution = Join-Path $dorotiRoot 'Doroti.Product.slnx'
 $artifacts = Join-Path $dorotiRoot 'artifacts'
@@ -70,76 +66,23 @@ function Get-CommandResult {
     }
 }
 
-function Get-SelectedContentRevision {
-    param([string] $SourcePath, [object[]] $AuditFiles)
-    if (@($AuditFiles).Count -eq 0) { return $null }
-    $entries = @()
-    foreach ($relativePath in ($AuditFiles | Sort-Object)) {
-        $path = [System.IO.Path]::GetFullPath((Join-Path $SourcePath $relativePath))
-        if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { return $null }
-        $hash = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()
-        $entries += "$($relativePath -replace '\\','/'):$hash"
-    }
-    $bytes = [System.Text.Encoding]::UTF8.GetBytes(($entries -join "`n") + "`n")
-    $sha = [System.Security.Cryptography.SHA256]::Create()
-    try {
-        $hash = -join ($sha.ComputeHash($bytes) | ForEach-Object { $_.ToString('x2') })
-        return "selected-content-sha256:$hash"
-    }
-    finally {
-        $sha.Dispose()
-    }
-}
-
 function Invoke-Doctor {
     $dotnet = Get-CommandResult 'dotnet' @('--version')
-    try {
-        $flutterSdk = Resolve-DorotiFlutterSdk -RepositoryRoot $repositoryRoot
-        $flutter = Get-CommandResult $flutterSdk.FlutterCommand @('--version')
-        $dart = Get-CommandResult $flutterSdk.DartCommand @('--version')
-    }
-    catch {
-        $flutter = [ordered]@{ available = $false; output = $_.Exception.Message }
-        $dart = [ordered]@{ available = $false; output = $_.Exception.Message }
-    }
-    $runtimeInformation = [System.Runtime.InteropServices.RuntimeInformation]
-    $isDesktop = $runtimeInformation::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows) -or
-        $runtimeInformation::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Linux) -or
-        $runtimeInformation::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::OSX)
-    $selectedBackend = if ($Backend -eq 'auto') { 'avalonia' } else { $Backend }
-    $backendAvailable = ($selectedBackend -eq 'software') -or $isDesktop
-
-    $sourceManifestPath = Join-Path $dorotiRoot 'migration/source-manifest.json'
-    $sourceManifest = Get-Content -Raw $sourceManifestPath | ConvertFrom-Json
-    $sources = @()
-    foreach ($source in ($sourceManifest.sources | Sort-Object id)) {
-        $sourcePath = [System.IO.Path]::GetFullPath((Join-Path (Split-Path $sourceManifestPath) $source.path))
-        $licensePath = Join-Path $sourcePath $source.license
-        $gitTopLevel = Get-CommandResult 'git' @('-C', $sourcePath, 'rev-parse', '--show-toplevel')
-        $revision = $source.pinnedRevision
-        if ($gitTopLevel.available -and ([System.IO.Path]::GetFullPath($gitTopLevel.output) -eq $sourcePath)) {
-            $gitRevision = Get-CommandResult 'git' @('-C', $sourcePath, 'rev-parse', 'HEAD')
-            if ($gitRevision.available) { $revision = "git:$($gitRevision.output)" }
-        }
-        if (-not $revision) { $revision = Get-SelectedContentRevision $sourcePath @($source.auditFiles) }
-        $sources += [ordered]@{
-            id = $source.id
-            pathExists = (Test-Path -LiteralPath $sourcePath -PathType Container)
-            licenseExists = (Test-Path -LiteralPath $licensePath -PathType Leaf)
-            revision = $revision
-        }
-    }
-
-    $success = $dotnet.available -and $flutter.available -and $dart.available -and $backendAvailable -and
-        (@($sources | Where-Object { -not $_.pathExists -or -not $_.licenseExists -or -not $_.revision }).Count -eq 0)
+    $powerShell = [ordered]@{ available = $PSVersionTable.PSVersion.Major -ge 7; output = $PSVersionTable.PSVersion.ToString() }
+    $flutterCheckout = Test-Path -LiteralPath (Join-Path $repositoryRoot 'reference/flutter-master') -PathType Container
+    $avaloniaCheckout = Test-Path -LiteralPath (Join-Path $repositoryRoot 'reference/Avalonia-main') -PathType Container
+    $success = $dotnet.available -and $powerShell.available
     $report = [ordered]@{
-        schemaVersion = 'doroti.doctor/v2'
+        schemaVersion = 'doroti.doctor/v3'
         success = $success
         dotnet = $dotnet
-        flutter = $flutter
-        dart = $dart
-        backend = [ordered]@{ selected = $selectedBackend; available = $backendAvailable; operatingSystem = [System.Environment]::OSVersion.VersionString }
-        sources = $sources
+        powerShell = $powerShell
+        referenceTools = [ordered]@{
+            requiredForProductDevelopment = $false
+            flutterCheckout = $flutterCheckout
+            avaloniaCheckout = $avaloniaCheckout
+            note = 'Pinned sources are optional for reference comparison and migration work.'
+        }
     }
 
     $outputDirectory = Join-Path $artifacts 'doctor'
@@ -152,14 +95,13 @@ function Invoke-Doctor {
         "Status: **$(if ($success) { 'PASS' } else { 'FAIL' })**",
         '',
         "- .NET SDK: $($dotnet.output)",
-        "- Repository-local Flutter SDK: $($flutter.output)",
-        "- Repository-local Dart SDK: $($dart.output)",
-        "- Backend: $selectedBackend (available: $backendAvailable)",
-        "- Reference sources: $($sources.Count)"
+        "- PowerShell: $($powerShell.output)",
+        "- Flutter reference checkout (optional): $flutterCheckout",
+        "- Avalonia reference checkout (optional): $avaloniaCheckout"
     ) -join "`n"
     [System.IO.File]::WriteAllText((Join-Path $outputDirectory 'doctor.md'), $markdown + "`n", [System.Text.UTF8Encoding]::new($false))
     Write-Host "Doctor: $(if ($success) { 'PASS' } else { 'FAIL' })"
-    if (-not $success) { throw 'Development environment does not satisfy R1 requirements. See artifacts/doctor/doctor.json.' }
+    if (-not $success) { throw 'Development environment is missing a required product-development tool. See artifacts/doctor/doctor.json.' }
 }
 
 function Invoke-Build {
@@ -167,22 +109,21 @@ function Invoke-Build {
 }
 
 function Invoke-Validation {
-    Write-Host 'Validate: compiler validation suite has been removed.'
+    & (Join-Path $PSScriptRoot 'validate.ps1') -Suite $ValidationSuite
 }
 
 function Invoke-Audit {
     & (Join-Path $PSScriptRoot 'validate-local-storage.ps1')
-    Invoke-Checked 'dotnet' @('run', '--project', (Join-Path $dorotiRoot 'tools/Doroti.AvaloniaPort/Doroti.AvaloniaPort.csproj'), '--', 'audit')
-    Invoke-Checked 'dotnet' @('run', '--project', (Join-Path $dorotiRoot 'tools/Doroti.SourceTools/Doroti.SourceTools.csproj'), '--', 'audit')
-    Invoke-Validation
+    & (Join-Path $PSScriptRoot 'validate.ps1') -Suite Source
 }
 
-function Invoke-Format {
-    Invoke-Checked 'dotnet' @('format', $productSolution, '--verify-no-changes', '--no-restore', '--verbosity', 'minimal')
+function Invoke-MigrationAudit {
+    Invoke-Checked 'dotnet' @('run', '--project', (Join-Path $dorotiRoot 'tools/Doroti.AvaloniaPort/Doroti.AvaloniaPort.csproj'), '--', 'audit')
+    Invoke-Checked 'dotnet' @('run', '--project', (Join-Path $dorotiRoot 'tools/Doroti.SourceTools/Doroti.SourceTools.csproj'), '--', 'audit')
 }
 
 function Invoke-Release {
-    Invoke-Build
+    & (Join-Path $PSScriptRoot 'validate.ps1') -Suite Release
     Invoke-Audit
 
     $packageDirectory = Join-Path $artifacts 'packages'
@@ -211,7 +152,7 @@ function Invoke-Release {
             $archive.Dispose()
         }
     }
-    throw 'Package build and inspection passed, but external application-template acceptance remains notVerified until Goal7 G7-3C replaces the removed legacy template.'
+    Write-Host 'Release: PASS'
 }
 
 function Invoke-Clean {
@@ -244,7 +185,7 @@ switch ($Command) {
     'build' { Invoke-Build }
     'validate' { Invoke-Validation }
     'audit' { Invoke-Audit }
-    'format' { Invoke-Format }
+    'migration-audit' { Invoke-MigrationAudit }
     'release' { Invoke-Release }
     'clean' { Invoke-Clean }
 }

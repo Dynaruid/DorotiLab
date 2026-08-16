@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class NavigatorPopHandler<T> : StatefulWidget
 {
@@ -21,7 +21,7 @@ public class NavigatorPopHandler<T> : StatefulWidget
     public virtual global::System.Action? onPop { get; private set; }
     public virtual global::System.Action<T?>? onPopWithResult { get; private set; }
 
-    public NavigatorPopHandler(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::System.Action? onPop = null, global::System.Action<T?>? onPopWithResult = null, bool enabled = true, Widget child = default!) : base(key: key)
+    public NavigatorPopHandler(global::Doroti.Framework.Foundation.Key? key = null, global::System.Action? onPop = null, global::System.Action<T?>? onPopWithResult = null, bool enabled = true, Widget child = default!) : base(key: key)
     {
         this.onPop = onPop;
         this.onPopWithResult = onPopWithResult;

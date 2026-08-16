@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public static partial class Raw_keyboard_androidLibrary
 {
@@ -72,13 +72,13 @@ public class RawKeyEventDataAndroid : RawKeyEventData
     {
         get
         {
-            if (global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kAndroidToPhysicalKey.ContainsKey(scanCode))
+            if (global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kAndroidToPhysicalKey.ContainsKey(scanCode))
             {
-                return global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kAndroidToPhysicalKey.GetValueOrDefault(scanCode)!;
+                return global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kAndroidToPhysicalKey.GetValueOrDefault(scanCode)!;
             }
             if (((eventSource & _sourceJoystick) == _sourceJoystick))
             {
-                LogicalKeyboardKey? foundKey__6524 = global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kAndroidToLogicalKey.GetValueOrDefault(keyCode);
+                LogicalKeyboardKey? foundKey__6524 = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kAndroidToLogicalKey.GetValueOrDefault(keyCode);
                 if ((object.Equals(foundKey__6524, LogicalKeyboardKey.arrowUp)))
                 {
                     return PhysicalKeyboardKey.arrowUp;
@@ -103,7 +103,7 @@ public class RawKeyEventDataAndroid : RawKeyEventData
     {
         get
         {
-            LogicalKeyboardKey? numPadKey = global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kAndroidNumPadMap.GetValueOrDefault(keyCode);
+            LogicalKeyboardKey? numPadKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kAndroidNumPadMap.GetValueOrDefault(keyCode);
             if ((numPadKey is not null))
             {
                 return numPadKey;
@@ -114,7 +114,7 @@ public class RawKeyEventDataAndroid : RawKeyEventData
                 long keyId__7907 = (LogicalKeyboardKey.unicodePlane | ((combinedCodePoint__7828 & LogicalKeyboardKey.valueMask)));
                 return (LogicalKeyboardKey.findKeyByKeyId(keyId__7907) ?? new LogicalKeyboardKey(keyId__7907));
             }
-            LogicalKeyboardKey? newKey = global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kAndroidToLogicalKey.GetValueOrDefault(keyCode);
+            LogicalKeyboardKey? newKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kAndroidToLogicalKey.GetValueOrDefault(keyCode);
             if ((newKey is not null))
             {
                 return newKey;

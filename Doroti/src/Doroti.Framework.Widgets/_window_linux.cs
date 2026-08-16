@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public static partial class _window_linuxLibrary
 {
@@ -33,10 +33,10 @@ public class WindowingOwnerLinuxIo : WindowingOwnerIo
     }
 
     public virtual LinuxWindowRegistrarIo registrar => this._registrar;
-    public virtual WindowControllerIo createWindowController(WindowControllerDelegateIo @delegate = default!, Size? size = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = default!, string? title = null)
+    public virtual WindowControllerIo createWindowController(WindowControllerDelegateIo @delegate = default!, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = default!, string? title = null)
     {
         bool __resizable = DartRuntimePrimitives.ConvertValue<bool>(constraints);
-        var __constraints = size is null ? null : (global::Doroti.Generated.Framework.Rendering.BoxConstraints)(object)size;
+        var __constraints = size is null ? null : (global::Doroti.Framework.Rendering.BoxConstraints)(object)size;
         var __title = resizable is null ? null : (string)(object)resizable;
         var __delegate = (WindowControllerDelegateIo)(object)title;
         var controller__3396 = new WindowControllerLinuxIo(owner: this, @delegate: __delegate, size: title, constraints: __constraints, title: __title);
@@ -45,7 +45,7 @@ public class WindowingOwnerLinuxIo : WindowingOwnerIo
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DialogWindowControllerIo createDialogWindowController(DialogWindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = default!, BaseWindowControllerIo? parent = null, string? title = null)
+    public virtual DialogWindowControllerIo createDialogWindowController(DialogWindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = default!, BaseWindowControllerIo? parent = null, string? title = null)
     {
         var controller__4046 = new DialogWindowControllerLinuxIo(owner: this, @delegate: @delegate, size: size, constraints: constraints, parent: parent, title: title);
         this._registrar.register(viewId: checked((long)controller__4046.rootView.viewId), windowHandle: ((DialogWindowControllerLinuxIo)controller__4046)._window.instance.cast<Void>(), viewHandle: ((DialogWindowControllerLinuxIo)controller__4046)._view.instance.cast<Void>());
@@ -53,7 +53,7 @@ public class WindowingOwnerLinuxIo : WindowingOwnerIo
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual TooltipWindowControllerIo createTooltipWindowController(TooltipWindowControllerDelegateIo @delegate, global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
+    public virtual TooltipWindowControllerIo createTooltipWindowController(TooltipWindowControllerDelegateIo @delegate, global::Doroti.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
     {
         var controller__4751 = new TooltipWindowControllerLinuxIo(owner: this, @delegate: @delegate, constraints: constraints, anchorRect: anchorRect, positioner: positioner, parent: parent);
         this._registrar.register(viewId: checked((long)controller__4751.rootView.viewId), windowHandle: ((TooltipWindowControllerLinuxIo)controller__4751)._window.instance.cast<Void>(), viewHandle: ((TooltipWindowControllerLinuxIo)controller__4751)._view.instance.cast<Void>());
@@ -61,7 +61,7 @@ public class WindowingOwnerLinuxIo : WindowingOwnerIo
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual PopupWindowControllerIo createPopupWindowController(PopupWindowControllerDelegateIo @delegate, global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
+    public virtual PopupWindowControllerIo createPopupWindowController(PopupWindowControllerDelegateIo @delegate, global::Doroti.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
     {
         var controller__5473 = new PopupWindowControllerLinuxIo(owner: this, @delegate: @delegate, constraints: constraints, anchorRect: anchorRect, positioner: positioner, parent: parent);
         this._registrar.register(viewId: checked((long)controller__5473.rootView.viewId), windowHandle: ((PopupWindowControllerLinuxIo)controller__5473)._window.instance.cast<Void>(), viewHandle: ((PopupWindowControllerLinuxIo)controller__5473)._view.instance.cast<Void>());
@@ -69,7 +69,7 @@ public class WindowingOwnerLinuxIo : WindowingOwnerIo
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual SatelliteWindowControllerIo createSatelliteWindowController(SatelliteWindowControllerDelegateIo @delegate, BaseWindowControllerIo parent, WindowPositionerIo initialPositioner, Rect? initialAnchorRect = null, Size? size = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = false, string? title = null)
+    public virtual SatelliteWindowControllerIo createSatelliteWindowController(SatelliteWindowControllerDelegateIo @delegate, BaseWindowControllerIo parent, WindowPositionerIo initialPositioner, Rect? initialAnchorRect = null, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = false, string? title = null)
     {
         throw new NotImplementedException("Satellite windows are not yet implemented on Linux.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -114,7 +114,7 @@ public class WindowControllerLinuxIo : WindowControllerIo, BaseWindowControllerL
     internal virtual _FlWindowMonitor___window_linux _windowMonitor { get; private set; } = default!;
     internal virtual bool _destroyed { get; set; } = false;
 
-    public WindowControllerLinuxIo(WindowingOwnerLinuxIo owner, WindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, bool decorated = true)
+    public WindowControllerLinuxIo(WindowingOwnerLinuxIo owner, WindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, bool decorated = true)
     {
         this._owner = owner;
         this._delegate = @delegate;
@@ -149,9 +149,9 @@ public class WindowControllerLinuxIo : WindowControllerIo, BaseWindowControllerL
         this._window.resize(DartRuntimePrimitives.RequireValue(size).width.toInt(), DartRuntimePrimitives.RequireValue(size).height.toInt());
     }
 
-    public override void setConstraints(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints)
+    public override void setConstraints(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        this._window.setGeometryHints(minWidth: ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).minWidth.toInt(), minHeight: ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).minHeight.toInt(), maxWidth: (double.IsInfinity(((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxWidth) ? _window_linuxLibrary._kMaxWindowDimensions : ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxWidth.toInt()), maxHeight: (double.IsInfinity(((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxHeight) ? _window_linuxLibrary._kMaxWindowDimensions : ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxHeight.toInt()));
+        this._window.setGeometryHints(minWidth: ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minWidth.toInt(), minHeight: ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minHeight.toInt(), maxWidth: (double.IsInfinity(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth) ? _window_linuxLibrary._kMaxWindowDimensions : ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth.toInt()), maxHeight: (double.IsInfinity(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight) ? _window_linuxLibrary._kMaxWindowDimensions : ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight.toInt()));
     }
 
     public override void setTitle(string title)
@@ -237,7 +237,7 @@ public class DialogWindowControllerLinuxIo : DialogWindowControllerIo, BaseWindo
     internal virtual _FlWindowMonitor___window_linux _windowMonitor { get; private set; } = default!;
     internal virtual bool _destroyed { get; set; } = false;
 
-    public DialogWindowControllerLinuxIo(WindowingOwnerLinuxIo owner, DialogWindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, BaseWindowControllerIo? parent = null, string? title = null, bool decorated = true)
+    public DialogWindowControllerLinuxIo(WindowingOwnerLinuxIo owner, DialogWindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, BaseWindowControllerIo? parent = null, string? title = null, bool decorated = true)
     {
         this._owner = owner;
         this._delegate = @delegate;
@@ -272,9 +272,9 @@ public class DialogWindowControllerLinuxIo : DialogWindowControllerIo, BaseWindo
         this._window.resize(DartRuntimePrimitives.RequireValue(size).width.toInt(), DartRuntimePrimitives.RequireValue(size).height.toInt());
     }
 
-    public override void setConstraints(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints)
+    public override void setConstraints(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        this._window.setGeometryHints(minWidth: ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).minWidth.toInt(), minHeight: ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).minHeight.toInt(), maxWidth: (double.IsInfinity(((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxWidth) ? 2147483647L : ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxWidth.toInt()), maxHeight: (double.IsInfinity(((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxHeight) ? 2147483647L : ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxHeight.toInt()));
+        this._window.setGeometryHints(minWidth: ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minWidth.toInt(), minHeight: ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minHeight.toInt(), maxWidth: (double.IsInfinity(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth) ? 2147483647L : ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth.toInt()), maxHeight: (double.IsInfinity(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight) ? 2147483647L : ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight.toInt()));
     }
 
     public override void setTitle(string title)
@@ -338,7 +338,7 @@ public class TooltipWindowControllerLinuxIo : TooltipWindowControllerIo, BaseWin
     internal virtual _FlWindowMonitor___window_linux _windowMonitor { get; private set; } = default!;
     internal virtual bool _destroyed { get; set; } = false;
 
-    public TooltipWindowControllerLinuxIo(WindowingOwnerLinuxIo owner, TooltipWindowControllerDelegateIo @delegate, global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
+    public TooltipWindowControllerLinuxIo(WindowingOwnerLinuxIo owner, TooltipWindowControllerDelegateIo @delegate, global::Doroti.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
     {
         this._owner = owner;
         this._delegate = @delegate;
@@ -398,9 +398,9 @@ public class TooltipWindowControllerLinuxIo : TooltipWindowControllerIo, BaseWin
     }
 
     public override BaseWindowControllerIo parent => this._parent;
-    public override void setConstraints(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints)
+    public override void setConstraints(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        this._window.setGeometryHints(minWidth: ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).minWidth.toInt(), minHeight: ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).minHeight.toInt(), maxWidth: (double.IsInfinity(((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxWidth) ? 2147483647L : ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxWidth.toInt()), maxHeight: (double.IsInfinity(((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxHeight) ? 2147483647L : ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxHeight.toInt()));
+        this._window.setGeometryHints(minWidth: ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minWidth.toInt(), minHeight: ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minHeight.toInt(), maxWidth: (double.IsInfinity(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth) ? 2147483647L : ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth.toInt()), maxHeight: (double.IsInfinity(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight) ? 2147483647L : ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight.toInt()));
     }
 
     public virtual Pointer<Void> windowHandle
@@ -443,7 +443,7 @@ public class PopupWindowControllerLinuxIo : PopupWindowControllerIo, BaseWindowC
     internal virtual Offset? _offsetFromParent { get; set; } = default;
     internal virtual bool _destroyed { get; set; } = false;
 
-    public PopupWindowControllerLinuxIo(WindowingOwnerLinuxIo owner, PopupWindowControllerDelegateIo @delegate, global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
+    public PopupWindowControllerLinuxIo(WindowingOwnerLinuxIo owner, PopupWindowControllerDelegateIo @delegate, global::Doroti.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
     {
         this._owner = owner;
         this._delegate = @delegate;
@@ -511,9 +511,9 @@ public class PopupWindowControllerLinuxIo : PopupWindowControllerIo, BaseWindowC
     }
 
     public override BaseWindowControllerIo parent => this._parent;
-    public override void setConstraints(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints)
+    public override void setConstraints(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        this._window.setGeometryHints(minWidth: ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).minWidth.toInt(), minHeight: ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).minHeight.toInt(), maxWidth: (double.IsInfinity(((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxWidth) ? 2147483647L : ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxWidth.toInt()), maxHeight: (double.IsInfinity(((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxHeight) ? 2147483647L : ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxHeight.toInt()));
+        this._window.setGeometryHints(minWidth: ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minWidth.toInt(), minHeight: ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minHeight.toInt(), maxWidth: (double.IsInfinity(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth) ? 2147483647L : ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth.toInt()), maxHeight: (double.IsInfinity(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight) ? 2147483647L : ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight.toInt()));
     }
 
     public virtual Pointer<Void> windowHandle

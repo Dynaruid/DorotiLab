@@ -90,7 +90,7 @@ String _disposition(String path) {
 String _owner(String path) {
   final disposition = _disposition(path);
   if (disposition == 'generated') {
-    return 'Doroti.Generated.Framework.F2';
+    return 'Doroti.Framework.F2';
   }
   if (disposition == 'runtime-binding') {
     return 'Doroti.Rendering+Doroti.Platform';

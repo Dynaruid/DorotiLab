@@ -4,7 +4,7 @@
 using System;
 using Doroti.Runtime;
 
-namespace Doroti.Generated.Framework.Foundation;
+namespace Doroti.Framework.Foundation;
 
 public static partial class objectRuntimeTypeFunctions
 {

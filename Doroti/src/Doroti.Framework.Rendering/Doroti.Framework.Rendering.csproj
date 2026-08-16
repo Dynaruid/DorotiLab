@@ -5,7 +5,7 @@
     <IsDorotiProduct>true</IsDorotiProduct>
   </PropertyGroup>
   <ItemGroup>
-    <InternalsVisibleTo Include="Doroti.Generated.Framework.Widgets.Widgets" />
+    <InternalsVisibleTo Include="Doroti.Framework.Widgets.Widgets" />
     <InternalsVisibleTo Include="Doroti.Framework.Widgets" />
     <ProjectReference Include="..\Doroti.Runtime\Doroti.Runtime.csproj" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />

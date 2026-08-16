@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public static partial class Text_painterLibrary
 {
@@ -296,7 +296,7 @@ internal class _TextPainterLayoutCacheWithOffset__text_painter
             return false;
         }
         double maxIntrinsicWidth__19391 = this.paragraph.maxIntrinsicWidth;
-        bool skipLineBreaking__19558 = ((maxWidth == this.layoutMaxWidth) || (((((this.paragraph.width - maxIntrinsicWidth__19391)) > -global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance) && (((maxWidth - maxIntrinsicWidth__19391)) > -global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))));
+        bool skipLineBreaking__19558 = ((maxWidth == this.layoutMaxWidth) || (((((this.paragraph.width - maxIntrinsicWidth__19391)) > -global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance) && (((maxWidth - maxIntrinsicWidth__19391)) > -global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))));
         if (skipLineBreaking__19558)
         {
             contentWidth = this.layout._contentWidthFor(minWidth, maxWidth, widthBasis);
@@ -649,7 +649,7 @@ public class TextPainter
     }
     public virtual void setPlaceholderDimensions(List<PlaceholderDimensions>? value)
     {
-        if ((((value is null) || (checked((long)(value.Count)) == 0)) || global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals(value, this._placeholderDimensions)))
+        if ((((value is null) || (checked((long)(value.Count)) == 0)) || global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(value, this._placeholderDimensions)))
         {
             return;
         }
@@ -1119,7 +1119,7 @@ public class TextPainter
                 _disposed = true;
                 return true;
             });
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this._layoutTemplate?.dispose();
         _layoutTemplate = null;
         this._layoutCache?.paragraph.dispose();

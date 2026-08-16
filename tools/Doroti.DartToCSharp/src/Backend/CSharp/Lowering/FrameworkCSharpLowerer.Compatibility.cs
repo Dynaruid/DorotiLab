@@ -57,7 +57,7 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.AppendLine("        this.velocity = velocity;");
             builder.AppendLine("    }");
             builder.AppendLine();
-            builder.AppendLine("    public override string ToString() => $\"{Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, \"Tolerance\")}(distance: ±{distance}, time: ±{time}, velocity: ±{velocity})\";");
+            builder.AppendLine("    public override string ToString() => $\"{Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, \"Tolerance\")}(distance: ±{distance}, time: ±{time}, velocity: ±{velocity})\";");
             builder.AppendLine("}");
             return true;
         }
@@ -113,7 +113,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (methodName == "showInViewport" && declaration.Name == "RenderViewportBase")
         {
-            builder.Append("global::Doroti.Generated.Framework.Rendering.RenderViewportBase<ParentDataClass>.showInViewport(");
+            builder.Append("global::Doroti.Framework.Rendering.RenderViewportBase<ParentDataClass>.showInViewport(");
             EmitArguments(builder, invocationArguments, declaration, package, library, inputPath, diagnostics);
             builder.Append(')');
             return;
@@ -121,7 +121,7 @@ internal sealed partial class FrameworkCSharpLowerer
         if (methodName == "addPointer" && target is not null && thenArguments is { Length: 1 })
         {
             LowerExpression(builder, target, declaration, package, library, inputPath, diagnostics);
-            builder.Append(".addPointer((global::Doroti.Generated.Framework.Gestures.PointerDownEvent)(object)");
+            builder.Append(".addPointer((global::Doroti.Framework.Gestures.PointerDownEvent)(object)");
             LowerExpression(builder, thenArguments[0], declaration, package, library, inputPath, diagnostics);
             builder.Append(')');
             return;
@@ -915,7 +915,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         else if (target is null && IsTopLevelElement(node.ElementId, "objectRuntimeType"))
         {
-            builder.Append("global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType");
+            builder.Append("global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType");
         }
         else if (target is null && !string.IsNullOrEmpty(node.ElementId))
         {
@@ -1744,9 +1744,9 @@ internal sealed partial class FrameworkCSharpLowerer
             LowerExpression(builder, value, declaration, package, library, inputPath, diagnostics);
             builder.Append("; if (").Append(valueName).Append(" is { } ").Append(nonNullName).Append(") { ")
                 .Append(listName).Append(".Add(");
-            if (elementType is "Widget" or "global::Doroti.Generated.Framework.Widgets.Widget")
+            if (elementType is "Widget" or "global::Doroti.Framework.Widgets.Widget")
             {
-                builder.Append("DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(")
+                builder.Append("DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(")
                     .Append(nonNullName).Append(')');
             }
             else
@@ -1885,9 +1885,9 @@ internal sealed partial class FrameworkCSharpLowerer
         string inputPath,
         List<ConverterDiagnostic> diagnostics)
     {
-        if (elementType is "Widget" or "global::Doroti.Generated.Framework.Widgets.Widget")
+        if (elementType is "Widget" or "global::Doroti.Framework.Widgets.Widget")
         {
-            builder.Append("DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(");
+            builder.Append("DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(");
             LowerExpression(builder, value, declaration, package, library, inputPath, diagnostics);
             builder.Append(')');
             return;
@@ -2598,7 +2598,7 @@ internal sealed partial class FrameworkCSharpLowerer
         if (targetType == "AnimationStatus" &&
             memberName is "isDismissed" or "isCompleted" or "isAnimating" or "isForwardOrCompleted")
         {
-            builder.Append("global::Doroti.Generated.Framework.Animation.AnimationStatusMembers.")
+            builder.Append("global::Doroti.Framework.Animation.AnimationStatusMembers.")
                 .Append(SafeIdentifier(memberName)).Append('(');
             LowerExpression(builder, target, declaration, package, library, inputPath, diagnostics);
             builder.Append(')');

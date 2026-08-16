@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public interface PreferredSizeWidget
 {
@@ -24,7 +24,7 @@ public class PreferredSize : StatelessWidget, PreferredSizeWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual Size preferredSize { get; private set; } = default!;
 
-    public PreferredSize(global::Doroti.Generated.Framework.Foundation.Key? key = null, Size preferredSize = default!, Widget child = default!) : base(key: key)
+    public PreferredSize(global::Doroti.Framework.Foundation.Key? key = null, Size preferredSize = default!, Widget child = default!) : base(key: key)
     {
         this.preferredSize = preferredSize;
         this.child = child;

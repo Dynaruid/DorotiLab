@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public static partial class Focus_managerLibrary
 {
@@ -23,7 +23,7 @@ public static partial class Focus_managerLibrary
 {
     internal static bool _focusDebug(global::System.Func<string> messageFunc, global::System.Func<IEnumerable<object>>? detailsFunc = null)
     {
-        if (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             throw new InvalidOperationException("_focusDebug was called in Release mode. It should always be wrapped in " + "an assert. Always call _focusDebug like so:\n" + "  assert(_focusDebug(() => 'Blah $foo'));");
         }
@@ -31,13 +31,13 @@ public static partial class Focus_managerLibrary
         {
             return true;
         }
-        global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint($"FOCUS: {messageFunc()}");
+        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"FOCUS: {messageFunc()}");
         IEnumerable<object> details__1975 = ((detailsFunc is null ? new List<object>() : detailsFunc.Invoke()));
         if (System.Linq.Enumerable.Any(details__1975))
         {
             foreach (var detail__2069 in details__1975)
             {
-                global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint($"    {detail__2069}");
+                global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"    {detail__2069}");
             }
         }
         return true;
@@ -81,11 +81,11 @@ public static partial class Focus_managerLibrary
     }
 }
 
-public delegate KeyEventResult FocusOnKeyCallback(FocusNode node, global::Doroti.Generated.Framework.Services.RawKeyEvent @event);
+public delegate KeyEventResult FocusOnKeyCallback(FocusNode node, global::Doroti.Framework.Services.RawKeyEvent @event);
 
-public delegate KeyEventResult FocusOnKeyEventCallback(FocusNode node, global::Doroti.Generated.Framework.Services.KeyEvent @event);
+public delegate KeyEventResult FocusOnKeyEventCallback(FocusNode node, global::Doroti.Framework.Services.KeyEvent @event);
 
-public delegate KeyEventResult OnKeyEventCallback(global::Doroti.Generated.Framework.Services.KeyEvent @event);
+public delegate KeyEventResult OnKeyEventCallback(global::Doroti.Framework.Services.KeyEvent @event);
 
 internal class _Autofocus__focus_manager
 {
@@ -168,8 +168,8 @@ public class FocusNode : ChangeNotifier
     internal virtual bool _descendantsAreFocusable { get; set; } = default!;
     internal virtual bool _descendantsAreTraversable { get; set; } = default!;
     internal virtual BuildContext? _context { get; set; } = default;
-    public virtual global::System.Func<FocusNode, global::Doroti.Generated.Framework.Services.RawKeyEvent, KeyEventResult>? onKey { get; set; } = default;
-    public virtual global::System.Func<FocusNode, global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult>? onKeyEvent { get; set; } = default;
+    public virtual global::System.Func<FocusNode, global::Doroti.Framework.Services.RawKeyEvent, KeyEventResult>? onKey { get; set; } = default;
+    public virtual global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>? onKeyEvent { get; set; } = default;
     internal virtual FocusManager? _manager { get; set; } = default;
     internal virtual List<FocusNode>? _ancestors { get; set; } = default;
     internal virtual List<FocusNode>? _descendants { get; set; } = default;
@@ -181,7 +181,7 @@ public class FocusNode : ChangeNotifier
     internal virtual FocusScopeNode? _enclosingScope { get; set; } = default;
     internal virtual bool _requestFocusWhenReparented { get; set; } = false;
 
-    public FocusNode(string? debugLabel = null, global::System.Func<FocusNode, global::Doroti.Generated.Framework.Services.RawKeyEvent, KeyEventResult>? onKey = null, global::System.Func<FocusNode, global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult>? onKeyEvent = null, bool skipTraversal = false, bool canRequestFocus = true, bool descendantsAreFocusable = true, bool descendantsAreTraversable = true)
+    public FocusNode(string? debugLabel = null, global::System.Func<FocusNode, global::Doroti.Framework.Services.RawKeyEvent, KeyEventResult>? onKey = null, global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>? onKeyEvent = null, bool skipTraversal = false, bool canRequestFocus = true, bool descendantsAreFocusable = true, bool descendantsAreTraversable = true)
     {
         this.onKey = onKey;
         this.onKeyEvent = onKeyEvent;
@@ -385,8 +385,8 @@ public class FocusNode : ChangeNotifier
         get
         {
             DartRuntimePrimitives.Assert(() => (this.context is not null), () => (object?)"Tried to get the offset of a focus node that didn't have its context set yet.\n" + "The context needs to be set before trying to evaluate traversal policies. " + "Setting the context is typically done with the attach method.");
-            global::Doroti.Generated.Framework.Rendering.RenderObject @object__35106 = this.context!.findRenderObject()!;
-            return MatrixUtils.transformPoint(((Matrix4)((dynamic)@object__35106).getTransformTo(((global::Doroti.Generated.Framework.Rendering.RenderObject)(object)null))), ((global::Doroti.Generated.Framework.Rendering.RenderObject)@object__35106).semanticBounds.topLeft);
+            global::Doroti.Framework.Rendering.RenderObject @object__35106 = this.context!.findRenderObject()!;
+            return MatrixUtils.transformPoint(((Matrix4)((dynamic)@object__35106).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null))), ((global::Doroti.Framework.Rendering.RenderObject)@object__35106).semanticBounds.topLeft);
             return default!;
         }
     }
@@ -395,9 +395,9 @@ public class FocusNode : ChangeNotifier
         get
         {
             DartRuntimePrimitives.Assert(() => (this.context is not null), () => (object?)"Tried to get the bounds of a focus node that didn't have its context set yet.\n" + "The context needs to be set before trying to evaluate traversal policies. " + "Setting the context is typically done with the attach method.");
-            global::Doroti.Generated.Framework.Rendering.RenderObject @object__35757 = this.context!.findRenderObject()!;
-            global::Doroti.Ui.Offset topLeft__35813 = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(((Matrix4)((dynamic)@object__35757).getTransformTo(((global::Doroti.Generated.Framework.Rendering.RenderObject)(object)null))), ((global::Doroti.Generated.Framework.Rendering.RenderObject)@object__35757).semanticBounds.topLeft));
-            global::Doroti.Ui.Offset bottomRight__35947 = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(((Matrix4)((dynamic)@object__35757).getTransformTo(((global::Doroti.Generated.Framework.Rendering.RenderObject)(object)null))), ((global::Doroti.Generated.Framework.Rendering.RenderObject)@object__35757).semanticBounds.bottomRight));
+            global::Doroti.Framework.Rendering.RenderObject @object__35757 = this.context!.findRenderObject()!;
+            global::Doroti.Ui.Offset topLeft__35813 = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(((Matrix4)((dynamic)@object__35757).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null))), ((global::Doroti.Framework.Rendering.RenderObject)@object__35757).semanticBounds.topLeft));
+            global::Doroti.Ui.Offset bottomRight__35947 = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(((Matrix4)((dynamic)@object__35757).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null))), ((global::Doroti.Framework.Rendering.RenderObject)@object__35757).semanticBounds.bottomRight));
             return global::Doroti.Ui.Rect.fromLTRB(topLeft__35813.dx, topLeft__35813.dy, bottomRight__35947.dx, bottomRight__35947.dy);
             return default!;
         }
@@ -546,11 +546,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         }
     }
 
-    public virtual FocusAttachment attach(BuildContext? context, global::System.Func<FocusNode, global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult>? onKeyEvent = null, global::System.Func<FocusNode, global::Doroti.Generated.Framework.Services.RawKeyEvent, KeyEventResult>? onKey = null)
+    public virtual FocusAttachment attach(BuildContext? context, global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>? onKeyEvent = null, global::System.Func<FocusNode, global::Doroti.Framework.Services.RawKeyEvent, KeyEventResult>? onKey = null)
     {
         _context = context;
-        this.onKey = (global::System.Func<FocusNode, global::Doroti.Generated.Framework.Services.RawKeyEvent, KeyEventResult>)((onKey ?? (global::System.Func<FocusNode, global::Doroti.Generated.Framework.Services.RawKeyEvent, KeyEventResult>)this.onKey));
-        this.onKeyEvent = (global::System.Func<FocusNode, global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult>)((onKeyEvent ?? (global::System.Func<FocusNode, global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult>)this.onKeyEvent));
+        this.onKey = (global::System.Func<FocusNode, global::Doroti.Framework.Services.RawKeyEvent, KeyEventResult>)((onKey ?? (global::System.Func<FocusNode, global::Doroti.Framework.Services.RawKeyEvent, KeyEventResult>)this.onKey));
+        this.onKeyEvent = (global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>)((onKeyEvent ?? (global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>)this.onKeyEvent));
         _attachment = new FocusAttachment(this);
         return this._attachment!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -632,21 +632,21 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     public virtual bool nextFocus() => FocusTraversalGroup.of(this.context!).next(this);
     public virtual bool previousFocus() => FocusTraversalGroup.of(this.context!).previous(this);
     public virtual bool focusInDirection(TraversalDirection direction) => FocusTraversalGroup.of(this.context!).inDirection(this, direction);
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<BuildContext>("context", this.context, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("descendantsAreFocusable", value: this.descendantsAreFocusable, ifFalse: "DESCENDANTS UNFOCUSABLE", defaultValue: true));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("descendantsAreTraversable", value: this.descendantsAreTraversable, ifFalse: "DESCENDANTS UNTRAVERSABLE", defaultValue: true));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("canRequestFocus", value: this.canRequestFocus, ifFalse: "NOT FOCUSABLE", defaultValue: true));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("hasFocus", value: (this.hasFocus && !this.hasPrimaryFocus), ifTrue: "IN FOCUS PATH", defaultValue: false));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("hasPrimaryFocus", value: this.hasPrimaryFocus, ifTrue: "PRIMARY FOCUS", defaultValue: false));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BuildContext>("context", this.context, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("descendantsAreFocusable", value: this.descendantsAreFocusable, ifFalse: "DESCENDANTS UNFOCUSABLE", defaultValue: true));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("descendantsAreTraversable", value: this.descendantsAreTraversable, ifFalse: "DESCENDANTS UNTRAVERSABLE", defaultValue: true));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("canRequestFocus", value: this.canRequestFocus, ifFalse: "NOT FOCUSABLE", defaultValue: true));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("hasFocus", value: (this.hasFocus && !this.hasPrimaryFocus), ifTrue: "IN FOCUS PATH", defaultValue: false));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("hasPrimaryFocus", value: this.hasPrimaryFocus, ifTrue: "PRIMARY FOCUS", defaultValue: false));
     }
 
-    public virtual List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
+    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
         var count__52560 = 1L;
-        return this._children.map<FocusNode, global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>(((child) => {
-return ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)(object?)((Diagnosticable)child).toDiagnosticsNode(name: $"Child {count__52560++}"));
+        return this._children.map<FocusNode, global::Doroti.Framework.Foundation.DiagnosticsNode>(((child) => {
+return ((global::Doroti.Framework.Foundation.DiagnosticsNode)(object?)((Diagnosticable)child).toDiagnosticsNode(name: $"Child {count__52560++}"));
 throw new InvalidOperationException("Dart closure completed without a value.");
 })).ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -656,7 +656,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         bool hasDebugLabel__52773 = ((this.debugLabel is not null) && (this.debugLabel!.Length != 0));
         var extraData__52845 = $"{(hasDebugLabel__52773 ? this.debugLabel : "")}" + $"{((this.hasFocus && hasDebugLabel__52773) ? " " : "")}" + $"{((this.hasFocus && !this.hasPrimaryFocus) ? "[IN FOCUS PATH]" : "")}" + $"{(this.hasPrimaryFocus ? "[PRIMARY FOCUS]" : "")}";
-        return $"{(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}{((extraData__52845.Length != 0) ? $"({extraData__52845})" : "")}";
+        return $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}{((extraData__52845.Length != 0) ? $"({extraData__52845})" : "")}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -668,7 +668,7 @@ public class FocusScopeNode : FocusNode
     public virtual TraversalEdgeBehavior directionalTraversalEdgeBehavior { get; set; } = default!;
     internal virtual List<FocusNode> _focusedChildren { get; private set; } = new List<FocusNode>();
 
-    public FocusScopeNode(string? debugLabel = null, global::System.Func<FocusNode, global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult>? onKeyEvent = null, global::System.Func<FocusNode, global::Doroti.Generated.Framework.Services.RawKeyEvent, KeyEventResult>? onKey = null, bool skipTraversal = false, bool canRequestFocus = true, TraversalEdgeBehavior traversalEdgeBehavior = TraversalEdgeBehavior.closedLoop, TraversalEdgeBehavior directionalTraversalEdgeBehavior = TraversalEdgeBehavior.stop) : base(debugLabel: debugLabel, onKeyEvent: onKeyEvent, onKey: onKey, skipTraversal: skipTraversal, canRequestFocus: canRequestFocus, descendantsAreFocusable: true)
+    public FocusScopeNode(string? debugLabel = null, global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>? onKeyEvent = null, global::System.Func<FocusNode, global::Doroti.Framework.Services.RawKeyEvent, KeyEventResult>? onKey = null, bool skipTraversal = false, bool canRequestFocus = true, TraversalEdgeBehavior traversalEdgeBehavior = TraversalEdgeBehavior.closedLoop, TraversalEdgeBehavior directionalTraversalEdgeBehavior = TraversalEdgeBehavior.stop) : base(debugLabel: debugLabel, onKeyEvent: onKeyEvent, onKey: onKey, skipTraversal: skipTraversal, canRequestFocus: canRequestFocus, descendantsAreFocusable: true)
     {
         this.traversalEdgeBehavior = traversalEdgeBehavior;
         this.directionalTraversalEdgeBehavior = directionalTraversalEdgeBehavior;
@@ -765,7 +765,7 @@ public class FocusScopeNode : FocusNode
         focusedChild__60217._doRequestFocus(findFirstFocus: true);
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         if (!System.Linq.Enumerable.Any(this._focusedChildren))
@@ -776,8 +776,8 @@ public class FocusScopeNode : FocusNode
 return ((string)(object?)((Diagnosticable)child).toStringShort());
 throw new InvalidOperationException("Dart closure completed without a value.");
 })).ToList().ToList();
-        properties.add(new global::Doroti.Generated.Framework.Foundation.IterableProperty<string>("focusedChildren", childList__60874.Cast<string>(), defaultValue: System.Linq.Enumerable.Empty<string>()));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<TraversalEdgeBehavior>("traversalEdgeBehavior", this.traversalEdgeBehavior, defaultValue: TraversalEdgeBehavior.closedLoop));
+        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<string>("focusedChildren", childList__60874.Cast<string>(), defaultValue: System.Linq.Enumerable.Empty<string>()));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TraversalEdgeBehavior>("traversalEdgeBehavior", this.traversalEdgeBehavior, defaultValue: TraversalEdgeBehavior.closedLoop));
     }
 
 }
@@ -825,7 +825,7 @@ public class FocusManager : ChangeNotifier
         this.rootScope._manager = this;
     }
 
-    internal virtual bool _respondToLifecycleChange => DartRuntimePrimitives.ConvertValue<bool>((global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb || (global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform switch { global::Doroti.Generated.Framework.Foundation.TargetPlatform.android => false, global::Doroti.Generated.Framework.Foundation.TargetPlatform.iOS => false, global::Doroti.Generated.Framework.Foundation.TargetPlatform.fuchsia => true, global::Doroti.Generated.Framework.Foundation.TargetPlatform.linux => true, global::Doroti.Generated.Framework.Foundation.TargetPlatform.windows => true, global::Doroti.Generated.Framework.Foundation.TargetPlatform.macOS => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
+    internal virtual bool _respondToLifecycleChange => DartRuntimePrimitives.ConvertValue<bool>((global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb || (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform switch { global::Doroti.Framework.Foundation.TargetPlatform.android => false, global::Doroti.Framework.Foundation.TargetPlatform.iOS => false, global::Doroti.Framework.Foundation.TargetPlatform.fuchsia => true, global::Doroti.Framework.Foundation.TargetPlatform.linux => true, global::Doroti.Framework.Foundation.TargetPlatform.windows => true, global::Doroti.Framework.Foundation.TargetPlatform.macOS => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
     public virtual void registerGlobalHandlers() => this._highlightManager.registerGlobalHandlers();
     public virtual void dispose()
     {
@@ -855,24 +855,24 @@ public class FocusManager : ChangeNotifier
     public virtual FocusHighlightMode highlightMode => ((_HighlightModeManager__focus_manager)this._highlightManager).highlightMode;
     public virtual void addHighlightModeListener(global::System.Action<FocusHighlightMode> listener) => this._highlightManager.addListener((global::System.Action<FocusHighlightMode>)listener);
     public virtual void removeHighlightModeListener(global::System.Action<FocusHighlightMode> listener) => this._highlightManager.removeListener((global::System.Action<FocusHighlightMode>)listener);
-    public virtual void addEarlyKeyEventHandler(global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult> handler)
+    public virtual void addEarlyKeyEventHandler(global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult> handler)
     {
-        this._highlightManager.addEarlyKeyEventHandler((global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult>)handler);
+        this._highlightManager.addEarlyKeyEventHandler((global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult>)handler);
     }
 
-    public virtual void removeEarlyKeyEventHandler(global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult> handler)
+    public virtual void removeEarlyKeyEventHandler(global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult> handler)
     {
-        this._highlightManager.removeEarlyKeyEventHandler((global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult>)handler);
+        this._highlightManager.removeEarlyKeyEventHandler((global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult>)handler);
     }
 
-    public virtual void addLateKeyEventHandler(global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult> handler)
+    public virtual void addLateKeyEventHandler(global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult> handler)
     {
-        this._highlightManager.addLateKeyEventHandler((global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult>)handler);
+        this._highlightManager.addLateKeyEventHandler((global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult>)handler);
     }
 
-    public virtual void removeLateKeyEventHandler(global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult> handler)
+    public virtual void removeLateKeyEventHandler(global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult> handler)
     {
-        this._highlightManager.removeLateKeyEventHandler((global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult>)handler);
+        this._highlightManager.removeLateKeyEventHandler((global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult>)handler);
     }
 
     public virtual FocusNode? primaryFocus => this._primaryFocus;
@@ -964,7 +964,7 @@ public class FocusManager : ChangeNotifier
     {
         lock (_focusUpdateGate)
         {
-        DartRuntimePrimitives.Assert(() => (!object.Equals(global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Generated.Framework.Scheduler.SchedulerPhase.persistentCallbacks)), () => (object?)"applyFocusChangesIfNeeded() should not be called during the build phase.");
+        DartRuntimePrimitives.Assert(() => (!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)), () => (object?)"applyFocusChangesIfNeeded() should not be called during the build phase.");
         _haveScheduledUpdate = false;
         FocusNode? previousFocus__79522 = this._primaryFocus;
         foreach (_Autofocus__focus_manager autofocus__79580 in this._pendingAutofocuses)
@@ -1030,21 +1030,21 @@ public class FocusManager : ChangeNotifier
         }
     }
 
-    public virtual List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
+    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
-        return new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { ((Diagnosticable)this.rootScope).toDiagnosticsNode(name: "rootScope") };
+        return new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { ((Diagnosticable)this.rootScope).toDiagnosticsNode(name: "rootScope") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("haveScheduledUpdate", value: this._haveScheduledUpdate, ifTrue: "UPDATE SCHEDULED"));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<FocusNode>("primaryFocus", this.primaryFocus, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<FocusNode>("nextFocus", this._markedForFocus, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("haveScheduledUpdate", value: this._haveScheduledUpdate, ifTrue: "UPDATE SCHEDULED"));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FocusNode>("primaryFocus", this.primaryFocus, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FocusNode>("nextFocus", this._markedForFocus, defaultValue: null));
         var element__83212 = ((Element?)(object?)this.primaryFocus?.context)!;
         if ((element__83212 is not null))
         {
-            properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<string>("primaryFocusCreator", element__83212.debugGetCreatorChain(20L)));
+            properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<string>("primaryFocusCreator", element__83212.debugGetCreatorChain(20L)));
         }
     }
 
@@ -1055,9 +1055,9 @@ internal class _HighlightModeManager__focus_manager
     internal virtual bool? _lastInteractionRequiresTraditionalHighlights { get; set; } = default;
     internal virtual FocusHighlightMode? _highlightMode { get; set; } = default;
     internal virtual FocusHighlightStrategy _strategy { get; set; } = FocusHighlightStrategy.automatic;
-    internal virtual global::Doroti.Generated.Framework.Foundation.HashedObserverList<global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult>> _earlyKeyEventHandlers { get; private set; } = new global::Doroti.Generated.Framework.Foundation.HashedObserverList<global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult>>();
-    internal virtual global::Doroti.Generated.Framework.Foundation.HashedObserverList<global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult>> _lateKeyEventHandlers { get; private set; } = new global::Doroti.Generated.Framework.Foundation.HashedObserverList<global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult>>();
-    internal virtual global::Doroti.Generated.Framework.Foundation.HashedObserverList<global::System.Action<FocusHighlightMode>> _listeners { get; set; } = new global::Doroti.Generated.Framework.Foundation.HashedObserverList<global::System.Action<FocusHighlightMode>>();
+    internal virtual global::Doroti.Framework.Foundation.HashedObserverList<global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult>> _earlyKeyEventHandlers { get; private set; } = new global::Doroti.Framework.Foundation.HashedObserverList<global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult>>();
+    internal virtual global::Doroti.Framework.Foundation.HashedObserverList<global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult>> _lateKeyEventHandlers { get; private set; } = new global::Doroti.Framework.Foundation.HashedObserverList<global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult>>();
+    internal virtual global::Doroti.Framework.Foundation.HashedObserverList<global::System.Action<FocusHighlightMode>> _listeners { get; set; } = new global::Doroti.Framework.Foundation.HashedObserverList<global::System.Action<FocusHighlightMode>>();
     internal const long _kAndroidSoftKeyboardFlag = 2L;
     internal static long _kAndroidVirtualKeyboardDeviceId = -1L;
 
@@ -1080,30 +1080,30 @@ internal class _HighlightModeManager__focus_manager
             updateMode();
         }
     }
-    public virtual void addEarlyKeyEventHandler(global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult> callback) => this._earlyKeyEventHandlers.add((global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult>)callback);
-    public virtual void removeEarlyKeyEventHandler(global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult> callback) => this._earlyKeyEventHandlers.remove((global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult>)callback);
-    public virtual void addLateKeyEventHandler(global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult> callback) => this._lateKeyEventHandlers.add((global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult>)callback);
-    public virtual void removeLateKeyEventHandler(global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult> callback) => this._lateKeyEventHandlers.remove((global::System.Func<global::Doroti.Generated.Framework.Services.KeyEvent, KeyEventResult>)callback);
+    public virtual void addEarlyKeyEventHandler(global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult> callback) => this._earlyKeyEventHandlers.add((global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult>)callback);
+    public virtual void removeEarlyKeyEventHandler(global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult> callback) => this._earlyKeyEventHandlers.remove((global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult>)callback);
+    public virtual void addLateKeyEventHandler(global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult> callback) => this._lateKeyEventHandlers.add((global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult>)callback);
+    public virtual void removeLateKeyEventHandler(global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult> callback) => this._lateKeyEventHandlers.remove((global::System.Func<global::Doroti.Framework.Services.KeyEvent, KeyEventResult>)callback);
     public virtual void addListener(global::System.Action<FocusHighlightMode> listener) => this._listeners.add((global::System.Action<FocusHighlightMode>)listener);
     public virtual void removeListener(global::System.Action<FocusHighlightMode> listener) => this._listeners.remove((global::System.Action<FocusHighlightMode>)listener);
     public virtual void registerGlobalHandlers()
     {
-        DartRuntimePrimitives.Assert(() => (global::Doroti.Generated.Framework.Services.ServicesBinding.instance.keyEventManager.keyMessageHandler is null));
-        global::Doroti.Generated.Framework.Services.ServicesBinding.instance.keyEventManager.keyMessageHandler = (global::System.Func<global::Doroti.Generated.Framework.Services.KeyMessage, bool>)this.handleKeyMessage;
-        global::Doroti.Generated.Framework.Gestures.GestureBinding.instance.pointerRouter.addGlobalRoute((global::System.Action<global::Doroti.Generated.Framework.Gestures.PointerEvent>)this.handlePointerEvent);
-        global::Doroti.Generated.Framework.Semantics.SemanticsBinding.instance.addSemanticsActionListener((global::System.Action<SemanticsActionEvent>)this.handleSemanticsAction);
+        DartRuntimePrimitives.Assert(() => (global::Doroti.Framework.Services.ServicesBinding.instance.keyEventManager.keyMessageHandler is null));
+        global::Doroti.Framework.Services.ServicesBinding.instance.keyEventManager.keyMessageHandler = (global::System.Func<global::Doroti.Framework.Services.KeyMessage, bool>)this.handleKeyMessage;
+        global::Doroti.Framework.Gestures.GestureBinding.instance.pointerRouter.addGlobalRoute((global::System.Action<global::Doroti.Framework.Gestures.PointerEvent>)this.handlePointerEvent);
+        global::Doroti.Framework.Semantics.SemanticsBinding.instance.addSemanticsActionListener((global::System.Action<SemanticsActionEvent>)this.handleSemanticsAction);
     }
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
-        if ((object.Equals((global::System.Func<global::Doroti.Generated.Framework.Services.KeyMessage, bool>?)global::Doroti.Generated.Framework.Services.ServicesBinding.instance.keyEventManager.keyMessageHandler, (global::System.Func<global::Doroti.Generated.Framework.Services.KeyMessage, bool>)this.handleKeyMessage)))
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        if ((object.Equals((global::System.Func<global::Doroti.Framework.Services.KeyMessage, bool>?)global::Doroti.Framework.Services.ServicesBinding.instance.keyEventManager.keyMessageHandler, (global::System.Func<global::Doroti.Framework.Services.KeyMessage, bool>)this.handleKeyMessage)))
         {
-            global::Doroti.Generated.Framework.Gestures.GestureBinding.instance.pointerRouter.removeGlobalRoute((global::System.Action<global::Doroti.Generated.Framework.Gestures.PointerEvent>)this.handlePointerEvent);
-            global::Doroti.Generated.Framework.Services.ServicesBinding.instance.keyEventManager.keyMessageHandler = null;
-            global::Doroti.Generated.Framework.Semantics.SemanticsBinding.instance.removeSemanticsActionListener((global::System.Action<SemanticsActionEvent>)this.handleSemanticsAction);
+            global::Doroti.Framework.Gestures.GestureBinding.instance.pointerRouter.removeGlobalRoute((global::System.Action<global::Doroti.Framework.Gestures.PointerEvent>)this.handlePointerEvent);
+            global::Doroti.Framework.Services.ServicesBinding.instance.keyEventManager.keyMessageHandler = null;
+            global::Doroti.Framework.Semantics.SemanticsBinding.instance.removeSemanticsActionListener((global::System.Action<SemanticsActionEvent>)this.handleSemanticsAction);
         }
-        _listeners = new global::Doroti.Generated.Framework.Foundation.HashedObserverList<global::System.Action<FocusHighlightMode>>();
+        _listeners = new global::Doroti.Framework.Foundation.HashedObserverList<global::System.Action<FocusHighlightMode>>();
     }
 
     public virtual void notifyListeners()
@@ -1128,18 +1128,18 @@ internal class _HighlightModeManager__focus_manager
                 InformationCollector? collector__87558 = default!;
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        collector__87558 = (() => new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<_HighlightModeManager__focus_manager>($"The {this.GetType()} sending notification was", this, style: global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) });
+                        collector__87558 = (() => new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.DiagnosticsProperty<_HighlightModeManager__focus_manager>($"The {this.GetType()} sending notification was", this, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) });
                         return true;
                         throw new InvalidOperationException("Dart closure completed without a value.");
                     });
-                FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails(exception: exception__87508, stack: stack__87519, library: "widgets library", context: new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"while dispatching notifications for {this.GetType()}"), informationCollector: (InformationCollector?)collector__87558));
+                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception__87508, stack: stack__87519, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription($"while dispatching notifications for {this.GetType()}"), informationCollector: (InformationCollector?)collector__87558));
             }
         }
     }
 
-    public virtual void handlePointerEvent(global::Doroti.Generated.Framework.Gestures.PointerEvent @event)
+    public virtual void handlePointerEvent(global::Doroti.Framework.Gestures.PointerEvent @event)
     {
-        switch (((global::Doroti.Generated.Framework.Gestures.PointerEvent)@event).kind)
+        switch (((global::Doroti.Framework.Gestures.PointerEvent)@event).kind)
         {
             case PointerDeviceKind.touch:
             case PointerDeviceKind.stylus:
@@ -1159,23 +1159,23 @@ internal class _HighlightModeManager__focus_manager
         }
     }
 
-    internal virtual bool _isKeyMessageFromAndroidIME(global::Doroti.Generated.Framework.Services.KeyMessage message)
+    internal virtual bool _isKeyMessageFromAndroidIME(global::Doroti.Framework.Services.KeyMessage message)
     {
-        global::Doroti.Generated.Framework.Services.RawKeyEvent? rawEvent__88985 = ((global::Doroti.Generated.Framework.Services.KeyMessage)message).rawEvent;
+        global::Doroti.Framework.Services.RawKeyEvent? rawEvent__88985 = ((global::Doroti.Framework.Services.KeyMessage)message).rawEvent;
         if ((rawEvent__88985 is null))
         {
             return false;
         }
-        global::Doroti.Generated.Framework.Services.RawKeyEventData data__89094 = ((global::Doroti.Generated.Framework.Services.RawKeyEvent)rawEvent__88985).data;
-        if ((data__89094 is not global::Doroti.Generated.Framework.Services.RawKeyEventDataAndroid))
+        global::Doroti.Framework.Services.RawKeyEventData data__89094 = ((global::Doroti.Framework.Services.RawKeyEvent)rawEvent__88985).data;
+        if ((data__89094 is not global::Doroti.Framework.Services.RawKeyEventDataAndroid))
         {
             return false;
         }
-        return ((((((global::Doroti.Generated.Framework.Services.RawKeyEventDataAndroid)((global::Doroti.Generated.Framework.Services.RawKeyEventDataAndroid)data__89094)).flags & _kAndroidSoftKeyboardFlag)) != 0L) || (((global::Doroti.Generated.Framework.Services.RawKeyEventDataAndroid)((global::Doroti.Generated.Framework.Services.RawKeyEventDataAndroid)data__89094)).deviceId == _kAndroidVirtualKeyboardDeviceId));
+        return ((((((global::Doroti.Framework.Services.RawKeyEventDataAndroid)((global::Doroti.Framework.Services.RawKeyEventDataAndroid)data__89094)).flags & _kAndroidSoftKeyboardFlag)) != 0L) || (((global::Doroti.Framework.Services.RawKeyEventDataAndroid)((global::Doroti.Framework.Services.RawKeyEventDataAndroid)data__89094)).deviceId == _kAndroidVirtualKeyboardDeviceId));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool handleKeyMessage(global::Doroti.Generated.Framework.Services.KeyMessage message)
+    public virtual bool handleKeyMessage(global::Doroti.Framework.Services.KeyMessage message)
     {
         if ((this._lastInteractionRequiresTraditionalHighlights != false))
         {
@@ -1281,7 +1281,7 @@ internal class _HighlightModeManager__focus_manager
 
     public virtual void handleSemanticsAction(SemanticsActionEvent semanticsActionEvent)
     {
-        if (((global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb && (object.Equals(semanticsActionEvent.type, SemanticsAction.focus))) && (this._lastInteractionRequiresTraditionalHighlights != true)))
+        if (((global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb && (object.Equals(semanticsActionEvent.type, SemanticsAction.focus))) && (this._lastInteractionRequiresTraditionalHighlights != true)))
         {
             _lastInteractionRequiresTraditionalHighlights = true;
             updateMode();
@@ -1332,21 +1332,21 @@ internal class _HighlightModeManager__focus_manager
     {
         get
         {
-            switch (global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+            switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
             {
-                case global::Doroti.Generated.Framework.Foundation.TargetPlatform.android:
-                case global::Doroti.Generated.Framework.Foundation.TargetPlatform.fuchsia:
-                case global::Doroti.Generated.Framework.Foundation.TargetPlatform.iOS:
+                case global::Doroti.Framework.Foundation.TargetPlatform.android:
+                case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
+                case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
                     {
-                        if (((global::Doroti.Generated.Framework.Rendering.MouseTracker)((dynamic)WidgetsBinding.instance).mouseTracker).mouseIsConnected)
+                        if (((global::Doroti.Framework.Rendering.MouseTracker)((dynamic)WidgetsBinding.instance).mouseTracker).mouseIsConnected)
                         {
                             return FocusHighlightMode.traditional;
                         }
                         return FocusHighlightMode.touch;
                     }
-                case global::Doroti.Generated.Framework.Foundation.TargetPlatform.linux:
-                case global::Doroti.Generated.Framework.Foundation.TargetPlatform.macOS:
-                case global::Doroti.Generated.Framework.Foundation.TargetPlatform.windows:
+                case global::Doroti.Framework.Foundation.TargetPlatform.linux:
+                case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+                case global::Doroti.Framework.Foundation.TargetPlatform.windows:
                     {
                         return FocusHighlightMode.traditional;
                     }
@@ -1385,7 +1385,7 @@ public static partial class Focus_managerLibrary
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint(Focus_managerLibrary.debugDescribeFocusTree());
+                global::Doroti.Framework.Foundation.PrintLibrary.debugPrint(Focus_managerLibrary.debugDescribeFocusTree());
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });

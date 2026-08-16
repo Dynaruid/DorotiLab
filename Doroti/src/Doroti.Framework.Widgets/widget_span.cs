@@ -12,26 +12,26 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
-public class WidgetSpan : global::Doroti.Generated.Framework.Painting.PlaceholderSpan
+public class WidgetSpan : global::Doroti.Framework.Painting.PlaceholderSpan
 {
     public virtual Widget child { get; private set; } = default!;
 
-    public WidgetSpan(Widget child, PlaceholderAlignment alignment = PlaceholderAlignment.bottom, TextBaseline? baseline = null, global::Doroti.Generated.Framework.Painting.TextStyle? style = null) : base(alignment: alignment, baseline: DartRuntimePrimitives.RequireValue(baseline), style: style)
+    public WidgetSpan(Widget child, PlaceholderAlignment alignment = PlaceholderAlignment.bottom, TextBaseline? baseline = null, global::Doroti.Framework.Painting.TextStyle? style = null) : base(alignment: alignment, baseline: DartRuntimePrimitives.RequireValue(baseline), style: style)
     {
         this.child = child;
         System.Diagnostics.Debug.Assert(((baseline is not null) || !(((DartRuntimePrimitives.Identical(alignment, PlaceholderAlignment.aboveBaseline) || DartRuntimePrimitives.Identical(alignment, PlaceholderAlignment.belowBaseline)) || DartRuntimePrimitives.Identical(alignment, PlaceholderAlignment.baseline)))));
     }
 
-    public static List<Widget> extractFromInlineSpan(global::Doroti.Generated.Framework.Painting.InlineSpan span, global::Doroti.Generated.Framework.Painting.TextScaler textScaler)
+    public static List<Widget> extractFromInlineSpan(global::Doroti.Framework.Painting.InlineSpan span, global::Doroti.Framework.Painting.TextScaler textScaler)
     {
         var widgets__3468 = new List<Widget>();
-        var fontSizeStack__3617 = new List<double> { global::Doroti.Generated.Framework.Painting.Text_painterLibrary.kDefaultFontSize };
+        var fontSizeStack__3617 = new List<double> { global::Doroti.Framework.Painting.Text_painterLibrary.kDefaultFontSize };
         var index__3669 = 0L;
-        bool visitSubtree(global::Doroti.Generated.Framework.Painting.InlineSpan span)
+        bool visitSubtree(global::Doroti.Framework.Painting.InlineSpan span)
         {
-            double? fontSizeToPush__3823 = (((global::Doroti.Generated.Framework.Painting.InlineSpan)span).style?.fontSize switch { double size__3893 when ((size__3893 != fontSizeStack__3617.Last())) => size__3893, _ => DartRuntimePrimitives.ConvertValue<double>(null) });
+            double? fontSizeToPush__3823 = (((global::Doroti.Framework.Painting.InlineSpan)span).style?.fontSize switch { double size__3893 when ((size__3893 != fontSizeStack__3617.Last())) => size__3893, _ => DartRuntimePrimitives.ConvertValue<double>(null) });
             if ((fontSizeToPush__3823 is not null))
             {
                 double fontSizeToPush__3823__value3977 = DartRuntimePrimitives.RequireValue(fontSizeToPush__3823);
@@ -42,10 +42,10 @@ public class WidgetSpan : global::Doroti.Generated.Framework.Painting.Placeholde
                 WidgetSpan span__as4064 = (WidgetSpan)span;
                 double fontSize__4107 = fontSizeStack__3617.Last();
                 double textScaleFactor__4159 = ((fontSize__4107 == 0L) ? 0 : (textScaler.scale(fontSize__4107) / fontSize__4107));
-                widgets__3468.Add(new _WidgetSpanParentData__widget_span(span: ((WidgetSpan)span__as4064), child: new Semantics(tagForChildren: new global::Doroti.Generated.Framework.Rendering.PlaceholderSpanIndexSemanticsTag(index__3669++), child: new _AutoScaleInlineWidget__widget_span(span: ((WidgetSpan)span__as4064), textScaleFactor: textScaleFactor__4159, child: ((WidgetSpan)((WidgetSpan)span__as4064)).child))));
+                widgets__3468.Add(new _WidgetSpanParentData__widget_span(span: ((WidgetSpan)span__as4064), child: new Semantics(tagForChildren: new global::Doroti.Framework.Rendering.PlaceholderSpanIndexSemanticsTag(index__3669++), child: new _AutoScaleInlineWidget__widget_span(span: ((WidgetSpan)span__as4064), textScaleFactor: textScaleFactor__4159, child: ((WidgetSpan)((WidgetSpan)span__as4064)).child))));
             }
-            DartRuntimePrimitives.Assert(() => ((span is WidgetSpan) || (span is not global::Doroti.Generated.Framework.Painting.PlaceholderSpan)), () => (object?)$"{(((global::Doroti.Generated.Framework.Painting.PlaceholderSpan)span))} is a PlaceholderSpan but not a WidgetSpan subclass. This is currently not supported.");
-            span.visitDirectChildren((global::System.Func<global::Doroti.Generated.Framework.Painting.InlineSpan, bool>)visitSubtree);
+            DartRuntimePrimitives.Assert(() => ((span is WidgetSpan) || (span is not global::Doroti.Framework.Painting.PlaceholderSpan)), () => (object?)$"{(((global::Doroti.Framework.Painting.PlaceholderSpan)span))} is a PlaceholderSpan but not a WidgetSpan subclass. This is currently not supported.");
+            span.visitDirectChildren((global::System.Func<global::Doroti.Framework.Painting.InlineSpan, bool>)visitSubtree);
             if ((fontSizeToPush__3823 is not null))
             {
                 double fontSizeToPush__3823__value4876 = DartRuntimePrimitives.RequireValue(fontSizeToPush__3823);
@@ -61,7 +61,7 @@ public class WidgetSpan : global::Doroti.Generated.Framework.Painting.Placeholde
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void build(ParagraphBuilder builder, global::Doroti.Generated.Framework.Painting.TextScaler textScaler = default!, List<global::Doroti.Generated.Framework.Painting.PlaceholderDimensions>? dimensions = null)
+    public override void build(ParagraphBuilder builder, global::Doroti.Framework.Painting.TextScaler textScaler = default!, List<global::Doroti.Framework.Painting.PlaceholderDimensions>? dimensions = null)
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
         DartRuntimePrimitives.Assert(() => (dimensions is not null));
@@ -71,64 +71,64 @@ public class WidgetSpan : global::Doroti.Generated.Framework.Painting.Placeholde
             builder.pushStyle(this.style!.getTextStyle(textScaler: textScaler));
         }
         DartRuntimePrimitives.Assert(() => (builder.placeholderCount < checked((long)(dimensions!.Count))));
-        global::Doroti.Generated.Framework.Painting.PlaceholderDimensions currentDimensions__6056 = dimensions![(int)(builder.placeholderCount)];
-        builder.addPlaceholder(((global::Doroti.Generated.Framework.Painting.PlaceholderDimensions)currentDimensions__6056).size.width, ((global::Doroti.Generated.Framework.Painting.PlaceholderDimensions)currentDimensions__6056).size.height, this.alignment, baseline: ((global::Doroti.Generated.Framework.Painting.PlaceholderDimensions)currentDimensions__6056).baseline, baselineOffset: ((global::Doroti.Generated.Framework.Painting.PlaceholderDimensions)currentDimensions__6056).baselineOffset);
+        global::Doroti.Framework.Painting.PlaceholderDimensions currentDimensions__6056 = dimensions![(int)(builder.placeholderCount)];
+        builder.addPlaceholder(((global::Doroti.Framework.Painting.PlaceholderDimensions)currentDimensions__6056).size.width, ((global::Doroti.Framework.Painting.PlaceholderDimensions)currentDimensions__6056).size.height, this.alignment, baseline: ((global::Doroti.Framework.Painting.PlaceholderDimensions)currentDimensions__6056).baseline, baselineOffset: ((global::Doroti.Framework.Painting.PlaceholderDimensions)currentDimensions__6056).baselineOffset);
         if (hasStyle__5843)
         {
             builder.pop();
         }
     }
 
-    public override bool visitChildren(global::System.Func<global::Doroti.Generated.Framework.Painting.InlineSpan, bool> visitor) => visitor(this);
-    public override bool visitDirectChildren(global::System.Func<global::Doroti.Generated.Framework.Painting.InlineSpan, bool> visitor) => true;
-    public override global::Doroti.Generated.Framework.Painting.InlineSpan? getSpanForPositionVisitor(TextPosition position, global::Doroti.Generated.Framework.Painting.Accumulator offset)
+    public override bool visitChildren(global::System.Func<global::Doroti.Framework.Painting.InlineSpan, bool> visitor) => visitor(this);
+    public override bool visitDirectChildren(global::System.Func<global::Doroti.Framework.Painting.InlineSpan, bool> visitor) => true;
+    public override global::Doroti.Framework.Painting.InlineSpan? getSpanForPositionVisitor(TextPosition position, global::Doroti.Framework.Painting.Accumulator offset)
     {
-        if ((position.offset == ((global::Doroti.Generated.Framework.Painting.Accumulator)offset).value))
+        if ((position.offset == ((global::Doroti.Framework.Painting.Accumulator)offset).value))
         {
-            return ((global::Doroti.Generated.Framework.Painting.InlineSpan?)(object?)this);
+            return ((global::Doroti.Framework.Painting.InlineSpan?)(object?)this);
         }
         offset.increment(1L);
-        return ((global::Doroti.Generated.Framework.Painting.InlineSpan)(object)null);
+        return ((global::Doroti.Framework.Painting.InlineSpan)(object)null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override long? codeUnitAtVisitor(long index, global::Doroti.Generated.Framework.Painting.Accumulator offset)
+    public override long? codeUnitAtVisitor(long index, global::Doroti.Framework.Painting.Accumulator offset)
     {
-        long localOffset__6924 = (index - ((global::Doroti.Generated.Framework.Painting.Accumulator)offset).value);
+        long localOffset__6924 = (index - ((global::Doroti.Framework.Painting.Accumulator)offset).value);
         DartRuntimePrimitives.Assert(() => (localOffset__6924 >= 0L));
         offset.increment(1L);
-        return ((localOffset__6924 == 0L) ? global::Doroti.Generated.Framework.Painting.PlaceholderSpan.placeholderCodeUnit : null);
+        return ((localOffset__6924 == 0L) ? global::Doroti.Framework.Painting.PlaceholderSpan.placeholderCodeUnit : null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Painting.RenderComparison compareTo(global::Doroti.Generated.Framework.Painting.InlineSpan other)
+    public override global::Doroti.Framework.Painting.RenderComparison compareTo(global::Doroti.Framework.Painting.InlineSpan other)
     {
         if (DartRuntimePrimitives.Identical(this, other))
         {
-            return global::Doroti.Generated.Framework.Painting.RenderComparison.identical;
+            return global::Doroti.Framework.Painting.RenderComparison.identical;
         }
         if ((!object.Equals(DartRuntimePrimitives.RuntimeType(other), this.GetType())))
         {
-            return global::Doroti.Generated.Framework.Painting.RenderComparison.layout;
+            return global::Doroti.Framework.Painting.RenderComparison.layout;
         }
-        if ((((this.style is null)) != ((((global::Doroti.Generated.Framework.Painting.InlineSpan)other).style is null))))
+        if ((((this.style is null)) != ((((global::Doroti.Framework.Painting.InlineSpan)other).style is null))))
         {
-            return global::Doroti.Generated.Framework.Painting.RenderComparison.layout;
+            return global::Doroti.Framework.Painting.RenderComparison.layout;
         }
         var typedOther__7430 = ((WidgetSpan?)(object?)other)!;
         if (((!object.Equals(this.child, ((WidgetSpan)typedOther__7430).child)) || (!object.Equals(this.alignment, typedOther__7430.alignment))))
         {
-            return global::Doroti.Generated.Framework.Painting.RenderComparison.layout;
+            return global::Doroti.Framework.Painting.RenderComparison.layout;
         }
-        global::Doroti.Generated.Framework.Painting.RenderComparison result__7603 = global::Doroti.Generated.Framework.Painting.RenderComparison.identical;
+        global::Doroti.Framework.Painting.RenderComparison result__7603 = global::Doroti.Framework.Painting.RenderComparison.identical;
         if ((this.style is not null))
         {
-            global::Doroti.Generated.Framework.Painting.RenderComparison candidate__7694 = this.style!.compareTo(((WidgetSpan)other).style!);
+            global::Doroti.Framework.Painting.RenderComparison candidate__7694 = this.style!.compareTo(((WidgetSpan)other).style!);
             if ((FoundationRuntimePorts.EnumIndex(candidate__7694) > FoundationRuntimePorts.EnumIndex(result__7603)))
             {
                 result__7603 = candidate__7694;
             }
-            if ((object.Equals(result__7603, global::Doroti.Generated.Framework.Painting.RenderComparison.layout)))
+            if ((object.Equals(result__7603, global::Doroti.Framework.Painting.RenderComparison.layout)))
             {
                 return result__7603;
             }
@@ -157,10 +157,10 @@ public class WidgetSpan : global::Doroti.Generated.Framework.Painting.Placeholde
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(base.GetHashCode(), this.child, this.alignment, this.baseline));
-    public override global::Doroti.Generated.Framework.Painting.InlineSpan? getSpanForPosition(TextPosition position)
+    public override global::Doroti.Framework.Painting.InlineSpan? getSpanForPosition(TextPosition position)
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
-        return ((global::Doroti.Generated.Framework.Painting.InlineSpan)(object)null);
+        return ((global::Doroti.Framework.Painting.InlineSpan)(object)null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -170,15 +170,15 @@ public class WidgetSpan : global::Doroti.Generated.Framework.Painting.Placeholde
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<Widget>("widget", this.child));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Widget>("widget", this.child));
     }
 
 }
 
-internal class _WidgetSpanParentData__widget_span : ParentDataWidget<global::Doroti.Generated.Framework.Rendering.TextParentData>
+internal class _WidgetSpanParentData__widget_span : ParentDataWidget<global::Doroti.Framework.Rendering.TextParentData>
 {
     public virtual WidgetSpan span { get; private set; } = default!;
 
@@ -187,9 +187,9 @@ internal class _WidgetSpanParentData__widget_span : ParentDataWidget<global::Dor
         this.span = span;
     }
 
-    public override void applyParentData(global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public override void applyParentData(global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var parentData__9510 = ((global::Doroti.Generated.Framework.Rendering.TextParentData?)(object?)((global::Doroti.Generated.Framework.Rendering.RenderObject)renderObject).parentData!)!;
+        var parentData__9510 = ((global::Doroti.Framework.Rendering.TextParentData?)(object?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
         parentData__9510.span = this.span;
     }
 
@@ -207,13 +207,13 @@ internal class _AutoScaleInlineWidget__widget_span : SingleChildRenderObjectWidg
         this.textScaleFactor = textScaleFactor;
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Rendering.RenderObject)(object?)new _RenderScaledInlineWidget__widget_span(this.span.alignment, this.span.baseline, this.textScaleFactor));
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderScaledInlineWidget__widget_span(this.span.alignment, this.span.baseline, this.textScaleFactor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(BuildContext context, global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (_RenderScaledInlineWidget__widget_span)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderScaledInlineWidget__widget_span>)(() =>
@@ -226,7 +226,7 @@ internal class _AutoScaleInlineWidget__widget_span : SingleChildRenderObjectWidg
 
 }
 
-public class _RenderScaledInlineWidget__widget_span : global::Doroti.Generated.Framework.Rendering.RenderBox, global::Doroti.Generated.Framework.Rendering.RenderObjectWithChildMixin<global::Doroti.Generated.Framework.Rendering.RenderBox>
+public class _RenderScaledInlineWidget__widget_span : global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.RenderObjectWithChildMixin<global::Doroti.Framework.Rendering.RenderBox>
 {
     internal virtual double _scale { get; set; } = default!;
     internal virtual PlaceholderAlignment _alignment { get; set; } = default!;
@@ -314,42 +314,42 @@ public class _RenderScaledInlineWidget__widget_span : global::Doroti.Generated.F
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override double? computeDryBaseline(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
+    public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        double? distance__12373 = this.child?.getDryBaseline(new global::Doroti.Generated.Framework.Rendering.BoxConstraints(maxWidth: (((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxWidth / this.scale)), DartRuntimePrimitives.RequireValue(baseline));
+        double? distance__12373 = this.child?.getDryBaseline(new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: (((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth / this.scale)), DartRuntimePrimitives.RequireValue(baseline));
         return ((distance__12373 is null) ? null : (this.scale * DartRuntimePrimitives.RequireValue(distance__12373)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override Size computeDryLayout(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints)
+    public override Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        DartRuntimePrimitives.Assert(() => !((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).hasBoundedHeight);
-        global::Doroti.Ui.Size unscaledSize__12676 = ((global::Doroti.Ui.Size)(object?)(this.child?.getDryLayout(new global::Doroti.Generated.Framework.Rendering.BoxConstraints(maxWidth: (((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxWidth / this.scale))) ?? Size.zero));
+        DartRuntimePrimitives.Assert(() => !((global::Doroti.Framework.Rendering.BoxConstraints)constraints).hasBoundedHeight);
+        global::Doroti.Ui.Size unscaledSize__12676 = ((global::Doroti.Ui.Size)(object?)(this.child?.getDryLayout(new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: (((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth / this.scale))) ?? Size.zero));
         return constraints.constrain((unscaledSize__12676 * this.scale));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void performLayout()
     {
-        global::Doroti.Generated.Framework.Rendering.RenderBox? child__12908 = ((global::Doroti.Generated.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? child__12908 = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
         if ((child__12908 is null))
         {
             return;
         }
-        DartRuntimePrimitives.Assert(() => !((global::Doroti.Generated.Framework.Rendering.BoxConstraints)this.constraints).hasBoundedHeight);
-        child__12908.layout(new global::Doroti.Generated.Framework.Rendering.BoxConstraints(maxWidth: (((global::Doroti.Generated.Framework.Rendering.BoxConstraints)this.constraints).maxWidth / this.scale)), parentUsesSize: true);
-        size = this.constraints.constrain((((global::Doroti.Generated.Framework.Rendering.RenderBox)child__12908).size * this.scale));
+        DartRuntimePrimitives.Assert(() => !((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).hasBoundedHeight);
+        child__12908.layout(new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: (((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth / this.scale)), parentUsesSize: true);
+        size = this.constraints.constrain((((global::Doroti.Framework.Rendering.RenderBox)child__12908).size * this.scale));
     }
 
-    public override void applyPaintTransform(global::Doroti.Generated.Framework.Rendering.RenderObject child, Matrix4 transform)
+    public override void applyPaintTransform(global::Doroti.Framework.Rendering.RenderObject child, Matrix4 transform)
     {
-        var __child = (global::Doroti.Generated.Framework.Rendering.RenderBox)(object)child;
+        var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
         transform.scaleByDouble(this.scale, this.scale, this.scale, 1);
     }
 
-    public override void paint(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset offset)
+    public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        global::Doroti.Generated.Framework.Rendering.RenderBox? child__13538 = ((global::Doroti.Generated.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? child__13538 = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
         if ((child__13538 is null))
         {
             layer = null;
@@ -361,17 +361,17 @@ public class _RenderScaledInlineWidget__widget_span : global::Doroti.Generated.F
             layer = null;
             return;
         }
-        layer = context.pushTransform(this.needsCompositing, offset, Matrix4.diagonal3Values(this.scale, this.scale, 1.0), ((global::System.Action<global::Doroti.Generated.Framework.Rendering.PaintingContext, Offset>)((context, offset) => { context.paintChild(child__13538, offset); })), oldLayer: ((global::Doroti.Generated.Framework.Rendering.TransformLayer?)(object?)this.layer)!);
+        layer = context.pushTransform(this.needsCompositing, offset, Matrix4.diagonal3Values(this.scale, this.scale, 1.0), ((global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)((context, offset) => { context.paintChild(child__13538, offset); })), oldLayer: ((global::Doroti.Framework.Rendering.TransformLayer?)(object?)this.layer)!);
     }
 
-    public override bool hitTestChildren(global::Doroti.Generated.Framework.Rendering.BoxHitTestResult result, Offset position)
+    public override bool hitTestChildren(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
     {
-        global::Doroti.Generated.Framework.Rendering.RenderBox? child__14101 = ((global::Doroti.Generated.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        global::Doroti.Framework.Rendering.RenderBox? child__14101 = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
         if ((child__14101 is null))
         {
             return false;
         }
-        return result.addWithPaintTransform(transform: Matrix4.diagonal3Values(this.scale, this.scale, 1.0), position: position, hitTest: ((global::System.Func<global::Doroti.Generated.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, transformedOffset) => child__14101.hitTest(result, position: transformedOffset))));
+        return result.addWithPaintTransform(transform: Matrix4.diagonal3Values(this.scale, this.scale, 1.0), position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, transformedOffset) => child__14101.hitTest(result, position: transformedOffset))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -381,7 +381,7 @@ public class _RenderScaledInlineWidget__widget_span : global::Doroti.Generated.F
             {
                 if ((child is not RenderBox))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Generated.Framework.Foundation.ErrorSpacer(), new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderBox)} child was created by", this.debugCreator, style: global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Generated.Framework.Foundation.ErrorSpacer(), new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", ((dynamic)child).debugCreator, style: global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderBox)} child was created by", this.debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", ((dynamic)child).debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -435,9 +435,9 @@ public class _RenderScaledInlineWidget__widget_span : global::Doroti.Generated.F
         }
     }
 
-    public override List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
+    public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
-        return ((this.child is not null) ? new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { ((Diagnosticable)this.child!).toDiagnosticsNode(name: "child") } : new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>());
+        return ((this.child is not null) ? new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { ((Diagnosticable)this.child!).toDiagnosticsNode(name: "child") } : new List<global::Doroti.Framework.Foundation.DiagnosticsNode>());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

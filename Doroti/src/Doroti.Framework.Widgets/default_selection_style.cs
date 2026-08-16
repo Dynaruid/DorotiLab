@@ -12,23 +12,23 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class DefaultSelectionStyle : InheritedTheme
 {
     public static Color defaultColor = new global::Doroti.Ui.Color(2155905152L);
     public virtual Color? cursorColor { get; private set; }
     public virtual Color? selectionColor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Services.MouseCursor? mouseCursor { get; private set; }
+    public virtual global::Doroti.Framework.Services.MouseCursor? mouseCursor { get; private set; }
 
-    public DefaultSelectionStyle(global::Doroti.Generated.Framework.Foundation.Key? key = null, Color? cursorColor = null, Color? selectionColor = null, global::Doroti.Generated.Framework.Services.MouseCursor? mouseCursor = null, Widget child = default!) : base(key: key, child: child)
+    public DefaultSelectionStyle(global::Doroti.Framework.Foundation.Key? key = null, Color? cursorColor = null, Color? selectionColor = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, Widget child = default!) : base(key: key, child: child)
     {
         this.cursorColor = cursorColor;
         this.selectionColor = selectionColor;
         this.mouseCursor = mouseCursor;
     }
 
-    public static DefaultSelectionStyle CreateFallback(global::Doroti.Generated.Framework.Foundation.Key? key = null)
+    public static DefaultSelectionStyle CreateFallback(global::Doroti.Framework.Foundation.Key? key = null)
     {
         var __instance = new DefaultSelectionStyle(default!, default!, default!, default!, default!);
         __instance.cursorColor = null;
@@ -37,7 +37,7 @@ public class DefaultSelectionStyle : InheritedTheme
         return __instance;
     }
 
-    public static Widget merge(global::Doroti.Generated.Framework.Foundation.Key? key = null, Color? cursorColor = null, Color? selectionColor = null, global::Doroti.Generated.Framework.Services.MouseCursor? mouseCursor = null, Widget child = default!)
+    public static Widget merge(global::Doroti.Framework.Foundation.Key? key = null, Color? cursorColor = null, Color? selectionColor = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, Widget child = default!)
     {
         return ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => {
 DefaultSelectionStyle parent__2224 = ((DefaultSelectionStyle)(object?)DefaultSelectionStyle.of(context));
@@ -76,7 +76,7 @@ internal class _NullWidget__default_selection_style : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        throw DartRuntimePrimitives.AsException(global::Doroti.Generated.Framework.Foundation.FlutterError.Create("A DefaultSelectionStyle constructed with DefaultSelectionStyle.fallback cannot be incorporated into the widget tree, " + "it is meant only to provide a fallback value returned by DefaultSelectionStyle.of() " + "when no enclosing default selection style is present in a BuildContext."));
+        throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("A DefaultSelectionStyle constructed with DefaultSelectionStyle.fallback cannot be incorporated into the widget tree, " + "it is meant only to provide a fallback value returned by DefaultSelectionStyle.of() " + "when no enclosing default selection style is present in a BuildContext."));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

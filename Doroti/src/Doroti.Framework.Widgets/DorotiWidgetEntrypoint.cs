@@ -1,11 +1,11 @@
-using Doroti.Generated.Framework.Widgets;
+using Doroti.Framework.Widgets;
 using Doroti.Hosting;
 using Doroti.Ui;
 
 namespace Doroti.Framework;
 
 /// <summary>
-/// Hosts a generated widget root behind the stable Doroti application-entrypoint contract.
+/// Hosts a widget root behind the stable Doroti application-entrypoint contract.
 /// </summary>
 public sealed class DorotiWidgetEntrypoint(Func<Widget> rootFactory) : IDorotiViewEntrypoint
 {

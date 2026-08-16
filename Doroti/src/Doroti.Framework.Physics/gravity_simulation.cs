@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Physics;
+namespace Doroti.Framework.Physics;
 
 public class GravitySimulation : Simulation
 {
@@ -33,6 +33,6 @@ public class GravitySimulation : Simulation
     public override double x(double time) => ((this._x + (this._v * time)) + (((0.5 * this._a) * time) * time));
     public override double dx(double time) => (this._v + (time * this._a));
     public override bool isDone(double time) => (x(time).abs() >= this._end);
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "GravitySimulation"))}(g: {this._a.toStringAsFixed(1L)}, x₀: {this._x.toStringAsFixed(1L)}, dx₀: {this._v.toStringAsFixed(1L)}, xₘₐₓ: ±{this._end.toStringAsFixed(1L)})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "GravitySimulation"))}(g: {this._a.toStringAsFixed(1L)}, x₀: {this._x.toStringAsFixed(1L)}, dx₀: {this._v.toStringAsFixed(1L)}, xₘₐₓ: ±{this._end.toStringAsFixed(1L)})";
 }
 

@@ -12,26 +12,26 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
-public class DialogTheme : global::Doroti.Generated.Framework.Widgets.InheritedTheme, global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class DialogTheme : global::Doroti.Framework.Widgets.InheritedTheme, global::Doroti.Framework.Foundation.Diagnosticable
 {
     internal virtual DialogThemeData? _data { get; private set; }
     internal virtual Color? _backgroundColor { get; private set; }
     internal virtual double? _elevation { get; private set; }
     internal virtual Color? _shadowColor { get; private set; }
     internal virtual Color? _surfaceTintColor { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Painting.ShapeBorder? _shape { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry? _alignment { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Painting.TextStyle? _titleTextStyle { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Painting.TextStyle? _contentTextStyle { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? _actionsPadding { get; private set; }
+    internal virtual global::Doroti.Framework.Painting.ShapeBorder? _shape { get; private set; }
+    internal virtual global::Doroti.Framework.Painting.AlignmentGeometry? _alignment { get; private set; }
+    internal virtual global::Doroti.Framework.Painting.TextStyle? _titleTextStyle { get; private set; }
+    internal virtual global::Doroti.Framework.Painting.TextStyle? _contentTextStyle { get; private set; }
+    internal virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? _actionsPadding { get; private set; }
     internal virtual Color? _iconColor { get; private set; }
     internal virtual Color? _barrierColor { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Painting.EdgeInsets? _insetPadding { get; private set; }
+    internal virtual global::Doroti.Framework.Painting.EdgeInsets? _insetPadding { get; private set; }
     internal virtual Clip? _clipBehavior { get; private set; }
 
-    public DialogTheme(global::Doroti.Generated.Framework.Foundation.Key? key = null, Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Generated.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry? alignment = null, Color? iconColor = null, global::Doroti.Generated.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Generated.Framework.Painting.TextStyle? contentTextStyle = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null, Color? barrierColor = null, global::Doroti.Generated.Framework.Painting.EdgeInsets? insetPadding = null, Clip? clipBehavior = null, DialogThemeData? data = null, global::Doroti.Generated.Framework.Widgets.Widget? child = null) : base(key: key, child: (child ?? new global::Doroti.Generated.Framework.Widgets.SizedBox()))
+    public DialogTheme(global::Doroti.Framework.Foundation.Key? key = null, Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = null, Color? iconColor = null, global::Doroti.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Framework.Painting.TextStyle? contentTextStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null, Color? barrierColor = null, global::Doroti.Framework.Painting.EdgeInsets? insetPadding = null, Clip? clipBehavior = null, DialogThemeData? data = null, global::Doroti.Framework.Widgets.Widget? child = null) : base(key: key, child: (child ?? new global::Doroti.Framework.Widgets.SizedBox()))
     {
         this._data = data;
         this._backgroundColor = backgroundColor;
@@ -54,14 +54,14 @@ public class DialogTheme : global::Doroti.Generated.Framework.Widgets.InheritedT
     public virtual double? elevation => ((this._data is not null) ? ((DialogThemeData)this._data).elevation : this._elevation);
     public virtual global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((this._data is not null) ? ((DialogThemeData)this._data).shadowColor : this._shadowColor));
     public virtual global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((this._data is not null) ? ((DialogThemeData)this._data).surfaceTintColor : this._surfaceTintColor));
-    public virtual global::Doroti.Generated.Framework.Painting.ShapeBorder? shape => ((this._data is not null) ? ((DialogThemeData)this._data).shape : this._shape);
-    public virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry? alignment => ((this._data is not null) ? ((DialogThemeData)this._data).alignment : this._alignment);
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? titleTextStyle => ((this._data is not null) ? ((DialogThemeData)this._data).titleTextStyle : this._titleTextStyle);
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? contentTextStyle => ((this._data is not null) ? ((DialogThemeData)this._data).contentTextStyle : this._contentTextStyle);
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? actionsPadding => ((this._data is not null) ? ((DialogThemeData)this._data).actionsPadding : this._actionsPadding);
+    public virtual global::Doroti.Framework.Painting.ShapeBorder? shape => ((this._data is not null) ? ((DialogThemeData)this._data).shape : this._shape);
+    public virtual global::Doroti.Framework.Painting.AlignmentGeometry? alignment => ((this._data is not null) ? ((DialogThemeData)this._data).alignment : this._alignment);
+    public virtual global::Doroti.Framework.Painting.TextStyle? titleTextStyle => ((this._data is not null) ? ((DialogThemeData)this._data).titleTextStyle : this._titleTextStyle);
+    public virtual global::Doroti.Framework.Painting.TextStyle? contentTextStyle => ((this._data is not null) ? ((DialogThemeData)this._data).contentTextStyle : this._contentTextStyle);
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? actionsPadding => ((this._data is not null) ? ((DialogThemeData)this._data).actionsPadding : this._actionsPadding);
     public virtual global::Doroti.Ui.Color? iconColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((this._data is not null) ? ((DialogThemeData)this._data).iconColor : this._iconColor));
     public virtual global::Doroti.Ui.Color? barrierColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((this._data is not null) ? ((DialogThemeData)this._data).barrierColor : this._barrierColor));
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsets? insetPadding => ((this._data is not null) ? ((DialogThemeData)this._data).insetPadding : this._insetPadding);
+    public virtual global::Doroti.Framework.Painting.EdgeInsets? insetPadding => ((this._data is not null) ? ((DialogThemeData)this._data).insetPadding : this._insetPadding);
     public virtual global::Doroti.Ui.Clip? clipBehavior => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Clip>(((this._data is not null) ? ((DialogThemeData)this._data).clipBehavior : this._clipBehavior));
     public virtual DialogThemeData data
     {
@@ -71,21 +71,21 @@ public class DialogTheme : global::Doroti.Generated.Framework.Widgets.InheritedT
             return default!;
         }
     }
-    public static DialogThemeData of(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static DialogThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DialogTheme? dialogTheme__8240 = ((DialogTheme?)(object?)context.dependOnInheritedWidgetOfExactType<DialogTheme>());
         return (dialogTheme__8240?.data ?? Theme.of(context).dialogTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget wrap(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Widgets.Widget child)
+    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new DialogTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new DialogTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Generated.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((DialogTheme)oldWidget).data)));
-    public virtual DialogTheme copyWith(Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Generated.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry? alignment = null, Color? iconColor = null, global::Doroti.Generated.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Generated.Framework.Painting.TextStyle? contentTextStyle = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null, Color? barrierColor = null, global::Doroti.Generated.Framework.Painting.EdgeInsets? insetPadding = null, Clip? clipBehavior = null)
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((DialogTheme)oldWidget).data)));
+    public virtual DialogTheme copyWith(Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = null, Color? iconColor = null, global::Doroti.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Framework.Painting.TextStyle? contentTextStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null, Color? barrierColor = null, global::Doroti.Framework.Painting.EdgeInsets? insetPadding = null, Clip? clipBehavior = null)
     {
         return new DialogTheme(backgroundColor: (backgroundColor ?? this.backgroundColor), elevation: (elevation ?? this.elevation), shadowColor: (shadowColor ?? this.shadowColor), surfaceTintColor: (surfaceTintColor ?? this.surfaceTintColor), shape: (shape ?? this.shape), alignment: (alignment ?? this.alignment), iconColor: (iconColor ?? this.iconColor), titleTextStyle: (titleTextStyle ?? this.titleTextStyle), contentTextStyle: (contentTextStyle ?? this.contentTextStyle), actionsPadding: (actionsPadding ?? this.actionsPadding), barrierColor: (barrierColor ?? this.barrierColor), insetPadding: (insetPadding ?? this.insetPadding), clipBehavior: (clipBehavior ?? this.clipBehavior));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -101,24 +101,24 @@ public class DialogTheme : global::Doroti.Generated.Framework.Widgets.InheritedT
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("backgroundColor", this.backgroundColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("elevation", this.elevation, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("shadowColor", this.shadowColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("surfaceTintColor", this.surfaceTintColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.ShapeBorder>("shape", this.shape, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("iconColor", this.iconColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.TextStyle>("titleTextStyle", this.titleTextStyle, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.TextStyle>("contentTextStyle", this.contentTextStyle, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry>("actionsPadding", this.actionsPadding, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("barrierColor", this.barrierColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.EdgeInsets>("insetPadding", this.insetPadding, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("backgroundColor", this.backgroundColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", this.elevation, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", this.shadowColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceTintColor", this.surfaceTintColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", this.shape, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("iconColor", this.iconColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("titleTextStyle", this.titleTextStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("contentTextStyle", this.contentTextStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("actionsPadding", this.actionsPadding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("barrierColor", this.barrierColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsets>("insetPadding", this.insetPadding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior, defaultValue: null));
     }
 
-    public override string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;
@@ -139,24 +139,24 @@ public class DialogTheme : global::Doroti.Generated.Framework.Widgets.InheritedT
 
 }
 
-public class DialogThemeData : global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class DialogThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 {
     public virtual Color? backgroundColor { get; private set; }
     public virtual double? elevation { get; private set; }
     public virtual Color? shadowColor { get; private set; }
     public virtual Color? surfaceTintColor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.ShapeBorder? shape { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry? alignment { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? titleTextStyle { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? contentTextStyle { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? actionsPadding { get; private set; }
+    public virtual global::Doroti.Framework.Painting.ShapeBorder? shape { get; private set; }
+    public virtual global::Doroti.Framework.Painting.AlignmentGeometry? alignment { get; private set; }
+    public virtual global::Doroti.Framework.Painting.TextStyle? titleTextStyle { get; private set; }
+    public virtual global::Doroti.Framework.Painting.TextStyle? contentTextStyle { get; private set; }
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? actionsPadding { get; private set; }
     public virtual Color? iconColor { get; private set; }
     public virtual Color? barrierColor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsets? insetPadding { get; private set; }
+    public virtual global::Doroti.Framework.Painting.EdgeInsets? insetPadding { get; private set; }
     public virtual Clip? clipBehavior { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints { get; private set; }
+    public virtual global::Doroti.Framework.Rendering.BoxConstraints? constraints { get; private set; }
 
-    public DialogThemeData(Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Generated.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry? alignment = null, Color? iconColor = null, global::Doroti.Generated.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Generated.Framework.Painting.TextStyle? contentTextStyle = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null, Color? barrierColor = null, global::Doroti.Generated.Framework.Painting.EdgeInsets? insetPadding = null, Clip? clipBehavior = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null)
+    public DialogThemeData(Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = null, Color? iconColor = null, global::Doroti.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Framework.Painting.TextStyle? contentTextStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null, Color? barrierColor = null, global::Doroti.Framework.Painting.EdgeInsets? insetPadding = null, Clip? clipBehavior = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null)
     {
         this.backgroundColor = backgroundColor;
         this.elevation = elevation;
@@ -174,7 +174,7 @@ public class DialogThemeData : global::Doroti.Generated.Framework.Foundation.Dia
         this.constraints = constraints;
     }
 
-    public virtual DialogThemeData copyWith(Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Generated.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry? alignment = null, Color? iconColor = null, global::Doroti.Generated.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Generated.Framework.Painting.TextStyle? contentTextStyle = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null, Color? barrierColor = null, global::Doroti.Generated.Framework.Painting.EdgeInsets? insetPadding = null, Clip? clipBehavior = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null)
+    public virtual DialogThemeData copyWith(Color? backgroundColor = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = null, Color? iconColor = null, global::Doroti.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Framework.Painting.TextStyle? contentTextStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null, Color? barrierColor = null, global::Doroti.Framework.Painting.EdgeInsets? insetPadding = null, Clip? clipBehavior = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null)
     {
         return new DialogThemeData(backgroundColor: (backgroundColor ?? this.backgroundColor), elevation: (elevation ?? this.elevation), shadowColor: (shadowColor ?? this.shadowColor), surfaceTintColor: (surfaceTintColor ?? this.surfaceTintColor), shape: (shape ?? this.shape), alignment: (alignment ?? this.alignment), iconColor: (iconColor ?? this.iconColor), titleTextStyle: (titleTextStyle ?? this.titleTextStyle), contentTextStyle: (contentTextStyle ?? this.contentTextStyle), actionsPadding: (actionsPadding ?? this.actionsPadding), barrierColor: (barrierColor ?? this.barrierColor), insetPadding: (insetPadding ?? this.insetPadding), clipBehavior: (clipBehavior ?? this.clipBehavior), constraints: (constraints ?? this.constraints));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -206,25 +206,25 @@ public class DialogThemeData : global::Doroti.Generated.Framework.Foundation.Dia
         return (((((((((((((((__other is DialogThemeData) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).backgroundColor, this.backgroundColor))) && (((DialogThemeData)((DialogThemeData)__other)).elevation == this.elevation)) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).shadowColor, this.shadowColor))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).shape, this.shape))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).alignment, this.alignment))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).iconColor, this.iconColor))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).titleTextStyle, this.titleTextStyle))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).contentTextStyle, this.contentTextStyle))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).actionsPadding, this.actionsPadding))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).barrierColor, this.barrierColor))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).insetPadding, this.insetPadding))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).clipBehavior, this.clipBehavior))) && (object.Equals(((DialogThemeData)((DialogThemeData)__other)).constraints, this.constraints)));
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("backgroundColor", this.backgroundColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("elevation", this.elevation, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("shadowColor", this.shadowColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("surfaceTintColor", this.surfaceTintColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.ShapeBorder>("shape", this.shape, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("iconColor", this.iconColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.TextStyle>("titleTextStyle", this.titleTextStyle, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.TextStyle>("contentTextStyle", this.contentTextStyle, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry>("actionsPadding", this.actionsPadding, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("barrierColor", this.barrierColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.EdgeInsets>("insetPadding", this.insetPadding, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Rendering.BoxConstraints>("constraints", this.constraints, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("backgroundColor", this.backgroundColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", this.elevation, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", this.shadowColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceTintColor", this.surfaceTintColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", this.shape, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("iconColor", this.iconColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("titleTextStyle", this.titleTextStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("contentTextStyle", this.contentTextStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("actionsPadding", this.actionsPadding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("barrierColor", this.barrierColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsets>("insetPadding", this.insetPadding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.BoxConstraints>("constraints", this.constraints, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;

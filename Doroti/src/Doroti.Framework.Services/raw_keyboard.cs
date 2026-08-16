@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public enum KeyboardSide
 {
@@ -65,10 +65,10 @@ public abstract class RawKeyEventData : Diagnosticable
                         {
                             if ((side__9332 is null))
                             {
-                                global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint("Raw key data is returning inconsistent information for " + $"pressed modifiers. isModifierPressed returns true for {key} " + "being pressed, but when getModifierSide is called, it says " + "that no modifiers are pressed.");
+                                global::Doroti.Framework.Foundation.PrintLibrary.debugPrint("Raw key data is returning inconsistent information for " + $"pressed modifiers. isModifierPressed returns true for {key} " + "being pressed, but when getModifierSide is called, it says " + "that no modifiers are pressed.");
                                 if ((this is RawKeyEventDataAndroid))
                                 {
-                                    global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint($"Android raw key metaState: {(((RawKeyEventDataAndroid?)this)!).metaState}");
+                                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"Android raw key metaState: {(((RawKeyEventDataAndroid?)this)!).metaState}");
                                 }
                             }
                             return true;
@@ -116,7 +116,7 @@ public abstract class RawKeyEvent : Diagnosticable
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         RawKeyEventData data = default!;
-        if (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb)
+        if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
         {
             data = dataFromWeb();
         }
@@ -384,10 +384,10 @@ public class RawKeyboard
                 {
                     if ((mappedKeys__42614 is null))
                     {
-                        global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint($"Platform key support for {Platform.operatingSystem} is " + "producing unsupported modifier combinations for " + $"modifier {key} on side {modifiersPressed.GetValueOrDefault(key)}.");
+                        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"Platform key support for {Platform.operatingSystem} is " + "producing unsupported modifier combinations for " + $"modifier {key} on side {modifiersPressed.GetValueOrDefault(key)}.");
                         if ((@event.data is RawKeyEventDataAndroid))
                         {
-                            global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint($"Android raw key metaState: {(((RawKeyEventDataAndroid?)@event.data)!).metaState}");
+                            global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"Android raw key metaState: {(((RawKeyEventDataAndroid?)@event.data)!).metaState}");
                         }
                     }
                     return true;

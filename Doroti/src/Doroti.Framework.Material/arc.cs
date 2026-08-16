@@ -12,14 +12,14 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
 public static partial class ArcLibrary
 {
     internal static double _kOnAxisDelta = 2.0;
 }
 
-public class MaterialPointArcTween : global::Doroti.Generated.Framework.Animation.Tween<Offset>
+public class MaterialPointArcTween : global::Doroti.Framework.Animation.Tween<Offset>
 {
     internal virtual bool _dirty { get; set; } = true;
     internal virtual Offset? _center { get; set; } = default;
@@ -205,7 +205,7 @@ public class MaterialPointArcTween : global::Doroti.Generated.Framework.Animatio
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "MaterialPointArcTween"))}({this.begin} → {this.end}; center={this.center}, radius={this.radius}, beginAngle={this.beginAngle}, endAngle={this.endAngle})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "MaterialPointArcTween"))}({this.begin} → {this.end}; center={this.center}, radius={this.radius}, beginAngle={this.beginAngle}, endAngle={this.endAngle})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -259,7 +259,7 @@ public static partial class ArcLibrary
     }
 }
 
-public class MaterialRectArcTween : global::Doroti.Generated.Framework.Animation.RectTween
+public class MaterialRectArcTween : global::Doroti.Framework.Animation.RectTween
 {
     internal virtual bool _dirty { get; set; } = true;
     internal virtual MaterialPointArcTween _beginArc { get; set; } = default!;
@@ -370,13 +370,13 @@ public class MaterialRectArcTween : global::Doroti.Generated.Framework.Animation
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "MaterialRectArcTween"))}({this.begin} → {this.end}; beginArc={this.beginArc}, endArc={this.endArc})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "MaterialRectArcTween"))}({this.begin} → {this.end}; beginArc={this.beginArc}, endArc={this.endArc})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-public class MaterialRectCenterArcTween : global::Doroti.Generated.Framework.Animation.RectTween
+public class MaterialRectCenterArcTween : global::Doroti.Framework.Animation.RectTween
 {
     internal virtual bool _dirty { get; set; } = true;
     internal virtual MaterialPointArcTween _centerArc { get; set; } = default!;
@@ -456,7 +456,7 @@ public class MaterialRectCenterArcTween : global::Doroti.Generated.Framework.Ani
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "MaterialRectCenterArcTween"))}({this.begin} → {this.end}; centerArc={this.centerArc})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "MaterialRectCenterArcTween"))}({this.begin} → {this.end}; centerArc={this.centerArc})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

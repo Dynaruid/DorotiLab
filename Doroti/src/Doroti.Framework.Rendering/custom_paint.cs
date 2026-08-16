@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public delegate List<CustomPainterSemantics> SemanticsBuilderCallback(Size size);
 
@@ -32,7 +32,7 @@ public abstract class CustomPainter : Listenable
     public virtual bool shouldRebuildSemantics(CustomPainter oldDelegate) => shouldRepaint(oldDelegate);
     public abstract bool shouldRepaint(CustomPainter oldDelegate);
     public virtual bool? hitTest(Offset position) => null;
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({(this._repaint?.ToString() ?? "")})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({(this._repaint?.ToString() ?? "")})";
 }
 
 public class CustomPainterSemantics
@@ -40,10 +40,10 @@ public class CustomPainterSemantics
     public virtual Key? key { get; private set; }
     public virtual Rect rect { get; private set; } = default!;
     public virtual Matrix4? transform { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Semantics.SemanticsProperties properties { get; private set; } = default!;
-    public virtual HashSet<global::Doroti.Generated.Framework.Semantics.SemanticsTag>? tags { get; private set; }
+    public virtual global::Doroti.Framework.Semantics.SemanticsProperties properties { get; private set; } = default!;
+    public virtual HashSet<global::Doroti.Framework.Semantics.SemanticsTag>? tags { get; private set; }
 
-    public CustomPainterSemantics(Key? key = null, Rect rect = default!, global::Doroti.Generated.Framework.Semantics.SemanticsProperties properties = default!, Matrix4? transform = null, HashSet<global::Doroti.Generated.Framework.Semantics.SemanticsTag>? tags = null)
+    public CustomPainterSemantics(Key? key = null, Rect rect = default!, global::Doroti.Framework.Semantics.SemanticsProperties properties = default!, Matrix4? transform = null, HashSet<global::Doroti.Framework.Semantics.SemanticsTag>? tags = null)
     {
         this.key = key;
         this.rect = rect;
@@ -63,8 +63,8 @@ public class RenderCustomPaint : RenderProxyBox
     public virtual bool willChange { get; set; } = default!;
     internal virtual Func<Size, List<CustomPainterSemantics>>? _backgroundSemanticsBuilder { get; set; } = default;
     internal virtual Func<Size, List<CustomPainterSemantics>>? _foregroundSemanticsBuilder { get; set; } = default;
-    internal virtual List<global::Doroti.Generated.Framework.Semantics.SemanticsNode>? _backgroundSemanticsNodes { get; set; } = default;
-    internal virtual List<global::Doroti.Generated.Framework.Semantics.SemanticsNode>? _foregroundSemanticsNodes { get; set; } = default;
+    internal virtual List<global::Doroti.Framework.Semantics.SemanticsNode>? _backgroundSemanticsNodes { get; set; } = default;
+    internal virtual List<global::Doroti.Framework.Semantics.SemanticsNode>? _foregroundSemanticsNodes { get; set; } = default;
 
     public RenderCustomPaint(CustomPainter? painter = null, CustomPainter? foregroundPainter = null, Size preferredSize = default, bool isComplex = false, bool willChange = false, RenderBox? child = null) : base(child)
     {
@@ -294,7 +294,7 @@ public class RenderCustomPaint : RenderProxyBox
         }
     }
 
-    public override void describeSemanticsConfiguration(global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration config)
+    public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
         _backgroundSemanticsBuilder = this.painter?.semanticsBuilder;
@@ -302,7 +302,7 @@ public class RenderCustomPaint : RenderProxyBox
         config.isSemanticBoundary = ((this._backgroundSemanticsBuilder is not null) || (this._foregroundSemanticsBuilder is not null));
     }
 
-    public override void assembleSemanticsNode(global::Doroti.Generated.Framework.Semantics.SemanticsNode node, global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration config, IEnumerable<global::Doroti.Generated.Framework.Semantics.SemanticsNode> children)
+    public override void assembleSemanticsNode(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsConfiguration config, IEnumerable<global::Doroti.Framework.Semantics.SemanticsNode> children)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -318,7 +318,7 @@ public class RenderCustomPaint : RenderProxyBox
         _foregroundSemanticsNodes = _updateSemanticsChildren(this._foregroundSemanticsNodes, foregroundSemantics__27596);
         bool hasBackgroundSemantics__27844 = ((this._backgroundSemanticsNodes is not null) && (checked((long)(this._backgroundSemanticsNodes!.Count)) != 0));
         bool hasForegroundSemantics__27968 = ((this._foregroundSemanticsNodes is not null) && (checked((long)(this._foregroundSemanticsNodes!.Count)) != 0));
-        var finalChildren__28087 = new List<global::Doroti.Generated.Framework.Semantics.SemanticsNode>();
+        var finalChildren__28087 = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
         base.assembleSemanticsNode(node, config, finalChildren__28087);
     }
 
@@ -329,9 +329,9 @@ public class RenderCustomPaint : RenderProxyBox
         _foregroundSemanticsNodes = null;
     }
 
-    internal static List<global::Doroti.Generated.Framework.Semantics.SemanticsNode> _updateSemanticsChildren(List<global::Doroti.Generated.Framework.Semantics.SemanticsNode>? oldSemantics, List<CustomPainterSemantics>? newChildSemantics)
+    internal static List<global::Doroti.Framework.Semantics.SemanticsNode> _updateSemanticsChildren(List<global::Doroti.Framework.Semantics.SemanticsNode>? oldSemantics, List<CustomPainterSemantics>? newChildSemantics)
     {
-        oldSemantics = (oldSemantics ?? new List<global::Doroti.Generated.Framework.Semantics.SemanticsNode>());
+        oldSemantics = (oldSemantics ?? new List<global::Doroti.Framework.Semantics.SemanticsNode>());
         newChildSemantics = (newChildSemantics ?? new List<CustomPainterSemantics>());
         DartRuntimePrimitives.Assert(() =>
             {
@@ -360,23 +360,23 @@ public class RenderCustomPaint : RenderProxyBox
         var oldChildrenTop__30836 = 0L;
         long newChildrenBottom__30864 = (checked((long)(newChildSemantics.Count)) - 1L);
         long oldChildrenBottom__30922 = (checked((long)(oldSemantics.Count)) - 1L);
-        var newChildren__30978 = new List<global::Doroti.Generated.Framework.Semantics.SemanticsNode?>(System.Linq.Enumerable.Repeat<global::Doroti.Generated.Framework.Semantics.SemanticsNode?>(null, checked((int)checked((long)(newChildSemantics.Count)))));
+        var newChildren__30978 = new List<global::Doroti.Framework.Semantics.SemanticsNode?>(System.Linq.Enumerable.Repeat<global::Doroti.Framework.Semantics.SemanticsNode?>(null, checked((int)checked((long)(newChildSemantics.Count)))));
         while ((((oldChildrenTop__30836 <= oldChildrenBottom__30922)) && ((newChildrenTop__30808 <= newChildrenBottom__30864))))
         {
-            global::Doroti.Generated.Framework.Semantics.SemanticsNode oldChild__31208 = oldSemantics[(int)(oldChildrenTop__30836)];
+            global::Doroti.Framework.Semantics.SemanticsNode oldChild__31208 = oldSemantics[(int)(oldChildrenTop__30836)];
             CustomPainterSemantics newSemantics__31284 = newChildSemantics[(int)(newChildrenTop__30808)];
             if (!_canUpdateSemanticsChild(oldChild__31208, newSemantics__31284))
             {
                 break;
             }
-            global::Doroti.Generated.Framework.Semantics.SemanticsNode newChild__31446 = _updateSemanticsChild(oldChild__31208, newSemantics__31284);
+            global::Doroti.Framework.Semantics.SemanticsNode newChild__31446 = _updateSemanticsChild(oldChild__31208, newSemantics__31284);
             newChildren__30978[(int)(newChildrenTop__30808)] = newChild__31446;
             newChildrenTop__30808 += 1L;
             oldChildrenTop__30836 += 1L;
         }
         while ((((oldChildrenTop__30836 <= oldChildrenBottom__30922)) && ((newChildrenTop__30808 <= newChildrenBottom__30864))))
         {
-            global::Doroti.Generated.Framework.Semantics.SemanticsNode oldChild__31766 = oldSemantics[(int)(oldChildrenBottom__30922)];
+            global::Doroti.Framework.Semantics.SemanticsNode oldChild__31766 = oldSemantics[(int)(oldChildrenBottom__30922)];
             CustomPainterSemantics newChild__31845 = newChildSemantics[(int)(newChildrenBottom__30864)];
             if (!_canUpdateSemanticsChild(oldChild__31766, newChild__31845))
             {
@@ -386,23 +386,23 @@ public class RenderCustomPaint : RenderProxyBox
             newChildrenBottom__30864 -= 1L;
         }
         bool haveOldChildren__32114 = (oldChildrenTop__30836 <= oldChildrenBottom__30922);
-        DartMap<Key, global::Doroti.Generated.Framework.Semantics.SemanticsNode> oldKeyedChildren__32208 = default!;
+        DartMap<Key, global::Doroti.Framework.Semantics.SemanticsNode> oldKeyedChildren__32208 = default!;
         if (haveOldChildren__32114)
         {
-            oldKeyedChildren__32208 = new DartMap<Key, global::Doroti.Generated.Framework.Semantics.SemanticsNode>();
+            oldKeyedChildren__32208 = new DartMap<Key, global::Doroti.Framework.Semantics.SemanticsNode>();
             while ((oldChildrenTop__30836 <= oldChildrenBottom__30922))
             {
-                global::Doroti.Generated.Framework.Semantics.SemanticsNode oldChild__32382 = oldSemantics[(int)(oldChildrenTop__30836)];
-                if ((((global::Doroti.Generated.Framework.Semantics.SemanticsNode)oldChild__32382).key is not null))
+                global::Doroti.Framework.Semantics.SemanticsNode oldChild__32382 = oldSemantics[(int)(oldChildrenTop__30836)];
+                if ((((global::Doroti.Framework.Semantics.SemanticsNode)oldChild__32382).key is not null))
                 {
-                    oldKeyedChildren__32208[((global::Doroti.Generated.Framework.Semantics.SemanticsNode)oldChild__32382).key!] = oldChild__32382;
+                    oldKeyedChildren__32208[((global::Doroti.Framework.Semantics.SemanticsNode)oldChild__32382).key!] = oldChild__32382;
                 }
                 oldChildrenTop__30836 += 1L;
             }
         }
         while ((newChildrenTop__30808 <= newChildrenBottom__30864))
         {
-            global::Doroti.Generated.Framework.Semantics.SemanticsNode? oldChild__32676 = default!;
+            global::Doroti.Framework.Semantics.SemanticsNode? oldChild__32676 = default!;
             CustomPainterSemantics newSemantics__32721 = newChildSemantics[(int)(newChildrenTop__30808)];
             if (haveOldChildren__32114)
             {
@@ -424,7 +424,7 @@ public class RenderCustomPaint : RenderProxyBox
                 }
             }
             DartRuntimePrimitives.Assert(() => ((oldChild__32676 is null) || _canUpdateSemanticsChild(oldChild__32676, newSemantics__32721)));
-            global::Doroti.Generated.Framework.Semantics.SemanticsNode newChild__33448 = _updateSemanticsChild(oldChild__32676, newSemantics__32721);
+            global::Doroti.Framework.Semantics.SemanticsNode newChild__33448 = _updateSemanticsChild(oldChild__32676, newSemantics__32721);
             DartRuntimePrimitives.Assert(() => ((object.Equals(oldChild__32676, newChild__33448)) || (oldChild__32676 is null)));
             newChildren__30978[(int)(newChildrenTop__30808)] = newChild__33448;
             newChildrenTop__30808 += 1L;
@@ -436,10 +436,10 @@ public class RenderCustomPaint : RenderProxyBox
         oldChildrenBottom__30922 = (checked((long)(oldSemantics.Count)) - 1L);
         while ((((oldChildrenTop__30836 <= oldChildrenBottom__30922)) && ((newChildrenTop__30808 <= newChildrenBottom__30864))))
         {
-            global::Doroti.Generated.Framework.Semantics.SemanticsNode oldChild__34141 = oldSemantics[(int)(oldChildrenTop__30836)];
+            global::Doroti.Framework.Semantics.SemanticsNode oldChild__34141 = oldSemantics[(int)(oldChildrenTop__30836)];
             CustomPainterSemantics newSemantics__34217 = newChildSemantics[(int)(newChildrenTop__30808)];
             DartRuntimePrimitives.Assert(() => _canUpdateSemanticsChild(oldChild__34141, newSemantics__34217));
-            global::Doroti.Generated.Framework.Semantics.SemanticsNode newChild__34357 = _updateSemanticsChild(oldChild__34141, newSemantics__34217);
+            global::Doroti.Framework.Semantics.SemanticsNode newChild__34357 = _updateSemanticsChild(oldChild__34141, newSemantics__34217);
             DartRuntimePrimitives.Assert(() => (object.Equals(oldChild__34141, newChild__34357)));
             newChildren__30978[(int)(newChildrenTop__30808)] = newChild__34357;
             newChildrenTop__30808 += 1L;
@@ -453,316 +453,316 @@ public class RenderCustomPaint : RenderProxyBox
                 }
                 return true;
             });
-        return newChildren__30978.cast<global::Doroti.Generated.Framework.Semantics.SemanticsNode>().ToList();
+        return newChildren__30978.cast<global::Doroti.Framework.Semantics.SemanticsNode>().ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static bool _canUpdateSemanticsChild(global::Doroti.Generated.Framework.Semantics.SemanticsNode oldChild, CustomPainterSemantics newSemantics)
+    internal static bool _canUpdateSemanticsChild(global::Doroti.Framework.Semantics.SemanticsNode oldChild, CustomPainterSemantics newSemantics)
     {
-        return (object.Equals(((global::Doroti.Generated.Framework.Semantics.SemanticsNode)oldChild).key, ((CustomPainterSemantics)newSemantics).key));
+        return (object.Equals(((global::Doroti.Framework.Semantics.SemanticsNode)oldChild).key, ((CustomPainterSemantics)newSemantics).key));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Generated.Framework.Semantics.SemanticsNode _updateSemanticsChild(global::Doroti.Generated.Framework.Semantics.SemanticsNode? oldChild, CustomPainterSemantics newSemantics)
+    internal static global::Doroti.Framework.Semantics.SemanticsNode _updateSemanticsChild(global::Doroti.Framework.Semantics.SemanticsNode? oldChild, CustomPainterSemantics newSemantics)
     {
         DartRuntimePrimitives.Assert(() => ((oldChild is null) || _canUpdateSemanticsChild(oldChild, newSemantics)));
-        global::Doroti.Generated.Framework.Semantics.SemanticsNode newChild__35556 = (oldChild ?? new global::Doroti.Generated.Framework.Semantics.SemanticsNode(key: ((CustomPainterSemantics)newSemantics).key));
-        global::Doroti.Generated.Framework.Semantics.SemanticsProperties properties__35648 = ((CustomPainterSemantics)newSemantics).properties;
-        var config__35696 = new global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration();
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).role is not null))
+        global::Doroti.Framework.Semantics.SemanticsNode newChild__35556 = (oldChild ?? new global::Doroti.Framework.Semantics.SemanticsNode(key: ((CustomPainterSemantics)newSemantics).key));
+        global::Doroti.Framework.Semantics.SemanticsProperties properties__35648 = ((CustomPainterSemantics)newSemantics).properties;
+        var config__35696 = new global::Doroti.Framework.Semantics.SemanticsConfiguration();
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).role is not null))
         {
-            config__35696.role = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).role);
+            config__35696.role = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).role);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).sortKey is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).sortKey is not null))
         {
-            config__35696.sortKey = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).sortKey;
+            config__35696.sortKey = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).sortKey;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).@checked is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).@checked is not null))
         {
-            config__35696.isChecked = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).@checked;
+            config__35696.isChecked = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).@checked;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).mixed is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).mixed is not null))
         {
-            config__35696.isCheckStateMixed = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).mixed;
+            config__35696.isCheckStateMixed = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).mixed;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).selected is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).selected is not null))
         {
-            config__35696.isSelected = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).selected);
+            config__35696.isSelected = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).selected);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).button is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).button is not null))
         {
-            config__35696.isButton = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).button);
+            config__35696.isButton = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).button);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).expanded is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).expanded is not null))
         {
-            config__35696.isExpanded = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).expanded;
+            config__35696.isExpanded = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).expanded;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).link is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).link is not null))
         {
-            config__35696.isLink = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).link);
+            config__35696.isLink = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).link);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).linkUrl is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).linkUrl is not null))
         {
-            config__35696.linkUrl = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).linkUrl;
+            config__35696.linkUrl = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).linkUrl;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).textField is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).textField is not null))
         {
-            config__35696.isTextField = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).textField);
+            config__35696.isTextField = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).textField);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).slider is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).slider is not null))
         {
-            config__35696.isSlider = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).slider);
+            config__35696.isSlider = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).slider);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).keyboardKey is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).keyboardKey is not null))
         {
-            config__35696.isKeyboardKey = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).keyboardKey);
+            config__35696.isKeyboardKey = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).keyboardKey);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).readOnly is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).readOnly is not null))
         {
-            config__35696.isReadOnly = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).readOnly);
+            config__35696.isReadOnly = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).readOnly);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).focusable is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).focusable is not null))
         {
-            config__35696.isFocusable = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).focusable);
+            config__35696.isFocusable = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).focusable);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).focused is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).focused is not null))
         {
-            config__35696.isFocused = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).focused;
+            config__35696.isFocused = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).focused;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).accessibilityFocusBlockType is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).accessibilityFocusBlockType is not null))
         {
-            config__35696.accessibilityFocusBlockType = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).accessibilityFocusBlockType);
+            config__35696.accessibilityFocusBlockType = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).accessibilityFocusBlockType);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).enabled is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).enabled is not null))
         {
-            config__35696.isEnabled = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).enabled;
+            config__35696.isEnabled = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).enabled;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).inMutuallyExclusiveGroup is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).inMutuallyExclusiveGroup is not null))
         {
-            config__35696.isInMutuallyExclusiveGroup = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).inMutuallyExclusiveGroup);
+            config__35696.isInMutuallyExclusiveGroup = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).inMutuallyExclusiveGroup);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).obscured is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).obscured is not null))
         {
-            config__35696.isObscured = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).obscured);
+            config__35696.isObscured = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).obscured);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).multiline is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).multiline is not null))
         {
-            config__35696.isMultiline = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).multiline);
+            config__35696.isMultiline = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).multiline);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).hidden is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).hidden is not null))
         {
-            config__35696.isHidden = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).hidden);
+            config__35696.isHidden = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).hidden);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).header is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).header is not null))
         {
-            config__35696.isHeader = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).header);
+            config__35696.isHeader = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).header);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).headingLevel is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).headingLevel is not null))
         {
-            config__35696.headingLevel = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).headingLevel);
+            config__35696.headingLevel = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).headingLevel);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).scopesRoute is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).scopesRoute is not null))
         {
-            config__35696.scopesRoute = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).scopesRoute);
+            config__35696.scopesRoute = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).scopesRoute);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).namesRoute is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).namesRoute is not null))
         {
-            config__35696.namesRoute = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).namesRoute);
+            config__35696.namesRoute = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).namesRoute);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).liveRegion is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).liveRegion is not null))
         {
-            config__35696.liveRegion = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).liveRegion);
+            config__35696.liveRegion = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).liveRegion);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).isRequired is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).isRequired is not null))
         {
-            config__35696.isRequired = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).isRequired;
+            config__35696.isRequired = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).isRequired;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).maxValueLength is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).maxValueLength is not null))
         {
-            config__35696.maxValueLength = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).maxValueLength;
+            config__35696.maxValueLength = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).maxValueLength;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).currentValueLength is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).currentValueLength is not null))
         {
-            config__35696.currentValueLength = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).currentValueLength;
+            config__35696.currentValueLength = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).currentValueLength;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).toggled is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).toggled is not null))
         {
-            config__35696.isToggled = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).toggled;
+            config__35696.isToggled = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).toggled;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).image is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).image is not null))
         {
-            config__35696.isImage = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).image);
+            config__35696.isImage = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).image);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).label is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).label is not null))
         {
-            config__35696.label = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).label!;
+            config__35696.label = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).label!;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).value is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).value is not null))
         {
-            config__35696.value = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).value!;
+            config__35696.value = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).value!;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).increasedValue is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).increasedValue is not null))
         {
-            config__35696.increasedValue = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).increasedValue!;
+            config__35696.increasedValue = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).increasedValue!;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).decreasedValue is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).decreasedValue is not null))
         {
-            config__35696.decreasedValue = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).decreasedValue!;
+            config__35696.decreasedValue = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).decreasedValue!;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).hint is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).hint is not null))
         {
-            config__35696.hint = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).hint!;
+            config__35696.hint = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).hint!;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).identifier is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).identifier is not null))
         {
-            config__35696.identifier = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).identifier!;
+            config__35696.identifier = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).identifier!;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).traversalParentIdentifier is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).traversalParentIdentifier is not null))
         {
-            config__35696.traversalParentIdentifier = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).traversalParentIdentifier;
+            config__35696.traversalParentIdentifier = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).traversalParentIdentifier;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).traversalChildIdentifier is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).traversalChildIdentifier is not null))
         {
-            config__35696.traversalChildIdentifier = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).traversalChildIdentifier;
+            config__35696.traversalChildIdentifier = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).traversalChildIdentifier;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).tooltip is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).tooltip is not null))
         {
-            config__35696.tooltip = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).tooltip!;
+            config__35696.tooltip = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).tooltip!;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).hintOverrides is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).hintOverrides is not null))
         {
-            config__35696.hintOverrides = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).hintOverrides;
+            config__35696.hintOverrides = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).hintOverrides;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).tagForChildren is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).tagForChildren is not null))
         {
-            config__35696.addTagForChildren(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).tagForChildren!);
+            config__35696.addTagForChildren(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).tagForChildren!);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).controlsNodes is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).controlsNodes is not null))
         {
-            config__35696.controlsNodes = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).controlsNodes;
+            config__35696.controlsNodes = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).controlsNodes;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).hint is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).hint is not null))
         {
-            config__35696.hint = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).hint!;
+            config__35696.hint = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).hint!;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).textDirection is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).textDirection is not null))
         {
-            config__35696.textDirection = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).textDirection;
+            config__35696.textDirection = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).textDirection;
         }
-        if ((!object.Equals(((global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration)config__35696).validationResult, ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).validationResult)))
+        if ((!object.Equals(((global::Doroti.Framework.Semantics.SemanticsConfiguration)config__35696).validationResult, ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).validationResult)))
         {
-            config__35696.validationResult = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).validationResult;
+            config__35696.validationResult = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).validationResult;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).hitTestBehavior is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).hitTestBehavior is not null))
         {
-            config__35696.hitTestBehavior = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).hitTestBehavior);
+            config__35696.hitTestBehavior = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).hitTestBehavior);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).inputType is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).inputType is not null))
         {
-            config__35696.inputType = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).inputType);
+            config__35696.inputType = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).inputType);
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).minValue is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).minValue is not null))
         {
-            config__35696.minValue = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).minValue;
+            config__35696.minValue = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).minValue;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).maxValue is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).maxValue is not null))
         {
-            config__35696.maxValue = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).maxValue;
+            config__35696.maxValue = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).maxValue;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onTap is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onTap is not null))
         {
-            config__35696.onTap = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onTap;
+            config__35696.onTap = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onTap;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onLongPress is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onLongPress is not null))
         {
-            config__35696.onLongPress = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onLongPress;
+            config__35696.onLongPress = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onLongPress;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onScrollLeft is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onScrollLeft is not null))
         {
-            config__35696.onScrollLeft = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onScrollLeft;
+            config__35696.onScrollLeft = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onScrollLeft;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onScrollRight is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onScrollRight is not null))
         {
-            config__35696.onScrollRight = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onScrollRight;
+            config__35696.onScrollRight = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onScrollRight;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onScrollUp is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onScrollUp is not null))
         {
-            config__35696.onScrollUp = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onScrollUp;
+            config__35696.onScrollUp = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onScrollUp;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onScrollDown is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onScrollDown is not null))
         {
-            config__35696.onScrollDown = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onScrollDown;
+            config__35696.onScrollDown = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onScrollDown;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onIncrease is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onIncrease is not null))
         {
-            config__35696.onIncrease = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onIncrease;
+            config__35696.onIncrease = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onIncrease;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onDecrease is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onDecrease is not null))
         {
-            config__35696.onDecrease = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onDecrease;
+            config__35696.onDecrease = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onDecrease;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onCopy is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onCopy is not null))
         {
-            config__35696.onCopy = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onCopy;
+            config__35696.onCopy = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onCopy;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onCut is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onCut is not null))
         {
-            config__35696.onCut = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onCut;
+            config__35696.onCut = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onCut;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onPaste is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onPaste is not null))
         {
-            config__35696.onPaste = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onPaste;
+            config__35696.onPaste = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onPaste;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onMoveCursorForwardByCharacter is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onMoveCursorForwardByCharacter is not null))
         {
-            config__35696.onMoveCursorForwardByCharacter = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onMoveCursorForwardByCharacter;
+            config__35696.onMoveCursorForwardByCharacter = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onMoveCursorForwardByCharacter;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onMoveCursorBackwardByCharacter is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onMoveCursorBackwardByCharacter is not null))
         {
-            config__35696.onMoveCursorBackwardByCharacter = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onMoveCursorBackwardByCharacter;
+            config__35696.onMoveCursorBackwardByCharacter = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onMoveCursorBackwardByCharacter;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onMoveCursorForwardByWord is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onMoveCursorForwardByWord is not null))
         {
-            config__35696.onMoveCursorForwardByWord = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onMoveCursorForwardByWord;
+            config__35696.onMoveCursorForwardByWord = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onMoveCursorForwardByWord;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onMoveCursorBackwardByWord is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onMoveCursorBackwardByWord is not null))
         {
-            config__35696.onMoveCursorBackwardByWord = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onMoveCursorBackwardByWord;
+            config__35696.onMoveCursorBackwardByWord = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onMoveCursorBackwardByWord;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onSetSelection is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onSetSelection is not null))
         {
-            config__35696.onSetSelection = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onSetSelection;
+            config__35696.onSetSelection = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onSetSelection;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onSetText is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onSetText is not null))
         {
-            config__35696.onSetText = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onSetText;
+            config__35696.onSetText = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onSetText;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onDidGainAccessibilityFocus is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onDidGainAccessibilityFocus is not null))
         {
-            config__35696.onDidGainAccessibilityFocus = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onDidGainAccessibilityFocus;
+            config__35696.onDidGainAccessibilityFocus = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onDidGainAccessibilityFocus;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onDidLoseAccessibilityFocus is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onDidLoseAccessibilityFocus is not null))
         {
-            config__35696.onDidLoseAccessibilityFocus = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onDidLoseAccessibilityFocus;
+            config__35696.onDidLoseAccessibilityFocus = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onDidLoseAccessibilityFocus;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onFocus is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onFocus is not null))
         {
-            config__35696.onFocus = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onFocus;
+            config__35696.onFocus = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onFocus;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onDismiss is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onDismiss is not null))
         {
-            config__35696.onDismiss = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onDismiss;
+            config__35696.onDismiss = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onDismiss;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onExpand is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onExpand is not null))
         {
-            config__35696.onExpand = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onExpand;
+            config__35696.onExpand = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onExpand;
         }
-        if ((((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onCollapse is not null))
+        if ((((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onCollapse is not null))
         {
-            config__35696.onCollapse = ((global::Doroti.Generated.Framework.Semantics.SemanticsProperties)properties__35648).onCollapse;
+            config__35696.onCollapse = ((global::Doroti.Framework.Semantics.SemanticsProperties)properties__35648).onCollapse;
         }
-        newChild__35556.updateWith(config: config__35696, childrenInInversePaintOrder: new List<global::Doroti.Generated.Framework.Semantics.SemanticsNode>());
-        ((Func<global::Doroti.Generated.Framework.Semantics.SemanticsNode>)(() =>
+        newChild__35556.updateWith(config: config__35696, childrenInInversePaintOrder: new List<global::Doroti.Framework.Semantics.SemanticsNode>());
+        ((Func<global::Doroti.Framework.Semantics.SemanticsNode>)(() =>
 {
     var __cascade = newChild__35556;
     __cascade.rect = ((CustomPainterSemantics)newSemantics).rect;

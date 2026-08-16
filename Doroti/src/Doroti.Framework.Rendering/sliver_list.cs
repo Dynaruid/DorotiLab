@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public class RenderSliverList : RenderSliverMultiBoxAdaptor
 {
@@ -88,7 +88,7 @@ public class RenderSliverList : RenderSliverMultiBoxAdaptor
                 }
             }
             double firstChildScrollOffset__6718 = (earliestScrollOffset__5356 - paintExtentOf(firstChild!));
-            if ((firstChildScrollOffset__6718 < -global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+            if ((firstChildScrollOffset__6718 < -global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
             {
                 geometry = new SliverGeometry(scrollOffsetCorrection: -firstChildScrollOffset__6718);
                 var childParentData__7151 = ((SliverMultiBoxAdaptorParentData?)(object?)firstChild!.parentData!)!;
@@ -101,8 +101,8 @@ public class RenderSliverList : RenderSliverMultiBoxAdaptor
             leadingChildWithLayout__4042 = earliestUsefulChild__4107;
             trailingChildWithLayout__4066 ??= earliestUsefulChild__4107;
         }
-        DartRuntimePrimitives.Assert(() => (DartRuntimePrimitives.RequireValue(childScrollOffset(firstChild!)) > -global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance));
-        if ((scrollOffset__2115 < global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+        DartRuntimePrimitives.Assert(() => (DartRuntimePrimitives.RequireValue(childScrollOffset(firstChild!)) > -global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance));
+        if ((scrollOffset__2115 < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
         {
             while ((indexOf(firstChild!) > 0L))
             {
@@ -112,7 +112,7 @@ public class RenderSliverList : RenderSliverMultiBoxAdaptor
                 double firstChildScrollOffset__8422 = (earliestScrollOffset__8015 - paintExtentOf(firstChild!));
                 var childParentData__8512 = ((SliverMultiBoxAdaptorParentData?)(object?)firstChild!.parentData!)!;
                 childParentData__8512.layoutOffset = 0.0;
-                if ((firstChildScrollOffset__8422 < -global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+                if ((firstChildScrollOffset__8422 < -global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
                 {
                     geometry = new SliverGeometry(scrollOffsetCorrection: -firstChildScrollOffset__8422);
                     return;

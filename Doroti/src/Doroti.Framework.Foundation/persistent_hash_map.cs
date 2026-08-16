@@ -3,7 +3,7 @@
 using System.Collections;
 using System.Numerics;
 
-namespace Doroti.Generated.Framework.Foundation;
+namespace Doroti.Framework.Foundation;
 
 /// <summary>An immutable map value with structural copy-on-write operations.</summary>
 public sealed class PersistentHashMap<TKey, TValue> : IReadOnlyDictionary<TKey, TValue>

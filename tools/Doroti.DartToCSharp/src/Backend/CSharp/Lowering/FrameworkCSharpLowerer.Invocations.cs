@@ -94,7 +94,7 @@ internal sealed partial class FrameworkCSharpLowerer
         var name = node.Text(CoreProperty.name) ?? "missing";
         if (name == "kLongPressTimeout")
         {
-            builder.Append("global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kLongPressTimeout");
+            builder.Append("global::Doroti.Framework.Gestures.ConstantsLibrary.kLongPressTimeout");
             return;
         }
         var prefix = node.Text(CoreProperty.prefix) ?? "missing";
@@ -107,28 +107,28 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             builder.Append("((__event) => ").Append(SafeIdentifier(prefix))
                 .Append(".dispatchPointerEvent(global::Doroti.Ui.PointerEvent.FromFrameworkEvent(")
-                .Append("__event is global::Doroti.Generated.Framework.Gestures.PointerDownEvent ? 1L : ")
-                .Append("__event is global::Doroti.Generated.Framework.Gestures.PointerUpEvent ? 2L : ")
-                .Append("__event is global::Doroti.Generated.Framework.Gestures.PointerCancelEvent ? 3L : ")
-                .Append("__event is global::Doroti.Generated.Framework.Gestures.PointerHoverEvent ? 4L : ")
-                .Append("__event is global::Doroti.Generated.Framework.Gestures.PointerMoveEvent ? 5L : 0L, ")
+                .Append("__event is global::Doroti.Framework.Gestures.PointerDownEvent ? 1L : ")
+                .Append("__event is global::Doroti.Framework.Gestures.PointerUpEvent ? 2L : ")
+                .Append("__event is global::Doroti.Framework.Gestures.PointerCancelEvent ? 3L : ")
+                .Append("__event is global::Doroti.Framework.Gestures.PointerHoverEvent ? 4L : ")
+                .Append("__event is global::Doroti.Framework.Gestures.PointerMoveEvent ? 5L : 0L, ")
                 .Append("__event.pointer, __event.embedderId, __event.platformData, __event.timeStamp, __event.position, __event.kind, ")
                 .Append("__event.orientation, __event.pressure, __event.size, __event.radiusMajor, __event.radiusMinor)))");
             return;
         }
         if (prefix == "RenderViewportBase" && name == "showInViewport")
         {
-            builder.Append("global::Doroti.Generated.Framework.Rendering.RenderViewportBase<global::Doroti.Generated.Framework.Rendering.SliverPhysicalContainerParentData>.showInViewport");
+            builder.Append("global::Doroti.Framework.Rendering.RenderViewportBase<global::Doroti.Framework.Rendering.SliverPhysicalContainerParentData>.showInViewport");
             return;
         }
         if (name == "debugFormatDouble")
         {
-            builder.Append("(value => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugFormatDouble(value))");
+            builder.Append("(value => global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value))");
             return;
         }
         if (prefix == "SemanticsBinding")
         {
-            builder.Append("global::Doroti.Generated.Framework.Semantics.SemanticsBinding.")
+            builder.Append("global::Doroti.Framework.Semantics.SemanticsBinding.")
                 .Append(SafeIdentifier(name));
             return;
         }
@@ -836,11 +836,11 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.Append("((__event) => ");
             LowerExpression(builder, target, declaration, package, library, inputPath, diagnostics);
             builder.Append(".dispatchPointerEvent(global::Doroti.Ui.PointerEvent.FromFrameworkEvent(")
-                .Append("__event is global::Doroti.Generated.Framework.Gestures.PointerDownEvent ? 1L : ")
-                .Append("__event is global::Doroti.Generated.Framework.Gestures.PointerUpEvent ? 2L : ")
-                .Append("__event is global::Doroti.Generated.Framework.Gestures.PointerCancelEvent ? 3L : ")
-                .Append("__event is global::Doroti.Generated.Framework.Gestures.PointerHoverEvent ? 4L : ")
-                .Append("__event is global::Doroti.Generated.Framework.Gestures.PointerMoveEvent ? 5L : 0L, ")
+                .Append("__event is global::Doroti.Framework.Gestures.PointerDownEvent ? 1L : ")
+                .Append("__event is global::Doroti.Framework.Gestures.PointerUpEvent ? 2L : ")
+                .Append("__event is global::Doroti.Framework.Gestures.PointerCancelEvent ? 3L : ")
+                .Append("__event is global::Doroti.Framework.Gestures.PointerHoverEvent ? 4L : ")
+                .Append("__event is global::Doroti.Framework.Gestures.PointerMoveEvent ? 5L : 0L, ")
                 .Append("__event.pointer, __event.embedderId, __event.platformData, __event.timeStamp, __event.position, __event.kind, ")
                 .Append("__event.orientation, __event.pressure, __event.size, __event.radiusMajor, __event.radiusMinor)))");
             return;
@@ -1555,17 +1555,17 @@ internal sealed partial class FrameworkCSharpLowerer
                 continue;
             }
             if (expectedArgumentType is "Widget" or "Widget?" or
-                    "global::Doroti.Generated.Framework.Widgets.Widget" or
-                    "global::Doroti.Generated.Framework.Widgets.Widget?" &&
+                    "global::Doroti.Framework.Widgets.Widget" or
+                    "global::Doroti.Framework.Widgets.Widget?" &&
                 actualArgumentType is not ("Widget" or "Widget?" or
-                    "global::Doroti.Generated.Framework.Widgets.Widget" or
-                    "global::Doroti.Generated.Framework.Widgets.Widget?") &&
+                    "global::Doroti.Framework.Widgets.Widget" or
+                    "global::Doroti.Framework.Widgets.Widget?") &&
                 actualArgumentType.TrimEnd('?') is
                     "PreferredSizeWidget" or "ObstructingPreferredSizeWidget" or
-                    "global::Doroti.Generated.Framework.Widgets.PreferredSizeWidget" or
-                    "global::Doroti.Generated.Framework.Cupertino.ObstructingPreferredSizeWidget")
+                    "global::Doroti.Framework.Widgets.PreferredSizeWidget" or
+                    "global::Doroti.Framework.Cupertino.ObstructingPreferredSizeWidget")
             {
-                builder.Append("DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(");
+                builder.Append("DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(");
                 LowerExpression(builder, argumentValue, declaration, package, library, inputPath, diagnostics);
                 builder.Append(')');
                 continue;
@@ -1617,7 +1617,7 @@ internal sealed partial class FrameworkCSharpLowerer
             }
             if (invocationName == "_updateParentData" && index == 0)
             {
-                builder.Append("DartRuntimePrimitives.ConvertValue<ParentDataWidget<global::Doroti.Generated.Framework.Rendering.ParentData>>(");
+                builder.Append("DartRuntimePrimitives.ConvertValue<ParentDataWidget<global::Doroti.Framework.Rendering.ParentData>>(");
                 LowerExpression(builder, argumentValue, declaration, package, library, inputPath, diagnostics);
                 builder.Append(')');
                 continue;
@@ -1968,7 +1968,7 @@ internal sealed partial class FrameworkCSharpLowerer
             if (expectedArgumentType.Contains("AnimationStatusListener", StringComparison.Ordinal) &&
                 actualDelegateType.StartsWith("Func<", StringComparison.Ordinal))
             {
-                builder.Append("(global::Doroti.Generated.Framework.Animation.AnimationStatus __status) => { _ = ");
+                builder.Append("(global::Doroti.Framework.Animation.AnimationStatus __status) => { _ = ");
                 LowerExpression(builder, argumentValue, declaration, package, library, inputPath, diagnostics);
                 builder.Append("(__status); }");
                 continue;
@@ -2075,7 +2075,7 @@ internal sealed partial class FrameworkCSharpLowerer
             {
                 // RenderObjectElement.renderObject is typed at its base contract,
                 // but _RawViewElement's Dart invariant guarantees RenderView.
-                builder.Append("DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Rendering.RenderView>(");
+                builder.Append("DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderView>(");
                 LowerExpression(builder, argumentValue, declaration, package, library, inputPath, diagnostics);
                 builder.Append(')');
             }

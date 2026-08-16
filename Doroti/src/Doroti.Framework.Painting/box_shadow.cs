@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public class BoxShadow : Shadow
 {
@@ -36,7 +36,7 @@ public class BoxShadow : Shadow
 }))();
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Generated.Framework.Painting.DebugLibrary.debugDisableShadows)
+                if (global::Doroti.Framework.Painting.DebugLibrary.debugDisableShadows)
                 {
                     result__2443.maskFilter = null;
                 }
@@ -105,6 +105,6 @@ public class BoxShadow : Shadow
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(color, DartRuntimePrimitives.RequireValue(offset), DartRuntimePrimitives.RequireValue(blurRadius), this.spreadRadius, this.blurStyle);
-    public override string ToString() => $"BoxShadow({color}, {DartRuntimePrimitives.RequireValue(offset)}, {(global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugFormatDouble(DartRuntimePrimitives.RequireValue(blurRadius)))}, {(global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugFormatDouble(this.spreadRadius))}, {this.blurStyle})";
+    public override string ToString() => $"BoxShadow({color}, {DartRuntimePrimitives.RequireValue(offset)}, {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(DartRuntimePrimitives.RequireValue(blurRadius)))}, {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(this.spreadRadius))}, {this.blurStyle})";
 }
 

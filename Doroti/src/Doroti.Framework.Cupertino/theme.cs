@@ -12,52 +12,52 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Cupertino;
+namespace Doroti.Framework.Cupertino;
 
 public static partial class ThemeLibrary
 {
     internal static _CupertinoThemeDefaults__theme _kDefaultTheme = new _CupertinoThemeDefaults__theme(null, CupertinoColors.systemBlue, CupertinoColors.white, CupertinoDynamicColor.CreateWithBrightness(color: new global::Doroti.Ui.Color(4042914297L), darkColor: new global::Doroti.Ui.Color(4028439837L)), CupertinoColors.systemBackground, CupertinoColors.systemBlue, false, new _CupertinoTextThemeDefaults__theme(CupertinoColors.label, CupertinoColors.inactiveGray));
 }
 
-public class CupertinoTheme : global::Doroti.Generated.Framework.Widgets.StatelessWidget
+public class CupertinoTheme : global::Doroti.Framework.Widgets.StatelessWidget
 {
     public virtual CupertinoThemeData data { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.Widget child { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
 
-    public CupertinoTheme(global::Doroti.Generated.Framework.Foundation.Key? key = null, CupertinoThemeData data = default!, global::Doroti.Generated.Framework.Widgets.Widget child = default!) : base(key: key)
+    public CupertinoTheme(global::Doroti.Framework.Foundation.Key? key = null, CupertinoThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key)
     {
         this.data = data;
         this.child = child;
     }
 
-    public static CupertinoThemeData of(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static CupertinoThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
         InheritedCupertinoTheme? inheritedTheme__2778 = ((InheritedCupertinoTheme?)(object?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
         return ((CupertinoThemeData)(object?)((inheritedTheme__2778?.theme.data ?? new CupertinoThemeData())).resolveFrom(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Ui.Brightness brightnessOf(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static global::Doroti.Ui.Brightness brightnessOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
         InheritedCupertinoTheme? inheritedTheme__3818 = ((InheritedCupertinoTheme?)(object?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
         return ((inheritedTheme__3818?.theme.data.brightness ?? (Brightness)MediaQuery.platformBrightnessOf(context)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Ui.Brightness? maybeBrightnessOf(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static global::Doroti.Ui.Brightness? maybeBrightnessOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
         InheritedCupertinoTheme? inheritedTheme__4825 = ((InheritedCupertinoTheme?)(object?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
         return ((inheritedTheme__4825?.theme.data.brightness ?? (Brightness)MediaQuery.maybePlatformBrightnessOf(context)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new InheritedCupertinoTheme(theme: this, child: new global::Doroti.Generated.Framework.Widgets.IconTheme(data: new CupertinoIconThemeData(color: ((CupertinoThemeData)this.data).primaryColor), child: this.child)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new InheritedCupertinoTheme(theme: this, child: new global::Doroti.Framework.Widgets.IconTheme(data: new CupertinoIconThemeData(color: ((CupertinoThemeData)this.data).primaryColor), child: this.child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         this.data.debugFillProperties(properties);
@@ -65,25 +65,25 @@ public class CupertinoTheme : global::Doroti.Generated.Framework.Widgets.Statele
 
 }
 
-public class InheritedCupertinoTheme : global::Doroti.Generated.Framework.Widgets.InheritedTheme
+public class InheritedCupertinoTheme : global::Doroti.Framework.Widgets.InheritedTheme
 {
     public virtual CupertinoTheme theme { get; private set; } = default!;
 
-    public InheritedCupertinoTheme(global::Doroti.Generated.Framework.Foundation.Key? key = null, CupertinoTheme theme = default!, global::Doroti.Generated.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public InheritedCupertinoTheme(global::Doroti.Framework.Foundation.Key? key = null, CupertinoTheme theme = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
     {
         this.theme = theme;
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget wrap(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Widgets.Widget child)
+    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new CupertinoTheme(data: ((CupertinoTheme)this.theme).data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoTheme(data: ((CupertinoTheme)this.theme).data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Generated.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(((CupertinoTheme)this.theme).data, ((InheritedCupertinoTheme)oldWidget).theme.data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(((CupertinoTheme)this.theme).data, ((InheritedCupertinoTheme)oldWidget).theme.data)));
 }
 
-public class CupertinoThemeData : NoDefaultCupertinoThemeData, global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class CupertinoThemeData : NoDefaultCupertinoThemeData, global::Doroti.Framework.Foundation.Diagnosticable
 {
     internal virtual _CupertinoThemeDefaults__theme _defaults { get; private set; } = default!;
 
@@ -121,7 +121,7 @@ public class CupertinoThemeData : NoDefaultCupertinoThemeData, global::Doroti.Ge
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override CupertinoThemeData resolveFrom(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override CupertinoThemeData resolveFrom(global::Doroti.Framework.Widgets.BuildContext context)
     {
         Color? convertColor(Color? color)
         {
@@ -138,16 +138,16 @@ public class CupertinoThemeData : NoDefaultCupertinoThemeData, global::Doroti.Ge
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         var defaultData__12086 = new CupertinoThemeData();
-        properties.add(new global::Doroti.Generated.Framework.Foundation.EnumProperty<global::Doroti.Ui.Brightness>("brightness", this.brightness, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.Brightness>("brightness", this.brightness, defaultValue: null));
         properties.add(ColorsLibrary.createCupertinoColorProperty("primaryColor", this.primaryColor, defaultValue: ((CupertinoThemeData)defaultData__12086).primaryColor));
         properties.add(ColorsLibrary.createCupertinoColorProperty("primaryContrastingColor", this.primaryContrastingColor, defaultValue: ((CupertinoThemeData)defaultData__12086).primaryContrastingColor));
         properties.add(ColorsLibrary.createCupertinoColorProperty("barBackgroundColor", this.barBackgroundColor, defaultValue: ((CupertinoThemeData)defaultData__12086).barBackgroundColor));
         properties.add(ColorsLibrary.createCupertinoColorProperty("scaffoldBackgroundColor", this.scaffoldBackgroundColor, defaultValue: ((CupertinoThemeData)defaultData__12086).scaffoldBackgroundColor));
         properties.add(ColorsLibrary.createCupertinoColorProperty("selectionHandleColor", this.selectionHandleColor, defaultValue: ((CupertinoThemeData)defaultData__12086).selectionHandleColor));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<bool>("applyThemeToAll", this.applyThemeToAll, defaultValue: ((CupertinoThemeData)defaultData__12086).applyThemeToAll));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("applyThemeToAll", this.applyThemeToAll, defaultValue: ((CupertinoThemeData)defaultData__12086).applyThemeToAll));
         this.textTheme.debugFillProperties(properties);
     }
 
@@ -167,7 +167,7 @@ public class CupertinoThemeData : NoDefaultCupertinoThemeData, global::Doroti.Ge
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.brightness, this.primaryColor, this.primaryContrastingColor, this.textTheme, this.barBackgroundColor, this.scaffoldBackgroundColor, this.selectionHandleColor, this.applyThemeToAll));
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;
@@ -212,7 +212,7 @@ public class NoDefaultCupertinoThemeData
     }
 
     public virtual NoDefaultCupertinoThemeData noDefault() => this;
-    public virtual NoDefaultCupertinoThemeData resolveFrom(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public virtual NoDefaultCupertinoThemeData resolveFrom(global::Doroti.Framework.Widgets.BuildContext context)
     {
         Color? convertColor(Color? color)
         {
@@ -270,7 +270,7 @@ internal class _CupertinoThemeDefaults__theme
         this.textThemeDefaults = textThemeDefaults;
     }
 
-    public virtual _CupertinoThemeDefaults__theme resolveFrom(global::Doroti.Generated.Framework.Widgets.BuildContext context, bool resolveTextTheme)
+    public virtual _CupertinoThemeDefaults__theme resolveFrom(global::Doroti.Framework.Widgets.BuildContext context, bool resolveTextTheme)
     {
         Color convertColor(Color color)
         {
@@ -294,7 +294,7 @@ public class _CupertinoTextThemeDefaults__theme
         this.inactiveGray = inactiveGray;
     }
 
-    public virtual _CupertinoTextThemeDefaults__theme resolveFrom(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public virtual _CupertinoTextThemeDefaults__theme resolveFrom(global::Doroti.Framework.Widgets.BuildContext context)
     {
         return new _CupertinoTextThemeDefaults__theme(CupertinoDynamicColor.resolve(this.labelColor, context), CupertinoDynamicColor.resolve(this.inactiveGray, context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -319,10 +319,10 @@ internal class _DefaultCupertinoTextThemeData__theme : CupertinoTextThemeData
         this.inactiveGray = inactiveGray;
     }
 
-    public override global::Doroti.Generated.Framework.Painting.TextStyle textStyle => base.textStyle.copyWith(color: this.labelColor);
-    public override global::Doroti.Generated.Framework.Painting.TextStyle tabLabelTextStyle => base.tabLabelTextStyle.copyWith(color: this.inactiveGray);
-    public override global::Doroti.Generated.Framework.Painting.TextStyle navTitleTextStyle => base.navTitleTextStyle.copyWith(color: this.labelColor);
-    public override global::Doroti.Generated.Framework.Painting.TextStyle navLargeTitleTextStyle => base.navLargeTitleTextStyle.copyWith(color: this.labelColor);
-    public override global::Doroti.Generated.Framework.Painting.TextStyle pickerTextStyle => base.pickerTextStyle.copyWith(color: this.labelColor);
-    public override global::Doroti.Generated.Framework.Painting.TextStyle dateTimePickerTextStyle => base.dateTimePickerTextStyle.copyWith(color: this.labelColor);
+    public override global::Doroti.Framework.Painting.TextStyle textStyle => base.textStyle.copyWith(color: this.labelColor);
+    public override global::Doroti.Framework.Painting.TextStyle tabLabelTextStyle => base.tabLabelTextStyle.copyWith(color: this.inactiveGray);
+    public override global::Doroti.Framework.Painting.TextStyle navTitleTextStyle => base.navTitleTextStyle.copyWith(color: this.labelColor);
+    public override global::Doroti.Framework.Painting.TextStyle navLargeTitleTextStyle => base.navLargeTitleTextStyle.copyWith(color: this.labelColor);
+    public override global::Doroti.Framework.Painting.TextStyle pickerTextStyle => base.pickerTextStyle.copyWith(color: this.labelColor);
+    public override global::Doroti.Framework.Painting.TextStyle dateTimePickerTextStyle => base.dateTimePickerTextStyle.copyWith(color: this.labelColor);
 }

@@ -1,11 +1,11 @@
 using Doroti.Framework;
 using Doroti.Hosting;
 using Doroti.Ui;
-using Doroti.Generated.Framework.Foundation;
-using Doroti.Generated.Framework.Painting;
-using Doroti.Generated.Framework.Widgets;
+using Doroti.Framework.Foundation;
+using Doroti.Framework.Painting;
+using Doroti.Framework.Widgets;
 using Locale = Doroti.Ui.Locale;
-using Material = Doroti.Generated.Framework.Material;
+using Material = Doroti.Framework.Material;
 using Size = Doroti.Ui.Size;
 using UiColor = Doroti.Ui.Color;
 
@@ -50,7 +50,7 @@ public sealed class CounterPageState : State<CounterPage>
             foregroundColor: new UiColor(0xff21005dL)),
         body: new Center(
             child: new Column(
-                mainAxisAlignment: Doroti.Generated.Framework.Rendering.MainAxisAlignment.center,
+                mainAxisAlignment: Doroti.Framework.Rendering.MainAxisAlignment.center,
                 spacing: 16,
                 children:
                 [

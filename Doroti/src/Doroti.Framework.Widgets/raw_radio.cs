@@ -12,14 +12,14 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public delegate Widget RadioBuilder(BuildContext context, dynamic state);
 
 public class RawRadio<T> : StatefulWidget
 {
     public virtual T value { get; private set; } = default!;
-    public virtual WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor> mouseCursor { get; private set; } = default!;
+    public virtual WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> mouseCursor { get; private set; } = default!;
     public virtual bool toggleable { get; private set; } = default!;
     public virtual FocusNode focusNode { get; private set; } = default!;
     public virtual bool autofocus { get; private set; } = default!;
@@ -27,7 +27,7 @@ public class RawRadio<T> : StatefulWidget
     public virtual bool enabled { get; private set; } = default!;
     public virtual RadioGroupRegistry<T>? groupRegistry { get; private set; }
 
-    public RawRadio(global::Doroti.Generated.Framework.Foundation.Key? key = null, T value = default!, WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor> mouseCursor = default!, bool toggleable = default!, FocusNode focusNode = default!, bool autofocus = default!, RadioGroupRegistry<T>? groupRegistry = default!, bool enabled = default!, global::System.Func<BuildContext, dynamic, Widget> builder = default!) : base(key: key)
+    public RawRadio(global::Doroti.Framework.Foundation.Key? key = null, T value = default!, WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> mouseCursor = default!, bool toggleable = default!, FocusNode focusNode = default!, bool autofocus = default!, RadioGroupRegistry<T>? groupRegistry = default!, bool enabled = default!, global::System.Func<BuildContext, dynamic, Widget> builder = default!) : base(key: key)
     {
         this.value = value;
         this.mouseCursor = mouseCursor;
@@ -45,16 +45,16 @@ public class RawRadio<T> : StatefulWidget
 
 public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderStateMixin<RawRadio<T>>, ToggleableStateMixin<RawRadio<T>>, RadioClient<T>
 {
-    public virtual HashSet<global::Doroti.Generated.Framework.Scheduler.Ticker>? _tickers { get; set; } = default;
-    public virtual global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
-    public virtual global::Doroti.Generated.Framework.Animation.AnimationController _positionController { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Animation.CurvedAnimation _position { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Animation.AnimationController _reactionController { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Animation.CurvedAnimation _reaction { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Animation.CurvedAnimation _reactionHoverFade { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Animation.AnimationController _reactionHoverFadeController { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Animation.CurvedAnimation _reactionFocusFade { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Animation.AnimationController _reactionFocusFadeController { get; set; } = default!;
+    public virtual HashSet<global::Doroti.Framework.Scheduler.Ticker>? _tickers { get; set; } = default;
+    public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
+    public virtual global::Doroti.Framework.Animation.AnimationController _positionController { get; set; } = default!;
+    public virtual global::Doroti.Framework.Animation.CurvedAnimation _position { get; set; } = default!;
+    public virtual global::Doroti.Framework.Animation.AnimationController _reactionController { get; set; } = default!;
+    public virtual global::Doroti.Framework.Animation.CurvedAnimation _reaction { get; set; } = default!;
+    public virtual global::Doroti.Framework.Animation.CurvedAnimation _reactionHoverFade { get; set; } = default!;
+    public virtual global::Doroti.Framework.Animation.AnimationController _reactionHoverFadeController { get; set; } = default!;
+    public virtual global::Doroti.Framework.Animation.CurvedAnimation _reactionFocusFade { get; set; } = default!;
+    public virtual global::Doroti.Framework.Animation.AnimationController _reactionFocusFadeController { get; set; } = default!;
     public virtual Duration _reactionAnimationDuration { get; set; } = Duration.Create(milliseconds: 100L);
     private bool __late__actionMap_initialized;
     private DartMap<Type, dynamic> __late__actionMap = default!;
@@ -82,14 +82,14 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
     {
         registry = ((RawRadio<T>)(object)this.widget).groupRegistry;
         base.initState();
-        _positionController = new global::Doroti.Generated.Framework.Animation.AnimationController(duration: global::Doroti.Generated.Framework.Widgets.ToggleableLibrary._kToggleDuration, value: ((this.value == false) ? 0.0 : 1.0), vsync: this);
-        _position = new global::Doroti.Generated.Framework.Animation.CurvedAnimation(parent: this._positionController, curve: global::Doroti.Generated.Framework.Animation.Curves.easeIn, reverseCurve: global::Doroti.Generated.Framework.Animation.Curves.easeOut);
-        _reactionController = new global::Doroti.Generated.Framework.Animation.AnimationController(duration: this._reactionAnimationDuration, vsync: this);
-        _reaction = new global::Doroti.Generated.Framework.Animation.CurvedAnimation(parent: this._reactionController, curve: global::Doroti.Generated.Framework.Animation.Curves.fastOutSlowIn);
-        _reactionHoverFadeController = new global::Doroti.Generated.Framework.Animation.AnimationController(duration: global::Doroti.Generated.Framework.Widgets.ToggleableLibrary._kReactionFadeDuration, value: ((this._hovering || this._focused) ? 1.0 : 0.0), vsync: this);
-        _reactionHoverFade = new global::Doroti.Generated.Framework.Animation.CurvedAnimation(parent: this._reactionHoverFadeController, curve: global::Doroti.Generated.Framework.Animation.Curves.fastOutSlowIn);
-        _reactionFocusFadeController = new global::Doroti.Generated.Framework.Animation.AnimationController(duration: global::Doroti.Generated.Framework.Widgets.ToggleableLibrary._kReactionFadeDuration, value: ((this._hovering || this._focused) ? 1.0 : 0.0), vsync: this);
-        _reactionFocusFade = new global::Doroti.Generated.Framework.Animation.CurvedAnimation(parent: this._reactionFocusFadeController, curve: global::Doroti.Generated.Framework.Animation.Curves.fastOutSlowIn);
+        _positionController = new global::Doroti.Framework.Animation.AnimationController(duration: global::Doroti.Framework.Widgets.ToggleableLibrary._kToggleDuration, value: ((this.value == false) ? 0.0 : 1.0), vsync: this);
+        _position = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._positionController, curve: global::Doroti.Framework.Animation.Curves.easeIn, reverseCurve: global::Doroti.Framework.Animation.Curves.easeOut);
+        _reactionController = new global::Doroti.Framework.Animation.AnimationController(duration: this._reactionAnimationDuration, vsync: this);
+        _reaction = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._reactionController, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
+        _reactionHoverFadeController = new global::Doroti.Framework.Animation.AnimationController(duration: global::Doroti.Framework.Widgets.ToggleableLibrary._kReactionFadeDuration, value: ((this._hovering || this._focused) ? 1.0 : 0.0), vsync: this);
+        _reactionHoverFade = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._reactionHoverFadeController, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
+        _reactionFocusFadeController = new global::Doroti.Framework.Animation.AnimationController(duration: global::Doroti.Framework.Widgets.ToggleableLibrary._kReactionFadeDuration, value: ((this._hovering || this._focused) ? 1.0 : 0.0), vsync: this);
+        _reactionFocusFade = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._reactionFocusFadeController, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
     }
 
     internal virtual void _handleChanged(bool? selected)
@@ -138,19 +138,19 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
     {
         bool? accessibilitySelected__6412 = default!;
         string? semanticsHint__6447 = default!;
-        switch (global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.windows:
+            case global::Doroti.Framework.Foundation.TargetPlatform.android:
+            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
+            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
+            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
                 {
                     accessibilitySelected__6412 = null;
                     semanticsHint__6447 = null;
                     break;
                 }
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.iOS:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.macOS:
+            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
                 {
                     accessibilitySelected__6412 = this.value;
                     if (!((this.value ?? false)))
@@ -165,22 +165,22 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
+    public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
     {
         if ((this._tickerModeNotifier is null))
         {
             _updateTickerModeNotifier();
         }
         DartRuntimePrimitives.Assert(() => (this._tickerModeNotifier is not null));
-        this._tickers ??= new HashSet<global::Doroti.Generated.Framework.Scheduler.Ticker>();
+        this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
             __cascade.muted = !((TickerModeData)values__17506).enabled;
             __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
             return __cascade;        }))();
         this._tickers!.Add(result__17553);
-        return ((global::Doroti.Generated.Framework.Scheduler.Ticker)(object?)result__17553);
+        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -204,7 +204,7 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
         {
             TickerModeData values__18318 = this._tickerModeNotifier!.value;
             bool muted__18372 = !((TickerModeData)values__18318).enabled;
-            foreach (global::Doroti.Generated.Framework.Scheduler.Ticker ticker__18421 in this._tickers!)
+            foreach (global::Doroti.Framework.Scheduler.Ticker ticker__18421 in this._tickers!)
             {
                 ticker__18421.muted = muted__18372;
                 ticker__18421.forceFrames = ((TickerModeData)values__18318).forceFrames;
@@ -214,7 +214,7 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__18621 = ((global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__18621 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
         if ((object.Equals(newNotifier__18621, this._tickerModeNotifier)))
         {
             return;
@@ -224,18 +224,18 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
         this._tickerModeNotifier = newNotifier__18621;
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Generated.Framework.Scheduler.Ticker>>("tickers", this._tickers, description: ((this._tickers is not null) ? $"tracking {checked((long)(this._tickers!.Count))} ticker{((checked((long)(this._tickers!.Count)) == 1L) ? "" : "s")}" : null), defaultValue: default));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", this._tickers, description: ((this._tickers is not null) ? $"tracking {checked((long)(this._tickers!.Count))} ticker{((checked((long)(this._tickers!.Count)) == 1L) ? "" : "s")}" : null), defaultValue: default));
     }
 
-    public virtual global::Doroti.Generated.Framework.Animation.AnimationController positionController => this._positionController;
-    public virtual global::Doroti.Generated.Framework.Animation.CurvedAnimation position => this._position;
-    public virtual global::Doroti.Generated.Framework.Animation.AnimationController reactionController => this._reactionController;
-    public virtual global::Doroti.Generated.Framework.Animation.CurvedAnimation reaction => this._reaction;
-    public virtual global::Doroti.Generated.Framework.Animation.CurvedAnimation reactionHoverFade => this._reactionHoverFade;
-    public virtual global::Doroti.Generated.Framework.Animation.CurvedAnimation reactionFocusFade => this._reactionFocusFade;
+    public virtual global::Doroti.Framework.Animation.AnimationController positionController => this._positionController;
+    public virtual global::Doroti.Framework.Animation.CurvedAnimation position => this._position;
+    public virtual global::Doroti.Framework.Animation.AnimationController reactionController => this._reactionController;
+    public virtual global::Doroti.Framework.Animation.CurvedAnimation reaction => this._reaction;
+    public virtual global::Doroti.Framework.Animation.CurvedAnimation reactionHoverFade => this._reactionHoverFade;
+    public virtual global::Doroti.Framework.Animation.CurvedAnimation reactionFocusFade => this._reactionFocusFade;
     public virtual Duration? reactionAnimationDuration => this._reactionAnimationDuration;
     public virtual void animateToValue()
     {
@@ -268,12 +268,12 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
     }
 
     public virtual Offset? downPosition => this._downPosition;
-    public virtual void _handleTapDown(global::Doroti.Generated.Framework.Gestures.TapDownDetails details)
+    public virtual void _handleTapDown(global::Doroti.Framework.Gestures.TapDownDetails details)
     {
         if (this.isInteractive)
         {
             setState(((global::System.Action)(() => {
-this._downPosition = ((global::Doroti.Generated.Framework.Gestures.TapDownDetails)details).localPosition;
+this._downPosition = ((global::Doroti.Framework.Gestures.TapDownDetails)details).localPosition;
 })));
             this._reactionController.forward();
         }
@@ -303,10 +303,10 @@ this._downPosition = ((global::Doroti.Generated.Framework.Gestures.TapDownDetail
                     break;
                 }
         }
-        ((dynamic)this.context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Generated.Framework.Semantics.TapSemanticEvent());
+        ((dynamic)this.context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.TapSemanticEvent());
     }
 
-    public virtual void _handleTapEnd(global::Doroti.Generated.Framework.Gestures.TapUpDetails? __unused0 = null)
+    public virtual void _handleTapEnd(global::Doroti.Framework.Gestures.TapUpDetails? __unused0 = null)
     {
         if ((this._downPosition is not null))
         {
@@ -354,20 +354,20 @@ this._hovering = hovering;
     }
 
     public virtual HashSet<WidgetState> states => new HashSet<WidgetState>();
-    public virtual Widget buildToggleable(FocusNode? focusNode = null, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor>? mouseCursor = null, Size size = default!, global::Doroti.Generated.Framework.Rendering.CustomPainter painter = default!)
+    public virtual Widget buildToggleable(FocusNode? focusNode = null, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>? mouseCursor = null, Size size = default!, global::Doroti.Framework.Rendering.CustomPainter painter = default!)
     {
         return ((Widget)(object?)buildToggleableWithChild(focusNode: focusNode, onFocusChange: (global::System.Action<bool>?)onFocusChange, autofocus: autofocus, mouseCursor: mouseCursor, child: new CustomPaint(size: size, painter: painter)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Widget buildToggleable(FocusNode? focusNode = null, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor>? mouseCursor = null, Size size = default!, ToggleablePainter painter = default!)
+    public virtual Widget buildToggleable(FocusNode? focusNode = null, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>? mouseCursor = null, Size size = default!, ToggleablePainter painter = default!)
     {
         return buildToggleableWithChild(focusNode: focusNode, onFocusChange: onFocusChange, autofocus: autofocus, mouseCursor: mouseCursor, child: new SizedBox(width: size.width, height: size.height));
     }
 
-    public virtual Widget buildToggleableWithChild(FocusNode? focusNode = null, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor>? mouseCursor = null, Widget child = default!)
+    public virtual Widget buildToggleableWithChild(FocusNode? focusNode = null, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>? mouseCursor = null, Widget child = default!)
     {
-        return ((Widget)(object?)new FocusableActionDetector(actions: this._actionMap, focusNode: focusNode, autofocus: autofocus, onFocusChange: (global::System.Action<bool>?)onFocusChange, enabled: this.isInteractive, onShowFocusHighlight: (global::System.Action<bool>)this._handleFocusHighlightChanged, onShowHoverHighlight: (global::System.Action<bool>)this._handleHoverChanged, mouseCursor: (mouseCursor?.resolve(this.states) ?? global::Doroti.Generated.Framework.Services.SystemMouseCursors.basic), child: new GestureDetector(excludeFromSemantics: !this.isInteractive, onTapDown: ((global::System.Action<global::Doroti.Generated.Framework.Gestures.TapDownDetails>)(this.isInteractive ? this._handleTapDown : null)), onTap: () => ((global::System.Action<Intent?>)(this.isInteractive ? this._handleTap : null))(default), onTapUp: ((global::System.Action<global::Doroti.Generated.Framework.Gestures.TapUpDetails?>)(this.isInteractive ? this._handleTapEnd : null)), onTapCancel: () => ((global::System.Action<global::Doroti.Generated.Framework.Gestures.TapUpDetails?>)(this.isInteractive ? this._handleTapEnd : null))(default), child: new Semantics(enabled: this.isInteractive, child: child))));
+        return ((Widget)(object?)new FocusableActionDetector(actions: this._actionMap, focusNode: focusNode, autofocus: autofocus, onFocusChange: (global::System.Action<bool>?)onFocusChange, enabled: this.isInteractive, onShowFocusHighlight: (global::System.Action<bool>)this._handleFocusHighlightChanged, onShowHoverHighlight: (global::System.Action<bool>)this._handleHoverChanged, mouseCursor: (mouseCursor?.resolve(this.states) ?? global::Doroti.Framework.Services.SystemMouseCursors.basic), child: new GestureDetector(excludeFromSemantics: !this.isInteractive, onTapDown: ((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)(this.isInteractive ? this._handleTapDown : null)), onTap: () => ((global::System.Action<Intent?>)(this.isInteractive ? this._handleTap : null))(default), onTapUp: ((global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails?>)(this.isInteractive ? this._handleTapEnd : null)), onTapCancel: () => ((global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails?>)(this.isInteractive ? this._handleTapEnd : null))(default), child: new Semantics(enabled: this.isInteractive, child: child))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

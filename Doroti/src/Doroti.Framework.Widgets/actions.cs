@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public static partial class ActionsLibrary
 {
@@ -29,7 +29,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     }
 }
 
-public abstract class Intent : global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public abstract class Intent : global::Doroti.Framework.Foundation.Diagnosticable
 {
     public static DoNothingIntent doNothing = new DoNothingIntent();
 
@@ -37,7 +37,7 @@ public abstract class Intent : global::Doroti.Generated.Framework.Foundation.Dia
     {
     }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;
@@ -71,9 +71,9 @@ public interface IActionListenerSource
     void removeActionListener(global::System.Action<dynamic> listener);
 }
 
-public abstract class Action<T> : global::Doroti.Generated.Framework.Foundation.Diagnosticable, IActionListenerSource where T : Intent
+public abstract class Action<T> : global::Doroti.Framework.Foundation.Diagnosticable, IActionListenerSource where T : Intent
 {
-    internal virtual global::Doroti.Generated.Framework.Foundation.ObserverList<global::System.Action<dynamic>> _listeners { get; private set; } = new global::Doroti.Generated.Framework.Foundation.ObserverList<global::System.Action<dynamic>>();
+    internal virtual global::Doroti.Framework.Foundation.ObserverList<global::System.Action<dynamic>> _listeners { get; private set; } = new global::Doroti.Framework.Foundation.ObserverList<global::System.Action<dynamic>>();
     internal virtual dynamic _currentCallingAction { get; set; } = default!;
 
     protected Action()
@@ -126,7 +126,7 @@ public abstract class Action<T> : global::Doroti.Generated.Framework.Foundation.
             InformationCollector? collector__18384 = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    collector__18384 = (() => new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<Action<T>>($"The {this.GetType()} sending notification was", this, style: global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) });
+                    collector__18384 = (() => new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.DiagnosticsProperty<Action<T>>($"The {this.GetType()} sending notification was", this, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) });
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
@@ -140,7 +140,7 @@ public abstract class Action<T> : global::Doroti.Generated.Framework.Foundation.
             catch (Exception exception__18795)
             {
                 var stack__18806 = new System.Diagnostics.StackTrace();
-                FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails(exception: exception__18795, stack: stack__18806, library: "widgets library", context: new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"while dispatching notifications for {this.GetType()}"), informationCollector: (InformationCollector?)collector__18384));
+                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception__18795, stack: stack__18806, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription($"while dispatching notifications for {this.GetType()}"), informationCollector: (InformationCollector?)collector__18384));
             }
         }
     }
@@ -151,7 +151,7 @@ public abstract class Action<T> : global::Doroti.Generated.Framework.Foundation.
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;
@@ -183,7 +183,7 @@ public class ActionListener : StatefulWidget
     public virtual dynamic action { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public ActionListener(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::System.Action<dynamic> listener = default!, dynamic action = default!, Widget child = default!) : base(key: key)
+    public ActionListener(global::Doroti.Framework.Foundation.Key? key = null, global::System.Action<dynamic> listener = default!, dynamic action = default!, Widget child = default!) : base(key: key)
     {
         this.listener = listener;
         this.action = action;
@@ -257,7 +257,7 @@ public class CallbackAction<T> : Action<T> where T : Intent
     public override object? invoke(T intent, BuildContext? context = null) => this.onInvoke(intent);
 }
 
-public class ActionDispatcher : global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class ActionDispatcher : global::Doroti.Framework.Foundation.Diagnosticable
 {
 
     public ActionDispatcher()
@@ -266,7 +266,7 @@ public class ActionDispatcher : global::Doroti.Generated.Framework.Foundation.Di
 
     public virtual object? invokeAction(dynamic action, Intent intent, BuildContext? context = null)
     {
-        BuildContext? target__26983 = (context ?? global::Doroti.Generated.Framework.Widgets.Focus_managerLibrary.primaryFocus?.context);
+        BuildContext? target__26983 = (context ?? global::Doroti.Framework.Widgets.Focus_managerLibrary.primaryFocus?.context);
         DartRuntimePrimitives.Assert(() => ((bool)((dynamic)action)._isEnabled(intent, target__26983)), () => (object?)"Action must be enabled when calling invokeAction");
         return ((dynamic)action)._invoke(intent, target__26983);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -274,7 +274,7 @@ public class ActionDispatcher : global::Doroti.Generated.Framework.Foundation.Di
 
     public virtual (bool, object?) invokeActionIfEnabled(dynamic action, Intent intent, BuildContext? context = null)
     {
-        BuildContext? target__28148 = (context ?? global::Doroti.Generated.Framework.Widgets.Focus_managerLibrary.primaryFocus?.context);
+        BuildContext? target__28148 = (context ?? global::Doroti.Framework.Widgets.Focus_managerLibrary.primaryFocus?.context);
         if (((bool)((dynamic)action)._isEnabled(intent, target__28148)))
         {
             return (true, ((dynamic)action)._invoke(intent, target__28148));
@@ -283,7 +283,7 @@ public class ActionDispatcher : global::Doroti.Generated.Framework.Foundation.Di
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;
@@ -315,7 +315,7 @@ public class Actions : StatefulWidget
     public virtual DartMap<Type, dynamic> actions { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public Actions(global::Doroti.Generated.Framework.Foundation.Key? key = null, ActionDispatcher? dispatcher = null, DartMap<Type, dynamic> actions = default!, Widget child = default!) : base(key: key)
+    public Actions(global::Doroti.Framework.Foundation.Key? key = null, ActionDispatcher? dispatcher = null, DartMap<Type, dynamic> actions = default!, Widget child = default!) : base(key: key)
     {
         this.dispatcher = dispatcher;
         this.actions = actions;
@@ -383,7 +383,7 @@ if (((bool)((dynamic)action__33514)._isEnabled(intent, context)))
                 if ((action__34857 is null))
                 {
                     Type type__34966 = (DartRuntimePrimitives.RuntimeType(intent) ?? typeof(T));
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Generated.Framework.Foundation.FlutterError.Create($"Unable to find an action for a {type__34966} in an {typeof(Actions)} widget " + "in the given context.\n" + $"{typeof(Actions)}.find() was called on a context that doesn't contain an " + $"{typeof(Actions)} widget with a mapping for the given intent type.\n" + "The context used was:\n" + $"  {context}\n" + "The intent type requested was:\n" + $"  {type__34966}"));
+                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"Unable to find an action for a {type__34966} in an {typeof(Actions)} widget " + "in the given context.\n" + $"{typeof(Actions)}.find() was called on a context that doesn't contain an " + $"{typeof(Actions)} widget with a mapping for the given intent type.\n" + "The context used was:\n" + $"  {context}\n" + "The intent type requested was:\n" + $"  {type__34966}"));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -413,7 +413,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"An {DartRuntimePrimitives.RuntimeType(action__37058)} cannot be cast to an Action<{typeof(T)}>."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"A valid action {action__37058} was found but could not be returned by Actions.maybeFind<{typeof(T)}>."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("This is a current limitation of the Actions widget, " + "see https://github.com/flutter/flutter/issues/180871 for more details. " + "As a workaround, consider using Actions.invoke or Actions.maybeInvoke instead, " + "or explicitly set the type parameter to Intent: " + "Actions.maybeFind<Intent>(context, intent)") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"An {DartRuntimePrimitives.RuntimeType(action__37058)} cannot be cast to an Action<{typeof(T)}>."), new global::Doroti.Framework.Foundation.ErrorDescription($"A valid action {action__37058} was found but could not be returned by Actions.maybeFind<{typeof(T)}>."), new global::Doroti.Framework.Foundation.ErrorHint("This is a current limitation of the Actions widget, " + "see https://github.com/flutter/flutter/issues/180871 for more details. " + "As a workaround, consider using Actions.invoke or Actions.maybeInvoke instead, " + "or explicitly set the type parameter to Intent: " + "Actions.maybeFind<Intent>(context, intent)") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         return ((Action<T>)(object)null);
@@ -470,7 +470,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             {
                 if (!actionFound__40165)
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Generated.Framework.Foundation.FlutterError.Create("Unable to find an action for an Intent with type " + $"{DartRuntimePrimitives.RuntimeType(intent)} in an {typeof(Actions)} widget in the given context.\n" + $"{typeof(Actions)}.invoke() was unable to find an {typeof(Actions)} widget that " + "contained a mapping for the given intent, or the intent type isn't the " + $"same as the type argument to invoke (which is {typeof(T)} - try supplying a " + "type argument to invoke if one was not given)\n" + "The context used was:\n" + $"  {context}\n" + "The intent type requested was:\n" + $"  {DartRuntimePrimitives.RuntimeType(intent)}"));
+                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Unable to find an action for an Intent with type " + $"{DartRuntimePrimitives.RuntimeType(intent)} in an {typeof(Actions)} widget in the given context.\n" + $"{typeof(Actions)}.invoke() was unable to find an {typeof(Actions)} widget that " + "contained a mapping for the given intent, or the intent type isn't the " + $"same as the type argument to invoke (which is {typeof(T)} - try supplying a " + "type argument to invoke if one was not given)\n" + "The context used was:\n" + $"  {context}\n" + "The intent type requested was:\n" + $"  {DartRuntimePrimitives.RuntimeType(intent)}"));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -497,11 +497,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _ActionsState__actions());
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<ActionDispatcher>("dispatcher", this.dispatcher));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<DartMap<Type, object>>("actions", this.actions));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ActionDispatcher>("dispatcher", this.dispatcher));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DartMap<Type, object>>("actions", this.actions));
     }
 
 }
@@ -583,7 +583,7 @@ internal class _ActionsScope__actions : InheritedWidget
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __oldWidget = (_ActionsScope__actions)(object)oldWidget;
-        return (((!object.Equals(this.rebuildKey, ((_ActionsScope__actions)__oldWidget).rebuildKey)) || (!object.Equals(((_ActionsScope__actions)__oldWidget).dispatcher, this.dispatcher))) || !global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.mapEquals<Type, object>(((_ActionsScope__actions)__oldWidget).actions, this.actions));
+        return (((!object.Equals(this.rebuildKey, ((_ActionsScope__actions)__oldWidget).rebuildKey)) || (!object.Equals(((_ActionsScope__actions)__oldWidget).dispatcher, this.dispatcher))) || !global::Doroti.Framework.Foundation.CollectionsLibrary.mapEquals<Type, object>(((_ActionsScope__actions)__oldWidget).actions, this.actions));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -601,13 +601,13 @@ public class FocusableActionDetector : StatefulWidget
     public virtual global::System.Action<bool>? onShowFocusHighlight { get; private set; }
     public virtual global::System.Action<bool>? onShowHoverHighlight { get; private set; }
     public virtual global::System.Action<bool>? onFocusChange { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Services.MouseCursor mouseCursor { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Services.MouseCursor mouseCursor { get; private set; } = default!;
     public virtual bool includeFocusSemantics { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public FocusableActionDetector(global::Doroti.Generated.Framework.Foundation.Key? key = null, bool enabled = true, FocusNode? focusNode = null, bool autofocus = false, bool descendantsAreFocusable = true, bool descendantsAreTraversable = true, DartMap<ShortcutActivator, Intent>? shortcuts = null, DartMap<Type, dynamic>? actions = null, global::System.Action<bool>? onShowFocusHighlight = null, global::System.Action<bool>? onShowHoverHighlight = null, global::System.Action<bool>? onFocusChange = null, global::Doroti.Generated.Framework.Services.MouseCursor mouseCursor = default!, bool includeFocusSemantics = true, Widget child = default!) : base(key: key)
+    public FocusableActionDetector(global::Doroti.Framework.Foundation.Key? key = null, bool enabled = true, FocusNode? focusNode = null, bool autofocus = false, bool descendantsAreFocusable = true, bool descendantsAreTraversable = true, DartMap<ShortcutActivator, Intent>? shortcuts = null, DartMap<Type, dynamic>? actions = null, global::System.Action<bool>? onShowFocusHighlight = null, global::System.Action<bool>? onShowHoverHighlight = null, global::System.Action<bool>? onFocusChange = null, global::Doroti.Framework.Services.MouseCursor mouseCursor = default!, bool includeFocusSemantics = true, Widget child = default!) : base(key: key)
     {
-        global::Doroti.Generated.Framework.Services.MouseCursor __mouseCursor = mouseCursor ?? global::Doroti.Generated.Framework.Services.MouseCursor.defer;
+        global::Doroti.Framework.Services.MouseCursor __mouseCursor = mouseCursor ?? global::Doroti.Framework.Services.MouseCursor.defer;
         this.enabled = enabled;
         this.focusNode = focusNode;
         this.autofocus = autofocus;
@@ -636,7 +636,7 @@ internal class _FocusableActionDetectorState__actions : State<FocusableActionDet
     public override void initState()
     {
         base.initState();
-        global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) => {
+        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) => {
 _updateHighlightMode(FocusManager.instance.highlightMode);
 })), debugLabel: "FocusableActionDetector.updateHighlightMode");
         FocusManager.instance.addHighlightModeListener((global::System.Action<FocusHighlightMode>)this._handleFocusHighlightModeChange);
@@ -664,7 +664,7 @@ _canShowHighlight = (FocusManager.instance.highlightMode switch { FocusHighlight
         _updateHighlightMode(mode);
     }
 
-    internal virtual void _handleMouseEnter(global::Doroti.Generated.Framework.Gestures.PointerEnterEvent @event)
+    internal virtual void _handleMouseEnter(global::Doroti.Framework.Gestures.PointerEnterEvent @event)
     {
         if (!this._hovering)
         {
@@ -674,7 +674,7 @@ _hovering = true;
         }
     }
 
-    internal virtual void _handleMouseExit(global::Doroti.Generated.Framework.Gestures.PointerExitEvent @event)
+    internal virtual void _handleMouseExit(global::Doroti.Framework.Gestures.PointerExitEvent @event)
     {
         if (this._hovering)
         {
@@ -712,7 +712,7 @@ _focused = focused;
             return ((this._focused && this._canShowHighlight) && canRequestFocus(target));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        DartRuntimePrimitives.Assert(() => (!object.Equals(global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Generated.Framework.Scheduler.SchedulerPhase.persistentCallbacks)));
+        DartRuntimePrimitives.Assert(() => (!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)));
         FocusableActionDetector oldTarget__52743 = ((oldWidget ?? (FocusableActionDetector)this.widget));
         bool didShowHoverHighlight__52791 = shouldShowHoverHighlight(oldTarget__52743);
         bool didShowFocusHighlight__52867 = shouldShowFocusHighlight(oldTarget__52743);
@@ -734,7 +734,7 @@ _focused = focused;
         base.didUpdateWidget(oldWidget);
         if ((((FocusableActionDetector)(object)this.widget).enabled != ((FocusableActionDetector)oldWidget).enabled))
         {
-            global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) => {
+            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) => {
 _mayTriggerCallback(oldWidget: oldWidget);
 })), debugLabel: "FocusableActionDetector.mayTriggerCallback");
         }
@@ -743,7 +743,7 @@ _mayTriggerCallback(oldWidget: oldWidget);
     internal virtual bool _canRequestFocus => (MediaQuery.maybeNavigationModeOf(this.context) switch { NavigationMode.traditional => ((FocusableActionDetector)(object)this.widget).enabled, null => ((FocusableActionDetector)(object)this.widget).enabled, NavigationMode.directional => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     public override Widget build(BuildContext context)
     {
-        Widget child__54279 = ((Widget)(object?)new MouseRegion(key: this._mouseRegionKey, onEnter: (global::System.Action<global::Doroti.Generated.Framework.Gestures.PointerEnterEvent>)this._handleMouseEnter, onExit: (global::System.Action<global::Doroti.Generated.Framework.Gestures.PointerExitEvent>)this._handleMouseExit, cursor: ((FocusableActionDetector)(object)this.widget).mouseCursor, child: new Focus(focusNode: ((FocusableActionDetector)(object)this.widget).focusNode, autofocus: ((FocusableActionDetector)(object)this.widget).autofocus, descendantsAreFocusable: ((FocusableActionDetector)(object)this.widget).descendantsAreFocusable, descendantsAreTraversable: ((FocusableActionDetector)(object)this.widget).descendantsAreTraversable, canRequestFocus: this._canRequestFocus, onFocusChange: (global::System.Action<bool>)this._handleFocusChange, includeSemantics: ((FocusableActionDetector)(object)this.widget).includeFocusSemantics, child: ((FocusableActionDetector)(object)this.widget).child)));
+        Widget child__54279 = ((Widget)(object?)new MouseRegion(key: this._mouseRegionKey, onEnter: (global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)this._handleMouseEnter, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)this._handleMouseExit, cursor: ((FocusableActionDetector)(object)this.widget).mouseCursor, child: new Focus(focusNode: ((FocusableActionDetector)(object)this.widget).focusNode, autofocus: ((FocusableActionDetector)(object)this.widget).autofocus, descendantsAreFocusable: ((FocusableActionDetector)(object)this.widget).descendantsAreFocusable, descendantsAreTraversable: ((FocusableActionDetector)(object)this.widget).descendantsAreTraversable, canRequestFocus: this._canRequestFocus, onFocusChange: (global::System.Action<bool>)this._handleFocusChange, includeSemantics: ((FocusableActionDetector)(object)this.widget).includeFocusSemantics, child: ((FocusableActionDetector)(object)this.widget).child)));
         if (((((FocusableActionDetector)(object)this.widget).enabled && (((FocusableActionDetector)(object)this.widget).actions is not null)) && System.Linq.Enumerable.Any(((FocusableActionDetector)(object)this.widget).actions!)))
         {
             child__54279 = DartRuntimePrimitives.ConvertValue<Widget>(new Actions(actions: ((FocusableActionDetector)(object)this.widget).actions!, child: child__54279));
@@ -881,7 +881,7 @@ public class PrioritizedAction : ContextAction<PrioritizedIntents>
 
     public override bool isEnabled(PrioritizedIntents intent, BuildContext? context = null)
     {
-        FocusNode? focus__63783 = global::Doroti.Generated.Framework.Widgets.Focus_managerLibrary.primaryFocus;
+        FocusNode? focus__63783 = global::Doroti.Framework.Widgets.Focus_managerLibrary.primaryFocus;
         if (((focus__63783 is null) || (((FocusNode)focus__63783).context is null)))
         {
             return false;
@@ -926,7 +926,7 @@ internal interface _OverridableActionMixin__actions<T> where T : Intent
     public bool isActionEnabled { get; }
     public bool isEnabled(T intent, BuildContext? context = null);
     public bool consumesKey(T intent);
-    public void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties);
+    public void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties);
 }
 
 internal class _OverridableAction__actions<T> : ContextAction<T> where T : Intent
@@ -1087,10 +1087,10 @@ internal class _OverridableAction__actions<T> : ContextAction<T> where T : Inten
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<Action<T>>("defaultAction", this._defaultAction));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Action<T>>("defaultAction", this._defaultAction));
     }
 
 }
@@ -1256,10 +1256,10 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T> where T 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<Action<T>>("defaultAction", this._defaultAction));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Action<T>>("defaultAction", this._defaultAction));
     }
 
 }

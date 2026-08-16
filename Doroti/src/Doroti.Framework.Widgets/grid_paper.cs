@@ -12,9 +12,9 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
-internal class _GridPaperPainter__grid_paper : global::Doroti.Generated.Framework.Rendering.CustomPainter
+internal class _GridPaperPainter__grid_paper : global::Doroti.Framework.Rendering.CustomPainter
 {
     public virtual Color color { get; private set; } = default!;
     public virtual double interval { get; private set; } = default!;
@@ -48,7 +48,7 @@ internal class _GridPaperPainter__grid_paper : global::Doroti.Generated.Framewor
         }
     }
 
-    public override bool shouldRepaint(global::Doroti.Generated.Framework.Rendering.CustomPainter oldDelegate)
+    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
     {
         var __oldPainter = (_GridPaperPainter__grid_paper)(object)oldDelegate;
         return ((((!object.Equals(((_GridPaperPainter__grid_paper)__oldPainter).color, this.color)) || (((_GridPaperPainter__grid_paper)__oldPainter).interval != this.interval)) || (((_GridPaperPainter__grid_paper)__oldPainter).divisions != this.divisions)) || (((_GridPaperPainter__grid_paper)__oldPainter).subdivisions != this.subdivisions));
@@ -66,7 +66,7 @@ public class GridPaper : StatelessWidget
     public virtual long subdivisions { get; private set; } = default!;
     public virtual Widget? child { get; private set; }
 
-    public GridPaper(global::Doroti.Generated.Framework.Foundation.Key? key = null, Color color = default!, double interval = 100.0, long divisions = 2, long subdivisions = 5, Widget? child = null) : base(key: key)
+    public GridPaper(global::Doroti.Framework.Foundation.Key? key = null, Color color = default!, double interval = 100.0, long divisions = 2, long subdivisions = 5, Widget? child = null) : base(key: key)
     {
         Color __color = color ?? new Color(0x7FC3E8F3);
         this.color = __color;

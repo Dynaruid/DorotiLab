@@ -12,11 +12,11 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class UndoHistory<T> : StatefulWidget
 {
-    public virtual global::Doroti.Generated.Framework.Foundation.ValueNotifier<T> value { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Foundation.ValueNotifier<T> value { get; private set; } = default!;
     public virtual global::System.Func<T?, T, bool>? shouldChangeUndoStack { get; private set; }
     public virtual global::System.Func<T, T>? undoStackModifier { get; private set; }
     public virtual global::System.Action<T> onTriggered { get; private set; } = default!;
@@ -24,7 +24,7 @@ public class UndoHistory<T> : StatefulWidget
     public virtual UndoHistoryController? controller { get; private set; }
     public virtual Widget child { get; private set; } = default!;
 
-    public UndoHistory(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::System.Func<T?, T, bool>? shouldChangeUndoStack = null, global::Doroti.Generated.Framework.Foundation.ValueNotifier<T> value = default!, global::System.Action<T> onTriggered = default!, FocusNode focusNode = default!, global::System.Func<T, T>? undoStackModifier = null, UndoHistoryController? controller = null, Widget child = default!) : base(key: key)
+    public UndoHistory(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<T?, T, bool>? shouldChangeUndoStack = null, global::Doroti.Framework.Foundation.ValueNotifier<T> value = default!, global::System.Action<T> onTriggered = default!, FocusNode focusNode = default!, global::System.Func<T, T>? undoStackModifier = null, UndoHistoryController? controller = null, Widget child = default!) : base(key: key)
     {
         this.shouldChangeUndoStack = shouldChangeUndoStack;
         this.value = value;
@@ -38,7 +38,7 @@ public class UndoHistory<T> : StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new UndoHistoryState<T>());
 }
 
-public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Generated.Framework.Services.UndoManagerClient
+public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framework.Services.UndoManagerClient
 {
     internal virtual _UndoStack__undo_history<T> _stack { get; private set; } = new _UndoStack__undo_history<T>();
     internal virtual global::System.Func<T, Timer> _throttledPush { get; private set; } = default!;
@@ -78,11 +78,11 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Generat
     internal virtual void _updateState()
     {
         this._effectiveController.value = new UndoHistoryValue(canUndo: this.canUndo, canRedo: this.canRedo);
-        if ((!object.Equals(global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Generated.Framework.Foundation.TargetPlatform.iOS)))
+        if ((!object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)))
         {
             return;
         }
-        if ((object.Equals(global::Doroti.Generated.Framework.Services.UndoManager.client, this)))
+        if ((object.Equals(global::Doroti.Framework.Services.UndoManager.client, this)))
         {
             UndoManager.setUndoState(canUndo: this.canUndo, canRedo: this.canRedo);
         }
@@ -148,26 +148,26 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Generat
     {
         if (!((UndoHistory<T>)(object)this.widget).focusNode.hasFocus)
         {
-            if ((object.Equals(global::Doroti.Generated.Framework.Services.UndoManager.client, this)))
+            if ((object.Equals(global::Doroti.Framework.Services.UndoManager.client, this)))
             {
-                global::Doroti.Generated.Framework.Services.UndoManager.client = null;
+                global::Doroti.Framework.Services.UndoManager.client = null;
             }
             return;
         }
-        global::Doroti.Generated.Framework.Services.UndoManager.client = this;
+        global::Doroti.Framework.Services.UndoManager.client = this;
         _updateState();
     }
 
-    public virtual void handlePlatformUndo(global::Doroti.Generated.Framework.Services.UndoDirection direction)
+    public virtual void handlePlatformUndo(global::Doroti.Framework.Services.UndoDirection direction)
     {
         switch (direction)
         {
-            case global::Doroti.Generated.Framework.Services.UndoDirection.undo:
+            case global::Doroti.Framework.Services.UndoDirection.undo:
                 {
                     undo();
                     break;
                 }
-            case global::Doroti.Generated.Framework.Services.UndoDirection.redo:
+            case global::Doroti.Framework.Services.UndoDirection.redo:
                 {
                     redo();
                     break;
@@ -217,9 +217,9 @@ _updateState();
 
     public override void dispose()
     {
-        if ((object.Equals(global::Doroti.Generated.Framework.Services.UndoManager.client, this)))
+        if ((object.Equals(global::Doroti.Framework.Services.UndoManager.client, this)))
         {
-            global::Doroti.Generated.Framework.Services.UndoManager.client = null;
+            global::Doroti.Framework.Services.UndoManager.client = null;
         }
         ((UndoHistory<T>)(object)this.widget).value.removeListener(() => this._push());
         ((UndoHistory<T>)(object)this.widget).focusNode.removeListener(() => this._handleFocus());
@@ -250,7 +250,7 @@ public class UndoHistoryValue
         this.canRedo = canRedo;
     }
 
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "UndoHistoryValue"))}(canUndo: {this.canUndo}, canRedo: {this.canRedo})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "UndoHistoryValue"))}(canUndo: {this.canUndo}, canRedo: {this.canRedo})";
     public override bool Equals(object? other)
     {
         var __other = other as UndoHistoryValue;
@@ -265,10 +265,10 @@ public class UndoHistoryValue
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.canUndo.GetHashCode(), this.canRedo.GetHashCode()));
 }
 
-public class UndoHistoryController : global::Doroti.Generated.Framework.Foundation.ValueNotifier<UndoHistoryValue>
+public class UndoHistoryController : global::Doroti.Framework.Foundation.ValueNotifier<UndoHistoryValue>
 {
-    public virtual global::Doroti.Generated.Framework.Foundation.ChangeNotifier onUndo { get; private set; } = new global::Doroti.Generated.Framework.Foundation.ChangeNotifier();
-    public virtual global::Doroti.Generated.Framework.Foundation.ChangeNotifier onRedo { get; private set; } = new global::Doroti.Generated.Framework.Foundation.ChangeNotifier();
+    public virtual global::Doroti.Framework.Foundation.ChangeNotifier onUndo { get; private set; } = new global::Doroti.Framework.Foundation.ChangeNotifier();
+    public virtual global::Doroti.Framework.Foundation.ChangeNotifier onRedo { get; private set; } = new global::Doroti.Framework.Foundation.ChangeNotifier();
 
     public UndoHistoryController(UndoHistoryValue? value = null) : base((value ?? UndoHistoryValue.empty))
     {

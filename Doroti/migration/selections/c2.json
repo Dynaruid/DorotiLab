@@ -4,8 +4,8 @@
   "migrationIrVersion": "2.0.0",
   "generationMode": "isolated-generated-solution",
   "compatibilityProfile": "flutter-aware-c2",
-  "outputNamespace": "Doroti.Generated.C2",
-  "outputAssemblyName": "Doroti.Generated.C2",
+  "outputNamespace": "Doroti.C2",
+  "outputAssemblyName": "Doroti.C2",
   "flutterBaseline": "../flutter-compat/baseline.json",
   "packageRoot": "../fixtures/c2_widgets",
   "inputs": [

@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public static partial class EditableLibrary
 {
@@ -26,7 +26,7 @@ public static partial class EditableLibrary
 
 public static partial class EditableLibrary
 {
-    internal static global::Doroti.Generated.Framework.Painting.EdgeInsets _kFloatingCursorSizeIncrease = global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 0.5, vertical: 1.0);
+    internal static global::Doroti.Framework.Painting.EdgeInsets _kFloatingCursorSizeIncrease = global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 0.5, vertical: 1.0);
 }
 
 public static partial class EditableLibrary
@@ -233,10 +233,10 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     public virtual TextSelectionDelegate textSelectionDelegate { get; set; } = default!;
     internal virtual ValueNotifier<bool> _selectionStartInViewport { get; private set; } = new ValueNotifier<bool>(true);
     internal virtual ValueNotifier<bool> _selectionEndInViewport { get; private set; } = new ValueNotifier<bool>(true);
-    internal virtual global::Doroti.Generated.Framework.Painting.TextPainter _textPainter { get; private set; } = default!;
-    internal virtual global::Doroti.Generated.Framework.Semantics.AttributedString? _cachedAttributedValue { get; set; } = default;
-    internal virtual List<global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation>? _cachedCombinedSemanticsInfos { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Painting.TextPainter? _textIntrinsicsCache { get; set; } = default;
+    internal virtual global::Doroti.Framework.Painting.TextPainter _textPainter { get; private set; } = default!;
+    internal virtual global::Doroti.Framework.Semantics.AttributedString? _cachedAttributedValue { get; set; } = default;
+    internal virtual List<global::Doroti.Framework.Painting.InlineSpanSemanticsInformation>? _cachedCombinedSemanticsInfos { get; set; } = default;
+    internal virtual global::Doroti.Framework.Painting.TextPainter? _textIntrinsicsCache { get; set; } = default;
     internal virtual bool _disposeShowCursor { get; set; } = default!;
     internal virtual ValueNotifier<bool> _showCursor { get; set; } = default!;
     internal virtual bool _hasFocus { get; set; } = false;
@@ -252,20 +252,20 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     internal virtual bool _paintCursorOnTop { get; set; } = default!;
     internal virtual LayerLink _startHandleLayerLink { get; set; } = default!;
     internal virtual LayerLink _endHandleLayerLink { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsets floatingCursorAddedMargin { get; set; } = default!;
+    public virtual global::Doroti.Framework.Painting.EdgeInsets floatingCursorAddedMargin { get; set; } = default!;
     internal virtual bool _floatingCursorOn { get; set; } = false;
     internal virtual TextPosition _floatingCursorTextPosition { get; set; } = default!;
     internal virtual bool? _enableInteractiveSelection { get; set; } = default;
     internal virtual double _maxScrollExtent { get; set; } = 0;
     internal virtual Clip _clipBehavior { get; set; } = Clip.hardEdge;
-    internal virtual List<global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation>? _semanticsInfo { get; set; } = default;
-    internal virtual DartMap<Key, global::Doroti.Generated.Framework.Semantics.SemanticsNode>? _cachedChildNodes { get; set; } = default;
+    internal virtual List<global::Doroti.Framework.Painting.InlineSpanSemanticsInformation>? _semanticsInfo { get; set; } = default;
+    internal virtual DartMap<Key, global::Doroti.Framework.Semantics.SemanticsNode>? _cachedChildNodes { get; set; } = default;
     internal virtual long? _cachedLineBreakCount { get; set; } = default;
     internal virtual TapGestureRecognizer _tap { get; set; } = default!;
     internal virtual LongPressGestureRecognizer _longPress { get; set; } = default!;
     internal virtual Offset? _lastTapDownPosition { get; set; } = default;
     internal virtual Offset? _lastSecondaryTapDownPosition { get; set; } = default;
-    internal virtual List<global::Doroti.Generated.Framework.Painting.PlaceholderDimensions>? _placeholderDimensions { get; set; } = default;
+    internal virtual List<global::Doroti.Framework.Painting.PlaceholderDimensions>? _placeholderDimensions { get; set; } = default;
     internal virtual Rect _caretPrototype { get; set; } = default!;
     internal virtual Offset _relativeOrigin { get; set; } = Offset.zero;
     internal virtual Offset? _previousOffset { get; set; } = default;
@@ -282,14 +282,14 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     public virtual RenderBox? _firstChild { get; set; } = default;
     public virtual RenderBox? _lastChild { get; set; } = default;
 
-    public RenderEditable(global::Doroti.Generated.Framework.Painting.InlineSpan? text = null, TextDirection textDirection = default!, TextAlign textAlign = TextAlign.start, Color? cursorColor = null, Color? backgroundCursorColor = null, ValueNotifier<bool>? showCursor = null, bool? hasFocus = null, LayerLink startHandleLayerLink = default!, LayerLink endHandleLayerLink = default!, long? maxLines = 1, long? minLines = null, bool expands = false, global::Doroti.Generated.Framework.Painting.StrutStyle? strutStyle = null, Color? selectionColor = null, double textScaleFactor = 1.0, global::Doroti.Generated.Framework.Painting.TextScaler textScaler = default!, TextSelection? selection = null, ViewportOffset offset = default!, bool ignorePointer = false, bool readOnly = false, bool forceLine = true, TextHeightBehavior? textHeightBehavior = null, global::Doroti.Generated.Framework.Painting.TextWidthBasis textWidthBasis = TextWidthBasis.parent, string obscuringCharacter = "•", bool obscureText = false, Locale? locale = null, double cursorWidth = 1.0, double? cursorHeight = null, Radius? cursorRadius = null, bool paintCursorAboveText = false, Offset cursorOffset = default, double devicePixelRatio = 1.0, BoxHeightStyle selectionHeightStyle = BoxHeightStyle.max, BoxWidthStyle selectionWidthStyle = BoxWidthStyle.max, bool? enableInteractiveSelection = null, global::Doroti.Generated.Framework.Painting.EdgeInsets floatingCursorAddedMargin = default!, TextRange? promptRectRange = null, Color? promptRectColor = null, Clip clipBehavior = Clip.hardEdge, TextSelectionDelegate textSelectionDelegate = default!, RenderEditablePainter? painter = null, RenderEditablePainter? foregroundPainter = null, List<RenderBox>? children = null)
+    public RenderEditable(global::Doroti.Framework.Painting.InlineSpan? text = null, TextDirection textDirection = default!, TextAlign textAlign = TextAlign.start, Color? cursorColor = null, Color? backgroundCursorColor = null, ValueNotifier<bool>? showCursor = null, bool? hasFocus = null, LayerLink startHandleLayerLink = default!, LayerLink endHandleLayerLink = default!, long? maxLines = 1, long? minLines = null, bool expands = false, global::Doroti.Framework.Painting.StrutStyle? strutStyle = null, Color? selectionColor = null, double textScaleFactor = 1.0, global::Doroti.Framework.Painting.TextScaler textScaler = default!, TextSelection? selection = null, ViewportOffset offset = default!, bool ignorePointer = false, bool readOnly = false, bool forceLine = true, TextHeightBehavior? textHeightBehavior = null, global::Doroti.Framework.Painting.TextWidthBasis textWidthBasis = TextWidthBasis.parent, string obscuringCharacter = "•", bool obscureText = false, Locale? locale = null, double cursorWidth = 1.0, double? cursorHeight = null, Radius? cursorRadius = null, bool paintCursorAboveText = false, Offset cursorOffset = default, double devicePixelRatio = 1.0, BoxHeightStyle selectionHeightStyle = BoxHeightStyle.max, BoxWidthStyle selectionWidthStyle = BoxWidthStyle.max, bool? enableInteractiveSelection = null, global::Doroti.Framework.Painting.EdgeInsets floatingCursorAddedMargin = default!, TextRange? promptRectRange = null, Color? promptRectColor = null, Clip clipBehavior = Clip.hardEdge, TextSelectionDelegate textSelectionDelegate = default!, RenderEditablePainter? painter = null, RenderEditablePainter? foregroundPainter = null, List<RenderBox>? children = null)
     {
-        global::Doroti.Generated.Framework.Painting.TextScaler __textScaler = textScaler ?? global::Doroti.Generated.Framework.Painting.TextScaler.noScaling;
-        global::Doroti.Generated.Framework.Painting.EdgeInsets __floatingCursorAddedMargin = floatingCursorAddedMargin ?? new global::Doroti.Generated.Framework.Painting.EdgeInsets(4, 4, 4, 5);
+        global::Doroti.Framework.Painting.TextScaler __textScaler = textScaler ?? global::Doroti.Framework.Painting.TextScaler.noScaling;
+        global::Doroti.Framework.Painting.EdgeInsets __floatingCursorAddedMargin = floatingCursorAddedMargin ?? new global::Doroti.Framework.Painting.EdgeInsets(4, 4, 4, 5);
         this.ignorePointer = ignorePointer;
         this.floatingCursorAddedMargin = __floatingCursorAddedMargin;
         this.textSelectionDelegate = textSelectionDelegate;
-        this._textPainter = new global::Doroti.Generated.Framework.Painting.TextPainter(text: text, textAlign: textAlign, textDirection: textDirection, textScaler: ((object.Equals(textScaler, global::Doroti.Generated.Framework.Painting.TextScaler.noScaling)) ? global::Doroti.Generated.Framework.Painting.TextScaler.CreateLinear(textScaleFactor) : textScaler), locale: locale, maxLines: ((maxLines == 1L) ? 1L : null), strutStyle: strutStyle, textHeightBehavior: textHeightBehavior, textWidthBasis: textWidthBasis);
+        this._textPainter = new global::Doroti.Framework.Painting.TextPainter(text: text, textAlign: textAlign, textDirection: textDirection, textScaler: ((object.Equals(textScaler, global::Doroti.Framework.Painting.TextScaler.noScaling)) ? global::Doroti.Framework.Painting.TextScaler.CreateLinear(textScaleFactor) : textScaler), locale: locale, maxLines: ((maxLines == 1L) ? 1L : null), strutStyle: strutStyle, textHeightBehavior: textHeightBehavior, textWidthBasis: textWidthBasis);
         this._showCursor = (showCursor ?? new ValueNotifier<bool>(false));
         this._maxLines = maxLines;
         this._minLines = minLines;
@@ -314,7 +314,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         System.Diagnostics.Debug.Assert(((minLines is null) || (DartRuntimePrimitives.RequireValue(minLines) > 0L)));
         System.Diagnostics.Debug.Assert(((((maxLines is null)) || ((minLines is null))) || ((maxLines >= DartRuntimePrimitives.RequireValue(minLines)))));
         System.Diagnostics.Debug.Assert((!expands || (((maxLines is null) && (minLines is null)))));
-        System.Diagnostics.Debug.Assert((DartRuntimePrimitives.Identical(__textScaler, global::Doroti.Generated.Framework.Painting.TextScaler.noScaling) || (textScaleFactor == 1.0)));
+        System.Diagnostics.Debug.Assert((DartRuntimePrimitives.Identical(__textScaler, global::Doroti.Framework.Painting.TextScaler.noScaling) || (textScaleFactor == 1.0)));
         System.Diagnostics.Debug.Assert((obscuringCharacter.characters().Count == 1L));
         System.Diagnostics.Debug.Assert((cursorWidth >= 0.0));
         System.Diagnostics.Debug.Assert(((cursorHeight is null) || (cursorHeight >= 0.0)));
@@ -419,11 +419,11 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
 
     public virtual global::Doroti.Ui.TextHeightBehavior? textHeightBehavior
     {
-        get => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textHeightBehavior;
+        get => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textHeightBehavior;
         set
         {
             var __value = value is null ? null : (TextHeightBehavior)(object)value;
-            if ((object.Equals(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textHeightBehavior, __value)))
+            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textHeightBehavior, __value)))
             {
                 return;
             }
@@ -431,13 +431,13 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Generated.Framework.Painting.TextWidthBasis textWidthBasis
+    public virtual global::Doroti.Framework.Painting.TextWidthBasis textWidthBasis
     {
-        get => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textWidthBasis;
+        get => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textWidthBasis;
         set
         {
             var __value = value;
-            if ((object.Equals(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textWidthBasis, DartRuntimePrimitives.RequireValue(__value))))
+            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textWidthBasis, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -536,7 +536,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
 
     public virtual global::Doroti.Ui.TextPosition getTextPositionAbove(TextPosition position)
     {
-        double preferredLineHeight__25835 = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).preferredLineHeight;
+        double preferredLineHeight__25835 = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).preferredLineHeight;
         double verticalOffset__25908 = (-0.5 * preferredLineHeight__25835);
         return _getTextPositionVertical(position, verticalOffset__25908);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -544,7 +544,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
 
     public virtual global::Doroti.Ui.TextPosition getTextPositionBelow(TextPosition position)
     {
-        double preferredLineHeight__26394 = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).preferredLineHeight;
+        double preferredLineHeight__26394 = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).preferredLineHeight;
         double verticalOffset__26467 = (1.5 * preferredLineHeight__26394);
         return _getTextPositionVertical(position, verticalOffset__26467);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -595,14 +595,14 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         this._textPainter.markNeedsLayout();
     }
 
-    public virtual string plainText => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).plainText;
-    public virtual global::Doroti.Generated.Framework.Painting.InlineSpan? text
+    public virtual string plainText => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).plainText;
+    public virtual global::Doroti.Framework.Painting.InlineSpan? text
     {
-        get => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).text;
+        get => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).text;
         set
         {
             var __value = value;
-            if ((object.Equals(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).text, __value)))
+            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).text, __value)))
             {
                 return;
             }
@@ -614,23 +614,23 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             markNeedsSemanticsUpdate();
         }
     }
-    internal virtual global::Doroti.Generated.Framework.Painting.TextPainter _textIntrinsics
+    internal virtual global::Doroti.Framework.Painting.TextPainter _textIntrinsics
     {
         get
         {
-            return ((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
+            return ((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
-    var __cascade = (_textIntrinsicsCache ??= new global::Doroti.Generated.Framework.Painting.TextPainter());
-    __cascade.text = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).text;
-    __cascade.textAlign = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textAlign;
-    __cascade.textDirection = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textDirection;
-    __cascade.textScaler = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textScaler;
-    __cascade.maxLines = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).maxLines;
-    __cascade.ellipsis = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).ellipsis;
-    __cascade.locale = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).locale;
-    __cascade.strutStyle = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).strutStyle;
-    __cascade.textWidthBasis = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textWidthBasis;
-    __cascade.textHeightBehavior = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textHeightBehavior;
+    var __cascade = (_textIntrinsicsCache ??= new global::Doroti.Framework.Painting.TextPainter());
+    __cascade.text = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).text;
+    __cascade.textAlign = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textAlign;
+    __cascade.textDirection = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textDirection;
+    __cascade.textScaler = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textScaler;
+    __cascade.maxLines = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).maxLines;
+    __cascade.ellipsis = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).ellipsis;
+    __cascade.locale = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).locale;
+    __cascade.strutStyle = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).strutStyle;
+    __cascade.textWidthBasis = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textWidthBasis;
+    __cascade.textHeightBehavior = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textHeightBehavior;
     return __cascade;
 }))();
             return default!;
@@ -638,11 +638,11 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     }
     public virtual global::Doroti.Ui.TextAlign textAlign
     {
-        get => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textAlign;
+        get => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textAlign;
         set
         {
             var __value = value;
-            if ((object.Equals(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textAlign, DartRuntimePrimitives.RequireValue(__value))))
+            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textAlign, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -652,11 +652,11 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     }
     public virtual global::Doroti.Ui.TextDirection textDirection
     {
-        get => DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textDirection);
+        get => DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textDirection);
         set
         {
             var __value = value;
-            if ((object.Equals(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textDirection, DartRuntimePrimitives.RequireValue(__value))))
+            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textDirection, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -667,11 +667,11 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     }
     public virtual global::Doroti.Ui.Locale? locale
     {
-        get => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).locale;
+        get => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).locale;
         set
         {
             var __value = value;
-            if ((object.Equals(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).locale, __value)))
+            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).locale, __value)))
             {
                 return;
             }
@@ -679,13 +679,13 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Generated.Framework.Painting.StrutStyle? strutStyle
+    public virtual global::Doroti.Framework.Painting.StrutStyle? strutStyle
     {
-        get => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).strutStyle;
+        get => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).strutStyle;
         set
         {
             var __value = value;
-            if ((object.Equals(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).strutStyle, __value)))
+            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).strutStyle, __value)))
             {
                 return;
             }
@@ -841,20 +841,20 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     }
     public virtual double textScaleFactor
     {
-        get => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textScaleFactor;
+        get => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textScaleFactor;
         set
         {
             var __value = value;
-            textScaler = global::Doroti.Generated.Framework.Painting.TextScaler.CreateLinear(DartRuntimePrimitives.RequireValue(__value));
+            textScaler = global::Doroti.Framework.Painting.TextScaler.CreateLinear(DartRuntimePrimitives.RequireValue(__value));
         }
     }
-    public virtual global::Doroti.Generated.Framework.Painting.TextScaler textScaler
+    public virtual global::Doroti.Framework.Painting.TextScaler textScaler
     {
-        get => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textScaler;
+        get => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textScaler;
         set
         {
             var __value = value;
-            if ((object.Equals(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textScaler, __value)))
+            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textScaler, __value)))
             {
                 return;
             }
@@ -1052,14 +1052,14 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void describeSemanticsConfiguration(global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration config)
+    public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
-        _semanticsInfo = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).text!.getSemanticsInformation();
-        if ((this._semanticsInfo!.any(((info) => (((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info).recognizer is not null))) && (!object.Equals(global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS))))
+        _semanticsInfo = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).text!.getSemanticsInformation();
+        if ((this._semanticsInfo!.any(((info) => (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info).recognizer is not null))) && (!object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, TargetPlatform.macOS))))
         {
             DartRuntimePrimitives.Assert(() => (this.readOnly && !this.obscureText));
-            ((Func<global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration>)(() =>
+            ((Func<global::Doroti.Framework.Semantics.SemanticsConfiguration>)(() =>
 {
     var __cascade = config;
     __cascade.isSemanticBoundary = true;
@@ -1072,17 +1072,17 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         {
             if (this.obscureText)
             {
-                _cachedAttributedValue = new global::Doroti.Generated.Framework.Semantics.AttributedString(DartCoreExtensions.repeat(this.obscuringCharacter, this.plainText.Length));
+                _cachedAttributedValue = new global::Doroti.Framework.Semantics.AttributedString(DartCoreExtensions.repeat(this.obscuringCharacter, this.plainText.Length));
             }
             else
             {
                 var buffer__50059 = new StringBuffer();
                 var offset__50096 = 0L;
                 var attributes__50122 = new List<global::Doroti.Ui.StringAttribute>();
-                foreach (global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation info__50206 in this._semanticsInfo!)
+                foreach (global::Doroti.Framework.Painting.InlineSpanSemanticsInformation info__50206 in this._semanticsInfo!)
                 {
-                    string label__50256 = (((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__50206).semanticsLabel ?? ((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__50206).text);
-                    foreach (global::Doroti.Ui.StringAttribute infoAttribute__50335 in ((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__50206).stringAttributes)
+                    string label__50256 = (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__50206).semanticsLabel ?? ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__50206).text);
+                    foreach (global::Doroti.Ui.StringAttribute infoAttribute__50335 in ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__50206).stringAttributes)
                     {
                         global::Doroti.Ui.TextRange originalRange__50405 = infoAttribute__50335.range;
                         attributes__50122.Add(infoAttribute__50335.copy(range: new global::Doroti.Ui.TextRange(start: (offset__50096 + originalRange__50405.start), end: (offset__50096 + originalRange__50405.end))));
@@ -1090,10 +1090,10 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
                     buffer__50059.write(label__50256);
                     offset__50096 += label__50256.Length;
                 }
-                _cachedAttributedValue = new global::Doroti.Generated.Framework.Semantics.AttributedString(buffer__50059.ToString(), attributes: attributes__50122);
+                _cachedAttributedValue = new global::Doroti.Framework.Semantics.AttributedString(buffer__50059.ToString(), attributes: attributes__50122);
             }
         }
-        ((Func<global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration>)(() =>
+        ((Func<global::Doroti.Framework.Semantics.SemanticsConfiguration>)(() =>
 {
     var __cascade = config;
     __cascade.attributedValue = this._cachedAttributedValue!;
@@ -1120,7 +1120,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             config.textSelection = this.selection;
             if ((this._textPainter.getOffsetBefore(this.selection!.extentOffset) is not null))
             {
-                ((Func<global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration>)(() =>
+                ((Func<global::Doroti.Framework.Semantics.SemanticsConfiguration>)(() =>
 {
     var __cascade = config;
     __cascade.onMoveCursorBackwardByWord = this._handleMoveCursorBackwardByWord;
@@ -1130,7 +1130,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             }
             if ((this._textPainter.getOffsetAfter(this.selection!.extentOffset) is not null))
             {
-                ((Func<global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration>)(() =>
+                ((Func<global::Doroti.Framework.Semantics.SemanticsConfiguration>)(() =>
 {
     var __cascade = config;
     __cascade.onMoveCursorForwardByWord = this._handleMoveCursorForwardByWord;
@@ -1146,10 +1146,10 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         this.textSelectionDelegate.userUpdateTextEditingValue(new TextEditingValue(text: text, selection: TextSelection.CreateCollapsed(offset: text.Length)), SelectionChangedCause.keyboard);
     }
 
-    public override void assembleSemanticsNode(global::Doroti.Generated.Framework.Semantics.SemanticsNode node, global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration config, IEnumerable<global::Doroti.Generated.Framework.Semantics.SemanticsNode> children)
+    public override void assembleSemanticsNode(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsConfiguration config, IEnumerable<global::Doroti.Framework.Semantics.SemanticsNode> children)
     {
         DartRuntimePrimitives.Assert(() => ((this._semanticsInfo is not null) && (checked((long)(this._semanticsInfo!.Count)) != 0)));
-        var newChildren__52630 = new List<global::Doroti.Generated.Framework.Semantics.SemanticsNode>();
+        var newChildren__52630 = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
         global::Doroti.Ui.TextDirection currentDirection__52681 = this.textDirection;
         global::Doroti.Ui.Rect currentRect__52724 = default!;
         var ordinal__52745 = 0.0;
@@ -1157,17 +1157,17 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         var placeholderIndex__52787 = 0L;
         var childIndex__52817 = 0L;
         RenderBox? child__52848 = firstChild;
-        var newChildCache__52878 = new DartMap<Key, global::Doroti.Generated.Framework.Semantics.SemanticsNode>();
-        _cachedCombinedSemanticsInfos ??= global::Doroti.Generated.Framework.Painting.Inline_spanLibrary.combineSemanticsInfo(this._semanticsInfo!);
-        foreach (global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation info__53041 in this._cachedCombinedSemanticsInfos!)
+        var newChildCache__52878 = new DartMap<Key, global::Doroti.Framework.Semantics.SemanticsNode>();
+        _cachedCombinedSemanticsInfos ??= global::Doroti.Framework.Painting.Inline_spanLibrary.combineSemanticsInfo(this._semanticsInfo!);
+        foreach (global::Doroti.Framework.Painting.InlineSpanSemanticsInformation info__53041 in this._cachedCombinedSemanticsInfos!)
         {
-            var selection__53095 = new TextSelection(baseOffset: start__52768, extentOffset: (start__52768 + ((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__53041).text.Length));
-            start__52768 += ((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__53041).text.Length;
-            if (((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__53041).isPlaceholder)
+            var selection__53095 = new TextSelection(baseOffset: start__52768, extentOffset: (start__52768 + ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__53041).text.Length));
+            start__52768 += ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__53041).text.Length;
+            if (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__53041).isPlaceholder)
             {
                 while (((children.Count() > childIndex__52817) && children.elementAt(childIndex__52817).isTagged(new PlaceholderSpanIndexSemanticsTag(placeholderIndex__52787))))
                 {
-                    global::Doroti.Generated.Framework.Semantics.SemanticsNode childNode__53614 = children.elementAt(childIndex__52817);
+                    global::Doroti.Framework.Semantics.SemanticsNode childNode__53614 = children.elementAt(childIndex__52817);
                     var parentData__53674 = ((TextParentData?)(object?)child__52848!.parentData!)!;
                     DartRuntimePrimitives.Assert(() => (((TextParentData)parentData__53674).offset is not null));
                     newChildren__52630.Add(childNode__53614);
@@ -1193,15 +1193,15 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
                 }
                 rect__54135 = global::Doroti.Ui.Rect.fromLTWH(Math.Max(0.0, rect__54135.left), Math.Max(0.0, rect__54135.top), Math.Min(rect__54135.width, ((BoxConstraints)constraints).maxWidth), Math.Min(rect__54135.height, ((BoxConstraints)constraints).maxHeight));
                 currentRect__52724 = global::Doroti.Ui.Rect.fromLTRB((rect__54135.left.floorToDouble() - 4.0), (rect__54135.top.floorToDouble() - 4.0), (rect__54135.right.ceilToDouble() + 4.0), (rect__54135.bottom.ceilToDouble() + 4.0));
-                var configuration__55137 = ((Func<global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration>)(() =>
+                var configuration__55137 = ((Func<global::Doroti.Framework.Semantics.SemanticsConfiguration>)(() =>
 {
-    var __cascade = new global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration();
-    __cascade.sortKey = new global::Doroti.Generated.Framework.Semantics.OrdinalSortKey(ordinal__52745++);
+    var __cascade = new global::Doroti.Framework.Semantics.SemanticsConfiguration();
+    __cascade.sortKey = new global::Doroti.Framework.Semantics.OrdinalSortKey(ordinal__52745++);
     __cascade.textDirection = initialDirection__53941;
-    __cascade.attributedLabel = new global::Doroti.Generated.Framework.Semantics.AttributedString((((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__53041).semanticsLabel ?? ((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__53041).text), attributes: ((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__53041).stringAttributes);
+    __cascade.attributedLabel = new global::Doroti.Framework.Semantics.AttributedString((((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__53041).semanticsLabel ?? ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__53041).text), attributes: ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__53041).stringAttributes);
     return __cascade;
 }))();
-                switch (((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__53041).recognizer)
+                switch (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__53041).recognizer)
                 {
                     case TapGestureRecognizer { onTap: Action handler__55523 } __object55475:
                         {
@@ -1239,12 +1239,12 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
                             break;
                         }
                 }
-                if ((((global::Doroti.Generated.Framework.Semantics.SemanticsNode)node).parentPaintClipRect is not null))
+                if ((((global::Doroti.Framework.Semantics.SemanticsNode)node).parentPaintClipRect is not null))
                 {
-                    global::Doroti.Ui.Rect paintRect__56181 = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsNode)node).parentPaintClipRect).intersect(currentRect__52724);
+                    global::Doroti.Ui.Rect paintRect__56181 = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsNode)node).parentPaintClipRect).intersect(currentRect__52724);
                     configuration__55137.isHidden = (paintRect__56181.isEmpty && !currentRect__52724.isEmpty);
                 }
-                global::Doroti.Generated.Framework.Semantics.SemanticsNode newChild__56364 = default!;
+                global::Doroti.Framework.Semantics.SemanticsNode newChild__56364 = default!;
                 if (((((long?)(this._cachedChildNodes?.Count)) is { } __count56386 ? __count56386 != 0 : (bool?)null) ?? false))
                 {
                     newChild__56364 = this._cachedChildNodes!.remove(this._cachedChildNodes!.Keys.First())!;
@@ -1252,20 +1252,20 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
                 else
                 {
                     var key__56541 = new UniqueKey();
-                    newChild__56364 = new global::Doroti.Generated.Framework.Semantics.SemanticsNode(key: key__56541, showOnScreen: _createShowOnScreenFor(key__56541));
+                    newChild__56364 = new global::Doroti.Framework.Semantics.SemanticsNode(key: key__56541, showOnScreen: _createShowOnScreenFor(key__56541));
                 }
-                ((Func<global::Doroti.Generated.Framework.Semantics.SemanticsNode>)(() =>
+                ((Func<global::Doroti.Framework.Semantics.SemanticsNode>)(() =>
 {
     var __cascade = newChild__56364;
     __cascade.updateWith(config: configuration__55137);
     __cascade.rect = currentRect__52724;
     return __cascade;
 }))();
-                newChildCache__52878[((global::Doroti.Generated.Framework.Semantics.SemanticsNode)newChild__56364).key!] = newChild__56364;
+                newChildCache__52878[((global::Doroti.Framework.Semantics.SemanticsNode)newChild__56364).key!] = newChild__56364;
                 newChildren__52630.Add(newChild__56364);
             }
         }
-        _cachedChildNodes = newChildCache__52878.cast<Key, global::Doroti.Generated.Framework.Semantics.SemanticsNode>();
+        _cachedChildNodes = newChildCache__52878.cast<Key, global::Doroti.Framework.Semantics.SemanticsNode>();
         node.updateWith(config: config, childrenInInversePaintOrder: newChildren__52630);
     }
 
@@ -1273,8 +1273,8 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     {
         return (() =>
         {
-            global::Doroti.Generated.Framework.Semantics.SemanticsNode node__57067 = this._cachedChildNodes!.GetValueOrDefault(key)!;
-            showOnScreen(descendant: this, rect: ((global::Doroti.Generated.Framework.Semantics.SemanticsNode)node__57067).rect);
+            global::Doroti.Framework.Semantics.SemanticsNode node__57067 = this._cachedChildNodes!.GetValueOrDefault(key)!;
+            showOnScreen(descendant: this, rect: ((global::Doroti.Framework.Semantics.SemanticsNode)node__57067).rect);
         });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1476,21 +1476,21 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     }
 
     internal virtual bool _isMultiline => (this.maxLines != 1L);
-    internal virtual global::Doroti.Generated.Framework.Painting.Axis _viewportAxis => (this._isMultiline ? global::Doroti.Generated.Framework.Painting.Axis.vertical : global::Doroti.Generated.Framework.Painting.Axis.horizontal);
-    internal virtual global::Doroti.Ui.Offset _paintOffset => (this._viewportAxis switch { global::Doroti.Generated.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Offset(-((ViewportOffset)this.offset).pixels, 0.0), global::Doroti.Generated.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Offset(0.0, -((ViewportOffset)this.offset).pixels), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+    internal virtual global::Doroti.Framework.Painting.Axis _viewportAxis => (this._isMultiline ? global::Doroti.Framework.Painting.Axis.vertical : global::Doroti.Framework.Painting.Axis.horizontal);
+    internal virtual global::Doroti.Ui.Offset _paintOffset => (this._viewportAxis switch { global::Doroti.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Offset(-((ViewportOffset)this.offset).pixels, 0.0), global::Doroti.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Offset(0.0, -((ViewportOffset)this.offset).pixels), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     internal virtual double _viewportExtent
     {
         get
         {
             DartRuntimePrimitives.Assert(() => hasSize);
-            return (this._viewportAxis switch { global::Doroti.Generated.Framework.Painting.Axis.horizontal => size.width, global::Doroti.Generated.Framework.Painting.Axis.vertical => size.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            return (this._viewportAxis switch { global::Doroti.Framework.Painting.Axis.horizontal => size.width, global::Doroti.Framework.Painting.Axis.vertical => size.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             return default!;
         }
     }
     internal virtual double _getMaxScrollExtent(Size contentSize)
     {
         DartRuntimePrimitives.Assert(() => hasSize);
-        return (this._viewportAxis switch { global::Doroti.Generated.Framework.Painting.Axis.horizontal => Math.Max(0.0, (contentSize.width - size.width)), global::Doroti.Generated.Framework.Painting.Axis.vertical => Math.Max(0.0, (contentSize.height - size.height)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (this._viewportAxis switch { global::Doroti.Framework.Painting.Axis.horizontal => Math.Max(0.0, (contentSize.width - size.width)), global::Doroti.Framework.Painting.Axis.vertical => Math.Max(0.0, (contentSize.height - size.height)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1508,8 +1508,8 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         }
         else
         {
-            global::Doroti.Ui.Offset start__64642 = (new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble(boxes__64020.First().start, 0, ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).size.width), boxes__64020.First().bottom) + paintOffset__63964);
-            global::Doroti.Ui.Offset end__64791 = (new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble(boxes__64020.Last().end, 0, ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).size.width), boxes__64020.Last().bottom) + paintOffset__63964);
+            global::Doroti.Ui.Offset start__64642 = (new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble(boxes__64020.First().start, 0, ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).size.width), boxes__64020.First().bottom) + paintOffset__63964);
+            global::Doroti.Ui.Offset end__64791 = (new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble(boxes__64020.Last().end, 0, ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).size.width), boxes__64020.Last().bottom) + paintOffset__63964);
             return new List<TextSelectionPoint> { new TextSelectionPoint(start__64642, boxes__64020.First().direction), new TextSelectionPoint(end__64791, boxes__64020.Last().direction) };
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1540,11 +1540,11 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         global::Doroti.Ui.Rect caretPrototype__67177 = this._caretPrototype;
         global::Doroti.Ui.Offset caretOffset__67228 = this._textPainter.getOffsetForCaret(caretPosition, caretPrototype__67177);
         global::Doroti.Ui.Rect caretRect__67314 = caretPrototype__67177.shift((caretOffset__67228 + this.cursorOffset));
-        double scrollableWidth__67393 = Math.Max((((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).width + this._caretMargin), size.width);
+        double scrollableWidth__67393 = Math.Max((((global::Doroti.Framework.Painting.TextPainter)this._textPainter).width + this._caretMargin), size.width);
         double caretX__67486 = Dart_uiLibrary.clampDouble(caretRect__67314.left, 0, Math.Max((scrollableWidth__67393 - this._caretMargin), 0));
         caretRect__67314 = (new global::Doroti.Ui.Offset(caretX__67486, caretRect__67314.top) & caretRect__67314.size);
         double fullHeight__67679 = this._textPainter.getFullHeightForCaret(caretPosition, caretPrototype__67177);
-        switch (global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
         {
             case var __constant67807 when object.Equals(__constant67807, TargetPlatform.iOS):
             case var __constant67838 when object.Equals(__constant67838, TargetPlatform.macOS):
@@ -1571,9 +1571,9 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
 
     public override double computeMinIntrinsicWidth(double height)
     {
-        List<global::Doroti.Generated.Framework.Painting.PlaceholderDimensions> placeholderDimensions__69114 = layoutInlineChildren(double.PositiveInfinity, ((Func<RenderBox, BoxConstraints, Size>)((child, constraints) => new global::Doroti.Ui.Size(child.getMinIntrinsicWidth(double.PositiveInfinity), 0.0))), (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline);
+        List<global::Doroti.Framework.Painting.PlaceholderDimensions> placeholderDimensions__69114 = layoutInlineChildren(double.PositiveInfinity, ((Func<RenderBox, BoxConstraints, Size>)((child, constraints) => new global::Doroti.Ui.Size(child.getMinIntrinsicWidth(double.PositiveInfinity), 0.0))), (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline);
         var (minWidth__69369, maxWidth__69386) = _adjustConstraints();
-        return (((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
+        return (((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
     var __cascade = this._textIntrinsics;
     __cascade.setPlaceholderDimensions(placeholderDimensions__69114);
@@ -1585,9 +1585,9 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        List<global::Doroti.Generated.Framework.Painting.PlaceholderDimensions> placeholderDimensions__69702 = layoutInlineChildren(double.PositiveInfinity, ((Func<RenderBox, BoxConstraints, Size>)((child, constraints) => new global::Doroti.Ui.Size(child.getMaxIntrinsicWidth(double.PositiveInfinity), 0.0))), (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline);
+        List<global::Doroti.Framework.Painting.PlaceholderDimensions> placeholderDimensions__69702 = layoutInlineChildren(double.PositiveInfinity, ((Func<RenderBox, BoxConstraints, Size>)((child, constraints) => new global::Doroti.Ui.Size(child.getMaxIntrinsicWidth(double.PositiveInfinity), 0.0))), (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline);
         var (minWidth__70104, maxWidth__70121) = _adjustConstraints();
-        return ((((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
+        return ((((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
     var __cascade = this._textIntrinsics;
     __cascade.setPlaceholderDimensions(placeholderDimensions__69702);
@@ -1597,7 +1597,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual double preferredLineHeight => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).preferredLineHeight;
+    public virtual double preferredLineHeight => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).preferredLineHeight;
     internal virtual long _countHardLineBreaks(string text)
     {
         long? cachedValue__70677 = this._cachedLineBreakCount;
@@ -1632,7 +1632,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         long? maxLines__71239 = this.maxLines;
         long? minLines__71280 = (this.minLines ?? maxLines__71239);
         double minHeight__71335 = (this.preferredLineHeight * ((minLines__71280 ?? 0L)));
-        DartRuntimePrimitives.Assert(() => ((maxLines__71239 != 1L) || (((global::Doroti.Generated.Framework.Painting.TextPainter)this._textIntrinsics).maxLines == 1L)));
+        DartRuntimePrimitives.Assert(() => ((maxLines__71239 != 1L) || (((global::Doroti.Framework.Painting.TextPainter)this._textIntrinsics).maxLines == 1L)));
         if ((maxLines__71239 is null))
         {
             double estimatedHeight__71494 = default!;
@@ -1643,7 +1643,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
             else
             {
                 var (minWidth__71673, maxWidth__71690) = _adjustConstraints(maxWidth: width);
-                estimatedHeight__71494 = (((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
+                estimatedHeight__71494 = (((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
     var __cascade = this._textIntrinsics;
     __cascade.layout(minWidth: minWidth__71673, maxWidth: maxWidth__71690);
@@ -1655,7 +1655,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         if ((DartRuntimePrimitives.RequireValue(maxLines__71239) == 1L))
         {
             var (minWidth__72341, maxWidth__72358) = _adjustConstraints(maxWidth: width);
-            return (((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
+            return (((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
     var __cascade = this._textIntrinsics;
     __cascade.layout(minWidth: minWidth__72341, maxWidth: maxWidth__72358);
@@ -1668,7 +1668,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         }
         double maxHeight__72579 = (this.preferredLineHeight * DartRuntimePrimitives.RequireValue(maxLines__71239));
         var (minWidth__72641, maxWidth__72658) = _adjustConstraints(maxWidth: width);
-        return Dart_uiLibrary.clampDouble((((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
+        return Dart_uiLibrary.clampDouble((((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
     var __cascade = this._textIntrinsics;
     __cascade.layout(minWidth: minWidth__72641, maxWidth: maxWidth__72658);
@@ -1697,7 +1697,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     {
         global::Doroti.Ui.Offset effectivePosition__73608 = (position - this._paintOffset);
         global::Doroti.Ui.GlyphInfo? glyph__73674 = this._textPainter.getClosestGlyphForOffset(effectivePosition__73608);
-        global::Doroti.Generated.Framework.Painting.InlineSpan? spanHit__74108 = (((glyph__73674 is not null) && glyph__73674.graphemeClusterLayoutBounds.contains(effectivePosition__73608)) ? ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).text!.getSpanForPosition(new global::Doroti.Ui.TextPosition(offset: glyph__73674.graphemeClusterCodeUnitRange.start)) : null);
+        global::Doroti.Framework.Painting.InlineSpan? spanHit__74108 = (((glyph__73674 is not null) && glyph__73674.graphemeClusterLayoutBounds.contains(effectivePosition__73608)) ? ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).text!.getSpanForPosition(new global::Doroti.Ui.TextPosition(offset: glyph__73674.graphemeClusterCodeUnitRange.start)) : null);
         switch (spanHit__74108)
         {
             case HitTestTarget span__74412:
@@ -1713,17 +1713,17 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void handleEvent(global::Doroti.Generated.Framework.Gestures.PointerEvent @event, HitTestEntry<HitTestTarget> entry)
+    public override void handleEvent(global::Doroti.Framework.Gestures.PointerEvent @event, HitTestEntry<HitTestTarget> entry)
     {
         DartRuntimePrimitives.Assert(() => debugHandleEvent(@event, entry));
-        if ((@event is global::Doroti.Generated.Framework.Gestures.PointerDownEvent))
+        if ((@event is global::Doroti.Framework.Gestures.PointerDownEvent))
         {
-            global::Doroti.Generated.Framework.Gestures.PointerDownEvent @event__as74778 = (global::Doroti.Generated.Framework.Gestures.PointerDownEvent)@event;
+            global::Doroti.Framework.Gestures.PointerDownEvent @event__as74778 = (global::Doroti.Framework.Gestures.PointerDownEvent)@event;
             DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
             if (!this.ignorePointer)
             {
-                this._tap.addPointer((global::Doroti.Generated.Framework.Gestures.PointerDownEvent)(object)@event__as74778);
-                this._longPress.addPointer((global::Doroti.Generated.Framework.Gestures.PointerDownEvent)(object)@event__as74778);
+                this._tap.addPointer((global::Doroti.Framework.Gestures.PointerDownEvent)(object)@event__as74778);
+                this._longPress.addPointer((global::Doroti.Framework.Gestures.PointerDownEvent)(object)@event__as74778);
             }
         }
     }
@@ -1789,7 +1789,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         _setSelection(newSelection__78894, cause);
     }
 
-    public virtual global::Doroti.Generated.Framework.Painting.WordBoundary wordBoundaries => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).wordBoundaries;
+    public virtual global::Doroti.Framework.Painting.WordBoundary wordBoundaries => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).wordBoundaries;
     public virtual void selectWord(SelectionChangedCause cause)
     {
         selectWordsInRange(from: DartRuntimePrimitives.RequireValue(this._lastTapDownPosition), cause: cause);
@@ -1853,7 +1853,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         if (((effectiveOffset__82304 > 0L) && TextLayoutMetrics.isWhitespace(this.plainText.codeUnitAt(effectiveOffset__82304))))
         {
             global::Doroti.Ui.TextRange? previousWord__83157 = _getPreviousWord(word__82243.start);
-            switch (global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+            switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
             {
                 case var __constant83254 when object.Equals(__constant83254, TargetPlatform.iOS):
                     {
@@ -1909,7 +1909,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
 
     internal virtual void _computeCaretPrototype()
     {
-        switch (global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
         {
             case var __constant86723 when object.Equals(__constant86723, TargetPlatform.iOS):
             case var __constant86754 when object.Equals(__constant86754, TargetPlatform.macOS):
@@ -1939,14 +1939,14 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         var (minWidth__87867, maxWidth__87884) = _adjustConstraints(minWidth: ((BoxConstraints)constraints).minWidth, maxWidth: ((BoxConstraints)constraints).maxWidth);
-        ((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
+        ((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
     var __cascade = this._textIntrinsics;
     __cascade.setPlaceholderDimensions(layoutInlineChildren(((BoxConstraints)constraints).maxWidth, (Func<RenderBox, BoxConstraints, Size>)ChildLayoutHelper.dryLayoutChild, (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline));
     __cascade.layout(minWidth: minWidth__87867, maxWidth: maxWidth__87884);
     return __cascade;
 }))();
-        double width__88295 = (this.forceLine ? ((BoxConstraints)constraints).maxWidth : constraints.constrainWidth((((global::Doroti.Generated.Framework.Painting.TextPainter)this._textIntrinsics).size.width + this._caretMargin)));
+        double width__88295 = (this.forceLine ? ((BoxConstraints)constraints).maxWidth : constraints.constrainWidth((((global::Doroti.Framework.Painting.TextPainter)this._textIntrinsics).size.width + this._caretMargin)));
         return new global::Doroti.Ui.Size(width__88295, constraints.constrainHeight(_preferredHeight(((BoxConstraints)constraints).maxWidth)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1954,7 +1954,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         var (minWidth__88644, maxWidth__88661) = _adjustConstraints(minWidth: ((BoxConstraints)constraints).minWidth, maxWidth: ((BoxConstraints)constraints).maxWidth);
-        ((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
+        ((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
     var __cascade = this._textIntrinsics;
     __cascade.setPlaceholderDimensions(layoutInlineChildren(((BoxConstraints)constraints).maxWidth, (Func<RenderBox, BoxConstraints, Size>)ChildLayoutHelper.dryLayoutChild, (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline));
@@ -1970,20 +1970,20 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         BoxConstraints constraints__89192 = this.constraints;
         _placeholderDimensions = layoutInlineChildren(((BoxConstraints)constraints__89192).maxWidth, (Func<RenderBox, BoxConstraints, Size>)ChildLayoutHelper.layoutChild, (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getBaseline);
         var (minWidth__89402, maxWidth__89419) = _adjustConstraints(minWidth: ((BoxConstraints)constraints__89192).minWidth, maxWidth: ((BoxConstraints)constraints__89192).maxWidth);
-        ((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
+        ((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
     var __cascade = this._textPainter;
     __cascade.setPlaceholderDimensions(this._placeholderDimensions);
     __cascade.layout(minWidth: minWidth__89402, maxWidth: maxWidth__89419);
     return __cascade;
 }))();
-        positionInlineChildren(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).inlinePlaceholderBoxes!);
+        positionInlineChildren(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).inlinePlaceholderBoxes!);
         _computeCaretPrototype();
-        double width__89778 = (this.forceLine ? ((BoxConstraints)constraints__89192).maxWidth : constraints__89192.constrainWidth((((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).width + this._caretMargin)));
-        DartRuntimePrimitives.Assert(() => ((this.maxLines != 1L) || (((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).maxLines == 1L)));
-        double preferredHeight__89974 = (this.maxLines switch { null => Math.Max(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).height, (this.preferredLineHeight * ((this.minLines ?? 0L)))), 1L => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).height, long maxLines__90144 => Dart_uiLibrary.clampDouble(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).height, (this.preferredLineHeight * ((this.minLines ?? DartRuntimePrimitives.RequireValue(maxLines__90144)))), (this.preferredLineHeight * DartRuntimePrimitives.RequireValue(maxLines__90144))) });
+        double width__89778 = (this.forceLine ? ((BoxConstraints)constraints__89192).maxWidth : constraints__89192.constrainWidth((((global::Doroti.Framework.Painting.TextPainter)this._textPainter).width + this._caretMargin)));
+        DartRuntimePrimitives.Assert(() => ((this.maxLines != 1L) || (((global::Doroti.Framework.Painting.TextPainter)this._textPainter).maxLines == 1L)));
+        double preferredHeight__89974 = (this.maxLines switch { null => Math.Max(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).height, (this.preferredLineHeight * ((this.minLines ?? 0L)))), 1L => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).height, long maxLines__90144 => Dart_uiLibrary.clampDouble(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).height, (this.preferredLineHeight * ((this.minLines ?? DartRuntimePrimitives.RequireValue(maxLines__90144)))), (this.preferredLineHeight * DartRuntimePrimitives.RequireValue(maxLines__90144))) });
         size = new global::Doroti.Ui.Size(width__89778, constraints__89192.constrainHeight(preferredHeight__89974));
-        var contentSize__90389 = new global::Doroti.Ui.Size((((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).width + this._caretMargin), ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).height);
+        var contentSize__90389 = new global::Doroti.Ui.Size((((global::Doroti.Framework.Painting.TextPainter)this._textPainter).width + this._caretMargin), ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).height);
         var painterConstraints__90476 = BoxConstraints.CreateTight(contentSize__90389);
         this._foregroundRenderObject?.layout(painterConstraints__90476);
         this._backgroundRenderObject?.layout(painterConstraints__90476);
@@ -2003,10 +2003,10 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     public virtual global::Doroti.Ui.Offset calculateBoundedFloatingCursorOffset(Offset rawCursorOffset, bool? shouldResetOrigin = null)
     {
         global::Doroti.Ui.Offset deltaPosition__91978 = Offset.zero;
-        double topBound__92024 = -((global::Doroti.Generated.Framework.Painting.EdgeInsets)this.floatingCursorAddedMargin).top;
-        double bottomBound__92084 = ((Math.Min(size.height, ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).height) - this.preferredLineHeight) + ((global::Doroti.Generated.Framework.Painting.EdgeInsets)this.floatingCursorAddedMargin).bottom);
-        double leftBound__92240 = -((global::Doroti.Generated.Framework.Painting.EdgeInsets)this.floatingCursorAddedMargin).left;
-        double rightBound__92302 = (Math.Min(size.width, ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).width) + ((global::Doroti.Generated.Framework.Painting.EdgeInsets)this.floatingCursorAddedMargin).right);
+        double topBound__92024 = -((global::Doroti.Framework.Painting.EdgeInsets)this.floatingCursorAddedMargin).top;
+        double bottomBound__92084 = ((Math.Min(size.height, ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).height) - this.preferredLineHeight) + ((global::Doroti.Framework.Painting.EdgeInsets)this.floatingCursorAddedMargin).bottom);
+        double leftBound__92240 = -((global::Doroti.Framework.Painting.EdgeInsets)this.floatingCursorAddedMargin).left;
+        double rightBound__92302 = (Math.Min(size.width, ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).width) + ((global::Doroti.Framework.Painting.EdgeInsets)this.floatingCursorAddedMargin).right);
         var boundingRects__92409 = global::Doroti.Ui.Rect.fromLTRB(leftBound__92240, topBound__92024, rightBound__92302, bottomBound__92084);
         if ((shouldResetOrigin is not null))
         {
@@ -2095,7 +2095,7 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         {
             _floatingCursorTextPosition = lastTextPosition;
             double? animationValue__95373 = this._resetFloatingCursorAnimationValue;
-            global::Doroti.Generated.Framework.Painting.EdgeInsets sizeAdjustment__95449 = ((animationValue__95373 is not null) ? EdgeInsets.lerp(EditableLibrary._kFloatingCursorSizeIncrease, global::Doroti.Generated.Framework.Painting.EdgeInsets.zero, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(animationValue__95373)))! : EditableLibrary._kFloatingCursorSizeIncrease);
+            global::Doroti.Framework.Painting.EdgeInsets sizeAdjustment__95449 = ((animationValue__95373 is not null) ? EdgeInsets.lerp(EditableLibrary._kFloatingCursorSizeIncrease, global::Doroti.Framework.Painting.EdgeInsets.zero, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(animationValue__95373)))! : EditableLibrary._kFloatingCursorSizeIncrease);
             this._caretPainter.floatingCursorRect = sizeAdjustment__95449.inflateRect(this._caretPrototype).shift(boundedOffset);
         }
         else
@@ -2220,13 +2220,13 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("cursorColor", this.cursorColor));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("cursorColor", this.cursorColor));
         properties.add(new DiagnosticsProperty<ValueNotifier<bool>>("showCursor", this.showCursor));
         properties.add(new IntProperty("maxLines", this.maxLines));
         properties.add(new IntProperty("minLines", this.minLines));
         properties.add(new DiagnosticsProperty<bool>("expands", this.expands, defaultValue: false));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("selectionColor", this.selectionColor));
-        properties.add(new DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.TextScaler>("textScaler", this.textScaler, defaultValue: global::Doroti.Generated.Framework.Painting.TextScaler.noScaling));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("selectionColor", this.selectionColor));
+        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.TextScaler>("textScaler", this.textScaler, defaultValue: global::Doroti.Framework.Painting.TextScaler.noScaling));
         properties.add(new DiagnosticsProperty<global::Doroti.Ui.Locale>("locale", this.locale, defaultValue: null));
         properties.add(new DiagnosticsProperty<TextSelection>("selection", this.selection));
         properties.add(new DiagnosticsProperty<ViewportOffset>("offset", this.offset));
@@ -2462,10 +2462,10 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         }
     }
 
-    public virtual List<global::Doroti.Generated.Framework.Painting.PlaceholderDimensions> layoutInlineChildren(double maxWidth, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getChildBaseline)
+    public virtual List<global::Doroti.Framework.Painting.PlaceholderDimensions> layoutInlineChildren(double maxWidth, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getChildBaseline)
     {
         var constraints__7015 = new BoxConstraints(maxWidth: maxWidth);
-        return new List<global::Doroti.Generated.Framework.Painting.PlaceholderDimensions>();
+        return new List<global::Doroti.Framework.Painting.PlaceholderDimensions>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2695,11 +2695,11 @@ internal class _TextHighlightPainter__editable : RenderEditablePainter
             return;
         }
         this.highlightPaint.color = color__108156;
-        global::Doroti.Generated.Framework.Painting.TextPainter textPainter__108320 = ((RenderEditable)renderEditable)._textPainter;
+        global::Doroti.Framework.Painting.TextPainter textPainter__108320 = ((RenderEditable)renderEditable)._textPainter;
         HashSet<global::Doroti.Ui.TextBox> boxes__108386 = textPainter__108320.getBoxesForSelection(new TextSelection(baseOffset: range__108113.start, extentOffset: range__108113.end), boxHeightStyle: this.selectionHeightStyle, boxWidthStyle: this.selectionWidthStyle).toSet();
         foreach (var box__108650 in boxes__108386)
         {
-            canvas.drawRect(box__108650.toRect().shift(((RenderEditable)renderEditable)._paintOffset).intersect(global::Doroti.Ui.Rect.fromLTWH(0, 0, ((global::Doroti.Generated.Framework.Painting.TextPainter)textPainter__108320).width, ((global::Doroti.Generated.Framework.Painting.TextPainter)textPainter__108320).height)), this.highlightPaint);
+            canvas.drawRect(box__108650.toRect().shift(((RenderEditable)renderEditable)._paintOffset).intersect(global::Doroti.Ui.Rect.fromLTWH(0, 0, ((global::Doroti.Framework.Painting.TextPainter)textPainter__108320).width, ((global::Doroti.Framework.Painting.TextPainter)textPainter__108320).height)), this.highlightPaint);
         }
     }
 

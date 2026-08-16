@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public delegate void RegisterViewFactoryIo(string __unused0, global::System.Func<long, object> __unused1, bool isVisible = default!);
 
@@ -20,7 +20,7 @@ public class PlatformSelectableRegionContextMenuIo : StatelessWidget
 {
     public static RegisterViewFactoryIo? debugOverrideRegisterViewFactory = default;
 
-    public PlatformSelectableRegionContextMenuIo(Widget child, global::Doroti.Generated.Framework.Foundation.Key? key = null) : base(key: key)
+    public PlatformSelectableRegionContextMenuIo(Widget child, global::Doroti.Framework.Foundation.Key? key = null) : base(key: key)
     {
     }
 

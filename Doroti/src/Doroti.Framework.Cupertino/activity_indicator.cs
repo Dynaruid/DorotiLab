@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Cupertino;
+namespace Doroti.Framework.Cupertino;
 
 public static partial class Activity_indicatorLibrary
 {
@@ -24,14 +24,14 @@ public static partial class Activity_indicatorLibrary
     internal static Color _kActiveTickColor = ((Color)(object?)new CupertinoDynamicColor(color: new global::Doroti.Ui.Color(4282137668L), darkColor: new global::Doroti.Ui.Color(4293651445L)));
 }
 
-public class CupertinoActivityIndicator : global::Doroti.Generated.Framework.Widgets.StatefulWidget
+public class CupertinoActivityIndicator : global::Doroti.Framework.Widgets.StatefulWidget
 {
     public virtual Color? color { get; private set; }
     public virtual bool animating { get; private set; } = default!;
     public virtual double radius { get; private set; } = default!;
     public virtual double progress { get; private set; } = default!;
 
-    public CupertinoActivityIndicator(global::Doroti.Generated.Framework.Foundation.Key? key = null, Color? color = null, bool animating = true, double? radius = null) : base(key: key)
+    public CupertinoActivityIndicator(global::Doroti.Framework.Foundation.Key? key = null, Color? color = null, bool animating = true, double? radius = null) : base(key: key)
     {
         double __radius = radius ?? Activity_indicatorLibrary._kDefaultIndicatorRadius;
         this.color = color;
@@ -41,7 +41,7 @@ public class CupertinoActivityIndicator : global::Doroti.Generated.Framework.Wid
         System.Diagnostics.Debug.Assert((__radius > 0.0));
     }
 
-    public static CupertinoActivityIndicator CreatePartiallyRevealed(global::Doroti.Generated.Framework.Foundation.Key? key = null, Color? color = null, double? radius = null, double progress = 1.0)
+    public static CupertinoActivityIndicator CreatePartiallyRevealed(global::Doroti.Framework.Foundation.Key? key = null, Color? color = null, double? radius = null, double progress = 1.0)
     {
         var __instance = new CupertinoActivityIndicator(key: key, color: color, radius: radius);
         double __radius = radius ?? Activity_indicatorLibrary._kDefaultIndicatorRadius;
@@ -55,16 +55,16 @@ public class CupertinoActivityIndicator : global::Doroti.Generated.Framework.Wid
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoActivityIndicatorState__activity_indicator());
 }
 
-internal class _CupertinoActivityIndicatorState__activity_indicator : global::Doroti.Generated.Framework.Widgets.State<CupertinoActivityIndicator>, global::Doroti.Generated.Framework.Widgets.SingleTickerProviderStateMixin<CupertinoActivityIndicator>
+internal class _CupertinoActivityIndicatorState__activity_indicator : global::Doroti.Framework.Widgets.State<CupertinoActivityIndicator>, global::Doroti.Framework.Widgets.SingleTickerProviderStateMixin<CupertinoActivityIndicator>
 {
-    internal virtual global::Doroti.Generated.Framework.Animation.AnimationController _controller { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Scheduler.Ticker? _ticker { get; set; } = default;
-    public virtual global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.AnimationController _controller { get; set; } = default!;
+    public virtual global::Doroti.Framework.Scheduler.Ticker? _ticker { get; set; } = default;
+    public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     public override void initState()
     {
         base.initState();
-        _controller = new global::Doroti.Generated.Framework.Animation.AnimationController(duration: Duration.Create(seconds: 1L), vsync: this);
+        _controller = new global::Doroti.Framework.Animation.AnimationController(duration: Duration.Create(seconds: 1L), vsync: this);
         if (((CupertinoActivityIndicator)this.widget).animating)
         {
             this._controller.repeat();
@@ -96,20 +96,20 @@ internal class _CupertinoActivityIndicatorState__activity_indicator : global::Do
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
             });
         this._tickerModeNotifier?.removeListener(() => this._updateTicker());
         _tickerModeNotifier = null;
         base.dispose();
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)global::Doroti.Generated.Framework.Widgets.SizedBox.CreateSquare(dimension: (((CupertinoActivityIndicator)this.widget).radius * 2L), child: new global::Doroti.Generated.Framework.Widgets.CustomPaint(painter: new _CupertinoActivityIndicatorPainter__activity_indicator(position: this._controller, activeColor: (((CupertinoActivityIndicator)this.widget).color ?? CupertinoDynamicColor.resolve(Activity_indicatorLibrary._kActiveTickColor, context)), radius: ((CupertinoActivityIndicator)this.widget).radius, progress: ((CupertinoActivityIndicator)this.widget).progress))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateSquare(dimension: (((CupertinoActivityIndicator)this.widget).radius * 2L), child: new global::Doroti.Framework.Widgets.CustomPaint(painter: new _CupertinoActivityIndicatorPainter__activity_indicator(position: this._controller, activeColor: (((CupertinoActivityIndicator)this.widget).color ?? CupertinoDynamicColor.resolve(Activity_indicatorLibrary._kActiveTickColor, context)), radius: ((CupertinoActivityIndicator)this.widget).radius, progress: ((CupertinoActivityIndicator)this.widget).progress))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
+    public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -117,9 +117,9 @@ internal class _CupertinoActivityIndicatorState__activity_indicator : global::Do
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
             });
-        this._ticker = new global::Doroti.Generated.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
         _updateTickerModeNotifier();
         _updateTicker();
         return this._ticker!;
@@ -145,7 +145,7 @@ internal class _CupertinoActivityIndicatorState__activity_indicator : global::Do
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
         if ((object.Equals(newNotifier__15400, this._tickerModeNotifier)))
         {
             return;
@@ -155,11 +155,11 @@ internal class _CupertinoActivityIndicatorState__activity_indicator : global::Do
         this._tickerModeNotifier = newNotifier__15400;
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         string? tickerDescription__15805 = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
     }
 
 }
@@ -179,15 +179,15 @@ public static partial class Activity_indicatorLibrary
     internal static long _partiallyRevealedAlpha = 147L;
 }
 
-internal class _CupertinoActivityIndicatorPainter__activity_indicator : global::Doroti.Generated.Framework.Rendering.CustomPainter
+internal class _CupertinoActivityIndicatorPainter__activity_indicator : global::Doroti.Framework.Rendering.CustomPainter
 {
-    public virtual global::Doroti.Generated.Framework.Animation.Animation<double> position { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Animation.Animation<double> position { get; private set; } = default!;
     public virtual Color activeColor { get; private set; } = default!;
     public virtual double radius { get; private set; } = default!;
     public virtual double progress { get; private set; } = default!;
     public virtual RRect tickFundamentalShape { get; private set; } = default!;
 
-    internal _CupertinoActivityIndicatorPainter__activity_indicator(global::Doroti.Generated.Framework.Animation.Animation<double> position, Color activeColor, double radius, double progress) : base(repaint: position)
+    internal _CupertinoActivityIndicatorPainter__activity_indicator(global::Doroti.Framework.Animation.Animation<double> position, Color activeColor, double radius, double progress) : base(repaint: position)
     {
         this.position = position;
         this.activeColor = activeColor;
@@ -202,7 +202,7 @@ internal class _CupertinoActivityIndicatorPainter__activity_indicator : global::
         long tickCount__5219 = checked((long)(Activity_indicatorLibrary._kAlphaValues.Count));
         canvas.save();
         canvas.translate((size.width / 2.0), (size.height / 2.0));
-        long activeTick__5347 = ((tickCount__5219 * ((global::Doroti.Generated.Framework.Animation.Animation<double>)this.position).value)).floor();
+        long activeTick__5347 = ((tickCount__5219 * ((global::Doroti.Framework.Animation.Animation<double>)this.position).value)).floor();
         for (var i__5412 = 0L; (i__5412 < (tickCount__5219 * this.progress)); ++i__5412)
         {
             long t__5468 = (((i__5412 - activeTick__5347)) % tickCount__5219);
@@ -213,7 +213,7 @@ internal class _CupertinoActivityIndicatorPainter__activity_indicator : global::
         canvas.restore();
     }
 
-    public override bool shouldRepaint(global::Doroti.Generated.Framework.Rendering.CustomPainter oldDelegate)
+    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
     {
         var __oldPainter = (_CupertinoActivityIndicatorPainter__activity_indicator)(object)oldDelegate;
         return (((!object.Equals(((_CupertinoActivityIndicatorPainter__activity_indicator)__oldPainter).position, this.position)) || (!object.Equals(((_CupertinoActivityIndicatorPainter__activity_indicator)__oldPainter).activeColor, this.activeColor))) || (((_CupertinoActivityIndicatorPainter__activity_indicator)__oldPainter).progress != this.progress));
@@ -222,13 +222,13 @@ internal class _CupertinoActivityIndicatorPainter__activity_indicator : global::
 
 }
 
-public class CupertinoLinearActivityIndicator : global::Doroti.Generated.Framework.Widgets.StatelessWidget
+public class CupertinoLinearActivityIndicator : global::Doroti.Framework.Widgets.StatelessWidget
 {
     public virtual double progress { get; private set; } = default!;
     public virtual double height { get; private set; } = default!;
     public virtual Color? color { get; private set; }
 
-    public CupertinoLinearActivityIndicator(global::Doroti.Generated.Framework.Foundation.Key? key = null, double progress = default!, double height = 4.5, Color? color = null) : base(key: key)
+    public CupertinoLinearActivityIndicator(global::Doroti.Framework.Foundation.Key? key = null, double progress = default!, double height = 4.5, Color? color = null) : base(key: key)
     {
         this.progress = progress;
         this.height = height;
@@ -237,15 +237,15 @@ public class CupertinoLinearActivityIndicator : global::Doroti.Generated.Framewo
         System.Diagnostics.Debug.Assert(((progress >= 0.0) && (progress <= 1.0)));
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Generated.Framework.Rendering.BoxConstraints(minHeight: this.height, minWidth: double.PositiveInfinity), child: new global::Doroti.Generated.Framework.Widgets.CustomPaint(painter: new _CupertinoLinearActivityIndicator__activity_indicator(progress: this.progress, color: this.color))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: this.height, minWidth: double.PositiveInfinity), child: new global::Doroti.Framework.Widgets.CustomPaint(painter: new _CupertinoLinearActivityIndicator__activity_indicator(progress: this.progress, color: this.color))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _CupertinoLinearActivityIndicator__activity_indicator : global::Doroti.Generated.Framework.Rendering.CustomPainter
+internal class _CupertinoLinearActivityIndicator__activity_indicator : global::Doroti.Framework.Rendering.CustomPainter
 {
     public virtual double progress { get; private set; } = default!;
     public virtual Color? color { get; private set; }
@@ -270,12 +270,12 @@ internal class _CupertinoLinearActivityIndicator__activity_indicator : global::D
 
     public override void paint(Canvas canvas, Size size)
     {
-        canvas.drawRRect(global::Doroti.Generated.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular((size.height / 2L))).toRRect((Offset.zero & size)), this._backgroundPaint);
+        canvas.drawRRect(global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular((size.height / 2L))).toRRect((Offset.zero & size)), this._backgroundPaint);
         if ((this.progress > 0L))
         {
-            canvas.drawRRect(global::Doroti.Generated.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular((size.height / 2L))).toRRect((Offset.zero & new global::Doroti.Ui.Size((Dart_uiLibrary.clampDouble(this.progress, 0.0, 1.0) * size.width), size.height))), this._progressPaint);
+            canvas.drawRRect(global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular((size.height / 2L))).toRRect((Offset.zero & new global::Doroti.Ui.Size((Dart_uiLibrary.clampDouble(this.progress, 0.0, 1.0) * size.width), size.height))), this._progressPaint);
         }
     }
 
-    public override bool shouldRepaint(global::Doroti.Generated.Framework.Rendering.CustomPainter oldDelegate) => ((((_CupertinoLinearActivityIndicator__activity_indicator)oldDelegate).progress != this.progress) || (!object.Equals(((_CupertinoLinearActivityIndicator__activity_indicator)oldDelegate).color, this.color)));
+    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate) => ((((_CupertinoLinearActivityIndicator__activity_indicator)oldDelegate).progress != this.progress) || (!object.Equals(((_CupertinoLinearActivityIndicator__activity_indicator)oldDelegate).color, this.color)));
 }

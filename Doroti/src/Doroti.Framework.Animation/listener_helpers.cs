@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Animation;
+namespace Doroti.Framework.Animation;
 
 public interface AnimationLazyListenerMixin
 {

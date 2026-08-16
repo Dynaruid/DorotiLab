@@ -22,7 +22,7 @@ internal sealed partial class FrameworkCSharpLowerer
         var parameterOwner = _session.ActiveDonorDeclaration ?? _session.ActiveDeclaration;
         if (parameterOwner?.Name == "TreeSliver" && parameter.Name == "treeRowExtentBuilder")
         {
-            mappedType = "global::System.Func<TreeSliverNode<T>, global::Doroti.Generated.Framework.Rendering.SliverLayoutDimensions, double?>";
+            mappedType = "global::System.Func<TreeSliverNode<T>, global::Doroti.Framework.Rendering.SliverLayoutDimensions, double?>";
         }
         else if (parameterOwner?.Name == "ScrollAwareImageProvider" && parameter.Name == "context")
         {
@@ -134,7 +134,7 @@ internal sealed partial class FrameworkCSharpLowerer
             arguments = Regex.Replace(
                 arguments,
                 @"\bkTouchSlop\b",
-                "global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kTouchSlop",
+                "global::Doroti.Framework.Gestures.ConstantsLibrary.kTouchSlop",
                 RegexOptions.CultureInvariant);
             if (type is "Color" or "global::Doroti.Ui.Color" &&
                 arguments.Trim() == "_kColorDefault")
@@ -167,19 +167,19 @@ internal sealed partial class FrameworkCSharpLowerer
         expression = expression.Replace("math.pi", "Dart_mathLibrary.pi", StringComparison.Ordinal);
         if (expression == "kNoDefaultValue")
         {
-            return "global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue";
+            return "global::Doroti.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue";
         }
         if (expression == "kTouchSlop")
         {
-            return "global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kTouchSlop";
+            return "global::Doroti.Framework.Gestures.ConstantsLibrary.kTouchSlop";
         }
         if (expression == "kLongPressTimeout")
         {
-            return "global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kLongPressTimeout";
+            return "global::Doroti.Framework.Gestures.ConstantsLibrary.kLongPressTimeout";
         }
         if (expression == "defaultTargetPlatform")
         {
-            return "global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform";
+            return "global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform";
         }
         if (Regex.IsMatch(expression, @"^[A-Za-z_]\w*$", RegexOptions.CultureInvariant) &&
             FindGlobalDeclaration(expression) is { Ast.Kind: CoreNodeKind.ClassDeclaration or
@@ -794,12 +794,12 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (type == "DiagnosticableTreeNode")
         {
-            var diagnosticNode = "global::Doroti.Generated.Framework.Foundation.DiagnosticableTreeNode<global::Doroti.Generated.Framework.Foundation.DiagnosticableTree>";
+            var diagnosticNode = "global::Doroti.Framework.Foundation.DiagnosticableTreeNode<global::Doroti.Framework.Foundation.DiagnosticableTree>";
             return nullable ? diagnosticNode + "?" : diagnosticNode;
         }
         if (type == "SemanticsBinding")
         {
-            var semanticsBinding = "global::Doroti.Generated.Framework.Semantics.SemanticsBinding";
+            var semanticsBinding = "global::Doroti.Framework.Semantics.SemanticsBinding";
             return nullable ? semanticsBinding + "?" : semanticsBinding;
         }
         if (type == "HitTestEntry")
@@ -889,13 +889,13 @@ internal sealed partial class FrameworkCSharpLowerer
             if (outer is "Set" or "HashSet" or "LinkedHashSet" && arguments.Length == 1 &&
                 StripLibraryPrefix(arguments[0]).TrimEnd('?').StartsWith("_WidgetTicker", StringComparison.Ordinal))
             {
-                const string tickerSet = "HashSet<global::Doroti.Generated.Framework.Scheduler.Ticker>";
+                const string tickerSet = "HashSet<global::Doroti.Framework.Scheduler.Ticker>";
                 return nullable ? tickerSet + "?" : tickerSet;
             }
             if (outer == "Tween" && arguments.Length == 1 &&
                 arguments[0].TrimEnd('?') is "dynamic" or "Object" or "object")
             {
-                const string dartTween = "global::Doroti.Generated.Framework.Animation.IDartTween";
+                const string dartTween = "global::Doroti.Framework.Animation.IDartTween";
                 return nullable ? dartTween + "?" : dartTween;
             }
             if ((outer == "Action" && arguments.Length == 1 &&
@@ -1037,7 +1037,7 @@ internal sealed partial class FrameworkCSharpLowerer
                 "FragmentShader" => "global::Doroti.Ui.FragmentShader",
                 "FragmentProgram" => "global::Doroti.Ui.FragmentProgram",
                 "DisplayFeature" => "global::Doroti.Ui.DisplayFeature",
-                "ViewConfiguration" => "global::Doroti.Generated.Framework.Rendering.ViewConfiguration",
+                "ViewConfiguration" => "global::Doroti.Framework.Rendering.ViewConfiguration",
                 "Map" => "System.Collections.IDictionary",
                 "List" => "System.Collections.IList",
                 "Uri" => "DartUri",
@@ -1056,7 +1056,7 @@ internal sealed partial class FrameworkCSharpLowerer
                     "GestureLongPressCallback" or "GestureLongPressCancelCallback" or
                     "GestureLongPressUpCallback" or "GestureDragCancelCallback" => "global::System.Action",
                 "GestureDragUpdateCallback" =>
-                    "global::System.Action<global::Doroti.Generated.Framework.Gestures.DragUpdateDetails>",
+                    "global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>",
                 "Function" => "Delegate",
                 "pragma" => "object",
                 "Invocation" => "global::Doroti.Runtime.Invocation",
@@ -1089,7 +1089,7 @@ internal sealed partial class FrameworkCSharpLowerer
         if (type == "MouseTrackerAnnotation" &&
             mappingLibrary.Contains("/rendering/", StringComparison.Ordinal))
         {
-            return "global::Doroti.Generated.Framework.Services.IMouseTrackerAnnotation";
+            return "global::Doroti.Framework.Services.IMouseTrackerAnnotation";
         }
         // Flutter framework pointer events are owned by package:flutter/gestures.
         // The Services assembly precedes Gestures in the reviewed CLR graph,
@@ -1103,7 +1103,7 @@ internal sealed partial class FrameworkCSharpLowerer
                 "PointerScaleEvent" or "PointerPanZoomStartEvent" or "PointerPanZoomUpdateEvent" or
                 "PointerPanZoomEndEvent")
         {
-            return "global::Doroti.Generated.Framework.Gestures." + type;
+            return "global::Doroti.Framework.Gestures." + type;
         }
         if (!_semanticIndex.DeclarationsBySimpleName.TryGetValue(type, out var matches) || matches.Length == 0)
         {
@@ -1119,7 +1119,7 @@ internal sealed partial class FrameworkCSharpLowerer
             ? FrameworkNamespaceForLibrary(_currentLibrary)
             : FrameworkNamespaceForLibrary(mappingLibrary);
         return declarationNamespace is not null && declarationNamespace != currentNamespace
-            ? $"global::Doroti.Generated.Framework.{declarationNamespace}.{emitted}"
+            ? $"global::Doroti.Framework.{declarationNamespace}.{emitted}"
             : emitted;
     }
 

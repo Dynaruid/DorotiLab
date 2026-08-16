@@ -12,9 +12,9 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
-internal class _PlaceholderPainter__placeholder : global::Doroti.Generated.Framework.Rendering.CustomPainter
+internal class _PlaceholderPainter__placeholder : global::Doroti.Framework.Rendering.CustomPainter
 {
     public virtual Color color { get; private set; } = default!;
     public virtual double strokeWidth { get; private set; } = default!;
@@ -43,7 +43,7 @@ internal class _PlaceholderPainter__placeholder : global::Doroti.Generated.Frame
         canvas.drawPath(path__660, paint__498);
     }
 
-    public override bool shouldRepaint(global::Doroti.Generated.Framework.Rendering.CustomPainter oldDelegate)
+    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
     {
         var __oldPainter = (_PlaceholderPainter__placeholder)(object)oldDelegate;
         return ((!object.Equals(((_PlaceholderPainter__placeholder)__oldPainter).color, this.color)) || (((_PlaceholderPainter__placeholder)__oldPainter).strokeWidth != this.strokeWidth));
@@ -61,7 +61,7 @@ public class Placeholder : StatelessWidget
     public virtual double fallbackHeight { get; private set; } = default!;
     public virtual Widget? child { get; private set; }
 
-    public Placeholder(global::Doroti.Generated.Framework.Foundation.Key? key = null, Color color = default!, double strokeWidth = 2.0, double fallbackWidth = 400.0, double fallbackHeight = 400.0, Widget? child = null) : base(key: key)
+    public Placeholder(global::Doroti.Framework.Foundation.Key? key = null, Color color = default!, double strokeWidth = 2.0, double fallbackWidth = 400.0, double fallbackHeight = 400.0, Widget? child = null) : base(key: key)
     {
         Color __color = color ?? new Color(0xFF455A64);
         this.color = __color;
@@ -77,13 +77,13 @@ public class Placeholder : StatelessWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("color", this.color, defaultValue: new global::Doroti.Ui.Color(4282735204L)));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("strokeWidth", this.strokeWidth, defaultValue: 2.0));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("fallbackWidth", this.fallbackWidth, defaultValue: 400.0));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("fallbackHeight", this.fallbackHeight, defaultValue: 400.0));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color, defaultValue: new global::Doroti.Ui.Color(4282735204L)));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("strokeWidth", this.strokeWidth, defaultValue: 2.0));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("fallbackWidth", this.fallbackWidth, defaultValue: 400.0));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("fallbackHeight", this.fallbackHeight, defaultValue: 400.0));
     }
 
 }

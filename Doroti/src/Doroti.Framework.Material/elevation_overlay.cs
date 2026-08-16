@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
 public abstract class ElevationOverlay
 {
@@ -48,7 +48,7 @@ public abstract class ElevationOverlay
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Ui.Color applyOverlay(global::Doroti.Generated.Framework.Widgets.BuildContext context, Color color, double elevation)
+    public static global::Doroti.Ui.Color applyOverlay(global::Doroti.Framework.Widgets.BuildContext context, Color color, double elevation)
     {
         ThemeData theme__4629 = Theme.of(context);
         if (((((elevation > 0.0) && theme__4629.applyElevationOverlayColor) && (object.Equals(theme__4629.brightness, Brightness.dark))) && (object.Equals(color.withOpacity(1.0), theme__4629.colorScheme.surface.withOpacity(1.0)))))
@@ -59,7 +59,7 @@ public abstract class ElevationOverlay
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Ui.Color overlayColor(global::Doroti.Generated.Framework.Widgets.BuildContext context, double elevation)
+    public static global::Doroti.Ui.Color overlayColor(global::Doroti.Framework.Widgets.BuildContext context, double elevation)
     {
         ThemeData theme__5534 = Theme.of(context);
         return ((global::Doroti.Ui.Color)(object?)ElevationOverlay._overlayColor(theme__5534.colorScheme.onSurface, elevation));

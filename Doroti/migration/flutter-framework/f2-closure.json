@@ -578,7 +578,7 @@
         "src/animation/listener_helpers.dart"
       ],
       "disposition": "generated",
-      "owner": "Doroti.Generated.Framework.F2",
+      "owner": "Doroti.Framework.F2",
       "analyzerErrors": 0,
       "declarations": [
         {
@@ -979,7 +979,7 @@
         "foundation.dart"
       ],
       "disposition": "generated",
-      "owner": "Doroti.Generated.Framework.F2",
+      "owner": "Doroti.Framework.F2",
       "analyzerErrors": 0,
       "declarations": [
         {
@@ -13961,7 +13961,7 @@
         "src/gestures/debug.dart"
       ],
       "disposition": "generated",
-      "owner": "Doroti.Generated.Framework.F2",
+      "owner": "Doroti.Framework.F2",
       "analyzerErrors": 0,
       "declarations": [
         {
@@ -16270,7 +16270,7 @@
         "src/gestures/events.dart"
       ],
       "disposition": "generated",
-      "owner": "Doroti.Generated.Framework.F2",
+      "owner": "Doroti.Framework.F2",
       "analyzerErrors": 0,
       "declarations": [
         {
@@ -16308,7 +16308,7 @@
         "src/gestures/events.dart"
       ],
       "disposition": "generated",
-      "owner": "Doroti.Generated.Framework.F2",
+      "owner": "Doroti.Framework.F2",
       "analyzerErrors": 0,
       "declarations": [
         {
@@ -16532,7 +16532,7 @@
         "src/gestures/events.dart"
       ],
       "disposition": "generated",
-      "owner": "Doroti.Generated.Framework.F2",
+      "owner": "Doroti.Framework.F2",
       "analyzerErrors": 0,
       "declarations": [
         {
@@ -17251,7 +17251,7 @@
         "src/gestures/lsq_solver.dart"
       ],
       "disposition": "generated",
-      "owner": "Doroti.Generated.Framework.F2",
+      "owner": "Doroti.Framework.F2",
       "analyzerErrors": 0,
       "declarations": [
         {
@@ -21222,7 +21222,7 @@
         "src/physics/simulation.dart"
       ],
       "disposition": "generated",
-      "owner": "Doroti.Generated.Framework.F2",
+      "owner": "Doroti.Framework.F2",
       "analyzerErrors": 0,
       "declarations": [
         {
@@ -21254,7 +21254,7 @@
         "src/physics/tolerance.dart"
       ],
       "disposition": "generated",
-      "owner": "Doroti.Generated.Framework.F2",
+      "owner": "Doroti.Framework.F2",
       "analyzerErrors": 0,
       "declarations": [
         {
@@ -21309,7 +21309,7 @@
         "src/physics/simulation.dart"
       ],
       "disposition": "generated",
-      "owner": "Doroti.Generated.Framework.F2",
+      "owner": "Doroti.Framework.F2",
       "analyzerErrors": 0,
       "declarations": [
         {
@@ -21340,7 +21340,7 @@
         "src/physics/tolerance.dart"
       ],
       "disposition": "generated",
-      "owner": "Doroti.Generated.Framework.F2",
+      "owner": "Doroti.Framework.F2",
       "analyzerErrors": 0,
       "declarations": [
         {
@@ -21369,7 +21369,7 @@
         "src/physics/utils.dart"
       ],
       "disposition": "generated",
-      "owner": "Doroti.Generated.Framework.F2",
+      "owner": "Doroti.Framework.F2",
       "analyzerErrors": 0,
       "declarations": [
         {
@@ -21491,7 +21491,7 @@
         "foundation.dart"
       ],
       "disposition": "generated",
-      "owner": "Doroti.Generated.Framework.F2",
+      "owner": "Doroti.Framework.F2",
       "analyzerErrors": 0,
       "declarations": [
         {
@@ -21516,7 +21516,7 @@
       "libraryUri": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/physics/utils.dart",
       "dependencies": [],
       "disposition": "generated",
-      "owner": "Doroti.Generated.Framework.F2",
+      "owner": "Doroti.Framework.F2",
       "analyzerErrors": 0,
       "declarations": [
         {

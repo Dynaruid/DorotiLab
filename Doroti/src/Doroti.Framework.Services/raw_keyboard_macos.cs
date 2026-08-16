@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public static partial class Raw_keyboard_macosLibrary
 {
@@ -63,7 +63,7 @@ public class RawKeyEventDataMacOs : RawKeyEventData
     }
 
     public override string keyLabel => charactersIgnoringModifiers;
-    public override PhysicalKeyboardKey physicalKey => (global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kMacOsToPhysicalKey.GetValueOrDefault(keyCode) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.windowsPlane + keyCode)));
+    public override PhysicalKeyboardKey physicalKey => (global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kMacOsToPhysicalKey.GetValueOrDefault(keyCode) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.windowsPlane + keyCode)));
     public override LogicalKeyboardKey logicalKey
     {
         get
@@ -73,12 +73,12 @@ public class RawKeyEventDataMacOs : RawKeyEventData
                 long key__3672 = DartRuntimePrimitives.RequireValue(specifiedLogicalKey__value3625);
                 return (LogicalKeyboardKey.findKeyByKeyId(key__3672) ?? new LogicalKeyboardKey(key__3672));
             }
-            LogicalKeyboardKey? numPadKey = global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kMacOsNumPadMap.GetValueOrDefault(keyCode);
+            LogicalKeyboardKey? numPadKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kMacOsNumPadMap.GetValueOrDefault(keyCode);
             if ((numPadKey is not null))
             {
                 return numPadKey;
             }
-            LogicalKeyboardKey? knownKey = global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kMacOsToLogicalKey.GetValueOrDefault(keyCode);
+            LogicalKeyboardKey? knownKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kMacOsToLogicalKey.GetValueOrDefault(keyCode);
             if ((knownKey is not null))
             {
                 return knownKey;

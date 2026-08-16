@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public abstract class RestorableValue<T> : RestorableProperty<T>
 {
@@ -52,13 +52,13 @@ public class _RestorablePrimitiveValueN__restoration_properties<T> : RestorableV
     internal _RestorablePrimitiveValueN__restoration_properties(T _defaultValue)
     {
         this._defaultValue = _defaultValue;
-        System.Diagnostics.Debug.Assert(global::Doroti.Generated.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(_defaultValue));
+        System.Diagnostics.Debug.Assert(global::Doroti.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(_defaultValue));
     }
 
     public override T createDefaultValue() => this._defaultValue;
     public override void didUpdateValue(T oldValue)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(this.value));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(this.value));
         notifyListeners();
     }
 
@@ -70,7 +70,7 @@ public class _RestorablePrimitiveValue__restoration_properties<T> : _RestorableP
 {
     internal _RestorablePrimitiveValue__restoration_properties(T defaultValue) : base(defaultValue)
     {
-        System.Diagnostics.Debug.Assert(global::Doroti.Generated.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(defaultValue));
+        System.Diagnostics.Debug.Assert(global::Doroti.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(defaultValue));
     }
 
     public override T value
@@ -188,7 +188,7 @@ public class RestorableDateTime : RestorableValue<DateTime>
     public override DateTime createDefaultValue() => this._defaultValue;
     public override void didUpdateValue(DateTime oldValue)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(DartRuntimePrimitives.MillisecondsSinceEpoch(this.value)));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(DartRuntimePrimitives.MillisecondsSinceEpoch(this.value)));
         notifyListeners();
     }
 
@@ -208,7 +208,7 @@ public class RestorableDateTimeN : RestorableValue<DateTime?>
     public override DateTime? createDefaultValue() => this._defaultValue;
     public override void didUpdateValue(DateTime? oldValue)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(DartRuntimePrimitives.MillisecondsSinceEpoch(this.value)));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(DartRuntimePrimitives.MillisecondsSinceEpoch(this.value)));
         notifyListeners();
     }
 
@@ -216,7 +216,7 @@ public class RestorableDateTimeN : RestorableValue<DateTime?>
     public override object? toPrimitives() => DartRuntimePrimitives.MillisecondsSinceEpoch(this.value);
 }
 
-public abstract class RestorableListenable<T> : RestorableProperty<T> where T : global::Doroti.Generated.Framework.Foundation.Listenable
+public abstract class RestorableListenable<T> : RestorableProperty<T> where T : global::Doroti.Framework.Foundation.Listenable
 {
     internal virtual T? _value { get; set; } = default;
 
@@ -244,7 +244,7 @@ public abstract class RestorableListenable<T> : RestorableProperty<T> where T : 
 
 }
 
-public abstract class RestorableChangeNotifier<T> : RestorableListenable<T> where T : global::Doroti.Generated.Framework.Foundation.ChangeNotifier
+public abstract class RestorableChangeNotifier<T> : RestorableListenable<T> where T : global::Doroti.Framework.Foundation.ChangeNotifier
 {
     public override void initWithValue(T value)
     {
@@ -270,11 +270,11 @@ public abstract class RestorableChangeNotifier<T> : RestorableListenable<T> wher
 
 public class RestorableTextEditingController : RestorableChangeNotifier<TextEditingController>
 {
-    internal virtual global::Doroti.Generated.Framework.Services.TextEditingValue _initialValue { get; private set; } = default!;
+    internal virtual global::Doroti.Framework.Services.TextEditingValue _initialValue { get; private set; } = default!;
 
-    public static RestorableTextEditingController Create(string? text = null) => new RestorableTextEditingController(((text is null) ? global::Doroti.Generated.Framework.Services.TextEditingValue.empty : new global::Doroti.Generated.Framework.Services.TextEditingValue(text: text)));
+    public static RestorableTextEditingController Create(string? text = null) => new RestorableTextEditingController(((text is null) ? global::Doroti.Framework.Services.TextEditingValue.empty : new global::Doroti.Framework.Services.TextEditingValue(text: text)));
 
-    public RestorableTextEditingController(global::Doroti.Generated.Framework.Services.TextEditingValue value)
+    public RestorableTextEditingController(global::Doroti.Framework.Services.TextEditingValue value)
     {
         this._initialValue = value;
     }

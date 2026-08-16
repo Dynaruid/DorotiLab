@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class SizeChangedLayoutNotification : LayoutChangedNotification
 {
@@ -24,13 +24,13 @@ public class SizeChangedLayoutNotification : LayoutChangedNotification
 
 public class SizeChangedLayoutNotifier : SingleChildRenderObjectWidget
 {
-    public SizeChangedLayoutNotifier(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget? child = null) : base(key: key, child: child)
+    public SizeChangedLayoutNotifier(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null) : base(key: key, child: child)
     {
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Rendering.RenderObject)(object?)new _RenderSizeChangedWithCallback__size_changed_layout_notifier(onLayoutChangedCallback: ((global::System.Action)(() => {
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderSizeChangedWithCallback__size_changed_layout_notifier(onLayoutChangedCallback: ((global::System.Action)(() => {
 new SizeChangedLayoutNotification().dispatch(context);
 }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -38,12 +38,12 @@ new SizeChangedLayoutNotification().dispatch(context);
 
 }
 
-internal class _RenderSizeChangedWithCallback__size_changed_layout_notifier : global::Doroti.Generated.Framework.Rendering.RenderProxyBox
+internal class _RenderSizeChangedWithCallback__size_changed_layout_notifier : global::Doroti.Framework.Rendering.RenderProxyBox
 {
     public virtual global::System.Action onLayoutChangedCallback { get; private set; } = default!;
     internal virtual Size? _oldSize { get; set; } = default;
 
-    internal _RenderSizeChangedWithCallback__size_changed_layout_notifier(global::Doroti.Generated.Framework.Rendering.RenderBox? child = null, global::System.Action onLayoutChangedCallback = default!) : base(child)
+    internal _RenderSizeChangedWithCallback__size_changed_layout_notifier(global::Doroti.Framework.Rendering.RenderBox? child = null, global::System.Action onLayoutChangedCallback = default!) : base(child)
     {
         this.onLayoutChangedCallback = onLayoutChangedCallback;
     }

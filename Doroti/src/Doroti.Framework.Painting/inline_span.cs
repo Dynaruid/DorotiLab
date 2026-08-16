@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public class Accumulator
 {
@@ -62,11 +62,11 @@ public class InlineSpanSemanticsInformation
     {
         var __other = other as InlineSpanSemanticsInformation;
         if (__other is null) return false;
-        return (((((((__other is InlineSpanSemanticsInformation) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).text == this.text)) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).semanticsLabel == this.semanticsLabel)) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).semanticsIdentifier == this.semanticsIdentifier)) && (object.Equals(((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).recognizer, this.recognizer))) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).isPlaceholder == this.isPlaceholder)) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals<global::Doroti.Ui.StringAttribute>(((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).stringAttributes, this.stringAttributes));
+        return (((((((__other is InlineSpanSemanticsInformation) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).text == this.text)) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).semanticsLabel == this.semanticsLabel)) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).semanticsIdentifier == this.semanticsIdentifier)) && (object.Equals(((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).recognizer, this.recognizer))) && (((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).isPlaceholder == this.isPlaceholder)) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<global::Doroti.Ui.StringAttribute>(((InlineSpanSemanticsInformation)((InlineSpanSemanticsInformation)__other)).stringAttributes, this.stringAttributes));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.text, this.semanticsLabel, this.semanticsIdentifier, this.recognizer, this.isPlaceholder);
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "InlineSpanSemanticsInformation"))}{{text: {this.text}, semanticsLabel: {this.semanticsLabel}, semanticsIdentifier: {this.semanticsIdentifier}, recognizer: {this.recognizer}}}";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "InlineSpanSemanticsInformation"))}{{text: {this.text}, semanticsLabel: {this.semanticsLabel}, semanticsIdentifier: {this.semanticsIdentifier}, recognizer: {this.recognizer}}}";
 }
 
 public static partial class Inline_spanLibrary

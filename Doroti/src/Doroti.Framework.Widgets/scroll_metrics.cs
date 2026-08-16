@@ -12,11 +12,11 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public interface ScrollMetrics
 {
-    public ScrollMetrics copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, global::Doroti.Generated.Framework.Painting.AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null);
+    public ScrollMetrics copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, global::Doroti.Framework.Painting.AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null);
     public double minScrollExtent { get; }
     public double maxScrollExtent { get; }
     public bool hasContentDimensions { get; }
@@ -24,8 +24,8 @@ public interface ScrollMetrics
     public bool hasPixels { get; }
     public double viewportDimension { get; }
     public bool hasViewportDimension { get; }
-    public global::Doroti.Generated.Framework.Painting.AxisDirection axisDirection { get; }
-    public global::Doroti.Generated.Framework.Painting.Axis axis { get; }
+    public global::Doroti.Framework.Painting.AxisDirection axisDirection { get; }
+    public global::Doroti.Framework.Painting.Axis axis { get; }
     public bool outOfRange { get; }
     public bool atEdge { get; }
     public double extentBefore { get; }
@@ -41,10 +41,10 @@ public class FixedScrollMetrics : ScrollMetrics
     internal virtual double? _maxScrollExtent { get; private set; }
     internal virtual double? _pixels { get; private set; }
     internal virtual double? _viewportDimension { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.AxisDirection axisDirection { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.AxisDirection axisDirection { get; private set; } = default!;
     public virtual double devicePixelRatio { get; private set; } = default!;
 
-    public FixedScrollMetrics(double? minScrollExtent, double? maxScrollExtent, double? pixels, double? viewportDimension, global::Doroti.Generated.Framework.Painting.AxisDirection axisDirection, double devicePixelRatio)
+    public FixedScrollMetrics(double? minScrollExtent, double? maxScrollExtent, double? pixels, double? viewportDimension, global::Doroti.Framework.Painting.AxisDirection axisDirection, double devicePixelRatio)
     {
         this.axisDirection = axisDirection;
         this.devicePixelRatio = devicePixelRatio;
@@ -63,17 +63,17 @@ public class FixedScrollMetrics : ScrollMetrics
     public virtual bool hasViewportDimension => DartRuntimePrimitives.ConvertValue<bool>((this._viewportDimension is not null));
     public override string ToString()
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FixedScrollMetrics"))}({this.extentBefore.toStringAsFixed(1L)}..[{this.extentInside.toStringAsFixed(1L)}]..{this.extentAfter.toStringAsFixed(1L)})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FixedScrollMetrics"))}({this.extentBefore.toStringAsFixed(1L)}..[{this.extentInside.toStringAsFixed(1L)}]..{this.extentAfter.toStringAsFixed(1L)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual ScrollMetrics copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, global::Doroti.Generated.Framework.Painting.AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
+    public virtual ScrollMetrics copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, global::Doroti.Framework.Painting.AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
     {
         return ((ScrollMetrics)(object?)new FixedScrollMetrics(minScrollExtent: (minScrollExtent ?? ((this.hasContentDimensions ? this.minScrollExtent : null))), maxScrollExtent: (maxScrollExtent ?? ((this.hasContentDimensions ? this.maxScrollExtent : null))), pixels: (pixels ?? ((this.hasPixels ? this.pixels : null))), viewportDimension: (viewportDimension ?? ((this.hasViewportDimension ? this.viewportDimension : null))), axisDirection: (axisDirection ?? this.axisDirection), devicePixelRatio: (devicePixelRatio ?? this.devicePixelRatio)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Painting.Axis axis => global::Doroti.Generated.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(DartRuntimePrimitives.RequireValue(this.axisDirection));
+    public virtual global::Doroti.Framework.Painting.Axis axis => global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(DartRuntimePrimitives.RequireValue(this.axisDirection));
     public virtual bool outOfRange => DartRuntimePrimitives.ConvertValue<bool>(((this.pixels < this.minScrollExtent) || (this.pixels > this.maxScrollExtent)));
     public virtual bool atEdge => DartRuntimePrimitives.ConvertValue<bool>(((this.pixels == this.minScrollExtent) || (this.pixels == this.maxScrollExtent)));
     public virtual double extentBefore => Math.Max((this.pixels - this.minScrollExtent), 0.0);

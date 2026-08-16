@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public abstract class BorderRadiusGeometry
 {
@@ -496,7 +496,7 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
 
     public override BorderRadius resolve(TextDirection? direction)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Painting.DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(BorderRadiusDirectional)}"));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Painting.DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(BorderRadiusDirectional)}"));
         switch (DartRuntimePrimitives.RequireValue(direction))
         {
             case TextDirection.rtl:
@@ -576,7 +576,7 @@ internal class _MixedBorderRadius__border_radius : BorderRadiusGeometry
 
     public override BorderRadius resolve(TextDirection? direction)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Painting.DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(_MixedBorderRadius__border_radius)}"));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Painting.DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(_MixedBorderRadius__border_radius)}"));
         switch (DartRuntimePrimitives.RequireValue(direction))
         {
             case TextDirection.rtl:

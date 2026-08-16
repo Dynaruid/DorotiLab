@@ -12,18 +12,18 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
-public delegate Widget AnimatedTransitionBuilder(BuildContext context, global::Doroti.Generated.Framework.Animation.Animation<double> animation, Widget? child);
+public delegate Widget AnimatedTransitionBuilder(BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, Widget? child);
 
 public class DualTransitionBuilder : StatefulWidget
 {
-    public virtual global::Doroti.Generated.Framework.Animation.Animation<double> animation { get; private set; } = default!;
-    public virtual global::System.Func<BuildContext, global::Doroti.Generated.Framework.Animation.Animation<double>, Widget?, Widget> forwardBuilder { get; private set; } = default!;
-    public virtual global::System.Func<BuildContext, global::Doroti.Generated.Framework.Animation.Animation<double>, Widget?, Widget> reverseBuilder { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Animation.Animation<double> animation { get; private set; } = default!;
+    public virtual global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, Widget?, Widget> forwardBuilder { get; private set; } = default!;
+    public virtual global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, Widget?, Widget> reverseBuilder { get; private set; } = default!;
     public virtual Widget? child { get; private set; }
 
-    public DualTransitionBuilder(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Animation.Animation<double> animation = default!, global::System.Func<BuildContext, global::Doroti.Generated.Framework.Animation.Animation<double>, Widget?, Widget> forwardBuilder = default!, global::System.Func<BuildContext, global::Doroti.Generated.Framework.Animation.Animation<double>, Widget?, Widget> reverseBuilder = default!, Widget? child = null) : base(key: key)
+    public DualTransitionBuilder(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Animation.Animation<double> animation = default!, global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, Widget?, Widget> forwardBuilder = default!, global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, Widget?, Widget> reverseBuilder = default!, Widget? child = null) : base(key: key)
     {
         this.animation = animation;
         this.forwardBuilder = forwardBuilder;
@@ -36,9 +36,9 @@ public class DualTransitionBuilder : StatefulWidget
 
 internal class _DualTransitionBuilderState__dual_transition_builder : State<DualTransitionBuilder>
 {
-    internal virtual global::Doroti.Generated.Framework.Animation.AnimationStatus _effectiveAnimationStatus { get; set; } = default!;
-    internal virtual global::Doroti.Generated.Framework.Animation.ProxyAnimation _forwardAnimation { get; private set; } = new global::Doroti.Generated.Framework.Animation.ProxyAnimation();
-    internal virtual global::Doroti.Generated.Framework.Animation.ProxyAnimation _reverseAnimation { get; private set; } = new global::Doroti.Generated.Framework.Animation.ProxyAnimation();
+    internal virtual global::Doroti.Framework.Animation.AnimationStatus _effectiveAnimationStatus { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Animation.ProxyAnimation _forwardAnimation { get; private set; } = new global::Doroti.Framework.Animation.ProxyAnimation();
+    internal virtual global::Doroti.Framework.Animation.ProxyAnimation _reverseAnimation { get; private set; } = new global::Doroti.Framework.Animation.ProxyAnimation();
 
     public override void initState()
     {
@@ -48,9 +48,9 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
         _updateAnimations();
     }
 
-    internal virtual void _animationListener(global::Doroti.Generated.Framework.Animation.AnimationStatus animationStatus)
+    internal virtual void _animationListener(global::Doroti.Framework.Animation.AnimationStatus animationStatus)
     {
-        global::Doroti.Generated.Framework.Animation.AnimationStatus oldEffective__4606 = this._effectiveAnimationStatus;
+        global::Doroti.Framework.Animation.AnimationStatus oldEffective__4606 = this._effectiveAnimationStatus;
         _effectiveAnimationStatus = _calculateEffectiveAnimationStatus(lastEffective: this._effectiveAnimationStatus, current: animationStatus);
         if ((!object.Equals(oldEffective__4606, this._effectiveAnimationStatus)))
         {
@@ -69,26 +69,26 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
         }
     }
 
-    internal virtual global::Doroti.Generated.Framework.Animation.AnimationStatus _calculateEffectiveAnimationStatus(global::Doroti.Generated.Framework.Animation.AnimationStatus lastEffective, global::Doroti.Generated.Framework.Animation.AnimationStatus current)
+    internal virtual global::Doroti.Framework.Animation.AnimationStatus _calculateEffectiveAnimationStatus(global::Doroti.Framework.Animation.AnimationStatus lastEffective, global::Doroti.Framework.Animation.AnimationStatus current)
     {
         switch (current)
         {
-            case global::Doroti.Generated.Framework.Animation.AnimationStatus.dismissed:
-            case global::Doroti.Generated.Framework.Animation.AnimationStatus.completed:
+            case global::Doroti.Framework.Animation.AnimationStatus.dismissed:
+            case global::Doroti.Framework.Animation.AnimationStatus.completed:
                 {
                     return current;
                 }
-            case global::Doroti.Generated.Framework.Animation.AnimationStatus.forward:
+            case global::Doroti.Framework.Animation.AnimationStatus.forward:
                 {
                     switch (lastEffective)
                     {
-                        case global::Doroti.Generated.Framework.Animation.AnimationStatus.dismissed:
-                        case global::Doroti.Generated.Framework.Animation.AnimationStatus.completed:
-                        case global::Doroti.Generated.Framework.Animation.AnimationStatus.forward:
+                        case global::Doroti.Framework.Animation.AnimationStatus.dismissed:
+                        case global::Doroti.Framework.Animation.AnimationStatus.completed:
+                        case global::Doroti.Framework.Animation.AnimationStatus.forward:
                             {
                                 return current;
                             }
-                        case global::Doroti.Generated.Framework.Animation.AnimationStatus.reverse:
+                        case global::Doroti.Framework.Animation.AnimationStatus.reverse:
                             {
                                 return lastEffective;
                             }
@@ -97,17 +97,17 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
                     }
                     break;
                 }
-            case global::Doroti.Generated.Framework.Animation.AnimationStatus.reverse:
+            case global::Doroti.Framework.Animation.AnimationStatus.reverse:
                 {
                     switch (lastEffective)
                     {
-                        case global::Doroti.Generated.Framework.Animation.AnimationStatus.dismissed:
-                        case global::Doroti.Generated.Framework.Animation.AnimationStatus.completed:
-                        case global::Doroti.Generated.Framework.Animation.AnimationStatus.reverse:
+                        case global::Doroti.Framework.Animation.AnimationStatus.dismissed:
+                        case global::Doroti.Framework.Animation.AnimationStatus.completed:
+                        case global::Doroti.Framework.Animation.AnimationStatus.reverse:
                             {
                                 return current;
                             }
-                        case global::Doroti.Generated.Framework.Animation.AnimationStatus.forward:
+                        case global::Doroti.Framework.Animation.AnimationStatus.forward:
                             {
                                 return lastEffective;
                             }
@@ -124,18 +124,18 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
     {
         switch (this._effectiveAnimationStatus)
         {
-            case global::Doroti.Generated.Framework.Animation.AnimationStatus.dismissed:
-            case global::Doroti.Generated.Framework.Animation.AnimationStatus.forward:
+            case global::Doroti.Framework.Animation.AnimationStatus.dismissed:
+            case global::Doroti.Framework.Animation.AnimationStatus.forward:
                 {
                     this._forwardAnimation.parent = ((DualTransitionBuilder)this.widget).animation;
-                    this._reverseAnimation.parent = global::Doroti.Generated.Framework.Animation.AnimationsLibrary.kAlwaysDismissedAnimation;
+                    this._reverseAnimation.parent = global::Doroti.Framework.Animation.AnimationsLibrary.kAlwaysDismissedAnimation;
                     break;
                 }
-            case global::Doroti.Generated.Framework.Animation.AnimationStatus.reverse:
-            case global::Doroti.Generated.Framework.Animation.AnimationStatus.completed:
+            case global::Doroti.Framework.Animation.AnimationStatus.reverse:
+            case global::Doroti.Framework.Animation.AnimationStatus.completed:
                 {
-                    this._forwardAnimation.parent = global::Doroti.Generated.Framework.Animation.AnimationsLibrary.kAlwaysCompleteAnimation;
-                    this._reverseAnimation.parent = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Animation.Animation<double>>(new global::Doroti.Generated.Framework.Animation.ReverseAnimation(((DualTransitionBuilder)this.widget).animation));
+                    this._forwardAnimation.parent = global::Doroti.Framework.Animation.AnimationsLibrary.kAlwaysCompleteAnimation;
+                    this._reverseAnimation.parent = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(new global::Doroti.Framework.Animation.ReverseAnimation(((DualTransitionBuilder)this.widget).animation));
                     break;
                 }
         }

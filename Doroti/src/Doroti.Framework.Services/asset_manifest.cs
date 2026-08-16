@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public static partial class Asset_manifestLibrary
 {
@@ -28,7 +28,7 @@ public interface AssetManifest
 {
     public static Future<AssetManifest> loadFromAssetBundle(AssetBundle bundle)
     {
-        if (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb)
+        if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
         {
             return bundle.loadStructuredData<AssetManifest>(Asset_manifestLibrary._kAssetManifestWebFilename, ((jsonData) =>
             {

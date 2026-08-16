@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class RouteInformation
 {
@@ -76,7 +76,7 @@ public class Router<T> : StatefulWidget
     public virtual BackButtonDispatcher? backButtonDispatcher { get; private set; }
     public virtual string? restorationScopeId { get; private set; }
 
-    public Router(global::Doroti.Generated.Framework.Foundation.Key? key = null, RouteInformationProvider? routeInformationProvider = null, RouteInformationParser<T>? routeInformationParser = null, RouterDelegate<T> routerDelegate = default!, BackButtonDispatcher? backButtonDispatcher = null, string? restorationScopeId = null) : base(key: key)
+    public Router(global::Doroti.Framework.Foundation.Key? key = null, RouteInformationProvider? routeInformationProvider = null, RouteInformationParser<T>? routeInformationParser = null, RouterDelegate<T> routerDelegate = default!, BackButtonDispatcher? backButtonDispatcher = null, string? restorationScopeId = null) : base(key: key)
     {
         this.routeInformationProvider = routeInformationProvider;
         this.routeInformationParser = routeInformationParser;
@@ -86,7 +86,7 @@ public class Router<T> : StatefulWidget
         System.Diagnostics.Debug.Assert(((routeInformationProvider is null) || (routeInformationParser is not null)));
     }
 
-    public static Router<T> CreateWithConfig(global::Doroti.Generated.Framework.Foundation.Key? key = null, RouterConfig<T> config = default!, string? restorationScopeId = null)
+    public static Router<T> CreateWithConfig(global::Doroti.Framework.Foundation.Key? key = null, RouterConfig<T> config = default!, string? restorationScopeId = null)
     {
         return new Router<T>(key: key, routeInformationProvider: ((RouterConfig<T>)config).routeInformationProvider, routeInformationParser: ((RouterConfig<T>)config).routeInformationParser, routerDelegate: ((RouterConfig<T>)config).routerDelegate, backButtonDispatcher: ((RouterConfig<T>)config).backButtonDispatcher, restorationScopeId: restorationScopeId);
     }
@@ -98,7 +98,7 @@ public class Router<T> : StatefulWidget
             {
                 if ((scope__22431 is null))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Generated.Framework.Foundation.FlutterError.Create("Router operation requested with a context that does not include a Router.\n" + "The context used to retrieve the Router must be that of a widget that " + "is a descendant of a Router widget."));
+                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Router operation requested with a context that does not include a Router.\n" + "The context used to retrieve the Router must be that of a widget that " + "is a descendant of a Router widget."));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -147,11 +147,11 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
     internal virtual _RestorableRouteInformation__router _routeInformation { get; private set; } = new _RestorableRouteInformation__router();
     internal virtual bool _routeParsePending { get; set; } = default!;
     internal virtual bool _routeInformationReportingTaskScheduled { get; set; } = false;
-    public virtual global::Doroti.Generated.Framework.Services.RestorationBucket? _bucket { get; set; } = default;
+    public virtual global::Doroti.Framework.Services.RestorationBucket? _bucket { get; set; } = default;
     public virtual DartMap<dynamic, global::System.Action> _properties { get; set; } = new DartMap<dynamic, global::System.Action>();
     public virtual List<dynamic>? _debugPropertiesWaitingForReregistration { get; set; } = default;
     public virtual bool _firstRestorePending { get; set; } = true;
-    public virtual global::Doroti.Generated.Framework.Services.RestorationBucket? _currentParent { get; set; } = default;
+    public virtual global::Doroti.Framework.Services.RestorationBucket? _currentParent { get; set; } = default;
 
     public virtual string? restorationId => ((Router<T>)(object)this.widget).restorationScopeId;
     public override void initState()
@@ -162,7 +162,7 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
         ((Router<T>)(object)this.widget).routerDelegate.addListener(() => this._handleRouterDelegateNotification());
     }
 
-    public virtual void restoreState(global::Doroti.Generated.Framework.Services.RestorationBucket? oldBucket, bool initialRestore)
+    public virtual void restoreState(global::Doroti.Framework.Services.RestorationBucket? oldBucket, bool initialRestore)
     {
         registerForRestoration(this._routeInformation, "route");
         if ((this._routeInformation.value is not null))
@@ -187,7 +187,7 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
         }
         DartRuntimePrimitives.Assert(() => (this._currentIntentionToReport is not null));
         _routeInformationReportingTaskScheduled = true;
-        global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback((__arg0) => ((global::System.Action<Duration>)this._reportRouteInformation)(__arg0), debugLabel: "Router.reportRouteInfo");
+        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback((__arg0) => ((global::System.Action<Duration>)this._reportRouteInformation)(__arg0), debugLabel: "Router.reportRouteInfo");
     }
 
     internal virtual void _reportRouteInformation(Duration timestamp)
@@ -225,7 +225,7 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
             {
                 if ((((this._currentIntentionToReport is not null) && (!object.Equals(this._currentIntentionToReport, RouteInformationReportingType.none))) && (!object.Equals(this._currentIntentionToReport, status))))
                 {
-                    FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails(exception: "Both Router.navigate and Router.neglect have been called in this " + "build cycle, and the Router cannot decide whether to report the " + "route information. Please make sure only one of them is called " + "within the same build cycle."));
+                    FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: "Both Router.navigate and Router.neglect have been called in this " + "build cycle, and the Router cannot decide whether to report the " + "route information. Please make sure only one of them is called " + "within the same build cycle."));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -246,7 +246,7 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
     {
         _routeParsePending = true;
         base.didChangeDependencies();
-        global::Doroti.Generated.Framework.Services.RestorationBucket? oldBucket__41020 = this._bucket;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket__41020 = this._bucket;
         bool needsRestore__41056 = this.restorePending;
         _currentParent = RestorationScope.maybeOf(this.context);
         bool didReplaceBucket__41159 = _updateBucketIfNecessary(parent: this._currentParent, restorePending: needsRestore__41056);
@@ -359,10 +359,10 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         return ((global::System.Func<bool, Future<bool>>)((data) => {
 if ((!object.Equals(transaction, this._currentRouterTransaction)))
 {
-    return new global::Doroti.Generated.Framework.Foundation.SynchronousFuture<bool>(true);
+    return new global::Doroti.Framework.Foundation.SynchronousFuture<bool>(true);
 }
 _rebuild();
-return new global::Doroti.Generated.Framework.Foundation.SynchronousFuture<bool>(data);
+return new global::Doroti.Framework.Foundation.SynchronousFuture<bool>(data);
 throw new InvalidOperationException("Dart closure completed without a value.");
 }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -388,8 +388,8 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Services.RestorationBucket? bucket => this._bucket;
-    public virtual void didToggleBucket(global::Doroti.Generated.Framework.Services.RestorationBucket? oldBucket)
+    public virtual global::Doroti.Framework.Services.RestorationBucket? bucket => this._bucket;
+    public virtual void didToggleBucket(global::Doroti.Framework.Services.RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() => (this._bucket?.isReplacing != true));
     }
@@ -441,7 +441,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         {
             return;
         }
-        global::Doroti.Generated.Framework.Services.RestorationBucket? oldBucket__39230 = this._bucket;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket__39230 = this._bucket;
         DartRuntimePrimitives.Assert(() => !this.restorePending);
         bool didReplaceBucket__39295 = _updateBucketIfNecessary(parent: this._currentParent, restorePending: false);
         if (didReplaceBucket__39295)
@@ -464,13 +464,13 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             {
                 return false;
             }
-            global::Doroti.Generated.Framework.Services.RestorationBucket? potentialNewParent__40517 = ((global::Doroti.Generated.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
+            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent__40517 = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
             return ((!object.Equals(potentialNewParent__40517, this._currentParent)) && ((potentialNewParent__40517?.isReplacing ?? false)));
             return default!;
         }
     }
     public virtual bool _debugDoingRestore => DartRuntimePrimitives.ConvertValue<bool>((this._debugPropertiesWaitingForReregistration is not null));
-    public virtual void _doRestore(global::Doroti.Generated.Framework.Services.RestorationBucket? oldBucket)
+    public virtual void _doRestore(global::Doroti.Framework.Services.RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -484,7 +484,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             {
                 if (System.Linq.Enumerable.Any(this._debugPropertiesWaitingForReregistration!))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\"."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\"."), new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:") }));
                 }
                 this._debugPropertiesWaitingForReregistration = null;
                 return true;
@@ -492,18 +492,18 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             });
     }
 
-    public virtual bool _updateBucketIfNecessary(global::Doroti.Generated.Framework.Services.RestorationBucket? parent, bool restorePending)
+    public virtual bool _updateBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? parent, bool restorePending)
     {
         if (((this.restorationId is null) || (parent is null)))
         {
-            bool didReplace__42801 = _setNewBucketIfNecessary(newBucket: ((global::Doroti.Generated.Framework.Services.RestorationBucket)(object)null), restorePending: restorePending);
+            bool didReplace__42801 = _setNewBucketIfNecessary(newBucket: ((global::Doroti.Framework.Services.RestorationBucket)(object)null), restorePending: restorePending);
             DartRuntimePrimitives.Assert(() => (this._bucket is null));
             return didReplace__42801;
         }
         DartRuntimePrimitives.Assert(() => (this.restorationId is not null));
         if ((restorePending || (this._bucket is null)))
         {
-            global::Doroti.Generated.Framework.Services.RestorationBucket newBucket__43086 = ((global::Doroti.Generated.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
+            global::Doroti.Framework.Services.RestorationBucket newBucket__43086 = ((global::Doroti.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
             bool didReplace__43168 = _setNewBucketIfNecessary(newBucket: newBucket__43086, restorePending: restorePending);
             DartRuntimePrimitives.Assert(() => (object.Equals(this._bucket, newBucket__43086)));
             return didReplace__43168;
@@ -516,13 +516,13 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool _setNewBucketIfNecessary(global::Doroti.Generated.Framework.Services.RestorationBucket? newBucket, bool restorePending)
+    public virtual bool _setNewBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? newBucket, bool restorePending)
     {
         if ((object.Equals(newBucket, this._bucket)))
         {
             return false;
         }
-        global::Doroti.Generated.Framework.Services.RestorationBucket? oldBucket__43946 = this._bucket;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket__43946 = this._bucket;
         this._bucket = newBucket;
         if (!restorePending)
         {
@@ -565,13 +565,13 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
 internal class _RouterScope__router : InheritedWidget
 {
-    public virtual global::Doroti.Generated.Framework.Foundation.ValueListenable<RouteInformation?>? routeInformationProvider { get; private set; }
+    public virtual global::Doroti.Framework.Foundation.ValueListenable<RouteInformation?>? routeInformationProvider { get; private set; }
     public virtual BackButtonDispatcher? backButtonDispatcher { get; private set; }
     public virtual dynamic routeInformationParser { get; private set; } = default!;
     public virtual dynamic routerDelegate { get; private set; } = default!;
     public virtual dynamic routerState { get; private set; } = default!;
 
-    internal _RouterScope__router(global::Doroti.Generated.Framework.Foundation.ValueListenable<RouteInformation?>? routeInformationProvider, BackButtonDispatcher? backButtonDispatcher, dynamic routeInformationParser, dynamic routerDelegate, dynamic routerState, Widget child) : base(child: child)
+    internal _RouterScope__router(global::Doroti.Framework.Foundation.ValueListenable<RouteInformation?>? routeInformationProvider, BackButtonDispatcher? backButtonDispatcher, dynamic routeInformationParser, dynamic routerDelegate, dynamic routerState, Widget child) : base(child: child)
     {
         this.routeInformationProvider = routeInformationProvider;
         this.backButtonDispatcher = backButtonDispatcher;
@@ -592,7 +592,7 @@ internal class _RouterScope__router : InheritedWidget
 
 public class _CallbackHookProvider__router<T>
 {
-    internal virtual global::Doroti.Generated.Framework.Foundation.ObserverList<global::System.Func<T>> _callbacks { get; private set; } = new global::Doroti.Generated.Framework.Foundation.ObserverList<global::System.Func<T>>();
+    internal virtual global::Doroti.Framework.Foundation.ObserverList<global::System.Func<T>> _callbacks { get; private set; } = new global::Doroti.Framework.Foundation.ObserverList<global::System.Func<T>>();
 
     public virtual bool hasCallbacks => System.Linq.Enumerable.Any(this._callbacks);
     public virtual void addCallback(global::System.Func<T> callback) => this._callbacks.add((global::System.Func<T>)callback);
@@ -610,7 +610,7 @@ public class _CallbackHookProvider__router<T>
         catch (Exception exception__39698)
         {
             var stack__39709 = new System.Diagnostics.StackTrace();
-            FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails(exception: exception__39698, stack: stack__39709, library: "widget library", context: new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"while invoking the callback for {this.GetType()}"), informationCollector: ((InformationCollector)(() => new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<_CallbackHookProvider__router<T>>($"The {this.GetType()} that invoked the callback was", this, style: global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }))));
+            FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception__39698, stack: stack__39709, library: "widget library", context: new global::Doroti.Framework.Foundation.ErrorDescription($"while invoking the callback for {this.GetType()}"), informationCollector: ((InformationCollector)(() => new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.DiagnosticsProperty<_CallbackHookProvider__router<T>>($"The {this.GetType()} that invoked the callback was", this, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }))));
             return defaultValue;
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -646,7 +646,7 @@ public abstract class BackButtonDispatcher : _CallbackHookProvider__router<Futur
             {
                 if (result)
                 {
-                    return ((Future<bool>)(object?)new global::Doroti.Generated.Framework.Foundation.SynchronousFuture<bool>(result));
+                    return ((Future<bool>)(object?)new global::Doroti.Framework.Foundation.SynchronousFuture<bool>(result));
                 }
                 if ((childIndex__42681 > 0L))
                 {
@@ -751,7 +751,7 @@ public class BackButtonListener : StatefulWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual global::System.Func<Future<bool>> onBackButtonPressed { get; private set; } = default!;
 
-    public BackButtonListener(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!, global::System.Func<Future<bool>> onBackButtonPressed = default!) : base(key: key)
+    public BackButtonListener(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, global::System.Func<Future<bool>> onBackButtonPressed = default!) : base(key: key)
     {
         this.child = child;
         this.onBackButtonPressed = onBackButtonPressed;
@@ -818,7 +818,7 @@ public abstract class RouteInformationParser<T>
     public virtual RouteInformation? restoreRouteInformation(T configuration) => DartRuntimePrimitives.ConvertValue<RouteInformation>(null);
 }
 
-public abstract class RouterDelegate<T> : global::Doroti.Generated.Framework.Foundation.Listenable
+public abstract class RouterDelegate<T> : global::Doroti.Framework.Foundation.Listenable
 {
     public virtual void addListener(global::System.Action listener) => throw new NotSupportedException();
     public virtual void removeListener(global::System.Action listener) => throw new NotSupportedException();
@@ -840,7 +840,7 @@ public abstract class RouterDelegate<T> : global::Doroti.Generated.Framework.Fou
     public abstract Widget build(BuildContext context);
 }
 
-public abstract class RouteInformationProvider : global::Doroti.Generated.Framework.Foundation.ValueListenable<RouteInformation>
+public abstract class RouteInformationProvider : global::Doroti.Framework.Foundation.ValueListenable<RouteInformation>
 {
     public virtual RouteInformation value => throw new NotSupportedException();
     public virtual void routerReportsNewRouteInformation(RouteInformation routeInformation, RouteInformationReportingType type = RouteInformationReportingType.none)
@@ -936,7 +936,7 @@ public abstract class PopNavigatorRouterDelegateMixin<T> : RouterDelegate<T>
     public override Future<bool> popRoute()
     {
         NavigatorState? navigator__68731 = this.navigatorKey?.currentState;
-        return (navigator__68731?.maybePop<object>() ?? new global::Doroti.Generated.Framework.Foundation.SynchronousFuture<bool>(false));
+        return (navigator__68731?.maybePop<object>() ?? new global::Doroti.Framework.Foundation.SynchronousFuture<bool>(false));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

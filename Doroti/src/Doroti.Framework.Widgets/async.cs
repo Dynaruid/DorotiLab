@@ -12,13 +12,13 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public abstract class StreamBuilderBase<T, S> : StatefulWidget
 {
     public virtual Stream<T>? stream { get; private set; }
 
-    protected StreamBuilderBase(global::Doroti.Generated.Framework.Foundation.Key? key = null, Stream<T>? stream = default!) : base(key: key)
+    protected StreamBuilderBase(global::Doroti.Framework.Foundation.Key? key = null, Stream<T>? stream = default!) : base(key: key)
     {
         this.stream = stream;
     }
@@ -162,7 +162,7 @@ public class AsyncSnapshot<T>
     public virtual AsyncSnapshot<T> inState(ConnectionState state) => new AsyncSnapshot<T>(state, this.data, this.error, this.stackTrace);
     public virtual bool hasData => DartRuntimePrimitives.ConvertValue<bool>((this.data is not null));
     public virtual bool hasError => DartRuntimePrimitives.ConvertValue<bool>((this.error is not null));
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "AsyncSnapshot"))}({this.connectionState}, {this.data}, {this.error}, {this.stackTrace})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "AsyncSnapshot"))}({this.connectionState}, {this.data}, {this.error}, {this.stackTrace})";
     public override bool Equals(object? other)
     {
         var __other = other as AsyncSnapshot<T>;
@@ -184,7 +184,7 @@ public class StreamBuilder<T> : StreamBuilderBase<T, AsyncSnapshot<T>>
     public virtual global::System.Func<BuildContext, AsyncSnapshot<T>, Widget> builder { get; private set; } = default!;
     public virtual T? initialData { get; private set; }
 
-    public StreamBuilder(global::Doroti.Generated.Framework.Foundation.Key? key = null, T? initialData = default, Stream<T>? stream = default!, global::System.Func<BuildContext, AsyncSnapshot<T>, Widget> builder = default!) : base(key: key, stream: stream)
+    public StreamBuilder(global::Doroti.Framework.Foundation.Key? key = null, T? initialData = default, Stream<T>? stream = default!, global::System.Func<BuildContext, AsyncSnapshot<T>, Widget> builder = default!) : base(key: key, stream: stream)
     {
         this.initialData = initialData;
         this.builder = builder;
@@ -216,7 +216,7 @@ public class FutureBuilder<T> : StatefulWidget
     public virtual T? initialData { get; private set; }
     public static bool debugRethrowError = false;
 
-    public FutureBuilder(global::Doroti.Generated.Framework.Foundation.Key? key = null, Future<T>? future = default!, T? initialData = default, global::System.Func<BuildContext, AsyncSnapshot<T>, Widget> builder = default!) : base(key: key)
+    public FutureBuilder(global::Doroti.Framework.Foundation.Key? key = null, Future<T>? future = default!, T? initialData = default, global::System.Func<BuildContext, AsyncSnapshot<T>, Widget> builder = default!) : base(key: key)
     {
         this.future = future;
         this.initialData = initialData;

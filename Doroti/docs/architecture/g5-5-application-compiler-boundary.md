@@ -1,5 +1,7 @@
 # G5-5 application compiler and resource/plugin boundary
 
+> Historical bootstrap record. The milestone validator named below has been retired; compiler work is now an explicit migration workflow under ADR-019.
+
 G5-5 extends the reviewed framework compiler into an application compiler. A Dart entry point now owns package/import discovery, conditional graph resolution, generated application project composition, resource manifests, and target plugin requirements without fixture-specific library lists.
 
 ## Application package graph

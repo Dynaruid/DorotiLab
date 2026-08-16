@@ -1,1 +1,1 @@
-global using Doroti.Generated.Framework.Cupertino;
+global using Doroti.Framework.Cupertino;

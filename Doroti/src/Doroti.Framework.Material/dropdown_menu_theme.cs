@@ -12,16 +12,16 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
-public class DropdownMenuThemeData : global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class DropdownMenuThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 {
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? textStyle { get; private set; }
+    public virtual global::Doroti.Framework.Painting.TextStyle? textStyle { get; private set; }
     internal virtual object? _inputDecorationTheme { get; private set; }
     public virtual MenuStyle? menuStyle { get; private set; }
     public virtual Color? disabledColor { get; private set; }
 
-    public DropdownMenuThemeData(global::Doroti.Generated.Framework.Painting.TextStyle? textStyle = null, object? inputDecorationTheme = null, MenuStyle? menuStyle = null, Color? disabledColor = null)
+    public DropdownMenuThemeData(global::Doroti.Framework.Painting.TextStyle? textStyle = null, object? inputDecorationTheme = null, MenuStyle? menuStyle = null, Color? disabledColor = null)
     {
         this.textStyle = textStyle;
         this.menuStyle = menuStyle;
@@ -42,7 +42,7 @@ public class DropdownMenuThemeData : global::Doroti.Generated.Framework.Foundati
             return default!;
         }
     }
-    public virtual DropdownMenuThemeData copyWith(global::Doroti.Generated.Framework.Painting.TextStyle? textStyle = null, object? inputDecorationTheme = null, MenuStyle? menuStyle = null, Color? disabledColor = null)
+    public virtual DropdownMenuThemeData copyWith(global::Doroti.Framework.Painting.TextStyle? textStyle = null, object? inputDecorationTheme = null, MenuStyle? menuStyle = null, Color? disabledColor = null)
     {
         return new DropdownMenuThemeData(textStyle: (textStyle ?? this.textStyle), inputDecorationTheme: (((object?)inputDecorationTheme ?? (object?)this.inputDecorationTheme)), menuStyle: (menuStyle ?? this.menuStyle), disabledColor: (disabledColor ?? this.disabledColor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -74,15 +74,15 @@ public class DropdownMenuThemeData : global::Doroti.Generated.Framework.Foundati
         return (((((__other is DropdownMenuThemeData) && (object.Equals(((DropdownMenuThemeData)((DropdownMenuThemeData)__other)).textStyle, this.textStyle))) && (object.Equals(((DropdownMenuThemeData)((DropdownMenuThemeData)__other)).inputDecorationTheme, this.inputDecorationTheme))) && (object.Equals(((DropdownMenuThemeData)((DropdownMenuThemeData)__other)).menuStyle, this.menuStyle))) && (object.Equals(((DropdownMenuThemeData)((DropdownMenuThemeData)__other)).disabledColor, this.disabledColor)));
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.TextStyle>("textStyle", this.textStyle, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<InputDecorationThemeData>("inputDecorationThemeData", this.inputDecorationTheme, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<MenuStyle>("menuStyle", this.menuStyle, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("disabledColor", this.disabledColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("textStyle", this.textStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<InputDecorationThemeData>("inputDecorationThemeData", this.inputDecorationTheme, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MenuStyle>("menuStyle", this.menuStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledColor", this.disabledColor, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;
@@ -103,32 +103,32 @@ public class DropdownMenuThemeData : global::Doroti.Generated.Framework.Foundati
 
 }
 
-public class DropdownMenuTheme : global::Doroti.Generated.Framework.Widgets.InheritedTheme
+public class DropdownMenuTheme : global::Doroti.Framework.Widgets.InheritedTheme
 {
     public virtual DropdownMenuThemeData data { get; private set; } = default!;
 
-    public DropdownMenuTheme(global::Doroti.Generated.Framework.Foundation.Key? key = null, DropdownMenuThemeData data = default!, global::Doroti.Generated.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public DropdownMenuTheme(global::Doroti.Framework.Foundation.Key? key = null, DropdownMenuThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static DropdownMenuThemeData of(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static DropdownMenuThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
         return (DropdownMenuTheme.maybeOf(context) ?? Theme.of(context).dropdownMenuTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static DropdownMenuThemeData? maybeOf(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static DropdownMenuThemeData? maybeOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
         return context.dependOnInheritedWidgetOfExactType<DropdownMenuTheme>()?.data;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget wrap(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Widgets.Widget child)
+    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new DropdownMenuTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new DropdownMenuTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Generated.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((DropdownMenuTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((DropdownMenuTheme)oldWidget).data)));
 }

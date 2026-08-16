@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public enum _OverflowSide__debug_overflow_indicator
 {
@@ -48,7 +48,7 @@ public interface DebugOverflowIndicatorMixin
     internal const double _indicatorFraction = 0.1;
     internal const double _indicatorFontSizePixels = 7.5;
     internal const double _indicatorLabelPaddingPixels = 1.0;
-    internal static global::Doroti.Generated.Framework.Painting.TextStyle _indicatorTextStyle = new global::Doroti.Generated.Framework.Painting.TextStyle(color: new global::Doroti.Ui.Color(4287627264L), fontSize: _indicatorFontSizePixels, fontWeight: FontWeight.w800);
+    internal static global::Doroti.Framework.Painting.TextStyle _indicatorTextStyle = new global::Doroti.Framework.Painting.TextStyle(color: new global::Doroti.Ui.Color(4287627264L), fontSize: _indicatorFontSizePixels, fontWeight: FontWeight.w800);
     internal static Paint _indicatorPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
@@ -61,7 +61,7 @@ public interface DebugOverflowIndicatorMixin
     __cascade.color = new global::Doroti.Ui.Color(4294967295L);
     return __cascade;
 }))();
-    List<global::Doroti.Generated.Framework.Painting.TextPainter> _indicatorLabel { get; }
+    List<global::Doroti.Framework.Painting.TextPainter> _indicatorLabel { get; }
     bool _overflowReportNeeded { get; set; }
 
     public void dispose();

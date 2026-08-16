@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public enum SelectionResult
 {
@@ -330,7 +330,7 @@ public class SelectionGeometry : Diagnosticable
         {
             return false;
         }
-        return ((((((__other is SelectionGeometry) && (object.Equals(((SelectionGeometry)((SelectionGeometry)__other)).startSelectionPoint, this.startSelectionPoint))) && (object.Equals(((SelectionGeometry)((SelectionGeometry)__other)).endSelectionPoint, this.endSelectionPoint))) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals(((SelectionGeometry)((SelectionGeometry)__other)).selectionRects, this.selectionRects)) && (object.Equals(((SelectionGeometry)((SelectionGeometry)__other)).status, this.status))) && (((SelectionGeometry)((SelectionGeometry)__other)).hasContent == this.hasContent));
+        return ((((((__other is SelectionGeometry) && (object.Equals(((SelectionGeometry)((SelectionGeometry)__other)).startSelectionPoint, this.startSelectionPoint))) && (object.Equals(((SelectionGeometry)((SelectionGeometry)__other)).endSelectionPoint, this.endSelectionPoint))) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(((SelectionGeometry)((SelectionGeometry)__other)).selectionRects, this.selectionRects)) && (object.Equals(((SelectionGeometry)((SelectionGeometry)__other)).status, this.status))) && (((SelectionGeometry)((SelectionGeometry)__other)).hasContent == this.hasContent));
     }
 
     public override int GetHashCode()

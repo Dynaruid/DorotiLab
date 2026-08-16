@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
 public abstract class MaterialLocalizations
 {
@@ -175,7 +175,7 @@ public abstract class MaterialLocalizations
     public abstract string keyboardKeySelect { get; }
     public abstract string keyboardKeyShift { get; }
     public abstract string keyboardKeySpace { get; }
-    public static MaterialLocalizations of(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static MaterialLocalizations of(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
         return Localizations.of<MaterialLocalizations>(context, typeof(MaterialLocalizations))!;
@@ -184,7 +184,7 @@ public abstract class MaterialLocalizations
 
 }
 
-internal class _MaterialLocalizationsDelegate__material_localizations : global::Doroti.Generated.Framework.Widgets.LocalizationsDelegate<MaterialLocalizations>
+internal class _MaterialLocalizationsDelegate__material_localizations : global::Doroti.Framework.Widgets.LocalizationsDelegate<MaterialLocalizations>
 {
     internal _MaterialLocalizationsDelegate__material_localizations()
     {
@@ -192,7 +192,7 @@ internal class _MaterialLocalizationsDelegate__material_localizations : global::
 
     public override bool isSupported(Locale locale) => DartRuntimePrimitives.ConvertValue<bool>((locale.languageCode == "en"));
     public override Future<MaterialLocalizations> load(Locale locale) => DefaultMaterialLocalizations.load(locale);
-    public override bool shouldReload(global::Doroti.Generated.Framework.Widgets.LocalizationsDelegate<MaterialLocalizations> old) => false;
+    public override bool shouldReload(global::Doroti.Framework.Widgets.LocalizationsDelegate<MaterialLocalizations> old) => false;
     public override string ToString() => "DefaultMaterialLocalizations.delegate(en_US)";
 }
 
@@ -203,7 +203,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
     internal static List<string> _narrowWeekdays = new List<string> { "S", "M", "T", "W", "T", "F", "S" };
     internal static List<string> _shortMonths = new List<string> { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
     internal static List<string> _months = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
-    public static global::Doroti.Generated.Framework.Widgets.LocalizationsDelegate<MaterialLocalizations> @delegate = ((global::Doroti.Generated.Framework.Widgets.LocalizationsDelegate<MaterialLocalizations>)(object?)new _MaterialLocalizationsDelegate__material_localizations());
+    public static global::Doroti.Framework.Widgets.LocalizationsDelegate<MaterialLocalizations> @delegate = ((global::Doroti.Framework.Widgets.LocalizationsDelegate<MaterialLocalizations>)(object?)new _MaterialLocalizationsDelegate__material_localizations());
 
     public DefaultMaterialLocalizations()
     {
@@ -529,7 +529,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
     public override string refreshIndicatorSemanticLabel => "Refresh";
     public static Future<MaterialLocalizations> load(Locale locale)
     {
-        return ((Future<MaterialLocalizations>)(object?)new global::Doroti.Generated.Framework.Foundation.SynchronousFuture<MaterialLocalizations>(new DefaultMaterialLocalizations()));
+        return ((Future<MaterialLocalizations>)(object?)new global::Doroti.Framework.Foundation.SynchronousFuture<MaterialLocalizations>(new DefaultMaterialLocalizations()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

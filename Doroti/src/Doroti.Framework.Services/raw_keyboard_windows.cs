@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public static partial class Raw_keyboard_windowsLibrary
 {
@@ -49,12 +49,12 @@ public class RawKeyEventDataWindows : RawKeyEventData
     }
 
     public override string keyLabel => ((characterCodePoint == 0L) ? "" : char.ConvertFromUtf32(checked((int)characterCodePoint)));
-    public override PhysicalKeyboardKey physicalKey => (global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kWindowsToPhysicalKey.GetValueOrDefault(scanCode) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.windowsPlane + scanCode)));
+    public override PhysicalKeyboardKey physicalKey => (global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kWindowsToPhysicalKey.GetValueOrDefault(scanCode) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.windowsPlane + scanCode)));
     public override LogicalKeyboardKey logicalKey
     {
         get
         {
-            LogicalKeyboardKey? numPadKey = global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kWindowsNumPadMap.GetValueOrDefault(keyCode);
+            LogicalKeyboardKey? numPadKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kWindowsNumPadMap.GetValueOrDefault(keyCode);
             if ((numPadKey is not null))
             {
                 return numPadKey;
@@ -64,7 +64,7 @@ public class RawKeyEventDataWindows : RawKeyEventData
                 long keyId__3527 = (LogicalKeyboardKey.unicodePlane | ((characterCodePoint & LogicalKeyboardKey.valueMask)));
                 return (LogicalKeyboardKey.findKeyByKeyId(keyId__3527) ?? new LogicalKeyboardKey(keyId__3527));
             }
-            LogicalKeyboardKey? newKey = global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kWindowsToLogicalKey.GetValueOrDefault(keyCode);
+            LogicalKeyboardKey? newKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kWindowsToLogicalKey.GetValueOrDefault(keyCode);
             if ((newKey is not null))
             {
                 return newKey;

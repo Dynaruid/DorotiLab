@@ -1,7 +1,7 @@
 // <doroti-reviewed-framework-source />
 using Doroti.Runtime;
 
-namespace Doroti.Generated.Framework.Foundation;
+namespace Doroti.Framework.Foundation;
 
 /// <summary>Source-library spelling used by deterministic cross-library qualification.</summary>
 public static class Consolidate_responseLibrary

@@ -313,7 +313,7 @@ String _disposition(String path) {
 
 String _owner(String path) {
   if (path == 'src/foundation/object.dart') {
-    return 'Doroti.Generated.Framework.Foundation';
+    return 'Doroti.Framework.Foundation';
   }
   if (path == 'src/foundation/binding.dart') {
     return 'Doroti.Engine+Doroti.Platform';

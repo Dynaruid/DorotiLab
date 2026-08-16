@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public class OvalBorder : CircleBorder
 {
@@ -53,9 +53,9 @@ public class OvalBorder : CircleBorder
     {
         if ((DartRuntimePrimitives.RequireValue(eccentricity) != 1.0))
         {
-            return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "OvalBorder"))}({side}, eccentricity: {DartRuntimePrimitives.RequireValue(eccentricity)})";
+            return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "OvalBorder"))}({side}, eccentricity: {DartRuntimePrimitives.RequireValue(eccentricity)})";
         }
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "OvalBorder"))}({side})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "OvalBorder"))}({side})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -12,11 +12,11 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public static partial class Platform_channelLibrary
 {
-    public static bool shouldProfilePlatformChannels => (Platform_channelLibrary.kProfilePlatformChannels || ((!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode && global::Doroti.Generated.Framework.Services.DebugLibrary.debugProfilePlatformChannels)));
+    public static bool shouldProfilePlatformChannels => (Platform_channelLibrary.kProfilePlatformChannels || ((!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && global::Doroti.Framework.Services.DebugLibrary.debugProfilePlatformChannels)));
 }
 
 public static partial class Platform_channelLibrary
@@ -146,7 +146,7 @@ public static partial class Platform_channelLibrary
             {
                 log__4355.writeln($"  (name:\"{stats.channel}\" type:\"{stats.type}\" codec:\"{stats.codec}\" upBytes:{stats.upBytes} upBytes_avg:{stats.averageUpPayload.toStringAsFixed(1L)} downBytes:{stats.downBytes} downBytes_avg:{stats.averageDownPayload.toStringAsFixed(1L)})");
             }
-            global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint(log__4355.ToString());
+            global::Doroti.Framework.Foundation.PrintLibrary.debugPrint(log__4355.ToString());
             Platform_channelLibrary._profilePlatformChannelsStats.Clear();
         }
     }
@@ -176,7 +176,7 @@ public static partial class Platform_channelLibrary
 {
     internal static BinaryMessenger _findBinaryMessenger()
     {
-        return ((!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb && (ServicesBinding.rootIsolateToken is null)) ? BackgroundIsolateBinaryMessenger.instance : ServicesBinding.instance.defaultBinaryMessenger);
+        return ((!global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb && (ServicesBinding.rootIsolateToken is null)) ? BackgroundIsolateBinaryMessenger.instance : ServicesBinding.instance.defaultBinaryMessenger);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

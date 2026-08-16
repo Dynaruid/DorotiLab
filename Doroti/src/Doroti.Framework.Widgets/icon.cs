@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class Icon : StatelessWidget
 {
@@ -30,7 +30,7 @@ public class Icon : StatelessWidget
     public virtual BlendMode? blendMode { get; private set; }
     public virtual FontWeight? fontWeight { get; private set; }
 
-    public Icon(IconData? icon, global::Doroti.Generated.Framework.Foundation.Key? key = null, double? size = null, double? fill = null, double? weight = null, double? grade = null, double? opticalSize = null, Color? color = null, List<Shadow>? shadows = null, string? semanticLabel = null, TextDirection? textDirection = null, bool? applyTextScaling = null, BlendMode? blendMode = null, FontWeight? fontWeight = null) : base(key: key)
+    public Icon(IconData? icon, global::Doroti.Framework.Foundation.Key? key = null, double? size = null, double? fill = null, double? weight = null, double? grade = null, double? opticalSize = null, Color? color = null, List<Shadow>? shadows = null, string? semanticLabel = null, TextDirection? textDirection = null, bool? applyTextScaling = null, BlendMode? blendMode = null, FontWeight? fontWeight = null) : base(key: key)
     {
         this.icon = icon;
         this.size = size;
@@ -52,11 +52,11 @@ public class Icon : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => ((((TextDirection?)((dynamic)this).textDirection) is not null) || global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context)));
+        DartRuntimePrimitives.Assert(() => ((((TextDirection?)((dynamic)this).textDirection) is not null) || global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context)));
         global::Doroti.Ui.TextDirection textDirection__9567 = ((((TextDirection?)((dynamic)this).textDirection) ?? (TextDirection)Directionality.of(context)));
         IconThemeData iconTheme__9658 = ((IconThemeData)(object?)IconTheme.of(context));
         bool applyTextScaling__9709 = ((this.applyTextScaling ?? ((IconThemeData)iconTheme__9658).applyTextScaling) ?? false);
-        double tentativeIconSize__9808 = ((this.size ?? ((IconThemeData)iconTheme__9658).size) ?? global::Doroti.Generated.Framework.Painting.Text_painterLibrary.kDefaultFontSize);
+        double tentativeIconSize__9808 = ((this.size ?? ((IconThemeData)iconTheme__9658).size) ?? global::Doroti.Framework.Painting.Text_painterLibrary.kDefaultFontSize);
         double iconSize__9890 = (DartRuntimePrimitives.RequireValue(applyTextScaling__9709) ? MediaQuery.textScalerOf(context).scale(tentativeIconSize__9808) : tentativeIconSize__9808);
         double? iconFill__10034 = (this.fill ?? ((IconThemeData)iconTheme__9658).fill);
         double? iconWeight__10088 = (this.weight ?? ((IconThemeData)iconTheme__9658).weight);
@@ -84,8 +84,8 @@ public class Icon : StatelessWidget
             return __cascade;        }))();
             iconColor__10591 = DartRuntimePrimitives.ConvertValue<Color>(null);
         }
-        var fontStyle__10977 = new global::Doroti.Generated.Framework.Painting.TextStyle(fontVariations: new List<global::Doroti.Ui.FontVariation>(), inherit: false, color: iconColor__10591, fontSize: iconSize__9890, fontFamily: ((IconData)icon__10351).fontFamily, fontWeight: this.fontWeight, package: ((IconData)icon__10351).fontPackage, fontFamilyFallback: ((IconData)icon__10351).fontFamilyFallback, shadows: iconShadows__10286, height: 1.0, leadingDistribution: TextLeadingDistribution.even, foreground: foreground__10641);
-        Widget iconWidget__11796 = ((Widget)(object?)new RichText(overflow: global::Doroti.Generated.Framework.Painting.TextOverflow.visible, textDirection: DartRuntimePrimitives.RequireValue(textDirection__9567), text: new global::Doroti.Generated.Framework.Painting.TextSpan(text: char.ConvertFromUtf32(checked((int)((IconData)icon__10351).codePoint)), style: fontStyle__10977)));
+        var fontStyle__10977 = new global::Doroti.Framework.Painting.TextStyle(fontVariations: new List<global::Doroti.Ui.FontVariation>(), inherit: false, color: iconColor__10591, fontSize: iconSize__9890, fontFamily: ((IconData)icon__10351).fontFamily, fontWeight: this.fontWeight, package: ((IconData)icon__10351).fontPackage, fontFamilyFallback: ((IconData)icon__10351).fontFamilyFallback, shadows: iconShadows__10286, height: 1.0, leadingDistribution: TextLeadingDistribution.even, foreground: foreground__10641);
+        Widget iconWidget__11796 = ((Widget)(object?)new RichText(overflow: global::Doroti.Framework.Painting.TextOverflow.visible, textDirection: DartRuntimePrimitives.RequireValue(textDirection__9567), text: new global::Doroti.Framework.Painting.TextSpan(text: char.ConvertFromUtf32(checked((int)((IconData)icon__10351).codePoint)), style: fontStyle__10977)));
         if (((IconData)icon__10351).matchTextDirection)
         {
             switch (DartRuntimePrimitives.RequireValue(textDirection__9567))
@@ -95,7 +95,7 @@ public class Icon : StatelessWidget
                         iconWidget__11796 = DartRuntimePrimitives.ConvertValue<Widget>(new Transform(transform: ((Func<Matrix4>)(() =>
 {            var __cascade = Matrix4.identity();
             __cascade.scaleByDouble(-1.0, 1.0, 1.0, 1);
-            return __cascade;        }))(), alignment: global::Doroti.Generated.Framework.Painting.Alignment.center, transformHitTests: false, child: iconWidget__11796));
+            return __cascade;        }))(), alignment: global::Doroti.Framework.Painting.Alignment.center, transformHitTests: false, child: iconWidget__11796));
                         break;
                     }
                 case TextDirection.ltr:
@@ -108,20 +108,20 @@ public class Icon : StatelessWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new IconDataProperty("icon", this.icon, ifNull: "<empty>", showName: false));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("size", this.size, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("fill", this.fill, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("weight", this.weight, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("grade", this.grade, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("opticalSize", this.opticalSize, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.IterableProperty<global::Doroti.Ui.Shadow>("shadows", this.shadows.Cast<global::Doroti.Ui.Shadow>(), defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.StringProperty("semanticLabel", this.semanticLabel, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<bool>("applyTextScaling", this.applyTextScaling, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("size", this.size, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("fill", this.fill, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("weight", this.weight, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("grade", this.grade, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("opticalSize", this.opticalSize, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<global::Doroti.Ui.Shadow>("shadows", this.shadows.Cast<global::Doroti.Ui.Shadow>(), defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.StringProperty("semanticLabel", this.semanticLabel, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("applyTextScaling", this.applyTextScaling, defaultValue: null));
     }
 
 }

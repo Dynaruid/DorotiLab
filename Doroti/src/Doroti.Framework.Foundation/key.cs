@@ -7,7 +7,7 @@ using System.Linq;
 using Doroti.Runtime;
 using static Doroti.Runtime.FoundationRuntimePorts;
 
-namespace Doroti.Generated.Framework.Foundation;
+namespace Doroti.Framework.Foundation;
 
 public abstract class Key
 {

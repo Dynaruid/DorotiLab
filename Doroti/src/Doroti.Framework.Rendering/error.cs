@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public static partial class ErrorLibrary
 {
@@ -28,7 +28,7 @@ public class RenderErrorBox : RenderBox
 {
     public virtual string message { get; private set; } = default!;
     internal virtual Paragraph? _paragraph { get; private set; }
-    public static global::Doroti.Generated.Framework.Painting.EdgeInsets padding = new global::Doroti.Generated.Framework.Painting.EdgeInsets(64.0, 96.0, 64.0, 12.0);
+    public static global::Doroti.Framework.Painting.EdgeInsets padding = new global::Doroti.Framework.Painting.EdgeInsets(64.0, 96.0, 64.0, 12.0);
     public static double minimumWidth = 200.0;
     public static global::Doroti.Ui.Color backgroundColor = _initBackgroundColor();
     public static global::Doroti.Ui.TextStyle textStyle = _initTextStyle();
@@ -98,15 +98,15 @@ public class RenderErrorBox : RenderBox
                 double width__5414 = size.width;
                 var left__5446 = 0.0;
                 var top__5470 = 0.0;
-                if ((width__5414 > ((((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding).left + minimumWidth) + ((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding).right)))
+                if ((width__5414 > ((((global::Doroti.Framework.Painting.EdgeInsets)padding).left + minimumWidth) + ((global::Doroti.Framework.Painting.EdgeInsets)padding).right)))
                 {
-                    width__5414 -= (((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding).left + ((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding).right);
-                    left__5446 += ((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding).left;
+                    width__5414 -= (((global::Doroti.Framework.Painting.EdgeInsets)padding).left + ((global::Doroti.Framework.Painting.EdgeInsets)padding).right);
+                    left__5446 += ((global::Doroti.Framework.Painting.EdgeInsets)padding).left;
                 }
                 this._paragraph.layout(new global::Doroti.Ui.ParagraphConstraints(width: width__5414));
-                if ((size.height > ((((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding).top + this._paragraph.height) + ((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding).bottom)))
+                if ((size.height > ((((global::Doroti.Framework.Painting.EdgeInsets)padding).top + this._paragraph.height) + ((global::Doroti.Framework.Painting.EdgeInsets)padding).bottom)))
                 {
-                    top__5470 += ((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding).top;
+                    top__5470 += ((global::Doroti.Framework.Painting.EdgeInsets)padding).top;
                 }
                 ((PaintingContext)context).canvas.drawParagraph(this._paragraph, (offset + new global::Doroti.Ui.Offset(left__5446, top__5470)));
             }

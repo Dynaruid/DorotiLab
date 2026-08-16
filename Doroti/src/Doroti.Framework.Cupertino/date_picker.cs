@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Cupertino;
+namespace Doroti.Framework.Cupertino;
 
 public static partial class Date_pickerLibrary
 {
@@ -51,7 +51,7 @@ public static partial class Date_pickerLibrary
 
 public static partial class Date_pickerLibrary
 {
-    internal static global::Doroti.Generated.Framework.Painting.TextStyle _kDefaultPickerTextStyle = new global::Doroti.Generated.Framework.Painting.TextStyle(letterSpacing: -0.83);
+    internal static global::Doroti.Framework.Painting.TextStyle _kDefaultPickerTextStyle = new global::Doroti.Framework.Painting.TextStyle(letterSpacing: -0.83);
 }
 
 public static partial class Date_pickerLibrary
@@ -86,40 +86,40 @@ public static partial class Date_pickerLibrary
 
 public static partial class Date_pickerLibrary
 {
-    internal static global::Doroti.Generated.Framework.Painting.TextStyle _themeTextStyle(global::Doroti.Generated.Framework.Widgets.BuildContext context, bool isValid = true)
+    internal static global::Doroti.Framework.Painting.TextStyle _themeTextStyle(global::Doroti.Framework.Widgets.BuildContext context, bool isValid = true)
     {
-        global::Doroti.Generated.Framework.Painting.TextStyle style__2220 = CupertinoTheme.of(context).textTheme.dateTimePickerTextStyle;
-        return (isValid ? style__2220.copyWith(color: CupertinoDynamicColor.maybeResolve(((global::Doroti.Generated.Framework.Painting.TextStyle)style__2220).color, context)) : style__2220.copyWith(color: CupertinoDynamicColor.resolve(CupertinoColors.inactiveGray, context)));
+        global::Doroti.Framework.Painting.TextStyle style__2220 = CupertinoTheme.of(context).textTheme.dateTimePickerTextStyle;
+        return (isValid ? style__2220.copyWith(color: CupertinoDynamicColor.maybeResolve(((global::Doroti.Framework.Painting.TextStyle)style__2220).color, context)) : style__2220.copyWith(color: CupertinoDynamicColor.resolve(CupertinoColors.inactiveGray, context)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
 public static partial class Date_pickerLibrary
 {
-    internal static void _animateColumnControllerToItem(global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController controller, long targetItem)
+    internal static void _animateColumnControllerToItem(global::Doroti.Framework.Widgets.FixedExtentScrollController controller, long targetItem)
     {
-        DartRuntimePrimitives.Ignore(controller.animateToItem(targetItem, curve: global::Doroti.Generated.Framework.Animation.Curves.easeInOut, duration: Duration.Create(milliseconds: 200L)));
+        DartRuntimePrimitives.Ignore(controller.animateToItem(targetItem, curve: global::Doroti.Framework.Animation.Curves.easeInOut, duration: Duration.Create(milliseconds: 200L)));
     }
 }
 
 public static partial class Date_pickerLibrary
 {
-    internal static global::Doroti.Generated.Framework.Widgets.Widget _startSelectionOverlay = ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new CupertinoPickerDefaultSelectionOverlay(capEndEdge: false));
+    internal static global::Doroti.Framework.Widgets.Widget _startSelectionOverlay = ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoPickerDefaultSelectionOverlay(capEndEdge: false));
 }
 
 public static partial class Date_pickerLibrary
 {
-    internal static global::Doroti.Generated.Framework.Widgets.Widget _centerSelectionOverlay = ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new CupertinoPickerDefaultSelectionOverlay(capStartEdge: false, capEndEdge: false));
+    internal static global::Doroti.Framework.Widgets.Widget _centerSelectionOverlay = ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoPickerDefaultSelectionOverlay(capStartEdge: false, capEndEdge: false));
 }
 
 public static partial class Date_pickerLibrary
 {
-    internal static global::Doroti.Generated.Framework.Widgets.Widget _endSelectionOverlay = ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new CupertinoPickerDefaultSelectionOverlay(capStartEdge: false));
+    internal static global::Doroti.Framework.Widgets.Widget _endSelectionOverlay = ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoPickerDefaultSelectionOverlay(capStartEdge: false));
 }
 
-public delegate global::Doroti.Generated.Framework.Widgets.Widget? SelectionOverlayBuilder(global::Doroti.Generated.Framework.Widgets.BuildContext context, long columnCount, long selectedIndex);
+public delegate global::Doroti.Framework.Widgets.Widget? SelectionOverlayBuilder(global::Doroti.Framework.Widgets.BuildContext context, long columnCount, long selectedIndex);
 
-internal class _DatePickerLayoutDelegate__date_picker : global::Doroti.Generated.Framework.Rendering.MultiChildLayoutDelegate
+internal class _DatePickerLayoutDelegate__date_picker : global::Doroti.Framework.Rendering.MultiChildLayoutDelegate
 {
     public virtual List<double> columnWidths { get; private set; } = default!;
     public virtual long textDirectionFactor { get; private set; } = default!;
@@ -152,17 +152,17 @@ internal class _DatePickerLayoutDelegate__date_picker : global::Doroti.Generated
                 {
                     if ((childWidth__4715 < 0L))
                     {
-                        FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails(exception: global::Doroti.Generated.Framework.Foundation.FlutterError.Create("Insufficient horizontal space to render the " + "CupertinoDatePicker because the parent is too narrow at " + $"{size.width}px.\n" + $"An additional {-remainingWidth__4301}px is needed to avoid " + "overlapping columns.")));
+                        FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: global::Doroti.Framework.Foundation.FlutterError.Create("Insufficient horizontal space to render the " + "CupertinoDatePicker because the parent is too narrow at " + $"{size.width}px.\n" + $"An additional {-remainingWidth__4301}px is needed to avoid " + "overlapping columns.")));
                     }
                     return true;
                 });
-            layoutChild(index__4633, global::Doroti.Generated.Framework.Rendering.BoxConstraints.CreateTight(new global::Doroti.Ui.Size(Math.Max(0.0, childWidth__4715), size.height)));
+            layoutChild(index__4633, global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(new global::Doroti.Ui.Size(Math.Max(0.0, childWidth__4715), size.height)));
             positionChild(index__4633, new global::Doroti.Ui.Offset(currentHorizontalOffset__4377, 0.0));
             currentHorizontalOffset__4377 += childWidth__4715;
         }
     }
 
-    public override bool shouldRelayout(global::Doroti.Generated.Framework.Rendering.MultiChildLayoutDelegate oldDelegate)
+    public override bool shouldRelayout(global::Doroti.Framework.Rendering.MultiChildLayoutDelegate oldDelegate)
     {
         var __oldDelegate = (_DatePickerLayoutDelegate__date_picker)(object)oldDelegate;
         return ((!object.Equals(this.columnWidths, ((_DatePickerLayoutDelegate__date_picker)__oldDelegate).columnWidths)) || (this.textDirectionFactor != ((_DatePickerLayoutDelegate__date_picker)__oldDelegate).textDirectionFactor));
@@ -191,7 +191,7 @@ internal enum _PickerColumnType__date_picker
     timeSeparator
 }
 
-public class CupertinoDatePicker : global::Doroti.Generated.Framework.Widgets.StatefulWidget
+public class CupertinoDatePicker : global::Doroti.Framework.Widgets.StatefulWidget
 {
     public virtual CupertinoDatePickerMode mode { get; private set; } = default!;
     public virtual DateTime initialDateTime { get; private set; } = default!;
@@ -209,9 +209,9 @@ public class CupertinoDatePicker : global::Doroti.Generated.Framework.Widgets.St
     public virtual global::System.Func<DateTime, bool>? selectableDayPredicate { get; private set; }
     public virtual double itemExtent { get; private set; } = default!;
     public virtual SelectionOverlayBuilder? selectionOverlayBuilder { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.ChangeReportingBehavior changeReportingBehavior { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.ChangeReportingBehavior changeReportingBehavior { get; private set; } = default!;
 
-    public CupertinoDatePicker(global::Doroti.Generated.Framework.Foundation.Key? key = null, CupertinoDatePickerMode mode = CupertinoDatePickerMode.dateAndTime, global::System.Action<DateTime> onDateTimeChanged = default!, DateTime? initialDateTime = null, DateTime? minimumDate = null, DateTime? maximumDate = null, long minimumYear = 1, long? maximumYear = null, long minuteInterval = 1, bool use24hFormat = false, DatePickerDateOrder? dateOrder = null, Color? backgroundColor = null, bool showDayOfWeek = false, bool showTimeSeparator = false, double? itemExtent = null, SelectionOverlayBuilder? selectionOverlayBuilder = null, global::System.Func<DateTime, bool>? selectableDayPredicate = null, global::Doroti.Generated.Framework.Widgets.ChangeReportingBehavior changeReportingBehavior = global::Doroti.Generated.Framework.Widgets.ChangeReportingBehavior.onScrollUpdate) : base(key: key)
+    public CupertinoDatePicker(global::Doroti.Framework.Foundation.Key? key = null, CupertinoDatePickerMode mode = CupertinoDatePickerMode.dateAndTime, global::System.Action<DateTime> onDateTimeChanged = default!, DateTime? initialDateTime = null, DateTime? minimumDate = null, DateTime? maximumDate = null, long minimumYear = 1, long? maximumYear = null, long minuteInterval = 1, bool use24hFormat = false, DatePickerDateOrder? dateOrder = null, Color? backgroundColor = null, bool showDayOfWeek = false, bool showTimeSeparator = false, double? itemExtent = null, SelectionOverlayBuilder? selectionOverlayBuilder = null, global::System.Func<DateTime, bool>? selectableDayPredicate = null, global::Doroti.Framework.Widgets.ChangeReportingBehavior changeReportingBehavior = global::Doroti.Framework.Widgets.ChangeReportingBehavior.onScrollUpdate) : base(key: key)
     {
         double __itemExtent = itemExtent ?? Date_pickerLibrary._kItemExtent;
         this.mode = mode;
@@ -247,11 +247,11 @@ public class CupertinoDatePicker : global::Doroti.Generated.Framework.Widgets.St
 
     public override IState createState()
     {
-        return ((IState)(object?)(this.mode switch { CupertinoDatePickerMode.time => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.State<CupertinoDatePicker>>(new _CupertinoDatePickerDateTimeState__date_picker()), CupertinoDatePickerMode.dateAndTime => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.State<CupertinoDatePicker>>(new _CupertinoDatePickerDateTimeState__date_picker()), CupertinoDatePickerMode.date => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.State<CupertinoDatePicker>>(new _CupertinoDatePickerDateState__date_picker(dateOrder: this.dateOrder)), CupertinoDatePickerMode.monthYear => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.State<CupertinoDatePicker>>(new _CupertinoDatePickerMonthYearState__date_picker(dateOrder: this.dateOrder)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        return ((IState)(object?)(this.mode switch { CupertinoDatePickerMode.time => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.State<CupertinoDatePicker>>(new _CupertinoDatePickerDateTimeState__date_picker()), CupertinoDatePickerMode.dateAndTime => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.State<CupertinoDatePicker>>(new _CupertinoDatePickerDateTimeState__date_picker()), CupertinoDatePickerMode.date => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.State<CupertinoDatePicker>>(new _CupertinoDatePickerDateState__date_picker(dateOrder: this.dateOrder)), CupertinoDatePickerMode.monthYear => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.State<CupertinoDatePicker>>(new _CupertinoDatePickerMonthYearState__date_picker(dateOrder: this.dateOrder)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static double _getColumnWidth(_PickerColumnType__date_picker columnType, CupertinoLocalizations localizations, global::Doroti.Generated.Framework.Widgets.BuildContext context, bool showDayOfWeek, bool standaloneMonth = false)
+    internal static double _getColumnWidth(_PickerColumnType__date_picker columnType, CupertinoLocalizations localizations, global::Doroti.Framework.Widgets.BuildContext context, bool showDayOfWeek, bool standaloneMonth = false)
     {
         var longTexts__22718 = new List<string>();
         switch (columnType)
@@ -333,30 +333,30 @@ public class CupertinoDatePicker : global::Doroti.Generated.Framework.Widgets.St
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static double getColumnWidth(List<string> texts, global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Painting.TextStyle? textStyle = null)
+    public static double getColumnWidth(List<string> texts, global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Painting.TextStyle? textStyle = null)
     {
-        return texts.map<string, double>(((text) => TextPainter.computeMaxIntrinsicWidth(text: new global::Doroti.Generated.Framework.Painting.TextSpan(style: (textStyle ?? Date_pickerLibrary._themeTextStyle(context)), text: text), textDirection: Directionality.of(context)))).reduce(global::Doroti.Runtime.Dart_mathLibrary.max);
+        return texts.map<string, double>(((text) => TextPainter.computeMaxIntrinsicWidth(text: new global::Doroti.Framework.Painting.TextSpan(style: (textStyle ?? Date_pickerLibrary._themeTextStyle(context)), text: text), textDirection: Directionality.of(context)))).reduce(global::Doroti.Runtime.Dart_mathLibrary.max);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal delegate global::Doroti.Generated.Framework.Widgets.Widget _ColumnBuilder__date_picker(double offAxisFraction, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay);
+internal delegate global::Doroti.Framework.Widgets.Widget _ColumnBuilder__date_picker(double offAxisFraction, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Framework.Widgets.Widget? selectionOverlay);
 
-internal class _CupertinoDatePickerDateTimeState__date_picker : global::Doroti.Generated.Framework.Widgets.State<CupertinoDatePicker>
+internal class _CupertinoDatePickerDateTimeState__date_picker : global::Doroti.Framework.Widgets.State<CupertinoDatePicker>
 {
     internal const double _kMaximumOffAxisFraction = 0.45;
     public virtual long textDirectionFactor { get; set; } = default!;
     public virtual CupertinoLocalizations localizations { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.Alignment alignCenterLeft { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.Alignment alignCenterRight { get; set; } = default!;
+    public virtual global::Doroti.Framework.Painting.Alignment alignCenterLeft { get; set; } = default!;
+    public virtual global::Doroti.Framework.Painting.Alignment alignCenterRight { get; set; } = default!;
     public virtual DateTime initialDateTime { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController dateController { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController hourController { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController minuteController { get; set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.FixedExtentScrollController dateController { get; set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.FixedExtentScrollController hourController { get; set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.FixedExtentScrollController minuteController { get; set; } = default!;
     public virtual long selectedAmPm { get; set; } = default!;
     public virtual long meridiemRegion { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController meridiemController { get; set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.FixedExtentScrollController meridiemController { get; set; } = default!;
     public virtual bool isDatePickerScrolling { get; set; } = false;
     public virtual bool isHourPickerScrolling { get; set; } = false;
     public virtual bool isMinutePickerScrolling { get; set; } = false;
@@ -371,7 +371,7 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : global::Doroti.G
             {
                 case CupertinoDatePickerMode.dateAndTime:
                     {
-                        return (this.dateController.hasClients ? ((global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController)this.dateController).selectedItem : 0L);
+                        return (this.dateController.hasClients ? ((global::Doroti.Framework.Widgets.FixedExtentScrollController)this.dateController).selectedItem : 0L);
                     }
                 case CupertinoDatePickerMode.time:
                     {
@@ -391,7 +391,7 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : global::Doroti.G
         }
     }
     public virtual long selectedHour => _selectedHour(this.selectedAmPm, this._selectedHourIndex);
-    internal virtual long _selectedHourIndex => (this.hourController.hasClients ? (((global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController)this.hourController).selectedItem % 24L) : this.initialDateTime.Hour);
+    internal virtual long _selectedHourIndex => (this.hourController.hasClients ? (((global::Doroti.Framework.Widgets.FixedExtentScrollController)this.hourController).selectedItem % 24L) : this.initialDateTime.Hour);
     internal virtual long _selectedHour(long selectedAmPm, long selectedHour)
     {
         return (_isHourRegionFlipped(selectedAmPm) ? (((selectedHour + 12L)) % 24L) : selectedHour);
@@ -402,7 +402,7 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : global::Doroti.G
     {
         get
         {
-            return (this.minuteController.hasClients ? ((((global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController)this.minuteController).selectedItem * ((CupertinoDatePicker)this.widget).minuteInterval) % 60L) : this.initialDateTime.Minute);
+            return (this.minuteController.hasClients ? ((((global::Doroti.Framework.Widgets.FixedExtentScrollController)this.minuteController).selectedItem * ((CupertinoDatePicker)this.widget).minuteInterval) % 60L) : this.initialDateTime.Minute);
             return default!;
         }
     }
@@ -422,11 +422,11 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : global::Doroti.G
         initialDateTime = ((CupertinoDatePicker)this.widget).initialDateTime;
         selectedAmPm = (checked((long)(this.initialDateTime.Hour / 12L)));
         meridiemRegion = this.selectedAmPm;
-        meridiemController = new global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController(initialItem: this.selectedAmPm);
-        hourController = new global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController(initialItem: this.initialDateTime.Hour);
-        minuteController = new global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController(initialItem: (checked((long)(this.initialDateTime.Minute / ((CupertinoDatePicker)this.widget).minuteInterval))));
-        dateController = new global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController();
-        global::Doroti.Generated.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(() => this._handleSystemFontsChange());
+        meridiemController = new global::Doroti.Framework.Widgets.FixedExtentScrollController(initialItem: this.selectedAmPm);
+        hourController = new global::Doroti.Framework.Widgets.FixedExtentScrollController(initialItem: this.initialDateTime.Hour);
+        minuteController = new global::Doroti.Framework.Widgets.FixedExtentScrollController(initialItem: (checked((long)(this.initialDateTime.Minute / ((CupertinoDatePicker)this.widget).minuteInterval))));
+        dateController = new global::Doroti.Framework.Widgets.FixedExtentScrollController();
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(() => this._handleSystemFontsChange());
     }
 
     internal virtual void _handleSystemFontsChange()
@@ -442,7 +442,7 @@ this.estimatedColumnWidths.Clear();
         this.hourController.dispose();
         this.minuteController.dispose();
         this.meridiemController.dispose();
-        global::Doroti.Generated.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(() => this._handleSystemFontsChange());
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(() => this._handleSystemFontsChange());
         base.dispose();
     }
 
@@ -453,7 +453,7 @@ this.estimatedColumnWidths.Clear();
         if ((!((CupertinoDatePicker)this.widget).use24hFormat && ((CupertinoDatePicker)oldWidget).use24hFormat))
         {
             this.meridiemController.dispose();
-            meridiemController = new global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController(initialItem: this.selectedAmPm);
+            meridiemController = new global::Doroti.Framework.Widgets.FixedExtentScrollController(initialItem: this.selectedAmPm);
         }
     }
 
@@ -462,8 +462,8 @@ this.estimatedColumnWidths.Clear();
         base.didChangeDependencies();
         textDirectionFactor = ((object.Equals(Directionality.of(this.context), TextDirection.ltr)) ? 1L : -1L);
         localizations = CupertinoLocalizations.of(this.context);
-        alignCenterLeft = ((this.textDirectionFactor == 1L) ? global::Doroti.Generated.Framework.Painting.Alignment.centerLeft : global::Doroti.Generated.Framework.Painting.Alignment.centerRight);
-        alignCenterRight = ((this.textDirectionFactor == 1L) ? global::Doroti.Generated.Framework.Painting.Alignment.centerRight : global::Doroti.Generated.Framework.Painting.Alignment.centerLeft);
+        alignCenterLeft = ((this.textDirectionFactor == 1L) ? global::Doroti.Framework.Painting.Alignment.centerLeft : global::Doroti.Framework.Painting.Alignment.centerRight);
+        alignCenterRight = ((this.textDirectionFactor == 1L) ? global::Doroti.Framework.Painting.Alignment.centerRight : global::Doroti.Framework.Painting.Alignment.centerLeft);
         this.estimatedColumnWidths.Clear();
     }
 
@@ -505,16 +505,16 @@ this.estimatedColumnWidths.Clear();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildMediumDatePicker(double offAxisFraction, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildMediumDatePicker(double offAxisFraction, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Framework.Widgets.Widget? selectionOverlay)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.NotificationListener<global::Doroti.Generated.Framework.Widgets.ScrollNotification>(onNotification: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.ScrollNotification, bool>)((notification) => {
-if ((notification is global::Doroti.Generated.Framework.Widgets.ScrollStartNotification))
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.ScrollNotification>(onNotification: ((global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>)((notification) => {
+if ((notification is global::Doroti.Framework.Widgets.ScrollStartNotification))
 {
     isDatePickerScrolling = true;
 }
 else
 {
-    if ((notification is global::Doroti.Generated.Framework.Widgets.ScrollEndNotification))
+    if ((notification is global::Doroti.Framework.Widgets.ScrollEndNotification))
     {
         isDatePickerScrolling = false;
         _pickerDidStopScrolling();
@@ -524,7 +524,7 @@ return false;
 throw new InvalidOperationException("Dart closure completed without a value.");
 })), child: CupertinoPicker.CreateBuilder(scrollController: this.dateController, offAxisFraction: offAxisFraction, itemExtent: ((CupertinoDatePicker)this.widget).itemExtent, useMagnifier: Date_pickerLibrary._kUseMagnifier, magnification: Date_pickerLibrary._kMagnification, backgroundColor: ((CupertinoDatePicker)this.widget).backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, changeReportingBehavior: ((CupertinoDatePicker)this.widget).changeReportingBehavior, onSelectedItemChanged: ((global::System.Action<long>)((index) => {
 _onSelectedItemChange(index);
-})), itemBuilder: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, long, global::Doroti.Generated.Framework.Widgets.Widget?>)((context, index) => {
+})), itemBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget?>)((context, index) => {
 var rangeStart__34476 = DartRuntimePrimitives.CreateDateTime(this.initialDateTime.Year, this.initialDateTime.Month, (this.initialDateTime.Day + index));
 var rangeEnd__34663 = DartRuntimePrimitives.CreateDateTime(this.initialDateTime.Year, this.initialDateTime.Month, ((this.initialDateTime.Day + index) + 1L));
 var now__34828 = new DateTime();
@@ -538,8 +538,8 @@ if ((((CupertinoDatePicker)this.widget).maximumDate?.isAfter(rangeStart__34476) 
 }
 string dateText__35080 = ((object.Equals(rangeStart__34476, DartRuntimePrimitives.CreateDateTime(now__34828.Year, now__34828.Month, now__34828.Day))) ? this.localizations.todayLabel : this.localizations.datePickerMediumDate(rangeStart__34476));
 bool isDisabled__35271 = !_isSelectableDate(rangeStart__34476);
-global::Doroti.Generated.Framework.Widgets.Widget child__35339 = itemPositioningBuilder(context, new global::Doroti.Generated.Framework.Widgets.Text(dateText__35080, style: Date_pickerLibrary._themeTextStyle(context, isValid: !isDisabled__35271)));
-return (isDisabled__35271 ? new global::Doroti.Generated.Framework.Widgets.ExcludeSemantics(child: child__35339) : child__35339);
+global::Doroti.Framework.Widgets.Widget child__35339 = itemPositioningBuilder(context, new global::Doroti.Framework.Widgets.Text(dateText__35080, style: Date_pickerLibrary._themeTextStyle(context, isValid: !isDisabled__35271)));
+return (isDisabled__35271 ? new global::Doroti.Framework.Widgets.ExcludeSemantics(child: child__35339) : child__35339);
 throw new InvalidOperationException("Dart closure completed without a value.");
 })), selectionOverlay: selectionOverlay)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -553,16 +553,16 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildHourPicker(double offAxisFraction, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildHourPicker(double offAxisFraction, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Framework.Widgets.Widget? selectionOverlay)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.NotificationListener<global::Doroti.Generated.Framework.Widgets.ScrollNotification>(onNotification: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.ScrollNotification, bool>)((notification) => {
-if ((notification is global::Doroti.Generated.Framework.Widgets.ScrollStartNotification))
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.ScrollNotification>(onNotification: ((global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>)((notification) => {
+if ((notification is global::Doroti.Framework.Widgets.ScrollStartNotification))
 {
     isHourPickerScrolling = true;
 }
 else
 {
-    if ((notification is global::Doroti.Generated.Framework.Widgets.ScrollEndNotification))
+    if ((notification is global::Doroti.Framework.Widgets.ScrollEndNotification))
     {
         isHourPickerScrolling = false;
         _pickerDidStopScrolling();
@@ -580,34 +580,34 @@ if (regionChanged__37338)
 }
 if ((!((CupertinoDatePicker)this.widget).use24hFormat && regionChanged__37338))
 {
-    DartRuntimePrimitives.Ignore(this.meridiemController.animateToItem(this.selectedAmPm, duration: Duration.Create(milliseconds: 300L), curve: global::Doroti.Generated.Framework.Animation.Curves.easeOut));
+    DartRuntimePrimitives.Ignore(this.meridiemController.animateToItem(this.selectedAmPm, duration: Duration.Create(milliseconds: 300L), curve: global::Doroti.Framework.Animation.Curves.easeOut));
 }
 else
 {
     _onSelectedItemChange(index);
 }
 DartRuntimePrimitives.Assert(() => (debugIsFlipped__37406 == this.isHourRegionFlipped));
-})), looping: true, selectionOverlay: selectionOverlay, children: new List<global::Doroti.Generated.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)24L)), ((index) => {
+})), looping: true, selectionOverlay: selectionOverlay, children: new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)24L)), ((index) => {
 long hour__38346 = (this.isHourRegionFlipped ? (((index + 12L)) % 24L) : index);
 long displayHour__38422 = (((CupertinoDatePicker)this.widget).use24hFormat ? hour__38346 : ((((hour__38346 + 11L)) % 12L) + 1L));
 bool isDisabled__38508 = !_isValidHour(this.selectedAmPm, index);
-global::Doroti.Generated.Framework.Widgets.Widget child__38581 = itemPositioningBuilder(this.context, new global::Doroti.Generated.Framework.Widgets.Text(this.localizations.datePickerHour(displayHour__38422), semanticsLabel: this.localizations.datePickerHourSemanticsLabel(displayHour__38422), style: Date_pickerLibrary._themeTextStyle(this.context, isValid: !isDisabled__38508)));
-return (isDisabled__38508 ? new global::Doroti.Generated.Framework.Widgets.ExcludeSemantics(child: child__38581) : child__38581);
+global::Doroti.Framework.Widgets.Widget child__38581 = itemPositioningBuilder(this.context, new global::Doroti.Framework.Widgets.Text(this.localizations.datePickerHour(displayHour__38422), semanticsLabel: this.localizations.datePickerHourSemanticsLabel(displayHour__38422), style: Date_pickerLibrary._themeTextStyle(this.context, isValid: !isDisabled__38508)));
+return (isDisabled__38508 ? new global::Doroti.Framework.Widgets.ExcludeSemantics(child: child__38581) : child__38581);
 throw new InvalidOperationException("Dart closure completed without a value.");
 }))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildMinutePicker(double offAxisFraction, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildMinutePicker(double offAxisFraction, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Framework.Widgets.Widget? selectionOverlay)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.NotificationListener<global::Doroti.Generated.Framework.Widgets.ScrollNotification>(onNotification: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.ScrollNotification, bool>)((notification) => {
-if ((notification is global::Doroti.Generated.Framework.Widgets.ScrollStartNotification))
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.ScrollNotification>(onNotification: ((global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>)((notification) => {
+if ((notification is global::Doroti.Framework.Widgets.ScrollStartNotification))
 {
     isMinutePickerScrolling = true;
 }
 else
 {
-    if ((notification is global::Doroti.Generated.Framework.Widgets.ScrollEndNotification))
+    if ((notification is global::Doroti.Framework.Widgets.ScrollEndNotification))
     {
         isMinutePickerScrolling = false;
         _pickerDidStopScrolling();
@@ -615,27 +615,27 @@ else
 }
 return false;
 throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: new CupertinoPicker(scrollController: this.minuteController, offAxisFraction: offAxisFraction, itemExtent: ((CupertinoDatePicker)this.widget).itemExtent, useMagnifier: Date_pickerLibrary._kUseMagnifier, magnification: Date_pickerLibrary._kMagnification, backgroundColor: ((CupertinoDatePicker)this.widget).backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, changeReportingBehavior: ((CupertinoDatePicker)this.widget).changeReportingBehavior, onSelectedItemChanged: (global::System.Action<long>)this._onSelectedItemChange, looping: true, selectionOverlay: selectionOverlay, children: new List<global::Doroti.Generated.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)(checked((long)(60L / ((CupertinoDatePicker)this.widget).minuteInterval))))), ((index) => {
+})), child: new CupertinoPicker(scrollController: this.minuteController, offAxisFraction: offAxisFraction, itemExtent: ((CupertinoDatePicker)this.widget).itemExtent, useMagnifier: Date_pickerLibrary._kUseMagnifier, magnification: Date_pickerLibrary._kMagnification, backgroundColor: ((CupertinoDatePicker)this.widget).backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, changeReportingBehavior: ((CupertinoDatePicker)this.widget).changeReportingBehavior, onSelectedItemChanged: (global::System.Action<long>)this._onSelectedItemChange, looping: true, selectionOverlay: selectionOverlay, children: new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)(checked((long)(60L / ((CupertinoDatePicker)this.widget).minuteInterval))))), ((index) => {
 long minute__40124 = (index * ((CupertinoDatePicker)this.widget).minuteInterval);
 var date__40181 = DartRuntimePrimitives.CreateDateTime(this.initialDateTime.Year, this.initialDateTime.Month, (this.initialDateTime.Day + this.selectedDayFromInitial), this.selectedHour, minute__40124);
 bool isInvalidMinute__40406 = (((((CupertinoDatePicker)this.widget).minimumDate?.isAfter(date__40181) ?? false)) || ((((CupertinoDatePicker)this.widget).maximumDate?.isBefore(date__40181) ?? false)));
-global::Doroti.Generated.Framework.Widgets.Widget child__40571 = itemPositioningBuilder(this.context, new global::Doroti.Generated.Framework.Widgets.Text(this.localizations.datePickerMinute(minute__40124), semanticsLabel: this.localizations.datePickerMinuteSemanticsLabel(minute__40124), style: Date_pickerLibrary._themeTextStyle(this.context, isValid: !isInvalidMinute__40406)));
-return (isInvalidMinute__40406 ? new global::Doroti.Generated.Framework.Widgets.ExcludeSemantics(child: child__40571) : child__40571);
+global::Doroti.Framework.Widgets.Widget child__40571 = itemPositioningBuilder(this.context, new global::Doroti.Framework.Widgets.Text(this.localizations.datePickerMinute(minute__40124), semanticsLabel: this.localizations.datePickerMinuteSemanticsLabel(minute__40124), style: Date_pickerLibrary._themeTextStyle(this.context, isValid: !isInvalidMinute__40406)));
+return (isInvalidMinute__40406 ? new global::Doroti.Framework.Widgets.ExcludeSemantics(child: child__40571) : child__40571);
 throw new InvalidOperationException("Dart closure completed without a value.");
 }))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildAmPmPicker(double offAxisFraction, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildAmPmPicker(double offAxisFraction, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Framework.Widgets.Widget? selectionOverlay)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.NotificationListener<global::Doroti.Generated.Framework.Widgets.ScrollNotification>(onNotification: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.ScrollNotification, bool>)((notification) => {
-if ((notification is global::Doroti.Generated.Framework.Widgets.ScrollStartNotification))
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.ScrollNotification>(onNotification: ((global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>)((notification) => {
+if ((notification is global::Doroti.Framework.Widgets.ScrollStartNotification))
 {
     isMeridiemPickerScrolling = true;
 }
 else
 {
-    if ((notification is global::Doroti.Generated.Framework.Widgets.ScrollEndNotification))
+    if ((notification is global::Doroti.Framework.Widgets.ScrollEndNotification))
     {
         isMeridiemPickerScrolling = false;
         _pickerDidStopScrolling();
@@ -647,20 +647,20 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 selectedAmPm = index;
 DartRuntimePrimitives.Assert(() => ((this.selectedAmPm == 0L) || (this.selectedAmPm == 1L)));
 _onSelectedItemChange(index);
-})), selectionOverlay: selectionOverlay, children: new List<global::Doroti.Generated.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)2L)), ((index) => {
+})), selectionOverlay: selectionOverlay, children: new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)2L)), ((index) => {
 bool isDisabled__42206 = !_isValidHour(index, this._selectedHourIndex);
-global::Doroti.Generated.Framework.Widgets.Widget child__42284 = itemPositioningBuilder(this.context, new global::Doroti.Generated.Framework.Widgets.Text(((index == 0L) ? this.localizations.anteMeridiemAbbreviation : this.localizations.postMeridiemAbbreviation), style: Date_pickerLibrary._themeTextStyle(this.context, isValid: !isDisabled__42206)));
-return (isDisabled__42206 ? new global::Doroti.Generated.Framework.Widgets.ExcludeSemantics(child: child__42284) : child__42284);
+global::Doroti.Framework.Widgets.Widget child__42284 = itemPositioningBuilder(this.context, new global::Doroti.Framework.Widgets.Text(((index == 0L) ? this.localizations.anteMeridiemAbbreviation : this.localizations.postMeridiemAbbreviation), style: Date_pickerLibrary._themeTextStyle(this.context, isValid: !isDisabled__42206)));
+return (isDisabled__42206 ? new global::Doroti.Framework.Widgets.ExcludeSemantics(child: child__42284) : child__42284);
 throw new InvalidOperationException("Dart closure completed without a value.");
 }))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildTimeSeparatorWidget(double offAxisFraction, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildTimeSeparatorWidget(double offAxisFraction, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Framework.Widgets.Widget? selectionOverlay)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.ExcludeSemantics(child: new CupertinoPicker(offAxisFraction: offAxisFraction, itemExtent: ((CupertinoDatePicker)this.widget).itemExtent, useMagnifier: Date_pickerLibrary._kUseMagnifier, magnification: Date_pickerLibrary._kMagnification, backgroundColor: ((CupertinoDatePicker)this.widget).backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, onSelectedItemChanged: ((global::System.Action<long>)((index) => {
-})), selectionOverlay: selectionOverlay, children: new List<global::Doroti.Generated.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)1L)), ((index) => {
-return itemPositioningBuilder(this.context, new global::Doroti.Generated.Framework.Widgets.Text(":", style: Date_pickerLibrary._themeTextStyle(this.context)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ExcludeSemantics(child: new CupertinoPicker(offAxisFraction: offAxisFraction, itemExtent: ((CupertinoDatePicker)this.widget).itemExtent, useMagnifier: Date_pickerLibrary._kUseMagnifier, magnification: Date_pickerLibrary._kMagnification, backgroundColor: ((CupertinoDatePicker)this.widget).backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, onSelectedItemChanged: ((global::System.Action<long>)((index) => {
+})), selectionOverlay: selectionOverlay, children: new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)1L)), ((index) => {
+return itemPositioningBuilder(this.context, new global::Doroti.Framework.Widgets.Text(":", style: Date_pickerLibrary._themeTextStyle(this.context)));
 throw new InvalidOperationException("Dart closure completed without a value.");
 }))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -672,7 +672,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         {
             var daysThreshold__43635 = 1L;
             DateTime targetDate__43675 = this.selectedDateTime.add(Duration.Create(days: daysThreshold__43635));
-            _scrollToDate(targetDate__43675, this.selectedDateTime, false, focusedIndex: (((global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController)this.dateController).selectedItem + daysThreshold__43635));
+            _scrollToDate(targetDate__43675, this.selectedDateTime, false, focusedIndex: (((global::Doroti.Framework.Widgets.FixedExtentScrollController)this.dateController).selectedItem + daysThreshold__43635));
         }
     }
 
@@ -697,7 +697,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     internal virtual void _scrollToDate(DateTime newDate, DateTime fromDate, bool minCheck, long? focusedIndex = null)
     {
-        global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
+        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
 if ((((fromDate.Year != newDate.Year) || (fromDate.Month != newDate.Month)) || (fromDate.Day != newDate.Day)))
 {
     Date_pickerLibrary._animateColumnControllerToItem(this.dateController, ((focusedIndex ?? (long)this.selectedDayFromInitial)));
@@ -707,13 +707,13 @@ if ((fromDate.Hour != newDate.Hour))
     bool needsMeridiemChange__45196 = (!((CupertinoDatePicker)this.widget).use24hFormat && ((checked((long)(fromDate.Hour / 12L))) != (checked((long)(newDate.Hour / 12L)))));
     if (needsMeridiemChange__45196)
     {
-        Date_pickerLibrary._animateColumnControllerToItem(this.meridiemController, (1L - ((global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController)this.meridiemController).selectedItem));
-        long newItem__45614 = ((((checked((long)(((global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController)this.hourController).selectedItem / 12L)))) * 12L) + ((((((global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController)this.hourController).selectedItem + newDate.Hour) - fromDate.Hour)) % 12L));
+        Date_pickerLibrary._animateColumnControllerToItem(this.meridiemController, (1L - ((global::Doroti.Framework.Widgets.FixedExtentScrollController)this.meridiemController).selectedItem));
+        long newItem__45614 = ((((checked((long)(((global::Doroti.Framework.Widgets.FixedExtentScrollController)this.hourController).selectedItem / 12L)))) * 12L) + ((((((global::Doroti.Framework.Widgets.FixedExtentScrollController)this.hourController).selectedItem + newDate.Hour) - fromDate.Hour)) % 12L));
         Date_pickerLibrary._animateColumnControllerToItem(this.hourController, newItem__45614);
     }
     else
     {
-        Date_pickerLibrary._animateColumnControllerToItem(this.hourController, ((((global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController)this.hourController).selectedItem + newDate.Hour) - fromDate.Hour));
+        Date_pickerLibrary._animateColumnControllerToItem(this.hourController, ((((global::Doroti.Framework.Widgets.FixedExtentScrollController)this.hourController).selectedItem + newDate.Hour) - fromDate.Hour));
     }
 }
 if ((fromDate.Minute != newDate.Minute))
@@ -725,10 +725,10 @@ if ((fromDate.Minute != newDate.Minute))
 })), debugLabel: "DatePicker.scrollToDate");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         var columnWidths__46495 = new List<double> { _getEstimatedColumnWidth(_PickerColumnType__date_picker.hour), _getEstimatedColumnWidth(_PickerColumnType__date_picker.minute) };
-        var pickerBuilders__46737 = ((List<global::System.Func<double, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>>)((object.Equals(Directionality.of(context), TextDirection.rtl)) ? new List<global::System.Func<double, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>> { this._buildMinutePicker, this._buildHourPicker } : new List<global::System.Func<double, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>> { this._buildHourPicker, this._buildMinutePicker }));
+        var pickerBuilders__46737 = ((List<global::System.Func<double, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>>)((object.Equals(Directionality.of(context), TextDirection.rtl)) ? new List<global::System.Func<double, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>> { this._buildMinutePicker, this._buildHourPicker } : new List<global::System.Func<double, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>> { this._buildHourPicker, this._buildMinutePicker }));
         if (((CupertinoDatePicker)this.widget).showTimeSeparator)
         {
             columnWidths__46495.Insert(checked((int)1L), _getEstimatedColumnWidth(_PickerColumnType__date_picker.timeSeparator));
@@ -774,13 +774,13 @@ if ((fromDate.Minute != newDate.Minute))
                     }
             }
         }
-        var pickers__48591 = new List<global::Doroti.Generated.Framework.Widgets.Widget>();
+        var pickers__48591 = new List<global::Doroti.Framework.Widgets.Widget>();
         double totalColumnWidths__48624 = (4L * Date_pickerLibrary._kDatePickerPadSize);
         foreach (var (i__48690, width__48700) in columnWidths__46495.indexed())
         {
             var (firstColumn__48752, lastColumn__48770) = ((i__48690 == 0L), (i__48690 == (checked((long)(columnWidths__46495.Count)) - 1L)));
             var offAxisFraction__48834 = 0.0;
-            global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay__48871 = Date_pickerLibrary._centerSelectionOverlay;
+            global::Doroti.Framework.Widgets.Widget? selectionOverlay__48871 = Date_pickerLibrary._centerSelectionOverlay;
             if ((((CupertinoDatePicker)this.widget).selectionOverlayBuilder is not null))
             {
                 selectionOverlay__48871 = ((CupertinoDatePicker)this.widget).selectionOverlayBuilder!(context, selectedIndex: i__48690, columnCount: checked((long)(columnWidths__46495.Count)));
@@ -810,42 +810,42 @@ if ((fromDate.Minute != newDate.Minute))
                     offAxisFraction__48834 = (_kMaximumOffAxisFraction * this.textDirectionFactor);
                 }
             }
-            var padding__49576 = global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateOnly(right: Date_pickerLibrary._kDatePickerPadSize);
+            var padding__49576 = global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(right: Date_pickerLibrary._kDatePickerPadSize);
             if (lastColumn__48770)
             {
-                padding__49576 = ((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding__49576).flipped;
+                padding__49576 = ((global::Doroti.Framework.Painting.EdgeInsets)padding__49576).flipped;
             }
             if ((this.textDirectionFactor == -1L))
             {
-                padding__49576 = ((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding__49576).flipped;
+                padding__49576 = ((global::Doroti.Framework.Painting.EdgeInsets)padding__49576).flipped;
             }
             totalColumnWidths__48624 += (width__48700 + ((2L * Date_pickerLibrary._kDatePickerPadSize)));
-            pickers__48591.Add(new global::Doroti.Generated.Framework.Widgets.LayoutId(id: i__48690, child: pickerBuilders__46737[(int)(i__48690)](offAxisFraction__48834, ((context, child) => {
-global::Doroti.Generated.Framework.Widgets.Widget constrained__50026 = ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Generated.Framework.Rendering.BoxConstraints(maxWidth: (width__48700 + Date_pickerLibrary._kDatePickerPadSize)), child: child));
-return new global::Doroti.Generated.Framework.Widgets.Padding(padding: padding__49576, child: new global::Doroti.Generated.Framework.Widgets.Align(alignment: (lastColumn__48770 ? this.alignCenterLeft : this.alignCenterRight), child: ((firstColumn__48752 || lastColumn__48770) ? constrained__50026 : child)));
+            pickers__48591.Add(new global::Doroti.Framework.Widgets.LayoutId(id: i__48690, child: pickerBuilders__46737[(int)(i__48690)](offAxisFraction__48834, ((context, child) => {
+global::Doroti.Framework.Widgets.Widget constrained__50026 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: (width__48700 + Date_pickerLibrary._kDatePickerPadSize)), child: child));
+return new global::Doroti.Framework.Widgets.Padding(padding: padding__49576, child: new global::Doroti.Framework.Widgets.Align(alignment: (lastColumn__48770 ? this.alignCenterLeft : this.alignCenterRight), child: ((firstColumn__48752 || lastColumn__48770) ? constrained__50026 : child)));
 throw new InvalidOperationException("Dart closure completed without a value.");
 }), selectionOverlay__48871)));
         }
         double maxPickerWidth__50526 = ((totalColumnWidths__48624 > Date_pickerLibrary._kPickerWidth) ? totalColumnWidths__48624 : Date_pickerLibrary._kPickerWidth);
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)MediaQuery.withNoTextScaling(child: DefaultTextStyle.merge(style: Date_pickerLibrary._kDefaultPickerTextStyle, child: new global::Doroti.Generated.Framework.Widgets.CustomMultiChildLayout(@delegate: new _DatePickerLayoutDelegate__date_picker(columnWidths: columnWidths__46495, textDirectionFactor: this.textDirectionFactor, maxWidth: maxPickerWidth__50526), children: pickers__48591))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)MediaQuery.withNoTextScaling(child: DefaultTextStyle.merge(style: Date_pickerLibrary._kDefaultPickerTextStyle, child: new global::Doroti.Framework.Widgets.CustomMultiChildLayout(@delegate: new _DatePickerLayoutDelegate__date_picker(columnWidths: columnWidths__46495, textDirectionFactor: this.textDirectionFactor, maxWidth: maxPickerWidth__50526), children: pickers__48591))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _CupertinoDatePickerDateState__date_picker : global::Doroti.Generated.Framework.Widgets.State<CupertinoDatePicker>
+internal class _CupertinoDatePickerDateState__date_picker : global::Doroti.Framework.Widgets.State<CupertinoDatePicker>
 {
     public virtual DatePickerDateOrder? dateOrder { get; private set; }
     public virtual long textDirectionFactor { get; set; } = default!;
     public virtual CupertinoLocalizations localizations { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.Alignment alignCenterLeft { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.Alignment alignCenterRight { get; set; } = default!;
+    public virtual global::Doroti.Framework.Painting.Alignment alignCenterLeft { get; set; } = default!;
+    public virtual global::Doroti.Framework.Painting.Alignment alignCenterRight { get; set; } = default!;
     public virtual long selectedDay { get; set; } = default!;
     public virtual long selectedMonth { get; set; } = default!;
     public virtual long selectedYear { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController dayController { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController monthController { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController yearController { get; set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.FixedExtentScrollController dayController { get; set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.FixedExtentScrollController monthController { get; set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.FixedExtentScrollController yearController { get; set; } = default!;
     public virtual bool isDayPickerScrolling { get; set; } = false;
     public virtual bool isMonthPickerScrolling { get; set; } = false;
     public virtual bool isYearPickerScrolling { get; set; } = false;
@@ -863,10 +863,10 @@ internal class _CupertinoDatePickerDateState__date_picker : global::Doroti.Gener
         selectedDay = ((CupertinoDatePicker)this.widget).initialDateTime.Day;
         selectedMonth = ((CupertinoDatePicker)this.widget).initialDateTime.Month;
         selectedYear = ((CupertinoDatePicker)this.widget).initialDateTime.Year;
-        dayController = new global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController(initialItem: (this.selectedDay - 1L));
-        monthController = new global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController(initialItem: (this.selectedMonth - 1L));
-        yearController = new global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController(initialItem: this.selectedYear);
-        global::Doroti.Generated.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(() => this._handleSystemFontsChange());
+        dayController = new global::Doroti.Framework.Widgets.FixedExtentScrollController(initialItem: (this.selectedDay - 1L));
+        monthController = new global::Doroti.Framework.Widgets.FixedExtentScrollController(initialItem: (this.selectedMonth - 1L));
+        yearController = new global::Doroti.Framework.Widgets.FixedExtentScrollController(initialItem: this.selectedYear);
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(() => this._handleSystemFontsChange());
     }
 
     internal virtual void _handleSystemFontsChange()
@@ -881,7 +881,7 @@ _refreshEstimatedColumnWidths();
         this.dayController.dispose();
         this.monthController.dispose();
         this.yearController.dispose();
-        global::Doroti.Generated.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(() => this._handleSystemFontsChange());
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(() => this._handleSystemFontsChange());
         base.dispose();
     }
 
@@ -890,8 +890,8 @@ _refreshEstimatedColumnWidths();
         base.didChangeDependencies();
         textDirectionFactor = ((object.Equals(Directionality.of(this.context), TextDirection.ltr)) ? 1L : -1L);
         localizations = CupertinoLocalizations.of(this.context);
-        alignCenterLeft = ((this.textDirectionFactor == 1L) ? global::Doroti.Generated.Framework.Painting.Alignment.centerLeft : global::Doroti.Generated.Framework.Painting.Alignment.centerRight);
-        alignCenterRight = ((this.textDirectionFactor == 1L) ? global::Doroti.Generated.Framework.Painting.Alignment.centerRight : global::Doroti.Generated.Framework.Painting.Alignment.centerLeft);
+        alignCenterLeft = ((this.textDirectionFactor == 1L) ? global::Doroti.Framework.Painting.Alignment.centerLeft : global::Doroti.Framework.Painting.Alignment.centerRight);
+        alignCenterRight = ((this.textDirectionFactor == 1L) ? global::Doroti.Framework.Painting.Alignment.centerRight : global::Doroti.Framework.Painting.Alignment.centerLeft);
         _refreshEstimatedColumnWidths();
     }
 
@@ -903,17 +903,17 @@ _refreshEstimatedColumnWidths();
     }
 
     internal virtual DateTime _lastDayInMonth(long year, long month) => DartRuntimePrimitives.CreateDateTime(year, (month + 1L), 0L);
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildDayPicker(double offAxisFraction, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildDayPicker(double offAxisFraction, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Framework.Widgets.Widget? selectionOverlay)
     {
         long daysInCurrentMonth__54703 = _lastDayInMonth(this.selectedYear, this.selectedMonth).Day;
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.NotificationListener<global::Doroti.Generated.Framework.Widgets.ScrollNotification>(onNotification: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.ScrollNotification, bool>)((notification) => {
-if ((notification is global::Doroti.Generated.Framework.Widgets.ScrollStartNotification))
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.ScrollNotification>(onNotification: ((global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>)((notification) => {
+if ((notification is global::Doroti.Framework.Widgets.ScrollStartNotification))
 {
     isDayPickerScrolling = true;
 }
 else
 {
-    if ((notification is global::Doroti.Generated.Framework.Widgets.ScrollEndNotification))
+    if ((notification is global::Doroti.Framework.Widgets.ScrollEndNotification))
     {
         isDayPickerScrolling = false;
         _pickerDidStopScrolling();
@@ -927,27 +927,27 @@ if (this._isCurrentDateValid)
 {
     this.widget.onDateTimeChanged(DartRuntimePrimitives.CreateDateTime(this.selectedYear, this.selectedMonth, this.selectedDay));
 }
-})), looping: true, selectionOverlay: selectionOverlay, children: new List<global::Doroti.Generated.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)31L)), ((index) => {
+})), looping: true, selectionOverlay: selectionOverlay, children: new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)31L)), ((index) => {
 long day__55905 = (index + 1L);
 long? dayOfWeek__55943 = (((CupertinoDatePicker)this.widget).showDayOfWeek ? DartRuntimePrimitives.CreateDateTime(this.selectedYear, this.selectedMonth, day__55905).DayOfWeek.ToDartWeekday() : null);
 bool isInvalidDay__56086 = ((((day__55905 > daysInCurrentMonth__54703)) || ((((((CupertinoDatePicker)this.widget).minimumDate?.Year == this.selectedYear) && (DartRuntimePrimitives.RequireValue(((CupertinoDatePicker)this.widget).minimumDate).Month == this.selectedMonth)) && (DartRuntimePrimitives.RequireValue(((CupertinoDatePicker)this.widget).minimumDate).Day > day__55905)))) || ((((((CupertinoDatePicker)this.widget).maximumDate?.Year == this.selectedYear) && (DartRuntimePrimitives.RequireValue(((CupertinoDatePicker)this.widget).maximumDate).Month == this.selectedMonth)) && (DartRuntimePrimitives.RequireValue(((CupertinoDatePicker)this.widget).maximumDate).Day < day__55905))));
-global::Doroti.Generated.Framework.Widgets.Widget child__56516 = itemPositioningBuilder(this.context, new global::Doroti.Generated.Framework.Widgets.Text(this.localizations.datePickerDayOfMonth(day__55905, dayOfWeek__55943), style: Date_pickerLibrary._themeTextStyle(this.context, isValid: !isInvalidDay__56086)));
-return (isInvalidDay__56086 ? new global::Doroti.Generated.Framework.Widgets.ExcludeSemantics(child: child__56516) : child__56516);
+global::Doroti.Framework.Widgets.Widget child__56516 = itemPositioningBuilder(this.context, new global::Doroti.Framework.Widgets.Text(this.localizations.datePickerDayOfMonth(day__55905, dayOfWeek__55943), style: Date_pickerLibrary._themeTextStyle(this.context, isValid: !isInvalidDay__56086)));
+return (isInvalidDay__56086 ? new global::Doroti.Framework.Widgets.ExcludeSemantics(child: child__56516) : child__56516);
 throw new InvalidOperationException("Dart closure completed without a value.");
 }))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildMonthPicker(double offAxisFraction, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildMonthPicker(double offAxisFraction, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Framework.Widgets.Widget? selectionOverlay)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.NotificationListener<global::Doroti.Generated.Framework.Widgets.ScrollNotification>(onNotification: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.ScrollNotification, bool>)((notification) => {
-if ((notification is global::Doroti.Generated.Framework.Widgets.ScrollStartNotification))
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.ScrollNotification>(onNotification: ((global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>)((notification) => {
+if ((notification is global::Doroti.Framework.Widgets.ScrollStartNotification))
 {
     isMonthPickerScrolling = true;
 }
 else
 {
-    if ((notification is global::Doroti.Generated.Framework.Widgets.ScrollEndNotification))
+    if ((notification is global::Doroti.Framework.Widgets.ScrollEndNotification))
     {
         isMonthPickerScrolling = false;
         _pickerDidStopScrolling();
@@ -961,27 +961,27 @@ if (this._isCurrentDateValid)
 {
     this.widget.onDateTimeChanged(DartRuntimePrimitives.CreateDateTime(this.selectedYear, this.selectedMonth, this.selectedDay));
 }
-})), looping: true, selectionOverlay: selectionOverlay, children: new List<global::Doroti.Generated.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)12L)), ((index) => {
+})), looping: true, selectionOverlay: selectionOverlay, children: new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)12L)), ((index) => {
 long month__58134 = (index + 1L);
 bool isInvalidMonth__58174 = ((((((CupertinoDatePicker)this.widget).minimumDate?.Year == this.selectedYear) && (DartRuntimePrimitives.RequireValue(((CupertinoDatePicker)this.widget).minimumDate).Month > month__58134))) || (((((CupertinoDatePicker)this.widget).maximumDate?.Year == this.selectedYear) && (DartRuntimePrimitives.RequireValue(((CupertinoDatePicker)this.widget).maximumDate).Month < month__58134))));
 string monthName__58406 = (((object.Equals(((CupertinoDatePicker)this.widget).mode, CupertinoDatePickerMode.monthYear))) ? this.localizations.datePickerStandaloneMonth(month__58134) : this.localizations.datePickerMonth(month__58134));
-global::Doroti.Generated.Framework.Widgets.Widget child__58610 = itemPositioningBuilder(this.context, new global::Doroti.Generated.Framework.Widgets.Text(monthName__58406, style: Date_pickerLibrary._themeTextStyle(this.context, isValid: !isInvalidMonth__58174)));
-return (isInvalidMonth__58174 ? new global::Doroti.Generated.Framework.Widgets.ExcludeSemantics(child: child__58610) : child__58610);
+global::Doroti.Framework.Widgets.Widget child__58610 = itemPositioningBuilder(this.context, new global::Doroti.Framework.Widgets.Text(monthName__58406, style: Date_pickerLibrary._themeTextStyle(this.context, isValid: !isInvalidMonth__58174)));
+return (isInvalidMonth__58174 ? new global::Doroti.Framework.Widgets.ExcludeSemantics(child: child__58610) : child__58610);
 throw new InvalidOperationException("Dart closure completed without a value.");
 }))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildYearPicker(double offAxisFraction, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildYearPicker(double offAxisFraction, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Framework.Widgets.Widget? selectionOverlay)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.NotificationListener<global::Doroti.Generated.Framework.Widgets.ScrollNotification>(onNotification: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.ScrollNotification, bool>)((notification) => {
-if ((notification is global::Doroti.Generated.Framework.Widgets.ScrollStartNotification))
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.ScrollNotification>(onNotification: ((global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>)((notification) => {
+if ((notification is global::Doroti.Framework.Widgets.ScrollStartNotification))
 {
     isYearPickerScrolling = true;
 }
 else
 {
-    if ((notification is global::Doroti.Generated.Framework.Widgets.ScrollEndNotification))
+    if ((notification is global::Doroti.Framework.Widgets.ScrollEndNotification))
     {
         isYearPickerScrolling = false;
         _pickerDidStopScrolling();
@@ -995,7 +995,7 @@ if (this._isCurrentDateValid)
 {
     this.widget.onDateTimeChanged(DartRuntimePrimitives.CreateDateTime(this.selectedYear, this.selectedMonth, this.selectedDay));
 }
-})), itemBuilder: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, long, global::Doroti.Generated.Framework.Widgets.Widget?>)((context, year) => {
+})), itemBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget?>)((context, year) => {
 if ((year < ((CupertinoDatePicker)this.widget).minimumYear))
 {
     return null;
@@ -1005,8 +1005,8 @@ if (((((CupertinoDatePicker)this.widget).maximumYear is not null) && (year > Dar
     return null;
 }
 bool isValidYear__60272 = ((((((CupertinoDatePicker)this.widget).minimumDate is null) || (DartRuntimePrimitives.RequireValue(((CupertinoDatePicker)this.widget).minimumDate).Year <= year))) && (((((CupertinoDatePicker)this.widget).maximumDate is null) || (DartRuntimePrimitives.RequireValue(((CupertinoDatePicker)this.widget).maximumDate).Year >= year))));
-global::Doroti.Generated.Framework.Widgets.Widget child__60472 = itemPositioningBuilder(context, new global::Doroti.Generated.Framework.Widgets.Text(this.localizations.datePickerYear(year), style: Date_pickerLibrary._themeTextStyle(context, isValid: isValidYear__60272)));
-return (isValidYear__60272 ? child__60472 : new global::Doroti.Generated.Framework.Widgets.ExcludeSemantics(child: child__60472));
+global::Doroti.Framework.Widgets.Widget child__60472 = itemPositioningBuilder(context, new global::Doroti.Framework.Widgets.Text(this.localizations.datePickerYear(year), style: Date_pickerLibrary._themeTextStyle(context, isValid: isValidYear__60272)));
+return (isValidYear__60272 ? child__60472 : new global::Doroti.Framework.Widgets.ExcludeSemantics(child: child__60472));
 throw new InvalidOperationException("Dart closure completed without a value.");
 })), selectionOverlay: selectionOverlay)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1051,7 +1051,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     internal virtual void _scrollToDate(DateTime newDate)
     {
-        global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
+        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
 if ((this.selectedYear != newDate.Year))
 {
     Date_pickerLibrary._animateColumnControllerToItem(this.yearController, newDate.Year);
@@ -1067,50 +1067,50 @@ if ((this.selectedDay != newDate.Day))
 })), debugLabel: "DatePicker.scrollToDate");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        var pickerBuilders__63180 = new List<global::System.Func<double, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>>();
+        var pickerBuilders__63180 = new List<global::System.Func<double, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>>();
         var columnWidths__63225 = new List<double>();
         DatePickerDateOrder datePickerDateOrder__63283 = (this.dateOrder ?? this.localizations.datePickerDateOrder);
         switch (datePickerDateOrder__63283)
         {
             case var __constant63400 when (object.Equals(__constant63400, DatePickerDateOrder.mdy)):
                 {
-                    pickerBuilders__63180 = new List<global::System.Func<double, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>> { this._buildMonthPicker, this._buildDayPicker, this._buildYearPicker };
+                    pickerBuilders__63180 = new List<global::System.Func<double, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>> { this._buildMonthPicker, this._buildDayPicker, this._buildYearPicker };
                     columnWidths__63225 = new List<double> { DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(this.estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(this.estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.dayOfMonth))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(this.estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year))) };
                     break;
                 }
             case var __constant63776 when (object.Equals(__constant63776, DatePickerDateOrder.dmy)):
                 {
-                    pickerBuilders__63180 = new List<global::System.Func<double, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>> { this._buildDayPicker, this._buildMonthPicker, this._buildYearPicker };
+                    pickerBuilders__63180 = new List<global::System.Func<double, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>> { this._buildDayPicker, this._buildMonthPicker, this._buildYearPicker };
                     columnWidths__63225 = new List<double> { DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(this.estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.dayOfMonth))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(this.estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(this.estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year))) };
                     break;
                 }
             case var __constant64152 when (object.Equals(__constant64152, DatePickerDateOrder.ymd)):
                 {
-                    pickerBuilders__63180 = new List<global::System.Func<double, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>> { this._buildYearPicker, this._buildMonthPicker, this._buildDayPicker };
+                    pickerBuilders__63180 = new List<global::System.Func<double, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>> { this._buildYearPicker, this._buildMonthPicker, this._buildDayPicker };
                     columnWidths__63225 = new List<double> { DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(this.estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(this.estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(this.estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.dayOfMonth))) };
                     break;
                 }
             case var __constant64528 when (object.Equals(__constant64528, DatePickerDateOrder.ydm)):
                 {
-                    pickerBuilders__63180 = new List<global::System.Func<double, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>> { this._buildYearPicker, this._buildDayPicker, this._buildMonthPicker };
+                    pickerBuilders__63180 = new List<global::System.Func<double, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>> { this._buildYearPicker, this._buildDayPicker, this._buildMonthPicker };
                     columnWidths__63225 = new List<double> { DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(this.estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(this.estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.dayOfMonth))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(this.estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month))) };
                     break;
                 }
         }
-        var pickers__64910 = new List<global::Doroti.Generated.Framework.Widgets.Widget>();
+        var pickers__64910 = new List<global::Doroti.Framework.Widgets.Widget>();
         double totalColumnWidths__64943 = (4L * Date_pickerLibrary._kDatePickerPadSize);
         foreach (var (i__65009, width__65019) in columnWidths__63225.indexed())
         {
             var (firstColumn__65071, lastColumn__65089) = ((i__65009 == 0L), (i__65009 == (checked((long)(columnWidths__63225.Count)) - 1L)));
             double offAxisFraction__65162 = ((((i__65009 - 1L)) * 0.3) * this.textDirectionFactor);
-            var padding__65228 = global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateOnly(right: Date_pickerLibrary._kDatePickerPadSize);
+            var padding__65228 = global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(right: Date_pickerLibrary._kDatePickerPadSize);
             if ((this.textDirectionFactor == -1L))
             {
-                padding__65228 = global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateOnly(left: Date_pickerLibrary._kDatePickerPadSize);
+                padding__65228 = global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: Date_pickerLibrary._kDatePickerPadSize);
             }
-            global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay__65419 = Date_pickerLibrary._centerSelectionOverlay;
+            global::Doroti.Framework.Widgets.Widget? selectionOverlay__65419 = Date_pickerLibrary._centerSelectionOverlay;
             if ((((CupertinoDatePicker)this.widget).selectionOverlayBuilder is not null))
             {
                 selectionOverlay__65419 = ((CupertinoDatePicker)this.widget).selectionOverlayBuilder!(context, selectedIndex: i__65009, columnCount: checked((long)(columnWidths__63225.Count)));
@@ -1130,29 +1130,29 @@ if ((this.selectedDay != newDate.Day))
                 }
             }
             totalColumnWidths__64943 += (width__65019 + ((2L * Date_pickerLibrary._kDatePickerPadSize)));
-            pickers__64910.Add(new global::Doroti.Generated.Framework.Widgets.LayoutId(id: i__65009, child: pickerBuilders__63180[(int)(i__65009)](offAxisFraction__65162, ((context, child) => {
-return new global::Doroti.Generated.Framework.Widgets.Padding(padding: (firstColumn__65071 ? global::Doroti.Generated.Framework.Painting.EdgeInsets.zero : padding__65228), child: new global::Doroti.Generated.Framework.Widgets.Align(alignment: (lastColumn__65089 ? this.alignCenterLeft : this.alignCenterRight), child: new global::Doroti.Generated.Framework.Widgets.SizedBox(width: (width__65019 + Date_pickerLibrary._kDatePickerPadSize), child: new global::Doroti.Generated.Framework.Widgets.Align(alignment: (firstColumn__65071 ? this.alignCenterLeft : this.alignCenterRight), child: child))));
+            pickers__64910.Add(new global::Doroti.Framework.Widgets.LayoutId(id: i__65009, child: pickerBuilders__63180[(int)(i__65009)](offAxisFraction__65162, ((context, child) => {
+return new global::Doroti.Framework.Widgets.Padding(padding: (firstColumn__65071 ? global::Doroti.Framework.Painting.EdgeInsets.zero : padding__65228), child: new global::Doroti.Framework.Widgets.Align(alignment: (lastColumn__65089 ? this.alignCenterLeft : this.alignCenterRight), child: new global::Doroti.Framework.Widgets.SizedBox(width: (width__65019 + Date_pickerLibrary._kDatePickerPadSize), child: new global::Doroti.Framework.Widgets.Align(alignment: (firstColumn__65071 ? this.alignCenterLeft : this.alignCenterRight), child: child))));
 throw new InvalidOperationException("Dart closure completed without a value.");
 }), selectionOverlay__65419)));
         }
         double maxPickerWidth__66663 = ((totalColumnWidths__64943 > Date_pickerLibrary._kPickerWidth) ? totalColumnWidths__64943 : Date_pickerLibrary._kPickerWidth);
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)MediaQuery.withNoTextScaling(child: DefaultTextStyle.merge(style: Date_pickerLibrary._kDefaultPickerTextStyle, child: new global::Doroti.Generated.Framework.Widgets.CustomMultiChildLayout(@delegate: new _DatePickerLayoutDelegate__date_picker(columnWidths: columnWidths__63225, textDirectionFactor: this.textDirectionFactor, maxWidth: maxPickerWidth__66663), children: pickers__64910))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)MediaQuery.withNoTextScaling(child: DefaultTextStyle.merge(style: Date_pickerLibrary._kDefaultPickerTextStyle, child: new global::Doroti.Framework.Widgets.CustomMultiChildLayout(@delegate: new _DatePickerLayoutDelegate__date_picker(columnWidths: columnWidths__63225, textDirectionFactor: this.textDirectionFactor, maxWidth: maxPickerWidth__66663), children: pickers__64910))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _CupertinoDatePickerMonthYearState__date_picker : global::Doroti.Generated.Framework.Widgets.State<CupertinoDatePicker>
+internal class _CupertinoDatePickerMonthYearState__date_picker : global::Doroti.Framework.Widgets.State<CupertinoDatePicker>
 {
     public virtual DatePickerDateOrder? dateOrder { get; private set; }
     public virtual long textDirectionFactor { get; set; } = default!;
     public virtual CupertinoLocalizations localizations { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.Alignment alignCenterLeft { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.Alignment alignCenterRight { get; set; } = default!;
+    public virtual global::Doroti.Framework.Painting.Alignment alignCenterLeft { get; set; } = default!;
+    public virtual global::Doroti.Framework.Painting.Alignment alignCenterRight { get; set; } = default!;
     public virtual long selectedYear { get; set; } = default!;
     public virtual long selectedMonth { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController monthController { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController yearController { get; set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.FixedExtentScrollController monthController { get; set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.FixedExtentScrollController yearController { get; set; } = default!;
     public virtual bool isMonthPickerScrolling { get; set; } = false;
     public virtual bool isYearPickerScrolling { get; set; } = false;
     public virtual DartMap<long, double> estimatedColumnWidths { get; set; } = new DartMap<long, double>();
@@ -1168,9 +1168,9 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : global::Doroti.
         base.initState();
         selectedMonth = ((CupertinoDatePicker)this.widget).initialDateTime.Month;
         selectedYear = ((CupertinoDatePicker)this.widget).initialDateTime.Year;
-        monthController = new global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController(initialItem: (this.selectedMonth - 1L));
-        yearController = new global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController(initialItem: this.selectedYear);
-        global::Doroti.Generated.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(() => this._handleSystemFontsChange());
+        monthController = new global::Doroti.Framework.Widgets.FixedExtentScrollController(initialItem: (this.selectedMonth - 1L));
+        yearController = new global::Doroti.Framework.Widgets.FixedExtentScrollController(initialItem: this.selectedYear);
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(() => this._handleSystemFontsChange());
     }
 
     internal virtual void _handleSystemFontsChange()
@@ -1184,7 +1184,7 @@ _refreshEstimatedColumnWidths();
     {
         this.monthController.dispose();
         this.yearController.dispose();
-        global::Doroti.Generated.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(() => this._handleSystemFontsChange());
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(() => this._handleSystemFontsChange());
         base.dispose();
     }
 
@@ -1193,8 +1193,8 @@ _refreshEstimatedColumnWidths();
         base.didChangeDependencies();
         textDirectionFactor = ((object.Equals(Directionality.of(this.context), TextDirection.ltr)) ? 1L : -1L);
         localizations = CupertinoLocalizations.of(this.context);
-        alignCenterLeft = ((this.textDirectionFactor == 1L) ? global::Doroti.Generated.Framework.Painting.Alignment.centerLeft : global::Doroti.Generated.Framework.Painting.Alignment.centerRight);
-        alignCenterRight = ((this.textDirectionFactor == 1L) ? global::Doroti.Generated.Framework.Painting.Alignment.centerRight : global::Doroti.Generated.Framework.Painting.Alignment.centerLeft);
+        alignCenterLeft = ((this.textDirectionFactor == 1L) ? global::Doroti.Framework.Painting.Alignment.centerLeft : global::Doroti.Framework.Painting.Alignment.centerRight);
+        alignCenterRight = ((this.textDirectionFactor == 1L) ? global::Doroti.Framework.Painting.Alignment.centerRight : global::Doroti.Framework.Painting.Alignment.centerLeft);
         _refreshEstimatedColumnWidths();
     }
 
@@ -1204,16 +1204,16 @@ _refreshEstimatedColumnWidths();
         this.estimatedColumnWidths[FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)] = CupertinoDatePicker._getColumnWidth(_PickerColumnType__date_picker.year, this.localizations, this.context, false);
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildMonthPicker(double offAxisFraction, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildMonthPicker(double offAxisFraction, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Framework.Widgets.Widget? selectionOverlay)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.NotificationListener<global::Doroti.Generated.Framework.Widgets.ScrollNotification>(onNotification: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.ScrollNotification, bool>)((notification) => {
-if ((notification is global::Doroti.Generated.Framework.Widgets.ScrollStartNotification))
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.ScrollNotification>(onNotification: ((global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>)((notification) => {
+if ((notification is global::Doroti.Framework.Widgets.ScrollStartNotification))
 {
     isMonthPickerScrolling = true;
 }
 else
 {
-    if ((notification is global::Doroti.Generated.Framework.Widgets.ScrollEndNotification))
+    if ((notification is global::Doroti.Framework.Widgets.ScrollEndNotification))
     {
         isMonthPickerScrolling = false;
         _pickerDidStopScrolling();
@@ -1227,27 +1227,27 @@ if (this._isCurrentDateValid)
 {
     this.widget.onDateTimeChanged(DartRuntimePrimitives.CreateDateTime(this.selectedYear, this.selectedMonth));
 }
-})), looping: true, selectionOverlay: selectionOverlay, children: new List<global::Doroti.Generated.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)12L)), ((index) => {
+})), looping: true, selectionOverlay: selectionOverlay, children: new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)12L)), ((index) => {
 long month__71305 = (index + 1L);
 bool isInvalidMonth__71345 = ((((((CupertinoDatePicker)this.widget).minimumDate?.Year == this.selectedYear) && (DartRuntimePrimitives.RequireValue(((CupertinoDatePicker)this.widget).minimumDate).Month > month__71305))) || (((((CupertinoDatePicker)this.widget).maximumDate?.Year == this.selectedYear) && (DartRuntimePrimitives.RequireValue(((CupertinoDatePicker)this.widget).maximumDate).Month < month__71305))));
 string monthName__71577 = (((object.Equals(((CupertinoDatePicker)this.widget).mode, CupertinoDatePickerMode.monthYear))) ? this.localizations.datePickerStandaloneMonth(month__71305) : this.localizations.datePickerMonth(month__71305));
-global::Doroti.Generated.Framework.Widgets.Widget child__71781 = itemPositioningBuilder(this.context, new global::Doroti.Generated.Framework.Widgets.Text(monthName__71577, style: Date_pickerLibrary._themeTextStyle(this.context, isValid: !isInvalidMonth__71345)));
-return (isInvalidMonth__71345 ? new global::Doroti.Generated.Framework.Widgets.ExcludeSemantics(child: child__71781) : child__71781);
+global::Doroti.Framework.Widgets.Widget child__71781 = itemPositioningBuilder(this.context, new global::Doroti.Framework.Widgets.Text(monthName__71577, style: Date_pickerLibrary._themeTextStyle(this.context, isValid: !isInvalidMonth__71345)));
+return (isInvalidMonth__71345 ? new global::Doroti.Framework.Widgets.ExcludeSemantics(child: child__71781) : child__71781);
 throw new InvalidOperationException("Dart closure completed without a value.");
 }))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildYearPicker(double offAxisFraction, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildYearPicker(double offAxisFraction, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget> itemPositioningBuilder, global::Doroti.Framework.Widgets.Widget? selectionOverlay)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.NotificationListener<global::Doroti.Generated.Framework.Widgets.ScrollNotification>(onNotification: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.ScrollNotification, bool>)((notification) => {
-if ((notification is global::Doroti.Generated.Framework.Widgets.ScrollStartNotification))
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.ScrollNotification>(onNotification: ((global::System.Func<global::Doroti.Framework.Widgets.ScrollNotification, bool>)((notification) => {
+if ((notification is global::Doroti.Framework.Widgets.ScrollStartNotification))
 {
     isYearPickerScrolling = true;
 }
 else
 {
-    if ((notification is global::Doroti.Generated.Framework.Widgets.ScrollEndNotification))
+    if ((notification is global::Doroti.Framework.Widgets.ScrollEndNotification))
     {
         isYearPickerScrolling = false;
         _pickerDidStopScrolling();
@@ -1261,7 +1261,7 @@ if (this._isCurrentDateValid)
 {
     this.widget.onDateTimeChanged(DartRuntimePrimitives.CreateDateTime(this.selectedYear, this.selectedMonth));
 }
-})), itemBuilder: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, long, global::Doroti.Generated.Framework.Widgets.Widget?>)((context, year) => {
+})), itemBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget?>)((context, year) => {
 if ((year < ((CupertinoDatePicker)this.widget).minimumYear))
 {
     return null;
@@ -1271,8 +1271,8 @@ if (((((CupertinoDatePicker)this.widget).maximumYear is not null) && (year > Dar
     return null;
 }
 bool isValidYear__73397 = ((((((CupertinoDatePicker)this.widget).minimumDate is null) || (DartRuntimePrimitives.RequireValue(((CupertinoDatePicker)this.widget).minimumDate).Year <= year))) && (((((CupertinoDatePicker)this.widget).maximumDate is null) || (DartRuntimePrimitives.RequireValue(((CupertinoDatePicker)this.widget).maximumDate).Year >= year))));
-global::Doroti.Generated.Framework.Widgets.Widget child__73597 = itemPositioningBuilder(context, new global::Doroti.Generated.Framework.Widgets.Text(this.localizations.datePickerYear(year), style: Date_pickerLibrary._themeTextStyle(context, isValid: isValidYear__73397)));
-return (isValidYear__73397 ? child__73597 : new global::Doroti.Generated.Framework.Widgets.ExcludeSemantics(child: child__73597));
+global::Doroti.Framework.Widgets.Widget child__73597 = itemPositioningBuilder(context, new global::Doroti.Framework.Widgets.Text(this.localizations.datePickerYear(year), style: Date_pickerLibrary._themeTextStyle(context, isValid: isValidYear__73397)));
+return (isValidYear__73397 ? child__73597 : new global::Doroti.Framework.Widgets.ExcludeSemantics(child: child__73597));
 throw new InvalidOperationException("Dart closure completed without a value.");
 })), selectionOverlay: selectionOverlay)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1312,7 +1312,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     internal virtual void _scrollToDate(DateTime newDate)
     {
-        global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
+        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
 if ((this.selectedYear != newDate.Year))
 {
     Date_pickerLibrary._animateColumnControllerToItem(this.yearController, newDate.Year);
@@ -1324,9 +1324,9 @@ if ((this.selectedMonth != newDate.Month))
 })), debugLabel: "DatePicker.scrollToDate");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        var pickerBuilders__75861 = new List<global::System.Func<double, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>>();
+        var pickerBuilders__75861 = new List<global::System.Func<double, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>>();
         var columnWidths__75906 = new List<double>();
         DatePickerDateOrder datePickerDateOrder__75964 = (this.dateOrder ?? this.localizations.datePickerDateOrder);
         switch (datePickerDateOrder__75964)
@@ -1334,26 +1334,26 @@ if ((this.selectedMonth != newDate.Month))
             case var __constant76081 when (object.Equals(__constant76081, DatePickerDateOrder.mdy)):
             case var __constant76117 when (object.Equals(__constant76117, DatePickerDateOrder.dmy)):
                 {
-                    pickerBuilders__75861 = new List<global::System.Func<double, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>> { this._buildMonthPicker, this._buildYearPicker };
+                    pickerBuilders__75861 = new List<global::System.Func<double, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>> { this._buildMonthPicker, this._buildYearPicker };
                     columnWidths__75906 = new List<double> { DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(this.estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(this.estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year))) };
                     break;
                 }
             case var __constant76406 when (object.Equals(__constant76406, DatePickerDateOrder.ymd)):
             case var __constant76442 when (object.Equals(__constant76442, DatePickerDateOrder.ydm)):
                 {
-                    pickerBuilders__75861 = new List<global::System.Func<double, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>> { this._buildYearPicker, this._buildMonthPicker };
+                    pickerBuilders__75861 = new List<global::System.Func<double, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>> { this._buildYearPicker, this._buildMonthPicker };
                     columnWidths__75906 = new List<double> { DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(this.estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year))), DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<double>(this.estimatedColumnWidths, FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month))) };
                     break;
                 }
         }
-        var pickers__76737 = new List<global::Doroti.Generated.Framework.Widgets.Widget>();
+        var pickers__76737 = new List<global::Doroti.Framework.Widgets.Widget>();
         double totalColumnWidths__76770 = (3L * Date_pickerLibrary._kDatePickerPadSize);
         foreach (var (i__76836, width__76846) in columnWidths__75906.indexed())
         {
             var (firstColumn__76898, lastColumn__76916) = ((i__76836 == 0L), (i__76836 == (checked((long)(columnWidths__75906.Count)) - 1L)));
             double offAxisFraction__76989 = (this.textDirectionFactor * ((firstColumn__76898 ? -0.3 : 0.5)));
             totalColumnWidths__76770 += (width__76846 + ((2L * Date_pickerLibrary._kDatePickerPadSize)));
-            global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay__77135 = Date_pickerLibrary._centerSelectionOverlay;
+            global::Doroti.Framework.Widgets.Widget? selectionOverlay__77135 = Date_pickerLibrary._centerSelectionOverlay;
             if ((((CupertinoDatePicker)this.widget).selectionOverlayBuilder is not null))
             {
                 selectionOverlay__77135 = ((CupertinoDatePicker)this.widget).selectionOverlayBuilder!(context, selectedIndex: i__76836, columnCount: checked((long)(columnWidths__75906.Count)));
@@ -1372,19 +1372,19 @@ if ((this.selectedMonth != newDate.Month))
                     }
                 }
             }
-            pickers__76737.Add(new global::Doroti.Generated.Framework.Widgets.LayoutId(id: i__76836, child: pickerBuilders__75861[(int)(i__76836)](offAxisFraction__76989, ((context, child) => {
-global::Doroti.Generated.Framework.Widgets.Widget contents__77763 = ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Align(alignment: (lastColumn__76916 ? this.alignCenterLeft : this.alignCenterRight), child: new global::Doroti.Generated.Framework.Widgets.SizedBox(width: (width__76846 + Date_pickerLibrary._kDatePickerPadSize), child: new global::Doroti.Generated.Framework.Widgets.Align(alignment: (firstColumn__76898 ? this.alignCenterLeft : this.alignCenterRight), child: child))));
+            pickers__76737.Add(new global::Doroti.Framework.Widgets.LayoutId(id: i__76836, child: pickerBuilders__75861[(int)(i__76836)](offAxisFraction__76989, ((context, child) => {
+global::Doroti.Framework.Widgets.Widget contents__77763 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Align(alignment: (lastColumn__76916 ? this.alignCenterLeft : this.alignCenterRight), child: new global::Doroti.Framework.Widgets.SizedBox(width: (width__76846 + Date_pickerLibrary._kDatePickerPadSize), child: new global::Doroti.Framework.Widgets.Align(alignment: (firstColumn__76898 ? this.alignCenterLeft : this.alignCenterRight), child: child))));
 if (firstColumn__76898)
 {
     return contents__77763;
 }
-var padding__78225 = global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateOnly(right: Date_pickerLibrary._kDatePickerPadSize);
-return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Padding(padding: ((this.textDirectionFactor == -1L) ? ((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding__78225).flipped : padding__78225), child: contents__77763));
+var padding__78225 = global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(right: Date_pickerLibrary._kDatePickerPadSize);
+return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: ((this.textDirectionFactor == -1L) ? ((global::Doroti.Framework.Painting.EdgeInsets)padding__78225).flipped : padding__78225), child: contents__77763));
 throw new InvalidOperationException("Dart closure completed without a value.");
 }), selectionOverlay__77135)));
         }
         double maxPickerWidth__78508 = ((totalColumnWidths__76770 > Date_pickerLibrary._kPickerWidth) ? totalColumnWidths__76770 : Date_pickerLibrary._kPickerWidth);
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)MediaQuery.withNoTextScaling(child: DefaultTextStyle.merge(style: Date_pickerLibrary._kDefaultPickerTextStyle, child: new global::Doroti.Generated.Framework.Widgets.CustomMultiChildLayout(@delegate: new _DatePickerLayoutDelegate__date_picker(columnWidths: columnWidths__75906, textDirectionFactor: this.textDirectionFactor, maxWidth: maxPickerWidth__78508), children: pickers__76737))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)MediaQuery.withNoTextScaling(child: DefaultTextStyle.merge(style: Date_pickerLibrary._kDefaultPickerTextStyle, child: new global::Doroti.Framework.Widgets.CustomMultiChildLayout(@delegate: new _DatePickerLayoutDelegate__date_picker(columnWidths: columnWidths__75906, textDirectionFactor: this.textDirectionFactor, maxWidth: maxPickerWidth__78508), children: pickers__76737))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1397,22 +1397,22 @@ public enum CupertinoTimerPickerMode
     hms
 }
 
-public class CupertinoTimerPicker : global::Doroti.Generated.Framework.Widgets.StatefulWidget
+public class CupertinoTimerPicker : global::Doroti.Framework.Widgets.StatefulWidget
 {
     public virtual CupertinoTimerPickerMode mode { get; private set; } = default!;
     public virtual Duration initialTimerDuration { get; private set; } = default!;
     public virtual long minuteInterval { get; private set; } = default!;
     public virtual long secondInterval { get; private set; } = default!;
     public virtual global::System.Action<Duration> onTimerDurationChanged { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
     public virtual Color? backgroundColor { get; private set; }
     public virtual double itemExtent { get; private set; } = default!;
     public virtual SelectionOverlayBuilder? selectionOverlayBuilder { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.ChangeReportingBehavior changeReportingBehavior { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.ChangeReportingBehavior changeReportingBehavior { get; private set; } = default!;
 
-    public CupertinoTimerPicker(global::Doroti.Generated.Framework.Foundation.Key? key = null, CupertinoTimerPickerMode mode = CupertinoTimerPickerMode.hms, Duration initialTimerDuration = default, long minuteInterval = 1, long secondInterval = 1, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, Color? backgroundColor = null, double? itemExtent = null, global::System.Action<Duration> onTimerDurationChanged = default!, global::Doroti.Generated.Framework.Widgets.ChangeReportingBehavior changeReportingBehavior = global::Doroti.Generated.Framework.Widgets.ChangeReportingBehavior.onScrollUpdate, SelectionOverlayBuilder? selectionOverlayBuilder = null) : base(key: key)
+    public CupertinoTimerPicker(global::Doroti.Framework.Foundation.Key? key = null, CupertinoTimerPickerMode mode = CupertinoTimerPickerMode.hms, Duration initialTimerDuration = default, long minuteInterval = 1, long secondInterval = 1, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, Color? backgroundColor = null, double? itemExtent = null, global::System.Action<Duration> onTimerDurationChanged = default!, global::Doroti.Framework.Widgets.ChangeReportingBehavior changeReportingBehavior = global::Doroti.Framework.Widgets.ChangeReportingBehavior.onScrollUpdate, SelectionOverlayBuilder? selectionOverlayBuilder = null) : base(key: key)
     {
-        global::Doroti.Generated.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Generated.Framework.Painting.Alignment.center;
+        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.Alignment.center;
         double __itemExtent = itemExtent ?? Date_pickerLibrary._kItemExtent;
         this.mode = mode;
         this.initialTimerDuration = initialTimerDuration;
@@ -1436,7 +1436,7 @@ public class CupertinoTimerPicker : global::Doroti.Generated.Framework.Widgets.S
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoTimerPickerState__date_picker());
 }
 
-internal class _CupertinoTimerPickerState__date_picker : global::Doroti.Generated.Framework.Widgets.State<CupertinoTimerPicker>
+internal class _CupertinoTimerPickerState__date_picker : global::Doroti.Framework.Widgets.State<CupertinoTimerPicker>
 {
     public virtual TextDirection textDirection { get; set; } = default!;
     public virtual CupertinoLocalizations localizations { get; set; } = default!;
@@ -1446,7 +1446,7 @@ internal class _CupertinoTimerPickerState__date_picker : global::Doroti.Generate
     public virtual long? lastSelectedHour { get; set; } = default;
     public virtual long? lastSelectedMinute { get; set; } = default;
     public virtual long? lastSelectedSecond { get; set; } = default;
-    public virtual global::Doroti.Generated.Framework.Painting.TextPainter textPainter { get; private set; } = new global::Doroti.Generated.Framework.Painting.TextPainter();
+    public virtual global::Doroti.Framework.Painting.TextPainter textPainter { get; private set; } = new global::Doroti.Framework.Painting.TextPainter();
     public virtual List<string> numbers { get; private set; } = new List<string>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)10L)), ((i) => $"{(9L - i)}")));
     public virtual double numberLabelWidth { get; set; } = default!;
     public virtual double numberLabelHeight { get; set; } = default!;
@@ -1456,9 +1456,9 @@ internal class _CupertinoTimerPickerState__date_picker : global::Doroti.Generate
     public virtual double secondLabelWidth { get; set; } = default!;
     public virtual double totalWidth { get; set; } = default!;
     public virtual double pickerColumnWidth { get; set; } = default!;
-    internal virtual global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController? _hourScrollController { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController? _minuteScrollController { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController? _secondScrollController { get; set; } = default;
+    internal virtual global::Doroti.Framework.Widgets.FixedExtentScrollController? _hourScrollController { get; set; } = default;
+    internal virtual global::Doroti.Framework.Widgets.FixedExtentScrollController? _minuteScrollController { get; set; } = default;
+    internal virtual global::Doroti.Framework.Widgets.FixedExtentScrollController? _secondScrollController { get; set; } = default;
 
     public virtual long textDirectionFactor => (this.textDirection switch { TextDirection.ltr => 1L, TextDirection.rtl => -1L, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     public override void initState()
@@ -1473,7 +1473,7 @@ internal class _CupertinoTimerPickerState__date_picker : global::Doroti.Generate
         {
             selectedSecond = (((CupertinoTimerPicker)this.widget).initialTimerDuration.inSeconds % 60L);
         }
-        global::Doroti.Generated.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(() => this._handleSystemFontsChange());
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(() => this._handleSystemFontsChange());
     }
 
     internal virtual void _handleSystemFontsChange()
@@ -1486,7 +1486,7 @@ _measureLabelMetrics();
 
     public override void dispose()
     {
-        global::Doroti.Generated.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(() => this._handleSystemFontsChange());
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(() => this._handleSystemFontsChange());
         this.textPainter.dispose();
         this._hourScrollController?.dispose();
         this._minuteScrollController?.dispose();
@@ -1511,23 +1511,23 @@ _measureLabelMetrics();
     internal virtual void _measureLabelMetrics()
     {
         ((dynamic)this.textPainter).textDirection = this.textDirection;
-        global::Doroti.Generated.Framework.Painting.TextStyle textStyle__88677 = ((global::Doroti.Generated.Framework.Painting.TextStyle)(object?)_textStyleFrom(this.context, Date_pickerLibrary._kTimerPickerMagnification));
+        global::Doroti.Framework.Painting.TextStyle textStyle__88677 = ((global::Doroti.Framework.Painting.TextStyle)(object?)_textStyleFrom(this.context, Date_pickerLibrary._kTimerPickerMagnification));
         double maxWidth__88754 = double.NegativeInfinity;
         string? widestNumber__88802 = default!;
         foreach (string input__89244 in this.numbers)
         {
-            this.textPainter.text = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Painting.InlineSpan>(new global::Doroti.Generated.Framework.Painting.TextSpan(text: input__89244, style: textStyle__88677));
+            this.textPainter.text = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.InlineSpan>(new global::Doroti.Framework.Painting.TextSpan(text: input__89244, style: textStyle__88677));
             this.textPainter.layout();
-            if ((((global::Doroti.Generated.Framework.Painting.TextPainter)this.textPainter).maxIntrinsicWidth > maxWidth__88754))
+            if ((((global::Doroti.Framework.Painting.TextPainter)this.textPainter).maxIntrinsicWidth > maxWidth__88754))
             {
-                maxWidth__88754 = ((global::Doroti.Generated.Framework.Painting.TextPainter)this.textPainter).maxIntrinsicWidth;
+                maxWidth__88754 = ((global::Doroti.Framework.Painting.TextPainter)this.textPainter).maxIntrinsicWidth;
                 widestNumber__88802 = input__89244;
             }
         }
-        this.textPainter.text = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Painting.InlineSpan>(new global::Doroti.Generated.Framework.Painting.TextSpan(text: $"{widestNumber__88802}{widestNumber__88802}", style: textStyle__88677));
+        this.textPainter.text = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.InlineSpan>(new global::Doroti.Framework.Painting.TextSpan(text: $"{widestNumber__88802}{widestNumber__88802}", style: textStyle__88677));
         this.textPainter.layout();
-        numberLabelWidth = ((global::Doroti.Generated.Framework.Painting.TextPainter)this.textPainter).maxIntrinsicWidth;
-        numberLabelHeight = ((global::Doroti.Generated.Framework.Painting.TextPainter)this.textPainter).height;
+        numberLabelWidth = ((global::Doroti.Framework.Painting.TextPainter)this.textPainter).maxIntrinsicWidth;
+        numberLabelHeight = ((global::Doroti.Framework.Painting.TextPainter)this.textPainter).height;
         numberLabelBaseline = this.textPainter.computeDistanceToActualBaseline(TextBaseline.alphabetic);
         minuteLabelWidth = _measureLabelsMaxWidth(this.localizations.timerPickerMinuteLabels.Cast<string?>().ToList(), textStyle__88677);
         if ((!object.Equals(((CupertinoTimerPicker)this.widget).mode, CupertinoTimerPickerMode.ms)))
@@ -1540,7 +1540,7 @@ _measureLabelMetrics();
         }
     }
 
-    internal virtual double _measureLabelsMaxWidth(List<string?> labels, global::Doroti.Generated.Framework.Painting.TextStyle style)
+    internal virtual double _measureLabelsMaxWidth(List<string?> labels, global::Doroti.Framework.Painting.TextStyle style)
     {
         double maxWidth__90389 = double.NegativeInfinity;
         for (var i__90438 = 0L; (i__90438 < checked((long)(labels.Count))); i__90438++)
@@ -1550,127 +1550,127 @@ _measureLabelMetrics();
             {
                 continue;
             }
-            this.textPainter.text = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Painting.InlineSpan>(new global::Doroti.Generated.Framework.Painting.TextSpan(text: label__90491, style: style));
+            this.textPainter.text = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.InlineSpan>(new global::Doroti.Framework.Painting.TextSpan(text: label__90491, style: style));
             this.textPainter.layout();
-            DartRuntimePrimitives.Ignore(((global::Doroti.Generated.Framework.Painting.TextPainter)this.textPainter).maxIntrinsicWidth);
-            if ((((global::Doroti.Generated.Framework.Painting.TextPainter)this.textPainter).maxIntrinsicWidth > maxWidth__90389))
+            DartRuntimePrimitives.Ignore(((global::Doroti.Framework.Painting.TextPainter)this.textPainter).maxIntrinsicWidth);
+            if ((((global::Doroti.Framework.Painting.TextPainter)this.textPainter).maxIntrinsicWidth > maxWidth__90389))
             {
-                maxWidth__90389 = ((global::Doroti.Generated.Framework.Painting.TextPainter)this.textPainter).maxIntrinsicWidth;
+                maxWidth__90389 = ((global::Doroti.Framework.Painting.TextPainter)this.textPainter).maxIntrinsicWidth;
             }
         }
         return maxWidth__90389;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildLabel(string text, global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional pickerPadding)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildLabel(string text, global::Doroti.Framework.Painting.EdgeInsetsDirectional pickerPadding)
     {
-        var padding__91206 = global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: ((this.numberLabelWidth + Date_pickerLibrary._kTimerPickerLabelPadSize) + ((global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional)pickerPadding).start));
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.IgnorePointer(child: new global::Doroti.Generated.Framework.Widgets.Padding(padding: padding__91206.resolve(this.textDirection), child: new global::Doroti.Generated.Framework.Widgets.Align(alignment: global::Doroti.Generated.Framework.Painting.AlignmentDirectional.centerStart.resolve(this.textDirection), child: new global::Doroti.Generated.Framework.Widgets.SizedBox(height: this.numberLabelHeight, child: new global::Doroti.Generated.Framework.Widgets.Baseline(baseline: this.numberLabelBaseline, baselineType: TextBaseline.alphabetic, child: new global::Doroti.Generated.Framework.Widgets.Text(text, style: new global::Doroti.Generated.Framework.Painting.TextStyle(fontSize: Date_pickerLibrary._kTimerPickerLabelFontSize, fontWeight: FontWeight.w600), maxLines: 1L, softWrap: false)))))));
+        var padding__91206 = global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: ((this.numberLabelWidth + Date_pickerLibrary._kTimerPickerLabelPadSize) + ((global::Doroti.Framework.Painting.EdgeInsetsDirectional)pickerPadding).start));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.IgnorePointer(child: new global::Doroti.Framework.Widgets.Padding(padding: padding__91206.resolve(this.textDirection), child: new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.centerStart.resolve(this.textDirection), child: new global::Doroti.Framework.Widgets.SizedBox(height: this.numberLabelHeight, child: new global::Doroti.Framework.Widgets.Baseline(baseline: this.numberLabelBaseline, baselineType: TextBaseline.alphabetic, child: new global::Doroti.Framework.Widgets.Text(text, style: new global::Doroti.Framework.Painting.TextStyle(fontSize: Date_pickerLibrary._kTimerPickerLabelFontSize, fontWeight: FontWeight.w600), maxLines: 1L, softWrap: false)))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildPickerNumberLabel(string text, global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional padding)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildPickerNumberLabel(string text, global::Doroti.Framework.Painting.EdgeInsetsDirectional padding)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.SizedBox(width: (Date_pickerLibrary._kTimerPickerColumnIntrinsicWidth + padding.horizontal), child: new global::Doroti.Generated.Framework.Widgets.Padding(padding: padding.resolve(this.textDirection), child: new global::Doroti.Generated.Framework.Widgets.Align(alignment: global::Doroti.Generated.Framework.Painting.AlignmentDirectional.centerStart.resolve(this.textDirection), child: new global::Doroti.Generated.Framework.Widgets.SizedBox(width: this.numberLabelWidth, child: new global::Doroti.Generated.Framework.Widgets.Align(alignment: global::Doroti.Generated.Framework.Painting.AlignmentDirectional.centerEnd.resolve(this.textDirection), child: new global::Doroti.Generated.Framework.Widgets.Text(text, softWrap: false, maxLines: 1L, overflow: global::Doroti.Generated.Framework.Painting.TextOverflow.visible)))))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(width: (Date_pickerLibrary._kTimerPickerColumnIntrinsicWidth + padding.horizontal), child: new global::Doroti.Framework.Widgets.Padding(padding: padding.resolve(this.textDirection), child: new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.centerStart.resolve(this.textDirection), child: new global::Doroti.Framework.Widgets.SizedBox(width: this.numberLabelWidth, child: new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.centerEnd.resolve(this.textDirection), child: new global::Doroti.Framework.Widgets.Text(text, softWrap: false, maxLines: 1L, overflow: global::Doroti.Framework.Painting.TextOverflow.visible)))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildHourPicker(global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional additionalPadding, global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildHourPicker(global::Doroti.Framework.Painting.EdgeInsetsDirectional additionalPadding, global::Doroti.Framework.Widgets.Widget? selectionOverlay)
     {
-        _hourScrollController ??= new global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController(initialItem: DartRuntimePrimitives.RequireValue(this.selectedHour));
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new CupertinoPicker(scrollController: this._hourScrollController, magnification: Date_pickerLibrary._kMagnification, offAxisFraction: _calculateOffAxisFraction(((global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional)additionalPadding).start, 0L), itemExtent: ((CupertinoTimerPicker)this.widget).itemExtent, backgroundColor: ((CupertinoTimerPicker)this.widget).backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, changeReportingBehavior: ((CupertinoTimerPicker)this.widget).changeReportingBehavior, onSelectedItemChanged: ((global::System.Action<long>)((index) => {
+        _hourScrollController ??= new global::Doroti.Framework.Widgets.FixedExtentScrollController(initialItem: DartRuntimePrimitives.RequireValue(this.selectedHour));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoPicker(scrollController: this._hourScrollController, magnification: Date_pickerLibrary._kMagnification, offAxisFraction: _calculateOffAxisFraction(((global::Doroti.Framework.Painting.EdgeInsetsDirectional)additionalPadding).start, 0L), itemExtent: ((CupertinoTimerPicker)this.widget).itemExtent, backgroundColor: ((CupertinoTimerPicker)this.widget).backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, changeReportingBehavior: ((CupertinoTimerPicker)this.widget).changeReportingBehavior, onSelectedItemChanged: ((global::System.Action<long>)((index) => {
 setState(((global::System.Action)(() => {
 selectedHour = index;
 this.widget.onTimerDurationChanged(Duration.Create(hours: DartRuntimePrimitives.RequireValue(this.selectedHour), minutes: this.selectedMinute, seconds: (this.selectedSecond ?? 0L)));
 })));
-})), selectionOverlay: selectionOverlay, children: new List<global::Doroti.Generated.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)24L)), ((index) => {
+})), selectionOverlay: selectionOverlay, children: new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)24L)), ((index) => {
 string label__93774 = (this.localizations.timerPickerHourLabel(index) ?? "");
 string semanticsLabel__93852 = ((this.textDirectionFactor == 1L) ? (this.localizations.timerPickerHour(index) + label__93774) : (label__93774 + this.localizations.timerPickerHour(index)));
-return new global::Doroti.Generated.Framework.Widgets.Semantics(label: semanticsLabel__93852, excludeSemantics: true, child: _buildPickerNumberLabel(this.localizations.timerPickerHour(index), additionalPadding));
+return new global::Doroti.Framework.Widgets.Semantics(label: semanticsLabel__93852, excludeSemantics: true, child: _buildPickerNumberLabel(this.localizations.timerPickerHour(index), additionalPadding));
 throw new InvalidOperationException("Dart closure completed without a value.");
 })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildHourColumn(global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional additionalPadding, global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildHourColumn(global::Doroti.Framework.Painting.EdgeInsetsDirectional additionalPadding, global::Doroti.Framework.Widgets.Widget? selectionOverlay)
     {
-        additionalPadding = global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: Math.Max(((global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional)additionalPadding).start, 0), end: Math.Max(((global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional)additionalPadding).end, 0));
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Stack(children: new List<global::Doroti.Generated.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.NotificationListener<global::Doroti.Generated.Framework.Widgets.ScrollEndNotification>(onNotification: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.ScrollEndNotification, bool>)((notification) => {
+        additionalPadding = global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: Math.Max(((global::Doroti.Framework.Painting.EdgeInsetsDirectional)additionalPadding).start, 0), end: Math.Max(((global::Doroti.Framework.Painting.EdgeInsetsDirectional)additionalPadding).end, 0));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.ScrollEndNotification>(onNotification: ((global::System.Func<global::Doroti.Framework.Widgets.ScrollEndNotification, bool>)((notification) => {
 setState(((global::System.Action)(() => {
 lastSelectedHour = this.selectedHour;
 })));
 return false;
 throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: _buildHourPicker(additionalPadding, selectionOverlay))), DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(_buildLabel((this.localizations.timerPickerHourLabel((this.lastSelectedHour ?? DartRuntimePrimitives.RequireValue(this.selectedHour))) ?? ""), additionalPadding)) }));
+})), child: _buildHourPicker(additionalPadding, selectionOverlay))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildLabel((this.localizations.timerPickerHourLabel((this.lastSelectedHour ?? DartRuntimePrimitives.RequireValue(this.selectedHour))) ?? ""), additionalPadding)) }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildMinutePicker(global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional additionalPadding, global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildMinutePicker(global::Doroti.Framework.Painting.EdgeInsetsDirectional additionalPadding, global::Doroti.Framework.Widgets.Widget? selectionOverlay)
     {
-        _minuteScrollController ??= new global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController(initialItem: (checked((long)(this.selectedMinute / ((CupertinoTimerPicker)this.widget).minuteInterval))));
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new CupertinoPicker(scrollController: this._minuteScrollController, magnification: Date_pickerLibrary._kMagnification, offAxisFraction: _calculateOffAxisFraction(((global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional)additionalPadding).start, ((object.Equals(((CupertinoTimerPicker)this.widget).mode, CupertinoTimerPickerMode.ms)) ? 0L : 1L)), itemExtent: ((CupertinoTimerPicker)this.widget).itemExtent, backgroundColor: ((CupertinoTimerPicker)this.widget).backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, looping: true, changeReportingBehavior: ((CupertinoTimerPicker)this.widget).changeReportingBehavior, onSelectedItemChanged: ((global::System.Action<long>)((index) => {
+        _minuteScrollController ??= new global::Doroti.Framework.Widgets.FixedExtentScrollController(initialItem: (checked((long)(this.selectedMinute / ((CupertinoTimerPicker)this.widget).minuteInterval))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoPicker(scrollController: this._minuteScrollController, magnification: Date_pickerLibrary._kMagnification, offAxisFraction: _calculateOffAxisFraction(((global::Doroti.Framework.Painting.EdgeInsetsDirectional)additionalPadding).start, ((object.Equals(((CupertinoTimerPicker)this.widget).mode, CupertinoTimerPickerMode.ms)) ? 0L : 1L)), itemExtent: ((CupertinoTimerPicker)this.widget).itemExtent, backgroundColor: ((CupertinoTimerPicker)this.widget).backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, looping: true, changeReportingBehavior: ((CupertinoTimerPicker)this.widget).changeReportingBehavior, onSelectedItemChanged: ((global::System.Action<long>)((index) => {
 setState(((global::System.Action)(() => {
 selectedMinute = (index * ((CupertinoTimerPicker)this.widget).minuteInterval);
 this.widget.onTimerDurationChanged(Duration.Create(hours: (this.selectedHour ?? 0L), minutes: this.selectedMinute, seconds: (this.selectedSecond ?? 0L)));
 })));
-})), selectionOverlay: selectionOverlay, children: new List<global::Doroti.Generated.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)(checked((long)(60L / ((CupertinoTimerPicker)this.widget).minuteInterval))))), ((index) => {
+})), selectionOverlay: selectionOverlay, children: new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)(checked((long)(60L / ((CupertinoTimerPicker)this.widget).minuteInterval))))), ((index) => {
 long minute__96219 = (index * ((CupertinoTimerPicker)this.widget).minuteInterval);
 string label__96280 = (this.localizations.timerPickerMinuteLabel(minute__96219) ?? "");
 string semanticsLabel__96361 = ((this.textDirectionFactor == 1L) ? (this.localizations.timerPickerMinute(minute__96219) + label__96280) : (label__96280 + this.localizations.timerPickerMinute(minute__96219)));
-return new global::Doroti.Generated.Framework.Widgets.Semantics(label: semanticsLabel__96361, excludeSemantics: true, child: _buildPickerNumberLabel(this.localizations.timerPickerMinute(minute__96219), additionalPadding));
+return new global::Doroti.Framework.Widgets.Semantics(label: semanticsLabel__96361, excludeSemantics: true, child: _buildPickerNumberLabel(this.localizations.timerPickerMinute(minute__96219), additionalPadding));
 throw new InvalidOperationException("Dart closure completed without a value.");
 })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildMinuteColumn(global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional additionalPadding, global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildMinuteColumn(global::Doroti.Framework.Painting.EdgeInsetsDirectional additionalPadding, global::Doroti.Framework.Widgets.Widget? selectionOverlay)
     {
-        additionalPadding = global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: Math.Max(((global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional)additionalPadding).start, 0), end: Math.Max(((global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional)additionalPadding).end, 0));
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Stack(children: new List<global::Doroti.Generated.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.NotificationListener<global::Doroti.Generated.Framework.Widgets.ScrollEndNotification>(onNotification: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.ScrollEndNotification, bool>)((notification) => {
+        additionalPadding = global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: Math.Max(((global::Doroti.Framework.Painting.EdgeInsetsDirectional)additionalPadding).start, 0), end: Math.Max(((global::Doroti.Framework.Painting.EdgeInsetsDirectional)additionalPadding).end, 0));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.ScrollEndNotification>(onNotification: ((global::System.Func<global::Doroti.Framework.Widgets.ScrollEndNotification, bool>)((notification) => {
 setState(((global::System.Action)(() => {
 lastSelectedMinute = this.selectedMinute;
 })));
 return false;
 throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: _buildMinutePicker(additionalPadding, selectionOverlay))), DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(_buildLabel((this.localizations.timerPickerMinuteLabel((this.lastSelectedMinute ?? this.selectedMinute)) ?? ""), additionalPadding)) }));
+})), child: _buildMinutePicker(additionalPadding, selectionOverlay))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildLabel((this.localizations.timerPickerMinuteLabel((this.lastSelectedMinute ?? this.selectedMinute)) ?? ""), additionalPadding)) }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildSecondPicker(global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional additionalPadding, global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildSecondPicker(global::Doroti.Framework.Painting.EdgeInsetsDirectional additionalPadding, global::Doroti.Framework.Widgets.Widget? selectionOverlay)
     {
-        _secondScrollController ??= new global::Doroti.Generated.Framework.Widgets.FixedExtentScrollController(initialItem: (checked((long)(DartRuntimePrimitives.RequireValue(this.selectedSecond) / ((CupertinoTimerPicker)this.widget).secondInterval))));
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new CupertinoPicker(scrollController: this._secondScrollController, magnification: Date_pickerLibrary._kMagnification, offAxisFraction: _calculateOffAxisFraction(((global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional)additionalPadding).start, ((object.Equals(((CupertinoTimerPicker)this.widget).mode, CupertinoTimerPickerMode.ms)) ? 1L : 2L)), itemExtent: ((CupertinoTimerPicker)this.widget).itemExtent, backgroundColor: ((CupertinoTimerPicker)this.widget).backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, looping: true, changeReportingBehavior: ((CupertinoTimerPicker)this.widget).changeReportingBehavior, onSelectedItemChanged: ((global::System.Action<long>)((index) => {
+        _secondScrollController ??= new global::Doroti.Framework.Widgets.FixedExtentScrollController(initialItem: (checked((long)(DartRuntimePrimitives.RequireValue(this.selectedSecond) / ((CupertinoTimerPicker)this.widget).secondInterval))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoPicker(scrollController: this._secondScrollController, magnification: Date_pickerLibrary._kMagnification, offAxisFraction: _calculateOffAxisFraction(((global::Doroti.Framework.Painting.EdgeInsetsDirectional)additionalPadding).start, ((object.Equals(((CupertinoTimerPicker)this.widget).mode, CupertinoTimerPickerMode.ms)) ? 1L : 2L)), itemExtent: ((CupertinoTimerPicker)this.widget).itemExtent, backgroundColor: ((CupertinoTimerPicker)this.widget).backgroundColor, squeeze: Date_pickerLibrary._kSqueeze, looping: true, changeReportingBehavior: ((CupertinoTimerPicker)this.widget).changeReportingBehavior, onSelectedItemChanged: ((global::System.Action<long>)((index) => {
 setState(((global::System.Action)(() => {
 selectedSecond = (index * ((CupertinoTimerPicker)this.widget).secondInterval);
 this.widget.onTimerDurationChanged(Duration.Create(hours: (this.selectedHour ?? 0L), minutes: this.selectedMinute, seconds: DartRuntimePrimitives.RequireValue(this.selectedSecond)));
 })));
-})), selectionOverlay: selectionOverlay, children: new List<global::Doroti.Generated.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)(checked((long)(60L / ((CupertinoTimerPicker)this.widget).secondInterval))))), ((index) => {
+})), selectionOverlay: selectionOverlay, children: new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)(checked((long)(60L / ((CupertinoTimerPicker)this.widget).secondInterval))))), ((index) => {
 long second__98727 = (index * ((CupertinoTimerPicker)this.widget).secondInterval);
 string label__98788 = (this.localizations.timerPickerSecondLabel(second__98727) ?? "");
 string semanticsLabel__98869 = ((this.textDirectionFactor == 1L) ? (this.localizations.timerPickerSecond(second__98727) + label__98788) : (label__98788 + this.localizations.timerPickerSecond(second__98727)));
-return new global::Doroti.Generated.Framework.Widgets.Semantics(label: semanticsLabel__98869, excludeSemantics: true, child: _buildPickerNumberLabel(this.localizations.timerPickerSecond(second__98727), additionalPadding));
+return new global::Doroti.Framework.Widgets.Semantics(label: semanticsLabel__98869, excludeSemantics: true, child: _buildPickerNumberLabel(this.localizations.timerPickerSecond(second__98727), additionalPadding));
 throw new InvalidOperationException("Dart closure completed without a value.");
 })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildSecondColumn(global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional additionalPadding, global::Doroti.Generated.Framework.Widgets.Widget? selectionOverlay)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildSecondColumn(global::Doroti.Framework.Painting.EdgeInsetsDirectional additionalPadding, global::Doroti.Framework.Widgets.Widget? selectionOverlay)
     {
-        additionalPadding = global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: Math.Max(((global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional)additionalPadding).start, 0), end: Math.Max(((global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional)additionalPadding).end, 0));
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Stack(children: new List<global::Doroti.Generated.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.NotificationListener<global::Doroti.Generated.Framework.Widgets.ScrollEndNotification>(onNotification: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.ScrollEndNotification, bool>)((notification) => {
+        additionalPadding = global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: Math.Max(((global::Doroti.Framework.Painting.EdgeInsetsDirectional)additionalPadding).start, 0), end: Math.Max(((global::Doroti.Framework.Painting.EdgeInsetsDirectional)additionalPadding).end, 0));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.ScrollEndNotification>(onNotification: ((global::System.Func<global::Doroti.Framework.Widgets.ScrollEndNotification, bool>)((notification) => {
 setState(((global::System.Action)(() => {
 lastSelectedSecond = this.selectedSecond;
 })));
 return false;
 throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: _buildSecondPicker(additionalPadding, selectionOverlay))), DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(_buildLabel((this.localizations.timerPickerSecondLabel((this.lastSelectedSecond ?? DartRuntimePrimitives.RequireValue(this.selectedSecond))) ?? ""), additionalPadding)) }));
+})), child: _buildSecondPicker(additionalPadding, selectionOverlay))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildLabel((this.localizations.timerPickerSecondLabel((this.lastSelectedSecond ?? DartRuntimePrimitives.RequireValue(this.selectedSecond))) ?? ""), additionalPadding)) }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Painting.TextStyle _textStyleFrom(global::Doroti.Generated.Framework.Widgets.BuildContext context, double magnification = 1.0)
+    internal virtual global::Doroti.Framework.Painting.TextStyle _textStyleFrom(global::Doroti.Framework.Widgets.BuildContext context, double magnification = 1.0)
     {
-        global::Doroti.Generated.Framework.Painting.TextStyle textStyle__100318 = CupertinoTheme.of(context).textTheme.pickerTextStyle;
-        return ((global::Doroti.Generated.Framework.Painting.TextStyle)(object?)textStyle__100318.copyWith(color: CupertinoDynamicColor.maybeResolve(((global::Doroti.Generated.Framework.Painting.TextStyle)textStyle__100318).color, context), fontSize: (DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Painting.TextStyle)textStyle__100318).fontSize) * magnification)));
+        global::Doroti.Framework.Painting.TextStyle textStyle__100318 = CupertinoTheme.of(context).textTheme.pickerTextStyle;
+        return ((global::Doroti.Framework.Painting.TextStyle)(object?)textStyle__100318.copyWith(color: CupertinoDynamicColor.maybeResolve(((global::Doroti.Framework.Painting.TextStyle)textStyle__100318).color, context), fontSize: (DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Painting.TextStyle)textStyle__100318).fontSize) * magnification)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1683,10 +1683,10 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Rendering.BoxConstraints, global::Doroti.Generated.Framework.Widgets.Widget>)((context, constraints) => {
-List<global::Doroti.Generated.Framework.Widgets.Widget> columns__101634 = default!;
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) => {
+List<global::Doroti.Framework.Widgets.Widget> columns__101634 = default!;
 if ((object.Equals(((CupertinoTimerPicker)this.widget).mode, CupertinoTimerPickerMode.hms)))
 {
     pickerColumnWidth = (Date_pickerLibrary._kTimerPickerColumnIntrinsicWidth + ((Date_pickerLibrary._kTimerPickerHalfColumnPadding * 2L)));
@@ -1697,9 +1697,9 @@ else
     totalWidth = Date_pickerLibrary._kPickerWidth;
     pickerColumnWidth = (this.totalWidth / 2L);
 }
-if ((((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxWidth < this.totalWidth))
+if ((((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth < this.totalWidth))
 {
-    totalWidth = ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxWidth;
+    totalWidth = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth;
     pickerColumnWidth = (this.totalWidth / (((object.Equals(((CupertinoTimerPicker)this.widget).mode, CupertinoTimerPickerMode.hms)) ? 3L : 2L)));
 }
 double baseLabelContentWidth__102326 = (this.numberLabelWidth + Date_pickerLibrary._kTimerPickerLabelPadSize);
@@ -1719,14 +1719,14 @@ switch (((CupertinoTimerPicker)this.widget).mode)
             {
                 minuteColumnEndPadding__103041 = Date_pickerLibrary._kTimerPickerMinHorizontalPadding;
             }
-            global::Doroti.Generated.Framework.Widgets.Widget? hourSelectionOverlay__103347 = Date_pickerLibrary._startSelectionOverlay;
-            global::Doroti.Generated.Framework.Widgets.Widget? minuteSelectionOverlay__103414 = Date_pickerLibrary._endSelectionOverlay;
+            global::Doroti.Framework.Widgets.Widget? hourSelectionOverlay__103347 = Date_pickerLibrary._startSelectionOverlay;
+            global::Doroti.Framework.Widgets.Widget? minuteSelectionOverlay__103414 = Date_pickerLibrary._endSelectionOverlay;
             if ((((CupertinoTimerPicker)this.widget).selectionOverlayBuilder is not null))
             {
                 hourSelectionOverlay__103347 = ((CupertinoTimerPicker)this.widget).selectionOverlayBuilder!(context, selectedIndex: 0L, columnCount: 2L);
                 minuteSelectionOverlay__103414 = ((CupertinoTimerPicker)this.widget).selectionOverlayBuilder!(context, selectedIndex: 1L, columnCount: 2L);
             }
-            columns__101634 = new List<global::Doroti.Generated.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(_buildHourColumn(global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: hourColumnStartPadding__102738, end: ((this.pickerColumnWidth - hourColumnStartPadding__102738) - hourLabelContentWidth__102655)), hourSelectionOverlay__103347)), DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(_buildMinuteColumn(global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: ((this.pickerColumnWidth - minuteColumnEndPadding__103041) - minuteLabelContentWidth__102417), end: minuteColumnEndPadding__103041), minuteSelectionOverlay__103414)) };
+            columns__101634 = new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildHourColumn(global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: hourColumnStartPadding__102738, end: ((this.pickerColumnWidth - hourColumnStartPadding__102738) - hourLabelContentWidth__102655)), hourSelectionOverlay__103347)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildMinuteColumn(global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: ((this.pickerColumnWidth - minuteColumnEndPadding__103041) - minuteLabelContentWidth__102417), end: minuteColumnEndPadding__103041), minuteSelectionOverlay__103414)) };
             break;
         }
     case CupertinoTimerPickerMode.ms:
@@ -1742,14 +1742,14 @@ switch (((CupertinoTimerPicker)this.widget).mode)
             {
                 minuteColumnStartPadding__104987 = Date_pickerLibrary._kTimerPickerMinHorizontalPadding;
             }
-            global::Doroti.Generated.Framework.Widgets.Widget? minuteSelectionOverlay__105299 = Date_pickerLibrary._startSelectionOverlay;
-            global::Doroti.Generated.Framework.Widgets.Widget? secondSelectionOverlay__105368 = Date_pickerLibrary._endSelectionOverlay;
+            global::Doroti.Framework.Widgets.Widget? minuteSelectionOverlay__105299 = Date_pickerLibrary._startSelectionOverlay;
+            global::Doroti.Framework.Widgets.Widget? secondSelectionOverlay__105368 = Date_pickerLibrary._endSelectionOverlay;
             if ((((CupertinoTimerPicker)this.widget).selectionOverlayBuilder is not null))
             {
                 minuteSelectionOverlay__105299 = ((CupertinoTimerPicker)this.widget).selectionOverlayBuilder!(context, selectedIndex: 0L, columnCount: 2L);
                 secondSelectionOverlay__105368 = ((CupertinoTimerPicker)this.widget).selectionOverlayBuilder!(context, selectedIndex: 1L, columnCount: 2L);
             }
-            columns__101634 = new List<global::Doroti.Generated.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(_buildMinuteColumn(global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: minuteColumnStartPadding__104987, end: ((this.pickerColumnWidth - minuteColumnStartPadding__104987) - minuteLabelContentWidth__102417)), minuteSelectionOverlay__105299)), DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(_buildSecondColumn(global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: ((this.pickerColumnWidth - secondColumnEndPadding__104682) - minuteLabelContentWidth__102417), end: secondColumnEndPadding__104682), secondSelectionOverlay__105368)) };
+            columns__101634 = new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildMinuteColumn(global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: minuteColumnStartPadding__104987, end: ((this.pickerColumnWidth - minuteColumnStartPadding__104987) - minuteLabelContentWidth__102417)), minuteSelectionOverlay__105299)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildSecondColumn(global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: ((this.pickerColumnWidth - secondColumnEndPadding__104682) - minuteLabelContentWidth__102417), end: secondColumnEndPadding__104682), secondSelectionOverlay__105368)) };
             break;
         }
     case CupertinoTimerPickerMode.hms:
@@ -1757,27 +1757,27 @@ switch (((CupertinoTimerPicker)this.widget).mode)
             double hourColumnEndPadding__106562 = (((this.pickerColumnWidth - baseLabelContentWidth__102326) - this.hourLabelWidth) - Date_pickerLibrary._kTimerPickerMinHorizontalPadding);
             double minuteColumnPadding__106770 = (((this.pickerColumnWidth - minuteLabelContentWidth__102417)) / 2L);
             double secondColumnStartPadding__106868 = (((this.pickerColumnWidth - baseLabelContentWidth__102326) - this.secondLabelWidth) - Date_pickerLibrary._kTimerPickerMinHorizontalPadding);
-            global::Doroti.Generated.Framework.Widgets.Widget? hourSelectionOverlay__107078 = Date_pickerLibrary._startSelectionOverlay;
-            global::Doroti.Generated.Framework.Widgets.Widget? minuteSelectionOverlay__107145 = Date_pickerLibrary._centerSelectionOverlay;
-            global::Doroti.Generated.Framework.Widgets.Widget? secondSelectionOverlay__107215 = Date_pickerLibrary._endSelectionOverlay;
+            global::Doroti.Framework.Widgets.Widget? hourSelectionOverlay__107078 = Date_pickerLibrary._startSelectionOverlay;
+            global::Doroti.Framework.Widgets.Widget? minuteSelectionOverlay__107145 = Date_pickerLibrary._centerSelectionOverlay;
+            global::Doroti.Framework.Widgets.Widget? secondSelectionOverlay__107215 = Date_pickerLibrary._endSelectionOverlay;
             if ((((CupertinoTimerPicker)this.widget).selectionOverlayBuilder is not null))
             {
                 hourSelectionOverlay__107078 = ((CupertinoTimerPicker)this.widget).selectionOverlayBuilder!(context, selectedIndex: 0L, columnCount: 3L);
                 minuteSelectionOverlay__107145 = ((CupertinoTimerPicker)this.widget).selectionOverlayBuilder!(context, selectedIndex: 1L, columnCount: 3L);
                 secondSelectionOverlay__107215 = ((CupertinoTimerPicker)this.widget).selectionOverlayBuilder!(context, selectedIndex: 2L, columnCount: 3L);
             }
-            columns__101634 = new List<global::Doroti.Generated.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(_buildHourColumn(global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: Date_pickerLibrary._kTimerPickerMinHorizontalPadding, end: Math.Max(hourColumnEndPadding__106562, 0)), hourSelectionOverlay__107078)), DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(_buildMinuteColumn(global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: minuteColumnPadding__106770, end: minuteColumnPadding__106770), minuteSelectionOverlay__107145)), DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(_buildSecondColumn(global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: Math.Max(secondColumnStartPadding__106868, 0), end: Date_pickerLibrary._kTimerPickerMinHorizontalPadding), secondSelectionOverlay__107215)) };
+            columns__101634 = new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildHourColumn(global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: Date_pickerLibrary._kTimerPickerMinHorizontalPadding, end: Math.Max(hourColumnEndPadding__106562, 0)), hourSelectionOverlay__107078)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildMinuteColumn(global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: minuteColumnPadding__106770, end: minuteColumnPadding__106770), minuteSelectionOverlay__107145)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildSecondColumn(global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: Math.Max(secondColumnStartPadding__106868, 0), end: Date_pickerLibrary._kTimerPickerMinHorizontalPadding), secondSelectionOverlay__107215)) };
             break;
         }
 }
-global::Doroti.Generated.Framework.Widgets.Widget contents__108680 = ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.SizedBox(width: this.totalWidth, height: Date_pickerLibrary._kPickerHeight, child: new global::Doroti.Generated.Framework.Widgets.DefaultTextStyle(style: _textStyleFrom(context), child: new global::Doroti.Generated.Framework.Widgets.Row(children: columns__101634.map<global::Doroti.Generated.Framework.Widgets.Widget, global::Doroti.Generated.Framework.Widgets.Expanded>(((child) => new global::Doroti.Generated.Framework.Widgets.Expanded(child: child))).ToList().Cast<global::Doroti.Generated.Framework.Widgets.Widget>().ToList()))));
+global::Doroti.Framework.Widgets.Widget contents__108680 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(width: this.totalWidth, height: Date_pickerLibrary._kPickerHeight, child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: _textStyleFrom(context), child: new global::Doroti.Framework.Widgets.Row(children: columns__101634.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Expanded>(((child) => new global::Doroti.Framework.Widgets.Expanded(child: child))).ToList().Cast<global::Doroti.Framework.Widgets.Widget>().ToList()))));
 global::Doroti.Ui.Color? color__109068 = ((global::Doroti.Ui.Color?)(object?)CupertinoDynamicColor.maybeResolve(((CupertinoTimerPicker)this.widget).backgroundColor, context));
 if ((color__109068 is not null))
 {
-    contents__108680 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.ColoredBox(color: color__109068, child: contents__108680));
+    contents__108680 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ColoredBox(color: color__109068, child: contents__108680));
 }
 CupertinoThemeData themeData__109282 = CupertinoTheme.of(context);
-return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)MediaQuery.withNoTextScaling(child: new CupertinoTheme(data: themeData__109282.copyWith(textTheme: themeData__109282.textTheme.copyWith(pickerTextStyle: _textStyleFrom(context, Date_pickerLibrary._kTimerPickerMagnification))), child: new global::Doroti.Generated.Framework.Widgets.Align(alignment: ((CupertinoTimerPicker)this.widget).alignment, child: contents__108680))));
+return ((global::Doroti.Framework.Widgets.Widget)(object?)MediaQuery.withNoTextScaling(child: new CupertinoTheme(data: themeData__109282.copyWith(textTheme: themeData__109282.textTheme.copyWith(pickerTextStyle: _textStyleFrom(context, Date_pickerLibrary._kTimerPickerMagnification))), child: new global::Doroti.Framework.Widgets.Align(alignment: ((CupertinoTimerPicker)this.widget).alignment, child: contents__108680))));
 throw new InvalidOperationException("Dart closure completed without a value.");
 }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");

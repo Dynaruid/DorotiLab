@@ -12,17 +12,17 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public abstract class SystemNavigator
 {
     public static async Future setFrameworkHandlesBack(bool frameworkHandlesBack)
     {
-        if (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb)
+        if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
         {
             return;
         }
-        switch (global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
         {
             case var __case1074 when object.Equals(__case1074, TargetPlatform.iOS):
             case var __case1105 when object.Equals(__case1105, TargetPlatform.macOS):

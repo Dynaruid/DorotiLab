@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public static partial class Raw_keyboard_webLibrary
 {
@@ -57,19 +57,19 @@ public class RawKeyEventDataWeb : RawKeyEventData
     {
         get
         {
-            return (global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kWebToPhysicalKey.GetValueOrDefault(code) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.webPlane + code.GetHashCode())));
+            return (global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kWebToPhysicalKey.GetValueOrDefault(code) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.webPlane + code.GetHashCode())));
         }
     }
     public override LogicalKeyboardKey logicalKey
     {
         get
         {
-            LogicalKeyboardKey? maybeLocationKey = global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kWebLocationMap.GetValueOrDefault(key)[(int)(location)];
+            LogicalKeyboardKey? maybeLocationKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kWebLocationMap.GetValueOrDefault(key)[(int)(location)];
             if ((maybeLocationKey is not null))
             {
                 return maybeLocationKey;
             }
-            LogicalKeyboardKey? newKey = global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kWebToLogicalKey.GetValueOrDefault(key);
+            LogicalKeyboardKey? newKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kWebToLogicalKey.GetValueOrDefault(key);
             if ((newKey is not null))
             {
                 return newKey;

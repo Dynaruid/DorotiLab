@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public static partial class Image_cacheLibrary
 {
@@ -45,7 +45,7 @@ public class ImageCache
                 return;
             }
             TimelineTask? debugTimelineTask__3943 = default!;
-            if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
                 debugTimelineTask__3943 = ((Func<TimelineTask>)(() =>
 {
@@ -63,7 +63,7 @@ public class ImageCache
             {
                 _checkCacheSize(debugTimelineTask__3943);
             }
-            if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
                 debugTimelineTask__3943!.finish();
             }
@@ -82,7 +82,7 @@ public class ImageCache
                 return;
             }
             TimelineTask? debugTimelineTask__5157 = default!;
-            if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
                 debugTimelineTask__5157 = ((Func<TimelineTask>)(() =>
 {
@@ -100,7 +100,7 @@ public class ImageCache
             {
                 _checkCacheSize(debugTimelineTask__5157);
             }
-            if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
                 debugTimelineTask__5157!.finish();
             }
@@ -109,7 +109,7 @@ public class ImageCache
     public virtual long currentSizeBytes => this._currentSizeBytes;
     public virtual void clear()
     {
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             Timeline.instantSync("ImageCache.clear", arguments: new DartMap<string, object> { ["pendingImages"] = checked((long)(this._pendingImages.Count)), ["keepAliveImages"] = checked((long)(this._cache.Count)), ["liveImages"] = checked((long)(this._liveImages.Count)), ["currentSizeInBytes"] = this._currentSizeBytes });
         }
@@ -136,7 +136,7 @@ public class ImageCache
         _PendingImage__image_cache? pendingImage__9430 = this._pendingImages.remove(key);
         if ((pendingImage__9430 is not null))
         {
-            if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
                 Timeline.instantSync("ImageCache.evict", arguments: new DartMap<string, object> { ["type"] = "pending" });
             }
@@ -146,7 +146,7 @@ public class ImageCache
         _CachedImage__image_cache? image__9725 = this._cache.remove(key);
         if ((image__9725 is not null))
         {
-            if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
                 Timeline.instantSync("ImageCache.evict", arguments: new DartMap<string, object> { ["type"] = "keepAlive", ["sizeInBytes"] = image__9725.sizeBytes });
             }
@@ -154,7 +154,7 @@ public class ImageCache
             image__9725.dispose();
             return true;
         }
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             Timeline.instantSync("ImageCache.evict", arguments: new DartMap<string, object> { ["type"] = "miss" });
         }
@@ -191,7 +191,7 @@ public class ImageCache
     public virtual ImageStreamCompleter? putIfAbsent(object key, Func<ImageStreamCompleter> loader, Action<object, global::System.Diagnostics.StackTrace?>? onError = null)
     {
         TimelineTask? debugTimelineTask__12217 = default!;
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             debugTimelineTask__12217 = ((Func<TimelineTask>)(() =>
 {
@@ -203,7 +203,7 @@ public class ImageCache
         ImageStreamCompleter? result__12430 = this._pendingImages.GetValueOrDefault(key)?.completer;
         if ((result__12430 is not null))
         {
-            if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
                 debugTimelineTask__12217!.finish(arguments: new DartMap<string, object> { ["result"] = "pending" });
             }
@@ -212,7 +212,7 @@ public class ImageCache
         _CachedImage__image_cache? image__13007 = this._cache.remove(key);
         if ((image__13007 is not null))
         {
-            if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
                 debugTimelineTask__12217!.finish(arguments: new DartMap<string, object> { ["result"] = "keepAlive" });
             }
@@ -224,7 +224,7 @@ public class ImageCache
         if ((liveImage__13475 is not null))
         {
             _touch(key, new _CachedImage__image_cache(liveImage__13475.completer, sizeBytes: liveImage__13475.sizeBytes), debugTimelineTask__12217);
-            if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
                 debugTimelineTask__12217!.finish(arguments: new DartMap<string, object> { ["result"] = "keepAlive" });
             }
@@ -238,7 +238,7 @@ public class ImageCache
         catch (Exception error__13926)
         {
             var stackTrace__13933 = new System.Diagnostics.StackTrace();
-            if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
                 debugTimelineTask__12217!.finish(arguments: new DartMap<string, object> { ["result"] = "error", ["error"] = error__13926.ToString(), ["stackTrace"] = stackTrace__13933.ToString() });
             }
@@ -252,7 +252,7 @@ public class ImageCache
                 throw;
             }
         }
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             debugTimelineTask__12217!.start("listener");
         }
@@ -282,7 +282,7 @@ public class ImageCache
             {
                 pendingImage__14941.removeListener();
             }
-            if ((!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode && !listenedOnce__14630))
+            if ((!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && !listenedOnce__14630))
             {
                 ((Func<TimelineTask>)(() =>
 {
@@ -331,7 +331,7 @@ public class ImageCache
     internal virtual void _checkCacheSize(TimelineTask? timelineTask)
     {
         var finishArgs__18051 = new DartMap<string, object>();
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             timelineTask!.start("checkCacheSize");
             finishArgs__18051["evictedKeys"] = new List<string>();
@@ -345,12 +345,12 @@ public class ImageCache
             _currentSizeBytes -= DartRuntimePrimitives.RequireValue(image__18464.sizeBytes);
             image__18464.dispose();
             this._cache.remove(key__18414);
-            if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
                 (((List<string>?)(object?)finishArgs__18051.GetValueOrDefault("evictedKeys"))!).Add(key__18414.ToString());
             }
         }
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             finishArgs__18051["endSize"] = this.currentSize;
             finishArgs__18051["endSizeBytes"] = this.currentSizeBytes;
@@ -391,7 +391,7 @@ public class ImageCacheStatus
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.pending, this.keepAlive, this.live);
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ImageCacheStatus"))}(pending: {this.pending}, live: {this.live}, keepAlive: {this.keepAlive})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ImageCacheStatus"))}(pending: {this.pending}, live: {this.live}, keepAlive: {this.keepAlive})";
 }
 
 internal abstract class _CachedImageBase__image_cache
@@ -410,7 +410,7 @@ internal abstract class _CachedImageBase__image_cache
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => (this.handle is not null));
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         SchedulerBinding.instance.addPostFrameCallback(((timeStamp) =>
         {
             DartRuntimePrimitives.Assert(() => (this.handle is not null));
@@ -443,7 +443,7 @@ internal class _LiveImage__image_cache : _CachedImageBase__image_cache
         base.dispose();
     }
 
-    public override string ToString() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
 }
 
 internal class _PendingImage__image_cache

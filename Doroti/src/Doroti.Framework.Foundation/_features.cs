@@ -1,7 +1,7 @@
 // <doroti-reviewed-framework-source />
 #nullable enable
 
-namespace Doroti.Generated.Framework.Foundation;
+namespace Doroti.Framework.Foundation;
 
 public static class _featuresLibrary
 {

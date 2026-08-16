@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public static class RadioGroup
 {
@@ -25,7 +25,7 @@ public class RadioGroup<T> : StatefulWidget
     public virtual global::System.Action<T?> onChanged { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public RadioGroup(global::Doroti.Generated.Framework.Foundation.Key? key = null, T? groupValue = default, global::System.Action<T?> onChanged = default!, Widget child = default!) : base(key: key)
+    public RadioGroup(global::Doroti.Framework.Foundation.Key? key = null, T? groupValue = default, global::System.Action<T?> onChanged = default!, Widget child = default!) : base(key: key)
     {
         this.groupValue = groupValue;
         this.onChanged = onChanged;
@@ -51,7 +51,7 @@ internal class _RadioGroupState__radio_group<T> : State<RadioGroup<T>>, RadioGro
         {
             if (!__late__radioGroupShortcuts_initialized)
             {
-                __late__radioGroupShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.arrowLeft)] = ((Intent)(object?)new VoidCallbackIntent(() => this._selectPreviousRadio())), [new SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.arrowRight)] = ((Intent)(object?)new VoidCallbackIntent(() => this._selectNextRadio())), [new SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.arrowDown)] = ((Intent)(object?)new VoidCallbackIntent(() => this._selectNextRadio())), [new SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.arrowUp)] = ((Intent)(object?)new VoidCallbackIntent(() => this._selectPreviousRadio())), [new SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.space)] = ((Intent)(object?)new VoidCallbackIntent(() => this._toggleFocusedRadio())) };
+                __late__radioGroupShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowLeft)] = ((Intent)(object?)new VoidCallbackIntent(() => this._selectPreviousRadio())), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowRight)] = ((Intent)(object?)new VoidCallbackIntent(() => this._selectNextRadio())), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown)] = ((Intent)(object?)new VoidCallbackIntent(() => this._selectNextRadio())), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp)] = ((Intent)(object?)new VoidCallbackIntent(() => this._selectPreviousRadio())), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.space)] = ((Intent)(object?)new VoidCallbackIntent(() => this._toggleFocusedRadio())) };
                 __late__radioGroupShortcuts_initialized = true;
             }
             return __late__radioGroupShortcuts;
@@ -86,7 +86,7 @@ if ((!this.mounted || _debugCheckOnlySingleSelection()))
 {
     return;
 }
-throw DartRuntimePrimitives.AsException(global::Doroti.Generated.Framework.Foundation.FlutterError.Create("RadioGroupPolicy can't be used for a radio group that allows multiple selection."));
+throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("RadioGroupPolicy can't be used for a radio group that allows multiple selection."));
 })), debugLabel: "RadioGroup.singleSelectionCheck");
         _debugHasScheduledSingleSelectionCheck = true;
         return true;
@@ -185,7 +185,7 @@ internal class _RadioGroupShortcutManager__radio_group<T> : ShortcutManager
         this.state = state;
     }
 
-    public override KeyEventResult handleKeypress(BuildContext context, global::Doroti.Generated.Framework.Services.KeyEvent @event)
+    public override KeyEventResult handleKeypress(BuildContext context, global::Doroti.Framework.Services.KeyEvent @event)
     {
         bool radioHasFocus__8040 = ((_RadioGroupState__radio_group<T>)this.state)._radios.any(((radio) => ((RadioClient<T>)radio).focusNode.hasFocus));
         if (!radioHasFocus__8040)

@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Cupertino;
+namespace Doroti.Framework.Cupertino;
 
 public static partial class RadioLibrary
 {
@@ -89,24 +89,24 @@ public static partial class RadioLibrary
     internal static List<double> _kDisabledDarkGradientOpacities = new List<double> { 0.08, 0.14 };
 }
 
-public class CupertinoRadio<T> : global::Doroti.Generated.Framework.Widgets.StatefulWidget
+public class CupertinoRadio<T> : global::Doroti.Framework.Widgets.StatefulWidget
 {
     public virtual T value { get; private set; } = default!;
     public virtual T? groupValue { get; private set; }
     public virtual global::System.Action<T?>? onChanged { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Services.MouseCursor? mouseCursor { get; private set; }
+    public virtual global::Doroti.Framework.Services.MouseCursor? mouseCursor { get; private set; }
     public virtual bool toggleable { get; private set; } = default!;
     public virtual bool useCheckmarkStyle { get; private set; } = default!;
     public virtual Color? activeColor { get; private set; }
     public virtual Color? inactiveColor { get; private set; }
     public virtual Color? fillColor { get; private set; }
     public virtual Color? focusColor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.FocusNode? focusNode { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.FocusNode? focusNode { get; private set; }
     public virtual bool autofocus { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.RadioGroupRegistry<T>? groupRegistry { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.RadioGroupRegistry<T>? groupRegistry { get; private set; }
     public virtual bool? enabled { get; private set; }
 
-    public CupertinoRadio(global::Doroti.Generated.Framework.Foundation.Key? key = null, T value = default!, T? groupValue = default, global::System.Action<T?>? onChanged = null, global::Doroti.Generated.Framework.Services.MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, Color? inactiveColor = null, Color? fillColor = null, Color? focusColor = null, global::Doroti.Generated.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, bool useCheckmarkStyle = false, bool? enabled = null, global::Doroti.Generated.Framework.Widgets.RadioGroupRegistry<T>? groupRegistry = null) : base(key: key)
+    public CupertinoRadio(global::Doroti.Framework.Foundation.Key? key = null, T value = default!, T? groupValue = default, global::System.Action<T?>? onChanged = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, bool toggleable = false, Color? activeColor = null, Color? inactiveColor = null, Color? fillColor = null, Color? focusColor = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, bool useCheckmarkStyle = false, bool? enabled = null, global::Doroti.Framework.Widgets.RadioGroupRegistry<T>? groupRegistry = null) : base(key: key)
     {
         this.value = value;
         this.groupValue = groupValue;
@@ -127,14 +127,14 @@ public class CupertinoRadio<T> : global::Doroti.Generated.Framework.Widgets.Stat
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoRadioState__radio<T>());
 }
 
-internal class _CupertinoRadioState__radio<T> : global::Doroti.Generated.Framework.Widgets.State<CupertinoRadio<T>>
+internal class _CupertinoRadioState__radio<T> : global::Doroti.Framework.Widgets.State<CupertinoRadio<T>>
 {
-    internal virtual global::Doroti.Generated.Framework.Widgets.FocusNode? _internalFocusNode { get; set; } = default;
+    internal virtual global::Doroti.Framework.Widgets.FocusNode? _internalFocusNode { get; set; } = default;
     internal virtual _RadioRegistry__radio<T>? _internalRadioRegistry { get; set; } = default;
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.FocusNode _effectiveFocusNode => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.FocusNode>((((CupertinoRadio<T>)(object)this.widget).focusNode ?? (_internalFocusNode ??= new global::Doroti.Generated.Framework.Widgets.FocusNode())));
+    internal virtual global::Doroti.Framework.Widgets.FocusNode _effectiveFocusNode => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.FocusNode>((((CupertinoRadio<T>)(object)this.widget).focusNode ?? (_internalFocusNode ??= new global::Doroti.Framework.Widgets.FocusNode())));
     internal virtual bool _enabled => DartRuntimePrimitives.ConvertValue<bool>((((CupertinoRadio<T>)(object)this.widget).enabled ?? ((((((CupertinoRadio<T>)(object)this.widget).onChanged is not null) || (((CupertinoRadio<T>)(object)this.widget).groupRegistry is not null)) || (RadioGroup.maybeOf<T>(this.context) is not null)))));
-    internal virtual global::Doroti.Generated.Framework.Widgets.RadioGroupRegistry<T> _effectiveRegistry
+    internal virtual global::Doroti.Framework.Widgets.RadioGroupRegistry<T> _effectiveRegistry
     {
         get
         {
@@ -142,7 +142,7 @@ internal class _CupertinoRadioState__radio<T> : global::Doroti.Generated.Framewo
             {
                 return ((CupertinoRadio<T>)(object)this.widget).groupRegistry!;
             }
-            global::Doroti.Generated.Framework.Widgets.RadioGroupRegistry<T>? inheritedRegistry__8523 = ((global::Doroti.Generated.Framework.Widgets.RadioGroupRegistry<T>?)(object?)RadioGroup.maybeOf<T>(this.context));
+            global::Doroti.Framework.Widgets.RadioGroupRegistry<T>? inheritedRegistry__8523 = ((global::Doroti.Framework.Widgets.RadioGroupRegistry<T>?)(object?)RadioGroup.maybeOf<T>(this.context));
             if ((inheritedRegistry__8523 is not null))
             {
                 return inheritedRegistry__8523;
@@ -157,15 +157,15 @@ internal class _CupertinoRadioState__radio<T> : global::Doroti.Generated.Framewo
         base.dispose();
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => (((!((((CupertinoRadio<T>)(object)this.widget).enabled ?? false)) || (((CupertinoRadio<T>)(object)this.widget).onChanged is not null)) || (((CupertinoRadio<T>)(object)this.widget).groupRegistry is not null)) || (RadioGroup.maybeOf<T>(context) is not null)), () => (object?)"Radio is enabled but has no CupertinoRadio.onChange, " + "CupertinoRadio.groupRegistry, or RadioGroup above");
-        global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor> effectiveMouseCursor__9242 = ((global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor>)(object?)WidgetStateProperty.resolveWith<global::Doroti.Generated.Framework.Services.MouseCursor>(((global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, global::Doroti.Generated.Framework.Services.MouseCursor>)((states) => {
-return ((global::Doroti.Generated.Framework.Services.MouseCursor)(object?)(WidgetStateProperty.resolveAs<global::Doroti.Generated.Framework.Services.MouseCursor?>(((CupertinoRadio<T>)(object)this.widget).mouseCursor, states) ?? (((!states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled) && global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb) ? global::Doroti.Generated.Framework.Services.SystemMouseCursors.click : global::Doroti.Generated.Framework.Services.SystemMouseCursors.basic))));
+        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> effectiveMouseCursor__9242 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>)(object?)WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Framework.Services.MouseCursor>)((states) => {
+return ((global::Doroti.Framework.Services.MouseCursor)(object?)(WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((CupertinoRadio<T>)(object)this.widget).mouseCursor, states) ?? (((!states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled) && global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb) ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.SystemMouseCursors.basic))));
 throw new InvalidOperationException("Dart closure completed without a value.");
 }))));
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.RawRadio<T>(value: ((CupertinoRadio<T>)(object)this.widget).value, groupRegistry: this._effectiveRegistry, mouseCursor: effectiveMouseCursor__9242, toggleable: ((CupertinoRadio<T>)(object)this.widget).toggleable, focusNode: this._effectiveFocusNode, autofocus: ((CupertinoRadio<T>)(object)this.widget).autofocus, enabled: this._enabled, builder: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, dynamic, global::Doroti.Generated.Framework.Widgets.Widget>)((context, state) => {
-return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new _RadioPaint__radio(activeColor: ((CupertinoRadio<T>)(object)this.widget).activeColor, inactiveColor: ((CupertinoRadio<T>)(object)this.widget).inactiveColor, fillColor: ((CupertinoRadio<T>)(object)this.widget).fillColor, focusColor: ((CupertinoRadio<T>)(object)this.widget).focusColor, useCheckmarkStyle: ((CupertinoRadio<T>)(object)this.widget).useCheckmarkStyle, isActive: this._enabled, toggleableState: state, focused: ((global::Doroti.Generated.Framework.Widgets.FocusNode)this._effectiveFocusNode).hasFocus));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.RawRadio<T>(value: ((CupertinoRadio<T>)(object)this.widget).value, groupRegistry: this._effectiveRegistry, mouseCursor: effectiveMouseCursor__9242, toggleable: ((CupertinoRadio<T>)(object)this.widget).toggleable, focusNode: this._effectiveFocusNode, autofocus: ((CupertinoRadio<T>)(object)this.widget).autofocus, enabled: this._enabled, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, dynamic, global::Doroti.Framework.Widgets.Widget>)((context, state) => {
+return ((global::Doroti.Framework.Widgets.Widget)(object?)new _RadioPaint__radio(activeColor: ((CupertinoRadio<T>)(object)this.widget).activeColor, inactiveColor: ((CupertinoRadio<T>)(object)this.widget).inactiveColor, fillColor: ((CupertinoRadio<T>)(object)this.widget).fillColor, focusColor: ((CupertinoRadio<T>)(object)this.widget).focusColor, useCheckmarkStyle: ((CupertinoRadio<T>)(object)this.widget).useCheckmarkStyle, isActive: this._enabled, toggleableState: state, focused: ((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).hasFocus));
 throw new InvalidOperationException("Dart closure completed without a value.");
 }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -173,7 +173,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
 }
 
-internal class _RadioRegistry__radio<T> : global::Doroti.Generated.Framework.Widgets.RadioGroupRegistry<T>
+internal class _RadioRegistry__radio<T> : global::Doroti.Framework.Widgets.RadioGroupRegistry<T>
 {
     public virtual _CupertinoRadioState__radio<T> state { get; private set; } = default!;
 
@@ -184,17 +184,17 @@ internal class _RadioRegistry__radio<T> : global::Doroti.Generated.Framework.Wid
 
     public virtual T? groupValue => this.state.widget.groupValue;
     public virtual global::System.Action<T?> onChanged => DartRuntimePrimitives.ConvertValue<global::System.Action<T?>>(this.state.widget.onChanged!);
-    public virtual void registerClient(global::Doroti.Generated.Framework.Widgets.RadioClient<T> radio)
+    public virtual void registerClient(global::Doroti.Framework.Widgets.RadioClient<T> radio)
     {
     }
 
-    public virtual void unregisterClient(global::Doroti.Generated.Framework.Widgets.RadioClient<T> radio)
+    public virtual void unregisterClient(global::Doroti.Framework.Widgets.RadioClient<T> radio)
     {
     }
 
 }
 
-internal class _RadioPaint__radio : global::Doroti.Generated.Framework.Widgets.StatefulWidget
+internal class _RadioPaint__radio : global::Doroti.Framework.Widgets.StatefulWidget
 {
     public virtual dynamic toggleableState { get; private set; } = default!;
     public virtual Color? activeColor { get; private set; }
@@ -220,7 +220,7 @@ internal class _RadioPaint__radio : global::Doroti.Generated.Framework.Widgets.S
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _RadioPaintState__radio());
 }
 
-internal class _RadioPaintState__radio : global::Doroti.Generated.Framework.Widgets.State<_RadioPaint__radio>
+internal class _RadioPaintState__radio : global::Doroti.Framework.Widgets.State<_RadioPaint__radio>
 {
     internal virtual _RadioPainter__radio _painter { get; private set; } = new _RadioPainter__radio();
 
@@ -230,16 +230,16 @@ internal class _RadioPaintState__radio : global::Doroti.Generated.Framework.Widg
         base.dispose();
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> _defaultOuterColor
+    internal virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> _defaultOuterColor
     {
         get
         {
             return WidgetStateProperty.resolveWith<Color>((states) => {
-if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled))
+if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
 {
     return CupertinoDynamicColor.resolve(RadioLibrary._kDisabledOuterColor, this.context);
 }
-if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected))
+if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
 {
     return widget.activeColor ?? CupertinoDynamicColor.resolve(RadioLibrary._kDefaultOuterColor, this.context);
 }
@@ -249,16 +249,16 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             return default!;
         }
     }
-    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> _defaultInnerColor
+    internal virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> _defaultInnerColor
     {
         get
         {
             return WidgetStateProperty.resolveWith<Color>((states) => {
-if ((states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled) && states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected)))
+if ((states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled) && states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected)))
 {
     return widget.fillColor ?? CupertinoDynamicColor.resolve(RadioLibrary._kDisabledInnerColor, this.context);
 }
-if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected))
+if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
 {
     return widget.fillColor ?? CupertinoDynamicColor.resolve(RadioLibrary._kDefaultInnerColor, this.context);
 }
@@ -268,16 +268,16 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             return default!;
         }
     }
-    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> _defaultBorderColor
+    internal virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> _defaultBorderColor
     {
         get
         {
             return WidgetStateProperty.resolveWith<Color>((states) => {
-if ((((states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected) || states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.focused))) && !states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled)))
+if ((((states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected) || states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))) && !states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled)))
 {
     return CupertinoColors.transparent;
 }
-if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled))
+if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
 {
     return CupertinoDynamicColor.resolve(CheckboxLibrary._kDisabledBorderColor, this.context);
 }
@@ -287,26 +287,26 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             return default!;
         }
     }
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState> activeStates__13367 = ((Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>>)(() =>
-{            var __cascade = ((HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states);
-            __cascade.Add(global::Doroti.Generated.Framework.Widgets.WidgetState.selected);
+        HashSet<global::Doroti.Framework.Widgets.WidgetState> activeStates__13367 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
+{            var __cascade = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states);
+            __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.selected);
             return __cascade;        }))();
-        HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState> inactiveStates__13467 = ((Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>>)(() =>
-{            var __cascade = ((HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states);
-            __cascade.Remove(global::Doroti.Generated.Framework.Widgets.WidgetState.selected);
+        HashSet<global::Doroti.Framework.Widgets.WidgetState> inactiveStates__13467 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
+{            var __cascade = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states);
+            __cascade.Remove(global::Doroti.Framework.Widgets.WidgetState.selected);
             return __cascade;        }))();
-        HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState> currentStates__13708 = ((HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states);
+        HashSet<global::Doroti.Framework.Widgets.WidgetState> currentStates__13708 = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states);
         global::Doroti.Ui.Color effectiveActiveColor__13772 = ((global::Doroti.Ui.Color)(object?)this._defaultOuterColor.resolve(activeStates__13367));
         global::Doroti.Ui.Color effectiveInactiveColor__13854 = ((global::Doroti.Ui.Color)(object?)this._defaultOuterColor.resolve(inactiveStates__13467));
-        global::Doroti.Ui.Color effectiveFocusOverlayColor__13940 = ((global::Doroti.Ui.Color)(object?)((((_RadioPaint__radio)(object)this.widget).focusColor ?? (Color)global::Doroti.Generated.Framework.Painting.HSLColor.CreateFromColor(effectiveActiveColor__13772.withOpacity(ConstantsLibrary.kCupertinoFocusColorOpacity)).withLightness(ConstantsLibrary.kCupertinoFocusColorBrightness).withSaturation(ConstantsLibrary.kCupertinoFocusColorSaturation).toColor())));
+        global::Doroti.Ui.Color effectiveFocusOverlayColor__13940 = ((global::Doroti.Ui.Color)(object?)((((_RadioPaint__radio)(object)this.widget).focusColor ?? (Color)global::Doroti.Framework.Painting.HSLColor.CreateFromColor(effectiveActiveColor__13772.withOpacity(ConstantsLibrary.kCupertinoFocusColorOpacity)).withLightness(ConstantsLibrary.kCupertinoFocusColorBrightness).withSaturation(ConstantsLibrary.kCupertinoFocusColorSaturation).toColor())));
         global::Doroti.Ui.Color effectiveFillColor__14248 = ((global::Doroti.Ui.Color)(object?)this._defaultInnerColor.resolve(currentStates__13708));
         global::Doroti.Ui.Color effectiveBorderColor__14329 = ((global::Doroti.Ui.Color)(object?)this._defaultBorderColor.resolve(currentStates__13708));
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.CustomPaint(size: RadioLibrary._size, painter: ((Func<_RadioPainter__radio>)(() =>
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CustomPaint(size: RadioLibrary._size, painter: ((Func<_RadioPainter__radio>)(() =>
 {            var __cascade = this._painter;
-            __cascade.position = ((global::Doroti.Generated.Framework.Animation.CurvedAnimation)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).position);
-            __cascade.reaction = ((global::Doroti.Generated.Framework.Animation.CurvedAnimation)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).reaction);
+            __cascade.position = ((global::Doroti.Framework.Animation.CurvedAnimation)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).position);
+            __cascade.reaction = ((global::Doroti.Framework.Animation.CurvedAnimation)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).reaction);
             __cascade.focusColor = effectiveFocusOverlayColor__13940;
             __cascade.downPosition = ((Offset?)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).downPosition);
             __cascade.isFocused = ((_RadioPaint__radio)(object)this.widget).focused;
@@ -324,7 +324,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
 }
 
-internal class _RadioPainter__radio : global::Doroti.Generated.Framework.Widgets.ToggleablePainter
+internal class _RadioPainter__radio : global::Doroti.Framework.Widgets.ToggleablePainter
 {
     internal virtual bool? _value { get; set; } = default;
     internal virtual Color? _fillColor { get; set; } = default;
@@ -413,7 +413,7 @@ internal class _RadioPainter__radio : global::Doroti.Generated.Framework.Widgets
 
     internal virtual void _drawFillGradient(Canvas canvas, Offset center, double radius, Color topColor, Color bottomColor)
     {
-        var fillGradient__16661 = new global::Doroti.Generated.Framework.Painting.LinearGradient(begin: global::Doroti.Generated.Framework.Painting.Alignment.topCenter, end: global::Doroti.Generated.Framework.Painting.Alignment.bottomCenter, colors: new List<global::Doroti.Ui.Color> { topColor, bottomColor });
+        var fillGradient__16661 = new global::Doroti.Framework.Painting.LinearGradient(begin: global::Doroti.Framework.Painting.Alignment.topCenter, end: global::Doroti.Framework.Painting.Alignment.bottomCenter, colors: new List<global::Doroti.Ui.Color> { topColor, bottomColor });
         var circleRect__16824 = global::Doroti.Ui.Rect.fromCircle(center: center, radius: radius);
         var gradientPaint__16896 = ((Func<Paint>)(() =>
 {            var __cascade = new global::Doroti.Ui.Paint();

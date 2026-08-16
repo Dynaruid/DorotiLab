@@ -5,8 +5,8 @@
   "generationMode": "framework-semantic",
   "compatibilityProfile": "flutter-framework",
   "frameworkMilestone": "G5-4",
-  "outputNamespace": "Doroti.Generated.Framework",
-  "outputAssemblyName": "Doroti.Generated.Framework.G54",
+  "outputNamespace": "Doroti.Framework",
+  "outputAssemblyName": "Doroti.Framework.G54",
   "flutterBaseline": "../flutter-compat/baseline.json",
   "inputs": [
     {

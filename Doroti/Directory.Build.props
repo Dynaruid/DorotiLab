@@ -29,7 +29,7 @@
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>C0 product cutover: source-ported desktop shell and generated/adopted Flutter framework packages.</PackageReleaseNotes>
+    <PackageReleaseNotes>Product-owned Doroti framework sources with MAUI Windows, Mac Catalyst, and Web target packages.</PackageReleaseNotes>
   </PropertyGroup>
   <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'win-x64' or '$(TargetFramework)' == 'net10.0-windows10.0.19041.0')">
     <BaseIntermediateOutputPath>obj\windows\</BaseIntermediateOutputPath>

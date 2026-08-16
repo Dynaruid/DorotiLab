@@ -57,13 +57,6 @@ finally {
 }
 if (Test-Path -LiteralPath $probe) { throw "Temporary contract probe was not removed: $probe" }
 
-foreach ($scriptName in @('validate-g5-3.ps1', 'validate-g5-3-slices.ps1')) {
-    $content = Get-Content -LiteralPath (Join-Path $PSScriptRoot $scriptName) -Raw
-    if ($content -notmatch 'finally\s*\{' -or $content -notmatch 'Remove-DorotiTemporaryItem') {
-        throw "$scriptName must clean its invocation-owned workspace in a finally block."
-    }
-}
-
 $ignored = git -C $workspaceRoot check-ignore '.doroti/local-storage-contract' 2>$null
 if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace(($ignored | Out-String))) {
     throw 'The workspace .doroti directory is not ignored by Git.'

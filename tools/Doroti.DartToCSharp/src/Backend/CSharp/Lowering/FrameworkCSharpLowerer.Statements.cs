@@ -240,7 +240,7 @@ internal sealed partial class FrameworkCSharpLowerer
                         var mappedReturn = MapType(containingReturn);
                         if (returnOwner.Name == "_LerpSides" && returnMember?.Name == "resolve")
                         {
-                            mappedReturn = "global::Doroti.Generated.Framework.Painting.BorderSide?";
+                            mappedReturn = "global::Doroti.Framework.Painting.BorderSide?";
                         }
                         else if (returnOwner.Name == "ContextAction" && returnMember?.Name == "_makeOverridableAction" &&
                             returnOwner.Element.TypeParameters is { Length: 1 } contextActionParameters)
@@ -583,12 +583,12 @@ internal sealed partial class FrameworkCSharpLowerer
                         }
                         if (name.StartsWith("defaultExceptionHandler", StringComparison.Ordinal))
                         {
-                            type = "global::Doroti.Generated.Framework.Foundation.FlutterExceptionHandler";
+                            type = "global::Doroti.Framework.Foundation.FlutterExceptionHandler";
                         }
                         if ((_session.ActiveDonorDeclaration ?? declaration).Name == "TreeSliver" &&
                             name.StartsWith("__treeRowExtentBuilder", StringComparison.Ordinal))
                         {
-                            type = "global::System.Func<TreeSliverNode<T>, global::Doroti.Generated.Framework.Rendering.SliverLayoutDimensions, double?>";
+                            type = "global::System.Func<TreeSliverNode<T>, global::Doroti.Framework.Rendering.SliverLayoutDimensions, double?>";
                         }
                         if (declaration.Name is "_RawMenuAnchorState" or "_RawMenuAnchorGroupState" &&
                             name.StartsWith("anchor__", StringComparison.Ordinal))

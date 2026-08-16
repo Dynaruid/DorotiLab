@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public delegate T SharedAppDataInitCallback<T>();
 
@@ -20,7 +20,7 @@ public class SharedAppData : StatefulWidget
 {
     public virtual Widget child { get; private set; } = default!;
 
-    public SharedAppData(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key)
+    public SharedAppData(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key)
     {
         this.child = child;
     }
@@ -47,7 +47,7 @@ public class SharedAppData : StatefulWidget
             {
                 if ((model is null))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("No SharedAppData widget found."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"SharedAppData.{methodName} requires an SharedAppData widget ancestor.\n"), context.describeWidget("The specific widget that could not find an SharedAppData ancestor was"), context.describeOwnershipChain("The ownership chain for the affected widget is"), new global::Doroti.Generated.Framework.Foundation.ErrorHint("Typically, the SharedAppData widget is introduced by the MaterialApp " + "or WidgetsApp widget at the top of your application widget tree. It " + "provides a key/value map of data that is shared with the entire " + "application.") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("No SharedAppData widget found."), new global::Doroti.Framework.Foundation.ErrorDescription($"SharedAppData.{methodName} requires an SharedAppData widget ancestor.\n"), context.describeWidget("The specific widget that could not find an SharedAppData ancestor was"), context.describeOwnershipChain("The ownership chain for the affected widget is"), new global::Doroti.Framework.Foundation.ErrorHint("Typically, the SharedAppData widget is introduced by the MaterialApp " + "or WidgetsApp widget at the top of your application widget tree. It " + "provides a key/value map of data that is shared with the entire " + "application.") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");

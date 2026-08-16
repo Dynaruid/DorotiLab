@@ -1,1 +1,1 @@
-global using Doroti.Generated.Framework.Physics;
+global using Doroti.Framework.Physics;

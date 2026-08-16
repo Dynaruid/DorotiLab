@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public class RenderSliverFillViewport : RenderSliverFixedExtentBoxAdaptor
 {
@@ -126,7 +126,7 @@ public class RenderSliverFillRemaining : RenderSliverSingleBoxAdapter
         double extent__7444 = (((SliverConstraints)constraints__7271).viewportMainAxisExtent - ((SliverConstraints)constraints__7271).precedingScrollExtent);
         if ((child is not null))
         {
-            double childExtent__7570 = (((SliverConstraints)constraints__7271).axis switch { global::Doroti.Generated.Framework.Painting.Axis.horizontal => child!.getMaxIntrinsicWidth(((SliverConstraints)constraints__7271).crossAxisExtent), global::Doroti.Generated.Framework.Painting.Axis.vertical => child!.getMaxIntrinsicHeight(((SliverConstraints)constraints__7271).crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            double childExtent__7570 = (((SliverConstraints)constraints__7271).axis switch { global::Doroti.Framework.Painting.Axis.horizontal => child!.getMaxIntrinsicWidth(((SliverConstraints)constraints__7271).crossAxisExtent), global::Doroti.Framework.Painting.Axis.vertical => child!.getMaxIntrinsicHeight(((SliverConstraints)constraints__7271).crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             extent__7444 = Math.Max(extent__7444, childExtent__7570);
             child!.layout(constraints__7271.asBoxConstraints(minExtent: extent__7444, maxExtent: extent__7444));
         }
@@ -157,7 +157,7 @@ public class RenderSliverFillRemainingAndOverscroll : RenderSliverSingleBoxAdapt
         double maxExtent__10832 = (((SliverConstraints)constraints__10416).remainingPaintExtent - Math.Min(((SliverConstraints)constraints__10416).overlap, 0.0));
         if ((child is not null))
         {
-            double childExtent__10960 = (((SliverConstraints)constraints__10416).axis switch { global::Doroti.Generated.Framework.Painting.Axis.horizontal => child!.getMaxIntrinsicWidth(((SliverConstraints)constraints__10416).crossAxisExtent), global::Doroti.Generated.Framework.Painting.Axis.vertical => child!.getMaxIntrinsicHeight(((SliverConstraints)constraints__10416).crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            double childExtent__10960 = (((SliverConstraints)constraints__10416).axis switch { global::Doroti.Framework.Painting.Axis.horizontal => child!.getMaxIntrinsicWidth(((SliverConstraints)constraints__10416).crossAxisExtent), global::Doroti.Framework.Painting.Axis.vertical => child!.getMaxIntrinsicHeight(((SliverConstraints)constraints__10416).crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             extent__10589 = Math.Max(extent__10589, childExtent__10960);
             maxExtent__10832 = Math.Max(extent__10589, maxExtent__10832);
             child!.layout(constraints__10416.asBoxConstraints(minExtent: extent__10589, maxExtent: maxExtent__10832));

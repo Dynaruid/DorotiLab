@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public class TextSelection : TextRange
 {
@@ -96,7 +96,7 @@ public class TextSelection : TextRange
     }
     public override string ToString()
     {
-        string typeName = global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "TextSelection");
+        string typeName = global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "TextSelection");
         if (!isValid)
         {
             return $"{typeName}.invalid";

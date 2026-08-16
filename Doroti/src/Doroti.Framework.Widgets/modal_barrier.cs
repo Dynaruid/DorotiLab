@@ -12,24 +12,24 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 internal class _SemanticsClipper__modal_barrier : SingleChildRenderObjectWidget
 {
-    public virtual global::Doroti.Generated.Framework.Foundation.ValueNotifier<global::Doroti.Generated.Framework.Painting.EdgeInsets> clipDetailsNotifier { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Foundation.ValueNotifier<global::Doroti.Framework.Painting.EdgeInsets> clipDetailsNotifier { get; private set; } = default!;
 
-    internal _SemanticsClipper__modal_barrier(Widget? child = null, global::Doroti.Generated.Framework.Foundation.ValueNotifier<global::Doroti.Generated.Framework.Painting.EdgeInsets> clipDetailsNotifier = default!) : base(child: child)
+    internal _SemanticsClipper__modal_barrier(Widget? child = null, global::Doroti.Framework.Foundation.ValueNotifier<global::Doroti.Framework.Painting.EdgeInsets> clipDetailsNotifier = default!) : base(child: child)
     {
         this.clipDetailsNotifier = clipDetailsNotifier;
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Rendering.RenderObject)(object?)new _RenderSemanticsClipper__modal_barrier(clipDetailsNotifier: this.clipDetailsNotifier));
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderSemanticsClipper__modal_barrier(clipDetailsNotifier: this.clipDetailsNotifier));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(BuildContext context, global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (_RenderSemanticsClipper__modal_barrier)(object)renderObject;
         __renderObject.clipDetailsNotifier = this.clipDetailsNotifier;
@@ -37,16 +37,16 @@ internal class _SemanticsClipper__modal_barrier : SingleChildRenderObjectWidget
 
 }
 
-public class _RenderSemanticsClipper__modal_barrier : global::Doroti.Generated.Framework.Rendering.RenderProxyBox
+public class _RenderSemanticsClipper__modal_barrier : global::Doroti.Framework.Rendering.RenderProxyBox
 {
-    internal virtual global::Doroti.Generated.Framework.Foundation.ValueNotifier<global::Doroti.Generated.Framework.Painting.EdgeInsets> _clipDetailsNotifier { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Foundation.ValueNotifier<global::Doroti.Framework.Painting.EdgeInsets> _clipDetailsNotifier { get; set; } = default!;
 
-    internal _RenderSemanticsClipper__modal_barrier(global::Doroti.Generated.Framework.Foundation.ValueNotifier<global::Doroti.Generated.Framework.Painting.EdgeInsets> clipDetailsNotifier, global::Doroti.Generated.Framework.Rendering.RenderBox? child = null) : base(child)
+    internal _RenderSemanticsClipper__modal_barrier(global::Doroti.Framework.Foundation.ValueNotifier<global::Doroti.Framework.Painting.EdgeInsets> clipDetailsNotifier, global::Doroti.Framework.Rendering.RenderBox? child = null) : base(child)
     {
         this._clipDetailsNotifier = clipDetailsNotifier;
     }
 
-    public virtual global::Doroti.Generated.Framework.Foundation.ValueNotifier<global::Doroti.Generated.Framework.Painting.EdgeInsets> clipDetailsNotifier
+    public virtual global::Doroti.Framework.Foundation.ValueNotifier<global::Doroti.Framework.Painting.EdgeInsets> clipDetailsNotifier
     {
         get => this._clipDetailsNotifier;
         set
@@ -69,14 +69,14 @@ public class _RenderSemanticsClipper__modal_barrier : global::Doroti.Generated.F
     {
         get
         {
-            global::Doroti.Generated.Framework.Painting.EdgeInsets clipDetails__3021 = ((global::Doroti.Generated.Framework.Painting.EdgeInsets)(object?)((global::Doroti.Generated.Framework.Foundation.ValueNotifier<global::Doroti.Generated.Framework.Painting.EdgeInsets>)this._clipDetailsNotifier).value);
+            global::Doroti.Framework.Painting.EdgeInsets clipDetails__3021 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)((global::Doroti.Framework.Foundation.ValueNotifier<global::Doroti.Framework.Painting.EdgeInsets>)this._clipDetailsNotifier).value);
             global::Doroti.Ui.Rect originalRect__3078 = ((global::Doroti.Ui.Rect)(object?)base.semanticBounds);
-            var clippedRect__3125 = global::Doroti.Ui.Rect.fromLTRB((originalRect__3078.left + ((global::Doroti.Generated.Framework.Painting.EdgeInsets)clipDetails__3021).left), (originalRect__3078.top + ((global::Doroti.Generated.Framework.Painting.EdgeInsets)clipDetails__3021).top), (originalRect__3078.right - ((global::Doroti.Generated.Framework.Painting.EdgeInsets)clipDetails__3021).right), (originalRect__3078.bottom - ((global::Doroti.Generated.Framework.Painting.EdgeInsets)clipDetails__3021).bottom));
+            var clippedRect__3125 = global::Doroti.Ui.Rect.fromLTRB((originalRect__3078.left + ((global::Doroti.Framework.Painting.EdgeInsets)clipDetails__3021).left), (originalRect__3078.top + ((global::Doroti.Framework.Painting.EdgeInsets)clipDetails__3021).top), (originalRect__3078.right - ((global::Doroti.Framework.Painting.EdgeInsets)clipDetails__3021).right), (originalRect__3078.bottom - ((global::Doroti.Framework.Painting.EdgeInsets)clipDetails__3021).bottom));
             return clippedRect__3125;
             return default!;
         }
     }
-    public virtual void attach(global::Doroti.Generated.Framework.Rendering.PipelineOwner owner)
+    public virtual void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
     {
         base.attach(owner);
         this.clipDetailsNotifier.addListener(() => this.markNeedsSemanticsUpdate());
@@ -88,7 +88,7 @@ public class _RenderSemanticsClipper__modal_barrier : global::Doroti.Generated.F
         base.detach();
     }
 
-    public override void describeSemanticsConfiguration(global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration config)
+    public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
         config.isSemanticBoundary = true;
@@ -103,10 +103,10 @@ public class ModalBarrier : StatelessWidget
     public virtual global::System.Action? onDismiss { get; private set; }
     public virtual bool? barrierSemanticsDismissible { get; private set; }
     public virtual string? semanticsLabel { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Foundation.ValueNotifier<global::Doroti.Generated.Framework.Painting.EdgeInsets>? clipDetailsNotifier { get; private set; }
+    public virtual global::Doroti.Framework.Foundation.ValueNotifier<global::Doroti.Framework.Painting.EdgeInsets>? clipDetailsNotifier { get; private set; }
     public virtual string? semanticsOnTapHint { get; private set; }
 
-    public ModalBarrier(global::Doroti.Generated.Framework.Foundation.Key? key = null, Color? color = null, bool dismissible = true, global::System.Action? onDismiss = null, string? semanticsLabel = null, bool? barrierSemanticsDismissible = true, global::Doroti.Generated.Framework.Foundation.ValueNotifier<global::Doroti.Generated.Framework.Painting.EdgeInsets>? clipDetailsNotifier = null, string? semanticsOnTapHint = null) : base(key: key)
+    public ModalBarrier(global::Doroti.Framework.Foundation.Key? key = null, Color? color = null, bool dismissible = true, global::System.Action? onDismiss = null, string? semanticsLabel = null, bool? barrierSemanticsDismissible = true, global::Doroti.Framework.Foundation.ValueNotifier<global::Doroti.Framework.Painting.EdgeInsets>? clipDetailsNotifier = null, string? semanticsOnTapHint = null) : base(key: key)
     {
         this.color = color;
         this.dismissible = dismissible;
@@ -119,20 +119,20 @@ public class ModalBarrier : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => ((!this.dismissible || (this.semanticsLabel is null)) || global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context)));
+        DartRuntimePrimitives.Assert(() => ((!this.dismissible || (this.semanticsLabel is null)) || global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context)));
         bool platformSupportsDismissingBarrier__7307 = default!;
-        switch (global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.windows:
+            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
+            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
+            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
                 {
                     platformSupportsDismissingBarrier__7307 = false;
                     break;
                 }
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.iOS:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.macOS:
+            case global::Doroti.Framework.Foundation.TargetPlatform.android:
+            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
                 {
                     platformSupportsDismissingBarrier__7307 = true;
                     break;
@@ -155,10 +155,10 @@ public class ModalBarrier : StatelessWidget
             }
             else
             {
-                DartRuntimePrimitives.Ignore(SystemSound.play(global::Doroti.Generated.Framework.Services.SystemSoundType.alert));
+                DartRuntimePrimitives.Ignore(SystemSound.play(global::Doroti.Framework.Services.SystemSoundType.alert));
             }
         }
-        Widget barrier__8153 = ((Widget)(object?)new Semantics(onTapHint: this.semanticsOnTapHint, onTap: ((global::System.Action)((semanticsDismissible__7703 && (this.semanticsLabel is not null)) ? handleDismiss : null)), onDismiss: ((global::System.Action)((semanticsDismissible__7703 && (this.semanticsLabel is not null)) ? handleDismiss : null)), label: (semanticsDismissible__7703 ? this.semanticsLabel : null), textDirection: ((semanticsDismissible__7703 && (this.semanticsLabel is not null)) ? Directionality.of(context) : null), child: new MouseRegion(cursor: global::Doroti.Generated.Framework.Services.SystemMouseCursors.basic, child: new ConstrainedBox(constraints: global::Doroti.Generated.Framework.Rendering.BoxConstraints.CreateExpand(), child: ((this.color is null) ? null : new ColoredBox(color: this.color!))))));
+        Widget barrier__8153 = ((Widget)(object?)new Semantics(onTapHint: this.semanticsOnTapHint, onTap: ((global::System.Action)((semanticsDismissible__7703 && (this.semanticsLabel is not null)) ? handleDismiss : null)), onDismiss: ((global::System.Action)((semanticsDismissible__7703 && (this.semanticsLabel is not null)) ? handleDismiss : null)), label: (semanticsDismissible__7703 ? this.semanticsLabel : null), textDirection: ((semanticsDismissible__7703 && (this.semanticsLabel is not null)) ? Directionality.of(context) : null), child: new MouseRegion(cursor: global::Doroti.Framework.Services.SystemMouseCursors.basic, child: new ConstrainedBox(constraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateExpand(), child: ((this.color is null) ? null : new ColoredBox(color: this.color!))))));
         bool excluding__9106 = (!semanticsDismissible__7703 || !modalBarrierSemanticsDismissible__7791);
         if ((!excluding__9106 && (this.clipDetailsNotifier is not null)))
         {
@@ -176,10 +176,10 @@ public class AnimatedModalBarrier : AnimatedWidget
     public virtual string? semanticsLabel { get; private set; }
     public virtual bool? barrierSemanticsDismissible { get; private set; }
     public virtual global::System.Action? onDismiss { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Foundation.ValueNotifier<global::Doroti.Generated.Framework.Painting.EdgeInsets>? clipDetailsNotifier { get; private set; }
+    public virtual global::Doroti.Framework.Foundation.ValueNotifier<global::Doroti.Framework.Painting.EdgeInsets>? clipDetailsNotifier { get; private set; }
     public virtual string? semanticsOnTapHint { get; private set; }
 
-    public AnimatedModalBarrier(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Animation.Animation<Color?> color = default!, bool dismissible = true, string? semanticsLabel = null, bool? barrierSemanticsDismissible = null, global::System.Action? onDismiss = null, global::Doroti.Generated.Framework.Foundation.ValueNotifier<global::Doroti.Generated.Framework.Painting.EdgeInsets>? clipDetailsNotifier = null, string? semanticsOnTapHint = null) : base(key: key, listenable: color)
+    public AnimatedModalBarrier(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Animation.Animation<Color?> color = default!, bool dismissible = true, string? semanticsLabel = null, bool? barrierSemanticsDismissible = null, global::System.Action? onDismiss = null, global::Doroti.Framework.Foundation.ValueNotifier<global::Doroti.Framework.Painting.EdgeInsets>? clipDetailsNotifier = null, string? semanticsOnTapHint = null) : base(key: key, listenable: color)
     {
         this.dismissible = dismissible;
         this.semanticsLabel = semanticsLabel;
@@ -189,16 +189,16 @@ public class AnimatedModalBarrier : AnimatedWidget
         this.semanticsOnTapHint = semanticsOnTapHint;
     }
 
-    public virtual global::Doroti.Generated.Framework.Animation.Animation<global::Doroti.Ui.Color?> color => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Animation.Animation<global::Doroti.Ui.Color?>>(((global::Doroti.Generated.Framework.Animation.Animation<global::Doroti.Ui.Color?>?)(object?)this.listenable)!);
+    public virtual global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Color?> color => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Color?>>(((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Color?>?)(object?)this.listenable)!);
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new ModalBarrier(color: ((global::Doroti.Generated.Framework.Animation.Animation<Color?>)this.color).value, dismissible: this.dismissible, semanticsLabel: this.semanticsLabel, barrierSemanticsDismissible: this.barrierSemanticsDismissible, onDismiss: () => this.onDismiss(), clipDetailsNotifier: this.clipDetailsNotifier, semanticsOnTapHint: this.semanticsOnTapHint));
+        return ((Widget)(object?)new ModalBarrier(color: ((global::Doroti.Framework.Animation.Animation<Color?>)this.color).value, dismissible: this.dismissible, semanticsLabel: this.semanticsLabel, barrierSemanticsDismissible: this.barrierSemanticsDismissible, onDismiss: () => this.onDismiss(), clipDetailsNotifier: this.clipDetailsNotifier, semanticsOnTapHint: this.semanticsOnTapHint));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-public class _AnyTapGestureRecognizer__modal_barrier : global::Doroti.Generated.Framework.Gestures.BaseTapGestureRecognizer
+public class _AnyTapGestureRecognizer__modal_barrier : global::Doroti.Framework.Gestures.BaseTapGestureRecognizer
 {
     public virtual global::System.Action? onAnyTapUp { get; set; } = default;
 
@@ -206,7 +206,7 @@ public class _AnyTapGestureRecognizer__modal_barrier : global::Doroti.Generated.
     {
     }
 
-    public override bool isPointerAllowed(global::Doroti.Generated.Framework.Gestures.PointerDownEvent @event)
+    public override bool isPointerAllowed(global::Doroti.Framework.Gestures.PointerDownEvent @event)
     {
         if ((this.onAnyTapUp is null))
         {
@@ -216,11 +216,11 @@ public class _AnyTapGestureRecognizer__modal_barrier : global::Doroti.Generated.
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void handleTapDown(global::Doroti.Generated.Framework.Gestures.PointerDownEvent down = default!)
+    public override void handleTapDown(global::Doroti.Framework.Gestures.PointerDownEvent down = default!)
     {
     }
 
-    public override void handleTapUp(global::Doroti.Generated.Framework.Gestures.PointerDownEvent down = default!, global::Doroti.Generated.Framework.Gestures.PointerUpEvent up = default!)
+    public override void handleTapUp(global::Doroti.Framework.Gestures.PointerDownEvent down = default!, global::Doroti.Framework.Gestures.PointerUpEvent up = default!)
     {
         if ((this.onAnyTapUp is not null))
         {
@@ -228,7 +228,7 @@ public class _AnyTapGestureRecognizer__modal_barrier : global::Doroti.Generated.
         }
     }
 
-    public override void handleTapCancel(global::Doroti.Generated.Framework.Gestures.PointerDownEvent down = default!, global::Doroti.Generated.Framework.Gestures.PointerCancelEvent? cancel = null, string reason = default!)
+    public override void handleTapCancel(global::Doroti.Framework.Gestures.PointerDownEvent down = default!, global::Doroti.Framework.Gestures.PointerCancelEvent? cancel = null, string reason = default!)
     {
     }
 
@@ -266,7 +266,7 @@ internal class _ModalBarrierGestureDetector__modal_barrier : StatelessWidget
     public override Widget build(BuildContext context)
     {
         var gestures__14778 = new DartMap<Type, dynamic> { [typeof(_AnyTapGestureRecognizer__modal_barrier)] = new _AnyTapGestureRecognizerFactory__modal_barrier(onAnyTapUp: () => this.onDismiss()) };
-        return ((Widget)(object?)new RawGestureDetector(gestures: gestures__14778, behavior: global::Doroti.Generated.Framework.Rendering.HitTestBehavior.opaque, child: this.child));
+        return ((Widget)(object?)new RawGestureDetector(gestures: gestures__14778, behavior: global::Doroti.Framework.Rendering.HitTestBehavior.opaque, child: this.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

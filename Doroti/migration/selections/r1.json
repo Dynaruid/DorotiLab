@@ -5,7 +5,7 @@
   "generationMode": "review-draft",
   "compatibilityProfile": "flutter-aware-bootstrap",
   "outputNamespace": "Doroti.MigrationDrafts",
-  "outputAssemblyName": "Doroti.Generated.R1",
+  "outputAssemblyName": "Doroti.R1",
   "flutterBaseline": "../flutter-compat/baseline.json",
   "inputs": [
     {

@@ -12,9 +12,9 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
-public class InputDatePickerFormField : global::Doroti.Generated.Framework.Widgets.StatefulWidget
+public class InputDatePickerFormField : global::Doroti.Framework.Widgets.StatefulWidget
 {
     public virtual DateTime? initialDate { get; private set; }
     public virtual DateTime firstDate { get; private set; } = default!;
@@ -26,13 +26,13 @@ public class InputDatePickerFormField : global::Doroti.Generated.Framework.Widge
     public virtual string? errorInvalidText { get; private set; }
     public virtual string? fieldHintText { get; private set; }
     public virtual string? fieldLabelText { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Services.TextInputType? keyboardType { get; private set; }
+    public virtual global::Doroti.Framework.Services.TextInputType? keyboardType { get; private set; }
     public virtual bool autofocus { get; private set; } = default!;
     public virtual bool acceptEmptyDate { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.FocusNode? focusNode { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.FocusNode? focusNode { get; private set; }
     public virtual CalendarDelegate<DateTime> calendarDelegate { get; private set; } = default!;
 
-    public InputDatePickerFormField(global::Doroti.Generated.Framework.Foundation.Key? key = null, DateTime? initialDate = null, DateTime firstDate = default!, DateTime lastDate = default!, global::System.Action<DateTime>? onDateSubmitted = null, global::System.Action<DateTime>? onDateSaved = null, global::System.Func<DateTime, bool>? selectableDayPredicate = null, string? errorFormatText = null, string? errorInvalidText = null, string? fieldHintText = null, string? fieldLabelText = null, global::Doroti.Generated.Framework.Services.TextInputType? keyboardType = null, bool autofocus = false, bool acceptEmptyDate = false, global::Doroti.Generated.Framework.Widgets.FocusNode? focusNode = null, CalendarDelegate<DateTime> calendarDelegate = default!) : base(key: key)
+    public InputDatePickerFormField(global::Doroti.Framework.Foundation.Key? key = null, DateTime? initialDate = null, DateTime firstDate = default!, DateTime lastDate = default!, global::System.Action<DateTime>? onDateSubmitted = null, global::System.Action<DateTime>? onDateSaved = null, global::System.Func<DateTime, bool>? selectableDayPredicate = null, string? errorFormatText = null, string? errorInvalidText = null, string? fieldHintText = null, string? fieldLabelText = null, global::Doroti.Framework.Services.TextInputType? keyboardType = null, bool autofocus = false, bool acceptEmptyDate = false, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, CalendarDelegate<DateTime> calendarDelegate = default!) : base(key: key)
     {
         CalendarDelegate<DateTime> __calendarDelegate = calendarDelegate ?? new GregorianCalendarDelegate();
         this.onDateSubmitted = onDateSubmitted;
@@ -59,9 +59,9 @@ public class InputDatePickerFormField : global::Doroti.Generated.Framework.Widge
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _InputDatePickerFormFieldState__input_date_picker_form_field());
 }
 
-internal class _InputDatePickerFormFieldState__input_date_picker_form_field : global::Doroti.Generated.Framework.Widgets.State<InputDatePickerFormField>
+internal class _InputDatePickerFormFieldState__input_date_picker_form_field : global::Doroti.Framework.Widgets.State<InputDatePickerFormField>
 {
-    internal virtual global::Doroti.Generated.Framework.Widgets.TextEditingController _controller { get; private set; } = new global::Doroti.Generated.Framework.Widgets.TextEditingController();
+    internal virtual global::Doroti.Framework.Widgets.TextEditingController _controller { get; private set; } = new global::Doroti.Framework.Widgets.TextEditingController();
     internal virtual DateTime? _selectedDate { get; set; } = default;
     internal virtual string? _inputText { get; set; } = default;
     internal virtual bool _autoSelected { get; set; } = false;
@@ -89,7 +89,7 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field : gl
         base.didUpdateWidget(oldWidget);
         if ((!object.Equals(((InputDatePickerFormField)this.widget).initialDate, ((InputDatePickerFormField)oldWidget).initialDate)))
         {
-            global::Doroti.Generated.Framework.Widgets.WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) => {
+            global::Doroti.Framework.Widgets.WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) => {
 setState(((global::System.Action)(() => {
 _selectedDate = ((InputDatePickerFormField)this.widget).initialDate;
 _updateValueForSelectedDate();
@@ -104,10 +104,10 @@ _updateValueForSelectedDate();
         {
             MaterialLocalizations localizations__6930 = ((MaterialLocalizations)(object?)MaterialLocalizations.of(this.context));
             _inputText = ((InputDatePickerFormField)this.widget).calendarDelegate.formatCompactDate(DartRuntimePrimitives.RequireValue(this._selectedDate), localizations__6930);
-            var textEditingValue__7084 = new global::Doroti.Generated.Framework.Services.TextEditingValue(text: this._inputText!);
+            var textEditingValue__7084 = new global::Doroti.Framework.Services.TextEditingValue(text: this._inputText!);
             if ((((InputDatePickerFormField)this.widget).autofocus && !this._autoSelected))
             {
-                textEditingValue__7084 = textEditingValue__7084.copyWith(selection: new global::Doroti.Generated.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: this._inputText!.Length));
+                textEditingValue__7084 = textEditingValue__7084.copyWith(selection: new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: this._inputText!.Length));
                 _autoSelected = true;
             }
             this._controller.value = textEditingValue__7084;
@@ -115,7 +115,7 @@ _updateValueForSelectedDate();
         else
         {
             _inputText = "";
-            this._controller.value = new global::Doroti.Generated.Framework.Services.TextEditingValue(text: this._inputText!);
+            this._controller.value = new global::Doroti.Framework.Services.TextEditingValue(text: this._inputText!);
         }
     }
 
@@ -175,7 +175,7 @@ _updateValueForSelectedDate();
         _updateDate(text, (global::System.Action<DateTime>?)((InputDatePickerFormField)this.widget).onDateSubmitted);
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ThemeData theme__9048 = Theme.of(context);
         bool useMaterial3__9090 = theme__9048.useMaterial3;
@@ -183,7 +183,7 @@ _updateValueForSelectedDate();
         DatePickerThemeData datePickerTheme__9238 = theme__9048.datePickerTheme;
         InputDecorationThemeData inputTheme__9314 = ((InputDecorationThemeData)(object?)InputDecorationTheme.of(context));
         InputBorder effectiveInputBorder__9383 = ((datePickerTheme__9238.inputDecorationTheme?.border ?? ((InputDecorationThemeData)inputTheme__9314).border) ?? ((useMaterial3__9090 ? new OutlineInputBorder() : new UnderlineInputBorder())));
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Semantics(container: true, child: new TextFormField(decoration: new InputDecoration(hintText: ((((InputDatePickerFormField)this.widget).fieldHintText ?? (string)((InputDatePickerFormField)this.widget).calendarDelegate.dateHelpText(localizations__9157))), labelText: ((((InputDatePickerFormField)this.widget).fieldLabelText ?? (string)((MaterialLocalizations)localizations__9157).dateInputLabel))).applyDefaults(inputTheme__9314.merge(datePickerTheme__9238.inputDecorationTheme).copyWith(border: effectiveInputBorder__9383)), validator: this._validateDate, keyboardType: (((InputDatePickerFormField)this.widget).keyboardType ?? global::Doroti.Generated.Framework.Services.TextInputType.datetime), onSaved: this._handleSaved, onFieldSubmitted: this._handleSubmitted, autofocus: ((InputDatePickerFormField)this.widget).autofocus, controller: this._controller, focusNode: ((InputDatePickerFormField)this.widget).focusNode)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(container: true, child: new TextFormField(decoration: new InputDecoration(hintText: ((((InputDatePickerFormField)this.widget).fieldHintText ?? (string)((InputDatePickerFormField)this.widget).calendarDelegate.dateHelpText(localizations__9157))), labelText: ((((InputDatePickerFormField)this.widget).fieldLabelText ?? (string)((MaterialLocalizations)localizations__9157).dateInputLabel))).applyDefaults(inputTheme__9314.merge(datePickerTheme__9238.inputDecorationTheme).copyWith(border: effectiveInputBorder__9383)), validator: this._validateDate, keyboardType: (((InputDatePickerFormField)this.widget).keyboardType ?? global::Doroti.Framework.Services.TextInputType.datetime), onSaved: this._handleSaved, onFieldSubmitted: this._handleSubmitted, autofocus: ((InputDatePickerFormField)this.widget).autofocus, controller: this._controller, focusNode: ((InputDatePickerFormField)this.widget).focusNode)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

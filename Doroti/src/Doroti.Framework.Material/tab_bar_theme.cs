@@ -12,29 +12,29 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
-public class TabBarTheme : global::Doroti.Generated.Framework.Widgets.InheritedTheme, global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class TabBarTheme : global::Doroti.Framework.Widgets.InheritedTheme, global::Doroti.Framework.Foundation.Diagnosticable
 {
     internal virtual TabBarThemeData? _data { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Painting.Decoration? _indicator { get; private set; }
+    internal virtual global::Doroti.Framework.Painting.Decoration? _indicator { get; private set; }
     internal virtual Color? _indicatorColor { get; private set; }
     internal virtual TabBarIndicatorSize? _indicatorSize { get; private set; }
     internal virtual Color? _dividerColor { get; private set; }
     internal virtual double? _dividerHeight { get; private set; }
     internal virtual Color? _labelColor { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? _labelPadding { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Painting.TextStyle? _labelStyle { get; private set; }
+    internal virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? _labelPadding { get; private set; }
+    internal virtual global::Doroti.Framework.Painting.TextStyle? _labelStyle { get; private set; }
     internal virtual Color? _unselectedLabelColor { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Painting.TextStyle? _unselectedLabelStyle { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? _overlayColor { get; private set; }
+    internal virtual global::Doroti.Framework.Painting.TextStyle? _unselectedLabelStyle { get; private set; }
+    internal virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? _overlayColor { get; private set; }
     internal virtual InteractiveInkFeatureFactory? _splashFactory { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>? _mouseCursor { get; private set; }
+    internal virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? _mouseCursor { get; private set; }
     internal virtual TabAlignment? _tabAlignment { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Painting.TextScaler? _textScaler { get; private set; }
+    internal virtual global::Doroti.Framework.Painting.TextScaler? _textScaler { get; private set; }
     internal virtual TabIndicatorAnimation? _indicatorAnimation { get; private set; }
 
-    public TabBarTheme(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Painting.Decoration? indicator = null, Color? indicatorColor = null, TabBarIndicatorSize? indicatorSize = null, Color? dividerColor = null, double? dividerHeight = null, Color? labelColor = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? labelPadding = null, global::Doroti.Generated.Framework.Painting.TextStyle? labelStyle = null, Color? unselectedLabelColor = null, global::Doroti.Generated.Framework.Painting.TextStyle? unselectedLabelStyle = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, InteractiveInkFeatureFactory? splashFactory = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>? mouseCursor = null, TabAlignment? tabAlignment = null, global::Doroti.Generated.Framework.Painting.TextScaler? textScaler = null, TabIndicatorAnimation? indicatorAnimation = null, TabBarThemeData? data = null, global::Doroti.Generated.Framework.Widgets.Widget? child = null) : base(key: key, child: (child ?? new global::Doroti.Generated.Framework.Widgets.SizedBox()))
+    public TabBarTheme(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Decoration? indicator = null, Color? indicatorColor = null, TabBarIndicatorSize? indicatorSize = null, Color? dividerColor = null, double? dividerHeight = null, Color? labelColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding = null, global::Doroti.Framework.Painting.TextStyle? labelStyle = null, Color? unselectedLabelColor = null, global::Doroti.Framework.Painting.TextStyle? unselectedLabelStyle = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, InteractiveInkFeatureFactory? splashFactory = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor = null, TabAlignment? tabAlignment = null, global::Doroti.Framework.Painting.TextScaler? textScaler = null, TabIndicatorAnimation? indicatorAnimation = null, TabBarThemeData? data = null, global::Doroti.Framework.Widgets.Widget? child = null) : base(key: key, child: (child ?? new global::Doroti.Framework.Widgets.SizedBox()))
     {
         this._indicator = indicator;
         this._indicatorColor = indicatorColor;
@@ -56,30 +56,30 @@ public class TabBarTheme : global::Doroti.Generated.Framework.Widgets.InheritedT
         System.Diagnostics.Debug.Assert(((data is null) || (((((object?)(((object?)(((object?)(((object?)(((object?)(((object?)(((object?)(((object?)(((object?)(((object?)(((object?)(((object?)(((object?)(((object?)(((object?)indicator ?? (object?)indicatorColor)) ?? (object?)indicatorSize)) ?? (object?)dividerColor)) ?? (object?)dividerHeight)) ?? (object?)labelColor)) ?? (object?)labelPadding)) ?? (object?)labelStyle)) ?? (object?)unselectedLabelColor)) ?? (object?)unselectedLabelStyle)) ?? (object?)overlayColor)) ?? (object?)splashFactory)) ?? (object?)mouseCursor)) ?? (object?)tabAlignment)) ?? (object?)textScaler)) ?? (object?)indicatorAnimation))) is null)));
     }
 
-    public virtual global::Doroti.Generated.Framework.Painting.Decoration? indicator => ((this._data is not null) ? ((TabBarThemeData)this._data).indicator : this._indicator);
+    public virtual global::Doroti.Framework.Painting.Decoration? indicator => ((this._data is not null) ? ((TabBarThemeData)this._data).indicator : this._indicator);
     public virtual global::Doroti.Ui.Color? indicatorColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((this._data is not null) ? ((TabBarThemeData)this._data).indicatorColor : this._indicatorColor));
     public virtual TabBarIndicatorSize? indicatorSize => ((this._data is not null) ? ((TabBarThemeData)this._data).indicatorSize : this._indicatorSize);
     public virtual global::Doroti.Ui.Color? dividerColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((this._data is not null) ? ((TabBarThemeData)this._data).dividerColor : this._dividerColor));
     public virtual double? dividerHeight => ((this._data is not null) ? ((TabBarThemeData)this._data).dividerHeight : this._dividerHeight);
     public virtual global::Doroti.Ui.Color? labelColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((this._data is not null) ? ((TabBarThemeData)this._data).labelColor : this._labelColor));
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? labelPadding => ((this._data is not null) ? ((TabBarThemeData)this._data).labelPadding : this._labelPadding);
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? labelStyle => ((this._data is not null) ? ((TabBarThemeData)this._data).labelStyle : this._labelStyle);
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding => ((this._data is not null) ? ((TabBarThemeData)this._data).labelPadding : this._labelPadding);
+    public virtual global::Doroti.Framework.Painting.TextStyle? labelStyle => ((this._data is not null) ? ((TabBarThemeData)this._data).labelStyle : this._labelStyle);
     public virtual global::Doroti.Ui.Color? unselectedLabelColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((this._data is not null) ? ((TabBarThemeData)this._data).unselectedLabelColor : this._unselectedLabelColor));
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? unselectedLabelStyle => ((this._data is not null) ? ((TabBarThemeData)this._data).unselectedLabelStyle : this._unselectedLabelStyle);
-    public virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(((this._data is not null) ? ((TabBarThemeData)this._data).overlayColor : this._overlayColor));
+    public virtual global::Doroti.Framework.Painting.TextStyle? unselectedLabelStyle => ((this._data is not null) ? ((TabBarThemeData)this._data).unselectedLabelStyle : this._unselectedLabelStyle);
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(((this._data is not null) ? ((TabBarThemeData)this._data).overlayColor : this._overlayColor));
     public virtual InteractiveInkFeatureFactory? splashFactory => ((this._data is not null) ? ((TabBarThemeData)this._data).splashFactory : this._splashFactory);
-    public virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>? mouseCursor => ((this._data is not null) ? ((TabBarThemeData)this._data).mouseCursor : this._mouseCursor);
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor => ((this._data is not null) ? ((TabBarThemeData)this._data).mouseCursor : this._mouseCursor);
     public virtual TabAlignment? tabAlignment => ((this._data is not null) ? ((TabBarThemeData)this._data).tabAlignment : this._tabAlignment);
-    public virtual global::Doroti.Generated.Framework.Painting.TextScaler? textScaler => ((this._data is not null) ? ((TabBarThemeData)this._data).textScaler : this._textScaler);
+    public virtual global::Doroti.Framework.Painting.TextScaler? textScaler => ((this._data is not null) ? ((TabBarThemeData)this._data).textScaler : this._textScaler);
     public virtual TabIndicatorAnimation? indicatorAnimation => ((this._data is not null) ? ((TabBarThemeData)this._data).indicatorAnimation : this._indicatorAnimation);
     public virtual TabBarThemeData data => DartRuntimePrimitives.ConvertValue<TabBarThemeData>((this._data ?? new TabBarThemeData(indicator: this._indicator, indicatorColor: this._indicatorColor, indicatorSize: this._indicatorSize, dividerColor: this._dividerColor, dividerHeight: this._dividerHeight, labelColor: this._labelColor, labelPadding: this._labelPadding, labelStyle: this._labelStyle, unselectedLabelColor: this._unselectedLabelColor, unselectedLabelStyle: this._unselectedLabelStyle, overlayColor: this._overlayColor, splashFactory: this._splashFactory, mouseCursor: this._mouseCursor, tabAlignment: this._tabAlignment, textScaler: this._textScaler, indicatorAnimation: this._indicatorAnimation)));
-    public virtual TabBarTheme copyWith(global::Doroti.Generated.Framework.Painting.Decoration? indicator = null, Color? indicatorColor = null, TabBarIndicatorSize? indicatorSize = null, Color? dividerColor = null, double? dividerHeight = null, Color? labelColor = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? labelPadding = null, global::Doroti.Generated.Framework.Painting.TextStyle? labelStyle = null, Color? unselectedLabelColor = null, global::Doroti.Generated.Framework.Painting.TextStyle? unselectedLabelStyle = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, InteractiveInkFeatureFactory? splashFactory = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>? mouseCursor = null, TabAlignment? tabAlignment = null, global::Doroti.Generated.Framework.Painting.TextScaler? textScaler = null, TabIndicatorAnimation? indicatorAnimation = null)
+    public virtual TabBarTheme copyWith(global::Doroti.Framework.Painting.Decoration? indicator = null, Color? indicatorColor = null, TabBarIndicatorSize? indicatorSize = null, Color? dividerColor = null, double? dividerHeight = null, Color? labelColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding = null, global::Doroti.Framework.Painting.TextStyle? labelStyle = null, Color? unselectedLabelColor = null, global::Doroti.Framework.Painting.TextStyle? unselectedLabelStyle = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, InteractiveInkFeatureFactory? splashFactory = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor = null, TabAlignment? tabAlignment = null, global::Doroti.Framework.Painting.TextScaler? textScaler = null, TabIndicatorAnimation? indicatorAnimation = null)
     {
         return new TabBarTheme(indicator: (indicator ?? this.indicator), indicatorColor: (indicatorColor ?? this.indicatorColor), indicatorSize: (indicatorSize ?? this.indicatorSize), dividerColor: (dividerColor ?? this.dividerColor), dividerHeight: (dividerHeight ?? this.dividerHeight), labelColor: (labelColor ?? this.labelColor), labelPadding: (labelPadding ?? this.labelPadding), labelStyle: (labelStyle ?? this.labelStyle), unselectedLabelColor: (unselectedLabelColor ?? this.unselectedLabelColor), unselectedLabelStyle: (unselectedLabelStyle ?? this.unselectedLabelStyle), overlayColor: (overlayColor ?? this.overlayColor), splashFactory: (splashFactory ?? this.splashFactory), mouseCursor: (mouseCursor ?? this.mouseCursor), tabAlignment: (tabAlignment ?? this.tabAlignment), textScaler: (textScaler ?? this.textScaler), indicatorAnimation: (indicatorAnimation ?? this.indicatorAnimation));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static TabBarThemeData of(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static TabBarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
         TabBarTheme? tabBarTheme__11741 = ((TabBarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<TabBarTheme>());
         return (tabBarTheme__11741?.data ?? Theme.of(context).tabBarTheme);
@@ -96,14 +96,14 @@ public class TabBarTheme : global::Doroti.Generated.Framework.Widgets.InheritedT
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Generated.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((TabBarTheme)oldWidget).data)));
-    public override global::Doroti.Generated.Framework.Widgets.Widget wrap(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Widgets.Widget child)
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((TabBarTheme)oldWidget).data)));
+    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new TabBarTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new TabBarTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;
@@ -128,27 +128,27 @@ public class TabBarTheme : global::Doroti.Generated.Framework.Widgets.InheritedT
 
 }
 
-public class TabBarThemeData : global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class TabBarThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 {
-    public virtual global::Doroti.Generated.Framework.Painting.Decoration? indicator { get; private set; }
+    public virtual global::Doroti.Framework.Painting.Decoration? indicator { get; private set; }
     public virtual Color? indicatorColor { get; private set; }
     public virtual TabBarIndicatorSize? indicatorSize { get; private set; }
     public virtual Color? dividerColor { get; private set; }
     public virtual double? dividerHeight { get; private set; }
     public virtual Color? labelColor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? labelPadding { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? labelStyle { get; private set; }
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding { get; private set; }
+    public virtual global::Doroti.Framework.Painting.TextStyle? labelStyle { get; private set; }
     public virtual Color? unselectedLabelColor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? unselectedLabelStyle { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor { get; private set; }
+    public virtual global::Doroti.Framework.Painting.TextStyle? unselectedLabelStyle { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor { get; private set; }
     public virtual InteractiveInkFeatureFactory? splashFactory { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>? mouseCursor { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor { get; private set; }
     public virtual TabAlignment? tabAlignment { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.TextScaler? textScaler { get; private set; }
+    public virtual global::Doroti.Framework.Painting.TextScaler? textScaler { get; private set; }
     public virtual TabIndicatorAnimation? indicatorAnimation { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.BorderRadius? splashBorderRadius { get; private set; }
+    public virtual global::Doroti.Framework.Painting.BorderRadius? splashBorderRadius { get; private set; }
 
-    public TabBarThemeData(global::Doroti.Generated.Framework.Painting.Decoration? indicator = null, Color? indicatorColor = null, TabBarIndicatorSize? indicatorSize = null, Color? dividerColor = null, double? dividerHeight = null, Color? labelColor = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? labelPadding = null, global::Doroti.Generated.Framework.Painting.TextStyle? labelStyle = null, Color? unselectedLabelColor = null, global::Doroti.Generated.Framework.Painting.TextStyle? unselectedLabelStyle = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, InteractiveInkFeatureFactory? splashFactory = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>? mouseCursor = null, TabAlignment? tabAlignment = null, global::Doroti.Generated.Framework.Painting.TextScaler? textScaler = null, TabIndicatorAnimation? indicatorAnimation = null, global::Doroti.Generated.Framework.Painting.BorderRadius? splashBorderRadius = null)
+    public TabBarThemeData(global::Doroti.Framework.Painting.Decoration? indicator = null, Color? indicatorColor = null, TabBarIndicatorSize? indicatorSize = null, Color? dividerColor = null, double? dividerHeight = null, Color? labelColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding = null, global::Doroti.Framework.Painting.TextStyle? labelStyle = null, Color? unselectedLabelColor = null, global::Doroti.Framework.Painting.TextStyle? unselectedLabelStyle = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, InteractiveInkFeatureFactory? splashFactory = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor = null, TabAlignment? tabAlignment = null, global::Doroti.Framework.Painting.TextScaler? textScaler = null, TabIndicatorAnimation? indicatorAnimation = null, global::Doroti.Framework.Painting.BorderRadius? splashBorderRadius = null)
     {
         this.indicator = indicator;
         this.indicatorColor = indicatorColor;
@@ -169,7 +169,7 @@ public class TabBarThemeData : global::Doroti.Generated.Framework.Foundation.Dia
         this.splashBorderRadius = splashBorderRadius;
     }
 
-    public virtual TabBarThemeData copyWith(global::Doroti.Generated.Framework.Painting.Decoration? indicator = null, Color? indicatorColor = null, TabBarIndicatorSize? indicatorSize = null, Color? dividerColor = null, double? dividerHeight = null, Color? labelColor = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? labelPadding = null, global::Doroti.Generated.Framework.Painting.TextStyle? labelStyle = null, Color? unselectedLabelColor = null, global::Doroti.Generated.Framework.Painting.TextStyle? unselectedLabelStyle = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, InteractiveInkFeatureFactory? splashFactory = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>? mouseCursor = null, TabAlignment? tabAlignment = null, global::Doroti.Generated.Framework.Painting.TextScaler? textScaler = null, TabIndicatorAnimation? indicatorAnimation = null, global::Doroti.Generated.Framework.Painting.BorderRadius? splashBorderRadius = null)
+    public virtual TabBarThemeData copyWith(global::Doroti.Framework.Painting.Decoration? indicator = null, Color? indicatorColor = null, TabBarIndicatorSize? indicatorSize = null, Color? dividerColor = null, double? dividerHeight = null, Color? labelColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding = null, global::Doroti.Framework.Painting.TextStyle? labelStyle = null, Color? unselectedLabelColor = null, global::Doroti.Framework.Painting.TextStyle? unselectedLabelStyle = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? overlayColor = null, InteractiveInkFeatureFactory? splashFactory = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor = null, TabAlignment? tabAlignment = null, global::Doroti.Framework.Painting.TextScaler? textScaler = null, TabIndicatorAnimation? indicatorAnimation = null, global::Doroti.Framework.Painting.BorderRadius? splashBorderRadius = null)
     {
         return new TabBarThemeData(indicator: (indicator ?? this.indicator), indicatorColor: (indicatorColor ?? this.indicatorColor), indicatorSize: (indicatorSize ?? this.indicatorSize), dividerColor: (dividerColor ?? this.dividerColor), dividerHeight: (dividerHeight ?? this.dividerHeight), labelColor: (labelColor ?? this.labelColor), labelPadding: (labelPadding ?? this.labelPadding), labelStyle: (labelStyle ?? this.labelStyle), unselectedLabelColor: (unselectedLabelColor ?? this.unselectedLabelColor), unselectedLabelStyle: (unselectedLabelStyle ?? this.unselectedLabelStyle), overlayColor: (overlayColor ?? this.overlayColor), splashFactory: (splashFactory ?? this.splashFactory), mouseCursor: (mouseCursor ?? this.mouseCursor), tabAlignment: (tabAlignment ?? this.tabAlignment), textScaler: (textScaler ?? this.textScaler), indicatorAnimation: (indicatorAnimation ?? this.indicatorAnimation), splashBorderRadius: (splashBorderRadius ?? this.splashBorderRadius));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -201,28 +201,28 @@ public class TabBarThemeData : global::Doroti.Generated.Framework.Foundation.Dia
         return ((((((((((((((((((__other is TabBarThemeData) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).indicator, this.indicator))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).indicatorColor, this.indicatorColor))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).indicatorSize, this.indicatorSize))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).dividerColor, this.dividerColor))) && (((TabBarThemeData)((TabBarThemeData)__other)).dividerHeight == this.dividerHeight)) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).labelColor, this.labelColor))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).labelPadding, this.labelPadding))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).labelStyle, this.labelStyle))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).unselectedLabelColor, this.unselectedLabelColor))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).unselectedLabelStyle, this.unselectedLabelStyle))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).overlayColor, this.overlayColor))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).splashFactory, this.splashFactory))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).mouseCursor, this.mouseCursor))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).tabAlignment, this.tabAlignment))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).textScaler, this.textScaler))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).indicatorAnimation, this.indicatorAnimation))) && (object.Equals(((TabBarThemeData)((TabBarThemeData)__other)).splashBorderRadius, this.splashBorderRadius)));
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.Decoration?>("indicator", this.indicator, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Color?>("indicatorColor", this.indicatorColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<TabBarIndicatorSize?>("indicatorSize", this.indicatorSize, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Color?>("dividerColor", this.dividerColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<double?>("dividerHeight", this.dividerHeight, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Color?>("labelColor", this.labelColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry?>("labelPadding", this.labelPadding, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.TextStyle?>("labelStyle", this.labelStyle, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Color?>("unselectedLabelColor", this.unselectedLabelColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.TextStyle?>("unselectedLabelStyle", this.unselectedLabelStyle, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?>("overlayColor", this.overlayColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<InteractiveInkFeatureFactory?>("splashFactory", this.splashFactory, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>?>("mouseCursor", this.mouseCursor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<TabAlignment?>("tabAlignment", this.tabAlignment, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.TextScaler?>("textScaler", this.textScaler, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<TabIndicatorAnimation?>("indicatorAnimation", this.indicatorAnimation, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.BorderRadius?>("splashBorderRadius", this.splashBorderRadius, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration?>("indicator", this.indicator, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Color?>("indicatorColor", this.indicatorColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TabBarIndicatorSize?>("indicatorSize", this.indicatorSize, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Color?>("dividerColor", this.dividerColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<double?>("dividerHeight", this.dividerHeight, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Color?>("labelColor", this.labelColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>("labelPadding", this.labelPadding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle?>("labelStyle", this.labelStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Color?>("unselectedLabelColor", this.unselectedLabelColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle?>("unselectedLabelStyle", this.unselectedLabelStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?>("overlayColor", this.overlayColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<InteractiveInkFeatureFactory?>("splashFactory", this.splashFactory, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>?>("mouseCursor", this.mouseCursor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TabAlignment?>("tabAlignment", this.tabAlignment, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextScaler?>("textScaler", this.textScaler, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TabIndicatorAnimation?>("indicatorAnimation", this.indicatorAnimation, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BorderRadius?>("splashBorderRadius", this.splashBorderRadius, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;

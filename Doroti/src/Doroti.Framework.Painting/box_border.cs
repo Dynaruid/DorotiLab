@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public enum BoxShape
 {
@@ -441,7 +441,7 @@ public class Border : BoxBorder
                 }
                 return true;
             });
-        global::Doroti.Generated.Framework.Painting.BordersLibrary.paintBorder(canvas, rect, top: this.top, right: this.right, bottom: this.bottom, left: this.left);
+        global::Doroti.Framework.Painting.BordersLibrary.paintBorder(canvas, rect, top: this.top, right: this.right, bottom: this.bottom, left: this.left);
     }
 
     public override bool Equals(object? other)
@@ -464,10 +464,10 @@ public class Border : BoxBorder
     {
         if (this.isUniform)
         {
-            return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Border"))}.all({this.top})";
+            return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Border"))}.all({this.top})";
         }
         var arguments__26672 = new List<string>();
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Border"))}({string.Join(", ", arguments__26672)})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Border"))}({string.Join(", ", arguments__26672)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -695,7 +695,7 @@ public class BorderDirectional : BoxBorder
         DartRuntimePrimitives.Assert(() => (borderRadius is null));
         DartRuntimePrimitives.Assert(() => (object.Equals(shape, BoxShape.rectangle)));
         DartRuntimePrimitives.Assert(() => (this._strokeAlignIsUniform && (((BorderSide)this.top).strokeAlign == BorderSide.strokeAlignInside)));
-        global::Doroti.Generated.Framework.Painting.BordersLibrary.paintBorder(canvas, rect, top: this.top, left: left__36767, bottom: this.bottom, right: right__36784);
+        global::Doroti.Framework.Painting.BordersLibrary.paintBorder(canvas, rect, top: this.top, left: left__36767, bottom: this.bottom, right: right__36784);
     }
 
     public override bool Equals(object? other)
@@ -717,7 +717,7 @@ public class BorderDirectional : BoxBorder
     public override string ToString()
     {
         var arguments__39057 = new List<string>();
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "BorderDirectional"))}({string.Join(", ", arguments__39057)})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "BorderDirectional"))}({string.Join(", ", arguments__39057)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

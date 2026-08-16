@@ -12,9 +12,9 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
-public class AppBarTheme : global::Doroti.Generated.Framework.Widgets.InheritedTheme, global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class AppBarTheme : global::Doroti.Framework.Widgets.InheritedTheme, global::Doroti.Framework.Foundation.Diagnosticable
 {
     internal virtual AppBarThemeData? _data { get; private set; }
     internal virtual Color? _backgroundColor { get; private set; }
@@ -23,19 +23,19 @@ public class AppBarTheme : global::Doroti.Generated.Framework.Widgets.InheritedT
     internal virtual double? _scrolledUnderElevation { get; private set; }
     internal virtual Color? _shadowColor { get; private set; }
     internal virtual Color? _surfaceTintColor { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Painting.ShapeBorder? _shape { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Widgets.IconThemeData? _iconTheme { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Widgets.IconThemeData? _actionsIconTheme { get; private set; }
+    internal virtual global::Doroti.Framework.Painting.ShapeBorder? _shape { get; private set; }
+    internal virtual global::Doroti.Framework.Widgets.IconThemeData? _iconTheme { get; private set; }
+    internal virtual global::Doroti.Framework.Widgets.IconThemeData? _actionsIconTheme { get; private set; }
     internal virtual bool? _centerTitle { get; private set; }
     internal virtual double? _titleSpacing { get; private set; }
     internal virtual double? _leadingWidth { get; private set; }
     internal virtual double? _toolbarHeight { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Painting.TextStyle? _toolbarTextStyle { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Painting.TextStyle? _titleTextStyle { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Services.SystemUiOverlayStyle? _systemOverlayStyle { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? _actionsPadding { get; private set; }
+    internal virtual global::Doroti.Framework.Painting.TextStyle? _toolbarTextStyle { get; private set; }
+    internal virtual global::Doroti.Framework.Painting.TextStyle? _titleTextStyle { get; private set; }
+    internal virtual global::Doroti.Framework.Services.SystemUiOverlayStyle? _systemOverlayStyle { get; private set; }
+    internal virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? _actionsPadding { get; private set; }
 
-    public AppBarTheme(global::Doroti.Generated.Framework.Foundation.Key? key = null, Color? color = null, Color? backgroundColor = null, Color? foregroundColor = null, double? elevation = null, double? scrolledUnderElevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Generated.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Generated.Framework.Widgets.IconThemeData? iconTheme = null, global::Doroti.Generated.Framework.Widgets.IconThemeData? actionsIconTheme = null, bool? centerTitle = null, double? titleSpacing = null, double? leadingWidth = null, double? toolbarHeight = null, global::Doroti.Generated.Framework.Painting.TextStyle? toolbarTextStyle = null, global::Doroti.Generated.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Generated.Framework.Services.SystemUiOverlayStyle? systemOverlayStyle = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null, AppBarThemeData? data = null, global::Doroti.Generated.Framework.Widgets.Widget? child = null) : base(key: key, child: (child ?? new global::Doroti.Generated.Framework.Widgets.SizedBox()))
+    public AppBarTheme(global::Doroti.Framework.Foundation.Key? key = null, Color? color = null, Color? backgroundColor = null, Color? foregroundColor = null, double? elevation = null, double? scrolledUnderElevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Widgets.IconThemeData? iconTheme = null, global::Doroti.Framework.Widgets.IconThemeData? actionsIconTheme = null, bool? centerTitle = null, double? titleSpacing = null, double? leadingWidth = null, double? toolbarHeight = null, global::Doroti.Framework.Painting.TextStyle? toolbarTextStyle = null, global::Doroti.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Framework.Services.SystemUiOverlayStyle? systemOverlayStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null, AppBarThemeData? data = null, global::Doroti.Framework.Widgets.Widget? child = null) : base(key: key, child: (child ?? new global::Doroti.Framework.Widgets.SizedBox()))
     {
         this._backgroundColor = (backgroundColor ?? color);
         this._foregroundColor = foregroundColor;
@@ -65,26 +65,26 @@ public class AppBarTheme : global::Doroti.Generated.Framework.Widgets.InheritedT
     public virtual double? scrolledUnderElevation => ((this._data is not null) ? ((AppBarThemeData)this._data).scrolledUnderElevation : this._scrolledUnderElevation);
     public virtual global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((this._data is not null) ? ((AppBarThemeData)this._data).shadowColor : this._shadowColor));
     public virtual global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((this._data is not null) ? ((AppBarThemeData)this._data).surfaceTintColor : this._surfaceTintColor));
-    public virtual global::Doroti.Generated.Framework.Painting.ShapeBorder? shape => ((this._data is not null) ? ((AppBarThemeData)this._data).shape : this._shape);
-    public virtual global::Doroti.Generated.Framework.Widgets.IconThemeData? iconTheme => ((this._data is not null) ? ((AppBarThemeData)this._data).iconTheme : this._iconTheme);
-    public virtual global::Doroti.Generated.Framework.Widgets.IconThemeData? actionsIconTheme => ((this._data is not null) ? ((AppBarThemeData)this._data).actionsIconTheme : this._actionsIconTheme);
+    public virtual global::Doroti.Framework.Painting.ShapeBorder? shape => ((this._data is not null) ? ((AppBarThemeData)this._data).shape : this._shape);
+    public virtual global::Doroti.Framework.Widgets.IconThemeData? iconTheme => ((this._data is not null) ? ((AppBarThemeData)this._data).iconTheme : this._iconTheme);
+    public virtual global::Doroti.Framework.Widgets.IconThemeData? actionsIconTheme => ((this._data is not null) ? ((AppBarThemeData)this._data).actionsIconTheme : this._actionsIconTheme);
     public virtual bool? centerTitle => ((this._data is not null) ? ((AppBarThemeData)this._data).centerTitle : this._centerTitle);
     public virtual double? titleSpacing => ((this._data is not null) ? ((AppBarThemeData)this._data).titleSpacing : this._titleSpacing);
     public virtual double? leadingWidth => ((this._data is not null) ? ((AppBarThemeData)this._data).leadingWidth : this._leadingWidth);
     public virtual double? toolbarHeight => ((this._data is not null) ? ((AppBarThemeData)this._data).toolbarHeight : this._toolbarHeight);
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? toolbarTextStyle => ((this._data is not null) ? ((AppBarThemeData)this._data).toolbarTextStyle : this._toolbarTextStyle);
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? titleTextStyle => ((this._data is not null) ? ((AppBarThemeData)this._data).titleTextStyle : this._titleTextStyle);
-    public virtual global::Doroti.Generated.Framework.Services.SystemUiOverlayStyle? systemOverlayStyle => ((this._data is not null) ? ((AppBarThemeData)this._data).systemOverlayStyle : this._systemOverlayStyle);
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? actionsPadding => ((this._data is not null) ? ((AppBarThemeData)this._data).actionsPadding : this._actionsPadding);
+    public virtual global::Doroti.Framework.Painting.TextStyle? toolbarTextStyle => ((this._data is not null) ? ((AppBarThemeData)this._data).toolbarTextStyle : this._toolbarTextStyle);
+    public virtual global::Doroti.Framework.Painting.TextStyle? titleTextStyle => ((this._data is not null) ? ((AppBarThemeData)this._data).titleTextStyle : this._titleTextStyle);
+    public virtual global::Doroti.Framework.Services.SystemUiOverlayStyle? systemOverlayStyle => ((this._data is not null) ? ((AppBarThemeData)this._data).systemOverlayStyle : this._systemOverlayStyle);
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? actionsPadding => ((this._data is not null) ? ((AppBarThemeData)this._data).actionsPadding : this._actionsPadding);
     public virtual AppBarThemeData data => DartRuntimePrimitives.ConvertValue<AppBarThemeData>((this._data ?? new AppBarThemeData(backgroundColor: this._backgroundColor, foregroundColor: this._foregroundColor, elevation: this._elevation, scrolledUnderElevation: this._scrolledUnderElevation, shadowColor: this._shadowColor, surfaceTintColor: this._surfaceTintColor, shape: this._shape, iconTheme: this._iconTheme, actionsIconTheme: this._actionsIconTheme, centerTitle: this._centerTitle, titleSpacing: this._titleSpacing, leadingWidth: this._leadingWidth, toolbarHeight: this._toolbarHeight, toolbarTextStyle: this._toolbarTextStyle, titleTextStyle: this._titleTextStyle, systemOverlayStyle: this._systemOverlayStyle, actionsPadding: this._actionsPadding)));
-    public virtual AppBarTheme copyWith(global::Doroti.Generated.Framework.Widgets.IconThemeData? actionsIconTheme = null, Color? color = null, Color? backgroundColor = null, Color? foregroundColor = null, double? elevation = null, double? scrolledUnderElevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Generated.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Generated.Framework.Widgets.IconThemeData? iconTheme = null, bool? centerTitle = null, double? titleSpacing = null, double? leadingWidth = null, double? toolbarHeight = null, global::Doroti.Generated.Framework.Painting.TextStyle? toolbarTextStyle = null, global::Doroti.Generated.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Generated.Framework.Services.SystemUiOverlayStyle? systemOverlayStyle = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null)
+    public virtual AppBarTheme copyWith(global::Doroti.Framework.Widgets.IconThemeData? actionsIconTheme = null, Color? color = null, Color? backgroundColor = null, Color? foregroundColor = null, double? elevation = null, double? scrolledUnderElevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Widgets.IconThemeData? iconTheme = null, bool? centerTitle = null, double? titleSpacing = null, double? leadingWidth = null, double? toolbarHeight = null, global::Doroti.Framework.Painting.TextStyle? toolbarTextStyle = null, global::Doroti.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Framework.Services.SystemUiOverlayStyle? systemOverlayStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null)
     {
         DartRuntimePrimitives.Assert(() => ((color is null) || (backgroundColor is null)), () => (object?)"The color and backgroundColor parameters mean the same thing. Only specify one.");
         return new AppBarTheme(backgroundColor: ((backgroundColor ?? color) ?? this.backgroundColor), foregroundColor: (foregroundColor ?? this.foregroundColor), elevation: (elevation ?? this.elevation), scrolledUnderElevation: (scrolledUnderElevation ?? this.scrolledUnderElevation), shadowColor: (shadowColor ?? this.shadowColor), surfaceTintColor: (surfaceTintColor ?? this.surfaceTintColor), shape: (shape ?? this.shape), iconTheme: (iconTheme ?? this.iconTheme), actionsIconTheme: (actionsIconTheme ?? this.actionsIconTheme), centerTitle: (centerTitle ?? this.centerTitle), titleSpacing: (titleSpacing ?? this.titleSpacing), leadingWidth: (leadingWidth ?? this.leadingWidth), toolbarHeight: (toolbarHeight ?? this.toolbarHeight), toolbarTextStyle: (toolbarTextStyle ?? this.toolbarTextStyle), titleTextStyle: (titleTextStyle ?? this.titleTextStyle), systemOverlayStyle: (systemOverlayStyle ?? this.systemOverlayStyle), actionsPadding: (actionsPadding ?? this.actionsPadding));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static AppBarThemeData of(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static AppBarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
         AppBarTheme? appBarTheme__12409 = ((AppBarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<AppBarTheme>());
         return (appBarTheme__12409?.data ?? Theme.of(context).appBarTheme);
@@ -101,14 +101,14 @@ public class AppBarTheme : global::Doroti.Generated.Framework.Widgets.InheritedT
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Generated.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((AppBarTheme)oldWidget).data)));
-    public override global::Doroti.Generated.Framework.Widgets.Widget wrap(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Widgets.Widget child)
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((AppBarTheme)oldWidget).data)));
+    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new AppBarTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new AppBarTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;
@@ -133,7 +133,7 @@ public class AppBarTheme : global::Doroti.Generated.Framework.Widgets.InheritedT
 
 }
 
-public class AppBarThemeData : global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class AppBarThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 {
     public virtual Color? backgroundColor { get; private set; }
     public virtual Color? foregroundColor { get; private set; }
@@ -141,19 +141,19 @@ public class AppBarThemeData : global::Doroti.Generated.Framework.Foundation.Dia
     public virtual double? scrolledUnderElevation { get; private set; }
     public virtual Color? shadowColor { get; private set; }
     public virtual Color? surfaceTintColor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.ShapeBorder? shape { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.IconThemeData? iconTheme { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.IconThemeData? actionsIconTheme { get; private set; }
+    public virtual global::Doroti.Framework.Painting.ShapeBorder? shape { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.IconThemeData? iconTheme { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.IconThemeData? actionsIconTheme { get; private set; }
     public virtual bool? centerTitle { get; private set; }
     public virtual double? titleSpacing { get; private set; }
     public virtual double? leadingWidth { get; private set; }
     public virtual double? toolbarHeight { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? toolbarTextStyle { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? titleTextStyle { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Services.SystemUiOverlayStyle? systemOverlayStyle { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? actionsPadding { get; private set; }
+    public virtual global::Doroti.Framework.Painting.TextStyle? toolbarTextStyle { get; private set; }
+    public virtual global::Doroti.Framework.Painting.TextStyle? titleTextStyle { get; private set; }
+    public virtual global::Doroti.Framework.Services.SystemUiOverlayStyle? systemOverlayStyle { get; private set; }
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? actionsPadding { get; private set; }
 
-    public AppBarThemeData(Color? backgroundColor = null, Color? foregroundColor = null, Color? color = null, double? elevation = null, double? scrolledUnderElevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Generated.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Generated.Framework.Widgets.IconThemeData? iconTheme = null, global::Doroti.Generated.Framework.Widgets.IconThemeData? actionsIconTheme = null, bool? centerTitle = null, double? titleSpacing = null, double? leadingWidth = null, double? toolbarHeight = null, global::Doroti.Generated.Framework.Painting.TextStyle? toolbarTextStyle = null, global::Doroti.Generated.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Generated.Framework.Services.SystemUiOverlayStyle? systemOverlayStyle = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null)
+    public AppBarThemeData(Color? backgroundColor = null, Color? foregroundColor = null, Color? color = null, double? elevation = null, double? scrolledUnderElevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Widgets.IconThemeData? iconTheme = null, global::Doroti.Framework.Widgets.IconThemeData? actionsIconTheme = null, bool? centerTitle = null, double? titleSpacing = null, double? leadingWidth = null, double? toolbarHeight = null, global::Doroti.Framework.Painting.TextStyle? toolbarTextStyle = null, global::Doroti.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Framework.Services.SystemUiOverlayStyle? systemOverlayStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null)
     {
         this.backgroundColor = backgroundColor;
         this.foregroundColor = foregroundColor;
@@ -175,7 +175,7 @@ public class AppBarThemeData : global::Doroti.Generated.Framework.Foundation.Dia
         System.Diagnostics.Debug.Assert(((color is null) || (backgroundColor is null)));
     }
 
-    public virtual AppBarThemeData copyWith(Color? backgroundColor = null, Color? foregroundColor = null, Color? color = null, double? elevation = null, double? scrolledUnderElevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Generated.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Generated.Framework.Widgets.IconThemeData? iconTheme = null, global::Doroti.Generated.Framework.Widgets.IconThemeData? actionsIconTheme = null, bool? centerTitle = null, double? titleSpacing = null, double? leadingWidth = null, double? toolbarHeight = null, global::Doroti.Generated.Framework.Painting.TextStyle? toolbarTextStyle = null, global::Doroti.Generated.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Generated.Framework.Services.SystemUiOverlayStyle? systemOverlayStyle = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null)
+    public virtual AppBarThemeData copyWith(Color? backgroundColor = null, Color? foregroundColor = null, Color? color = null, double? elevation = null, double? scrolledUnderElevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, global::Doroti.Framework.Widgets.IconThemeData? iconTheme = null, global::Doroti.Framework.Widgets.IconThemeData? actionsIconTheme = null, bool? centerTitle = null, double? titleSpacing = null, double? leadingWidth = null, double? toolbarHeight = null, global::Doroti.Framework.Painting.TextStyle? toolbarTextStyle = null, global::Doroti.Framework.Painting.TextStyle? titleTextStyle = null, global::Doroti.Framework.Services.SystemUiOverlayStyle? systemOverlayStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? actionsPadding = null)
     {
         return new AppBarThemeData(backgroundColor: ((backgroundColor ?? color) ?? this.backgroundColor), foregroundColor: (foregroundColor ?? this.foregroundColor), elevation: (elevation ?? this.elevation), scrolledUnderElevation: (scrolledUnderElevation ?? this.scrolledUnderElevation), shadowColor: (shadowColor ?? this.shadowColor), surfaceTintColor: (surfaceTintColor ?? this.surfaceTintColor), shape: (shape ?? this.shape), iconTheme: (iconTheme ?? this.iconTheme), actionsIconTheme: (actionsIconTheme ?? this.actionsIconTheme), centerTitle: (centerTitle ?? this.centerTitle), titleSpacing: (titleSpacing ?? this.titleSpacing), leadingWidth: (leadingWidth ?? this.leadingWidth), toolbarHeight: (toolbarHeight ?? this.toolbarHeight), toolbarTextStyle: (toolbarTextStyle ?? this.toolbarTextStyle), titleTextStyle: (titleTextStyle ?? this.titleTextStyle), systemOverlayStyle: (systemOverlayStyle ?? this.systemOverlayStyle), actionsPadding: (actionsPadding ?? this.actionsPadding));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -207,28 +207,28 @@ public class AppBarThemeData : global::Doroti.Generated.Framework.Foundation.Dia
         return ((((((((((((((((((__other is AppBarThemeData) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).backgroundColor, this.backgroundColor))) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).foregroundColor, this.foregroundColor))) && (((AppBarThemeData)((AppBarThemeData)__other)).elevation == this.elevation)) && (((AppBarThemeData)((AppBarThemeData)__other)).scrolledUnderElevation == this.scrolledUnderElevation)) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).shadowColor, this.shadowColor))) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).shape, this.shape))) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).iconTheme, this.iconTheme))) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).actionsIconTheme, this.actionsIconTheme))) && (((AppBarThemeData)((AppBarThemeData)__other)).centerTitle == this.centerTitle)) && (((AppBarThemeData)((AppBarThemeData)__other)).titleSpacing == this.titleSpacing)) && (((AppBarThemeData)((AppBarThemeData)__other)).leadingWidth == this.leadingWidth)) && (((AppBarThemeData)((AppBarThemeData)__other)).toolbarHeight == this.toolbarHeight)) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).toolbarTextStyle, this.toolbarTextStyle))) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).titleTextStyle, this.titleTextStyle))) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).systemOverlayStyle, this.systemOverlayStyle))) && (object.Equals(((AppBarThemeData)((AppBarThemeData)__other)).actionsPadding, this.actionsPadding)));
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("backgroundColor", this.backgroundColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("foregroundColor", this.foregroundColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("elevation", this.elevation, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("scrolledUnderElevation", this.scrolledUnderElevation, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("shadowColor", this.shadowColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("surfaceTintColor", this.surfaceTintColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.ShapeBorder>("shape", this.shape, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Widgets.IconThemeData>("iconTheme", this.iconTheme, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Widgets.IconThemeData>("actionsIconTheme", this.actionsIconTheme, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<bool>("centerTitle", this.centerTitle, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("titleSpacing", this.titleSpacing, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("leadingWidth", this.leadingWidth, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("toolbarHeight", this.toolbarHeight, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.TextStyle>("toolbarTextStyle", this.toolbarTextStyle, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.TextStyle>("titleTextStyle", this.titleTextStyle, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Services.SystemUiOverlayStyle?>("systemOverlayStyle", this.systemOverlayStyle, defaultValue: null, description: ((this.systemOverlayStyle is null) ? null : $"SystemUiOverlayStyle({string.Join(", ", ((Func<List<string>>)(() => { var __collection24269 = new List<string>(); if ((this.systemOverlayStyle?.systemNavigationBarColor is not null)) { __collection24269.Add($"systemNavigationBarColor: {this.systemOverlayStyle?.systemNavigationBarColor}"); } if ((this.systemOverlayStyle?.systemNavigationBarDividerColor is not null)) { __collection24269.Add($"systemNavigationBarDividerColor: {this.systemOverlayStyle?.systemNavigationBarDividerColor}"); } if ((this.systemOverlayStyle?.systemNavigationBarIconBrightness is not null)) { __collection24269.Add($"systemNavigationBarIconBrightness: {this.systemOverlayStyle?.systemNavigationBarIconBrightness}"); } if ((this.systemOverlayStyle?.statusBarColor is not null)) { __collection24269.Add($"statusBarColor: {this.systemOverlayStyle?.statusBarColor}"); } if ((this.systemOverlayStyle?.statusBarBrightness is not null)) { __collection24269.Add($"statusBarBrightness: {this.systemOverlayStyle?.statusBarBrightness}"); } if ((this.systemOverlayStyle?.statusBarIconBrightness is not null)) { __collection24269.Add($"statusBarIconBrightness: {this.systemOverlayStyle?.statusBarIconBrightness}"); } if ((this.systemOverlayStyle?.systemStatusBarContrastEnforced is not null)) { __collection24269.Add($"systemStatusBarContrastEnforced: {this.systemOverlayStyle?.systemStatusBarContrastEnforced}"); } if ((this.systemOverlayStyle?.systemNavigationBarContrastEnforced is not null)) { __collection24269.Add($"systemNavigationBarContrastEnforced: {this.systemOverlayStyle?.systemNavigationBarContrastEnforced}"); } return __collection24269; }))().where(((s) => (s.Length != 0))))})")));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry?>("actionsPadding", this.actionsPadding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("backgroundColor", this.backgroundColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("foregroundColor", this.foregroundColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", this.elevation, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("scrolledUnderElevation", this.scrolledUnderElevation, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", this.shadowColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceTintColor", this.surfaceTintColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", this.shape, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.IconThemeData>("iconTheme", this.iconTheme, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.IconThemeData>("actionsIconTheme", this.actionsIconTheme, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("centerTitle", this.centerTitle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("titleSpacing", this.titleSpacing, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("leadingWidth", this.leadingWidth, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("toolbarHeight", this.toolbarHeight, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("toolbarTextStyle", this.toolbarTextStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("titleTextStyle", this.titleTextStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Services.SystemUiOverlayStyle?>("systemOverlayStyle", this.systemOverlayStyle, defaultValue: null, description: ((this.systemOverlayStyle is null) ? null : $"SystemUiOverlayStyle({string.Join(", ", ((Func<List<string>>)(() => { var __collection24269 = new List<string>(); if ((this.systemOverlayStyle?.systemNavigationBarColor is not null)) { __collection24269.Add($"systemNavigationBarColor: {this.systemOverlayStyle?.systemNavigationBarColor}"); } if ((this.systemOverlayStyle?.systemNavigationBarDividerColor is not null)) { __collection24269.Add($"systemNavigationBarDividerColor: {this.systemOverlayStyle?.systemNavigationBarDividerColor}"); } if ((this.systemOverlayStyle?.systemNavigationBarIconBrightness is not null)) { __collection24269.Add($"systemNavigationBarIconBrightness: {this.systemOverlayStyle?.systemNavigationBarIconBrightness}"); } if ((this.systemOverlayStyle?.statusBarColor is not null)) { __collection24269.Add($"statusBarColor: {this.systemOverlayStyle?.statusBarColor}"); } if ((this.systemOverlayStyle?.statusBarBrightness is not null)) { __collection24269.Add($"statusBarBrightness: {this.systemOverlayStyle?.statusBarBrightness}"); } if ((this.systemOverlayStyle?.statusBarIconBrightness is not null)) { __collection24269.Add($"statusBarIconBrightness: {this.systemOverlayStyle?.statusBarIconBrightness}"); } if ((this.systemOverlayStyle?.systemStatusBarContrastEnforced is not null)) { __collection24269.Add($"systemStatusBarContrastEnforced: {this.systemOverlayStyle?.systemStatusBarContrastEnforced}"); } if ((this.systemOverlayStyle?.systemNavigationBarContrastEnforced is not null)) { __collection24269.Add($"systemNavigationBarContrastEnforced: {this.systemOverlayStyle?.systemNavigationBarContrastEnforced}"); } return __collection24269; }))().where(((s) => (s.Length != 0))))})")));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>("actionsPadding", this.actionsPadding, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;

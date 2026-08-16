@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Gestures;
+namespace Doroti.Framework.Gestures;
 
 public static partial class ConverterLibrary
 {
@@ -29,11 +29,11 @@ public static partial class ConverterLibrary
             case PointerDeviceKind.stylus:
             case PointerDeviceKind.invertedStylus:
                 {
-                    return ((buttons == 0L) ? global::Doroti.Generated.Framework.Gestures.EventsLibrary.kPrimaryButton : buttons);
+                    return ((buttons == 0L) ? global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton : buttons);
                 }
             case PointerDeviceKind.unknown:
                 {
-                    return ((buttons == 0L) ? global::Doroti.Generated.Framework.Gestures.EventsLibrary.kPrimaryButton : buttons);
+                    return ((buttons == 0L) ? global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton : buttons);
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");

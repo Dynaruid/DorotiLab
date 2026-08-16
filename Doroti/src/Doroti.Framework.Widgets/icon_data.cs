@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class IconData
 {
@@ -39,7 +39,7 @@ public class IconData
         {
             return false;
         }
-        return ((((((__other is IconData) && (((IconData)((IconData)__other)).codePoint == this.codePoint)) && (((IconData)((IconData)__other)).fontFamily == this.fontFamily)) && (((IconData)((IconData)__other)).fontPackage == this.fontPackage)) && (((IconData)((IconData)__other)).matchTextDirection == this.matchTextDirection)) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals(((IconData)((IconData)__other)).fontFamilyFallback, this.fontFamilyFallback));
+        return ((((((__other is IconData) && (((IconData)((IconData)__other)).codePoint == this.codePoint)) && (((IconData)((IconData)__other)).fontFamily == this.fontFamily)) && (((IconData)((IconData)__other)).fontPackage == this.fontPackage)) && (((IconData)((IconData)__other)).matchTextDirection == this.matchTextDirection)) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(((IconData)((IconData)__other)).fontFamilyFallback, this.fontFamilyFallback));
     }
 
     public override int GetHashCode()
@@ -50,13 +50,13 @@ public class IconData
     public override string ToString() => $"IconData(U+{this.codePoint.toRadixString(16L).toUpperCase().padLeft(5L, "0")})";
 }
 
-public class IconDataProperty : global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<IconData>
+public class IconDataProperty : global::Doroti.Framework.Foundation.DiagnosticsProperty<IconData>
 {
-    public IconDataProperty(string name, IconData? value, string? ifNull = null, bool showName = true, global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle style = global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.singleLine, global::Doroti.Generated.Framework.Foundation.DiagnosticLevel level = global::Doroti.Generated.Framework.Foundation.DiagnosticLevel.info) : base(name, value, ifNull: ifNull, showName: showName, style: style, level: level)
+    public IconDataProperty(string name, IconData? value, string? ifNull = null, bool showName = true, global::Doroti.Framework.Foundation.DiagnosticsTreeStyle style = global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.singleLine, global::Doroti.Framework.Foundation.DiagnosticLevel level = global::Doroti.Framework.Foundation.DiagnosticLevel.info) : base(name, value, ifNull: ifNull, showName: showName, style: style, level: level)
     {
     }
 
-    public virtual DartMap<string, object> toJsonMap(global::Doroti.Generated.Framework.Foundation.DiagnosticsSerializationDelegate @delegate)
+    public virtual DartMap<string, object> toJsonMap(global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate @delegate)
     {
         DartMap<string, object?> json__4260 = ((DartMap<string, object?>)(object?)base.toJsonMap(@delegate));
         if ((this.value is not null))

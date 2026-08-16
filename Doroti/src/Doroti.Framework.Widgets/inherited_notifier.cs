@@ -12,13 +12,13 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
-public abstract class InheritedNotifier<T> : InheritedWidget where T : global::Doroti.Generated.Framework.Foundation.Listenable
+public abstract class InheritedNotifier<T> : InheritedWidget where T : global::Doroti.Framework.Foundation.Listenable
 {
     public virtual T? notifier { get; private set; }
 
-    protected InheritedNotifier(global::Doroti.Generated.Framework.Foundation.Key? key = null, T? notifier = default, Widget child = default!) : base(key: key, child: child)
+    protected InheritedNotifier(global::Doroti.Framework.Foundation.Key? key = null, T? notifier = default, Widget child = default!) : base(key: key, child: child)
     {
         this.notifier = notifier;
     }
@@ -33,7 +33,7 @@ public abstract class InheritedNotifier<T> : InheritedWidget where T : global::D
     public override InheritedElement createElement() => DartRuntimePrimitives.ConvertValue<InheritedElement>(new _InheritedNotifierElement__inherited_notifier<T>(this));
 }
 
-internal class _InheritedNotifierElement__inherited_notifier<T> : InheritedElement where T : global::Doroti.Generated.Framework.Foundation.Listenable
+internal class _InheritedNotifierElement__inherited_notifier<T> : InheritedElement where T : global::Doroti.Framework.Foundation.Listenable
 {
     internal virtual bool _dirty { get; set; } = false;
 

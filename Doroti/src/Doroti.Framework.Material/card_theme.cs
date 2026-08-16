@@ -12,9 +12,9 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
-public class CardTheme : global::Doroti.Generated.Framework.Widgets.InheritedWidget, global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class CardTheme : global::Doroti.Framework.Widgets.InheritedWidget, global::Doroti.Framework.Foundation.Diagnosticable
 {
     internal virtual CardThemeData? _data { get; private set; }
     internal virtual Clip? _clipBehavior { get; private set; }
@@ -22,10 +22,10 @@ public class CardTheme : global::Doroti.Generated.Framework.Widgets.InheritedWid
     internal virtual Color? _surfaceTintColor { get; private set; }
     internal virtual Color? _shadowColor { get; private set; }
     internal virtual double? _elevation { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? _margin { get; private set; }
-    internal virtual global::Doroti.Generated.Framework.Painting.ShapeBorder? _shape { get; private set; }
+    internal virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? _margin { get; private set; }
+    internal virtual global::Doroti.Framework.Painting.ShapeBorder? _shape { get; private set; }
 
-    public CardTheme(global::Doroti.Generated.Framework.Foundation.Key? key = null, Clip? clipBehavior = null, Color? color = null, Color? surfaceTintColor = null, Color? shadowColor = null, double? elevation = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? margin = null, global::Doroti.Generated.Framework.Painting.ShapeBorder? shape = null, CardThemeData? data = null, global::Doroti.Generated.Framework.Widgets.Widget? child = null) : base(key: key, child: (child ?? new global::Doroti.Generated.Framework.Widgets.SizedBox()))
+    public CardTheme(global::Doroti.Framework.Foundation.Key? key = null, Clip? clipBehavior = null, Color? color = null, Color? surfaceTintColor = null, Color? shadowColor = null, double? elevation = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? margin = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null, CardThemeData? data = null, global::Doroti.Framework.Widgets.Widget? child = null) : base(key: key, child: (child ?? new global::Doroti.Framework.Widgets.SizedBox()))
     {
         this._data = data;
         this._clipBehavior = clipBehavior;
@@ -44,8 +44,8 @@ public class CardTheme : global::Doroti.Generated.Framework.Widgets.InheritedWid
     public virtual global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((this._data is not null) ? ((CardThemeData)this._data).surfaceTintColor : this._surfaceTintColor));
     public virtual global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((this._data is not null) ? ((CardThemeData)this._data).shadowColor : this._shadowColor));
     public virtual double? elevation => ((this._data is not null) ? ((CardThemeData)this._data).elevation : this._elevation);
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? margin => ((this._data is not null) ? ((CardThemeData)this._data).margin : this._margin);
-    public virtual global::Doroti.Generated.Framework.Painting.ShapeBorder? shape => ((this._data is not null) ? ((CardThemeData)this._data).shape : this._shape);
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? margin => ((this._data is not null) ? ((CardThemeData)this._data).margin : this._margin);
+    public virtual global::Doroti.Framework.Painting.ShapeBorder? shape => ((this._data is not null) ? ((CardThemeData)this._data).shape : this._shape);
     public virtual CardThemeData data
     {
         get
@@ -54,20 +54,20 @@ public class CardTheme : global::Doroti.Generated.Framework.Widgets.InheritedWid
             return default!;
         }
     }
-    public virtual CardTheme copyWith(Clip? clipBehavior = null, Color? color = null, Color? shadowColor = null, Color? surfaceTintColor = null, double? elevation = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? margin = null, global::Doroti.Generated.Framework.Painting.ShapeBorder? shape = null)
+    public virtual CardTheme copyWith(Clip? clipBehavior = null, Color? color = null, Color? shadowColor = null, Color? surfaceTintColor = null, double? elevation = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? margin = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null)
     {
         return new CardTheme(clipBehavior: (clipBehavior ?? this.clipBehavior), color: (color ?? this.color), shadowColor: (shadowColor ?? this.shadowColor), surfaceTintColor: (surfaceTintColor ?? this.surfaceTintColor), elevation: (elevation ?? this.elevation), margin: (margin ?? this.margin), shape: (shape ?? this.shape));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static CardThemeData of(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static CardThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
         CardTheme? cardTheme__5957 = ((CardTheme?)(object?)context.dependOnInheritedWidgetOfExactType<CardTheme>());
         return (cardTheme__5957?.data ?? Theme.of(context).cardTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Generated.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((CardTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((CardTheme)oldWidget).data)));
     public static CardTheme lerp(CardTheme? a, CardTheme? b, double t)
     {
         if ((DartRuntimePrimitives.Identical(a, b) && (a is not null)))
@@ -78,18 +78,18 @@ public class CardTheme : global::Doroti.Generated.Framework.Widgets.InheritedWid
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("shadowColor", this.shadowColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("surfaceTintColor", this.surfaceTintColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<double>("elevation", this.elevation, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry>("margin", this.margin, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.ShapeBorder>("shape", this.shape, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", this.shadowColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceTintColor", this.surfaceTintColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<double>("elevation", this.elevation, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("margin", this.margin, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", this.shape, defaultValue: null));
     }
 
-    public override string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;
@@ -110,17 +110,17 @@ public class CardTheme : global::Doroti.Generated.Framework.Widgets.InheritedWid
 
 }
 
-public class CardThemeData : global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class CardThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 {
     public virtual Clip? clipBehavior { get; private set; }
     public virtual Color? color { get; private set; }
     public virtual Color? shadowColor { get; private set; }
     public virtual Color? surfaceTintColor { get; private set; }
     public virtual double? elevation { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? margin { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.ShapeBorder? shape { get; private set; }
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? margin { get; private set; }
+    public virtual global::Doroti.Framework.Painting.ShapeBorder? shape { get; private set; }
 
-    public CardThemeData(Clip? clipBehavior = null, Color? color = null, Color? shadowColor = null, Color? surfaceTintColor = null, double? elevation = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? margin = null, global::Doroti.Generated.Framework.Painting.ShapeBorder? shape = null)
+    public CardThemeData(Clip? clipBehavior = null, Color? color = null, Color? shadowColor = null, Color? surfaceTintColor = null, double? elevation = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? margin = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null)
     {
         this.clipBehavior = clipBehavior;
         this.color = color;
@@ -132,7 +132,7 @@ public class CardThemeData : global::Doroti.Generated.Framework.Foundation.Diagn
         System.Diagnostics.Debug.Assert(((elevation is null) || (elevation >= 0.0)));
     }
 
-    public virtual CardThemeData copyWith(Clip? clipBehavior = null, Color? color = null, Color? shadowColor = null, Color? surfaceTintColor = null, double? elevation = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? margin = null, global::Doroti.Generated.Framework.Painting.ShapeBorder? shape = null)
+    public virtual CardThemeData copyWith(Clip? clipBehavior = null, Color? color = null, Color? shadowColor = null, Color? surfaceTintColor = null, double? elevation = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? margin = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null)
     {
         return new CardThemeData(clipBehavior: (clipBehavior ?? this.clipBehavior), color: (color ?? this.color), shadowColor: (shadowColor ?? this.shadowColor), surfaceTintColor: (surfaceTintColor ?? this.surfaceTintColor), elevation: (elevation ?? this.elevation), margin: (margin ?? this.margin), shape: (shape ?? this.shape));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -164,18 +164,18 @@ public class CardThemeData : global::Doroti.Generated.Framework.Foundation.Diagn
         return ((((((((__other is CardThemeData) && (object.Equals(((CardThemeData)((CardThemeData)__other)).clipBehavior, this.clipBehavior))) && (object.Equals(((CardThemeData)((CardThemeData)__other)).color, this.color))) && (object.Equals(((CardThemeData)((CardThemeData)__other)).shadowColor, this.shadowColor))) && (object.Equals(((CardThemeData)((CardThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (((CardThemeData)((CardThemeData)__other)).elevation == this.elevation)) && (object.Equals(((CardThemeData)((CardThemeData)__other)).margin, this.margin))) && (object.Equals(((CardThemeData)((CardThemeData)__other)).shape, this.shape)));
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("shadowColor", this.shadowColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("surfaceTintColor", this.surfaceTintColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<double>("elevation", this.elevation, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry>("margin", this.margin, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.ShapeBorder>("shape", this.shape, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", this.shadowColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceTintColor", this.surfaceTintColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<double>("elevation", this.elevation, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("margin", this.margin, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.ShapeBorder>("shape", this.shape, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;

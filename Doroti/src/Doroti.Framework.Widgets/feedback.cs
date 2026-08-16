@@ -12,25 +12,25 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public abstract class Feedback
 {
     public static async Future forTap(BuildContext context)
     {
-        ((dynamic)context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Generated.Framework.Semantics.TapSemanticEvent());
-        switch (global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        ((dynamic)context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.TapSemanticEvent());
+        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.fuchsia:
+            case global::Doroti.Framework.Foundation.TargetPlatform.android:
+            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
                 {
-                    await SystemSound.play(global::Doroti.Generated.Framework.Services.SystemSoundType.click);
+                    await SystemSound.play(global::Doroti.Framework.Services.SystemSoundType.click);
                     return;
                 }
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.iOS:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.macOS:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.windows:
+            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
+            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
                 {
                     await Future.value();
                     return;
@@ -55,21 +55,21 @@ callback();
 
     public static Future forLongPress(BuildContext context)
     {
-        ((dynamic)context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Generated.Framework.Semantics.LongPressSemanticsEvent());
-        switch (global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        ((dynamic)context.findRenderObject()!).sendSemanticsEvent(new global::Doroti.Framework.Semantics.LongPressSemanticsEvent());
+        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.fuchsia:
+            case global::Doroti.Framework.Foundation.TargetPlatform.android:
+            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
                 {
                     return ((Future)(object?)HapticFeedback.vibrate());
                 }
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.iOS:
+            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
                 {
-                    return ((Future)(object?)global::Doroti.Runtime.DartAsyncRuntime.wait(new List<Future> { SystemSound.play(global::Doroti.Generated.Framework.Services.SystemSoundType.click), HapticFeedback.heavyImpact() }));
+                    return ((Future)(object?)global::Doroti.Runtime.DartAsyncRuntime.wait(new List<Future> { SystemSound.play(global::Doroti.Framework.Services.SystemSoundType.click), HapticFeedback.heavyImpact() }));
                 }
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.macOS:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.windows:
+            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
+            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
                 {
                     return Future.value();
                 }

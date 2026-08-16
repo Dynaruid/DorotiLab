@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
 public static partial class Floating_action_button_locationLibrary
 {
@@ -61,7 +61,7 @@ public abstract class FloatingActionButtonLocation
     }
 
     public abstract global::Doroti.Ui.Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry);
-    public override string ToString() => global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FloatingActionButtonLocation");
+    public override string ToString() => global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FloatingActionButtonLocation");
 }
 
 public abstract class StandardFabLocation : FloatingActionButtonLocation
@@ -905,16 +905,16 @@ public abstract class FloatingActionButtonAnimator
     }
 
     public abstract global::Doroti.Ui.Offset getOffset(Offset begin, Offset end, double progress);
-    public abstract global::Doroti.Generated.Framework.Animation.Animation<double> getScaleAnimation(global::Doroti.Generated.Framework.Animation.Animation<double> parent);
-    public abstract global::Doroti.Generated.Framework.Animation.Animation<double> getRotationAnimation(global::Doroti.Generated.Framework.Animation.Animation<double> parent);
+    public abstract global::Doroti.Framework.Animation.Animation<double> getScaleAnimation(global::Doroti.Framework.Animation.Animation<double> parent);
+    public abstract global::Doroti.Framework.Animation.Animation<double> getRotationAnimation(global::Doroti.Framework.Animation.Animation<double> parent);
     public virtual double getAnimationRestart(double previousValue) => 0.0;
-    public override string ToString() => global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FloatingActionButtonAnimator");
+    public override string ToString() => global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FloatingActionButtonAnimator");
 }
 
 internal class _ScalingFabMotionAnimator__floating_action_button_location : FloatingActionButtonAnimator
 {
-    internal static global::Doroti.Generated.Framework.Animation.Animatable<double> _rotationTween = ((global::Doroti.Generated.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: (1.0 - (Floating_action_button_locationLibrary.kFloatingActionButtonTurnInterval * 2.0)), end: 1.0));
-    internal static global::Doroti.Generated.Framework.Animation.Animatable<double> _thresholdCenterTween = ((global::Doroti.Generated.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Generated.Framework.Animation.CurveTween(curve: new global::Doroti.Generated.Framework.Animation.Threshold(0.5)));
+    internal static global::Doroti.Framework.Animation.Animatable<double> _rotationTween = ((global::Doroti.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Framework.Animation.Tween<double>(begin: (1.0 - (Floating_action_button_locationLibrary.kFloatingActionButtonTurnInterval * 2.0)), end: 1.0));
+    internal static global::Doroti.Framework.Animation.Animatable<double> _thresholdCenterTween = ((global::Doroti.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Threshold(0.5)));
 
     internal _ScalingFabMotionAnimator__floating_action_button_location()
     {
@@ -933,16 +933,16 @@ internal class _ScalingFabMotionAnimator__floating_action_button_location : Floa
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Animation.Animation<double> getScaleAnimation(global::Doroti.Generated.Framework.Animation.Animation<double> parent)
+    public override global::Doroti.Framework.Animation.Animation<double> getScaleAnimation(global::Doroti.Framework.Animation.Animation<double> parent)
     {
-        global::Doroti.Generated.Framework.Animation.Curve curve__43656 = ((global::Doroti.Generated.Framework.Animation.Curve)(object?)new global::Doroti.Generated.Framework.Animation.Interval(0.5, 1.0, curve: global::Doroti.Generated.Framework.Animation.Curves.ease));
-        return ((global::Doroti.Generated.Framework.Animation.Animation<double>)(object?)new _AnimationSwap__floating_action_button_location<double>(new global::Doroti.Generated.Framework.Animation.ReverseAnimation(parent.drive(new global::Doroti.Generated.Framework.Animation.CurveTween(curve: ((global::Doroti.Generated.Framework.Animation.Curve)curve__43656).flipped))), parent.drive(new global::Doroti.Generated.Framework.Animation.CurveTween(curve: curve__43656)), parent, 0.5));
+        global::Doroti.Framework.Animation.Curve curve__43656 = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Interval(0.5, 1.0, curve: global::Doroti.Framework.Animation.Curves.ease));
+        return ((global::Doroti.Framework.Animation.Animation<double>)(object?)new _AnimationSwap__floating_action_button_location<double>(new global::Doroti.Framework.Animation.ReverseAnimation(parent.drive(new global::Doroti.Framework.Animation.CurveTween(curve: ((global::Doroti.Framework.Animation.Curve)curve__43656).flipped))), parent.drive(new global::Doroti.Framework.Animation.CurveTween(curve: curve__43656)), parent, 0.5));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Animation.Animation<double> getRotationAnimation(global::Doroti.Generated.Framework.Animation.Animation<double> parent)
+    public override global::Doroti.Framework.Animation.Animation<double> getRotationAnimation(global::Doroti.Framework.Animation.Animation<double> parent)
     {
-        return ((global::Doroti.Generated.Framework.Animation.Animation<double>)(object?)new _AnimationSwap__floating_action_button_location<double>(parent.drive(_rotationTween), new global::Doroti.Generated.Framework.Animation.ReverseAnimation(parent.drive(_thresholdCenterTween)), parent, 0.5));
+        return ((global::Doroti.Framework.Animation.Animation<double>)(object?)new _AnimationSwap__floating_action_button_location<double>(parent.drive(_rotationTween), new global::Doroti.Framework.Animation.ReverseAnimation(parent.drive(_thresholdCenterTween)), parent, 0.5));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -961,30 +961,30 @@ internal class _NoAnimationFabMotionAnimator__floating_action_button_location : 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Animation.Animation<double> getRotationAnimation(global::Doroti.Generated.Framework.Animation.Animation<double> parent)
+    public override global::Doroti.Framework.Animation.Animation<double> getRotationAnimation(global::Doroti.Framework.Animation.Animation<double> parent)
     {
-        return ((global::Doroti.Generated.Framework.Animation.Animation<double>)(object?)new global::Doroti.Generated.Framework.Animation.AlwaysStoppedAnimation<double>(1.0));
+        return ((global::Doroti.Framework.Animation.Animation<double>)(object?)new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1.0));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Animation.Animation<double> getScaleAnimation(global::Doroti.Generated.Framework.Animation.Animation<double> parent)
+    public override global::Doroti.Framework.Animation.Animation<double> getScaleAnimation(global::Doroti.Framework.Animation.Animation<double> parent)
     {
-        return ((global::Doroti.Generated.Framework.Animation.Animation<double>)(object?)new global::Doroti.Generated.Framework.Animation.AlwaysStoppedAnimation<double>(1.0));
+        return ((global::Doroti.Framework.Animation.Animation<double>)(object?)new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1.0));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _AnimationSwap__floating_action_button_location<T> : global::Doroti.Generated.Framework.Animation.CompoundAnimation<T>
+internal class _AnimationSwap__floating_action_button_location<T> : global::Doroti.Framework.Animation.CompoundAnimation<T>
 {
-    public virtual global::Doroti.Generated.Framework.Animation.Animation<double> parent { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Animation.Animation<double> parent { get; private set; } = default!;
     public virtual double swapThreshold { get; private set; } = default!;
 
-    internal _AnimationSwap__floating_action_button_location(global::Doroti.Generated.Framework.Animation.Animation<T> first, global::Doroti.Generated.Framework.Animation.Animation<T> next, global::Doroti.Generated.Framework.Animation.Animation<double> parent, double swapThreshold) : base(first: first, next: next)
+    internal _AnimationSwap__floating_action_button_location(global::Doroti.Framework.Animation.Animation<T> first, global::Doroti.Framework.Animation.Animation<T> next, global::Doroti.Framework.Animation.Animation<double> parent, double swapThreshold) : base(first: first, next: next)
     {
         this.parent = parent;
         this.swapThreshold = swapThreshold;
     }
 
-    public override T value => ((((global::Doroti.Generated.Framework.Animation.Animation<double>)this.parent).value < this.swapThreshold) ? ((global::Doroti.Generated.Framework.Animation.Animation<T>)this.first).value : ((global::Doroti.Generated.Framework.Animation.Animation<T>)this.next).value);
+    public override T value => ((((global::Doroti.Framework.Animation.Animation<double>)this.parent).value < this.swapThreshold) ? ((global::Doroti.Framework.Animation.Animation<T>)this.first).value : ((global::Doroti.Framework.Animation.Animation<T>)this.next).value);
 }

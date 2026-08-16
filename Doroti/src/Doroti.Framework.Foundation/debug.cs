@@ -3,7 +3,7 @@
 using System.Globalization;
 using Doroti.Ui;
 
-namespace Doroti.Generated.Framework.Foundation;
+namespace Doroti.Framework.Foundation;
 
 public static class DebugLibrary
 {

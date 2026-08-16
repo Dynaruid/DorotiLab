@@ -1,0 +1,31 @@
+# ADR-019: Product framework source ownership
+
+## Status
+
+Accepted on 2026-08-16.
+
+## Decision
+
+The C# files under `src/Doroti.Framework.*` are maintained product source. Their public namespaces are `Doroti.Framework.*`, matching their project, assembly, and package identities.
+
+New framework work is implemented directly in the owning product project. Cross-cutting behavior is fixed at the lowest shared framework, runtime, rendering, or host contract and is validated through representative product scenarios. Product changes do not require a full Dart-to-C# regeneration pass.
+
+The Dart-to-C# compiler remains an optional import, migration, and reference-differential tool. It may emit candidates only into isolated tool workspaces or `migration/`; it must not overwrite product source. A candidate can enter `src/` only through an explicit review that establishes ownership, provenance, API shape, and product validation.
+
+## Consequences
+
+- `Doroti.Generated.*` is not a public or product namespace.
+- Compiler-owned `.g.cs` files are not compiled from `src/Doroti.Framework.*`.
+- The pinned Flutter checkout is optional for ordinary build and feature development, but remains required when a task explicitly performs source comparison or migration.
+- Historical selection manifests and evidence remain useful provenance. They do not make the current product source generated or immutable.
+- The active validation surface is capability-based: source ownership, product build, application targets, and one integrated release run. Historical milestone validators are not active entry points.
+- Native live, browser live, physical, and cross-target claims remain independent; an unrun gate is `notVerified`.
+
+## Change workflow
+
+1. Find the product owner in `Doroti.Framework.*`, `Doroti.Runtime`, rendering, or the target host.
+2. Change the shared contract and all affected consumers directly.
+3. Add focused tests or assertions near that contract.
+4. Run `eng/doroti.ps1 validate` for the developer gate.
+5. Run `eng/doroti.ps1 validate -ValidationSuite Release` before a release claim.
+6. Use `migration-audit` only when compiler, upstream selection, or provenance inputs changed.

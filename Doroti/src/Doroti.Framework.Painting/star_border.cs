@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public static partial class Star_borderLibrary
 {
@@ -251,7 +251,7 @@ public class StarBorder : OutlinedBorder
     public override int GetHashCode() => side.GetHashCode();
     public override string ToString()
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "StarBorder"))}({side}, points: {this.points}, innerRadiusRatio: {this.innerRadiusRatio})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "StarBorder"))}({side}, points: {this.points}, innerRadiusRatio: {this.innerRadiusRatio})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

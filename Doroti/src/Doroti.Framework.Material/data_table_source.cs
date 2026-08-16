@@ -12,9 +12,9 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
-public abstract class DataTableSource : global::Doroti.Generated.Framework.Foundation.ChangeNotifier
+public abstract class DataTableSource : global::Doroti.Framework.Foundation.ChangeNotifier
 {
     public abstract DataRow? getRow(long index);
     public abstract long rowCount { get; }

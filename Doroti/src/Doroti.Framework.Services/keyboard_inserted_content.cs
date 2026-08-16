@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public class KeyboardInsertedContent
 {
@@ -37,7 +37,7 @@ public class KeyboardInsertedContent
     }
 
     public virtual bool hasData => (((bool?)((data?.Count != 0))) ?? false);
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "KeyboardInsertedContent"))}({mimeType}, {uri}, {data})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "KeyboardInsertedContent"))}({mimeType}, {uri}, {data})";
     public override bool Equals(object? other)
     {
         var __other = other as KeyboardInsertedContent;

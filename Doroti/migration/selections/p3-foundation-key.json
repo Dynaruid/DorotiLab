@@ -4,8 +4,8 @@
   "migrationIrVersion": "2.0.0",
   "generationMode": "isolated-generated-solution",
   "compatibilityProfile": "flutter-aware-c2",
-  "outputNamespace": "Doroti.Generated.P3.Foundation",
-  "outputAssemblyName": "Doroti.Generated.P3.Foundation",
+  "outputNamespace": "Doroti.P3.Foundation",
+  "outputAssemblyName": "Doroti.P3.Foundation",
   "flutterBaseline": "../flutter-compat/baseline.json",
   "analysisMode": "syntax-only",
   "inputs": [

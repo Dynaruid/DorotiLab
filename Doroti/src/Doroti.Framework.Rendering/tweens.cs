@@ -12,32 +12,32 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
-public class FractionalOffsetTween : Tween<global::Doroti.Generated.Framework.Painting.FractionalOffset?>
+public class FractionalOffsetTween : Tween<global::Doroti.Framework.Painting.FractionalOffset?>
 {
-    public FractionalOffsetTween(global::Doroti.Generated.Framework.Painting.FractionalOffset? begin = null, global::Doroti.Generated.Framework.Painting.FractionalOffset? end = null) : base(begin: begin, end: end)
+    public FractionalOffsetTween(global::Doroti.Framework.Painting.FractionalOffset? begin = null, global::Doroti.Framework.Painting.FractionalOffset? end = null) : base(begin: begin, end: end)
     {
     }
 
-    public virtual global::Doroti.Generated.Framework.Painting.FractionalOffset? lerp(double t) => FractionalOffset.lerp(begin, end, t);
+    public virtual global::Doroti.Framework.Painting.FractionalOffset? lerp(double t) => FractionalOffset.lerp(begin, end, t);
 }
 
-public class AlignmentTween : Tween<global::Doroti.Generated.Framework.Painting.Alignment>
+public class AlignmentTween : Tween<global::Doroti.Framework.Painting.Alignment>
 {
-    public AlignmentTween(global::Doroti.Generated.Framework.Painting.Alignment? begin = null, global::Doroti.Generated.Framework.Painting.Alignment? end = null) : base(begin: begin, end: end)
+    public AlignmentTween(global::Doroti.Framework.Painting.Alignment? begin = null, global::Doroti.Framework.Painting.Alignment? end = null) : base(begin: begin, end: end)
     {
     }
 
-    public virtual global::Doroti.Generated.Framework.Painting.Alignment lerp(double t) => Alignment.lerp(begin, end, t)!;
+    public virtual global::Doroti.Framework.Painting.Alignment lerp(double t) => Alignment.lerp(begin, end, t)!;
 }
 
-public class AlignmentGeometryTween : Tween<global::Doroti.Generated.Framework.Painting.AlignmentGeometry?>
+public class AlignmentGeometryTween : Tween<global::Doroti.Framework.Painting.AlignmentGeometry?>
 {
-    public AlignmentGeometryTween(global::Doroti.Generated.Framework.Painting.AlignmentGeometry? begin = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry? end = null) : base(begin: begin, end: end)
+    public AlignmentGeometryTween(global::Doroti.Framework.Painting.AlignmentGeometry? begin = null, global::Doroti.Framework.Painting.AlignmentGeometry? end = null) : base(begin: begin, end: end)
     {
     }
 
-    public virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry? lerp(double t) => AlignmentGeometry.lerp(begin, end, t);
+    public virtual global::Doroti.Framework.Painting.AlignmentGeometry? lerp(double t) => AlignmentGeometry.lerp(begin, end, t);
 }
 

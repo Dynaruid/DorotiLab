@@ -1,5 +1,7 @@
 # G5-4 Material, Cupertino, and Widget Previews full framework
 
+> Historical bootstrap record. The generation/review commands named below have been retired; `src/Doroti.Framework.*` is current product-owned source under ADR-019.
+
 G5-4 closes the pinned Flutter public framework graph through the Material, Cupertino, and Widget Previews product partitions. Flutter source remains the owner of adaptive behavior and UI semantics; the host supplies typed OS capabilities only.
 
 ## Pinned census and ownership

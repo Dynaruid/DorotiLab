@@ -12,9 +12,9 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
-public delegate Widget? MagnifierBuilder(BuildContext context, MagnifierController controller, global::Doroti.Generated.Framework.Foundation.ValueNotifier<MagnifierInfo> magnifierInfo);
+public delegate Widget? MagnifierBuilder(BuildContext context, MagnifierController controller, global::Doroti.Framework.Foundation.ValueNotifier<MagnifierInfo> magnifierInfo);
 
 public class MagnifierInfo
 {
@@ -46,7 +46,7 @@ public class MagnifierInfo
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.globalGesturePosition, this.caretRect, this.fieldBounds, this.currentLineBoundaries));
     public override string ToString()
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "MagnifierInfo"))}(" + $"position: {this.globalGesturePosition}, " + $"line: {this.currentLineBoundaries}, " + $"caret: {this.caretRect}, " + $"field: {this.fieldBounds}" + ")";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "MagnifierInfo"))}(" + $"position: {this.globalGesturePosition}, " + $"line: {this.currentLineBoundaries}, " + $"caret: {this.caretRect}, " + $"field: {this.fieldBounds}" + ")";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -54,26 +54,26 @@ public class MagnifierInfo
 
 public class TextMagnifierConfiguration
 {
-    internal virtual global::System.Func<BuildContext, MagnifierController, global::Doroti.Generated.Framework.Foundation.ValueNotifier<MagnifierInfo>, Widget?>? _magnifierBuilder { get; private set; }
+    internal virtual global::System.Func<BuildContext, MagnifierController, global::Doroti.Framework.Foundation.ValueNotifier<MagnifierInfo>, Widget?>? _magnifierBuilder { get; private set; }
     public virtual bool shouldDisplayHandlesInMagnifier { get; private set; } = default!;
     public static TextMagnifierConfiguration disabled = new TextMagnifierConfiguration();
 
-    public TextMagnifierConfiguration(global::System.Func<BuildContext, MagnifierController, global::Doroti.Generated.Framework.Foundation.ValueNotifier<MagnifierInfo>, Widget?>? magnifierBuilder = null, bool shouldDisplayHandlesInMagnifier = true)
+    public TextMagnifierConfiguration(global::System.Func<BuildContext, MagnifierController, global::Doroti.Framework.Foundation.ValueNotifier<MagnifierInfo>, Widget?>? magnifierBuilder = null, bool shouldDisplayHandlesInMagnifier = true)
     {
         this.shouldDisplayHandlesInMagnifier = shouldDisplayHandlesInMagnifier;
         this._magnifierBuilder = magnifierBuilder;
     }
 
-    public virtual global::System.Func<BuildContext, MagnifierController, global::Doroti.Generated.Framework.Foundation.ValueNotifier<MagnifierInfo>, Widget?> magnifierBuilder => DartRuntimePrimitives.ConvertValue<global::System.Func<BuildContext, MagnifierController, global::Doroti.Generated.Framework.Foundation.ValueNotifier<MagnifierInfo>, Widget?>>(((this._magnifierBuilder ?? (global::System.Func<BuildContext, MagnifierController, global::Doroti.Generated.Framework.Foundation.ValueNotifier<MagnifierInfo>, Widget?>)_none)));
-    internal static Widget? _none(BuildContext context, MagnifierController controller, global::Doroti.Generated.Framework.Foundation.ValueNotifier<MagnifierInfo> magnifierInfo) => DartRuntimePrimitives.ConvertValue<Widget>(null);
+    public virtual global::System.Func<BuildContext, MagnifierController, global::Doroti.Framework.Foundation.ValueNotifier<MagnifierInfo>, Widget?> magnifierBuilder => DartRuntimePrimitives.ConvertValue<global::System.Func<BuildContext, MagnifierController, global::Doroti.Framework.Foundation.ValueNotifier<MagnifierInfo>, Widget?>>(((this._magnifierBuilder ?? (global::System.Func<BuildContext, MagnifierController, global::Doroti.Framework.Foundation.ValueNotifier<MagnifierInfo>, Widget?>)_none)));
+    internal static Widget? _none(BuildContext context, MagnifierController controller, global::Doroti.Framework.Foundation.ValueNotifier<MagnifierInfo> magnifierInfo) => DartRuntimePrimitives.ConvertValue<Widget>(null);
 }
 
 public class MagnifierController
 {
-    public virtual global::Doroti.Generated.Framework.Animation.AnimationController? animationController { get; set; } = default;
+    public virtual global::Doroti.Framework.Animation.AnimationController? animationController { get; set; } = default;
     internal virtual OverlayEntry? _overlayEntry { get; set; } = default;
 
-    public MagnifierController(global::Doroti.Generated.Framework.Animation.AnimationController? animationController = null)
+    public MagnifierController(global::Doroti.Framework.Animation.AnimationController? animationController = null)
     {
         this.animationController = animationController;
     }
@@ -153,12 +153,12 @@ public class MagnifierController
 public class MagnifierDecoration
 {
     public virtual double opacity { get; private set; } = default!;
-    public virtual List<global::Doroti.Generated.Framework.Painting.BoxShadow>? shadows { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.ShapeBorder shape { get; private set; } = default!;
+    public virtual List<global::Doroti.Framework.Painting.BoxShadow>? shadows { get; private set; }
+    public virtual global::Doroti.Framework.Painting.ShapeBorder shape { get; private set; } = default!;
 
-    public MagnifierDecoration(double opacity = 1.0, List<global::Doroti.Generated.Framework.Painting.BoxShadow>? shadows = null, global::Doroti.Generated.Framework.Painting.ShapeBorder shape = default!)
+    public MagnifierDecoration(double opacity = 1.0, List<global::Doroti.Framework.Painting.BoxShadow>? shadows = null, global::Doroti.Framework.Painting.ShapeBorder shape = default!)
     {
-        global::Doroti.Generated.Framework.Painting.ShapeBorder __shape = shape ?? new global::Doroti.Generated.Framework.Painting.RoundedRectangleBorder();
+        global::Doroti.Framework.Painting.ShapeBorder __shape = shape ?? new global::Doroti.Framework.Painting.RoundedRectangleBorder();
         this.opacity = opacity;
         this.shadows = shadows;
         this.shape = __shape;
@@ -172,7 +172,7 @@ public class MagnifierDecoration
         {
             return false;
         }
-        return ((((__other is MagnifierDecoration) && (((MagnifierDecoration)((MagnifierDecoration)__other)).opacity == this.opacity)) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals<global::Doroti.Generated.Framework.Painting.BoxShadow>(((MagnifierDecoration)((MagnifierDecoration)__other)).shadows, this.shadows)) && (object.Equals(((MagnifierDecoration)((MagnifierDecoration)__other)).shape, this.shape)));
+        return ((((__other is MagnifierDecoration) && (((MagnifierDecoration)((MagnifierDecoration)__other)).opacity == this.opacity)) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<global::Doroti.Framework.Painting.BoxShadow>(((MagnifierDecoration)((MagnifierDecoration)__other)).shadows, this.shadows)) && (object.Equals(((MagnifierDecoration)((MagnifierDecoration)__other)).shape, this.shape)));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.opacity, this.shape, ((this.shadows is null) ? null : FoundationRuntimePorts.ObjectHashAll(this.shadows!))));
@@ -187,7 +187,7 @@ public class RawMagnifier : StatelessWidget
     public virtual double magnificationScale { get; private set; } = default!;
     public virtual Size size { get; private set; } = default!;
 
-    public RawMagnifier(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget? child = null, MagnifierDecoration decoration = default!, Clip clipBehavior = Clip.none, Offset focalPointOffset = default, double magnificationScale = 1, Size size = default!) : base(key: key)
+    public RawMagnifier(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null, MagnifierDecoration decoration = default!, Clip clipBehavior = Clip.none, Offset focalPointOffset = default, double magnificationScale = 1, Size size = default!) : base(key: key)
     {
         MagnifierDecoration __decoration = decoration ?? new MagnifierDecoration();
         this.child = child;
@@ -201,17 +201,17 @@ public class RawMagnifier : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new Stack(clipBehavior: Clip.none, alignment: global::Doroti.Generated.Framework.Painting.Alignment.center, children: new List<Widget> { ClipPath.shape(shape: ((MagnifierDecoration)this.decoration).shape, child: new Opacity(opacity: ((MagnifierDecoration)this.decoration).opacity, child: new _Magnifier__magnifier(focalPointOffset: this.focalPointOffset, magnificationScale: this.magnificationScale, child: SizedBox.CreateFromSize(size: this.size, child: this.child)))), new IgnorePointer(child: new Opacity(opacity: ((MagnifierDecoration)this.decoration).opacity, child: new ClipPath(clipBehavior: this.clipBehavior, clipper: new _NegativeClip__magnifier(shape: ((MagnifierDecoration)this.decoration).shape), child: new DecoratedBox(decoration: new global::Doroti.Generated.Framework.Painting.ShapeDecoration(shape: ((MagnifierDecoration)this.decoration).shape, shadows: ((MagnifierDecoration)this.decoration).shadows), child: SizedBox.CreateFromSize(size: this.size))))) }));
+        return ((Widget)(object?)new Stack(clipBehavior: Clip.none, alignment: global::Doroti.Framework.Painting.Alignment.center, children: new List<Widget> { ClipPath.shape(shape: ((MagnifierDecoration)this.decoration).shape, child: new Opacity(opacity: ((MagnifierDecoration)this.decoration).opacity, child: new _Magnifier__magnifier(focalPointOffset: this.focalPointOffset, magnificationScale: this.magnificationScale, child: SizedBox.CreateFromSize(size: this.size, child: this.child)))), new IgnorePointer(child: new Opacity(opacity: ((MagnifierDecoration)this.decoration).opacity, child: new ClipPath(clipBehavior: this.clipBehavior, clipper: new _NegativeClip__magnifier(shape: ((MagnifierDecoration)this.decoration).shape), child: new DecoratedBox(decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shape: ((MagnifierDecoration)this.decoration).shape, shadows: ((MagnifierDecoration)this.decoration).shadows), child: SizedBox.CreateFromSize(size: this.size))))) }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _NegativeClip__magnifier : global::Doroti.Generated.Framework.Rendering.CustomClipper<Path>
+internal class _NegativeClip__magnifier : global::Doroti.Framework.Rendering.CustomClipper<Path>
 {
-    public virtual global::Doroti.Generated.Framework.Painting.ShapeBorder shape { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.ShapeBorder shape { get; private set; } = default!;
 
-    internal _NegativeClip__magnifier(global::Doroti.Generated.Framework.Painting.ShapeBorder shape)
+    internal _NegativeClip__magnifier(global::Doroti.Framework.Painting.ShapeBorder shape)
     {
         this.shape = shape;
     }
@@ -227,7 +227,7 @@ internal class _NegativeClip__magnifier : global::Doroti.Generated.Framework.Ren
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool shouldReclip(global::Doroti.Generated.Framework.Rendering.CustomClipper<Path> oldClipper) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(((_NegativeClip__magnifier)oldClipper).shape, this.shape)));
+    public override bool shouldReclip(global::Doroti.Framework.Rendering.CustomClipper<Path> oldClipper) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(((_NegativeClip__magnifier)oldClipper).shape, this.shape)));
 }
 
 internal class _Magnifier__magnifier : SingleChildRenderObjectWidget
@@ -241,13 +241,13 @@ internal class _Magnifier__magnifier : SingleChildRenderObjectWidget
         this.focalPointOffset = focalPointOffset;
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Rendering.RenderObject)(object?)new _RenderMagnification__magnifier(this.focalPointOffset, this.magnificationScale));
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderMagnification__magnifier(this.focalPointOffset, this.magnificationScale));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(BuildContext context, global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (_RenderMagnification__magnifier)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderMagnification__magnifier>)(() =>
@@ -259,12 +259,12 @@ internal class _Magnifier__magnifier : SingleChildRenderObjectWidget
 
 }
 
-public class _RenderMagnification__magnifier : global::Doroti.Generated.Framework.Rendering.RenderProxyBox
+public class _RenderMagnification__magnifier : global::Doroti.Framework.Rendering.RenderProxyBox
 {
     internal virtual Offset _focalPointOffset { get; set; } = default!;
     internal virtual double _magnificationScale { get; set; } = default!;
 
-    internal _RenderMagnification__magnifier(Offset _focalPointOffset, double _magnificationScale, global::Doroti.Generated.Framework.Rendering.RenderBox? child = null) : base(child)
+    internal _RenderMagnification__magnifier(Offset _focalPointOffset, double _magnificationScale, global::Doroti.Framework.Rendering.RenderBox? child = null) : base(child)
     {
         this._focalPointOffset = _focalPointOffset;
         this._magnificationScale = _magnificationScale;
@@ -299,10 +299,10 @@ public class _RenderMagnification__magnifier : global::Doroti.Generated.Framewor
         }
     }
     public override bool alwaysNeedsCompositing => true;
-    public override global::Doroti.Generated.Framework.Rendering.BackdropFilterLayer? layer => ((global::Doroti.Generated.Framework.Rendering.BackdropFilterLayer?)(object?)base.layer)!;
-    public virtual void paint(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset offset)
+    public override global::Doroti.Framework.Rendering.BackdropFilterLayer? layer => ((global::Doroti.Framework.Rendering.BackdropFilterLayer?)(object?)base.layer)!;
+    public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        global::Doroti.Ui.Offset thisCenter__22916 = ((global::Doroti.Ui.Offset)(object?)(global::Doroti.Generated.Framework.Painting.Alignment.center.alongSize(this.size) + offset));
+        global::Doroti.Ui.Offset thisCenter__22916 = ((global::Doroti.Ui.Offset)(object?)(global::Doroti.Framework.Painting.Alignment.center.alongSize(this.size) + offset));
         var matrix__22982 = ((Func<Matrix4>)(() =>
 {            var __cascade = Matrix4.identity();
             __cascade.translateByDouble(((this.magnificationScale * ((((this.focalPointOffset.dx * -1L)) - thisCenter__22916.dx))) + thisCenter__22916.dx), ((this.magnificationScale * ((((this.focalPointOffset.dy * -1L)) - thisCenter__22916.dy))) + thisCenter__22916.dy), 0, 1);
@@ -311,13 +311,13 @@ public class _RenderMagnification__magnifier : global::Doroti.Generated.Framewor
         var filter__23345 = new global::Doroti.Ui.ImageFilter(matrix__22982.storage, filterQuality: FilterQuality.high);
         if ((this.layer is null))
         {
-            layer = new global::Doroti.Generated.Framework.Rendering.BackdropFilterLayer(filter: filter__23345);
+            layer = new global::Doroti.Framework.Rendering.BackdropFilterLayer(filter: filter__23345);
         }
         else
         {
             this.layer!.filter = filter__23345;
         }
-        context.pushLayer(this.layer!, (global::System.Action<global::Doroti.Generated.Framework.Rendering.PaintingContext, Offset>)base.paint, offset);
+        context.pushLayer(this.layer!, (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)base.paint, offset);
     }
 
 }

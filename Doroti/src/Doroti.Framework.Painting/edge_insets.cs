@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public abstract class EdgeInsetsGeometry
 {
@@ -495,7 +495,7 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
 
     public override EdgeInsets resolve(TextDirection? direction)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Painting.DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(EdgeInsetsDirectional)}"));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Painting.DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(EdgeInsetsDirectional)}"));
         return (DartRuntimePrimitives.RequireValue(direction) switch { TextDirection.rtl => new EdgeInsets(this.end, this.top, this.start, this.bottom), TextDirection.ltr => new EdgeInsets(this.start, this.top, this.end, this.bottom), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -573,7 +573,7 @@ internal class _MixedEdgeInsets__edge_insets : EdgeInsetsGeometry
 
     public override EdgeInsets resolve(TextDirection? direction)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Painting.DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(_MixedEdgeInsets__edge_insets)}"));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Painting.DebugLibrary.debugCheckCanResolveTextDirection(direction, $"{typeof(_MixedEdgeInsets__edge_insets)}"));
         return (DartRuntimePrimitives.RequireValue(direction) switch { TextDirection.rtl => new EdgeInsets((this._end + this._left), this._top, (this._start + this._right), this._bottom), TextDirection.ltr => new EdgeInsets((this._start + this._left), this._top, (this._end + this._right), this._bottom), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

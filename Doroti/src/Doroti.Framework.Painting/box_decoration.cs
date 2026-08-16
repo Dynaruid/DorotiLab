@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public class BoxDecoration : Decoration
 {
@@ -137,7 +137,7 @@ public class BoxDecoration : Decoration
         {
             return false;
         }
-        return (((((((((__other is BoxDecoration) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).color, this.color))) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).image, this.image))) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).border, this.border))) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).borderRadius, this.borderRadius))) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals<BoxShadow>(((BoxDecoration)((BoxDecoration)__other)).boxShadow, this.boxShadow)) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).gradient, this.gradient))) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).backgroundBlendMode, this.backgroundBlendMode))) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).shape, this.shape)));
+        return (((((((((__other is BoxDecoration) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).color, this.color))) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).image, this.image))) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).border, this.border))) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).borderRadius, this.borderRadius))) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<BoxShadow>(((BoxDecoration)((BoxDecoration)__other)).boxShadow, this.boxShadow)) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).gradient, this.gradient))) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).backgroundBlendMode, this.backgroundBlendMode))) && (object.Equals(((BoxDecoration)((BoxDecoration)__other)).shape, this.shape)));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.color, this.image, this.border, this.borderRadius, ((this.boxShadow is null) ? null : FoundationRuntimePorts.ObjectHashAll(this.boxShadow!)), this.gradient, this.backgroundBlendMode, this.shape);
@@ -269,7 +269,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
             global::Doroti.Ui.Rect bounds__16308 = rect.shift(boxShadow__16205.offset).inflate(((BoxShadow)boxShadow__16205).spreadRadius);
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((global::Doroti.Generated.Framework.Painting.DebugLibrary.debugDisableShadows && (object.Equals(((BoxShadow)boxShadow__16205).blurStyle, BlurStyle.outer))))
+                    if ((global::Doroti.Framework.Painting.DebugLibrary.debugDisableShadows && (object.Equals(((BoxShadow)boxShadow__16205).blurStyle, BlurStyle.outer))))
                     {
                         canvas.save();
                         canvas.clipRect(bounds__16308);
@@ -279,7 +279,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
             _paintBox(canvas, bounds__16308, paint__16262, textDirection);
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((global::Doroti.Generated.Framework.Painting.DebugLibrary.debugDisableShadows && (object.Equals(((BoxShadow)boxShadow__16205).blurStyle, BlurStyle.outer))))
+                    if ((global::Doroti.Framework.Painting.DebugLibrary.debugDisableShadows && (object.Equals(((BoxShadow)boxShadow__16205).blurStyle, BlurStyle.outer))))
                     {
                         canvas.restore();
                     }

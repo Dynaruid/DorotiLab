@@ -12,23 +12,23 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
-public class ScrollbarThemeData : global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class ScrollbarThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 {
-    public virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<bool?>? thumbVisibility { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<double?>? thickness { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<bool?>? trackVisibility { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<bool?>? thumbVisibility { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? thickness { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<bool?>? trackVisibility { get; private set; }
     public virtual bool? interactive { get; private set; }
     public virtual Radius? radius { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? thumbColor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? trackColor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? trackBorderColor { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? thumbColor { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackColor { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackBorderColor { get; private set; }
     public virtual double? crossAxisMargin { get; private set; }
     public virtual double? mainAxisMargin { get; private set; }
     public virtual double? minThumbLength { get; private set; }
 
-    public ScrollbarThemeData(global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<bool?>? thumbVisibility = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<double?>? thickness = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<bool?>? trackVisibility = null, Radius? radius = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? thumbColor = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? trackColor = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? trackBorderColor = null, double? crossAxisMargin = null, double? mainAxisMargin = null, double? minThumbLength = null, bool? interactive = null)
+    public ScrollbarThemeData(global::Doroti.Framework.Widgets.WidgetStateProperty<bool?>? thumbVisibility = null, global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? thickness = null, global::Doroti.Framework.Widgets.WidgetStateProperty<bool?>? trackVisibility = null, Radius? radius = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? thumbColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackBorderColor = null, double? crossAxisMargin = null, double? mainAxisMargin = null, double? minThumbLength = null, bool? interactive = null)
     {
         this.thumbVisibility = thumbVisibility;
         this.thickness = thickness;
@@ -43,7 +43,7 @@ public class ScrollbarThemeData : global::Doroti.Generated.Framework.Foundation.
         this.interactive = interactive;
     }
 
-    public virtual ScrollbarThemeData copyWith(global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<bool?>? thumbVisibility = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<double?>? thickness = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<bool?>? trackVisibility = null, bool? interactive = null, Radius? radius = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? thumbColor = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? trackColor = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? trackBorderColor = null, double? crossAxisMargin = null, double? mainAxisMargin = null, double? minThumbLength = null)
+    public virtual ScrollbarThemeData copyWith(global::Doroti.Framework.Widgets.WidgetStateProperty<bool?>? thumbVisibility = null, global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? thickness = null, global::Doroti.Framework.Widgets.WidgetStateProperty<bool?>? trackVisibility = null, bool? interactive = null, Radius? radius = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? thumbColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackColor = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? trackBorderColor = null, double? crossAxisMargin = null, double? mainAxisMargin = null, double? minThumbLength = null)
     {
         return new ScrollbarThemeData(thumbVisibility: (thumbVisibility ?? this.thumbVisibility), thickness: (thickness ?? this.thickness), trackVisibility: (trackVisibility ?? this.trackVisibility), interactive: (interactive ?? this.interactive), radius: (radius ?? this.radius), thumbColor: (thumbColor ?? this.thumbColor), trackColor: (trackColor ?? this.trackColor), trackBorderColor: (trackBorderColor ?? this.trackBorderColor), crossAxisMargin: (crossAxisMargin ?? this.crossAxisMargin), mainAxisMargin: (mainAxisMargin ?? this.mainAxisMargin), minThumbLength: (minThumbLength ?? this.minThumbLength));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -75,22 +75,22 @@ public class ScrollbarThemeData : global::Doroti.Generated.Framework.Foundation.
         return ((((((((((((__other is ScrollbarThemeData) && (object.Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).thumbVisibility, this.thumbVisibility))) && (object.Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).thickness, this.thickness))) && (object.Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).trackVisibility, this.trackVisibility))) && (((ScrollbarThemeData)((ScrollbarThemeData)__other)).interactive == this.interactive)) && (object.Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).radius, this.radius))) && (object.Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).thumbColor, this.thumbColor))) && (object.Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).trackColor, this.trackColor))) && (object.Equals(((ScrollbarThemeData)((ScrollbarThemeData)__other)).trackBorderColor, this.trackBorderColor))) && (((ScrollbarThemeData)((ScrollbarThemeData)__other)).crossAxisMargin == this.crossAxisMargin)) && (((ScrollbarThemeData)((ScrollbarThemeData)__other)).mainAxisMargin == this.mainAxisMargin)) && (((ScrollbarThemeData)((ScrollbarThemeData)__other)).minThumbLength == this.minThumbLength));
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<bool?>>("thumbVisibility", this.thumbVisibility, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<double?>>("thickness", this.thickness, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<bool?>>("trackVisibility", this.trackVisibility, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<bool>("interactive", this.interactive, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Radius>("radius", this.radius, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("thumbColor", this.thumbColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("trackColor", this.trackColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("trackBorderColor", this.trackBorderColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<double>("crossAxisMargin", this.crossAxisMargin, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<double>("mainAxisMargin", this.mainAxisMargin, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<double>("minThumbLength", this.minThumbLength, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<bool?>>("thumbVisibility", this.thumbVisibility, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<double?>>("thickness", this.thickness, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<bool?>>("trackVisibility", this.trackVisibility, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("interactive", this.interactive, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Radius>("radius", this.radius, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("thumbColor", this.thumbColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("trackColor", this.trackColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>("trackBorderColor", this.trackBorderColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<double>("crossAxisMargin", this.crossAxisMargin, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<double>("mainAxisMargin", this.mainAxisMargin, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<double>("minThumbLength", this.minThumbLength, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;
@@ -116,27 +116,27 @@ public static partial class Scrollbar_themeLibrary
     internal static bool? _lerpBool(bool? a, bool? b, double t) => ((t < 0.5) ? a : b);
 }
 
-public class ScrollbarTheme : global::Doroti.Generated.Framework.Widgets.InheritedTheme
+public class ScrollbarTheme : global::Doroti.Framework.Widgets.InheritedTheme
 {
     public virtual ScrollbarThemeData data { get; private set; } = default!;
 
-    public ScrollbarTheme(global::Doroti.Generated.Framework.Foundation.Key? key = null, ScrollbarThemeData data = default!, global::Doroti.Generated.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public ScrollbarTheme(global::Doroti.Framework.Foundation.Key? key = null, ScrollbarThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static ScrollbarThemeData of(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static ScrollbarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ScrollbarTheme? scrollbarTheme__10876 = ((ScrollbarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<ScrollbarTheme>());
         return (scrollbarTheme__10876?.data ?? Theme.of(context).scrollbarTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget wrap(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Widgets.Widget child)
+    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new ScrollbarTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new ScrollbarTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Generated.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((ScrollbarTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((ScrollbarTheme)oldWidget).data)));
 }

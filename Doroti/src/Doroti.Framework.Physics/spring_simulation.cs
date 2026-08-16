@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Physics;
+namespace Doroti.Framework.Physics;
 
 public class SpringDescription
 {
@@ -67,7 +67,7 @@ public class SpringDescription
             return default!;
         }
     }
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SpringDescription"))}(mass: {this.mass.toStringAsFixed(1L)}, stiffness: {this.stiffness.toStringAsFixed(1L)}, damping: {this.damping.toStringAsFixed(1L)})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SpringDescription"))}(mass: {this.mass.toStringAsFixed(1L)}, stiffness: {this.stiffness.toStringAsFixed(1L)}, damping: {this.damping.toStringAsFixed(1L)})";
 }
 
 public enum SpringType
@@ -119,11 +119,11 @@ public class SpringSimulation : Simulation
 
     public override bool isDone(double time)
     {
-        return (global::Doroti.Generated.Framework.Physics.UtilsLibrary.nearZero(this._solution.x(time), ((Tolerance)tolerance).distance) && global::Doroti.Generated.Framework.Physics.UtilsLibrary.nearZero(this._solution.dx(time), ((Tolerance)tolerance).velocity));
+        return (global::Doroti.Framework.Physics.UtilsLibrary.nearZero(this._solution.x(time), ((Tolerance)tolerance).distance) && global::Doroti.Framework.Physics.UtilsLibrary.nearZero(this._solution.dx(time), ((Tolerance)tolerance).velocity));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SpringSimulation"))}(end: {this._endPosition.toStringAsFixed(1L)}, {this.type})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SpringSimulation"))}(end: {this._endPosition.toStringAsFixed(1L)}, {this.type})";
 }
 
 public class ScrollSpringSimulation : SpringSimulation

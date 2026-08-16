@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public class RawKeyEventDataIos : RawKeyEventData
 {
@@ -47,22 +47,22 @@ public class RawKeyEventDataIos : RawKeyEventData
     }
 
     public override string keyLabel => charactersIgnoringModifiers;
-    public override PhysicalKeyboardKey physicalKey => (global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kIosToPhysicalKey.GetValueOrDefault(keyCode) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.iosPlane + keyCode)));
+    public override PhysicalKeyboardKey physicalKey => (global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kIosToPhysicalKey.GetValueOrDefault(keyCode) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.iosPlane + keyCode)));
     public override LogicalKeyboardKey logicalKey
     {
         get
         {
-            LogicalKeyboardKey? numPadKey = global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kIosNumPadMap.GetValueOrDefault(keyCode);
+            LogicalKeyboardKey? numPadKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kIosNumPadMap.GetValueOrDefault(keyCode);
             if ((numPadKey is not null))
             {
                 return numPadKey;
             }
-            LogicalKeyboardKey? specialKey = global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kIosSpecialLogicalMap.GetValueOrDefault(keyLabel);
+            LogicalKeyboardKey? specialKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kIosSpecialLogicalMap.GetValueOrDefault(keyLabel);
             if ((specialKey is not null))
             {
                 return specialKey;
             }
-            LogicalKeyboardKey? knownKey = global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kIosToLogicalKey.GetValueOrDefault(keyCode);
+            LogicalKeyboardKey? knownKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kIosToLogicalKey.GetValueOrDefault(keyCode);
             if ((knownKey is not null))
             {
                 return knownKey;

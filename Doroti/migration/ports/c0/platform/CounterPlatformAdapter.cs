@@ -1,4 +1,4 @@
-namespace Doroti.Generated.C0;
+namespace Doroti.C0;
 
 public interface ICounterPlatformPort
 {

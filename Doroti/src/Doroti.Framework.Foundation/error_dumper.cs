@@ -1,6 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/foundation/error_dumper.dart and _error_dumper_io.dart
-namespace Doroti.Generated.Framework.Foundation;
+namespace Doroti.Framework.Foundation;
 
 public static class ErrorToConsoleDumper
 {

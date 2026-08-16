@@ -95,7 +95,7 @@ internal sealed partial class FrameworkCSharpLowerer
             // The analyzer canonicalizes named parameters alphabetically.  C#
             // delegate binding, however, is positional, so retain Flutter's
             // source order for the requestFocusCallback method tear-offs.
-            builder.AppendLine($"{visibility} delegate void TraversalRequestFocusCallback(FocusNode node, ScrollPositionAlignmentPolicy? alignmentPolicy = null, double? alignment = null, Duration? duration = null, global::Doroti.Generated.Framework.Animation.Curve? curve = null);");
+            builder.AppendLine($"{visibility} delegate void TraversalRequestFocusCallback(FocusNode node, ScrollPositionAlignmentPolicy? alignmentPolicy = null, double? alignment = null, Duration? duration = null, global::Doroti.Framework.Animation.Curve? curve = null);");
             builder.AppendLine();
             return;
         }
@@ -325,7 +325,7 @@ internal sealed partial class FrameworkCSharpLowerer
             // Scheduler -> Services -> Gestures. Use its most-specific product
             // base while the G4-5 mixins remain generated interfaces below.
             bases.Clear();
-            bases.Add("global::Doroti.Generated.Framework.Gestures.GestureBinding");
+            bases.Add("global::Doroti.Framework.Gestures.GestureBinding");
             hasConcreteBase = true;
         }
         if (declaration.Name == "WidgetsFlutterBinding" &&
@@ -334,7 +334,7 @@ internal sealed partial class FrameworkCSharpLowerer
             // G5-3 consumes the reviewed Scheduler -> Services -> Gestures CLR
             // class chain and keeps the remaining binding mixins as interfaces.
             bases.Clear();
-            bases.Add("global::Doroti.Generated.Framework.Gestures.GestureBinding");
+            bases.Add("global::Doroti.Framework.Gestures.GestureBinding");
             hasConcreteBase = true;
         }
         if (!hasConcreteBase && (declaration.Element.Mixins ?? []).Any(type =>
@@ -387,7 +387,7 @@ internal sealed partial class FrameworkCSharpLowerer
             // linear, so retain the reviewed Scheduler -> Services -> Gestures
             // product chain at the generated GestureBinding boundary.
             bases.Clear();
-            bases.Add("global::Doroti.Generated.Framework.Services.ServicesBinding");
+            bases.Add("global::Doroti.Framework.Services.ServicesBinding");
             hasConcreteBase = true;
         }
         if (declaration.Name == "PointerEvent")
@@ -428,7 +428,7 @@ internal sealed partial class FrameworkCSharpLowerer
                 // event types live in Gestures (which already depends on
                 // Services). Preserve Dart's structural implements relation
                 // through the generated cross-assembly companion contract.
-                bases.Add("global::Doroti.Generated.Framework.Services.IMouseTrackerAnnotation");
+                bases.Add("global::Doroti.Framework.Services.IMouseTrackerAnnotation");
                 continue;
             }
             if (!hasConcreteBase && simpleInterface == "Color")
@@ -591,8 +591,8 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (!isInterface && declaration.Name == "RenderMouseRegion")
         {
-            builder.AppendLine("    dynamic global::Doroti.Generated.Framework.Services.IMouseTrackerAnnotation.onEnter => this.onEnter;");
-            builder.AppendLine("    dynamic global::Doroti.Generated.Framework.Services.IMouseTrackerAnnotation.onExit => this.onExit;");
+            builder.AppendLine("    dynamic global::Doroti.Framework.Services.IMouseTrackerAnnotation.onEnter => this.onEnter;");
+            builder.AppendLine("    dynamic global::Doroti.Framework.Services.IMouseTrackerAnnotation.onExit => this.onExit;");
         }
         // Concrete storage for mixin interface fields used by this class.
         if (!isMixinDeclaration)
@@ -816,11 +816,11 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.AppendLine("    bool debugCheckZone(string entryPoint);");
             builder.AppendLine("    void addPostFrameCallback(global::System.Action<Duration> callback, string debugLabel = \"callback\");");
             builder.AppendLine("    void scheduleWarmUpFrame();");
-            builder.AppendLine("    IEnumerable<global::Doroti.Generated.Framework.Rendering.RenderView> renderViews { get; }");
-            builder.AppendLine("    void hitTestInView(global::Doroti.Generated.Framework.Gestures.HitTestResult result, Offset position, long viewId);");
+            builder.AppendLine("    IEnumerable<global::Doroti.Framework.Rendering.RenderView> renderViews { get; }");
+            builder.AppendLine("    void hitTestInView(global::Doroti.Framework.Gestures.HitTestResult result, Offset position, long viewId);");
             builder.AppendLine("    DorotiView window => platformDispatcher.implicitView ?? throw new InvalidOperationException(\"WidgetsBinding.window requires exactly one Flutter view.\");");
-            builder.AppendLine("    Future endOfFrame => global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.endOfFrame;");
-            builder.AppendLine("    void cancelPointer(long pointer) => global::Doroti.Generated.Framework.Gestures.GestureBinding.instance.cancelPointer(pointer);");
+            builder.AppendLine("    Future endOfFrame => global::Doroti.Framework.Scheduler.SchedulerBinding.instance.endOfFrame;");
+            builder.AppendLine("    void cancelPointer(long pointer) => global::Doroti.Framework.Gestures.GestureBinding.instance.cancelPointer(pointer);");
         }
         if (!isInterface)
         {
@@ -870,7 +870,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (!isInterface && declaration.Name == "MultiChildRenderObjectWidget")
         {
-            builder.AppendLine("    protected MultiChildRenderObjectWidget(global::Doroti.Generated.Framework.Foundation.Key? key = null, IEnumerable<Widget> children = default!) : this(key, children.ToList()) { }");
+            builder.AppendLine("    protected MultiChildRenderObjectWidget(global::Doroti.Framework.Foundation.Key? key = null, IEnumerable<Widget> children = default!) : this(key, children.ToList()) { }");
         }
         if (!isInterface && declaration.Name == "InheritedWidget")
         {
@@ -890,7 +890,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (!isInterface && declaration.Name == "_ReorderableItemGlobalKey")
         {
-            builder.AppendLine("    internal static _ReorderableItemGlobalKey__reorderable_list Create(global::Doroti.Generated.Framework.Foundation.Key key, long index, SliverReorderableListState state) => new(key, index, state);");
+            builder.AppendLine("    internal static _ReorderableItemGlobalKey__reorderable_list Create(global::Doroti.Framework.Foundation.Key key, long index, SliverReorderableListState state) => new(key, index, state);");
         }
         if (!isInterface && bases.Any(b => b == "IEnumerable" || b.StartsWith("IEnumerable<", StringComparison.Ordinal)))
         {

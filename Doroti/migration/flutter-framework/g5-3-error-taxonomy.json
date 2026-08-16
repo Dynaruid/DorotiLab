@@ -440,7 +440,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0314",
-                                                      "message":  "\u0027T\u0027 형식은 제네릭 형식 또는 \u0027State\u003cT\u003e\u0027 메서드에서 \u0027T\u0027 형식 매개 변수로 사용할 수 없습니다. \u0027T\u0027에서 \u0027Doroti.Generated.Framework.Widgets.StatefulWidget\u0027(으)로의 boxing 변환 또는 형식 매개 변수 변환이 없습니다."
+                                                      "message":  "\u0027T\u0027 형식은 제네릭 형식 또는 \u0027State\u003cT\u003e\u0027 메서드에서 \u0027T\u0027 형식 매개 변수로 사용할 수 없습니다. \u0027T\u0027에서 \u0027Doroti.Framework.Widgets.StatefulWidget\u0027(으)로의 boxing 변환 또는 형식 매개 변수 변환이 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -512,7 +512,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Widgets.Draggable\u003cT\u003e\u0027에서 \u0027Doroti.Generated.Framework.Widgets.Draggable\u003cobject\u003e\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Widgets.Draggable\u003cT\u003e\u0027에서 \u0027Doroti.Framework.Widgets.Draggable\u003cobject\u003e\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -560,7 +560,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027object\u0027에서 \u0027Doroti.Generated.Framework.Services.SpellCheckService?\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027object\u0027에서 \u0027Doroti.Framework.Services.SpellCheckService?\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W7",
@@ -632,7 +632,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027System.Collections.Generic.List\u003cDoroti.Generated.Framework.Widgets.EditableText\u003e\u0027에서 \u0027System.Collections.Generic.List\u003cstring\u003e?\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027System.Collections.Generic.List\u003cDoroti.Framework.Widgets.EditableText\u003e\u0027에서 \u0027System.Collections.Generic.List\u003cstring\u003e?\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W7",
@@ -656,7 +656,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "2 인수: \u0027System.Collections.Generic.List\u003cDoroti.Generated.Framework.Widgets.EditableText\u003e\u0027에서 \u0027System.Collections.Generic.List\u003cstring\u003e?\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "2 인수: \u0027System.Collections.Generic.List\u003cDoroti.Framework.Widgets.EditableText\u003e\u0027에서 \u0027System.Collections.Generic.List\u003cstring\u003e?\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W7",
@@ -756,7 +756,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Foundation.HashedObserverList\u003cSystem.Action\u003cDoroti.Generated.Framework.Widgets.FocusHighlightMode\u003e\u003e\u0027에서 \u0027System.Collections.Generic.IEnumerable\u003cSystem.Action\u003cobject\u003e\u003e\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Foundation.HashedObserverList\u003cSystem.Action\u003cDoroti.Framework.Widgets.FocusHighlightMode\u003e\u003e\u0027에서 \u0027System.Collections.Generic.IEnumerable\u003cSystem.Action\u003cobject\u003e\u003e\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W4",
@@ -780,7 +780,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0030",
-                                                      "message":  "\u0027System.Action\u003cobject\u003e\u0027 형식을 \u0027System.Action\u003cDoroti.Generated.Framework.Widgets.FocusHighlightMode\u003e\u0027 형식으로 변환할 수 없습니다."
+                                                      "message":  "\u0027System.Action\u003cobject\u003e\u0027 형식을 \u0027System.Action\u003cDoroti.Framework.Widgets.FocusHighlightMode\u003e\u0027 형식으로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W4",
@@ -828,7 +828,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "3 인수: \u0027Doroti.Generated.Framework.Widgets.FocusNode\u0027에서 \u0027Doroti.Generated.Framework.Widgets.FocusScopeNode\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "3 인수: \u0027Doroti.Framework.Widgets.FocusNode\u0027에서 \u0027Doroti.Framework.Widgets.FocusScopeNode\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W4",
@@ -852,7 +852,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "3 인수: \u0027Doroti.Generated.Framework.Widgets.FocusNode\u0027에서 \u0027Doroti.Generated.Framework.Widgets.FocusScopeNode\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "3 인수: \u0027Doroti.Framework.Widgets.FocusNode\u0027에서 \u0027Doroti.Framework.Widgets.FocusScopeNode\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W4",
@@ -876,7 +876,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "3 인수: \u0027Doroti.Generated.Framework.Widgets.FocusNode\u0027에서 \u0027Doroti.Generated.Framework.Widgets.FocusScopeNode\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "3 인수: \u0027Doroti.Framework.Widgets.FocusNode\u0027에서 \u0027Doroti.Framework.Widgets.FocusScopeNode\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W4",
@@ -972,7 +972,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Widgets.RestorableStringN\u0027에서 \u0027Doroti.Generated.Framework.Widgets.RestorableProperty\u003cobject\u003e\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Widgets.RestorableStringN\u0027에서 \u0027Doroti.Framework.Widgets.RestorableProperty\u003cobject\u003e\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -996,7 +996,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Widgets.RestorableBool\u0027에서 \u0027Doroti.Generated.Framework.Widgets.RestorableProperty\u003cobject\u003e\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Widgets.RestorableBool\u0027에서 \u0027Doroti.Framework.Widgets.RestorableProperty\u003cobject\u003e\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -1116,7 +1116,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Widgets.ParentDataWidget\u003cT\u003e\u0027에서 \u0027Doroti.Generated.Framework.Widgets.ParentDataWidget\u003cDoroti.Generated.Framework.Rendering.ParentData\u003e\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Widgets.ParentDataWidget\u003cT\u003e\u0027에서 \u0027Doroti.Framework.Widgets.ParentDataWidget\u003cDoroti.Framework.Rendering.ParentData\u003e\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -1140,7 +1140,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0266",
-                                                      "message":  "암시적으로 \u0027Doroti.Generated.Framework.Rendering.RenderObject\u0027 형식을 \u0027Doroti.Generated.Framework.Rendering.ContainerRenderObjectMixin\u003cDoroti.Generated.Framework.Rendering.RenderObject, Doroti.Generated.Framework.Rendering.ContainerParentDataMixin\u003cDoroti.Generated.Framework.Rendering.RenderObject\u003e\u003e\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
+                                                      "message":  "암시적으로 \u0027Doroti.Framework.Rendering.RenderObject\u0027 형식을 \u0027Doroti.Framework.Rendering.ContainerRenderObjectMixin\u003cDoroti.Framework.Rendering.RenderObject, Doroti.Framework.Rendering.ContainerParentDataMixin\u003cDoroti.Framework.Rendering.RenderObject\u003e\u003e\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -1164,7 +1164,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0266",
-                                                      "message":  "암시적으로 \u0027Doroti.Generated.Framework.Rendering.RenderObject\u0027 형식을 \u0027Doroti.Generated.Framework.Rendering.ContainerRenderObjectMixin\u003cDoroti.Generated.Framework.Rendering.RenderObject, Doroti.Generated.Framework.Rendering.ContainerParentDataMixin\u003cDoroti.Generated.Framework.Rendering.RenderObject\u003e\u003e\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
+                                                      "message":  "암시적으로 \u0027Doroti.Framework.Rendering.RenderObject\u0027 형식을 \u0027Doroti.Framework.Rendering.ContainerRenderObjectMixin\u003cDoroti.Framework.Rendering.RenderObject, Doroti.Framework.Rendering.ContainerParentDataMixin\u003cDoroti.Framework.Rendering.RenderObject\u003e\u003e\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -1188,7 +1188,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0266",
-                                                      "message":  "암시적으로 \u0027Doroti.Generated.Framework.Rendering.RenderObject\u0027 형식을 \u0027Doroti.Generated.Framework.Rendering.ContainerRenderObjectMixin\u003cDoroti.Generated.Framework.Rendering.RenderObject, Doroti.Generated.Framework.Rendering.ContainerParentDataMixin\u003cDoroti.Generated.Framework.Rendering.RenderObject\u003e\u003e\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
+                                                      "message":  "암시적으로 \u0027Doroti.Framework.Rendering.RenderObject\u0027 형식을 \u0027Doroti.Framework.Rendering.ContainerRenderObjectMixin\u003cDoroti.Framework.Rendering.RenderObject, Doroti.Framework.Rendering.ContainerParentDataMixin\u003cDoroti.Framework.Rendering.RenderObject\u003e\u003e\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -1212,7 +1212,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0030",
-                                                      "message":  "\u0027Doroti.Generated.Framework.Widgets.IndexedSlot\u003cT\u003e\u0027 형식을 \u0027Doroti.Generated.Framework.Widgets.IndexedSlot\u003cDoroti.Generated.Framework.Widgets.Element?\u003e\u0027 형식으로 변환할 수 없습니다."
+                                                      "message":  "\u0027Doroti.Framework.Widgets.IndexedSlot\u003cT\u003e\u0027 형식을 \u0027Doroti.Framework.Widgets.IndexedSlot\u003cDoroti.Framework.Widgets.Element?\u003e\u0027 형식으로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -1236,7 +1236,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0030",
-                                                      "message":  "\u0027Doroti.Generated.Framework.Widgets.IndexedSlot\u003cT\u003e\u0027 형식을 \u0027Doroti.Generated.Framework.Widgets.IndexedSlot\u003cDoroti.Generated.Framework.Widgets.Element?\u003e\u0027 형식으로 변환할 수 없습니다."
+                                                      "message":  "\u0027Doroti.Framework.Widgets.IndexedSlot\u003cT\u003e\u0027 형식을 \u0027Doroti.Framework.Widgets.IndexedSlot\u003cDoroti.Framework.Widgets.Element?\u003e\u0027 형식으로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -1380,7 +1380,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Widgets.DisposableBuildContext\u003cDoroti.Generated.Framework.Widgets.State\u003cDoroti.Generated.Framework.Widgets.Image\u003e\u003e\u0027에서 \u0027Doroti.Generated.Framework.Widgets.DisposableBuildContext\u003cDoroti.Generated.Framework.Widgets.IState\u003e\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Widgets.DisposableBuildContext\u003cDoroti.Framework.Widgets.State\u003cDoroti.Framework.Widgets.Image\u003e\u003e\u0027에서 \u0027Doroti.Framework.Widgets.DisposableBuildContext\u003cDoroti.Framework.Widgets.IState\u003e\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W6",
@@ -1452,7 +1452,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0266",
-                                                      "message":  "암시적으로 \u0027Doroti.Generated.Framework.Rendering.RenderObject\u0027 형식을 \u0027Doroti.Generated.Framework.Widgets.RenderAbstractLayoutBuilderMixin\u003cLayoutInfoType, Doroti.Generated.Framework.Rendering.RenderObject\u003e\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
+                                                      "message":  "암시적으로 \u0027Doroti.Framework.Rendering.RenderObject\u0027 형식을 \u0027Doroti.Framework.Widgets.RenderAbstractLayoutBuilderMixin\u003cLayoutInfoType, Doroti.Framework.Rendering.RenderObject\u003e\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -1476,7 +1476,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0266",
-                                                      "message":  "암시적으로 \u0027Doroti.Generated.Framework.Rendering.RenderObject\u0027 형식을 \u0027Doroti.Generated.Framework.Rendering.RenderListWheelViewport\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
+                                                      "message":  "암시적으로 \u0027Doroti.Framework.Rendering.RenderObject\u0027 형식을 \u0027Doroti.Framework.Rendering.RenderListWheelViewport\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W6",
@@ -1644,7 +1644,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Widgets.LocalizationsDelegate\u003cDoroti.Generated.Framework.Widgets.WidgetsLocalizations\u003e\u0027에서 \u0027Doroti.Generated.Framework.Widgets.LocalizationsDelegate\u003cobject?\u003e\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Widgets.LocalizationsDelegate\u003cDoroti.Framework.Widgets.WidgetsLocalizations\u003e\u0027에서 \u0027Doroti.Framework.Widgets.LocalizationsDelegate\u003cobject?\u003e\u0027(으)로 변환할 수 없습니다."
                                                   },
                                                   {
                                                       "code":  "CS1950",
@@ -1816,7 +1816,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Widgets.RestorableNum\u003clong\u003e\u0027에서 \u0027Doroti.Generated.Framework.Widgets.RestorableProperty\u003cobject\u003e\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Widgets.RestorableNum\u003clong\u003e\u0027에서 \u0027Doroti.Framework.Widgets.RestorableProperty\u003cobject\u003e\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W5",
@@ -1840,7 +1840,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Widgets._HistoryProperty__navigator\u0027에서 \u0027Doroti.Generated.Framework.Widgets.RestorableProperty\u003cobject\u003e\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Widgets._HistoryProperty__navigator\u0027에서 \u0027Doroti.Framework.Widgets.RestorableProperty\u003cobject\u003e\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W5",
@@ -1936,7 +1936,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Widgets.ScrollActivityDelegate\u0027에서 \u0027Doroti.Generated.Framework.Widgets._NestedScrollPosition__nested_scroll_view\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Widgets.ScrollActivityDelegate\u0027에서 \u0027Doroti.Framework.Widgets._NestedScrollPosition__nested_scroll_view\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W6",
@@ -1960,7 +1960,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Widgets.ScrollActivityDelegate\u0027에서 \u0027Doroti.Generated.Framework.Widgets._NestedScrollPosition__nested_scroll_view\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Widgets.ScrollActivityDelegate\u0027에서 \u0027Doroti.Framework.Widgets._NestedScrollPosition__nested_scroll_view\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W6",
@@ -1984,7 +1984,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "2 인수: \u0027Doroti.Generated.Framework.Widgets.ScrollActivityDelegate\u0027에서 \u0027Doroti.Generated.Framework.Widgets._NestedScrollPosition__nested_scroll_view\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "2 인수: \u0027Doroti.Framework.Widgets.ScrollActivityDelegate\u0027에서 \u0027Doroti.Framework.Widgets._NestedScrollPosition__nested_scroll_view\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W6",
@@ -2056,7 +2056,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027System.Collections.Generic.List\u003cDoroti.Generated.Framework.Widgets._OverlayEntryWidget__overlay\u003e\u0027에서 \u0027System.Collections.Generic.List\u003cDoroti.Generated.Framework.Widgets.Widget\u003e\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027System.Collections.Generic.List\u003cDoroti.Framework.Widgets._OverlayEntryWidget__overlay\u003e\u0027에서 \u0027System.Collections.Generic.List\u003cDoroti.Framework.Widgets.Widget\u003e\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W5",
@@ -2104,7 +2104,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027object\u0027에서 \u0027Doroti.Generated.Framework.Widgets._RenderDeferredLayoutBox__overlay\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027object\u0027에서 \u0027Doroti.Framework.Widgets._RenderDeferredLayoutBox__overlay\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W5",
@@ -2224,7 +2224,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0311",
-                                                      "message":  "\u0027Doroti.Generated.Framework.Rendering.RenderDarwinPlatformView\u003cDoroti.Generated.Framework.Services.UiKitViewController\u003e\u0027 형식은 제네릭 형식 또는 \u0027_DarwinViewState__platform_view\u003cPlatformViewT, ControllerT, RenderT, ViewT\u003e\u0027 메서드에서 \u0027RenderT\u0027 형식 매개 변수로 사용할 수 없습니다. \u0027Doroti.Generated.Framework.Rendering.RenderDarwinPlatformView\u003cDoroti.Generated.Framework.Services.UiKitViewController\u003e\u0027에서 \u0027Doroti.Generated.Framework.Rendering.RenderDarwinPlatformView\u003cDoroti.Generated.Framework.Services.DarwinPlatformViewController\u003e\u0027(으)로의 암시적 참조 변환이 없습니다."
+                                                      "message":  "\u0027Doroti.Framework.Rendering.RenderDarwinPlatformView\u003cDoroti.Framework.Services.UiKitViewController\u003e\u0027 형식은 제네릭 형식 또는 \u0027_DarwinViewState__platform_view\u003cPlatformViewT, ControllerT, RenderT, ViewT\u003e\u0027 메서드에서 \u0027RenderT\u0027 형식 매개 변수로 사용할 수 없습니다. \u0027Doroti.Framework.Rendering.RenderDarwinPlatformView\u003cDoroti.Framework.Services.UiKitViewController\u003e\u0027에서 \u0027Doroti.Framework.Rendering.RenderDarwinPlatformView\u003cDoroti.Framework.Services.DarwinPlatformViewController\u003e\u0027(으)로의 암시적 참조 변환이 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -2248,7 +2248,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0311",
-                                                      "message":  "\u0027Doroti.Generated.Framework.Widgets._DarwinPlatformView__platform_view\u003cDoroti.Generated.Framework.Services.UiKitViewController, Doroti.Generated.Framework.Rendering.RenderUiKitView\u003e\u0027 형식은 제네릭 형식 또는 \u0027_DarwinViewState__platform_view\u003cPlatformViewT, ControllerT, RenderT, ViewT\u003e\u0027 메서드에서 \u0027ViewT\u0027 형식 매개 변수로 사용할 수 없습니다. \u0027Doroti.Generated.Framework.Widgets._DarwinPlatformView__platform_view\u003cDoroti.Generated.Framework.Services.UiKitViewController, Doroti.Generated.Framework.Rendering.RenderUiKitView\u003e\u0027에서 \u0027Doroti.Generated.Framework.Widgets._DarwinPlatformView__platform_view\u003cDoroti.Generated.Framework.Services.DarwinPlatformViewController, Doroti.Generated.Framework.Rendering.RenderDarwinPlatformView\u003cDoroti.Generated.Framework.Services.UiKitViewController\u003e\u003e\u0027(으)로의 암시적 참조 변환이 없습니다."
+                                                      "message":  "\u0027Doroti.Framework.Widgets._DarwinPlatformView__platform_view\u003cDoroti.Framework.Services.UiKitViewController, Doroti.Framework.Rendering.RenderUiKitView\u003e\u0027 형식은 제네릭 형식 또는 \u0027_DarwinViewState__platform_view\u003cPlatformViewT, ControllerT, RenderT, ViewT\u003e\u0027 메서드에서 \u0027ViewT\u0027 형식 매개 변수로 사용할 수 없습니다. \u0027Doroti.Framework.Widgets._DarwinPlatformView__platform_view\u003cDoroti.Framework.Services.UiKitViewController, Doroti.Framework.Rendering.RenderUiKitView\u003e\u0027에서 \u0027Doroti.Framework.Widgets._DarwinPlatformView__platform_view\u003cDoroti.Framework.Services.DarwinPlatformViewController, Doroti.Framework.Rendering.RenderDarwinPlatformView\u003cDoroti.Framework.Services.UiKitViewController\u003e\u003e\u0027(으)로의 암시적 참조 변환이 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -2272,7 +2272,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0311",
-                                                      "message":  "\u0027Doroti.Generated.Framework.Rendering.RenderDarwinPlatformView\u003cDoroti.Generated.Framework.Services.AppKitViewController\u003e\u0027 형식은 제네릭 형식 또는 \u0027_DarwinViewState__platform_view\u003cPlatformViewT, ControllerT, RenderT, ViewT\u003e\u0027 메서드에서 \u0027RenderT\u0027 형식 매개 변수로 사용할 수 없습니다. \u0027Doroti.Generated.Framework.Rendering.RenderDarwinPlatformView\u003cDoroti.Generated.Framework.Services.AppKitViewController\u003e\u0027에서 \u0027Doroti.Generated.Framework.Rendering.RenderDarwinPlatformView\u003cDoroti.Generated.Framework.Services.DarwinPlatformViewController\u003e\u0027(으)로의 암시적 참조 변환이 없습니다."
+                                                      "message":  "\u0027Doroti.Framework.Rendering.RenderDarwinPlatformView\u003cDoroti.Framework.Services.AppKitViewController\u003e\u0027 형식은 제네릭 형식 또는 \u0027_DarwinViewState__platform_view\u003cPlatformViewT, ControllerT, RenderT, ViewT\u003e\u0027 메서드에서 \u0027RenderT\u0027 형식 매개 변수로 사용할 수 없습니다. \u0027Doroti.Framework.Rendering.RenderDarwinPlatformView\u003cDoroti.Framework.Services.AppKitViewController\u003e\u0027에서 \u0027Doroti.Framework.Rendering.RenderDarwinPlatformView\u003cDoroti.Framework.Services.DarwinPlatformViewController\u003e\u0027(으)로의 암시적 참조 변환이 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -2296,7 +2296,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0311",
-                                                      "message":  "\u0027Doroti.Generated.Framework.Widgets._DarwinPlatformView__platform_view\u003cDoroti.Generated.Framework.Services.AppKitViewController, Doroti.Generated.Framework.Rendering.RenderAppKitView\u003e\u0027 형식은 제네릭 형식 또는 \u0027_DarwinViewState__platform_view\u003cPlatformViewT, ControllerT, RenderT, ViewT\u003e\u0027 메서드에서 \u0027ViewT\u0027 형식 매개 변수로 사용할 수 없습니다. \u0027Doroti.Generated.Framework.Widgets._DarwinPlatformView__platform_view\u003cDoroti.Generated.Framework.Services.AppKitViewController, Doroti.Generated.Framework.Rendering.RenderAppKitView\u003e\u0027에서 \u0027Doroti.Generated.Framework.Widgets._DarwinPlatformView__platform_view\u003cDoroti.Generated.Framework.Services.DarwinPlatformViewController, Doroti.Generated.Framework.Rendering.RenderDarwinPlatformView\u003cDoroti.Generated.Framework.Services.AppKitViewController\u003e\u003e\u0027(으)로의 암시적 참조 변환이 없습니다."
+                                                      "message":  "\u0027Doroti.Framework.Widgets._DarwinPlatformView__platform_view\u003cDoroti.Framework.Services.AppKitViewController, Doroti.Framework.Rendering.RenderAppKitView\u003e\u0027 형식은 제네릭 형식 또는 \u0027_DarwinViewState__platform_view\u003cPlatformViewT, ControllerT, RenderT, ViewT\u003e\u0027 메서드에서 \u0027ViewT\u0027 형식 매개 변수로 사용할 수 없습니다. \u0027Doroti.Framework.Widgets._DarwinPlatformView__platform_view\u003cDoroti.Framework.Services.AppKitViewController, Doroti.Framework.Rendering.RenderAppKitView\u003e\u0027에서 \u0027Doroti.Framework.Widgets._DarwinPlatformView__platform_view\u003cDoroti.Framework.Services.DarwinPlatformViewController, Doroti.Framework.Rendering.RenderDarwinPlatformView\u003cDoroti.Framework.Services.AppKitViewController\u003e\u003e\u0027(으)로의 암시적 참조 변환이 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -2320,7 +2320,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Widgets.Widget\u0027에서 \u0027Doroti.Generated.Framework.Foundation.Key?\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Widgets.Widget\u0027에서 \u0027Doroti.Framework.Foundation.Key?\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -2392,7 +2392,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0266",
-                                                      "message":  "암시적으로 \u0027Doroti.Generated.Framework.Widgets._RawMenuAnchorBaseMixin__raw_menu_anchor\u003cDoroti.Generated.Framework.Widgets.StatefulWidget\u003e\u0027 형식을 \u0027Doroti.Generated.Framework.Widgets._RawMenuAnchorBaseMixin__raw_menu_anchor\u003cDoroti.Generated.Framework.Widgets.RawMenuAnchor\u003e\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
+                                                      "message":  "암시적으로 \u0027Doroti.Framework.Widgets._RawMenuAnchorBaseMixin__raw_menu_anchor\u003cDoroti.Framework.Widgets.StatefulWidget\u003e\u0027 형식을 \u0027Doroti.Framework.Widgets._RawMenuAnchorBaseMixin__raw_menu_anchor\u003cDoroti.Framework.Widgets.RawMenuAnchor\u003e\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -2416,7 +2416,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0266",
-                                                      "message":  "암시적으로 \u0027Doroti.Generated.Framework.Widgets._RawMenuAnchorBaseMixin__raw_menu_anchor\u003cDoroti.Generated.Framework.Widgets.StatefulWidget\u003e\u0027 형식을 \u0027Doroti.Generated.Framework.Widgets._RawMenuAnchorBaseMixin__raw_menu_anchor\u003cDoroti.Generated.Framework.Widgets.RawMenuAnchorGroup\u003e\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
+                                                      "message":  "암시적으로 \u0027Doroti.Framework.Widgets._RawMenuAnchorBaseMixin__raw_menu_anchor\u003cDoroti.Framework.Widgets.StatefulWidget\u003e\u0027 형식을 \u0027Doroti.Framework.Widgets._RawMenuAnchorBaseMixin__raw_menu_anchor\u003cDoroti.Framework.Widgets.RawMenuAnchorGroup\u003e\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -2464,7 +2464,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "2 인수: \u0027Doroti.Generated.Framework.Widgets._RawRadioState__raw_radio\u003cT\u003e\u0027에서 \u0027Doroti.Generated.Framework.Widgets.ToggleableStateMixin\u003cDoroti.Generated.Framework.Widgets.StatefulWidget\u003e\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "2 인수: \u0027Doroti.Framework.Widgets._RawRadioState__raw_radio\u003cT\u003e\u0027에서 \u0027Doroti.Framework.Widgets.ToggleableStateMixin\u003cDoroti.Framework.Widgets.StatefulWidget\u003e\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -2656,7 +2656,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Widgets._RestorableRouteInformation__router\u0027에서 \u0027Doroti.Generated.Framework.Widgets.RestorableProperty\u003cobject\u003e\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Widgets._RestorableRouteInformation__router\u0027에서 \u0027Doroti.Framework.Widgets.RestorableProperty\u003cobject\u003e\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W5",
@@ -2800,7 +2800,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0030",
-                                                      "message":  "\u0027Doroti.Generated.Framework.Widgets.ScrollAwareImageProvider\u003cT\u003e\u0027 형식을 \u0027Doroti.Generated.Framework.Widgets.ScrollAwareImageProvider\u003cobject\u003e\u0027 형식으로 변환할 수 없습니다."
+                                                      "message":  "\u0027Doroti.Framework.Widgets.ScrollAwareImageProvider\u003cT\u003e\u0027 형식을 \u0027Doroti.Framework.Widgets.ScrollAwareImageProvider\u003cobject\u003e\u0027 형식으로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W6",
@@ -2824,7 +2824,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0030",
-                                                      "message":  "\u0027Doroti.Generated.Framework.Widgets.ScrollAwareImageProvider\u003cT\u003e\u0027 형식을 \u0027Doroti.Generated.Framework.Widgets.ScrollAwareImageProvider\u003cobject\u003e\u0027 형식으로 변환할 수 없습니다."
+                                                      "message":  "\u0027Doroti.Framework.Widgets.ScrollAwareImageProvider\u003cT\u003e\u0027 형식을 \u0027Doroti.Framework.Widgets.ScrollAwareImageProvider\u003cobject\u003e\u0027 형식으로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W6",
@@ -2992,7 +2992,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Widgets._RestorableScrollOffset__scrollable\u0027에서 \u0027Doroti.Generated.Framework.Widgets.RestorableProperty\u003cobject\u003e\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Widgets._RestorableScrollOffset__scrollable\u0027에서 \u0027Doroti.Framework.Widgets.RestorableProperty\u003cobject\u003e\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W6",
@@ -3092,7 +3092,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0029",
-                                                      "message":  "암시적으로 \u0027Doroti.Flutter.Runtime.DartMap\u003cSystem.Type, object\u003e\u0027 형식을 \u0027Doroti.Flutter.Runtime.DartMap\u003cSystem.Type, Doroti.Generated.Framework.Widgets.GestureRecognizerFactory\u003cDoroti.Generated.Framework.Gestures.GestureRecognizer\u003e\u003e\u0027 형식으로 변환할 수 없습니다."
+                                                      "message":  "암시적으로 \u0027Doroti.Flutter.Runtime.DartMap\u003cSystem.Type, object\u003e\u0027 형식을 \u0027Doroti.Flutter.Runtime.DartMap\u003cSystem.Type, Doroti.Framework.Widgets.GestureRecognizerFactory\u003cDoroti.Framework.Gestures.GestureRecognizer\u003e\u003e\u0027 형식으로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W6",
@@ -3116,7 +3116,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0029",
-                                                      "message":  "암시적으로 \u0027Doroti.Flutter.Runtime.DartMap\u003cSystem.Type, object\u003e\u0027 형식을 \u0027Doroti.Flutter.Runtime.DartMap\u003cSystem.Type, Doroti.Generated.Framework.Widgets.GestureRecognizerFactory\u003cDoroti.Generated.Framework.Gestures.GestureRecognizer\u003e\u003e\u0027 형식으로 변환할 수 없습니다."
+                                                      "message":  "암시적으로 \u0027Doroti.Flutter.Runtime.DartMap\u003cSystem.Type, object\u003e\u0027 형식을 \u0027Doroti.Flutter.Runtime.DartMap\u003cSystem.Type, Doroti.Framework.Widgets.GestureRecognizerFactory\u003cDoroti.Framework.Gestures.GestureRecognizer\u003e\u003e\u0027 형식으로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W6",
@@ -3140,7 +3140,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "2 인수: \u0027Doroti.Flutter.Runtime.DartMap\u003cSystem.Type, Doroti.Generated.Framework.Widgets.GestureRecognizerFactory\u003cDoroti.Generated.Framework.Gestures.GestureRecognizer\u003e\u003e\u0027에서 \u0027Doroti.Flutter.Runtime.DartMap\u003cSystem.Type, dynamic\u003e\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "2 인수: \u0027Doroti.Flutter.Runtime.DartMap\u003cSystem.Type, Doroti.Framework.Widgets.GestureRecognizerFactory\u003cDoroti.Framework.Gestures.GestureRecognizer\u003e\u003e\u0027에서 \u0027Doroti.Flutter.Runtime.DartMap\u003cSystem.Type, dynamic\u003e\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W6",
@@ -3164,7 +3164,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "2 인수: \u0027Doroti.Generated.Framework.Widgets.ScrollbarPainter\u0027에서 \u0027Doroti.Generated.Framework.Rendering.CustomPainter?\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "2 인수: \u0027Doroti.Framework.Widgets.ScrollbarPainter\u0027에서 \u0027Doroti.Framework.Rendering.CustomPainter?\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W6",
@@ -3380,7 +3380,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0029",
-                                                      "message":  "암시적으로 \u0027Doroti.Generated.Framework.Widgets.SelectionContainer\u0027 형식을 \u0027Doroti.Generated.Framework.Rendering.SelectionGeometry\u0027 형식으로 변환할 수 없습니다."
+                                                      "message":  "암시적으로 \u0027Doroti.Framework.Widgets.SelectionContainer\u0027 형식을 \u0027Doroti.Framework.Rendering.SelectionGeometry\u0027 형식으로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -3860,7 +3860,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0266",
-                                                      "message":  "암시적으로 \u0027Doroti.Generated.Framework.Rendering.RenderObject\u0027 형식을 \u0027Doroti.Generated.Framework.Widgets._RenderSliverPersistentHeaderForWidgetsMixin__sliver_persistent_header\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
+                                                      "message":  "암시적으로 \u0027Doroti.Framework.Rendering.RenderObject\u0027 형식을 \u0027Doroti.Framework.Widgets._RenderSliverPersistentHeaderForWidgetsMixin__sliver_persistent_header\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W6",
@@ -3980,7 +3980,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Widgets.TreeSliverNode\u003cT\u003e\u0027에서 \u0027long\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Widgets.TreeSliverNode\u003cT\u003e\u0027에서 \u0027long\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W6",
@@ -4004,7 +4004,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0029",
-                                                      "message":  "암시적으로 \u0027Doroti.Generated.Framework.Rendering.TreeSliverNodesAnimation\u0027 형식을 \u0027(long fromIndex, long toIndex, double value)\u0027 형식으로 변환할 수 없습니다."
+                                                      "message":  "암시적으로 \u0027Doroti.Framework.Rendering.TreeSliverNodesAnimation\u0027 형식을 \u0027(long fromIndex, long toIndex, double value)\u0027 형식으로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W6",
@@ -4028,7 +4028,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Widgets.SlottedMultiChildRenderObjectWidget\u003cSlotType, ChildType\u003e\u0027에서 \u0027Doroti.Generated.Framework.Widgets.SlottedMultiChildRenderObjectWidgetMixin\u003cSlotType, ChildType\u003e\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Widgets.SlottedMultiChildRenderObjectWidget\u003cSlotType, ChildType\u003e\u0027에서 \u0027Doroti.Framework.Widgets.SlottedMultiChildRenderObjectWidgetMixin\u003cSlotType, ChildType\u003e\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -4052,7 +4052,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Widgets.SlottedMultiChildRenderObjectWidgetMixin\u003cSlotType, ChildType\u003e\u0027에서 \u0027Doroti.Generated.Framework.Widgets.RenderObjectWidget\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Widgets.SlottedMultiChildRenderObjectWidgetMixin\u003cSlotType, ChildType\u003e\u0027에서 \u0027Doroti.Framework.Widgets.RenderObjectWidget\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -4076,7 +4076,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Widgets.SlottedMultiChildRenderObjectWidgetMixin\u003cSlotType, ChildType\u003e\u0027에서 \u0027Doroti.Generated.Framework.Widgets.Widget\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Widgets.SlottedMultiChildRenderObjectWidgetMixin\u003cSlotType, ChildType\u003e\u0027에서 \u0027Doroti.Framework.Widgets.Widget\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -4220,7 +4220,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "2 인수: \u0027Doroti.Generated.Framework.Services.SelectionChangedCause?\u0027에서 \u0027Doroti.Generated.Framework.Services.SelectionChangedCause\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "2 인수: \u0027Doroti.Framework.Services.SelectionChangedCause?\u0027에서 \u0027Doroti.Framework.Services.SelectionChangedCause\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W7",
@@ -4244,7 +4244,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0266",
-                                                      "message":  "암시적으로 \u0027object\u0027 형식을 \u0027Doroti.Generated.Framework.Foundation.ValueListenable\u003cbool\u003e\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
+                                                      "message":  "암시적으로 \u0027object\u0027 형식을 \u0027Doroti.Framework.Foundation.ValueListenable\u003cbool\u003e\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -4268,7 +4268,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0266",
-                                                      "message":  "암시적으로 \u0027object\u0027 형식을 \u0027Doroti.Generated.Framework.Foundation.ValueListenable\u003cDoroti.Generated.Framework.Widgets.TickerModeData\u003e\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
+                                                      "message":  "암시적으로 \u0027object\u0027 형식을 \u0027Doroti.Framework.Foundation.ValueListenable\u003cDoroti.Framework.Widgets.TickerModeData\u003e\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -4340,7 +4340,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Rendering.RenderObject\u0027에서 \u0027Doroti.Generated.Framework.Rendering.RenderView\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Rendering.RenderObject\u0027에서 \u0027Doroti.Framework.Rendering.RenderView\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W0",
@@ -4364,7 +4364,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027Doroti.Generated.Framework.Rendering.RenderObject\u0027에서 \u0027Doroti.Generated.Framework.Rendering.RenderView\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027Doroti.Framework.Rendering.RenderObject\u0027에서 \u0027Doroti.Framework.Rendering.RenderView\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W0",
@@ -4388,7 +4388,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "2 인수: \u0027System.Collections.Generic.IEnumerable\u003cDoroti.Generated.Framework.Foundation.DiagnosticsNode\u003e\u0027에서 \u0027System.Collections.Generic.List\u003cDoroti.Generated.Framework.Foundation.DiagnosticsNode\u003e\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "2 인수: \u0027System.Collections.Generic.IEnumerable\u003cDoroti.Framework.Foundation.DiagnosticsNode\u003e\u0027에서 \u0027System.Collections.Generic.List\u003cDoroti.Framework.Foundation.DiagnosticsNode\u003e\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -4508,7 +4508,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "2 인수: \u0027System.Func\u003cstring, System.Func\u003cDoroti.Generated.Framework.Foundation.DiagnosticsNode, Doroti.Generated.Framework.Widgets.InspectorSerializationDelegate, Doroti.Flutter.Runtime.DartMap\u003cstring, object\u003e?\u003e?, Doroti.Flutter.Runtime.DartMap\u003cstring, object\u003e?\u003e\u0027에서 \u0027System.Func\u003cstring, object\u003e\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "2 인수: \u0027System.Func\u003cstring, System.Func\u003cDoroti.Framework.Foundation.DiagnosticsNode, Doroti.Framework.Widgets.InspectorSerializationDelegate, Doroti.Flutter.Runtime.DartMap\u003cstring, object\u003e?\u003e?, Doroti.Flutter.Runtime.DartMap\u003cstring, object\u003e?\u003e\u0027에서 \u0027System.Func\u003cstring, object\u003e\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -4676,7 +4676,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0266",
-                                                      "message":  "암시적으로 \u0027object\u0027 형식을 \u0027Doroti.Generated.Framework.Widgets.Element\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
+                                                      "message":  "암시적으로 \u0027object\u0027 형식을 \u0027Doroti.Framework.Widgets.Element\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -4700,7 +4700,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0266",
-                                                      "message":  "암시적으로 \u0027object\u0027 형식을 \u0027Doroti.Generated.Framework.Rendering.RenderObject\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
+                                                      "message":  "암시적으로 \u0027object\u0027 형식을 \u0027Doroti.Framework.Rendering.RenderObject\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -4748,7 +4748,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027System.Collections.Generic.IEnumerable\u003cDoroti.Generated.Framework.Foundation.DiagnosticsNode\u003e\u0027에서 \u0027System.Collections.Generic.List\u003cDoroti.Generated.Framework.Foundation.DiagnosticsNode\u003e\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027System.Collections.Generic.IEnumerable\u003cDoroti.Framework.Foundation.DiagnosticsNode\u003e\u0027에서 \u0027System.Collections.Generic.List\u003cDoroti.Framework.Foundation.DiagnosticsNode\u003e\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -4772,7 +4772,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027System.Collections.Generic.IEnumerable\u003cDoroti.Generated.Framework.Foundation.DiagnosticsNode\u003e\u0027에서 \u0027System.Collections.Generic.List\u003cDoroti.Generated.Framework.Foundation.DiagnosticsNode\u003e\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027System.Collections.Generic.IEnumerable\u003cDoroti.Framework.Foundation.DiagnosticsNode\u003e\u0027에서 \u0027System.Collections.Generic.List\u003cDoroti.Framework.Foundation.DiagnosticsNode\u003e\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -4796,7 +4796,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0266",
-                                                      "message":  "암시적으로 \u0027Doroti.Generated.Framework.Foundation.DiagnosticsSerializationDelegate\u0027 형식을 \u0027Doroti.Generated.Framework.Widgets.InspectorSerializationDelegate\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
+                                                      "message":  "암시적으로 \u0027Doroti.Framework.Foundation.DiagnosticsSerializationDelegate\u0027 형식을 \u0027Doroti.Framework.Widgets.InspectorSerializationDelegate\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -4820,7 +4820,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS0266",
-                                                      "message":  "암시적으로 \u0027Doroti.Generated.Framework.Foundation.DiagnosticsSerializationDelegate\u0027 형식을 \u0027Doroti.Generated.Framework.Widgets.InspectorSerializationDelegate\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
+                                                      "message":  "암시적으로 \u0027Doroti.Framework.Foundation.DiagnosticsSerializationDelegate\u0027 형식을 \u0027Doroti.Framework.Widgets.InspectorSerializationDelegate\u0027 형식으로 변환할 수 없습니다. 명시적 변환이 있습니다. 캐스트가 있는지 확인하세요."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",
@@ -4844,7 +4844,7 @@
                         "csharpDiagnostics":  [
                                                   {
                                                       "code":  "CS1503",
-                                                      "message":  "1 인수: \u0027object\u0027에서 \u0027Doroti.Generated.Framework.Widgets.Element\u0027(으)로 변환할 수 없습니다."
+                                                      "message":  "1 인수: \u0027object\u0027에서 \u0027Doroti.Framework.Widgets.Element\u0027(으)로 변환할 수 없습니다."
                                                   }
                                               ],
                         "firstRequiredSlice":  "W1",

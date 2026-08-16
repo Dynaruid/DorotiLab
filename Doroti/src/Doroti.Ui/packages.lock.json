@@ -2,6 +2,12 @@
   "version": 2,
   "dependencies": {
     "net10.0": {
+      "Microsoft.NET.ILLink.Tasks": {
+        "type": "Direct",
+        "requested": "[10.0.8, )",
+        "resolved": "10.0.8",
+        "contentHash": "dVbSXGIFNR5nZcv2tOLoWI+a9T4jtFd77IYjuND+QVe360qWgAF7H0WtoopYhRw/+SgpGUTyrkrh+65+ClNnfw=="
+      },
       "doroti.runtime": {
         "type": "Project",
         "dependencies": {
@@ -14,6 +20,7 @@
         "resolved": "0.3.0",
         "contentHash": "KxXxwL8SJoI63rb7onZKL7rBZmoWQj2aVLNf7ZMNzq6mvfEzR8XInvIAi+hj6NGDm9IvcQ0YJ2SWTUHoPjTABg=="
       }
-    }
+    },
+    "net10.0/browser-wasm": {}
   }
 }

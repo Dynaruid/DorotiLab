@@ -10,10 +10,10 @@ $env:MSBUILDDISABLENODEREUSE = '1'
 $dorotiRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $repoRoot = (Resolve-Path (Join-Path $dorotiRoot '..')).Path
 $project = Join-Path $repoRoot 'DorotiDemoApp/DorotiDemoApp.csproj'
-$tmpRoot = Join-Path $dorotiRoot '.doroti/tmp/g7-maui-single-project'
+$tmpRoot = Join-Path $dorotiRoot '.doroti/tmp/app-targets'
 $publishRoot = Join-Path $tmpRoot 'windows-publish'
 $rawLivePath = Join-Path $tmpRoot 'windows-live.json'
-$evidencePath = Join-Path $dorotiRoot 'migration/maui/g7-maui-single-project-evidence.json'
+$evidencePath = Join-Path $dorotiRoot 'migration/maui/app-targets-evidence.json'
 [IO.Directory]::CreateDirectory($tmpRoot) | Out-Null
 
 function Test-Shard([string] $Name) { return $Shard -eq 'All' -or $Shard -eq $Name }
@@ -96,8 +96,8 @@ function Write-Evidence {
     Assert-True (Test-Path -LiteralPath $rawLivePath -PathType Leaf) 'Windows live input for evidence'
     $live = Get-Content -LiteralPath $rawLivePath -Raw | ConvertFrom-Json
     Write-Json $evidencePath ([ordered]@{
-        schemaVersion = 'doroti.g7-maui-single-project-evidence/v1'
-        milestone = 'M1-M7'
+        schemaVersion = 'doroti.app-targets-evidence/v1'
+        scope = 'single-project-targets'
         capturedAtUtc = [DateTimeOffset]::UtcNow
         status = 'partial'
         project = 'DorotiDemoApp/DorotiDemoApp.csproj'
@@ -134,4 +134,4 @@ if (Test-Shard 'Graph') { Invoke-GraphGate }
 if (Test-Shard 'Build') { Invoke-BuildGate }
 if (Test-Shard 'Live') { Invoke-LiveGate }
 if (Test-Shard 'Evidence') { Write-Evidence }
-Write-Output "G7 MAUI single-project shard '$Shard': PASS"
+Write-Output "Doroti application target shard '$Shard': PASS"

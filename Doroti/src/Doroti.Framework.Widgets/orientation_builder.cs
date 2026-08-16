@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public delegate Widget OrientationWidgetBuilder(BuildContext context, Orientation orientation);
 
@@ -20,21 +20,21 @@ public class OrientationBuilder : StatelessWidget
 {
     public virtual global::System.Func<BuildContext, Orientation, Widget> builder { get; private set; } = default!;
 
-    public OrientationBuilder(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, Orientation, Widget> builder = default!) : base(key: key)
+    public OrientationBuilder(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, Orientation, Widget> builder = default!) : base(key: key)
     {
         this.builder = builder;
     }
 
-    internal virtual Widget _buildWithConstraints(BuildContext context, global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints)
+    internal virtual Widget _buildWithConstraints(BuildContext context, global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        Orientation orientation__1887 = ((((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxWidth > ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxHeight) ? Orientation.landscape : Orientation.portrait);
+        Orientation orientation__1887 = ((((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth > ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight) ? Orientation.landscape : Orientation.portrait);
         return this.builder(context, orientation__1887);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new LayoutBuilder(builder: (global::System.Func<BuildContext, global::Doroti.Generated.Framework.Rendering.BoxConstraints, Widget>)this._buildWithConstraints));
+        return ((Widget)(object?)new LayoutBuilder(builder: (global::System.Func<BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, Widget>)this._buildWithConstraints));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -44,7 +44,7 @@ public class DeviceOrientationBuilder : StatelessWidget
 {
     public virtual global::System.Func<BuildContext, Orientation, Widget> builder { get; private set; } = default!;
 
-    public DeviceOrientationBuilder(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, Orientation, Widget> builder = default!) : base(key: key)
+    public DeviceOrientationBuilder(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, Orientation, Widget> builder = default!) : base(key: key)
     {
         this.builder = builder;
     }

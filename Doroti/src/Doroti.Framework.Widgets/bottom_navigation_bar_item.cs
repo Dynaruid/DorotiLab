@@ -12,11 +12,11 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class BottomNavigationBarItem
 {
-    public virtual global::Doroti.Generated.Framework.Foundation.Key? key { get; private set; }
+    public virtual global::Doroti.Framework.Foundation.Key? key { get; private set; }
     public virtual Widget icon { get; private set; } = default!;
     public virtual Widget activeIcon { get; private set; } = default!;
     public virtual string? label { get; private set; }
@@ -24,7 +24,7 @@ public class BottomNavigationBarItem
     public virtual string? tooltip { get; private set; }
     public virtual string? semanticsLabel { get; private set; }
 
-    public BottomNavigationBarItem(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget icon = default!, string? label = null, Widget? activeIcon = null, Color? backgroundColor = null, string? tooltip = null, string? semanticsLabel = null)
+    public BottomNavigationBarItem(global::Doroti.Framework.Foundation.Key? key = null, Widget icon = default!, string? label = null, Widget? activeIcon = null, Color? backgroundColor = null, string? tooltip = null, string? semanticsLabel = null)
     {
         this.key = key;
         this.icon = icon;

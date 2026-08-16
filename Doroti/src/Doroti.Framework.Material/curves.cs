@@ -12,19 +12,19 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
 public static partial class CurvesLibrary
 {
-    public static global::Doroti.Generated.Framework.Animation.Curve standardEasing = ((global::Doroti.Generated.Framework.Animation.Curve)(object?)global::Doroti.Generated.Framework.Animation.Curves.fastOutSlowIn);
+    public static global::Doroti.Framework.Animation.Curve standardEasing = ((global::Doroti.Framework.Animation.Curve)(object?)global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
 }
 
 public static partial class CurvesLibrary
 {
-    public static global::Doroti.Generated.Framework.Animation.Curve accelerateEasing = ((global::Doroti.Generated.Framework.Animation.Curve)(object?)new global::Doroti.Generated.Framework.Animation.Cubic(0.4, 0.0, 1.0, 1.0));
+    public static global::Doroti.Framework.Animation.Curve accelerateEasing = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Cubic(0.4, 0.0, 1.0, 1.0));
 }
 
 public static partial class CurvesLibrary
 {
-    public static global::Doroti.Generated.Framework.Animation.Curve decelerateEasing = ((global::Doroti.Generated.Framework.Animation.Curve)(object?)new global::Doroti.Generated.Framework.Animation.Cubic(0.0, 0.0, 0.2, 1.0));
+    public static global::Doroti.Framework.Animation.Curve decelerateEasing = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Cubic(0.0, 0.0, 0.2, 1.0));
 }

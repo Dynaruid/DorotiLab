@@ -12,61 +12,61 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
-public class Ink : global::Doroti.Generated.Framework.Widgets.StatefulWidget
+public class Ink : global::Doroti.Framework.Widgets.StatefulWidget
 {
-    public virtual global::Doroti.Generated.Framework.Widgets.Widget? child { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.Decoration? decoration { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.Widget? child { get; private set; }
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
+    public virtual global::Doroti.Framework.Painting.Decoration? decoration { get; private set; }
     public virtual double? width { get; private set; }
     public virtual double? height { get; private set; }
 
-    public Ink(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding = null, Color? color = null, global::Doroti.Generated.Framework.Painting.Decoration? decoration = null, double? width = null, double? height = null, global::Doroti.Generated.Framework.Widgets.Widget? child = null) : base(key: key)
+    public Ink(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, Color? color = null, global::Doroti.Framework.Painting.Decoration? decoration = null, double? width = null, double? height = null, global::Doroti.Framework.Widgets.Widget? child = null) : base(key: key)
     {
         this.padding = padding;
         this.width = width;
         this.height = height;
         this.child = child;
-        this.decoration = (decoration ?? (((color is not null) ? new global::Doroti.Generated.Framework.Painting.BoxDecoration(color: color) : null)));
-        System.Diagnostics.Debug.Assert(((padding is null) || ((global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry)padding).isNonNegative));
+        this.decoration = (decoration ?? (((color is not null) ? new global::Doroti.Framework.Painting.BoxDecoration(color: color) : null)));
+        System.Diagnostics.Debug.Assert(((padding is null) || ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)padding).isNonNegative));
         System.Diagnostics.Debug.Assert(((decoration is null) || decoration.debugAssertIsValid()));
         System.Diagnostics.Debug.Assert(((color is null) || (decoration is null)));
     }
 
-    public static Ink CreateImage(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding = null, dynamic image = default!, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onImageError = null, ColorFilter? colorFilter = null, global::Doroti.Generated.Framework.Painting.BoxFit? fit = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, Rect? centerSlice = null, global::Doroti.Generated.Framework.Painting.ImageRepeat repeat = global::Doroti.Generated.Framework.Painting.ImageRepeat.noRepeat, bool matchTextDirection = false, double? width = null, double? height = null, global::Doroti.Generated.Framework.Widgets.Widget? child = null)
+    public static Ink CreateImage(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, dynamic image = default!, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onImageError = null, ColorFilter? colorFilter = null, global::Doroti.Framework.Painting.BoxFit? fit = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, Rect? centerSlice = null, global::Doroti.Framework.Painting.ImageRepeat repeat = global::Doroti.Framework.Painting.ImageRepeat.noRepeat, bool matchTextDirection = false, double? width = null, double? height = null, global::Doroti.Framework.Widgets.Widget? child = null)
     {
         var __instance = new Ink(key: key, padding: padding, width: width, height: height, child: child);
-        global::Doroti.Generated.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Generated.Framework.Painting.Alignment.center;
+        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.Alignment.center;
         __instance.padding = padding;
         __instance.width = width;
         __instance.height = height;
         __instance.child = child;
-        __instance.decoration = new global::Doroti.Generated.Framework.Painting.BoxDecoration(image: new global::Doroti.Generated.Framework.Painting.DecorationImage(image: image, onError: (global::System.Action<object, global::System.Diagnostics.StackTrace?>?)onImageError, colorFilter: colorFilter, fit: fit, alignment: alignment, centerSlice: centerSlice, repeat: repeat, matchTextDirection: matchTextDirection));
+        __instance.decoration = new global::Doroti.Framework.Painting.BoxDecoration(image: new global::Doroti.Framework.Painting.DecorationImage(image: image, onError: (global::System.Action<object, global::System.Diagnostics.StackTrace?>?)onImageError, colorFilter: colorFilter, fit: fit, alignment: alignment, centerSlice: centerSlice, repeat: repeat, matchTextDirection: matchTextDirection));
         return __instance;
     }
 
-    internal virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry _paddingIncludingDecoration
+    internal virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry _paddingIncludingDecoration
     {
         get
         {
-            return ((this.padding, this.decoration?.padding) switch { (null, null) => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Generated.Framework.Painting.EdgeInsets.zero), (null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry padding__9101) => padding__9101, (global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry padding__9154, null) => padding__9154, _ => this.padding!.add(this.decoration!.padding) });
+            return ((this.padding, this.decoration?.padding) switch { (null, null) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsets.zero), (null, global::Doroti.Framework.Painting.EdgeInsetsGeometry padding__9101) => padding__9101, (global::Doroti.Framework.Painting.EdgeInsetsGeometry padding__9154, null) => padding__9154, _ => this.padding!.add(this.decoration!.padding) });
             return default!;
         }
     }
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.Decoration>("bg", this.decoration, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>("bg", this.decoration, defaultValue: null));
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _InkState__ink_decoration());
 }
 
-internal class _InkState__ink_decoration : global::Doroti.Generated.Framework.Widgets.State<Ink>
+internal class _InkState__ink_decoration : global::Doroti.Framework.Widgets.State<Ink>
 {
-    internal virtual global::Doroti.Generated.Framework.Widgets.GlobalKey<IState> _boxKey { get; private set; } = global::Doroti.Generated.Framework.Widgets.GlobalKey<IState>.Create();
+    internal virtual global::Doroti.Framework.Widgets.GlobalKey<IState> _boxKey { get; private set; } = global::Doroti.Framework.Widgets.GlobalKey<IState>.Create();
     internal virtual InkDecoration? _ink { get; set; } = default;
 
     internal virtual void _handleRemoved()
@@ -81,29 +81,29 @@ internal class _InkState__ink_decoration : global::Doroti.Generated.Framework.Wi
         base.deactivate();
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    internal virtual global::Doroti.Framework.Widgets.Widget _build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         if ((this._ink is null))
         {
-            _ink = new InkDecoration(decoration: ((Ink)this.widget).decoration, isVisible: Visibility.of(context), configuration: global::Doroti.Generated.Framework.Widgets.ImageLibrary.createLocalImageConfiguration(context), controller: Material.of(context), referenceBox: ((global::Doroti.Generated.Framework.Rendering.RenderBox?)(object?)((global::Doroti.Generated.Framework.Widgets.GlobalKey<IState>)this._boxKey).currentContext!.findRenderObject()!)!, onRemoved: () => this._handleRemoved());
+            _ink = new InkDecoration(decoration: ((Ink)this.widget).decoration, isVisible: Visibility.of(context), configuration: global::Doroti.Framework.Widgets.ImageLibrary.createLocalImageConfiguration(context), controller: Material.of(context), referenceBox: ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)this._boxKey).currentContext!.findRenderObject()!)!, onRemoved: () => this._handleRemoved());
         }
         else
         {
             this._ink!.decoration = ((Ink)this.widget).decoration;
             this._ink!.isVisible = Visibility.of(context);
-            this._ink!.configuration = global::Doroti.Generated.Framework.Widgets.ImageLibrary.createLocalImageConfiguration(context);
+            this._ink!.configuration = global::Doroti.Framework.Widgets.ImageLibrary.createLocalImageConfiguration(context);
         }
-        return (((Ink)this.widget).child ?? new global::Doroti.Generated.Framework.Widgets.ConstrainedBox(constraints: global::Doroti.Generated.Framework.Rendering.BoxConstraints.CreateExpand()));
+        return (((Ink)this.widget).child ?? new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateExpand()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
-        global::Doroti.Generated.Framework.Widgets.Widget result__10780 = ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Padding(key: this._boxKey, padding: ((Ink)this.widget)._paddingIncludingDecoration, child: new global::Doroti.Generated.Framework.Widgets.Builder(builder: (global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget>)this._build)));
+        global::Doroti.Framework.Widgets.Widget result__10780 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(key: this._boxKey, padding: ((Ink)this.widget)._paddingIncludingDecoration, child: new global::Doroti.Framework.Widgets.Builder(builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)this._build)));
         if (((((Ink)this.widget).width is not null) || (((Ink)this.widget).height is not null)))
         {
-            result__10780 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.SizedBox(width: ((Ink)this.widget).width, height: ((Ink)this.widget).height, child: result__10780));
+            result__10780 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: ((Ink)this.widget).width, height: ((Ink)this.widget).height, child: result__10780));
         }
         return result__10780;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -113,12 +113,12 @@ internal class _InkState__ink_decoration : global::Doroti.Generated.Framework.Wi
 
 public class InkDecoration : InkFeature
 {
-    internal virtual global::Doroti.Generated.Framework.Painting.BoxPainter? _painter { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Painting.Decoration? _decoration { get; set; } = default;
+    internal virtual global::Doroti.Framework.Painting.BoxPainter? _painter { get; set; } = default;
+    internal virtual global::Doroti.Framework.Painting.Decoration? _decoration { get; set; } = default;
     internal virtual bool _isVisible { get; set; } = true;
-    internal virtual global::Doroti.Generated.Framework.Painting.ImageConfiguration _configuration { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Painting.ImageConfiguration _configuration { get; set; } = default!;
 
-    public InkDecoration(global::Doroti.Generated.Framework.Painting.Decoration? decoration, bool isVisible = true, global::Doroti.Generated.Framework.Painting.ImageConfiguration configuration = default!, MaterialInkController controller = default!, global::Doroti.Generated.Framework.Rendering.RenderBox referenceBox = default!, global::System.Action? onRemoved = null) : base(controller: controller, referenceBox: referenceBox, onRemoved: onRemoved)
+    public InkDecoration(global::Doroti.Framework.Painting.Decoration? decoration, bool isVisible = true, global::Doroti.Framework.Painting.ImageConfiguration configuration = default!, MaterialInkController controller = default!, global::Doroti.Framework.Rendering.RenderBox referenceBox = default!, global::System.Action? onRemoved = null) : base(controller: controller, referenceBox: referenceBox, onRemoved: onRemoved)
     {
         this._configuration = configuration;
         this.decoration = decoration;
@@ -126,7 +126,7 @@ public class InkDecoration : InkFeature
         this.controller.addInkFeature(this);
     }
 
-    public virtual global::Doroti.Generated.Framework.Painting.Decoration? decoration
+    public virtual global::Doroti.Framework.Painting.Decoration? decoration
     {
         get => this._decoration;
         set
@@ -156,7 +156,7 @@ public class InkDecoration : InkFeature
             this.controller.markNeedsPaint();
         }
     }
-    public virtual global::Doroti.Generated.Framework.Painting.ImageConfiguration configuration
+    public virtual global::Doroti.Framework.Painting.ImageConfiguration configuration
     {
         get => this._configuration;
         set
@@ -188,7 +188,7 @@ public class InkDecoration : InkFeature
             return;
         }
         global::Doroti.Ui.Offset? originOffset__13767 = ((global::Doroti.Ui.Offset?)(object?)MatrixUtils.getAsTranslation(transform));
-        global::Doroti.Generated.Framework.Painting.ImageConfiguration sizedConfiguration__13852 = ((global::Doroti.Generated.Framework.Painting.ImageConfiguration)(object?)this.configuration.copyWith(size: ((global::Doroti.Generated.Framework.Rendering.RenderBox)this.referenceBox).size));
+        global::Doroti.Framework.Painting.ImageConfiguration sizedConfiguration__13852 = ((global::Doroti.Framework.Painting.ImageConfiguration)(object?)this.configuration.copyWith(size: ((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size));
         if ((originOffset__13767 is null))
         {
             canvas.save();

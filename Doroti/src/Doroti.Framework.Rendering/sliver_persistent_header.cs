@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public static partial class Sliver_persistent_headerLibrary
 {
@@ -76,7 +76,7 @@ public abstract class RenderSliverPersistentHeader : RenderSliver, RenderObjectW
                 return 0.0;
             }
             DartRuntimePrimitives.Assert(() => child!.hasSize);
-            return (((SliverConstraints)constraints).axis switch { global::Doroti.Generated.Framework.Painting.Axis.vertical => child!.size.height, global::Doroti.Generated.Framework.Painting.Axis.horizontal => child!.size.width, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            return (((SliverConstraints)constraints).axis switch { global::Doroti.Framework.Painting.Axis.vertical => child!.size.height, global::Doroti.Framework.Painting.Axis.horizontal => child!.size.width, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             return default!;
         }
     }
@@ -149,12 +149,12 @@ public abstract class RenderSliverPersistentHeader : RenderSliver, RenderObjectW
     {
         if (((child is not null) && geometry!.visible))
         {
-            offset += (global::Doroti.Generated.Framework.Rendering.SliverLibrary.applyGrowthDirectionToAxisDirection(((SliverConstraints)constraints).axisDirection, ((SliverConstraints)constraints).growthDirection) switch { global::Doroti.Generated.Framework.Painting.AxisDirection.up => new global::Doroti.Ui.Offset(0.0, ((geometry!.paintExtent - childMainAxisPosition(child!)) - this.childExtent)), global::Doroti.Generated.Framework.Painting.AxisDirection.left => new global::Doroti.Ui.Offset(((geometry!.paintExtent - childMainAxisPosition(child!)) - this.childExtent), 0.0), global::Doroti.Generated.Framework.Painting.AxisDirection.right => new global::Doroti.Ui.Offset(childMainAxisPosition(child!), 0.0), global::Doroti.Generated.Framework.Painting.AxisDirection.down => new global::Doroti.Ui.Offset(0.0, childMainAxisPosition(child!)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            offset += (global::Doroti.Framework.Rendering.SliverLibrary.applyGrowthDirectionToAxisDirection(((SliverConstraints)constraints).axisDirection, ((SliverConstraints)constraints).growthDirection) switch { global::Doroti.Framework.Painting.AxisDirection.up => new global::Doroti.Ui.Offset(0.0, ((geometry!.paintExtent - childMainAxisPosition(child!)) - this.childExtent)), global::Doroti.Framework.Painting.AxisDirection.left => new global::Doroti.Ui.Offset(((geometry!.paintExtent - childMainAxisPosition(child!)) - this.childExtent), 0.0), global::Doroti.Framework.Painting.AxisDirection.right => new global::Doroti.Ui.Offset(childMainAxisPosition(child!), 0.0), global::Doroti.Framework.Painting.AxisDirection.down => new global::Doroti.Ui.Offset(0.0, childMainAxisPosition(child!)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             context.paintChild(child!, offset);
         }
     }
 
-    public override void describeSemanticsConfiguration(global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration config)
+    public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
         config.addTagForChildren(RenderViewport.excludeFromScrolling);
@@ -234,7 +234,7 @@ public abstract class RenderSliverPersistentHeader : RenderSliver, RenderObjectW
 
     public virtual bool _getRightWayUp(SliverConstraints constraints)
     {
-        bool reversed__78998 = global::Doroti.Generated.Framework.Painting.Basic_typesLibrary.axisDirectionIsReversed(((SliverConstraints)constraints).axisDirection);
+        bool reversed__78998 = global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionIsReversed(((SliverConstraints)constraints).axisDirection);
         return (((SliverConstraints)constraints).growthDirection switch { GrowthDirection.forward => !reversed__78998, GrowthDirection.reverse => reversed__78998, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -250,7 +250,7 @@ public abstract class RenderSliverPersistentHeader : RenderSliver, RenderObjectW
         global::Doroti.Ui.Offset transformedPosition__80162 = default!;
         switch (((SliverConstraints)constraints).axis)
         {
-            case global::Doroti.Generated.Framework.Painting.Axis.horizontal:
+            case global::Doroti.Framework.Painting.Axis.horizontal:
                 {
                     if (!rightWayUp__79845)
                     {
@@ -261,7 +261,7 @@ public abstract class RenderSliverPersistentHeader : RenderSliver, RenderObjectW
                     transformedPosition__80162 = new global::Doroti.Ui.Offset(absolutePosition__80012, absoluteCrossAxisPosition__80074);
                     break;
                 }
-            case global::Doroti.Generated.Framework.Painting.Axis.vertical:
+            case global::Doroti.Framework.Painting.Axis.vertical:
                 {
                     if (!rightWayUp__79845)
                     {
@@ -288,7 +288,7 @@ public abstract class RenderSliverPersistentHeader : RenderSliver, RenderObjectW
         double crossAxisDelta__81694 = childCrossAxisPosition(child);
         switch (((SliverConstraints)constraints).axis)
         {
-            case global::Doroti.Generated.Framework.Painting.Axis.horizontal:
+            case global::Doroti.Framework.Painting.Axis.horizontal:
                 {
                     if (!rightWayUp__81586)
                     {
@@ -297,7 +297,7 @@ public abstract class RenderSliverPersistentHeader : RenderSliver, RenderObjectW
                     transform.translateByDouble(delta__81639, crossAxisDelta__81694, 0, 1);
                     break;
                 }
-            case global::Doroti.Generated.Framework.Painting.Axis.vertical:
+            case global::Doroti.Framework.Painting.Axis.vertical:
                 {
                     if (!rightWayUp__81586)
                     {
@@ -377,7 +377,7 @@ public abstract class RenderSliverPinnedPersistentHeader : RenderSliverPersisten
     public override void showOnScreen(RenderObject? descendant = null, Rect? rect = null, Duration duration = default, Curve curve = default!)
     {
         global::Doroti.Ui.Rect? localBounds__18249 = ((descendant is not null) ? MatrixUtils.transformRect(descendant.getTransformTo(this), (rect ?? ((RenderObject)descendant).paintBounds)) : rect);
-        global::Doroti.Ui.Rect? newRect__18416 = (global::Doroti.Generated.Framework.Rendering.SliverLibrary.applyGrowthDirectionToAxisDirection(((SliverConstraints)constraints).axisDirection, ((SliverConstraints)constraints).growthDirection) switch { global::Doroti.Generated.Framework.Painting.AxisDirection.up => Sliver_persistent_headerLibrary._trim(localBounds__18249, bottom: childExtent), global::Doroti.Generated.Framework.Painting.AxisDirection.left => Sliver_persistent_headerLibrary._trim(localBounds__18249, right: childExtent), global::Doroti.Generated.Framework.Painting.AxisDirection.right => Sliver_persistent_headerLibrary._trim(localBounds__18249, left: 0), global::Doroti.Generated.Framework.Painting.AxisDirection.down => Sliver_persistent_headerLibrary._trim(localBounds__18249, top: 0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        global::Doroti.Ui.Rect? newRect__18416 = (global::Doroti.Framework.Rendering.SliverLibrary.applyGrowthDirectionToAxisDirection(((SliverConstraints)constraints).axisDirection, ((SliverConstraints)constraints).growthDirection) switch { global::Doroti.Framework.Painting.AxisDirection.up => Sliver_persistent_headerLibrary._trim(localBounds__18249, bottom: childExtent), global::Doroti.Framework.Painting.AxisDirection.left => Sliver_persistent_headerLibrary._trim(localBounds__18249, right: childExtent), global::Doroti.Framework.Painting.AxisDirection.right => Sliver_persistent_headerLibrary._trim(localBounds__18249, left: 0), global::Doroti.Framework.Painting.AxisDirection.down => Sliver_persistent_headerLibrary._trim(localBounds__18249, top: 0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         base.showOnScreen(descendant: this, rect: newRect__18416, duration: duration, curve: curve);
     }
 
@@ -556,27 +556,27 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
         global::Doroti.Ui.Rect? childBounds__27993 = ((descendant is not null) ? MatrixUtils.transformRect(descendant.getTransformTo(child), (rect ?? ((RenderObject)descendant).paintBounds)) : rect);
         double targetExtent__28193 = default!;
         global::Doroti.Ui.Rect? targetRect__28217 = default!;
-        switch (global::Doroti.Generated.Framework.Rendering.SliverLibrary.applyGrowthDirectionToAxisDirection(((SliverConstraints)constraints).axisDirection, ((SliverConstraints)constraints).growthDirection))
+        switch (global::Doroti.Framework.Rendering.SliverLibrary.applyGrowthDirectionToAxisDirection(((SliverConstraints)constraints).axisDirection, ((SliverConstraints)constraints).growthDirection))
         {
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.up:
+            case global::Doroti.Framework.Painting.AxisDirection.up:
                 {
                     targetExtent__28193 = (childExtent - ((childBounds__27993?.top ?? 0L)));
                     targetRect__28217 = Sliver_persistent_headerLibrary._trim(childBounds__27993, bottom: childExtent);
                     break;
                 }
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.right:
+            case global::Doroti.Framework.Painting.AxisDirection.right:
                 {
                     targetExtent__28193 = (childBounds__27993?.right ?? childExtent);
                     targetRect__28217 = Sliver_persistent_headerLibrary._trim(childBounds__27993, left: 0);
                     break;
                 }
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.down:
+            case global::Doroti.Framework.Painting.AxisDirection.down:
                 {
                     targetExtent__28193 = (childBounds__27993?.bottom ?? childExtent);
                     targetRect__28217 = Sliver_persistent_headerLibrary._trim(childBounds__27993, top: 0);
                     break;
                 }
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.left:
+            case global::Doroti.Framework.Painting.AxisDirection.left:
                 {
                     targetExtent__28193 = (childExtent - ((childBounds__27993?.left ?? 0L)));
                     targetRect__28217 = Sliver_persistent_headerLibrary._trim(childBounds__27993, right: childExtent);

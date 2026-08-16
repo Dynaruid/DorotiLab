@@ -5,6 +5,7 @@ using SkiaSharp.HarfBuzz;
 
 namespace Doroti.Vendor.Avalonia.Skia;
 
+// Doroti-owned text fallback implementation. This file is not derived from Avalonia.
 internal static class FontFallbackTextRenderer
 {
     private static readonly ConcurrentDictionary<(string RequestedFamily, int Scalar), string> FamilyByScalar = new();

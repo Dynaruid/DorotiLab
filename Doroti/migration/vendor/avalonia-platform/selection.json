@@ -47,6 +47,7 @@
     }
   ],
   "ownedFiles": [
-    "src/Doroti.Vendor.Avalonia.Skia/VendorBoundary.cs"
+    "src/Doroti.Vendor.Avalonia.Skia/VendorBoundary.cs",
+    "src/Doroti.Vendor.Avalonia.Skia/FontFallbackTextRenderer.cs"
   ]
 }

@@ -1,4 +1,4 @@
-namespace Doroti.Generated.Provider;
+namespace Doroti.Provider;
 
 public sealed partial class ReassembleHandler
 {

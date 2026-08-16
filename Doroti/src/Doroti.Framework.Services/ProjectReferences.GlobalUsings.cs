@@ -1,1 +1,1 @@
-global using Doroti.Generated.Framework.Scheduler;
+global using Doroti.Framework.Scheduler;

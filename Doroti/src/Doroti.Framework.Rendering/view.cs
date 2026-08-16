@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public class ViewConfiguration
 {
@@ -70,7 +70,7 @@ public class ViewConfiguration
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.logicalConstraints, this.physicalConstraints, this.devicePixelRatio);
-    public override string ToString() => $"{this.logicalConstraints} at {(global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugFormatDouble(this.devicePixelRatio))}x";
+    public override string ToString() => $"{this.logicalConstraints} at {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(this.devicePixelRatio))}x";
 }
 
 public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
@@ -207,7 +207,7 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
 
     public virtual void compositeFrame()
     {
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             FlutterTimeline.startSync("COMPOSITING");
         }
@@ -227,16 +227,16 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
             scene__14106.dispose();
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled || global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugRepaintTextRainbowEnabled))
+                    if ((global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled || global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintTextRainbowEnabled))
                     {
-                        global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugCurrentRepaintColor = global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugCurrentRepaintColor.withHue((((((global::Doroti.Generated.Framework.Painting.HSVColor)global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugCurrentRepaintColor).hue + 2.0)) % 360.0));
+                        global::Doroti.Framework.Rendering.DebugLibrary.debugCurrentRepaintColor = global::Doroti.Framework.Rendering.DebugLibrary.debugCurrentRepaintColor.withHue((((((global::Doroti.Framework.Painting.HSVColor)global::Doroti.Framework.Rendering.DebugLibrary.debugCurrentRepaintColor).hue + 2.0)) % 360.0));
                     }
                     return true;
                 });
         }
         finally
         {
-            if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
                 FlutterTimeline.finishSync();
             }
@@ -255,7 +255,7 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
         var bottom__16482 = new global::Doroti.Ui.Offset(bounds__16131.center.dx, ((bounds__16131.bottom - 1.0) - (this._view.padding.bottom / 2.0)));
         SystemUiOverlayStyle? upperOverlayStyle__17026 = layer!.find<SystemUiOverlayStyle>(top__16195);
         SystemUiOverlayStyle? lowerOverlayStyle__17174 = default!;
-        switch (global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
         {
             case var __constant17241 when object.Equals(__constant17241, TargetPlatform.android):
                 {
@@ -281,7 +281,7 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
             SystemChrome.setSystemUIOverlayStyle(overlayStyle__18175);
             return;
         }
-        var isAndroid__19296 = (object.Equals(global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, TargetPlatform.android));
+        var isAndroid__19296 = (object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, TargetPlatform.android));
         SystemUiOverlayStyle definedOverlayStyle__19388 = ((upperOverlayStyle__17026 ?? lowerOverlayStyle__17174))!;
         var overlayStyle__19463 = new SystemUiOverlayStyle(statusBarBrightness: definedOverlayStyle__19388.statusBarBrightness, statusBarIconBrightness: definedOverlayStyle__19388.statusBarIconBrightness, statusBarColor: definedOverlayStyle__19388.statusBarColor, systemStatusBarContrastEnforced: definedOverlayStyle__19388.systemStatusBarContrastEnforced, systemNavigationBarColor: (isAndroid__19296 ? definedOverlayStyle__19388.systemNavigationBarColor : null), systemNavigationBarDividerColor: (isAndroid__19296 ? definedOverlayStyle__19388.systemNavigationBarDividerColor : null), systemNavigationBarIconBrightness: (isAndroid__19296 ? definedOverlayStyle__19388.systemNavigationBarIconBrightness : null), systemNavigationBarContrastEnforced: (isAndroid__19296 ? definedOverlayStyle__19388.systemNavigationBarContrastEnforced : null));
         SystemChrome.setSystemUIOverlayStyle(overlayStyle__19463);
@@ -301,7 +301,7 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                properties.add(new DiagnosticsNode($"debug mode enabled - {((global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb ? "Web" : Platform.operatingSystem))}"));
+                properties.add(new DiagnosticsNode($"debug mode enabled - {((global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? "Web" : Platform.operatingSystem))}"));
                 return true;
             });
         properties.add(new DiagnosticsProperty<global::Doroti.Ui.Size>("view size", this._view.physicalSize, tooltip: "in physical pixels"));

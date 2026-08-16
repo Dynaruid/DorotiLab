@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public delegate BoxConstraints BoxConstraintsTransform(BoxConstraints constraints);
 
@@ -184,22 +184,22 @@ public abstract class RenderShiftedBox : RenderBox, RenderObjectWithChildMixin<R
 
 public class RenderPadding : RenderShiftedBox
 {
-    internal virtual global::Doroti.Generated.Framework.Painting.EdgeInsets? _resolvedPaddingCache { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry _padding { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Painting.EdgeInsets? _resolvedPaddingCache { get; set; } = default;
+    internal virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry _padding { get; set; } = default!;
     internal virtual TextDirection? _textDirection { get; set; } = default;
 
-    public RenderPadding(global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry padding, TextDirection? textDirection = null, RenderBox? child = null) : base(child)
+    public RenderPadding(global::Doroti.Framework.Painting.EdgeInsetsGeometry padding, TextDirection? textDirection = null, RenderBox? child = null) : base(child)
     {
         this._textDirection = textDirection;
         this._padding = padding;
-        System.Diagnostics.Debug.Assert(((global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry)padding).isNonNegative);
+        System.Diagnostics.Debug.Assert(((global::Doroti.Framework.Painting.EdgeInsetsGeometry)padding).isNonNegative);
     }
 
-    internal virtual global::Doroti.Generated.Framework.Painting.EdgeInsets _resolvedPadding
+    internal virtual global::Doroti.Framework.Painting.EdgeInsets _resolvedPadding
     {
         get
         {
-            global::Doroti.Generated.Framework.Painting.EdgeInsets returnValue__4479 = _resolvedPaddingCache ??= this.padding.resolve(this.textDirection);
+            global::Doroti.Framework.Painting.EdgeInsets returnValue__4479 = _resolvedPaddingCache ??= this.padding.resolve(this.textDirection);
             DartRuntimePrimitives.Assert(() => returnValue__4479.isNonNegative);
             return returnValue__4479;
             return default!;
@@ -211,13 +211,13 @@ public class RenderPadding : RenderShiftedBox
         markNeedsLayout();
     }
 
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry padding
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry padding
     {
         get => this._padding;
         set
         {
             var __value = value;
-            DartRuntimePrimitives.Assert(() => ((global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry)__value).isNonNegative);
+            DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)__value).isNonNegative);
             if ((object.Equals(this._padding, __value)))
             {
                 return;
@@ -242,7 +242,7 @@ public class RenderPadding : RenderShiftedBox
     }
     public override double computeMinIntrinsicWidth(double height)
     {
-        global::Doroti.Generated.Framework.Painting.EdgeInsets padding__5661 = this._resolvedPadding;
+        global::Doroti.Framework.Painting.EdgeInsets padding__5661 = this._resolvedPadding;
         if ((child is not null))
         {
             return (child!.getMinIntrinsicWidth(Math.Max(0.0, (height - padding__5661.vertical))) + padding__5661.horizontal);
@@ -253,7 +253,7 @@ public class RenderPadding : RenderShiftedBox
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        global::Doroti.Generated.Framework.Painting.EdgeInsets padding__6002 = this._resolvedPadding;
+        global::Doroti.Framework.Painting.EdgeInsets padding__6002 = this._resolvedPadding;
         if ((child is not null))
         {
             return (child!.getMaxIntrinsicWidth(Math.Max(0.0, (height - padding__6002.vertical))) + padding__6002.horizontal);
@@ -264,7 +264,7 @@ public class RenderPadding : RenderShiftedBox
 
     public override double computeMinIntrinsicHeight(double width)
     {
-        global::Doroti.Generated.Framework.Painting.EdgeInsets padding__6343 = this._resolvedPadding;
+        global::Doroti.Framework.Painting.EdgeInsets padding__6343 = this._resolvedPadding;
         if ((child is not null))
         {
             return (child!.getMinIntrinsicHeight(Math.Max(0.0, (width - padding__6343.horizontal))) + padding__6343.vertical);
@@ -275,7 +275,7 @@ public class RenderPadding : RenderShiftedBox
 
     public override double computeMaxIntrinsicHeight(double width)
     {
-        global::Doroti.Generated.Framework.Painting.EdgeInsets padding__6682 = this._resolvedPadding;
+        global::Doroti.Framework.Painting.EdgeInsets padding__6682 = this._resolvedPadding;
         if ((child is not null))
         {
             return (child!.getMaxIntrinsicHeight(Math.Max(0.0, (width - padding__6682.horizontal))) + padding__6682.vertical);
@@ -286,7 +286,7 @@ public class RenderPadding : RenderShiftedBox
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        global::Doroti.Generated.Framework.Painting.EdgeInsets padding__7047 = this._resolvedPadding;
+        global::Doroti.Framework.Painting.EdgeInsets padding__7047 = this._resolvedPadding;
         if ((child is null))
         {
             return constraints.constrain(new global::Doroti.Ui.Size(padding__7047.horizontal, padding__7047.vertical));
@@ -304,21 +304,21 @@ public class RenderPadding : RenderShiftedBox
         {
             return null;
         }
-        global::Doroti.Generated.Framework.Painting.EdgeInsets padding__7675 = this._resolvedPadding;
+        global::Doroti.Framework.Painting.EdgeInsets padding__7675 = this._resolvedPadding;
         BoxConstraints innerConstraints__7728 = constraints.deflate(padding__7675);
         double? childBaseline__7795 = child__7584.getDryBaseline(innerConstraints__7728, baseline);
         if ((childBaseline__7795 is null))
         {
             return null;
         }
-        return (DartRuntimePrimitives.RequireValue(childBaseline__7795) + ((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding__7675).top);
+        return (DartRuntimePrimitives.RequireValue(childBaseline__7795) + ((global::Doroti.Framework.Painting.EdgeInsets)padding__7675).top);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void performLayout()
     {
         BoxConstraints constraints__8026 = this.constraints;
-        global::Doroti.Generated.Framework.Painting.EdgeInsets padding__8079 = this._resolvedPadding;
+        global::Doroti.Framework.Painting.EdgeInsets padding__8079 = this._resolvedPadding;
         if ((child is null))
         {
             size = constraints__8026.constrain(new global::Doroti.Ui.Size(padding__8079.horizontal, padding__8079.vertical));
@@ -327,7 +327,7 @@ public class RenderPadding : RenderShiftedBox
         BoxConstraints innerConstraints__8257 = constraints__8026.deflate(padding__8079);
         child!.layout(innerConstraints__8257, parentUsesSize: true);
         var childParentData__8375 = ((BoxParentData?)(object?)child!.parentData!)!;
-        childParentData__8375.offset = new global::Doroti.Ui.Offset(((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding__8079).left, ((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding__8079).top);
+        childParentData__8375.offset = new global::Doroti.Ui.Offset(((global::Doroti.Framework.Painting.EdgeInsets)padding__8079).left, ((global::Doroti.Framework.Painting.EdgeInsets)padding__8079).top);
         size = constraints__8026.constrain(new global::Doroti.Ui.Size((padding__8079.horizontal + child!.size.width), (padding__8079.vertical + child!.size.height)));
     }
 
@@ -337,7 +337,7 @@ public class RenderPadding : RenderShiftedBox
         DartRuntimePrimitives.Assert(() =>
             {
                 global::Doroti.Ui.Rect outerRect__8783 = (offset & size);
-                global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugPaintPadding(((PaintingContext)context).canvas, outerRect__8783, ((child is not null) ? this._resolvedPaddingCache!.deflateRect(outerRect__8783) : null));
+                global::Doroti.Framework.Rendering.DebugLibrary.debugPaintPadding(((PaintingContext)context).canvas, outerRect__8783, ((child is not null) ? this._resolvedPaddingCache!.deflateRect(outerRect__8783) : null));
                 return true;
             });
     }
@@ -345,7 +345,7 @@ public class RenderPadding : RenderShiftedBox
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding));
+        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding));
         properties.add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
     }
 
@@ -353,25 +353,25 @@ public class RenderPadding : RenderShiftedBox
 
 public abstract class RenderAligningShiftedBox : RenderShiftedBox
 {
-    internal virtual global::Doroti.Generated.Framework.Painting.Alignment? _resolvedAlignment { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry _alignment { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Painting.Alignment? _resolvedAlignment { get; set; } = default;
+    internal virtual global::Doroti.Framework.Painting.AlignmentGeometry _alignment { get; set; } = default!;
     internal virtual TextDirection? _textDirection { get; set; } = default;
 
-    protected RenderAligningShiftedBox(global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = default!, RenderBox? child = null) : base(child)
+    protected RenderAligningShiftedBox(global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = default!, RenderBox? child = null) : base(child)
     {
-        global::Doroti.Generated.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Generated.Framework.Painting.Alignment.center;
+        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.Alignment.center;
         this._alignment = __alignment;
         this._textDirection = textDirection;
     }
 
-    public virtual global::Doroti.Generated.Framework.Painting.Alignment resolvedAlignment => _resolvedAlignment ??= this.alignment.resolve(this.textDirection);
+    public virtual global::Doroti.Framework.Painting.Alignment resolvedAlignment => _resolvedAlignment ??= this.alignment.resolve(this.textDirection);
     internal virtual void _markNeedResolution()
     {
         _resolvedAlignment = null;
         markNeedsLayout();
     }
 
-    public virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment
+    public virtual global::Doroti.Framework.Painting.AlignmentGeometry alignment
     {
         get => this._alignment;
         set
@@ -412,7 +412,7 @@ public abstract class RenderAligningShiftedBox : RenderShiftedBox
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.AlignmentGeometry>("alignment", this.alignment));
+        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment));
         properties.add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
     }
 
@@ -423,7 +423,7 @@ public class RenderPositionedBox : RenderAligningShiftedBox
     internal virtual double? _widthFactor { get; set; } = default;
     internal virtual double? _heightFactor { get; set; } = default;
 
-    public RenderPositionedBox(RenderBox? child = null, double? widthFactor = null, double? heightFactor = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null) : base(child: child, alignment: alignment ?? global::Doroti.Generated.Framework.Painting.Alignment.center, textDirection: DartRuntimePrimitives.RequireValue(textDirection))
+    public RenderPositionedBox(RenderBox? child = null, double? widthFactor = null, double? heightFactor = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null) : base(child: child, alignment: alignment ?? global::Doroti.Framework.Painting.Alignment.center, textDirection: DartRuntimePrimitives.RequireValue(textDirection))
     {
         this._widthFactor = widthFactor;
         this._heightFactor = heightFactor;
@@ -638,7 +638,7 @@ public class RenderConstrainedOverflowBox : RenderAligningShiftedBox
     internal virtual double? _maxHeight { get; set; } = default;
     internal virtual OverflowBoxFit _fit { get; set; } = default!;
 
-    public RenderConstrainedOverflowBox(RenderBox? child = null, double? minWidth = null, double? maxWidth = null, double? minHeight = null, double? maxHeight = null, OverflowBoxFit fit = OverflowBoxFit.max, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null) : base(child: child, alignment: alignment ?? global::Doroti.Generated.Framework.Painting.Alignment.center, textDirection: DartRuntimePrimitives.RequireValue(textDirection))
+    public RenderConstrainedOverflowBox(RenderBox? child = null, double? minWidth = null, double? maxWidth = null, double? minHeight = null, double? maxHeight = null, OverflowBoxFit fit = OverflowBoxFit.max, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null) : base(child: child, alignment: alignment ?? global::Doroti.Framework.Painting.Alignment.center, textDirection: DartRuntimePrimitives.RequireValue(textDirection))
     {
         this._minWidth = minWidth;
         this._maxWidth = maxWidth;
@@ -808,10 +808,10 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
     internal virtual bool _isOverflowing { get; set; } = false;
     internal virtual BoxConstraints? _childConstraints { get; set; } = default;
     internal virtual LayerHandle<ClipRectLayer> _clipRectLayer { get; private set; } = new LayerHandle<ClipRectLayer>();
-    public virtual List<global::Doroti.Generated.Framework.Painting.TextPainter> _indicatorLabel { get; set; } = new List<global::Doroti.Generated.Framework.Painting.TextPainter>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(System.Enum.GetValues<_OverflowSide__debug_overflow_indicator>().ToList().Count)))), ((i) => new global::Doroti.Generated.Framework.Painting.TextPainter(textDirection: TextDirection.ltr))));
+    public virtual List<global::Doroti.Framework.Painting.TextPainter> _indicatorLabel { get; set; } = new List<global::Doroti.Framework.Painting.TextPainter>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(System.Enum.GetValues<_OverflowSide__debug_overflow_indicator>().ToList().Count)))), ((i) => new global::Doroti.Framework.Painting.TextPainter(textDirection: TextDirection.ltr))));
     public virtual bool _overflowReportNeeded { get; set; } = true;
 
-    public RenderConstraintsTransformBox(global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment, TextDirection? textDirection, Func<BoxConstraints, BoxConstraints> constraintsTransform, RenderBox? child = null, Clip clipBehavior = Clip.none) : base(alignment: alignment, textDirection: DartRuntimePrimitives.RequireValue(textDirection), child: child)
+    public RenderConstraintsTransformBox(global::Doroti.Framework.Painting.AlignmentGeometry alignment, TextDirection? textDirection, Func<BoxConstraints, BoxConstraints> constraintsTransform, RenderBox? child = null, Clip clipBehavior = Clip.none) : base(alignment: alignment, textDirection: DartRuntimePrimitives.RequireValue(textDirection), child: child)
     {
         this._constraintsTransform = constraintsTransform;
         this._clipBehavior = clipBehavior;
@@ -963,7 +963,7 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
     public override void dispose()
     {
         this._clipRectLayer.layer = null;
-        foreach (global::Doroti.Generated.Framework.Painting.TextPainter painter__3670 in this._indicatorLabel)
+        foreach (global::Doroti.Framework.Painting.TextPainter painter__3670 in this._indicatorLabel)
         {
             painter__3670.dispose();
         }
@@ -991,7 +991,7 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
     public override string toStringShort()
     {
         string header__35928 = base.toStringShort();
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             if (this._isOverflowing)
             {
@@ -1080,10 +1080,10 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
         foreach (var region__10201 in overflowRegions__10097)
         {
             ((PaintingContext)context).canvas.drawRect(((_OverflowRegionData__debug_overflow_indicator)region__10201).rect.shift(offset), DebugOverflowIndicatorMixin._indicatorPaint);
-            var textSpan__10317 = ((global::Doroti.Generated.Framework.Painting.TextSpan?)(object?)this._indicatorLabel[(int)(FoundationRuntimePorts.EnumIndex(((_OverflowRegionData__debug_overflow_indicator)region__10201).side))].text)!;
+            var textSpan__10317 = ((global::Doroti.Framework.Painting.TextSpan?)(object?)this._indicatorLabel[(int)(FoundationRuntimePorts.EnumIndex(((_OverflowRegionData__debug_overflow_indicator)region__10201).side))].text)!;
             if ((textSpan__10317?.text != ((_OverflowRegionData__debug_overflow_indicator)region__10201).label))
             {
-                this._indicatorLabel[(int)(FoundationRuntimePorts.EnumIndex(((_OverflowRegionData__debug_overflow_indicator)region__10201).side))].text = new global::Doroti.Generated.Framework.Painting.TextSpan(text: ((_OverflowRegionData__debug_overflow_indicator)region__10201).label, style: DebugOverflowIndicatorMixin._indicatorTextStyle);
+                this._indicatorLabel[(int)(FoundationRuntimePorts.EnumIndex(((_OverflowRegionData__debug_overflow_indicator)region__10201).side))].text = new global::Doroti.Framework.Painting.TextSpan(text: ((_OverflowRegionData__debug_overflow_indicator)region__10201).label, style: DebugOverflowIndicatorMixin._indicatorTextStyle);
                 this._indicatorLabel[(int)(FoundationRuntimePorts.EnumIndex(((_OverflowRegionData__debug_overflow_indicator)region__10201).side))].layout();
             }
             global::Doroti.Ui.Offset labelOffset__10646 = (((_OverflowRegionData__debug_overflow_indicator)region__10201).labelOffset + offset);
@@ -1119,7 +1119,7 @@ public class RenderSizedOverflowBox : RenderAligningShiftedBox
 {
     internal virtual Size _requestedSize { get; set; } = default!;
 
-    public RenderSizedOverflowBox(RenderBox? child = null, Size requestedSize = default!, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null) : base(child: child, alignment: alignment ?? global::Doroti.Generated.Framework.Painting.Alignment.center, textDirection: DartRuntimePrimitives.RequireValue(textDirection))
+    public RenderSizedOverflowBox(RenderBox? child = null, Size requestedSize = default!, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null) : base(child: child, alignment: alignment ?? global::Doroti.Framework.Painting.Alignment.center, textDirection: DartRuntimePrimitives.RequireValue(textDirection))
     {
         this._requestedSize = requestedSize;
     }
@@ -1220,7 +1220,7 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
     internal virtual double? _widthFactor { get; set; } = default;
     internal virtual double? _heightFactor { get; set; } = default;
 
-    public RenderFractionallySizedOverflowBox(RenderBox? child = null, double? widthFactor = null, double? heightFactor = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null) : base(child: child, alignment: alignment ?? global::Doroti.Generated.Framework.Painting.Alignment.center, textDirection: DartRuntimePrimitives.RequireValue(textDirection))
+    public RenderFractionallySizedOverflowBox(RenderBox? child = null, double? widthFactor = null, double? heightFactor = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null) : base(child: child, alignment: alignment ?? global::Doroti.Framework.Painting.Alignment.center, textDirection: DartRuntimePrimitives.RequireValue(textDirection))
     {
         this._widthFactor = widthFactor;
         this._heightFactor = heightFactor;

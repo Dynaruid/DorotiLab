@@ -685,7 +685,7 @@ internal static partial class ConverterEngine
         var compilationDiagnostics = profile.IsFrameworkGraph
             ? Array.Empty<Microsoft.CodeAnalysis.Diagnostic>()
             : CSharpCompilation.Create(
-                "Doroti.GeneratedDraft.Validation",
+                "DorotiDraft.Validation",
                 new[] { CSharpSyntaxTree.ParseText(generated.Code) },
                 platformReferences,
                 new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, warningLevel: 9999))
@@ -794,7 +794,7 @@ internal static partial class ConverterEngine
         var compilationDiagnostics = profile.IsFrameworkGraph
             ? Array.Empty<Microsoft.CodeAnalysis.Diagnostic>()
             : CSharpCompilation.Create(
-                    "Doroti.GeneratedDraft.Validation",
+                    "DorotiDraft.Validation",
                     [CSharpSyntaxTree.ParseText(generatedCode)],
                     platformReferences,
                     new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, warningLevel: 9999))

@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public enum BorderStyle
 {
@@ -245,7 +245,7 @@ public abstract class ShapeBorder
     public virtual void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, BoxShape shape = BoxShape.rectangle, BorderRadius? borderRadius = null) { }
     public override string ToString()
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ShapeBorder"))}()";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ShapeBorder"))}()";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -438,7 +438,7 @@ internal class _CompoundBorder__borders : ShapeBorder
         {
             return false;
         }
-        return ((__other is _CompoundBorder__borders) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals<ShapeBorder>(((_CompoundBorder__borders)((_CompoundBorder__borders)__other)).borders, this.borders));
+        return ((__other is _CompoundBorder__borders) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<ShapeBorder>(((_CompoundBorder__borders)((_CompoundBorder__borders)__other)).borders, this.borders));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHashAll(this.borders);

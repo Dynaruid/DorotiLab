@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
 public static partial class DropdownLibrary
 {
@@ -31,42 +31,42 @@ public static partial class DropdownLibrary
 
 public static partial class DropdownLibrary
 {
-    internal static global::Doroti.Generated.Framework.Painting.EdgeInsets _kMenuItemPadding = global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16.0);
+    internal static global::Doroti.Framework.Painting.EdgeInsets _kMenuItemPadding = global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16.0);
 }
 
 public static partial class DropdownLibrary
 {
-    internal static global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry _kAlignedButtonPadding = ((global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: 16.0, end: 4.0));
+    internal static global::Doroti.Framework.Painting.EdgeInsetsGeometry _kAlignedButtonPadding = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: 16.0, end: 4.0));
 }
 
 public static partial class DropdownLibrary
 {
-    internal static global::Doroti.Generated.Framework.Painting.EdgeInsets _kUnalignedButtonPadding = global::Doroti.Generated.Framework.Painting.EdgeInsets.zero;
+    internal static global::Doroti.Framework.Painting.EdgeInsets _kUnalignedButtonPadding = global::Doroti.Framework.Painting.EdgeInsets.zero;
 }
 
 public static partial class DropdownLibrary
 {
-    internal static global::Doroti.Generated.Framework.Painting.EdgeInsets _kAlignedMenuMargin = global::Doroti.Generated.Framework.Painting.EdgeInsets.zero;
+    internal static global::Doroti.Framework.Painting.EdgeInsets _kAlignedMenuMargin = global::Doroti.Framework.Painting.EdgeInsets.zero;
 }
 
 public static partial class DropdownLibrary
 {
-    internal static global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry _kUnalignedMenuMargin = ((global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: 16.0, end: 24.0));
+    internal static global::Doroti.Framework.Painting.EdgeInsetsGeometry _kUnalignedMenuMargin = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: 16.0, end: 24.0));
 }
 
-public delegate List<global::Doroti.Generated.Framework.Widgets.Widget> DropdownButtonBuilder(global::Doroti.Generated.Framework.Widgets.BuildContext context);
+public delegate List<global::Doroti.Framework.Widgets.Widget> DropdownButtonBuilder(global::Doroti.Framework.Widgets.BuildContext context);
 
-internal class _DropdownMenuPainter__dropdown : global::Doroti.Generated.Framework.Rendering.CustomPainter
+internal class _DropdownMenuPainter__dropdown : global::Doroti.Framework.Rendering.CustomPainter
 {
     public virtual Color? color { get; private set; }
     public virtual long? elevation { get; private set; }
     public virtual long? selectedIndex { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.BorderRadius? borderRadius { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Animation.Animation<double> resize { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.BorderRadius? borderRadius { get; private set; }
+    public virtual global::Doroti.Framework.Animation.Animation<double> resize { get; private set; } = default!;
     public virtual global::System.Func<double> getSelectedItemOffset { get; private set; } = default!;
-    internal virtual global::Doroti.Generated.Framework.Painting.BoxPainter _painter { get; private set; } = default!;
+    internal virtual global::Doroti.Framework.Painting.BoxPainter _painter { get; private set; } = default!;
 
-    internal _DropdownMenuPainter__dropdown(Color? color = null, long? elevation = null, long? selectedIndex = null, global::Doroti.Generated.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Generated.Framework.Animation.Animation<double> resize = default!, global::System.Func<double> getSelectedItemOffset = default!) : base(repaint: resize)
+    internal _DropdownMenuPainter__dropdown(Color? color = null, long? elevation = null, long? selectedIndex = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Animation.Animation<double> resize = default!, global::System.Func<double> getSelectedItemOffset = default!) : base(repaint: resize)
     {
         this.color = color;
         this.elevation = elevation;
@@ -74,19 +74,19 @@ internal class _DropdownMenuPainter__dropdown : global::Doroti.Generated.Framewo
         this.borderRadius = borderRadius;
         this.resize = resize;
         this.getSelectedItemOffset = getSelectedItemOffset;
-        this._painter = new global::Doroti.Generated.Framework.Painting.BoxDecoration(color: color, borderRadius: (borderRadius ?? global::Doroti.Generated.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(2.0))), boxShadow: ShadowsLibrary.kElevationToShadow.GetValueOrDefault(elevation)).createBoxPainter();
+        this._painter = new global::Doroti.Framework.Painting.BoxDecoration(color: color, borderRadius: (borderRadius ?? global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(2.0))), boxShadow: ShadowsLibrary.kElevationToShadow.GetValueOrDefault(elevation)).createBoxPainter();
     }
 
     public override void paint(Canvas canvas, Size size)
     {
         double selectedItemOffset__2754 = this.getSelectedItemOffset();
-        var top__2810 = new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: Dart_uiLibrary.clampDouble(selectedItemOffset__2754, 0.0, Math.Max((size.height - DropdownLibrary._kMenuItemHeight), 0.0)), end: 0.0);
-        var bottom__2963 = new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: Dart_uiLibrary.clampDouble((DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Animation.Tween<double>)top__2810).begin) + DropdownLibrary._kMenuItemHeight), Math.Min(DropdownLibrary._kMenuItemHeight, size.height), size.height), end: size.height);
+        var top__2810 = new global::Doroti.Framework.Animation.Tween<double>(begin: Dart_uiLibrary.clampDouble(selectedItemOffset__2754, 0.0, Math.Max((size.height - DropdownLibrary._kMenuItemHeight), 0.0)), end: 0.0);
+        var bottom__2963 = new global::Doroti.Framework.Animation.Tween<double>(begin: Dart_uiLibrary.clampDouble((DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Animation.Tween<double>)top__2810).begin) + DropdownLibrary._kMenuItemHeight), Math.Min(DropdownLibrary._kMenuItemHeight, size.height), size.height), end: size.height);
         var rect__3173 = global::Doroti.Ui.Rect.fromLTRB(0.0, top__2810.evaluate(this.resize), size.width, bottom__2963.evaluate(this.resize));
-        this._painter.paint(canvas, rect__3173.topLeft, new global::Doroti.Generated.Framework.Painting.ImageConfiguration(size: rect__3173.size));
+        this._painter.paint(canvas, rect__3173.topLeft, new global::Doroti.Framework.Painting.ImageConfiguration(size: rect__3173.size));
     }
 
-    public override bool shouldRepaint(global::Doroti.Generated.Framework.Rendering.CustomPainter oldDelegate)
+    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
     {
         var __oldPainter = (_DropdownMenuPainter__dropdown)(object)oldDelegate;
         return (((((!object.Equals(((_DropdownMenuPainter__dropdown)__oldPainter).color, this.color)) || (((_DropdownMenuPainter__dropdown)__oldPainter).elevation != this.elevation)) || (((_DropdownMenuPainter__dropdown)__oldPainter).selectedIndex != this.selectedIndex)) || (!object.Equals(((_DropdownMenuPainter__dropdown)__oldPainter).borderRadius, this.borderRadius))) || (!object.Equals(((_DropdownMenuPainter__dropdown)__oldPainter).resize, this.resize)));
@@ -95,18 +95,18 @@ internal class _DropdownMenuPainter__dropdown : global::Doroti.Generated.Framewo
 
 }
 
-public class _DropdownMenuItemButton__dropdown<T> : global::Doroti.Generated.Framework.Widgets.StatefulWidget
+public class _DropdownMenuItemButton__dropdown<T> : global::Doroti.Framework.Widgets.StatefulWidget
 {
     public virtual _DropdownRoute__dropdown<T> route { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.ScrollController scrollController { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsets? padding { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.ScrollController scrollController { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.EdgeInsets? padding { get; private set; }
     public virtual Rect buttonRect { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Rendering.BoxConstraints constraints { get; private set; } = default!;
     public virtual long itemIndex { get; private set; } = default!;
     public virtual bool enableFeedback { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Services.MouseCursor? mouseCursor { get; private set; }
+    public virtual global::Doroti.Framework.Services.MouseCursor? mouseCursor { get; private set; }
 
-    internal _DropdownMenuItemButton__dropdown(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Painting.EdgeInsets? padding = null, _DropdownRoute__dropdown<T> route = default!, Rect buttonRect = default!, global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints = default!, long itemIndex = default!, bool enableFeedback = default!, global::Doroti.Generated.Framework.Widgets.ScrollController scrollController = default!, global::Doroti.Generated.Framework.Services.MouseCursor? mouseCursor = null) : base(key: key)
+    internal _DropdownMenuItemButton__dropdown(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.EdgeInsets? padding = null, _DropdownRoute__dropdown<T> route = default!, Rect buttonRect = default!, global::Doroti.Framework.Rendering.BoxConstraints constraints = default!, long itemIndex = default!, bool enableFeedback = default!, global::Doroti.Framework.Widgets.ScrollController scrollController = default!, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null) : base(key: key)
     {
         this.padding = padding;
         this.route = route;
@@ -121,10 +121,10 @@ public class _DropdownMenuItemButton__dropdown<T> : global::Doroti.Generated.Fra
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _DropdownMenuItemButtonState__dropdown<T>());
 }
 
-public class _DropdownMenuItemButtonState__dropdown<T> : global::Doroti.Generated.Framework.Widgets.State<_DropdownMenuItemButton__dropdown<T>>
+public class _DropdownMenuItemButtonState__dropdown<T> : global::Doroti.Framework.Widgets.State<_DropdownMenuItemButton__dropdown<T>>
 {
-    internal virtual global::Doroti.Generated.Framework.Animation.CurvedAnimation _opacityAnimation { get; set; } = default!;
-    internal static DartMap<global::Doroti.Generated.Framework.Widgets.ShortcutActivator, global::Doroti.Generated.Framework.Widgets.Intent> _webShortcuts = new DartMap<global::Doroti.Generated.Framework.Widgets.ShortcutActivator, global::Doroti.Generated.Framework.Widgets.Intent> { [new global::Doroti.Generated.Framework.Widgets.SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.arrowDown)] = ((global::Doroti.Generated.Framework.Widgets.Intent)(object?)new global::Doroti.Generated.Framework.Widgets.DirectionalFocusIntent(global::Doroti.Generated.Framework.Widgets.TraversalDirection.down)), [new global::Doroti.Generated.Framework.Widgets.SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.arrowUp)] = ((global::Doroti.Generated.Framework.Widgets.Intent)(object?)new global::Doroti.Generated.Framework.Widgets.DirectionalFocusIntent(global::Doroti.Generated.Framework.Widgets.TraversalDirection.up)) };
+    internal virtual global::Doroti.Framework.Animation.CurvedAnimation _opacityAnimation { get; set; } = default!;
+    internal static DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent> _webShortcuts = new DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent> { [new global::Doroti.Framework.Widgets.SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown)] = ((global::Doroti.Framework.Widgets.Intent)(object?)new global::Doroti.Framework.Widgets.DirectionalFocusIntent(global::Doroti.Framework.Widgets.TraversalDirection.down)), [new global::Doroti.Framework.Widgets.SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp)] = ((global::Doroti.Framework.Widgets.Intent)(object?)new global::Doroti.Framework.Widgets.DirectionalFocusIntent(global::Doroti.Framework.Widgets.TraversalDirection.up)) };
 
     public override void initState()
     {
@@ -147,23 +147,23 @@ public class _DropdownMenuItemButtonState__dropdown<T> : global::Doroti.Generate
         double unit__5102 = (0.5 / ((checked((long)(((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).route.items.Count)) + 1.5)));
         if ((((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).itemIndex == ((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).route.selectedIndex))
         {
-            _opacityAnimation = new global::Doroti.Generated.Framework.Animation.CurvedAnimation(parent: ((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).route.animation!, curve: new global::Doroti.Generated.Framework.Animation.Threshold(0.0));
+            _opacityAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: ((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).route.animation!, curve: new global::Doroti.Framework.Animation.Threshold(0.0));
         }
         else
         {
             double start__5370 = Dart_uiLibrary.clampDouble((0.5 + (((((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).itemIndex + 1L)) * unit__5102)), 0.0, 1.0);
             double end__5457 = Dart_uiLibrary.clampDouble((start__5370 + (1.5 * unit__5102)), 0.0, 1.0);
-            _opacityAnimation = new global::Doroti.Generated.Framework.Animation.CurvedAnimation(parent: ((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).route.animation!, curve: new global::Doroti.Generated.Framework.Animation.Interval(start__5370, end__5457));
+            _opacityAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: ((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).route.animation!, curve: new global::Doroti.Framework.Animation.Interval(start__5370, end__5457));
         }
     }
 
     internal virtual void _handleFocusChange(bool focused)
     {
-        bool inTraditionalMode__5704 = (global::Doroti.Generated.Framework.Widgets.FocusManager.instance.highlightMode switch { global::Doroti.Generated.Framework.Widgets.FocusHighlightMode.touch => false, global::Doroti.Generated.Framework.Widgets.FocusHighlightMode.traditional => true, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        bool inTraditionalMode__5704 = (global::Doroti.Framework.Widgets.FocusManager.instance.highlightMode switch { global::Doroti.Framework.Widgets.FocusHighlightMode.touch => false, global::Doroti.Framework.Widgets.FocusHighlightMode.traditional => true, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         if ((focused && inTraditionalMode__5704))
         {
             _MenuLimits__dropdown menuLimits__5930 = ((_MenuLimits__dropdown)(object?)((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).route.getMenuLimits(((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).buttonRect, ((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).constraints.maxHeight, ((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).itemIndex));
-            DartRuntimePrimitives.Ignore(((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).scrollController.animateTo(((_MenuLimits__dropdown)menuLimits__5930).scrollOffset, curve: global::Doroti.Generated.Framework.Animation.Curves.easeInOut, duration: Duration.Create(milliseconds: 100L)));
+            DartRuntimePrimitives.Ignore(((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).scrollController.animateTo(((_MenuLimits__dropdown)menuLimits__5930).scrollOffset, curve: global::Doroti.Framework.Animation.Curves.easeInOut, duration: Duration.Create(milliseconds: 100L)));
         }
     }
 
@@ -180,46 +180,46 @@ public class _DropdownMenuItemButtonState__dropdown<T> : global::Doroti.Generate
         base.dispose();
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DropdownMenuItem<T> dropdownMenuItem__7073 = ((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).route.items[(int)(((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).itemIndex)].item!;
-        global::Doroti.Generated.Framework.Widgets.Widget child__7147 = ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).route.items[(int)(((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).itemIndex)]);
-        if (((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).padding is global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry padding__7246)
+        global::Doroti.Framework.Widgets.Widget child__7147 = ((global::Doroti.Framework.Widgets.Widget)(object?)((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).route.items[(int)(((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).itemIndex)]);
+        if (((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).padding is global::Doroti.Framework.Painting.EdgeInsetsGeometry padding__7246)
         {
-            child__7147 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.Padding(padding: padding__7246, child: child__7147));
+            child__7147 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: padding__7246, child: child__7147));
         }
-        child__7147 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.SizedBox(height: ((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).route.itemHeight, child: child__7147));
+        child__7147 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: ((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).route.itemHeight, child: child__7147));
         var isSelected__7398 = (((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).itemIndex == ((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).route.selectedIndex);
-        global::Doroti.Generated.Framework.Widgets.FocusHighlightMode highlightMode__7488 = global::Doroti.Generated.Framework.Widgets.FocusManager.instance.highlightMode;
+        global::Doroti.Framework.Widgets.FocusHighlightMode highlightMode__7488 = global::Doroti.Framework.Widgets.FocusManager.instance.highlightMode;
         if (((DropdownMenuItem<T>)dropdownMenuItem__7073).enabled)
         {
-            child__7147 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new InkWell(autofocus: isSelected__7398, enableFeedback: ((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).enableFeedback, onTap: this._handleOnTap, onFocusChange: this._handleFocusChange, mouseCursor: ((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).mouseCursor, child: ((object.Equals(highlightMode__7488, global::Doroti.Generated.Framework.Widgets.FocusHighlightMode.touch)) ? new Ink(color: (isSelected__7398 ? Theme.of(context).focusColor : null), child: child__7147) : child__7147)));
+            child__7147 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new InkWell(autofocus: isSelected__7398, enableFeedback: ((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).enableFeedback, onTap: this._handleOnTap, onFocusChange: this._handleFocusChange, mouseCursor: ((_DropdownMenuItemButton__dropdown<T>)(object)this.widget).mouseCursor, child: ((object.Equals(highlightMode__7488, global::Doroti.Framework.Widgets.FocusHighlightMode.touch)) ? new Ink(color: (isSelected__7398 ? Theme.of(context).focusColor : null), child: child__7147) : child__7147)));
         }
-        child__7147 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.FadeTransition(opacity: this._opacityAnimation, child: child__7147));
-        if ((global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb && ((DropdownMenuItem<T>)dropdownMenuItem__7073).enabled))
+        child__7147 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._opacityAnimation, child: child__7147));
+        if ((global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb && ((DropdownMenuItem<T>)dropdownMenuItem__7073).enabled))
         {
-            child__7147 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.Shortcuts(shortcuts: _webShortcuts, child: child__7147));
+            child__7147 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Shortcuts(shortcuts: _webShortcuts, child: child__7147));
         }
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Semantics(role: SemanticsRole.menuItem, child: child__7147));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.menuItem, child: child__7147));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _DropdownMenu__dropdown<T> : global::Doroti.Generated.Framework.Widgets.StatefulWidget
+internal class _DropdownMenu__dropdown<T> : global::Doroti.Framework.Widgets.StatefulWidget
 {
     public virtual _DropdownRoute__dropdown<T> route { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsets? padding { get; private set; }
+    public virtual global::Doroti.Framework.Painting.EdgeInsets? padding { get; private set; }
     public virtual Rect buttonRect { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Rendering.BoxConstraints constraints { get; private set; } = default!;
     public virtual Color? dropdownColor { get; private set; }
     public virtual bool enableFeedback { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.BorderRadius? borderRadius { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.ScrollController scrollController { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.BorderRadius? borderRadius { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.ScrollController scrollController { get; private set; } = default!;
     public virtual double? menuWidth { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Services.MouseCursor? mouseCursor { get; private set; }
+    public virtual global::Doroti.Framework.Services.MouseCursor? mouseCursor { get; private set; }
 
-    internal _DropdownMenu__dropdown(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Painting.EdgeInsets? padding = null, _DropdownRoute__dropdown<T> route = default!, Rect buttonRect = default!, global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints = default!, Color? dropdownColor = null, bool enableFeedback = default!, global::Doroti.Generated.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Generated.Framework.Widgets.ScrollController scrollController = default!, double? menuWidth = null, global::Doroti.Generated.Framework.Services.MouseCursor? mouseCursor = null) : base(key: key)
+    internal _DropdownMenu__dropdown(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.EdgeInsets? padding = null, _DropdownRoute__dropdown<T> route = default!, Rect buttonRect = default!, global::Doroti.Framework.Rendering.BoxConstraints constraints = default!, Color? dropdownColor = null, bool enableFeedback = default!, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Widgets.ScrollController scrollController = default!, double? menuWidth = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null) : base(key: key)
     {
         this.padding = padding;
         this.route = route;
@@ -236,16 +236,16 @@ internal class _DropdownMenu__dropdown<T> : global::Doroti.Generated.Framework.W
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _DropdownMenuState__dropdown<T>());
 }
 
-internal class _DropdownMenuState__dropdown<T> : global::Doroti.Generated.Framework.Widgets.State<_DropdownMenu__dropdown<T>>
+internal class _DropdownMenuState__dropdown<T> : global::Doroti.Framework.Widgets.State<_DropdownMenu__dropdown<T>>
 {
-    internal virtual global::Doroti.Generated.Framework.Animation.CurvedAnimation _fadeOpacity { get; private set; } = default!;
-    internal virtual global::Doroti.Generated.Framework.Animation.CurvedAnimation _resize { get; private set; } = default!;
+    internal virtual global::Doroti.Framework.Animation.CurvedAnimation _fadeOpacity { get; private set; } = default!;
+    internal virtual global::Doroti.Framework.Animation.CurvedAnimation _resize { get; private set; } = default!;
 
     public override void initState()
     {
         base.initState();
-        _fadeOpacity = new global::Doroti.Generated.Framework.Animation.CurvedAnimation(parent: ((_DropdownMenu__dropdown<T>)(object)this.widget).route.animation!, curve: new global::Doroti.Generated.Framework.Animation.Interval(0.0, 0.25), reverseCurve: new global::Doroti.Generated.Framework.Animation.Interval(0.75, 1.0));
-        _resize = new global::Doroti.Generated.Framework.Animation.CurvedAnimation(parent: ((_DropdownMenu__dropdown<T>)(object)this.widget).route.animation!, curve: new global::Doroti.Generated.Framework.Animation.Interval(0.25, 0.5), reverseCurve: new global::Doroti.Generated.Framework.Animation.Threshold(0.0));
+        _fadeOpacity = new global::Doroti.Framework.Animation.CurvedAnimation(parent: ((_DropdownMenu__dropdown<T>)(object)this.widget).route.animation!, curve: new global::Doroti.Framework.Animation.Interval(0.0, 0.25), reverseCurve: new global::Doroti.Framework.Animation.Interval(0.75, 1.0));
+        _resize = new global::Doroti.Framework.Animation.CurvedAnimation(parent: ((_DropdownMenu__dropdown<T>)(object)this.widget).route.animation!, curve: new global::Doroti.Framework.Animation.Interval(0.25, 0.5), reverseCurve: new global::Doroti.Framework.Animation.Threshold(0.0));
     }
 
     public override void dispose()
@@ -255,19 +255,19 @@ internal class _DropdownMenuState__dropdown<T> : global::Doroti.Generated.Framew
         base.dispose();
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
         MaterialLocalizations localizations__10764 = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
         _DropdownRoute__dropdown<T> route__10843 = ((_DropdownMenu__dropdown<T>)(object)this.widget).route;
-        var children__10875 = ((Func<List<global::Doroti.Generated.Framework.Widgets.Widget>>)(() => { var __collection10886 = new List<global::Doroti.Generated.Framework.Widgets.Widget>(); for (long itemIndex__10911 = 0L; (itemIndex__10911 < checked((long)(((_DropdownRoute__dropdown<T>)route__10843).items.Count))); ++itemIndex__10911) { __collection10886.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new _DropdownMenuItemButton__dropdown<T>(route: ((_DropdownMenu__dropdown<T>)(object)this.widget).route, padding: ((_DropdownMenu__dropdown<T>)(object)this.widget).padding, buttonRect: ((_DropdownMenu__dropdown<T>)(object)this.widget).buttonRect, constraints: ((_DropdownMenu__dropdown<T>)(object)this.widget).constraints, itemIndex: itemIndex__10911, enableFeedback: ((_DropdownMenu__dropdown<T>)(object)this.widget).enableFeedback, scrollController: ((_DropdownMenu__dropdown<T>)(object)this.widget).scrollController, mouseCursor: ((_DropdownMenu__dropdown<T>)(object)this.widget).mouseCursor))); } return __collection10886; }))();
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.FadeTransition(opacity: this._fadeOpacity, child: new global::Doroti.Generated.Framework.Widgets.CustomPaint(painter: new _DropdownMenuPainter__dropdown(color: (((_DropdownMenu__dropdown<T>)(object)this.widget).dropdownColor ?? Theme.of(context).canvasColor), elevation: ((_DropdownRoute__dropdown<T>)route__10843).elevation, selectedIndex: ((_DropdownRoute__dropdown<T>)route__10843).selectedIndex, resize: this._resize, borderRadius: ((_DropdownMenu__dropdown<T>)(object)this.widget).borderRadius, getSelectedItemOffset: ((global::System.Func<double>)(() => route__10843.getItemOffset(((_DropdownRoute__dropdown<T>)route__10843).selectedIndex)))), child: new global::Doroti.Generated.Framework.Widgets.Semantics(role: SemanticsRole.menu, scopesRoute: true, namesRoute: true, explicitChildNodes: true, label: ((MaterialLocalizations)localizations__10764).popupMenuLabel, child: new global::Doroti.Generated.Framework.Widgets.ClipRRect(borderRadius: (((_DropdownMenu__dropdown<T>)(object)this.widget).borderRadius ?? global::Doroti.Generated.Framework.Painting.BorderRadius.zero), clipBehavior: ((((_DropdownMenu__dropdown<T>)(object)this.widget).borderRadius is not null) ? Clip.antiAlias : Clip.none), child: new Material(type: MaterialType.transparency, textStyle: ((_DropdownRoute__dropdown<T>)route__10843).style, child: new global::Doroti.Generated.Framework.Widgets.ScrollConfiguration(behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false, overscroll: false, physics: new global::Doroti.Generated.Framework.Widgets.ClampingScrollPhysics(), platform: Theme.of(context).platform), child: new global::Doroti.Generated.Framework.Widgets.PrimaryScrollController(controller: ((_DropdownMenu__dropdown<T>)(object)this.widget).scrollController, child: new Scrollbar(thumbVisibility: true, child: new global::Doroti.Generated.Framework.Widgets.ListView(primary: true, padding: ConstantsLibrary.kMaterialListPadding, shrinkWrap: true, children: children__10875))))))))));
+        var children__10875 = ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection10886 = new List<global::Doroti.Framework.Widgets.Widget>(); for (long itemIndex__10911 = 0L; (itemIndex__10911 < checked((long)(((_DropdownRoute__dropdown<T>)route__10843).items.Count))); ++itemIndex__10911) { __collection10886.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _DropdownMenuItemButton__dropdown<T>(route: ((_DropdownMenu__dropdown<T>)(object)this.widget).route, padding: ((_DropdownMenu__dropdown<T>)(object)this.widget).padding, buttonRect: ((_DropdownMenu__dropdown<T>)(object)this.widget).buttonRect, constraints: ((_DropdownMenu__dropdown<T>)(object)this.widget).constraints, itemIndex: itemIndex__10911, enableFeedback: ((_DropdownMenu__dropdown<T>)(object)this.widget).enableFeedback, scrollController: ((_DropdownMenu__dropdown<T>)(object)this.widget).scrollController, mouseCursor: ((_DropdownMenu__dropdown<T>)(object)this.widget).mouseCursor))); } return __collection10886; }))();
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._fadeOpacity, child: new global::Doroti.Framework.Widgets.CustomPaint(painter: new _DropdownMenuPainter__dropdown(color: (((_DropdownMenu__dropdown<T>)(object)this.widget).dropdownColor ?? Theme.of(context).canvasColor), elevation: ((_DropdownRoute__dropdown<T>)route__10843).elevation, selectedIndex: ((_DropdownRoute__dropdown<T>)route__10843).selectedIndex, resize: this._resize, borderRadius: ((_DropdownMenu__dropdown<T>)(object)this.widget).borderRadius, getSelectedItemOffset: ((global::System.Func<double>)(() => route__10843.getItemOffset(((_DropdownRoute__dropdown<T>)route__10843).selectedIndex)))), child: new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.menu, scopesRoute: true, namesRoute: true, explicitChildNodes: true, label: ((MaterialLocalizations)localizations__10764).popupMenuLabel, child: new global::Doroti.Framework.Widgets.ClipRRect(borderRadius: (((_DropdownMenu__dropdown<T>)(object)this.widget).borderRadius ?? global::Doroti.Framework.Painting.BorderRadius.zero), clipBehavior: ((((_DropdownMenu__dropdown<T>)(object)this.widget).borderRadius is not null) ? Clip.antiAlias : Clip.none), child: new Material(type: MaterialType.transparency, textStyle: ((_DropdownRoute__dropdown<T>)route__10843).style, child: new global::Doroti.Framework.Widgets.ScrollConfiguration(behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false, overscroll: false, physics: new global::Doroti.Framework.Widgets.ClampingScrollPhysics(), platform: Theme.of(context).platform), child: new global::Doroti.Framework.Widgets.PrimaryScrollController(controller: ((_DropdownMenu__dropdown<T>)(object)this.widget).scrollController, child: new Scrollbar(thumbVisibility: true, child: new global::Doroti.Framework.Widgets.ListView(primary: true, padding: ConstantsLibrary.kMaterialListPadding, shrinkWrap: true, children: children__10875))))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _DropdownMenuRouteLayout__dropdown<T> : global::Doroti.Generated.Framework.Rendering.SingleChildLayoutDelegate
+internal class _DropdownMenuRouteLayout__dropdown<T> : global::Doroti.Framework.Rendering.SingleChildLayoutDelegate
 {
     public virtual Rect buttonRect { get; private set; } = default!;
     public virtual _DropdownRoute__dropdown<T> route { get; private set; } = default!;
@@ -282,15 +282,15 @@ internal class _DropdownMenuRouteLayout__dropdown<T> : global::Doroti.Generated.
         this.menuWidth = menuWidth;
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.BoxConstraints getConstraintsForChild(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints)
+    public override global::Doroti.Framework.Rendering.BoxConstraints getConstraintsForChild(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        double maxHeight__14295 = Math.Max(0.0, (((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxHeight - (2L * DropdownLibrary._kMenuItemHeight)));
+        double maxHeight__14295 = Math.Max(0.0, (((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight - (2L * DropdownLibrary._kMenuItemHeight)));
         if (((((_DropdownRoute__dropdown<T>)this.route).menuMaxHeight is not null) && (DartRuntimePrimitives.RequireValue(((_DropdownRoute__dropdown<T>)this.route).menuMaxHeight) <= maxHeight__14295)))
         {
             maxHeight__14295 = DartRuntimePrimitives.RequireValue(((_DropdownRoute__dropdown<T>)this.route).menuMaxHeight);
         }
-        double width__14663 = Math.Min(((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxWidth, (this.menuWidth ?? this.buttonRect.width));
-        return new global::Doroti.Generated.Framework.Rendering.BoxConstraints(minWidth: width__14663, maxWidth: width__14663, maxHeight: maxHeight__14295);
+        double width__14663 = Math.Min(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth, (this.menuWidth ?? this.buttonRect.width));
+        return new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: width__14663, maxWidth: width__14663, maxHeight: maxHeight__14295);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -313,7 +313,7 @@ internal class _DropdownMenuRouteLayout__dropdown<T> : global::Doroti.Generated.
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool shouldRelayout(global::Doroti.Generated.Framework.Rendering.SingleChildLayoutDelegate oldDelegate)
+    public override bool shouldRelayout(global::Doroti.Framework.Rendering.SingleChildLayoutDelegate oldDelegate)
     {
         var __oldDelegate = (_DropdownMenuRouteLayout__dropdown<T>)(object)oldDelegate;
         return ((!object.Equals(this.buttonRect, ((_DropdownMenuRouteLayout__dropdown<T>)__oldDelegate).buttonRect)) || (!object.Equals(this.textDirection, ((_DropdownMenuRouteLayout__dropdown<T>)__oldDelegate).textDirection)));
@@ -358,29 +358,29 @@ public class _MenuLimits__dropdown
 
 }
 
-public class _DropdownRoute__dropdown<T> : global::Doroti.Generated.Framework.Widgets.PopupRoute<_DropdownRouteResult__dropdown<T>>
+public class _DropdownRoute__dropdown<T> : global::Doroti.Framework.Widgets.PopupRoute<_DropdownRouteResult__dropdown<T>>
 {
     public virtual List<_MenuItem__dropdown<T>> items { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry padding { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry padding { get; private set; } = default!;
     public virtual Rect buttonRect { get; private set; } = default!;
     public virtual long selectedIndex { get; private set; } = default!;
     public virtual long elevation { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.CapturedThemes capturedThemes { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle style { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.CapturedThemes capturedThemes { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.TextStyle style { get; private set; } = default!;
     public virtual double? itemHeight { get; private set; }
     public virtual double? menuWidth { get; private set; }
     public virtual Color? dropdownColor { get; private set; }
     public virtual double? menuMaxHeight { get; private set; }
     public virtual bool enableFeedback { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.BorderRadius? borderRadius { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Services.MouseCursor? dropdownMenuItemMouseCursor { get; private set; }
+    public virtual global::Doroti.Framework.Painting.BorderRadius? borderRadius { get; private set; }
+    public virtual global::Doroti.Framework.Services.MouseCursor? dropdownMenuItemMouseCursor { get; private set; }
     public virtual List<double> itemHeights { get; private set; } = default!;
     private bool __field_barrierDismissible = default!;
     public override bool barrierDismissible { get => __field_barrierDismissible; }
     private string? __field_barrierLabel = default!;
     public override string? barrierLabel { get => __field_barrierLabel; }
 
-    internal _DropdownRoute__dropdown(List<_MenuItem__dropdown<T>> items, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry padding, Rect buttonRect, long selectedIndex, long elevation = 8, global::Doroti.Generated.Framework.Widgets.CapturedThemes capturedThemes = default!, global::Doroti.Generated.Framework.Painting.TextStyle style = default!, string? barrierLabel = null, double? itemHeight = null, double? menuWidth = null, Color? dropdownColor = null, double? menuMaxHeight = null, bool enableFeedback = default!, global::Doroti.Generated.Framework.Painting.BorderRadius? borderRadius = null, bool barrierDismissible = true, global::Doroti.Generated.Framework.Services.MouseCursor? dropdownMenuItemMouseCursor = null)
+    internal _DropdownRoute__dropdown(List<_MenuItem__dropdown<T>> items, global::Doroti.Framework.Painting.EdgeInsetsGeometry padding, Rect buttonRect, long selectedIndex, long elevation = 8, global::Doroti.Framework.Widgets.CapturedThemes capturedThemes = default!, global::Doroti.Framework.Painting.TextStyle style = default!, string? barrierLabel = null, double? itemHeight = null, double? menuWidth = null, Color? dropdownColor = null, double? menuMaxHeight = null, bool enableFeedback = default!, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, bool barrierDismissible = true, global::Doroti.Framework.Services.MouseCursor? dropdownMenuItemMouseCursor = null)
     {
         this.items = items;
         this.padding = padding;
@@ -403,10 +403,10 @@ public class _DropdownRoute__dropdown<T> : global::Doroti.Generated.Framework.Wi
 
     public override Duration transitionDuration => DropdownLibrary._kDropdownMenuDuration;
     public override Color? barrierColor => DartRuntimePrimitives.ConvertValue<Color>(null);
-    public override global::Doroti.Generated.Framework.Widgets.Widget buildPage(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Animation.Animation<double> animation, global::Doroti.Generated.Framework.Animation.Animation<double> secondaryAnimation)
+    public override global::Doroti.Framework.Widgets.Widget buildPage(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Rendering.BoxConstraints, global::Doroti.Generated.Framework.Widgets.Widget>)((context, constraints) => {
-return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new _DropdownRoutePage__dropdown<T>(route: this, constraints: constraints, items: this.items, padding: this.padding, buttonRect: this.buttonRect, selectedIndex: this.selectedIndex, elevation: this.elevation, capturedThemes: this.capturedThemes, style: this.style, dropdownColor: this.dropdownColor, enableFeedback: this.enableFeedback, borderRadius: this.borderRadius, menuWidth: this.menuWidth, mouseCursor: this.dropdownMenuItemMouseCursor));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) => {
+return ((global::Doroti.Framework.Widgets.Widget)(object?)new _DropdownRoutePage__dropdown<T>(route: this, constraints: constraints, items: this.items, padding: this.padding, buttonRect: this.buttonRect, selectedIndex: this.selectedIndex, elevation: this.elevation, capturedThemes: this.capturedThemes, style: this.style, dropdownColor: this.dropdownColor, enableFeedback: this.enableFeedback, borderRadius: this.borderRadius, menuWidth: this.menuWidth, mouseCursor: this.dropdownMenuItemMouseCursor));
 throw new InvalidOperationException("Dart closure completed without a value.");
 }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -422,7 +422,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     public virtual double getItemOffset(long index)
     {
-        double offset__18858 = ((global::Doroti.Generated.Framework.Painting.EdgeInsets)ConstantsLibrary.kMaterialListPadding).top;
+        double offset__18858 = ((global::Doroti.Framework.Painting.EdgeInsets)ConstantsLibrary.kMaterialListPadding).top;
         if ((System.Linq.Enumerable.Any(this.items) && (index > 0L)))
         {
             DartRuntimePrimitives.Assert(() => (checked((long)(this.items.Count)) == checked((long)(this.itemHeights.Count))));
@@ -474,31 +474,31 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             scrollOffset__21708 = Math.Max(0.0, (selectedItemOffset__19816 - ((buttonTop__19693 - menuTop__20301))));
             scrollOffset__21708 = Math.Min(scrollOffset__21708, (preferredMenuHeight__20421 - menuHeight__20748));
         }
-        DartRuntimePrimitives.Assert(() => ((((menuBottom__20822 - menuTop__20301) - menuHeight__20748)).abs() < global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance));
+        DartRuntimePrimitives.Assert(() => ((((menuBottom__20822 - menuTop__20301) - menuHeight__20748)).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance));
         return new _MenuLimits__dropdown(menuTop__20301, menuBottom__20822, menuHeight__20748, scrollOffset__21708);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _DropdownRoutePage__dropdown<T> : global::Doroti.Generated.Framework.Widgets.StatefulWidget
+internal class _DropdownRoutePage__dropdown<T> : global::Doroti.Framework.Widgets.StatefulWidget
 {
     public virtual _DropdownRoute__dropdown<T> route { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Rendering.BoxConstraints constraints { get; private set; } = default!;
     public virtual List<_MenuItem__dropdown<T>>? items { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry padding { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry padding { get; private set; } = default!;
     public virtual Rect buttonRect { get; private set; } = default!;
     public virtual long selectedIndex { get; private set; } = default!;
     public virtual long elevation { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.CapturedThemes capturedThemes { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? style { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.CapturedThemes capturedThemes { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.TextStyle? style { get; private set; }
     public virtual Color? dropdownColor { get; private set; }
     public virtual bool enableFeedback { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.BorderRadius? borderRadius { get; private set; }
+    public virtual global::Doroti.Framework.Painting.BorderRadius? borderRadius { get; private set; }
     public virtual double? menuWidth { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Services.MouseCursor? mouseCursor { get; private set; }
+    public virtual global::Doroti.Framework.Services.MouseCursor? mouseCursor { get; private set; }
 
-    internal _DropdownRoutePage__dropdown(global::Doroti.Generated.Framework.Foundation.Key? key = null, _DropdownRoute__dropdown<T> route = default!, global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints = default!, List<_MenuItem__dropdown<T>>? items = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry padding = default!, Rect buttonRect = default!, long selectedIndex = default!, long elevation = 8, global::Doroti.Generated.Framework.Widgets.CapturedThemes capturedThemes = default!, global::Doroti.Generated.Framework.Painting.TextStyle? style = null, Color? dropdownColor = default!, bool enableFeedback = default!, global::Doroti.Generated.Framework.Painting.BorderRadius? borderRadius = null, double? menuWidth = null, global::Doroti.Generated.Framework.Services.MouseCursor? mouseCursor = null) : base(key: key)
+    internal _DropdownRoutePage__dropdown(global::Doroti.Framework.Foundation.Key? key = null, _DropdownRoute__dropdown<T> route = default!, global::Doroti.Framework.Rendering.BoxConstraints constraints = default!, List<_MenuItem__dropdown<T>>? items = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry padding = default!, Rect buttonRect = default!, long selectedIndex = default!, long elevation = 8, global::Doroti.Framework.Widgets.CapturedThemes capturedThemes = default!, global::Doroti.Framework.Painting.TextStyle? style = null, Color? dropdownColor = default!, bool enableFeedback = default!, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, double? menuWidth = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null) : base(key: key)
     {
         this.route = route;
         this.constraints = constraints;
@@ -519,24 +519,24 @@ internal class _DropdownRoutePage__dropdown<T> : global::Doroti.Generated.Framew
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _DropdownRoutePageState__dropdown<T>());
 }
 
-internal class _DropdownRoutePageState__dropdown<T> : global::Doroti.Generated.Framework.Widgets.State<_DropdownRoutePage__dropdown<T>>
+internal class _DropdownRoutePageState__dropdown<T> : global::Doroti.Framework.Widgets.State<_DropdownRoutePage__dropdown<T>>
 {
-    internal virtual global::Doroti.Generated.Framework.Widgets.ScrollController _scrollController { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Widgets.ScrollController _scrollController { get; set; } = default!;
 
     public override void initState()
     {
         base.initState();
         _MenuLimits__dropdown menuLimits__24511 = ((_MenuLimits__dropdown)(object?)((_DropdownRoutePage__dropdown<T>)(object)this.widget).route.getMenuLimits(((_DropdownRoutePage__dropdown<T>)(object)this.widget).buttonRect, ((_DropdownRoutePage__dropdown<T>)(object)this.widget).constraints.maxHeight, ((_DropdownRoutePage__dropdown<T>)(object)this.widget).selectedIndex));
-        _scrollController = new global::Doroti.Generated.Framework.Widgets.ScrollController(initialScrollOffset: ((_MenuLimits__dropdown)menuLimits__24511).scrollOffset);
+        _scrollController = new global::Doroti.Framework.Widgets.ScrollController(initialScrollOffset: ((_MenuLimits__dropdown)menuLimits__24511).scrollOffset);
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
         global::Doroti.Ui.TextDirection? textDirection__24868 = Directionality.maybeOf(context);
-        global::Doroti.Generated.Framework.Widgets.Widget menu__24934 = ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new _DropdownMenu__dropdown<T>(route: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).route, padding: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).padding.resolve(textDirection__24868), buttonRect: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).buttonRect, constraints: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).constraints, dropdownColor: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).dropdownColor, enableFeedback: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).enableFeedback, borderRadius: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).borderRadius, scrollController: this._scrollController, mouseCursor: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).mouseCursor));
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)global::Doroti.Generated.Framework.Widgets.MediaQuery.CreateRemovePadding(context: context, removeTop: true, removeBottom: true, removeLeft: true, removeRight: true, child: new global::Doroti.Generated.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget>)((context) => {
-return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.CustomSingleChildLayout(@delegate: new _DropdownMenuRouteLayout__dropdown<T>(buttonRect: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).buttonRect, route: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).route, textDirection: textDirection__24868, menuWidth: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).menuWidth), child: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).capturedThemes.wrap(menu__24934)));
+        global::Doroti.Framework.Widgets.Widget menu__24934 = ((global::Doroti.Framework.Widgets.Widget)(object?)new _DropdownMenu__dropdown<T>(route: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).route, padding: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).padding.resolve(textDirection__24868), buttonRect: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).buttonRect, constraints: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).constraints, dropdownColor: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).dropdownColor, enableFeedback: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).enableFeedback, borderRadius: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).borderRadius, scrollController: this._scrollController, mouseCursor: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).mouseCursor));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.MediaQuery.CreateRemovePadding(context: context, removeTop: true, removeBottom: true, removeLeft: true, removeRight: true, child: new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) => {
+return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CustomSingleChildLayout(@delegate: new _DropdownMenuRouteLayout__dropdown<T>(buttonRect: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).buttonRect, route: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).route, textDirection: textDirection__24868, menuWidth: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).menuWidth), child: ((_DropdownRoutePage__dropdown<T>)(object)this.widget).capturedThemes.wrap(menu__24934)));
 throw new InvalidOperationException("Dart closure completed without a value.");
 })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -550,24 +550,24 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
 }
 
-public class _MenuItem__dropdown<T> : global::Doroti.Generated.Framework.Widgets.SingleChildRenderObjectWidget
+public class _MenuItem__dropdown<T> : global::Doroti.Framework.Widgets.SingleChildRenderObjectWidget
 {
     public virtual global::System.Action<Size> onLayout { get; private set; } = default!;
     public virtual DropdownMenuItem<T>? item { get; private set; }
 
-    internal _MenuItem__dropdown(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::System.Action<Size> onLayout = default!, DropdownMenuItem<T>? item = default!) : base(key: key, child: item)
+    internal _MenuItem__dropdown(global::Doroti.Framework.Foundation.Key? key = null, global::System.Action<Size> onLayout = default!, DropdownMenuItem<T>? item = default!) : base(key: key, child: item)
     {
         this.onLayout = onLayout;
         this.item = item;
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Rendering.RenderObject)(object?)new _RenderMenuItem__dropdown((global::System.Action<Size>)this.onLayout));
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderMenuItem__dropdown((global::System.Action<Size>)this.onLayout));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (_RenderMenuItem__dropdown)(object)renderObject;
         __renderObject.onLayout = (global::System.Action<Size>)this.onLayout;
@@ -575,11 +575,11 @@ public class _MenuItem__dropdown<T> : global::Doroti.Generated.Framework.Widgets
 
 }
 
-public class _RenderMenuItem__dropdown : global::Doroti.Generated.Framework.Rendering.RenderProxyBox
+public class _RenderMenuItem__dropdown : global::Doroti.Framework.Rendering.RenderProxyBox
 {
     public virtual global::System.Action<Size> onLayout { get; set; } = default!;
 
-    internal _RenderMenuItem__dropdown(global::System.Action<Size> onLayout, global::Doroti.Generated.Framework.Rendering.RenderBox? child = null) : base(child)
+    internal _RenderMenuItem__dropdown(global::System.Action<Size> onLayout, global::Doroti.Framework.Rendering.RenderBox? child = null) : base(child)
     {
         this.onLayout = onLayout;
     }
@@ -592,21 +592,21 @@ public class _RenderMenuItem__dropdown : global::Doroti.Generated.Framework.Rend
 
 }
 
-public class _DropdownMenuItemContainer__dropdown : global::Doroti.Generated.Framework.Widgets.StatelessWidget
+public class _DropdownMenuItemContainer__dropdown : global::Doroti.Framework.Widgets.StatelessWidget
 {
-    public virtual global::Doroti.Generated.Framework.Widgets.Widget child { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
 
-    internal _DropdownMenuItemContainer__dropdown(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Generated.Framework.Widgets.Widget child = default!) : base(key: key)
+    internal _DropdownMenuItemContainer__dropdown(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key)
     {
-        global::Doroti.Generated.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Generated.Framework.Painting.AlignmentDirectional.centerStart;
+        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.AlignmentDirectional.centerStart;
         this.alignment = __alignment;
         this.child = child;
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Semantics(button: true, child: new global::Doroti.Generated.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Generated.Framework.Rendering.BoxConstraints(minHeight: DropdownLibrary._kMenuItemHeight), child: new global::Doroti.Generated.Framework.Widgets.Align(alignment: this.alignment, child: this.child))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(button: true, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: DropdownLibrary._kMenuItemHeight), child: new global::Doroti.Framework.Widgets.Align(alignment: this.alignment, child: this.child))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -618,7 +618,7 @@ public class DropdownMenuItem<T> : _DropdownMenuItemContainer__dropdown
     public virtual T? value { get; private set; }
     public virtual bool enabled { get; private set; } = default!;
 
-    public DropdownMenuItem(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::System.Action? onTap = null, T? value = default, bool enabled = true, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Generated.Framework.Widgets.Widget child = default!) : base(key: key, alignment: alignment ?? global::Doroti.Generated.Framework.Painting.AlignmentDirectional.centerStart, child: child)
+    public DropdownMenuItem(global::Doroti.Framework.Foundation.Key? key = null, global::System.Action? onTap = null, T? value = default, bool enabled = true, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, alignment: alignment ?? global::Doroti.Framework.Painting.AlignmentDirectional.centerStart, child: child)
     {
         this.onTap = onTap;
         this.value = value;
@@ -627,34 +627,34 @@ public class DropdownMenuItem<T> : _DropdownMenuItemContainer__dropdown
 
 }
 
-public class DropdownButtonHideUnderline : global::Doroti.Generated.Framework.Widgets.InheritedWidget
+public class DropdownButtonHideUnderline : global::Doroti.Framework.Widgets.InheritedWidget
 {
-    public DropdownButtonHideUnderline(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public DropdownButtonHideUnderline(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
     {
     }
 
-    public static bool at(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static bool at(global::Doroti.Framework.Widgets.BuildContext context)
     {
         return (context.dependOnInheritedWidgetOfExactType<DropdownButtonHideUnderline>() is not null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Generated.Framework.Widgets.InheritedWidget oldWidget) => false;
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => false;
 }
 
-public class DropdownButton<T> : global::Doroti.Generated.Framework.Widgets.StatefulWidget
+public class DropdownButton<T> : global::Doroti.Framework.Widgets.StatefulWidget
 {
     public virtual List<DropdownMenuItem<T>>? items { get; private set; }
     public virtual T? value { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.Widget? hint { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.Widget? disabledHint { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.Widget? hint { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.Widget? disabledHint { get; private set; }
     public virtual global::System.Action<T?>? onChanged { get; private set; }
     public virtual global::System.Action? onTap { get; private set; }
-    public virtual global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, List<global::Doroti.Generated.Framework.Widgets.Widget>>? selectedItemBuilder { get; private set; }
+    public virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, List<global::Doroti.Framework.Widgets.Widget>>? selectedItemBuilder { get; private set; }
     public virtual long elevation { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? style { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.Widget? underline { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.Widget? icon { get; private set; }
+    public virtual global::Doroti.Framework.Painting.TextStyle? style { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.Widget? underline { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.Widget? icon { get; private set; }
     public virtual Color? iconDisabledColor { get; private set; }
     public virtual Color? iconEnabledColor { get; private set; }
     public virtual double iconSize { get; private set; } = default!;
@@ -663,24 +663,24 @@ public class DropdownButton<T> : global::Doroti.Generated.Framework.Widgets.Stat
     public virtual double? itemHeight { get; private set; }
     public virtual double? menuWidth { get; private set; }
     public virtual Color? focusColor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.FocusNode? focusNode { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.FocusNode? focusNode { get; private set; }
     public virtual bool autofocus { get; private set; } = default!;
     public virtual Color? dropdownColor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
     public virtual double? menuMaxHeight { get; private set; }
     public virtual bool? enableFeedback { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.BorderRadius? borderRadius { get; private set; }
+    public virtual global::Doroti.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.BorderRadius? borderRadius { get; private set; }
     public virtual bool barrierDismissible { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Services.MouseCursor? mouseCursor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Services.MouseCursor? dropdownMenuItemMouseCursor { get; private set; }
+    public virtual global::Doroti.Framework.Services.MouseCursor? mouseCursor { get; private set; }
+    public virtual global::Doroti.Framework.Services.MouseCursor? dropdownMenuItemMouseCursor { get; private set; }
     internal virtual InputDecoration? _inputDecoration { get; private set; }
     internal virtual bool _isEmpty { get; private set; } = default!;
 
-    public DropdownButton(global::Doroti.Generated.Framework.Foundation.Key? key = null, List<DropdownMenuItem<T>>? items = default!, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, List<global::Doroti.Generated.Framework.Widgets.Widget>>? selectedItemBuilder = null, T? value = default, global::Doroti.Generated.Framework.Widgets.Widget? hint = null, global::Doroti.Generated.Framework.Widgets.Widget? disabledHint = null, global::System.Action<T?>? onChanged = default!, global::System.Action? onTap = null, long elevation = 8, global::Doroti.Generated.Framework.Painting.TextStyle? style = null, global::Doroti.Generated.Framework.Widgets.Widget? underline = null, global::Doroti.Generated.Framework.Widgets.Widget? icon = null, Color? iconDisabledColor = null, Color? iconEnabledColor = null, double iconSize = 24.0, bool isDense = false, bool isExpanded = false, double? itemHeight = null, double? menuWidth = null, Color? focusColor = null, global::Doroti.Generated.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, Color? dropdownColor = null, double? menuMaxHeight = null, bool? enableFeedback = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Generated.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding = null, bool barrierDismissible = true, global::Doroti.Generated.Framework.Services.MouseCursor? mouseCursor = null, global::Doroti.Generated.Framework.Services.MouseCursor? dropdownMenuItemMouseCursor = null) : base(key: key)
+    public DropdownButton(global::Doroti.Framework.Foundation.Key? key = null, List<DropdownMenuItem<T>>? items = default!, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, List<global::Doroti.Framework.Widgets.Widget>>? selectedItemBuilder = null, T? value = default, global::Doroti.Framework.Widgets.Widget? hint = null, global::Doroti.Framework.Widgets.Widget? disabledHint = null, global::System.Action<T?>? onChanged = default!, global::System.Action? onTap = null, long elevation = 8, global::Doroti.Framework.Painting.TextStyle? style = null, global::Doroti.Framework.Widgets.Widget? underline = null, global::Doroti.Framework.Widgets.Widget? icon = null, Color? iconDisabledColor = null, Color? iconEnabledColor = null, double iconSize = 24.0, bool isDense = false, bool isExpanded = false, double? itemHeight = null, double? menuWidth = null, Color? focusColor = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, Color? dropdownColor = null, double? menuMaxHeight = null, bool? enableFeedback = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, bool barrierDismissible = true, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, global::Doroti.Framework.Services.MouseCursor? dropdownMenuItemMouseCursor = null) : base(key: key)
     {
         double? __itemHeight = itemHeight ?? ConstantsLibrary.kMinInteractiveDimension;
-        global::Doroti.Generated.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Generated.Framework.Painting.AlignmentDirectional.centerStart;
+        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.AlignmentDirectional.centerStart;
         this.items = items;
         this.selectedItemBuilder = selectedItemBuilder;
         this.value = value;
@@ -720,11 +720,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         System.Diagnostics.Debug.Assert(((__itemHeight is null) || (__itemHeight >= ConstantsLibrary.kMinInteractiveDimension)));
     }
 
-    public static DropdownButton<T> Create_formField(global::Doroti.Generated.Framework.Foundation.Key? key = null, List<DropdownMenuItem<T>>? items = default!, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, List<global::Doroti.Generated.Framework.Widgets.Widget>>? selectedItemBuilder = null, T? value = default, global::Doroti.Generated.Framework.Widgets.Widget? hint = null, global::Doroti.Generated.Framework.Widgets.Widget? disabledHint = null, global::System.Action<T?>? onChanged = default!, global::System.Action? onTap = null, long elevation = 8, global::Doroti.Generated.Framework.Painting.TextStyle? style = null, global::Doroti.Generated.Framework.Widgets.Widget? underline = null, global::Doroti.Generated.Framework.Widgets.Widget? icon = null, Color? iconDisabledColor = null, Color? iconEnabledColor = null, double iconSize = 24.0, bool isDense = false, bool isExpanded = false, double? itemHeight = null, double? menuWidth = null, Color? focusColor = null, global::Doroti.Generated.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, Color? dropdownColor = null, double? menuMaxHeight = null, bool? enableFeedback = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Generated.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding = null, bool barrierDismissible = true, global::Doroti.Generated.Framework.Services.MouseCursor? mouseCursor = null, global::Doroti.Generated.Framework.Services.MouseCursor? dropdownMenuItemMouseCursor = null, InputDecoration inputDecoration = default!, bool isEmpty = default!)
+    public static DropdownButton<T> Create_formField(global::Doroti.Framework.Foundation.Key? key = null, List<DropdownMenuItem<T>>? items = default!, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, List<global::Doroti.Framework.Widgets.Widget>>? selectedItemBuilder = null, T? value = default, global::Doroti.Framework.Widgets.Widget? hint = null, global::Doroti.Framework.Widgets.Widget? disabledHint = null, global::System.Action<T?>? onChanged = default!, global::System.Action? onTap = null, long elevation = 8, global::Doroti.Framework.Painting.TextStyle? style = null, global::Doroti.Framework.Widgets.Widget? underline = null, global::Doroti.Framework.Widgets.Widget? icon = null, Color? iconDisabledColor = null, Color? iconEnabledColor = null, double iconSize = 24.0, bool isDense = false, bool isExpanded = false, double? itemHeight = null, double? menuWidth = null, Color? focusColor = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, Color? dropdownColor = null, double? menuMaxHeight = null, bool? enableFeedback = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, bool barrierDismissible = true, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, global::Doroti.Framework.Services.MouseCursor? dropdownMenuItemMouseCursor = null, InputDecoration inputDecoration = default!, bool isEmpty = default!)
     {
         var __instance = new DropdownButton<T>(key: key, items: items, selectedItemBuilder: selectedItemBuilder, value: value, hint: hint, disabledHint: disabledHint, onChanged: onChanged, onTap: onTap, elevation: elevation, style: style, underline: underline, icon: icon, iconDisabledColor: iconDisabledColor, iconEnabledColor: iconEnabledColor, iconSize: iconSize, isDense: isDense, isExpanded: isExpanded, itemHeight: itemHeight, menuWidth: menuWidth, focusColor: focusColor, focusNode: focusNode, autofocus: autofocus, dropdownColor: dropdownColor, menuMaxHeight: menuMaxHeight, enableFeedback: enableFeedback, alignment: alignment, borderRadius: borderRadius, padding: padding, barrierDismissible: barrierDismissible, mouseCursor: mouseCursor, dropdownMenuItemMouseCursor: dropdownMenuItemMouseCursor);
         double? __itemHeight = itemHeight ?? ConstantsLibrary.kMinInteractiveDimension;
-        global::Doroti.Generated.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Generated.Framework.Painting.AlignmentDirectional.centerStart;
+        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.AlignmentDirectional.centerStart;
         __instance.items = items;
         __instance.selectedItemBuilder = selectedItemBuilder;
         __instance.value = value;
@@ -763,21 +763,21 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _DropdownButtonState__dropdown<T>());
 }
 
-internal class _DropdownButtonState__dropdown<T> : global::Doroti.Generated.Framework.Widgets.State<DropdownButton<T>>, global::Doroti.Generated.Framework.Widgets.WidgetsBindingObserver
+internal class _DropdownButtonState__dropdown<T> : global::Doroti.Framework.Widgets.State<DropdownButton<T>>, global::Doroti.Framework.Widgets.WidgetsBindingObserver
 {
     internal virtual long? _selectedIndex { get; set; } = default;
     internal virtual _DropdownRoute__dropdown<T>? _dropdownRoute { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Widgets.Orientation? _lastOrientation { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Widgets.FocusNode? _internalNode { get; set; } = default;
+    internal virtual global::Doroti.Framework.Widgets.Orientation? _lastOrientation { get; set; } = default;
+    internal virtual global::Doroti.Framework.Widgets.FocusNode? _internalNode { get; set; } = default;
     internal virtual DartMap<Type, dynamic> _actionMap { get; set; } = default!;
     internal virtual bool _isHovering { get; set; } = false;
     internal virtual bool _hasPrimaryFocus { get; set; } = false;
     internal virtual bool _isMenuExpanded { get; set; } = false;
 
-    public virtual global::Doroti.Generated.Framework.Widgets.FocusNode focusNode => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.FocusNode>((((DropdownButton<T>)(object)this.widget).focusNode ?? this._internalNode!));
-    internal virtual global::Doroti.Generated.Framework.Widgets.FocusNode _createFocusNode()
+    public virtual global::Doroti.Framework.Widgets.FocusNode focusNode => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.FocusNode>((((DropdownButton<T>)(object)this.widget).focusNode ?? this._internalNode!));
+    internal virtual global::Doroti.Framework.Widgets.FocusNode _createFocusNode()
     {
-        return new global::Doroti.Generated.Framework.Widgets.FocusNode(debugLabel: $"{DartRuntimePrimitives.RuntimeType(this.widget)}");
+        return new global::Doroti.Framework.Widgets.FocusNode(debugLabel: $"{DartRuntimePrimitives.RuntimeType(this.widget)}");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -789,13 +789,13 @@ internal class _DropdownButtonState__dropdown<T> : global::Doroti.Generated.Fram
         {
             _internalNode ??= _createFocusNode();
         }
-        _actionMap = new DartMap<Type, dynamic> { [typeof(global::Doroti.Generated.Framework.Widgets.ActivateIntent)] = new global::Doroti.Generated.Framework.Widgets.CallbackAction<global::Doroti.Generated.Framework.Widgets.ActivateIntent>(onInvoke: ((global::System.Action<global::Doroti.Generated.Framework.Widgets.ActivateIntent>)((intent) => { _handleTap(); }))), [typeof(global::Doroti.Generated.Framework.Widgets.ButtonActivateIntent)] = new global::Doroti.Generated.Framework.Widgets.CallbackAction<global::Doroti.Generated.Framework.Widgets.ButtonActivateIntent>(onInvoke: ((global::System.Action<global::Doroti.Generated.Framework.Widgets.ButtonActivateIntent>)((intent) => { _handleTap(); }))) };
+        _actionMap = new DartMap<Type, dynamic> { [typeof(global::Doroti.Framework.Widgets.ActivateIntent)] = new global::Doroti.Framework.Widgets.CallbackAction<global::Doroti.Framework.Widgets.ActivateIntent>(onInvoke: ((global::System.Action<global::Doroti.Framework.Widgets.ActivateIntent>)((intent) => { _handleTap(); }))), [typeof(global::Doroti.Framework.Widgets.ButtonActivateIntent)] = new global::Doroti.Framework.Widgets.CallbackAction<global::Doroti.Framework.Widgets.ButtonActivateIntent>(onInvoke: ((global::System.Action<global::Doroti.Framework.Widgets.ButtonActivateIntent>)((intent) => { _handleTap(); }))) };
         this.focusNode.addListener(() => this._handleFocusChanged());
     }
 
     public override void dispose()
     {
-        global::Doroti.Generated.Framework.Widgets.WidgetsBinding.instance.removeObserver(this);
+        global::Doroti.Framework.Widgets.WidgetsBinding.instance.removeObserver(this);
         _removeDropdownRoute();
         this.focusNode.removeListener(() => this._handleFocusChanged());
         this._internalNode?.dispose();
@@ -804,10 +804,10 @@ internal class _DropdownButtonState__dropdown<T> : global::Doroti.Generated.Fram
 
     internal virtual void _handleFocusChanged()
     {
-        if ((this._hasPrimaryFocus != ((global::Doroti.Generated.Framework.Widgets.FocusNode)this.focusNode).hasPrimaryFocus))
+        if ((this._hasPrimaryFocus != ((global::Doroti.Framework.Widgets.FocusNode)this.focusNode).hasPrimaryFocus))
         {
             setState(((global::System.Action)(() => {
-_hasPrimaryFocus = ((global::Doroti.Generated.Framework.Widgets.FocusNode)this.focusNode).hasPrimaryFocus;
+_hasPrimaryFocus = ((global::Doroti.Framework.Widgets.FocusNode)this.focusNode).hasPrimaryFocus;
 })));
         }
     }
@@ -834,7 +834,7 @@ _hasPrimaryFocus = ((global::Doroti.Generated.Framework.Widgets.FocusNode)this.f
             {
                 _internalNode ??= _createFocusNode();
             }
-            _hasPrimaryFocus = ((global::Doroti.Generated.Framework.Widgets.FocusNode)this.focusNode).hasPrimaryFocus;
+            _hasPrimaryFocus = ((global::Doroti.Framework.Widgets.FocusNode)this.focusNode).hasPrimaryFocus;
             this.focusNode.addListener(() => this._handleFocusChanged());
         }
         _updateSelectedIndex();
@@ -858,11 +858,11 @@ _hasPrimaryFocus = ((global::Doroti.Generated.Framework.Widgets.FocusNode)this.f
         }
     }
 
-    internal virtual global::Doroti.Generated.Framework.Painting.TextStyle? _textStyle => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Painting.TextStyle>((((DropdownButton<T>)(object)this.widget).style ?? Theme.of(this.context).textTheme.titleMedium));
+    internal virtual global::Doroti.Framework.Painting.TextStyle? _textStyle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.TextStyle>((((DropdownButton<T>)(object)this.widget).style ?? Theme.of(this.context).textTheme.titleMedium));
     internal virtual void _handleTap()
     {
         global::Doroti.Ui.TextDirection? textDirection__50817 = Directionality.maybeOf(this.context);
-        global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry menuMargin__50895 = (ButtonTheme.of(this.context).alignedDropdown ? DropdownLibrary._kAlignedMenuMargin : DropdownLibrary._kUnalignedMenuMargin);
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry menuMargin__50895 = (ButtonTheme.of(this.context).alignedDropdown ? DropdownLibrary._kAlignedMenuMargin : DropdownLibrary._kUnalignedMenuMargin);
         var menuItems__51022 = ((Func<List<_MenuItem__dropdown<T>>>)(() => { var __collection51034 = new List<_MenuItem__dropdown<T>>(); for (long index__51065 = 0L; (index__51065 < checked((long)(((DropdownButton<T>)(object)this.widget).items!.Count))); index__51065 += 1L) { __collection51034.Add(new _MenuItem__dropdown<T>(item: ((DropdownButton<T>)(object)this.widget).items![(int)(index__51065)], onLayout: ((global::System.Action<Size>)((size) => {
 if ((this._dropdownRoute is null))
 {
@@ -870,10 +870,10 @@ if ((this._dropdownRoute is null))
 }
 this._dropdownRoute!.itemHeights[(int)(index__51065)] = size.height;
 })))); } return __collection51034; }))();
-        global::Doroti.Generated.Framework.Widgets.NavigatorState navigator__51933 = ((global::Doroti.Generated.Framework.Widgets.NavigatorState)(object?)Navigator.of(this.context));
+        global::Doroti.Framework.Widgets.NavigatorState navigator__51933 = ((global::Doroti.Framework.Widgets.NavigatorState)(object?)Navigator.of(this.context));
         DartRuntimePrimitives.Assert(() => (this._dropdownRoute is null));
-        var itemBox__52014 = ((global::Doroti.Generated.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
-        global::Doroti.Ui.Rect itemRect__52081 = ((global::Doroti.Ui.Rect)(object?)(((Offset)((dynamic)itemBox__52014).localToGlobal(Offset.zero, ancestor: navigator__51933.context.findRenderObject())) & ((global::Doroti.Generated.Framework.Rendering.RenderBox)itemBox__52014).size));
+        var itemBox__52014 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
+        global::Doroti.Ui.Rect itemRect__52081 = ((global::Doroti.Ui.Rect)(object?)(((Offset)((dynamic)itemBox__52014).localToGlobal(Offset.zero, ancestor: navigator__51933.context.findRenderObject())) & ((global::Doroti.Framework.Rendering.RenderBox)itemBox__52014).size));
         _dropdownRoute = new _DropdownRoute__dropdown<T>(items: menuItems__51022, buttonRect: menuMargin__50895.resolve(textDirection__50817).inflateRect(itemRect__52081), padding: DropdownLibrary._kMenuItemPadding.resolve(textDirection__50817), selectedIndex: (this._selectedIndex ?? 0L), elevation: ((DropdownButton<T>)(object)this.widget).elevation, capturedThemes: InheritedTheme.capture(from: this.context, to: navigator__51933.context), style: this._textStyle!, barrierLabel: MaterialLocalizations.of(this.context).modalBarrierDismissLabel, itemHeight: ((DropdownButton<T>)(object)this.widget).itemHeight, menuWidth: ((DropdownButton<T>)(object)this.widget).menuWidth, dropdownColor: ((DropdownButton<T>)(object)this.widget).dropdownColor, menuMaxHeight: ((DropdownButton<T>)(object)this.widget).menuMaxHeight, enableFeedback: (((DropdownButton<T>)(object)this.widget).enableFeedback ?? true), borderRadius: ((DropdownButton<T>)(object)this.widget).borderRadius, barrierDismissible: ((DropdownButton<T>)(object)this.widget).barrierDismissible, dropdownMenuItemMouseCursor: ((DropdownButton<T>)(object)this.widget).dropdownMenuItemMouseCursor);
         this.focusNode.requestFocus();
         DartRuntimePrimitives.Ignore(navigator__51933.push(this._dropdownRoute!).then((global::System.Action<_DropdownRouteResult__dropdown<T>?>)((newValue) => {
@@ -924,75 +924,75 @@ _isMenuExpanded = true;
         }
     }
     internal virtual bool _enabled => DartRuntimePrimitives.ConvertValue<bool>((((((DropdownButton<T>)(object)this.widget).items is not null) && System.Linq.Enumerable.Any(((DropdownButton<T>)(object)this.widget).items!)) && (((DropdownButton<T>)(object)this.widget).onChanged is not null)));
-    internal virtual global::Doroti.Generated.Framework.Widgets.Orientation _getOrientation(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    internal virtual global::Doroti.Framework.Widgets.Orientation _getOrientation(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Generated.Framework.Widgets.Orientation? result__54969 = MediaQuery.maybeOrientationOf(context);
+        global::Doroti.Framework.Widgets.Orientation? result__54969 = MediaQuery.maybeOrientationOf(context);
         if ((result__54969 is null))
         {
             global::Doroti.Ui.Size size__55156 = ((global::Doroti.Ui.Size)(object?)View.of(context).physicalSize);
-            result__54969 = ((size__55156.width > size__55156.height) ? global::Doroti.Generated.Framework.Widgets.Orientation.landscape : global::Doroti.Generated.Framework.Widgets.Orientation.portrait);
+            result__54969 = ((size__55156.width > size__55156.height) ? global::Doroti.Framework.Widgets.Orientation.landscape : global::Doroti.Framework.Widgets.Orientation.portrait);
         }
         return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(result__54969));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        global::Doroti.Generated.Framework.Widgets.Orientation newOrientation__55486 = _getOrientation(context);
+        global::Doroti.Framework.Widgets.Orientation newOrientation__55486 = _getOrientation(context);
         _lastOrientation ??= newOrientation__55486;
         if ((!object.Equals(newOrientation__55486, this._lastOrientation)))
         {
             _removeDropdownRoute();
             _lastOrientation = newOrientation__55486;
         }
-        List<global::Doroti.Generated.Framework.Widgets.Widget> items__56033 = default!;
+        List<global::Doroti.Framework.Widgets.Widget> items__56033 = default!;
         if ((((DropdownButton<T>)(object)this.widget).selectedItemBuilder is not null))
         {
-            List<global::Doroti.Generated.Framework.Widgets.Widget> selectedItems__56111 = ((DropdownButton<T>)(object)this.widget).selectedItemBuilder!(context).ToList();
+            List<global::Doroti.Framework.Widgets.Widget> selectedItems__56111 = ((DropdownButton<T>)(object)this.widget).selectedItemBuilder!(context).ToList();
             DartRuntimePrimitives.Assert(() => ((((DropdownButton<T>)(object)this.widget).items is null) || (checked((long)(selectedItems__56111.Count)) == checked((long)(((DropdownButton<T>)(object)this.widget).items!.Count)))), () => (object?)"The selectedItemBuilder must return a list of widgets with the same length as the items list.\n" + $"Currently, selectedItemBuilder returns a list of length {checked((long)(selectedItems__56111.Count))}, " + $"but items has length {checked((long)(((DropdownButton<T>)(object)this.widget).items!.Count))}.");
-            items__56033 = new List<global::Doroti.Generated.Framework.Widgets.Widget>(DartRuntimePrimitives.ConvertEnumerable<global::Doroti.Generated.Framework.Widgets.Widget>(selectedItems__56111));
+            items__56033 = new List<global::Doroti.Framework.Widgets.Widget>(DartRuntimePrimitives.ConvertEnumerable<global::Doroti.Framework.Widgets.Widget>(selectedItems__56111));
         }
         else
         {
-            items__56033 = ((((DropdownButton<T>)(object)this.widget).items is not null) ? new List<global::Doroti.Generated.Framework.Widgets.Widget>(DartRuntimePrimitives.ConvertEnumerable<global::Doroti.Generated.Framework.Widgets.Widget>(((DropdownButton<T>)(object)this.widget).items!)) : new List<global::Doroti.Generated.Framework.Widgets.Widget>());
+            items__56033 = ((((DropdownButton<T>)(object)this.widget).items is not null) ? new List<global::Doroti.Framework.Widgets.Widget>(DartRuntimePrimitives.ConvertEnumerable<global::Doroti.Framework.Widgets.Widget>(((DropdownButton<T>)(object)this.widget).items!)) : new List<global::Doroti.Framework.Widgets.Widget>());
         }
         long? hintIndex__56678 = default!;
         if (((((DropdownButton<T>)(object)this.widget).hint is not null) || ((!this._enabled && (((DropdownButton<T>)(object)this.widget).disabledHint is not null)))))
         {
-            global::Doroti.Generated.Framework.Widgets.Widget displayedHint__56785 = (this._enabled ? ((DropdownButton<T>)(object)this.widget).hint! : (((DropdownButton<T>)(object)this.widget).disabledHint ?? ((DropdownButton<T>)(object)this.widget).hint!));
+            global::Doroti.Framework.Widgets.Widget displayedHint__56785 = (this._enabled ? ((DropdownButton<T>)(object)this.widget).hint! : (((DropdownButton<T>)(object)this.widget).disabledHint ?? ((DropdownButton<T>)(object)this.widget).hint!));
             hintIndex__56678 = checked((long)(items__56033.Count));
-            items__56033.Add(new global::Doroti.Generated.Framework.Widgets.DefaultTextStyle(style: this._textStyle!.copyWith(color: Theme.of(context).hintColor), child: new global::Doroti.Generated.Framework.Widgets.IgnorePointer(child: new _DropdownMenuItemContainer__dropdown(alignment: ((DropdownButton<T>)(object)this.widget).alignment, child: displayedHint__56785))));
+            items__56033.Add(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: this._textStyle!.copyWith(color: Theme.of(context).hintColor), child: new global::Doroti.Framework.Widgets.IgnorePointer(child: new _DropdownMenuItemContainer__dropdown(alignment: ((DropdownButton<T>)(object)this.widget).alignment, child: displayedHint__56785))));
         }
-        global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry padding__57214 = ((ButtonTheme.of(context).alignedDropdown && (((DropdownButton<T>)(object)this.widget)._inputDecoration is null)) ? DropdownLibrary._kAlignedButtonPadding : DropdownLibrary._kUnalignedButtonPadding);
-        global::Doroti.Generated.Framework.Widgets.Widget innerItemsWidget__57499 = default!;
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry padding__57214 = ((ButtonTheme.of(context).alignedDropdown && (((DropdownButton<T>)(object)this.widget)._inputDecoration is null)) ? DropdownLibrary._kAlignedButtonPadding : DropdownLibrary._kUnalignedButtonPadding);
+        global::Doroti.Framework.Widgets.Widget innerItemsWidget__57499 = default!;
         if (!System.Linq.Enumerable.Any(items__56033))
         {
-            innerItemsWidget__57499 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(global::Doroti.Generated.Framework.Widgets.SizedBox.CreateShrink());
+            innerItemsWidget__57499 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
         }
         else
         {
-            innerItemsWidget__57499 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.IndexedStack(index: (this._selectedIndex ?? hintIndex__56678), alignment: ((DropdownButton<T>)(object)this.widget).alignment, children: (((DropdownButton<T>)(object)this.widget).isDense ? items__56033 : items__56033.map<global::Doroti.Generated.Framework.Widgets.Widget, global::Doroti.Generated.Framework.Widgets.RenderObjectWidget>(((item) => {
-return ((((DropdownButton<T>)(object)this.widget).itemHeight is not null) ? new global::Doroti.Generated.Framework.Widgets.SizedBox(height: ((DropdownButton<T>)(object)this.widget).itemHeight, child: item) : new global::Doroti.Generated.Framework.Widgets.Column(mainAxisSize: global::Doroti.Generated.Framework.Rendering.MainAxisSize.min, children: new List<global::Doroti.Generated.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(item) }));
+            innerItemsWidget__57499 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.IndexedStack(index: (this._selectedIndex ?? hintIndex__56678), alignment: ((DropdownButton<T>)(object)this.widget).alignment, children: (((DropdownButton<T>)(object)this.widget).isDense ? items__56033 : items__56033.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.RenderObjectWidget>(((item) => {
+return ((((DropdownButton<T>)(object)this.widget).itemHeight is not null) ? new global::Doroti.Framework.Widgets.SizedBox(height: ((DropdownButton<T>)(object)this.widget).itemHeight, child: item) : new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(item) }));
 throw new InvalidOperationException("Dart closure completed without a value.");
-})).Cast<global::Doroti.Generated.Framework.Widgets.Widget>().ToList())));
+})).Cast<global::Doroti.Framework.Widgets.Widget>().ToList())));
         }
-        var defaultIcon__58079 = new global::Doroti.Generated.Framework.Widgets.Icon(Icons.arrow_drop_down);
-        global::Doroti.Generated.Framework.Widgets.Widget effectiveSuffixIcon__58139 = ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.IconTheme(data: new global::Doroti.Generated.Framework.Widgets.IconThemeData(color: this._iconColor, size: ((DropdownButton<T>)(object)this.widget).iconSize), child: ((((DropdownButton<T>)(object)this.widget).icon ?? ((DropdownButton<T>)(object)this.widget)._inputDecoration?.suffixIcon) ?? defaultIcon__58079)));
-        global::Doroti.Generated.Framework.Widgets.Widget result__58340 = ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.DefaultTextStyle(style: (this._enabled ? this._textStyle! : this._textStyle!.copyWith(color: Theme.of(context).disabledColor)), child: new global::Doroti.Generated.Framework.Widgets.SizedBox(height: (((DropdownButton<T>)(object)this.widget).isDense ? this._denseButtonHeight : null), child: new global::Doroti.Generated.Framework.Widgets.Padding(padding: padding__57214.resolve(Directionality.of(context)), child: new global::Doroti.Generated.Framework.Widgets.Row(mainAxisAlignment: global::Doroti.Generated.Framework.Rendering.MainAxisAlignment.spaceBetween, mainAxisSize: global::Doroti.Generated.Framework.Rendering.MainAxisSize.min, children: ((Func<List<global::Doroti.Generated.Framework.Widgets.Widget>>)(() => { var __collection58789 = new List<global::Doroti.Generated.Framework.Widgets.Widget>(); if (((DropdownButton<T>)(object)this.widget).isExpanded) { __collection58789.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.Expanded(child: innerItemsWidget__57499))); } else { __collection58789.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(innerItemsWidget__57499)); } if ((((DropdownButton<T>)(object)this.widget)._inputDecoration is null)) { __collection58789.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(effectiveSuffixIcon__58139)); } return __collection58789; }))())))));
+        var defaultIcon__58079 = new global::Doroti.Framework.Widgets.Icon(Icons.arrow_drop_down);
+        global::Doroti.Framework.Widgets.Widget effectiveSuffixIcon__58139 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.IconTheme(data: new global::Doroti.Framework.Widgets.IconThemeData(color: this._iconColor, size: ((DropdownButton<T>)(object)this.widget).iconSize), child: ((((DropdownButton<T>)(object)this.widget).icon ?? ((DropdownButton<T>)(object)this.widget)._inputDecoration?.suffixIcon) ?? defaultIcon__58079)));
+        global::Doroti.Framework.Widgets.Widget result__58340 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DefaultTextStyle(style: (this._enabled ? this._textStyle! : this._textStyle!.copyWith(color: Theme.of(context).disabledColor)), child: new global::Doroti.Framework.Widgets.SizedBox(height: (((DropdownButton<T>)(object)this.widget).isDense ? this._denseButtonHeight : null), child: new global::Doroti.Framework.Widgets.Padding(padding: padding__57214.resolve(Directionality.of(context)), child: new global::Doroti.Framework.Widgets.Row(mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.spaceBetween, mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection58789 = new List<global::Doroti.Framework.Widgets.Widget>(); if (((DropdownButton<T>)(object)this.widget).isExpanded) { __collection58789.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: innerItemsWidget__57499))); } else { __collection58789.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(innerItemsWidget__57499)); } if ((((DropdownButton<T>)(object)this.widget)._inputDecoration is null)) { __collection58789.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(effectiveSuffixIcon__58139)); } return __collection58789; }))())))));
         if (!DropdownButtonHideUnderline.at(context))
         {
             var bottom__59085 = (((((DropdownButton<T>)(object)this.widget).isDense || (((DropdownButton<T>)(object)this.widget).itemHeight is null))) ? 0.0 : 8.0);
-            result__58340 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.Stack(children: new List<global::Doroti.Generated.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(result__58340), DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.Positioned(left: 0.0, right: 0.0, bottom: bottom__59085, child: (((DropdownButton<T>)(object)this.widget).underline ?? new global::Doroti.Generated.Framework.Widgets.Container(height: 1.0, decoration: new global::Doroti.Generated.Framework.Painting.BoxDecoration(border: new global::Doroti.Generated.Framework.Painting.Border(bottom: new global::Doroti.Generated.Framework.Painting.BorderSide(color: new global::Doroti.Ui.Color(4290624957L), width: 0.0))))))) }));
+            result__58340 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(result__58340), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Positioned(left: 0.0, right: 0.0, bottom: bottom__59085, child: (((DropdownButton<T>)(object)this.widget).underline ?? new global::Doroti.Framework.Widgets.Container(height: 1.0, decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: new global::Doroti.Framework.Painting.Border(bottom: new global::Doroti.Framework.Painting.BorderSide(color: new global::Doroti.Ui.Color(4290624957L), width: 0.0))))))) }));
         }
-        global::Doroti.Generated.Framework.Services.MouseCursor effectiveMouseCursor__59678 = ((global::Doroti.Generated.Framework.Services.MouseCursor)(object?)WidgetStateProperty.resolveAs<global::Doroti.Generated.Framework.Services.MouseCursor>((((DropdownButton<T>)(object)this.widget).mouseCursor ?? global::Doroti.Generated.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable), ((Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>>)(() => { var __collection59821 = new HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>(); if (!this._enabled) { __collection59821.Add(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled); } return __collection59821; }))()));
+        global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor__59678 = ((global::Doroti.Framework.Services.MouseCursor)(object?)WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor>((((DropdownButton<T>)(object)this.widget).mouseCursor ?? global::Doroti.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable), ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection59821 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (!this._enabled) { __collection59821.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } return __collection59821; }))()));
         if ((((DropdownButton<T>)(object)this.widget)._inputDecoration is not null))
         {
             bool filled__60494 = (((DropdownButton<T>)(object)this.widget)._inputDecoration?.filled ?? InputDecorationTheme.of(context).filled);
             bool oulined__60606 = ((((DropdownButton<T>)(object)this.widget)._inputDecoration?.border?.isOutline ?? InputDecorationTheme.of(context).border?.isOutline) ?? false);
             var suffixIconEndMargin__60766 = (((filled__60494 || oulined__60606)) ? 12.0 : 0.0);
-            InputDecoration effectiveDecoration__60844 = ((InputDecoration)(object?)((DropdownButton<T>)(object)this.widget)._inputDecoration!.copyWith(suffixIconConstraints: new global::Doroti.Generated.Framework.Rendering.BoxConstraints(minWidth: (((DropdownButton<T>)(object)this.widget).iconSize + suffixIconEndMargin__60766), minHeight: ((DropdownButton<T>)(object)this.widget).iconSize), suffixIcon: new global::Doroti.Generated.Framework.Widgets.Padding(padding: global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry.CreateDirectional(end: suffixIconEndMargin__60766), child: effectiveSuffixIcon__58139)));
+            InputDecoration effectiveDecoration__60844 = ((InputDecoration)(object?)((DropdownButton<T>)(object)this.widget)._inputDecoration!.copyWith(suffixIconConstraints: new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: (((DropdownButton<T>)(object)this.widget).iconSize + suffixIconEndMargin__60766), minHeight: ((DropdownButton<T>)(object)this.widget).iconSize), suffixIcon: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsGeometry.CreateDirectional(end: suffixIconEndMargin__60766), child: effectiveSuffixIcon__58139)));
             if (this._hasPrimaryFocus)
             {
                 global::Doroti.Ui.Color? focusColor__61427 = ((global::Doroti.Ui.Color?)(object?)(((DropdownButton<T>)(object)this.widget).focusColor ?? ((InputDecoration)effectiveDecoration__60844).focusColor));
@@ -1001,63 +1001,63 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                     effectiveDecoration__60844 = effectiveDecoration__60844.copyWith(fillColor: focusColor__61427);
                 }
             }
-            result__58340 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.Focus(canRequestFocus: this._enabled, focusNode: this.focusNode, autofocus: ((DropdownButton<T>)(object)this.widget).autofocus, child: new global::Doroti.Generated.Framework.Widgets.MouseRegion(onEnter: ((global::System.Action<global::Doroti.Generated.Framework.Gestures.PointerEnterEvent>)((@event) => {
+            result__58340 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Focus(canRequestFocus: this._enabled, focusNode: this.focusNode, autofocus: ((DropdownButton<T>)(object)this.widget).autofocus, child: new global::Doroti.Framework.Widgets.MouseRegion(onEnter: ((global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)((@event) => {
 if (!this._isHovering)
 {
     setState(((global::System.Action)(() => {
 _isHovering = true;
 })));
 }
-})), onExit: ((global::System.Action<global::Doroti.Generated.Framework.Gestures.PointerExitEvent>)((@event) => {
+})), onExit: ((global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)((@event) => {
 if (this._isHovering)
 {
     setState(((global::System.Action)(() => {
 _isHovering = false;
 })));
 }
-})), cursor: effectiveMouseCursor__59678, child: new global::Doroti.Generated.Framework.Widgets.GestureDetector(onTap: ((global::System.Action)(this._enabled ? this._handleTap : null)), behavior: global::Doroti.Generated.Framework.Rendering.HitTestBehavior.opaque, child: new InputDecorator(decoration: effectiveDecoration__60844, isEmpty: ((DropdownButton<T>)(object)this.widget)._isEmpty, isFocused: this._hasPrimaryFocus, isHovering: this._isHovering, child: ((((DropdownButton<T>)(object)this.widget).padding is null) ? result__58340 : new global::Doroti.Generated.Framework.Widgets.Padding(padding: ((DropdownButton<T>)(object)this.widget).padding!, child: result__58340)))))));
+})), cursor: effectiveMouseCursor__59678, child: new global::Doroti.Framework.Widgets.GestureDetector(onTap: ((global::System.Action)(this._enabled ? this._handleTap : null)), behavior: global::Doroti.Framework.Rendering.HitTestBehavior.opaque, child: new InputDecorator(decoration: effectiveDecoration__60844, isEmpty: ((DropdownButton<T>)(object)this.widget)._isEmpty, isFocused: this._hasPrimaryFocus, isHovering: this._isHovering, child: ((((DropdownButton<T>)(object)this.widget).padding is null) ? result__58340 : new global::Doroti.Framework.Widgets.Padding(padding: ((DropdownButton<T>)(object)this.widget).padding!, child: result__58340)))))));
         }
         else
         {
-            result__58340 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new InkWell(mouseCursor: effectiveMouseCursor__59678, onTap: ((global::System.Action)(this._enabled ? this._handleTap : null)), canRequestFocus: this._enabled, borderRadius: ((DropdownButton<T>)(object)this.widget).borderRadius, focusNode: this.focusNode, autofocus: ((DropdownButton<T>)(object)this.widget).autofocus, focusColor: (((DropdownButton<T>)(object)this.widget).focusColor ?? Theme.of(context).focusColor), enableFeedback: false, child: ((((DropdownButton<T>)(object)this.widget).padding is null) ? result__58340 : new global::Doroti.Generated.Framework.Widgets.Padding(padding: ((DropdownButton<T>)(object)this.widget).padding!, child: result__58340))));
+            result__58340 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new InkWell(mouseCursor: effectiveMouseCursor__59678, onTap: ((global::System.Action)(this._enabled ? this._handleTap : null)), canRequestFocus: this._enabled, borderRadius: ((DropdownButton<T>)(object)this.widget).borderRadius, focusNode: this.focusNode, autofocus: ((DropdownButton<T>)(object)this.widget).autofocus, focusColor: (((DropdownButton<T>)(object)this.widget).focusColor ?? Theme.of(context).focusColor), enableFeedback: false, child: ((((DropdownButton<T>)(object)this.widget).padding is null) ? result__58340 : new global::Doroti.Framework.Widgets.Padding(padding: ((DropdownButton<T>)(object)this.widget).padding!, child: result__58340))));
         }
         bool childHasButtonSemantic__63298 = ((hintIndex__56678 is not null) || (((this._selectedIndex is not null) && (((DropdownButton<T>)(object)this.widget).selectedItemBuilder is null))));
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Semantics(button: !childHasButtonSemantic__63298, expanded: this._isMenuExpanded, child: new global::Doroti.Generated.Framework.Widgets.Actions(actions: this._actionMap, child: result__58340)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(button: !childHasButtonSemantic__63298, expanded: this._isMenuExpanded, child: new global::Doroti.Framework.Widgets.Actions(actions: this._actionMap, child: result__58340)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-public class DropdownButtonFormField<T> : global::Doroti.Generated.Framework.Widgets.FormField<T>
+public class DropdownButtonFormField<T> : global::Doroti.Framework.Widgets.FormField<T>
 {
     public virtual global::System.Action<T?>? onChanged { get; private set; }
     public virtual InputDecoration decoration { get; private set; } = default!;
     public virtual bool barrierDismissible { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Services.MouseCursor? mouseCursor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Services.MouseCursor? dropdownMenuItemMouseCursor { get; private set; }
+    public virtual global::Doroti.Framework.Services.MouseCursor? mouseCursor { get; private set; }
+    public virtual global::Doroti.Framework.Services.MouseCursor? dropdownMenuItemMouseCursor { get; private set; }
 
-    public DropdownButtonFormField(global::Doroti.Generated.Framework.Foundation.Key? key = null, List<DropdownMenuItem<T>>? items = default!, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, List<global::Doroti.Generated.Framework.Widgets.Widget>>? selectedItemBuilder = null, T? value = default, T? initialValue = default, global::Doroti.Generated.Framework.Widgets.Widget? hint = null, global::Doroti.Generated.Framework.Widgets.Widget? disabledHint = null, global::System.Action<T?>? onChanged = default!, global::System.Action? onTap = null, long elevation = 8, global::Doroti.Generated.Framework.Painting.TextStyle? style = null, global::Doroti.Generated.Framework.Widgets.Widget? icon = null, Color? iconDisabledColor = null, Color? iconEnabledColor = null, double iconSize = 24.0, bool isDense = true, bool isExpanded = false, double? itemHeight = null, Color? focusColor = null, global::Doroti.Generated.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, Color? dropdownColor = null, InputDecoration? decoration = null, global::System.Action<T?>? onSaved = null, global::System.Func<T?, string?>? validator = null, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, string, global::Doroti.Generated.Framework.Widgets.Widget>? errorBuilder = null, string? forceErrorText = null, global::Doroti.Generated.Framework.Widgets.AutovalidateMode? autovalidateMode = null, double? menuMaxHeight = null, bool? enableFeedback = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Generated.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding = null, bool barrierDismissible = true, global::Doroti.Generated.Framework.Services.MouseCursor? mouseCursor = null, global::Doroti.Generated.Framework.Services.MouseCursor? dropdownMenuItemMouseCursor = null) : base(key: key, onSaved: onSaved, validator: validator, errorBuilder: errorBuilder, forceErrorText: forceErrorText, initialValue: (initialValue ?? value), autovalidateMode: (autovalidateMode ?? global::Doroti.Generated.Framework.Widgets.AutovalidateMode.disabled), builder: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.FormFieldState<T>, global::Doroti.Generated.Framework.Widgets.Widget>)((field) => {
+    public DropdownButtonFormField(global::Doroti.Framework.Foundation.Key? key = null, List<DropdownMenuItem<T>>? items = default!, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, List<global::Doroti.Framework.Widgets.Widget>>? selectedItemBuilder = null, T? value = default, T? initialValue = default, global::Doroti.Framework.Widgets.Widget? hint = null, global::Doroti.Framework.Widgets.Widget? disabledHint = null, global::System.Action<T?>? onChanged = default!, global::System.Action? onTap = null, long elevation = 8, global::Doroti.Framework.Painting.TextStyle? style = null, global::Doroti.Framework.Widgets.Widget? icon = null, Color? iconDisabledColor = null, Color? iconEnabledColor = null, double iconSize = 24.0, bool isDense = true, bool isExpanded = false, double? itemHeight = null, Color? focusColor = null, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, Color? dropdownColor = null, InputDecoration? decoration = null, global::System.Action<T?>? onSaved = null, global::System.Func<T?, string?>? validator = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, string, global::Doroti.Framework.Widgets.Widget>? errorBuilder = null, string? forceErrorText = null, global::Doroti.Framework.Widgets.AutovalidateMode? autovalidateMode = null, double? menuMaxHeight = null, bool? enableFeedback = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, bool barrierDismissible = true, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, global::Doroti.Framework.Services.MouseCursor? dropdownMenuItemMouseCursor = null) : base(key: key, onSaved: onSaved, validator: validator, errorBuilder: errorBuilder, forceErrorText: forceErrorText, initialValue: (initialValue ?? value), autovalidateMode: (autovalidateMode ?? global::Doroti.Framework.Widgets.AutovalidateMode.disabled), builder: ((global::System.Func<global::Doroti.Framework.Widgets.FormFieldState<T>, global::Doroti.Framework.Widgets.Widget>)((field) => {
 var state__66866 = ((_DropdownButtonFormFieldState__dropdown<T>?)(object?)field)!;
 InputDecoration effectiveDecoration__66944 = ((InputDecoration)(object?)((decoration ?? new InputDecoration())).applyDefaults(InputDecorationTheme.of(((_DropdownButtonFormFieldState__dropdown<T>)field).context)));
 bool showSelectedItem__67100 = ((items is not null) && System.Linq.Enumerable.Any(items.where(((item) => EqualityComparer<T>.Default.Equals(((DropdownMenuItem<T>)item).value, state__66866.value)))));
 bool isDropdownEnabled__67269 = (((onChanged is not null) && (items is not null)) && System.Linq.Enumerable.Any(items));
-global::Doroti.Generated.Framework.Widgets.Widget? decorationHint__67480 = ((global::Doroti.Generated.Framework.Widgets.Widget?)(object?)((((InputDecoration)effectiveDecoration__66944).hintText is not null) ? new global::Doroti.Generated.Framework.Widgets.Text(((InputDecoration)effectiveDecoration__66944).hintText!) : null));
-global::Doroti.Generated.Framework.Widgets.Widget? effectiveHint__67635 = (hint ?? decorationHint__67480);
-global::Doroti.Generated.Framework.Widgets.Widget? effectiveDisabledHint__67700 = (disabledHint ?? effectiveHint__67635);
+global::Doroti.Framework.Widgets.Widget? decorationHint__67480 = ((global::Doroti.Framework.Widgets.Widget?)(object?)((((InputDecoration)effectiveDecoration__66944).hintText is not null) ? new global::Doroti.Framework.Widgets.Text(((InputDecoration)effectiveDecoration__66944).hintText!) : null));
+global::Doroti.Framework.Widgets.Widget? effectiveHint__67635 = (hint ?? decorationHint__67480);
+global::Doroti.Framework.Widgets.Widget? effectiveDisabledHint__67700 = (disabledHint ?? effectiveHint__67635);
 bool isHintOrDisabledHintAvailable__67777 = (isDropdownEnabled__67269 ? (effectiveHint__67635 is not null) : ((effectiveHint__67635 is not null) || (effectiveDisabledHint__67700 is not null)));
 bool isEmpty__67961 = (!showSelectedItem__67100 && !isHintOrDisabledHintAvailable__67777);
 if (((((_DropdownButtonFormFieldState__dropdown<T>)field).errorText is not null) || (((InputDecoration)effectiveDecoration__66944).hintText is not null)))
 {
-    global::Doroti.Generated.Framework.Widgets.Widget? error__68134 = (((((_DropdownButtonFormFieldState__dropdown<T>)field).errorText is not null) && (errorBuilder is not null)) ? errorBuilder(state__66866.context, ((_DropdownButtonFormFieldState__dropdown<T>)field).errorText!) : null);
+    global::Doroti.Framework.Widgets.Widget? error__68134 = (((((_DropdownButtonFormFieldState__dropdown<T>)field).errorText is not null) && (errorBuilder is not null)) ? errorBuilder(state__66866.context, ((_DropdownButtonFormFieldState__dropdown<T>)field).errorText!) : null);
     string? errorText__68307 = ((error__68134 is null) ? ((_DropdownButtonFormFieldState__dropdown<T>)field).errorText : null);
     string? hintText__68479 = ((((InputDecoration)effectiveDecoration__66944).hintText is not null) ? "" : null);
     effectiveDecoration__66944 = effectiveDecoration__66944.copyWith(error: error__68134, errorText: errorText__68307, hintText: hintText__68479);
 }
-return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Focus(canRequestFocus: false, skipTraversal: true, child: new DropdownButtonHideUnderline(child: DropdownButton<T>.Create_formField(items: items, selectedItemBuilder: (global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, List<global::Doroti.Generated.Framework.Widgets.Widget>>?)selectedItemBuilder, value: state__66866.value, hint: effectiveHint__67635, disabledHint: effectiveDisabledHint__67700, onChanged: ((global::System.Action<T?>)((onChanged is null) ? null : ((_DropdownButtonFormFieldState__dropdown<T>)state__66866).didChange)), onTap: onTap, elevation: elevation, style: style, icon: icon, iconDisabledColor: iconDisabledColor, iconEnabledColor: iconEnabledColor, iconSize: iconSize, isDense: isDense, isExpanded: isExpanded, itemHeight: itemHeight, focusColor: focusColor, focusNode: focusNode, autofocus: autofocus, dropdownColor: dropdownColor, menuMaxHeight: menuMaxHeight, enableFeedback: enableFeedback, alignment: alignment ?? global::Doroti.Generated.Framework.Painting.AlignmentDirectional.centerStart, borderRadius: borderRadius, inputDecoration: effectiveDecoration__66944, isEmpty: isEmpty__67961, padding: padding, barrierDismissible: barrierDismissible, mouseCursor: mouseCursor, dropdownMenuItemMouseCursor: dropdownMenuItemMouseCursor))));
+return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Focus(canRequestFocus: false, skipTraversal: true, child: new DropdownButtonHideUnderline(child: DropdownButton<T>.Create_formField(items: items, selectedItemBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, List<global::Doroti.Framework.Widgets.Widget>>?)selectedItemBuilder, value: state__66866.value, hint: effectiveHint__67635, disabledHint: effectiveDisabledHint__67700, onChanged: ((global::System.Action<T?>)((onChanged is null) ? null : ((_DropdownButtonFormFieldState__dropdown<T>)state__66866).didChange)), onTap: onTap, elevation: elevation, style: style, icon: icon, iconDisabledColor: iconDisabledColor, iconEnabledColor: iconEnabledColor, iconSize: iconSize, isDense: isDense, isExpanded: isExpanded, itemHeight: itemHeight, focusColor: focusColor, focusNode: focusNode, autofocus: autofocus, dropdownColor: dropdownColor, menuMaxHeight: menuMaxHeight, enableFeedback: enableFeedback, alignment: alignment ?? global::Doroti.Framework.Painting.AlignmentDirectional.centerStart, borderRadius: borderRadius, inputDecoration: effectiveDecoration__66944, isEmpty: isEmpty__67961, padding: padding, barrierDismissible: barrierDismissible, mouseCursor: mouseCursor, dropdownMenuItemMouseCursor: dropdownMenuItemMouseCursor))));
 throw new InvalidOperationException("Dart closure completed without a value.");
 })))
     {
-        global::Doroti.Generated.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Generated.Framework.Painting.AlignmentDirectional.centerStart;
+        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.AlignmentDirectional.centerStart;
         this.onChanged = onChanged;
         this.barrierDismissible = barrierDismissible;
         this.mouseCursor = mouseCursor;
@@ -1071,7 +1071,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _DropdownButtonFormFieldState__dropdown<T>());
 }
 
-internal class _DropdownButtonFormFieldState__dropdown<T> : global::Doroti.Generated.Framework.Widgets.FormFieldState<T>
+internal class _DropdownButtonFormFieldState__dropdown<T> : global::Doroti.Framework.Widgets.FormFieldState<T>
 {
     internal virtual DropdownButtonFormField<T> _dropdownButtonFormField => ((DropdownButtonFormField<T>?)(object?)this.widget)!;
     public override void didChange(T? value)
@@ -1080,7 +1080,7 @@ internal class _DropdownButtonFormFieldState__dropdown<T> : global::Doroti.Gener
         ((DropdownButtonFormField<T>)this._dropdownButtonFormField).onChanged?.Invoke(value);
     }
 
-    public override void didUpdateWidget(global::Doroti.Generated.Framework.Widgets.FormField<T> oldWidget)
+    public override void didUpdateWidget(global::Doroti.Framework.Widgets.FormField<T> oldWidget)
     {
         var __oldWidget = (DropdownButtonFormField<T>)(object)oldWidget;
         base.didUpdateWidget(__oldWidget);

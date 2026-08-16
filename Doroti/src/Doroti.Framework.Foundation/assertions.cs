@@ -3,7 +3,7 @@
 using System.Diagnostics;
 using Doroti.Runtime;
 
-namespace Doroti.Generated.Framework.Foundation;
+namespace Doroti.Framework.Foundation;
 
 public delegate IEnumerable<DiagnosticsNode> DiagnosticPropertiesTransformer(IEnumerable<DiagnosticsNode> properties);
 public delegate void FlutterExceptionHandler(FlutterErrorDetails details);

@@ -67,20 +67,20 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             type = contractField is null
                 ? ownType
-                : "global::Doroti.Generated.Framework.Rendering.RenderObject" +
+                : "global::Doroti.Framework.Rendering.RenderObject" +
                     (ownType.EndsWith("?", StringComparison.Ordinal) ? "?" : string.Empty);
         }
         if (field.Name == "compareOrder")
         {
-            type = "global::System.Func<global::Doroti.Generated.Framework.Rendering.Selectable, global::Doroti.Generated.Framework.Rendering.Selectable, long>";
+            type = "global::System.Func<global::Doroti.Framework.Rendering.Selectable, global::Doroti.Framework.Rendering.Selectable, long>";
         }
         if (declaration.Name == "TreeSliver" && field.Name == "treeRowExtentBuilder")
         {
-            type = "global::System.Func<TreeSliverNode<T>, global::Doroti.Generated.Framework.Rendering.SliverLayoutDimensions, double?>";
+            type = "global::System.Func<TreeSliverNode<T>, global::Doroti.Framework.Rendering.SliverLayoutDimensions, double?>";
         }
         if (declaration.Name == "_TreeSliverState" && field.Name == "_activeAnimations")
         {
-            type = "DartMap<global::Doroti.Generated.Framework.Foundation.UniqueKey, global::Doroti.Generated.Framework.Rendering.TreeSliverNodesAnimation>";
+            type = "DartMap<global::Doroti.Framework.Foundation.UniqueKey, global::Doroti.Framework.Rendering.TreeSliverNodesAnimation>";
         }
         if (declaration.Name == "ScrollAwareImageProvider" && field.Name == "context")
         {
@@ -88,7 +88,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (field.Name == "value" && declaration.Name is "SelectionContainerDelegate" or "_SelectionContainerState")
         {
-            type = "global::Doroti.Generated.Framework.Rendering.SelectionGeometry";
+            type = "global::Doroti.Framework.Rendering.SelectionGeometry";
         }
         if (declaration.Name == "PrioritizedAction" && field.Name == "_selectedAction")
         {
@@ -481,7 +481,7 @@ internal sealed partial class FrameworkCSharpLowerer
         var returnType = MapType(member.Element.ReturnType ?? member.Element.Type ?? "void");
         if (declaration.Name == "SelectionContainerDelegate" && member.Name == "value")
         {
-            returnType = "global::Doroti.Generated.Framework.Rendering.SelectionGeometry";
+            returnType = "global::Doroti.Framework.Rendering.SelectionGeometry";
         }
         var name = MapMethodDeclarationName(member);
         if (member.IsGetter)
@@ -664,7 +664,7 @@ internal sealed partial class FrameworkCSharpLowerer
             : MapTypeFromAst(returnTypeNode);
         if (method.Name == "createRenderObject")
         {
-            returnType = "global::Doroti.Generated.Framework.Rendering.RenderObject";
+            returnType = "global::Doroti.Framework.Rendering.RenderObject";
         }
         if (method.Name == "createState")
         {
@@ -679,15 +679,15 @@ internal sealed partial class FrameworkCSharpLowerer
         // so apply the reviewed G5-3 surface type last.
         if (method.Name == "renderObject")
         {
-            returnType = "global::Doroti.Generated.Framework.Rendering.RenderObject";
+            returnType = "global::Doroti.Framework.Rendering.RenderObject";
         }
         if (method.Name == "compareOrder")
         {
-            returnType = "global::System.Func<global::Doroti.Generated.Framework.Rendering.Selectable, global::Doroti.Generated.Framework.Rendering.Selectable, long>";
+            returnType = "global::System.Func<global::Doroti.Framework.Rendering.Selectable, global::Doroti.Framework.Rendering.Selectable, long>";
         }
         if (method.Name == "value" && declaration.Name is "SelectionContainerDelegate" or "_SelectionContainerState")
         {
-            returnType = "global::Doroti.Generated.Framework.Rendering.SelectionGeometry";
+            returnType = "global::Doroti.Framework.Rendering.SelectionGeometry";
         }
         if (method.Name == "root" && declaration.Name is "_RawMenuAnchorState" or "_RawMenuAnchorGroupState" &&
             (declaration.Element.Mixins ?? []).FirstOrDefault(type =>
@@ -709,15 +709,15 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (method.Name == "renderObject")
         {
-            returnType = "global::Doroti.Generated.Framework.Rendering.RenderObject";
+            returnType = "global::Doroti.Framework.Rendering.RenderObject";
         }
         if (method.Name == "compareOrder")
         {
-            returnType = "global::System.Func<global::Doroti.Generated.Framework.Rendering.Selectable, global::Doroti.Generated.Framework.Rendering.Selectable, long>";
+            returnType = "global::System.Func<global::Doroti.Framework.Rendering.Selectable, global::Doroti.Framework.Rendering.Selectable, long>";
         }
         if (method.Name == "value" && declaration.Name is "SelectionContainerDelegate" or "_SelectionContainerState")
         {
-            returnType = "global::Doroti.Generated.Framework.Rendering.SelectionGeometry";
+            returnType = "global::Doroti.Framework.Rendering.SelectionGeometry";
         }
         if (method.Name == "root" && declaration.Name is "_RawMenuAnchorState" or "_RawMenuAnchorGroupState" &&
             (declaration.Element.Mixins ?? []).FirstOrDefault(type =>
@@ -739,15 +739,15 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (method.IsGetter && method.Name == "renderObject")
         {
-            returnType = "global::Doroti.Generated.Framework.Rendering.RenderObject";
+            returnType = "global::Doroti.Framework.Rendering.RenderObject";
         }
         if (method.IsGetter && method.Name == "compareOrder")
         {
-            returnType = "global::System.Func<global::Doroti.Generated.Framework.Rendering.Selectable, global::Doroti.Generated.Framework.Rendering.Selectable, long>";
+            returnType = "global::System.Func<global::Doroti.Framework.Rendering.Selectable, global::Doroti.Framework.Rendering.Selectable, long>";
         }
         if (method.IsGetter && method.Name == "value" && declaration.Name is "SelectionContainerDelegate" or "_SelectionContainerState")
         {
-            returnType = "global::Doroti.Generated.Framework.Rendering.SelectionGeometry";
+            returnType = "global::Doroti.Framework.Rendering.SelectionGeometry";
         }
         if (method.IsGetter && method.Name == "root" &&
             declaration.Name is "_RawMenuAnchorState" or "_RawMenuAnchorGroupState" &&
@@ -766,11 +766,11 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (method.IsGetter && method.Name == "renderObject")
         {
-            returnType = "global::Doroti.Generated.Framework.Rendering.RenderObject?";
+            returnType = "global::Doroti.Framework.Rendering.RenderObject?";
         }
         if (method.IsGetter && method.Name == "compareOrder")
         {
-            returnType = "global::System.Func<global::Doroti.Generated.Framework.Rendering.Selectable, global::Doroti.Generated.Framework.Rendering.Selectable, long>";
+            returnType = "global::System.Func<global::Doroti.Framework.Rendering.Selectable, global::Doroti.Framework.Rendering.Selectable, long>";
         }
         if (declaration.Name == "_RouterState" && method.Name == "_handleRoutePopped")
         {
@@ -856,7 +856,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (method.Name == "createRenderObject")
         {
-            returnType = "global::Doroti.Generated.Framework.Rendering.RenderObject";
+            returnType = "global::Doroti.Framework.Rendering.RenderObject";
         }
         if (method.Name == "createState")
         {
@@ -864,15 +864,15 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (method.Name == "renderObject")
         {
-            returnType = "global::Doroti.Generated.Framework.Rendering.RenderObject";
+            returnType = "global::Doroti.Framework.Rendering.RenderObject";
         }
         if (method.Name == "compareOrder")
         {
-            returnType = "Comparison<global::Doroti.Generated.Framework.Rendering.Selectable>";
+            returnType = "Comparison<global::Doroti.Framework.Rendering.Selectable>";
         }
         if (method.Name == "value" && declaration.Name is "SelectionContainerDelegate" or "_SelectionContainerState")
         {
-            returnType = "global::Doroti.Generated.Framework.Rendering.SelectionGeometry";
+            returnType = "global::Doroti.Framework.Rendering.SelectionGeometry";
         }
         if (method.Name == "root" && declaration.Name is "_RawMenuAnchorState" or "_RawMenuAnchorGroupState" &&
             (declaration.Element.Mixins ?? []).FirstOrDefault(type =>

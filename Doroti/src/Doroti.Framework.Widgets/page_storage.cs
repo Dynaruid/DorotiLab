@@ -12,9 +12,9 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
-public class PageStorageKey<T> : global::Doroti.Generated.Framework.Foundation.ValueKey<T>
+public class PageStorageKey<T> : global::Doroti.Framework.Foundation.ValueKey<T>
 {
     public PageStorageKey(T value) : base(value)
     {
@@ -40,7 +40,7 @@ internal class _StorageEntryIdentifier__page_storage
         {
             return false;
         }
-        return ((__other is _StorageEntryIdentifier__page_storage) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals<PageStorageKey<object>>(((_StorageEntryIdentifier__page_storage)((_StorageEntryIdentifier__page_storage)__other)).keys, this.keys));
+        return ((__other is _StorageEntryIdentifier__page_storage) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<PageStorageKey<object>>(((_StorageEntryIdentifier__page_storage)((_StorageEntryIdentifier__page_storage)__other)).keys, this.keys));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHashAll(this.keys));
@@ -59,7 +59,7 @@ public class PageStorageBucket
     internal static bool _maybeAddKey(BuildContext context, List<PageStorageKey<object>> keys)
     {
         Widget widget__2191 = ((BuildContext)context).widget;
-        global::Doroti.Generated.Framework.Foundation.Key? key__2231 = ((Widget)widget__2191).key;
+        global::Doroti.Framework.Foundation.Key? key__2231 = ((Widget)widget__2191).key;
         if ((key__2231 is PageStorageKey<object>))
         {
             PageStorageKey<object> key__2231__as2257 = (PageStorageKey<object>)key__2231;
@@ -128,7 +128,7 @@ public class PageStorage : StatelessWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual PageStorageBucket bucket { get; private set; } = default!;
 
-    public PageStorage(global::Doroti.Generated.Framework.Foundation.Key? key = null, PageStorageBucket bucket = default!, Widget child = default!) : base(key: key)
+    public PageStorage(global::Doroti.Framework.Foundation.Key? key = null, PageStorageBucket bucket = default!, Widget child = default!) : base(key: key)
     {
         this.bucket = bucket;
         this.child = child;
@@ -148,7 +148,7 @@ public class PageStorage : StatelessWidget
             {
                 if ((bucket__7884 is null))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Generated.Framework.Foundation.FlutterError.Create("PageStorage.of() was called with a context that does not contain a " + "PageStorage widget.\n" + "No PageStorage widget ancestor could be found starting from the " + "context that was passed to PageStorage.of(). This can happen " + "because you are using a widget that looks for a PageStorage " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
+                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("PageStorage.of() was called with a context that does not contain a " + "PageStorage widget.\n" + "No PageStorage widget ancestor could be found starting from the " + "context that was passed to PageStorage.of(). This can happen " + "because you are using a widget that looks for a PageStorage " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");

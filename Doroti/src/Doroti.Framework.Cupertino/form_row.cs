@@ -12,22 +12,22 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Cupertino;
+namespace Doroti.Framework.Cupertino;
 
 public static partial class Form_rowLibrary
 {
-    internal static global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry _kDefaultPadding = ((global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry)(object?)new global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional(20.0, 6.0, 6.0, 6.0));
+    internal static global::Doroti.Framework.Painting.EdgeInsetsGeometry _kDefaultPadding = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)new global::Doroti.Framework.Painting.EdgeInsetsDirectional(20.0, 6.0, 6.0, 6.0));
 }
 
-public class CupertinoFormRow : global::Doroti.Generated.Framework.Widgets.StatelessWidget
+public class CupertinoFormRow : global::Doroti.Framework.Widgets.StatelessWidget
 {
-    public virtual global::Doroti.Generated.Framework.Widgets.Widget? prefix { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.Widget? helper { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.Widget? error { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.Widget child { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.Widget? prefix { get; private set; }
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.Widget? helper { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.Widget? error { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.Widget child { get; private set; } = default!;
 
-    public CupertinoFormRow(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Widgets.Widget child = default!, global::Doroti.Generated.Framework.Widgets.Widget? prefix = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Generated.Framework.Widgets.Widget? helper = null, global::Doroti.Generated.Framework.Widgets.Widget? error = null) : base(key: key)
+    public CupertinoFormRow(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget child = default!, global::Doroti.Framework.Widgets.Widget? prefix = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Widgets.Widget? helper = null, global::Doroti.Framework.Widgets.Widget? error = null) : base(key: key)
     {
         this.child = child;
         this.prefix = prefix;
@@ -36,11 +36,11 @@ public class CupertinoFormRow : global::Doroti.Generated.Framework.Widgets.State
         this.error = error;
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         CupertinoThemeData theme__4850 = CupertinoTheme.of(context);
-        global::Doroti.Generated.Framework.Painting.TextStyle textStyle__4906 = ((global::Doroti.Generated.Framework.Painting.TextStyle)(object?)theme__4850.textTheme.textStyle.copyWith(color: CupertinoDynamicColor.maybeResolve(theme__4850.textTheme.textStyle.color, context)));
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Padding(padding: (this.padding ?? Form_rowLibrary._kDefaultPadding), child: new global::Doroti.Generated.Framework.Widgets.Column(children: ((Func<List<global::Doroti.Generated.Framework.Widgets.Widget>>)(() => { var __collection5156 = new List<global::Doroti.Generated.Framework.Widgets.Widget>(); __collection5156.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.Row(mainAxisAlignment: global::Doroti.Generated.Framework.Rendering.MainAxisAlignment.spaceBetween, children: ((Func<List<global::Doroti.Generated.Framework.Widgets.Widget>>)(() => { var __collection5266 = new List<global::Doroti.Generated.Framework.Widgets.Widget>(); if ((this.prefix is not null)) { __collection5266.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.DefaultTextStyle(style: textStyle__4906, child: this.prefix!))); } __collection5266.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.Flexible(child: new global::Doroti.Generated.Framework.Widgets.Align(alignment: global::Doroti.Generated.Framework.Painting.AlignmentDirectional.centerEnd, child: this.child)))); return __collection5266; }))()))); if ((this.helper is not null)) { __collection5156.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.Align(alignment: global::Doroti.Generated.Framework.Painting.AlignmentDirectional.centerStart, child: new global::Doroti.Generated.Framework.Widgets.DefaultTextStyle(style: textStyle__4906, child: this.helper!)))); } if ((this.error is not null)) { __collection5156.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.Align(alignment: global::Doroti.Generated.Framework.Painting.AlignmentDirectional.centerStart, child: new global::Doroti.Generated.Framework.Widgets.DefaultTextStyle(style: new global::Doroti.Generated.Framework.Painting.TextStyle(color: CupertinoColors.destructiveRed, fontWeight: FontWeight.w500), child: this.error!)))); } return __collection5156; }))())));
+        global::Doroti.Framework.Painting.TextStyle textStyle__4906 = ((global::Doroti.Framework.Painting.TextStyle)(object?)theme__4850.textTheme.textStyle.copyWith(color: CupertinoDynamicColor.maybeResolve(theme__4850.textTheme.textStyle.color, context)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: (this.padding ?? Form_rowLibrary._kDefaultPadding), child: new global::Doroti.Framework.Widgets.Column(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection5156 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection5156.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.spaceBetween, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection5266 = new List<global::Doroti.Framework.Widgets.Widget>(); if ((this.prefix is not null)) { __collection5266.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.DefaultTextStyle(style: textStyle__4906, child: this.prefix!))); } __collection5266.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.centerEnd, child: this.child)))); return __collection5266; }))()))); if ((this.helper is not null)) { __collection5156.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.centerStart, child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: textStyle__4906, child: this.helper!)))); } if ((this.error is not null)) { __collection5156.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.centerStart, child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: new global::Doroti.Framework.Painting.TextStyle(color: CupertinoColors.destructiveRed, fontWeight: FontWeight.w500), child: this.error!)))); } return __collection5156; }))())));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public static partial class _html_element_view_webLibrary
 {
@@ -29,7 +29,7 @@ onElementCreated(Dart_ui_webLibrary.platformViewRegistry.getViewById(id));
     }
 }
 
-internal class _HtmlElementViewController___html_element_view_web : global::Doroti.Generated.Framework.Services.PlatformViewController
+internal class _HtmlElementViewController___html_element_view_web : global::Doroti.Framework.Services.PlatformViewController
 {
     private long __field_viewId = default!;
     public override long viewId { get => __field_viewId; }
@@ -47,7 +47,7 @@ internal class _HtmlElementViewController___html_element_view_web : global::Doro
     internal async virtual Future _initialize()
     {
         var args__3128 = new DartMap<string, object> { ["id"] = this.viewId, ["viewType"] = this.viewType, ["params"] = this.creationParams };
-        await global::Doroti.Generated.Framework.Services.SystemChannels.platform_views.invokeMethod<object?>("create", args__3128);
+        await global::Doroti.Framework.Services.SystemChannels.platform_views.invokeMethod<object?>("create", args__3128);
         _initialized = true;
     }
 
@@ -55,7 +55,7 @@ internal class _HtmlElementViewController___html_element_view_web : global::Doro
     {
     }
 
-    public async override Future dispatchPointerEvent(global::Doroti.Generated.Framework.Gestures.PointerEvent @event)
+    public async override Future dispatchPointerEvent(global::Doroti.Framework.Gestures.PointerEvent @event)
     {
     }
 
@@ -63,7 +63,7 @@ internal class _HtmlElementViewController___html_element_view_web : global::Doro
     {
         if (this._initialized)
         {
-            await global::Doroti.Generated.Framework.Services.SystemChannels.platform_views.invokeMethod<object?>("dispose", this.viewId);
+            await global::Doroti.Framework.Services.SystemChannels.platform_views.invokeMethod<object?>("dispose", this.viewId);
         }
     }
 

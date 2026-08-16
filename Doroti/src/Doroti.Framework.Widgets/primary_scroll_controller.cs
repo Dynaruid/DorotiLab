@@ -12,44 +12,44 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public static partial class Primary_scroll_controllerLibrary
 {
-    internal static HashSet<global::Doroti.Generated.Framework.Foundation.TargetPlatform> _kMobilePlatforms = new HashSet<global::Doroti.Generated.Framework.Foundation.TargetPlatform> { global::Doroti.Generated.Framework.Foundation.TargetPlatform.android, global::Doroti.Generated.Framework.Foundation.TargetPlatform.iOS, global::Doroti.Generated.Framework.Foundation.TargetPlatform.fuchsia };
+    internal static HashSet<global::Doroti.Framework.Foundation.TargetPlatform> _kMobilePlatforms = new HashSet<global::Doroti.Framework.Foundation.TargetPlatform> { global::Doroti.Framework.Foundation.TargetPlatform.android, global::Doroti.Framework.Foundation.TargetPlatform.iOS, global::Doroti.Framework.Foundation.TargetPlatform.fuchsia };
 }
 
 public class PrimaryScrollController : InheritedWidget
 {
     public virtual ScrollController? controller { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.Axis? scrollDirection { get; private set; }
-    public virtual HashSet<global::Doroti.Generated.Framework.Foundation.TargetPlatform> automaticallyInheritForPlatforms { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.Axis? scrollDirection { get; private set; }
+    public virtual HashSet<global::Doroti.Framework.Foundation.TargetPlatform> automaticallyInheritForPlatforms { get; private set; } = default!;
 
-    public PrimaryScrollController(global::Doroti.Generated.Framework.Foundation.Key? key = null, ScrollController controller = default!, HashSet<global::Doroti.Generated.Framework.Foundation.TargetPlatform> automaticallyInheritForPlatforms = default!, global::Doroti.Generated.Framework.Painting.Axis? scrollDirection = global::Doroti.Generated.Framework.Painting.Axis.vertical, Widget child = default!) : base(key: key, child: child)
+    public PrimaryScrollController(global::Doroti.Framework.Foundation.Key? key = null, ScrollController controller = default!, HashSet<global::Doroti.Framework.Foundation.TargetPlatform> automaticallyInheritForPlatforms = default!, global::Doroti.Framework.Painting.Axis? scrollDirection = global::Doroti.Framework.Painting.Axis.vertical, Widget child = default!) : base(key: key, child: child)
     {
-        HashSet<global::Doroti.Generated.Framework.Foundation.TargetPlatform> __automaticallyInheritForPlatforms = automaticallyInheritForPlatforms ?? Primary_scroll_controllerLibrary._kMobilePlatforms;
+        HashSet<global::Doroti.Framework.Foundation.TargetPlatform> __automaticallyInheritForPlatforms = automaticallyInheritForPlatforms ?? Primary_scroll_controllerLibrary._kMobilePlatforms;
         this.controller = controller;
         this.automaticallyInheritForPlatforms = __automaticallyInheritForPlatforms;
         this.scrollDirection = scrollDirection;
     }
 
-    public static PrimaryScrollController CreateNone(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!)
+    public static PrimaryScrollController CreateNone(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!)
     {
         var __instance = new PrimaryScrollController(default!, default!, default!, default!, default!);
-        __instance.automaticallyInheritForPlatforms = new HashSet<global::Doroti.Generated.Framework.Foundation.TargetPlatform>();
+        __instance.automaticallyInheritForPlatforms = new HashSet<global::Doroti.Framework.Foundation.TargetPlatform>();
         __instance.scrollDirection = null;
         __instance.controller = null;
         return __instance;
     }
 
-    public static bool shouldInherit(BuildContext context, global::Doroti.Generated.Framework.Painting.Axis scrollDirection)
+    public static bool shouldInherit(BuildContext context, global::Doroti.Framework.Painting.Axis scrollDirection)
     {
         PrimaryScrollController? result__5386 = ((PrimaryScrollController?)(object?)context.findAncestorWidgetOfExactType<PrimaryScrollController>());
         if ((result__5386 is null))
         {
             return false;
         }
-        global::Doroti.Generated.Framework.Foundation.TargetPlatform platform__5548 = ScrollConfiguration.of(context).getPlatform(context);
+        global::Doroti.Framework.Foundation.TargetPlatform platform__5548 = ScrollConfiguration.of(context).getPlatform(context);
         if (((PrimaryScrollController)result__5386).automaticallyInheritForPlatforms.Contains(platform__5548))
         {
             return (object.Equals(((PrimaryScrollController)result__5386).scrollDirection, DartRuntimePrimitives.RequireValue(scrollDirection)));
@@ -72,7 +72,7 @@ public class PrimaryScrollController : InheritedWidget
             {
                 if ((controller__7088 is null))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Generated.Framework.Foundation.FlutterError.Create("PrimaryScrollController.of() was called with a context that does not contain a " + "PrimaryScrollController widget.\n" + "No PrimaryScrollController widget ancestor could be found starting from the " + "context that was passed to PrimaryScrollController.of(). This can happen " + "because you are using a widget that looks for a PrimaryScrollController " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
+                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("PrimaryScrollController.of() was called with a context that does not contain a " + "PrimaryScrollController widget.\n" + "No PrimaryScrollController widget ancestor could be found starting from the " + "context that was passed to PrimaryScrollController.of(). This can happen " + "because you are using a widget that looks for a PrimaryScrollController " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -82,10 +82,10 @@ public class PrimaryScrollController : InheritedWidget
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.controller, ((PrimaryScrollController)oldWidget).controller)));
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<ScrollController>("controller", this.controller, ifNull: "no controller", showName: false));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollController>("controller", this.controller, ifNull: "no controller", showName: false));
     }
 
 }

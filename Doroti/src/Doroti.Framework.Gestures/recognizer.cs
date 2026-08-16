@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Gestures;
+namespace Doroti.Framework.Gestures;
 
 public delegate T RecognizerCallback<T>();
 
@@ -120,7 +120,7 @@ public abstract class GestureRecognizer : GestureArenaMember, DiagnosticableTree
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
     }
 
     public abstract string debugDescription { get; }
@@ -131,11 +131,11 @@ public abstract class GestureRecognizer : GestureArenaMember, DiagnosticableTree
         {
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if (global::Doroti.Generated.Framework.Gestures.DebugLibrary.debugPrintRecognizerCallbacksTrace)
+                    if (global::Doroti.Framework.Gestures.DebugLibrary.debugPrintRecognizerCallbacksTrace)
                     {
                         string? report__13951 = ((debugReport is not null) ? debugReport() : null);
-                        var prefix__14141 = (global::Doroti.Generated.Framework.Gestures.DebugLibrary.debugPrintGestureArenaDiagnostics ? $"{DartCoreExtensions.repeat(" ", 19L)}❙ " : "");
-                        global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint($"{prefix__14141}{this} calling {name} callback.{((((report__13951 is null ? (bool?)null : report__13951.Length != 0) ?? false)) ? $" {report__13951}" : "")}");
+                        var prefix__14141 = (global::Doroti.Framework.Gestures.DebugLibrary.debugPrintGestureArenaDiagnostics ? $"{DartCoreExtensions.repeat(" ", 19L)}❙ " : "");
+                        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"{prefix__14141}{this} calling {name} callback.{((((report__13951 is null ? (bool?)null : report__13951.Length != 0) ?? false)) ? $" {report__13951}" : "")}");
                     }
                     return true;
                 });
@@ -313,7 +313,7 @@ public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecogn
 
     public virtual double? preAcceptSlopTolerance => ((this._preAcceptSlopTolerance == RecognizerLibrary._unsetTouchSlop) ? this._defaultTouchSlop : this._preAcceptSlopTolerance);
     public virtual double? postAcceptSlopTolerance => ((this._postAcceptSlopTolerance == RecognizerLibrary._unsetTouchSlop) ? this._defaultTouchSlop : this._postAcceptSlopTolerance);
-    internal virtual double _defaultTouchSlop => (gestureSettings?.touchSlop ?? global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kTouchSlop);
+    internal virtual double _defaultTouchSlop => (gestureSettings?.touchSlop ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kTouchSlop);
     public virtual GestureRecognizerState state => this._state;
     public virtual long? primaryPointer => this._primaryPointer;
     public virtual OffsetPair? initialPosition => this._initialPosition;
@@ -470,7 +470,7 @@ public class OffsetPair
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "OffsetPair"))}(local: {this.local}, global: {this.global})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "OffsetPair"))}(local: {this.local}, global: {this.global})";
 }
 
 internal class _RecognizerEventData__recognizer

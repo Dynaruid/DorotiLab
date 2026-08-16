@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 internal delegate void _BucketVisitor(RestorationBucket bucket);
 
@@ -480,7 +480,7 @@ public class RestorationBucket
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => _debugAssertNotDisposed());
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         _visitChildren(_dropChild, concurrentModification: true);
         _claimedChildren.Clear();
         _childrenToAdd.Clear();
@@ -490,7 +490,7 @@ public class RestorationBucket
         _debugDisposed = true;
     }
 
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "RestorationBucket"))}(restorationId: {restorationId}, owner: {debugOwner})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "RestorationBucket"))}(restorationId: {restorationId}, owner: {debugOwner})";
     internal virtual bool _debugAssertNotDisposed()
     {
         DartRuntimePrimitives.Assert(() =>

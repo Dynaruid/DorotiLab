@@ -1,5 +1,7 @@
 # ADR-015: input route and gesture lifecycle
 
+> The behavioral decision remains relevant, but the milestone validator named below is historical. Use the consolidated validation suites from ADR-019.
+
 Status: accepted; G5-1 reviewed recognizer cutover implemented.
 
 Win32 owns message normalization, device capability reporting and native capture lifetime. `Doroti.Engine.InputDispatcher` converts backend-neutral raw input to a hit-test path snapshot; it does not expose HWND, native message ids or backend types to `Rendering` or `Widgets`.

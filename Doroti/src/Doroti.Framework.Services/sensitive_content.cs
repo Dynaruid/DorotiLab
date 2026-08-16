@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public enum ContentSensitivity
 {
@@ -49,7 +49,7 @@ public class SensitiveContentService
 
     public async virtual Future<bool> isSupported()
     {
-        if ((!object.Equals(global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, TargetPlatform.android)))
+        if ((!object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, TargetPlatform.android)))
         {
             return false;
         }

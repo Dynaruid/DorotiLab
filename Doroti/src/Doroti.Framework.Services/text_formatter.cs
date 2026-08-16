@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public enum MaxLengthEnforcement
 {
@@ -182,13 +182,13 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
 
     public static MaxLengthEnforcement getDefaultMaxLengthEnforcement(TargetPlatform? platform = null)
     {
-        if (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb)
+        if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
         {
             return MaxLengthEnforcement.truncateAfterCompositionEnds;
         }
         else
         {
-            switch ((platform ?? global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform))
+            switch ((platform ?? global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform))
             {
                 case var __case22082 when object.Equals(__case22082, TargetPlatform.android):
                 case var __case22119 when object.Equals(__case22119, TargetPlatform.windows):

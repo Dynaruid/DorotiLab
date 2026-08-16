@@ -12,18 +12,18 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class IconTheme : InheritedTheme
 {
     public virtual IconThemeData data { get; private set; } = default!;
 
-    public IconTheme(global::Doroti.Generated.Framework.Foundation.Key? key = null, IconThemeData data = default!, Widget child = default!) : base(key: key, child: child)
+    public IconTheme(global::Doroti.Framework.Foundation.Key? key = null, IconThemeData data = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static Widget merge(global::Doroti.Generated.Framework.Foundation.Key? key = null, IconThemeData data = default!, Widget child = default!)
+    public static Widget merge(global::Doroti.Framework.Foundation.Key? key = null, IconThemeData data = default!, Widget child = default!)
     {
         return ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => {
 return ((Widget)(object?)new IconTheme(key: key, data: IconTheme._getInheritedIconThemeData(context).merge(data), child: child));
@@ -53,7 +53,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         this.data.debugFillProperties(properties);

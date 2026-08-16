@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public static partial class FormLibrary
 {
@@ -29,7 +29,7 @@ public class Form : StatefulWidget
     public virtual global::System.Action? onChanged { get; private set; }
     public virtual AutovalidateMode autovalidateMode { get; private set; } = default!;
 
-    public Form(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!, bool? canPop = null, global::System.Action<bool>? onPopInvoked = null, global::System.Action<bool, object>? onPopInvokedWithResult = null, global::System.Func<Future<bool>>? onWillPop = null, global::System.Action? onChanged = null, AutovalidateMode? autovalidateMode = null) : base(key: key)
+    public Form(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, bool? canPop = null, global::System.Action<bool>? onPopInvoked = null, global::System.Action<bool, object>? onPopInvokedWithResult = null, global::System.Func<Future<bool>>? onWillPop = null, global::System.Action? onChanged = null, AutovalidateMode? autovalidateMode = null) : base(key: key)
     {
         this.child = child;
         this.canPop = canPop;
@@ -56,7 +56,7 @@ public class Form : StatefulWidget
             {
                 if ((formState__4508 is null))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Generated.Framework.Foundation.FlutterError.Create("Form.of() was called with a context that does not contain a Form widget.\n" + "No Form widget ancestor could be found starting from the context that " + "was passed to Form.of(). This can happen because you are using a widget " + "that looks for a Form ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
+                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Form.of() was called with a context that does not contain a Form widget.\n" + "No Form widget ancestor could be found starting from the context that " + "was passed to Form.of(). This can happen because you are using a widget " + "that looks for a Form ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -224,26 +224,26 @@ public class FormState : State<Form>
         if (((errorMessage__12596.Length != 0) && MediaQuery.supportsAnnounceOf(this.context)))
         {
             global::Doroti.Ui.TextDirection directionality__13387 = Directionality.of(this.context);
-            if ((object.Equals(global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Generated.Framework.Foundation.TargetPlatform.iOS)))
+            if ((object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)))
             {
                 global::Doroti.Runtime.DartAsyncRuntime.unawaited(new Future((async () => {
 await new Future(FormLibrary._kIOSAnnouncementDelayDuration);
 try
 {
-    await SemanticsService.sendAnnouncement(view, errorMessage__12596, directionality__13387, assertiveness: global::Doroti.Generated.Framework.Semantics.Assertiveness.assertive);
+    await SemanticsService.sendAnnouncement(view, errorMessage__12596, directionality__13387, assertiveness: global::Doroti.Framework.Semantics.Assertiveness.assertive);
 }
 catch (Exception exception__13865)
 {
     var stack__13876 = new System.Diagnostics.StackTrace();
-    FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails(exception: exception__13865, stack: stack__13876, library: "widgets library", context: new global::Doroti.Generated.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
+    FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception__13865, stack: stack__13876, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
 }
 throw new InvalidOperationException("Dart closure completed without a value.");
 })));
             }
             else
             {
-                DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(view, errorMessage__12596, directionality__13387, assertiveness: global::Doroti.Generated.Framework.Semantics.Assertiveness.assertive).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) => {
-FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Generated.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
+                DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(view, errorMessage__12596, directionality__13387, assertiveness: global::Doroti.Framework.Semantics.Assertiveness.assertive).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) => {
+FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
 }))));
             }
         }
@@ -289,7 +289,7 @@ public class FormField<T> : StatefulWidget
     public virtual AutovalidateMode autovalidateMode { get; private set; } = default!;
     public virtual string? restorationId { get; private set; }
 
-    public FormField(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::System.Func<FormFieldState<T>, Widget> builder = default!, global::System.Action<T?>? onSaved = null, global::System.Action? onReset = null, string? forceErrorText = null, global::System.Func<T?, string?>? validator = null, global::System.Func<BuildContext, string, Widget>? errorBuilder = null, T? initialValue = default, bool enabled = true, AutovalidateMode? autovalidateMode = null, string? restorationId = null) : base(key: key)
+    public FormField(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<FormFieldState<T>, Widget> builder = default!, global::System.Action<T?>? onSaved = null, global::System.Action? onReset = null, string? forceErrorText = null, global::System.Func<T?, string?>? validator = null, global::System.Func<BuildContext, string, Widget>? errorBuilder = null, T? initialValue = default, bool enabled = true, AutovalidateMode? autovalidateMode = null, string? restorationId = null) : base(key: key)
     {
         this.builder = builder;
         this.onSaved = onSaved;
@@ -326,11 +326,11 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
     internal virtual RestorableStringN _errorText { get; private set; } = default!;
     internal virtual RestorableBool _hasInteractedByUser { get; private set; } = new RestorableBool(false);
     internal virtual FocusNode _focusNode { get; private set; } = new FocusNode();
-    public virtual global::Doroti.Generated.Framework.Services.RestorationBucket? _bucket { get; set; } = default;
+    public virtual global::Doroti.Framework.Services.RestorationBucket? _bucket { get; set; } = default;
     public virtual DartMap<dynamic, global::System.Action> _properties { get; set; } = new DartMap<dynamic, global::System.Action>();
     public virtual List<dynamic>? _debugPropertiesWaitingForReregistration { get; set; } = default;
     public virtual bool _firstRestorePending { get; set; } = true;
-    public virtual global::Doroti.Generated.Framework.Services.RestorationBucket? _currentParent { get; set; } = default;
+    public virtual global::Doroti.Framework.Services.RestorationBucket? _currentParent { get; set; } = default;
 
     public virtual T? value => this._value;
     public virtual string? errorText => this._errorText.value;
@@ -407,7 +407,7 @@ this._hasInteractedByUser.value = true;
     }
 
     public virtual string? restorationId => ((FormField<T>)(object)this.widget).restorationId;
-    public virtual void restoreState(global::Doroti.Generated.Framework.Services.RestorationBucket? oldBucket, bool initialRestore)
+    public virtual void restoreState(global::Doroti.Framework.Services.RestorationBucket? oldBucket, bool initialRestore)
     {
         registerForRestoration(this._errorText, "error_text");
         registerForRestoration(this._hasInteractedByUser, "has_interacted_by_user");
@@ -438,7 +438,7 @@ this._hasInteractedByUser.value = true;
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        global::Doroti.Generated.Framework.Services.RestorationBucket? oldBucket__41020 = this._bucket;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket__41020 = this._bucket;
         bool needsRestore__41056 = this.restorePending;
         _currentParent = RestorationScope.maybeOf(this.context);
         bool didReplaceBucket__41159 = _updateBucketIfNecessary(parent: this._currentParent, restorePending: needsRestore__41056);
@@ -541,8 +541,8 @@ _validate();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Services.RestorationBucket? bucket => this._bucket;
-    public virtual void didToggleBucket(global::Doroti.Generated.Framework.Services.RestorationBucket? oldBucket)
+    public virtual global::Doroti.Framework.Services.RestorationBucket? bucket => this._bucket;
+    public virtual void didToggleBucket(global::Doroti.Framework.Services.RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() => (this._bucket?.isReplacing != true));
     }
@@ -594,7 +594,7 @@ _validate();
         {
             return;
         }
-        global::Doroti.Generated.Framework.Services.RestorationBucket? oldBucket__39230 = this._bucket;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket__39230 = this._bucket;
         DartRuntimePrimitives.Assert(() => !this.restorePending);
         bool didReplaceBucket__39295 = _updateBucketIfNecessary(parent: this._currentParent, restorePending: false);
         if (didReplaceBucket__39295)
@@ -617,13 +617,13 @@ _validate();
             {
                 return false;
             }
-            global::Doroti.Generated.Framework.Services.RestorationBucket? potentialNewParent__40517 = ((global::Doroti.Generated.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
+            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent__40517 = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
             return ((!object.Equals(potentialNewParent__40517, this._currentParent)) && ((potentialNewParent__40517?.isReplacing ?? false)));
             return default!;
         }
     }
     public virtual bool _debugDoingRestore => DartRuntimePrimitives.ConvertValue<bool>((this._debugPropertiesWaitingForReregistration is not null));
-    public virtual void _doRestore(global::Doroti.Generated.Framework.Services.RestorationBucket? oldBucket)
+    public virtual void _doRestore(global::Doroti.Framework.Services.RestorationBucket? oldBucket)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -637,7 +637,7 @@ _validate();
             {
                 if (System.Linq.Enumerable.Any(this._debugPropertiesWaitingForReregistration!))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\"."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Previously registered RestorableProperties must be re-registered in \"restoreState\"."), new global::Doroti.Framework.Foundation.ErrorDescription($"The RestorableProperties with the following IDs were not re-registered to {this} when " + "\"restoreState\" was called:") }));
                 }
                 this._debugPropertiesWaitingForReregistration = null;
                 return true;
@@ -645,18 +645,18 @@ _validate();
             });
     }
 
-    public virtual bool _updateBucketIfNecessary(global::Doroti.Generated.Framework.Services.RestorationBucket? parent, bool restorePending)
+    public virtual bool _updateBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? parent, bool restorePending)
     {
         if (((this.restorationId is null) || (parent is null)))
         {
-            bool didReplace__42801 = _setNewBucketIfNecessary(newBucket: ((global::Doroti.Generated.Framework.Services.RestorationBucket)(object)null), restorePending: restorePending);
+            bool didReplace__42801 = _setNewBucketIfNecessary(newBucket: ((global::Doroti.Framework.Services.RestorationBucket)(object)null), restorePending: restorePending);
             DartRuntimePrimitives.Assert(() => (this._bucket is null));
             return didReplace__42801;
         }
         DartRuntimePrimitives.Assert(() => (this.restorationId is not null));
         if ((restorePending || (this._bucket is null)))
         {
-            global::Doroti.Generated.Framework.Services.RestorationBucket newBucket__43086 = ((global::Doroti.Generated.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
+            global::Doroti.Framework.Services.RestorationBucket newBucket__43086 = ((global::Doroti.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
             bool didReplace__43168 = _setNewBucketIfNecessary(newBucket: newBucket__43086, restorePending: restorePending);
             DartRuntimePrimitives.Assert(() => (object.Equals(this._bucket, newBucket__43086)));
             return didReplace__43168;
@@ -669,13 +669,13 @@ _validate();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool _setNewBucketIfNecessary(global::Doroti.Generated.Framework.Services.RestorationBucket? newBucket, bool restorePending)
+    public virtual bool _setNewBucketIfNecessary(global::Doroti.Framework.Services.RestorationBucket? newBucket, bool restorePending)
     {
         if ((object.Equals(newBucket, this._bucket)))
         {
             return false;
         }
-        global::Doroti.Generated.Framework.Services.RestorationBucket? oldBucket__43946 = this._bucket;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket__43946 = this._bucket;
         this._bucket = newBucket;
         if (!restorePending)
         {

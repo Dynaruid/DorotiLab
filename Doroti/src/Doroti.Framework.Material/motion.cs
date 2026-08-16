@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
 public abstract class Durations
 {
@@ -37,14 +37,14 @@ public abstract class Durations
 
 public abstract class Easing
 {
-    public static global::Doroti.Generated.Framework.Animation.Curve emphasizedAccelerate = ((global::Doroti.Generated.Framework.Animation.Curve)(object?)new global::Doroti.Generated.Framework.Animation.Cubic(0.3, 0.0, 0.8, 0.15));
-    public static global::Doroti.Generated.Framework.Animation.Curve emphasizedDecelerate = ((global::Doroti.Generated.Framework.Animation.Curve)(object?)new global::Doroti.Generated.Framework.Animation.Cubic(0.05, 0.7, 0.1, 1.0));
-    public static global::Doroti.Generated.Framework.Animation.Curve linear = ((global::Doroti.Generated.Framework.Animation.Curve)(object?)new global::Doroti.Generated.Framework.Animation.Cubic(0.0, 0.0, 1.0, 1.0));
-    public static global::Doroti.Generated.Framework.Animation.Curve standard = ((global::Doroti.Generated.Framework.Animation.Curve)(object?)new global::Doroti.Generated.Framework.Animation.Cubic(0.2, 0.0, 0.0, 1.0));
-    public static global::Doroti.Generated.Framework.Animation.Curve standardAccelerate = ((global::Doroti.Generated.Framework.Animation.Curve)(object?)new global::Doroti.Generated.Framework.Animation.Cubic(0.3, 0.0, 1.0, 1.0));
-    public static global::Doroti.Generated.Framework.Animation.Curve standardDecelerate = ((global::Doroti.Generated.Framework.Animation.Curve)(object?)new global::Doroti.Generated.Framework.Animation.Cubic(0.0, 0.0, 0.0, 1.0));
-    public static global::Doroti.Generated.Framework.Animation.Curve legacyDecelerate = ((global::Doroti.Generated.Framework.Animation.Curve)(object?)new global::Doroti.Generated.Framework.Animation.Cubic(0.0, 0.0, 0.2, 1.0));
-    public static global::Doroti.Generated.Framework.Animation.Curve legacyAccelerate = ((global::Doroti.Generated.Framework.Animation.Curve)(object?)new global::Doroti.Generated.Framework.Animation.Cubic(0.4, 0.0, 1.0, 1.0));
-    public static global::Doroti.Generated.Framework.Animation.Curve legacy = ((global::Doroti.Generated.Framework.Animation.Curve)(object?)new global::Doroti.Generated.Framework.Animation.Cubic(0.4, 0.0, 0.2, 1.0));
+    public static global::Doroti.Framework.Animation.Curve emphasizedAccelerate = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Cubic(0.3, 0.0, 0.8, 0.15));
+    public static global::Doroti.Framework.Animation.Curve emphasizedDecelerate = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Cubic(0.05, 0.7, 0.1, 1.0));
+    public static global::Doroti.Framework.Animation.Curve linear = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Cubic(0.0, 0.0, 1.0, 1.0));
+    public static global::Doroti.Framework.Animation.Curve standard = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Cubic(0.2, 0.0, 0.0, 1.0));
+    public static global::Doroti.Framework.Animation.Curve standardAccelerate = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Cubic(0.3, 0.0, 1.0, 1.0));
+    public static global::Doroti.Framework.Animation.Curve standardDecelerate = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Cubic(0.0, 0.0, 0.0, 1.0));
+    public static global::Doroti.Framework.Animation.Curve legacyDecelerate = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Cubic(0.0, 0.0, 0.2, 1.0));
+    public static global::Doroti.Framework.Animation.Curve legacyAccelerate = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Cubic(0.4, 0.0, 1.0, 1.0));
+    public static global::Doroti.Framework.Animation.Curve legacy = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Cubic(0.4, 0.0, 0.2, 1.0));
 
 }

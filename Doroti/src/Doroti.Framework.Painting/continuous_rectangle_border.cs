@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public class ContinuousRectangleBorder : OutlinedBorder
 {
@@ -142,7 +142,7 @@ public class ContinuousRectangleBorder : OutlinedBorder
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(side, this.borderRadius);
     public override string ToString()
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ContinuousRectangleBorder"))}({side}, {this.borderRadius})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ContinuousRectangleBorder"))}({side}, {this.borderRadius})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

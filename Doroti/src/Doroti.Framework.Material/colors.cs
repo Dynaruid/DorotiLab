@@ -12,9 +12,9 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
-public class MaterialColor : global::Doroti.Generated.Framework.Painting.ColorSwatch<long>
+public class MaterialColor : global::Doroti.Framework.Painting.ColorSwatch<long>
 {
     public MaterialColor(long primary, DartMap<long, Color> swatch) : base(primary, swatch)
     {
@@ -32,7 +32,7 @@ public class MaterialColor : global::Doroti.Generated.Framework.Painting.ColorSw
     public virtual global::Doroti.Ui.Color shade900 => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this[900L]!);
 }
 
-public class MaterialAccentColor : global::Doroti.Generated.Framework.Painting.ColorSwatch<long>
+public class MaterialAccentColor : global::Doroti.Framework.Painting.ColorSwatch<long>
 {
     public MaterialAccentColor(long primary, DartMap<long, Color> swatch) : base(primary, swatch)
     {

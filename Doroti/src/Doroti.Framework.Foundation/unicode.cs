@@ -1,6 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/foundation/unicode.dart
-namespace Doroti.Generated.Framework.Foundation;
+namespace Doroti.Framework.Foundation;
 
 public abstract class Unicode
 {

@@ -2,7 +2,7 @@
 // Flutter 56b8e1a8: packages/flutter/lib/src/foundation/basic_types.dart
 using System.Collections;
 
-namespace Doroti.Generated.Framework.Foundation;
+namespace Doroti.Framework.Foundation;
 
 public delegate void ValueChanged<in T>(T value);
 public delegate void ValueSetter<in T>(T value);

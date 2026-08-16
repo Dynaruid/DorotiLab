@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public enum ImageRepeat
 {
@@ -83,7 +83,7 @@ public class DecorationImage
     public override string ToString()
     {
         var properties__7894 = new List<string> { $"{this.image}", $"{this.alignment}", $"scale {this.scale.toStringAsFixed(1L)}", $"opacity {this.opacity.toStringAsFixed(1L)}", $"{this.filterQuality}" };
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "DecorationImage"))}({string.Join(", ", properties__7894)})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "DecorationImage"))}({string.Join(", ", properties__7894)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -185,7 +185,7 @@ internal class _DecorationImagePainter__decoration_image : DecorationImagePainte
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this._imageStream?.removeListener(new ImageStreamListener(this._handleImage, onError: ((DecorationImage)this._details).onError));
         this._image?.dispose();
         _image = null;
@@ -193,7 +193,7 @@ internal class _DecorationImagePainter__decoration_image : DecorationImagePainte
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "DecorationImagePainter"))}(stream: {this._imageStream}, image: {this._image}) for {this._details}";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "DecorationImagePainter"))}(stream: {this._imageStream}, image: {this._image}) for {this._details}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -242,7 +242,7 @@ public static partial class Decoration_imageLibrary
         }
         fit ??= ((centerSlice is null) ? BoxFit.scaleDown : BoxFit.fill);
         DartRuntimePrimitives.Assert(() => ((centerSlice is null) || (((!object.Equals(DartRuntimePrimitives.RequireValue(fit), BoxFit.none)) && (!object.Equals(DartRuntimePrimitives.RequireValue(fit), BoxFit.cover))))));
-        FittedSizes fittedSizes__20502 = global::Doroti.Generated.Framework.Painting.Box_fitLibrary.applyBoxFit(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(fit)), (inputSize__20043 / scale), outputSize__20013);
+        FittedSizes fittedSizes__20502 = global::Doroti.Framework.Painting.Box_fitLibrary.applyBoxFit(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(fit)), (inputSize__20043 / scale), outputSize__20013);
         global::Doroti.Ui.Size sourceSize__20578 = (((FittedSizes)fittedSizes__20502).source * scale);
         global::Doroti.Ui.Size destinationSize__20626 = ((FittedSizes)fittedSizes__20502).destination;
         if ((centerSlice is not null))
@@ -277,13 +277,13 @@ public static partial class Decoration_imageLibrary
         global::Doroti.Ui.Offset destinationPosition__21929 = rect.topLeft.translate(dx__21751, dy__21860);
         global::Doroti.Ui.Rect destinationRect__21996 = (destinationPosition__21929 & destinationSize__20626);
         var invertedCanvas__22141 = false;
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             double maxDevicePixelRatio__22909 = System.Linq.Enumerable.Aggregate(PaintingBinding.instance.platformDispatcher.views, (double)0.0, ((previousValue, view) => Math.Max(previousValue, view.devicePixelRatio)));
             var sizeInfo__23116 = new ImageSizeInfo(source: (debugImageLabel ?? $"<Unknown Image({image.width}×{image.height})>"), imageSize: new global::Doroti.Ui.Size(image.width.toDouble(), image.height.toDouble()), displaySize: (outputSize__20013 * maxDevicePixelRatio__22909));
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((global::Doroti.Generated.Framework.Painting.DebugLibrary.debugInvertOversizedImages && (((ImageSizeInfo)sizeInfo__23116).decodedSizeInBytes > (((ImageSizeInfo)sizeInfo__23116).displaySizeInBytes + global::Doroti.Generated.Framework.Painting.DebugLibrary.debugImageOverheadAllowance))))
+                    if ((global::Doroti.Framework.Painting.DebugLibrary.debugInvertOversizedImages && (((ImageSizeInfo)sizeInfo__23116).decodedSizeInBytes > (((ImageSizeInfo)sizeInfo__23116).displaySizeInBytes + global::Doroti.Framework.Painting.DebugLibrary.debugImageOverheadAllowance))))
                     {
                         long overheadInKilobytes__23602 = (checked((long)(((((ImageSizeInfo)sizeInfo__23116).decodedSizeInBytes - ((ImageSizeInfo)sizeInfo__23116).displaySizeInBytes)) / 1024L)));
                         long outputWidth__23723 = ((ImageSizeInfo)sizeInfo__23116).displaySize.width.toInt();
@@ -310,7 +310,7 @@ public static partial class Decoration_imageLibrary
                 {
                     Decoration_imageLibrary._pendingImageSizeInfo[((ImageSizeInfo)sizeInfo__23116).source!] = sizeInfo__23116;
                 }
-                global::Doroti.Generated.Framework.Painting.DebugLibrary.debugOnPaintImage?.Invoke(sizeInfo__23116);
+                global::Doroti.Framework.Painting.DebugLibrary.debugOnPaintImage?.Invoke(sizeInfo__23116);
                 SchedulerBinding.instance.addPostFrameCallback(((timeStamp) =>
                 {
                     Decoration_imageLibrary._lastFrameImageSizeInfo = Decoration_imageLibrary._pendingImageSizeInfo.Values.toSet();
@@ -461,7 +461,7 @@ internal class _BlendedDecorationImage__decoration_image : DecorationImage
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.a, this.b, this.t);
     public override string ToString()
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "_BlendedDecorationImage"))}({this.a}, {this.b}, {this.t})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "_BlendedDecorationImage"))}({this.a}, {this.b}, {this.t})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -490,14 +490,14 @@ internal class _BlendedDecorationImagePainter__decoration_image : DecorationImag
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this.a?.dispose();
         this.b?.dispose();
     }
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "_BlendedDecorationImagePainter"))}({this.a}, {this.b}, {this.t})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "_BlendedDecorationImagePainter"))}({this.a}, {this.b}, {this.t})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

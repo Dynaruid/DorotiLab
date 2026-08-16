@@ -12,27 +12,27 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public static partial class Hardware_keyboardLibrary
 {
     internal static bool _keyboardDebug(Func<string> messageFunc, Func<IEnumerable<object>>? detailsFunc = null)
     {
-        if (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             throw new InvalidOperationException("_keyboardDebug was called in Release mode, which means they are called " + "without being wrapped in an assert. Always call _keyboardDebug like so:\n" + "  assert(_keyboardDebug(() => 'Blah $foo'));");
         }
-        if (!global::Doroti.Generated.Framework.Services.DebugLibrary.debugPrintKeyboardEvents)
+        if (!global::Doroti.Framework.Services.DebugLibrary.debugPrintKeyboardEvents)
         {
             return true;
         }
-        global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint($"KEYBOARD: {messageFunc()}");
+        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"KEYBOARD: {messageFunc()}");
         IEnumerable<object> details = (detailsFunc?.Invoke() ?? new List<object>());
         if ((details.Count() != 0))
         {
             foreach (var detail in details)
             {
-                global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint($"    {detail}");
+                global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"    {detail}");
             }
         }
         return true;
@@ -458,7 +458,7 @@ public class KeyEventManager
             }
             if ((object.Equals(_transitMode, KeyDataTransitMode.rawKeyData)))
             {
-                DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.setEquals(_rawKeyboard.physicalKeysPressed, _hardwareKeyboard.physicalKeysPressed));
+                DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.CollectionsLibrary.setEquals(_rawKeyboard.physicalKeysPressed, _hardwareKeyboard.physicalKeysPressed));
             }
             handled = (_dispatchKeyMessage(_keyEventsSinceLastMessage, rawEvent) || handled);
             _keyEventsSinceLastMessage.Clear();

@@ -1,5 +1,7 @@
 # ADR-018: Flutter framework / Avalonia source-port boundary
 
+> The boundary remains relevant, but the milestone validator named below is historical. ADR-019 defines current source ownership and validation commands.
+
 - Status: Accepted for G4-0
 - Date: 2026-08-07
 - Flutter revision: `56b8e1a851a594b1a154f8ea93270807dab22b9a`

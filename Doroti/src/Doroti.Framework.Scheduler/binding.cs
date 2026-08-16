@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Scheduler;
+namespace Doroti.Framework.Scheduler;
 
 public static partial class BindingLibrary
 {
@@ -62,7 +62,7 @@ internal class _TaskEntry<T>
 
     public virtual void run()
     {
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             Timeline.timeSync((debugLabel ?? "Scheduled Task"), (() =>
             {
@@ -113,7 +113,7 @@ public class PerformanceModeRequestHandle
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => (_cleanup is not null));
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         _cleanup!();
         _cleanup = null;
     }
@@ -145,7 +145,7 @@ public abstract class SchedulerBinding : BindingBase
     internal virtual long _debugFrameNumber { get; set; } = 0L;
     internal virtual string? _debugBanner { get; set; } = default;
     internal virtual bool _rescheduleAfterWarmUpFrame { get; set; } = false;
-    internal virtual TimelineTask? _frameTimelineTask { get; private set; } = (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : new TimelineTask());
+    internal virtual TimelineTask? _frameTimelineTask { get; private set; } = (global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : new TimelineTask());
     internal virtual DartPerformanceMode? _performanceMode { get; set; } = default;
     internal virtual long _numPerformanceModeRequests { get; set; } = 0L;
 
@@ -158,7 +158,7 @@ public abstract class SchedulerBinding : BindingBase
     {
         base.initInstances();
         _instance = this;
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             addTimingsCallback(((timings) =>
             {
@@ -218,7 +218,7 @@ public abstract class SchedulerBinding : BindingBase
     protected override void initServiceExtensions()
     {
         base.initServiceExtensions();
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             registerNumericServiceExtension(name: SchedulerServiceExtensions.timeDilation.ToString(), getter: (() => BindingLibrary.timeDilation), setter: ((value) =>
             {
@@ -415,12 +415,12 @@ public abstract class SchedulerBinding : BindingBase
             {
                 if ((_FrameCallbackEntry.debugCurrentCallbackStack is not null))
                 {
-                    global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint("When the current transient callback was registered, this was the stack:");
-                    global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint(string.Join("\n", FlutterError.defaultStackFilter(FlutterError.demangleStackTrace(_FrameCallbackEntry.debugCurrentCallbackStack!).ToString().trimRight().split("\n"))));
+                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint("When the current transient callback was registered, this was the stack:");
+                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint(string.Join("\n", FlutterError.defaultStackFilter(FlutterError.demangleStackTrace(_FrameCallbackEntry.debugCurrentCallbackStack!).ToString().trimRight().split("\n"))));
                 }
                 else
                 {
-                    global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint("No transient callback is currently executing.");
+                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint("No transient callback is currently executing.");
                 }
                 return true;
             });
@@ -435,7 +435,7 @@ public abstract class SchedulerBinding : BindingBase
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Generated.Framework.Scheduler.DebugLibrary.debugTracePostFrameCallbacks)
+                if (global::Doroti.Framework.Scheduler.DebugLibrary.debugTracePostFrameCallbacks)
                 {
                     var originalCallback__30444 = callback;
                     callback = ((timeStamp) =>
@@ -525,9 +525,9 @@ public abstract class SchedulerBinding : BindingBase
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Generated.Framework.Scheduler.DebugLibrary.debugPrintScheduleFrameStacks)
+                if (global::Doroti.Framework.Scheduler.DebugLibrary.debugPrintScheduleFrameStacks)
                 {
-                    global::Doroti.Generated.Framework.Foundation.AssertionsLibrary.debugPrintStack(label: $"scheduleFrame() called. Current phase is {schedulerPhase}.");
+                    global::Doroti.Framework.Foundation.AssertionsLibrary.debugPrintStack(label: $"scheduleFrame() called. Current phase is {schedulerPhase}.");
                 }
                 return true;
             });
@@ -544,9 +544,9 @@ public abstract class SchedulerBinding : BindingBase
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Generated.Framework.Scheduler.DebugLibrary.debugPrintScheduleFrameStacks)
+                if (global::Doroti.Framework.Scheduler.DebugLibrary.debugPrintScheduleFrameStacks)
                 {
-                    global::Doroti.Generated.Framework.Foundation.AssertionsLibrary.debugPrintStack(label: $"scheduleForcedFrame() called. Current phase is {schedulerPhase}.");
+                    global::Doroti.Framework.Foundation.AssertionsLibrary.debugPrintStack(label: $"scheduleForcedFrame() called. Current phase is {schedulerPhase}.");
                 }
                 return true;
             });
@@ -563,7 +563,7 @@ public abstract class SchedulerBinding : BindingBase
         }
         _warmUpFrame = true;
         TimelineTask? debugTimelineTask = default!;
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             debugTimelineTask = ((Func<TimelineTask>)(() =>
 {
@@ -591,7 +591,7 @@ public abstract class SchedulerBinding : BindingBase
         _ = lockEvents((async () =>
         {
             await endOfFrame;
-            if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
                 debugTimelineTask!.finish();
             }
@@ -664,7 +664,7 @@ public abstract class SchedulerBinding : BindingBase
         DartRuntimePrimitives.Assert(() =>
             {
                 _debugFrameNumber += 1L;
-                if ((global::Doroti.Generated.Framework.Scheduler.DebugLibrary.debugPrintBeginFrameBanner || global::Doroti.Generated.Framework.Scheduler.DebugLibrary.debugPrintEndFrameBanner))
+                if ((global::Doroti.Framework.Scheduler.DebugLibrary.debugPrintBeginFrameBanner || global::Doroti.Framework.Scheduler.DebugLibrary.debugPrintEndFrameBanner))
                 {
                     var frameTimeStampDescription__47549 = new StringBuffer();
                     if (rawTimeStamp is Duration rawTimeStamp__value47605)
@@ -676,9 +676,9 @@ public abstract class SchedulerBinding : BindingBase
                         frameTimeStampDescription__47549.write("(warm-up frame)");
                     }
                     _debugBanner = $"▄▄▄▄▄▄▄▄ Frame {_debugFrameNumber.ToString().padRight(7L)}   {frameTimeStampDescription__47549.ToString().padLeft(18L)} ▄▄▄▄▄▄▄▄";
-                    if (global::Doroti.Generated.Framework.Scheduler.DebugLibrary.debugPrintBeginFrameBanner)
+                    if (global::Doroti.Framework.Scheduler.DebugLibrary.debugPrintBeginFrameBanner)
                     {
-                        global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint(_debugBanner);
+                        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint(_debugBanner);
                     }
                 }
                 return true;
@@ -742,7 +742,7 @@ public abstract class SchedulerBinding : BindingBase
 
     public virtual DartPerformanceMode? debugGetRequestedPerformanceMode()
     {
-        if (!((global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kDebugMode || global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kProfileMode)))
+        if (!((global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode || global::Doroti.Framework.Foundation.ConstantsLibrary.kProfileMode)))
         {
             return null;
         }
@@ -767,7 +767,7 @@ public abstract class SchedulerBinding : BindingBase
             _schedulerPhase = SchedulerPhase.postFrameCallbacks;
             var localPostFrameCallbacks__51803 = new List<Action<Duration>>(_postFrameCallbacks);
             _postFrameCallbacks.Clear();
-            if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
                 FlutterTimeline.startSync("POST_FRAME");
             }
@@ -780,7 +780,7 @@ public abstract class SchedulerBinding : BindingBase
             }
             finally
             {
-                if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+                if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
                 {
                     FlutterTimeline.finishSync();
                 }
@@ -792,9 +792,9 @@ public abstract class SchedulerBinding : BindingBase
             _frameTimelineTask?.finish();
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if (global::Doroti.Generated.Framework.Scheduler.DebugLibrary.debugPrintEndFrameBanner)
+                    if (global::Doroti.Framework.Scheduler.DebugLibrary.debugPrintEndFrameBanner)
                     {
-                        global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint(DartCoreExtensions.repeat("▀", _debugBanner!.Length));
+                        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint(DartCoreExtensions.repeat("▀", _debugBanner!.Length));
                     }
                     _debugBanner = null;
                     return true;

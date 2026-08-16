@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Animation;
+namespace Doroti.Framework.Animation;
 
 public enum AnimationStatus
 {
@@ -53,10 +53,10 @@ public abstract class Animation<T> : Listenable, ValueListenable<T>
         get => throw new NotSupportedException("Dart getter contract has no base implementation.");
         set => throw new NotSupportedException("Dart setter contract has no base implementation.");
     }
-    public virtual bool isDismissed => global::Doroti.Generated.Framework.Animation.AnimationStatusMembers.isDismissed(this.status);
-    public virtual bool isCompleted => global::Doroti.Generated.Framework.Animation.AnimationStatusMembers.isCompleted(this.status);
-    public virtual bool isAnimating => global::Doroti.Generated.Framework.Animation.AnimationStatusMembers.isAnimating(this.status);
-    public virtual bool isForwardOrCompleted => global::Doroti.Generated.Framework.Animation.AnimationStatusMembers.isForwardOrCompleted(this.status);
+    public virtual bool isDismissed => global::Doroti.Framework.Animation.AnimationStatusMembers.isDismissed(this.status);
+    public virtual bool isCompleted => global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(this.status);
+    public virtual bool isAnimating => global::Doroti.Framework.Animation.AnimationStatusMembers.isAnimating(this.status);
+    public virtual bool isForwardOrCompleted => global::Doroti.Framework.Animation.AnimationStatusMembers.isForwardOrCompleted(this.status);
     public virtual Animation<U> drive<U>(Animatable<U> child)
     {
         DartRuntimePrimitives.Assert(() => (this is Animation<double>));
@@ -66,7 +66,7 @@ public abstract class Animation<T> : Listenable, ValueListenable<T>
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({toStringDetails()})";
+        return $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({toStringDetails()})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

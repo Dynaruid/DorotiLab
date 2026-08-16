@@ -56,7 +56,7 @@
     },
     {
       "id": "generated-consumer",
-      "distributionPackagePattern": "Doroti.Generated.*",
+      "distributionPackagePattern": "Doroti.*",
       "officialAvaloniaDependency": "forbidden",
       "status": "public-doroti-api-only"
     }

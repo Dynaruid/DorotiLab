@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Cupertino;
+namespace Doroti.Framework.Cupertino;
 
 public static partial class ConstantsLibrary
 {
@@ -51,12 +51,12 @@ public static partial class ConstantsLibrary
 
 public static partial class ConstantsLibrary
 {
-    public static DartMap<CupertinoButtonSize, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry> kCupertinoButtonPadding = new DartMap<CupertinoButtonSize, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry> { [CupertinoButtonSize.small] = ((global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 6, horizontal: 12)), [CupertinoButtonSize.medium] = ((global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 10, horizontal: 15)), [CupertinoButtonSize.large] = ((global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 16, horizontal: 20)) };
+    public static DartMap<CupertinoButtonSize, global::Doroti.Framework.Painting.EdgeInsetsGeometry> kCupertinoButtonPadding = new DartMap<CupertinoButtonSize, global::Doroti.Framework.Painting.EdgeInsetsGeometry> { [CupertinoButtonSize.small] = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 6, horizontal: 12)), [CupertinoButtonSize.medium] = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 10, horizontal: 15)), [CupertinoButtonSize.large] = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 16, horizontal: 20)) };
 }
 
 public static partial class ConstantsLibrary
 {
-    public static DartMap<CupertinoButtonSize, global::Doroti.Generated.Framework.Painting.BorderRadius> kCupertinoButtonSizeBorderRadius = new DartMap<CupertinoButtonSize, global::Doroti.Generated.Framework.Painting.BorderRadius> { [CupertinoButtonSize.small] = global::Doroti.Generated.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(40)), [CupertinoButtonSize.medium] = global::Doroti.Generated.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(40)), [CupertinoButtonSize.large] = global::Doroti.Generated.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(12)) };
+    public static DartMap<CupertinoButtonSize, global::Doroti.Framework.Painting.BorderRadius> kCupertinoButtonSizeBorderRadius = new DartMap<CupertinoButtonSize, global::Doroti.Framework.Painting.BorderRadius> { [CupertinoButtonSize.small] = global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(40)), [CupertinoButtonSize.medium] = global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(40)), [CupertinoButtonSize.large] = global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(12)) };
 }
 
 public static partial class ConstantsLibrary

@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public static partial class ToggleableLibrary
 {
@@ -26,26 +26,26 @@ public static partial class ToggleableLibrary
 
 public interface ToggleableStateMixin<S> where S : StatefulWidget
 {
-    global::Doroti.Generated.Framework.Animation.AnimationController _positionController { get; set; }
-    global::Doroti.Generated.Framework.Animation.CurvedAnimation _position { get; set; }
-    global::Doroti.Generated.Framework.Animation.AnimationController _reactionController { get; set; }
-    global::Doroti.Generated.Framework.Animation.CurvedAnimation _reaction { get; set; }
-    global::Doroti.Generated.Framework.Animation.CurvedAnimation _reactionHoverFade { get; set; }
-    global::Doroti.Generated.Framework.Animation.AnimationController _reactionHoverFadeController { get; set; }
-    global::Doroti.Generated.Framework.Animation.CurvedAnimation _reactionFocusFade { get; set; }
-    global::Doroti.Generated.Framework.Animation.AnimationController _reactionFocusFadeController { get; set; }
+    global::Doroti.Framework.Animation.AnimationController _positionController { get; set; }
+    global::Doroti.Framework.Animation.CurvedAnimation _position { get; set; }
+    global::Doroti.Framework.Animation.AnimationController _reactionController { get; set; }
+    global::Doroti.Framework.Animation.CurvedAnimation _reaction { get; set; }
+    global::Doroti.Framework.Animation.CurvedAnimation _reactionHoverFade { get; set; }
+    global::Doroti.Framework.Animation.AnimationController _reactionHoverFadeController { get; set; }
+    global::Doroti.Framework.Animation.CurvedAnimation _reactionFocusFade { get; set; }
+    global::Doroti.Framework.Animation.AnimationController _reactionFocusFadeController { get; set; }
     Duration _reactionAnimationDuration { get; }
     DartMap<Type, dynamic> _actionMap { get; }
     Offset? _downPosition { get; set; }
     bool _focused { get; set; }
     bool _hovering { get; set; }
 
-    public global::Doroti.Generated.Framework.Animation.AnimationController positionController { get; }
-    public global::Doroti.Generated.Framework.Animation.CurvedAnimation position { get; }
-    public global::Doroti.Generated.Framework.Animation.AnimationController reactionController { get; }
-    public global::Doroti.Generated.Framework.Animation.CurvedAnimation reaction { get; }
-    public global::Doroti.Generated.Framework.Animation.CurvedAnimation reactionHoverFade { get; }
-    public global::Doroti.Generated.Framework.Animation.CurvedAnimation reactionFocusFade { get; }
+    public global::Doroti.Framework.Animation.AnimationController positionController { get; }
+    public global::Doroti.Framework.Animation.CurvedAnimation position { get; }
+    public global::Doroti.Framework.Animation.AnimationController reactionController { get; }
+    public global::Doroti.Framework.Animation.CurvedAnimation reaction { get; }
+    public global::Doroti.Framework.Animation.CurvedAnimation reactionHoverFade { get; }
+    public global::Doroti.Framework.Animation.CurvedAnimation reactionFocusFade { get; }
     public Duration? reactionAnimationDuration { get; }
     public bool isInteractive { get; }
     public global::System.Action<bool?>? onChanged { get; }
@@ -55,21 +55,21 @@ public interface ToggleableStateMixin<S> where S : StatefulWidget
     public void animateToValue();
     public void dispose();
     public global::Doroti.Ui.Offset? downPosition { get; }
-    public void _handleTapDown(global::Doroti.Generated.Framework.Gestures.TapDownDetails details);
+    public void _handleTapDown(global::Doroti.Framework.Gestures.TapDownDetails details);
     public void _handleTap(Intent? __unused0 = null);
-    public void _handleTapEnd(global::Doroti.Generated.Framework.Gestures.TapUpDetails? __unused0 = null);
+    public void _handleTapEnd(global::Doroti.Framework.Gestures.TapUpDetails? __unused0 = null);
     public void _handleFocusHighlightChanged(bool focused);
     public void _handleHoverChanged(bool hovering);
     public HashSet<WidgetState> states { get; }
-    public Widget buildToggleableWithChild(FocusNode? focusNode = null, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor>? mouseCursor = null, Widget child = default!);
+    public Widget buildToggleableWithChild(FocusNode? focusNode = null, global::System.Action<bool>? onFocusChange = null, bool autofocus = false, WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>? mouseCursor = null, Widget child = default!);
 }
 
-public abstract class ToggleablePainter : global::Doroti.Generated.Framework.Foundation.ChangeNotifier
+public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.ChangeNotifier
 {
-    internal virtual global::Doroti.Generated.Framework.Animation.Animation<double>? _position { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Animation<double>? _reaction { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Animation<double>? _reactionFocusFade { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Animation<double>? _reactionHoverFade { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Animation<double>? _position { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Animation<double>? _reaction { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Animation<double>? _reactionFocusFade { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Animation<double>? _reactionHoverFade { get; set; } = default;
     internal virtual Color? _activeColor { get; set; } = default;
     internal virtual Color? _inactiveColor { get; set; } = default;
     internal virtual Color? _inactiveReactionColor { get; set; } = default;
@@ -82,7 +82,7 @@ public abstract class ToggleablePainter : global::Doroti.Generated.Framework.Fou
     internal virtual bool? _isHovered { get; set; } = default;
     internal virtual bool? _isActive { get; set; } = default;
 
-    public virtual global::Doroti.Generated.Framework.Animation.Animation<double> position
+    public virtual global::Doroti.Framework.Animation.Animation<double> position
     {
         get => this._position!;
         set
@@ -98,7 +98,7 @@ public abstract class ToggleablePainter : global::Doroti.Generated.Framework.Fou
             notifyListeners();
         }
     }
-    public virtual global::Doroti.Generated.Framework.Animation.Animation<double> reaction
+    public virtual global::Doroti.Framework.Animation.Animation<double> reaction
     {
         get => this._reaction!;
         set
@@ -114,7 +114,7 @@ public abstract class ToggleablePainter : global::Doroti.Generated.Framework.Fou
             notifyListeners();
         }
     }
-    public virtual global::Doroti.Generated.Framework.Animation.Animation<double> reactionFocusFade
+    public virtual global::Doroti.Framework.Animation.Animation<double> reactionFocusFade
     {
         get => this._reactionFocusFade!;
         set
@@ -130,7 +130,7 @@ public abstract class ToggleablePainter : global::Doroti.Generated.Framework.Fou
             notifyListeners();
         }
     }
-    public virtual global::Doroti.Generated.Framework.Animation.Animation<double> reactionHoverFade
+    public virtual global::Doroti.Framework.Animation.Animation<double> reactionHoverFade
     {
         get => this._reactionHoverFade!;
         set
@@ -302,13 +302,13 @@ public abstract class ToggleablePainter : global::Doroti.Generated.Framework.Fou
     }
     public virtual void paintRadialReaction(Canvas canvas, Offset offset = default, Offset origin = default!)
     {
-        if (((!((global::Doroti.Generated.Framework.Animation.Animation<double>)this.reaction).isDismissed || !((global::Doroti.Generated.Framework.Animation.Animation<double>)this.reactionFocusFade).isDismissed) || !((global::Doroti.Generated.Framework.Animation.Animation<double>)this.reactionHoverFade).isDismissed))
+        if (((!((global::Doroti.Framework.Animation.Animation<double>)this.reaction).isDismissed || !((global::Doroti.Framework.Animation.Animation<double>)this.reactionFocusFade).isDismissed) || !((global::Doroti.Framework.Animation.Animation<double>)this.reactionHoverFade).isDismissed))
         {
             var reactionPaint__22305 = ((Func<Paint>)(() =>
 {            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = Dart_uiLibrary.Color.lerp(Dart_uiLibrary.Color.lerp(Dart_uiLibrary.Color.lerp(this.inactiveReactionColor, this.reactionColor, ((global::Doroti.Generated.Framework.Animation.Animation<double>)this.position).value), this.hoverColor, ((global::Doroti.Generated.Framework.Animation.Animation<double>)this.reactionHoverFade).value), this.focusColor, ((global::Doroti.Generated.Framework.Animation.Animation<double>)this.reactionFocusFade).value)!;
+            __cascade.color = Dart_uiLibrary.Color.lerp(Dart_uiLibrary.Color.lerp(Dart_uiLibrary.Color.lerp(this.inactiveReactionColor, this.reactionColor, ((global::Doroti.Framework.Animation.Animation<double>)this.position).value), this.hoverColor, ((global::Doroti.Framework.Animation.Animation<double>)this.reactionHoverFade).value), this.focusColor, ((global::Doroti.Framework.Animation.Animation<double>)this.reactionFocusFade).value)!;
             return __cascade;        }))();
-            global::Doroti.Generated.Framework.Animation.Animatable<double> radialReactionRadiusTween__22633 = ((global::Doroti.Generated.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: 0.0, end: this.splashRadius));
+            global::Doroti.Framework.Animation.Animatable<double> radialReactionRadiusTween__22633 = ((global::Doroti.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: this.splashRadius));
             double reactionRadius__22751 = ((this.isFocused || this.isHovered) ? this.splashRadius : radialReactionRadiusTween__22633.evaluate(this.reaction));
             if ((reactionRadius__22751 > 0.0))
             {
@@ -326,9 +326,9 @@ public abstract class ToggleablePainter : global::Doroti.Generated.Framework.Fou
         base.dispose();
     }
 
-    public virtual bool shouldRepaint(global::Doroti.Generated.Framework.Rendering.CustomPainter oldDelegate) => true;
+    public virtual bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate) => true;
     public virtual bool? hitTest(Offset position) => DartRuntimePrimitives.ConvertValue<bool>(null);
-    public virtual global::System.Func<Size, List<global::Doroti.Generated.Framework.Rendering.CustomPainterSemantics>>? semanticsBuilder => DartRuntimePrimitives.ConvertValue<global::System.Func<Size, List<global::Doroti.Generated.Framework.Rendering.CustomPainterSemantics>>>(null);
-    public virtual bool shouldRebuildSemantics(global::Doroti.Generated.Framework.Rendering.CustomPainter oldDelegate) => false;
-    public override string ToString() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual global::System.Func<Size, List<global::Doroti.Framework.Rendering.CustomPainterSemantics>>? semanticsBuilder => DartRuntimePrimitives.ConvertValue<global::System.Func<Size, List<global::Doroti.Framework.Rendering.CustomPainterSemantics>>>(null);
+    public virtual bool shouldRebuildSemantics(global::Doroti.Framework.Rendering.CustomPainter oldDelegate) => false;
+    public override string ToString() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
 }

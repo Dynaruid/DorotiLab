@@ -12,14 +12,14 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class DisplayFeatureSubScreen : StatelessWidget
 {
     public virtual Offset? anchorPoint { get; private set; }
     public virtual Widget child { get; private set; } = default!;
 
-    public DisplayFeatureSubScreen(global::Doroti.Generated.Framework.Foundation.Key? key = null, Offset? anchorPoint = null, Widget child = default!) : base(key: key)
+    public DisplayFeatureSubScreen(global::Doroti.Framework.Foundation.Key? key = null, Offset? anchorPoint = null, Widget child = default!) : base(key: key)
     {
         this.anchorPoint = anchorPoint;
         this.child = child;
@@ -27,14 +27,14 @@ public class DisplayFeatureSubScreen : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => ((this.anchorPoint is not null) || global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context, why: "to determine which sub-screen DisplayFeatureSubScreen uses", alternative: "Alternatively, consider specifying the 'anchorPoint' argument on the DisplayFeatureSubScreen.")));
+        DartRuntimePrimitives.Assert(() => ((this.anchorPoint is not null) || global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context, why: "to determine which sub-screen DisplayFeatureSubScreen uses", alternative: "Alternatively, consider specifying the 'anchorPoint' argument on the DisplayFeatureSubScreen.")));
         MediaQueryData mediaQuery__4178 = ((MediaQueryData)(object?)MediaQuery.of(context));
         global::Doroti.Ui.Size parentSize__4230 = ((global::Doroti.Ui.Size)(object?)((MediaQueryData)mediaQuery__4178).size);
         global::Doroti.Ui.Rect wantedBounds__4275 = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & parentSize__4230));
         global::Doroti.Ui.Offset resolvedAnchorPoint__4333 = ((global::Doroti.Ui.Offset)(object?)DisplayFeatureSubScreen._capOffset(((this.anchorPoint ?? (Offset)DisplayFeatureSubScreen._fallbackAnchorPoint(context))), parentSize__4230));
         IEnumerable<global::Doroti.Ui.Rect> subScreens__4469 = ((IEnumerable<global::Doroti.Ui.Rect>)(object?)DisplayFeatureSubScreen.subScreensInBounds(wantedBounds__4275, DisplayFeatureSubScreen.avoidBounds(mediaQuery__4178)));
         global::Doroti.Ui.Rect closestSubScreen__4556 = ((global::Doroti.Ui.Rect)(object?)DisplayFeatureSubScreen._closestToAnchorPoint(subScreens__4469.Cast<Rect>(), resolvedAnchorPoint__4333));
-        return ((Widget)(object?)new Padding(padding: global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateOnly(left: closestSubScreen__4556.left, top: closestSubScreen__4556.top, right: (parentSize__4230.width - closestSubScreen__4556.right), bottom: (parentSize__4230.height - closestSubScreen__4556.bottom)), child: new MediaQuery(data: mediaQuery__4178.removeDisplayFeatures(closestSubScreen__4556), child: this.child)));
+        return ((Widget)(object?)new Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: closestSubScreen__4556.left, top: closestSubScreen__4556.top, right: (parentSize__4230.width - closestSubScreen__4556.right), bottom: (parentSize__4230.height - closestSubScreen__4556.bottom)), child: new MediaQuery(data: mediaQuery__4178.removeDisplayFeatures(closestSubScreen__4556), child: this.child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

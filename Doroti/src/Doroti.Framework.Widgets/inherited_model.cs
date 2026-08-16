@@ -12,11 +12,11 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public abstract class InheritedModel<T> : InheritedWidget where T : notnull
 {
-    protected InheritedModel(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key, child: child)
+    protected InheritedModel(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key, child: child)
     {
     }
 

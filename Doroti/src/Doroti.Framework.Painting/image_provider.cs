@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 internal delegate void _KeyAndErrorHandlerCallback__image_provider<T>(T key, Action<object, global::System.Diagnostics.StackTrace?> handleError);
 
@@ -270,7 +270,7 @@ public abstract class ImageProvider<T>
 
     public async virtual Future<bool> evict(ImageCache? cache = null, ImageConfiguration configuration = default!)
     {
-        cache ??= global::Doroti.Generated.Framework.Painting.BindingLibrary.imageCache;
+        cache ??= global::Doroti.Framework.Painting.BindingLibrary.imageCache;
         T key__22301 = await obtainKey(configuration);
         return cache.evict(key__22301);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -308,7 +308,7 @@ public abstract class ImageProvider<T>
                 ((buffer, getTargetSize) => decode(buffer, getTargetSize)));
     }
 
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ImageConfiguration"))}()";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ImageConfiguration"))}()";
 }
 
 internal class _AbstractImageStreamCompleter__image_provider : ImageStreamCompleter
@@ -340,7 +340,7 @@ public class AssetBundleImageKey
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.bundle, this.name, this.scale);
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "AssetBundleImageKey"))}(bundle: {this.bundle}, name: \"{this.name}\", scale: {this.scale})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "AssetBundleImageKey"))}(bundle: {this.bundle}, name: \"{this.name}\", scale: {this.scale})";
 }
 
 public abstract class AssetBundleImageProvider : ImageProvider<AssetBundleImageKey>
@@ -465,7 +465,7 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         ImageStreamCompleter completer__42681 = this.imageProvider.loadBuffer(((ResizeImageKey)key)._providerCacheKey, ((Func<ImmutableBuffer, bool, long?, long?, Future<Codec>>)((__buffer, __allowUpscaling, __cacheWidth, __cacheHeight) => decodeResize(__buffer, __cacheWidth, __cacheHeight, __allowUpscaling))));
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             completer__42681.debugLabel = $"{((ImageStreamCompleter)completer__42681).debugLabel} - Resized({((ResizeImageKey)key)._width}×{((ResizeImageKey)key)._height})";
         }
@@ -551,7 +551,7 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         ImageStreamCompleter completer__45591 = this.imageProvider.loadImage(((ResizeImageKey)key)._providerCacheKey, (Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>>)decodeResize);
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             completer__45591.debugLabel = $"{((ImageStreamCompleter)completer__45591).debugLabel} - Resized({((ResizeImageKey)key)._width}×{((ResizeImageKey)key)._height})";
         }
@@ -687,7 +687,7 @@ public class FileImage : ImageProvider<FileImage>
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.file.path, this.scale);
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FileImage"))}(\"{this.file.path}\", scale: {this.scale.toStringAsFixed(1L)})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FileImage"))}(\"{this.file.path}\", scale: {this.scale.toStringAsFixed(1L)})";
 }
 
 public class MemoryImage : ImageProvider<MemoryImage>
@@ -710,13 +710,13 @@ public class MemoryImage : ImageProvider<MemoryImage>
     public override ImageStreamCompleter loadBuffer(MemoryImage key, Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode)
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(key, this)));
-        return new MultiFrameImageStreamCompleter(codec: _loadAsync(key, decode: (ImmutableBuffer __buffer) => decode(__buffer, false, null, null)), scale: ((MemoryImage)key).scale, debugLabel: $"MemoryImage({(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(((MemoryImage)key).bytes))})");
+        return new MultiFrameImageStreamCompleter(codec: _loadAsync(key, decode: (ImmutableBuffer __buffer) => decode(__buffer, false, null, null)), scale: ((MemoryImage)key).scale, debugLabel: $"MemoryImage({(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(((MemoryImage)key).bytes))})");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override ImageStreamCompleter loadImage(MemoryImage key, Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode)
     {
-        return new MultiFrameImageStreamCompleter(codec: _loadAsync(key, decode: (ImmutableBuffer __buffer) => decode(__buffer, null)), scale: ((MemoryImage)key).scale, debugLabel: $"MemoryImage({(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(((MemoryImage)key).bytes))})");
+        return new MultiFrameImageStreamCompleter(codec: _loadAsync(key, decode: (ImmutableBuffer __buffer) => decode(__buffer, null)), scale: ((MemoryImage)key).scale, debugLabel: $"MemoryImage({(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(((MemoryImage)key).bytes))})");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -739,7 +739,7 @@ public class MemoryImage : ImageProvider<MemoryImage>
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.bytes.GetHashCode(), this.scale);
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "MemoryImage"))}({(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this.bytes))}, scale: {this.scale.toStringAsFixed(1L)})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "MemoryImage"))}({(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this.bytes))}, scale: {this.scale.toStringAsFixed(1L)})";
 }
 
 public class ExactAssetImage : AssetBundleImageProvider
@@ -760,7 +760,7 @@ public class ExactAssetImage : AssetBundleImageProvider
     public virtual string keyName => ((this.package is null) ? this.assetName : $"packages/{this.package}/{this.assetName}");
     public override Future<AssetBundleImageKey> obtainKey(ImageConfiguration configuration)
     {
-        return new SynchronousFuture<AssetBundleImageKey>(new AssetBundleImageKey(bundle: ((this.bundle ?? ((ImageConfiguration)configuration).bundle) ?? global::Doroti.Generated.Framework.Services.Asset_bundleLibrary.rootBundle), name: this.keyName, scale: this.scale));
+        return new SynchronousFuture<AssetBundleImageKey>(new AssetBundleImageKey(bundle: ((this.bundle ?? ((ImageConfiguration)configuration).bundle) ?? global::Doroti.Framework.Services.Asset_bundleLibrary.rootBundle), name: this.keyName, scale: this.scale));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -776,7 +776,7 @@ public class ExactAssetImage : AssetBundleImageProvider
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.keyName, this.scale, this.bundle);
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ExactAssetImage"))}(name: \"{this.keyName}\", scale: {this.scale.toStringAsFixed(1L)}, bundle: {this.bundle})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ExactAssetImage"))}(name: \"{this.keyName}\", scale: {this.scale.toStringAsFixed(1L)}, bundle: {this.bundle})";
 }
 
 internal class _ErrorImageCompleter__image_provider : ImageStreamCompleter

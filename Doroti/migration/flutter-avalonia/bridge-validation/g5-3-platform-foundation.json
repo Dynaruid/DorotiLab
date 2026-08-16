@@ -11,7 +11,7 @@
   },
   "application": {
     "entrypointContract": "Doroti.Flutter.Hosting.IFlutterViewEntrypoint",
-    "predecessorBinding": "Doroti.Generated.Framework.Services.ServicesBinding",
+    "predecessorBinding": "Doroti.Framework.Services.ServicesBinding",
     "targetIdentity": "win-x64/win32-wgl",
     "viewId": 530,
     "nativeHandle": 9111276,

@@ -12,13 +12,13 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class Spacer : StatelessWidget
 {
     public virtual long flex { get; private set; } = default!;
 
-    public Spacer(global::Doroti.Generated.Framework.Foundation.Key? key = null, long flex = 1) : base(key: key)
+    public Spacer(global::Doroti.Framework.Foundation.Key? key = null, long flex = 1) : base(key: key)
     {
         this.flex = flex;
         System.Diagnostics.Debug.Assert((flex > 0L));

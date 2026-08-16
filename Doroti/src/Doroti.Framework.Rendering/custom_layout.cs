@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public class MultiChildLayoutParentData : ContainerBoxParentData<RenderBox>
 {
@@ -140,7 +140,7 @@ public abstract class MultiChildLayoutDelegate
     public virtual global::Doroti.Ui.Size getSize(BoxConstraints constraints) => ((BoxConstraints)constraints).biggest;
     public abstract void performLayout(Size size);
     public abstract bool shouldRelayout(MultiChildLayoutDelegate oldDelegate);
-    public override string ToString() => global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "MultiChildLayoutDelegate");
+    public override string ToString() => global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "MultiChildLayoutDelegate");
 }
 
 public class RenderCustomMultiChildLayoutBox : RenderBox, ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>, RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData>

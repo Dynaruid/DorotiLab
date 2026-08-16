@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public delegate bool DragTargetWillAccept<T>(T? data);
 
@@ -24,9 +24,9 @@ public delegate void DragTargetAcceptWithDetails<T>(DragTargetDetails<T> details
 
 public delegate Widget DragTargetBuilder<T>(BuildContext context, List<T?> candidateData, List<object> rejectedData);
 
-public delegate void DragUpdateCallback(global::Doroti.Generated.Framework.Gestures.DragUpdateDetails details);
+public delegate void DragUpdateCallback(global::Doroti.Framework.Gestures.DragUpdateDetails details);
 
-public delegate void DraggableCanceledCallback(global::Doroti.Generated.Framework.Gestures.Velocity velocity, Offset offset);
+public delegate void DraggableCanceledCallback(global::Doroti.Framework.Gestures.Velocity velocity, Offset offset);
 
 public delegate void DragEndCallback(DraggableDetails details);
 
@@ -40,7 +40,7 @@ public static partial class Drag_targetLibrary
 {
     public static Offset childDragAnchorStrategy(Draggable<object> draggable, BuildContext context, Offset position)
     {
-        var renderObject__4151 = ((global::Doroti.Generated.Framework.Rendering.RenderBox?)(object?)context.findRenderObject()!)!;
+        var renderObject__4151 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)context.findRenderObject()!)!;
         return ((Offset)((dynamic)renderObject__4151).globalToLocal(position));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -58,7 +58,7 @@ public static partial class Drag_targetLibrary
 public class Draggable<T> : StatefulWidget
 {
     public virtual T? data { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.Axis? axis { get; private set; }
+    public virtual global::Doroti.Framework.Painting.Axis? axis { get; private set; }
     public virtual Widget child { get; private set; } = default!;
     public virtual Widget? childWhenDragging { get; private set; }
     public virtual Widget feedback { get; private set; } = default!;
@@ -66,18 +66,18 @@ public class Draggable<T> : StatefulWidget
     public virtual global::System.Func<Draggable<object>, BuildContext, Offset, Offset> dragAnchorStrategy { get; private set; } = default!;
     public virtual bool ignoringFeedbackSemantics { get; private set; } = default!;
     public virtual bool ignoringFeedbackPointer { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.Axis? affinity { get; private set; }
+    public virtual global::Doroti.Framework.Painting.Axis? affinity { get; private set; }
     public virtual long? maxSimultaneousDrags { get; private set; }
     public virtual global::System.Action? onDragStarted { get; private set; }
-    public virtual global::System.Action<global::Doroti.Generated.Framework.Gestures.DragUpdateDetails>? onDragUpdate { get; private set; }
-    public virtual global::System.Action<global::Doroti.Generated.Framework.Gestures.Velocity, Offset>? onDraggableCanceled { get; private set; }
+    public virtual global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? onDragUpdate { get; private set; }
+    public virtual global::System.Action<global::Doroti.Framework.Gestures.Velocity, Offset>? onDraggableCanceled { get; private set; }
     public virtual global::System.Action? onDragCompleted { get; private set; }
     public virtual global::System.Action<DraggableDetails>? onDragEnd { get; private set; }
     public virtual bool rootOverlay { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Rendering.HitTestBehavior hitTestBehavior { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior { get; private set; } = default!;
     public virtual global::System.Func<long, bool>? allowedButtonsFilter { get; private set; }
 
-    public Draggable(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!, Widget feedback = default!, T? data = default, global::Doroti.Generated.Framework.Painting.Axis? axis = null, Widget? childWhenDragging = null, Offset feedbackOffset = default, global::System.Func<Draggable<object>, BuildContext, Offset, Offset> dragAnchorStrategy = default!, global::Doroti.Generated.Framework.Painting.Axis? affinity = null, long? maxSimultaneousDrags = null, global::System.Action? onDragStarted = null, global::System.Action<global::Doroti.Generated.Framework.Gestures.DragUpdateDetails>? onDragUpdate = null, global::System.Action<global::Doroti.Generated.Framework.Gestures.Velocity, Offset>? onDraggableCanceled = null, global::System.Action<DraggableDetails>? onDragEnd = null, global::System.Action? onDragCompleted = null, bool ignoringFeedbackSemantics = true, bool ignoringFeedbackPointer = true, bool rootOverlay = false, global::Doroti.Generated.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Generated.Framework.Rendering.HitTestBehavior.deferToChild, global::System.Func<long, bool>? allowedButtonsFilter = null) : base(key: key)
+    public Draggable(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, Widget feedback = default!, T? data = default, global::Doroti.Framework.Painting.Axis? axis = null, Widget? childWhenDragging = null, Offset feedbackOffset = default, global::System.Func<Draggable<object>, BuildContext, Offset, Offset> dragAnchorStrategy = default!, global::Doroti.Framework.Painting.Axis? affinity = null, long? maxSimultaneousDrags = null, global::System.Action? onDragStarted = null, global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? onDragUpdate = null, global::System.Action<global::Doroti.Framework.Gestures.Velocity, Offset>? onDraggableCanceled = null, global::System.Action<DraggableDetails>? onDragEnd = null, global::System.Action? onDragCompleted = null, bool ignoringFeedbackSemantics = true, bool ignoringFeedbackPointer = true, bool rootOverlay = false, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.HitTestBehavior.deferToChild, global::System.Func<long, bool>? allowedButtonsFilter = null) : base(key: key)
     {
         global::System.Func<Draggable<object>, BuildContext, Offset, Offset> __dragAnchorStrategy = dragAnchorStrategy ?? Drag_targetLibrary.childDragAnchorStrategy;
         this.child = child;
@@ -102,10 +102,10 @@ public class Draggable<T> : StatefulWidget
         System.Diagnostics.Debug.Assert(((maxSimultaneousDrags is null) || (maxSimultaneousDrags >= 0L)));
     }
 
-    public virtual global::Doroti.Generated.Framework.Gestures.MultiDragGestureRecognizer createRecognizer(global::System.Func<Offset, global::Doroti.Generated.Framework.Gestures.Drag?> onStart)
+    public virtual global::Doroti.Framework.Gestures.MultiDragGestureRecognizer createRecognizer(global::System.Func<Offset, global::Doroti.Framework.Gestures.Drag?> onStart)
     {
-        return ((Func<global::Doroti.Generated.Framework.Gestures.MultiDragGestureRecognizer>)(() =>
-{            var __cascade = (this.affinity switch { global::Doroti.Generated.Framework.Painting.Axis.horizontal => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Gestures.MultiDragGestureRecognizer>(new global::Doroti.Generated.Framework.Gestures.HorizontalMultiDragGestureRecognizer(allowedButtonsFilter: (global::System.Func<long, bool>?)this.allowedButtonsFilter)), global::Doroti.Generated.Framework.Painting.Axis.vertical => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Gestures.MultiDragGestureRecognizer>(new global::Doroti.Generated.Framework.Gestures.VerticalMultiDragGestureRecognizer(allowedButtonsFilter: (global::System.Func<long, bool>?)this.allowedButtonsFilter)), null => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Gestures.MultiDragGestureRecognizer>(new global::Doroti.Generated.Framework.Gestures.ImmediateMultiDragGestureRecognizer(allowedButtonsFilter: (global::System.Func<long, bool>?)this.allowedButtonsFilter)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return ((Func<global::Doroti.Framework.Gestures.MultiDragGestureRecognizer>)(() =>
+{            var __cascade = (this.affinity switch { global::Doroti.Framework.Painting.Axis.horizontal => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Gestures.MultiDragGestureRecognizer>(new global::Doroti.Framework.Gestures.HorizontalMultiDragGestureRecognizer(allowedButtonsFilter: (global::System.Func<long, bool>?)this.allowedButtonsFilter)), global::Doroti.Framework.Painting.Axis.vertical => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Gestures.MultiDragGestureRecognizer>(new global::Doroti.Framework.Gestures.VerticalMultiDragGestureRecognizer(allowedButtonsFilter: (global::System.Func<long, bool>?)this.allowedButtonsFilter)), null => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Gestures.MultiDragGestureRecognizer>(new global::Doroti.Framework.Gestures.ImmediateMultiDragGestureRecognizer(allowedButtonsFilter: (global::System.Func<long, bool>?)this.allowedButtonsFilter)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             __cascade.onStart = onStart;
             return __cascade;        }))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -119,19 +119,19 @@ public class LongPressDraggable<T> : Draggable<T>
     public virtual bool hapticFeedbackOnStart { get; private set; } = default!;
     public virtual Duration delay { get; private set; } = default!;
 
-    public LongPressDraggable(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!, Widget feedback = default!, T? data = default, global::Doroti.Generated.Framework.Painting.Axis? axis = null, Widget? childWhenDragging = null, Offset feedbackOffset = default, global::System.Func<Draggable<object>, BuildContext, Offset, Offset> dragAnchorStrategy = default!, long? maxSimultaneousDrags = null, global::System.Action? onDragStarted = null, global::System.Action<global::Doroti.Generated.Framework.Gestures.DragUpdateDetails>? onDragUpdate = null, global::System.Action<global::Doroti.Generated.Framework.Gestures.Velocity, Offset>? onDraggableCanceled = null, global::System.Action<DraggableDetails>? onDragEnd = null, global::System.Action? onDragCompleted = null, bool hapticFeedbackOnStart = true, bool ignoringFeedbackSemantics = true, bool ignoringFeedbackPointer = true, Duration? delay = null, global::System.Func<long, bool>? allowedButtonsFilter = null, global::Doroti.Generated.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Generated.Framework.Rendering.HitTestBehavior.deferToChild, bool rootOverlay = false) : base(key: key, child: child, feedback: feedback, data: data, axis: DartRuntimePrimitives.RequireValue(axis), childWhenDragging: childWhenDragging, feedbackOffset: feedbackOffset, dragAnchorStrategy: dragAnchorStrategy ?? Drag_targetLibrary.childDragAnchorStrategy, maxSimultaneousDrags: DartRuntimePrimitives.RequireValue(maxSimultaneousDrags), onDragStarted: onDragStarted, onDragUpdate: onDragUpdate, onDraggableCanceled: onDraggableCanceled, onDragEnd: onDragEnd, onDragCompleted: onDragCompleted, ignoringFeedbackSemantics: ignoringFeedbackSemantics, ignoringFeedbackPointer: ignoringFeedbackPointer, allowedButtonsFilter: allowedButtonsFilter, hitTestBehavior: hitTestBehavior, rootOverlay: rootOverlay)
+    public LongPressDraggable(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, Widget feedback = default!, T? data = default, global::Doroti.Framework.Painting.Axis? axis = null, Widget? childWhenDragging = null, Offset feedbackOffset = default, global::System.Func<Draggable<object>, BuildContext, Offset, Offset> dragAnchorStrategy = default!, long? maxSimultaneousDrags = null, global::System.Action? onDragStarted = null, global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? onDragUpdate = null, global::System.Action<global::Doroti.Framework.Gestures.Velocity, Offset>? onDraggableCanceled = null, global::System.Action<DraggableDetails>? onDragEnd = null, global::System.Action? onDragCompleted = null, bool hapticFeedbackOnStart = true, bool ignoringFeedbackSemantics = true, bool ignoringFeedbackPointer = true, Duration? delay = null, global::System.Func<long, bool>? allowedButtonsFilter = null, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.HitTestBehavior.deferToChild, bool rootOverlay = false) : base(key: key, child: child, feedback: feedback, data: data, axis: DartRuntimePrimitives.RequireValue(axis), childWhenDragging: childWhenDragging, feedbackOffset: feedbackOffset, dragAnchorStrategy: dragAnchorStrategy ?? Drag_targetLibrary.childDragAnchorStrategy, maxSimultaneousDrags: DartRuntimePrimitives.RequireValue(maxSimultaneousDrags), onDragStarted: onDragStarted, onDragUpdate: onDragUpdate, onDraggableCanceled: onDraggableCanceled, onDragEnd: onDragEnd, onDragCompleted: onDragCompleted, ignoringFeedbackSemantics: ignoringFeedbackSemantics, ignoringFeedbackPointer: ignoringFeedbackPointer, allowedButtonsFilter: allowedButtonsFilter, hitTestBehavior: hitTestBehavior, rootOverlay: rootOverlay)
     {
-        Duration __delay = delay ?? global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kLongPressTimeout;
+        Duration __delay = delay ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kLongPressTimeout;
         this.hapticFeedbackOnStart = hapticFeedbackOnStart;
         this.delay = __delay;
     }
 
-    public override global::Doroti.Generated.Framework.Gestures.DelayedMultiDragGestureRecognizer createRecognizer(global::System.Func<Offset, global::Doroti.Generated.Framework.Gestures.Drag?> onStart)
+    public override global::Doroti.Framework.Gestures.DelayedMultiDragGestureRecognizer createRecognizer(global::System.Func<Offset, global::Doroti.Framework.Gestures.Drag?> onStart)
     {
-        return ((Func<global::Doroti.Generated.Framework.Gestures.DelayedMultiDragGestureRecognizer>)(() =>
-{            var __cascade = new global::Doroti.Generated.Framework.Gestures.DelayedMultiDragGestureRecognizer(delay: DartRuntimePrimitives.RequireValue(this.delay), allowedButtonsFilter: (global::System.Func<long, bool>?)this.allowedButtonsFilter);
+        return ((Func<global::Doroti.Framework.Gestures.DelayedMultiDragGestureRecognizer>)(() =>
+{            var __cascade = new global::Doroti.Framework.Gestures.DelayedMultiDragGestureRecognizer(delay: DartRuntimePrimitives.RequireValue(this.delay), allowedButtonsFilter: (global::System.Func<long, bool>?)this.allowedButtonsFilter);
             __cascade.onStart = ((position) => {
-global::Doroti.Generated.Framework.Gestures.Drag? result__17898 = onStart(position);
+global::Doroti.Framework.Gestures.Drag? result__17898 = onStart(position);
 if (((result__17898 is not null) && this.hapticFeedbackOnStart))
 {
     DartRuntimePrimitives.Ignore(HapticFeedback.selectionClick());
@@ -147,13 +147,13 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
 internal class _DraggableState__drag_target<T> : State<Draggable<T>>
 {
-    internal virtual global::Doroti.Generated.Framework.Gestures.GestureRecognizer? _recognizer { get; set; } = default;
+    internal virtual global::Doroti.Framework.Gestures.GestureRecognizer? _recognizer { get; set; } = default;
     internal virtual long _activeCount { get; set; } = 0L;
 
     public override void initState()
     {
         base.initState();
-        _recognizer = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Gestures.GestureRecognizer>(this.widget.createRecognizer((global::System.Func<Offset, _DragAvatar__drag_target<T>?>)this._startDrag));
+        _recognizer = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Gestures.GestureRecognizer>(this.widget.createRecognizer((global::System.Func<Offset, _DragAvatar__drag_target<T>?>)this._startDrag));
     }
 
     public override void dispose()
@@ -178,13 +178,13 @@ internal class _DraggableState__drag_target<T> : State<Draggable<T>>
         _recognizer = null;
     }
 
-    internal virtual void _routePointer(global::Doroti.Generated.Framework.Gestures.PointerDownEvent @event)
+    internal virtual void _routePointer(global::Doroti.Framework.Gestures.PointerDownEvent @event)
     {
         if (((((Draggable<T>)(object)this.widget).maxSimultaneousDrags is not null) && (this._activeCount >= DartRuntimePrimitives.RequireValue(((Draggable<T>)(object)this.widget).maxSimultaneousDrags))))
         {
             return;
         }
-        this._recognizer!.addPointer((global::Doroti.Generated.Framework.Gestures.PointerDownEvent)(object)@event);
+        this._recognizer!.addPointer((global::Doroti.Framework.Gestures.PointerDownEvent)(object)@event);
     }
 
     internal virtual _DragAvatar__drag_target<T>? _startDrag(Offset position)
@@ -198,12 +198,12 @@ internal class _DraggableState__drag_target<T> : State<Draggable<T>>
         setState(((global::System.Action)(() => {
 _activeCount += 1L;
 })));
-        var avatar__19813 = new _DragAvatar__drag_target<T>(overlayState: Overlay.of(this.context, debugRequiredFor: this.widget, rootOverlay: ((Draggable<T>)(object)this.widget).rootOverlay), data: ((Draggable<T>)(object)this.widget).data, axis: ((Draggable<T>)(object)this.widget).axis, initialPosition: position, dragStartPoint: dragStartPoint__19661, feedback: ((Draggable<T>)(object)this.widget).feedback, feedbackOffset: ((Draggable<T>)(object)this.widget).feedbackOffset, ignoringFeedbackSemantics: ((Draggable<T>)(object)this.widget).ignoringFeedbackSemantics, ignoringFeedbackPointer: ((Draggable<T>)(object)this.widget).ignoringFeedbackPointer, viewId: checked((long)View.of(this.context).viewId), onDragUpdate: ((global::System.Action<global::Doroti.Generated.Framework.Gestures.DragUpdateDetails>)((details) => {
+        var avatar__19813 = new _DragAvatar__drag_target<T>(overlayState: Overlay.of(this.context, debugRequiredFor: this.widget, rootOverlay: ((Draggable<T>)(object)this.widget).rootOverlay), data: ((Draggable<T>)(object)this.widget).data, axis: ((Draggable<T>)(object)this.widget).axis, initialPosition: position, dragStartPoint: dragStartPoint__19661, feedback: ((Draggable<T>)(object)this.widget).feedback, feedbackOffset: ((Draggable<T>)(object)this.widget).feedbackOffset, ignoringFeedbackSemantics: ((Draggable<T>)(object)this.widget).ignoringFeedbackSemantics, ignoringFeedbackPointer: ((Draggable<T>)(object)this.widget).ignoringFeedbackPointer, viewId: checked((long)View.of(this.context).viewId), onDragUpdate: ((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)((details) => {
 if ((this.mounted && (((Draggable<T>)(object)this.widget).onDragUpdate is not null)))
 {
     ((Draggable<T>)(object)this.widget).onDragUpdate!(details);
 }
-})), onDragEnd: ((global::System.Action<global::Doroti.Generated.Framework.Gestures.Velocity, Offset, bool>)((velocity, offset, wasAccepted) => {
+})), onDragEnd: ((global::System.Action<global::Doroti.Framework.Gestures.Velocity, Offset, bool>)((velocity, offset, wasAccepted) => {
 if (this.mounted)
 {
     setState(((global::System.Action)(() => {
@@ -235,10 +235,10 @@ if ((!wasAccepted && (((Draggable<T>)(object)this.widget).onDraggableCanceled is
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugCheckHasOverlay(context));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasOverlay(context));
         bool canDrag__21351 = ((((Draggable<T>)(object)this.widget).maxSimultaneousDrags is null) || (this._activeCount < DartRuntimePrimitives.RequireValue(((Draggable<T>)(object)this.widget).maxSimultaneousDrags)));
         bool showChild__21468 = ((this._activeCount == 0L) || (((Draggable<T>)(object)this.widget).childWhenDragging is null));
-        return ((Widget)(object?)new Listener(behavior: ((Draggable<T>)(object)this.widget).hitTestBehavior, onPointerDown: ((global::System.Action<global::Doroti.Generated.Framework.Gestures.PointerDownEvent>)(canDrag__21351 ? this._routePointer : null)), child: (showChild__21468 ? ((Draggable<T>)(object)this.widget).child : ((Draggable<T>)(object)this.widget).childWhenDragging)));
+        return ((Widget)(object?)new Listener(behavior: ((Draggable<T>)(object)this.widget).hitTestBehavior, onPointerDown: ((global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)(canDrag__21351 ? this._routePointer : null)), child: (showChild__21468 ? ((Draggable<T>)(object)this.widget).child : ((Draggable<T>)(object)this.widget).childWhenDragging)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -247,10 +247,10 @@ if ((!wasAccepted && (((Draggable<T>)(object)this.widget).onDraggableCanceled is
 public class DraggableDetails
 {
     public virtual bool wasAccepted { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Gestures.Velocity velocity { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Gestures.Velocity velocity { get; private set; } = default!;
     public virtual Offset offset { get; private set; } = default!;
 
-    public DraggableDetails(bool wasAccepted = false, global::Doroti.Generated.Framework.Gestures.Velocity velocity = default!, Offset offset = default!)
+    public DraggableDetails(bool wasAccepted = false, global::Doroti.Framework.Gestures.Velocity velocity = default!, Offset offset = default!)
     {
         this.wasAccepted = wasAccepted;
         this.velocity = velocity;
@@ -281,9 +281,9 @@ public class DragTarget<T> : StatefulWidget
     public virtual global::System.Action<DragTargetDetails<T>>? onAcceptWithDetails { get; private set; }
     public virtual global::System.Action<T?>? onLeave { get; private set; }
     public virtual global::System.Action<DragTargetDetails<T>>? onMove { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Rendering.HitTestBehavior hitTestBehavior { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior { get; private set; } = default!;
 
-    public DragTarget(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, List<T?>, List<object>, Widget> builder = default!, global::System.Func<T?, bool>? onWillAccept = null, global::System.Func<DragTargetDetails<T>, bool>? onWillAcceptWithDetails = null, global::System.Action<T>? onAccept = null, global::System.Action<DragTargetDetails<T>>? onAcceptWithDetails = null, global::System.Action<T?>? onLeave = null, global::System.Action<DragTargetDetails<T>>? onMove = null, global::Doroti.Generated.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Generated.Framework.Rendering.HitTestBehavior.translucent) : base(key: key)
+    public DragTarget(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, List<T?>, List<object>, Widget> builder = default!, global::System.Func<T?, bool>? onWillAccept = null, global::System.Func<DragTargetDetails<T>, bool>? onWillAcceptWithDetails = null, global::System.Action<T>? onAccept = null, global::System.Action<DragTargetDetails<T>>? onAcceptWithDetails = null, global::System.Action<T?>? onLeave = null, global::System.Action<DragTargetDetails<T>>? onMove = null, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.HitTestBehavior.translucent) : base(key: key)
     {
         this.builder = builder;
         this.onWillAccept = onWillAccept;
@@ -315,7 +315,7 @@ internal class _DragTargetState__drag_target<T> : State<DragTarget<T>>
 
     public virtual bool isExpectedDataType(object? data, Type type)
     {
-        if ((global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb && (((((object.Equals(type, typeof(long))) && (object.Equals(typeof(T), typeof(double))))) || (((object.Equals(type, typeof(double))) && (object.Equals(typeof(T), typeof(long)))))))))
+        if ((global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb && (((((object.Equals(type, typeof(long))) && (object.Equals(typeof(T), typeof(double))))) || (((object.Equals(type, typeof(double))) && (object.Equals(typeof(T), typeof(long)))))))))
         {
             return false;
         }
@@ -399,17 +399,17 @@ public enum _DragEndKind__drag_target
     canceled
 }
 
-internal delegate void _OnDragEnd__drag_target(global::Doroti.Generated.Framework.Gestures.Velocity velocity, Offset offset, bool wasAccepted);
+internal delegate void _OnDragEnd__drag_target(global::Doroti.Framework.Gestures.Velocity velocity, Offset offset, bool wasAccepted);
 
-public class _DragAvatar__drag_target<T> : global::Doroti.Generated.Framework.Gestures.Drag
+public class _DragAvatar__drag_target<T> : global::Doroti.Framework.Gestures.Drag
 {
     public virtual T? data { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.Axis? axis { get; private set; }
+    public virtual global::Doroti.Framework.Painting.Axis? axis { get; private set; }
     public virtual Offset dragStartPoint { get; private set; } = default!;
     public virtual Widget? feedback { get; private set; }
     public virtual Offset feedbackOffset { get; private set; } = default!;
-    public virtual global::System.Action<global::Doroti.Generated.Framework.Gestures.DragUpdateDetails>? onDragUpdate { get; private set; }
-    public virtual global::System.Action<global::Doroti.Generated.Framework.Gestures.Velocity, Offset, bool>? onDragEnd { get; private set; }
+    public virtual global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? onDragUpdate { get; private set; }
+    public virtual global::System.Action<global::Doroti.Framework.Gestures.Velocity, Offset, bool>? onDragEnd { get; private set; }
     public virtual OverlayState overlayState { get; private set; } = default!;
     public virtual bool ignoringFeedbackSemantics { get; private set; } = default!;
     public virtual bool ignoringFeedbackPointer { get; private set; } = default!;
@@ -421,7 +421,7 @@ public class _DragAvatar__drag_target<T> : global::Doroti.Generated.Framework.Ge
     internal virtual Offset _overlayOffset { get; set; } = default!;
     internal virtual OverlayEntry? _entry { get; set; } = default;
 
-    internal _DragAvatar__drag_target(OverlayState overlayState, T? data = default, global::Doroti.Generated.Framework.Painting.Axis? axis = null, Offset initialPosition = default!, Offset dragStartPoint = default, Widget? feedback = null, Offset feedbackOffset = default, global::System.Action<global::Doroti.Generated.Framework.Gestures.DragUpdateDetails>? onDragUpdate = null, global::System.Action<global::Doroti.Generated.Framework.Gestures.Velocity, Offset, bool>? onDragEnd = null, bool ignoringFeedbackSemantics = default!, bool ignoringFeedbackPointer = default!, long viewId = default!)
+    internal _DragAvatar__drag_target(OverlayState overlayState, T? data = default, global::Doroti.Framework.Painting.Axis? axis = null, Offset initialPosition = default!, Offset dragStartPoint = default, Widget? feedback = null, Offset feedbackOffset = default, global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? onDragUpdate = null, global::System.Action<global::Doroti.Framework.Gestures.Velocity, Offset, bool>? onDragEnd = null, bool ignoringFeedbackSemantics = default!, bool ignoringFeedbackPointer = default!, long viewId = default!)
     {
         this.overlayState = overlayState;
         this.data = data;
@@ -437,10 +437,10 @@ public class _DragAvatar__drag_target<T> : global::Doroti.Generated.Framework.Ge
         this._position = initialPosition;
     }
 
-    public override void update(global::Doroti.Generated.Framework.Gestures.DragUpdateDetails details)
+    public override void update(global::Doroti.Framework.Gestures.DragUpdateDetails details)
     {
         global::Doroti.Ui.Offset oldPosition__32743 = ((global::Doroti.Ui.Offset)(object?)this._position);
-        _position += _restrictAxis(((global::Doroti.Generated.Framework.Gestures.DragUpdateDetails)details).delta);
+        _position += _restrictAxis(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).delta);
         updateDrag(this._position);
         if (((this.onDragUpdate is not null) && (!object.Equals(this._position, oldPosition__32743))))
         {
@@ -448,9 +448,9 @@ public class _DragAvatar__drag_target<T> : global::Doroti.Generated.Framework.Ge
         }
     }
 
-    public override void end(global::Doroti.Generated.Framework.Gestures.DragEndDetails details)
+    public override void end(global::Doroti.Framework.Gestures.DragEndDetails details)
     {
-        finishDrag(_DragEndKind__drag_target.dropped, _restrictVelocityAxis(((global::Doroti.Generated.Framework.Gestures.DragEndDetails)details).velocity));
+        finishDrag(_DragEndKind__drag_target.dropped, _restrictVelocityAxis(((global::Doroti.Framework.Gestures.DragEndDetails)details).velocity));
     }
 
     public override void cancel()
@@ -463,14 +463,14 @@ public class _DragAvatar__drag_target<T> : global::Doroti.Generated.Framework.Ge
         _lastOffset = (globalPosition - this.dragStartPoint);
         if (this.overlayState.mounted)
         {
-            var box__33288 = ((global::Doroti.Generated.Framework.Rendering.RenderBox?)(object?)this.overlayState.context.findRenderObject()!)!;
+            var box__33288 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.overlayState.context.findRenderObject()!)!;
             global::Doroti.Ui.Offset overlaySpaceOffset__33368 = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)box__33288).globalToLocal(globalPosition)));
             _overlayOffset = (overlaySpaceOffset__33368 - this.dragStartPoint);
             this._entry!.markNeedsBuild();
         }
-        var result__33534 = new global::Doroti.Generated.Framework.Gestures.HitTestResult();
+        var result__33534 = new global::Doroti.Framework.Gestures.HitTestResult();
         WidgetsBinding.instance.hitTestInView(result__33534, (globalPosition + this.feedbackOffset), this.viewId);
-        List<_DragTargetState__drag_target<object>> targets__33694 = _getDragTargets(((global::Doroti.Generated.Framework.Gestures.HitTestResult)result__33534).path.Cast<global::Doroti.Generated.Framework.Gestures.HitTestEntry<global::Doroti.Generated.Framework.Gestures.HitTestTarget>>()).ToList().ToList();
+        List<_DragTargetState__drag_target<object>> targets__33694 = _getDragTargets(((global::Doroti.Framework.Gestures.HitTestResult)result__33534).path.Cast<global::Doroti.Framework.Gestures.HitTestEntry<global::Doroti.Framework.Gestures.HitTestTarget>>()).ToList().ToList();
         var listsMatch__33752 = false;
         if (((checked((long)(targets__33694.Count)) >= checked((long)(this._enteredTargets.Count))) && System.Linq.Enumerable.Any(this._enteredTargets)))
         {
@@ -511,7 +511,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         _activeTarget = newTarget__35087;
     }
 
-    internal virtual IEnumerable<_DragTargetState__drag_target<object>> _getDragTargets(IEnumerable<global::Doroti.Generated.Framework.Gestures.HitTestEntry<global::Doroti.Generated.Framework.Gestures.HitTestTarget>> path)
+    internal virtual IEnumerable<_DragTargetState__drag_target<object>> _getDragTargets(IEnumerable<global::Doroti.Framework.Gestures.HitTestEntry<global::Doroti.Framework.Gestures.HitTestTarget>> path)
     {
         return ((IEnumerable<_DragTargetState__drag_target<object>>)(object?)new List<_DragTargetState__drag_target<object>>());
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -526,7 +526,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         this._enteredTargets.Clear();
     }
 
-    public virtual void finishDrag(_DragEndKind__drag_target endKind, global::Doroti.Generated.Framework.Gestures.Velocity? velocity = null)
+    public virtual void finishDrag(_DragEndKind__drag_target endKind, global::Doroti.Framework.Gestures.Velocity? velocity = null)
     {
         var wasAccepted__36334 = false;
         if (((object.Equals(endKind, _DragEndKind__drag_target.dropped)) && (this._activeTarget is not null)))
@@ -540,7 +540,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         this._entry!.remove();
         this._entry!.dispose();
         _entry = null;
-        this.onDragEnd?.Invoke((velocity ?? global::Doroti.Generated.Framework.Gestures.Velocity.zero), DartRuntimePrimitives.RequireValue(this._lastOffset), wasAccepted__36334);
+        this.onDragEnd?.Invoke((velocity ?? global::Doroti.Framework.Gestures.Velocity.zero), DartRuntimePrimitives.RequireValue(this._lastOffset), wasAccepted__36334);
     }
 
     internal virtual Widget _build(BuildContext context)
@@ -549,19 +549,19 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Gestures.Velocity _restrictVelocityAxis(global::Doroti.Generated.Framework.Gestures.Velocity velocity)
+    internal virtual global::Doroti.Framework.Gestures.Velocity _restrictVelocityAxis(global::Doroti.Framework.Gestures.Velocity velocity)
     {
         if ((this.axis is null))
         {
             return velocity;
         }
-        return new global::Doroti.Generated.Framework.Gestures.Velocity(pixelsPerSecond: _restrictAxis(((global::Doroti.Generated.Framework.Gestures.Velocity)velocity).pixelsPerSecond));
+        return new global::Doroti.Framework.Gestures.Velocity(pixelsPerSecond: _restrictAxis(((global::Doroti.Framework.Gestures.Velocity)velocity).pixelsPerSecond));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.Offset _restrictAxis(Offset offset)
     {
-        return (this.axis switch { global::Doroti.Generated.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Offset(offset.dx, 0.0), global::Doroti.Generated.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Offset(0.0, offset.dy), null => offset, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (this.axis switch { global::Doroti.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Offset(offset.dx, 0.0), global::Doroti.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Offset(0.0, offset.dy), null => offset, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

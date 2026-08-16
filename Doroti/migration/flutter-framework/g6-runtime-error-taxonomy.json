@@ -11,7 +11,7 @@
                     "message":  "Object reference not set to an instance of an object.",
                     "widget":  "AppBar",
                     "library":  "package:flutter/src/material/app_bar.dart",
-                    "firstStackFrame":  "at Doroti.Generated.Framework.Material._AppBarState__app_bar.build(BuildContext context) in Doroti/migration/generated-candidates/g5-4-reviewed/projects/Material/app_bar.g.cs:line 277",
+                    "firstStackFrame":  "at Doroti.Framework.Material._AppBarState__app_bar.build(BuildContext context) in Doroti/migration/generated-candidates/g5-4-reviewed/projects/Material/app_bar.g.cs:line 277",
                     "frameTimeout":  false,
                     "presentedFrames":  0,
                     "status":  "historical-g6-0-blocker-reverify-in-g6-3",

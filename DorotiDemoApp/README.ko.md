@@ -2,51 +2,32 @@
 
 [English](README.md) | **한국어**
 
-DorotiDemoApp은 Doroti single-project application 계약을 직접 사용하는 dogfood 앱입니다. 하나의 `DorotiDemoApp.csproj`, root `Program.cs`, 공용 `src/App.cs`로 두 번째 host project 없이 MAUI Windows, MAUI Mac Catalyst, Blazor WebAssembly를 선택합니다.
+DorotiDemoApp은 제품이 직접 소유하는 Doroti framework와 single-project application 계약을 사용하는 dogfood 앱입니다. 하나의 `DorotiDemoApp.csproj`, root `Program.cs`, 공용 `src/App.cs`가 MAUI Windows, MAUI Mac Catalyst 또는 Blazor WebAssembly를 target으로 선택합니다.
 
 ## 구성
 
-- `src/App.cs`: target-neutral 검토 Material widget/state tree
-- `Program.cs`: Web과 Mac Catalyst용 얇은 bootstrap. Windows는 WinUI generated `Main` 사용
-- `Platforms/Maui`: 공용 C# `Application`, `Window`, `ContentPage`, `SKGLView` 구성
-- `Platforms/Windows`: 유일한 bootstrap `App.xaml`, WinUI code-behind와 package manifest
-- `Platforms/MacCatalyst`: UIKit entrypoint, delegate, plist와 entitlements
+- `src/App.cs`: `Doroti.Framework.*`를 사용하는 target-neutral Material widget/state tree
+- `Program.cs`: Web과 Mac Catalyst용 얇은 bootstrap. Windows는 SDK가 생성한 WinUI entrypoint 사용
+- `Platforms/Maui`: 공용 C# `Application`, `Window`, `ContentPage`, `SKGLView`
+- `Platforms/Windows`: 유일한 bootstrap `App.xaml`, code-behind와 manifest
+- `Platforms/MacCatalyst`: UIKit bootstrap, delegate, plist와 entitlements
 - `Platforms/Web`: Blazor composition root와 static asset
 
-Application project는 정확히 하나입니다. Windows는 `ApplicationDefinition` 하나와 `MauiXaml` 0개를 컴파일하고 Mac Catalyst/Web은 XAML을 컴파일하지 않습니다.
-
-## 빌드와 실행
-
-Repository root에서 실행합니다.
+## Build와 validation
 
 ```powershell
 dotnet run --project ./DorotiDemoApp/DorotiDemoApp.csproj -p:DorotiTarget=Windows
 dotnet publish ./DorotiDemoApp/DorotiDemoApp.csproj -c Release -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm -o ./publish/doroti-demo-web
 dotnet publish ./DorotiDemoApp/DorotiDemoApp.csproj -c Release -p:DorotiTarget=MacCatalyst -p:RuntimeIdentifier=maccatalyst-arm64
+
+pwsh -File ./Doroti/eng/doroti.ps1 validate
+pwsh -File ./Doroti/eng/doroti.ps1 validate -ValidationSuite Release
 ```
 
-Mac Catalyst compile graph는 Windows-host cross-build를 통과했습니다. Publish와 native 실행은 적절한 Apple Silicon macOS runner가 필요하며 계속 `notVerified`입니다.
+Developer suite는 세 target graph와 build를 확인합니다. Release suite는 실제 Windows `MauiSKSwapChainPanel` GPU frame과 저장소 밖 Web template/package publish 시나리오를 추가합니다.
 
-## 검증 상태
+Mac Catalyst Windows-host cross-build는 확인했지만 native publish/run에는 Apple Silicon macOS가 필요합니다. Native hover/wheel/capture/keyboard/IME/UIA, browser live 자동화, physical acceptance와 cross-target parity는 각각 별도의 `notVerified` gate입니다.
 
-현재 single-project gate는 다음과 같이 실행합니다.
+해당 release suite를 완료하면 현재 evidence는 [app target evidence](../Doroti/migration/maui/app-targets-evidence.json)와 [Web product evidence](../Doroti/migration/web/web-product-evidence.json)에 기록됩니다. 과거 Win32/AppKit 및 G4-G7 evidence는 predecessor-only로 보존합니다.
 
-```powershell
-pwsh -File ./Doroti/eng/validate-g7-maui-single-project.ps1 -Shard All
-pwsh -File ./Doroti/eng/validate-g7-web-build.ps1 -Shard Graph
-pwsh -File ./Doroti/eng/validate-g7-web-build.ps1 -Shard Template
-pwsh -File ./Doroti/eng/validate-g7-web-build.ps1 -Shard Compile
-pwsh -File ./Doroti/eng/validate-g7-web-build.ps1 -Shard Publish
-```
-
-현재 evidence는 Windows Release build/publish, `MauiSKSwapChainPanel`과 `win-x64/winui3/SKSwapChainPanel/ANGLE-DirectX-Skia`를 통한 실제 GPU frame, Web package-only compile/publish를 증명합니다. 기본 MAUI touch 변환과 clipboard/focus adapter는 구현했지만 native hover/wheel/capture/keyboard/IME/UIA, resize/DPI/context recreate, Mac Catalyst native 실행, physical acceptance와 cross-target parity는 `notVerified`입니다.
-
-2026-08-15 수동 Chromium smoke는 공식 Web publish artifact의 non-empty GPU canvas, DPR sizing, bounded backdrop blur, 2-pass shadow, semantics, 기본 pointer 상태 변화와 console error 0에만 적용됩니다. 남은 Web 자동화나 physical gate를 증명하지 않습니다.
-
-## Evidence
-
-- [MAUI single-project evidence](../Doroti/migration/maui/g7-maui-single-project-evidence.json)
-- [Web build evidence](../Doroti/migration/web/g7-web-build-evidence.json)
-- 기존 Win32/AppKit evidence는 predecessor-only로 유지하며 MAUI PASS로 승격하지 않습니다.
-
-Runtime architecture와 개발 명령은 [Doroti runtime README](../Doroti/README.ko.md)를 참고하세요.
+Source 소유권과 명령 설명은 [Doroti runtime README](../Doroti/README.ko.md)를 참고하세요.

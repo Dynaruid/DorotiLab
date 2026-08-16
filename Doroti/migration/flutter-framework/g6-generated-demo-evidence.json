@@ -6,7 +6,7 @@
   "source": {
     "dartPackage": "DorotiDemoApp/dart",
     "entryPoint": "package:doroti_demo_app/main.dart",
-    "generatedAssembly": "Doroti.Generated.Application.G6Demo.Framework",
+    "generatedAssembly": "Doroti.Application.G6Demo.Framework",
     "handwrittenFixture": "DorotiDemoApp/Program.cs"
   },
   "compiler": {

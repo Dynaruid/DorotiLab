@@ -101,7 +101,7 @@ String _disposition(String path) {
 String _owner(String path) {
   final disposition = _disposition(path);
   if (disposition == 'generated') {
-    return 'Doroti.Generated.Framework.F4';
+    return 'Doroti.Framework.F4';
   }
   if (disposition == 'runtime-binding') {
     return 'Doroti.FlutterCompat+Doroti.Composition+Doroti.Platform';

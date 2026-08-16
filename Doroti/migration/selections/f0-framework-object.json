@@ -4,8 +4,8 @@
   "migrationIrVersion": "3.0.0",
   "generationMode": "framework-semantic",
   "compatibilityProfile": "flutter-framework-f0",
-  "outputNamespace": "Doroti.Generated.Framework.Foundation",
-  "outputAssemblyName": "Doroti.Generated.Framework.Foundation",
+  "outputNamespace": "Doroti.Framework.Foundation",
+  "outputAssemblyName": "Doroti.Framework.Foundation",
   "flutterBaseline": "../flutter-compat/baseline.json",
   "inputs": [
     {

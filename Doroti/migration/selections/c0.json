@@ -4,8 +4,8 @@
   "migrationIrVersion": "2.0.0",
   "generationMode": "isolated-generated-solution",
   "compatibilityProfile": "flutter-aware-c0",
-  "outputNamespace": "Doroti.Generated.C0",
-  "outputAssemblyName": "Doroti.Generated.C0",
+  "outputNamespace": "Doroti.C0",
+  "outputAssemblyName": "Doroti.C0",
   "flutterBaseline": "../flutter-compat/baseline.json",
   "packageRoot": "../fixtures/c0_language",
   "inputs": [

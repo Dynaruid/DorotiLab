@@ -12,27 +12,27 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
-public class TooltipThemeData : global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class TooltipThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 {
     public virtual double? height { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? margin { get; private set; }
+    public virtual global::Doroti.Framework.Rendering.BoxConstraints? constraints { get; private set; }
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? margin { get; private set; }
     public virtual double? verticalOffset { get; private set; }
     public virtual bool? preferBelow { get; private set; }
     public virtual bool? excludeFromSemantics { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.Decoration? decoration { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? textStyle { get; private set; }
+    public virtual global::Doroti.Framework.Painting.Decoration? decoration { get; private set; }
+    public virtual global::Doroti.Framework.Painting.TextStyle? textStyle { get; private set; }
     public virtual TextAlign? textAlign { get; private set; }
     public virtual Duration? waitDuration { get; private set; }
     public virtual Duration? showDuration { get; private set; }
     public virtual Duration? exitDuration { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.TooltipTriggerMode? triggerMode { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.TooltipTriggerMode? triggerMode { get; private set; }
     public virtual bool? enableFeedback { get; private set; }
 
-    public TooltipThemeData(double? height = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? margin = null, double? verticalOffset = null, bool? preferBelow = null, bool? excludeFromSemantics = null, global::Doroti.Generated.Framework.Painting.Decoration? decoration = null, global::Doroti.Generated.Framework.Painting.TextStyle? textStyle = null, TextAlign? textAlign = null, Duration? waitDuration = null, Duration? showDuration = null, Duration? exitDuration = null, global::Doroti.Generated.Framework.Widgets.TooltipTriggerMode? triggerMode = null, bool? enableFeedback = null)
+    public TooltipThemeData(double? height = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? margin = null, double? verticalOffset = null, bool? preferBelow = null, bool? excludeFromSemantics = null, global::Doroti.Framework.Painting.Decoration? decoration = null, global::Doroti.Framework.Painting.TextStyle? textStyle = null, TextAlign? textAlign = null, Duration? waitDuration = null, Duration? showDuration = null, Duration? exitDuration = null, global::Doroti.Framework.Widgets.TooltipTriggerMode? triggerMode = null, bool? enableFeedback = null)
     {
         this.height = height;
         this.constraints = constraints;
@@ -52,7 +52,7 @@ public class TooltipThemeData : global::Doroti.Generated.Framework.Foundation.Di
         System.Diagnostics.Debug.Assert(((height is null) || (constraints is null)));
     }
 
-    public virtual TooltipThemeData copyWith(double? height = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? margin = null, double? verticalOffset = null, bool? preferBelow = null, bool? excludeFromSemantics = null, global::Doroti.Generated.Framework.Painting.Decoration? decoration = null, global::Doroti.Generated.Framework.Painting.TextStyle? textStyle = null, TextAlign? textAlign = null, Duration? waitDuration = null, Duration? showDuration = null, Duration? exitDuration = null, global::Doroti.Generated.Framework.Widgets.TooltipTriggerMode? triggerMode = null, bool? enableFeedback = null)
+    public virtual TooltipThemeData copyWith(double? height = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? margin = null, double? verticalOffset = null, bool? preferBelow = null, bool? excludeFromSemantics = null, global::Doroti.Framework.Painting.Decoration? decoration = null, global::Doroti.Framework.Painting.TextStyle? textStyle = null, TextAlign? textAlign = null, Duration? waitDuration = null, Duration? showDuration = null, Duration? exitDuration = null, global::Doroti.Framework.Widgets.TooltipTriggerMode? triggerMode = null, bool? enableFeedback = null)
     {
         return new TooltipThemeData(height: (height ?? this.height), constraints: (constraints ?? this.constraints), padding: (padding ?? this.padding), margin: (margin ?? this.margin), verticalOffset: (verticalOffset ?? this.verticalOffset), preferBelow: (preferBelow ?? this.preferBelow), excludeFromSemantics: (excludeFromSemantics ?? this.excludeFromSemantics), decoration: (decoration ?? this.decoration), textStyle: (textStyle ?? this.textStyle), textAlign: (textAlign ?? this.textAlign), waitDuration: (waitDuration ?? this.waitDuration), showDuration: (showDuration ?? this.showDuration), triggerMode: (triggerMode ?? this.triggerMode), enableFeedback: (enableFeedback ?? this.enableFeedback));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -84,26 +84,26 @@ public class TooltipThemeData : global::Doroti.Generated.Framework.Foundation.Di
         return ((((((((((((((((__other is TooltipThemeData) && (((TooltipThemeData)((TooltipThemeData)__other)).height == this.height)) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).constraints, this.constraints))) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).padding, this.padding))) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).margin, this.margin))) && (((TooltipThemeData)((TooltipThemeData)__other)).verticalOffset == this.verticalOffset)) && (((TooltipThemeData)((TooltipThemeData)__other)).preferBelow == this.preferBelow)) && (((TooltipThemeData)((TooltipThemeData)__other)).excludeFromSemantics == this.excludeFromSemantics)) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).decoration, this.decoration))) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).textStyle, this.textStyle))) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).textAlign, this.textAlign))) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).waitDuration, this.waitDuration))) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).showDuration, this.showDuration))) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).exitDuration, this.exitDuration))) && (object.Equals(((TooltipThemeData)((TooltipThemeData)__other)).triggerMode, this.triggerMode))) && (((TooltipThemeData)((TooltipThemeData)__other)).enableFeedback == this.enableFeedback));
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("height", this.height, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Rendering.BoxConstraints>("constraints", this.constraints, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry>("margin", this.margin, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("vertical offset", this.verticalOffset, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("position", value: this.preferBelow, ifTrue: "below", ifFalse: "above", showName: true));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("semantics", value: this.excludeFromSemantics, ifTrue: "excluded", showName: true));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.Decoration>("decoration", this.decoration, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.TextStyle>("textStyle", this.textStyle, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.TextAlign>("textAlign", this.textAlign, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<Duration>("wait duration", this.waitDuration, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<Duration>("show duration", this.showDuration, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<Duration>("exit duration", this.exitDuration, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Widgets.TooltipTriggerMode>("triggerMode", this.triggerMode, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("enableFeedback", value: this.enableFeedback, ifTrue: "true", showName: true));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", this.height, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.BoxConstraints>("constraints", this.constraints, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("margin", this.margin, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("vertical offset", this.verticalOffset, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("position", value: this.preferBelow, ifTrue: "below", ifFalse: "above", showName: true));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("semantics", value: this.excludeFromSemantics, ifTrue: "excluded", showName: true));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>("decoration", this.decoration, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("textStyle", this.textStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.TextAlign>("textAlign", this.textAlign, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Duration>("wait duration", this.waitDuration, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Duration>("show duration", this.showDuration, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Duration>("exit duration", this.exitDuration, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.TooltipTriggerMode>("triggerMode", this.triggerMode, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("enableFeedback", value: this.enableFeedback, ifTrue: "true", showName: true));
     }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;
@@ -124,27 +124,27 @@ public class TooltipThemeData : global::Doroti.Generated.Framework.Foundation.Di
 
 }
 
-public class TooltipTheme : global::Doroti.Generated.Framework.Widgets.InheritedTheme
+public class TooltipTheme : global::Doroti.Framework.Widgets.InheritedTheme
 {
     public virtual TooltipThemeData data { get; private set; } = default!;
 
-    public TooltipTheme(global::Doroti.Generated.Framework.Foundation.Key? key = null, TooltipThemeData data = default!, global::Doroti.Generated.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public TooltipTheme(global::Doroti.Framework.Foundation.Key? key = null, TooltipThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static TooltipThemeData of(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static TooltipThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
         TooltipTheme? tooltipTheme__12186 = ((TooltipTheme?)(object?)context.dependOnInheritedWidgetOfExactType<TooltipTheme>());
         return (tooltipTheme__12186?.data ?? Theme.of(context).tooltipTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget wrap(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Widgets.Widget child)
+    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new TooltipTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new TooltipTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Generated.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((TooltipTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((TooltipTheme)oldWidget).data)));
 }

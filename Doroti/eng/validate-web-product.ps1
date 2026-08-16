@@ -11,8 +11,9 @@ $env:MSBUILDDISABLENODEREUSE = '1'
 $dorotiRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $repoRoot = (Resolve-Path (Join-Path $dorotiRoot '..')).Path
 $migrationRoot = Join-Path $dorotiRoot 'migration/web'
-$tmpRoot = Join-Path $dorotiRoot '.doroti/tmp/g7-web-product'
-$releaseRoot = Join-Path $dorotiRoot 'artifacts/g7-web/0.2.0-beta'
+$tmpRoot = Join-Path $dorotiRoot '.doroti/tmp/web-product'
+$externalTmpRoot = Join-Path $repoRoot '.doroti/tmp/web-product'
+$releaseRoot = Join-Path $dorotiRoot 'artifacts/web/0.2.0-beta'
 $hostProject = Join-Path $dorotiRoot 'src/Doroti.Host.Web/Doroti.Host.Web.csproj'
 $targetProject = Join-Path $dorotiRoot 'src/Doroti.Target.Web.browser-wasm/Doroti.Target.Web.browser-wasm.csproj'
 $templateProject = Join-Path $dorotiRoot 'templates/Doroti.Templates/Doroti.Templates.csproj'
@@ -21,6 +22,7 @@ $demoWebProject = $demoDesktopProject
 $statePath = Join-Path $tmpRoot 'external-product.json'
 [IO.Directory]::CreateDirectory($migrationRoot) | Out-Null
 [IO.Directory]::CreateDirectory($tmpRoot) | Out-Null
+[IO.Directory]::CreateDirectory($externalTmpRoot) | Out-Null
 
 function Assert-True([bool] $Condition, [string] $Name) {
     if (-not $Condition) { throw "$Name failed." }
@@ -83,7 +85,10 @@ function Reset-SafeDirectory([string] $Path, [string] $AllowedRoot) {
 
 function Get-ExternalState {
     $state = Read-Json $statePath
-    Assert-True (Test-Path -LiteralPath $state.project -PathType Leaf) 'external generated project'
+    $resolvedExternal = [IO.Path]::GetFullPath([string] $state.external)
+    $resolvedRoot = [IO.Path]::GetFullPath($externalTmpRoot).TrimEnd('\') + '\'
+    Assert-True ($resolvedExternal.StartsWith($resolvedRoot, [StringComparison]::OrdinalIgnoreCase)) 'external consumer local-storage boundary'
+    Assert-True (Test-Path -LiteralPath $state.project -PathType Leaf) 'external template-created project'
     Assert-True (Test-Path -LiteralPath $state.feed -PathType Container) 'external package feed'
     $env:NUGET_PACKAGES = $state.packages
     return $state
@@ -97,9 +102,9 @@ function Write-Composite {
         $shards[$name] = if (Test-Path -LiteralPath $path) { Read-Json $path } else { [ordered]@{ status='notVerified' } }
     }
     $pass = @($names | Where-Object { $shards[$_].status -ne 'pass' }).Count -eq 0
-    Write-Json (Join-Path $migrationRoot 'g7-web-build-evidence.json') ([ordered]@{
-        schemaVersion = 'doroti.g7-web-build-evidence/v2'
-        milestone = 'G7-3'
+    Write-Json (Join-Path $migrationRoot 'web-product-evidence.json') ([ordered]@{
+        schemaVersion = 'doroti.web-product-evidence/v1'
+        scope = 'web-product'
         status = $(if ($pass) { 'pass' } else { 'partial' })
         target = 'browser-wasm'
         shards = $shards
@@ -114,9 +119,9 @@ function Write-Composite {
             flutterOrDartProductCommands = 0
         }
         notVerified = @(
-            [ordered]@{ mode='trimmed-generated-product'; blocker='generated framework reflection roots have not been audited; the G7-3 product baseline pins PublishTrimmed=false' },
-            [ordered]@{ mode='wasm-aot-product'; blocker='G7-3 validates the native-linked interpreter product; product AOT and trimming require their own generated-framework closure' },
-            [ordered]@{ mode='chromium-live-product'; owner='G7-4'; blocker='GPU pixels, browser input, IME, clipboard and ARIA actions require the isolated Chromium live gate' }
+            [ordered]@{ mode='trimmed-product'; blocker='framework reflection roots have not been audited; the current product baseline pins PublishTrimmed=false' },
+            [ordered]@{ mode='wasm-aot-product'; blocker='the release suite validates the native-linked interpreter product; product AOT and trimming require their own framework closure' },
+            [ordered]@{ mode='chromium-live-product'; owner='browser-live'; blocker='GPU pixels, browser input, IME, clipboard and ARIA actions require the isolated Chromium live gate' }
         )
     })
 }
@@ -240,9 +245,12 @@ if ($Shard -eq 'Graph') {
 
 if ($Shard -eq 'Template') {
     $feed = Join-Path $tmpRoot 'package-feed'
-    $external = Join-Path ([IO.Path]::GetTempPath()) ("doroti-g7-product-" + [Guid]::NewGuid().ToString('N'))
+    foreach ($stalePath in @($statePath, (Join-Path $tmpRoot 'template.json'), (Join-Path $tmpRoot 'compile.json'), (Join-Path $tmpRoot 'publish.json'))) {
+        if (Test-Path -LiteralPath $stalePath -PathType Leaf) { Remove-Item -LiteralPath $stalePath -Force }
+    }
+    $external = Join-Path $externalTmpRoot ("external-" + [Guid]::NewGuid().ToString('N'))
     Reset-SafeDirectory $feed $tmpRoot
-    [IO.Directory]::CreateDirectory($external) | Out-Null
+    Reset-SafeDirectory $external $externalTmpRoot
     $mapping = Read-Json (Join-Path $dorotiRoot 'migration/product-naming/g7-doroti-naming-map.json')
     $packageProjects = [Collections.Generic.List[string]]::new()
     $requiredPackages = @(
@@ -267,27 +275,27 @@ if ($Shard -eq 'Template') {
     $hive = Join-Path $external '.templateengine'
     $packages = Join-Path $external '.nuget/packages'
     $env:NUGET_PACKAGES = $packages
-    $projectRoot = Join-Path $external 'G7WebProduct'
+    $projectRoot = Join-Path $external 'DorotiWebProduct'
     Invoke-Checked { dotnet new install $templatePackage --debug:custom-hive $hive } 'install Doroti template package'
-    Invoke-Checked { dotnet new doroti-app --name G7WebProduct --output $projectRoot --debug:custom-hive $hive } 'create external Doroti C# application'
-    $project = Join-Path $projectRoot 'G7WebProduct.csproj'
+    Invoke-Checked { dotnet new doroti-app --name DorotiWebProduct --output $projectRoot --debug:custom-hive $hive } 'create external Doroti C# application'
+    $project = Join-Path $projectRoot 'DorotiWebProduct.csproj'
     $nugetConfig = Join-Path $projectRoot 'NuGet.Config'
     $escapedFeed = [Security.SecurityElement]::Escape($feed)
     [IO.File]::WriteAllText($nugetConfig, "<?xml version=`"1.0`" encoding=`"utf-8`"?><configuration><packageSources><clear/><add key=`"doroti-validation`" value=`"$escapedFeed`"/><add key=`"nuget.org`" value=`"https://api.nuget.org/v3/index.json`"/></packageSources></configuration>", [Text.UTF8Encoding]::new($false))
     Invoke-Checked { dotnet restore $project --packages $packages --force --no-cache -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm --configfile $nugetConfig } 'restore external package-only product'
-    $generatedFiles = @(Get-ChildItem -LiteralPath $projectRoot -File -Recurse)
-    Assert-Equal @($generatedFiles | Where-Object { $_.Extension -eq '.dart' -or $_.Name -in @('pubspec.yaml','.metadata','doroti.yaml') }).Count 0 'generated Flutter/Dart files'
-    Assert-Equal @($generatedFiles | Where-Object { $_.DirectoryName -match '[\\/](android|ios|linux|macos)$' }).Count 0 'generated unsupported platform directories'
-    Assert-Equal @($generatedFiles | Where-Object Extension -eq '.csproj').Count 1 'single generated project'
+    $createdFiles = @(Get-ChildItem -LiteralPath $projectRoot -File -Recurse)
+    Assert-Equal @($createdFiles | Where-Object { $_.Extension -eq '.dart' -or $_.Name -in @('pubspec.yaml','.metadata','doroti.yaml') }).Count 0 'template Flutter/Dart files'
+    Assert-Equal @($createdFiles | Where-Object { $_.DirectoryName -match '[\\/](android|ios|linux|macos)$' }).Count 0 'template unsupported platform directories'
+    Assert-Equal @($createdFiles | Where-Object Extension -eq '.csproj').Count 1 'single template-created project'
     Assert-True (Test-Path -LiteralPath (Join-Path $projectRoot 'src/App.cs')) 'shared C# application source'
     Assert-True (Test-Path -LiteralPath (Join-Path $projectRoot 'Platforms/Web/PlatformBootstrap.cs')) 'internal Blazor host'
     $assets = Get-Content -LiteralPath (Join-Path $projectRoot 'obj/web/project.assets.json') -Raw
     Assert-True ($assets -notmatch 'projectReferences"\s*:\s*\{\s*"[A-Za-z]:\\Users\\parti\\Labo\\DorotiLab') 'repository-private package fallback'
     Write-Json $statePath ([ordered]@{ feed=$feed; external=$external; projectRoot=$projectRoot; project=$project; packages=$packages; templatePackage=$templatePackage })
     Write-Json (Join-Path $tmpRoot 'template.json') ([ordered]@{
-        status='pass'; command='dotnet new doroti-app --name G7WebProduct'; source='package-only'
+        status='pass'; command='dotnet new doroti-app --name DorotiWebProduct'; source='package-only'
         externalRoot='repository-outside-source-tree'; packageCount=@(Get-ChildItem -LiteralPath $feed -File -Filter '*.nupkg' | Where-Object Name -notlike '*.snupkg').Count
-        generatedFlutterDartFiles=0; generatedPlatformDirectories=0; userAuthoredRazorFiles=0
+        flutterDartFiles=0; unsupportedPlatformDirectories=0; userAuthoredRazorFiles=0
         flutterOrDartCommands=0; sharedApplication='src/App.cs'; browserHost='Platforms/Web/PlatformBootstrap.cs'
     })
 }
@@ -305,7 +313,7 @@ if ($Shard -eq 'Compile') {
     Write-Json (Join-Path $tmpRoot 'compile.json') ([ordered]@{
         status='pass'; browser=[ordered]@{ target='browser-wasm'; configuration='Release'; diagnostics=0; applicationAssembly=$browserAssembly.Name; applicationSha256=Get-Sha $browserAssembly.FullName }
         sharedSource=[ordered]@{ path='DorotiDemoApp/src/App.cs'; bootstrap='DorotiDemoApp/Program.cs'; desktopCompile='win-x64-pass'; browserCompile='browser-wasm-pass'; compileItemIdentity='same-files' }
-        externalAcceptance=[ordered]@{ project='template-created-G7WebProduct'; build='pass'; source='promoted-packages-only' }
+        externalAcceptance=[ordered]@{ project='template-created-DorotiWebProduct'; build='pass'; source='promoted-packages-only' }
         invalidTarget=[ordered]@{ status='fail-closed-as-expected'; diagnostic='DOROTIAPP004' }
         nativeSkiaLink='pass'; flutterOrDartCommands=0
     })
@@ -351,7 +359,7 @@ if ($Shard -eq 'Publish') {
     Assert-True ($externalAssets -notmatch [regex]::Escape($dorotiRoot)) 'external browser assets repository source fallback'
     $externalStatic = Join-Path $externalPublish 'wwwroot'
     Assert-True (Test-Path -LiteralPath (Join-Path $externalStatic '_content/Doroti.Host.Web/doroti.web.js') -PathType Leaf) 'external package-only host static asset'
-    Assert-True (@(Get-ChildItem (Join-Path $externalStatic '_framework') -File -Filter 'G7WebProduct.*.wasm' | Where-Object Name -notmatch '\.(br|gz)$').Count -eq 1) 'external package-only C# app assembly'
+    Assert-True (@(Get-ChildItem (Join-Path $externalStatic '_framework') -File -Filter 'DorotiWebProduct.*.wasm' | Where-Object Name -notmatch '\.(br|gz)$').Count -eq 1) 'external package-only C# app assembly'
     [IO.Directory]::CreateDirectory($releaseRoot) | Out-Null
     $artifactRoot = Join-Path $releaseRoot 'wwwroot'
     Reset-SafeDirectory $artifactRoot $releaseRoot
@@ -360,7 +368,7 @@ if ($Shard -eq 'Publish') {
     Assert-Equal (Get-IdentityHash $artifactIdentity) $hashA 'copied release artifact identity'
     $appSource = Join-Path $repoRoot 'DorotiDemoApp/src/App.cs'
     $manifest = [ordered]@{
-        schemaVersion='doroti.static-artifact-manifest/v2'; milestone='G7-3'; target='browser-wasm'; version='0.2.0-beta'
+        schemaVersion='doroti.static-artifact-manifest/v3'; scope='web-product'; target='browser-wasm'; version='0.2.0-beta'
         deploymentRoot='wwwroot'; aggregateSha256=$hashA; repeatAggregateSha256=$hashB; fileCount=$artifactIdentity.Count
         application=[ordered]@{ source='DorotiDemoApp/src/App.cs'; bootstrap='DorotiDemoApp/Program.cs'; sourceSha256=Get-Sha $appSource; assembly=$app[0].Name; assemblySha256=Get-Sha $app[0].FullName; project='DorotiDemoApp.csproj' }
         runtime=[ordered]@{ nativeWasm=$native[0].Name; nativeSha256=Get-Sha $native[0].FullName; skiaWasm=@($skia | ForEach-Object { [ordered]@{ name=$_.Name; sha256=Get-Sha $_.FullName } }) }
@@ -381,9 +389,9 @@ if ($Shard -eq 'Publish') {
         skiaWasmCount=$skia.Count; appAssembly=$app[0].Name; resources=@('assets/doroti-mark.txt','locales/en-US.json'); plugin='plugins/echo.js'
         repositoryPrivateFallbacks=0; desktopNativeDependencies=0; avaloniaDependencies=0; canvasKitArtifacts=0
         missingStaticArtifacts=0; staticArtifactHashMismatches=0; flutterOrDartCommands=0
-        artifactRoot='artifacts/g7-web/0.2.0-beta/wwwroot'
+        artifactRoot='artifacts/web/0.2.0-beta/wwwroot'
     })
 }
 
 Write-Composite
-Write-Output "G7-3 Web product shard '$Shard': PASS"
+Write-Output "Doroti Web product shard '$Shard': PASS"

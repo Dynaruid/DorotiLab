@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class ImgElementPlatformViewIo : StatelessWidget
 {
@@ -20,7 +20,7 @@ public class ImgElementPlatformViewIo : StatelessWidget
     internal static bool _registered = false;
     public virtual string? src { get; private set; }
 
-    public ImgElementPlatformViewIo(string? src, global::Doroti.Generated.Framework.Foundation.Key? key = null) : base(key: key)
+    public ImgElementPlatformViewIo(string? src, global::Doroti.Framework.Foundation.Key? key = null) : base(key: key)
     {
         this.src = src;
     }
@@ -29,7 +29,7 @@ public class ImgElementPlatformViewIo : StatelessWidget
     {
         DartRuntimePrimitives.Assert(() => !_registered);
         _registered = true;
-        Dart_ui_webLibrary.platformViewRegistry.registerViewFactory(global::Doroti.Generated.Framework.Widgets._platform_selectable_region_context_menu_webLibrary._viewType, ((viewId, arg1) => {
+        Dart_ui_webLibrary.platformViewRegistry.registerViewFactory(global::Doroti.Framework.Widgets._platform_selectable_region_context_menu_webLibrary._viewType, ((viewId, arg1) => {
 var paramsMap__1130 = DartRuntimePrimitives.ConvertMap<object?, object?>((System.Collections.IDictionary)@params!);
 var img__1319 = ((HTMLImageElement?)(object?)WebLibrary.document.createElement("img"))!;
 img__1319.src = ((string?)(object?)paramsMap__1130.GetValueOrDefault("src")!)!;
@@ -50,7 +50,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         {
             return ((Widget)(object?)SizedBox.CreateExpand());
         }
-        return ((Widget)(object?)new HtmlElementView(viewType: global::Doroti.Generated.Framework.Widgets._platform_selectable_region_context_menu_webLibrary._viewType, creationParams: new DartMap<string, string?> { ["src"] = this.src }, hitTestBehavior: global::Doroti.Generated.Framework.Rendering.PlatformViewHitTestBehavior.transparent));
+        return ((Widget)(object?)new HtmlElementView(viewType: global::Doroti.Framework.Widgets._platform_selectable_region_context_menu_webLibrary._viewType, creationParams: new DartMap<string, string?> { ["src"] = this.src }, hitTestBehavior: global::Doroti.Framework.Rendering.PlatformViewHitTestBehavior.transparent));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -58,17 +58,17 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
 public class RawWebImageIo : SingleChildRenderObjectWidget
 {
-    public virtual global::Doroti.Generated.Framework.Painting.WebImageInfoIo image { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.WebImageInfoIo image { get; private set; } = default!;
     public virtual string? debugImageLabel { get; private set; }
     public virtual double? width { get; private set; }
     public virtual double? height { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.BoxFit? fit { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.BoxFit? fit { get; private set; }
+    public virtual global::Doroti.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
     public virtual bool matchTextDirection { get; private set; } = default!;
 
-    public RawWebImageIo(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Painting.WebImageInfoIo image = default!, string? debugImageLabel = null, double? width = null, double? height = null, global::Doroti.Generated.Framework.Painting.BoxFit? fit = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, bool matchTextDirection = false) : base(key: key, child: new ImgElementPlatformViewIo(((HTMLImageElement)((dynamic)image).htmlImage).src))
+    public RawWebImageIo(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.WebImageInfoIo image = default!, string? debugImageLabel = null, double? width = null, double? height = null, global::Doroti.Framework.Painting.BoxFit? fit = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, bool matchTextDirection = false) : base(key: key, child: new ImgElementPlatformViewIo(((HTMLImageElement)((dynamic)image).htmlImage).src))
     {
-        global::Doroti.Generated.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Generated.Framework.Painting.Alignment.center;
+        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.Alignment.center;
         this.image = image;
         this.debugImageLabel = debugImageLabel;
         this.width = width;
@@ -78,13 +78,13 @@ public class RawWebImageIo : SingleChildRenderObjectWidget
         this.matchTextDirection = matchTextDirection;
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Rendering.RenderObject)(object?)new RenderWebImageIo(image: ((HTMLImageElement)((dynamic)this.image).htmlImage), width: this.width, height: this.height, fit: this.fit, alignment: this.alignment, matchTextDirection: this.matchTextDirection, textDirection: ((this.matchTextDirection || (this.alignment is not global::Doroti.Generated.Framework.Painting.Alignment)) ? Directionality.of(context) : null)));
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new RenderWebImageIo(image: ((HTMLImageElement)((dynamic)this.image).htmlImage), width: this.width, height: this.height, fit: this.fit, alignment: this.alignment, matchTextDirection: this.matchTextDirection, textDirection: ((this.matchTextDirection || (this.alignment is not global::Doroti.Framework.Painting.Alignment)) ? Directionality.of(context) : null)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(BuildContext context, global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (RenderWebImageIo)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<RenderWebImageIo>)(() =>
@@ -95,15 +95,15 @@ public class RawWebImageIo : SingleChildRenderObjectWidget
             __cascade.fit = this.fit;
             __cascade.alignment = this.alignment;
             __cascade.matchTextDirection = this.matchTextDirection;
-            __cascade.textDirection = ((this.matchTextDirection || (this.alignment is not global::Doroti.Generated.Framework.Painting.Alignment)) ? Directionality.of(context) : null);
+            __cascade.textDirection = ((this.matchTextDirection || (this.alignment is not global::Doroti.Framework.Painting.Alignment)) ? Directionality.of(context) : null);
             return __cascade;        }))());
     }
 
 }
 
-public class RenderWebImageIo : global::Doroti.Generated.Framework.Rendering.RenderShiftedBox
+public class RenderWebImageIo : global::Doroti.Framework.Rendering.RenderShiftedBox
 {
-    internal virtual global::Doroti.Generated.Framework.Painting.Alignment? _resolvedAlignment { get; set; } = default;
+    internal virtual global::Doroti.Framework.Painting.Alignment? _resolvedAlignment { get; set; } = default;
     internal virtual bool? _flipHorizontally { get; set; } = default;
     internal virtual bool _needsClip { get; set; } = false;
     internal virtual bool _matchTextDirection { get; set; } = default!;
@@ -111,12 +111,12 @@ public class RenderWebImageIo : global::Doroti.Generated.Framework.Rendering.Ren
     internal virtual HTMLImageElement _image { get; set; } = default!;
     internal virtual double? _width { get; set; } = default;
     internal virtual double? _height { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Painting.BoxFit? _fit { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry _alignment { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Painting.BoxFit? _fit { get; set; } = default;
+    internal virtual global::Doroti.Framework.Painting.AlignmentGeometry _alignment { get; set; } = default!;
 
-    public RenderWebImageIo(global::Doroti.Generated.Framework.Rendering.RenderBox? child = null, HTMLImageElement image = default!, double? width = null, double? height = null, global::Doroti.Generated.Framework.Painting.BoxFit? fit = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, bool matchTextDirection = false, TextDirection? textDirection = null) : base(child)
+    public RenderWebImageIo(global::Doroti.Framework.Rendering.RenderBox? child = null, HTMLImageElement image = default!, double? width = null, double? height = null, global::Doroti.Framework.Painting.BoxFit? fit = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, bool matchTextDirection = false, TextDirection? textDirection = null) : base(child)
     {
-        global::Doroti.Generated.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Generated.Framework.Painting.Alignment.center;
+        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.Alignment.center;
         this._image = image;
         this._width = width;
         this._height = height;
@@ -222,7 +222,7 @@ public class RenderWebImageIo : global::Doroti.Generated.Framework.Rendering.Ren
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Generated.Framework.Painting.BoxFit? fit
+    public virtual global::Doroti.Framework.Painting.BoxFit? fit
     {
         get => this._fit;
         set
@@ -236,7 +236,7 @@ public class RenderWebImageIo : global::Doroti.Generated.Framework.Rendering.Ren
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment
+    public virtual global::Doroti.Framework.Painting.AlignmentGeometry alignment
     {
         get => this._alignment;
         set
@@ -250,9 +250,9 @@ public class RenderWebImageIo : global::Doroti.Generated.Framework.Rendering.Ren
             _markNeedResolution();
         }
     }
-    internal virtual global::Doroti.Ui.Size _sizeForConstraints(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints)
+    internal virtual global::Doroti.Ui.Size _sizeForConstraints(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        constraints = global::Doroti.Generated.Framework.Rendering.BoxConstraints.CreateTightFor(width: this._width, height: this._height).enforce(constraints);
+        constraints = global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(width: this._width, height: this._height).enforce(constraints);
         return ((global::Doroti.Ui.Size)(object?)constraints.constrainSizeAndAttemptToPreserveAspectRatio(new global::Doroti.Ui.Size(this._image.naturalWidth.toDouble(), this._image.naturalHeight.toDouble())));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -264,14 +264,14 @@ public class RenderWebImageIo : global::Doroti.Generated.Framework.Rendering.Ren
         {
             return 0.0;
         }
-        return DartRuntimePrimitives.RequireValue(_sizeForConstraints(global::Doroti.Generated.Framework.Rendering.BoxConstraints.CreateTightForFinite(height: DartRuntimePrimitives.RequireValue(height))).width);
+        return DartRuntimePrimitives.RequireValue(_sizeForConstraints(global::Doroti.Framework.Rendering.BoxConstraints.CreateTightForFinite(height: DartRuntimePrimitives.RequireValue(height))).width);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
         DartRuntimePrimitives.Assert(() => (height >= 0.0));
-        return DartRuntimePrimitives.RequireValue(_sizeForConstraints(global::Doroti.Generated.Framework.Rendering.BoxConstraints.CreateTightForFinite(height: DartRuntimePrimitives.RequireValue(height))).width);
+        return DartRuntimePrimitives.RequireValue(_sizeForConstraints(global::Doroti.Framework.Rendering.BoxConstraints.CreateTightForFinite(height: DartRuntimePrimitives.RequireValue(height))).width);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -282,19 +282,19 @@ public class RenderWebImageIo : global::Doroti.Generated.Framework.Rendering.Ren
         {
             return 0.0;
         }
-        return DartRuntimePrimitives.RequireValue(_sizeForConstraints(global::Doroti.Generated.Framework.Rendering.BoxConstraints.CreateTightForFinite(width: DartRuntimePrimitives.RequireValue(width))).height);
+        return DartRuntimePrimitives.RequireValue(_sizeForConstraints(global::Doroti.Framework.Rendering.BoxConstraints.CreateTightForFinite(width: DartRuntimePrimitives.RequireValue(width))).height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         DartRuntimePrimitives.Assert(() => (width >= 0.0));
-        return DartRuntimePrimitives.RequireValue(_sizeForConstraints(global::Doroti.Generated.Framework.Rendering.BoxConstraints.CreateTightForFinite(width: DartRuntimePrimitives.RequireValue(width))).height);
+        return DartRuntimePrimitives.RequireValue(_sizeForConstraints(global::Doroti.Framework.Rendering.BoxConstraints.CreateTightForFinite(width: DartRuntimePrimitives.RequireValue(width))).height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool hitTestSelf(Offset position) => true;
-    public override Size computeDryLayout(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints)
+    public override Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
         return _sizeForConstraints(constraints);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -311,37 +311,37 @@ public class RenderWebImageIo : global::Doroti.Generated.Framework.Rendering.Ren
             return;
         }
         var inputSize__11026 = new global::Doroti.Ui.Size(this.image.naturalWidth.toDouble(), this.image.naturalHeight.toDouble());
-        global::Doroti.Generated.Framework.Painting.BoxFit resolvedFit__11124 = (this.fit ?? global::Doroti.Generated.Framework.Painting.BoxFit.scaleDown);
-        global::Doroti.Generated.Framework.Painting.FittedSizes fittedSizes__11185 = global::Doroti.Generated.Framework.Painting.Box_fitLibrary.applyBoxFit(resolvedFit__11124, inputSize__11026, this.size);
-        if ((object.Equals(((global::Doroti.Generated.Framework.Painting.FittedSizes)fittedSizes__11185).source, inputSize__11026)))
+        global::Doroti.Framework.Painting.BoxFit resolvedFit__11124 = (this.fit ?? global::Doroti.Framework.Painting.BoxFit.scaleDown);
+        global::Doroti.Framework.Painting.FittedSizes fittedSizes__11185 = global::Doroti.Framework.Painting.Box_fitLibrary.applyBoxFit(resolvedFit__11124, inputSize__11026, this.size);
+        if ((object.Equals(((global::Doroti.Framework.Painting.FittedSizes)fittedSizes__11185).source, inputSize__11026)))
         {
-            global::Doroti.Ui.Size childSize__11527 = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Generated.Framework.Painting.FittedSizes)fittedSizes__11185).destination);
-            this.child!.layout(global::Doroti.Generated.Framework.Rendering.BoxConstraints.CreateTight(childSize__11527));
+            global::Doroti.Ui.Size childSize__11527 = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Framework.Painting.FittedSizes)fittedSizes__11185).destination);
+            this.child!.layout(global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(childSize__11527));
             double halfWidthDelta__11919 = (((this.size.width - childSize__11527.width)) / 2.0);
             double halfHeightDelta__11993 = (((this.size.height - childSize__11527.height)) / 2.0);
             double dx__12070 = (halfWidthDelta__11919 + (((DartRuntimePrimitives.RequireValue(this._flipHorizontally) ? -this._resolvedAlignment!.x : this._resolvedAlignment!.x)) * halfWidthDelta__11919));
             double dy__12219 = (halfHeightDelta__11993 + (this._resolvedAlignment!.y * halfHeightDelta__11993));
-            var childParentData__12295 = ((global::Doroti.Generated.Framework.Rendering.BoxParentData?)(object?)this.child!.parentData!)!;
+            var childParentData__12295 = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)this.child!.parentData!)!;
             childParentData__12295.offset = new global::Doroti.Ui.Offset(dx__12070, dy__12219);
             _needsClip = false;
         }
         else
         {
-            global::Doroti.Ui.Size sourceSize__12917 = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Generated.Framework.Painting.FittedSizes)fittedSizes__11185).source);
-            global::Doroti.Ui.Size destinationSize__12967 = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Generated.Framework.Painting.FittedSizes)fittedSizes__11185).destination);
-            DartRuntimePrimitives.Assert(() => (((sourceSize__12917.aspectRatio - destinationSize__12967.aspectRatio)).abs() < global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance));
+            global::Doroti.Ui.Size sourceSize__12917 = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Framework.Painting.FittedSizes)fittedSizes__11185).source);
+            global::Doroti.Ui.Size destinationSize__12967 = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Framework.Painting.FittedSizes)fittedSizes__11185).destination);
+            DartRuntimePrimitives.Assert(() => (((sourceSize__12917.aspectRatio - destinationSize__12967.aspectRatio)).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance));
             double scale__13997 = (destinationSize__12967.width / sourceSize__12917.width);
             global::Doroti.Ui.Size childSize__14064 = ((global::Doroti.Ui.Size)(object?)(inputSize__11026 * scale__13997));
-            this.child!.layout(global::Doroti.Generated.Framework.Rendering.BoxConstraints.CreateTight(childSize__14064));
+            this.child!.layout(global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(childSize__14064));
             global::Doroti.Ui.Rect sourceRect__14845 = ((global::Doroti.Ui.Rect)(object?)this._resolvedAlignment!.inscribe(sourceSize__12917, (Offset.zero & inputSize__11026)));
             global::Doroti.Ui.Offset childOffset__14944 = ((global::Doroti.Ui.Offset)(object?)(new global::Doroti.Ui.Offset(-sourceRect__14845.left, -sourceRect__14845.top) * scale__13997));
-            var childParentData__15021 = ((global::Doroti.Generated.Framework.Rendering.BoxParentData?)(object?)this.child!.parentData!)!;
+            var childParentData__15021 = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)this.child!.parentData!)!;
             childParentData__15021.offset = childOffset__14944;
             _needsClip = true;
         }
     }
 
-    public override void paint(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset offset)
+    public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
         if ((this.child is null))
         {
@@ -350,7 +350,7 @@ public class RenderWebImageIo : global::Doroti.Generated.Framework.Rendering.Ren
         if (this._needsClip)
         {
             global::Doroti.Ui.Rect destinationRect__15307 = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & this.size));
-            context.pushClipRect(this.needsCompositing, offset, destinationRect__15307, (global::System.Action<global::Doroti.Generated.Framework.Rendering.PaintingContext, Offset>)base.paint);
+            context.pushClipRect(this.needsCompositing, offset, destinationRect__15307, (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)base.paint);
         }
         else
         {
@@ -358,14 +358,14 @@ public class RenderWebImageIo : global::Doroti.Generated.Framework.Rendering.Ren
         }
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<HTMLImageElement>("image", this.image));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("width", this.width, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("height", this.height, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.EnumProperty<global::Doroti.Generated.Framework.Painting.BoxFit>("fit", this.fit, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HTMLImageElement>("image", this.image));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("width", this.width, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", this.height, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.BoxFit>("fit", this.fit, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, defaultValue: null));
     }
 
 }

@@ -12,11 +12,11 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Cupertino;
+namespace Doroti.Framework.Cupertino;
 
 public static partial class Text_selection_toolbar_buttonLibrary
 {
-    internal static global::Doroti.Generated.Framework.Painting.TextStyle _kToolbarButtonFontStyle = new global::Doroti.Generated.Framework.Painting.TextStyle(inherit: false, fontSize: 15.0, letterSpacing: -0.15, fontWeight: FontWeight.w400);
+    internal static global::Doroti.Framework.Painting.TextStyle _kToolbarButtonFontStyle = new global::Doroti.Framework.Painting.TextStyle(inherit: false, fontSize: 15.0, letterSpacing: -0.15, fontWeight: FontWeight.w400);
 }
 
 public static partial class Text_selection_toolbar_buttonLibrary
@@ -31,17 +31,17 @@ public static partial class Text_selection_toolbar_buttonLibrary
 
 public static partial class Text_selection_toolbar_buttonLibrary
 {
-    internal static global::Doroti.Generated.Framework.Painting.EdgeInsets _kToolbarButtonPadding = global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 18.0, horizontal: 16.0);
+    internal static global::Doroti.Framework.Painting.EdgeInsets _kToolbarButtonPadding = global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 18.0, horizontal: 16.0);
 }
 
-public class CupertinoTextSelectionToolbarButton : global::Doroti.Generated.Framework.Widgets.StatefulWidget
+public class CupertinoTextSelectionToolbarButton : global::Doroti.Framework.Widgets.StatefulWidget
 {
-    public virtual global::Doroti.Generated.Framework.Widgets.Widget? child { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.Widget? child { get; private set; }
     public virtual global::System.Action? onPressed { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem? buttonItem { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.ContextMenuButtonItem? buttonItem { get; private set; }
     public virtual string? text { get; private set; }
 
-    public CupertinoTextSelectionToolbarButton(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::System.Action? onPressed = null, global::Doroti.Generated.Framework.Widgets.Widget child = default!) : base(key: key)
+    public CupertinoTextSelectionToolbarButton(global::Doroti.Framework.Foundation.Key? key = null, global::System.Action? onPressed = null, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key)
     {
         this.onPressed = onPressed;
         this.child = child;
@@ -49,7 +49,7 @@ public class CupertinoTextSelectionToolbarButton : global::Doroti.Generated.Fram
         this.buttonItem = null;
     }
 
-    public static CupertinoTextSelectionToolbarButton CreateText(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::System.Action? onPressed = null, string? text = default!)
+    public static CupertinoTextSelectionToolbarButton CreateText(global::Doroti.Framework.Foundation.Key? key = null, global::System.Action? onPressed = null, string? text = default!)
     {
         var __instance = new CupertinoTextSelectionToolbarButton(key: key, onPressed: onPressed, child: default!);
         __instance.onPressed = onPressed;
@@ -59,7 +59,7 @@ public class CupertinoTextSelectionToolbarButton : global::Doroti.Generated.Fram
         return __instance;
     }
 
-    public static CupertinoTextSelectionToolbarButton CreateButtonItem(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem buttonItem = default!)
+    public static CupertinoTextSelectionToolbarButton CreateButtonItem(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.ContextMenuButtonItem buttonItem = default!)
     {
         var __instance = new CupertinoTextSelectionToolbarButton(key: key, child: default!);
         __instance.buttonItem = buttonItem;
@@ -69,7 +69,7 @@ public class CupertinoTextSelectionToolbarButton : global::Doroti.Generated.Fram
         return __instance;
     }
 
-    public static string getButtonLabel(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem buttonItem)
+    public static string getButtonLabel(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.ContextMenuButtonItem buttonItem)
     {
         if ((buttonItem.label is not null))
         {
@@ -77,23 +77,23 @@ public class CupertinoTextSelectionToolbarButton : global::Doroti.Generated.Fram
         }
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasCupertinoLocalizations(context));
         CupertinoLocalizations localizations__3148 = CupertinoLocalizations.of(context);
-        return (buttonItem.type switch { global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.cut => localizations__3148.cutButtonLabel, global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.copy => localizations__3148.copyButtonLabel, global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.paste => localizations__3148.pasteButtonLabel, global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.selectAll => localizations__3148.selectAllButtonLabel, global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.lookUp => localizations__3148.lookUpButtonLabel, global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.searchWeb => localizations__3148.searchWebButtonLabel, global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.share => localizations__3148.shareButtonLabel, global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.liveTextInput or global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.delete => "", global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.custom => "", _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (buttonItem.type switch { global::Doroti.Framework.Widgets.ContextMenuButtonType.cut => localizations__3148.cutButtonLabel, global::Doroti.Framework.Widgets.ContextMenuButtonType.copy => localizations__3148.copyButtonLabel, global::Doroti.Framework.Widgets.ContextMenuButtonType.paste => localizations__3148.pasteButtonLabel, global::Doroti.Framework.Widgets.ContextMenuButtonType.selectAll => localizations__3148.selectAllButtonLabel, global::Doroti.Framework.Widgets.ContextMenuButtonType.lookUp => localizations__3148.lookUpButtonLabel, global::Doroti.Framework.Widgets.ContextMenuButtonType.searchWeb => localizations__3148.searchWebButtonLabel, global::Doroti.Framework.Widgets.ContextMenuButtonType.share => localizations__3148.shareButtonLabel, global::Doroti.Framework.Widgets.ContextMenuButtonType.liveTextInput or global::Doroti.Framework.Widgets.ContextMenuButtonType.delete => "", global::Doroti.Framework.Widgets.ContextMenuButtonType.custom => "", _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoTextSelectionToolbarButtonState__text_selection_toolbar_button());
 }
 
-internal class _CupertinoTextSelectionToolbarButtonState__text_selection_toolbar_button : global::Doroti.Generated.Framework.Widgets.State<CupertinoTextSelectionToolbarButton>
+internal class _CupertinoTextSelectionToolbarButtonState__text_selection_toolbar_button : global::Doroti.Framework.Widgets.State<CupertinoTextSelectionToolbarButton>
 {
     public virtual bool isPressed { get; set; } = false;
 
-    internal virtual void _onTapDown(global::Doroti.Generated.Framework.Gestures.TapDownDetails details)
+    internal virtual void _onTapDown(global::Doroti.Framework.Gestures.TapDownDetails details)
     {
         setState(((global::System.Action)(() => { _ = isPressed = true; })));
     }
 
-    internal virtual void _onTapUp(global::Doroti.Generated.Framework.Gestures.TapUpDetails details)
+    internal virtual void _onTapUp(global::Doroti.Framework.Gestures.TapUpDetails details)
     {
         setState(((global::System.Action)(() => { _ = isPressed = false; })));
         ((CupertinoTextSelectionToolbarButton)this.widget).onPressed?.Invoke();
@@ -104,13 +104,13 @@ internal class _CupertinoTextSelectionToolbarButtonState__text_selection_toolbar
         setState(((global::System.Action)(() => { _ = isPressed = false; })));
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Generated.Framework.Widgets.Widget content__4436 = ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)_getContentWidget(context));
-        global::Doroti.Generated.Framework.Widgets.Widget child__4491 = ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new CupertinoButton(color: (this.isPressed ? Text_selection_toolbar_buttonLibrary._kToolbarPressedColor.resolveFrom(context) : CupertinoColors.transparent), disabledColor: CupertinoColors.transparent, onPressed: ((CupertinoTextSelectionToolbarButton)this.widget).onPressed, padding: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonPadding, pressedOpacity: 1.0, child: content__4436));
+        global::Doroti.Framework.Widgets.Widget content__4436 = ((global::Doroti.Framework.Widgets.Widget)(object?)_getContentWidget(context));
+        global::Doroti.Framework.Widgets.Widget child__4491 = ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoButton(color: (this.isPressed ? Text_selection_toolbar_buttonLibrary._kToolbarPressedColor.resolveFrom(context) : CupertinoColors.transparent), disabledColor: CupertinoColors.transparent, onPressed: ((CupertinoTextSelectionToolbarButton)this.widget).onPressed, padding: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonPadding, pressedOpacity: 1.0, child: content__4436));
         if ((((CupertinoTextSelectionToolbarButton)this.widget).onPressed is not null))
         {
-            return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.GestureDetector(onTapDown: (global::System.Action<global::Doroti.Generated.Framework.Gestures.TapDownDetails>)this._onTapDown, onTapUp: (global::System.Action<global::Doroti.Generated.Framework.Gestures.TapUpDetails>)this._onTapUp, onTapCancel: () => this._onTapCancel(), child: child__4491));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.GestureDetector(onTapDown: (global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)this._onTapDown, onTapUp: (global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>)this._onTapUp, onTapCancel: () => this._onTapCancel(), child: child__4491));
         }
         else
         {
@@ -119,31 +119,31 @@ internal class _CupertinoTextSelectionToolbarButtonState__text_selection_toolbar
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _getContentWidget(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    internal virtual global::Doroti.Framework.Widgets.Widget _getContentWidget(global::Doroti.Framework.Widgets.BuildContext context)
     {
         if ((((CupertinoTextSelectionToolbarButton)this.widget).child is not null))
         {
             return ((CupertinoTextSelectionToolbarButton)this.widget).child!;
         }
-        global::Doroti.Generated.Framework.Widgets.Widget textWidget__5667 = ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Text(((((CupertinoTextSelectionToolbarButton)this.widget).text ?? (string)CupertinoTextSelectionToolbarButton.getButtonLabel(context, ((CupertinoTextSelectionToolbarButton)this.widget).buttonItem!))), overflow: global::Doroti.Generated.Framework.Painting.TextOverflow.ellipsis, style: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonFontStyle.copyWith(color: ((((CupertinoTextSelectionToolbarButton)this.widget).onPressed is not null) ? Text_selection_toolbarLibrary._kToolbarTextColor.resolveFrom(context) : CupertinoColors.inactiveGray))));
+        global::Doroti.Framework.Widgets.Widget textWidget__5667 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Text(((((CupertinoTextSelectionToolbarButton)this.widget).text ?? (string)CupertinoTextSelectionToolbarButton.getButtonLabel(context, ((CupertinoTextSelectionToolbarButton)this.widget).buttonItem!))), overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis, style: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonFontStyle.copyWith(color: ((((CupertinoTextSelectionToolbarButton)this.widget).onPressed is not null) ? Text_selection_toolbarLibrary._kToolbarTextColor.resolveFrom(context) : CupertinoColors.inactiveGray))));
         switch (((CupertinoTextSelectionToolbarButton)this.widget).buttonItem?.type)
         {
-            case global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.cut:
-            case global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.copy:
-            case global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.paste:
-            case global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.selectAll:
-            case global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.delete:
-            case global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.lookUp:
-            case global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.searchWeb:
-            case global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.share:
-            case global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.custom:
+            case global::Doroti.Framework.Widgets.ContextMenuButtonType.cut:
+            case global::Doroti.Framework.Widgets.ContextMenuButtonType.copy:
+            case global::Doroti.Framework.Widgets.ContextMenuButtonType.paste:
+            case global::Doroti.Framework.Widgets.ContextMenuButtonType.selectAll:
+            case global::Doroti.Framework.Widgets.ContextMenuButtonType.delete:
+            case global::Doroti.Framework.Widgets.ContextMenuButtonType.lookUp:
+            case global::Doroti.Framework.Widgets.ContextMenuButtonType.searchWeb:
+            case global::Doroti.Framework.Widgets.ContextMenuButtonType.share:
+            case global::Doroti.Framework.Widgets.ContextMenuButtonType.custom:
             case null:
                 {
                     return textWidget__5667;
                 }
-            case global::Doroti.Generated.Framework.Widgets.ContextMenuButtonType.liveTextInput:
+            case global::Doroti.Framework.Widgets.ContextMenuButtonType.liveTextInput:
                 {
-                    return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)global::Doroti.Generated.Framework.Widgets.SizedBox.CreateSquare(dimension: 13.0, child: new global::Doroti.Generated.Framework.Widgets.CustomPaint(painter: new _LiveTextIconPainter__text_selection_toolbar_button(color: Text_selection_toolbarLibrary._kToolbarTextColor.resolveFrom(context)))));
+                    return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateSquare(dimension: 13.0, child: new global::Doroti.Framework.Widgets.CustomPaint(painter: new _LiveTextIconPainter__text_selection_toolbar_button(color: Text_selection_toolbarLibrary._kToolbarTextColor.resolveFrom(context)))));
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -153,7 +153,7 @@ internal class _CupertinoTextSelectionToolbarButtonState__text_selection_toolbar
 
 }
 
-internal class _LiveTextIconPainter__text_selection_toolbar_button : global::Doroti.Generated.Framework.Rendering.CustomPainter
+internal class _LiveTextIconPainter__text_selection_toolbar_button : global::Doroti.Framework.Rendering.CustomPainter
 {
     public virtual Color color { get; private set; } = default!;
     internal virtual Paint _painter { get; private set; } = ((Func<Paint>)(() =>
@@ -197,7 +197,7 @@ internal class _LiveTextIconPainter__text_selection_toolbar_button : global::Dor
         canvas.restore();
     }
 
-    public override bool shouldRepaint(global::Doroti.Generated.Framework.Rendering.CustomPainter oldDelegate)
+    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
     {
         var __oldDelegate = (_LiveTextIconPainter__text_selection_toolbar_button)(object)oldDelegate;
         return (!object.Equals(((_LiveTextIconPainter__text_selection_toolbar_button)__oldDelegate).color, this.color));

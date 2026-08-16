@@ -12,26 +12,26 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
-public class BottomNavigationBarThemeData : global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class BottomNavigationBarThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 {
     public virtual Color? backgroundColor { get; private set; }
     public virtual double? elevation { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.IconThemeData? selectedIconTheme { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.IconThemeData? unselectedIconTheme { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.IconThemeData? selectedIconTheme { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.IconThemeData? unselectedIconTheme { get; private set; }
     public virtual Color? selectedItemColor { get; private set; }
     public virtual Color? unselectedItemColor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? selectedLabelStyle { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? unselectedLabelStyle { get; private set; }
+    public virtual global::Doroti.Framework.Painting.TextStyle? selectedLabelStyle { get; private set; }
+    public virtual global::Doroti.Framework.Painting.TextStyle? unselectedLabelStyle { get; private set; }
     public virtual bool? showSelectedLabels { get; private set; }
     public virtual bool? showUnselectedLabels { get; private set; }
     public virtual BottomNavigationBarType? type { get; private set; }
     public virtual bool? enableFeedback { get; private set; }
     public virtual BottomNavigationBarLandscapeLayout? landscapeLayout { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>? mouseCursor { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor { get; private set; }
 
-    public BottomNavigationBarThemeData(Color? backgroundColor = null, double? elevation = null, global::Doroti.Generated.Framework.Widgets.IconThemeData? selectedIconTheme = null, global::Doroti.Generated.Framework.Widgets.IconThemeData? unselectedIconTheme = null, Color? selectedItemColor = null, Color? unselectedItemColor = null, global::Doroti.Generated.Framework.Painting.TextStyle? selectedLabelStyle = null, global::Doroti.Generated.Framework.Painting.TextStyle? unselectedLabelStyle = null, bool? showSelectedLabels = null, bool? showUnselectedLabels = null, BottomNavigationBarType? type = null, bool? enableFeedback = null, BottomNavigationBarLandscapeLayout? landscapeLayout = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>? mouseCursor = null)
+    public BottomNavigationBarThemeData(Color? backgroundColor = null, double? elevation = null, global::Doroti.Framework.Widgets.IconThemeData? selectedIconTheme = null, global::Doroti.Framework.Widgets.IconThemeData? unselectedIconTheme = null, Color? selectedItemColor = null, Color? unselectedItemColor = null, global::Doroti.Framework.Painting.TextStyle? selectedLabelStyle = null, global::Doroti.Framework.Painting.TextStyle? unselectedLabelStyle = null, bool? showSelectedLabels = null, bool? showUnselectedLabels = null, BottomNavigationBarType? type = null, bool? enableFeedback = null, BottomNavigationBarLandscapeLayout? landscapeLayout = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor = null)
     {
         this.backgroundColor = backgroundColor;
         this.elevation = elevation;
@@ -49,7 +49,7 @@ public class BottomNavigationBarThemeData : global::Doroti.Generated.Framework.F
         this.mouseCursor = mouseCursor;
     }
 
-    public virtual BottomNavigationBarThemeData copyWith(Color? backgroundColor = null, double? elevation = null, global::Doroti.Generated.Framework.Widgets.IconThemeData? selectedIconTheme = null, global::Doroti.Generated.Framework.Widgets.IconThemeData? unselectedIconTheme = null, Color? selectedItemColor = null, Color? unselectedItemColor = null, global::Doroti.Generated.Framework.Painting.TextStyle? selectedLabelStyle = null, global::Doroti.Generated.Framework.Painting.TextStyle? unselectedLabelStyle = null, bool? showSelectedLabels = null, bool? showUnselectedLabels = null, BottomNavigationBarType? type = null, bool? enableFeedback = null, BottomNavigationBarLandscapeLayout? landscapeLayout = null, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>? mouseCursor = null)
+    public virtual BottomNavigationBarThemeData copyWith(Color? backgroundColor = null, double? elevation = null, global::Doroti.Framework.Widgets.IconThemeData? selectedIconTheme = null, global::Doroti.Framework.Widgets.IconThemeData? unselectedIconTheme = null, Color? selectedItemColor = null, Color? unselectedItemColor = null, global::Doroti.Framework.Painting.TextStyle? selectedLabelStyle = null, global::Doroti.Framework.Painting.TextStyle? unselectedLabelStyle = null, bool? showSelectedLabels = null, bool? showUnselectedLabels = null, BottomNavigationBarType? type = null, bool? enableFeedback = null, BottomNavigationBarLandscapeLayout? landscapeLayout = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor = null)
     {
         return new BottomNavigationBarThemeData(backgroundColor: (backgroundColor ?? this.backgroundColor), elevation: (elevation ?? this.elevation), selectedIconTheme: (selectedIconTheme ?? this.selectedIconTheme), unselectedIconTheme: (unselectedIconTheme ?? this.unselectedIconTheme), selectedItemColor: (selectedItemColor ?? this.selectedItemColor), unselectedItemColor: (unselectedItemColor ?? this.unselectedItemColor), selectedLabelStyle: (selectedLabelStyle ?? this.selectedLabelStyle), unselectedLabelStyle: (unselectedLabelStyle ?? this.unselectedLabelStyle), showSelectedLabels: (showSelectedLabels ?? this.showSelectedLabels), showUnselectedLabels: (showUnselectedLabels ?? this.showUnselectedLabels), type: (type ?? this.type), enableFeedback: (enableFeedback ?? this.enableFeedback), landscapeLayout: (landscapeLayout ?? this.landscapeLayout), mouseCursor: (mouseCursor ?? this.mouseCursor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -81,25 +81,25 @@ public class BottomNavigationBarThemeData : global::Doroti.Generated.Framework.F
         return (((((((((((((((__other is BottomNavigationBarThemeData) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).backgroundColor, this.backgroundColor))) && (((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).elevation == this.elevation)) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).selectedIconTheme, this.selectedIconTheme))) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).unselectedIconTheme, this.unselectedIconTheme))) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).selectedItemColor, this.selectedItemColor))) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).unselectedItemColor, this.unselectedItemColor))) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).selectedLabelStyle, this.selectedLabelStyle))) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).unselectedLabelStyle, this.unselectedLabelStyle))) && (((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).showSelectedLabels == this.showSelectedLabels)) && (((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).showUnselectedLabels == this.showUnselectedLabels)) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).type, this.type))) && (((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).enableFeedback == this.enableFeedback)) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).landscapeLayout, this.landscapeLayout))) && (object.Equals(((BottomNavigationBarThemeData)((BottomNavigationBarThemeData)__other)).mouseCursor, this.mouseCursor)));
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("backgroundColor", this.backgroundColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("elevation", this.elevation, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Widgets.IconThemeData>("selectedIconTheme", this.selectedIconTheme, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Widgets.IconThemeData>("unselectedIconTheme", this.unselectedIconTheme, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("selectedItemColor", this.selectedItemColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("unselectedItemColor", this.unselectedItemColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.TextStyle>("selectedLabelStyle", this.selectedLabelStyle, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.TextStyle>("unselectedLabelStyle", this.unselectedLabelStyle, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<bool>("showSelectedLabels", this.showSelectedLabels, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<bool>("showUnselectedLabels", this.showUnselectedLabels, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<BottomNavigationBarType>("type", this.type, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<bool>("enableFeedback", this.enableFeedback, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<BottomNavigationBarLandscapeLayout>("landscapeLayout", this.landscapeLayout, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Generated.Framework.Services.MouseCursor?>>("mouseCursor", this.mouseCursor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("backgroundColor", this.backgroundColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", this.elevation, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.IconThemeData>("selectedIconTheme", this.selectedIconTheme, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.IconThemeData>("unselectedIconTheme", this.unselectedIconTheme, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("selectedItemColor", this.selectedItemColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("unselectedItemColor", this.unselectedItemColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("selectedLabelStyle", this.selectedLabelStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("unselectedLabelStyle", this.unselectedLabelStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("showSelectedLabels", this.showSelectedLabels, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("showUnselectedLabels", this.showUnselectedLabels, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BottomNavigationBarType>("type", this.type, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("enableFeedback", this.enableFeedback, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BottomNavigationBarLandscapeLayout>("landscapeLayout", this.landscapeLayout, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>>("mouseCursor", this.mouseCursor, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;
@@ -120,21 +120,21 @@ public class BottomNavigationBarThemeData : global::Doroti.Generated.Framework.F
 
 }
 
-public class BottomNavigationBarTheme : global::Doroti.Generated.Framework.Widgets.InheritedWidget
+public class BottomNavigationBarTheme : global::Doroti.Framework.Widgets.InheritedWidget
 {
     public virtual BottomNavigationBarThemeData data { get; private set; } = default!;
 
-    public BottomNavigationBarTheme(global::Doroti.Generated.Framework.Foundation.Key? key = null, BottomNavigationBarThemeData data = default!, global::Doroti.Generated.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public BottomNavigationBarTheme(global::Doroti.Framework.Foundation.Key? key = null, BottomNavigationBarThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static BottomNavigationBarThemeData of(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static BottomNavigationBarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
         BottomNavigationBarTheme? bottomNavTheme__12363 = ((BottomNavigationBarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<BottomNavigationBarTheme>());
         return (bottomNavTheme__12363?.data ?? Theme.of(context).bottomNavigationBarTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Generated.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((BottomNavigationBarTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((BottomNavigationBarTheme)oldWidget).data)));
 }

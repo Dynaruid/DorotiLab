@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
 public class MenuBarThemeData : MenuThemeData
 {
@@ -32,27 +32,27 @@ public class MenuBarThemeData : MenuThemeData
 
 }
 
-public class MenuBarTheme : global::Doroti.Generated.Framework.Widgets.InheritedTheme
+public class MenuBarTheme : global::Doroti.Framework.Widgets.InheritedTheme
 {
     public virtual MenuBarThemeData data { get; private set; } = default!;
 
-    public MenuBarTheme(global::Doroti.Generated.Framework.Foundation.Key? key = null, MenuBarThemeData data = default!, global::Doroti.Generated.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public MenuBarTheme(global::Doroti.Framework.Foundation.Key? key = null, MenuBarThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static MenuBarThemeData of(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static MenuBarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
         MenuBarTheme? menuBarTheme__3582 = ((MenuBarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<MenuBarTheme>());
         return (menuBarTheme__3582?.data ?? Theme.of(context).menuBarTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget wrap(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Widgets.Widget child)
+    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new MenuBarTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new MenuBarTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Generated.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((MenuBarTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((MenuBarTheme)oldWidget).data)));
 }

@@ -1,5 +1,7 @@
 # G5-6W Windows RID package boundary
 
+> Historical bootstrap record. The milestone validator named below has been retired; use `eng/doroti.ps1 validate` and ADR-019 for the current product workflow.
+
 G5-6W fixes the already validated G5-3B Windows source-port closure as the `Doroti.Target.Windows.win-x64` NuGet package. It does not move Flutter framework policy into the target. A selected framework package still talks only to `Doroti.Hosting` and the typed `dart:ui` capability surface; the RID package composes that host with the Win32/WGL implementation.
 
 ## Package and release inputs

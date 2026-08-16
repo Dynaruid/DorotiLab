@@ -1,1 +1,1 @@
-global using Doroti.Generated.Framework.Widgets;
+global using Doroti.Framework.Widgets;

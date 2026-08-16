@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class DoNothingAndStopPropagationTextIntent : Intent
 {
@@ -172,9 +172,9 @@ public class ScrollToDocumentBoundaryIntent : DirectionalTextEditingIntent
 
 public class SelectAllTextIntent : Intent
 {
-    public virtual global::Doroti.Generated.Framework.Services.SelectionChangedCause cause { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Services.SelectionChangedCause cause { get; private set; } = default!;
 
-    public SelectAllTextIntent(global::Doroti.Generated.Framework.Services.SelectionChangedCause cause)
+    public SelectAllTextIntent(global::Doroti.Framework.Services.SelectionChangedCause cause)
     {
         this.cause = cause;
     }
@@ -183,17 +183,17 @@ public class SelectAllTextIntent : Intent
 
 public class CopySelectionTextIntent : Intent
 {
-    public static CopySelectionTextIntent copy = new CopySelectionTextIntent(global::Doroti.Generated.Framework.Services.SelectionChangedCause.keyboard, false);
-    public virtual global::Doroti.Generated.Framework.Services.SelectionChangedCause cause { get; private set; } = default!;
+    public static CopySelectionTextIntent copy = new CopySelectionTextIntent(global::Doroti.Framework.Services.SelectionChangedCause.keyboard, false);
+    public virtual global::Doroti.Framework.Services.SelectionChangedCause cause { get; private set; } = default!;
     public virtual bool collapseSelection { get; private set; } = default!;
 
-    public CopySelectionTextIntent(global::Doroti.Generated.Framework.Services.SelectionChangedCause cause, bool collapseSelection)
+    public CopySelectionTextIntent(global::Doroti.Framework.Services.SelectionChangedCause cause, bool collapseSelection)
     {
         this.cause = cause;
         this.collapseSelection = collapseSelection;
     }
 
-    public static CopySelectionTextIntent CreateCut(global::Doroti.Generated.Framework.Services.SelectionChangedCause cause)
+    public static CopySelectionTextIntent CreateCut(global::Doroti.Framework.Services.SelectionChangedCause cause)
     {
         return new CopySelectionTextIntent(cause, true);
     }
@@ -202,9 +202,9 @@ public class CopySelectionTextIntent : Intent
 
 public class PasteTextIntent : Intent
 {
-    public virtual global::Doroti.Generated.Framework.Services.SelectionChangedCause cause { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Services.SelectionChangedCause cause { get; private set; } = default!;
 
-    public PasteTextIntent(global::Doroti.Generated.Framework.Services.SelectionChangedCause cause)
+    public PasteTextIntent(global::Doroti.Framework.Services.SelectionChangedCause cause)
     {
         this.cause = cause;
     }
@@ -213,9 +213,9 @@ public class PasteTextIntent : Intent
 
 public class RedoTextIntent : Intent
 {
-    public virtual global::Doroti.Generated.Framework.Services.SelectionChangedCause cause { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Services.SelectionChangedCause cause { get; private set; } = default!;
 
-    public RedoTextIntent(global::Doroti.Generated.Framework.Services.SelectionChangedCause cause)
+    public RedoTextIntent(global::Doroti.Framework.Services.SelectionChangedCause cause)
     {
         this.cause = cause;
     }
@@ -224,12 +224,12 @@ public class RedoTextIntent : Intent
 
 public class ReplaceTextIntent : Intent
 {
-    public virtual global::Doroti.Generated.Framework.Services.TextEditingValue currentTextEditingValue { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Services.TextEditingValue currentTextEditingValue { get; private set; } = default!;
     public virtual string replacementText { get; private set; } = default!;
     public virtual TextRange replacementRange { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Services.SelectionChangedCause cause { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Services.SelectionChangedCause cause { get; private set; } = default!;
 
-    public ReplaceTextIntent(global::Doroti.Generated.Framework.Services.TextEditingValue currentTextEditingValue, string replacementText, TextRange replacementRange, global::Doroti.Generated.Framework.Services.SelectionChangedCause cause)
+    public ReplaceTextIntent(global::Doroti.Framework.Services.TextEditingValue currentTextEditingValue, string replacementText, TextRange replacementRange, global::Doroti.Framework.Services.SelectionChangedCause cause)
     {
         this.currentTextEditingValue = currentTextEditingValue;
         this.replacementText = replacementText;
@@ -241,9 +241,9 @@ public class ReplaceTextIntent : Intent
 
 public class UndoTextIntent : Intent
 {
-    public virtual global::Doroti.Generated.Framework.Services.SelectionChangedCause cause { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Services.SelectionChangedCause cause { get; private set; } = default!;
 
-    public UndoTextIntent(global::Doroti.Generated.Framework.Services.SelectionChangedCause cause)
+    public UndoTextIntent(global::Doroti.Framework.Services.SelectionChangedCause cause)
     {
         this.cause = cause;
     }
@@ -252,11 +252,11 @@ public class UndoTextIntent : Intent
 
 public class UpdateSelectionIntent : Intent
 {
-    public virtual global::Doroti.Generated.Framework.Services.TextEditingValue currentTextEditingValue { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Services.TextSelection newSelection { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Services.SelectionChangedCause cause { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Services.TextEditingValue currentTextEditingValue { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Services.TextSelection newSelection { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Services.SelectionChangedCause cause { get; private set; } = default!;
 
-    public UpdateSelectionIntent(global::Doroti.Generated.Framework.Services.TextEditingValue currentTextEditingValue, global::Doroti.Generated.Framework.Services.TextSelection newSelection, global::Doroti.Generated.Framework.Services.SelectionChangedCause cause)
+    public UpdateSelectionIntent(global::Doroti.Framework.Services.TextEditingValue currentTextEditingValue, global::Doroti.Framework.Services.TextSelection newSelection, global::Doroti.Framework.Services.SelectionChangedCause cause)
     {
         this.currentTextEditingValue = currentTextEditingValue;
         this.newSelection = newSelection;
@@ -276,9 +276,9 @@ public class TransposeCharactersIntent : Intent
 public class EditableTextTapOutsideIntent : Intent
 {
     public virtual FocusNode focusNode { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Gestures.PointerDownEvent pointerDownEvent { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Gestures.PointerDownEvent pointerDownEvent { get; private set; } = default!;
 
-    public EditableTextTapOutsideIntent(FocusNode focusNode, global::Doroti.Generated.Framework.Gestures.PointerDownEvent pointerDownEvent)
+    public EditableTextTapOutsideIntent(FocusNode focusNode, global::Doroti.Framework.Gestures.PointerDownEvent pointerDownEvent)
     {
         this.focusNode = focusNode;
         this.pointerDownEvent = pointerDownEvent;
@@ -289,9 +289,9 @@ public class EditableTextTapOutsideIntent : Intent
 public class EditableTextTapUpOutsideIntent : Intent
 {
     public virtual FocusNode focusNode { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Gestures.PointerUpEvent pointerUpEvent { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Gestures.PointerUpEvent pointerUpEvent { get; private set; } = default!;
 
-    public EditableTextTapUpOutsideIntent(FocusNode focusNode, global::Doroti.Generated.Framework.Gestures.PointerUpEvent pointerUpEvent)
+    public EditableTextTapUpOutsideIntent(FocusNode focusNode, global::Doroti.Framework.Gestures.PointerUpEvent pointerUpEvent)
     {
         this.focusNode = focusNode;
         this.pointerUpEvent = pointerUpEvent;

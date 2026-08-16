@@ -17531,7 +17531,7 @@
         "src/painting/debug.dart"
       ],
       "disposition": "generated",
-      "owner": "Doroti.Generated.Framework.F3",
+      "owner": "Doroti.Framework.F3",
       "analyzerErrors": 0,
       "declarations": [
         {
@@ -17685,7 +17685,7 @@
         "foundation.dart"
       ],
       "disposition": "generated",
-      "owner": "Doroti.Generated.Framework.F3",
+      "owner": "Doroti.Framework.F3",
       "analyzerErrors": 0,
       "declarations": [
         {
@@ -24190,7 +24190,7 @@
         "src/rendering/layer.dart"
       ],
       "disposition": "generated",
-      "owner": "Doroti.Generated.Framework.F3",
+      "owner": "Doroti.Framework.F3",
       "analyzerErrors": 0,
       "declarations": [
         {
@@ -44560,7 +44560,7 @@
         "src/widgets/widget_inspector.dart"
       ],
       "disposition": "generated",
-      "owner": "Doroti.Generated.Framework.F3",
+      "owner": "Doroti.Framework.F3",
       "analyzerErrors": 0,
       "declarations": [
         {

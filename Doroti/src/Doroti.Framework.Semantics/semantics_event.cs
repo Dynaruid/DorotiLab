@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Semantics;
+namespace Doroti.Framework.Semantics;
 
 public enum Assertiveness
 {
@@ -56,7 +56,7 @@ public abstract class SemanticsEvent
         {
             pairs__2231.Add($"{key__2388}: {dataMap__2282.GetValueOrDefault(key__2388)}");
         }
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsEvent"))}({string.Join(", ", pairs__2231)})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsEvent"))}({string.Join(", ", pairs__2231)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

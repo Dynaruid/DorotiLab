@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public enum StandardComponentType
 {
@@ -24,6 +24,6 @@ public enum StandardComponentType
 
 public static class StandardComponentTypeMembers
 {
-    public static global::Doroti.Generated.Framework.Foundation.ValueKey<StandardComponentType> key(this StandardComponentType value) => new global::Doroti.Generated.Framework.Foundation.ValueKey<StandardComponentType>(value);
+    public static global::Doroti.Framework.Foundation.ValueKey<StandardComponentType> key(this StandardComponentType value) => new global::Doroti.Framework.Foundation.ValueKey<StandardComponentType>(value);
 }
 

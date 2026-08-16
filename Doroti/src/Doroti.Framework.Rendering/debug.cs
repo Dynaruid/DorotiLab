@@ -12,11 +12,11 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public static partial class DebugLibrary
 {
-    internal static global::Doroti.Generated.Framework.Painting.HSVColor _kDebugDefaultRepaintColor = new global::Doroti.Generated.Framework.Painting.HSVColor(0.4, 60.0, 1.0, 1.0);
+    internal static global::Doroti.Framework.Painting.HSVColor _kDebugDefaultRepaintColor = new global::Doroti.Framework.Painting.HSVColor(0.4, 60.0, 1.0, 1.0);
 }
 
 public static partial class DebugLibrary
@@ -56,7 +56,7 @@ public static partial class DebugLibrary
 
 public static partial class DebugLibrary
 {
-    public static global::Doroti.Generated.Framework.Painting.HSVColor debugCurrentRepaintColor = DebugLibrary._kDebugDefaultRepaintColor;
+    public static global::Doroti.Framework.Painting.HSVColor debugCurrentRepaintColor = DebugLibrary._kDebugDefaultRepaintColor;
 }
 
 public static partial class DebugLibrary
@@ -189,7 +189,7 @@ public static partial class DebugLibrary
 
 public static partial class DebugLibrary
 {
-    public static bool debugCheckHasBoundedAxis(global::Doroti.Generated.Framework.Painting.Axis axis, BoxConstraints constraints)
+    public static bool debugCheckHasBoundedAxis(global::Doroti.Framework.Painting.Axis axis, BoxConstraints constraints)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -197,7 +197,7 @@ public static partial class DebugLibrary
                 {
                     switch (axis)
                     {
-                        case global::Doroti.Generated.Framework.Painting.Axis.vertical:
+                        case global::Doroti.Framework.Painting.Axis.vertical:
                             {
                                 if (!((BoxConstraints)constraints).hasBoundedHeight)
                                 {
@@ -209,7 +209,7 @@ public static partial class DebugLibrary
                                 }
                                 break;
                             }
-                        case global::Doroti.Generated.Framework.Painting.Axis.horizontal:
+                        case global::Doroti.Framework.Painting.Axis.horizontal:
                             {
                                 if (!((BoxConstraints)constraints).hasBoundedWidth)
                                 {

@@ -12,9 +12,9 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
-public class TextSelectionThemeData : global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class TextSelectionThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 {
     public virtual Color? cursorColor { get; private set; }
     public virtual Color? selectionColor { get; private set; }
@@ -59,14 +59,14 @@ public class TextSelectionThemeData : global::Doroti.Generated.Framework.Foundat
         return ((((__other is TextSelectionThemeData) && (object.Equals(((TextSelectionThemeData)((TextSelectionThemeData)__other)).cursorColor, this.cursorColor))) && (object.Equals(((TextSelectionThemeData)((TextSelectionThemeData)__other)).selectionColor, this.selectionColor))) && (object.Equals(((TextSelectionThemeData)((TextSelectionThemeData)__other)).selectionHandleColor, this.selectionHandleColor)));
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("cursorColor", this.cursorColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("selectionColor", this.selectionColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("selectionHandleColor", this.selectionHandleColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("cursorColor", this.cursorColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("selectionColor", this.selectionColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("selectionHandleColor", this.selectionHandleColor, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;
@@ -87,46 +87,46 @@ public class TextSelectionThemeData : global::Doroti.Generated.Framework.Foundat
 
 }
 
-public class TextSelectionTheme : global::Doroti.Generated.Framework.Widgets.InheritedTheme
+public class TextSelectionTheme : global::Doroti.Framework.Widgets.InheritedTheme
 {
     public virtual TextSelectionThemeData data { get; private set; } = default!;
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _child { get; private set; } = default!;
+    internal virtual global::Doroti.Framework.Widgets.Widget _child { get; private set; } = default!;
 
-    public TextSelectionTheme(global::Doroti.Generated.Framework.Foundation.Key? key = null, TextSelectionThemeData data = default!, global::Doroti.Generated.Framework.Widgets.Widget child = default!) : base(key: key, child: new _NullWidget__text_selection_theme())
+    public TextSelectionTheme(global::Doroti.Framework.Foundation.Key? key = null, TextSelectionThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: new _NullWidget__text_selection_theme())
     {
         this.data = data;
         this._child = child;
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget child
+    public override global::Doroti.Framework.Widgets.Widget child
     {
         get
         {
-            return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.DefaultSelectionStyle(selectionColor: ((TextSelectionThemeData)this.data).selectionColor, cursorColor: ((TextSelectionThemeData)this.data).cursorColor, child: this._child));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DefaultSelectionStyle(selectionColor: ((TextSelectionThemeData)this.data).selectionColor, cursorColor: ((TextSelectionThemeData)this.data).cursorColor, child: this._child));
             return default!;
         }
     }
-    public static TextSelectionThemeData of(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static TextSelectionThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
         TextSelectionTheme? selectionTheme__6349 = ((TextSelectionTheme?)(object?)context.dependOnInheritedWidgetOfExactType<TextSelectionTheme>());
         return (selectionTheme__6349?.data ?? Theme.of(context).textSelectionTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget wrap(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Widgets.Widget child)
+    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new TextSelectionTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new TextSelectionTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Generated.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((TextSelectionTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((TextSelectionTheme)oldWidget).data)));
 }
 
-internal class _NullWidget__text_selection_theme : global::Doroti.Generated.Framework.Widgets.Widget
+internal class _NullWidget__text_selection_theme : global::Doroti.Framework.Widgets.Widget
 {
     internal _NullWidget__text_selection_theme()
     {
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Element createElement() => throw new NotImplementedException();
+    public override global::Doroti.Framework.Widgets.Element createElement() => throw new NotImplementedException();
 }

@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public delegate void PopInvokedCallback(bool didPop);
 
@@ -23,7 +23,7 @@ public class PopScope<T> : StatefulWidget
     public virtual global::System.Action<bool>? onPopInvoked { get; private set; }
     public virtual bool canPop { get; private set; } = default!;
 
-    public PopScope(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!, bool canPop = true, global::System.Action<bool, T?>? onPopInvokedWithResult = null, global::System.Action<bool>? onPopInvoked = null) : base(key: key)
+    public PopScope(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, bool canPop = true, global::System.Action<bool, T?>? onPopInvokedWithResult = null, global::System.Action<bool>? onPopInvoked = null) : base(key: key)
     {
         this.child = child;
         this.canPop = canPop;
@@ -48,7 +48,7 @@ public class PopScope<T> : StatefulWidget
 internal class _PopScopeState__pop_scope<T> : State<PopScope<T>>
 {
     internal virtual dynamic _route { get; set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Foundation.ValueNotifier<bool> canPopNotifier { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Foundation.ValueNotifier<bool> canPopNotifier { get; private set; } = default!;
 
     public virtual void onPopInvoked(bool didPop)
     {
@@ -63,7 +63,7 @@ internal class _PopScopeState__pop_scope<T> : State<PopScope<T>>
     public override void initState()
     {
         base.initState();
-        canPopNotifier = new global::Doroti.Generated.Framework.Foundation.ValueNotifier<bool>(((PopScope<T>)(object)this.widget).canPop);
+        canPopNotifier = new global::Doroti.Framework.Foundation.ValueNotifier<bool>(((PopScope<T>)(object)this.widget).canPop);
     }
 
     public override void didChangeDependencies()

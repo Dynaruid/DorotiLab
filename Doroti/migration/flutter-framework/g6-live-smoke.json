@@ -20,19 +20,19 @@
       "Text",
       "FloatingActionButton"
     ],
-    "rootWidget": "Doroti.Generated.Framework.Material.MaterialApp"
+    "rootWidget": "Doroti.Framework.Material.MaterialApp"
   },
   "firstFlutterError": {
     "exceptionType": "System.NullReferenceException",
     "message": "Object reference not set to an instance of an object.",
     "library": "widgets library",
-    "context": "building Doroti.Generated.Framework.Widgets.StatefulElement",
+    "context": "building Doroti.Framework.Widgets.StatefulElement",
     "widget": "AppBar",
     "sourceLibrary": "package:flutter/src/material/app_bar.dart",
     "stack": [
-      "at Doroti.Generated.Framework.Material._AppBarState__app_bar.build(BuildContext context) in Doroti/migration/generated-candidates/g5-4-reviewed/projects/Material/app_bar.g.cs:line 277",
-      "at Doroti.Generated.Framework.Widgets.StatefulElement.build() in Doroti/src/Doroti.Flutter.Framework.Widgets/framework.cs:line 2765",
-      "at Doroti.Generated.Framework.Widgets.ComponentElement.performRebuild() in Doroti/src/Doroti.Flutter.Framework.Widgets/framework.cs:line 2682"
+      "at Doroti.Framework.Material._AppBarState__app_bar.build(BuildContext context) in Doroti/migration/generated-candidates/g5-4-reviewed/projects/Material/app_bar.g.cs:line 277",
+      "at Doroti.Framework.Widgets.StatefulElement.build() in Doroti/src/Doroti.Flutter.Framework.Widgets/framework.cs:line 2765",
+      "at Doroti.Framework.Widgets.ComponentElement.performRebuild() in Doroti/src/Doroti.Flutter.Framework.Widgets/framework.cs:line 2682"
     ]
   },
   "unhandledException": null,

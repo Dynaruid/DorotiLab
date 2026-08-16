@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Text;
 using Doroti.Runtime;
 
-namespace Doroti.Generated.Framework.Foundation;
+namespace Doroti.Framework.Foundation;
 
 public delegate T? ComputePropertyValueCallback<out T>();
 

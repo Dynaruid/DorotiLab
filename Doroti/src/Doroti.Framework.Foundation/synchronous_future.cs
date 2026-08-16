@@ -1,6 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/foundation/synchronous_future.dart
-namespace Doroti.Generated.Framework.Foundation;
+namespace Doroti.Framework.Foundation;
 
 /// <summary>A completed value whose continuation is invoked synchronously, matching Flutter's SynchronousFuture.</summary>
 public sealed class SynchronousFuture<T> : Doroti.Runtime.Future<T>

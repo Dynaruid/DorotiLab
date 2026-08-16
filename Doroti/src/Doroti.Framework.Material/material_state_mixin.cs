@@ -12,16 +12,16 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
-public interface MaterialStateMixin<T> where T : global::Doroti.Generated.Framework.Widgets.StatefulWidget
+public interface MaterialStateMixin<T> where T : global::Doroti.Framework.Widgets.StatefulWidget
 {
-    HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState> materialStates { get; set; }
+    HashSet<global::Doroti.Framework.Widgets.WidgetState> materialStates { get; set; }
 
-    public global::System.Action<bool> updateMaterialState(global::Doroti.Generated.Framework.Widgets.WidgetState key, global::System.Action<bool>? onChanged = null);
-    public void setMaterialState(global::Doroti.Generated.Framework.Widgets.WidgetState state, bool isSet);
-    public void addMaterialState(global::Doroti.Generated.Framework.Widgets.WidgetState state);
-    public void removeMaterialState(global::Doroti.Generated.Framework.Widgets.WidgetState state);
+    public global::System.Action<bool> updateMaterialState(global::Doroti.Framework.Widgets.WidgetState key, global::System.Action<bool>? onChanged = null);
+    public void setMaterialState(global::Doroti.Framework.Widgets.WidgetState state, bool isSet);
+    public void addMaterialState(global::Doroti.Framework.Widgets.WidgetState state);
+    public void removeMaterialState(global::Doroti.Framework.Widgets.WidgetState state);
     public bool isDisabled { get; }
     public bool isDragged { get; }
     public bool isErrored { get; }
@@ -30,5 +30,5 @@ public interface MaterialStateMixin<T> where T : global::Doroti.Generated.Framew
     public bool isPressed { get; }
     public bool isScrolledUnder { get; }
     public bool isSelected { get; }
-    public void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties);
+    public void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties);
 }

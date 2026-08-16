@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public class SliverGridGeometry
 {
@@ -79,7 +79,7 @@ public class SliverGridRegularTileLayout : SliverGridLayout
 
     public virtual long getMinChildIndexForScrollOffset(double scrollOffset)
     {
-        return ((this.mainAxisStride > global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance) ? (this.crossAxisCount * ((checked((long)(scrollOffset / this.mainAxisStride))))) : 0L);
+        return ((this.mainAxisStride > global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance) ? (this.crossAxisCount * ((checked((long)(scrollOffset / this.mainAxisStride))))) : 0L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -169,7 +169,7 @@ public class SliverGridDelegateWithFixedCrossAxisCount : SliverGridDelegate
         double usableCrossAxisExtent__15191 = Math.Max(0.0, (((SliverConstraints)constraints).crossAxisExtent - (this.crossAxisSpacing * ((this.crossAxisCount - 1L)))));
         double childCrossAxisExtent__15337 = (usableCrossAxisExtent__15191 / this.crossAxisCount);
         double childMainAxisExtent__15417 = (this.mainAxisExtent ?? (childCrossAxisExtent__15337 / this.childAspectRatio));
-        return new SliverGridRegularTileLayout(crossAxisCount: this.crossAxisCount, mainAxisStride: (childMainAxisExtent__15417 + this.mainAxisSpacing), crossAxisStride: (childCrossAxisExtent__15337 + this.crossAxisSpacing), childMainAxisExtent: childMainAxisExtent__15417, childCrossAxisExtent: childCrossAxisExtent__15337, reverseCrossAxis: global::Doroti.Generated.Framework.Painting.Basic_typesLibrary.axisDirectionIsReversed(((SliverConstraints)constraints).crossAxisDirection));
+        return new SliverGridRegularTileLayout(crossAxisCount: this.crossAxisCount, mainAxisStride: (childMainAxisExtent__15417 + this.mainAxisSpacing), crossAxisStride: (childCrossAxisExtent__15337 + this.crossAxisSpacing), childMainAxisExtent: childMainAxisExtent__15417, childCrossAxisExtent: childCrossAxisExtent__15337, reverseCrossAxis: global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionIsReversed(((SliverConstraints)constraints).crossAxisDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -223,7 +223,7 @@ public class SliverGridDelegateWithMaxCrossAxisExtent : SliverGridDelegate
         double usableCrossAxisExtent__20007 = Math.Max(0.0, (((SliverConstraints)constraints).crossAxisExtent - (this.crossAxisSpacing * ((crossAxisCount__19713 - 1L)))));
         double childCrossAxisExtent__20153 = (usableCrossAxisExtent__20007 / crossAxisCount__19713);
         double childMainAxisExtent__20233 = (this.mainAxisExtent ?? (childCrossAxisExtent__20153 / this.childAspectRatio));
-        return new SliverGridRegularTileLayout(crossAxisCount: crossAxisCount__19713, mainAxisStride: (childMainAxisExtent__20233 + this.mainAxisSpacing), crossAxisStride: (childCrossAxisExtent__20153 + this.crossAxisSpacing), childMainAxisExtent: childMainAxisExtent__20233, childCrossAxisExtent: childCrossAxisExtent__20153, reverseCrossAxis: global::Doroti.Generated.Framework.Painting.Basic_typesLibrary.axisDirectionIsReversed(((SliverConstraints)constraints).crossAxisDirection));
+        return new SliverGridRegularTileLayout(crossAxisCount: crossAxisCount__19713, mainAxisStride: (childMainAxisExtent__20233 + this.mainAxisSpacing), crossAxisStride: (childCrossAxisExtent__20153 + this.crossAxisSpacing), childMainAxisExtent: childMainAxisExtent__20233, childCrossAxisExtent: childCrossAxisExtent__20153, reverseCrossAxis: global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionIsReversed(((SliverConstraints)constraints).crossAxisDirection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

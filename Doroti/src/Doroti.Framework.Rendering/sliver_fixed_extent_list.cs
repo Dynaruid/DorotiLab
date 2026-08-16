@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAdaptor
 {
@@ -68,7 +68,7 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
             {
                 double actual__4446 = (scrollOffset / itemExtent);
                 long round__4500 = actual__4446.round();
-                if (((((actual__4446 * itemExtent) - (round__4500 * itemExtent))).abs() < global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+                if (((((actual__4446 * itemExtent) - (round__4500 * itemExtent))).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
                 {
                     return round__4500;
                 }
@@ -92,7 +92,7 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
             {
                 double actual__5596 = ((scrollOffset / itemExtent) - 1L);
                 long round__5654 = actual__5596.round();
-                if (((((actual__5596 * itemExtent) - (round__5654 * itemExtent))).abs() < global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+                if (((((actual__5596 * itemExtent) - (round__5654 * itemExtent))).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
                 {
                     return Math.Max(0L, round__5654);
                 }
@@ -211,9 +211,9 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
                     double scrollExtent__10552 = geometry!.scrollExtent;
                     double count__10612 = (scrollExtent__10552 / itemExtent__10500);
                     double diff__10668 = ((count__10612.roundToDouble() - count__10612)).abs();
-                    if ((((diff__10668 * itemExtent__10500) > global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance) && (diff__10668 > global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)))
+                    if ((((diff__10668 * itemExtent__10500) > global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance) && (diff__10668 > global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)))
                     {
-                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("RenderSliverFixedExtentBoxAdaptor.computeMaxScrollOffset() returned a value that is not an even multiple of its itemExtent."), new ErrorDescription($"The itemExtent__10500 was {itemExtent__10500}, but the scrollExtent was {scrollExtent__10552}."), new ErrorDescription($"The difference was {diff__10668}, which is greater than precisionErrorTolerance ({(global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)})."), describeForError("The render object in question was") });
+                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("RenderSliverFixedExtentBoxAdaptor.computeMaxScrollOffset() returned a value that is not an even multiple of its itemExtent."), new ErrorDescription($"The itemExtent__10500 was {itemExtent__10500}, but the scrollExtent was {scrollExtent__10552}."), new ErrorDescription($"The difference was {diff__10668}, which is greater than precisionErrorTolerance ({(global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)})."), describeForError("The render object in question was") });
                     }
                 }
                 return true;
@@ -311,7 +311,7 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
         long lastIndex__16041 = indexOf(lastChild!);
         double leadingScrollOffset__16091 = indexToLayoutOffset(deprecatedExtraItemExtent__12534, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(firstIndex__12581)));
         double trailingScrollOffset__16190 = indexToLayoutOffset(deprecatedExtraItemExtent__12534, (DartRuntimePrimitives.RequireValue(lastIndex__16041) + 1L));
-        DartRuntimePrimitives.Assert(() => ((DartRuntimePrimitives.RequireValue(firstIndex__12581) == 0L) || ((DartRuntimePrimitives.RequireValue(childScrollOffset(firstChild!)) - scrollOffset__11892) <= global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)));
+        DartRuntimePrimitives.Assert(() => ((DartRuntimePrimitives.RequireValue(firstIndex__12581) == 0L) || ((DartRuntimePrimitives.RequireValue(childScrollOffset(firstChild!)) - scrollOffset__11892) <= global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)));
         DartRuntimePrimitives.Assert(() => debugAssertChildListIsNonEmptyAndContiguous());
         DartRuntimePrimitives.Assert(() => (indexOf(firstChild!) == DartRuntimePrimitives.RequireValue(firstIndex__12581)));
         DartRuntimePrimitives.Assert(() => ((targetLastIndex__12683 is null) || (lastIndex__16041 <= DartRuntimePrimitives.RequireValue(targetLastIndex__12683))));

@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public enum ScrollDirection
 {
@@ -69,7 +69,7 @@ public abstract class ViewportOffset : ChangeNotifier
     {
         var description__11654 = new List<string>();
         debugFillDescription(description__11654);
-        return $"{(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({string.Join(", ", description__11654)})";
+        return $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({string.Join(", ", description__11654)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

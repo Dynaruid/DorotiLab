@@ -1,6 +1,6 @@
 using Doroti.FlutterCompat;
 
-namespace Doroti.Generated.SharedPreferences;
+namespace Doroti.SharedPreferences;
 
 public sealed class InMemorySharedPreferencesPlatformPort : ISharedPreferencesPlatformPort
 {

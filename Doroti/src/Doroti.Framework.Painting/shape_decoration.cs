@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public class ShapeDecoration : Decoration
 {
@@ -134,7 +134,7 @@ public class ShapeDecoration : Decoration
         {
             return false;
         }
-        return ((((((__other is ShapeDecoration) && (object.Equals(((ShapeDecoration)((ShapeDecoration)__other)).color, this.color))) && (object.Equals(((ShapeDecoration)((ShapeDecoration)__other)).gradient, this.gradient))) && (object.Equals(((ShapeDecoration)((ShapeDecoration)__other)).image, this.image))) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals<BoxShadow>(((ShapeDecoration)((ShapeDecoration)__other)).shadows, this.shadows)) && (object.Equals(((ShapeDecoration)((ShapeDecoration)__other)).shape, this.shape)));
+        return ((((((__other is ShapeDecoration) && (object.Equals(((ShapeDecoration)((ShapeDecoration)__other)).color, this.color))) && (object.Equals(((ShapeDecoration)((ShapeDecoration)__other)).gradient, this.gradient))) && (object.Equals(((ShapeDecoration)((ShapeDecoration)__other)).image, this.image))) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<BoxShadow>(((ShapeDecoration)((ShapeDecoration)__other)).shadows, this.shadows)) && (object.Equals(((ShapeDecoration)((ShapeDecoration)__other)).shape, this.shape)));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.color, this.gradient, this.image, this.shape, ((this.shadows is null) ? null : FoundationRuntimePorts.ObjectHashAll(this.shadows!)));
@@ -242,7 +242,7 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
     {
         bool debugHandleDisabledShadowStart(Canvas canvas, BoxShadow boxShadow, Path path)
         {
-            if ((global::Doroti.Generated.Framework.Painting.DebugLibrary.debugDisableShadows && (object.Equals(((BoxShadow)boxShadow).blurStyle, BlurStyle.outer))))
+            if ((global::Doroti.Framework.Painting.DebugLibrary.debugDisableShadows && (object.Equals(((BoxShadow)boxShadow).blurStyle, BlurStyle.outer))))
             {
                 canvas.save();
                 var clipPath__14580 = new global::Doroti.Ui.Path();
@@ -256,7 +256,7 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
         }
         bool debugHandleDisabledShadowEnd(Canvas canvas, BoxShadow boxShadow)
         {
-            if ((global::Doroti.Generated.Framework.Painting.DebugLibrary.debugDisableShadows && (object.Equals(((BoxShadow)boxShadow).blurStyle, BlurStyle.outer))))
+            if ((global::Doroti.Framework.Painting.DebugLibrary.debugDisableShadows && (object.Equals(((BoxShadow)boxShadow).blurStyle, BlurStyle.outer))))
             {
                 canvas.restore();
             }

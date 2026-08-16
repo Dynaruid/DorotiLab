@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public class LinearBorderEdge
 {
@@ -56,7 +56,7 @@ public class LinearBorderEdge
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.size, this.alignment);
     public override string ToString()
     {
-        var s__3252 = new StringBuffer($"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearBorderEdge"))}(");
+        var s__3252 = new StringBuffer($"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearBorderEdge"))}(");
         if ((this.size != 1.0))
         {
             s__3252.write($"size: {this.size}");
@@ -293,7 +293,7 @@ public class LinearBorder : OutlinedBorder
         {
             return "LinearBorder.none";
         }
-        var s__12531 = new StringBuffer($"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearBorder"))}(side: {side}");
+        var s__12531 = new StringBuffer($"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearBorder"))}(side: {side}");
         if ((this.start is not null))
         {
             s__12531.write($", start: {this.start}");

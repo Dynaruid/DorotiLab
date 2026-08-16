@@ -12,15 +12,15 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class TweenAnimationBuilder<T> : ImplicitlyAnimatedWidget
 {
-    public virtual global::Doroti.Generated.Framework.Animation.Tween<T> tween { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Animation.Tween<T> tween { get; private set; } = default!;
     public virtual global::System.Func<BuildContext, T, Widget?, Widget> builder { get; private set; } = default!;
     public virtual Widget? child { get; private set; }
 
-    public TweenAnimationBuilder(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Animation.Tween<T> tween = default!, Duration duration = default!, global::Doroti.Generated.Framework.Animation.Curve curve = default!, global::System.Func<BuildContext, T, Widget?, Widget> builder = default!, global::System.Action? onEnd = null, Widget? child = null) : base(key: key, duration: duration, curve: curve ?? global::Doroti.Generated.Framework.Animation.Curves.linear, onEnd: onEnd)
+    public TweenAnimationBuilder(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Animation.Tween<T> tween = default!, Duration duration = default!, global::Doroti.Framework.Animation.Curve curve = default!, global::System.Func<BuildContext, T, Widget?, Widget> builder = default!, global::System.Action? onEnd = null, Widget? child = null) : base(key: key, duration: duration, curve: curve ?? global::Doroti.Framework.Animation.Curves.linear, onEnd: onEnd)
     {
         this.tween = tween;
         this.builder = builder;
@@ -37,7 +37,7 @@ public class TweenAnimationBuilder<T> : ImplicitlyAnimatedWidget
 
 internal class _TweenAnimationBuilderState__tween_animation_builder<T> : AnimatedWidgetBaseState<TweenAnimationBuilder<T>>
 {
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<T>? _currentTween { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Tween<T>? _currentTween { get; set; } = default;
 
     public override void initState()
     {
@@ -50,10 +50,10 @@ internal class _TweenAnimationBuilderState__tween_animation_builder<T> : Animate
         }
     }
 
-    public override void forEachTween(global::System.Func<global::Doroti.Generated.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Generated.Framework.Animation.IDartTween>, global::Doroti.Generated.Framework.Animation.IDartTween?> visitor)
+    public override void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor)
     {
         DartRuntimePrimitives.Assert(() => (((TweenAnimationBuilder<T>)(object)this.widget).tween.end is not null), () => (object?)"Tween provided to TweenAnimationBuilder must have non-null Tween.end value.");
-        _currentTween = ((global::Doroti.Generated.Framework.Animation.Tween<T>?)(object?)visitor(this._currentTween, ((TweenAnimationBuilder<T>)(object)this.widget).tween.end, ((value) => {
+        _currentTween = ((global::Doroti.Framework.Animation.Tween<T>?)(object?)visitor(this._currentTween, ((TweenAnimationBuilder<T>)(object)this.widget).tween.end, ((value) => {
 DartRuntimePrimitives.Assert(() => false);
 throw new InvalidOperationException("Constructor will never be called because null is never provided as current tween.");
 throw new InvalidOperationException("Dart closure completed without a value.");

@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public class RawKeyEventDataLinux : RawKeyEventData
 {
@@ -37,7 +37,7 @@ public class RawKeyEventDataLinux : RawKeyEventData
     }
 
     public override string keyLabel => ((unicodeScalarValues == 0L) ? "" : char.ConvertFromUtf32(checked((int)unicodeScalarValues)));
-    public override PhysicalKeyboardKey physicalKey => (global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kLinuxToPhysicalKey.GetValueOrDefault(scanCode) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.webPlane + scanCode)));
+    public override PhysicalKeyboardKey physicalKey => (global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kLinuxToPhysicalKey.GetValueOrDefault(scanCode) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.webPlane + scanCode)));
     public override LogicalKeyboardKey logicalKey
     {
         get
@@ -178,13 +178,13 @@ public class GLFWKeyHelper : KeyHelper
 
     public virtual LogicalKeyboardKey? numpadKey(long keyCode)
     {
-        return global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kGlfwNumpadMap.GetValueOrDefault(keyCode);
+        return global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kGlfwNumpadMap.GetValueOrDefault(keyCode);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual LogicalKeyboardKey? logicalKey(long keyCode)
     {
-        return global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kGlfwToLogicalKey.GetValueOrDefault(keyCode);
+        return global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kGlfwToLogicalKey.GetValueOrDefault(keyCode);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -234,13 +234,13 @@ public class GtkKeyHelper : KeyHelper
 
     public virtual LogicalKeyboardKey? numpadKey(long keyCode)
     {
-        return global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kGtkNumpadMap.GetValueOrDefault(keyCode);
+        return global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kGtkNumpadMap.GetValueOrDefault(keyCode);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual LogicalKeyboardKey? logicalKey(long keyCode)
     {
-        return global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kGtkToLogicalKey.GetValueOrDefault(keyCode);
+        return global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kGtkToLogicalKey.GetValueOrDefault(keyCode);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

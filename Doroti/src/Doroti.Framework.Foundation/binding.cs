@@ -3,7 +3,7 @@
 using Doroti.Runtime;
 using Doroti.Ui;
 
-namespace Doroti.Generated.Framework.Foundation;
+namespace Doroti.Framework.Foundation;
 
 public delegate Task<Dictionary<string, object?>> ServiceExtensionCallback(IReadOnlyDictionary<string, string> parameters);
 

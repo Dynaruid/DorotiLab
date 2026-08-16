@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
 internal enum _ChipVariant__choice_chip
 {
@@ -20,26 +20,26 @@ internal enum _ChipVariant__choice_chip
     elevated
 }
 
-public class ChoiceChip : global::Doroti.Generated.Framework.Widgets.StatelessWidget, ChipAttributes, SelectableChipAttributes, CheckmarkableChipAttributes, DisabledChipAttributes
+public class ChoiceChip : global::Doroti.Framework.Widgets.StatelessWidget, ChipAttributes, SelectableChipAttributes, CheckmarkableChipAttributes, DisabledChipAttributes
 {
-    public virtual global::Doroti.Generated.Framework.Widgets.Widget? avatar { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.Widget label { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? labelStyle { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? labelPadding { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.Widget? avatar { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.Widget label { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.TextStyle? labelStyle { get; private set; }
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding { get; private set; }
     public virtual global::System.Action<bool>? onSelected { get; private set; }
     public virtual double? pressElevation { get; private set; }
     public virtual bool selected { get; private set; } = default!;
     public virtual Color? disabledColor { get; private set; }
     public virtual Color? selectedColor { get; private set; }
     public virtual string? tooltip { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.BorderSide? side { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.OutlinedBorder? shape { get; private set; }
+    public virtual global::Doroti.Framework.Painting.BorderSide? side { get; private set; }
+    public virtual global::Doroti.Framework.Painting.OutlinedBorder? shape { get; private set; }
     public virtual Clip clipBehavior { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.FocusNode? focusNode { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.FocusNode? focusNode { get; private set; }
     public virtual bool autofocus { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? color { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? color { get; private set; }
     public virtual Color? backgroundColor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
     public virtual VisualDensity? visualDensity { get; private set; }
     public virtual MaterialTapTargetSize? materialTapTargetSize { get; private set; }
     public virtual double? elevation { get; private set; }
@@ -48,16 +48,16 @@ public class ChoiceChip : global::Doroti.Generated.Framework.Widgets.StatelessWi
     public virtual Color? selectedShadowColor { get; private set; }
     public virtual bool? showCheckmark { get; private set; }
     public virtual Color? checkmarkColor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.ShapeBorder avatarBorder { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.IconThemeData? iconTheme { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Rendering.BoxConstraints? avatarBoxConstraints { get; private set; }
+    public virtual global::Doroti.Framework.Painting.ShapeBorder avatarBorder { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.IconThemeData? iconTheme { get; private set; }
+    public virtual global::Doroti.Framework.Rendering.BoxConstraints? avatarBoxConstraints { get; private set; }
     public virtual ChipAnimationStyle? chipAnimationStyle { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Services.MouseCursor? mouseCursor { get; private set; }
+    public virtual global::Doroti.Framework.Services.MouseCursor? mouseCursor { get; private set; }
     internal virtual _ChipVariant__choice_chip _chipVariant { get; private set; } = default!;
 
-    public ChoiceChip(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Widgets.Widget? avatar = null, global::Doroti.Generated.Framework.Widgets.Widget label = default!, global::Doroti.Generated.Framework.Painting.TextStyle? labelStyle = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? labelPadding = null, global::System.Action<bool>? onSelected = null, double? pressElevation = null, bool selected = default!, Color? selectedColor = null, Color? disabledColor = null, string? tooltip = null, global::Doroti.Generated.Framework.Painting.BorderSide? side = null, global::Doroti.Generated.Framework.Painting.OutlinedBorder? shape = null, Clip clipBehavior = Clip.none, global::Doroti.Generated.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? color = null, Color? backgroundColor = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding = null, VisualDensity? visualDensity = null, MaterialTapTargetSize? materialTapTargetSize = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Generated.Framework.Widgets.IconThemeData? iconTheme = null, Color? selectedShadowColor = null, bool? showCheckmark = null, Color? checkmarkColor = null, global::Doroti.Generated.Framework.Painting.ShapeBorder avatarBorder = default!, global::Doroti.Generated.Framework.Rendering.BoxConstraints? avatarBoxConstraints = null, ChipAnimationStyle? chipAnimationStyle = null, global::Doroti.Generated.Framework.Services.MouseCursor? mouseCursor = null) : base(key: key)
+    public ChoiceChip(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? avatar = null, global::Doroti.Framework.Widgets.Widget label = default!, global::Doroti.Framework.Painting.TextStyle? labelStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding = null, global::System.Action<bool>? onSelected = null, double? pressElevation = null, bool selected = default!, Color? selectedColor = null, Color? disabledColor = null, string? tooltip = null, global::Doroti.Framework.Painting.BorderSide? side = null, global::Doroti.Framework.Painting.OutlinedBorder? shape = null, Clip clipBehavior = Clip.none, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? color = null, Color? backgroundColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, VisualDensity? visualDensity = null, MaterialTapTargetSize? materialTapTargetSize = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Framework.Widgets.IconThemeData? iconTheme = null, Color? selectedShadowColor = null, bool? showCheckmark = null, Color? checkmarkColor = null, global::Doroti.Framework.Painting.ShapeBorder avatarBorder = default!, global::Doroti.Framework.Rendering.BoxConstraints? avatarBoxConstraints = null, ChipAnimationStyle? chipAnimationStyle = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null) : base(key: key)
     {
-        global::Doroti.Generated.Framework.Painting.ShapeBorder __avatarBorder = avatarBorder ?? new global::Doroti.Generated.Framework.Painting.CircleBorder();
+        global::Doroti.Framework.Painting.ShapeBorder __avatarBorder = avatarBorder ?? new global::Doroti.Framework.Painting.CircleBorder();
         this.avatar = avatar;
         this.label = label;
         this.labelStyle = labelStyle;
@@ -94,10 +94,10 @@ public class ChoiceChip : global::Doroti.Generated.Framework.Widgets.StatelessWi
         System.Diagnostics.Debug.Assert(((elevation is null) || (elevation >= 0.0)));
     }
 
-    public static ChoiceChip CreateElevated(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Widgets.Widget? avatar = null, global::Doroti.Generated.Framework.Widgets.Widget label = default!, global::Doroti.Generated.Framework.Painting.TextStyle? labelStyle = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? labelPadding = null, global::System.Action<bool>? onSelected = null, double? pressElevation = null, bool selected = default!, Color? selectedColor = null, Color? disabledColor = null, string? tooltip = null, global::Doroti.Generated.Framework.Painting.BorderSide? side = null, global::Doroti.Generated.Framework.Painting.OutlinedBorder? shape = null, Clip clipBehavior = Clip.none, global::Doroti.Generated.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color?>? color = null, Color? backgroundColor = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding = null, VisualDensity? visualDensity = null, MaterialTapTargetSize? materialTapTargetSize = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Generated.Framework.Widgets.IconThemeData? iconTheme = null, Color? selectedShadowColor = null, bool? showCheckmark = null, Color? checkmarkColor = null, global::Doroti.Generated.Framework.Painting.ShapeBorder avatarBorder = default!, global::Doroti.Generated.Framework.Rendering.BoxConstraints? avatarBoxConstraints = null, ChipAnimationStyle? chipAnimationStyle = null, global::Doroti.Generated.Framework.Services.MouseCursor? mouseCursor = null)
+    public static ChoiceChip CreateElevated(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.Widget? avatar = null, global::Doroti.Framework.Widgets.Widget label = default!, global::Doroti.Framework.Painting.TextStyle? labelStyle = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding = null, global::System.Action<bool>? onSelected = null, double? pressElevation = null, bool selected = default!, Color? selectedColor = null, Color? disabledColor = null, string? tooltip = null, global::Doroti.Framework.Painting.BorderSide? side = null, global::Doroti.Framework.Painting.OutlinedBorder? shape = null, Clip clipBehavior = Clip.none, global::Doroti.Framework.Widgets.FocusNode? focusNode = null, bool autofocus = false, global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? color = null, Color? backgroundColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, VisualDensity? visualDensity = null, MaterialTapTargetSize? materialTapTargetSize = null, double? elevation = null, Color? shadowColor = null, Color? surfaceTintColor = null, global::Doroti.Framework.Widgets.IconThemeData? iconTheme = null, Color? selectedShadowColor = null, bool? showCheckmark = null, Color? checkmarkColor = null, global::Doroti.Framework.Painting.ShapeBorder avatarBorder = default!, global::Doroti.Framework.Rendering.BoxConstraints? avatarBoxConstraints = null, ChipAnimationStyle? chipAnimationStyle = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null)
     {
         var __instance = new ChoiceChip(key: key, avatar: avatar, label: label, labelStyle: labelStyle, labelPadding: labelPadding, onSelected: onSelected, pressElevation: pressElevation, selected: selected, selectedColor: selectedColor, disabledColor: disabledColor, tooltip: tooltip, side: side, shape: shape, clipBehavior: clipBehavior, focusNode: focusNode, autofocus: autofocus, color: color, backgroundColor: backgroundColor, padding: padding, visualDensity: visualDensity, materialTapTargetSize: materialTapTargetSize, elevation: elevation, shadowColor: shadowColor, surfaceTintColor: surfaceTintColor, iconTheme: iconTheme, selectedShadowColor: selectedShadowColor, showCheckmark: showCheckmark, checkmarkColor: checkmarkColor, avatarBorder: avatarBorder, avatarBoxConstraints: avatarBoxConstraints, chipAnimationStyle: chipAnimationStyle, mouseCursor: mouseCursor);
-        global::Doroti.Generated.Framework.Painting.ShapeBorder __avatarBorder = avatarBorder ?? new global::Doroti.Generated.Framework.Painting.CircleBorder();
+        global::Doroti.Framework.Painting.ShapeBorder __avatarBorder = avatarBorder ?? new global::Doroti.Framework.Painting.CircleBorder();
         __instance.avatar = avatar;
         __instance.label = label;
         __instance.labelStyle = labelStyle;
@@ -134,12 +134,12 @@ public class ChoiceChip : global::Doroti.Generated.Framework.Widgets.StatelessWi
     }
 
     public virtual bool isEnabled => DartRuntimePrimitives.ConvertValue<bool>((this.onSelected is not null));
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
         ChipThemeData chipTheme__6510 = ChipTheme.of(context);
         ChipThemeData? defaults__6570 = ((ChipThemeData?)(object?)(Theme.of(context).useMaterial3 ? new _ChoiceChipDefaultsM3__choice_chip(context, this.isEnabled, this.selected, this._chipVariant) : null));
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new RawChip(defaultProperties: defaults__6570, avatar: this.avatar, label: this.label, labelStyle: (this.labelStyle ?? ((this.selected ? chipTheme__6510.secondaryLabelStyle : null))), labelPadding: this.labelPadding, onSelected: (global::System.Action<bool>?)this.onSelected, pressElevation: this.pressElevation, selected: this.selected, showCheckmark: ((this.showCheckmark ?? chipTheme__6510.showCheckmark) ?? Theme.of(context).useMaterial3), checkmarkColor: this.checkmarkColor, tooltip: this.tooltip, side: this.side, shape: this.shape, clipBehavior: this.clipBehavior, focusNode: this.focusNode, autofocus: this.autofocus, disabledColor: this.disabledColor, selectedColor: (this.selectedColor ?? chipTheme__6510.secondarySelectedColor), color: this.color, backgroundColor: this.backgroundColor, padding: this.padding, visualDensity: this.visualDensity, isEnabled: this.isEnabled, materialTapTargetSize: this.materialTapTargetSize, elevation: this.elevation, shadowColor: this.shadowColor, surfaceTintColor: this.surfaceTintColor, selectedShadowColor: this.selectedShadowColor, avatarBorder: this.avatarBorder, iconTheme: this.iconTheme, avatarBoxConstraints: this.avatarBoxConstraints, chipAnimationStyle: this.chipAnimationStyle, mouseCursor: this.mouseCursor));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new RawChip(defaultProperties: defaults__6570, avatar: this.avatar, label: this.label, labelStyle: (this.labelStyle ?? ((this.selected ? chipTheme__6510.secondaryLabelStyle : null))), labelPadding: this.labelPadding, onSelected: (global::System.Action<bool>?)this.onSelected, pressElevation: this.pressElevation, selected: this.selected, showCheckmark: ((this.showCheckmark ?? chipTheme__6510.showCheckmark) ?? Theme.of(context).useMaterial3), checkmarkColor: this.checkmarkColor, tooltip: this.tooltip, side: this.side, shape: this.shape, clipBehavior: this.clipBehavior, focusNode: this.focusNode, autofocus: this.autofocus, disabledColor: this.disabledColor, selectedColor: (this.selectedColor ?? chipTheme__6510.secondarySelectedColor), color: this.color, backgroundColor: this.backgroundColor, padding: this.padding, visualDensity: this.visualDensity, isEnabled: this.isEnabled, materialTapTargetSize: this.materialTapTargetSize, elevation: this.elevation, shadowColor: this.shadowColor, surfaceTintColor: this.surfaceTintColor, selectedShadowColor: this.selectedShadowColor, avatarBorder: this.avatarBorder, iconTheme: this.iconTheme, avatarBoxConstraints: this.avatarBoxConstraints, chipAnimationStyle: this.chipAnimationStyle, mouseCursor: this.mouseCursor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -147,7 +147,7 @@ public class ChoiceChip : global::Doroti.Generated.Framework.Widgets.StatelessWi
 
 internal class _ChoiceChipDefaultsM3__choice_chip : ChipThemeData
 {
-    public virtual global::Doroti.Generated.Framework.Widgets.BuildContext context { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
     public virtual bool isEnabled { get; private set; } = default!;
     public virtual bool isSelected { get; private set; } = default!;
     internal virtual _ChipVariant__choice_chip _chipVariant { get; private set; } = default!;
@@ -180,7 +180,7 @@ internal class _ChoiceChipDefaultsM3__choice_chip : ChipThemeData
         }
     }
 
-    internal _ChoiceChipDefaultsM3__choice_chip(global::Doroti.Generated.Framework.Widgets.BuildContext context, bool isEnabled, bool isSelected, _ChipVariant__choice_chip _chipVariant) : base(shape: new global::Doroti.Generated.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Generated.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(8.0))), showCheckmark: true)
+    internal _ChoiceChipDefaultsM3__choice_chip(global::Doroti.Framework.Widgets.BuildContext context, bool isEnabled, bool isSelected, _ChipVariant__choice_chip _chipVariant) : base(shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(8.0))), showCheckmark: true)
     {
         this.context = context;
         this.isEnabled = isEnabled;
@@ -190,17 +190,17 @@ internal class _ChoiceChipDefaultsM3__choice_chip : ChipThemeData
 
     public override double? elevation => ((object.Equals(this._chipVariant, _ChipVariant__choice_chip.flat)) ? 0.0 : (this.isEnabled ? 1.0 : 0.0));
     public override double? pressElevation => 1.0;
-    public override global::Doroti.Generated.Framework.Painting.TextStyle? labelStyle => this._textTheme.labelLarge?.copyWith(color: (this.isEnabled ? (this.isSelected ? this._colors.onSecondaryContainer : this._colors.onSurfaceVariant) : this._colors.onSurface));
-    public virtual global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) => {
-if ((states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected) && states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled)))
+    public override global::Doroti.Framework.Painting.TextStyle? labelStyle => this._textTheme.labelLarge?.copyWith(color: (this.isEnabled ? (this.isSelected ? this._colors.onSecondaryContainer : this._colors.onSurfaceVariant) : this._colors.onSurface));
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) => {
+if ((states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected) && states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled)))
 {
     return (((object.Equals(this._chipVariant, _ChipVariant__choice_chip.flat)) ? this._colors.onSurface.withOpacity(0.12) : this._colors.onSurface.withOpacity(0.12)));
 }
-if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.disabled))
+if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
 {
     return (((object.Equals(this._chipVariant, _ChipVariant__choice_chip.flat)) ? null : this._colors.onSurface.withOpacity(0.12)));
 }
-if (states.Contains(global::Doroti.Generated.Framework.Widgets.WidgetState.selected))
+if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
 {
     return (((object.Equals(this._chipVariant, _ChipVariant__choice_chip.flat)) ? this._colors.secondaryContainer : this._colors.secondaryContainer));
 }
@@ -211,16 +211,16 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     public virtual global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
     public virtual global::Doroti.Ui.Color? checkmarkColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>((this.isEnabled ? (this.isSelected ? this._colors.onSecondaryContainer : this._colors.primary) : this._colors.onSurface));
     public virtual global::Doroti.Ui.Color? deleteIconColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>((this.isEnabled ? (this.isSelected ? this._colors.onSecondaryContainer : this._colors.onSurfaceVariant) : this._colors.onSurface));
-    public override global::Doroti.Generated.Framework.Painting.BorderSide? side => (((object.Equals(this._chipVariant, _ChipVariant__choice_chip.flat)) && !this.isSelected) ? (this.isEnabled ? new global::Doroti.Generated.Framework.Painting.BorderSide(color: this._colors.outlineVariant) : new global::Doroti.Generated.Framework.Painting.BorderSide(color: this._colors.onSurface.withOpacity(0.12))) : new global::Doroti.Generated.Framework.Painting.BorderSide(color: Colors.transparent));
-    public override global::Doroti.Generated.Framework.Widgets.IconThemeData? iconTheme => new global::Doroti.Generated.Framework.Widgets.IconThemeData(color: (this.isEnabled ? (this.isSelected ? this._colors.onSecondaryContainer : this._colors.primary) : this._colors.onSurface), size: 18.0);
-    public override global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateAll(8.0));
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? labelPadding
+    public override global::Doroti.Framework.Painting.BorderSide? side => (((object.Equals(this._chipVariant, _ChipVariant__choice_chip.flat)) && !this.isSelected) ? (this.isEnabled ? new global::Doroti.Framework.Painting.BorderSide(color: this._colors.outlineVariant) : new global::Doroti.Framework.Painting.BorderSide(color: this._colors.onSurface.withOpacity(0.12))) : new global::Doroti.Framework.Painting.BorderSide(color: Colors.transparent));
+    public override global::Doroti.Framework.Widgets.IconThemeData? iconTheme => new global::Doroti.Framework.Widgets.IconThemeData(color: (this.isEnabled ? (this.isSelected ? this._colors.onSecondaryContainer : this._colors.primary) : this._colors.onSurface), size: 18.0);
+    public override global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsets.CreateAll(8.0));
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding
     {
         get
         {
             double fontSize__11629 = (this.labelStyle?.fontSize ?? 14.0);
             double fontSizeRatio__11687 = (MediaQuery.textScalerOf(this.context).scale(fontSize__11629) / 14.0);
-            return ((global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry?)(object?)EdgeInsets.lerp(global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8.0), global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4.0), Dart_uiLibrary.clampDouble((fontSizeRatio__11687 - 1.0), 0.0, 1.0))!);
+            return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry?)(object?)EdgeInsets.lerp(global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8.0), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4.0), Dart_uiLibrary.clampDouble((fontSizeRatio__11687 - 1.0), 0.0, 1.0))!);
             return default!;
         }
     }

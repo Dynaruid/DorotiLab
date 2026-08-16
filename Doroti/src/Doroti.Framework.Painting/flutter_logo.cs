@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public enum FlutterLogoStyle
 {
@@ -158,7 +158,7 @@ public class FlutterLogoDecoration : Decoration
         properties.add(new EnumProperty<FlutterLogoStyle>("style", this.style));
         if (this._inTransition)
         {
-            properties.add(new DiagnosticsNode($"transition {(global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugFormatDouble(this._position))}:{(global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugFormatDouble(this._opacity))}"));
+            properties.add(new DiagnosticsNode($"transition {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(this._position))}:{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(this._opacity))}"));
         }
     }
 
@@ -277,7 +277,7 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
             return;
         }
         global::Doroti.Ui.Size logoSize__10676 = (((FlutterLogoDecoration)this._config)._position switch { > 0.0 => new global::Doroti.Ui.Size(820.0, 232.0), < 0.0 => new global::Doroti.Ui.Size(252.0, 306.0), _ => new global::Doroti.Ui.Size(202.0, 202.0) });
-        FittedSizes fittedSize__10918 = global::Doroti.Generated.Framework.Painting.Box_fitLibrary.applyBoxFit(BoxFit.contain, logoSize__10676, canvasSize__10549);
+        FittedSizes fittedSize__10918 = global::Doroti.Framework.Painting.Box_fitLibrary.applyBoxFit(BoxFit.contain, logoSize__10676, canvasSize__10549);
         DartRuntimePrimitives.Assert(() => (object.Equals(((FittedSizes)fittedSize__10918).source, logoSize__10676)));
         global::Doroti.Ui.Rect rect__11040 = Alignment.center.inscribe(((FittedSizes)fittedSize__10918).destination, (offset & canvasSize__10549));
         double centerSquareHeight__11136 = canvasSize__10549.shortestSide;

@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public class ListBodyParentData : ContainerBoxParentData<RenderBox>
 {
@@ -22,12 +22,12 @@ internal delegate double _ChildSizingFunction__list_body(RenderBox child);
 
 public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, ListBodyParentData>, RenderBoxContainerDefaultsMixin<RenderBox, ListBodyParentData>
 {
-    internal virtual global::Doroti.Generated.Framework.Painting.AxisDirection _axisDirection { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Painting.AxisDirection _axisDirection { get; set; } = default!;
     public virtual long _childCount { get; set; } = 0L;
     public virtual RenderBox? _firstChild { get; set; } = default;
     public virtual RenderBox? _lastChild { get; set; } = default;
 
-    public RenderListBody(List<RenderBox>? children = null, global::Doroti.Generated.Framework.Painting.AxisDirection axisDirection = AxisDirection.down)
+    public RenderListBody(List<RenderBox>? children = null, global::Doroti.Framework.Painting.AxisDirection axisDirection = AxisDirection.down)
     {
         this._axisDirection = axisDirection;
     }
@@ -41,7 +41,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
         }
     }
 
-    public virtual global::Doroti.Generated.Framework.Painting.AxisDirection axisDirection
+    public virtual global::Doroti.Framework.Painting.AxisDirection axisDirection
     {
         get => this._axisDirection;
         set
@@ -55,7 +55,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Generated.Framework.Painting.Axis mainAxis => global::Doroti.Generated.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(this.axisDirection);
+    public virtual global::Doroti.Framework.Painting.Axis mainAxis => global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(this.axisDirection);
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         DartRuntimePrimitives.Assert(() => _debugCheckConstraints(constraints));
@@ -63,8 +63,8 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
         Func<RenderBox, RenderBox?> nextChild__2619 = default!;
         switch (this.axisDirection)
         {
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.right:
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.left:
+            case global::Doroti.Framework.Painting.AxisDirection.right:
+            case global::Doroti.Framework.Painting.AxisDirection.left:
                 {
                     var childConstraints__2736 = BoxConstraints.CreateTightFor(height: ((BoxConstraints)constraints).maxHeight);
                     BaselineOffset baselineOffset__2834 = BaselineOffset.noBaseline;
@@ -74,13 +74,13 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
                     }
                     return baselineOffset__2834.offset;
                 }
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.up:
+            case global::Doroti.Framework.Painting.AxisDirection.up:
                 {
                     child__2571 = lastChild;
                     nextChild__2619 = childBefore;
                     break;
                 }
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.down:
+            case global::Doroti.Framework.Painting.AxisDirection.down:
                 {
                     child__2571 = firstChild;
                     nextChild__2619 = childAfter;
@@ -110,8 +110,8 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
         RenderBox? child__3952 = firstChild;
         switch (this.axisDirection)
         {
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.right:
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.left:
+            case global::Doroti.Framework.Painting.AxisDirection.right:
+            case global::Doroti.Framework.Painting.AxisDirection.left:
                 {
                     var innerConstraints__4078 = BoxConstraints.CreateTightFor(height: ((BoxConstraints)constraints).maxHeight);
                     while ((child__3952 is not null))
@@ -122,8 +122,8 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
                     }
                     return constraints.constrain(new global::Doroti.Ui.Size(mainAxisExtent__3915, ((BoxConstraints)constraints).maxHeight));
                 }
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.up:
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.down:
+            case global::Doroti.Framework.Painting.AxisDirection.up:
+            case global::Doroti.Framework.Painting.AxisDirection.down:
                 {
                     var innerConstraints__4505 = BoxConstraints.CreateTightFor(width: ((BoxConstraints)constraints).maxWidth);
                     while ((child__3952 is not null))
@@ -144,7 +144,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
             {
                 switch (this.mainAxis)
                 {
-                    case global::Doroti.Generated.Framework.Painting.Axis.horizontal:
+                    case global::Doroti.Framework.Painting.Axis.horizontal:
                         {
                             if (!((BoxConstraints)constraints).hasBoundedWidth)
                             {
@@ -152,7 +152,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
                             }
                             break;
                         }
-                    case global::Doroti.Generated.Framework.Painting.Axis.vertical:
+                    case global::Doroti.Framework.Painting.Axis.vertical:
                         {
                             if (!((BoxConstraints)constraints).hasBoundedHeight)
                             {
@@ -167,7 +167,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
             {
                 switch (this.mainAxis)
                 {
-                    case global::Doroti.Generated.Framework.Painting.Axis.horizontal:
+                    case global::Doroti.Framework.Painting.Axis.horizontal:
                         {
                             if (((BoxConstraints)constraints).hasBoundedHeight)
                             {
@@ -175,7 +175,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
                             }
                             break;
                         }
-                    case global::Doroti.Generated.Framework.Painting.Axis.vertical:
+                    case global::Doroti.Framework.Painting.Axis.vertical:
                         {
                             if (((BoxConstraints)constraints).hasBoundedWidth)
                             {
@@ -198,7 +198,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
         RenderBox? child__7377 = firstChild;
         switch (this.axisDirection)
         {
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.right:
+            case global::Doroti.Framework.Painting.AxisDirection.right:
                 {
                     var innerConstraints__7472 = BoxConstraints.CreateTightFor(height: ((BoxConstraints)constraints__7251).maxHeight);
                     while ((child__7377 is not null))
@@ -213,7 +213,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
                     size = constraints__7251.constrain(new global::Doroti.Ui.Size(mainAxisExtent__7340, ((BoxConstraints)constraints__7251).maxHeight));
                     break;
                 }
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.left:
+            case global::Doroti.Framework.Painting.AxisDirection.left:
                 {
                     var innerConstraints__8068 = BoxConstraints.CreateTightFor(height: ((BoxConstraints)constraints__7251).maxHeight);
                     while ((child__7377 is not null))
@@ -237,7 +237,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
                     size = constraints__7251.constrain(new global::Doroti.Ui.Size(mainAxisExtent__7340, ((BoxConstraints)constraints__7251).maxHeight));
                     break;
                 }
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.down:
+            case global::Doroti.Framework.Painting.AxisDirection.down:
                 {
                     var innerConstraints__8990 = BoxConstraints.CreateTightFor(width: ((BoxConstraints)constraints__7251).maxWidth);
                     while ((child__7377 is not null))
@@ -252,7 +252,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
                     size = constraints__7251.constrain(new global::Doroti.Ui.Size(((BoxConstraints)constraints__7251).maxWidth, mainAxisExtent__7340));
                     break;
                 }
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.up:
+            case global::Doroti.Framework.Painting.AxisDirection.up:
                 {
                     var innerConstraints__9582 = BoxConstraints.CreateTightFor(width: ((BoxConstraints)constraints__7251).maxWidth);
                     while ((child__7377 is not null))
@@ -283,7 +283,7 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new EnumProperty<global::Doroti.Generated.Framework.Painting.AxisDirection>("axisDirection", this.axisDirection));
+        properties.add(new EnumProperty<global::Doroti.Framework.Painting.AxisDirection>("axisDirection", this.axisDirection));
     }
 
     internal virtual double _getIntrinsicCrossAxis(Func<RenderBox, double> childSize)
@@ -316,25 +316,25 @@ public class RenderListBody : RenderBox, ContainerRenderObjectMixin<RenderBox, L
 
     public override double computeMinIntrinsicWidth(double height)
     {
-        return (this.mainAxis switch { global::Doroti.Generated.Framework.Painting.Axis.horizontal => _getIntrinsicMainAxis(((Func<RenderBox, double>)((child) => child.getMinIntrinsicWidth(height)))), global::Doroti.Generated.Framework.Painting.Axis.vertical => _getIntrinsicCrossAxis(((Func<RenderBox, double>)((child) => child.getMinIntrinsicWidth(height)))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (this.mainAxis switch { global::Doroti.Framework.Painting.Axis.horizontal => _getIntrinsicMainAxis(((Func<RenderBox, double>)((child) => child.getMinIntrinsicWidth(height)))), global::Doroti.Framework.Painting.Axis.vertical => _getIntrinsicCrossAxis(((Func<RenderBox, double>)((child) => child.getMinIntrinsicWidth(height)))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        return (this.mainAxis switch { global::Doroti.Generated.Framework.Painting.Axis.horizontal => _getIntrinsicMainAxis(((Func<RenderBox, double>)((child) => child.getMaxIntrinsicWidth(height)))), global::Doroti.Generated.Framework.Painting.Axis.vertical => _getIntrinsicCrossAxis(((Func<RenderBox, double>)((child) => child.getMaxIntrinsicWidth(height)))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (this.mainAxis switch { global::Doroti.Framework.Painting.Axis.horizontal => _getIntrinsicMainAxis(((Func<RenderBox, double>)((child) => child.getMaxIntrinsicWidth(height)))), global::Doroti.Framework.Painting.Axis.vertical => _getIntrinsicCrossAxis(((Func<RenderBox, double>)((child) => child.getMaxIntrinsicWidth(height)))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
-        return (this.mainAxis switch { global::Doroti.Generated.Framework.Painting.Axis.horizontal => _getIntrinsicMainAxis(((Func<RenderBox, double>)((child) => child.getMinIntrinsicHeight(width)))), global::Doroti.Generated.Framework.Painting.Axis.vertical => _getIntrinsicCrossAxis(((Func<RenderBox, double>)((child) => child.getMinIntrinsicHeight(width)))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (this.mainAxis switch { global::Doroti.Framework.Painting.Axis.horizontal => _getIntrinsicMainAxis(((Func<RenderBox, double>)((child) => child.getMinIntrinsicHeight(width)))), global::Doroti.Framework.Painting.Axis.vertical => _getIntrinsicCrossAxis(((Func<RenderBox, double>)((child) => child.getMinIntrinsicHeight(width)))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
-        return (this.mainAxis switch { global::Doroti.Generated.Framework.Painting.Axis.horizontal => _getIntrinsicMainAxis(((Func<RenderBox, double>)((child) => child.getMaxIntrinsicHeight(width)))), global::Doroti.Generated.Framework.Painting.Axis.vertical => _getIntrinsicCrossAxis(((Func<RenderBox, double>)((child) => child.getMaxIntrinsicHeight(width)))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (this.mainAxis switch { global::Doroti.Framework.Painting.Axis.horizontal => _getIntrinsicMainAxis(((Func<RenderBox, double>)((child) => child.getMaxIntrinsicHeight(width)))), global::Doroti.Framework.Painting.Axis.vertical => _getIntrinsicCrossAxis(((Func<RenderBox, double>)((child) => child.getMaxIntrinsicHeight(width)))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

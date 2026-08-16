@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
 public static partial class ConstantsLibrary
 {
@@ -61,12 +61,12 @@ public static partial class ConstantsLibrary
 
 public static partial class ConstantsLibrary
 {
-    public static global::Doroti.Generated.Framework.Painting.EdgeInsets kTabLabelPadding = global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16.0);
+    public static global::Doroti.Framework.Painting.EdgeInsets kTabLabelPadding = global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16.0);
 }
 
 public static partial class ConstantsLibrary
 {
-    public static global::Doroti.Generated.Framework.Painting.EdgeInsets kMaterialListPadding = global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 8.0);
+    public static global::Doroti.Framework.Painting.EdgeInsets kMaterialListPadding = global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 8.0);
 }
 
 public static partial class ConstantsLibrary

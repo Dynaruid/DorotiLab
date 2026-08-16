@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public enum RenderAnimatedSizeState
 {
@@ -36,7 +36,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
     internal virtual Size _currentSize { get; set; } = default!;
     internal virtual LayerHandle<ClipRectLayer> _clipRectLayer { get; private set; } = new LayerHandle<ClipRectLayer>();
 
-    public RenderAnimatedSize(TickerProvider vsync, Duration duration, Duration? reverseDuration = null, Curve curve = default!, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, RenderBox? child = null, Clip clipBehavior = Clip.hardEdge, Action? onEnd = null) : base(alignment: alignment ?? global::Doroti.Generated.Framework.Painting.Alignment.center, textDirection: textDirection, child: child)
+    public RenderAnimatedSize(TickerProvider vsync, Duration duration, Duration? reverseDuration = null, Curve curve = default!, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, TextDirection? textDirection = null, RenderBox? child = null, Clip clipBehavior = Clip.hardEdge, Action? onEnd = null) : base(alignment: alignment ?? global::Doroti.Framework.Painting.Alignment.center, textDirection: textDirection, child: child)
     {
         Curve __curve = curve ?? Curves.linear;
         this._vsync = vsync;
@@ -356,7 +356,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
 
     internal virtual void _animationStatusListener(AnimationStatus status)
     {
-        if (global::Doroti.Generated.Framework.Animation.AnimationStatusMembers.isCompleted(status))
+        if (global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(status))
         {
             this._onEnd?.Invoke();
         }

@@ -143,46 +143,46 @@ internal static partial class ConverterEngine
             {
                 ArtifactFiles.WriteUtf8(
                     Path.Combine(directory, "Foundation.GlobalUsings.g.cs"),
-                    "global using Doroti.Generated.Framework.Foundation;\n");
+                    "global using Doroti.Framework.Foundation;\n");
             }
             if (manifest.FrameworkMilestone is "G4-4" or "G4-5" or "G5-3" or "G5-4")
             {
                 ArtifactFiles.WriteUtf8(
                     Path.Combine(directory, "SchedulerServices.GlobalUsings.g.cs"),
-                    "global using Doroti.Generated.Framework.Scheduler;\nglobal using Doroti.Generated.Framework.Services;\nglobal using Timer = Doroti.Runtime.Timer;\n");
+                    "global using Doroti.Framework.Scheduler;\nglobal using Doroti.Framework.Services;\nglobal using Timer = Doroti.Runtime.Timer;\n");
             }
             if (manifest.FrameworkMilestone is "G4-5" or "G5-3" or "G5-4")
             {
                 ArtifactFiles.WriteUtf8(
                     Path.Combine(directory, "G45.GlobalUsings.g.cs"),
-                    "global using Doroti.Generated.Framework.Physics;\n" +
-                    "global using Doroti.Generated.Framework.Animation;\n" +
-                    "global using Doroti.Generated.Framework.Gestures;\n" +
+                    "global using Doroti.Framework.Physics;\n" +
+                    "global using Doroti.Framework.Animation;\n" +
+                    "global using Doroti.Framework.Gestures;\n" +
                     "global using Path = Doroti.Ui.Path;\n" +
-                    "global using PointerEvent = Doroti.Generated.Framework.Gestures.PointerEvent;\n" +
-                    "global using PointerDownEvent = Doroti.Generated.Framework.Gestures.PointerDownEvent;\n" +
-                    "global using PointerEnterEvent = Doroti.Generated.Framework.Gestures.PointerEnterEvent;\n" +
-                    "global using PointerExitEvent = Doroti.Generated.Framework.Gestures.PointerExitEvent;\n");
+                    "global using PointerEvent = Doroti.Framework.Gestures.PointerEvent;\n" +
+                    "global using PointerDownEvent = Doroti.Framework.Gestures.PointerDownEvent;\n" +
+                    "global using PointerEnterEvent = Doroti.Framework.Gestures.PointerEnterEvent;\n" +
+                    "global using PointerExitEvent = Doroti.Framework.Gestures.PointerExitEvent;\n");
             }
             if (manifest.FrameworkMilestone is "G5-3" or "G5-4")
             {
                 ArtifactFiles.WriteUtf8(
                     Path.Combine(directory, "G53.GlobalUsings.g.cs"),
-                    "global using Doroti.Generated.Framework.Painting;\n" +
-                    "global using Doroti.Generated.Framework.Rendering;\n" +
-                    "global using Doroti.Generated.Framework.Semantics;\n" +
-                    "global using TextStyle = Doroti.Generated.Framework.Painting.TextStyle;\n" +
-                    "global using StrutStyle = Doroti.Generated.Framework.Painting.StrutStyle;\n" +
-                    "global using PointerUpEvent = Doroti.Generated.Framework.Gestures.PointerUpEvent;\n" +
-                    "global using PointerHoverEvent = Doroti.Generated.Framework.Gestures.PointerHoverEvent;\n" +
-                    "global using PointerCancelEvent = Doroti.Generated.Framework.Gestures.PointerCancelEvent;\n" +
-                    "global using PointerMoveEvent = Doroti.Generated.Framework.Gestures.PointerMoveEvent;\n");
+                    "global using Doroti.Framework.Painting;\n" +
+                    "global using Doroti.Framework.Rendering;\n" +
+                    "global using Doroti.Framework.Semantics;\n" +
+                    "global using TextStyle = Doroti.Framework.Painting.TextStyle;\n" +
+                    "global using StrutStyle = Doroti.Framework.Painting.StrutStyle;\n" +
+                    "global using PointerUpEvent = Doroti.Framework.Gestures.PointerUpEvent;\n" +
+                    "global using PointerHoverEvent = Doroti.Framework.Gestures.PointerHoverEvent;\n" +
+                    "global using PointerCancelEvent = Doroti.Framework.Gestures.PointerCancelEvent;\n" +
+                    "global using PointerMoveEvent = Doroti.Framework.Gestures.PointerMoveEvent;\n");
             }
             if (manifest.FrameworkMilestone == "G5-4")
             {
                 ArtifactFiles.WriteUtf8(
                     Path.Combine(directory, "G54.GlobalUsings.g.cs"),
-                    "global using Doroti.Generated.Framework.Widgets;\n");
+                    "global using Doroti.Framework.Widgets;\n");
             }
             if (references.Length > 0)
             {
@@ -213,7 +213,7 @@ internal static partial class ConverterEngine
             </Project>
             """ + "\n");
         ArtifactFiles.WriteUtf8(
-            Path.Combine(outputDirectory, "Doroti.Generated.Framework.slnx"),
+            Path.Combine(outputDirectory, "Doroti.Framework.slnx"),
             "<Solution>\n" + string.Join('\n', emittedPartitions.Select(partition =>
                 $"  <Project Path=\"projects/{partition}/{manifest.OutputAssemblyName}.{partition}.csproj\" />")) + "\n</Solution>\n");
 

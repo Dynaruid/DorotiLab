@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public delegate Offset PointTransformer(Offset position);
 
@@ -172,7 +172,7 @@ public class AndroidPointerProperties
     internal virtual List<long> _asList() => new List<long> { id, toolType };
     public override string ToString()
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "AndroidPointerProperties"))}(id: {id}, toolType: {toolType})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "AndroidPointerProperties"))}(id: {id}, toolType: {toolType})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -211,7 +211,7 @@ public class AndroidPointerCoords
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "AndroidPointerCoords"))}(orientation: {orientation}, pressure: {pressure}, size: {size}, toolMajor: {toolMajor}, toolMinor: {toolMinor}, touchMajor: {touchMajor}, touchMinor: {touchMinor}, x: {x}, y: {y})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "AndroidPointerCoords"))}(orientation: {orientation}, pressure: {pressure}, size: {size}, toolMajor: {toolMajor}, toolMinor: {toolMinor}, touchMajor: {touchMajor}, touchMinor: {touchMinor}, x: {x}, y: {y})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

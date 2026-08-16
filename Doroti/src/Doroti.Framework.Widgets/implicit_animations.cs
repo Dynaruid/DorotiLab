@@ -12,63 +12,63 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
-public class BoxConstraintsTween : global::Doroti.Generated.Framework.Animation.Tween<global::Doroti.Generated.Framework.Rendering.BoxConstraints>
+public class BoxConstraintsTween : global::Doroti.Framework.Animation.Tween<global::Doroti.Framework.Rendering.BoxConstraints>
 {
-    public BoxConstraintsTween(global::Doroti.Generated.Framework.Rendering.BoxConstraints? begin = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? end = null) : base(begin: begin, end: end)
+    public BoxConstraintsTween(global::Doroti.Framework.Rendering.BoxConstraints? begin = null, global::Doroti.Framework.Rendering.BoxConstraints? end = null) : base(begin: begin, end: end)
     {
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.BoxConstraints lerp(double t) => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Rendering.BoxConstraints>(BoxConstraints.lerp(this.begin, this.end, t)!);
+    public override global::Doroti.Framework.Rendering.BoxConstraints lerp(double t) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.BoxConstraints>(BoxConstraints.lerp(this.begin, this.end, t)!);
 }
 
-public class DecorationTween : global::Doroti.Generated.Framework.Animation.Tween<global::Doroti.Generated.Framework.Painting.Decoration>
+public class DecorationTween : global::Doroti.Framework.Animation.Tween<global::Doroti.Framework.Painting.Decoration>
 {
-    public DecorationTween(global::Doroti.Generated.Framework.Painting.Decoration? begin = null, global::Doroti.Generated.Framework.Painting.Decoration? end = null) : base(begin: begin, end: end)
+    public DecorationTween(global::Doroti.Framework.Painting.Decoration? begin = null, global::Doroti.Framework.Painting.Decoration? end = null) : base(begin: begin, end: end)
     {
     }
 
-    public override global::Doroti.Generated.Framework.Painting.Decoration lerp(double t) => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Painting.Decoration>(Decoration.lerp(this.begin, this.end, t)!);
+    public override global::Doroti.Framework.Painting.Decoration lerp(double t) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.Decoration>(Decoration.lerp(this.begin, this.end, t)!);
 }
 
-public class EdgeInsetsTween : global::Doroti.Generated.Framework.Animation.Tween<global::Doroti.Generated.Framework.Painting.EdgeInsets>
+public class EdgeInsetsTween : global::Doroti.Framework.Animation.Tween<global::Doroti.Framework.Painting.EdgeInsets>
 {
-    public EdgeInsetsTween(global::Doroti.Generated.Framework.Painting.EdgeInsets? begin = null, global::Doroti.Generated.Framework.Painting.EdgeInsets? end = null) : base(begin: begin, end: end)
+    public EdgeInsetsTween(global::Doroti.Framework.Painting.EdgeInsets? begin = null, global::Doroti.Framework.Painting.EdgeInsets? end = null) : base(begin: begin, end: end)
     {
     }
 
-    public override global::Doroti.Generated.Framework.Painting.EdgeInsets lerp(double t) => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Painting.EdgeInsets>(EdgeInsets.lerp(this.begin, this.end, t)!);
+    public override global::Doroti.Framework.Painting.EdgeInsets lerp(double t) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsets>(EdgeInsets.lerp(this.begin, this.end, t)!);
 }
 
-public class EdgeInsetsGeometryTween : global::Doroti.Generated.Framework.Animation.Tween<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry>
+public class EdgeInsetsGeometryTween : global::Doroti.Framework.Animation.Tween<global::Doroti.Framework.Painting.EdgeInsetsGeometry>
 {
-    public EdgeInsetsGeometryTween(global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? begin = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? end = null) : base(begin: begin, end: end)
+    public EdgeInsetsGeometryTween(global::Doroti.Framework.Painting.EdgeInsetsGeometry? begin = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? end = null) : base(begin: begin, end: end)
     {
     }
 
-    public override global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry lerp(double t) => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry>(EdgeInsetsGeometry.lerp(this.begin, this.end, t)!);
+    public override global::Doroti.Framework.Painting.EdgeInsetsGeometry lerp(double t) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(EdgeInsetsGeometry.lerp(this.begin, this.end, t)!);
 }
 
-public class BorderRadiusTween : global::Doroti.Generated.Framework.Animation.Tween<global::Doroti.Generated.Framework.Painting.BorderRadius?>
+public class BorderRadiusTween : global::Doroti.Framework.Animation.Tween<global::Doroti.Framework.Painting.BorderRadius?>
 {
-    public BorderRadiusTween(global::Doroti.Generated.Framework.Painting.BorderRadius? begin = null, global::Doroti.Generated.Framework.Painting.BorderRadius? end = null) : base(begin: begin, end: end)
+    public BorderRadiusTween(global::Doroti.Framework.Painting.BorderRadius? begin = null, global::Doroti.Framework.Painting.BorderRadius? end = null) : base(begin: begin, end: end)
     {
     }
 
-    public override global::Doroti.Generated.Framework.Painting.BorderRadius? lerp(double t) => BorderRadius.lerp(this.begin, this.end, t);
+    public override global::Doroti.Framework.Painting.BorderRadius? lerp(double t) => BorderRadius.lerp(this.begin, this.end, t);
 }
 
-public class BorderTween : global::Doroti.Generated.Framework.Animation.Tween<global::Doroti.Generated.Framework.Painting.Border?>
+public class BorderTween : global::Doroti.Framework.Animation.Tween<global::Doroti.Framework.Painting.Border?>
 {
-    public BorderTween(global::Doroti.Generated.Framework.Painting.Border? begin = null, global::Doroti.Generated.Framework.Painting.Border? end = null) : base(begin: begin, end: end)
+    public BorderTween(global::Doroti.Framework.Painting.Border? begin = null, global::Doroti.Framework.Painting.Border? end = null) : base(begin: begin, end: end)
     {
     }
 
-    public override global::Doroti.Generated.Framework.Painting.Border? lerp(double t) => Border.lerp(this.begin, this.end, t);
+    public override global::Doroti.Framework.Painting.Border? lerp(double t) => Border.lerp(this.begin, this.end, t);
 }
 
-public class Matrix4Tween : global::Doroti.Generated.Framework.Animation.Tween<Matrix4>
+public class Matrix4Tween : global::Doroti.Framework.Animation.Tween<Matrix4>
 {
     public Matrix4Tween(Matrix4? begin = null, Matrix4? end = null) : base(begin: begin, end: end)
     {
@@ -95,61 +95,61 @@ public class Matrix4Tween : global::Doroti.Generated.Framework.Animation.Tween<M
 
 }
 
-public class TextStyleTween : global::Doroti.Generated.Framework.Animation.Tween<global::Doroti.Generated.Framework.Painting.TextStyle>
+public class TextStyleTween : global::Doroti.Framework.Animation.Tween<global::Doroti.Framework.Painting.TextStyle>
 {
-    public TextStyleTween(global::Doroti.Generated.Framework.Painting.TextStyle? begin = null, global::Doroti.Generated.Framework.Painting.TextStyle? end = null) : base(begin: begin, end: end)
+    public TextStyleTween(global::Doroti.Framework.Painting.TextStyle? begin = null, global::Doroti.Framework.Painting.TextStyle? end = null) : base(begin: begin, end: end)
     {
     }
 
-    public override global::Doroti.Generated.Framework.Painting.TextStyle lerp(double t) => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Painting.TextStyle>(TextStyle.lerp(this.begin, this.end, t)!);
+    public override global::Doroti.Framework.Painting.TextStyle lerp(double t) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.TextStyle>(TextStyle.lerp(this.begin, this.end, t)!);
 }
 
 public abstract class ImplicitlyAnimatedWidget : StatefulWidget
 {
-    public virtual global::Doroti.Generated.Framework.Animation.Curve curve { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Animation.Curve curve { get; private set; } = default!;
     public virtual Duration duration { get; private set; } = default!;
     public virtual global::System.Action? onEnd { get; private set; }
 
-    protected ImplicitlyAnimatedWidget(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key)
+    protected ImplicitlyAnimatedWidget(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key)
     {
-        global::Doroti.Generated.Framework.Animation.Curve __curve = curve ?? global::Doroti.Generated.Framework.Animation.Curves.linear;
+        global::Doroti.Framework.Animation.Curve __curve = curve ?? global::Doroti.Framework.Animation.Curves.linear;
         this.curve = __curve;
         this.duration = duration;
         this.onEnd = onEnd;
     }
 
     public abstract override IState createState();
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.IntProperty("duration", this.duration.inMilliseconds, unit: "ms"));
+        properties.add(new global::Doroti.Framework.Foundation.IntProperty("duration", this.duration.inMilliseconds, unit: "ms"));
     }
 
 }
 
-public delegate global::Doroti.Generated.Framework.Animation.Tween<T> TweenConstructor<T>(T targetValue);
+public delegate global::Doroti.Framework.Animation.Tween<T> TweenConstructor<T>(T targetValue);
 
-public delegate global::Doroti.Generated.Framework.Animation.Tween<T>? TweenVisitor<T>(global::Doroti.Generated.Framework.Animation.Tween<T>? tween, T targetValue, global::System.Func<T, global::Doroti.Generated.Framework.Animation.Tween<T>> constructor);
+public delegate global::Doroti.Framework.Animation.Tween<T>? TweenVisitor<T>(global::Doroti.Framework.Animation.Tween<T>? tween, T targetValue, global::System.Func<T, global::Doroti.Framework.Animation.Tween<T>> constructor);
 
 public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerProviderStateMixin<T> where T : ImplicitlyAnimatedWidget
 {
     private bool __late_controller_initialized;
-    private global::Doroti.Generated.Framework.Animation.AnimationController __late_controller = default!;
-    public virtual global::Doroti.Generated.Framework.Animation.AnimationController controller
+    private global::Doroti.Framework.Animation.AnimationController __late_controller = default!;
+    public virtual global::Doroti.Framework.Animation.AnimationController controller
     {
         get
         {
             if (!__late_controller_initialized)
             {
-                __late_controller = new global::Doroti.Generated.Framework.Animation.AnimationController(duration: ((ImplicitlyAnimatedWidget)(object)this.widget).duration, debugLabel: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kDebugMode ? ((Diagnosticable)this.widget).toStringShort() : null), vsync: this);
+                __late_controller = new global::Doroti.Framework.Animation.AnimationController(duration: ((ImplicitlyAnimatedWidget)(object)this.widget).duration, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? ((Diagnosticable)this.widget).toStringShort() : null), vsync: this);
                 __late_controller_initialized = true;
             }
             return __late_controller;
         }
     }
     private bool __late__animation_initialized;
-    private global::Doroti.Generated.Framework.Animation.CurvedAnimation __late__animation = default!;
-    internal virtual global::Doroti.Generated.Framework.Animation.CurvedAnimation _animation
+    private global::Doroti.Framework.Animation.CurvedAnimation __late__animation = default!;
+    internal virtual global::Doroti.Framework.Animation.CurvedAnimation _animation
     {
         get
         {
@@ -162,15 +162,15 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
         }
         set { __late__animation = value; __late__animation_initialized = true; }
     }
-    public virtual global::Doroti.Generated.Framework.Scheduler.Ticker? _ticker { get; set; } = default;
-    public virtual global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
+    public virtual global::Doroti.Framework.Scheduler.Ticker? _ticker { get; set; } = default;
+    public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
-    public virtual global::Doroti.Generated.Framework.Animation.Animation<double> animation => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Animation.Animation<double>>(this._animation);
+    public virtual global::Doroti.Framework.Animation.Animation<double> animation => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(this._animation);
     public override void initState()
     {
         base.initState();
         this.controller.addStatusListener(((AnimationStatusListener)((status) => {
-if (global::Doroti.Generated.Framework.Animation.AnimationStatusMembers.isCompleted(status))
+if (global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(status))
 {
     ((ImplicitlyAnimatedWidget)(object)this.widget).onEnd?.Invoke();
 }
@@ -190,8 +190,8 @@ if (global::Doroti.Generated.Framework.Animation.AnimationStatusMembers.isComple
         this.controller.duration = ((ImplicitlyAnimatedWidget)(object)this.widget).duration;
         if (_constructTweens())
         {
-            forEachTween(((global::System.Func<global::Doroti.Generated.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Generated.Framework.Animation.IDartTween>, global::Doroti.Generated.Framework.Animation.IDartTween?>)((tween, targetValue, constructor) => {
-return ((Func<global::Doroti.Generated.Framework.Animation.IDartTween?>)(() =>
+            forEachTween(((global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?>)((tween, targetValue, constructor) => {
+return ((Func<global::Doroti.Framework.Animation.IDartTween?>)(() =>
 {            var __cascade = tween;
             if (__cascade is null) return null;
             __cascade.begin = tween.evaluate(this._animation);
@@ -204,9 +204,9 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         }
     }
 
-    internal virtual global::Doroti.Generated.Framework.Animation.CurvedAnimation _createCurve()
+    internal virtual global::Doroti.Framework.Animation.CurvedAnimation _createCurve()
     {
-        return new global::Doroti.Generated.Framework.Animation.CurvedAnimation(parent: this.controller, curve: ((ImplicitlyAnimatedWidget)(object)this.widget).curve);
+        return new global::Doroti.Framework.Animation.CurvedAnimation(parent: this.controller, curve: ((ImplicitlyAnimatedWidget)(object)this.widget).curve);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -220,7 +220,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         this._tickerModeNotifier?.removeListener(() => this._updateTicker());
@@ -231,7 +231,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     internal virtual bool _constructTweens()
     {
         var shouldStartAnimation__16124 = false;
-        forEachTween(((global::System.Func<global::Doroti.Generated.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Generated.Framework.Animation.IDartTween>, global::Doroti.Generated.Framework.Animation.IDartTween?>)((tween, targetValue, constructor) => {
+        forEachTween(((global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?>)((tween, targetValue, constructor) => {
 if ((targetValue is not null))
 {
     tween ??= constructor(targetValue);
@@ -255,12 +255,12 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public abstract void forEachTween(global::System.Func<global::Doroti.Generated.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Generated.Framework.Animation.IDartTween>, global::Doroti.Generated.Framework.Animation.IDartTween?> visitor);
+    public abstract void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor);
     public virtual void didUpdateTweens()
     {
     }
 
-    public virtual global::Doroti.Generated.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
+    public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -268,10 +268,10 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._ticker = new global::Doroti.Generated.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
         _updateTickerModeNotifier();
         _updateTicker();
         return this._ticker!;
@@ -297,7 +297,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
         if ((object.Equals(newNotifier__15400, this._tickerModeNotifier)))
         {
             return;
@@ -307,11 +307,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         this._tickerModeNotifier = newNotifier__15400;
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         string? tickerDescription__15805 = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
     }
 
 }
@@ -335,17 +335,17 @@ public abstract class AnimatedWidgetBaseState<T> : ImplicitlyAnimatedWidgetState
 public class AnimatedContainer : ImplicitlyAnimatedWidget
 {
     public virtual Widget? child { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry? alignment { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.Decoration? decoration { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.Decoration? foregroundDecoration { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? margin { get; private set; }
+    public virtual global::Doroti.Framework.Painting.AlignmentGeometry? alignment { get; private set; }
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
+    public virtual global::Doroti.Framework.Painting.Decoration? decoration { get; private set; }
+    public virtual global::Doroti.Framework.Painting.Decoration? foregroundDecoration { get; private set; }
+    public virtual global::Doroti.Framework.Rendering.BoxConstraints? constraints { get; private set; }
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? margin { get; private set; }
     public virtual Matrix4? transform { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry? transformAlignment { get; private set; }
+    public virtual global::Doroti.Framework.Painting.AlignmentGeometry? transformAlignment { get; private set; }
     public virtual Clip clipBehavior { get; private set; } = default!;
 
-    public AnimatedContainer(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry? alignment = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding = null, Color? color = null, global::Doroti.Generated.Framework.Painting.Decoration? decoration = null, global::Doroti.Generated.Framework.Painting.Decoration? foregroundDecoration = null, double? width = null, double? height = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? margin = null, Matrix4? transform = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry? transformAlignment = null, Widget? child = null, Clip clipBehavior = Clip.none, global::Doroti.Generated.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Generated.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedContainer(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, Color? color = null, global::Doroti.Framework.Painting.Decoration? decoration = null, global::Doroti.Framework.Painting.Decoration? foregroundDecoration = null, double? width = null, double? height = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? margin = null, Matrix4? transform = null, global::Doroti.Framework.Painting.AlignmentGeometry? transformAlignment = null, Widget? child = null, Clip clipBehavior = Clip.none, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.alignment = alignment;
         this.padding = padding;
@@ -355,94 +355,94 @@ public class AnimatedContainer : ImplicitlyAnimatedWidget
         this.transformAlignment = transformAlignment;
         this.child = child;
         this.clipBehavior = clipBehavior;
-        this.decoration = (decoration ?? (((color is not null) ? new global::Doroti.Generated.Framework.Painting.BoxDecoration(color: color) : null)));
-        this.constraints = ((((width is not null) || (height is not null))) ? (constraints?.tighten(width: width, height: height) ?? global::Doroti.Generated.Framework.Rendering.BoxConstraints.CreateTightFor(width: width, height: height)) : constraints);
-        System.Diagnostics.Debug.Assert(((margin is null) || ((global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry)margin).isNonNegative));
-        System.Diagnostics.Debug.Assert(((padding is null) || ((global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry)padding).isNonNegative));
+        this.decoration = (decoration ?? (((color is not null) ? new global::Doroti.Framework.Painting.BoxDecoration(color: color) : null)));
+        this.constraints = ((((width is not null) || (height is not null))) ? (constraints?.tighten(width: width, height: height) ?? global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(width: width, height: height)) : constraints);
+        System.Diagnostics.Debug.Assert(((margin is null) || ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)margin).isNonNegative));
+        System.Diagnostics.Debug.Assert(((padding is null) || ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)padding).isNonNegative));
         System.Diagnostics.Debug.Assert(((decoration is null) || decoration.debugAssertIsValid()));
         System.Diagnostics.Debug.Assert(((constraints is null) || constraints.debugAssertIsValid()));
         System.Diagnostics.Debug.Assert(((color is null) || (decoration is null)));
     }
 
     public override AnimatedWidgetBaseState<AnimatedContainer> createState() => DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedContainer>>(new _AnimatedContainerState__implicit_animations());
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, showName: false, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.Decoration>("bg", this.decoration, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.Decoration>("fg", this.foregroundDecoration, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Rendering.BoxConstraints>("constraints", this.constraints, defaultValue: null, showName: false));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry>("margin", this.margin, defaultValue: null));
-        properties.add(global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<Matrix4>.CreateHas("transform", this.transform));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.AlignmentGeometry>("transformAlignment", this.transformAlignment, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, showName: false, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>("bg", this.decoration, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>("fg", this.foregroundDecoration, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.BoxConstraints>("constraints", this.constraints, defaultValue: null, showName: false));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("margin", this.margin, defaultValue: null));
+        properties.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<Matrix4>.CreateHas("transform", this.transform));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("transformAlignment", this.transformAlignment, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Clip>("clipBehavior", this.clipBehavior));
     }
 
 }
 
 internal class _AnimatedContainerState__implicit_animations : AnimatedWidgetBaseState<AnimatedContainer>
 {
-    internal virtual global::Doroti.Generated.Framework.Rendering.AlignmentGeometryTween? _alignment { get; set; } = default;
+    internal virtual global::Doroti.Framework.Rendering.AlignmentGeometryTween? _alignment { get; set; } = default;
     internal virtual EdgeInsetsGeometryTween? _padding { get; set; } = default;
     internal virtual DecorationTween? _decoration { get; set; } = default;
     internal virtual DecorationTween? _foregroundDecoration { get; set; } = default;
     internal virtual BoxConstraintsTween? _constraints { get; set; } = default;
     internal virtual EdgeInsetsGeometryTween? _margin { get; set; } = default;
     internal virtual Matrix4Tween? _transform { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Rendering.AlignmentGeometryTween? _transformAlignment { get; set; } = default;
+    internal virtual global::Doroti.Framework.Rendering.AlignmentGeometryTween? _transformAlignment { get; set; } = default;
 
-    public override void forEachTween(global::System.Func<global::Doroti.Generated.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Generated.Framework.Animation.IDartTween>, global::Doroti.Generated.Framework.Animation.IDartTween?> visitor)
+    public override void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor)
     {
-        _alignment = ((global::Doroti.Generated.Framework.Rendering.AlignmentGeometryTween?)(object?)visitor(this._alignment, ((AnimatedContainer)(object)this.widget).alignment, ((value) => new global::Doroti.Generated.Framework.Rendering.AlignmentGeometryTween(begin: ((global::Doroti.Generated.Framework.Painting.AlignmentGeometry?)(object?)value)!))))!;
-        _padding = ((EdgeInsetsGeometryTween?)(object?)visitor(this._padding, ((AnimatedContainer)(object)this.widget).padding, ((value) => new EdgeInsetsGeometryTween(begin: ((global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry?)(object?)value)!))))!;
-        _decoration = ((DecorationTween?)(object?)visitor(this._decoration, ((AnimatedContainer)(object)this.widget).decoration, ((value) => new DecorationTween(begin: ((global::Doroti.Generated.Framework.Painting.Decoration?)(object?)value)!))))!;
-        _foregroundDecoration = ((DecorationTween?)(object?)visitor(this._foregroundDecoration, ((AnimatedContainer)(object)this.widget).foregroundDecoration, ((value) => new DecorationTween(begin: ((global::Doroti.Generated.Framework.Painting.Decoration?)(object?)value)!))))!;
-        _constraints = ((BoxConstraintsTween?)(object?)visitor(this._constraints, ((AnimatedContainer)(object)this.widget).constraints, ((value) => new BoxConstraintsTween(begin: ((global::Doroti.Generated.Framework.Rendering.BoxConstraints?)(object?)value)!))))!;
-        _margin = ((EdgeInsetsGeometryTween?)(object?)visitor(this._margin, ((AnimatedContainer)(object)this.widget).margin, ((value) => new EdgeInsetsGeometryTween(begin: ((global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry?)(object?)value)!))))!;
+        _alignment = ((global::Doroti.Framework.Rendering.AlignmentGeometryTween?)(object?)visitor(this._alignment, ((AnimatedContainer)(object)this.widget).alignment, ((value) => new global::Doroti.Framework.Rendering.AlignmentGeometryTween(begin: ((global::Doroti.Framework.Painting.AlignmentGeometry?)(object?)value)!))))!;
+        _padding = ((EdgeInsetsGeometryTween?)(object?)visitor(this._padding, ((AnimatedContainer)(object)this.widget).padding, ((value) => new EdgeInsetsGeometryTween(begin: ((global::Doroti.Framework.Painting.EdgeInsetsGeometry?)(object?)value)!))))!;
+        _decoration = ((DecorationTween?)(object?)visitor(this._decoration, ((AnimatedContainer)(object)this.widget).decoration, ((value) => new DecorationTween(begin: ((global::Doroti.Framework.Painting.Decoration?)(object?)value)!))))!;
+        _foregroundDecoration = ((DecorationTween?)(object?)visitor(this._foregroundDecoration, ((AnimatedContainer)(object)this.widget).foregroundDecoration, ((value) => new DecorationTween(begin: ((global::Doroti.Framework.Painting.Decoration?)(object?)value)!))))!;
+        _constraints = ((BoxConstraintsTween?)(object?)visitor(this._constraints, ((AnimatedContainer)(object)this.widget).constraints, ((value) => new BoxConstraintsTween(begin: ((global::Doroti.Framework.Rendering.BoxConstraints?)(object?)value)!))))!;
+        _margin = ((EdgeInsetsGeometryTween?)(object?)visitor(this._margin, ((AnimatedContainer)(object)this.widget).margin, ((value) => new EdgeInsetsGeometryTween(begin: ((global::Doroti.Framework.Painting.EdgeInsetsGeometry?)(object?)value)!))))!;
         _transform = ((Matrix4Tween?)(object?)visitor(this._transform, ((AnimatedContainer)(object)this.widget).transform, ((value) => new Matrix4Tween(begin: ((Matrix4?)(object?)value)!))))!;
-        _transformAlignment = ((global::Doroti.Generated.Framework.Rendering.AlignmentGeometryTween?)(object?)visitor(this._transformAlignment, ((AnimatedContainer)(object)this.widget).transformAlignment, ((value) => new global::Doroti.Generated.Framework.Rendering.AlignmentGeometryTween(begin: ((global::Doroti.Generated.Framework.Painting.AlignmentGeometry?)(object?)value)!))))!;
+        _transformAlignment = ((global::Doroti.Framework.Rendering.AlignmentGeometryTween?)(object?)visitor(this._transformAlignment, ((AnimatedContainer)(object)this.widget).transformAlignment, ((value) => new global::Doroti.Framework.Rendering.AlignmentGeometryTween(begin: ((global::Doroti.Framework.Painting.AlignmentGeometry?)(object?)value)!))))!;
     }
 
     public override Widget build(BuildContext context)
     {
-        global::Doroti.Generated.Framework.Animation.Animation<double> animation__31381 = this.animation;
+        global::Doroti.Framework.Animation.Animation<double> animation__31381 = this.animation;
         return ((Widget)(object?)new Container(alignment: this._alignment?.evaluate(animation__31381), padding: this._padding?.evaluate(animation__31381), decoration: this._decoration?.evaluate(animation__31381), foregroundDecoration: this._foregroundDecoration?.evaluate(animation__31381), constraints: this._constraints?.evaluate(animation__31381), margin: this._margin?.evaluate(animation__31381), transform: this._transform?.evaluate(animation__31381), transformAlignment: this._transformAlignment?.evaluate(animation__31381), clipBehavior: ((AnimatedContainer)(object)this.widget).clipBehavior, child: ((AnimatedContainer)(object)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder description)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Rendering.AlignmentGeometryTween>("alignment", this._alignment, showName: false, defaultValue: null));
-        description.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<EdgeInsetsGeometryTween>("padding", this._padding, defaultValue: null));
-        description.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<DecorationTween>("bg", this._decoration, defaultValue: null));
-        description.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<DecorationTween>("fg", this._foregroundDecoration, defaultValue: null));
-        description.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<BoxConstraintsTween>("constraints", this._constraints, showName: false, defaultValue: null));
-        description.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<EdgeInsetsGeometryTween>("margin", this._margin, defaultValue: null));
-        description.add(global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<Matrix4Tween>.CreateHas("transform", this._transform));
-        description.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Rendering.AlignmentGeometryTween>("transformAlignment", this._transformAlignment, defaultValue: null));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.AlignmentGeometryTween>("alignment", this._alignment, showName: false, defaultValue: null));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<EdgeInsetsGeometryTween>("padding", this._padding, defaultValue: null));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DecorationTween>("bg", this._decoration, defaultValue: null));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DecorationTween>("fg", this._foregroundDecoration, defaultValue: null));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BoxConstraintsTween>("constraints", this._constraints, showName: false, defaultValue: null));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<EdgeInsetsGeometryTween>("margin", this._margin, defaultValue: null));
+        description.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<Matrix4Tween>.CreateHas("transform", this._transform));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.AlignmentGeometryTween>("transformAlignment", this._transformAlignment, defaultValue: null));
     }
 
 }
 
 public class AnimatedPadding : ImplicitlyAnimatedWidget
 {
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry padding { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry padding { get; private set; } = default!;
     public virtual Widget? child { get; private set; }
 
-    public AnimatedPadding(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry padding = default!, Widget? child = null, global::Doroti.Generated.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Generated.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedPadding(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry padding = default!, Widget? child = null, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.padding = padding;
         this.child = child;
-        System.Diagnostics.Debug.Assert(((global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry)padding).isNonNegative);
+        System.Diagnostics.Debug.Assert(((global::Doroti.Framework.Painting.EdgeInsetsGeometry)padding).isNonNegative);
     }
 
     public override AnimatedWidgetBaseState<AnimatedPadding> createState() => DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedPadding>>(new _AnimatedPaddingState__implicit_animations());
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding));
     }
 
 }
@@ -451,33 +451,33 @@ internal class _AnimatedPaddingState__implicit_animations : AnimatedWidgetBaseSt
 {
     internal virtual EdgeInsetsGeometryTween? _padding { get; set; } = default;
 
-    public override void forEachTween(global::System.Func<global::Doroti.Generated.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Generated.Framework.Animation.IDartTween>, global::Doroti.Generated.Framework.Animation.IDartTween?> visitor)
+    public override void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor)
     {
-        _padding = ((EdgeInsetsGeometryTween?)(object?)visitor(this._padding, ((AnimatedPadding)(object)this.widget).padding, ((value) => new EdgeInsetsGeometryTween(begin: ((global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry?)(object?)value)!))))!;
+        _padding = ((EdgeInsetsGeometryTween?)(object?)visitor(this._padding, ((AnimatedPadding)(object)this.widget).padding, ((value) => new EdgeInsetsGeometryTween(begin: ((global::Doroti.Framework.Painting.EdgeInsetsGeometry?)(object?)value)!))))!;
     }
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new Padding(padding: this._padding!.evaluate(this.animation).clamp(global::Doroti.Generated.Framework.Painting.EdgeInsets.zero, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry.infinity), child: ((AnimatedPadding)(object)this.widget).child));
+        return ((Widget)(object?)new Padding(padding: this._padding!.evaluate(this.animation).clamp(global::Doroti.Framework.Painting.EdgeInsets.zero, global::Doroti.Framework.Painting.EdgeInsetsGeometry.infinity), child: ((AnimatedPadding)(object)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder description)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<EdgeInsetsGeometryTween>("padding", this._padding, defaultValue: null));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<EdgeInsetsGeometryTween>("padding", this._padding, defaultValue: null));
     }
 
 }
 
 public class AnimatedAlign : ImplicitlyAnimatedWidget
 {
-    public virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
     public virtual Widget? child { get; private set; }
     public virtual double? heightFactor { get; private set; }
     public virtual double? widthFactor { get; private set; }
 
-    public AnimatedAlign(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, Widget? child = null, double? heightFactor = null, double? widthFactor = null, global::Doroti.Generated.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Generated.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedAlign(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, Widget? child = null, double? heightFactor = null, double? widthFactor = null, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.alignment = alignment;
         this.child = child;
@@ -488,30 +488,30 @@ public class AnimatedAlign : ImplicitlyAnimatedWidget
     }
 
     public override AnimatedWidgetBaseState<AnimatedAlign> createState() => DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedAlign>>(new _AnimatedAlignState__implicit_animations());
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.AlignmentGeometry>("alignment", this.alignment));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment));
     }
 
 }
 
 internal class _AnimatedAlignState__implicit_animations : AnimatedWidgetBaseState<AnimatedAlign>
 {
-    internal virtual global::Doroti.Generated.Framework.Rendering.AlignmentGeometryTween? _alignment { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _heightFactorTween { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _widthFactorTween { get; set; } = default;
+    internal virtual global::Doroti.Framework.Rendering.AlignmentGeometryTween? _alignment { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _heightFactorTween { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _widthFactorTween { get; set; } = default;
 
-    public override void forEachTween(global::System.Func<global::Doroti.Generated.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Generated.Framework.Animation.IDartTween>, global::Doroti.Generated.Framework.Animation.IDartTween?> visitor)
+    public override void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor)
     {
-        _alignment = ((global::Doroti.Generated.Framework.Rendering.AlignmentGeometryTween?)(object?)visitor(this._alignment, ((AnimatedAlign)(object)this.widget).alignment, ((value) => new global::Doroti.Generated.Framework.Rendering.AlignmentGeometryTween(begin: ((global::Doroti.Generated.Framework.Painting.AlignmentGeometry?)(object?)value)!))))!;
+        _alignment = ((global::Doroti.Framework.Rendering.AlignmentGeometryTween?)(object?)visitor(this._alignment, ((AnimatedAlign)(object)this.widget).alignment, ((value) => new global::Doroti.Framework.Rendering.AlignmentGeometryTween(begin: ((global::Doroti.Framework.Painting.AlignmentGeometry?)(object?)value)!))))!;
         if ((((AnimatedAlign)(object)this.widget).heightFactor is not null))
         {
-            _heightFactorTween = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._heightFactorTween, ((AnimatedAlign)(object)this.widget).heightFactor, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+            _heightFactorTween = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._heightFactorTween, ((AnimatedAlign)(object)this.widget).heightFactor, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
         }
         if ((((AnimatedAlign)(object)this.widget).widthFactor is not null))
         {
-            _widthFactorTween = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._widthFactorTween, ((AnimatedAlign)(object)this.widget).widthFactor, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+            _widthFactorTween = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._widthFactorTween, ((AnimatedAlign)(object)this.widget).widthFactor, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
         }
     }
 
@@ -521,12 +521,12 @@ internal class _AnimatedAlignState__implicit_animations : AnimatedWidgetBaseStat
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder description)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Rendering.AlignmentGeometryTween>("alignment", this._alignment, defaultValue: null));
-        description.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Animation.Tween<double>>("widthFactor", this._widthFactorTween, defaultValue: null));
-        description.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Animation.Tween<double>>("heightFactor", this._heightFactorTween, defaultValue: null));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.AlignmentGeometryTween>("alignment", this._alignment, defaultValue: null));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.Tween<double>>("widthFactor", this._widthFactorTween, defaultValue: null));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.Tween<double>>("heightFactor", this._heightFactorTween, defaultValue: null));
     }
 
 }
@@ -541,7 +541,7 @@ public class AnimatedPositioned : ImplicitlyAnimatedWidget
     public virtual double? width { get; private set; }
     public virtual double? height { get; private set; }
 
-    public AnimatedPositioned(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!, double? left = null, double? top = null, double? right = null, double? bottom = null, double? width = null, double? height = null, global::Doroti.Generated.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Generated.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedPositioned(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, double? left = null, double? top = null, double? right = null, double? bottom = null, double? width = null, double? height = null, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.child = child;
         this.left = left;
@@ -554,10 +554,10 @@ public class AnimatedPositioned : ImplicitlyAnimatedWidget
         System.Diagnostics.Debug.Assert((((top is null) || (bottom is null)) || (height is null)));
     }
 
-    public static AnimatedPositioned CreateFromRect(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!, Rect rect = default!, global::Doroti.Generated.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null)
+    public static AnimatedPositioned CreateFromRect(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, Rect rect = default!, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null)
     {
         var __instance = new AnimatedPositioned(default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!);
-        global::Doroti.Generated.Framework.Animation.Curve __curve = curve ?? global::Doroti.Generated.Framework.Animation.Curves.linear;
+        global::Doroti.Framework.Animation.Curve __curve = curve ?? global::Doroti.Framework.Animation.Curves.linear;
         __instance.child = child;
         __instance.left = rect.left;
         __instance.top = rect.top;
@@ -569,36 +569,36 @@ public class AnimatedPositioned : ImplicitlyAnimatedWidget
     }
 
     public override AnimatedWidgetBaseState<AnimatedPositioned> createState() => DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedPositioned>>(new _AnimatedPositionedState__implicit_animations());
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("left", this.left, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("top", this.top, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("right", this.right, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("bottom", this.bottom, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("width", this.width, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("height", this.height, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("left", this.left, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("top", this.top, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("right", this.right, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("bottom", this.bottom, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("width", this.width, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", this.height, defaultValue: null));
     }
 
 }
 
 internal class _AnimatedPositionedState__implicit_animations : AnimatedWidgetBaseState<AnimatedPositioned>
 {
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _left { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _top { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _right { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _bottom { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _width { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _height { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _left { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _top { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _right { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _bottom { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _width { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _height { get; set; } = default;
 
-    public override void forEachTween(global::System.Func<global::Doroti.Generated.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Generated.Framework.Animation.IDartTween>, global::Doroti.Generated.Framework.Animation.IDartTween?> visitor)
+    public override void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor)
     {
-        _left = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._left, ((AnimatedPositioned)(object)this.widget).left, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
-        _top = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._top, ((AnimatedPositioned)(object)this.widget).top, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
-        _right = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._right, ((AnimatedPositioned)(object)this.widget).right, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
-        _bottom = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._bottom, ((AnimatedPositioned)(object)this.widget).bottom, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
-        _width = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._width, ((AnimatedPositioned)(object)this.widget).width, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
-        _height = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._height, ((AnimatedPositioned)(object)this.widget).height, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+        _left = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._left, ((AnimatedPositioned)(object)this.widget).left, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+        _top = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._top, ((AnimatedPositioned)(object)this.widget).top, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+        _right = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._right, ((AnimatedPositioned)(object)this.widget).right, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+        _bottom = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._bottom, ((AnimatedPositioned)(object)this.widget).bottom, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+        _width = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._width, ((AnimatedPositioned)(object)this.widget).width, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+        _height = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._height, ((AnimatedPositioned)(object)this.widget).height, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
     }
 
     public override Widget build(BuildContext context)
@@ -607,15 +607,15 @@ internal class _AnimatedPositionedState__implicit_animations : AnimatedWidgetBas
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder description)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<global::Doroti.Generated.Framework.Animation.Tween<double>>.CreateHas("left", this._left));
-        description.add(global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<global::Doroti.Generated.Framework.Animation.Tween<double>>.CreateHas("top", this._top));
-        description.add(global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<global::Doroti.Generated.Framework.Animation.Tween<double>>.CreateHas("right", this._right));
-        description.add(global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<global::Doroti.Generated.Framework.Animation.Tween<double>>.CreateHas("bottom", this._bottom));
-        description.add(global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<global::Doroti.Generated.Framework.Animation.Tween<double>>.CreateHas("width", this._width));
-        description.add(global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<global::Doroti.Generated.Framework.Animation.Tween<double>>.CreateHas("height", this._height));
+        description.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<global::Doroti.Framework.Animation.Tween<double>>.CreateHas("left", this._left));
+        description.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<global::Doroti.Framework.Animation.Tween<double>>.CreateHas("top", this._top));
+        description.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<global::Doroti.Framework.Animation.Tween<double>>.CreateHas("right", this._right));
+        description.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<global::Doroti.Framework.Animation.Tween<double>>.CreateHas("bottom", this._bottom));
+        description.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<global::Doroti.Framework.Animation.Tween<double>>.CreateHas("width", this._width));
+        description.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<global::Doroti.Framework.Animation.Tween<double>>.CreateHas("height", this._height));
     }
 
 }
@@ -630,7 +630,7 @@ public class AnimatedPositionedDirectional : ImplicitlyAnimatedWidget
     public virtual double? width { get; private set; }
     public virtual double? height { get; private set; }
 
-    public AnimatedPositionedDirectional(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!, double? start = null, double? top = null, double? end = null, double? bottom = null, double? width = null, double? height = null, global::Doroti.Generated.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Generated.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedPositionedDirectional(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, double? start = null, double? top = null, double? end = null, double? bottom = null, double? width = null, double? height = null, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.child = child;
         this.start = start;
@@ -644,54 +644,54 @@ public class AnimatedPositionedDirectional : ImplicitlyAnimatedWidget
     }
 
     public override AnimatedWidgetBaseState<AnimatedPositionedDirectional> createState() => DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedPositionedDirectional>>(new _AnimatedPositionedDirectionalState__implicit_animations());
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("start", this.start, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("top", this.top, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("end", this.end, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("bottom", this.bottom, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("width", this.width, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("height", this.height, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("start", this.start, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("top", this.top, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("end", this.end, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("bottom", this.bottom, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("width", this.width, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", this.height, defaultValue: null));
     }
 
 }
 
 internal class _AnimatedPositionedDirectionalState__implicit_animations : AnimatedWidgetBaseState<AnimatedPositionedDirectional>
 {
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _start { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _top { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _end { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _bottom { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _width { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _height { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _start { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _top { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _end { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _bottom { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _width { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _height { get; set; } = default;
 
-    public override void forEachTween(global::System.Func<global::Doroti.Generated.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Generated.Framework.Animation.IDartTween>, global::Doroti.Generated.Framework.Animation.IDartTween?> visitor)
+    public override void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor)
     {
-        _start = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._start, ((AnimatedPositionedDirectional)(object)this.widget).start, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
-        _top = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._top, ((AnimatedPositionedDirectional)(object)this.widget).top, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
-        _end = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._end, ((AnimatedPositionedDirectional)(object)this.widget).end, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
-        _bottom = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._bottom, ((AnimatedPositionedDirectional)(object)this.widget).bottom, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
-        _width = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._width, ((AnimatedPositionedDirectional)(object)this.widget).width, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
-        _height = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._height, ((AnimatedPositionedDirectional)(object)this.widget).height, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+        _start = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._start, ((AnimatedPositionedDirectional)(object)this.widget).start, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+        _top = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._top, ((AnimatedPositionedDirectional)(object)this.widget).top, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+        _end = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._end, ((AnimatedPositionedDirectional)(object)this.widget).end, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+        _bottom = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._bottom, ((AnimatedPositionedDirectional)(object)this.widget).bottom, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+        _width = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._width, ((AnimatedPositionedDirectional)(object)this.widget).width, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+        _height = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._height, ((AnimatedPositionedDirectional)(object)this.widget).height, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
     }
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
         return ((Widget)(object?)Positioned.CreateDirectional(textDirection: Directionality.of(context), start: this._start?.evaluate(this.animation), top: this._top?.evaluate(this.animation), end: this._end?.evaluate(this.animation), bottom: this._bottom?.evaluate(this.animation), width: this._width?.evaluate(this.animation), height: this._height?.evaluate(this.animation), child: ((AnimatedPositionedDirectional)(object)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder description)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<global::Doroti.Generated.Framework.Animation.Tween<double>>.CreateHas("start", this._start));
-        description.add(global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<global::Doroti.Generated.Framework.Animation.Tween<double>>.CreateHas("top", this._top));
-        description.add(global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<global::Doroti.Generated.Framework.Animation.Tween<double>>.CreateHas("end", this._end));
-        description.add(global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<global::Doroti.Generated.Framework.Animation.Tween<double>>.CreateHas("bottom", this._bottom));
-        description.add(global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<global::Doroti.Generated.Framework.Animation.Tween<double>>.CreateHas("width", this._width));
-        description.add(global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<global::Doroti.Generated.Framework.Animation.Tween<double>>.CreateHas("height", this._height));
+        description.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<global::Doroti.Framework.Animation.Tween<double>>.CreateHas("start", this._start));
+        description.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<global::Doroti.Framework.Animation.Tween<double>>.CreateHas("top", this._top));
+        description.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<global::Doroti.Framework.Animation.Tween<double>>.CreateHas("end", this._end));
+        description.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<global::Doroti.Framework.Animation.Tween<double>>.CreateHas("bottom", this._bottom));
+        description.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<global::Doroti.Framework.Animation.Tween<double>>.CreateHas("width", this._width));
+        description.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<global::Doroti.Framework.Animation.Tween<double>>.CreateHas("height", this._height));
     }
 
 }
@@ -700,12 +700,12 @@ public class AnimatedScale : ImplicitlyAnimatedWidget
 {
     public virtual Widget? child { get; private set; }
     public virtual double scale { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.Alignment alignment { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.Alignment alignment { get; private set; } = default!;
     public virtual FilterQuality? filterQuality { get; private set; }
 
-    public AnimatedScale(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget? child = null, double scale = default!, global::Doroti.Generated.Framework.Painting.Alignment alignment = default!, FilterQuality? filterQuality = null, global::Doroti.Generated.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Generated.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedScale(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null, double scale = default!, global::Doroti.Framework.Painting.Alignment alignment = default!, FilterQuality? filterQuality = null, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
     {
-        global::Doroti.Generated.Framework.Painting.Alignment __alignment = alignment ?? global::Doroti.Generated.Framework.Painting.Alignment.center;
+        global::Doroti.Framework.Painting.Alignment __alignment = alignment ?? global::Doroti.Framework.Painting.Alignment.center;
         this.child = child;
         this.scale = scale;
         this.alignment = __alignment;
@@ -713,24 +713,24 @@ public class AnimatedScale : ImplicitlyAnimatedWidget
     }
 
     public override IState createState() => new _AnimatedScaleState__implicit_animations();
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("scale", this.scale));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.Alignment>("alignment", this.alignment, defaultValue: global::Doroti.Generated.Framework.Painting.Alignment.center));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.EnumProperty<global::Doroti.Ui.FilterQuality>("filterQuality", this.filterQuality, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("scale", this.scale));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Alignment>("alignment", this.alignment, defaultValue: global::Doroti.Framework.Painting.Alignment.center));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.FilterQuality>("filterQuality", this.filterQuality, defaultValue: null));
     }
 
 }
 
 internal class _AnimatedScaleState__implicit_animations : ImplicitlyAnimatedWidgetState<AnimatedScale>
 {
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _scale { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Animation<double> _scaleAnimation { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _scale { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Animation<double> _scaleAnimation { get; set; } = default!;
 
-    public override void forEachTween(global::System.Func<global::Doroti.Generated.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Generated.Framework.Animation.IDartTween>, global::Doroti.Generated.Framework.Animation.IDartTween?> visitor)
+    public override void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor)
     {
-        _scale = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._scale, ((AnimatedScale)(object)this.widget).scale, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+        _scale = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._scale, ((AnimatedScale)(object)this.widget).scale, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
     }
 
     public override void didUpdateTweens()
@@ -750,12 +750,12 @@ public class AnimatedRotation : ImplicitlyAnimatedWidget
 {
     public virtual Widget? child { get; private set; }
     public virtual double turns { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.Alignment alignment { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.Alignment alignment { get; private set; } = default!;
     public virtual FilterQuality? filterQuality { get; private set; }
 
-    public AnimatedRotation(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget? child = null, double turns = default!, global::Doroti.Generated.Framework.Painting.Alignment alignment = default!, FilterQuality? filterQuality = null, global::Doroti.Generated.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Generated.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedRotation(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null, double turns = default!, global::Doroti.Framework.Painting.Alignment alignment = default!, FilterQuality? filterQuality = null, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
     {
-        global::Doroti.Generated.Framework.Painting.Alignment __alignment = alignment ?? global::Doroti.Generated.Framework.Painting.Alignment.center;
+        global::Doroti.Framework.Painting.Alignment __alignment = alignment ?? global::Doroti.Framework.Painting.Alignment.center;
         this.child = child;
         this.turns = turns;
         this.alignment = __alignment;
@@ -763,24 +763,24 @@ public class AnimatedRotation : ImplicitlyAnimatedWidget
     }
 
     public override IState createState() => new _AnimatedRotationState__implicit_animations();
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("turns", this.turns));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.Alignment>("alignment", this.alignment, defaultValue: global::Doroti.Generated.Framework.Painting.Alignment.center));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.EnumProperty<global::Doroti.Ui.FilterQuality>("filterQuality", this.filterQuality, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("turns", this.turns));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Alignment>("alignment", this.alignment, defaultValue: global::Doroti.Framework.Painting.Alignment.center));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.FilterQuality>("filterQuality", this.filterQuality, defaultValue: null));
     }
 
 }
 
 internal class _AnimatedRotationState__implicit_animations : ImplicitlyAnimatedWidgetState<AnimatedRotation>
 {
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _turns { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Animation<double> _turnsAnimation { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _turns { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Animation<double> _turnsAnimation { get; set; } = default!;
 
-    public override void forEachTween(global::System.Func<global::Doroti.Generated.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Generated.Framework.Animation.IDartTween>, global::Doroti.Generated.Framework.Animation.IDartTween?> visitor)
+    public override void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor)
     {
-        _turns = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._turns, ((AnimatedRotation)(object)this.widget).turns, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+        _turns = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._turns, ((AnimatedRotation)(object)this.widget).turns, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
     }
 
     public override void didUpdateTweens()
@@ -801,29 +801,29 @@ public class AnimatedSlide : ImplicitlyAnimatedWidget
     public virtual Widget? child { get; private set; }
     public virtual Offset offset { get; private set; } = default!;
 
-    public AnimatedSlide(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget? child = null, Offset offset = default!, global::Doroti.Generated.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Generated.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedSlide(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null, Offset offset = default!, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.child = child;
         this.offset = offset;
     }
 
     public override IState createState() => new _AnimatedSlideState__implicit_animations();
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Offset>("offset", this.offset));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Offset>("offset", this.offset));
     }
 
 }
 
 internal class _AnimatedSlideState__implicit_animations : ImplicitlyAnimatedWidgetState<AnimatedSlide>
 {
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<Offset>? _offset { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Animation<Offset> _offsetAnimation { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Animation.Tween<Offset>? _offset { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Animation<Offset> _offsetAnimation { get; set; } = default!;
 
-    public override void forEachTween(global::System.Func<global::Doroti.Generated.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Generated.Framework.Animation.IDartTween>, global::Doroti.Generated.Framework.Animation.IDartTween?> visitor)
+    public override void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor)
     {
-        _offset = ((global::Doroti.Generated.Framework.Animation.Tween<global::Doroti.Ui.Offset>?)(object?)visitor(this._offset, ((AnimatedSlide)(object)this.widget).offset, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(value)))))!;
+        _offset = ((global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>?)(object?)visitor(this._offset, ((AnimatedSlide)(object)this.widget).offset, ((value) => new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(value)))))!;
     }
 
     public override void didUpdateTweens()
@@ -845,7 +845,7 @@ public class AnimatedOpacity : ImplicitlyAnimatedWidget
     public virtual double opacity { get; private set; } = default!;
     public virtual bool alwaysIncludeSemantics { get; private set; } = default!;
 
-    public AnimatedOpacity(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget? child = null, double opacity = default!, global::Doroti.Generated.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null, bool alwaysIncludeSemantics = false) : base(key: key, curve: curve ?? global::Doroti.Generated.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedOpacity(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null, double opacity = default!, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null, bool alwaysIncludeSemantics = false) : base(key: key, curve: curve ?? global::Doroti.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.child = child;
         this.opacity = opacity;
@@ -854,22 +854,22 @@ public class AnimatedOpacity : ImplicitlyAnimatedWidget
     }
 
     public override IState createState() => new _AnimatedOpacityState__implicit_animations();
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("opacity", this.opacity));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("opacity", this.opacity));
     }
 
 }
 
 internal class _AnimatedOpacityState__implicit_animations : ImplicitlyAnimatedWidgetState<AnimatedOpacity>
 {
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _opacity { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Animation<double> _opacityAnimation { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _opacity { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Animation<double> _opacityAnimation { get; set; } = default!;
 
-    public override void forEachTween(global::System.Func<global::Doroti.Generated.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Generated.Framework.Animation.IDartTween>, global::Doroti.Generated.Framework.Animation.IDartTween?> visitor)
+    public override void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor)
     {
-        _opacity = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._opacity, ((AnimatedOpacity)(object)this.widget).opacity, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+        _opacity = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._opacity, ((AnimatedOpacity)(object)this.widget).opacity, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
     }
 
     public override void didUpdateTweens()
@@ -891,7 +891,7 @@ public class SliverAnimatedOpacity : ImplicitlyAnimatedWidget
     public virtual double opacity { get; private set; } = default!;
     public virtual bool alwaysIncludeSemantics { get; private set; } = default!;
 
-    public SliverAnimatedOpacity(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget? sliver = null, double opacity = default!, global::Doroti.Generated.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null, bool alwaysIncludeSemantics = false) : base(key: key, curve: curve ?? global::Doroti.Generated.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
+    public SliverAnimatedOpacity(global::Doroti.Framework.Foundation.Key? key = null, Widget? sliver = null, double opacity = default!, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null, bool alwaysIncludeSemantics = false) : base(key: key, curve: curve ?? global::Doroti.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.sliver = sliver;
         this.opacity = opacity;
@@ -900,22 +900,22 @@ public class SliverAnimatedOpacity : ImplicitlyAnimatedWidget
     }
 
     public override IState createState() => new _SliverAnimatedOpacityState__implicit_animations();
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("opacity", this.opacity));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("opacity", this.opacity));
     }
 
 }
 
 internal class _SliverAnimatedOpacityState__implicit_animations : ImplicitlyAnimatedWidgetState<SliverAnimatedOpacity>
 {
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _opacity { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Animation<double> _opacityAnimation { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _opacity { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Animation<double> _opacityAnimation { get; set; } = default!;
 
-    public override void forEachTween(global::System.Func<global::Doroti.Generated.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Generated.Framework.Animation.IDartTween>, global::Doroti.Generated.Framework.Animation.IDartTween?> visitor)
+    public override void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor)
     {
-        _opacity = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._opacity, ((SliverAnimatedOpacity)(object)this.widget).opacity, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+        _opacity = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._opacity, ((SliverAnimatedOpacity)(object)this.widget).opacity, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
     }
 
     public override void didUpdateTweens()
@@ -934,15 +934,15 @@ internal class _SliverAnimatedOpacityState__implicit_animations : ImplicitlyAnim
 public class AnimatedDefaultTextStyle : ImplicitlyAnimatedWidget
 {
     public virtual Widget child { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle style { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.TextStyle style { get; private set; } = default!;
     public virtual TextAlign? textAlign { get; private set; }
     public virtual bool softWrap { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.TextOverflow overflow { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.TextOverflow overflow { get; private set; } = default!;
     public virtual long? maxLines { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.TextWidthBasis textWidthBasis { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.TextWidthBasis textWidthBasis { get; private set; } = default!;
     public virtual TextHeightBehavior? textHeightBehavior { get; private set; }
 
-    public AnimatedDefaultTextStyle(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!, global::Doroti.Generated.Framework.Painting.TextStyle style = default!, TextAlign? textAlign = null, bool softWrap = true, global::Doroti.Generated.Framework.Painting.TextOverflow overflow = global::Doroti.Generated.Framework.Painting.TextOverflow.clip, long? maxLines = null, global::Doroti.Generated.Framework.Painting.TextWidthBasis textWidthBasis = global::Doroti.Generated.Framework.Painting.TextWidthBasis.parent, TextHeightBehavior? textHeightBehavior = null, global::Doroti.Generated.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Generated.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedDefaultTextStyle(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, global::Doroti.Framework.Painting.TextStyle style = default!, TextAlign? textAlign = null, bool softWrap = true, global::Doroti.Framework.Painting.TextOverflow overflow = global::Doroti.Framework.Painting.TextOverflow.clip, long? maxLines = null, global::Doroti.Framework.Painting.TextWidthBasis textWidthBasis = global::Doroti.Framework.Painting.TextWidthBasis.parent, TextHeightBehavior? textHeightBehavior = null, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.child = child;
         this.style = style;
@@ -956,16 +956,16 @@ public class AnimatedDefaultTextStyle : ImplicitlyAnimatedWidget
     }
 
     public override AnimatedWidgetBaseState<AnimatedDefaultTextStyle> createState() => DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedDefaultTextStyle>>(new _AnimatedDefaultTextStyleState__implicit_animations());
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         this.style.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextAlign>("textAlign", this.textAlign, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("softWrap", value: this.softWrap, ifTrue: "wrapping at box width", ifFalse: "no wrapping except at line break characters", showName: true));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.EnumProperty<global::Doroti.Generated.Framework.Painting.TextOverflow>("overflow", this.overflow, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.IntProperty("maxLines", this.maxLines, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.EnumProperty<global::Doroti.Generated.Framework.Painting.TextWidthBasis>("textWidthBasis", this.textWidthBasis, defaultValue: global::Doroti.Generated.Framework.Painting.TextWidthBasis.parent));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.TextHeightBehavior>("textHeightBehavior", this.textHeightBehavior, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextAlign>("textAlign", this.textAlign, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("softWrap", value: this.softWrap, ifTrue: "wrapping at box width", ifFalse: "no wrapping except at line break characters", showName: true));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.TextOverflow>("overflow", this.overflow, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.IntProperty("maxLines", this.maxLines, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.TextWidthBasis>("textWidthBasis", this.textWidthBasis, defaultValue: global::Doroti.Framework.Painting.TextWidthBasis.parent));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.TextHeightBehavior>("textHeightBehavior", this.textHeightBehavior, defaultValue: null));
     }
 
 }
@@ -974,9 +974,9 @@ internal class _AnimatedDefaultTextStyleState__implicit_animations : AnimatedWid
 {
     internal virtual TextStyleTween? _style { get; set; } = default;
 
-    public override void forEachTween(global::System.Func<global::Doroti.Generated.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Generated.Framework.Animation.IDartTween>, global::Doroti.Generated.Framework.Animation.IDartTween?> visitor)
+    public override void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor)
     {
-        _style = ((TextStyleTween?)(object?)visitor(this._style, ((AnimatedDefaultTextStyle)(object)this.widget).style, ((value) => new TextStyleTween(begin: ((global::Doroti.Generated.Framework.Painting.TextStyle?)(object?)value)!))))!;
+        _style = ((TextStyleTween?)(object?)visitor(this._style, ((AnimatedDefaultTextStyle)(object)this.widget).style, ((value) => new TextStyleTween(begin: ((global::Doroti.Framework.Painting.TextStyle?)(object?)value)!))))!;
     }
 
     public override Widget build(BuildContext context)
@@ -990,16 +990,16 @@ internal class _AnimatedDefaultTextStyleState__implicit_animations : AnimatedWid
 public class AnimatedPhysicalModel : ImplicitlyAnimatedWidget
 {
     public virtual Widget child { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.BoxShape shape { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.BoxShape shape { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.BorderRadius? borderRadius { get; private set; }
+    public virtual global::Doroti.Framework.Painting.BorderRadius? borderRadius { get; private set; }
     public virtual double elevation { get; private set; } = default!;
     public virtual Color color { get; private set; } = default!;
     public virtual bool animateColor { get; private set; } = default!;
     public virtual Color shadowColor { get; private set; } = default!;
     public virtual bool animateShadowColor { get; private set; } = default!;
 
-    public AnimatedPhysicalModel(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!, global::Doroti.Generated.Framework.Painting.BoxShape shape = global::Doroti.Generated.Framework.Painting.BoxShape.rectangle, Clip clipBehavior = Clip.none, global::Doroti.Generated.Framework.Painting.BorderRadius? borderRadius = null, double elevation = 0.0, Color color = default!, bool animateColor = true, Color shadowColor = default!, bool animateShadowColor = true, global::Doroti.Generated.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Generated.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedPhysicalModel(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, global::Doroti.Framework.Painting.BoxShape shape = global::Doroti.Framework.Painting.BoxShape.rectangle, Clip clipBehavior = Clip.none, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, double elevation = 0.0, Color color = default!, bool animateColor = true, Color shadowColor = default!, bool animateShadowColor = true, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
     {
         this.child = child;
         this.shape = shape;
@@ -1014,16 +1014,16 @@ public class AnimatedPhysicalModel : ImplicitlyAnimatedWidget
     }
 
     public override AnimatedWidgetBaseState<AnimatedPhysicalModel> createState() => DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedPhysicalModel>>(new _AnimatedPhysicalModelState__implicit_animations());
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.EnumProperty<global::Doroti.Generated.Framework.Painting.BoxShape>("shape", this.shape));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.BorderRadius>("borderRadius", this.borderRadius));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("elevation", this.elevation));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("color", this.color));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<bool>("animateColor", this.animateColor));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("shadowColor", this.shadowColor));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<bool>("animateShadowColor", this.animateShadowColor));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Painting.BoxShape>("shape", this.shape));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.BorderRadius>("borderRadius", this.borderRadius));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", this.elevation));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("animateColor", this.animateColor));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", this.shadowColor));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("animateShadowColor", this.animateShadowColor));
     }
 
 }
@@ -1031,16 +1031,16 @@ public class AnimatedPhysicalModel : ImplicitlyAnimatedWidget
 internal class _AnimatedPhysicalModelState__implicit_animations : AnimatedWidgetBaseState<AnimatedPhysicalModel>
 {
     internal virtual BorderRadiusTween? _borderRadius { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _elevation { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.ColorTween? _color { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.ColorTween? _shadowColor { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _elevation { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.ColorTween? _color { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.ColorTween? _shadowColor { get; set; } = default;
 
-    public override void forEachTween(global::System.Func<global::Doroti.Generated.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Generated.Framework.Animation.IDartTween>, global::Doroti.Generated.Framework.Animation.IDartTween?> visitor)
+    public override void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor)
     {
-        _borderRadius = ((BorderRadiusTween?)(object?)visitor(this._borderRadius, (((AnimatedPhysicalModel)(object)this.widget).borderRadius ?? global::Doroti.Generated.Framework.Painting.BorderRadius.zero), ((value) => new BorderRadiusTween(begin: ((global::Doroti.Generated.Framework.Painting.BorderRadius?)(object?)value)!))))!;
-        _elevation = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._elevation, ((AnimatedPhysicalModel)(object)this.widget).elevation, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
-        _color = ((global::Doroti.Generated.Framework.Animation.ColorTween?)(object?)visitor(this._color, ((AnimatedPhysicalModel)(object)this.widget).color, ((value) => new global::Doroti.Generated.Framework.Animation.ColorTween(begin: ((global::Doroti.Ui.Color?)(object?)value)!))))!;
-        _shadowColor = ((global::Doroti.Generated.Framework.Animation.ColorTween?)(object?)visitor(this._shadowColor, ((AnimatedPhysicalModel)(object)this.widget).shadowColor, ((value) => new global::Doroti.Generated.Framework.Animation.ColorTween(begin: ((global::Doroti.Ui.Color?)(object?)value)!))))!;
+        _borderRadius = ((BorderRadiusTween?)(object?)visitor(this._borderRadius, (((AnimatedPhysicalModel)(object)this.widget).borderRadius ?? global::Doroti.Framework.Painting.BorderRadius.zero), ((value) => new BorderRadiusTween(begin: ((global::Doroti.Framework.Painting.BorderRadius?)(object?)value)!))))!;
+        _elevation = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._elevation, ((AnimatedPhysicalModel)(object)this.widget).elevation, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+        _color = ((global::Doroti.Framework.Animation.ColorTween?)(object?)visitor(this._color, ((AnimatedPhysicalModel)(object)this.widget).color, ((value) => new global::Doroti.Framework.Animation.ColorTween(begin: ((global::Doroti.Ui.Color?)(object?)value)!))))!;
+        _shadowColor = ((global::Doroti.Framework.Animation.ColorTween?)(object?)visitor(this._shadowColor, ((AnimatedPhysicalModel)(object)this.widget).shadowColor, ((value) => new global::Doroti.Framework.Animation.ColorTween(begin: ((global::Doroti.Ui.Color?)(object?)value)!))))!;
     }
 
     public override Widget build(BuildContext context)
@@ -1056,11 +1056,11 @@ public class AnimatedFractionallySizedBox : ImplicitlyAnimatedWidget
     public virtual Widget? child { get; private set; }
     public virtual double? heightFactor { get; private set; }
     public virtual double? widthFactor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
 
-    public AnimatedFractionallySizedBox(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, Widget? child = null, double? heightFactor = null, double? widthFactor = null, global::Doroti.Generated.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Generated.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
+    public AnimatedFractionallySizedBox(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, Widget? child = null, double? heightFactor = null, double? widthFactor = null, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null) : base(key: key, curve: curve ?? global::Doroti.Framework.Animation.Curves.linear, duration: duration, onEnd: onEnd)
     {
-        global::Doroti.Generated.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Generated.Framework.Painting.Alignment.center;
+        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.Alignment.center;
         this.alignment = __alignment;
         this.child = child;
         this.heightFactor = heightFactor;
@@ -1070,32 +1070,32 @@ public class AnimatedFractionallySizedBox : ImplicitlyAnimatedWidget
     }
 
     public override AnimatedWidgetBaseState<AnimatedFractionallySizedBox> createState() => DartRuntimePrimitives.ConvertValue<AnimatedWidgetBaseState<AnimatedFractionallySizedBox>>(new _AnimatedFractionallySizedBoxState__implicit_animations());
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.AlignmentGeometry>("alignment", this.alignment));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<double>("widthFactor", this.widthFactor));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<double>("heightFactor", this.heightFactor));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<double>("widthFactor", this.widthFactor));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<double>("heightFactor", this.heightFactor));
     }
 
 }
 
 internal class _AnimatedFractionallySizedBoxState__implicit_animations : AnimatedWidgetBaseState<AnimatedFractionallySizedBox>
 {
-    internal virtual global::Doroti.Generated.Framework.Rendering.AlignmentGeometryTween? _alignment { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _heightFactorTween { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Animation.Tween<double>? _widthFactorTween { get; set; } = default;
+    internal virtual global::Doroti.Framework.Rendering.AlignmentGeometryTween? _alignment { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _heightFactorTween { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.Tween<double>? _widthFactorTween { get; set; } = default;
 
-    public override void forEachTween(global::System.Func<global::Doroti.Generated.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Generated.Framework.Animation.IDartTween>, global::Doroti.Generated.Framework.Animation.IDartTween?> visitor)
+    public override void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor)
     {
-        _alignment = ((global::Doroti.Generated.Framework.Rendering.AlignmentGeometryTween?)(object?)visitor(this._alignment, ((AnimatedFractionallySizedBox)(object)this.widget).alignment, ((value) => new global::Doroti.Generated.Framework.Rendering.AlignmentGeometryTween(begin: ((global::Doroti.Generated.Framework.Painting.AlignmentGeometry?)(object?)value)!))))!;
+        _alignment = ((global::Doroti.Framework.Rendering.AlignmentGeometryTween?)(object?)visitor(this._alignment, ((AnimatedFractionallySizedBox)(object)this.widget).alignment, ((value) => new global::Doroti.Framework.Rendering.AlignmentGeometryTween(begin: ((global::Doroti.Framework.Painting.AlignmentGeometry?)(object?)value)!))))!;
         if ((((AnimatedFractionallySizedBox)(object)this.widget).heightFactor is not null))
         {
-            _heightFactorTween = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._heightFactorTween, ((AnimatedFractionallySizedBox)(object)this.widget).heightFactor, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+            _heightFactorTween = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._heightFactorTween, ((AnimatedFractionallySizedBox)(object)this.widget).heightFactor, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
         }
         if ((((AnimatedFractionallySizedBox)(object)this.widget).widthFactor is not null))
         {
-            _widthFactorTween = ((global::Doroti.Generated.Framework.Animation.Tween<double>?)(object?)visitor(this._widthFactorTween, ((AnimatedFractionallySizedBox)(object)this.widget).widthFactor, ((value) => new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
+            _widthFactorTween = ((global::Doroti.Framework.Animation.Tween<double>?)(object?)visitor(this._widthFactorTween, ((AnimatedFractionallySizedBox)(object)this.widget).widthFactor, ((value) => new global::Doroti.Framework.Animation.Tween<double>(begin: ((double)value)))))!;
         }
     }
 
@@ -1105,12 +1105,12 @@ internal class _AnimatedFractionallySizedBoxState__implicit_animations : Animate
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder description)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
-        description.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Rendering.AlignmentGeometryTween>("alignment", this._alignment, defaultValue: null));
-        description.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Animation.Tween<double>>("widthFactor", this._widthFactorTween, defaultValue: null));
-        description.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Animation.Tween<double>>("heightFactor", this._heightFactorTween, defaultValue: null));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.AlignmentGeometryTween>("alignment", this._alignment, defaultValue: null));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.Tween<double>>("widthFactor", this._widthFactorTween, defaultValue: null));
+        description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Animation.Tween<double>>("heightFactor", this._heightFactorTween, defaultValue: null));
     }
 
 }

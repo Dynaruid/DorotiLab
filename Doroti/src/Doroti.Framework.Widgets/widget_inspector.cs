@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public delegate Widget ExitWidgetSelectionButtonBuilder(BuildContext context, GlobalKey<IState> key, global::System.Action onPressed, string semanticsLabel);
 
@@ -22,11 +22,11 @@ public delegate Widget TapBehaviorButtonBuilder(BuildContext context, global::Sy
 
 public delegate void RegisterServiceExtensionCallback(global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>> callback, string name);
 
-internal class _ProxyLayer__widget_inspector : global::Doroti.Generated.Framework.Rendering.Layer
+internal class _ProxyLayer__widget_inspector : global::Doroti.Framework.Rendering.Layer
 {
-    internal virtual global::Doroti.Generated.Framework.Rendering.Layer _layer { get; private set; } = default!;
+    internal virtual global::Doroti.Framework.Rendering.Layer _layer { get; private set; } = default!;
 
-    internal _ProxyLayer__widget_inspector(global::Doroti.Generated.Framework.Rendering.Layer _layer)
+    internal _ProxyLayer__widget_inspector(global::Doroti.Framework.Rendering.Layer _layer)
     {
         this._layer = _layer;
     }
@@ -36,7 +36,7 @@ internal class _ProxyLayer__widget_inspector : global::Doroti.Generated.Framewor
         this._layer.addToScene(builder);
     }
 
-    public override bool findAnnotations<S>(global::Doroti.Generated.Framework.Rendering.AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
+    public override bool findAnnotations<S>(global::Doroti.Framework.Rendering.AnnotationResult<S> result, Offset localPosition, bool onlyFirst)
     {
         return this._layer.findAnnotations(result, localPosition, onlyFirst: onlyFirst);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -263,10 +263,10 @@ internal class _MulticastCanvas__widget_inspector : Canvas
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static Rect _calculateSubtreeBoundsHelper(global::Doroti.Generated.Framework.Rendering.RenderObject @object, Matrix4 transform)
+    internal static Rect _calculateSubtreeBoundsHelper(global::Doroti.Framework.Rendering.RenderObject @object, Matrix4 transform)
     {
-        global::Doroti.Ui.Rect bounds__9333 = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(transform, ((global::Doroti.Generated.Framework.Rendering.RenderObject)@object).semanticBounds));
-        ((dynamic)@object).visitChildren(((global::System.Action<global::Doroti.Generated.Framework.Rendering.RenderObject>)((child) => {
+        global::Doroti.Ui.Rect bounds__9333 = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(transform, ((global::Doroti.Framework.Rendering.RenderObject)@object).semanticBounds));
+        ((dynamic)@object).visitChildren(((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)((child) => {
 Matrix4 childTransform__9468 = transform.clone();
 ((dynamic)@object).applyPaintTransform(child, childTransform__9468);
 global::Doroti.Ui.Rect childBounds__9568 = ((global::Doroti.Ui.Rect)(object?)Widget_inspectorLibrary._calculateSubtreeBoundsHelper(child, childTransform__9468));
@@ -289,14 +289,14 @@ if ((childBounds__9568.isFinite && !childBounds__9568.isEmpty))
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static Rect _calculateSubtreeBounds(global::Doroti.Generated.Framework.Rendering.RenderObject @object)
+    internal static Rect _calculateSubtreeBounds(global::Doroti.Framework.Rendering.RenderObject @object)
     {
         return Widget_inspectorLibrary._calculateSubtreeBoundsHelper(@object, Matrix4.identity());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
-internal class _ScreenshotContainerLayer__widget_inspector : global::Doroti.Generated.Framework.Rendering.OffsetLayer
+internal class _ScreenshotContainerLayer__widget_inspector : global::Doroti.Framework.Rendering.OffsetLayer
 {
     public override void addToScene(SceneBuilder builder)
     {
@@ -307,13 +307,13 @@ internal class _ScreenshotContainerLayer__widget_inspector : global::Doroti.Gene
 
 public class _ScreenshotData__widget_inspector
 {
-    public virtual global::Doroti.Generated.Framework.Rendering.RenderObject target { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Rendering.OffsetLayer containerLayer { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Rendering.RenderObject target { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Rendering.OffsetLayer containerLayer { get; private set; } = default!;
     public virtual bool foundTarget { get; set; } = false;
     public virtual bool includeInScreenshot { get; set; } = false;
     public virtual bool includeInRegularContext { get; set; } = true;
 
-    internal _ScreenshotData__widget_inspector(global::Doroti.Generated.Framework.Rendering.RenderObject target)
+    internal _ScreenshotData__widget_inspector(global::Doroti.Framework.Rendering.RenderObject target)
     {
         this.target = target;
         this.containerLayer = new _ScreenshotContainerLayer__widget_inspector();
@@ -323,7 +323,7 @@ public class _ScreenshotData__widget_inspector
     {
         get{
             DartRuntimePrimitives.Assert(() => this.foundTarget);
-            return ((global::Doroti.Generated.Framework.Rendering.OffsetLayer)this.containerLayer).offset;
+            return ((global::Doroti.Framework.Rendering.OffsetLayer)this.containerLayer).offset;
             return default!;
         }
         set
@@ -334,21 +334,21 @@ public class _ScreenshotData__widget_inspector
     }
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this.containerLayer.dispose();
     }
 
 }
 
-internal class _ScreenshotPaintingContext__widget_inspector : global::Doroti.Generated.Framework.Rendering.PaintingContext
+internal class _ScreenshotPaintingContext__widget_inspector : global::Doroti.Framework.Rendering.PaintingContext
 {
     internal virtual _ScreenshotData__widget_inspector _data { get; private set; } = default!;
-    internal virtual global::Doroti.Generated.Framework.Rendering.PictureLayer? _screenshotCurrentLayer { get; set; } = default;
+    internal virtual global::Doroti.Framework.Rendering.PictureLayer? _screenshotCurrentLayer { get; set; } = default;
     internal virtual PictureRecorder? _screenshotRecorder { get; set; } = default;
     internal virtual Canvas? _screenshotCanvas { get; set; } = default;
     internal virtual _MulticastCanvas__widget_inspector? _multicastCanvas { get; set; } = default;
 
-    internal _ScreenshotPaintingContext__widget_inspector(global::Doroti.Generated.Framework.Rendering.ContainerLayer containerLayer, Rect estimatedBounds, _ScreenshotData__widget_inspector screenshotData) : base(containerLayer, estimatedBounds)
+    internal _ScreenshotPaintingContext__widget_inspector(global::Doroti.Framework.Rendering.ContainerLayer containerLayer, Rect estimatedBounds, _ScreenshotData__widget_inspector screenshotData) : base(containerLayer, estimatedBounds)
     {
         this._data = screenshotData;
     }
@@ -404,7 +404,7 @@ internal class _ScreenshotPaintingContext__widget_inspector : global::Doroti.Gen
     {
         DartRuntimePrimitives.Assert(() => ((_ScreenshotData__widget_inspector)this._data).includeInScreenshot);
         DartRuntimePrimitives.Assert(() => !this._isScreenshotRecording);
-        _screenshotCurrentLayer = new global::Doroti.Generated.Framework.Rendering.PictureLayer(this.estimatedBounds);
+        _screenshotCurrentLayer = new global::Doroti.Framework.Rendering.PictureLayer(this.estimatedBounds);
         _screenshotRecorder = new global::Doroti.Ui.PictureRecorder();
         _screenshotCanvas = new global::Doroti.Ui.Canvas(this._screenshotRecorder!);
         ((_ScreenshotData__widget_inspector)this._data).containerLayer.append(this._screenshotCurrentLayer!);
@@ -437,7 +437,7 @@ internal class _ScreenshotPaintingContext__widget_inspector : global::Doroti.Gen
         _screenshotCanvas = null;
     }
 
-    public override void appendLayer(global::Doroti.Generated.Framework.Rendering.Layer layer)
+    public override void appendLayer(global::Doroti.Framework.Rendering.Layer layer)
     {
         if (((_ScreenshotData__widget_inspector)this._data).includeInRegularContext)
         {
@@ -458,20 +458,20 @@ internal class _ScreenshotPaintingContext__widget_inspector : global::Doroti.Gen
         }
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.PaintingContext createChildContext(global::Doroti.Generated.Framework.Rendering.ContainerLayer childLayer, Rect bounds)
+    public override global::Doroti.Framework.Rendering.PaintingContext createChildContext(global::Doroti.Framework.Rendering.ContainerLayer childLayer, Rect bounds)
     {
         if (((_ScreenshotData__widget_inspector)this._data).foundTarget)
         {
-            return ((global::Doroti.Generated.Framework.Rendering.PaintingContext)(object?)base.createChildContext(childLayer, bounds));
+            return ((global::Doroti.Framework.Rendering.PaintingContext)(object?)base.createChildContext(childLayer, bounds));
         }
         else
         {
-            return ((global::Doroti.Generated.Framework.Rendering.PaintingContext)(object?)new _ScreenshotPaintingContext__widget_inspector(containerLayer: childLayer, estimatedBounds: bounds, screenshotData: this._data));
+            return ((global::Doroti.Framework.Rendering.PaintingContext)(object?)new _ScreenshotPaintingContext__widget_inspector(containerLayer: childLayer, estimatedBounds: bounds, screenshotData: this._data));
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void paintChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, Offset offset)
+    public override void paintChild(global::Doroti.Framework.Rendering.RenderObject child, Offset offset)
     {
         bool isScreenshotTarget__16348 = DartRuntimePrimitives.Identical(child, ((_ScreenshotData__widget_inspector)this._data).target);
         if (isScreenshotTarget__16348)
@@ -490,44 +490,44 @@ internal class _ScreenshotPaintingContext__widget_inspector : global::Doroti.Gen
         }
     }
 
-    public static async Future<global::Doroti.Ui.Image> toImage(global::Doroti.Generated.Framework.Rendering.RenderObject renderObject, Rect renderBounds, double pixelRatio = 1.0, bool debugPaint = false)
+    public static async Future<global::Doroti.Ui.Image> toImage(global::Doroti.Framework.Rendering.RenderObject renderObject, Rect renderBounds, double pixelRatio = 1.0, bool debugPaint = false)
     {
         var repaintBoundary__18429 = renderObject;
-        while (!((global::Doroti.Generated.Framework.Rendering.RenderObject)repaintBoundary__18429).isRepaintBoundary)
+        while (!((global::Doroti.Framework.Rendering.RenderObject)repaintBoundary__18429).isRepaintBoundary)
         {
-            repaintBoundary__18429 = ((global::Doroti.Generated.Framework.Rendering.RenderObject)repaintBoundary__18429).parent!;
+            repaintBoundary__18429 = ((global::Doroti.Framework.Rendering.RenderObject)repaintBoundary__18429).parent!;
         }
         var data__18575 = new _ScreenshotData__widget_inspector(target: renderObject);
-        var context__18631 = new _ScreenshotPaintingContext__widget_inspector(containerLayer: ((global::Doroti.Generated.Framework.Rendering.RenderObject)repaintBoundary__18429).debugLayer!, estimatedBounds: ((global::Doroti.Generated.Framework.Rendering.RenderObject)repaintBoundary__18429).paintBounds, screenshotData: data__18575);
+        var context__18631 = new _ScreenshotPaintingContext__widget_inspector(containerLayer: ((global::Doroti.Framework.Rendering.RenderObject)repaintBoundary__18429).debugLayer!, estimatedBounds: ((global::Doroti.Framework.Rendering.RenderObject)repaintBoundary__18429).paintBounds, screenshotData: data__18575);
         if (DartRuntimePrimitives.Identical(renderObject, repaintBoundary__18429))
         {
-            ((_ScreenshotData__widget_inspector)data__18575).containerLayer.append(new _ProxyLayer__widget_inspector(((global::Doroti.Generated.Framework.Rendering.RenderObject)repaintBoundary__18429).debugLayer!));
+            ((_ScreenshotData__widget_inspector)data__18575).containerLayer.append(new _ProxyLayer__widget_inspector(((global::Doroti.Framework.Rendering.RenderObject)repaintBoundary__18429).debugLayer!));
             data__18575.foundTarget = true;
-            var offsetLayer__19195 = ((global::Doroti.Generated.Framework.Rendering.OffsetLayer?)(object?)((global::Doroti.Generated.Framework.Rendering.RenderObject)repaintBoundary__18429).debugLayer!)!;
-            data__18575.screenshotOffset = ((global::Doroti.Generated.Framework.Rendering.OffsetLayer)offsetLayer__19195).offset;
+            var offsetLayer__19195 = ((global::Doroti.Framework.Rendering.OffsetLayer?)(object?)((global::Doroti.Framework.Rendering.RenderObject)repaintBoundary__18429).debugLayer!)!;
+            data__18575.screenshotOffset = ((global::Doroti.Framework.Rendering.OffsetLayer)offsetLayer__19195).offset;
         }
         else
         {
             PaintingContext.debugInstrumentRepaintCompositedChild(repaintBoundary__18429, customContext: context__18631);
         }
-        if ((debugPaint && !global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled))
+        if ((debugPaint && !global::Doroti.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled))
         {
             data__18575.includeInRegularContext = false;
             context__18631.stopRecordingIfNeeded();
             DartRuntimePrimitives.Assert(() => ((_ScreenshotData__widget_inspector)data__18575).foundTarget);
             data__18575.includeInScreenshot = true;
-            global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled = true;
+            global::Doroti.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled = true;
             try
             {
                 ((dynamic)renderObject).debugPaint(context__18631, ((_ScreenshotData__widget_inspector)data__18575).screenshotOffset);
             }
             finally
             {
-                global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled = false;
+                global::Doroti.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled = false;
                 context__18631.stopRecordingIfNeeded();
             }
         }
-        ((global::Doroti.Generated.Framework.Rendering.RenderObject)repaintBoundary__18429).debugLayer!.buildScene(new global::Doroti.Ui.SceneBuilder());
+        ((global::Doroti.Framework.Rendering.RenderObject)repaintBoundary__18429).debugLayer!.buildScene(new global::Doroti.Ui.SceneBuilder());
         global::Doroti.Ui.Image image__20637 = default!;
         try
         {
@@ -545,11 +545,11 @@ internal class _ScreenshotPaintingContext__widget_inspector : global::Doroti.Gen
 
 public class _DiagnosticsPathNode__widget_inspector
 {
-    public virtual global::Doroti.Generated.Framework.Foundation.DiagnosticsNode node { get; private set; } = default!;
-    public virtual List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> children { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Foundation.DiagnosticsNode node { get; private set; } = default!;
+    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> children { get; private set; } = default!;
     public virtual long? childIndex { get; private set; }
 
-    internal _DiagnosticsPathNode__widget_inspector(global::Doroti.Generated.Framework.Foundation.DiagnosticsNode node, List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> children, long? childIndex = null)
+    internal _DiagnosticsPathNode__widget_inspector(global::Doroti.Framework.Foundation.DiagnosticsNode node, List<global::Doroti.Framework.Foundation.DiagnosticsNode> children, long? childIndex = null)
     {
         this.node = node;
         this.children = children;
@@ -560,23 +560,23 @@ public class _DiagnosticsPathNode__widget_inspector
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static List<_DiagnosticsPathNode__widget_inspector>? _followDiagnosticableChain(List<global::Doroti.Generated.Framework.Foundation.Diagnosticable> chain)
+    internal static List<_DiagnosticsPathNode__widget_inspector>? _followDiagnosticableChain(List<global::Doroti.Framework.Foundation.Diagnosticable> chain)
     {
         var path__21974 = new List<_DiagnosticsPathNode__widget_inspector>();
         if (!System.Linq.Enumerable.Any(chain))
         {
             return path__21974;
         }
-        global::Doroti.Generated.Framework.Foundation.DiagnosticsNode diagnostic__22069 = ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)(object?)((Diagnosticable)chain.First()).toDiagnosticsNode());
+        global::Doroti.Framework.Foundation.DiagnosticsNode diagnostic__22069 = ((global::Doroti.Framework.Foundation.DiagnosticsNode)(object?)((Diagnosticable)chain.First()).toDiagnosticsNode());
         for (var i__22126 = 1L; (i__22126 < checked((long)(chain.Count))); i__22126 += 1L)
         {
-            global::Doroti.Generated.Framework.Foundation.Diagnosticable target__22186 = chain[(int)(i__22126)];
+            global::Doroti.Framework.Foundation.Diagnosticable target__22186 = chain[(int)(i__22126)];
             var foundMatch__22213 = false;
-            List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> children__22265 = ((List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>)(object?)diagnostic__22069.getChildren());
+            List<global::Doroti.Framework.Foundation.DiagnosticsNode> children__22265 = ((List<global::Doroti.Framework.Foundation.DiagnosticsNode>)(object?)diagnostic__22069.getChildren());
             for (var j__22315 = 0L; (j__22315 < checked((long)(children__22265.Count))); j__22315 += 1L)
             {
-                global::Doroti.Generated.Framework.Foundation.DiagnosticsNode child__22381 = children__22265[(int)(j__22315)];
-                if ((object.Equals(((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)child__22381).value, target__22186)))
+                global::Doroti.Framework.Foundation.DiagnosticsNode child__22381 = children__22265[(int)(j__22315)];
+                if ((object.Equals(((global::Doroti.Framework.Foundation.DiagnosticsNode)child__22381).value, target__22186)))
                 {
                     foundMatch__22213 = true;
                     path__21974.Add(new _DiagnosticsPathNode__widget_inspector(node: diagnostic__22069, children: children__22265, childIndex: j__22315));
@@ -714,17 +714,17 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _reportStructuredError(global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails details)
+    public virtual void _reportStructuredError(global::Doroti.Framework.Foundation.FlutterErrorDetails details)
     {
         DartMap<string, object?> errorJson__34717 = _nodeToJson(((Diagnosticable)details).toDiagnosticsNode(), new InspectorSerializationDelegate(groupName: WidgetInspectorService._consoleObjectGroup, subtreeDepth: 5L, includeProperties: true, maxDescendantsTruncatableNode: 5L, service: this))!.cast<string, object?>();
         errorJson__34717["errorsSinceReload"] = this._errorsSinceReload;
         if ((this._errorsSinceReload == 0L))
         {
-            errorJson__34717["renderedErrorText"] = new global::Doroti.Generated.Framework.Foundation.TextTreeRenderer(wrapWidthProperties: global::Doroti.Generated.Framework.Foundation.FlutterError.wrapWidth, maxDescendentsTruncatableNode: 5L).render(((Diagnosticable)details).toDiagnosticsNode(style: global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.error)).trimRight();
+            errorJson__34717["renderedErrorText"] = new global::Doroti.Framework.Foundation.TextTreeRenderer(wrapWidthProperties: global::Doroti.Framework.Foundation.FlutterError.wrapWidth, maxDescendentsTruncatableNode: 5L).render(((Diagnosticable)details).toDiagnosticsNode(style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.error)).trimRight();
         }
         else
         {
-            errorJson__34717["renderedErrorText"] = $"Another exception was thrown: {(((global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails)details).summary)}";
+            errorJson__34717["renderedErrorText"] = $"Another exception was thrown: {(((global::Doroti.Framework.Foundation.FlutterErrorDetails)details).summary)}";
         }
         this._errorsSinceReload += 1L;
         postEvent("Flutter.Error", errorJson__34717.cast<object, object>());
@@ -750,10 +750,10 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     public virtual void initServiceExtensions(RegisterServiceExtensionCallback registerExtension)
     {
-        global::Doroti.Generated.Framework.Foundation.FlutterExceptionHandler defaultExceptionHandler__36848 = ((global::Doroti.Generated.Framework.Foundation.FlutterExceptionHandler)(object?)global::Doroti.Generated.Framework.Foundation.FlutterError.presentError);
+        global::Doroti.Framework.Foundation.FlutterExceptionHandler defaultExceptionHandler__36848 = ((global::Doroti.Framework.Foundation.FlutterExceptionHandler)(object?)global::Doroti.Framework.Foundation.FlutterError.presentError);
         if (isStructuredErrorsEnabled())
         {
-            global::Doroti.Generated.Framework.Foundation.FlutterError.presentError = this._reportStructuredError;
+            global::Doroti.Framework.Foundation.FlutterError.presentError = this._reportStructuredError;
         }
         DartRuntimePrimitives.Assert(() => !WidgetInspectorService._debugServiceExtensionsRegistered);
         DartRuntimePrimitives.Assert(() =>
@@ -762,9 +762,9 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.addPersistentFrameCallback((global::System.Action<Duration>)this._onFrameStart);
-        _registerBoolServiceExtension(name: WidgetInspectorServiceExtensions.structuredErrors.ToString(), getter: ((global::System.Func<Future<bool>>)(async () => (object.Equals((global::Doroti.Generated.Framework.Foundation.FlutterExceptionHandler)global::Doroti.Generated.Framework.Foundation.FlutterError.presentError, (global::Doroti.Generated.Framework.Foundation.FlutterExceptionHandler)this._reportStructuredError)))), setter: ((global::System.Func<bool, Future>)((value) => {
-global::Doroti.Generated.Framework.Foundation.FlutterError.presentError = ((value ? (global::Doroti.Generated.Framework.Foundation.FlutterExceptionHandler)this._reportStructuredError : defaultExceptionHandler__36848));
+        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPersistentFrameCallback((global::System.Action<Duration>)this._onFrameStart);
+        _registerBoolServiceExtension(name: WidgetInspectorServiceExtensions.structuredErrors.ToString(), getter: ((global::System.Func<Future<bool>>)(async () => (object.Equals((global::Doroti.Framework.Foundation.FlutterExceptionHandler)global::Doroti.Framework.Foundation.FlutterError.presentError, (global::Doroti.Framework.Foundation.FlutterExceptionHandler)this._reportStructuredError)))), setter: ((global::System.Func<bool, Future>)((value) => {
+global::Doroti.Framework.Foundation.FlutterError.presentError = ((value ? (global::Doroti.Framework.Foundation.FlutterExceptionHandler)this._reportStructuredError : defaultExceptionHandler__36848));
 return Future.value();
 throw new InvalidOperationException("Dart closure completed without a value.");
 })), registerExtension: (RegisterServiceExtensionCallback)registerExtension);
@@ -787,14 +787,14 @@ this._rebuildStats.resetCounts();
 this._trackRebuildDirtyWidgets = value;
 if (value)
 {
-    DartRuntimePrimitives.Assert(() => (global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugOnRebuildDirtyWidget is null));
-    global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugOnRebuildDirtyWidget = this._onRebuildWidget;
+    DartRuntimePrimitives.Assert(() => (global::Doroti.Framework.Widgets.DebugLibrary.debugOnRebuildDirtyWidget is null));
+    global::Doroti.Framework.Widgets.DebugLibrary.debugOnRebuildDirtyWidget = this._onRebuildWidget;
     await forceRebuild();
     return;
 }
 else
 {
-    global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugOnRebuildDirtyWidget = null;
+    global::Doroti.Framework.Widgets.DebugLibrary.debugOnRebuildDirtyWidget = null;
     return;
 }
 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -812,18 +812,18 @@ this._repaintStats.resetCounts();
 this._trackRepaintWidgets = value;
 if (value)
 {
-    DartRuntimePrimitives.Assert(() => (global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugOnProfilePaint is null));
-    global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugOnProfilePaint = this._onPaint;
-    void markTreeNeedsPaint(global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    DartRuntimePrimitives.Assert(() => (global::Doroti.Framework.Rendering.DebugLibrary.debugOnProfilePaint is null));
+    global::Doroti.Framework.Rendering.DebugLibrary.debugOnProfilePaint = this._onPaint;
+    void markTreeNeedsPaint(global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         ((dynamic)renderObject).markNeedsPaint();
-        ((dynamic)renderObject).visitChildren((global::System.Action<global::Doroti.Generated.Framework.Rendering.RenderObject>)markTreeNeedsPaint);
+        ((dynamic)renderObject).visitChildren((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)markTreeNeedsPaint);
     }
-    global::Doroti.Generated.Framework.Rendering.RendererBinding.instance.renderViews.forEach((__arg0) => ((global::System.Action<global::Doroti.Generated.Framework.Rendering.RenderObject>)markTreeNeedsPaint)(DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Rendering.RenderObject>(__arg0)));
+    global::Doroti.Framework.Rendering.RendererBinding.instance.renderViews.forEach((__arg0) => ((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)markTreeNeedsPaint)(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(__arg0)));
 }
 else
 {
-    global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugOnProfilePaint = null;
+    global::Doroti.Framework.Rendering.DebugLibrary.debugOnProfilePaint = null;
 }
 throw new InvalidOperationException("Dart closure completed without a value.");
 })), registerExtension: (RegisterServiceExtensionCallback)registerExtension);
@@ -867,7 +867,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         _registerServiceExtensionWithArg(name: WidgetInspectorServiceExtensions.getChildrenSummaryTree.ToString(), callback: (global::System.Func<string?, string, List<object>>)this._getChildrenSummaryTree, registerExtension: (RegisterServiceExtensionCallback)registerExtension);
         _registerServiceExtensionWithArg(name: WidgetInspectorServiceExtensions.getChildrenDetailsSubtree.ToString(), callback: (global::System.Func<string?, string, List<object>>)this._getChildrenDetailsSubtree, registerExtension: (RegisterServiceExtensionCallback)registerExtension);
         _registerObjectGroupServiceExtension(name: WidgetInspectorServiceExtensions.getRootWidget.ToString(), callback: (global::System.Func<string, DartMap<string, object>?>)this._getRootWidget, registerExtension: (RegisterServiceExtensionCallback)registerExtension);
-        _registerObjectGroupServiceExtension(name: WidgetInspectorServiceExtensions.getRootWidgetSummaryTree.ToString(), callback: (global::System.Func<string, global::System.Func<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>?, DartMap<string, object>?>)this._getRootWidgetSummaryTree, registerExtension: (RegisterServiceExtensionCallback)registerExtension);
+        _registerObjectGroupServiceExtension(name: WidgetInspectorServiceExtensions.getRootWidgetSummaryTree.ToString(), callback: (global::System.Func<string, global::System.Func<global::Doroti.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>?, DartMap<string, object>?>)this._getRootWidgetSummaryTree, registerExtension: (RegisterServiceExtensionCallback)registerExtension);
         registerServiceExtension(name: WidgetInspectorServiceExtensions.getRootWidgetSummaryTreeWithPreviews.ToString(), callback: (global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)this._getRootWidgetSummaryTreeWithPreviews, registerExtension: (RegisterServiceExtensionCallback)registerExtension);
         registerServiceExtension(name: WidgetInspectorServiceExtensions.getRootWidgetTree.ToString(), callback: (global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)this._getRootWidgetTree, registerExtension: (RegisterServiceExtensionCallback)registerExtension);
         registerServiceExtension(name: WidgetInspectorServiceExtensions.getDetailsSubtree.ToString(), callback: ((global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)(async (parameters) => {
@@ -990,7 +990,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         InspectorReferenceData? data__50504 = this._idToReferenceData.GetValueOrDefault(id);
         if ((data__50504 is null))
         {
-            throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Id does not exist.") }));
+            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Id does not exist.") }));
         }
         return ((InspectorReferenceData)data__50504).value;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1017,11 +1017,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         InspectorReferenceData? referenceData__51731 = this._idToReferenceData.GetValueOrDefault(id);
         if ((referenceData__51731 is null))
         {
-            throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Id does not exist") }));
+            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Id does not exist") }));
         }
         if ((this._groups.GetValueOrDefault(groupName)?.Remove(referenceData__51731) != true))
         {
-            throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Id is not in group") }));
+            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Id is not in group") }));
         }
         _decrementReferenceCount(referenceData__51731);
     }
@@ -1085,10 +1085,10 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                     _notifyToolsOfSelection(((InspectorSelection)this.selection).currentElement);
                     return true;
                 }
-            case global::Doroti.Generated.Framework.Rendering.RenderObject __object56090 when ((!object.Equals(@object, ((InspectorSelection)this.selection).current))):
+            case global::Doroti.Framework.Rendering.RenderObject __object56090 when ((!object.Equals(@object, ((InspectorSelection)this.selection).current))):
                 {
                     this.selection.clearCandidates();
-                    this.selection.current = (global::Doroti.Generated.Framework.Rendering.RenderObject)@object;
+                    this.selection.current = (global::Doroti.Framework.Rendering.RenderObject)@object;
                     _notifyToolsOfSelection(((InspectorSelection)this.selection).current);
                     return true;
                 }
@@ -1124,7 +1124,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     public virtual string? _devToolsInspectorUriForElement(Element element)
     {
-        if (((global::Doroti.Generated.Framework.Foundation.DebugLibrary.activeDevToolsServerAddress is not null) && (global::Doroti.Generated.Framework.Foundation.DebugLibrary.connectedVmServiceUri is not null)))
+        if (((global::Doroti.Framework.Foundation.DebugLibrary.activeDevToolsServerAddress is not null) && (global::Doroti.Framework.Foundation.DebugLibrary.connectedVmServiceUri is not null)))
         {
             string? inspectorRef__58355 = ((string?)(object?)toId(element, WidgetInspectorService._consoleObjectGroup));
             if ((inspectorRef__58355 is not null))
@@ -1138,9 +1138,9 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     public virtual string devToolsInspectorUri(string inspectorRef)
     {
-        DartRuntimePrimitives.Assert(() => (global::Doroti.Generated.Framework.Foundation.DebugLibrary.activeDevToolsServerAddress is not null));
-        DartRuntimePrimitives.Assert(() => (global::Doroti.Generated.Framework.Foundation.DebugLibrary.connectedVmServiceUri is not null));
-        DartUri uri__58816 = DartUri.parse(global::Doroti.Generated.Framework.Foundation.DebugLibrary.activeDevToolsServerAddress!.ToString()).replace(queryParameters: new DartMap<string, string> { ["uri"] = global::Doroti.Generated.Framework.Foundation.DebugLibrary.connectedVmServiceUri.ToString(), ["inspectorRef"] = inspectorRef });
+        DartRuntimePrimitives.Assert(() => (global::Doroti.Framework.Foundation.DebugLibrary.activeDevToolsServerAddress is not null));
+        DartRuntimePrimitives.Assert(() => (global::Doroti.Framework.Foundation.DebugLibrary.connectedVmServiceUri is not null));
+        DartUri uri__58816 = DartUri.parse(global::Doroti.Framework.Foundation.DebugLibrary.activeDevToolsServerAddress!.ToString()).replace(queryParameters: new DartMap<string, string> { ["uri"] = global::Doroti.Framework.Foundation.DebugLibrary.connectedVmServiceUri.ToString(), ["inspectorRef"] = inspectorRef });
         var devToolsInspectorUri__59352 = uri__58816.ToString();
         long startQueryParamIndex__59405 = ((long)((dynamic)devToolsInspectorUri__59352).IndexOf("?"));
         DartRuntimePrimitives.Assert(() => (startQueryParamIndex__59405 != -1L));
@@ -1157,7 +1157,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     public virtual List<object> _getParentChain(string? id, string groupName)
     {
         object? value__60294 = toObject(id);
-        List<_DiagnosticsPathNode__widget_inspector> path__60353 = (value__60294 switch { global::Doroti.Generated.Framework.Rendering.RenderObject __object60383 => _getRenderObjectParentChain(((global::Doroti.Generated.Framework.Rendering.RenderObject)__object60383), groupName)!, Element __object60455 => _getElementParentChain(((Element)__object60455), groupName), _ => throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"Cannot get parent chain for node of type {DartRuntimePrimitives.RuntimeType(value__60294)}") })) }).ToList();
+        List<_DiagnosticsPathNode__widget_inspector> path__60353 = (value__60294 switch { global::Doroti.Framework.Rendering.RenderObject __object60383 => _getRenderObjectParentChain(((global::Doroti.Framework.Rendering.RenderObject)__object60383), groupName)!, Element __object60455 => _getElementParentChain(((Element)__object60455), groupName), _ => throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"Cannot get parent chain for node of type {DartRuntimePrimitives.RuntimeType(value__60294)}") })) }).ToList();
         InspectorSerializationDelegate createDelegate()
         {
             return new InspectorSerializationDelegate(groupName: groupName, service: this);
@@ -1191,23 +1191,23 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     public virtual List<_DiagnosticsPathNode__widget_inspector> _getElementParentChain(Element element, string groupName, long? numLocalParents = null)
     {
-        return (Widget_inspectorLibrary._followDiagnosticableChain(_getRawElementParentChain(element, numLocalParents: numLocalParents).Cast<global::Doroti.Generated.Framework.Foundation.Diagnosticable>().ToList()) ?? new List<_DiagnosticsPathNode__widget_inspector>());
+        return (Widget_inspectorLibrary._followDiagnosticableChain(_getRawElementParentChain(element, numLocalParents: numLocalParents).Cast<global::Doroti.Framework.Foundation.Diagnosticable>().ToList()) ?? new List<_DiagnosticsPathNode__widget_inspector>());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<_DiagnosticsPathNode__widget_inspector>? _getRenderObjectParentChain(global::Doroti.Generated.Framework.Rendering.RenderObject? renderObject, string groupName)
+    public virtual List<_DiagnosticsPathNode__widget_inspector>? _getRenderObjectParentChain(global::Doroti.Framework.Rendering.RenderObject? renderObject, string groupName)
     {
-        var chain__62197 = new List<global::Doroti.Generated.Framework.Rendering.RenderObject>();
+        var chain__62197 = new List<global::Doroti.Framework.Rendering.RenderObject>();
         while ((renderObject is not null))
         {
             chain__62197.Add(renderObject);
-            renderObject = ((global::Doroti.Generated.Framework.Rendering.RenderObject)renderObject).parent;
+            renderObject = ((global::Doroti.Framework.Rendering.RenderObject)renderObject).parent;
         }
-        return Widget_inspectorLibrary._followDiagnosticableChain(System.Linq.Enumerable.Reverse(chain__62197).ToList().Cast<global::Doroti.Generated.Framework.Foundation.Diagnosticable>().ToList());
+        return Widget_inspectorLibrary._followDiagnosticableChain(System.Linq.Enumerable.Reverse(chain__62197).ToList().Cast<global::Doroti.Framework.Foundation.Diagnosticable>().ToList());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DartMap<string, object>? _nodeToJson(global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? node, InspectorSerializationDelegate @delegate, bool fullDetails = true)
+    public virtual DartMap<string, object>? _nodeToJson(global::Doroti.Framework.Foundation.DiagnosticsNode? node, InspectorSerializationDelegate @delegate, bool fullDetails = true)
     {
         if (fullDetails)
         {
@@ -1272,11 +1272,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> _truncateNodes(IEnumerable<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> nodes, long maxDescendentsTruncatableNode)
+    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> _truncateNodes(IEnumerable<global::Doroti.Framework.Foundation.DiagnosticsNode> nodes, long maxDescendentsTruncatableNode)
     {
-        if ((nodes.All(((node) => (((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)node).value is Element))) && isWidgetCreationTracked()))
+        if ((nodes.All(((node) => (((global::Doroti.Framework.Foundation.DiagnosticsNode)node).value is Element))) && isWidgetCreationTracked()))
         {
-            List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> localNodes__65137 = nodes.where(((node) => _isValueCreatedByLocalProject(((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)node).value))).ToList().ToList();
+            List<global::Doroti.Framework.Foundation.DiagnosticsNode> localNodes__65137 = nodes.where(((node) => _isValueCreatedByLocalProject(((global::Doroti.Framework.Foundation.DiagnosticsNode)node).value))).ToList().ToList();
             if (System.Linq.Enumerable.Any(localNodes__65137))
             {
                 return localNodes__65137;
@@ -1286,7 +1286,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<DartMap<string, object>> _nodesToJson(List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> nodes, InspectorSerializationDelegate @delegate, global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? parent)
+    public virtual List<DartMap<string, object>> _nodesToJson(List<global::Doroti.Framework.Foundation.DiagnosticsNode> nodes, InspectorSerializationDelegate @delegate, global::Doroti.Framework.Foundation.DiagnosticsNode? parent)
     {
         return ((List<DartMap<string, object>>)(object?)DiagnosticsNode.toJsonList(nodes, parent, @delegate));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1300,7 +1300,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     public virtual List<object> _getProperties(string? diagnosticableId, string groupName)
     {
-        global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? node__66037 = ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode?)(object?)_idToDiagnosticsNode(diagnosticableId));
+        global::Doroti.Framework.Foundation.DiagnosticsNode? node__66037 = ((global::Doroti.Framework.Foundation.DiagnosticsNode?)(object?)_idToDiagnosticsNode(diagnosticableId));
         if ((node__66037 is null))
         {
             return new List<object>();
@@ -1317,9 +1317,9 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     public virtual List<object> _getChildren(string? diagnosticsNodeId, string groupName)
     {
-        var node__66661 = ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode?)(object?)toObject(diagnosticsNodeId))!;
+        var node__66661 = ((global::Doroti.Framework.Foundation.DiagnosticsNode?)(object?)toObject(diagnosticsNodeId))!;
         var @delegate__66727 = new InspectorSerializationDelegate(groupName: groupName, service: this);
-        return ((List<object>)(object?)_nodesToJson(((node__66661 is null) ? new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>() : _getChildrenFiltered(node__66661, @delegate__66727)), @delegate__66727, parent: node__66661));
+        return ((List<object>)(object?)_nodesToJson(((node__66661 is null) ? new List<global::Doroti.Framework.Foundation.DiagnosticsNode>() : _getChildrenFiltered(node__66661, @delegate__66727)), @delegate__66727, parent: node__66661));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1329,16 +1329,16 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? _idToDiagnosticsNode(string? diagnosticableId)
+    public virtual global::Doroti.Framework.Foundation.DiagnosticsNode? _idToDiagnosticsNode(string? diagnosticableId)
     {
         object? @object__67881 = toObject(diagnosticableId);
-        return ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode?)(object?)WidgetInspectorService.objectToDiagnosticsNode(@object__67881));
+        return ((global::Doroti.Framework.Foundation.DiagnosticsNode?)(object?)WidgetInspectorService.objectToDiagnosticsNode(@object__67881));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual List<object> _getChildrenSummaryTree(string? diagnosticableId, string groupName)
     {
-        global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? node__68334 = ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode?)(object?)_idToDiagnosticsNode(diagnosticableId));
+        global::Doroti.Framework.Foundation.DiagnosticsNode? node__68334 = ((global::Doroti.Framework.Foundation.DiagnosticsNode?)(object?)_idToDiagnosticsNode(diagnosticableId));
         if ((node__68334 is null))
         {
             return new List<object>();
@@ -1356,24 +1356,24 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     public virtual List<object> _getChildrenDetailsSubtree(string? diagnosticableId, string groupName)
     {
-        global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? node__69276 = ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode?)(object?)_idToDiagnosticsNode(diagnosticableId));
+        global::Doroti.Framework.Foundation.DiagnosticsNode? node__69276 = ((global::Doroti.Framework.Foundation.DiagnosticsNode?)(object?)_idToDiagnosticsNode(diagnosticableId));
         var @delegate__69419 = new InspectorSerializationDelegate(groupName: groupName, includeProperties: true, service: this);
-        return ((List<object>)(object?)_nodesToJson(((node__69276 is null) ? new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>() : _getChildrenFiltered(node__69276, @delegate__69419)), @delegate__69419, parent: node__69276));
+        return ((List<object>)(object?)_nodesToJson(((node__69276 is null) ? new List<global::Doroti.Framework.Foundation.DiagnosticsNode>() : _getChildrenFiltered(node__69276, @delegate__69419)), @delegate__69419, parent: node__69276));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool _shouldShowInSummaryTree(global::Doroti.Generated.Framework.Foundation.DiagnosticsNode node)
+    public virtual bool _shouldShowInSummaryTree(global::Doroti.Framework.Foundation.DiagnosticsNode node)
     {
-        if ((object.Equals(((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)node).level, global::Doroti.Generated.Framework.Foundation.DiagnosticLevel.error)))
+        if ((object.Equals(((global::Doroti.Framework.Foundation.DiagnosticsNode)node).level, global::Doroti.Framework.Foundation.DiagnosticLevel.error)))
         {
             return true;
         }
-        object? value__69855 = ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)node).value;
-        if ((value__69855 is not global::Doroti.Generated.Framework.Foundation.Diagnosticable))
+        object? value__69855 = ((global::Doroti.Framework.Foundation.DiagnosticsNode)node).value;
+        if ((value__69855 is not global::Doroti.Framework.Foundation.Diagnosticable))
         {
             return true;
         }
-        if (((((global::Doroti.Generated.Framework.Foundation.Diagnosticable)value__69855) is not Element) || !isWidgetCreationTracked()))
+        if (((((global::Doroti.Framework.Foundation.Diagnosticable)value__69855) is not Element) || !isWidgetCreationTracked()))
         {
             return true;
         }
@@ -1381,15 +1381,15 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> _getChildrenFiltered(global::Doroti.Generated.Framework.Foundation.DiagnosticsNode node, InspectorSerializationDelegate @delegate)
+    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> _getChildrenFiltered(global::Doroti.Framework.Foundation.DiagnosticsNode node, InspectorSerializationDelegate @delegate)
     {
-        return ((List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>)(object?)_filterChildren(node.getChildren().ToList(), @delegate));
+        return ((List<global::Doroti.Framework.Foundation.DiagnosticsNode>)(object?)_filterChildren(node.getChildren().ToList(), @delegate));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> _filterChildren(List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> nodes, InspectorSerializationDelegate @delegate)
+    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> _filterChildren(List<global::Doroti.Framework.Foundation.DiagnosticsNode> nodes, InspectorSerializationDelegate @delegate)
     {
-        var children__70492 = new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>();
+        var children__70492 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
         foreach (var child__70540 in nodes)
         {
             InspectorSerializationDelegate? updatedDelegate__70741 = ((InspectorSerializationDelegate?)(object?)_updateDelegateForWidgetInspectorEnabledState(@delegate: @delegate, node: child__70540));
@@ -1407,9 +1407,9 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual InspectorSerializationDelegate? _updateDelegateForWidgetInspectorEnabledState(InspectorSerializationDelegate @delegate, global::Doroti.Generated.Framework.Foundation.DiagnosticsNode node)
+    public virtual InspectorSerializationDelegate? _updateDelegateForWidgetInspectorEnabledState(InspectorSerializationDelegate @delegate, global::Doroti.Framework.Foundation.DiagnosticsNode node)
     {
-        object? value__72458 = ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)node).value;
+        object? value__72458 = ((global::Doroti.Framework.Foundation.DiagnosticsNode)node).value;
         if ((!((InspectorSerializationDelegate)@delegate).inDisableWidgetInspectorScope && (value__72458 is _DisableWidgetInspectorScopeProxyElement__widget_inspector)))
         {
             _DisableWidgetInspectorScopeProxyElement__widget_inspector value__72458__as72537 = (_DisableWidgetInspectorScopeProxyElement__widget_inspector)value__72458;
@@ -1445,9 +1445,9 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DartMap<string, object>? _getRootWidgetSummaryTree(string groupName, global::System.Func<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>? addAdditionalPropertiesCallback = null)
+    public virtual DartMap<string, object>? _getRootWidgetSummaryTree(string groupName, global::System.Func<global::Doroti.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>? addAdditionalPropertiesCallback = null)
     {
-        return ((DartMap<string, object>?)(object?)_getRootWidgetTreeImpl(groupName: groupName, isSummaryTree: true, withPreviews: false, addAdditionalPropertiesCallback: (global::System.Func<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>?)addAdditionalPropertiesCallback));
+        return ((DartMap<string, object>?)(object?)_getRootWidgetTreeImpl(groupName: groupName, isSummaryTree: true, withPreviews: false, addAdditionalPropertiesCallback: (global::System.Func<global::Doroti.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>?)addAdditionalPropertiesCallback));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1470,31 +1470,31 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DartMap<string, object>? _getRootWidgetTreeImpl(string groupName, bool isSummaryTree, bool withPreviews, bool fullDetails = true, global::System.Func<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>? addAdditionalPropertiesCallback = null)
+    public virtual DartMap<string, object>? _getRootWidgetTreeImpl(string groupName, bool isSummaryTree, bool withPreviews, bool fullDetails = true, global::System.Func<global::Doroti.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>? addAdditionalPropertiesCallback = null)
     {
         bool shouldAddAdditionalProperties__75403 = ((addAdditionalPropertiesCallback is not null) || withPreviews);
-        DartMap<string, object>? combinedAddAdditionalPropertiesCallback(global::Doroti.Generated.Framework.Foundation.DiagnosticsNode node, InspectorSerializationDelegate @delegate)
+        DartMap<string, object>? combinedAddAdditionalPropertiesCallback(global::Doroti.Framework.Foundation.DiagnosticsNode node, InspectorSerializationDelegate @delegate)
         {
             DartMap<string, object> additionalPropertiesJson__75813 = ((addAdditionalPropertiesCallback is null ? new DartMap<string, object>() : addAdditionalPropertiesCallback.Invoke(node, @delegate)));
             if (!withPreviews)
             {
                 return additionalPropertiesJson__75813;
             }
-            object? value__76023 = ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)node).value;
+            object? value__76023 = ((global::Doroti.Framework.Foundation.DiagnosticsNode)node).value;
             if ((value__76023 is Element))
             {
                 Element value__76023__as76053 = (Element)value__76023;
-                global::Doroti.Generated.Framework.Rendering.RenderObject? renderObject__76101 = ((global::Doroti.Generated.Framework.Rendering.RenderObject?)(object?)_renderObjectOrNull(((Element)value__76023__as76053)));
-                if ((renderObject__76101 is global::Doroti.Generated.Framework.Rendering.RenderParagraph))
+                global::Doroti.Framework.Rendering.RenderObject? renderObject__76101 = ((global::Doroti.Framework.Rendering.RenderObject?)(object?)_renderObjectOrNull(((Element)value__76023__as76053)));
+                if ((renderObject__76101 is global::Doroti.Framework.Rendering.RenderParagraph))
                 {
-                    global::Doroti.Generated.Framework.Rendering.RenderParagraph renderObject__76101__as76156 = (global::Doroti.Generated.Framework.Rendering.RenderParagraph)renderObject__76101;
-                    additionalPropertiesJson__75813["textPreview"] = ((global::Doroti.Generated.Framework.Rendering.RenderParagraph)((global::Doroti.Generated.Framework.Rendering.RenderParagraph)renderObject__76101__as76156)).text.toPlainText();
+                    global::Doroti.Framework.Rendering.RenderParagraph renderObject__76101__as76156 = (global::Doroti.Framework.Rendering.RenderParagraph)renderObject__76101;
+                    additionalPropertiesJson__75813["textPreview"] = ((global::Doroti.Framework.Rendering.RenderParagraph)((global::Doroti.Framework.Rendering.RenderParagraph)renderObject__76101__as76156)).text.toPlainText();
                 }
             }
             return additionalPropertiesJson__75813;
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        return ((DartMap<string, object>?)(object?)_nodeToJson(((Diagnosticable)WidgetsBinding.instance.rootElement).toDiagnosticsNode(), new InspectorSerializationDelegate(groupName: groupName, subtreeDepth: 1000000L, summaryTree: isSummaryTree, service: this, addAdditionalPropertiesCallback: ((global::System.Func<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>)(shouldAddAdditionalProperties__75403 ? combinedAddAdditionalPropertiesCallback : null))), fullDetails: fullDetails));
+        return ((DartMap<string, object>?)(object?)_nodeToJson(((Diagnosticable)WidgetsBinding.instance.rootElement).toDiagnosticsNode(), new InspectorSerializationDelegate(groupName: groupName, subtreeDepth: 1000000L, summaryTree: isSummaryTree, service: this, addAdditionalPropertiesCallback: ((global::System.Func<global::Doroti.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>)(shouldAddAdditionalProperties__75403 ? combinedAddAdditionalPropertiesCallback : null))), fullDetails: fullDetails));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1506,7 +1506,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     public virtual DartMap<string, object>? _getDetailsSubtree(string? diagnosticableId, string? groupName, long subtreeDepth)
     {
-        global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? root__77643 = ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode?)(object?)_idToDiagnosticsNode(diagnosticableId));
+        global::Doroti.Framework.Foundation.DiagnosticsNode? root__77643 = ((global::Doroti.Framework.Foundation.DiagnosticsNode?)(object?)_idToDiagnosticsNode(diagnosticableId));
         if ((root__77643 is null))
         {
             return ((DartMap<string, object>)(object)null);
@@ -1519,7 +1519,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         if ((previousSelectionId is not null))
         {
-            global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint("previousSelectionId is deprecated in API");
+            global::Doroti.Framework.Foundation.PrintLibrary.debugPrint("previousSelectionId is deprecated in API");
         }
         return ((string)(object?)_safeJsonEncode(_getSelectedWidget(((string)(object)null), groupName)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1527,26 +1527,26 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     public async virtual Future<global::Doroti.Ui.Image?> screenshot(object? @object, double width, double height, double margin = 0.0, double maxPixelRatio = 1.0, bool debugPaint = false)
     {
-        if (((@object is not Element) && (@object is not global::Doroti.Generated.Framework.Rendering.RenderObject)))
+        if (((@object is not Element) && (@object is not global::Doroti.Framework.Rendering.RenderObject)))
         {
             return ((global::Doroti.Ui.Image)(object)null);
         }
-        global::Doroti.Generated.Framework.Rendering.RenderObject? renderObject__79378 = ((@object is Element) ? _renderObjectOrNull((Element)@object) : (((global::Doroti.Generated.Framework.Rendering.RenderObject?)(object?)@object)!));
-        if (((renderObject__79378 is null) || !((global::Doroti.Generated.Framework.Rendering.RenderObject)renderObject__79378).attached))
+        global::Doroti.Framework.Rendering.RenderObject? renderObject__79378 = ((@object is Element) ? _renderObjectOrNull((Element)@object) : (((global::Doroti.Framework.Rendering.RenderObject?)(object?)@object)!));
+        if (((renderObject__79378 is null) || !((global::Doroti.Framework.Rendering.RenderObject)renderObject__79378).attached))
         {
             return ((global::Doroti.Ui.Image)(object)null);
         }
-        if (((global::Doroti.Generated.Framework.Rendering.RenderObject)renderObject__79378).debugNeedsLayout)
+        if (((global::Doroti.Framework.Rendering.RenderObject)renderObject__79378).debugNeedsLayout)
         {
-            global::Doroti.Generated.Framework.Rendering.PipelineOwner owner__79637 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Rendering.PipelineOwner>(((global::Doroti.Generated.Framework.Rendering.RenderObject)renderObject__79378).owner!);
-            DartRuntimePrimitives.Assert(() => !((global::Doroti.Generated.Framework.Rendering.PipelineOwner)owner__79637).debugDoingLayout);
-            DartRuntimePrimitives.Ignore(((Func<global::Doroti.Generated.Framework.Rendering.PipelineOwner>)(() =>
+            global::Doroti.Framework.Rendering.PipelineOwner owner__79637 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.PipelineOwner>(((global::Doroti.Framework.Rendering.RenderObject)renderObject__79378).owner!);
+            DartRuntimePrimitives.Assert(() => !((global::Doroti.Framework.Rendering.PipelineOwner)owner__79637).debugDoingLayout);
+            DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.PipelineOwner>)(() =>
 {            var __cascade = owner__79637;
             __cascade.flushLayout();
             __cascade.flushCompositingBits();
             __cascade.flushPaint();
             return __cascade;        }))());
-            if (((global::Doroti.Generated.Framework.Rendering.RenderObject)renderObject__79378).debugNeedsLayout)
+            if (((global::Doroti.Framework.Rendering.RenderObject)renderObject__79378).debugNeedsLayout)
             {
                 return ((global::Doroti.Ui.Image)(object)null);
             }
@@ -1571,24 +1571,24 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         long subtreeDepth__80803 = Dart_coreLibrary.parse(parameters.GetValueOrDefault("subtreeDepth")!);
         string? groupName__80876 = parameters.GetValueOrDefault("groupName");
         DartMap<string, object>? result__80939 = new DartMap<string, object>().cast<string, object>();
-        global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? root__80996 = ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode?)(object?)_idToDiagnosticsNode(diagnosticableId__80752));
+        global::Doroti.Framework.Foundation.DiagnosticsNode? root__80996 = ((global::Doroti.Framework.Foundation.DiagnosticsNode?)(object?)_idToDiagnosticsNode(diagnosticableId__80752));
         if ((root__80996 is null))
         {
             return Future<DartMap<string, object>>.value(new DartMap<string, object> { ["result"] = result__80939 });
         }
-        result__80939 = _nodeToJson(root__80996, new InspectorSerializationDelegate(groupName: groupName__80876, summaryTree: true, subtreeDepth: subtreeDepth__80803, service: this, addAdditionalPropertiesCallback: ((global::System.Func<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>?)((node, @delegate) => {
-object? value__81482 = ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)node).value;
-global::Doroti.Generated.Framework.Rendering.RenderObject? renderObject__81532 = ((value__81482 is Element) ? _renderObjectOrNull(((Element)value__81482)) : null);
+        result__80939 = _nodeToJson(root__80996, new InspectorSerializationDelegate(groupName: groupName__80876, summaryTree: true, subtreeDepth: subtreeDepth__80803, service: this, addAdditionalPropertiesCallback: ((global::System.Func<global::Doroti.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>?)((node, @delegate) => {
+object? value__81482 = ((global::Doroti.Framework.Foundation.DiagnosticsNode)node).value;
+global::Doroti.Framework.Rendering.RenderObject? renderObject__81532 = ((value__81482 is Element) ? _renderObjectOrNull(((Element)value__81482)) : null);
 if ((renderObject__81532 is null))
 {
     return new DartMap<string, object>();
 }
-global::Doroti.Generated.Framework.Foundation.DiagnosticsSerializationDelegate renderObjectSerializationDelegate__81746 = ((global::Doroti.Generated.Framework.Foundation.DiagnosticsSerializationDelegate)(object?)@delegate.copyWith(subtreeDepth: 0L, includeProperties: true, expandPropertyValues: false));
+global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate renderObjectSerializationDelegate__81746 = ((global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate)(object?)@delegate.copyWith(subtreeDepth: 0L, includeProperties: true, expandPropertyValues: false));
 var additionalJson__81903 = new DartMap<string, object>();
-global::Doroti.Generated.Framework.Rendering.RenderObject? renderParent__82484 = ((global::Doroti.Generated.Framework.Rendering.RenderObject)renderObject__81532).parent;
+global::Doroti.Framework.Rendering.RenderObject? renderParent__82484 = ((global::Doroti.Framework.Rendering.RenderObject)renderObject__81532).parent;
 if ((((renderParent__82484 is not null) && (((InspectorSerializationDelegate)@delegate).subtreeDepth > 0L)) && ((InspectorSerializationDelegate)@delegate).expandPropertyValues))
 {
-    object? parentCreator__82646 = ((global::Doroti.Generated.Framework.Rendering.RenderObject)renderParent__82484).debugCreator;
+    object? parentCreator__82646 = ((global::Doroti.Framework.Rendering.RenderObject)renderParent__82484).debugCreator;
     if ((parentCreator__82646 is DebugCreator))
     {
         DebugCreator parentCreator__82646__as82705 = (DebugCreator)parentCreator__82646;
@@ -1597,14 +1597,14 @@ if ((((renderParent__82484 is not null) && (((InspectorSerializationDelegate)@de
 }
 try
 {
-    if (!((global::Doroti.Generated.Framework.Rendering.RenderObject)renderObject__81532).debugNeedsLayout)
+    if (!((global::Doroti.Framework.Rendering.RenderObject)renderObject__81532).debugNeedsLayout)
     {
-        global::Doroti.Generated.Framework.Rendering.Constraints constraints__83404 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Rendering.Constraints>(((global::Doroti.Generated.Framework.Rendering.RenderObject)renderObject__81532).constraints);
+        global::Doroti.Framework.Rendering.Constraints constraints__83404 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.Constraints>(((global::Doroti.Framework.Rendering.RenderObject)renderObject__81532).constraints);
         var constraintsProperty__83464 = new DartMap<string, object> { ["type"] = DartRuntimePrimitives.RuntimeTypeName(constraints__83404), ["description"] = constraints__83404.ToString() };
-        if ((constraints__83404 is global::Doroti.Generated.Framework.Rendering.BoxConstraints))
+        if ((constraints__83404 is global::Doroti.Framework.Rendering.BoxConstraints))
         {
-            global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints__83404__as83654 = (global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints__83404;
-            constraintsProperty__83464.AddRange(new DartMap<string, object> { ["minWidth"] = ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints__83404__as83654)).minWidth.ToString(), ["minHeight"] = ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints__83404__as83654)).minHeight.ToString(), ["maxWidth"] = ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints__83404__as83654)).maxWidth.ToString(), ["maxHeight"] = ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints__83404__as83654)).maxHeight.ToString() });
+            global::Doroti.Framework.Rendering.BoxConstraints constraints__83404__as83654 = (global::Doroti.Framework.Rendering.BoxConstraints)constraints__83404;
+            constraintsProperty__83464.AddRange(new DartMap<string, object> { ["minWidth"] = ((global::Doroti.Framework.Rendering.BoxConstraints)((global::Doroti.Framework.Rendering.BoxConstraints)constraints__83404__as83654)).minWidth.ToString(), ["minHeight"] = ((global::Doroti.Framework.Rendering.BoxConstraints)((global::Doroti.Framework.Rendering.BoxConstraints)constraints__83404__as83654)).minHeight.ToString(), ["maxWidth"] = ((global::Doroti.Framework.Rendering.BoxConstraints)((global::Doroti.Framework.Rendering.BoxConstraints)constraints__83404__as83654)).maxWidth.ToString(), ["maxHeight"] = ((global::Doroti.Framework.Rendering.BoxConstraints)((global::Doroti.Framework.Rendering.BoxConstraints)constraints__83404__as83654)).maxHeight.ToString() });
         }
         additionalJson__81903["constraints"] = constraintsProperty__83464;
     }
@@ -1614,34 +1614,34 @@ catch (Exception e__84140)
 }
 try
 {
-    if ((renderObject__81532 is global::Doroti.Generated.Framework.Rendering.RenderBox))
+    if ((renderObject__81532 is global::Doroti.Framework.Rendering.RenderBox))
     {
-        global::Doroti.Generated.Framework.Rendering.RenderBox renderObject__81532__as84297 = (global::Doroti.Generated.Framework.Rendering.RenderBox)renderObject__81532;
+        global::Doroti.Framework.Rendering.RenderBox renderObject__81532__as84297 = (global::Doroti.Framework.Rendering.RenderBox)renderObject__81532;
         additionalJson__81903["isBox"] = true;
-        additionalJson__81903["size"] = new DartMap<string, object> { ["width"] = ((global::Doroti.Generated.Framework.Rendering.RenderBox)((global::Doroti.Generated.Framework.Rendering.RenderBox)renderObject__81532__as84297)).size.width.ToString(), ["height"] = ((global::Doroti.Generated.Framework.Rendering.RenderBox)((global::Doroti.Generated.Framework.Rendering.RenderBox)renderObject__81532__as84297)).size.height.ToString() };
-        global::Doroti.Generated.Framework.Rendering.ParentData? parentData__84603 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Rendering.ParentData>(((global::Doroti.Generated.Framework.Rendering.RenderBox)renderObject__81532__as84297).parentData);
-        if ((parentData__84603 is global::Doroti.Generated.Framework.Rendering.FlexParentData))
+        additionalJson__81903["size"] = new DartMap<string, object> { ["width"] = ((global::Doroti.Framework.Rendering.RenderBox)((global::Doroti.Framework.Rendering.RenderBox)renderObject__81532__as84297)).size.width.ToString(), ["height"] = ((global::Doroti.Framework.Rendering.RenderBox)((global::Doroti.Framework.Rendering.RenderBox)renderObject__81532__as84297)).size.height.ToString() };
+        global::Doroti.Framework.Rendering.ParentData? parentData__84603 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.ParentData>(((global::Doroti.Framework.Rendering.RenderBox)renderObject__81532__as84297).parentData);
+        if ((parentData__84603 is global::Doroti.Framework.Rendering.FlexParentData))
         {
-            global::Doroti.Generated.Framework.Rendering.FlexParentData parentData__84603__as84659 = (global::Doroti.Generated.Framework.Rendering.FlexParentData)parentData__84603;
-            additionalJson__81903["flexFactor"] = (((global::Doroti.Generated.Framework.Rendering.FlexParentData)((global::Doroti.Generated.Framework.Rendering.FlexParentData)parentData__84603__as84659)).flex ?? 0L);
-            additionalJson__81903["flexFit"] = ((((global::Doroti.Generated.Framework.Rendering.FlexParentData)((global::Doroti.Generated.Framework.Rendering.FlexParentData)parentData__84603__as84659)).fit ?? global::Doroti.Generated.Framework.Rendering.FlexFit.tight)).ToString();
+            global::Doroti.Framework.Rendering.FlexParentData parentData__84603__as84659 = (global::Doroti.Framework.Rendering.FlexParentData)parentData__84603;
+            additionalJson__81903["flexFactor"] = (((global::Doroti.Framework.Rendering.FlexParentData)((global::Doroti.Framework.Rendering.FlexParentData)parentData__84603__as84659)).flex ?? 0L);
+            additionalJson__81903["flexFit"] = ((((global::Doroti.Framework.Rendering.FlexParentData)((global::Doroti.Framework.Rendering.FlexParentData)parentData__84603__as84659)).fit ?? global::Doroti.Framework.Rendering.FlexFit.tight)).ToString();
         }
         else
         {
-            if ((parentData__84603 is global::Doroti.Generated.Framework.Rendering.BoxParentData))
+            if ((parentData__84603 is global::Doroti.Framework.Rendering.BoxParentData))
             {
-                global::Doroti.Generated.Framework.Rendering.BoxParentData parentData__84603__as84869 = (global::Doroti.Generated.Framework.Rendering.BoxParentData)parentData__84603;
-                global::Doroti.Ui.Offset offset__84929 = ((global::Doroti.Ui.Offset)(object?)((global::Doroti.Generated.Framework.Rendering.BoxParentData)((global::Doroti.Generated.Framework.Rendering.BoxParentData)parentData__84603__as84869)).offset);
+                global::Doroti.Framework.Rendering.BoxParentData parentData__84603__as84869 = (global::Doroti.Framework.Rendering.BoxParentData)parentData__84603;
+                global::Doroti.Ui.Offset offset__84929 = ((global::Doroti.Ui.Offset)(object?)((global::Doroti.Framework.Rendering.BoxParentData)((global::Doroti.Framework.Rendering.BoxParentData)parentData__84603__as84869)).offset);
                 additionalJson__81903["parentData"] = new DartMap<string, object> { ["offsetX"] = offset__84929.dx.ToString(), ["offsetY"] = offset__84929.dy.ToString() };
             }
         }
     }
     else
     {
-        if ((renderObject__81532 is global::Doroti.Generated.Framework.Rendering.RenderView))
+        if ((renderObject__81532 is global::Doroti.Framework.Rendering.RenderView))
         {
-            global::Doroti.Generated.Framework.Rendering.RenderView renderObject__81532__as85182 = (global::Doroti.Generated.Framework.Rendering.RenderView)renderObject__81532;
-            additionalJson__81903["size"] = new DartMap<string, object> { ["width"] = ((global::Doroti.Generated.Framework.Rendering.RenderView)((global::Doroti.Generated.Framework.Rendering.RenderView)renderObject__81532__as85182)).size.width.ToString(), ["height"] = ((global::Doroti.Generated.Framework.Rendering.RenderView)((global::Doroti.Generated.Framework.Rendering.RenderView)renderObject__81532__as85182)).size.height.ToString() };
+            global::Doroti.Framework.Rendering.RenderView renderObject__81532__as85182 = (global::Doroti.Framework.Rendering.RenderView)renderObject__81532;
+            additionalJson__81903["size"] = new DartMap<string, object> { ["width"] = ((global::Doroti.Framework.Rendering.RenderView)((global::Doroti.Framework.Rendering.RenderView)renderObject__81532__as85182)).size.width.ToString(), ["height"] = ((global::Doroti.Framework.Rendering.RenderView)((global::Doroti.Framework.Rendering.RenderView)renderObject__81532__as85182)).size.height.ToString() };
         }
     }
 }
@@ -1659,17 +1659,17 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         string? id__85737 = parameters.GetValueOrDefault("id");
         string parameter__85777 = parameters.GetValueOrDefault("flexFit")!;
-        global::Doroti.Generated.Framework.Rendering.FlexFit flexFit__85831 = _toEnumEntry<global::Doroti.Generated.Framework.Rendering.FlexFit>(System.Enum.GetValues<global::Doroti.Generated.Framework.Rendering.FlexFit>().ToList(), parameter__85777);
+        global::Doroti.Framework.Rendering.FlexFit flexFit__85831 = _toEnumEntry<global::Doroti.Framework.Rendering.FlexFit>(System.Enum.GetValues<global::Doroti.Framework.Rendering.FlexFit>().ToList(), parameter__85777);
         object? @object__85909 = toObject(id__85737);
         var succeed__85940 = false;
         if (((@object__85909 is not null) && (@object__85909 is Element)))
         {
             Element @object__85909__as85983 = (Element)@object__85909;
-            global::Doroti.Generated.Framework.Rendering.RenderObject? render__86030 = ((global::Doroti.Generated.Framework.Rendering.RenderObject?)(object?)_renderObjectOrNull(((Element)@object__85909__as85983)));
-            global::Doroti.Generated.Framework.Rendering.ParentData? parentData__86092 = ((global::Doroti.Generated.Framework.Rendering.ParentData?)((dynamic)render__86030)?.parentData);
-            if ((parentData__86092 is global::Doroti.Generated.Framework.Rendering.FlexParentData))
+            global::Doroti.Framework.Rendering.RenderObject? render__86030 = ((global::Doroti.Framework.Rendering.RenderObject?)(object?)_renderObjectOrNull(((Element)@object__85909__as85983)));
+            global::Doroti.Framework.Rendering.ParentData? parentData__86092 = ((global::Doroti.Framework.Rendering.ParentData?)((dynamic)render__86030)?.parentData);
+            if ((parentData__86092 is global::Doroti.Framework.Rendering.FlexParentData))
             {
-                global::Doroti.Generated.Framework.Rendering.FlexParentData parentData__86092__as86135 = (global::Doroti.Generated.Framework.Rendering.FlexParentData)parentData__86092;
+                global::Doroti.Framework.Rendering.FlexParentData parentData__86092__as86135 = (global::Doroti.Framework.Rendering.FlexParentData)parentData__86092;
                 parentData__86092__as86135.fit = flexFit__85831;
                 ((dynamic)render__86030!).markNeedsLayout();
                 succeed__85940 = true;
@@ -1689,11 +1689,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         if (((@object__86635 is not null) && (@object__86635 is Element)))
         {
             Element @object__86635__as86709 = (Element)@object__86635;
-            global::Doroti.Generated.Framework.Rendering.RenderObject? render__86756 = ((global::Doroti.Generated.Framework.Rendering.RenderObject?)(object?)_renderObjectOrNull(((Element)@object__86635__as86709)));
-            global::Doroti.Generated.Framework.Rendering.ParentData? parentData__86818 = ((global::Doroti.Generated.Framework.Rendering.ParentData?)((dynamic)render__86756)?.parentData);
-            if ((parentData__86818 is global::Doroti.Generated.Framework.Rendering.FlexParentData))
+            global::Doroti.Framework.Rendering.RenderObject? render__86756 = ((global::Doroti.Framework.Rendering.RenderObject?)(object?)_renderObjectOrNull(((Element)@object__86635__as86709)));
+            global::Doroti.Framework.Rendering.ParentData? parentData__86818 = ((global::Doroti.Framework.Rendering.ParentData?)((dynamic)render__86756)?.parentData);
+            if ((parentData__86818 is global::Doroti.Framework.Rendering.FlexParentData))
             {
-                global::Doroti.Generated.Framework.Rendering.FlexParentData parentData__86818__as86861 = (global::Doroti.Generated.Framework.Rendering.FlexParentData)parentData__86818;
+                global::Doroti.Framework.Rendering.FlexParentData parentData__86818__as86861 = (global::Doroti.Framework.Rendering.FlexParentData)parentData__86818;
                 parentData__86818__as86861.flex = factor__86555;
                 ((dynamic)render__86756!).markNeedsLayout();
                 succeed__86666 = true;
@@ -1706,21 +1706,21 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     public virtual Future<DartMap<string, object>> _setFlexProperties(DartMap<string, string> parameters)
     {
         string? id__87190 = parameters.GetValueOrDefault("id");
-        global::Doroti.Generated.Framework.Rendering.MainAxisAlignment mainAxisAlignment__87241 = _toEnumEntry<global::Doroti.Generated.Framework.Rendering.MainAxisAlignment>(System.Enum.GetValues<global::Doroti.Generated.Framework.Rendering.MainAxisAlignment>().ToList(), parameters.GetValueOrDefault("mainAxisAlignment")!);
-        global::Doroti.Generated.Framework.Rendering.CrossAxisAlignment crossAxisAlignment__87402 = _toEnumEntry<global::Doroti.Generated.Framework.Rendering.CrossAxisAlignment>(System.Enum.GetValues<global::Doroti.Generated.Framework.Rendering.CrossAxisAlignment>().ToList(), parameters.GetValueOrDefault("crossAxisAlignment")!);
+        global::Doroti.Framework.Rendering.MainAxisAlignment mainAxisAlignment__87241 = _toEnumEntry<global::Doroti.Framework.Rendering.MainAxisAlignment>(System.Enum.GetValues<global::Doroti.Framework.Rendering.MainAxisAlignment>().ToList(), parameters.GetValueOrDefault("mainAxisAlignment")!);
+        global::Doroti.Framework.Rendering.CrossAxisAlignment crossAxisAlignment__87402 = _toEnumEntry<global::Doroti.Framework.Rendering.CrossAxisAlignment>(System.Enum.GetValues<global::Doroti.Framework.Rendering.CrossAxisAlignment>().ToList(), parameters.GetValueOrDefault("crossAxisAlignment")!);
         object? @object__87556 = toObject(id__87190);
         var succeed__87587 = false;
         if (((@object__87556 is not null) && (@object__87556 is Element)))
         {
             Element @object__87556__as87630 = (Element)@object__87556;
-            global::Doroti.Generated.Framework.Rendering.RenderObject? render__87677 = ((global::Doroti.Generated.Framework.Rendering.RenderObject?)(object?)_renderObjectOrNull(((Element)@object__87556__as87630)));
-            if ((render__87677 is global::Doroti.Generated.Framework.Rendering.RenderFlex))
+            global::Doroti.Framework.Rendering.RenderObject? render__87677 = ((global::Doroti.Framework.Rendering.RenderObject?)(object?)_renderObjectOrNull(((Element)@object__87556__as87630)));
+            if ((render__87677 is global::Doroti.Framework.Rendering.RenderFlex))
             {
-                global::Doroti.Generated.Framework.Rendering.RenderFlex render__87677__as87725 = (global::Doroti.Generated.Framework.Rendering.RenderFlex)render__87677;
+                global::Doroti.Framework.Rendering.RenderFlex render__87677__as87725 = (global::Doroti.Framework.Rendering.RenderFlex)render__87677;
                 render__87677__as87725.mainAxisAlignment = mainAxisAlignment__87241;
                 render__87677__as87725.crossAxisAlignment = crossAxisAlignment__87402;
-                ((global::Doroti.Generated.Framework.Rendering.RenderFlex)render__87677__as87725).markNeedsLayout();
-                ((global::Doroti.Generated.Framework.Rendering.RenderFlex)render__87677__as87725).markNeedsPaint();
+                ((global::Doroti.Framework.Rendering.RenderFlex)render__87677__as87725).markNeedsLayout();
+                ((global::Doroti.Framework.Rendering.RenderFlex)render__87677__as87725).markNeedsPaint();
                 succeed__87587 = true;
             }
         }
@@ -1747,9 +1747,9 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? _getSelectedWidgetDiagnosticsNode(string? previousSelectionId)
+    public virtual global::Doroti.Framework.Foundation.DiagnosticsNode? _getSelectedWidgetDiagnosticsNode(string? previousSelectionId)
     {
-        var previousSelection__88636 = ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode?)(object?)toObject(previousSelectionId))!;
+        var previousSelection__88636 = ((global::Doroti.Framework.Foundation.DiagnosticsNode?)(object?)toObject(previousSelectionId))!;
         Element? current__88726 = ((InspectorSelection)this.selection).currentElement;
         return ((object.Equals(current__88726, previousSelection__88636?.value)) ? previousSelection__88636 : ((Diagnosticable)current__88726).toDiagnosticsNode());
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1759,7 +1759,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         if ((previousSelectionId is not null))
         {
-            global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint("previousSelectionId is deprecated in API");
+            global::Doroti.Framework.Foundation.PrintLibrary.debugPrint("previousSelectionId is deprecated in API");
         }
         return ((string)(object?)_safeJsonEncode(_getSelectedSummaryWidget(((string)(object)null), groupName)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1767,18 +1767,18 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     public virtual global::Doroti.Runtime.CreationLocation? _getSelectedWidgetLocation(bool restrictToSummaryTree = false)
     {
-        global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? selectedNode__89851 = (restrictToSummaryTree ? _getSelectedSummaryDiagnosticsNode(((string)(object)null)) : _getSelectedWidgetDiagnosticsNode(((string)(object)null)));
+        global::Doroti.Framework.Foundation.DiagnosticsNode? selectedNode__89851 = (restrictToSummaryTree ? _getSelectedSummaryDiagnosticsNode(((string)(object)null)) : _getSelectedWidgetDiagnosticsNode(((string)(object)null)));
         return ((global::Doroti.Runtime.CreationLocation)(object)Widget_inspectorLibrary._getCreationLocation(selectedNode__89851?.value));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? _getSelectedSummaryDiagnosticsNode(string? previousSelectionId)
+    public virtual global::Doroti.Framework.Foundation.DiagnosticsNode? _getSelectedSummaryDiagnosticsNode(string? previousSelectionId)
     {
         if (!isWidgetCreationTracked())
         {
-            return ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode?)(object?)_getSelectedWidgetDiagnosticsNode(previousSelectionId));
+            return ((global::Doroti.Framework.Foundation.DiagnosticsNode?)(object?)_getSelectedWidgetDiagnosticsNode(previousSelectionId));
         }
-        var previousSelection__90258 = ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode?)(object?)toObject(previousSelectionId))!;
+        var previousSelection__90258 = ((global::Doroti.Framework.Foundation.DiagnosticsNode?)(object?)toObject(previousSelectionId))!;
         Element? current__90342 = ((InspectorSelection)this.selection).currentElement;
         if (((current__90342 is not null) && !_isValueCreatedByLocalProject(current__90342)))
         {
@@ -1814,7 +1814,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         this._frameStart = timeStamp;
         this._frameNumber = PlatformDispatcher.instance.frameData.frameNumber;
-        global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback((__arg0) => ((global::System.Action<Duration>)this._onFrameEnd)(__arg0), debugLabel: "WidgetInspector.onFrameStart");
+        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback((__arg0) => ((global::System.Action<Duration>)this._onFrameEnd)(__arg0), debugLabel: "WidgetInspector.onFrameStart");
     }
 
     public virtual void _onFrameEnd(Duration timeStamp)
@@ -1849,11 +1849,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         this._rebuildStats.add(element);
     }
 
-    public virtual void _onPaint(global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public virtual void _onPaint(global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         try
         {
-            Element? element__93316 = DartRuntimePrimitives.ConvertValue<Element>((((DebugCreator?)(object?)((global::Doroti.Generated.Framework.Rendering.RenderObject)renderObject).debugCreator)!)?.element);
+            Element? element__93316 = DartRuntimePrimitives.ConvertValue<Element>((((DebugCreator?)(object?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).debugCreator)!)?.element);
             if ((element__93316 is not RenderObjectElement))
             {
                 return;
@@ -1872,7 +1872,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         catch (Exception exception__94210)
         {
             var stack__94221 = new System.Diagnostics.StackTrace();
-            FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails(exception: exception__94210, stack: stack__94221, library: "widget inspector library", context: new global::Doroti.Generated.Framework.Foundation.ErrorDescription("while tracking widget repaints")));
+            FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception__94210, stack: stack__94221, library: "widget inspector library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while tracking widget repaints")));
         }
     }
 
@@ -1882,7 +1882,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         _resetErrorCount();
     }
 
-    public virtual global::Doroti.Generated.Framework.Rendering.RenderObject? _renderObjectOrNull(Element element) => (((Element)element).mounted ? ((Element)element).renderObject : null);
+    public virtual global::Doroti.Framework.Rendering.RenderObject? _renderObjectOrNull(Element element) => (((Element)element).mounted ? ((Element)element).renderObject : null);
 }
 
 public interface WidgetInspectorService
@@ -1923,7 +1923,7 @@ public interface WidgetInspectorService
     public void _registerServiceExtensionWithArg(string name, dynamic callback, RegisterServiceExtensionCallback registerExtension);
     public void _registerServiceExtensionVarArgs(string name, global::System.Func<List<string>, object> callback, RegisterServiceExtensionCallback registerExtension);
     public Future forceRebuild();
-    public void _reportStructuredError(global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails details);
+    public void _reportStructuredError(global::Doroti.Framework.Foundation.FlutterErrorDetails details);
     public void _resetErrorCount();
     public bool isStructuredErrorsEnabled();
     public void _clearStats();
@@ -1951,43 +1951,43 @@ public interface WidgetInspectorService
     public List<object?> _getParentChain(string? id, string groupName);
     public List<Element> _getRawElementParentChain(Element element, long? numLocalParents);
     public List<_DiagnosticsPathNode__widget_inspector> _getElementParentChain(Element element, string groupName, long? numLocalParents = null);
-    public List<_DiagnosticsPathNode__widget_inspector>? _getRenderObjectParentChain(global::Doroti.Generated.Framework.Rendering.RenderObject? renderObject, string groupName);
-    public DartMap<string, object?>? _nodeToJson(global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? node, InspectorSerializationDelegate @delegate, bool fullDetails = true);
+    public List<_DiagnosticsPathNode__widget_inspector>? _getRenderObjectParentChain(global::Doroti.Framework.Rendering.RenderObject? renderObject, string groupName);
+    public DartMap<string, object?>? _nodeToJson(global::Doroti.Framework.Foundation.DiagnosticsNode? node, InspectorSerializationDelegate @delegate, bool fullDetails = true);
     public bool _isValueCreatedByLocalProject(object? value);
     public bool _isLocalCreationLocationImpl(string locationUri);
     public bool _isLocalCreationLocation(string locationUri);
     public string _safeJsonEncode(object? @object);
-    public List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> _truncateNodes(IEnumerable<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> nodes, long maxDescendentsTruncatableNode);
-    public List<DartMap<string, object?>> _nodesToJson(List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> nodes, InspectorSerializationDelegate @delegate, global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? parent);
+    public List<global::Doroti.Framework.Foundation.DiagnosticsNode> _truncateNodes(IEnumerable<global::Doroti.Framework.Foundation.DiagnosticsNode> nodes, long maxDescendentsTruncatableNode);
+    public List<DartMap<string, object?>> _nodesToJson(List<global::Doroti.Framework.Foundation.DiagnosticsNode> nodes, InspectorSerializationDelegate @delegate, global::Doroti.Framework.Foundation.DiagnosticsNode? parent);
     public string getProperties(string diagnosticsNodeId, string groupName);
     public List<object> _getProperties(string? diagnosticableId, string groupName);
     public string getChildren(string diagnosticsNodeId, string groupName);
     public List<object> _getChildren(string? diagnosticsNodeId, string groupName);
     public string getChildrenSummaryTree(string diagnosticsNodeId, string groupName);
-    public global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? _idToDiagnosticsNode(string? diagnosticableId);
-    public static global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? objectToDiagnosticsNode(object? @object)
+    public global::Doroti.Framework.Foundation.DiagnosticsNode? _idToDiagnosticsNode(string? diagnosticableId);
+    public static global::Doroti.Framework.Foundation.DiagnosticsNode? objectToDiagnosticsNode(object? @object)
     {
-        if ((@object is global::Doroti.Generated.Framework.Foundation.Diagnosticable))
+        if ((@object is global::Doroti.Framework.Foundation.Diagnosticable))
         {
-            global::Doroti.Generated.Framework.Foundation.Diagnosticable @object__as68125 = (global::Doroti.Generated.Framework.Foundation.Diagnosticable)@object;
-            return ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode?)(object?)((Diagnosticable)((global::Doroti.Generated.Framework.Foundation.Diagnosticable)@object__as68125)).toDiagnosticsNode());
+            global::Doroti.Framework.Foundation.Diagnosticable @object__as68125 = (global::Doroti.Framework.Foundation.Diagnosticable)@object;
+            return ((global::Doroti.Framework.Foundation.DiagnosticsNode?)(object?)((Diagnosticable)((global::Doroti.Framework.Foundation.Diagnosticable)@object__as68125)).toDiagnosticsNode());
         }
-        return ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)(object)null);
+        return ((global::Doroti.Framework.Foundation.DiagnosticsNode)(object)null);
     }
     public List<object> _getChildrenSummaryTree(string? diagnosticableId, string groupName);
     public string getChildrenDetailsSubtree(string diagnosticableId, string groupName);
     public List<object> _getChildrenDetailsSubtree(string? diagnosticableId, string groupName);
-    public bool _shouldShowInSummaryTree(global::Doroti.Generated.Framework.Foundation.DiagnosticsNode node);
-    public List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> _getChildrenFiltered(global::Doroti.Generated.Framework.Foundation.DiagnosticsNode node, InspectorSerializationDelegate @delegate);
-    public List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> _filterChildren(List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> nodes, InspectorSerializationDelegate @delegate);
-    public InspectorSerializationDelegate? _updateDelegateForWidgetInspectorEnabledState(InspectorSerializationDelegate @delegate, global::Doroti.Generated.Framework.Foundation.DiagnosticsNode node);
+    public bool _shouldShowInSummaryTree(global::Doroti.Framework.Foundation.DiagnosticsNode node);
+    public List<global::Doroti.Framework.Foundation.DiagnosticsNode> _getChildrenFiltered(global::Doroti.Framework.Foundation.DiagnosticsNode node, InspectorSerializationDelegate @delegate);
+    public List<global::Doroti.Framework.Foundation.DiagnosticsNode> _filterChildren(List<global::Doroti.Framework.Foundation.DiagnosticsNode> nodes, InspectorSerializationDelegate @delegate);
+    public InspectorSerializationDelegate? _updateDelegateForWidgetInspectorEnabledState(InspectorSerializationDelegate @delegate, global::Doroti.Framework.Foundation.DiagnosticsNode node);
     public string getRootWidget(string groupName);
     public DartMap<string, object?>? _getRootWidget(string groupName);
     public string getRootWidgetSummaryTree(string groupName);
-    public DartMap<string, object?>? _getRootWidgetSummaryTree(string groupName, global::System.Func<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>? addAdditionalPropertiesCallback = null);
+    public DartMap<string, object?>? _getRootWidgetSummaryTree(string groupName, global::System.Func<global::Doroti.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>? addAdditionalPropertiesCallback = null);
     public Future<DartMap<string, object?>> _getRootWidgetSummaryTreeWithPreviews(DartMap<string, string> parameters);
     public Future<DartMap<string, object?>> _getRootWidgetTree(DartMap<string, string> parameters);
-    public DartMap<string, object?>? _getRootWidgetTreeImpl(string groupName, bool isSummaryTree, bool withPreviews, bool fullDetails = true, global::System.Func<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>? addAdditionalPropertiesCallback = null);
+    public DartMap<string, object?>? _getRootWidgetTreeImpl(string groupName, bool isSummaryTree, bool withPreviews, bool fullDetails = true, global::System.Func<global::Doroti.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>? addAdditionalPropertiesCallback = null);
     public string getDetailsSubtree(string diagnosticableId, string groupName, long subtreeDepth = 2);
     public DartMap<string, object?>? _getDetailsSubtree(string? diagnosticableId, string? groupName, long subtreeDepth);
     public string getSelectedWidget(string? previousSelectionId, string groupName);
@@ -1998,10 +1998,10 @@ public interface WidgetInspectorService
     public Future<DartMap<string, object>> _setFlexProperties(DartMap<string, string> parameters);
     public T _toEnumEntry<T>(List<T> enumEntries, string name);
     public DartMap<string, object?>? _getSelectedWidget(string? previousSelectionId, string groupName);
-    public global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? _getSelectedWidgetDiagnosticsNode(string? previousSelectionId);
+    public global::Doroti.Framework.Foundation.DiagnosticsNode? _getSelectedWidgetDiagnosticsNode(string? previousSelectionId);
     public string getSelectedSummaryWidget(string? previousSelectionId, string groupName);
     public global::Doroti.Runtime.CreationLocation? _getSelectedWidgetLocation(bool restrictToSummaryTree = false);
-    public global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? _getSelectedSummaryDiagnosticsNode(string? previousSelectionId);
+    public global::Doroti.Framework.Foundation.DiagnosticsNode? _getSelectedSummaryDiagnosticsNode(string? previousSelectionId);
     public DartMap<string, object?>? _getSelectedSummaryWidget(string? previousSelectionId, string groupName);
     public bool isWidgetCreationTracked();
     public void _onFrameStart(Duration timeStamp);
@@ -2010,8 +2010,8 @@ public interface WidgetInspectorService
     public void postEvent(string eventKind, DartMap<object, object> eventData, string stream = "Extension");
     public void inspect(object? @object);
     public void _onRebuildWidget(Element element, bool builtOnce);
-    public void _onPaint(global::Doroti.Generated.Framework.Rendering.RenderObject renderObject);
-    public global::Doroti.Generated.Framework.Rendering.RenderObject? _renderObjectOrNull(Element element);
+    public void _onPaint(global::Doroti.Framework.Rendering.RenderObject renderObject);
+    public global::Doroti.Framework.Rendering.RenderObject? _renderObjectOrNull(Element element);
 }
 
 public class _LocationCount__widget_inspector
@@ -2157,7 +2157,7 @@ public class WidgetInspector : StatefulWidget
     public virtual MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder { get; private set; }
     public virtual TapBehaviorButtonBuilder? tapBehaviorButtonBuilder { get; private set; }
 
-    public WidgetInspector(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!, TapBehaviorButtonBuilder? tapBehaviorButtonBuilder = default!, ExitWidgetSelectionButtonBuilder? exitWidgetSelectionButtonBuilder = default!, MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder = default!) : base(key: key)
+    public WidgetInspector(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, TapBehaviorButtonBuilder? tapBehaviorButtonBuilder = default!, ExitWidgetSelectionButtonBuilder? exitWidgetSelectionButtonBuilder = default!, MoveExitWidgetSelectionButtonBuilder? moveExitWidgetSelectionButtonBuilder = default!) : base(key: key)
     {
         this.child = child;
         this.tapBehaviorButtonBuilder = tapBehaviorButtonBuilder;
@@ -2180,8 +2180,8 @@ internal class _WidgetInspectorState__widget_inspector : State<WidgetInspector>,
     {
     }
 
-    internal virtual global::Doroti.Generated.Framework.Foundation.ValueNotifier<bool> _selectionOnTapEnabled => WidgetsBinding.instance.debugWidgetInspectorSelectionOnTapEnabled;
-    internal virtual bool _isSelectModeWithSelectionOnTapEnabled => DartRuntimePrimitives.ConvertValue<bool>((this.isSelectMode && ((global::Doroti.Generated.Framework.Foundation.ValueNotifier<bool>)this._selectionOnTapEnabled).value));
+    internal virtual global::Doroti.Framework.Foundation.ValueNotifier<bool> _selectionOnTapEnabled => WidgetsBinding.instance.debugWidgetInspectorSelectionOnTapEnabled;
+    internal virtual bool _isSelectModeWithSelectionOnTapEnabled => DartRuntimePrimitives.ConvertValue<bool>((this.isSelectMode && ((global::Doroti.Framework.Foundation.ValueNotifier<bool>)this._selectionOnTapEnabled).value));
     public override void initState()
     {
         base.initState();
@@ -2204,7 +2204,7 @@ internal class _WidgetInspectorState__widget_inspector : State<WidgetInspector>,
 selection = WidgetInspectorService.instance.selection;
 isSelectMode = WidgetsBinding.instance.debugShowWidgetInspectorOverride;
 })));
-    internal virtual bool _hitTestHelper(List<global::Doroti.Generated.Framework.Rendering.RenderObject> hits, List<global::Doroti.Generated.Framework.Rendering.RenderObject> edgeHits, Offset position, global::Doroti.Generated.Framework.Rendering.RenderObject @object, Matrix4 transform)
+    internal virtual bool _hitTestHelper(List<global::Doroti.Framework.Rendering.RenderObject> hits, List<global::Doroti.Framework.Rendering.RenderObject> edgeHits, Offset position, global::Doroti.Framework.Rendering.RenderObject @object, Matrix4 transform)
     {
         var hit__105994 = false;
         Matrix4? inverse__106026 = Matrix4.tryInvert(transform);
@@ -2213,15 +2213,15 @@ isSelectMode = WidgetsBinding.instance.debugShowWidgetInspectorOverride;
             return false;
         }
         global::Doroti.Ui.Offset localPosition__106252 = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(inverse__106026, position));
-        List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> children__106348 = ((List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>)(object?)((List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>)((dynamic)@object).debugDescribeChildren()));
+        List<global::Doroti.Framework.Foundation.DiagnosticsNode> children__106348 = ((List<global::Doroti.Framework.Foundation.DiagnosticsNode>)(object?)((List<global::Doroti.Framework.Foundation.DiagnosticsNode>)((dynamic)@object).debugDescribeChildren()));
         for (long i__106404 = (checked((long)(children__106348.Count)) - 1L); (i__106404 >= 0L); i__106404 -= 1L)
         {
-            global::Doroti.Generated.Framework.Foundation.DiagnosticsNode diagnostics__106475 = children__106348[(int)(i__106404)];
-            if (((object.Equals(((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)diagnostics__106475).style, global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.offstage)) || (((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)diagnostics__106475).value is not global::Doroti.Generated.Framework.Rendering.RenderObject)))
+            global::Doroti.Framework.Foundation.DiagnosticsNode diagnostics__106475 = children__106348[(int)(i__106404)];
+            if (((object.Equals(((global::Doroti.Framework.Foundation.DiagnosticsNode)diagnostics__106475).style, global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.offstage)) || (((global::Doroti.Framework.Foundation.DiagnosticsNode)diagnostics__106475).value is not global::Doroti.Framework.Rendering.RenderObject)))
             {
                 continue;
             }
-            var child__106652 = ((global::Doroti.Generated.Framework.Rendering.RenderObject?)(object?)((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)diagnostics__106475).value!)!;
+            var child__106652 = ((global::Doroti.Framework.Rendering.RenderObject?)(object?)((global::Doroti.Framework.Foundation.DiagnosticsNode)diagnostics__106475).value!)!;
             global::Doroti.Ui.Rect? paintClip__106714 = ((global::Doroti.Ui.Rect?)(object?)((Rect?)((dynamic)@object).describeApproximatePaintClip(child__106652)));
             if (((paintClip__106714 is not null) && !DartRuntimePrimitives.RequireValue(paintClip__106714).contains(localPosition__106252)))
             {
@@ -2235,7 +2235,7 @@ isSelectMode = WidgetsBinding.instance.debugShowWidgetInspectorOverride;
                 hit__105994 = true;
             }
         }
-        global::Doroti.Ui.Rect bounds__107106 = ((global::Doroti.Ui.Rect)(object?)((global::Doroti.Generated.Framework.Rendering.RenderObject)@object).semanticBounds);
+        global::Doroti.Ui.Rect bounds__107106 = ((global::Doroti.Ui.Rect)(object?)((global::Doroti.Framework.Rendering.RenderObject)@object).semanticBounds);
         if (bounds__107106.contains(localPosition__106252))
         {
             hit__105994 = true;
@@ -2252,19 +2252,19 @@ isSelectMode = WidgetsBinding.instance.debugShowWidgetInspectorOverride;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<global::Doroti.Generated.Framework.Rendering.RenderObject> hitTest(Offset position, global::Doroti.Generated.Framework.Rendering.RenderObject root)
+    public virtual List<global::Doroti.Framework.Rendering.RenderObject> hitTest(Offset position, global::Doroti.Framework.Rendering.RenderObject root)
     {
-        var regularHits__107997 = new List<global::Doroti.Generated.Framework.Rendering.RenderObject>();
-        var edgeHits__108039 = new List<global::Doroti.Generated.Framework.Rendering.RenderObject>();
-        _hitTestHelper(regularHits__107997, edgeHits__108039, position, root, ((Matrix4)((dynamic)root).getTransformTo(((global::Doroti.Generated.Framework.Rendering.RenderObject)(object)null))));
-        double area(global::Doroti.Generated.Framework.Rendering.RenderObject @object)
+        var regularHits__107997 = new List<global::Doroti.Framework.Rendering.RenderObject>();
+        var edgeHits__108039 = new List<global::Doroti.Framework.Rendering.RenderObject>();
+        _hitTestHelper(regularHits__107997, edgeHits__108039, position, root, ((Matrix4)((dynamic)root).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null))));
+        double area(global::Doroti.Framework.Rendering.RenderObject @object)
         {
-            global::Doroti.Ui.Size size__108261 = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Generated.Framework.Rendering.RenderObject)@object).semanticBounds.size);
+            global::Doroti.Ui.Size size__108261 = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Framework.Rendering.RenderObject)@object).semanticBounds.size);
             return (size__108261.width * size__108261.height);
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         regularHits__107997.sort(((a, b) => area(a).CompareTo(area(b))));
-        var hits__108438 = new HashSet<global::Doroti.Generated.Framework.Rendering.RenderObject>();
+        var hits__108438 = new HashSet<global::Doroti.Framework.Rendering.RenderObject>();
         return hits__108438.ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -2275,25 +2275,25 @@ isSelectMode = WidgetsBinding.instance.debugShowWidgetInspectorOverride;
         {
             return;
         }
-        var ignorePointer__108640 = ((global::Doroti.Generated.Framework.Rendering.RenderIgnorePointer?)(object?)((GlobalKey<IState>)this._ignorePointerKey).currentContext!.findRenderObject()!)!;
-        global::Doroti.Generated.Framework.Rendering.RenderObject userRender__108765 = ((global::Doroti.Generated.Framework.Rendering.RenderObject)(object?)((global::Doroti.Generated.Framework.Rendering.RenderBox?)((dynamic)ignorePointer__108640).child)!);
-        List<global::Doroti.Generated.Framework.Rendering.RenderObject> selected__108829 = ((List<global::Doroti.Generated.Framework.Rendering.RenderObject>)(object?)hitTest(position, userRender__108765));
+        var ignorePointer__108640 = ((global::Doroti.Framework.Rendering.RenderIgnorePointer?)(object?)((GlobalKey<IState>)this._ignorePointerKey).currentContext!.findRenderObject()!)!;
+        global::Doroti.Framework.Rendering.RenderObject userRender__108765 = ((global::Doroti.Framework.Rendering.RenderObject)(object?)((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)ignorePointer__108640).child)!);
+        List<global::Doroti.Framework.Rendering.RenderObject> selected__108829 = ((List<global::Doroti.Framework.Rendering.RenderObject>)(object?)hitTest(position, userRender__108765));
         this.selection.candidates = Widget_inspectorLibrary._filterInspectorHitCandidatesToModalRouteScope(selected__108829);
     }
 
-    internal virtual void _handlePanDown(global::Doroti.Generated.Framework.Gestures.DragDownDetails @event)
+    internal virtual void _handlePanDown(global::Doroti.Framework.Gestures.DragDownDetails @event)
     {
-        _lastPointerLocation = ((global::Doroti.Generated.Framework.Gestures.DragDownDetails)@event).globalPosition;
-        _inspectAt(((global::Doroti.Generated.Framework.Gestures.DragDownDetails)@event).globalPosition);
+        _lastPointerLocation = ((global::Doroti.Framework.Gestures.DragDownDetails)@event).globalPosition;
+        _inspectAt(((global::Doroti.Framework.Gestures.DragDownDetails)@event).globalPosition);
     }
 
-    internal virtual void _handlePanUpdate(global::Doroti.Generated.Framework.Gestures.DragUpdateDetails @event)
+    internal virtual void _handlePanUpdate(global::Doroti.Framework.Gestures.DragUpdateDetails @event)
     {
-        _lastPointerLocation = ((global::Doroti.Generated.Framework.Gestures.DragUpdateDetails)@event).globalPosition;
-        _inspectAt(((global::Doroti.Generated.Framework.Gestures.DragUpdateDetails)@event).globalPosition);
+        _lastPointerLocation = ((global::Doroti.Framework.Gestures.DragUpdateDetails)@event).globalPosition;
+        _inspectAt(((global::Doroti.Framework.Gestures.DragUpdateDetails)@event).globalPosition);
     }
 
-    internal virtual void _handlePanEnd(global::Doroti.Generated.Framework.Gestures.DragEndDetails details)
+    internal virtual void _handlePanEnd(global::Doroti.Framework.Gestures.DragEndDetails details)
     {
         global::Doroti.Ui.DorotiView view__109703 = ((global::Doroti.Ui.DorotiView)(object?)View.of(this.context));
         global::Doroti.Ui.Rect bounds__109743 = ((global::Doroti.Ui.Rect)(object?)((Offset.zero & ((view__109703.physicalSize / view__109703.devicePixelRatio)))).deflate(Widget_inspectorLibrary._kOffScreenMargin));
@@ -2322,7 +2322,7 @@ isSelectMode = WidgetsBinding.instance.debugShowWidgetInspectorOverride;
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new Stack(children: new List<Widget> { new GestureDetector(onTap: () => this._handleTap(), onPanDown: (global::System.Action<global::Doroti.Generated.Framework.Gestures.DragDownDetails>)this._handlePanDown, onPanEnd: (global::System.Action<global::Doroti.Generated.Framework.Gestures.DragEndDetails>)this._handlePanEnd, onPanUpdate: (global::System.Action<global::Doroti.Generated.Framework.Gestures.DragUpdateDetails>)this._handlePanUpdate, behavior: global::Doroti.Generated.Framework.Rendering.HitTestBehavior.opaque, excludeFromSemantics: true, child: new IgnorePointer(ignoring: this._isSelectModeWithSelectionOnTapEnabled, key: this._ignorePointerKey, child: ((WidgetInspector)this.widget).child)), Positioned.CreateFill(child: new _InspectorOverlay__widget_inspector(selection: this.selection)) }));
+        return ((Widget)(object?)new Stack(children: new List<Widget> { new GestureDetector(onTap: () => this._handleTap(), onPanDown: (global::System.Action<global::Doroti.Framework.Gestures.DragDownDetails>)this._handlePanDown, onPanEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._handlePanEnd, onPanUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handlePanUpdate, behavior: global::Doroti.Framework.Rendering.HitTestBehavior.opaque, excludeFromSemantics: true, child: new IgnorePointer(ignoring: this._isSelectModeWithSelectionOnTapEnabled, key: this._ignorePointerKey, child: ((WidgetInspector)this.widget).child)), Positioned.CreateFill(child: new _InspectorOverlay__widget_inspector(selection: this.selection)) }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2330,7 +2330,7 @@ isSelectMode = WidgetsBinding.instance.debugShowWidgetInspectorOverride;
 
 public class EnableWidgetInspectorScope : ProxyWidget
 {
-    public EnableWidgetInspectorScope(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key, child: child)
+    public EnableWidgetInspectorScope(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key, child: child)
     {
     }
 
@@ -2351,7 +2351,7 @@ internal class _EnableWidgetInspectorScopeProxyElement__widget_inspector : Proxy
 
 public class DisableWidgetInspectorScope : ProxyWidget
 {
-    public DisableWidgetInspectorScope(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key, child: child)
+    public DisableWidgetInspectorScope(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key, child: child)
     {
     }
 
@@ -2388,7 +2388,7 @@ public abstract class InspectorButton : StatelessWidget
     public const double buttonSize = 32.0;
     public const double buttonIconSize = 18.0;
 
-    protected InspectorButton(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::System.Action onPressed = default!, string semanticsLabel = default!, IconData icon = default!, GlobalKey<IState>? buttonKey = null, InspectorButtonVariant variant = default!, bool? toggledOn = null) : base(key: key)
+    protected InspectorButton(global::Doroti.Framework.Foundation.Key? key = null, global::System.Action onPressed = default!, string semanticsLabel = default!, IconData icon = default!, GlobalKey<IState>? buttonKey = null, InspectorButtonVariant variant = default!, bool? toggledOn = null) : base(key: key)
     {
         this.onPressed = onPressed;
         this.semanticsLabel = semanticsLabel;
@@ -2401,17 +2401,17 @@ public abstract class InspectorButton : StatelessWidget
     protected InspectorButton(global::System.Action onPressed, string semanticsLabel, IconData icon, GlobalKey<IState>? buttonKey = null)
         : this(null, onPressed, semanticsLabel, icon, buttonKey) { }
 
-    protected static InspectorButton CreateFilled(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::System.Action onPressed = default!, string semanticsLabel = default!, IconData icon = default!, GlobalKey<IState>? buttonKey = null)
+    protected static InspectorButton CreateFilled(global::Doroti.Framework.Foundation.Key? key = null, global::System.Action onPressed = default!, string semanticsLabel = default!, IconData icon = default!, GlobalKey<IState>? buttonKey = null)
     {
         throw new InvalidOperationException("Dart abstract constructors cannot be invoked directly.");
     }
 
-    protected static InspectorButton CreateToggle(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::System.Action onPressed = default!, string semanticsLabel = default!, IconData icon = default!, bool toggledOn = true)
+    protected static InspectorButton CreateToggle(global::Doroti.Framework.Foundation.Key? key = null, global::System.Action onPressed = default!, string semanticsLabel = default!, IconData icon = default!, bool toggledOn = true)
     {
         throw new InvalidOperationException("Dart abstract constructors cannot be invoked directly.");
     }
 
-    protected static InspectorButton CreateIconOnly(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::System.Action onPressed = default!, string semanticsLabel = default!, IconData icon = default!)
+    protected static InspectorButton CreateIconOnly(global::Doroti.Framework.Foundation.Key? key = null, global::System.Action onPressed = default!, string semanticsLabel = default!, IconData icon = default!)
     {
         throw new InvalidOperationException("Dart abstract constructors cannot be invoked directly.");
     }
@@ -2444,16 +2444,16 @@ public abstract class InspectorButton : StatelessWidget
 
 public class InspectorSelection : ChangeNotifier
 {
-    internal virtual List<global::Doroti.Generated.Framework.Rendering.RenderObject> _candidates { get; set; } = new List<global::Doroti.Generated.Framework.Rendering.RenderObject>();
+    internal virtual List<global::Doroti.Framework.Rendering.RenderObject> _candidates { get; set; } = new List<global::Doroti.Framework.Rendering.RenderObject>();
     internal virtual long _index { get; set; } = 0L;
-    internal virtual global::Doroti.Generated.Framework.Rendering.RenderObject? _current { get; set; } = default;
+    internal virtual global::Doroti.Framework.Rendering.RenderObject? _current { get; set; } = default;
     internal virtual Element? _currentElement { get; set; } = default;
 
     public InspectorSelection()
     {
     }
 
-    public virtual List<global::Doroti.Generated.Framework.Rendering.RenderObject> candidates
+    public virtual List<global::Doroti.Framework.Rendering.RenderObject> candidates
     {
         get => this._candidates;
         set
@@ -2476,7 +2476,7 @@ public class InspectorSelection : ChangeNotifier
     }
     public virtual void clear()
     {
-        _candidates = new List<global::Doroti.Generated.Framework.Rendering.RenderObject>();
+        _candidates = new List<global::Doroti.Framework.Rendering.RenderObject>();
         _index = 0L;
         _computeCurrent();
     }
@@ -2487,11 +2487,11 @@ public class InspectorSelection : ChangeNotifier
         {
             return;
         }
-        _candidates = new List<global::Doroti.Generated.Framework.Rendering.RenderObject>();
+        _candidates = new List<global::Doroti.Framework.Rendering.RenderObject>();
         _index = 0L;
     }
 
-    public virtual global::Doroti.Generated.Framework.Rendering.RenderObject? current
+    public virtual global::Doroti.Framework.Rendering.RenderObject? current
     {
         get => (this.active ? this._current : null);
         set
@@ -2557,13 +2557,13 @@ internal class _InspectorOverlay__widget_inspector : LeafRenderObjectWidget
         this.selection = selection;
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Rendering.RenderObject)(object?)new _RenderInspectorOverlay__widget_inspector(selection: this.selection));
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderInspectorOverlay__widget_inspector(selection: this.selection));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(BuildContext context, global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (_RenderInspectorOverlay__widget_inspector)(object)renderObject;
         __renderObject.selection = this.selection;
@@ -2571,7 +2571,7 @@ internal class _InspectorOverlay__widget_inspector : LeafRenderObjectWidget
 
 }
 
-public class _RenderInspectorOverlay__widget_inspector : global::Doroti.Generated.Framework.Rendering.RenderBox
+public class _RenderInspectorOverlay__widget_inspector : global::Doroti.Framework.Rendering.RenderBox
 {
     internal virtual InspectorSelection _selection { get; set; } = default!;
 
@@ -2595,13 +2595,13 @@ public class _RenderInspectorOverlay__widget_inspector : global::Doroti.Generate
     }
     public override bool sizedByParent => true;
     public override bool alwaysNeedsCompositing => true;
-    public override Size computeDryLayout(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints)
+    public override Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
         return constraints.constrain(Size.infinite);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void paint(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset offset)
+    public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
         DartRuntimePrimitives.Assert(() => this.needsCompositing);
         context.addLayer(new _InspectorOverlayLayer__widget_inspector(overlayRect: global::Doroti.Ui.Rect.fromLTWH(offset.dx, offset.dy, this.size.width, this.size.height), selection: this.selection, rootRenderObject: (true ? this.parent! : null)));
@@ -2614,9 +2614,9 @@ public class _TransformedRect__widget_inspector
     public virtual Rect rect { get; private set; } = default!;
     public virtual Matrix4 transform { get; private set; } = default!;
 
-    internal _TransformedRect__widget_inspector(global::Doroti.Generated.Framework.Rendering.RenderObject @object, global::Doroti.Generated.Framework.Rendering.RenderObject? ancestor)
+    internal _TransformedRect__widget_inspector(global::Doroti.Framework.Rendering.RenderObject @object, global::Doroti.Framework.Rendering.RenderObject? ancestor)
     {
-        this.rect = ((global::Doroti.Generated.Framework.Rendering.RenderObject)@object).semanticBounds;
+        this.rect = ((global::Doroti.Framework.Rendering.RenderObject)@object).semanticBounds;
         this.transform = ((Matrix4)((dynamic)@object).getTransformTo(ancestor));
     }
 
@@ -2659,7 +2659,7 @@ internal class _InspectorOverlayRenderState__widget_inspector
         {
             return false;
         }
-        return (((((__other is _InspectorOverlayRenderState__widget_inspector) && (object.Equals(((_InspectorOverlayRenderState__widget_inspector)((_InspectorOverlayRenderState__widget_inspector)__other)).overlayRect, this.overlayRect))) && (object.Equals(((_InspectorOverlayRenderState__widget_inspector)((_InspectorOverlayRenderState__widget_inspector)__other)).selected, this.selected))) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals<_TransformedRect__widget_inspector>(((_InspectorOverlayRenderState__widget_inspector)((_InspectorOverlayRenderState__widget_inspector)__other)).candidates, this.candidates)) && (((_InspectorOverlayRenderState__widget_inspector)((_InspectorOverlayRenderState__widget_inspector)__other)).tooltip == this.tooltip));
+        return (((((__other is _InspectorOverlayRenderState__widget_inspector) && (object.Equals(((_InspectorOverlayRenderState__widget_inspector)((_InspectorOverlayRenderState__widget_inspector)__other)).overlayRect, this.overlayRect))) && (object.Equals(((_InspectorOverlayRenderState__widget_inspector)((_InspectorOverlayRenderState__widget_inspector)__other)).selected, this.selected))) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<_TransformedRect__widget_inspector>(((_InspectorOverlayRenderState__widget_inspector)((_InspectorOverlayRenderState__widget_inspector)__other)).candidates, this.candidates)) && (((_InspectorOverlayRenderState__widget_inspector)((_InspectorOverlayRenderState__widget_inspector)__other)).tooltip == this.tooltip));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.overlayRect, this.selected, FoundationRuntimePorts.ObjectHashAll(this.candidates), this.tooltip));
@@ -2687,7 +2687,7 @@ public static partial class Widget_inspectorLibrary
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static Element? _elementForRenderObject(global::Doroti.Generated.Framework.Rendering.RenderObject? @object)
+    internal static Element? _elementForRenderObject(global::Doroti.Framework.Rendering.RenderObject? @object)
     {
         object? creator__124233 = ((dynamic)@object)?.debugCreator;
         if ((creator__124233 is DebugCreator))
@@ -2702,7 +2702,7 @@ public static partial class Widget_inspectorLibrary
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static dynamic _modalRouteForRenderObject(global::Doroti.Generated.Framework.Rendering.RenderObject? @object)
+    internal static dynamic _modalRouteForRenderObject(global::Doroti.Framework.Rendering.RenderObject? @object)
     {
         Element? element__124437 = Widget_inspectorLibrary._elementForRenderObject(@object);
         if ((element__124437 is null))
@@ -2716,9 +2716,9 @@ public static partial class Widget_inspectorLibrary
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static double _inspectorHitArea(global::Doroti.Generated.Framework.Rendering.RenderObject @object)
+    internal static double _inspectorHitArea(global::Doroti.Framework.Rendering.RenderObject @object)
     {
-        global::Doroti.Ui.Size size__124632 = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Generated.Framework.Rendering.RenderObject)@object).semanticBounds.size);
+        global::Doroti.Ui.Size size__124632 = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Framework.Rendering.RenderObject)@object).semanticBounds.size);
         return (size__124632.width * size__124632.height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -2726,7 +2726,7 @@ public static partial class Widget_inspectorLibrary
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static dynamic _inspectorScopeRouteForHits(List<global::Doroti.Generated.Framework.Rendering.RenderObject> hits)
+    internal static dynamic _inspectorScopeRouteForHits(List<global::Doroti.Framework.Rendering.RenderObject> hits)
     {
         foreach (var hit__124794 in hits)
         {
@@ -2736,7 +2736,7 @@ public static partial class Widget_inspectorLibrary
                 return route__124840;
             }
         }
-        global::Doroti.Generated.Framework.Rendering.RenderObject? smallestHit__125107 = default!;
+        global::Doroti.Framework.Rendering.RenderObject? smallestHit__125107 = default!;
         double smallestArea__125129 = double.PositiveInfinity;
         foreach (var hit__125174 in hits)
         {
@@ -2763,13 +2763,13 @@ public static partial class Widget_inspectorLibrary
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static List<global::Doroti.Generated.Framework.Rendering.RenderObject> _filterInspectorHitCandidatesToModalRouteScope(List<global::Doroti.Generated.Framework.Rendering.RenderObject> hits)
+    internal static List<global::Doroti.Framework.Rendering.RenderObject> _filterInspectorHitCandidatesToModalRouteScope(List<global::Doroti.Framework.Rendering.RenderObject> hits)
     {
         if (!System.Linq.Enumerable.Any(hits))
         {
             return hits;
         }
-        List<global::Doroti.Generated.Framework.Rendering.RenderObject> onstageHits__125809 = hits.where(((hit) => {
+        List<global::Doroti.Framework.Rendering.RenderObject> onstageHits__125809 = hits.where(((hit) => {
 dynamic route__125897 = Widget_inspectorLibrary._modalRouteForRenderObject(hit);
 return ((route__125897 is null) || !((bool)((dynamic)route__125897).offstage));
 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -2779,24 +2779,24 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             return onstageHits__125809;
         }
         dynamic scopeRoute__126100 = Widget_inspectorLibrary._inspectorScopeRouteForHits(onstageHits__125809);
-        List<global::Doroti.Generated.Framework.Rendering.RenderObject> scopedHits__126182 = onstageHits__125809.where(((hit) => DartRuntimePrimitives.Identical(Widget_inspectorLibrary._modalRouteForRenderObject(hit), scopeRoute__126100))).ToList().ToList();
+        List<global::Doroti.Framework.Rendering.RenderObject> scopedHits__126182 = onstageHits__125809.where(((hit) => DartRuntimePrimitives.Identical(Widget_inspectorLibrary._modalRouteForRenderObject(hit), scopeRoute__126100))).ToList().ToList();
         scopedHits__126182.sort(((a, b) => Widget_inspectorLibrary._inspectorHitArea(a).CompareTo(Widget_inspectorLibrary._inspectorHitArea(b))));
         return scopedHits__126182;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
-internal class _InspectorOverlayLayer__widget_inspector : global::Doroti.Generated.Framework.Rendering.Layer
+internal class _InspectorOverlayLayer__widget_inspector : global::Doroti.Framework.Rendering.Layer
 {
     public virtual InspectorSelection selection { get; set; } = default!;
     public virtual Rect overlayRect { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Rendering.RenderObject? rootRenderObject { get; private set; }
+    public virtual global::Doroti.Framework.Rendering.RenderObject? rootRenderObject { get; private set; }
     internal virtual _InspectorOverlayRenderState__widget_inspector? _lastState { get; set; } = default;
     internal virtual Picture? _picture { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Painting.TextPainter? _textPainter { get; set; } = default;
+    internal virtual global::Doroti.Framework.Painting.TextPainter? _textPainter { get; set; } = default;
     internal virtual double? _textPainterMaxWidth { get; set; } = default;
 
-    internal _InspectorOverlayLayer__widget_inspector(Rect overlayRect, InspectorSelection selection, global::Doroti.Generated.Framework.Rendering.RenderObject? rootRenderObject)
+    internal _InspectorOverlayLayer__widget_inspector(Rect overlayRect, InspectorSelection selection, global::Doroti.Framework.Rendering.RenderObject? rootRenderObject)
     {
         this.overlayRect = overlayRect;
         this.selection = selection;
@@ -2817,15 +2817,15 @@ internal class _InspectorOverlayLayer__widget_inspector : global::Doroti.Generat
         {
             return;
         }
-        global::Doroti.Generated.Framework.Rendering.RenderObject selected__128250 = ((InspectorSelection)this.selection).current!;
+        global::Doroti.Framework.Rendering.RenderObject selected__128250 = ((InspectorSelection)this.selection).current!;
         if (!_isInInspectorRenderObjectTree(selected__128250))
         {
             return;
         }
         var candidates__128366 = new List<_TransformedRect__widget_inspector>();
-        foreach (global::Doroti.Generated.Framework.Rendering.RenderObject candidate__128429 in ((InspectorSelection)this.selection).candidates)
+        foreach (global::Doroti.Framework.Rendering.RenderObject candidate__128429 in ((InspectorSelection)this.selection).candidates)
         {
-            if (((((object.Equals(candidate__128429, selected__128250)) || !((global::Doroti.Generated.Framework.Rendering.RenderObject)candidate__128429).attached) || !_isInInspectorRenderObjectTree(candidate__128429)) || !DartRuntimePrimitives.Identical(Widget_inspectorLibrary._modalRouteForRenderObject(candidate__128429), Widget_inspectorLibrary._modalRouteForRenderObject(selected__128250))))
+            if (((((object.Equals(candidate__128429, selected__128250)) || !((global::Doroti.Framework.Rendering.RenderObject)candidate__128429).attached) || !_isInInspectorRenderObjectTree(candidate__128429)) || !DartRuntimePrimitives.Identical(Widget_inspectorLibrary._modalRouteForRenderObject(candidate__128429), Widget_inspectorLibrary._modalRouteForRenderObject(selected__128250))))
             {
                 continue;
             }
@@ -2897,22 +2897,22 @@ internal class _InspectorOverlayLayer__widget_inspector : global::Doroti.Generat
     {
         canvas.save();
         double maxWidth__131840 = Math.Max((size.width - (2L * ((Widget_inspectorLibrary._kScreenEdgeMargin + Widget_inspectorLibrary._kTooltipPadding)))), 0);
-        var textSpan__131932 = ((global::Doroti.Generated.Framework.Painting.TextSpan?)(object?)this._textPainter?.text)!;
+        var textSpan__131932 = ((global::Doroti.Framework.Painting.TextSpan?)(object?)this._textPainter?.text)!;
         if ((((this._textPainter is null) || (textSpan__131932!.text != message)) || (this._textPainterMaxWidth != maxWidth__131840)))
         {
             _textPainterMaxWidth = maxWidth__131840;
             this._textPainter?.dispose();
-            _textPainter = ((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
-{            var __cascade = new global::Doroti.Generated.Framework.Painting.TextPainter();
+            _textPainter = ((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
+{            var __cascade = new global::Doroti.Framework.Painting.TextPainter();
             __cascade.maxLines = Widget_inspectorLibrary._kMaxTooltipLines;
             __cascade.ellipsis = "...";
-            __cascade.text = new global::Doroti.Generated.Framework.Painting.TextSpan(style: Widget_inspectorLibrary._messageStyle, text: message);
+            __cascade.text = new global::Doroti.Framework.Painting.TextSpan(style: Widget_inspectorLibrary._messageStyle, text: message);
             __cascade.textDirection = textDirection;
             __cascade.layout(maxWidth: maxWidth__131840);
             return __cascade;        }))();
         }
         global::Doroti.Ui.Size tooltipSize__132407 = ((global::Doroti.Ui.Size)(object?)(this._textPainter!.size + new global::Doroti.Ui.Offset((Widget_inspectorLibrary._kTooltipPadding * 2L), (Widget_inspectorLibrary._kTooltipPadding * 2L))));
-        global::Doroti.Ui.Offset tipOffset__132525 = ((global::Doroti.Ui.Offset)(object?)global::Doroti.Generated.Framework.Painting.GeometryLibrary.positionDependentBox(size: size, childSize: tooltipSize__132407, target: target, verticalOffset: verticalOffset, preferBelow: false));
+        global::Doroti.Ui.Offset tipOffset__132525 = ((global::Doroti.Ui.Offset)(object?)global::Doroti.Framework.Painting.GeometryLibrary.positionDependentBox(size: size, childSize: tooltipSize__132407, target: target, verticalOffset: verticalOffset, preferBelow: false));
         var tooltipBackground__132711 = ((Func<Paint>)(() =>
 {            var __cascade = new global::Doroti.Ui.Paint();
             __cascade.style = PaintingStyle.fill;
@@ -2937,23 +2937,23 @@ internal class _InspectorOverlayLayer__widget_inspector : global::Doroti.Generat
         canvas.restore();
     }
 
-    public override bool findAnnotations<S>(global::Doroti.Generated.Framework.Rendering.AnnotationResult<S> result, Offset localPosition, bool onlyFirst = default!)
+    public override bool findAnnotations<S>(global::Doroti.Framework.Rendering.AnnotationResult<S> result, Offset localPosition, bool onlyFirst = default!)
     {
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual bool _isInInspectorRenderObjectTree(global::Doroti.Generated.Framework.Rendering.RenderObject child)
+    internal virtual bool _isInInspectorRenderObjectTree(global::Doroti.Framework.Rendering.RenderObject child)
     {
-        global::Doroti.Generated.Framework.Rendering.RenderObject? current__134258 = ((global::Doroti.Generated.Framework.Rendering.RenderObject)child).parent;
+        global::Doroti.Framework.Rendering.RenderObject? current__134258 = ((global::Doroti.Framework.Rendering.RenderObject)child).parent;
         while ((current__134258 is not null))
         {
-            if (((current__134258 is global::Doroti.Generated.Framework.Rendering.RenderStack) && ((global::Doroti.Generated.Framework.Rendering.RenderStack)current__134258).getChildrenAsList().any(((child) => (child is _RenderInspectorOverlay__widget_inspector)))))
+            if (((current__134258 is global::Doroti.Framework.Rendering.RenderStack) && ((global::Doroti.Framework.Rendering.RenderStack)current__134258).getChildrenAsList().any(((child) => (child is _RenderInspectorOverlay__widget_inspector)))))
             {
-                global::Doroti.Generated.Framework.Rendering.RenderStack current__134258__as134376 = (global::Doroti.Generated.Framework.Rendering.RenderStack)current__134258;
-                return (object.Equals(this.rootRenderObject, ((global::Doroti.Generated.Framework.Rendering.RenderStack)current__134258__as134376)));
+                global::Doroti.Framework.Rendering.RenderStack current__134258__as134376 = (global::Doroti.Framework.Rendering.RenderStack)current__134258;
+                return (object.Equals(this.rootRenderObject, ((global::Doroti.Framework.Rendering.RenderStack)current__134258__as134376)));
             }
-            current__134258 = ((global::Doroti.Generated.Framework.Rendering.RenderObject)current__134258).parent;
+            current__134258 = ((global::Doroti.Framework.Rendering.RenderObject)current__134258).parent;
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2978,7 +2978,7 @@ public static partial class Widget_inspectorLibrary
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static global::Doroti.Generated.Framework.Painting.TextStyle _messageStyle = new global::Doroti.Generated.Framework.Painting.TextStyle(color: new global::Doroti.Ui.Color(4294967295L), fontSize: 10.0, height: 1.2);
+    internal static global::Doroti.Framework.Painting.TextStyle _messageStyle = new global::Doroti.Framework.Painting.TextStyle(color: new global::Doroti.Ui.Color(4294967295L), fontSize: 10.0, height: 1.2);
 }
 
 internal class _WidgetInspectorButtonGroup__widget_inspector : StatefulWidget
@@ -3005,7 +3005,7 @@ internal class _WidgetInspectorButtonGroupState__widget_inspector : State<_Widge
     internal virtual string? _tooltipMessage { get; set; } = default;
     internal virtual bool _usesDefaultAlignment { get; set; } = true;
 
-    internal virtual global::Doroti.Generated.Framework.Foundation.ValueNotifier<bool> _selectionOnTapEnabled => WidgetsBinding.instance.debugWidgetInspectorSelectionOnTapEnabled;
+    internal virtual global::Doroti.Framework.Foundation.ValueNotifier<bool> _selectionOnTapEnabled => WidgetsBinding.instance.debugWidgetInspectorSelectionOnTapEnabled;
     internal virtual Widget? _moveExitWidgetSelectionButton
     {
         get
@@ -3046,7 +3046,7 @@ _changeTooltipMessage(buttonLabel__137141);
             {
                 return ((Widget)(object)null);
             }
-            return ((Widget?)(object?)new _WidgetInspectorButton__widget_inspector(button: buttonBuilder__137630(this.context, onPressed: () => this._changeSelectionOnTapMode(default), semanticsLabel: "Change widget selection mode for taps", selectionOnTapEnabled: ((global::Doroti.Generated.Framework.Foundation.ValueNotifier<bool>)this._selectionOnTapEnabled).value), onTooltipVisible: () => this._changeSelectionOnTapTooltip(), onTooltipHidden: () => this._onTooltipHidden()));
+            return ((Widget?)(object?)new _WidgetInspectorButton__widget_inspector(button: buttonBuilder__137630(this.context, onPressed: () => this._changeSelectionOnTapMode(default), semanticsLabel: "Change widget selection mode for taps", selectionOnTapEnabled: ((global::Doroti.Framework.Foundation.ValueNotifier<bool>)this._selectionOnTapEnabled).value), onTooltipVisible: () => this._changeSelectionOnTapTooltip(), onTooltipHidden: () => this._onTooltipHidden()));
             return default!;
         }
     }
@@ -3055,7 +3055,7 @@ _changeTooltipMessage(buttonLabel__137141);
     {
         double bottomPadding__138231 = Math.Max(_kExitWidgetSelectionButtonMargin, MediaQuery.viewPaddingOf(context).bottom);
         Widget selectionModeButtons__138371 = ((Widget)(object?)new Column(children: new List<Widget> { this._exitWidgetSelectionButton }));
-        Widget buttonGroup__138502 = ((Widget)(object?)new Stack(alignment: global::Doroti.Generated.Framework.Painting.AlignmentDirectional.topCenter, children: new List<Widget> { new CustomPaint(painter: new _ExitWidgetSelectionTooltipPainter__widget_inspector(tooltipMessage: this._tooltipMessage, buttonKey: this._exitWidgetSelectionButtonKey, usesDefaultAlignment: this._usesDefaultAlignment)), new Row(crossAxisAlignment: global::Doroti.Generated.Framework.Rendering.CrossAxisAlignment.end, mainAxisAlignment: global::Doroti.Generated.Framework.Rendering.MainAxisAlignment.center, children: new List<Widget>()) }));
+        Widget buttonGroup__138502 = ((Widget)(object?)new Stack(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.topCenter, children: new List<Widget> { new CustomPaint(painter: new _ExitWidgetSelectionTooltipPainter__widget_inspector(tooltipMessage: this._tooltipMessage, buttonKey: this._exitWidgetSelectionButtonKey, usesDefaultAlignment: this._usesDefaultAlignment)), new Row(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.end, mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.center, children: new List<Widget>()) }));
         return ((Widget)(object?)Positioned.CreateDirectional(textDirection: Directionality.of(context), start: (this._usesDefaultAlignment ? _kExitWidgetSelectionButtonMargin : null), end: (this._usesDefaultAlignment ? null : _kExitWidgetSelectionButtonMargin), bottom: bottomPadding__138231, child: buttonGroup__138502));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -3068,7 +3068,7 @@ _changeTooltipMessage(buttonLabel__137141);
 
     internal virtual void _changeSelectionOnTapMode(bool? selectionOnTapEnabled = null)
     {
-        bool newValue__139859 = (selectionOnTapEnabled ?? !((global::Doroti.Generated.Framework.Foundation.ValueNotifier<bool>)this._selectionOnTapEnabled).value);
+        bool newValue__139859 = (selectionOnTapEnabled ?? !((global::Doroti.Framework.Foundation.ValueNotifier<bool>)this._selectionOnTapEnabled).value);
         this._selectionOnTapEnabled.value = newValue__139859;
         WidgetInspectorService.instance.selection.clear();
         if (this._tooltipVisible)
@@ -3079,7 +3079,7 @@ _changeTooltipMessage(buttonLabel__137141);
 
     internal virtual void _changeSelectionOnTapTooltip()
     {
-        _changeTooltipMessage((((global::Doroti.Generated.Framework.Foundation.ValueNotifier<bool>)this._selectionOnTapEnabled).value ? "Disable widget selection for taps" : "Enable widget selection for taps"));
+        _changeTooltipMessage((((global::Doroti.Framework.Foundation.ValueNotifier<bool>)this._selectionOnTapEnabled).value ? "Disable widget selection for taps" : "Enable widget selection for taps"));
     }
 
     internal virtual void _changeButtonGroupAlignment()
@@ -3143,12 +3143,12 @@ internal class _WidgetInspectorButtonState__widget_inspector : State<_WidgetInsp
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new Stack(alignment: global::Doroti.Generated.Framework.Painting.AlignmentDirectional.topCenter, children: new List<Widget> { new GestureDetector(onLongPress: ((global::System.Action)(() => {
+        return ((Widget)(object?)new Stack(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.topCenter, children: new List<Widget> { new GestureDetector(onLongPress: ((global::System.Action)(() => {
 _tooltipVisibleAfter(_WidgetInspectorButton__widget_inspector._tooltipDelayDuration);
 _tooltipHiddenAfter((_WidgetInspectorButton__widget_inspector._tooltipShownOnLongPressDuration + _WidgetInspectorButton__widget_inspector._tooltipDelayDuration));
-})), child: new MouseRegion(onEnter: ((global::System.Action<global::Doroti.Generated.Framework.Gestures.PointerEnterEvent>)((_) => {
+})), child: new MouseRegion(onEnter: ((global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)((_) => {
 _tooltipVisibleAfter(_WidgetInspectorButton__widget_inspector._tooltipDelayDuration);
-})), onExit: ((global::System.Action<global::Doroti.Generated.Framework.Gestures.PointerExitEvent>)((_) => {
+})), onExit: ((global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)((_) => {
 _tooltipHiddenAfter(_WidgetInspectorButton__widget_inspector._tooltipDelayDuration);
 })), child: ((_WidgetInspectorButton__widget_inspector)this.widget).button)) }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -3187,7 +3187,7 @@ this.widget.onTooltipHidden();
 
 }
 
-internal class _ExitWidgetSelectionTooltipPainter__widget_inspector : global::Doroti.Generated.Framework.Rendering.CustomPainter
+internal class _ExitWidgetSelectionTooltipPainter__widget_inspector : global::Doroti.Framework.Rendering.CustomPainter
 {
     public virtual string? tooltipMessage { get; private set; }
     public virtual GlobalKey<IState> buttonKey { get; private set; } = default!;
@@ -3207,18 +3207,18 @@ internal class _ExitWidgetSelectionTooltipPainter__widget_inspector : global::Do
         {
             return;
         }
-        global::Doroti.Generated.Framework.Rendering.RenderObject? buttonRenderObject__143714 = ((global::Doroti.Generated.Framework.Rendering.RenderObject?)(object?)((GlobalKey<IState>)this.buttonKey).currentContext?.findRenderObject());
+        global::Doroti.Framework.Rendering.RenderObject? buttonRenderObject__143714 = ((global::Doroti.Framework.Rendering.RenderObject?)(object?)((GlobalKey<IState>)this.buttonKey).currentContext?.findRenderObject());
         if ((buttonRenderObject__143714 is null))
         {
             return;
         }
         var tooltipPadding__143884 = 4.0;
         var tooltipSpacing__143916 = 6.0;
-        var tooltipTextPainter__143949 = ((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
-{            var __cascade = new global::Doroti.Generated.Framework.Painting.TextPainter();
+        var tooltipTextPainter__143949 = ((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
+{            var __cascade = new global::Doroti.Framework.Painting.TextPainter();
             __cascade.maxLines = 1L;
             __cascade.ellipsis = "...";
-            __cascade.text = new global::Doroti.Generated.Framework.Painting.TextSpan(text: this.tooltipMessage, style: Widget_inspectorLibrary._messageStyle);
+            __cascade.text = new global::Doroti.Framework.Painting.TextSpan(text: this.tooltipMessage, style: Widget_inspectorLibrary._messageStyle);
             __cascade.textDirection = TextDirection.ltr;
             __cascade.layout();
             return __cascade;        }))();
@@ -3227,8 +3227,8 @@ internal class _ExitWidgetSelectionTooltipPainter__widget_inspector : global::Do
             __cascade.style = PaintingStyle.fill;
             __cascade.color = Widget_inspectorLibrary._kTooltipBackgroundColor;
             return __cascade;        }))();
-        double buttonWidth__144322 = ((global::Doroti.Generated.Framework.Rendering.RenderObject)buttonRenderObject__143714).paintBounds.width;
-        global::Doroti.Ui.Size textSize__144389 = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Generated.Framework.Painting.TextPainter)tooltipTextPainter__143949).size);
+        double buttonWidth__144322 = ((global::Doroti.Framework.Rendering.RenderObject)buttonRenderObject__143714).paintBounds.width;
+        global::Doroti.Ui.Size textSize__144389 = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Framework.Painting.TextPainter)tooltipTextPainter__143949).size);
         double textWidth__144442 = textSize__144389.width;
         double textHeight__144487 = textSize__144389.height;
         double tooltipWidth__144534 = (textWidth__144442 + ((tooltipPadding__143884 * 2L)));
@@ -3239,7 +3239,7 @@ internal class _ExitWidgetSelectionTooltipPainter__widget_inspector : global::Do
         tooltipTextPainter__143949.paint(canvas, new global::Doroti.Ui.Offset((tooltipXOffset__144669 + tooltipPadding__143884), (tooltipYOffset__144794 + tooltipPadding__143884)));
     }
 
-    public override bool shouldRepaint(global::Doroti.Generated.Framework.Rendering.CustomPainter oldDelegate)
+    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
     {
         var __oldDelegate = (_ExitWidgetSelectionTooltipPainter__widget_inspector)(object)oldDelegate;
         return (this.tooltipMessage != ((_ExitWidgetSelectionTooltipPainter__widget_inspector)__oldDelegate).tooltipMessage);
@@ -3250,40 +3250,40 @@ internal class _ExitWidgetSelectionTooltipPainter__widget_inspector : global::Do
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static bool _isDebugCreator(global::Doroti.Generated.Framework.Foundation.DiagnosticsNode node) => (node is global::Doroti.Generated.Framework.Rendering.DiagnosticsDebugCreator);
+    internal static bool _isDebugCreator(global::Doroti.Framework.Foundation.DiagnosticsNode node) => (node is global::Doroti.Framework.Rendering.DiagnosticsDebugCreator);
 }
 
 public static partial class Widget_inspectorLibrary
 {
-    public static IEnumerable<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> debugTransformDebugCreator(IEnumerable<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> properties)
+    public static IEnumerable<global::Doroti.Framework.Foundation.DiagnosticsNode> debugTransformDebugCreator(IEnumerable<global::Doroti.Framework.Foundation.DiagnosticsNode> properties)
     {
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kDebugMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode)
         {
-            return ((IEnumerable<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>)(object?)new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>());
+            return ((IEnumerable<global::Doroti.Framework.Foundation.DiagnosticsNode>)(object?)new List<global::Doroti.Framework.Foundation.DiagnosticsNode>());
         }
-        var pending__145873 = new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>();
-        global::Doroti.Generated.Framework.Foundation.ErrorSummary? errorSummary__145920 = default!;
+        var pending__145873 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
+        global::Doroti.Framework.Foundation.ErrorSummary? errorSummary__145920 = default!;
         foreach (var node__145947 in properties)
         {
-            if ((node__145947 is global::Doroti.Generated.Framework.Foundation.ErrorSummary))
+            if ((node__145947 is global::Doroti.Framework.Foundation.ErrorSummary))
             {
-                global::Doroti.Generated.Framework.Foundation.ErrorSummary node__145947__as145977 = (global::Doroti.Generated.Framework.Foundation.ErrorSummary)node__145947;
-                errorSummary__145920 = ((global::Doroti.Generated.Framework.Foundation.ErrorSummary)node__145947__as145977);
+                global::Doroti.Framework.Foundation.ErrorSummary node__145947__as145977 = (global::Doroti.Framework.Foundation.ErrorSummary)node__145947;
+                errorSummary__145920 = ((global::Doroti.Framework.Foundation.ErrorSummary)node__145947__as145977);
                 break;
             }
         }
         var foundStackTrace__146057 = false;
-        var result__146090 = new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>();
+        var result__146090 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
         foreach (var node__146133 in properties)
         {
-            if ((!foundStackTrace__146057 && (node__146133 is global::Doroti.Generated.Framework.Foundation.DiagnosticsStackTrace)))
+            if ((!foundStackTrace__146057 && (node__146133 is global::Doroti.Framework.Foundation.DiagnosticsStackTrace)))
             {
-                global::Doroti.Generated.Framework.Foundation.DiagnosticsStackTrace node__146133__as146183 = (global::Doroti.Generated.Framework.Foundation.DiagnosticsStackTrace)node__146133;
+                global::Doroti.Framework.Foundation.DiagnosticsStackTrace node__146133__as146183 = (global::Doroti.Framework.Foundation.DiagnosticsStackTrace)node__146133;
                 foundStackTrace__146057 = true;
             }
             if (Widget_inspectorLibrary._isDebugCreator(node__146133))
             {
-                result__146090.AddRange(Widget_inspectorLibrary._parseDiagnosticsNode(node__146133, errorSummary__145920).Cast<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>());
+                result__146090.AddRange(Widget_inspectorLibrary._parseDiagnosticsNode(node__146133, errorSummary__145920).Cast<global::Doroti.Framework.Foundation.DiagnosticsNode>());
             }
             else
             {
@@ -3297,20 +3297,20 @@ public static partial class Widget_inspectorLibrary
                 }
             }
         }
-        result__146090.AddRange(pending__145873.Cast<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>());
-        return ((IEnumerable<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>)(object?)result__146090);
+        result__146090.AddRange(pending__145873.Cast<global::Doroti.Framework.Foundation.DiagnosticsNode>());
+        return ((IEnumerable<global::Doroti.Framework.Foundation.DiagnosticsNode>)(object?)result__146090);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static IEnumerable<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> _parseDiagnosticsNode(global::Doroti.Generated.Framework.Foundation.DiagnosticsNode node, global::Doroti.Generated.Framework.Foundation.ErrorSummary? errorSummary)
+    internal static IEnumerable<global::Doroti.Framework.Foundation.DiagnosticsNode> _parseDiagnosticsNode(global::Doroti.Framework.Foundation.DiagnosticsNode node, global::Doroti.Framework.Foundation.ErrorSummary? errorSummary)
     {
         DartRuntimePrimitives.Assert(() => Widget_inspectorLibrary._isDebugCreator(node));
         try
         {
-            var debugCreator__146783 = ((DebugCreator?)(object?)((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)node).value!)!;
+            var debugCreator__146783 = ((DebugCreator?)(object?)((global::Doroti.Framework.Foundation.DiagnosticsNode)node).value!)!;
             Element element__146845 = ((DebugCreator)debugCreator__146783).element;
             return Widget_inspectorLibrary._describeRelevantUserCode(element__146845, errorSummary);
         }
@@ -3318,9 +3318,9 @@ public static partial class Widget_inspectorLibrary
         {
             var stack__146956 = new System.Diagnostics.StackTrace();
             DartAsyncRuntime.scheduleMicrotask((() => {
-FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails(exception: error__146949, stack: stack__146956, library: "widget inspector", informationCollector: ((InformationCollector)(() => new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { global::Doroti.Generated.Framework.Foundation.DiagnosticsNode.CreateMessage("This exception was caught while trying to describe the user-relevant code of another error.") }))));
+FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: error__146949, stack: stack__146956, library: "widget inspector", informationCollector: ((InformationCollector)(() => new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { global::Doroti.Framework.Foundation.DiagnosticsNode.CreateMessage("This exception was caught while trying to describe the user-relevant code of another error.") }))));
 }));
-            return ((IEnumerable<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>)(object?)new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>());
+            return ((IEnumerable<global::Doroti.Framework.Foundation.DiagnosticsNode>)(object?)new List<global::Doroti.Framework.Foundation.DiagnosticsNode>());
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -3328,11 +3328,11 @@ FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.Flutt
 
 public static partial class Widget_inspectorLibrary
 {
-    internal static IEnumerable<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> _describeRelevantUserCode(Element element, global::Doroti.Generated.Framework.Foundation.ErrorSummary? errorSummary)
+    internal static IEnumerable<global::Doroti.Framework.Foundation.DiagnosticsNode> _describeRelevantUserCode(Element element, global::Doroti.Framework.Foundation.ErrorSummary? errorSummary)
     {
         if (!WidgetInspectorService.instance.isWidgetCreationTracked())
         {
-            return ((IEnumerable<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>)(object?)new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorDescription("Widget creation tracking is currently disabled. Enabling " + "it enables improved error messages. It can be enabled by passing " + "`--track-widget-creation` to `flutter run` or `flutter test`."), new global::Doroti.Generated.Framework.Foundation.ErrorSpacer() });
+            return ((IEnumerable<global::Doroti.Framework.Foundation.DiagnosticsNode>)(object?)new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorDescription("Widget creation tracking is currently disabled. Enabling " + "it enables improved error messages. It can be enabled by passing " + "`--track-widget-creation` to `flutter run` or `flutter test`."), new global::Doroti.Framework.Foundation.ErrorSpacer() });
         }
         bool isOverflowError()
         {
@@ -3348,21 +3348,21 @@ public static partial class Widget_inspectorLibrary
             return false;
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        var nodes__148218 = new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>();
+        var nodes__148218 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
         bool processElement(Element target)
         {
             if (Widget_inspectorLibrary.debugIsLocalCreationLocation(target))
             {
-                global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? devToolsDiagnostic__148465 = default!;
+                global::Doroti.Framework.Foundation.DiagnosticsNode? devToolsDiagnostic__148465 = default!;
                 if (isOverflowError())
                 {
                     string? devToolsInspectorUri__148769 = ((string?)(object?)WidgetInspectorService.instance._devToolsInspectorUriForElement(target));
                     if ((devToolsInspectorUri__148769 is not null))
                     {
-                        devToolsDiagnostic__148465 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>(new DevToolsDeepLinkProperty($"To inspect this widget in Flutter DevTools, visit: {devToolsInspectorUri__148769}", devToolsInspectorUri__148769));
+                        devToolsDiagnostic__148465 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Foundation.DiagnosticsNode>(new DevToolsDeepLinkProperty($"To inspect this widget in Flutter DevTools, visit: {devToolsInspectorUri__148769}", devToolsInspectorUri__148769));
                     }
                 }
-                nodes__148218.AddRange(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.DiagnosticsBlock(name: "The relevant error-causing widget was", children: new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"{((Diagnosticable)((Element)target).widget).toStringShort()} {Widget_inspectorLibrary._describeCreationLocation(target)}") }), new global::Doroti.Generated.Framework.Foundation.ErrorSpacer() }.Cast<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>());
+                nodes__148218.AddRange(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.DiagnosticsBlock(name: "The relevant error-causing widget was", children: new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorDescription($"{((Diagnosticable)((Element)target).widget).toStringShort()} {Widget_inspectorLibrary._describeCreationLocation(target)}") }), new global::Doroti.Framework.Foundation.ErrorSpacer() }.Cast<global::Doroti.Framework.Foundation.DiagnosticsNode>());
                 return false;
             }
             return true;
@@ -3372,14 +3372,14 @@ public static partial class Widget_inspectorLibrary
         {
             element.visitAncestorElements((global::System.Func<Element, bool>)processElement);
         }
-        return ((IEnumerable<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>)(object?)nodes__148218);
+        return ((IEnumerable<global::Doroti.Framework.Foundation.DiagnosticsNode>)(object?)nodes__148218);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
-public class DevToolsDeepLinkProperty : global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<string>
+public class DevToolsDeepLinkProperty : global::Doroti.Framework.Foundation.DiagnosticsProperty<string>
 {
-    public DevToolsDeepLinkProperty(string description, string url) : base("", url, description: description, level: global::Doroti.Generated.Framework.Foundation.DiagnosticLevel.info)
+    public DevToolsDeepLinkProperty(string description, string url) : base("", url, description: description, level: global::Doroti.Framework.Foundation.DiagnosticLevel.info)
     {
     }
 
@@ -3486,7 +3486,7 @@ public static partial class Widget_inspectorLibrary
     }
 }
 
-public class InspectorSerializationDelegate : global::Doroti.Generated.Framework.Foundation.DiagnosticsSerializationDelegate
+public class InspectorSerializationDelegate : global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate
 {
     public virtual WidgetInspectorService service { get; private set; } = default!;
     public virtual string? groupName { get; private set; }
@@ -3496,10 +3496,10 @@ public class InspectorSerializationDelegate : global::Doroti.Generated.Framework
     public virtual long subtreeDepth { get; private set; } = default!;
     public virtual bool expandPropertyValues { get; private set; } = default!;
     public virtual bool inDisableWidgetInspectorScope { get; private set; } = default!;
-    public virtual global::System.Func<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>? addAdditionalPropertiesCallback { get; private set; }
-    internal virtual List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> _nodesCreatedByLocalProject { get; private set; } = new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>();
+    public virtual global::System.Func<global::Doroti.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>? addAdditionalPropertiesCallback { get; private set; }
+    internal virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> _nodesCreatedByLocalProject { get; private set; } = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
 
-    public InspectorSerializationDelegate(string? groupName = null, bool summaryTree = false, long maxDescendantsTruncatableNode = -1, bool expandPropertyValues = true, long subtreeDepth = 1, bool includeProperties = false, WidgetInspectorService service = default!, global::System.Func<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>? addAdditionalPropertiesCallback = null, bool inDisableWidgetInspectorScope = false)
+    public InspectorSerializationDelegate(string? groupName = null, bool summaryTree = false, long maxDescendantsTruncatableNode = -1, bool expandPropertyValues = true, long subtreeDepth = 1, bool includeProperties = false, WidgetInspectorService service = default!, global::System.Func<global::Doroti.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>? addAdditionalPropertiesCallback = null, bool inDisableWidgetInspectorScope = false)
     {
         this.groupName = groupName;
         this.summaryTree = summaryTree;
@@ -3513,10 +3513,10 @@ public class InspectorSerializationDelegate : global::Doroti.Generated.Framework
     }
 
     internal virtual bool _interactive => DartRuntimePrimitives.ConvertValue<bool>((this.groupName is not null));
-    public virtual DartMap<string, object> additionalNodeProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticsNode node, bool fullDetails = true)
+    public virtual DartMap<string, object> additionalNodeProperties(global::Doroti.Framework.Foundation.DiagnosticsNode node, bool fullDetails = true)
     {
         var result__156129 = new DartMap<string, object>();
-        object? value__156177 = ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)node).value;
+        object? value__156177 = ((global::Doroti.Framework.Foundation.DiagnosticsNode)node).value;
         if ((this.summaryTree && fullDetails))
         {
             result__156129["summaryTree"] = true;
@@ -3547,41 +3547,41 @@ public class InspectorSerializationDelegate : global::Doroti.Generated.Framework
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Foundation.DiagnosticsSerializationDelegate delegateForNode(global::Doroti.Generated.Framework.Foundation.DiagnosticsNode node)
+    public virtual global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate delegateForNode(global::Doroti.Framework.Foundation.DiagnosticsNode node)
     {
-        return ((global::Doroti.Generated.Framework.Foundation.DiagnosticsSerializationDelegate)(object?)(((this.summaryTree || (this.subtreeDepth > 1L)) || this.service._shouldShowInSummaryTree(node)) ? copyWith(subtreeDepth: (this.subtreeDepth - 1L)) : this));
+        return ((global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate)(object?)(((this.summaryTree || (this.subtreeDepth > 1L)) || this.service._shouldShowInSummaryTree(node)) ? copyWith(subtreeDepth: (this.subtreeDepth - 1L)) : this));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> filterChildren(List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> nodes, global::Doroti.Generated.Framework.Foundation.DiagnosticsNode owner)
+    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> filterChildren(List<global::Doroti.Framework.Foundation.DiagnosticsNode> nodes, global::Doroti.Framework.Foundation.DiagnosticsNode owner)
     {
-        return ((List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>)(object?)this.service._filterChildren(nodes, this));
+        return ((List<global::Doroti.Framework.Foundation.DiagnosticsNode>)(object?)this.service._filterChildren(nodes, this));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> filterProperties(List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> nodes, global::Doroti.Generated.Framework.Foundation.DiagnosticsNode owner)
+    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> filterProperties(List<global::Doroti.Framework.Foundation.DiagnosticsNode> nodes, global::Doroti.Framework.Foundation.DiagnosticsNode owner)
     {
         bool createdByLocalProject__157887 = this._nodesCreatedByLocalProject.Contains(owner);
         return nodes.where(((node) => {
-return !node.isFiltered((createdByLocalProject__157887 ? global::Doroti.Generated.Framework.Foundation.DiagnosticLevel.fine : global::Doroti.Generated.Framework.Foundation.DiagnosticLevel.info));
+return !node.isFiltered((createdByLocalProject__157887 ? global::Doroti.Framework.Foundation.DiagnosticLevel.fine : global::Doroti.Framework.Foundation.DiagnosticLevel.info));
 throw new InvalidOperationException("Dart closure completed without a value.");
 })).ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> truncateNodesList(List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> nodes, global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? owner)
+    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> truncateNodesList(List<global::Doroti.Framework.Foundation.DiagnosticsNode> nodes, global::Doroti.Framework.Foundation.DiagnosticsNode? owner)
     {
         if ((((this.maxDescendantsTruncatableNode >= 0L) && owner!.allowTruncate) && (checked((long)(nodes.Count)) > this.maxDescendantsTruncatableNode)))
         {
-            nodes = this.service._truncateNodes(nodes.Cast<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>(), this.maxDescendantsTruncatableNode);
+            nodes = this.service._truncateNodes(nodes.Cast<global::Doroti.Framework.Foundation.DiagnosticsNode>(), this.maxDescendantsTruncatableNode);
         }
         return nodes;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Foundation.DiagnosticsSerializationDelegate copyWith(long? subtreeDepth = null, bool? includeProperties = null, bool? expandPropertyValues = null, bool? inDisableWidgetInspectorScope = null)
+    public virtual global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate copyWith(long? subtreeDepth = null, bool? includeProperties = null, bool? expandPropertyValues = null, bool? inDisableWidgetInspectorScope = null)
     {
-        return ((global::Doroti.Generated.Framework.Foundation.DiagnosticsSerializationDelegate)(object?)new InspectorSerializationDelegate(groupName: this.groupName, summaryTree: this.summaryTree, maxDescendantsTruncatableNode: this.maxDescendantsTruncatableNode, expandPropertyValues: (expandPropertyValues ?? this.expandPropertyValues), subtreeDepth: (subtreeDepth ?? this.subtreeDepth), includeProperties: (includeProperties ?? this.includeProperties), service: this.service, addAdditionalPropertiesCallback: (global::System.Func<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>?)this.addAdditionalPropertiesCallback, inDisableWidgetInspectorScope: (inDisableWidgetInspectorScope ?? this.inDisableWidgetInspectorScope)));
+        return ((global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate)(object?)new InspectorSerializationDelegate(groupName: this.groupName, summaryTree: this.summaryTree, maxDescendantsTruncatableNode: this.maxDescendantsTruncatableNode, expandPropertyValues: (expandPropertyValues ?? this.expandPropertyValues), subtreeDepth: (subtreeDepth ?? this.subtreeDepth), includeProperties: (includeProperties ?? this.includeProperties), service: this.service, addAdditionalPropertiesCallback: (global::System.Func<global::Doroti.Framework.Foundation.DiagnosticsNode, InspectorSerializationDelegate, DartMap<string, object>?>?)this.addAdditionalPropertiesCallback, inDisableWidgetInspectorScope: (inDisableWidgetInspectorScope ?? this.inDisableWidgetInspectorScope)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -12,9 +12,9 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
-public delegate object AutocompleteOptionsBuilder<T>(global::Doroti.Generated.Framework.Services.TextEditingValue textEditingValue);
+public delegate object AutocompleteOptionsBuilder<T>(global::Doroti.Framework.Services.TextEditingValue textEditingValue);
 
 public delegate void AutocompleteOnSelected<T>(T option);
 
@@ -39,11 +39,11 @@ public class RawAutocomplete<T> : StatefulWidget
     public virtual OptionsViewOpenDirection optionsViewOpenDirection { get; private set; } = default!;
     public virtual global::System.Func<T, string> displayStringForOption { get; private set; } = default!;
     public virtual global::System.Action<T>? onSelected { get; private set; }
-    public virtual global::System.Func<global::Doroti.Generated.Framework.Services.TextEditingValue, object> optionsBuilder { get; private set; } = default!;
+    public virtual global::System.Func<global::Doroti.Framework.Services.TextEditingValue, object> optionsBuilder { get; private set; } = default!;
     public virtual TextEditingController? textEditingController { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Services.TextEditingValue? initialValue { get; private set; }
+    public virtual global::Doroti.Framework.Services.TextEditingValue? initialValue { get; private set; }
 
-    public RawAutocomplete(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, global::System.Action<T>, IEnumerable<T>, Widget> optionsViewBuilder = default!, global::System.Func<global::Doroti.Generated.Framework.Services.TextEditingValue, object> optionsBuilder = default!, OptionsViewOpenDirection optionsViewOpenDirection = OptionsViewOpenDirection.down, global::System.Func<T, string> displayStringForOption = default!, global::System.Func<BuildContext, TextEditingController, FocusNode, global::System.Action, Widget>? fieldViewBuilder = null, FocusNode? focusNode = null, global::System.Action<T>? onSelected = null, TextEditingController? textEditingController = null, global::Doroti.Generated.Framework.Services.TextEditingValue? initialValue = null) : base(key: key)
+    public RawAutocomplete(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, global::System.Action<T>, IEnumerable<T>, Widget> optionsViewBuilder = default!, global::System.Func<global::Doroti.Framework.Services.TextEditingValue, object> optionsBuilder = default!, OptionsViewOpenDirection optionsViewOpenDirection = OptionsViewOpenDirection.down, global::System.Func<T, string> displayStringForOption = default!, global::System.Func<BuildContext, TextEditingController, FocusNode, global::System.Action, Widget>? fieldViewBuilder = null, FocusNode? focusNode = null, global::System.Action<T>? onSelected = null, TextEditingController? textEditingController = null, global::Doroti.Framework.Services.TextEditingValue? initialValue = null) : base(key: key)
     {
         global::System.Func<T, string> __displayStringForOption = displayStringForOption ?? new global::System.Func<T, string>((__option) => defaultStringForOption(__option));
         this.optionsViewBuilder = optionsViewBuilder;
@@ -100,12 +100,12 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
     internal virtual IEnumerable<T> _options { get; set; } = System.Linq.Enumerable.Empty<T>();
     internal virtual T? _selection { get; set; } = default;
     internal virtual string? _lastFieldText { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Foundation.ValueNotifier<long> _highlightedOptionIndex { get; private set; } = new global::Doroti.Generated.Framework.Foundation.ValueNotifier<long>(0L);
-    internal static DartMap<ShortcutActivator, Intent> _appleShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.arrowUp, meta: true)] = ((Intent)(object?)new AutocompleteFirstOptionIntent()), [new SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.arrowDown, meta: true)] = ((Intent)(object?)new AutocompleteLastOptionIntent()) };
-    internal static DartMap<ShortcutActivator, Intent> _nonAppleShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.arrowUp, control: true)] = ((Intent)(object?)new AutocompleteFirstOptionIntent()), [new SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.arrowDown, control: true)] = ((Intent)(object?)new AutocompleteLastOptionIntent()) };
-    internal static DartMap<ShortcutActivator, Intent> _commonShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.arrowUp)] = ((Intent)(object?)new AutocompletePreviousOptionIntent()), [new SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.arrowDown)] = ((Intent)(object?)new AutocompleteNextOptionIntent()), [new SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.pageUp)] = ((Intent)(object?)new AutocompletePreviousPageOptionIntent()), [new SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.pageDown)] = ((Intent)(object?)new AutocompleteNextPageOptionIntent()) };
+    internal virtual global::Doroti.Framework.Foundation.ValueNotifier<long> _highlightedOptionIndex { get; private set; } = new global::Doroti.Framework.Foundation.ValueNotifier<long>(0L);
+    internal static DartMap<ShortcutActivator, Intent> _appleShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp, meta: true)] = ((Intent)(object?)new AutocompleteFirstOptionIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown, meta: true)] = ((Intent)(object?)new AutocompleteLastOptionIntent()) };
+    internal static DartMap<ShortcutActivator, Intent> _nonAppleShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp, control: true)] = ((Intent)(object?)new AutocompleteFirstOptionIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown, control: true)] = ((Intent)(object?)new AutocompleteLastOptionIntent()) };
+    internal static DartMap<ShortcutActivator, Intent> _commonShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp)] = ((Intent)(object?)new AutocompletePreviousOptionIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown)] = ((Intent)(object?)new AutocompleteNextOptionIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.pageUp)] = ((Intent)(object?)new AutocompletePreviousPageOptionIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.pageDown)] = ((Intent)(object?)new AutocompleteNextPageOptionIntent()) };
     internal virtual long _onChangedCallId { get; set; } = 0L;
-    internal static double _kMinUsableHeight = global::Doroti.Generated.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension;
+    internal static double _kMinUsableHeight = global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension;
 
     internal virtual TextEditingController _textEditingController
     {
@@ -164,7 +164,7 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
         WidgetsLocalizations localizations__18078 = ((WidgetsLocalizations)(object?)WidgetsLocalizations.of(this.context));
         string optionsHint__18145 = (resultsAvailable ? ((WidgetsLocalizations)localizations__18078).searchResultsFound : ((WidgetsLocalizations)localizations__18078).noResultsFound);
         DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(View.of(this.context), optionsHint__18145, ((WidgetsLocalizations)localizations__18078).textDirection).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) => {
-FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Generated.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
+FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
 }))));
     }
 
@@ -174,14 +174,14 @@ FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.Flutt
         {
             return;
         }
-        global::Doroti.Generated.Framework.Services.TextEditingValue value__19184 = ((global::Doroti.Generated.Framework.Services.TextEditingValue)(object?)this._textEditingController.value);
+        global::Doroti.Framework.Services.TextEditingValue value__19184 = ((global::Doroti.Framework.Services.TextEditingValue)(object?)this._textEditingController.value);
         var shouldUpdateOptions__19309 = false;
-        if ((((global::Doroti.Generated.Framework.Services.TextEditingValue)value__19184).text != this._lastFieldText))
+        if ((((global::Doroti.Framework.Services.TextEditingValue)value__19184).text != this._lastFieldText))
         {
             shouldUpdateOptions__19309 = true;
             _onChangedCallId += 1L;
         }
-        _lastFieldText = ((global::Doroti.Generated.Framework.Services.TextEditingValue)value__19184).text;
+        _lastFieldText = ((global::Doroti.Framework.Services.TextEditingValue)value__19184).text;
         long callId__19494 = this._onChangedCallId;
         IEnumerable<T> options__19543 = await DartAsyncRuntime.AwaitFutureOrValue<IEnumerable<T>>(this.widget.optionsBuilder(value__19184));
         if (!this.mounted)
@@ -197,9 +197,9 @@ FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.Flutt
             _announceSemantics(System.Linq.Enumerable.Any(options__19543));
         }
         _options = options__19543;
-        _updateHighlight(((global::Doroti.Generated.Framework.Foundation.ValueNotifier<long>)this._highlightedOptionIndex).value);
+        _updateHighlight(((global::Doroti.Framework.Foundation.ValueNotifier<long>)this._highlightedOptionIndex).value);
         T? selection__19972 = this._selection;
-        if (((selection__19972 is not null) && (((global::Doroti.Generated.Framework.Services.TextEditingValue)value__19184).text != this.widget.displayStringForOption(selection__19972))))
+        if (((selection__19972 is not null) && (((global::Doroti.Framework.Services.TextEditingValue)value__19184).text != this.widget.displayStringForOption(selection__19972))))
         {
             _selection = default(T);
         }
@@ -210,7 +210,7 @@ FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.Flutt
     {
         if (((OverlayPortalController)this._optionsViewController).isShowing)
         {
-            _select(this._options.elementAt(((global::Doroti.Generated.Framework.Foundation.ValueNotifier<long>)this._highlightedOptionIndex).value));
+            _select(this._options.elementAt(((global::Doroti.Framework.Foundation.ValueNotifier<long>)this._highlightedOptionIndex).value));
         }
     }
 
@@ -223,7 +223,7 @@ FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.Flutt
         _selecting = true;
         _selection = nextSelection;
         string selectionString__20590 = this.widget.displayStringForOption(nextSelection);
-        this._textEditingController.value = new global::Doroti.Generated.Framework.Services.TextEditingValue(selection: global::Doroti.Generated.Framework.Services.TextSelection.CreateCollapsed(offset: selectionString__20590.Length), text: selectionString__20590);
+        this._textEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: selectionString__20590.Length), text: selectionString__20590);
         _lastFieldText = selectionString__20590;
         ((RawAutocomplete<T>)(object)this.widget).onSelected?.Invoke(nextSelection);
         if (((OverlayPortalController)this._optionsViewController).isShowing)
@@ -240,12 +240,12 @@ FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.Flutt
 
     internal virtual void _highlightPreviousOption(AutocompletePreviousOptionIntent intent)
     {
-        _highlightOption((((global::Doroti.Generated.Framework.Foundation.ValueNotifier<long>)this._highlightedOptionIndex).value - 1L));
+        _highlightOption((((global::Doroti.Framework.Foundation.ValueNotifier<long>)this._highlightedOptionIndex).value - 1L));
     }
 
     internal virtual void _highlightNextOption(AutocompleteNextOptionIntent intent)
     {
-        _highlightOption((((global::Doroti.Generated.Framework.Foundation.ValueNotifier<long>)this._highlightedOptionIndex).value + 1L));
+        _highlightOption((((global::Doroti.Framework.Foundation.ValueNotifier<long>)this._highlightedOptionIndex).value + 1L));
     }
 
     internal virtual void _highlightFirstOption(AutocompleteFirstOptionIntent intent)
@@ -260,12 +260,12 @@ FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.Flutt
 
     internal virtual void _highlightNextPageOption(AutocompleteNextPageOptionIntent intent)
     {
-        _highlightOption((((global::Doroti.Generated.Framework.Foundation.ValueNotifier<long>)this._highlightedOptionIndex).value + _pageSize));
+        _highlightOption((((global::Doroti.Framework.Foundation.ValueNotifier<long>)this._highlightedOptionIndex).value + _pageSize));
     }
 
     internal virtual void _highlightPreviousPageOption(AutocompletePreviousPageOptionIntent intent)
     {
-        _highlightOption((((global::Doroti.Generated.Framework.Foundation.ValueNotifier<long>)this._highlightedOptionIndex).value - _pageSize));
+        _highlightOption((((global::Doroti.Framework.Foundation.ValueNotifier<long>)this._highlightedOptionIndex).value - _pageSize));
     }
 
     internal virtual void _highlightOption(long index)
@@ -301,8 +301,8 @@ FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.Flutt
 {            var __cascade = ((OverlayChildLayoutInfo)layoutInfo).childPaintTransform.clone();
             __cascade.invert();
             return __cascade;        }))();
-        global::Doroti.Generated.Framework.Painting.EdgeInsets mediaQueryPadding__23317 = ((global::Doroti.Generated.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
-        global::Doroti.Generated.Framework.Painting.EdgeInsets viewInsets__23389 = ((global::Doroti.Generated.Framework.Painting.EdgeInsets)(object?)MediaQuery.viewInsetsOf(context));
+        global::Doroti.Framework.Painting.EdgeInsets mediaQueryPadding__23317 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
+        global::Doroti.Framework.Painting.EdgeInsets viewInsets__23389 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.viewInsetsOf(context));
         global::Doroti.Ui.Rect overlayRect__23452 = ((global::Doroti.Ui.Rect)(object?)mediaQueryPadding__23317.deflateRect(viewInsets__23389.deflateRect((Offset.zero & ((OverlayChildLayoutInfo)layoutInfo).overlaySize))));
         global::Doroti.Ui.Rect overlayRectInField__23756 = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(invertTransform__23227, overlayRect__23452));
         double spaceAbove__23852 = -overlayRectInField__23756.top;
@@ -316,7 +316,7 @@ FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.Flutt
             __cascade.translateByDouble(0.0, originY__24485, 0, 1);
             return __cascade;        }))();
         Widget child__24739 = ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => this.widget.optionsViewBuilder(context, this._select, this._options)))));
-        return ((Widget)(object?)new Transform(transform: transform__24624, child: new Align(alignment: global::Doroti.Generated.Framework.Painting.Alignment.topLeft, child: new ConstrainedBox(constraints: global::Doroti.Generated.Framework.Rendering.BoxConstraints.CreateTight(optionsViewBoundingBox__24349), child: new Align(alignment: (opensUp__23981 ? global::Doroti.Generated.Framework.Painting.AlignmentDirectional.bottomStart : global::Doroti.Generated.Framework.Painting.AlignmentDirectional.topStart), child: new TextFieldTapRegion(child: new AutocompleteHighlightedOption(highlightIndexNotifier: this._highlightedOptionIndex, child: new ExcludeFocus(child: child__24739))))))));
+        return ((Widget)(object?)new Transform(transform: transform__24624, child: new Align(alignment: global::Doroti.Framework.Painting.Alignment.topLeft, child: new ConstrainedBox(constraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(optionsViewBoundingBox__24349), child: new Align(alignment: (opensUp__23981 ? global::Doroti.Framework.Painting.AlignmentDirectional.bottomStart : global::Doroti.Framework.Painting.AlignmentDirectional.topStart), child: new TextFieldTapRegion(child: new AutocompleteHighlightedOption(highlightIndexNotifier: this._highlightedOptionIndex, child: new ExcludeFocus(child: child__24739))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -434,9 +434,9 @@ public class AutocompletePreviousPageOptionIntent : Intent
 
 }
 
-public class AutocompleteHighlightedOption : InheritedNotifier<global::Doroti.Generated.Framework.Foundation.ValueNotifier<long>>
+public class AutocompleteHighlightedOption : InheritedNotifier<global::Doroti.Framework.Foundation.ValueNotifier<long>>
 {
-    public AutocompleteHighlightedOption(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Foundation.ValueNotifier<long> highlightIndexNotifier = default!, Widget child = default!) : base(key: key, child: child, notifier: highlightIndexNotifier)
+    public AutocompleteHighlightedOption(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Foundation.ValueNotifier<long> highlightIndexNotifier = default!, Widget child = default!) : base(key: key, child: child, notifier: highlightIndexNotifier)
     {
     }
 

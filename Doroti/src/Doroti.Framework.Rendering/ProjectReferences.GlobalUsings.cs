@@ -1,2 +1,2 @@
-global using Doroti.Generated.Framework.Painting;
-global using Doroti.Generated.Framework.Semantics;
+global using Doroti.Framework.Painting;
+global using Doroti.Framework.Semantics;

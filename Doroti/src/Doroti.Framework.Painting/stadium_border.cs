@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public class StadiumBorder : OutlinedBorder
 {
@@ -141,7 +141,7 @@ public class StadiumBorder : OutlinedBorder
     public override int GetHashCode() => side.GetHashCode();
     public override string ToString()
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "StadiumBorder"))}({side})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "StadiumBorder"))}({side})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public interface ViewportNotificationMixin
 {
@@ -51,9 +51,9 @@ public abstract class ScrollNotification : LayoutChangedNotification, ViewportNo
 
 public class ScrollStartNotification : ScrollNotification
 {
-    public virtual global::Doroti.Generated.Framework.Gestures.DragStartDetails? dragDetails { get; private set; }
+    public virtual global::Doroti.Framework.Gestures.DragStartDetails? dragDetails { get; private set; }
 
-    public ScrollStartNotification(ScrollMetrics metrics, BuildContext? context, global::Doroti.Generated.Framework.Gestures.DragStartDetails? dragDetails = null) : base(metrics: metrics, context: context)
+    public ScrollStartNotification(ScrollMetrics metrics, BuildContext? context, global::Doroti.Framework.Gestures.DragStartDetails? dragDetails = null) : base(metrics: metrics, context: context)
     {
         this.dragDetails = dragDetails;
     }
@@ -71,10 +71,10 @@ public class ScrollStartNotification : ScrollNotification
 
 public class ScrollUpdateNotification : ScrollNotification
 {
-    public virtual global::Doroti.Generated.Framework.Gestures.DragUpdateDetails? dragDetails { get; private set; }
+    public virtual global::Doroti.Framework.Gestures.DragUpdateDetails? dragDetails { get; private set; }
     public virtual double? scrollDelta { get; private set; }
 
-    public ScrollUpdateNotification(ScrollMetrics metrics, BuildContext context, global::Doroti.Generated.Framework.Gestures.DragUpdateDetails? dragDetails = null, double? scrollDelta = null, long? depth = null) : base(metrics: metrics, context: context)
+    public ScrollUpdateNotification(ScrollMetrics metrics, BuildContext context, global::Doroti.Framework.Gestures.DragUpdateDetails? dragDetails = null, double? scrollDelta = null, long? depth = null) : base(metrics: metrics, context: context)
     {
         this.dragDetails = dragDetails;
         this.scrollDelta = scrollDelta;
@@ -94,11 +94,11 @@ public class ScrollUpdateNotification : ScrollNotification
 
 public class OverscrollNotification : ScrollNotification
 {
-    public virtual global::Doroti.Generated.Framework.Gestures.DragUpdateDetails? dragDetails { get; private set; }
+    public virtual global::Doroti.Framework.Gestures.DragUpdateDetails? dragDetails { get; private set; }
     public virtual double overscroll { get; private set; } = default!;
     public virtual double velocity { get; private set; } = default!;
 
-    public OverscrollNotification(ScrollMetrics metrics, BuildContext context, global::Doroti.Generated.Framework.Gestures.DragUpdateDetails? dragDetails = null, double overscroll = default!, double velocity = 0.0) : base(metrics: metrics, context: context)
+    public OverscrollNotification(ScrollMetrics metrics, BuildContext context, global::Doroti.Framework.Gestures.DragUpdateDetails? dragDetails = null, double overscroll = default!, double velocity = 0.0) : base(metrics: metrics, context: context)
     {
         this.dragDetails = dragDetails;
         this.overscroll = overscroll;
@@ -122,9 +122,9 @@ public class OverscrollNotification : ScrollNotification
 
 public class ScrollEndNotification : ScrollNotification
 {
-    public virtual global::Doroti.Generated.Framework.Gestures.DragEndDetails? dragDetails { get; private set; }
+    public virtual global::Doroti.Framework.Gestures.DragEndDetails? dragDetails { get; private set; }
 
-    public ScrollEndNotification(ScrollMetrics metrics, BuildContext context, global::Doroti.Generated.Framework.Gestures.DragEndDetails? dragDetails = null) : base(metrics: metrics, context: context)
+    public ScrollEndNotification(ScrollMetrics metrics, BuildContext context, global::Doroti.Framework.Gestures.DragEndDetails? dragDetails = null) : base(metrics: metrics, context: context)
     {
         this.dragDetails = dragDetails;
     }
@@ -142,9 +142,9 @@ public class ScrollEndNotification : ScrollNotification
 
 public class UserScrollNotification : ScrollNotification
 {
-    public virtual global::Doroti.Generated.Framework.Rendering.ScrollDirection direction { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Rendering.ScrollDirection direction { get; private set; } = default!;
 
-    public UserScrollNotification(ScrollMetrics metrics, BuildContext context, global::Doroti.Generated.Framework.Rendering.ScrollDirection direction) : base(metrics: metrics, context: context)
+    public UserScrollNotification(ScrollMetrics metrics, BuildContext context, global::Doroti.Framework.Rendering.ScrollDirection direction) : base(metrics: metrics, context: context)
     {
         this.direction = direction;
     }

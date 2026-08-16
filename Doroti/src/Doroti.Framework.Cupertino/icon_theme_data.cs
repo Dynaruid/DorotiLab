@@ -12,19 +12,19 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Cupertino;
+namespace Doroti.Framework.Cupertino;
 
-public class CupertinoIconThemeData : global::Doroti.Generated.Framework.Widgets.IconThemeData, global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class CupertinoIconThemeData : global::Doroti.Framework.Widgets.IconThemeData, global::Doroti.Framework.Foundation.Diagnosticable
 {
 
     public CupertinoIconThemeData(double? size = null, double? fill = null, double? weight = null, double? grade = null, double? opticalSize = null, Color? color = null, double? opacity = null, List<Shadow>? shadows = null, bool? applyTextScaling = null) : base(size: size, fill: fill, weight: weight, grade: grade, opticalSize: opticalSize, color: color, opacity: opacity, shadows: shadows, applyTextScaling: applyTextScaling)
     {
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.IconThemeData resolve(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.IconThemeData resolve(global::Doroti.Framework.Widgets.BuildContext context)
     {
         global::Doroti.Ui.Color? resolvedColor__871 = ((global::Doroti.Ui.Color?)(object?)CupertinoDynamicColor.maybeResolve(this.color, context));
-        return ((global::Doroti.Generated.Framework.Widgets.IconThemeData)(object?)((object.Equals(resolvedColor__871, this.color)) ? this : copyWith(color: resolvedColor__871)));
+        return ((global::Doroti.Framework.Widgets.IconThemeData)(object?)((object.Equals(resolvedColor__871, this.color)) ? this : copyWith(color: resolvedColor__871)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -34,12 +34,12 @@ public class CupertinoIconThemeData : global::Doroti.Generated.Framework.Widgets
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         properties.add(ColorsLibrary.createCupertinoColorProperty("color", this.color, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;

@@ -28,7 +28,7 @@ internal sealed partial class FrameworkCSharpLowerer
                 if (node.Text(CoreProperty.name) == "debugFormatDouble" &&
                     node.StaticType?.Contains("Function", StringComparison.Ordinal) == true)
                 {
-                    builder.Append("(value => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugFormatDouble(value))");
+                    builder.Append("(value => global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value))");
                     return;
                 }
                 EmitIdentifier(builder, node, declaration, library);
@@ -680,17 +680,17 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (name == "kTouchSlop")
         {
-            builder.Append("global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kTouchSlop");
+            builder.Append("global::Doroti.Framework.Gestures.ConstantsLibrary.kTouchSlop");
             return;
         }
         if (name == "kLongPressTimeout")
         {
-            builder.Append("global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kLongPressTimeout");
+            builder.Append("global::Doroti.Framework.Gestures.ConstantsLibrary.kLongPressTimeout");
             return;
         }
         if (name == "defaultTargetPlatform")
         {
-            builder.Append("global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform");
+            builder.Append("global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform");
             return;
         }
         if (name == "PlatformSelectableRegionContextMenu")
@@ -707,7 +707,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (name == "kLongPressTimeout")
         {
-            builder.Append("global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kLongPressTimeout");
+            builder.Append("global::Doroti.Framework.Gestures.ConstantsLibrary.kLongPressTimeout");
             return;
         }
         if (name == "window_impl" &&
@@ -724,7 +724,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (elementId?.EndsWith("#SemanticsBinding._instance", StringComparison.Ordinal) == true)
         {
-            builder.Append("global::Doroti.Generated.Framework.Semantics.SemanticsBinding.")
+            builder.Append("global::Doroti.Framework.Semantics.SemanticsBinding.")
                 .Append(SafeIdentifier(name));
             return;
         }
@@ -784,7 +784,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (name == "SemanticsBinding")
         {
-            builder.Append("global::Doroti.Generated.Framework.Semantics.SemanticsBinding");
+            builder.Append("global::Doroti.Framework.Semantics.SemanticsBinding");
             return;
         }
         if (name is "PluginUtilities" or "ViewFocusState" or "ViewFocusDirection")
@@ -912,7 +912,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (name == "debugProfilePlatformChannels")
         {
-            builder.Append("global::Doroti.Generated.Framework.Services.DebugLibrary.debugProfilePlatformChannels");
+            builder.Append("global::Doroti.Framework.Services.DebugLibrary.debugProfilePlatformChannels");
             return;
         }
         if (name == "utf8")
@@ -963,7 +963,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (elementId is not null && elementId != currentLibrary && IsTopLevelElement(elementId, "objectRuntimeType"))
         {
-            builder.Append("global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType");
+            builder.Append("global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType");
             return;
         }
         if (name == "runtimeType" && elementId is not null && elementId.Contains("Object.runtimeType", StringComparison.Ordinal))
@@ -1333,7 +1333,7 @@ internal sealed partial class FrameworkCSharpLowerer
         else if (opToken == "=" && activeAssignmentOwner.Name == "_HighlightModeManager" &&
             left.Text(CoreProperty.name) == "_listeners")
         {
-            mappedLeftType = "global::Doroti.Generated.Framework.Foundation.HashedObserverList<global::System.Action<FocusHighlightMode>>";
+            mappedLeftType = "global::Doroti.Framework.Foundation.HashedObserverList<global::System.Action<FocusHighlightMode>>";
         }
         if (opToken == "=" && activeAssignmentOwner.Name == "FormFieldState" &&
             left.Text(CoreProperty.name) == "value" &&
@@ -1854,7 +1854,7 @@ internal sealed partial class FrameworkCSharpLowerer
     {
         if (DescendantsAndSelf(operand).Any(item => item.Text(CoreProperty.name) is "presentError" or "_reportStructuredError"))
         {
-            builder.Append("(global::Doroti.Generated.Framework.Foundation.FlutterExceptionHandler)");
+            builder.Append("(global::Doroti.Framework.Foundation.FlutterExceptionHandler)");
         }
         else if (operand.StaticType?.Contains(" Function", StringComparison.Ordinal) == true)
         {

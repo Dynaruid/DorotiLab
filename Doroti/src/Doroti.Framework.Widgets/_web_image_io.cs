@@ -12,21 +12,21 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class RawWebImageIo : StatelessWidget
 {
-    public virtual global::Doroti.Generated.Framework.Painting.WebImageInfoIo image { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.WebImageInfoIo image { get; private set; } = default!;
     public virtual string? debugImageLabel { get; private set; }
     public virtual double? width { get; private set; }
     public virtual double? height { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.BoxFit? fit { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.BoxFit? fit { get; private set; }
+    public virtual global::Doroti.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
     public virtual bool matchTextDirection { get; private set; } = default!;
 
-    public RawWebImageIo(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Painting.WebImageInfoIo image = default!, string? debugImageLabel = null, double? width = null, double? height = null, global::Doroti.Generated.Framework.Painting.BoxFit? fit = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, bool matchTextDirection = false) : base(key: key)
+    public RawWebImageIo(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.WebImageInfoIo image = default!, string? debugImageLabel = null, double? width = null, double? height = null, global::Doroti.Framework.Painting.BoxFit? fit = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, bool matchTextDirection = false) : base(key: key)
     {
-        global::Doroti.Generated.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Generated.Framework.Painting.Alignment.center;
+        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.Alignment.center;
         this.image = image;
         this.debugImageLabel = debugImageLabel;
         this.width = width;

@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMixin<RenderSliver, SliverPhysicalContainerParentData>
 {
@@ -34,7 +34,7 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
     {
         var __child = (RenderSliver)(object)child;
         global::Doroti.Ui.Offset paintOffset__1979 = (((SliverPhysicalParentData?)(object?)__child.parentData!)!).paintOffset;
-        return (((SliverConstraints)constraints).axis switch { global::Doroti.Generated.Framework.Painting.Axis.vertical => paintOffset__1979.dx, global::Doroti.Generated.Framework.Painting.Axis.horizontal => paintOffset__1979.dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((SliverConstraints)constraints).axis switch { global::Doroti.Framework.Painting.Axis.vertical => paintOffset__1979.dx, global::Doroti.Framework.Painting.Axis.horizontal => paintOffset__1979.dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -97,7 +97,7 @@ public class RenderSliverCrossAxisGroup : RenderSliver, ContainerRenderObjectMix
             double remainingExtent__4723 = (geometry!.scrollExtent - ((SliverConstraints)constraints).scrollOffset);
             double paintCorrection__4811 = ((((SliverGeometry)childLayoutGeometry__4665).paintExtent > remainingExtent__4723) ? (((SliverGeometry)childLayoutGeometry__4665).paintExtent - remainingExtent__4723) : 0.0);
             double childExtent__4977 = (((RenderSliver)child__2537).geometry!.crossAxisExtent ?? (extentPerFlexValue__3304 * ((((SliverPhysicalParentData)childParentData__4573).crossAxisFlex ?? 0L))));
-            childParentData__4573.paintOffset = (((SliverConstraints)constraints).axis switch { global::Doroti.Generated.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Offset(offset__4519, -paintCorrection__4811), global::Doroti.Generated.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Offset(-paintCorrection__4811, offset__4519), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            childParentData__4573.paintOffset = (((SliverConstraints)constraints).axis switch { global::Doroti.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Offset(offset__4519, -paintCorrection__4811), global::Doroti.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Offset(-paintCorrection__4811, offset__4519), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             offset__4519 += childExtent__4977;
             child__2537 = childAfter(child__2537);
         }
@@ -504,7 +504,7 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
     {
         var __child = (RenderSliver)(object)child;
         var childParentData__10646 = ((SliverPhysicalParentData?)(object?)__child.parentData!)!;
-        return (global::Doroti.Generated.Framework.Rendering.SliverLibrary.applyGrowthDirectionToAxisDirection(((RenderSliver)__child).constraints.axisDirection, ((RenderSliver)__child).constraints.growthDirection) switch { global::Doroti.Generated.Framework.Painting.AxisDirection.down => ((SliverPhysicalParentData)childParentData__10646).paintOffset.dy, global::Doroti.Generated.Framework.Painting.AxisDirection.right => ((SliverPhysicalParentData)childParentData__10646).paintOffset.dx, global::Doroti.Generated.Framework.Painting.AxisDirection.up => ((geometry!.paintExtent - ((RenderSliver)__child).geometry!.paintExtent) - ((SliverPhysicalParentData)childParentData__10646).paintOffset.dy), global::Doroti.Generated.Framework.Painting.AxisDirection.left => ((geometry!.paintExtent - ((RenderSliver)__child).geometry!.paintExtent) - ((SliverPhysicalParentData)childParentData__10646).paintOffset.dx), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (global::Doroti.Framework.Rendering.SliverLibrary.applyGrowthDirectionToAxisDirection(((RenderSliver)__child).constraints.axisDirection, ((RenderSliver)__child).constraints.growthDirection) switch { global::Doroti.Framework.Painting.AxisDirection.down => ((SliverPhysicalParentData)childParentData__10646).paintOffset.dy, global::Doroti.Framework.Painting.AxisDirection.right => ((SliverPhysicalParentData)childParentData__10646).paintOffset.dx, global::Doroti.Framework.Painting.AxisDirection.up => ((geometry!.paintExtent - ((RenderSliver)__child).geometry!.paintExtent) - ((SliverPhysicalParentData)childParentData__10646).paintOffset.dy), global::Doroti.Framework.Painting.AxisDirection.left => ((geometry!.paintExtent - ((RenderSliver)__child).geometry!.paintExtent) - ((SliverPhysicalParentData)childParentData__10646).paintOffset.dx), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -538,7 +538,7 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
             DartRuntimePrimitives.Assert(() => childLayoutGeometry__13055.debugAssertIsValid());
             double childPaintOffset__13412 = (layoutOffset__11381 + ((SliverGeometry)childLayoutGeometry__13055).paintOrigin);
             var childParentData__13491 = ((SliverPhysicalParentData?)(object?)child__11923.parentData!)!;
-            childParentData__13491.paintOffset = (((SliverConstraints)constraints).axis switch { global::Doroti.Generated.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Offset(0.0, childPaintOffset__13412), global::Doroti.Generated.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Offset(childPaintOffset__13412, 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            childParentData__13491.paintOffset = (((SliverConstraints)constraints).axis switch { global::Doroti.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Offset(0.0, childPaintOffset__13412), global::Doroti.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Offset(childPaintOffset__13412, 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             scrollOffset__11352 += ((SliverGeometry)childLayoutGeometry__13055).scrollExtent;
             layoutOffset__11381 += ((SliverGeometry)childLayoutGeometry__13055).layoutExtent;
             maxPaintExtent__11410 += ((SliverGeometry)childLayoutGeometry__13055).maxPaintExtent;
@@ -570,12 +570,12 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
             {
                 SliverGeometry childLayoutGeometry__15387 = ((RenderSliver)child__11923).geometry!;
                 var childParentData__15440 = ((SliverPhysicalParentData?)(object?)child__11923.parentData!)!;
-                double childMainAxisPaintOffset__15526 = (((SliverConstraints)constraints).axis switch { global::Doroti.Generated.Framework.Painting.Axis.vertical => ((SliverPhysicalParentData)childParentData__15440).paintOffset.dy, global::Doroti.Generated.Framework.Painting.Axis.horizontal => ((SliverPhysicalParentData)childParentData__15440).paintOffset.dx, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                double childMainAxisPaintOffset__15526 = (((SliverConstraints)constraints).axis switch { global::Doroti.Framework.Painting.Axis.vertical => ((SliverPhysicalParentData)childParentData__15440).paintOffset.dy, global::Doroti.Framework.Painting.Axis.horizontal => ((SliverPhysicalParentData)childParentData__15440).paintOffset.dx, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
                 double childPaintEnd__15733 = (childMainAxisPaintOffset__15526 + ((SliverGeometry)childLayoutGeometry__15387).paintExtent);
                 bool childIsPinned__15828 = (((SliverGeometry)childLayoutGeometry__15387).maxScrollObstructionExtent > 0L);
                 if (((childPaintEnd__15733 > remainingExtent__14738) || ((pinnedChildrenOverflow__15094 && childIsPinned__15828))))
                 {
-                    childParentData__15440.paintOffset = (((SliverConstraints)constraints).axis switch { global::Doroti.Generated.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Offset(0.0, (((SliverPhysicalParentData)childParentData__15440).paintOffset.dy - paintCorrection__15216)), global::Doroti.Generated.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Offset((((SliverPhysicalParentData)childParentData__15440).paintOffset.dx - paintCorrection__15216), 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                    childParentData__15440.paintOffset = (((SliverConstraints)constraints).axis switch { global::Doroti.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Offset(0.0, (((SliverPhysicalParentData)childParentData__15440).paintOffset.dy - paintCorrection__15216)), global::Doroti.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Offset((((SliverPhysicalParentData)childParentData__15440).paintOffset.dx - paintCorrection__15216), 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
                 }
                 child__11923 = childAfter(child__11923);
             }
@@ -587,7 +587,7 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
         while ((child__11923 is not null))
         {
             var childParentData__17055 = ((SliverPhysicalParentData?)(object?)child__11923.parentData!)!;
-            childParentData__17055.paintOffset = (global::Doroti.Generated.Framework.Rendering.SliverLibrary.applyGrowthDirectionToAxisDirection(((SliverConstraints)constraints).axisDirection, ((SliverConstraints)constraints).growthDirection) switch { global::Doroti.Generated.Framework.Painting.AxisDirection.up => new global::Doroti.Ui.Offset(0.0, ((paintExtent__16486 - ((SliverPhysicalParentData)childParentData__17055).paintOffset.dy) - ((RenderSliver)child__11923).geometry!.paintExtent)), global::Doroti.Generated.Framework.Painting.AxisDirection.left => new global::Doroti.Ui.Offset(((paintExtent__16486 - ((SliverPhysicalParentData)childParentData__17055).paintOffset.dx) - ((RenderSliver)child__11923).geometry!.paintExtent), 0.0), global::Doroti.Generated.Framework.Painting.AxisDirection.right => ((SliverPhysicalParentData)childParentData__17055).paintOffset, global::Doroti.Generated.Framework.Painting.AxisDirection.down => ((SliverPhysicalParentData)childParentData__17055).paintOffset, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            childParentData__17055.paintOffset = (global::Doroti.Framework.Rendering.SliverLibrary.applyGrowthDirectionToAxisDirection(((SliverConstraints)constraints).axisDirection, ((SliverConstraints)constraints).growthDirection) switch { global::Doroti.Framework.Painting.AxisDirection.up => new global::Doroti.Ui.Offset(0.0, ((paintExtent__16486 - ((SliverPhysicalParentData)childParentData__17055).paintOffset.dy) - ((RenderSliver)child__11923).geometry!.paintExtent)), global::Doroti.Framework.Painting.AxisDirection.left => new global::Doroti.Ui.Offset(((paintExtent__16486 - ((SliverPhysicalParentData)childParentData__17055).paintOffset.dx) - ((RenderSliver)child__11923).geometry!.paintExtent), 0.0), global::Doroti.Framework.Painting.AxisDirection.right => ((SliverPhysicalParentData)childParentData__17055).paintOffset, global::Doroti.Framework.Painting.AxisDirection.down => ((SliverPhysicalParentData)childParentData__17055).paintOffset, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             child__11923 = advance__11734(child__11923);
         }
     }
@@ -645,7 +645,7 @@ public class RenderSliverMainAxisGroup : RenderSliver, ContainerRenderObjectMixi
 
     internal static double _fixPrecisionError(double number)
     {
-        return ((number.abs() < global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance) ? 0.0 : number);
+        return ((number.abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance) ? 0.0 : number);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

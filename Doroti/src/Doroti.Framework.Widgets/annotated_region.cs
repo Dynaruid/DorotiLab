@@ -12,29 +12,29 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class AnnotatedRegion<T> : SingleChildRenderObjectWidget
 {
     public virtual T value { get; private set; } = default!;
     public virtual bool sized { get; private set; } = default!;
 
-    public AnnotatedRegion(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!, T value = default!, bool sized = true) : base(key: key, child: child)
+    public AnnotatedRegion(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, T value = default!, bool sized = true) : base(key: key, child: child)
     {
         this.value = value;
         this.sized = sized;
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Rendering.RenderObject)(object?)new global::Doroti.Generated.Framework.Rendering.RenderAnnotatedRegion<T>(value: this.value, sized: this.sized));
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderAnnotatedRegion<T>(value: this.value, sized: this.sized));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(BuildContext context, global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Generated.Framework.Rendering.RenderAnnotatedRegion<T>)(object)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<global::Doroti.Generated.Framework.Rendering.RenderAnnotatedRegion<T>>)(() =>
+        var __renderObject = (global::Doroti.Framework.Rendering.RenderAnnotatedRegion<T>)(object)renderObject;
+        DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderAnnotatedRegion<T>>)(() =>
 {            var __cascade = __renderObject;
             __cascade.value = this.value;
             __cascade.sized = this.sized;

@@ -5,8 +5,8 @@
   "generationMode": "framework-semantic",
   "compatibilityProfile": "flutter-framework",
   "frameworkMilestone": "G4-3",
-  "outputNamespace": "Doroti.Generated.Framework",
-  "outputAssemblyName": "Doroti.Generated.Framework.SchedulerServices",
+  "outputNamespace": "Doroti.Framework",
+  "outputAssemblyName": "Doroti.Framework.SchedulerServices",
   "flutterBaseline": "../flutter-compat/baseline.json",
   "inputs": [
     {

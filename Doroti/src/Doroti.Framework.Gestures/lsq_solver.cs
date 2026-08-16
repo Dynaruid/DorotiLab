@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Gestures;
+namespace Doroti.Framework.Gestures;
 
 public class _Vector__lsq_solver
 {
@@ -95,7 +95,7 @@ public class PolynomialFit
     public override string ToString()
     {
         var coefficientString__2255 = this.coefficients.map<double, string>(((c) => c.toStringAsPrecision(3L))).ToList().ToString();
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "PolynomialFit"))}({coefficientString__2255}, confidence: {this.confidence.toStringAsFixed(3L)})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "PolynomialFit"))}({coefficientString__2255}, confidence: {this.confidence.toStringAsFixed(3L)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -151,7 +151,7 @@ public class LeastSquaresSolver
                 }
             }
             double norm__4275 = q__3832.getRow(j__3942).norm();
-            if ((norm__4275 < global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+            if ((norm__4275 < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
             {
                 return null;
             }
@@ -200,7 +200,7 @@ public class LeastSquaresSolver
             double v__5998 = (this.y[(int)(h__5718)] - yMean__5549);
             sumSquaredTotal__5682 += (((this.w[(int)(h__5718)] * this.w[(int)(h__5718)]) * v__5998) * v__5998);
         }
-        result__3259.confidence = ((sumSquaredTotal__5682 <= global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance) ? 1.0 : (1.0 - ((sumSquaredError__5651 / sumSquaredTotal__5682))));
+        result__3259.confidence = ((sumSquaredTotal__5682 <= global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance) ? 1.0 : (1.0 - ((sumSquaredError__5651 / sumSquaredTotal__5682))));
         return result__3259;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

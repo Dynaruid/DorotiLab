@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
 public enum DayPeriod
 {
@@ -58,9 +58,9 @@ public class TimeOfDay : IComparable<TimeOfDay>
     public virtual DayPeriod period => ((this.hour < hoursPerPeriod) ? DayPeriod.am : DayPeriod.pm);
     public virtual long hourOfPeriod => (((this.hour == 0L) || (this.hour == 12L)) ? 12L : (this.hour - this.periodOffset));
     public virtual long periodOffset => ((object.Equals(this.period, DayPeriod.am)) ? 0L : hoursPerPeriod);
-    public virtual string format(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public virtual string format(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
         MaterialLocalizations localizations__3846 = MaterialLocalizations.of(context);
         return localizations__3846.formatTimeOfDay(this, alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context));
@@ -105,7 +105,7 @@ public class TimeOfDay : IComparable<TimeOfDay>
     public int CompareTo(TimeOfDay? other) => checked((int)compareTo(other!));
 }
 
-public class RestorableTimeOfDay : global::Doroti.Generated.Framework.Widgets.RestorableValue<TimeOfDay>
+public class RestorableTimeOfDay : global::Doroti.Framework.Widgets.RestorableValue<TimeOfDay>
 {
     internal virtual TimeOfDay _defaultValue { get; private set; } = default!;
 
@@ -117,8 +117,8 @@ public class RestorableTimeOfDay : global::Doroti.Generated.Framework.Widgets.Re
     public override TimeOfDay createDefaultValue() => this._defaultValue;
     public override void didUpdateValue(TimeOfDay oldValue)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(((TimeOfDay)this.value).hour));
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(((TimeOfDay)this.value).minute));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(((TimeOfDay)this.value).hour));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(((TimeOfDay)this.value).minute));
         notifyListeners();
     }
 

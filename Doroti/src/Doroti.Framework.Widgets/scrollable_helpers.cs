@@ -12,16 +12,16 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class ScrollableDetails
 {
-    public virtual global::Doroti.Generated.Framework.Painting.AxisDirection direction { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.AxisDirection direction { get; private set; } = default!;
     public virtual ScrollController? controller { get; private set; }
     public virtual ScrollPhysics? physics { get; private set; }
     public virtual Clip? decorationClipBehavior { get; private set; }
 
-    public ScrollableDetails(global::Doroti.Generated.Framework.Painting.AxisDirection direction, ScrollController? controller = null, ScrollPhysics? physics = null, Clip? clipBehavior = null, Clip? decorationClipBehavior = null)
+    public ScrollableDetails(global::Doroti.Framework.Painting.AxisDirection direction, ScrollController? controller = null, ScrollPhysics? physics = null, Clip? clipBehavior = null, Clip? decorationClipBehavior = null)
     {
         this.direction = direction;
         this.controller = controller;
@@ -35,7 +35,7 @@ public class ScrollableDetails
         __instance.controller = controller;
         __instance.physics = physics;
         __instance.decorationClipBehavior = decorationClipBehavior;
-        __instance.direction = (reverse ? global::Doroti.Generated.Framework.Painting.AxisDirection.up : global::Doroti.Generated.Framework.Painting.AxisDirection.down);
+        __instance.direction = (reverse ? global::Doroti.Framework.Painting.AxisDirection.up : global::Doroti.Framework.Painting.AxisDirection.down);
         return __instance;
     }
 
@@ -45,12 +45,12 @@ public class ScrollableDetails
         __instance.controller = controller;
         __instance.physics = physics;
         __instance.decorationClipBehavior = decorationClipBehavior;
-        __instance.direction = (reverse ? global::Doroti.Generated.Framework.Painting.AxisDirection.left : global::Doroti.Generated.Framework.Painting.AxisDirection.right);
+        __instance.direction = (reverse ? global::Doroti.Framework.Painting.AxisDirection.left : global::Doroti.Framework.Painting.AxisDirection.right);
         return __instance;
     }
 
     public virtual global::Doroti.Ui.Clip? clipBehavior => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Clip>(this.decorationClipBehavior);
-    public virtual ScrollableDetails copyWith(global::Doroti.Generated.Framework.Painting.AxisDirection? direction = null, ScrollController? controller = null, ScrollPhysics? physics = null, Clip? decorationClipBehavior = null)
+    public virtual ScrollableDetails copyWith(global::Doroti.Framework.Painting.AxisDirection? direction = null, ScrollController? controller = null, ScrollPhysics? physics = null, Clip? decorationClipBehavior = null)
     {
         return new ScrollableDetails(direction: (direction ?? this.direction), controller: (controller ?? this.controller), physics: (physics ?? this.physics), decorationClipBehavior: (decorationClipBehavior ?? this.decorationClipBehavior));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -70,7 +70,7 @@ public class ScrollableDetails
         addIfNonNull("scroll controller: ", this.controller);
         addIfNonNull("scroll physics: ", this.physics);
         addIfNonNull("decorationClipBehavior: ", this.decorationClipBehavior);
-        return $"{(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({string.Join(", ", description__3940)})";
+        return $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({string.Join(", ", description__3940)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -108,20 +108,20 @@ public class EdgeDraggingAutoScroller
     }
 
     public virtual bool scrolling => this._scrolling;
-    internal virtual double _offsetExtent(Offset offset, global::Doroti.Generated.Framework.Painting.Axis scrollDirection)
+    internal virtual double _offsetExtent(Offset offset, global::Doroti.Framework.Painting.Axis scrollDirection)
     {
-        return (scrollDirection switch { global::Doroti.Generated.Framework.Painting.Axis.horizontal => offset.dx, global::Doroti.Generated.Framework.Painting.Axis.vertical => offset.dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (scrollDirection switch { global::Doroti.Framework.Painting.Axis.horizontal => offset.dx, global::Doroti.Framework.Painting.Axis.vertical => offset.dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual double _sizeExtent(Size size, global::Doroti.Generated.Framework.Painting.Axis scrollDirection)
+    internal virtual double _sizeExtent(Size size, global::Doroti.Framework.Painting.Axis scrollDirection)
     {
-        return (scrollDirection switch { global::Doroti.Generated.Framework.Painting.Axis.horizontal => size.width, global::Doroti.Generated.Framework.Painting.Axis.vertical => size.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (scrollDirection switch { global::Doroti.Framework.Painting.Axis.horizontal => size.width, global::Doroti.Framework.Painting.Axis.vertical => size.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Painting.AxisDirection _axisDirection => ((ScrollableState)this.scrollable).axisDirection;
-    internal virtual global::Doroti.Generated.Framework.Painting.Axis _scrollDirection => global::Doroti.Generated.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(this._axisDirection);
+    internal virtual global::Doroti.Framework.Painting.AxisDirection _axisDirection => ((ScrollableState)this.scrollable).axisDirection;
+    internal virtual global::Doroti.Framework.Painting.Axis _scrollDirection => global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(this._axisDirection);
     public virtual void startAutoScrollIfNecessary(Rect dragTarget)
     {
         ScrollPhysics? physics__7416 = ((ScrollableState)this.scrollable).resolvedPhysics;
@@ -147,11 +147,11 @@ public class EdgeDraggingAutoScroller
 
     internal async virtual Future _scroll()
     {
-        var scrollRenderBox__8025 = ((global::Doroti.Generated.Framework.Rendering.RenderBox?)(object?)this.scrollable.context.findRenderObject()!)!;
-        Matrix4 transform__8114 = ((Matrix4)(object?)scrollRenderBox__8025.getTransformTo(((global::Doroti.Generated.Framework.Rendering.RenderObject)(object)null)));
-        global::Doroti.Ui.Rect globalRect__8179 = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(transform__8114, global::Doroti.Ui.Rect.fromLTWH(0, 0, ((global::Doroti.Generated.Framework.Rendering.RenderBox)scrollRenderBox__8025).size.width, ((global::Doroti.Generated.Framework.Rendering.RenderBox)scrollRenderBox__8025).size.height)));
+        var scrollRenderBox__8025 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.scrollable.context.findRenderObject()!)!;
+        Matrix4 transform__8114 = ((Matrix4)(object?)scrollRenderBox__8025.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)));
+        global::Doroti.Ui.Rect globalRect__8179 = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(transform__8114, global::Doroti.Ui.Rect.fromLTWH(0, 0, ((global::Doroti.Framework.Rendering.RenderBox)scrollRenderBox__8025).size.width, ((global::Doroti.Framework.Rendering.RenderBox)scrollRenderBox__8025).size.height)));
         global::Doroti.Ui.Rect transformedDragTarget__8342 = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(transform__8114, this._dragTargetRelatedToScrollOrigin));
-        DartRuntimePrimitives.Assert(() => ((((globalRect__8179.size.width + global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)) >= transformedDragTarget__8342.size.width) && (((globalRect__8179.size.height + global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)) >= transformedDragTarget__8342.size.height)), () => (object?)"Drag target size is larger than scrollable size, which may cause bouncing");
+        DartRuntimePrimitives.Assert(() => ((((globalRect__8179.size.width + global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)) >= transformedDragTarget__8342.size.width) && (((globalRect__8179.size.height + global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)) >= transformedDragTarget__8342.size.height)), () => (object?)"Drag target size is larger than scrollable size, which may cause bouncing");
         _scrolling = true;
         double? newOffset__8789 = default!;
         var overDragMax__8810 = 20.0;
@@ -163,8 +163,8 @@ public class EdgeDraggingAutoScroller
         double proxyEnd__9315 = _offsetExtent(this._dragTargetRelatedToScrollOrigin.bottomRight, this._scrollDirection);
         switch (this._axisDirection)
         {
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.up:
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.left:
+            case global::Doroti.Framework.Painting.AxisDirection.up:
+            case global::Doroti.Framework.Painting.AxisDirection.left:
                 {
                     if (((proxyEnd__9315 > viewportEnd__9095) && (((ScrollableState)this.scrollable).position.pixels > ((ScrollableState)this.scrollable).position.minScrollExtent)))
                     {
@@ -181,8 +181,8 @@ public class EdgeDraggingAutoScroller
                     }
                     break;
                 }
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.right:
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.down:
+            case global::Doroti.Framework.Painting.AxisDirection.right:
+            case global::Doroti.Framework.Painting.AxisDirection.down:
                 {
                     if (((proxyStart__9191 < viewportStart__9013) && (((ScrollableState)this.scrollable).position.pixels > ((ScrollableState)this.scrollable).position.minScrollExtent)))
                     {
@@ -206,7 +206,7 @@ public class EdgeDraggingAutoScroller
             return;
         }
         var duration__11192 = Duration.Create(milliseconds: ((1000L / this.velocityScalar)).round());
-        await ((ScrollableState)this.scrollable).position.animateTo(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(newOffset__8789)), duration: duration__11192, curve: global::Doroti.Generated.Framework.Animation.Curves.linear);
+        await ((ScrollableState)this.scrollable).position.animateTo(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(newOffset__8789)), duration: duration__11192, curve: global::Doroti.Framework.Animation.Curves.linear);
         this.onScrollViewScrolled?.Invoke();
         if (this._scrolling)
         {
@@ -239,10 +239,10 @@ public class ScrollIncrementDetails
 
 public class ScrollIntent : Intent
 {
-    public virtual global::Doroti.Generated.Framework.Painting.AxisDirection direction { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.AxisDirection direction { get; private set; } = default!;
     public virtual ScrollIncrementType type { get; private set; } = default!;
 
-    public ScrollIntent(global::Doroti.Generated.Framework.Painting.AxisDirection direction, ScrollIncrementType type = ScrollIncrementType.line)
+    public ScrollIntent(global::Doroti.Framework.Painting.AxisDirection direction, ScrollIncrementType type = ScrollIncrementType.line)
     {
         this.direction = direction;
         this.type = type;
@@ -281,7 +281,7 @@ public class ScrollAction : ContextAction<ScrollIntent>
 
     public static double getDirectionalIncrement(ScrollableState state, ScrollIntent intent)
     {
-        if ((object.Equals(global::Doroti.Generated.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(((ScrollIntent)intent).direction), global::Doroti.Generated.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(((ScrollableState)state).axisDirection))))
+        if ((object.Equals(global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(((ScrollIntent)intent).direction), global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(((ScrollableState)state).axisDirection))))
         {
             double increment__17112 = ScrollAction._calculateScrollIncrement(state, type: ((ScrollIntent)intent).type);
             return ((object.Equals(((ScrollIntent)intent).direction, ((ScrollableState)state).axisDirection)) ? increment__17112 : -increment__17112);
@@ -301,7 +301,7 @@ public class ScrollAction : ContextAction<ScrollIntent>
                 {
                     if ((((ScrollController)primaryScrollController__17535).positions.Count() != 1L))
                     {
-                        throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("A ScrollAction was invoked with the PrimaryScrollController, but " + "more than one ScrollPosition is attached."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("Only one ScrollPosition can be manipulated by a ScrollAction at " + "a time."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("The PrimaryScrollController can be inherited automatically by " + "descendant ScrollViews based on the TargetPlatform and scroll " + "direction. By default, the PrimaryScrollController is " + "automatically inherited on mobile platforms for vertical " + "ScrollViews. ScrollView.primary can also override this behavior.") }));
+                        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("A ScrollAction was invoked with the PrimaryScrollController, but " + "more than one ScrollPosition is attached."), new global::Doroti.Framework.Foundation.ErrorDescription("Only one ScrollPosition can be manipulated by a ScrollAction at " + "a time."), new global::Doroti.Framework.Foundation.ErrorHint("The PrimaryScrollController can be inherited automatically by " + "descendant ScrollViews based on the TargetPlatform and scroll " + "direction. By default, the PrimaryScrollController is " + "automatically inherited on mobile platforms for vertical " + "ScrollViews. ScrollView.primary can also override this behavior.") }));
                     }
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
@@ -326,7 +326,7 @@ public class ScrollAction : ContextAction<ScrollIntent>
         {
             return default!;
         }
-        DartRuntimePrimitives.Ignore(((ScrollableState)state__17443).position.moveTo((((ScrollableState)state__17443).position.pixels + increment__19180), duration: Duration.Create(milliseconds: 100L), curve: global::Doroti.Generated.Framework.Animation.Curves.easeInOut));
+        DartRuntimePrimitives.Ignore(((ScrollableState)state__17443).position.moveTo((((ScrollableState)state__17443).position.pixels + increment__19180), duration: Duration.Create(milliseconds: 100L), curve: global::Doroti.Framework.Animation.Curves.easeInOut));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

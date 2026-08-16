@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public abstract class AutofillHints
 {
@@ -127,7 +127,7 @@ public class AutofillConfiguration
         {
             return false;
         }
-        return ((((((__other is AutofillConfiguration) && (((AutofillConfiguration)__other).enabled == enabled)) && (((AutofillConfiguration)__other).uniqueIdentifier == uniqueIdentifier)) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals(((AutofillConfiguration)__other).autofillHints, autofillHints)) && (object.Equals(((AutofillConfiguration)__other).currentEditingValue, currentEditingValue))) && (((AutofillConfiguration)__other).hintText == hintText));
+        return ((((((__other is AutofillConfiguration) && (((AutofillConfiguration)__other).enabled == enabled)) && (((AutofillConfiguration)__other).uniqueIdentifier == uniqueIdentifier)) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(((AutofillConfiguration)__other).autofillHints, autofillHints)) && (object.Equals(((AutofillConfiguration)__other).currentEditingValue, currentEditingValue))) && (((AutofillConfiguration)__other).hintText == hintText));
     }
 
     public override int GetHashCode()

@@ -3,7 +3,7 @@
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
-namespace Doroti.Generated.Framework.Foundation;
+namespace Doroti.Framework.Foundation;
 
 public delegate void DebugPrintCallback(string? message, int? wrapWidth = null);
 

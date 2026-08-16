@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 internal sealed class QuantizerResult
 {
     internal DartMap<long, long> colorToCount { get; } = new();
@@ -94,7 +94,7 @@ public enum DynamicSchemeVariant
     fruitSalad
 }
 
-public class ColorScheme : global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class ColorScheme : global::Doroti.Framework.Foundation.Diagnosticable
 {
     public virtual Brightness brightness { get; private set; } = default!;
     public virtual Color primary { get; private set; } = default!;
@@ -555,59 +555,59 @@ public class ColorScheme : global::Doroti.Generated.Framework.Foundation.Diagnos
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.brightness, this.primary, this.onPrimary, this.primaryContainer, this.onPrimaryContainer, this.secondary, this.onSecondary, this.secondaryContainer, this.onSecondaryContainer, this.tertiary, this.onTertiary, this.tertiaryContainer, this.onTertiaryContainer, this.error, this.onError, this.errorContainer, this.onErrorContainer, FoundationRuntimePorts.ObjectHash(this.surface, this.onSurface, this.surfaceDim, this.surfaceBright, this.surfaceContainerLowest, this.surfaceContainerLow, this.surfaceContainer, this.surfaceContainerHigh, this.surfaceContainerHighest, this.onSurfaceVariant, this.outline, this.outlineVariant, this.shadow, this.scrim, this.inverseSurface, this.onInverseSurface, this.inversePrimary, this.surfaceTint, FoundationRuntimePorts.ObjectHash(this.primaryFixed, this.primaryFixedDim, this.onPrimaryFixed, this.onPrimaryFixedVariant, this.secondaryFixed, this.secondaryFixedDim, this.onSecondaryFixed, this.onSecondaryFixedVariant, this.tertiaryFixed, this.tertiaryFixedDim, this.onTertiaryFixed, this.onTertiaryFixedVariant, this.background, this.onBackground, this.surfaceVariant))));
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         var defaultScheme__66720 = ColorScheme.CreateLight();
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Brightness>("brightness", this.brightness, defaultValue: ((ColorScheme)defaultScheme__66720).brightness));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("primary", this.primary, defaultValue: ((ColorScheme)defaultScheme__66720).primary));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("onPrimary", this.onPrimary, defaultValue: ((ColorScheme)defaultScheme__66720).onPrimary));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("primaryContainer", this.primaryContainer, defaultValue: ((ColorScheme)defaultScheme__66720).primaryContainer));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("onPrimaryContainer", this.onPrimaryContainer, defaultValue: ((ColorScheme)defaultScheme__66720).onPrimaryContainer));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("primaryFixed", this.primaryFixed, defaultValue: ((ColorScheme)defaultScheme__66720).primaryFixed));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("primaryFixedDim", this.primaryFixedDim, defaultValue: ((ColorScheme)defaultScheme__66720).primaryFixedDim));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("onPrimaryFixed", this.onPrimaryFixed, defaultValue: ((ColorScheme)defaultScheme__66720).onPrimaryFixed));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("onPrimaryFixedVariant", this.onPrimaryFixedVariant, defaultValue: ((ColorScheme)defaultScheme__66720).onPrimaryFixedVariant));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("secondary", this.secondary, defaultValue: ((ColorScheme)defaultScheme__66720).secondary));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("onSecondary", this.onSecondary, defaultValue: ((ColorScheme)defaultScheme__66720).onSecondary));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("secondaryContainer", this.secondaryContainer, defaultValue: ((ColorScheme)defaultScheme__66720).secondaryContainer));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("onSecondaryContainer", this.onSecondaryContainer, defaultValue: ((ColorScheme)defaultScheme__66720).onSecondaryContainer));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("secondaryFixed", this.secondaryFixed, defaultValue: ((ColorScheme)defaultScheme__66720).secondaryFixed));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("secondaryFixedDim", this.secondaryFixedDim, defaultValue: ((ColorScheme)defaultScheme__66720).secondaryFixedDim));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("onSecondaryFixed", this.onSecondaryFixed, defaultValue: ((ColorScheme)defaultScheme__66720).onSecondaryFixed));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("onSecondaryFixedVariant", this.onSecondaryFixedVariant, defaultValue: ((ColorScheme)defaultScheme__66720).onSecondaryFixedVariant));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("tertiary", this.tertiary, defaultValue: ((ColorScheme)defaultScheme__66720).tertiary));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("onTertiary", this.onTertiary, defaultValue: ((ColorScheme)defaultScheme__66720).onTertiary));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("tertiaryContainer", this.tertiaryContainer, defaultValue: ((ColorScheme)defaultScheme__66720).tertiaryContainer));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("onTertiaryContainer", this.onTertiaryContainer, defaultValue: ((ColorScheme)defaultScheme__66720).onTertiaryContainer));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("tertiaryFixed", this.tertiaryFixed, defaultValue: ((ColorScheme)defaultScheme__66720).tertiaryFixed));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("tertiaryFixedDim", this.tertiaryFixedDim, defaultValue: ((ColorScheme)defaultScheme__66720).tertiaryFixedDim));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("onTertiaryFixed", this.onTertiaryFixed, defaultValue: ((ColorScheme)defaultScheme__66720).onTertiaryFixed));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("onTertiaryFixedVariant", this.onTertiaryFixedVariant, defaultValue: ((ColorScheme)defaultScheme__66720).onTertiaryFixedVariant));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("error", this.error, defaultValue: ((ColorScheme)defaultScheme__66720).error));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("onError", this.onError, defaultValue: ((ColorScheme)defaultScheme__66720).onError));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("errorContainer", this.errorContainer, defaultValue: ((ColorScheme)defaultScheme__66720).errorContainer));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("onErrorContainer", this.onErrorContainer, defaultValue: ((ColorScheme)defaultScheme__66720).onErrorContainer));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("surface", this.surface, defaultValue: ((ColorScheme)defaultScheme__66720).surface));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("onSurface", this.onSurface, defaultValue: ((ColorScheme)defaultScheme__66720).onSurface));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("surfaceDim", this.surfaceDim, defaultValue: ((ColorScheme)defaultScheme__66720).surfaceDim));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("surfaceBright", this.surfaceBright, defaultValue: ((ColorScheme)defaultScheme__66720).surfaceBright));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("surfaceContainerLowest", this.surfaceContainerLowest, defaultValue: ((ColorScheme)defaultScheme__66720).surfaceContainerLowest));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("surfaceContainerLow", this.surfaceContainerLow, defaultValue: ((ColorScheme)defaultScheme__66720).surfaceContainerLow));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("surfaceContainer", this.surfaceContainer, defaultValue: ((ColorScheme)defaultScheme__66720).surfaceContainer));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("surfaceContainerHigh", this.surfaceContainerHigh, defaultValue: ((ColorScheme)defaultScheme__66720).surfaceContainerHigh));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("surfaceContainerHighest", this.surfaceContainerHighest, defaultValue: ((ColorScheme)defaultScheme__66720).surfaceContainerHighest));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("onSurfaceVariant", this.onSurfaceVariant, defaultValue: ((ColorScheme)defaultScheme__66720).onSurfaceVariant));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("outline", this.outline, defaultValue: ((ColorScheme)defaultScheme__66720).outline));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("outlineVariant", this.outlineVariant, defaultValue: ((ColorScheme)defaultScheme__66720).outlineVariant));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("shadow", this.shadow, defaultValue: ((ColorScheme)defaultScheme__66720).shadow));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("scrim", this.scrim, defaultValue: ((ColorScheme)defaultScheme__66720).scrim));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("inverseSurface", this.inverseSurface, defaultValue: ((ColorScheme)defaultScheme__66720).inverseSurface));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("onInverseSurface", this.onInverseSurface, defaultValue: ((ColorScheme)defaultScheme__66720).onInverseSurface));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("inversePrimary", this.inversePrimary, defaultValue: ((ColorScheme)defaultScheme__66720).inversePrimary));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("surfaceTint", this.surfaceTint, defaultValue: ((ColorScheme)defaultScheme__66720).surfaceTint));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("background", this.background, defaultValue: ((ColorScheme)defaultScheme__66720).background));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("onBackground", this.onBackground, defaultValue: ((ColorScheme)defaultScheme__66720).onBackground));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("surfaceVariant", this.surfaceVariant, defaultValue: ((ColorScheme)defaultScheme__66720).surfaceVariant));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Brightness>("brightness", this.brightness, defaultValue: ((ColorScheme)defaultScheme__66720).brightness));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("primary", this.primary, defaultValue: ((ColorScheme)defaultScheme__66720).primary));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("onPrimary", this.onPrimary, defaultValue: ((ColorScheme)defaultScheme__66720).onPrimary));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("primaryContainer", this.primaryContainer, defaultValue: ((ColorScheme)defaultScheme__66720).primaryContainer));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("onPrimaryContainer", this.onPrimaryContainer, defaultValue: ((ColorScheme)defaultScheme__66720).onPrimaryContainer));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("primaryFixed", this.primaryFixed, defaultValue: ((ColorScheme)defaultScheme__66720).primaryFixed));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("primaryFixedDim", this.primaryFixedDim, defaultValue: ((ColorScheme)defaultScheme__66720).primaryFixedDim));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("onPrimaryFixed", this.onPrimaryFixed, defaultValue: ((ColorScheme)defaultScheme__66720).onPrimaryFixed));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("onPrimaryFixedVariant", this.onPrimaryFixedVariant, defaultValue: ((ColorScheme)defaultScheme__66720).onPrimaryFixedVariant));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("secondary", this.secondary, defaultValue: ((ColorScheme)defaultScheme__66720).secondary));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("onSecondary", this.onSecondary, defaultValue: ((ColorScheme)defaultScheme__66720).onSecondary));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("secondaryContainer", this.secondaryContainer, defaultValue: ((ColorScheme)defaultScheme__66720).secondaryContainer));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("onSecondaryContainer", this.onSecondaryContainer, defaultValue: ((ColorScheme)defaultScheme__66720).onSecondaryContainer));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("secondaryFixed", this.secondaryFixed, defaultValue: ((ColorScheme)defaultScheme__66720).secondaryFixed));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("secondaryFixedDim", this.secondaryFixedDim, defaultValue: ((ColorScheme)defaultScheme__66720).secondaryFixedDim));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("onSecondaryFixed", this.onSecondaryFixed, defaultValue: ((ColorScheme)defaultScheme__66720).onSecondaryFixed));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("onSecondaryFixedVariant", this.onSecondaryFixedVariant, defaultValue: ((ColorScheme)defaultScheme__66720).onSecondaryFixedVariant));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("tertiary", this.tertiary, defaultValue: ((ColorScheme)defaultScheme__66720).tertiary));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("onTertiary", this.onTertiary, defaultValue: ((ColorScheme)defaultScheme__66720).onTertiary));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("tertiaryContainer", this.tertiaryContainer, defaultValue: ((ColorScheme)defaultScheme__66720).tertiaryContainer));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("onTertiaryContainer", this.onTertiaryContainer, defaultValue: ((ColorScheme)defaultScheme__66720).onTertiaryContainer));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("tertiaryFixed", this.tertiaryFixed, defaultValue: ((ColorScheme)defaultScheme__66720).tertiaryFixed));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("tertiaryFixedDim", this.tertiaryFixedDim, defaultValue: ((ColorScheme)defaultScheme__66720).tertiaryFixedDim));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("onTertiaryFixed", this.onTertiaryFixed, defaultValue: ((ColorScheme)defaultScheme__66720).onTertiaryFixed));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("onTertiaryFixedVariant", this.onTertiaryFixedVariant, defaultValue: ((ColorScheme)defaultScheme__66720).onTertiaryFixedVariant));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("error", this.error, defaultValue: ((ColorScheme)defaultScheme__66720).error));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("onError", this.onError, defaultValue: ((ColorScheme)defaultScheme__66720).onError));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("errorContainer", this.errorContainer, defaultValue: ((ColorScheme)defaultScheme__66720).errorContainer));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("onErrorContainer", this.onErrorContainer, defaultValue: ((ColorScheme)defaultScheme__66720).onErrorContainer));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surface", this.surface, defaultValue: ((ColorScheme)defaultScheme__66720).surface));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("onSurface", this.onSurface, defaultValue: ((ColorScheme)defaultScheme__66720).onSurface));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceDim", this.surfaceDim, defaultValue: ((ColorScheme)defaultScheme__66720).surfaceDim));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceBright", this.surfaceBright, defaultValue: ((ColorScheme)defaultScheme__66720).surfaceBright));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceContainerLowest", this.surfaceContainerLowest, defaultValue: ((ColorScheme)defaultScheme__66720).surfaceContainerLowest));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceContainerLow", this.surfaceContainerLow, defaultValue: ((ColorScheme)defaultScheme__66720).surfaceContainerLow));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceContainer", this.surfaceContainer, defaultValue: ((ColorScheme)defaultScheme__66720).surfaceContainer));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceContainerHigh", this.surfaceContainerHigh, defaultValue: ((ColorScheme)defaultScheme__66720).surfaceContainerHigh));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceContainerHighest", this.surfaceContainerHighest, defaultValue: ((ColorScheme)defaultScheme__66720).surfaceContainerHighest));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("onSurfaceVariant", this.onSurfaceVariant, defaultValue: ((ColorScheme)defaultScheme__66720).onSurfaceVariant));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("outline", this.outline, defaultValue: ((ColorScheme)defaultScheme__66720).outline));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("outlineVariant", this.outlineVariant, defaultValue: ((ColorScheme)defaultScheme__66720).outlineVariant));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadow", this.shadow, defaultValue: ((ColorScheme)defaultScheme__66720).shadow));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("scrim", this.scrim, defaultValue: ((ColorScheme)defaultScheme__66720).scrim));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("inverseSurface", this.inverseSurface, defaultValue: ((ColorScheme)defaultScheme__66720).inverseSurface));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("onInverseSurface", this.onInverseSurface, defaultValue: ((ColorScheme)defaultScheme__66720).onInverseSurface));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("inversePrimary", this.inversePrimary, defaultValue: ((ColorScheme)defaultScheme__66720).inversePrimary));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceTint", this.surfaceTint, defaultValue: ((ColorScheme)defaultScheme__66720).surfaceTint));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("background", this.background, defaultValue: ((ColorScheme)defaultScheme__66720).background));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("onBackground", this.onBackground, defaultValue: ((ColorScheme)defaultScheme__66720).onBackground));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceVariant", this.surfaceVariant, defaultValue: ((ColorScheme)defaultScheme__66720).surfaceVariant));
     }
 
     public static async Future<ColorScheme> fromImageProvider(dynamic provider, Brightness brightness = Brightness.light, DynamicSchemeVariant dynamicSchemeVariant = DynamicSchemeVariant.tonalSpot, double contrastLevel = 0.0, Color? primary = null, Color? onPrimary = null, Color? primaryContainer = null, Color? onPrimaryContainer = null, Color? primaryFixed = null, Color? primaryFixedDim = null, Color? onPrimaryFixed = null, Color? onPrimaryFixedVariant = null, Color? secondary = null, Color? onSecondary = null, Color? secondaryContainer = null, Color? onSecondaryContainer = null, Color? secondaryFixed = null, Color? secondaryFixedDim = null, Color? onSecondaryFixed = null, Color? onSecondaryFixedVariant = null, Color? tertiary = null, Color? onTertiary = null, Color? tertiaryContainer = null, Color? onTertiaryContainer = null, Color? tertiaryFixed = null, Color? tertiaryFixedDim = null, Color? onTertiaryFixed = null, Color? onTertiaryFixedVariant = null, Color? error = null, Color? onError = null, Color? errorContainer = null, Color? onErrorContainer = null, Color? outline = null, Color? outlineVariant = null, Color? surface = null, Color? onSurface = null, Color? surfaceDim = null, Color? surfaceBright = null, Color? surfaceContainerLowest = null, Color? surfaceContainerLow = null, Color? surfaceContainer = null, Color? surfaceContainerHigh = null, Color? surfaceContainerHighest = null, Color? onSurfaceVariant = null, Color? inverseSurface = null, Color? onInverseSurface = null, Color? inversePrimary = null, Color? shadow = null, Color? scrim = null, Color? surfaceTint = null, Color? background = null, Color? onBackground = null, Color? surfaceVariant = null)
@@ -633,15 +633,15 @@ public class ColorScheme : global::Doroti.Generated.Framework.Foundation.Diagnos
     internal static async Future<global::Doroti.Ui.Image> _imageProviderToScaled(dynamic imageProvider)
     {
         var maxDimension__84088 = 112.0;
-        global::Doroti.Generated.Framework.Painting.ImageStream stream__84132 = ((global::Doroti.Generated.Framework.Painting.ImageStream)(object?)((global::Doroti.Generated.Framework.Painting.ImageStream)((dynamic)imageProvider).resolve(new global::Doroti.Generated.Framework.Painting.ImageConfiguration(size: new global::Doroti.Ui.Size(maxDimension__84088, maxDimension__84088)))));
+        global::Doroti.Framework.Painting.ImageStream stream__84132 = ((global::Doroti.Framework.Painting.ImageStream)(object?)((global::Doroti.Framework.Painting.ImageStream)((dynamic)imageProvider).resolve(new global::Doroti.Framework.Painting.ImageConfiguration(size: new global::Doroti.Ui.Size(maxDimension__84088, maxDimension__84088)))));
         var imageCompleter__84253 = new Completer<global::Doroti.Ui.Image>();
-        global::Doroti.Generated.Framework.Painting.ImageStreamListener listener__84322 = default!;
+        global::Doroti.Framework.Painting.ImageStreamListener listener__84322 = default!;
         global::Doroti.Ui.Image scaledImage__84350 = default!;
         Timer? loadFailureTimeout__84374 = default!;
-        listener__84322 = new global::Doroti.Generated.Framework.Painting.ImageStreamListener(((global::System.Action<global::Doroti.Generated.Framework.Painting.ImageInfo, bool>)(async (info, sync) => {
+        listener__84322 = new global::Doroti.Framework.Painting.ImageStreamListener(((global::System.Action<global::Doroti.Framework.Painting.ImageInfo, bool>)(async (info, sync) => {
 loadFailureTimeout__84374?.cancel();
 stream__84132.removeListener(listener__84322);
-global::Doroti.Ui.Image image__84575 = ((global::Doroti.Ui.Image)(object?)((global::Doroti.Generated.Framework.Painting.ImageInfo)info).image);
+global::Doroti.Ui.Image image__84575 = ((global::Doroti.Ui.Image)(object?)((global::Doroti.Framework.Painting.ImageInfo)info).image);
 long width__84613 = image__84575.width;
 long height__84652 = image__84575.height;
 double paintWidth__84690 = width__84613.toDouble();
@@ -655,10 +655,10 @@ if (rescale__84830)
 }
 var pictureRecorder__85115 = new global::Doroti.Ui.PictureRecorder();
 var canvas__85169 = new global::Doroti.Ui.Canvas(pictureRecorder__85115);
-global::Doroti.Generated.Framework.Painting.Decoration_imageLibrary.paintImage(canvas: canvas__85169, rect: global::Doroti.Ui.Rect.fromLTRB(0, 0, paintWidth__84690, paintHeight__84736), image: image__84575, filterQuality: FilterQuality.none);
+global::Doroti.Framework.Painting.Decoration_imageLibrary.paintImage(canvas: canvas__85169, rect: global::Doroti.Ui.Rect.fromLTRB(0, 0, paintWidth__84690, paintHeight__84736), image: image__84575, filterQuality: FilterQuality.none);
 global::Doroti.Ui.Picture picture__85417 = ((global::Doroti.Ui.Picture)(object?)pictureRecorder__85115.endRecording());
 scaledImage__84350 = await picture__85417.toImage(paintWidth__84690.toInt(), paintHeight__84736.toInt());
-imageCompleter__84253.complete(((global::Doroti.Generated.Framework.Painting.ImageInfo)info).image);
+imageCompleter__84253.complete(((global::Doroti.Framework.Painting.ImageInfo)info).image);
 })), onError: ((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((exception, stackTrace) => {
 loadFailureTimeout__84374?.cancel();
 stream__84132.removeListener(listener__84322);
@@ -695,8 +695,8 @@ imageCompleter__84253.completeError(new TimeoutException("Timeout occurred tryin
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static ColorScheme of(global::Doroti.Generated.Framework.Widgets.BuildContext context) => Theme.of(context).colorScheme;
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public static ColorScheme of(global::Doroti.Framework.Widgets.BuildContext context) => Theme.of(context).colorScheme;
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;

@@ -4,7 +4,7 @@
 using System;
 using Doroti.Runtime;
 
-namespace Doroti.Generated.Framework.Physics;
+namespace Doroti.Framework.Physics;
 
 public class Tolerance
 {
@@ -21,5 +21,5 @@ public class Tolerance
         this.velocity = velocity;
     }
 
-    public override string ToString() => $"{Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Tolerance")}(distance: ±{distance}, time: ±{time}, velocity: ±{velocity})";
+    public override string ToString() => $"{Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Tolerance")}(distance: ±{distance}, time: ±{time}, velocity: ±{velocity})";
 }

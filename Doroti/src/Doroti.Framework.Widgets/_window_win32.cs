@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public delegate void HWNDIo();
 
@@ -76,35 +76,35 @@ public class WindowingOwnerWin32Io : WindowingOwnerIo
         this.allocator = new _CallocAllocator___window_win32();
     }
 
-    public virtual WindowControllerIo createWindowController(WindowControllerDelegateIo @delegate = default!, Size? size = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = default!, string? title = null)
+    public virtual WindowControllerIo createWindowController(WindowControllerDelegateIo @delegate = default!, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = default!, string? title = null)
     {
         bool __resizable = DartRuntimePrimitives.ConvertValue<bool>(constraints);
-        var __constraints = size is null ? null : (global::Doroti.Generated.Framework.Rendering.BoxConstraints)(object)size;
+        var __constraints = size is null ? null : (global::Doroti.Framework.Rendering.BoxConstraints)(object)size;
         var __title = resizable is null ? null : (string)(object)resizable;
         var __delegate = (WindowControllerDelegateIo)(object)title;
         return ((WindowControllerIo)(object?)new WindowControllerWin32Io(owner: this, @delegate: __delegate, size: title, constraints: __constraints, title: __title, resizable: __resizable));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DialogWindowControllerIo createDialogWindowController(DialogWindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = default!, BaseWindowControllerIo? parent = null, string? title = null)
+    public virtual DialogWindowControllerIo createDialogWindowController(DialogWindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = default!, BaseWindowControllerIo? parent = null, string? title = null)
     {
         return ((DialogWindowControllerIo)(object?)new DialogWindowControllerWin32Io(owner: this, @delegate: @delegate, size: size, constraints: constraints, title: title, parent: parent, resizable: resizable));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual TooltipWindowControllerIo createTooltipWindowController(TooltipWindowControllerDelegateIo @delegate, global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
+    public virtual TooltipWindowControllerIo createTooltipWindowController(TooltipWindowControllerDelegateIo @delegate, global::Doroti.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
     {
         return ((TooltipWindowControllerIo)(object?)new TooltipWindowControllerWin32Io(owner: this, @delegate: @delegate, contentSizeConstraints: constraints, anchorRect: anchorRect, positioner: positioner, parent: parent));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual PopupWindowControllerIo createPopupWindowController(PopupWindowControllerDelegateIo @delegate, global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
+    public virtual PopupWindowControllerIo createPopupWindowController(PopupWindowControllerDelegateIo @delegate, global::Doroti.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
     {
         return ((PopupWindowControllerIo)(object?)new PopupWindowControllerWin32Io(owner: this, @delegate: @delegate, contentSizeConstraints: constraints, anchorRect: anchorRect, positioner: positioner, parent: parent));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual SatelliteWindowControllerIo createSatelliteWindowController(SatelliteWindowControllerDelegateIo @delegate, BaseWindowControllerIo parent, WindowPositionerIo initialPositioner, Rect? initialAnchorRect = null, Size? size = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = default!, string? title = null)
+    public virtual SatelliteWindowControllerIo createSatelliteWindowController(SatelliteWindowControllerDelegateIo @delegate, BaseWindowControllerIo parent, WindowPositionerIo initialPositioner, Rect? initialAnchorRect = null, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = default!, string? title = null)
     {
         throw new NotImplementedException("Satellite windows are not yet implemented on Windows.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -173,7 +173,7 @@ public class WindowControllerWin32Io : WindowControllerIo, BaseWindowControllerW
     internal virtual _WindowMessageHandler___window_win32 _handler { get; private set; } = default!;
     internal virtual bool _destroyed { get; set; } = false;
 
-    public WindowControllerWin32Io(WindowingOwnerWin32Io owner, WindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, bool resizable = default!)
+    public WindowControllerWin32Io(WindowingOwnerWin32Io owner, WindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, bool resizable = default!)
     {
         this._owner = owner;
         this._delegate = @delegate;
@@ -242,7 +242,7 @@ public class WindowControllerWin32Io : WindowControllerIo, BaseWindowControllerW
         _Win32PlatformInterface___window_win32.setWindowContentSize(((WindowingOwnerWin32Io)this._owner).allocator, this.windowHandle, size);
     }
 
-    public override void setConstraints(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints)
+    public override void setConstraints(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
         _ensureNotDestroyed();
         _Win32PlatformInterface___window_win32.setWindowConstraints(((WindowingOwnerWin32Io)this._owner).allocator, this.windowHandle, constraints);
@@ -388,7 +388,7 @@ public class DialogWindowControllerWin32Io : DialogWindowControllerIo, BaseWindo
     internal virtual _DialogWindowMesageHandler___window_win32 _handler { get; private set; } = default!;
     internal virtual bool _destroyed { get; set; } = false;
 
-    public DialogWindowControllerWin32Io(WindowingOwnerWin32Io owner, DialogWindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, BaseWindowControllerIo? parent = null, bool resizable = default!)
+    public DialogWindowControllerWin32Io(WindowingOwnerWin32Io owner, DialogWindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, BaseWindowControllerIo? parent = null, bool resizable = default!)
     {
         this._owner = owner;
         this._delegate = @delegate;
@@ -440,7 +440,7 @@ public class DialogWindowControllerWin32Io : DialogWindowControllerIo, BaseWindo
         _Win32PlatformInterface___window_win32.setWindowContentSize(((WindowingOwnerWin32Io)this._owner).allocator, this.windowHandle, size);
     }
 
-    public override void setConstraints(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints)
+    public override void setConstraints(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
         _ensureNotDestroyed();
         _Win32PlatformInterface___window_win32.setWindowConstraints(((WindowingOwnerWin32Io)this._owner).allocator, this.windowHandle, constraints);
@@ -555,7 +555,7 @@ public class TooltipWindowControllerWin32Io : TooltipWindowControllerIo, BaseWin
     internal virtual bool _destroyed { get; set; } = false;
     internal virtual NativeCallable<global::System.Func<Pointer<_Size___window_win32>, Pointer<_Rect___window_win32>, Pointer<_Rect___window_win32>, Pointer<_Rect___window_win32>>> _onGetWindowPosition { get; private set; } = default!;
 
-    public TooltipWindowControllerWin32Io(WindowingOwnerWin32Io owner, TooltipWindowControllerDelegateIo @delegate, global::Doroti.Generated.Framework.Rendering.BoxConstraints contentSizeConstraints, BaseWindowControllerIo parent, Rect anchorRect, WindowPositionerIo positioner)
+    public TooltipWindowControllerWin32Io(WindowingOwnerWin32Io owner, TooltipWindowControllerDelegateIo @delegate, global::Doroti.Framework.Rendering.BoxConstraints contentSizeConstraints, BaseWindowControllerIo parent, Rect anchorRect, WindowPositionerIo positioner)
     {
         this._delegate = @delegate;
         this._owner = owner;
@@ -682,7 +682,7 @@ public class TooltipWindowControllerWin32Io : TooltipWindowControllerIo, BaseWin
     }
 
     public override BaseWindowControllerIo parent => this._parent;
-    public override void setConstraints(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints)
+    public override void setConstraints(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
     }
 
@@ -698,7 +698,7 @@ public class PopupWindowControllerWin32Io : PopupWindowControllerIo, _WindowsMes
     internal virtual bool _destroyed { get; set; } = false;
     internal virtual NativeCallable<global::System.Func<Pointer<_Size___window_win32>, Pointer<_Rect___window_win32>, Pointer<_Rect___window_win32>, Pointer<_Rect___window_win32>>> _onGetWindowPosition { get; private set; } = default!;
 
-    public PopupWindowControllerWin32Io(WindowingOwnerWin32Io owner, PopupWindowControllerDelegateIo @delegate, global::Doroti.Generated.Framework.Rendering.BoxConstraints contentSizeConstraints, BaseWindowControllerIo parent, Rect anchorRect, WindowPositionerIo positioner)
+    public PopupWindowControllerWin32Io(WindowingOwnerWin32Io owner, PopupWindowControllerDelegateIo @delegate, global::Doroti.Framework.Rendering.BoxConstraints contentSizeConstraints, BaseWindowControllerIo parent, Rect anchorRect, WindowPositionerIo positioner)
     {
         this._delegate = @delegate;
         this._owner = owner;
@@ -833,7 +833,7 @@ public class PopupWindowControllerWin32Io : PopupWindowControllerIo, _WindowsMes
     }
 
     public override BaseWindowControllerIo parent => this._parent;
-    public override void setConstraints(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints)
+    public override void setConstraints(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
     }
 
@@ -927,7 +927,7 @@ internal class _Win32PlatformInterface___window_win32
     }
 
     internal abstract static void _initializeWindowing(long engineId, Pointer<_WindowingInitRequest___window_win32> request);
-    public static long createWindow(Allocator allocator, long engineId, Size? size, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints, string? title, bool shrinkWrap, bool resizable)
+    public static long createWindow(Allocator allocator, long engineId, Size? size, global::Doroti.Framework.Rendering.BoxConstraints? constraints, string? title, bool shrinkWrap, bool resizable)
     {
         Pointer<_WindowCreationRequest___window_win32> request__37078 = allocator();
         try
@@ -947,7 +947,7 @@ internal class _Win32PlatformInterface___window_win32
     }
 
     internal abstract static long _createWindow(long engineId, Pointer<_WindowCreationRequest___window_win32> request);
-    public static long createDialogWindow(Allocator allocator, long engineId, Size? size, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints, string? title, Pointer<Void>? parent, bool shrinkWrap, bool resizable)
+    public static long createDialogWindow(Allocator allocator, long engineId, Size? size, global::Doroti.Framework.Rendering.BoxConstraints? constraints, string? title, Pointer<Void>? parent, bool shrinkWrap, bool resizable)
     {
         Pointer<_DialogWindowCreationRequest___window_win32> request__38033 = allocator();
         try
@@ -968,7 +968,7 @@ internal class _Win32PlatformInterface___window_win32
     }
 
     internal abstract static long _createDialogWindow(long engineId, Pointer<_DialogWindowCreationRequest___window_win32> request);
-    public static long createTooltipWindow(Allocator allocator, long engineId, global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints, Pointer<Void> parent, Pointer<NativeFunction<global::System.Func<Pointer<_Size___window_win32>, Pointer<_Rect___window_win32>, Pointer<_Rect___window_win32>, Pointer<_Rect___window_win32>>>> onGetWindowPosition)
+    public static long createTooltipWindow(Allocator allocator, long engineId, global::Doroti.Framework.Rendering.BoxConstraints constraints, Pointer<Void> parent, Pointer<NativeFunction<global::System.Func<Pointer<_Size___window_win32>, Pointer<_Rect___window_win32>, Pointer<_Rect___window_win32>, Pointer<_Rect___window_win32>>>> onGetWindowPosition)
     {
         Pointer<_TooltipWindowCreationRequest___window_win32> request__39280 = allocator();
         try
@@ -986,7 +986,7 @@ internal class _Win32PlatformInterface___window_win32
     }
 
     internal abstract static long _createTooltipWindow(long engineId, Pointer<_TooltipWindowCreationRequest___window_win32> request);
-    public static long createPopupWindow(Allocator allocator, long engineId, global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints, Pointer<Void> parent, Pointer<NativeFunction<global::System.Func<Pointer<_Size___window_win32>, Pointer<_Rect___window_win32>, Pointer<_Rect___window_win32>, Pointer<_Rect___window_win32>>>> onGetWindowPosition)
+    public static long createPopupWindow(Allocator allocator, long engineId, global::Doroti.Framework.Rendering.BoxConstraints constraints, Pointer<Void> parent, Pointer<NativeFunction<global::System.Func<Pointer<_Size___window_win32>, Pointer<_Rect___window_win32>, Pointer<_Rect___window_win32>, Pointer<_Rect___window_win32>>>> onGetWindowPosition)
     {
         Pointer<_PopupWindowCreationRequest___window_win32> request__40335 = allocator();
         try
@@ -1036,7 +1036,7 @@ internal class _Win32PlatformInterface___window_win32
     }
 
     internal abstract static void _setWindowContentSize(Pointer<Void> windowHandle, Pointer<_WindowSizeRequest___window_win32> size);
-    public static void setWindowConstraints(Allocator allocator, Pointer<Void> windowHandle, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints)
+    public static void setWindowConstraints(Allocator allocator, Pointer<Void> windowHandle, global::Doroti.Framework.Rendering.BoxConstraints? constraints)
     {
         Pointer<_WindowConstraintsRequest___window_win32> request__42755 = allocator();
         try
@@ -1189,7 +1189,7 @@ internal class _WindowConstraintsRequest___window_win32 : Struct
     public virtual double maxWidth { get; set; } = default!;
     public virtual double maxHeight { get; set; } = default!;
 
-    public virtual void from(global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints)
+    public virtual void from(global::Doroti.Framework.Rendering.BoxConstraints? constraints)
     {
         hasConstraints = (constraints is not null);
         minWidth = (constraints?.minWidth ?? 0);

@@ -316,44 +316,44 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (libraryUri.Contains("/foundation/", StringComparison.Ordinal))
         {
-            return "global::Doroti.Generated.Framework.Foundation." + name;
+            return "global::Doroti.Framework.Foundation." + name;
         }
         if (libraryUri.Contains("/scheduler/", StringComparison.Ordinal))
         {
-            return "global::Doroti.Generated.Framework.Scheduler." + name;
+            return "global::Doroti.Framework.Scheduler." + name;
         }
         if (libraryUri.Contains("/services/", StringComparison.Ordinal))
         {
-            return "global::Doroti.Generated.Framework.Services." + name;
+            return "global::Doroti.Framework.Services." + name;
         }
         if (libraryUri.Contains("/physics/", StringComparison.Ordinal))
         {
-            return "global::Doroti.Generated.Framework.Physics." + name;
+            return "global::Doroti.Framework.Physics." + name;
         }
         if (libraryUri.Contains("/animation/", StringComparison.Ordinal))
         {
-            return "global::Doroti.Generated.Framework.Animation." + name;
+            return "global::Doroti.Framework.Animation." + name;
         }
         if (libraryUri.Contains("/gestures/", StringComparison.Ordinal))
         {
-            return "global::Doroti.Generated.Framework.Gestures." + name;
+            return "global::Doroti.Framework.Gestures." + name;
         }
         if (libraryUri.Contains("/painting/", StringComparison.Ordinal))
         {
-            return "global::Doroti.Generated.Framework.Painting." + name;
+            return "global::Doroti.Framework.Painting." + name;
         }
         if (libraryUri.Contains("/rendering/", StringComparison.Ordinal))
         {
-            return "global::Doroti.Generated.Framework.Rendering." + name;
+            return "global::Doroti.Framework.Rendering." + name;
         }
         if (libraryUri.Contains("/semantics/", StringComparison.Ordinal))
         {
-            return "global::Doroti.Generated.Framework.Semantics." + name;
+            return "global::Doroti.Framework.Semantics." + name;
         }
         if (libraryUri.Contains("/widgets/", StringComparison.Ordinal) ||
             string.Equals(libraryUri, "package:flutter/widgets.dart", StringComparison.Ordinal))
         {
-            return "global::Doroti.Generated.Framework.Widgets." + name;
+            return "global::Doroti.Framework.Widgets." + name;
         }
         return name;
     }

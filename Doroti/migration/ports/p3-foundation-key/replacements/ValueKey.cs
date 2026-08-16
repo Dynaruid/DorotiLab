@@ -1,5 +1,5 @@
 // Manual replacement for Flutter ValueKey<T> runtime-type equality and hashing.
-namespace Doroti.Generated.P3.Foundation;
+namespace Doroti.P3.Foundation;
 
 public partial class ValueKey<T> : LocalKey, IEquatable<ValueKey<T>>
 {

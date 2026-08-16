@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public delegate void ScrollNotificationCallback(ScrollNotification notification);
 
@@ -43,7 +43,7 @@ public class ScrollNotificationObserver : StatefulWidget
 {
     public virtual Widget child { get; private set; } = default!;
 
-    public ScrollNotificationObserver(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key)
+    public ScrollNotificationObserver(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key)
     {
         this.child = child;
     }
@@ -61,7 +61,7 @@ public class ScrollNotificationObserver : StatefulWidget
             {
                 if ((observerState__4708 is null))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Generated.Framework.Foundation.FlutterError.Create("ScrollNotificationObserver.of() was called with a context that does not contain a " + "ScrollNotificationObserver widget.\n" + "No ScrollNotificationObserver widget ancestor could be found starting from the " + "context that was passed to ScrollNotificationObserver.of(). This can happen " + "because you are using a widget that looks for a ScrollNotificationObserver " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
+                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("ScrollNotificationObserver.of() was called with a context that does not contain a " + "ScrollNotificationObserver widget.\n" + "No ScrollNotificationObserver widget ancestor could be found starting from the " + "context that was passed to ScrollNotificationObserver.of(). This can happen " + "because you are using a widget that looks for a ScrollNotificationObserver " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -83,7 +83,7 @@ public class ScrollNotificationObserverState : State<ScrollNotificationObserver>
             {
                 if ((this._listeners is null))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Generated.Framework.Foundation.FlutterError.Create($"A {this.GetType()} was used after being disposed.\n" + $"Once you have called dispose() on a {this.GetType()}, it can no longer be used."));
+                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"A {this.GetType()} was used after being disposed.\n" + $"Once you have called dispose() on a {this.GetType()}, it can no longer be used."));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -131,7 +131,7 @@ public class ScrollNotificationObserverState : State<ScrollNotificationObserver>
             catch (Exception exception__7291)
             {
                 var stack__7302 = new System.Diagnostics.StackTrace();
-                FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails(exception: exception__7291, stack: stack__7302, library: "widget library", context: new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"while dispatching notifications for {this.GetType()}"), informationCollector: ((InformationCollector)(() => new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<ScrollNotificationObserverState>($"The {this.GetType()} sending notification was", this, style: global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }))));
+                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception__7291, stack: stack__7302, library: "widget library", context: new global::Doroti.Framework.Foundation.ErrorDescription($"while dispatching notifications for {this.GetType()}"), informationCollector: ((InformationCollector)(() => new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollNotificationObserverState>($"The {this.GetType()} sending notification was", this, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }))));
             }
         }
     }

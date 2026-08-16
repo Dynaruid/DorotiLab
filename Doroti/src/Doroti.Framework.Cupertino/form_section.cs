@@ -12,27 +12,27 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Cupertino;
+namespace Doroti.Framework.Cupertino;
 
 public static partial class Form_sectionLibrary
 {
-    internal static global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional _kFormDefaultInsetGroupedRowsMargin = new global::Doroti.Generated.Framework.Painting.EdgeInsetsDirectional(20.0, 0.0, 20.0, 10.0);
+    internal static global::Doroti.Framework.Painting.EdgeInsetsDirectional _kFormDefaultInsetGroupedRowsMargin = new global::Doroti.Framework.Painting.EdgeInsetsDirectional(20.0, 0.0, 20.0, 10.0);
 }
 
-public class CupertinoFormSection : global::Doroti.Generated.Framework.Widgets.StatelessWidget
+public class CupertinoFormSection : global::Doroti.Framework.Widgets.StatelessWidget
 {
     internal virtual CupertinoListSectionType _type { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.Widget? header { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.Widget? footer { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry margin { get; private set; } = default!;
-    public virtual List<global::Doroti.Generated.Framework.Widgets.Widget> children { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.BoxDecoration? decoration { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.Widget? header { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.Widget? footer { get; private set; }
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry margin { get; private set; } = default!;
+    public virtual List<global::Doroti.Framework.Widgets.Widget> children { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.BoxDecoration? decoration { get; private set; }
     public virtual Color backgroundColor { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
 
-    public CupertinoFormSection(global::Doroti.Generated.Framework.Foundation.Key? key = null, List<global::Doroti.Generated.Framework.Widgets.Widget> children = default!, global::Doroti.Generated.Framework.Widgets.Widget? header = null, global::Doroti.Generated.Framework.Widgets.Widget? footer = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry margin = default!, Color backgroundColor = default!, global::Doroti.Generated.Framework.Painting.BoxDecoration? decoration = null, Clip clipBehavior = Clip.none) : base(key: key)
+    public CupertinoFormSection(global::Doroti.Framework.Foundation.Key? key = null, List<global::Doroti.Framework.Widgets.Widget> children = default!, global::Doroti.Framework.Widgets.Widget? header = null, global::Doroti.Framework.Widgets.Widget? footer = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry margin = default!, Color backgroundColor = default!, global::Doroti.Framework.Painting.BoxDecoration? decoration = null, Clip clipBehavior = Clip.none) : base(key: key)
     {
-        global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry __margin = margin ?? global::Doroti.Generated.Framework.Painting.EdgeInsets.zero;
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry __margin = margin ?? global::Doroti.Framework.Painting.EdgeInsets.zero;
         Color __backgroundColor = backgroundColor ?? CupertinoColors.systemGroupedBackground;
         this.children = children;
         this.header = header;
@@ -45,10 +45,10 @@ public class CupertinoFormSection : global::Doroti.Generated.Framework.Widgets.S
         System.Diagnostics.Debug.Assert((checked((long)(children.Count)) > 0L));
     }
 
-    public static CupertinoFormSection CreateInsetGrouped(global::Doroti.Generated.Framework.Foundation.Key? key = null, List<global::Doroti.Generated.Framework.Widgets.Widget> children = default!, global::Doroti.Generated.Framework.Widgets.Widget? header = null, global::Doroti.Generated.Framework.Widgets.Widget? footer = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry margin = default!, Color backgroundColor = default!, global::Doroti.Generated.Framework.Painting.BoxDecoration? decoration = null, Clip clipBehavior = Clip.none)
+    public static CupertinoFormSection CreateInsetGrouped(global::Doroti.Framework.Foundation.Key? key = null, List<global::Doroti.Framework.Widgets.Widget> children = default!, global::Doroti.Framework.Widgets.Widget? header = null, global::Doroti.Framework.Widgets.Widget? footer = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry margin = default!, Color backgroundColor = default!, global::Doroti.Framework.Painting.BoxDecoration? decoration = null, Clip clipBehavior = Clip.none)
     {
         var __instance = new CupertinoFormSection(key: key, children: children, header: header, footer: footer, margin: margin, backgroundColor: backgroundColor, decoration: decoration, clipBehavior: clipBehavior);
-        global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry __margin = margin ?? Form_sectionLibrary._kFormDefaultInsetGroupedRowsMargin;
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry __margin = margin ?? Form_sectionLibrary._kFormDefaultInsetGroupedRowsMargin;
         Color __backgroundColor = backgroundColor ?? CupertinoColors.systemGroupedBackground;
         __instance.children = children;
         __instance.header = header;
@@ -61,19 +61,19 @@ public class CupertinoFormSection : global::Doroti.Generated.Framework.Widgets.S
         return __instance;
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Generated.Framework.Widgets.Widget? headerWidget__8813 = ((global::Doroti.Generated.Framework.Widgets.Widget?)(object?)((this.header is null) ? null : new global::Doroti.Generated.Framework.Widgets.DefaultTextStyle(style: new global::Doroti.Generated.Framework.Painting.TextStyle(fontSize: 13.0, color: CupertinoColors.secondaryLabel.resolveFrom(context)), child: this.header!)));
-        global::Doroti.Generated.Framework.Widgets.Widget? footerWidget__9095 = ((global::Doroti.Generated.Framework.Widgets.Widget?)(object?)((this.footer is null) ? null : new global::Doroti.Generated.Framework.Widgets.DefaultTextStyle(style: new global::Doroti.Generated.Framework.Painting.TextStyle(fontSize: 13.0, color: CupertinoColors.secondaryLabel.resolveFrom(context)), child: this.footer!)));
+        global::Doroti.Framework.Widgets.Widget? headerWidget__8813 = ((global::Doroti.Framework.Widgets.Widget?)(object?)((this.header is null) ? null : new global::Doroti.Framework.Widgets.DefaultTextStyle(style: new global::Doroti.Framework.Painting.TextStyle(fontSize: 13.0, color: CupertinoColors.secondaryLabel.resolveFrom(context)), child: this.header!)));
+        global::Doroti.Framework.Widgets.Widget? footerWidget__9095 = ((global::Doroti.Framework.Widgets.Widget?)(object?)((this.footer is null) ? null : new global::Doroti.Framework.Widgets.DefaultTextStyle(style: new global::Doroti.Framework.Painting.TextStyle(fontSize: 13.0, color: CupertinoColors.secondaryLabel.resolveFrom(context)), child: this.footer!)));
         switch (this._type)
         {
             case var __constant9391 when (object.Equals(__constant9391, CupertinoListSectionType.@base)):
                 {
-                    return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new CupertinoListSection(header: headerWidget__8813, footer: footerWidget__9095, margin: this.margin, backgroundColor: this.backgroundColor, decoration: this.decoration, clipBehavior: this.clipBehavior, hasLeading: false, children: this.children));
+                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoListSection(header: headerWidget__8813, footer: footerWidget__9095, margin: this.margin, backgroundColor: this.backgroundColor, decoration: this.decoration, clipBehavior: this.clipBehavior, hasLeading: false, children: this.children));
                 }
             case var __constant9746 when (object.Equals(__constant9746, CupertinoListSectionType.insetGrouped)):
                 {
-                    return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new CupertinoListSection(header: headerWidget__8813, footer: footerWidget__9095, margin: this.margin, backgroundColor: this.backgroundColor, decoration: this.decoration, clipBehavior: this.clipBehavior, hasLeading: false, children: this.children));
+                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoListSection(header: headerWidget__8813, footer: footerWidget__9095, margin: this.margin, backgroundColor: this.backgroundColor, decoration: this.decoration, clipBehavior: this.clipBehavior, hasLeading: false, children: this.children));
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");

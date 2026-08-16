@@ -12,22 +12,22 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class AnimatedSize : StatefulWidget
 {
     public virtual Widget? child { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Animation.Curve curve { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Animation.Curve curve { get; private set; } = default!;
     public virtual Duration duration { get; private set; } = default!;
     public virtual Duration? reverseDuration { get; private set; }
     public virtual Clip clipBehavior { get; private set; } = default!;
     public virtual global::System.Action? onEnd { get; private set; }
 
-    public AnimatedSize(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget? child = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Generated.Framework.Animation.Curve curve = default!, Duration duration = default!, Duration? reverseDuration = null, Clip clipBehavior = Clip.hardEdge, global::System.Action? onEnd = null) : base(key: key)
+    public AnimatedSize(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, Duration? reverseDuration = null, Clip clipBehavior = Clip.hardEdge, global::System.Action? onEnd = null) : base(key: key)
     {
-        global::Doroti.Generated.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Generated.Framework.Painting.Alignment.center;
-        global::Doroti.Generated.Framework.Animation.Curve __curve = curve ?? global::Doroti.Generated.Framework.Animation.Curves.linear;
+        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.Alignment.center;
+        global::Doroti.Framework.Animation.Curve __curve = curve ?? global::Doroti.Framework.Animation.Curves.linear;
         this.child = child;
         this.alignment = __alignment;
         this.curve = __curve;
@@ -42,8 +42,8 @@ public class AnimatedSize : StatefulWidget
 
 internal class _AnimatedSizeState__animated_size : State<AnimatedSize>, SingleTickerProviderStateMixin<AnimatedSize>
 {
-    public virtual global::Doroti.Generated.Framework.Scheduler.Ticker? _ticker { get; set; } = default;
-    public virtual global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
+    public virtual global::Doroti.Framework.Scheduler.Ticker? _ticker { get; set; } = default;
+    public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     public override Widget build(BuildContext context)
     {
@@ -51,7 +51,7 @@ internal class _AnimatedSizeState__animated_size : State<AnimatedSize>, SingleTi
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
+    public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -59,10 +59,10 @@ internal class _AnimatedSizeState__animated_size : State<AnimatedSize>, SingleTi
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._ticker = new global::Doroti.Generated.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
         _updateTickerModeNotifier();
         _updateTicker();
         return this._ticker!;
@@ -77,7 +77,7 @@ internal class _AnimatedSizeState__animated_size : State<AnimatedSize>, SingleTi
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         this._tickerModeNotifier?.removeListener(() => this._updateTicker());
@@ -104,7 +104,7 @@ internal class _AnimatedSizeState__animated_size : State<AnimatedSize>, SingleTi
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
         if ((object.Equals(newNotifier__15400, this._tickerModeNotifier)))
         {
             return;
@@ -114,29 +114,29 @@ internal class _AnimatedSizeState__animated_size : State<AnimatedSize>, SingleTi
         this._tickerModeNotifier = newNotifier__15400;
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         string? tickerDescription__15805 = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
     }
 
 }
 
 internal class _AnimatedSize__animated_size : SingleChildRenderObjectWidget
 {
-    public virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Animation.Curve curve { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.AlignmentGeometry alignment { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Animation.Curve curve { get; private set; } = default!;
     public virtual Duration duration { get; private set; } = default!;
     public virtual Duration? reverseDuration { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Scheduler.TickerProvider vsync { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Scheduler.TickerProvider vsync { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
     public virtual global::System.Action? onEnd { get; private set; }
 
-    internal _AnimatedSize__animated_size(Widget? child = null, global::Doroti.Generated.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Generated.Framework.Animation.Curve curve = default!, Duration duration = default!, Duration? reverseDuration = null, global::Doroti.Generated.Framework.Scheduler.TickerProvider vsync = default!, Clip clipBehavior = Clip.hardEdge, global::System.Action? onEnd = null) : base(child: child)
+    internal _AnimatedSize__animated_size(Widget? child = null, global::Doroti.Framework.Painting.AlignmentGeometry alignment = default!, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, Duration? reverseDuration = null, global::Doroti.Framework.Scheduler.TickerProvider vsync = default!, Clip clipBehavior = Clip.hardEdge, global::System.Action? onEnd = null) : base(child: child)
     {
-        global::Doroti.Generated.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Generated.Framework.Painting.Alignment.center;
-        global::Doroti.Generated.Framework.Animation.Curve __curve = curve ?? global::Doroti.Generated.Framework.Animation.Curves.linear;
+        global::Doroti.Framework.Painting.AlignmentGeometry __alignment = alignment ?? global::Doroti.Framework.Painting.Alignment.center;
+        global::Doroti.Framework.Animation.Curve __curve = curve ?? global::Doroti.Framework.Animation.Curves.linear;
         this.alignment = __alignment;
         this.curve = __curve;
         this.duration = duration;
@@ -146,16 +146,16 @@ internal class _AnimatedSize__animated_size : SingleChildRenderObjectWidget
         this.onEnd = onEnd;
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Rendering.RenderObject)(object?)new global::Doroti.Generated.Framework.Rendering.RenderAnimatedSize(alignment: this.alignment, duration: this.duration, reverseDuration: this.reverseDuration, curve: this.curve, vsync: this.vsync, textDirection: Directionality.maybeOf(context), clipBehavior: this.clipBehavior, onEnd: () => this.onEnd()));
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderAnimatedSize(alignment: this.alignment, duration: this.duration, reverseDuration: this.reverseDuration, curve: this.curve, vsync: this.vsync, textDirection: Directionality.maybeOf(context), clipBehavior: this.clipBehavior, onEnd: () => this.onEnd()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(BuildContext context, global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Generated.Framework.Rendering.RenderAnimatedSize)(object)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<global::Doroti.Generated.Framework.Rendering.RenderAnimatedSize>)(() =>
+        var __renderObject = (global::Doroti.Framework.Rendering.RenderAnimatedSize)(object)renderObject;
+        DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderAnimatedSize>)(() =>
 {            var __cascade = __renderObject;
             __cascade.alignment = this.alignment;
             __cascade.duration = this.duration;
@@ -168,12 +168,12 @@ internal class _AnimatedSize__animated_size : SingleChildRenderObjectWidget
             return __cascade;        }))());
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, defaultValue: global::Doroti.Generated.Framework.Painting.Alignment.topCenter));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.IntProperty("duration", this.duration.inMilliseconds, unit: "ms"));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.IntProperty("reverseDuration", this.reverseDuration?.inMilliseconds, unit: "ms", defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment, defaultValue: global::Doroti.Framework.Painting.Alignment.topCenter));
+        properties.add(new global::Doroti.Framework.Foundation.IntProperty("duration", this.duration.inMilliseconds, unit: "ms"));
+        properties.add(new global::Doroti.Framework.Foundation.IntProperty("reverseDuration", this.reverseDuration?.inMilliseconds, unit: "ms", defaultValue: null));
     }
 
 }

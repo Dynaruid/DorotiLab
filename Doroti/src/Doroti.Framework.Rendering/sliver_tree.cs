@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public delegate void TreeSliverNodesAnimation();
 
@@ -130,7 +130,7 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
 
     public override void performLayout()
     {
-        DartRuntimePrimitives.Assert(() => (object.Equals(((SliverConstraints)constraints).axisDirection, global::Doroti.Generated.Framework.Painting.AxisDirection.down)));
+        DartRuntimePrimitives.Assert(() => (object.Equals(((SliverConstraints)constraints).axisDirection, global::Doroti.Framework.Painting.AxisDirection.down)));
         _updateAnimationCache();
         base.performLayout();
     }

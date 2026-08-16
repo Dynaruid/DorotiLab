@@ -12,14 +12,14 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public static partial class _windowLibrary
 {
     internal static string _kWindowingDisabledErrorMessage = "Windowing APIs are not enabled.\n\nWindowing APIs are currently experimental. Do not use windowing APIs in\nproduction applications or plugins published to pub.dev.\n\nTo try experimental windowing APIs:\n1. Switch to Flutter's main release channel.\n2. Turn on the windowing feature flag.\n\nSee: https://github.com/flutter/flutter/issues/30701.\n";
 }
 
-public abstract class BaseWindowControllerIo : global::Doroti.Generated.Framework.Foundation.ChangeNotifier
+public abstract class BaseWindowControllerIo : global::Doroti.Framework.Foundation.ChangeNotifier
 {
     internal virtual DorotiView _view { get; private set; } = default!;
 
@@ -41,7 +41,7 @@ public class WindowControllerDelegateIo
 {
     public virtual void onWindowCloseRequested(WindowControllerIo controller)
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -50,7 +50,7 @@ public class WindowControllerDelegateIo
 
     public virtual void onWindowDestroyed()
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -60,9 +60,9 @@ public class WindowControllerDelegateIo
 
 public abstract class WindowControllerIo : BaseWindowControllerIo
 {
-    public static WindowControllerIo Create(Size size, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, WindowControllerDelegateIo? @delegate = null)
+    public static WindowControllerIo Create(Size size, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, WindowControllerDelegateIo? @delegate = null)
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -74,9 +74,9 @@ public abstract class WindowControllerIo : BaseWindowControllerIo
         return ((WindowControllerIo)(object?)owner__8133.createWindowController(@delegate: (@delegate ?? new WindowControllerDelegateIo()), size: size, constraints: constraints, title: title, resizable: true));
     }
 
-    public static WindowControllerIo CreateShrinkWrap(bool resizable = false, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, WindowControllerDelegateIo? @delegate = null)
+    public static WindowControllerIo CreateShrinkWrap(bool resizable = false, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, WindowControllerDelegateIo? @delegate = null)
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -95,7 +95,7 @@ public abstract class WindowControllerIo : BaseWindowControllerIo
     public abstract bool isMinimized { get; }
     public abstract bool isFullscreen { get; }
     public abstract void setSize(Size size);
-    public abstract void setConstraints(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints);
+    public abstract void setConstraints(global::Doroti.Framework.Rendering.BoxConstraints constraints);
     public abstract void setTitle(string title);
     public abstract void activate();
     public abstract void setMaximized(bool maximized);
@@ -107,7 +107,7 @@ public class DialogWindowControllerDelegateIo
 {
     public virtual void onWindowCloseRequested(DialogWindowControllerIo controller)
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -116,7 +116,7 @@ public class DialogWindowControllerDelegateIo
 
     public virtual void onWindowDestroyed()
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -126,9 +126,9 @@ public class DialogWindowControllerDelegateIo
 
 public abstract class DialogWindowControllerIo : BaseWindowControllerIo
 {
-    public static DialogWindowControllerIo Create(Size size, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, BaseWindowControllerIo? parent = null, string? title = null, DialogWindowControllerDelegateIo? @delegate = null)
+    public static DialogWindowControllerIo Create(Size size, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, BaseWindowControllerIo? parent = null, string? title = null, DialogWindowControllerDelegateIo? @delegate = null)
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -141,9 +141,9 @@ public abstract class DialogWindowControllerIo : BaseWindowControllerIo
         return ((DialogWindowControllerIo)(object?)owner__20060.createDialogWindowController(@delegate: (@delegate ?? new DialogWindowControllerDelegateIo()), size: size, constraints: constraints, title: title, parent: parent, resizable: true));
     }
 
-    public static DialogWindowControllerIo CreateShrinkWrap(bool resizable = false, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, BaseWindowControllerIo? parent = null, string? title = null, DialogWindowControllerDelegateIo? @delegate = null)
+    public static DialogWindowControllerIo CreateShrinkWrap(bool resizable = false, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, BaseWindowControllerIo? parent = null, string? title = null, DialogWindowControllerDelegateIo? @delegate = null)
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -161,7 +161,7 @@ public abstract class DialogWindowControllerIo : BaseWindowControllerIo
     public abstract bool isActivated { get; }
     public abstract bool isMinimized { get; }
     public abstract void setSize(Size size);
-    public abstract void setConstraints(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints);
+    public abstract void setConstraints(global::Doroti.Framework.Rendering.BoxConstraints constraints);
     public abstract void setTitle(string title);
     public abstract void activate();
     public abstract void setMinimized(bool minimized);
@@ -171,7 +171,7 @@ public class TooltipWindowControllerDelegateIo
 {
     public virtual void onWindowDestroyed()
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -181,10 +181,10 @@ public class TooltipWindowControllerDelegateIo
 
 public abstract class TooltipWindowControllerIo : BaseWindowControllerIo
 {
-    public static TooltipWindowControllerIo Create(BaseWindowControllerIo parent, Rect anchorRect, WindowPositionerIo positioner, global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints = default!, TooltipWindowControllerDelegateIo? @delegate = null)
+    public static TooltipWindowControllerIo Create(BaseWindowControllerIo parent, Rect anchorRect, WindowPositionerIo positioner, global::Doroti.Framework.Rendering.BoxConstraints constraints = default!, TooltipWindowControllerDelegateIo? @delegate = null)
     {
-        global::Doroti.Generated.Framework.Rendering.BoxConstraints __constraints = constraints ?? new global::Doroti.Generated.Framework.Rendering.BoxConstraints();
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        global::Doroti.Framework.Rendering.BoxConstraints __constraints = constraints ?? new global::Doroti.Framework.Rendering.BoxConstraints();
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -199,7 +199,7 @@ public abstract class TooltipWindowControllerIo : BaseWindowControllerIo
     }
 
     public abstract BaseWindowControllerIo parent { get; }
-    public abstract void setConstraints(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints);
+    public abstract void setConstraints(global::Doroti.Framework.Rendering.BoxConstraints constraints);
     public abstract void updatePosition(Rect? anchorRect = null, WindowPositionerIo? positioner = null);
 }
 
@@ -207,7 +207,7 @@ public class PopupWindowControllerDelegateIo
 {
     public virtual void onWindowDestroyed()
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -217,15 +217,15 @@ public class PopupWindowControllerDelegateIo
 
 public abstract class PopupWindowControllerIo : BaseWindowControllerIo
 {
-    public static PopupWindowControllerIo Create(BaseWindowControllerIo parent, Rect anchorRect, WindowPositionerIo positioner, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, PopupWindowControllerDelegateIo? @delegate = null)
+    public static PopupWindowControllerIo Create(BaseWindowControllerIo parent, Rect anchorRect, WindowPositionerIo positioner, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, PopupWindowControllerDelegateIo? @delegate = null)
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
         WidgetsFlutterBinding.ensureInitialized();
         WindowingOwnerIo owner__33068 = WidgetsBinding.instance.windowingOwner;
-        return ((PopupWindowControllerIo)(object?)owner__33068.createPopupWindowController(parent: parent, constraints: (constraints ?? new global::Doroti.Generated.Framework.Rendering.BoxConstraints()), @delegate: (@delegate ?? new PopupWindowControllerDelegateIo()), anchorRect: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(anchorRect)), positioner: positioner));
+        return ((PopupWindowControllerIo)(object?)owner__33068.createPopupWindowController(parent: parent, constraints: (constraints ?? new global::Doroti.Framework.Rendering.BoxConstraints()), @delegate: (@delegate ?? new PopupWindowControllerDelegateIo()), anchorRect: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(anchorRect)), positioner: positioner));
     }
 
     protected PopupWindowControllerIo()
@@ -233,7 +233,7 @@ public abstract class PopupWindowControllerIo : BaseWindowControllerIo
     }
 
     public abstract BaseWindowControllerIo parent { get; }
-    public abstract void setConstraints(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints);
+    public abstract void setConstraints(global::Doroti.Framework.Rendering.BoxConstraints constraints);
     public abstract void updatePosition(Rect? anchorRect = null, WindowPositionerIo? positioner = null);
     public abstract global::Doroti.Ui.Offset offsetFromParent { get; }
     public virtual void activate()
@@ -313,7 +313,7 @@ public class SatelliteWindowControllerDelegateIo
 {
     public virtual void onWindowCloseRequested(SatelliteWindowControllerIo controller)
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -322,7 +322,7 @@ public class SatelliteWindowControllerDelegateIo
 
     public virtual void onWindowDestroyed()
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -332,9 +332,9 @@ public class SatelliteWindowControllerDelegateIo
 
 public abstract class SatelliteWindowControllerIo : BaseWindowControllerIo
 {
-    public static SatelliteWindowControllerIo Create(BaseWindowControllerIo parent, WindowPositionerIo initialPositioner, Rect? initialAnchorRect = null, Size? size = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, SatelliteWindowControllerDelegateIo? @delegate = null)
+    public static SatelliteWindowControllerIo Create(BaseWindowControllerIo parent, WindowPositionerIo initialPositioner, Rect? initialAnchorRect = null, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, SatelliteWindowControllerDelegateIo? @delegate = null)
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -347,9 +347,9 @@ public abstract class SatelliteWindowControllerIo : BaseWindowControllerIo
         return ((SatelliteWindowControllerIo)(object?)owner__42022.createSatelliteWindowController(@delegate: (@delegate ?? new SatelliteWindowControllerDelegateIo()), parent: parent, initialAnchorRect: initialAnchorRect, initialPositioner: initialPositioner, size: size, constraints: constraints, title: title, resizable: true));
     }
 
-    public static SatelliteWindowControllerIo CreateShrinkWrap(BaseWindowControllerIo parent, WindowPositionerIo initialPositioner, Rect? initialAnchorRect = null, bool resizable = false, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, SatelliteWindowControllerDelegateIo? @delegate = null)
+    public static SatelliteWindowControllerIo CreateShrinkWrap(BaseWindowControllerIo parent, WindowPositionerIo initialPositioner, Rect? initialAnchorRect = null, bool resizable = false, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, SatelliteWindowControllerDelegateIo? @delegate = null)
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -367,25 +367,25 @@ public abstract class SatelliteWindowControllerIo : BaseWindowControllerIo
     public abstract bool isActivated { get; }
     public abstract void setParent(BaseWindowControllerIo parent);
     public abstract void setSize(Size size);
-    public abstract void setConstraints(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints);
+    public abstract void setConstraints(global::Doroti.Framework.Rendering.BoxConstraints constraints);
     public abstract void setTitle(string title);
     public abstract void activate();
 }
 
 public interface WindowingOwnerIo
 {
-    public WindowControllerIo createWindowController(WindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = default!, string? title = null);
-    public DialogWindowControllerIo createDialogWindowController(DialogWindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = default!, BaseWindowControllerIo? parent = null, string? title = null);
-    public TooltipWindowControllerIo createTooltipWindowController(TooltipWindowControllerDelegateIo @delegate, global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent);
-    public PopupWindowControllerIo createPopupWindowController(PopupWindowControllerDelegateIo @delegate, global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent);
-    public SatelliteWindowControllerIo createSatelliteWindowController(SatelliteWindowControllerDelegateIo @delegate, BaseWindowControllerIo parent, WindowPositionerIo initialPositioner, Rect? initialAnchorRect = null, Size? size = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = default!, string? title = null);
+    public WindowControllerIo createWindowController(WindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = default!, string? title = null);
+    public DialogWindowControllerIo createDialogWindowController(DialogWindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = default!, BaseWindowControllerIo? parent = null, string? title = null);
+    public TooltipWindowControllerIo createTooltipWindowController(TooltipWindowControllerDelegateIo @delegate, global::Doroti.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent);
+    public PopupWindowControllerIo createPopupWindowController(PopupWindowControllerDelegateIo @delegate, global::Doroti.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent);
+    public SatelliteWindowControllerIo createSatelliteWindowController(SatelliteWindowControllerDelegateIo @delegate, BaseWindowControllerIo parent, WindowPositionerIo initialPositioner, Rect? initialAnchorRect = null, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = default!, string? title = null);
 }
 
 public static partial class _windowLibrary
 {
     public static WindowingOwnerIo createDefaultWindowingOwner()
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             return ((WindowingOwnerIo)(object?)new _WindowingOwnerUnsupported___window(errorMessage: _windowLibrary._kWindowingDisabledErrorMessage));
         }
@@ -408,31 +408,31 @@ internal class _WindowingOwnerUnsupported___window : WindowingOwnerIo
         this.errorMessage = errorMessage;
     }
 
-    public virtual WindowControllerIo createWindowController(WindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = true, string? title = null)
+    public virtual WindowControllerIo createWindowController(WindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = true, string? title = null)
     {
         throw new NotSupportedException(this.errorMessage);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DialogWindowControllerIo createDialogWindowController(DialogWindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = true, BaseWindowControllerIo? parent = null, string? title = null)
+    public virtual DialogWindowControllerIo createDialogWindowController(DialogWindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = true, BaseWindowControllerIo? parent = null, string? title = null)
     {
         throw new NotSupportedException(this.errorMessage);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual TooltipWindowControllerIo createTooltipWindowController(TooltipWindowControllerDelegateIo @delegate, global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
+    public virtual TooltipWindowControllerIo createTooltipWindowController(TooltipWindowControllerDelegateIo @delegate, global::Doroti.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
     {
         throw new NotImplementedException(this.errorMessage);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual PopupWindowControllerIo createPopupWindowController(PopupWindowControllerDelegateIo @delegate, global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
+    public virtual PopupWindowControllerIo createPopupWindowController(PopupWindowControllerDelegateIo @delegate, global::Doroti.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
     {
         throw new NotImplementedException(this.errorMessage);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual SatelliteWindowControllerIo createSatelliteWindowController(SatelliteWindowControllerDelegateIo @delegate, BaseWindowControllerIo parent, WindowPositionerIo initialPositioner, Rect? initialAnchorRect = null, Size? size = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = true, string? title = null)
+    public virtual SatelliteWindowControllerIo createSatelliteWindowController(SatelliteWindowControllerDelegateIo @delegate, BaseWindowControllerIo parent, WindowPositionerIo initialPositioner, Rect? initialAnchorRect = null, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = true, string? title = null)
     {
         throw new NotImplementedException(this.errorMessage);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -445,7 +445,7 @@ public class WindowIo : StatelessWidget
     public virtual WindowControllerIo controller { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public WindowIo(global::Doroti.Generated.Framework.Foundation.Key? key = null, WindowControllerIo controller = default!, Widget child = default!) : base(key: key)
+    public WindowIo(global::Doroti.Framework.Foundation.Key? key = null, WindowControllerIo controller = default!, Widget child = default!) : base(key: key)
     {
         this.controller = controller;
         this.child = child;
@@ -464,7 +464,7 @@ public class DialogWindowIo : StatelessWidget
     public virtual DialogWindowControllerIo controller { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public DialogWindowIo(global::Doroti.Generated.Framework.Foundation.Key? key = null, DialogWindowControllerIo controller = default!, Widget child = default!) : base(key: key)
+    public DialogWindowIo(global::Doroti.Framework.Foundation.Key? key = null, DialogWindowControllerIo controller = default!, Widget child = default!) : base(key: key)
     {
         this.controller = controller;
         this.child = child;
@@ -483,7 +483,7 @@ public class TooltipWindowIo : StatelessWidget
     public virtual TooltipWindowControllerIo controller { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public TooltipWindowIo(global::Doroti.Generated.Framework.Foundation.Key? key = null, TooltipWindowControllerIo controller = default!, Widget child = default!) : base(key: key)
+    public TooltipWindowIo(global::Doroti.Framework.Foundation.Key? key = null, TooltipWindowControllerIo controller = default!, Widget child = default!) : base(key: key)
     {
         this.controller = controller;
         this.child = child;
@@ -502,7 +502,7 @@ public class PopupWindowIo : StatelessWidget
     public virtual PopupWindowControllerIo controller { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public PopupWindowIo(global::Doroti.Generated.Framework.Foundation.Key? key = null, PopupWindowControllerIo controller = default!, Widget child = default!) : base(key: key)
+    public PopupWindowIo(global::Doroti.Framework.Foundation.Key? key = null, PopupWindowControllerIo controller = default!, Widget child = default!) : base(key: key)
     {
         this.controller = controller;
         this.child = child;
@@ -521,7 +521,7 @@ public class SatelliteWindowIo : StatelessWidget
     public virtual SatelliteWindowControllerIo controller { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public SatelliteWindowIo(global::Doroti.Generated.Framework.Foundation.Key? key = null, SatelliteWindowControllerIo controller = default!, Widget child = default!) : base(key: key)
+    public SatelliteWindowIo(global::Doroti.Framework.Foundation.Key? key = null, SatelliteWindowControllerIo controller = default!, Widget child = default!) : base(key: key)
     {
         this.controller = controller;
         this.child = child;
@@ -557,7 +557,7 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
     internal virtual bool _isDestroyed { get; private set; } = default!;
     public virtual BaseWindowControllerIo controller { get; private set; } = default!;
 
-    public WindowScopeIo(global::Doroti.Generated.Framework.Foundation.Key? key = null, BaseWindowControllerIo controller = default!, Widget child = default!) : base(key: key, child: child)
+    public WindowScopeIo(global::Doroti.Framework.Foundation.Key? key = null, BaseWindowControllerIo controller = default!, Widget child = default!) : base(key: key, child: child)
     {
         this.controller = controller;
         this._isDestroyed = ((BaseWindowControllerIo)controller).isDestroyed;
@@ -687,7 +687,7 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
     internal static bool _isFullscreenValue(BaseWindowControllerIo controller) => (controller switch { WindowControllerIo __object79323 => ((WindowControllerIo)((WindowControllerIo)__object79323)).isFullscreen, DialogWindowControllerIo __object79374 => false, TooltipWindowControllerIo __object79413 => false, PopupWindowControllerIo __object79453 => false, SatelliteWindowControllerIo __object79491 => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     internal static BaseWindowControllerIo _of(BuildContext context, _WindowControllerAspect___window? aspect = null)
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -698,7 +698,7 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
 
     internal static BaseWindowControllerIo? _maybeOf(BuildContext context, _WindowControllerAspect___window? aspect = null)
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -712,7 +712,7 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
             {
                 if ((context.dependOnInheritedWidgetOfExactType<WindowScopeIo>() is null))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("No WindowScope found in context."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"{DartRuntimePrimitives.RuntimeType(((BuildContext)context).widget)} widgets require a WindowScope widget ancestor."), context.describeWidget("The specific widget that could not find a WindowScope ancestor was"), context.describeOwnershipChain("The ownership chain for the affected widget is"), new global::Doroti.Generated.Framework.Foundation.ErrorHint("No WindowScope ancestor could be found starting from the context " + "that was passed to WindowScope.of(). This can happen because the " + "context used is not a descendant of a Window widget, which introduces " + "a WindowScope.") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("No WindowScope found in context."), new global::Doroti.Framework.Foundation.ErrorDescription($"{DartRuntimePrimitives.RuntimeType(((BuildContext)context).widget)} widgets require a WindowScope widget ancestor."), context.describeWidget("The specific widget that could not find a WindowScope ancestor was"), context.describeOwnershipChain("The ownership chain for the affected widget is"), new global::Doroti.Framework.Foundation.ErrorHint("No WindowScope ancestor could be found starting from the context " + "that was passed to WindowScope.of(). This can happen because the " + "context used is not a descendant of a Window widget, which introduces " + "a WindowScope.") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -738,7 +738,7 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
 
 }
 
-public class WindowRegistryIo : global::Doroti.Generated.Framework.Foundation.ChangeNotifier
+public class WindowRegistryIo : global::Doroti.Framework.Foundation.ChangeNotifier
 {
     internal virtual List<WindowEntryIo> _windows { get; private set; } = new List<WindowEntryIo>();
 
@@ -749,7 +749,7 @@ public class WindowRegistryIo : global::Doroti.Generated.Framework.Foundation.Ch
     public virtual List<WindowEntryIo> windows => new List<WindowEntryIo>(DartRuntimePrimitives.ConvertEnumerable<WindowEntryIo>(this._windows));
     public virtual void register(WindowEntryIo entry)
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -759,7 +759,7 @@ public class WindowRegistryIo : global::Doroti.Generated.Framework.Foundation.Ch
 
     public virtual void unregister(WindowEntryIo entry)
     {
-        if (!global::Doroti.Generated.Framework.Foundation._featuresLibrary.isWindowingEnabled)
+        if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
         {
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
@@ -780,7 +780,7 @@ public class WindowRegistryIo : global::Doroti.Generated.Framework.Foundation.Ch
             {
                 if ((registry__85861 is null))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("No WindowRegistry found in context."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"{DartRuntimePrimitives.RuntimeType(((BuildContext)context).widget)} widgets require a WindowRegistry widget ancestor."), context.describeWidget("The specific widget that could not find a WindowRegistry ancestor was"), context.describeOwnershipChain("The ownership chain for the affected widget is"), new global::Doroti.Generated.Framework.Foundation.ErrorHint("No WindowRegistry ancestor could be found starting from the context " + "that was passed to WindowRegistry.of(). This can happen because the " + "context used is not a descendant of a WindowManager widget, which introduces " + "a WindowRegistry.") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("No WindowRegistry found in context."), new global::Doroti.Framework.Foundation.ErrorDescription($"{DartRuntimePrimitives.RuntimeType(((BuildContext)context).widget)} widgets require a WindowRegistry widget ancestor."), context.describeWidget("The specific widget that could not find a WindowRegistry ancestor was"), context.describeOwnershipChain("The ownership chain for the affected widget is"), new global::Doroti.Framework.Foundation.ErrorHint("No WindowRegistry ancestor could be found starting from the context " + "that was passed to WindowRegistry.of(). This can happen because the " + "context used is not a descendant of a WindowManager widget, which introduces " + "a WindowRegistry.") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -826,7 +826,7 @@ public class WindowManagerIo : StatefulWidget
 {
     public virtual List<WindowEntryIo> initialWindows { get; private set; } = default!;
 
-    public WindowManagerIo(global::Doroti.Generated.Framework.Foundation.Key? key = null, List<WindowEntryIo> initialWindows = default!) : base(key: key)
+    public WindowManagerIo(global::Doroti.Framework.Foundation.Key? key = null, List<WindowEntryIo> initialWindows = default!) : base(key: key)
     {
         this.initialWindows = initialWindows;
     }

@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public class ImageInfo
 {
@@ -45,11 +45,11 @@ public class ImageInfo
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => (((((long?)(global::Doroti.Ui.Image.debugGetOpenHandleStackTraces()?.Count)) ?? 1L)) > 0L));
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this.image.dispose();
     }
 
-    public override string ToString() => $"{((this.debugLabel is not null) ? $"{this.debugLabel} " : "")}{this.image} @ {(global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugFormatDouble(this.scale))}x";
+    public override string ToString() => $"{((this.debugLabel is not null) ? $"{this.debugLabel} " : "")}{this.image} @ {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(this.scale))}x";
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.image, this.scale, this.debugLabel);
     public override bool Equals(object? other)
     {
@@ -203,7 +203,7 @@ public class ImageStreamCompleterHandle
         this._completer!._keepAliveHandles -= 1L;
         this._completer!._maybeDispose();
         _completer = null;
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
     }
 
 }
@@ -515,7 +515,7 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
             return;
         }
         Duration delay__41889 = (DartRuntimePrimitives.RequireValue(this._frameDuration) - ((timestamp - this._shownTimestamp)));
-        _timer = new Timer((delay__41889 * global::Doroti.Generated.Framework.Scheduler.BindingLibrary.timeDilation), (() =>
+        _timer = new Timer((delay__41889 * global::Doroti.Framework.Scheduler.BindingLibrary.timeDilation), (() =>
         {
             _scheduleAppFrame();
         }));

@@ -11,9 +11,9 @@ using Doroti.Runtime;
 using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
-using SemanticsBinding = global::Doroti.Generated.Framework.Semantics.SemanticsBinding;
+using SemanticsBinding = global::Doroti.Framework.Semantics.SemanticsBinding;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public interface RendererBinding
 {
@@ -46,7 +46,7 @@ public interface RendererBinding
     public void handleTextScaleFactorChanged();
     public void handlePlatformBrightnessChanged();
     public void initMouseTracker(MouseTracker? tracker = null);
-    public void dispatchEvent(global::Doroti.Generated.Framework.Gestures.PointerEvent @event, HitTestResult? hitTestResult);
+    public void dispatchEvent(global::Doroti.Framework.Gestures.PointerEvent @event, HitTestResult? hitTestResult);
     public void performSemanticsAction(SemanticsActionEvent action);
     public Rect? getRectOfSemanticsNodeInViewCoordinates(long viewId, long nodeId);
     public void _handleWebFirstFrame(Duration __unused0);
@@ -81,7 +81,7 @@ public static partial class BindingLibrary
 {
     public static void debugDumpRenderTree()
     {
-        global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint(BindingLibrary._debugCollectRenderTrees());
+        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint(BindingLibrary._debugCollectRenderTrees());
     }
 }
 
@@ -102,13 +102,13 @@ public static partial class BindingLibrary
 {
     public static void debugDumpLayerTree()
     {
-        global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint(BindingLibrary._debugCollectLayerTrees());
+        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint(BindingLibrary._debugCollectLayerTrees());
     }
 }
 
 public static partial class BindingLibrary
 {
-    internal static string _debugCollectSemanticsTrees(global::Doroti.Generated.Framework.Semantics.DebugSemanticsDumpOrder childOrder)
+    internal static string _debugCollectSemanticsTrees(global::Doroti.Framework.Semantics.DebugSemanticsDumpOrder childOrder)
     {
         if ((RendererBinding.instance.renderViews.Count() == 0))
         {
@@ -142,9 +142,9 @@ public static partial class BindingLibrary
 
 public static partial class BindingLibrary
 {
-    public static void debugDumpSemanticsTree(global::Doroti.Generated.Framework.Semantics.DebugSemanticsDumpOrder childOrder = DebugSemanticsDumpOrder.traversalOrder)
+    public static void debugDumpSemanticsTree(global::Doroti.Framework.Semantics.DebugSemanticsDumpOrder childOrder = DebugSemanticsDumpOrder.traversalOrder)
     {
-        global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint(BindingLibrary._debugCollectSemanticsTrees(childOrder));
+        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint(BindingLibrary._debugCollectSemanticsTrees(childOrder));
     }
 }
 
@@ -152,11 +152,11 @@ public static partial class BindingLibrary
 {
     public static void debugDumpPipelineOwnerTree()
     {
-        global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint(RendererBinding.instance.rootPipelineOwner.toStringDeep());
+        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint(RendererBinding.instance.rootPipelineOwner.toStringDeep());
     }
 }
 
-public class RenderingFlutterBinding : global::Doroti.Generated.Framework.Gestures.GestureBinding, global::Doroti.Generated.Framework.Semantics.SemanticsBinding, global::Doroti.Generated.Framework.Painting.PaintingBinding, RendererBinding
+public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.GestureBinding, global::Doroti.Framework.Semantics.SemanticsBinding, global::Doroti.Framework.Painting.PaintingBinding, RendererBinding
 {
     private bool __late__semanticsEnabled_initialized;
     private ValueNotifier<bool> __late__semanticsEnabled = default!;
@@ -381,9 +381,9 @@ public class RenderingFlutterBinding : global::Doroti.Generated.Framework.Gestur
             bool value__9471 = this._accessibilityFeatures.disableAnimations;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((global::Doroti.Generated.Framework.Semantics.DebugLibrary.debugSemanticsDisableAnimations is not null))
+                    if ((global::Doroti.Framework.Semantics.DebugLibrary.debugSemanticsDisableAnimations is not null))
                     {
-                        value__9471 = DartRuntimePrimitives.RequireValue(global::Doroti.Generated.Framework.Semantics.DebugLibrary.debugSemanticsDisableAnimations);
+                        value__9471 = DartRuntimePrimitives.RequireValue(global::Doroti.Framework.Semantics.DebugLibrary.debugSemanticsDisableAnimations);
                     }
                     return true;
                 });
@@ -442,36 +442,36 @@ public class RenderingFlutterBinding : global::Doroti.Generated.Framework.Gestur
         base.initServiceExtensions();
         DartRuntimePrimitives.Assert(() =>
             {
-                registerBoolServiceExtension(name: RenderingServiceExtensions.invertOversizedImages.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Generated.Framework.Painting.DebugLibrary.debugInvertOversizedImages)), setter: ((Func<bool, Future>)(async (value) =>
+                registerBoolServiceExtension(name: RenderingServiceExtensions.invertOversizedImages.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Painting.DebugLibrary.debugInvertOversizedImages)), setter: ((Func<bool, Future>)(async (value) =>
                 {
-                    if ((global::Doroti.Generated.Framework.Painting.DebugLibrary.debugInvertOversizedImages != value))
+                    if ((global::Doroti.Framework.Painting.DebugLibrary.debugInvertOversizedImages != value))
                     {
-                        global::Doroti.Generated.Framework.Painting.DebugLibrary.debugInvertOversizedImages = value;
+                        global::Doroti.Framework.Painting.DebugLibrary.debugInvertOversizedImages = value;
                         global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
                     }
                 })));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugPaint.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled)), setter: ((Func<bool, Future>)(async (value) =>
+                registerBoolServiceExtension(name: RenderingServiceExtensions.debugPaint.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled)), setter: ((Func<bool, Future>)(async (value) =>
                 {
-                    if ((global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled == value))
+                    if ((global::Doroti.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled == value))
                     {
                         return;
                     }
-                    global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled = value;
+                    global::Doroti.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled = value;
                     global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
                 })));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugPaintBaselinesEnabled.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugPaintBaselinesEnabled)), setter: ((Func<bool, Future>)(async (value) =>
+                registerBoolServiceExtension(name: RenderingServiceExtensions.debugPaintBaselinesEnabled.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugPaintBaselinesEnabled)), setter: ((Func<bool, Future>)(async (value) =>
                 {
-                    if ((global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugPaintBaselinesEnabled == value))
+                    if ((global::Doroti.Framework.Rendering.DebugLibrary.debugPaintBaselinesEnabled == value))
                     {
                         return;
                     }
-                    global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugPaintBaselinesEnabled = value;
+                    global::Doroti.Framework.Rendering.DebugLibrary.debugPaintBaselinesEnabled = value;
                     global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
                 })));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.repaintRainbow.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled)), setter: ((Func<bool, Future>)(async (value) =>
+                registerBoolServiceExtension(name: RenderingServiceExtensions.repaintRainbow.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled)), setter: ((Func<bool, Future>)(async (value) =>
                 {
-                    bool repaint__4659 = (global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled && !value);
-                    global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled = value;
+                    bool repaint__4659 = (global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled && !value);
+                    global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled = value;
                     if (repaint__4659)
                     {
                         global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
@@ -481,36 +481,36 @@ public class RenderingFlutterBinding : global::Doroti.Generated.Framework.Gestur
                 {
                     return new DartMap<string, object> { ["data"] = BindingLibrary._debugCollectLayerTrees() };
                 }));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisableClipLayers.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugDisableClipLayers)), setter: ((Func<bool, Future>)(async (value) =>
+                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisableClipLayers.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugDisableClipLayers)), setter: ((Func<bool, Future>)(async (value) =>
                 {
-                    if ((global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugDisableClipLayers == value))
+                    if ((global::Doroti.Framework.Rendering.DebugLibrary.debugDisableClipLayers == value))
                     {
                         return;
                     }
-                    global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugDisableClipLayers = value;
+                    global::Doroti.Framework.Rendering.DebugLibrary.debugDisableClipLayers = value;
                     global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
                 })));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisablePhysicalShapeLayers.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugDisablePhysicalShapeLayers)), setter: ((Func<bool, Future>)(async (value) =>
+                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisablePhysicalShapeLayers.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugDisablePhysicalShapeLayers)), setter: ((Func<bool, Future>)(async (value) =>
                 {
-                    if ((global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugDisablePhysicalShapeLayers == value))
+                    if ((global::Doroti.Framework.Rendering.DebugLibrary.debugDisablePhysicalShapeLayers == value))
                     {
                         return;
                     }
-                    global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugDisablePhysicalShapeLayers = value;
+                    global::Doroti.Framework.Rendering.DebugLibrary.debugDisablePhysicalShapeLayers = value;
                     global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
                 })));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisableOpacityLayers.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugDisableOpacityLayers)), setter: ((Func<bool, Future>)(async (value) =>
+                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisableOpacityLayers.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugDisableOpacityLayers)), setter: ((Func<bool, Future>)(async (value) =>
                 {
-                    if ((global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugDisableOpacityLayers == value))
+                    if ((global::Doroti.Framework.Rendering.DebugLibrary.debugDisableOpacityLayers == value))
                     {
                         return;
                     }
-                    global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugDisableOpacityLayers = value;
+                    global::Doroti.Framework.Rendering.DebugLibrary.debugDisableOpacityLayers = value;
                     global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
                 })));
                 return true;
             });
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             registerServiceExtension(name: RenderingServiceExtensions.debugDumpRenderTree.ToString(), callback: (async (parameters) =>
             {
@@ -518,24 +518,24 @@ public class RenderingFlutterBinding : global::Doroti.Generated.Framework.Gestur
             }));
             registerServiceExtension(name: RenderingServiceExtensions.debugDumpSemanticsTreeInTraversalOrder.ToString(), callback: (async (parameters) =>
             {
-                return new DartMap<string, object> { ["data"] = BindingLibrary._debugCollectSemanticsTrees(global::Doroti.Generated.Framework.Semantics.DebugSemanticsDumpOrder.traversalOrder) };
+                return new DartMap<string, object> { ["data"] = BindingLibrary._debugCollectSemanticsTrees(global::Doroti.Framework.Semantics.DebugSemanticsDumpOrder.traversalOrder) };
             }));
             registerServiceExtension(name: RenderingServiceExtensions.debugDumpSemanticsTreeInInverseHitTestOrder.ToString(), callback: (async (parameters) =>
             {
-                return new DartMap<string, object> { ["data"] = BindingLibrary._debugCollectSemanticsTrees(global::Doroti.Generated.Framework.Semantics.DebugSemanticsDumpOrder.inverseHitTest) };
+                return new DartMap<string, object> { ["data"] = BindingLibrary._debugCollectSemanticsTrees(global::Doroti.Framework.Semantics.DebugSemanticsDumpOrder.inverseHitTest) };
             }));
-            registerBoolServiceExtension(name: RenderingServiceExtensions.profileRenderObjectPaints.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugProfilePaintsEnabled)), setter: ((Func<bool, Future>)(async (value) =>
+            registerBoolServiceExtension(name: RenderingServiceExtensions.profileRenderObjectPaints.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugProfilePaintsEnabled)), setter: ((Func<bool, Future>)(async (value) =>
             {
-                if ((global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugProfilePaintsEnabled != value))
+                if ((global::Doroti.Framework.Rendering.DebugLibrary.debugProfilePaintsEnabled != value))
                 {
-                    global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugProfilePaintsEnabled = value;
+                    global::Doroti.Framework.Rendering.DebugLibrary.debugProfilePaintsEnabled = value;
                 }
             })));
-            registerBoolServiceExtension(name: RenderingServiceExtensions.profileRenderObjectLayouts.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled)), setter: ((Func<bool, Future>)(async (value) =>
+            registerBoolServiceExtension(name: RenderingServiceExtensions.profileRenderObjectLayouts.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled)), setter: ((Func<bool, Future>)(async (value) =>
             {
-                if ((global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled != value))
+                if ((global::Doroti.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled != value))
                 {
-                    global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled = value;
+                    global::Doroti.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled = value;
                 }
             })));
         }
@@ -609,9 +609,9 @@ public class RenderingFlutterBinding : global::Doroti.Generated.Framework.Gestur
         })));
     }
 
-    public virtual void dispatchEvent(global::Doroti.Generated.Framework.Gestures.PointerEvent @event, HitTestResult? hitTestResult)
+    public virtual void dispatchEvent(global::Doroti.Framework.Gestures.PointerEvent @event, HitTestResult? hitTestResult)
     {
-        this._mouseTracker!.updateWithEvent(@event, ((@event is global::Doroti.Generated.Framework.Gestures.PointerMoveEvent) ? null : hitTestResult));
+        this._mouseTracker!.updateWithEvent(@event, ((@event is global::Doroti.Framework.Gestures.PointerMoveEvent) ? null : hitTestResult));
         base.dispatchEvent(@event, hitTestResult);
     }
 
@@ -622,7 +622,7 @@ public class RenderingFlutterBinding : global::Doroti.Generated.Framework.Gestur
 
     public virtual void _handleWebFirstFrame(Duration __unused0)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb);
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb);
         var methodChannel__21314 = new MethodChannel("flutter/service_worker");
         _ = methodChannel__21314.invokeMethod<object?>("first-frame").then(((_) =>
         {
@@ -699,7 +699,7 @@ public class RenderingFlutterBinding : global::Doroti.Generated.Framework.Gestur
     protected async override Task performReassemble()
     {
         await base.performReassemble();
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             FlutterTimeline.startSync("Preparing Hot Reload (layout)");
         }
@@ -712,7 +712,7 @@ public class RenderingFlutterBinding : global::Doroti.Generated.Framework.Gestur
         }
         finally
         {
-            if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
                 FlutterTimeline.finishSync();
             }

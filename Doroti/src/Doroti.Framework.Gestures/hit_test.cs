@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Gestures;
+namespace Doroti.Framework.Gestures;
 
 public interface HitTestable
 {
@@ -43,7 +43,7 @@ public class HitTestEntry<T> where T : HitTestTarget
         this.target = target;
     }
 
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({this.target})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({this.target})";
     public virtual Matrix4? transform => this._transform;
 }
 

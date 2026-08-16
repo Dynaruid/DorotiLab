@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 internal class _ColorsAndStops__gradient
 {
@@ -119,7 +119,7 @@ public class GradientRotation : GradientTransform
     public override int GetHashCode() => this.radians.GetHashCode();
     public override string ToString()
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "GradientRotation"))}(radians: {(global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugFormatDouble(this.radians))})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "GradientRotation"))}(radians: {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(this.radians))})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -297,14 +297,14 @@ public class LinearGradient : Gradient
         {
             return false;
         }
-        return (((((((__other is LinearGradient) && (object.Equals(((LinearGradient)((LinearGradient)__other)).begin, this.begin))) && (object.Equals(((LinearGradient)((LinearGradient)__other)).end, this.end))) && (object.Equals(((LinearGradient)((LinearGradient)__other)).tileMode, this.tileMode))) && (object.Equals(((LinearGradient)__other).transform, transform))) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals<global::Doroti.Ui.Color>(((LinearGradient)__other).colors, colors)) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals<double>(((LinearGradient)__other).stops, stops));
+        return (((((((__other is LinearGradient) && (object.Equals(((LinearGradient)((LinearGradient)__other)).begin, this.begin))) && (object.Equals(((LinearGradient)((LinearGradient)__other)).end, this.end))) && (object.Equals(((LinearGradient)((LinearGradient)__other)).tileMode, this.tileMode))) && (object.Equals(((LinearGradient)__other).transform, transform))) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<global::Doroti.Ui.Color>(((LinearGradient)__other).colors, colors)) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<double>(((LinearGradient)__other).stops, stops));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.begin, this.end, this.tileMode, transform, FoundationRuntimePorts.ObjectHashAll(colors), ((stops is null) ? null : FoundationRuntimePorts.ObjectHashAll(stops!)));
     public override string ToString()
     {
         var description__21498 = new List<string> { $"begin: {this.begin}", $"end: {this.end}", $"colors: {colors}", $"tileMode: {this.tileMode}" };
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearGradient"))}({string.Join(", ", description__21498)})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearGradient"))}({string.Join(", ", description__21498)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -405,14 +405,14 @@ public class RadialGradient : Gradient
         {
             return false;
         }
-        return (((((((((__other is RadialGradient) && (object.Equals(((RadialGradient)((RadialGradient)__other)).center, this.center))) && (((RadialGradient)((RadialGradient)__other)).radius == this.radius)) && (object.Equals(((RadialGradient)((RadialGradient)__other)).tileMode, this.tileMode))) && (object.Equals(((RadialGradient)__other).transform, transform))) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals<global::Doroti.Ui.Color>(((RadialGradient)__other).colors, colors)) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals<double>(((RadialGradient)__other).stops, stops)) && (object.Equals(((RadialGradient)((RadialGradient)__other)).focal, this.focal))) && (((RadialGradient)((RadialGradient)__other)).focalRadius == this.focalRadius));
+        return (((((((((__other is RadialGradient) && (object.Equals(((RadialGradient)((RadialGradient)__other)).center, this.center))) && (((RadialGradient)((RadialGradient)__other)).radius == this.radius)) && (object.Equals(((RadialGradient)((RadialGradient)__other)).tileMode, this.tileMode))) && (object.Equals(((RadialGradient)__other).transform, transform))) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<global::Doroti.Ui.Color>(((RadialGradient)__other).colors, colors)) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<double>(((RadialGradient)__other).stops, stops)) && (object.Equals(((RadialGradient)((RadialGradient)__other)).focal, this.focal))) && (((RadialGradient)((RadialGradient)__other)).focalRadius == this.focalRadius));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.center, this.radius, this.tileMode, transform, FoundationRuntimePorts.ObjectHashAll(colors), ((stops is null) ? null : FoundationRuntimePorts.ObjectHashAll(stops!)), this.focal, this.focalRadius);
     public override string ToString()
     {
-        var description__33354 = new List<string> { $"center: {this.center}", $"radius: {(global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugFormatDouble(this.radius))}", $"colors: {colors}", $"tileMode: {this.tileMode}", $"focalRadius: {(global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugFormatDouble(this.focalRadius))}" };
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "RadialGradient"))}({string.Join(", ", description__33354)})";
+        var description__33354 = new List<string> { $"center: {this.center}", $"radius: {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(this.radius))}", $"colors: {colors}", $"tileMode: {this.tileMode}", $"focalRadius: {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(this.focalRadius))}" };
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "RadialGradient"))}({string.Join(", ", description__33354)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -512,14 +512,14 @@ public class SweepGradient : Gradient
         {
             return false;
         }
-        return ((((((((__other is SweepGradient) && (object.Equals(((SweepGradient)((SweepGradient)__other)).center, this.center))) && (((SweepGradient)((SweepGradient)__other)).startAngle == this.startAngle)) && (((SweepGradient)((SweepGradient)__other)).endAngle == this.endAngle)) && (object.Equals(((SweepGradient)((SweepGradient)__other)).tileMode, this.tileMode))) && (object.Equals(((SweepGradient)__other).transform, transform))) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals<global::Doroti.Ui.Color>(((SweepGradient)__other).colors, colors)) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals<double>(((SweepGradient)__other).stops, stops));
+        return ((((((((__other is SweepGradient) && (object.Equals(((SweepGradient)((SweepGradient)__other)).center, this.center))) && (((SweepGradient)((SweepGradient)__other)).startAngle == this.startAngle)) && (((SweepGradient)((SweepGradient)__other)).endAngle == this.endAngle)) && (object.Equals(((SweepGradient)((SweepGradient)__other)).tileMode, this.tileMode))) && (object.Equals(((SweepGradient)__other).transform, transform))) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<global::Doroti.Ui.Color>(((SweepGradient)__other).colors, colors)) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<double>(((SweepGradient)__other).stops, stops));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.center, this.startAngle, DartRuntimePrimitives.RequireValue(this.endAngle), this.tileMode, transform, FoundationRuntimePorts.ObjectHashAll(colors), ((stops is null) ? null : FoundationRuntimePorts.ObjectHashAll(stops!)));
     public override string ToString()
     {
-        var description__44372 = new List<string> { $"center: {this.center}", $"startAngle: {(global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugFormatDouble(this.startAngle))}", $"endAngle: {(global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugFormatDouble(DartRuntimePrimitives.RequireValue(this.endAngle)))}", $"colors: {colors}", $"tileMode: {this.tileMode}" };
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SweepGradient"))}({string.Join(", ", description__44372)})";
+        var description__44372 = new List<string> { $"center: {this.center}", $"startAngle: {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(this.startAngle))}", $"endAngle: {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(DartRuntimePrimitives.RequireValue(this.endAngle)))}", $"colors: {colors}", $"tileMode: {this.tileMode}" };
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SweepGradient"))}({string.Join(", ", description__44372)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Gestures;
+namespace Doroti.Framework.Gestures;
 
 public delegate void GestureDoubleTapCallback();
 
@@ -112,7 +112,7 @@ public class DoubleTapGestureRecognizer : GestureRecognizer
     {
     }
 
-    internal static bool _defaultButtonAcceptBehavior(long buttons) => (buttons == global::Doroti.Generated.Framework.Gestures.EventsLibrary.kPrimaryButton);
+    internal static bool _defaultButtonAcceptBehavior(long buttons) => (buttons == global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton);
     public override bool isPointerAllowed(PointerDownEvent @event)
     {
         if ((this._firstTap is null))
@@ -135,7 +135,7 @@ public class DoubleTapGestureRecognizer : GestureRecognizer
     {
         if ((this._firstTap is not null))
         {
-            if (!this._firstTap!.isWithinGlobalTolerance(@event, global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kDoubleTapSlop))
+            if (!this._firstTap!.isWithinGlobalTolerance(@event, global::Doroti.Framework.Gestures.ConstantsLibrary.kDoubleTapSlop))
             {
                 return;
             }
@@ -163,7 +163,7 @@ public class DoubleTapGestureRecognizer : GestureRecognizer
     internal virtual void _trackTap(PointerDownEvent @event)
     {
         _stopDoubleTapTimer();
-        var tracker__8763 = new _TapTracker__multitap(@event: @event, entry: GestureBinding.instance.gestureArena.add(@event.pointer, this), doubleTapMinTime: global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kDoubleTapMinTime, gestureSettings: gestureSettings);
+        var tracker__8763 = new _TapTracker__multitap(@event: @event, entry: GestureBinding.instance.gestureArena.add(@event.pointer, this), doubleTapMinTime: global::Doroti.Framework.Gestures.ConstantsLibrary.kDoubleTapMinTime, gestureSettings: gestureSettings);
         this._trackers[@event.pointer] = tracker__8763;
         tracker__8763.startTrackingPointer((Action<PointerEvent>)this._handleEvent, @event.transform);
     }
@@ -188,7 +188,7 @@ public class DoubleTapGestureRecognizer : GestureRecognizer
             if ((@event is PointerMoveEvent))
             {
                 PointerMoveEvent @event__as9360 = (PointerMoveEvent)@event;
-                if (!tracker__9146.isWithinGlobalTolerance(((PointerMoveEvent)@event__as9360), global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kDoubleTapTouchSlop))
+                if (!tracker__9146.isWithinGlobalTolerance(((PointerMoveEvent)@event__as9360), global::Doroti.Framework.Gestures.ConstantsLibrary.kDoubleTapTouchSlop))
                 {
                     _reject(tracker__9146);
                 }
@@ -299,7 +299,7 @@ public class DoubleTapGestureRecognizer : GestureRecognizer
 
     internal virtual void _startDoubleTapTimer()
     {
-        _doubleTapTimer ??= new Timer(global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kDoubleTapTimeout, this._reset);
+        _doubleTapTimer ??= new Timer(global::Doroti.Framework.Gestures.ConstantsLibrary.kDoubleTapTimeout, this._reset);
     }
 
     internal virtual void _stopDoubleTapTimer()
@@ -338,7 +338,7 @@ internal class _TapGesture__multitap : _TapTracker__multitap
     internal virtual OffsetPair _lastPosition { get; set; } = default!;
     internal virtual OffsetPair? _finalPosition { get; set; } = default;
 
-    internal _TapGesture__multitap(MultiTapGestureRecognizer gestureRecognizer, PointerEvent @event, Duration longTapDelay, DeviceGestureSettings? gestureSettings) : base(gestureSettings: gestureSettings, @event: ((PointerDownEvent?)(object?)@event)!, entry: GestureBinding.instance.gestureArena.add(((PointerDownEvent)@event).pointer, gestureRecognizer), doubleTapMinTime: global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kDoubleTapMinTime)
+    internal _TapGesture__multitap(MultiTapGestureRecognizer gestureRecognizer, PointerEvent @event, Duration longTapDelay, DeviceGestureSettings? gestureSettings) : base(gestureSettings: gestureSettings, @event: ((PointerDownEvent?)(object?)@event)!, entry: GestureBinding.instance.gestureArena.add(((PointerDownEvent)@event).pointer, gestureRecognizer), doubleTapMinTime: global::Doroti.Framework.Gestures.ConstantsLibrary.kDoubleTapMinTime)
     {
         this.gestureRecognizer = gestureRecognizer;
         this._lastPosition = OffsetPair.CreateFromEventPosition(@event);
@@ -350,7 +350,7 @@ internal class _TapGesture__multitap : _TapTracker__multitap
         if ((@event is PointerMoveEvent))
         {
             PointerMoveEvent @event__as13527 = (PointerMoveEvent)@event;
-            if (!isWithinGlobalTolerance(((PointerMoveEvent)@event__as13527), global::Doroti.Generated.Framework.Gestures.EventsLibrary.computeHitSlop(((PointerMoveEvent)@event__as13527).kind, gestureSettings)))
+            if (!isWithinGlobalTolerance(((PointerMoveEvent)@event__as13527), global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(((PointerMoveEvent)@event__as13527).kind, gestureSettings)))
             {
                 cancel();
             }
@@ -644,7 +644,7 @@ public class SerialTapGestureRecognizer : GestureRecognizer
 
     internal virtual bool _representsSameSeries(_TapTracker__multitap tap, PointerDownEvent @event)
     {
-        return ((tap.hasElapsedMinTime() && tap.hasSameButton(@event)) && tap.isWithinGlobalTolerance(@event, global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kDoubleTapSlop));
+        return ((tap.hasElapsedMinTime() && tap.hasSameButton(@event)) && tap.isWithinGlobalTolerance(@event, global::Doroti.Framework.Gestures.ConstantsLibrary.kDoubleTapSlop));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -656,7 +656,7 @@ public class SerialTapGestureRecognizer : GestureRecognizer
             var details__31711 = new SerialTapDownDetails(globalPosition: @event.position, localPosition: @event.localPosition, kind: getKindForPointer(@event.pointer), buttons: @event.buttons, count: (checked((long)(this._completedTaps.Count)) + 1L));
             invokeCallback<object?>("onSerialTapDown", () => { ((Action)((() => this.onSerialTapDown!(details__31711))))(); return null; });
         }
-        var tracker__32054 = new _TapTracker__multitap(gestureSettings: gestureSettings, @event: @event, entry: GestureBinding.instance.gestureArena.add(@event.pointer, this), doubleTapMinTime: global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kDoubleTapMinTime);
+        var tracker__32054 = new _TapTracker__multitap(gestureSettings: gestureSettings, @event: @event, entry: GestureBinding.instance.gestureArena.add(@event.pointer, this), doubleTapMinTime: global::Doroti.Framework.Gestures.ConstantsLibrary.kDoubleTapMinTime);
         DartRuntimePrimitives.Assert(() => (this._pendingTap is null));
         _pendingTap = tracker__32054;
         tracker__32054.startTrackingPointer((Action<PointerEvent>)this._handleEvent, @event.transform);
@@ -677,7 +677,7 @@ public class SerialTapGestureRecognizer : GestureRecognizer
             if ((@event is PointerMoveEvent))
             {
                 PointerMoveEvent @event__as32651 = (PointerMoveEvent)@event;
-                if (!tracker__32541.isWithinGlobalTolerance(((PointerMoveEvent)@event__as32651), global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kDoubleTapTouchSlop))
+                if (!tracker__32541.isWithinGlobalTolerance(((PointerMoveEvent)@event__as32651), global::Doroti.Framework.Gestures.ConstantsLibrary.kDoubleTapTouchSlop))
                 {
                     _reset();
                 }
@@ -761,7 +761,7 @@ public class SerialTapGestureRecognizer : GestureRecognizer
 
     internal virtual void _startSerialTapTimer()
     {
-        _serialTapTimer ??= new Timer(global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kDoubleTapTimeout, this._reset);
+        _serialTapTimer ??= new Timer(global::Doroti.Framework.Gestures.ConstantsLibrary.kDoubleTapTimeout, this._reset);
     }
 
     internal virtual void _stopSerialTapTimer()

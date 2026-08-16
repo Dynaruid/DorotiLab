@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 internal delegate double _ChildSizingFunction__list_wheel_viewport(RenderBox child);
 
@@ -675,7 +675,7 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     internal virtual Matrix4 _centerOriginTransform(Matrix4 originalMatrix)
     {
         var result__39096 = Matrix4.identity();
-        global::Doroti.Ui.Offset centerOriginTranslation__39142 = global::Doroti.Generated.Framework.Painting.Alignment.center.alongSize(size);
+        global::Doroti.Ui.Offset centerOriginTranslation__39142 = global::Doroti.Framework.Painting.Alignment.center.alongSize(size);
         result__39096.translateByDouble((centerOriginTranslation__39142.dx * (((-this._offAxisFraction * 2L) + 1L))), centerOriginTranslation__39142.dy, 0, 1);
         result__39096.multiply(originalMatrix);
         result__39096.translateByDouble((-centerOriginTranslation__39142.dx * (((-this._offAxisFraction * 2L) + 1L))), -centerOriginTranslation__39142.dy, 0, 1);
@@ -748,7 +748,7 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual RevealedOffset getOffsetToReveal(RenderObject target, double alignment, Rect? rect = null, global::Doroti.Generated.Framework.Painting.Axis? axis = null)
+    public virtual RevealedOffset getOffsetToReveal(RenderObject target, double alignment, Rect? rect = null, global::Doroti.Framework.Painting.Axis? axis = null)
     {
         rect ??= ((RenderObject)target).paintBounds;
         var child__42246 = target;

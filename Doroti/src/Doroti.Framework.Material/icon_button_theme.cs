@@ -12,9 +12,9 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
-public class IconButtonThemeData : global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class IconButtonThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 {
     public virtual ButtonStyle? style { get; private set; }
 
@@ -49,12 +49,12 @@ public class IconButtonThemeData : global::Doroti.Generated.Framework.Foundation
         return ((__other is IconButtonThemeData) && (object.Equals(((IconButtonThemeData)((IconButtonThemeData)__other)).style, this.style)));
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<ButtonStyle>("style", this.style, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonStyle>("style", this.style, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;
@@ -75,27 +75,27 @@ public class IconButtonThemeData : global::Doroti.Generated.Framework.Foundation
 
 }
 
-public class IconButtonTheme : global::Doroti.Generated.Framework.Widgets.InheritedTheme
+public class IconButtonTheme : global::Doroti.Framework.Widgets.InheritedTheme
 {
     public virtual IconButtonThemeData data { get; private set; } = default!;
 
-    public IconButtonTheme(global::Doroti.Generated.Framework.Foundation.Key? key = null, IconButtonThemeData data = default!, global::Doroti.Generated.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public IconButtonTheme(global::Doroti.Framework.Foundation.Key? key = null, IconButtonThemeData data = default!, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static IconButtonThemeData of(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static IconButtonThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
         IconButtonTheme? buttonTheme__3886 = ((IconButtonTheme?)(object?)context.dependOnInheritedWidgetOfExactType<IconButtonTheme>());
         return (buttonTheme__3886?.data ?? Theme.of(context).iconButtonTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget wrap(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Widgets.Widget child)
+    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new IconButtonTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new IconButtonTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Generated.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((IconButtonTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((IconButtonTheme)oldWidget).data)));
 }

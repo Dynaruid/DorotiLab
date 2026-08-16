@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Gestures;
+namespace Doroti.Framework.Gestures;
 
 public static partial class ScaleLibrary
 {
@@ -195,7 +195,7 @@ public static partial class ScaleLibrary
     internal static bool _isFlingGesture(Velocity velocity)
     {
         double speedSquared__10727 = ((Velocity)velocity).pixelsPerSecond.distanceSquared;
-        return (speedSquared__10727 > (global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity * global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity));
+        return (speedSquared__10727 > (global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity * global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -542,9 +542,9 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
                 if (ScaleLibrary._isFlingGesture(velocity__25914))
                 {
                     global::Doroti.Ui.Offset pixelsPerSecond__26012 = ((Velocity)velocity__25914).pixelsPerSecond;
-                    if ((pixelsPerSecond__26012.distanceSquared > (global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity * global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity)))
+                    if ((pixelsPerSecond__26012.distanceSquared > (global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity * global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity)))
                     {
-                        velocity__25914 = new Velocity(pixelsPerSecond: (((pixelsPerSecond__26012 / pixelsPerSecond__26012.distance)) * global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity));
+                        velocity__25914 = new Velocity(pixelsPerSecond: (((pixelsPerSecond__26012 / pixelsPerSecond__26012.distance)) * global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity));
                     }
                     invokeCallback<object?>("onEnd", () => { ((Action)((() => this.onEnd!(new ScaleEndDetails(velocity: velocity__25914, scaleVelocity: (this._scaleVelocityTracker?.getVelocity().pixelsPerSecond.dx ?? -1), pointerCount: this.pointerCount)))))(); return null; });
                 }
@@ -572,7 +572,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
         {
             double spanDelta__27518 = ((this._currentSpan - this._initialSpan)).abs();
             double focalPointDelta__27586 = ((DartRuntimePrimitives.RequireValue(this._currentFocalPoint) - this._initialFocalPoint)).distance;
-            if ((((spanDelta__27518 > global::Doroti.Generated.Framework.Gestures.EventsLibrary.computeScaleSlop(((PointerEvent)@event).kind)) || (focalPointDelta__27586 > global::Doroti.Generated.Framework.Gestures.EventsLibrary.computePanSlop(((PointerEvent)@event).kind, gestureSettings))) || (Math.Max((this._scaleFactor / this._pointerScaleFactor), (this._pointerScaleFactor / this._scaleFactor)) > 1.05)))
+            if ((((spanDelta__27518 > global::Doroti.Framework.Gestures.EventsLibrary.computeScaleSlop(((PointerEvent)@event).kind)) || (focalPointDelta__27586 > global::Doroti.Framework.Gestures.EventsLibrary.computePanSlop(((PointerEvent)@event).kind, gestureSettings))) || (Math.Max((this._scaleFactor / this._pointerScaleFactor), (this._pointerScaleFactor / this._scaleFactor)) > 1.05)))
             {
                 resolve(GestureDisposition.accepted);
             }

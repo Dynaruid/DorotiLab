@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class Texture : LeafRenderObjectWidget
 {
@@ -20,17 +20,17 @@ public class Texture : LeafRenderObjectWidget
     public virtual bool freeze { get; private set; } = default!;
     public virtual FilterQuality filterQuality { get; private set; } = default!;
 
-    public Texture(global::Doroti.Generated.Framework.Foundation.Key? key = null, long textureId = default!, bool freeze = false, FilterQuality filterQuality = FilterQuality.low) : base(key: key)
+    public Texture(global::Doroti.Framework.Foundation.Key? key = null, long textureId = default!, bool freeze = false, FilterQuality filterQuality = FilterQuality.low) : base(key: key)
     {
         this.textureId = textureId;
         this.freeze = freeze;
         this.filterQuality = filterQuality;
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Rendering.RenderObject>(new global::Doroti.Generated.Framework.Rendering.TextureBox(textureId: this.textureId, freeze: this.freeze, filterQuality: this.filterQuality));
-    public override void updateRenderObject(BuildContext context, global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.TextureBox(textureId: this.textureId, freeze: this.freeze, filterQuality: this.filterQuality));
+    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Generated.Framework.Rendering.TextureBox)(object)renderObject;
+        var __renderObject = (global::Doroti.Framework.Rendering.TextureBox)(object)renderObject;
         __renderObject.textureId = this.textureId;
         __renderObject.freeze = this.freeze;
         __renderObject.filterQuality = this.filterQuality;

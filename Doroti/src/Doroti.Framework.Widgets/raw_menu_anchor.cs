@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public static partial class Raw_menu_anchorLibrary
 {
@@ -21,7 +21,7 @@ public static partial class Raw_menu_anchorLibrary
 
 public static partial class Raw_menu_anchorLibrary
 {
-    internal static DartMap<ShortcutActivator, Intent> _kMenuTraversalShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.gameButtonA)] = ((Intent)(object?)new ActivateIntent()), [new SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.escape)] = ((Intent)(object?)new DismissIntent()), [new SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.arrowDown)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.down)), [new SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.arrowUp)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.up)), [new SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.arrowLeft)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.left)), [new SingleActivator(global::Doroti.Generated.Framework.Services.LogicalKeyboardKey.arrowRight)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.right)) };
+    internal static DartMap<ShortcutActivator, Intent> _kMenuTraversalShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.gameButtonA)] = ((Intent)(object?)new ActivateIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.escape)] = ((Intent)(object?)new DismissIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.down)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.up)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowLeft)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.left)), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowRight)] = ((Intent)(object?)new DirectionalFocusIntent(TraversalDirection.right)) };
 }
 
 public class RawMenuOverlayInfo
@@ -103,7 +103,7 @@ public class RawMenuAnchor : StatefulWidget
     public virtual bool consumeOutsideTaps { get; private set; } = default!;
     public virtual MenuController controller { get; private set; } = default!;
 
-    public RawMenuAnchor(global::Doroti.Generated.Framework.Foundation.Key? key = null, FocusNode? childFocusNode = null, bool consumeOutsideTaps = false, global::System.Action? onOpen = null, global::System.Action? onClose = null, global::System.Action<Offset?, global::System.Action> onOpenRequested = default!, global::System.Action<global::System.Action> onCloseRequested = default!, bool useRootOverlay = false, global::System.Func<BuildContext, MenuController, Widget?, Widget>? builder = null, MenuController controller = default!, global::System.Func<BuildContext, RawMenuOverlayInfo, Widget> overlayBuilder = default!, Widget? child = null) : base(key: key)
+    public RawMenuAnchor(global::Doroti.Framework.Foundation.Key? key = null, FocusNode? childFocusNode = null, bool consumeOutsideTaps = false, global::System.Action? onOpen = null, global::System.Action? onClose = null, global::System.Action<Offset?, global::System.Action> onOpenRequested = default!, global::System.Action<global::System.Action> onCloseRequested = default!, bool useRootOverlay = false, global::System.Func<BuildContext, MenuController, Widget?, Widget>? builder = null, MenuController controller = default!, global::System.Func<BuildContext, RawMenuOverlayInfo, Widget> overlayBuilder = default!, Widget? child = null) : base(key: key)
     {
         global::System.Action<Offset?, global::System.Action> __onOpenRequested = onOpenRequested ?? _defaultOnOpenRequested;
         global::System.Action<global::System.Action> __onCloseRequested = onCloseRequested ?? _defaultOnCloseRequested;
@@ -131,11 +131,11 @@ public class RawMenuAnchor : StatefulWidget
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _RawMenuAnchorState__raw_menu_anchor());
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<FocusNode>.CreateHas("focusNode", this.childFocusNode));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("useRootOverlay", value: this.useRootOverlay, ifFalse: "use nearest overlay", ifTrue: "use root overlay"));
+        properties.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<FocusNode>.CreateHas("focusNode", this.childFocusNode));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("useRootOverlay", value: this.useRootOverlay, ifFalse: "use nearest overlay", ifTrue: "use root overlay"));
     }
 
 }
@@ -164,16 +164,16 @@ internal interface _RawMenuAnchorBaseMixin__raw_menu_anchor<T> where T : Statefu
     public void handleCloseRequest();
     public void closeChildren(bool inDispose = false);
     public void requestChildrenClose();
-    public void handleOutsideTap(global::Doroti.Generated.Framework.Gestures.PointerDownEvent pointerDownEvent);
+    public void handleOutsideTap(global::Doroti.Framework.Gestures.PointerDownEvent pointerDownEvent);
     public Widget buildAnchor(BuildContext context);
     public Widget build(BuildContext context);
-    public string ToString(global::Doroti.Generated.Framework.Foundation.DiagnosticLevel minLevel = default!);
+    public string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = default!);
 }
 
 internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _RawMenuAnchorBaseMixin__raw_menu_anchor<RawMenuAnchor>
 {
-    internal virtual GlobalKey<_RawMenuAnchorState__raw_menu_anchor> _anchorKey { get; private set; } = GlobalKey<_RawMenuAnchorState__raw_menu_anchor>.Create(debugLabel: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : "MenuAnchor"));
-    internal virtual OverlayPortalController _overlayController { get; private set; } = new OverlayPortalController(debugLabel: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : "MenuAnchor controller"));
+    internal virtual GlobalKey<_RawMenuAnchorState__raw_menu_anchor> _anchorKey { get; private set; } = GlobalKey<_RawMenuAnchorState__raw_menu_anchor>.Create(debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : "MenuAnchor"));
+    internal virtual OverlayPortalController _overlayController { get; private set; } = new OverlayPortalController(debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : "MenuAnchor controller"));
     internal virtual Offset? _menuPosition { get; set; } = default;
     public virtual List<dynamic> _anchorChildren { get; set; } = new List<_RawMenuAnchorBaseMixin__raw_menu_anchor<StatefulWidget>>().Cast<dynamic>().ToList();
     public virtual dynamic _parent { get; set; } = default!;
@@ -239,7 +239,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
             return;
         }
         closeChildren(inDispose: inDispose);
-        if ((!object.Equals(global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Generated.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
+        if ((!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
         {
             this._overlayController.hide();
         }
@@ -247,7 +247,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
         {
             if (!inDispose)
             {
-                global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) => {
+                global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) => {
 this._overlayController.hide();
 })), debugLabel: "MenuAnchor.hide");
             }
@@ -256,7 +256,7 @@ this._overlayController.hide();
         {
             ((dynamic)this._parent)?._childChangedOpenState();
             ((RawMenuAnchor)(object)this.widget).onClose?.Invoke();
-            if ((this.mounted && (!object.Equals(global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Generated.Framework.Scheduler.SchedulerPhase.persistentCallbacks))))
+            if ((this.mounted && (!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks))))
             {
                 setState(((global::System.Action)(() => {
 })));
@@ -273,13 +273,13 @@ open(position: position);
 
     public virtual void handleCloseRequest()
     {
-        if ((!object.Equals(global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Generated.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
+        if ((!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
         {
             this.widget.onCloseRequested(() => this.close(default));
         }
         else
         {
-            global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) => {
+            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) => {
 if (this.mounted)
 {
     this.widget.onCloseRequested(() => this.close(default));
@@ -301,7 +301,7 @@ if (this.mounted)
 
     public virtual Widget buildAnchor(BuildContext context)
     {
-        Widget child__30309 = ((Widget)(object?)new Shortcuts(includeSemantics: false, shortcuts: Raw_menu_anchorLibrary._kMenuTraversalShortcuts, child: new TapRegion(groupId: ((MenuController)((dynamic)this.root).menuController), consumeOutsideTaps: (((bool)((dynamic)this.root).isOpen) && ((RawMenuAnchor)(object)this.widget).consumeOutsideTaps), onTapOutside: (global::System.Action<global::Doroti.Generated.Framework.Gestures.PointerDownEvent>)this.handleOutsideTap, child: new Builder(key: this._anchorKey, builder: ((global::System.Func<BuildContext, Widget>)((context) => {
+        Widget child__30309 = ((Widget)(object?)new Shortcuts(includeSemantics: false, shortcuts: Raw_menu_anchorLibrary._kMenuTraversalShortcuts, child: new TapRegion(groupId: ((MenuController)((dynamic)this.root).menuController), consumeOutsideTaps: (((bool)((dynamic)this.root).isOpen) && ((RawMenuAnchor)(object)this.widget).consumeOutsideTaps), onTapOutside: (global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)this.handleOutsideTap, child: new Builder(key: this._anchorKey, builder: ((global::System.Func<BuildContext, Widget>)((context) => {
 return (((((RawMenuAnchor)(object)this.widget).builder is null ? ((RawMenuAnchor)(object)this.widget).child : ((RawMenuAnchor)(object)this.widget).builder.Invoke(context, this.menuController, ((RawMenuAnchor)(object)this.widget).child))) ?? new SizedBox());
 throw new InvalidOperationException("Dart closure completed without a value.");
 }))))));
@@ -309,9 +309,9 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual string ToString(global::Doroti.Generated.Framework.Foundation.DiagnosticLevel minLevel = default!)
+    public virtual string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = default!)
     {
-        return global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+        return global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -408,14 +408,14 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     public virtual void _childChangedOpenState()
     {
         ((dynamic)this._parent)?._childChangedOpenState();
-        if ((!object.Equals(global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Generated.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
+        if ((!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
         {
             setState(((global::System.Action)(() => {
 })));
         }
         else
         {
-            global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
+            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
 setState(((global::System.Action)(() => {
 })));
 })));
@@ -442,7 +442,7 @@ setState(((global::System.Action)(() => {
         }
     }
 
-    public virtual void handleOutsideTap(global::Doroti.Generated.Framework.Gestures.PointerDownEvent pointerDownEvent)
+    public virtual void handleOutsideTap(global::Doroti.Framework.Gestures.PointerDownEvent pointerDownEvent)
     {
         DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Tapped Outside {this.menuController}"));
         if (this.isOpen)
@@ -464,16 +464,16 @@ public class RawMenuAnchorGroup : StatefulWidget
     public virtual Widget child { get; private set; } = default!;
     public virtual MenuController controller { get; private set; } = default!;
 
-    public RawMenuAnchorGroup(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!, MenuController controller = default!) : base(key: key)
+    public RawMenuAnchorGroup(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, MenuController controller = default!) : base(key: key)
     {
         this.child = child;
         this.controller = controller;
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<MenuController>.CreateHas("controller", this.controller));
+        properties.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<MenuController>.CreateHas("controller", this.controller));
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _RawMenuAnchorGroupState__raw_menu_anchor());
@@ -507,14 +507,14 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
         closeChildren(inDispose: inDispose);
         if (!inDispose)
         {
-            if ((!object.Equals(global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Generated.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
+            if ((!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
             {
                 setState(((global::System.Action)(() => {
 })));
             }
             else
             {
-                global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
+                global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
 if (this.mounted)
 {
     setState(((global::System.Action)(() => {
@@ -545,7 +545,7 @@ if (this.mounted)
 
     public virtual Widget buildAnchor(BuildContext context)
     {
-        return ((Widget)(object?)new TapRegion(groupId: ((MenuController)((dynamic)this.root).menuController), onTapOutside: (global::System.Action<global::Doroti.Generated.Framework.Gestures.PointerDownEvent>)this.handleOutsideTap, child: ((RawMenuAnchorGroup)(object)this.widget).child));
+        return ((Widget)(object?)new TapRegion(groupId: ((MenuController)((dynamic)this.root).menuController), onTapOutside: (global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)this.handleOutsideTap, child: ((RawMenuAnchorGroup)(object)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -642,14 +642,14 @@ if (this.mounted)
     public virtual void _childChangedOpenState()
     {
         ((dynamic)this._parent)?._childChangedOpenState();
-        if ((!object.Equals(global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Generated.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
+        if ((!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
         {
             setState(((global::System.Action)(() => {
 })));
         }
         else
         {
-            global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
+            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
 setState(((global::System.Action)(() => {
 })));
 })));
@@ -676,7 +676,7 @@ setState(((global::System.Action)(() => {
         }
     }
 
-    public virtual void handleOutsideTap(global::Doroti.Generated.Framework.Gestures.PointerDownEvent pointerDownEvent)
+    public virtual void handleOutsideTap(global::Doroti.Framework.Gestures.PointerDownEvent pointerDownEvent)
     {
         DartRuntimePrimitives.Assert(() => Raw_menu_anchorLibrary._debugMenuInfo($"Tapped Outside {this.menuController}"));
         if (this.isOpen)
@@ -691,7 +691,7 @@ setState(((global::System.Action)(() => {
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual string ToString(global::Doroti.Generated.Framework.Foundation.DiagnosticLevel minLevel = default!) => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = default!) => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
 }
 
 public class MenuController
@@ -741,7 +741,7 @@ public class MenuController
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
 }
 
 public class DismissMenuAction : DismissAction
@@ -775,12 +775,12 @@ public static partial class Raw_menu_anchorLibrary
             {
                 if (Raw_menu_anchorLibrary._kDebugMenus)
                 {
-                    global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint($"MENU: {message}");
+                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"MENU: {message}");
                     if (((details is not null) && System.Linq.Enumerable.Any(details)))
                     {
                         foreach (string detail__40260 in details)
                         {
-                            global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint($"    {detail__40260}");
+                            global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"    {detail__40260}");
                         }
                     }
                 }

@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public enum SnapshotMode
 {
@@ -21,7 +21,7 @@ public enum SnapshotMode
     forced
 }
 
-public class SnapshotController : global::Doroti.Generated.Framework.Foundation.ChangeNotifier
+public class SnapshotController : global::Doroti.Framework.Foundation.ChangeNotifier
 {
     internal virtual bool _allowSnapshotting { get; set; } = default!;
 
@@ -58,7 +58,7 @@ public class SnapshotWidget : SingleChildRenderObjectWidget
     public virtual bool autoresize { get; private set; } = default!;
     public virtual SnapshotPainter painter { get; private set; } = default!;
 
-    public SnapshotWidget(global::Doroti.Generated.Framework.Foundation.Key? key = null, SnapshotMode mode = SnapshotMode.normal, SnapshotPainter painter = default!, bool autoresize = false, SnapshotController controller = default!, Widget? child = default!) : base(key: key, child: child)
+    public SnapshotWidget(global::Doroti.Framework.Foundation.Key? key = null, SnapshotMode mode = SnapshotMode.normal, SnapshotPainter painter = default!, bool autoresize = false, SnapshotController controller = default!, Widget? child = default!) : base(key: key, child: child)
     {
         SnapshotPainter __painter = painter ?? new _DefaultSnapshotPainter__snapshot_widget();
         this.mode = mode;
@@ -67,16 +67,16 @@ public class SnapshotWidget : SingleChildRenderObjectWidget
         this.controller = controller;
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context);
-        return ((global::Doroti.Generated.Framework.Rendering.RenderObject)(object?)new _RenderSnapshotWidget__snapshot_widget(controller: this.controller, mode: this.mode, devicePixelRatio: MediaQuery.devicePixelRatioOf(context), painter: this.painter, autoresize: this.autoresize));
+        global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context);
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderSnapshotWidget__snapshot_widget(controller: this.controller, mode: this.mode, devicePixelRatio: MediaQuery.devicePixelRatioOf(context), painter: this.painter, autoresize: this.autoresize));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(BuildContext context, global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context);
+        global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context);
         DartRuntimePrimitives.Ignore(((Func<_RenderSnapshotWidget__snapshot_widget>)(() =>
 {            var __cascade = (((_RenderSnapshotWidget__snapshot_widget?)(object?)renderObject)!);
             __cascade.controller = this.controller;
@@ -89,7 +89,7 @@ public class SnapshotWidget : SingleChildRenderObjectWidget
 
 }
 
-internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Generated.Framework.Rendering.RenderProxyBox
+internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Framework.Rendering.RenderProxyBox
 {
     internal virtual double _devicePixelRatio { get; set; } = default!;
     internal virtual SnapshotPainter _painter { get; set; } = default!;
@@ -207,7 +207,7 @@ internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Generated
             markNeedsPaint();
         }
     }
-    public virtual void attach(global::Doroti.Generated.Framework.Rendering.PipelineOwner owner)
+    public virtual void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
     {
         this.controller.addListener(() => this._onRasterValueChanged());
         this.painter.addListener(() => this.markNeedsPaint());
@@ -246,8 +246,8 @@ internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Generated
 
     internal virtual global::Doroti.Ui.Image? _paintAndDetachToImage()
     {
-        var offsetLayer__9758 = new global::Doroti.Generated.Framework.Rendering.OffsetLayer();
-        var context__9797 = new global::Doroti.Generated.Framework.Rendering.PaintingContext(offsetLayer__9758, (Offset.zero & this.size));
+        var offsetLayer__9758 = new global::Doroti.Framework.Rendering.OffsetLayer();
+        var context__9797 = new global::Doroti.Framework.Rendering.PaintingContext(offsetLayer__9758, (Offset.zero & this.size));
         base.paint(context__9797, Offset.zero);
         context__9797.stopRecordingIfNeeded();
         if (((!object.Equals(this.mode, SnapshotMode.forced)) && !offsetLayer__9758.supportsRasterization()))
@@ -255,7 +255,7 @@ internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Generated
             offsetLayer__9758.dispose();
             if ((object.Equals(this.mode, SnapshotMode.normal)))
             {
-                throw DartRuntimePrimitives.AsException(global::Doroti.Generated.Framework.Foundation.FlutterError.Create("SnapshotWidget used with a child that contains a PlatformView."));
+                throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("SnapshotWidget used with a child that contains a PlatformView."));
             }
             _disableSnapshotAttempt = true;
             return ((global::Doroti.Ui.Image)(object)null);
@@ -267,7 +267,7 @@ internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Generated
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void paint(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset offset)
+    public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
         if (this.size.isEmpty)
         {
@@ -281,7 +281,7 @@ internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Generated
             this._childRaster?.dispose();
             _childRaster = null;
             _childRasterSize = null;
-            this.painter.paint(context, offset, this.size, (global::System.Action<global::Doroti.Generated.Framework.Rendering.PaintingContext, Offset>)base.paint);
+            this.painter.paint(context, offset, this.size, (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)base.paint);
             return;
         }
         if (((this.autoresize && (!object.Equals(this.size, this._lastCachedSize))) && (this._lastCachedSize is not null)))
@@ -296,7 +296,7 @@ internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Generated
         }
         if ((this._childRaster is null))
         {
-            this.painter.paint(context, offset, this.size, (global::System.Action<global::Doroti.Generated.Framework.Rendering.PaintingContext, Offset>)base.paint);
+            this.painter.paint(context, offset, this.size, (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)base.paint);
         }
         else
         {
@@ -306,14 +306,14 @@ internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Generated
 
 }
 
-public abstract class SnapshotPainter : global::Doroti.Generated.Framework.Foundation.ChangeNotifier
+public abstract class SnapshotPainter : global::Doroti.Framework.Foundation.ChangeNotifier
 {
     protected SnapshotPainter()
     {
     }
 
-    public abstract void paintSnapshot(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset offset, Size size, global::Doroti.Ui.Image image, Size sourceSize, double pixelRatio);
-    public abstract void paint(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset offset, Size size, global::System.Action<global::Doroti.Generated.Framework.Rendering.PaintingContext, Offset> painter);
+    public abstract void paintSnapshot(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset, Size size, global::Doroti.Ui.Image image, Size sourceSize, double pixelRatio);
+    public abstract void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset, Size size, global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset> painter);
     public abstract bool shouldRepaint(SnapshotPainter oldPainter);
 }
 
@@ -336,12 +336,12 @@ internal class _DefaultSnapshotPainter__snapshot_widget : SnapshotPainter
     {
     }
 
-    public override void paint(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset offset, Size size, global::System.Action<global::Doroti.Generated.Framework.Rendering.PaintingContext, Offset> painter)
+    public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset, Size size, global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset> painter)
     {
         painter(context, offset);
     }
 
-    public override void paintSnapshot(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset offset, Size size, global::Doroti.Ui.Image image, Size sourceSize, double pixelRatio)
+    public override void paintSnapshot(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset, Size size, global::Doroti.Ui.Image image, Size sourceSize, double pixelRatio)
     {
         var src__17443 = global::Doroti.Ui.Rect.fromLTWH(0, 0, sourceSize.width, sourceSize.height);
         var dst__17517 = global::Doroti.Ui.Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height);
@@ -349,7 +349,7 @@ internal class _DefaultSnapshotPainter__snapshot_widget : SnapshotPainter
 {            var __cascade = new global::Doroti.Ui.Paint();
             __cascade.filterQuality = FilterQuality.medium;
             return __cascade;        }))();
-        ((global::Doroti.Generated.Framework.Rendering.PaintingContext)context).canvas.drawImageRect(image, src__17443, dst__17517, paint__17595);
+        ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawImageRect(image, src__17443, dst__17517, paint__17595);
     }
 
     public virtual void removeListener(global::System.Action listener)

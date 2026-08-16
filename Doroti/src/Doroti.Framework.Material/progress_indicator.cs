@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
 public static partial class Progress_indicatorLibrary
 {
@@ -40,16 +40,16 @@ public static partial class Progress_indicatorLibrary
     internal static string _kValueControllerAssertion = "A progress indicator cannot have both a value and a controller.\n" + "The \"value\" property is for a determinate indicator with a specific progress, " + "while the \"controller\" is for controlling the animation of an indeterminate indicator.\n" + "To resolve this, provide only one of the two properties.";
 }
 
-public abstract class ProgressIndicator : global::Doroti.Generated.Framework.Widgets.StatefulWidget
+public abstract class ProgressIndicator : global::Doroti.Framework.Widgets.StatefulWidget
 {
     public virtual double? value { get; private set; }
     public virtual Color? backgroundColor { get; private set; }
     public virtual Color? color { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Animation.Animation<Color?>? valueColor { get; private set; }
+    public virtual global::Doroti.Framework.Animation.Animation<Color?>? valueColor { get; private set; }
     public virtual string? semanticsLabel { get; private set; }
     public virtual string? semanticsValue { get; private set; }
 
-    protected ProgressIndicator(global::Doroti.Generated.Framework.Foundation.Key? key = null, double? value = null, Color? backgroundColor = null, Color? color = null, global::Doroti.Generated.Framework.Animation.Animation<Color?>? valueColor = null, string? semanticsLabel = null, string? semanticsValue = null) : base(key: key)
+    protected ProgressIndicator(global::Doroti.Framework.Foundation.Key? key = null, double? value = null, Color? backgroundColor = null, Color? color = null, global::Doroti.Framework.Animation.Animation<Color?>? valueColor = null, string? semanticsLabel = null, string? semanticsValue = null) : base(key: key)
     {
         this.value = value;
         this.backgroundColor = backgroundColor;
@@ -60,19 +60,19 @@ public abstract class ProgressIndicator : global::Doroti.Generated.Framework.Wid
     }
 
     internal virtual double? _effectiveValue => ((this.value is null) ? null : Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(this.value), 0.0, 1.0));
-    internal virtual global::Doroti.Ui.Color _getValueColor(global::Doroti.Generated.Framework.Widgets.BuildContext context, Color? defaultColor = null)
+    internal virtual global::Doroti.Ui.Color _getValueColor(global::Doroti.Framework.Widgets.BuildContext context, Color? defaultColor = null)
     {
         return ((global::Doroti.Ui.Color)(object?)((((this.valueColor?.value ?? this.color) ?? ProgressIndicatorTheme.of(context).color) ?? defaultColor) ?? Theme.of(context).colorScheme.primary));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.PercentProperty("value", this.value, showName: false, ifNull: "<indeterminate>"));
+        properties.add(new global::Doroti.Framework.Foundation.PercentProperty("value", this.value, showName: false, ifNull: "<indeterminate>"));
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildSemanticsWrapper(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Widgets.Widget child)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildSemanticsWrapper(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
         var isProgressBar__5908 = false;
         string? expandedSemanticsValue__5943 = this.semanticsValue;
@@ -82,29 +82,29 @@ public abstract class ProgressIndicator : global::Doroti.Generated.Framework.Wid
             expandedSemanticsValue__5943 ??= $"{((DartRuntimePrimitives.RequireValue(this._effectiveValue) * 100L)).round()}";
             isProgressBar__5908 = true;
         }
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Semantics(label: this.semanticsLabel, role: (isProgressBar__5908 ? SemanticsRole.progressBar : SemanticsRole.loadingSpinner), minValue: (isProgressBar__5908 ? "0" : null), maxValue: (isProgressBar__5908 ? "100" : null), value: expandedSemanticsValue__5943, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(label: this.semanticsLabel, role: (isProgressBar__5908 ? SemanticsRole.progressBar : SemanticsRole.loadingSpinner), minValue: (isProgressBar__5908 ? "0" : null), maxValue: (isProgressBar__5908 ? "100" : null), value: expandedSemanticsValue__5943, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _LinearProgressIndicatorPainter__progress_indicator : global::Doroti.Generated.Framework.Rendering.CustomPainter
+internal class _LinearProgressIndicatorPainter__progress_indicator : global::Doroti.Framework.Rendering.CustomPainter
 {
     public virtual Color trackColor { get; private set; } = default!;
     public virtual Color valueColor { get; private set; } = default!;
     public virtual double? value { get; private set; }
     public virtual double animationValue { get; private set; } = default!;
     public virtual TextDirection textDirection { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.BorderRadiusGeometry? indicatorBorderRadius { get; private set; }
+    public virtual global::Doroti.Framework.Painting.BorderRadiusGeometry? indicatorBorderRadius { get; private set; }
     public virtual Color? stopIndicatorColor { get; private set; }
     public virtual double? stopIndicatorRadius { get; private set; }
     public virtual double? trackGap { get; private set; }
-    public static global::Doroti.Generated.Framework.Animation.Curve line1Head = ((global::Doroti.Generated.Framework.Animation.Curve)(object?)new global::Doroti.Generated.Framework.Animation.Interval(0.0, (750.0 / Progress_indicatorLibrary._kIndeterminateLinearDuration), curve: new global::Doroti.Generated.Framework.Animation.Cubic(0.2, 0.0, 0.8, 1.0)));
-    public static global::Doroti.Generated.Framework.Animation.Curve line1Tail = ((global::Doroti.Generated.Framework.Animation.Curve)(object?)new global::Doroti.Generated.Framework.Animation.Interval((333.0 / Progress_indicatorLibrary._kIndeterminateLinearDuration), (((333.0 + 750.0)) / Progress_indicatorLibrary._kIndeterminateLinearDuration), curve: new global::Doroti.Generated.Framework.Animation.Cubic(0.4, 0.0, 1.0, 1.0)));
-    public static global::Doroti.Generated.Framework.Animation.Curve line2Head = ((global::Doroti.Generated.Framework.Animation.Curve)(object?)new global::Doroti.Generated.Framework.Animation.Interval((1000.0 / Progress_indicatorLibrary._kIndeterminateLinearDuration), (((1000.0 + 567.0)) / Progress_indicatorLibrary._kIndeterminateLinearDuration), curve: new global::Doroti.Generated.Framework.Animation.Cubic(0.0, 0.0, 0.65, 1.0)));
-    public static global::Doroti.Generated.Framework.Animation.Curve line2Tail = ((global::Doroti.Generated.Framework.Animation.Curve)(object?)new global::Doroti.Generated.Framework.Animation.Interval((1267.0 / Progress_indicatorLibrary._kIndeterminateLinearDuration), (((1267.0 + 533.0)) / Progress_indicatorLibrary._kIndeterminateLinearDuration), curve: new global::Doroti.Generated.Framework.Animation.Cubic(0.1, 0.0, 0.45, 1.0)));
+    public static global::Doroti.Framework.Animation.Curve line1Head = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Interval(0.0, (750.0 / Progress_indicatorLibrary._kIndeterminateLinearDuration), curve: new global::Doroti.Framework.Animation.Cubic(0.2, 0.0, 0.8, 1.0)));
+    public static global::Doroti.Framework.Animation.Curve line1Tail = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Interval((333.0 / Progress_indicatorLibrary._kIndeterminateLinearDuration), (((333.0 + 750.0)) / Progress_indicatorLibrary._kIndeterminateLinearDuration), curve: new global::Doroti.Framework.Animation.Cubic(0.4, 0.0, 1.0, 1.0)));
+    public static global::Doroti.Framework.Animation.Curve line2Head = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Interval((1000.0 / Progress_indicatorLibrary._kIndeterminateLinearDuration), (((1000.0 + 567.0)) / Progress_indicatorLibrary._kIndeterminateLinearDuration), curve: new global::Doroti.Framework.Animation.Cubic(0.0, 0.0, 0.65, 1.0)));
+    public static global::Doroti.Framework.Animation.Curve line2Tail = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Interval((1267.0 / Progress_indicatorLibrary._kIndeterminateLinearDuration), (((1267.0 + 533.0)) / Progress_indicatorLibrary._kIndeterminateLinearDuration), curve: new global::Doroti.Framework.Animation.Cubic(0.1, 0.0, 0.45, 1.0)));
 
-    internal _LinearProgressIndicatorPainter__progress_indicator(Color trackColor, Color valueColor, double? value = null, double animationValue = default!, TextDirection textDirection = default!, global::Doroti.Generated.Framework.Painting.BorderRadiusGeometry? indicatorBorderRadius = default!, Color? stopIndicatorColor = default!, double? stopIndicatorRadius = default!, double? trackGap = default!)
+    internal _LinearProgressIndicatorPainter__progress_indicator(Color trackColor, Color valueColor, double? value = null, double animationValue = default!, TextDirection textDirection = default!, global::Doroti.Framework.Painting.BorderRadiusGeometry? indicatorBorderRadius = default!, Color? stopIndicatorColor = default!, double? stopIndicatorRadius = default!, double? trackGap = default!)
     {
         this.trackColor = trackColor;
         this.valueColor = valueColor;
@@ -211,7 +211,7 @@ internal class _LinearProgressIndicatorPainter__progress_indicator : global::Dor
         }
     }
 
-    public override bool shouldRepaint(global::Doroti.Generated.Framework.Rendering.CustomPainter oldDelegate)
+    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
     {
         var __oldPainter = (_LinearProgressIndicatorPainter__progress_indicator)(object)oldDelegate;
         return (((((((((!object.Equals(((_LinearProgressIndicatorPainter__progress_indicator)__oldPainter).trackColor, this.trackColor)) || (!object.Equals(((_LinearProgressIndicatorPainter__progress_indicator)__oldPainter).valueColor, this.valueColor))) || (((_LinearProgressIndicatorPainter__progress_indicator)__oldPainter).value != this.value)) || (((_LinearProgressIndicatorPainter__progress_indicator)__oldPainter).animationValue != this.animationValue)) || (!object.Equals(((_LinearProgressIndicatorPainter__progress_indicator)__oldPainter).textDirection, this.textDirection))) || (!object.Equals(((_LinearProgressIndicatorPainter__progress_indicator)__oldPainter).indicatorBorderRadius, this.indicatorBorderRadius))) || (!object.Equals(((_LinearProgressIndicatorPainter__progress_indicator)__oldPainter).stopIndicatorColor, this.stopIndicatorColor))) || (((_LinearProgressIndicatorPainter__progress_indicator)__oldPainter).stopIndicatorRadius != this.stopIndicatorRadius)) || (((_LinearProgressIndicatorPainter__progress_indicator)__oldPainter).trackGap != this.trackGap));
@@ -223,15 +223,15 @@ internal class _LinearProgressIndicatorPainter__progress_indicator : global::Dor
 public class LinearProgressIndicator : ProgressIndicator
 {
     public virtual double? minHeight { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.BorderRadiusGeometry? borderRadius { get; private set; }
+    public virtual global::Doroti.Framework.Painting.BorderRadiusGeometry? borderRadius { get; private set; }
     public virtual Color? stopIndicatorColor { get; private set; }
     public virtual double? stopIndicatorRadius { get; private set; }
     public virtual double? trackGap { get; private set; }
     public virtual bool? year2023 { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Animation.AnimationController? controller { get; private set; }
+    public virtual global::Doroti.Framework.Animation.AnimationController? controller { get; private set; }
     public static Duration defaultAnimationDuration = Duration.Create(milliseconds: Progress_indicatorLibrary._kIndeterminateLinearDuration);
 
-    public LinearProgressIndicator(global::Doroti.Generated.Framework.Foundation.Key? key = null, double? value = null, Color? backgroundColor = null, Color? color = null, global::Doroti.Generated.Framework.Animation.Animation<Color?>? valueColor = null, double? minHeight = null, string? semanticsLabel = null, string? semanticsValue = null, global::Doroti.Generated.Framework.Painting.BorderRadiusGeometry? borderRadius = null, Color? stopIndicatorColor = null, double? stopIndicatorRadius = null, double? trackGap = null, bool? year2023 = null, global::Doroti.Generated.Framework.Animation.AnimationController? controller = null) : base(key: key, value: value, backgroundColor: backgroundColor, color: color, valueColor: valueColor, semanticsLabel: semanticsLabel, semanticsValue: semanticsValue)
+    public LinearProgressIndicator(global::Doroti.Framework.Foundation.Key? key = null, double? value = null, Color? backgroundColor = null, Color? color = null, global::Doroti.Framework.Animation.Animation<Color?>? valueColor = null, double? minHeight = null, string? semanticsLabel = null, string? semanticsValue = null, global::Doroti.Framework.Painting.BorderRadiusGeometry? borderRadius = null, Color? stopIndicatorColor = null, double? stopIndicatorRadius = null, double? trackGap = null, bool? year2023 = null, global::Doroti.Framework.Animation.AnimationController? controller = null) : base(key: key, value: value, backgroundColor: backgroundColor, color: color, valueColor: valueColor, semanticsLabel: semanticsLabel, semanticsValue: semanticsValue)
     {
         this.minHeight = minHeight;
         this.borderRadius = borderRadius;
@@ -248,16 +248,16 @@ public class LinearProgressIndicator : ProgressIndicator
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _LinearProgressIndicatorState__progress_indicator());
 }
 
-internal class _LinearProgressIndicatorState__progress_indicator : global::Doroti.Generated.Framework.Widgets.State<LinearProgressIndicator>, global::Doroti.Generated.Framework.Widgets.SingleTickerProviderStateMixin<LinearProgressIndicator>
+internal class _LinearProgressIndicatorState__progress_indicator : global::Doroti.Framework.Widgets.State<LinearProgressIndicator>, global::Doroti.Framework.Widgets.SingleTickerProviderStateMixin<LinearProgressIndicator>
 {
-    internal virtual global::Doroti.Generated.Framework.Animation.AnimationController _internalController { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Scheduler.Ticker? _ticker { get; set; } = default;
-    public virtual global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.AnimationController _internalController { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Scheduler.Ticker? _ticker { get; set; } = default;
+    public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     public override void initState()
     {
         base.initState();
-        _internalController = new global::Doroti.Generated.Framework.Animation.AnimationController(duration: LinearProgressIndicator.defaultAnimationDuration, vsync: this);
+        _internalController = new global::Doroti.Framework.Animation.AnimationController(duration: LinearProgressIndicator.defaultAnimationDuration, vsync: this);
         _updateControllerAnimatingStatus();
     }
 
@@ -276,64 +276,64 @@ internal class _LinearProgressIndicatorState__progress_indicator : global::Dorot
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
             });
         this._tickerModeNotifier?.removeListener(() => this._updateTicker());
         _tickerModeNotifier = null;
         base.dispose();
     }
 
-    internal virtual global::Doroti.Generated.Framework.Animation.AnimationController _controller => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Animation.AnimationController>((((((LinearProgressIndicator)this.widget).controller ?? this.context.getInheritedWidgetOfExactType<ProgressIndicatorTheme>()?.data.controller) ?? this.context.findAncestorWidgetOfExactType<Theme>()?.data.progressIndicatorTheme.controller) ?? this._internalController));
+    internal virtual global::Doroti.Framework.Animation.AnimationController _controller => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.AnimationController>((((((LinearProgressIndicator)this.widget).controller ?? this.context.getInheritedWidgetOfExactType<ProgressIndicatorTheme>()?.data.controller) ?? this.context.findAncestorWidgetOfExactType<Theme>()?.data.progressIndicatorTheme.controller) ?? this._internalController));
     internal virtual void _updateControllerAnimatingStatus()
     {
-        if (((this.widget._effectiveValue is null) && !((global::Doroti.Generated.Framework.Animation.AnimationController)this._internalController).isAnimating))
+        if (((this.widget._effectiveValue is null) && !((global::Doroti.Framework.Animation.AnimationController)this._internalController).isAnimating))
         {
             this._internalController.repeat();
         }
         else
         {
-            if (((this.widget._effectiveValue is not null) && ((global::Doroti.Generated.Framework.Animation.AnimationController)this._internalController).isAnimating))
+            if (((this.widget._effectiveValue is not null) && ((global::Doroti.Framework.Animation.AnimationController)this._internalController).isAnimating))
             {
                 this._internalController.stop();
             }
         }
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildIndicator(global::Doroti.Generated.Framework.Widgets.BuildContext context, double animationValue, TextDirection textDirection)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildIndicator(global::Doroti.Framework.Widgets.BuildContext context, double animationValue, TextDirection textDirection)
     {
         ProgressIndicatorThemeData indicatorTheme__23578 = ProgressIndicatorTheme.of(context);
         bool year2023__23646 = ((((LinearProgressIndicator)this.widget).year2023 ?? indicatorTheme__23578.year2023) ?? true);
         ProgressIndicatorThemeData defaults__23746 = (((object)Theme.of(context).useMaterial3) switch { true => (year2023__23646 ? new _LinearProgressIndicatorDefaultsM3Year2023__progress_indicator(context) : new _LinearProgressIndicatorDefaultsM3__progress_indicator(context)), false => DartRuntimePrimitives.ConvertValue<ProgressIndicatorThemeData>(new _LinearProgressIndicatorDefaultsM2__progress_indicator(context)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         global::Doroti.Ui.Color trackColor__24038 = ((global::Doroti.Ui.Color)(object?)((((LinearProgressIndicator)this.widget).backgroundColor ?? indicatorTheme__23578.linearTrackColor) ?? defaults__23746.linearTrackColor!));
         double minHeight__24165 = ((((LinearProgressIndicator)this.widget).minHeight ?? indicatorTheme__23578.linearMinHeight) ?? DartRuntimePrimitives.RequireValue(defaults__23746.linearMinHeight));
-        global::Doroti.Generated.Framework.Painting.BorderRadiusGeometry? borderRadius__24298 = ((((LinearProgressIndicator)this.widget).borderRadius ?? indicatorTheme__23578.borderRadius) ?? defaults__23746.borderRadius);
+        global::Doroti.Framework.Painting.BorderRadiusGeometry? borderRadius__24298 = ((((LinearProgressIndicator)this.widget).borderRadius ?? indicatorTheme__23578.borderRadius) ?? defaults__23746.borderRadius);
         global::Doroti.Ui.Color? stopIndicatorColor__24415 = ((global::Doroti.Ui.Color?)(object?)(!year2023__23646 ? ((((LinearProgressIndicator)this.widget).stopIndicatorColor ?? indicatorTheme__23578.stopIndicatorColor) ?? defaults__23746.stopIndicatorColor) : null));
         double? stopIndicatorRadius__24612 = (!year2023__23646 ? ((((LinearProgressIndicator)this.widget).stopIndicatorRadius ?? indicatorTheme__23578.stopIndicatorRadius) ?? defaults__23746.stopIndicatorRadius) : null);
         double? trackGap__24813 = (!year2023__23646 ? ((((LinearProgressIndicator)this.widget).trackGap ?? indicatorTheme__23578.trackGap) ?? defaults__23746.trackGap) : null);
-        global::Doroti.Generated.Framework.Widgets.Widget result__24936 = ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Generated.Framework.Rendering.BoxConstraints(minWidth: double.PositiveInfinity, minHeight: minHeight__24165), child: new global::Doroti.Generated.Framework.Widgets.CustomPaint(painter: new _LinearProgressIndicatorPainter__progress_indicator(trackColor: trackColor__24038, valueColor: this.widget._getValueColor(context, defaultColor: defaults__23746.color), value: this.widget._effectiveValue, animationValue: animationValue, textDirection: textDirection, indicatorBorderRadius: borderRadius__24298, stopIndicatorColor: stopIndicatorColor__24415, stopIndicatorRadius: stopIndicatorRadius__24612, trackGap: trackGap__24813))));
+        global::Doroti.Framework.Widgets.Widget result__24936 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: double.PositiveInfinity, minHeight: minHeight__24165), child: new global::Doroti.Framework.Widgets.CustomPaint(painter: new _LinearProgressIndicatorPainter__progress_indicator(trackColor: trackColor__24038, valueColor: this.widget._getValueColor(context, defaultColor: defaults__23746.color), value: this.widget._effectiveValue, animationValue: animationValue, textDirection: textDirection, indicatorBorderRadius: borderRadius__24298, stopIndicatorColor: stopIndicatorColor__24415, stopIndicatorRadius: stopIndicatorRadius__24612, trackGap: trackGap__24813))));
         if (((borderRadius__24298 is not null) && (this.widget._effectiveValue is null)))
         {
-            result__24936 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.ClipRRect(borderRadius: borderRadius__24298, child: result__24936));
+            result__24936 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ClipRRect(borderRadius: borderRadius__24298, child: result__24936));
         }
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)this.widget._buildSemanticsWrapper(context: context, child: result__24936));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)this.widget._buildSemanticsWrapper(context: context, child: result__24936));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         global::Doroti.Ui.TextDirection textDirection__25996 = Directionality.of(context);
         if ((this.widget._effectiveValue is not null))
         {
-            return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)_buildIndicator(context, ((global::Doroti.Generated.Framework.Animation.AnimationController)this._controller).value, textDirection__25996));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildIndicator(context, ((global::Doroti.Framework.Animation.AnimationController)this._controller).value, textDirection__25996));
         }
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.AnimatedBuilder(animation: ((global::Doroti.Generated.Framework.Animation.AnimationController)this._controller).view, builder: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>)((context, child) => {
-return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)_buildIndicator(context, ((global::Doroti.Generated.Framework.Animation.AnimationController)this._controller).value, textDirection__25996));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: ((global::Doroti.Framework.Animation.AnimationController)this._controller).view, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) => {
+return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildIndicator(context, ((global::Doroti.Framework.Animation.AnimationController)this._controller).value, textDirection__25996));
 throw new InvalidOperationException("Dart closure completed without a value.");
 }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
+    public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -341,9 +341,9 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
             });
-        this._ticker = new global::Doroti.Generated.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
         _updateTickerModeNotifier();
         _updateTicker();
         return this._ticker!;
@@ -369,7 +369,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
         if ((object.Equals(newNotifier__15400, this._tickerModeNotifier)))
         {
             return;
@@ -379,16 +379,16 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         this._tickerModeNotifier = newNotifier__15400;
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         string? tickerDescription__15805 = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
     }
 
 }
 
-internal class _CircularProgressIndicatorPainter__progress_indicator : global::Doroti.Generated.Framework.Rendering.CustomPainter
+internal class _CircularProgressIndicatorPainter__progress_indicator : global::Doroti.Framework.Rendering.CustomPainter
 {
     public virtual Color? trackColor { get; private set; }
     public virtual Color valueColor { get; private set; } = default!;
@@ -487,7 +487,7 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : global::D
         canvas.drawArc((arcBaseOffset__28218 & arcActualSize__28280), this.arcStart, this.arcSweep, false, paint__27905);
     }
 
-    public override bool shouldRepaint(global::Doroti.Generated.Framework.Rendering.CustomPainter oldDelegate)
+    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
     {
         var __oldPainter = (_CircularProgressIndicatorPainter__progress_indicator)(object)oldDelegate;
         return ((((((((((((!object.Equals(((_CircularProgressIndicatorPainter__progress_indicator)__oldPainter).trackColor, this.trackColor)) || (!object.Equals(((_CircularProgressIndicatorPainter__progress_indicator)__oldPainter).valueColor, this.valueColor))) || (((_CircularProgressIndicatorPainter__progress_indicator)__oldPainter).value != this.value)) || (((_CircularProgressIndicatorPainter__progress_indicator)__oldPainter).headValue != this.headValue)) || (((_CircularProgressIndicatorPainter__progress_indicator)__oldPainter).tailValue != this.tailValue)) || (((_CircularProgressIndicatorPainter__progress_indicator)__oldPainter).offsetValue != this.offsetValue)) || (((_CircularProgressIndicatorPainter__progress_indicator)__oldPainter).rotationValue != this.rotationValue)) || (((_CircularProgressIndicatorPainter__progress_indicator)__oldPainter).strokeWidth != this.strokeWidth)) || (((_CircularProgressIndicatorPainter__progress_indicator)__oldPainter).strokeAlign != this.strokeAlign)) || (!object.Equals(((_CircularProgressIndicatorPainter__progress_indicator)__oldPainter).strokeCap, this.strokeCap))) || (((_CircularProgressIndicatorPainter__progress_indicator)__oldPainter).trackGap != this.trackGap)) || (((_CircularProgressIndicatorPainter__progress_indicator)__oldPainter).year2023 != this.year2023));
@@ -502,17 +502,17 @@ public class CircularProgressIndicator : ProgressIndicator
     public virtual double? strokeWidth { get; private set; }
     public virtual double? strokeAlign { get; private set; }
     public virtual StrokeCap? strokeCap { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints { get; private set; }
+    public virtual global::Doroti.Framework.Rendering.BoxConstraints? constraints { get; private set; }
     public virtual double? trackGap { get; private set; }
     public virtual bool? year2023 { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Animation.AnimationController? controller { get; private set; }
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
+    public virtual global::Doroti.Framework.Animation.AnimationController? controller { get; private set; }
     public static double strokeAlignInside = -1.0;
     public const double strokeAlignCenter = 0.0;
     public const double strokeAlignOutside = 1.0;
     public static Duration defaultAnimationDuration = Duration.Create(milliseconds: Progress_indicatorLibrary._kIndeterminateCircularDuration);
 
-    public CircularProgressIndicator(global::Doroti.Generated.Framework.Foundation.Key? key = null, double? value = null, Color? backgroundColor = null, Color? color = null, global::Doroti.Generated.Framework.Animation.Animation<Color?>? valueColor = null, double? strokeWidth = null, double? strokeAlign = null, string? semanticsLabel = null, string? semanticsValue = null, StrokeCap? strokeCap = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, double? trackGap = null, bool? year2023 = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Generated.Framework.Animation.AnimationController? controller = null) : base(key: key, value: value, backgroundColor: backgroundColor, color: color, valueColor: valueColor, semanticsLabel: semanticsLabel, semanticsValue: semanticsValue)
+    public CircularProgressIndicator(global::Doroti.Framework.Foundation.Key? key = null, double? value = null, Color? backgroundColor = null, Color? color = null, global::Doroti.Framework.Animation.Animation<Color?>? valueColor = null, double? strokeWidth = null, double? strokeAlign = null, string? semanticsLabel = null, string? semanticsValue = null, StrokeCap? strokeCap = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, double? trackGap = null, bool? year2023 = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Animation.AnimationController? controller = null) : base(key: key, value: value, backgroundColor: backgroundColor, color: color, valueColor: valueColor, semanticsLabel: semanticsLabel, semanticsValue: semanticsValue)
     {
         this.strokeWidth = strokeWidth;
         this.strokeAlign = strokeAlign;
@@ -526,7 +526,7 @@ public class CircularProgressIndicator : ProgressIndicator
         System.Diagnostics.Debug.Assert(((value is null) || (controller is null)));
     }
 
-    public static CircularProgressIndicator CreateAdaptive(global::Doroti.Generated.Framework.Foundation.Key? key = null, double? value = null, Color? backgroundColor = null, global::Doroti.Generated.Framework.Animation.Animation<Color?>? valueColor = null, double? strokeWidth = null, string? semanticsLabel = null, string? semanticsValue = null, StrokeCap? strokeCap = null, double? strokeAlign = null, global::Doroti.Generated.Framework.Rendering.BoxConstraints? constraints = null, double? trackGap = null, bool? year2023 = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Generated.Framework.Animation.AnimationController? controller = null)
+    public static CircularProgressIndicator CreateAdaptive(global::Doroti.Framework.Foundation.Key? key = null, double? value = null, Color? backgroundColor = null, global::Doroti.Framework.Animation.Animation<Color?>? valueColor = null, double? strokeWidth = null, string? semanticsLabel = null, string? semanticsValue = null, StrokeCap? strokeCap = null, double? strokeAlign = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, double? trackGap = null, bool? year2023 = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Animation.AnimationController? controller = null)
     {
         var __instance = new CircularProgressIndicator(key: key, value: value, backgroundColor: backgroundColor, valueColor: valueColor, strokeWidth: strokeWidth, strokeAlign: strokeAlign, semanticsLabel: semanticsLabel, semanticsValue: semanticsValue, strokeCap: strokeCap, constraints: constraints, trackGap: trackGap, year2023: year2023, padding: padding, controller: controller);
         __instance.strokeWidth = strokeWidth;
@@ -545,22 +545,22 @@ public class CircularProgressIndicator : ProgressIndicator
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CircularProgressIndicatorState__progress_indicator());
 }
 
-internal class _CircularProgressIndicatorState__progress_indicator : global::Doroti.Generated.Framework.Widgets.State<CircularProgressIndicator>, global::Doroti.Generated.Framework.Widgets.SingleTickerProviderStateMixin<CircularProgressIndicator>
+internal class _CircularProgressIndicatorState__progress_indicator : global::Doroti.Framework.Widgets.State<CircularProgressIndicator>, global::Doroti.Framework.Widgets.SingleTickerProviderStateMixin<CircularProgressIndicator>
 {
     internal static long _pathCount = (checked((long)(Progress_indicatorLibrary._kIndeterminateCircularDuration / 1333L)));
     internal static long _rotationCount = (checked((long)(Progress_indicatorLibrary._kIndeterminateCircularDuration / 2222L)));
-    internal static global::Doroti.Generated.Framework.Animation.Animatable<double> _strokeHeadTween = new global::Doroti.Generated.Framework.Animation.CurveTween(curve: new global::Doroti.Generated.Framework.Animation.Interval(0.0, 0.5, curve: global::Doroti.Generated.Framework.Animation.Curves.fastOutSlowIn)).chain(new global::Doroti.Generated.Framework.Animation.CurveTween(curve: new global::Doroti.Generated.Framework.Animation.SawTooth(_pathCount)));
-    internal static global::Doroti.Generated.Framework.Animation.Animatable<double> _strokeTailTween = new global::Doroti.Generated.Framework.Animation.CurveTween(curve: new global::Doroti.Generated.Framework.Animation.Interval(0.5, 1.0, curve: global::Doroti.Generated.Framework.Animation.Curves.fastOutSlowIn)).chain(new global::Doroti.Generated.Framework.Animation.CurveTween(curve: new global::Doroti.Generated.Framework.Animation.SawTooth(_pathCount)));
-    internal static global::Doroti.Generated.Framework.Animation.Animatable<double> _offsetTween = ((global::Doroti.Generated.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Generated.Framework.Animation.CurveTween(curve: new global::Doroti.Generated.Framework.Animation.SawTooth(_pathCount)));
-    internal static global::Doroti.Generated.Framework.Animation.Animatable<double> _rotationTween = ((global::Doroti.Generated.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Generated.Framework.Animation.CurveTween(curve: new global::Doroti.Generated.Framework.Animation.SawTooth(_rotationCount)));
-    internal virtual global::Doroti.Generated.Framework.Animation.AnimationController _internalController { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Scheduler.Ticker? _ticker { get; set; } = default;
-    public virtual global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
+    internal static global::Doroti.Framework.Animation.Animatable<double> _strokeHeadTween = new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Interval(0.0, 0.5, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn)).chain(new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.SawTooth(_pathCount)));
+    internal static global::Doroti.Framework.Animation.Animatable<double> _strokeTailTween = new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Interval(0.5, 1.0, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn)).chain(new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.SawTooth(_pathCount)));
+    internal static global::Doroti.Framework.Animation.Animatable<double> _offsetTween = ((global::Doroti.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.SawTooth(_pathCount)));
+    internal static global::Doroti.Framework.Animation.Animatable<double> _rotationTween = ((global::Doroti.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.SawTooth(_rotationCount)));
+    internal virtual global::Doroti.Framework.Animation.AnimationController _internalController { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Scheduler.Ticker? _ticker { get; set; } = default;
+    public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     public override void initState()
     {
         base.initState();
-        _internalController = new global::Doroti.Generated.Framework.Animation.AnimationController(duration: CircularProgressIndicator.defaultAnimationDuration, vsync: this);
+        _internalController = new global::Doroti.Framework.Animation.AnimationController(duration: CircularProgressIndicator.defaultAnimationDuration, vsync: this);
         _updateControllerAnimatingStatus();
     }
 
@@ -579,42 +579,42 @@ internal class _CircularProgressIndicatorState__progress_indicator : global::Dor
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
             });
         this._tickerModeNotifier?.removeListener(() => this._updateTicker());
         _tickerModeNotifier = null;
         base.dispose();
     }
 
-    internal virtual global::Doroti.Generated.Framework.Animation.AnimationController _controller => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Animation.AnimationController>((((((CircularProgressIndicator)this.widget).controller ?? this.context.getInheritedWidgetOfExactType<ProgressIndicatorTheme>()?.data.controller) ?? this.context.findAncestorWidgetOfExactType<Theme>()?.data.progressIndicatorTheme.controller) ?? this._internalController));
+    internal virtual global::Doroti.Framework.Animation.AnimationController _controller => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.AnimationController>((((((CircularProgressIndicator)this.widget).controller ?? this.context.getInheritedWidgetOfExactType<ProgressIndicatorTheme>()?.data.controller) ?? this.context.findAncestorWidgetOfExactType<Theme>()?.data.progressIndicatorTheme.controller) ?? this._internalController));
     internal virtual void _updateControllerAnimatingStatus()
     {
-        if (((this.widget._effectiveValue is null) && !((global::Doroti.Generated.Framework.Animation.AnimationController)this._internalController).isAnimating))
+        if (((this.widget._effectiveValue is null) && !((global::Doroti.Framework.Animation.AnimationController)this._internalController).isAnimating))
         {
             this._internalController.repeat();
         }
         else
         {
-            if (((this.widget._effectiveValue is not null) && ((global::Doroti.Generated.Framework.Animation.AnimationController)this._internalController).isAnimating))
+            if (((this.widget._effectiveValue is not null) && ((global::Doroti.Framework.Animation.AnimationController)this._internalController).isAnimating))
             {
                 this._internalController.stop();
             }
         }
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildCupertinoIndicator(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildCupertinoIndicator(global::Doroti.Framework.Widgets.BuildContext context)
     {
         global::Doroti.Ui.Color? tickColor__44701 = ((global::Doroti.Ui.Color?)(object?)((CircularProgressIndicator)this.widget).backgroundColor);
         double? value__44755 = this.widget._effectiveValue;
         if ((value__44755 is null))
         {
-            return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new CupertinoActivityIndicator(key: this.widget.key, color: tickColor__44701));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoActivityIndicator(key: this.widget.key, color: tickColor__44701));
         }
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)CupertinoActivityIndicator.CreatePartiallyRevealed(key: this.widget.key, color: tickColor__44701, progress: DartRuntimePrimitives.RequireValue(value__44755)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)CupertinoActivityIndicator.CreatePartiallyRevealed(key: this.widget.key, color: tickColor__44701, progress: DartRuntimePrimitives.RequireValue(value__44755)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildMaterialIndicator(global::Doroti.Generated.Framework.Widgets.BuildContext context, double headValue, double tailValue, double offsetValue, double rotationValue)
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildMaterialIndicator(global::Doroti.Framework.Widgets.BuildContext context, double headValue, double tailValue, double offsetValue, double rotationValue)
     {
         ProgressIndicatorThemeData indicatorTheme__45230 = ProgressIndicatorTheme.of(context);
         bool year2023__45298 = ((((CircularProgressIndicator)this.widget).year2023 ?? indicatorTheme__45230.year2023) ?? true);
@@ -623,60 +623,60 @@ internal class _CircularProgressIndicatorState__progress_indicator : global::Dor
         double strokeWidth__46091 = ((((CircularProgressIndicator)this.widget).strokeWidth ?? indicatorTheme__45230.strokeWidth) ?? DartRuntimePrimitives.RequireValue(defaults__45398.strokeWidth));
         double strokeAlign__46205 = ((((CircularProgressIndicator)this.widget).strokeAlign ?? indicatorTheme__45230.strokeAlign) ?? DartRuntimePrimitives.RequireValue(defaults__45398.strokeAlign));
         global::Doroti.Ui.StrokeCap? strokeCap__46323 = ((global::Doroti.Ui.StrokeCap?)(object?)(((CircularProgressIndicator)this.widget).strokeCap ?? indicatorTheme__45230.strokeCap));
-        global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints__46406 = ((((CircularProgressIndicator)this.widget).constraints ?? indicatorTheme__45230.constraints) ?? defaults__45398.constraints!);
+        global::Doroti.Framework.Rendering.BoxConstraints constraints__46406 = ((((CircularProgressIndicator)this.widget).constraints ?? indicatorTheme__45230.constraints) ?? defaults__45398.constraints!);
         double? trackGap__46521 = (year2023__45298 ? null : ((((CircularProgressIndicator)this.widget).trackGap ?? indicatorTheme__45230.trackGap) ?? defaults__45398.trackGap));
-        global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? effectivePadding__46661 = ((((CircularProgressIndicator)this.widget).padding ?? indicatorTheme__45230.circularTrackPadding) ?? defaults__45398.circularTrackPadding);
-        global::Doroti.Generated.Framework.Widgets.Widget result__46788 = ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.ConstrainedBox(constraints: constraints__46406, child: new global::Doroti.Generated.Framework.Widgets.CustomPaint(painter: new _CircularProgressIndicatorPainter__progress_indicator(trackColor: trackColor__45961, valueColor: this.widget._getValueColor(context, defaultColor: defaults__45398.color), value: this.widget._effectiveValue, headValue: headValue, tailValue: tailValue, offsetValue: offsetValue, rotationValue: rotationValue, strokeWidth: strokeWidth__46091, strokeAlign: strokeAlign__46205, strokeCap: strokeCap__46323, trackGap: trackGap__46521, year2023: year2023__45298))));
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectivePadding__46661 = ((((CircularProgressIndicator)this.widget).padding ?? indicatorTheme__45230.circularTrackPadding) ?? defaults__45398.circularTrackPadding);
+        global::Doroti.Framework.Widgets.Widget result__46788 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: constraints__46406, child: new global::Doroti.Framework.Widgets.CustomPaint(painter: new _CircularProgressIndicatorPainter__progress_indicator(trackColor: trackColor__45961, valueColor: this.widget._getValueColor(context, defaultColor: defaults__45398.color), value: this.widget._effectiveValue, headValue: headValue, tailValue: tailValue, offsetValue: offsetValue, rotationValue: rotationValue, strokeWidth: strokeWidth__46091, strokeAlign: strokeAlign__46205, strokeCap: strokeCap__46323, trackGap: trackGap__46521, year2023: year2023__45298))));
         if ((effectivePadding__46661 is not null))
         {
-            result__46788 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.Padding(padding: effectivePadding__46661, child: result__46788));
+            result__46788 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: effectivePadding__46661, child: result__46788));
         }
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)this.widget._buildSemanticsWrapper(context: context, child: result__46788));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)this.widget._buildSemanticsWrapper(context: context, child: result__46788));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _buildAnimation()
+    internal virtual global::Doroti.Framework.Widgets.Widget _buildAnimation()
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.AnimatedBuilder(animation: this._controller, builder: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>)((context, child) => {
-return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)_buildMaterialIndicator(context, _strokeHeadTween.evaluate(this._controller), _strokeTailTween.evaluate(this._controller), _offsetTween.evaluate(this._controller), _rotationTween.evaluate(this._controller)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._controller, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) => {
+return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildMaterialIndicator(context, _strokeHeadTween.evaluate(this._controller), _strokeTailTween.evaluate(this._controller), _offsetTween.evaluate(this._controller), _rotationTween.evaluate(this._controller)));
 throw new InvalidOperationException("Dart closure completed without a value.");
 }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget>)((context) => {
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) => {
 switch (((CircularProgressIndicator)this.widget)._indicatorType)
 {
     case _ActivityIndicatorType__progress_indicator.material:
         {
             if ((this.widget._effectiveValue is not null))
             {
-                return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)_buildMaterialIndicator(context, 0.0, 0.0, 0, 0.0));
+                return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildMaterialIndicator(context, 0.0, 0.0, 0, 0.0));
             }
-            return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)_buildAnimation());
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildAnimation());
         }
     case _ActivityIndicatorType__progress_indicator.adaptive:
         {
             ThemeData theme__48583 = Theme.of(context);
             switch (theme__48583.platform)
             {
-                case global::Doroti.Generated.Framework.Foundation.TargetPlatform.iOS:
-                case global::Doroti.Generated.Framework.Foundation.TargetPlatform.macOS:
+                case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+                case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
                     {
-                        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)_buildCupertinoIndicator(context));
+                        return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildCupertinoIndicator(context));
                     }
-                case global::Doroti.Generated.Framework.Foundation.TargetPlatform.android:
-                case global::Doroti.Generated.Framework.Foundation.TargetPlatform.fuchsia:
-                case global::Doroti.Generated.Framework.Foundation.TargetPlatform.linux:
-                case global::Doroti.Generated.Framework.Foundation.TargetPlatform.windows:
+                case global::Doroti.Framework.Foundation.TargetPlatform.android:
+                case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
+                case global::Doroti.Framework.Foundation.TargetPlatform.linux:
+                case global::Doroti.Framework.Foundation.TargetPlatform.windows:
                     {
                         if ((this.widget._effectiveValue is not null))
                         {
-                            return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)_buildMaterialIndicator(context, 0.0, 0.0, 0, 0.0));
+                            return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildMaterialIndicator(context, 0.0, 0.0, 0, 0.0));
                         }
-                        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)_buildAnimation());
+                        return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildAnimation());
                     }
                 default:
                     throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -689,7 +689,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
+    public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -697,9 +697,9 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
             });
-        this._ticker = new global::Doroti.Generated.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
         _updateTickerModeNotifier();
         _updateTicker();
         return this._ticker!;
@@ -725,7 +725,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
         if ((object.Equals(newNotifier__15400, this._tickerModeNotifier)))
         {
             return;
@@ -735,11 +735,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         this._tickerModeNotifier = newNotifier__15400;
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         string? tickerDescription__15805 = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
     }
 
 }
@@ -795,14 +795,14 @@ internal class _RefreshProgressIndicatorPainter__progress_indicator : _CircularP
 public class RefreshProgressIndicator : CircularProgressIndicator
 {
     public virtual double elevation { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry indicatorMargin { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry indicatorPadding { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry indicatorMargin { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry indicatorPadding { get; private set; } = default!;
     public const double defaultStrokeWidth = 2.5;
 
-    public RefreshProgressIndicator(global::Doroti.Generated.Framework.Foundation.Key? key = null, double? value = null, Color? backgroundColor = null, Color? color = null, global::Doroti.Generated.Framework.Animation.Animation<Color?>? valueColor = null, double? strokeWidth = null, double? strokeAlign = null, string? semanticsLabel = null, string? semanticsValue = null, StrokeCap? strokeCap = null, double elevation = 2.0, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry indicatorMargin = default!, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry indicatorPadding = default!) : base(key: key, value: value, backgroundColor: backgroundColor, color: color, valueColor: valueColor, strokeWidth: strokeWidth ?? defaultStrokeWidth, strokeAlign: strokeAlign, semanticsLabel: semanticsLabel, semanticsValue: semanticsValue, strokeCap: strokeCap)
+    public RefreshProgressIndicator(global::Doroti.Framework.Foundation.Key? key = null, double? value = null, Color? backgroundColor = null, Color? color = null, global::Doroti.Framework.Animation.Animation<Color?>? valueColor = null, double? strokeWidth = null, double? strokeAlign = null, string? semanticsLabel = null, string? semanticsValue = null, StrokeCap? strokeCap = null, double elevation = 2.0, global::Doroti.Framework.Painting.EdgeInsetsGeometry indicatorMargin = default!, global::Doroti.Framework.Painting.EdgeInsetsGeometry indicatorPadding = default!) : base(key: key, value: value, backgroundColor: backgroundColor, color: color, valueColor: valueColor, strokeWidth: strokeWidth ?? defaultStrokeWidth, strokeAlign: strokeAlign, semanticsLabel: semanticsLabel, semanticsValue: semanticsValue, strokeCap: strokeCap)
     {
-        global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry __indicatorMargin = indicatorMargin ?? global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateAll(4.0);
-        global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry __indicatorPadding = indicatorPadding ?? global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateAll(12.0);
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry __indicatorMargin = indicatorMargin ?? global::Doroti.Framework.Painting.EdgeInsets.CreateAll(4.0);
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry __indicatorPadding = indicatorPadding ?? global::Doroti.Framework.Painting.EdgeInsets.CreateAll(12.0);
         this.elevation = elevation;
         this.indicatorMargin = __indicatorMargin;
         this.indicatorPadding = __indicatorPadding;
@@ -817,28 +817,28 @@ internal class _RefreshProgressIndicatorState__progress_indicator : _CircularPro
     internal const double _indicatorSize = 41.0;
     internal const double _strokeHeadInterval = 0.33;
     private bool __late__convertTween_initialized;
-    private global::Doroti.Generated.Framework.Animation.Animatable<double> __late__convertTween = default!;
-    internal virtual global::Doroti.Generated.Framework.Animation.Animatable<double> _convertTween
+    private global::Doroti.Framework.Animation.Animatable<double> __late__convertTween = default!;
+    internal virtual global::Doroti.Framework.Animation.Animatable<double> _convertTween
     {
         get
         {
             if (!__late__convertTween_initialized)
             {
-                __late__convertTween = ((global::Doroti.Generated.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Generated.Framework.Animation.CurveTween(curve: new global::Doroti.Generated.Framework.Animation.Interval(0.1, _strokeHeadInterval)));
+                __late__convertTween = ((global::Doroti.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Interval(0.1, _strokeHeadInterval)));
                 __late__convertTween_initialized = true;
             }
             return __late__convertTween;
         }
     }
     private bool __late__additionalRotationTween_initialized;
-    private global::Doroti.Generated.Framework.Animation.Animatable<double> __late__additionalRotationTween = default!;
-    internal virtual global::Doroti.Generated.Framework.Animation.Animatable<double> _additionalRotationTween
+    private global::Doroti.Framework.Animation.Animatable<double> __late__additionalRotationTween = default!;
+    internal virtual global::Doroti.Framework.Animation.Animatable<double> _additionalRotationTween
     {
         get
         {
             if (!__late__additionalRotationTween_initialized)
             {
-                __late__additionalRotationTween = ((global::Doroti.Generated.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Generated.Framework.Animation.TweenSequence<double>(new List<global::Doroti.Generated.Framework.Animation.TweenSequenceItem<double>> { new global::Doroti.Generated.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: -0.1, end: -0.2), weight: _strokeHeadInterval), new global::Doroti.Generated.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: -0.2, end: 1.35), weight: (1L - _strokeHeadInterval)) }));
+                __late__additionalRotationTween = ((global::Doroti.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Framework.Animation.TweenSequence<double>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<double>> { new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.Tween<double>(begin: -0.1, end: -0.2), weight: _strokeHeadInterval), new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.Tween<double>(begin: -0.2, end: 1.35), weight: (1L - _strokeHeadInterval)) }));
                 __late__additionalRotationTween_initialized = true;
             }
             return __late__additionalRotationTween;
@@ -847,7 +847,7 @@ internal class _RefreshProgressIndicatorState__progress_indicator : _CircularPro
     internal virtual double? _lastValue { get; set; } = default;
 
     public override RefreshProgressIndicator widget => ((RefreshProgressIndicator?)(object?)base.widget)!;
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         double? value__54874 = this.widget._effectiveValue;
         if ((value__54874 is not null))
@@ -856,23 +856,23 @@ internal class _RefreshProgressIndicatorState__progress_indicator : _CircularPro
             _lastValue = DartRuntimePrimitives.RequireValue(value__54874__value54914);
             this._controller.value = (this._convertTween.transform(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value__54874__value54914))) * (((1333L / 2L) / Progress_indicatorLibrary._kIndeterminateCircularDuration)));
         }
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)_buildAnimation());
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildAnimation());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal override global::Doroti.Generated.Framework.Widgets.Widget _buildAnimation()
+    internal override global::Doroti.Framework.Widgets.Widget _buildAnimation()
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.AnimatedBuilder(animation: this._controller, builder: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>)((context, child) => {
-return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)_buildMaterialIndicator(context, (1.05 * _CircularProgressIndicatorState__progress_indicator._strokeHeadTween.transform(((global::Doroti.Generated.Framework.Animation.AnimationController)this._controller).value)), _CircularProgressIndicatorState__progress_indicator._strokeTailTween.transform(((global::Doroti.Generated.Framework.Animation.AnimationController)this._controller).value), _CircularProgressIndicatorState__progress_indicator._offsetTween.transform(((global::Doroti.Generated.Framework.Animation.AnimationController)this._controller).value), _CircularProgressIndicatorState__progress_indicator._rotationTween.transform(((global::Doroti.Generated.Framework.Animation.AnimationController)this._controller).value)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._controller, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) => {
+return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildMaterialIndicator(context, (1.05 * _CircularProgressIndicatorState__progress_indicator._strokeHeadTween.transform(((global::Doroti.Framework.Animation.AnimationController)this._controller).value)), _CircularProgressIndicatorState__progress_indicator._strokeTailTween.transform(((global::Doroti.Framework.Animation.AnimationController)this._controller).value), _CircularProgressIndicatorState__progress_indicator._offsetTween.transform(((global::Doroti.Framework.Animation.AnimationController)this._controller).value), _CircularProgressIndicatorState__progress_indicator._rotationTween.transform(((global::Doroti.Framework.Animation.AnimationController)this._controller).value)));
 throw new InvalidOperationException("Dart closure completed without a value.");
 }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal override global::Doroti.Generated.Framework.Widgets.Widget _buildMaterialIndicator(global::Doroti.Generated.Framework.Widgets.BuildContext context, double headValue, double tailValue, double offsetValue, double rotationValue)
+    internal override global::Doroti.Framework.Widgets.Widget _buildMaterialIndicator(global::Doroti.Framework.Widgets.BuildContext context, double headValue, double tailValue, double offsetValue, double rotationValue)
     {
         double? value__55944 = this.widget._effectiveValue;
-        double arrowheadScale__55993 = ((value__55944 is null) ? 0.0 : new global::Doroti.Generated.Framework.Animation.Interval(0.1, _strokeHeadInterval).transform(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value__55944))));
+        double arrowheadScale__55993 = ((value__55944 is null) ? 0.0 : new global::Doroti.Framework.Animation.Interval(0.1, _strokeHeadInterval).transform(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value__55944))));
         double rotation__56124 = default!;
         if (((value__55944 is null) && (this._lastValue is null)))
         {
@@ -891,7 +891,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         double strokeWidth__57009 = ((this.widget.strokeWidth ?? indicatorTheme__56783.strokeWidth) ?? DartRuntimePrimitives.RequireValue(defaults__56495.strokeWidth));
         double strokeAlign__57123 = ((this.widget.strokeAlign ?? indicatorTheme__56783.strokeAlign) ?? DartRuntimePrimitives.RequireValue(defaults__56495.strokeAlign));
         global::Doroti.Ui.StrokeCap? strokeCap__57241 = ((global::Doroti.Ui.StrokeCap?)(object?)(this.widget.strokeCap ?? indicatorTheme__56783.strokeCap));
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)this.widget._buildSemanticsWrapper(context: context, child: new global::Doroti.Generated.Framework.Widgets.Padding(padding: ((RefreshProgressIndicator)this.widget).indicatorMargin, child: global::Doroti.Generated.Framework.Widgets.SizedBox.CreateFromSize(size: new global::Doroti.Ui.Size(_indicatorSize), child: new Material(type: MaterialType.circle, color: backgroundColor__56852, elevation: ((RefreshProgressIndicator)this.widget).elevation, child: new global::Doroti.Generated.Framework.Widgets.Padding(padding: ((RefreshProgressIndicator)this.widget).indicatorPadding, child: new global::Doroti.Generated.Framework.Widgets.Opacity(opacity: opacity__56381, child: global::Doroti.Generated.Framework.Widgets.Transform.CreateRotate(angle: rotation__56124, child: new global::Doroti.Generated.Framework.Widgets.CustomPaint(painter: new _RefreshProgressIndicatorPainter__progress_indicator(valueColor: valueColor__56319, value: null, headValue: headValue, tailValue: tailValue, offsetValue: offsetValue, rotationValue: rotationValue, strokeWidth: strokeWidth__57009, strokeAlign: strokeAlign__57123, arrowheadScale: arrowheadScale__55993, strokeCap: strokeCap__57241))))))))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)this.widget._buildSemanticsWrapper(context: context, child: new global::Doroti.Framework.Widgets.Padding(padding: ((RefreshProgressIndicator)this.widget).indicatorMargin, child: global::Doroti.Framework.Widgets.SizedBox.CreateFromSize(size: new global::Doroti.Ui.Size(_indicatorSize), child: new Material(type: MaterialType.circle, color: backgroundColor__56852, elevation: ((RefreshProgressIndicator)this.widget).elevation, child: new global::Doroti.Framework.Widgets.Padding(padding: ((RefreshProgressIndicator)this.widget).indicatorPadding, child: new global::Doroti.Framework.Widgets.Opacity(opacity: opacity__56381, child: global::Doroti.Framework.Widgets.Transform.CreateRotate(angle: rotation__56124, child: new global::Doroti.Framework.Widgets.CustomPaint(painter: new _RefreshProgressIndicatorPainter__progress_indicator(valueColor: valueColor__56319, value: null, headValue: headValue, tailValue: tailValue, offsetValue: offsetValue, rotationValue: rotationValue, strokeWidth: strokeWidth__57009, strokeAlign: strokeAlign__57123, arrowheadScale: arrowheadScale__55993, strokeCap: strokeCap__57241))))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -899,7 +899,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
 internal class _CircularProgressIndicatorDefaultsM2__progress_indicator : ProgressIndicatorThemeData
 {
-    public virtual global::Doroti.Generated.Framework.Widgets.BuildContext context { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
     private bool __late__colors_initialized;
     private ColorScheme __late__colors = default!;
     internal virtual ColorScheme _colors
@@ -916,7 +916,7 @@ internal class _CircularProgressIndicatorDefaultsM2__progress_indicator : Progre
     }
     public virtual bool indeterminate { get; private set; } = default!;
 
-    internal _CircularProgressIndicatorDefaultsM2__progress_indicator(global::Doroti.Generated.Framework.Widgets.BuildContext context, bool indeterminate)
+    internal _CircularProgressIndicatorDefaultsM2__progress_indicator(global::Doroti.Framework.Widgets.BuildContext context, bool indeterminate)
     {
         this.context = context;
         this.indeterminate = indeterminate;
@@ -925,12 +925,12 @@ internal class _CircularProgressIndicatorDefaultsM2__progress_indicator : Progre
     public virtual global::Doroti.Ui.Color color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
     public override double? strokeWidth => 4.0;
     public override double? strokeAlign => CircularProgressIndicator.strokeAlignCenter;
-    public virtual global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints => new global::Doroti.Generated.Framework.Rendering.BoxConstraints(minWidth: 36.0, minHeight: 36.0);
+    public virtual global::Doroti.Framework.Rendering.BoxConstraints constraints => new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: 36.0, minHeight: 36.0);
 }
 
 internal class _LinearProgressIndicatorDefaultsM2__progress_indicator : ProgressIndicatorThemeData
 {
-    public virtual global::Doroti.Generated.Framework.Widgets.BuildContext context { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
     private bool __late__colors_initialized;
     private ColorScheme __late__colors = default!;
     internal virtual ColorScheme _colors
@@ -946,7 +946,7 @@ internal class _LinearProgressIndicatorDefaultsM2__progress_indicator : Progress
         }
     }
 
-    internal _LinearProgressIndicatorDefaultsM2__progress_indicator(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    internal _LinearProgressIndicatorDefaultsM2__progress_indicator(global::Doroti.Framework.Widgets.BuildContext context)
     {
         this.context = context;
     }
@@ -958,7 +958,7 @@ internal class _LinearProgressIndicatorDefaultsM2__progress_indicator : Progress
 
 internal class _CircularProgressIndicatorDefaultsM3Year2023__progress_indicator : ProgressIndicatorThemeData
 {
-    public virtual global::Doroti.Generated.Framework.Widgets.BuildContext context { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
     private bool __late__colors_initialized;
     private ColorScheme __late__colors = default!;
     internal virtual ColorScheme _colors
@@ -975,7 +975,7 @@ internal class _CircularProgressIndicatorDefaultsM3Year2023__progress_indicator 
     }
     public virtual bool indeterminate { get; private set; } = default!;
 
-    internal _CircularProgressIndicatorDefaultsM3Year2023__progress_indicator(global::Doroti.Generated.Framework.Widgets.BuildContext context, bool indeterminate)
+    internal _CircularProgressIndicatorDefaultsM3Year2023__progress_indicator(global::Doroti.Framework.Widgets.BuildContext context, bool indeterminate)
     {
         this.context = context;
         this.indeterminate = indeterminate;
@@ -984,12 +984,12 @@ internal class _CircularProgressIndicatorDefaultsM3Year2023__progress_indicator 
     public virtual global::Doroti.Ui.Color color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
     public virtual double strokeWidth => 4.0;
     public override double? strokeAlign => CircularProgressIndicator.strokeAlignCenter;
-    public virtual global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints => new global::Doroti.Generated.Framework.Rendering.BoxConstraints(minWidth: 36.0, minHeight: 36.0);
+    public virtual global::Doroti.Framework.Rendering.BoxConstraints constraints => new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: 36.0, minHeight: 36.0);
 }
 
 internal class _LinearProgressIndicatorDefaultsM3Year2023__progress_indicator : ProgressIndicatorThemeData
 {
-    public virtual global::Doroti.Generated.Framework.Widgets.BuildContext context { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
     private bool __late__colors_initialized;
     private ColorScheme __late__colors = default!;
     internal virtual ColorScheme _colors
@@ -1005,7 +1005,7 @@ internal class _LinearProgressIndicatorDefaultsM3Year2023__progress_indicator : 
         }
     }
 
-    internal _LinearProgressIndicatorDefaultsM3Year2023__progress_indicator(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    internal _LinearProgressIndicatorDefaultsM3Year2023__progress_indicator(global::Doroti.Framework.Widgets.BuildContext context)
     {
         this.context = context;
     }
@@ -1017,7 +1017,7 @@ internal class _LinearProgressIndicatorDefaultsM3Year2023__progress_indicator : 
 
 internal class _CircularProgressIndicatorDefaultsM3__progress_indicator : ProgressIndicatorThemeData
 {
-    public virtual global::Doroti.Generated.Framework.Widgets.BuildContext context { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
     private bool __late__colors_initialized;
     private ColorScheme __late__colors = default!;
     internal virtual ColorScheme _colors
@@ -1034,7 +1034,7 @@ internal class _CircularProgressIndicatorDefaultsM3__progress_indicator : Progre
     }
     public virtual bool indeterminate { get; private set; } = default!;
 
-    internal _CircularProgressIndicatorDefaultsM3__progress_indicator(global::Doroti.Generated.Framework.Widgets.BuildContext context, bool indeterminate)
+    internal _CircularProgressIndicatorDefaultsM3__progress_indicator(global::Doroti.Framework.Widgets.BuildContext context, bool indeterminate)
     {
         this.context = context;
         this.indeterminate = indeterminate;
@@ -1044,14 +1044,14 @@ internal class _CircularProgressIndicatorDefaultsM3__progress_indicator : Progre
     public virtual global::Doroti.Ui.Color? circularTrackColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>((this.indeterminate ? null : this._colors.secondaryContainer));
     public virtual double strokeWidth => 4.0;
     public override double? strokeAlign => CircularProgressIndicator.strokeAlignInside;
-    public virtual global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints => new global::Doroti.Generated.Framework.Rendering.BoxConstraints(minWidth: 40.0, minHeight: 40.0);
+    public virtual global::Doroti.Framework.Rendering.BoxConstraints constraints => new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: 40.0, minHeight: 40.0);
     public override double? trackGap => 4.0;
-    public override global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? circularTrackPadding => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateAll(4.0));
+    public override global::Doroti.Framework.Painting.EdgeInsetsGeometry? circularTrackPadding => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsets.CreateAll(4.0));
 }
 
 internal class _LinearProgressIndicatorDefaultsM3__progress_indicator : ProgressIndicatorThemeData
 {
-    public virtual global::Doroti.Generated.Framework.Widgets.BuildContext context { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
     private bool __late__colors_initialized;
     private ColorScheme __late__colors = default!;
     internal virtual ColorScheme _colors
@@ -1067,7 +1067,7 @@ internal class _LinearProgressIndicatorDefaultsM3__progress_indicator : Progress
         }
     }
 
-    internal _LinearProgressIndicatorDefaultsM3__progress_indicator(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    internal _LinearProgressIndicatorDefaultsM3__progress_indicator(global::Doroti.Framework.Widgets.BuildContext context)
     {
         this.context = context;
     }
@@ -1075,7 +1075,7 @@ internal class _LinearProgressIndicatorDefaultsM3__progress_indicator : Progress
     public virtual global::Doroti.Ui.Color color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
     public virtual global::Doroti.Ui.Color linearTrackColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.secondaryContainer);
     public virtual double linearMinHeight => 4.0;
-    public virtual global::Doroti.Generated.Framework.Painting.BorderRadius borderRadius => global::Doroti.Generated.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular((4.0 / 2L)));
+    public virtual global::Doroti.Framework.Painting.BorderRadius borderRadius => global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular((4.0 / 2L)));
     public virtual global::Doroti.Ui.Color stopIndicatorColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
     public override double? stopIndicatorRadius => DartRuntimePrimitives.ConvertValue<double>((4.0 / 2L));
     public override double? trackGap => 4.0;

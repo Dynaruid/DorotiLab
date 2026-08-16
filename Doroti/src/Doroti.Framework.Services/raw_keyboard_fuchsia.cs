@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public class RawKeyEventDataFuchsia : RawKeyEventData
 {
@@ -49,9 +49,9 @@ public class RawKeyEventDataFuchsia : RawKeyEventData
             if ((codePoint != 0L))
             {
                 long flutterId__2960 = (LogicalKeyboardKey.unicodePlane | (codePoint & LogicalKeyboardKey.valueMask));
-                return (global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kFuchsiaToLogicalKey.GetValueOrDefault(flutterId__2960) ?? new LogicalKeyboardKey((LogicalKeyboardKey.unicodePlane | (codePoint & LogicalKeyboardKey.valueMask))));
+                return (global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kFuchsiaToLogicalKey.GetValueOrDefault(flutterId__2960) ?? new LogicalKeyboardKey((LogicalKeyboardKey.unicodePlane | (codePoint & LogicalKeyboardKey.valueMask))));
             }
-            LogicalKeyboardKey? newKey = global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kFuchsiaToLogicalKey.GetValueOrDefault((hidUsage | LogicalKeyboardKey.fuchsiaPlane));
+            LogicalKeyboardKey? newKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kFuchsiaToLogicalKey.GetValueOrDefault((hidUsage | LogicalKeyboardKey.fuchsiaPlane));
             if ((newKey is not null))
             {
                 return newKey;
@@ -59,7 +59,7 @@ public class RawKeyEventDataFuchsia : RawKeyEventData
             return new LogicalKeyboardKey((hidUsage | LogicalKeyboardKey.fuchsiaPlane));
         }
     }
-    public override PhysicalKeyboardKey physicalKey => (global::Doroti.Generated.Framework.Services.Keyboard_maps_gLibrary.kFuchsiaToPhysicalKey.GetValueOrDefault(hidUsage) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.fuchsiaPlane + hidUsage)));
+    public override PhysicalKeyboardKey physicalKey => (global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kFuchsiaToPhysicalKey.GetValueOrDefault(hidUsage) ?? new PhysicalKeyboardKey((LogicalKeyboardKey.fuchsiaPlane + hidUsage)));
     internal virtual bool _isLeftRightModifierPressed(KeyboardSide side, long anyMask, long leftMask, long rightMask)
     {
         if (((modifiers & anyMask) == 0L))

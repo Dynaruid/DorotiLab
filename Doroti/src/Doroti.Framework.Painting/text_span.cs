@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public class TextSpan : InlineSpan, HitTestTarget
 {
@@ -49,7 +49,7 @@ public class TextSpan : InlineSpan, HitTestTarget
         if ((@event is PointerDownEvent))
         {
             PointerDownEvent @event__as9792 = (PointerDownEvent)@event;
-            this.recognizer?.addPointer((global::Doroti.Generated.Framework.Gestures.PointerDownEvent)(object)@event__as9792);
+            this.recognizer?.addPointer((global::Doroti.Framework.Gestures.PointerDownEvent)(object)@event__as9792);
         }
     }
 
@@ -290,11 +290,11 @@ public class TextSpan : InlineSpan, HitTestTarget
         {
             return false;
         }
-        return (((((((((__other is TextSpan) && (((TextSpan)((TextSpan)__other)).text == this.text)) && (object.Equals(((TextSpan)((TextSpan)__other)).recognizer, this.recognizer))) && (((TextSpan)((TextSpan)__other)).semanticsLabel == this.semanticsLabel)) && (((TextSpan)((TextSpan)__other)).semanticsIdentifier == this.semanticsIdentifier)) && (object.Equals((Action<PointerEnterEvent>?)this.onEnter, (Action<PointerEnterEvent>?)((TextSpan)((TextSpan)__other)).onEnter))) && (object.Equals((Action<PointerExitEvent>?)this.onExit, (Action<PointerExitEvent>?)((TextSpan)((TextSpan)__other)).onExit))) && (object.Equals(this.mouseCursor, ((TextSpan)((TextSpan)__other)).mouseCursor))) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals<InlineSpan>(((TextSpan)((TextSpan)__other)).children, this.children));
+        return (((((((((__other is TextSpan) && (((TextSpan)((TextSpan)__other)).text == this.text)) && (object.Equals(((TextSpan)((TextSpan)__other)).recognizer, this.recognizer))) && (((TextSpan)((TextSpan)__other)).semanticsLabel == this.semanticsLabel)) && (((TextSpan)((TextSpan)__other)).semanticsIdentifier == this.semanticsIdentifier)) && (object.Equals((Action<PointerEnterEvent>?)this.onEnter, (Action<PointerEnterEvent>?)((TextSpan)((TextSpan)__other)).onEnter))) && (object.Equals((Action<PointerExitEvent>?)this.onExit, (Action<PointerExitEvent>?)((TextSpan)((TextSpan)__other)).onExit))) && (object.Equals(this.mouseCursor, ((TextSpan)((TextSpan)__other)).mouseCursor))) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<InlineSpan>(((TextSpan)((TextSpan)__other)).children, this.children));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(base.GetHashCode(), this.text, this.recognizer, this.semanticsLabel, this.semanticsIdentifier, this.onEnter, this.onExit, this.mouseCursor, ((this.children is null) ? null : FoundationRuntimePorts.ObjectHashAll(this.children!)));
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "TextSpan");
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "TextSpan");
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);

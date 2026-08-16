@@ -12,20 +12,20 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
-public class MaterialBannerThemeData : global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class MaterialBannerThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 {
     public virtual Color? backgroundColor { get; private set; }
     public virtual Color? surfaceTintColor { get; private set; }
     public virtual Color? shadowColor { get; private set; }
     public virtual Color? dividerColor { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.TextStyle? contentTextStyle { get; private set; }
+    public virtual global::Doroti.Framework.Painting.TextStyle? contentTextStyle { get; private set; }
     public virtual double? elevation { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? leadingPadding { get; private set; }
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding { get; private set; }
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry? leadingPadding { get; private set; }
 
-    public MaterialBannerThemeData(Color? backgroundColor = null, Color? surfaceTintColor = null, Color? shadowColor = null, Color? dividerColor = null, global::Doroti.Generated.Framework.Painting.TextStyle? contentTextStyle = null, double? elevation = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? leadingPadding = null)
+    public MaterialBannerThemeData(Color? backgroundColor = null, Color? surfaceTintColor = null, Color? shadowColor = null, Color? dividerColor = null, global::Doroti.Framework.Painting.TextStyle? contentTextStyle = null, double? elevation = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? leadingPadding = null)
     {
         this.backgroundColor = backgroundColor;
         this.surfaceTintColor = surfaceTintColor;
@@ -37,7 +37,7 @@ public class MaterialBannerThemeData : global::Doroti.Generated.Framework.Founda
         this.leadingPadding = leadingPadding;
     }
 
-    public virtual MaterialBannerThemeData copyWith(Color? backgroundColor = null, Color? surfaceTintColor = null, Color? shadowColor = null, Color? dividerColor = null, global::Doroti.Generated.Framework.Painting.TextStyle? contentTextStyle = null, double? elevation = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry? leadingPadding = null)
+    public virtual MaterialBannerThemeData copyWith(Color? backgroundColor = null, Color? surfaceTintColor = null, Color? shadowColor = null, Color? dividerColor = null, global::Doroti.Framework.Painting.TextStyle? contentTextStyle = null, double? elevation = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? leadingPadding = null)
     {
         return new MaterialBannerThemeData(backgroundColor: (backgroundColor ?? this.backgroundColor), surfaceTintColor: (surfaceTintColor ?? this.surfaceTintColor), shadowColor: (shadowColor ?? this.shadowColor), dividerColor: (dividerColor ?? this.dividerColor), contentTextStyle: (contentTextStyle ?? this.contentTextStyle), elevation: (elevation ?? this.elevation), padding: (padding ?? this.padding), leadingPadding: (leadingPadding ?? this.leadingPadding));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -65,19 +65,19 @@ public class MaterialBannerThemeData : global::Doroti.Generated.Framework.Founda
         return (((((((((__other is MaterialBannerThemeData) && (object.Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).backgroundColor, this.backgroundColor))) && (object.Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).surfaceTintColor, this.surfaceTintColor))) && (object.Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).shadowColor, this.shadowColor))) && (object.Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).dividerColor, this.dividerColor))) && (object.Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).contentTextStyle, this.contentTextStyle))) && (((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).elevation == this.elevation)) && (object.Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).padding, this.padding))) && (object.Equals(((MaterialBannerThemeData)((MaterialBannerThemeData)__other)).leadingPadding, this.leadingPadding)));
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("backgroundColor", this.backgroundColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("surfaceTintColor", this.surfaceTintColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("shadowColor", this.shadowColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("dividerColor", this.dividerColor, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.TextStyle>("contentTextStyle", this.contentTextStyle, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("elevation", this.elevation, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry>("leadingPadding", this.leadingPadding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("backgroundColor", this.backgroundColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("surfaceTintColor", this.surfaceTintColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", this.shadowColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("dividerColor", this.dividerColor, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("contentTextStyle", this.contentTextStyle, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("elevation", this.elevation, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("leadingPadding", this.leadingPadding, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;
@@ -98,27 +98,27 @@ public class MaterialBannerThemeData : global::Doroti.Generated.Framework.Founda
 
 }
 
-public class MaterialBannerTheme : global::Doroti.Generated.Framework.Widgets.InheritedTheme
+public class MaterialBannerTheme : global::Doroti.Framework.Widgets.InheritedTheme
 {
     public virtual MaterialBannerThemeData? data { get; private set; }
 
-    public MaterialBannerTheme(global::Doroti.Generated.Framework.Foundation.Key? key = null, MaterialBannerThemeData? data = null, global::Doroti.Generated.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
+    public MaterialBannerTheme(global::Doroti.Framework.Foundation.Key? key = null, MaterialBannerThemeData? data = null, global::Doroti.Framework.Widgets.Widget child = default!) : base(key: key, child: child)
     {
         this.data = data;
     }
 
-    public static MaterialBannerThemeData of(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static MaterialBannerThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
         MaterialBannerTheme? bannerTheme__6819 = ((MaterialBannerTheme?)(object?)context.dependOnInheritedWidgetOfExactType<MaterialBannerTheme>());
         return (bannerTheme__6819?.data ?? Theme.of(context).bannerTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget wrap(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Widgets.Widget child)
+    public override global::Doroti.Framework.Widgets.Widget wrap(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new MaterialBannerTheme(data: this.data, child: child));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new MaterialBannerTheme(data: this.data, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool updateShouldNotify(global::Doroti.Generated.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((MaterialBannerTheme)oldWidget).data)));
+    public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this.data, ((MaterialBannerTheme)oldWidget).data)));
 }

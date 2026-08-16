@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public static partial class ColorsLibrary
 {
@@ -166,7 +166,7 @@ public class HSVColor
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.alpha, this.hue, this.saturation, this.value);
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "HSVColor"))}({this.alpha}, {this.hue}, {this.saturation}, {this.value})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "HSVColor"))}({this.alpha}, {this.hue}, {this.saturation}, {this.value})";
 }
 
 public class HSLColor
@@ -276,7 +276,7 @@ public class HSLColor
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.alpha, this.hue, this.saturation, this.lightness);
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "HSLColor"))}({this.alpha}, {this.hue}, {this.saturation}, {this.lightness})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "HSLColor"))}({this.alpha}, {this.hue}, {this.saturation}, {this.lightness})";
 }
 
 public class ColorSwatch<T> : Color where T : notnull
@@ -309,11 +309,11 @@ public class ColorSwatch<T> : Color where T : notnull
         {
             return false;
         }
-        return ((base.Equals(__other) && (__other is ColorSwatch<T>)) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.mapEquals<T, global::Doroti.Ui.Color>(((ColorSwatch<T>)((ColorSwatch<T>)__other))._swatch, this._swatch));
+        return ((base.Equals(__other) && (__other is ColorSwatch<T>)) && global::Doroti.Framework.Foundation.CollectionsLibrary.mapEquals<T, global::Doroti.Ui.Color>(((ColorSwatch<T>)((ColorSwatch<T>)__other))._swatch, this._swatch));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.GetType(), value, this._swatch);
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ColorSwatch"))}(primary value: {base.ToString()})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ColorSwatch"))}(primary value: {base.ToString()})";
     public static ColorSwatch<T>? lerp<T>(ColorSwatch<T>? a, ColorSwatch<T>? b, double t) where T : notnull
     {
         if (DartRuntimePrimitives.Identical(a, b))
@@ -344,7 +344,7 @@ public class ColorSwatch<T> : Color where T : notnull
 
 public class ColorProperty : DiagnosticsProperty<Color>
 {
-    public ColorProperty(string name, Color? value, bool showName = true, object? defaultValue = default!, DiagnosticsTreeStyle style = DiagnosticsTreeStyle.singleLine, DiagnosticLevel level = DiagnosticLevel.info) : base(name, value, showName: showName, defaultValue: defaultValue ?? global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue, style: style, level: level)
+    public ColorProperty(string name, Color? value, bool showName = true, object? defaultValue = default!, DiagnosticsTreeStyle style = DiagnosticsTreeStyle.singleLine, DiagnosticLevel level = DiagnosticLevel.info) : base(name, value, showName: showName, defaultValue: defaultValue ?? global::Doroti.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue, style: style, level: level)
     {
     }
 

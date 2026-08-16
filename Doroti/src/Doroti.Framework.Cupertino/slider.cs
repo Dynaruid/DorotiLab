@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Cupertino;
+namespace Doroti.Framework.Cupertino;
 
 internal delegate void _SliderValueChanged__slider(double value, bool isFastDrag);
 
@@ -21,7 +21,7 @@ public static partial class SliderLibrary
     internal static double _kVelocityThreshold = 1.0;
 }
 
-public class CupertinoSlider : global::Doroti.Generated.Framework.Widgets.StatefulWidget
+public class CupertinoSlider : global::Doroti.Framework.Widgets.StatefulWidget
 {
     public virtual double value { get; private set; } = default!;
     public virtual global::System.Action<double>? onChanged { get; private set; }
@@ -33,7 +33,7 @@ public class CupertinoSlider : global::Doroti.Generated.Framework.Widgets.Statef
     public virtual Color? activeColor { get; private set; }
     public virtual Color thumbColor { get; private set; } = default!;
 
-    public CupertinoSlider(global::Doroti.Generated.Framework.Foundation.Key? key = null, double value = default!, global::System.Action<double>? onChanged = default!, global::System.Action<double>? onChangeStart = null, global::System.Action<double>? onChangeEnd = null, double min = 0.0, double max = 1.0, long? divisions = null, Color? activeColor = null, Color thumbColor = default!) : base(key: key)
+    public CupertinoSlider(global::Doroti.Framework.Foundation.Key? key = null, double value = default!, global::System.Action<double>? onChanged = default!, global::System.Action<double>? onChangeStart = null, global::System.Action<double>? onChangeEnd = null, double min = 0.0, double max = 1.0, long? divisions = null, Color? activeColor = null, Color thumbColor = default!) : base(key: key)
     {
         Color __thumbColor = thumbColor ?? CupertinoColors.white;
         this.value = value;
@@ -50,20 +50,20 @@ public class CupertinoSlider : global::Doroti.Generated.Framework.Widgets.Statef
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoSliderState__slider());
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("value", this.value));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("min", this.min));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("max", this.max));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("value", this.value));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("min", this.min));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("max", this.max));
     }
 
 }
 
-internal class _CupertinoSliderState__slider : global::Doroti.Generated.Framework.Widgets.State<CupertinoSlider>, global::Doroti.Generated.Framework.Widgets.TickerProviderStateMixin<CupertinoSlider>
+internal class _CupertinoSliderState__slider : global::Doroti.Framework.Widgets.State<CupertinoSlider>, global::Doroti.Framework.Widgets.TickerProviderStateMixin<CupertinoSlider>
 {
-    public virtual HashSet<global::Doroti.Generated.Framework.Scheduler.Ticker>? _tickers { get; set; } = default;
-    public virtual global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
+    public virtual HashSet<global::Doroti.Framework.Scheduler.Ticker>? _tickers { get; set; } = default;
+    public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     internal virtual void _handleChanged(double value, bool isFastDrag)
     {
@@ -94,9 +94,9 @@ internal class _CupertinoSliderState__slider : global::Doroti.Generated.Framewor
 
     internal virtual void _emitHapticFeedback(bool isFastDrag)
     {
-        switch (global::Doroti.Generated.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
         {
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.iOS:
+            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
                 {
                     if (isFastDrag)
                     {
@@ -108,43 +108,43 @@ internal class _CupertinoSliderState__slider : global::Doroti.Generated.Framewor
                     }
                     break;
                 }
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.macOS:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.windows:
+            case global::Doroti.Framework.Foundation.TargetPlatform.android:
+            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
+            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
+            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
                 {
                     break;
                 }
         }
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new _CupertinoSliderRenderObjectWidget__slider(value: (((((CupertinoSlider)this.widget).value - ((CupertinoSlider)this.widget).min)) / ((((CupertinoSlider)this.widget).max - ((CupertinoSlider)this.widget).min))), divisions: ((CupertinoSlider)this.widget).divisions, activeColor: CupertinoDynamicColor.resolve((((CupertinoSlider)this.widget).activeColor ?? CupertinoTheme.of(context).primaryColor), context), thumbColor: ((CupertinoSlider)this.widget).thumbColor, onChanged: ((global::System.Action<double, bool>)((((CupertinoSlider)this.widget).onChanged is not null) ? this._handleChanged : null)), onChangeStart: ((global::System.Action<double>)((((CupertinoSlider)this.widget).onChangeStart is not null) ? this._handleDragStart : null)), onChangeEnd: ((global::System.Action<double>)((((CupertinoSlider)this.widget).onChangeEnd is not null) ? this._handleDragEnd : null)), vsync: this));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _CupertinoSliderRenderObjectWidget__slider(value: (((((CupertinoSlider)this.widget).value - ((CupertinoSlider)this.widget).min)) / ((((CupertinoSlider)this.widget).max - ((CupertinoSlider)this.widget).min))), divisions: ((CupertinoSlider)this.widget).divisions, activeColor: CupertinoDynamicColor.resolve((((CupertinoSlider)this.widget).activeColor ?? CupertinoTheme.of(context).primaryColor), context), thumbColor: ((CupertinoSlider)this.widget).thumbColor, onChanged: ((global::System.Action<double, bool>)((((CupertinoSlider)this.widget).onChanged is not null) ? this._handleChanged : null)), onChangeStart: ((global::System.Action<double>)((((CupertinoSlider)this.widget).onChangeStart is not null) ? this._handleDragStart : null)), onChangeEnd: ((global::System.Action<double>)((((CupertinoSlider)this.widget).onChangeEnd is not null) ? this._handleDragEnd : null)), vsync: this));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
+    public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
     {
         if ((this._tickerModeNotifier is null))
         {
             _updateTickerModeNotifier();
         }
         DartRuntimePrimitives.Assert(() => (this._tickerModeNotifier is not null));
-        this._tickers ??= new HashSet<global::Doroti.Generated.Framework.Scheduler.Ticker>();
+        this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
-        var result__17553 = ((Func<global::Doroti.Generated.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+        var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
+{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
             __cascade.muted = !((TickerModeData)values__17506).enabled;
             __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
             return __cascade;        }))();
         this._tickers!.Add(result__17553);
-        return ((global::Doroti.Generated.Framework.Scheduler.Ticker)(object?)result__17553);
+        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void _removeTicker(global::Doroti.Generated.Framework.Widgets._WidgetTicker__ticker_provider ticker)
+    public virtual void _removeTicker(global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider ticker)
     {
         DartRuntimePrimitives.Assert(() => (this._tickers is not null));
         DartRuntimePrimitives.Assert(() => this._tickers!.Contains(ticker));
@@ -164,7 +164,7 @@ internal class _CupertinoSliderState__slider : global::Doroti.Generated.Framewor
         {
             TickerModeData values__18318 = this._tickerModeNotifier!.value;
             bool muted__18372 = !((TickerModeData)values__18318).enabled;
-            foreach (global::Doroti.Generated.Framework.Scheduler.Ticker ticker__18421 in this._tickers!)
+            foreach (global::Doroti.Framework.Scheduler.Ticker ticker__18421 in this._tickers!)
             {
                 ticker__18421.muted = muted__18372;
                 ticker__18421.forceFrames = ((TickerModeData)values__18318).forceFrames;
@@ -174,7 +174,7 @@ internal class _CupertinoSliderState__slider : global::Doroti.Generated.Framewor
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__18621 = ((global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__18621 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
         if ((object.Equals(newNotifier__18621, this._tickerModeNotifier)))
         {
             return;
@@ -190,11 +190,11 @@ internal class _CupertinoSliderState__slider : global::Doroti.Generated.Framewor
             {
                 if ((this._tickers is not null))
                 {
-                    foreach (global::Doroti.Generated.Framework.Scheduler.Ticker ticker__18989 in this._tickers!)
+                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker__18989 in this._tickers!)
                     {
-                        if (((global::Doroti.Generated.Framework.Scheduler.Ticker)ticker__18989).isActive)
+                        if (((global::Doroti.Framework.Scheduler.Ticker)ticker__18989).isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker__18989.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker__18989.describeForError("The offending ticker was") }));
                         }
                     }
                 }
@@ -205,15 +205,15 @@ internal class _CupertinoSliderState__slider : global::Doroti.Generated.Framewor
         base.dispose();
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Generated.Framework.Scheduler.Ticker>>("tickers", this._tickers, description: ((this._tickers is not null) ? $"tracking {checked((long)(this._tickers!.Count))} ticker{((checked((long)(this._tickers!.Count)) == 1L) ? "" : "s")}" : null), defaultValue: default));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", this._tickers, description: ((this._tickers is not null) ? $"tracking {checked((long)(this._tickers!.Count))} ticker{((checked((long)(this._tickers!.Count)) == 1L) ? "" : "s")}" : null), defaultValue: default));
     }
 
 }
 
-internal class _CupertinoSliderRenderObjectWidget__slider : global::Doroti.Generated.Framework.Widgets.LeafRenderObjectWidget
+internal class _CupertinoSliderRenderObjectWidget__slider : global::Doroti.Framework.Widgets.LeafRenderObjectWidget
 {
     public virtual double value { get; private set; } = default!;
     public virtual long? divisions { get; private set; }
@@ -222,9 +222,9 @@ internal class _CupertinoSliderRenderObjectWidget__slider : global::Doroti.Gener
     public virtual global::System.Action<double, bool>? onChanged { get; private set; }
     public virtual global::System.Action<double>? onChangeStart { get; private set; }
     public virtual global::System.Action<double>? onChangeEnd { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Scheduler.TickerProvider vsync { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Scheduler.TickerProvider vsync { get; private set; } = default!;
 
-    internal _CupertinoSliderRenderObjectWidget__slider(double value, long? divisions = null, Color activeColor = default!, Color thumbColor = default!, global::System.Action<double, bool>? onChanged = null, global::System.Action<double>? onChangeStart = null, global::System.Action<double>? onChangeEnd = null, global::Doroti.Generated.Framework.Scheduler.TickerProvider vsync = default!)
+    internal _CupertinoSliderRenderObjectWidget__slider(double value, long? divisions = null, Color activeColor = default!, Color thumbColor = default!, global::System.Action<double, bool>? onChanged = null, global::System.Action<double>? onChangeStart = null, global::System.Action<double>? onChangeEnd = null, global::Doroti.Framework.Scheduler.TickerProvider vsync = default!)
     {
         this.value = value;
         this.divisions = divisions;
@@ -236,17 +236,17 @@ internal class _CupertinoSliderRenderObjectWidget__slider : global::Doroti.Gener
         this.vsync = vsync;
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
-        return ((global::Doroti.Generated.Framework.Rendering.RenderObject)(object?)new _RenderCupertinoSlider__slider(value: this.value, divisions: this.divisions, activeColor: this.activeColor, thumbColor: CupertinoDynamicColor.resolve(this.thumbColor, context), trackColor: CupertinoDynamicColor.resolve(CupertinoColors.systemFill, context), onChanged: (global::System.Action<double, bool>?)this.onChanged, onChangeStart: (global::System.Action<double>?)this.onChangeStart, onChangeEnd: (global::System.Action<double>?)this.onChangeEnd, vsync: this.vsync, textDirection: Directionality.of(context), cursor: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb ? global::Doroti.Generated.Framework.Services.SystemMouseCursors.click : global::Doroti.Generated.Framework.Services.MouseCursor.defer)));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderCupertinoSlider__slider(value: this.value, divisions: this.divisions, activeColor: this.activeColor, thumbColor: CupertinoDynamicColor.resolve(this.thumbColor, context), trackColor: CupertinoDynamicColor.resolve(CupertinoColors.systemFill, context), onChanged: (global::System.Action<double, bool>?)this.onChanged, onChangeStart: (global::System.Action<double>?)this.onChangeStart, onChangeEnd: (global::System.Action<double>?)this.onChangeEnd, vsync: this.vsync, textDirection: Directionality.of(context), cursor: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.MouseCursor.defer)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (_RenderCupertinoSlider__slider)(object)renderObject;
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
         DartRuntimePrimitives.Ignore(((Func<_RenderCupertinoSlider__slider>)(() =>
 {            var __cascade = __renderObject;
             __cascade.value = this.value;
@@ -288,7 +288,7 @@ public static partial class SliderLibrary
     internal static double _kAdjustmentUnit = 0.1;
 }
 
-public class _RenderCupertinoSlider__slider : global::Doroti.Generated.Framework.Rendering.RenderConstrainedBox
+public class _RenderCupertinoSlider__slider : global::Doroti.Framework.Rendering.RenderConstrainedBox
 {
     internal virtual double _value { get; set; } = default!;
     internal virtual long? _divisions { get; set; } = default;
@@ -299,18 +299,18 @@ public class _RenderCupertinoSlider__slider : global::Doroti.Generated.Framework
     public virtual global::System.Action<double>? onChangeStart { get; set; } = default;
     public virtual global::System.Action<double>? onChangeEnd { get; set; } = default;
     internal virtual TextDirection _textDirection { get; set; } = default!;
-    internal virtual global::Doroti.Generated.Framework.Animation.AnimationController _position { get; set; } = default!;
-    internal virtual global::Doroti.Generated.Framework.Gestures.HorizontalDragGestureRecognizer _drag { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Animation.AnimationController _position { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer _drag { get; set; } = default!;
     internal virtual double _currentDragValue { get; set; } = 0.0;
     internal virtual Duration? _lastUpdateTimestamp { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Services.MouseCursor _cursor { get; set; } = default!;
-    public virtual global::System.Action<global::Doroti.Generated.Framework.Gestures.PointerEnterEvent>? onEnter { get; set; } = default;
-    public virtual global::System.Action<global::Doroti.Generated.Framework.Gestures.PointerHoverEvent>? onHover { get; set; } = default;
-    public virtual global::System.Action<global::Doroti.Generated.Framework.Gestures.PointerExitEvent>? onExit { get; set; } = default;
+    internal virtual global::Doroti.Framework.Services.MouseCursor _cursor { get; set; } = default!;
+    public virtual global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>? onEnter { get; set; } = default;
+    public virtual global::System.Action<global::Doroti.Framework.Gestures.PointerHoverEvent>? onHover { get; set; } = default;
+    public virtual global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>? onExit { get; set; } = default;
 
-    internal _RenderCupertinoSlider__slider(double value, long? divisions = null, Color activeColor = default!, Color thumbColor = default!, Color trackColor = default!, global::System.Action<double, bool>? onChanged = null, global::System.Action<double>? onChangeStart = null, global::System.Action<double>? onChangeEnd = null, global::Doroti.Generated.Framework.Scheduler.TickerProvider vsync = default!, TextDirection textDirection = default!, global::Doroti.Generated.Framework.Services.MouseCursor cursor = default!) : base(additionalConstraints: global::Doroti.Generated.Framework.Rendering.BoxConstraints.CreateTightFor(width: SliderLibrary._kSliderWidth, height: SliderLibrary._kSliderHeight))
+    internal _RenderCupertinoSlider__slider(double value, long? divisions = null, Color activeColor = default!, Color thumbColor = default!, Color trackColor = default!, global::System.Action<double, bool>? onChanged = null, global::System.Action<double>? onChangeStart = null, global::System.Action<double>? onChangeEnd = null, global::Doroti.Framework.Scheduler.TickerProvider vsync = default!, TextDirection textDirection = default!, global::Doroti.Framework.Services.MouseCursor cursor = default!) : base(additionalConstraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(width: SliderLibrary._kSliderWidth, height: SliderLibrary._kSliderHeight))
     {
-        global::Doroti.Generated.Framework.Services.MouseCursor __cursor = cursor ?? global::Doroti.Generated.Framework.Services.MouseCursor.defer;
+        global::Doroti.Framework.Services.MouseCursor __cursor = cursor ?? global::Doroti.Framework.Services.MouseCursor.defer;
         this.onChangeStart = onChangeStart;
         this.onChangeEnd = onChangeEnd;
         this._cursor = __cursor;
@@ -322,14 +322,14 @@ public class _RenderCupertinoSlider__slider : global::Doroti.Generated.Framework
         this._onChanged = onChanged;
         this._textDirection = textDirection;
         System.Diagnostics.Debug.Assert(((value >= 0.0) && (value <= 1.0)));
-        _drag = ((Func<global::Doroti.Generated.Framework.Gestures.HorizontalDragGestureRecognizer>)(() =>
-{            var __cascade = new global::Doroti.Generated.Framework.Gestures.HorizontalDragGestureRecognizer();
+        _drag = ((Func<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>)(() =>
+{            var __cascade = new global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer();
             __cascade.onStart = this._handleDragStart;
             __cascade.onUpdate = this._handleDragUpdate;
             __cascade.onEnd = this._handleDragEnd;
             return __cascade;        }))();
-        _position = ((Func<global::Doroti.Generated.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Generated.Framework.Animation.AnimationController(value: DartRuntimePrimitives.RequireValue(value), duration: SliderLibrary._kDiscreteTransitionDuration, vsync: vsync);
+        _position = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
+{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(value: DartRuntimePrimitives.RequireValue(value), duration: SliderLibrary._kDiscreteTransitionDuration, vsync: vsync);
             __cascade.addListener(() => this.markNeedsPaint());
             return __cascade;        }))();
     }
@@ -349,7 +349,7 @@ public class _RenderCupertinoSlider__slider : global::Doroti.Generated.Framework
             if ((this.divisions is not null))
             {
                 long divisions__value13358 = DartRuntimePrimitives.RequireValue(divisions);
-                this._position.animateTo(newValue, curve: global::Doroti.Generated.Framework.Animation.Curves.fastOutSlowIn);
+                this._position.animateTo(newValue, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
             }
             else
             {
@@ -472,18 +472,18 @@ public class _RenderCupertinoSlider__slider : global::Doroti.Generated.Framework
         }
     }
     public virtual bool isInteractive => DartRuntimePrimitives.ConvertValue<bool>((this.onChanged is not null));
-    internal virtual void _handleDragStart(global::Doroti.Generated.Framework.Gestures.DragStartDetails details) => _startInteraction(details);
-    internal virtual void _handleDragUpdate(global::Doroti.Generated.Framework.Gestures.DragUpdateDetails details)
+    internal virtual void _handleDragStart(global::Doroti.Framework.Gestures.DragStartDetails details) => _startInteraction(details);
+    internal virtual void _handleDragUpdate(global::Doroti.Framework.Gestures.DragUpdateDetails details)
     {
         if (!this.isInteractive)
         {
             return;
         }
         double extent__16026 = Math.Max(SliderLibrary._kPadding, (this.size.width - (2.0 * ((SliderLibrary._kPadding + CupertinoThumbPainter.radius)))));
-        double valueDelta__16155 = (DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Gestures.DragUpdateDetails)details).primaryDelta) / extent__16026);
+        double valueDelta__16155 = (DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).primaryDelta) / extent__16026);
         _currentDragValue += (this.textDirection switch { TextDirection.rtl => -valueDelta__16155, TextDirection.ltr => valueDelta__16155, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         var isFast__16406 = false;
-        Duration? currentTimestamp__16442 = ((global::Doroti.Generated.Framework.Gestures.DragUpdateDetails)details).sourceTimeStamp;
+        Duration? currentTimestamp__16442 = ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).sourceTimeStamp;
         if (((currentTimestamp__16442 is not null) && (this._lastUpdateTimestamp is not null)))
         {
             Duration currentTimestamp__16442__value16494 = DartRuntimePrimitives.RequireValue(currentTimestamp__16442);
@@ -495,14 +495,14 @@ public class _RenderCupertinoSlider__slider : global::Doroti.Generated.Framework
         this.onChanged!(this._discretizedCurrentDragValue, isFast__16406);
     }
 
-    internal virtual void _handleDragEnd(global::Doroti.Generated.Framework.Gestures.DragEndDetails details) => _endInteraction();
-    internal virtual void _startInteraction(global::Doroti.Generated.Framework.Gestures.DragStartDetails details)
+    internal virtual void _handleDragEnd(global::Doroti.Framework.Gestures.DragEndDetails details) => _endInteraction();
+    internal virtual void _startInteraction(global::Doroti.Framework.Gestures.DragStartDetails details)
     {
         if (this.isInteractive)
         {
             this.onChangeStart?.Invoke(this._discretizedCurrentDragValue);
             _currentDragValue = this._value;
-            _lastUpdateTimestamp = ((global::Doroti.Generated.Framework.Gestures.DragStartDetails)details).sourceTimeStamp;
+            _lastUpdateTimestamp = ((global::Doroti.Framework.Gestures.DragStartDetails)details).sourceTimeStamp;
             this.onChanged!(this._discretizedCurrentDragValue, false);
         }
     }
@@ -520,26 +520,26 @@ public class _RenderCupertinoSlider__slider : global::Doroti.Generated.Framework
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void handleEvent(global::Doroti.Generated.Framework.Gestures.PointerEvent @event, global::Doroti.Generated.Framework.Gestures.HitTestEntry<global::Doroti.Generated.Framework.Gestures.HitTestTarget> entry)
+    public override void handleEvent(global::Doroti.Framework.Gestures.PointerEvent @event, global::Doroti.Framework.Gestures.HitTestEntry<global::Doroti.Framework.Gestures.HitTestTarget> entry)
     {
         DartRuntimePrimitives.Assert(() => debugHandleEvent(@event, entry));
-        if (((@event is global::Doroti.Generated.Framework.Gestures.PointerDownEvent) && this.isInteractive))
+        if (((@event is global::Doroti.Framework.Gestures.PointerDownEvent) && this.isInteractive))
         {
-            global::Doroti.Generated.Framework.Gestures.PointerDownEvent @event__as17793 = (global::Doroti.Generated.Framework.Gestures.PointerDownEvent)@event;
-            this._drag.addPointer((global::Doroti.Generated.Framework.Gestures.PointerDownEvent)(object)((global::Doroti.Generated.Framework.Gestures.PointerDownEvent)@event__as17793));
+            global::Doroti.Framework.Gestures.PointerDownEvent @event__as17793 = (global::Doroti.Framework.Gestures.PointerDownEvent)@event;
+            this._drag.addPointer((global::Doroti.Framework.Gestures.PointerDownEvent)(object)((global::Doroti.Framework.Gestures.PointerDownEvent)@event__as17793));
         }
     }
 
-    public virtual void paint(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset offset)
+    public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        var (visualPosition__17966, leftColor__17988, rightColor__18005) = (this.textDirection switch { TextDirection.rtl => (((double, Color, Color))(((1.0 - ((global::Doroti.Generated.Framework.Animation.AnimationController)this._position).value), this._activeColor, this.trackColor))), TextDirection.ltr => (((double, Color, Color))((((global::Doroti.Generated.Framework.Animation.AnimationController)this._position).value, this.trackColor, this._activeColor))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        var (visualPosition__17966, leftColor__17988, rightColor__18005) = (this.textDirection switch { TextDirection.rtl => (((double, Color, Color))(((1.0 - ((global::Doroti.Framework.Animation.AnimationController)this._position).value), this._activeColor, this.trackColor))), TextDirection.ltr => (((double, Color, Color))((((global::Doroti.Framework.Animation.AnimationController)this._position).value, this.trackColor, this._activeColor))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         double trackCenter__18219 = (offset.dy + (this.size.height / 2.0));
         double trackLeft__18281 = (offset.dx + this._trackLeft);
         double trackTop__18334 = (trackCenter__18219 - 1.0);
         double trackBottom__18381 = (trackCenter__18219 + 1.0);
         double trackRight__18431 = (offset.dx + this._trackRight);
         double trackActive__18486 = (offset.dx + this._thumbCenter);
-        global::Doroti.Ui.Canvas canvas__18544 = ((global::Doroti.Ui.Canvas)(object?)((global::Doroti.Generated.Framework.Rendering.PaintingContext)context).canvas);
+        global::Doroti.Ui.Canvas canvas__18544 = ((global::Doroti.Ui.Canvas)(object?)((global::Doroti.Framework.Rendering.PaintingContext)context).canvas);
         if ((visualPosition__17966 > 0.0))
         {
             var paint__18613 = ((Func<Paint>)(() =>
@@ -560,7 +560,7 @@ public class _RenderCupertinoSlider__slider : global::Doroti.Generated.Framework
         new CupertinoThumbPainter(color: this.thumbColor).paint(canvas__18544, global::Doroti.Ui.Rect.fromCircle(center: thumbCenter__19261, radius: CupertinoThumbPainter.radius));
     }
 
-    public override void describeSemanticsConfiguration(global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration config)
+    public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
         config.isSemanticBoundary = this.isInteractive;
@@ -593,7 +593,7 @@ public class _RenderCupertinoSlider__slider : global::Doroti.Generated.Framework
         }
     }
 
-    public virtual global::Doroti.Generated.Framework.Services.MouseCursor cursor
+    public virtual global::Doroti.Framework.Services.MouseCursor cursor
     {
         get => this._cursor;
         set

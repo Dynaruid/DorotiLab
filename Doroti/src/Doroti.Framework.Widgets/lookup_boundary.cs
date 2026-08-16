@@ -12,11 +12,11 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class LookupBoundary : InheritedWidget
 {
-    public LookupBoundary(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key, child: child)
+    public LookupBoundary(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key, child: child)
     {
     }
 
@@ -107,7 +107,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static T? findAncestorRenderObjectOfType<T>(BuildContext context) where T : global::Doroti.Generated.Framework.Rendering.RenderObject
+    public static T? findAncestorRenderObjectOfType<T>(BuildContext context) where T : global::Doroti.Framework.Rendering.RenderObject
     {
         Element? target__11491 = default!;
         context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) => {
@@ -191,7 +191,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static bool debugIsHidingAncestorRenderObjectOfType<T>(BuildContext context) where T : global::Doroti.Generated.Framework.Rendering.RenderObject
+    public static bool debugIsHidingAncestorRenderObjectOfType<T>(BuildContext context) where T : global::Doroti.Framework.Rendering.RenderObject
     {
         bool? result__15081 = default!;
         DartRuntimePrimitives.Assert(() =>

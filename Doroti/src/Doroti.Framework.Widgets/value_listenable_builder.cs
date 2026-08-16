@@ -12,17 +12,17 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public delegate Widget ValueWidgetBuilder<T>(BuildContext context, T value, Widget? child);
 
 public class ValueListenableBuilder<T> : StatefulWidget
 {
-    public virtual global::Doroti.Generated.Framework.Foundation.ValueListenable<T> valueListenable { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Foundation.ValueListenable<T> valueListenable { get; private set; } = default!;
     public virtual global::System.Func<BuildContext, T, Widget?, Widget> builder { get; private set; } = default!;
     public virtual Widget? child { get; private set; }
 
-    public ValueListenableBuilder(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Foundation.ValueListenable<T> valueListenable = default!, global::System.Func<BuildContext, T, Widget?, Widget> builder = default!, Widget? child = null) : base(key: key)
+    public ValueListenableBuilder(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Foundation.ValueListenable<T> valueListenable = default!, global::System.Func<BuildContext, T, Widget?, Widget> builder = default!, Widget? child = null) : base(key: key)
     {
         this.valueListenable = valueListenable;
         this.builder = builder;

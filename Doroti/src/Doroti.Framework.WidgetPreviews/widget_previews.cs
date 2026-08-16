@@ -1,8 +1,8 @@
 #nullable enable
 using Doroti.Ui;
-using Doroti.Generated.Framework.Widgets;
+using Doroti.Framework.Widgets;
 
-namespace Doroti.Generated.Framework.WidgetPreviews;
+namespace Doroti.Framework.WidgetPreviews;
 
 public delegate PreviewThemeData PreviewTheme();
 public delegate Widget WidgetWrapper(Widget child);

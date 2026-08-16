@@ -12,14 +12,14 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class WillPopScope : StatefulWidget
 {
     public virtual Widget child { get; private set; } = default!;
     public virtual global::System.Func<Future<bool>>? onWillPop { get; private set; }
 
-    public WillPopScope(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!, global::System.Func<Future<bool>>? onWillPop = default!) : base(key: key)
+    public WillPopScope(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, global::System.Func<Future<bool>>? onWillPop = default!) : base(key: key)
     {
         this.child = child;
         this.onWillPop = onWillPop;

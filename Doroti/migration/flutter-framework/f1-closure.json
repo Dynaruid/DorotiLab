@@ -1853,7 +1853,7 @@
       "libraryUri": "file:///C:/Users/parti/Labo/DorotiLab/reference/flutter-master/packages/flutter/lib/src/foundation/object.dart",
       "dependencies": [],
       "disposition": "generated",
-      "owner": "Doroti.Generated.Framework.Foundation",
+      "owner": "Doroti.Framework.Foundation",
       "analyzerErrors": 0,
       "declarations": [
         {

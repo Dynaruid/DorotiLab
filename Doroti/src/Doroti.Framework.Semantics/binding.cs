@@ -12,20 +12,20 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Semantics;
+namespace Doroti.Framework.Semantics;
 
 public interface SemanticsBinding
 {
-    public static global::Doroti.Generated.Framework.Semantics.SemanticsBinding? _instance = default;
+    public static global::Doroti.Framework.Semantics.SemanticsBinding? _instance = default;
     ValueNotifier<bool> _semanticsEnabled { get; }
     ObserverList<Action<SemanticsActionEvent>> _semanticsActionListeners { get; }
     long _outstandingHandles { get; set; }
     SemanticsHandle? _semanticsHandle { get; set; }
     AccessibilityFeatures _accessibilityFeatures { get; set; }
 
-    public static global::Doroti.Generated.Framework.Semantics.SemanticsBinding instance
+    public static global::Doroti.Framework.Semantics.SemanticsBinding instance
     {
-        get => BindingBase.checkInstance(global::Doroti.Generated.Framework.Semantics.SemanticsBinding._instance);
+        get => BindingBase.checkInstance(global::Doroti.Framework.Semantics.SemanticsBinding._instance);
     }
     public bool semanticsEnabled { get; }
     public void addSemanticsEnabledListener(Action listener);
@@ -59,7 +59,7 @@ public class SemanticsHandle
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this._onDispose();
     }
 

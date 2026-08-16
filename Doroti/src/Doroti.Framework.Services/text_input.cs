@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public enum SmartDashesType
 {
@@ -70,7 +70,7 @@ public class TextInputType
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "TextInputType"))}(" + $"name: {_name}, " + $"signed: {signed}, " + $"decimal: {@decimal})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "TextInputType"))}(" + $"name: {_name}, " + $"signed: {signed}, " + $"decimal: {@decimal})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -179,7 +179,7 @@ public class TextInputConfiguration
         {
             return false;
         }
-        return ((((((((((((((((((((__other is TextInputConfiguration) && (((TextInputConfiguration)__other).viewId == viewId)) && (object.Equals(((TextInputConfiguration)__other).inputType, inputType))) && (((TextInputConfiguration)__other).readOnly == readOnly)) && (((TextInputConfiguration)__other).obscureText == obscureText)) && (((TextInputConfiguration)__other).autocorrect == autocorrect)) && (object.Equals(((TextInputConfiguration)__other).smartDashesType, smartDashesType))) && (object.Equals(((TextInputConfiguration)__other).smartQuotesType, smartQuotesType))) && (((TextInputConfiguration)__other).enableSuggestions == enableSuggestions)) && (((TextInputConfiguration)__other).enableInteractiveSelection == enableInteractiveSelection)) && (((TextInputConfiguration)__other).actionLabel == actionLabel)) && (object.Equals(((TextInputConfiguration)__other).inputAction, inputAction))) && (object.Equals(((TextInputConfiguration)__other).keyboardAppearance, keyboardAppearance))) && (object.Equals(((TextInputConfiguration)__other).textCapitalization, textCapitalization))) && (object.Equals(((TextInputConfiguration)__other).autofillConfiguration, autofillConfiguration))) && (((TextInputConfiguration)__other).enableIMEPersonalizedLearning == enableIMEPersonalizedLearning)) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals(((TextInputConfiguration)__other).allowedMimeTypes, allowedMimeTypes)) && (((TextInputConfiguration)__other).enableDeltaModel == enableDeltaModel)) && (object.Equals(((TextInputConfiguration)__other).hintLocales, hintLocales))) && (((TextInputConfiguration)__other).enableInlinePrediction == enableInlinePrediction));
+        return ((((((((((((((((((((__other is TextInputConfiguration) && (((TextInputConfiguration)__other).viewId == viewId)) && (object.Equals(((TextInputConfiguration)__other).inputType, inputType))) && (((TextInputConfiguration)__other).readOnly == readOnly)) && (((TextInputConfiguration)__other).obscureText == obscureText)) && (((TextInputConfiguration)__other).autocorrect == autocorrect)) && (object.Equals(((TextInputConfiguration)__other).smartDashesType, smartDashesType))) && (object.Equals(((TextInputConfiguration)__other).smartQuotesType, smartQuotesType))) && (((TextInputConfiguration)__other).enableSuggestions == enableSuggestions)) && (((TextInputConfiguration)__other).enableInteractiveSelection == enableInteractiveSelection)) && (((TextInputConfiguration)__other).actionLabel == actionLabel)) && (object.Equals(((TextInputConfiguration)__other).inputAction, inputAction))) && (object.Equals(((TextInputConfiguration)__other).keyboardAppearance, keyboardAppearance))) && (object.Equals(((TextInputConfiguration)__other).textCapitalization, textCapitalization))) && (object.Equals(((TextInputConfiguration)__other).autofillConfiguration, autofillConfiguration))) && (((TextInputConfiguration)__other).enableIMEPersonalizedLearning == enableIMEPersonalizedLearning)) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(((TextInputConfiguration)__other).allowedMimeTypes, allowedMimeTypes)) && (((TextInputConfiguration)__other).enableDeltaModel == enableDeltaModel)) && (object.Equals(((TextInputConfiguration)__other).hintLocales, hintLocales))) && (((TextInputConfiguration)__other).enableInlinePrediction == enableInlinePrediction));
     }
 
     public override int GetHashCode()
@@ -292,7 +292,7 @@ public class TextEditingValue
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "TextEditingValue"))}(text: ┤{text}├, selection: {selection}, composing: {composing})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "TextEditingValue"))}(text: ┤{text}├, selection: {selection}, composing: {composing})";
     public override bool Equals(object? other)
     {
         var __other = other as TextEditingValue;
@@ -582,7 +582,7 @@ public class TextInputConnection
 
     public virtual void setSelectionRects(List<SelectionRect> selectionRects)
     {
-        if (!global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals(_cachedSelectionRects, selectionRects))
+        if (!global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(_cachedSelectionRects, selectionRects))
         {
             _cachedSelectionRects = selectionRects;
             TextInput._instance._setSelectionRects(selectionRects);
@@ -757,7 +757,7 @@ public class TextInput
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb)
+                if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
                 {
                     return true;
                 }
@@ -1334,7 +1334,7 @@ internal class _PlatformTextInputControl : TextInputControl
         if ((!object.Equals(TextInput._instance._currentControl, _PlatformTextInputControl.instance)))
         {
             DartMap<string, object> none__100409 = TextInputType.none.toJson();
-            if (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb)
+            if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
             {
                 none__100409["isMultiline"] = (object.Equals(configuration.inputType, TextInputType.multiline));
             }
@@ -1508,7 +1508,7 @@ public class SystemContextMenuController : SystemContextMenuClient, Diagnosticab
         DartRuntimePrimitives.Assert(() => !_isDisposed);
         DartRuntimePrimitives.Assert(() => (items.Count != 0));
         DartRuntimePrimitives.Assert(() => (TextInput._instance._currentConnection is not null));
-        if (((((_lastShown is not null) && _lastShown!.isVisible) && (object.Equals(_lastShown!._lastTargetRect, targetRect))) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals(_lastShown!._lastItems, items)))
+        if (((((_lastShown is not null) && _lastShown!.isVisible) && (object.Equals(_lastShown!._lastTargetRect, targetRect))) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(_lastShown!._lastItems, items)))
         {
             return Future.value();
         }

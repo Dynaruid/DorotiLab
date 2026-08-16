@@ -12,23 +12,23 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Material;
+namespace Doroti.Framework.Material;
 
-public class ExpandIcon : global::Doroti.Generated.Framework.Widgets.StatefulWidget
+public class ExpandIcon : global::Doroti.Framework.Widgets.StatefulWidget
 {
     public virtual bool isExpanded { get; private set; } = default!;
     public virtual double size { get; private set; } = default!;
     public virtual global::System.Action<bool>? onPressed { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry padding { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry padding { get; private set; } = default!;
     public virtual Color? color { get; private set; }
     public virtual Color? disabledColor { get; private set; }
     public virtual Color? expandedColor { get; private set; }
     public virtual Color? splashColor { get; private set; }
     public virtual Color? highlightColor { get; private set; }
 
-    public ExpandIcon(global::Doroti.Generated.Framework.Foundation.Key? key = null, bool isExpanded = false, double size = 24.0, global::System.Action<bool>? onPressed = default!, global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry padding = default!, Color? color = null, Color? disabledColor = null, Color? expandedColor = null, Color? splashColor = null, Color? highlightColor = null) : base(key: key)
+    public ExpandIcon(global::Doroti.Framework.Foundation.Key? key = null, bool isExpanded = false, double size = 24.0, global::System.Action<bool>? onPressed = default!, global::Doroti.Framework.Painting.EdgeInsetsGeometry padding = default!, Color? color = null, Color? disabledColor = null, Color? expandedColor = null, Color? splashColor = null, Color? highlightColor = null) : base(key: key)
     {
-        global::Doroti.Generated.Framework.Painting.EdgeInsetsGeometry __padding = padding ?? global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateAll(8.0);
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry __padding = padding ?? global::Doroti.Framework.Painting.EdgeInsets.CreateAll(8.0);
         this.isExpanded = isExpanded;
         this.size = size;
         this.onPressed = onPressed;
@@ -43,18 +43,18 @@ public class ExpandIcon : global::Doroti.Generated.Framework.Widgets.StatefulWid
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _ExpandIconState__expand_icon());
 }
 
-internal class _ExpandIconState__expand_icon : global::Doroti.Generated.Framework.Widgets.State<ExpandIcon>, global::Doroti.Generated.Framework.Widgets.SingleTickerProviderStateMixin<ExpandIcon>
+internal class _ExpandIconState__expand_icon : global::Doroti.Framework.Widgets.State<ExpandIcon>, global::Doroti.Framework.Widgets.SingleTickerProviderStateMixin<ExpandIcon>
 {
-    internal virtual global::Doroti.Generated.Framework.Animation.AnimationController _controller { get; set; } = default!;
-    internal virtual global::Doroti.Generated.Framework.Animation.Animation<double> _iconTurns { get; set; } = default!;
-    internal static global::Doroti.Generated.Framework.Animation.Animatable<double> _iconTurnTween = new global::Doroti.Generated.Framework.Animation.Tween<double>(begin: 0.0, end: 0.5).chain(new global::Doroti.Generated.Framework.Animation.CurveTween(curve: global::Doroti.Generated.Framework.Animation.Curves.fastOutSlowIn));
-    public virtual global::Doroti.Generated.Framework.Scheduler.Ticker? _ticker { get; set; } = default;
-    public virtual global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
+    internal virtual global::Doroti.Framework.Animation.AnimationController _controller { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Animation.Animation<double> _iconTurns { get; set; } = default!;
+    internal static global::Doroti.Framework.Animation.Animatable<double> _iconTurnTween = new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: 0.5).chain(new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn));
+    public virtual global::Doroti.Framework.Scheduler.Ticker? _ticker { get; set; } = default;
+    public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     public override void initState()
     {
         base.initState();
-        _controller = new global::Doroti.Generated.Framework.Animation.AnimationController(duration: ThemeLibrary.kThemeAnimationDuration, vsync: this);
+        _controller = new global::Doroti.Framework.Animation.AnimationController(duration: ThemeLibrary.kThemeAnimationDuration, vsync: this);
         _iconTurns = this._controller.drive(_iconTurnTween);
         if (((ExpandIcon)this.widget).isExpanded)
         {
@@ -71,7 +71,7 @@ internal class _ExpandIconState__expand_icon : global::Doroti.Generated.Framewor
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
             });
         this._tickerModeNotifier?.removeListener(() => this._updateTicker());
         _tickerModeNotifier = null;
@@ -115,17 +115,17 @@ internal class _ExpandIconState__expand_icon : global::Doroti.Generated.Framewor
             return default!;
         }
     }
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
         MaterialLocalizations localizations__6314 = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
         string onTapHint__6382 = (((ExpandIcon)this.widget).isExpanded ? ((MaterialLocalizations)localizations__6314).expandedIconTapHint : ((MaterialLocalizations)localizations__6314).collapsedIconTapHint);
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Semantics(onTapHint: ((((ExpandIcon)this.widget).onPressed is null) ? null : onTapHint__6382), child: new IconButton(padding: ((ExpandIcon)this.widget).padding, iconSize: ((ExpandIcon)this.widget).size, highlightColor: ((ExpandIcon)this.widget).highlightColor, splashColor: ((ExpandIcon)this.widget).splashColor, color: this._iconColor, disabledColor: ((ExpandIcon)this.widget).disabledColor, onPressed: ((global::System.Action)((((ExpandIcon)this.widget).onPressed is null) ? null : this._handlePressed)), icon: new global::Doroti.Generated.Framework.Widgets.RotationTransition(turns: this._iconTurns, child: new global::Doroti.Generated.Framework.Widgets.Icon(Icons.expand_more)))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(onTapHint: ((((ExpandIcon)this.widget).onPressed is null) ? null : onTapHint__6382), child: new IconButton(padding: ((ExpandIcon)this.widget).padding, iconSize: ((ExpandIcon)this.widget).size, highlightColor: ((ExpandIcon)this.widget).highlightColor, splashColor: ((ExpandIcon)this.widget).splashColor, color: this._iconColor, disabledColor: ((ExpandIcon)this.widget).disabledColor, onPressed: ((global::System.Action)((((ExpandIcon)this.widget).onPressed is null) ? null : this._handlePressed)), icon: new global::Doroti.Framework.Widgets.RotationTransition(turns: this._iconTurns, child: new global::Doroti.Framework.Widgets.Icon(Icons.expand_more)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
+    public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -133,9 +133,9 @@ internal class _ExpandIconState__expand_icon : global::Doroti.Generated.Framewor
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this.GetType()} is a SingleTickerProviderStateMixin but multiple tickers were created."), new global::Doroti.Framework.Foundation.ErrorDescription("A SingleTickerProviderStateMixin can only be used as a TickerProvider once."), new global::Doroti.Framework.Foundation.ErrorHint("If a State is used for multiple AnimationController objects, or if it is passed to other " + "objects and those objects might use it more than one time in total, then instead of " + "mixing in a SingleTickerProviderStateMixin, use a regular TickerProviderStateMixin.") }));
             });
-        this._ticker = new global::Doroti.Generated.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+        this._ticker = new global::Doroti.Framework.Scheduler.Ticker((global::System.Action<Duration>)onTick, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
         _updateTickerModeNotifier();
         _updateTicker();
         return this._ticker!;
@@ -161,7 +161,7 @@ internal class _ExpandIconState__expand_icon : global::Doroti.Generated.Framewor
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
         if ((object.Equals(newNotifier__15400, this._tickerModeNotifier)))
         {
             return;
@@ -171,11 +171,11 @@ internal class _ExpandIconState__expand_icon : global::Doroti.Generated.Framewor
         this._tickerModeNotifier = newNotifier__15400;
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         string? tickerDescription__15805 = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
     }
 
 }

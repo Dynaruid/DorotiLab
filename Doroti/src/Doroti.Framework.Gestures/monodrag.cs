@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Gestures;
+namespace Doroti.Framework.Gestures;
 
 internal enum _DragState__monodrag
 {
@@ -67,7 +67,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
     }
 
     internal static VelocityTracker _defaultBuilder(PointerEvent @event) => new VelocityTracker(((PointerEvent)@event).kind);
-    internal static bool _defaultButtonAcceptBehavior(long buttons) => (buttons == global::Doroti.Generated.Framework.Gestures.EventsLibrary.kPrimaryButton);
+    internal static bool _defaultButtonAcceptBehavior(long buttons) => (buttons == global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton);
     public virtual OffsetPair lastPosition => this._lastPosition;
     public virtual Duration? debugLastPendingEventTimestamp
     {
@@ -155,7 +155,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
         startTrackingPointer(@event.pointer, @event.transform);
         if ((object.Equals(this._state, _DragState__monodrag.ready)))
         {
-            _initialButtons = global::Doroti.Generated.Framework.Gestures.EventsLibrary.kPrimaryButton;
+            _initialButtons = global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton;
         }
         _addPointer(@event);
     }
@@ -635,8 +635,8 @@ public class VerticalDragGestureRecognizer : DragGestureRecognizer
 
     public override bool isFlingGesture(VelocityEstimate estimate, PointerDeviceKind kind)
     {
-        double minVelocity__34838 = (minFlingVelocity ?? global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity);
-        double minDistance__34908 = (minFlingDistance ?? global::Doroti.Generated.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings));
+        double minVelocity__34838 = (minFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity);
+        double minDistance__34908 = (minFlingDistance ?? global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings));
         return ((((VelocityEstimate)estimate).pixelsPerSecond.dy.abs() > minVelocity__34838) && (((VelocityEstimate)estimate).offset.dy.abs() > minDistance__34908));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -647,7 +647,7 @@ public class VerticalDragGestureRecognizer : DragGestureRecognizer
         {
             return null;
         }
-        double maxVelocity__35278 = (maxFlingVelocity ?? global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity);
+        double maxVelocity__35278 = (maxFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity);
         double dy__35348 = Dart_uiLibrary.clampDouble(((VelocityEstimate)estimate).pixelsPerSecond.dy, -maxVelocity__35278, maxVelocity__35278);
         return new DragEndDetails(velocity: new Velocity(pixelsPerSecond: new global::Doroti.Ui.Offset(0, dy__35348)), primaryVelocity: dy__35348, globalPosition: ((OffsetPair)lastPosition).global, localPosition: ((OffsetPair)lastPosition).local);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -655,7 +655,7 @@ public class VerticalDragGestureRecognizer : DragGestureRecognizer
 
     public override bool hasSufficientGlobalDistanceToAccept(PointerDeviceKind pointerDeviceKind, double? deviceTouchSlop)
     {
-        return (globalDistanceMoved.abs() > global::Doroti.Generated.Framework.Gestures.EventsLibrary.computeHitSlop(pointerDeviceKind, gestureSettings));
+        return (globalDistanceMoved.abs() > global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(pointerDeviceKind, gestureSettings));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -673,8 +673,8 @@ public class HorizontalDragGestureRecognizer : DragGestureRecognizer
 
     public override bool isFlingGesture(VelocityEstimate estimate, PointerDeviceKind kind)
     {
-        double minVelocity__36945 = (minFlingVelocity ?? global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity);
-        double minDistance__37015 = (minFlingDistance ?? global::Doroti.Generated.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings));
+        double minVelocity__36945 = (minFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity);
+        double minDistance__37015 = (minFlingDistance ?? global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings));
         return ((((VelocityEstimate)estimate).pixelsPerSecond.dx.abs() > minVelocity__36945) && (((VelocityEstimate)estimate).offset.dx.abs() > minDistance__37015));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -685,7 +685,7 @@ public class HorizontalDragGestureRecognizer : DragGestureRecognizer
         {
             return null;
         }
-        double maxVelocity__37385 = (maxFlingVelocity ?? global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity);
+        double maxVelocity__37385 = (maxFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity);
         double dx__37455 = Dart_uiLibrary.clampDouble(((VelocityEstimate)estimate).pixelsPerSecond.dx, -maxVelocity__37385, maxVelocity__37385);
         return new DragEndDetails(velocity: new Velocity(pixelsPerSecond: new global::Doroti.Ui.Offset(dx__37455, 0)), primaryVelocity: dx__37455, globalPosition: ((OffsetPair)_lastPosition).global, localPosition: ((OffsetPair)_lastPosition).local);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -693,7 +693,7 @@ public class HorizontalDragGestureRecognizer : DragGestureRecognizer
 
     public override bool hasSufficientGlobalDistanceToAccept(PointerDeviceKind pointerDeviceKind, double? deviceTouchSlop)
     {
-        return (globalDistanceMoved.abs() > global::Doroti.Generated.Framework.Gestures.EventsLibrary.computeHitSlop(pointerDeviceKind, gestureSettings));
+        return (globalDistanceMoved.abs() > global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(pointerDeviceKind, gestureSettings));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -711,8 +711,8 @@ public class PanGestureRecognizer : DragGestureRecognizer
 
     public override bool isFlingGesture(VelocityEstimate estimate, PointerDeviceKind kind)
     {
-        double minVelocity__38983 = (minFlingVelocity ?? global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity);
-        double minDistance__39053 = (minFlingDistance ?? global::Doroti.Generated.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings));
+        double minVelocity__38983 = (minFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity);
+        double minDistance__39053 = (minFlingDistance ?? global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings));
         return ((((VelocityEstimate)estimate).pixelsPerSecond.distanceSquared > (minVelocity__38983 * minVelocity__38983)) && (((VelocityEstimate)estimate).offset.distanceSquared > (minDistance__39053 * minDistance__39053)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -723,14 +723,14 @@ public class PanGestureRecognizer : DragGestureRecognizer
         {
             return null;
         }
-        Velocity velocity__39467 = new Velocity(pixelsPerSecond: ((VelocityEstimate)estimate).pixelsPerSecond).clampMagnitude((minFlingVelocity ?? global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity), (maxFlingVelocity ?? global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity));
+        Velocity velocity__39467 = new Velocity(pixelsPerSecond: ((VelocityEstimate)estimate).pixelsPerSecond).clampMagnitude((minFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity), (maxFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity));
         return new DragEndDetails(velocity: velocity__39467, globalPosition: ((OffsetPair)lastPosition).global, localPosition: ((OffsetPair)lastPosition).local);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool hasSufficientGlobalDistanceToAccept(PointerDeviceKind pointerDeviceKind, double? deviceTouchSlop)
     {
-        return (globalDistanceMoved.abs() > global::Doroti.Generated.Framework.Gestures.EventsLibrary.computePanSlop(pointerDeviceKind, gestureSettings));
+        return (globalDistanceMoved.abs() > global::Doroti.Framework.Gestures.EventsLibrary.computePanSlop(pointerDeviceKind, gestureSettings));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

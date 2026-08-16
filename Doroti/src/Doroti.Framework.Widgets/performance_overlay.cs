@@ -12,28 +12,28 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class PerformanceOverlay : LeafRenderObjectWidget
 {
     public virtual long optionsMask { get; private set; } = default!;
 
-    public PerformanceOverlay(global::Doroti.Generated.Framework.Foundation.Key? key = null, long optionsMask = 0) : base(key: key)
+    public PerformanceOverlay(global::Doroti.Framework.Foundation.Key? key = null, long optionsMask = 0) : base(key: key)
     {
         this.optionsMask = optionsMask;
     }
 
-    public static PerformanceOverlay CreateAllEnabled(global::Doroti.Generated.Framework.Foundation.Key? key = null)
+    public static PerformanceOverlay CreateAllEnabled(global::Doroti.Framework.Foundation.Key? key = null)
     {
         var __instance = new PerformanceOverlay(default!, default!);
-        __instance.optionsMask = ((((1L << (int)(FoundationRuntimePorts.EnumIndex(global::Doroti.Generated.Framework.Rendering.PerformanceOverlayOption.displayRasterizerStatistics))) | (1L << (int)(FoundationRuntimePorts.EnumIndex(global::Doroti.Generated.Framework.Rendering.PerformanceOverlayOption.visualizeRasterizerStatistics)))) | (1L << (int)(FoundationRuntimePorts.EnumIndex(global::Doroti.Generated.Framework.Rendering.PerformanceOverlayOption.displayEngineStatistics)))) | (1L << (int)(FoundationRuntimePorts.EnumIndex(global::Doroti.Generated.Framework.Rendering.PerformanceOverlayOption.visualizeEngineStatistics))));
+        __instance.optionsMask = ((((1L << (int)(FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Rendering.PerformanceOverlayOption.displayRasterizerStatistics))) | (1L << (int)(FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Rendering.PerformanceOverlayOption.visualizeRasterizerStatistics)))) | (1L << (int)(FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Rendering.PerformanceOverlayOption.displayEngineStatistics)))) | (1L << (int)(FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Rendering.PerformanceOverlayOption.visualizeEngineStatistics))));
         return __instance;
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Rendering.RenderObject>(new global::Doroti.Generated.Framework.Rendering.RenderPerformanceOverlay(optionsMask: this.optionsMask));
-    public override void updateRenderObject(BuildContext context, global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderPerformanceOverlay(optionsMask: this.optionsMask));
+    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Generated.Framework.Rendering.RenderPerformanceOverlay)(object)renderObject;
+        var __renderObject = (global::Doroti.Framework.Rendering.RenderPerformanceOverlay)(object)renderObject;
         __renderObject.optionsMask = this.optionsMask;
     }
 

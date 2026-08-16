@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Scheduler;
+namespace Doroti.Framework.Scheduler;
 
 public delegate void TickerCallback(Duration elapsed);
 
@@ -200,7 +200,7 @@ public class Ticker
 
     public virtual void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         if ((_future is not null))
         {
             TickerFuture localFuture__13113 = _future!;
@@ -219,7 +219,7 @@ public class Ticker
     public virtual string ToString(bool debugIncludeStack = false)
     {
         var buffer = new StringBuffer();
-        buffer.write($"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Ticker"))}(");
+        buffer.write($"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Ticker"))}(");
         DartRuntimePrimitives.Assert(() =>
             {
                 buffer.write((debugLabel ?? ""));
@@ -335,7 +335,7 @@ public class TickerFuture : Future
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({((_completed is null) ? "active" : (DartRuntimePrimitives.RequireValue(_completed) ? "complete" : "canceled"))})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({((_completed is null) ? "active" : (DartRuntimePrimitives.RequireValue(_completed) ? "complete" : "canceled"))})";
 }
 
 public class TickerCanceled : Exception

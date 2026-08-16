@@ -60,7 +60,7 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.AppendLine("using Match = Doroti.Runtime.DartMatch;");
             if (library.EndsWith("/rendering/binding.dart", StringComparison.Ordinal))
             {
-                builder.AppendLine("using SemanticsBinding = global::Doroti.Generated.Framework.Semantics.SemanticsBinding;");
+                builder.AppendLine("using SemanticsBinding = global::Doroti.Framework.Semantics.SemanticsBinding;");
             }
         }
         builder.AppendLine();

@@ -12,11 +12,11 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public delegate Future<AppExitResponse> AppExitRequestCallback();
 
-public class AppLifecycleListener : WidgetsBindingObserver, global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class AppLifecycleListener : WidgetsBindingObserver, global::Doroti.Framework.Foundation.Diagnosticable
 {
     internal virtual AppLifecycleState? _lifecycleState { get; set; } = default;
     public virtual WidgetsBinding binding { get; private set; } = default!;
@@ -49,7 +49,7 @@ public class AppLifecycleListener : WidgetsBindingObserver, global::Doroti.Gener
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => _debugAssertNotDisposed());
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this.binding.removeObserver(this);
         DartRuntimePrimitives.Assert(() =>
             {
@@ -65,7 +65,7 @@ public class AppLifecycleListener : WidgetsBindingObserver, global::Doroti.Gener
             {
                 if (this._debugDisposed)
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Generated.Framework.Foundation.FlutterError.Create($"A {this.GetType()} was used after being disposed.\n" + $"Once you have called dispose() on a {this.GetType()}, it " + "can no longer be used."));
+                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"A {this.GetType()} was used after being disposed.\n" + $"Once you have called dispose() on a {this.GetType()}, it " + "can no longer be used."));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -153,21 +153,21 @@ public class AppLifecycleListener : WidgetsBindingObserver, global::Doroti.Gener
         this.onStateChange?.Invoke(DartRuntimePrimitives.RequireValue(this._lifecycleState));
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<WidgetsBinding>("binding", this.binding));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("onStateChange", value: (this.onStateChange is not null), ifTrue: "onStateChange"));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("onInactive", value: (this.onInactive is not null), ifTrue: "onInactive"));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("onResume", value: (this.onResume is not null), ifTrue: "onResume"));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("onHide", value: (this.onHide is not null), ifTrue: "onHide"));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("onShow", value: (this.onShow is not null), ifTrue: "onShow"));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("onPause", value: (this.onPause is not null), ifTrue: "onPause"));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("onRestart", value: (this.onRestart is not null), ifTrue: "onRestart"));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("onExitRequested", value: (this.onExitRequested is not null), ifTrue: "onExitRequested"));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("onDetach", value: (this.onDetach is not null), ifTrue: "onDetach"));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<WidgetsBinding>("binding", this.binding));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("onStateChange", value: (this.onStateChange is not null), ifTrue: "onStateChange"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("onInactive", value: (this.onInactive is not null), ifTrue: "onInactive"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("onResume", value: (this.onResume is not null), ifTrue: "onResume"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("onHide", value: (this.onHide is not null), ifTrue: "onHide"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("onShow", value: (this.onShow is not null), ifTrue: "onShow"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("onPause", value: (this.onPause is not null), ifTrue: "onPause"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("onRestart", value: (this.onRestart is not null), ifTrue: "onRestart"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("onExitRequested", value: (this.onExitRequested is not null), ifTrue: "onExitRequested"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("onDetach", value: (this.onDetach is not null), ifTrue: "onDetach"));
     }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;

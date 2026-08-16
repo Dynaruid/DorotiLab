@@ -12,11 +12,11 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public delegate void ScrollControllerCallback(ScrollPosition position);
 
-public class ScrollController : global::Doroti.Generated.Framework.Foundation.ChangeNotifier
+public class ScrollController : global::Doroti.Framework.Foundation.ChangeNotifier
 {
     internal virtual double _initialScrollOffset { get; private set; } = default!;
     public virtual bool keepScrollOffset { get; private set; } = default!;
@@ -48,7 +48,7 @@ public class ScrollController : global::Doroti.Generated.Framework.Foundation.Ch
         }
     }
     public virtual double offset => ((ScrollPosition)this.position).pixels;
-    public async virtual Future animateTo(double offset, Duration duration, global::Doroti.Generated.Framework.Animation.Curve curve)
+    public async virtual Future animateTo(double offset, Duration duration, global::Doroti.Framework.Animation.Curve curve)
     {
         DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(this._positions), () => (object?)"ScrollController not attached to any scroll views.");
         await global::Doroti.Runtime.DartAsyncRuntime.wait<object?>(new List<Future>());
@@ -98,7 +98,7 @@ public class ScrollController : global::Doroti.Generated.Framework.Foundation.Ch
     {
         var description__13707 = new List<string>();
         debugFillDescription(description__13707);
-        return $"{(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({string.Join(", ", description__13707)})";
+        return $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({string.Join(", ", description__13707)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

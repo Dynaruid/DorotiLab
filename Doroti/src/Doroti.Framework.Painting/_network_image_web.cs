@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public delegate XMLHttpRequest HttpRequestFactoryIo();
 
@@ -139,15 +139,15 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
         }
         switch (this.webHtmlElementStrategy)
         {
-            case global::Doroti.Generated.Framework.Painting.Image_providerLibrary.WebHtmlElementStrategy.never:
+            case global::Doroti.Framework.Painting.Image_providerLibrary.WebHtmlElementStrategy.never:
                 {
                     return await loadViaDecode();
                 }
-            case global::Doroti.Generated.Framework.Painting.Image_providerLibrary.WebHtmlElementStrategy.prefer:
+            case global::Doroti.Framework.Painting.Image_providerLibrary.WebHtmlElementStrategy.prefer:
                 {
                     return await loadViaImgElement();
                 }
-            case global::Doroti.Generated.Framework.Painting.Image_providerLibrary.WebHtmlElementStrategy.fallback:
+            case global::Doroti.Framework.Painting.Image_providerLibrary.WebHtmlElementStrategy.fallback:
                 {
                     try
                     {
@@ -213,11 +213,11 @@ else
         {
             return false;
         }
-        return (((((__other is NetworkImageIo) && (((NetworkImageIo)__other).url == this.url)) && (((NetworkImageIo)__other).scale == this.scale)) && (object.Equals(((NetworkImageIo)__other).webHtmlElementStrategy, this.webHtmlElementStrategy))) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.mapEquals(((NetworkImageIo)__other).headers, this.headers));
+        return (((((__other is NetworkImageIo) && (((NetworkImageIo)__other).url == this.url)) && (((NetworkImageIo)__other).scale == this.scale)) && (object.Equals(((NetworkImageIo)__other).webHtmlElementStrategy, this.webHtmlElementStrategy))) && global::Doroti.Framework.Foundation.CollectionsLibrary.mapEquals(((NetworkImageIo)__other).headers, this.headers));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.url, this.scale, DartRuntimePrimitives.RequireValue(this.webHtmlElementStrategy), new MapEquality<string, string>().hash(this.headers));
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "NetworkImage"))}(\"{this.url}\", scale: {this.scale.toStringAsFixed(1L)}, webHtmlElementStrategy: {webHtmlElementStrategy.ToString()}, headers: {this.headers})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "NetworkImage"))}(\"{this.url}\", scale: {this.scale.toStringAsFixed(1L)}, webHtmlElementStrategy: {webHtmlElementStrategy.ToString()}, headers: {this.headers})";
     ImageStreamCompleter NetworkImage.loadBuffer(NetworkImage key, Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode) =>
         loadBuffer((NetworkImageIo)key, decode);
     ImageStreamCompleter NetworkImage.loadImage(NetworkImage key, Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode) =>

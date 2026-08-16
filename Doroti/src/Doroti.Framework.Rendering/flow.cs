@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public interface FlowPaintingContext
 {
@@ -36,7 +36,7 @@ public abstract class FlowDelegate
     public abstract void paintChildren(FlowPaintingContext context);
     public virtual bool shouldRelayout(FlowDelegate oldDelegate) => false;
     public abstract bool shouldRepaint(FlowDelegate oldDelegate);
-    public override string ToString() => global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FlowDelegate");
+    public override string ToString() => global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "FlowDelegate");
 }
 
 public class FlowParentData : ContainerBoxParentData<RenderBox>

@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Cupertino;
+namespace Doroti.Framework.Cupertino;
 
 public static partial class RefreshLibrary
 {
@@ -24,25 +24,25 @@ public static partial class RefreshLibrary
     internal static double _kActivityIndicatorMargin = 16.0;
 }
 
-internal class _CupertinoSliverRefresh__refresh : global::Doroti.Generated.Framework.Widgets.SingleChildRenderObjectWidget
+internal class _CupertinoSliverRefresh__refresh : global::Doroti.Framework.Widgets.SingleChildRenderObjectWidget
 {
     public virtual double refreshIndicatorLayoutExtent { get; private set; } = default!;
     public virtual bool hasLayoutExtent { get; private set; } = default!;
 
-    internal _CupertinoSliverRefresh__refresh(double refreshIndicatorLayoutExtent = 0.0, bool hasLayoutExtent = false, global::Doroti.Generated.Framework.Widgets.Widget? child = null) : base(child: child)
+    internal _CupertinoSliverRefresh__refresh(double refreshIndicatorLayoutExtent = 0.0, bool hasLayoutExtent = false, global::Doroti.Framework.Widgets.Widget? child = null) : base(child: child)
     {
         this.refreshIndicatorLayoutExtent = refreshIndicatorLayoutExtent;
         this.hasLayoutExtent = hasLayoutExtent;
         System.Diagnostics.Debug.Assert((refreshIndicatorLayoutExtent >= 0.0));
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Rendering.RenderObject)(object?)new _RenderCupertinoSliverRefresh__refresh(refreshIndicatorExtent: this.refreshIndicatorLayoutExtent, hasLayoutExtent: this.hasLayoutExtent));
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderCupertinoSliverRefresh__refresh(refreshIndicatorExtent: this.refreshIndicatorLayoutExtent, hasLayoutExtent: this.hasLayoutExtent));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (_RenderCupertinoSliverRefresh__refresh)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderCupertinoSliverRefresh__refresh>)(() =>
@@ -54,14 +54,14 @@ internal class _CupertinoSliverRefresh__refresh : global::Doroti.Generated.Frame
 
 }
 
-public class _RenderCupertinoSliverRefresh__refresh : global::Doroti.Generated.Framework.Rendering.RenderSliver, global::Doroti.Generated.Framework.Rendering.RenderObjectWithChildMixin<global::Doroti.Generated.Framework.Rendering.RenderBox>
+public class _RenderCupertinoSliverRefresh__refresh : global::Doroti.Framework.Rendering.RenderSliver, global::Doroti.Framework.Rendering.RenderObjectWithChildMixin<global::Doroti.Framework.Rendering.RenderBox>
 {
     internal virtual double _refreshIndicatorExtent { get; set; } = default!;
     internal virtual bool _hasLayoutExtent { get; set; } = default!;
     public virtual double layoutExtentOffsetCompensation { get; set; } = 0.0;
     public virtual RenderBox? _child { get; set; } = default;
 
-    internal _RenderCupertinoSliverRefresh__refresh(double refreshIndicatorExtent, bool hasLayoutExtent, global::Doroti.Generated.Framework.Rendering.RenderBox? child = null)
+    internal _RenderCupertinoSliverRefresh__refresh(double refreshIndicatorExtent, bool hasLayoutExtent, global::Doroti.Framework.Rendering.RenderBox? child = null)
     {
         this._refreshIndicatorExtent = refreshIndicatorExtent;
         this._hasLayoutExtent = hasLayoutExtent;
@@ -100,38 +100,38 @@ public class _RenderCupertinoSliverRefresh__refresh : global::Doroti.Generated.F
     }
     public override void performLayout()
     {
-        global::Doroti.Generated.Framework.Rendering.SliverConstraints constraints__3818 = this.constraints;
-        DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Generated.Framework.Rendering.SliverConstraints)constraints__3818).axisDirection, global::Doroti.Generated.Framework.Painting.AxisDirection.down)));
-        DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Generated.Framework.Rendering.SliverConstraints)constraints__3818).growthDirection, global::Doroti.Generated.Framework.Rendering.GrowthDirection.forward)));
+        global::Doroti.Framework.Rendering.SliverConstraints constraints__3818 = this.constraints;
+        DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Framework.Rendering.SliverConstraints)constraints__3818).axisDirection, global::Doroti.Framework.Painting.AxisDirection.down)));
+        DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Framework.Rendering.SliverConstraints)constraints__3818).growthDirection, global::Doroti.Framework.Rendering.GrowthDirection.forward)));
         double layoutExtent__4123 = (((this._hasLayoutExtent ? 1.0 : 0.0)) * this._refreshIndicatorExtent);
         if ((layoutExtent__4123 != this.layoutExtentOffsetCompensation))
         {
-            geometry = new global::Doroti.Generated.Framework.Rendering.SliverGeometry(scrollOffsetCorrection: (layoutExtent__4123 - this.layoutExtentOffsetCompensation));
+            geometry = new global::Doroti.Framework.Rendering.SliverGeometry(scrollOffsetCorrection: (layoutExtent__4123 - this.layoutExtentOffsetCompensation));
             layoutExtentOffsetCompensation = layoutExtent__4123;
             return;
         }
-        bool active__4956 = ((((global::Doroti.Generated.Framework.Rendering.SliverConstraints)constraints__3818).overlap < 0.0) || (layoutExtent__4123 > 0.0));
-        double overscrolledExtent__5031 = ((((global::Doroti.Generated.Framework.Rendering.SliverConstraints)constraints__3818).overlap < 0.0) ? ((global::Doroti.Generated.Framework.Rendering.SliverConstraints)constraints__3818).overlap.abs() : 0.0);
+        bool active__4956 = ((((global::Doroti.Framework.Rendering.SliverConstraints)constraints__3818).overlap < 0.0) || (layoutExtent__4123 > 0.0));
+        double overscrolledExtent__5031 = ((((global::Doroti.Framework.Rendering.SliverConstraints)constraints__3818).overlap < 0.0) ? ((global::Doroti.Framework.Rendering.SliverConstraints)constraints__3818).overlap.abs() : 0.0);
         this.child!.layout(constraints__3818.asBoxConstraints(maxExtent: (layoutExtent__4123 + overscrolledExtent__5031)), parentUsesSize: true);
         if (active__4956)
         {
-            geometry = new global::Doroti.Generated.Framework.Rendering.SliverGeometry(scrollExtent: layoutExtent__4123, paintOrigin: (-overscrolledExtent__5031 - ((global::Doroti.Generated.Framework.Rendering.SliverConstraints)constraints__3818).scrollOffset), paintExtent: Math.Max((Math.Max(this.child!.size.height, layoutExtent__4123) - ((global::Doroti.Generated.Framework.Rendering.SliverConstraints)constraints__3818).scrollOffset), 0.0), maxPaintExtent: Math.Max((Math.Max(this.child!.size.height, layoutExtent__4123) - ((global::Doroti.Generated.Framework.Rendering.SliverConstraints)constraints__3818).scrollOffset), 0.0), layoutExtent: Math.Max((layoutExtent__4123 - ((global::Doroti.Generated.Framework.Rendering.SliverConstraints)constraints__3818).scrollOffset), 0.0));
+            geometry = new global::Doroti.Framework.Rendering.SliverGeometry(scrollExtent: layoutExtent__4123, paintOrigin: (-overscrolledExtent__5031 - ((global::Doroti.Framework.Rendering.SliverConstraints)constraints__3818).scrollOffset), paintExtent: Math.Max((Math.Max(this.child!.size.height, layoutExtent__4123) - ((global::Doroti.Framework.Rendering.SliverConstraints)constraints__3818).scrollOffset), 0.0), maxPaintExtent: Math.Max((Math.Max(this.child!.size.height, layoutExtent__4123) - ((global::Doroti.Framework.Rendering.SliverConstraints)constraints__3818).scrollOffset), 0.0), layoutExtent: Math.Max((layoutExtent__4123 - ((global::Doroti.Framework.Rendering.SliverConstraints)constraints__3818).scrollOffset), 0.0));
         }
         else
         {
-            geometry = global::Doroti.Generated.Framework.Rendering.SliverGeometry.zero;
+            geometry = global::Doroti.Framework.Rendering.SliverGeometry.zero;
         }
     }
 
-    public override void paint(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset offset)
+    public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        if (((((global::Doroti.Generated.Framework.Rendering.SliverConstraints)this.constraints).overlap < 0.0) || ((((global::Doroti.Generated.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset + this.child!.size.height) > 0L)))
+        if (((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).overlap < 0.0) || ((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset + this.child!.size.height) > 0L)))
         {
             context.paintChild(this.child!, offset);
         }
     }
 
-    public override void applyPaintTransform(global::Doroti.Generated.Framework.Rendering.RenderObject child, Matrix4 transform)
+    public override void applyPaintTransform(global::Doroti.Framework.Rendering.RenderObject child, Matrix4 transform)
     {
     }
 
@@ -141,7 +141,7 @@ public class _RenderCupertinoSliverRefresh__refresh : global::Doroti.Generated.F
             {
                 if ((child is not RenderBox))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Generated.Framework.Foundation.ErrorSpacer(), new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderBox)} child was created by", this.debugCreator, style: global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Generated.Framework.Foundation.ErrorSpacer(), new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", ((dynamic)child).debugCreator, style: global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"A {this.GetType()} expected a child of type {typeof(RenderBox)} but received a " + $"child of type {DartRuntimePrimitives.RuntimeType(child)}."), new global::Doroti.Framework.Foundation.ErrorDescription("RenderObjects expect specific types of children because they " + "coordinate with their children during layout and paint. For " + "example, a RenderSliver cannot be the child of a RenderBox because " + "a RenderSliver does not understand the RenderBox layout protocol."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {this.GetType()} that expected a {typeof(RenderBox)} child was created by", this.debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.DiagnosticsProperty<object?>($"The {DartRuntimePrimitives.RuntimeType(child)} that did not match the expected child type " + "was created by", ((dynamic)child).debugCreator, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }));
                 }
                 return true;
             });
@@ -194,9 +194,9 @@ public class _RenderCupertinoSliverRefresh__refresh : global::Doroti.Generated.F
         }
     }
 
-    public override List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
+    public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
-        return ((this.child is not null) ? new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { ((Diagnosticable)this.child!).toDiagnosticsNode(name: "child") } : new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>());
+        return ((this.child is not null) ? new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { ((Diagnosticable)this.child!).toDiagnosticsNode(name: "child") } : new List<global::Doroti.Framework.Foundation.DiagnosticsNode>());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -211,24 +211,24 @@ public enum RefreshIndicatorMode
     done
 }
 
-public delegate global::Doroti.Generated.Framework.Widgets.Widget RefreshControlIndicatorBuilder(global::Doroti.Generated.Framework.Widgets.BuildContext context, RefreshIndicatorMode refreshState, double pulledExtent, double refreshTriggerPullDistance, double refreshIndicatorExtent);
+public delegate global::Doroti.Framework.Widgets.Widget RefreshControlIndicatorBuilder(global::Doroti.Framework.Widgets.BuildContext context, RefreshIndicatorMode refreshState, double pulledExtent, double refreshTriggerPullDistance, double refreshIndicatorExtent);
 
 public delegate Future RefreshCallback();
 
-public class CupertinoSliverRefreshControl : global::Doroti.Generated.Framework.Widgets.StatefulWidget
+public class CupertinoSliverRefreshControl : global::Doroti.Framework.Widgets.StatefulWidget
 {
     public virtual double refreshTriggerPullDistance { get; private set; } = default!;
     public virtual double refreshIndicatorExtent { get; private set; } = default!;
-    public virtual global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, RefreshIndicatorMode, double, double, double, global::Doroti.Generated.Framework.Widgets.Widget>? builder { get; private set; }
+    public virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, RefreshIndicatorMode, double, double, double, global::Doroti.Framework.Widgets.Widget>? builder { get; private set; }
     public virtual global::System.Func<Future>? onRefresh { get; private set; }
     internal const double _defaultRefreshTriggerPullDistance = 100.0;
     internal const double _defaultRefreshIndicatorExtent = 60.0;
 
-    public CupertinoSliverRefreshControl(global::Doroti.Generated.Framework.Foundation.Key? key = null, double? refreshTriggerPullDistance = null, double? refreshIndicatorExtent = null, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, RefreshIndicatorMode, double, double, double, global::Doroti.Generated.Framework.Widgets.Widget>? builder = default!, global::System.Func<Future>? onRefresh = null) : base(key: key)
+    public CupertinoSliverRefreshControl(global::Doroti.Framework.Foundation.Key? key = null, double? refreshTriggerPullDistance = null, double? refreshIndicatorExtent = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, RefreshIndicatorMode, double, double, double, global::Doroti.Framework.Widgets.Widget>? builder = default!, global::System.Func<Future>? onRefresh = null) : base(key: key)
     {
         double __refreshTriggerPullDistance = refreshTriggerPullDistance ?? _defaultRefreshTriggerPullDistance;
         double __refreshIndicatorExtent = refreshIndicatorExtent ?? _defaultRefreshIndicatorExtent;
-        global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, RefreshIndicatorMode, double, double, double, global::Doroti.Generated.Framework.Widgets.Widget>? __builder = builder ?? buildRefreshIndicator;
+        global::System.Func<global::Doroti.Framework.Widgets.BuildContext, RefreshIndicatorMode, double, double, double, global::Doroti.Framework.Widgets.Widget>? __builder = builder ?? buildRefreshIndicator;
         this.refreshTriggerPullDistance = __refreshTriggerPullDistance;
         this.refreshIndicatorExtent = __refreshIndicatorExtent;
         this.builder = __builder;
@@ -238,41 +238,41 @@ public class CupertinoSliverRefreshControl : global::Doroti.Generated.Framework.
         System.Diagnostics.Debug.Assert((__refreshTriggerPullDistance >= __refreshIndicatorExtent));
     }
 
-    public static RefreshIndicatorMode state(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public static RefreshIndicatorMode state(global::Doroti.Framework.Widgets.BuildContext context)
     {
         _CupertinoSliverRefreshControlState__refresh state__15140 = context.findAncestorStateOfType<_CupertinoSliverRefreshControlState__refresh>()!;
         return ((_CupertinoSliverRefreshControlState__refresh)state__15140).refreshState;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Generated.Framework.Widgets.Widget buildRefreshIndicator(global::Doroti.Generated.Framework.Widgets.BuildContext context, RefreshIndicatorMode refreshState, double pulledExtent, double refreshTriggerPullDistance, double refreshIndicatorExtent)
+    public static global::Doroti.Framework.Widgets.Widget buildRefreshIndicator(global::Doroti.Framework.Widgets.BuildContext context, RefreshIndicatorMode refreshState, double pulledExtent, double refreshTriggerPullDistance, double refreshIndicatorExtent)
     {
         double percentageComplete__16035 = Dart_uiLibrary.clampDouble((pulledExtent / refreshTriggerPullDistance), 0.0, 1.0);
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Center(child: new global::Doroti.Generated.Framework.Widgets.Stack(clipBehavior: Clip.none, children: new List<global::Doroti.Generated.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.Widget>(new global::Doroti.Generated.Framework.Widgets.Positioned(top: RefreshLibrary._kActivityIndicatorMargin, left: 0.0, right: 0.0, child: CupertinoSliverRefreshControl._buildIndicatorForRefreshState(refreshState, RefreshLibrary._kActivityIndicatorRadius, percentageComplete__16035))) })));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Stack(clipBehavior: Clip.none, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Positioned(top: RefreshLibrary._kActivityIndicatorMargin, left: 0.0, right: 0.0, child: CupertinoSliverRefreshControl._buildIndicatorForRefreshState(refreshState, RefreshLibrary._kActivityIndicatorRadius, percentageComplete__16035))) })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static global::Doroti.Generated.Framework.Widgets.Widget _buildIndicatorForRefreshState(RefreshIndicatorMode refreshState, double radius, double percentageComplete)
+    internal static global::Doroti.Framework.Widgets.Widget _buildIndicatorForRefreshState(RefreshIndicatorMode refreshState, double radius, double percentageComplete)
     {
         switch (refreshState)
         {
             case RefreshIndicatorMode.drag:
                 {
-                    global::Doroti.Generated.Framework.Animation.Curve opacityCurve__17620 = ((global::Doroti.Generated.Framework.Animation.Curve)(object?)new global::Doroti.Generated.Framework.Animation.Interval(0.0, 0.35, curve: global::Doroti.Generated.Framework.Animation.Curves.easeInOut));
-                    return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Opacity(opacity: opacityCurve__17620.transform(percentageComplete), child: CupertinoActivityIndicator.CreatePartiallyRevealed(radius: radius, progress: percentageComplete)));
+                    global::Doroti.Framework.Animation.Curve opacityCurve__17620 = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Interval(0.0, 0.35, curve: global::Doroti.Framework.Animation.Curves.easeInOut));
+                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Opacity(opacity: opacityCurve__17620.transform(percentageComplete), child: CupertinoActivityIndicator.CreatePartiallyRevealed(radius: radius, progress: percentageComplete)));
                 }
             case RefreshIndicatorMode.armed:
             case RefreshIndicatorMode.refresh:
                 {
-                    return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new CupertinoActivityIndicator(radius: radius));
+                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoActivityIndicator(radius: radius));
                 }
             case RefreshIndicatorMode.done:
                 {
-                    return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new CupertinoActivityIndicator(radius: (radius * percentageComplete)));
+                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoActivityIndicator(radius: (radius * percentageComplete)));
                 }
             case RefreshIndicatorMode.inactive:
                 {
-                    return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)global::Doroti.Generated.Framework.Widgets.SizedBox.CreateShrink());
+                    return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -283,7 +283,7 @@ public class CupertinoSliverRefreshControl : global::Doroti.Generated.Framework.
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoSliverRefreshControlState__refresh());
 }
 
-internal class _CupertinoSliverRefreshControlState__refresh : global::Doroti.Generated.Framework.Widgets.State<CupertinoSliverRefreshControl>
+internal class _CupertinoSliverRefreshControlState__refresh : global::Doroti.Framework.Widgets.State<CupertinoSliverRefreshControl>
 {
     internal const double _inactiveResetOverscrollFraction = 0.1;
     public virtual RefreshIndicatorMode refreshState { get; set; } = default!;
@@ -303,13 +303,13 @@ internal class _CupertinoSliverRefreshControlState__refresh : global::Doroti.Gen
         void goToDone()
         {
             nextState__19800 = RefreshIndicatorMode.done;
-            if ((object.Equals(global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Generated.Framework.Scheduler.SchedulerPhase.idle)))
+            if ((object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.idle)))
             {
                 setState(((global::System.Action)(() => { _ = hasSliverLayoutExtent = false; })));
             }
             else
             {
-                global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
+                global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
 setState(((global::System.Action)(() => { _ = hasSliverLayoutExtent = false; })));
 })), debugLabel: "Refresh.goToDone");
             }
@@ -345,7 +345,7 @@ setState(((global::System.Action)(() => { _ = hasSliverLayoutExtent = false; }))
                             if ((((CupertinoSliverRefreshControl)this.widget).onRefresh is not null))
                             {
                                 DartRuntimePrimitives.Ignore(HapticFeedback.mediumImpact());
-                                global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
+                                global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
 DartRuntimePrimitives.Ignore(refreshTask = ((Func<Future>)(() =>
 {            var __cascade = ((CupertinoSliverRefreshControl)this.widget).onRefresh!();
             __cascade.whenComplete((() => {
@@ -410,16 +410,16 @@ setState(((global::System.Action)(() => { _ = hasSliverLayoutExtent = true; })))
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new _CupertinoSliverRefresh__refresh(refreshIndicatorLayoutExtent: ((CupertinoSliverRefreshControl)this.widget).refreshIndicatorExtent, hasLayoutExtent: this.hasSliverLayoutExtent, child: new global::Doroti.Generated.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Rendering.BoxConstraints, global::Doroti.Generated.Framework.Widgets.Widget>)((context, constraints) => {
-latestIndicatorBoxExtent = ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)constraints).maxHeight;
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _CupertinoSliverRefresh__refresh(refreshIndicatorLayoutExtent: ((CupertinoSliverRefreshControl)this.widget).refreshIndicatorExtent, hasLayoutExtent: this.hasSliverLayoutExtent, child: new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) => {
+latestIndicatorBoxExtent = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight;
 refreshState = transitionNextState();
 if (((((CupertinoSliverRefreshControl)this.widget).builder is not null) && (this.latestIndicatorBoxExtent > 0L)))
 {
     return ((CupertinoSliverRefreshControl)this.widget).builder!(context, this.refreshState, this.latestIndicatorBoxExtent, ((CupertinoSliverRefreshControl)this.widget).refreshTriggerPullDistance, ((CupertinoSliverRefreshControl)this.widget).refreshIndicatorExtent);
 }
-return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.LimitedBox(maxWidth: 0.0, maxHeight: 0.0, child: global::Doroti.Generated.Framework.Widgets.SizedBox.CreateExpand()));
+return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.LimitedBox(maxWidth: 0.0, maxHeight: 0.0, child: global::Doroti.Framework.Widgets.SizedBox.CreateExpand()));
 throw new InvalidOperationException("Dart closure completed without a value.");
 })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");

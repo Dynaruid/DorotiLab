@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class ImageIcon : StatelessWidget
 {
@@ -22,7 +22,7 @@ public class ImageIcon : StatelessWidget
     public virtual string? semanticLabel { get; private set; }
     public virtual bool useOriginalColors { get; private set; } = default!;
 
-    public ImageIcon(dynamic image, global::Doroti.Generated.Framework.Foundation.Key? key = null, double? size = null, Color? color = null, string? semanticLabel = null, bool useOriginalColors = false) : base(key: key)
+    public ImageIcon(dynamic image, global::Doroti.Framework.Foundation.Key? key = null, double? size = null, Color? color = null, string? semanticLabel = null, bool useOriginalColors = false) : base(key: key)
     {
         this.image = image;
         this.size = size;
@@ -47,16 +47,16 @@ public class ImageIcon : StatelessWidget
             double iconOpacity__3341__value3432 = DartRuntimePrimitives.RequireValue(iconOpacity__3341);
             iconColor__3384 = iconColor__3384.withOpacity((iconColor__3384.opacity * DartRuntimePrimitives.RequireValue(iconOpacity__3341__value3432)));
         }
-        return ((Widget)(object?)new Semantics(label: this.semanticLabel, child: new Image(image: this.image!, width: iconSize__3132, height: iconSize__3132, color: (this.useOriginalColors ? null : iconColor__3384), fit: global::Doroti.Generated.Framework.Painting.BoxFit.scaleDown, excludeFromSemantics: true)));
+        return ((Widget)(object?)new Semantics(label: this.semanticLabel, child: new Image(image: this.image!, width: iconSize__3132, height: iconSize__3132, color: (this.useOriginalColors ? null : iconColor__3384), fit: global::Doroti.Framework.Painting.BoxFit.scaleDown, excludeFromSemantics: true)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<object>("image", this.image, ifNull: "<empty>", showName: false));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("size", this.size, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<object>("image", this.image, ifNull: "<empty>", showName: false));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("size", this.size, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
     }
 
 }

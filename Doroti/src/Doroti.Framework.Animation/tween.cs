@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Animation;
+namespace Doroti.Framework.Animation;
 
 public delegate T AnimatableCallback<T>(double value);
 
@@ -172,7 +172,7 @@ public class Tween<T> : Animatable<T>, IDartTween
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Animatable"))}({this.begin} → {this.end})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Animatable"))}({this.begin} → {this.end})";
 
     dynamic? IDartTween.begin { get => begin; set => begin = (T?)value; }
     dynamic? IDartTween.end { get => end; set => end = (T?)value; }
@@ -244,7 +244,7 @@ public class ConstantTween<T> : Tween<T>
     }
 
     public override T lerp(double t) => ((T?)(object?)begin)!;
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ConstantTween"))}(value: {begin})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ConstantTween"))}(value: {begin})";
 }
 
 public class CurveTween : Animatable<double>
@@ -267,5 +267,5 @@ public class CurveTween : Animatable<double>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "CurveTween"))}(curve: {this.curve})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "CurveTween"))}(curve: {this.curve})";
 }

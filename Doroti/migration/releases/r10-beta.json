@@ -24,11 +24,11 @@
     "Doroti.Templates"
   ],
   "generatedPackages": [
-    "Doroti.Generated.Collection",
-    "Doroti.Generated.VectorMath",
-    "Doroti.Generated.Provider",
-    "Doroti.Generated.RealApp",
-    "Doroti.Generated.SharedPreferences"
+    "Doroti.Collection",
+    "Doroti.VectorMath",
+    "Doroti.Provider",
+    "Doroti.RealApp",
+    "Doroti.SharedPreferences"
   ],
   "validations": [
     {

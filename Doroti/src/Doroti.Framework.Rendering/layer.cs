@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public class AnnotationEntry<T>
 {
@@ -27,7 +27,7 @@ public class AnnotationEntry<T>
 
     public override string ToString()
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "AnnotationEntry"))}(annotation: {this.annotation}, localPosition: {this.localPosition})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "AnnotationEntry"))}(annotation: {this.annotation}, localPosition: {this.localPosition})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -175,7 +175,7 @@ public abstract class Layer : DiagnosticableTreeMixin
                 _debugDisposed = true;
                 return true;
             });
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this._engineLayer?.dispose();
         _engineLayer = null;
     }
@@ -312,7 +312,7 @@ public abstract class Layer : DiagnosticableTreeMixin
         properties.add(new DiagnosticsProperty<object?>("creator", this.debugCreator, defaultValue: null, level: DiagnosticLevel.debug));
         if ((this._engineLayer is not null))
         {
-            properties.add(new DiagnosticsProperty<string>("engine layer", global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this._engineLayer)));
+            properties.add(new DiagnosticsProperty<string>("engine layer", global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this._engineLayer)));
         }
         properties.add(new DiagnosticsProperty<long>("handles", this.debugHandleCount));
     }
@@ -416,7 +416,7 @@ public class PictureLayer : Layer
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect>("paint bounds", this.canvasBounds));
-        properties.add(new DiagnosticsProperty<string>("picture", global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this._picture)));
+        properties.add(new DiagnosticsProperty<string>("picture", global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this._picture)));
         properties.add(new DiagnosticsProperty<string>("raster cache hints", $"isComplex = {this.isComplexHint}, willChange = {this.willChangeHint}"));
     }
 
@@ -1025,7 +1025,7 @@ public class ClipRectLayer : ContainerLayer
         var enabled__59084 = true;
         DartRuntimePrimitives.Assert(() =>
             {
-                enabled__59084 = !global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugDisableClipLayers;
+                enabled__59084 = !global::Doroti.Framework.Rendering.DebugLibrary.debugDisableClipLayers;
                 return true;
             });
         if (enabled__59084)
@@ -1108,7 +1108,7 @@ public class ClipRRectLayer : ContainerLayer
         var enabled__61652 = true;
         DartRuntimePrimitives.Assert(() =>
             {
-                enabled__61652 = !global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugDisableClipLayers;
+                enabled__61652 = !global::Doroti.Framework.Rendering.DebugLibrary.debugDisableClipLayers;
                 return true;
             });
         if (enabled__61652)
@@ -1191,7 +1191,7 @@ public class ClipRSuperellipseLayer : ContainerLayer
         var enabled__64482 = true;
         DartRuntimePrimitives.Assert(() =>
             {
-                enabled__64482 = !global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugDisableClipLayers;
+                enabled__64482 = !global::Doroti.Framework.Rendering.DebugLibrary.debugDisableClipLayers;
                 return true;
             });
         if (enabled__64482)
@@ -1274,7 +1274,7 @@ public class ClipPathLayer : ContainerLayer
         var enabled__67057 = true;
         DartRuntimePrimitives.Assert(() =>
             {
-                enabled__67057 = !global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugDisableClipLayers;
+                enabled__67057 = !global::Doroti.Framework.Rendering.DebugLibrary.debugDisableClipLayers;
                 return true;
             });
         if (enabled__67057)
@@ -1468,7 +1468,7 @@ public class TransformLayer : OffsetLayer
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Painting.TransformProperty("transform", this.transform));
+        properties.add(new global::Doroti.Framework.Painting.TransformProperty("transform", this.transform));
     }
 
 }
@@ -1511,7 +1511,7 @@ public class OpacityLayer : OffsetLayer
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                enabled__74627 = (enabled__74627 && !global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugDisableOpacityLayers);
+                enabled__74627 = (enabled__74627 && !global::Doroti.Framework.Rendering.DebugLibrary.debugDisableOpacityLayers);
                 return true;
             });
         long realizedAlpha__74987 = DartRuntimePrimitives.RequireValue(this.alpha);
@@ -1747,7 +1747,7 @@ public class LayerLink
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({((this._leader is not null) ? "<linked>" : "<dangling>")})";
+        return $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({((this._leader is not null) ? "<linked>" : "<dangling>")})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2058,7 +2058,7 @@ public class FollowerLayer : ContainerLayer
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<LayerLink>("link", this.link));
-        properties.add(new global::Doroti.Generated.Framework.Painting.TransformProperty("transform", getLastTransform(), defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.TransformProperty("transform", getLastTransform(), defaultValue: null));
     }
 
 }

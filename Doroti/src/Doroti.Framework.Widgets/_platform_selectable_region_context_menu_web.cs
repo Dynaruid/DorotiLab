@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public static partial class _platform_selectable_region_context_menu_webLibrary
 {
@@ -50,7 +50,7 @@ public class PlatformSelectableRegionContextMenuIo : StatelessWidget
     internal static string? _registeredViewType = default;
     public static RegisterViewFactoryIo? debugOverrideRegisterViewFactory = default;
 
-    public PlatformSelectableRegionContextMenuIo(Widget child, global::Doroti.Generated.Framework.Foundation.Key? key = null) : base(key: key)
+    public PlatformSelectableRegionContextMenuIo(Widget child, global::Doroti.Framework.Foundation.Key? key = null) : base(key: key)
     {
         this.child = child;
     }
@@ -83,9 +83,9 @@ SelectionContainerDelegate? client__3377 = _activeClient;
 if ((client__3377 is not null))
 {
     var localOffset__3513 = new global::Doroti.Ui.Offset(@event.offsetX.toDouble(), @event.offsetY.toDouble());
-    Matrix4 transform__3609 = ((Matrix4)(object?)client__3377.getTransformTo(((global::Doroti.Generated.Framework.Rendering.RenderObject)(object)null)));
+    Matrix4 transform__3609 = ((Matrix4)(object?)client__3377.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)));
     global::Doroti.Ui.Offset globalOffset__3671 = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(transform__3609, localOffset__3513));
-    client__3377.dispatchSelectionEvent(new global::Doroti.Generated.Framework.Rendering.SelectWordSelectionEvent(globalPosition: globalOffset__3671));
+    client__3377.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.SelectWordSelectionEvent(globalPosition: globalOffset__3671));
     element.innerText = (client__3377.getSelectedContent()?.plainText ?? "");
     Range range__4093 = ((Func<Range>)(() =>
 {            var __cascade = WebLibrary.document.createRange();
@@ -133,7 +133,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new Stack(fit: global::Doroti.Generated.Framework.Rendering.StackFit.passthrough, children: new List<Widget> { Positioned.CreateFill(child: new HtmlElementView(viewType: _platform_selectable_region_context_menu_webLibrary._viewType)), this.child }));
+        return ((Widget)(object?)new Stack(fit: global::Doroti.Framework.Rendering.StackFit.passthrough, children: new List<Widget> { Positioned.CreateFill(child: new HtmlElementView(viewType: _platform_selectable_region_context_menu_webLibrary._viewType)), this.child }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

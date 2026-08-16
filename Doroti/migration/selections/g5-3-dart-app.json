@@ -5,8 +5,8 @@
     "generationMode":  "framework-semantic",
     "compatibilityProfile":  "flutter-framework",
     "frameworkMilestone":  "G5-3",
-    "outputNamespace":  "Doroti.Generated.Application",
-    "outputAssemblyName":  "Doroti.Generated.Application.G53ExternalApp",
+    "outputNamespace":  "Doroti.Application",
+    "outputAssemblyName":  "Doroti.Application.G53ExternalApp",
     "flutterBaseline":  "../flutter-compat/baseline.json",
     "inputs":  [
                    {

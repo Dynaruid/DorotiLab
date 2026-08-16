@@ -12,32 +12,32 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class ColorFiltered : SingleChildRenderObjectWidget
 {
     public virtual ColorFilter colorFilter { get; private set; } = default!;
 
-    public ColorFiltered(ColorFilter colorFilter, Widget? child = null, global::Doroti.Generated.Framework.Foundation.Key? key = null) : base(child: child, key: key)
+    public ColorFiltered(ColorFilter colorFilter, Widget? child = null, global::Doroti.Framework.Foundation.Key? key = null) : base(child: child, key: key)
     {
         this.colorFilter = colorFilter;
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Rendering.RenderObject>(new _ColorFilterRenderObject__color_filter(this.colorFilter));
-    public override void updateRenderObject(BuildContext context, global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new _ColorFilterRenderObject__color_filter(this.colorFilter));
+    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         (((_ColorFilterRenderObject__color_filter?)(object?)renderObject)!).colorFilter = this.colorFilter;
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.ColorFilter>("colorFilter", this.colorFilter));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.ColorFilter>("colorFilter", this.colorFilter));
     }
 
 }
 
-internal class _ColorFilterRenderObject__color_filter : global::Doroti.Generated.Framework.Rendering.RenderProxyBox
+internal class _ColorFilterRenderObject__color_filter : global::Doroti.Framework.Rendering.RenderProxyBox
 {
     internal virtual ColorFilter _colorFilter { get; set; } = default!;
 
@@ -60,9 +60,9 @@ internal class _ColorFilterRenderObject__color_filter : global::Doroti.Generated
         }
     }
     public override bool alwaysNeedsCompositing => DartRuntimePrimitives.ConvertValue<bool>((this.child is not null));
-    public virtual void paint(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset offset)
+    public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        layer = context.pushColorFilter(offset, this.colorFilter, (global::System.Action<global::Doroti.Generated.Framework.Rendering.PaintingContext, Offset>)base.paint, oldLayer: ((global::Doroti.Generated.Framework.Rendering.ColorFilterLayer?)(object?)this.layer)!);
+        layer = context.pushColorFilter(offset, this.colorFilter, (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)base.paint, oldLayer: ((global::Doroti.Framework.Rendering.ColorFilterLayer?)(object?)this.layer)!);
         DartRuntimePrimitives.Assert(() =>
             {
                 this.layer!.debugCreator = this.debugCreator;

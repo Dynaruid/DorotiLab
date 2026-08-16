@@ -12,9 +12,9 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
-public class TextSelectionToolbarLayoutDelegate : global::Doroti.Generated.Framework.Rendering.SingleChildLayoutDelegate
+public class TextSelectionToolbarLayoutDelegate : global::Doroti.Framework.Rendering.SingleChildLayoutDelegate
 {
     public virtual Offset anchorAbove { get; private set; } = default!;
     public virtual Offset anchorBelow { get; private set; } = default!;
@@ -41,9 +41,9 @@ public class TextSelectionToolbarLayoutDelegate : global::Doroti.Generated.Frame
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.BoxConstraints getConstraintsForChild(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints)
+    public override global::Doroti.Framework.Rendering.BoxConstraints getConstraintsForChild(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        return ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)(object?)constraints.loosen());
+        return ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)constraints.loosen());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -55,7 +55,7 @@ public class TextSelectionToolbarLayoutDelegate : global::Doroti.Generated.Frame
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool shouldRelayout(global::Doroti.Generated.Framework.Rendering.SingleChildLayoutDelegate oldDelegate)
+    public override bool shouldRelayout(global::Doroti.Framework.Rendering.SingleChildLayoutDelegate oldDelegate)
     {
         var __oldDelegate = (TextSelectionToolbarLayoutDelegate)(object)oldDelegate;
         return (((!object.Equals(this.anchorAbove, ((TextSelectionToolbarLayoutDelegate)__oldDelegate).anchorAbove)) || (!object.Equals(this.anchorBelow, ((TextSelectionToolbarLayoutDelegate)__oldDelegate).anchorBelow))) || (this.fitsAbove != ((TextSelectionToolbarLayoutDelegate)__oldDelegate).fitsAbove));

@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Gestures;
+namespace Doroti.Framework.Gestures;
 
 public static partial class EventsLibrary
 {
@@ -75,12 +75,12 @@ public static partial class EventsLibrary
 
 public static partial class EventsLibrary
 {
-    public static long nthMouseButton(long number) => (((EventsLibrary.kPrimaryMouseButton << (int)(((number - 1L))))) & global::Doroti.Generated.Framework.Foundation.BitfieldLibrary.kMaxUnsignedSMI);
+    public static long nthMouseButton(long number) => (((EventsLibrary.kPrimaryMouseButton << (int)(((number - 1L))))) & global::Doroti.Framework.Foundation.BitfieldLibrary.kMaxUnsignedSMI);
 }
 
 public static partial class EventsLibrary
 {
-    public static long nthStylusButton(long number) => (((EventsLibrary.kPrimaryStylusButton << (int)(((number - 1L))))) & global::Doroti.Generated.Framework.Foundation.BitfieldLibrary.kMaxUnsignedSMI);
+    public static long nthStylusButton(long number) => (((EventsLibrary.kPrimaryStylusButton << (int)(((number - 1L))))) & global::Doroti.Framework.Foundation.BitfieldLibrary.kMaxUnsignedSMI);
 }
 
 public static partial class EventsLibrary
@@ -2598,7 +2598,7 @@ public static partial class EventsLibrary
         {
             case PointerDeviceKind.mouse:
                 {
-                    return global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kPrecisePointerHitSlop;
+                    return global::Doroti.Framework.Gestures.ConstantsLibrary.kPrecisePointerHitSlop;
                 }
             case PointerDeviceKind.stylus:
             case PointerDeviceKind.invertedStylus:
@@ -2606,7 +2606,7 @@ public static partial class EventsLibrary
             case PointerDeviceKind.touch:
             case PointerDeviceKind.trackpad:
                 {
-                    return (settings?.touchSlop ?? global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kTouchSlop);
+                    return (settings?.touchSlop ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kTouchSlop);
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2621,7 +2621,7 @@ public static partial class EventsLibrary
         {
             case PointerDeviceKind.mouse:
                 {
-                    return global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kPrecisePointerPanSlop;
+                    return global::Doroti.Framework.Gestures.ConstantsLibrary.kPrecisePointerPanSlop;
                 }
             case PointerDeviceKind.stylus:
             case PointerDeviceKind.invertedStylus:
@@ -2629,7 +2629,7 @@ public static partial class EventsLibrary
             case PointerDeviceKind.touch:
             case PointerDeviceKind.trackpad:
                 {
-                    return (settings?.panSlop ?? global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kPanSlop);
+                    return (settings?.panSlop ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kPanSlop);
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2644,7 +2644,7 @@ public static partial class EventsLibrary
         {
             case PointerDeviceKind.mouse:
                 {
-                    return global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kPrecisePointerScaleSlop;
+                    return global::Doroti.Framework.Gestures.ConstantsLibrary.kPrecisePointerScaleSlop;
                 }
             case PointerDeviceKind.stylus:
             case PointerDeviceKind.invertedStylus:
@@ -2652,7 +2652,7 @@ public static partial class EventsLibrary
             case PointerDeviceKind.touch:
             case PointerDeviceKind.trackpad:
                 {
-                    return global::Doroti.Generated.Framework.Gestures.ConstantsLibrary.kScaleSlop;
+                    return global::Doroti.Framework.Gestures.ConstantsLibrary.kScaleSlop;
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");

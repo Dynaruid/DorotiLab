@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 internal delegate void _TextBoundaryRecord__paragraph();
 
@@ -25,7 +25,7 @@ public static partial class ParagraphLibrary
     internal static string _kEllipsis = "…";
 }
 
-public class PlaceholderSpanIndexSemanticsTag : global::Doroti.Generated.Framework.Semantics.SemanticsTag
+public class PlaceholderSpanIndexSemanticsTag : global::Doroti.Framework.Semantics.SemanticsTag
 {
     public virtual long index { get; private set; } = default!;
 
@@ -47,7 +47,7 @@ public class PlaceholderSpanIndexSemanticsTag : global::Doroti.Generated.Framewo
 public class TextParentData : ParentData, ContainerParentDataMixin<RenderBox>
 {
     internal virtual Offset? _offset { get; set; } = default;
-    public virtual global::Doroti.Generated.Framework.Painting.PlaceholderSpan? span { get; set; } = default;
+    public virtual global::Doroti.Framework.Painting.PlaceholderSpan? span { get; set; } = default;
     public virtual RenderBox? previousSibling { get; set; } = default;
     public virtual RenderBox? nextSibling { get; set; } = default;
 
@@ -67,21 +67,21 @@ public class TextParentData : ParentData, ContainerParentDataMixin<RenderBox>
 public interface RenderInlineChildrenContainerDefaults
 {
     public void setupParentData(RenderObject child);
-    public static global::Doroti.Generated.Framework.Painting.PlaceholderDimensions _layoutChild(RenderBox child, BoxConstraints childConstraints, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getBaseline)
+    public static global::Doroti.Framework.Painting.PlaceholderDimensions _layoutChild(RenderBox child, BoxConstraints childConstraints, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getBaseline)
     {
         var parentData__5133 = ((TextParentData?)(object?)child.parentData!)!;
-        global::Doroti.Generated.Framework.Painting.PlaceholderSpan? span__5210 = ((TextParentData)parentData__5133).span;
+        global::Doroti.Framework.Painting.PlaceholderSpan? span__5210 = ((TextParentData)parentData__5133).span;
         DartRuntimePrimitives.Assert(() => (span__5210 is not null));
-        return ((span__5210 is null) ? global::Doroti.Generated.Framework.Painting.PlaceholderDimensions.empty : new global::Doroti.Generated.Framework.Painting.PlaceholderDimensions(size: layoutChild(child, childConstraints), alignment: ((global::Doroti.Generated.Framework.Painting.PlaceholderSpan)span__5210).alignment, baseline: ((global::Doroti.Generated.Framework.Painting.PlaceholderSpan)span__5210).baseline, baselineOffset: (((global::Doroti.Generated.Framework.Painting.PlaceholderSpan)span__5210).alignment switch { Dart_uiLibrary.PlaceholderAlignment.aboveBaseline or Dart_uiLibrary.PlaceholderAlignment.belowBaseline or Dart_uiLibrary.PlaceholderAlignment.bottom or Dart_uiLibrary.PlaceholderAlignment.middle => null, Dart_uiLibrary.PlaceholderAlignment.top => null, Dart_uiLibrary.PlaceholderAlignment.baseline => getBaseline(child, childConstraints, DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Painting.PlaceholderSpan)span__5210).baseline)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
+        return ((span__5210 is null) ? global::Doroti.Framework.Painting.PlaceholderDimensions.empty : new global::Doroti.Framework.Painting.PlaceholderDimensions(size: layoutChild(child, childConstraints), alignment: ((global::Doroti.Framework.Painting.PlaceholderSpan)span__5210).alignment, baseline: ((global::Doroti.Framework.Painting.PlaceholderSpan)span__5210).baseline, baselineOffset: (((global::Doroti.Framework.Painting.PlaceholderSpan)span__5210).alignment switch { Dart_uiLibrary.PlaceholderAlignment.aboveBaseline or Dart_uiLibrary.PlaceholderAlignment.belowBaseline or Dart_uiLibrary.PlaceholderAlignment.bottom or Dart_uiLibrary.PlaceholderAlignment.middle => null, Dart_uiLibrary.PlaceholderAlignment.top => null, Dart_uiLibrary.PlaceholderAlignment.baseline => getBaseline(child, childConstraints, DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Painting.PlaceholderSpan)span__5210).baseline)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
     }
-    public List<global::Doroti.Generated.Framework.Painting.PlaceholderDimensions> layoutInlineChildren(double maxWidth, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getChildBaseline);
+    public List<global::Doroti.Framework.Painting.PlaceholderDimensions> layoutInlineChildren(double maxWidth, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getChildBaseline);
     public void positionInlineChildren(List<TextBox> boxes);
     public void defaultApplyPaintTransform(RenderBox child, Matrix4 transform);
     public void paintInlineChildren(PaintingContext context, Offset offset);
     public bool hitTestInlineChildren(BoxHitTestResult result, Offset position);
 }
 
-internal class _UnspecifiedTextScaler__paragraph : global::Doroti.Generated.Framework.Painting.TextScaler
+internal class _UnspecifiedTextScaler__paragraph : global::Doroti.Framework.Painting.TextScaler
 {
     internal _UnspecifiedTextScaler__paragraph()
     {
@@ -93,82 +93,82 @@ internal class _UnspecifiedTextScaler__paragraph : global::Doroti.Generated.Fram
 
 public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, TextParentData>, RenderInlineChildrenContainerDefaults, RelayoutWhenSystemFontsChangeMixin
 {
-    internal static string _placeholderCharacter = char.ConvertFromUtf32(checked((int)global::Doroti.Generated.Framework.Painting.PlaceholderSpan.placeholderCodeUnit));
-    internal virtual global::Doroti.Generated.Framework.Painting.TextPainter _textPainter { get; private set; } = default!;
-    internal virtual global::Doroti.Generated.Framework.Painting.TextPainter? _textIntrinsicsCache { get; set; } = default;
-    internal virtual List<global::Doroti.Generated.Framework.Semantics.AttributedString>? _cachedAttributedLabels { get; set; } = default;
-    internal virtual List<global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation>? _cachedCombinedSemanticsInfos { get; set; } = default;
+    internal static string _placeholderCharacter = char.ConvertFromUtf32(checked((int)global::Doroti.Framework.Painting.PlaceholderSpan.placeholderCodeUnit));
+    internal virtual global::Doroti.Framework.Painting.TextPainter _textPainter { get; private set; } = default!;
+    internal virtual global::Doroti.Framework.Painting.TextPainter? _textIntrinsicsCache { get; set; } = default;
+    internal virtual List<global::Doroti.Framework.Semantics.AttributedString>? _cachedAttributedLabels { get; set; } = default;
+    internal virtual List<global::Doroti.Framework.Painting.InlineSpanSemanticsInformation>? _cachedCombinedSemanticsInfos { get; set; } = default;
     internal virtual List<_SelectableFragment__paragraph>? _lastSelectableFragments { get; set; } = default;
     internal virtual SelectionRegistrar? _registrar { get; set; } = default;
     internal virtual bool _softWrap { get; set; } = default!;
-    internal virtual global::Doroti.Generated.Framework.Painting.TextOverflow _overflow { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Painting.TextOverflow _overflow { get; set; } = default!;
     internal virtual double _devicePixelRatio { get; set; } = default!;
     internal virtual Color? _selectionColor { get; set; } = default;
     internal virtual bool _needsClipping { get; set; } = false;
     internal virtual Shader? _overflowShader { get; set; } = default;
-    internal virtual List<global::Doroti.Generated.Framework.Painting.PlaceholderDimensions>? _placeholderDimensions { get; set; } = default;
-    internal virtual List<global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation>? _semanticsInfo { get; set; } = default;
-    internal virtual DartMap<Key, global::Doroti.Generated.Framework.Semantics.SemanticsNode>? _cachedChildNodes { get; set; } = default;
+    internal virtual List<global::Doroti.Framework.Painting.PlaceholderDimensions>? _placeholderDimensions { get; set; } = default;
+    internal virtual List<global::Doroti.Framework.Painting.InlineSpanSemanticsInformation>? _semanticsInfo { get; set; } = default;
+    internal virtual DartMap<Key, global::Doroti.Framework.Semantics.SemanticsNode>? _cachedChildNodes { get; set; } = default;
     public virtual long _childCount { get; set; } = 0L;
     public virtual RenderBox? _firstChild { get; set; } = default;
     public virtual RenderBox? _lastChild { get; set; } = default;
     public virtual bool _hasPendingSystemFontsDidChangeCallBack { get; set; } = false;
 
-    public RenderParagraph(global::Doroti.Generated.Framework.Painting.InlineSpan text, TextAlign textAlign = TextAlign.start, TextDirection textDirection = default!, bool softWrap = true, global::Doroti.Generated.Framework.Painting.TextOverflow overflow = TextOverflow.clip, double textScaleFactor = 1.0, global::Doroti.Generated.Framework.Painting.TextScaler textScaler = default!, long? maxLines = null, Locale? locale = null, global::Doroti.Generated.Framework.Painting.StrutStyle? strutStyle = null, global::Doroti.Generated.Framework.Painting.TextWidthBasis textWidthBasis = TextWidthBasis.parent, TextHeightBehavior? textHeightBehavior = null, List<RenderBox>? children = null, Color? selectionColor = null, SelectionRegistrar? registrar = null, double devicePixelRatio = 1.0)
+    public RenderParagraph(global::Doroti.Framework.Painting.InlineSpan text, TextAlign textAlign = TextAlign.start, TextDirection textDirection = default!, bool softWrap = true, global::Doroti.Framework.Painting.TextOverflow overflow = TextOverflow.clip, double textScaleFactor = 1.0, global::Doroti.Framework.Painting.TextScaler textScaler = default!, long? maxLines = null, Locale? locale = null, global::Doroti.Framework.Painting.StrutStyle? strutStyle = null, global::Doroti.Framework.Painting.TextWidthBasis textWidthBasis = TextWidthBasis.parent, TextHeightBehavior? textHeightBehavior = null, List<RenderBox>? children = null, Color? selectionColor = null, SelectionRegistrar? registrar = null, double devicePixelRatio = 1.0)
     {
-        global::Doroti.Generated.Framework.Painting.TextScaler __textScaler = textScaler ?? new _UnspecifiedTextScaler__paragraph();
+        global::Doroti.Framework.Painting.TextScaler __textScaler = textScaler ?? new _UnspecifiedTextScaler__paragraph();
         this._softWrap = softWrap;
         this._overflow = overflow;
         this._devicePixelRatio = devicePixelRatio;
         this._selectionColor = selectionColor;
-        this._textPainter = new global::Doroti.Generated.Framework.Painting.TextPainter(text: text, textAlign: textAlign, textDirection: textDirection, textScaler: ((object.Equals(textScaler, new _UnspecifiedTextScaler__paragraph())) ? global::Doroti.Generated.Framework.Painting.TextScaler.CreateLinear(textScaleFactor) : textScaler), maxLines: maxLines, ellipsis: ((object.Equals(overflow, global::Doroti.Generated.Framework.Painting.TextOverflow.ellipsis)) ? ParagraphLibrary._kEllipsis : null), locale: locale, strutStyle: strutStyle, textWidthBasis: textWidthBasis, textHeightBehavior: textHeightBehavior);
+        this._textPainter = new global::Doroti.Framework.Painting.TextPainter(text: text, textAlign: textAlign, textDirection: textDirection, textScaler: ((object.Equals(textScaler, new _UnspecifiedTextScaler__paragraph())) ? global::Doroti.Framework.Painting.TextScaler.CreateLinear(textScaleFactor) : textScaler), maxLines: maxLines, ellipsis: ((object.Equals(overflow, global::Doroti.Framework.Painting.TextOverflow.ellipsis)) ? ParagraphLibrary._kEllipsis : null), locale: locale, strutStyle: strutStyle, textWidthBasis: textWidthBasis, textHeightBehavior: textHeightBehavior);
         System.Diagnostics.Debug.Assert(text.debugAssertIsValid());
         System.Diagnostics.Debug.Assert(((maxLines is null) || (DartRuntimePrimitives.RequireValue(maxLines) > 0L)));
         System.Diagnostics.Debug.Assert((DartRuntimePrimitives.Identical(__textScaler, new _UnspecifiedTextScaler__paragraph()) || (textScaleFactor == 1.0)));
     }
 
-    internal virtual global::Doroti.Generated.Framework.Painting.TextPainter _textIntrinsics
+    internal virtual global::Doroti.Framework.Painting.TextPainter _textIntrinsics
     {
         get
         {
-            return ((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
+            return ((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
-    var __cascade = (_textIntrinsicsCache ??= new global::Doroti.Generated.Framework.Painting.TextPainter());
-    __cascade.text = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).text;
-    __cascade.textAlign = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textAlign;
-    __cascade.textDirection = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textDirection;
-    __cascade.textScaler = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textScaler;
-    __cascade.maxLines = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).maxLines;
-    __cascade.ellipsis = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).ellipsis;
-    __cascade.locale = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).locale;
-    __cascade.strutStyle = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).strutStyle;
-    __cascade.textWidthBasis = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textWidthBasis;
-    __cascade.textHeightBehavior = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textHeightBehavior;
+    var __cascade = (_textIntrinsicsCache ??= new global::Doroti.Framework.Painting.TextPainter());
+    __cascade.text = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).text;
+    __cascade.textAlign = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textAlign;
+    __cascade.textDirection = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textDirection;
+    __cascade.textScaler = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textScaler;
+    __cascade.maxLines = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).maxLines;
+    __cascade.ellipsis = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).ellipsis;
+    __cascade.locale = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).locale;
+    __cascade.strutStyle = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).strutStyle;
+    __cascade.textWidthBasis = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textWidthBasis;
+    __cascade.textHeightBehavior = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textHeightBehavior;
     return __cascade;
 }))();
             return default!;
         }
     }
-    public virtual global::Doroti.Generated.Framework.Painting.InlineSpan text
+    public virtual global::Doroti.Framework.Painting.InlineSpan text
     {
-        get => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).text!;
+        get => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).text!;
         set
         {
             var __value = value;
-            switch (((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).text!.compareTo(__value))
+            switch (((global::Doroti.Framework.Painting.TextPainter)this._textPainter).text!.compareTo(__value))
             {
-                case global::Doroti.Generated.Framework.Painting.RenderComparison.identical:
+                case global::Doroti.Framework.Painting.RenderComparison.identical:
                     {
                         return;
                     }
-                case global::Doroti.Generated.Framework.Painting.RenderComparison.metadata:
+                case global::Doroti.Framework.Painting.RenderComparison.metadata:
                     {
                         this._textPainter.text = __value;
                         _cachedCombinedSemanticsInfos = null;
                         markNeedsSemanticsUpdate();
                         break;
                     }
-                case global::Doroti.Generated.Framework.Painting.RenderComparison.paint:
+                case global::Doroti.Framework.Painting.RenderComparison.paint:
                     {
                         this._textPainter.text = __value;
                         _cachedAttributedLabels = null;
@@ -177,7 +177,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                         markNeedsSemanticsUpdate();
                         break;
                     }
-                case global::Doroti.Generated.Framework.Painting.RenderComparison.layout:
+                case global::Doroti.Framework.Painting.RenderComparison.layout:
                     {
                         this._textPainter.text = __value;
                         _overflowShader = null;
@@ -315,11 +315,11 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public virtual global::Doroti.Ui.TextAlign textAlign
     {
-        get => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textAlign;
+        get => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textAlign;
         set
         {
             var __value = value;
-            if ((object.Equals(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textAlign, DartRuntimePrimitives.RequireValue(__value))))
+            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textAlign, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -329,11 +329,11 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     }
     public virtual global::Doroti.Ui.TextDirection textDirection
     {
-        get => DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textDirection);
+        get => DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textDirection);
         set
         {
             var __value = value;
-            if ((object.Equals(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textDirection, DartRuntimePrimitives.RequireValue(__value))))
+            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textDirection, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -355,7 +355,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Generated.Framework.Painting.TextOverflow overflow
+    public virtual global::Doroti.Framework.Painting.TextOverflow overflow
     {
         get => this._overflow;
         set
@@ -366,26 +366,26 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                 return;
             }
             _overflow = DartRuntimePrimitives.RequireValue(__value);
-            this._textPainter.ellipsis = ((object.Equals(DartRuntimePrimitives.RequireValue(__value), global::Doroti.Generated.Framework.Painting.TextOverflow.ellipsis)) ? ParagraphLibrary._kEllipsis : null);
+            this._textPainter.ellipsis = ((object.Equals(DartRuntimePrimitives.RequireValue(__value), global::Doroti.Framework.Painting.TextOverflow.ellipsis)) ? ParagraphLibrary._kEllipsis : null);
             markNeedsLayout();
         }
     }
     public virtual double textScaleFactor
     {
-        get => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textScaleFactor;
+        get => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textScaleFactor;
         set
         {
             var __value = value;
-            textScaler = global::Doroti.Generated.Framework.Painting.TextScaler.CreateLinear(DartRuntimePrimitives.RequireValue(__value));
+            textScaler = global::Doroti.Framework.Painting.TextScaler.CreateLinear(DartRuntimePrimitives.RequireValue(__value));
         }
     }
-    public virtual global::Doroti.Generated.Framework.Painting.TextScaler textScaler
+    public virtual global::Doroti.Framework.Painting.TextScaler textScaler
     {
-        get => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textScaler;
+        get => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textScaler;
         set
         {
             var __value = value;
-            if ((object.Equals(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textScaler, __value)))
+            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textScaler, __value)))
             {
                 return;
             }
@@ -405,7 +405,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                 return;
             }
             _devicePixelRatio = DartRuntimePrimitives.RequireValue(__value);
-            if (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb)
+            if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
             {
                 markNeedsPaint();
             }
@@ -413,12 +413,12 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     }
     public virtual long? maxLines
     {
-        get => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).maxLines;
+        get => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).maxLines;
         set
         {
             var __value = value;
             DartRuntimePrimitives.Assert(() => ((__value is null) || (DartRuntimePrimitives.RequireValue(__value) > 0L)));
-            if ((((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).maxLines == __value))
+            if ((((global::Doroti.Framework.Painting.TextPainter)this._textPainter).maxLines == __value))
             {
                 return;
             }
@@ -429,11 +429,11 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     }
     public virtual global::Doroti.Ui.Locale? locale
     {
-        get => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).locale;
+        get => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).locale;
         set
         {
             var __value = value;
-            if ((object.Equals(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).locale, __value)))
+            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).locale, __value)))
             {
                 return;
             }
@@ -442,13 +442,13 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Generated.Framework.Painting.StrutStyle? strutStyle
+    public virtual global::Doroti.Framework.Painting.StrutStyle? strutStyle
     {
-        get => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).strutStyle;
+        get => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).strutStyle;
         set
         {
             var __value = value;
-            if ((object.Equals(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).strutStyle, __value)))
+            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).strutStyle, __value)))
             {
                 return;
             }
@@ -457,13 +457,13 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             markNeedsLayout();
         }
     }
-    public virtual global::Doroti.Generated.Framework.Painting.TextWidthBasis textWidthBasis
+    public virtual global::Doroti.Framework.Painting.TextWidthBasis textWidthBasis
     {
-        get => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textWidthBasis;
+        get => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textWidthBasis;
         set
         {
             var __value = value;
-            if ((object.Equals(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textWidthBasis, DartRuntimePrimitives.RequireValue(__value))))
+            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textWidthBasis, DartRuntimePrimitives.RequireValue(__value))))
             {
                 return;
             }
@@ -474,11 +474,11 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     }
     public virtual global::Doroti.Ui.TextHeightBehavior? textHeightBehavior
     {
-        get => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textHeightBehavior;
+        get => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textHeightBehavior;
         set
         {
             var __value = value is null ? null : (TextHeightBehavior)(object)value;
-            if ((object.Equals(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).textHeightBehavior, __value)))
+            if ((object.Equals(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).textHeightBehavior, __value)))
             {
                 return;
             }
@@ -512,8 +512,8 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public override double computeMinIntrinsicWidth(double height)
     {
-        List<global::Doroti.Generated.Framework.Painting.PlaceholderDimensions> placeholderDimensions__26445 = layoutInlineChildren(double.PositiveInfinity, ((Func<RenderBox, BoxConstraints, Size>)((child, constraints) => new global::Doroti.Ui.Size(child.getMinIntrinsicWidth(double.PositiveInfinity), 0.0))), (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline);
-        return (((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
+        List<global::Doroti.Framework.Painting.PlaceholderDimensions> placeholderDimensions__26445 = layoutInlineChildren(double.PositiveInfinity, ((Func<RenderBox, BoxConstraints, Size>)((child, constraints) => new global::Doroti.Ui.Size(child.getMinIntrinsicWidth(double.PositiveInfinity), 0.0))), (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline);
+        return (((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
     var __cascade = this._textIntrinsics;
     __cascade.setPlaceholderDimensions(placeholderDimensions__26445);
@@ -525,8 +525,8 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        List<global::Doroti.Generated.Framework.Painting.PlaceholderDimensions> placeholderDimensions__26926 = layoutInlineChildren(double.PositiveInfinity, ((Func<RenderBox, BoxConstraints, Size>)((child, constraints) => new global::Doroti.Ui.Size(child.getMaxIntrinsicWidth(double.PositiveInfinity), 0.0))), (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline);
-        return (((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
+        List<global::Doroti.Framework.Painting.PlaceholderDimensions> placeholderDimensions__26926 = layoutInlineChildren(double.PositiveInfinity, ((Func<RenderBox, BoxConstraints, Size>)((child, constraints) => new global::Doroti.Ui.Size(child.getMaxIntrinsicWidth(double.PositiveInfinity), 0.0))), (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline);
+        return (((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
     var __cascade = this._textIntrinsics;
     __cascade.setPlaceholderDimensions(placeholderDimensions__26926);
@@ -536,10 +536,10 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual double preferredLineHeight => ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).preferredLineHeight;
+    public virtual double preferredLineHeight => ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).preferredLineHeight;
     internal virtual double _computeIntrinsicHeight(double width)
     {
-        return (((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
+        return (((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
     var __cascade = this._textIntrinsics;
     __cascade.setPlaceholderDimensions(layoutInlineChildren(width, (Func<RenderBox, BoxConstraints, Size>)ChildLayoutHelper.dryLayoutChild, (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline));
@@ -565,7 +565,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
         global::Doroti.Ui.GlyphInfo? glyph__28489 = this._textPainter.getClosestGlyphForOffset(position);
-        global::Doroti.Generated.Framework.Painting.InlineSpan? spanHit__28914 = (((glyph__28489 is not null) && glyph__28489.graphemeClusterLayoutBounds.contains(position)) ? ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).text!.getSpanForPosition(new global::Doroti.Ui.TextPosition(offset: glyph__28489.graphemeClusterCodeUnitRange.start)) : null);
+        global::Doroti.Framework.Painting.InlineSpan? spanHit__28914 = (((glyph__28489 is not null) && glyph__28489.graphemeClusterLayoutBounds.contains(position)) ? ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).text!.getSpanForPosition(new global::Doroti.Ui.TextPosition(offset: glyph__28489.graphemeClusterCodeUnitRange.start)) : null);
         switch (spanHit__28914)
         {
             case HitTestTarget span__29209:
@@ -590,13 +590,13 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     internal virtual double _adjustMaxWidth(double maxWidth)
     {
-        return ((this.softWrap || (object.Equals(this.overflow, global::Doroti.Generated.Framework.Painting.TextOverflow.ellipsis))) ? maxWidth : double.PositiveInfinity);
+        return ((this.softWrap || (object.Equals(this.overflow, global::Doroti.Framework.Painting.TextOverflow.ellipsis))) ? maxWidth : double.PositiveInfinity);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _layoutTextWithConstraints(BoxConstraints constraints)
     {
-        ((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
+        ((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
     var __cascade = this._textPainter;
     __cascade.setPlaceholderDimensions(this._placeholderDimensions);
@@ -607,7 +607,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        global::Doroti.Ui.Size size__30627 = (((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
+        global::Doroti.Ui.Size size__30627 = (((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
     var __cascade = this._textIntrinsics;
     __cascade.setPlaceholderDimensions(layoutInlineChildren(((BoxConstraints)constraints).maxWidth, (Func<RenderBox, BoxConstraints, Size>)ChildLayoutHelper.dryLayoutChild, (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline));
@@ -630,7 +630,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         DartRuntimePrimitives.Assert(() => constraints.debugAssertIsValid());
-        ((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
+        ((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
     var __cascade = this._textIntrinsics;
     __cascade.setPlaceholderDimensions(layoutInlineChildren(((BoxConstraints)constraints).maxWidth, (Func<RenderBox, BoxConstraints, Size>)ChildLayoutHelper.dryLayoutChild, (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline));
@@ -647,47 +647,47 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         BoxConstraints constraints__32594 = this.constraints;
         _placeholderDimensions = layoutInlineChildren(((BoxConstraints)constraints__32594).maxWidth, (Func<RenderBox, BoxConstraints, Size>)ChildLayoutHelper.layoutChild, (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getBaseline);
         _layoutTextWithConstraints(constraints__32594);
-        positionInlineChildren(((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).inlinePlaceholderBoxes!);
-        global::Doroti.Ui.Size textSize__32913 = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).size;
+        positionInlineChildren(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).inlinePlaceholderBoxes!);
+        global::Doroti.Ui.Size textSize__32913 = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).size;
         size = constraints__32594.constrain(textSize__32913);
-        bool didOverflowHeight__33003 = ((size.height < textSize__32913.height) || ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).didExceedMaxLines);
+        bool didOverflowHeight__33003 = ((size.height < textSize__32913.height) || ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).didExceedMaxLines);
         bool didOverflowWidth__33103 = (size.width < textSize__32913.width);
         bool hasVisualOverflow__33547 = (didOverflowWidth__33103 || didOverflowHeight__33003);
         if (hasVisualOverflow__33547)
         {
             switch (this._overflow)
             {
-                case global::Doroti.Generated.Framework.Painting.TextOverflow.visible:
+                case global::Doroti.Framework.Painting.TextOverflow.visible:
                     {
                         _needsClipping = false;
                         _overflowShader = null;
                         break;
                     }
-                case global::Doroti.Generated.Framework.Painting.TextOverflow.clip:
-                case global::Doroti.Generated.Framework.Painting.TextOverflow.ellipsis:
+                case global::Doroti.Framework.Painting.TextOverflow.clip:
+                case global::Doroti.Framework.Painting.TextOverflow.ellipsis:
                     {
                         _needsClipping = true;
                         _overflowShader = null;
                         break;
                     }
-                case global::Doroti.Generated.Framework.Painting.TextOverflow.fade:
+                case global::Doroti.Framework.Painting.TextOverflow.fade:
                     {
                         _needsClipping = true;
-                        var fadeSizePainter__33981 = ((Func<global::Doroti.Generated.Framework.Painting.TextPainter>)(() =>
+                        var fadeSizePainter__33981 = ((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
-    var __cascade = new global::Doroti.Generated.Framework.Painting.TextPainter(text: new global::Doroti.Generated.Framework.Painting.TextSpan(style: ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).text!.style, text: "…"), textDirection: this.textDirection, textScaler: this.textScaler, locale: this.locale);
+    var __cascade = new global::Doroti.Framework.Painting.TextPainter(text: new global::Doroti.Framework.Painting.TextSpan(style: ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).text!.style, text: "…"), textDirection: this.textDirection, textScaler: this.textScaler, locale: this.locale);
     __cascade.layout();
     return __cascade;
 }))();
                         if (didOverflowWidth__33103)
                         {
-                            var (fadeStart__34278, fadeEnd__34296) = (this.textDirection switch { TextDirection.rtl => (((double, double))((((global::Doroti.Generated.Framework.Painting.TextPainter)fadeSizePainter__33981).width, 0.0))), TextDirection.ltr => (((double, double))(((size.width - ((global::Doroti.Generated.Framework.Painting.TextPainter)fadeSizePainter__33981).width), size.width))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                            var (fadeStart__34278, fadeEnd__34296) = (this.textDirection switch { TextDirection.rtl => (((double, double))((((global::Doroti.Framework.Painting.TextPainter)fadeSizePainter__33981).width, 0.0))), TextDirection.ltr => (((double, double))(((size.width - ((global::Doroti.Framework.Painting.TextPainter)fadeSizePainter__33981).width), size.width))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
                             _overflowShader = global::Doroti.Ui.Gradient.linear(new global::Doroti.Ui.Offset(fadeStart__34278, 0.0), new global::Doroti.Ui.Offset(fadeEnd__34296, 0.0), new List<global::Doroti.Ui.Color> { new global::Doroti.Ui.Color(4294967295L), new global::Doroti.Ui.Color(16777215L) });
                         }
                         else
                         {
                             double fadeEnd__34753 = size.height;
-                            double fadeStart__34801 = (fadeEnd__34753 - (((global::Doroti.Generated.Framework.Painting.TextPainter)fadeSizePainter__33981).height / 2.0));
+                            double fadeStart__34801 = (fadeEnd__34753 - (((global::Doroti.Framework.Painting.TextPainter)fadeSizePainter__33981).height / 2.0));
                             _overflowShader = global::Doroti.Ui.Gradient.linear(new global::Doroti.Ui.Offset(0.0, fadeStart__34801), new global::Doroti.Ui.Offset(0.0, fadeEnd__34753), new List<global::Doroti.Ui.Color> { new global::Doroti.Ui.Color(4294967295L), new global::Doroti.Ui.Color(16777215L) });
                         }
                         fadeSizePainter__33981.dispose();
@@ -713,12 +713,12 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         _layoutTextWithConstraints(constraints);
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugRepaintTextRainbowEnabled)
+                if (global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintTextRainbowEnabled)
                 {
                     var paint__35729 = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugCurrentRepaintColor.toColor();
+    __cascade.color = global::Doroti.Framework.Rendering.DebugLibrary.debugCurrentRepaintColor.toColor();
     return __cascade;
 }))();
                     ((PaintingContext)context).canvas.drawRect((offset & size), paint__35729);
@@ -756,7 +756,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                this._textPainter.debugPaintTextLayoutBoxes = global::Doroti.Generated.Framework.Rendering.DebugLibrary.debugPaintTextLayoutBoxes;
+                this._textPainter.debugPaintTextLayoutBoxes = global::Doroti.Framework.Rendering.DebugLibrary.debugPaintTextLayoutBoxes;
                 return true;
             });
         this._textPainter.paint(((PaintingContext)context).canvas, offset);
@@ -829,7 +829,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     internal virtual global::Doroti.Ui.TextRange _getLineAtOffset(TextPosition position) => this._textPainter.getLineBoundary(position);
     internal virtual global::Doroti.Ui.TextPosition _getTextPositionAbove(TextPosition position)
     {
-        double preferredLineHeight__40319 = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).preferredLineHeight;
+        double preferredLineHeight__40319 = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).preferredLineHeight;
         double verticalOffset__40392 = (-0.5 * preferredLineHeight__40319);
         return _getTextPositionVertical(position, verticalOffset__40392);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -837,7 +837,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     internal virtual global::Doroti.Ui.TextPosition _getTextPositionBelow(TextPosition position)
     {
-        double preferredLineHeight__40658 = ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).preferredLineHeight;
+        double preferredLineHeight__40658 = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).preferredLineHeight;
         double verticalOffset__40731 = (1.5 * preferredLineHeight__40658);
         return _getTextPositionVertical(position, verticalOffset__40731);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -856,7 +856,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         get
         {
             DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
-            return ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).size;
+            return ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).size;
             return default!;
         }
     }
@@ -865,24 +865,24 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         get
         {
             DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
-            return ((global::Doroti.Generated.Framework.Painting.TextPainter)this._textPainter).didExceedMaxLines;
+            return ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).didExceedMaxLines;
             return default!;
         }
     }
-    public override void describeSemanticsConfiguration(global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration config)
+    public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
         _semanticsInfo = this.text.getSemanticsInformation();
         var needsAssembleSemanticsNode__42289 = false;
         var needsChildConfigurationsDelegate__42333 = false;
-        foreach (global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation info__42421 in this._semanticsInfo!)
+        foreach (global::Doroti.Framework.Painting.InlineSpanSemanticsInformation info__42421 in this._semanticsInfo!)
         {
-            if (((((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__42421).recognizer is not null) || (((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__42421).semanticsIdentifier is not null)))
+            if (((((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__42421).recognizer is not null) || (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__42421).semanticsIdentifier is not null)))
             {
                 needsAssembleSemanticsNode__42289 = true;
                 break;
             }
-            needsChildConfigurationsDelegate__42333 = (needsChildConfigurationsDelegate__42333 || ((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__42421).isPlaceholder);
+            needsChildConfigurationsDelegate__42333 = (needsChildConfigurationsDelegate__42333 || ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__42421).isPlaceholder);
         }
         if (needsAssembleSemanticsNode__42289)
         {
@@ -902,10 +902,10 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                     var buffer__43014 = new StringBuffer();
                     var offset__43051 = 0L;
                     var attributes__43077 = new List<global::Doroti.Ui.StringAttribute>();
-                    foreach (global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation info__43161 in this._semanticsInfo!)
+                    foreach (global::Doroti.Framework.Painting.InlineSpanSemanticsInformation info__43161 in this._semanticsInfo!)
                     {
-                        string label__43211 = (((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__43161).semanticsLabel ?? ((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__43161).text);
-                        foreach (global::Doroti.Ui.StringAttribute infoAttribute__43290 in ((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__43161).stringAttributes)
+                        string label__43211 = (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__43161).semanticsLabel ?? ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__43161).text);
+                        foreach (global::Doroti.Ui.StringAttribute infoAttribute__43290 in ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__43161).stringAttributes)
                         {
                             global::Doroti.Ui.TextRange originalRange__43360 = infoAttribute__43290.range;
                             attributes__43077.Add(infoAttribute__43290.copy(range: new global::Doroti.Ui.TextRange(start: (offset__43051 + originalRange__43360.start), end: (offset__43051 + originalRange__43360.end))));
@@ -913,7 +913,7 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                         buffer__43014.write(label__43211);
                         offset__43051 += label__43211.Length;
                     }
-                    _cachedAttributedLabels = new List<global::Doroti.Generated.Framework.Semantics.AttributedString> { new global::Doroti.Generated.Framework.Semantics.AttributedString(buffer__43014.ToString(), attributes: attributes__43077) };
+                    _cachedAttributedLabels = new List<global::Doroti.Framework.Semantics.AttributedString> { new global::Doroti.Framework.Semantics.AttributedString(buffer__43014.ToString(), attributes: attributes__43077) };
                 }
                 config.attributedLabel = this._cachedAttributedLabels![(int)(0L)];
                 config.textDirection = this.textDirection;
@@ -921,16 +921,16 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         }
     }
 
-    internal virtual global::Doroti.Generated.Framework.Semantics.ChildSemanticsConfigurationsResult _childSemanticsConfigurationsDelegate(List<global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration> childConfigs)
+    internal virtual global::Doroti.Framework.Semantics.ChildSemanticsConfigurationsResult _childSemanticsConfigurationsDelegate(List<global::Doroti.Framework.Semantics.SemanticsConfiguration> childConfigs)
     {
-        var builder__44135 = new global::Doroti.Generated.Framework.Semantics.ChildSemanticsConfigurationsResultBuilder();
+        var builder__44135 = new global::Doroti.Framework.Semantics.ChildSemanticsConfigurationsResultBuilder();
         var placeholderIndex__44198 = 0L;
         var childConfigsIndex__44228 = 0L;
         var attributedLabelCacheIndex__44259 = 0L;
-        _cachedCombinedSemanticsInfos ??= global::Doroti.Generated.Framework.Painting.Inline_spanLibrary.combineSemanticsInfo(this._semanticsInfo!);
-        foreach (global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation info__44413 in this._cachedCombinedSemanticsInfos!)
+        _cachedCombinedSemanticsInfos ??= global::Doroti.Framework.Painting.Inline_spanLibrary.combineSemanticsInfo(this._semanticsInfo!);
+        foreach (global::Doroti.Framework.Painting.InlineSpanSemanticsInformation info__44413 in this._cachedCombinedSemanticsInfos!)
         {
-            if (((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__44413).isPlaceholder)
+            if (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__44413).isPlaceholder)
             {
                 while (((childConfigsIndex__44228 < checked((long)(childConfigs.Count))) && _childConfigBelongsToPlaceholder(childConfigs[(int)(childConfigsIndex__44228)], placeholderIndex__44198)))
                 {
@@ -949,14 +949,14 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal static bool _childConfigBelongsToPlaceholder(global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration childConfig, long placeholderIndex)
+    internal static bool _childConfigBelongsToPlaceholder(global::Doroti.Framework.Semantics.SemanticsConfiguration childConfig, long placeholderIndex)
     {
-        IEnumerable<global::Doroti.Generated.Framework.Semantics.SemanticsTag>? tags__45584 = ((global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration)childConfig).tagsForChildren;
+        IEnumerable<global::Doroti.Framework.Semantics.SemanticsTag>? tags__45584 = ((global::Doroti.Framework.Semantics.SemanticsConfiguration)childConfig).tagsForChildren;
         if ((tags__45584 is null))
         {
             return false;
         }
-        foreach (global::Doroti.Generated.Framework.Semantics.SemanticsTag tag__45698 in tags__45584)
+        foreach (global::Doroti.Framework.Semantics.SemanticsTag tag__45698 in tags__45584)
         {
             if ((tag__45698 is PlaceholderSpanIndexSemanticsTag))
             {
@@ -968,13 +968,13 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration _createSemanticsConfigForTextInfo(global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation textInfo, long cacheIndex)
+    internal virtual global::Doroti.Framework.Semantics.SemanticsConfiguration _createSemanticsConfigForTextInfo(global::Doroti.Framework.Painting.InlineSpanSemanticsInformation textInfo, long cacheIndex)
     {
-        DartRuntimePrimitives.Assert(() => !((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)textInfo).requiresOwnNode);
-        List<global::Doroti.Generated.Framework.Semantics.AttributedString> cachedStrings__46052 = _cachedAttributedLabels ??= new List<global::Doroti.Generated.Framework.Semantics.AttributedString>();
+        DartRuntimePrimitives.Assert(() => !((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)textInfo).requiresOwnNode);
+        List<global::Doroti.Framework.Semantics.AttributedString> cachedStrings__46052 = _cachedAttributedLabels ??= new List<global::Doroti.Framework.Semantics.AttributedString>();
         DartRuntimePrimitives.Assert(() => (cacheIndex <= checked((long)(cachedStrings__46052.Count))));
         bool hasCache__46181 = (cacheIndex < checked((long)(cachedStrings__46052.Count)));
-        global::Doroti.Generated.Framework.Semantics.AttributedString attributedLabel__46254 = default!;
+        global::Doroti.Framework.Semantics.AttributedString attributedLabel__46254 = default!;
         if (hasCache__46181)
         {
             attributedLabel__46254 = cachedStrings__46052[(int)(cacheIndex)];
@@ -982,12 +982,12 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         else
         {
             DartRuntimePrimitives.Assert(() => (checked((long)(cachedStrings__46052.Count)) == cacheIndex));
-            attributedLabel__46254 = new global::Doroti.Generated.Framework.Semantics.AttributedString((((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)textInfo).semanticsLabel ?? ((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)textInfo).text), attributes: ((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)textInfo).stringAttributes);
+            attributedLabel__46254 = new global::Doroti.Framework.Semantics.AttributedString((((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)textInfo).semanticsLabel ?? ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)textInfo).text), attributes: ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)textInfo).stringAttributes);
             cachedStrings__46052.Add(attributedLabel__46254);
         }
-        return ((Func<global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration>)(() =>
+        return ((Func<global::Doroti.Framework.Semantics.SemanticsConfiguration>)(() =>
 {
-    var __cascade = new global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration();
+    var __cascade = new global::Doroti.Framework.Semantics.SemanticsConfiguration();
     __cascade.textDirection = this.textDirection;
     __cascade.attributedLabel = attributedLabel__46254;
     return __cascade;
@@ -995,10 +995,10 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void assembleSemanticsNode(global::Doroti.Generated.Framework.Semantics.SemanticsNode node, global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration config, IEnumerable<global::Doroti.Generated.Framework.Semantics.SemanticsNode> children)
+    public override void assembleSemanticsNode(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsConfiguration config, IEnumerable<global::Doroti.Framework.Semantics.SemanticsNode> children)
     {
         DartRuntimePrimitives.Assert(() => ((this._semanticsInfo is not null) && (checked((long)(this._semanticsInfo!.Count)) != 0)));
-        var newChildren__47251 = new List<global::Doroti.Generated.Framework.Semantics.SemanticsNode>();
+        var newChildren__47251 = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
         global::Doroti.Ui.TextDirection currentDirection__47302 = this.textDirection;
         global::Doroti.Ui.Rect currentRect__47345 = default!;
         var ordinal__47366 = 0.0;
@@ -1006,17 +1006,17 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         var placeholderIndex__47408 = 0L;
         var childIndex__47438 = 0L;
         RenderBox? child__47469 = firstChild;
-        var newChildCache__47499 = new DartMap<Key, global::Doroti.Generated.Framework.Semantics.SemanticsNode>();
-        _cachedCombinedSemanticsInfos ??= global::Doroti.Generated.Framework.Painting.Inline_spanLibrary.combineSemanticsInfo(this._semanticsInfo!);
-        foreach (global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation info__47662 in this._cachedCombinedSemanticsInfos!)
+        var newChildCache__47499 = new DartMap<Key, global::Doroti.Framework.Semantics.SemanticsNode>();
+        _cachedCombinedSemanticsInfos ??= global::Doroti.Framework.Painting.Inline_spanLibrary.combineSemanticsInfo(this._semanticsInfo!);
+        foreach (global::Doroti.Framework.Painting.InlineSpanSemanticsInformation info__47662 in this._cachedCombinedSemanticsInfos!)
         {
-            var selection__47716 = new TextSelection(baseOffset: start__47389, extentOffset: (start__47389 + ((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__47662).text.Length));
-            start__47389 += ((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__47662).text.Length;
-            if (((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__47662).isPlaceholder)
+            var selection__47716 = new TextSelection(baseOffset: start__47389, extentOffset: (start__47389 + ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__47662).text.Length));
+            start__47389 += ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__47662).text.Length;
+            if (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__47662).isPlaceholder)
             {
                 while (((children.Count() > childIndex__47438) && children.elementAt(childIndex__47438).isTagged(new PlaceholderSpanIndexSemanticsTag(placeholderIndex__47408))))
                 {
-                    global::Doroti.Generated.Framework.Semantics.SemanticsNode childNode__48235 = children.elementAt(childIndex__47438);
+                    global::Doroti.Framework.Semantics.SemanticsNode childNode__48235 = children.elementAt(childIndex__47438);
                     var parentData__48295 = ((TextParentData?)(object?)child__47469!.parentData!)!;
                     if ((((TextParentData)parentData__48295).offset is not null))
                     {
@@ -1044,16 +1044,16 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                 }
                 rect__48832 = global::Doroti.Ui.Rect.fromLTWH(Math.Max(0.0, rect__48832.left), Math.Max(0.0, rect__48832.top), Math.Min(rect__48832.width, ((BoxConstraints)constraints).maxWidth), Math.Min(rect__48832.height, ((BoxConstraints)constraints).maxHeight));
                 currentRect__47345 = global::Doroti.Ui.Rect.fromLTRB((rect__48832.left.floorToDouble() - 4.0), (rect__48832.top.floorToDouble() - 4.0), (rect__48832.right.ceilToDouble() + 4.0), (rect__48832.bottom.ceilToDouble() + 4.0));
-                var configuration__49834 = ((Func<global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration>)(() =>
+                var configuration__49834 = ((Func<global::Doroti.Framework.Semantics.SemanticsConfiguration>)(() =>
 {
-    var __cascade = new global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration();
-    __cascade.sortKey = new global::Doroti.Generated.Framework.Semantics.OrdinalSortKey(ordinal__47366++);
+    var __cascade = new global::Doroti.Framework.Semantics.SemanticsConfiguration();
+    __cascade.sortKey = new global::Doroti.Framework.Semantics.OrdinalSortKey(ordinal__47366++);
     __cascade.textDirection = initialDirection__48651;
-    __cascade.identifier = (((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__47662).semanticsIdentifier ?? "");
-    __cascade.attributedLabel = new global::Doroti.Generated.Framework.Semantics.AttributedString((((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__47662).semanticsLabel ?? ((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__47662).text), attributes: ((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__47662).stringAttributes);
+    __cascade.identifier = (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__47662).semanticsIdentifier ?? "");
+    __cascade.attributedLabel = new global::Doroti.Framework.Semantics.AttributedString((((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__47662).semanticsLabel ?? ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__47662).text), attributes: ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__47662).stringAttributes);
     return __cascade;
 }))();
-                switch (((global::Doroti.Generated.Framework.Painting.InlineSpanSemanticsInformation)info__47662).recognizer)
+                switch (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__47662).recognizer)
                 {
                     case TapGestureRecognizer { onTap: Action handler__50276 } __object50228:
                         {
@@ -1091,12 +1091,12 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                             break;
                         }
                 }
-                if ((((global::Doroti.Generated.Framework.Semantics.SemanticsNode)node).parentPaintClipRect is not null))
+                if ((((global::Doroti.Framework.Semantics.SemanticsNode)node).parentPaintClipRect is not null))
                 {
-                    global::Doroti.Ui.Rect paintRect__50934 = DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Semantics.SemanticsNode)node).parentPaintClipRect).intersect(currentRect__47345);
+                    global::Doroti.Ui.Rect paintRect__50934 = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsNode)node).parentPaintClipRect).intersect(currentRect__47345);
                     configuration__49834.isHidden = (paintRect__50934.isEmpty && !currentRect__47345.isEmpty);
                 }
-                global::Doroti.Generated.Framework.Semantics.SemanticsNode newChild__51112 = default!;
+                global::Doroti.Framework.Semantics.SemanticsNode newChild__51112 = default!;
                 if (((((long?)(this._cachedChildNodes?.Count)) is { } __count51134 ? __count51134 != 0 : (bool?)null) ?? false))
                 {
                     newChild__51112 = this._cachedChildNodes!.remove(this._cachedChildNodes!.Keys.First())!;
@@ -1104,22 +1104,22 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                 else
                 {
                     var key__51289 = new UniqueKey();
-                    newChild__51112 = new global::Doroti.Generated.Framework.Semantics.SemanticsNode(key: key__51289, showOnScreen: _createShowOnScreenFor(key__51289));
+                    newChild__51112 = new global::Doroti.Framework.Semantics.SemanticsNode(key: key__51289, showOnScreen: _createShowOnScreenFor(key__51289));
                 }
-                ((Func<global::Doroti.Generated.Framework.Semantics.SemanticsNode>)(() =>
+                ((Func<global::Doroti.Framework.Semantics.SemanticsNode>)(() =>
 {
     var __cascade = newChild__51112;
     __cascade.updateWith(config: configuration__49834);
     __cascade.rect = currentRect__47345;
     return __cascade;
 }))();
-                newChildCache__47499[((global::Doroti.Generated.Framework.Semantics.SemanticsNode)newChild__51112).key!] = newChild__51112;
+                newChildCache__47499[((global::Doroti.Framework.Semantics.SemanticsNode)newChild__51112).key!] = newChild__51112;
                 newChildren__47251.Add(newChild__51112);
             }
         }
         DartRuntimePrimitives.Assert(() => (childIndex__47438 == children.Count()));
         DartRuntimePrimitives.Assert(() => (child__47469 is null));
-        _cachedChildNodes = newChildCache__47499.cast<Key, global::Doroti.Generated.Framework.Semantics.SemanticsNode>();
+        _cachedChildNodes = newChildCache__47499.cast<Key, global::Doroti.Framework.Semantics.SemanticsNode>();
         node.updateWith(config: config, childrenInInversePaintOrder: newChildren__47251);
     }
 
@@ -1127,8 +1127,8 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     {
         return (() =>
         {
-            global::Doroti.Generated.Framework.Semantics.SemanticsNode node__51948 = this._cachedChildNodes!.GetValueOrDefault(key)!;
-            showOnScreen(descendant: this, rect: ((global::Doroti.Generated.Framework.Semantics.SemanticsNode)node__51948).rect);
+            global::Doroti.Framework.Semantics.SemanticsNode node__51948 = this._cachedChildNodes!.GetValueOrDefault(key)!;
+            showOnScreen(descendant: this, rect: ((global::Doroti.Framework.Semantics.SemanticsNode)node__51948).rect);
         });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1151,8 +1151,8 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         properties.add(new EnumProperty<global::Doroti.Ui.TextAlign>("textAlign", this.textAlign));
         properties.add(new EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection));
         properties.add(new FlagProperty("softWrap", value: this.softWrap, ifTrue: "wrapping at box width", ifFalse: "no wrapping except at line break characters", showName: true));
-        properties.add(new EnumProperty<global::Doroti.Generated.Framework.Painting.TextOverflow>("overflow", this.overflow));
-        properties.add(new DiagnosticsProperty<global::Doroti.Generated.Framework.Painting.TextScaler>("textScaler", this.textScaler, defaultValue: global::Doroti.Generated.Framework.Painting.TextScaler.noScaling));
+        properties.add(new EnumProperty<global::Doroti.Framework.Painting.TextOverflow>("overflow", this.overflow));
+        properties.add(new DiagnosticsProperty<global::Doroti.Framework.Painting.TextScaler>("textScaler", this.textScaler, defaultValue: global::Doroti.Framework.Painting.TextScaler.noScaling));
         properties.add(new DiagnosticsProperty<global::Doroti.Ui.Locale>("locale", this.locale, defaultValue: null));
         properties.add(new IntProperty("maxLines", this.maxLines, ifNull: "unlimited"));
         properties.add(new DoubleProperty("devicePixelRatio", this.devicePixelRatio, defaultValue: 1.0));
@@ -1409,10 +1409,10 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         }
     }
 
-    public virtual List<global::Doroti.Generated.Framework.Painting.PlaceholderDimensions> layoutInlineChildren(double maxWidth, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getChildBaseline)
+    public virtual List<global::Doroti.Framework.Painting.PlaceholderDimensions> layoutInlineChildren(double maxWidth, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getChildBaseline)
     {
         var constraints__7015 = new BoxConstraints(maxWidth: maxWidth);
-        return new List<global::Doroti.Generated.Framework.Painting.PlaceholderDimensions>();
+        return new List<global::Doroti.Framework.Painting.PlaceholderDimensions>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1525,7 +1525,7 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
     internal virtual LayerLink? _startHandleLayerLink { get; set; } = default;
     internal virtual LayerLink? _endHandleLayerLink { get; set; } = default;
     internal virtual SelectionGeometry _selectionGeometry { get; set; } = default!;
-    internal static string _placeholderCharacter = char.ConvertFromUtf32(checked((int)global::Doroti.Generated.Framework.Painting.PlaceholderSpan.placeholderCodeUnit));
+    internal static string _placeholderCharacter = char.ConvertFromUtf32(checked((int)global::Doroti.Framework.Painting.PlaceholderSpan.placeholderCodeUnit));
     internal static long _placeholderLength = _placeholderCharacter.Length;
     internal virtual List<Rect>? _cachedBoundingBoxes { get; set; } = default;
     internal virtual Rect? _cachedRect { get; set; } = default;

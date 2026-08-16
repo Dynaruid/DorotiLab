@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Gestures;
+namespace Doroti.Framework.Gestures;
 
 public enum GestureDisposition
 {
@@ -285,11 +285,11 @@ public class GestureArenaManager
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Generated.Framework.Gestures.DebugLibrary.debugPrintGestureArenaDiagnostics)
+                if (global::Doroti.Framework.Gestures.DebugLibrary.debugPrintGestureArenaDiagnostics)
                 {
                     long? count__10031 = ((long?)(state?.members?.Count));
                     var s__10076 = ((count__10031 != 1L) ? "s" : "");
-                    global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint($"Gesture arena {pointer.ToString().padRight(4L)} ❙ {message}{((count__10031 is not null) ? $" with {DartRuntimePrimitives.RequireValue(count__10031)} member{s__10076}." : "")}");
+                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"Gesture arena {pointer.ToString().padRight(4L)} ❙ {message}{((count__10031 is not null) ? $" with {DartRuntimePrimitives.RequireValue(count__10031)} member{s__10076}." : "")}");
                 }
                 return true;
             });

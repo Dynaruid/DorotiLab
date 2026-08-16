@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Rendering;
+namespace Doroti.Framework.Rendering;
 
 public interface RenderSliverBoxChildManager
 {
@@ -467,7 +467,7 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
     public virtual double paintExtentOf(RenderBox child)
     {
         DartRuntimePrimitives.Assert(() => ((RenderBox)child).hasSize);
-        return (((SliverConstraints)constraints).axis switch { global::Doroti.Generated.Framework.Painting.Axis.horizontal => ((RenderBox)child).size.width, global::Doroti.Generated.Framework.Painting.Axis.vertical => ((RenderBox)child).size.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (((SliverConstraints)constraints).axis switch { global::Doroti.Framework.Painting.Axis.horizontal => ((RenderBox)child).size.width, global::Doroti.Framework.Painting.Axis.vertical => ((RenderBox)child).size.height, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -533,9 +533,9 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
         global::Doroti.Ui.Offset crossAxisUnit__26637 = default!;
         global::Doroti.Ui.Offset originOffset__26652 = default!;
         bool addExtent__26681 = default!;
-        switch (global::Doroti.Generated.Framework.Rendering.SliverLibrary.applyGrowthDirectionToAxisDirection(((SliverConstraints)constraints).axisDirection, ((SliverConstraints)constraints).growthDirection))
+        switch (global::Doroti.Framework.Rendering.SliverLibrary.applyGrowthDirectionToAxisDirection(((SliverConstraints)constraints).axisDirection, ((SliverConstraints)constraints).growthDirection))
         {
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.up:
+            case global::Doroti.Framework.Painting.AxisDirection.up:
                 {
                     mainAxisUnit__26623 = new global::Doroti.Ui.Offset(0.0, -1.0);
                     crossAxisUnit__26637 = new global::Doroti.Ui.Offset(1.0, 0.0);
@@ -543,7 +543,7 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
                     addExtent__26681 = true;
                     break;
                 }
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.right:
+            case global::Doroti.Framework.Painting.AxisDirection.right:
                 {
                     mainAxisUnit__26623 = new global::Doroti.Ui.Offset(1.0, 0.0);
                     crossAxisUnit__26637 = new global::Doroti.Ui.Offset(0.0, 1.0);
@@ -551,7 +551,7 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
                     addExtent__26681 = false;
                     break;
                 }
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.down:
+            case global::Doroti.Framework.Painting.AxisDirection.down:
                 {
                     mainAxisUnit__26623 = new global::Doroti.Ui.Offset(0.0, 1.0);
                     crossAxisUnit__26637 = new global::Doroti.Ui.Offset(1.0, 0.0);
@@ -559,7 +559,7 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
                     addExtent__26681 = false;
                     break;
                 }
-            case global::Doroti.Generated.Framework.Painting.AxisDirection.left:
+            case global::Doroti.Framework.Painting.AxisDirection.left:
                 {
                     mainAxisUnit__26623 = new global::Doroti.Ui.Offset(-1.0, 0.0);
                     crossAxisUnit__26637 = new global::Doroti.Ui.Offset(0.0, 1.0);
@@ -792,7 +792,7 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
 
     public virtual bool _getRightWayUp(SliverConstraints constraints)
     {
-        bool reversed__78998 = global::Doroti.Generated.Framework.Painting.Basic_typesLibrary.axisDirectionIsReversed(((SliverConstraints)constraints).axisDirection);
+        bool reversed__78998 = global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionIsReversed(((SliverConstraints)constraints).axisDirection);
         return (((SliverConstraints)constraints).growthDirection switch { GrowthDirection.forward => !reversed__78998, GrowthDirection.reverse => reversed__78998, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -808,7 +808,7 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
         global::Doroti.Ui.Offset transformedPosition__80162 = default!;
         switch (((SliverConstraints)constraints).axis)
         {
-            case global::Doroti.Generated.Framework.Painting.Axis.horizontal:
+            case global::Doroti.Framework.Painting.Axis.horizontal:
                 {
                     if (!rightWayUp__79845)
                     {
@@ -819,7 +819,7 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
                     transformedPosition__80162 = new global::Doroti.Ui.Offset(absolutePosition__80012, absoluteCrossAxisPosition__80074);
                     break;
                 }
-            case global::Doroti.Generated.Framework.Painting.Axis.vertical:
+            case global::Doroti.Framework.Painting.Axis.vertical:
                 {
                     if (!rightWayUp__79845)
                     {
@@ -846,7 +846,7 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
         double crossAxisDelta__81694 = childCrossAxisPosition(child);
         switch (((SliverConstraints)constraints).axis)
         {
-            case global::Doroti.Generated.Framework.Painting.Axis.horizontal:
+            case global::Doroti.Framework.Painting.Axis.horizontal:
                 {
                     if (!rightWayUp__81586)
                     {
@@ -855,7 +855,7 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
                     transform.translateByDouble(delta__81639, crossAxisDelta__81694, 0, 1);
                     break;
                 }
-            case global::Doroti.Generated.Framework.Painting.Axis.vertical:
+            case global::Doroti.Framework.Painting.Axis.vertical:
                 {
                     if (!rightWayUp__81586)
                     {

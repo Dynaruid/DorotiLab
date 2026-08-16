@@ -124,7 +124,7 @@ internal static partial class ConverterEngine
                 "Foundation", "Scheduler", "Services", "Physics", "Animation", "Gestures",
                 "Painting", "Semantics", "Rendering", "Widgets",
             }.Concat(application.FrameworkPackages).Distinct(StringComparer.Ordinal).Select(package =>
-                $"global using Doroti.Generated.Framework.{package};")) + "\n" +
+                $"global using Doroti.Framework.{package};")) + "\n" +
             "global using Doroti.Hosting;\n");
         ArtifactFiles.WriteUtf8(
             Path.Combine(outputDirectory, "Directory.Build.props"),
@@ -133,8 +133,8 @@ internal static partial class ConverterEngine
             Path.Combine(outputDirectory, "Directory.Packages.props"),
             "<Project>\n  <PropertyGroup>\n    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>\n  </PropertyGroup>\n</Project>\n");
         var solution = $"<Solution>\n  <Project Path=\"projects/Framework/{assemblyName}.csproj\" />\n</Solution>\n";
-        ArtifactFiles.WriteUtf8(Path.Combine(outputDirectory, "Doroti.Generated.Application.slnx"), solution);
-        ArtifactFiles.WriteUtf8(Path.Combine(outputDirectory, "Doroti.Generated.Framework.slnx"), solution);
+        ArtifactFiles.WriteUtf8(Path.Combine(outputDirectory, "Doroti.Application.slnx"), solution);
+        ArtifactFiles.WriteUtf8(Path.Combine(outputDirectory, "Doroti.Framework.slnx"), solution);
 
         ArtifactFiles.WriteJson(Path.Combine(outputDirectory, "application-graph.json"), new
         {

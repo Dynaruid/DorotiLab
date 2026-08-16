@@ -1,4 +1,4 @@
-namespace Doroti.Generated.Collection;
+namespace Doroti.Collection;
 
 public static class CollectionPilotExtensions
 {

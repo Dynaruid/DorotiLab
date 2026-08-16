@@ -12,15 +12,15 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class StretchEffect : StatelessWidget
 {
     public virtual double stretchStrength { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.Axis axis { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.Axis axis { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public StretchEffect(global::Doroti.Generated.Framework.Foundation.Key? key = null, double stretchStrength = 0.0, global::Doroti.Generated.Framework.Painting.Axis axis = default!, Widget child = default!) : base(key: key)
+    public StretchEffect(global::Doroti.Framework.Foundation.Key? key = null, double stretchStrength = 0.0, global::Doroti.Framework.Painting.Axis axis = default!, Widget child = default!) : base(key: key)
     {
         this.stretchStrength = stretchStrength;
         this.axis = axis;
@@ -28,20 +28,20 @@ public class StretchEffect : StatelessWidget
         System.Diagnostics.Debug.Assert(((stretchStrength >= -1.0) && (stretchStrength <= 1.0)));
     }
 
-    internal virtual global::Doroti.Generated.Framework.Painting.AlignmentGeometry _getAlignment(TextDirection direction)
+    internal virtual global::Doroti.Framework.Painting.AlignmentGeometry _getAlignment(TextDirection direction)
     {
         bool isForward__2587 = (this.stretchStrength > 0L);
-        if ((object.Equals(this.axis, global::Doroti.Generated.Framework.Painting.Axis.vertical)))
+        if ((object.Equals(this.axis, global::Doroti.Framework.Painting.Axis.vertical)))
         {
-            return ((global::Doroti.Generated.Framework.Painting.AlignmentGeometry)(object?)(isForward__2587 ? global::Doroti.Generated.Framework.Painting.AlignmentDirectional.topCenter : global::Doroti.Generated.Framework.Painting.AlignmentDirectional.bottomCenter));
+            return ((global::Doroti.Framework.Painting.AlignmentGeometry)(object?)(isForward__2587 ? global::Doroti.Framework.Painting.AlignmentDirectional.topCenter : global::Doroti.Framework.Painting.AlignmentDirectional.bottomCenter));
         }
         if ((object.Equals(direction, TextDirection.rtl)))
         {
-            return ((global::Doroti.Generated.Framework.Painting.AlignmentGeometry)(object?)(isForward__2587 ? global::Doroti.Generated.Framework.Painting.AlignmentDirectional.centerEnd : global::Doroti.Generated.Framework.Painting.AlignmentDirectional.centerStart));
+            return ((global::Doroti.Framework.Painting.AlignmentGeometry)(object?)(isForward__2587 ? global::Doroti.Framework.Painting.AlignmentDirectional.centerEnd : global::Doroti.Framework.Painting.AlignmentDirectional.centerStart));
         }
         else
         {
-            return ((global::Doroti.Generated.Framework.Painting.AlignmentGeometry)(object?)(isForward__2587 ? global::Doroti.Generated.Framework.Painting.AlignmentDirectional.centerStart : global::Doroti.Generated.Framework.Painting.AlignmentDirectional.centerEnd));
+            return ((global::Doroti.Framework.Painting.AlignmentGeometry)(object?)(isForward__2587 ? global::Doroti.Framework.Painting.AlignmentDirectional.centerStart : global::Doroti.Framework.Painting.AlignmentDirectional.centerEnd));
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -57,12 +57,12 @@ public class StretchEffect : StatelessWidget
         var y__3327 = 1.0;
         switch (this.axis)
         {
-            case global::Doroti.Generated.Framework.Painting.Axis.horizontal:
+            case global::Doroti.Framework.Painting.Axis.horizontal:
                 {
                     x__3310 += this.stretchStrength.abs();
                     break;
                 }
-            case global::Doroti.Generated.Framework.Painting.Axis.vertical:
+            case global::Doroti.Framework.Painting.Axis.vertical:
                 {
                     y__3327 += this.stretchStrength.abs();
                     break;
@@ -77,10 +77,10 @@ public class StretchEffect : StatelessWidget
 internal class _StretchOverscrollEffect__stretch_effect : StatefulWidget
 {
     public virtual double stretchStrength { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.Axis axis { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.Axis axis { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    internal _StretchOverscrollEffect__stretch_effect(double stretchStrength = 0.0, global::Doroti.Generated.Framework.Painting.Axis axis = default!, Widget child = default!)
+    internal _StretchOverscrollEffect__stretch_effect(double stretchStrength = 0.0, global::Doroti.Framework.Painting.Axis axis = default!, Widget child = default!)
     {
         this.stretchStrength = stretchStrength;
         this.axis = axis;
@@ -112,14 +112,14 @@ internal class _StretchOverscrollEffectState__stretch_effect : State<_StretchOve
 
     public override Widget build(BuildContext context)
     {
-        bool isShaderNeeded__5894 = (((_StretchOverscrollEffect__stretch_effect)this.widget).stretchStrength.abs() > global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance);
+        bool isShaderNeeded__5894 = (((_StretchOverscrollEffect__stretch_effect)this.widget).stretchStrength.abs() > global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance);
         global::Doroti.Ui.ImageFilter imageFilter__5993 = default!;
         if (_StretchEffectShader__stretch_effect._initialized)
         {
             this._fragmentShader?.dispose();
             _fragmentShader = _StretchEffectShader__stretch_effect._program!.fragmentShader();
             this._fragmentShader!.setFloat(2L, maxStretchIntensity);
-            if ((object.Equals(((_StretchOverscrollEffect__stretch_effect)this.widget).axis, global::Doroti.Generated.Framework.Painting.Axis.vertical)))
+            if ((object.Equals(((_StretchOverscrollEffect__stretch_effect)this.widget).axis, global::Doroti.Framework.Painting.Axis.vertical)))
             {
                 this._fragmentShader!.setFloat(3L, 0.0);
                 this._fragmentShader!.setFloat(4L, ((_StretchOverscrollEffect__stretch_effect)this.widget).stretchStrength);
@@ -144,7 +144,7 @@ internal class _StretchOverscrollEffectState__stretch_effect : State<_StretchOve
 
 }
 
-internal class _StretchEffectPainter__stretch_effect : global::Doroti.Generated.Framework.Rendering.CustomPainter
+internal class _StretchEffectPainter__stretch_effect : global::Doroti.Framework.Rendering.CustomPainter
 {
     public override void paint(Canvas canvas, Size size)
     {
@@ -156,7 +156,7 @@ internal class _StretchEffectPainter__stretch_effect : global::Doroti.Generated.
         canvas.drawPoints(global::Doroti.Ui.PointMode.points, new List<global::Doroti.Ui.Offset> { Offset.zero, new global::Doroti.Ui.Offset((size.width - 1L), 0), new global::Doroti.Ui.Offset(0, (size.height - 1L)), new global::Doroti.Ui.Offset((size.width - 1L), (size.height - 1L)) }, paint__7473);
     }
 
-    public override bool shouldRepaint(global::Doroti.Generated.Framework.Rendering.CustomPainter oldDelegate) => false;
+    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate) => false;
 }
 
 internal class _StretchEffectShader__stretch_effect

@@ -12,13 +12,13 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class PinnedHeaderSliver : StatelessWidget
 {
     public virtual Widget? child { get; private set; }
 
-    public PinnedHeaderSliver(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget? child = null) : base(key: key)
+    public PinnedHeaderSliver(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null) : base(key: key)
     {
         this.child = child;
     }
@@ -32,15 +32,15 @@ internal class _PinnedHeaderSliver__pinned_header_sliver : SingleChildRenderObje
     {
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        return ((global::Doroti.Generated.Framework.Rendering.RenderObject)(object?)new _RenderPinnedHeaderSliver__pinned_header_sliver());
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderPinnedHeaderSliver__pinned_header_sliver());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _RenderPinnedHeaderSliver__pinned_header_sliver : global::Doroti.Generated.Framework.Rendering.RenderSliverSingleBoxAdapter
+internal class _RenderPinnedHeaderSliver__pinned_header_sliver : global::Doroti.Framework.Rendering.RenderSliverSingleBoxAdapter
 {
     internal _RenderPinnedHeaderSliver__pinned_header_sliver()
     {
@@ -55,26 +55,26 @@ internal class _RenderPinnedHeaderSliver__pinned_header_sliver : global::Doroti.
                 return 0.0;
             }
             DartRuntimePrimitives.Assert(() => this.child!.hasSize);
-            return (((global::Doroti.Generated.Framework.Rendering.SliverConstraints)this.constraints).axis switch { global::Doroti.Generated.Framework.Painting.Axis.vertical => this.child!.size.height, global::Doroti.Generated.Framework.Painting.Axis.horizontal => this.child!.size.width, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            return (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).axis switch { global::Doroti.Framework.Painting.Axis.vertical => this.child!.size.height, global::Doroti.Framework.Painting.Axis.horizontal => this.child!.size.width, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             return default!;
         }
     }
-    public override double childMainAxisPosition(global::Doroti.Generated.Framework.Rendering.RenderObject child) => 0;
+    public override double childMainAxisPosition(global::Doroti.Framework.Rendering.RenderObject child) => 0;
     public override void performLayout()
     {
-        global::Doroti.Generated.Framework.Rendering.SliverConstraints constraints__3834 = this.constraints;
+        global::Doroti.Framework.Rendering.SliverConstraints constraints__3834 = this.constraints;
         this.child?.layout(constraints__3834.asBoxConstraints(), parentUsesSize: true);
-        double layoutExtent__3957 = Dart_uiLibrary.clampDouble((this.childExtent - ((global::Doroti.Generated.Framework.Rendering.SliverConstraints)constraints__3834).scrollOffset), 0, ((global::Doroti.Generated.Framework.Rendering.SliverConstraints)constraints__3834).remainingPaintExtent);
-        double paintExtent__4104 = Math.Min(this.childExtent, (((global::Doroti.Generated.Framework.Rendering.SliverConstraints)constraints__3834).remainingPaintExtent - ((global::Doroti.Generated.Framework.Rendering.SliverConstraints)constraints__3834).overlap));
-        geometry = new global::Doroti.Generated.Framework.Rendering.SliverGeometry(scrollExtent: this.childExtent, paintOrigin: ((global::Doroti.Generated.Framework.Rendering.SliverConstraints)constraints__3834).overlap, paintExtent: paintExtent__4104, layoutExtent: layoutExtent__3957, maxPaintExtent: this.childExtent, maxScrollObstructionExtent: this.childExtent, cacheExtent: calculateCacheOffset(constraints__3834, from: 0.0, to: this.childExtent), hasVisualOverflow: true);
+        double layoutExtent__3957 = Dart_uiLibrary.clampDouble((this.childExtent - ((global::Doroti.Framework.Rendering.SliverConstraints)constraints__3834).scrollOffset), 0, ((global::Doroti.Framework.Rendering.SliverConstraints)constraints__3834).remainingPaintExtent);
+        double paintExtent__4104 = Math.Min(this.childExtent, (((global::Doroti.Framework.Rendering.SliverConstraints)constraints__3834).remainingPaintExtent - ((global::Doroti.Framework.Rendering.SliverConstraints)constraints__3834).overlap));
+        geometry = new global::Doroti.Framework.Rendering.SliverGeometry(scrollExtent: this.childExtent, paintOrigin: ((global::Doroti.Framework.Rendering.SliverConstraints)constraints__3834).overlap, paintExtent: paintExtent__4104, layoutExtent: layoutExtent__3957, maxPaintExtent: this.childExtent, maxScrollObstructionExtent: this.childExtent, cacheExtent: calculateCacheOffset(constraints__3834, from: 0.0, to: this.childExtent), hasVisualOverflow: true);
     }
 
-    public override void describeSemanticsConfiguration(global::Doroti.Generated.Framework.Semantics.SemanticsConfiguration config)
+    public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)
     {
         base.describeSemanticsConfiguration(config);
         if (((this.geometry is not null) && (this.geometry!.layoutExtent < this.childExtent)))
         {
-            config.addTagForChildren(global::Doroti.Generated.Framework.Rendering.RenderViewport.excludeFromScrolling);
+            config.addTagForChildren(global::Doroti.Framework.Rendering.RenderViewport.excludeFromScrolling);
         }
     }
 

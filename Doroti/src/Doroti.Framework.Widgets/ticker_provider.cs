@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class TickerMode : StatefulWidget
 {
@@ -20,7 +20,7 @@ public class TickerMode : StatefulWidget
     public virtual bool forceFrames { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public TickerMode(global::Doroti.Generated.Framework.Foundation.Key? key = null, bool enabled = default!, Widget child = default!, bool forceFrames = false) : base(key: key)
+    public TickerMode(global::Doroti.Framework.Foundation.Key? key = null, bool enabled = default!, Widget child = default!, bool forceFrames = false) : base(key: key)
     {
         this.enabled = enabled;
         this.child = child;
@@ -34,10 +34,10 @@ public class TickerMode : StatefulWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Generated.Framework.Foundation.ValueListenable<bool> getNotifier(BuildContext context)
+    public static global::Doroti.Framework.Foundation.ValueListenable<bool> getNotifier(BuildContext context)
     {
         _EffectiveTickerMode__ticker_provider? widget__4995 = ((_EffectiveTickerMode__ticker_provider?)(object?)context.getInheritedWidgetOfExactType<_EffectiveTickerMode__ticker_provider>());
-        return DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Foundation.ValueListenable<bool>>((object?)widget__4995?.notifier ?? (object?)new _ConstantValueListenable__ticker_provider<bool>(true));
+        return DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Foundation.ValueListenable<bool>>((object?)widget__4995?.notifier ?? (object?)new _ConstantValueListenable__ticker_provider<bool>(true));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -48,19 +48,19 @@ public class TickerMode : StatefulWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData> getValuesNotifier(BuildContext context)
+    public static global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> getValuesNotifier(BuildContext context)
     {
         var fallback__7914 = new _ConstantTickerModeDataListenable__ticker_provider(TickerModeData.fallback);
         if (!((BuildContext)context).mounted)
         {
-            return ((global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>)(object?)fallback__7914);
+            return ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)fallback__7914);
         }
         _EffectiveTickerMode__ticker_provider? widget__8322 = ((_EffectiveTickerMode__ticker_provider?)(object?)context.getInheritedWidgetOfExactType<_EffectiveTickerMode__ticker_provider>());
-        return DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>>((object?)widget__8322?.valuesNotifier ?? (object?)fallback__7914);
+        return DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>>((object?)widget__8322?.valuesNotifier ?? (object?)fallback__7914);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static Widget merge(global::Doroti.Generated.Framework.Foundation.Key? key = null, bool? enabled = null, bool? forceFrames = null, Widget child = default!)
+    public static Widget merge(global::Doroti.Framework.Foundation.Key? key = null, bool? enabled = null, bool? forceFrames = null, Widget child = default!)
     {
         return ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => {
 _EffectiveTickerMode__ticker_provider? parent__8863 = ((_EffectiveTickerMode__ticker_provider?)(object?)context.dependOnInheritedWidgetOfExactType<_EffectiveTickerMode__ticker_provider>());
@@ -79,8 +79,8 @@ internal class _TickerModeState__ticker_provider : State<TickerMode>
 {
     internal virtual bool _ancestorTickerMode { get; set; } = TickerModeData.fallback.enabled;
     internal virtual bool _ancestorForceFrames { get; set; } = TickerModeData.fallback.forceFrames;
-    internal virtual global::Doroti.Generated.Framework.Foundation.ValueNotifier<bool> _effectiveMode { get; private set; } = new global::Doroti.Generated.Framework.Foundation.ValueNotifier<bool>(TickerModeData.fallback.enabled);
-    internal virtual global::Doroti.Generated.Framework.Foundation.ValueNotifier<TickerModeData> _effectiveValues { get; private set; } = new global::Doroti.Generated.Framework.Foundation.ValueNotifier<TickerModeData>(TickerModeData.fallback);
+    internal virtual global::Doroti.Framework.Foundation.ValueNotifier<bool> _effectiveMode { get; private set; } = new global::Doroti.Framework.Foundation.ValueNotifier<bool>(TickerModeData.fallback.enabled);
+    internal virtual global::Doroti.Framework.Foundation.ValueNotifier<TickerModeData> _effectiveValues { get; private set; } = new global::Doroti.Framework.Foundation.ValueNotifier<TickerModeData>(TickerModeData.fallback);
 
     public override void didChangeDependencies()
     {
@@ -114,14 +114,14 @@ internal class _TickerModeState__ticker_provider : State<TickerMode>
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new _EffectiveTickerMode__ticker_provider(enabled: ((global::Doroti.Generated.Framework.Foundation.ValueNotifier<bool>)this._effectiveMode).value, forceFrames: ((global::Doroti.Generated.Framework.Foundation.ValueNotifier<TickerModeData>)this._effectiveValues).value.forceFrames, notifier: this._effectiveMode, valuesNotifier: this._effectiveValues, child: ((TickerMode)(object)this.widget).child));
+        return ((Widget)(object?)new _EffectiveTickerMode__ticker_provider(enabled: ((global::Doroti.Framework.Foundation.ValueNotifier<bool>)this._effectiveMode).value, forceFrames: ((global::Doroti.Framework.Foundation.ValueNotifier<TickerModeData>)this._effectiveValues).value.forceFrames, notifier: this._effectiveMode, valuesNotifier: this._effectiveValues, child: ((TickerMode)(object)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("requested mode", value: ((TickerMode)(object)this.widget).enabled, ifTrue: "enabled", ifFalse: "disabled", showName: true));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("requested mode", value: ((TickerMode)(object)this.widget).enabled, ifTrue: "enabled", ifFalse: "disabled", showName: true));
     }
 
 }
@@ -130,10 +130,10 @@ internal class _EffectiveTickerMode__ticker_provider : InheritedWidget
 {
     public virtual bool enabled { get; private set; } = default!;
     public virtual bool forceFrames { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Foundation.ValueNotifier<bool> notifier { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Foundation.ValueNotifier<TickerModeData> valuesNotifier { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Foundation.ValueNotifier<bool> notifier { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Foundation.ValueNotifier<TickerModeData> valuesNotifier { get; private set; } = default!;
 
-    internal _EffectiveTickerMode__ticker_provider(bool enabled, bool forceFrames, global::Doroti.Generated.Framework.Foundation.ValueNotifier<bool> notifier, global::Doroti.Generated.Framework.Foundation.ValueNotifier<TickerModeData> valuesNotifier, Widget child) : base(child: child)
+    internal _EffectiveTickerMode__ticker_provider(bool enabled, bool forceFrames, global::Doroti.Framework.Foundation.ValueNotifier<bool> notifier, global::Doroti.Framework.Foundation.ValueNotifier<TickerModeData> valuesNotifier, Widget child) : base(child: child)
     {
         this.enabled = enabled;
         this.forceFrames = forceFrames;
@@ -141,27 +141,27 @@ internal class _EffectiveTickerMode__ticker_provider : InheritedWidget
         this.valuesNotifier = valuesNotifier;
     }
 
-    public virtual TickerModeData values => ((global::Doroti.Generated.Framework.Foundation.ValueNotifier<TickerModeData>)this.valuesNotifier).value;
+    public virtual TickerModeData values => ((global::Doroti.Framework.Foundation.ValueNotifier<TickerModeData>)this.valuesNotifier).value;
     public override bool updateShouldNotify(InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>(((this.enabled != ((_EffectiveTickerMode__ticker_provider)oldWidget).enabled) || (this.forceFrames != ((_EffectiveTickerMode__ticker_provider)oldWidget).forceFrames)));
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("effective mode", value: this.enabled, ifTrue: "enabled", ifFalse: "disabled", showName: true));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("effective mode", value: this.enabled, ifTrue: "enabled", ifFalse: "disabled", showName: true));
     }
 
 }
 
-public interface SingleTickerProviderStateMixin<T> : global::Doroti.Generated.Framework.Scheduler.TickerProvider where T : StatefulWidget
+public interface SingleTickerProviderStateMixin<T> : global::Doroti.Framework.Scheduler.TickerProvider where T : StatefulWidget
 {
-    global::Doroti.Generated.Framework.Scheduler.Ticker? _ticker { get; set; }
-    global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; }
+    global::Doroti.Framework.Scheduler.Ticker? _ticker { get; set; }
+    global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; }
 
-    public global::Doroti.Generated.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick);
+    public global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick);
     public void dispose();
     public void activate();
     public void _updateTicker();
     public void _updateTickerModeNotifier();
-    public void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties);
+    public void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties);
 }
 
 public interface WidgetTickerCreator
@@ -169,21 +169,21 @@ public interface WidgetTickerCreator
     void _removeTicker(_WidgetTicker__ticker_provider ticker);
 }
 
-public interface TickerProviderStateMixin<T> : global::Doroti.Generated.Framework.Scheduler.TickerProvider, WidgetTickerCreator where T : StatefulWidget
+public interface TickerProviderStateMixin<T> : global::Doroti.Framework.Scheduler.TickerProvider, WidgetTickerCreator where T : StatefulWidget
 {
-    HashSet<global::Doroti.Generated.Framework.Scheduler.Ticker>? _tickers { get; set; }
-    global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; }
+    HashSet<global::Doroti.Framework.Scheduler.Ticker>? _tickers { get; set; }
+    global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; }
 
-    public global::Doroti.Generated.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick);
+    public global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick);
     public void _removeTicker(_WidgetTicker__ticker_provider ticker);
     public void activate();
     public void _updateTickers();
     public void _updateTickerModeNotifier();
     public void dispose();
-    public void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties);
+    public void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties);
 }
 
-public class _WidgetTicker__ticker_provider : global::Doroti.Generated.Framework.Scheduler.Ticker
+public class _WidgetTicker__ticker_provider : global::Doroti.Framework.Scheduler.Ticker
 {
     internal virtual WidgetTickerCreator _creator { get; private set; } = default!;
 
@@ -200,7 +200,7 @@ public class _WidgetTicker__ticker_provider : global::Doroti.Generated.Framework
 
 }
 
-internal class _ConstantValueListenable__ticker_provider<T> : global::Doroti.Generated.Framework.Foundation.ValueListenable<T>
+internal class _ConstantValueListenable__ticker_provider<T> : global::Doroti.Framework.Foundation.ValueListenable<T>
 {
     public virtual T value { get; private set; } = default!;
 
@@ -249,7 +249,7 @@ public class TickerModeData
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.enabled, this.forceFrames));
 }
 
-internal class _ConstantTickerModeDataListenable__ticker_provider : global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>
+internal class _ConstantTickerModeDataListenable__ticker_provider : global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>
 {
     public virtual TickerModeData value { get; private set; } = default!;
 

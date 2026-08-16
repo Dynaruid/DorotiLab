@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public delegate bool NotificationListenerCallback<T>(T notification) where T : Notification;
 
@@ -31,7 +31,7 @@ public abstract class Notification
     {
         var description__2885 = new List<string>();
         debugFillDescription(description__2885);
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Notification"))}({string.Join(", ", description__2885)})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Notification"))}({string.Join(", ", description__2885)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -45,7 +45,7 @@ public class NotificationListener<T> : ProxyWidget where T : Notification
 {
     public virtual global::System.Func<T, bool>? onNotification { get; private set; }
 
-    public NotificationListener(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!, global::System.Func<T, bool>? onNotification = null) : base(key: key, child: child)
+    public NotificationListener(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, global::System.Func<T, bool>? onNotification = null) : base(key: key, child: child)
     {
         this.onNotification = onNotification;
     }

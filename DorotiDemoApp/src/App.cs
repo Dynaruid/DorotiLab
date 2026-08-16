@@ -1,14 +1,14 @@
 using Doroti.Hosting;
 using Doroti.Runtime;
 using Doroti.Ui;
-using Doroti.Generated.Framework.Foundation;
-using Doroti.Generated.Framework.Painting;
-using Doroti.Generated.Framework.Widgets;
-using Material = Doroti.Generated.Framework.Material;
-using ListView = Doroti.Generated.Framework.Widgets.ListView;
+using Doroti.Framework.Foundation;
+using Doroti.Framework.Painting;
+using Doroti.Framework.Widgets;
+using Material = Doroti.Framework.Material;
+using ListView = Doroti.Framework.Widgets.ListView;
 using Locale = Doroti.Ui.Locale;
 using Rect = Doroti.Ui.Rect;
-using Semantics = Doroti.Generated.Framework.Widgets.Semantics;
+using Semantics = Doroti.Framework.Widgets.Semantics;
 using Size = Doroti.Ui.Size;
 using UiColor = Doroti.Ui.Color;
 
@@ -96,7 +96,7 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
     internal IReadOnlyList<string> HitTestTargetsAt(double x, double y)
     {
         var binding = _binding ?? throw new InvalidOperationException("The Material binding is not initialized.");
-        var result = new Doroti.Generated.Framework.Gestures.HitTestResult();
+        var result = new Doroti.Framework.Gestures.HitTestResult();
         binding.hitTestInView(
             result,
             new Offset(x, y),
@@ -209,7 +209,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
     internal Offset BlurToggleCenter()
     {
         var context = _blurToggleKey.currentContext ?? throw new InvalidOperationException("Backdrop blur toggle is not mounted.");
-        var box = context.findRenderObject() as Doroti.Generated.Framework.Rendering.RenderBox
+        var box = context.findRenderObject() as Doroti.Framework.Rendering.RenderBox
             ?? throw new InvalidOperationException("Backdrop blur toggle does not own a RenderBox.");
         return box.localToGlobal(box.size.center(Offset.zero));
     }
@@ -217,7 +217,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
     internal Rect BackdropPanelBounds()
     {
         var context = _backdropPanelKey.currentContext ?? throw new InvalidOperationException("Backdrop panel is not mounted.");
-        var box = context.findRenderObject() as Doroti.Generated.Framework.Rendering.RenderBox
+        var box = context.findRenderObject() as Doroti.Framework.Rendering.RenderBox
             ?? throw new InvalidOperationException("Backdrop panel does not own a RenderBox.");
         var origin = box.localToGlobal(Offset.zero);
         return Rect.fromLTWH(origin.dx, origin.dy, box.size.width, box.size.height);
@@ -319,7 +319,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
             itemBuilder: (_, index) => new Container(
                 color: new UiColor(index % 2 == 0 ? 0xff6750a4L : 0xfff4b400L),
                 child: new Text($"Lazy item {index + 1}",
-                    style: new Doroti.Generated.Framework.Painting.TextStyle(color: new UiColor(0xff000000L)))));
+                    style: new Doroti.Framework.Painting.TextStyle(color: new UiColor(0xff000000L)))));
         var blurToggle = new Semantics(
             key: _blurToggleKey,
             container: true,
@@ -347,7 +347,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                     [
                         new Positioned(left: 0, top: 0, right: 0, bottom: 0, child: new IgnorePointer(
                             child: new BackdropFilter(
-                                filterConfig: Doroti.Generated.Framework.Rendering.ImageFilterConfig.CreateBlur(
+                                filterConfig: Doroti.Framework.Rendering.ImageFilterConfig.CreateBlur(
                                     sigmaX: 12, sigmaY: 6, tileMode: TileMode.clamp, bounded: true),
                                 enabled: _blurEnabled,
                                 child: new Container(color: new UiColor(0x01ffffffL))))),
@@ -356,7 +356,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                                 color: new UiColor(0x55ffffffL),
                                 padding: EdgeInsets.CreateAll(12),
                                 child: new Column(
-                                    crossAxisAlignment: Doroti.Generated.Framework.Rendering.CrossAxisAlignment.start,
+                                    crossAxisAlignment: Doroti.Framework.Rendering.CrossAxisAlignment.start,
                                     children:
                                     [
                                         new Text("FROSTED GLASS · BACKDROP BLUR"),
@@ -377,7 +377,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                 child: new Container(
                     padding: EdgeInsets.CreateAll(16),
                     child: new Column(
-                        crossAxisAlignment: Doroti.Generated.Framework.Rendering.CrossAxisAlignment.start,
+                        crossAxisAlignment: Doroti.Framework.Rendering.CrossAxisAlignment.start,
                         spacing: 10,
                         children:
                         [

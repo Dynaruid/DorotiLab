@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Cupertino;
+namespace Doroti.Framework.Cupertino;
 
 public static partial class Thumb_painterLibrary
 {
@@ -21,30 +21,30 @@ public static partial class Thumb_painterLibrary
 
 public static partial class Thumb_painterLibrary
 {
-    internal static List<global::Doroti.Generated.Framework.Painting.BoxShadow> _kSwitchBoxShadows = new List<global::Doroti.Generated.Framework.Painting.BoxShadow> { new global::Doroti.Generated.Framework.Painting.BoxShadow(color: new global::Doroti.Ui.Color(637534208L), offset: new global::Doroti.Ui.Offset(0, 3), blurRadius: 8.0), new global::Doroti.Generated.Framework.Painting.BoxShadow(color: new global::Doroti.Ui.Color(251658240L), offset: new global::Doroti.Ui.Offset(0, 3), blurRadius: 1.0) };
+    internal static List<global::Doroti.Framework.Painting.BoxShadow> _kSwitchBoxShadows = new List<global::Doroti.Framework.Painting.BoxShadow> { new global::Doroti.Framework.Painting.BoxShadow(color: new global::Doroti.Ui.Color(637534208L), offset: new global::Doroti.Ui.Offset(0, 3), blurRadius: 8.0), new global::Doroti.Framework.Painting.BoxShadow(color: new global::Doroti.Ui.Color(251658240L), offset: new global::Doroti.Ui.Offset(0, 3), blurRadius: 1.0) };
 }
 
 public static partial class Thumb_painterLibrary
 {
-    internal static List<global::Doroti.Generated.Framework.Painting.BoxShadow> _kSliderBoxShadows = new List<global::Doroti.Generated.Framework.Painting.BoxShadow> { new global::Doroti.Generated.Framework.Painting.BoxShadow(color: new global::Doroti.Ui.Color(637534208L), offset: new global::Doroti.Ui.Offset(0, 3), blurRadius: 8.0), new global::Doroti.Generated.Framework.Painting.BoxShadow(color: new global::Doroti.Ui.Color(687865856L), offset: new global::Doroti.Ui.Offset(0, 1), blurRadius: 1.0), new global::Doroti.Generated.Framework.Painting.BoxShadow(color: new global::Doroti.Ui.Color(436207616L), offset: new global::Doroti.Ui.Offset(0, 3), blurRadius: 1.0) };
+    internal static List<global::Doroti.Framework.Painting.BoxShadow> _kSliderBoxShadows = new List<global::Doroti.Framework.Painting.BoxShadow> { new global::Doroti.Framework.Painting.BoxShadow(color: new global::Doroti.Ui.Color(637534208L), offset: new global::Doroti.Ui.Offset(0, 3), blurRadius: 8.0), new global::Doroti.Framework.Painting.BoxShadow(color: new global::Doroti.Ui.Color(687865856L), offset: new global::Doroti.Ui.Offset(0, 1), blurRadius: 1.0), new global::Doroti.Framework.Painting.BoxShadow(color: new global::Doroti.Ui.Color(436207616L), offset: new global::Doroti.Ui.Offset(0, 3), blurRadius: 1.0) };
 }
 
 public class CupertinoThumbPainter
 {
     public virtual Color color { get; private set; } = default!;
-    public virtual List<global::Doroti.Generated.Framework.Painting.BoxShadow> shadows { get; private set; } = default!;
+    public virtual List<global::Doroti.Framework.Painting.BoxShadow> shadows { get; private set; } = default!;
     public const double radius = 14.0;
     public const double extension = 7.0;
 
-    public CupertinoThumbPainter(Color color = default!, List<global::Doroti.Generated.Framework.Painting.BoxShadow> shadows = default!)
+    public CupertinoThumbPainter(Color color = default!, List<global::Doroti.Framework.Painting.BoxShadow> shadows = default!)
     {
         Color __color = color ?? CupertinoColors.white;
-        List<global::Doroti.Generated.Framework.Painting.BoxShadow> __shadows = shadows ?? Thumb_painterLibrary._kSliderBoxShadows;
+        List<global::Doroti.Framework.Painting.BoxShadow> __shadows = shadows ?? Thumb_painterLibrary._kSliderBoxShadows;
         this.color = __color;
         this.shadows = __shadows;
     }
 
-    public static CupertinoThumbPainter CreateSwitchThumb(Color color = default!, List<global::Doroti.Generated.Framework.Painting.BoxShadow> shadows = default!)
+    public static CupertinoThumbPainter CreateSwitchThumb(Color color = default!, List<global::Doroti.Framework.Painting.BoxShadow> shadows = default!)
     {
         return new CupertinoThumbPainter(color: color, shadows: shadows);
     }
@@ -52,7 +52,7 @@ public class CupertinoThumbPainter
     public virtual void paint(Canvas canvas, Rect rect)
     {
         var thumbShape__2130 = global::Doroti.Ui.RRect.fromRectAndRadius(rect, global::Doroti.Ui.Radius.circular((rect.shortestSide / 2.0)));
-        foreach (global::Doroti.Generated.Framework.Painting.BoxShadow shadow__2242 in this.shadows)
+        foreach (global::Doroti.Framework.Painting.BoxShadow shadow__2242 in this.shadows)
         {
             canvas.drawRRect(thumbShape__2130.shift(shadow__2242.offset), shadow__2242.toPaint());
         }

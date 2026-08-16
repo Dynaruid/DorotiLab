@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Painting;
+namespace Doroti.Framework.Painting;
 
 public static partial class Image_resolutionLibrary
 {
@@ -36,7 +36,7 @@ public class AssetImage : AssetBundleImageProvider
     public virtual string keyName => ((this.package is null) ? this.assetName : $"packages/{this.package}/{this.assetName}");
     public override Future<AssetBundleImageKey> obtainKey(ImageConfiguration configuration)
     {
-        AssetBundle chosenBundle__11235 = ((this.bundle ?? ((ImageConfiguration)configuration).bundle) ?? global::Doroti.Generated.Framework.Services.Asset_bundleLibrary.rootBundle);
+        AssetBundle chosenBundle__11235 = ((this.bundle ?? ((ImageConfiguration)configuration).bundle) ?? global::Doroti.Framework.Services.Asset_bundleLibrary.rootBundle);
         Completer<AssetBundleImageKey>? completer__11332 = default!;
         Future<AssetBundleImageKey>? result__11376 = default!;
         _ = AssetManifest.loadFromAssetBundle(chosenBundle__11235).then((Action<AssetManifest>)((manifest) =>
@@ -121,6 +121,6 @@ public class AssetImage : AssetBundleImageProvider
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.keyName, this.bundle);
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "AssetImage"))}(bundle: {this.bundle}, name: \"{this.keyName}\")";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "AssetImage"))}(bundle: {this.bundle}, name: \"{this.keyName}\")";
 }
 

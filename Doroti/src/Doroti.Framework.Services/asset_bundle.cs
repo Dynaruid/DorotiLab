@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public abstract class AssetBundle
 {
@@ -27,11 +27,11 @@ public abstract class AssetBundle
     public async virtual Future<string> loadString(string key, bool cache = true)
     {
         ByteData data = await load(key);
-        if (((data.lengthInBytes < (50L * 1024L)) || global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb))
+        if (((data.lengthInBytes < (50L * 1024L)) || global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb))
         {
             return global::Doroti.Runtime.Dart_convertLibrary.utf8.decode(new Uint8List(data));
         }
-        return await global::Doroti.Generated.Framework.Foundation.IsolatesLibrary.compute(_utf8decode, data, debugLabel: $"UTF8 decode for \"{key}\"");
+        return await global::Doroti.Framework.Foundation.IsolatesLibrary.compute(_utf8decode, data, debugLabel: $"UTF8 decode for \"{key}\"");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -61,7 +61,7 @@ public abstract class AssetBundle
     {
     }
 
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}()";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}()";
 }
 
 public class NetworkAssetBundle : AssetBundle
@@ -84,12 +84,12 @@ public class NetworkAssetBundle : AssetBundle
         {
             throw new FlutterError(new List<DiagnosticsNode> { Asset_bundleLibrary._errorSummaryWithKey(key), new IntProperty("HTTP status code", response.statusCode) });
         }
-        Uint8List bytes = await global::Doroti.Generated.Framework.Foundation.Consolidate_responseLibrary.consolidateHttpClientResponseBytes(response);
+        Uint8List bytes = await global::Doroti.Framework.Foundation.Consolidate_responseLibrary.consolidateHttpClientResponseBytes(response);
         return new ByteData(bytes);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({_baseUrl})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({_baseUrl})";
 }
 
 public abstract class CachingAssetBundle : AssetBundle
@@ -212,7 +212,7 @@ public class PlatformAssetBundle : CachingAssetBundle
 
     public async override Future<ImmutableBuffer> loadBuffer(string key)
     {
-        if (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb)
+        if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
         {
             ByteData bytes__14289 = await load(key);
             return await Dart_uiLibrary.ImmutableBuffer.fromUint8List(new Uint8List(bytes__14289));

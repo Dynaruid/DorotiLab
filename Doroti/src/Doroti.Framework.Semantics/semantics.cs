@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Semantics;
+namespace Doroti.Framework.Semantics;
 
 public delegate bool SemanticsNodeVisitor(SemanticsNode node);
 
@@ -486,7 +486,7 @@ public class SemanticsTag
         this.name = name;
     }
 
-    public override string ToString() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsTag"))}({this.name})";
+    public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsTag"))}({this.name})";
 }
 
 public class ChildSemanticsConfigurationsResult
@@ -657,13 +657,13 @@ public class AttributedString
     {
         var __other = other as AttributedString;
         if (__other is null) return false;
-        return ((((object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())) && (__other is AttributedString)) && (((AttributedString)((AttributedString)__other)).@string == this.@string)) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals<global::Doroti.Ui.StringAttribute>(((AttributedString)((AttributedString)__other)).attributes, this.attributes));
+        return ((((object.Equals(DartRuntimePrimitives.RuntimeType(__other), this.GetType())) && (__other is AttributedString)) && (((AttributedString)((AttributedString)__other)).@string == this.@string)) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals<global::Doroti.Ui.StringAttribute>(((AttributedString)((AttributedString)__other)).attributes, this.attributes));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.@string, this.attributes);
     public override string ToString()
     {
-        return $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "AttributedString"))}('{this.@string}', attributes: {this.attributes})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "AttributedString"))}('{this.@string}', attributes: {this.attributes})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -673,7 +673,7 @@ public class AttributedStringProperty : DiagnosticsProperty<AttributedString>
 {
     public virtual bool showWhenEmpty { get; private set; } = default!;
 
-    public AttributedStringProperty(string name, AttributedString? value, bool showName = true, bool showWhenEmpty = false, object? defaultValue = default!, DiagnosticLevel level = DiagnosticLevel.info, string? description = null) : base(name, value, showName: showName, defaultValue: defaultValue ?? global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue, level: level, description: description)
+    public AttributedStringProperty(string name, AttributedString? value, bool showName = true, bool showWhenEmpty = false, object? defaultValue = default!, DiagnosticLevel level = DiagnosticLevel.info, string? description = null) : base(name, value, showName: showName, defaultValue: defaultValue ?? global::Doroti.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue, level: level, description: description)
     {
         this.showWhenEmpty = showWhenEmpty;
     }
@@ -859,12 +859,12 @@ public class SemanticsData : Diagnosticable
     public virtual string hint => ((AttributedString)this.attributedHint).@string;
     public virtual bool hasFlag(SemanticsFlag flag) => (((this.flags & FoundationRuntimePorts.EnumIndex(flag))) != 0L);
     public virtual bool hasAction(SemanticsAction action) => ((this.actions & (long)action) != 0L);
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsData");
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsData");
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect>("rect", this.rect, showName: false));
-        properties.add(new global::Doroti.Generated.Framework.Painting.TransformProperty("transform", this.transform, showName: false, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.TransformProperty("transform", this.transform, showName: false, defaultValue: null));
         var actionSummary__49230 = new List<string>();
         List<string?> customSemanticsActionSummary__49410 = this.customSemanticsActionIds!.map<long, string?>(((actionId) => CustomSemanticsAction.getAction(actionId)!.label)).ToList();
         properties.add(new IterableProperty<string>("actions", actionSummary__49230, ifEmpty: null));
@@ -915,7 +915,7 @@ public class SemanticsData : Diagnosticable
     {
         var __other = other as SemanticsData;
         if (__other is null) return false;
-        return (((((((((((((((((((((((((((((((((((((__other is SemanticsData) && (((SemanticsData)((SemanticsData)__other)).flags == this.flags)) && (((SemanticsData)((SemanticsData)__other)).actions == this.actions)) && (((SemanticsData)((SemanticsData)__other)).identifier == this.identifier)) && (object.Equals(((SemanticsData)((SemanticsData)__other)).traversalParentIdentifier, this.traversalParentIdentifier))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).traversalChildIdentifier, this.traversalChildIdentifier))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).attributedLabel, this.attributedLabel))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).attributedValue, this.attributedValue))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).attributedIncreasedValue, this.attributedIncreasedValue))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).attributedDecreasedValue, this.attributedDecreasedValue))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).attributedHint, this.attributedHint))) && (((SemanticsData)((SemanticsData)__other)).tooltip == this.tooltip)) && (object.Equals(((SemanticsData)((SemanticsData)__other)).textDirection, this.textDirection))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).rect, this.rect))) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.setEquals(((SemanticsData)((SemanticsData)__other)).tags, this.tags)) && (((SemanticsData)((SemanticsData)__other)).scrollChildCount == this.scrollChildCount)) && (((SemanticsData)((SemanticsData)__other)).scrollIndex == this.scrollIndex)) && (object.Equals(((SemanticsData)((SemanticsData)__other)).textSelection, this.textSelection))) && (((SemanticsData)((SemanticsData)__other)).scrollPosition == this.scrollPosition)) && (((SemanticsData)((SemanticsData)__other)).scrollExtentMax == this.scrollExtentMax)) && (((SemanticsData)((SemanticsData)__other)).scrollExtentMin == this.scrollExtentMin)) && (((SemanticsData)((SemanticsData)__other)).platformViewId == this.platformViewId)) && (((SemanticsData)((SemanticsData)__other)).maxValueLength == this.maxValueLength)) && (((SemanticsData)((SemanticsData)__other)).currentValueLength == this.currentValueLength)) && (object.Equals(((SemanticsData)((SemanticsData)__other)).transform, this.transform))) && (((SemanticsData)((SemanticsData)__other)).headingLevel == this.headingLevel)) && (object.Equals(((SemanticsData)((SemanticsData)__other)).linkUrl, this.linkUrl))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).role, this.role))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).validationResult, this.validationResult))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).inputType, this.inputType))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).hitTestBehavior, this.hitTestBehavior))) && _sortedListsEqual(((SemanticsData)((SemanticsData)__other)).customSemanticsActionIds, this.customSemanticsActionIds)) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.setEquals<string>(this.controlsNodes, ((SemanticsData)((SemanticsData)__other)).controlsNodes)) && (object.Equals(((SemanticsData)((SemanticsData)__other)).traversalParentIdentifier, this.traversalParentIdentifier))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).traversalChildIdentifier, this.traversalChildIdentifier))) && (((SemanticsData)((SemanticsData)__other)).minValue == this.minValue)) && (((SemanticsData)((SemanticsData)__other)).maxValue == this.maxValue));
+        return (((((((((((((((((((((((((((((((((((((__other is SemanticsData) && (((SemanticsData)((SemanticsData)__other)).flags == this.flags)) && (((SemanticsData)((SemanticsData)__other)).actions == this.actions)) && (((SemanticsData)((SemanticsData)__other)).identifier == this.identifier)) && (object.Equals(((SemanticsData)((SemanticsData)__other)).traversalParentIdentifier, this.traversalParentIdentifier))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).traversalChildIdentifier, this.traversalChildIdentifier))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).attributedLabel, this.attributedLabel))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).attributedValue, this.attributedValue))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).attributedIncreasedValue, this.attributedIncreasedValue))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).attributedDecreasedValue, this.attributedDecreasedValue))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).attributedHint, this.attributedHint))) && (((SemanticsData)((SemanticsData)__other)).tooltip == this.tooltip)) && (object.Equals(((SemanticsData)((SemanticsData)__other)).textDirection, this.textDirection))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).rect, this.rect))) && global::Doroti.Framework.Foundation.CollectionsLibrary.setEquals(((SemanticsData)((SemanticsData)__other)).tags, this.tags)) && (((SemanticsData)((SemanticsData)__other)).scrollChildCount == this.scrollChildCount)) && (((SemanticsData)((SemanticsData)__other)).scrollIndex == this.scrollIndex)) && (object.Equals(((SemanticsData)((SemanticsData)__other)).textSelection, this.textSelection))) && (((SemanticsData)((SemanticsData)__other)).scrollPosition == this.scrollPosition)) && (((SemanticsData)((SemanticsData)__other)).scrollExtentMax == this.scrollExtentMax)) && (((SemanticsData)((SemanticsData)__other)).scrollExtentMin == this.scrollExtentMin)) && (((SemanticsData)((SemanticsData)__other)).platformViewId == this.platformViewId)) && (((SemanticsData)((SemanticsData)__other)).maxValueLength == this.maxValueLength)) && (((SemanticsData)((SemanticsData)__other)).currentValueLength == this.currentValueLength)) && (object.Equals(((SemanticsData)((SemanticsData)__other)).transform, this.transform))) && (((SemanticsData)((SemanticsData)__other)).headingLevel == this.headingLevel)) && (object.Equals(((SemanticsData)((SemanticsData)__other)).linkUrl, this.linkUrl))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).role, this.role))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).validationResult, this.validationResult))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).inputType, this.inputType))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).hitTestBehavior, this.hitTestBehavior))) && _sortedListsEqual(((SemanticsData)((SemanticsData)__other)).customSemanticsActionIds, this.customSemanticsActionIds)) && global::Doroti.Framework.Foundation.CollectionsLibrary.setEquals<string>(this.controlsNodes, ((SemanticsData)((SemanticsData)__other)).controlsNodes)) && (object.Equals(((SemanticsData)((SemanticsData)__other)).traversalParentIdentifier, this.traversalParentIdentifier))) && (object.Equals(((SemanticsData)((SemanticsData)__other)).traversalChildIdentifier, this.traversalChildIdentifier))) && (((SemanticsData)((SemanticsData)__other)).minValue == this.minValue)) && (((SemanticsData)((SemanticsData)__other)).maxValue == this.maxValue));
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.flags, this.actions, this.identifier, this.attributedLabel, this.attributedValue, this.attributedIncreasedValue, this.attributedDecreasedValue, this.attributedHint, this.tooltip, this.textDirection, this.rect, this.tags, this.textSelection, this.scrollChildCount, this.scrollIndex, this.scrollPosition, this.scrollExtentMax, this.scrollExtentMin, this.platformViewId, FoundationRuntimePorts.ObjectHash(this.maxValueLength, this.currentValueLength, this.transform, this.headingLevel, this.linkUrl, ((this.customSemanticsActionIds is null) ? null : FoundationRuntimePorts.ObjectHashAll(this.customSemanticsActionIds!)), this.role, this.validationResult, ((this.controlsNodes is null) ? null : FoundationRuntimePorts.ObjectHashAll(this.controlsNodes!)), this.inputType, this.hitTestBehavior, this.traversalParentIdentifier, this.traversalChildIdentifier, this.minValue, this.maxValue));
@@ -1194,7 +1194,7 @@ public class SemanticsProperties : DiagnosticableTree
         properties.add(new DiagnosticsProperty<SemanticsHintOverrides>("hintOverrides", this.hintOverrides, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsProperties");
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsProperties");
     public virtual string toStringDeep(string prefixLineOne = "", string? prefixOtherLines = null, DiagnosticLevel minLevel = DiagnosticLevel.debug, long? wrapWidth = null) =>
         ((DiagnosticableTree)this).toStringDeep(prefixLineOne, prefixOtherLines, minLevel, wrapWidth);
 }
@@ -1315,7 +1315,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
     {
         get
         {
-            return (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb ? this.transform : ((this._traversalChildTransform ?? this.transform)));
+            return (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? this.transform : ((this._traversalChildTransform ?? this.transform)));
             return default!;
         }
     }
@@ -1681,7 +1681,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
     }
     internal virtual bool _isDifferentFromCurrentSemanticAnnotation(SemanticsConfiguration config)
     {
-        return ((((((((((((((((((((((((((((((!object.Equals(this._attributedLabel, ((SemanticsConfiguration)config).attributedLabel)) || (!object.Equals(this._attributedHint, ((SemanticsConfiguration)config).attributedHint))) || (!object.Equals(this._attributedValue, ((SemanticsConfiguration)config).attributedValue))) || (!object.Equals(this._attributedIncreasedValue, ((SemanticsConfiguration)config).attributedIncreasedValue))) || (!object.Equals(this._attributedDecreasedValue, ((SemanticsConfiguration)config).attributedDecreasedValue))) || (this._tooltip != ((SemanticsConfiguration)config).tooltip)) || (!object.Equals(this._flags, ((SemanticsConfiguration)config)._flags))) || (!object.Equals(this._textDirection, ((SemanticsConfiguration)config).textDirection))) || (!object.Equals(this._sortKey, ((SemanticsConfiguration)config)._sortKey))) || (!object.Equals(this._textSelection, ((SemanticsConfiguration)config)._textSelection))) || (this._scrollPosition != ((SemanticsConfiguration)config)._scrollPosition)) || (this._scrollExtentMax != ((SemanticsConfiguration)config)._scrollExtentMax)) || (this._scrollExtentMin != ((SemanticsConfiguration)config)._scrollExtentMin)) || (this._actionsAsBits != ((SemanticsConfiguration)config)._actionsAsBits)) || (this.indexInParent != ((SemanticsConfiguration)config).indexInParent)) || (this.platformViewId != ((SemanticsConfiguration)config).platformViewId)) || (this._maxValueLength != ((SemanticsConfiguration)config)._maxValueLength)) || (this._currentValueLength != ((SemanticsConfiguration)config)._currentValueLength)) || (this._mergeAllDescendantsIntoThisNode != ((SemanticsConfiguration)config).isMergingSemanticsOfDescendants)) || (this._areUserActionsBlocked != ((SemanticsConfiguration)config).isBlockingUserActions)) || (this._headingLevel != ((SemanticsConfiguration)config)._headingLevel)) || (!object.Equals(this._linkUrl, ((SemanticsConfiguration)config)._linkUrl))) || (!object.Equals(this._role, ((SemanticsConfiguration)config).role))) || (!object.Equals(this._validationResult, ((SemanticsConfiguration)config).validationResult))) || (!object.Equals(this._hitTestBehavior, ((SemanticsConfiguration)config).hitTestBehavior))) || (!object.Equals(this._traversalChildIdentifier, ((SemanticsConfiguration)config)._traversalChildIdentifier))) || (!object.Equals(this._traversalParentIdentifier, ((SemanticsConfiguration)config)._traversalParentIdentifier))) || (this._minValue != ((SemanticsConfiguration)config)._minValue)) || (this._maxValue != ((SemanticsConfiguration)config)._maxValue)) || !global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.mapEquals<CustomSemanticsAction, Action>(this._customSemanticsActions, ((SemanticsConfiguration)config)._customSemanticsActions));
+        return ((((((((((((((((((((((((((((((!object.Equals(this._attributedLabel, ((SemanticsConfiguration)config).attributedLabel)) || (!object.Equals(this._attributedHint, ((SemanticsConfiguration)config).attributedHint))) || (!object.Equals(this._attributedValue, ((SemanticsConfiguration)config).attributedValue))) || (!object.Equals(this._attributedIncreasedValue, ((SemanticsConfiguration)config).attributedIncreasedValue))) || (!object.Equals(this._attributedDecreasedValue, ((SemanticsConfiguration)config).attributedDecreasedValue))) || (this._tooltip != ((SemanticsConfiguration)config).tooltip)) || (!object.Equals(this._flags, ((SemanticsConfiguration)config)._flags))) || (!object.Equals(this._textDirection, ((SemanticsConfiguration)config).textDirection))) || (!object.Equals(this._sortKey, ((SemanticsConfiguration)config)._sortKey))) || (!object.Equals(this._textSelection, ((SemanticsConfiguration)config)._textSelection))) || (this._scrollPosition != ((SemanticsConfiguration)config)._scrollPosition)) || (this._scrollExtentMax != ((SemanticsConfiguration)config)._scrollExtentMax)) || (this._scrollExtentMin != ((SemanticsConfiguration)config)._scrollExtentMin)) || (this._actionsAsBits != ((SemanticsConfiguration)config)._actionsAsBits)) || (this.indexInParent != ((SemanticsConfiguration)config).indexInParent)) || (this.platformViewId != ((SemanticsConfiguration)config).platformViewId)) || (this._maxValueLength != ((SemanticsConfiguration)config)._maxValueLength)) || (this._currentValueLength != ((SemanticsConfiguration)config)._currentValueLength)) || (this._mergeAllDescendantsIntoThisNode != ((SemanticsConfiguration)config).isMergingSemanticsOfDescendants)) || (this._areUserActionsBlocked != ((SemanticsConfiguration)config).isBlockingUserActions)) || (this._headingLevel != ((SemanticsConfiguration)config)._headingLevel)) || (!object.Equals(this._linkUrl, ((SemanticsConfiguration)config)._linkUrl))) || (!object.Equals(this._role, ((SemanticsConfiguration)config).role))) || (!object.Equals(this._validationResult, ((SemanticsConfiguration)config).validationResult))) || (!object.Equals(this._hitTestBehavior, ((SemanticsConfiguration)config).hitTestBehavior))) || (!object.Equals(this._traversalChildIdentifier, ((SemanticsConfiguration)config)._traversalChildIdentifier))) || (!object.Equals(this._traversalParentIdentifier, ((SemanticsConfiguration)config)._traversalParentIdentifier))) || (this._minValue != ((SemanticsConfiguration)config)._minValue)) || (this._maxValue != ((SemanticsConfiguration)config)._maxValue)) || !global::Doroti.Framework.Foundation.CollectionsLibrary.mapEquals<CustomSemanticsAction, Action>(this._customSemanticsActions, ((SemanticsConfiguration)config)._customSemanticsActions));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2033,7 +2033,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
         {
             return new List<SemanticsNode>();
         }
-        if ((global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb || this._isTraversalParent))
+        if ((global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb || this._isTraversalParent))
         {
             return this._children!;
         }
@@ -2075,7 +2075,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
         Int32List childrenInHitTestOrder__154707 = default!;
         if ((!this.hasChildren || this.mergeAllDescendantsIntoThisNode))
         {
-            if ((this._isTraversalParent && !global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb))
+            if ((this._isTraversalParent && !global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb))
             {
                 if (((this.owner is not null) && this.owner!._traversalChildNodes.ContainsKey(this.traversalParentIdentifier)))
                 {
@@ -2130,7 +2130,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
         if ((childIdentifier__156672 is not null))
         {
             traversalParent = this.owner!._traversalParentNodes.GetValueOrDefault(childIdentifier__156672);
-            if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb)
+            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
             {
                 _traversalChildTransform = _computeTraversalTransform(parent: this.traversalParent!, child: this);
             }
@@ -2141,7 +2141,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
 
     internal virtual List<SemanticsNode>? _updateChildrenInTraversalOrder()
     {
-        if (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb)
+        if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
         {
             return this._children;
         }
@@ -2266,7 +2266,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual string toStringShort() => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsNode"))}#{this.id}";
+    public virtual string toStringShort() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsNode"))}#{this.id}";
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
@@ -2643,7 +2643,7 @@ public class SemanticsOwner : ChangeNotifier
     public virtual SemanticsNode? getSemanticsNode(long id) => this._nodes.GetValueOrDefault(id);
     public override void dispose()
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this._dirtyNodes.Clear();
         this._nodes.Clear();
         this._detachedNodes.Clear();
@@ -2746,7 +2746,7 @@ public class SemanticsOwner : ChangeNotifier
                         this._traversalChildNodes.putIfAbsent(((SemanticsNode)node__189541).traversalChildIdentifier!, (() => new HashSet<SemanticsNode>())).Add(node__189541);
                     }
                 }
-                if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb)
+                if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
                 {
                     if (((SemanticsNode)node__189541)._isTraversalChild)
                     {
@@ -2760,7 +2760,7 @@ public class SemanticsOwner : ChangeNotifier
             }
         }
         visitedNodes__189111.sort(((a, b) => (((SemanticsNode)a).depth - ((SemanticsNode)b).depth)));
-        global::Doroti.Ui.SemanticsUpdateBuilder builder__192635 = global::Doroti.Generated.Framework.Semantics.SemanticsBinding.instance.createSemanticsUpdateBuilder();
+        global::Doroti.Ui.SemanticsUpdateBuilder builder__192635 = global::Doroti.Framework.Semantics.SemanticsBinding.instance.createSemanticsUpdateBuilder();
         foreach (var node__192719 in visitedNodes__189111)
         {
             DartRuntimePrimitives.Assert(() => (((SemanticsNode)node__192719).parent?._dirty != true));
@@ -2886,7 +2886,7 @@ public class SemanticsOwner : ChangeNotifier
         }
     }
 
-    public override string ToString() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
 }
 
 public class SemanticsConfiguration
@@ -4041,7 +4041,7 @@ public class SemanticsConfiguration
             {
                 return true;
             }
-            if (((((((this._flags.isTextField || ((this._flags.isHeader && global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb))) || this._flags.isSlider) || this._flags.isLink) || this._flags.scopesRoute) || this._flags.isImage) || this._flags.isKeyboardKey))
+            if (((((((this._flags.isTextField || ((this._flags.isHeader && global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb))) || this._flags.isSlider) || this._flags.isLink) || this._flags.scopesRoute) || this._flags.isImage) || this._flags.isKeyboardKey))
             {
                 return true;
             }

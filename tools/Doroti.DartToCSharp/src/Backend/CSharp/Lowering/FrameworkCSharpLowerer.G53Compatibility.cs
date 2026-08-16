@@ -68,7 +68,7 @@ internal sealed partial class FrameworkCSharpLowerer
         // many value types, so the CLR-invariant RestorableProperty<object>
         // projection must stay dynamically typed at this boundary.
         source = source
-            .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Widgets.RestorableProperty<object>", "dynamic", StringComparison.Ordinal)
+            .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Widgets.RestorableProperty<object>", "dynamic", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("RestorableProperty<object>", "dynamic", StringComparison.Ordinal);
         // Dart List.sublist(start) uses the remaining length. A one-argument
         // invocation can arrive without an argument-role node in older IR,
@@ -90,14 +90,14 @@ internal sealed partial class FrameworkCSharpLowerer
             library.EndsWith("/text_button.dart", StringComparison.Ordinal))
         {
             source = source.ReplaceGeneratedLocalPattern(
-                "new DartMap<global::Doroti.Generated.Framework.Widgets.WidgetState, Color?>",
-                "new DartMap<global::Doroti.Generated.Framework.Widgets.WidgetStatesConstraint, Color?>",
+                "new DartMap<global::Doroti.Framework.Widgets.WidgetState, Color?>",
+                "new DartMap<global::Doroti.Framework.Widgets.WidgetStatesConstraint, Color?>",
                 StringComparison.Ordinal);
             foreach (var state in new[] { "pressed", "hovered", "focused" })
             {
                 source = source.ReplaceGeneratedLocalPattern(
-                    $"[global::Doroti.Generated.Framework.Widgets.WidgetState.{state}] =",
-                    $"[global::Doroti.Generated.Framework.Widgets.WidgetState.{state}.asConstraint()] =",
+                    $"[global::Doroti.Framework.Widgets.WidgetState.{state}] =",
+                    $"[global::Doroti.Framework.Widgets.WidgetState.{state}.asConstraint()] =",
                     StringComparison.Ordinal);
             }
         }
@@ -159,7 +159,7 @@ internal sealed partial class FrameworkCSharpLowerer
             // cases remain exhaustive when RichText is created by Icon.
             source = source.ReplaceGeneratedLocalPattern(
                 "    {\n        return ((textScaler, textScaleFactor) switch",
-                "    {\n        textScaler ??= global::Doroti.Generated.Framework.Painting.TextScaler.noScaling;\n        return ((textScaler, textScaleFactor) switch",
+                "    {\n        textScaler ??= global::Doroti.Framework.Painting.TextScaler.noScaling;\n        return ((textScaler, textScaleFactor) switch",
                 StringComparison.Ordinal);
         }
 
@@ -186,7 +186,7 @@ internal sealed partial class FrameworkCSharpLowerer
             source = Regex.Replace(
                 source,
                 @"(?<name>defaults__\d+)\.(?<property>fillColor|overlayColor|checkColor)!\.resolve\(",
-                "((global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color>)${name}.${property}).resolve(");
+                "((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)${name}.${property}).resolve(");
         }
 
         if (library.EndsWith("/material/radio.dart", StringComparison.Ordinal))
@@ -198,7 +198,7 @@ internal sealed partial class FrameworkCSharpLowerer
             source = Regex.Replace(
                 source,
                 @"(?<name>defaults__\d+)\.(?<property>fillColor|backgroundColor|overlayColor)!\.resolve\(",
-                "((global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color>)${name}.${property}).resolve(");
+                "((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)${name}.${property}).resolve(");
         }
 
         if (library.EndsWith("/material/switch.dart", StringComparison.Ordinal))
@@ -208,10 +208,10 @@ internal sealed partial class FrameworkCSharpLowerer
                 "dynamic ${name} = default!;");
             source = Regex.Replace(source,
                 @"(?<name>defaults__\d+)\.(?<property>thumbColor|trackColor|trackOutlineColor|overlayColor)!?\.resolve\(",
-                "((global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<Color>)${name}.${property}).resolve(");
+                "((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)${name}.${property}).resolve(");
             source = Regex.Replace(source,
                 @"(?<name>defaults__\d+)\.trackOutlineWidth\?\.resolve\(",
-                "((global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<double>)${name}.trackOutlineWidth).resolve(");
+                "((global::Doroti.Framework.Widgets.WidgetStateProperty<double>)${name}.trackOutlineWidth).resolve(");
         }
 
         if (library.EndsWith("/material/text_field.dart", StringComparison.Ordinal))
@@ -328,10 +328,10 @@ internal sealed partial class FrameworkCSharpLowerer
                         this.platformDispatcher.onSemanticsActionEvent = this._handleSemanticsActionEvent;
                         this.platformDispatcher.onAccessibilityFeaturesChanged = () =>
                         {
-                            if (global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase ==
-                                global::Doroti.Generated.Framework.Scheduler.SchedulerPhase.persistentCallbacks)
+                            if (global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase ==
+                                global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)
                             {
-                                global::Doroti.Generated.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(
+                                global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(
                                     _ => handleAccessibilityFeaturesChanged(),
                                     debugLabel: "SemanticsBinding.handleAccessibilityFeaturesChanged");
                             }
@@ -381,12 +381,12 @@ internal sealed partial class FrameworkCSharpLowerer
             // the first semantics pass observes a null properties object.
             source = source.ReplaceGeneratedLocalPattern(
                 """
-                    public RenderSemanticsAnnotations(RenderBox? child = null, global::Doroti.Generated.Framework.Semantics.SemanticsProperties properties = default!, bool container = false, bool explicitChildNodes = false, bool excludeSemantics = false, bool blockUserActions = false, Locale? localeForSubtree = null, TextDirection? textDirection = null) : base(child)
+                    public RenderSemanticsAnnotations(RenderBox? child = null, global::Doroti.Framework.Semantics.SemanticsProperties properties = default!, bool container = false, bool explicitChildNodes = false, bool excludeSemantics = false, bool blockUserActions = false, Locale? localeForSubtree = null, TextDirection? textDirection = null) : base(child)
                     {
                     }
                 """,
                 """
-                    public RenderSemanticsAnnotations(RenderBox? child = null, global::Doroti.Generated.Framework.Semantics.SemanticsProperties properties = default!, bool container = false, bool explicitChildNodes = false, bool excludeSemantics = false, bool blockUserActions = false, Locale? localeForSubtree = null, TextDirection? textDirection = null) : base(child)
+                    public RenderSemanticsAnnotations(RenderBox? child = null, global::Doroti.Framework.Semantics.SemanticsProperties properties = default!, bool container = false, bool explicitChildNodes = false, bool excludeSemantics = false, bool blockUserActions = false, Locale? localeForSubtree = null, TextDirection? textDirection = null) : base(child)
                     {
                         initSemanticsAnnotations(
                             properties,
@@ -438,22 +438,22 @@ internal sealed partial class FrameworkCSharpLowerer
         if (library.EndsWith("/cupertino/app.dart", StringComparison.Ordinal))
         {
             source = source
-                .ReplaceGeneratedLocalPattern("_exitWidgetSelectionButtonBuilder(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::System.Action onPressed, string semanticsLabel, global::Doroti.Generated.Framework.Widgets.GlobalKey<IState> key)", "_exitWidgetSelectionButtonBuilder(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Widgets.GlobalKey<IState> key, global::System.Action onPressed, string semanticsLabel)", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("_tapBehaviorButtonBuilder(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::System.Action onPressed, string semanticsLabel, bool selectionOnTapEnabled)", "_tapBehaviorButtonBuilder(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::System.Action onPressed, bool selectionOnTapEnabled, string semanticsLabel)", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("_exitWidgetSelectionButtonBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::System.Action onPressed, string semanticsLabel, global::Doroti.Framework.Widgets.GlobalKey<IState> key)", "_exitWidgetSelectionButtonBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.GlobalKey<IState> key, global::System.Action onPressed, string semanticsLabel)", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("_tapBehaviorButtonBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::System.Action onPressed, string semanticsLabel, bool selectionOnTapEnabled)", "_tapBehaviorButtonBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::System.Action onPressed, bool selectionOnTapEnabled, string semanticsLabel)", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("return new CupertinoPageRoute<CupertinoApp>(settings: settings, builder:", "return new CupertinoPageRoute<object>(settings: settings, builder:", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/material/app.dart", StringComparison.Ordinal))
         {
             source = source.ReplaceGeneratedLocalPattern(
-                "return (global::Doroti.Generated.Framework.Widgets.Route<object>)(object)new MaterialPageRoute<MaterialApp>(settings: settings, builder:",
+                "return (global::Doroti.Framework.Widgets.Route<object>)(object)new MaterialPageRoute<MaterialApp>(settings: settings, builder:",
                 "return new MaterialPageRoute<object>(settings: settings, builder:",
                 StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/cupertino/bottom_tab_bar.dart", StringComparison.Ordinal))
         {
-            source = source.ReplaceGeneratedLocalPattern("BorderSide(color: _kDefaultTabBarBorderColor", "new global::Doroti.Generated.Framework.Painting.BorderSide(color: Bottom_tab_barLibrary._kDefaultTabBarBorderColor", StringComparison.Ordinal);
+            source = source.ReplaceGeneratedLocalPattern("BorderSide(color: _kDefaultTabBarBorderColor", "new global::Doroti.Framework.Painting.BorderSide(color: Bottom_tab_barLibrary._kDefaultTabBarBorderColor", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/cupertino/button.dart", StringComparison.Ordinal) ||
@@ -462,26 +462,26 @@ internal sealed partial class FrameworkCSharpLowerer
             library.EndsWith("/cupertino/switch.dart", StringComparison.Ordinal) ||
             library.EndsWith("/cupertino/menu_anchor.dart", StringComparison.Ordinal))
         {
-            const string cursorResolver = "global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, global::Doroti.Generated.Framework.Services.MouseCursor>";
+            const string cursorResolver = "global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Framework.Services.MouseCursor>";
             source = source
-                .ReplaceGeneratedLocalPattern("WidgetStateProperty.resolveWith<global::Doroti.Generated.Framework.Services.MouseCursor>(((global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, CupertinoButton>)", $"WidgetStateProperty.resolveWith<global::Doroti.Generated.Framework.Services.MouseCursor>((({cursorResolver})", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("WidgetStateProperty.resolveWith<global::Doroti.Generated.Framework.Services.MouseCursor>(((global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, CupertinoCheckbox>)", $"WidgetStateProperty.resolveWith<global::Doroti.Generated.Framework.Services.MouseCursor>((({cursorResolver})", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("WidgetStateProperty.resolveWith<global::Doroti.Generated.Framework.Services.MouseCursor>(((global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, T>)", $"WidgetStateProperty.resolveWith<global::Doroti.Generated.Framework.Services.MouseCursor>((({cursorResolver})", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("_defaultMouseCursor => WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, CupertinoSwitch>)", $"_defaultMouseCursor => WidgetStateProperty.resolveWith((({cursorResolver})", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("WidgetStateProperty.resolveWith<global::Doroti.Generated.Framework.Services.MouseCursor>(((global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, T>)", $"WidgetStateProperty.resolveWith<global::Doroti.Generated.Framework.Services.MouseCursor>((({cursorResolver})", StringComparison.Ordinal);
+                .ReplaceGeneratedLocalPattern("WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, CupertinoButton>)", $"WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>((({cursorResolver})", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, CupertinoCheckbox>)", $"WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>((({cursorResolver})", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, T>)", $"WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>((({cursorResolver})", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("_defaultMouseCursor => WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, CupertinoSwitch>)", $"_defaultMouseCursor => WidgetStateProperty.resolveWith((({cursorResolver})", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, T>)", $"WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>((({cursorResolver})", StringComparison.Ordinal);
             source = source
-                .ReplaceGeneratedLocalPattern("return ((CupertinoButton)(object?)((!states.Contains", "return ((global::Doroti.Generated.Framework.Services.MouseCursor)(object?)((!states.Contains", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("return ((CupertinoCheckbox)(object?)((!states.Contains", "return ((global::Doroti.Generated.Framework.Services.MouseCursor)(object?)((!states.Contains", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("return ((CupertinoSwitch)(object?)global::Doroti.Generated.Framework.Services.MouseCursor.defer)", "return global::Doroti.Generated.Framework.Services.MouseCursor.defer", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("return ((CupertinoSwitch)(object?)(global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb", "return ((global::Doroti.Generated.Framework.Services.MouseCursor)(object?)(global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("return ((T)(object?)((!states.Contains", "return ((global::Doroti.Generated.Framework.Services.MouseCursor)(object?)((!states.Contains", StringComparison.Ordinal);
+                .ReplaceGeneratedLocalPattern("return ((CupertinoButton)(object?)((!states.Contains", "return ((global::Doroti.Framework.Services.MouseCursor)(object?)((!states.Contains", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("return ((CupertinoCheckbox)(object?)((!states.Contains", "return ((global::Doroti.Framework.Services.MouseCursor)(object?)((!states.Contains", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("return ((CupertinoSwitch)(object?)global::Doroti.Framework.Services.MouseCursor.defer)", "return global::Doroti.Framework.Services.MouseCursor.defer", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("return ((CupertinoSwitch)(object?)(global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb", "return ((global::Doroti.Framework.Services.MouseCursor)(object?)(global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("return ((T)(object?)((!states.Contains", "return ((global::Doroti.Framework.Services.MouseCursor)(object?)((!states.Contains", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/cupertino/checkbox.dart", StringComparison.Ordinal) || library.EndsWith("/cupertino/switch.dart", StringComparison.Ordinal))
         {
             source = source
-                .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Rendering.CustomPainter painter = default!", "dynamic painter = default!", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("new Semantics(", "new global::Doroti.Generated.Framework.Widgets.Semantics(", StringComparison.Ordinal);
+                .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Rendering.CustomPainter painter = default!", "dynamic painter = default!", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("new Semantics(", "new global::Doroti.Framework.Widgets.Semantics(", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/cupertino/colors.dart", StringComparison.Ordinal))
@@ -492,28 +492,28 @@ internal sealed partial class FrameworkCSharpLowerer
         if (library.EndsWith("/cupertino/context_menu.dart", StringComparison.Ordinal))
         {
             source = source
-                .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Widgets.Visibility.Create(key:", "new global::Doroti.Generated.Framework.Widgets.Visibility(key:", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Widgets.OrientationBuilder.Create(builder:", "new global::Doroti.Generated.Framework.Widgets.OrientationBuilder(builder:", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Widgets.Visibility.Create(key:", "new global::Doroti.Framework.Widgets.Visibility(key:", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Widgets.OrientationBuilder.Create(builder:", "new global::Doroti.Framework.Widgets.OrientationBuilder(builder:", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("_ContextMenuSheet__context_menu.Create(key:", "new _ContextMenuSheet__context_menu(key:", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Widgets.Transform.Create(key:", "global::Doroti.Generated.Framework.Widgets.Transform.CreateScale(key:", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Widgets.TickerMode.Create(enabled:", "new global::Doroti.Generated.Framework.Widgets.TickerMode(enabled:", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Widgets.Transform.Create(key:", "global::Doroti.Framework.Widgets.Transform.CreateScale(key:", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Widgets.TickerMode.Create(enabled:", "new global::Doroti.Framework.Widgets.TickerMode(enabled:", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("_ContextMenuRouteStatic__context_menu.Create(actions:", "new _ContextMenuRouteStatic__context_menu(actions:", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Widgets.MouseRegion.Create(cursor:", "new global::Doroti.Generated.Framework.Widgets.MouseRegion(cursor:", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Widgets.Listener.Create(onPointerDown:", "new global::Doroti.Generated.Framework.Widgets.Listener(onPointerDown:", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Widgets.AnimatedBuilder.Create(animation:", "new global::Doroti.Generated.Framework.Widgets.AnimatedBuilder(animation:", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Widgets.FadeTransition.Create(opacity:", "new global::Doroti.Generated.Framework.Widgets.FadeTransition(opacity:", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Widgets.Transform.Create(alignment:", "global::Doroti.Generated.Framework.Widgets.Transform.CreateScale(alignment:", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Widgets.Transform.Create(key:", "global::Doroti.Generated.Framework.Widgets.Transform.CreateScale(key:", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Widgets.Positioned.Create(rect:", "global::Doroti.Generated.Framework.Widgets.Positioned.CreateFromRect(rect:", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Widgets.Positioned.Create(key:", "global::Doroti.Generated.Framework.Widgets.Positioned.CreateFromRect(key:", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Widgets.MouseRegion.Create(cursor:", "new global::Doroti.Framework.Widgets.MouseRegion(cursor:", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Widgets.Listener.Create(onPointerDown:", "new global::Doroti.Framework.Widgets.Listener(onPointerDown:", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Widgets.AnimatedBuilder.Create(animation:", "new global::Doroti.Framework.Widgets.AnimatedBuilder(animation:", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Widgets.FadeTransition.Create(opacity:", "new global::Doroti.Framework.Widgets.FadeTransition(opacity:", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Widgets.Transform.Create(alignment:", "global::Doroti.Framework.Widgets.Transform.CreateScale(alignment:", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Widgets.Transform.Create(key:", "global::Doroti.Framework.Widgets.Transform.CreateScale(key:", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Widgets.Positioned.Create(rect:", "global::Doroti.Framework.Widgets.Positioned.CreateFromRect(rect:", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Widgets.Positioned.Create(key:", "global::Doroti.Framework.Widgets.Positioned.CreateFromRect(key:", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("_sheetScaleTween.end = this._scale;", "_sheetScaleTween.end = DartRuntimePrimitives.RequireValue(this._scale);", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/cupertino/cupertino_focus_halo.dart", StringComparison.Ordinal))
         {
             source = source
-                .ReplaceGeneratedLocalPattern("(arg0) => new global::Doroti.Generated.Framework.Painting.RoundedRectangleBorder(arg0)", "(borderRadius, side) => new global::Doroti.Generated.Framework.Painting.RoundedRectangleBorder(side: side, borderRadius: borderRadius)", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("(arg0) => new global::Doroti.Generated.Framework.Painting.RoundedSuperellipseBorder(arg0)", "(borderRadius, side) => new global::Doroti.Generated.Framework.Painting.RoundedSuperellipseBorder(side: side, borderRadius: borderRadius)", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("(arg0) => new global::Doroti.Framework.Painting.RoundedRectangleBorder(arg0)", "(borderRadius, side) => new global::Doroti.Framework.Painting.RoundedRectangleBorder(side: side, borderRadius: borderRadius)", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("(arg0) => new global::Doroti.Framework.Painting.RoundedSuperellipseBorder(arg0)", "(borderRadius, side) => new global::Doroti.Framework.Painting.RoundedSuperellipseBorder(side: side, borderRadius: borderRadius)", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("this.widget._shapeBuilder(side: ", "this.widget._shapeBuilder(", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern(", borderRadius: ((CupertinoFocusHalo)this.widget)._borderRadius)", ", ((CupertinoFocusHalo)this.widget)._borderRadius)", StringComparison.Ordinal);
             source = source.ReplaceGeneratedLocalPattern("this.widget._shapeBuilder((this._childHasFocus", "this.widget._shapeBuilder(((CupertinoFocusHalo)this.widget)._borderRadius, (this._childHasFocus", StringComparison.Ordinal)
@@ -532,8 +532,8 @@ internal sealed partial class FrameworkCSharpLowerer
 
         if (library.EndsWith("/cupertino/list_section.dart", StringComparison.Ordinal))
         {
-            source = source.ReplaceGeneratedLocalPattern("decoration: (((object?)this.decoration ?? (object?)new global::Doroti.Generated.Framework.Painting.ShapeDecoration", "decoration: DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Painting.Decoration>((object?)this.decoration ?? (object?)new global::Doroti.Generated.Framework.Painting.ShapeDecoration", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern(")))), child: new global::Doroti.Generated.Framework.Widgets.Column", "))), child: new global::Doroti.Generated.Framework.Widgets.Column", StringComparison.Ordinal);
+            source = source.ReplaceGeneratedLocalPattern("decoration: (((object?)this.decoration ?? (object?)new global::Doroti.Framework.Painting.ShapeDecoration", "decoration: DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.Decoration>((object?)this.decoration ?? (object?)new global::Doroti.Framework.Painting.ShapeDecoration", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern(")))), child: new global::Doroti.Framework.Widgets.Column", "))), child: new global::Doroti.Framework.Widgets.Column", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/cupertino/localizations.dart", StringComparison.Ordinal))
@@ -568,9 +568,9 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
     private static readonly List<long> _normalizedBodyScales = new() { -3, -2, -1, 0, 2, 4, 6, 11, 16, 23, 30, 36 };
     private static readonly double[] _bodySizes = { 14, 15, 16, 17, 19, 21, 23, 28, 33, 40, 47, 53 };
     private static readonly double[] _subheadSizes = { 12, 13, 14, 15, 17, 19, 21, 26, 31, 38, 45, 51 };
-    private static List<global::Doroti.Generated.Framework.Painting.TextStyle> styles(this _DynamicTypeStyle__menu_anchor value) =>
+    private static List<global::Doroti.Framework.Painting.TextStyle> styles(this _DynamicTypeStyle__menu_anchor value) =>
         (value == _DynamicTypeStyle__menu_anchor.body ? _bodySizes : _subheadSizes)
-            .Select(size => new global::Doroti.Generated.Framework.Painting.TextStyle(fontSize: size)).ToList();
+            .Select(size => new global::Doroti.Framework.Painting.TextStyle(fontSize: size)).ToList();
     private static double _interpolateUnits(double value, double min, double max) => (value - min) / (max - min);
 """;
             source = source
@@ -580,11 +580,11 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
                 .ReplaceGeneratedLocalPattern("_DynamicTypeStyle__menu_anchor._interpolateUnits", "_interpolateUnits", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("_CupertinoMenuWidth__menu_anchor.CreateFromScreenWidth", "_CupertinoMenuWidth__menu_anchorMembers.CreateFromScreenWidth", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern(").points", ").points()", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("[global::Doroti.Generated.Framework.Widgets.WidgetState.dragged]", "[global::Doroti.Generated.Framework.Widgets.WidgetState.dragged.asConstraint()]", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("[global::Doroti.Generated.Framework.Widgets.WidgetState.pressed]", "[global::Doroti.Generated.Framework.Widgets.WidgetState.pressed.asConstraint()]", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("[global::Doroti.Generated.Framework.Widgets.WidgetState.focused]", "[global::Doroti.Generated.Framework.Widgets.WidgetState.focused.asConstraint()]", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("[global::Doroti.Generated.Framework.Widgets.WidgetState.hovered]", "[global::Doroti.Generated.Framework.Widgets.WidgetState.hovered.asConstraint()]", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("[global::Doroti.Generated.Framework.Widgets.WidgetState.any]", "[global::Doroti.Generated.Framework.Widgets.WidgetStateMembers.any]", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("[global::Doroti.Framework.Widgets.WidgetState.dragged]", "[global::Doroti.Framework.Widgets.WidgetState.dragged.asConstraint()]", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("[global::Doroti.Framework.Widgets.WidgetState.pressed]", "[global::Doroti.Framework.Widgets.WidgetState.pressed.asConstraint()]", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("[global::Doroti.Framework.Widgets.WidgetState.focused]", "[global::Doroti.Framework.Widgets.WidgetState.focused.asConstraint()]", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("[global::Doroti.Framework.Widgets.WidgetState.hovered]", "[global::Doroti.Framework.Widgets.WidgetState.hovered.asConstraint()]", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("[global::Doroti.Framework.Widgets.WidgetState.any]", "[global::Doroti.Framework.Widgets.WidgetStateMembers.any]", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("(global::System.Action<bool?>)this._handleFocusChange", "(global::System.Action<bool>)(value => this._handleFocusChange(value))", StringComparison.Ordinal);
         }
 
@@ -592,8 +592,8 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
         {
             source = source
                 .ReplaceGeneratedLocalPattern("CupertinoSheetRoute.hasParentSheet", "CupertinoSheetRoute<object>.hasParentSheet", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("userBottom: ((CupertinoNavigationBar)this.widget).bottom", "userBottom: (global::Doroti.Generated.Framework.Widgets.Widget?)(object?)((CupertinoNavigationBar)this.widget).bottom", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern(": ((CupertinoSliverNavigationBar)this.widget).bottom))", ": (global::Doroti.Generated.Framework.Widgets.Widget?)(object?)((CupertinoSliverNavigationBar)this.widget).bottom))", StringComparison.Ordinal);
+                .ReplaceGeneratedLocalPattern("userBottom: ((CupertinoNavigationBar)this.widget).bottom", "userBottom: (global::Doroti.Framework.Widgets.Widget?)(object?)((CupertinoNavigationBar)this.widget).bottom", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern(": ((CupertinoSliverNavigationBar)this.widget).bottom))", ": (global::Doroti.Framework.Widgets.Widget?)(object?)((CupertinoSliverNavigationBar)this.widget).bottom))", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/cupertino/page_scaffold.dart", StringComparison.Ordinal))
@@ -624,7 +624,7 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
 
         if (library.EndsWith("/cupertino/sliding_segmented_control.dart", StringComparison.Ordinal))
         {
-            source = source.ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Painting.BorderRadius.CreateAll(DialogLibrary._kCornerRadius)", "global::Doroti.Generated.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(DialogLibrary._kCornerRadius))", StringComparison.Ordinal);
+            source = source.ReplaceGeneratedLocalPattern("global::Doroti.Framework.Painting.BorderRadius.CreateAll(DialogLibrary._kCornerRadius)", "global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(DialogLibrary._kCornerRadius))", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/cupertino/sheet.dart", StringComparison.Ordinal))
@@ -642,18 +642,18 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
             source = source
                 .ReplaceGeneratedLocalPattern("new CupertinoSpellCheckSuggestionsToolbar(editableTextState:", "CupertinoSpellCheckSuggestionsToolbar.CreateEditableText(editableTextState:", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("(this._controller?.value.text.Length != 0) ?? false", "this._controller is not null && this._controller.value.text.Length != 0", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Widgets.Semantics.Create(button:", "new global::Doroti.Generated.Framework.Widgets.Semantics(button:", StringComparison.Ordinal);
-            source = source.ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Widgets.GestureDetector.Create(key:", "new global::Doroti.Generated.Framework.Widgets.GestureDetector(key:", StringComparison.Ordinal);
+                .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Widgets.Semantics.Create(button:", "new global::Doroti.Framework.Widgets.Semantics(button:", StringComparison.Ordinal);
+            source = source.ReplaceGeneratedLocalPattern("global::Doroti.Framework.Widgets.GestureDetector.Create(key:", "new global::Doroti.Framework.Widgets.GestureDetector(key:", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/cupertino/radio.dart", StringComparison.Ordinal))
         {
-            source = source.ReplaceGeneratedLocalPattern("return ((T)(object?)(WidgetStateProperty.resolveAs<global::Doroti.Generated.Framework.Services.MouseCursor?>", "return ((global::Doroti.Generated.Framework.Services.MouseCursor)(object?)(WidgetStateProperty.resolveAs<global::Doroti.Generated.Framework.Services.MouseCursor?>", StringComparison.Ordinal);
+            source = source.ReplaceGeneratedLocalPattern("return ((T)(object?)(WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>", "return ((global::Doroti.Framework.Services.MouseCursor)(object?)(WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/cupertino/checkbox.dart", StringComparison.Ordinal))
         {
-            source = source.ReplaceGeneratedLocalPattern("return ((CupertinoCheckbox)(object?)(WidgetStateProperty.resolveAs<global::Doroti.Generated.Framework.Services.MouseCursor?>", "return ((global::Doroti.Generated.Framework.Services.MouseCursor)(object?)(WidgetStateProperty.resolveAs<global::Doroti.Generated.Framework.Services.MouseCursor?>", StringComparison.Ordinal);
+            source = source.ReplaceGeneratedLocalPattern("return ((CupertinoCheckbox)(object?)(WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>", "return ((global::Doroti.Framework.Services.MouseCursor)(object?)(WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/cupertino/switch.dart", StringComparison.Ordinal))
@@ -667,7 +667,7 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
         {
             source = source
                 .ReplaceGeneratedLocalPattern("((global::Doroti.Ui.Paint)(object?)_debugPaint ??=", "(_debugPaint ??=", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("public override global::Doroti.Generated.Framework.Rendering.RenderObject renderObject => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Rendering.RenderObject>", "public override _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar renderObject => DartRuntimePrimitives.ConvertValue<_RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar>", StringComparison.Ordinal);
+                .ReplaceGeneratedLocalPattern("public override global::Doroti.Framework.Rendering.RenderObject renderObject => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>", "public override _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar renderObject => DartRuntimePrimitives.ConvertValue<_RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar>", StringComparison.Ordinal);
         }
         if (library.EndsWith("/cupertino/colors.dart", StringComparison.Ordinal))
         {
@@ -691,7 +691,7 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
             // superclass; CLR cannot inherit both classes, so retain the
             // Cupertino implementation and inline the mixin donor members.
             source = source
-                .ReplaceGeneratedLocalPattern(", global::Doroti.Generated.Framework.Widgets.TextSelectionHandleControls", string.Empty, StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern(", global::Doroti.Framework.Widgets.TextSelectionHandleControls", string.Empty, StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("public override void handleCut(", "public virtual void handleCut(", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("public override void handleCopy(", "public virtual void handleCopy(", StringComparison.Ordinal);
         }
@@ -699,7 +699,7 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
         if (library.EndsWith("/cupertino/desktop_text_selection.dart", StringComparison.Ordinal))
         {
             source = source
-                .ReplaceGeneratedLocalPattern(", global::Doroti.Generated.Framework.Widgets.TextSelectionHandleControls", string.Empty, StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern(", global::Doroti.Framework.Widgets.TextSelectionHandleControls", string.Empty, StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("public override void handleCut(", "public virtual void handleCut(", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("public override void handleCopy(", "public virtual void handleCopy(", StringComparison.Ordinal);
         }
@@ -708,8 +708,8 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
         {
             source = source
                 .ReplaceGeneratedLocalPattern(
-                    "public override global::Doroti.Generated.Framework.Rendering.OverScrollHeaderStretchConfiguration? stretchConfiguration { get; set; } = default;",
-                    "private global::Doroti.Generated.Framework.Rendering.OverScrollHeaderStretchConfiguration? __field_stretchConfiguration = default;\n    public override global::Doroti.Generated.Framework.Rendering.OverScrollHeaderStretchConfiguration? stretchConfiguration => __field_stretchConfiguration;",
+                    "public override global::Doroti.Framework.Rendering.OverScrollHeaderStretchConfiguration? stretchConfiguration { get; set; } = default;",
+                    "private global::Doroti.Framework.Rendering.OverScrollHeaderStretchConfiguration? __field_stretchConfiguration = default;\n    public override global::Doroti.Framework.Rendering.OverScrollHeaderStretchConfiguration? stretchConfiguration => __field_stretchConfiguration;",
                     StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("this.stretchConfiguration = stretchConfiguration;", "this.__field_stretchConfiguration = stretchConfiguration;", StringComparison.Ordinal);
         }
@@ -728,7 +728,7 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
             // Preserve the CLR base signature and keep the body casts explicit.
             source = source.ReplaceGeneratedLocalPattern(
                 "public override void didUpdateWidget(CupertinoTextFormFieldRow oldWidget)",
-                "public override void didUpdateWidget(global::Doroti.Generated.Framework.Widgets.FormField<string> oldWidget)",
+                "public override void didUpdateWidget(global::Doroti.Framework.Widgets.FormField<string> oldWidget)",
                 StringComparison.Ordinal);
         }
 
@@ -739,10 +739,10 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
                 .ReplaceGeneratedLocalPattern("DateTime.february", "2L", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("DateTime.monday", "1L", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("DateTime.daysPerWeek", "7L", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Widgets.WidgetState.any", "global::Doroti.Generated.Framework.Widgets.WidgetStateMembers.any", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("MaterialStatePropertyAll<", "global::Doroti.Generated.Framework.Widgets.WidgetStatePropertyAll<", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("MaterialStateProperty<", "global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("MaterialStatesController", "global::Doroti.Generated.Framework.Widgets.WidgetStatesController", StringComparison.Ordinal);
+                .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Widgets.WidgetState.any", "global::Doroti.Framework.Widgets.WidgetStateMembers.any", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("MaterialStatePropertyAll<", "global::Doroti.Framework.Widgets.WidgetStatePropertyAll<", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("MaterialStateProperty<", "global::Doroti.Framework.Widgets.WidgetStateProperty<", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("MaterialStatesController", "global::Doroti.Framework.Widgets.WidgetStatesController", StringComparison.Ordinal);
 
             source = Regex.Replace(source, @"internal enum (_[A-Za-z0-9_]*Slot[A-Za-z0-9_]*)", "public enum $1");
             source = Regex.Replace(source, @"_AnimatedIconData__[A-Za-z0-9_]+", "_AnimatedIconData__animated_icons_data");
@@ -779,10 +779,10 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
 
             source = source
                 .ReplaceGeneratedLocalPattern("new ThemeData()", "ThemeData.Create()", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("List<global::Doroti.Generated.Framework.Widgets.GlobalKey<IState>>.Create(", "DartRuntimePrimitives.CreateList<global::Doroti.Generated.Framework.Widgets.GlobalKey<IState>>(", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("[global::Doroti.Generated.Framework.Widgets.WidgetState.disabled] = disabled", "[global::Doroti.Generated.Framework.Widgets.WidgetState.disabled.asConstraint()] = disabled", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("[global::Doroti.Generated.Framework.Widgets.WidgetState.selected] = selected", "[global::Doroti.Generated.Framework.Widgets.WidgetState.selected.asConstraint()] = selected", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("[global::Doroti.Generated.Framework.Widgets.WidgetState.dragged] =", "[global::Doroti.Generated.Framework.Widgets.WidgetState.dragged.asConstraint()] =", StringComparison.Ordinal);
+                .ReplaceGeneratedLocalPattern("List<global::Doroti.Framework.Widgets.GlobalKey<IState>>.Create(", "DartRuntimePrimitives.CreateList<global::Doroti.Framework.Widgets.GlobalKey<IState>>(", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("[global::Doroti.Framework.Widgets.WidgetState.disabled] = disabled", "[global::Doroti.Framework.Widgets.WidgetState.disabled.asConstraint()] = disabled", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("[global::Doroti.Framework.Widgets.WidgetState.selected] = selected", "[global::Doroti.Framework.Widgets.WidgetState.selected.asConstraint()] = selected", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("[global::Doroti.Framework.Widgets.WidgetState.dragged] =", "[global::Doroti.Framework.Widgets.WidgetState.dragged.asConstraint()] =", StringComparison.Ordinal);
         }
 
         if (library.Contains("/material/animated_icons/data/", StringComparison.Ordinal) &&
@@ -815,46 +815,46 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
         if (library.EndsWith("/material/button_style_button.dart", StringComparison.Ordinal))
         {
             source = source
-                .ReplaceGeneratedLocalPattern("public abstract ButtonStyle defaultStyleOf(global::Doroti.Generated.Framework.Widgets.BuildContext context);", "public virtual ButtonStyle defaultStyleOf(global::Doroti.Generated.Framework.Widgets.BuildContext context) => default!;", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("public abstract ButtonStyle? themeStyleOf(global::Doroti.Generated.Framework.Widgets.BuildContext context);", "public virtual ButtonStyle? themeStyleOf(global::Doroti.Generated.Framework.Widgets.BuildContext context) => default;", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("public abstract ButtonStyle defaultStyleOf(global::Doroti.Framework.Widgets.BuildContext context);", "public virtual ButtonStyle defaultStyleOf(global::Doroti.Framework.Widgets.BuildContext context) => default!;", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("public abstract ButtonStyle? themeStyleOf(global::Doroti.Framework.Widgets.BuildContext context);", "public virtual ButtonStyle? themeStyleOf(global::Doroti.Framework.Widgets.BuildContext context) => default;", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("ButtonStyleButton? effectiveValue(global::System.Func<ButtonStyle?, ButtonStyleButton?> getProperty)", "P? effectiveValue<P>(global::System.Func<ButtonStyle?, P?> getProperty)", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("ButtonStyleButton? widgetValue", "P? widgetValue", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("ButtonStyleButton? themeValue", "P? themeValue", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("ButtonStyleButton? defaultValue", "P? defaultValue", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("ButtonStyleButton? resolve(global::System.Func<ButtonStyle?, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<ButtonStyleButton>?> getProperty)", "P? resolve<P>(global::System.Func<ButtonStyle?, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<P>?> getProperty)", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("ButtonStyleButton? resolve(global::System.Func<ButtonStyle?, global::Doroti.Framework.Widgets.WidgetStateProperty<ButtonStyleButton>?> getProperty)", "P? resolve<P>(global::System.Func<ButtonStyle?, global::Doroti.Framework.Widgets.WidgetStateProperty<P>?> getProperty)", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("return ((ButtonStyleButton?)(object?)getProperty(style)?.resolve(this.statesController.value));", "return getProperty(style) is { } property ? property.resolve(this.statesController.value) : default;", StringComparison.Ordinal);
-            source = source.ReplaceGeneratedLocalPattern("global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, ButtonStyleButton>", "global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, global::Doroti.Ui.Color?>", StringComparison.Ordinal);
+            source = source.ReplaceGeneratedLocalPattern("global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, ButtonStyleButton>", "global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Ui.Color?>", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/material/elevated_button.dart", StringComparison.Ordinal))
         {
             source = source
-                .ReplaceGeneratedLocalPattern("[global::Doroti.Generated.Framework.Widgets.WidgetState.pressed] = (DartRuntimePrimitives.RequireValue(elevation", "[global::Doroti.Generated.Framework.Widgets.WidgetState.pressed.asConstraint()] = (DartRuntimePrimitives.RequireValue(elevation", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("[global::Doroti.Generated.Framework.Widgets.WidgetState.hovered] = (DartRuntimePrimitives.RequireValue(elevation", "[global::Doroti.Generated.Framework.Widgets.WidgetState.hovered.asConstraint()] = (DartRuntimePrimitives.RequireValue(elevation", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("[global::Doroti.Generated.Framework.Widgets.WidgetState.focused] = (DartRuntimePrimitives.RequireValue(elevation", "[global::Doroti.Generated.Framework.Widgets.WidgetState.focused.asConstraint()] = (DartRuntimePrimitives.RequireValue(elevation", StringComparison.Ordinal);
+                .ReplaceGeneratedLocalPattern("[global::Doroti.Framework.Widgets.WidgetState.pressed] = (DartRuntimePrimitives.RequireValue(elevation", "[global::Doroti.Framework.Widgets.WidgetState.pressed.asConstraint()] = (DartRuntimePrimitives.RequireValue(elevation", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("[global::Doroti.Framework.Widgets.WidgetState.hovered] = (DartRuntimePrimitives.RequireValue(elevation", "[global::Doroti.Framework.Widgets.WidgetState.hovered.asConstraint()] = (DartRuntimePrimitives.RequireValue(elevation", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("[global::Doroti.Framework.Widgets.WidgetState.focused] = (DartRuntimePrimitives.RequireValue(elevation", "[global::Doroti.Framework.Widgets.WidgetState.focused.asConstraint()] = (DartRuntimePrimitives.RequireValue(elevation", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/material/calendar_date_picker.dart", StringComparison.Ordinal))
         {
             source = source
                 .ReplaceGeneratedLocalPattern("_Day__calendar_date_picker? effectiveValue(global::System.Func<DatePickerThemeData?, _Day__calendar_date_picker?> getProperty)", "P? effectiveValue<P>(global::System.Func<DatePickerThemeData?, P?> getProperty)", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("_Day__calendar_date_picker? resolve(global::System.Func<DatePickerThemeData?, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<_Day__calendar_date_picker>?> getProperty", "P? resolve<P>(global::System.Func<DatePickerThemeData?, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<P>?> getProperty", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("_Day__calendar_date_picker? resolve(global::System.Func<DatePickerThemeData?, global::Doroti.Framework.Widgets.WidgetStateProperty<_Day__calendar_date_picker>?> getProperty", "P? resolve<P>(global::System.Func<DatePickerThemeData?, global::Doroti.Framework.Widgets.WidgetStateProperty<P>?> getProperty", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("return ((_Day__calendar_date_picker?)(object?)getProperty(theme)?.resolve(states));", "return getProperty(theme) is { } property ? property.resolve(states) : default;", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("YearPicker? effectiveValue(global::System.Func<DatePickerThemeData?, YearPicker?> getProperty)", "P? effectiveValue<P>(global::System.Func<DatePickerThemeData?, P?> getProperty)", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("YearPicker? resolve(global::System.Func<DatePickerThemeData?, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<YearPicker>?> getProperty", "P? resolve<P>(global::System.Func<DatePickerThemeData?, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<P>?> getProperty", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("YearPicker? resolve(global::System.Func<DatePickerThemeData?, global::Doroti.Framework.Widgets.WidgetStateProperty<YearPicker>?> getProperty", "P? resolve<P>(global::System.Func<DatePickerThemeData?, global::Doroti.Framework.Widgets.WidgetStateProperty<P>?> getProperty", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("return ((YearPicker?)(object?)getProperty(theme)?.resolve(states));", "return getProperty(theme) is { } property ? property.resolve(states) : default;", StringComparison.Ordinal);
             source = source
-                .ReplaceGeneratedLocalPattern("global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, _Day__calendar_date_picker>", "global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, global::Doroti.Ui.Color?>", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, YearPicker>", "global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, global::Doroti.Ui.Color?>", StringComparison.Ordinal);
+                .ReplaceGeneratedLocalPattern("global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, _Day__calendar_date_picker>", "global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Ui.Color?>", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, YearPicker>", "global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Ui.Color?>", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/material/date_picker.dart", StringComparison.Ordinal))
         {
             source = source
                 .ReplaceGeneratedLocalPattern("_DayItem__date_picker? effectiveValue(global::System.Func<DatePickerThemeData?, _DayItem__date_picker?> getProperty)", "P? effectiveValue<P>(global::System.Func<DatePickerThemeData?, P?> getProperty)", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("_DayItem__date_picker? resolve(global::System.Func<DatePickerThemeData?, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<_DayItem__date_picker>?> getProperty", "P? resolve<P>(global::System.Func<DatePickerThemeData?, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<P>?> getProperty", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("_DayItem__date_picker? resolve(global::System.Func<DatePickerThemeData?, global::Doroti.Framework.Widgets.WidgetStateProperty<_DayItem__date_picker>?> getProperty", "P? resolve<P>(global::System.Func<DatePickerThemeData?, global::Doroti.Framework.Widgets.WidgetStateProperty<P>?> getProperty", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("return ((_DayItem__date_picker?)(object?)getProperty(theme)?.resolve(states));", "return getProperty(theme) is { } property ? property.resolve(states) : default;", StringComparison.Ordinal);
-            source = source.ReplaceGeneratedLocalPattern("global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, _DayItem__date_picker>", "global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, global::Doroti.Ui.Color?>", StringComparison.Ordinal);
+            source = source.ReplaceGeneratedLocalPattern("global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, _DayItem__date_picker>", "global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Ui.Color?>", StringComparison.Ordinal);
             source = source.ReplaceGeneratedLocalPattern("this.value.index", "FoundationRuntimePorts.EnumIndex(this.value)", StringComparison.Ordinal);
         }
 
@@ -880,7 +880,7 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
         if (library.EndsWith("/material/desktop_text_selection.dart", StringComparison.Ordinal) || library.EndsWith("/material/text_selection.dart", StringComparison.Ordinal))
         {
             source = source
-                .ReplaceGeneratedLocalPattern(", global::Doroti.Generated.Framework.Widgets.TextSelectionHandleControls", string.Empty, StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern(", global::Doroti.Framework.Widgets.TextSelectionHandleControls", string.Empty, StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("public override void handleCut(", "public virtual void handleCut(", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("public override void handleCopy(", "public virtual void handleCopy(", StringComparison.Ordinal);
         }
@@ -889,22 +889,22 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
         {
             source = source
                 .ReplaceGeneratedLocalPattern("internal class _DropdownRouteResult__dropdown", "public class _DropdownRouteResult__dropdown", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("public override void didUpdateWidget(T oldWidget)", "public override void didUpdateWidget(global::Doroti.Generated.Framework.Widgets.FormField<T> oldWidget)", StringComparison.Ordinal);
+                .ReplaceGeneratedLocalPattern("public override void didUpdateWidget(T oldWidget)", "public override void didUpdateWidget(global::Doroti.Framework.Widgets.FormField<T> oldWidget)", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/material/dropdown_menu_form_field.dart", StringComparison.Ordinal))
         {
-            source = source.ReplaceGeneratedLocalPattern("public override void didUpdateWidget(T oldWidget)", "public override void didUpdateWidget(global::Doroti.Generated.Framework.Widgets.FormField<T> oldWidget)", StringComparison.Ordinal);
+            source = source.ReplaceGeneratedLocalPattern("public override void didUpdateWidget(T oldWidget)", "public override void didUpdateWidget(global::Doroti.Framework.Widgets.FormField<T> oldWidget)", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/material/text_form_field.dart", StringComparison.Ordinal))
         {
-            source = source.ReplaceGeneratedLocalPattern("public override void didUpdateWidget(TextFormField oldWidget)", "public override void didUpdateWidget(global::Doroti.Generated.Framework.Widgets.FormField<string> oldWidget)", StringComparison.Ordinal);
+            source = source.ReplaceGeneratedLocalPattern("public override void didUpdateWidget(TextFormField oldWidget)", "public override void didUpdateWidget(global::Doroti.Framework.Widgets.FormField<string> oldWidget)", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/material/icons.dart", StringComparison.Ordinal))
         {
-            source = source.ReplaceGeneratedLocalPattern("public override global::Doroti.Generated.Framework.Widgets.IconData", "public virtual global::Doroti.Generated.Framework.Widgets.IconData", StringComparison.Ordinal);
+            source = source.ReplaceGeneratedLocalPattern("public override global::Doroti.Framework.Widgets.IconData", "public virtual global::Doroti.Framework.Widgets.IconData", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/material/ink_sparkle.dart", StringComparison.Ordinal))
@@ -929,7 +929,7 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
 
         if (library.EndsWith("/material/page_transitions_theme.dart", StringComparison.Ordinal))
         {
-            source = source.ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Widgets.Image image", "global::Doroti.Ui.Image image", StringComparison.Ordinal);
+            source = source.ReplaceGeneratedLocalPattern("global::Doroti.Framework.Widgets.Image image", "global::Doroti.Ui.Image image", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/material/scaffold.dart", StringComparison.Ordinal))
@@ -940,7 +940,7 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
         if (library.EndsWith("/material/slider_parts.dart", StringComparison.Ordinal))
         {
             source = source.ReplaceGeneratedLocalPattern("TextDirection textDirection = false", "TextDirection textDirection = default!", StringComparison.Ordinal);
-            const string sliderOverload = "\n    public global::Doroti.Ui.Size getPreferredSize(bool isEnabled, bool isDiscrete, global::Doroti.Generated.Framework.Painting.TextPainter? labelPainter = null, double? textScaleFactor = null) => getPreferredSize(isEnabled, isDiscrete);\n";
+            const string sliderOverload = "\n    public global::Doroti.Ui.Size getPreferredSize(bool isEnabled, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter? labelPainter = null, double? textScaleFactor = null) => getPreferredSize(isEnabled, isDiscrete);\n";
             source = source.ReplaceGeneratedLocalPattern("public class RoundSliderThumbShape : SliderComponentShape\n{", "public class RoundSliderThumbShape : SliderComponentShape\n{" + sliderOverload, StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("public class HandleThumbShape : SliderComponentShape\n{", "public class HandleThumbShape : SliderComponentShape\n{" + sliderOverload, StringComparison.Ordinal);
         }
@@ -954,11 +954,11 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
         if (library.EndsWith("/material/slider_value_indicator_shape.dart", StringComparison.Ordinal))
         {
             source = source
-                .ReplaceGeneratedLocalPattern("public virtual global::Doroti.Ui.Size getPreferredSize(bool isEnabled, bool isDiscrete, global::Doroti.Generated.Framework.Painting.TextPainter labelPainter, double textScaleFactor)", "public override global::Doroti.Ui.Size getPreferredSize(bool isEnabled, bool isDiscrete, global::Doroti.Generated.Framework.Painting.TextPainter labelPainter, double textScaleFactor)", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("public override global::Doroti.Ui.Size getPreferredSize(bool isEnabled, bool isDiscrete, global::Doroti.Generated.Framework.Painting.TextPainter? labelPainter = null, double? textScaleFactor = null)", "public override global::Doroti.Ui.Size getPreferredSize(bool isEnabled, bool isDiscrete, global::Doroti.Generated.Framework.Painting.TextPainter labelPainter, double textScaleFactor)", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("public virtual void paint(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Generated.Framework.Animation.Animation<double>? activationAnimation = null, global::Doroti.Generated.Framework.Animation.Animation<double>? enableAnimation = null, bool? isDiscrete = null, bool? isOnTop = null, global::Doroti.Generated.Framework.Painting.TextPainter? labelPainter = null, double? textScaleFactor = null, Size? sizeWithOverflow = null, global::Doroti.Generated.Framework.Rendering.RenderBox? parentBox = null, SliderThemeData? sliderTheme = null, TextDirection? textDirection = null, double? value = null, Thumb? thumb = null)", "public override void paint(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Generated.Framework.Animation.Animation<double> activationAnimation, global::Doroti.Generated.Framework.Animation.Animation<double> enableAnimation, bool isDiscrete = default!, bool isOnTop = default!, global::Doroti.Generated.Framework.Painting.TextPainter labelPainter = default!, double textScaleFactor = default!, Size sizeWithOverflow = default!, global::Doroti.Generated.Framework.Rendering.RenderBox parentBox = default!, SliderThemeData sliderTheme = default!, TextDirection textDirection = default!, double value = default!, Thumb thumb = default!)", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("public override void paint(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Generated.Framework.Animation.Animation<double>? activationAnimation = null, global::Doroti.Generated.Framework.Animation.Animation<double>? enableAnimation = null, bool? isDiscrete = null, bool? isOnTop = null, global::Doroti.Generated.Framework.Painting.TextPainter? labelPainter = null, double? textScaleFactor = null, Size? sizeWithOverflow = null, global::Doroti.Generated.Framework.Rendering.RenderBox? parentBox = null, SliderThemeData? sliderTheme = null, TextDirection? textDirection = null, double? value = null, Thumb? thumb = null)", "public override void paint(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Generated.Framework.Animation.Animation<double> activationAnimation, global::Doroti.Generated.Framework.Animation.Animation<double> enableAnimation, bool isDiscrete = default!, bool isOnTop = default!, global::Doroti.Generated.Framework.Painting.TextPainter labelPainter = default!, double textScaleFactor = default!, Size sizeWithOverflow = default!, global::Doroti.Generated.Framework.Rendering.RenderBox parentBox = default!, SliderThemeData sliderTheme = default!, TextDirection textDirection = default!, double value = default!, Thumb thumb = default!)", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("public virtual void paint(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Generated.Framework.Animation.Animation<double> activationAnimation, global::Doroti.Generated.Framework.Animation.Animation<double> enableAnimation, bool? isDiscrete = null, bool isOnTop = false, global::Doroti.Generated.Framework.Painting.TextPainter labelPainter = default!, global::Doroti.Generated.Framework.Rendering.RenderBox parentBox = default!, SliderThemeData sliderTheme = default!, TextDirection? textDirection = null, Thumb? thumb = null, double? value = null, double? textScaleFactor = null, Size? sizeWithOverflow = null)", "public override void paint(global::Doroti.Generated.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Generated.Framework.Animation.Animation<double> activationAnimation, global::Doroti.Generated.Framework.Animation.Animation<double> enableAnimation, bool isDiscrete = default!, bool isOnTop = default!, global::Doroti.Generated.Framework.Painting.TextPainter labelPainter = default!, double textScaleFactor = default!, Size sizeWithOverflow = default!, global::Doroti.Generated.Framework.Rendering.RenderBox parentBox = default!, SliderThemeData sliderTheme = default!, TextDirection textDirection = default!, double value = default!, Thumb thumb = default!)", StringComparison.Ordinal);
+                .ReplaceGeneratedLocalPattern("public virtual global::Doroti.Ui.Size getPreferredSize(bool isEnabled, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter labelPainter, double textScaleFactor)", "public override global::Doroti.Ui.Size getPreferredSize(bool isEnabled, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter labelPainter, double textScaleFactor)", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("public override global::Doroti.Ui.Size getPreferredSize(bool isEnabled, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter? labelPainter = null, double? textScaleFactor = null)", "public override global::Doroti.Ui.Size getPreferredSize(bool isEnabled, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter labelPainter, double textScaleFactor)", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Framework.Animation.Animation<double>? activationAnimation = null, global::Doroti.Framework.Animation.Animation<double>? enableAnimation = null, bool? isDiscrete = null, bool? isOnTop = null, global::Doroti.Framework.Painting.TextPainter? labelPainter = null, double? textScaleFactor = null, Size? sizeWithOverflow = null, global::Doroti.Framework.Rendering.RenderBox? parentBox = null, SliderThemeData? sliderTheme = null, TextDirection? textDirection = null, double? value = null, Thumb? thumb = null)", "public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Framework.Animation.Animation<double> activationAnimation, global::Doroti.Framework.Animation.Animation<double> enableAnimation, bool isDiscrete = default!, bool isOnTop = default!, global::Doroti.Framework.Painting.TextPainter labelPainter = default!, double textScaleFactor = default!, Size sizeWithOverflow = default!, global::Doroti.Framework.Rendering.RenderBox parentBox = default!, SliderThemeData sliderTheme = default!, TextDirection textDirection = default!, double value = default!, Thumb thumb = default!)", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Framework.Animation.Animation<double>? activationAnimation = null, global::Doroti.Framework.Animation.Animation<double>? enableAnimation = null, bool? isDiscrete = null, bool? isOnTop = null, global::Doroti.Framework.Painting.TextPainter? labelPainter = null, double? textScaleFactor = null, Size? sizeWithOverflow = null, global::Doroti.Framework.Rendering.RenderBox? parentBox = null, SliderThemeData? sliderTheme = null, TextDirection? textDirection = null, double? value = null, Thumb? thumb = null)", "public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Framework.Animation.Animation<double> activationAnimation, global::Doroti.Framework.Animation.Animation<double> enableAnimation, bool isDiscrete = default!, bool isOnTop = default!, global::Doroti.Framework.Painting.TextPainter labelPainter = default!, double textScaleFactor = default!, Size sizeWithOverflow = default!, global::Doroti.Framework.Rendering.RenderBox parentBox = default!, SliderThemeData sliderTheme = default!, TextDirection textDirection = default!, double value = default!, Thumb thumb = default!)", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Framework.Animation.Animation<double> activationAnimation, global::Doroti.Framework.Animation.Animation<double> enableAnimation, bool? isDiscrete = null, bool isOnTop = false, global::Doroti.Framework.Painting.TextPainter labelPainter = default!, global::Doroti.Framework.Rendering.RenderBox parentBox = default!, SliderThemeData sliderTheme = default!, TextDirection? textDirection = null, Thumb? thumb = null, double? value = null, double? textScaleFactor = null, Size? sizeWithOverflow = null)", "public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Framework.Animation.Animation<double> activationAnimation, global::Doroti.Framework.Animation.Animation<double> enableAnimation, bool isDiscrete = default!, bool isOnTop = default!, global::Doroti.Framework.Painting.TextPainter labelPainter = default!, double textScaleFactor = default!, Size sizeWithOverflow = default!, global::Doroti.Framework.Rendering.RenderBox parentBox = default!, SliderThemeData sliderTheme = default!, TextDirection textDirection = default!, double value = default!, Thumb thumb = default!)", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/material/color_scheme.dart", StringComparison.Ordinal))
@@ -1033,40 +1033,40 @@ internal static class MaterialDynamicColors
     internal static readonly _MaterialDynamicColor primary = new("primary"), onPrimary = new("onPrimary"), primaryContainer = new("primaryContainer"), onPrimaryContainer = new("onPrimaryContainer"), primaryFixed = new("primaryFixed"), primaryFixedDim = new("primaryFixedDim"), onPrimaryFixed = new("onPrimaryFixed"), onPrimaryFixedVariant = new("onPrimaryFixedVariant"), secondary = new("secondary"), onSecondary = new("onSecondary"), secondaryContainer = new("secondaryContainer"), onSecondaryContainer = new("onSecondaryContainer"), secondaryFixed = new("secondaryFixed"), secondaryFixedDim = new("secondaryFixedDim"), onSecondaryFixed = new("onSecondaryFixed"), onSecondaryFixedVariant = new("onSecondaryFixedVariant"), tertiary = new("tertiary"), onTertiary = new("onTertiary"), tertiaryContainer = new("tertiaryContainer"), onTertiaryContainer = new("onTertiaryContainer"), tertiaryFixed = new("tertiaryFixed"), tertiaryFixedDim = new("tertiaryFixedDim"), onTertiaryFixed = new("onTertiaryFixed"), onTertiaryFixedVariant = new("onTertiaryFixedVariant"), error = new("error"), onError = new("onError"), errorContainer = new("errorContainer"), onErrorContainer = new("onErrorContainer"), outline = new("outline"), outlineVariant = new("outlineVariant"), surface = new("surface"), surfaceDim = new("surfaceDim"), surfaceBright = new("surfaceBright"), surfaceContainerLowest = new("surfaceContainerLowest"), surfaceContainerLow = new("surfaceContainerLow"), surfaceContainer = new("surfaceContainer"), surfaceContainerHigh = new("surfaceContainerHigh"), surfaceContainerHighest = new("surfaceContainerHighest"), onSurface = new("onSurface"), onSurfaceVariant = new("onSurfaceVariant"), inverseSurface = new("inverseSurface"), inverseOnSurface = new("inverseOnSurface"), inversePrimary = new("inversePrimary"), shadow = new("shadow"), scrim = new("scrim"), background = new("background"), onBackground = new("onBackground"), surfaceVariant = new("surfaceVariant");
 }
 """;
-            source = source.ReplaceGeneratedLocalPattern("namespace Doroti.Generated.Framework.Material;", "namespace Doroti.Generated.Framework.Material;" + materialColorUtilities, StringComparison.Ordinal);
+            source = source.ReplaceGeneratedLocalPattern("namespace Doroti.Framework.Material;", "namespace Doroti.Framework.Material;" + materialColorUtilities, StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/material/material_state.dart", StringComparison.Ordinal))
         {
             source = source
-                .ReplaceGeneratedLocalPattern("public virtual T resolve(HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState> states)", "public virtual InputBorder resolve(HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState> states)", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("public delegate void global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<T>();", string.Empty, StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("public delegate void global::Doroti.Generated.Framework.Widgets.WidgetStatePropertyAll<T>();", string.Empty, StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("public delegate void global::Doroti.Generated.Framework.Widgets.WidgetStatesController();", string.Empty, StringComparison.Ordinal);
+                .ReplaceGeneratedLocalPattern("public virtual T resolve(HashSet<global::Doroti.Framework.Widgets.WidgetState> states)", "public virtual InputBorder resolve(HashSet<global::Doroti.Framework.Widgets.WidgetState> states)", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("public delegate void global::Doroti.Framework.Widgets.WidgetStateProperty<T>();", string.Empty, StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("public delegate void global::Doroti.Framework.Widgets.WidgetStatePropertyAll<T>();", string.Empty, StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("public delegate void global::Doroti.Framework.Widgets.WidgetStatesController();", string.Empty, StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/material/segmented_button.dart", StringComparison.Ordinal))
         {
             source = source
                 .ReplaceGeneratedLocalPattern("P? effectiveValue(global::System.Func<ButtonStyle?, P?> getProperty)", "P? effectiveValue<P>(global::System.Func<ButtonStyle?, P?> getProperty)", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("P? resolve(global::System.Func<ButtonStyle?, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<P>?> getProperty", "P? resolve<P>(global::System.Func<ButtonStyle?, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<P>?> getProperty", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("[(global::Doroti.Generated.Framework.Widgets.WidgetState.selected & global::Doroti.Generated.Framework.Widgets.WidgetState.pressed)]", "[global::Doroti.Generated.Framework.Widgets.WidgetState.selected.asConstraint().op_BitwiseAnd(global::Doroti.Generated.Framework.Widgets.WidgetState.pressed.asConstraint())]", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("[(global::Doroti.Generated.Framework.Widgets.WidgetState.selected & global::Doroti.Generated.Framework.Widgets.WidgetState.hovered)]", "[global::Doroti.Generated.Framework.Widgets.WidgetState.selected.asConstraint().op_BitwiseAnd(global::Doroti.Generated.Framework.Widgets.WidgetState.hovered.asConstraint())]", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("[(global::Doroti.Generated.Framework.Widgets.WidgetState.selected & global::Doroti.Generated.Framework.Widgets.WidgetState.focused)]", "[global::Doroti.Generated.Framework.Widgets.WidgetState.selected.asConstraint().op_BitwiseAnd(global::Doroti.Generated.Framework.Widgets.WidgetState.focused.asConstraint())]", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("[global::Doroti.Generated.Framework.Widgets.WidgetState.pressed] = unselected", "[global::Doroti.Generated.Framework.Widgets.WidgetState.pressed.asConstraint()] = unselected", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("[global::Doroti.Generated.Framework.Widgets.WidgetState.hovered] = unselected", "[global::Doroti.Generated.Framework.Widgets.WidgetState.hovered.asConstraint()] = unselected", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("[global::Doroti.Generated.Framework.Widgets.WidgetState.focused] = unselected", "[global::Doroti.Generated.Framework.Widgets.WidgetState.focused.asConstraint()] = unselected", StringComparison.Ordinal);
+                .ReplaceGeneratedLocalPattern("P? resolve(global::System.Func<ButtonStyle?, global::Doroti.Framework.Widgets.WidgetStateProperty<P>?> getProperty", "P? resolve<P>(global::System.Func<ButtonStyle?, global::Doroti.Framework.Widgets.WidgetStateProperty<P>?> getProperty", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("[(global::Doroti.Framework.Widgets.WidgetState.selected & global::Doroti.Framework.Widgets.WidgetState.pressed)]", "[global::Doroti.Framework.Widgets.WidgetState.selected.asConstraint().op_BitwiseAnd(global::Doroti.Framework.Widgets.WidgetState.pressed.asConstraint())]", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("[(global::Doroti.Framework.Widgets.WidgetState.selected & global::Doroti.Framework.Widgets.WidgetState.hovered)]", "[global::Doroti.Framework.Widgets.WidgetState.selected.asConstraint().op_BitwiseAnd(global::Doroti.Framework.Widgets.WidgetState.hovered.asConstraint())]", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("[(global::Doroti.Framework.Widgets.WidgetState.selected & global::Doroti.Framework.Widgets.WidgetState.focused)]", "[global::Doroti.Framework.Widgets.WidgetState.selected.asConstraint().op_BitwiseAnd(global::Doroti.Framework.Widgets.WidgetState.focused.asConstraint())]", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("[global::Doroti.Framework.Widgets.WidgetState.pressed] = unselected", "[global::Doroti.Framework.Widgets.WidgetState.pressed.asConstraint()] = unselected", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("[global::Doroti.Framework.Widgets.WidgetState.hovered] = unselected", "[global::Doroti.Framework.Widgets.WidgetState.hovered.asConstraint()] = unselected", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("[global::Doroti.Framework.Widgets.WidgetState.focused] = unselected", "[global::Doroti.Framework.Widgets.WidgetState.focused.asConstraint()] = unselected", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/material/menu_anchor.dart", StringComparison.Ordinal))
         {
-            source = source.ReplaceGeneratedLocalPattern("public override void invoke(global::Doroti.Generated.Framework.Widgets.DirectionalFocusIntent", "public override object? invoke(global::Doroti.Generated.Framework.Widgets.DirectionalFocusIntent", StringComparison.Ordinal)
+            source = source.ReplaceGeneratedLocalPattern("public override void invoke(global::Doroti.Framework.Widgets.DirectionalFocusIntent", "public override object? invoke(global::Doroti.Framework.Widgets.DirectionalFocusIntent", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("        base.invoke(intent, context);\n    }", "        return base.invoke(intent, context);\n    }", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("_MenuPanel__menu_anchor? effectiveValue(global::System.Func<MenuStyle?, _MenuPanel__menu_anchor?> getProperty)", "P? effectiveValue<P>(global::System.Func<MenuStyle?, P?> getProperty)", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("_MenuPanel__menu_anchor? resolve(global::System.Func<MenuStyle?, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<_MenuPanel__menu_anchor>?> getProperty)", "P? resolve<P>(global::System.Func<MenuStyle?, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<P>?> getProperty)", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("return ((_MenuPanel__menu_anchor?)(object?)getProperty(style)?.resolve(new HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>()));", "return getProperty(style) is { } property ? property.resolve(new HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>()) : default;", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("_MenuPanel__menu_anchor? resolve(global::System.Func<MenuStyle?, global::Doroti.Framework.Widgets.WidgetStateProperty<_MenuPanel__menu_anchor>?> getProperty)", "P? resolve<P>(global::System.Func<MenuStyle?, global::Doroti.Framework.Widgets.WidgetStateProperty<P>?> getProperty)", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("return ((_MenuPanel__menu_anchor?)(object?)getProperty(style)?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>()));", "return getProperty(style) is { } property ? property.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>()) : default;", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("T? effectiveValue(global::System.Func<MenuStyle?, T?> getProperty)", "T? effectiveValue<T>(global::System.Func<MenuStyle?, T?> getProperty)", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("T? resolve(global::System.Func<MenuStyle?, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<T>?> getProperty)", "T? resolve<T>(global::System.Func<MenuStyle?, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<T>?> getProperty)", StringComparison.Ordinal);
+                .ReplaceGeneratedLocalPattern("T? resolve(global::System.Func<MenuStyle?, global::Doroti.Framework.Widgets.WidgetStateProperty<T>?> getProperty)", "T? resolve<T>(global::System.Func<MenuStyle?, global::Doroti.Framework.Widgets.WidgetStateProperty<T>?> getProperty)", StringComparison.Ordinal);
             source = Regex.Replace(
                 source,
                 @"(internal class _SubmenuDirectionalFocusAction__menu_anchor[\s\S]*?)(?=\ninternal class _LocalizedShortcutLabeler__menu_anchor)",
@@ -1076,7 +1076,7 @@ internal static class MaterialDynamicColors
         if (library.EndsWith("/material/search_anchor.dart", StringComparison.Ordinal))
         {
             source = source
-                .ReplaceGeneratedLocalPattern("SearchBar? resolve(global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<SearchBar>? widgetValue, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<SearchBar>? themeValue, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<SearchBar>? defaultValue)", "P? resolve<P>(global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<P>? widgetValue, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<P>? themeValue, global::Doroti.Generated.Framework.Widgets.WidgetStateProperty<P>? defaultValue)", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("SearchBar? resolve(global::Doroti.Framework.Widgets.WidgetStateProperty<SearchBar>? widgetValue, global::Doroti.Framework.Widgets.WidgetStateProperty<SearchBar>? themeValue, global::Doroti.Framework.Widgets.WidgetStateProperty<SearchBar>? defaultValue)", "P? resolve<P>(global::Doroti.Framework.Widgets.WidgetStateProperty<P>? widgetValue, global::Doroti.Framework.Widgets.WidgetStateProperty<P>? themeValue, global::Doroti.Framework.Widgets.WidgetStateProperty<P>? defaultValue)", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("return ((((widgetValue?.resolve(states__60702) ?? (SearchBar)themeValue?.resolve(states__60702))) ?? (SearchBar)defaultValue?.resolve(states__60702)));", "return widgetValue is not null ? widgetValue.resolve(states__60702) : themeValue is not null ? themeValue.resolve(states__60702) : defaultValue is not null ? defaultValue.resolve(states__60702) : default;", StringComparison.Ordinal);
             source = Regex.Replace(
                 source,
@@ -1095,13 +1095,13 @@ internal static class MaterialDynamicColors
         {
             source = source
                 .ReplaceGeneratedLocalPattern("(Future<_LicenseData__about>)new _LicenseData__about()", "Future<_LicenseData__about>.value(new _LicenseData__about())", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Widgets.Flow flow", "global::Doroti.Runtime.Flow flow", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Widgets.Flow flow", "global::Doroti.Runtime.Flow flow", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("Flow.begin()", "global::Doroti.Runtime.Flow.begin()", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("Flow.step(", "global::Doroti.Runtime.Flow.step(", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("Flow.end(", "global::Doroti.Runtime.Flow.end(", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("(global::System.Func<bool, List<global::Doroti.Generated.Framework.Foundation.LicenseParagraph>>)((global::Doroti.Generated.Framework.Foundation.LicenseEntry)license__34391).paragraphs.toList", "(global::System.Func<bool, List<global::Doroti.Generated.Framework.Foundation.LicenseParagraph>>)((_) => ((global::Doroti.Generated.Framework.Foundation.LicenseEntry)license__34391).paragraphs.toList())", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("(global::System.Func<bool, List<global::Doroti.Framework.Foundation.LicenseParagraph>>)((global::Doroti.Framework.Foundation.LicenseEntry)license__34391).paragraphs.toList", "(global::System.Func<bool, List<global::Doroti.Framework.Foundation.LicenseParagraph>>)((_) => ((global::Doroti.Framework.Foundation.LicenseEntry)license__34391).paragraphs.toList())", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("((_) => { _ = this._detailArguments.value = arguments; })", "((_duration) => { this._detailArguments.value = arguments; })", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Widgets.PageRoute<_MasterDetailScaffold__about>", "global::Doroti.Generated.Framework.Widgets.PageRoute<object?>", StringComparison.Ordinal);
+                .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Widgets.PageRoute<_MasterDetailScaffold__about>", "global::Doroti.Framework.Widgets.PageRoute<object?>", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/material/carousel.dart", StringComparison.Ordinal))
@@ -1132,8 +1132,8 @@ internal static class MaterialDynamicColors
 
         if (library.EndsWith("/material/switch.dart", StringComparison.Ordinal))
         {
-            const string erasedCursor = "WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Generated.Framework.Widgets.WidgetState>, T>)((states) => global::Doroti.Generated.Framework.Widgets.WidgetStateMouseCursor.clickable.resolve(states))))";
-            source = source.ReplaceGeneratedLocalPattern(erasedCursor, "WidgetStateProperty.resolveWith((states) => global::Doroti.Generated.Framework.Widgets.WidgetStateMouseCursor.clickable.resolve(states))", StringComparison.Ordinal);
+            const string erasedCursor = "WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, T>)((states) => global::Doroti.Framework.Widgets.WidgetStateMouseCursor.clickable.resolve(states))))";
+            source = source.ReplaceGeneratedLocalPattern(erasedCursor, "WidgetStateProperty.resolveWith((states) => global::Doroti.Framework.Widgets.WidgetStateMouseCursor.clickable.resolve(states))", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/material/app.dart", StringComparison.Ordinal) ||
@@ -1152,7 +1152,7 @@ internal static class MaterialDynamicColors
             {
                 source = source
                     .ReplaceGeneratedLocalPattern("new CupertinoSpellCheckSuggestionsToolbar(editableTextState: editableTextState)", "CupertinoSpellCheckSuggestionsToolbar.CreateEditableText(editableTextState: editableTextState)", StringComparison.Ordinal)
-                    .ReplaceGeneratedLocalPattern("unregisterFromRestoration(this._controller!)", "unregisterFromRestoration(DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Widgets.RestorableProperty<object>>(this._controller!))", StringComparison.Ordinal)
+                    .ReplaceGeneratedLocalPattern("unregisterFromRestoration(this._controller!)", "unregisterFromRestoration(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.RestorableProperty<object>>(this._controller!))", StringComparison.Ordinal)
                     .ReplaceGeneratedLocalPattern("Text_selectionLibrary.cupertinoTextSelectionHandleControls", "Text_selectionLibrary.materialTextSelectionHandleControls", StringComparison.Ordinal)
                     .ReplaceGeneratedLocalPattern("Desktop_text_selectionLibrary.cupertinoDesktopTextSelectionHandleControls", "Desktop_text_selectionLibrary.desktopTextSelectionHandleControls", StringComparison.Ordinal);
             }
@@ -1219,8 +1219,8 @@ internal static class MaterialDynamicColors
         if (library.EndsWith("/cupertino/spell_check_suggestions_toolbar.dart", StringComparison.Ordinal))
         {
             source = source
-                .ReplaceGeneratedLocalPattern("return ((List<global::Doroti.Generated.Framework.Widgets.Widget>)(object?)this.buttonItems.map<global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem, CupertinoTextSelectionToolbarButton>", "return this.buttonItems.map<global::Doroti.Generated.Framework.Widgets.ContextMenuButtonItem, CupertinoTextSelectionToolbarButton>", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("})).ToList());", "})).Cast<global::Doroti.Generated.Framework.Widgets.Widget>().ToList();", StringComparison.Ordinal);
+                .ReplaceGeneratedLocalPattern("return ((List<global::Doroti.Framework.Widgets.Widget>)(object?)this.buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, CupertinoTextSelectionToolbarButton>", "return this.buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, CupertinoTextSelectionToolbarButton>", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("})).ToList());", "})).Cast<global::Doroti.Framework.Widgets.Widget>().ToList();", StringComparison.Ordinal);
         }
 
         // Nullable callback properties are Dart tear-offs, not always-present
@@ -1254,10 +1254,10 @@ internal static class MaterialDynamicColors
             .ReplaceGeneratedLocalPattern("orElse: (() => { })", "orElse: (() => default!)", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("_makeOverridable((__arg0) => ((Action<TransposeCharactersIntent>)", "_makeOverridable<TransposeCharactersIntent>((__arg0) => ((Action<TransposeCharactersIntent>)", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("((global::System.Func<object, bool>)((FocusScopeNode)nodeScope__42268)._focusedChildren.Remove)(__arg0)", "((FocusScopeNode)nodeScope__42268)._focusedChildren.Remove(DartRuntimePrimitives.ConvertValue<FocusScopeNode>(__arg0))", StringComparison.Ordinal)
-            .ReplaceGeneratedLocalPattern("(((object?)spellCheckService__128604 ?? (object?)new global::Doroti.Generated.Framework.Services.DefaultSpellCheckService()))", "DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Services.SpellCheckService>(spellCheckService__128604 ?? new global::Doroti.Generated.Framework.Services.DefaultSpellCheckService())", StringComparison.Ordinal)
-            .ReplaceGeneratedLocalPattern("((global::Doroti.Generated.Framework.Rendering.ContainerRenderObjectMixin<global::Doroti.Generated.Framework.Rendering.RenderObject, global::Doroti.Generated.Framework.Rendering.ContainerParentDataMixin<global::Doroti.Generated.Framework.Rendering.RenderObject>>?)(object?)base.renderObject)!", "DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Rendering.RenderObject>(base.renderObject)", StringComparison.Ordinal)
+            .ReplaceGeneratedLocalPattern("(((object?)spellCheckService__128604 ?? (object?)new global::Doroti.Framework.Services.DefaultSpellCheckService()))", "DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Services.SpellCheckService>(spellCheckService__128604 ?? new global::Doroti.Framework.Services.DefaultSpellCheckService())", StringComparison.Ordinal)
+            .ReplaceGeneratedLocalPattern("((global::Doroti.Framework.Rendering.ContainerRenderObjectMixin<global::Doroti.Framework.Rendering.RenderObject, global::Doroti.Framework.Rendering.ContainerParentDataMixin<global::Doroti.Framework.Rendering.RenderObject>>?)(object?)base.renderObject)!", "DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(base.renderObject)", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("((IndexedSlot<Element?>)((IndexedSlot<Element?>)__other))", "((IndexedSlot<T>)(object)__other)", StringComparison.Ordinal)
-            .ReplaceGeneratedLocalPattern("gestures ?? new DartMap<Type, GestureRecognizerFactory<global::Doroti.Generated.Framework.Gestures.GestureRecognizer>>()", "gestures ?? new DartMap<Type, GestureRecognizerFactory<global::Doroti.Generated.Framework.Gestures.GestureRecognizer>>().cast<Type, dynamic>()", StringComparison.Ordinal)
+            .ReplaceGeneratedLocalPattern("gestures ?? new DartMap<Type, GestureRecognizerFactory<global::Doroti.Framework.Gestures.GestureRecognizer>>()", "gestures ?? new DartMap<Type, GestureRecognizerFactory<global::Doroti.Framework.Gestures.GestureRecognizer>>().cast<Type, dynamic>()", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("double value__as40867 = (double)value", "double value__as40867 = (double)(object)value!", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern(".ToList().Cast<EditableText>().ToList()", ".ToList().Cast<string>().ToList()", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("begin: value)", "begin: DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(value))", StringComparison.Ordinal)
@@ -1265,15 +1265,15 @@ internal static class MaterialDynamicColors
             .ReplaceGeneratedLocalPattern("this._childElements.Remove(((Element)child).slot)", "this._childElements.Remove(DartRuntimePrimitives.ConvertValue<long>(((Element)child).slot))", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("this._childElements.ContainsKey(((Element)child).slot)", "this._childElements.ContainsKey(DartRuntimePrimitives.ConvertValue<long>(((Element)child).slot))", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("((dynamic)this.renderObject).child = DartRuntimePrimitives.ConvertValue<Element>(__child)", "((dynamic)this.renderObject).child = __child", StringComparison.Ordinal)
-            .ReplaceGeneratedLocalPattern("internal virtual GlobalKey<IState> _anchorKey { get; private set; } = ((GlobalKey<IState>)(object?)GlobalKey<_RawMenuAnchorState__raw_menu_anchor>.Create(debugLabel: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : \"MenuAnchor\")));", "internal virtual GlobalKey<_RawMenuAnchorState__raw_menu_anchor> _anchorKey { get; private set; } = GlobalKey<_RawMenuAnchorState__raw_menu_anchor>.Create(debugLabel: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : \"MenuAnchor\"));", StringComparison.Ordinal)
+            .ReplaceGeneratedLocalPattern("internal virtual GlobalKey<IState> _anchorKey { get; private set; } = ((GlobalKey<IState>)(object?)GlobalKey<_RawMenuAnchorState__raw_menu_anchor>.Create(debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : \"MenuAnchor\")));", "internal virtual GlobalKey<_RawMenuAnchorState__raw_menu_anchor> _anchorKey { get; private set; } = GlobalKey<_RawMenuAnchorState__raw_menu_anchor>.Create(debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : \"MenuAnchor\"));", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("onPopInvoked ?? _defaultPopInvokedHandler", "onPopInvoked ?? ((didPop, result) => _defaultPopInvokedHandler(didPop, result))", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("createInnerBallisticScrollActivity(this.@delegate, this.velocity)", "createInnerBallisticScrollActivity(DartRuntimePrimitives.ConvertValue<_NestedScrollPosition__nested_scroll_view>(this.@delegate), this.velocity)", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("nestOffset(value, this.@delegate)", "nestOffset(value, DartRuntimePrimitives.ConvertValue<_NestedScrollPosition__nested_scroll_view>(this.@delegate))", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("InsertRange(_insertionIndex(below, above),", "InsertRange(checked((int)_insertionIndex(below, above)),", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("old__32464.removeAll(newEntriesList__31689.Cast<object>())", "old__32464.RemoveAll(item => newEntriesList__31689.Contains(item))", StringComparison.Ordinal)
-            .ReplaceGeneratedLocalPattern("this.overlayLocation!._detachFromLayoutSurrogate(deferredChild__101178)", "this.overlayLocation!._detachFromLayoutSurrogate(DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Rendering.RenderDeferredLayoutBox>(deferredChild__101178))", StringComparison.Ordinal)
+            .ReplaceGeneratedLocalPattern("this.overlayLocation!._detachFromLayoutSurrogate(deferredChild__101178)", "this.overlayLocation!._detachFromLayoutSurrogate(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderDeferredLayoutBox>(deferredChild__101178))", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("this.widget.onCloseRequested((global::System.Action<bool>)this.close)", "this.widget.onCloseRequested(() => this.close())", StringComparison.Ordinal)
-            .ReplaceGeneratedLocalPattern("defaultValue: (((this.semanticsTooltip is null) || (this.semanticsTooltip!.Length == 0)) ? null : global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue)", "defaultValue: (((this.semanticsTooltip is null) || (this.semanticsTooltip!.Length == 0)) ? null : global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue.ToString())", StringComparison.Ordinal)
+            .ReplaceGeneratedLocalPattern("defaultValue: (((this.semanticsTooltip is null) || (this.semanticsTooltip!.Length == 0)) ? null : global::Doroti.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue)", "defaultValue: (((this.semanticsTooltip is null) || (this.semanticsTooltip!.Length == 0)) ? null : global::Doroti.Framework.Foundation.DiagnosticsLibrary.kNoDefaultValue.ToString())", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("_ReorderableItemGlobalKey__reorderable_list.Create(((Widget)child__40762).key!, index, this)", "_ReorderableItemGlobalKey__reorderable_list.Create(key: ((Widget)child__40762).key!, index: index, state: this)", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("await delegateRouteSetter()(data)", "await delegateRouteSetter()(DartRuntimePrimitives.ConvertValue<T>(data))", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("public virtual void takePriority() => this._children.clear();", "public virtual void takePriority() => ((dynamic)this._children).clear();", StringComparison.Ordinal)
@@ -1284,11 +1284,11 @@ internal static class MaterialDynamicColors
             .ReplaceGeneratedLocalPattern("treeRowExtentBuilder ?? TreeSliver<T>.defaultTreeRowExtentBuilder", "treeRowExtentBuilder ?? ((node, dimensions) => TreeSliver<T>.defaultTreeRowExtentBuilder(node, dimensions))", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("return callingAction__81081.invoke(intent);", "return ((dynamic)callingAction__81081).invoke(intent);", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("DartAsyncRuntime.scheduleMicrotask((global::System.Action<Duration?>)runScheduledTask)", "DartAsyncRuntime.scheduleMicrotask(() => runScheduledTask(null))", StringComparison.Ordinal)
-            .ReplaceGeneratedLocalPattern("(global::System.Func<global::Doroti.Generated.Framework.Rendering.Selectable, global::Doroti.Generated.Framework.Rendering.Selectable, long>)this.compareOrder", "((left, right) => this.compareOrder(left, right))", StringComparison.Ordinal)
+            .ReplaceGeneratedLocalPattern("(global::System.Func<global::Doroti.Framework.Rendering.Selectable, global::Doroti.Framework.Rendering.Selectable, long>)this.compareOrder", "((left, right) => this.compareOrder(left, right))", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("return _adjustingSelectionEnd = (forward != isReversed__68050);", "return DartRuntimePrimitives.RequireValue(_adjustingSelectionEnd = (forward != isReversed__68050));", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("new FutureBuilder<object?>(future: this._sensitiveContentRegistrationFuture", "new FutureBuilder<object?>(future: DartRuntimePrimitives.ConvertValue<Future<object?>>(this._sensitiveContentRegistrationFuture)", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("var (enabled__36562, invokeResult__36579) = Actions.of(context__36354).invokeActionIfEnabled(action__36418, intent__36280, context__36354);", "var (enabled__36562, invokeResult__36579) = DartRuntimePrimitives.ConvertValue<(bool, object?)>(Actions.of(context__36354).invokeActionIfEnabled(action__36418, intent__36280, context__36354));", StringComparison.Ordinal)
-            .ReplaceGeneratedLocalPattern("RenderViewportBase.showInViewport", "RenderViewportBase<global::Doroti.Generated.Framework.Rendering.ContainerParentDataMixin<global::Doroti.Generated.Framework.Rendering.RenderSliver>>.showInViewport", StringComparison.Ordinal)
+            .ReplaceGeneratedLocalPattern("RenderViewportBase.showInViewport", "RenderViewportBase<global::Doroti.Framework.Rendering.ContainerParentDataMixin<global::Doroti.Framework.Rendering.RenderSliver>>.showInViewport", StringComparison.Ordinal)
             .ReplaceGeneratedLocalPattern("_setChild(default, __slot)", "_setChild(default(SlotType)!, __slot)", StringComparison.Ordinal);
 
         // The analyzer represents a zero-argument instance-method tear-off as a
@@ -1326,10 +1326,10 @@ internal static class MaterialDynamicColors
                 "public static GlobalKey<T> Create(string? debugLabel = null) => new LabeledGlobalKey<T>(debugLabel);",
                 StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern(
-                "global::Doroti.Generated.Framework.Foundation.FlutterError.Create(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>",
-                "new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>",
+                "global::Doroti.Framework.Foundation.FlutterError.Create(new List<global::Doroti.Framework.Foundation.DiagnosticsNode>",
+                "new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode>",
                 StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<GlobalKey<IState>>.Create(", "new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<GlobalKey<IState>>(", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Foundation.DiagnosticsProperty<GlobalKey<IState>>.Create(", "new global::Doroti.Framework.Foundation.DiagnosticsProperty<GlobalKey<IState>>(", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern(
                     "        this._state = widget.createState();\n    }",
                     "        this._state = widget.createState();\n        this._state!._element = this;\n        this._state!._widget = widget;\n    }",
@@ -1340,7 +1340,7 @@ internal static class MaterialDynamicColors
                     StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern(
                     "_inheritedElements = this._parent?._inheritedElements;",
-                    "_inheritedElements = this._parent?._inheritedElements ?? global::Doroti.Generated.Framework.Foundation.PersistentHashMap<Type, InheritedElement>.CreateEmpty();",
+                    "_inheritedElements = this._parent?._inheritedElements ?? global::Doroti.Framework.Foundation.PersistentHashMap<Type, InheritedElement>.CreateEmpty();",
                     StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("((dynamic)this.state)._element = null;", "this.state._element = null;", StringComparison.Ordinal);
             source = Regex.Replace(
@@ -1415,7 +1415,7 @@ internal static class MaterialDynamicColors
                 StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern(
                 "        PaintingBinding._instance = this;\n        this._imageCache = createImageCache();",
-                "        PaintingBinding._instance = this;\n        global::Doroti.Generated.Framework.Semantics.SemanticsBinding._instance = this;\n        global::Doroti.Generated.Framework.Rendering.RendererBinding._instance = this;\n        WidgetsBinding._instance = this;\n        this._buildOwner = new BuildOwner();\n        this._buildOwner.onBuildScheduled = _handleBuildScheduled;\n        this._imageCache = createImageCache();",
+                "        PaintingBinding._instance = this;\n        global::Doroti.Framework.Semantics.SemanticsBinding._instance = this;\n        global::Doroti.Framework.Rendering.RendererBinding._instance = this;\n        WidgetsBinding._instance = this;\n        this._buildOwner = new BuildOwner();\n        this._buildOwner.onBuildScheduled = _handleBuildScheduled;\n        this._imageCache = createImageCache();",
                 StringComparison.Ordinal);
         }
 
@@ -1423,7 +1423,7 @@ internal static class MaterialDynamicColors
         {
             source = source
                 .ReplaceGeneratedLocalPattern("this._entries.Cast<Overlay>().ToList(), newEntriesList__31689.Cast<Overlay>().ToList()", "this._entries, newEntriesList__31689", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Rendering.RenderDeferredLayoutBox", "_RenderDeferredLayoutBox__overlay", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Rendering.RenderDeferredLayoutBox", "_RenderDeferredLayoutBox__overlay", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("old__32464.RemoveAll(item => newEntriesList__31689.Contains(item))", "old__32464.ExceptWith(newEntriesList__31689)", StringComparison.Ordinal);
         }
 
@@ -1466,7 +1466,7 @@ internal static class MaterialDynamicColors
         if (library.EndsWith("/scrollbar.dart", StringComparison.Ordinal))
         {
             source = source
-                .ReplaceGeneratedLocalPattern("DartMap<Type, GestureRecognizerFactory<global::Doroti.Generated.Framework.Gestures.GestureRecognizer>> _gestures", "DartMap<Type, dynamic> _gestures", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("DartMap<Type, GestureRecognizerFactory<global::Doroti.Framework.Gestures.GestureRecognizer>> _gestures", "DartMap<Type, dynamic> _gestures", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("return ((DartMap<Type, object>)(object?)gestures__75996);", "return gestures__75996;", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("foregroundPainter: this.scrollbarPainter", "foregroundPainter: new _ScrollbarCustomPainterAdapter(this.scrollbarPainter)", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("internal virtual Timer? _fadeoutTimer { get; set; } = default;", "internal virtual Timer? _fadeoutTimer { get; set; } = default;\n    internal virtual bool _isDisposed { get; set; }", StringComparison.Ordinal)
@@ -1476,15 +1476,15 @@ internal static class MaterialDynamicColors
                 source,
                 @"\(\(ScrollbarPainter\?\)\(object\?\)\(\(CustomPaint\)(?<paint>customPaint__\d+)\)\.foregroundPainter!\)!",
                 "_ScrollbarCustomPainterAdapter.Unwrap(((CustomPaint)${paint}).foregroundPainter!)");
-            source += "\ninternal sealed class _ScrollbarCustomPainterAdapter : global::Doroti.Generated.Framework.Rendering.CustomPainter\n{\n    private readonly ScrollbarPainter _owner;\n    internal _ScrollbarCustomPainterAdapter(ScrollbarPainter owner) : base(owner) => _owner = owner;\n    internal static ScrollbarPainter Unwrap(global::Doroti.Generated.Framework.Rendering.CustomPainter painter) => painter is _ScrollbarCustomPainterAdapter adapter ? adapter._owner : (ScrollbarPainter)(object)painter;\n    public override void paint(Canvas canvas, Size size) => _owner.paint(canvas, size);\n    public override bool shouldRepaint(global::Doroti.Generated.Framework.Rendering.CustomPainter oldDelegate) => oldDelegate is not _ScrollbarCustomPainterAdapter other || _owner.shouldRepaint(other._owner);\n    public override bool? hitTest(Offset position) => _owner.hitTest(position);\n}\n";
+            source += "\ninternal sealed class _ScrollbarCustomPainterAdapter : global::Doroti.Framework.Rendering.CustomPainter\n{\n    private readonly ScrollbarPainter _owner;\n    internal _ScrollbarCustomPainterAdapter(ScrollbarPainter owner) : base(owner) => _owner = owner;\n    internal static ScrollbarPainter Unwrap(global::Doroti.Framework.Rendering.CustomPainter painter) => painter is _ScrollbarCustomPainterAdapter adapter ? adapter._owner : (ScrollbarPainter)(object)painter;\n    public override void paint(Canvas canvas, Size size) => _owner.paint(canvas, size);\n    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate) => oldDelegate is not _ScrollbarCustomPainterAdapter other || _owner.shouldRepaint(other._owner);\n    public override bool? hitTest(Offset position) => _owner.hitTest(position);\n}\n";
         }
 
         if (library.EndsWith("/selectable_region.dart", StringComparison.Ordinal) ||
             library.EndsWith("/text.dart", StringComparison.Ordinal))
         {
             source = source.ReplaceGeneratedLocalPattern(
-                "DartRuntimePrimitives.ConvertValue<Comparison<global::Doroti.Generated.Framework.Rendering.Selectable>>(_compareScreenOrder)",
-                "new Comparison<global::Doroti.Generated.Framework.Rendering.Selectable>((left, right) => checked((int)_compareScreenOrder(left, right)))",
+                "DartRuntimePrimitives.ConvertValue<Comparison<global::Doroti.Framework.Rendering.Selectable>>(_compareScreenOrder)",
+                "new Comparison<global::Doroti.Framework.Rendering.Selectable>((left, right) => checked((int)_compareScreenOrder(left, right)))",
                 StringComparison.Ordinal);
         }
 
@@ -1502,9 +1502,9 @@ internal static class MaterialDynamicColors
         if (library.EndsWith("/sliver_tree.dart", StringComparison.Ordinal))
         {
             source = source
-                .ReplaceGeneratedLocalPattern("ItemExtentBuilder __treeRowExtentBuilder", "global::System.Func<TreeSliverNode<T>, global::Doroti.Generated.Framework.Rendering.SliverLayoutDimensions, double?> __treeRowExtentBuilder", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("ItemExtentBuilder __treeRowExtentBuilder", "global::System.Func<TreeSliverNode<T>, global::Doroti.Framework.Rendering.SliverLayoutDimensions, double?> __treeRowExtentBuilder", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("semanticIndexCallback ?? Sliver_treeLibrary._kDefaultSemanticIndexCallback", "semanticIndexCallback ?? ((widget, index) => Sliver_treeLibrary._kDefaultSemanticIndexCallback(widget, index))", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("activeAnimations: this._activeAnimations, itemBuilder:", "activeAnimations: this._activeAnimations.cast<global::Doroti.Generated.Framework.Foundation.UniqueKey, (long fromIndex, long toIndex, double value)>(), itemBuilder:", StringComparison.Ordinal);
+                .ReplaceGeneratedLocalPattern("activeAnimations: this._activeAnimations, itemBuilder:", "activeAnimations: this._activeAnimations.cast<global::Doroti.Framework.Foundation.UniqueKey, (long fromIndex, long toIndex, double value)>(), itemBuilder:", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/sliver_resizing_header.dart", StringComparison.Ordinal))
@@ -1526,12 +1526,12 @@ internal static class MaterialDynamicColors
         if (library.EndsWith("/single_child_scroll_view.dart", StringComparison.Ordinal))
         {
             source = source.ReplaceGeneratedLocalPattern(
-                "RenderViewportBase<global::Doroti.Generated.Framework.Rendering.ContainerParentDataMixin<global::Doroti.Generated.Framework.Rendering.RenderSliver>>.showInViewport(descendant: descendant, viewport: this, offset: this.offset, rect: rect, duration: duration, curve: curve)",
+                "RenderViewportBase<global::Doroti.Framework.Rendering.ContainerParentDataMixin<global::Doroti.Framework.Rendering.RenderSliver>>.showInViewport(descendant: descendant, viewport: this, offset: this.offset, rect: rect, duration: duration, curve: curve)",
                 "_showInViewport(descendant, rect, this, this.offset, duration, curve)",
                 StringComparison.Ordinal);
             source = source.ReplaceGeneratedLocalPattern(
                 "    public override void debugFillProperties",
-                "    private static Rect? _showInViewport(global::Doroti.Generated.Framework.Rendering.RenderObject? descendant, Rect? rect, _RenderSingleChildViewport__single_child_scroll_view viewport, global::Doroti.Generated.Framework.Rendering.ViewportOffset offset, Duration duration, global::Doroti.Generated.Framework.Animation.Curve curve) { if (descendant is null) return rect; var leading = viewport.getOffsetToReveal(descendant, 0.0, rect: rect); var trailing = viewport.getOffsetToReveal(descendant, 1.0, rect: rect); var target = global::Doroti.Generated.Framework.Rendering.RevealedOffset.clampOffset(leading, trailing, offset.pixels); if (target is null) return rect ?? descendant.paintBounds; _ = offset.moveTo(target.offset, duration: duration, curve: curve); return target.rect; }\n\n    public override void debugFillProperties",
+                "    private static Rect? _showInViewport(global::Doroti.Framework.Rendering.RenderObject? descendant, Rect? rect, _RenderSingleChildViewport__single_child_scroll_view viewport, global::Doroti.Framework.Rendering.ViewportOffset offset, Duration duration, global::Doroti.Framework.Animation.Curve curve) { if (descendant is null) return rect; var leading = viewport.getOffsetToReveal(descendant, 0.0, rect: rect); var trailing = viewport.getOffsetToReveal(descendant, 1.0, rect: rect); var target = global::Doroti.Framework.Rendering.RevealedOffset.clampOffset(leading, trailing, offset.pixels); if (target is null) return rect ?? descendant.paintBounds; _ = offset.moveTo(target.offset, duration: duration, curve: curve); return target.rect; }\n\n    public override void debugFillProperties",
                 StringComparison.Ordinal);
         }
 
@@ -1556,8 +1556,8 @@ internal static class MaterialDynamicColors
         if (library.EndsWith("/ticker_provider.dart", StringComparison.Ordinal))
         {
             source = source
-                .ReplaceGeneratedLocalPattern("return (((object?)widget__4995?.notifier ?? (object?)new _ConstantValueListenable__ticker_provider<bool>(true)));", "return DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Foundation.ValueListenable<bool>>((object?)widget__4995?.notifier ?? (object?)new _ConstantValueListenable__ticker_provider<bool>(true));", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("return (((object?)widget__8322?.valuesNotifier ?? (object?)fallback__7914));", "return DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>>((object?)widget__8322?.valuesNotifier ?? (object?)fallback__7914);", StringComparison.Ordinal);
+                .ReplaceGeneratedLocalPattern("return (((object?)widget__4995?.notifier ?? (object?)new _ConstantValueListenable__ticker_provider<bool>(true)));", "return DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Foundation.ValueListenable<bool>>((object?)widget__4995?.notifier ?? (object?)new _ConstantValueListenable__ticker_provider<bool>(true));", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("return (((object?)widget__8322?.valuesNotifier ?? (object?)fallback__7914));", "return DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>>((object?)widget__8322?.valuesNotifier ?? (object?)fallback__7914);", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/text_selection.dart", StringComparison.Ordinal))
@@ -1568,8 +1568,8 @@ internal static class MaterialDynamicColors
                     "this.editableText.userUpdateTextEditingValue(((EditableTextState)this.editableText).textEditingValue.copyWith(selection: newSelection__116605), DartRuntimePrimitives.RequireValue(cause))",
                     StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern(
-                    "        this._value = value;\n    }\n\n    public virtual global::Doroti.Generated.Framework.Services.TextEditingValue value",
-                    "        this._value = value;\n        this.renderObject.selectionStartInViewport.addListener(this._updateTextSelectionOverlayVisibilities);\n        this.renderObject.selectionEndInViewport.addListener(this._updateTextSelectionOverlayVisibilities);\n        this._updateTextSelectionOverlayVisibilities();\n        this._selectionOverlay = new SelectionOverlay(\n            magnifierConfiguration: magnifierConfiguration, context: context, debugRequiredFor: debugRequiredFor,\n            startHandleType: global::Doroti.Generated.Framework.Rendering.TextSelectionHandleType.collapsed,\n            startHandlesVisible: this._effectiveStartHandleVisibility, lineHeightAtStart: 0.0,\n            onStartHandleDragStart: this._handleSelectionStartHandleDragStart, onStartHandleDragUpdate: this._handleSelectionStartHandleDragUpdate,\n            onStartHandleDragEnd: this._handleAnyDragEnd, endHandleType: global::Doroti.Generated.Framework.Rendering.TextSelectionHandleType.collapsed,\n            endHandlesVisible: this._effectiveEndHandleVisibility, lineHeightAtEnd: 0.0,\n            onEndHandleDragStart: this._handleSelectionEndHandleDragStart, onEndHandleDragUpdate: this._handleSelectionEndHandleDragUpdate,\n            onEndHandleDragEnd: this._handleAnyDragEnd, toolbarVisible: this._effectiveToolbarVisibility,\n            selectionEndpoints: new List<global::Doroti.Generated.Framework.Rendering.TextSelectionPoint>(), selectionControls: selectionControls,\n            selectionDelegate: selectionDelegate, clipboardStatus: clipboardStatus, startHandleLayerLink: startHandleLayerLink,\n            endHandleLayerLink: endHandleLayerLink, toolbarLayerLink: toolbarLayerLink, onSelectionHandleTapped: onSelectionHandleTapped,\n            dragStartBehavior: dragStartBehavior, toolbarLocation: renderObject.lastSecondaryTapDownPosition);\n    }\n\n    public virtual global::Doroti.Generated.Framework.Services.TextEditingValue value",
+                    "        this._value = value;\n    }\n\n    public virtual global::Doroti.Framework.Services.TextEditingValue value",
+                    "        this._value = value;\n        this.renderObject.selectionStartInViewport.addListener(this._updateTextSelectionOverlayVisibilities);\n        this.renderObject.selectionEndInViewport.addListener(this._updateTextSelectionOverlayVisibilities);\n        this._updateTextSelectionOverlayVisibilities();\n        this._selectionOverlay = new SelectionOverlay(\n            magnifierConfiguration: magnifierConfiguration, context: context, debugRequiredFor: debugRequiredFor,\n            startHandleType: global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed,\n            startHandlesVisible: this._effectiveStartHandleVisibility, lineHeightAtStart: 0.0,\n            onStartHandleDragStart: this._handleSelectionStartHandleDragStart, onStartHandleDragUpdate: this._handleSelectionStartHandleDragUpdate,\n            onStartHandleDragEnd: this._handleAnyDragEnd, endHandleType: global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed,\n            endHandlesVisible: this._effectiveEndHandleVisibility, lineHeightAtEnd: 0.0,\n            onEndHandleDragStart: this._handleSelectionEndHandleDragStart, onEndHandleDragUpdate: this._handleSelectionEndHandleDragUpdate,\n            onEndHandleDragEnd: this._handleAnyDragEnd, toolbarVisible: this._effectiveToolbarVisibility,\n            selectionEndpoints: new List<global::Doroti.Framework.Rendering.TextSelectionPoint>(), selectionControls: selectionControls,\n            selectionDelegate: selectionDelegate, clipboardStatus: clipboardStatus, startHandleLayerLink: startHandleLayerLink,\n            endHandleLayerLink: endHandleLayerLink, toolbarLayerLink: toolbarLayerLink, onSelectionHandleTapped: onSelectionHandleTapped,\n            dragStartBehavior: dragStartBehavior, toolbarLocation: renderObject.lastSecondaryTapDownPosition);\n    }\n\n    public virtual global::Doroti.Framework.Services.TextEditingValue value",
                     StringComparison.Ordinal);
         }
 
@@ -1610,16 +1610,16 @@ internal static class MaterialDynamicColors
         .ReplaceGeneratedLocalPattern("global::System.Func<object> callback", "dynamic callback", StringComparison.Ordinal)
         .ReplaceGeneratedLocalPattern("global::System.Func<string, object> callback", "dynamic callback", StringComparison.Ordinal)
         .ReplaceGeneratedLocalPattern("global::System.Func<string?, string, object> callback", "dynamic callback", StringComparison.Ordinal)
-        .ReplaceGeneratedLocalPattern("(global::System.Action<global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails>)(value ? this._reportStructuredError : defaultExceptionHandler__36848)", "(value ? (global::Doroti.Generated.Framework.Foundation.FlutterExceptionHandler)this._reportStructuredError : defaultExceptionHandler__36848)", StringComparison.Ordinal)
+        .ReplaceGeneratedLocalPattern("(global::System.Action<global::Doroti.Framework.Foundation.FlutterErrorDetails>)(value ? this._reportStructuredError : defaultExceptionHandler__36848)", "(value ? (global::Doroti.Framework.Foundation.FlutterExceptionHandler)this._reportStructuredError : defaultExceptionHandler__36848)", StringComparison.Ordinal)
         .ReplaceGeneratedLocalPattern("this._objectToId.GetValueOrDefault(@object)", "this._objectToId[@object]", StringComparison.Ordinal)
         .ReplaceGeneratedLocalPattern("pubRootDirectories = DartRuntimePrimitives.ConvertValue<global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>>(pubRootDirectories.map<string, string>", "pubRootDirectories = pubRootDirectories.map<string, string>", StringComparison.Ordinal)
         .ReplaceGeneratedLocalPattern(".path)).ToList());", ".path)).ToList();", StringComparison.Ordinal)
         .ReplaceGeneratedLocalPattern("this.selection.currentElement = @object", "this.selection.currentElement = (Element)@object", StringComparison.Ordinal)
-        .ReplaceGeneratedLocalPattern("this.selection.current = @object", "this.selection.current = (global::Doroti.Generated.Framework.Rendering.RenderObject)@object", StringComparison.Ordinal)
-        .ReplaceGeneratedLocalPattern("global::Doroti.Generated.Framework.Foundation.DebugLibrary.connectedVmServiceUri,", "global::Doroti.Generated.Framework.Foundation.DebugLibrary.connectedVmServiceUri.ToString(),", StringComparison.Ordinal)
-        .ReplaceGeneratedLocalPattern("DartUri.parse(global::Doroti.Generated.Framework.Foundation.DebugLibrary.activeDevToolsServerAddress!)", "DartUri.parse(global::Doroti.Generated.Framework.Foundation.DebugLibrary.activeDevToolsServerAddress!.ToString())", StringComparison.Ordinal)
+        .ReplaceGeneratedLocalPattern("this.selection.current = @object", "this.selection.current = (global::Doroti.Framework.Rendering.RenderObject)@object", StringComparison.Ordinal)
+        .ReplaceGeneratedLocalPattern("global::Doroti.Framework.Foundation.DebugLibrary.connectedVmServiceUri,", "global::Doroti.Framework.Foundation.DebugLibrary.connectedVmServiceUri.ToString(),", StringComparison.Ordinal)
+        .ReplaceGeneratedLocalPattern("DartUri.parse(global::Doroti.Framework.Foundation.DebugLibrary.activeDevToolsServerAddress!)", "DartUri.parse(global::Doroti.Framework.Foundation.DebugLibrary.activeDevToolsServerAddress!.ToString())", StringComparison.Ordinal)
         .ReplaceGeneratedLocalPattern("replace(queryParameters: new DartMap<string, object>", "replace(queryParameters: new DartMap<string, string>", StringComparison.Ordinal)
-        .ReplaceGeneratedLocalPattern("_getRawElementParentChain(element, numLocalParents: numLocalParents))", "_getRawElementParentChain(element, numLocalParents: numLocalParents).Cast<global::Doroti.Generated.Framework.Foundation.Diagnosticable>().ToList())", StringComparison.Ordinal)
+        .ReplaceGeneratedLocalPattern("_getRawElementParentChain(element, numLocalParents: numLocalParents))", "_getRawElementParentChain(element, numLocalParents: numLocalParents).Cast<global::Doroti.Framework.Foundation.Diagnosticable>().ToList())", StringComparison.Ordinal)
         .ReplaceGeneratedLocalPattern("node__66037.getProperties(),", "node__66037.getProperties().ToList(),", StringComparison.Ordinal)
         .ReplaceGeneratedLocalPattern("_filterChildren(node.getChildren(),", "_filterChildren(node.getChildren().ToList(),", StringComparison.Ordinal)
         .ReplaceGeneratedLocalPattern("_renderObjectOrNull(@object)", "_renderObjectOrNull((Element)@object)", StringComparison.Ordinal)
@@ -1629,5 +1629,5 @@ internal static class MaterialDynamicColors
         .ReplaceGeneratedLocalPattern("!string.IsNullOrEmpty(errorSummary.value)", "!string.IsNullOrEmpty(errorSummary.value?.ToString())", StringComparison.Ordinal)
         .ReplaceGeneratedLocalPattern("errorSummary.value.First()", "errorSummary.value", StringComparison.Ordinal)
         .ReplaceGeneratedLocalPattern("foreach (MapEntry<global::Doroti.Runtime.CreationLocation, long> entry__153282 in Widget_inspectorLibrary._locationToId.entries)", "foreach (var entry__153282 in Widget_inspectorLibrary._locationToId.entries)", StringComparison.Ordinal)
-        .ReplaceGeneratedLocalPattern("public virtual global::Doroti.Generated.Framework.Foundation.DiagnosticsSerializationDelegate copyWith(long subtreeDepth = default!, bool includeProperties = default!", "public virtual global::Doroti.Generated.Framework.Foundation.DiagnosticsSerializationDelegate copyWith(long? subtreeDepth = null, bool? includeProperties = null", StringComparison.Ordinal);
+        .ReplaceGeneratedLocalPattern("public virtual global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate copyWith(long subtreeDepth = default!, bool includeProperties = default!", "public virtual global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate copyWith(long? subtreeDepth = null, bool? includeProperties = null", StringComparison.Ordinal);
 }

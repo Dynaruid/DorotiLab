@@ -1,5 +1,7 @@
 # G7-3M macOS `osx-arm64` source-port and RID package
 
+> Historical bootstrap record. The milestone validator named below has been retired; use `eng/doroti.ps1 validate` and ADR-019 for the current product workflow.
+
 Status: implemented and verified on Apple Silicon macOS on 2026-08-15.
 
 G7-3M promotes `osx-arm64` from deferred desktop work to a required Goal 7 target. The product uses a real AppKit `NSWindow`, an arm64 `libAvalonia.dylib` built from reviewed Objective-C++ source, and Skia over a hardware NSOpenGL context. It does not add Avalonia UI, Control, XAML, visual-tree, or Composition binaries to the product graph.

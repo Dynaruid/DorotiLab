@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class SafeArea : StatelessWidget
 {
@@ -20,13 +20,13 @@ public class SafeArea : StatelessWidget
     public virtual bool top { get; private set; } = default!;
     public virtual bool right { get; private set; } = default!;
     public virtual bool bottom { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsets minimum { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.EdgeInsets minimum { get; private set; } = default!;
     public virtual bool maintainBottomViewPadding { get; private set; } = default!;
     public virtual Widget child { get; private set; } = default!;
 
-    public SafeArea(global::Doroti.Generated.Framework.Foundation.Key? key = null, bool left = true, bool top = true, bool right = true, bool bottom = true, global::Doroti.Generated.Framework.Painting.EdgeInsets minimum = default!, bool maintainBottomViewPadding = false, Widget child = default!) : base(key: key)
+    public SafeArea(global::Doroti.Framework.Foundation.Key? key = null, bool left = true, bool top = true, bool right = true, bool bottom = true, global::Doroti.Framework.Painting.EdgeInsets minimum = default!, bool maintainBottomViewPadding = false, Widget child = default!) : base(key: key)
     {
-        global::Doroti.Generated.Framework.Painting.EdgeInsets __minimum = minimum ?? global::Doroti.Generated.Framework.Painting.EdgeInsets.zero;
+        global::Doroti.Framework.Painting.EdgeInsets __minimum = minimum ?? global::Doroti.Framework.Painting.EdgeInsets.zero;
         this.left = left;
         this.top = top;
         this.right = right;
@@ -38,23 +38,23 @@ public class SafeArea : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-        global::Doroti.Generated.Framework.Painting.EdgeInsets padding__3761 = ((global::Doroti.Generated.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
+        global::Doroti.Framework.Painting.EdgeInsets padding__3761 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
         if (this.maintainBottomViewPadding)
         {
             padding__3761 = padding__3761.copyWith(bottom: MediaQuery.viewPaddingOf(context).bottom);
         }
-        return ((Widget)(object?)new Padding(padding: global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateOnly(left: Math.Max((this.left ? ((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding__3761).left : 0.0), ((global::Doroti.Generated.Framework.Painting.EdgeInsets)this.minimum).left), top: Math.Max((this.top ? ((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding__3761).top : 0.0), ((global::Doroti.Generated.Framework.Painting.EdgeInsets)this.minimum).top), right: Math.Max((this.right ? ((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding__3761).right : 0.0), ((global::Doroti.Generated.Framework.Painting.EdgeInsets)this.minimum).right), bottom: Math.Max((this.bottom ? ((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding__3761).bottom : 0.0), ((global::Doroti.Generated.Framework.Painting.EdgeInsets)this.minimum).bottom)), child: MediaQuery.CreateRemovePadding(context: context, removeLeft: this.left, removeTop: this.top, removeRight: this.right, removeBottom: this.bottom, child: this.child)));
+        return ((Widget)(object?)new Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: Math.Max((this.left ? ((global::Doroti.Framework.Painting.EdgeInsets)padding__3761).left : 0.0), ((global::Doroti.Framework.Painting.EdgeInsets)this.minimum).left), top: Math.Max((this.top ? ((global::Doroti.Framework.Painting.EdgeInsets)padding__3761).top : 0.0), ((global::Doroti.Framework.Painting.EdgeInsets)this.minimum).top), right: Math.Max((this.right ? ((global::Doroti.Framework.Painting.EdgeInsets)padding__3761).right : 0.0), ((global::Doroti.Framework.Painting.EdgeInsets)this.minimum).right), bottom: Math.Max((this.bottom ? ((global::Doroti.Framework.Painting.EdgeInsets)padding__3761).bottom : 0.0), ((global::Doroti.Framework.Painting.EdgeInsets)this.minimum).bottom)), child: MediaQuery.CreateRemovePadding(context: context, removeLeft: this.left, removeTop: this.top, removeRight: this.right, removeBottom: this.bottom, child: this.child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("left", value: this.left, ifTrue: "avoid left padding"));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("top", value: this.top, ifTrue: "avoid top padding"));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("right", value: this.right, ifTrue: "avoid right padding"));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("bottom", value: this.bottom, ifTrue: "avoid bottom padding"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("left", value: this.left, ifTrue: "avoid left padding"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("top", value: this.top, ifTrue: "avoid top padding"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("right", value: this.right, ifTrue: "avoid right padding"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("bottom", value: this.bottom, ifTrue: "avoid bottom padding"));
     }
 
 }
@@ -65,12 +65,12 @@ public class SliverSafeArea : StatelessWidget
     public virtual bool top { get; private set; } = default!;
     public virtual bool right { get; private set; } = default!;
     public virtual bool bottom { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Painting.EdgeInsets minimum { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Painting.EdgeInsets minimum { get; private set; } = default!;
     public virtual Widget sliver { get; private set; } = default!;
 
-    public SliverSafeArea(global::Doroti.Generated.Framework.Foundation.Key? key = null, bool left = true, bool top = true, bool right = true, bool bottom = true, global::Doroti.Generated.Framework.Painting.EdgeInsets minimum = default!, Widget sliver = default!) : base(key: key)
+    public SliverSafeArea(global::Doroti.Framework.Foundation.Key? key = null, bool left = true, bool top = true, bool right = true, bool bottom = true, global::Doroti.Framework.Painting.EdgeInsets minimum = default!, Widget sliver = default!) : base(key: key)
     {
-        global::Doroti.Generated.Framework.Painting.EdgeInsets __minimum = minimum ?? global::Doroti.Generated.Framework.Painting.EdgeInsets.zero;
+        global::Doroti.Framework.Painting.EdgeInsets __minimum = minimum ?? global::Doroti.Framework.Painting.EdgeInsets.zero;
         this.left = left;
         this.top = top;
         this.right = right;
@@ -81,19 +81,19 @@ public class SliverSafeArea : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-        global::Doroti.Generated.Framework.Painting.EdgeInsets padding__7030 = ((global::Doroti.Generated.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
-        return ((Widget)(object?)new SliverPadding(padding: global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateOnly(left: Math.Max((this.left ? ((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding__7030).left : 0.0), ((global::Doroti.Generated.Framework.Painting.EdgeInsets)this.minimum).left), top: Math.Max((this.top ? ((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding__7030).top : 0.0), ((global::Doroti.Generated.Framework.Painting.EdgeInsets)this.minimum).top), right: Math.Max((this.right ? ((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding__7030).right : 0.0), ((global::Doroti.Generated.Framework.Painting.EdgeInsets)this.minimum).right), bottom: Math.Max((this.bottom ? ((global::Doroti.Generated.Framework.Painting.EdgeInsets)padding__7030).bottom : 0.0), ((global::Doroti.Generated.Framework.Painting.EdgeInsets)this.minimum).bottom)), sliver: MediaQuery.CreateRemovePadding(context: context, removeLeft: this.left, removeTop: this.top, removeRight: this.right, removeBottom: this.bottom, child: this.sliver)));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
+        global::Doroti.Framework.Painting.EdgeInsets padding__7030 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
+        return ((Widget)(object?)new SliverPadding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: Math.Max((this.left ? ((global::Doroti.Framework.Painting.EdgeInsets)padding__7030).left : 0.0), ((global::Doroti.Framework.Painting.EdgeInsets)this.minimum).left), top: Math.Max((this.top ? ((global::Doroti.Framework.Painting.EdgeInsets)padding__7030).top : 0.0), ((global::Doroti.Framework.Painting.EdgeInsets)this.minimum).top), right: Math.Max((this.right ? ((global::Doroti.Framework.Painting.EdgeInsets)padding__7030).right : 0.0), ((global::Doroti.Framework.Painting.EdgeInsets)this.minimum).right), bottom: Math.Max((this.bottom ? ((global::Doroti.Framework.Painting.EdgeInsets)padding__7030).bottom : 0.0), ((global::Doroti.Framework.Painting.EdgeInsets)this.minimum).bottom)), sliver: MediaQuery.CreateRemovePadding(context: context, removeLeft: this.left, removeTop: this.top, removeRight: this.right, removeBottom: this.bottom, child: this.sliver)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("left", value: this.left, ifTrue: "avoid left padding"));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("top", value: this.top, ifTrue: "avoid top padding"));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("right", value: this.right, ifTrue: "avoid right padding"));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("bottom", value: this.bottom, ifTrue: "avoid bottom padding"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("left", value: this.left, ifTrue: "avoid left padding"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("top", value: this.top, ifTrue: "avoid top padding"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("right", value: this.right, ifTrue: "avoid right padding"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("bottom", value: this.bottom, ifTrue: "avoid bottom padding"));
     }
 
 }

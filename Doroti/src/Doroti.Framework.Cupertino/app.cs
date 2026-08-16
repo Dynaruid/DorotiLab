@@ -12,28 +12,28 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Cupertino;
+namespace Doroti.Framework.Cupertino;
 
-public class CupertinoApp : global::Doroti.Generated.Framework.Widgets.StatefulWidget
+public class CupertinoApp : global::Doroti.Framework.Widgets.StatefulWidget
 {
-    public virtual global::Doroti.Generated.Framework.Widgets.GlobalKey<global::Doroti.Generated.Framework.Widgets.NavigatorState>? navigatorKey { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.Widget? home { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState>? navigatorKey { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.Widget? home { get; private set; }
     public virtual CupertinoThemeData? theme { get; private set; }
-    public virtual DartMap<string, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget>>? routes { get; private set; }
+    public virtual DartMap<string, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>>? routes { get; private set; }
     public virtual string? initialRoute { get; private set; }
-    public virtual global::System.Func<global::Doroti.Generated.Framework.Widgets.RouteSettings, dynamic>? onGenerateRoute { get; private set; }
+    public virtual global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic>? onGenerateRoute { get; private set; }
     public virtual global::System.Func<string, List<dynamic>>? onGenerateInitialRoutes { get; private set; }
-    public virtual global::System.Func<global::Doroti.Generated.Framework.Widgets.RouteSettings, dynamic>? onUnknownRoute { get; private set; }
-    public virtual global::System.Func<global::Doroti.Generated.Framework.Widgets.NavigationNotification, bool>? onNavigationNotification { get; private set; }
-    public virtual List<global::Doroti.Generated.Framework.Widgets.NavigatorObserver>? navigatorObservers { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.RouteInformationProvider? routeInformationProvider { get; private set; }
+    public virtual global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic>? onUnknownRoute { get; private set; }
+    public virtual global::System.Func<global::Doroti.Framework.Widgets.NavigationNotification, bool>? onNavigationNotification { get; private set; }
+    public virtual List<global::Doroti.Framework.Widgets.NavigatorObserver>? navigatorObservers { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.RouteInformationProvider? routeInformationProvider { get; private set; }
     public virtual dynamic routeInformationParser { get; private set; } = default!;
     public virtual dynamic routerDelegate { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Widgets.BackButtonDispatcher? backButtonDispatcher { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.RouterConfig<object>? routerConfig { get; private set; }
-    public virtual global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>? builder { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.BackButtonDispatcher? backButtonDispatcher { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.RouterConfig<object>? routerConfig { get; private set; }
+    public virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>? builder { get; private set; }
     public virtual string? title { get; private set; }
-    public virtual global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, string>? onGenerateTitle { get; private set; }
+    public virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, string>? onGenerateTitle { get; private set; }
     public virtual Color? color { get; private set; }
     public virtual Locale? locale { get; private set; }
     public virtual IEnumerable<dynamic>? localizationsDelegates { get; private set; }
@@ -45,16 +45,16 @@ public class CupertinoApp : global::Doroti.Generated.Framework.Widgets.StatefulW
     public virtual bool checkerboardOffscreenLayers { get; private set; } = default!;
     public virtual bool showSemanticsDebugger { get; private set; } = default!;
     public virtual bool debugShowCheckedModeBanner { get; private set; } = default!;
-    public virtual DartMap<global::Doroti.Generated.Framework.Widgets.ShortcutActivator, global::Doroti.Generated.Framework.Widgets.Intent>? shortcuts { get; private set; }
+    public virtual DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent>? shortcuts { get; private set; }
     public virtual DartMap<Type, dynamic>? actions { get; private set; }
     public virtual string? restorationScopeId { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Widgets.ScrollBehavior? scrollBehavior { get; private set; }
+    public virtual global::Doroti.Framework.Widgets.ScrollBehavior? scrollBehavior { get; private set; }
     public virtual bool useInheritedMediaQuery { get; private set; } = default!;
 
-    public CupertinoApp(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Widgets.GlobalKey<global::Doroti.Generated.Framework.Widgets.NavigatorState>? navigatorKey = null, global::Doroti.Generated.Framework.Widgets.Widget? home = null, CupertinoThemeData? theme = null, DartMap<string, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget>> routes = default!, string? initialRoute = null, global::System.Func<global::Doroti.Generated.Framework.Widgets.RouteSettings, dynamic>? onGenerateRoute = null, global::System.Func<string, List<dynamic>>? onGenerateInitialRoutes = null, global::System.Func<global::Doroti.Generated.Framework.Widgets.RouteSettings, dynamic>? onUnknownRoute = null, global::System.Func<global::Doroti.Generated.Framework.Widgets.NavigationNotification, bool>? onNavigationNotification = null, List<global::Doroti.Generated.Framework.Widgets.NavigatorObserver> navigatorObservers = default!, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>? builder = null, string? title = null, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, string>? onGenerateTitle = null, Color? color = null, Locale? locale = null, IEnumerable<dynamic>? localizationsDelegates = null, global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback = null, global::System.Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback = null, IEnumerable<Locale> supportedLocales = default!, bool showPerformanceOverlay = false, bool checkerboardRasterCacheImages = false, bool checkerboardOffscreenLayers = false, bool showSemanticsDebugger = false, bool debugShowCheckedModeBanner = true, DartMap<global::Doroti.Generated.Framework.Widgets.ShortcutActivator, global::Doroti.Generated.Framework.Widgets.Intent>? shortcuts = null, DartMap<Type, dynamic>? actions = null, string? restorationScopeId = null, global::Doroti.Generated.Framework.Widgets.ScrollBehavior? scrollBehavior = null, bool useInheritedMediaQuery = false) : base(key: key)
+    public CupertinoApp(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState>? navigatorKey = null, global::Doroti.Framework.Widgets.Widget? home = null, CupertinoThemeData? theme = null, DartMap<string, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>> routes = default!, string? initialRoute = null, global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic>? onGenerateRoute = null, global::System.Func<string, List<dynamic>>? onGenerateInitialRoutes = null, global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic>? onUnknownRoute = null, global::System.Func<global::Doroti.Framework.Widgets.NavigationNotification, bool>? onNavigationNotification = null, List<global::Doroti.Framework.Widgets.NavigatorObserver> navigatorObservers = default!, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>? builder = null, string? title = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, string>? onGenerateTitle = null, Color? color = null, Locale? locale = null, IEnumerable<dynamic>? localizationsDelegates = null, global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback = null, global::System.Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback = null, IEnumerable<Locale> supportedLocales = default!, bool showPerformanceOverlay = false, bool checkerboardRasterCacheImages = false, bool checkerboardOffscreenLayers = false, bool showSemanticsDebugger = false, bool debugShowCheckedModeBanner = true, DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent>? shortcuts = null, DartMap<Type, dynamic>? actions = null, string? restorationScopeId = null, global::Doroti.Framework.Widgets.ScrollBehavior? scrollBehavior = null, bool useInheritedMediaQuery = false) : base(key: key)
     {
-        DartMap<string, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget>> __routes = routes ?? new DartMap<string, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget>>();
-        List<global::Doroti.Generated.Framework.Widgets.NavigatorObserver> __navigatorObservers = navigatorObservers ?? new List<global::Doroti.Generated.Framework.Widgets.NavigatorObserver>();
+        DartMap<string, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>> __routes = routes ?? new DartMap<string, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>>();
+        List<global::Doroti.Framework.Widgets.NavigatorObserver> __navigatorObservers = navigatorObservers ?? new List<global::Doroti.Framework.Widgets.NavigatorObserver>();
         IEnumerable<Locale> __supportedLocales = supportedLocales ?? new List<Locale> { new Locale("en", "US") };
         this.navigatorKey = navigatorKey;
         this.home = home;
@@ -92,9 +92,9 @@ public class CupertinoApp : global::Doroti.Generated.Framework.Widgets.StatefulW
         this.routerConfig = null;
     }
 
-    public static CupertinoApp CreateRouter(global::Doroti.Generated.Framework.Foundation.Key? key = null, global::Doroti.Generated.Framework.Widgets.RouteInformationProvider? routeInformationProvider = null, dynamic routeInformationParser = null, dynamic routerDelegate = null, global::Doroti.Generated.Framework.Widgets.BackButtonDispatcher? backButtonDispatcher = null, global::Doroti.Generated.Framework.Widgets.RouterConfig<object>? routerConfig = null, CupertinoThemeData? theme = null, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>? builder = null, string? title = null, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, string>? onGenerateTitle = null, global::System.Func<global::Doroti.Generated.Framework.Widgets.NavigationNotification, bool>? onNavigationNotification = null, Color? color = null, Locale? locale = null, IEnumerable<dynamic>? localizationsDelegates = null, global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback = null, global::System.Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback = null, IEnumerable<Locale> supportedLocales = default!, bool showPerformanceOverlay = false, bool checkerboardRasterCacheImages = false, bool checkerboardOffscreenLayers = false, bool showSemanticsDebugger = false, bool debugShowCheckedModeBanner = true, DartMap<global::Doroti.Generated.Framework.Widgets.ShortcutActivator, global::Doroti.Generated.Framework.Widgets.Intent>? shortcuts = null, DartMap<Type, dynamic>? actions = null, string? restorationScopeId = null, global::Doroti.Generated.Framework.Widgets.ScrollBehavior? scrollBehavior = null, bool useInheritedMediaQuery = false)
+    public static CupertinoApp CreateRouter(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Widgets.RouteInformationProvider? routeInformationProvider = null, dynamic routeInformationParser = null, dynamic routerDelegate = null, global::Doroti.Framework.Widgets.BackButtonDispatcher? backButtonDispatcher = null, global::Doroti.Framework.Widgets.RouterConfig<object>? routerConfig = null, CupertinoThemeData? theme = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>? builder = null, string? title = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, string>? onGenerateTitle = null, global::System.Func<global::Doroti.Framework.Widgets.NavigationNotification, bool>? onNavigationNotification = null, Color? color = null, Locale? locale = null, IEnumerable<dynamic>? localizationsDelegates = null, global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>? localeListResolutionCallback = null, global::System.Func<Locale?, IEnumerable<Locale>, Locale?>? localeResolutionCallback = null, IEnumerable<Locale> supportedLocales = default!, bool showPerformanceOverlay = false, bool checkerboardRasterCacheImages = false, bool checkerboardOffscreenLayers = false, bool showSemanticsDebugger = false, bool debugShowCheckedModeBanner = true, DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent>? shortcuts = null, DartMap<Type, dynamic>? actions = null, string? restorationScopeId = null, global::Doroti.Framework.Widgets.ScrollBehavior? scrollBehavior = null, bool useInheritedMediaQuery = false)
     {
-        var __instance = new CupertinoApp(key: key, theme: theme, routes: new DartMap<string, global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget>>(), onNavigationNotification: onNavigationNotification, navigatorObservers: new List<global::Doroti.Generated.Framework.Widgets.NavigatorObserver>(), builder: builder, title: title, onGenerateTitle: onGenerateTitle, color: color, locale: locale, localizationsDelegates: localizationsDelegates, localeListResolutionCallback: localeListResolutionCallback, localeResolutionCallback: localeResolutionCallback, supportedLocales: supportedLocales, showPerformanceOverlay: showPerformanceOverlay, checkerboardRasterCacheImages: checkerboardRasterCacheImages, checkerboardOffscreenLayers: checkerboardOffscreenLayers, showSemanticsDebugger: showSemanticsDebugger, debugShowCheckedModeBanner: debugShowCheckedModeBanner, shortcuts: shortcuts, actions: actions, restorationScopeId: restorationScopeId, scrollBehavior: scrollBehavior, useInheritedMediaQuery: useInheritedMediaQuery);
+        var __instance = new CupertinoApp(key: key, theme: theme, routes: new DartMap<string, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>>(), onNavigationNotification: onNavigationNotification, navigatorObservers: new List<global::Doroti.Framework.Widgets.NavigatorObserver>(), builder: builder, title: title, onGenerateTitle: onGenerateTitle, color: color, locale: locale, localizationsDelegates: localizationsDelegates, localeListResolutionCallback: localeListResolutionCallback, localeResolutionCallback: localeResolutionCallback, supportedLocales: supportedLocales, showPerformanceOverlay: showPerformanceOverlay, checkerboardRasterCacheImages: checkerboardRasterCacheImages, checkerboardOffscreenLayers: checkerboardOffscreenLayers, showSemanticsDebugger: showSemanticsDebugger, debugShowCheckedModeBanner: debugShowCheckedModeBanner, shortcuts: shortcuts, actions: actions, restorationScopeId: restorationScopeId, scrollBehavior: scrollBehavior, useInheritedMediaQuery: useInheritedMediaQuery);
         IEnumerable<Locale> __supportedLocales = supportedLocales ?? new List<Locale> { new Locale("en", "US") };
         __instance.routeInformationProvider = routeInformationProvider;
         __instance.routeInformationParser = routeInformationParser;
@@ -134,29 +134,29 @@ public class CupertinoApp : global::Doroti.Generated.Framework.Widgets.StatefulW
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoAppState__app());
-    public static global::Doroti.Generated.Framework.Widgets.HeroController createCupertinoHeroController() => new global::Doroti.Generated.Framework.Widgets.HeroController();
+    public static global::Doroti.Framework.Widgets.HeroController createCupertinoHeroController() => new global::Doroti.Framework.Widgets.HeroController();
 }
 
-public class CupertinoScrollBehavior : global::Doroti.Generated.Framework.Widgets.ScrollBehavior
+public class CupertinoScrollBehavior : global::Doroti.Framework.Widgets.ScrollBehavior
 {
     public CupertinoScrollBehavior()
     {
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget buildScrollbar(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Widgets.Widget child, global::Doroti.Generated.Framework.Widgets.ScrollableDetails details)
+    public override global::Doroti.Framework.Widgets.Widget buildScrollbar(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child, global::Doroti.Framework.Widgets.ScrollableDetails details)
     {
         switch (getPlatform(context))
         {
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.linux:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.macOS:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.windows:
+            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
+            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
                 {
-                    DartRuntimePrimitives.Assert(() => (((global::Doroti.Generated.Framework.Widgets.ScrollableDetails)details).controller is not null));
-                    return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new CupertinoScrollbar(controller: ((global::Doroti.Generated.Framework.Widgets.ScrollableDetails)details).controller, child: child));
+                    DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Widgets.ScrollableDetails)details).controller is not null));
+                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoScrollbar(controller: ((global::Doroti.Framework.Widgets.ScrollableDetails)details).controller, child: child));
                 }
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.android:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.fuchsia:
-            case global::Doroti.Generated.Framework.Foundation.TargetPlatform.iOS:
+            case global::Doroti.Framework.Foundation.TargetPlatform.android:
+            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
+            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
                 {
                     return child;
                 }
@@ -166,28 +166,28 @@ public class CupertinoScrollBehavior : global::Doroti.Generated.Framework.Widget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget buildOverscrollIndicator(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Widgets.Widget child, global::Doroti.Generated.Framework.Widgets.ScrollableDetails details)
+    public override global::Doroti.Framework.Widgets.Widget buildOverscrollIndicator(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child, global::Doroti.Framework.Widgets.ScrollableDetails details)
     {
         return child;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.ScrollPhysics getScrollPhysics(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.ScrollPhysics getScrollPhysics(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        if ((object.Equals(getPlatform(context), global::Doroti.Generated.Framework.Foundation.TargetPlatform.macOS)))
+        if ((object.Equals(getPlatform(context), global::Doroti.Framework.Foundation.TargetPlatform.macOS)))
         {
-            return ((global::Doroti.Generated.Framework.Widgets.ScrollPhysics)(object?)new global::Doroti.Generated.Framework.Widgets.BouncingScrollPhysics(decelerationRate: global::Doroti.Generated.Framework.Widgets.ScrollDecelerationRate.fast));
+            return ((global::Doroti.Framework.Widgets.ScrollPhysics)(object?)new global::Doroti.Framework.Widgets.BouncingScrollPhysics(decelerationRate: global::Doroti.Framework.Widgets.ScrollDecelerationRate.fast));
         }
-        return ((global::Doroti.Generated.Framework.Widgets.ScrollPhysics)(object?)new global::Doroti.Generated.Framework.Widgets.BouncingScrollPhysics());
+        return ((global::Doroti.Framework.Widgets.ScrollPhysics)(object?)new global::Doroti.Framework.Widgets.BouncingScrollPhysics());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Gestures.MultitouchDragStrategy getMultitouchDragStrategy(global::Doroti.Generated.Framework.Widgets.BuildContext context) => global::Doroti.Generated.Framework.Gestures.MultitouchDragStrategy.averageBoundaryPointers;
+    public override global::Doroti.Framework.Gestures.MultitouchDragStrategy getMultitouchDragStrategy(global::Doroti.Framework.Widgets.BuildContext context) => global::Doroti.Framework.Gestures.MultitouchDragStrategy.averageBoundaryPointers;
 }
 
-internal class _CupertinoAppState__app : global::Doroti.Generated.Framework.Widgets.State<CupertinoApp>
+internal class _CupertinoAppState__app : global::Doroti.Framework.Widgets.State<CupertinoApp>
 {
-    internal virtual global::Doroti.Generated.Framework.Widgets.HeroController _heroController { get; set; } = default!;
+    internal virtual global::Doroti.Framework.Widgets.HeroController _heroController { get; set; } = default!;
 
     internal virtual bool _usesRouter => DartRuntimePrimitives.ConvertValue<bool>(((((CupertinoApp)this.widget).routerDelegate is not null) || (((CupertinoApp)this.widget).routerConfig is not null)));
     public override void initState()
@@ -210,90 +210,90 @@ internal class _CupertinoAppState__app : global::Doroti.Generated.Framework.Widg
             return default!;
         }
     }
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _exitWidgetSelectionButtonBuilder(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::Doroti.Generated.Framework.Widgets.GlobalKey<IState> key, global::System.Action onPressed, string semanticsLabel)
+    internal virtual global::Doroti.Framework.Widgets.Widget _exitWidgetSelectionButtonBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.GlobalKey<IState> key, global::System.Action onPressed, string semanticsLabel)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new _CupertinoInspectorButton__app(onPressed: () => onPressed(), semanticsLabel: semanticsLabel, icon: CupertinoIcons.xmark, buttonKey: key));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _CupertinoInspectorButton__app(onPressed: () => onPressed(), semanticsLabel: semanticsLabel, icon: CupertinoIcons.xmark, buttonKey: key));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _moveExitWidgetSelectionButtonBuilder(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::System.Action onPressed, string semanticsLabel, bool usesDefaultAlignment = true)
+    internal virtual global::Doroti.Framework.Widgets.Widget _moveExitWidgetSelectionButtonBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::System.Action onPressed, string semanticsLabel, bool usesDefaultAlignment = true)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)_CupertinoInspectorButton__app.CreateIconOnly(onPressed: onPressed, semanticsLabel: semanticsLabel, icon: (usesDefaultAlignment ? CupertinoIcons.arrow_right : CupertinoIcons.arrow_left)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)_CupertinoInspectorButton__app.CreateIconOnly(onPressed: onPressed, semanticsLabel: semanticsLabel, icon: (usesDefaultAlignment ? CupertinoIcons.arrow_right : CupertinoIcons.arrow_left)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.Widget _tapBehaviorButtonBuilder(global::Doroti.Generated.Framework.Widgets.BuildContext context, global::System.Action onPressed, bool selectionOnTapEnabled, string semanticsLabel)
+    internal virtual global::Doroti.Framework.Widgets.Widget _tapBehaviorButtonBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::System.Action onPressed, bool selectionOnTapEnabled, string semanticsLabel)
     {
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)_CupertinoInspectorButton__app.CreateToggle(onPressed: () => onPressed(), semanticsLabel: semanticsLabel, icon: new global::Doroti.Generated.Framework.Widgets.IconData(128842L), toggledOn: selectionOnTapEnabled));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)_CupertinoInspectorButton__app.CreateToggle(onPressed: () => onPressed(), semanticsLabel: semanticsLabel, icon: new global::Doroti.Framework.Widgets.IconData(128842L), toggledOn: selectionOnTapEnabled));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Generated.Framework.Widgets.WidgetsApp _buildWidgetApp(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    internal virtual global::Doroti.Framework.Widgets.WidgetsApp _buildWidgetApp(global::Doroti.Framework.Widgets.BuildContext context)
     {
         CupertinoThemeData effectiveThemeData__20419 = CupertinoTheme.of(context);
         global::Doroti.Ui.Color color__20484 = ((global::Doroti.Ui.Color)(object?)CupertinoDynamicColor.resolve((((CupertinoApp)this.widget).color ?? effectiveThemeData__20419.primaryColor), context));
         if (this._usesRouter)
         {
-            return global::Doroti.Generated.Framework.Widgets.WidgetsApp.CreateRouter(key: new global::Doroti.Generated.Framework.Widgets.GlobalObjectKey<IState>(this), routeInformationProvider: ((CupertinoApp)this.widget).routeInformationProvider, routeInformationParser: ((CupertinoApp)this.widget).routeInformationParser, routerDelegate: ((CupertinoApp)this.widget).routerDelegate, routerConfig: ((CupertinoApp)this.widget).routerConfig, backButtonDispatcher: ((CupertinoApp)this.widget).backButtonDispatcher, onNavigationNotification: (global::System.Func<global::Doroti.Generated.Framework.Widgets.NavigationNotification, bool>?)((CupertinoApp)this.widget).onNavigationNotification, builder: (global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>?)((CupertinoApp)this.widget).builder, title: ((CupertinoApp)this.widget).title, onGenerateTitle: (global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, string>?)((CupertinoApp)this.widget).onGenerateTitle, textStyle: effectiveThemeData__20419.textTheme.textStyle, color: color__20484, locale: ((CupertinoApp)this.widget).locale, localizationsDelegates: this._localizationsDelegates.Cast<dynamic>(), localeResolutionCallback: (global::System.Func<Locale?, IEnumerable<Locale>, Locale?>?)((CupertinoApp)this.widget).localeResolutionCallback, localeListResolutionCallback: (global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>?)((CupertinoApp)this.widget).localeListResolutionCallback, supportedLocales: ((CupertinoApp)this.widget).supportedLocales.Cast<Locale>(), showPerformanceOverlay: ((CupertinoApp)this.widget).showPerformanceOverlay, showSemanticsDebugger: ((CupertinoApp)this.widget).showSemanticsDebugger, debugShowCheckedModeBanner: ((CupertinoApp)this.widget).debugShowCheckedModeBanner, exitWidgetSelectionButtonBuilder: (ExitWidgetSelectionButtonBuilder)this._exitWidgetSelectionButtonBuilder, moveExitWidgetSelectionButtonBuilder: (MoveExitWidgetSelectionButtonBuilder)this._moveExitWidgetSelectionButtonBuilder, tapBehaviorButtonBuilder: (TapBehaviorButtonBuilder)this._tapBehaviorButtonBuilder, shortcuts: ((CupertinoApp)this.widget).shortcuts, actions: ((CupertinoApp)this.widget).actions, restorationScopeId: ((CupertinoApp)this.widget).restorationScopeId);
+            return global::Doroti.Framework.Widgets.WidgetsApp.CreateRouter(key: new global::Doroti.Framework.Widgets.GlobalObjectKey<IState>(this), routeInformationProvider: ((CupertinoApp)this.widget).routeInformationProvider, routeInformationParser: ((CupertinoApp)this.widget).routeInformationParser, routerDelegate: ((CupertinoApp)this.widget).routerDelegate, routerConfig: ((CupertinoApp)this.widget).routerConfig, backButtonDispatcher: ((CupertinoApp)this.widget).backButtonDispatcher, onNavigationNotification: (global::System.Func<global::Doroti.Framework.Widgets.NavigationNotification, bool>?)((CupertinoApp)this.widget).onNavigationNotification, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>?)((CupertinoApp)this.widget).builder, title: ((CupertinoApp)this.widget).title, onGenerateTitle: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, string>?)((CupertinoApp)this.widget).onGenerateTitle, textStyle: effectiveThemeData__20419.textTheme.textStyle, color: color__20484, locale: ((CupertinoApp)this.widget).locale, localizationsDelegates: this._localizationsDelegates.Cast<dynamic>(), localeResolutionCallback: (global::System.Func<Locale?, IEnumerable<Locale>, Locale?>?)((CupertinoApp)this.widget).localeResolutionCallback, localeListResolutionCallback: (global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>?)((CupertinoApp)this.widget).localeListResolutionCallback, supportedLocales: ((CupertinoApp)this.widget).supportedLocales.Cast<Locale>(), showPerformanceOverlay: ((CupertinoApp)this.widget).showPerformanceOverlay, showSemanticsDebugger: ((CupertinoApp)this.widget).showSemanticsDebugger, debugShowCheckedModeBanner: ((CupertinoApp)this.widget).debugShowCheckedModeBanner, exitWidgetSelectionButtonBuilder: (ExitWidgetSelectionButtonBuilder)this._exitWidgetSelectionButtonBuilder, moveExitWidgetSelectionButtonBuilder: (MoveExitWidgetSelectionButtonBuilder)this._moveExitWidgetSelectionButtonBuilder, tapBehaviorButtonBuilder: (TapBehaviorButtonBuilder)this._tapBehaviorButtonBuilder, shortcuts: ((CupertinoApp)this.widget).shortcuts, actions: ((CupertinoApp)this.widget).actions, restorationScopeId: ((CupertinoApp)this.widget).restorationScopeId);
         }
-        return new global::Doroti.Generated.Framework.Widgets.WidgetsApp(key: new global::Doroti.Generated.Framework.Widgets.GlobalObjectKey<IState>(this), navigatorKey: ((CupertinoApp)this.widget).navigatorKey, navigatorObservers: ((CupertinoApp)this.widget).navigatorObservers!, pageRouteBuilder: ((PageRouteFactory)((settings, builder) => {
-return new CupertinoPageRoute<object>(settings: settings, builder: (global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget>)builder);
+        return new global::Doroti.Framework.Widgets.WidgetsApp(key: new global::Doroti.Framework.Widgets.GlobalObjectKey<IState>(this), navigatorKey: ((CupertinoApp)this.widget).navigatorKey, navigatorObservers: ((CupertinoApp)this.widget).navigatorObservers!, pageRouteBuilder: ((PageRouteFactory)((settings, builder) => {
+return new CupertinoPageRoute<object>(settings: settings, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)builder);
 throw new InvalidOperationException("Dart closure completed without a value.");
-})), home: ((CupertinoApp)this.widget).home, routes: ((CupertinoApp)this.widget).routes!, initialRoute: ((CupertinoApp)this.widget).initialRoute, onGenerateRoute: (global::System.Func<global::Doroti.Generated.Framework.Widgets.RouteSettings, dynamic>?)((CupertinoApp)this.widget).onGenerateRoute, onGenerateInitialRoutes: (global::System.Func<string, List<dynamic>>?)((CupertinoApp)this.widget).onGenerateInitialRoutes, onUnknownRoute: (global::System.Func<global::Doroti.Generated.Framework.Widgets.RouteSettings, dynamic>?)((CupertinoApp)this.widget).onUnknownRoute, onNavigationNotification: (global::System.Func<global::Doroti.Generated.Framework.Widgets.NavigationNotification, bool>?)((CupertinoApp)this.widget).onNavigationNotification, builder: (global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.Widget?, global::Doroti.Generated.Framework.Widgets.Widget>?)((CupertinoApp)this.widget).builder, title: ((CupertinoApp)this.widget).title, onGenerateTitle: (global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, string>?)((CupertinoApp)this.widget).onGenerateTitle, textStyle: effectiveThemeData__20419.textTheme.textStyle, color: color__20484, locale: ((CupertinoApp)this.widget).locale, localizationsDelegates: this._localizationsDelegates.Cast<dynamic>(), localeResolutionCallback: (global::System.Func<Locale?, IEnumerable<Locale>, Locale?>?)((CupertinoApp)this.widget).localeResolutionCallback, localeListResolutionCallback: (global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>?)((CupertinoApp)this.widget).localeListResolutionCallback, supportedLocales: ((CupertinoApp)this.widget).supportedLocales.Cast<Locale>(), showPerformanceOverlay: ((CupertinoApp)this.widget).showPerformanceOverlay, showSemanticsDebugger: ((CupertinoApp)this.widget).showSemanticsDebugger, debugShowCheckedModeBanner: ((CupertinoApp)this.widget).debugShowCheckedModeBanner, exitWidgetSelectionButtonBuilder: (ExitWidgetSelectionButtonBuilder)this._exitWidgetSelectionButtonBuilder, moveExitWidgetSelectionButtonBuilder: (MoveExitWidgetSelectionButtonBuilder)this._moveExitWidgetSelectionButtonBuilder, tapBehaviorButtonBuilder: (TapBehaviorButtonBuilder)this._tapBehaviorButtonBuilder, shortcuts: ((CupertinoApp)this.widget).shortcuts, actions: ((CupertinoApp)this.widget).actions, restorationScopeId: ((CupertinoApp)this.widget).restorationScopeId);
+})), home: ((CupertinoApp)this.widget).home, routes: ((CupertinoApp)this.widget).routes!, initialRoute: ((CupertinoApp)this.widget).initialRoute, onGenerateRoute: (global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic>?)((CupertinoApp)this.widget).onGenerateRoute, onGenerateInitialRoutes: (global::System.Func<string, List<dynamic>>?)((CupertinoApp)this.widget).onGenerateInitialRoutes, onUnknownRoute: (global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic>?)((CupertinoApp)this.widget).onUnknownRoute, onNavigationNotification: (global::System.Func<global::Doroti.Framework.Widgets.NavigationNotification, bool>?)((CupertinoApp)this.widget).onNavigationNotification, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>?)((CupertinoApp)this.widget).builder, title: ((CupertinoApp)this.widget).title, onGenerateTitle: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, string>?)((CupertinoApp)this.widget).onGenerateTitle, textStyle: effectiveThemeData__20419.textTheme.textStyle, color: color__20484, locale: ((CupertinoApp)this.widget).locale, localizationsDelegates: this._localizationsDelegates.Cast<dynamic>(), localeResolutionCallback: (global::System.Func<Locale?, IEnumerable<Locale>, Locale?>?)((CupertinoApp)this.widget).localeResolutionCallback, localeListResolutionCallback: (global::System.Func<List<Locale>?, IEnumerable<Locale>, Locale?>?)((CupertinoApp)this.widget).localeListResolutionCallback, supportedLocales: ((CupertinoApp)this.widget).supportedLocales.Cast<Locale>(), showPerformanceOverlay: ((CupertinoApp)this.widget).showPerformanceOverlay, showSemanticsDebugger: ((CupertinoApp)this.widget).showSemanticsDebugger, debugShowCheckedModeBanner: ((CupertinoApp)this.widget).debugShowCheckedModeBanner, exitWidgetSelectionButtonBuilder: (ExitWidgetSelectionButtonBuilder)this._exitWidgetSelectionButtonBuilder, moveExitWidgetSelectionButtonBuilder: (MoveExitWidgetSelectionButtonBuilder)this._moveExitWidgetSelectionButtonBuilder, tapBehaviorButtonBuilder: (TapBehaviorButtonBuilder)this._tapBehaviorButtonBuilder, shortcuts: ((CupertinoApp)this.widget).shortcuts, actions: ((CupertinoApp)this.widget).actions, restorationScopeId: ((CupertinoApp)this.widget).restorationScopeId);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         CupertinoThemeData effectiveThemeData__23770 = ((((CupertinoApp)this.widget).theme ?? new CupertinoThemeData())).resolveFrom(context);
         global::Doroti.Ui.Brightness brightness__23963 = ((effectiveThemeData__23770.brightness ?? (Brightness)MediaQuery.platformBrightnessOf(context)));
-        SystemChrome.setSystemUIOverlayStyle(((object.Equals(brightness__23963, Brightness.dark)) ? global::Doroti.Generated.Framework.Services.SystemUiOverlayStyle.light : global::Doroti.Generated.Framework.Services.SystemUiOverlayStyle.dark));
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.ScrollConfiguration(behavior: (((CupertinoApp)this.widget).scrollBehavior ?? new CupertinoScrollBehavior()), child: new CupertinoUserInterfaceLevel(data: CupertinoUserInterfaceLevelData.@base, child: new CupertinoTheme(data: effectiveThemeData__23770, child: new global::Doroti.Generated.Framework.Widgets.DefaultSelectionStyle(selectionColor: effectiveThemeData__23770.primaryColor.withOpacity(0.2), cursorColor: effectiveThemeData__23770.primaryColor, child: new global::Doroti.Generated.Framework.Widgets.HeroControllerScope(controller: this._heroController, child: new global::Doroti.Generated.Framework.Widgets.Builder(builder: (global::System.Func<global::Doroti.Generated.Framework.Widgets.BuildContext, global::Doroti.Generated.Framework.Widgets.WidgetsApp>)this._buildWidgetApp)))))));
+        SystemChrome.setSystemUIOverlayStyle(((object.Equals(brightness__23963, Brightness.dark)) ? global::Doroti.Framework.Services.SystemUiOverlayStyle.light : global::Doroti.Framework.Services.SystemUiOverlayStyle.dark));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ScrollConfiguration(behavior: (((CupertinoApp)this.widget).scrollBehavior ?? new CupertinoScrollBehavior()), child: new CupertinoUserInterfaceLevel(data: CupertinoUserInterfaceLevelData.@base, child: new CupertinoTheme(data: effectiveThemeData__23770, child: new global::Doroti.Framework.Widgets.DefaultSelectionStyle(selectionColor: effectiveThemeData__23770.primaryColor.withOpacity(0.2), cursorColor: effectiveThemeData__23770.primaryColor, child: new global::Doroti.Framework.Widgets.HeroControllerScope(controller: this._heroController, child: new global::Doroti.Framework.Widgets.Builder(builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.WidgetsApp>)this._buildWidgetApp)))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-internal class _CupertinoInspectorButton__app : global::Doroti.Generated.Framework.Widgets.InspectorButton
+internal class _CupertinoInspectorButton__app : global::Doroti.Framework.Widgets.InspectorButton
 {
-    internal _CupertinoInspectorButton__app(global::System.Action onPressed, string semanticsLabel, global::Doroti.Generated.Framework.Widgets.IconData icon, global::Doroti.Generated.Framework.Widgets.GlobalKey<IState>? buttonKey = null) : base(onPressed, semanticsLabel, icon, buttonKey)
+    internal _CupertinoInspectorButton__app(global::System.Action onPressed, string semanticsLabel, global::Doroti.Framework.Widgets.IconData icon, global::Doroti.Framework.Widgets.GlobalKey<IState>? buttonKey = null) : base(onPressed, semanticsLabel, icon, buttonKey)
     {
     }
 
-    internal static _CupertinoInspectorButton__app CreateToggle(global::System.Action onPressed, string semanticsLabel, global::Doroti.Generated.Framework.Widgets.IconData icon, bool toggledOn = true)
+    internal static _CupertinoInspectorButton__app CreateToggle(global::System.Action onPressed, string semanticsLabel, global::Doroti.Framework.Widgets.IconData icon, bool toggledOn = true)
     {
         var __instance = new _CupertinoInspectorButton__app(onPressed: onPressed, semanticsLabel: semanticsLabel, icon: icon);
         return __instance;
     }
 
-    internal static _CupertinoInspectorButton__app CreateIconOnly(global::System.Action onPressed, string semanticsLabel, global::Doroti.Generated.Framework.Widgets.IconData icon)
+    internal static _CupertinoInspectorButton__app CreateIconOnly(global::System.Action onPressed, string semanticsLabel, global::Doroti.Framework.Widgets.IconData icon)
     {
         var __instance = new _CupertinoInspectorButton__app(onPressed: onPressed, semanticsLabel: semanticsLabel, icon: icon);
         return __instance;
     }
 
-    public override global::Doroti.Generated.Framework.Widgets.Widget build(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        var buttonIcon__25484 = new global::Doroti.Generated.Framework.Widgets.Icon(this.icon, semanticLabel: this.semanticsLabel, size: this.iconSizeForVariant, color: foregroundColor(context));
-        return ((global::Doroti.Generated.Framework.Widgets.Widget)(object?)new global::Doroti.Generated.Framework.Widgets.Padding(key: this.buttonKey, padding: global::Doroti.Generated.Framework.Painting.EdgeInsets.CreateAll((((ConstantsLibrary.kMinInteractiveDimensionCupertino - global::Doroti.Generated.Framework.Widgets.InspectorButton.buttonSize)) / 2L)), child: (((object.Equals(this.variant, global::Doroti.Generated.Framework.Widgets.InspectorButtonVariant.toggle)) && !DartRuntimePrimitives.RequireValue(this.toggledOn)) ? new CupertinoButton(minSize: global::Doroti.Generated.Framework.Widgets.InspectorButton.buttonSize, onPressed: this.onPressed, padding: global::Doroti.Generated.Framework.Painting.EdgeInsets.zero, child: buttonIcon__25484) : new CupertinoButton(minSize: global::Doroti.Generated.Framework.Widgets.InspectorButton.buttonSize, onPressed: this.onPressed, padding: global::Doroti.Generated.Framework.Painting.EdgeInsets.zero, color: backgroundColor(context), child: buttonIcon__25484))));
+        var buttonIcon__25484 = new global::Doroti.Framework.Widgets.Icon(this.icon, semanticLabel: this.semanticsLabel, size: this.iconSizeForVariant, color: foregroundColor(context));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(key: this.buttonKey, padding: global::Doroti.Framework.Painting.EdgeInsets.CreateAll((((ConstantsLibrary.kMinInteractiveDimensionCupertino - global::Doroti.Framework.Widgets.InspectorButton.buttonSize)) / 2L)), child: (((object.Equals(this.variant, global::Doroti.Framework.Widgets.InspectorButtonVariant.toggle)) && !DartRuntimePrimitives.RequireValue(this.toggledOn)) ? new CupertinoButton(minSize: global::Doroti.Framework.Widgets.InspectorButton.buttonSize, onPressed: this.onPressed, padding: global::Doroti.Framework.Painting.EdgeInsets.zero, child: buttonIcon__25484) : new CupertinoButton(minSize: global::Doroti.Framework.Widgets.InspectorButton.buttonSize, onPressed: this.onPressed, padding: global::Doroti.Framework.Painting.EdgeInsets.zero, color: backgroundColor(context), child: buttonIcon__25484))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override Color foregroundColor(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override Color foregroundColor(global::Doroti.Framework.Widgets.BuildContext context)
     {
         global::Doroti.Ui.Color primaryColor__26415 = ((global::Doroti.Ui.Color)(object?)CupertinoTheme.of(context).primaryColor);
         global::Doroti.Ui.Color secondaryColor__26487 = ((global::Doroti.Ui.Color)(object?)CupertinoTheme.of(context).primaryContrastingColor);
         switch (this.variant)
         {
-            case global::Doroti.Generated.Framework.Widgets.InspectorButtonVariant.filled:
+            case global::Doroti.Framework.Widgets.InspectorButtonVariant.filled:
                 {
                     return secondaryColor__26487;
                 }
-            case global::Doroti.Generated.Framework.Widgets.InspectorButtonVariant.iconOnly:
+            case global::Doroti.Framework.Widgets.InspectorButtonVariant.iconOnly:
                 {
                     return primaryColor__26415;
                 }
-            case global::Doroti.Generated.Framework.Widgets.InspectorButtonVariant.toggle:
+            case global::Doroti.Framework.Widgets.InspectorButtonVariant.toggle:
                 {
                     return (!DartRuntimePrimitives.RequireValue(this.toggledOn) ? primaryColor__26415 : secondaryColor__26487);
                 }
@@ -303,17 +303,17 @@ internal class _CupertinoInspectorButton__app : global::Doroti.Generated.Framewo
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override Color backgroundColor(global::Doroti.Generated.Framework.Widgets.BuildContext context)
+    public override Color backgroundColor(global::Doroti.Framework.Widgets.BuildContext context)
     {
         global::Doroti.Ui.Color primaryColor__26914 = ((global::Doroti.Ui.Color)(object?)CupertinoTheme.of(context).primaryColor);
         switch (this.variant)
         {
-            case global::Doroti.Generated.Framework.Widgets.InspectorButtonVariant.filled:
-            case global::Doroti.Generated.Framework.Widgets.InspectorButtonVariant.toggle:
+            case global::Doroti.Framework.Widgets.InspectorButtonVariant.filled:
+            case global::Doroti.Framework.Widgets.InspectorButtonVariant.toggle:
                 {
                     return primaryColor__26914;
                 }
-            case global::Doroti.Generated.Framework.Widgets.InspectorButtonVariant.iconOnly:
+            case global::Doroti.Framework.Widgets.InspectorButtonVariant.iconOnly:
                 {
                     return new global::Doroti.Ui.Color(0L);
                 }

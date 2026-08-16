@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public class MouseCursorManager
 {
@@ -181,7 +181,7 @@ public class SystemMouseCursor : MouseCursor
         this.kind = kind;
     }
 
-    public override string debugDescription => $"{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SystemMouseCursor"))}({kind})";
+    public override string debugDescription => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SystemMouseCursor"))}({kind})";
     public override MouseCursorSession createSession(long device) => new _SystemMouseCursorSession(this, device);
     public override bool Equals(object? other)
     {

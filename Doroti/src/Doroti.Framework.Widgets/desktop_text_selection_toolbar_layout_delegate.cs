@@ -12,9 +12,9 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
-public class DesktopTextSelectionToolbarLayoutDelegate : global::Doroti.Generated.Framework.Rendering.SingleChildLayoutDelegate
+public class DesktopTextSelectionToolbarLayoutDelegate : global::Doroti.Framework.Rendering.SingleChildLayoutDelegate
 {
     public virtual Offset anchor { get; private set; } = default!;
 
@@ -23,9 +23,9 @@ public class DesktopTextSelectionToolbarLayoutDelegate : global::Doroti.Generate
         this.anchor = anchor;
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.BoxConstraints getConstraintsForChild(global::Doroti.Generated.Framework.Rendering.BoxConstraints constraints)
+    public override global::Doroti.Framework.Rendering.BoxConstraints getConstraintsForChild(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        return ((global::Doroti.Generated.Framework.Rendering.BoxConstraints)(object?)constraints.loosen());
+        return ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)constraints.loosen());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -36,7 +36,7 @@ public class DesktopTextSelectionToolbarLayoutDelegate : global::Doroti.Generate
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override bool shouldRelayout(global::Doroti.Generated.Framework.Rendering.SingleChildLayoutDelegate oldDelegate)
+    public override bool shouldRelayout(global::Doroti.Framework.Rendering.SingleChildLayoutDelegate oldDelegate)
     {
         var __oldDelegate = (DesktopTextSelectionToolbarLayoutDelegate)(object)oldDelegate;
         return (!object.Equals(this.anchor, ((DesktopTextSelectionToolbarLayoutDelegate)__oldDelegate).anchor));

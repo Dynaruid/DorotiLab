@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 /// <summary>Non-generic CLR contract for Dart's raw State type.</summary>
 public interface IState
@@ -47,7 +47,7 @@ public static partial class FrameworkLibrary
     internal static _DebugOnly__framework _debugOnly = new _DebugOnly__framework();
 }
 
-public class ObjectKey : global::Doroti.Generated.Framework.Foundation.LocalKey
+public class ObjectKey : global::Doroti.Framework.Foundation.LocalKey
 {
     public virtual object? value { get; private set; }
 
@@ -72,15 +72,15 @@ public class ObjectKey : global::Doroti.Generated.Framework.Foundation.LocalKey
     {
         if ((object.Equals(this.GetType(), typeof(ObjectKey))))
         {
-            return $"[{(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this.value))}]";
+            return $"[{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this.value))}]";
         }
-        return $"[{(global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ObjectKey"))} {(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this.value))}]";
+        return $"[{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "ObjectKey"))} {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this.value))}]";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-public abstract class GlobalKeyBase : global::Doroti.Generated.Framework.Foundation.Key
+public abstract class GlobalKeyBase : global::Doroti.Framework.Foundation.Key
 {
     internal virtual Element? _currentElement => WidgetsBinding.instance.buildOwner!._globalKeyRegistry.GetValueOrDefault(this);
 }
@@ -113,9 +113,9 @@ public class LabeledGlobalKey<T> : GlobalKey<T> where T : IState
         var label__8279 = ((this._debugLabel is not null) ? $" {this._debugLabel}" : "");
         if ((object.Equals(this.GetType(), typeof(LabeledGlobalKey<T>))))
         {
-            return $"[GlobalKey#{(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.shortHash(this))}{label__8279}]";
+            return $"[GlobalKey#{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.shortHash(this))}{label__8279}]";
         }
-        return $"[{(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}{label__8279}]";
+        return $"[{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}{label__8279}]";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -144,46 +144,46 @@ public class GlobalObjectKey<T> : GlobalKey<T> where T : IState
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(Dart_coreLibrary.identityHashCode(this.value));
     public override string ToString()
     {
-        string selfType__9972 = global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "GlobalObjectKey");
+        string selfType__9972 = global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "GlobalObjectKey");
         var suffix__10261 = "<State<StatefulWidget>>";
         if (selfType__9972.endsWith(suffix__10261))
         {
             selfType__9972 = selfType__9972.substring(0L, (selfType__9972.Length - suffix__10261.Length));
         }
-        return $"[{selfType__9972} {(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this.value))}]";
+        return $"[{selfType__9972} {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this.value))}]";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
 
-public abstract class Widget : global::Doroti.Generated.Framework.Foundation.DiagnosticableTree
+public abstract class Widget : global::Doroti.Framework.Foundation.DiagnosticableTree
 {
-    public virtual global::Doroti.Generated.Framework.Foundation.Key? key { get; private set; }
+    public virtual global::Doroti.Framework.Foundation.Key? key { get; private set; }
     public Widget() { }
 
 
-    protected Widget(global::Doroti.Generated.Framework.Foundation.Key? key = null)
+    protected Widget(global::Doroti.Framework.Foundation.Key? key = null)
     {
         this.key = key;
     }
 
-    public virtual string toStringShallow(string joiner = ", ", global::Doroti.Generated.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Generated.Framework.Foundation.DiagnosticLevel.debug) => throw new NotSupportedException();
-    public virtual string toStringDeep(string prefixLineOne = "", string? prefixOtherLines = null, global::Doroti.Generated.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Generated.Framework.Foundation.DiagnosticLevel.debug, long wrapWidth = 65) => throw new NotSupportedException();
-    public virtual global::Doroti.Generated.Framework.Foundation.DiagnosticsNode toDiagnosticsNode(string? name = null, global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle? style = null) => throw new NotSupportedException();
-    public virtual List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> debugDescribeChildren() => throw new NotSupportedException();
-    public virtual string ToString(global::Doroti.Generated.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Generated.Framework.Foundation.DiagnosticLevel.info) => throw new NotSupportedException();
+    public virtual string toStringShallow(string joiner = ", ", global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.debug) => throw new NotSupportedException();
+    public virtual string toStringDeep(string prefixLineOne = "", string? prefixOtherLines = null, global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.debug, long wrapWidth = 65) => throw new NotSupportedException();
+    public virtual global::Doroti.Framework.Foundation.DiagnosticsNode toDiagnosticsNode(string? name = null, global::Doroti.Framework.Foundation.DiagnosticsTreeStyle? style = null) => throw new NotSupportedException();
+    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren() => throw new NotSupportedException();
+    public virtual string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.info) => throw new NotSupportedException();
     public abstract Element createElement();
     public virtual string toStringShort()
     {
-        string type__14140 = global::Doroti.Generated.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Widget");
+        string type__14140 = global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Widget");
         return ((this.key is null) ? type__14140 : $"{type__14140}-{this.key}");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.defaultDiagnosticsTreeStyle = global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.dense;
+        properties.defaultDiagnosticsTreeStyle = global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.dense;
     }
 
     public override bool Equals(object? other)
@@ -210,7 +210,7 @@ public abstract class Widget : global::Doroti.Generated.Framework.Foundation.Dia
 
 public abstract class StatelessWidget : Widget
 {
-    protected StatelessWidget(global::Doroti.Generated.Framework.Foundation.Key? key = null) : base(key: key)
+    protected StatelessWidget(global::Doroti.Framework.Foundation.Key? key = null) : base(key: key)
     {
     }
 
@@ -220,7 +220,7 @@ public abstract class StatelessWidget : Widget
 
 public abstract class StatefulWidget : Widget
 {
-    protected StatefulWidget(global::Doroti.Generated.Framework.Foundation.Key? key = null) : base(key: key)
+    protected StatefulWidget(global::Doroti.Framework.Foundation.Key? key = null) : base(key: key)
     {
     }
 
@@ -238,7 +238,7 @@ public enum _StateLifecycle__framework
 
 public delegate void StateSetter(global::System.Action fn);
 
-public abstract class State<T> : IState, global::Doroti.Generated.Framework.Foundation.Diagnosticable where T : StatefulWidget
+public abstract class State<T> : IState, global::Doroti.Framework.Foundation.Diagnosticable where T : StatefulWidget
 {
     internal virtual T? _widget { get; set; } = default;
     internal virtual _StateLifecycle__framework _debugLifecycleState { get; set; } = _StateLifecycle__framework.created;
@@ -254,7 +254,7 @@ public abstract class State<T> : IState, global::Doroti.Generated.Framework.Foun
                 {
                     if ((this._element is null))
                     {
-                        throw DartRuntimePrimitives.AsException(global::Doroti.Generated.Framework.Foundation.FlutterError.Create("This widget has been unmounted, so the State no longer has a context (and should be considered defunct). \n" + "Consider canceling any active work during \"dispose\" or using the \"mounted\" getter to determine if the State is still active."));
+                        throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("This widget has been unmounted, so the State no longer has a context (and should be considered defunct). \n" + "Consider canceling any active work during \"dispose\" or using the \"mounted\" getter to determine if the State is still active."));
                     }
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
@@ -267,7 +267,7 @@ public abstract class State<T> : IState, global::Doroti.Generated.Framework.Foun
     public virtual void initState()
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(this._debugLifecycleState, _StateLifecycle__framework.created)));
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchCreated("widgets", "State", this));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchCreated("widgets", "State", this));
     }
 
     public virtual void didUpdateWidget(T oldWidget)
@@ -284,11 +284,11 @@ public abstract class State<T> : IState, global::Doroti.Generated.Framework.Foun
             {
                 if ((object.Equals(this._debugLifecycleState, _StateLifecycle__framework.defunct)))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"setState() called after dispose(): {this}"), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("This error happens if you call setState() on a State object for a widget that " + "no longer appears in the widget tree (e.g., whose parent widget no longer " + "includes the widget in its build). This error can occur when code calls " + "setState() from a timer, from an animation callback, or after an " + "asynchronous operation (such as an awaited network request or other " + "Future) completes after the widget has been removed from the tree."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("The preferred solution is " + "to cancel the timer or stop listening to the animation in the dispose() " + "callback. Another solution is to check the \"mounted\" property of this " + "object before calling setState() to ensure the object is still in the " + "tree."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("This error might indicate a memory leak if setState() is being called " + "because another object is retaining a reference to this State object " + "after it has been removed from the tree. To avoid memory leaks, " + "consider breaking the reference to this object during dispose().") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"setState() called after dispose(): {this}"), new global::Doroti.Framework.Foundation.ErrorDescription("This error happens if you call setState() on a State object for a widget that " + "no longer appears in the widget tree (e.g., whose parent widget no longer " + "includes the widget in its build). This error can occur when code calls " + "setState() from a timer, from an animation callback, or after an " + "asynchronous operation (such as an awaited network request or other " + "Future) completes after the widget has been removed from the tree."), new global::Doroti.Framework.Foundation.ErrorHint("The preferred solution is " + "to cancel the timer or stop listening to the animation in the dispose() " + "callback. Another solution is to check the \"mounted\" property of this " + "object before calling setState() to ensure the object is still in the " + "tree."), new global::Doroti.Framework.Foundation.ErrorHint("This error might indicate a memory leak if setState() is being called " + "because another object is retaining a reference to this State object " + "after it has been removed from the tree. To avoid memory leaks, " + "consider breaking the reference to this object during dispose().") }));
                 }
                 if (((object.Equals(this._debugLifecycleState, _StateLifecycle__framework.created)) && !this.mounted))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"setState() called in constructor: {this}"), new global::Doroti.Generated.Framework.Foundation.ErrorHint("This happens when you call setState() on a State object for a widget that " + "hasn't been inserted into the widget tree yet. It is not necessary to call " + "setState() in the constructor, since the state is already assumed to be dirty " + "when it is initially created.") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"setState() called in constructor: {this}"), new global::Doroti.Framework.Foundation.ErrorHint("This happens when you call setState() on a State object for a widget that " + "hasn't been inserted into the widget tree yet. It is not necessary to call " + "setState() in the constructor, since the state is already assumed to be dirty " + "when it is initially created.") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -299,7 +299,7 @@ public abstract class State<T> : IState, global::Doroti.Generated.Framework.Foun
                 if ((result__53490 is Future))
                 {
                     Future result__53490__as53542 = (Future)result__53490;
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("setState() callback argument returned a Future."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"The setState() method on {this} was called with a closure or method that " + "returned a Future. Maybe it is marked as \"async\"."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("Instead of performing asynchronous work inside a call to setState(), first " + "execute the work (without updating the widget state), and then synchronously " + "update the state inside a call to setState().") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("setState() callback argument returned a Future."), new global::Doroti.Framework.Foundation.ErrorDescription($"The setState() method on {this} was called with a closure or method that " + "returned a Future. Maybe it is marked as \"async\"."), new global::Doroti.Framework.Foundation.ErrorHint("Instead of performing asynchronous work inside a call to setState(), first " + "execute the work (without updating the widget state), and then synchronously " + "update the state inside a call to setState().") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -324,7 +324,7 @@ public abstract class State<T> : IState, global::Doroti.Generated.Framework.Foun
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
     }
 
     public abstract Widget build(BuildContext context);
@@ -332,16 +332,16 @@ public abstract class State<T> : IState, global::Doroti.Generated.Framework.Foun
     {
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                properties.add(new global::Doroti.Generated.Framework.Foundation.EnumProperty<_StateLifecycle__framework>("lifecycle state", this._debugLifecycleState, defaultValue: _StateLifecycle__framework.ready));
+                properties.add(new global::Doroti.Framework.Foundation.EnumProperty<_StateLifecycle__framework>("lifecycle state", this._debugLifecycleState, defaultValue: _StateLifecycle__framework.ready));
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        properties.add(new global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<T>("_widget", this._widget, ifNull: "no widget"));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<StatefulElement>("_element", this._element, ifNull: "not mounted"));
+        properties.add(new global::Doroti.Framework.Foundation.ObjectFlagProperty<T>("_widget", this._widget, ifNull: "no widget"));
+        properties.add(new global::Doroti.Framework.Foundation.ObjectFlagProperty<StatefulElement>("_element", this._element, ifNull: "not mounted"));
     }
 
     StatefulWidget? IState._widget { get => _widget; set => _widget = (T?)value; }
@@ -352,7 +352,7 @@ public abstract class State<T> : IState, global::Doroti.Generated.Framework.Foun
     public virtual void didChangeAppLifecycleState(AppLifecycleState state) { }
     public virtual void didChangeAccessibilityFeatures() { }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;
@@ -378,7 +378,7 @@ public abstract class ProxyWidget : Widget
 {
     public virtual Widget child { get; private set; } = default!;
 
-    protected ProxyWidget(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key)
+    protected ProxyWidget(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key)
     {
         this.child = child;
     }
@@ -387,37 +387,37 @@ public abstract class ProxyWidget : Widget
 
 public abstract class ParentDataWidget<T> : ProxyWidget
 {
-    protected ParentDataWidget(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key, child: child)
+    protected ParentDataWidget(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key, child: child)
     {
     }
 
     public override ParentDataElement<T> createElement() => new ParentDataElement<T>(this);
-    public virtual bool debugIsValidRenderObject(global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public virtual bool debugIsValidRenderObject(global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         DartRuntimePrimitives.Assert(() => (!object.Equals(typeof(T), typeof(object))));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(typeof(T), typeof(global::Doroti.Generated.Framework.Rendering.ParentData))));
-        return (((global::Doroti.Generated.Framework.Rendering.RenderObject)renderObject).parentData is T);
+        DartRuntimePrimitives.Assert(() => (!object.Equals(typeof(T), typeof(global::Doroti.Framework.Rendering.ParentData))));
+        return (((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData is T);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public abstract Type debugTypicalAncestorWidgetClass { get; }
     public virtual string debugTypicalAncestorWidgetDescription => $"{this.debugTypicalAncestorWidgetClass}";
-    internal virtual IEnumerable<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> _debugDescribeIncorrectParentDataType(global::Doroti.Generated.Framework.Rendering.ParentData? parentData, RenderObjectWidget? parentDataCreator = null, global::Doroti.Generated.Framework.Foundation.DiagnosticsNode? ownershipChain = null)
+    internal virtual IEnumerable<global::Doroti.Framework.Foundation.DiagnosticsNode> _debugDescribeIncorrectParentDataType(global::Doroti.Framework.Rendering.ParentData? parentData, RenderObjectWidget? parentDataCreator = null, global::Doroti.Framework.Foundation.DiagnosticsNode? ownershipChain = null)
     {
         DartRuntimePrimitives.Assert(() => (!object.Equals(typeof(T), typeof(object))));
-        DartRuntimePrimitives.Assert(() => (!object.Equals(typeof(T), typeof(global::Doroti.Generated.Framework.Rendering.ParentData))));
+        DartRuntimePrimitives.Assert(() => (!object.Equals(typeof(T), typeof(global::Doroti.Framework.Rendering.ParentData))));
         var description__72780 = $"The ParentDataWidget {this} wants to apply ParentData of type {typeof(T)} to a RenderObject";
-        return ((IEnumerable<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>)(object?)new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorHint($"Usually, this means that the {this.GetType()} widget has the wrong ancestor RenderObjectWidget. " + $"Typically, {this.GetType()} widgets are placed directly inside {this.debugTypicalAncestorWidgetDescription} widgets.") });
+        return ((IEnumerable<global::Doroti.Framework.Foundation.DiagnosticsNode>)(object?)new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorHint($"Usually, this means that the {this.GetType()} widget has the wrong ancestor RenderObjectWidget. " + $"Typically, {this.GetType()} widgets are placed directly inside {this.debugTypicalAncestorWidgetDescription} widgets.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public abstract void applyParentData(global::Doroti.Generated.Framework.Rendering.RenderObject renderObject);
+    public abstract void applyParentData(global::Doroti.Framework.Rendering.RenderObject renderObject);
     public virtual bool debugCanApplyOutOfTurn() => false;
 }
 
 public abstract class InheritedWidget : ProxyWidget
 {
-    protected InheritedWidget(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key, child: child)
+    protected InheritedWidget(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key, child: child)
     {
     }
 
@@ -428,17 +428,17 @@ public abstract class InheritedWidget : ProxyWidget
 
 public abstract class RenderObjectWidget : Widget
 {
-    protected RenderObjectWidget(global::Doroti.Generated.Framework.Foundation.Key? key = null) : base(key: key)
+    protected RenderObjectWidget(global::Doroti.Framework.Foundation.Key? key = null) : base(key: key)
     {
     }
 
     public abstract override RenderObjectElement createElement();
-    public abstract global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(BuildContext context);
-    public virtual void updateRenderObject(BuildContext context, global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public abstract global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context);
+    public virtual void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
     }
 
-    public virtual void didUnmountRenderObject(global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public virtual void didUnmountRenderObject(global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
     }
 
@@ -446,7 +446,7 @@ public abstract class RenderObjectWidget : Widget
 
 public abstract class LeafRenderObjectWidget : RenderObjectWidget
 {
-    protected LeafRenderObjectWidget(global::Doroti.Generated.Framework.Foundation.Key? key = null) : base(key: key)
+    protected LeafRenderObjectWidget(global::Doroti.Framework.Foundation.Key? key = null) : base(key: key)
     {
     }
 
@@ -457,7 +457,7 @@ public abstract class SingleChildRenderObjectWidget : RenderObjectWidget
 {
     public virtual Widget? child { get; private set; }
 
-    protected SingleChildRenderObjectWidget(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget? child = null) : base(key: key)
+    protected SingleChildRenderObjectWidget(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null) : base(key: key)
     {
         this.child = child;
     }
@@ -469,14 +469,14 @@ public abstract class MultiChildRenderObjectWidget : RenderObjectWidget
 {
     public virtual List<Widget> children { get; private set; } = default!;
 
-    protected MultiChildRenderObjectWidget(global::Doroti.Generated.Framework.Foundation.Key? key = null, List<Widget> children = default!) : base(key: key)
+    protected MultiChildRenderObjectWidget(global::Doroti.Framework.Foundation.Key? key = null, List<Widget> children = default!) : base(key: key)
     {
         List<Widget> __children = children ?? new List<Widget>();
         this.children = __children;
     }
 
     public override MultiChildRenderObjectElement createElement() => new MultiChildRenderObjectElement(this);
-    protected MultiChildRenderObjectWidget(global::Doroti.Generated.Framework.Foundation.Key? key = null, IEnumerable<Widget> children = default!) : this(key, children.ToList()) { }
+    protected MultiChildRenderObjectWidget(global::Doroti.Framework.Foundation.Key? key = null, IEnumerable<Widget> children = default!) : this(key, children.ToList()) { }
 }
 
 internal enum _ElementLifecycle__framework
@@ -498,11 +498,11 @@ internal class _InactiveElements__framework
         DartRuntimePrimitives.Assert(() => (object.Equals(((Element)element)._lifecycleState, _ElementLifecycle__framework.inactive)));
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugPrintGlobalKeyedWidgetLifecycle)
+                if (global::Doroti.Framework.Widgets.DebugLibrary.debugPrintGlobalKeyedWidgetLifecycle)
                 {
                     if ((((Element)element).widget.key is GlobalKeyBase))
                     {
-                        global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint($"Discarding {element} from inactive elements list.");
+                        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"Discarding {element} from inactive elements list.");
                     }
                 }
                 return true;
@@ -616,7 +616,7 @@ public interface BuildContext
     public BuildOwner? owner { get; }
     public bool mounted { get; }
     public bool debugDoingBuild { get; }
-    public global::Doroti.Generated.Framework.Rendering.RenderObject? findRenderObject();
+    public global::Doroti.Framework.Rendering.RenderObject? findRenderObject();
     public global::Doroti.Ui.Size? size { get; }
     public InheritedWidget dependOnInheritedElement(InheritedElement ancestor, object? aspect = null);
     public T? dependOnInheritedWidgetOfExactType<T>(object? aspect = null);
@@ -629,10 +629,10 @@ public interface BuildContext
     public void visitAncestorElements(global::System.Func<Element, bool> visitor);
     public void visitChildElements(global::System.Action<Element> visitor);
     public void dispatchNotification(Notification notification);
-    public global::Doroti.Generated.Framework.Foundation.DiagnosticsNode describeElement(string name, global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle style = global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.errorProperty);
-    public global::Doroti.Generated.Framework.Foundation.DiagnosticsNode describeWidget(string name, global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle style = global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.errorProperty);
-    public List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> describeMissingAncestor(Type expectedAncestorType);
-    public global::Doroti.Generated.Framework.Foundation.DiagnosticsNode describeOwnershipChain(string name);
+    public global::Doroti.Framework.Foundation.DiagnosticsNode describeElement(string name, global::Doroti.Framework.Foundation.DiagnosticsTreeStyle style = global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty);
+    public global::Doroti.Framework.Foundation.DiagnosticsNode describeWidget(string name, global::Doroti.Framework.Foundation.DiagnosticsTreeStyle style = global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty);
+    public List<global::Doroti.Framework.Foundation.DiagnosticsNode> describeMissingAncestor(Type expectedAncestorType);
+    public global::Doroti.Framework.Foundation.DiagnosticsNode describeOwnershipChain(string name);
 }
 
 public class BuildScope
@@ -671,13 +671,13 @@ public class BuildScope
     {
         DartRuntimePrimitives.Assert(() => ((Element)element)._inDirtyList);
         DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(((Element)element).buildScope, this));
-        bool isTimelineTracked__120372 = (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode && FrameworkLibrary._isProfileBuildsEnabledFor(((Element)element).widget));
+        bool isTimelineTracked__120372 = (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && FrameworkLibrary._isProfileBuildsEnabledFor(((Element)element).widget));
         if (isTimelineTracked__120372)
         {
             DartMap<string, string>? debugTimelineArguments__120509 = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kDebugMode && global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugEnhanceBuildTimelineArguments))
+                    if ((global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode && global::Doroti.Framework.Widgets.DebugLibrary.debugEnhanceBuildTimelineArguments))
                     {
                         debugTimelineArguments__120509 = ((Diagnosticable)((Element)element).widget).toDiagnosticsNode().toTimelineArguments();
                     }
@@ -693,7 +693,7 @@ public class BuildScope
         catch (Exception e__120906)
         {
             var stack__120909 = new System.Diagnostics.StackTrace();
-            FrameworkLibrary._reportException(new global::Doroti.Generated.Framework.Foundation.ErrorDescription("while rebuilding dirty elements"), e__120906, stack__120909, informationCollector: (() => new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { element.describeElement("The element being rebuilt at the time was") }));
+            FrameworkLibrary._reportException(new global::Doroti.Framework.Foundation.ErrorDescription("while rebuilding dirty elements"), e__120906, stack__120909, informationCollector: (() => new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { element.describeElement("The element being rebuilt at the time was") }));
         }
         if (isTimelineTracked__120372)
         {
@@ -708,7 +708,7 @@ public class BuildScope
         {
             return true;
         }
-        throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Tried to build dirty widget in the wrong build scope."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("A widget which was marked as dirty and is still active was scheduled to be built, " + "but the current build scope unexpectedly does not contain that widget."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("Sometimes this is detected when an element is removed from the widget tree, but the " + "element somehow did not get marked as inactive. In that case, it might be caused by " + "an ancestor element failing to implement visitChildren correctly, thus preventing " + "some or all of its descendants from being correctly deactivated."), new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<Element>("The root of the build scope was", debugBuildRoot, style: global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<Element>("The offending element (which does not appear to be a descendant of the root of the build scope) was", element, style: global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }));
+        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Tried to build dirty widget in the wrong build scope."), new global::Doroti.Framework.Foundation.ErrorDescription("A widget which was marked as dirty and is still active was scheduled to be built, " + "but the current build scope unexpectedly does not contain that widget."), new global::Doroti.Framework.Foundation.ErrorHint("Sometimes this is detected when an element is removed from the widget tree, but the " + "element somehow did not get marked as inactive. In that case, it might be caused by " + "an ancestor element failing to implement visitChildren correctly, thus preventing " + "some or all of its descendants from being correctly deactivated."), new global::Doroti.Framework.Foundation.DiagnosticsProperty<Element>("The root of the build scope was", debugBuildRoot, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.DiagnosticsProperty<Element>("The offending element (which does not appear to be a descendant of the root of the build scope) was", element, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -733,7 +733,7 @@ public class BuildScope
                     IEnumerable<Element> missedElements__123356 = this._dirtyElements.where(((element) => ((((Element)element).debugIsActive && ((Element)element).dirty) && DartRuntimePrimitives.Identical(((Element)element).buildScope, this))));
                     if (System.Linq.Enumerable.Any(missedElements__123356))
                     {
-                        throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("buildScope missed some dirty elements."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("This probably indicates that the dirty list should have been resorted but was not."), new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<Element>("The context argument of the buildScope call was", debugBuildRoot, style: global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), Element.describeElements("The list of missed elements at the end of the buildScope call was", missedElements__123356.Cast<Element>()) }));
+                        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("buildScope missed some dirty elements."), new global::Doroti.Framework.Foundation.ErrorHint("This probably indicates that the dirty list should have been resorted but was not."), new global::Doroti.Framework.Foundation.DiagnosticsProperty<Element>("The context argument of the buildScope call was", debugBuildRoot, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), Element.describeElements("The list of missed elements at the end of the buildScope call was", missedElements__123356.Cast<Element>()) }));
                     }
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
@@ -794,8 +794,8 @@ public class BuildOwner
     internal virtual Element? _debugCurrentBuildTarget { get; set; } = default;
     internal virtual DartMap<Element, HashSet<GlobalKeyBase>>? _debugElementsThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans { get; set; } = default;
     internal virtual DartMap<GlobalKeyBase, Element> _globalKeyRegistry { get; private set; } = new DartMap<GlobalKeyBase, Element>();
-    internal virtual HashSet<Element>? _debugIllFatedElements { get; private set; } = (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kDebugMode ? new HashSet<Element>() : null);
-    internal virtual DartMap<Element, DartMap<Element, GlobalKeyBase>>? _debugGlobalKeyReservations { get; private set; } = (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kDebugMode ? new DartMap<Element, DartMap<Element, GlobalKeyBase>>() : null);
+    internal virtual HashSet<Element>? _debugIllFatedElements { get; private set; } = (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? new HashSet<Element>() : null);
+    internal virtual DartMap<Element, DartMap<Element, GlobalKeyBase>>? _debugGlobalKeyReservations { get; private set; } = (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? new DartMap<Element, DartMap<Element, GlobalKeyBase>>() : null);
 
     public BuildOwner(global::System.Action? onBuildScheduled = null, FocusManager? focusManager = null)
     {
@@ -812,13 +812,13 @@ public class BuildOwner
         DartRuntimePrimitives.Assert(() => (((Element)element)._parentBuildScope is not null));
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugPrintScheduleBuildForStacks)
+                if (global::Doroti.Framework.Widgets.DebugLibrary.debugPrintScheduleBuildForStacks)
                 {
-                    global::Doroti.Generated.Framework.Foundation.AssertionsLibrary.debugPrintStack(label: $"scheduleBuildFor() called for {element}{(((Element)element).buildScope._dirtyElements.Contains(element) ? " (ALREADY IN LIST)" : "")}");
+                    global::Doroti.Framework.Foundation.AssertionsLibrary.debugPrintStack(label: $"scheduleBuildFor() called for {element}{(((Element)element).buildScope._dirtyElements.Contains(element) ? " (ALREADY IN LIST)" : "")}");
                 }
                 if (!((Element)element).dirty)
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("scheduleBuildFor() called for a widget that is not marked as dirty."), element.describeElement("The method was called for the following element"), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("This element is not current marked as dirty. Make sure to set the dirty flag before " + "calling scheduleBuildFor()."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("If you did not attempt to call scheduleBuildFor() yourself, then this probably " + "indicates a bug in the widgets framework. Please report it:\n" + "  https://github.com/flutter/flutter/issues/new?template=02_bug.yml") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("scheduleBuildFor() called for a widget that is not marked as dirty."), element.describeElement("The method was called for the following element"), new global::Doroti.Framework.Foundation.ErrorDescription("This element is not current marked as dirty. Make sure to set the dirty flag before " + "calling scheduleBuildFor()."), new global::Doroti.Framework.Foundation.ErrorHint("If you did not attempt to call scheduleBuildFor() yourself, then this probably " + "indicates a bug in the widgets framework. Please report it:\n" + "  https://github.com/flutter/flutter/issues/new?template=02_bug.yml") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -826,13 +826,13 @@ public class BuildOwner
         BuildScope buildScope__129576 = ((Element)element).buildScope;
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugPrintScheduleBuildForStacks && ((Element)element)._inDirtyList))
+                if ((global::Doroti.Framework.Widgets.DebugLibrary.debugPrintScheduleBuildForStacks && ((Element)element)._inDirtyList))
                 {
-                    global::Doroti.Generated.Framework.Foundation.AssertionsLibrary.debugPrintStack(label: "BuildOwner.scheduleBuildFor() called; " + $"_dirtyElementsNeedsResorting was {((BuildScope)buildScope__129576)._dirtyElementsNeedsResorting} (now true); " + $"The dirty list for the current build scope is: {((BuildScope)buildScope__129576)._dirtyElements}");
+                    global::Doroti.Framework.Foundation.AssertionsLibrary.debugPrintStack(label: "BuildOwner.scheduleBuildFor() called; " + $"_dirtyElementsNeedsResorting was {((BuildScope)buildScope__129576)._dirtyElementsNeedsResorting} (now true); " + $"The dirty list for the current build scope is: {((BuildScope)buildScope__129576)._dirtyElements}");
                 }
                 if ((!this._debugBuilding && ((Element)element)._inDirtyList))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("BuildOwner.scheduleBuildFor() called inappropriately."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("The BuildOwner.scheduleBuildFor() method called on an Element " + "that is already in the dirty list."), element.describeElement("the dirty Element was") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("BuildOwner.scheduleBuildFor() called inappropriately."), new global::Doroti.Framework.Foundation.ErrorHint("The BuildOwner.scheduleBuildFor() method called on an Element " + "that is already in the dirty list."), element.describeElement("the dirty Element was") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -845,9 +845,9 @@ public class BuildOwner
         buildScope__129576._scheduleBuildFor(element);
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugPrintScheduleBuildForStacks)
+                if (global::Doroti.Framework.Widgets.DebugLibrary.debugPrintScheduleBuildForStacks)
                 {
-                    global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint($"...the build scope's dirty list is now: {((BuildScope)buildScope__129576)._dirtyElements}");
+                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"...the build scope's dirty list is now: {((BuildScope)buildScope__129576)._dirtyElements}");
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -892,21 +892,21 @@ public class BuildOwner
         DartRuntimePrimitives.Assert(() => !this._debugBuilding);
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugPrintBuildScope)
+                if (global::Doroti.Framework.Widgets.DebugLibrary.debugPrintBuildScope)
                 {
-                    global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint($"buildScope called with context {context}; " + $"its build scope's dirty list is: {((BuildScope)buildScope__133142)._dirtyElements}");
+                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"buildScope called with context {context}; " + $"its build scope's dirty list is: {((BuildScope)buildScope__133142)._dirtyElements}");
                 }
                 _debugStateLockLevel += 1L;
                 _debugBuilding = true;
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             DartMap<string, string>? debugTimelineArguments__133689 = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if (global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugEnhanceBuildTimelineArguments)
+                    if (global::Doroti.Framework.Widgets.DebugLibrary.debugEnhanceBuildTimelineArguments)
                     {
                         debugTimelineArguments__133689 = new DartMap<string, string> { ["build scope dirty count"] = $"{checked((long)(((BuildScope)buildScope__133142)._dirtyElements.Count))}", ["build scope dirty list"] = $"{((BuildScope)buildScope__133142)._dirtyElements}", ["lock level"] = $"{this._debugStateLockLevel}", ["scope context"] = $"{context}" }.cast<string, string>();
                     }
@@ -952,7 +952,7 @@ public class BuildOwner
         {
             buildScope__133142._building = false;
             _scheduledFlushDirtyElements = false;
-            if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
                 FlutterTimeline.finishSync();
             }
@@ -961,9 +961,9 @@ public class BuildOwner
                 {
                     _debugBuilding = false;
                     _debugStateLockLevel -= 1L;
-                    if (global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugPrintBuildScope)
+                    if (global::Doroti.Framework.Widgets.DebugLibrary.debugPrintBuildScope)
                     {
-                        global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint("buildScope finished");
+                        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint("buildScope finished");
                     }
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
@@ -1059,14 +1059,14 @@ if ((keyToParent__138423.ContainsKey(key) && (!object.Equals(keyToParent__138423
 {
     Element older__139588 = keyToParent__138423.GetValueOrDefault(key)!;
     var newer__139633 = parent;
-    global::Doroti.Generated.Framework.Foundation.FlutterError error__139680 = default!;
+    global::Doroti.Framework.Foundation.FlutterError error__139680 = default!;
     if ((older__139588.ToString() != newer__139633.ToString()))
     {
-        error__139680 = new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Multiple widgets used the same GlobalKey."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"The key {key} was used by multiple widgets. The parents of those widgets were:\n" + $"- {older__139588}\n" + $"- {newer__139633}\n" + "A GlobalKey can only be specified on one widget at a time in the widget tree.") });
+        error__139680 = new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Multiple widgets used the same GlobalKey."), new global::Doroti.Framework.Foundation.ErrorDescription($"The key {key} was used by multiple widgets. The parents of those widgets were:\n" + $"- {older__139588}\n" + $"- {newer__139633}\n" + "A GlobalKey can only be specified on one widget at a time in the widget tree.") });
     }
     else
     {
-        error__139680 = new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Multiple widgets used the same GlobalKey."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"The key {key} was used by multiple widgets. The parents of those widgets were " + "different widgets that both had the following description:\n" + $"  {parent}\n" + "A GlobalKey can only be specified on one widget at a time in the widget tree.") });
+        error__139680 = new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Multiple widgets used the same GlobalKey."), new global::Doroti.Framework.Foundation.ErrorDescription($"The key {key} was used by multiple widgets. The parents of those widgets were " + "different widgets that both had the following description:\n" + $"  {parent}\n" + "A GlobalKey can only be specified on one widget at a time in the widget tree.") });
     }
     if ((!object.Equals(((Element)child)._parent, older__139588)))
     {
@@ -1121,15 +1121,15 @@ else
                 this._debugIllFatedElements.Clear();
                 if ((duplicates__141809 is not null))
                 {
-                    var information__142524 = new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>();
-                    information__142524.Add(new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Multiple widgets used the same GlobalKey."));
+                    var information__142524 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
+                    information__142524.Add(new global::Doroti.Framework.Foundation.ErrorSummary("Multiple widgets used the same GlobalKey."));
                     foreach (GlobalKeyBase key__142672 in duplicates__141809.Keys)
                     {
                         HashSet<Element> elements__142727 = duplicates__141809.GetValueOrDefault(key__142672)!;
                         information__142524.Add(Element.describeElements($"The key {key__142672} was used by {checked((long)(elements__142727.Count))} widgets", elements__142727));
                     }
-                    information__142524.Add(new global::Doroti.Generated.Framework.Foundation.ErrorDescription("A GlobalKey can only be specified on one widget at a time in the widget tree."));
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(information__142524));
+                    information__142524.Add(new global::Doroti.Framework.Foundation.ErrorDescription("A GlobalKey can only be specified on one widget at a time in the widget tree."));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(information__142524));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -1138,7 +1138,7 @@ else
 
     public virtual void finalizeTree()
     {
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             FlutterTimeline.startSync("FINALIZE TREE");
         }
@@ -1202,7 +1202,7 @@ else
                                 var they__147150 = ((checked((long)(elementLabels__146196.Count)) == 1L) ? "it" : "they");
                                 var think__147220 = ((checked((long)(elementLabels__146196.Count)) == 1L) ? "thinks" : "think");
                                 var are__147296 = ((checked((long)(elementLabels__146196.Count)) == 1L) ? "is" : "are");
-                                throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"Duplicate GlobalKey{s__146687} detected in widget tree."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"The following GlobalKey{s__146687} {were__146740} specified multiple times in the widget tree. This will lead to " + "parts of the widget tree being truncated unexpectedly, because the second time a key is seen, " + $"the previous instance is moved to the new location. The key{s__146687} {were__146740}:\n" + $"- {string.Join("\n  ", keyLabels__145222)}\n" + $"This was determined by noticing that after{the__146629} widget{s__146687} with the above global key{s__146687} {were__146740} moved " + $"out of {their__146802}{respective__146866} previous parent{s2__147012}, {those2__147075} previous parent{s2__147012} never updated during this frame, meaning " + $"that {they__147150} either did not update at all or updated before the widget{s__146687} {were__146740} moved, in either case " + $"implying that {they__147150} still {think__147220} that {they__147150} should have a child with {those__146947} global key{s__146687}.\n" + $"The specific parent{s2__147012} that did not update after having one or more children forcibly removed " + $"due to GlobalKey reparenting {are__147296}:\n" + $"- {string.Join("\n  ", elementLabels__146196)}" + "\nA GlobalKey can only be specified on one widget at a time in the widget tree.") }));
+                                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"Duplicate GlobalKey{s__146687} detected in widget tree."), new global::Doroti.Framework.Foundation.ErrorDescription($"The following GlobalKey{s__146687} {were__146740} specified multiple times in the widget tree. This will lead to " + "parts of the widget tree being truncated unexpectedly, because the second time a key is seen, " + $"the previous instance is moved to the new location. The key{s__146687} {were__146740}:\n" + $"- {string.Join("\n  ", keyLabels__145222)}\n" + $"This was determined by noticing that after{the__146629} widget{s__146687} with the above global key{s__146687} {were__146740} moved " + $"out of {their__146802}{respective__146866} previous parent{s2__147012}, {those2__147075} previous parent{s2__147012} never updated during this frame, meaning " + $"that {they__147150} either did not update at all or updated before the widget{s__146687} {were__146740} moved, in either case " + $"implying that {they__147150} still {think__147220} that {they__147150} should have a child with {those__146947} global key{s__146687}.\n" + $"The specific parent{s2__147012} that did not update after having one or more children forcibly removed " + $"due to GlobalKey reparenting {are__147296}:\n" + $"- {string.Join("\n  ", elementLabels__146196)}" + "\nA GlobalKey can only be specified on one widget at a time in the widget tree.") }));
                             }
                         }
                     }
@@ -1217,13 +1217,13 @@ else
         catch (Exception e__149151)
         {
             var stack__149154 = new System.Diagnostics.StackTrace();
-            FrameworkLibrary._reportException(new global::Doroti.Generated.Framework.Foundation.ErrorSummary("while finalizing the widget tree"), e__149151, stack__149154);
+            FrameworkLibrary._reportException(new global::Doroti.Framework.Foundation.ErrorSummary("while finalizing the widget tree"), e__149151, stack__149154);
         }
     }
 
     public virtual void reassemble(Element root)
     {
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             FlutterTimeline.startSync("Preparing Hot Reload (widgets)");
         }
@@ -1235,7 +1235,7 @@ else
         }
         finally
         {
-            if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+            if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
                 FlutterTimeline.finishSync();
             }
@@ -1276,12 +1276,12 @@ public static partial class FrameworkLibrary
 {
     internal static bool _isProfileBuildsEnabledFor(Widget widget)
     {
-        return (global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugProfileBuildsEnabled || ((global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugProfileBuildsEnabledUserWidgets && global::Doroti.Generated.Framework.Widgets.Widget_inspectorLibrary.debugIsWidgetLocalCreation(widget))));
+        return (global::Doroti.Framework.Widgets.DebugLibrary.debugProfileBuildsEnabled || ((global::Doroti.Framework.Widgets.DebugLibrary.debugProfileBuildsEnabledUserWidgets && global::Doroti.Framework.Widgets.Widget_inspectorLibrary.debugIsWidgetLocalCreation(widget))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 
-public abstract class Element : global::Doroti.Generated.Framework.Foundation.DiagnosticableTree, BuildContext
+public abstract class Element : global::Doroti.Framework.Foundation.DiagnosticableTree, BuildContext
 {
     internal virtual Element? _parent { get; set; } = default;
     internal virtual _NotificationNode__framework? _notificationTree { get; set; } = default;
@@ -1291,8 +1291,8 @@ public abstract class Element : global::Doroti.Generated.Framework.Foundation.Di
     internal virtual BuildOwner? _owner { get; set; } = default;
     internal virtual BuildScope? _parentBuildScope { get; set; } = default;
     internal virtual _ElementLifecycle__framework _lifecycleState { get; set; } = _ElementLifecycle__framework.initial;
-    internal virtual HashSet<Element>? _debugForgottenChildrenWithGlobalKey { get; private set; } = (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kDebugMode ? new HashSet<Element>() : null);
-    internal virtual global::Doroti.Generated.Framework.Foundation.PersistentHashMap<Type, InheritedElement>? _inheritedElements { get; set; } = default;
+    internal virtual HashSet<Element>? _debugForgottenChildrenWithGlobalKey { get; private set; } = (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? new HashSet<Element>() : null);
+    internal virtual global::Doroti.Framework.Foundation.PersistentHashMap<Type, InheritedElement>? _inheritedElements { get; set; } = default;
     internal virtual HashSet<InheritedElement>? _dependencies { get; set; } = default;
     internal virtual bool _hadUnsatisfiedDependencies { get; set; } = false;
     internal virtual bool _dirty { get; set; } = true;
@@ -1304,9 +1304,9 @@ public abstract class Element : global::Doroti.Generated.Framework.Foundation.Di
         this._widget = widget;
     }
 
-    public virtual string toStringShallow(string joiner = ", ", global::Doroti.Generated.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Generated.Framework.Foundation.DiagnosticLevel.debug) => throw new NotSupportedException();
-    public virtual string toStringDeep(string prefixLineOne = "", string? prefixOtherLines = null, global::Doroti.Generated.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Generated.Framework.Foundation.DiagnosticLevel.debug, long wrapWidth = 65) => throw new NotSupportedException();
-    public virtual string ToString(global::Doroti.Generated.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Generated.Framework.Foundation.DiagnosticLevel.info) => throw new NotSupportedException();
+    public virtual string toStringShallow(string joiner = ", ", global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.debug) => throw new NotSupportedException();
+    public virtual string toStringDeep(string prefixLineOne = "", string? prefixOtherLines = null, global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.debug, long wrapWidth = 65) => throw new NotSupportedException();
+    public virtual string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.info) => throw new NotSupportedException();
     public virtual bool debugDoingBuild => throw new NotSupportedException();
     public override bool Equals(object? other)
     {
@@ -1324,7 +1324,7 @@ public abstract class Element : global::Doroti.Generated.Framework.Foundation.Di
                 {
                     if ((object.Equals(this._lifecycleState, _ElementLifecycle__framework.initial)))
                     {
-                        throw DartRuntimePrimitives.AsException(global::Doroti.Generated.Framework.Foundation.FlutterError.Create("Depth is only available when element has been mounted."));
+                        throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Depth is only available when element has been mounted."));
                     }
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
@@ -1408,7 +1408,7 @@ child.reassemble();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Rendering.RenderObject renderObject
+    public virtual global::Doroti.Framework.Rendering.RenderObject renderObject
     {
         get
         {
@@ -1432,7 +1432,7 @@ child.reassemble();
                     }
                 }
             }
-            return ((global::Doroti.Generated.Framework.Rendering.RenderObject)(object)null);
+            return ((global::Doroti.Framework.Rendering.RenderObject)(object)null);
             return default!;
         }
     }
@@ -1449,49 +1449,49 @@ next__164695 = child;
             return default!;
         }
     }
-    public virtual List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> describeMissingAncestor(Type expectedAncestorType)
+    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> describeMissingAncestor(Type expectedAncestorType)
     {
-        var information__164971 = new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>();
+        var information__164971 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
         var ancestors__165016 = new List<Element>();
         visitAncestorElements(((global::System.Func<Element, bool>)((element) => {
 ancestors__165016.Add(element);
 return true;
 throw new InvalidOperationException("Dart closure completed without a value.");
 })));
-        information__164971.Add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<Element>($"The specific widget that could not find a {expectedAncestorType} ancestor was", this, style: global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.errorProperty));
+        information__164971.Add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Element>($"The specific widget that could not find a {expectedAncestorType} ancestor was", this, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty));
         if (System.Linq.Enumerable.Any(ancestors__165016))
         {
             information__164971.Add(Element.describeElements("The ancestors of this widget were", ancestors__165016.Cast<Element>()));
         }
         else
         {
-            information__164971.Add(new global::Doroti.Generated.Framework.Foundation.ErrorDescription("This widget is the root of the tree, so it has no " + $"ancestors, let alone a \"{expectedAncestorType}\" ancestor."));
+            information__164971.Add(new global::Doroti.Framework.Foundation.ErrorDescription("This widget is the root of the tree, so it has no " + $"ancestors, let alone a \"{expectedAncestorType}\" ancestor."));
         }
         return information__164971;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Generated.Framework.Foundation.DiagnosticsNode describeElements(string name, IEnumerable<Element> elements)
+    public static global::Doroti.Framework.Foundation.DiagnosticsNode describeElements(string name, IEnumerable<Element> elements)
     {
-        return ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)(object?)new global::Doroti.Generated.Framework.Foundation.DiagnosticsBlock(name: name, children: elements.map<Element, global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>(((element) => new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<Element>("", element))).ToList(), allowTruncate: true));
+        return ((global::Doroti.Framework.Foundation.DiagnosticsNode)(object?)new global::Doroti.Framework.Foundation.DiagnosticsBlock(name: name, children: elements.map<Element, global::Doroti.Framework.Foundation.DiagnosticsNode>(((element) => new global::Doroti.Framework.Foundation.DiagnosticsProperty<Element>("", element))).ToList(), allowTruncate: true));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Foundation.DiagnosticsNode describeElement(string name, global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle style = global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.errorProperty)
+    public virtual global::Doroti.Framework.Foundation.DiagnosticsNode describeElement(string name, global::Doroti.Framework.Foundation.DiagnosticsTreeStyle style = global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty)
     {
-        return ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)(object?)new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<Element>(name, this, style: DartRuntimePrimitives.RequireValue(style)));
+        return ((global::Doroti.Framework.Foundation.DiagnosticsNode)(object?)new global::Doroti.Framework.Foundation.DiagnosticsProperty<Element>(name, this, style: DartRuntimePrimitives.RequireValue(style)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Foundation.DiagnosticsNode describeWidget(string name, global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle style = global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.errorProperty)
+    public virtual global::Doroti.Framework.Foundation.DiagnosticsNode describeWidget(string name, global::Doroti.Framework.Foundation.DiagnosticsTreeStyle style = global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty)
     {
-        return ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)(object?)new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<Element>(name, this, style: DartRuntimePrimitives.RequireValue(style)));
+        return ((global::Doroti.Framework.Foundation.DiagnosticsNode)(object?)new global::Doroti.Framework.Foundation.DiagnosticsProperty<Element>(name, this, style: DartRuntimePrimitives.RequireValue(style)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Foundation.DiagnosticsNode describeOwnershipChain(string name)
+    public virtual global::Doroti.Framework.Foundation.DiagnosticsNode describeOwnershipChain(string name)
     {
-        return ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)(object?)new global::Doroti.Generated.Framework.Foundation.StringProperty(name, debugGetCreatorChain(10L)));
+        return ((global::Doroti.Framework.Foundation.DiagnosticsNode)(object?)new global::Doroti.Framework.Foundation.StringProperty(name, debugGetCreatorChain(10L)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1508,7 +1508,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("visitChildElements() called during build."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("The BuildContext.visitChildElements() method can't be called during " + "build because the child list is still being updated at that point, " + "so the children might not be constructed yet, or might be old children " + "that are going to be replaced.") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("visitChildElements() called during build."), new global::Doroti.Framework.Foundation.ErrorDescription("The BuildContext.visitChildElements() method can't be called during " + "build because the child list is still being updated at that point, " + "so the children might not be constructed yet, or might be old children " + "that are going to be replaced.") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         visitChildren((global::System.Action<Element>)visitor);
@@ -1552,13 +1552,13 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                     {
                         updateSlotForChild(child, newSlot);
                     }
-                    bool isTimelineTracked__173867 = (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode && FrameworkLibrary._isProfileBuildsEnabledFor(newWidget));
+                    bool isTimelineTracked__173867 = (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && FrameworkLibrary._isProfileBuildsEnabledFor(newWidget));
                     if (isTimelineTracked__173867)
                     {
                         DartMap<string, string>? debugTimelineArguments__174007 = default!;
                         DartRuntimePrimitives.Assert(() =>
                             {
-                                if ((global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kDebugMode && global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugEnhanceBuildTimelineArguments))
+                                if ((global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode && global::Doroti.Framework.Widgets.DebugLibrary.debugEnhanceBuildTimelineArguments))
                                 {
                                     debugTimelineArguments__174007 = ((Diagnosticable)newWidget).toDiagnosticsNode().toTimelineArguments();
                                 }
@@ -1599,7 +1599,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                 {
                     _debugRemoveGlobalKeyReservation(child);
                 }
-                global::Doroti.Generated.Framework.Foundation.Key? key__175416 = ((Widget)newWidget).key;
+                global::Doroti.Framework.Foundation.Key? key__175416 = ((Widget)newWidget).key;
                 if ((key__175416 is GlobalKeyBase))
                 {
                     GlobalKeyBase key__175416__as175447 = (GlobalKeyBase)key__175416;
@@ -1661,10 +1661,10 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             newChildrenBottom__180983 -= 1L;
         }
         bool haveOldChildren__182620 = (oldChildrenTop__180955 <= oldChildrenBottom__181034);
-        DartMap<global::Doroti.Generated.Framework.Foundation.Key, Element>? oldKeyedChildren__182698 = default!;
+        DartMap<global::Doroti.Framework.Foundation.Key, Element>? oldKeyedChildren__182698 = default!;
         if (haveOldChildren__182620)
         {
-            oldKeyedChildren__182698 = new DartMap<global::Doroti.Generated.Framework.Foundation.Key, Element>();
+            oldKeyedChildren__182698 = new DartMap<global::Doroti.Framework.Foundation.Key, Element>();
             while ((oldChildrenTop__180955 <= oldChildrenBottom__181034))
             {
                 Element? oldChild__182861 = replaceWithNullIfForgotten(oldChildren[(int)(oldChildrenTop__180955)]);
@@ -1689,7 +1689,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             Widget newWidget__183415 = newWidgets[(int)(newChildrenTop__180927)];
             if (haveOldChildren__182620)
             {
-                global::Doroti.Generated.Framework.Foundation.Key? key__183503 = ((Widget)newWidget__183415).key;
+                global::Doroti.Framework.Foundation.Key? key__183503 = ((Widget)newWidget__183415).key;
                 if ((key__183503 is not null))
                 {
                     oldChild__183386 = oldKeyedChildren__182698!.GetValueOrDefault(key__183503);
@@ -1765,7 +1765,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             _parentBuildScope = ((Element)parent).buildScope;
         }
         DartRuntimePrimitives.Assert(() => (this.owner is not null));
-        global::Doroti.Generated.Framework.Foundation.Key? key__188214 = ((Widget)this.widget).key;
+        global::Doroti.Framework.Foundation.Key? key__188214 = ((Widget)this.widget).key;
         if ((key__188214 is GlobalKeyBase))
         {
             GlobalKeyBase key__188214__as188240 = (GlobalKeyBase)key__188214;
@@ -1873,9 +1873,9 @@ child.attachRenderObject(newSlot);
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugPrintGlobalKeyedWidgetLifecycle)
+                if (global::Doroti.Framework.Widgets.DebugLibrary.debugPrintGlobalKeyedWidgetLifecycle)
                 {
-                    global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint($"Attempting to take {element__193149} from {(((object?)((Element)element__193149)._parent ?? (object?)"inactive elements list"))} to put in {this}.");
+                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"Attempting to take {element__193149} from {(((object?)((Element)element__193149)._parent ?? (object?)"inactive elements list"))} to put in {this}.");
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -1887,7 +1887,7 @@ child.attachRenderObject(newSlot);
                 {
                     if ((object.Equals(parent__193576, this)))
                     {
-                        throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("A GlobalKey was used multiple times inside one widget's child list."), new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<GlobalKeyBase>("The offending GlobalKey was", key), parent__193576.describeElement("The parent of the widgets with that key was"), element__193149.describeElement("The first child to get instantiated with that key became"), new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<Widget>("The second child that was to get instantiated with that key was", this.widget, style: global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("A GlobalKey can only be specified on one widget at a time in the widget tree.") }));
+                        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("A GlobalKey was used multiple times inside one widget's child list."), new global::Doroti.Framework.Foundation.DiagnosticsProperty<GlobalKeyBase>("The offending GlobalKey was", key), parent__193576.describeElement("The parent of the widgets with that key was"), element__193149.describeElement("The first child to get instantiated with that key became"), new global::Doroti.Framework.Foundation.DiagnosticsProperty<Widget>("The second child that was to get instantiated with that key was", this.widget, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorDescription("A GlobalKey can only be specified on one widget at a time in the widget tree.") }));
                     }
                     ((Element)parent__193576).owner!._debugTrackElementThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans(parent__193576, key);
                     return true;
@@ -1904,13 +1904,13 @@ child.attachRenderObject(newSlot);
 
     public virtual Element inflateWidget(Widget newWidget, object? newSlot)
     {
-        bool isTimelineTracked__195828 = (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode && FrameworkLibrary._isProfileBuildsEnabledFor(newWidget));
+        bool isTimelineTracked__195828 = (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && FrameworkLibrary._isProfileBuildsEnabledFor(newWidget));
         if (isTimelineTracked__195828)
         {
             DartMap<string, string>? debugTimelineArguments__195960 = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kDebugMode && global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugEnhanceBuildTimelineArguments))
+                    if ((global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode && global::Doroti.Framework.Widgets.DebugLibrary.debugEnhanceBuildTimelineArguments))
                     {
                         debugTimelineArguments__195960 = ((Diagnosticable)newWidget).toDiagnosticsNode().toTimelineArguments();
                     }
@@ -1921,7 +1921,7 @@ child.attachRenderObject(newSlot);
         }
         try
         {
-            global::Doroti.Generated.Framework.Foundation.Key? key__196327 = ((Widget)newWidget).key;
+            global::Doroti.Framework.Foundation.Key? key__196327 = ((Widget)newWidget).key;
             Element? inactiveChild__196369 = ((key__196327 is GlobalKeyBase globalKey__196327) ? _retakeInactiveElement(globalKey__196327, newWidget) : null);
             Element newChild__196491 = ((inactiveChild__196369 ?? (Element)newWidget.createElement()));
             DartRuntimePrimitives.Assert(() =>
@@ -1987,11 +1987,11 @@ child.attachRenderObject(newSlot);
         this.owner!._inactiveElements.add(child);
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugPrintGlobalKeyedWidgetLifecycle)
+                if (global::Doroti.Framework.Widgets.DebugLibrary.debugPrintGlobalKeyedWidgetLifecycle)
                 {
                     if ((((Element)child).widget.key is GlobalKeyBase))
                     {
-                        global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint($"Deactivated {child} (keyed child of {this})");
+                        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"Deactivated {child} (keyed child of {this})");
                     }
                 }
                 return true;
@@ -2052,9 +2052,9 @@ child.attachRenderObject(newSlot);
         _owner = ((Element)parent).owner;
         DartRuntimePrimitives.Assert(() =>
             {
-                if (global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugPrintGlobalKeyedWidgetLifecycle)
+                if (global::Doroti.Framework.Widgets.DebugLibrary.debugPrintGlobalKeyedWidgetLifecycle)
                 {
-                    global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint($"Reactivating {this} (now child of {this._parent}).");
+                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"Reactivating {this} (now child of {this._parent}).");
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -2124,8 +2124,8 @@ child.attachRenderObject(newSlot);
         DartRuntimePrimitives.Assert(() => (object.Equals(this._lifecycleState, _ElementLifecycle__framework.inactive)));
         DartRuntimePrimitives.Assert(() => (this._widget is not null));
         DartRuntimePrimitives.Assert(() => (this.owner is not null));
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
-        global::Doroti.Generated.Framework.Foundation.Key? key__207717 = this._widget?.key;
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        global::Doroti.Framework.Foundation.Key? key__207717 = this._widget?.key;
         if ((key__207717 is GlobalKeyBase))
         {
             GlobalKeyBase key__207717__as207745 = (GlobalKeyBase)key__207717;
@@ -2137,13 +2137,13 @@ child.attachRenderObject(newSlot);
     }
 
     public virtual bool debugExpectsRenderObjectForSlot(object? slot) => true;
-    public virtual global::Doroti.Generated.Framework.Rendering.RenderObject? findRenderObject()
+    public virtual global::Doroti.Framework.Rendering.RenderObject? findRenderObject()
     {
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((!object.Equals(this._lifecycleState, _ElementLifecycle__framework.active)))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Cannot get renderObject of inactive element."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("In order for an element to have a valid renderObject, it must be " + "active, which means it is part of the tree.\n" + $"Instead, this element is in the {this._lifecycleState} state.\n" + "If you called this method from a State object, consider guarding " + "it with State.mounted."), describeElement("The findRenderObject() method was called for the following element") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Cannot get renderObject of inactive element."), new global::Doroti.Framework.Foundation.ErrorDescription("In order for an element to have a valid renderObject, it must be " + "active, which means it is part of the tree.\n" + $"Instead, this element is in the {this._lifecycleState} state.\n" + "If you called this method from a State object, consider guarding " + "it with State.mounted."), describeElement("The findRenderObject() method was called for the following element") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -2160,47 +2160,47 @@ child.attachRenderObject(newSlot);
                 {
                     if ((!object.Equals(this._lifecycleState, _ElementLifecycle__framework.active)))
                     {
-                        throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Cannot get size of inactive element."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("In order for an element to have a valid size, the element must be " + "active, which means it is part of the tree.\n" + $"Instead, this element is in the {this._lifecycleState} state."), describeElement("The size getter was called for the following element") }));
+                        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Cannot get size of inactive element."), new global::Doroti.Framework.Foundation.ErrorDescription("In order for an element to have a valid size, the element must be " + "active, which means it is part of the tree.\n" + $"Instead, this element is in the {this._lifecycleState} state."), describeElement("The size getter was called for the following element") }));
                     }
                     if (this.owner!._debugBuilding)
                     {
-                        throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Cannot get size during build."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("The size of this render object has not yet been determined because " + "the framework is still in the process of building widgets, which " + "means the render tree for this frame has not yet been determined. " + "The size getter should only be called from paint callbacks or " + "interaction event handlers (e.g. gesture callbacks)."), new global::Doroti.Generated.Framework.Foundation.ErrorSpacer(), new global::Doroti.Generated.Framework.Foundation.ErrorHint("If you need some sizing information during build to decide which " + "widgets to build, consider using a LayoutBuilder widget, which can " + "tell you the layout constraints at a given location in the tree. See " + "<https://api.flutter.dev/flutter/widgets/LayoutBuilder-class.html> " + "for more details."), new global::Doroti.Generated.Framework.Foundation.ErrorSpacer(), describeElement("The size getter was called for the following element") }));
+                        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Cannot get size during build."), new global::Doroti.Framework.Foundation.ErrorDescription("The size of this render object has not yet been determined because " + "the framework is still in the process of building widgets, which " + "means the render tree for this frame has not yet been determined. " + "The size getter should only be called from paint callbacks or " + "interaction event handlers (e.g. gesture callbacks)."), new global::Doroti.Framework.Foundation.ErrorSpacer(), new global::Doroti.Framework.Foundation.ErrorHint("If you need some sizing information during build to decide which " + "widgets to build, consider using a LayoutBuilder widget, which can " + "tell you the layout constraints at a given location in the tree. See " + "<https://api.flutter.dev/flutter/widgets/LayoutBuilder-class.html> " + "for more details."), new global::Doroti.Framework.Foundation.ErrorSpacer(), describeElement("The size getter was called for the following element") }));
                     }
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
-            global::Doroti.Generated.Framework.Rendering.RenderObject? renderObject__212317 = ((global::Doroti.Generated.Framework.Rendering.RenderObject?)(object?)findRenderObject());
+            global::Doroti.Framework.Rendering.RenderObject? renderObject__212317 = ((global::Doroti.Framework.Rendering.RenderObject?)(object?)findRenderObject());
             DartRuntimePrimitives.Assert(() =>
                 {
                     if ((renderObject__212317 is null))
                     {
-                        throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Cannot get size without a render object."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("In order for an element to have a valid size, the element must have " + "an associated render object. This element does not have an associated " + "render object, which typically means that the size getter was called " + "too early in the pipeline (e.g., during the build phase) before the " + "framework has created the render tree."), describeElement("The size getter was called for the following element") }));
+                        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Cannot get size without a render object."), new global::Doroti.Framework.Foundation.ErrorHint("In order for an element to have a valid size, the element must have " + "an associated render object. This element does not have an associated " + "render object, which typically means that the size getter was called " + "too early in the pipeline (e.g., during the build phase) before the " + "framework has created the render tree."), describeElement("The size getter was called for the following element") }));
                     }
-                    if ((renderObject__212317 is global::Doroti.Generated.Framework.Rendering.RenderSliver))
+                    if ((renderObject__212317 is global::Doroti.Framework.Rendering.RenderSliver))
                     {
-                        global::Doroti.Generated.Framework.Rendering.RenderSliver renderObject__212317__as213062 = (global::Doroti.Generated.Framework.Rendering.RenderSliver)renderObject__212317;
-                        throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Cannot get size from a RenderSliver."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("The render object associated with this element is a " + $"{(DartRuntimePrimitives.RuntimeType(((global::Doroti.Generated.Framework.Rendering.RenderSliver)renderObject__212317__as213062)))}, which is a subtype of RenderSliver. " + "Slivers do not have a size per se. They have a more elaborate " + "geometry description, which can be accessed by calling " + "findRenderObject and then using the \"geometry\" getter on the " + "resulting object."), describeElement("The size getter was called for the following element"), ((global::Doroti.Generated.Framework.Rendering.RenderSliver)renderObject__212317__as213062).describeForError("The associated render sliver was") }));
+                        global::Doroti.Framework.Rendering.RenderSliver renderObject__212317__as213062 = (global::Doroti.Framework.Rendering.RenderSliver)renderObject__212317;
+                        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Cannot get size from a RenderSliver."), new global::Doroti.Framework.Foundation.ErrorHint("The render object associated with this element is a " + $"{(DartRuntimePrimitives.RuntimeType(((global::Doroti.Framework.Rendering.RenderSliver)renderObject__212317__as213062)))}, which is a subtype of RenderSliver. " + "Slivers do not have a size per se. They have a more elaborate " + "geometry description, which can be accessed by calling " + "findRenderObject and then using the \"geometry\" getter on the " + "resulting object."), describeElement("The size getter was called for the following element"), ((global::Doroti.Framework.Rendering.RenderSliver)renderObject__212317__as213062).describeForError("The associated render sliver was") }));
                     }
-                    if ((renderObject__212317 is not global::Doroti.Generated.Framework.Rendering.RenderBox))
+                    if ((renderObject__212317 is not global::Doroti.Framework.Rendering.RenderBox))
                     {
-                        throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Cannot get size from a render object that is not a RenderBox."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("Instead of being a subtype of RenderBox, the render object associated " + $"with this element is a {DartRuntimePrimitives.RuntimeType(renderObject__212317)}. If this type of " + "render object does have a size, consider calling findRenderObject " + "and extracting its size manually."), describeElement("The size getter was called for the following element"), ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)((dynamic)renderObject__212317).describeForError("The associated render object was")) }));
+                        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Cannot get size from a render object that is not a RenderBox."), new global::Doroti.Framework.Foundation.ErrorHint("Instead of being a subtype of RenderBox, the render object associated " + $"with this element is a {DartRuntimePrimitives.RuntimeType(renderObject__212317)}. If this type of " + "render object does have a size, consider calling findRenderObject " + "and extracting its size manually."), describeElement("The size getter was called for the following element"), ((global::Doroti.Framework.Foundation.DiagnosticsNode)((dynamic)renderObject__212317).describeForError("The associated render object was")) }));
                     }
-                    global::Doroti.Generated.Framework.Rendering.RenderBox box__214550 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Rendering.RenderBox>(((global::Doroti.Generated.Framework.Rendering.RenderBox)renderObject__212317));
-                    if (!((global::Doroti.Generated.Framework.Rendering.RenderBox)box__214550).hasSize)
+                    global::Doroti.Framework.Rendering.RenderBox box__214550 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderBox>(((global::Doroti.Framework.Rendering.RenderBox)renderObject__212317));
+                    if (!((global::Doroti.Framework.Rendering.RenderBox)box__214550).hasSize)
                     {
-                        throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Cannot get size from a render object that has not been through layout."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("The size of this render object has not yet been determined because " + "this render object has not yet been through layout, which typically " + "means that the size getter was called too early in the pipeline " + "(e.g., during the build phase) before the framework has determined " + "the size and position of the render objects during layout."), describeElement("The size getter was called for the following element"), box__214550.describeForError("The render object from which the size was to be obtained was") }));
+                        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Cannot get size from a render object that has not been through layout."), new global::Doroti.Framework.Foundation.ErrorHint("The size of this render object has not yet been determined because " + "this render object has not yet been through layout, which typically " + "means that the size getter was called too early in the pipeline " + "(e.g., during the build phase) before the framework has determined " + "the size and position of the render objects during layout."), describeElement("The size getter was called for the following element"), box__214550.describeForError("The render object from which the size was to be obtained was") }));
                     }
                     if (box__214550.debugNeedsLayout)
                     {
-                        throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Cannot get size from a render object that has been marked dirty for layout."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("The size of this render object is ambiguous because this render object has " + "been modified since it was last laid out, which typically means that the size " + "getter was called too early in the pipeline (e.g., during the build phase) " + "before the framework has determined the size and position of the render " + "objects during layout."), describeElement("The size getter was called for the following element"), box__214550.describeForError("The render object from which the size was to be obtained was"), new global::Doroti.Generated.Framework.Foundation.ErrorHint("Consider using debugPrintMarkNeedsLayoutStacks to determine why the render " + "object in question is dirty, if you did not expect this.") }));
+                        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Cannot get size from a render object that has been marked dirty for layout."), new global::Doroti.Framework.Foundation.ErrorHint("The size of this render object is ambiguous because this render object has " + "been modified since it was last laid out, which typically means that the size " + "getter was called too early in the pipeline (e.g., during the build phase) " + "before the framework has determined the size and position of the render " + "objects during layout."), describeElement("The size getter was called for the following element"), box__214550.describeForError("The render object from which the size was to be obtained was"), new global::Doroti.Framework.Foundation.ErrorHint("Consider using debugPrintMarkNeedsLayoutStacks to determine why the render " + "object in question is dirty, if you did not expect this.") }));
                     }
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
-            if ((renderObject__212317 is global::Doroti.Generated.Framework.Rendering.RenderBox))
+            if ((renderObject__212317 is global::Doroti.Framework.Rendering.RenderBox))
             {
-                global::Doroti.Generated.Framework.Rendering.RenderBox renderObject__212317__as216465 = (global::Doroti.Generated.Framework.Rendering.RenderBox)renderObject__212317;
-                return ((global::Doroti.Generated.Framework.Rendering.RenderBox)((global::Doroti.Generated.Framework.Rendering.RenderBox)renderObject__212317__as216465)).size;
+                global::Doroti.Framework.Rendering.RenderBox renderObject__212317__as216465 = (global::Doroti.Framework.Rendering.RenderBox)renderObject__212317;
+                return ((global::Doroti.Framework.Rendering.RenderBox)((global::Doroti.Framework.Rendering.RenderBox)renderObject__212317__as216465)).size;
             }
             return ((Size)(object)null);
             return default!;
@@ -2212,7 +2212,7 @@ child.attachRenderObject(newSlot);
             {
                 if ((!object.Equals(this._lifecycleState, _ElementLifecycle__framework.active)))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Looking up a deactivated widget's ancestor is unsafe."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("At this point the state of the widget's element tree is no longer " + "stable."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("To safely refer to a widget's ancestor in its dispose() method, " + "save a reference to the ancestor by calling dependOnInheritedWidgetOfExactType() " + "in the widget's didChangeDependencies() method.") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Looking up a deactivated widget's ancestor is unsafe."), new global::Doroti.Framework.Foundation.ErrorDescription("At this point the state of the widget's element tree is no longer " + "stable."), new global::Doroti.Framework.Foundation.ErrorHint("To safely refer to a widget's ancestor in its dispose() method, " + "save a reference to the ancestor by calling dependOnInheritedWidgetOfExactType() " + "in the widget's didChangeDependencies() method.") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -2269,7 +2269,7 @@ child.attachRenderObject(newSlot);
     internal virtual void _updateInheritance()
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(this._lifecycleState, _ElementLifecycle__framework.active)));
-        _inheritedElements = this._parent?._inheritedElements ?? global::Doroti.Generated.Framework.Foundation.PersistentHashMap<Type, InheritedElement>.CreateEmpty();
+        _inheritedElements = this._parent?._inheritedElements ?? global::Doroti.Framework.Foundation.PersistentHashMap<Type, InheritedElement>.CreateEmpty();
     }
 
     public virtual T? findAncestorWidgetOfExactType<T>()
@@ -2360,7 +2360,7 @@ child.attachRenderObject(newSlot);
             {
                 if ((this.owner!._debugCurrentBuildTarget is null))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"{methodName} for {DartRuntimePrimitives.RuntimeType(this.widget)} was called at an " + "inappropriate time."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("It may only be called while the widgets are being built."), new global::Doroti.Generated.Framework.Foundation.ErrorHint($"A possible cause of this error is when {methodName} is called during " + "one of:\n" + " * network I/O event\n" + " * file I/O event\n" + " * timer\n" + " * microtask (caused by Future.then, async/await, scheduleMicrotask)") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{methodName} for {DartRuntimePrimitives.RuntimeType(this.widget)} was called at an " + "inappropriate time."), new global::Doroti.Framework.Foundation.ErrorDescription("It may only be called while the widgets are being built."), new global::Doroti.Framework.Foundation.ErrorHint($"A possible cause of this error is when {methodName} is called during " + "one of:\n" + " * network I/O event\n" + " * file I/O event\n" + " * timer\n" + " * microtask (caused by Future.then, async/await, scheduleMicrotask)") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -2404,25 +2404,25 @@ child.attachRenderObject(newSlot);
         this._notificationTree?.dispatchNotification(notification);
     }
 
-    public virtual string toStringShort() => DartRuntimePrimitives.ConvertValue<string>((((Diagnosticable)this._widget).toStringShort() ?? $"{(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}(DEFUNCT)"));
-    public virtual global::Doroti.Generated.Framework.Foundation.DiagnosticsNode toDiagnosticsNode(string? name = null, global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle? style = null)
+    public virtual string toStringShort() => DartRuntimePrimitives.ConvertValue<string>((((Diagnosticable)this._widget).toStringShort() ?? $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}(DEFUNCT)"));
+    public virtual global::Doroti.Framework.Foundation.DiagnosticsNode toDiagnosticsNode(string? name = null, global::Doroti.Framework.Foundation.DiagnosticsTreeStyle? style = null)
     {
-        return ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)(object?)new _ElementDiagnosticableTreeNode__framework(name: name, value: this, style: style));
+        return ((global::Doroti.Framework.Foundation.DiagnosticsNode)(object?)new _ElementDiagnosticableTreeNode__framework(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.defaultDiagnosticsTreeStyle = global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.dense;
+        properties.defaultDiagnosticsTreeStyle = global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.dense;
         if ((!object.Equals(this._lifecycleState, _ElementLifecycle__framework.initial)))
         {
-            properties.add(new global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<long>("depth", this.depth, ifNull: "no depth"));
+            properties.add(new global::Doroti.Framework.Foundation.ObjectFlagProperty<long>("depth", this.depth, ifNull: "no depth"));
         }
-        properties.add(new global::Doroti.Generated.Framework.Foundation.ObjectFlagProperty<Widget>("widget", this._widget, ifNull: "no widget"));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Foundation.Key>("key", this._widget?.key, showName: false, defaultValue: null, level: global::Doroti.Generated.Framework.Foundation.DiagnosticLevel.hidden));
+        properties.add(new global::Doroti.Framework.Foundation.ObjectFlagProperty<Widget>("widget", this._widget, ifNull: "no widget"));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Foundation.Key>("key", this._widget?.key, showName: false, defaultValue: null, level: global::Doroti.Framework.Foundation.DiagnosticLevel.hidden));
         this._widget?.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.FlagProperty("dirty", value: this.dirty, ifTrue: "dirty"));
+        properties.add(new global::Doroti.Framework.Foundation.FlagProperty("dirty", value: this.dirty, ifTrue: "dirty"));
         HashSet<InheritedElement>? deps__224858 = this._dependencies;
         if (((deps__224858 is not null) && System.Linq.Enumerable.Any(deps__224858)))
         {
@@ -2430,14 +2430,14 @@ child.attachRenderObject(newSlot);
 {            var __cascade = deps__224858.ToList();
             __cascade.sort(((a, b) => ((Diagnosticable)a).toStringShort().CompareTo(((Diagnosticable)b).toStringShort())));
             return __cascade;        }))().ToList();
-            List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> diagnosticsDependencies__225170 = sortedDependencies__224958.map<InheritedElement, global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>(((element) => ((Diagnosticable)((InheritedElement)element).widget).toDiagnosticsNode(style: global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.sparse))).ToList().ToList();
-            properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<HashSet<InheritedElement>>("dependencies", deps__224858, description: diagnosticsDependencies__225170.ToString()));
+            List<global::Doroti.Framework.Foundation.DiagnosticsNode> diagnosticsDependencies__225170 = sortedDependencies__224958.map<InheritedElement, global::Doroti.Framework.Foundation.DiagnosticsNode>(((element) => ((Diagnosticable)((InheritedElement)element).widget).toDiagnosticsNode(style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.sparse))).ToList().ToList();
+            properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<InheritedElement>>("dependencies", deps__224858, description: diagnosticsDependencies__225170.ToString()));
         }
     }
 
-    public virtual List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
+    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
-        var children__225670 = new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>();
+        var children__225670 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
         visitChildren(((global::System.Action<Element>)((child) => {
 children__225670.Add(((Diagnosticable)child).toDiagnosticsNode());
 })));
@@ -2465,18 +2465,18 @@ children__225670.Add(((Diagnosticable)child).toDiagnosticsNode());
                     {
                         return true;
                     }
-                    var information__227480 = new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("setState() or markNeedsBuild() called during build."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"This {DartRuntimePrimitives.RuntimeType(this.widget)} widget cannot be marked as needing to build because the framework " + "is already in the process of building widgets. A widget can be marked as " + "needing to be built during the build phase only if one of its ancestors " + "is currently building. This exception is allowed because the framework " + "builds parent widgets before children, which means a dirty descendant " + "will always be built. Otherwise, the framework might not visit this " + "widget during this build phase."), describeElement("The widget on which setState() or markNeedsBuild() was called was") };
+                    var information__227480 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("setState() or markNeedsBuild() called during build."), new global::Doroti.Framework.Foundation.ErrorDescription($"This {DartRuntimePrimitives.RuntimeType(this.widget)} widget cannot be marked as needing to build because the framework " + "is already in the process of building widgets. A widget can be marked as " + "needing to be built during the build phase only if one of its ancestors " + "is currently building. This exception is allowed because the framework " + "builds parent widgets before children, which means a dirty descendant " + "will always be built. Otherwise, the framework might not visit this " + "widget during this build phase."), describeElement("The widget on which setState() or markNeedsBuild() was called was") };
                     if ((this.owner!._debugCurrentBuildTarget is not null))
                     {
                         information__227480.Add(this.owner!._debugCurrentBuildTarget!.describeWidget("The widget which was currently being built when the offending call was made was"));
                     }
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(information__227480));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(information__227480));
                 }
                 else
                 {
                     if (this.owner!._debugStateLocked)
                     {
-                        throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("setState() or markNeedsBuild() called when widget tree was locked."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"This {DartRuntimePrimitives.RuntimeType(this.widget)} widget cannot be marked as needing to build " + "because the framework is locked."), describeElement("The widget on which setState() or markNeedsBuild() was called was") }));
+                        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("setState() or markNeedsBuild() called when widget tree was locked."), new global::Doroti.Framework.Foundation.ErrorDescription($"This {DartRuntimePrimitives.RuntimeType(this.widget)} widget cannot be marked as needing to build " + "because the framework is locked."), describeElement("The widget on which setState() or markNeedsBuild() was called was") }));
                     }
                 }
                 return true;
@@ -2499,17 +2499,17 @@ children__225670.Add(((Diagnosticable)child).toDiagnosticsNode());
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugOnRebuildDirtyWidget?.Invoke(this, this._debugBuiltOnce);
-                if (global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugPrintRebuildDirtyWidgets)
+                global::Doroti.Framework.Widgets.DebugLibrary.debugOnRebuildDirtyWidget?.Invoke(this, this._debugBuiltOnce);
+                if (global::Doroti.Framework.Widgets.DebugLibrary.debugPrintRebuildDirtyWidgets)
                 {
                     if (!this._debugBuiltOnce)
                     {
-                        global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint($"Building {this}");
+                        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"Building {this}");
                         _debugBuiltOnce = true;
                     }
                     else
                     {
-                        global::Doroti.Generated.Framework.Foundation.PrintLibrary.debugPrint($"Rebuilding {this}");
+                        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"Rebuilding {this}");
                     }
                 }
                 return true;
@@ -2550,16 +2550,16 @@ children__225670.Add(((Diagnosticable)child).toDiagnosticsNode());
 
 }
 
-internal class _ElementDiagnosticableTreeNode__framework : global::Doroti.Generated.Framework.Foundation.DiagnosticableTreeNode<global::Doroti.Generated.Framework.Foundation.DiagnosticableTree>
+internal class _ElementDiagnosticableTreeNode__framework : global::Doroti.Framework.Foundation.DiagnosticableTreeNode<global::Doroti.Framework.Foundation.DiagnosticableTree>
 {
     public virtual bool stateful { get; private set; } = default!;
 
-    internal _ElementDiagnosticableTreeNode__framework(string? name = null, Element value = default!, global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle? style = default!, bool stateful = false) : base(name: name, value: value, style: DartRuntimePrimitives.RequireValue(style))
+    internal _ElementDiagnosticableTreeNode__framework(string? name = null, Element value = default!, global::Doroti.Framework.Foundation.DiagnosticsTreeStyle? style = default!, bool stateful = false) : base(name: name, value: value, style: DartRuntimePrimitives.RequireValue(style))
     {
         this.stateful = stateful;
     }
 
-    public override DartMap<string, object> toJsonMap(global::Doroti.Generated.Framework.Foundation.DiagnosticsSerializationDelegate @delegate)
+    public override DartMap<string, object> toJsonMap(global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate @delegate)
     {
         DartMap<string, object?> json__236880 = ((DartMap<string, object?>)(object?)base.toJsonMap(@delegate));
         var element__236924 = ((Element?)(object?)this.value)!;
@@ -2574,21 +2574,21 @@ internal class _ElementDiagnosticableTreeNode__framework : global::Doroti.Genera
 
 }
 
-public delegate Widget ErrorWidgetBuilder(global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails details);
+public delegate Widget ErrorWidgetBuilder(global::Doroti.Framework.Foundation.FlutterErrorDetails details);
 
 public class ErrorWidget : LeafRenderObjectWidget
 {
-    public static global::System.Func<global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails, Widget> builder = _defaultErrorWidgetBuilder;
+    public static global::System.Func<global::Doroti.Framework.Foundation.FlutterErrorDetails, Widget> builder = _defaultErrorWidgetBuilder;
     public virtual string message { get; private set; } = default!;
-    internal virtual global::Doroti.Generated.Framework.Foundation.FlutterError? _flutterError { get; private set; }
+    internal virtual global::Doroti.Framework.Foundation.FlutterError? _flutterError { get; private set; }
 
-    public ErrorWidget(object exception) : base(key: new global::Doroti.Generated.Framework.Foundation.UniqueKey())
+    public ErrorWidget(object exception) : base(key: new global::Doroti.Framework.Foundation.UniqueKey())
     {
         this.message = ErrorWidget._stringify(exception);
-        this._flutterError = ((exception is global::Doroti.Generated.Framework.Foundation.FlutterError) ? ((global::Doroti.Generated.Framework.Foundation.FlutterError)exception) : null);
+        this._flutterError = ((exception is global::Doroti.Framework.Foundation.FlutterError) ? ((global::Doroti.Framework.Foundation.FlutterError)exception) : null);
     }
 
-    public static ErrorWidget CreateWithDetails(string message = "", global::Doroti.Generated.Framework.Foundation.FlutterError? error = null)
+    public static ErrorWidget CreateWithDetails(string message = "", global::Doroti.Framework.Foundation.FlutterError? error = null)
     {
         var __instance = new ErrorWidget(default!);
         __instance.message = message;
@@ -2596,17 +2596,17 @@ public class ErrorWidget : LeafRenderObjectWidget
         return __instance;
     }
 
-    internal static Widget _defaultErrorWidgetBuilder(global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails details)
+    internal static Widget _defaultErrorWidgetBuilder(global::Doroti.Framework.Foundation.FlutterErrorDetails details)
     {
         var message__241341 = "";
         DartRuntimePrimitives.Assert(() =>
             {
-                message__241341 = $"{(ErrorWidget._stringify(((global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails)details).exception))}\nSee also: https://docs.flutter.dev/testing/errors";
+                message__241341 = $"{(ErrorWidget._stringify(((global::Doroti.Framework.Foundation.FlutterErrorDetails)details).exception))}\nSee also: https://docs.flutter.dev/testing/errors";
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        object exception__241530 = ((global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails)details).exception;
-        return ((Widget)(object?)ErrorWidget.CreateWithDetails(message: message__241341, error: ((exception__241530 is global::Doroti.Generated.Framework.Foundation.FlutterError) ? ((global::Doroti.Generated.Framework.Foundation.FlutterError)exception__241530) : null)));
+        object exception__241530 = ((global::Doroti.Framework.Foundation.FlutterErrorDetails)details).exception;
+        return ((Widget)(object?)ErrorWidget.CreateWithDetails(message: message__241341, error: ((exception__241530 is global::Doroti.Framework.Foundation.FlutterError) ? ((global::Doroti.Framework.Foundation.FlutterError)exception__241530) : null)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2623,17 +2623,17 @@ public class ErrorWidget : LeafRenderObjectWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Rendering.RenderObject>(new global::Doroti.Generated.Framework.Rendering.RenderErrorBox(this.message));
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(new global::Doroti.Framework.Rendering.RenderErrorBox(this.message));
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         if ((this._flutterError is null))
         {
-            properties.add(new global::Doroti.Generated.Framework.Foundation.StringProperty("message", this.message, quoted: false));
+            properties.add(new global::Doroti.Framework.Foundation.StringProperty("message", this.message, quoted: false));
         }
         else
         {
-            properties.add(((Diagnosticable)this._flutterError).toDiagnosticsNode(style: global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle.whitespace));
+            properties.add(((Diagnosticable)this._flutterError).toDiagnosticsNode(style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.whitespace));
         }
     }
 
@@ -2690,13 +2690,13 @@ public abstract class ComponentElement : Element
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
-            global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugWidgetBuilderValue(this.widget, built__246655);
+            global::Doroti.Framework.Widgets.DebugLibrary.debugWidgetBuilderValue(this.widget, built__246655);
         }
         catch (Exception e__246923)
         {
             var stack__246926 = new System.Diagnostics.StackTrace();
             _debugDoingBuild = false;
-            built__246655 = ErrorWidget.builder(FrameworkLibrary._reportException(new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"building {this}"), e__246923, stack__246926, informationCollector: (() => new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>())));
+            built__246655 = ErrorWidget.builder(FrameworkLibrary._reportException(new global::Doroti.Framework.Foundation.ErrorDescription($"building {this}"), e__246923, stack__246926, informationCollector: (() => new List<global::Doroti.Framework.Foundation.DiagnosticsNode>())));
         }
         try
         {
@@ -2706,7 +2706,7 @@ public abstract class ComponentElement : Element
         catch (Exception e__247601)
         {
             var stack__247604 = new System.Diagnostics.StackTrace();
-            built__246655 = ErrorWidget.builder(FrameworkLibrary._reportException(new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"building {this}"), e__247601, stack__247604, informationCollector: (() => new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>())));
+            built__246655 = ErrorWidget.builder(FrameworkLibrary._reportException(new global::Doroti.Framework.Foundation.ErrorDescription($"building {this}"), e__247601, stack__247604, informationCollector: (() => new List<global::Doroti.Framework.Foundation.DiagnosticsNode>())));
             try
             {
                 this._child?.deactivate();
@@ -2783,7 +2783,7 @@ public class StatefulElement : ComponentElement
                 if ((debugCheckForReturnedFuture__250900 is Future))
                 {
                     Future debugCheckForReturnedFuture__250900__as250986 = (Future)debugCheckForReturnedFuture__250900;
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"{DartRuntimePrimitives.RuntimeType(this.state)}.initState() returned a Future."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("State.initState() must be a void method without an `async` keyword."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("Rather than awaiting on asynchronous work directly inside of initState, " + "call a separate method to do this work without awaiting it.") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{DartRuntimePrimitives.RuntimeType(this.state)}.initState() returned a Future."), new global::Doroti.Framework.Foundation.ErrorDescription("State.initState() must be a void method without an `async` keyword."), new global::Doroti.Framework.Foundation.ErrorHint("Rather than awaiting on asynchronous work directly inside of initState, " + "call a separate method to do this work without awaiting it.") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -2827,7 +2827,7 @@ public class StatefulElement : ComponentElement
                 if ((debugCheckForReturnedFuture__252202 is Future))
                 {
                     Future debugCheckForReturnedFuture__252202__as252303 = (Future)debugCheckForReturnedFuture__252202;
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"{DartRuntimePrimitives.RuntimeType(this.state)}.didUpdateWidget() returned a Future."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("State.didUpdateWidget() must be a void method without an `async` keyword."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("Rather than awaiting on asynchronous work directly inside of didUpdateWidget, " + "call a separate method to do this work without awaiting it.") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{DartRuntimePrimitives.RuntimeType(this.state)}.didUpdateWidget() returned a Future."), new global::Doroti.Framework.Foundation.ErrorDescription("State.didUpdateWidget() must be a void method without an `async` keyword."), new global::Doroti.Framework.Foundation.ErrorHint("Rather than awaiting on asynchronous work directly inside of didUpdateWidget, " + "call a separate method to do this work without awaiting it.") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -2859,7 +2859,7 @@ public class StatefulElement : ComponentElement
                 {
                     return true;
                 }
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"{DartRuntimePrimitives.RuntimeType(this.state)}.dispose failed to call super.dispose."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("dispose() implementations must always call their superclass dispose() method, to ensure " + "that all the resources used by the widget are fully released.") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{DartRuntimePrimitives.RuntimeType(this.state)}.dispose failed to call super.dispose."), new global::Doroti.Framework.Foundation.ErrorDescription("dispose() implementations must always call their superclass dispose() method, to ensure " + "that all the resources used by the widget are fully released.") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         this.state._element = null;
@@ -2873,11 +2873,11 @@ public class StatefulElement : ComponentElement
                 Type targetType__254256 = DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget);
                 if ((object.Equals(this.state._debugLifecycleState, _StateLifecycle__framework.created)))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"dependOnInheritedWidgetOfExactType<{targetType__254256}>() or dependOnInheritedElement() was called before {DartRuntimePrimitives.RuntimeType(this.state)}.initState() completed."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("When an inherited widget changes, for example if the value of Theme.of() changes, " + "its dependent widgets are rebuilt. If the dependent widget's reference to " + "the inherited widget is in a constructor or an initState() method, " + "then the rebuilt dependent widget will not reflect the changes in the " + "inherited widget."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("Typically references to inherited widgets should occur in widget build() methods. Alternatively, " + "initialization based on inherited widgets can be placed in the didChangeDependencies method, which " + "is called after initState and whenever the dependencies change thereafter.") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"dependOnInheritedWidgetOfExactType<{targetType__254256}>() or dependOnInheritedElement() was called before {DartRuntimePrimitives.RuntimeType(this.state)}.initState() completed."), new global::Doroti.Framework.Foundation.ErrorDescription("When an inherited widget changes, for example if the value of Theme.of() changes, " + "its dependent widgets are rebuilt. If the dependent widget's reference to " + "the inherited widget is in a constructor or an initState() method, " + "then the rebuilt dependent widget will not reflect the changes in the " + "inherited widget."), new global::Doroti.Framework.Foundation.ErrorHint("Typically references to inherited widgets should occur in widget build() methods. Alternatively, " + "initialization based on inherited widgets can be placed in the didChangeDependencies method, which " + "is called after initState and whenever the dependencies change thereafter.") }));
                 }
                 if ((object.Equals(this.state._debugLifecycleState, _StateLifecycle__framework.defunct)))
                 {
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"dependOnInheritedWidgetOfExactType<{targetType__254256}>() or dependOnInheritedElement() was called after dispose(): {this}"), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("This error happens if you call dependOnInheritedWidgetOfExactType() on the " + "BuildContext for a widget that no longer appears in the widget tree " + "(e.g., whose parent widget no longer includes the widget in its " + "build). This error can occur when code calls " + "dependOnInheritedWidgetOfExactType() from a timer or an animation callback."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("The preferred solution is to cancel the timer or stop listening to the " + "animation in the dispose() callback. Another solution is to check the " + "\"mounted\" property of this object before calling " + "dependOnInheritedWidgetOfExactType() to ensure the object is still in the " + "tree."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("This error might indicate a memory leak if " + "dependOnInheritedWidgetOfExactType() is being called because another object " + "is retaining a reference to this State object after it has been " + "removed from the tree. To avoid memory leaks, consider breaking the " + "reference to this object during dispose().") }));
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"dependOnInheritedWidgetOfExactType<{targetType__254256}>() or dependOnInheritedElement() was called after dispose(): {this}"), new global::Doroti.Framework.Foundation.ErrorDescription("This error happens if you call dependOnInheritedWidgetOfExactType() on the " + "BuildContext for a widget that no longer appears in the widget tree " + "(e.g., whose parent widget no longer includes the widget in its " + "build). This error can occur when code calls " + "dependOnInheritedWidgetOfExactType() from a timer or an animation callback."), new global::Doroti.Framework.Foundation.ErrorHint("The preferred solution is to cancel the timer or stop listening to the " + "animation in the dispose() callback. Another solution is to check the " + "\"mounted\" property of this object before calling " + "dependOnInheritedWidgetOfExactType() to ensure the object is still in the " + "tree."), new global::Doroti.Framework.Foundation.ErrorHint("This error might indicate a memory leak if " + "dependOnInheritedWidgetOfExactType() is being called because another object " + "is retaining a reference to this State object after it has been " + "removed from the tree. To avoid memory leaks, consider breaking the " + "reference to this object during dispose().") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -2892,16 +2892,16 @@ public class StatefulElement : ComponentElement
         _didChangeDependencies = true;
     }
 
-    public override global::Doroti.Generated.Framework.Foundation.DiagnosticsNode toDiagnosticsNode(string? name = null, global::Doroti.Generated.Framework.Foundation.DiagnosticsTreeStyle? style = null)
+    public override global::Doroti.Framework.Foundation.DiagnosticsNode toDiagnosticsNode(string? name = null, global::Doroti.Framework.Foundation.DiagnosticsTreeStyle? style = null)
     {
-        return ((global::Doroti.Generated.Framework.Foundation.DiagnosticsNode)(object?)new _ElementDiagnosticableTreeNode__framework(name: name, value: this, style: style, stateful: true));
+        return ((global::Doroti.Framework.Foundation.DiagnosticsNode)(object?)new _ElementDiagnosticableTreeNode__framework(name: name, value: this, style: style, stateful: true));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<IState>("state", this._state, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<IState>("state", this._state, defaultValue: null));
     }
 
 }
@@ -3014,7 +3014,7 @@ public class InheritedElement : ProxyElement
     internal override void _updateInheritance()
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(this._lifecycleState, _ElementLifecycle__framework.active)));
-        global::Doroti.Generated.Framework.Foundation.PersistentHashMap<Type, InheritedElement> incomingWidgets__263141 = (this._parent?._inheritedElements ?? global::Doroti.Generated.Framework.Foundation.PersistentHashMap<Type, InheritedElement>.CreateEmpty());
+        global::Doroti.Framework.Foundation.PersistentHashMap<Type, InheritedElement> incomingWidgets__263141 = (this._parent?._inheritedElements ?? global::Doroti.Framework.Foundation.PersistentHashMap<Type, InheritedElement>.CreateEmpty());
         _inheritedElements = incomingWidgets__263141.put(DartRuntimePrimitives.RuntimeType(this.widget), this);
     }
 
@@ -3084,7 +3084,7 @@ public class InheritedElement : ProxyElement
 
 public abstract class RenderObjectElement : Element
 {
-    internal virtual global::Doroti.Generated.Framework.Rendering.RenderObject? _renderObject { get; set; } = default;
+    internal virtual global::Doroti.Framework.Rendering.RenderObject? _renderObject { get; set; } = default;
     internal virtual bool _debugDoingBuild { get; set; } = false;
     internal virtual RenderObjectElement? _ancestorRenderObjectElement { get; set; } = default;
 
@@ -3092,7 +3092,7 @@ public abstract class RenderObjectElement : Element
     {
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject renderObject
+    public override global::Doroti.Framework.Rendering.RenderObject renderObject
     {
         get
         {
@@ -3141,11 +3141,11 @@ public abstract class RenderObjectElement : Element
                     DartRuntimePrimitives.Assert(() => ((checked((long)(debugAncestorTypes.Count)) < checked((long)(result.Count))) || (checked((long)(debugParentDataTypes.Count)) < checked((long)(result.Count)))));
                     try
                     {
-                        throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Incorrect use of ParentDataWidget."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("Competing ParentDataWidgets are providing parent data to the " + "same RenderObject:"), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("A RenderObject can receive parent data from multiple " + "ParentDataWidgets, but the Type of ParentData must be unique to " + "prevent one overwriting another."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("Usually, this indicates that one or more of the offending " + "ParentDataWidgets listed above isn't placed inside a dedicated " + "compatible ancestor widget that it isn't sharing with another " + "ParentDataWidget of the same type."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("Otherwise, separating aspects of ParentData to prevent " + "conflicts can be done using mixins, mixing them all in on the " + "full ParentData Object, such as KeepAlive does with " + "KeepAliveParentDataMixin."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("The ownership chain for the RenderObject that received the " + $"parent data was:\n  {debugGetCreatorChain(10L)}") }));
+                        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Incorrect use of ParentDataWidget."), new global::Doroti.Framework.Foundation.ErrorDescription("Competing ParentDataWidgets are providing parent data to the " + "same RenderObject:"), new global::Doroti.Framework.Foundation.ErrorDescription("A RenderObject can receive parent data from multiple " + "ParentDataWidgets, but the Type of ParentData must be unique to " + "prevent one overwriting another."), new global::Doroti.Framework.Foundation.ErrorHint("Usually, this indicates that one or more of the offending " + "ParentDataWidgets listed above isn't placed inside a dedicated " + "compatible ancestor widget that it isn't sharing with another " + "ParentDataWidget of the same type."), new global::Doroti.Framework.Foundation.ErrorHint("Otherwise, separating aspects of ParentData to prevent " + "conflicts can be done using mixins, mixing them all in on the " + "full ParentData Object, such as KeepAlive does with " + "KeepAliveParentDataMixin."), new global::Doroti.Framework.Foundation.ErrorDescription("The ownership chain for the RenderObject that received the " + $"parent data was:\n  {debugGetCreatorChain(10L)}") }));
                     }
-                    catch (global::Doroti.Generated.Framework.Foundation.FlutterError error__282928)
+                    catch (global::Doroti.Framework.Foundation.FlutterError error__282928)
                     {
-                        FrameworkLibrary._reportException(new global::Doroti.Generated.Framework.Foundation.ErrorSummary("while looking for parent data."), error__282928, error__282928.stackTrace);
+                        FrameworkLibrary._reportException(new global::Doroti.Framework.Foundation.ErrorSummary("while looking for parent data."), error__282928, error__282928.stackTrace);
                     }
                 }
                 return true;
@@ -3271,15 +3271,15 @@ public abstract class RenderObjectElement : Element
     public override void deactivate()
     {
         base.deactivate();
-        DartRuntimePrimitives.Assert(() => !((global::Doroti.Generated.Framework.Rendering.RenderObject)this.renderObject).attached, () => (object?)"A RenderObject was still attached when attempting to deactivate its " + $"RenderObjectElement: {this.renderObject}");
+        DartRuntimePrimitives.Assert(() => !((global::Doroti.Framework.Rendering.RenderObject)this.renderObject).attached, () => (object?)"A RenderObject was still attached when attempting to deactivate its " + $"RenderObjectElement: {this.renderObject}");
     }
 
     public override void unmount()
     {
-        DartRuntimePrimitives.Assert(() => !DartRuntimePrimitives.RequireValue(((global::Doroti.Generated.Framework.Rendering.RenderObject)this.renderObject).debugDisposed), () => (object?)"A RenderObject was disposed prior to its owning element being unmounted: " + $"{this.renderObject}");
+        DartRuntimePrimitives.Assert(() => !DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Rendering.RenderObject)this.renderObject).debugDisposed), () => (object?)"A RenderObject was disposed prior to its owning element being unmounted: " + $"{this.renderObject}");
         var oldWidget__287428 = ((RenderObjectWidget?)(object?)this.widget)!;
         base.unmount();
-        DartRuntimePrimitives.Assert(() => !((global::Doroti.Generated.Framework.Rendering.RenderObject)this.renderObject).attached, () => (object?)"A RenderObject was still attached when attempting to unmount its " + $"RenderObjectElement: {this.renderObject}");
+        DartRuntimePrimitives.Assert(() => !((global::Doroti.Framework.Rendering.RenderObject)this.renderObject).attached, () => (object?)"A RenderObject was still attached when attempting to unmount its " + $"RenderObjectElement: {this.renderObject}");
         oldWidget__287428.didUnmountRenderObject(this.renderObject);
         ((dynamic)this._renderObject!).dispose();
         _renderObject = null;
@@ -3295,12 +3295,12 @@ public abstract class RenderObjectElement : Element
                     if (!parentDataWidget.debugIsValidRenderObject(this.renderObject))
                     {
                         applyParentData__287853 = false;
-                        throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("Incorrect use of ParentDataWidget.") }));
+                        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Incorrect use of ParentDataWidget.") }));
                     }
                 }
-                catch (global::Doroti.Generated.Framework.Foundation.FlutterError e__288494)
+                catch (global::Doroti.Framework.Foundation.FlutterError e__288494)
                 {
-                    FrameworkLibrary._reportException(new global::Doroti.Generated.Framework.Foundation.ErrorSummary("while applying parent data."), e__288494, e__288494.stackTrace);
+                    FrameworkLibrary._reportException(new global::Doroti.Framework.Foundation.ErrorSummary("while applying parent data."), e__288494, e__288494.stackTrace);
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -3330,7 +3330,7 @@ public abstract class RenderObjectElement : Element
             {
                 if ((this._ancestorRenderObjectElement is null))
                 {
-                    FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails(exception: new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"The render object for {toStringShort()} cannot find ancestor render object to attach to."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"The ownership chain for the RenderObject in question was:\n  {debugGetCreatorChain(10L)}"), new global::Doroti.Generated.Framework.Foundation.ErrorHint("Try wrapping your widget in a View widget or any other widget that is backed by " + $"a {typeof(RenderTreeRootElement)} to serve as the root of the render tree.") })));
+                    FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"The render object for {toStringShort()} cannot find ancestor render object to attach to."), new global::Doroti.Framework.Foundation.ErrorDescription($"The ownership chain for the RenderObject in question was:\n  {debugGetCreatorChain(10L)}"), new global::Doroti.Framework.Foundation.ErrorHint("Try wrapping your widget in a View widget or any other widget that is backed by " + $"a {typeof(RenderTreeRootElement)} to serve as the root of the render tree.") })));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -3353,13 +3353,13 @@ public abstract class RenderObjectElement : Element
         _slot = null;
     }
 
-    public abstract void insertRenderObjectChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, object? slot);
-    public abstract void moveRenderObjectChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot);
-    public abstract void removeRenderObjectChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, object? slot);
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public abstract void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot);
+    public abstract void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot);
+    public abstract void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot);
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<global::Doroti.Generated.Framework.Rendering.RenderObject>("renderObject", this._renderObject, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.RenderObject>("renderObject", this._renderObject, defaultValue: null));
     }
 
 }
@@ -3404,24 +3404,24 @@ public class LeafRenderObjectElement : RenderObjectElement
         base.forgetChild(child);
     }
 
-    public override void insertRenderObjectChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, object? slot)
+    public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         DartRuntimePrimitives.Assert(() => false);
     }
 
-    public override void moveRenderObjectChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
+    public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
     {
         DartRuntimePrimitives.Assert(() => false);
     }
 
-    public override void removeRenderObjectChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, object? slot)
+    public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         DartRuntimePrimitives.Assert(() => false);
     }
 
-    public override List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
+    public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
-        return ((List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode>)(object?)this.widget.debugDescribeChildren());
+        return ((List<global::Doroti.Framework.Foundation.DiagnosticsNode>)(object?)this.widget.debugDescribeChildren());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3464,7 +3464,7 @@ public class SingleChildRenderObjectElement : RenderObjectElement
         _child = updateChild(this._child, ((Widget?)((dynamic)(((SingleChildRenderObjectWidget?)(object?)this.widget)!)).child), null);
     }
 
-    public override void insertRenderObjectChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, object? slot)
+    public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         dynamic renderObject__296838 = this.renderObject;
         DartRuntimePrimitives.Assert(() => (slot is null));
@@ -3473,12 +3473,12 @@ public class SingleChildRenderObjectElement : RenderObjectElement
         DartRuntimePrimitives.Assert(() => (object.Equals(renderObject__296838, this.renderObject)));
     }
 
-    public override void moveRenderObjectChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
+    public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
     {
         DartRuntimePrimitives.Assert(() => false);
     }
 
-    public override void removeRenderObjectChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, object? slot)
+    public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         dynamic renderObject__297288 = this.renderObject;
         DartRuntimePrimitives.Assert(() => (slot is null));
@@ -3496,19 +3496,19 @@ public class MultiChildRenderObjectElement : RenderObjectElement
 
     public MultiChildRenderObjectElement(MultiChildRenderObjectWidget widget) : base(widget)
     {
-        System.Diagnostics.Debug.Assert(!global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugChildrenHaveDuplicateKeys(widget, ((MultiChildRenderObjectWidget)widget).children.Cast<Widget>()));
+        System.Diagnostics.Debug.Assert(!global::Doroti.Framework.Widgets.DebugLibrary.debugChildrenHaveDuplicateKeys(widget, ((MultiChildRenderObjectWidget)widget).children.Cast<Widget>()));
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject renderObject
+    public override global::Doroti.Framework.Rendering.RenderObject renderObject
     {
         get
         {
-            return DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Rendering.RenderObject>(base.renderObject);
+            return DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(base.renderObject);
             return default!;
         }
     }
     public virtual IEnumerable<Element> children => this._children.where(((child) => !this._forgottenChildren.Contains(child)));
-    public override void insertRenderObjectChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, object? slot)
+    public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         var __slot = (IndexedSlot<Element?>)(object)slot;
         dynamic renderObject__299399 = this.renderObject;
@@ -3517,20 +3517,20 @@ public class MultiChildRenderObjectElement : RenderObjectElement
         DartRuntimePrimitives.Assert(() => (object.Equals(renderObject__299399, this.renderObject)));
     }
 
-    public override void moveRenderObjectChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
+    public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
     {
         var __oldSlot = (IndexedSlot<Element?>)(object)oldSlot;
         var __newSlot = (IndexedSlot<Element?>)(object)newSlot;
         dynamic renderObject__299839 = this.renderObject;
-        DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Generated.Framework.Rendering.RenderObject)child).parent, renderObject__299839)));
+        DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Framework.Rendering.RenderObject)child).parent, renderObject__299839)));
         ((dynamic)renderObject__299839).move((dynamic)child, after: (dynamic?)((IndexedSlot<Element?>)__newSlot).value?.renderObject);
         DartRuntimePrimitives.Assert(() => (object.Equals(renderObject__299839, this.renderObject)));
     }
 
-    public override void removeRenderObjectChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, object? slot)
+    public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         dynamic renderObject__300207 = this.renderObject;
-        DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Generated.Framework.Rendering.RenderObject)child).parent, renderObject__300207)));
+        DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Framework.Rendering.RenderObject)child).parent, renderObject__300207)));
         ((dynamic)renderObject__300207).remove((dynamic)child);
         DartRuntimePrimitives.Assert(() => (object.Equals(renderObject__300207, this.renderObject)));
     }
@@ -3560,7 +3560,7 @@ public class MultiChildRenderObjectElement : RenderObjectElement
             {
                 if ((((Element)newChild).renderObject is null))
                 {
-                    FlutterError.reportError(new global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails(exception: new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary("The children of `MultiChildRenderObjectElement` must each has an associated render object."), new global::Doroti.Generated.Framework.Foundation.ErrorHint($"This typically means that the `{((Element)newChild).widget}` or its children\n" + "are not a subtype of `RenderObjectWidget`."), newChild.describeElement("The following element does not have an associated render object"), new global::Doroti.Generated.Framework.Rendering.DiagnosticsDebugCreator(new DebugCreator(newChild)) })));
+                    FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("The children of `MultiChildRenderObjectElement` must each has an associated render object."), new global::Doroti.Framework.Foundation.ErrorHint($"This typically means that the `{((Element)newChild).widget}` or its children\n" + "are not a subtype of `RenderObjectWidget`."), newChild.describeElement("The following element does not have an associated render object"), new global::Doroti.Framework.Rendering.DiagnosticsDebugCreator(new DebugCreator(newChild)) })));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -3598,7 +3598,7 @@ public class MultiChildRenderObjectElement : RenderObjectElement
         base.update(__newWidget);
         var multiChildRenderObjectWidget__302645 = ((MultiChildRenderObjectWidget?)(object?)this.widget)!;
         DartRuntimePrimitives.Assert(() => (object.Equals(this.widget, __newWidget)));
-        DartRuntimePrimitives.Assert(() => !global::Doroti.Generated.Framework.Widgets.DebugLibrary.debugChildrenHaveDuplicateKeys(this.widget, ((MultiChildRenderObjectWidget)multiChildRenderObjectWidget__302645).children.Cast<Widget>()));
+        DartRuntimePrimitives.Assert(() => !global::Doroti.Framework.Widgets.DebugLibrary.debugChildrenHaveDuplicateKeys(this.widget, ((MultiChildRenderObjectWidget)multiChildRenderObjectWidget__302645).children.Cast<Widget>()));
         _children = updateChildren(this._children, ((MultiChildRenderObjectWidget)multiChildRenderObjectWidget__302645).children, forgottenChildren: this._forgottenChildren);
         this._forgottenChildren.Clear();
     }
@@ -3630,13 +3630,13 @@ public abstract class RenderTreeRootElement : RenderObjectElement
 
     internal virtual bool _debugCheckMustNotAttachRenderObjectToAncestor()
     {
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kDebugMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode)
         {
             return true;
         }
         if ((_findAncestorRenderObjectElement() is not null))
         {
-            throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"The RenderObject for {toStringShort()} cannot maintain an independent render tree at its current location."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"The ownership chain for the RenderObject in question was:\n  {debugGetCreatorChain(10L)}"), new global::Doroti.Generated.Framework.Foundation.ErrorDescription("This RenderObject is the root of an independent render tree and it cannot " + "attach itself to an ancestor in an existing tree. The ancestor RenderObject, " + "however, expects that a child will be attached."), new global::Doroti.Generated.Framework.Foundation.ErrorHint($"Try moving the subtree that contains the {toStringShort()} widget " + "to a location where it is not expected to attach its RenderObject " + "to a parent. This could mean moving the subtree into the view " + "property of a \"ViewAnchor\" widget or - if the subtree is the root of " + "your widget tree - passing it to \"runWidget\" instead of \"runApp\"."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("If you are seeing this error in a test and the subtree containing " + $"the {toStringShort()} widget is passed to \"WidgetTester.pumpWidget\", " + "consider setting the \"wrapWithView\" parameter of that method to false.") }));
+            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"The RenderObject for {toStringShort()} cannot maintain an independent render tree at its current location."), new global::Doroti.Framework.Foundation.ErrorDescription($"The ownership chain for the RenderObject in question was:\n  {debugGetCreatorChain(10L)}"), new global::Doroti.Framework.Foundation.ErrorDescription("This RenderObject is the root of an independent render tree and it cannot " + "attach itself to an ancestor in an existing tree. The ancestor RenderObject, " + "however, expects that a child will be attached."), new global::Doroti.Framework.Foundation.ErrorHint($"Try moving the subtree that contains the {toStringShort()} widget " + "to a location where it is not expected to attach its RenderObject " + "to a parent. This could mean moving the subtree into the view " + "property of a \"ViewAnchor\" widget or - if the subtree is the root of " + "your widget tree - passing it to \"runWidget\" instead of \"runApp\"."), new global::Doroti.Framework.Foundation.ErrorHint("If you are seeing this error in a test and the subtree containing " + $"the {toStringShort()} widget is passed to \"WidgetTester.pumpWidget\", " + "consider setting the \"wrapWithView\" parameter of that method to false.") }));
         }
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -3658,9 +3658,9 @@ public class DebugCreator
 
 public static partial class FrameworkLibrary
 {
-    internal static global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails _reportException(global::Doroti.Generated.Framework.Foundation.DiagnosticsNode context, object exception, global::System.Diagnostics.StackTrace? stack, InformationCollector? informationCollector = null)
+    internal static global::Doroti.Framework.Foundation.FlutterErrorDetails _reportException(global::Doroti.Framework.Foundation.DiagnosticsNode context, object exception, global::System.Diagnostics.StackTrace? stack, InformationCollector? informationCollector = null)
     {
-        var details__306179 = new global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: context, informationCollector: (InformationCollector?)informationCollector);
+        var details__306179 = new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: context, informationCollector: (InformationCollector?)informationCollector);
         FlutterError.reportError(details__306179);
         return details__306179;
         throw new InvalidOperationException("Dart control flow completed without a value.");

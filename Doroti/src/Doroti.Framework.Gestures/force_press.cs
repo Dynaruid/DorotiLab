@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Gestures;
+namespace Doroti.Framework.Gestures;
 
 internal enum _ForceState__force_press
 {
@@ -115,7 +115,7 @@ public class ForcePressGestureRecognizer : OneSequenceGestureRecognizer
                 }
                 else
                 {
-                    if ((((PointerEvent)@event).delta.distanceSquared > global::Doroti.Generated.Framework.Gestures.EventsLibrary.computeHitSlop(((PointerEvent)@event).kind, gestureSettings)))
+                    if ((((PointerEvent)@event).delta.distanceSquared > global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(((PointerEvent)@event).kind, gestureSettings)))
                     {
                         resolve(GestureDisposition.rejected);
                     }

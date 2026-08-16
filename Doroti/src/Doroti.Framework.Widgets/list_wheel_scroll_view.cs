@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public enum ChangeReportingBehavior
 {
@@ -143,7 +143,7 @@ public class FixedExtentScrollController : ScrollController
             return default!;
         }
     }
-    public async virtual Future animateToItem(long itemIndex, Duration duration, global::Doroti.Generated.Framework.Animation.Curve curve)
+    public async virtual Future animateToItem(long itemIndex, Duration duration, global::Doroti.Framework.Animation.Curve curve)
     {
         if (!this.hasClients)
         {
@@ -174,12 +174,12 @@ public class FixedExtentMetrics : FixedScrollMetrics
     public FixedExtentMetrics() : base(default!, default!, default!, default!, default!, default!) { }
 
 
-    public FixedExtentMetrics(double? minScrollExtent, double? maxScrollExtent, double? pixels, double? viewportDimension, global::Doroti.Generated.Framework.Painting.AxisDirection axisDirection, long itemIndex, double devicePixelRatio) : base(minScrollExtent: DartRuntimePrimitives.RequireValue(minScrollExtent), maxScrollExtent: DartRuntimePrimitives.RequireValue(maxScrollExtent), pixels: DartRuntimePrimitives.RequireValue(pixels), viewportDimension: DartRuntimePrimitives.RequireValue(viewportDimension), axisDirection: axisDirection, devicePixelRatio: devicePixelRatio)
+    public FixedExtentMetrics(double? minScrollExtent, double? maxScrollExtent, double? pixels, double? viewportDimension, global::Doroti.Framework.Painting.AxisDirection axisDirection, long itemIndex, double devicePixelRatio) : base(minScrollExtent: DartRuntimePrimitives.RequireValue(minScrollExtent), maxScrollExtent: DartRuntimePrimitives.RequireValue(maxScrollExtent), pixels: DartRuntimePrimitives.RequireValue(pixels), viewportDimension: DartRuntimePrimitives.RequireValue(viewportDimension), axisDirection: axisDirection, devicePixelRatio: devicePixelRatio)
     {
         this.itemIndex = itemIndex;
     }
 
-    public virtual FixedExtentMetrics copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, global::Doroti.Generated.Framework.Painting.AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
+    public virtual FixedExtentMetrics copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, global::Doroti.Framework.Painting.AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
     {
         return new FixedExtentMetrics(minScrollExtent: (minScrollExtent ?? ((this.hasContentDimensions ? this.minScrollExtent : null))), maxScrollExtent: (maxScrollExtent ?? ((this.hasContentDimensions ? this.maxScrollExtent : null))), pixels: (pixels ?? ((this.hasPixels ? this.pixels : null))), viewportDimension: (viewportDimension ?? ((this.hasViewportDimension ? this.viewportDimension : null))), axisDirection: (axisDirection ?? this.axisDirection), itemIndex: (itemIndex ?? this.itemIndex), devicePixelRatio: (devicePixelRatio ?? this.devicePixelRatio));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -228,7 +228,7 @@ internal class _FixedExtentScrollPosition__list_wheel_scroll_view : ScrollPositi
             return default!;
         }
     }
-    public virtual FixedExtentMetrics copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, global::Doroti.Generated.Framework.Painting.AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
+    public virtual FixedExtentMetrics copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, global::Doroti.Framework.Painting.AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
     {
         return new FixedExtentMetrics(minScrollExtent: (minScrollExtent ?? ((this.hasContentDimensions ? this.minScrollExtent : null))), maxScrollExtent: (maxScrollExtent ?? ((this.hasContentDimensions ? this.maxScrollExtent : null))), pixels: (pixels ?? ((this.hasPixels ? this.pixels : null))), viewportDimension: (viewportDimension ?? ((this.hasViewportDimension ? this.viewportDimension : null))), axisDirection: (axisDirection ?? this.axisDirection), itemIndex: (itemIndex ?? this.itemIndex), devicePixelRatio: (devicePixelRatio ?? this.devicePixelRatio));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -240,7 +240,7 @@ internal class _FixedExtentScrollable__list_wheel_scroll_view : Scrollable
 {
     public virtual double itemExtent { get; private set; } = default!;
 
-    internal _FixedExtentScrollable__list_wheel_scroll_view(ScrollController? controller = null, ScrollPhysics? physics = null, double itemExtent = default!, global::System.Func<BuildContext, global::Doroti.Generated.Framework.Rendering.ViewportOffset, Widget> viewportBuilder = default!, global::Doroti.Generated.Framework.Gestures.DragStartBehavior dragStartBehavior = default!, string? restorationId = null, ScrollBehavior? scrollBehavior = null, global::Doroti.Generated.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Generated.Framework.Rendering.HitTestBehavior.opaque) : base(controller: controller, physics: physics, viewportBuilder: viewportBuilder, dragStartBehavior: dragStartBehavior, restorationId: restorationId, scrollBehavior: scrollBehavior, hitTestBehavior: hitTestBehavior)
+    internal _FixedExtentScrollable__list_wheel_scroll_view(ScrollController? controller = null, ScrollPhysics? physics = null, double itemExtent = default!, global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget> viewportBuilder = default!, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = default!, string? restorationId = null, ScrollBehavior? scrollBehavior = null, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.HitTestBehavior.opaque) : base(controller: controller, physics: physics, viewportBuilder: viewportBuilder, dragStartBehavior: dragStartBehavior, restorationId: restorationId, scrollBehavior: scrollBehavior, hitTestBehavior: hitTestBehavior)
     {
         this.itemExtent = itemExtent;
     }
@@ -273,30 +273,30 @@ public class FixedExtentScrollPhysics : ScrollPhysics
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override global::Doroti.Generated.Framework.Physics.Simulation? createBallisticSimulation(ScrollMetrics position, double velocity)
+    public override global::Doroti.Framework.Physics.Simulation? createBallisticSimulation(ScrollMetrics position, double velocity)
     {
         DartRuntimePrimitives.Assert(() => (position is _FixedExtentScrollPosition__list_wheel_scroll_view), () => (object?)"FixedExtentScrollPhysics can only be used with Scrollables that uses " + "the FixedExtentScrollController");
         var metrics__18212 = ((_FixedExtentScrollPosition__list_wheel_scroll_view?)(object?)position)!;
         if (((((velocity <= 0.0) && (metrics__18212.pixels <= metrics__18212.minScrollExtent))) || (((velocity >= 0.0) && (metrics__18212.pixels >= metrics__18212.maxScrollExtent)))))
         {
-            return ((global::Doroti.Generated.Framework.Physics.Simulation?)(object?)base.createBallisticSimulation(metrics__18212, velocity));
+            return ((global::Doroti.Framework.Physics.Simulation?)(object?)base.createBallisticSimulation(metrics__18212, velocity));
         }
-        global::Doroti.Generated.Framework.Physics.Simulation? testFrictionSimulation__18812 = ((global::Doroti.Generated.Framework.Physics.Simulation?)(object?)base.createBallisticSimulation(metrics__18212, velocity));
+        global::Doroti.Framework.Physics.Simulation? testFrictionSimulation__18812 = ((global::Doroti.Framework.Physics.Simulation?)(object?)base.createBallisticSimulation(metrics__18212, velocity));
         if (((testFrictionSimulation__18812 is not null) && (((testFrictionSimulation__18812.x(double.PositiveInfinity) == metrics__18212.minScrollExtent) || (testFrictionSimulation__18812.x(double.PositiveInfinity) == metrics__18212.maxScrollExtent)))))
         {
-            return ((global::Doroti.Generated.Framework.Physics.Simulation?)(object?)base.createBallisticSimulation(metrics__18212, velocity));
+            return ((global::Doroti.Framework.Physics.Simulation?)(object?)base.createBallisticSimulation(metrics__18212, velocity));
         }
         long settlingItemIndex__19471 = List_wheel_scroll_viewLibrary._getItemFromOffset(offset: ((testFrictionSimulation__18812?.x(double.PositiveInfinity) ?? (double)metrics__18212.pixels)), itemExtent: ((_FixedExtentScrollPosition__list_wheel_scroll_view)metrics__18212).itemExtent, minScrollExtent: metrics__18212.minScrollExtent, maxScrollExtent: metrics__18212.maxScrollExtent);
         double settlingPixels__19746 = (settlingItemIndex__19471 * ((_FixedExtentScrollPosition__list_wheel_scroll_view)metrics__18212).itemExtent);
         if (((velocity.abs() < toleranceFor(((_FixedExtentScrollPosition__list_wheel_scroll_view)position)).velocity) && (((settlingPixels__19746 - metrics__18212.pixels)).abs() < toleranceFor(((_FixedExtentScrollPosition__list_wheel_scroll_view)position)).distance)))
         {
-            return ((global::Doroti.Generated.Framework.Physics.Simulation)(object)null);
+            return ((global::Doroti.Framework.Physics.Simulation)(object)null);
         }
         if ((settlingItemIndex__19471 == ((_FixedExtentScrollPosition__list_wheel_scroll_view)metrics__18212).itemIndex))
         {
-            return ((global::Doroti.Generated.Framework.Physics.Simulation?)(object?)new global::Doroti.Generated.Framework.Physics.SpringSimulation(this.spring, metrics__18212.pixels, settlingPixels__19746, velocity, tolerance: toleranceFor(((_FixedExtentScrollPosition__list_wheel_scroll_view)position))));
+            return ((global::Doroti.Framework.Physics.Simulation?)(object?)new global::Doroti.Framework.Physics.SpringSimulation(this.spring, metrics__18212.pixels, settlingPixels__19746, velocity, tolerance: toleranceFor(((_FixedExtentScrollPosition__list_wheel_scroll_view)position))));
         }
-        return ((global::Doroti.Generated.Framework.Physics.Simulation?)(object?)global::Doroti.Generated.Framework.Physics.FrictionSimulation.CreateThrough(metrics__18212.pixels, settlingPixels__19746, velocity, (toleranceFor(((_FixedExtentScrollPosition__list_wheel_scroll_view)position)).velocity * Math.Sign(velocity))));
+        return ((global::Doroti.Framework.Physics.Simulation?)(object?)global::Doroti.Framework.Physics.FrictionSimulation.CreateThrough(metrics__18212.pixels, settlingPixels__19746, velocity, (toleranceFor(((_FixedExtentScrollPosition__list_wheel_scroll_view)position)).velocity * Math.Sign(velocity))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -318,16 +318,16 @@ public class ListWheelScrollView : StatefulWidget
     public virtual bool renderChildrenOutsideViewport { get; private set; } = default!;
     public virtual ListWheelChildDelegate childDelegate { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Rendering.HitTestBehavior hitTestBehavior { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior { get; private set; } = default!;
     public virtual string? restorationId { get; private set; }
     public virtual ScrollBehavior? scrollBehavior { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Gestures.DragStartBehavior dragStartBehavior { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior { get; private set; } = default!;
     public virtual ChangeReportingBehavior changeReportingBehavior { get; private set; } = default!;
 
-    public ListWheelScrollView(global::Doroti.Generated.Framework.Foundation.Key? key = null, ScrollController? controller = null, ScrollPhysics? physics = null, double? diameterRatio = null, double? perspective = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, double overAndUnderCenterOpacity = 1.0, double itemExtent = default!, double squeeze = 1.0, global::System.Action<long>? onSelectedItemChanged = null, bool renderChildrenOutsideViewport = false, Clip clipBehavior = Clip.hardEdge, global::Doroti.Generated.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Generated.Framework.Rendering.HitTestBehavior.opaque, string? restorationId = null, ScrollBehavior? scrollBehavior = null, global::Doroti.Generated.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Generated.Framework.Gestures.DragStartBehavior.start, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate, List<Widget> children = default!) : base(key: key)
+    public ListWheelScrollView(global::Doroti.Framework.Foundation.Key? key = null, ScrollController? controller = null, ScrollPhysics? physics = null, double? diameterRatio = null, double? perspective = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, double overAndUnderCenterOpacity = 1.0, double itemExtent = default!, double squeeze = 1.0, global::System.Action<long>? onSelectedItemChanged = null, bool renderChildrenOutsideViewport = false, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.HitTestBehavior.opaque, string? restorationId = null, ScrollBehavior? scrollBehavior = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate, List<Widget> children = default!) : base(key: key)
     {
-        double __diameterRatio = diameterRatio ?? global::Doroti.Generated.Framework.Rendering.RenderListWheelViewport.defaultDiameterRatio;
-        double __perspective = perspective ?? global::Doroti.Generated.Framework.Rendering.RenderListWheelViewport.defaultPerspective;
+        double __diameterRatio = diameterRatio ?? global::Doroti.Framework.Rendering.RenderListWheelViewport.defaultDiameterRatio;
+        double __perspective = perspective ?? global::Doroti.Framework.Rendering.RenderListWheelViewport.defaultPerspective;
         this.controller = controller;
         this.physics = physics;
         this.diameterRatio = __diameterRatio;
@@ -357,11 +357,11 @@ public class ListWheelScrollView : StatefulWidget
         System.Diagnostics.Debug.Assert((!renderChildrenOutsideViewport || (object.Equals(clipBehavior, Clip.none))));
     }
 
-    public static ListWheelScrollView CreateUseDelegate(global::Doroti.Generated.Framework.Foundation.Key? key = null, ScrollController? controller = null, ScrollPhysics? physics = null, double? diameterRatio = null, double? perspective = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, double overAndUnderCenterOpacity = 1.0, double itemExtent = default!, double squeeze = 1.0, global::System.Action<long>? onSelectedItemChanged = null, bool renderChildrenOutsideViewport = false, Clip clipBehavior = Clip.hardEdge, global::Doroti.Generated.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Generated.Framework.Rendering.HitTestBehavior.opaque, string? restorationId = null, ScrollBehavior? scrollBehavior = null, global::Doroti.Generated.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Generated.Framework.Gestures.DragStartBehavior.start, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate, ListWheelChildDelegate childDelegate = default!)
+    public static ListWheelScrollView CreateUseDelegate(global::Doroti.Framework.Foundation.Key? key = null, ScrollController? controller = null, ScrollPhysics? physics = null, double? diameterRatio = null, double? perspective = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, double overAndUnderCenterOpacity = 1.0, double itemExtent = default!, double squeeze = 1.0, global::System.Action<long>? onSelectedItemChanged = null, bool renderChildrenOutsideViewport = false, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.HitTestBehavior.opaque, string? restorationId = null, ScrollBehavior? scrollBehavior = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, ChangeReportingBehavior changeReportingBehavior = ChangeReportingBehavior.onScrollUpdate, ListWheelChildDelegate childDelegate = default!)
     {
         var __instance = new ListWheelScrollView(default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!);
-        double __diameterRatio = diameterRatio ?? global::Doroti.Generated.Framework.Rendering.RenderListWheelViewport.defaultDiameterRatio;
-        double __perspective = perspective ?? global::Doroti.Generated.Framework.Rendering.RenderListWheelViewport.defaultPerspective;
+        double __diameterRatio = diameterRatio ?? global::Doroti.Framework.Rendering.RenderListWheelViewport.defaultDiameterRatio;
+        double __perspective = perspective ?? global::Doroti.Framework.Rendering.RenderListWheelViewport.defaultPerspective;
         __instance.controller = controller;
         __instance.physics = physics;
         __instance.diameterRatio = __diameterRatio;
@@ -454,7 +454,7 @@ internal class _ListWheelScrollViewState__list_wheel_scroll_view : State<ListWhe
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new NotificationListener<ScrollNotification>(onNotification: (global::System.Func<ScrollNotification, bool>)this._handleScrollNotification, child: new _FixedExtentScrollable__list_wheel_scroll_view(controller: this._effectiveController, physics: ((ListWheelScrollView)this.widget).physics, itemExtent: ((ListWheelScrollView)this.widget).itemExtent, restorationId: ((ListWheelScrollView)this.widget).restorationId, hitTestBehavior: ((ListWheelScrollView)this.widget).hitTestBehavior, scrollBehavior: ((((ListWheelScrollView)this.widget).scrollBehavior ?? (ScrollBehavior)ScrollConfiguration.of(context).copyWith(scrollbars: false))), dragStartBehavior: ((ListWheelScrollView)this.widget).dragStartBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Generated.Framework.Rendering.ViewportOffset, Widget>)((context, offset) => {
+        return ((Widget)(object?)new NotificationListener<ScrollNotification>(onNotification: (global::System.Func<ScrollNotification, bool>)this._handleScrollNotification, child: new _FixedExtentScrollable__list_wheel_scroll_view(controller: this._effectiveController, physics: ((ListWheelScrollView)this.widget).physics, itemExtent: ((ListWheelScrollView)this.widget).itemExtent, restorationId: ((ListWheelScrollView)this.widget).restorationId, hitTestBehavior: ((ListWheelScrollView)this.widget).hitTestBehavior, scrollBehavior: ((((ListWheelScrollView)this.widget).scrollBehavior ?? (ScrollBehavior)ScrollConfiguration.of(context).copyWith(scrollbars: false))), dragStartBehavior: ((ListWheelScrollView)this.widget).dragStartBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, offset) => {
 return ((Widget)(object?)new ListWheelViewport(diameterRatio: ((ListWheelScrollView)this.widget).diameterRatio, perspective: ((ListWheelScrollView)this.widget).perspective, offAxisFraction: ((ListWheelScrollView)this.widget).offAxisFraction, useMagnifier: ((ListWheelScrollView)this.widget).useMagnifier, magnification: ((ListWheelScrollView)this.widget).magnification, overAndUnderCenterOpacity: ((ListWheelScrollView)this.widget).overAndUnderCenterOpacity, itemExtent: ((ListWheelScrollView)this.widget).itemExtent, squeeze: ((ListWheelScrollView)this.widget).squeeze, renderChildrenOutsideViewport: ((ListWheelScrollView)this.widget).renderChildrenOutsideViewport, offset: offset, childDelegate: ((ListWheelScrollView)this.widget).childDelegate, clipBehavior: ((ListWheelScrollView)this.widget).clipBehavior));
 throw new InvalidOperationException("Dart closure completed without a value.");
 })))));
@@ -463,7 +463,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
 }
 
-public class ListWheelElement : RenderObjectElement, global::Doroti.Generated.Framework.Rendering.ListWheelChildManager
+public class ListWheelElement : RenderObjectElement, global::Doroti.Framework.Rendering.ListWheelChildManager
 {
     internal virtual DartMap<long, Widget?> _childWidgets { get; private set; } = new DartMap<long, Widget?>();
     internal virtual SortedDictionary<long, Element> _childElements { get; private set; } = new SortedDictionary<long, Element>();
@@ -472,7 +472,7 @@ public class ListWheelElement : RenderObjectElement, global::Doroti.Generated.Fr
     {
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject renderObject => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Rendering.RenderObject>(((global::Doroti.Generated.Framework.Rendering.RenderListWheelViewport?)(object?)base.renderObject)!);
+    public override global::Doroti.Framework.Rendering.RenderObject renderObject => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(((global::Doroti.Framework.Rendering.RenderListWheelViewport?)(object?)base.renderObject)!);
     public override void update(Widget newWidget)
     {
         var __newWidget = (ListWheelViewport)(object)newWidget;
@@ -519,7 +519,7 @@ public class ListWheelElement : RenderObjectElement, global::Doroti.Generated.Fr
     }
 
     public virtual bool childExistsAt(long index) => DartRuntimePrimitives.ConvertValue<bool>((retrieveWidget(index) is not null));
-    public virtual void createChild(long index, global::Doroti.Generated.Framework.Rendering.RenderBox? after)
+    public virtual void createChild(long index, global::Doroti.Framework.Rendering.RenderBox? after)
     {
         this.owner!.buildScope(this, ((global::System.Action)(() => {
 var insertFirst__33942 = (after is null);
@@ -536,7 +536,7 @@ else
 })));
     }
 
-    public virtual void removeChild(global::Doroti.Generated.Framework.Rendering.RenderBox child)
+    public virtual void removeChild(global::Doroti.Framework.Rendering.RenderBox child)
     {
         long index__34343 = DartRuntimePrimitives.ConvertValue<long>(((long)((dynamic)this.renderObject).indexOf(child)));
         this.owner!.buildScope(this, ((global::System.Action)(() => {
@@ -550,9 +550,9 @@ DartRuntimePrimitives.Assert(() => !this._childElements.ContainsKey(index__34343
 
     public override Element? updateChild(Element? child, Widget? newWidget, object? newSlot)
     {
-        var oldParentData__34769 = ((global::Doroti.Generated.Framework.Rendering.ListWheelParentData?)(object?)((global::Doroti.Generated.Framework.Rendering.ParentData?)((dynamic)child?.renderObject)?.parentData))!;
+        var oldParentData__34769 = ((global::Doroti.Framework.Rendering.ListWheelParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)((dynamic)child?.renderObject)?.parentData))!;
         Element? newChild__34861 = ((Element?)(object?)base.updateChild(child, newWidget, newSlot));
-        var newParentData__34928 = ((global::Doroti.Generated.Framework.Rendering.ListWheelParentData?)(object?)((global::Doroti.Generated.Framework.Rendering.ParentData?)((dynamic)newChild__34861?.renderObject)?.parentData))!;
+        var newParentData__34928 = ((global::Doroti.Framework.Rendering.ListWheelParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)((dynamic)newChild__34861?.renderObject)?.parentData))!;
         if ((newParentData__34928 is not null))
         {
             newParentData__34928.index = ((long)newSlot!);
@@ -565,16 +565,16 @@ DartRuntimePrimitives.Assert(() => !this._childElements.ContainsKey(index__34343
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void insertRenderObjectChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, object? slot)
+    public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         long __slot = DartRuntimePrimitives.ConvertValue<long>(slot);
-        global::Doroti.Generated.Framework.Rendering.RenderListWheelViewport renderObject__35320 = DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Rendering.RenderListWheelViewport>(this.renderObject);
+        global::Doroti.Framework.Rendering.RenderListWheelViewport renderObject__35320 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderListWheelViewport>(this.renderObject);
         DartRuntimePrimitives.Assert(() => ((bool)((dynamic)renderObject__35320).debugValidateChild(child)));
-        renderObject__35320.insert(((global::Doroti.Generated.Framework.Rendering.RenderBox?)(object?)child)!, after: ((global::Doroti.Generated.Framework.Rendering.RenderBox?)(object?)this._childElements.GetValueOrDefault((__slot - 1L))?.renderObject)!);
+        renderObject__35320.insert(((global::Doroti.Framework.Rendering.RenderBox?)(object?)child)!, after: ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this._childElements.GetValueOrDefault((__slot - 1L))?.renderObject)!);
         DartRuntimePrimitives.Assert(() => (object.Equals(renderObject__35320, this.renderObject)));
     }
 
-    public override void moveRenderObjectChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
+    public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
     {
         long __oldSlot = DartRuntimePrimitives.ConvertValue<long>(oldSlot);
         long __newSlot = DartRuntimePrimitives.ConvertValue<long>(newSlot);
@@ -582,11 +582,11 @@ DartRuntimePrimitives.Assert(() => !this._childElements.ContainsKey(index__34343
         DartRuntimePrimitives.Assert(() => false, () => (object?)moveChildRenderObjectErrorMessage__35682);
     }
 
-    public override void removeRenderObjectChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, object? slot)
+    public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         long __slot = DartRuntimePrimitives.ConvertValue<long>(slot);
-        DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Generated.Framework.Rendering.RenderObject)child).parent, this.renderObject)));
-        ((dynamic)this.renderObject).remove(((global::Doroti.Generated.Framework.Rendering.RenderBox?)(object?)child)!);
+        DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Framework.Rendering.RenderObject)child).parent, this.renderObject)));
+        ((dynamic)this.renderObject).remove(((global::Doroti.Framework.Rendering.RenderBox?)(object?)child)!);
     }
 
     public override void visitChildren(global::System.Action<Element> visitor)
@@ -615,14 +615,14 @@ public class ListWheelViewport : RenderObjectWidget
     public virtual double itemExtent { get; private set; } = default!;
     public virtual double squeeze { get; private set; } = default!;
     public virtual bool renderChildrenOutsideViewport { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Rendering.ViewportOffset offset { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Rendering.ViewportOffset offset { get; private set; } = default!;
     public virtual ListWheelChildDelegate childDelegate { get; private set; } = default!;
     public virtual Clip clipBehavior { get; private set; } = default!;
 
-    public ListWheelViewport(global::Doroti.Generated.Framework.Foundation.Key? key = null, double? diameterRatio = null, double? perspective = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, double overAndUnderCenterOpacity = 1.0, double itemExtent = default!, double squeeze = 1.0, bool renderChildrenOutsideViewport = false, global::Doroti.Generated.Framework.Rendering.ViewportOffset offset = default!, ListWheelChildDelegate childDelegate = default!, Clip clipBehavior = Clip.hardEdge) : base(key: key)
+    public ListWheelViewport(global::Doroti.Framework.Foundation.Key? key = null, double? diameterRatio = null, double? perspective = null, double offAxisFraction = 0.0, bool useMagnifier = false, double magnification = 1.0, double overAndUnderCenterOpacity = 1.0, double itemExtent = default!, double squeeze = 1.0, bool renderChildrenOutsideViewport = false, global::Doroti.Framework.Rendering.ViewportOffset offset = default!, ListWheelChildDelegate childDelegate = default!, Clip clipBehavior = Clip.hardEdge) : base(key: key)
     {
-        double __diameterRatio = diameterRatio ?? global::Doroti.Generated.Framework.Rendering.RenderListWheelViewport.defaultDiameterRatio;
-        double __perspective = perspective ?? global::Doroti.Generated.Framework.Rendering.RenderListWheelViewport.defaultPerspective;
+        double __diameterRatio = diameterRatio ?? global::Doroti.Framework.Rendering.RenderListWheelViewport.defaultDiameterRatio;
+        double __perspective = perspective ?? global::Doroti.Framework.Rendering.RenderListWheelViewport.defaultPerspective;
         this.diameterRatio = __diameterRatio;
         this.perspective = __perspective;
         this.offAxisFraction = offAxisFraction;
@@ -645,17 +645,17 @@ public class ListWheelViewport : RenderObjectWidget
     }
 
     public override ListWheelElement createElement() => new ListWheelElement(this);
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
         var childManager__39973 = ((ListWheelElement?)(object?)context)!;
-        return ((global::Doroti.Generated.Framework.Rendering.RenderObject)(object?)new global::Doroti.Generated.Framework.Rendering.RenderListWheelViewport(childManager: childManager__39973, offset: this.offset, diameterRatio: DartRuntimePrimitives.RequireValue(this.diameterRatio), perspective: DartRuntimePrimitives.RequireValue(this.perspective), offAxisFraction: this.offAxisFraction, useMagnifier: this.useMagnifier, magnification: this.magnification, overAndUnderCenterOpacity: this.overAndUnderCenterOpacity, itemExtent: this.itemExtent, squeeze: this.squeeze, renderChildrenOutsideViewport: this.renderChildrenOutsideViewport, clipBehavior: this.clipBehavior));
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderListWheelViewport(childManager: childManager__39973, offset: this.offset, diameterRatio: DartRuntimePrimitives.RequireValue(this.diameterRatio), perspective: DartRuntimePrimitives.RequireValue(this.perspective), offAxisFraction: this.offAxisFraction, useMagnifier: this.useMagnifier, magnification: this.magnification, overAndUnderCenterOpacity: this.overAndUnderCenterOpacity, itemExtent: this.itemExtent, squeeze: this.squeeze, renderChildrenOutsideViewport: this.renderChildrenOutsideViewport, clipBehavior: this.clipBehavior));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void updateRenderObject(BuildContext context, global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var __renderObject = (global::Doroti.Generated.Framework.Rendering.RenderListWheelViewport)(object)renderObject;
-        DartRuntimePrimitives.Ignore(((Func<global::Doroti.Generated.Framework.Rendering.RenderListWheelViewport>)(() =>
+        var __renderObject = (global::Doroti.Framework.Rendering.RenderListWheelViewport)(object)renderObject;
+        DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderListWheelViewport>)(() =>
 {            var __cascade = __renderObject;
             __cascade.offset = this.offset;
             __cascade.diameterRatio = this.diameterRatio;

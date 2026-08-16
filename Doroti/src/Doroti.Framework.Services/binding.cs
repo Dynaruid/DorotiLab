@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Services;
+namespace Doroti.Framework.Services;
 
 public abstract class ServicesBinding : SchedulerBinding
 {
@@ -73,7 +73,7 @@ public abstract class ServicesBinding : SchedulerBinding
 
     public virtual void handleMemoryPressure()
     {
-        global::Doroti.Generated.Framework.Services.Asset_bundleLibrary.rootBundle.clear();
+        global::Doroti.Framework.Services.Asset_bundleLibrary.rootBundle.clear();
     }
 
     public async virtual Future handleSystemMessage(object systemMessage)
@@ -102,17 +102,17 @@ public abstract class ServicesBinding : SchedulerBinding
         controller = new StreamController<LicenseEntry>(onListen: (async () =>
         {
             string rawLicenses = default!;
-            if (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kIsWeb)
+            if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
             {
-                rawLicenses = await global::Doroti.Generated.Framework.Services.Asset_bundleLibrary.rootBundle.loadString("NOTICES", cache: false);
+                rawLicenses = await global::Doroti.Framework.Services.Asset_bundleLibrary.rootBundle.loadString("NOTICES", cache: false);
             }
             else
             {
-                ByteData licenseBytes__8056 = await global::Doroti.Generated.Framework.Services.Asset_bundleLibrary.rootBundle.load("NOTICES.Z");
-                List<long> unzippedBytes__8133 = await global::Doroti.Generated.Framework.Foundation.IsolatesLibrary.compute<List<long>, List<long>>(Dart_ioLibrary.gzip.decode, licenseBytes__8056.buffer.asUint8List(), debugLabel: "decompressLicenses");
-                rawLicenses = await global::Doroti.Generated.Framework.Foundation.IsolatesLibrary.compute<List<long>, string>(global::Doroti.Runtime.Dart_convertLibrary.utf8.decode, unzippedBytes__8133, debugLabel: "utf8DecodeLicenses");
+                ByteData licenseBytes__8056 = await global::Doroti.Framework.Services.Asset_bundleLibrary.rootBundle.load("NOTICES.Z");
+                List<long> unzippedBytes__8133 = await global::Doroti.Framework.Foundation.IsolatesLibrary.compute<List<long>, List<long>>(Dart_ioLibrary.gzip.decode, licenseBytes__8056.buffer.asUint8List(), debugLabel: "decompressLicenses");
+                rawLicenses = await global::Doroti.Framework.Foundation.IsolatesLibrary.compute<List<long>, string>(global::Doroti.Runtime.Dart_convertLibrary.utf8.decode, unzippedBytes__8133, debugLabel: "utf8DecodeLicenses");
             }
-            List<LicenseEntry> licenses = await global::Doroti.Generated.Framework.Foundation.IsolatesLibrary.compute<string, List<LicenseEntry>>(_parseLicenses, rawLicenses, debugLabel: "parseLicenses");
+            List<LicenseEntry> licenses = await global::Doroti.Framework.Foundation.IsolatesLibrary.compute<string, List<LicenseEntry>>(_parseLicenses, rawLicenses, debugLabel: "parseLicenses");
             licenses.forEach(controller.add);
             await controller.close();
         }));
@@ -138,18 +138,18 @@ public abstract class ServicesBinding : SchedulerBinding
                 }));
                 return true;
             });
-        if (!global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kReleaseMode)
+        if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
-            registerBoolServiceExtension(name: ServicesServiceExtensions.profilePlatformChannels.ToString(), getter: (() => global::Doroti.Generated.Framework.Services.DebugLibrary.debugProfilePlatformChannels), setter: ((value) =>
+            registerBoolServiceExtension(name: ServicesServiceExtensions.profilePlatformChannels.ToString(), getter: (() => global::Doroti.Framework.Services.DebugLibrary.debugProfilePlatformChannels), setter: ((value) =>
             {
-                global::Doroti.Generated.Framework.Services.DebugLibrary.debugProfilePlatformChannels = value;
+                global::Doroti.Framework.Services.DebugLibrary.debugProfilePlatformChannels = value;
             }));
         }
     }
 
     public virtual void evict(string asset)
     {
-        global::Doroti.Generated.Framework.Services.Asset_bundleLibrary.rootBundle.evict(asset);
+        global::Doroti.Framework.Services.Asset_bundleLibrary.rootBundle.evict(asset);
     }
 
     public virtual void readInitialLifecycleStateFromNativeWindow()

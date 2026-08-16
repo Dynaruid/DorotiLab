@@ -2,7 +2,7 @@
 // Flutter 56b8e1a8: packages/flutter/lib/src/foundation/platform.dart and _platform_io.dart
 using Doroti.Ui;
 
-namespace Doroti.Generated.Framework.Foundation;
+namespace Doroti.Framework.Foundation;
 
 public enum TargetPlatform
 {

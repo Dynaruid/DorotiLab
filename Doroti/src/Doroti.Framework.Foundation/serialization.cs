@@ -3,7 +3,7 @@
 using System.Buffers.Binary;
 using Doroti.Runtime;
 
-namespace Doroti.Generated.Framework.Foundation;
+namespace Doroti.Framework.Foundation;
 
 public enum Endian
 {

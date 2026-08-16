@@ -12,9 +12,9 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
-public class IconThemeData : global::Doroti.Generated.Framework.Foundation.Diagnosticable
+public class IconThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 {
     public virtual double? size { get; private set; }
     public virtual double? fill { get; private set; }
@@ -94,24 +94,24 @@ public class IconThemeData : global::Doroti.Generated.Framework.Foundation.Diagn
         {
             return false;
         }
-        return ((((((((((__other is IconThemeData) && (((IconThemeData)((IconThemeData)__other)).size == this.size)) && (((IconThemeData)((IconThemeData)__other)).fill == this.fill)) && (((IconThemeData)((IconThemeData)__other)).weight == this.weight)) && (((IconThemeData)((IconThemeData)__other)).grade == this.grade)) && (((IconThemeData)((IconThemeData)__other)).opticalSize == this.opticalSize)) && (object.Equals(((IconThemeData)((IconThemeData)__other)).color, this.color))) && (((IconThemeData)((IconThemeData)__other)).opacity == this.opacity)) && global::Doroti.Generated.Framework.Foundation.CollectionsLibrary.listEquals(((IconThemeData)((IconThemeData)__other)).shadows, this.shadows)) && (((IconThemeData)((IconThemeData)__other)).applyTextScaling == this.applyTextScaling));
+        return ((((((((((__other is IconThemeData) && (((IconThemeData)((IconThemeData)__other)).size == this.size)) && (((IconThemeData)((IconThemeData)__other)).fill == this.fill)) && (((IconThemeData)((IconThemeData)__other)).weight == this.weight)) && (((IconThemeData)((IconThemeData)__other)).grade == this.grade)) && (((IconThemeData)((IconThemeData)__other)).opticalSize == this.opticalSize)) && (object.Equals(((IconThemeData)((IconThemeData)__other)).color, this.color))) && (((IconThemeData)((IconThemeData)__other)).opacity == this.opacity)) && global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(((IconThemeData)((IconThemeData)__other)).shadows, this.shadows)) && (((IconThemeData)((IconThemeData)__other)).applyTextScaling == this.applyTextScaling));
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.size, this.fill, this.weight, this.grade, this.opticalSize, this.color, this.opacity, ((this.shadows is null) ? null : FoundationRuntimePorts.ObjectHashAll(this.shadows!)), this.applyTextScaling));
-    public virtual void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("size", this.size, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("fill", this.fill, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("weight", this.weight, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("grade", this.grade, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("opticalSize", this.opticalSize, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DoubleProperty("opacity", this.opacity, defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.IterableProperty<global::Doroti.Ui.Shadow>("shadows", this.shadows.Cast<global::Doroti.Ui.Shadow>(), defaultValue: null));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<bool>("applyTextScaling", this.applyTextScaling, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("size", this.size, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("fill", this.fill, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("weight", this.weight, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("grade", this.grade, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("opticalSize", this.opticalSize, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("color", this.color, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("opacity", this.opacity, defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<global::Doroti.Ui.Shadow>("shadows", this.shadows.Cast<global::Doroti.Ui.Shadow>(), defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("applyTextScaling", this.applyTextScaling, defaultValue: null));
     }
 
-    public virtual string toStringShort() => global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString__105654 = default!;

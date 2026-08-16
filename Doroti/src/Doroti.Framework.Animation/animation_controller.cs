@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Animation;
+namespace Doroti.Framework.Animation;
 
 internal enum _AnimationDirection__animation_controller
 {
@@ -22,12 +22,12 @@ internal enum _AnimationDirection__animation_controller
 
 public static partial class Animation_controllerLibrary
 {
-    internal static global::Doroti.Generated.Framework.Physics.SpringDescription _kFlingSpringDescription = global::Doroti.Generated.Framework.Physics.SpringDescription.CreateWithDampingRatio(mass: 1.0, stiffness: 500.0);
+    internal static global::Doroti.Framework.Physics.SpringDescription _kFlingSpringDescription = global::Doroti.Framework.Physics.SpringDescription.CreateWithDampingRatio(mass: 1.0, stiffness: 500.0);
 }
 
 public static partial class Animation_controllerLibrary
 {
-    internal static global::Doroti.Generated.Framework.Physics.Tolerance _kFlingTolerance = new global::Doroti.Generated.Framework.Physics.Tolerance(velocity: double.PositiveInfinity, distance: 0.01);
+    internal static global::Doroti.Framework.Physics.Tolerance _kFlingTolerance = new global::Doroti.Framework.Physics.Tolerance(velocity: double.PositiveInfinity, distance: 0.01);
 }
 
 public enum AnimationBehavior
@@ -50,7 +50,7 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
     public virtual Duration? duration { get; set; } = default;
     public virtual Duration? reverseDuration { get; set; } = default;
     internal virtual Ticker? _ticker { get; set; } = default;
-    internal virtual global::Doroti.Generated.Framework.Physics.Simulation? _simulation { get; set; } = default;
+    internal virtual global::Doroti.Framework.Physics.Simulation? _simulation { get; set; } = default;
     internal virtual double _value { get; set; } = default!;
     internal virtual Duration? _lastElapsedDuration { get; set; } = default;
     internal virtual _AnimationDirection__animation_controller _direction { get; set; } = _AnimationDirection__animation_controller.forward;
@@ -83,7 +83,7 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
             upperBound: double.PositiveInfinity,
             animationBehavior: animationBehavior,
             vsync: vsync);
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchCreated("animation", "AnimationController", __instance));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchCreated("animation", "AnimationController", __instance));
         return __instance;
     }
 
@@ -314,26 +314,26 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
         _checkStatusChanged();
     }
 
-    public virtual TickerFuture fling(double velocity = 1.0, global::Doroti.Generated.Framework.Physics.SpringDescription? springDescription = null, AnimationBehavior? animationBehavior = null)
+    public virtual TickerFuture fling(double velocity = 1.0, global::Doroti.Framework.Physics.SpringDescription? springDescription = null, AnimationBehavior? animationBehavior = null)
     {
         springDescription ??= Animation_controllerLibrary._kFlingSpringDescription;
         _direction = ((velocity < 0.0) ? _AnimationDirection__animation_controller.reverse : _AnimationDirection__animation_controller.forward);
-        double target__30559 = ((velocity < 0.0) ? (this.lowerBound - ((global::Doroti.Generated.Framework.Physics.Tolerance)Animation_controllerLibrary._kFlingTolerance).distance) : (this.upperBound + ((global::Doroti.Generated.Framework.Physics.Tolerance)Animation_controllerLibrary._kFlingTolerance).distance));
+        double target__30559 = ((velocity < 0.0) ? (this.lowerBound - ((global::Doroti.Framework.Physics.Tolerance)Animation_controllerLibrary._kFlingTolerance).distance) : (this.upperBound + ((global::Doroti.Framework.Physics.Tolerance)Animation_controllerLibrary._kFlingTolerance).distance));
         AnimationBehavior behavior__30710 = (animationBehavior ?? this.animationBehavior);
         var scale__30871 = (AnimationBehaviorMembers._enableAnimations(behavior__30710) ? 1.0 : 200.0);
-        var simulation__30931 = ((Func<global::Doroti.Generated.Framework.Physics.SpringSimulation>)(() =>
+        var simulation__30931 = ((Func<global::Doroti.Framework.Physics.SpringSimulation>)(() =>
 {
-    var __cascade = new global::Doroti.Generated.Framework.Physics.SpringSimulation(springDescription, this.value, target__30559, (velocity * scale__30871));
+    var __cascade = new global::Doroti.Framework.Physics.SpringSimulation(springDescription, this.value, target__30559, (velocity * scale__30871));
     __cascade.tolerance = Animation_controllerLibrary._kFlingTolerance;
     return __cascade;
 }))();
-        DartRuntimePrimitives.Assert(() => (!object.Equals(((global::Doroti.Generated.Framework.Physics.SpringSimulation)simulation__30931).type, global::Doroti.Generated.Framework.Physics.SpringType.underDamped)));
+        DartRuntimePrimitives.Assert(() => (!object.Equals(((global::Doroti.Framework.Physics.SpringSimulation)simulation__30931).type, global::Doroti.Framework.Physics.SpringType.underDamped)));
         stop();
         return _startSimulation(simulation__30931);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual TickerFuture animateWith(global::Doroti.Generated.Framework.Physics.Simulation simulation)
+    public virtual TickerFuture animateWith(global::Doroti.Framework.Physics.Simulation simulation)
     {
         DartRuntimePrimitives.Assert(() => (this._ticker is not null));
         stop();
@@ -342,7 +342,7 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual TickerFuture animateBackWith(global::Doroti.Generated.Framework.Physics.Simulation simulation)
+    public virtual TickerFuture animateBackWith(global::Doroti.Framework.Physics.Simulation simulation)
     {
         DartRuntimePrimitives.Assert(() => (this._ticker is not null));
         stop();
@@ -351,7 +351,7 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual TickerFuture _startSimulation(global::Doroti.Generated.Framework.Physics.Simulation simulation)
+    internal virtual TickerFuture _startSimulation(global::Doroti.Framework.Physics.Simulation simulation)
     {
         DartRuntimePrimitives.Assert(() => !this.isAnimating);
         _simulation = simulation;
@@ -382,7 +382,7 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
                 }
                 return true;
             });
-        DartRuntimePrimitives.Assert(() => global::Doroti.Generated.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this._ticker!.dispose();
         _ticker = null;
         clearStatusListeners();
@@ -534,7 +534,7 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
 
 }
 
-internal class _InterpolationSimulation__animation_controller : global::Doroti.Generated.Framework.Physics.Simulation
+internal class _InterpolationSimulation__animation_controller : global::Doroti.Framework.Physics.Simulation
 {
     internal virtual double _durationInSeconds { get; private set; } = default!;
     internal virtual double _begin { get; private set; } = default!;
@@ -559,7 +559,7 @@ internal class _InterpolationSimulation__animation_controller : global::Doroti.G
 
     public override double dx(double time)
     {
-        double epsilon__38157 = ((global::Doroti.Generated.Framework.Physics.Tolerance)tolerance).time;
+        double epsilon__38157 = ((global::Doroti.Framework.Physics.Tolerance)tolerance).time;
         return (((x((time + epsilon__38157)) - x((time - epsilon__38157)))) / ((2L * epsilon__38157)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -569,7 +569,7 @@ internal class _InterpolationSimulation__animation_controller : global::Doroti.G
 
 internal delegate void _DirectionSetter__animation_controller(_AnimationDirection__animation_controller direction);
 
-internal class _RepeatingSimulation__animation_controller : global::Doroti.Generated.Framework.Physics.Simulation
+internal class _RepeatingSimulation__animation_controller : global::Doroti.Framework.Physics.Simulation
 {
     public virtual double min { get; private set; } = default!;
     public virtual double max { get; private set; } = default!;

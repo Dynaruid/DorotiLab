@@ -12,16 +12,16 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 internal class _ChildEntry__animated_switcher
 {
-    public virtual global::Doroti.Generated.Framework.Animation.AnimationController controller { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Animation.CurvedAnimation animation { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Animation.AnimationController controller { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Animation.CurvedAnimation animation { get; private set; } = default!;
     public virtual Widget transition { get; set; } = default!;
     public virtual Widget widgetChild { get; set; } = default!;
 
-    internal _ChildEntry__animated_switcher(global::Doroti.Generated.Framework.Animation.AnimationController controller, global::Doroti.Generated.Framework.Animation.CurvedAnimation animation, Widget transition, Widget widgetChild)
+    internal _ChildEntry__animated_switcher(global::Doroti.Framework.Animation.AnimationController controller, global::Doroti.Framework.Animation.CurvedAnimation animation, Widget transition, Widget widgetChild)
     {
         this.controller = controller;
         this.animation = animation;
@@ -29,10 +29,10 @@ internal class _ChildEntry__animated_switcher
         this.widgetChild = widgetChild;
     }
 
-    public override string ToString() => $"Entry#{(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.shortHash(this))}({this.widgetChild})";
+    public override string ToString() => $"Entry#{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.shortHash(this))}({this.widgetChild})";
 }
 
-public delegate Widget AnimatedSwitcherTransitionBuilder(Widget child, global::Doroti.Generated.Framework.Animation.Animation<double> animation);
+public delegate Widget AnimatedSwitcherTransitionBuilder(Widget child, global::Doroti.Framework.Animation.Animation<double> animation);
 
 public delegate Widget AnimatedSwitcherLayoutBuilder(Widget? currentChild, List<Widget> previousChildren);
 
@@ -41,16 +41,16 @@ public class AnimatedSwitcher : StatefulWidget
     public virtual Widget? child { get; private set; }
     public virtual Duration duration { get; private set; } = default!;
     public virtual Duration? reverseDuration { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Animation.Curve switchInCurve { get; private set; } = default!;
-    public virtual global::Doroti.Generated.Framework.Animation.Curve switchOutCurve { get; private set; } = default!;
-    public virtual global::System.Func<Widget, global::Doroti.Generated.Framework.Animation.Animation<double>, Widget> transitionBuilder { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Animation.Curve switchInCurve { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Animation.Curve switchOutCurve { get; private set; } = default!;
+    public virtual global::System.Func<Widget, global::Doroti.Framework.Animation.Animation<double>, Widget> transitionBuilder { get; private set; } = default!;
     public virtual global::System.Func<Widget?, List<Widget>, Widget> layoutBuilder { get; private set; } = default!;
 
-    public AnimatedSwitcher(global::Doroti.Generated.Framework.Foundation.Key? key = null, Widget? child = null, Duration duration = default!, Duration? reverseDuration = null, global::Doroti.Generated.Framework.Animation.Curve switchInCurve = default!, global::Doroti.Generated.Framework.Animation.Curve switchOutCurve = default!, global::System.Func<Widget, global::Doroti.Generated.Framework.Animation.Animation<double>, Widget> transitionBuilder = default!, global::System.Func<Widget?, List<Widget>, Widget> layoutBuilder = default!) : base(key: key)
+    public AnimatedSwitcher(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null, Duration duration = default!, Duration? reverseDuration = null, global::Doroti.Framework.Animation.Curve switchInCurve = default!, global::Doroti.Framework.Animation.Curve switchOutCurve = default!, global::System.Func<Widget, global::Doroti.Framework.Animation.Animation<double>, Widget> transitionBuilder = default!, global::System.Func<Widget?, List<Widget>, Widget> layoutBuilder = default!) : base(key: key)
     {
-        global::Doroti.Generated.Framework.Animation.Curve __switchInCurve = switchInCurve ?? global::Doroti.Generated.Framework.Animation.Curves.linear;
-        global::Doroti.Generated.Framework.Animation.Curve __switchOutCurve = switchOutCurve ?? global::Doroti.Generated.Framework.Animation.Curves.linear;
-        global::System.Func<Widget, global::Doroti.Generated.Framework.Animation.Animation<double>, Widget> __transitionBuilder = transitionBuilder ?? AnimatedSwitcher.defaultTransitionBuilder;
+        global::Doroti.Framework.Animation.Curve __switchInCurve = switchInCurve ?? global::Doroti.Framework.Animation.Curves.linear;
+        global::Doroti.Framework.Animation.Curve __switchOutCurve = switchOutCurve ?? global::Doroti.Framework.Animation.Curves.linear;
+        global::System.Func<Widget, global::Doroti.Framework.Animation.Animation<double>, Widget> __transitionBuilder = transitionBuilder ?? AnimatedSwitcher.defaultTransitionBuilder;
         global::System.Func<Widget?, List<Widget>, Widget> __layoutBuilder = layoutBuilder ?? AnimatedSwitcher.defaultLayoutBuilder;
         this.child = child;
         this.duration = duration;
@@ -62,23 +62,23 @@ public class AnimatedSwitcher : StatefulWidget
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _AnimatedSwitcherState__animated_switcher());
-    public static Widget defaultTransitionBuilder(Widget child, global::Doroti.Generated.Framework.Animation.Animation<double> animation)
+    public static Widget defaultTransitionBuilder(Widget child, global::Doroti.Framework.Animation.Animation<double> animation)
     {
-        return ((Widget)(object?)new FadeTransition(key: new global::Doroti.Generated.Framework.Foundation.ValueKey<global::Doroti.Generated.Framework.Foundation.Key?>(((Widget)child).key), opacity: animation, child: child));
+        return ((Widget)(object?)new FadeTransition(key: new global::Doroti.Framework.Foundation.ValueKey<global::Doroti.Framework.Foundation.Key?>(((Widget)child).key), opacity: animation, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static Widget defaultLayoutBuilder(Widget? currentChild, List<Widget> previousChildren)
     {
-        return ((Widget)(object?)new Stack(alignment: global::Doroti.Generated.Framework.Painting.Alignment.center, children: new List<Widget>()));
+        return ((Widget)(object?)new Stack(alignment: global::Doroti.Framework.Painting.Alignment.center, children: new List<Widget>()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.IntProperty("duration", this.duration.inMilliseconds, unit: "ms"));
-        properties.add(new global::Doroti.Generated.Framework.Foundation.IntProperty("reverseDuration", this.reverseDuration?.inMilliseconds, unit: "ms", defaultValue: null));
+        properties.add(new global::Doroti.Framework.Foundation.IntProperty("duration", this.duration.inMilliseconds, unit: "ms"));
+        properties.add(new global::Doroti.Framework.Foundation.IntProperty("reverseDuration", this.reverseDuration?.inMilliseconds, unit: "ms", defaultValue: null));
     }
 
 }
@@ -89,8 +89,8 @@ internal class _AnimatedSwitcherState__animated_switcher : State<AnimatedSwitche
     internal virtual HashSet<_ChildEntry__animated_switcher> _outgoingEntries { get; private set; } = new HashSet<_ChildEntry__animated_switcher>();
     internal virtual List<Widget>? _outgoingWidgets { get; set; } = new List<Widget>();
     internal virtual long _childNumber { get; set; } = 0L;
-    public virtual HashSet<global::Doroti.Generated.Framework.Scheduler.Ticker>? _tickers { get; set; } = default;
-    public virtual global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
+    public virtual HashSet<global::Doroti.Framework.Scheduler.Ticker>? _tickers { get; set; } = default;
+    public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     public override void initState()
     {
@@ -101,7 +101,7 @@ internal class _AnimatedSwitcherState__animated_switcher : State<AnimatedSwitche
     public override void didUpdateWidget(AnimatedSwitcher oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if ((!object.Equals((global::System.Func<Widget, global::Doroti.Generated.Framework.Animation.Animation<double>, Widget>)((AnimatedSwitcher)this.widget).transitionBuilder, (global::System.Func<Widget, global::Doroti.Generated.Framework.Animation.Animation<double>, Widget>)((AnimatedSwitcher)oldWidget).transitionBuilder)))
+        if ((!object.Equals((global::System.Func<Widget, global::Doroti.Framework.Animation.Animation<double>, Widget>)((AnimatedSwitcher)this.widget).transitionBuilder, (global::System.Func<Widget, global::Doroti.Framework.Animation.Animation<double>, Widget>)((AnimatedSwitcher)oldWidget).transitionBuilder)))
         {
             this._outgoingEntries.forEach((__arg0) => ((global::System.Action<_ChildEntry__animated_switcher>)this._updateTransitionForEntry)(__arg0));
             if ((this._currentEntry is not null))
@@ -146,9 +146,9 @@ internal class _AnimatedSwitcherState__animated_switcher : State<AnimatedSwitche
         {
             return;
         }
-        var controller__12745 = new global::Doroti.Generated.Framework.Animation.AnimationController(duration: ((AnimatedSwitcher)this.widget).duration, reverseDuration: ((AnimatedSwitcher)this.widget).reverseDuration, vsync: this);
-        var animation__12895 = new global::Doroti.Generated.Framework.Animation.CurvedAnimation(parent: controller__12745, curve: ((AnimatedSwitcher)this.widget).switchInCurve, reverseCurve: ((AnimatedSwitcher)this.widget).switchOutCurve);
-        _currentEntry = _newEntry(child: ((AnimatedSwitcher)this.widget).child!, controller: controller__12745, animation: animation__12895, builder: (global::System.Func<Widget, global::Doroti.Generated.Framework.Animation.Animation<double>, Widget>)((AnimatedSwitcher)this.widget).transitionBuilder);
+        var controller__12745 = new global::Doroti.Framework.Animation.AnimationController(duration: ((AnimatedSwitcher)this.widget).duration, reverseDuration: ((AnimatedSwitcher)this.widget).reverseDuration, vsync: this);
+        var animation__12895 = new global::Doroti.Framework.Animation.CurvedAnimation(parent: controller__12745, curve: ((AnimatedSwitcher)this.widget).switchInCurve, reverseCurve: ((AnimatedSwitcher)this.widget).switchOutCurve);
+        _currentEntry = _newEntry(child: ((AnimatedSwitcher)this.widget).child!, controller: controller__12745, animation: animation__12895, builder: (global::System.Func<Widget, global::Doroti.Framework.Animation.Animation<double>, Widget>)((AnimatedSwitcher)this.widget).transitionBuilder);
         if (animate)
         {
             controller__12745.forward();
@@ -160,11 +160,11 @@ internal class _AnimatedSwitcherState__animated_switcher : State<AnimatedSwitche
         }
     }
 
-    internal virtual _ChildEntry__animated_switcher _newEntry(Widget child, global::System.Func<Widget, global::Doroti.Generated.Framework.Animation.Animation<double>, Widget> builder, global::Doroti.Generated.Framework.Animation.AnimationController controller, global::Doroti.Generated.Framework.Animation.CurvedAnimation animation)
+    internal virtual _ChildEntry__animated_switcher _newEntry(Widget child, global::System.Func<Widget, global::Doroti.Framework.Animation.Animation<double>, Widget> builder, global::Doroti.Framework.Animation.AnimationController controller, global::Doroti.Framework.Animation.CurvedAnimation animation)
     {
         var entry__13552 = new _ChildEntry__animated_switcher(widgetChild: child, transition: KeyedSubtree.CreateWrap(builder(child, animation), this._childNumber), animation: animation, controller: controller);
         animation.addStatusListener(((AnimationStatusListener)((status) => {
-if (global::Doroti.Generated.Framework.Animation.AnimationStatusMembers.isDismissed(status))
+if (global::Doroti.Framework.Animation.AnimationStatusMembers.isDismissed(status))
 {
     setState(((global::System.Action)(() => {
 DartRuntimePrimitives.Assert(() => this.mounted);
@@ -210,11 +210,11 @@ _markChildWidgetCacheAsDirty();
             {
                 if ((this._tickers is not null))
                 {
-                    foreach (global::Doroti.Generated.Framework.Scheduler.Ticker ticker__18989 in this._tickers!)
+                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker__18989 in this._tickers!)
                     {
-                        if (((global::Doroti.Generated.Framework.Scheduler.Ticker)ticker__18989).isActive)
+                        if (((global::Doroti.Framework.Scheduler.Ticker)ticker__18989).isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Generated.Framework.Foundation.FlutterError(new List<global::Doroti.Generated.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Generated.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Generated.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Generated.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker__18989.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker__18989.describeForError("The offending ticker was") }));
                         }
                     }
                 }
@@ -233,22 +233,22 @@ _markChildWidgetCacheAsDirty();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Generated.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
+    public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
     {
         if ((this._tickerModeNotifier is null))
         {
             _updateTickerModeNotifier();
         }
         DartRuntimePrimitives.Assert(() => (this._tickerModeNotifier is not null));
-        this._tickers ??= new HashSet<global::Doroti.Generated.Framework.Scheduler.Ticker>();
+        this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Generated.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Generated.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
             __cascade.muted = !((TickerModeData)values__17506).enabled;
             __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
             return __cascade;        }))();
         this._tickers!.Add(result__17553);
-        return ((global::Doroti.Generated.Framework.Scheduler.Ticker)(object?)result__17553);
+        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -272,7 +272,7 @@ _markChildWidgetCacheAsDirty();
         {
             TickerModeData values__18318 = this._tickerModeNotifier!.value;
             bool muted__18372 = !((TickerModeData)values__18318).enabled;
-            foreach (global::Doroti.Generated.Framework.Scheduler.Ticker ticker__18421 in this._tickers!)
+            foreach (global::Doroti.Framework.Scheduler.Ticker ticker__18421 in this._tickers!)
             {
                 ticker__18421.muted = muted__18372;
                 ticker__18421.forceFrames = ((TickerModeData)values__18318).forceFrames;
@@ -282,7 +282,7 @@ _markChildWidgetCacheAsDirty();
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__18621 = ((global::Doroti.Generated.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__18621 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
         if ((object.Equals(newNotifier__18621, this._tickerModeNotifier)))
         {
             return;
@@ -292,10 +292,10 @@ _markChildWidgetCacheAsDirty();
         this._tickerModeNotifier = newNotifier__18621;
     }
 
-    public override void debugFillProperties(global::Doroti.Generated.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        properties.add(new global::Doroti.Generated.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Generated.Framework.Scheduler.Ticker>>("tickers", this._tickers, description: ((this._tickers is not null) ? $"tracking {checked((long)(this._tickers!.Count))} ticker{((checked((long)(this._tickers!.Count)) == 1L) ? "" : "s")}" : null), defaultValue: default));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<global::Doroti.Framework.Scheduler.Ticker>>("tickers", this._tickers, description: ((this._tickers is not null) ? $"tracking {checked((long)(this._tickers!.Count))} ticker{((checked((long)(this._tickers!.Count)) == 1L) ? "" : "s")}" : null), defaultValue: default));
     }
 
 }

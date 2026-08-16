@@ -12,7 +12,7 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
 public class TextSelectionToolbarAnchors
 {
@@ -25,7 +25,7 @@ public class TextSelectionToolbarAnchors
         this.secondaryAnchor = secondaryAnchor;
     }
 
-    public static TextSelectionToolbarAnchors CreateFromSelection(global::Doroti.Generated.Framework.Rendering.RenderBox renderBox, double startGlyphHeight, double endGlyphHeight, List<global::Doroti.Generated.Framework.Rendering.TextSelectionPoint> selectionEndpoints)
+    public static TextSelectionToolbarAnchors CreateFromSelection(global::Doroti.Framework.Rendering.RenderBox renderBox, double startGlyphHeight, double endGlyphHeight, List<global::Doroti.Framework.Rendering.TextSelectionPoint> selectionEndpoints)
     {
         global::Doroti.Ui.Rect selectionRect__1187 = ((global::Doroti.Ui.Rect)(object?)TextSelectionToolbarAnchors.getSelectionRect(renderBox, startGlyphHeight, endGlyphHeight, selectionEndpoints));
         if ((object.Equals(selectionRect__1187, Rect.zero)))
@@ -36,13 +36,13 @@ public class TextSelectionToolbarAnchors
         return new TextSelectionToolbarAnchors(primaryAnchor: new global::Doroti.Ui.Offset((selectionRect__1187.left + (selectionRect__1187.width / 2L)), Dart_uiLibrary.clampDouble(selectionRect__1187.top, editingRegion__1453.top, editingRegion__1453.bottom)), secondaryAnchor: new global::Doroti.Ui.Offset((selectionRect__1187.left + (selectionRect__1187.width / 2L)), Dart_uiLibrary.clampDouble(selectionRect__1187.bottom, editingRegion__1453.top, editingRegion__1453.bottom)));
     }
 
-    internal static global::Doroti.Ui.Rect _getEditingRegion(global::Doroti.Generated.Framework.Rendering.RenderBox renderBox)
+    internal static global::Doroti.Ui.Rect _getEditingRegion(global::Doroti.Framework.Rendering.RenderBox renderBox)
     {
-        return global::Doroti.Ui.Rect.fromPoints(((Offset)((dynamic)renderBox).localToGlobal(Offset.zero)), ((Offset)((dynamic)renderBox).localToGlobal(((global::Doroti.Generated.Framework.Rendering.RenderBox)renderBox).size.bottomRight(Offset.zero))));
+        return global::Doroti.Ui.Rect.fromPoints(((Offset)((dynamic)renderBox).localToGlobal(Offset.zero)), ((Offset)((dynamic)renderBox).localToGlobal(((global::Doroti.Framework.Rendering.RenderBox)renderBox).size.bottomRight(Offset.zero))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static global::Doroti.Ui.Rect getSelectionRect(global::Doroti.Generated.Framework.Rendering.RenderBox renderBox, double startGlyphHeight, double endGlyphHeight, List<global::Doroti.Generated.Framework.Rendering.TextSelectionPoint> selectionEndpoints)
+    public static global::Doroti.Ui.Rect getSelectionRect(global::Doroti.Framework.Rendering.RenderBox renderBox, double startGlyphHeight, double endGlyphHeight, List<global::Doroti.Framework.Rendering.TextSelectionPoint> selectionEndpoints)
     {
         global::Doroti.Ui.Rect editingRegion__2471 = ((global::Doroti.Ui.Rect)(object?)TextSelectionToolbarAnchors._getEditingRegion(renderBox));
         if ((((double.IsNaN(editingRegion__2471.left) || double.IsNaN(editingRegion__2471.top)) || double.IsNaN(editingRegion__2471.right)) || double.IsNaN(editingRegion__2471.bottom)))

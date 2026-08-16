@@ -12,15 +12,15 @@ using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
 
-namespace Doroti.Generated.Framework.Widgets;
+namespace Doroti.Framework.Widgets;
 
-public class RenderObjectToWidgetAdapter<T> : RenderObjectWidget where T : global::Doroti.Generated.Framework.Rendering.RenderObject
+public class RenderObjectToWidgetAdapter<T> : RenderObjectWidget where T : global::Doroti.Framework.Rendering.RenderObject
 {
     public virtual Widget? child { get; private set; }
-    public virtual global::Doroti.Generated.Framework.Rendering.RenderObjectWithChildMixin<T> container { get; private set; } = default!;
+    public virtual global::Doroti.Framework.Rendering.RenderObjectWithChildMixin<T> container { get; private set; } = default!;
     public virtual string? debugShortDescription { get; private set; }
 
-    public RenderObjectToWidgetAdapter(Widget? child = null, global::Doroti.Generated.Framework.Rendering.RenderObjectWithChildMixin<T> container = default!, string? debugShortDescription = null) : base(key: new GlobalObjectKey<IState>(container))
+    public RenderObjectToWidgetAdapter(Widget? child = null, global::Doroti.Framework.Rendering.RenderObjectWithChildMixin<T> container = default!, string? debugShortDescription = null) : base(key: new GlobalObjectKey<IState>(container))
     {
         this.child = child;
         this.container = container;
@@ -28,8 +28,8 @@ public class RenderObjectToWidgetAdapter<T> : RenderObjectWidget where T : globa
     }
 
     public override RenderObjectToWidgetElement<T> createElement() => new RenderObjectToWidgetElement<T>(this);
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Rendering.RenderObject>(this.container);
-    public override void updateRenderObject(BuildContext context, global::Doroti.Generated.Framework.Rendering.RenderObject renderObject)
+    public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(this.container);
+    public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
     }
 
@@ -58,7 +58,7 @@ element!.mount(((Element)(object)null), null);
     public override string toStringShort() => DartRuntimePrimitives.ConvertValue<string>(((this.debugShortDescription ?? (string)base.toStringShort())));
 }
 
-public class RenderObjectToWidgetElement<T> : RenderTreeRootElement, RootElementMixin where T : global::Doroti.Generated.Framework.Rendering.RenderObject
+public class RenderObjectToWidgetElement<T> : RenderTreeRootElement, RootElementMixin where T : global::Doroti.Framework.Rendering.RenderObject
 {
     internal virtual Element? _child { get; set; } = default;
     internal static object _rootChildSlot = new object();
@@ -122,29 +122,29 @@ public class RenderObjectToWidgetElement<T> : RenderTreeRootElement, RootElement
         catch (Exception exception__4978)
         {
             var stack__4989 = new System.Diagnostics.StackTrace();
-            var details__5010 = new global::Doroti.Generated.Framework.Foundation.FlutterErrorDetails(exception: exception__4978, stack: stack__4989, library: "widgets library", context: new global::Doroti.Generated.Framework.Foundation.ErrorDescription("attaching to the render tree"));
+            var details__5010 = new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception__4978, stack: stack__4989, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("attaching to the render tree"));
             FlutterError.reportError(details__5010);
             Widget error__5265 = ErrorWidget.builder(details__5010);
             _child = updateChild(((Element)(object)null), error__5265, _rootChildSlot);
         }
     }
 
-    public override global::Doroti.Generated.Framework.Rendering.RenderObject renderObject => DartRuntimePrimitives.ConvertValue<global::Doroti.Generated.Framework.Rendering.RenderObject>(((global::Doroti.Generated.Framework.Rendering.RenderObjectWithChildMixin<T>?)(object?)base.renderObject)!);
-    public override void insertRenderObjectChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, object? slot)
+    public override global::Doroti.Framework.Rendering.RenderObject renderObject => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(((global::Doroti.Framework.Rendering.RenderObjectWithChildMixin<T>?)(object?)base.renderObject)!);
+    public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(slot, _rootChildSlot)));
         DartRuntimePrimitives.Assert(() => ((bool)((dynamic)this.renderObject).debugValidateChild(child)));
         ((dynamic)this.renderObject).child = ((T?)(object?)child)!;
     }
 
-    public override void moveRenderObjectChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
+    public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
     {
         DartRuntimePrimitives.Assert(() => false);
     }
 
-    public override void removeRenderObjectChild(global::Doroti.Generated.Framework.Rendering.RenderObject child, object? slot)
+    public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
-        DartRuntimePrimitives.Assert(() => object.Equals(((global::Doroti.Generated.Framework.Rendering.RenderObjectWithChildMixin<T>)this.renderObject).child, child));
+        DartRuntimePrimitives.Assert(() => object.Equals(((global::Doroti.Framework.Rendering.RenderObjectWithChildMixin<T>)this.renderObject).child, child));
         ((dynamic)this.renderObject).child = default(T);
     }
 
