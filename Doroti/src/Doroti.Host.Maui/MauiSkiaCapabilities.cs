@@ -19,10 +19,12 @@ internal sealed class MauiSkiaCapabilities :
     private readonly MauiHostAdapter _host;
     private readonly object _gate = new();
     private readonly Dictionary<int, SemanticsNodeUpdate> _semantics = [];
-    private Scene? _pendingScene;
+    private SceneFrame? _pendingFrame;
+    private SceneFrame? _presentedFrame;
     private Action? _invalidate;
     private long _submitted;
     private long _presented;
+    private long _replayed;
     private long _failed;
     private long _contextGeneration;
     private bool _semanticsEnabled;
@@ -42,8 +44,8 @@ internal sealed class MauiSkiaCapabilities :
         get
         {
             lock (_gate)
-                return new(_submitted, _presented, _failed, _contextGeneration,
-                    _host.Snapshot.SurfaceGeneration, _pendingScene is not null,
+                return new(_submitted, _presented, _replayed, _failed, _contextGeneration,
+                    _host.Snapshot.SurfaceGeneration, _pendingFrame is not null,
                     "skiasharp-maui-skglview-gpu");
         }
     }
@@ -52,12 +54,14 @@ internal sealed class MauiSkiaCapabilities :
     {
         ArgumentNullException.ThrowIfNull(invalidate);
         ObjectDisposedException.ThrowIf(_disposed, this);
+        bool hasFrame;
         lock (_gate)
         {
             _invalidate = invalidate;
             _contextGeneration++;
-            if (_pendingScene is not null) invalidate();
+            hasFrame = _pendingFrame is not null || _presentedFrame is not null;
         }
+        if (hasFrame) invalidate();
     }
 
     public void Submit(ulong viewId, Scene scene, DartUiInvocation invocation)
@@ -70,7 +74,7 @@ internal sealed class MauiSkiaCapabilities :
         Action? invalidate;
         lock (_gate)
         {
-            _pendingScene = scene;
+            _pendingFrame = new(scene.Commands);
             _submitted++;
             invalidate = _invalidate;
         }
@@ -81,26 +85,46 @@ internal sealed class MauiSkiaCapabilities :
     {
         ArgumentNullException.ThrowIfNull(surface);
         ObjectDisposedException.ThrowIf(_disposed, this);
-        Scene? scene;
+        SceneFrame? frame;
+        bool isNewFrame;
         lock (_gate)
         {
-            scene = _pendingScene;
-            _pendingScene = null;
+            frame = _pendingFrame;
+            isNewFrame = frame is not null;
+            if (isNewFrame) _pendingFrame = null;
+            else frame = _presentedFrame;
         }
+        // SKSwapChainPanel can rotate to a fresh back buffer for a native paint.
+        // Replay the last successful framework scene when no replacement is pending.
+        if (frame is null) return;
         var canvas = surface.Canvas;
         canvas.Clear(SKColors.Transparent);
-        if (scene is null) return;
         try
         {
             // RenderView's root transform has already converted logical coordinates
             // into physical pixels. Applying the browser DPR here would scale twice.
-            DrawScene(canvas, scene.Commands);
+            DrawScene(canvas, frame.Commands);
             canvas.Flush();
-            lock (_gate) _presented++;
+            lock (_gate)
+            {
+                if (isNewFrame)
+                {
+                    _presentedFrame = frame;
+                    _presented++;
+                }
+                else
+                {
+                    _replayed++;
+                }
+            }
         }
         catch
         {
-            lock (_gate) _failed++;
+            lock (_gate)
+            {
+                if (isNewFrame && _pendingFrame is null) _pendingFrame = frame;
+                _failed++;
+            }
             throw;
         }
     }
@@ -159,11 +183,14 @@ internal sealed class MauiSkiaCapabilities :
         _disposed = true;
         lock (_gate)
         {
-            _pendingScene = null;
+            _pendingFrame = null;
+            _presentedFrame = null;
             _invalidate = null;
         }
         _semantics.Clear();
     }
+
+    private sealed record SceneFrame(IReadOnlyList<SceneCommand> Commands);
 
     private static void DrawScene(SKCanvas canvas, IReadOnlyList<SceneCommand> commands)
     {

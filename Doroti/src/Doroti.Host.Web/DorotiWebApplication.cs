@@ -19,6 +19,7 @@ public sealed record DorotiWebApplication(
 public sealed record BrowserFrameDiagnostics(
     long Submitted,
     long Presented,
+    long Replayed,
     long Failed,
     long ContextGeneration,
     long SurfaceGeneration,

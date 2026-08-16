@@ -15,6 +15,7 @@ public sealed record MauiSurfaceSnapshot(
 public sealed record MauiFrameDiagnostics(
     long Submitted,
     long Presented,
+    long Replayed,
     long Failed,
     long ContextGeneration,
     long SurfaceGeneration,

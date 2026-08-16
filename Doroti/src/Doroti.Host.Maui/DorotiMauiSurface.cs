@@ -45,7 +45,6 @@ public sealed class DorotiMauiSurface : SKGLView, IDisposable
         _session.Start(deferFrameworkBootstrap: true);
         _host.CreateView(_session, _viewId, this, _configuration);
         _attached = true;
-        InvalidateSurface();
     }
 
     private void PaintGpuSurface(object? sender, SKPaintGLSurfaceEventArgs args)
@@ -73,7 +72,12 @@ public sealed class DorotiMauiSurface : SKGLView, IDisposable
         var quitFrames = int.TryParse(Environment.GetEnvironmentVariable("DOROTI_MAUI_AUTO_QUIT_FRAMES"), out var value)
             ? value : 0;
         if (quitFrames > 0 && diagnostics.Frame.Presented >= quitFrames)
-            Dispatcher.Dispatch(() => Application.Current?.Quit());
+        {
+            if (diagnostics.Frame.Replayed > 0)
+                Dispatcher.Dispatch(() => Application.Current?.Quit());
+            else
+                Dispatcher.Dispatch(InvalidateSurface);
+        }
     }
 
     public void Dispose()

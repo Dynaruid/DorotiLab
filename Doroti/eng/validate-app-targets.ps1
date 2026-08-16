@@ -87,6 +87,7 @@ function Invoke-LiveGate {
     Assert-True (Test-Path -LiteralPath $rawLivePath -PathType Leaf) 'Windows MAUI live evidence'
     $live = Get-Content -LiteralPath $rawLivePath -Raw | ConvertFrom-Json
     Assert-True ([long]$live.Frame.Presented -gt 0 -and [long]$live.Frame.Failed -eq 0) 'Windows MAUI presented frame'
+    Assert-True ([long]$live.Frame.Replayed -gt 0) 'Windows MAUI retained scene replay'
     Assert-True ([long]$live.SoftwareFallbackFrames -eq 0) 'Windows MAUI software fallback count'
     Assert-True ([string]$live.Surface.NativeViewType -match 'MauiSKSwapChainPanel') 'Windows MAUI native view type'
     Assert-True ([string]$live.Surface.GraphicsBackend -ceq 'win-x64/winui3/SKSwapChainPanel/ANGLE-DirectX-Skia') 'Windows MAUI backend identity'
