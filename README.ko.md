@@ -12,7 +12,7 @@ Doroti는 Flutter를 WebView에 넣지 않으며 MAUI 또는 Avalonia control로
 
 프로젝트 초반에는 semantic compiler로 Flutter source의 큰 범위를 일괄 변환해 기반을 만들었습니다. 이 bootstrap은 현재 framework를 만드는 데 유효했지만 이제 일반 기능 개발 방식은 아닙니다.
 
-현재 `Doroti/src/Doroti.Framework.*`는 제품이 직접 소유하는 C# source이며 namespace, assembly, package는 `Doroti.Framework.*`로 일치합니다. 기능과 수정은 소유 framework/runtime/renderer/host 계약에서 직접 개발합니다. Dart-to-C# compiler와 고정 Flutter checkout은 선택적인 import·reference differential 도구로 남고 제품 source를 덮어쓰지 않습니다.
+현재 `Doroti/src/Doroti.Framework.*`는 제품이 직접 소유하는 C# source이며 namespace, assembly, package는 `Doroti.Framework.*`로 일치합니다. 기능과 수정은 소유 framework/runtime/renderer/host 계약에서 직접 개발합니다. Dart-to-C# compiler와 고정 Flutter checkout은 선택적인 import·reference differential 도구로 남고 제품 source를 덮어쓰지 않습니다. `DorotiDemoApp`과 생성된 `doroti-app` project는 C# 전용이며 활성 validation은 그 내부에 Dart package를 만들지 않습니다.
 
 자세한 결정은 [ADR-019](Doroti/docs/adr/ADR-019-product-framework-source-ownership.md), 현재 우선순위는 [작업 목록](work.md)을 참고하세요.
 

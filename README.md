@@ -12,7 +12,7 @@ Doroti does not embed Flutter in a WebView and does not compose its UI from MAUI
 
 The project began by translating large Flutter source slices through a semantic compiler. That bootstrap made the current framework possible, but it is no longer the normal feature workflow.
 
-Today `Doroti/src/Doroti.Framework.*` is product-owned C# source with matching `Doroti.Framework.*` namespaces, assemblies, and packages. Features and fixes are developed directly in the owning framework/runtime/renderer/host contract. The Dart-to-C# compiler and pinned Flutter checkout remain optional import and reference-differential tools; they never overwrite product source.
+Today `Doroti/src/Doroti.Framework.*` is product-owned C# source with matching `Doroti.Framework.*` namespaces, assemblies, and packages. Features and fixes are developed directly in the owning framework/runtime/renderer/host contract. The Dart-to-C# compiler and pinned Flutter checkout remain optional import and reference-differential tools; they never overwrite product source. `DorotiDemoApp` and generated `doroti-app` projects are C#-only, and active validation never creates a Dart package inside them.
 
 See [ADR-019](Doroti/docs/adr/ADR-019-product-framework-source-ownership.md) and the active [work list](work.md).
 

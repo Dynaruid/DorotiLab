@@ -69,7 +69,6 @@ _ReSharper*/
 **/.flutter-plugins
 **/.flutter-plugins-dependencies
 **/doc/api/
-/DorotiDemoApp/dart/build/
 
 # JavaScript tooling, if used by docs or diagnostics frontends
 **/node_modules/

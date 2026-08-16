@@ -4,6 +4,8 @@
 
 DorotiDemoApp dogfoods Doroti's product-owned framework and single-project application contract. One `DorotiDemoApp.csproj`, root `Program.cs`, and shared `src/App.cs` target MAUI Windows, MAUI Mac Catalyst, or Blazor WebAssembly.
 
+The application is C#-only. Its build and validation flows do not generate or consume a `DorotiDemoApp/dart` package.
+
 ## Layout
 
 - `src/App.cs`: target-neutral Material widget/state tree using `Doroti.Framework.*`

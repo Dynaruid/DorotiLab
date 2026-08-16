@@ -34,7 +34,6 @@
     }
   },
   "boundaries": {
-    "generatedDartPackage": "verified-predecessor-separate-g6-generated-demo-evidence",
     "physicalInput": "notVerified",
     "browserWasm": "notVerified"
   },

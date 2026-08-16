@@ -5,6 +5,7 @@
 - `Doroti/src/Doroti.Framework.*` is maintained product source. Its public namespace is `Doroti.Framework.*`, matching the package and assembly names.
 - Feature and correctness work starts in the owning framework/runtime/host project and changes the smallest shared contract that fixes the behavior.
 - The Dart-to-C# compiler and pinned Flutter checkout are optional migration/reference tools. They do not overwrite product source and are not prerequisites for ordinary product development.
+- `DorotiDemoApp` and `doroti-app` template applications are C#-only. Active build and validation commands must not create or consume a Dart package under either application tree.
 - Reference comparison remains useful for Flutter behavior fidelity, but a conversion report is not product proof. Build, native live, browser live, physical, and cross-target evidence stay separate.
 - Generated artifacts are confined to tool workspaces and `migration/`; no compiler-owned `.g.cs` file is compiled from `Doroti/src/Doroti.Framework.*`.
 

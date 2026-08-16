@@ -4,6 +4,8 @@
 
 DorotiDemoApp은 제품이 직접 소유하는 Doroti framework와 single-project application 계약을 사용하는 dogfood 앱입니다. 하나의 `DorotiDemoApp.csproj`, root `Program.cs`, 공용 `src/App.cs`가 MAUI Windows, MAUI Mac Catalyst 또는 Blazor WebAssembly를 target으로 선택합니다.
 
+이 application은 C# 전용입니다. Build와 validation flow는 `DorotiDemoApp/dart` package를 생성하거나 소비하지 않습니다.
+
 ## 구성
 
 - `src/App.cs`: `Doroti.Framework.*`를 사용하는 target-neutral Material widget/state tree

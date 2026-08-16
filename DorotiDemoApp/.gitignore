@@ -22,9 +22,6 @@
 # In-place Blazor/_framework dumps under source wwwroot
 Platforms/Web/wwwroot/_framework/
 
-# Legacy dart scratch still referenced by the workspace ignore file
-dart/build/
-
 # MSBuild / IDE user state
 *.user
 *.suo

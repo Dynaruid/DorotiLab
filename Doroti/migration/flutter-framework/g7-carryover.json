@@ -2,7 +2,7 @@
   "schemaVersion": "doroti.g7-carryover/v1",
   "milestone": "G7-2",
   "status": "PASS",
-  "scope": "G7-2 Cupertino/adaptive and generated Dart product closure complete; remaining release blockers are assigned to G7-3 through G7-6",
+  "scope": "G7-2 Cupertino/adaptive product closure complete; remaining release blockers are assigned to G7-3 through G7-6",
   "sourcePins": {
     "dorotiCommit": "5379137447162adb2957212ea2f336894effe05e",
     "worktreeDirty": true,
@@ -82,12 +82,6 @@
       "status": "verified-predecessor",
       "evidence": "g6-cupertino-component-matrix.json",
       "detail": "55/55 presented; interaction remains partial"
-    },
-    {
-      "id": "generated-windows-package",
-      "status": "verified-predecessor-partial",
-      "evidence": "g6-generated-demo-evidence.json",
-      "boundary": "Windows package/compiler/live slices; parity prerequisites open"
     }
   ],
   "releaseBlockers": [
@@ -136,15 +130,15 @@
       "evidence": "g7-compositing-evidence.json"
     },
     {
-      "id": "cupertino-adaptive-generated-parity",
+      "id": "cupertino-adaptive-parity",
       "state": "closed",
-      "owner": "Cupertino/adaptive framework and Dart application compiler",
+      "owner": "Cupertino/adaptive framework",
       "followUpMilestone": "G7-2",
       "reproduction": {
-        "command": "Doroti/eng/validate-g7-product.ps1 -Gate Cupertino; Doroti/eng/validate-g7-product.ps1 -Gate Generated",
+        "command": "Doroti/eng/validate-g7-product.ps1 -Gate Cupertino",
         "maxMinutes": 20
       },
-      "evidence": "g7-cupertino-adaptive-evidence.json and g7-generated-demo-evidence.json"
+      "evidence": "g7-cupertino-adaptive-evidence.json"
     },
     {
       "id": "browser-wasm-build-live",
