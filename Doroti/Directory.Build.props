@@ -10,7 +10,6 @@
     <AnalysisLevel>10.0</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <Deterministic>true</Deterministic>
-    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
     <IsPackable>false</IsPackable>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(MSBuildThisFileDirectory)migration\generated\**;$(MSBuildThisFileDirectory)migration\generated-candidates\**;$(MSBuildThisFileDirectory)migration\promotions\**;$(MSBuildThisFileDirectory)artifacts\**</DefaultItemExcludes>
@@ -34,11 +33,9 @@
   <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'win-x64' or '$(TargetFramework)' == 'net10.0-windows10.0.19041.0')">
     <BaseIntermediateOutputPath>obj\windows\</BaseIntermediateOutputPath>
     <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
-    <NuGetLockFilePath>packages.windows.lock.json</NuGetLockFilePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'maccatalyst-arm64' or '$(TargetFramework)' == 'net10.0-maccatalyst')">
     <BaseIntermediateOutputPath>obj\maccatalyst\</BaseIntermediateOutputPath>
     <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
-    <NuGetLockFilePath>packages.maccatalyst.lock.json</NuGetLockFilePath>
   </PropertyGroup>
 </Project>

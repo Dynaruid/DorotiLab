@@ -5,6 +5,7 @@
     <PackageId>Doroti.Templates</PackageId>
     <IsDorotiProduct>false</IsDorotiProduct>
     <IsPackable>true</IsPackable>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <Authors>Doroti contributors</Authors>
     <Description>Standard .NET templates for C# Doroti applications.</Description>
     <PackageTags>doroti;templates;blazor;webassembly</PackageTags>
