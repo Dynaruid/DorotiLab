@@ -4,6 +4,9 @@
 
 ### A cross-platform UI framework built with C# and .NET
 
+> [!WARNING]
+> Doroti is currently experimental. Its APIs, architecture, behavior, and project structure may change significantly at any time without backward-compatibility guarantees.
+
 Doroti brings a shared C# widget, layout, painting, semantics, and rendering pipeline to Windows, Mac Catalyst, and the Web. Flutter remains the behavior reference for familiar Material and Cupertino APIs, while the maintained product implementation lives in `Doroti.Framework.*`.
 
 Doroti does not embed Flutter in a WebView and does not compose its UI from MAUI or Avalonia controls. Platform hosts provide the native window/view, GPU surface, input, text, clipboard, and accessibility capabilities; Doroti owns the widget and render trees.
@@ -74,7 +77,7 @@ For detailed commands and evidence boundaries, see the [runtime README](Doroti/R
 
 Current priorities are native desktop capability closure, automated Web live parity, and one representative release/physical acceptance flow per target. Build, native live, browser live, physical, and cross-target results are never substituted for one another.
 
-Doroti is an experimental personal project. Ideas, feedback, forks, and independent experiments are welcome.
+Doroti is a personal project. Ideas, feedback, forks, and independent experiments are welcome.
 
 ## License
 

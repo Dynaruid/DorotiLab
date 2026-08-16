@@ -4,6 +4,9 @@
 
 ### C#과 .NET으로 만드는 cross-platform UI framework
 
+> [!WARNING]
+> Doroti는 현재 실험 단계입니다. API, architecture, 동작 및 project 구조는 하위 호환성 보장 없이 언제든 크게 변경될 수 있습니다.
+
 Doroti는 공용 C# widget, layout, painting, semantics, rendering pipeline을 Windows, Mac Catalyst와 Web에 제공합니다. 익숙한 Material/Cupertino API의 동작 reference는 Flutter이지만, 유지보수하는 제품 구현은 `Doroti.Framework.*`에 있습니다.
 
 Doroti는 Flutter를 WebView에 넣지 않으며 MAUI 또는 Avalonia control로 UI를 구성하지 않습니다. Platform host는 native window/view, GPU surface, input, text, clipboard, accessibility capability를 제공하고 Doroti가 widget/render tree를 소유합니다.
@@ -74,7 +77,7 @@ pwsh -File ./Doroti/eng/doroti.ps1 validate -ValidationSuite Release
 
 현재 우선순위는 native desktop capability closure, Web live parity 자동화, target별 대표 release/physical acceptance flow입니다. Build, native live, browser live, physical, cross-target 결과는 서로 대신하지 않습니다.
 
-Doroti는 실험적인 개인 프로젝트입니다. 아이디어, 피드백, fork와 독립적인 실험을 환영합니다.
+Doroti는 개인 프로젝트입니다. 아이디어, 피드백, fork와 독립적인 실험을 환영합니다.
 
 ## License
 
