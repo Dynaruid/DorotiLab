@@ -1,0 +1,425 @@
+using Doroti.Hosting;
+using Doroti.Runtime;
+using Doroti.Ui;
+using Doroti.Generated.Framework.Foundation;
+using Doroti.Generated.Framework.Painting;
+using Doroti.Generated.Framework.Widgets;
+using Material = Doroti.Generated.Framework.Material;
+using ListView = Doroti.Generated.Framework.Widgets.ListView;
+using Locale = Doroti.Ui.Locale;
+using Rect = Doroti.Ui.Rect;
+using Semantics = Doroti.Generated.Framework.Widgets.Semantics;
+using Size = Doroti.Ui.Size;
+using UiColor = Doroti.Ui.Color;
+
+internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requireExternalUia) : IDorotiViewEntrypoint
+{
+    private WidgetsFlutterBinding? _binding;
+    private DorotiView? _view;
+
+    internal Material.Scaffold? RootScaffold { get; private set; }
+    internal MaterialGalleryState? GalleryState { get; private set; }
+    internal Widget RootApp => _rootApp ??= CreateRootApp();
+    internal DemoEntryMode EntryMode { get; } = entryMode;
+    internal bool RequireExternalUia { get; } = requireExternalUia;
+#if DOROTI_LEGACY_DESKTOP
+    internal DesktopFrameworkPixelReadback? InitialReadback { get; set; }
+    internal DesktopFrameworkPixelReadback? ChangedReadback { get; set; }
+    internal DesktopFrameworkPixelReadback? BackdropOnReadback { get; set; }
+    internal DesktopFrameworkPixelReadback? BackdropOffReadback { get; set; }
+#endif
+    internal string? InitialStateSignature { get; set; }
+    internal string? ChangedStateSignature { get; set; }
+    internal long CadencePresented { get; set; }
+    internal TimeSpan CadenceDuration { get; set; }
+    internal int NativePointerInteractionCount { get; set; }
+    internal IReadOnlyList<string> NativePointerHitTestTargets { get; set; } = [];
+    internal Offset? NativeEffectTogglePoint { get; set; }
+    internal Rect? NativeEffectPanelBounds { get; set; }
+    internal IReadOnlyList<string> NativeEffectHitTestTargets { get; set; } = [];
+
+    private Material.MaterialApp? _rootApp;
+
+    internal FlutterErrorDetails? FirstFrameworkError { get; private set; }
+
+    public void Bootstrap(PlatformDispatcher dispatcher)
+    {
+        FlutterError.onError = details =>
+        {
+            FirstFrameworkError ??= details;
+#if DOROTI_BROWSER
+            Console.Error.WriteLine(details.exceptionThrown);
+#endif
+        };
+        _binding = new WidgetsFlutterBinding(dispatcher);
+    }
+
+    public void AttachView(DorotiView view)
+    {
+        if (_binding is null)
+        {
+            throw new InvalidOperationException("The Material framework binding was not bootstrapped.");
+        }
+        if (_view is not null)
+        {
+            throw new InvalidOperationException("DorotiDemoApp owns exactly one Doroti view.");
+        }
+
+        _view = view;
+        _binding.scheduleFrameCallback(_ =>
+        {
+            _binding.attachRootWidget(_binding.wrapWithDefaultView(RootApp));
+        });
+    }
+
+    public void DetachView(DorotiView view)
+    {
+        if (ReferenceEquals(_view, view))
+        {
+            _view = null;
+        }
+    }
+
+    internal void ExerciseAll() =>
+        (GalleryState ?? throw new InvalidOperationException("The Material gallery State is not mounted.")).ExerciseAll();
+
+    internal void RequestFrame()
+    {
+        if (GalleryState is { } galleryState)
+        {
+            galleryState.PulseFrame();
+            return;
+        }
+        (_binding ?? throw new InvalidOperationException("The Material binding is not initialized.")).scheduleFrame();
+    }
+
+    internal IReadOnlyList<string> HitTestTargetsAt(double x, double y)
+    {
+        var binding = _binding ?? throw new InvalidOperationException("The Material binding is not initialized.");
+        var result = new Doroti.Generated.Framework.Gestures.HitTestResult();
+        binding.hitTestInView(
+            result,
+            new Offset(x, y),
+            checked((long)(_view ?? throw new InvalidOperationException("The Doroti view is not attached.")).viewId));
+        return result.path.Select(entry => entry.target.GetType().FullName ?? entry.target.GetType().Name).ToArray();
+    }
+
+    internal Rect BackdropPanelPhysicalBounds()
+    {
+        var view = _view ?? throw new InvalidOperationException("The Doroti view is not attached.");
+        var logical = (GalleryState ?? throw new InvalidOperationException("The Material gallery State is not mounted."))
+            .BackdropPanelBounds();
+        var scale = view.devicePixelRatio;
+        return new Rect(logical.left * scale, logical.top * scale, logical.right * scale, logical.bottom * scale);
+    }
+
+    public void Shutdown()
+    {
+        _binding?.Dispose();
+        _binding = null;
+        _view = null;
+        FlutterError.onError = null;
+    }
+
+    private Material.MaterialApp CreateRootApp()
+    {
+        var theme = Material.ThemeData.Create(
+            useMaterial3: true,
+            colorSchemeSeed: new UiColor(0xff6750a4L),
+            scaffoldBackgroundColor: new UiColor(0xfffffbfeL));
+        Widget Gallery() => new MaterialGallery(
+                state => GalleryState = state,
+                scaffold => RootScaffold = scaffold);
+
+        return EntryMode == DemoEntryMode.Builder
+            ? new Material.MaterialApp(
+                title: "Doroti Material Demo",
+                color: new UiColor(0xff6750a4L),
+                locale: new Locale("en", "US"),
+                debugShowCheckedModeBanner: false,
+                builder: (_, _) => new Material.Theme(
+                    data: theme,
+                    child: new Overlay(initialEntries:
+                    [
+                        new OverlayEntry(builder: _ => Gallery()),
+                    ])))
+            : new Material.MaterialApp(
+                title: "Doroti Material Demo",
+                color: new UiColor(0xff6750a4L),
+                locale: new Locale("en", "US"),
+                debugShowCheckedModeBanner: false,
+                home: new Material.Theme(data: theme, child: Gallery()));
+    }
+}
+
+internal sealed class MaterialGallery(
+    System.Action<MaterialGalleryState> mounted,
+    System.Action<Material.Scaffold> scaffoldBuilt) : StatefulWidget
+{
+    internal System.Action<MaterialGalleryState> Mounted { get; } = mounted;
+    internal System.Action<Material.Scaffold> ScaffoldBuilt { get; } = scaffoldBuilt;
+    public override IState createState() => new MaterialGalleryState();
+}
+
+internal sealed class MaterialGalleryState : State<MaterialGallery>
+{
+    internal static readonly string[] InteractiveLabels =
+    [
+        "G6 Material button", "G6 Material checkbox", "G6 Material radio",
+        "G6 Material switch", "G6 Material slider", "G6 Material FAB",
+    ];
+
+    private int _buttonCount;
+    private bool _checked;
+    private long _radio;
+    private bool _switched;
+    private double _slider = 0.2;
+    private int _fabCount;
+    private bool _blurEnabled = true;
+    private readonly GlobalKey<IState> _blurToggleKey = new("g6-backdrop-blur-toggle");
+    private readonly GlobalKey<IState> _backdropPanelKey = new("g6-backdrop-blur-panel");
+
+    internal int InteractionCount { get; private set; }
+    internal int EffectInteractionCount { get; private set; }
+    internal bool BlurEnabled => _blurEnabled;
+    internal int BuildCount { get; private set; }
+    internal string StateSignature =>
+        $"button={_buttonCount};checked={_checked};radio={_radio};switch={_switched};slider={_slider:F1};fab={_fabCount}";
+    internal string EffectStateSignature => $"backdropBlur={_blurEnabled};effectInteractions={EffectInteractionCount}";
+
+    public override void initState()
+    {
+        base.initState();
+        widget.Mounted(this);
+    }
+
+    internal void ExerciseAll() => setState(() =>
+    {
+        _buttonCount++;
+        _checked = !_checked;
+        _radio = _radio == 1 ? 0 : 1;
+        _switched = !_switched;
+        _slider = _slider < 0.7 ? 0.8 : 0.2;
+        _fabCount++;
+        InteractionCount += InteractiveLabels.Length;
+    });
+
+    internal void PulseFrame() => setState(() => { });
+
+    internal Offset BlurToggleCenter()
+    {
+        var context = _blurToggleKey.currentContext ?? throw new InvalidOperationException("Backdrop blur toggle is not mounted.");
+        var box = context.findRenderObject() as Doroti.Generated.Framework.Rendering.RenderBox
+            ?? throw new InvalidOperationException("Backdrop blur toggle does not own a RenderBox.");
+        return box.localToGlobal(box.size.center(Offset.zero));
+    }
+
+    internal Rect BackdropPanelBounds()
+    {
+        var context = _backdropPanelKey.currentContext ?? throw new InvalidOperationException("Backdrop panel is not mounted.");
+        var box = context.findRenderObject() as Doroti.Generated.Framework.Rendering.RenderBox
+            ?? throw new InvalidOperationException("Backdrop panel does not own a RenderBox.");
+        var origin = box.localToGlobal(Offset.zero);
+        return Rect.fromLTWH(origin.dx, origin.dy, box.size.width, box.size.height);
+    }
+
+    private void ToggleBlur() => setState(() =>
+    {
+        _blurEnabled = !_blurEnabled;
+        EffectInteractionCount++;
+    });
+
+    private void Mutate(System.Action mutation) => setState(() =>
+    {
+        mutation();
+        InteractionCount++;
+    });
+
+    private Widget ActionSemantics(string label, Widget child, System.Action action, string value) => new Semantics(
+        container: true,
+        excludeSemantics: true,
+        identifier: label.Replace(' ', '-').ToLowerInvariant(),
+        label: label,
+        value: value,
+        button: label is "G6 Material button" or "G6 Material FAB",
+        @checked: label == "G6 Material checkbox" ? _checked : null,
+        selected: label == "G6 Material radio" ? _radio == 1 : null,
+        inMutuallyExclusiveGroup: label == "G6 Material radio" ? true : null,
+        toggled: label == "G6 Material switch" ? _switched : null,
+        slider: label == "G6 Material slider" ? true : null,
+        onTap: () => Mutate(action),
+        child: child);
+
+    public override Widget build(BuildContext context)
+    {
+        BuildCount++;
+        var button = ActionSemantics(InteractiveLabels[0], new Material.ElevatedButton(
+            onPressed: () => Mutate(() => _buttonCount++),
+            child: new Text("Press button")), () => _buttonCount++, _buttonCount.ToString());
+        var checkbox = ActionSemantics(InteractiveLabels[1], new Material.Checkbox(
+            value: _checked,
+            semanticLabel: "Gallery checkbox",
+            activeColor: new UiColor(0xff6750a4L),
+            fillColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(0xff6750a4L)),
+            overlayColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(0x226750a4L)),
+            checkColor: new UiColor(0xffffffffL),
+            focusColor: new UiColor(0x226750a4L),
+            hoverColor: new UiColor(0x226750a4L),
+            splashRadius: 20,
+            side: new BorderSide(color: new UiColor(0xff49454fL), width: 2),
+            shape: new RoundedRectangleBorder(),
+            materialTapTargetSize: Material.MaterialTapTargetSize.padded,
+            visualDensity: Material.VisualDensity.standard,
+            onChanged: value => Mutate(() => _checked = value == true)), () => _checked = !_checked, _checked.ToString());
+        var radio = ActionSemantics(InteractiveLabels[2], new Material.Radio<long>(
+            value: 1,
+            groupValue: _radio,
+            activeColor: new UiColor(0xff6750a4L),
+            fillColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(0xff6750a4L)),
+            backgroundColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(0x00000000L)),
+            overlayColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(0x226750a4L)),
+            focusColor: new UiColor(0x226750a4L),
+            hoverColor: new UiColor(0x226750a4L),
+            splashRadius: 20,
+            side: new BorderSide(color: new UiColor(0xff49454fL), width: 2),
+            materialTapTargetSize: Material.MaterialTapTargetSize.padded,
+            visualDensity: Material.VisualDensity.standard,
+            onChanged: value => Mutate(() => _radio = value)), () => _radio = _radio == 1 ? 0 : 1, _radio.ToString());
+        var toggle = ActionSemantics(InteractiveLabels[3], new Material.Switch(
+            value: _switched,
+            activeThumbColor: new UiColor(0xff6750a4L),
+            activeTrackColor: new UiColor(0xffd0bcffL),
+            inactiveThumbColor: new UiColor(0xff79747eL),
+            inactiveTrackColor: new UiColor(0xffe7e0ecL),
+            thumbColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(_switched ? 0xff6750a4L : 0xff79747eL)),
+            trackColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(_switched ? 0xffd0bcffL : 0xffe7e0ecL)),
+            trackOutlineColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(0xff79747eL)),
+            trackOutlineWidth: new WidgetStatePropertyAll<double?>(1),
+            overlayColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(0x226750a4L)),
+            focusColor: new UiColor(0x226750a4L),
+            hoverColor: new UiColor(0x226750a4L),
+            splashRadius: 20,
+            onChanged: value => Mutate(() => _switched = value)), () => _switched = !_switched, _switched.ToString());
+        var slider = ActionSemantics(InteractiveLabels[4], new Material.Slider(
+            value: _slider,
+            min: 0,
+            max: 1,
+            divisions: 10,
+            activeColor: new UiColor(0xff6750a4L),
+            inactiveColor: new UiColor(0xffcac4d0L),
+            thumbColor: new UiColor(0xff6750a4L),
+            overlayColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(0x226750a4L)),
+            showValueIndicator: Material.ShowValueIndicator.never,
+            onChanged: value => Mutate(() => _slider = value)), () => _slider = _slider < 0.7 ? 0.8 : 0.2, $"{_slider:F1}");
+
+        var lazyList = ListView.CreateBuilder(
+            primary: false,
+            itemCount: 12,
+            itemExtent: 30,
+            itemBuilder: (_, index) => new Container(
+                color: new UiColor(index % 2 == 0 ? 0xff6750a4L : 0xfff4b400L),
+                child: new Text($"Lazy item {index + 1}",
+                    style: new Doroti.Generated.Framework.Painting.TextStyle(color: new UiColor(0xff000000L)))));
+        var blurToggle = new Semantics(
+            key: _blurToggleKey,
+            container: true,
+            excludeSemantics: true,
+            identifier: "g6-backdrop-blur-toggle",
+            label: "G6 backdrop blur",
+            value: _blurEnabled ? "on" : "off",
+            toggled: _blurEnabled,
+            child: new Material.ElevatedButton(
+                onPressed: ToggleBlur,
+                child: new Row(spacing: 6, children:
+                [
+                    new IgnorePointer(child: new Material.Checkbox(value: _blurEnabled, onChanged: _ => { })),
+                    new Text(_blurEnabled ? "Blur ON" : "Blur OFF"),
+                ])));
+        var effectPanel = new SizedBox(height: 180, child: new Stack(
+            children:
+            [
+                new Positioned(left: 0, top: 0, right: 0, height: 170, child: lazyList),
+                new Positioned(left: 64, top: 30, width: 560, height: 100, child: new SizedBox(
+                    key: _backdropPanelKey,
+                    width: 560,
+                    height: 100,
+                    child: new Stack(children:
+                    [
+                        new Positioned(left: 0, top: 0, right: 0, bottom: 0, child: new IgnorePointer(
+                            child: new BackdropFilter(
+                                filterConfig: Doroti.Generated.Framework.Rendering.ImageFilterConfig.CreateBlur(
+                                    sigmaX: 12, sigmaY: 6, tileMode: TileMode.clamp, bounded: true),
+                                enabled: _blurEnabled,
+                                child: new Container(color: new UiColor(0x01ffffffL))))),
+                        new Positioned(left: 0, top: 0, right: 0, bottom: 0, child: new IgnorePointer(
+                            child: new Container(
+                                color: new UiColor(0x55ffffffL),
+                                padding: EdgeInsets.CreateAll(12),
+                                child: new Column(
+                                    crossAxisAlignment: Doroti.Generated.Framework.Rendering.CrossAxisAlignment.start,
+                                    children:
+                                    [
+                                        new Text("FROSTED GLASS · BACKDROP BLUR"),
+                                        new Text("ListView rows continue behind this overlay"),
+                                    ])))),
+                    ]))),
+            ]));
+
+        var scaffold = new Material.Scaffold(
+            appBar: new Material.AppBar(
+                title: new Text("Doroti Material Gallery"),
+                backgroundColor: new UiColor(0xffeaddffL),
+                foregroundColor: new UiColor(0xff21005dL),
+                iconTheme: new IconThemeData(color: new UiColor(0xff1d1b20L), size: 24),
+                actionsIconTheme: new IconThemeData(color: new UiColor(0xff49454fL), size: 24)),
+            body: new SingleChildScrollView(
+                primary: false,
+                child: new Container(
+                    padding: EdgeInsets.CreateAll(16),
+                    child: new Column(
+                        crossAxisAlignment: Doroti.Generated.Framework.Rendering.CrossAxisAlignment.start,
+                        spacing: 10,
+                        children:
+                        [
+                            new Text("Reviewed Material · promoted product · strict Skia GPU"),
+                            new Material.Card(
+                                color: new UiColor(0xfff3edf7L),
+                                child: new Material.ListTile(
+                                    title: new Text("Material components"),
+                                    subtitle: new Text("Card + ListTile + local state"))),
+                            new Row(spacing: 12, children: [button, new Text($"Pressed {_buttonCount}")]),
+                            new Row(spacing: 12, children: [checkbox, new Text("Checkbox"), radio, new Text("Radio")]),
+                            new Row(spacing: 12, children: [toggle, new Text("Switch")]),
+                            slider,
+                            new SizedBox(height: 64, child: new Stack(
+                                alignment: Alignment.center,
+                                children:
+                                [
+                                    new Container(width: 260, height: 56, color: new UiColor(_switched ? 0xffd0bcffL : 0xffb3261eL)),
+                                    new Text($"Stack state · {StateSignature}"),
+                                ])),
+                            new Row(spacing: 8, children: [blurToggle, new Text("Backdrop blur (native effect gate)")]),
+                            new Text("Lazy ListView.builder + clipped backdrop panel"),
+                            effectPanel,
+                        ]))),
+            floatingActionButton: ActionSemantics(InteractiveLabels[5], new Material.FloatingActionButton(
+                tooltip: "Material action",
+                backgroundColor: new UiColor(0xffeaddffL),
+                foregroundColor: new UiColor(0xff21005dL),
+                onPressed: () => Mutate(() => _fabCount++),
+                child: new Text("+")), () => _fabCount++, _fabCount.ToString()));
+        widget.ScaffoldBuilt(scaffold);
+        return scaffold;
+    }
+}
+
+internal enum DemoEntryMode { Builder, Home }
+
+internal static class App
+{
+    internal static Func<IDorotiViewEntrypoint> Definition =>
+        () => new MaterialDemoEntrypoint(DemoEntryMode.Home, requireExternalUia: false);
+
+    internal static DorotiViewConfiguration ViewConfiguration { get; } =
+        new("Doroti Material Demo", new Size(720, 640));
+}

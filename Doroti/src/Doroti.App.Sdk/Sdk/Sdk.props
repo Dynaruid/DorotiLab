@@ -1,0 +1,53 @@
+<Project>
+  <PropertyGroup>
+    <DorotiRequestedRuntimeIdentifier>$(RuntimeIdentifier)</DorotiRequestedRuntimeIdentifier>
+    <DorotiTarget Condition="'$(DorotiTarget)' == '' and '$(RuntimeIdentifier)' == 'browser-wasm'">Web</DorotiTarget>
+    <DorotiTarget Condition="'$(DorotiTarget)' == '' and '$(RuntimeIdentifier)' == 'win-x64'">Windows</DorotiTarget>
+    <DorotiTarget Condition="'$(DorotiTarget)' == '' and '$(RuntimeIdentifier)' == 'maccatalyst-arm64'">MacCatalyst</DorotiTarget>
+    <DorotiTarget Condition="'$(DorotiTarget)' == '' and $([MSBuild]::IsOSPlatform('Windows'))">Windows</DorotiTarget>
+    <DorotiTarget Condition="'$(DorotiTarget)' == '' and $([MSBuild]::IsOSPlatform('OSX'))">MacCatalyst</DorotiTarget>
+    <DorotiTargetKey>$([System.String]::Copy('$(DorotiTarget)').ToLowerInvariant())</DorotiTargetKey>
+    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">obj\$(DorotiTargetKey)\</BaseIntermediateOutputPath>
+    <OutputPath Condition="'$(OutputPath)' == ''">bin\$(DorotiTargetKey)\$(Configuration)\</OutputPath>
+    <PublishDir Condition="'$(PublishDir)' == ''">$(OutputPath)publish\</PublishDir>
+    <NuGetLockFilePath Condition="'$(NuGetLockFilePath)' == ''">packages.$(DorotiTargetKey).lock.json</NuGetLockFilePath>
+  </PropertyGroup>
+
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk.BlazorWebAssembly" Condition="'$(DorotiTarget)' == 'Web'" />
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" Condition="'$(DorotiTarget)' != 'Web'" />
+
+  <PropertyGroup>
+    <RuntimeIdentifier Condition="'$(DorotiRequestedRuntimeIdentifier)' != ''">$(DorotiRequestedRuntimeIdentifier)</RuntimeIdentifier>
+    <TargetFramework Condition="'$(DorotiTarget)' == 'Windows'">net10.0-windows10.0.19041.0</TargetFramework>
+    <RuntimeIdentifier Condition="'$(DorotiTarget)' == 'Windows' and '$(RuntimeIdentifier)' == ''">win-x64</RuntimeIdentifier>
+    <UseMaui Condition="'$(DorotiTarget)' == 'Windows'">true</UseMaui>
+    <TargetFramework Condition="'$(DorotiTarget)' == 'MacCatalyst'">net10.0-maccatalyst</TargetFramework>
+    <RuntimeIdentifier Condition="'$(DorotiTarget)' == 'MacCatalyst' and '$(RuntimeIdentifier)' == ''">maccatalyst-arm64</RuntimeIdentifier>
+    <UseMaui Condition="'$(DorotiTarget)' == 'MacCatalyst'">true</UseMaui>
+    <TargetFramework Condition="'$(DorotiTarget)' == 'Web'">net10.0</TargetFramework>
+    <RuntimeIdentifier Condition="'$(DorotiTarget)' == 'Web' and '$(RuntimeIdentifier)' == ''">browser-wasm</RuntimeIdentifier>
+    <OutputType>Exe</OutputType>
+    <LangVersion>14.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Deterministic>true</Deterministic>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+    <SingleProject Condition="'$(UseMaui)' == 'true'">true</SingleProject>
+    <MauiVersion Condition="'$(MauiVersion)' == ''">10.0.90</MauiVersion>
+    <DorotiVersion Condition="'$(DorotiVersion)' == ''">0.2.0-beta</DorotiVersion>
+    <SkiaSharpVersion Condition="'$(SkiaSharpVersion)' == ''">3.119.4</SkiaSharpVersion>
+    <DorotiMarkupVersion Condition="'$(DorotiMarkupVersion)' == ''">8.0.0</DorotiMarkupVersion>
+    <DefineConstants Condition="'$(DorotiTarget)' == 'Windows'">$(DefineConstants);WINDOWS;DOROTI_MAUI</DefineConstants>
+    <DefineConstants Condition="'$(DorotiTarget)' == 'MacCatalyst'">$(DefineConstants);MACCATALYST;DOROTI_MAUI</DefineConstants>
+    <DefineConstants Condition="'$(DorotiTarget)' == 'Web'">$(DefineConstants);DOROTI_BROWSER</DefineConstants>
+    <SupportedOSPlatformVersion Condition="'$(DorotiTarget)' == 'Windows'">10.0.19041.0</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion Condition="'$(DorotiTarget)' == 'Windows'">10.0.19041.0</TargetPlatformMinVersion>
+    <SupportedOSPlatformVersion Condition="'$(DorotiTarget)' == 'MacCatalyst'">15.0</SupportedOSPlatformVersion>
+    <WindowsPackageType Condition="'$(DorotiTarget)' == 'Windows' and '$(WindowsPackageType)' == ''">None</WindowsPackageType>
+    <PublishTrimmed Condition="'$(DorotiTarget)' == 'Web'">false</PublishTrimmed>
+  </PropertyGroup>
+</Project>

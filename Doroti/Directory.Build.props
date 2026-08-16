@@ -31,4 +31,14 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>C0 product cutover: source-ported desktop shell and generated/adopted Flutter framework packages.</PackageReleaseNotes>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'win-x64' or '$(TargetFramework)' == 'net10.0-windows10.0.19041.0')">
+    <BaseIntermediateOutputPath>obj\windows\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+    <NuGetLockFilePath>packages.windows.lock.json</NuGetLockFilePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'maccatalyst-arm64' or '$(TargetFramework)' == 'net10.0-maccatalyst')">
+    <BaseIntermediateOutputPath>obj\maccatalyst\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+    <NuGetLockFilePath>packages.maccatalyst.lock.json</NuGetLockFilePath>
+  </PropertyGroup>
 </Project>

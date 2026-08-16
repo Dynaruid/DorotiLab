@@ -56,7 +56,7 @@ C# framework packages
 Doroti runtime + widget/rendering pipeline
       ↓
 platform host + rendering surface
-(Windows: Win32/WGL · macOS: AppKit/NSOpenGL · Web: Blazor WASM/WebGL2)
+(Windows: MAUI/WinUI 3/SKSwapChainPanel · macOS: MAUI Mac Catalyst/SKMetalView · Web: Blazor WASM/WebGL2)
       ↓
 Web / Windows / Linux / macOS / Android / iOS
 ```
@@ -70,36 +70,30 @@ Web / Windows / Linux / macOS / Android / iOS
 
 ## 실행해 보기
 
-현재 데모와 자동 native smoke validation은 **Windows x64**와 **Apple Silicon macOS(`osx-arm64`)**에서 실행할 수 있습니다. 같은 앱의 Web artifact는 **Blazor WebAssembly `browser-wasm`**으로 만들 수 있습니다. .NET SDK 10과 PowerShell 7이 필요합니다.
+데모는 하나의 `DorotiDemoApp.csproj`에서 target selector로 **MAUI Windows x64**, **MAUI Mac Catalyst arm64**, **Blazor WebAssembly `browser-wasm`**을 빌드합니다. .NET SDK 10과 PowerShell 7이 필요합니다.
 
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 build
-dotnet run --project ./DorotiDemoApp
-```
-
-짧은 자동 smoke run도 준비되어 있습니다.
-
-```powershell
-dotnet run --project ./DorotiDemoApp -- --smoke --entry builder --frames 3 --duration-ms 15000
+dotnet run --project ./DorotiDemoApp/DorotiDemoApp.csproj -p:DorotiTarget=Windows
 ```
 
 Web publish는 다음과 같이 만듭니다. 배포 root는 `publish/doroti-demo-web/wwwroot`입니다.
 
 ```powershell
-dotnet publish ./DorotiDemoApp/DorotiDemoApp.Web.csproj -c Release -r browser-wasm -o ./publish/doroti-demo-web
+dotnet publish ./DorotiDemoApp/DorotiDemoApp.csproj -c Release -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm -o ./publish/doroti-demo-web
 ```
 
 공식 publish artifact의 수동 Chromium smoke에서 non-empty GPU canvas, Flutter식 DPR, bounded `sigmaX=12`/`sigmaY=6` backdrop blur, desktop과 같은 2-pass shadow, semantics tree, pointer 상태 변화와 console error 0을 확인했습니다.
 
-> Windows x64와 `osx-arm64`는 구현된 native desktop target이며 Web은 build/publish와 수동 `presented`/기본 pointer 범위까지 확인됐습니다. Web의 wheel/keyboard/IME/clipboard/ARIA 자동화와 physical acceptance, Intel macOS, Linux, Android와 iOS에는 후속 gate가 남아 있습니다.
+> 새 Windows MAUI host는 build/publish와 자동 GPU present까지 확인했습니다. Web은 build/publish와 기존 수동 `presented`/기본 pointer 범위를 확인했습니다. Native hover/wheel/keyboard/IME/UIA, Mac Catalyst native 실행, physical acceptance와 cross-target parity는 `notVerified`이며 기존 Win32/AppKit 증거를 MAUI에 전이하지 않습니다.
 
 ## 프로젝트 구성
 
 | 경로 | 내용 |
 | --- | --- |
 | [`Doroti/`](Doroti/) | compiler가 만든 framework, runtime, renderer와 platform host |
-| [`Doroti/src/Doroti.Host.Desktop/`](Doroti/src/Doroti.Host.Desktop/) | Windows와 macOS composition root가 함께 사용하는 typed desktop host |
-| [`Doroti/src/Doroti.Target.macOS.osx-arm64/`](Doroti/src/Doroti.Target.macOS.osx-arm64/) | Apple Silicon AppKit/NSOpenGL target package |
+| [`Doroti/src/Doroti.Host.Maui/`](Doroti/src/Doroti.Host.Maui/) | MAUI lifecycle과 외부 소유 Skia GPU surface를 잇는 공용 adapter |
+| [`Doroti/src/Doroti.App.Sdk/`](Doroti/src/Doroti.App.Sdk/) | Windows/Mac Catalyst/Web single-project target 선택 SDK |
 | [`Doroti/src/Doroti.Host.Avalonia/`](Doroti/src/Doroti.Host.Avalonia/) | 공식 `Avalonia.Desktop` package 기반 비교·검증용 host |
 | [`DorotiDemoApp/`](DorotiDemoApp/) | 실제 Material widget tree를 띄우는 데모 앱 |
 | [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | Dart를 C#으로 변환하는 semantic compiler |

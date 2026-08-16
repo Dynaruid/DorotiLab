@@ -8,11 +8,11 @@ Doroti는 Flutter를 WebView에 넣어 실행하지 않으며 Avalonia control�
 
 ## 현재 상태
 
-현재 native 제품 gate는 **Windows x64**와 **Apple Silicon macOS**를 검증합니다. 검토된 Material widget tree가 실제 HWND 또는 NSWindow에서 construct, mount, layout, paint, present되고 입력에 반응하며 strict `skia-wgl-opengl-gpu` 또는 `skia-nsopengl-opengl-gpu` backend를 사용합니다.
+현재 migration은 하나의 application project로 **MAUI Windows x64**, **MAUI Mac Catalyst arm64**, **Blazor WebAssembly**를 선택합니다. Windows MAUI 제품 host는 Release build/publish와 실제 GPU 실행을 통과했으며 `MauiSKSwapChainPanel`, `win-x64/winui3/SKSwapChainPanel/ANGLE-DirectX-Skia`, submitted/presented 3, failure 0, software fallback 0을 기록했습니다.
 
-검증된 범위에는 `MaterialApp`, `Theme`, `Navigator`, `Scaffold`, `AppBar`, `Card`, `ListTile`, button과 selection control, 주요 layout widget, scrolling, lazy list, local state update와 native accessibility action이 포함됩니다. `MaterialApp.builder`와 `MaterialApp.home` 두 진입 경로를 모두 검증합니다.
+공용 `src/App.cs`의 검토된 Material tree를 선택된 모든 target이 함께 컴파일합니다. Windows native hover/wheel/keyboard/IME/UIA, resize/DPI/context recreate, Mac Catalyst native build/publish/live, physical acceptance와 cross-target parity는 별도 `notVerified` gate로 남아 있습니다.
 
-`osx-arm64` gate는 실제 AppKit window, Apple M1 GPU present, native input/text/clipboard/accessibility trace, 균형 잡힌 resource 종료, repeat publish identity와 저장소 밖 package-only launch를 포함합니다. 물리 Korean IME candidate window, VoiceOver 탐색, precise trackpad gesture, `osx-x64`, Linux, Web, Android와 iOS에는 별도 gate가 남아 있습니다. 특정 target에서 project나 package가 compile된 사실만으로 native 동작까지 증명되었다고 판단하지 않습니다.
+기존 Win32/WGL과 AppKit/NSOpenGL 결과는 predecessor evidence로만 유지하며 MAUI acceptance로 계산하지 않습니다. 특정 target에서 project나 package가 compile된 사실만으로 native 동작까지 증명되었다고 판단하지 않습니다.
 
 Goal7의 완료 milestone, 남은 Web/release gate와 증거 경계는 역사 기록인 [Goal7 요약](../history/26-08-16/goal7-summary.md)에서 확인할 수 있습니다. 이 문서는 후속 active roadmap을 지정하지 않습니다.
 
@@ -32,14 +32,15 @@ Doroti.DartToCSharp ──► reviewed C# framework packages
                               │
                               ▼
               target package and native host
-       (Windows: Win32/WGL · macOS: AppKit/NSOpenGL)
+ (Windows: WinUI 3/SKSwapChainPanel · Mac Catalyst: UIKit/SKMetalView · Web: WebGL2)
 ```
 
 - `Doroti.Framework.*`에는 생성·검토된 framework library가 들어 있습니다.
 - `Doroti.Runtime`, `Doroti.Ui`, `Doroti.Hosting`은 Dart/Flutter runtime 의미와 app bootstrap을 제공합니다.
 - `Doroti.Engine`, `Doroti.Rendering`, `Doroti.Graphics`는 frame scheduling, display output과 graphics contract를 담당합니다.
-- `Doroti.Shell.Core`와 `Doroti.Host.Desktop`은 backend-neutral typed desktop capability를 정의하고 소비합니다.
-- `Doroti.Target.Windows.win-x64`와 `Doroti.Target.macOS.osx-arm64`가 Win32/WGL 또는 AppKit/NSOpenGL 구현을 주입합니다.
+- `Doroti.App.Sdk`가 target, TFM, RID, platform source set, lock/output 경로와 underlying .NET SDK를 선택합니다.
+- `Doroti.Host.Maui`가 `SKGLView` 소유 `SKSurface`를 소비하고 CPU fallback 없이 session/view/frame lifecycle을 연결합니다.
+- `Doroti.Target.Windows.Maui.win-x64`, `Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64`, `Doroti.Target.Web.browser-wasm`이 target composition root를 제공합니다.
 
 선별한 Avalonia platform source는 Doroti contract 뒤에 이식하고 provenance manifest로 추적합니다. Doroti app은 Avalonia control에 runtime dependency를 갖지 않습니다.
 
@@ -59,13 +60,13 @@ Repository root에서 실행합니다.
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 doctor
 pwsh -File ./Doroti/eng/doroti.ps1 build
-dotnet run --project ./DorotiDemoApp
+dotnet run --project ./DorotiDemoApp/DorotiDemoApp.csproj -p:DorotiTarget=Windows
 ```
 
-지원되는 native desktop host에서 짧은 deterministic smoke run을 실행하려면 다음 명령을 사용합니다.
+Single-project graph/build sequence, Windows live GPU와 evidence gate는 다음 명령으로 실행합니다.
 
 ```powershell
-dotnet run --project ./DorotiDemoApp -- --smoke --entry builder --frames 3 --duration-ms 15000
+pwsh -File ./Doroti/eng/validate-g7-maui-single-project.ps1 -Shard All
 ```
 
 ## Repository 명령

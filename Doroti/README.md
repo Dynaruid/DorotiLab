@@ -8,11 +8,11 @@ Doroti does not embed Flutter in a WebView and does not build its UI with Avalon
 
 ## Current status
 
-The current native product gates cover **Windows x64** and **Apple Silicon macOS**. A reviewed Material widget tree can construct, mount, lay out, paint, present, and respond to input in an actual HWND or NSWindow using the strict `skia-wgl-opengl-gpu` or `skia-nsopengl-opengl-gpu` backend.
+The active migration uses one application project for **MAUI Windows x64**, **MAUI Mac Catalyst arm64**, and **Blazor WebAssembly**. The Windows MAUI product host has Release build/publish and live GPU evidence from `MauiSKSwapChainPanel` with the `win-x64/winui3/SKSwapChainPanel/ANGLE-DirectX-Skia` identity, three submitted/presented frames, zero failures, and zero software fallback.
 
-The validated slice includes `MaterialApp`, `Theme`, `Navigator`, `Scaffold`, `AppBar`, `Card`, `ListTile`, buttons and selection controls, common layout widgets, scrolling, a lazy list, local state updates, and native accessibility actions. Both `MaterialApp.builder` and `MaterialApp.home` entry paths are covered.
+The shared `src/App.cs` contains the reviewed Material tree and is compiled by all selected targets. Windows native hover/wheel/keyboard/IME/UIA, resize/DPI/context recreation, Mac Catalyst native build/publish/live, physical acceptance, and cross-target parity remain separate `notVerified` gates.
 
-The `osx-arm64` gate includes an actual AppKit window, Apple M1 GPU presentation, native input/text/clipboard/accessibility traces, balanced resource shutdown, repeat publish identity, and a repository-external package-only launch. Physical Korean IME candidate-window placement, VoiceOver navigation, precise trackpad gestures, `osx-x64`, Linux, Web, Android, and iOS retain separate gates. A project or package compiling for a target is never treated as proof of native behavior by itself.
+The earlier Win32/WGL and AppKit/NSOpenGL results remain predecessor evidence only. They are not counted as MAUI acceptance. A project or package compiling for a target is never treated as proof of native behavior by itself.
 
 See the archived [Goal 7 summary](../history/26-08-16/goal7-summary.md) for its completed milestones, remaining Web/release gates, and evidence boundaries. No successor active roadmap is designated there.
 
@@ -32,14 +32,15 @@ Doroti.DartToCSharp ──► reviewed C# framework packages
                               │
                               ▼
               target package and native host
-       (Windows: Win32/WGL · macOS: AppKit/NSOpenGL)
+ (Windows: WinUI 3/SKSwapChainPanel · Mac Catalyst: UIKit/SKMetalView · Web: WebGL2)
 ```
 
 - `Doroti.Framework.*` contains generated and reviewed framework libraries.
 - `Doroti.Runtime`, `Doroti.Ui`, and `Doroti.Hosting` provide Dart/Flutter runtime semantics and application bootstrap.
 - `Doroti.Engine`, `Doroti.Rendering`, and `Doroti.Graphics` own frame scheduling, display output, and graphics contracts.
-- `Doroti.Shell.Core` and `Doroti.Host.Desktop` define and consume backend-neutral typed desktop capabilities.
-- `Doroti.Target.Windows.win-x64` and `Doroti.Target.macOS.osx-arm64` inject the Win32/WGL or AppKit/NSOpenGL implementation.
+- `Doroti.App.Sdk` selects one target, TFM, RID, platform source set, lock/output directory, and underlying .NET SDK.
+- `Doroti.Host.Maui` consumes the `SKSurface` owned by `SKGLView` and connects session/view/frame lifecycle without a CPU fallback.
+- `Doroti.Target.Windows.Maui.win-x64`, `Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64`, and `Doroti.Target.Web.browser-wasm` provide target composition roots.
 
 Selected Avalonia platform code is adapted behind Doroti contracts and tracked by provenance manifests. Applications do not take a runtime dependency on Avalonia controls.
 
@@ -59,13 +60,13 @@ Run these commands from the repository root:
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 doctor
 pwsh -File ./Doroti/eng/doroti.ps1 build
-dotnet run --project ./DorotiDemoApp
+dotnet run --project ./DorotiDemoApp/DorotiDemoApp.csproj -p:DorotiTarget=Windows
 ```
 
-For a short deterministic smoke run on either supported native desktop host:
+Run the single-project graph, build sequence, Windows live GPU, and evidence gate with:
 
 ```powershell
-dotnet run --project ./DorotiDemoApp -- --smoke --entry builder --frames 3 --duration-ms 15000
+pwsh -File ./Doroti/eng/validate-g7-maui-single-project.ps1 -Shard All
 ```
 
 ## Repository commands

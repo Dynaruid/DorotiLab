@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "doroti.g7-maui-single-project-evidence/v1",
+  "milestone": "M1-M7",
+  "capturedAtUtc": "2026-08-16T01:55:37.4518028+00:00",
+  "status": "partial",
+  "project": "DorotiDemoApp/DorotiDemoApp.csproj",
+  "graph": {
+    "status": "pass",
+    "projectCount": 1,
+    "applicationSource": "DorotiDemoApp/src/App.cs",
+    "bootstrapSource": "DorotiDemoApp/Program.cs",
+    "windowsApplicationDefinitionCount": 1,
+    "otherXamlCount": 0,
+    "selectedPlatformLeakage": 0
+  },
+  "build": {
+    "status": "pass",
+    "sequence": [
+      "Windows",
+      "Web",
+      "MacCatalyst-cross-build",
+      "Windows-no-restore"
+    ],
+    "windows": {
+      "targetFramework": "net10.0-windows10.0.19041.0",
+      "rid": "win-x64"
+    },
+    "web": {
+      "targetFramework": "net10.0",
+      "rid": "browser-wasm"
+    },
+    "macCatalyst": {
+      "targetFramework": "net10.0-maccatalyst",
+      "rid": "maccatalyst-arm64",
+      "host": "windows-cross-build-only"
+    }
+  },
+  "windowsLive": {
+    "applicationSource": "src/App.cs",
+    "bootstrapSource": "Platforms/Windows/App.xaml.cs",
+    "targetFramework": ".NETCoreApp,Version=v10.0",
+    "rid": "win-x64",
+    "mauiVersion": "10.0.90",
+    "skiaSharpVersion": "3.119.4",
+    "surface": {
+      "pixelWidth": 1894,
+      "pixelHeight": 1014,
+      "devicePixelRatio": 1,
+      "metricsGeneration": 4,
+      "contextGeneration": 1,
+      "surfaceGeneration": 2,
+      "nativeViewType": "SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKSwapChainPanel",
+      "graphicsBackend": "win-x64/winui3/SKSwapChainPanel/ANGLE-DirectX-Skia"
+    },
+    "frame": {
+      "submitted": 3,
+      "presented": 3,
+      "failed": 0,
+      "contextGeneration": 1,
+      "surfaceGeneration": 2,
+      "pendingScene": false,
+      "backend": "skiasharp-maui-skglview-gpu"
+    },
+    "invalidationsRequested": 8,
+    "invalidationsCoalesced": 4,
+    "softwareFallbackFrames": 0
+  },
+  "boundaries": {
+    "basicTouch": "implemented-not-live-verified",
+    "hoverWheelCaptureKeyboardImeUia": "notVerified",
+    "resizeDpiContextRecreate": "notVerified-product-host",
+    "macCatalystBuild": "pass-windows-cross-build-only",
+    "macCatalystPublishLive": "notVerified",
+    "physical": "notVerified",
+    "crossTarget": "notVerified"
+  }
+}

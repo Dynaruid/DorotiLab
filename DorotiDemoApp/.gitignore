@@ -1,0 +1,30 @@
+# DorotiDemoApp ignore rules
+# Doroti.App.Sdk writes target-keyed output:
+#   bin/<windows|maccatalyst|web>/<Configuration>/
+#   obj/<windows|maccatalyst|web>/
+# Keep packages.<target>.lock.json tracked for RestorePackagesWithLockFile.
+
+[Bb]in/
+[Oo]bj/
+
+# Local publish output (for example ./publish/doroti-demo-web)
+[Pp]ublish/
+
+# MAUI / Windows App SDK packaging leftovers
+[Aa]pp[Pp]ackages/
+[Bb]undle[Aa]rtifacts/
+*.appx
+*.appxbundle
+*.msix
+*.msixbundle
+*.appinstaller
+
+# In-place Blazor/_framework dumps under source wwwroot
+Platforms/Web/wwwroot/_framework/
+
+# Legacy dart scratch still referenced by the workspace ignore file
+dart/build/
+
+# MSBuild / IDE user state
+*.user
+*.suo

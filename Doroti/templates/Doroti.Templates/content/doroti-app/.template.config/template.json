@@ -1,9 +1,9 @@
 {
   "$schema": "http://json.schemastore.org/template",
   "author": "Doroti contributors",
-  "classifications": ["Doroti", "Blazor", "WebAssembly"],
+  "classifications": ["Doroti", "MAUI", "Blazor", "WebAssembly"],
   "identity": "Doroti.Templates.CSharpApp",
-  "name": "Doroti C# application",
+  "name": "Doroti single-project C# application",
   "shortName": "doroti-app",
   "sourceName": "DorotiApp",
   "preferNameDirectory": true,

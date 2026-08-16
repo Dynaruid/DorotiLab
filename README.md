@@ -56,7 +56,7 @@ C# framework packages
 Doroti runtime + widget/rendering pipeline
       ↓
 platform host + rendering surface
-(Windows: Win32/WGL · macOS: AppKit/NSOpenGL · Web: Blazor WASM/WebGL2)
+(Windows: MAUI/WinUI 3/SKSwapChainPanel · macOS: MAUI Mac Catalyst/SKMetalView · Web: Blazor WASM/WebGL2)
       ↓
 Web / Windows / Linux / macOS / Android / iOS
 ```
@@ -70,36 +70,30 @@ Rather than quietly patching generated code, the project fixes shared semantics 
 
 ## Try it
 
-The demo and automated native smoke validation run on **Windows x64** and **Apple Silicon macOS (`osx-arm64`)**. The same app can be built as a **Blazor WebAssembly `browser-wasm`** artifact. These workflows require .NET SDK 10 and PowerShell 7.
+The demo is one `DorotiDemoApp.csproj` whose target selector builds **MAUI Windows x64**, **MAUI Mac Catalyst arm64**, or **Blazor WebAssembly `browser-wasm`**. These workflows require .NET SDK 10 and PowerShell 7.
 
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 build
-dotnet run --project ./DorotiDemoApp
-```
-
-A short automated smoke run is also available:
-
-```powershell
-dotnet run --project ./DorotiDemoApp -- --smoke --entry builder --frames 3 --duration-ms 15000
+dotnet run --project ./DorotiDemoApp/DorotiDemoApp.csproj -p:DorotiTarget=Windows
 ```
 
 Publish the Web app with the following command. Its deployment root is `publish/doroti-demo-web/wwwroot`.
 
 ```powershell
-dotnet publish ./DorotiDemoApp/DorotiDemoApp.Web.csproj -c Release -r browser-wasm -o ./publish/doroti-demo-web
+dotnet publish ./DorotiDemoApp/DorotiDemoApp.csproj -c Release -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm -o ./publish/doroti-demo-web
 ```
 
 A manual Chromium smoke of the official publish artifact confirmed a non-empty GPU canvas, Flutter-style DPR sizing, bounded `sigmaX=12`/`sigmaY=6` backdrop blur, the same two-pass shadow model as desktop, a semantics tree, a pointer-driven state change, and zero console errors.
 
-> Windows x64 and `osx-arm64` are implemented native desktop targets. Web build/publish and manual `presented`/basic-pointer behavior are confirmed; automated wheel, keyboard, IME, clipboard, and ARIA coverage plus physical acceptance remain open. Intel macOS, Linux, Android, and iOS retain later implementation gates.
+> The new Windows MAUI host has build/publish and automated GPU presentation evidence. Web build/publish and the earlier manual `presented`/basic-pointer smoke are confirmed. Native hover/wheel/keyboard/IME/UIA, Mac Catalyst native execution, physical acceptance, and cross-target parity remain `notVerified`; predecessor Win32/AppKit evidence is not transferred to MAUI.
 
 ## Repository layout
 
 | Path | Description |
 | --- | --- |
 | [`Doroti/`](Doroti/) | Compiler-generated framework, runtime, renderer, and platform hosts |
-| [`Doroti/src/Doroti.Host.Desktop/`](Doroti/src/Doroti.Host.Desktop/) | Shared typed desktop host used by the Windows and macOS composition roots |
-| [`Doroti/src/Doroti.Target.macOS.osx-arm64/`](Doroti/src/Doroti.Target.macOS.osx-arm64/) | Apple Silicon AppKit/NSOpenGL target package |
+| [`Doroti/src/Doroti.Host.Maui/`](Doroti/src/Doroti.Host.Maui/) | Shared MAUI lifecycle and externally owned Skia GPU-surface adapter |
+| [`Doroti/src/Doroti.App.Sdk/`](Doroti/src/Doroti.App.Sdk/) | Single-project Windows/Mac Catalyst/Web target selection SDK |
 | [`Doroti/src/Doroti.Host.Avalonia/`](Doroti/src/Doroti.Host.Avalonia/) | Comparison and validation host based on the official `Avalonia.Desktop` package |
 | [`DorotiDemoApp/`](DorotiDemoApp/) | Demo app that displays a real Material widget tree |
 | [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | Semantic compiler that translates Dart into C# |

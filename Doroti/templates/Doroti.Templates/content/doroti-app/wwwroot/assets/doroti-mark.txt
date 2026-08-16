@@ -1,1 +1,0 @@
-Doroti browser-wasm package asset

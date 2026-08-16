@@ -1,0 +1,9 @@
+{
+  "schema": "doroti-target/v2",
+  "packageId": "Doroti.Target.Windows.Maui.win-x64",
+  "targetFramework": "net10.0-windows10.0.19041.0",
+  "rid": "win-x64",
+  "nativeViewType": "SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKSwapChainPanel",
+  "graphicsBackend": "winui3/SKSwapChainPanel/ANGLE-DirectX-Skia",
+  "softwareFallback": false
+}

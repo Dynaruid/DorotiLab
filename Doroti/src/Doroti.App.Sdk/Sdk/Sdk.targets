@@ -1,0 +1,58 @@
+<Project>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="src\**\*.cs" />
+    <Compile Include="Platforms\Maui\**\*.cs" Condition="'$(UseMaui)' == 'true'" />
+    <Compile Include="Platforms\Windows\**\*.cs" Condition="'$(DorotiTarget)' == 'Windows'" />
+    <Compile Include="Platforms\MacCatalyst\**\*.cs" Condition="'$(DorotiTarget)' == 'MacCatalyst'" />
+    <Compile Include="Platforms\Web\**\*.cs" Condition="'$(DorotiTarget)' == 'Web'" />
+    <ApplicationDefinition Include="Platforms\Windows\App.xaml" Generator="MSBuild:Compile" Condition="'$(DorotiTarget)' == 'Windows'" />
+    <Content Include="Platforms\Web\wwwroot\**" Link="wwwroot\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Condition="'$(DorotiTarget)' == 'Web'" />
+    <EmbeddedResource Include="Platforms\$(DorotiTarget)\application-manifest.json" LogicalName="Doroti.Application.Manifest" Condition="Exists('Platforms\$(DorotiTarget)\application-manifest.json')" />
+    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#6750A4" Condition="'$(UseMaui)' == 'true' and Exists('Resources\AppIcon\appicon.svg')" />
+    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#1D1B20" BaseSize="128,128" Condition="'$(UseMaui)' == 'true' and Exists('Resources\Splash\splash.svg')" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(UseMaui)' == 'true'">
+    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+    <PackageReference Include="CommunityToolkit.Maui.Markup" Version="$(DorotiMarkupVersion)" />
+    <PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="$(SkiaSharpVersion)" />
+    <PackageReference Include="Doroti.Host.Maui" Version="$(DorotiVersion)" Condition="'$(DorotiUseRepositoryProjects)' != 'true'" />
+    <PackageReference Include="Doroti.Target.$(DorotiTarget).Maui.$(RuntimeIdentifier)" Version="$(DorotiVersion)" Condition="'$(DorotiUseRepositoryProjects)' != 'true'" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(DorotiTarget)' == 'Web'">
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
+    <PackageReference Include="Doroti.Target.Web.browser-wasm" Version="$(DorotiVersion)" Condition="'$(DorotiUseRepositoryProjects)' != 'true'" />
+  </ItemGroup>
+
+  <Target Name="ValidateDorotiAppTarget" BeforeTargets="PrepareForBuild;Restore">
+    <Error Code="DOROTIAPP001" Condition="'$(DorotiTarget)' != 'Windows' and '$(DorotiTarget)' != 'MacCatalyst' and '$(DorotiTarget)' != 'Web'" Text="DorotiTarget must be Windows, MacCatalyst, or Web; found '$(DorotiTarget)'." />
+    <Error Code="DOROTIAPP002" Condition="'$(DorotiTarget)' == 'Windows' and '$(RuntimeIdentifier)' != 'win-x64'" Text="DorotiTarget Windows requires RuntimeIdentifier win-x64; found '$(RuntimeIdentifier)'." />
+    <Error Code="DOROTIAPP003" Condition="'$(DorotiTarget)' == 'MacCatalyst' and '$(RuntimeIdentifier)' != 'maccatalyst-arm64'" Text="DorotiTarget MacCatalyst requires RuntimeIdentifier maccatalyst-arm64; found '$(RuntimeIdentifier)'." />
+    <Error Code="DOROTIAPP004" Condition="'$(DorotiTarget)' == 'Web' and '$(RuntimeIdentifier)' != 'browser-wasm'" Text="DorotiTarget Web requires RuntimeIdentifier browser-wasm; found '$(RuntimeIdentifier)'." />
+    <ItemGroup>
+      <_DorotiDisallowedXaml Include="@(MauiXaml)" />
+      <_DorotiDisallowedXaml Include="@(ApplicationDefinition)" Condition="'$(DorotiTarget)' != 'Windows' or '%(ApplicationDefinition.Identity)' != 'Platforms\Windows\App.xaml'" />
+      <_DorotiUnexpectedPlatformCompile Include="@(Compile)" Condition="'$(DorotiTarget)' != 'Windows' and $([System.String]::Copy('%(Compile.Identity)').Contains('Platforms\Windows\'))" />
+      <_DorotiUnexpectedPlatformCompile Include="@(Compile)" Condition="'$(DorotiTarget)' != 'MacCatalyst' and $([System.String]::Copy('%(Compile.Identity)').Contains('Platforms\MacCatalyst\'))" />
+      <_DorotiUnexpectedPlatformCompile Include="@(Compile)" Condition="'$(DorotiTarget)' != 'Web' and $([System.String]::Copy('%(Compile.Identity)').Contains('Platforms\Web\'))" />
+    </ItemGroup>
+    <Error Code="DOROTIAPP005" Condition="'@(_DorotiDisallowedXaml)' != ''" Text="Only Platforms/Windows/App.xaml may be compiled, and only for the Windows target: @(_DorotiDisallowedXaml)." />
+    <Error Code="DOROTIAPP006" Condition="'@(_DorotiUnexpectedPlatformCompile)' != ''" Text="The selected Doroti target contains source from another platform: @(_DorotiUnexpectedPlatformCompile)." />
+  </Target>
+
+  <Target Name="WriteDorotiTargetGraph" DependsOnTargets="ValidateDorotiAppTarget">
+    <ItemGroup>
+      <_DorotiGraphLine Include="target=$(DorotiTarget)" />
+      <_DorotiGraphLine Include="tfm=$(TargetFramework)" />
+      <_DorotiGraphLine Include="rid=$(RuntimeIdentifier)" />
+      <_DorotiGraphLine Include="compile=%(Compile.Identity)" />
+      <_DorotiGraphLine Include="applicationDefinition=%(ApplicationDefinition.Identity)" />
+      <_DorotiGraphLine Include="mauiXaml=%(MauiXaml.Identity)" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(BaseIntermediateOutputPath)doroti-target-graph.txt" Overwrite="true" Lines="@(_DorotiGraphLine)" />
+  </Target>
+
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk.BlazorWebAssembly" Condition="'$(DorotiTarget)' == 'Web'" />
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" Condition="'$(DorotiTarget)' != 'Web'" />
+</Project>

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-maccatalyst</TargetFramework>
+    <RuntimeIdentifier>maccatalyst-arm64</RuntimeIdentifier>
+    <AssemblyName>Doroti.Target.MacCatalyst.Maui</AssemblyName>
+    <RootNamespace>Doroti.Target.MacCatalyst.Maui</RootNamespace>
+    <PackageId>Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64</PackageId>
+    <Description>Doroti UIKit SKMetalView MAUI composition root for Apple Silicon Mac Catalyst.</Description>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+    <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Doroti.Host.Maui\Doroti.Host.Maui.csproj" />
+    <EmbeddedResource Include="doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" />
+    <None Include="doroti-target-manifest.json" Pack="true" PackagePath="doroti\" />
+  </ItemGroup>
+</Project>

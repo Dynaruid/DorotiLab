@@ -2,116 +2,51 @@
 
 **English** | [한국어](README.ko.md)
 
-DorotiDemoApp is the cross-target validation app for Doroti's reviewed C# framework product. The same `Program.cs` Material widget tree compiles for Win32/WGL, AppKit/NSOpenGL `osx-arm64`, and the SkiaSharp/Blazor `browser-wasm` host.
+DorotiDemoApp dogfoods Doroti's single-project application contract. One `DorotiDemoApp.csproj`, one root `Program.cs`, and one shared `src/App.cs` select MAUI Windows, MAUI Mac Catalyst, or Blazor WebAssembly without a second host project.
 
-It is both a runnable gallery and the shared generated-product scenario used by the Windows and G7-3M macOS native gates.
+## Layout
 
-## What the demo contains
+- `src/App.cs`: target-neutral reviewed Material widget/state tree
+- `Program.cs`: thin target bootstrap for Web and Mac Catalyst; Windows uses generated WinUI `Main`
+- `Platforms/Maui`: shared C# `Application`, `Window`, `ContentPage`, and `SKGLView` composition
+- `Platforms/Windows`: the only bootstrap `App.xaml`, WinUI code-behind, and package manifests
+- `Platforms/MacCatalyst`: UIKit entrypoint, delegate, plist, and entitlements
+- `Platforms/Web`: Blazor composition root and static assets
 
-- `MaterialApp.builder` and `MaterialApp.home`/Navigator startup paths
-- `Theme`, `Scaffold`, `AppBar`, `Card`, and `ListTile`
-- Elevated button, checkbox, radio, switch, slider, and floating action button
-- `Row`, `Column`, `Stack`, `SingleChildScrollView`, and `ListView.builder`
-- Local `State` updates with measurable raster changes
-- Semantics nodes and target-native accessibility actions
-- Native window and GPU resource-lifecycle checks
+There is exactly one application project. Windows compiles one `ApplicationDefinition` and zero `MauiXaml` items; Mac Catalyst and Web compile no XAML.
 
-The app references promoted product projects under `Doroti/src`; it does not run migration candidates or the former native-list/runtime-v2 demos.
-
-## Requirements
-
-- Windows x64, Apple Silicon macOS (`osx-arm64`), or the `browser-wasm` workload for a static Web build
-- .NET SDK 10.0.300 or a compatible latest patch
-- A complete DorotiLab checkout with the `Doroti` project
-- PowerShell 7 for the full validation gate
-
-The project selects exactly one target composition root from the host OS or explicit RID. Linux, Intel macOS, mobile, and physical-device acceptance remain `notVerified` unless covered by their own target evidence.
-
-## Build the Web app
-
-`DorotiDemoApp.Web.csproj` compiles the same `Program.cs` widget/state source with the internal Blazor host and no desktop target dependency:
-
-```powershell
-dotnet build ./DorotiDemoApp/DorotiDemoApp.Web.csproj -c Release
-dotnet publish ./DorotiDemoApp/DorotiDemoApp.Web.csproj -c Release -r browser-wasm -o ./publish/doroti-demo-web
-```
-
-The deployment root is `publish/doroti-demo-web/wwwroot`. It contains the standard Blazor loader, the fingerprinted Doroti and SkiaSharp WASM assemblies, the statically linked native runtime, assets, localization, and the example Web plugin. Chromium GPU/input/ARIA runtime acceptance belongs to G7-4; G7-3 proves the build and static artifact graph only.
-
-A manual Chromium smoke on 2026-08-15 confirmed a non-empty GPU canvas from the official publish artifact, separated logical/physical DPR sizing, bounded `sigmaX=12`/`sigmaY=6` backdrop blur, the same two-pass shadow model as desktop, a semantics tree, a pointer-driven state change, and zero console errors for the artifact origin. This is `presented` plus basic-pointer evidence; it does not replace G7-4 automation for wheel, keyboard, IME, clipboard, resize, ARIA actions, references, or physical acceptance.
-
-## Run the app
+## Build and run
 
 From the repository root:
 
 ```powershell
-dotnet run --project ./DorotiDemoApp
+dotnet run --project ./DorotiDemoApp/DorotiDemoApp.csproj -p:DorotiTarget=Windows
+dotnet publish ./DorotiDemoApp/DorotiDemoApp.csproj -c Release -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm -o ./publish/doroti-demo-web
+dotnet publish ./DorotiDemoApp/DorotiDemoApp.csproj -c Release -p:DorotiTarget=MacCatalyst -p:RuntimeIdentifier=maccatalyst-arm64
 ```
 
-The default entry path is `MaterialApp.builder`. To run a short automatic smoke test:
+The Mac Catalyst compile graph passes as a Windows-host cross-build. Publish and native execution still require a suitable Apple Silicon macOS runner and remain `notVerified`.
+
+## Validation status
+
+Run the current single-project gates with:
 
 ```powershell
-dotnet run --project ./DorotiDemoApp -- --smoke --entry builder --frames 3 --duration-ms 15000
+pwsh -File ./Doroti/eng/validate-g7-maui-single-project.ps1 -Shard All
+pwsh -File ./Doroti/eng/validate-g7-web-build.ps1 -Shard Graph
+pwsh -File ./Doroti/eng/validate-g7-web-build.ps1 -Shard Template
+pwsh -File ./Doroti/eng/validate-g7-web-build.ps1 -Shard Compile
+pwsh -File ./Doroti/eng/validate-g7-web-build.ps1 -Shard Publish
 ```
 
-Use the Navigator-backed `MaterialApp.home` path with:
+Current evidence proves Windows Release build/publish and a live GPU frame through `MauiSKSwapChainPanel` with the `win-x64/winui3/SKSwapChainPanel/ANGLE-DirectX-Skia` identity, plus Web package-only compile/publish. Basic MAUI touch translation and clipboard/focus adapters exist, but native hover/wheel/capture/keyboard/IME/UIA, resize/DPI/context recreation, Mac Catalyst native execution, physical acceptance, and cross-target parity remain `notVerified`.
 
-```powershell
-dotnet run --project ./DorotiDemoApp -- --smoke --entry home --frames 3 --duration-ms 15000
-```
+The manual Chromium smoke from 2026-08-15 remains scoped to the official Web publish artifact: non-empty GPU canvas, DPR sizing, bounded backdrop blur, two-pass shadows, semantics, a basic pointer state change, and zero console errors. It does not prove the remaining Web automation or physical gates.
 
-`--smoke` first posts a target-native pointer move/down/up tap into the visible window and requires that tap to traverse the framework hit-test/gesture path and update local state. It then exercises every action/selection control, verifies state and pixel changes, checks the semantics tree and strict GPU backend, and confirms balanced native resources before exit.
+## Evidence
 
-## Target validation
+- [MAUI single-project evidence](../Doroti/migration/maui/g7-maui-single-project-evidence.json)
+- [Web build evidence](../Doroti/migration/web/g7-web-build-evidence.json)
+- Historical Win32/AppKit evidence remains predecessor-only and is not promoted to MAUI PASS.
 
-Run the complete G6-3 gate from the repository root:
-
-```powershell
-pwsh -File ./Doroti/eng/validate-g6-material-demo.ps1 -Shard All
-```
-
-The Windows gate covers:
-
-- `builder` and `home` entry paths
-- first-visible-frame native pointer input and framework hit-test propagation
-- six external Windows UI Automation actions
-- 300 requested frames over 30 seconds
-- screenshot colors, text ink, layout bounds, and interaction deltas
-- compiler and widget regressions
-- Release product build
-- a clean external consumer restored from local packages only
-
-The script also accepts `LiveWindows`, `ExternalConsumer`, `Compiler`, `Regression`, or `Evidence` as `-Shard` values when a narrower run is needed.
-
-On Apple Silicon macOS, run the four G7-3M shards:
-
-```powershell
-pwsh -File ./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Source
-pwsh -File ./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Build
-pwsh -File ./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Live
-pwsh -File ./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Package
-```
-
-The macOS gate verifies an actual NSWindow, AppKit lifecycle/focus, pointer and fractional wheel input, key/text input, clipboard restoration, an NSAccessibility action, Apple M1 strict-GPU presentation, repeat publish identity, and an external package-only consumer. Physical Korean IME candidate placement, VoiceOver navigation, and precise trackpad gestures remain explicitly `notVerified`.
-
-## Evidence and artifacts
-
-- Committed aggregate evidence: [`../Doroti/migration/flutter-framework/g6-material-demo-evidence.json`](../Doroti/migration/flutter-framework/g6-material-demo-evidence.json)
-- G7-3M macOS aggregate evidence: [`../Doroti/migration/macos/g7-macos-shell-evidence.json`](../Doroti/migration/macos/g7-macos-shell-evidence.json)
-- G7-3 browser build evidence (`doroti.g7-web-build-evidence/v2`): [`../Doroti/migration/web/g7-web-build-evidence.json`](../Doroti/migration/web/g7-web-build-evidence.json)
-- Screenshot/layout reference: [`g6-material-reference.json`](g6-material-reference.json)
-- Transient run output: `../Doroti/artifacts/g6-material-demo/win-x64/`
-
-Each evidence file is target-scoped. Windows results do not transfer to macOS, macOS automation does not claim physical IME/VoiceOver/trackpad acceptance, and neither target proves unsupported operating systems.
-
-## Project files
-
-| File | Purpose |
-| --- | --- |
-| [`Program.cs`](Program.cs) | Shared Material gallery/state source plus the desktop-only host loop and evidence writer |
-| [`DorotiDemoApp.csproj`](DorotiDemoApp.csproj) | Product framework, hosting, and OS/RID-conditioned desktop target references |
-| [`DorotiDemoApp.Web.csproj`](DorotiDemoApp.Web.csproj) | Blazor WebAssembly host that compiles the same `Program.cs` for `browser-wasm` |
-| [`WebHost/`](WebHost/) | Internal Web composition root and static deployment assets |
-| [`g6-material-reference.json`](g6-material-reference.json) | Expected logical geometry, colors, and pixel tolerances |
-
-For the runtime architecture and broader development commands, see the [Doroti runtime README](../Doroti/README.md). Doroti is distributed under the repository's [BSD 3-Clause license](../LICENSE).
+For runtime architecture and development commands, see the [Doroti runtime README](../Doroti/README.md).

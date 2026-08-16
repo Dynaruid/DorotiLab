@@ -128,13 +128,13 @@
       "command": "dotnet new doroti-app --name G7WebProduct",
       "source": "package-only",
       "externalRoot": "repository-outside-source-tree",
-      "packageCount": 18,
+      "packageCount": 19,
       "generatedFlutterDartFiles": 0,
       "generatedPlatformDirectories": 0,
       "userAuthoredRazorFiles": 0,
       "flutterOrDartCommands": 0,
-      "sharedApplication": "App/G7WebProduct.App.csproj",
-      "browserHost": "G7WebProduct.csproj"
+      "sharedApplication": "src/App.cs",
+      "browserHost": "Platforms/Web/PlatformBootstrap.cs"
     },
     "compile": {
       "status": "pass",
@@ -142,14 +142,15 @@
         "target": "browser-wasm",
         "configuration": "Release",
         "diagnostics": 0,
-        "applicationAssembly": "DorotiDemoApp.Web.yqlcqcgxre.wasm",
-        "applicationSha256": "e6bcf2098e4d5108fa759e8774904cbc89faed1a93c1ce4b36990492eb41ebcb"
+        "applicationAssembly": "DorotiDemoApp.8powg9wb31.wasm",
+        "applicationSha256": "f426c919a652a93fd0b70b53443b5457f076044c18484a531961ddda3e3b4276"
       },
       "sharedSource": {
-        "path": "DorotiDemoApp/Program.cs",
+        "path": "DorotiDemoApp/src/App.cs",
+        "bootstrap": "DorotiDemoApp/Program.cs",
         "desktopCompile": "win-x64-pass",
         "browserCompile": "browser-wasm-pass",
-        "compileItemIdentity": "same-file"
+        "compileItemIdentity": "same-files"
       },
       "externalAcceptance": {
         "project": "template-created-G7WebProduct",
@@ -158,7 +159,7 @@
       },
       "invalidTarget": {
         "status": "fail-closed-as-expected",
-        "diagnostic": "DOROTIWEB002"
+        "diagnostic": "DOROTIAPP004"
       },
       "nativeSkiaLink": "pass",
       "flutterOrDartCommands": 0
@@ -166,7 +167,7 @@
     "publish": {
       "status": "pass",
       "primaryProduct": "DorotiDemoApp",
-      "source": "same Program.cs compiled for desktop and browser-wasm",
+      "source": "same src/App.cs and root Program.cs compiled for desktop and browser-wasm",
       "create": "pass",
       "restore": "clean",
       "build": "pass",
@@ -181,15 +182,15 @@
         "publish": "pass"
       },
       "staticFileCount": 720,
-      "aggregateSha256": "358ac6d54545ef4b8538f80194607dda63665b649f478c3a70f41327563f1309",
-      "repeatAggregateSha256": "358ac6d54545ef4b8538f80194607dda63665b649f478c3a70f41327563f1309",
+      "aggregateSha256": "3f4dd8c3fce113b5cc7c2a319adea1e75020d59ce708f3dc83487baff43ca528",
+      "repeatAggregateSha256": "3f4dd8c3fce113b5cc7c2a319adea1e75020d59ce708f3dc83487baff43ca528",
       "bootLoader": "_framework/blazor.webassembly.js",
       "nativeWasm": {
-        "name": "dotnet.native.knkuhb387f.wasm",
-        "sha256": "10b1b0bbc05e3ba20d6ac599d7ffb5cc9d3c5b64f9fbef3f9fb003f5332597a2"
+        "name": "dotnet.native.4wd3yfjoew.wasm",
+        "sha256": "ec68f473c8bbca1bdda7f9fb1bd1a0c85c8768bd0672fffbbc2a6f53debee734"
       },
       "skiaWasmCount": 2,
-      "appAssembly": "DorotiDemoApp.Web.yqlcqcgxre.wasm",
+      "appAssembly": "DorotiDemoApp.8powg9wb31.wasm",
       "resources": [
         "assets/doroti-mark.txt",
         "locales/en-US.json"

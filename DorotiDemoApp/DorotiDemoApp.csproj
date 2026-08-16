@@ -1,22 +1,23 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project>
+  <Import Project="..\Doroti\src\Doroti.App.Sdk\Sdk\Sdk.props" />
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net10.0</TargetFramework>
-    <LangVersion>14.0</LangVersion>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AssemblyName>DorotiDemoApp</AssemblyName>
+    <RootNamespace>DorotiDemoApp</RootNamespace>
+    <ApplicationTitle>Doroti Material Demo</ApplicationTitle>
+    <ApplicationId>dev.doroti.demo</ApplicationId>
+    <ApplicationDisplayVersion>0.2.0</ApplicationDisplayVersion>
+    <ApplicationVersion>2</ApplicationVersion>
+    <DorotiUseRepositoryProjects>true</DorotiUseRepositoryProjects>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="WebHost\**\*.cs" />
     <ProjectReference Include="..\Doroti\src\Doroti.Hosting\Doroti.Hosting.csproj" />
     <ProjectReference Include="..\Doroti\src\Doroti.Framework.Widgets\Doroti.Framework.Widgets.csproj" />
     <ProjectReference Include="..\Doroti\src\Doroti.Framework.Material\Doroti.Framework.Material.csproj" />
-    <ProjectReference Include="..\Doroti\src\Doroti.Target.Windows.win-x64\Doroti.Target.Windows.win-x64.csproj"
-                      Condition="('$(RuntimeIdentifier)' == '' And $([MSBuild]::IsOSPlatform('Windows'))) Or '$(RuntimeIdentifier)' == 'win-x64'" />
-    <ProjectReference Include="..\Doroti\src\Doroti.Target.macOS.osx-arm64\Doroti.Target.macOS.osx-arm64.csproj"
-                      Condition="('$(RuntimeIdentifier)' == '' And $([MSBuild]::IsOSPlatform('OSX'))) Or '$(RuntimeIdentifier)' == 'osx-arm64'" />
+    <ProjectReference Include="..\Doroti\src\Doroti.Target.Windows.Maui.win-x64\Doroti.Target.Windows.Maui.win-x64.csproj" Condition="'$(DorotiTarget)' == 'Windows'" />
+    <ProjectReference Include="..\Doroti\src\Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64\Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.csproj" Condition="'$(DorotiTarget)' == 'MacCatalyst'" />
+    <ProjectReference Include="..\Doroti\src\Doroti.Target.Web.browser-wasm\Doroti.Target.Web.browser-wasm.csproj" Condition="'$(DorotiTarget)' == 'Web'" />
+    <DorotiJavaScriptPlugin Include="echo" Channel="doroti.example/echo" ExportName="invoke" ModuleUrl="./plugins/echo.js" Condition="'$(DorotiTarget)' == 'Web'" />
   </ItemGroup>
+  <Import Project="..\Doroti\src\Doroti.App.Sdk\Sdk\Sdk.targets" />
 </Project>

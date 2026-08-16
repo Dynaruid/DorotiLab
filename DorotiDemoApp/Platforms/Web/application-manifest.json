@@ -1,0 +1,6 @@
+{
+  "schema": "doroti-application/v2",
+  "applicationId": "dev.doroti.demo",
+  "targetRid": "browser-wasm",
+  "backend": "browser/document-canvas/WebGL2-Skia"
+}
