@@ -2,11 +2,11 @@
 
 ## 0. 결정과 범위
 
-- 상태: 검토와 작업계획만 작성했다. 아직 template, runtime, target package, DemoApp 구현은 변경하지 않았다.
+- 상태(2026-08-16): M0 Windows feasibility는 `PASS`, Mac Catalyst native feasibility는 `notVerified`다. Windows 초기화 전용 `App.xaml` 1개를 허용하고 나머지 UI를 CommunityToolkit C# Markup/C#으로 구성한 fixture에서 Debug build, Release publish/live, `MauiSKSwapChainPanel` GPU surface, resize, clean shutdown을 확인했다. M0 전체는 Mac arm64 live gate가 남아 `PARTIAL`이며 M1~M7 product 전환은 아직 시작하지 않았다.
 - 생성 결과에는 `.csproj`를 하나만 둔다.
 - 공용 Doroti 앱은 `src/App.cs`, 공용 진입점은 프로젝트 루트 `Program.cs`가 소유한다.
 - Windows와 macOS 계열 shell은 .NET MAUI로 교체한다.
-- MAUI 화면은 XAML 없이 순수 C#으로 구성한다. 생성 결과에 `App.xaml`, `MainPage.xaml`, `AppShell.xaml`과 `InitializeComponent()` 의존성을 두지 않는다.
+- MAUI 화면은 CommunityToolkit C# Markup과 순수 C#으로 구성한다. Windows만 WinUI theme resource/generated entrypoint 초기화용 빈 `Platforms/Windows/App.xaml`과 그 `InitializeComponent()` 1회를 허용하며 `MainPage.xaml`, `AppShell.xaml`, XAML style/resource UI는 두지 않는다.
 - GPU surface는 `SkiaSharp.Views.Maui.Controls.SKGLView` 3.119.4를 사용하고 `SKCanvasView` software fallback은 두지 않는다.
 - MAUI의 Mac desktop target은 AppKit `osx-arm64`가 아니라 Mac Catalyst이므로 새 계약은 `net10.0-maccatalyst` / `maccatalyst-arm64`로 명명한다.
 - Web은 기존 Blazor WebAssembly/WebGL2 host를 유지하되 같은 root project와 `src/App.cs`를 사용한다.
@@ -16,19 +16,19 @@
 
 ### 확인된 MAUI/SkiaSharp 계약
 
-- `SkiaSharp.Views.Maui.Controls` 3.119.4 package는 .NET 10 Windows와 Mac Catalyst asset을 포함하고 `Microsoft.Maui.Controls/Core` 10.0.20에 대응한다.
+- `SkiaSharp.Views.Maui.Controls` 3.119.4 package는 .NET 10 Windows와 Mac Catalyst asset을 포함한다. fixture는 `Microsoft.Maui.Controls` 10.0.90과 `CommunityToolkit.Maui.Markup` 8.0.0을 고정한다.
 - `UseSkiaSharp()`는 `SKCanvasViewHandler`와 `SKGLViewHandler`를 등록한다.
 - Windows `SKGLViewHandler`의 native view는 WinUI 3 `SKSwapChainPanel`이며 GPU surface와 `GRContext`를 제공한다.
 - Mac Catalyst `SKGLViewHandler`의 native view는 `SKMetalView`이며 Metal-backed surface와 `GRContext`를 제공한다.
 - `HasRenderLoop=false`일 때 `InvalidateSurface()`로 demand-driven frame을 요청할 수 있다. Doroti scheduler는 이 모드를 기본으로 사용하고 무조건 continuous loop를 켜지 않는다.
 - `PaintSurface`는 Doroti가 그릴 `SKSurface`, backend render target, pixel size를 제공하므로 MAUI adapter가 WGL/NSOpenGL context를 직접 생성하지 않는다.
 
-### XAML 없는 구성 결론
+### C# UI와 Windows bootstrap 구성 결론
 
-- shell은 `Application -> Window -> ContentPage -> SKGLView` 하나이므로 CommunityToolkit C# Markup 없이 일반 C# object initializer가 가장 작다.
-- `CommunityToolkit.Maui.Markup`은 복잡한 native overlay/layout을 만드는 기능이며 현재 full-surface Doroti view에는 필수 dependency가 아니다.
+- shell은 `Application -> Window -> ContentPage -> SKGLView`를 C#으로 만들고 `CommunityToolkit.Maui.Markup`을 생성 shell의 C# UI 계약으로 등록한다. 현재 full-surface view는 일반 object initializer만으로도 표현되지만 이후 native overlay/layout도 같은 XAML-free UI 경로를 사용한다.
+- `UseMauiCommunityToolkitMarkup()`은 C# UI/바인딩 helper와 Hot Reload 연결을 제공할 뿐 WinUI application resource bootstrap을 대체하지 않는다.
 - 공용 MAUI application은 `Application.CreateWindow()`를 override해 C#으로 `Window`와 `ContentPage`를 만든다.
-- Windows는 XAML compiler가 만들던 WinUI entrypoint 동작을 root `Program.cs -> PlatformBootstrap` C# 코드로 명시한다. WinRT COM wrapper 초기화, dispatcher synchronization context, `Microsoft.UI.Xaml.Application.Start`를 XAML 없이 구성해야 한다.
+- Windows는 빈 `Platforms/Windows/App.xaml`을 유일한 `ApplicationDefinition`으로 컴파일해 WinUI generated entrypoint와 theme resource bootstrap을 사용하고, code-behind는 `MauiProgram.CreateMauiApp()`만 연결한다. 공용/화면 UI는 이 XAML에 넣지 않는다.
 - Mac Catalyst는 root `Program.cs -> PlatformBootstrap`이 `UIApplication.Main`과 `MauiUIApplicationDelegate`를 연결한다.
 - `Package.appxmanifest`, `Info.plist`, `Entitlements.plist`는 native packaging manifest이지 XAML UI가 아니므로 유지한다.
 
@@ -64,7 +64,8 @@ SampleApp/
    │  └─ DorotiSkiaView.cs
    ├─ Windows/
    │  ├─ PlatformBootstrap.cs
-   │  ├─ WindowsMauiApplication.cs
+   │  ├─ App.xaml
+   │  ├─ App.xaml.cs
    │  ├─ Package.appxmanifest
    │  ├─ app.manifest
    │  └─ application-manifest.json
@@ -88,9 +89,9 @@ SampleApp/
 ### 파일 소유권
 
 - `src/App.cs`: user-owned Doroti widget/state와 target-neutral `App.Definition`만 둔다. MAUI, WinUI, UIKit, Blazor type과 `#if`를 넣지 않는다.
-- root `Program.cs`: `PlatformBootstrap.RunAsync(args, App.Definition)`만 호출한다.
+- root `Program.cs`: generated entrypoint가 없는 Mac Catalyst/Web target에서 `PlatformBootstrap.RunAsync(args, App.Definition)`만 호출한다. Windows는 `App.xaml` generated Main이 공용 `MauiProgram`을 호출한다.
 - `Platforms/Maui/*`: Windows/Mac Catalyst가 공유하는 MAUI builder, C# Application/Window/Page, `SKGLView` bridge를 둔다.
-- `Platforms/Windows/*`: WinUI application start, native input/IME/UIA/manifest를 둔다.
+- `Platforms/Windows/*`: 빈 bootstrap `App.xaml`, 얇은 code-behind, native input/IME/UIA/manifest를 둔다. `App.xaml`에는 UI/resource dictionary를 추가하지 않는다.
 - `Platforms/MacCatalyst/*`: UIKit application start, delegate, native input/text/accessibility/plist를 둔다.
 - `Platforms/Web/*`: 기존 Blazor/WebGL2 composition root와 static web assets를 둔다.
 - target별 `application-manifest.json` 하나만 `Doroti.Application.Manifest` logical resource로 embed한다.
@@ -106,7 +107,7 @@ SampleApp/
 - `Program.cs`와 `src/**/*.cs`는 항상 compile한다.
 - Windows/Mac Catalyst는 `Platforms/Maui/**/*.cs`와 선택 target 폴더만 compile하고 Web source/static asset을 제외한다.
 - Web은 `Platforms/Web/**/*.cs`만 compile하고 MAUI package/source/resource를 graph에서 제외한다.
-- XAML item은 0개여야 하며 `MauiXaml`, `ApplicationDefinition`, generated `*.g.cs` entrypoint에 의존하지 않는다.
+- Windows는 `Platforms/Windows/App.xaml` `ApplicationDefinition`과 그 generated entrypoint를 정확히 1개 허용한다. `MauiXaml`, 다른 `ApplicationDefinition`, page/shell/style XAML은 0개여야 하며 Mac Catalyst/Web에는 XAML compile item이 0개여야 한다.
 - `BaseIntermediateOutputPath`, `OutputPath`, publish state, `NuGetLockFilePath`는 target별로 분리한다.
 - target/RID 충돌, 지원하지 않는 platform, MAUI workload 미설치는 stable `DOROTIAPPxxx` 진단으로 fail closed한다.
 
@@ -141,28 +142,38 @@ dotnet publish .\SampleApp.csproj -c Release -p:DorotiTarget=Web
 
 ### C# application 구성
 
-- `MauiProgram.CreateMauiApp`는 `UseMauiApp<DorotiMauiApplication>()`, `UseSkiaSharp()`, Doroti definition/host service 등록만 수행한다.
+- `MauiProgram.CreateMauiApp`는 `UseMauiApp<DorotiMauiApplication>()`, `UseMauiCommunityToolkitMarkup()`, `UseSkiaSharp()`, Doroti definition/host service 등록을 수행한다.
 - `DorotiMauiApplication.CreateWindow`는 C#으로 `Window(new DorotiMauiPage(...))`를 반환한다.
 - `DorotiMauiPage`는 `Content = new DorotiSkiaView(...)`로 full-surface view를 구성한다.
 - generated shell에 NavigationPage, Shell, XAML resource dictionary, MAUI widget UI를 추가하지 않는다.
-- C# Markup은 baseline dependency에서 제외한다. 향후 native toolbar/overlay가 실제 요구될 때 별도 opt-in으로 평가한다.
+- C# Markup은 baseline dependency로 고정한다. full-surface `SKGLView`는 일반 C#으로 유지하고 native toolbar/overlay가 필요할 때만 Markup helper를 사용한다.
 
 ## 5. 작업 단계
 
-### M0. XAML-free MAUI + SKGLView feasibility gate
+### M0. C# Markup MAUI + SKGLView feasibility gate
 
-- repository 밖 fixture에서 `SkiaSharp.Views.Maui.Controls` 3.119.4와 MAUI 10.0.20을 고정한다.
-- `.csproj` 하나, root `Program.cs`, C# Application/Window/Page, Windows/Mac Catalyst platform source만으로 XAML 없이 build되는 최소 앱을 만든다.
+- repository fixture에서 `SkiaSharp.Views.Maui.Controls` 3.119.4, MAUI 10.0.90, `CommunityToolkit.Maui.Markup` 8.0.0을 고정한다.
+- `.csproj` 하나, C# Application/Window/Page, Windows 초기화 전용 `App.xaml` 1개, Mac Catalyst platform source로 최소 앱을 만든다.
 - Windows에서 `UseSkiaSharp()` handler 등록, `SKGLView`, non-null `GRContext`, GPU-backed `PaintSurface`, invalidate-driven 반복 frame을 실제 창으로 증명한다.
 - Mac arm64에서 같은 fixture가 `SKMetalView`/Metal surface로 build/publish/present되는지 별도 증명한다.
-- Windows XAML generated Main을 제거한 수동 entrypoint와 Mac Catalyst `UIApplication.Main`이 debugger/Release publish 모두에서 정상인지 확인한다.
+- Windows `App.xaml` generated Main과 Mac Catalyst `UIApplication.Main`이 Debug/Release publish에서 정상인지 확인한다.
 
 완료 조건:
 
-- 생성/fixture XAML 파일과 XAML compile item이 0개다.
+- Windows bootstrap `App.xaml`/`ApplicationDefinition`이 정확히 1개이고 공용/page/shell/style XAML과 `MauiXaml`은 0개다. Mac Catalyst/Web XAML compile item도 0개다.
 - Windows `SKSwapChainPanel`, Mac Catalyst `SKMetalView` backend identity가 실제 runtime에서 확인된다.
 - CPU fallback 0, non-empty GPU frame, resize/DPI 반영, clean shutdown이 확인된다.
 - 실패 시 기존 shell로 되돌려 완료 처리하지 않고 MAUI feasibility를 미완료로 유지한다.
+
+실행 결과(2026-08-16):
+
+- `reference/Maui.Markup-main`의 공식 sample 구조를 대조했다. 공용 Application/ResourceDictionary/Shell/Page는 C#이지만 Windows는 빈 `Platforms/Windows/App.xaml`과 `InitializeComponent()`를 유지하며, `UseMauiCommunityToolkitMarkup()` 자체는 WinUI resource bootstrap을 수행하지 않는다.
+- `reference/MauiSampleApp`을 `.csproj` 1개, Windows bootstrap XAML 1개, 공용/page/shell/style XAML 0개, C# `Application/Window/Page`, `SKGLView` 구성으로 바꾸고 MAUI 10.0.90 + Markup 8.0.0 + SkiaSharp 3.119.4를 lock했다.
+- XAML 0 수동 `Application.Start` negative probe는 `XamlControlsResources`에서 `AcrylicBackgroundFillColorDefaultBrush`를 찾지 못해 exit `0xC000027B`였다. MAUI core initializer를 제거하면 더 진행하지만 `NavigationViewButtonHolderGridMargin`이 없어 실패했다. 따라서 Toolkit은 UI XAML을 대체하지만 Windows `ApplicationDefinition` 초기화까지 대체하지 않는다는 경계를 확인했다.
+- Windows locked restore와 Debug build는 경고/오류 0, Release publish/live는 exit 0으로 통과했다. 실제 native view는 `SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKSwapChainPanel`, GPU context/surface는 non-null, `HasRenderLoop=false`, 3 demand-driven frames를 기록했다.
+- live resize에서 backend surface가 1894x1014에서 1414x1003 pixel로 바뀌고 density 2가 유지됐으며, `CloseMainWindow()` 뒤 exit 0을 확인했다. CPU/`SKCanvasView` fallback은 0이다.
+- Mac Catalyst는 Windows host package-only Debug compile이 경고/오류 0으로 통과했다. Mac arm64 `SKMetalView`/Metal publish/present, resize/scale, clean shutdown은 `notVerified`다.
+- Windows M0은 `PASS`지만 M0 전체는 Mac arm64 native gate가 남아 `PARTIAL`이다. M1~M7은 선행 gate 대기 상태다.
 
 ### M1. Doroti.App.Sdk의 MAUI/Web target selection
 
@@ -199,7 +210,7 @@ dotnet publish .\SampleApp.csproj -c Release -p:DorotiTarget=Web
 - 확정한 single-project/C#/`Platforms/*` 구조를 template content로 만든다.
 - Windows/Mac Catalyst app icon, splash, packaging manifest를 추가한다.
 - source-name 치환 후 assembly/application ID/bundle ID/Web manifest가 일치하게 한다.
-- 생성 결과에 `.csproj` 1개, XAML 0개, user Razor 0개, Flutter/Dart scaffold 0개를 강제한다.
+- 생성 결과에 `.csproj` 1개, Windows bootstrap XAML 1개, 그 외 XAML 0개, user Razor 0개, Flutter/Dart scaffold 0개를 강제한다.
 
 ### M6. DorotiDemoApp dogfood 이관
 
@@ -224,7 +235,7 @@ dotnet publish .\SampleApp.csproj -c Release -p:DorotiTarget=Web
 ### 구조/package-only
 
 - 외부 임시 디렉터리에서 template pack/install/create/locked restore/build/publish.
-- project 수 1, XAML 0, `InitializeComponent` 0, 선택되지 않은 platform compile item 0.
+- project 수 1, Windows bootstrap `ApplicationDefinition`/`InitializeComponent` 각 1개, 그 외 XAML 0개, 선택되지 않은 platform compile item 0.
 - promoted package feed만 사용하고 repository-private project/path fallback 0.
 - target 전환 반복 시 assets/lock/output identity와 platform leakage 검사.
 
@@ -258,11 +269,10 @@ dotnet publish .\SampleApp.csproj -c Release -p:DorotiTarget=Web
 ## 7. 비범위
 
 - MAUI controls로 Doroti widget UI를 다시 만드는 작업.
-- XAML, AppShell, NavigationPage 기반 앱 구조.
+- Windows 초기화용 빈 `App.xaml` 외의 XAML UI, AppShell, NavigationPage 기반 앱 구조.
 - `SKCanvasView` software fallback.
 - 이번 단계의 Android/iOS target 추가.
 - 기존 Win32/AppKit shell을 영구 fallback으로 유지하는 작업. differential/전환 기간 뒤 제거한다.
-- C# Markup package 기본 포함. native overlay 요구가 생기면 별도 opt-in으로 검토한다.
 
 ## 8. 외부 계약 확인 자료
 
