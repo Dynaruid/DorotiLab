@@ -24,6 +24,7 @@
     <Project Path="src/Doroti.Host.Desktop.Framework/Doroti.Host.Desktop.Framework.csproj" />
     <Project Path="src/Doroti.Host.Web/Doroti.Host.Web.csproj" />
     <Project Path="src/Doroti.Host.Maui/Doroti.Host.Maui.csproj" />
+    <Project Path="src/Doroti.Skia.RuntimeEffects/Doroti.Skia.RuntimeEffects.csproj" />
     <Project Path="src/Doroti.Platform/Doroti.Platform.csproj" />
     <Project Path="src/Doroti.Rendering/Doroti.Rendering.csproj" />
     <Project Path="src/Doroti.Shell.Core/Doroti.Shell.Core.csproj" />
@@ -31,6 +32,8 @@
     <Project Path="src/Doroti.Target.macOS.osx-arm64/Doroti.Target.macOS.osx-arm64.csproj" />
     <Project Path="src/Doroti.Target.Windows.Maui.win-x64/Doroti.Target.Windows.Maui.win-x64.csproj" />
     <Project Path="src/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.csproj" />
+    <Project Path="src/Doroti.Target.Android.Maui.android-arm64/Doroti.Target.Android.Maui.android-arm64.csproj" />
+    <Project Path="src/Doroti.Target.Android.Maui.android-x64/Doroti.Target.Android.Maui.android-x64.csproj" />
     <Project Path="src/Doroti.Target.Web.browser-wasm/Doroti.Target.Web.browser-wasm.csproj" />
     <Project Path="src/Doroti.Vendor.Avalonia.Skia/Doroti.Vendor.Avalonia.Skia.csproj" />
     <Project Path="src/Doroti.Vendor.Avalonia.Base/Doroti.Vendor.Avalonia.Base.csproj" />

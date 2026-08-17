@@ -1,0 +1,7 @@
+uniform float2 uSize;
+uniform float uPhase;
+
+half4 main(float2 position) {
+    float2 uv = position / max(uSize, float2(1.0));
+    return half4(uv.x, 0.35 + 0.35 * sin(uPhase + uv.x * 6.2831853), uv.y, 1.0);
+}

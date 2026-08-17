@@ -14,6 +14,8 @@ $externalTmpRoot = Join-Path $repoRoot '.doroti/tmp/web-product'
 $releaseRoot = Join-Path $dorotiRoot 'artifacts/web/0.2.0-beta'
 $hostProject = Join-Path $dorotiRoot 'src/Doroti.Host.Web/Doroti.Host.Web.csproj'
 $targetProject = Join-Path $dorotiRoot 'src/Doroti.Target.Web.browser-wasm/Doroti.Target.Web.browser-wasm.csproj'
+$mauiHostProject = Join-Path $dorotiRoot 'src/Doroti.Host.Maui/Doroti.Host.Maui.csproj'
+$androidTargetProject = Join-Path $dorotiRoot 'src/Doroti.Target.Android.Maui.android-arm64/Doroti.Target.Android.Maui.android-arm64.csproj'
 $templateProject = Join-Path $dorotiRoot 'templates/Doroti.Templates/Doroti.Templates.csproj'
 $productSolution = Join-Path $dorotiRoot 'Doroti.Product.slnx'
 $demoDesktopProject = Join-Path $repoRoot 'DorotiDemoApp/DorotiDemoApp.csproj'
@@ -327,20 +329,22 @@ if ($Shard -eq 'Template') {
     $mapping = Read-Json (Join-Path $dorotiRoot 'migration/product-naming/g7-doroti-naming-map.json')
     $packageProjects = [Collections.Generic.List[string]]::new()
     $requiredPackages = @(
-        'Doroti.Runtime', 'Doroti.Ui', 'Doroti.Hosting',
+        'Doroti.Runtime', 'Doroti.Ui', 'Doroti.Hosting', 'Doroti.Skia.RuntimeEffects',
         'Doroti.Framework.Foundation', 'Doroti.Framework.Scheduler', 'Doroti.Framework.Services',
         'Doroti.Framework.Physics', 'Doroti.Framework.Animation', 'Doroti.Framework.Gestures',
         'Doroti.Framework.Painting', 'Doroti.Framework.Semantics', 'Doroti.Framework.Rendering',
         'Doroti.Framework.Widgets', 'Doroti.Framework.Cupertino', 'Doroti.Framework.Material'
     )
     foreach ($name in $requiredPackages) {
-        Assert-True ($name -in @($mapping.projectMappings.new)) "promoted package mapping $name"
+        if ($name -ne 'Doroti.Skia.RuntimeEffects') {
+            Assert-True ($name -in @($mapping.projectMappings.new)) "promoted package mapping $name"
+        }
         $project = Join-Path $dorotiRoot "src/$name/$name.csproj"
         Assert-True (Test-Path -LiteralPath $project -PathType Leaf) "package project $name"
         $packageProjects.Add($project)
     }
     $sdkProject = Join-Path $dorotiRoot 'src/Doroti.App.Sdk/Doroti.App.Sdk.csproj'
-    foreach ($project in @($packageProjects + @($hostProject, $targetProject, $sdkProject, $templateProject))) {
+    foreach ($project in @($packageProjects + @($hostProject, $targetProject, $mauiHostProject, $androidTargetProject, $sdkProject, $templateProject))) {
         Invoke-Checked { dotnet pack $project -c Release --nologo -o $feed } "package $project"
     }
     $templatePackage = Join-Path $feed 'Doroti.Templates.0.2.0-beta.nupkg'
@@ -357,9 +361,15 @@ if ($Shard -eq 'Template') {
     Invoke-WithNuGetPackages $packages {
         dotnet restore $project --packages $packages --force --no-cache -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm --configfile $nugetConfig
     } 'restore external package-only product'
+    Invoke-WithNuGetPackages $packages {
+        dotnet restore $project --packages $packages --force --no-cache -p:DorotiTarget=Android -p:RuntimeIdentifier=android-arm64 --configfile $nugetConfig
+    } 'restore external package-only Android product'
+    Invoke-WithNuGetPackages $packages {
+        dotnet build $project -c Release -p:DorotiTarget=Android -p:RuntimeIdentifier=android-arm64 --no-restore --nologo
+    } 'build external package-only Android product'
     $createdFiles = @(Get-ChildItem -LiteralPath $projectRoot -File -Recurse)
     Assert-Equal @($createdFiles | Where-Object { $_.Extension -eq '.dart' -or $_.Name -in @('pubspec.yaml','.metadata','doroti.yaml') }).Count 0 'template Flutter/Dart files'
-    Assert-Equal @($createdFiles | Where-Object { $_.DirectoryName -match '[\\/](android|ios|linux|macos)$' }).Count 0 'template unsupported platform directories'
+    Assert-Equal @($createdFiles | Where-Object { $_.DirectoryName -match '[\\/](ios|linux|macos)$' }).Count 0 'template unsupported platform directories'
     Assert-Equal @($createdFiles | Where-Object Extension -eq '.csproj').Count 1 'single template-created project'
     Assert-True (Test-Path -LiteralPath (Join-Path $projectRoot 'src/App.cs')) 'shared C# application source'
     Assert-True (-not (Test-Path -LiteralPath (Join-Path $projectRoot 'Platforms/Web/PlatformBootstrap.cs'))) 'legacy app-owned Blazor bootstrap absence'
@@ -367,6 +377,8 @@ if ($Shard -eq 'Template') {
     Assert-True (Test-Path -LiteralPath (Join-Path $projectRoot 'Platforms/Web/tsconfig.json')) 'template-created TypeScript config'
     Assert-True (Test-Path -LiteralPath (Join-Path $projectRoot 'Platforms/Web/src/doroti_bootstrap.ts')) 'template-created TypeScript bootstrap'
     Assert-True (Test-Path -LiteralPath (Join-Path $projectRoot 'Platforms/Web/src/plugins/echo.ts')) 'template-created TypeScript plugin'
+    Assert-True (Test-Path -LiteralPath (Join-Path $projectRoot 'Platforms/Android/MainActivity.cs')) 'template-created Android activity'
+    Assert-True (Test-Path -LiteralPath (Join-Path $projectRoot 'Resources/Shaders/aurora.sksl')) 'template-created SkSL asset'
     Assert-Equal @($createdFiles | Where-Object { $_.FullName -notmatch '[\\/](bin|obj)[\\/]' -and $_.Extension -eq '.js' }).Count 0 'template-created checked-in JavaScript'
     $startup = Get-Content -LiteralPath (Join-Path $projectRoot 'Program.cs') -Raw
     Assert-True ($startup -match 'public sealed class Program : IDorotiApplicationStartup' -and $startup -notmatch '#if|DOROTI_BROWSER|MACCATALYST') 'target-neutral public startup contract'
@@ -374,7 +386,7 @@ if ($Shard -eq 'Template') {
     Assert-True ($assets -notmatch 'projectReferences"\s*:\s*\{\s*"[A-Za-z]:\\Users\\parti\\Labo\\DorotiLab') 'repository-private package fallback'
     Write-Json $statePath ([ordered]@{ feed=$feed; external=$external; projectRoot=$projectRoot; project=$project; packages=$packages; templatePackage=$templatePackage })
     Write-Json (Join-Path $tmpRoot 'template.json') ([ordered]@{
-        status='pass'; command='dotnet new doroti-app --name DorotiWebProduct'; source='package-only'
+        status='pass'; command='dotnet new doroti-app --name DorotiWebProduct'; source='package-only'; androidBuild='pass-android-arm64'
         externalRoot='repository-outside-source-tree'; packageCount=@(Get-ChildItem -LiteralPath $feed -File -Filter '*.nupkg' | Where-Object Name -notlike '*.snupkg').Count
         flutterDartFiles=0; unsupportedPlatformDirectories=0; userAuthoredRazorFiles=0; checkedInJavaScript=0
         typeScript=[ordered]@{ version='7.0.0'; config='Platforms/Web/tsconfig.json'; bootstrap='Platforms/Web/src/doroti_bootstrap.ts'; plugin='Platforms/Web/src/plugins/echo.ts' }

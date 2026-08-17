@@ -2,7 +2,7 @@
 
 **English** | [한국어](README.ko.md)
 
-Doroti is a C#/.NET UI framework with a shared widget, layout, painting, semantics, and rendering pipeline for MAUI Windows, MAUI Mac Catalyst, and Blazor WebAssembly.
+Doroti is a C#/.NET UI framework with a shared widget, layout, painting, semantics, and rendering pipeline for MAUI Windows, MAUI Mac Catalyst, MAUI Android, and Blazor WebAssembly.
 
 ## Development model
 
@@ -17,13 +17,14 @@ See [ADR-019](docs/adr/ADR-019-product-framework-source-ownership.md) for the ow
 - `Doroti.Framework.*`: product-owned Foundation, Scheduler, Services, Physics, Animation, Gestures, Painting, Semantics, Rendering, Widgets, Cupertino, and Material libraries
 - `Doroti.Runtime`, `Doroti.Ui`, `Doroti.Hosting`: runtime semantics plus the target-neutral startup/builder/descriptor contract
 - `Doroti.Engine`, `Doroti.Rendering`, `Doroti.Graphics`: frame scheduling, display output, and graphics contracts
-- `Doroti.App.Sdk`: one-project target selection plus generated native/Web bootstrap and plugin registration
+- `Doroti.App.Sdk`: one-project Windows/Mac Catalyst/Android/Web selection plus generated native/Web bootstrap and plugin registration
+- `Doroti.Skia.RuntimeEffects`: shared fail-closed SkSL compiler and uniform/image-sampler binder used by native and Web hosts
 - `Doroti.Host.Maui`: host-owned MAUI application/page lifecycle and `SKGLView` GPU-surface integration
 - `Doroti.Host.Web`: host-owned Blazor composition, WebGL2 canvas, input, accessibility, and resource bridge
 
 Web execution source is TypeScript-owned. Applications edit `Platforms/Web/src/**/*.ts`; Doroti owns `src/Doroti.Host.Web/Web/*.ts`. `Microsoft.TypeScript.MSBuild` 7.0.0 compiles both into target/configuration-specific `obj` directories, and publish contains only the resulting JavaScript. Node, npm, Bun, and a bundler are not application requirements. See [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md).
 
-Windows Release build/publish and an actual `MauiSKSwapChainPanel` GPU frame are verified. Web package-only compile/publish and a Chromium canvas/basic-FAB-pointer smoke are verified on runtime 10.0.11. Native hover/wheel/keyboard/IME/UIA, Mac Catalyst native execution, Web keyboard/IME/clipboard/resize/interactive ARIA, physical acceptance, and cross-target parity remain separate `notVerified` gates.
+Windows Release build/publish and an actual `MauiSKSwapChainPanel` GPU frame are verified. Android arm64 APK/AAB build and an automated physical-device `MauiSKGLTextureView` OpenGL ES custom-SkSL frame/replay are verified. The Android x64 target is also built and repeatedly scrolled on an x86_64 emulator with persistent visible-content screenshot evidence. Web compile/publish and Mac Catalyst cross-build are verified; fresh Web and Mac native custom-shader presentation remain separate `notVerified` gates.
 
 ## Requirements
 

@@ -1,7 +1,8 @@
 #Requires -Version 5.1
 param(
-    [ValidateSet('All', 'Graph', 'Build', 'Live', 'Evidence')]
-    [string] $Shard = 'All'
+    [ValidateSet('All', 'Graph', 'Build', 'Live', 'WindowsLive', 'AndroidLive', 'AndroidPhysical', 'Evidence')]
+    [string] $Shard = 'All',
+    [string] $AndroidSerial = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -16,6 +17,7 @@ $invalidRegistrationProject = Join-Path $dorotiRoot 'validation/app-bootstrap/in
 $tmpRoot = Join-Path $dorotiRoot '.doroti/tmp/app-targets'
 $publishRoot = Join-Path $tmpRoot 'windows-publish'
 $rawLivePath = Join-Path $tmpRoot 'windows-live.json'
+$rawAndroidLivePath = Join-Path $tmpRoot 'android-live.json'
 $evidencePath = Join-Path $dorotiRoot 'migration/maui/app-targets-evidence.json'
 [IO.Directory]::CreateDirectory($tmpRoot) | Out-Null
 
@@ -35,6 +37,43 @@ function Write-Json([string] $Path, [object] $Value) {
     [IO.Directory]::CreateDirectory((Split-Path $Path -Parent)) | Out-Null
     $json = (($Value | ConvertTo-Json -Depth 64) -replace "`r`n", "`n") + "`n"
     [IO.File]::WriteAllText($Path, $json, [Text.UTF8Encoding]::new($false))
+}
+
+function Measure-RenderedScreenshot([string] $Path) {
+    Add-Type -AssemblyName System.Drawing.Common
+    $bitmap = [System.Drawing.Bitmap]::FromFile($Path)
+    try {
+        # Sample the scrollable body only. The fixed AppBar and FAB remain colored
+        # when a broken clip makes the entire viewport white, so whole-screen
+        # sampling can report a false pass.
+        $left = [int]($bitmap.Width * 0.02)
+        $right = [int]($bitmap.Width * 0.85)
+        $top = [int]($bitmap.Height * 0.12)
+        $bottom = [int]($bitmap.Height * 0.84)
+        $samples = 0
+        $nonLight = 0
+        $colored = 0
+        for ($y = $top; $y -lt $bottom; $y += 12) {
+            for ($x = $left; $x -lt $right; $x += 12) {
+                $pixel = $bitmap.GetPixel($x, $y)
+                $samples++
+                if ($pixel.R -lt 225 -or $pixel.G -lt 225 -or $pixel.B -lt 225) { $nonLight++ }
+                $maximum = [Math]::Max($pixel.R, [Math]::Max($pixel.G, $pixel.B))
+                $minimum = [Math]::Min($pixel.R, [Math]::Min($pixel.G, $pixel.B))
+                if (($maximum - $minimum) -gt 25) { $colored++ }
+            }
+        }
+        Assert-True ($samples -gt 0) 'Android screenshot sample count'
+        return [ordered]@{
+            width = $bitmap.Width
+            height = $bitmap.Height
+            sampleRegion = [ordered]@{ left = $left; top = $top; right = $right; bottom = $bottom }
+            sampleCount = $samples
+            nonLightRatio = [Math]::Round($nonLight / $samples, 4)
+            coloredRatio = [Math]::Round($colored / $samples, 4)
+        }
+    }
+    finally { $bitmap.Dispose() }
 }
 
 function Invoke-AppRestore([string] $Target, [string] $Rid) {
@@ -59,11 +98,20 @@ function Invoke-GraphGate {
         Assert-True ($mauiHost.IndexOf($token, [StringComparison]::Ordinal) -ge 0) "MAUI interaction token $token"
     }
     Assert-True ($mauiSurface -match 'MauiTextInputBridge' -and $mauiSurface -match 'MauiSemanticsBridge' -and $mauiSurface -match 'setSemanticsTreeEnabled\(true\)') 'MAUI native IME and semantics composition'
-    Assert-True ($mauiNativeInput -match 'KeyData' -and $mauiNativeInput -match '#if WINDOWS' -and $mauiNativeInput -match 'PressesBegan') 'Windows and Mac Catalyst native keyboard bridges'
+    Assert-True ($mauiNativeInput -match 'KeyData' -and $mauiNativeInput -match '#if WINDOWS' -and $mauiNativeInput -match 'PressesBegan' -and $mauiNativeInput -match '#elif ANDROID') 'Windows, Mac Catalyst, and Android native keyboard bridges'
     Assert-True ($mauiSemantics -match 'SemanticsAction\.tap' -and $mauiSemantics -match 'SemanticsAction\.setText') 'MAUI actionable semantics bridge'
     foreach ($root in @((Split-Path $project -Parent), $templateRoot)) {
         Assert-True (-not (Test-Path -LiteralPath (Join-Path $root 'Platforms/Maui'))) "$root legacy Platforms/Maui absence"
         Assert-True (@(Get-ChildItem -LiteralPath (Join-Path $root 'Platforms') -Filter 'PlatformBootstrap.cs' -File -Recurse).Count -eq 0) "$root legacy PlatformBootstrap absence"
+        $shaderPath = Join-Path $root 'Resources/Shaders/aurora.sksl'
+        Assert-True (Test-Path -LiteralPath $shaderPath -PathType Leaf) "$root custom shader asset"
+        $shaderBytes = [IO.File]::ReadAllBytes($shaderPath)
+        $shaderHash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($shaderBytes)).ToLowerInvariant()
+        Assert-True ($shaderBytes.LongLength -eq 210 -and $shaderHash -eq '658695aca71aa8cdc9e776e037ea404c29c5759a481d9955c9f21e4a1e664e41') "$root custom shader integrity"
+        foreach ($targetManifest in Get-ChildItem -LiteralPath (Join-Path $root 'Platforms') -Filter 'application-manifest*.json' -File -Recurse) {
+            $manifestText = Get-Content -LiteralPath $targetManifest.FullName -Raw
+            Assert-True ($manifestText -match 'shaders/aurora\.sksl' -and $manifestText -match 'Doroti\.Shaders\.aurora\.sksl') "$($targetManifest.FullName) custom shader registration"
+        }
     }
     $sourceRoots = @(
         (Join-Path $dorotiRoot 'src/Doroti.Hosting'),
@@ -75,9 +123,11 @@ function Invoke-GraphGate {
     $reflectionBootstrap = @($sourceRoots | Get-ChildItem -File -Recurse -Include *.cs | Select-String -Pattern 'GetType\("(?:DorotiApp\.)?App"|Type\.GetType\(')
     Assert-True ($reflectionBootstrap.Count -eq 0) 'reflection/string startup lookup absence'
     Invoke-Checked { dotnet run --project $descriptorContract -c Release --nologo } 'application descriptor contract failed'
+    Invoke-Checked { dotnet run --project (Join-Path $dorotiRoot 'validation/runtime-shader-contract/Doroti.Validation.RuntimeShaderContract.csproj') -c Release --nologo } 'runtime shader contract failed'
 
     foreach ($target in @(
         [ordered]@{ Name='Windows'; Rid='win-x64'; Graph='windows'; Host='Maui'; Entry='WinUI-Xaml' },
+        [ordered]@{ Name='Android'; Rid='android-arm64'; Graph='android'; Host='Maui'; Entry='Android-Application' },
         [ordered]@{ Name='MacCatalyst'; Rid='maccatalyst-arm64'; Graph='maccatalyst'; Host='Maui'; Entry='UIKit-Main' },
         [ordered]@{ Name='Web'; Rid='browser-wasm'; Graph='Web'; Host='BlazorWebAssembly'; Entry='Managed-Main' }
     )) {
@@ -96,6 +146,11 @@ function Invoke-GraphGate {
         if ($target.Name -eq 'Windows') {
             Assert-True (@($graph | Where-Object { $_ -ceq 'applicationDefinition=Platforms\Windows\App.xaml' }).Count -eq 1) 'Windows ApplicationDefinition count'
             Assert-True (@($graph | Where-Object { $_ -like 'compile=Platforms\Web\*' }).Count -eq 0) 'Windows Web source exclusion'
+        } elseif ($target.Name -eq 'Android') {
+            Assert-True (@($graph | Where-Object { $_ -like 'applicationDefinition=?*' }).Count -eq 0) 'Android XAML exclusion'
+            Assert-True (@($graph | Where-Object { $_ -ceq 'compile=Platforms\Android\MainActivity.cs' }).Count -eq 1) 'Android MainActivity source'
+            Assert-True (@($graph | Where-Object { $_ -ceq 'compile=Platforms\Android\MainApplication.cs' }).Count -eq 1) 'Android MainApplication source'
+            Assert-True (@($graph | Where-Object { $_ -like 'compile=Platforms\Windows\*' -or $_ -like 'compile=Platforms\MacCatalyst\*' -or $_ -like 'compile=Platforms\Web\*' }).Count -eq 0) 'Android other-platform source exclusion'
         } elseif ($target.Name -eq 'MacCatalyst') {
             Assert-True (@($graph | Where-Object { $_ -like 'applicationDefinition=?*' }).Count -eq 0) 'Mac Catalyst XAML exclusion'
             Assert-True (@($graph | Where-Object { $_ -like 'compile=Platforms\Windows\*' -or $_ -like 'compile=Platforms\Web\*' }).Count -eq 0) 'Mac Catalyst other-platform source exclusion'
@@ -115,6 +170,9 @@ function Invoke-GraphGate {
     Invoke-Checked { dotnet msbuild $syntheticProject -t:WriteDorotiTargetGraph -nologo } 'synthetic fourth host descriptor failed'
     $syntheticGraph = Get-Content -LiteralPath (Join-Path (Split-Path $syntheticProject -Parent) 'obj/linux/doroti-target-graph.txt')
     Assert-True (@($syntheticGraph | Where-Object { $_ -ceq 'descriptor=Linux|SyntheticQt|Synthetic|Doroti.Target.Linux.Qt.linux-x64' }).Count -eq 1) 'synthetic fourth host descriptor identity'
+    $invalidAndroidRid = @(& dotnet msbuild $project -t:WriteDorotiTargetGraph -p:DorotiTarget=Android -p:RuntimeIdentifier=android-x86 -nologo 2>&1)
+    Assert-True ($LASTEXITCODE -ne 0 -and (($invalidAndroidRid -join "`n") -match 'DOROTIAPP004')) 'Android RID diagnostic fail-closed'
+    $global:LASTEXITCODE = 0
 }
 
 function Invoke-BuildGate {
@@ -132,12 +190,25 @@ function Invoke-BuildGate {
     foreach ($path in @($windowsGeneratedFiles + $windowsAssembly)) {
         $windowsWriteTimes[$path] = [IO.File]::GetLastWriteTimeUtc($path)
     }
+    Invoke-AppRestore 'Android' 'android-arm64'
+    Invoke-Checked { dotnet build $project -c Release -p:DorotiTarget=Android -p:RuntimeIdentifier=android-arm64 --nologo --no-restore } 'Android Release build failed'
+    $androidOutput = Join-Path (Split-Path $project -Parent) 'bin/android/Release/net10.0-android/android-arm64'
+    $androidApk = @(Get-ChildItem -LiteralPath $androidOutput -Recurse -File -Filter '*-Signed.apk')
+    $androidAab = @(Get-ChildItem -LiteralPath $androidOutput -Recurse -File -Filter '*.aab')
+    Assert-True ($androidApk.Count -gt 0) 'Android signed APK output'
+    Assert-True ($androidAab.Count -gt 0) 'Android AAB output'
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $apkArchive = [IO.Compression.ZipFile]::OpenRead($androidApk[0].FullName)
+    try {
+        Assert-True (@($apkArchive.Entries | Where-Object { $_.FullName -like 'lib/arm64-v8a/*' }).Count -gt 0) 'Android APK arm64 native assets'
+    }
+    finally { $apkArchive.Dispose() }
     Invoke-AppRestore 'Web' 'browser-wasm'
     Invoke-Checked { dotnet build $project -c Release -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm --nologo --no-restore } 'Web Release build failed'
     Invoke-AppRestore 'MacCatalyst' 'maccatalyst-arm64'
     Invoke-Checked { dotnet build $project -c Release -p:DorotiTarget=MacCatalyst -p:RuntimeIdentifier=maccatalyst-arm64 --nologo --no-restore } 'Mac Catalyst cross-build failed'
     Invoke-Checked { dotnet build $project -c Release -p:DorotiTarget=Windows -p:RuntimeIdentifier=win-x64 --nologo --no-restore } 'Windows repeat build failed'
-    foreach ($nativeTarget in @('windows','maccatalyst')) {
+    foreach ($nativeTarget in @('windows','android','maccatalyst')) {
         $nativeAssets = Get-Content -LiteralPath (Join-Path (Split-Path $project -Parent) "obj/$nativeTarget/project.assets.json") -Raw
         Assert-True ($nativeAssets -notmatch 'Microsoft\.TypeScript\.MSBuild') "$nativeTarget TypeScript package isolation"
     }
@@ -153,7 +224,7 @@ function Invoke-BuildGate {
     $global:LASTEXITCODE = 0
 }
 
-function Invoke-LiveGate {
+function Invoke-WindowsLiveGate {
     Invoke-AppRestore 'Windows' 'win-x64'
     Invoke-Checked {
         dotnet publish $project -c Release -p:DorotiTarget=Windows -p:RuntimeIdentifier=win-x64 -o $publishRoot --nologo --no-restore
@@ -178,11 +249,137 @@ function Invoke-LiveGate {
     Assert-True ([string]$live.Surface.GraphicsBackend -ceq 'win-x64/winui3/SKSwapChainPanel/ANGLE-DirectX-Skia') 'Windows MAUI backend identity'
 }
 
+function Invoke-AndroidLiveGate([bool] $RequirePhysical) {
+    Assert-True (-not [string]::IsNullOrWhiteSpace($AndroidSerial)) 'Android serial argument'
+    Assert-True ($null -ne (Get-Command adb -ErrorAction SilentlyContinue)) 'adb command availability'
+    $devices = @(adb devices | Select-String -Pattern "^$([regex]::Escape($AndroidSerial))\s+device$")
+    Assert-True ($devices.Count -eq 1) "Android device '$AndroidSerial' availability"
+    $model = (adb -s $AndroidSerial shell getprop ro.product.model).Trim()
+    $api = (adb -s $AndroidSerial shell getprop ro.build.version.sdk).Trim()
+    $abi = (adb -s $AndroidSerial shell getprop ro.product.cpu.abi).Trim()
+    $qemu = (adb -s $AndroidSerial shell getprop ro.kernel.qemu).Trim()
+    $runtimeIdentifier = switch ($abi) {
+        'arm64-v8a' { 'android-arm64' }
+        'x86_64' { 'android-x64' }
+        default { throw "Android ABI '$abi' has no Doroti target package." }
+    }
+    if ($RequirePhysical) {
+        Assert-True ($qemu -ne '1') 'physical Android device identity'
+        Assert-True ($runtimeIdentifier -eq 'android-arm64') 'physical Android arm64 ABI'
+    }
+
+    Invoke-AppRestore 'Android' $runtimeIdentifier
+    Invoke-Checked { dotnet build $project -c Release -p:DorotiTarget=Android -p:RuntimeIdentifier=$runtimeIdentifier --nologo --no-restore } 'Android live package build failed'
+    $androidArtifactKey = if ($runtimeIdentifier -eq 'android-x64') { 'android-x64' } else { 'android' }
+    $androidOutput = Join-Path (Split-Path $project -Parent) "bin/$androidArtifactKey/Release/net10.0-android/$runtimeIdentifier"
+    $apk = Get-ChildItem -LiteralPath $androidOutput -Recurse -File -Filter '*-Signed.apk' | Select-Object -First 1
+    Assert-True ($null -ne $apk) 'Android live signed APK'
+    Invoke-Checked { adb -s $AndroidSerial install --user 0 -r $apk.FullName } 'Android APK install failed'
+    $activity = (adb -s $AndroidSerial shell cmd package resolve-activity --user 0 --brief dev.doroti.demo | Select-Object -Last 1).Trim()
+    Assert-True ($activity -match '^dev\.doroti\.demo/.+MainActivity$') 'Android launcher activity resolution'
+    adb -s $AndroidSerial logcat -b all -c | Out-Null
+    adb -s $AndroidSerial shell am force-stop --user 0 dev.doroti.demo | Out-Null
+    try {
+        function Capture-AndroidBody([string] $Name) {
+            $remotePath = "/sdcard/doroti-$Name.png"
+            $localPath = Join-Path $tmpRoot "$Name-$runtimeIdentifier.png"
+            Invoke-Checked { adb -s $AndroidSerial shell screencap -p $remotePath } "Android screenshot '$Name' capture failed"
+            Invoke-Checked { adb -s $AndroidSerial pull $remotePath $localPath } "Android screenshot '$Name' pull failed"
+            return Measure-RenderedScreenshot $localPath
+        }
+
+        Invoke-Checked { adb -s $AndroidSerial shell am start --user 0 -n $activity --ei doroti_auto_quit_frames 2000 } 'Android activity launch failed'
+        $json = $null
+        for ($attempt = 0; $attempt -lt 30; $attempt++) {
+            Start-Sleep -Seconds 1
+            $startupLog = @(adb -s $AndroidSerial logcat -d -s 'DorotiMauiEvidence:I' '*:S' -v raw)
+            foreach ($line in $startupLog) {
+                if ($line.TrimStart().StartsWith('{')) {
+                    try { $json = $line | ConvertFrom-Json } catch { }
+                }
+            }
+            if ($null -ne $json -and [long]$json.Frame.Presented -gt 0 -and [long]$json.Frame.Replayed -gt 0) { break }
+        }
+        Assert-True ($null -ne $json -and [long]$json.Frame.Replayed -gt 0) 'Android startup frame before scroll'
+        $initialScreenshot = $null
+        for ($attempt = 0; $attempt -lt 15; $attempt++) {
+            $initialScreenshot = Capture-AndroidBody 'android-scroll-initial'
+            if ($initialScreenshot.nonLightRatio -gt 0.05 -and $initialScreenshot.coloredRatio -gt 0.02) { break }
+            Start-Sleep -Seconds 1
+        }
+        Assert-True ($initialScreenshot.nonLightRatio -gt 0.05 -and $initialScreenshot.coloredRatio -gt 0.02) 'Android visible scroll body before swipes'
+        $sizeLine = @(adb -s $AndroidSerial shell wm size | Where-Object { $_ -match '(?:Physical|Override) size:\s*(\d+)x(\d+)' }) | Select-Object -Last 1
+        Assert-True ($sizeLine -match '(\d+)x(\d+)') 'Android display size query'
+        $screenWidth = [int]$Matches[1]
+        $screenHeight = [int]$Matches[2]
+        $scrollX = [int]($screenWidth / 2)
+        $scrollTop = [int]($screenHeight * 0.22)
+        $scrollBottom = [int]($screenHeight * 0.78)
+        $scrollScreenshots = @()
+        for ($index = 0; $index -lt 4; $index++) {
+            Invoke-Checked { adb -s $AndroidSerial shell input swipe $scrollX $scrollBottom $scrollX $scrollTop 220 } 'Android upward scroll injection failed'
+            $captured = Capture-AndroidBody "android-scroll-up-$index"
+            Assert-True ($captured.nonLightRatio -gt 0.05 -and $captured.coloredRatio -gt 0.02) "Android visible body after upward swipe $index"
+            $scrollScreenshots += $captured
+        }
+        for ($index = 0; $index -lt 2; $index++) {
+            Invoke-Checked { adb -s $AndroidSerial shell input swipe $scrollX $scrollTop $scrollX $scrollBottom 220 } 'Android downward scroll injection failed'
+            $captured = Capture-AndroidBody "android-scroll-down-$index"
+            Assert-True ($captured.nonLightRatio -gt 0.05 -and $captured.coloredRatio -gt 0.02) "Android visible body after downward swipe $index"
+            $scrollScreenshots += $captured
+        }
+        for ($attempt = 0; $attempt -lt 30; $attempt++) {
+            Start-Sleep -Seconds 2
+            $log = @(adb -s $AndroidSerial logcat -d -s 'DorotiMauiEvidence:I' '*:S' -v raw)
+            foreach ($line in $log) {
+                if ($line.TrimStart().StartsWith('{')) {
+                    try { $json = $line | ConvertFrom-Json } catch { }
+                }
+            }
+            if ($null -ne $json -and [long]$json.Frame.Presented -ge 12 -and [long]$json.Frame.Replayed -gt 0) { break }
+        }
+        $appPid = (adb -s $AndroidSerial shell pidof dev.doroti.demo | Out-String).Trim()
+        $failures = @(adb -s $AndroidSerial logcat -d -v raw |
+            Select-String -Pattern 'FATAL UNHANDLED EXCEPTION|NotSupportedException: Doroti MAUI canvas operation|Fatal signal|pthread_mutex_lock called on a destroyed mutex')
+        Assert-True (-not [string]::IsNullOrWhiteSpace($appPid)) 'Android process survival after scroll'
+        Assert-True ($failures.Count -eq 0) 'Android scroll crash log'
+        Assert-True ($null -ne $json) 'Android structured live evidence'
+        Assert-True ([long]$json.Frame.Presented -ge 12 -and [long]$json.Frame.Failed -eq 0) 'Android presented custom-shader frames'
+        Assert-True ([long]$json.Frame.Replayed -gt 0) 'Android retained scene replay'
+        Assert-True ([long]$json.SoftwareFallbackFrames -eq 0) 'Android software fallback count'
+        Assert-True ([string]$json.Surface.NativeViewType -ceq 'SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKGLTextureView') 'Android MAUI native view type'
+        Assert-True ([string]$json.Rid -ceq $runtimeIdentifier) 'Android runtime identifier'
+        Assert-True ([string]$json.Surface.GraphicsBackend -ceq "$runtimeIdentifier/Android/MauiSKGLTextureView/OpenGL-ES-Skia") 'Android graphics backend identity'
+        $screenshot = Capture-AndroidBody 'android-scroll-settled'
+        Assert-True ($screenshot.nonLightRatio -gt 0.05 -and $screenshot.coloredRatio -gt 0.02) 'Android visible scroll content after repeated swipes'
+        Write-Json $rawAndroidLivePath ([ordered]@{
+            serial = $AndroidSerial; model = $model; api = $api; abi = $abi; rid = $runtimeIdentifier
+            deviceKind = if ($qemu -eq '1') { 'emulator' } else { 'physical' }
+            automatedGpu = $json
+            automatedScroll = 'pass-adb-up-4-down-2'
+            automatedPersistentDisplay = [ordered]@{
+                status = 'pass'
+                initialScreenshot = $initialScreenshot
+                swipeScreenshots = $scrollScreenshots
+                settledScreenshot = $screenshot
+            }
+            manualPersistentDisplay = 'notVerified'
+            imeTalkBackStylusMouse = 'notVerified'
+        })
+    }
+    finally {
+        adb -s $AndroidSerial shell am force-stop --user 0 dev.doroti.demo | Out-Null
+    }
+}
+
 function Write-Evidence {
     Assert-True (Test-Path -LiteralPath $rawLivePath -PathType Leaf) 'Windows live input for evidence'
     $live = Get-Content -LiteralPath $rawLivePath -Raw | ConvertFrom-Json
+    $androidLive = if (Test-Path -LiteralPath $rawAndroidLivePath -PathType Leaf) {
+        Get-Content -LiteralPath $rawAndroidLivePath -Raw | ConvertFrom-Json
+    } else { [ordered]@{ status = 'notVerified'; reason = 'Run AndroidLive or AndroidPhysical with an explicit serial.' } }
     Write-Json $evidencePath ([ordered]@{
-        schemaVersion = 'doroti.app-targets-evidence/v3'
+        schemaVersion = 'doroti.app-targets-evidence/v4'
         scope = 'generated-application-bootstrap'
         capturedAtUtc = [DateTimeOffset]::UtcNow
         status = 'partial'
@@ -206,8 +403,9 @@ function Write-Evidence {
         }
         build = [ordered]@{
             status = 'pass'
-            sequence = @('Windows','Web','MacCatalyst-cross-build','Windows-no-restore')
+            sequence = @('Windows','Android','Web','MacCatalyst-cross-build','Windows-no-restore')
             windows = [ordered]@{ targetFramework='net10.0-windows10.0.19041.0';rid='win-x64' }
+            android = [ordered]@{ targetFramework='net10.0-android';rids=@('android-arm64','android-x64');packaging='signed-apk-and-aab';abis=@('arm64-v8a','x86_64') }
             web = [ordered]@{ targetFramework='net10.0';rid='browser-wasm';typeScriptMsBuild='7.0.0';sourceCount=2;outputRoot='obj/web/<configuration>/net10.0/Doroti.Generated/wwwroot' }
             macCatalyst = [ordered]@{ targetFramework='net10.0-maccatalyst';rid='maccatalyst-arm64';host='windows-cross-build-only' }
             startupNegative = 'pass-failed-closed-CS0311'
@@ -215,6 +413,16 @@ function Write-Evidence {
             nativeTypeScriptPackageCount = 0
         }
         windowsLive = $live
+        androidLive = $androidLive
+        customShaders = [ordered]@{
+            status = 'pass'
+            contract = 'FragmentProgram.fromSource/fromAsset + FragmentShader float uniforms/image samplers + Paint.shader/ShaderMask; ImageFilter.shader unadvertised with Flutter matrix stretch fallback'
+            compiler = 'shared Skia SKRuntimeEffect'
+            targets = @('Windows','MacCatalyst','Android','Web')
+            nativeLive = @('Windows','Android')
+            macCatalystLive = 'notVerified'
+            webBrowserLive = 'notVerified'
+        }
         boundaries = [ordered]@{
             pointerMousePenWheelPressure = 'implemented-not-live-verified'
             keyboardImeCursor = 'implemented-not-live-verified'
@@ -231,6 +439,8 @@ function Write-Evidence {
 
 if (Test-Shard 'Graph') { Invoke-GraphGate }
 if (Test-Shard 'Build') { Invoke-BuildGate }
-if (Test-Shard 'Live') { Invoke-LiveGate }
+if ($Shard -in @('All','Live','WindowsLive')) { Invoke-WindowsLiveGate }
+if ($Shard -eq 'AndroidLive') { Invoke-AndroidLiveGate $false }
+if ($Shard -eq 'AndroidPhysical') { Invoke-AndroidLiveGate $true }
 if (Test-Shard 'Evidence') { Write-Evidence }
 Write-Output "Doroti application target shard '$Shard': PASS"

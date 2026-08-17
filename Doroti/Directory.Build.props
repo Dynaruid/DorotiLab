@@ -28,7 +28,7 @@
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>Product-owned Doroti framework sources with MAUI Windows, Mac Catalyst, and Web target packages.</PackageReleaseNotes>
+    <PackageReleaseNotes>Product-owned Doroti framework sources with MAUI Windows, Mac Catalyst, Android, Web, and shared SkSL runtime effects.</PackageReleaseNotes>
   </PropertyGroup>
   <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'win-x64' or '$(TargetFramework)' == 'net10.0-windows10.0.19041.0')">
     <BaseIntermediateOutputPath>obj\windows\</BaseIntermediateOutputPath>
@@ -36,6 +36,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'maccatalyst-arm64' or '$(TargetFramework)' == 'net10.0-maccatalyst')">
     <BaseIntermediateOutputPath>obj\maccatalyst\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'android-arm64' or '$(RuntimeIdentifier)' == 'android-x64')">
+    <BaseIntermediateOutputPath>obj\$(RuntimeIdentifier)\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and '$(RuntimeIdentifier)' == '' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <BaseIntermediateOutputPath>obj\android\</BaseIntermediateOutputPath>
     <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
   </PropertyGroup>
 </Project>

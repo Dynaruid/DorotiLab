@@ -16,6 +16,8 @@
     <ProjectReference Include="..\Doroti\src\Doroti.Framework.Material\Doroti.Framework.Material.csproj" />
     <ProjectReference Include="..\Doroti\src\Doroti.Target.Windows.Maui.win-x64\Doroti.Target.Windows.Maui.win-x64.csproj" Condition="'$(DorotiTarget)' == 'Windows'" />
     <ProjectReference Include="..\Doroti\src\Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64\Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.csproj" Condition="'$(DorotiTarget)' == 'MacCatalyst'" />
+    <ProjectReference Include="..\Doroti\src\Doroti.Target.Android.Maui.android-arm64\Doroti.Target.Android.Maui.android-arm64.csproj" Condition="'$(DorotiTarget)' == 'Android' and '$(RuntimeIdentifier)' == 'android-arm64'" />
+    <ProjectReference Include="..\Doroti\src\Doroti.Target.Android.Maui.android-x64\Doroti.Target.Android.Maui.android-x64.csproj" Condition="'$(DorotiTarget)' == 'Android' and '$(RuntimeIdentifier)' == 'android-x64'" />
     <ProjectReference Include="..\Doroti\src\Doroti.Target.Web.browser-wasm\Doroti.Target.Web.browser-wasm.csproj" Condition="'$(DorotiTarget)' == 'Web'" />
     <DorotiJavaScriptPlugin Include="echo" Channel="doroti.example/echo" ExportName="invoke" ModuleUrl="./plugins/echo.js" Condition="'$(DorotiTarget)' == 'Web'" />
   </ItemGroup>

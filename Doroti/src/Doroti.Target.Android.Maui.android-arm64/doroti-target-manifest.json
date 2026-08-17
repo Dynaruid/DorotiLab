@@ -1,0 +1,9 @@
+{
+  "schema": "doroti-target/v2",
+  "packageId": "Doroti.Target.Android.Maui.android-arm64",
+  "targetFramework": "net10.0-android",
+  "rid": "android-arm64",
+  "nativeViewType": "SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKGLTextureView",
+  "graphicsBackend": "Android/MauiSKGLTextureView/OpenGL-ES-Skia",
+  "softwareFallback": false
+}

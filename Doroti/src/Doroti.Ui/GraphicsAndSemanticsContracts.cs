@@ -345,6 +345,7 @@ internal sealed record CanvasParagraphPayload(Paragraph Paragraph, Offset Offset
 internal sealed record CanvasShadowPayload(Path Path, Color Color, double Elevation, bool TransparentOccluder);
 internal sealed record CanvasCirclePayload(Offset Center, double Radius, PaintSnapshot Paint);
 internal sealed record CanvasLinePayload(Offset Start, Offset End, PaintSnapshot Paint);
+internal sealed record CanvasPointsPayload(PointMode PointMode, IReadOnlyList<Offset> Points, PaintSnapshot Paint);
 internal sealed record CanvasOvalPayload(Rect Rect, PaintSnapshot Paint);
 internal sealed record CanvasArcPayload(Rect Rect, double StartAngle, double SweepAngle, bool UseCenter, PaintSnapshot Paint);
 internal sealed record CanvasColorPayload(Color Color, BlendMode BlendMode);
@@ -392,7 +393,7 @@ internal abstract record ShaderSnapshot
             gradient.matrix4 is null ? null : Array.AsReadOnly(gradient.matrix4.ToArray())),
         ImageShader image => new ImageShaderSnapshot(image.image, image.tmx, image.tmy,
             Array.AsReadOnly(image.matrix4.storage.ToArray()), image.filterQuality),
-        FragmentShader => new UnsupportedShaderSnapshot("fragmentShader"),
+        FragmentShader fragment => new FragmentShaderSnapshot(fragment.CaptureState()),
         _ => new UnsupportedShaderSnapshot(shader.GetType().FullName ?? shader.GetType().Name),
     };
 }
@@ -404,6 +405,7 @@ internal sealed record GradientShaderSnapshot(
 internal sealed record ImageShaderSnapshot(
     Image Image, TileMode TileModeX, TileMode TileModeY, IReadOnlyList<double> Matrix4,
     FilterQuality? FilterQuality) : ShaderSnapshot;
+internal sealed record FragmentShaderSnapshot(FragmentShaderState State) : ShaderSnapshot;
 internal sealed record UnsupportedShaderSnapshot(string Family) : ShaderSnapshot;
 
 internal sealed record ColorFilterSnapshot(
@@ -429,13 +431,14 @@ internal sealed record ImageFilterSnapshot(
     ColorFilterSnapshot? ColorFilter,
     IReadOnlyList<double>? Matrix4,
     FilterQuality FilterQuality,
-    bool IsShader)
+    ShaderSnapshot? Shader)
 {
     internal static ImageFilterSnapshot Capture(ImageFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
         if (filter.shader is not null)
-            return new(0, 0, TileMode.clamp, null, null, null, null, null, FilterQuality.none, true);
+            return new(0, 0, TileMode.clamp, null, null, null, null, null, FilterQuality.none,
+                ShaderSnapshot.Capture(filter.shader));
         return new(
             filter.sigmaX,
             filter.sigmaY,
@@ -446,7 +449,7 @@ internal sealed record ImageFilterSnapshot(
             filter.colorFilter is null ? null : ColorFilterSnapshot.Capture(filter.colorFilter),
             filter.matrix4 is null ? null : Array.AsReadOnly(filter.matrix4.ToArray()),
             filter.filterQuality,
-            false);
+            null);
     }
 }
 internal interface IDorotiImageHandle
@@ -659,10 +662,30 @@ public class Canvas
                 Rect.fromLTWH(offset.dx, offset.dy, image.width, image.height), PaintSnapshot.Capture(paint)),
         });
     public void drawPicture(Picture picture) => _commands.AddRange(picture.Commands);
-    public void drawPoints(PointMode pointMode, IReadOnlyList<Offset> points, Paint paint) =>
-        _commands.Add(new("drawPoints", [(double)pointMode, points.Count, paint.color.value]));
-    public void drawRawPoints(PointMode pointMode, Float32List points, Paint paint) =>
-        _commands.Add(new("drawRawPoints", [(double)pointMode, points.Count, paint.color.value]));
+    public void drawPoints(PointMode pointMode, IReadOnlyList<Offset> points, Paint paint)
+    {
+        ArgumentNullException.ThrowIfNull(points);
+        ArgumentNullException.ThrowIfNull(paint);
+        var capturedPoints = Array.AsReadOnly(points.ToArray());
+        _commands.Add(new PathCommand("drawPoints", [(double)pointMode, capturedPoints.Count, paint.color.value])
+        {
+            HostPayload = new CanvasPointsPayload(pointMode, capturedPoints, PaintSnapshot.Capture(paint)),
+        });
+    }
+    public void drawRawPoints(PointMode pointMode, Float32List points, Paint paint)
+    {
+        ArgumentNullException.ThrowIfNull(points);
+        ArgumentNullException.ThrowIfNull(paint);
+        if ((points.Count & 1) != 0)
+            throw new ArgumentException("Raw point coordinates must contain x/y pairs.", nameof(points));
+        var capturedPoints = Array.AsReadOnly(Enumerable.Range(0, points.Count / 2)
+            .Select(index => new Offset(points[index * 2], points[(index * 2) + 1]))
+            .ToArray());
+        _commands.Add(new PathCommand("drawRawPoints", [(double)pointMode, capturedPoints.Count, paint.color.value])
+        {
+            HostPayload = new CanvasPointsPayload(pointMode, capturedPoints, PaintSnapshot.Capture(paint)),
+        });
+    }
     public void drawVertices(Vertices vertices, BlendMode blendMode, Paint paint) =>
         _commands.Add(new("drawVertices", [(double)blendMode, paint.color.value]));
     public void drawAtlas(Image atlas, IReadOnlyList<RSTransform> transforms, IReadOnlyList<Rect> rects,

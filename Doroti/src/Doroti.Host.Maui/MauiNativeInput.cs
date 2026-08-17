@@ -207,7 +207,7 @@ internal static class MauiNativeInput
                 new Windows.UI.Core.CoreCursor(cursorType, 0)));
         }
     }
-#else
+#elif MACCATALYST
     private sealed class NativeKeyboardSubscription : IDisposable
     {
         private readonly SKGLView _view;
@@ -261,13 +261,13 @@ internal static class MauiNativeInput
     {
         public override bool CanBecomeFirstResponder => true;
 
-        public override void PressesBegan(Foundation.NSSet<UIKit.UIPress> presses, UIKit.UIPressesEvent? evt)
+        public override void PressesBegan(Foundation.NSSet<UIKit.UIPress> presses, UIKit.UIPressesEvent evt)
         {
             Dispatch(presses, KeyEventType.down);
             base.PressesBegan(presses, evt);
         }
 
-        public override void PressesEnded(Foundation.NSSet<UIKit.UIPress> presses, UIKit.UIPressesEvent? evt)
+        public override void PressesEnded(Foundation.NSSet<UIKit.UIPress> presses, UIKit.UIPressesEvent evt)
         {
             Dispatch(presses, KeyEventType.up);
             base.PressesEnded(presses, evt);
@@ -333,5 +333,133 @@ internal static class MauiNativeInput
             }
         }
     }
+#elif ANDROID
+    private sealed class NativeKeyboardSubscription : IDisposable
+    {
+        private readonly SKGLView _view;
+        private readonly MauiTextInputBridge _textInput;
+        private readonly ulong _viewId;
+        private readonly Action<KeyData> _dispatch;
+        private readonly List<Android.Views.View> _native = [];
+
+        internal NativeKeyboardSubscription(SKGLView view, MauiTextInputBridge textInput, ulong viewId, Action<KeyData> dispatch)
+        {
+            _view = view;
+            _textInput = textInput;
+            _viewId = viewId;
+            _dispatch = dispatch;
+            _view.HandlerChanged += HandleHandlerChanged;
+            foreach (var input in _textInput.Inputs) input.HandlerChanged += HandleHandlerChanged;
+            AttachCurrent();
+        }
+
+        private void HandleHandlerChanged(object? sender, EventArgs args) => AttachCurrent();
+
+        private void AttachCurrent()
+        {
+            DetachCurrent();
+            foreach (var native in new object?[] { _view.Handler?.PlatformView }
+                .Concat(_textInput.Inputs.Select(input => input.Handler?.PlatformView))
+                .OfType<Android.Views.View>().Distinct())
+            {
+                native.Focusable = true;
+                native.FocusableInTouchMode = true;
+                native.KeyPress += HandleKeyPress;
+                _native.Add(native);
+            }
+        }
+
+        private void HandleKeyPress(object? sender, Android.Views.View.KeyEventArgs args)
+        {
+            var nativeEvent = args.Event;
+            if (nativeEvent is null) return;
+            var type = nativeEvent.Action switch
+            {
+                Android.Views.KeyEventActions.Up => KeyEventType.up,
+                _ when nativeEvent.RepeatCount > 0 => KeyEventType.repeat,
+                _ => KeyEventType.down,
+            };
+            var physical = Physical(args.KeyCode);
+            var unicode = nativeEvent.GetUnicodeChar(nativeEvent.MetaState);
+            var character = unicode > 0 && !char.IsControl((char)unicode) ? char.ConvertFromUtf32(unicode) : null;
+            var name = character ?? KeyName(args.KeyCode);
+            _dispatch(new(_viewId, TimeSpan.FromTicks(DateTime.UtcNow.Ticks), type,
+                physical, Logical(name, physical), false, character));
+            args.Handled = true;
+        }
+
+        private static long Physical(Android.Views.Keycode key) => key switch
+        {
+            >= Android.Views.Keycode.A and <= Android.Views.Keycode.Z => 0x70004 + (int)key - (int)Android.Views.Keycode.A,
+            >= Android.Views.Keycode.Num1 and <= Android.Views.Keycode.Num9 => 0x7001e + (int)key - (int)Android.Views.Keycode.Num1,
+            Android.Views.Keycode.Num0 => 0x70027,
+            Android.Views.Keycode.Enter => 0x70028,
+            Android.Views.Keycode.Escape or Android.Views.Keycode.Back => 0x70029,
+            Android.Views.Keycode.Del => 0x7002a,
+            Android.Views.Keycode.Tab => 0x7002b,
+            Android.Views.Keycode.Space => 0x7002c,
+            Android.Views.Keycode.ForwardDel => 0x7004c,
+            Android.Views.Keycode.DpadRight => 0x7004f,
+            Android.Views.Keycode.DpadLeft => 0x70050,
+            Android.Views.Keycode.DpadDown => 0x70051,
+            Android.Views.Keycode.DpadUp => 0x70052,
+            _ => 0x100000000 | (uint)key,
+        };
+
+        private static string KeyName(Android.Views.Keycode key) => key switch
+        {
+            Android.Views.Keycode.Enter => "Enter",
+            Android.Views.Keycode.Escape or Android.Views.Keycode.Back => "Escape",
+            Android.Views.Keycode.Del => "Backspace",
+            Android.Views.Keycode.Tab => "Tab",
+            Android.Views.Keycode.Space => " ",
+            Android.Views.Keycode.ForwardDel => "Delete",
+            Android.Views.Keycode.MoveHome => "Home",
+            Android.Views.Keycode.MoveEnd => "End",
+            Android.Views.Keycode.PageUp => "PageUp",
+            Android.Views.Keycode.PageDown => "PageDown",
+            Android.Views.Keycode.DpadLeft => "ArrowLeft",
+            Android.Views.Keycode.DpadRight => "ArrowRight",
+            Android.Views.Keycode.DpadUp => "ArrowUp",
+            Android.Views.Keycode.DpadDown => "ArrowDown",
+            _ => key.ToString(),
+        };
+
+        private void DetachCurrent()
+        {
+            foreach (var native in _native) native.KeyPress -= HandleKeyPress;
+            _native.Clear();
+        }
+
+        public void Dispose()
+        {
+            _view.HandlerChanged -= HandleHandlerChanged;
+            foreach (var input in _textInput.Inputs) input.HandlerChanged -= HandleHandlerChanged;
+            DetachCurrent();
+        }
+    }
+
+    private static class NativeCursor
+    {
+        internal static void Set(SKGLView view, DorotiMouseCursorKind cursor)
+        {
+            if (!OperatingSystem.IsAndroidVersionAtLeast(24) ||
+                view.Handler?.PlatformView is not Android.Views.View native || native.Context is not { } context) return;
+            var kind = cursor switch
+            {
+                DorotiMouseCursorKind.click => Android.Views.PointerIconType.Hand,
+                DorotiMouseCursorKind.text => Android.Views.PointerIconType.Text,
+                DorotiMouseCursorKind.verticalText => Android.Views.PointerIconType.VerticalText,
+                DorotiMouseCursorKind.precise => Android.Views.PointerIconType.Crosshair,
+                DorotiMouseCursorKind.resizeLeftRight => Android.Views.PointerIconType.HorizontalDoubleArrow,
+                DorotiMouseCursorKind.resizeUpDown => Android.Views.PointerIconType.VerticalDoubleArrow,
+                DorotiMouseCursorKind.none => Android.Views.PointerIconType.Null,
+                _ => Android.Views.PointerIconType.Arrow,
+            };
+            native.PointerIcon = Android.Views.PointerIcon.GetSystemIcon(context, kind);
+        }
+    }
+#else
+#error Doroti.Host.Maui requires an explicit native input implementation.
 #endif
 }

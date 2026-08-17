@@ -13,6 +13,7 @@
     <PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
+    <ProjectReference Include="..\Doroti.Skia.RuntimeEffects\Doroti.Skia.RuntimeEffects.csproj" />
   </ItemGroup>
   <PropertyGroup>
     <DorotiWebTypeScript>true</DorotiWebTypeScript>

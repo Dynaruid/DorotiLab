@@ -163,6 +163,16 @@ internal sealed class MaterialGallery(
 
 internal sealed class MaterialGalleryState : State<MaterialGallery>
 {
+    private const string GalleryShaderSource = """
+        uniform float2 uSize;
+        uniform float uPhase;
+
+        half4 main(float2 position) {
+            float2 uv = position / max(uSize, float2(1.0));
+            return half4(uv.x, 0.35 + 0.35 * sin(uPhase + uv.x * 6.2831853), uv.y, 1.0);
+        }
+        """;
+
     internal static readonly string[] InteractiveLabels =
     [
         "G6 Material button", "G6 Material checkbox", "G6 Material radio",
@@ -176,6 +186,8 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
     private double _slider = 0.2;
     private int _fabCount;
     private bool _blurEnabled = true;
+    private readonly FragmentShader _galleryShader =
+        FragmentProgram.fromSource(GalleryShaderSource, "doroti-demo-gallery").fragmentShader();
     private readonly GlobalKey<IState> _blurToggleKey = new("g6-backdrop-blur-toggle");
     private readonly GlobalKey<IState> _backdropPanelKey = new("g6-backdrop-blur-panel");
 
@@ -381,6 +393,15 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                         spacing: 10,
                         children:
                         [
+                            new ShaderMask(
+                                shaderCallback: bounds =>
+                                {
+                                    _galleryShader.setFloat(0, bounds.width);
+                                    _galleryShader.setFloat(1, bounds.height);
+                                    _galleryShader.setFloat(2, _slider * 6.2831853);
+                                    return _galleryShader;
+                                },
+                                child: new Text("Custom SkSL · shared GPU runtime effect · all targets")),
                             new Text("Reviewed Material · promoted product · strict Skia GPU"),
                             new Material.Card(
                                 color: new UiColor(0xfff3edf7L),

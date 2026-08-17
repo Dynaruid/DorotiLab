@@ -2,7 +2,7 @@
 
 [English](README.md) | **한국어**
 
-Doroti는 MAUI Windows, MAUI Mac Catalyst, Blazor WebAssembly에서 공용 widget, layout, painting, semantics, rendering pipeline을 사용하는 C#/.NET UI framework입니다.
+Doroti는 MAUI Windows, MAUI Mac Catalyst, MAUI Android, Blazor WebAssembly에서 공용 widget, layout, painting, semantics, rendering pipeline을 사용하는 C#/.NET UI framework입니다.
 
 ## 개발 방식
 
@@ -17,13 +17,14 @@ Dart-to-C# compiler와 고정 Flutter checkout은 선택적인 import·동작 re
 - `Doroti.Framework.*`: 제품이 소유하는 Foundation, Scheduler, Services, Physics, Animation, Gestures, Painting, Semantics, Rendering, Widgets, Cupertino, Material library
 - `Doroti.Runtime`, `Doroti.Ui`, `Doroti.Hosting`: runtime 의미와 target-neutral startup/builder/descriptor 계약
 - `Doroti.Engine`, `Doroti.Rendering`, `Doroti.Graphics`: frame scheduling, display output, graphics 계약
-- `Doroti.App.Sdk`: Windows, Mac Catalyst, Web의 single-project target 선택과 generated native/Web bootstrap/plugin registration
+- `Doroti.App.Sdk`: Windows, Mac Catalyst, Android, Web의 single-project target 선택과 generated native/Web bootstrap/plugin registration
+- `Doroti.Skia.RuntimeEffects`: native/Web host가 공유하는 fail-closed SkSL compiler와 uniform/image-sampler binder
 - `Doroti.Host.Maui`: host 소유 MAUI application/page lifecycle과 `SKGLView` GPU surface 통합
 - `Doroti.Host.Web`: host 소유 Blazor composition, WebGL2 canvas, input, accessibility, resource bridge
 
 Web 실행 source는 TypeScript가 소유합니다. 앱은 `Platforms/Web/src/**/*.ts`, Doroti는 `src/Doroti.Host.Web/Web/*.ts`를 편집합니다. `Microsoft.TypeScript.MSBuild` 7.0.0이 target/configuration별 `obj`에 JavaScript를 만들며 publish에는 그 결과만 포함됩니다. 앱 도구로 Node, npm, Bun, bundler를 요구하지 않습니다. 자세한 결정은 [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md)에 있습니다.
 
-Windows Release build/publish와 실제 `MauiSKSwapChainPanel` GPU frame은 확인했습니다. Web package-only compile/publish와 Chromium canvas/기본 FAB pointer smoke도 runtime 10.0.11에서 확인했습니다. Native hover/wheel/keyboard/IME/UIA, Mac Catalyst native 실행, Web keyboard/IME/clipboard/resize/interactive ARIA, physical acceptance와 cross-target parity는 각각 별도의 `notVerified` gate입니다.
+Windows Release build/publish와 실제 `MauiSKSwapChainPanel` GPU frame을 확인했습니다. Android arm64 APK/AAB build와 실기기 `MauiSKGLTextureView` OpenGL ES custom-SkSL frame/replay도 자동 확인했습니다. Android x64 target은 x86_64 에뮬레이터에서 build한 뒤 반복 스크롤과 visible-content screenshot으로 지속 표시를 확인했습니다. Web compile/publish와 Mac Catalyst cross-build는 통과했지만 새 custom shader의 Web 및 Mac native presentation은 별도의 `notVerified` gate입니다.
 
 ## 요구 사항
 

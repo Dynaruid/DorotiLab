@@ -446,6 +446,17 @@ public sealed class PlatformDispatcher : IDisposable
             "platform messaging requires exactly one active view in this host-neutral dispatcher scope");
     }
 
+    internal ValueTask<ReadOnlyMemory<byte>> LoadApplicationResourceAsync(
+        string key,
+        DartUiInvocation invocation,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(key);
+        var view = RequireMessagingView();
+        return view.RequireCapability<IApplicationResourceHostCapability>(
+            DorotiCapabilityIds.ApplicationResources, invocation).LoadAsync(key, cancellationToken);
+    }
+
     public void Dispose()
     {
         DorotiView[] viewsToDispose;

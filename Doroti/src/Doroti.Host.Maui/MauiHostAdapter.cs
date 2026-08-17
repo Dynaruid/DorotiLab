@@ -35,7 +35,10 @@ internal sealed class MauiHostAdapter :
     private long _surfaceGeneration;
     private long _invalidationsRequested;
     private long _invalidationsCoalesced;
+    private long _nativePointerEvents;
     private bool _invalidatePending;
+    private bool _isPainting;
+    private bool _invalidateAfterPaint;
     private bool _disposed;
 
     internal MauiHostAdapter(ulong viewId, SKGLView view, MauiTextInputBridge textInput,
@@ -66,6 +69,7 @@ internal sealed class MauiHostAdapter :
 
     internal long InvalidationsRequested => Interlocked.Read(ref _invalidationsRequested);
     internal long InvalidationsCoalesced => Interlocked.Read(ref _invalidationsCoalesced);
+    internal long NativePointerEvents => Interlocked.Read(ref _nativePointerEvents);
     public ViewMetrics Metrics => new(
         new Size(_logicalSize.width * _density, _logicalSize.height * _density), _density,
         ViewPadding.zero, ViewPadding.zero, ViewPadding.zero, AppLifecycleState.resumed,
@@ -76,8 +80,12 @@ internal sealed class MauiHostAdapter :
         false, false,
 #if WINDOWS
         HostOperatingSystem.windows
-#else
+#elif MACCATALYST
         HostOperatingSystem.macOS
+#elif ANDROID
+        HostOperatingSystem.android
+#else
+#error Doroti.Host.Maui requires an explicit operating-system mapping.
 #endif
     );
 
@@ -129,7 +137,11 @@ internal sealed class MauiHostAdapter :
     internal void BeginPaint(SKPaintGLSurfaceEventArgs args, object? context, string nativeViewType, string backend)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        lock (_gate) _invalidatePending = false;
+        lock (_gate)
+        {
+            _invalidatePending = false;
+            _isPainting = true;
+        }
         var previous = Snapshot;
         if (context is not null && !ReferenceEquals(context, _lastContext))
         {
@@ -160,6 +172,26 @@ internal sealed class MauiHostAdapter :
         foreach (var callback in callbacks) callback(now);
     }
 
+    internal void EndPaint()
+    {
+        if (_disposed) return;
+        var dispatch = false;
+        lock (_gate)
+        {
+            _isPainting = false;
+            if (_invalidateAfterPaint)
+            {
+                _invalidateAfterPaint = false;
+                if (!_invalidatePending)
+                {
+                    _invalidatePending = true;
+                    dispatch = true;
+                }
+            }
+        }
+        if (dispatch) _view.Dispatcher.Dispatch(_view.InvalidateSurface);
+    }
+
     private object? _lastContext;
 
     internal event Action<int, SemanticsAction, object?>? SemanticsAction;
@@ -173,6 +205,14 @@ internal sealed class MauiHostAdapter :
         Interlocked.Increment(ref _invalidationsRequested);
         lock (_gate)
         {
+            // TextureView can discard an InvalidateSurface issued by its active
+            // PaintSurface callback. Post that request after the paint completes.
+            if (_isPainting)
+            {
+                if (_invalidateAfterPaint) Interlocked.Increment(ref _invalidationsCoalesced);
+                _invalidateAfterPaint = true;
+                return;
+            }
             if (_invalidatePending)
             {
                 Interlocked.Increment(ref _invalidationsCoalesced);
@@ -231,7 +271,12 @@ internal sealed class MauiHostAdapter :
             application.RequestedThemeChanged -= HandleRequestedThemeChanged;
         _nativeInput.Dispose();
         _textInput.Dispose();
-        lock (_gate) _frameCallbacks.Clear();
+        lock (_gate)
+        {
+            _frameCallbacks.Clear();
+            _invalidateAfterPaint = false;
+            _isPainting = false;
+        }
         Closed?.Invoke();
         GC.KeepAlive(ConfigurationChanged);
         GC.KeepAlive(KeyData);
@@ -253,6 +298,7 @@ internal sealed class MauiHostAdapter :
     private void HandleTouch(object? sender, SKTouchEventArgs args)
     {
         _ = sender;
+        Interlocked.Increment(ref _nativePointerEvents);
         var change = args.ActionType switch
         {
             SKTouchAction.Pressed => PointerChange.down,

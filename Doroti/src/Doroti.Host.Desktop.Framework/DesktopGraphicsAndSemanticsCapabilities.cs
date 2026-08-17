@@ -655,7 +655,7 @@ internal sealed class DesktopGraphicsAndSemanticsCapabilities :
 
     private static RasterImageFilter Convert(ImageFilterSnapshot value)
     {
-        if (value.IsShader)
+        if (value.Shader is not null)
             throw new NotSupportedException("Fragment shader image filters are explicitly unsupported by the current backend.");
         if (value.Outer is not null && value.Inner is not null)
             return new RasterImageFilter(RasterImageFilterKind.Compose,

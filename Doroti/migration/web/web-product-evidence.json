@@ -146,8 +146,9 @@
       "status": "pass",
       "command": "dotnet new doroti-app --name DorotiWebProduct",
       "source": "package-only",
+      "androidBuild": "pass-android-arm64",
       "externalRoot": "repository-outside-source-tree",
-      "packageCount": 19,
+      "packageCount": 22,
       "flutterDartFiles": 0,
       "unsupportedPlatformDirectories": 0,
       "userAuthoredRazorFiles": 0,
@@ -168,8 +169,8 @@
         "target": "browser-wasm",
         "configuration": "Release",
         "diagnostics": 0,
-        "applicationAssembly": "DorotiDemoApp.l3h5ofhjbd.wasm",
-        "applicationSha256": "2f9657dda7aae7adb1a46fd0cc800fefcf741f04dda56f4d45b63289b55f4e5e"
+        "applicationAssembly": "DorotiDemoApp.qmo39frnni.wasm",
+        "applicationSha256": "8eab090a6a801e1eab1363a478d80ca06637cd095202ea634e60721522ccc57d"
       },
       "sharedSource": {
         "path": "DorotiDemoApp/src/App.cs",
@@ -241,9 +242,9 @@
         "build": "pass",
         "publish": "pass"
       },
-      "staticFileCount": 726,
-      "aggregateSha256": "9b42b11881ade6fccfacb5ad7fe50eb5e7056eb46f6c811ffe1ea49927585f44",
-      "repeatAggregateSha256": "9b42b11881ade6fccfacb5ad7fe50eb5e7056eb46f6c811ffe1ea49927585f44",
+      "staticFileCount": 729,
+      "aggregateSha256": "e1cae56a509cbfc0b6d08d92c2fcc59d6934ce421b9cc72ec8eb246b5e894e89",
+      "repeatAggregateSha256": "e1cae56a509cbfc0b6d08d92c2fcc59d6934ce421b9cc72ec8eb246b5e894e89",
       "bootLoader": "_framework/blazor.webassembly.js",
       "runtimeFrameworkVersion": "10.0.11",
       "coreLibWebCil": {
@@ -251,11 +252,11 @@
         "sha256": "668eca2e7600e31cbc9b10f3b2c32b79765f4e51c18112a72d67d814c890bc2c"
       },
       "nativeWasm": {
-        "name": "dotnet.native.4wd3yfjoew.wasm",
-        "sha256": "ec68f473c8bbca1bdda7f9fb1bd1a0c85c8768bd0672fffbbc2a6f53debee734"
+        "name": "dotnet.native.sv8k2et09y.wasm",
+        "sha256": "088c5330c15d5fd1c4938cc6f07cad14c80da8514bb7c728dce50b88f245c9c8"
       },
       "skiaWasmCount": 2,
-      "appAssembly": "DorotiDemoApp.l3h5ofhjbd.wasm",
+      "appAssembly": "DorotiDemoApp.qmo39frnni.wasm",
       "resources": [
         "assets/doroti-mark.txt",
         "locales/en-US.json"
@@ -281,9 +282,9 @@
         },
         "browserInterop": {
           "source": "Doroti/src/Doroti.Host.Web/Web/doroti.web.ts",
-          "sourceSha256": "2fb72557d8e0f00dee7a15654a8121903de11085705d075834719d5be7fc0896",
+          "sourceSha256": "d88df849781e15c94e4c45dd13241e8891c31083937a9c9030bd83f423d3d26e",
           "artifact": "_content/Doroti.Host.Web/doroti.web.js",
-          "artifactSha256": "c7844fd2720dbb92b958d358986b9598d2edbb6fca4805086cfb622dfc88cdf3"
+          "artifactSha256": "fadd86b3db0cc254bf4021880f95a30fdc011e9c6d26f4a531d6073013b13166"
         }
       },
       "publishedTypeScriptSources": 0,
@@ -370,7 +371,7 @@
     {
       "mode": "browser-live-remaining",
       "owner": "browser-live",
-      "blocker": "keyboard, IME, clipboard, resize and interactive ARIA actions remain outside the recorded canvas and basic-pointer smoke"
+      "blocker": "keyboard, IME, clipboard, resize and interactive ARIA actions are implemented but remain outside the recorded canvas and basic-pointer smoke"
     }
   ]
 }

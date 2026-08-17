@@ -5,13 +5,17 @@
     <DorotiTarget Condition="'$(DorotiTarget)' == '' and '$(RuntimeIdentifier)' == 'browser-wasm'">Web</DorotiTarget>
     <DorotiTarget Condition="'$(DorotiTarget)' == '' and '$(RuntimeIdentifier)' == 'win-x64'">Windows</DorotiTarget>
     <DorotiTarget Condition="'$(DorotiTarget)' == '' and '$(RuntimeIdentifier)' == 'maccatalyst-arm64'">MacCatalyst</DorotiTarget>
+    <DorotiTarget Condition="'$(DorotiTarget)' == '' and '$(RuntimeIdentifier)' == 'android-arm64'">Android</DorotiTarget>
+    <DorotiTarget Condition="'$(DorotiTarget)' == '' and '$(RuntimeIdentifier)' == 'android-x64'">Android</DorotiTarget>
     <DorotiTarget Condition="'$(DorotiTarget)' == '' and $([MSBuild]::IsOSPlatform('Windows'))">Windows</DorotiTarget>
     <DorotiTarget Condition="'$(DorotiTarget)' == '' and $([MSBuild]::IsOSPlatform('OSX'))">MacCatalyst</DorotiTarget>
     <DorotiTargetKey>$([System.String]::Copy('$(DorotiTarget)').ToLowerInvariant())</DorotiTargetKey>
-    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">obj\$(DorotiTargetKey)\</BaseIntermediateOutputPath>
-    <OutputPath Condition="'$(OutputPath)' == ''">bin\$(DorotiTargetKey)\$(Configuration)\</OutputPath>
+    <DorotiArtifactKey Condition="'$(DorotiTarget)' == 'Android' and '$(DorotiRequestedRuntimeIdentifier)' == 'android-x64'">android-x64</DorotiArtifactKey>
+    <DorotiArtifactKey Condition="'$(DorotiArtifactKey)' == ''">$(DorotiTargetKey)</DorotiArtifactKey>
+    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">obj\$(DorotiArtifactKey)\</BaseIntermediateOutputPath>
+    <OutputPath Condition="'$(OutputPath)' == ''">bin\$(DorotiArtifactKey)\$(Configuration)\</OutputPath>
     <PublishDir Condition="'$(PublishDir)' == ''">$(OutputPath)publish\</PublishDir>
-    <NuGetLockFilePath Condition="'$(NuGetLockFilePath)' == ''">packages.$(DorotiTargetKey).lock.json</NuGetLockFilePath>
+    <NuGetLockFilePath Condition="'$(NuGetLockFilePath)' == ''">packages.$(DorotiArtifactKey).lock.json</NuGetLockFilePath>
   </PropertyGroup>
 
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk.BlazorWebAssembly" Condition="'$(DorotiTarget)' == 'Web'" />
@@ -25,6 +29,9 @@
     <TargetFramework Condition="'$(DorotiTarget)' == 'MacCatalyst'">net10.0-maccatalyst</TargetFramework>
     <RuntimeIdentifier Condition="'$(DorotiTarget)' == 'MacCatalyst' and '$(RuntimeIdentifier)' == ''">maccatalyst-arm64</RuntimeIdentifier>
     <UseMaui Condition="'$(DorotiTarget)' == 'MacCatalyst'">true</UseMaui>
+    <TargetFramework Condition="'$(DorotiTarget)' == 'Android'">net10.0-android</TargetFramework>
+    <RuntimeIdentifier Condition="'$(DorotiTarget)' == 'Android' and '$(RuntimeIdentifier)' == ''">android-arm64</RuntimeIdentifier>
+    <UseMaui Condition="'$(DorotiTarget)' == 'Android'">true</UseMaui>
     <TargetFramework Condition="'$(DorotiTarget)' == 'Web'">net10.0</TargetFramework>
     <RuntimeIdentifier Condition="'$(DorotiTarget)' == 'Web' and '$(RuntimeIdentifier)' == ''">browser-wasm</RuntimeIdentifier>
     <RuntimeFrameworkVersion Condition="'$(DorotiTarget)' == 'Web' and '$(RuntimeFrameworkVersion)' == ''">10.0.11</RuntimeFrameworkVersion>
@@ -45,10 +52,13 @@
     <DorotiMarkupVersion Condition="'$(DorotiMarkupVersion)' == ''">8.0.0</DorotiMarkupVersion>
     <DefineConstants Condition="'$(DorotiTarget)' == 'Windows'">$(DefineConstants);WINDOWS;DOROTI_MAUI</DefineConstants>
     <DefineConstants Condition="'$(DorotiTarget)' == 'MacCatalyst'">$(DefineConstants);MACCATALYST;DOROTI_MAUI</DefineConstants>
+    <DefineConstants Condition="'$(DorotiTarget)' == 'Android'">$(DefineConstants);ANDROID;DOROTI_MAUI</DefineConstants>
     <DefineConstants Condition="'$(DorotiTarget)' == 'Web'">$(DefineConstants);DOROTI_BROWSER</DefineConstants>
     <SupportedOSPlatformVersion Condition="'$(DorotiTarget)' == 'Windows'">10.0.19041.0</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion Condition="'$(DorotiTarget)' == 'Windows'">10.0.19041.0</TargetPlatformMinVersion>
     <SupportedOSPlatformVersion Condition="'$(DorotiTarget)' == 'MacCatalyst'">15.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="'$(DorotiTarget)' == 'Android'">21.0</SupportedOSPlatformVersion>
+    <AndroidManifest Condition="'$(DorotiTarget)' == 'Android'">Platforms\Android\AndroidManifest.xml</AndroidManifest>
     <WindowsPackageType Condition="'$(DorotiTarget)' == 'Windows' and '$(WindowsPackageType)' == ''">None</WindowsPackageType>
     <PublishTrimmed Condition="'$(DorotiTarget)' == 'Web'">false</PublishTrimmed>
     <DorotiWebTypeScript Condition="'$(DorotiTarget)' == 'Web' and Exists('Platforms\Web\tsconfig.json')">true</DorotiWebTypeScript>

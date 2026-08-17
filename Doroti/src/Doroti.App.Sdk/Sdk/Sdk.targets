@@ -18,6 +18,8 @@
   <ItemGroup>
     <DorotiTargetDescriptor Include="Windows" HostKind="Maui" NativeEntryKind="WinUI-Xaml" RuntimeIdentifier="win-x64" TargetFramework="net10.0-windows10.0.19041.0" TargetPackage="Doroti.Target.Windows.Maui.win-x64" Condition="'$(DorotiTarget)' == 'Windows'" />
     <DorotiTargetDescriptor Include="MacCatalyst" HostKind="Maui" NativeEntryKind="UIKit-Main" RuntimeIdentifier="maccatalyst-arm64" TargetFramework="net10.0-maccatalyst" TargetPackage="Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64" Condition="'$(DorotiTarget)' == 'MacCatalyst'" />
+    <DorotiTargetDescriptor Include="Android" HostKind="Maui" NativeEntryKind="Android-Application" RuntimeIdentifier="android-arm64" TargetFramework="net10.0-android" TargetPackage="Doroti.Target.Android.Maui.android-arm64" Condition="'$(DorotiTarget)' == 'Android' and '$(RuntimeIdentifier)' == 'android-arm64'" />
+    <DorotiTargetDescriptor Include="Android" HostKind="Maui" NativeEntryKind="Android-Application" RuntimeIdentifier="android-x64" TargetFramework="net10.0-android" TargetPackage="Doroti.Target.Android.Maui.android-x64" Condition="'$(DorotiTarget)' == 'Android' and '$(RuntimeIdentifier)' == 'android-x64'" />
     <DorotiTargetDescriptor Include="Web" HostKind="BlazorWebAssembly" NativeEntryKind="Managed-Main" RuntimeIdentifier="browser-wasm" TargetFramework="net10.0" TargetPackage="Doroti.Target.Web.browser-wasm" Condition="'$(DorotiTarget)' == 'Web'" />
   </ItemGroup>
 
@@ -29,7 +31,10 @@
     <Compile Include="$(_DorotiPluginRegistrationFile)" AutoGen="true" DesignTime="true" Visible="false" />
     <ApplicationDefinition Include="Platforms\$(DorotiTarget)\App.xaml" Generator="MSBuild:Compile" Condition="Exists('Platforms\$(DorotiTarget)\App.xaml')" />
     <Content Include="Platforms\$(DorotiTarget)\wwwroot\**" Link="wwwroot\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Condition="Exists('Platforms\$(DorotiTarget)\wwwroot')" />
-    <EmbeddedResource Include="Platforms\$(DorotiTarget)\application-manifest.json" LogicalName="Doroti.Application.Manifest" Condition="Exists('Platforms\$(DorotiTarget)\application-manifest.json')" />
+    <EmbeddedResource Include="Platforms\$(DorotiTarget)\application-manifest.$(RuntimeIdentifier).json" LogicalName="Doroti.Application.Manifest" Condition="Exists('Platforms\$(DorotiTarget)\application-manifest.$(RuntimeIdentifier).json')" />
+    <EmbeddedResource Include="Platforms\$(DorotiTarget)\application-manifest.json" LogicalName="Doroti.Application.Manifest" Condition="!Exists('Platforms\$(DorotiTarget)\application-manifest.$(RuntimeIdentifier).json') and Exists('Platforms\$(DorotiTarget)\application-manifest.json')" />
+    <EmbeddedResource Include="Resources\Shaders\**\*.sksl" LogicalName="Doroti.Shaders.%(RecursiveDir)%(Filename)%(Extension)" Condition="Exists('Resources\Shaders')" />
+    <AndroidResource Include="Platforms\Android\Resources\**\*" Condition="'$(DorotiTarget)' == 'Android' and Exists('Platforms\Android\Resources')" />
     <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#6750A4" Condition="'$(UseMaui)' == 'true' and Exists('Resources\AppIcon\appicon.svg')" />
     <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#1D1B20" BaseSize="128,128" Condition="'$(UseMaui)' == 'true' and Exists('Resources\Splash\splash.svg')" />
   </ItemGroup>
@@ -61,6 +66,7 @@
       <_DorotiDisallowedXaml Include="@(MauiXaml)" />
       <_DorotiDisallowedXaml Include="@(ApplicationDefinition)" Condition="'%(ApplicationDefinition.Identity)' != 'Platforms\$(DorotiTarget)\App.xaml'" />
     </ItemGroup>
+    <Error Code="DOROTIAPP004" Condition="'$(DorotiTarget)' == 'Android' and '$(RuntimeIdentifier)' != 'android-arm64' and '$(RuntimeIdentifier)' != 'android-x64'" Text="DorotiTarget Android requires RuntimeIdentifier 'android-arm64' or 'android-x64'; found '$(RuntimeIdentifier)'." />
     <Error Code="DOROTIAPP001" Condition="'$(_DorotiTargetDescriptorCount)' != '1'" Text="A Doroti build requires exactly one DorotiTargetDescriptor; found '$(_DorotiTargetDescriptorCount)' for '$(DorotiTarget)'." />
     <Error Code="DOROTIAPP002" Condition="'$(_DorotiSelectedTarget)' != '$(DorotiTarget)'" Text="DorotiTargetDescriptor '$(_DorotiSelectedTarget)' does not match DorotiTarget '$(DorotiTarget)'." />
     <Error Code="DOROTIAPP003" Condition="'$(_DorotiSelectedTfm)' != '$(TargetFramework)'" Text="DorotiTarget $(DorotiTarget) requires TargetFramework '$(_DorotiSelectedTfm)'; found '$(TargetFramework)'." />

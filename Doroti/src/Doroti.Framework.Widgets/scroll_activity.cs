@@ -338,6 +338,15 @@ public class BallisticScrollActivity : ScrollActivity
     public BallisticScrollActivity(ScrollActivityDelegate @delegate, global::Doroti.Framework.Physics.Simulation simulation, global::Doroti.Framework.Scheduler.TickerProvider vsync, bool shouldIgnorePointer) : base(@delegate)
     {
         this.__field_shouldIgnorePointer = shouldIgnorePointer;
+        this._controller = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
+        {
+            var controller = global::Doroti.Framework.Animation.AnimationController.CreateUnbounded(
+                debugLabel: global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "BallisticScrollActivity"),
+                vsync: vsync);
+            controller.addListener(this._tick);
+            controller.animateWith(simulation).whenComplete(() => { this._end(); return default!; });
+            return controller;
+        }))();
     }
 
     public override void resetActivity()
@@ -460,4 +469,3 @@ public class DrivenScrollActivity : ScrollActivity
     }
 
 }
-

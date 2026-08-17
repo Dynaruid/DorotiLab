@@ -1,0 +1,5 @@
+<Project>
+  <ItemGroup Condition="'$(DorotiTarget)' == 'Android' and '@(DorotiTargetDescriptor)' == ''">
+    <DorotiTargetDescriptor Include="Android" HostKind="Maui" NativeEntryKind="Android-Application" RuntimeIdentifier="android-x64" TargetFramework="net10.0-android" TargetPackage="Doroti.Target.Android.Maui.android-x64" />
+  </ItemGroup>
+</Project>

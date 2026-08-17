@@ -1329,6 +1329,10 @@ public abstract class _RenderCustomClip__proxy_box<T> : RenderProxyBox
 {
     internal virtual CustomClipper<T>? _clipper { get; set; } = default;
     internal virtual T? _clip { get; set; } = default;
+    // `T?` on an unconstrained C# generic is only a nullable annotation. When T is
+    // Rect or RRect, default(T) is an empty value rather than Dart's null sentinel.
+    // Track validity explicitly so the first paint computes the actual clip.
+    internal virtual bool _clipIsValid { get; set; }
     internal virtual Clip _clipBehavior { get; set; } = default!;
     internal virtual Paint? _debugPaint { get; set; } = default;
     internal virtual global::Doroti.Framework.Painting.TextPainter? _debugText { get; set; } = default;
@@ -1378,6 +1382,7 @@ public abstract class _RenderCustomClip__proxy_box<T> : RenderProxyBox
     internal virtual void _markNeedsClip()
     {
         _clip = default;
+        _clipIsValid = false;
         markNeedsPaint();
         markNeedsSemanticsUpdate();
     }
@@ -1403,12 +1408,13 @@ public abstract class _RenderCustomClip__proxy_box<T> : RenderProxyBox
         if ((!object.Equals(oldSize__52169, size)))
         {
             _clip = default;
+            _clipIsValid = false;
         }
     }
 
     internal virtual void _updateClip()
     {
-        if (_clip is null)
+        if (!_clipIsValid)
         {
             if (_clipper is null)
             {
@@ -1418,6 +1424,7 @@ public abstract class _RenderCustomClip__proxy_box<T> : RenderProxyBox
             {
                 _clip = _clipper.getClip(size);
             }
+            _clipIsValid = true;
         }
     }
     public override Rect? describeApproximatePaintClip(RenderObject child)

@@ -43,4 +43,19 @@ public abstract class DorotiMauiUIApplicationDelegate<TStartup> : MauiUIApplicat
 
     protected virtual void ConfigurePlatform(MauiAppBuilder builder) => _ = builder;
 }
+#elif ANDROID
+public abstract class DorotiMauiAndroidApplication(IntPtr handle, Android.Runtime.JniHandleOwnership ownership)
+    : MauiApplication(handle, ownership)
+{
+    protected sealed override MauiApp CreateMauiApp()
+    {
+        var builder = MauiApp.CreateBuilder();
+        ConfigurePlatform(builder);
+        return builder.UseDorotiApplication(CreateApplicationDescriptor()).Build();
+    }
+
+    protected abstract DorotiApplicationDescriptor CreateApplicationDescriptor();
+
+    protected virtual void ConfigurePlatform(MauiAppBuilder builder) => _ = builder;
+}
 #endif

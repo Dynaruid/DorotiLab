@@ -185,6 +185,11 @@ public sealed record ColorFilter
 
 public sealed record ImageFilter
 {
+    // Runtime fragment shaders are supported for Paint and ShaderMask. A shader image
+    // filter additionally needs the host to bind the filtered child as an implicit
+    // texture input. SkiaSharp does not expose that image-filter primitive, so report
+    // the narrower capability honestly and let Flutter's StretchEffect use its matrix
+    // fallback instead of replacing the scroll subtree with a source-less shader.
     public static bool isShaderFilterSupported => false;
 
     public ImageFilter(double sigmaX = 0, double sigmaY = 0, TileMode tileMode = TileMode.clamp, Rect? bounds = null)

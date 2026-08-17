@@ -73,7 +73,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             var rect = node.Rect is { Length: 4 } ? node.Rect : [0, 0, 0, 0];
             AbsoluteLayout.SetLayoutBounds(element, new Microsoft.Maui.Graphics.Rect(
                 rect[0], rect[1], Math.Max(0, rect[2] - rect[0]), Math.Max(0, rect[3] - rect[1])));
-            AbsoluteLayout.SetLayoutFlags(element, AbsoluteLayoutFlags.None);
+            AbsoluteLayout.SetLayoutFlags(element, Microsoft.Maui.Layouts.AbsoluteLayoutFlags.None);
             _layer.Children.Add(element);
         }
         _layer.SetValue(SemanticProperties.DescriptionProperty, $"Doroti semantics generation {update?.Generation ?? 0}");

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Skia.RuntimeEffects</AssemblyName>
+    <PackageId>Doroti.Skia.RuntimeEffects</PackageId>
+    <Description>Shared Skia runtime-effect compiler for Doroti custom shaders on native and Web targets.</Description>
+    <PackageReleaseNotes>Adds FragmentProgram, float-uniform, and image-sampler runtime effects.</PackageReleaseNotes>
+    <IsDorotiProduct>true</IsDorotiProduct>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Doroti.Host.Maui" />
+    <InternalsVisibleTo Include="Doroti.Host.Web" />
+    <InternalsVisibleTo Include="Doroti.Validation.RuntimeShaderContract" />
+    <PackageReference Include="SkiaSharp" />
+    <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
+  </ItemGroup>
+</Project>

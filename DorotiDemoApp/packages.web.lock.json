@@ -440,6 +440,7 @@
         "type": "Project",
         "dependencies": {
           "Doroti.Hosting": "[0.2.0-beta, )",
+          "Doroti.Skia.RuntimeEffects": "[0.2.0-beta, )",
           "Doroti.Ui": "[0.2.0-beta, )",
           "SkiaSharp.NativeAssets.WebAssembly": "[3.119.4, )",
           "SkiaSharp.Views.Blazor": "[3.119.4, )"
@@ -456,6 +457,13 @@
         "type": "Project",
         "dependencies": {
           "MaterialColorUtilities": "[0.3.0, )"
+        }
+      },
+      "doroti.skia.runtimeeffects": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Ui": "[0.2.0-beta, )",
+          "SkiaSharp": "[3.119.4, )"
         }
       },
       "doroti.target.web.browser-wasm": {

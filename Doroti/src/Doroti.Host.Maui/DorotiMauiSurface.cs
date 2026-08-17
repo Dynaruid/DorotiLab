@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using Doroti.Hosting;
 using Doroti.Ui;
@@ -8,6 +10,12 @@ namespace Doroti.Host.Maui;
 
 public sealed class DorotiMauiSurface : Grid, IDisposable
 {
+    private static readonly JsonSerializerOptions EvidenceJsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        WriteIndented = true,
+    };
+    private static readonly TimeSpan EvidenceWriteInterval = TimeSpan.FromSeconds(1);
     private readonly ulong _viewId;
     private readonly DorotiApplicationDescriptor _application;
     private DorotiApplicationBoundary? _boundary;
@@ -20,6 +28,8 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     private readonly AbsoluteLayout _semanticsLayer;
     private bool _attached;
     private bool _disposed;
+    private long _lastEvidenceWriteTimestamp;
+    private long _lastEvidenceReplayed;
     private Window? _window;
 
     public DorotiMauiSurface(
@@ -44,9 +54,19 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     }
 
     public MauiHostDiagnostics? Diagnostics => _host?.CaptureDiagnostics(
-        _viewId, "src/App.cs", OperatingSystem.IsWindows()
-            ? "Platforms/Windows/App.xaml.cs"
-            : "obj/maccatalyst/Doroti.Generated/DorotiBootstrap.g.cs -> Platforms/MacCatalyst/AppDelegate.cs");
+        _viewId, "src/App.cs",
+#if WINDOWS
+        "Platforms/Windows/App.xaml.cs"
+#elif MACCATALYST
+        "obj/maccatalyst/Doroti.Generated/DorotiBootstrap.g.cs -> Platforms/MacCatalyst/AppDelegate.cs"
+#elif ANDROID
+        RuntimeInformation.ProcessArchitecture == Architecture.X64
+            ? "obj/android-x64/Doroti.Generated/DorotiBootstrap.g.cs -> Platforms/Android/MainApplication.cs"
+            : "obj/android/Doroti.Generated/DorotiBootstrap.g.cs -> Platforms/Android/MainApplication.cs"
+#else
+#error Doroti.Host.Maui requires an explicit bootstrap source.
+#endif
+        );
 
     private void HandleHandlerChanged(object? sender, EventArgs args)
     {
@@ -73,30 +93,70 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         if (args.Surface is null || _skiaView.GRContext is null)
             throw new InvalidOperationException("Strict Doroti MAUI mode requires a GPU-backed SKSurface and GRContext.");
         var nativeType = _skiaView.Handler?.PlatformView?.GetType().FullName ?? "unknown";
-        _host.BeginPaint(_viewId, args, _skiaView.GRContext, nativeType);
-        _host.PaintSkiaSurface(_viewId, args.Surface, args.BackendRenderTarget.Width, args.BackendRenderTarget.Height);
-        WriteEvidence();
+        try
+        {
+            _host.BeginPaint(_viewId, args, _skiaView.GRContext, nativeType);
+            _host.PaintSkiaSurface(_viewId, args.Surface, args.BackendRenderTarget.Width, args.BackendRenderTarget.Height);
+            WriteEvidence();
+        }
+        finally
+        {
+            _host.EndPaint(_viewId);
+        }
     }
 
     private void WriteEvidence()
     {
-        var path = Environment.GetEnvironmentVariable("DOROTI_MAUI_EVIDENCE");
         var diagnostics = Diagnostics;
-        if (string.IsNullOrWhiteSpace(path) || diagnostics is null) return;
-        File.WriteAllText(path, JsonSerializer.Serialize(diagnostics, new JsonSerializerOptions
+        if (diagnostics is null) return;
+        var quitFrames = GetAutoQuitFrames();
+        var shouldRequestReplay = quitFrames > 0 && diagnostics.Frame.Presented >= quitFrames &&
+                                  diagnostics.Frame.Replayed == 0;
+        var shouldQuit = quitFrames > 0 && diagnostics.Frame.Presented >= quitFrames &&
+                         diagnostics.Frame.Replayed > 0;
+        var timestamp = Stopwatch.GetTimestamp();
+        var firstEvidence = _lastEvidenceWriteTimestamp == 0;
+        var firstReplay = diagnostics.Frame.Replayed > 0 && _lastEvidenceReplayed == 0;
+        var intervalElapsed = !firstEvidence &&
+                              Stopwatch.GetElapsedTime(_lastEvidenceWriteTimestamp, timestamp) >= EvidenceWriteInterval;
+
+        // Evidence collection must not serialize, log, and synchronously rewrite a file on every
+        // interactive frame. That work runs on the native paint path and can starve Android's
+        // TextureView compositor while a drag is producing frames.
+        if (firstEvidence || firstReplay || intervalElapsed || shouldQuit)
         {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true,
-        }));
-        var quitFrames = int.TryParse(Environment.GetEnvironmentVariable("DOROTI_MAUI_AUTO_QUIT_FRAMES"), out var value)
-            ? value : 0;
-        if (quitFrames > 0 && diagnostics.Frame.Presented >= quitFrames)
-        {
-            if (diagnostics.Frame.Replayed > 0)
-                Dispatcher.Dispatch(() => Application.Current?.Quit());
-            else
-                Dispatcher.Dispatch(_skiaView.InvalidateSurface);
+            var json = JsonSerializer.Serialize(diagnostics, EvidenceJsonOptions);
+            var path = Environment.GetEnvironmentVariable("DOROTI_MAUI_EVIDENCE");
+#if ANDROID
+            path = System.IO.Path.Combine(Android.App.Application.Context.CacheDir?.AbsolutePath
+                ?? throw new InvalidOperationException("Android cache directory is unavailable."), "doroti-maui-evidence.json");
+            Android.Util.Log.Info("DorotiMauiEvidence", json.ReplaceLineEndings(string.Empty));
+#endif
+            if (!string.IsNullOrWhiteSpace(path)) File.WriteAllText(path, json);
+            _lastEvidenceWriteTimestamp = timestamp;
+            _lastEvidenceReplayed = diagnostics.Frame.Replayed;
         }
+
+        if (shouldQuit)
+        {
+            Dispatcher.Dispatch(() => Application.Current?.Quit());
+        }
+        else if (shouldRequestReplay)
+        {
+            Dispatcher.Dispatch(_skiaView.InvalidateSurface);
+        }
+    }
+
+    private static int GetAutoQuitFrames()
+    {
+        if (int.TryParse(Environment.GetEnvironmentVariable("DOROTI_MAUI_AUTO_QUIT_FRAMES"), out var value))
+            return value;
+#if ANDROID
+        return Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?.Intent?
+            .GetIntExtra("doroti_auto_quit_frames", 0) ?? 0;
+#else
+        return 0;
+#endif
     }
 
     public void Dispose()

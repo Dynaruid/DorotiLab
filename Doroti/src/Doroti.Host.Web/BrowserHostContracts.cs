@@ -142,7 +142,11 @@ internal static partial class BrowserInterop
         BrowserHostAdapter.DispatchTextAction(hostId, action);
 
     [JSExport]
-    internal static void DispatchSemanticsAction(int hostId, long nodeId, long action, string argumentsJson) =>
+    internal static void DispatchSemanticsAction(
+        int hostId,
+        [JSMarshalAs<JSType.Number>] long nodeId,
+        [JSMarshalAs<JSType.Number>] long action,
+        string argumentsJson) =>
         BrowserHostAdapter.DispatchSemanticsAction(hostId, nodeId, action, argumentsJson);
 
     internal static BrowserHostSnapshot ParseSnapshot(string json) =>

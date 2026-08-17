@@ -31,6 +31,42 @@ public class BouncingScrollSimulation : global::Doroti.Framework.Physics.Simulat
         this.trailingExtent = trailingExtent;
         this.spring = spring;
         System.Diagnostics.Debug.Assert((leadingExtent <= trailingExtent));
+        if (position < leadingExtent)
+        {
+            this._springSimulation = _underscrollSimulation(position, velocity);
+            this._springTime = double.NegativeInfinity;
+        }
+        else if (position > trailingExtent)
+        {
+            this._springSimulation = _overscrollSimulation(position, velocity);
+            this._springTime = double.NegativeInfinity;
+        }
+        else
+        {
+            this._frictionSimulation = new global::Doroti.Framework.Physics.FrictionSimulation(
+                0.135, position, velocity, constantDeceleration: constantDeceleration);
+            var finalX = this._frictionSimulation.finalX;
+            if (velocity > 0.0 && finalX > trailingExtent)
+            {
+                this._springTime = this._frictionSimulation.timeAtX(trailingExtent);
+                this._springSimulation = _overscrollSimulation(
+                    trailingExtent,
+                    Math.Min(this._frictionSimulation.dx(this._springTime), maxSpringTransferVelocity));
+                System.Diagnostics.Debug.Assert(double.IsFinite(this._springTime));
+            }
+            else if (velocity < 0.0 && finalX < leadingExtent)
+            {
+                this._springTime = this._frictionSimulation.timeAtX(leadingExtent);
+                this._springSimulation = _underscrollSimulation(
+                    leadingExtent,
+                    Math.Min(this._frictionSimulation.dx(this._springTime), maxSpringTransferVelocity));
+                System.Diagnostics.Debug.Assert(double.IsFinite(this._springTime));
+            }
+            else
+            {
+                this._springTime = double.PositiveInfinity;
+            }
+        }
     }
 
     internal virtual global::Doroti.Framework.Physics.Simulation _underscrollSimulation(double x, double dx)
@@ -92,6 +128,8 @@ public class ClampingScrollSimulation : global::Doroti.Framework.Physics.Simulat
         this.position = position;
         this.velocity = velocity;
         this.friction = friction;
+        this._duration = _flingDuration();
+        this._distance = _flingDistance();
     }
 
     internal virtual double _flingDuration()
@@ -138,4 +176,3 @@ public class ClampingScrollSimulation : global::Doroti.Framework.Physics.Simulat
     }
 
 }
-

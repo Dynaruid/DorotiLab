@@ -41,7 +41,19 @@ public sealed class CounterPage : StatefulWidget
 
 public sealed class CounterPageState : State<CounterPage>
 {
+    private const string CounterShaderSource = """
+        uniform float2 uSize;
+        uniform float uPhase;
+
+        half4 main(float2 position) {
+            float2 uv = position / max(uSize, float2(1.0));
+            return half4(uv.x, 0.35 + 0.35 * sin(uPhase + uv.x * 6.2831853), uv.y, 1.0);
+        }
+        """;
+
     private int _count;
+    private readonly FragmentShader _counterShader =
+        FragmentProgram.fromSource(CounterShaderSource, "doroti-template-counter").fragmentShader();
 
     public override Widget build(BuildContext context) => new Material.Scaffold(
         appBar: new Material.AppBar(
@@ -56,7 +68,15 @@ public sealed class CounterPageState : State<CounterPage>
                 [
                     new Text("Package asset: assets/doroti-mark.txt"),
                     new Text("Localized resource: locales/en-US.json"),
-                    new Text($"Count: {_count}"),
+                    new ShaderMask(
+                        shaderCallback: bounds =>
+                        {
+                            _counterShader.setFloat(0, bounds.width);
+                            _counterShader.setFloat(1, bounds.height);
+                            _counterShader.setFloat(2, _count * 0.4);
+                            return _counterShader;
+                        },
+                        child: new Text($"Custom SkSL count: {_count}")),
                     new Material.ElevatedButton(
                         onPressed: () => setState(() => _count++),
                         child: new Text("Increment")),

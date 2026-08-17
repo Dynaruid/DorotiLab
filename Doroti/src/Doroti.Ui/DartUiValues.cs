@@ -293,9 +293,23 @@ public sealed class Matrix4
         return invert();
     }
 
-    public void translateByDouble(double x, double y, double z, double w) => leftTranslateByDouble(x, y, z, w);
+    public void translateByDouble(double x, double y, double z, double w)
+    {
+        // vector_math's translateByDouble post-multiplies this matrix. The
+        // translation therefore replaces the fourth column with M * (x,y,z,w).
+        // Prepending it (leftTranslateByDouble) loses Transform alignment and
+        // the paint-offset conjugation used by Flutter's matrix image filters.
+        var tx = (_storage[0] * x) + (_storage[4] * y) + (_storage[8] * z) + (_storage[12] * w);
+        var ty = (_storage[1] * x) + (_storage[5] * y) + (_storage[9] * z) + (_storage[13] * w);
+        var tz = (_storage[2] * x) + (_storage[6] * y) + (_storage[10] * z) + (_storage[14] * w);
+        var tw = (_storage[3] * x) + (_storage[7] * y) + (_storage[11] * z) + (_storage[15] * w);
+        _storage[12] = tx;
+        _storage[13] = ty;
+        _storage[14] = tz;
+        _storage[15] = tw;
+    }
 
-    public void translate(double x, double y, double z = 0) => leftTranslateByDouble(x, y, z, 1);
+    public void translate(double x, double y, double z = 0) => translateByDouble(x, y, z, 1);
 
     public void scaleByDouble(double x, double y, double z, double w) =>
         multiply(new Matrix4([x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, w]));

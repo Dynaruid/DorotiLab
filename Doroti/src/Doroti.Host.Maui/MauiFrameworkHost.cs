@@ -2,6 +2,7 @@ using Doroti.Hosting;
 using Doroti.Ui;
 using Microsoft.Maui.Controls;
 using SkiaSharp.Views.Maui.Controls;
+using System.Runtime.InteropServices;
 
 namespace Doroti.Host.Maui;
 
@@ -15,8 +16,12 @@ public sealed class MauiFrameworkHost : IDisposable
     public MauiFrameworkHost(string? targetIdentity = null) => _targetIdentity = targetIdentity ??
 #if WINDOWS
         "win-x64/winui3/SKSwapChainPanel/ANGLE-DirectX-Skia";
-#else
+#elif MACCATALYST
         "maccatalyst-arm64/UIKit-MacCatalyst/SKMetalView/Metal-Skia";
+#elif ANDROID
+        $"{AndroidRuntimeIdentifier}/Android/MauiSKGLTextureView/OpenGL-ES-Skia";
+#else
+#error Doroti.Host.Maui requires an explicit platform identity.
 #endif
 
     public DorotiView CreateView(
@@ -83,6 +88,13 @@ public sealed class MauiFrameworkHost : IDisposable
         value.Host.BeginPaint(args, context, nativeViewType, _targetIdentity);
     }
 
+    internal void EndPaint(ulong viewId)
+    {
+        if (!_views.TryGetValue(viewId, out var value))
+            throw new KeyNotFoundException($"MAUI Doroti view {viewId} is not registered.");
+        value.Host.EndPaint();
+    }
+
     internal void PaintSkiaSurface(ulong viewId, SkiaSharp.SKSurface surface, int pixelWidth, int pixelHeight)
     {
         if (!_views.TryGetValue(viewId, out var value))
@@ -109,15 +121,39 @@ public sealed class MauiFrameworkHost : IDisposable
     {
         if (!_views.TryGetValue(viewId, out var value))
             throw new KeyNotFoundException($"MAUI Doroti view {viewId} is not registered.");
-        return new(applicationSource, bootstrapSource, AppContext.TargetFrameworkName ?? "unknown",
+        return new(applicationSource, bootstrapSource,
+#if WINDOWS
+            ".NETCoreApp,Version=v10.0/Windows,Version=10.0.19041.0",
+#elif MACCATALYST
+            ".NETCoreApp,Version=v10.0/MacCatalyst,Version=15.0",
+#elif ANDROID
+            ".NETCoreApp,Version=v10.0/Android,Version=21.0",
+#else
+#error Doroti.Host.Maui requires an explicit target framework identity.
+#endif
 #if WINDOWS
             "win-x64",
-#else
+#elif MACCATALYST
             "maccatalyst-arm64",
+#elif ANDROID
+            AndroidRuntimeIdentifier,
+#else
+#error Doroti.Host.Maui requires an explicit runtime identifier.
 #endif
             "10.0.90", "3.119.4", value.Host.Snapshot, value.Graphics.Diagnostics,
-            value.Host.InvalidationsRequested, value.Host.InvalidationsCoalesced, 0);
+            value.Host.InvalidationsRequested, value.Host.InvalidationsCoalesced,
+            value.Host.NativePointerEvents, 0);
     }
+
+#if ANDROID
+    private static string AndroidRuntimeIdentifier => RuntimeInformation.ProcessArchitecture switch
+    {
+        Architecture.Arm64 => "android-arm64",
+        Architecture.X64 => "android-x64",
+        var architecture => throw new PlatformNotSupportedException(
+            $"Doroti MAUI does not support Android process architecture '{architecture}'."),
+    };
+#endif
 
     public void Dispose()
     {

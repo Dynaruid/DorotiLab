@@ -1,7 +1,7 @@
 {
-  "schemaVersion": "doroti.app-targets-evidence/v3",
+  "schemaVersion": "doroti.app-targets-evidence/v4",
   "scope": "generated-application-bootstrap",
-  "capturedAtUtc": "2026-08-17T05:43:40.206695+00:00",
+  "capturedAtUtc": "2026-08-17T10:10:50.8648804+00:00",
   "status": "partial",
   "project": "DorotiDemoApp/DorotiDemoApp.csproj",
   "graph": {
@@ -25,6 +25,7 @@
     "status": "pass",
     "sequence": [
       "Windows",
+      "Android",
       "Web",
       "MacCatalyst-cross-build",
       "Windows-no-restore"
@@ -32,6 +33,18 @@
     "windows": {
       "targetFramework": "net10.0-windows10.0.19041.0",
       "rid": "win-x64"
+    },
+    "android": {
+      "targetFramework": "net10.0-android",
+      "rids": [
+        "android-arm64",
+        "android-x64"
+      ],
+      "packaging": "signed-apk-and-aab",
+      "abis": [
+        "arm64-v8a",
+        "x86_64"
+      ]
     },
     "web": {
       "targetFramework": "net10.0",
@@ -52,7 +65,7 @@
   "windowsLive": {
     "applicationSource": "src/App.cs",
     "bootstrapSource": "Platforms/Windows/App.xaml.cs",
-    "targetFramework": ".NETCoreApp,Version=v10.0",
+    "targetFramework": ".NETCoreApp,Version=v10.0/Windows,Version=10.0.19041.0",
     "rid": "win-x64",
     "mauiVersion": "10.0.90",
     "skiaSharpVersion": "3.119.4",
@@ -80,9 +93,180 @@
     "invalidationsCoalesced": 3,
     "softwareFallbackFrames": 0
   },
+  "androidLive": {
+    "serial": "emulator-5556",
+    "model": "sdk_gphone64_x86_64",
+    "api": "33",
+    "abi": "x86_64",
+    "rid": "android-x64",
+    "deviceKind": "emulator",
+    "automatedGpu": {
+      "applicationSource": "src/App.cs",
+      "bootstrapSource": "obj/android-x64/Doroti.Generated/DorotiBootstrap.g.cs -> Platforms/Android/MainApplication.cs",
+      "targetFramework": ".NETCoreApp,Version=v10.0/Android,Version=21.0",
+      "rid": "android-x64",
+      "mauiVersion": "10.0.90",
+      "skiaSharpVersion": "3.119.4",
+      "surface": {
+        "pixelWidth": 1920,
+        "pixelHeight": 1074,
+        "devicePixelRatio": 1.5,
+        "metricsGeneration": 3,
+        "contextGeneration": 1,
+        "surfaceGeneration": 2,
+        "nativeViewType": "SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKGLTextureView",
+        "graphicsBackend": "android-x64/Android/MauiSKGLTextureView/OpenGL-ES-Skia"
+      },
+      "frame": {
+        "submitted": 46,
+        "presented": 46,
+        "replayed": 6,
+        "failed": 0,
+        "contextGeneration": 1,
+        "surfaceGeneration": 2,
+        "pendingScene": false,
+        "backend": "skiasharp-maui-skglview-gpu"
+      },
+      "invalidationsRequested": 95,
+      "invalidationsCoalesced": 42,
+      "nativePointerEvents": 52,
+      "softwareFallbackFrames": 0
+    },
+    "automatedScroll": "pass-adb-up-4-down-2",
+    "automatedPersistentDisplay": {
+      "status": "pass",
+      "initialScreenshot": {
+        "width": 1920,
+        "height": 1200,
+        "sampleRegion": {
+          "left": 38,
+          "top": 144,
+          "right": 1632,
+          "bottom": 1008
+        },
+        "sampleCount": 9576,
+        "nonLightRatio": 0.1325,
+        "coloredRatio": 0.1065
+      },
+      "swipeScreenshots": [
+        {
+          "width": 1920,
+          "height": 1200,
+          "sampleRegion": {
+            "left": 38,
+            "top": 144,
+            "right": 1632,
+            "bottom": 1008
+          },
+          "sampleCount": 9576,
+          "nonLightRatio": 0.1325,
+          "coloredRatio": 0.1065
+        },
+        {
+          "width": 1920,
+          "height": 1200,
+          "sampleRegion": {
+            "left": 38,
+            "top": 144,
+            "right": 1632,
+            "bottom": 1008
+          },
+          "sampleCount": 9576,
+          "nonLightRatio": 0.1325,
+          "coloredRatio": 0.1066
+        },
+        {
+          "width": 1920,
+          "height": 1200,
+          "sampleRegion": {
+            "left": 38,
+            "top": 144,
+            "right": 1632,
+            "bottom": 1008
+          },
+          "sampleCount": 9576,
+          "nonLightRatio": 0.1325,
+          "coloredRatio": 0.1064
+        },
+        {
+          "width": 1920,
+          "height": 1200,
+          "sampleRegion": {
+            "left": 38,
+            "top": 144,
+            "right": 1632,
+            "bottom": 1008
+          },
+          "sampleCount": 9576,
+          "nonLightRatio": 0.1325,
+          "coloredRatio": 0.1066
+        },
+        {
+          "width": 1920,
+          "height": 1200,
+          "sampleRegion": {
+            "left": 38,
+            "top": 144,
+            "right": 1632,
+            "bottom": 1008
+          },
+          "sampleCount": 9576,
+          "nonLightRatio": 0.0929,
+          "coloredRatio": 0.0786
+        },
+        {
+          "width": 1920,
+          "height": 1200,
+          "sampleRegion": {
+            "left": 38,
+            "top": 144,
+            "right": 1632,
+            "bottom": 1008
+          },
+          "sampleCount": 9576,
+          "nonLightRatio": 0.1208,
+          "coloredRatio": 0.0924
+        }
+      ],
+      "settledScreenshot": {
+        "width": 1920,
+        "height": 1200,
+        "sampleRegion": {
+          "left": 38,
+          "top": 144,
+          "right": 1632,
+          "bottom": 1008
+        },
+        "sampleCount": 9576,
+        "nonLightRatio": 0.1325,
+        "coloredRatio": 0.1066
+      }
+    },
+    "manualPersistentDisplay": "notVerified",
+    "imeTalkBackStylusMouse": "notVerified"
+  },
+  "customShaders": {
+    "status": "pass",
+    "contract": "FragmentProgram.fromSource/fromAsset + FragmentShader float uniforms/image samplers + Paint.shader/ShaderMask; ImageFilter.shader unadvertised with Flutter matrix stretch fallback",
+    "compiler": "shared Skia SKRuntimeEffect",
+    "targets": [
+      "Windows",
+      "MacCatalyst",
+      "Android",
+      "Web"
+    ],
+    "nativeLive": [
+      "Windows",
+      "Android"
+    ],
+    "macCatalystLive": "notVerified",
+    "webBrowserLive": "notVerified"
+  },
   "boundaries": {
-    "basicTouch": "implemented-not-live-verified",
-    "hoverWheelCaptureKeyboardImeUia": "notVerified",
+    "pointerMousePenWheelPressure": "implemented-not-live-verified",
+    "keyboardImeCursor": "implemented-not-live-verified",
+    "lifecycleConfiguration": "implemented-not-live-verified",
+    "nativeAccessibilityActions": "implemented-not-live-verified",
     "resizeDpiContextRecreate": "notVerified-product-host",
     "macCatalystBuild": "pass-windows-cross-build-only",
     "macCatalystPublishLive": "notVerified",

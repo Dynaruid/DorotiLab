@@ -12,6 +12,8 @@
 **/[Bb]in/[Dd]ebug/
 **/[Bb]in/[Rr]elease/
 **/[Bb]in/[Ww]eb/
+**/[Bb]in/[Aa]ndroid/
+**/[Bb]in/[Aa]ndroid-x64/
 **/[Oo]bj/
 **/[Tt]est[Rr]esults/
 **/[Bb]enchmark[Dd]ot[Nn]et.[Aa]rtifacts/

@@ -33,6 +33,7 @@ public sealed record MauiHostDiagnostics(
     MauiFrameDiagnostics Frame,
     long InvalidationsRequested,
     long InvalidationsCoalesced,
+    long NativePointerEvents,
     long SoftwareFallbackFrames);
 
 public interface IMauiSemanticsBridge

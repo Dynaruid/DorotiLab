@@ -1,4 +1,5 @@
 using Doroti.Ui;
+using Doroti.Skia.RuntimeEffects;
 using SkiaSharp;
 using BlendMode = Doroti.Ui.BlendMode;
 using Rect = Doroti.Ui.Rect;
@@ -244,7 +245,10 @@ internal sealed class MauiSkiaCapabilities :
                     case "offset" when command.HostPayload is SceneOffsetPayload offset:
                         canvas.Save(); restoreCounts.Push(1); canvas.Translate((float)offset.Dx, (float)offset.Dy); break;
                     case "clipRect" when command.HostPayload is SceneClipRectPayload clip:
-                        canvas.Save(); restoreCounts.Push(1); canvas.ClipRect(ToRect(clip.Rect), SKClipOperation.Intersect, true); break;
+                        canvas.Save();
+                        restoreCounts.Push(1);
+                        canvas.ClipRect(ToRect(clip.Rect), SKClipOperation.Intersect, true);
+                        break;
                     case "clipRRect" when command.HostPayload is SceneClipRRectPayload clip:
                         canvas.Save(); restoreCounts.Push(1); canvas.ClipPath(ToPath(clip.RRect), SKClipOperation.Intersect, true); break;
                     case "clipRSuperellipse" when command.HostPayload is SceneClipRSuperellipsePayload clip:
@@ -252,16 +256,41 @@ internal sealed class MauiSkiaCapabilities :
                     case "clipPath" when command.HostPayload is SceneClipPathPayload clip:
                         canvas.Save(); restoreCounts.Push(1); canvas.ClipPath(ToPath(clip.Path), SKClipOperation.Intersect, true); break;
                     case "transform" when command.HostPayload is SceneTransformPayload transform:
-                        canvas.Save(); restoreCounts.Push(1); Concat(canvas, transform.Matrix4); break;
+                        canvas.Save();
+                        restoreCounts.Push(1);
+                        Concat(canvas, transform.Matrix4);
+                        break;
                     case "opacity" when command.HostPayload is SceneOpacityPayload opacity:
                         using (var paint = new SKPaint { Color = SKColors.White.WithAlpha((byte)Math.Clamp(Math.Round(opacity.Opacity * 255), 0, 255)) })
                             canvas.SaveLayer(paint);
                         restoreCounts.Push(1); canvas.Translate((float)opacity.Offset.dx, (float)opacity.Offset.dy); break;
                     case "colorFilter" when command.HostPayload is SceneColorFilterPayload:
                         canvas.SaveLayer(); restoreCounts.Push(1); break;
+                    case "shaderMask" when command.HostPayload is SceneShaderMaskPayload mask:
+                        using (var shader = ToShader(mask.Shader))
+                        using (var paint = new SKPaint { Shader = shader, BlendMode = ToBlend(mask.BlendMode) })
+                            canvas.SaveLayer(ToRect(mask.MaskRect), paint);
+                        restoreCounts.Push(1); break;
                     case "imageFilter" when command.HostPayload is SceneImageFilterPayload image:
-                        using (var paint = FilterPaint(image.Filter)) canvas.SaveLayer(paint);
-                        restoreCounts.Push(1); canvas.Translate((float)image.Offset.dx, (float)image.Offset.dy); break;
+                        canvas.Save();
+                        var imageRestoreCount = 1;
+                        if (image.Filter.Matrix4 is not null && image.Filter.Outer is null &&
+                            image.Filter.Inner is null && image.Filter.ColorFilter is null && image.Filter.Shader is null)
+                        {
+                            // Doroti retains vector scene commands, so replay a pure matrix image filter as
+                            // an equivalent scene transform. An unbounded GPU SaveLayer + matrix filter can
+                            // produce an empty texture while Android is animating stretch overscroll.
+                            Concat(canvas, image.Filter.Matrix4);
+                        }
+                        else
+                        {
+                            using var paint = FilterPaint(image.Filter);
+                            canvas.SaveLayer(paint);
+                            imageRestoreCount++;
+                        }
+                        canvas.Translate((float)image.Offset.dx, (float)image.Offset.dy);
+                        restoreCounts.Push(imageRestoreCount);
+                        break;
                     case "backdropFilter" when command.HostPayload is SceneBackdropFilterPayload backdrop:
                         using (var filter = ToImageFilter(backdrop.Filter))
                         using (var paint = new SKPaint { BlendMode = ToBlend(backdrop.BlendMode) })
@@ -327,6 +356,10 @@ internal sealed class MauiSkiaCapabilities :
                 case "drawCircle" when command.HostPayload is CanvasCirclePayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawCircle((float)draw.Center.dx, (float)draw.Center.dy, (float)draw.Radius, paint); break;
                 case "drawOval" when command.HostPayload is CanvasOvalPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawOval(ToRect(draw.Rect), paint); break;
                 case "drawLine" when command.HostPayload is CanvasLinePayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawLine((float)draw.Start.dx, (float)draw.Start.dy, (float)draw.End.dx, (float)draw.End.dy, paint); break;
+                case "drawPoints" or "drawRawPoints" when command.HostPayload is CanvasPointsPayload draw:
+                    using (var paint = ToPaint(draw.Paint))
+                        canvas.DrawPoints(ToPointMode(draw.PointMode), draw.Points.Select(ToPoint).ToArray(), paint);
+                    break;
                 case "drawArc" when command.HostPayload is CanvasArcPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawArc(ToRect(draw.Rect), (float)(draw.StartAngle * 180 / Math.PI), (float)(draw.SweepAngle * 180 / Math.PI), draw.UseCenter, paint); break;
                 case "drawColor" when command.HostPayload is CanvasColorPayload draw: canvas.DrawColor(ToColor(draw.Color), ToBlend(draw.BlendMode)); break;
                 case "drawParagraph" when command.HostPayload is CanvasParagraphPayload draw:
@@ -357,10 +390,7 @@ internal sealed class MauiSkiaCapabilities :
             StrokeCap = value.StrokeCap switch { StrokeCap.round => SKStrokeCap.Round, StrokeCap.square => SKStrokeCap.Square, _ => SKStrokeCap.Butt },
             StrokeJoin = value.StrokeJoin switch { StrokeJoin.round => SKStrokeJoin.Round, StrokeJoin.bevel => SKStrokeJoin.Bevel, _ => SKStrokeJoin.Miter },
         };
-        if (value.Shader is GradientShaderSnapshot gradient && gradient.Begin is { } begin && gradient.End is { } end)
-            paint.Shader = SKShader.CreateLinearGradient(new((float)begin.dx, (float)begin.dy), new((float)end.dx, (float)end.dy), gradient.Colors.Select(ToColor).ToArray(), gradient.Stops.Select(stop => (float)stop).ToArray(), SKShaderTileMode.Clamp);
-        else if (value.Shader is not null)
-            throw new NotSupportedException("The Doroti MAUI backend rejects an unsupported shader family.");
+        if (value.Shader is not null) paint.Shader = ToShader(value.Shader);
         return paint;
     }
 
@@ -368,11 +398,26 @@ internal sealed class MauiSkiaCapabilities :
 
     private static SKImageFilter ToImageFilter(ImageFilterSnapshot filter)
     {
-        if (filter.IsShader || filter.Outer is not null || filter.Inner is not null ||
-            filter.ColorFilter is not null || filter.Matrix4 is not null)
+        if (filter.Shader is not null)
         {
-            throw new NotSupportedException("The Doroti MAUI backend currently supports blur image filters only.");
+            throw new NotSupportedException(
+                "Doroti MAUI does not advertise ImageFilter.shader because SkiaSharp cannot bind the filtered child as its implicit texture input.");
         }
+        if (filter.Outer is not null && filter.Inner is not null)
+        {
+            using var outer = ToImageFilter(filter.Outer);
+            using var inner = ToImageFilter(filter.Inner);
+            return SKImageFilter.CreateCompose(outer, inner);
+        }
+        if (filter.ColorFilter is not null)
+        {
+            using var color = ToColorFilter(filter.ColorFilter);
+            if (filter.Inner is null) return SKImageFilter.CreateColorFilter(color);
+            using var inner = ToImageFilter(filter.Inner);
+            return SKImageFilter.CreateColorFilter(color, inner);
+        }
+        if (filter.Matrix4 is not null)
+            return SKImageFilter.CreateMatrix(ToMatrix(filter.Matrix4), ToSamplingOptions(filter.FilterQuality), null);
         return SKImageFilter.CreateBlur(
             (float)filter.SigmaX,
             (float)filter.SigmaY,
@@ -384,6 +429,88 @@ internal sealed class MauiSkiaCapabilities :
                 _ => SKShaderTileMode.Clamp,
             });
     }
+
+    private static SKShader ToShader(ShaderSnapshot value) => value switch
+    {
+        GradientShaderSnapshot gradient => ToGradientShader(gradient),
+        ImageShaderSnapshot image => ToImageShader(image),
+        FragmentShaderSnapshot fragment => DorotiSkiaRuntimeEffects.CreateShader(fragment, CreateImageShader),
+        UnsupportedShaderSnapshot unsupported => throw new NotSupportedException(
+            $"The Doroti MAUI backend rejects shader family '{unsupported.Family}'."),
+        _ => throw new NotSupportedException($"The Doroti MAUI backend rejects shader snapshot '{value.GetType().Name}'."),
+    };
+
+    private static SKShader ToGradientShader(GradientShaderSnapshot value)
+    {
+        var colors = value.Colors.Select(ToColor).ToArray();
+        var stops = value.Stops.Select(stop => (float)stop).ToArray();
+        var tile = ToTileMode(value.TileMode);
+        var matrix = value.Matrix4 is null ? SKMatrix.Identity : ToMatrix(value.Matrix4);
+        if (value.Begin is { } begin && value.End is { } end)
+            return SKShader.CreateLinearGradient(new((float)begin.dx, (float)begin.dy),
+                new((float)end.dx, (float)end.dy), colors, stops, tile, matrix);
+        if (value.Center is { } center && value.Radius > 0)
+            return SKShader.CreateRadialGradient(new((float)center.dx, (float)center.dy),
+                (float)value.Radius, colors, stops, tile, matrix);
+        if (value.Center is { } sweepCenter)
+            return SKShader.CreateSweepGradient(new((float)sweepCenter.dx, (float)sweepCenter.dy),
+                colors, stops, tile, (float)(value.StartAngle * 180 / Math.PI),
+                (float)(value.EndAngle * 180 / Math.PI), matrix);
+        throw new InvalidDataException("Doroti gradient shader has no supported geometry.");
+    }
+
+    private static SKShader ToImageShader(ImageShaderSnapshot value)
+    {
+        if (value.Image.HostHandle is not MauiImageHandle handle)
+            throw new InvalidDataException("Doroti MAUI image shader has no native image handle.");
+        return handle.Image.ToShader(ToTileMode(value.TileModeX), ToTileMode(value.TileModeY),
+            ToSamplingOptions(value.FilterQuality ?? FilterQuality.none), ToMatrix(value.Matrix4));
+    }
+
+    private static SKShader CreateImageShader(Doroti.Ui.Image image)
+    {
+        if (image.HostHandle is not MauiImageHandle handle)
+            throw new InvalidDataException("Doroti MAUI fragment shader sampler has no native image handle.");
+        return handle.Image.ToShader(SKShaderTileMode.Clamp, SKShaderTileMode.Clamp, SKSamplingOptions.Default);
+    }
+
+    private static SKColorFilter ToColorFilter(ColorFilterSnapshot value) => value.Kind switch
+    {
+        ColorFilterKind.mode => SKColorFilter.CreateBlendMode(
+            value.Color is null ? throw new InvalidDataException("Mode color filter has no color.") : ToColor(value.Color),
+            ToBlend(value.BlendMode)),
+        ColorFilterKind.matrix => SKColorFilter.CreateColorMatrix(
+            value.Matrix?.Select(item => (float)item).ToArray()
+            ?? throw new InvalidDataException("Matrix color filter has no matrix.")),
+        ColorFilterKind.linearToSrgbGamma => SKColorFilter.CreateLinearToSrgbGamma(),
+        ColorFilterKind.srgbToLinearGamma => SKColorFilter.CreateSrgbToLinearGamma(),
+        _ => throw new NotSupportedException($"Unsupported Doroti color filter '{value.Kind}'."),
+    };
+
+    private static SKShaderTileMode ToTileMode(TileMode value) => value switch
+    {
+        TileMode.repeated => SKShaderTileMode.Repeat,
+        TileMode.mirror => SKShaderTileMode.Mirror,
+        TileMode.decal => SKShaderTileMode.Decal,
+        _ => SKShaderTileMode.Clamp,
+    };
+
+    private static SKPointMode ToPointMode(PointMode value) => value switch
+    {
+        PointMode.lines => SKPointMode.Lines,
+        PointMode.polygon => SKPointMode.Polygon,
+        _ => SKPointMode.Points,
+    };
+
+    private static SKPoint ToPoint(Offset value) => new((float)value.dx, (float)value.dy);
+
+    private static SKSamplingOptions ToSamplingOptions(FilterQuality value) => value switch
+    {
+        FilterQuality.low => new SKSamplingOptions(SKFilterMode.Linear),
+        FilterQuality.medium => new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear),
+        FilterQuality.high => new SKSamplingOptions(SKCubicResampler.Mitchell),
+        _ => new SKSamplingOptions(SKFilterMode.Nearest),
+    };
 
     private static void DrawShadow(SKCanvas canvas, CanvasShadowPayload shadow)
     {
@@ -442,8 +569,13 @@ internal sealed class MauiSkiaCapabilities :
 
     private static void Concat(SKCanvas canvas, IReadOnlyList<double> matrix)
     {
+        canvas.Concat(ToMatrix(matrix));
+    }
+
+    private static SKMatrix ToMatrix(IReadOnlyList<double> matrix)
+    {
         if (matrix.Count < 16) throw new InvalidDataException("A Doroti transform must contain 16 values.");
-        var value = new SKMatrix
+        return new SKMatrix
         {
             ScaleX = (float)matrix[0],
             SkewX = (float)matrix[4],
@@ -455,7 +587,6 @@ internal sealed class MauiSkiaCapabilities :
             Persp1 = (float)matrix[7],
             Persp2 = (float)matrix[15],
         };
-        canvas.Concat(value);
     }
 
     internal sealed class MauiImageHandle : IDorotiImageHandle

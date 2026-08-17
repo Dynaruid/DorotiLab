@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-android</TargetFramework>
+    <RuntimeIdentifier>android-x64</RuntimeIdentifier>
+    <AssemblyName>Doroti.Target.Android.Maui</AssemblyName>
+    <RootNamespace>Doroti.Target.Android.Maui</RootNamespace>
+    <PackageId>Doroti.Target.Android.Maui.android-x64</PackageId>
+    <Description>Doroti Android MAUI SKGL texture view OpenGL ES composition root for x64 emulators.</Description>
+    <PackageReleaseNotes>Adds the Android x64 MAUI target with strict GPU surface ownership.</PackageReleaseNotes>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+    <SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Doroti.Host.Maui\Doroti.Host.Maui.csproj" AdditionalProperties="RuntimeIdentifier=android-x64" />
+    <EmbeddedResource Include="doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" />
+    <None Include="doroti-target-manifest.json" Pack="true" PackagePath="doroti\" />
+    <None Include="buildTransitive\Doroti.Target.Android.Maui.android-x64.targets" Pack="true" PackagePath="buildTransitive\Doroti.Target.Android.Maui.android-x64.targets" />
+  </ItemGroup>
+</Project>
