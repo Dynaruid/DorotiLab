@@ -91,7 +91,8 @@ internal static class FontFallbackTextRenderer
         if (requestedFamily.Length > 0)
         {
             var requested = GetTypeface(requestedFamily);
-            if (requested.ContainsGlyph(scalar))
+            using var requestedFont = new SKFont(requested);
+            if (requestedFont.ContainsGlyph(scalar))
             {
                 return requestedFamily;
             }

@@ -93,9 +93,9 @@ internal class _ImageFilterRenderObject__image_filter : global::Doroti.Framework
         var __oldLayer = oldLayer is null ? null : (global::Doroti.Framework.Rendering.ImageFilterLayer)(object)oldLayer;
         global::Doroti.Framework.Rendering.ImageFilterLayer layer__3520 = (__oldLayer ?? new global::Doroti.Framework.Rendering.ImageFilterLayer());
         layer__3520.imageFilter = this.imageFilter;
+        layer__3520.bounds = this.paintBounds;
         return ((global::Doroti.Framework.Rendering.OffsetLayer)(object?)layer__3520);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
-

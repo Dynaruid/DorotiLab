@@ -21,7 +21,7 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 ## SkiaSharp
 
 - Upstream: https://github.com/mono/SkiaSharp
-- Package: `SkiaSharp` 3.119.4; platform-native assets are selected transitively by the target RID graph
+- Package: `SkiaSharp` 4.151.1; platform-native assets are selected transitively by the target RID graph
 - Use: internal BGRA8888 and GPU surface implementation behind `Doroti.Backends.Skia`, including WGL on Windows and NSOpenGL on `osx-arm64`
 - License: MIT; package license metadata is preserved by NuGet restore and distribution packaging
 

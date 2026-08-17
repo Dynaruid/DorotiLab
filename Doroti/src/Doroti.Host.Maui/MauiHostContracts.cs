@@ -20,6 +20,7 @@ public sealed record MauiFrameDiagnostics(
     long ContextGeneration,
     long SurfaceGeneration,
     bool PendingScene,
+    long ShaderImageFiltersRendered,
     string Backend);
 
 public sealed record MauiHostDiagnostics(

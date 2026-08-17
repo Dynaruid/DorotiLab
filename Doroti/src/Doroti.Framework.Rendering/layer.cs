@@ -1342,6 +1342,7 @@ public class ColorFilterLayer : ContainerLayer
 public class ImageFilterLayer : OffsetLayer
 {
     internal virtual ImageFilter? _imageFilter { get; set; } = default;
+    internal virtual Rect? _bounds { get; set; } = default;
 
     public ImageFilterLayer(ImageFilter? imageFilter = null, Offset offset = default) : base(offset: offset)
     {
@@ -1362,10 +1363,23 @@ public class ImageFilterLayer : OffsetLayer
             }
         }
     }
+    public virtual global::Doroti.Ui.Rect? bounds
+    {
+        get => this._bounds;
+        set
+        {
+            if (!object.Equals(value, this._bounds))
+            {
+                _bounds = value;
+                markNeedsAddToScene();
+            }
+        }
+    }
     public override void addToScene(SceneBuilder builder)
     {
         DartRuntimePrimitives.Assert(() => (this.imageFilter is not null));
-        engineLayer = builder.pushImageFilter(this.imageFilter!, offset: offset, oldLayer: ((global::Doroti.Ui.ImageFilterEngineLayer?)(object?)_engineLayer)!);
+        engineLayer = builder.pushImageFilter(this.imageFilter!, offset: offset,
+            oldLayer: ((global::Doroti.Ui.ImageFilterEngineLayer?)(object?)_engineLayer)!, bounds: bounds);
         addChildrenToScene(builder);
         builder.pop();
     }
@@ -1374,6 +1388,7 @@ public class ImageFilterLayer : OffsetLayer
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<global::Doroti.Ui.ImageFilter>("imageFilter", this.imageFilter));
+        properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect?>("bounds", this.bounds));
     }
 
 }

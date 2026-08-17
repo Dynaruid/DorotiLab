@@ -2,8 +2,8 @@
   <PropertyGroup>
     <AssemblyName>Doroti.Skia.RuntimeEffects</AssemblyName>
     <PackageId>Doroti.Skia.RuntimeEffects</PackageId>
-    <Description>Shared Skia runtime-effect compiler for Doroti custom shaders on native and Web targets.</Description>
-    <PackageReleaseNotes>Adds FragmentProgram, float-uniform, and image-sampler runtime effects.</PackageReleaseNotes>
+    <Description>Shared Skia runtime-effect compiler and GPU image-filter input renderer for Doroti native and Web targets.</Description>
+    <PackageReleaseNotes>Uses SkiaSharp 4.151.1 and adds bounded same-context GPU capture for ImageFilter.shader implicit child inputs.</PackageReleaseNotes>
     <IsDorotiProduct>true</IsDorotiProduct>
   </PropertyGroup>
   <ItemGroup>

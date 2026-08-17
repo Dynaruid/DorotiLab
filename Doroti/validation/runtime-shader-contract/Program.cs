@@ -2,6 +2,7 @@ using Doroti.Skia.RuntimeEffects;
 using Doroti.Runtime;
 using Doroti.Ui;
 using Doroti.Framework.Rendering;
+using SkiaSharp;
 using System.Reflection;
 
 const string source = """
@@ -15,9 +16,9 @@ const string source = """
     """;
 
 DorotiSkiaRuntimeEffects.Validate(source, "runtime-shader-contract");
-if (ImageFilter.isShaderFilterSupported)
+if (!ImageFilter.isShaderFilterSupported)
     throw new InvalidOperationException(
-        "Shader image filters must remain unadvertised until the host can bind the filtered child as an implicit texture input.");
+        "Shader image filters must be advertised now that every product host binds the filtered child on its GPU path.");
 var shader = FragmentProgram.fromSource(source, "runtime-shader-contract").fragmentShader();
 shader.setFloat(0, 320);
 shader.setFloat(1, 80);
@@ -30,6 +31,66 @@ using (var nativeShader = DorotiSkiaRuntimeEffects.CreateShader(
 using (var cachedNativeShader = DorotiSkiaRuntimeEffects.CreateShader(
     new FragmentShaderSnapshot(shader.CaptureState()),
     _ => throw new InvalidOperationException("The scalar-uniform fixture declares no image sampler.")))
+{
+}
+
+const string imageFilterSource = """
+    uniform float2 uSize;
+    uniform shader uTexture;
+
+    half4 main(float2 position) {
+        if (uSize.x != 2.0 || uSize.y != 1.0) {
+            return half4(1.0, 1.0, 0.0, 1.0);
+        }
+        half4 inputColor = uTexture.eval(position);
+        return half4(inputColor.b, inputColor.g, inputColor.r, inputColor.a);
+    }
+    """;
+var filterShader = FragmentProgram.fromSource(imageFilterSource, "runtime-image-filter-contract").fragmentShader();
+var shaderFilter = new ImageFilter(filterShader, FilterQuality.none);
+if (shaderFilter.filterQuality != FilterQuality.none)
+    throw new InvalidOperationException("ImageFilter.shader did not retain its input sampling quality.");
+using (var inputBitmap = new SKBitmap(new SKImageInfo(2, 1, SKColorType.Rgba8888, SKAlphaType.Premul)))
+{
+    inputBitmap.SetPixel(0, 0, SKColors.Red);
+    inputBitmap.SetPixel(1, 0, SKColors.Green);
+    using var inputImage = SKImage.FromBitmap(inputBitmap);
+    using var outputBitmap = new SKBitmap(new SKImageInfo(2, 1, SKColorType.Rgba8888, SKAlphaType.Premul));
+    using var outputCanvas = new SKCanvas(outputBitmap);
+    using var nativeFilterShader = DorotiSkiaRuntimeEffects.CreateImageFilterShader(
+        new FragmentShaderSnapshot(filterShader.CaptureState()),
+        inputImage,
+        SKSamplingOptions.Default,
+        _ => throw new InvalidOperationException("The implicit input is the only image-filter sampler."));
+    using var filterPaint = new SKPaint { Shader = nativeFilterShader };
+    outputCanvas.DrawRect(SKRect.Create(2, 1), filterPaint);
+    var filteredRed = outputBitmap.GetPixel(0, 0);
+    var filteredGreen = outputBitmap.GetPixel(1, 0);
+    if (filteredRed.Blue < 250 || filteredRed.Red > 5 || filteredGreen.Green < 120)
+        throw new InvalidOperationException(
+            $"ImageFilter.shader did not sample and transform its implicit child: {filteredRed}, {filteredGreen}.");
+}
+filterShader.dispose();
+
+var stretchShaderType = typeof(Doroti.Framework.Widgets.StretchEffect).Assembly.GetType(
+    "Doroti.Framework.Widgets._StretchEffectShader__stretch_effect",
+    throwOnError: true)!;
+var stretchShaderSource = (string)stretchShaderType.GetField(
+    "_source",
+    BindingFlags.Static | BindingFlags.NonPublic)!.GetRawConstantValue()!;
+DorotiSkiaRuntimeEffects.Validate(stretchShaderSource, "doroti-framework-stretch-effect");
+var stretchShader = FragmentProgram.fromSource(
+    stretchShaderSource,
+    "doroti-framework-stretch-effect").fragmentShader();
+_ = new ImageFilter(stretchShader);
+stretchShader.dispose();
+
+try
+{
+    _ = new ImageFilter(shader);
+    throw new InvalidOperationException("A shader image filter without an implicit sampler unexpectedly passed validation.");
+}
+catch (InvalidOperationException error) when (error.Message.Contains("sampler", StringComparison.Ordinal))
 {
 }
 

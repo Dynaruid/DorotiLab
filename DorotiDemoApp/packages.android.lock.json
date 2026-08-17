@@ -31,14 +31,14 @@
       },
       "SkiaSharp.Views.Maui.Controls": {
         "type": "Direct",
-        "requested": "[3.119.4, )",
-        "resolved": "3.119.4",
-        "contentHash": "eULoAf1/XhexRl3Ae2XLWRCI42ve6P6ABwF9bp9m2bgKW3ruYl7dhs9QcrRi8nXWO76sfF0ZMv7nqLrrYmLXSg==",
+        "requested": "[4.151.1, )",
+        "resolved": "4.151.1",
+        "contentHash": "O42/Nr1SHCWjrDLMQTqj49sE9fDOI/M+roEAHk6VAhJLDbL0L9J30UBM6YV3tmU1zRh8XFDIE0bH9u5Dn46b4g==",
         "dependencies": {
           "Microsoft.Maui.Controls": "10.0.20",
           "Microsoft.Maui.Core": "10.0.20",
-          "SkiaSharp": "3.119.4",
-          "SkiaSharp.Views.Maui.Core": "3.119.4"
+          "SkiaSharp": "4.151.1",
+          "SkiaSharp.Views.Maui.Core": "4.151.1"
         }
       },
       "GoogleGson": {
@@ -223,33 +223,33 @@
       },
       "SkiaSharp": {
         "type": "Transitive",
-        "resolved": "3.119.4",
-        "contentHash": "53NOSUZ1Us+91Sm0uCkIivh/k7jOowRErZT2sIWwPFN9mLUvdxnE6rS4sWo4255+Rd2MWUSF+j0NMZHD6Cke+Q==",
+        "resolved": "4.151.1",
+        "contentHash": "FNlVsGZ9to3o9pObVqhIZanHjUGOoPb/Zxk5svCSLMJnKwxPKV7sIJrjs9BpB/jF3j9OdsaMOb4cfwSJbjueSw==",
         "dependencies": {
-          "SkiaSharp.NativeAssets.Android": "3.119.4"
+          "SkiaSharp.NativeAssets.Android": "4.151.1"
         }
       },
       "SkiaSharp.NativeAssets.Android": {
         "type": "Transitive",
-        "resolved": "3.119.4",
-        "contentHash": "qfjNh5hZBZxpOIM1aeDByj2qNbcK2JZG5Y7YyGSeliaYnf1N/hVfsswIPUa+qzcMqS9Q0VCGk85zQLvwVXtrvQ=="
+        "resolved": "4.151.1",
+        "contentHash": "EHi7v73kpAipF8AGXd1tCm5iiGEkd8EWHK6CvpICdOB5OGoejSD4zqeM1pKMdzrzrmmwdeqtRselBqmOMAUEAQ=="
       },
       "SkiaSharp.Views": {
         "type": "Transitive",
-        "resolved": "3.119.4",
-        "contentHash": "zwuGO7uG7oLlty7h/k44npEUjZfMIf1n8DGhGOIO6DB+e6w6PA2Fyp5dFUCSQMv0x+cNOPshKFvVdeQas01RJg==",
+        "resolved": "4.151.1",
+        "contentHash": "PjyQT+0KvKfYks/ki5HrQiJA5ko9tdjicTHYW+iyR0namvhSrmD2OLbNZMKPcNs1YZIYNqHEPDi6TjCSrhrQiw==",
         "dependencies": {
-          "SkiaSharp": "3.119.4"
+          "SkiaSharp": "4.151.1"
         }
       },
       "SkiaSharp.Views.Maui.Core": {
         "type": "Transitive",
-        "resolved": "3.119.4",
-        "contentHash": "TF36TpKIBL84v2FYbbYPRhJf7fbUd9Gyj11W0SW3SLXFcqhEcabDU2fXM8DJ2Wlgu774CRNQ/lLp4C4JZ88qwg==",
+        "resolved": "4.151.1",
+        "contentHash": "qRT+d6anwusyAD/VNff+3RrNqVM90sAW/kbziKIoHu0JOBFBIcZH2YpCelkMNB3u7gBDXnEZtOwaki1Da8+KvA==",
         "dependencies": {
           "Microsoft.Maui.Core": "10.0.20",
-          "SkiaSharp": "3.119.4",
-          "SkiaSharp.Views": "3.119.4"
+          "SkiaSharp": "4.151.1",
+          "SkiaSharp.Views": "4.151.1"
         }
       },
       "Xamarin.Android.Glide": {
@@ -1436,7 +1436,7 @@
           "Doroti.Skia.RuntimeEffects": "[0.2.0-beta, )",
           "Doroti.Ui": "[0.2.0-beta, )",
           "Microsoft.Maui.Controls": "[10.0.90, )",
-          "SkiaSharp.Views.Maui.Controls": "[3.119.4, )"
+          "SkiaSharp.Views.Maui.Controls": "[4.151.1, )"
         }
       },
       "doroti.hosting": {
@@ -1456,7 +1456,7 @@
         "type": "Project",
         "dependencies": {
           "Doroti.Ui": "[0.2.0-beta, )",
-          "SkiaSharp": "[3.119.4, )"
+          "SkiaSharp": "[4.151.1, )"
         }
       },
       "doroti.target.android.maui.android-arm64": {
@@ -1475,8 +1475,8 @@
     "net10.0-android36.0/android-arm64": {
       "SkiaSharp.NativeAssets.Android": {
         "type": "Transitive",
-        "resolved": "3.119.4",
-        "contentHash": "qfjNh5hZBZxpOIM1aeDByj2qNbcK2JZG5Y7YyGSeliaYnf1N/hVfsswIPUa+qzcMqS9Q0VCGk85zQLvwVXtrvQ=="
+        "resolved": "4.151.1",
+        "contentHash": "EHi7v73kpAipF8AGXd1tCm5iiGEkd8EWHK6CvpICdOB5OGoejSD4zqeM1pKMdzrzrmmwdeqtRselBqmOMAUEAQ=="
       }
     }
   }

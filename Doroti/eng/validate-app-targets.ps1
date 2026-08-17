@@ -10,6 +10,7 @@ $dorotiRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $repoRoot = (Resolve-Path (Join-Path $dorotiRoot '..')).Path
 $project = Join-Path $repoRoot 'DorotiDemoApp/DorotiDemoApp.csproj'
 $productSolution = Join-Path $dorotiRoot 'Doroti.Product.slnx'
+$mauiHostProject = Join-Path $dorotiRoot 'src/Doroti.Host.Maui/Doroti.Host.Maui.csproj'
 $templateRoot = Join-Path $dorotiRoot 'templates/Doroti.Templates/content/doroti-app'
 $descriptorContract = Join-Path $dorotiRoot 'validation/app-bootstrap/descriptor-contract/DescriptorContract.csproj'
 $syntheticProject = Join-Path $dorotiRoot 'validation/app-bootstrap/synthetic-fourth-host/SyntheticFourthHost.csproj'
@@ -86,8 +87,18 @@ function Invoke-AppRestore([string] $Target, [string] $Rid) {
         $script:productRestoreComplete = $true
     }
     Invoke-Checked {
-        dotnet restore $project --no-dependencies -p:DorotiTarget=$Target -p:RuntimeIdentifier=$Rid --nologo
+        dotnet restore $project --force-evaluate -p:DorotiTarget=$Target -p:RuntimeIdentifier=$Rid --nologo
     } "$Target application restore failed"
+    if ($Target -ne 'Web') {
+        $targetFramework = switch ($Target) {
+            'Windows' { 'net10.0-windows10.0.19041.0' }
+            'Android' { 'net10.0-android' }
+            'MacCatalyst' { 'net10.0-maccatalyst' }
+        }
+        Invoke-Checked {
+            dotnet restore $mauiHostProject --no-dependencies --force-evaluate -p:TargetFramework=$targetFramework --nologo
+        } "$Target MAUI host restore failed"
+    }
 }
 
 function Invoke-GraphGate {
@@ -247,6 +258,7 @@ function Invoke-WindowsLiveGate {
     Assert-True (Test-Path -LiteralPath $rawLivePath -PathType Leaf) 'Windows MAUI live evidence'
     $live = Get-Content -LiteralPath $rawLivePath -Raw | ConvertFrom-Json
     Assert-True ([long]$live.Frame.Presented -gt 0 -and [long]$live.Frame.Failed -eq 0) 'Windows MAUI presented frame'
+    Assert-True ([long]$live.Frame.ShaderImageFiltersRendered -gt 0) 'Windows native ImageFilter.shader execution'
     Assert-True ([long]$live.Frame.Replayed -gt 0) 'Windows MAUI retained scene replay'
     Assert-True ([long]$live.SoftwareFallbackFrames -eq 0) 'Windows MAUI software fallback count'
     Assert-True ([string]$live.Surface.NativeViewType -match 'MauiSKSwapChainPanel') 'Windows MAUI native view type'
@@ -349,6 +361,7 @@ function Invoke-AndroidLiveGate([bool] $RequirePhysical) {
         Assert-True ($failures.Count -eq 0) 'Android scroll crash log'
         Assert-True ($null -ne $json) 'Android structured live evidence'
         Assert-True ([long]$json.Frame.Presented -ge 12 -and [long]$json.Frame.Failed -eq 0) 'Android presented custom-shader frames'
+        Assert-True ([long]$json.Frame.ShaderImageFiltersRendered -gt 0) 'Android native ImageFilter.shader execution'
         Assert-True ([long]$json.Frame.Replayed -gt 0) 'Android retained scene replay'
         Assert-True ([long]$json.SoftwareFallbackFrames -eq 0) 'Android software fallback count'
         Assert-True ([string]$json.Surface.NativeViewType -ceq 'SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKGLTextureView') 'Android MAUI native view type'
@@ -382,6 +395,10 @@ function Write-Evidence {
     $androidLive = if (Test-Path -LiteralPath $rawAndroidLivePath -PathType Leaf) {
         Get-Content -LiteralPath $rawAndroidLivePath -Raw | ConvertFrom-Json
     } else { [ordered]@{ status = 'notVerified'; reason = 'Run AndroidLive or AndroidPhysical with an explicit serial.' } }
+    $androidShaderFilterPresentation = if (
+        [string]$androidLive.automatedGpu.SkiaSharpVersion -ceq '4.151.1' -and
+        [long]$androidLive.automatedGpu.Frame.ShaderImageFiltersRendered -gt 0
+    ) { "pass-$($androidLive.deviceKind)" } else { 'notVerified-after-4.151.1-upgrade' }
     Write-Json $evidencePath ([ordered]@{
         schemaVersion = 'doroti.app-targets-evidence/v4'
         scope = 'generated-application-bootstrap'
@@ -420,10 +437,17 @@ function Write-Evidence {
         androidLive = $androidLive
         customShaders = [ordered]@{
             status = 'pass'
-            contract = 'FragmentProgram.fromSource/fromAsset + FragmentShader float uniforms/image samplers + Paint.shader/ShaderMask; ImageFilter.shader unadvertised with Flutter matrix stretch fallback'
+            contract = 'SkiaSharp 4.151.1 + FragmentProgram.fromSource/fromAsset + FragmentShader float uniforms/image samplers + Paint.shader/ShaderMask/ImageFilter.shader; bounded same-context GPU child capture with first-float2 size and first-sampler implicit input; Flutter Android SkSL stretch'
             compiler = 'shared Skia SKRuntimeEffect'
             targets = @('Windows','MacCatalyst','Android','Web')
             nativeLive = @('Windows','Android')
+            imageFilterShader = [ordered]@{
+                contract = 'pass-runtime-pixel-fixture'
+                windowsNativePresentation = 'pass'
+                androidNativePresentation = $androidShaderFilterPresentation
+                macCatalystNativePresentation = 'notVerified'
+                webBrowserPresentation = 'notVerified'
+            }
             macCatalystLive = 'notVerified'
             webBrowserLive = 'notVerified'
         }

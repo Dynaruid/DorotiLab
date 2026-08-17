@@ -140,7 +140,7 @@ public sealed class MauiFrameworkHost : IDisposable
 #else
 #error Doroti.Host.Maui requires an explicit runtime identifier.
 #endif
-            "10.0.90", "3.119.4", value.Host.Snapshot, value.Graphics.Diagnostics,
+            "10.0.90", "4.151.1", value.Host.Snapshot, value.Graphics.Diagnostics,
             value.Host.InvalidationsRequested, value.Host.InvalidationsCoalesced,
             value.Host.NativePointerEvents, 0);
     }

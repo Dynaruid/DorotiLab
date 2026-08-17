@@ -255,36 +255,36 @@
       },
       "SkiaSharp": {
         "type": "Transitive",
-        "resolved": "3.119.4",
-        "contentHash": "53NOSUZ1Us+91Sm0uCkIivh/k7jOowRErZT2sIWwPFN9mLUvdxnE6rS4sWo4255+Rd2MWUSF+j0NMZHD6Cke+Q==",
+        "resolved": "4.151.1",
+        "contentHash": "FNlVsGZ9to3o9pObVqhIZanHjUGOoPb/Zxk5svCSLMJnKwxPKV7sIJrjs9BpB/jF3j9OdsaMOb4cfwSJbjueSw==",
         "dependencies": {
-          "SkiaSharp.NativeAssets.Win32": "3.119.4",
-          "SkiaSharp.NativeAssets.macOS": "3.119.4"
+          "SkiaSharp.NativeAssets.Win32": "4.151.1",
+          "SkiaSharp.NativeAssets.macOS": "4.151.1"
         }
       },
       "SkiaSharp.NativeAssets.macOS": {
         "type": "Transitive",
-        "resolved": "3.119.4",
-        "contentHash": "fgBOWEqbY012x7gMfJU4ezgz6dfhJb30Z6YdW35h85Zoe39+a8YNbAAwL29ihPfWoppg5AjvyKNzD1oCvlqWwA=="
+        "resolved": "4.151.1",
+        "contentHash": "nLXwdhi0oB7pqqNLbSOLX+FIZQOMAU/yFPspzcDTJjTmPbMWyp0JWyeVj8sFJ/cweurEfT0J/lvfgdXX2EFHXA=="
       },
       "SkiaSharp.NativeAssets.WebAssembly": {
         "type": "Transitive",
-        "resolved": "3.119.4",
-        "contentHash": "S1HOxtBbD4bYDtA2e9WH5TX+lxqRrTPvKjrjttRhxnHNNu7YY8VFo/LeCP7tNqoTA6PV+8vsvNbmRUEC2ip8RQ=="
+        "resolved": "4.151.1",
+        "contentHash": "jZ6uHGAs3Ppg+yZq5I8wCvROUlnvOYkrWo2uMoliXnCKkubipiWresZidIne2l86n6CbMfsYpbrVKwGm5zmVrQ=="
       },
       "SkiaSharp.NativeAssets.Win32": {
         "type": "Transitive",
-        "resolved": "3.119.4",
-        "contentHash": "XOpbx/4CReO2wYsq2s6rbvdauc6dntG4Zv499sHGTJ87bwZaFXszFkwql3+FIZMc8kUPeaj3Mx2ezIJmo8a1Kg=="
+        "resolved": "4.151.1",
+        "contentHash": "G+nln30ZX2ZuhH+ungf6x/QMXCje38KTS0VTfQeMyeY8uyMBmsZwFz2D30ZxUjZqsVbEIcaC2bsYF65876s4Yg=="
       },
       "SkiaSharp.Views.Blazor": {
         "type": "Transitive",
-        "resolved": "3.119.4",
-        "contentHash": "EoDhLV1SHUmaFyXQZbI3aP76EJFiOEoOmnZKUBIVKrb9flK44CCu9d6KEe+XH9S6XHBA6OsfUzgYkYWrnqcwJQ==",
+        "resolved": "4.151.1",
+        "contentHash": "cWoz6IHsjori/ne2rXqiV1QxvDdbhup4imvcF/ybZWl/5VTuz1G1cLjGscTRLcr6tCvhiijKMoVHqi6BbOYrqQ==",
         "dependencies": {
           "Microsoft.AspNetCore.Components.Web": "10.0.0",
-          "SkiaSharp": "3.119.4",
-          "SkiaSharp.NativeAssets.WebAssembly": "3.119.4"
+          "SkiaSharp": "4.151.1",
+          "SkiaSharp.NativeAssets.WebAssembly": "4.151.1"
         }
       },
       "doroti.framework.animation": {
@@ -442,8 +442,8 @@
           "Doroti.Hosting": "[0.2.0-beta, )",
           "Doroti.Skia.RuntimeEffects": "[0.2.0-beta, )",
           "Doroti.Ui": "[0.2.0-beta, )",
-          "SkiaSharp.NativeAssets.WebAssembly": "[3.119.4, )",
-          "SkiaSharp.Views.Blazor": "[3.119.4, )"
+          "SkiaSharp.NativeAssets.WebAssembly": "[4.151.1, )",
+          "SkiaSharp.Views.Blazor": "[4.151.1, )"
         }
       },
       "doroti.hosting": {
@@ -463,7 +463,7 @@
         "type": "Project",
         "dependencies": {
           "Doroti.Ui": "[0.2.0-beta, )",
-          "SkiaSharp": "[3.119.4, )"
+          "SkiaSharp": "[4.151.1, )"
         }
       },
       "doroti.target.web.browser-wasm": {
@@ -485,13 +485,13 @@
     "net10.0/browser-wasm": {
       "SkiaSharp.NativeAssets.macOS": {
         "type": "Transitive",
-        "resolved": "3.119.4",
-        "contentHash": "fgBOWEqbY012x7gMfJU4ezgz6dfhJb30Z6YdW35h85Zoe39+a8YNbAAwL29ihPfWoppg5AjvyKNzD1oCvlqWwA=="
+        "resolved": "4.151.1",
+        "contentHash": "nLXwdhi0oB7pqqNLbSOLX+FIZQOMAU/yFPspzcDTJjTmPbMWyp0JWyeVj8sFJ/cweurEfT0J/lvfgdXX2EFHXA=="
       },
       "SkiaSharp.NativeAssets.Win32": {
         "type": "Transitive",
-        "resolved": "3.119.4",
-        "contentHash": "XOpbx/4CReO2wYsq2s6rbvdauc6dntG4Zv499sHGTJ87bwZaFXszFkwql3+FIZMc8kUPeaj3Mx2ezIJmo8a1Kg=="
+        "resolved": "4.151.1",
+        "contentHash": "G+nln30ZX2ZuhH+ungf6x/QMXCje38KTS0VTfQeMyeY8uyMBmsZwFz2D30ZxUjZqsVbEIcaC2bsYF65876s4Yg=="
       }
     }
   }

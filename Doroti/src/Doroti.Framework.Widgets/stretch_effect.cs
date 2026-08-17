@@ -161,6 +161,82 @@ internal class _StretchEffectPainter__stretch_effect : global::Doroti.Framework.
 
 internal class _StretchEffectShader__stretch_effect
 {
+    private const string _source = """
+        uniform float2 u_size;
+        uniform float u_max_stretch_intensity;
+        uniform float u_overscroll_x;
+        uniform float u_overscroll_y;
+        uniform float u_interpolation_strength;
+        uniform shader u_texture;
+
+        float ease_in(float t, float d) {
+          return t * d;
+        }
+
+        float compute_overscroll_start(
+          float in_pos, float overscroll, float stretch_affected_dist,
+          float inverse_stretch_affected_dist, float distance_stretched,
+          float interpolation_strength) {
+          float offset_pos = stretch_affected_dist - in_pos;
+          float pos_based_variation = mix(
+            1.0, ease_in(offset_pos, inverse_stretch_affected_dist), interpolation_strength);
+          float stretch_intensity = overscroll * pos_based_variation;
+          return distance_stretched - (offset_pos / (1.0 + stretch_intensity));
+        }
+
+        float compute_overscroll_end(
+          float in_pos, float overscroll, float reverse_stretch_dist,
+          float stretch_affected_dist, float inverse_stretch_affected_dist,
+          float distance_stretched, float interpolation_strength,
+          float viewport_dimension) {
+          float offset_pos = in_pos - reverse_stretch_dist;
+          float pos_based_variation = mix(
+            1.0, ease_in(offset_pos, inverse_stretch_affected_dist), interpolation_strength);
+          float stretch_intensity = (-overscroll) * pos_based_variation;
+          return viewport_dimension - (distance_stretched - (offset_pos / (1.0 + stretch_intensity)));
+        }
+
+        float compute_stretched_effect(
+          float in_pos, float overscroll, float stretch_affected_dist,
+          float inverse_stretch_affected_dist, float distance_stretched,
+          float distance_diff, float interpolation_strength, float viewport_dimension) {
+          if (overscroll > 0.0) {
+            if (in_pos <= stretch_affected_dist) {
+              return compute_overscroll_start(
+                in_pos, overscroll, stretch_affected_dist, inverse_stretch_affected_dist,
+                distance_stretched, interpolation_strength);
+            }
+            return distance_diff + in_pos;
+          }
+          if (overscroll < 0.0) {
+            float affected_start = viewport_dimension - stretch_affected_dist;
+            if (in_pos >= affected_start) {
+              return compute_overscroll_end(
+                in_pos, overscroll, affected_start, stretch_affected_dist,
+                inverse_stretch_affected_dist, distance_stretched,
+                interpolation_strength, viewport_dimension);
+            }
+            return -distance_diff + in_pos;
+          }
+          return in_pos;
+        }
+
+        half4 main(float2 position) {
+          float2 uv = position / max(u_size, float2(1.0));
+          bool is_vertical = u_overscroll_y != 0.0;
+          float overscroll = (is_vertical ? u_overscroll_y : u_overscroll_x) * u_max_stretch_intensity;
+          float distance_stretched = 1.0 / (1.0 + abs(overscroll));
+          float distance_diff = distance_stretched - 1.0;
+          float out_u = is_vertical ? uv.x : compute_stretched_effect(
+            uv.x, overscroll, 1.0, 1.0, distance_stretched, distance_diff,
+            u_interpolation_strength, 1.0);
+          float out_v = is_vertical ? compute_stretched_effect(
+            uv.y, overscroll, 1.0, 1.0, distance_stretched, distance_diff,
+            u_interpolation_strength, 1.0) : uv.y;
+          return u_texture.eval(float2(out_u * u_size.x, out_v * u_size.y));
+        }
+        """;
+
     internal static bool _initCalled = false;
     internal static bool _initialized = false;
     internal static global::Doroti.Ui.FragmentProgram? _program = default;
@@ -169,11 +245,9 @@ internal class _StretchEffectShader__stretch_effect
     {
         if (!_initCalled)
         {
-            DartRuntimePrimitives.Ignore(Dart_uiLibrary.FragmentProgram.fromAsset("shaders/stretch_effect.frag").then((global::System.Action<global::Doroti.Ui.FragmentProgram>)((program) => {
-_program = program;
-_initialized = true;
-})));
             _initCalled = true;
+            _program = global::Doroti.Ui.FragmentProgram.fromSource(_source, "doroti-framework-stretch-effect");
+            _initialized = true;
         }
     }
 

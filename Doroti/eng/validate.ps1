@@ -8,6 +8,7 @@ $ErrorActionPreference = 'Stop'
 $dorotiRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $repositoryRoot = (Resolve-Path (Join-Path $dorotiRoot '..')).Path
 $productSolution = Join-Path $dorotiRoot 'Doroti.Product.slnx'
+$mauiHostProject = Join-Path $dorotiRoot 'src/Doroti.Host.Maui/Doroti.Host.Maui.csproj'
 $summaryPath = Join-Path $dorotiRoot 'artifacts/validation/summary.json'
 $completed = [Collections.Generic.List[string]]::new()
 
@@ -101,7 +102,17 @@ function Invoke-SourceGate {
 }
 
 function Invoke-BuildGate {
-    Invoke-Checked { dotnet build $productSolution -c Release --nologo } 'Release product build failed'
+    Invoke-Checked { dotnet restore $productSolution --force-evaluate --nologo } 'Release product restore failed'
+    foreach ($targetFramework in @(
+        'net10.0-windows10.0.19041.0',
+        'net10.0-maccatalyst',
+        'net10.0-android'
+    )) {
+        Invoke-Checked {
+            dotnet restore $mauiHostProject --no-dependencies --force-evaluate -p:TargetFramework=$targetFramework --nologo
+        } "MAUI host restore failed for $targetFramework"
+    }
+    Invoke-Checked { dotnet build $productSolution -c Release --no-restore --nologo } 'Release product build failed'
     $completed.Add('build')
 }
 

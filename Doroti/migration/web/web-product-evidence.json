@@ -80,7 +80,7 @@
       "status": "pass",
       "packageVersions": {
         "blazor": "10.0.0",
-        "skiaSharp": "3.119.4",
+        "skiaSharp": "4.151.1",
         "typescriptMsBuild": "7.0.0"
       },
       "desktopNativeDependencies": 0,
@@ -99,7 +99,7 @@
         "host": "document-canvas",
         "graphicsBackend": "webgl2-browser-gpu-required",
         "blazorWebAssemblyVersion": "10.0.0",
-        "skiaSharpVersion": "3.119.4",
+        "skiaSharpVersion": "4.151.1",
         "skiaSharpViewsPackage": "SkiaSharp.Views.Blazor",
         "skiaSharpNativePackage": "SkiaSharp.NativeAssets.WebAssembly",
         "bootLoader": "_framework/blazor.webassembly.js",

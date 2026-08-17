@@ -103,7 +103,7 @@ internal sealed class BrowserSkiaCapabilities :
         {
             // RenderView's root transform has already converted logical coordinates
             // into physical pixels. Applying the browser DPR here would scale twice.
-            DrawScene(canvas, frame.Commands);
+            DrawScene(canvas, frame.Commands, pixelWidth, pixelHeight);
             canvas.Flush();
             lock (_gate)
             {
@@ -242,17 +242,32 @@ internal sealed class BrowserSkiaCapabilities :
 
     private sealed record SceneFrame(IReadOnlyList<SceneCommand> Commands);
 
-    private static void DrawScene(SKCanvas canvas, IReadOnlyList<SceneCommand> commands)
+    private static void DrawScene(
+        SKCanvas canvas,
+        IReadOnlyList<SceneCommand> commands,
+        int pixelWidth,
+        int pixelHeight) =>
+        DrawScene(canvas, commands, 0, commands.Count, pixelWidth, pixelHeight);
+
+    private static void DrawScene(
+        SKCanvas canvas,
+        IReadOnlyList<SceneCommand> commands,
+        int start,
+        int end,
+        int pixelWidth,
+        int pixelHeight)
     {
         var restoreCounts = new Stack<int>();
-        DrawCommands(commands);
+        DrawCommands(commands, start, end);
         if (restoreCounts.Count != 0)
             throw new InvalidDataException($"Doroti browser scene has {restoreCounts.Count} unclosed scopes.");
 
-        void DrawCommands(IReadOnlyList<SceneCommand> source)
+        void DrawCommands(IReadOnlyList<SceneCommand> source, int sourceStart = 0, int sourceEnd = -1)
         {
-            foreach (var command in source)
+            if (sourceEnd < 0) sourceEnd = source.Count;
+            for (var commandIndex = sourceStart; commandIndex < sourceEnd; commandIndex++)
             {
+                var command = source[commandIndex];
                 switch (command.Operation)
                 {
                     case "picture" when command.HostPayload is ScenePicturePayload picture:
@@ -284,6 +299,32 @@ internal sealed class BrowserSkiaCapabilities :
                         using (var paint = new SKPaint { Shader = shader, BlendMode = ToBlend(mask.BlendMode) })
                             canvas.SaveLayer(ToRect(mask.MaskRect), paint);
                         restoreCounts.Push(1); break;
+                    case "imageFilter" when command.HostPayload is SceneImageFilterPayload image &&
+                                                  image.Filter.Shader is FragmentShaderSnapshot fragment:
+                    {
+                        var matchingPop = FindMatchingPop(source, commandIndex, sourceEnd);
+                        var offset = new SKPoint((float)image.Offset.dx, (float)image.Offset.dy);
+                        var bounds = image.Bounds is { } explicitBounds
+                            ? ToRect(explicitBounds)
+                            : new SKRect(
+                                canvas.LocalClipBounds.Left - offset.X,
+                                canvas.LocalClipBounds.Top - offset.Y,
+                                canvas.LocalClipBounds.Right - offset.X,
+                                canvas.LocalClipBounds.Bottom - offset.Y);
+                        DorotiSkiaImageFilterRenderer.Draw(
+                            canvas,
+                            pixelWidth,
+                            pixelHeight,
+                            fragment,
+                            bounds,
+                            offset,
+                            ToSamplingOptions(image.Filter.FilterQuality),
+                            CreateImageShader,
+                            (inputCanvas, inputWidth, inputHeight) =>
+                                DrawScene(inputCanvas, source, commandIndex + 1, matchingPop, inputWidth, inputHeight));
+                        commandIndex = matchingPop;
+                        break;
+                    }
                     case "imageFilter" when command.HostPayload is SceneImageFilterPayload image:
                         canvas.Save();
                         var imageRestoreCount = 1;
@@ -336,6 +377,29 @@ internal sealed class BrowserSkiaCapabilities :
         }
     }
 
+    private static int FindMatchingPop(IReadOnlyList<SceneCommand> source, int scopeStart, int end)
+    {
+        var depth = 1;
+        for (var index = scopeStart + 1; index < end; index++)
+        {
+            if (IsSceneScopeStart(source[index].Operation))
+            {
+                depth++;
+            }
+            else if (source[index].Operation == "pop" && --depth == 0)
+            {
+                return index;
+            }
+        }
+        throw new InvalidDataException(
+            $"Doroti browser scene image-filter scope at command {scopeStart} has no matching pop.");
+    }
+
+    private static bool IsSceneScopeStart(string operation) => operation is
+        "offset" or "clipRect" or "clipRRect" or "clipRSuperellipse" or "clipPath" or
+        "transform" or "opacity" or "colorFilter" or "shaderMask" or "imageFilter" or
+        "backdropFilter";
+
     private static void DrawPicture(SKCanvas canvas, Picture picture)
     {
         ObjectDisposedException.ThrowIf(picture.debugDisposed, picture);
@@ -381,7 +445,10 @@ internal sealed class BrowserSkiaCapabilities :
                         canvas.DrawText(draw.Paragraph.text, (float)draw.Offset.dx, (float)(draw.Offset.dy + draw.Paragraph.alphabeticBaseline), SKTextAlign.Left, font, paint);
                     break;
                 case "drawImageRect" or "drawImage" when command.HostPayload is CanvasImagePayload draw && draw.Image.HostHandle is BrowserImageHandle handle:
-                    using (var paint = ToPaint(draw.Paint)) canvas.DrawImage(handle.Image, ToRect(draw.Source), ToRect(draw.Destination), paint); break;
+                    using (var paint = ToPaint(draw.Paint))
+                        canvas.DrawImage(handle.Image, ToRect(draw.Source), ToRect(draw.Destination),
+                            ToSamplingOptions(draw.Paint.FilterQuality), paint);
+                    break;
                 case "drawShadow" when command.HostPayload is CanvasShadowPayload draw:
                     DrawShadow(canvas, draw);
                     break;
@@ -411,10 +478,8 @@ internal sealed class BrowserSkiaCapabilities :
     private static SKImageFilter ToImageFilter(ImageFilterSnapshot filter)
     {
         if (filter.Shader is not null)
-        {
-            throw new NotSupportedException(
-                "Doroti Web does not advertise ImageFilter.shader because SkiaSharp cannot bind the filtered child as its implicit texture input.");
-        }
+            throw new InvalidOperationException(
+                "Shader image filters must be rendered through Doroti's GPU offscreen input path.");
         if (filter.Outer is not null && filter.Inner is not null)
         {
             using var outer = ToImageFilter(filter.Outer);
@@ -549,30 +614,34 @@ internal sealed class BrowserSkiaCapabilities :
 
     private static SKPath ToPath(UiPath path)
     {
-        var result = new SKPath { FillType = path.fillType == PathFillType.evenOdd ? SKPathFillType.EvenOdd : SKPathFillType.Winding };
+        using var builder = new SKPathBuilder
+        {
+            FillType = path.fillType == PathFillType.evenOdd ? SKPathFillType.EvenOdd : SKPathFillType.Winding,
+        };
         foreach (var command in path.Commands)
         {
             var a = command.Arguments;
             switch (command.Operation)
             {
-                case "moveTo": result.MoveTo((float)a[0], (float)a[1]); break;
-                case "lineTo": result.LineTo((float)a[0], (float)a[1]); break;
-                case "quadraticBezierTo": result.QuadTo((float)a[0], (float)a[1], (float)a[2], (float)a[3]); break;
-                case "cubicTo": result.CubicTo((float)a[0], (float)a[1], (float)a[2], (float)a[3], (float)a[4], (float)a[5]); break;
-                case "addRect": result.AddRect(new((float)a[0], (float)a[1], (float)a[2], (float)a[3])); break;
-                case "addOval": result.AddOval(new((float)a[0], (float)a[1], (float)a[2], (float)a[3])); break;
-                case "addRRect": result.AddRoundRect(new((float)a[0], (float)a[1], (float)a[2], (float)a[3]), (float)a[4], (float)a[5]); break;
-                case "close": result.Close(); break;
+                case "moveTo": builder.MoveTo((float)a[0], (float)a[1]); break;
+                case "lineTo": builder.LineTo((float)a[0], (float)a[1]); break;
+                case "quadraticBezierTo": builder.QuadTo((float)a[0], (float)a[1], (float)a[2], (float)a[3]); break;
+                case "cubicTo": builder.CubicTo((float)a[0], (float)a[1], (float)a[2], (float)a[3], (float)a[4], (float)a[5]); break;
+                case "addRect": builder.AddRect(new((float)a[0], (float)a[1], (float)a[2], (float)a[3]), SKPathDirection.Clockwise); break;
+                case "addOval": builder.AddOval(new((float)a[0], (float)a[1], (float)a[2], (float)a[3]), SKPathDirection.Clockwise); break;
+                case "addRRect": builder.AddRoundRect(new((float)a[0], (float)a[1], (float)a[2], (float)a[3]), (float)a[4], (float)a[5], SKPathDirection.Clockwise); break;
+                case "close": builder.Close(); break;
             }
         }
-        return result;
+        return builder.Detach();
     }
 
     private static SKPath ToPath(RRect value)
     {
-        var path = new SKPath();
-        path.AddRoundRect(ToRect(value.outerRect), (float)value.tlRadiusX, (float)value.tlRadiusY);
-        return path;
+        using var builder = new SKPathBuilder();
+        builder.AddRoundRect(ToRect(value.outerRect), (float)value.tlRadiusX, (float)value.tlRadiusY,
+            SKPathDirection.Clockwise);
+        return builder.Detach();
     }
 
     private static SKRect ToRect(Rect value) => new((float)value.left, (float)value.top, (float)value.right, (float)value.bottom);

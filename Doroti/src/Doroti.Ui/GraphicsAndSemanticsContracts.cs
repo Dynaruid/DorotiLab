@@ -327,7 +327,7 @@ internal sealed record SceneClipPathPayload(Path Path);
 internal sealed record SceneTransformPayload(IReadOnlyList<double> Matrix4);
 internal sealed record SceneOpacityPayload(double Opacity, Offset Offset);
 internal sealed record SceneColorFilterPayload(ColorFilterSnapshot Filter);
-internal sealed record SceneImageFilterPayload(ImageFilterSnapshot Filter, Offset Offset);
+internal sealed record SceneImageFilterPayload(ImageFilterSnapshot Filter, Offset Offset, Rect? Bounds);
 internal sealed record SceneShaderMaskPayload(ShaderSnapshot Shader, Rect MaskRect, BlendMode BlendMode);
 internal sealed record SceneBackdropFilterPayload(ImageFilterSnapshot Filter, BlendMode BlendMode, object? BackdropId);
 internal sealed record SceneRetainedPayload(IReadOnlyList<SceneCommand> Commands, ulong ViewId, long Generation);
@@ -437,7 +437,7 @@ internal sealed record ImageFilterSnapshot(
     {
         ArgumentNullException.ThrowIfNull(filter);
         if (filter.shader is not null)
-            return new(0, 0, TileMode.clamp, null, null, null, null, null, FilterQuality.none,
+            return new(0, 0, TileMode.clamp, null, null, null, null, null, filter.filterQuality,
                 ShaderSnapshot.Capture(filter.shader));
         return new(
             filter.sigmaX,
@@ -514,8 +514,13 @@ public sealed class SceneBuilder
         Push(oldLayer, "clipPath", new { path, clipBehavior }, new SceneClipPathPayload(path));
     public ColorFilterEngineLayer pushColorFilter(ColorFilter filter, ColorFilterEngineLayer? oldLayer = null) =>
         Push(oldLayer, "colorFilter", filter, new SceneColorFilterPayload(ColorFilterSnapshot.Capture(filter)));
-    public ImageFilterEngineLayer pushImageFilter(ImageFilter filter, Offset offset = default, ImageFilterEngineLayer? oldLayer = null) =>
-        Push(oldLayer, "imageFilter", new { filter, offset }, new SceneImageFilterPayload(ImageFilterSnapshot.Capture(filter), offset));
+    public ImageFilterEngineLayer pushImageFilter(
+        ImageFilter filter,
+        Offset offset = default,
+        ImageFilterEngineLayer? oldLayer = null,
+        Rect? bounds = null) =>
+        Push(oldLayer, "imageFilter", new { filter, offset, bounds },
+            new SceneImageFilterPayload(ImageFilterSnapshot.Capture(filter), offset, bounds));
     public TransformEngineLayer pushTransform(IReadOnlyList<double> matrix4, TransformEngineLayer? oldLayer = null) =>
         Push(oldLayer, "transform", matrix4, new SceneTransformPayload(matrix4));
     public OpacityEngineLayer pushOpacity(long alpha, Offset offset = default, OpacityEngineLayer? oldLayer = null) =>

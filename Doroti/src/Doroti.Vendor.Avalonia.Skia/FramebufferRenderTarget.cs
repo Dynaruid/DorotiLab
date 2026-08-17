@@ -250,7 +250,7 @@ internal sealed class NativeFramebufferFrame : INativeRasterFrame
             (float)destinationTop,
             (float)destinationRight,
             (float)destinationBottom);
-        _canvas.DrawBitmap(bitmap, source, destination, paint);
+        _canvas.DrawBitmap(bitmap, source, destination, SKSamplingOptions.Default, paint);
     }
 
     public void DrawText(string text, double x, double y, double fontSize, uint argb, double opacity, string? fontFamily = null)
@@ -314,12 +314,15 @@ internal sealed class NativeFramebufferFrame : INativeRasterFrame
     {
         if (coordinates.Length < 4 || coordinates.Length % 2 != 0)
             throw new ArgumentException("Path coordinates must contain x/y pairs.", nameof(coordinates));
-        var path = new SKPath { FillType = evenOdd ? SKPathFillType.EvenOdd : SKPathFillType.Winding };
-        path.MoveTo((float)coordinates[0], (float)coordinates[1]);
+        using var builder = new SKPathBuilder
+        {
+            FillType = evenOdd ? SKPathFillType.EvenOdd : SKPathFillType.Winding,
+        };
+        builder.MoveTo((float)coordinates[0], (float)coordinates[1]);
         for (var index = 2; index < coordinates.Length; index += 2)
-            path.LineTo((float)coordinates[index], (float)coordinates[index + 1]);
-        if (closed) path.Close();
-        return path;
+            builder.LineTo((float)coordinates[index], (float)coordinates[index + 1]);
+        if (closed) builder.Close();
+        return builder.Detach();
     }
 
     private static byte OpacityByte(double opacity) => (byte)Math.Round(255 * opacity);

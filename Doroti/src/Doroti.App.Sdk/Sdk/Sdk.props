@@ -48,7 +48,7 @@
     <SingleProject Condition="'$(UseMaui)' == 'true'">true</SingleProject>
     <MauiVersion Condition="'$(MauiVersion)' == ''">10.0.90</MauiVersion>
     <DorotiVersion Condition="'$(DorotiVersion)' == ''">0.2.0-beta</DorotiVersion>
-    <SkiaSharpVersion Condition="'$(SkiaSharpVersion)' == ''">3.119.4</SkiaSharpVersion>
+    <SkiaSharpVersion Condition="'$(SkiaSharpVersion)' == ''">4.151.1</SkiaSharpVersion>
     <DorotiMarkupVersion Condition="'$(DorotiMarkupVersion)' == ''">8.0.0</DorotiMarkupVersion>
     <DefineConstants Condition="'$(DorotiTarget)' == 'Windows'">$(DefineConstants);WINDOWS;DOROTI_MAUI</DefineConstants>
     <DefineConstants Condition="'$(DorotiTarget)' == 'MacCatalyst'">$(DefineConstants);MACCATALYST;DOROTI_MAUI</DefineConstants>

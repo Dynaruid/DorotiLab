@@ -8,7 +8,7 @@ Hardware selection is fail-closed. `SkiaSurfaceFactory.CreateHardware` requires 
 
 `Doroti.Vendor.Avalonia.Base.SleepLoopRenderTimer` is the pinned source-port adaptation behind `DesktopFrameDispatcher`. On Windows it uses `DwmFlush` as the presentation-clock signal and coalesces all callbacks for a tick before posting them to the shell UI dispatcher. Dispatcher priority is no longer the clock. The precision sleep loop remains a non-Windows/failure fallback for the timer itself, not a rendering backend fallback.
 
-Both GPU and diagnostic Skia canvases call `SkiaSharp.HarfBuzz.SKShaper`; the managed rectangle-glyph implementation remains reachable only through explicitly selected managed software diagnostics. `SkiaSharp.HarfBuzz` is pinned at the same `3.119.4` version as SkiaSharp.
+Both GPU and diagnostic Skia canvases call `SkiaSharp.HarfBuzz.SKShaper`; the managed rectangle-glyph implementation remains reachable only through explicitly selected managed software diagnostics. `SkiaSharp.HarfBuzz` is pinned at the same `4.151.1` version as SkiaSharp.
 
 The former `DorotiDemoApp --runtime-v2` diagnostic entrypoint was removed when
 the product demo was consolidated into the Goal6 Material application. This

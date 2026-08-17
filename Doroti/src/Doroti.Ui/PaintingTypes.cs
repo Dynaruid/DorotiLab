@@ -185,12 +185,7 @@ public sealed record ColorFilter
 
 public sealed record ImageFilter
 {
-    // Runtime fragment shaders are supported for Paint and ShaderMask. A shader image
-    // filter additionally needs the host to bind the filtered child as an implicit
-    // texture input. SkiaSharp does not expose that image-filter primitive, so report
-    // the narrower capability honestly and let Flutter's StretchEffect use its matrix
-    // fallback instead of replacing the scroll subtree with a source-less shader.
-    public static bool isShaderFilterSupported => false;
+    public static bool isShaderFilterSupported => true;
 
     public ImageFilter(double sigmaX = 0, double sigmaY = 0, TileMode tileMode = TileMode.clamp, Rect? bounds = null)
     {
@@ -223,9 +218,23 @@ public sealed record ImageFilter
         this.filterQuality = filterQuality;
     }
 
-    public ImageFilter(FragmentShader shader)
+    public ImageFilter(FragmentShader shader, FilterQuality filterQuality = FilterQuality.none)
     {
         this.shader = shader ?? throw new ArgumentNullException(nameof(shader));
+        var source = shader.program.source;
+        var firstFloatUniform = System.Text.RegularExpressions.Regex.Match(
+            source,
+            @"(?m)^\s*(?:layout\s*\([^)]*\)\s*)?uniform\s+(?<type>(?:float|half)(?:[234](?:x[234])?)?)\s+[A-Za-z_]\w*\s*(?:\[\s*\d+\s*\])?\s*;");
+        if (!firstFloatUniform.Success ||
+            firstFloatUniform.Groups["type"].Value is not ("float2" or "half2"))
+            throw new InvalidOperationException(
+                "ImageFilter.shader requires the first float uniform to be a float2 input size.");
+        if (!System.Text.RegularExpressions.Regex.IsMatch(
+                source,
+                @"(?m)^\s*(?:layout\s*\([^)]*\)\s*)?uniform\s+shader\s+[A-Za-z_]\w*\s*;"))
+            throw new InvalidOperationException(
+                "ImageFilter.shader requires at least one shader sampler for the filtered child.");
+        this.filterQuality = filterQuality;
     }
 
     public double sigmaX { get; }
@@ -240,7 +249,7 @@ public sealed record ImageFilter
     public FilterQuality filterQuality { get; }
     public string debugShortDescription => outer is not null && inner is not null
         ? $"{inner.debugShortDescription} -> {outer.debugShortDescription}"
-        : matrix4 is not null ? "matrix" : "blur";
+        : shader is not null ? "shader" : matrix4 is not null ? "matrix" : "blur";
 }
 
 public sealed record MaskFilter

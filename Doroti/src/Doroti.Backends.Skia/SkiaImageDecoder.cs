@@ -14,11 +14,12 @@ public sealed class SkiaImageDecoder : IImageDecoder
         }
         using var source = SKBitmap.Decode(encodedBytes.ToArray())
             ?? throw new InvalidDataException("Skia could not decode the image payload.");
+        using var sourceImage = SKImage.FromBitmap(source);
         using var converted = new SKBitmap(new SKImageInfo(source.Width, source.Height, SKColorType.Bgra8888, SKAlphaType.Premul));
         using (var canvas = new SKCanvas(converted))
         {
             canvas.Clear(SKColors.Transparent);
-            canvas.DrawBitmap(source, 0, 0);
+            canvas.DrawImage(sourceImage, 0, 0, SKSamplingOptions.Default);
             canvas.Flush();
         }
         cancellationToken.ThrowIfCancellationRequested();

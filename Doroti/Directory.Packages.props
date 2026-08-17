@@ -5,14 +5,14 @@
   <ItemGroup>
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
     <PackageVersion Include="MaterialColorUtilities" Version="0.3.0" />
-    <PackageVersion Include="SkiaSharp" Version="3.119.4" />
-    <PackageVersion Include="SkiaSharp.HarfBuzz" Version="3.119.4" />
-    <PackageVersion Include="SkiaSharp.Views.Blazor" Version="3.119.4" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="3.119.4" />
+    <PackageVersion Include="SkiaSharp" Version="4.151.1" />
+    <PackageVersion Include="SkiaSharp.HarfBuzz" Version="4.151.1" />
+    <PackageVersion Include="SkiaSharp.Views.Blazor" Version="4.151.1" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="4.151.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
     <PackageVersion Include="Microsoft.TypeScript.MSBuild" Version="7.0.0" />
     <PackageVersion Include="Microsoft.Maui.Controls" Version="10.0.90" />
     <PackageVersion Include="CommunityToolkit.Maui.Markup" Version="8.0.0" />
-    <PackageVersion Include="SkiaSharp.Views.Maui.Controls" Version="3.119.4" />
+    <PackageVersion Include="SkiaSharp.Views.Maui.Controls" Version="4.151.1" />
   </ItemGroup>
 </Project>

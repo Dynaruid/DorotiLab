@@ -173,6 +173,18 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
         }
         """;
 
+    private const string GalleryFilterShaderSource = """
+        uniform float2 uSize;
+        uniform float uPhase;
+        uniform shader uInput;
+
+        half4 main(float2 position) {
+            half4 inputColor = uInput.eval(position);
+            float wave = 0.82 + 0.18 * sin(uPhase + position.x / max(uSize.x, 1.0) * 6.2831853);
+            return half4(inputColor.r * wave, inputColor.g, inputColor.b / max(wave, 0.01), inputColor.a);
+        }
+        """;
+
     internal static readonly string[] InteractiveLabels =
     [
         "G6 Material button", "G6 Material checkbox", "G6 Material radio",
@@ -188,6 +200,8 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
     private bool _blurEnabled = true;
     private readonly FragmentShader _galleryShader =
         FragmentProgram.fromSource(GalleryShaderSource, "doroti-demo-gallery").fragmentShader();
+    private readonly FragmentShader _galleryFilterShader =
+        FragmentProgram.fromSource(GalleryFilterShaderSource, "doroti-demo-image-filter").fragmentShader();
     private readonly GlobalKey<IState> _blurToggleKey = new("g6-backdrop-blur-toggle");
     private readonly GlobalKey<IState> _backdropPanelKey = new("g6-backdrop-blur-panel");
 
@@ -265,6 +279,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
     public override Widget build(BuildContext context)
     {
         BuildCount++;
+        _galleryFilterShader.setFloat(2, _slider * 6.2831853);
         var button = ActionSemantics(InteractiveLabels[0], new Material.ElevatedButton(
             onPressed: () => Mutate(() => _buttonCount++),
             child: new Text("Press button")), () => _buttonCount++, _buttonCount.ToString());
@@ -402,6 +417,14 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                                     return _galleryShader;
                                 },
                                 child: new Text("Custom SkSL · shared GPU runtime effect · all targets")),
+                            new ImageFiltered(
+                                imageFilter: new ImageFilter(_galleryFilterShader, FilterQuality.low),
+                                child: new Container(
+                                    width: 340,
+                                    height: 48,
+                                    color: new UiColor(0xff6750a4L),
+                                    alignment: Alignment.center,
+                                    child: new Text("ImageFilter.shader · implicit child texture · GPU 2-pass"))),
                             new Text("Reviewed Material · promoted product · strict Skia GPU"),
                             new Material.Card(
                                 color: new UiColor(0xfff3edf7L),

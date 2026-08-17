@@ -1,7 +1,7 @@
 {
   "schemaVersion": "doroti.app-targets-evidence/v4",
   "scope": "generated-application-bootstrap",
-  "capturedAtUtc": "2026-08-17T10:10:50.8648804+00:00",
+  "capturedAtUtc": "2026-08-17T14:11:26.7397397+00:00",
   "status": "partial",
   "project": "DorotiDemoApp/DorotiDemoApp.csproj",
   "graph": {
@@ -68,7 +68,7 @@
     "targetFramework": ".NETCoreApp,Version=v10.0/Windows,Version=10.0.19041.0",
     "rid": "win-x64",
     "mauiVersion": "10.0.90",
-    "skiaSharpVersion": "3.119.4",
+    "skiaSharpVersion": "4.151.1",
     "surface": {
       "pixelWidth": 1894,
       "pixelHeight": 1014,
@@ -87,159 +87,162 @@
       "contextGeneration": 1,
       "surfaceGeneration": 2,
       "pendingScene": false,
+      "shaderImageFiltersRendered": 5,
       "backend": "skiasharp-maui-skglview-gpu"
     },
     "invalidationsRequested": 6,
     "invalidationsCoalesced": 3,
+    "nativePointerEvents": 0,
     "softwareFallbackFrames": 0
   },
   "androidLive": {
-    "serial": "emulator-5556",
-    "model": "sdk_gphone64_x86_64",
-    "api": "33",
-    "abi": "x86_64",
-    "rid": "android-x64",
-    "deviceKind": "emulator",
+    "serial": "R3CY30KZA4B",
+    "model": "SM-S931N",
+    "api": "36",
+    "abi": "arm64-v8a",
+    "rid": "android-arm64",
+    "deviceKind": "physical",
     "automatedGpu": {
       "applicationSource": "src/App.cs",
-      "bootstrapSource": "obj/android-x64/Doroti.Generated/DorotiBootstrap.g.cs -> Platforms/Android/MainApplication.cs",
+      "bootstrapSource": "obj/android/Doroti.Generated/DorotiBootstrap.g.cs -> Platforms/Android/MainApplication.cs",
       "targetFramework": ".NETCoreApp,Version=v10.0/Android,Version=21.0",
-      "rid": "android-x64",
+      "rid": "android-arm64",
       "mauiVersion": "10.0.90",
-      "skiaSharpVersion": "3.119.4",
+      "skiaSharpVersion": "4.151.1",
       "surface": {
-        "pixelWidth": 1920,
-        "pixelHeight": 1074,
-        "devicePixelRatio": 1.5,
+        "pixelWidth": 1080,
+        "pixelHeight": 2192,
+        "devicePixelRatio": 3,
         "metricsGeneration": 3,
         "contextGeneration": 1,
         "surfaceGeneration": 2,
         "nativeViewType": "SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKGLTextureView",
-        "graphicsBackend": "android-x64/Android/MauiSKGLTextureView/OpenGL-ES-Skia"
+        "graphicsBackend": "android-arm64/Android/MauiSKGLTextureView/OpenGL-ES-Skia"
       },
       "frame": {
-        "submitted": 46,
-        "presented": 46,
-        "replayed": 6,
+        "submitted": 540,
+        "presented": 540,
+        "replayed": 28,
         "failed": 0,
         "contextGeneration": 1,
         "surfaceGeneration": 2,
         "pendingScene": false,
+        "shaderImageFiltersRendered": 803,
         "backend": "skiasharp-maui-skglview-gpu"
       },
-      "invalidationsRequested": 95,
-      "invalidationsCoalesced": 42,
-      "nativePointerEvents": 52,
+      "invalidationsRequested": 1083,
+      "invalidationsCoalesced": 514,
+      "nativePointerEvents": 177,
       "softwareFallbackFrames": 0
     },
     "automatedScroll": "pass-adb-up-4-down-2",
     "automatedPersistentDisplay": {
       "status": "pass",
       "initialScreenshot": {
-        "width": 1920,
-        "height": 1200,
+        "width": 1080,
+        "height": 2340,
         "sampleRegion": {
-          "left": 38,
-          "top": 144,
-          "right": 1632,
-          "bottom": 1008
+          "left": 22,
+          "top": 281,
+          "right": 918,
+          "bottom": 1966
         },
-        "sampleCount": 9576,
-        "nonLightRatio": 0.1325,
-        "coloredRatio": 0.1065
+        "sampleCount": 10575,
+        "nonLightRatio": 0.9059,
+        "coloredRatio": 0.2164
       },
       "swipeScreenshots": [
         {
-          "width": 1920,
-          "height": 1200,
+          "width": 1080,
+          "height": 2340,
           "sampleRegion": {
-            "left": 38,
-            "top": 144,
-            "right": 1632,
-            "bottom": 1008
+            "left": 22,
+            "top": 281,
+            "right": 918,
+            "bottom": 1966
           },
-          "sampleCount": 9576,
-          "nonLightRatio": 0.1325,
-          "coloredRatio": 0.1065
+          "sampleCount": 10575,
+          "nonLightRatio": 0.277,
+          "coloredRatio": 0.2201
         },
         {
-          "width": 1920,
-          "height": 1200,
+          "width": 1080,
+          "height": 2340,
           "sampleRegion": {
-            "left": 38,
-            "top": 144,
-            "right": 1632,
-            "bottom": 1008
+            "left": 22,
+            "top": 281,
+            "right": 918,
+            "bottom": 1966
           },
-          "sampleCount": 9576,
-          "nonLightRatio": 0.1325,
-          "coloredRatio": 0.1066
+          "sampleCount": 10575,
+          "nonLightRatio": 0.2668,
+          "coloredRatio": 0.209
         },
         {
-          "width": 1920,
-          "height": 1200,
+          "width": 1080,
+          "height": 2340,
           "sampleRegion": {
-            "left": 38,
-            "top": 144,
-            "right": 1632,
-            "bottom": 1008
+            "left": 22,
+            "top": 281,
+            "right": 918,
+            "bottom": 1966
           },
-          "sampleCount": 9576,
-          "nonLightRatio": 0.1325,
-          "coloredRatio": 0.1064
+          "sampleCount": 10575,
+          "nonLightRatio": 0.2776,
+          "coloredRatio": 0.2235
         },
         {
-          "width": 1920,
-          "height": 1200,
+          "width": 1080,
+          "height": 2340,
           "sampleRegion": {
-            "left": 38,
-            "top": 144,
-            "right": 1632,
-            "bottom": 1008
+            "left": 22,
+            "top": 281,
+            "right": 918,
+            "bottom": 1966
           },
-          "sampleCount": 9576,
-          "nonLightRatio": 0.1325,
-          "coloredRatio": 0.1066
+          "sampleCount": 10575,
+          "nonLightRatio": 0.2748,
+          "coloredRatio": 0.2203
         },
         {
-          "width": 1920,
-          "height": 1200,
+          "width": 1080,
+          "height": 2340,
           "sampleRegion": {
-            "left": 38,
-            "top": 144,
-            "right": 1632,
-            "bottom": 1008
+            "left": 22,
+            "top": 281,
+            "right": 918,
+            "bottom": 1966
           },
-          "sampleCount": 9576,
-          "nonLightRatio": 0.0929,
-          "coloredRatio": 0.0786
+          "sampleCount": 10575,
+          "nonLightRatio": 0.2084,
+          "coloredRatio": 0.1681
         },
         {
-          "width": 1920,
-          "height": 1200,
+          "width": 1080,
+          "height": 2340,
           "sampleRegion": {
-            "left": 38,
-            "top": 144,
-            "right": 1632,
-            "bottom": 1008
+            "left": 22,
+            "top": 281,
+            "right": 918,
+            "bottom": 1966
           },
-          "sampleCount": 9576,
-          "nonLightRatio": 0.1208,
-          "coloredRatio": 0.0924
+          "sampleCount": 10575,
+          "nonLightRatio": 0.2016,
+          "coloredRatio": 0.1685
         }
       ],
       "settledScreenshot": {
-        "width": 1920,
-        "height": 1200,
+        "width": 1080,
+        "height": 2340,
         "sampleRegion": {
-          "left": 38,
-          "top": 144,
-          "right": 1632,
-          "bottom": 1008
+          "left": 22,
+          "top": 281,
+          "right": 918,
+          "bottom": 1966
         },
-        "sampleCount": 9576,
-        "nonLightRatio": 0.1325,
-        "coloredRatio": 0.1066
+        "sampleCount": 10575,
+        "nonLightRatio": 0.8877,
+        "coloredRatio": 0.1626
       }
     },
     "manualPersistentDisplay": "notVerified",
@@ -247,7 +250,7 @@
   },
   "customShaders": {
     "status": "pass",
-    "contract": "FragmentProgram.fromSource/fromAsset + FragmentShader float uniforms/image samplers + Paint.shader/ShaderMask; ImageFilter.shader unadvertised with Flutter matrix stretch fallback",
+    "contract": "SkiaSharp 4.151.1 + FragmentProgram.fromSource/fromAsset + FragmentShader float uniforms/image samplers + Paint.shader/ShaderMask/ImageFilter.shader; bounded same-context GPU child capture with first-float2 size and first-sampler implicit input; Flutter Android SkSL stretch",
     "compiler": "shared Skia SKRuntimeEffect",
     "targets": [
       "Windows",
@@ -259,6 +262,13 @@
       "Windows",
       "Android"
     ],
+    "imageFilterShader": {
+      "contract": "pass-runtime-pixel-fixture",
+      "windowsNativePresentation": "pass",
+      "androidNativePresentation": "pass-physical",
+      "macCatalystNativePresentation": "notVerified",
+      "webBrowserPresentation": "notVerified"
+    },
     "macCatalystLive": "notVerified",
     "webBrowserLive": "notVerified"
   },
