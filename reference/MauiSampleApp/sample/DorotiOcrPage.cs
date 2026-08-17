@@ -43,7 +43,7 @@ public sealed class DorotiOcrPage : ContentPage
     {
         Title = "Doroti OCR";
         BackgroundColor = Color.FromArgb("#1D1B20");
-        _status.Text = "Load the bundled sample, pick a photo, or capture one. Android uses ML Kit from Google Maven.";
+        _status.Text = "Load the bundled sample, pick a photo, or capture one. Android uses ML Kit; iOS/Mac Catalyst use Vision.";
 
         var sampleButton = CreateActionButton("Sample");
         sampleButton.Clicked += async (_, _) => await LoadSampleAsync();

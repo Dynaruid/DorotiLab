@@ -12,9 +12,9 @@
     <DorotiTargetKey>$([System.String]::Copy('$(DorotiTarget)').ToLowerInvariant())</DorotiTargetKey>
     <DorotiArtifactKey Condition="'$(DorotiTarget)' == 'Android' and '$(DorotiRequestedRuntimeIdentifier)' == 'android-x64'">android-x64</DorotiArtifactKey>
     <DorotiArtifactKey Condition="'$(DorotiArtifactKey)' == ''">$(DorotiTargetKey)</DorotiArtifactKey>
-    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">obj\$(DorotiArtifactKey)\</BaseIntermediateOutputPath>
-    <OutputPath Condition="'$(OutputPath)' == ''">bin\$(DorotiArtifactKey)\$(Configuration)\</OutputPath>
-    <PublishDir Condition="'$(PublishDir)' == ''">$(OutputPath)publish\</PublishDir>
+    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">obj/$(DorotiArtifactKey)/</BaseIntermediateOutputPath>
+    <OutputPath Condition="'$(OutputPath)' == ''">bin/$(DorotiArtifactKey)/$(Configuration)/</OutputPath>
+    <PublishDir Condition="'$(PublishDir)' == ''">$(OutputPath)publish/</PublishDir>
     <NuGetLockFilePath Condition="'$(NuGetLockFilePath)' == ''">packages.$(DorotiArtifactKey).lock.json</NuGetLockFilePath>
   </PropertyGroup>
 
@@ -58,9 +58,9 @@
     <TargetPlatformMinVersion Condition="'$(DorotiTarget)' == 'Windows'">10.0.19041.0</TargetPlatformMinVersion>
     <SupportedOSPlatformVersion Condition="'$(DorotiTarget)' == 'MacCatalyst'">15.0</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="'$(DorotiTarget)' == 'Android'">21.0</SupportedOSPlatformVersion>
-    <AndroidManifest Condition="'$(DorotiTarget)' == 'Android'">Platforms\Android\AndroidManifest.xml</AndroidManifest>
+    <AndroidManifest Condition="'$(DorotiTarget)' == 'Android'">Platforms/Android/AndroidManifest.xml</AndroidManifest>
     <WindowsPackageType Condition="'$(DorotiTarget)' == 'Windows' and '$(WindowsPackageType)' == ''">None</WindowsPackageType>
     <PublishTrimmed Condition="'$(DorotiTarget)' == 'Web'">false</PublishTrimmed>
-    <DorotiWebTypeScript Condition="'$(DorotiTarget)' == 'Web' and Exists('Platforms\Web\tsconfig.json')">true</DorotiWebTypeScript>
+    <DorotiWebTypeScript Condition="'$(DorotiTarget)' == 'Web' and Exists('Platforms/Web/tsconfig.json')">true</DorotiWebTypeScript>
   </PropertyGroup>
 </Project>

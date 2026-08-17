@@ -3,7 +3,7 @@
   "packageId": "Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64",
   "targetFramework": "net10.0-maccatalyst",
   "rid": "maccatalyst-arm64",
-  "nativeViewType": "SkiaSharp.Views.Maui.Controls.SKMetalView",
+  "nativeViewType": "SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKMetalView",
   "graphicsBackend": "UIKit-MacCatalyst/SKMetalView/Metal-Skia",
   "softwareFallback": false
 }

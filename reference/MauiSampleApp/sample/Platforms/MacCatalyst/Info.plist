@@ -40,5 +40,7 @@
 	<string>Take a photo to recognize text.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Pick a photo to recognize text.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Save a captured photo before recognizing text.</string>
 </dict>
 </plist>

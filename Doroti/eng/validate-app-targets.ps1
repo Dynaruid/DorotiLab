@@ -27,6 +27,10 @@ function Assert-True([bool] $Condition, [string] $Name) {
     if (-not $Condition) { throw "$Name failed." }
 }
 
+function Get-DorotiTargetGraph([string] $Path) {
+    return @(Get-Content -LiteralPath $Path | ForEach-Object { $_.Replace('/', '\') })
+}
+
 function Invoke-Checked([scriptblock] $Command, [string] $Failure) {
     $global:LASTEXITCODE = 0
     & $Command | Out-Host
@@ -136,7 +140,7 @@ function Invoke-GraphGate {
         } "$($target.Name) target graph failed"
         $graphPath = Join-Path (Split-Path $project -Parent) "obj/$($target.Graph)/doroti-target-graph.txt"
         Assert-True (Test-Path -LiteralPath $graphPath -PathType Leaf) "$($target.Name) target graph output"
-        $graph = Get-Content -LiteralPath $graphPath
+        $graph = Get-DorotiTargetGraph $graphPath
         Assert-True (@($graph | Where-Object { $_ -ceq 'compile=Program.cs' }).Count -eq 1) "$($target.Name) root bootstrap"
         Assert-True (@($graph | Where-Object { $_ -ceq 'compile=src\App.cs' }).Count -eq 1) "$($target.Name) shared app source"
         Assert-True (@($graph | Where-Object { $_ -ceq "startup=DorotiDemoApp.Program" }).Count -eq 1) "$($target.Name) startup identity"
@@ -168,7 +172,7 @@ function Invoke-GraphGate {
     }
 
     Invoke-Checked { dotnet msbuild $syntheticProject -t:WriteDorotiTargetGraph -nologo } 'synthetic fourth host descriptor failed'
-    $syntheticGraph = Get-Content -LiteralPath (Join-Path (Split-Path $syntheticProject -Parent) 'obj/linux/doroti-target-graph.txt')
+    $syntheticGraph = Get-DorotiTargetGraph (Join-Path (Split-Path $syntheticProject -Parent) 'obj/linux/doroti-target-graph.txt')
     Assert-True (@($syntheticGraph | Where-Object { $_ -ceq 'descriptor=Linux|SyntheticQt|Synthetic|Doroti.Target.Linux.Qt.linux-x64' }).Count -eq 1) 'synthetic fourth host descriptor identity'
     $invalidAndroidRid = @(& dotnet msbuild $project -t:WriteDorotiTargetGraph -p:DorotiTarget=Android -p:RuntimeIdentifier=android-x86 -nologo 2>&1)
     Assert-True ($LASTEXITCODE -ne 0 -and (($invalidAndroidRid -join "`n") -match 'DOROTIAPP004')) 'Android RID diagnostic fail-closed'

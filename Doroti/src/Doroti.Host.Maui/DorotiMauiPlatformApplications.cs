@@ -25,14 +25,20 @@ public abstract class DorotiMauiWinUIApplication : MauiWinUIApplication
 
     private static void WriteStartupFailure(Exception exception)
     {
-        var path = Environment.GetEnvironmentVariable("DOROTI_MAUI_EVIDENCE");
-        if (!string.IsNullOrWhiteSpace(path)) File.WriteAllText(path + ".exception.txt", exception.ToString());
+        DorotiMauiSurface.WriteFailure(exception);
     }
 }
 #elif MACCATALYST
 public abstract class DorotiMauiUIApplicationDelegate<TStartup> : MauiUIApplicationDelegate
     where TStartup : IDorotiApplicationStartup, new()
 {
+    protected DorotiMauiUIApplicationDelegate()
+    {
+        AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+            DorotiMauiSurface.WriteFailure(args.ExceptionObject as Exception ??
+                new InvalidOperationException(args.ExceptionObject.ToString()));
+    }
+
     protected sealed override MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();

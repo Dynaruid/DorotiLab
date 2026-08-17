@@ -12,7 +12,7 @@
   <ItemGroup Condition="'$(DorotiWebTypeScript)' == 'true'">
     <Content Remove="$(DorotiTypeScriptConfig)" />
     <DorotiTypeScriptConfigInput Include="$(DorotiTypeScriptConfig)" />
-    <DorotiTypeScriptSource Include="$(DorotiTypeScriptSourceRoot)\**\*.ts" />
+    <DorotiTypeScriptSource Include="$(DorotiTypeScriptSourceRoot)/**/*.ts" />
   </ItemGroup>
 
   <Target Name="DorotiValidateTypeScriptToolchain" Condition="'$(DorotiWebTypeScript)' == 'true'" BeforeTargets="PrepareForBuild">
@@ -36,8 +36,8 @@
     </Exec>
     <Error Code="DOROTIWEB016" Condition="'$(DorotiTypeScriptExitCode)' != '0'" Text="Doroti Web TypeScript compilation failed. See compiler diagnostics above." />
     <ItemGroup>
-      <DorotiTypeScriptGenerated Include="$(DorotiTypeScriptOutputRoot)\**\*.js" />
-      <DorotiTypeScriptGenerated Include="$(DorotiTypeScriptOutputRoot)\**\*.js.map" Condition="'$(DorotiTypeScriptSourceMap)' == 'true'" />
+      <DorotiTypeScriptGenerated Include="$(DorotiTypeScriptOutputRoot)/**/*.js" />
+      <DorotiTypeScriptGenerated Include="$(DorotiTypeScriptOutputRoot)/**/*.js.map" Condition="'$(DorotiTypeScriptSourceMap)' == 'true'" />
     </ItemGroup>
     <Error Code="DOROTIWEB017" Condition="'@(DorotiTypeScriptGenerated)' == '' or !Exists('$(DorotiTypeScriptExpectedOutput)')" Text="Doroti Web TypeScript compilation produced no usable JavaScript at $(DorotiTypeScriptOutputRoot)." />
     <ItemGroup>
@@ -50,13 +50,13 @@
           DependsOnTargets="DorotiCompileTypeScript"
           BeforeTargets="ResolveProjectStaticWebAssets;ResolveCurrentProjectStaticWebAssetsInputs">
     <ItemGroup>
-      <_DorotiTypeScriptStaticAsset Include="$(DorotiTypeScriptOutputRoot)\**\*.js" />
-      <_DorotiTypeScriptStaticAsset Include="$(DorotiTypeScriptOutputRoot)\**\*.js.map" Condition="'$(DorotiTypeScriptSourceMap)' == 'true'" />
+      <_DorotiTypeScriptStaticAsset Include="$(DorotiTypeScriptOutputRoot)/**/*.js" />
+      <_DorotiTypeScriptStaticAsset Include="$(DorotiTypeScriptOutputRoot)/**/*.js.map" Condition="'$(DorotiTypeScriptSourceMap)' == 'true'" />
       <_DorotiTypeScriptStaticAsset Update="@(_DorotiTypeScriptStaticAsset)">
         <DorotiRelativePath>%(RecursiveDir)%(Filename)%(Extension)</DorotiRelativePath>
       </_DorotiTypeScriptStaticAsset>
       <Content Include="@(_DorotiTypeScriptStaticAsset)"
-               Link="$(DorotiTypeScriptStaticBasePath)\%(_DorotiTypeScriptStaticAsset.DorotiRelativePath)"
+               Link="$(DorotiTypeScriptStaticBasePath)/%(_DorotiTypeScriptStaticAsset.DorotiRelativePath)"
                CopyToOutputDirectory="$(DorotiTypeScriptCopyToOutputDirectory)"
                CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>

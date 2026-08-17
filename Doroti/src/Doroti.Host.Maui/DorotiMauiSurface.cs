@@ -73,35 +73,51 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         _ = sender;
         _ = args;
         if (Handler is null || _attached || _disposed) return;
-        _session = new(_application.EntrypointFactory());
-        _host = new();
-        _session.Start(deferFrameworkBootstrap: true);
-        _boundary = DorotiApplicationBoundary.Load(
-            _application.ApplicationAssembly,
-            _application.LaunchContext.RuntimeIdentifier);
-        _host.CreateView(_session, _viewId, _skiaView, _application.ViewConfiguration,
-            new MauiSemanticsBridge(_semanticsLayer), _boundary, _textInput);
-        using (var dispatcherScope = _session.dispatcher.EnterScope())
-            _session.dispatcher.setSemanticsTreeEnabled(true);
-        _attached = true;
+        try
+        {
+            _session = new(_application.EntrypointFactory());
+            _host = new();
+            _session.Start(deferFrameworkBootstrap: true);
+            _boundary = DorotiApplicationBoundary.Load(
+                _application.ApplicationAssembly,
+                _application.LaunchContext.RuntimeIdentifier);
+            _host.CreateView(_session, _viewId, _skiaView, _application.ViewConfiguration,
+                new MauiSemanticsBridge(_semanticsLayer), _boundary, _textInput);
+            using (var dispatcherScope = _session.dispatcher.EnterScope())
+                _session.dispatcher.setSemanticsTreeEnabled(true);
+            _attached = true;
+        }
+        catch (Exception exception)
+        {
+            WriteFailure(exception);
+            throw;
+        }
     }
 
     private void PaintGpuSurface(object? sender, SKPaintGLSurfaceEventArgs args)
     {
         _ = sender;
         if (!_attached || _host is null) return;
-        if (args.Surface is null || _skiaView.GRContext is null)
-            throw new InvalidOperationException("Strict Doroti MAUI mode requires a GPU-backed SKSurface and GRContext.");
-        var nativeType = _skiaView.Handler?.PlatformView?.GetType().FullName ?? "unknown";
         try
         {
-            _host.BeginPaint(_viewId, args, _skiaView.GRContext, nativeType);
-            _host.PaintSkiaSurface(_viewId, args.Surface, args.BackendRenderTarget.Width, args.BackendRenderTarget.Height);
-            WriteEvidence();
+            if (args.Surface is null || _skiaView.GRContext is null)
+                throw new InvalidOperationException("Strict Doroti MAUI mode requires a GPU-backed SKSurface and GRContext.");
+            var nativeType = _skiaView.Handler?.PlatformView?.GetType().FullName ?? "unknown";
+            try
+            {
+                _host.BeginPaint(_viewId, args, _skiaView.GRContext, nativeType);
+                _host.PaintSkiaSurface(_viewId, args.Surface, args.BackendRenderTarget.Width, args.BackendRenderTarget.Height);
+                WriteEvidence();
+            }
+            finally
+            {
+                _host.EndPaint(_viewId);
+            }
         }
-        finally
+        catch (Exception exception)
         {
-            _host.EndPaint(_viewId);
+            WriteFailure(exception);
+            throw;
         }
     }
 
@@ -132,19 +148,49 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 ?? throw new InvalidOperationException("Android cache directory is unavailable."), "doroti-maui-evidence.json");
             Android.Util.Log.Info("DorotiMauiEvidence", json.ReplaceLineEndings(string.Empty));
 #endif
-            if (!string.IsNullOrWhiteSpace(path)) File.WriteAllText(path, json);
+            TryWriteText(path, json);
             _lastEvidenceWriteTimestamp = timestamp;
             _lastEvidenceReplayed = diagnostics.Frame.Replayed;
         }
 
         if (shouldQuit)
         {
-            Dispatcher.Dispatch(() => Application.Current?.Quit());
+            Dispatcher.Dispatch(QuitHost);
         }
         else if (shouldRequestReplay)
         {
             Dispatcher.Dispatch(_skiaView.InvalidateSurface);
         }
+    }
+
+    internal static void WriteFailure(Exception exception)
+    {
+        var path = Environment.GetEnvironmentVariable("DOROTI_MAUI_EVIDENCE");
+        if (string.IsNullOrWhiteSpace(path)) return;
+        TryWriteText(path + ".exception.txt", exception.ToString());
+    }
+
+    private static void TryWriteText(string? path, string contents)
+    {
+        if (string.IsNullOrWhiteSpace(path)) return;
+        try
+        {
+            var directory = System.IO.Path.GetDirectoryName(path);
+            if (!string.IsNullOrWhiteSpace(directory)) Directory.CreateDirectory(directory);
+            File.WriteAllText(path, contents);
+        }
+        catch (Exception)
+        {
+            // Evidence must never fail the GPU paint or startup path.
+        }
+    }
+
+    private static void QuitHost()
+    {
+        Application.Current?.Quit();
+#if MACCATALYST
+        Environment.Exit(0);
+#endif
     }
 
     private static int GetAutoQuitFrames()

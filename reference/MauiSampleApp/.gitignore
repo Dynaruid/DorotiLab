@@ -3,4 +3,6 @@
 android/native/.gradle/
 android/native/**/build/
 android/native/local.properties
+macios/native/**/xcuserdata/
+macios/native/**/DerivedData/
 **/.DS_Store

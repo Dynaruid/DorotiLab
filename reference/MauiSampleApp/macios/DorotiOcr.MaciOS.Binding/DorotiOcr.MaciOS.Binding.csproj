@@ -6,6 +6,8 @@
     <IsBindingProject>true</IsBindingProject>
     <IsTrimmable>true</IsTrimmable>
     <RootNamespace>DorotiOcrMaciOS</RootNamespace>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>

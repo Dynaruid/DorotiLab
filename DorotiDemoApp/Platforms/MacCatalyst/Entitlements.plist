@@ -3,12 +3,11 @@
 <plist version="1.0">
     <!-- See https://aka.ms/maui-publish-app-store#add-entitlements for more information about adding entitlements.-->
     <dict>
-        <!-- App Sandbox must be enabled to distribute a MacCatalyst app through the Mac App Store. -->
+        <!-- Local unsigned Mac Catalyst runs must not enable App Sandbox; it blocks
+             DOROTI_MAUI_EVIDENCE writes and other developer-host file access.
+             Re-enable this key for Mac App Store distribution. -->
         <key>com.apple.security.app-sandbox</key>
-        <true/>
-        <!-- When App Sandbox is enabled, this value is required to open outgoing network connections. -->
-        <key>com.apple.security.network.client</key>
-        <true/>
+        <false/>
     </dict>
 </plist>
 
