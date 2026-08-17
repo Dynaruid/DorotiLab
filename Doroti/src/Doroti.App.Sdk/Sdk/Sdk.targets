@@ -30,7 +30,7 @@
     <Compile Include="$(_DorotiBootstrapFile)" AutoGen="true" DesignTime="true" Visible="false" />
     <Compile Include="$(_DorotiPluginRegistrationFile)" AutoGen="true" DesignTime="true" Visible="false" />
     <ApplicationDefinition Include="Platforms/$(DorotiTarget)/App.xaml" Generator="MSBuild:Compile" Condition="Exists('Platforms/$(DorotiTarget)/App.xaml')" />
-    <Content Include="Platforms/$(DorotiTarget)/wwwroot/**" Link="wwwroot/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Condition="Exists('Platforms/$(DorotiTarget)/wwwroot')" />
+    <Content Include="Platforms/$(DorotiTarget)/wwwroot/**" Link="wwwroot/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Condition="'$(DorotiTarget)' != 'Web' and Exists('Platforms/$(DorotiTarget)/wwwroot')" />
     <EmbeddedResource Include="Platforms/$(DorotiTarget)/application-manifest.$(RuntimeIdentifier).json" LogicalName="Doroti.Application.Manifest" Condition="Exists('Platforms/$(DorotiTarget)/application-manifest.$(RuntimeIdentifier).json')" />
     <EmbeddedResource Include="Platforms/$(DorotiTarget)/application-manifest.json" LogicalName="Doroti.Application.Manifest" Condition="!Exists('Platforms/$(DorotiTarget)/application-manifest.$(RuntimeIdentifier).json') and Exists('Platforms/$(DorotiTarget)/application-manifest.json')" />
     <EmbeddedResource Include="Resources/Shaders/**/*.sksl" LogicalName="Doroti.Shaders.%(RecursiveDir)%(Filename)%(Extension)" Condition="Exists('Resources/Shaders')" />
@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup Condition="'$(DorotiTarget)' == 'Web'">
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="$(DorotiTypeScriptVersion)" PrivateAssets="all" Condition="'$(DorotiWebTypeScript)' == 'true'" />
     <PackageReference Include="Doroti.Target.Web.browser-wasm" Version="$(DorotiVersion)" Condition="'$(DorotiUseRepositoryProjects)' != 'true'" />
   </ItemGroup>
@@ -142,6 +143,53 @@
       <_DorotiGraphLine Include="mauiXaml=%(MauiXaml.Identity)" />
     </ItemGroup>
     <WriteLinesToFile File="$(BaseIntermediateOutputPath)doroti-target-graph.txt" Overwrite="true" Lines="@(_DorotiGraphLine)" />
+  </Target>
+
+  <!--
+    Blazor maps Content Link=wwwroot/** onto $(MSBuildProjectDirectory)\wwwroot. Doroti keeps
+    handwritten web files under Platforms/Web/wwwroot, so development hosting must register
+    that folder as the static-web-asset content root or the printed URL 404s every file.
+  -->
+  <Target Name="DorotiRegisterWebWwwrootStaticAssets"
+          Condition="'$(DorotiTarget)' == 'Web' and Exists('$(MSBuildProjectDirectory)\Platforms\Web\wwwroot')"
+          DependsOnTargets="ResolveStaticWebAssetsConfiguration"
+          BeforeTargets="ResolveProjectStaticWebAssets;ResolveCurrentProjectStaticWebAssetsInputs">
+    <PropertyGroup>
+      <_DorotiWebWwwrootDirectory>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)\Platforms\Web\wwwroot'))</_DorotiWebWwwrootDirectory>
+    </PropertyGroup>
+    <ItemGroup>
+      <_DorotiWebWwwroot Include="Platforms\Web\wwwroot\**\*" />
+      <_DorotiWebWwwroot Update="@(_DorotiWebWwwroot)">
+        <RelativePath>%(RecursiveDir)%(Filename)%(Extension)</RelativePath>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </_DorotiWebWwwroot>
+      <Content Remove="@(_DorotiWebWwwroot)" />
+    </ItemGroup>
+    <DefineStaticWebAssets
+        CandidateAssets="@(_DorotiWebWwwroot)"
+        FingerprintCandidates="$(StaticWebAssetsFingerprintContent)"
+        FingerprintPatterns="@(StaticWebAssetFingerprintPattern)"
+        SourceId="$(PackageId)"
+        SourceType="Discovered"
+        ContentRoot="$(_DorotiWebWwwrootDirectory)"
+        BasePath="$(StaticWebAssetBasePath)">
+      <Output TaskParameter="Assets" ItemName="StaticWebAsset" />
+      <Output TaskParameter="Assets" ItemName="_DorotiWebWwwrootStaticWebAsset" />
+    </DefineStaticWebAssets>
+    <DefineStaticWebAssetEndpoints
+        CandidateAssets="@(_DorotiWebWwwrootStaticWebAsset)"
+        ContentTypeMappings="@(StaticWebAssetContentTypeMapping)">
+      <Output TaskParameter="Endpoints" ItemName="StaticWebAssetEndpoint" />
+    </DefineStaticWebAssetEndpoints>
+    <ItemGroup>
+      <StaticWebAssetDiscoveryPattern Include="$(PackageId)\wwwroot">
+        <Source>$(PackageId)</Source>
+        <BasePath>$(StaticWebAssetBasePath)</BasePath>
+        <ContentRoot>$(_DorotiWebWwwrootDirectory)</ContentRoot>
+        <Pattern>**</Pattern>
+      </StaticWebAssetDiscoveryPattern>
+    </ItemGroup>
   </Target>
 
   <Import Project="$(MSBuildThisFileDirectory)Doroti.TypeScript.targets" Condition="'$(DorotiWebTypeScript)' == 'true'" />

@@ -47,19 +47,37 @@
 
   <Target Name="DorotiRegisterTypeScriptStaticAssets"
           Condition="'$(DorotiWebTypeScript)' == 'true'"
-          DependsOnTargets="DorotiCompileTypeScript"
+          DependsOnTargets="DorotiCompileTypeScript;ResolveStaticWebAssetsConfiguration"
           BeforeTargets="ResolveProjectStaticWebAssets;ResolveCurrentProjectStaticWebAssetsInputs">
+    <PropertyGroup>
+      <_DorotiTypeScriptContentRoot>$([MSBuild]::NormalizeDirectory('$(DorotiTypeScriptOutputRoot)'))</_DorotiTypeScriptContentRoot>
+    </PropertyGroup>
     <ItemGroup>
       <_DorotiTypeScriptStaticAsset Include="$(DorotiTypeScriptOutputRoot)/**/*.js" />
       <_DorotiTypeScriptStaticAsset Include="$(DorotiTypeScriptOutputRoot)/**/*.js.map" Condition="'$(DorotiTypeScriptSourceMap)' == 'true'" />
       <_DorotiTypeScriptStaticAsset Update="@(_DorotiTypeScriptStaticAsset)">
-        <DorotiRelativePath>%(RecursiveDir)%(Filename)%(Extension)</DorotiRelativePath>
+        <RelativePath>%(RecursiveDir)%(Filename)%(Extension)</RelativePath>
+        <CopyToOutputDirectory>$(DorotiTypeScriptCopyToOutputDirectory)</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </_DorotiTypeScriptStaticAsset>
-      <Content Include="@(_DorotiTypeScriptStaticAsset)"
-               Link="$(DorotiTypeScriptStaticBasePath)/%(_DorotiTypeScriptStaticAsset.DorotiRelativePath)"
-               CopyToOutputDirectory="$(DorotiTypeScriptCopyToOutputDirectory)"
-               CopyToPublishDirectory="PreserveNewest" />
+      <Content Remove="@(_DorotiTypeScriptStaticAsset)" />
     </ItemGroup>
+    <DefineStaticWebAssets
+        CandidateAssets="@(_DorotiTypeScriptStaticAsset)"
+        FingerprintCandidates="$(StaticWebAssetsFingerprintContent)"
+        FingerprintPatterns="@(StaticWebAssetFingerprintPattern)"
+        SourceId="$(PackageId)"
+        SourceType="Computed"
+        ContentRoot="$(_DorotiTypeScriptContentRoot)"
+        BasePath="$(StaticWebAssetBasePath)">
+      <Output TaskParameter="Assets" ItemName="StaticWebAsset" />
+      <Output TaskParameter="Assets" ItemName="_DorotiTypeScriptStaticWebAsset" />
+    </DefineStaticWebAssets>
+    <DefineStaticWebAssetEndpoints
+        CandidateAssets="@(_DorotiTypeScriptStaticWebAsset)"
+        ContentTypeMappings="@(StaticWebAssetContentTypeMapping)">
+      <Output TaskParameter="Endpoints" ItemName="StaticWebAssetEndpoint" />
+    </DefineStaticWebAssetEndpoints>
   </Target>
 
   <Target Name="DorotiCleanTypeScript" Condition="'$(DorotiWebTypeScript)' == 'true'" AfterTargets="Clean">
