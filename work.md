@@ -1,290 +1,354 @@
-# Doroti application bootstrap 개편
+# Doroti Web TypeScript bootstrap 및 browser source 전환
 
-## 구현 상태 (2026-08-17)
+## 상태
 
-| 범위 | 상태 | 확인 결과 |
-|---|---|---|
-| B1 공통 startup/descriptor | PASS | `Doroti.Hosting`의 typed startup/builder/descriptor/factory와 host-neutral contract fixture 통과 |
-| B2 MAUI host 소유권 | PARTIAL | `Platforms/Maui` 제거, Windows/MacCatalyst host shell 공통화, Windows GPU live PASS. Mac Catalyst native publish/live는 `notVerified` |
-| B3 generated bootstrap/Web | PASS (명시 범위) | 세 target build, 외부 template/package publish, WebGL2 canvas presentation과 기본 pointer `fab=0 → 1` PASS |
-| B4 네 번째 host 확장점 | PARTIAL | synthetic fourth-host graph PASS. 실제 `Doroti.Host.Qt`, Linux build/live/physical은 `notVerified` |
+계획 작성 완료, 구현은 아직 시작하지 않음. 아래 항목은 구현과 증거 수집 전까지 모두 `notVerified`다.
 
-공통 앱 소스는 이제 target-neutral `Program : IDorotiApplicationStartup` 하나를 사용한다. MAUI/Web 불변 초기화는 host/target package가 소유하고, SDK가 `obj/<target>/Doroti.Generated/`에 bootstrap과 plugin registration을 생성한다. legacy `Platforms/Maui`, `PlatformBootstrap.cs`, reflection startup lookup은 제거했다.
+## 결정
 
-도구 체인은 .NET SDK `10.0.400`, .NET/ASP.NET/WindowsDesktop 및 browser-wasm runtime `10.0.11`로 정렬했다. Web runtime patch가 바뀌면 SDK가 버전 stamp를 비교해 stale WebCIL publish cache만 무효화하므로 이전 `System.Private.CoreLib`을 재사용하지 않는다.
+Doroti의 Web 플랫폼 소스는 TypeScript를 제품 소스로 사용하고, 브라우저가 실행하는 JavaScript는 build/publish 산출물로만 만든다.
 
-검증 진입점:
+- 앱 개발자는 `Platforms/Web/src/**/*.ts`를 편집한다.
+- `Microsoft.TypeScript.MSBuild 7.0.0`을 Web 전용 compiler/toolchain으로 고정한다.
+- Node, npm, Bun, TypeScript npm package, bundler는 필수 도구로 추가하지 않는다.
+- TypeScript 7 native compiler가 늘리는 약 54MB의 개발/restore 비용은 허용한다. compiler와 build asset은 앱 publish 결과에 포함하지 않는다.
+- 생성된 `.js`와 `.js.map`은 source `wwwroot`에 쓰거나 체크인하지 않고 target/configuration별 `obj` 아래에 둔다.
+- 새 bootstrap과 loader뿐 아니라 기존 browser interop 및 plugin 예제도 TypeScript 소유권으로 전환한다. 향후 service worker도 같은 source/build 경계를 사용한다.
 
-```powershell
-pwsh -NoProfile -File ./Doroti/eng/validate-app-targets.ps1 -Shard Graph
-pwsh -NoProfile -File ./Doroti/eng/validate-app-targets.ps1 -Shard Build
-pwsh -NoProfile -File ./Doroti/eng/validate-app-targets.ps1 -Shard Live
-pwsh -NoProfile -File ./Doroti/eng/validate-app-targets.ps1 -Shard Evidence
-pwsh -NoProfile -File ./Doroti/eng/validate-web-product.ps1 -Shard Graph
-pwsh -NoProfile -File ./Doroti/eng/validate-web-product.ps1 -Shard Template
-pwsh -NoProfile -File ./Doroti/eng/validate-web-product.ps1 -Shard Compile
-pwsh -NoProfile -File ./Doroti/eng/validate-web-product.ps1 -Shard Publish
-```
+Flutter Web의 `flutter_bootstrap.js`처럼 앱이 초기화 정책을 구성할 수 있게 하되, Doroti는 Flutter 엔진이 아니라 Blazor WebAssembly와 정적으로 링크된 SkiaSharp를 사용하므로 Flutter 이름, CanvasKit 옵션, Flutter build token을 복제하지 않는다.
 
-현재 증거는 `Doroti/migration/maui/app-targets-evidence.json`, `Doroti/migration/web/web-product-evidence.json`, `Doroti/migration/web/web-browser-live-manual.json`에 기록한다. Web 수동 smoke는 canvas presentation과 단일 FAB pointer/state 전이만 증명하며 keyboard/IME/clipboard/resize/interactive ARIA, physical, cross-target 결과로 확대하지 않는다.
-
-## 결론
-
-Flutter처럼 **공통 애플리케이션 진입점과 네이티브 플랫폼 셸을 분리**한다. 다만 Doroti의 예약 초기화 코드를 사용자가 보는 `Platforms/Doroti` 또는 `Platforms/Maui` 소스 폴더에 두지는 않는다.
-
-- `Program.cs`는 Windows, MacCatalyst, Web, 이후 Linux/Qt가 공유하는 유일한 **논리적 애플리케이션 진입점**이다.
-- `Platforms/<Target>`에는 OS가 요구하는 물리적 진입점, manifest/resource, 사용자 커스터마이징 훅만 둔다.
-- Doroti 세션, view, surface, application boundary, resource/plugin 연결은 `Doroti.Hosting`과 각 `Doroti.Host.*`/`Doroti.Target.*` 패키지가 소유한다.
-- 대상별로 반복되는 접착 코드는 `Doroti.App.Sdk`가 `obj/<target>/Doroti.Generated/`에 생성한다. 생성 코드는 앱 템플릿의 소스가 아니며 수정 대상도 아니다.
-- `Platforms/Maui`는 제거한다. MAUI는 Windows와 MacCatalyst가 현재 사용하는 호스트 구현일 뿐 애플리케이션 플랫폼이 아니다.
-- 런타임 reflection으로 `App`을 찾지 않는다. SDK가 `Program`의 타입을 컴파일 시점에 강하게 연결하고, 잘못된 계약은 빌드 오류로 닫는다.
-
-즉 Flutter와 대응시키면 `Program.cs`가 `lib/main.dart`, `Platforms/Windows`·`Platforms/MacCatalyst`·향후 `Platforms/Linux`가 runner shell, SDK가 생성한 `obj/**/Doroti.Generated`가 tool-managed bootstrap 역할을 맡는다.
-
-## 개편 전 구조에서 확인된 문제
-
-- 루트 `Program.cs`는 Web과 MacCatalyst만 조건부 호출하며 Windows의 실질적인 시작 경로가 아니다. 공통 진입점처럼 보이지만 대상별 의미가 다르다.
-- Windows와 MacCatalyst가 각각 `MauiApp.CreateBuilder`, toolkit, Skia, `Application`, `Window`, `DorotiMauiSurface` 연결을 다시 구현한다.
-- `Platforms/Maui`의 `MauiProgram`, `DorotiMauiApplication`, `DorotiMauiPage`는 MAUI 대상에 함께 컴파일되지만 현재 Windows/MacCatalyst 시작 경로는 각 플랫폼의 별도 bootstrap application을 사용한다. 공통 구현이 아니라 중복된 제3 경로가 되어 있다.
-- Windows는 문자열과 reflection으로 `DorotiApp.App`을 찾고 MacCatalyst는 정적 타입을 직접 참조한다. rename, trimming/AOT, 진단 시점이 서로 다르다.
-- Web bootstrap은 `DorotiWebApplication`과 JavaScript plugin descriptor를 직접 조립한다. 프로젝트의 `DorotiJavaScriptPlugin` MSBuild item과 등록 정보가 중복될 수 있다.
-- `DorotiMauiSurface`는 entrypoint factory와 view configuration을 따로 받고, Web은 application assembly와 plugin descriptor까지 포함한 별도 record를 받는다. 동일 앱을 호스트하는 공통 계약이 아직 없다.
-- SDK의 대상 allowlist와 compile item 규칙이 Windows/MacCatalyst/Web을 직접 열거하므로 Linux/Qt를 추가할 때 앱 템플릿, SDK, validator를 동시에 조건 분기로 늘리게 된다.
-
-## 소유권 경계
-
-| 영역 | 소유자 | 내용 |
-|---|---|---|
-| 공통 앱 구성 | 앱 개발자 | `Program.cs`, root widget, 공통 서비스와 앱 옵션 |
-| 네이티브 셸 커스터마이징 | 앱 개발자 | activation, native window 옵션, URL/notification lifecycle, entitlement/manifest |
-| Doroti 불변 초기화 | Doroti | session/view/application boundary 생성, surface 연결, resource/plugin 등록, dispose 순서 |
-| 대상 선택과 접착 코드 | `Doroti.App.Sdk` | 선택된 target package, 생성 bootstrap, compile/content item, 계약 진단 |
-| 렌더링/입력 호스트 | `Doroti.Host.Maui`, `Doroti.Host.Web`, 향후 `Doroti.Host.Qt` | 각 UI toolkit과 Doroti capability 사이의 adapter |
-| OS/RID 구현 | `Doroti.Target.*` | Windows, MacCatalyst, Web, Linux의 native backend와 지원 조건 |
-
-플랫폼 파일을 사용자가 수정할 수 있다는 것과 Doroti 초기화 순서를 사용자가 소유한다는 것은 분리한다. 사용자는 안정된 hook을 통해 builder와 native lifecycle을 확장할 수 있지만, 필수 등록을 삭제하거나 순서를 바꾸지는 못하게 한다.
-
-## 구현한 공통 계약
-
-### 1. `Program.cs`는 대상 중립 startup 타입으로 만든다
-
-초기 API 모양은 다음처럼 단순하게 유지한다. 이름은 구현 단계에서 조정할 수 있지만 역할은 분리하지 않는다.
-
-```csharp
-using Doroti.Hosting;
-
-namespace DorotiApp;
-
-public sealed class Program : IDorotiApplicationStartup
-{
-    public void Configure(DorotiApplicationBuilder builder) => builder
-        .UseEntrypoint(App.Definition)
-        .UseView(App.ViewConfiguration);
-}
-```
-
-- `Program.cs`에는 `#if DOROTI_BROWSER`, `MACCATALYST`, MAUI, Blazor, Qt 참조가 없어야 한다.
-- `IDorotiApplicationStartup`과 `DorotiApplicationBuilder`는 target-neutral `Doroti.Hosting`에 둔다.
-- builder 결과는 최소한 entrypoint factory, application assembly, view configuration, normalized launch context를 가진 불변 `DorotiApplicationDescriptor`가 된다.
-- command-line, WinUI activation, UIKit lifecycle, browser base URI처럼 모양이 다른 입력은 `DorotiLaunchContext`로 정규화한다. 공통 `Program`이 OS 타입을 직접 받지 않는다.
-- 기본 startup 타입은 `$(RootNamespace).Program`이며 필요하면 `<DorotiApplicationType>...</DorotiApplicationType>`으로 명시한다.
-- SDK 생성 코드는 `DorotiApplicationType`을 generic/type reference로 직접 사용한다. 현재 Windows reflection 경로는 제거한다.
-
-`Program`은 모든 OS에서 반드시 CLR `Main` 자체일 필요는 없다. WinUI와 UIKit은 프레임워크가 요구하는 실제 process entry를 유지하되, 어느 대상이든 앱 정의를 얻는 유일한 경로가 `Program`이어야 한다.
-
-### 2. 호스트가 공통 descriptor를 소비한다
-
-- `DorotiMauiSurface`는 `(Func<IDorotiViewEntrypoint>, DorotiViewConfiguration)` 대신 `DorotiApplicationDescriptor` 또는 descriptor에서 만든 scoped runtime을 받는다.
-- `DorotiWebApplication`에 들어 있는 공통 필드는 descriptor로 올리고, browser-only plugin adapter만 Web 계층에 남긴다.
-- application manifest load, resource capability, plugin capability, session start, view attach/show, dispose 순서를 한 composition service에서 통일한다.
-- 한 프로세스에서 descriptor는 하나지만 view/session은 lifecycle에 맞게 생성될 수 있어야 한다. 향후 multi-window를 막는 singleton surface 설계는 피한다.
-- platform plugin 등록은 `Program.cs`의 조건부 코드가 아니라 MSBuild item과 생성된 target registration에서 descriptor로 합쳐진다.
-
-### 3. MAUI 불변 구현을 `Doroti.Host.Maui`로 이동한다
-
-`Platforms/Maui/MauiProgram.cs`, `DorotiMauiApplication.cs`, `DorotiMauiPage.cs`의 역할은 앱 템플릿이 아니라 `Doroti.Host.Maui`가 소유한다.
-
-호스트 패키지는 다음과 같은 base/extension 계약을 제공한다.
-
-- `UseDorotiApplication<TStartup>()`: toolkit, Skia, Doroti descriptor/runtime, application/page를 필수 순서로 등록한다.
-- `DorotiMauiApplication`: 기본 window/page와 scoped surface를 만든다.
-- Windows용 `DorotiMauiWinUIApplication<TStartup>`과 MacCatalyst용 `DorotiMauiUIApplicationDelegate<TStartup>`: `CreateMauiApp`의 불변 구현을 소유한다.
-- `ConfigurePlatform(MauiAppBuilder builder)` 같은 명시적 hook: 사용자 서비스와 native handler 추가에만 사용한다.
-- 필수 Doroti 등록은 hook 전후에 검증하고, 빠졌거나 교체되었으면 시작 후 예외가 아니라 build/startup 진단으로 실패시킨다.
-
-### 4. Web도 동일한 startup을 사용한다
-
-현재 `Platforms/Web/PlatformBootstrap.cs`는 제거하고 SDK 생성 bootstrap이 다음 역할을 한다.
-
-1. `Program`으로 공통 descriptor를 만든다.
-2. `WebAssemblyHostBuilder`와 `DorotiRoot`를 구성한다.
-3. target package와 `DorotiJavaScriptPlugin` item에서 생성한 browser plugin registration을 연결한다.
-4. `DorotiWebRunner.RunAsync`를 호출한다.
-
-사용자 Web 커스터마이징이 필요하면 선택적인 `Platforms/Web/WebPlatform.cs`에 `ConfigureWebHost` hook만 둔다. `wwwroot`, `index.html`, PWA manifest 같은 Web 자산은 계속 사용자 영역이다.
-
-### 5. Linux/Qt는 MAUI의 예외 분기가 아니라 새 host/target으로 추가한다
-
-향후 구성은 다음 경계를 따른다.
-
-- `Doroti.Host.Qt`: Qt event loop, window, GPU surface, pointer/keyboard/IME/clipboard/accessibility adapter.
-- `Doroti.Target.Linux.Qt.linux-x64`와 필요한 추가 RID package: native Qt/Skia 자산과 지원 조건.
-- `Doroti.App.Sdk`: `DorotiTarget=Linux`, RID/TFM, package, 생성 process entry 선택.
-- `Platforms/Linux`: icon, desktop file, native window option과 사용자 `ConfigureQt` hook.
-
-Qt runner 역시 같은 `Program : IDorotiApplicationStartup`을 소비한다. 공통 앱 코드는 Qt 타입을 참조하지 않고, MAUI를 일반 desktop 추상화로 승격시키지도 않는다.
-
-## 개편 후 템플릿 구조
+## 목표 구조
 
 ```text
 doroti-app/
 ├─ DorotiApp.csproj
-├─ Program.cs                         # 모든 target의 공통 논리적 진입점
+├─ Program.cs
 ├─ src/
 │  └─ App.cs
-├─ Platforms/
-│  ├─ Windows/
-│  │  ├─ App.xaml
-│  │  ├─ App.xaml.cs                  # native shell + 사용자 hook
-│  │  └─ manifests...
-│  ├─ MacCatalyst/
-│  │  ├─ AppDelegate.cs               # native shell + 사용자 hook
-│  │  └─ plist/entitlements...
-│  ├─ Web/
-│  │  ├─ WebPlatform.cs               # 선택 사항
-│  │  └─ wwwroot/...
-│  └─ Linux/                          # Qt target 도입 시 추가
-│     └─ LinuxPlatform.cs              # native 옵션/hook
-└─ Resources/...
+└─ Platforms/
+   └─ Web/
+      ├─ tsconfig.json
+      ├─ src/
+      │  ├─ doroti_bootstrap.ts       # 앱 소유 Web 초기화 설정과 hook
+      │  └─ plugins/
+      │     └─ echo.ts                 # 앱 소유 browser plugin 예제
+      └─ wwwroot/
+         ├─ index.html                 # compiled bootstrap JS만 참조
+         ├─ assets/
+         ├─ locales/
+         └─ doroti-app-manifest.json
 
-obj/<target>/Doroti.Generated/
-├─ DorotiBootstrap.g.cs               # SDK 소유, 수정 금지
-└─ DorotiPluginRegistration.g.cs       # SDK 소유, 수정 금지
+Doroti/src/Doroti.Host.Web/
+├─ Web/
+│  ├─ doroti.loader.ts                # Doroti 소유, Blazor 정확히 한 번 시작
+│  └─ doroti.web.ts                   # DOM/WebGL2/input/IME/accessibility interop
+└─ wwwroot/
+   └─ doroti.web.css
+
+obj/web/<configuration>/<tfm>/Doroti.Generated/wwwroot/
+├─ doroti_bootstrap.js
+└─ plugins/
+   └─ echo.js
+
+Doroti.Host.Web/obj/<configuration>/<tfm>/Doroti.Web/wwwroot/
+├─ doroti.loader.js
+└─ doroti.web.js
 ```
 
-`Platforms/Maui`와 `Platforms/Doroti`는 만들지 않는다. 예약 코드를 source tree 안에 둘 경우 사용자 수정, 템플릿 버전 drift, regenerate 충돌을 다시 만들기 때문이다.
+source tree에는 TypeScript와 직접 작성한 HTML/CSS/manifest/resource만 남긴다. publish 결과에는 JavaScript가 다음 URL로 존재한다.
 
-## 플랫폼별 얇은 셸의 형태
+- 앱 bootstrap: `doroti_bootstrap.js`
+- 앱 plugin: `plugins/echo.js`
+- Doroti loader: `_content/Doroti.Host.Web/doroti.loader.js`
+- Doroti browser interop: `_content/Doroti.Host.Web/doroti.web.js`
 
-Windows와 MacCatalyst 파일은 삭제 대상이 아니라 **사용자 소유 adapter**로 축소한다.
+## 참고한 upstream 계약
 
-```csharp
-// Platforms/Windows/App.xaml.cs
-public sealed partial class App : DorotiMauiWinUIApplication<Program>
+- [Flutter Web app initialization](https://docs.flutter.dev/platform-integration/web/initialization): 앱 소유 bootstrap, loader 설정, 시작 단계 callback, loading/error UI 모델을 참고한다.
+- [ASP.NET Core Blazor startup](https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/startup?view=aspnetcore-10.0): standalone Blazor WebAssembly의 `autostart="false"`와 `Blazor.start(options)`를 실제 실행 계약으로 사용한다.
+- [Microsoft.TypeScript.MSBuild](https://www.nuget.org/packages/Microsoft.TypeScript.MSBuild/): `7.0.0` native compiler와 MSBuild integration을 Web build toolchain으로 사용한다.
+
+Flutter와 Doroti의 대응은 다음 범위로 한정한다.
+
+| Flutter 개념 | Doroti 대응 | 비고 |
+|---|---|---|
+| `flutter_bootstrap.js` source | `Platforms/Web/src/doroti_bootstrap.ts` | 앱 개발자가 편집 |
+| build된 `flutter_bootstrap.js` | publish의 `doroti_bootstrap.js` | TypeScript compiler 산출물 |
+| `_flutter.loader.load()` | `startDoroti()` | 내부에서 공식 `Blazor.start()`를 정확히 한 번 호출 |
+| loader `config` | typed Blazor start option 구성 hook | runtime/resource loading 정책 |
+| `onEntrypointLoaded` | `beforeStart`/`afterStarted`/`onStage` | 실제로 관찰 가능한 Blazor 단계만 노출 |
+| `{{flutter_build_config}}` | `_framework/blazor.boot.json` 등 Blazor 산출물 | Doroti token 치환을 새로 만들지 않음 |
+
+## TypeScript toolchain 계약
+
+### 패키지와 활성화
+
+- `DorotiTypeScriptVersion`의 기본값은 `7.0.0`으로 고정한다.
+- `DorotiWebTypeScript`는 `DorotiTarget=Web`이고 `Platforms/Web/tsconfig.json`이 있을 때 활성화한다.
+- `Microsoft.TypeScript.MSBuild`는 해당 조건에서만 `PrivateAssets="all"`로 app graph에 추가한다.
+- JS-only 기존 앱은 명시적인 migration 전까지 compiler package를 강제로 받지 않게 한다. 새 template과 DemoApp은 TypeScript 모드를 기본 사용한다.
+- package version은 Web 전용 `packages.web.lock.json`에 고정하고 Windows/MacCatalyst lock/restore graph에는 유입시키지 않는다.
+- Windows/macOS/Linux x64·arm64의 package compiler executable을 허용 범위로 삼고, 실행 파일을 찾을 수 없는 build host에서는 조용히 건너뛰지 않고 stable `DOROTIWEB` 진단으로 실패한다.
+
+### `tsconfig.json`
+
+template과 DemoApp의 기본 설정은 다음 원칙을 명시한다.
+
+```json
 {
-    public App() => InitializeComponent();
-
-    protected override void ConfigurePlatform(MauiAppBuilder builder)
-    {
-        // 사용자 native service/handler 등록 지점
-    }
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "strict": true,
+    "noEmitOnError": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "rootDir": "src"
+  },
+  "include": ["src/**/*.ts"]
 }
 ```
 
-```csharp
-// Platforms/MacCatalyst/AppDelegate.cs
-[Register("AppDelegate")]
-public sealed class AppDelegate : DorotiMauiUIApplicationDelegate<Program>
-{
-    protected override void ConfigurePlatform(MauiAppBuilder builder)
-    {
-        // 사용자 UIKit/MAUI 확장 지점
-    }
-}
+- `outDir`은 앱 source 설정이 아니라 Doroti SDK가 `$(IntermediateOutputPath)` 아래로 강제한다.
+- Debug는 source map을 생성·배포할 수 있고 Release는 기본적으로 `.map`을 publish하지 않는다.
+- `.ts` import는 browser에서 유효한 최종 `.js` specifier를 사용하며 bundling을 전제로 하지 않는다.
+- public loader/plugin ABI에 필요한 `.d.ts`는 Doroti package가 단일 원본으로 제공한다. template에 같은 선언을 복사하여 drift시키지 않는다.
+- `Doroti.App.Sdk`는 package의 type declaration 경로를 TypeScript compiler에 전달하고 외부 package-only 소비자에서도 같은 IntelliSense/type-check 결과가 나오게 한다.
+
+### 생성물과 static web asset
+
+`Microsoft.TypeScript.MSBuild`의 기본 compile hook만으로는 build 중 뒤늦게 생성된 JS가 Blazor static asset에 안전하게 포함된다고 가정하지 않는다.
+
+- app output은 `$(IntermediateOutputPath)Doroti.Generated/wwwroot/` 아래에 생성한다.
+- `Doroti.Host.Web` output은 자체 `$(IntermediateOutputPath)Doroti.Web/wwwroot/` 아래에 생성한다.
+- Doroti MSBuild target은 TypeScript compile 이후, `ResolveCurrentProjectStaticWebAssetsInputs` 전에 생성된 `.js`와 허용된 `.map`을 동적으로 `Content`/static web asset으로 등록한다.
+- `EnableDefaultContentItems=false`와 관계없이 `Platforms/Web/tsconfig.json`은 compiler 입력으로 명시 등록하되 publish content에서는 제외한다.
+- TypeScript package의 emitted-file/clean 계약은 `obj` 안의 파일만 삭제하게 한다. source `wwwroot`를 output directory로 지정하지 않는다.
+- clean build와 첫 publish에서 기존 JS가 미리 존재하지 않아도 동일한 결과가 나와야 한다. 이전 build의 stale JS에 의존하는 구성은 실패로 본다.
+- publish에는 `.ts`, `tsconfig.json`, TypeScript compiler binary, MSBuild tool asset, repository 절대 경로가 포함되지 않아야 한다.
+
+## browser bootstrap API
+
+앱의 TypeScript bootstrap은 다음 형태를 기준으로 한다.
+
+```ts
+import {
+  startDoroti,
+  type DorotiBootstrapContext,
+} from "./_content/Doroti.Host.Web/doroti.loader.js";
+
+await startDoroti({
+  configure(context: DorotiBootstrapContext) {
+    // context.blazorOptions.configureRuntime = ...;
+    // context.blazorOptions.loadBootResource = ...;
+  },
+  onStage(stage, context) {
+    // "before-start" | "starting" | "started" | "failed"
+  },
+  onError(error, context) {
+    // loading UI와 진단 표시
+  },
+});
 ```
 
-base class가 `CreateMauiApp`을 소유하고 필수 초기화를 수행한다. 사용자는 native lifecycle override와 제공된 hook을 사용할 수 있지만 `DorotiMauiSurface`를 직접 조립할 필요는 없다.
+`index.html`은 compiled module만 로드한다.
 
-## SDK/진단 계약 변경
+```html
+<script src="_framework/blazor.webassembly.js" autostart="false"></script>
+<script type="module" src="doroti_bootstrap.js"></script>
+```
 
-- `Sdk.targets`의 `Compile Include="Platforms\Maui\**\*.cs"`를 제거한다.
-- 대상별 bootstrap 파일을 앱 source에서 찾지 말고 `DorotiApplicationType`을 입력으로 생성한다.
-- Windows/MacCatalyst/Web 직접 allowlist는 target descriptor item으로 바꾼다. 새 target은 SDK core 조건문을 복제하기보다 target package가 TFM, RID, host kind, native entry kind를 제공하게 한다.
-- 각 빌드는 정확히 하나의 `DorotiTargetDescriptor`와 하나의 generated bootstrap을 가져야 한다.
-- `DOROTIAPP` 진단을 추가/개편한다.
-  - startup 타입 누락, 비공개, 중복 또는 interface 미구현
-  - target descriptor 0개/복수
-  - 선택되지 않은 플랫폼 source 유입
-  - 앱 source의 금지된 `Platforms/Maui` 및 legacy `PlatformBootstrap`
-  - Web plugin metadata 누락/중복 및 생성 registration 불일치
-- 생성 파일 목록과 선택된 startup/host/target을 `WriteDorotiTargetGraph`에 기록해 구조 검증이 가능한 상태로 만든다.
+두 번째 script에는 `async`를 붙이지 않는다. Blazor loader가 준비된 다음 app bootstrap이 실행되는 순서를 유지한다.
 
-## 구현 결과와 단계
+API 원칙:
 
-### B1. 공통 startup/descriptor 계약
+- `doroti.loader.ts`만 `Blazor.start()`를 호출한다.
+- `startDoroti()`를 여러 번 호출해도 하나의 시작 Promise만 공유하거나 stable diagnostic으로 실패하며 runtime을 두 번 만들지 않는다.
+- `configure`는 시작 전에 한 번 실행되고 typed mutable `blazorOptions`를 제공한다.
+- `onStage`는 실제 단계만 알리고 `started`는 `Blazor.start()` Promise가 성공한 뒤에만 발생한다.
+- `onError`가 없어도 오류를 삼키지 않고 console과 rejected Promise에 같은 원인을 보존한다.
+- custom `loadBootResource`가 `fetch`를 반환하면 전달받은 `integrity`를 보존해야 한다. 기본 경로는 Blazor의 integrity/cache 동작을 바꾸지 않는다.
+- loader는 canvas, widget, plugin을 직접 만들지 않는다. managed app이 시작된 뒤의 WebGL2/input/IME/accessibility 연결은 `Doroti.Host.Web`이 계속 소유한다.
+- 외부 ES module을 사용해 inline bootstrap을 피한다. CSP nonce, CDN, service worker 같은 앱 정책은 typed hook에서 명시적으로 구성할 수 있게 한다.
 
-상태: **PASS**. Target-neutral 계약과 descriptor fixture를 구현하고 MAUI/Web consumer를 같은 descriptor로 전환했다.
+## 구현 계획
 
-- `Doroti.Hosting`에 startup, builder, descriptor, launch context를 추가한다.
-- MAUI와 Web이 descriptor를 소비하도록 application boundary와 lifecycle 조립을 공통화한다.
-- 같은 descriptor로 두 host를 구성하는 unit/contract test를 먼저 만든다.
+### W1. TypeScript MSBuild 기반과 fail-closed 진단
 
-완료 조건:
+대상:
 
-- 공통 계약이 MAUI, Blazor, Qt 타입을 참조하지 않는다.
-- entrypoint, assembly, configuration, resource/plugin boundary가 한 descriptor에서 유실 없이 전달된다.
-- reflection 및 문자열 기반 앱 타입 조회가 0건이다.
+- `Doroti/Directory.Packages.props`
+- `Doroti/src/Doroti.App.Sdk/Sdk/Sdk.props`
+- `Doroti/src/Doroti.App.Sdk/Sdk/Sdk.targets`
+- `Doroti/src/Doroti.Target.Web.browser-wasm/buildTransitive/Doroti.Target.Web.browser-wasm.targets`
 
-### B2. MAUI host 소유권 이동
+작업:
 
-상태: **PARTIAL**. 구조 전환과 Windows build/publish/live는 PASS이고, Mac Catalyst native live는 `notVerified`다.
-
-- 공통 MAUI application/page/builder를 `Doroti.Host.Maui`로 이동한다.
-- Windows/MacCatalyst base entry와 사용자 hook을 추가한다.
-- 템플릿과 `DorotiDemoApp`의 `Platforms/Maui`를 삭제하고 각 platform shell을 축소한다.
-
-완료 조건:
-
-- Windows와 MacCatalyst에 앱 정의/surface 조립 중복이 없다.
-- Windows build/publish/live GPU presentation이 기존 backend identity와 frame/resource 계약을 유지한다.
-- MacCatalyst는 Windows cross-build와 실제 Apple Silicon live 결과를 분리 기록한다.
-
-### B3. SDK generated bootstrap과 Web 통합
-
-상태: **PASS (검증 범위 한정)**. Build/package/publish와 WebGL2 canvas 및 기본 FAB pointer smoke를 통과했다.
-
-- `Program` startup을 대상별 native entry에 강하게 연결하는 생성 코드를 추가한다.
-- Web `PlatformBootstrap.cs`를 제거하고 `DorotiWebRunner`로 이전한다.
-- `DorotiJavaScriptPlugin`에서 browser registration을 생성하여 수기 descriptor 목록을 제거한다.
-- target graph validator를 새 구조에 맞춘다.
+- repository product와 외부 SDK 소비자가 같은 `Microsoft.TypeScript.MSBuild 7.0.0`을 사용하도록 version/property 계약을 추가한다.
+- Web + tsconfig 존재 조건에서만 compiler package와 compile target을 활성화한다.
+- TypeScript output을 target/configuration별 `obj`로 강제하고 generated JS를 static web asset resolve 전에 등록한다.
+- compiler executable, tsconfig, TypeScript source, bootstrap output 누락을 각각 stable `DOROTIWEB` 진단으로 닫는다.
+- Web target graph에 compiler version, config, source count, generated JS root를 기록한다.
+- unsupported host, TypeScript syntax/type 오류, empty emit, source `wwwroot` emit을 negative fixture로 만든다.
 
 완료 조건:
 
-- 세 대상의 `Program.cs` compile item과 내용이 동일하고 조건부 컴파일이 없다.
-- external `dotnet new doroti-app` 소비자가 Windows/Web build와 Web publish를 통과한다.
-- WebGL2 presentation과 pointer smoke를 다시 확인하며 native live나 physical acceptance로 확대 해석하지 않는다.
+- clean `dotnet build` 한 번으로 TypeScript compile과 Web static asset 생성이 끝난다.
+- TypeScript 오류가 있어도 C# build만 성공하는 false PASS가 없다.
+- Windows/MacCatalyst build는 TypeScript compiler를 restore하거나 실행하지 않는다.
+- `dotnet clean`은 `obj`의 emitted JS만 제거하고 `.ts`, HTML, CSS, manifest/resource를 보존한다.
 
-### B4. Linux/Qt 확장점 증명
+### W2. Doroti loader를 TypeScript로 구현
 
-상태: **PARTIAL**. Synthetic fourth-host descriptor는 PASS이나 실제 Qt/Linux 구현과 live gate는 후속 범위다.
+대상:
 
-- 실제 Qt 구현 전 synthetic target descriptor로 SDK가 네 번째 host kind를 수용하는지 검증한다.
-- 이후 `Doroti.Host.Qt`와 Linux target package를 연결하고 platform hook을 추가한다.
-- Linux build/package, Qt live presentation, input/IME/accessibility, physical/cross-target 검증은 각각 별도 evidence로 남긴다.
+- `Doroti/src/Doroti.Host.Web/Web/doroti.loader.ts` 추가
+- loader public type declaration/package wiring
+- Web bootstrap 계약 문서 또는 ADR
+
+작업:
+
+- `startDoroti(options)`의 typed option, 정확히 한 번 시작, stage 전이, 오류 전파를 구현한다.
+- `globalThis.Blazor`와 `Blazor.start`가 없으면 stable diagnostic으로 즉시 실패시킨다.
+- 시작 Promise, callback 호출 순서, error identity를 contract fixture로 고정한다.
+- compiler가 만든 `doroti.loader.js`와 public `.d.ts`가 `Doroti.Host.Web` NuGet/static web asset에 포함되게 한다.
+- 앱 bootstrap의 relative runtime import가 외부 template build에서도 type-check되도록 package-owned ambient/module declaration을 연결한다.
 
 완료 조건:
 
-- Linux 추가를 위해 `Program.cs`, `src/App.cs`, MAUI/Web host를 수정하지 않는다.
-- 새 target 추가 변경이 target package, SDK descriptor registration, Linux platform assets/validator에 한정된다.
+- source tree에는 `doroti.loader.js`가 없고 package/publish에는 compiled JS가 있다.
+- 앱 bootstrap은 `Blazor.start()`를 직접 호출하지 않는다.
+- callback 예외와 Blazor 시작 실패가 `failed`, `onError`, rejected Promise에 동일한 원인으로 남는다.
+
+### W3. 기존 browser interop을 TypeScript 소유권으로 전환
+
+대상:
+
+- `Doroti/src/Doroti.Host.Web/wwwroot/doroti.web.js` 제거
+- `Doroti/src/Doroti.Host.Web/Web/doroti.web.ts` 추가
+- managed callback, host snapshot, plugin request/response type
+
+작업:
+
+- 현재 export 이름과 JS interop ABI를 그대로 유지하면서 DOM/WebGL2/input/IME/clipboard/semantics 코드를 strict TypeScript로 옮긴다.
+- `any`로 전체 경계를 우회하지 않고 managed callback, host state, GPU identity, pointer sample, text editing payload를 명시적으로 타입화한다.
+- `HTMLCanvasElement`, `HTMLTextAreaElement`, `ResizeObserver`, Pointer/Composition/Keyboard event narrowing을 실제 DOM type으로 검증한다.
+- runtime URL과 exported function 이름은 기존 C# consumer 및 evidence와 동일하게 유지한다.
+- 변환 전후의 export inventory와 대표 payload를 contract fixture로 비교한다.
+
+완료 조건:
+
+- checked-in `doroti.web.js`가 0건이고 compiled `_content/Doroti.Host.Web/doroti.web.js`가 존재한다.
+- C# JS import/export 이름, codec, payload shape가 변하지 않는다.
+- WebGL2 hardware-only, retained-scene replay, pointer/IME/accessibility 기존 범위를 약화시키지 않는다.
+
+### W4. template과 DemoApp을 TypeScript Web source로 전환
+
+대상:
+
+- template/DemoApp의 `Platforms/Web/tsconfig.json`
+- template/DemoApp의 `Platforms/Web/src/doroti_bootstrap.ts`
+- template/DemoApp의 `Platforms/Web/src/plugins/echo.ts`
+- template/DemoApp의 `Platforms/Web/wwwroot/index.html`
+- 기존 `Platforms/Web/wwwroot/plugins/echo.js` 제거
+
+작업:
+
+- 두 index에서 Blazor 자동 시작을 끄고 compiled app bootstrap module을 로드한다.
+- template bootstrap에는 no-op 기본 구성과 최소 stage/error 예시만 둔다.
+- DemoApp bootstrap에는 live validator가 읽을 수 있는 `document.documentElement.dataset.dorotiBootstrapStage` marker를 둔다.
+- `DorotiJavaScriptPlugin ModuleUrl="./plugins/echo.js"`는 runtime URL로 유지하되 source는 `echo.ts` 한 곳만 소유한다.
+- template과 DemoApp의 tsconfig/bootstrap/plugin 계약 drift를 validator에서 검사한다.
+- `<base href>`를 존중하는 상대 URL만 사용하고 `/` 고정 경로를 추가하지 않는다.
+
+완료 조건:
+
+- 외부 `dotnet new doroti-app` 결과에 `.ts` source와 tsconfig가 있으며 생성 `.js`는 없다.
+- build 후 `obj/web/**`와 publish에만 app/plugin JS가 존재한다.
+- Windows/MacCatalyst compile/content graph에는 Web TypeScript source와 output이 유입되지 않는다.
+
+### W5. bootstrap 구성과 실패 경로 검증
+
+대표 fixture/live 시나리오:
+
+- 기본 시작: `before-start -> starting -> started`가 한 번씩 발생하고 managed Doroti app이 mount된다.
+- runtime 구성: typed `configure`에서 `configureRuntime` 또는 안전한 marker를 설정하고 적용을 확인한다.
+- boot resource 관찰: `loadBootResource`가 기본 URI와 integrity를 훼손하지 않고 요청을 관찰한다.
+- 진행 UI: stage callback이 `#app` 또는 dataset marker를 갱신하고 최종 `started`에 도달한다.
+- 사용자 오류: `configure`/callback 예외가 `failed`, `onError`, rejected Promise에 남고 무한 Loading 상태가 되지 않는다.
+- 중복 시작: 두 번째 호출이 별도 runtime을 만들지 않는다.
+- compiler 오류: 잘못된 TypeScript가 `dotnet build`를 실패시키고 stale JS로 publish되지 않는다.
+- clean-first publish: 사전 생성 JS가 없는 상태에서도 compile 후 올바른 static asset을 얻는다.
+
+완료 조건:
+
+- TypeScript compile, bootstrap hook, managed mount를 각각 관찰한다.
+- `started`만으로 WebGL2 presentation을 주장하지 않고 canvas presentation/basic pointer는 별도 Web live assertion으로 확인한다.
+- keyboard/IME/clipboard/resize/interactive ARIA 및 physical/cross-target 항목은 실행하지 않았다면 계속 `notVerified`로 기록한다.
+
+### W6. package/publish evidence와 문서 동기화
+
+대상:
+
+- `Doroti/eng/validate-app-targets.ps1`
+- `Doroti/eng/validate-web-product.ps1`
+- Web artifact/evidence schema
+- `Doroti/README.md`, `Doroti/README.ko.md`
+- `DorotiDemoApp/README.md`, `DorotiDemoApp/README.ko.md`
+- template 설명과 Web bootstrap ADR/문서
+
+작업:
+
+- publish 결과의 framework loader, app bootstrap, Doroti loader, browser interop, plugin을 별도 artifact로 기록한다.
+- `.ts` source identity와 compiled `.js` hash를 연결하되 repository 절대 경로를 evidence에 넣지 않는다.
+- 반복 publish identity와 저장소 밖 package-only template create/restore/build/publish를 TypeScript toolchain까지 확장한다.
+- 앱 개발자가 수정하는 `.ts`, Doroti가 소유하는 host `.ts`, SDK가 생성하는 JS/C# bootstrap을 분리해 설명한다.
+- 기본 설정, loading UI, `configureRuntime`, integrity를 보존하는 `loadBootResource`, 향후 service worker 등록 예제를 제공한다.
+- Flutter 문서는 API/UX 참고이며 실제 실행 계약은 Blazor 공식 API임을 명시한다.
 
 ## 검증 게이트
 
-구조 변경은 compile 성공만으로 닫지 않는다.
+repository 지침에 따라 각 테스트 실행에는 20분 timeout을 적용한다.
 
-- Structural: legacy `Platforms/Maui`와 `PlatformBootstrap` 0건, reflection 0건, 대상별 source leakage 0건, generated bootstrap 정확히 1개.
-- Contract: Windows/MacCatalyst/Web descriptor가 같은 startup과 application assembly를 사용하고 target별 plugin/resource registration만 달라지는지 검사.
-- Build: Release Windows, Web, MacCatalyst cross-build와 반복 build; lock/package graph identity 확인.
-- Package consumer: 저장소 밖 임시 디렉터리에서 template install/create/restore/build/Web publish.
-- Native live: Windows MAUI GPU presented/replayed/failed/resource evidence를 재수집.
-- Web live: Blazor mount, WebGL2 presentation, pointer/keyboard/IME/resize/plugin을 Web 범위로 재검증.
-- Target-specific: MacCatalyst 실제 장비와 Linux/Qt는 실행 가능한 환경에서만 PASS로 기록하고, 그 전에는 `notVerified`를 유지.
-- Regression: platform hook에서 사용자 서비스/handler를 하나 추가한 template fixture와, 필수 Doroti 등록을 훼손하려는 negative fixture를 함께 검사.
+1. 구조/소유권
+   - template, DemoApp, `Doroti.Host.Web`의 checked-in generated JS 0건
+   - TypeScript source/tsconfig는 Web scope에만 존재
+   - generated JS는 target/configuration별 `obj`와 publish에만 존재
+   - Flutter token, CanvasKit, Node/npm/Bun/bundler 신규 의존 0건
+2. compiler/fail-closed
+   - compiler `7.0.0`, strict/noEmitOnError, source count, output root 확인
+   - syntax/type 오류, compiler 누락, empty emit, stale output negative fixture
+   - clean이 source를 삭제하지 않고 generated output만 제거하는지 확인
+3. 제품 빌드
+   - `pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 validate -ValidationSuite Developer`
+   - Windows, MacCatalyst cross-build, Web Release build
+   - native target restore/lock에 TypeScript package가 유입되지 않는지 확인
+4. package/publish
+   - `validate-web-product.ps1`의 Template, Compile, Publish shard
+   - 저장소 밖 template install/create/restore/build/publish
+   - clean-first 및 반복 publish static identity
+   - publish의 `.ts`, tsconfig, compiler/tool binary, repository-private fallback 0건
+5. browser live
+   - Chromium에서 stage 순서, managed mount, console/unhandled rejection 0건
+   - `_content` loader/interop와 app/plugin compiled module load 확인
+   - 기존 WebGL2 canvas presentation과 기본 pointer `fab=0 -> fab=1` 별도 재확인
+   - 오류/중복 시작 fixture 결과를 정상 live evidence와 분리
+6. 마감
+   - `git diff --check`
+   - Web product evidence와 영문/한국어 문서 갱신
+   - 실행하지 않은 Mac Catalyst native/physical/cross-target gate는 `notVerified` 유지
 
-테스트 명령은 기존 진입점을 유지하되 새 bootstrap 구조 검사를 `validate-app-targets.ps1`에 통합한다. 테스트 실행 시 repository 지침에 따라 20분 timeout을 사용한다.
+## 이번 범위에서 하지 않을 것
 
-## 이번 개편에서 하지 않을 것
+- Flutter 이름, `_flutter`, Flutter build token, CanvasKit 설정을 제공하지 않는다.
+- TypeScript 도입을 이유로 React/Vue/Vite/Webpack/esbuild 같은 framework/bundler를 추가하지 않는다.
+- service worker/PWA 동작 자체를 이번 단계에서 구현하지 않는다. 이후 TypeScript source로 추가할 수 있는 build와 bootstrap hook만 보장한다.
+- TypeScript compiler나 generated JS를 앱 NuGet source 자산으로 노출하거나 source tree에 되쓰지 않는다.
+- 기존 C# application bootstrap과 plugin registration을 JavaScript/TypeScript로 옮기지 않는다. 이들은 계속 `Doroti.App.Sdk`가 `obj/<target>/Doroti.Generated/`에 생성한다.
+- bootstrap 성공을 canvas/input/IME/accessibility/physical acceptance 증거로 확대하지 않는다.
 
-- MAUI 위에 Qt를 추상화하거나 Qt를 MAUI target으로 취급하지 않는다.
-- 사용자가 편집하는 `Platforms` 아래에 Doroti 생성 코드를 체크인하지 않는다.
-- 기존 reflection bootstrap 또는 `Platforms/Maui`를 호환 모드로 장기간 병행하지 않는다. beta template이므로 producer, template, DemoApp, validators, docs를 한 번에 전환한다.
-- Windows build/live 결과를 MacCatalyst, Web, Linux의 실제 동작 증거로 사용하지 않는다.
+## 예상 완료 상태
+
+작업이 끝나면 사용자는 `Platforms/Web/src/doroti_bootstrap.ts`와 plugin TypeScript에서 runtime 옵션, resource loading, loading/error UI, 시작 전후 hook을 타입 안전하게 구성할 수 있어야 한다. Doroti의 loader와 browser interop도 TypeScript를 제품 원본으로 사용하며, 모든 실행 JavaScript는 격리된 build output에서 생성되어 Blazor static web asset으로 배포된다. Windows/MacCatalyst 앱 graph와 공통 `Program.cs`는 이 Web toolchain을 알 필요가 없다.
