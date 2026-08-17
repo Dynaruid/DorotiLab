@@ -1,8 +1,8 @@
 {
-  "schema": "doroti-application/v2",
+  "schemaVersion": "doroti.application-capabilities/v1",
   "applicationId": "dev.doroti.dorotiapp",
   "targetRid": "maccatalyst-arm64",
-  "backend": "UIKit-MacCatalyst/SKMetalView/Metal-Skia"
+  "resources": [],
+  "plugins": []
 }
-
 

@@ -1,13 +1,27 @@
 <Project>
+  <PropertyGroup>
+    <DorotiApplicationType Condition="'$(DorotiApplicationType)' == ''">$(RootNamespace).Program</DorotiApplicationType>
+    <_DorotiGeneratedDirectory>$(BaseIntermediateOutputPath)Doroti.Generated\</_DorotiGeneratedDirectory>
+    <_DorotiBootstrapFile>$(_DorotiGeneratedDirectory)DorotiBootstrap.g.cs</_DorotiBootstrapFile>
+    <_DorotiPluginRegistrationFile>$(_DorotiGeneratedDirectory)DorotiPluginRegistration.g.cs</_DorotiPluginRegistrationFile>
+    <_DorotiWebRuntimeStampFile>$(_DorotiGeneratedDirectory)web-runtime-version.txt</_DorotiWebRuntimeStampFile>
+  </PropertyGroup>
+
+  <!-- Restore-time mirrors; target packages publish the same descriptors through buildTransitive assets. -->
+  <ItemGroup>
+    <DorotiTargetDescriptor Include="Windows" HostKind="Maui" NativeEntryKind="WinUI-Xaml" RuntimeIdentifier="win-x64" TargetFramework="net10.0-windows10.0.19041.0" TargetPackage="Doroti.Target.Windows.Maui.win-x64" Condition="'$(DorotiTarget)' == 'Windows'" />
+    <DorotiTargetDescriptor Include="MacCatalyst" HostKind="Maui" NativeEntryKind="UIKit-Main" RuntimeIdentifier="maccatalyst-arm64" TargetFramework="net10.0-maccatalyst" TargetPackage="Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64" Condition="'$(DorotiTarget)' == 'MacCatalyst'" />
+    <DorotiTargetDescriptor Include="Web" HostKind="BlazorWebAssembly" NativeEntryKind="Managed-Main" RuntimeIdentifier="browser-wasm" TargetFramework="net10.0" TargetPackage="Doroti.Target.Web.browser-wasm" Condition="'$(DorotiTarget)' == 'Web'" />
+  </ItemGroup>
+
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="src\**\*.cs" />
-    <Compile Include="Platforms\Maui\**\*.cs" Condition="'$(UseMaui)' == 'true'" />
-    <Compile Include="Platforms\Windows\**\*.cs" Condition="'$(DorotiTarget)' == 'Windows'" />
-    <Compile Include="Platforms\MacCatalyst\**\*.cs" Condition="'$(DorotiTarget)' == 'MacCatalyst'" />
-    <Compile Include="Platforms\Web\**\*.cs" Condition="'$(DorotiTarget)' == 'Web'" />
-    <ApplicationDefinition Include="Platforms\Windows\App.xaml" Generator="MSBuild:Compile" Condition="'$(DorotiTarget)' == 'Windows'" />
-    <Content Include="Platforms\Web\wwwroot\**" Link="wwwroot\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Condition="'$(DorotiTarget)' == 'Web'" />
+    <Compile Include="Platforms\$(DorotiTarget)\**\*.cs" />
+    <Compile Include="$(_DorotiBootstrapFile)" AutoGen="true" DesignTime="true" Visible="false" />
+    <Compile Include="$(_DorotiPluginRegistrationFile)" AutoGen="true" DesignTime="true" Visible="false" />
+    <ApplicationDefinition Include="Platforms\$(DorotiTarget)\App.xaml" Generator="MSBuild:Compile" Condition="Exists('Platforms\$(DorotiTarget)\App.xaml')" />
+    <Content Include="Platforms\$(DorotiTarget)\wwwroot\**" Link="wwwroot\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Condition="Exists('Platforms\$(DorotiTarget)\wwwroot')" />
     <EmbeddedResource Include="Platforms\$(DorotiTarget)\application-manifest.json" LogicalName="Doroti.Application.Manifest" Condition="Exists('Platforms\$(DorotiTarget)\application-manifest.json')" />
     <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#6750A4" Condition="'$(UseMaui)' == 'true' and Exists('Resources\AppIcon\appicon.svg')" />
     <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#1D1B20" BaseSize="128,128" Condition="'$(UseMaui)' == 'true' and Exists('Resources\Splash\splash.svg')" />
@@ -26,27 +40,83 @@
   </ItemGroup>
 
   <Target Name="ValidateDorotiAppTarget" BeforeTargets="PrepareForBuild;Restore">
-    <Error Code="DOROTIAPP001" Condition="'$(DorotiTarget)' != 'Windows' and '$(DorotiTarget)' != 'MacCatalyst' and '$(DorotiTarget)' != 'Web'" Text="DorotiTarget must be Windows, MacCatalyst, or Web; found '$(DorotiTarget)'." />
-    <Error Code="DOROTIAPP002" Condition="'$(DorotiTarget)' == 'Windows' and '$(RuntimeIdentifier)' != 'win-x64'" Text="DorotiTarget Windows requires RuntimeIdentifier win-x64; found '$(RuntimeIdentifier)'." />
-    <Error Code="DOROTIAPP003" Condition="'$(DorotiTarget)' == 'MacCatalyst' and '$(RuntimeIdentifier)' != 'maccatalyst-arm64'" Text="DorotiTarget MacCatalyst requires RuntimeIdentifier maccatalyst-arm64; found '$(RuntimeIdentifier)'." />
-    <Error Code="DOROTIAPP004" Condition="'$(DorotiTarget)' == 'Web' and '$(RuntimeIdentifier)' != 'browser-wasm'" Text="DorotiTarget Web requires RuntimeIdentifier browser-wasm; found '$(RuntimeIdentifier)'." />
+    <PropertyGroup>
+      <_DorotiTargetDescriptorCount>@(DorotiTargetDescriptor->Count())</_DorotiTargetDescriptorCount>
+      <_DorotiSelectedTarget>@(DorotiTargetDescriptor->'%(Identity)')</_DorotiSelectedTarget>
+      <_DorotiSelectedTfm>@(DorotiTargetDescriptor->'%(TargetFramework)')</_DorotiSelectedTfm>
+      <_DorotiSelectedRid>@(DorotiTargetDescriptor->'%(RuntimeIdentifier)')</_DorotiSelectedRid>
+    </PropertyGroup>
     <ItemGroup>
+      <_DorotiForbiddenSource Include="Platforms\Maui\**\*" />
+      <_DorotiForbiddenSource Include="Platforms\**\PlatformBootstrap.cs" />
+      <_DorotiUnexpectedPlatformCompile Include="@(Compile)" Condition="$([System.String]::Copy('%(Compile.Identity)').Contains('Platforms\')) and !$([System.String]::Copy('%(Compile.Identity)').Contains('Platforms\$(DorotiTarget)\'))" />
       <_DorotiDisallowedXaml Include="@(MauiXaml)" />
-      <_DorotiDisallowedXaml Include="@(ApplicationDefinition)" Condition="'$(DorotiTarget)' != 'Windows' or '%(ApplicationDefinition.Identity)' != 'Platforms\Windows\App.xaml'" />
-      <_DorotiUnexpectedPlatformCompile Include="@(Compile)" Condition="'$(DorotiTarget)' != 'Windows' and $([System.String]::Copy('%(Compile.Identity)').Contains('Platforms\Windows\'))" />
-      <_DorotiUnexpectedPlatformCompile Include="@(Compile)" Condition="'$(DorotiTarget)' != 'MacCatalyst' and $([System.String]::Copy('%(Compile.Identity)').Contains('Platforms\MacCatalyst\'))" />
-      <_DorotiUnexpectedPlatformCompile Include="@(Compile)" Condition="'$(DorotiTarget)' != 'Web' and $([System.String]::Copy('%(Compile.Identity)').Contains('Platforms\Web\'))" />
+      <_DorotiDisallowedXaml Include="@(ApplicationDefinition)" Condition="'%(ApplicationDefinition.Identity)' != 'Platforms\$(DorotiTarget)\App.xaml'" />
     </ItemGroup>
-    <Error Code="DOROTIAPP005" Condition="'@(_DorotiDisallowedXaml)' != ''" Text="Only Platforms/Windows/App.xaml may be compiled, and only for the Windows target: @(_DorotiDisallowedXaml)." />
+    <Error Code="DOROTIAPP001" Condition="'$(_DorotiTargetDescriptorCount)' != '1'" Text="A Doroti build requires exactly one DorotiTargetDescriptor; found '$(_DorotiTargetDescriptorCount)' for '$(DorotiTarget)'." />
+    <Error Code="DOROTIAPP002" Condition="'$(_DorotiSelectedTarget)' != '$(DorotiTarget)'" Text="DorotiTargetDescriptor '$(_DorotiSelectedTarget)' does not match DorotiTarget '$(DorotiTarget)'." />
+    <Error Code="DOROTIAPP003" Condition="'$(_DorotiSelectedTfm)' != '$(TargetFramework)'" Text="DorotiTarget $(DorotiTarget) requires TargetFramework '$(_DorotiSelectedTfm)'; found '$(TargetFramework)'." />
+    <Error Code="DOROTIAPP004" Condition="'$(_DorotiSelectedRid)' != '$(RuntimeIdentifier)'" Text="DorotiTarget $(DorotiTarget) requires RuntimeIdentifier '$(_DorotiSelectedRid)'; found '$(RuntimeIdentifier)'." />
+    <Error Code="DOROTIAPP005" Condition="'@(_DorotiDisallowedXaml)' != ''" Text="Only the selected target ApplicationDefinition is allowed: @(_DorotiDisallowedXaml)." />
     <Error Code="DOROTIAPP006" Condition="'@(_DorotiUnexpectedPlatformCompile)' != ''" Text="The selected Doroti target contains source from another platform: @(_DorotiUnexpectedPlatformCompile)." />
+    <Error Code="DOROTIAPP007" Condition="'@(_DorotiForbiddenSource)' != ''" Text="Legacy app-owned Doroti bootstrap source is forbidden: @(_DorotiForbiddenSource)." />
+    <Error Code="DOROTIAPP008" Condition="'$(DorotiApplicationType)' == ''" Text="DorotiApplicationType must name one public startup type." />
+    <Error Code="DOROTIAPP009" Condition="'@(DorotiJavaScriptPlugin)' != '' and '%(DorotiJavaScriptPlugin.Channel)' == ''" Text="DorotiJavaScriptPlugin '%(DorotiJavaScriptPlugin.Identity)' must declare Channel metadata." />
+    <Error Code="DOROTIAPP010" Condition="'@(DorotiJavaScriptPlugin)' != '' and '%(DorotiJavaScriptPlugin.ExportName)' == ''" Text="DorotiJavaScriptPlugin '%(DorotiJavaScriptPlugin.Identity)' must declare ExportName metadata." />
   </Target>
 
-  <Target Name="WriteDorotiTargetGraph" DependsOnTargets="ValidateDorotiAppTarget">
+  <Target Name="InvalidateDorotiWebRuntimeCache" BeforeTargets="PrepareForBuild" Condition="'$(DorotiTarget)' == 'Web'">
+    <ReadLinesFromFile File="$(_DorotiWebRuntimeStampFile)" Condition="Exists('$(_DorotiWebRuntimeStampFile)')">
+      <Output TaskParameter="Lines" PropertyName="_DorotiPreviousWebRuntimeVersion" />
+    </ReadLinesFromFile>
+    <RemoveDir Directories="$(IntermediateOutputPath)webcil" Condition="'$(_DorotiPreviousWebRuntimeVersion)' != '$(RuntimeFrameworkVersion)' and Exists('$(IntermediateOutputPath)webcil')" />
+    <MakeDir Directories="$(_DorotiGeneratedDirectory)" />
+    <WriteLinesToFile File="$(_DorotiWebRuntimeStampFile)" Overwrite="true" Lines="$(RuntimeFrameworkVersion)" />
+  </Target>
+
+  <Target Name="GenerateDorotiBootstrap" DependsOnTargets="ValidateDorotiAppTarget" BeforeTargets="PrepareForBuild;CoreCompile">
+    <MakeDir Directories="$(_DorotiGeneratedDirectory)" />
+    <ItemGroup>
+      <_DorotiPluginLines Include="// &lt;auto-generated /&gt;" />
+      <_DorotiPluginLines Include="namespace Doroti.Generated%3B" />
+      <_DorotiPluginLines Include="internal static class DorotiPluginRegistration" />
+      <_DorotiPluginLines Include="{" />
+      <_DorotiPluginLines Include="    internal static readonly global::Doroti.Hosting.DorotiApplicationPluginRegistration[] Items =" />
+      <_DorotiPluginLines Include="    [" />
+      <_DorotiPluginLines Include="@(DorotiJavaScriptPlugin->'        new global::Doroti.Hosting.DorotiApplicationPluginRegistration(&quot;%(Identity)&quot;, &quot;%(Channel)&quot;, &quot;doroti.browser-js-plugin/v1&quot;, &quot;%(ModuleUrl)&quot;, &quot;%(ExportName)&quot;),')" />
+      <_DorotiPluginLines Include="    ]%3B" />
+      <_DorotiPluginLines Include="}" />
+      <_DorotiBootstrapLines Include="// &lt;auto-generated /&gt;" />
+      <_DorotiBootstrapLines Include="namespace Doroti.Generated%3B" />
+      <_DorotiBootstrapLines Include="internal static class DorotiBootstrap" />
+      <_DorotiBootstrapLines Include="{" />
+      <_DorotiBootstrapLines Include="    internal static global::Doroti.Hosting.DorotiApplicationDescriptor Create(string[] args) =&gt;" />
+      <_DorotiBootstrapLines Include="        global::Doroti.Hosting.DorotiApplicationFactory.Create&lt;global::$(DorotiApplicationType)&gt;(" />
+      <_DorotiBootstrapLines Include="            global::Doroti.Hosting.DorotiLaunchContext.Create(&quot;$(DorotiTarget)&quot;, &quot;$(RuntimeIdentifier)&quot;, args), DorotiPluginRegistration.Items)%3B" />
+      <_DorotiBootstrapLines Include="    [global::System.Runtime.Versioning.SupportedOSPlatform(&quot;browser&quot;)]" Condition="'@(DorotiTargetDescriptor->'%(NativeEntryKind)')' == 'Managed-Main'" />
+      <_DorotiBootstrapLines Include="    public static global::System.Threading.Tasks.Task Main(string[] args) =&gt;" Condition="'@(DorotiTargetDescriptor->'%(NativeEntryKind)')' == 'Managed-Main'" />
+      <_DorotiBootstrapLines Include="        global::Doroti.Target.Web.DorotiWebRunner.RunAsync&lt;global::$(DorotiApplicationType)&gt;(args, DorotiPluginRegistration.Items)%3B" Condition="'@(DorotiTargetDescriptor->'%(NativeEntryKind)')' == 'Managed-Main'" />
+      <_DorotiBootstrapLines Include="    public static void Main(string[] args) =&gt;" Condition="'@(DorotiTargetDescriptor->'%(NativeEntryKind)')' == 'UIKit-Main'" />
+      <_DorotiBootstrapLines Include="        global::UIKit.UIApplication.Main(args, null, typeof(global::$(RootNamespace).Platforms.MacCatalyst.AppDelegate))%3B" Condition="'@(DorotiTargetDescriptor->'%(NativeEntryKind)')' == 'UIKit-Main'" />
+      <_DorotiBootstrapLines Include="}" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(_DorotiPluginRegistrationFile)" Overwrite="true" Lines="@(_DorotiPluginLines)" />
+    <WriteLinesToFile File="$(_DorotiBootstrapFile)" Overwrite="true" Lines="@(_DorotiBootstrapLines)" />
+    <ItemGroup>
+      <FileWrites Include="$(_DorotiBootstrapFile);$(_DorotiPluginRegistrationFile)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="WriteDorotiTargetGraph" DependsOnTargets="GenerateDorotiBootstrap">
     <ItemGroup>
       <_DorotiGraphLine Include="target=$(DorotiTarget)" />
       <_DorotiGraphLine Include="tfm=$(TargetFramework)" />
       <_DorotiGraphLine Include="rid=$(RuntimeIdentifier)" />
+      <_DorotiGraphLine Include="startup=$(DorotiApplicationType)" />
+      <_DorotiGraphLine Include="descriptor=%(DorotiTargetDescriptor.Identity)|%(DorotiTargetDescriptor.HostKind)|%(DorotiTargetDescriptor.NativeEntryKind)|%(DorotiTargetDescriptor.TargetPackage)" />
       <_DorotiGraphLine Include="compile=%(Compile.Identity)" />
+      <_DorotiGraphLine Include="generatedBootstrap=$(_DorotiBootstrapFile)" />
+      <_DorotiGraphLine Include="generatedPluginRegistration=$(_DorotiPluginRegistrationFile)" />
       <_DorotiGraphLine Include="applicationDefinition=%(ApplicationDefinition.Identity)" />
       <_DorotiGraphLine Include="mauiXaml=%(MauiXaml.Identity)" />
     </ItemGroup>

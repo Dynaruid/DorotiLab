@@ -23,7 +23,8 @@ public sealed class MauiFrameworkHost : IDisposable
         ulong viewId,
         SKGLView nativeView,
         DorotiViewConfiguration configuration,
-        IMauiSemanticsBridge? semantics = null)
+        IMauiSemanticsBridge? semantics = null,
+        DorotiApplicationBoundary? application = null)
     {
         ArgumentNullException.ThrowIfNull(session);
         ArgumentNullException.ThrowIfNull(nativeView);
@@ -46,8 +47,11 @@ public sealed class MauiFrameworkHost : IDisposable
             .Register<ISceneHostCapability>(DorotiCapabilityIds.GraphicsScene, graphics)
             .Register<IParagraphHostCapability>(DorotiCapabilityIds.GraphicsText, graphics)
             .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, graphics)
-            .Register<ISemanticsHostCapability>(DorotiCapabilityIds.AccessibilitySemantics, graphics)
-            .Register<IPlatformMessageHostCapability>(DorotiCapabilityIds.PlatformMessaging, messages);
+            .Register<ISemanticsHostCapability>(DorotiCapabilityIds.AccessibilitySemantics, graphics);
+        if (application is null)
+            capabilities.Register<IPlatformMessageHostCapability>(DorotiCapabilityIds.PlatformMessaging, messages);
+        else
+            application.Configure(capabilities, messages);
         DorotiView? view = null;
         try
         {

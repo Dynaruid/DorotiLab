@@ -1,8 +1,8 @@
 {
-  "schema": "doroti-application/v2",
+  "schemaVersion": "doroti.application-capabilities/v1",
   "applicationId": "dev.doroti.dorotiapp",
   "targetRid": "win-x64",
-  "backend": "winui3/SKSwapChainPanel/ANGLE-DirectX-Skia"
+  "resources": [],
+  "plugins": []
 }
-
 

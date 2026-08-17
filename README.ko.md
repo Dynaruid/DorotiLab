@@ -23,11 +23,12 @@ Doroti는 Flutter를 WebView에 넣지 않으며 MAUI 또는 Avalonia control로
 
 - 공용 Material/Cupertino widget, element, layout, paint, semantics, state 기반
 - MAUI Windows x64, MAUI Mac Catalyst arm64 또는 Blazor WebAssembly를 선택하는 하나의 C# application project
+- 하나의 public target-neutral `Program` startup, host 소유 native 초기화, SDK 생성 `obj/<target>/Doroti.Generated` bootstrap code
 - Windows WinUI 3 `MauiSKSwapChainPanel`과 Web WebGL2를 통한 strict Skia GPU rendering
 - Windows Release build/publish와 실제 GPU frame evidence
-- 저장소 밖 Web template/package compile/publish evidence와 기존 수동 Chromium canvas/기본 pointer smoke
+- 저장소 밖 Web template/package compile/publish evidence와 .NET 10.0.11의 현재 Chromium WebGL2 canvas/기본 FAB pointer smoke
 
-Native hover/wheel/keyboard/IME/UIA, Mac Catalyst native 실행, Web interaction 자동화, physical acceptance와 cross-target parity는 각각 독립적인 `notVerified` gate입니다. 과거 Win32/WGL과 AppKit/NSOpenGL 결과는 predecessor evidence로만 유지합니다.
+Native hover/wheel/keyboard/IME/UIA, Mac Catalyst native 실행, Web keyboard/IME/clipboard/resize/interactive ARIA, physical acceptance와 cross-target parity는 각각 독립적인 `notVerified` gate입니다. 과거 Win32/WGL과 AppKit/NSOpenGL 결과는 predecessor evidence로만 유지합니다.
 
 ## 구조
 
@@ -46,7 +47,7 @@ Flutter source는 fidelity 작업에서 동작 reference가 필요할 때 사용
 
 ## 실행
 
-.NET 10과 PowerShell 7이 필요합니다.
+.NET SDK 10.0.400, 일치하는 10.0.11 runtime/workload와 PowerShell 7이 필요합니다.
 
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 build

@@ -1,11 +1,10 @@
 {
   "schemaVersion": "doroti.application/v1",
-  "applicationAssembly": "DorotiApp.Web.dll",
+  "applicationAssembly": "DorotiTemplateApp.dll",
   "entrypoint": "MaterialDemoEntrypoint",
   "resources": ["assets/doroti-mark.txt", "locales/en-US.json"],
   "plugins": ["doroti.example/echo"]
 }
-
 
 
 

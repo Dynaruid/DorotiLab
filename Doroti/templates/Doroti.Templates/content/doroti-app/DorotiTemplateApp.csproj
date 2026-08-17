@@ -1,8 +1,8 @@
 <Project Sdk="Doroti.App.Sdk/0.2.0-beta">
   <PropertyGroup>
-    <AssemblyName>DorotiApp</AssemblyName>
-    <RootNamespace>DorotiApp</RootNamespace>
-    <ApplicationTitle>DorotiApp</ApplicationTitle>
+    <AssemblyName>DorotiTemplateApp</AssemblyName>
+    <RootNamespace>DorotiTemplateApp</RootNamespace>
+    <ApplicationTitle>DorotiTemplateApp</ApplicationTitle>
     <ApplicationId>dev.doroti.dorotiapp</ApplicationId>
     <ApplicationDisplayVersion>0.2.0</ApplicationDisplayVersion>
     <ApplicationVersion>2</ApplicationVersion>

@@ -2,6 +2,7 @@
   <PropertyGroup>
     <DorotiWebTarget>true</DorotiWebTarget>
     <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">browser-wasm</RuntimeIdentifier>
+    <RuntimeFrameworkVersion Condition="'$(RuntimeFrameworkVersion)' == ''">10.0.11</RuntimeFrameworkVersion>
     <WasmBuildNative>true</WasmBuildNative>
     <PublishTrimmed>false</PublishTrimmed>
     <InvariantGlobalization>false</InvariantGlobalization>

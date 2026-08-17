@@ -16,5 +16,6 @@
     <ProjectReference Include="..\Doroti.Host.Maui\Doroti.Host.Maui.csproj" />
     <EmbeddedResource Include="doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" />
     <None Include="doroti-target-manifest.json" Pack="true" PackagePath="doroti\" />
+    <None Include="buildTransitive\Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.targets" Pack="true" PackagePath="buildTransitive\Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.targets" />
   </ItemGroup>
 </Project>

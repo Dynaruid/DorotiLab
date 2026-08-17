@@ -8,12 +8,12 @@ DorotiDemoApp은 제품이 직접 소유하는 Doroti framework와 single-projec
 
 ## 구성
 
-- `src/App.cs`: `Doroti.Framework.*`를 사용하는 target-neutral Material widget/state tree
-- `Program.cs`: Web과 Mac Catalyst용 얇은 bootstrap. Windows는 SDK가 생성한 WinUI entrypoint 사용
-- `Platforms/Maui`: 공용 C# `Application`, `Window`, `ContentPage`, `SKGLView`
-- `Platforms/Windows`: 유일한 bootstrap `App.xaml`, code-behind와 manifest
-- `Platforms/MacCatalyst`: UIKit bootstrap, delegate, plist와 entitlements
-- `Platforms/Web`: Blazor composition root와 static asset
+- `Program.cs`: 모든 target이 사용하는 public target-neutral `IDorotiApplicationStartup`
+- `src/App.cs`: `Program`이 선택하는 target-neutral Material widget/state tree와 view configuration
+- `Platforms/Windows`: 얇은 WinUI shell, 선택적 platform hook과 manifest
+- `Platforms/MacCatalyst`: 얇은 UIKit delegate, 선택적 platform hook, plist와 entitlement
+- `Platforms/Web`: 사용자 소유 static asset. Blazor composition root는 host/SDK가 소유
+- `obj/<target>/Doroti.Generated`: SDK 소유 bootstrap과 plugin registration. 직접 수정하지 않음
 
 ## Build와 validation
 
@@ -26,10 +26,10 @@ pwsh -File ./Doroti/eng/doroti.ps1 validate
 pwsh -File ./Doroti/eng/doroti.ps1 validate -ValidationSuite Release
 ```
 
-Developer suite는 세 target graph와 build를 확인합니다. Release suite는 실제 Windows `MauiSKSwapChainPanel` GPU frame과 저장소 밖 Web template/package publish 시나리오를 추가합니다.
+Developer suite는 공통 descriptor, generated bootstrap, synthetic fourth-host 확장점과 세 target graph/build를 확인합니다. Release suite는 실제 Windows `MauiSKSwapChainPanel` GPU frame과 저장소 밖 Web template/package publish 시나리오를 추가합니다. Repository는 SDK 10.0.400과 Web runtime 10.0.11을 고정하며, runtime patch 변경 시 version stamp가 stale WebCIL publish cache를 무효화합니다.
 
-Mac Catalyst Windows-host cross-build는 확인했지만 native publish/run에는 Apple Silicon macOS가 필요합니다. Native hover/wheel/capture/keyboard/IME/UIA, browser live 자동화, physical acceptance와 cross-target parity는 각각 별도의 `notVerified` gate입니다.
+Mac Catalyst Windows-host cross-build는 확인했지만 native publish/run에는 Apple Silicon macOS가 필요합니다. 수동 Chromium smoke에서 publish된 WebGL2 canvas, page console error 0건, 렌더링된 FAB click에 따른 `fab=0`에서 `fab=1` 상태 전이를 확인했습니다. Keyboard/IME/clipboard/resize/interactive ARIA, native hover/wheel/capture/keyboard/IME/UIA, physical acceptance와 cross-target parity는 각각 별도의 `notVerified` gate입니다.
 
-해당 release suite를 완료하면 현재 evidence는 [app target evidence](../Doroti/migration/maui/app-targets-evidence.json)와 [Web product evidence](../Doroti/migration/web/web-product-evidence.json)에 기록됩니다. 과거 Win32/AppKit 및 G4-G7 evidence는 predecessor-only로 보존합니다.
+현재 evidence는 [app target evidence](../Doroti/migration/maui/app-targets-evidence.json), [Web product evidence](../Doroti/migration/web/web-product-evidence.json), [수동 browser evidence](../Doroti/migration/web/web-browser-live-manual.json)에 기록합니다. 과거 Win32/AppKit 및 G4-G7 evidence는 predecessor-only로 보존합니다.
 
 Source 소유권과 명령 설명은 [Doroti runtime README](../Doroti/README.ko.md)를 참고하세요.

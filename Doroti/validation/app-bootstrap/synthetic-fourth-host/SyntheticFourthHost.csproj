@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <DorotiTarget>Linux</DorotiTarget>
+    <TargetFramework>net10.0</TargetFramework>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    <RootNamespace>SyntheticFourthHost</RootNamespace>
+    <AssemblyName>SyntheticFourthHost</AssemblyName>
+    <DorotiUseRepositoryProjects>true</DorotiUseRepositoryProjects>
+  </PropertyGroup>
+  <Import Project="..\..\..\src\Doroti.App.Sdk\Sdk\Sdk.props" />
+  <ItemGroup>
+    <DorotiTargetDescriptor Include="Linux" HostKind="SyntheticQt" NativeEntryKind="Synthetic" RuntimeIdentifier="linux-x64" TargetFramework="net10.0" TargetPackage="Doroti.Target.Linux.Qt.linux-x64" />
+    <ProjectReference Include="..\..\..\src\Doroti.Hosting\Doroti.Hosting.csproj" />
+  </ItemGroup>
+  <Import Project="..\..\..\src\Doroti.App.Sdk\Sdk\Sdk.targets" />
+</Project>

@@ -5,17 +5,6 @@ using SkiaSharp;
 
 namespace Doroti.Host.Web;
 
-public sealed record DorotiWebApplication(
-    Func<IDorotiViewEntrypoint> EntrypointFactory,
-    Assembly ApplicationAssembly,
-    DorotiViewConfiguration ViewConfiguration,
-    IReadOnlyList<BrowserJavaScriptPluginDescriptor>? Plugins = null)
-{
-    public const ulong DefaultViewId = 7301;
-
-    public IReadOnlyList<BrowserJavaScriptPluginDescriptor> PluginDescriptors { get; } = Plugins ?? [];
-}
-
 public sealed record BrowserFrameDiagnostics(
     long Submitted,
     long Presented,

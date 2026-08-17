@@ -9,7 +9,7 @@ using Material = Doroti.Framework.Material;
 using Size = Doroti.Ui.Size;
 using UiColor = Doroti.Ui.Color;
 
-namespace DorotiApp;
+namespace DorotiTemplateApp;
 
 public static class App
 {

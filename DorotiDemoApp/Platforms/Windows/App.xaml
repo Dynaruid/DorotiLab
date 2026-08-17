@@ -1,6 +1,6 @@
-<maui:MauiWinUIApplication
-    x:Class="DorotiDemoApp.WinUI.WindowsMauiApplication"
+<host:DorotiMauiWinUIApplication
+    x:Class="DorotiDemoApp.WinUI.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:maui="using:Microsoft.Maui">
-</maui:MauiWinUIApplication>
+    xmlns:host="using:Doroti.Host.Maui">
+</host:DorotiMauiWinUIApplication>

@@ -25,9 +25,9 @@
       },
       "Microsoft.NET.ILLink.Tasks": {
         "type": "Direct",
-        "requested": "[10.0.8, )",
-        "resolved": "10.0.8",
-        "contentHash": "dVbSXGIFNR5nZcv2tOLoWI+a9T4jtFd77IYjuND+QVe360qWgAF7H0WtoopYhRw/+SgpGUTyrkrh+65+ClNnfw=="
+        "requested": "[10.0.11, )",
+        "resolved": "10.0.11",
+        "contentHash": "IBf7lbovvjGWVWXZX5cJ/cO0WXbId0Zq4BuSeT94mGZuOAP66oMeH9PTBZ9Jpp3Jb6jtK0qm/NyUbPRo1gC/wQ=="
       },
       "SkiaSharp.Views.Maui.Controls": {
         "type": "Direct",
@@ -383,6 +383,7 @@
       "doroti.host.maui": {
         "type": "Project",
         "dependencies": {
+          "CommunityToolkit.Maui.Markup": "[8.0.0, )",
           "Doroti.Hosting": "[0.2.0-beta, )",
           "Doroti.Ui": "[0.2.0-beta, )",
           "Microsoft.Maui.Controls": "[10.0.90, )",

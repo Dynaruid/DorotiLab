@@ -26,7 +26,7 @@ typed Dart IR ──► Core IR ──► structured C# IR
 
 ## 요구 사항
 
-- .NET SDK 10.0.300 또는 호환되는 최신 patch
+- .NET SDK 10.0.400 또는 호환되는 최신 patch
 - Compiler-owned analyzer package와 호환되는 Dart SDK
 - Flutter selection을 위한 repository의 pinned `reference/flutter-master` checkout
 - Shared runtime과 tooling project를 포함한 전체 DorotiLab checkout

@@ -15,17 +15,18 @@
 </main>
 
 @code {
-    private const ulong ViewId = DorotiWebApplication.DefaultViewId;
+    private const ulong ViewId = 7301;
     private readonly IReadOnlyDictionary<string, object> _canvasAttributes =
         new Dictionary<string, object> { ["id"] = CanvasId, ["tabindex"] = "0", ["aria-label"] = "Doroti GPU surface" };
     private SKGLView? _skiaView;
     private IDorotiBrowserTarget? _target;
+    private DorotiApplicationBoundary? _boundary;
     private DorotiHostSession? _session;
     private DorotiView? _view;
     private bool _started;
 
     [Parameter, EditorRequired]
-    public required DorotiWebApplication Application { get; set; }
+    public required DorotiApplicationDescriptor Application { get; set; }
 
     private static string CanvasId => "doroti-surface";
     private static string TextInputId => "doroti-ime";
@@ -40,8 +41,10 @@
         _session = new DorotiHostSession(Application.EntrypointFactory());
         using var dispatcherScope = _session.dispatcher.EnterScope();
         _session.Start(deferFrameworkBootstrap: true);
-        var boundary = _target.LoadApplicationBoundary(Application.ApplicationAssembly, Application.PluginDescriptors);
-        _view = _target.CreateView(_session, ViewId, CanvasId, Application.ViewConfiguration, boundary);
+        var plugins = Application.PluginRegistrations.Select(item => new BrowserJavaScriptPluginDescriptor(
+            item.Id, item.Channel, item.Adapter, item.Module, item.ExportName));
+        _boundary = _target.LoadApplicationBoundary(Application.ApplicationAssembly, plugins);
+        _view = _target.CreateView(_session, ViewId, CanvasId, Application.ViewConfiguration, _boundary);
         _target.AttachSkiaSurface(ViewId, () => _ = InvokeAsync(() => _skiaView?.Invalidate()));
         _view.Show();
         _session.dispatcher.setSemanticsTreeEnabled(true);
@@ -58,11 +61,13 @@
     {
         using var dispatcherScope = _session?.dispatcher.EnterScope();
         _view?.Dispose();
+        _boundary?.Dispose();
         _target?.Dispose();
         _session?.Dispose();
         _view = null;
         _target = null;
         _session = null;
+        _boundary = null;
         return ValueTask.CompletedTask;
     }
 }

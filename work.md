@@ -1,5 +1,33 @@
 # Doroti application bootstrap 개편
 
+## 구현 상태 (2026-08-17)
+
+| 범위 | 상태 | 확인 결과 |
+|---|---|---|
+| B1 공통 startup/descriptor | PASS | `Doroti.Hosting`의 typed startup/builder/descriptor/factory와 host-neutral contract fixture 통과 |
+| B2 MAUI host 소유권 | PARTIAL | `Platforms/Maui` 제거, Windows/MacCatalyst host shell 공통화, Windows GPU live PASS. Mac Catalyst native publish/live는 `notVerified` |
+| B3 generated bootstrap/Web | PASS (명시 범위) | 세 target build, 외부 template/package publish, WebGL2 canvas presentation과 기본 pointer `fab=0 → 1` PASS |
+| B4 네 번째 host 확장점 | PARTIAL | synthetic fourth-host graph PASS. 실제 `Doroti.Host.Qt`, Linux build/live/physical은 `notVerified` |
+
+공통 앱 소스는 이제 target-neutral `Program : IDorotiApplicationStartup` 하나를 사용한다. MAUI/Web 불변 초기화는 host/target package가 소유하고, SDK가 `obj/<target>/Doroti.Generated/`에 bootstrap과 plugin registration을 생성한다. legacy `Platforms/Maui`, `PlatformBootstrap.cs`, reflection startup lookup은 제거했다.
+
+도구 체인은 .NET SDK `10.0.400`, .NET/ASP.NET/WindowsDesktop 및 browser-wasm runtime `10.0.11`로 정렬했다. Web runtime patch가 바뀌면 SDK가 버전 stamp를 비교해 stale WebCIL publish cache만 무효화하므로 이전 `System.Private.CoreLib`을 재사용하지 않는다.
+
+검증 진입점:
+
+```powershell
+pwsh -NoProfile -File ./Doroti/eng/validate-app-targets.ps1 -Shard Graph
+pwsh -NoProfile -File ./Doroti/eng/validate-app-targets.ps1 -Shard Build
+pwsh -NoProfile -File ./Doroti/eng/validate-app-targets.ps1 -Shard Live
+pwsh -NoProfile -File ./Doroti/eng/validate-app-targets.ps1 -Shard Evidence
+pwsh -NoProfile -File ./Doroti/eng/validate-web-product.ps1 -Shard Graph
+pwsh -NoProfile -File ./Doroti/eng/validate-web-product.ps1 -Shard Template
+pwsh -NoProfile -File ./Doroti/eng/validate-web-product.ps1 -Shard Compile
+pwsh -NoProfile -File ./Doroti/eng/validate-web-product.ps1 -Shard Publish
+```
+
+현재 증거는 `Doroti/migration/maui/app-targets-evidence.json`, `Doroti/migration/web/web-product-evidence.json`, `Doroti/migration/web/web-browser-live-manual.json`에 기록한다. Web 수동 smoke는 canvas presentation과 단일 FAB pointer/state 전이만 증명하며 keyboard/IME/clipboard/resize/interactive ARIA, physical, cross-target 결과로 확대하지 않는다.
+
 ## 결론
 
 Flutter처럼 **공통 애플리케이션 진입점과 네이티브 플랫폼 셸을 분리**한다. 다만 Doroti의 예약 초기화 코드를 사용자가 보는 `Platforms/Doroti` 또는 `Platforms/Maui` 소스 폴더에 두지는 않는다.
@@ -13,7 +41,7 @@ Flutter처럼 **공통 애플리케이션 진입점과 네이티브 플랫폼 �
 
 즉 Flutter와 대응시키면 `Program.cs`가 `lib/main.dart`, `Platforms/Windows`·`Platforms/MacCatalyst`·향후 `Platforms/Linux`가 runner shell, SDK가 생성한 `obj/**/Doroti.Generated`가 tool-managed bootstrap 역할을 맡는다.
 
-## 현행 구조에서 확인된 문제
+## 개편 전 구조에서 확인된 문제
 
 - 루트 `Program.cs`는 Web과 MacCatalyst만 조건부 호출하며 Windows의 실질적인 시작 경로가 아니다. 공통 진입점처럼 보이지만 대상별 의미가 다르다.
 - Windows와 MacCatalyst가 각각 `MauiApp.CreateBuilder`, toolkit, Skia, `Application`, `Window`, `DorotiMauiSurface` 연결을 다시 구현한다.
@@ -36,7 +64,7 @@ Flutter처럼 **공통 애플리케이션 진입점과 네이티브 플랫폼 �
 
 플랫폼 파일을 사용자가 수정할 수 있다는 것과 Doroti 초기화 순서를 사용자가 소유한다는 것은 분리한다. 사용자는 안정된 hook을 통해 builder와 native lifecycle을 확장할 수 있지만, 필수 등록을 삭제하거나 순서를 바꾸지는 못하게 한다.
 
-## 제안하는 공통 계약
+## 구현한 공통 계약
 
 ### 1. `Program.cs`는 대상 중립 startup 타입으로 만든다
 
@@ -181,9 +209,11 @@ base class가 `CreateMauiApp`을 소유하고 필수 초기화를 수행한다. 
   - Web plugin metadata 누락/중복 및 생성 registration 불일치
 - 생성 파일 목록과 선택된 startup/host/target을 `WriteDorotiTargetGraph`에 기록해 구조 검증이 가능한 상태로 만든다.
 
-## 구현 순서
+## 구현 결과와 단계
 
 ### B1. 공통 startup/descriptor 계약
+
+상태: **PASS**. Target-neutral 계약과 descriptor fixture를 구현하고 MAUI/Web consumer를 같은 descriptor로 전환했다.
 
 - `Doroti.Hosting`에 startup, builder, descriptor, launch context를 추가한다.
 - MAUI와 Web이 descriptor를 소비하도록 application boundary와 lifecycle 조립을 공통화한다.
@@ -197,6 +227,8 @@ base class가 `CreateMauiApp`을 소유하고 필수 초기화를 수행한다. 
 
 ### B2. MAUI host 소유권 이동
 
+상태: **PARTIAL**. 구조 전환과 Windows build/publish/live는 PASS이고, Mac Catalyst native live는 `notVerified`다.
+
 - 공통 MAUI application/page/builder를 `Doroti.Host.Maui`로 이동한다.
 - Windows/MacCatalyst base entry와 사용자 hook을 추가한다.
 - 템플릿과 `DorotiDemoApp`의 `Platforms/Maui`를 삭제하고 각 platform shell을 축소한다.
@@ -208,6 +240,8 @@ base class가 `CreateMauiApp`을 소유하고 필수 초기화를 수행한다. 
 - MacCatalyst는 Windows cross-build와 실제 Apple Silicon live 결과를 분리 기록한다.
 
 ### B3. SDK generated bootstrap과 Web 통합
+
+상태: **PASS (검증 범위 한정)**. Build/package/publish와 WebGL2 canvas 및 기본 FAB pointer smoke를 통과했다.
 
 - `Program` startup을 대상별 native entry에 강하게 연결하는 생성 코드를 추가한다.
 - Web `PlatformBootstrap.cs`를 제거하고 `DorotiWebRunner`로 이전한다.
@@ -221,6 +255,8 @@ base class가 `CreateMauiApp`을 소유하고 필수 초기화를 수행한다. 
 - WebGL2 presentation과 pointer smoke를 다시 확인하며 native live나 physical acceptance로 확대 해석하지 않는다.
 
 ### B4. Linux/Qt 확장점 증명
+
+상태: **PARTIAL**. Synthetic fourth-host descriptor는 PASS이나 실제 Qt/Linux 구현과 live gate는 후속 범위다.
 
 - 실제 Qt 구현 전 synthetic target descriptor로 SDK가 네 번째 host kind를 수용하는지 검증한다.
 - 이후 `Doroti.Host.Qt`와 Linux target package를 연결하고 platform hook을 추가한다.

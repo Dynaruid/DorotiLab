@@ -1,7 +1,7 @@
 {
-  "schemaVersion": "doroti.app-targets-evidence/v1",
-  "scope": "single-project-targets",
-  "capturedAtUtc": "2026-08-16T02:34:51.5045886+00:00",
+  "schemaVersion": "doroti.app-targets-evidence/v2",
+  "scope": "generated-application-bootstrap",
+  "capturedAtUtc": "2026-08-17T03:57:07.0075927+00:00",
   "status": "partial",
   "project": "DorotiDemoApp/DorotiDemoApp.csproj",
   "graph": {
@@ -9,6 +9,14 @@
     "projectCount": 1,
     "applicationSource": "DorotiDemoApp/src/App.cs",
     "bootstrapSource": "DorotiDemoApp/Program.cs",
+    "generatedBootstrap": "obj/<target>/Doroti.Generated/DorotiBootstrap.g.cs",
+    "generatedPluginRegistration": "obj/<target>/Doroti.Generated/DorotiPluginRegistration.g.cs",
+    "startupType": "DorotiDemoApp.Program",
+    "targetDescriptorCount": 1,
+    "syntheticFourthHost": "pass-graph-only",
+    "reflectionStartupLookupCount": 0,
+    "legacyPlatformBootstrapCount": 0,
+    "legacyPlatformsMauiCount": 0,
     "windowsApplicationDefinitionCount": 1,
     "otherXamlCount": 0,
     "selectedPlatformLeakage": 0
@@ -33,7 +41,9 @@
       "targetFramework": "net10.0-maccatalyst",
       "rid": "maccatalyst-arm64",
       "host": "windows-cross-build-only"
-    }
+    },
+    "startupNegative": "pass-failed-closed-CS0311",
+    "requiredRegistrationNegative": "pass-failed-closed-CS0239"
   },
   "windowsLive": {
     "applicationSource": "src/App.cs",
@@ -45,24 +55,25 @@
     "surface": {
       "pixelWidth": 1894,
       "pixelHeight": 1014,
-      "devicePixelRatio": 1,
-      "metricsGeneration": 4,
+      "devicePixelRatio": 2,
+      "metricsGeneration": 3,
       "contextGeneration": 1,
       "surfaceGeneration": 2,
       "nativeViewType": "SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKSwapChainPanel",
       "graphicsBackend": "win-x64/winui3/SKSwapChainPanel/ANGLE-DirectX-Skia"
     },
     "frame": {
-      "submitted": 3,
-      "presented": 3,
+      "submitted": 2,
+      "presented": 2,
+      "replayed": 3,
       "failed": 0,
       "contextGeneration": 1,
       "surfaceGeneration": 2,
       "pendingScene": false,
       "backend": "skiasharp-maui-skglview-gpu"
     },
-    "invalidationsRequested": 8,
-    "invalidationsCoalesced": 4,
+    "invalidationsRequested": 6,
+    "invalidationsCoalesced": 3,
     "softwareFallbackFrames": 0
   },
   "boundaries": {

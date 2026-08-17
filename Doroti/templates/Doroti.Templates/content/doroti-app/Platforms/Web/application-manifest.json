@@ -1,8 +1,22 @@
 {
-  "schema": "doroti-application/v2",
+  "schemaVersion": "doroti.application-capabilities/v1",
   "applicationId": "dev.doroti.dorotiapp",
   "targetRid": "browser-wasm",
-  "backend": "browser/document-canvas/WebGL2-Skia"
+  "resources": [],
+  "plugins": [
+    {
+      "id": "echo",
+      "channel": "doroti.example/echo",
+      "codec": "standard-message",
+      "capabilityId": "platform-messaging",
+      "nativePackage": {
+        "rid": "browser-wasm",
+        "packageId": "doroti.browser-js-plugin",
+        "version": "1",
+        "abiVersion": "doroti.browser-js-plugin/v1",
+        "handlerType": "generated-js-registration"
+      }
+    }
+  ]
 }
-
 

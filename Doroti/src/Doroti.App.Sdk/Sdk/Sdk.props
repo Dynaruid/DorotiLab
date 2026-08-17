@@ -26,6 +26,7 @@
     <UseMaui Condition="'$(DorotiTarget)' == 'MacCatalyst'">true</UseMaui>
     <TargetFramework Condition="'$(DorotiTarget)' == 'Web'">net10.0</TargetFramework>
     <RuntimeIdentifier Condition="'$(DorotiTarget)' == 'Web' and '$(RuntimeIdentifier)' == ''">browser-wasm</RuntimeIdentifier>
+    <RuntimeFrameworkVersion Condition="'$(DorotiTarget)' == 'Web' and '$(RuntimeFrameworkVersion)' == ''">10.0.11</RuntimeFrameworkVersion>
     <OutputType>Exe</OutputType>
     <LangVersion>14.0</LangVersion>
     <Nullable>enable</Nullable>

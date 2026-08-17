@@ -26,7 +26,7 @@ Each logical input is analyzed once. Per-library analysis, lowering, and emissio
 
 ## Requirements
 
-- .NET SDK 10.0.300 or a compatible latest patch
+- .NET SDK 10.0.400 or a compatible latest patch
 - Dart SDK compatible with the compiler-owned analyzer package
 - The repository's pinned `reference/flutter-master` checkout for Flutter selections
 - A complete DorotiLab checkout; the tool references shared runtime and tooling projects

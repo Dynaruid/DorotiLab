@@ -544,6 +544,7 @@
       "doroti.host.maui": {
         "type": "Project",
         "dependencies": {
+          "CommunityToolkit.Maui.Markup": "[8.0.0, )",
           "Doroti.Hosting": "[0.2.0-beta, )",
           "Doroti.Ui": "[0.2.0-beta, )",
           "Microsoft.Maui.Controls": "[10.0.90, )",

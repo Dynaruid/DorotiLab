@@ -1,7 +1,10 @@
-#if DOROTI_BROWSER
-[assembly: System.Runtime.Versioning.SupportedOSPlatform("browser")]
+using Doroti.Hosting;
 
-await DorotiDemoApp.Platforms.Web.PlatformBootstrap.RunAsync(args);
-#elif MACCATALYST
-DorotiDemoApp.Platforms.MacCatalyst.PlatformBootstrap.Run(args);
-#endif
+namespace DorotiDemoApp;
+
+public sealed class Program : IDorotiApplicationStartup
+{
+    public void Configure(DorotiApplicationBuilder builder) => builder
+        .UseEntrypoint(global::App.Definition)
+        .UseView(global::App.ViewConfiguration);
+}

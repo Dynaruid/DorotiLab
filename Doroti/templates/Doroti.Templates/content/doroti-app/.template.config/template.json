@@ -5,7 +5,7 @@
   "identity": "Doroti.Templates.CSharpApp",
   "name": "Doroti single-project C# application",
   "shortName": "doroti-app",
-  "sourceName": "DorotiApp",
+  "sourceName": "DorotiTemplateApp",
   "preferNameDirectory": true,
   "tags": {
     "language": "C#",

@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Doroti.Host.Maui\Doroti.Host.Maui.csproj" />
+  </ItemGroup>
+</Project>

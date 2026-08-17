@@ -23,11 +23,12 @@ See [ADR-019](Doroti/docs/adr/ADR-019-product-framework-source-ownership.md) and
 
 - Shared Material/Cupertino widget, element, layout, paint, semantics, and state infrastructure
 - A single C# application project targeting MAUI Windows x64, MAUI Mac Catalyst arm64, or Blazor WebAssembly
+- One public target-neutral `Program` startup, host-owned native initialization, and SDK-generated `obj/<target>/Doroti.Generated` bootstrap code
 - Strict Skia GPU rendering through WinUI 3 `MauiSKSwapChainPanel` on Windows and WebGL2 on the Web
 - Windows Release build/publish and actual GPU-frame evidence
-- Web external template/package compile and publish evidence, plus a previously recorded manual Chromium canvas/basic-pointer smoke
+- Web external template/package compile/publish evidence and a current Chromium WebGL2 canvas/basic-FAB-pointer smoke on .NET 10.0.11
 
-Native hover/wheel/keyboard/IME/UIA, Mac Catalyst native execution, automated Web interaction, physical acceptance, and cross-target parity remain independent `notVerified` gates. Historical Win32/WGL and AppKit/NSOpenGL evidence is predecessor evidence only.
+Native hover/wheel/keyboard/IME/UIA, Mac Catalyst native execution, Web keyboard/IME/clipboard/resize/interactive ARIA, physical acceptance, and cross-target parity remain independent `notVerified` gates. Historical Win32/WGL and AppKit/NSOpenGL evidence is predecessor evidence only.
 
 ## Architecture
 
@@ -46,7 +47,7 @@ Flutter source is consulted when fidelity work needs a behavioral reference. Com
 
 ## Try it
 
-Requires .NET 10 and PowerShell 7.
+Requires .NET SDK 10.0.400, matching 10.0.11 runtimes/workloads, and PowerShell 7.
 
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 build

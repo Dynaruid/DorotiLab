@@ -10,6 +10,10 @@ $env:MSBUILDDISABLENODEREUSE = '1'
 $dorotiRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $repoRoot = (Resolve-Path (Join-Path $dorotiRoot '..')).Path
 $project = Join-Path $repoRoot 'DorotiDemoApp/DorotiDemoApp.csproj'
+$templateRoot = Join-Path $dorotiRoot 'templates/Doroti.Templates/content/doroti-app'
+$descriptorContract = Join-Path $dorotiRoot 'validation/app-bootstrap/descriptor-contract/DescriptorContract.csproj'
+$syntheticProject = Join-Path $dorotiRoot 'validation/app-bootstrap/synthetic-fourth-host/SyntheticFourthHost.csproj'
+$invalidRegistrationProject = Join-Path $dorotiRoot 'validation/app-bootstrap/invalid-required-registration/InvalidRequiredRegistration.csproj'
 $tmpRoot = Join-Path $dorotiRoot '.doroti/tmp/app-targets'
 $publishRoot = Join-Path $tmpRoot 'windows-publish'
 $rawLivePath = Join-Path $tmpRoot 'windows-live.json'
@@ -35,10 +39,28 @@ function Write-Json([string] $Path, [object] $Value) {
 }
 
 function Invoke-GraphGate {
+    $program = Get-Content -LiteralPath (Join-Path (Split-Path $project -Parent) 'Program.cs') -Raw
+    Assert-True ($program -match 'public sealed class Program : IDorotiApplicationStartup') 'public target-neutral startup type'
+    Assert-True ($program -notmatch '#if|DOROTI_BROWSER|MACCATALYST|Maui|Blazor|Qt') 'Program target neutrality'
+    foreach ($root in @((Split-Path $project -Parent), $templateRoot)) {
+        Assert-True (-not (Test-Path -LiteralPath (Join-Path $root 'Platforms/Maui'))) "$root legacy Platforms/Maui absence"
+        Assert-True (@(Get-ChildItem -LiteralPath (Join-Path $root 'Platforms') -Filter 'PlatformBootstrap.cs' -File -Recurse).Count -eq 0) "$root legacy PlatformBootstrap absence"
+    }
+    $sourceRoots = @(
+        (Join-Path $dorotiRoot 'src/Doroti.Hosting'),
+        (Join-Path $dorotiRoot 'src/Doroti.Host.Maui'),
+        (Join-Path $dorotiRoot 'src/Doroti.Host.Web'),
+        (Split-Path $project -Parent),
+        $templateRoot
+    )
+    $reflectionBootstrap = @($sourceRoots | Get-ChildItem -File -Recurse -Include *.cs | Select-String -Pattern 'GetType\("(?:DorotiApp\.)?App"|Type\.GetType\(')
+    Assert-True ($reflectionBootstrap.Count -eq 0) 'reflection/string startup lookup absence'
+    Invoke-Checked { dotnet run --project $descriptorContract -c Release --nologo } 'application descriptor contract failed'
+
     foreach ($target in @(
-        [ordered]@{ Name='Windows'; Rid='win-x64'; Graph='windows' },
-        [ordered]@{ Name='MacCatalyst'; Rid='maccatalyst-arm64'; Graph='maccatalyst' },
-        [ordered]@{ Name='Web'; Rid='browser-wasm'; Graph='Web' }
+        [ordered]@{ Name='Windows'; Rid='win-x64'; Graph='windows'; Host='Maui'; Entry='WinUI-Xaml' },
+        [ordered]@{ Name='MacCatalyst'; Rid='maccatalyst-arm64'; Graph='maccatalyst'; Host='Maui'; Entry='UIKit-Main' },
+        [ordered]@{ Name='Web'; Rid='browser-wasm'; Graph='Web'; Host='BlazorWebAssembly'; Entry='Managed-Main' }
     )) {
         Invoke-Checked {
             dotnet build $project -t:WriteDorotiTargetGraph -p:DorotiTarget=$($target.Name) -p:RuntimeIdentifier=$($target.Rid) --nologo
@@ -48,6 +70,10 @@ function Invoke-GraphGate {
         $graph = Get-Content -LiteralPath $graphPath
         Assert-True (@($graph | Where-Object { $_ -ceq 'compile=Program.cs' }).Count -eq 1) "$($target.Name) root bootstrap"
         Assert-True (@($graph | Where-Object { $_ -ceq 'compile=src\App.cs' }).Count -eq 1) "$($target.Name) shared app source"
+        Assert-True (@($graph | Where-Object { $_ -ceq "startup=DorotiDemoApp.Program" }).Count -eq 1) "$($target.Name) startup identity"
+        Assert-True (@($graph | Where-Object { $_ -like "descriptor=$($target.Name)|$($target.Host)|$($target.Entry)|*" }).Count -eq 1) "$($target.Name) descriptor identity"
+        Assert-True (@($graph | Where-Object { $_ -like 'compile=*Doroti.Generated\DorotiBootstrap.g.cs' }).Count -eq 1) "$($target.Name) generated bootstrap count"
+        Assert-True (@($graph | Where-Object { $_ -like 'compile=*Doroti.Generated\DorotiPluginRegistration.g.cs' }).Count -eq 1) "$($target.Name) generated plugin registration count"
         if ($target.Name -eq 'Windows') {
             Assert-True (@($graph | Where-Object { $_ -ceq 'applicationDefinition=Platforms\Windows\App.xaml' }).Count -eq 1) 'Windows ApplicationDefinition count'
             Assert-True (@($graph | Where-Object { $_ -like 'compile=Platforms\Web\*' }).Count -eq 0) 'Windows Web source exclusion'
@@ -60,6 +86,10 @@ function Invoke-GraphGate {
         }
         Assert-True (@($graph | Where-Object { $_ -like 'mauiXaml=?*' }).Count -eq 0) "$($target.Name) MauiXaml count"
     }
+
+    Invoke-Checked { dotnet build $syntheticProject -t:WriteDorotiTargetGraph --nologo } 'synthetic fourth host descriptor failed'
+    $syntheticGraph = Get-Content -LiteralPath (Join-Path (Split-Path $syntheticProject -Parent) 'obj/linux/doroti-target-graph.txt')
+    Assert-True (@($syntheticGraph | Where-Object { $_ -ceq 'descriptor=Linux|SyntheticQt|Synthetic|Doroti.Target.Linux.Qt.linux-x64' }).Count -eq 1) 'synthetic fourth host descriptor identity'
 }
 
 function Invoke-BuildGate {
@@ -67,6 +97,10 @@ function Invoke-BuildGate {
     Invoke-Checked { dotnet build $project -c Release -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm --nologo } 'Web Release build failed'
     Invoke-Checked { dotnet build $project -c Release -p:DorotiTarget=MacCatalyst -p:RuntimeIdentifier=maccatalyst-arm64 --nologo } 'Mac Catalyst cross-build failed'
     Invoke-Checked { dotnet build $project -c Release -p:DorotiTarget=Windows -p:RuntimeIdentifier=win-x64 --nologo --no-restore } 'Windows repeat build failed'
+    $invalidStartup = @(& dotnet build $project -c Release -p:DorotiTarget=Windows -p:RuntimeIdentifier=win-x64 -p:DorotiApplicationType=System.String --nologo --no-restore 2>&1)
+    Assert-True ($LASTEXITCODE -ne 0 -and (($invalidStartup -join "`n") -match 'CS0311')) 'startup interface diagnostic fail-closed'
+    $invalidRegistration = @(& dotnet build $invalidRegistrationProject -c Release --nologo 2>&1)
+    Assert-True ($LASTEXITCODE -ne 0 -and (($invalidRegistration -join "`n") -match 'CS0239')) 'mandatory registration override fail-closed'
 }
 
 function Invoke-LiveGate {
@@ -97,8 +131,8 @@ function Write-Evidence {
     Assert-True (Test-Path -LiteralPath $rawLivePath -PathType Leaf) 'Windows live input for evidence'
     $live = Get-Content -LiteralPath $rawLivePath -Raw | ConvertFrom-Json
     Write-Json $evidencePath ([ordered]@{
-        schemaVersion = 'doroti.app-targets-evidence/v1'
-        scope = 'single-project-targets'
+        schemaVersion = 'doroti.app-targets-evidence/v2'
+        scope = 'generated-application-bootstrap'
         capturedAtUtc = [DateTimeOffset]::UtcNow
         status = 'partial'
         project = 'DorotiDemoApp/DorotiDemoApp.csproj'
@@ -107,6 +141,14 @@ function Write-Evidence {
             projectCount = 1
             applicationSource = 'DorotiDemoApp/src/App.cs'
             bootstrapSource = 'DorotiDemoApp/Program.cs'
+            generatedBootstrap = 'obj/<target>/Doroti.Generated/DorotiBootstrap.g.cs'
+            generatedPluginRegistration = 'obj/<target>/Doroti.Generated/DorotiPluginRegistration.g.cs'
+            startupType = 'DorotiDemoApp.Program'
+            targetDescriptorCount = 1
+            syntheticFourthHost = 'pass-graph-only'
+            reflectionStartupLookupCount = 0
+            legacyPlatformBootstrapCount = 0
+            legacyPlatformsMauiCount = 0
             windowsApplicationDefinitionCount = 1
             otherXamlCount = 0
             selectedPlatformLeakage = 0
@@ -117,6 +159,8 @@ function Write-Evidence {
             windows = [ordered]@{ targetFramework='net10.0-windows10.0.19041.0';rid='win-x64' }
             web = [ordered]@{ targetFramework='net10.0';rid='browser-wasm' }
             macCatalyst = [ordered]@{ targetFramework='net10.0-maccatalyst';rid='maccatalyst-arm64';host='windows-cross-build-only' }
+            startupNegative = 'pass-failed-closed-CS0311'
+            requiredRegistrationNegative = 'pass-failed-closed-CS0239'
         }
         windowsLive = $live
         boundaries = [ordered]@{

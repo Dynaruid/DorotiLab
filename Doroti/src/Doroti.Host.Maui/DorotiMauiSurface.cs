@@ -9,20 +9,18 @@ namespace Doroti.Host.Maui;
 public sealed class DorotiMauiSurface : SKGLView, IDisposable
 {
     private readonly ulong _viewId;
-    private readonly Func<IDorotiViewEntrypoint> _entrypointFactory;
-    private readonly DorotiViewConfiguration _configuration;
+    private readonly DorotiApplicationDescriptor _application;
+    private DorotiApplicationBoundary? _boundary;
     private DorotiHostSession? _session;
     private MauiFrameworkHost? _host;
     private bool _attached;
     private bool _disposed;
 
     public DorotiMauiSurface(
-        Func<IDorotiViewEntrypoint> entrypointFactory,
-        DorotiViewConfiguration configuration,
+        DorotiApplicationDescriptor application,
         ulong viewId = 1)
     {
-        _entrypointFactory = entrypointFactory ?? throw new ArgumentNullException(nameof(entrypointFactory));
-        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        _application = application ?? throw new ArgumentNullException(nameof(application));
         _viewId = viewId;
         HasRenderLoop = false;
         EnableTouchEvents = true;
@@ -33,17 +31,20 @@ public sealed class DorotiMauiSurface : SKGLView, IDisposable
     public MauiHostDiagnostics? Diagnostics => _host?.CaptureDiagnostics(
         _viewId, "src/App.cs", OperatingSystem.IsWindows()
             ? "Platforms/Windows/App.xaml.cs"
-            : "Program.cs -> Platforms/MacCatalyst/PlatformBootstrap.cs");
+            : "obj/maccatalyst/Doroti.Generated/DorotiBootstrap.g.cs -> Platforms/MacCatalyst/AppDelegate.cs");
 
     private void HandleHandlerChanged(object? sender, EventArgs args)
     {
         _ = sender;
         _ = args;
         if (Handler is null || _attached || _disposed) return;
-        _session = new(_entrypointFactory());
+        _session = new(_application.EntrypointFactory());
         _host = new();
         _session.Start(deferFrameworkBootstrap: true);
-        _host.CreateView(_session, _viewId, this, _configuration);
+        _boundary = DorotiApplicationBoundary.Load(
+            _application.ApplicationAssembly,
+            _application.LaunchContext.RuntimeIdentifier);
+        _host.CreateView(_session, _viewId, this, _application.ViewConfiguration, application: _boundary);
         _attached = true;
     }
 
@@ -88,7 +89,9 @@ public sealed class DorotiMauiSurface : SKGLView, IDisposable
         HandlerChanged -= HandleHandlerChanged;
         _host?.Dispose();
         _session?.Dispose();
+        _boundary?.Dispose();
         _host = null;
         _session = null;
+        _boundary = null;
     }
 }

@@ -15,19 +15,19 @@ Dart-to-C# compiler와 고정 Flutter checkout은 선택적인 import·동작 re
 ## 현재 제품 경계
 
 - `Doroti.Framework.*`: 제품이 소유하는 Foundation, Scheduler, Services, Physics, Animation, Gestures, Painting, Semantics, Rendering, Widgets, Cupertino, Material library
-- `Doroti.Runtime`, `Doroti.Ui`, `Doroti.Hosting`: Dart/Flutter 호환 runtime 의미와 application bootstrap
+- `Doroti.Runtime`, `Doroti.Ui`, `Doroti.Hosting`: runtime 의미와 target-neutral startup/builder/descriptor 계약
 - `Doroti.Engine`, `Doroti.Rendering`, `Doroti.Graphics`: frame scheduling, display output, graphics 계약
-- `Doroti.App.Sdk`: Windows, Mac Catalyst, Web의 single-project target 선택
-- `Doroti.Host.Maui`: 외부 소유 `SKGLView` GPU surface 통합
-- `Doroti.Host.Web`: Blazor/WebGL2 canvas, input, accessibility, resource bridge
+- `Doroti.App.Sdk`: Windows, Mac Catalyst, Web의 single-project target 선택과 generated native/Web bootstrap/plugin registration
+- `Doroti.Host.Maui`: host 소유 MAUI application/page lifecycle과 `SKGLView` GPU surface 통합
+- `Doroti.Host.Web`: host 소유 Blazor composition, WebGL2 canvas, input, accessibility, resource bridge
 
-Windows Release build/publish와 실제 `MauiSKSwapChainPanel` GPU frame은 확인했습니다. Web package-only compile/publish도 확인했습니다. Native hover/wheel/keyboard/IME/UIA, Mac Catalyst native 실행, browser interaction 자동화, physical acceptance와 cross-target parity는 각각 별도의 `notVerified` gate입니다.
+Windows Release build/publish와 실제 `MauiSKSwapChainPanel` GPU frame은 확인했습니다. Web package-only compile/publish와 Chromium canvas/기본 FAB pointer smoke도 runtime 10.0.11에서 확인했습니다. Native hover/wheel/keyboard/IME/UIA, Mac Catalyst native 실행, Web keyboard/IME/clipboard/resize/interactive ARIA, physical acceptance와 cross-target parity는 각각 별도의 `notVerified` gate입니다.
 
 ## 요구 사항
 
-- [global.json](global.json)에 고정한 .NET SDK 10.0.300 또는 호환 patch
+- [global.json](global.json)에 고정한 .NET SDK 10.0.400 또는 호환 patch
 - PowerShell 7
-- 선택 target에 맞는 MAUI/WebAssembly workload
+- 10.0.11의 .NET/ASP.NET/WindowsDesktop 및 browser-wasm runtime pack과 선택 target에 맞는 MAUI/WebAssembly workload
 
 `reference/flutter-master`와 `reference/Avalonia-main` checkout은 명시적인 reference 비교나 migration 작업에만 필요합니다. 해당 작업에서 Flutter가 필요하면 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 준비합니다.
 

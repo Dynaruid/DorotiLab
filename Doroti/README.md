@@ -15,19 +15,19 @@ See [ADR-019](docs/adr/ADR-019-product-framework-source-ownership.md) for the ow
 ## Current product boundary
 
 - `Doroti.Framework.*`: product-owned Foundation, Scheduler, Services, Physics, Animation, Gestures, Painting, Semantics, Rendering, Widgets, Cupertino, and Material libraries
-- `Doroti.Runtime`, `Doroti.Ui`, `Doroti.Hosting`: Dart/Flutter-compatible runtime semantics and application bootstrap
+- `Doroti.Runtime`, `Doroti.Ui`, `Doroti.Hosting`: runtime semantics plus the target-neutral startup/builder/descriptor contract
 - `Doroti.Engine`, `Doroti.Rendering`, `Doroti.Graphics`: frame scheduling, display output, and graphics contracts
-- `Doroti.App.Sdk`: one-project target selection for Windows, Mac Catalyst, and Web
-- `Doroti.Host.Maui`: externally owned `SKGLView` GPU-surface integration
-- `Doroti.Host.Web`: Blazor/WebGL2 canvas, input, accessibility, and resource bridge
+- `Doroti.App.Sdk`: one-project target selection plus generated native/Web bootstrap and plugin registration
+- `Doroti.Host.Maui`: host-owned MAUI application/page lifecycle and `SKGLView` GPU-surface integration
+- `Doroti.Host.Web`: host-owned Blazor composition, WebGL2 canvas, input, accessibility, and resource bridge
 
-Windows Release build/publish and an actual `MauiSKSwapChainPanel` GPU frame are verified. Web package-only compile/publish is verified. Native hover/wheel/keyboard/IME/UIA, Mac Catalyst native execution, automated browser interaction, physical acceptance, and cross-target parity remain separate `notVerified` gates.
+Windows Release build/publish and an actual `MauiSKSwapChainPanel` GPU frame are verified. Web package-only compile/publish and a Chromium canvas/basic-FAB-pointer smoke are verified on runtime 10.0.11. Native hover/wheel/keyboard/IME/UIA, Mac Catalyst native execution, Web keyboard/IME/clipboard/resize/interactive ARIA, physical acceptance, and cross-target parity remain separate `notVerified` gates.
 
 ## Requirements
 
-- .NET SDK 10.0.300 or a compatible patch, pinned by [global.json](global.json)
+- .NET SDK 10.0.400 or a compatible patch, pinned by [global.json](global.json)
 - PowerShell 7
-- The matching MAUI/WebAssembly workloads for the selected target
+- .NET/ASP.NET/WindowsDesktop and browser-wasm runtime packs at 10.0.11, with matching MAUI/WebAssembly workloads
 
 The `reference/flutter-master` and `reference/Avalonia-main` checkouts are needed only for explicit reference comparison or migration work. Prepare Flutter for such work with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`.
 

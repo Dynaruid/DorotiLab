@@ -1,5 +1,4 @@
-DorotiApp browser product asset
-
+DorotiTemplateApp browser product asset
 
 
 

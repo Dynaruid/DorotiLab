@@ -6,7 +6,7 @@
   "shards": {
     "toolchain": {
       "status": "pass",
-      "sdkVersion": "10.0.300",
+      "sdkVersion": "10.0.400",
       "targetFramework": "net10.0",
       "rid": "browser-wasm",
       "blazorWebAssemblySdk": "available",
@@ -134,7 +134,7 @@
       "userAuthoredRazorFiles": 0,
       "flutterOrDartCommands": 0,
       "sharedApplication": "src/App.cs",
-      "browserHost": "Platforms/Web/PlatformBootstrap.cs"
+      "browserHost": "obj/web/Doroti.Generated/DorotiBootstrap.g.cs"
     },
     "compile": {
       "status": "pass",
@@ -142,12 +142,14 @@
         "target": "browser-wasm",
         "configuration": "Release",
         "diagnostics": 0,
-        "applicationAssembly": "DorotiDemoApp.et49rge1o9.wasm",
-        "applicationSha256": "5e243e4e6ad17c0991596a641c8f68307da81fa3c1de2f7c44c53b186386fd9f"
+        "applicationAssembly": "DorotiDemoApp.jn2ycgokoc.wasm",
+        "applicationSha256": "ef8da4918be9dce239ce09d64ee0a6077e5c347a8c21e2b490c6db263e31668a"
       },
       "sharedSource": {
         "path": "DorotiDemoApp/src/App.cs",
-        "bootstrap": "DorotiDemoApp/Program.cs",
+        "startup": "DorotiDemoApp/Program.cs",
+        "generatedBootstrap": "obj/web/Doroti.Generated/DorotiBootstrap.g.cs",
+        "generatedPluginRegistration": "obj/web/Doroti.Generated/DorotiPluginRegistration.g.cs",
         "desktopCompile": "win-x64-pass",
         "browserCompile": "browser-wasm-pass",
         "compileItemIdentity": "same-files"
@@ -182,15 +184,20 @@
         "publish": "pass"
       },
       "staticFileCount": 720,
-      "aggregateSha256": "8501427ec25f82c9bef0c293b1f7479eb473da2b60c22fe2f3947dd022c0538b",
-      "repeatAggregateSha256": "8501427ec25f82c9bef0c293b1f7479eb473da2b60c22fe2f3947dd022c0538b",
+      "aggregateSha256": "746acd22c6f2944a0ddab2cac6a4e4c2845cae1169186f7d2f8e8b2a32565ec2",
+      "repeatAggregateSha256": "746acd22c6f2944a0ddab2cac6a4e4c2845cae1169186f7d2f8e8b2a32565ec2",
       "bootLoader": "_framework/blazor.webassembly.js",
+      "runtimeFrameworkVersion": "10.0.11",
+      "coreLibWebCil": {
+        "name": "System.Private.CoreLib.acqhqif0l6.wasm",
+        "sha256": "668eca2e7600e31cbc9b10f3b2c32b79765f4e51c18112a72d67d814c890bc2c"
+      },
       "nativeWasm": {
         "name": "dotnet.native.4wd3yfjoew.wasm",
         "sha256": "ec68f473c8bbca1bdda7f9fb1bd1a0c85c8768bd0672fffbbc2a6f53debee734"
       },
       "skiaWasmCount": 2,
-      "appAssembly": "DorotiDemoApp.et49rge1o9.wasm",
+      "appAssembly": "DorotiDemoApp.jn2ycgokoc.wasm",
       "resources": [
         "assets/doroti-mark.txt",
         "locales/en-US.json"
@@ -205,6 +212,38 @@
       "flutterOrDartCommands": 0,
       "artifactRoot": "artifacts/web/0.2.0-beta/wwwroot"
     }
+  },
+  "manualBrowserLive": {
+    "schemaVersion": "doroti.web-browser-live-manual/v1",
+    "capturedAtUtc": "2026-08-17T03:57:45.6970747Z",
+    "status": "pass-basic-pointer",
+    "browser": "Chromium extension session",
+    "source": "Doroti/artifacts/web/0.2.0-beta/wwwroot",
+    "artifactAggregateSha256": "746acd22c6f2944a0ddab2cac6a4e4c2845cae1169186f7d2f8e8b2a32565ec2",
+    "runtimeFrameworkVersion": "10.0.11",
+    "coreLibAsset": "System.Private.CoreLib.acqhqif0l6.wasm",
+    "presented": {
+      "status": "pass",
+      "canvasCssPixels": "1280x609",
+      "canvasBackingPixels": "2560x1218",
+      "visibleContent": "Material controls, lazy list, clipped backdrop panel and FAB"
+    },
+    "input": {
+      "status": "pass-basic-pointer",
+      "action": "click rendered FAB",
+      "stateBefore": "fab=0",
+      "stateAfter": "fab=1"
+    },
+    "consoleErrors": 0,
+    "notVerified": [
+      "keyboard",
+      "IME",
+      "clipboard",
+      "resize",
+      "interactive ARIA actions",
+      "physical acceptance",
+      "cross-target parity"
+    ]
   },
   "closure": {
     "avaloniaProductDependencies": 0,
@@ -226,9 +265,9 @@
       "blocker": "the release suite validates the native-linked interpreter product; product AOT and trimming require their own framework closure"
     },
     {
-      "mode": "chromium-live-product",
+      "mode": "browser-live-remaining",
       "owner": "browser-live",
-      "blocker": "GPU pixels, browser input, IME, clipboard and ARIA actions require the isolated Chromium live gate"
+      "blocker": "keyboard, IME, clipboard, resize and interactive ARIA actions remain outside the recorded canvas and basic-pointer smoke"
     }
   ]
 }

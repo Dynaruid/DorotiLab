@@ -1,0 +1,5 @@
+<Project>
+  <ItemGroup Condition="'$(DorotiTarget)' == 'Windows' and '@(DorotiTargetDescriptor)' == ''">
+    <DorotiTargetDescriptor Include="Windows" HostKind="Maui" NativeEntryKind="WinUI-Xaml" RuntimeIdentifier="win-x64" TargetFramework="net10.0-windows10.0.19041.0" TargetPackage="Doroti.Target.Windows.Maui.win-x64" />
+  </ItemGroup>
+</Project>
