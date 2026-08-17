@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Doroti.Validation.RuntimeAsyncContract</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Doroti.Runtime\Doroti.Runtime.csproj" />
+  </ItemGroup>
+</Project>

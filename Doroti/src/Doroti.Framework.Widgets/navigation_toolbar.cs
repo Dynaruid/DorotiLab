@@ -37,7 +37,14 @@ public class NavigationToolbar : StatelessWidget
     {
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
         global::Doroti.Ui.TextDirection textDirection__2159 = Directionality.of(context);
-        return ((Widget)(object?)new CustomMultiChildLayout(@delegate: new _ToolbarLayout__navigation_toolbar(centerMiddle: this.centerMiddle, middleSpacing: DartRuntimePrimitives.RequireValue(this.middleSpacing), textDirection: textDirection__2159), children: new List<Widget>()));
+        var children = new List<Widget>();
+        if (this.leading is not null)
+            children.Add(new LayoutId(id: _ToolbarSlot__navigation_toolbar.leading, child: this.leading));
+        if (this.middle is not null)
+            children.Add(new LayoutId(id: _ToolbarSlot__navigation_toolbar.middle, child: this.middle));
+        if (this.trailing is not null)
+            children.Add(new LayoutId(id: _ToolbarSlot__navigation_toolbar.trailing, child: this.trailing));
+        return ((Widget)(object?)new CustomMultiChildLayout(@delegate: new _ToolbarLayout__navigation_toolbar(centerMiddle: this.centerMiddle, middleSpacing: DartRuntimePrimitives.RequireValue(this.middleSpacing), textDirection: textDirection__2159), children: children));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -119,4 +126,3 @@ internal class _ToolbarLayout__navigation_toolbar : global::Doroti.Framework.Ren
     }
 
 }
-

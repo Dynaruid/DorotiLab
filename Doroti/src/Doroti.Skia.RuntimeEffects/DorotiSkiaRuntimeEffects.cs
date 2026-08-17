@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using Doroti.Ui;
 using SkiaSharp;
@@ -6,6 +7,12 @@ namespace Doroti.Skia.RuntimeEffects;
 
 public static partial class DorotiSkiaRuntimeEffects
 {
+    private static readonly ConcurrentDictionary<string, Lazy<CompiledRuntimeEffect>> EffectCache =
+        new(StringComparer.Ordinal);
+    private static long _compiledEffectCount;
+
+    internal static long CompiledEffectCountForValidation => Interlocked.Read(ref _compiledEffectCount);
+
     internal static SKShader CreateShader(
         FragmentShaderSnapshot snapshot,
         Func<Image, SKShader> imageShaderFactory)
@@ -13,11 +20,10 @@ public static partial class DorotiSkiaRuntimeEffects
         ArgumentNullException.ThrowIfNull(snapshot);
         ArgumentNullException.ThrowIfNull(imageShaderFactory);
         var state = snapshot.State;
-        using var effect = SKRuntimeEffect.CreateShader(state.Source, out var errors)
-            ?? throw new InvalidDataException(
-                $"Doroti fragment program '{state.DebugName}' failed SkSL compilation: {errors}");
+        var compiled = GetCompiledEffect(state);
+        var effect = compiled.Effect;
         using var uniforms = new SKRuntimeEffectUniforms(effect);
-        BindFloats(effect, uniforms, state);
+        BindFloats(compiled, uniforms, state);
         using var children = new SKRuntimeEffectChildren(effect);
         var childShaders = new List<SKShader>();
         try
@@ -54,22 +60,20 @@ public static partial class DorotiSkiaRuntimeEffects
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(imageShaderFactory);
         var state = snapshot.State;
-        using var effect = SKRuntimeEffect.CreateShader(state.Source, out var errors)
-            ?? throw new InvalidDataException(
-                $"Doroti fragment program '{state.DebugName}' failed SkSL compilation: {errors}");
+        var compiled = GetCompiledEffect(state);
+        var effect = compiled.Effect;
         if (effect.Children.Count == 0)
             throw new InvalidDataException(
                 $"Doroti image-filter program '{state.DebugName}' requires a shader sampler for the filtered child.");
 
-        var declarations = ReadUniformDeclarations(state.Source);
         if (effect.Uniforms.Count == 0 ||
-            !declarations.TryGetValue(effect.Uniforms[0], out var firstUniform) ||
+            !compiled.UniformDeclarations.TryGetValue(effect.Uniforms[0], out var firstUniform) ||
             firstUniform.FloatCount != 2 || firstUniform.ArrayLength != 1)
             throw new InvalidDataException(
                 $"Doroti image-filter program '{state.DebugName}' requires its first float uniform to be float2.");
 
         using var uniforms = new SKRuntimeEffectUniforms(effect);
-        BindFloats(effect, uniforms, state, input.Width, input.Height);
+        BindFloats(compiled, uniforms, state, input.Width, input.Height);
         using var children = new SKRuntimeEffectChildren(effect);
         var childShaders = new List<SKShader>();
         try
@@ -112,13 +116,14 @@ public static partial class DorotiSkiaRuntimeEffects
     }
 
     private static void BindFloats(
-        SKRuntimeEffect effect,
+        CompiledRuntimeEffect compiled,
         SKRuntimeEffectUniforms uniforms,
         FragmentShaderState state,
         int? inputWidth = null,
         int? inputHeight = null)
     {
-        var declarations = ReadUniformDeclarations(state.Source);
+        var effect = compiled.Effect;
+        var declarations = compiled.UniformDeclarations;
         var offset = 0;
         foreach (var name in effect.Uniforms)
         {
@@ -153,6 +158,33 @@ public static partial class DorotiSkiaRuntimeEffects
                 match.Groups["array"].Success ? int.Parse(match.Groups["array"].Value) : 1))
             .ToDictionary(item => item.Name, StringComparer.Ordinal);
 
+    private static CompiledRuntimeEffect GetCompiledEffect(FragmentShaderState state)
+    {
+        var lazy = EffectCache.GetOrAdd(state.Source, source =>
+            new Lazy<CompiledRuntimeEffect>(
+                () => CompileEffect(source, state.DebugName),
+                LazyThreadSafetyMode.ExecutionAndPublication));
+        try
+        {
+            return lazy.Value;
+        }
+        catch
+        {
+            ((ICollection<KeyValuePair<string, Lazy<CompiledRuntimeEffect>>>)EffectCache)
+                .Remove(new(state.Source, lazy));
+            throw;
+        }
+    }
+
+    private static CompiledRuntimeEffect CompileEffect(string source, string debugName)
+    {
+        var effect = SKRuntimeEffect.CreateShader(source, out var errors)
+            ?? throw new InvalidDataException(
+                $"Doroti fragment program '{debugName}' failed SkSL compilation: {errors}");
+        Interlocked.Increment(ref _compiledEffectCount);
+        return new(effect, ReadUniformDeclarations(source));
+    }
+
     private static int FloatCount(string type)
     {
         var normalized = type.Replace("half", "float", StringComparison.Ordinal);
@@ -170,6 +202,10 @@ public static partial class DorotiSkiaRuntimeEffects
     }
 
     private sealed record UniformDeclaration(string Name, int FloatCount, int ArrayLength);
+
+    private sealed record CompiledRuntimeEffect(
+        SKRuntimeEffect Effect,
+        IReadOnlyDictionary<string, UniformDeclaration> UniformDeclarations);
 
     [GeneratedRegex(@"(?m)^\s*(?:layout\s*\([^)]*\)\s*)?uniform\s+(?<type>(?:float|half)(?:[234](?:x[234])?)?)\s+(?<name>[A-Za-z_]\w*)\s*(?:\[\s*(?<array>\d+)\s*\])?\s*;")]
     private static partial Regex UniformDeclarationRegex();

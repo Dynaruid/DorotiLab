@@ -18,7 +18,10 @@ internal sealed class MauiSkiaCapabilities :
 {
     private readonly ulong _viewId;
     private readonly MauiHostAdapter _host;
+    private readonly SKColor _backgroundColor;
     private readonly object _gate = new();
+    private readonly object _paintGate = new();
+    private readonly Dictionary<TextRenderKey, TextRenderResources> _textRenderResources = [];
     private readonly Dictionary<int, SemanticsNodeUpdate> _semantics = [];
     private SceneFrame? _pendingFrame;
     private SceneFrame? _presentedFrame;
@@ -32,10 +35,14 @@ internal sealed class MauiSkiaCapabilities :
     private bool _semanticsEnabled;
     private bool _disposed;
 
-    internal MauiSkiaCapabilities(ulong viewId, MauiHostAdapter host)
+    internal MauiSkiaCapabilities(ulong viewId, MauiHostAdapter host, UiColor? backgroundColor)
     {
         _viewId = viewId;
         _host = host;
+        backgroundColor ??= new UiColor(0xfffffbfeL);
+        _backgroundColor = new SKColor(
+            checked((byte)backgroundColor.red), checked((byte)backgroundColor.green),
+            checked((byte)backgroundColor.blue), checked((byte)backgroundColor.alpha));
         _host.SemanticsAction += HandleSemanticsAction;
     }
 
@@ -89,6 +96,11 @@ internal sealed class MauiSkiaCapabilities :
     {
         ArgumentNullException.ThrowIfNull(surface);
         ObjectDisposedException.ThrowIf(_disposed, this);
+        lock (_paintGate) PaintCore(surface, pixelWidth, pixelHeight);
+    }
+
+    private void PaintCore(SKSurface surface, int pixelWidth, int pixelHeight)
+    {
         SceneFrame? frame;
         bool isNewFrame;
         lock (_gate)
@@ -98,13 +110,21 @@ internal sealed class MauiSkiaCapabilities :
             if (isNewFrame) _pendingFrame = null;
             else frame = _presentedFrame;
         }
-        // SKSwapChainPanel can rotate to a fresh back buffer for a native paint.
-        // Replay the last successful framework scene when no replacement is pending.
-        if (frame is null) return;
         var canvas = surface.Canvas;
-        canvas.Clear(SKColors.Transparent);
+        // The native GL surface exists before the first framework scene. Clear
+        // every fresh back buffer to the app-owned opaque color so neither that
+        // startup gap nor an uncovered scene region exposes Android's black
+        // TextureView/window background.
+        canvas.Clear(_backgroundColor);
+        if (frame is null)
+        {
+            canvas.Flush();
+            return;
+        }
         try
         {
+            // SKSwapChainPanel and TextureView can rotate to a fresh back buffer.
+            // Replay the last successful framework scene when no replacement is pending.
             // RenderView's root transform has already converted logical coordinates
             // into physical pixels. Applying the browser DPR here would scale twice.
             DrawScene(canvas, frame.Commands, pixelWidth, pixelHeight);
@@ -168,40 +188,28 @@ internal sealed class MauiSkiaCapabilities :
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (!_semanticsEnabled) return;
         foreach (var node in update.nodes) _semantics[node.id] = node;
-        var nodes = _semantics.Values.OrderBy(node => node.indexInParent ?? int.MaxValue).ThenBy(node => node.id)
-            .Select(node => new
-            {
-                node.id,
-                node.label,
-                node.value,
-                role = node.role.ToString(),
-                actions = (long)node.actions,
-                children = node.children,
-                flags = node.flags is null ? null : new
-                {
-                    @checked = node.flags.isChecked.ToString(),
-                    selected = node.flags.isSelected.toBoolOrNull(),
-                    enabled = node.flags.isEnabled.toBoolOrNull(),
-                    toggled = node.flags.isToggled.toBoolOrNull(),
-                    expanded = node.flags.isExpanded.toBoolOrNull(),
-                    required = node.flags.isRequired.toBoolOrNull(),
-                    focused = node.flags.isFocused.toBoolOrNull(),
-                    button = node.flags.isButton,
-                    textField = node.flags.isTextField,
-                    header = node.flags.isHeader,
-                    hidden = node.flags.isHidden,
-                    image = node.flags.isImage,
-                    liveRegion = node.flags.isLiveRegion,
-                    multiline = node.flags.isMultiline,
-                    readOnly = node.flags.isReadOnly,
-                    link = node.flags.isLink,
-                    slider = node.flags.isSlider,
-                },
-                node.textSelectionBase,
-                node.textSelectionExtent,
-                rect = new[] { node.rect.left, node.rect.top, node.rect.right, node.rect.bottom },
-            });
-        _host.UpdateSemantics(System.Text.Json.JsonSerializer.Serialize(new { generation = update.generation, nodes }));
+        PruneUnreachableSemantics(_semantics);
+        var nodes = _semantics.Values
+            .OrderBy(node => node.indexInParent ?? int.MaxValue)
+            .ThenBy(node => node.id)
+            .ToArray();
+        _host.UpdateSemantics(new SemanticsUpdate(update.generation, nodes));
+    }
+
+    private static void PruneUnreachableSemantics(Dictionary<int, SemanticsNodeUpdate> nodes)
+    {
+        const int rootNodeId = 0;
+        if (!nodes.ContainsKey(rootNodeId)) return;
+        var reachable = new HashSet<int>();
+        var pending = new Stack<int>();
+        pending.Push(rootNodeId);
+        while (pending.TryPop(out var nodeId))
+        {
+            if (!reachable.Add(nodeId) || !nodes.TryGetValue(nodeId, out var node)) continue;
+            foreach (var childId in node.children) pending.Push(childId);
+        }
+        foreach (var staleId in nodes.Keys.Where(id => !reachable.Contains(id)).ToArray())
+            nodes.Remove(staleId);
     }
 
     public void Dispose()
@@ -209,11 +217,16 @@ internal sealed class MauiSkiaCapabilities :
         if (_disposed) return;
         _disposed = true;
         _host.SemanticsAction -= HandleSemanticsAction;
-        lock (_gate)
+        lock (_paintGate)
         {
-            _pendingFrame = null;
-            _presentedFrame = null;
-            _invalidate = null;
+            lock (_gate)
+            {
+                _pendingFrame = null;
+                _presentedFrame = null;
+                _invalidate = null;
+            }
+            foreach (var resources in _textRenderResources.Values) resources.Dispose();
+            _textRenderResources.Clear();
         }
         _semantics.Clear();
     }
@@ -290,31 +303,31 @@ internal sealed class MauiSkiaCapabilities :
                         restoreCounts.Push(1); break;
                     case "imageFilter" when command.HostPayload is SceneImageFilterPayload image &&
                                                   image.Filter.Shader is FragmentShaderSnapshot fragment:
-                    {
-                        var matchingPop = FindMatchingPop(source, commandIndex, sourceEnd);
-                        var offset = new SKPoint((float)image.Offset.dx, (float)image.Offset.dy);
-                        var bounds = image.Bounds is { } explicitBounds
-                            ? ToRect(explicitBounds)
-                            : new SKRect(
-                                canvas.LocalClipBounds.Left - offset.X,
-                                canvas.LocalClipBounds.Top - offset.Y,
-                                canvas.LocalClipBounds.Right - offset.X,
-                                canvas.LocalClipBounds.Bottom - offset.Y);
-                        if (DorotiSkiaImageFilterRenderer.Draw(
-                            canvas,
-                            pixelWidth,
-                            pixelHeight,
-                            fragment,
-                            bounds,
-                            offset,
-                            ToSamplingOptions(image.Filter.FilterQuality),
-                            CreateImageShader,
-                            (inputCanvas, inputWidth, inputHeight) =>
-                                DrawScene(inputCanvas, source, commandIndex + 1, matchingPop, inputWidth, inputHeight)))
-                            Interlocked.Increment(ref _shaderImageFiltersRendered);
-                        commandIndex = matchingPop;
-                        break;
-                    }
+                        {
+                            var matchingPop = FindMatchingPop(source, commandIndex, sourceEnd);
+                            var offset = new SKPoint((float)image.Offset.dx, (float)image.Offset.dy);
+                            var bounds = image.Bounds is { } explicitBounds
+                                ? ToRect(explicitBounds)
+                                : new SKRect(
+                                    canvas.LocalClipBounds.Left - offset.X,
+                                    canvas.LocalClipBounds.Top - offset.Y,
+                                    canvas.LocalClipBounds.Right - offset.X,
+                                    canvas.LocalClipBounds.Bottom - offset.Y);
+                            if (DorotiSkiaImageFilterRenderer.Draw(
+                                canvas,
+                                pixelWidth,
+                                pixelHeight,
+                                fragment,
+                                bounds,
+                                offset,
+                                ToSamplingOptions(image.Filter.FilterQuality),
+                                CreateImageShader,
+                                (inputCanvas, inputWidth, inputHeight) =>
+                                    DrawScene(inputCanvas, source, commandIndex + 1, matchingPop, inputWidth, inputHeight)))
+                                Interlocked.Increment(ref _shaderImageFiltersRendered);
+                            commandIndex = matchingPop;
+                            break;
+                        }
                     case "imageFilter" when command.HostPayload is SceneImageFilterPayload image:
                         canvas.Save();
                         var imageRestoreCount = 1;
@@ -391,7 +404,7 @@ internal sealed class MauiSkiaCapabilities :
         "transform" or "opacity" or "colorFilter" or "shaderMask" or "imageFilter" or
         "backdropFilter";
 
-    private static void DrawPicture(SKCanvas canvas, Picture picture)
+    private void DrawPicture(SKCanvas canvas, Picture picture)
     {
         ObjectDisposedException.ThrowIf(picture.debugDisposed, picture);
         foreach (var command in picture.Commands)
@@ -430,10 +443,13 @@ internal sealed class MauiSkiaCapabilities :
                 case "drawArc" when command.HostPayload is CanvasArcPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawArc(ToRect(draw.Rect), (float)(draw.StartAngle * 180 / Math.PI), (float)(draw.SweepAngle * 180 / Math.PI), draw.UseCenter, paint); break;
                 case "drawColor" when command.HostPayload is CanvasColorPayload draw: canvas.DrawColor(ToColor(draw.Color), ToBlend(draw.BlendMode)); break;
                 case "drawParagraph" when command.HostPayload is CanvasParagraphPayload draw:
-                    using (var typeface = SKTypeface.FromFamilyName(draw.Paragraph.fontFamily))
-                    using (var font = new SKFont(typeface, (float)draw.Paragraph.fontSize))
-                    using (var paint = new SKPaint { Color = ToColor(draw.Paragraph.color), IsAntialias = true })
-                        canvas.DrawText(draw.Paragraph.text, (float)draw.Offset.dx, (float)(draw.Offset.dy + draw.Paragraph.alphabeticBaseline), SKTextAlign.Left, font, paint);
+                    var textResources = GetTextRenderResources(
+                        draw.Paragraph.fontFamily,
+                        (float)draw.Paragraph.fontSize,
+                        ToColor(draw.Paragraph.color));
+                    canvas.DrawText(draw.Paragraph.text, (float)draw.Offset.dx,
+                        (float)(draw.Offset.dy + draw.Paragraph.alphabeticBaseline),
+                        SKTextAlign.Left, textResources.Font, textResources.Paint);
                     break;
                 case "drawImageRect" or "drawImage" when command.HostPayload is CanvasImagePayload draw && draw.Image.HostHandle is MauiImageHandle handle:
                     using (var paint = ToPaint(draw.Paint))
@@ -445,6 +461,39 @@ internal sealed class MauiSkiaCapabilities :
                     break;
                 default: throw new NotSupportedException($"Doroti MAUI canvas operation '{command.Operation}' has no Skia GPU mapping.");
             }
+        }
+    }
+
+    private TextRenderResources GetTextRenderResources(string? fontFamily, float fontSize, SKColor color)
+    {
+        var key = new TextRenderKey(fontFamily ?? string.Empty, fontSize, color);
+        if (_textRenderResources.TryGetValue(key, out var resources)) return resources;
+        resources = new TextRenderResources(fontFamily, fontSize, color);
+        _textRenderResources.Add(key, resources);
+        return resources;
+    }
+
+    private readonly record struct TextRenderKey(string FontFamily, float FontSize, SKColor Color);
+
+    private sealed class TextRenderResources : IDisposable
+    {
+        private readonly SKTypeface _typeface;
+
+        internal TextRenderResources(string? fontFamily, float fontSize, SKColor color)
+        {
+            _typeface = SKTypeface.FromFamilyName(fontFamily);
+            Font = new SKFont(_typeface, fontSize);
+            Paint = new SKPaint { Color = color, IsAntialias = true };
+        }
+
+        internal SKFont Font { get; }
+        internal SKPaint Paint { get; }
+
+        public void Dispose()
+        {
+            Paint.Dispose();
+            Font.Dispose();
+            _typeface.Dispose();
         }
     }
 

@@ -47,9 +47,7 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
         FlutterError.onError = details =>
         {
             FirstFrameworkError ??= details;
-#if DOROTI_BROWSER
             Console.Error.WriteLine(details.exceptionThrown);
-#endif
         };
         _binding = new WidgetsFlutterBinding(dispatcher);
     }
@@ -198,6 +196,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
     private double _slider = 0.2;
     private int _fabCount;
     private bool _blurEnabled = true;
+    private readonly ScrollController _scrollController = new();
     private readonly FragmentShader _galleryShader =
         FragmentProgram.fromSource(GalleryShaderSource, "doroti-demo-gallery").fragmentShader();
     private readonly FragmentShader _galleryFilterShader =
@@ -217,6 +216,12 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
     {
         base.initState();
         widget.Mounted(this);
+    }
+
+    public override void dispose()
+    {
+        _scrollController.dispose();
+        base.dispose();
     }
 
     internal void ExerciseAll() => setState(() =>
@@ -399,24 +404,35 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                 foregroundColor: new UiColor(0xff21005dL),
                 iconTheme: new IconThemeData(color: new UiColor(0xff1d1b20L), size: 24),
                 actionsIconTheme: new IconThemeData(color: new UiColor(0xff49454fL), size: 24)),
-            body: new SingleChildScrollView(
-                primary: false,
-                child: new Container(
+            body: new Material.Scrollbar(
+                controller: _scrollController,
+                thumbVisibility: true,
+                child: new SingleChildScrollView(
+                    controller: _scrollController,
+                    primary: false,
+                    child: new Container(
                     padding: EdgeInsets.CreateAll(16),
                     child: new Column(
                         crossAxisAlignment: Doroti.Framework.Rendering.CrossAxisAlignment.start,
                         spacing: 10,
                         children:
                         [
-                            new ShaderMask(
-                                shaderCallback: bounds =>
-                                {
-                                    _galleryShader.setFloat(0, bounds.width);
-                                    _galleryShader.setFloat(1, bounds.height);
-                                    _galleryShader.setFloat(2, _slider * 6.2831853);
-                                    return _galleryShader;
-                                },
-                                child: new Text("Custom SkSL · shared GPU runtime effect · all targets")),
+                            new Stack(children:
+                            [
+                                new Text("Custom SkSL · shared GPU runtime effect · all targets",
+                                    style: new Doroti.Framework.Painting.TextStyle(color: new UiColor(0xff6750a4L))),
+                                new ExcludeSemantics(child: new ShaderMask(
+                                    blendMode: Doroti.Ui.BlendMode.srcIn,
+                                    shaderCallback: bounds =>
+                                    {
+                                        _galleryShader.setFloat(0, bounds.width);
+                                        _galleryShader.setFloat(1, bounds.height);
+                                        _galleryShader.setFloat(2, _slider * 6.2831853);
+                                        return _galleryShader;
+                                    },
+                                    child: new Text("Custom SkSL · shared GPU runtime effect · all targets",
+                                        style: new Doroti.Framework.Painting.TextStyle(color: new UiColor(0xff6750a4L))))),
+                            ]),
                             new ImageFiltered(
                                 imageFilter: new ImageFilter(_galleryFilterShader, FilterQuality.low),
                                 child: new Container(
@@ -445,7 +461,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                             new Row(spacing: 8, children: [blurToggle, new Text("Backdrop blur (native effect gate)")]),
                             new Text("Lazy ListView.builder + clipped backdrop panel"),
                             effectPanel,
-                        ]))),
+                        ])))),
             floatingActionButton: ActionSemantics(InteractiveLabels[5], new Material.FloatingActionButton(
                 tooltip: "Material action",
                 backgroundColor: new UiColor(0xffeaddffL),
@@ -465,5 +481,5 @@ internal static class App
         () => new MaterialDemoEntrypoint(DemoEntryMode.Home, requireExternalUia: false);
 
     internal static DorotiViewConfiguration ViewConfiguration { get; } =
-        new("Doroti Material Demo", new Size(720, 640));
+        new("Doroti Material Demo", new Size(720, 640), new UiColor(0xfffffbfeL));
 }

@@ -136,6 +136,16 @@ public class Tween<T> : Animatable<T>, IDartTween
     {
         DartRuntimePrimitives.Assert(() => (this.begin is not null));
         DartRuntimePrimitives.Assert(() => (this.end is not null));
+        // Dart Offset arithmetic accepts a double interpolation factor. The
+        // typed C# boundary represents that value as Vector2, whose operator*
+        // only accepts float; routing through Vector2.Lerp preserves Flutter's
+        // Tween<Offset> behavior without a dynamic binder failure.
+        if (typeof(T) == typeof(global::System.Numerics.Vector2))
+        {
+            var beginVector = (global::System.Numerics.Vector2)(object)this.begin!;
+            var endVector = (global::System.Numerics.Vector2)(object)this.end!;
+            return (T)(object)global::System.Numerics.Vector2.Lerp(beginVector, endVector, checked((float)t));
+        }
         DartRuntimePrimitives.Assert(() =>
             {
                 object result__11290 = default!;

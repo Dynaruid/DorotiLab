@@ -42,7 +42,7 @@ public sealed class MauiFrameworkHost : IDisposable
 
         textInput ??= new(new Entry(), new Editor());
         var host = new MauiHostAdapter(viewId, nativeView, textInput, configuration.logicalSize, semantics);
-        var graphics = new MauiSkiaCapabilities(viewId, host);
+        var graphics = new MauiSkiaCapabilities(viewId, host, configuration.backgroundColor);
         var messages = new MauiPlatformMessageCapability();
         var capabilities = new DorotiViewCapabilities(_targetIdentity)
             .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
@@ -142,7 +142,7 @@ public sealed class MauiFrameworkHost : IDisposable
 #endif
             "10.0.90", "4.151.1", value.Host.Snapshot, value.Graphics.Diagnostics,
             value.Host.InvalidationsRequested, value.Host.InvalidationsCoalesced,
-            value.Host.NativePointerEvents, 0);
+            value.Host.NativePointerEvents, value.Host.SemanticsDiagnostics, 0);
     }
 
 #if ANDROID

@@ -70,6 +70,7 @@ internal sealed class MauiHostAdapter :
     internal long InvalidationsRequested => Interlocked.Read(ref _invalidationsRequested);
     internal long InvalidationsCoalesced => Interlocked.Read(ref _invalidationsCoalesced);
     internal long NativePointerEvents => Interlocked.Read(ref _nativePointerEvents);
+    internal MauiSemanticsDiagnostics SemanticsDiagnostics => _semantics.Diagnostics;
     public ViewMetrics Metrics => new(
         new Size(_logicalSize.width * _density, _logicalSize.height * _density), _density,
         ViewPadding.zero, ViewPadding.zero, ViewPadding.zero, AppLifecycleState.resumed,
@@ -196,8 +197,8 @@ internal sealed class MauiHostAdapter :
 
     internal event Action<int, SemanticsAction, object?>? SemanticsAction;
 
-    internal void UpdateSemantics(string serializedTree) =>
-        _semantics.Update(serializedTree, (nodeId, action, arguments) =>
+    internal void UpdateSemantics(SemanticsUpdate update) =>
+        _semantics.Update(update, (nodeId, action, arguments) =>
             SemanticsAction?.Invoke(nodeId, action, arguments));
 
     internal void RequestInvalidate()

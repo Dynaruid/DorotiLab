@@ -223,9 +223,12 @@ internal class _InkSparkleFactory__ink_sparkle : InteractiveInkFeatureFactory
     {
         if (!_initCalled)
         {
-            DartRuntimePrimitives.Ignore(Dart_uiLibrary.FragmentProgram.fromAsset("shaders/ink_sparkle.frag").then((global::System.Action<global::Doroti.Ui.FragmentProgram>)((program) => {
-_program = program;
-})));
+            using var stream = typeof(InkSparkle).Assembly.GetManifestResourceStream(
+                "Doroti.Framework.Material.Shaders.ink_sparkle.sksl")
+                ?? throw new InvalidDataException("Doroti Material InkSparkle shader resource is missing.");
+            using var reader = new System.IO.StreamReader(stream);
+            _program = global::Doroti.Ui.FragmentProgram.fromSource(
+                reader.ReadToEnd(), "shaders/ink_sparkle.frag");
             _initCalled = true;
         }
     }

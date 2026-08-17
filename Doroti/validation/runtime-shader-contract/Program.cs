@@ -16,6 +16,18 @@ const string source = """
     """;
 
 DorotiSkiaRuntimeEffects.Validate(source, "runtime-shader-contract");
+using (var inkSparkleStream = typeof(Doroti.Framework.Material.InkSparkle).Assembly
+           .GetManifestResourceStream("Doroti.Framework.Material.Shaders.ink_sparkle.sksl")
+       ?? throw new InvalidOperationException("The Material InkSparkle shader was not embedded."))
+using (var inkSparkleReader = new StreamReader(inkSparkleStream))
+{
+    DorotiSkiaRuntimeEffects.Validate(inkSparkleReader.ReadToEnd(), "shaders/ink_sparkle.frag");
+}
+var offsetTween = new Doroti.Framework.Animation.Tween<System.Numerics.Vector2>(
+    begin: new System.Numerics.Vector2(10, 20),
+    end: new System.Numerics.Vector2(30, 60));
+if (offsetTween.transform(0.25) != new System.Numerics.Vector2(15, 30))
+    throw new InvalidOperationException("Tween<Offset> did not preserve Flutter double-factor interpolation.");
 if (!ImageFilter.isShaderFilterSupported)
     throw new InvalidOperationException(
         "Shader image filters must be advertised now that every product host binds the filtered child on its GPU path.");
@@ -23,11 +35,15 @@ var shader = FragmentProgram.fromSource(source, "runtime-shader-contract").fragm
 shader.setFloat(0, 320);
 shader.setFloat(1, 80);
 shader.setFloat(2, 0.75);
+var compiledBeforeScalarShader = DorotiSkiaRuntimeEffects.CompiledEffectCountForValidation;
 using (var nativeShader = DorotiSkiaRuntimeEffects.CreateShader(
     new FragmentShaderSnapshot(shader.CaptureState()),
     _ => throw new InvalidOperationException("The scalar-uniform fixture declares no image sampler.")))
 {
 }
+if (DorotiSkiaRuntimeEffects.CompiledEffectCountForValidation != compiledBeforeScalarShader + 1)
+    throw new InvalidOperationException(
+        "Repeated runtime shader creation recompiled identical SkSL instead of reusing the compiled effect.");
 using (var cachedNativeShader = DorotiSkiaRuntimeEffects.CreateShader(
     new FragmentShaderSnapshot(shader.CaptureState()),
     _ => throw new InvalidOperationException("The scalar-uniform fixture declares no image sampler.")))
@@ -57,11 +73,20 @@ using (var inputBitmap = new SKBitmap(new SKImageInfo(2, 1, SKColorType.Rgba8888
     using var inputImage = SKImage.FromBitmap(inputBitmap);
     using var outputBitmap = new SKBitmap(new SKImageInfo(2, 1, SKColorType.Rgba8888, SKAlphaType.Premul));
     using var outputCanvas = new SKCanvas(outputBitmap);
+    var compiledBeforeImageFilter = DorotiSkiaRuntimeEffects.CompiledEffectCountForValidation;
     using var nativeFilterShader = DorotiSkiaRuntimeEffects.CreateImageFilterShader(
         new FragmentShaderSnapshot(filterShader.CaptureState()),
         inputImage,
         SKSamplingOptions.Default,
         _ => throw new InvalidOperationException("The implicit input is the only image-filter sampler."));
+    using var cachedNativeFilterShader = DorotiSkiaRuntimeEffects.CreateImageFilterShader(
+        new FragmentShaderSnapshot(filterShader.CaptureState()),
+        inputImage,
+        SKSamplingOptions.Default,
+        _ => throw new InvalidOperationException("The implicit input is the only image-filter sampler."));
+    if (DorotiSkiaRuntimeEffects.CompiledEffectCountForValidation != compiledBeforeImageFilter + 1)
+        throw new InvalidOperationException(
+            "Repeated image-filter shader creation recompiled identical SkSL instead of reusing the compiled effect.");
     using var filterPaint = new SKPaint { Shader = nativeFilterShader };
     outputCanvas.DrawRect(SKRect.Create(2, 1), filterPaint);
     var filteredRed = outputBitmap.GetPixel(0, 0);

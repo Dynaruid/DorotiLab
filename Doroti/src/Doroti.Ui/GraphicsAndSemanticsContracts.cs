@@ -1288,7 +1288,7 @@ public sealed class SemanticsUpdateBuilder
         var hitTestChildren = ToNodeIds(childrenInHitTestOrder);
         updateNode(new SemanticsNodeUpdate(
             checked((int)id),
-            rect,
+            TransformRect(rect, transform),
             label,
             value,
             actionFlags,
@@ -1299,6 +1299,26 @@ public sealed class SemanticsUpdateBuilder
             null,
             textSelectionBase,
             textSelectionExtent));
+    }
+
+    private static Rect TransformRect(Rect rect, object transform)
+    {
+        if (transform is not IEnumerable<double> values) return rect;
+        var storage = values.ToArray();
+        if (storage.Length != 16) return rect;
+        var matrix = new Matrix4(storage);
+        var corners = new[]
+        {
+            matrix.perspectiveTransform(new Vector3(rect.left, rect.top, 0)),
+            matrix.perspectiveTransform(new Vector3(rect.right, rect.top, 0)),
+            matrix.perspectiveTransform(new Vector3(rect.left, rect.bottom, 0)),
+            matrix.perspectiveTransform(new Vector3(rect.right, rect.bottom, 0)),
+        };
+        return new Rect(
+            corners.Min(point => point.x),
+            corners.Min(point => point.y),
+            corners.Max(point => point.x),
+            corners.Max(point => point.y));
     }
 
     public void updateCustomAction(long id, string? label = null, string? hint = null, long overrideId = -1)

@@ -58,6 +58,7 @@ function Measure-RenderedScreenshot([string] $Path) {
         $samples = 0
         $nonLight = 0
         $colored = 0
+        $dark = 0
         for ($y = $top; $y -lt $bottom; $y += 12) {
             for ($x = $left; $x -lt $right; $x += 12) {
                 $pixel = $bitmap.GetPixel($x, $y)
@@ -66,6 +67,7 @@ function Measure-RenderedScreenshot([string] $Path) {
                 $maximum = [Math]::Max($pixel.R, [Math]::Max($pixel.G, $pixel.B))
                 $minimum = [Math]::Min($pixel.R, [Math]::Min($pixel.G, $pixel.B))
                 if (($maximum - $minimum) -gt 25) { $colored++ }
+                if ($pixel.R -lt 32 -and $pixel.G -lt 32 -and $pixel.B -lt 32) { $dark++ }
             }
         }
         Assert-True ($samples -gt 0) 'Android screenshot sample count'
@@ -76,6 +78,7 @@ function Measure-RenderedScreenshot([string] $Path) {
             sampleCount = $samples
             nonLightRatio = [Math]::Round($nonLight / $samples, 4)
             coloredRatio = [Math]::Round($colored / $samples, 4)
+            darkRatio = [Math]::Round($dark / $samples, 4)
         }
     }
     finally { $bitmap.Dispose() }
@@ -107,15 +110,20 @@ function Invoke-GraphGate {
     Assert-True ($program -notmatch '#if|DOROTI_BROWSER|MACCATALYST|Maui|Blazor|Qt') 'Program target neutrality'
     $mauiHost = Get-Content -LiteralPath (Join-Path $dorotiRoot 'src/Doroti.Host.Maui/MauiHostAdapter.cs') -Raw
     $mauiSurface = Get-Content -LiteralPath (Join-Path $dorotiRoot 'src/Doroti.Host.Maui/DorotiMauiSurface.cs') -Raw
+    $mauiGraphics = Get-Content -LiteralPath (Join-Path $dorotiRoot 'src/Doroti.Host.Maui/MauiSkiaCapabilities.cs') -Raw
     $mauiNativeInput = Get-Content -LiteralPath (Join-Path $dorotiRoot 'src/Doroti.Host.Maui/MauiNativeInput.cs') -Raw
     $mauiSemantics = Get-Content -LiteralPath (Join-Path $dorotiRoot 'src/Doroti.Host.Maui/MauiSemanticsBridge.cs') -Raw
     foreach ($token in @('SKTouchDeviceType.Mouse','SKTouchDeviceType.Pen','SKTouchAction.WheelChanged','_textInput.SetClient','MauiNativeInput.Attach')) {
         Assert-True ($mauiHost.IndexOf($token, [StringComparison]::Ordinal) -ge 0) "MAUI interaction token $token"
     }
     Assert-True ($mauiSurface -match 'MauiTextInputBridge' -and $mauiSurface -match 'MauiSemanticsBridge' -and $mauiSurface -match 'setSemanticsTreeEnabled\(true\)') 'MAUI native IME and semantics composition'
+    Assert-True ($mauiSurface -notmatch 'AUTO_QUIT|auto_quit|Application\.Current\?\.Quit') 'MAUI application auto-quit absence'
+    Assert-True ($mauiGraphics -match 'canvas\.Clear\(_backgroundColor\)' -and $mauiGraphics -match 'if \(frame is null\)') 'MAUI opaque startup surface clear'
     Assert-True ($mauiNativeInput -match 'KeyData' -and $mauiNativeInput -match '#if WINDOWS' -and $mauiNativeInput -match 'PressesBegan' -and $mauiNativeInput -match '#elif ANDROID') 'Windows, Mac Catalyst, and Android native keyboard bridges'
     Assert-True ($mauiSemantics -match 'SemanticsAction\.tap' -and $mauiSemantics -match 'SemanticsAction\.setText') 'MAUI actionable semantics bridge'
     foreach ($root in @((Split-Path $project -Parent), $templateRoot)) {
+        $appSource = Get-Content -LiteralPath (Join-Path $root 'src/App.cs') -Raw
+        Assert-True ($appSource -match 'DorotiViewConfiguration[\s\S]*0xfffffbfeL') "$root startup background contract"
         Assert-True (-not (Test-Path -LiteralPath (Join-Path $root 'Platforms/Maui'))) "$root legacy Platforms/Maui absence"
         Assert-True (@(Get-ChildItem -LiteralPath (Join-Path $root 'Platforms') -Filter 'PlatformBootstrap.cs' -File -Recurse).Count -eq 0) "$root legacy PlatformBootstrap absence"
         $shaderPath = Join-Path $root 'Resources/Shaders/aurora.sksl'
@@ -128,6 +136,8 @@ function Invoke-GraphGate {
             Assert-True ($manifestText -match 'shaders/aurora\.sksl' -and $manifestText -match 'Doroti\.Shaders\.aurora\.sksl') "$($targetManifest.FullName) custom shader registration"
         }
     }
+    $sdkTargets = Get-Content -LiteralPath (Join-Path $dorotiRoot 'src/Doroti.App.Sdk/Sdk/Sdk.targets') -Raw
+    Assert-True ($sdkTargets -match 'MauiSplashScreen[^>]+Color="#FFFBFE"') 'MAUI splash and first-scene background continuity'
     $sourceRoots = @(
         (Join-Path $dorotiRoot 'src/Doroti.Hosting'),
         (Join-Path $dorotiRoot 'src/Doroti.Host.Maui'),
@@ -138,6 +148,7 @@ function Invoke-GraphGate {
     $reflectionBootstrap = @($sourceRoots | Get-ChildItem -File -Recurse -Include *.cs | Select-String -Pattern 'GetType\("(?:DorotiApp\.)?App"|Type\.GetType\(')
     Assert-True ($reflectionBootstrap.Count -eq 0) 'reflection/string startup lookup absence'
     Invoke-Checked { dotnet run --project $descriptorContract -c Release --nologo } 'application descriptor contract failed'
+    Invoke-Checked { dotnet run --project (Join-Path $dorotiRoot 'validation/runtime-async-contract/Doroti.Validation.RuntimeAsyncContract.csproj') -c Release --nologo } 'runtime async contract failed'
     Invoke-Checked { dotnet run --project (Join-Path $dorotiRoot 'validation/runtime-shader-contract/Doroti.Validation.RuntimeShaderContract.csproj') -c Release --nologo } 'runtime shader contract failed'
 
     foreach ($target in @(
@@ -246,20 +257,32 @@ function Invoke-WindowsLiveGate {
     } 'Windows MAUI publish failed'
     if (Test-Path -LiteralPath $rawLivePath) { [IO.File]::Delete($rawLivePath) }
     $env:DOROTI_MAUI_EVIDENCE = $rawLivePath
-    $env:DOROTI_MAUI_AUTO_QUIT_FRAMES = '1'
     $process = Start-Process -FilePath (Join-Path $publishRoot 'DorotiDemoApp.exe') -PassThru -WindowStyle Hidden
     try {
-        Assert-True ($process.WaitForExit(60000)) 'Windows MAUI clean auto-exit'
-        Assert-True ($process.ExitCode -eq 0) 'Windows MAUI exit code'
+        $live = $null
+        for ($attempt = 0; $attempt -lt 120; $attempt++) {
+            Start-Sleep -Milliseconds 500
+            if (Test-Path -LiteralPath $rawLivePath -PathType Leaf) {
+                try { $live = Get-Content -LiteralPath $rawLivePath -Raw | ConvertFrom-Json } catch { }
+                if ($null -ne $live -and [long]$live.Frame.Replayed -gt 0) { break }
+            }
+            $process.Refresh()
+            Assert-True (-not $process.HasExited) 'Windows MAUI process survival while collecting evidence'
+        }
+        Assert-True ($null -ne $live -and [long]$live.Frame.Replayed -gt 0) 'Windows MAUI retained scene evidence timeout'
     }
     finally {
         if (-not $process.HasExited) { Stop-Process -Id $process.Id -Force }
+        Remove-Item Env:DOROTI_MAUI_EVIDENCE -ErrorAction SilentlyContinue
     }
     Assert-True (Test-Path -LiteralPath $rawLivePath -PathType Leaf) 'Windows MAUI live evidence'
     $live = Get-Content -LiteralPath $rawLivePath -Raw | ConvertFrom-Json
     Assert-True ([long]$live.Frame.Presented -gt 0 -and [long]$live.Frame.Failed -eq 0) 'Windows MAUI presented frame'
     Assert-True ([long]$live.Frame.ShaderImageFiltersRendered -gt 0) 'Windows native ImageFilter.shader execution'
     Assert-True ([long]$live.Frame.Replayed -gt 0) 'Windows MAUI retained scene replay'
+    Assert-True ([long]$live.Semantics.UpdatesReceived -gt 0 -and
+        [long]$live.Semantics.UpdatesApplied -gt 0) 'Windows typed semantics bridge'
+    Assert-True ([long]$live.Semantics.ElementsCreated -eq [long]$live.Semantics.ActiveElements) 'Windows initial semantics node reuse baseline'
     Assert-True ([long]$live.SoftwareFallbackFrames -eq 0) 'Windows MAUI software fallback count'
     Assert-True ([string]$live.Surface.NativeViewType -match 'MauiSKSwapChainPanel') 'Windows MAUI native view type'
     Assert-True ([string]$live.Surface.GraphicsBackend -ceq 'win-x64/winui3/SKSwapChainPanel/ANGLE-DirectX-Skia') 'Windows MAUI backend identity'
@@ -304,7 +327,16 @@ function Invoke-AndroidLiveGate([bool] $RequirePhysical) {
             return Measure-RenderedScreenshot $localPath
         }
 
-        Invoke-Checked { adb -s $AndroidSerial shell am start --user 0 -n $activity --ei doroti_auto_quit_frames 2000 } 'Android activity launch failed'
+        Invoke-Checked { adb -s $AndroidSerial shell am start --user 0 -n $activity } 'Android activity launch failed'
+        $appFocused = $false
+        for ($attempt = 0; $attempt -lt 50; $attempt++) {
+            $focusedWindow = (adb -s $AndroidSerial shell dumpsys window | Select-String -Pattern 'mCurrentFocus' | Select-Object -First 1).ToString()
+            if ($focusedWindow -match 'dev\.doroti\.demo') { $appFocused = $true; break }
+            Start-Sleep -Milliseconds 50
+        }
+        Assert-True $appFocused 'Android foreground activity after launch'
+        $launchScreenshot = Capture-AndroidBody 'android-launch-immediate'
+        Assert-True ($launchScreenshot.darkRatio -lt 0.8) 'Android non-black startup surface'
         $json = $null
         for ($attempt = 0; $attempt -lt 30; $attempt++) {
             Start-Sleep -Seconds 1
@@ -314,9 +346,9 @@ function Invoke-AndroidLiveGate([bool] $RequirePhysical) {
                     try { $json = $line | ConvertFrom-Json } catch { }
                 }
             }
-            if ($null -ne $json -and [long]$json.Frame.Presented -gt 0 -and [long]$json.Frame.Replayed -gt 0) { break }
+            if ($null -ne $json -and [long]$json.Frame.Presented -gt 0) { break }
         }
-        Assert-True ($null -ne $json -and [long]$json.Frame.Replayed -gt 0) 'Android startup frame before scroll'
+        Assert-True ($null -ne $json -and [long]$json.Frame.Presented -gt 0) 'Android startup frame before scroll'
         $initialScreenshot = $null
         for ($attempt = 0; $attempt -lt 15; $attempt++) {
             $initialScreenshot = Capture-AndroidBody 'android-scroll-initial'
@@ -344,6 +376,43 @@ function Invoke-AndroidLiveGate([bool] $RequirePhysical) {
             Assert-True ($captured.nonLightRatio -gt 0.05 -and $captured.coloredRatio -gt 0.02) "Android visible body after downward swipe $index"
             $scrollScreenshots += $captured
         }
+        if ($RequirePhysical) {
+            # A canceled press timer used to remain queued behind a busy Android
+            # event loop and fire after the tap recognizer had cleared its down
+            # event. Sustained alternating drags exercise that exact lifetime,
+            # while periodic in-flight captures reject transient black frames.
+            $adbPath = (Get-Command adb).Source
+            for ($index = 0; $index -lt 48; $index++) {
+                $upward = ($index % 2) -eq 0
+                $fromY = if ($upward) { $scrollBottom } else { $scrollTop }
+                $toY = if ($upward) { $scrollTop } else { $scrollBottom }
+                if (($index % 6) -eq 0) {
+                    $swipe = Start-Process -FilePath $adbPath -ArgumentList @(
+                        '-s', $AndroidSerial, 'shell', 'input', 'swipe',
+                        "$scrollX", "$fromY", "$scrollX", "$toY", '550'
+                    ) -PassThru -WindowStyle Hidden
+                    Start-Sleep -Milliseconds 180
+                    $captured = Capture-AndroidBody "android-scroll-active-$index"
+                    Assert-True ($captured.nonLightRatio -gt 0.05 -and $captured.coloredRatio -gt 0.02) "Android non-black body during active swipe $index"
+                    $scrollScreenshots += $captured
+                    Assert-True ($swipe.WaitForExit(5000) -and $swipe.ExitCode -eq 0) "Android active swipe $index"
+                }
+                else {
+                    Invoke-Checked { adb -s $AndroidSerial shell input swipe $scrollX $fromY $scrollX $toY 180 } "Android stress swipe $index failed"
+                }
+            }
+            $fabX = [int]($screenWidth * 0.88)
+            $fabY = [int]($screenHeight * 0.92)
+            Invoke-Checked { adb -s $AndroidSerial shell input tap $fabX $fabY } 'Android FAB tap injection failed'
+            Start-Sleep -Milliseconds 750
+            $fabDumpRemote = '/sdcard/doroti-fab-after.xml'
+            $fabDumpLocal = Join-Path $tmpRoot 'android-fab-after.xml'
+            Invoke-Checked { adb -s $AndroidSerial shell uiautomator dump $fabDumpRemote } 'Android FAB accessibility state dump failed'
+            Invoke-Checked { adb -s $AndroidSerial pull $fabDumpRemote $fabDumpLocal } 'Android FAB accessibility state pull failed'
+            $fabDump = Get-Content -LiteralPath $fabDumpLocal -Raw
+            Assert-True ($fabDump -match 'content-desc="G6 Material FAB 1"') 'Android FAB framework action after scroll stress'
+            Assert-True ($fabDump -match 'content-desc="Stack state · button=0;[^\"]*fab=1"') 'Android semantics overlay ordinary-touch pass-through'
+        }
         for ($attempt = 0; $attempt -lt 30; $attempt++) {
             Start-Sleep -Seconds 2
             $log = @(adb -s $AndroidSerial logcat -d -s 'DorotiMauiEvidence:I' '*:S' -v raw)
@@ -355,14 +424,24 @@ function Invoke-AndroidLiveGate([bool] $RequirePhysical) {
             if ($null -ne $json -and [long]$json.Frame.Presented -ge 12 -and [long]$json.Frame.Replayed -gt 0) { break }
         }
         $appPid = (adb -s $AndroidSerial shell pidof dev.doroti.demo | Out-String).Trim()
-        $failures = @(adb -s $AndroidSerial logcat -d -v raw |
-            Select-String -Pattern 'FATAL UNHANDLED EXCEPTION|NotSupportedException: Doroti MAUI canvas operation|Fatal signal|pthread_mutex_lock called on a destroyed mutex')
+        $failureLog = if ([string]::IsNullOrWhiteSpace($appPid)) {
+            @(adb -s $AndroidSerial logcat -d -v raw)
+        } else {
+            @(adb -s $AndroidSerial logcat --pid=$appPid -d -v raw)
+        }
+        $failures = @($failureLog |
+            Select-String -Pattern 'FATAL UNHANDLED EXCEPTION|NotSupportedException: Doroti MAUI canvas operation|Fatal signal|pthread_mutex_lock called on a destroyed mutex|TapGestureRecognizer\.handleTapDown|InvalidOperation_EnumFailedVersion|RuntimeBinderException|BadBinaryOps')
         Assert-True (-not [string]::IsNullOrWhiteSpace($appPid)) 'Android process survival after scroll'
         Assert-True ($failures.Count -eq 0) 'Android scroll crash log'
         Assert-True ($null -ne $json) 'Android structured live evidence'
         Assert-True ([long]$json.Frame.Presented -ge 12 -and [long]$json.Frame.Failed -eq 0) 'Android presented custom-shader frames'
         Assert-True ([long]$json.Frame.ShaderImageFiltersRendered -gt 0) 'Android native ImageFilter.shader execution'
         Assert-True ([long]$json.Frame.Replayed -gt 0) 'Android retained scene replay'
+        Assert-True ([long]$json.Semantics.UpdatesReceived -gt [long]$json.Semantics.UpdatesApplied) 'Android semantics update throttling'
+        Assert-True ([long]$json.Semantics.UpdatesCoalesced -gt 0) 'Android semantics latest-update coalescing'
+        $naiveSemanticsRebuilds = [long]$json.Semantics.UpdatesApplied * [long]$json.Semantics.ActiveElements
+        Assert-True ([long]$json.Semantics.ElementsCreated * 2 -lt $naiveSemanticsRebuilds) 'Android semantics native node reuse'
+        Assert-True ([long]$json.Semantics.RetainedNodes -le 64) 'Android semantics reachable-node retention'
         Assert-True ([long]$json.SoftwareFallbackFrames -eq 0) 'Android software fallback count'
         Assert-True ([string]$json.Surface.NativeViewType -ceq 'SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKGLTextureView') 'Android MAUI native view type'
         Assert-True ([string]$json.Rid -ceq $runtimeIdentifier) 'Android runtime identifier'
@@ -373,9 +452,10 @@ function Invoke-AndroidLiveGate([bool] $RequirePhysical) {
             serial = $AndroidSerial; model = $model; api = $api; abi = $abi; rid = $runtimeIdentifier
             deviceKind = if ($qemu -eq '1') { 'emulator' } else { 'physical' }
             automatedGpu = $json
-            automatedScroll = 'pass-adb-up-4-down-2'
+            automatedScroll = if ($RequirePhysical) { 'pass-adb-up-4-down-2-stress-48-active-samples-8-fab-action' } else { 'pass-adb-up-4-down-2' }
             automatedPersistentDisplay = [ordered]@{
                 status = 'pass'
+                launchScreenshot = $launchScreenshot
                 initialScreenshot = $initialScreenshot
                 swipeScreenshots = $scrollScreenshots
                 settledScreenshot = $screenshot

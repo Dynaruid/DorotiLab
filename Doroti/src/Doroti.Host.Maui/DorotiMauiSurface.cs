@@ -38,7 +38,14 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     {
         _application = application ?? throw new ArgumentNullException(nameof(application));
         _viewId = viewId;
-        _skiaView = new SKGLView { HasRenderLoop = false, EnableTouchEvents = true };
+        var startupColor = application.ViewConfiguration.backgroundColor ?? new Doroti.Ui.Color(0xfffffbfeL);
+        BackgroundColor = new Microsoft.Maui.Graphics.Color(
+            (float)startupColor.r, (float)startupColor.g, (float)startupColor.b, (float)startupColor.a);
+        _skiaView = new SKGLView
+        {
+            HasRenderLoop = false,
+            EnableTouchEvents = true,
+        };
         _singleLineInput = CreateHiddenInput<Entry>();
         _multilineInput = CreateHiddenInput<Editor>();
         _semanticsLayer = new AbsoluteLayout { InputTransparent = true, CascadeInputTransparent = false };
@@ -125,11 +132,9 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     {
         var diagnostics = Diagnostics;
         if (diagnostics is null) return;
-        var quitFrames = GetAutoQuitFrames();
-        var shouldRequestReplay = quitFrames > 0 && diagnostics.Frame.Presented >= quitFrames &&
-                                  diagnostics.Frame.Replayed == 0;
-        var shouldQuit = quitFrames > 0 && diagnostics.Frame.Presented >= quitFrames &&
-                         diagnostics.Frame.Replayed > 0;
+        var evidencePath = Environment.GetEnvironmentVariable("DOROTI_MAUI_EVIDENCE");
+        var shouldRequestReplay = !string.IsNullOrWhiteSpace(evidencePath) &&
+                                  diagnostics.Frame.Presented > 0 && diagnostics.Frame.Replayed == 0;
         var timestamp = Stopwatch.GetTimestamp();
         var firstEvidence = _lastEvidenceWriteTimestamp == 0;
         var firstReplay = diagnostics.Frame.Replayed > 0 && _lastEvidenceReplayed == 0;
@@ -139,10 +144,10 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         // Evidence collection must not serialize, log, and synchronously rewrite a file on every
         // interactive frame. That work runs on the native paint path and can starve Android's
         // TextureView compositor while a drag is producing frames.
-        if (firstEvidence || firstReplay || intervalElapsed || shouldQuit)
+        if (firstEvidence || firstReplay || intervalElapsed)
         {
             var json = JsonSerializer.Serialize(diagnostics, EvidenceJsonOptions);
-            var path = Environment.GetEnvironmentVariable("DOROTI_MAUI_EVIDENCE");
+            var path = evidencePath;
 #if ANDROID
             path = System.IO.Path.Combine(Android.App.Application.Context.CacheDir?.AbsolutePath
                 ?? throw new InvalidOperationException("Android cache directory is unavailable."), "doroti-maui-evidence.json");
@@ -153,11 +158,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
             _lastEvidenceReplayed = diagnostics.Frame.Replayed;
         }
 
-        if (shouldQuit)
-        {
-            Dispatcher.Dispatch(QuitHost);
-        }
-        else if (shouldRequestReplay)
+        if (shouldRequestReplay)
         {
             Dispatcher.Dispatch(_skiaView.InvalidateSurface);
         }
@@ -166,8 +167,18 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     internal static void WriteFailure(Exception exception)
     {
         var path = Environment.GetEnvironmentVariable("DOROTI_MAUI_EVIDENCE");
-        if (string.IsNullOrWhiteSpace(path)) return;
-        TryWriteText(path + ".exception.txt", exception.ToString());
+#if ANDROID
+        Android.Util.Log.Error("DorotiMauiFailure", exception.ToString());
+        path = System.IO.Path.Combine(Android.App.Application.Context.CacheDir?.AbsolutePath
+            ?? throw new InvalidOperationException("Android cache directory is unavailable."), "doroti-maui-evidence.exception.txt");
+#endif
+        TryWriteText(
+#if ANDROID
+            path,
+#else
+            string.IsNullOrWhiteSpace(path) ? null : path + ".exception.txt",
+#endif
+            exception.ToString());
     }
 
     private static void TryWriteText(string? path, string contents)
@@ -183,26 +194,6 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         {
             // Evidence must never fail the GPU paint or startup path.
         }
-    }
-
-    private static void QuitHost()
-    {
-        Application.Current?.Quit();
-#if MACCATALYST
-        Environment.Exit(0);
-#endif
-    }
-
-    private static int GetAutoQuitFrames()
-    {
-        if (int.TryParse(Environment.GetEnvironmentVariable("DOROTI_MAUI_AUTO_QUIT_FRAMES"), out var value))
-            return value;
-#if ANDROID
-        return Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?.Intent?
-            .GetIntExtra("doroti_auto_quit_frames", 0) ?? 0;
-#else
-        return 0;
-#endif
     }
 
     public void Dispose()

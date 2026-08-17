@@ -36,7 +36,7 @@
     <EmbeddedResource Include="Resources/Shaders/**/*.sksl" LogicalName="Doroti.Shaders.%(RecursiveDir)%(Filename)%(Extension)" Condition="Exists('Resources/Shaders')" />
     <AndroidResource Include="Platforms/Android/Resources/**/*" Condition="'$(DorotiTarget)' == 'Android' and Exists('Platforms/Android/Resources')" />
     <MauiIcon Include="Resources/AppIcon/appicon.svg" ForegroundFile="Resources/AppIcon/appiconfg.svg" Color="#6750A4" Condition="'$(UseMaui)' == 'true' and Exists('Resources/AppIcon/appicon.svg')" />
-    <MauiSplashScreen Include="Resources/Splash/splash.svg" Color="#1D1B20" BaseSize="128,128" Condition="'$(UseMaui)' == 'true' and Exists('Resources/Splash/splash.svg')" />
+    <MauiSplashScreen Include="Resources/Splash/splash.svg" Color="#FFFBFE" BaseSize="128,128" Condition="'$(UseMaui)' == 'true' and Exists('Resources/Splash/splash.svg')" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(UseMaui)' == 'true'">

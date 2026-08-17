@@ -164,6 +164,7 @@ internal sealed class BrowserSkiaCapabilities :
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (!_semanticsEnabled) return;
         foreach (var node in update.nodes) _semantics[node.id] = node;
+        PruneUnreachableSemantics(_semantics);
         var nodes = _semantics.Values.OrderBy(node => node.indexInParent ?? int.MaxValue).ThenBy(node => node.id)
             .Select(node => new
             {
@@ -198,6 +199,22 @@ internal sealed class BrowserSkiaCapabilities :
                 rect = new[] { node.rect.left, node.rect.top, node.rect.right, node.rect.bottom },
             });
         _host.UpdateSemantics(System.Text.Json.JsonSerializer.Serialize(new { generation = update.generation, nodes }));
+    }
+
+    private static void PruneUnreachableSemantics(Dictionary<int, SemanticsNodeUpdate> nodes)
+    {
+        const int rootNodeId = 0;
+        if (!nodes.ContainsKey(rootNodeId)) return;
+        var reachable = new HashSet<int>();
+        var pending = new Stack<int>();
+        pending.Push(rootNodeId);
+        while (pending.TryPop(out var nodeId))
+        {
+            if (!reachable.Add(nodeId) || !nodes.TryGetValue(nodeId, out var node)) continue;
+            foreach (var childId in node.children) pending.Push(childId);
+        }
+        foreach (var staleId in nodes.Keys.Where(id => !reachable.Contains(id)).ToArray())
+            nodes.Remove(staleId);
     }
 
     public void Dispose()
@@ -301,30 +318,30 @@ internal sealed class BrowserSkiaCapabilities :
                         restoreCounts.Push(1); break;
                     case "imageFilter" when command.HostPayload is SceneImageFilterPayload image &&
                                                   image.Filter.Shader is FragmentShaderSnapshot fragment:
-                    {
-                        var matchingPop = FindMatchingPop(source, commandIndex, sourceEnd);
-                        var offset = new SKPoint((float)image.Offset.dx, (float)image.Offset.dy);
-                        var bounds = image.Bounds is { } explicitBounds
-                            ? ToRect(explicitBounds)
-                            : new SKRect(
-                                canvas.LocalClipBounds.Left - offset.X,
-                                canvas.LocalClipBounds.Top - offset.Y,
-                                canvas.LocalClipBounds.Right - offset.X,
-                                canvas.LocalClipBounds.Bottom - offset.Y);
-                        DorotiSkiaImageFilterRenderer.Draw(
-                            canvas,
-                            pixelWidth,
-                            pixelHeight,
-                            fragment,
-                            bounds,
-                            offset,
-                            ToSamplingOptions(image.Filter.FilterQuality),
-                            CreateImageShader,
-                            (inputCanvas, inputWidth, inputHeight) =>
-                                DrawScene(inputCanvas, source, commandIndex + 1, matchingPop, inputWidth, inputHeight));
-                        commandIndex = matchingPop;
-                        break;
-                    }
+                        {
+                            var matchingPop = FindMatchingPop(source, commandIndex, sourceEnd);
+                            var offset = new SKPoint((float)image.Offset.dx, (float)image.Offset.dy);
+                            var bounds = image.Bounds is { } explicitBounds
+                                ? ToRect(explicitBounds)
+                                : new SKRect(
+                                    canvas.LocalClipBounds.Left - offset.X,
+                                    canvas.LocalClipBounds.Top - offset.Y,
+                                    canvas.LocalClipBounds.Right - offset.X,
+                                    canvas.LocalClipBounds.Bottom - offset.Y);
+                            DorotiSkiaImageFilterRenderer.Draw(
+                                canvas,
+                                pixelWidth,
+                                pixelHeight,
+                                fragment,
+                                bounds,
+                                offset,
+                                ToSamplingOptions(image.Filter.FilterQuality),
+                                CreateImageShader,
+                                (inputCanvas, inputWidth, inputHeight) =>
+                                    DrawScene(inputCanvas, source, commandIndex + 1, matchingPop, inputWidth, inputHeight));
+                            commandIndex = matchingPop;
+                            break;
+                        }
                     case "imageFilter" when command.HostPayload is SceneImageFilterPayload image:
                         canvas.Save();
                         var imageRestoreCount = 1;

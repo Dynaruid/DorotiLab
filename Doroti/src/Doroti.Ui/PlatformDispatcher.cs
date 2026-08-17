@@ -7,6 +7,7 @@ public sealed class PlatformDispatcher : IDisposable
 {
     private static readonly AsyncLocal<PlatformDispatcher?> ActiveDispatcher = new();
     private readonly object _gate = new();
+    private readonly object _dispatchGate = new();
     private readonly Dictionary<ulong, DorotiView> _views = [];
     private readonly DartMicrotaskQueue _microtasks = new();
     private readonly IDartPerformanceModeCapability? _performanceModeCapability;
@@ -383,10 +384,12 @@ public sealed class PlatformDispatcher : IDisposable
 
     internal void DispatchPlatformConfiguration(DorotiView view, PlatformConfiguration configuration)
     {
-        using var scope = PlatformEnvironmentContext.Enter(configuration);
-        onPlatformConfigurationChanged?.Invoke(view, configuration);
-        onTextScaleFactorChanged?.Invoke();
-        onPlatformBrightnessChanged?.Invoke();
+        DispatchWithEnvironment(view, () =>
+        {
+            onPlatformConfigurationChanged?.Invoke(view, configuration);
+            onTextScaleFactorChanged?.Invoke();
+            onPlatformBrightnessChanged?.Invoke();
+        });
     }
 
     internal void DispatchSemanticsAction(DorotiView view, SemanticsActionEvent action) =>
@@ -406,14 +409,21 @@ public sealed class PlatformDispatcher : IDisposable
 
     private void DispatchWithEnvironment(DorotiView view, Action callback)
     {
-        using var dispatcherScope = EnterScope();
-        if (view.environmentConfiguration is { } configuration)
+        // A Flutter isolate has one event loop. Android delivers TextureView
+        // paints on its GL thread while touch, semantics, and lifecycle events
+        // arrive on the UI thread, so serialize their framework callbacks here.
+        // The monitor is reentrant for nested framework dispatch on one thread.
+        lock (_dispatchGate)
         {
-            using var environmentScope = PlatformEnvironmentContext.Enter(configuration);
+            using var dispatcherScope = EnterScope();
+            if (view.environmentConfiguration is { } configuration)
+            {
+                using var environmentScope = PlatformEnvironmentContext.Enter(configuration);
+                DispatchAndDrainMicrotasks(callback);
+                return;
+            }
             DispatchAndDrainMicrotasks(callback);
-            return;
         }
-        DispatchAndDrainMicrotasks(callback);
     }
 
     private void DispatchAndDrainMicrotasks(Action callback)

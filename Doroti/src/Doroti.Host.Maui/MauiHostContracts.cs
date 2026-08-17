@@ -23,6 +23,14 @@ public sealed record MauiFrameDiagnostics(
     long ShaderImageFiltersRendered,
     string Backend);
 
+public sealed record MauiSemanticsDiagnostics(
+    long UpdatesReceived,
+    long UpdatesApplied,
+    long UpdatesCoalesced,
+    long ElementsCreated,
+    long ActiveElements,
+    long RetainedNodes);
+
 public sealed record MauiHostDiagnostics(
     string ApplicationSource,
     string BootstrapSource,
@@ -35,18 +43,23 @@ public sealed record MauiHostDiagnostics(
     long InvalidationsRequested,
     long InvalidationsCoalesced,
     long NativePointerEvents,
+    MauiSemanticsDiagnostics Semantics,
     long SoftwareFallbackFrames);
 
 public interface IMauiSemanticsBridge
 {
-    void Update(string serializedTree, Action<int, SemanticsAction, object?> performAction);
+    MauiSemanticsDiagnostics Diagnostics { get; }
+
+    void Update(SemanticsUpdate update, Action<int, SemanticsAction, object?> performAction);
 }
 
 internal sealed class NullMauiSemanticsBridge : IMauiSemanticsBridge
 {
-    public void Update(string serializedTree, Action<int, SemanticsAction, object?> performAction)
+    public MauiSemanticsDiagnostics Diagnostics { get; } = new(0, 0, 0, 0, 0, 0);
+
+    public void Update(SemanticsUpdate update, Action<int, SemanticsAction, object?> performAction)
     {
-        _ = serializedTree;
+        _ = update;
         _ = performAction;
     }
 }

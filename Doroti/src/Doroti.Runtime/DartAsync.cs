@@ -5,18 +5,14 @@ namespace Doroti.Runtime;
 public sealed class Timer : IDisposable
 {
     private readonly System.Threading.Timer _timer;
-    private bool _isActive = true;
+    private int _isActive = 1;
 
     public Timer(Duration duration, Action callback)
     {
         ArgumentNullException.ThrowIfNull(callback);
         var scheduler = DartAsyncRuntime.captureMicrotaskScheduler();
         _timer = new System.Threading.Timer(
-            _ =>
-            {
-                _isActive = false;
-                DartAsyncRuntime.dispatchCaptured(scheduler, callback);
-            },
+            _ => DartAsyncRuntime.dispatchCaptured(scheduler, () => InvokeOnce(callback)),
             null,
             (TimeSpan)duration,
             Timeout.InfiniteTimeSpan);
@@ -27,11 +23,7 @@ public sealed class Timer : IDisposable
         ArgumentNullException.ThrowIfNull(callback);
         var scheduler = DartAsyncRuntime.captureMicrotaskScheduler();
         _timer = new System.Threading.Timer(
-            _ =>
-            {
-                _isActive = false;
-                DartAsyncRuntime.dispatchCaptured(scheduler, () => callback(this));
-            },
+            _ => DartAsyncRuntime.dispatchCaptured(scheduler, () => InvokeOnce(() => callback(this))),
             null,
             (TimeSpan)duration,
             Timeout.InfiniteTimeSpan);
@@ -41,13 +33,13 @@ public sealed class Timer : IDisposable
     {
         var scheduler = DartAsyncRuntime.captureMicrotaskScheduler();
         _timer = new System.Threading.Timer(
-            _ => DartAsyncRuntime.dispatchCaptured(scheduler, () => callback(this)),
+            _ => DartAsyncRuntime.dispatchCaptured(scheduler, () => InvokePeriodic(callback)),
             null,
             (TimeSpan)duration,
             periodic ? (TimeSpan)duration : Timeout.InfiniteTimeSpan);
     }
 
-    public bool isActive => _isActive;
+    public bool isActive => Volatile.Read(ref _isActive) == 1;
 
     public static Timer periodic(Duration duration, Action<Timer> callback) => new(duration, callback, periodic: true);
 
@@ -59,12 +51,26 @@ public sealed class Timer : IDisposable
 
     public void cancel()
     {
-        if (!_isActive) return;
-        _isActive = false;
+        Interlocked.Exchange(ref _isActive, 0);
         _timer.Dispose();
     }
 
     public void Dispose() => cancel();
+
+    private void InvokeOnce(Action callback)
+    {
+        // A native timer can expire and enqueue its callback just before a
+        // gesture cancels it. Dart cancellation still suppresses that queued
+        // event, so claim the callback only when the host event loop executes.
+        if (Interlocked.Exchange(ref _isActive, 0) != 1) return;
+        callback();
+    }
+
+    private void InvokePeriodic(Action<Timer> callback)
+    {
+        if (Volatile.Read(ref _isActive) != 1) return;
+        callback(this);
+    }
 }
 
 public static class DartAsyncRuntime

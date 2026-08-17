@@ -20,4 +20,7 @@
     <ProjectReference Include="..\Doroti.Framework.Widgets\Doroti.Framework.Widgets.csproj" />
     <ProjectReference Include="..\Doroti.Framework.Cupertino\Doroti.Framework.Cupertino.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Shaders\ink_sparkle.sksl" LogicalName="Doroti.Framework.Material.Shaders.ink_sparkle.sksl" />
+  </ItemGroup>
 </Project>
