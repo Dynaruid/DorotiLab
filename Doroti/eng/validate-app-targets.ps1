@@ -51,6 +51,16 @@ function Invoke-GraphGate {
     $program = Get-Content -LiteralPath (Join-Path (Split-Path $project -Parent) 'Program.cs') -Raw
     Assert-True ($program -match 'public sealed class Program : IDorotiApplicationStartup') 'public target-neutral startup type'
     Assert-True ($program -notmatch '#if|DOROTI_BROWSER|MACCATALYST|Maui|Blazor|Qt') 'Program target neutrality'
+    $mauiHost = Get-Content -LiteralPath (Join-Path $dorotiRoot 'src/Doroti.Host.Maui/MauiHostAdapter.cs') -Raw
+    $mauiSurface = Get-Content -LiteralPath (Join-Path $dorotiRoot 'src/Doroti.Host.Maui/DorotiMauiSurface.cs') -Raw
+    $mauiNativeInput = Get-Content -LiteralPath (Join-Path $dorotiRoot 'src/Doroti.Host.Maui/MauiNativeInput.cs') -Raw
+    $mauiSemantics = Get-Content -LiteralPath (Join-Path $dorotiRoot 'src/Doroti.Host.Maui/MauiSemanticsBridge.cs') -Raw
+    foreach ($token in @('SKTouchDeviceType.Mouse','SKTouchDeviceType.Pen','SKTouchAction.WheelChanged','_textInput.SetClient','MauiNativeInput.Attach')) {
+        Assert-True ($mauiHost.IndexOf($token, [StringComparison]::Ordinal) -ge 0) "MAUI interaction token $token"
+    }
+    Assert-True ($mauiSurface -match 'MauiTextInputBridge' -and $mauiSurface -match 'MauiSemanticsBridge' -and $mauiSurface -match 'setSemanticsTreeEnabled\(true\)') 'MAUI native IME and semantics composition'
+    Assert-True ($mauiNativeInput -match 'KeyData' -and $mauiNativeInput -match '#if WINDOWS' -and $mauiNativeInput -match 'PressesBegan') 'Windows and Mac Catalyst native keyboard bridges'
+    Assert-True ($mauiSemantics -match 'SemanticsAction\.tap' -and $mauiSemantics -match 'SemanticsAction\.setText') 'MAUI actionable semantics bridge'
     foreach ($root in @((Split-Path $project -Parent), $templateRoot)) {
         Assert-True (-not (Test-Path -LiteralPath (Join-Path $root 'Platforms/Maui'))) "$root legacy Platforms/Maui absence"
         Assert-True (@(Get-ChildItem -LiteralPath (Join-Path $root 'Platforms') -Filter 'PlatformBootstrap.cs' -File -Recurse).Count -eq 0) "$root legacy PlatformBootstrap absence"
@@ -206,8 +216,10 @@ function Write-Evidence {
         }
         windowsLive = $live
         boundaries = [ordered]@{
-            basicTouch = 'implemented-not-live-verified'
-            hoverWheelCaptureKeyboardImeUia = 'notVerified'
+            pointerMousePenWheelPressure = 'implemented-not-live-verified'
+            keyboardImeCursor = 'implemented-not-live-verified'
+            lifecycleConfiguration = 'implemented-not-live-verified'
+            nativeAccessibilityActions = 'implemented-not-live-verified'
             resizeDpiContextRecreate = 'notVerified-product-host'
             macCatalystBuild = 'pass-windows-cross-build-only'
             macCatalystPublishLive = 'notVerified'

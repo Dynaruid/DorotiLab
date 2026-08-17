@@ -741,9 +741,10 @@ internal sealed class DesktopTextInputCapability : ITextInputHostCapability, ITe
 
     public event Action<DorotiTextInputAction>? ActionPerformed;
 
-    public void SetClient(DorotiTextEditingState initialState)
+    public void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState initialState)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
+        _ = configuration;
         _connection.SetClient(this, ToPlatform(initialState));
     }
 

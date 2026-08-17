@@ -6,15 +6,21 @@ using SkiaSharp.Views.Maui.Controls;
 
 namespace Doroti.Host.Maui;
 
-public sealed class DorotiMauiSurface : SKGLView, IDisposable
+public sealed class DorotiMauiSurface : Grid, IDisposable
 {
     private readonly ulong _viewId;
     private readonly DorotiApplicationDescriptor _application;
     private DorotiApplicationBoundary? _boundary;
     private DorotiHostSession? _session;
     private MauiFrameworkHost? _host;
+    private readonly SKGLView _skiaView;
+    private readonly Entry _singleLineInput;
+    private readonly Editor _multilineInput;
+    private readonly MauiTextInputBridge _textInput;
+    private readonly AbsoluteLayout _semanticsLayer;
     private bool _attached;
     private bool _disposed;
+    private Window? _window;
 
     public DorotiMauiSurface(
         DorotiApplicationDescriptor application,
@@ -22,10 +28,19 @@ public sealed class DorotiMauiSurface : SKGLView, IDisposable
     {
         _application = application ?? throw new ArgumentNullException(nameof(application));
         _viewId = viewId;
-        HasRenderLoop = false;
-        EnableTouchEvents = true;
-        PaintSurface += PaintGpuSurface;
+        _skiaView = new SKGLView { HasRenderLoop = false, EnableTouchEvents = true };
+        _singleLineInput = CreateHiddenInput<Entry>();
+        _multilineInput = CreateHiddenInput<Editor>();
+        _semanticsLayer = new AbsoluteLayout { InputTransparent = true, CascadeInputTransparent = false };
+        _textInput = new(_singleLineInput, _multilineInput);
+        Children.Add(_skiaView);
+        Children.Add(_singleLineInput);
+        Children.Add(_multilineInput);
+        Children.Add(_semanticsLayer);
+        _skiaView.PaintSurface += PaintGpuSurface;
         HandlerChanged += HandleHandlerChanged;
+        Loaded += HandleLoaded;
+        Unloaded += HandleUnloaded;
     }
 
     public MauiHostDiagnostics? Diagnostics => _host?.CaptureDiagnostics(
@@ -44,7 +59,10 @@ public sealed class DorotiMauiSurface : SKGLView, IDisposable
         _boundary = DorotiApplicationBoundary.Load(
             _application.ApplicationAssembly,
             _application.LaunchContext.RuntimeIdentifier);
-        _host.CreateView(_session, _viewId, this, _application.ViewConfiguration, application: _boundary);
+        _host.CreateView(_session, _viewId, _skiaView, _application.ViewConfiguration,
+            new MauiSemanticsBridge(_semanticsLayer), _boundary, _textInput);
+        using (var dispatcherScope = _session.dispatcher.EnterScope())
+            _session.dispatcher.setSemanticsTreeEnabled(true);
         _attached = true;
     }
 
@@ -52,10 +70,10 @@ public sealed class DorotiMauiSurface : SKGLView, IDisposable
     {
         _ = sender;
         if (!_attached || _host is null) return;
-        if (args.Surface is null || GRContext is null)
+        if (args.Surface is null || _skiaView.GRContext is null)
             throw new InvalidOperationException("Strict Doroti MAUI mode requires a GPU-backed SKSurface and GRContext.");
-        var nativeType = Handler?.PlatformView?.GetType().FullName ?? "unknown";
-        _host.BeginPaint(_viewId, args, GRContext, nativeType);
+        var nativeType = _skiaView.Handler?.PlatformView?.GetType().FullName ?? "unknown";
+        _host.BeginPaint(_viewId, args, _skiaView.GRContext, nativeType);
         _host.PaintSkiaSurface(_viewId, args.Surface, args.BackendRenderTarget.Width, args.BackendRenderTarget.Height);
         WriteEvidence();
     }
@@ -77,7 +95,7 @@ public sealed class DorotiMauiSurface : SKGLView, IDisposable
             if (diagnostics.Frame.Replayed > 0)
                 Dispatcher.Dispatch(() => Application.Current?.Quit());
             else
-                Dispatcher.Dispatch(InvalidateSurface);
+                Dispatcher.Dispatch(_skiaView.InvalidateSurface);
         }
     }
 
@@ -85,13 +103,64 @@ public sealed class DorotiMauiSurface : SKGLView, IDisposable
     {
         if (_disposed) return;
         _disposed = true;
-        PaintSurface -= PaintGpuSurface;
+        _skiaView.PaintSurface -= PaintGpuSurface;
         HandlerChanged -= HandleHandlerChanged;
+        Loaded -= HandleLoaded;
+        Unloaded -= HandleUnloaded;
+        DetachWindow();
         _host?.Dispose();
         _session?.Dispose();
         _boundary?.Dispose();
         _host = null;
         _session = null;
         _boundary = null;
+        _textInput.Dispose();
+    }
+
+    private static T CreateHiddenInput<T>() where T : InputView, new() => new()
+    {
+        Opacity = 0.01,
+        WidthRequest = 1,
+        HeightRequest = 1,
+        HorizontalOptions = LayoutOptions.Start,
+        VerticalOptions = LayoutOptions.Start,
+        ZIndex = 1,
+    };
+
+    private void HandleLoaded(object? sender, EventArgs args)
+    {
+        if (Window is not { } window || ReferenceEquals(window, _window)) return;
+        DetachWindow();
+        _window = window;
+        window.Activated += HandleActivated;
+        window.Deactivated += HandleDeactivated;
+        window.Resumed += HandleResumed;
+        window.Stopped += HandleStopped;
+        window.Destroying += HandleDestroying;
+        _host?.NotifyLifecycle(_viewId, AppLifecycleState.resumed);
+    }
+
+    private void HandleUnloaded(object? sender, EventArgs args) =>
+        _host?.NotifyLifecycle(_viewId, AppLifecycleState.detached);
+
+    private void HandleActivated(object? sender, EventArgs args) => _host?.NotifyLifecycle(_viewId, AppLifecycleState.resumed);
+    private void HandleDeactivated(object? sender, EventArgs args) => _host?.NotifyLifecycle(_viewId, AppLifecycleState.inactive);
+    private void HandleResumed(object? sender, EventArgs args) => _host?.NotifyLifecycle(_viewId, AppLifecycleState.resumed);
+    private void HandleStopped(object? sender, EventArgs args) => _host?.NotifyLifecycle(_viewId, AppLifecycleState.paused);
+    private void HandleDestroying(object? sender, EventArgs args)
+    {
+        _host?.NotifyCloseRequested(_viewId);
+        _host?.NotifyLifecycle(_viewId, AppLifecycleState.detached);
+    }
+
+    private void DetachWindow()
+    {
+        if (_window is null) return;
+        _window.Activated -= HandleActivated;
+        _window.Deactivated -= HandleDeactivated;
+        _window.Resumed -= HandleResumed;
+        _window.Stopped -= HandleStopped;
+        _window.Destroying -= HandleDestroying;
+        _window = null;
     }
 }

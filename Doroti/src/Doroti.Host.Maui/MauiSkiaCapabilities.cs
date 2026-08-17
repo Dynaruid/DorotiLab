@@ -34,6 +34,7 @@ internal sealed class MauiSkiaCapabilities :
     {
         _viewId = viewId;
         _host = host;
+        _host.SemanticsAction += HandleSemanticsAction;
     }
 
     private Action<SemanticsActionEvent>? _action;
@@ -171,7 +172,30 @@ internal sealed class MauiSkiaCapabilities :
                 node.label,
                 node.value,
                 role = node.role.ToString(),
-                actions = node.actions.ToString(),
+                actions = (long)node.actions,
+                children = node.children,
+                flags = node.flags is null ? null : new
+                {
+                    @checked = node.flags.isChecked.ToString(),
+                    selected = node.flags.isSelected.toBoolOrNull(),
+                    enabled = node.flags.isEnabled.toBoolOrNull(),
+                    toggled = node.flags.isToggled.toBoolOrNull(),
+                    expanded = node.flags.isExpanded.toBoolOrNull(),
+                    required = node.flags.isRequired.toBoolOrNull(),
+                    focused = node.flags.isFocused.toBoolOrNull(),
+                    button = node.flags.isButton,
+                    textField = node.flags.isTextField,
+                    header = node.flags.isHeader,
+                    hidden = node.flags.isHidden,
+                    image = node.flags.isImage,
+                    liveRegion = node.flags.isLiveRegion,
+                    multiline = node.flags.isMultiline,
+                    readOnly = node.flags.isReadOnly,
+                    link = node.flags.isLink,
+                    slider = node.flags.isSlider,
+                },
+                node.textSelectionBase,
+                node.textSelectionExtent,
                 rect = new[] { node.rect.left, node.rect.top, node.rect.right, node.rect.bottom },
             });
         _host.UpdateSemantics(System.Text.Json.JsonSerializer.Serialize(new { generation = update.generation, nodes }));
@@ -181,6 +205,7 @@ internal sealed class MauiSkiaCapabilities :
     {
         if (_disposed) return;
         _disposed = true;
+        _host.SemanticsAction -= HandleSemanticsAction;
         lock (_gate)
         {
             _pendingFrame = null;
@@ -188,6 +213,11 @@ internal sealed class MauiSkiaCapabilities :
             _invalidate = null;
         }
         _semantics.Clear();
+    }
+
+    private void HandleSemanticsAction(int nodeId, SemanticsAction action, object? arguments)
+    {
+        if (!_disposed) _action?.Invoke(new(_viewId, nodeId, action, arguments));
     }
 
     private sealed record SceneFrame(IReadOnlyList<SceneCommand> Commands);

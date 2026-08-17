@@ -147,7 +147,7 @@ function Write-Composite {
         notVerified = @(
             [ordered]@{ mode='trimmed-product'; blocker='framework reflection roots have not been audited; the current product baseline pins PublishTrimmed=false' },
             [ordered]@{ mode='wasm-aot-product'; blocker='the release suite validates the native-linked interpreter product; product AOT and trimming require their own framework closure' },
-            [ordered]@{ mode='browser-live-remaining'; owner='browser-live'; blocker='keyboard, IME, clipboard, resize and interactive ARIA actions remain outside the recorded canvas and basic-pointer smoke' }
+            [ordered]@{ mode='browser-live-remaining'; owner='browser-live'; blocker='keyboard, IME, clipboard, resize and interactive ARIA actions are implemented but remain outside the recorded canvas and basic-pointer smoke' }
         )
     })
 }
@@ -214,6 +214,7 @@ if ($Shard -eq 'Hosting') {
     $skia = Get-Content -LiteralPath (Join-Path $hostRoot 'BrowserSkiaCapabilities.cs') -Raw
     $frameworkHost = Get-Content -LiteralPath (Join-Path $hostRoot 'BrowserFrameworkHost.cs') -Raw
     $script = Get-Content -LiteralPath (Join-Path $hostRoot 'Web/doroti.web.ts') -Raw
+    $keyMap = Get-Content -LiteralPath (Join-Path $hostRoot 'BrowserKeyMap.cs') -Raw
     $loader = Get-Content -LiteralPath (Join-Path $hostRoot 'Web/doroti.loader.ts') -Raw
     $loaderTypes = Get-Content -LiteralPath (Join-Path $hostRoot 'Web/types/doroti-loader/index.d.ts') -Raw
     $loaderContract = Read-Json (Join-Path $dorotiRoot 'validation/web-typescript/loader-contract.json')
@@ -228,6 +229,10 @@ if ($Shard -eq 'Hosting') {
     foreach ($token in @('requestAnimationFrame','ResizeObserver','devicePixelRatio','getContext("webgl2"','getCoalescedEvents','setPointerCapture','compositionstart','navigator.clipboard','webglcontextlost','webglcontextrestored')) {
         Assert-True ($script.Contains($token, [StringComparison]::Ordinal)) "browser bridge token $token"
     }
+    foreach ($token in @('releasePressedKeys','setViewFocus','dispatchSemanticsAction','applySemanticsFlags','languagechange','prefers-color-scheme')) {
+        Assert-True ($script.Contains($token, [StringComparison]::Ordinal)) "browser interaction token $token"
+    }
+    Assert-True ($keyMap -match 'HidPlane' -and $keyMap -match 'LogicalKeys' -and $contracts -notmatch 'StableKey\(') 'Flutter-compatible browser key identifiers'
     Assert-True ($script -notmatch 'getContext\(["'']2d["'']' -and $script -notmatch 'canvaskit') 'software and CanvasKit fallback absence'
     $managedImports = @([regex]::Matches($contracts, 'JSImport\("([A-Za-z0-9]+)"') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
     $typescriptExports = @([regex]::Matches($script, '(?m)^export (?:async )?function ([A-Za-z0-9]+)') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)

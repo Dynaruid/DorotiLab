@@ -1229,7 +1229,7 @@ internal sealed class _HostTextInputControl : TextInputControl
             DartUiInvocation.Managed("package:flutter/services.dart#TextInput.attach"));
         _capability.EditingStateChanged += OnEditingStateChanged;
         _capability.ActionPerformed += OnActionPerformed;
-        _capability.SetClient(ToHost(client.currentTextEditingValue ?? TextEditingValue.empty));
+        _capability.SetClient(ToHost(configuration), ToHost(client.currentTextEditingValue ?? TextEditingValue.empty));
     }
 
     public override void detach(TextInputClient client)
@@ -1281,9 +1281,17 @@ internal sealed class _HostTextInputControl : TextInputControl
         _client?.performAction(action switch
         {
             DorotiTextInputAction.done => TextInputAction.done,
+            DorotiTextInputAction.go => TextInputAction.go,
+            DorotiTextInputAction.search => TextInputAction.search,
+            DorotiTextInputAction.send => TextInputAction.send,
             DorotiTextInputAction.next => TextInputAction.next,
             DorotiTextInputAction.previous => TextInputAction.previous,
+            DorotiTextInputAction.continueAction => TextInputAction.continueAction,
+            DorotiTextInputAction.join => TextInputAction.join,
+            DorotiTextInputAction.route => TextInputAction.route,
+            DorotiTextInputAction.emergencyCall => TextInputAction.emergencyCall,
             DorotiTextInputAction.newline => TextInputAction.newline,
+            DorotiTextInputAction.unspecified => TextInputAction.unspecified,
             _ => TextInputAction.none,
         });
     }
@@ -1317,6 +1325,16 @@ internal sealed class _HostTextInputControl : TextInputControl
                 checked((int)selection.extentOffset)),
             composing);
     }
+
+    private static DorotiTextInputConfiguration ToHost(TextInputConfiguration configuration) => new(
+        (DorotiTextInputType)Math.Clamp(configuration.inputType.index, 0, 12),
+        (DorotiTextInputAction)configuration.inputAction,
+        (DorotiTextCapitalization)configuration.textCapitalization,
+        configuration.readOnly,
+        configuration.obscureText,
+        configuration.autocorrect,
+        configuration.enableSuggestions,
+        configuration.actionLabel);
 }
 
 internal class _PlatformTextInputControl : TextInputControl

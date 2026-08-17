@@ -73,7 +73,10 @@ internal static partial class BrowserInterop
     internal static partial string RequestFocus(int hostId, bool focused);
 
     [JSImport("setTextInputState", Module)]
-    internal static partial void SetTextInputState(int hostId, string text, int selectionBase, int selectionExtent);
+    internal static partial void SetTextInputState(
+        int hostId, string text, int selectionBase, int selectionExtent,
+        string inputMode, string enterKeyHint, bool readOnly, bool obscureText,
+        string autocapitalize, bool autocorrect, int inputAction, bool multiline);
 
     [JSImport("setCaretRect", Module)]
     internal static partial void SetCaretRect(int hostId, double left, double top, double width, double height);
@@ -122,8 +125,8 @@ internal static partial class BrowserInterop
 
     [JSExport]
     internal static void DispatchKey(
-        int hostId, bool down, bool repeat, string code, string key, double timestampMilliseconds) =>
-        BrowserHostAdapter.DispatchKey(hostId, down, repeat, code, key, timestampMilliseconds);
+        int hostId, bool down, bool repeat, bool synthesized, string code, string key, double timestampMilliseconds) =>
+        BrowserHostAdapter.DispatchKey(hostId, down, repeat, synthesized, code, key, timestampMilliseconds);
 
     [JSExport]
     internal static void DispatchFocus(int hostId, bool focused, double timestampMilliseconds) =>
@@ -137,6 +140,10 @@ internal static partial class BrowserInterop
     [JSExport]
     internal static void DispatchTextAction(int hostId, int action) =>
         BrowserHostAdapter.DispatchTextAction(hostId, action);
+
+    [JSExport]
+    internal static void DispatchSemanticsAction(int hostId, long nodeId, long action, string argumentsJson) =>
+        BrowserHostAdapter.DispatchSemanticsAction(hostId, nodeId, action, argumentsJson);
 
     internal static BrowserHostSnapshot ParseSnapshot(string json) =>
         JsonSerializer.Deserialize<BrowserHostSnapshot>(json, new JsonSerializerOptions
@@ -190,6 +197,7 @@ public sealed class BrowserHostAdapter :
     private int _nextCallbackId;
     private BrowserHostSnapshot _snapshot;
     private PlatformConfiguration _configuration;
+    private DorotiTextInputConfiguration _textInputConfiguration;
     private bool _disposed;
 
     public BrowserHostAdapter(ulong viewId, string canvasId, Size logicalSize)
@@ -247,6 +255,8 @@ public sealed class BrowserHostAdapter :
         BrowserInterop.UpdateSemantics(HostId, json);
     }
 
+    internal event Action<long, long, string>? SemanticsAction;
+
     public async ValueTask<string?> GetClipboardTextAsync(CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -272,10 +282,20 @@ public sealed class BrowserHostAdapter :
             BrowserInterop.RequestFocus(HostId, state == ViewFocusState.focused)));
     }
 
-    public void SetClient(DorotiTextEditingState initialState) => UpdateState(initialState);
+    public void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState initialState)
+    {
+        _textInputConfiguration = configuration;
+        UpdateState(initialState);
+    }
 
     public void UpdateState(DorotiTextEditingState state) => BrowserInterop.SetTextInputState(
-        HostId, state.text, state.selection.baseOffset, state.selection.extentOffset);
+        HostId, state.text, state.selection.baseOffset, state.selection.extentOffset,
+        InputMode(_textInputConfiguration.inputType), EnterKeyHint(_textInputConfiguration.inputAction),
+        _textInputConfiguration.readOnly, _textInputConfiguration.obscureText,
+        AutoCapitalize(_textInputConfiguration.textCapitalization),
+        _textInputConfiguration.autocorrect && _textInputConfiguration.enableSuggestions,
+        (int)_textInputConfiguration.inputAction,
+        _textInputConfiguration.inputType == DorotiTextInputType.multiline);
 
     public void SetCaretRect(Rect logicalRect) => BrowserInterop.SetCaretRect(
         HostId, logicalRect.left, logicalRect.top, logicalRect.width, logicalRect.height);
@@ -402,17 +422,22 @@ public sealed class BrowserHostAdapter :
     }
 
     internal static void DispatchKey(
-        int hostId, bool down, bool repeat, string code, string key, double timestampMilliseconds)
+        int hostId, bool down, bool repeat, bool synthesized, string code, string key, double timestampMilliseconds)
     {
         if (!TryGet(hostId, out var host)) return;
         host.KeyData?.Invoke(new(
             host._viewId,
             TimeSpan.FromMilliseconds(timestampMilliseconds),
             down ? (repeat ? KeyEventType.repeat : KeyEventType.down) : KeyEventType.up,
-            StableKey(code),
-            StableKey(key),
-            false,
-            key.Length == 1 ? key : null));
+            BrowserKeyMap.Physical(code),
+            BrowserKeyMap.Logical(code, key),
+            synthesized,
+            BrowserKeyMap.Character(key)));
+    }
+
+    internal static void DispatchSemanticsAction(int hostId, long nodeId, long action, string argumentsJson)
+    {
+        if (TryGet(hostId, out var host)) host.SemanticsAction?.Invoke(nodeId, action, argumentsJson);
     }
 
     internal static void DispatchFocus(int hostId, bool focused, double timestampMilliseconds)
@@ -509,15 +534,36 @@ public sealed class BrowserHostAdapter :
             false, false, operatingSystem);
     }
 
-    private static long StableKey(string value)
+    private static string InputMode(DorotiTextInputType type) => type switch
     {
-        unchecked
-        {
-            long result = 1469598103934665603;
-            foreach (var character in value) result = (result ^ character) * 1099511628211;
-            return result;
-        }
-    }
+        DorotiTextInputType.number => "decimal",
+        DorotiTextInputType.phone => "tel",
+        DorotiTextInputType.emailAddress => "email",
+        DorotiTextInputType.url => "url",
+        DorotiTextInputType.none => "none",
+        DorotiTextInputType.webSearch => "search",
+        _ => "text",
+    };
+
+    private static string EnterKeyHint(DorotiTextInputAction action) => action switch
+    {
+        DorotiTextInputAction.done => "done",
+        DorotiTextInputAction.go => "go",
+        DorotiTextInputAction.search => "search",
+        DorotiTextInputAction.send => "send",
+        DorotiTextInputAction.next => "next",
+        DorotiTextInputAction.previous => "previous",
+        DorotiTextInputAction.newline => "enter",
+        _ => string.Empty,
+    };
+
+    private static string AutoCapitalize(DorotiTextCapitalization capitalization) => capitalization switch
+    {
+        DorotiTextCapitalization.words => "words",
+        DorotiTextCapitalization.sentences => "sentences",
+        DorotiTextCapitalization.characters => "characters",
+        _ => "none",
+    };
 
     private static string CursorName(DorotiMouseCursorKind cursor) => cursor switch
     {

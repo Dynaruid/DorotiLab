@@ -85,11 +85,55 @@ public readonly record struct DorotiTextEditingState(
 public enum DorotiTextInputAction
 {
     none,
+    unspecified,
     done,
+    go,
+    search,
+    send,
     next,
     previous,
+    continueAction,
+    join,
+    route,
+    emergencyCall,
     newline,
 }
+
+public enum DorotiTextInputType
+{
+    text,
+    multiline,
+    number,
+    phone,
+    datetime,
+    emailAddress,
+    url,
+    visiblePassword,
+    name,
+    streetAddress,
+    none,
+    webSearch,
+    twitter,
+}
+
+public enum DorotiTextCapitalization
+{
+    words,
+    sentences,
+    characters,
+    none,
+}
+
+/// <summary>Host-neutral IME policy supplied by Flutter Services.</summary>
+public readonly record struct DorotiTextInputConfiguration(
+    DorotiTextInputType inputType,
+    DorotiTextInputAction inputAction,
+    DorotiTextCapitalization textCapitalization,
+    bool readOnly,
+    bool obscureText,
+    bool autocorrect,
+    bool enableSuggestions,
+    string? actionLabel = null);
 
 /// <summary>Avalonia-backed IME transport. Editing policy remains in Flutter Services.</summary>
 public interface ITextInputHostCapability
@@ -98,7 +142,7 @@ public interface ITextInputHostCapability
 
     event Action<DorotiTextInputAction>? ActionPerformed;
 
-    void SetClient(DorotiTextEditingState initialState);
+    void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState initialState);
 
     void UpdateState(DorotiTextEditingState state);
 

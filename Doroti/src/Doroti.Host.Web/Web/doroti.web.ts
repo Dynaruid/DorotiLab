@@ -3,10 +3,11 @@ interface ManagedCallbacks {
   dispatchSnapshot(hostId: number, snapshotJson: string): void;
   dispatchPointerBatch(hostId: number, phase: number, kind: number, pointerId: number, buttons: number, modifiers: number, samples: number[]): void;
   dispatchWheel(hostId: number, x: number, y: number, deltaX: number, deltaY: number, timestamp: number): void;
-  dispatchKey(hostId: number, pressed: boolean, repeat: boolean, code: string, key: string, timestamp: number): void;
+  dispatchKey(hostId: number, pressed: boolean, repeat: boolean, synthesized: boolean, code: string, key: string, timestamp: number): void;
   dispatchFocus(hostId: number, focused: boolean, timestamp: number): void;
   dispatchTextEditing(hostId: number, text: string, selectionBase: number, selectionExtent: number, composingBase: number, composingExtent: number): void;
   dispatchTextAction(hostId: number, action: number): void;
+  dispatchSemanticsAction(hostId: number, nodeId: number, action: number, argumentsJson: string): void;
 }
 
 interface GpuIdentity {
@@ -37,6 +38,17 @@ interface BrowserHost {
   listeners: ListenerRegistration[];
   composing: boolean;
   compositionStart: number;
+  viewFocused: boolean;
+  pressedKeys: Map<string, string>;
+  inputAction: number;
+  multiline: boolean;
+}
+
+interface SemanticsFlags {
+  checked?: string; selected?: boolean; enabled?: boolean; toggled?: boolean;
+  expanded?: boolean; required?: boolean; focused?: boolean; button?: boolean;
+  textField?: boolean; header?: boolean; hidden?: boolean; image?: boolean;
+  liveRegion?: boolean; multiline?: boolean; readOnly?: boolean; link?: boolean; slider?: boolean;
 }
 
 interface SemanticsNode {
@@ -44,6 +56,11 @@ interface SemanticsNode {
   role?: string;
   label?: string;
   value?: string;
+  actions?: number;
+  children?: number[];
+  flags?: SemanticsFlags;
+  textSelectionBase?: number;
+  textSelectionExtent?: number;
   rect: [number, number, number, number];
 }
 
@@ -75,6 +92,7 @@ interface DorotiAssemblyExports {
           DispatchFocus: ManagedCallbacks["dispatchFocus"];
           DispatchTextEditing: ManagedCallbacks["dispatchTextEditing"];
           DispatchTextAction: ManagedCallbacks["dispatchTextAction"];
+          DispatchSemanticsAction: ManagedCallbacks["dispatchSemanticsAction"];
         };
       };
     };
@@ -96,7 +114,7 @@ function snapshot(host: BrowserHost): string {
     logicalHeight: host.logicalHeight,
     devicePixelRatio: ratio,
     visible: document.visibilityState !== "hidden",
-    focused: document.hasFocus(),
+    focused: document.hasFocus() && host.viewFocused,
     languageTag: navigator.language || "en-US",
     brightness: globalThis.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light",
     operatingSystem: browserOperatingSystem(),
@@ -141,7 +159,7 @@ function gpuIdentity(canvas: HTMLCanvasElement): GpuIdentity {
 export function configureManagedCallbacks(callbacks: ManagedCallbacks): void {
   const required: (keyof ManagedCallbacks)[] = [
     "dispatchAnimationFrame", "dispatchSnapshot", "dispatchPointerBatch", "dispatchWheel",
-    "dispatchKey", "dispatchFocus", "dispatchTextEditing", "dispatchTextAction",
+    "dispatchKey", "dispatchFocus", "dispatchTextEditing", "dispatchTextAction", "dispatchSemanticsAction",
   ];
   if (!callbacks || required.some((name) => typeof callbacks[name] !== "function")) {
     throw new Error("Doroti browser managed callback ABI v1 is incomplete.");
@@ -165,6 +183,7 @@ export async function initializeManagedCallbacks(): Promise<"ready"> {
     dispatchFocus: interop.DispatchFocus,
     dispatchTextEditing: interop.DispatchTextEditing,
     dispatchTextAction: interop.DispatchTextAction,
+    dispatchSemanticsAction: interop.DispatchSemanticsAction,
   });
   return "ready";
 }
@@ -182,7 +201,8 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   const host: BrowserHost = {
     id: hostId, canvas, input, semantics, logicalWidth, logicalHeight,
     generation: 0, surfaceGeneration: 1, gpu: gpuIdentity(canvas), observers: [], listeners: [],
-    composing: false, compositionStart: -1,
+    composing: false, compositionStart: -1, viewFocused: false, pressedKeys: new Map(),
+    inputAction: 2, multiline: false,
   };
   const observe = (target: EventTarget, name: string, handler: EventListener): void => {
     target.addEventListener(name, handler);
@@ -190,8 +210,11 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   };
   observe(document, "visibilitychange", () => emit(host));
   observe(globalThis, "focus", () => emit(host));
-  observe(globalThis, "blur", () => emit(host));
+  observe(globalThis, "blur", () => { releasePressedKeys(host); setViewFocus(host, false, performance.now()); emit(host); });
   observe(globalThis, "resize", () => { host.surfaceGeneration++; emit(host); });
+  observe(globalThis, "languagechange", () => emit(host));
+  const colorScheme = globalThis.matchMedia?.("(prefers-color-scheme: dark)");
+  if (colorScheme) observe(colorScheme, "change", () => emit(host));
 
   const pointerKind = (type: string): number => type === "touch" ? 1 : type === "pen" ? 2 : 0;
   const pointerSamples = (event: PointerEvent): number[] => {
@@ -225,24 +248,40 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     wheel.preventDefault();
     requireManaged().dispatchWheel(host.id, wheel.offsetX, wheel.offsetY, wheel.deltaX, wheel.deltaY, wheel.timeStamp);
   });
-  observe(canvas, "keydown", (event) => {
+  const belongsToHost = (target: EventTarget | null): boolean =>
+    target === canvas || target === input || (target instanceof Node && semantics.contains(target));
+  observe(document, "keydown", (event) => {
     const key = event as KeyboardEvent;
+    if (!host.viewFocused || !belongsToHost(document.activeElement)) return;
     if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " ", "Tab"].includes(key.key)) key.preventDefault();
-    requireManaged().dispatchKey(host.id, true, key.repeat, key.code, key.key, key.timeStamp);
+    host.pressedKeys.set(key.code, key.key);
+    requireManaged().dispatchKey(host.id, true, key.repeat, false, key.code, key.key, key.timeStamp);
   });
-  observe(canvas, "keyup", (event) => {
+  observe(document, "keyup", (event) => {
     const key = event as KeyboardEvent;
-    requireManaged().dispatchKey(host.id, false, false, key.code, key.key, key.timeStamp);
+    if (!host.pressedKeys.has(key.code)) return;
+    host.pressedKeys.delete(key.code);
+    requireManaged().dispatchKey(host.id, false, false, false, key.code, key.key, key.timeStamp);
   });
-  observe(canvas, "focus", (event) => requireManaged().dispatchFocus(host.id, true, event.timeStamp));
-  observe(canvas, "blur", (event) => requireManaged().dispatchFocus(host.id, false, event.timeStamp));
+  observe(canvas, "focus", (event) => setViewFocus(host, true, event.timeStamp));
+  observe(input, "focus", (event) => setViewFocus(host, true, event.timeStamp));
+  observe(semantics, "focusin", (event) => setViewFocus(host, true, event.timeStamp));
+  observe(document, "focusout", (event) => queueMicrotask(() => {
+    if (!belongsToHost(document.activeElement)) {
+      releasePressedKeys(host);
+      setViewFocus(host, false, event.timeStamp);
+    }
+  }));
   observe(input, "compositionstart", () => { host.composing = true; host.compositionStart = input.selectionStart; emitText(host); });
   observe(input, "compositionupdate", () => emitText(host));
   observe(input, "compositionend", () => { host.composing = false; host.compositionStart = -1; emitText(host); });
   observe(input, "input", () => emitText(host));
   observe(input, "keydown", (event) => {
     const key = event as KeyboardEvent;
-    if (key.key === "Enter" && !key.shiftKey) requireManaged().dispatchTextAction(host.id, 1);
+    if (key.key === "Enter" && !key.shiftKey && (!host.multiline || host.inputAction !== 12)) {
+      key.preventDefault();
+      requireManaged().dispatchTextAction(host.id, host.inputAction);
+    }
   });
   observe(canvas, "webglcontextlost", (event) => { event.preventDefault(); host.surfaceGeneration++; emit(host); });
   observe(canvas, "webglcontextrestored", () => { host.surfaceGeneration++; host.gpu = gpuIdentity(canvas); emit(host); });
@@ -298,6 +337,7 @@ export function requestFrame(hostId: number, callbackId: number): void {
 export function closeHost(hostId: number): void {
   const host = hosts.get(hostId);
   if (!host) return;
+  releasePressedKeys(host);
   for (const observer of host.observers) observer.disconnect();
   for (const listener of host.listeners) listener.target.removeEventListener(listener.name, listener.handler);
   hosts.delete(hostId);
@@ -311,8 +351,20 @@ export function setCursor(hostId: number, cursor: string): void {
   requireHost(hostId).canvas.style.cursor = cursor;
 }
 
-export function setTextInputState(hostId: number, text: string, selectionBase: number, selectionExtent: number): void {
+export function setTextInputState(
+  hostId: number, text: string, selectionBase: number, selectionExtent: number,
+  inputMode: string, enterKeyHint: string, readOnly: boolean, obscureText: boolean,
+  autocapitalize: string, autocorrect: boolean, inputAction: number, multiline: boolean): void {
   const host = requireHost(hostId);
+  host.input.inputMode = inputMode as typeof host.input.inputMode;
+  host.input.enterKeyHint = enterKeyHint;
+  host.input.readOnly = readOnly;
+  host.input.autocapitalize = autocapitalize;
+  host.input.autocomplete = autocorrect ? "on" : "off";
+  host.input.spellcheck = autocorrect;
+  host.inputAction = inputAction;
+  host.multiline = multiline;
+  host.input.style.setProperty("-webkit-text-security", obscureText ? "disc" : "none");
   host.input.value = text;
   host.input.hidden = false;
   host.input.setSelectionRange(selectionBase, selectionExtent);
@@ -351,18 +403,65 @@ export function updateSemantics(hostId: number, json: string): void {
   const update = JSON.parse(json) as SemanticsUpdate;
   host.semantics.replaceChildren();
   host.semantics.dataset.generation = String(update.generation);
+  const elements = new Map<number, HTMLElement>();
   for (const node of update.nodes ?? []) {
     const element = document.createElement("div");
     element.dataset.dorotiSemanticsId = String(node.id);
     element.setAttribute("role", semanticsRole(node.role));
     if (node.label) element.setAttribute("aria-label", node.label);
     if (node.value) element.setAttribute("aria-valuetext", node.value);
+    applySemanticsFlags(element, node.flags);
+    const actions = node.actions ?? 0;
+    if (actions !== 0) {
+      element.tabIndex = 0;
+      element.style.pointerEvents = "auto";
+      if ((actions & 1) !== 0) element.addEventListener("click", () => dispatchSemantics(host, node.id, 1));
+      if ((actions & (1 << 6)) !== 0) element.addEventListener("keydown", (event) => {
+        if ((event as KeyboardEvent).key === "ArrowUp") dispatchSemantics(host, node.id, 1 << 6);
+      });
+      if ((actions & (1 << 7)) !== 0) element.addEventListener("keydown", (event) => {
+        if ((event as KeyboardEvent).key === "ArrowDown") dispatchSemantics(host, node.id, 1 << 7);
+      });
+      element.addEventListener("focus", () => {
+        if ((actions & (1 << 22)) !== 0) dispatchSemantics(host, node.id, 1 << 22);
+      });
+    }
+    if (node.flags?.textField) {
+      element.setAttribute("contenteditable", node.flags.readOnly ? "false" : "true");
+      element.textContent = node.value ?? "";
+      element.addEventListener("input", () => dispatchSemantics(host, node.id, 1 << 21, element.textContent ?? ""));
+      const selection = () => {
+        if ((actions & (1 << 11)) === 0) return;
+        const offsets = textSelectionOffsets(element);
+        if (offsets) dispatchSemantics(host, node.id, 1 << 11, offsets);
+      };
+      element.addEventListener("keyup", selection);
+      element.addEventListener("mouseup", selection);
+      if ((actions & (1 << 12)) !== 0) element.addEventListener("copy", () => dispatchSemantics(host, node.id, 1 << 12));
+      if ((actions & (1 << 13)) !== 0) element.addEventListener("cut", () => dispatchSemantics(host, node.id, 1 << 13));
+      if ((actions & (1 << 14)) !== 0) element.addEventListener("paste", () => dispatchSemantics(host, node.id, 1 << 14));
+    }
+    if ((actions & (1 << 18)) !== 0) element.addEventListener("keydown", (event) => {
+      if ((event as KeyboardEvent).key === "Escape") dispatchSemantics(host, node.id, 1 << 18);
+    });
     element.style.position = "absolute";
     element.style.left = `${node.rect[0]}px`;
     element.style.top = `${node.rect[1]}px`;
     element.style.width = `${Math.max(0, node.rect[2] - node.rect[0])}px`;
     element.style.height = `${Math.max(0, node.rect[3] - node.rect[1])}px`;
-    host.semantics.append(element);
+    elements.set(Number(node.id), element);
+  }
+  const childIds = new Set<number>();
+  for (const node of update.nodes ?? []) {
+    const parent = elements.get(Number(node.id));
+    if (!parent) continue;
+    for (const childId of node.children ?? []) {
+      const child = elements.get(childId);
+      if (child) { parent.append(child); childIds.add(childId); }
+    }
+  }
+  for (const [id, element] of elements) {
+    if (!childIds.has(id)) host.semantics.append(element);
   }
 }
 
@@ -407,13 +506,83 @@ function emitText(host: BrowserHost): void {
   requireManaged().dispatchTextEditing(host.id, host.input.value, start, end, composingBase, composingExtent);
 }
 
+function setViewFocus(host: BrowserHost, focused: boolean, timestamp: number): void {
+  if (host.viewFocused === focused) return;
+  host.viewFocused = focused;
+  requireManaged().dispatchFocus(host.id, focused, timestamp);
+  emit(host);
+}
+
+function releasePressedKeys(host: BrowserHost): void {
+  const timestamp = performance.now();
+  for (const [code, key] of host.pressedKeys) {
+    requireManaged().dispatchKey(host.id, false, false, true, code, key, timestamp);
+  }
+  host.pressedKeys.clear();
+}
+
+function dispatchSemantics(host: BrowserHost, nodeId: number | string, action: number, args: unknown = null): void {
+  requireManaged().dispatchSemanticsAction(host.id, Number(nodeId), action, JSON.stringify(args));
+}
+
+function textSelectionOffsets(element: HTMLElement): { base: number; extent: number } | null {
+  const selection = globalThis.getSelection?.();
+  if (!selection || selection.rangeCount === 0 || !element.contains(selection.anchorNode) || !element.contains(selection.focusNode)) return null;
+  const offset = (node: Node | null, nodeOffset: number): number => {
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    if (node) range.setEnd(node, nodeOffset);
+    return range.toString().length;
+  };
+  return { base: offset(selection.anchorNode, selection.anchorOffset), extent: offset(selection.focusNode, selection.focusOffset) };
+}
+
+function applySemanticsFlags(element: HTMLElement, flags: SemanticsFlags | undefined): void {
+  if (!flags) return;
+  if (flags.hidden) element.setAttribute("aria-hidden", "true");
+  if (flags.liveRegion) element.setAttribute("aria-live", "polite");
+  if (flags.checked && flags.checked !== "none") element.setAttribute("aria-checked", flags.checked === "mixed" ? "mixed" : String(flags.checked === "isTrue"));
+  if (flags.selected !== undefined && flags.selected !== null) element.setAttribute("aria-selected", String(flags.selected));
+  if (flags.enabled === false) element.setAttribute("aria-disabled", "true");
+  if (flags.toggled !== undefined && flags.toggled !== null) element.setAttribute("aria-pressed", String(flags.toggled));
+  if (flags.expanded !== undefined && flags.expanded !== null) element.setAttribute("aria-expanded", String(flags.expanded));
+  if (flags.required !== undefined && flags.required !== null) element.setAttribute("aria-required", String(flags.required));
+  if (flags.multiline) element.setAttribute("aria-multiline", "true");
+  if (flags.readOnly) element.setAttribute("aria-readonly", "true");
+}
+
 function semanticsRole(role: string | undefined): string {
   const key = String(role ?? "").toLowerCase();
+  if (key.includes("alertdialog")) return "alertdialog";
+  if (key.includes("dialog")) return "dialog";
+  if (key.includes("navigation")) return "navigation";
+  if (key.includes("contentinfo")) return "contentinfo";
+  if (key.includes("complementary")) return "complementary";
+  if (key === "main") return "main";
+  if (key.includes("progressbar")) return "progressbar";
+  if (key.includes("spinbutton")) return "spinbutton";
+  if (key.includes("combobox")) return "combobox";
+  if (key.includes("menuitemcheckbox")) return "menuitemcheckbox";
+  if (key.includes("menuitemradio")) return "menuitemradio";
+  if (key.includes("menuitem")) return "menuitem";
+  if (key.includes("menubar")) return "menubar";
+  if (key === "menu") return "menu";
+  if (key.includes("tabpanel")) return "tabpanel";
+  if (key.includes("tabbar")) return "tablist";
+  if (key === "tab") return "tab";
+  if (key.includes("columnheader")) return "columnheader";
+  if (key === "row") return "row";
+  if (key === "cell") return "cell";
+  if (key === "table") return "table";
   if (key.includes("button")) return "button";
   if (key.includes("textfield")) return "textbox";
   if (key.includes("slider")) return "slider";
   if (key.includes("listitem")) return "listitem";
   if (key.includes("list")) return "list";
   if (key.includes("image")) return "img";
+  if (key.includes("status")) return "status";
+  if (key.includes("alert")) return "alert";
+  if (key.includes("form")) return "form";
+  if (key.includes("region")) return "region";
   return "group";
 }

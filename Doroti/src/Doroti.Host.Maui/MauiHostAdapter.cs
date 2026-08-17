@@ -25,6 +25,9 @@ internal sealed class MauiHostAdapter :
     private readonly object _gate = new();
     private readonly Queue<Action<TimeSpan>> _frameCallbacks = [];
     private readonly IMauiSemanticsBridge _semantics;
+    private readonly MauiTextInputBridge _textInput;
+    private readonly Dictionary<ulong, (double X, double Y)> _pointerPositions = [];
+    private readonly IDisposable _nativeInput;
     private Size _logicalSize;
     private double _density;
     private long _metricsGeneration = 1;
@@ -35,10 +38,12 @@ internal sealed class MauiHostAdapter :
     private bool _invalidatePending;
     private bool _disposed;
 
-    internal MauiHostAdapter(ulong viewId, SKGLView view, Size logicalSize, IMauiSemanticsBridge? semantics = null)
+    internal MauiHostAdapter(ulong viewId, SKGLView view, MauiTextInputBridge textInput,
+        Size logicalSize, IMauiSemanticsBridge? semantics = null)
     {
         _viewId = viewId;
         _view = view ?? throw new ArgumentNullException(nameof(view));
+        _textInput = textInput ?? throw new ArgumentNullException(nameof(textInput));
         _logicalSize = logicalSize ?? throw new ArgumentNullException(nameof(logicalSize));
         _density = Math.Max(1, DeviceDisplay.Current.MainDisplayInfo.Density);
         _semantics = semantics ?? new NullMauiSemanticsBridge();
@@ -46,6 +51,14 @@ internal sealed class MauiHostAdapter :
         _view.EnableTouchEvents = true;
         _view.Touch += HandleTouch;
         _view.SizeChanged += HandleSizeChanged;
+        _view.Focused += HandleFocused;
+        _view.Unfocused += HandleUnfocused;
+        _textInput.EditingStateChanged += HandleEditingStateChanged;
+        _textInput.ActionPerformed += HandleActionPerformed;
+        _textInput.FocusChanged += HandleTextFocusChanged;
+        if (Application.Current is { } application)
+            application.RequestedThemeChanged += HandleRequestedThemeChanged;
+        _nativeInput = MauiNativeInput.Attach(_view, _textInput, _viewId, data => KeyData?.Invoke(data));
     }
 
     internal MauiSurfaceSnapshot Snapshot { get; private set; } = new(
@@ -84,6 +97,16 @@ internal sealed class MauiHostAdapter :
         ObjectDisposedException.ThrowIf(_disposed, this);
         RequestInvalidate();
         LifecycleChanged?.Invoke(AppLifecycleState.resumed);
+    }
+
+    internal void NotifyLifecycle(AppLifecycleState state)
+    {
+        if (!_disposed) LifecycleChanged?.Invoke(state);
+    }
+
+    internal void NotifyCloseRequested()
+    {
+        if (!_disposed) CloseRequested?.Invoke();
     }
 
     public void Resize(Size logicalSize)
@@ -139,7 +162,11 @@ internal sealed class MauiHostAdapter :
 
     private object? _lastContext;
 
-    internal void UpdateSemantics(string serializedTree) => _semantics.Update(serializedTree);
+    internal event Action<int, SemanticsAction, object?>? SemanticsAction;
+
+    internal void UpdateSemantics(string serializedTree) =>
+        _semantics.Update(serializedTree, (nodeId, action, arguments) =>
+            SemanticsAction?.Invoke(nodeId, action, arguments));
 
     internal void RequestInvalidate()
     {
@@ -159,7 +186,8 @@ internal sealed class MauiHostAdapter :
     public void RequestFocus(ViewFocusState state, ViewFocusDirection direction)
     {
         _ = direction;
-        FocusData?.Invoke(new(_viewId, state == ViewFocusState.focused, TimeSpan.FromTicks(DateTime.UtcNow.Ticks)));
+        if (state == ViewFocusState.focused) _view.Focus();
+        else _view.Unfocus();
     }
 
     public async ValueTask<string?> GetClipboardTextAsync(CancellationToken cancellationToken = default)
@@ -174,11 +202,12 @@ internal sealed class MauiHostAdapter :
         await Clipboard.Default.SetTextAsync(text ?? string.Empty);
     }
 
-    public void SetCursor(DorotiMouseCursorKind cursor) => _ = cursor;
-    public void SetClient(DorotiTextEditingState initialState) => _ = initialState;
-    public void UpdateState(DorotiTextEditingState state) => _ = state;
-    public void SetCaretRect(Rect logicalRect) => _ = logicalRect;
-    public void ClearClient() { }
+    public void SetCursor(DorotiMouseCursorKind cursor) => MauiNativeInput.SetCursor(_view, cursor);
+    public void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState initialState) =>
+        _textInput.SetClient(configuration, initialState);
+    public void UpdateState(DorotiTextEditingState state) => _textInput.UpdateState(state);
+    public void SetCaretRect(Rect logicalRect) => _textInput.SetCaretRect(logicalRect);
+    public void ClearClient() => _textInput.ClearClient();
 
     public void Close()
     {
@@ -193,6 +222,15 @@ internal sealed class MauiHostAdapter :
         _disposed = true;
         _view.Touch -= HandleTouch;
         _view.SizeChanged -= HandleSizeChanged;
+        _view.Focused -= HandleFocused;
+        _view.Unfocused -= HandleUnfocused;
+        _textInput.EditingStateChanged -= HandleEditingStateChanged;
+        _textInput.ActionPerformed -= HandleActionPerformed;
+        _textInput.FocusChanged -= HandleTextFocusChanged;
+        if (Application.Current is { } application)
+            application.RequestedThemeChanged -= HandleRequestedThemeChanged;
+        _nativeInput.Dispose();
+        _textInput.Dispose();
         lock (_gate) _frameCallbacks.Clear();
         Closed?.Invoke();
         GC.KeepAlive(ConfigurationChanged);
@@ -222,13 +260,50 @@ internal sealed class MauiHostAdapter :
             SKTouchAction.Cancelled => PointerChange.cancel,
             SKTouchAction.Entered => PointerChange.add,
             SKTouchAction.Exited => PointerChange.remove,
+            SKTouchAction.WheelChanged => PointerChange.hover,
             _ => PointerChange.move,
         };
+        var pointer = checked((ulong)Math.Max(0, args.Id));
+        var hasPrevious = _pointerPositions.TryGetValue(pointer, out var previous);
+        var x = args.Location.X;
+        var y = args.Location.Y;
+        var buttons = args.InContact ? args.MouseButton switch
+        {
+            SKMouseButton.Right => 2,
+            SKMouseButton.Middle => 4,
+            _ => 1,
+        } : 0;
+        var kind = args.DeviceType switch
+        {
+            SKTouchDeviceType.Mouse => PointerDeviceKind.mouse,
+            SKTouchDeviceType.Pen => PointerDeviceKind.stylus,
+            _ => PointerDeviceKind.touch,
+        };
         PointerData?.Invoke(new([new(_viewId, TimeSpan.FromTicks(DateTime.UtcNow.Ticks), change,
-            PointerDeviceKind.touch, checked((ulong)Math.Max(0, args.Id)), args.Location.X, args.Location.Y,
-            0, 0, args.InContact ? 1 : 0, pointerIdentifier: checked((ulong)Math.Max(0, args.Id))) ]));
+            kind, pointer, x, y,
+            hasPrevious ? x - previous.X : 0, hasPrevious ? y - previous.Y : 0, buttons,
+            scrollDeltaX: 0, scrollDeltaY: args.ActionType == SKTouchAction.WheelChanged ? -args.WheelDelta : 0,
+            signalKind: args.ActionType == SKTouchAction.WheelChanged ? PointerSignalKind.scroll : PointerSignalKind.none,
+            pointerIdentifier: pointer, pressure: args.Pressure, pressureMin: 0, pressureMax: 1) ]));
+        if (change is PointerChange.remove or PointerChange.cancel) _pointerPositions.Remove(pointer);
+        else _pointerPositions[pointer] = (x, y);
         args.Handled = true;
     }
+
+    private void HandleFocused(object? sender, FocusEventArgs args) =>
+        FocusData?.Invoke(new(_viewId, true, TimeSpan.FromTicks(DateTime.UtcNow.Ticks)));
+
+    private void HandleUnfocused(object? sender, FocusEventArgs args) =>
+        FocusData?.Invoke(new(_viewId, false, TimeSpan.FromTicks(DateTime.UtcNow.Ticks)));
+
+    private void HandleTextFocusChanged(bool focused) =>
+        FocusData?.Invoke(new(_viewId, focused, TimeSpan.FromTicks(DateTime.UtcNow.Ticks)));
+
+    private void HandleEditingStateChanged(DorotiTextEditingState state) => EditingStateChanged?.Invoke(state);
+    private void HandleActionPerformed(DorotiTextInputAction action) => ActionPerformed?.Invoke(action);
+
+    private void HandleRequestedThemeChanged(object? sender, AppThemeChangedEventArgs args) =>
+        ConfigurationChanged?.Invoke(Configuration);
 
     private static Locale ToLocale(CultureInfo culture)
     {

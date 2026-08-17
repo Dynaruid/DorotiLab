@@ -32,6 +32,7 @@ function Write-Summary {
             source = 'namespace and product-source ownership'
             build = 'Release product compilation'
             targets = 'single-project target graph and package build'
+            interaction = 'source-contract coverage for pointer, keyboard, IME, lifecycle and semantics; live proof is separate'
             release = 'Windows GPU presentation plus Web package-only publish'
             physical = 'notVerified'
             macCatalystNative = 'notVerified unless run on Apple Silicon macOS'

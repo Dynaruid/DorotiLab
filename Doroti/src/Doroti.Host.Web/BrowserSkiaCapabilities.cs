@@ -1,5 +1,6 @@
 using Doroti.Ui;
 using SkiaSharp;
+using System.Text.Json;
 using UiColor = Doroti.Ui.Color;
 using UiImage = Doroti.Ui.Image;
 using UiPath = Doroti.Ui.Path;
@@ -33,6 +34,7 @@ internal sealed class BrowserSkiaCapabilities :
     {
         _viewId = viewId;
         _host = host;
+        _host.SemanticsAction += HandleSemanticsAction;
     }
 
     private Action<SemanticsActionEvent>? _action;
@@ -168,7 +170,30 @@ internal sealed class BrowserSkiaCapabilities :
                 node.label,
                 node.value,
                 role = node.role.ToString(),
-                actions = node.actions.ToString(),
+                actions = (long)node.actions,
+                children = node.children,
+                flags = node.flags is null ? null : new
+                {
+                    @checked = node.flags.isChecked.ToString(),
+                    selected = node.flags.isSelected.toBoolOrNull(),
+                    enabled = node.flags.isEnabled.toBoolOrNull(),
+                    toggled = node.flags.isToggled.toBoolOrNull(),
+                    expanded = node.flags.isExpanded.toBoolOrNull(),
+                    required = node.flags.isRequired.toBoolOrNull(),
+                    focused = node.flags.isFocused.toBoolOrNull(),
+                    button = node.flags.isButton,
+                    textField = node.flags.isTextField,
+                    header = node.flags.isHeader,
+                    hidden = node.flags.isHidden,
+                    image = node.flags.isImage,
+                    liveRegion = node.flags.isLiveRegion,
+                    multiline = node.flags.isMultiline,
+                    readOnly = node.flags.isReadOnly,
+                    link = node.flags.isLink,
+                    slider = node.flags.isSlider,
+                },
+                node.textSelectionBase,
+                node.textSelectionExtent,
                 rect = new[] { node.rect.left, node.rect.top, node.rect.right, node.rect.bottom },
             });
         _host.UpdateSemantics(System.Text.Json.JsonSerializer.Serialize(new { generation = update.generation, nodes }));
@@ -178,6 +203,7 @@ internal sealed class BrowserSkiaCapabilities :
     {
         if (_disposed) return;
         _disposed = true;
+        _host.SemanticsAction -= HandleSemanticsAction;
         lock (_gate)
         {
             _pendingFrame = null;
@@ -186,6 +212,32 @@ internal sealed class BrowserSkiaCapabilities :
         }
         _semantics.Clear();
     }
+
+    private void HandleSemanticsAction(long nodeId, long action, string argumentsJson)
+    {
+        if (_disposed || nodeId is < int.MinValue or > int.MaxValue) return;
+        _action?.Invoke(new(_viewId, checked((int)nodeId), (SemanticsAction)action, ParseArguments(argumentsJson)));
+    }
+
+    private static object? ParseArguments(string json)
+    {
+        if (string.IsNullOrWhiteSpace(json) || json == "null") return null;
+        using var document = JsonDocument.Parse(json);
+        return ConvertElement(document.RootElement);
+    }
+
+    private static object? ConvertElement(JsonElement element) => element.ValueKind switch
+    {
+        JsonValueKind.String => element.GetString(),
+        JsonValueKind.Number when element.TryGetInt64(out var integer) => integer,
+        JsonValueKind.Number => element.GetDouble(),
+        JsonValueKind.True => true,
+        JsonValueKind.False => false,
+        JsonValueKind.Array => element.EnumerateArray().Select(ConvertElement).ToArray(),
+        JsonValueKind.Object => element.EnumerateObject().ToDictionary(
+            property => property.Name, property => ConvertElement(property.Value), StringComparer.Ordinal),
+        _ => null,
+    };
 
     private sealed record SceneFrame(IReadOnlyList<SceneCommand> Commands);
 

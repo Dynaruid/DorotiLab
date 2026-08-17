@@ -1,5 +1,6 @@
 using Doroti.Hosting;
 using Doroti.Ui;
+using Microsoft.Maui.Controls;
 using SkiaSharp.Views.Maui.Controls;
 
 namespace Doroti.Host.Maui;
@@ -24,7 +25,8 @@ public sealed class MauiFrameworkHost : IDisposable
         SKGLView nativeView,
         DorotiViewConfiguration configuration,
         IMauiSemanticsBridge? semantics = null,
-        DorotiApplicationBoundary? application = null)
+        DorotiApplicationBoundary? application = null,
+        MauiTextInputBridge? textInput = null)
     {
         ArgumentNullException.ThrowIfNull(session);
         ArgumentNullException.ThrowIfNull(nativeView);
@@ -33,7 +35,8 @@ public sealed class MauiFrameworkHost : IDisposable
         if (session.state != DorotiHostSessionState.running)
             throw new InvalidOperationException("The Doroti host session must be running before a MAUI view is created.");
 
-        var host = new MauiHostAdapter(viewId, nativeView, configuration.logicalSize, semantics);
+        textInput ??= new(new Entry(), new Editor());
+        var host = new MauiHostAdapter(viewId, nativeView, textInput, configuration.logicalSize, semantics);
         var graphics = new MauiSkiaCapabilities(viewId, host);
         var messages = new MauiPlatformMessageCapability();
         var capabilities = new DorotiViewCapabilities(_targetIdentity)
@@ -85,6 +88,16 @@ public sealed class MauiFrameworkHost : IDisposable
         if (!_views.TryGetValue(viewId, out var value))
             throw new KeyNotFoundException($"MAUI Doroti view {viewId} is not registered.");
         value.Graphics.Paint(surface, pixelWidth, pixelHeight);
+    }
+
+    internal void NotifyLifecycle(ulong viewId, AppLifecycleState state)
+    {
+        if (_views.TryGetValue(viewId, out var value)) value.Host.NotifyLifecycle(state);
+    }
+
+    internal void NotifyCloseRequested(ulong viewId)
+    {
+        if (_views.TryGetValue(viewId, out var value)) value.Host.NotifyCloseRequested();
     }
 
     public MauiFrameDiagnostics CaptureFrameDiagnostics(ulong viewId) =>

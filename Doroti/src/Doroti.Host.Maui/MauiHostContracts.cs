@@ -37,10 +37,14 @@ public sealed record MauiHostDiagnostics(
 
 public interface IMauiSemanticsBridge
 {
-    void Update(string serializedTree);
+    void Update(string serializedTree, Action<int, SemanticsAction, object?> performAction);
 }
 
 internal sealed class NullMauiSemanticsBridge : IMauiSemanticsBridge
 {
-    public void Update(string serializedTree) => _ = serializedTree;
+    public void Update(string serializedTree, Action<int, SemanticsAction, object?> performAction)
+    {
+        _ = serializedTree;
+        _ = performAction;
+    }
 }
