@@ -344,14 +344,16 @@ internal sealed partial class FrameworkCSharpLowerer
             hasConcreteBase = true;
         }
         if (!hasConcreteBase && (declaration.Element.Mixins ?? [])
-            .Select(MapType)
-            .FirstOrDefault(type => FindGlobalDeclaration(type) is { } mixin && !WillEmitAsInterface(mixin)) is { } promotedMixinBase)
+            .Select(type => new { DartType = type, MappedType = MapType(type) })
+            .FirstOrDefault(candidate =>
+                HasPromotedClassRepresentation(StripLibraryPrefix(candidate.DartType).Split('<')[0]) ||
+                FindGlobalDeclaration(candidate.DartType) is { } mixin && !WillEmitAsInterface(mixin)) is { } promotedMixin)
         {
             // A Dart `with` application may reference a contract deliberately
             // emitted as a CLR class (for example TextInputControl). With no
             // Dart superclass, that class is the one legal CLR base; the other
             // mixin interfaces remain in the base list below.
-            bases.Add(promotedMixinBase);
+            bases.Add(promotedMixin.MappedType);
             hasConcreteBase = true;
         }
         if (declaration.Name == "SelectionRegistrant" && !bases.Contains("ChangeNotifier"))
@@ -967,9 +969,9 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (!isInterface && isPlatformNetworkImage)
         {
-            builder.AppendLine("    ImageStreamCompleter NetworkImage.loadBuffer(NetworkImage key, Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode) =>");
+            builder.AppendLine("    ImageStreamCompleter NetworkImage.loadBuffer(NetworkImage key, DecoderBufferCallback decode) =>");
             builder.AppendLine($"        loadBuffer(({emittedName})key, decode);");
-            builder.AppendLine("    ImageStreamCompleter NetworkImage.loadImage(NetworkImage key, Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode) =>");
+            builder.AppendLine("    ImageStreamCompleter NetworkImage.loadImage(NetworkImage key, ImageDecoderCallback decode) =>");
             builder.AppendLine($"        loadImage(({emittedName})key, decode);");
         }
         builder.AppendLine("}");

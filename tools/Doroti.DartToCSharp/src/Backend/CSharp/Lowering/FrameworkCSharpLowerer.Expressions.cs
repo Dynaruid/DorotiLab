@@ -728,6 +728,19 @@ internal sealed partial class FrameworkCSharpLowerer
                 .Append(SafeIdentifier(name));
             return;
         }
+        if (_session.EmittingAssignmentLeft &&
+            FindGlobalMember(elementId) is { IsStatic: false })
+        {
+            builder.Append(_session.ExplicitThisExpression ?? "this").Append('.').Append(SafeIdentifier(name));
+            return;
+        }
+        if (_session.EmittingAssignmentLeft && elementId is null &&
+            (_session.ActiveDonorDeclaration ?? declaration).Name == "SemanticsNode" &&
+            name == "traversalParent")
+        {
+            builder.Append(_session.ExplicitThisExpression ?? "this").Append(".traversalParent");
+            return;
+        }
         if (name == "size" &&
             (_session.ActiveDonorDeclaration ?? declaration).Name == "_RenderTheater")
         {

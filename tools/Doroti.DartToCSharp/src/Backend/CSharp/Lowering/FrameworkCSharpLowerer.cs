@@ -163,7 +163,98 @@ internal sealed partial class FrameworkCSharpLowerer
                 printedOrigin.EndLine,
                 "typed-semantic");
         }).ToArray();
-        return new(ApplyG53FrameworkCompatibility(library, printed.Text), mappings);
+        var source = ApplyG53FrameworkCompatibility(library, printed.Text);
+        ValidateRenderCustomClipCacheContract(source);
+        ValidatePlatformNetworkImageContract(source);
+        ValidateSemanticsLoweringContracts(source);
+        ValidateCustomClipperContract(source);
+        return new(source, mappings);
+    }
+
+    private void ValidateRenderCustomClipCacheContract(string source)
+    {
+        if (!_currentDeclarations.Any(declaration => declaration.Name == "_RenderCustomClip"))
+        {
+            return;
+        }
+
+        var requiredFragments = new[]
+        {
+            "internal virtual bool _clipIsValid { get; set; }",
+            "if (!_clipIsValid)",
+            "_clipIsValid = false;",
+            "_clipIsValid = true;",
+        };
+        if (requiredFragments.Any(fragment => !source.Contains(fragment, StringComparison.Ordinal)) ||
+            source.Contains("if (_clip is null)", StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException(
+                "Generated _RenderCustomClip must preserve Dart nullable generic cache semantics for value-type clips.");
+        }
+    }
+
+    private void ValidatePlatformNetworkImageContract(string source)
+    {
+        if (!IsPrivateCompanionLibrary(_currentLibrary) ||
+            !_currentDeclarations.Any(declaration => declaration.Name == "NetworkImage"))
+        {
+            return;
+        }
+
+        var requiredFragments = new[]
+        {
+            "NetworkImage.loadBuffer(NetworkImage key, DecoderBufferCallback decode)",
+            "NetworkImage.loadImage(NetworkImage key, ImageDecoderCallback decode)",
+        };
+        if (requiredFragments.Any(fragment => !source.Contains(fragment, StringComparison.Ordinal)) ||
+            source.Contains("NetworkImage key, Func<", StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException(
+                "Generated platform NetworkImage bridges must preserve the interface callback typedefs.");
+        }
+    }
+
+    private void ValidateSemanticsLoweringContracts(string source)
+    {
+        if (_currentDeclarations.Any(declaration => declaration.Name == "SemanticsNode"))
+        {
+            var requiredFragments = new[]
+            {
+                "public class SemanticsNode : DiagnosticableTreeMixin",
+                "debugDescribeChildren(DebugSemanticsDumpOrder childOrder = DebugSemanticsDumpOrder.traversalOrder)",
+                "this.traversalParent =",
+            };
+            if (requiredFragments.Any(fragment => !source.Contains(fragment, StringComparison.Ordinal)) ||
+                source.Contains("((ViewportNotificationMixin)child)._depth", StringComparison.Ordinal) ||
+                source.Contains("((dynamic)SemanticsRole).list", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException(
+                    "Generated SemanticsNode must preserve promoted mixins, member scope, and typed enum/collection access.");
+            }
+        }
+
+        if (_currentDeclarations.Any(declaration => declaration.Name == "SemanticsService") &&
+            (!source.Contains("global::Doroti.Ui.DorotiView", StringComparison.Ordinal) ||
+             source.Contains("global::Doroti.Ui.FlutterView", StringComparison.Ordinal)))
+        {
+            throw new InvalidOperationException(
+                "Generated semantics services must bind dart:ui FlutterView to the DorotiView runtime contract.");
+        }
+    }
+
+    private void ValidateCustomClipperContract(string source)
+    {
+        if (!_currentDeclarations.Any(declaration => declaration.Name == "CustomClipper"))
+        {
+            return;
+        }
+
+        if (!source.Contains("abstract bool shouldReclip(CustomClipper<T> oldClipper)", StringComparison.Ordinal) ||
+            source.Contains("abstract bool shouldReclip(Listenable oldClipper)", StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException(
+                "Generated CustomClipper<T> must preserve its covariant generic shouldReclip contract.");
+        }
     }
 
     private static void EmitStateRuntimeContract(CsSyntaxBuilder builder)

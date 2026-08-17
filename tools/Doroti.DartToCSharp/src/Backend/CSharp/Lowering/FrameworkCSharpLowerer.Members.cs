@@ -247,6 +247,13 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.Append(type.EndsWith("?", StringComparison.Ordinal) ? " = default" : " = default!");
         }
         builder.AppendLine(";");
+        if (declaration.Name == "_RenderCustomClip" && field.Name == "_clip")
+        {
+            builder.AppendLine("    // `T?` on an unconstrained C# generic is only a nullable annotation. When T is");
+            builder.AppendLine("    // Rect or RRect, default(T) is an empty value rather than Dart's null sentinel.");
+            builder.AppendLine("    // Track validity explicitly so the first paint computes the actual clip.");
+            builder.AppendLine("    internal virtual bool _clipIsValid { get; set; }");
+        }
     }
 
     private void EmitFieldInitializer(
@@ -576,6 +583,10 @@ internal sealed partial class FrameworkCSharpLowerer
         List<ConverterDiagnostic> diagnostics)
     {
         var sourceParameters = method.Element.Parameters ?? [];
+        if (TryEmitRenderCustomClipCacheMethod(builder, declaration, method))
+        {
+            return;
+        }
         if (declaration.Name == "LocalizationsDelegate" && method.Name == "shouldReload" &&
             declaration.Element.TypeParameters is { Length: 1 } localizationDelegateParameters)
         {
@@ -626,16 +637,19 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             parameters[0] = parameters[0] with { Type = $"LocalizationsDelegate<{localizationParameters[0].Name}>" };
         }
-        if (method.Name == "debugFillProperties" && sourceParameters.Length > 0)
+        if (method.Name == "debugFillProperties" && sourceParameters.Length > 0 &&
+            declaration.Name is not ("TextStyle" or "StrutStyle"))
         {
             parameters = [sourceParameters[0]];
         }
-        if ((method.Name is "markNeedsLayout" or "debugDescribeChildren") &&
+        if ((method.Name == "markNeedsLayout" || method.Name == "debugDescribeChildren" && sourceParameters.Length == 0) &&
             !(declaration.Name == "RenderTwoDimensionalViewport" && method.Name == "markNeedsLayout"))
         {
             parameters = [];
         }
-        if (method.Name == "shouldReclip" && declaration.Element.Supertype is { } clipperBase && parameters.Length == 1)
+        if (method.Name == "shouldReclip" && declaration.Element.Supertype is { } clipperBase &&
+            StripLibraryPrefix(clipperBase).StartsWith("CustomClipper<", StringComparison.Ordinal) &&
+            parameters.Length == 1)
         {
             parameters[0] = parameters[0] with { Type = clipperBase };
         }
@@ -800,24 +814,6 @@ internal sealed partial class FrameworkCSharpLowerer
             parameters = parameters.Select((parameter, index) => index == 0
                 ? parameter with { Type = "OffsetLayer?" }
                 : parameter).ToArray();
-        }
-        if (declaration.Name == "_RenderCustomClip" && method.Name == "_updateClip")
-        {
-            builder.AppendLine("    internal virtual void _updateClip()");
-            builder.AppendLine("    {");
-            builder.AppendLine("        if (_clip is null)");
-            builder.AppendLine("        {");
-            builder.AppendLine("            if (_clipper is null)");
-            builder.AppendLine("            {");
-            builder.AppendLine("                _clip = _defaultClip;");
-            builder.AppendLine("            }");
-            builder.AppendLine("            else");
-            builder.AppendLine("            {");
-            builder.AppendLine("                _clip = _clipper.getClip(size);");
-            builder.AppendLine("            }");
-            builder.AppendLine("        }");
-            builder.AppendLine("    }");
-            return;
         }
         if (!method.IsStatic && (contractMember?.Element.ReturnType ?? contractMember?.Element.Type) is { } baseReturnType)
         {
@@ -1419,6 +1415,66 @@ internal sealed partial class FrameworkCSharpLowerer
 
         AddUnsupportedDiagnostic(diagnostics, package, library, inputPath, declaration, method.Ast,
             "class-method-body", "Add a typed block or expression method visitor before selecting this class.");
+    }
+
+    private static bool TryEmitRenderCustomClipCacheMethod(
+        CsSyntaxBuilder builder,
+        CoreResolvedDeclaration declaration,
+        CoreResolvedMember method)
+    {
+        if (declaration.Name != "_RenderCustomClip")
+        {
+            return false;
+        }
+
+        if (method.Name == "_markNeedsClip")
+        {
+            builder.AppendLine("    internal virtual void _markNeedsClip()");
+            builder.AppendLine("    {");
+            builder.AppendLine("        _clip = default;");
+            builder.AppendLine("        _clipIsValid = false;");
+            builder.AppendLine("        markNeedsPaint();");
+            builder.AppendLine("        markNeedsSemanticsUpdate();");
+            builder.AppendLine("    }");
+            return true;
+        }
+
+        if (method.Name == "performLayout")
+        {
+            builder.AppendLine("    public override void performLayout()");
+            builder.AppendLine("    {");
+            builder.AppendLine("        global::Doroti.Ui.Size? oldSize = hasSize ? size : null;");
+            builder.AppendLine("        base.performLayout();");
+            builder.AppendLine("        if (!object.Equals(oldSize, size))");
+            builder.AppendLine("        {");
+            builder.AppendLine("            _clip = default;");
+            builder.AppendLine("            _clipIsValid = false;");
+            builder.AppendLine("        }");
+            builder.AppendLine("    }");
+            return true;
+        }
+
+        if (method.Name == "_updateClip")
+        {
+            builder.AppendLine("    internal virtual void _updateClip()");
+            builder.AppendLine("    {");
+            builder.AppendLine("        if (!_clipIsValid)");
+            builder.AppendLine("        {");
+            builder.AppendLine("            if (_clipper is null)");
+            builder.AppendLine("            {");
+            builder.AppendLine("                _clip = _defaultClip;");
+            builder.AppendLine("            }");
+            builder.AppendLine("            else");
+            builder.AppendLine("            {");
+            builder.AppendLine("                _clip = _clipper.getClip(size);");
+            builder.AppendLine("            }");
+            builder.AppendLine("            _clipIsValid = true;");
+            builder.AppendLine("        }");
+            builder.AppendLine("    }");
+            return true;
+        }
+
+        return false;
     }
 
     private string MapMethodDeclarationName(CoreResolvedMember method) => method.Name switch

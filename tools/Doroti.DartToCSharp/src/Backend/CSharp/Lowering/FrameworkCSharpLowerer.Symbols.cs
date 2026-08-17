@@ -33,8 +33,7 @@ internal sealed partial class FrameworkCSharpLowerer
 
     private IEnumerable<CoreResolvedDeclaration> AppliedMixinDeclarations(CoreResolvedDeclaration declaration) =>
         (declaration.Element.Mixins ?? [])
-            .Select(MapType)
-            .Select(FindGlobalDeclaration)
+            .Select(type => FindGlobalDeclaration(type) ?? FindGlobalDeclaration(MapType(type)))
             .Where(candidate => candidate?.Ast.Kind == CoreNodeKind.MixinDeclaration)
             .Cast<CoreResolvedDeclaration>()
             .DistinctBy(candidate => candidate.Element.CanonicalId, StringComparer.Ordinal);
@@ -191,7 +190,10 @@ internal sealed partial class FrameworkCSharpLowerer
         _generatedDeclarationIds.Contains(declaration.Element.CanonicalId);
 
     private static bool HasPromotedClassRepresentation(CoreResolvedDeclaration declaration) =>
-        declaration.Name is "GestureBinding" or "SchedulerBinding" or "ServicesBinding" or
+        HasPromotedClassRepresentation(declaration.Name);
+
+    private static bool HasPromotedClassRepresentation(string declarationName) =>
+        declarationName is "GestureBinding" or "SchedulerBinding" or "ServicesBinding" or
             "DiagnosticableTreeMixin" or "RenderObjectWithLayoutCallbackMixin" or
             "CustomClipper" or "TextScaler" or
             "ValueNotifier" or "DiagnosticsProperty";

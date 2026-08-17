@@ -721,6 +721,11 @@ internal sealed partial class FrameworkCSharpLowerer
             nullable |= substitutedType.EndsWith("?", StringComparison.Ordinal);
             type = substitutedType.TrimEnd('?');
         }
+        if (type is "FlutterView" or "dart:ui.FlutterView" or "ui.FlutterView")
+        {
+            const string dorotiView = "global::Doroti.Ui.DorotiView";
+            return nullable ? dorotiView + "?" : dorotiView;
+        }
         if (type.StartsWith("dart:ui.", StringComparison.Ordinal))
         {
             var uiType = "global::Doroti.Ui." + type["dart:ui.".Length..];
@@ -1527,6 +1532,10 @@ internal sealed partial class FrameworkCSharpLowerer
             if (uiTypeName == "VoidCallback")
             {
                 return "global::System.Action";
+            }
+            if (uiTypeName == "FlutterView")
+            {
+                return "global::Doroti.Ui.DorotiView";
             }
             return "global::Doroti.Ui." + SafeIdentifier(uiTypeName);
         }

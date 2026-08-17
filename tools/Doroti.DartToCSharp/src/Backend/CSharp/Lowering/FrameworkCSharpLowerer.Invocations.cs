@@ -285,7 +285,8 @@ internal sealed partial class FrameworkCSharpLowerer
                 prefixMemberName,
                 null) ?? string.Empty).TrimEnd('?');
         }
-        if (prefixNode is not null && name == "_depth")
+        if (prefixNode is not null && name == "_depth" &&
+            node.ElementId?.Contains("#ViewportNotificationMixin._depth", StringComparison.Ordinal) == true)
         {
             builder.Append("((ViewportNotificationMixin)");
             LowerExpression(builder, prefixNode, declaration, package, library, inputPath, diagnostics);
@@ -308,7 +309,8 @@ internal sealed partial class FrameworkCSharpLowerer
             return;
         }
         if (prefixNode is not null && name is "isEmpty" or "isNotEmpty" &&
-            (IsDartEnumerableType(prefixType) || IsDartEnumerableType(MapType(prefixType))))
+            (IsDartEnumerableType(prefixType) || IsDartEnumerableType(MapType(prefixType)) ||
+             node.ElementId is "dart:core#Iterable.isEmpty" or "dart:core#Iterable.isNotEmpty"))
         {
             var iterableNullAware = node.Text(CoreProperty.@operator) == "?." ||
                 prefixNode.StaticType?.EndsWith("?", StringComparison.Ordinal) == true;
@@ -325,6 +327,14 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.Append(name == "isEmpty" ? "!System.Linq.Enumerable.Any(" : "System.Linq.Enumerable.Any(");
             LowerExpression(builder, prefixNode, declaration, package, library, inputPath, diagnostics);
             builder.Append(')');
+            return;
+        }
+        if (prefixNode is not null && name == "flattened" &&
+            node.ElementId?.Contains("#IterableIterableExtension.flattened", StringComparison.Ordinal) == true)
+        {
+            builder.Append("System.Linq.Enumerable.SelectMany(");
+            LowerExpression(builder, prefixNode, declaration, package, library, inputPath, diagnostics);
+            builder.Append(", __items => __items)");
             return;
         }
         if (prefixNode?.Text(CoreProperty.name) == "TextAlign")
@@ -537,7 +547,9 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.Append(".Peek()");
             return;
         }
-        if (name is "first" or "last" && prefixNode is not null && IsDartEnumerableType(prefixType))
+        if (name is "first" or "last" && prefixNode is not null &&
+            (IsDartEnumerableType(prefixType) ||
+             string.Equals(node.ElementId, $"dart:core#Iterable.{name}", StringComparison.Ordinal)))
         {
             LowerExpression(builder, prefixNode, declaration, package, library, inputPath, diagnostics);
             builder.Append(name == "first" ? ".First()" : ".Last()");
@@ -725,6 +737,10 @@ internal sealed partial class FrameworkCSharpLowerer
         var targetType = (target is null
             ? string.Empty
             : ResolvedExpressionValueType(target) ?? string.Empty).TrimEnd('?');
+        var resolvedPropertyElementId = node.ElementId ?? node.Children
+            .FirstOrDefault(item => item.Kind == CoreNodeKind.SimpleIdentifier &&
+                string.Equals(item.Text(CoreProperty.name), name, StringComparison.Ordinal))?
+            .ElementId;
         if (targetType.Length == 0 && target?.Text(CoreProperty.name) is { } targetMemberName)
         {
             targetType = (AssignmentStorageType(
@@ -780,7 +796,8 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.Append(").").Append(name);
             return;
         }
-        if (target is not null && name == "_depth")
+        if (target is not null && name == "_depth" &&
+            resolvedPropertyElementId?.Contains("#ViewportNotificationMixin._depth", StringComparison.Ordinal) == true)
         {
             builder.Append("((ViewportNotificationMixin)");
             LowerExpression(builder, target, declaration, package, library, inputPath, diagnostics);
@@ -788,7 +805,8 @@ internal sealed partial class FrameworkCSharpLowerer
             return;
         }
         if (target is not null && name is "isEmpty" or "isNotEmpty" &&
-            (IsDartEnumerableType(targetType) || IsDartEnumerableType(MapType(targetType))))
+            (IsDartEnumerableType(targetType) || IsDartEnumerableType(MapType(targetType)) ||
+             resolvedPropertyElementId is "dart:core#Iterable.isEmpty" or "dart:core#Iterable.isNotEmpty"))
         {
             var nullAware = node.Text(CoreProperty.@operator) == "?." ||
                 target.StaticType?.EndsWith("?", StringComparison.Ordinal) == true;
@@ -805,6 +823,14 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.Append(name == "isEmpty" ? "!System.Linq.Enumerable.Any(" : "System.Linq.Enumerable.Any(");
             LowerExpression(builder, target, declaration, package, library, inputPath, diagnostics);
             builder.Append(')');
+            return;
+        }
+        if (target is not null && name == "flattened" &&
+            resolvedPropertyElementId?.Contains("#IterableIterableExtension.flattened", StringComparison.Ordinal) == true)
+        {
+            builder.Append("System.Linq.Enumerable.SelectMany(");
+            LowerExpression(builder, target, declaration, package, library, inputPath, diagnostics);
+            builder.Append(", __items => __items)");
             return;
         }
         if (target is not null && name == "target" &&
@@ -884,10 +910,6 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.Append("new global::System.Diagnostics.StackTrace(true)");
             return;
         }
-        var resolvedPropertyElementId = node.ElementId ?? node.Children
-            .FirstOrDefault(item => item.Kind == CoreNodeKind.SimpleIdentifier &&
-                string.Equals(item.Text(CoreProperty.name), name, StringComparison.Ordinal))?
-            .ElementId;
         if (name == "disableAnimations" &&
             resolvedPropertyElementId?.Contains("#SemanticsBinding.disableAnimations", StringComparison.Ordinal) == true)
         {
@@ -1105,7 +1127,9 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.Append(".Peek()");
             return;
         }
-        if (name is "first" or "last" && target is not null && IsDartEnumerableType(targetType))
+        if (name is "first" or "last" && target is not null &&
+            (IsDartEnumerableType(targetType) ||
+             string.Equals(node.ElementId, $"dart:core#Iterable.{name}", StringComparison.Ordinal)))
         {
             LowerExpression(builder, target, declaration, package, library, inputPath, diagnostics);
             builder.Append(name == "first" ? ".First()" : ".Last()");
@@ -1343,11 +1367,21 @@ internal sealed partial class FrameworkCSharpLowerer
         if (isMapGet)
         {
             builder.Append(".GetValueOrDefault(");
-            // Dart maps accept nullable lookup keys and return null/default when no
-            // matching key exists. DartMap.GetValueOrDefault(object?) preserves that
-            // contract; a generated null assertion here changes valid `map[key?]`
-            // reads into runtime failures.
+            var indexStaticType = expressions[1].StaticType;
+            var nullableValueKey = indexStaticType is not null &&
+                indexStaticType.EndsWith("?", StringComparison.Ordinal) &&
+                IsValueType(MapType(indexStaticType).TrimEnd('?'));
+            var requiresClrDictionaryKey = nullableValueKey &&
+                !targetType.Contains("DartMap<", StringComparison.Ordinal) &&
+                (targetType.Contains("Dictionary<", StringComparison.Ordinal) ||
+                 targetType.Contains("SortedDictionary<", StringComparison.Ordinal) ||
+                 targetType.Contains("SplayTreeMap<", StringComparison.Ordinal));
+            // DartMap accepts nullable lookup keys and returns null/default when no
+            // match exists. CLR dictionaries cannot accept a nullable value-type key;
+            // Dart flow analysis has already promoted such keys at these reads.
+            if (requiresClrDictionaryKey) builder.Append("DartRuntimePrimitives.RequireValue(");
             LowerExpression(builder, expressions[1], declaration, package, library, inputPath, diagnostics);
+            if (requiresClrDictionaryKey) builder.Append(')');
             builder.Append(')');
             return;
         }
@@ -1494,6 +1528,15 @@ internal sealed partial class FrameworkCSharpLowerer
                     builder.Append("(__buffer, null)");
                     continue;
                 }
+            }
+            if (invocationName == "putIfAbsent" && namedArgument == "onError")
+            {
+                // ImageCache.putIfAbsent exposes the ImageErrorListener typedef.
+                // Preserve its two-argument contract instead of adapting the tear-off
+                // as a zero-argument Action through the generic callback fallback.
+                builder.Append("(global::System.Action<object, global::System.Diagnostics.StackTrace?>)");
+                LowerExpression(builder, argumentValue, declaration, package, library, inputPath, diagnostics);
+                continue;
             }
             var argumentName = argumentValue.Kind is CoreNodeKind.SimpleIdentifier or CoreNodeKind.PropertyAccess or CoreNodeKind.PrefixedIdentifier
                 ? argumentValue.Text(CoreProperty.name)

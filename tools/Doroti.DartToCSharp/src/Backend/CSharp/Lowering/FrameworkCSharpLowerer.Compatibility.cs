@@ -2478,9 +2478,10 @@ internal sealed partial class FrameworkCSharpLowerer
             mappedType == "RenderObject" || mappedType.EndsWith(".RenderObject", StringComparison.Ordinal) ||
             memberName is "child" or "center" or "debugChildIntegrityEnabled" or "_element" or
                 "_updateCallback" or "_callback" or "_deferredLayoutChild" or "_dragCancelCallback" or
-                "mouseTracker" or "simulation" or "list" or "invoke" or "textDirection" or
+                "mouseTracker" or "simulation" or "invoke" or "textDirection" or
                 "_currentDrag" or "lastOverlapsContent" or
-                "lastShrinkOffset";
+                "lastShrinkOffset" ||
+            memberName == "list" && memberElementId?.StartsWith("dart:ui#SemanticsRole.", StringComparison.Ordinal) != true;
     }
 
     private bool IsTopLevelElement(string? elementId, string name)
