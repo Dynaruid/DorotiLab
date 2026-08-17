@@ -12,8 +12,12 @@ The application is C#-only. Its build and validation flows do not generate or co
 - `src/App.cs`: the target-neutral Material widget/state tree and view configuration selected by `Program`
 - `Platforms/Windows`: thin WinUI shell, optional platform hook, and manifests
 - `Platforms/MacCatalyst`: thin UIKit delegate, optional platform hook, plist, and entitlements
-- `Platforms/Web`: user-owned static assets; the Blazor composition root is host/SDK-owned
-- `obj/<target>/Doroti.Generated`: SDK-owned bootstrap and plugin registration; never edit these files
+- `Platforms/Web/src`: user-owned TypeScript bootstrap policy and browser plugins
+- `Platforms/Web/wwwroot`: handwritten HTML, CSS-adjacent resources, locale/assets, and manifest files; generated JavaScript is forbidden here
+- `obj/web/<configuration>/net10.0/Doroti.Generated/wwwroot`: compiled application bootstrap/plugin JavaScript
+- `obj/<target>/Doroti.Generated`: SDK-owned C# bootstrap and plugin registration; never edit these files
+
+`doroti_bootstrap.ts` configures loading/error UI and typed Blazor startup hooks through Doroti's loader. Only `doroti.loader.ts` calls `Blazor.start()`. Release publish exposes `doroti_bootstrap.js`, `plugins/echo.js`, `_content/Doroti.Host.Web/doroti.loader.js`, and `_content/Doroti.Host.Web/doroti.web.js`; it does not expose TypeScript source, `tsconfig.json`, or compiler assets.
 
 ## Build and validation
 

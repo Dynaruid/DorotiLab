@@ -1,0 +1,419 @@
+interface ManagedCallbacks {
+  dispatchAnimationFrame(hostId: number, callbackId: number, timestamp: number): void;
+  dispatchSnapshot(hostId: number, snapshotJson: string): void;
+  dispatchPointerBatch(hostId: number, phase: number, kind: number, pointerId: number, buttons: number, modifiers: number, samples: number[]): void;
+  dispatchWheel(hostId: number, x: number, y: number, deltaX: number, deltaY: number, timestamp: number): void;
+  dispatchKey(hostId: number, pressed: boolean, repeat: boolean, code: string, key: string, timestamp: number): void;
+  dispatchFocus(hostId: number, focused: boolean, timestamp: number): void;
+  dispatchTextEditing(hostId: number, text: string, selectionBase: number, selectionExtent: number, composingBase: number, composingExtent: number): void;
+  dispatchTextAction(hostId: number, action: number): void;
+}
+
+interface GpuIdentity {
+  api: "webgl2";
+  vendor: string;
+  renderer: string;
+  hardware: true;
+  softwareFallbackUsed: boolean;
+}
+
+interface ListenerRegistration {
+  target: EventTarget;
+  name: string;
+  handler: EventListener;
+}
+
+interface BrowserHost {
+  id: number;
+  canvas: HTMLCanvasElement;
+  input: HTMLTextAreaElement;
+  semantics: HTMLElement;
+  logicalWidth: number;
+  logicalHeight: number;
+  generation: number;
+  surfaceGeneration: number;
+  gpu: GpuIdentity;
+  observers: ResizeObserver[];
+  listeners: ListenerRegistration[];
+  composing: boolean;
+  compositionStart: number;
+}
+
+interface SemanticsNode {
+  id: number | string;
+  role?: string;
+  label?: string;
+  value?: string;
+  rect: [number, number, number, number];
+}
+
+interface SemanticsUpdate {
+  generation: number;
+  nodes?: SemanticsNode[];
+}
+
+interface PluginRequest {
+  channel: string;
+  codec: string;
+  payloadBase64: string;
+}
+
+interface DotnetRuntime {
+  getAssemblyExports(assemblyName: string): Promise<unknown>;
+}
+
+interface DorotiAssemblyExports {
+  Doroti: {
+    Host: {
+      Web: {
+        BrowserInterop: {
+          DispatchAnimationFrame: ManagedCallbacks["dispatchAnimationFrame"];
+          DispatchSnapshot: ManagedCallbacks["dispatchSnapshot"];
+          DispatchPointerBatch: ManagedCallbacks["dispatchPointerBatch"];
+          DispatchWheel: ManagedCallbacks["dispatchWheel"];
+          DispatchKey: ManagedCallbacks["dispatchKey"];
+          DispatchFocus: ManagedCallbacks["dispatchFocus"];
+          DispatchTextEditing: ManagedCallbacks["dispatchTextEditing"];
+          DispatchTextAction: ManagedCallbacks["dispatchTextAction"];
+        };
+      };
+    };
+  };
+}
+
+const hosts = new Map<number, BrowserHost>();
+let managed: ManagedCallbacks | null = null;
+
+function snapshot(host: BrowserHost): string {
+  const ratio = Math.max(1, globalThis.devicePixelRatio || 1);
+  const pixelWidth = Math.max(1, Math.round(host.logicalWidth * ratio));
+  const pixelHeight = Math.max(1, Math.round(host.logicalHeight * ratio));
+  if (host.canvas.width !== pixelWidth) host.canvas.width = pixelWidth;
+  if (host.canvas.height !== pixelHeight) host.canvas.height = pixelHeight;
+  return JSON.stringify({
+    canvasId: host.canvas.id,
+    logicalWidth: host.logicalWidth,
+    logicalHeight: host.logicalHeight,
+    devicePixelRatio: ratio,
+    visible: document.visibilityState !== "hidden",
+    focused: document.hasFocus(),
+    languageTag: navigator.language || "en-US",
+    brightness: globalThis.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light",
+    operatingSystem: browserOperatingSystem(),
+    generation: ++host.generation,
+    surfaceGeneration: host.surfaceGeneration,
+    gpu: host.gpu,
+  });
+}
+
+function browserOperatingSystem(): string {
+  const navigatorWithUaData = navigator as Navigator & { userAgentData?: { platform?: string } };
+  const platform = String(navigatorWithUaData.userAgentData?.platform || navigator.platform || navigator.userAgent || "").toLowerCase();
+  if (/android/.test(platform)) return "android";
+  if (/iphone|ipad|ipod/.test(platform) || (platform.includes("mac") && navigator.maxTouchPoints > 1)) return "iOS";
+  if (/win/.test(platform)) return "windows";
+  if (/mac/.test(platform)) return "macOS";
+  if (/linux|x11|cros/.test(platform)) return "linux";
+  return "web";
+}
+
+function emit(host: BrowserHost): void {
+  managed?.dispatchSnapshot(host.id, snapshot(host));
+}
+
+function gpuIdentity(canvas: HTMLCanvasElement): GpuIdentity {
+  const gl = canvas.getContext("webgl2", {
+    alpha: true,
+    antialias: true,
+    depth: true,
+    failIfMajorPerformanceCaveat: true,
+    premultipliedAlpha: true,
+  });
+  if (!gl) throw new Error("Doroti requires a hardware WebGL2 canvas; CPU/2D fallback is forbidden.");
+  const debug = gl.getExtension("WEBGL_debug_renderer_info");
+  const vendor = debug ? gl.getParameter(debug.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR);
+  const renderer = debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+  const softwareFallbackUsed = /swiftshader|llvmpipe|software/.test(`${String(vendor)} ${String(renderer)}`.toLowerCase());
+  if (softwareFallbackUsed) throw new Error(`Doroti rejected software WebGL renderer '${String(renderer)}'.`);
+  return { api: "webgl2", vendor: String(vendor), renderer: String(renderer), hardware: true, softwareFallbackUsed };
+}
+
+export function configureManagedCallbacks(callbacks: ManagedCallbacks): void {
+  const required: (keyof ManagedCallbacks)[] = [
+    "dispatchAnimationFrame", "dispatchSnapshot", "dispatchPointerBatch", "dispatchWheel",
+    "dispatchKey", "dispatchFocus", "dispatchTextEditing", "dispatchTextAction",
+  ];
+  if (!callbacks || required.some((name) => typeof callbacks[name] !== "function")) {
+    throw new Error("Doroti browser managed callback ABI v1 is incomplete.");
+  }
+  managed = callbacks;
+}
+
+export async function initializeManagedCallbacks(): Promise<"ready"> {
+  if (managed) return "ready";
+  const getDotnetRuntime = (globalThis as typeof globalThis & { getDotnetRuntime?: (index: number) => DotnetRuntime }).getDotnetRuntime;
+  const runtime = getDotnetRuntime?.(0);
+  if (!runtime) throw new Error("Doroti could not resolve the active Blazor WebAssembly runtime.");
+  const exports = await runtime.getAssemblyExports("Doroti.Host.Web.dll") as DorotiAssemblyExports;
+  const interop = exports.Doroti.Host.Web.BrowserInterop;
+  configureManagedCallbacks({
+    dispatchAnimationFrame: interop.DispatchAnimationFrame,
+    dispatchSnapshot: interop.DispatchSnapshot,
+    dispatchPointerBatch: interop.DispatchPointerBatch,
+    dispatchWheel: interop.DispatchWheel,
+    dispatchKey: interop.DispatchKey,
+    dispatchFocus: interop.DispatchFocus,
+    dispatchTextEditing: interop.DispatchTextEditing,
+    dispatchTextAction: interop.DispatchTextAction,
+  });
+  return "ready";
+}
+
+export function createHost(hostId: number, canvasId: string, logicalWidth: number, logicalHeight: number): string {
+  if (!managed) throw new Error("Doroti browser managed callbacks must be configured before host creation.");
+  if (hosts.has(hostId)) throw new Error(`Doroti browser host ${hostId} already exists.`);
+  const canvas = document.getElementById(canvasId);
+  const input = document.getElementById("doroti-ime");
+  const semantics = document.getElementById("doroti-semantics");
+  if (!(canvas instanceof HTMLCanvasElement)) throw new Error(`Canvas '#${canvasId}' was not found.`);
+  if (!(input instanceof HTMLTextAreaElement)) throw new Error("Doroti hidden text input was not found.");
+  if (!(semantics instanceof HTMLElement)) throw new Error("Doroti semantics host was not found.");
+
+  const host: BrowserHost = {
+    id: hostId, canvas, input, semantics, logicalWidth, logicalHeight,
+    generation: 0, surfaceGeneration: 1, gpu: gpuIdentity(canvas), observers: [], listeners: [],
+    composing: false, compositionStart: -1,
+  };
+  const observe = (target: EventTarget, name: string, handler: EventListener): void => {
+    target.addEventListener(name, handler);
+    host.listeners.push({ target, name, handler });
+  };
+  observe(document, "visibilitychange", () => emit(host));
+  observe(globalThis, "focus", () => emit(host));
+  observe(globalThis, "blur", () => emit(host));
+  observe(globalThis, "resize", () => { host.surfaceGeneration++; emit(host); });
+
+  const pointerKind = (type: string): number => type === "touch" ? 1 : type === "pen" ? 2 : 0;
+  const pointerSamples = (event: PointerEvent): number[] => {
+    const source = event.type === "pointermove" && typeof event.getCoalescedEvents === "function"
+      ? event.getCoalescedEvents() : [event];
+    const samples: number[] = [];
+    for (const point of source.length ? source : [event]) {
+      samples.push(point.offsetX, point.offsetY, point.pressure || (point.buttons ? 0.5 : 0),
+        point.tiltX || 0, point.tiltY || 0, point.twist || 0, point.timeStamp);
+    }
+    return samples;
+  };
+  const pointer = (phase: number) => (event: PointerEvent): void => {
+    event.preventDefault();
+    if (phase === 1) canvas.setPointerCapture(event.pointerId);
+    requireManaged().dispatchPointerBatch(host.id, phase, pointerKind(event.pointerType), event.pointerId,
+      event.buttons, modifierMask(event), pointerSamples(event));
+    if ((phase === 2 || phase === 3) && canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+  };
+  observe(canvas, "pointerenter", (event) => pointer(5)(event as PointerEvent));
+  observe(canvas, "pointermove", (event) => {
+    const pointerEvent = event as PointerEvent;
+    pointer(pointerEvent.buttons ? 0 : 4)(pointerEvent);
+  });
+  observe(canvas, "pointerdown", (event) => pointer(1)(event as PointerEvent));
+  observe(canvas, "pointerup", (event) => pointer(2)(event as PointerEvent));
+  observe(canvas, "pointercancel", (event) => pointer(3)(event as PointerEvent));
+  observe(canvas, "pointerleave", (event) => pointer(6)(event as PointerEvent));
+  observe(canvas, "wheel", (event) => {
+    const wheel = event as WheelEvent;
+    wheel.preventDefault();
+    requireManaged().dispatchWheel(host.id, wheel.offsetX, wheel.offsetY, wheel.deltaX, wheel.deltaY, wheel.timeStamp);
+  });
+  observe(canvas, "keydown", (event) => {
+    const key = event as KeyboardEvent;
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " ", "Tab"].includes(key.key)) key.preventDefault();
+    requireManaged().dispatchKey(host.id, true, key.repeat, key.code, key.key, key.timeStamp);
+  });
+  observe(canvas, "keyup", (event) => {
+    const key = event as KeyboardEvent;
+    requireManaged().dispatchKey(host.id, false, false, key.code, key.key, key.timeStamp);
+  });
+  observe(canvas, "focus", (event) => requireManaged().dispatchFocus(host.id, true, event.timeStamp));
+  observe(canvas, "blur", (event) => requireManaged().dispatchFocus(host.id, false, event.timeStamp));
+  observe(input, "compositionstart", () => { host.composing = true; host.compositionStart = input.selectionStart; emitText(host); });
+  observe(input, "compositionupdate", () => emitText(host));
+  observe(input, "compositionend", () => { host.composing = false; host.compositionStart = -1; emitText(host); });
+  observe(input, "input", () => emitText(host));
+  observe(input, "keydown", (event) => {
+    const key = event as KeyboardEvent;
+    if (key.key === "Enter" && !key.shiftKey) requireManaged().dispatchTextAction(host.id, 1);
+  });
+  observe(canvas, "webglcontextlost", (event) => { event.preventDefault(); host.surfaceGeneration++; emit(host); });
+  observe(canvas, "webglcontextrestored", () => { host.surfaceGeneration++; host.gpu = gpuIdentity(canvas); emit(host); });
+  if (globalThis.ResizeObserver) {
+    const observer = new ResizeObserver((entries) => {
+      const rect = entries[0]?.contentRect;
+      if (rect && rect.width > 0 && rect.height > 0 &&
+          (rect.width !== host.logicalWidth || rect.height !== host.logicalHeight)) {
+        host.logicalWidth = rect.width;
+        host.logicalHeight = rect.height;
+        host.surfaceGeneration++;
+        emit(host);
+      }
+    });
+    observer.observe(canvas);
+    host.observers.push(observer);
+  }
+  hosts.set(hostId, host);
+  return snapshot(host);
+}
+
+export function showHost(hostId: number): string {
+  const host = requireHost(hostId);
+  host.canvas.hidden = false;
+  host.canvas.tabIndex = host.canvas.tabIndex < 0 ? 0 : host.canvas.tabIndex;
+  host.canvas.focus({ preventScroll: true });
+  return snapshot(host);
+}
+
+export function requestFocus(hostId: number, focused: boolean): string {
+  const host = requireHost(hostId);
+  if (focused) host.canvas.focus({ preventScroll: true }); else host.canvas.blur();
+  return snapshot(host);
+}
+
+export function resizeHost(hostId: number, logicalWidth: number, logicalHeight: number): string {
+  const host = requireHost(hostId);
+  host.logicalWidth = logicalWidth;
+  host.logicalHeight = logicalHeight;
+  host.canvas.style.width = `${logicalWidth}px`;
+  host.canvas.style.height = `${logicalHeight}px`;
+  host.surfaceGeneration++;
+  return snapshot(host);
+}
+
+export function requestFrame(hostId: number, callbackId: number): void {
+  requireHost(hostId);
+  requestAnimationFrame((timestamp) => {
+    if (hosts.has(hostId)) managed?.dispatchAnimationFrame(hostId, callbackId, timestamp);
+  });
+}
+
+export function closeHost(hostId: number): void {
+  const host = hosts.get(hostId);
+  if (!host) return;
+  for (const observer of host.observers) observer.disconnect();
+  for (const listener of host.listeners) listener.target.removeEventListener(listener.name, listener.handler);
+  hosts.delete(hostId);
+}
+
+export function resolveResourceUrl(relativeUrl: string): string {
+  return new URL(relativeUrl, document.baseURI).href;
+}
+
+export function setCursor(hostId: number, cursor: string): void {
+  requireHost(hostId).canvas.style.cursor = cursor;
+}
+
+export function setTextInputState(hostId: number, text: string, selectionBase: number, selectionExtent: number): void {
+  const host = requireHost(hostId);
+  host.input.value = text;
+  host.input.hidden = false;
+  host.input.setSelectionRange(selectionBase, selectionExtent);
+  host.input.focus({ preventScroll: true });
+}
+
+export function setCaretRect(hostId: number, left: number, top: number, width: number, height: number): void {
+  const input = requireHost(hostId).input;
+  input.style.left = `${left}px`;
+  input.style.top = `${top}px`;
+  input.style.width = `${Math.max(1, width)}px`;
+  input.style.height = `${Math.max(1, height)}px`;
+  input.focus({ preventScroll: true });
+}
+
+export function clearTextInput(hostId: number): void {
+  const host = requireHost(hostId);
+  host.input.value = "";
+  host.input.hidden = true;
+  host.canvas.focus({ preventScroll: true });
+}
+
+export async function readClipboardText(): Promise<string> {
+  if (!navigator.clipboard?.readText) throw new Error("Doroti clipboard read capability is unavailable.");
+  return navigator.clipboard.readText();
+}
+
+export async function writeClipboardText(text: string): Promise<"written"> {
+  if (!navigator.clipboard?.writeText) throw new Error("Doroti clipboard write capability is unavailable.");
+  await navigator.clipboard.writeText(text);
+  return "written";
+}
+
+export function updateSemantics(hostId: number, json: string): void {
+  const host = requireHost(hostId);
+  const update = JSON.parse(json) as SemanticsUpdate;
+  host.semantics.replaceChildren();
+  host.semantics.dataset.generation = String(update.generation);
+  for (const node of update.nodes ?? []) {
+    const element = document.createElement("div");
+    element.dataset.dorotiSemanticsId = String(node.id);
+    element.setAttribute("role", semanticsRole(node.role));
+    if (node.label) element.setAttribute("aria-label", node.label);
+    if (node.value) element.setAttribute("aria-valuetext", node.value);
+    element.style.position = "absolute";
+    element.style.left = `${node.rect[0]}px`;
+    element.style.top = `${node.rect[1]}px`;
+    element.style.width = `${Math.max(0, node.rect[2] - node.rect[0])}px`;
+    element.style.height = `${Math.max(0, node.rect[3] - node.rect[1])}px`;
+    host.semantics.append(element);
+  }
+}
+
+export async function invokePlugin(moduleUrl: string, exportName: string, channel: string, codec: string, payloadBase64: string): Promise<string> {
+  const resolved = new URL(moduleUrl, document.baseURI).href;
+  const pluginModule = await import(resolved) as Record<string, unknown>;
+  const handler = pluginModule[exportName];
+  if (typeof handler !== "function") throw new Error(`Doroti JavaScript plugin export '${exportName}' is missing from '${resolved}'.`);
+  const request: PluginRequest = { channel, codec, payloadBase64 };
+  const value: unknown = await handler(request);
+  if (value === null || value === undefined) return JSON.stringify({ hasValue: false, base64: "" });
+  if (typeof value === "string") return JSON.stringify({ hasValue: true, base64: value });
+  if (value instanceof Uint8Array) {
+    let binary = "";
+    for (const byte of value) binary += String.fromCharCode(byte);
+    return JSON.stringify({ hasValue: true, base64: btoa(binary) });
+  }
+  throw new Error(`Doroti JavaScript plugin '${exportName}' returned an unsupported response type.`);
+}
+
+function requireHost(hostId: number): BrowserHost {
+  const host = hosts.get(hostId);
+  if (!host) throw new Error(`Doroti browser host ${hostId} is not active.`);
+  return host;
+}
+
+function requireManaged(): ManagedCallbacks {
+  if (!managed) throw new Error("Doroti browser managed callbacks are unavailable.");
+  return managed;
+}
+
+function modifierMask(event: MouseEvent | KeyboardEvent): number {
+  return (event.shiftKey ? 1 : 0) | (event.ctrlKey ? 2 : 0) |
+    (event.altKey ? 4 : 0) | (event.metaKey ? 8 : 0);
+}
+
+function emitText(host: BrowserHost): void {
+  const start = host.input.selectionStart ?? 0;
+  const end = host.input.selectionEnd ?? start;
+  const composingBase = host.composing ? Math.max(0, host.compositionStart) : -1;
+  const composingExtent = host.composing ? end : -1;
+  requireManaged().dispatchTextEditing(host.id, host.input.value, start, end, composingBase, composingExtent);
+}
+
+function semanticsRole(role: string | undefined): string {
+  const key = String(role ?? "").toLowerCase();
+  if (key.includes("button")) return "button";
+  if (key.includes("textfield")) return "textbox";
+  if (key.includes("slider")) return "slider";
+  if (key.includes("listitem")) return "listitem";
+  if (key.includes("list")) return "list";
+  if (key.includes("image")) return "img";
+  return "group";
+}

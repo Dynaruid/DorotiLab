@@ -1,6 +1,7 @@
 <Project>
   <PropertyGroup>
     <DorotiRequestedRuntimeIdentifier>$(RuntimeIdentifier)</DorotiRequestedRuntimeIdentifier>
+    <DorotiTypeScriptVersion Condition="'$(DorotiTypeScriptVersion)' == ''">7.0.0</DorotiTypeScriptVersion>
     <DorotiTarget Condition="'$(DorotiTarget)' == '' and '$(RuntimeIdentifier)' == 'browser-wasm'">Web</DorotiTarget>
     <DorotiTarget Condition="'$(DorotiTarget)' == '' and '$(RuntimeIdentifier)' == 'win-x64'">Windows</DorotiTarget>
     <DorotiTarget Condition="'$(DorotiTarget)' == '' and '$(RuntimeIdentifier)' == 'maccatalyst-arm64'">MacCatalyst</DorotiTarget>
@@ -50,5 +51,6 @@
     <SupportedOSPlatformVersion Condition="'$(DorotiTarget)' == 'MacCatalyst'">15.0</SupportedOSPlatformVersion>
     <WindowsPackageType Condition="'$(DorotiTarget)' == 'Windows' and '$(WindowsPackageType)' == ''">None</WindowsPackageType>
     <PublishTrimmed Condition="'$(DorotiTarget)' == 'Web'">false</PublishTrimmed>
+    <DorotiWebTypeScript Condition="'$(DorotiTarget)' == 'Web' and Exists('Platforms\Web\tsconfig.json')">true</DorotiWebTypeScript>
   </PropertyGroup>
 </Project>

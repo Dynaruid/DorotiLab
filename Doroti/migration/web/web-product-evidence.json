@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "doroti.web-product-evidence/v1",
+  "schemaVersion": "doroti.web-product-evidence/v2",
   "scope": "web-product",
   "status": "pass",
   "target": "browser-wasm",
@@ -57,6 +57,22 @@
         "IInputHostCapability",
         "Doroti gesture/state"
       ],
+      "browserSource": "strict-TypeScript",
+      "checkedInJavaScript": 0,
+      "managedImportCount": 16,
+      "typescriptExportCount": 17,
+      "loader": {
+        "blazorStartOwners": 1,
+        "stages": [
+          "before-start",
+          "starting",
+          "started",
+          "failed"
+        ],
+        "declaration": "package-owned",
+        "contractFixture": "pass",
+        "originalErrorIdentity": "preserved"
+      },
       "softwareFallbacks": 0,
       "canvasKitDependencies": 0
     },
@@ -64,7 +80,8 @@
       "status": "pass",
       "packageVersions": {
         "blazor": "10.0.0",
-        "skiaSharp": "3.119.4"
+        "skiaSharp": "3.119.4",
+        "typescriptMsBuild": "7.0.0"
       },
       "desktopNativeDependencies": 0,
       "avaloniaDependencies": 0,
@@ -72,6 +89,8 @@
       "userRazorFiles": 0,
       "flutterDartScaffoldFiles": 0,
       "productFacingFlutterIdentifiers": 0,
+      "checkedInGeneratedJavaScript": 0,
+      "webTypeScriptScope": "template-demo-host-only",
       "targetManifest": {
         "schemaVersion": "doroti.target-package/v1",
         "packageId": "Doroti.Target.Web.browser-wasm",
@@ -132,6 +151,13 @@
       "flutterDartFiles": 0,
       "unsupportedPlatformDirectories": 0,
       "userAuthoredRazorFiles": 0,
+      "checkedInJavaScript": 0,
+      "typeScript": {
+        "version": "7.0.0",
+        "config": "Platforms/Web/tsconfig.json",
+        "bootstrap": "Platforms/Web/src/doroti_bootstrap.ts",
+        "plugin": "Platforms/Web/src/plugins/echo.ts"
+      },
       "flutterOrDartCommands": 0,
       "sharedApplication": "src/App.cs",
       "browserHost": "obj/web/Doroti.Generated/DorotiBootstrap.g.cs"
@@ -142,8 +168,8 @@
         "target": "browser-wasm",
         "configuration": "Release",
         "diagnostics": 0,
-        "applicationAssembly": "DorotiDemoApp.jn2ycgokoc.wasm",
-        "applicationSha256": "ef8da4918be9dce239ce09d64ee0a6077e5c347a8c21e2b490c6db263e31668a"
+        "applicationAssembly": "DorotiDemoApp.l3h5ofhjbd.wasm",
+        "applicationSha256": "2f9657dda7aae7adb1a46fd0cc800fefcf741f04dda56f4d45b63289b55f4e5e"
       },
       "sharedSource": {
         "path": "DorotiDemoApp/src/App.cs",
@@ -159,9 +185,41 @@
         "build": "pass",
         "source": "promoted-packages-only"
       },
-      "invalidTarget": {
-        "status": "fail-closed-as-expected",
-        "diagnostic": "DOROTIAPP004"
+      "typeScript": {
+        "version": "7.0.0",
+        "sourceCount": 2,
+        "appOutput": "obj/web/Release/net10.0/Doroti.Generated/wwwroot",
+        "hostOutput": "Doroti.Host.Web/obj/Release/net10.0/Doroti.Web/wwwroot"
+      },
+      "negative": {
+        "invalidTarget": {
+          "status": "fail-closed-as-expected",
+          "diagnostic": "DOROTIAPP004"
+        },
+        "compiler": {
+          "status": "fail-closed-as-expected",
+          "diagnostic": "DOROTIWEB013"
+        },
+        "config": {
+          "status": "fail-closed-as-expected",
+          "diagnostic": "DOROTIWEB011"
+        },
+        "emptySource": {
+          "status": "fail-closed-as-expected",
+          "diagnostic": "DOROTIWEB012"
+        },
+        "sourceOutput": {
+          "status": "fail-closed-as-expected",
+          "diagnostic": "DOROTIWEB014"
+        },
+        "syntaxAndStale": {
+          "status": "fail-closed-as-expected",
+          "diagnostic": "DOROTIWEB016"
+        },
+        "emptyEmit": {
+          "status": "fail-closed-as-expected",
+          "diagnostic": "DOROTIWEB017"
+        }
       },
       "nativeSkiaLink": "pass",
       "flutterOrDartCommands": 0
@@ -183,9 +241,9 @@
         "build": "pass",
         "publish": "pass"
       },
-      "staticFileCount": 720,
-      "aggregateSha256": "746acd22c6f2944a0ddab2cac6a4e4c2845cae1169186f7d2f8e8b2a32565ec2",
-      "repeatAggregateSha256": "746acd22c6f2944a0ddab2cac6a4e4c2845cae1169186f7d2f8e8b2a32565ec2",
+      "staticFileCount": 726,
+      "aggregateSha256": "9b42b11881ade6fccfacb5ad7fe50eb5e7056eb46f6c811ffe1ea49927585f44",
+      "repeatAggregateSha256": "9b42b11881ade6fccfacb5ad7fe50eb5e7056eb46f6c811ffe1ea49927585f44",
       "bootLoader": "_framework/blazor.webassembly.js",
       "runtimeFrameworkVersion": "10.0.11",
       "coreLibWebCil": {
@@ -197,12 +255,39 @@
         "sha256": "ec68f473c8bbca1bdda7f9fb1bd1a0c85c8768bd0672fffbbc2a6f53debee734"
       },
       "skiaWasmCount": 2,
-      "appAssembly": "DorotiDemoApp.jn2ycgokoc.wasm",
+      "appAssembly": "DorotiDemoApp.l3h5ofhjbd.wasm",
       "resources": [
         "assets/doroti-mark.txt",
         "locales/en-US.json"
       ],
-      "plugin": "plugins/echo.js",
+      "webModules": {
+        "applicationBootstrap": {
+          "source": "DorotiDemoApp/Platforms/Web/src/doroti_bootstrap.ts",
+          "sourceSha256": "9a6300d5b433fbb68c9055d055bacbfeff527b6516374c66b82fc1af42d66607",
+          "artifact": "doroti_bootstrap.js",
+          "artifactSha256": "781c40c7660165130caf96abc8812300c08bb5a114229b33244966544be0a2f5"
+        },
+        "applicationPlugin": {
+          "source": "DorotiDemoApp/Platforms/Web/src/plugins/echo.ts",
+          "sourceSha256": "acb56a16bb2124b2f7d0a1e960524aa7940675636b4f66b8effc0489a02baaa7",
+          "artifact": "plugins/echo.js",
+          "artifactSha256": "9396491637e8db384112f655f310d6429cd7eaed3a6cf41c6a861aaa1d740a0e"
+        },
+        "dorotiLoader": {
+          "source": "Doroti/src/Doroti.Host.Web/Web/doroti.loader.ts",
+          "sourceSha256": "6f33de6c9c8e8690da41b2915651a95e6654b284ab642c4fe30bd02eeab51ed6",
+          "artifact": "_content/Doroti.Host.Web/doroti.loader.js",
+          "artifactSha256": "3f51eb805cf1544e7f92bbeb22520c05b05612a0e548f9a3146c176d55901143"
+        },
+        "browserInterop": {
+          "source": "Doroti/src/Doroti.Host.Web/Web/doroti.web.ts",
+          "sourceSha256": "2fb72557d8e0f00dee7a15654a8121903de11085705d075834719d5be7fc0896",
+          "artifact": "_content/Doroti.Host.Web/doroti.web.js",
+          "artifactSha256": "c7844fd2720dbb92b958d358986b9598d2edbb6fca4805086cfb622dfc88cdf3"
+        }
+      },
+      "publishedTypeScriptSources": 0,
+      "publishedTypeScriptCompilerAssets": 0,
       "repositoryPrivateFallbacks": 0,
       "desktopNativeDependencies": 0,
       "avaloniaDependencies": 0,
@@ -214,12 +299,12 @@
     }
   },
   "manualBrowserLive": {
-    "schemaVersion": "doroti.web-browser-live-manual/v1",
-    "capturedAtUtc": "2026-08-17T03:57:45.6970747Z",
+    "schemaVersion": "doroti.web-browser-live-manual/v2",
+    "capturedAtUtc": "2026-08-17T05:38:18Z",
     "status": "pass-basic-pointer",
     "browser": "Chromium extension session",
     "source": "Doroti/artifacts/web/0.2.0-beta/wwwroot",
-    "artifactAggregateSha256": "746acd22c6f2944a0ddab2cac6a4e4c2845cae1169186f7d2f8e8b2a32565ec2",
+    "artifactAggregateSha256": "9b42b11881ade6fccfacb5ad7fe50eb5e7056eb46f6c811ffe1ea49927585f44",
     "runtimeFrameworkVersion": "10.0.11",
     "coreLibAsset": "System.Private.CoreLib.acqhqif0l6.wasm",
     "presented": {
@@ -228,6 +313,23 @@
       "canvasBackingPixels": "2560x1218",
       "visibleContent": "Material controls, lazy list, clipped backdrop panel and FAB"
     },
+    "bootstrap": {
+      "status": "pass",
+      "stages": [
+        "before-start",
+        "starting",
+        "started"
+      ],
+      "configured": true,
+      "bootIntegrityObserved": true,
+      "bootstrapError": null
+    },
+    "liveLoadedModules": [
+      "doroti_bootstrap.js",
+      "_content/Doroti.Host.Web/doroti.loader.js",
+      "_content/Doroti.Host.Web/doroti.web.js"
+    ],
+    "publishedModuleOnly": "plugins/echo.js",
     "input": {
       "status": "pass-basic-pointer",
       "action": "click rendered FAB",
@@ -241,6 +343,7 @@
       "clipboard",
       "resize",
       "interactive ARIA actions",
+      "browser-live plugin invocation",
       "physical acceptance",
       "cross-target parity"
     ]

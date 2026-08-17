@@ -1,7 +1,7 @@
 {
-  "schemaVersion": "doroti.app-targets-evidence/v2",
+  "schemaVersion": "doroti.app-targets-evidence/v3",
   "scope": "generated-application-bootstrap",
-  "capturedAtUtc": "2026-08-17T03:57:07.0075927+00:00",
+  "capturedAtUtc": "2026-08-17T05:43:40.206695+00:00",
   "status": "partial",
   "project": "DorotiDemoApp/DorotiDemoApp.csproj",
   "graph": {
@@ -35,7 +35,10 @@
     },
     "web": {
       "targetFramework": "net10.0",
-      "rid": "browser-wasm"
+      "rid": "browser-wasm",
+      "typeScriptMsBuild": "7.0.0",
+      "sourceCount": 2,
+      "outputRoot": "obj/web/<configuration>/net10.0/Doroti.Generated/wwwroot"
     },
     "macCatalyst": {
       "targetFramework": "net10.0-maccatalyst",
@@ -43,7 +46,8 @@
       "host": "windows-cross-build-only"
     },
     "startupNegative": "pass-failed-closed-CS0311",
-    "requiredRegistrationNegative": "pass-failed-closed-CS0239"
+    "requiredRegistrationNegative": "pass-failed-closed-CS0239",
+    "nativeTypeScriptPackageCount": 0
   },
   "windowsLive": {
     "applicationSource": "src/App.cs",

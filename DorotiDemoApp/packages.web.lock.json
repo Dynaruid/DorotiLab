@@ -21,6 +21,12 @@
         "resolved": "10.0.11",
         "contentHash": "vI5/681Ld3dnYch2wCH+8cDc3PXIgfaJhjCHTUmCtm2tu92T71iY3shZHM3BeLPDFv9G7Nq/gS5hrlghPG+MXg=="
       },
+      "Microsoft.TypeScript.MSBuild": {
+        "type": "Direct",
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "JIkyvRnd8eDBLvYcbJTfLDTd382vfGPXZYPnTryUw2VLZW6BGULMzYZk4NSJTM5VJDbwDC2xwjCgFi6b7PJdDA=="
+      },
       "MaterialColorUtilities": {
         "type": "Transitive",
         "resolved": "0.3.0",

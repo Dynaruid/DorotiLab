@@ -21,6 +21,8 @@ See [ADR-019](docs/adr/ADR-019-product-framework-source-ownership.md) for the ow
 - `Doroti.Host.Maui`: host-owned MAUI application/page lifecycle and `SKGLView` GPU-surface integration
 - `Doroti.Host.Web`: host-owned Blazor composition, WebGL2 canvas, input, accessibility, and resource bridge
 
+Web execution source is TypeScript-owned. Applications edit `Platforms/Web/src/**/*.ts`; Doroti owns `src/Doroti.Host.Web/Web/*.ts`. `Microsoft.TypeScript.MSBuild` 7.0.0 compiles both into target/configuration-specific `obj` directories, and publish contains only the resulting JavaScript. Node, npm, Bun, and a bundler are not application requirements. See [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md).
+
 Windows Release build/publish and an actual `MauiSKSwapChainPanel` GPU frame are verified. Web package-only compile/publish and a Chromium canvas/basic-FAB-pointer smoke are verified on runtime 10.0.11. Native hover/wheel/keyboard/IME/UIA, Mac Catalyst native execution, Web keyboard/IME/clipboard/resize/interactive ARIA, physical acceptance, and cross-target parity remain separate `notVerified` gates.
 
 ## Requirements
@@ -28,6 +30,7 @@ Windows Release build/publish and an actual `MauiSKSwapChainPanel` GPU frame are
 - .NET SDK 10.0.400 or a compatible patch, pinned by [global.json](global.json)
 - PowerShell 7
 - .NET/ASP.NET/WindowsDesktop and browser-wasm runtime packs at 10.0.11, with matching MAUI/WebAssembly workloads
+- `Microsoft.TypeScript.MSBuild` 7.0.0 restored only for Web projects that contain `Platforms/Web/tsconfig.json`
 
 The `reference/flutter-master` and `reference/Avalonia-main` checkouts are needed only for explicit reference comparison or migration work. Prepare Flutter for such work with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`.
 

@@ -8,9 +8,24 @@
     <AddRazorSupportForMvc>false</AddRazorSupportForMvc>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" PrivateAssets="all" />
     <PackageReference Include="SkiaSharp.Views.Blazor" />
     <PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
   </ItemGroup>
+  <PropertyGroup>
+    <DorotiWebTypeScript>true</DorotiWebTypeScript>
+    <DorotiTypeScriptVersion>7.0.0</DorotiTypeScriptVersion>
+    <DorotiTypeScriptConfig>$(MSBuildProjectDirectory)\Web\tsconfig.json</DorotiTypeScriptConfig>
+    <DorotiTypeScriptSourceRoot>$(MSBuildProjectDirectory)\Web</DorotiTypeScriptSourceRoot>
+    <DorotiTypeScriptOutputRoot>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework)\Doroti.Web\wwwroot</DorotiTypeScriptOutputRoot>
+    <DorotiTypeScriptExpectedOutput>$(DorotiTypeScriptOutputRoot)\doroti.loader.js</DorotiTypeScriptExpectedOutput>
+    <DorotiTypeScriptStaticBasePath>wwwroot</DorotiTypeScriptStaticBasePath>
+    <DorotiTypeScriptCopyToOutputDirectory>Never</DorotiTypeScriptCopyToOutputDirectory>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="Web\types\doroti-loader\index.d.ts" Pack="true" PackagePath="types\doroti-loader\index.d.ts" />
+  </ItemGroup>
+  <Import Project="..\Doroti.App.Sdk\Sdk\Doroti.TypeScript.targets" />
 </Project>

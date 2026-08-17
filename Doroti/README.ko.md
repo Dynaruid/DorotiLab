@@ -21,6 +21,8 @@ Dart-to-C# compiler와 고정 Flutter checkout은 선택적인 import·동작 re
 - `Doroti.Host.Maui`: host 소유 MAUI application/page lifecycle과 `SKGLView` GPU surface 통합
 - `Doroti.Host.Web`: host 소유 Blazor composition, WebGL2 canvas, input, accessibility, resource bridge
 
+Web 실행 source는 TypeScript가 소유합니다. 앱은 `Platforms/Web/src/**/*.ts`, Doroti는 `src/Doroti.Host.Web/Web/*.ts`를 편집합니다. `Microsoft.TypeScript.MSBuild` 7.0.0이 target/configuration별 `obj`에 JavaScript를 만들며 publish에는 그 결과만 포함됩니다. 앱 도구로 Node, npm, Bun, bundler를 요구하지 않습니다. 자세한 결정은 [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md)에 있습니다.
+
 Windows Release build/publish와 실제 `MauiSKSwapChainPanel` GPU frame은 확인했습니다. Web package-only compile/publish와 Chromium canvas/기본 FAB pointer smoke도 runtime 10.0.11에서 확인했습니다. Native hover/wheel/keyboard/IME/UIA, Mac Catalyst native 실행, Web keyboard/IME/clipboard/resize/interactive ARIA, physical acceptance와 cross-target parity는 각각 별도의 `notVerified` gate입니다.
 
 ## 요구 사항
@@ -28,6 +30,7 @@ Windows Release build/publish와 실제 `MauiSKSwapChainPanel` GPU frame은 확�
 - [global.json](global.json)에 고정한 .NET SDK 10.0.400 또는 호환 patch
 - PowerShell 7
 - 10.0.11의 .NET/ASP.NET/WindowsDesktop 및 browser-wasm runtime pack과 선택 target에 맞는 MAUI/WebAssembly workload
+- `Platforms/Web/tsconfig.json`이 있는 Web project에서만 restore하는 `Microsoft.TypeScript.MSBuild` 7.0.0
 
 `reference/flutter-master`와 `reference/Avalonia-main` checkout은 명시적인 reference 비교나 migration 작업에만 필요합니다. 해당 작업에서 Flutter가 필요하면 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 준비합니다.
 

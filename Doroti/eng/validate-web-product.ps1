@@ -128,7 +128,7 @@ function Write-Composite {
     $manualBrowserPath = Join-Path $migrationRoot 'web-browser-live-manual.json'
     $manualBrowserLive = if (Test-Path -LiteralPath $manualBrowserPath) { Read-Json $manualBrowserPath } else { [ordered]@{ status='notVerified' } }
     Write-Json (Join-Path $migrationRoot 'web-product-evidence.json') ([ordered]@{
-        schemaVersion = 'doroti.web-product-evidence/v1'
+        schemaVersion = 'doroti.web-product-evidence/v2'
         scope = 'web-product'
         status = $(if ($pass) { 'pass' } else { 'partial' })
         target = 'browser-wasm'
@@ -213,7 +213,10 @@ if ($Shard -eq 'Hosting') {
     $contracts = Get-Content -LiteralPath (Join-Path $hostRoot 'BrowserHostContracts.cs') -Raw
     $skia = Get-Content -LiteralPath (Join-Path $hostRoot 'BrowserSkiaCapabilities.cs') -Raw
     $frameworkHost = Get-Content -LiteralPath (Join-Path $hostRoot 'BrowserFrameworkHost.cs') -Raw
-    $script = Get-Content -LiteralPath (Join-Path $hostRoot 'wwwroot/doroti.web.js') -Raw
+    $script = Get-Content -LiteralPath (Join-Path $hostRoot 'Web/doroti.web.ts') -Raw
+    $loader = Get-Content -LiteralPath (Join-Path $hostRoot 'Web/doroti.loader.ts') -Raw
+    $loaderTypes = Get-Content -LiteralPath (Join-Path $hostRoot 'Web/types/doroti-loader/index.d.ts') -Raw
+    $loaderContract = Read-Json (Join-Path $dorotiRoot 'validation/web-typescript/loader-contract.json')
     $razor = @(Get-ChildItem -LiteralPath $hostRoot -File -Filter '*.razor' | Where-Object Name -notlike '_*')
     Assert-Equal $razor.Count 2 'allowlisted Razor component count'
     Assert-True ($surface -match '<SKGLView' -and $surface -match 'EnableRenderLoop="false"' -and $surface -match 'OnPaintSurface') 'explicit SKGLView paint contract'
@@ -226,11 +229,27 @@ if ($Shard -eq 'Hosting') {
         Assert-True ($script.Contains($token, [StringComparison]::Ordinal)) "browser bridge token $token"
     }
     Assert-True ($script -notmatch 'getContext\(["'']2d["'']' -and $script -notmatch 'canvaskit') 'software and CanvasKit fallback absence'
+    $managedImports = @([regex]::Matches($contracts, 'JSImport\("([A-Za-z0-9]+)"') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
+    $typescriptExports = @([regex]::Matches($script, '(?m)^export (?:async )?function ([A-Za-z0-9]+)') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
+    foreach ($name in $managedImports) { Assert-True ($name -in $typescriptExports) "browser ABI export $name" }
+    Assert-True ($loader -match 'startPromise \?\?=' -and @([regex]::Matches($loader, '\bblazor\.start\(')).Count -eq 1) 'single Blazor.start owner'
+    Assert-True ($loader -match '"before-start"' -and $loader -match '"starting"' -and $loader -match '"started"' -and $loader -match '"failed"') 'loader stage contract'
+    $successStageCalls = @([regex]::Matches($loader, 'notifyStage\("(before-start|starting|started)"') | ForEach-Object { $_.Groups[1].Value })
+    Assert-Equal ($successStageCalls -join ',') (@($loaderContract.successStages) -join ',') 'loader success callback order fixture'
+    Assert-True ($loader.Contains($loaderContract.singleStartOwner, [StringComparison]::Ordinal)) 'loader duplicate start fixture'
+    foreach ($diagnostic in @($loaderContract.missingBlazorDiagnostic, $loaderContract.failedStageCallbackDiagnostic, $loaderContract.errorCallbackDiagnostic)) {
+        Assert-True ($loader.Contains($diagnostic, [StringComparison]::Ordinal)) "loader stable diagnostic $diagnostic"
+    }
+    Assert-True ($loader -match 'options\.onStage\?\.\("failed", context\)' -and $loader -match 'options\.onError\?\.\(error, context\)' -and $loader -match 'throw error;') 'loader original error identity fixture'
+    Assert-True ($loaderTypes -match 'DorotiBootstrapContext' -and $loaderTypes -match 'DorotiBootResourceLoader') 'package-owned loader declarations'
+    Assert-Equal @(Get-ChildItem -LiteralPath $hostRoot -File -Recurse -Filter '*.js' | Where-Object FullName -notmatch '[\\/](bin|obj)[\\/]').Count 0 'checked-in host JavaScript'
     Write-Json (Join-Path $tmpRoot 'hosting.json') ([ordered]@{
         status='pass'; razorComponents=@($razor.Name | Sort-Object); visibleWidgetDomNodes=0
         domOwners=@('canvas','hidden-text-input','accessibility-bridge')
         gpuChain=@('SKGLView WebGL2 context','SkiaSharp SKSurface','Doroti scene draw','explicit invalidate','terminal frame diagnostics')
         inputChain=@('DOM pointer/key/focus','JSImport/JSExport primitive bridge','BrowserHostAdapter normalization','IInputHostCapability','Doroti gesture/state')
+        browserSource='strict-TypeScript'; checkedInJavaScript=0; managedImportCount=$managedImports.Count; typescriptExportCount=$typescriptExports.Count
+        loader=[ordered]@{ blazorStartOwners=1; stages=@('before-start','starting','started','failed'); declaration='package-owned'; contractFixture='pass'; originalErrorIdentity='preserved' }
         softwareFallbacks=0; canvasKitDependencies=0
     })
 }
@@ -246,16 +265,18 @@ if ($Shard -eq 'Graph') {
     $templateRoot = Join-Path $dorotiRoot 'templates/Doroti.Templates/content/doroti-app'
     $demoWebProjectText = Get-Content -LiteralPath $demoWebProject -Raw
     $templateFiles = @(Get-ChildItem -LiteralPath $templateRoot -File -Recurse)
-    $graphFiles = @(Get-ChildItem (Join-Path $dorotiRoot 'src/Doroti.Host.Web'), (Join-Path $dorotiRoot 'src/Doroti.Target.Web.browser-wasm') -Include *.cs,*.csproj,*.razor,*.js,*.json -File -Recurse |
+    $graphFiles = @(Get-ChildItem (Join-Path $dorotiRoot 'src/Doroti.Host.Web'), (Join-Path $dorotiRoot 'src/Doroti.Target.Web.browser-wasm') -Include *.cs,*.csproj,*.razor,*.ts,*.json -File -Recurse |
         Where-Object { $_.FullName -notmatch '[\\/](bin|obj)[\\/]' -and $_.Name -ne 'packages.lock.json' })
     $forbidden = @($graphFiles | Select-String -Pattern 'Doroti\.(Host\.Desktop|Shell\.|Vendor\.Avalonia|Target\.Windows|Target\.macOS)|Avalonia\.Controls|Win32|AppKit|NSOpenGL|WGL' -CaseSensitive)
     Assert-Equal $forbidden.Count 0 'browser graph desktop/Avalonia dependency scan'
     Assert-True ($central -match 'SkiaSharp.Views.Blazor" Version="3.119.4"' -and $central -match 'SkiaSharp.NativeAssets.WebAssembly" Version="3.119.4"') 'SkiaSharp WebAssembly version set'
     Assert-True ($central -match 'Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0"') 'Blazor WebAssembly package pin'
+    Assert-True ($central -match 'Microsoft.TypeScript.MSBuild" Version="7.0.0"') 'TypeScript MSBuild package pin'
     Assert-True ($hostCsproj -match 'SkiaSharp.Views.Blazor' -and $hostCsproj -match 'SkiaSharp.NativeAssets.WebAssembly') 'Web host Skia package graph'
     Assert-True ($targetCsproj -match 'Microsoft.AspNetCore.Components.WebAssembly' -and $targetCsproj -match 'buildTransitive') 'target Blazor build contract'
     Assert-True ($sdkProps -match '<RuntimeFrameworkVersion.+>10\.0\.11</RuntimeFrameworkVersion>' -and $targetProps -match '<RuntimeFrameworkVersion.+>10\.0\.11</RuntimeFrameworkVersion>') 'browser runtime patch contract'
     Assert-True ($sdkTargets -match 'InvalidateDorotiWebRuntimeCache' -and $sdkTargets -match 'web-runtime-version\.txt' -and $sdkTargets -match 'RemoveDir Directories="\$\(IntermediateOutputPath\)webcil"') 'browser runtime cache invalidation contract'
+    Assert-True ($sdkTargets -match 'Microsoft.TypeScript.MSBuild' -and $sdkTargets -match 'Doroti.TypeScript.targets') 'Web-only TypeScript SDK activation'
     Assert-True ($demoWebProjectText -match 'Doroti.App.Sdk' -and $demoWebProjectText -match 'Doroti.Target.Web.browser-wasm') 'DorotiDemoApp single-project target selector'
     Assert-Equal $manifest.rid 'browser-wasm' 'browser target RID'
     Assert-Equal $manifest.graphicsBackend 'webgl2-browser-gpu-required' 'browser GPU policy'
@@ -264,14 +285,28 @@ if ($Shard -eq 'Graph') {
     Assert-Equal @($templateFiles | Where-Object { $_.Extension -in @('.dart') -or $_.Name -in @('pubspec.yaml','.metadata','doroti.yaml') }).Count 0 'template Flutter/Dart scaffold files'
     Assert-Equal @($templateFiles | Where-Object Extension -eq '.razor').Count 0 'user-owned Razor files'
     Assert-Equal @($templateFiles | Where-Object Name -eq 'PlatformBootstrap.cs').Count 0 'legacy app-owned Web bootstrap files'
+    Assert-True (Test-Path -LiteralPath (Join-Path $templateRoot 'Platforms/Web/tsconfig.json')) 'template TypeScript config'
+    Assert-True (Test-Path -LiteralPath (Join-Path $templateRoot 'Platforms/Web/src/doroti_bootstrap.ts')) 'template TypeScript bootstrap'
+    Assert-Equal @($templateFiles | Where-Object { $_.Extension -eq '.js' }).Count 0 'template checked-in JavaScript'
+    $templateTsConfig = Get-Content -LiteralPath (Join-Path $templateRoot 'Platforms/Web/tsconfig.json') -Raw
+    $demoTsConfig = Get-Content -LiteralPath (Join-Path $repoRoot 'DorotiDemoApp/Platforms/Web/tsconfig.json') -Raw
+    $templateBootstrap = Get-Content -LiteralPath (Join-Path $templateRoot 'Platforms/Web/src/doroti_bootstrap.ts') -Raw
+    $demoBootstrap = Get-Content -LiteralPath (Join-Path $repoRoot 'DorotiDemoApp/Platforms/Web/src/doroti_bootstrap.ts') -Raw
+    Assert-Equal $templateTsConfig $demoTsConfig 'template and DemoApp tsconfig contract'
+    Assert-Equal (Get-Content -LiteralPath (Join-Path $templateRoot 'Platforms/Web/src/plugins/echo.ts') -Raw) (Get-Content -LiteralPath (Join-Path $repoRoot 'DorotiDemoApp/Platforms/Web/src/plugins/echo.ts') -Raw) 'template and DemoApp plugin contract'
+    foreach ($bootstrap in @($templateBootstrap, $demoBootstrap)) {
+        Assert-True ($bootstrap -match 'startDoroti' -and $bootstrap -match 'onStage' -and $bootstrap -match 'onError' -and $bootstrap -notmatch '\bBlazor\.start\(') 'app bootstrap loader ownership contract'
+    }
+    Assert-True ($demoBootstrap -match 'dorotiBootstrapStage' -and $demoBootstrap -match 'loadBootResource') 'DemoApp live bootstrap markers'
     Assert-True (-not (Test-Path -LiteralPath (Join-Path $templateRoot 'Platforms/Maui'))) 'legacy app-owned MAUI bootstrap directory'
     $templateSource = ($templateFiles | Where-Object Extension -in @('.cs','.csproj') | ForEach-Object { Get-Content -LiteralPath $_.FullName -Raw }) -join "`n"
     Assert-True ($templateSource -notmatch '\bFlutter[A-Za-z0-9_]*\b') 'product-facing Flutter identifiers in template source'
     Assert-True ($templateSource -notmatch 'Router|EditForm|Microsoft\.AspNetCore\.Components\.Forms') 'router/forms/component UI dependency absence'
     Write-Json (Join-Path $tmpRoot 'graph.json') ([ordered]@{
-        status='pass'; packageVersions=[ordered]@{ blazor='10.0.0'; skiaSharp='3.119.4' }
+        status='pass'; packageVersions=[ordered]@{ blazor='10.0.0'; skiaSharp='3.119.4'; typescriptMsBuild='7.0.0' }
         desktopNativeDependencies=0; avaloniaDependencies=0; canvasKitDependencies=0
         userRazorFiles=0; flutterDartScaffoldFiles=0; productFacingFlutterIdentifiers=0
+        checkedInGeneratedJavaScript=0; webTypeScriptScope='template-demo-host-only'
         targetManifest=$manifest
     })
 }
@@ -324,6 +359,10 @@ if ($Shard -eq 'Template') {
     Assert-True (Test-Path -LiteralPath (Join-Path $projectRoot 'src/App.cs')) 'shared C# application source'
     Assert-True (-not (Test-Path -LiteralPath (Join-Path $projectRoot 'Platforms/Web/PlatformBootstrap.cs'))) 'legacy app-owned Blazor bootstrap absence'
     Assert-True (-not (Test-Path -LiteralPath (Join-Path $projectRoot 'Platforms/Maui'))) 'legacy app-owned MAUI bootstrap absence'
+    Assert-True (Test-Path -LiteralPath (Join-Path $projectRoot 'Platforms/Web/tsconfig.json')) 'template-created TypeScript config'
+    Assert-True (Test-Path -LiteralPath (Join-Path $projectRoot 'Platforms/Web/src/doroti_bootstrap.ts')) 'template-created TypeScript bootstrap'
+    Assert-True (Test-Path -LiteralPath (Join-Path $projectRoot 'Platforms/Web/src/plugins/echo.ts')) 'template-created TypeScript plugin'
+    Assert-Equal @($createdFiles | Where-Object { $_.FullName -notmatch '[\\/](bin|obj)[\\/]' -and $_.Extension -eq '.js' }).Count 0 'template-created checked-in JavaScript'
     $startup = Get-Content -LiteralPath (Join-Path $projectRoot 'Program.cs') -Raw
     Assert-True ($startup -match 'public sealed class Program : IDorotiApplicationStartup' -and $startup -notmatch '#if|DOROTI_BROWSER|MACCATALYST') 'target-neutral public startup contract'
     $assets = Get-Content -LiteralPath (Join-Path $projectRoot 'obj/web/project.assets.json') -Raw
@@ -332,7 +371,8 @@ if ($Shard -eq 'Template') {
     Write-Json (Join-Path $tmpRoot 'template.json') ([ordered]@{
         status='pass'; command='dotnet new doroti-app --name DorotiWebProduct'; source='package-only'
         externalRoot='repository-outside-source-tree'; packageCount=@(Get-ChildItem -LiteralPath $feed -File -Filter '*.nupkg' | Where-Object Name -notlike '*.snupkg').Count
-        flutterDartFiles=0; unsupportedPlatformDirectories=0; userAuthoredRazorFiles=0
+        flutterDartFiles=0; unsupportedPlatformDirectories=0; userAuthoredRazorFiles=0; checkedInJavaScript=0
+        typeScript=[ordered]@{ version='7.0.0'; config='Platforms/Web/tsconfig.json'; bootstrap='Platforms/Web/src/doroti_bootstrap.ts'; plugin='Platforms/Web/src/plugins/echo.ts' }
         flutterOrDartCommands=0; sharedApplication='src/App.cs'; browserHost='obj/web/Doroti.Generated/DorotiBootstrap.g.cs'
     })
 }
@@ -346,6 +386,14 @@ if ($Shard -eq 'Compile') {
     Invoke-WithNuGetPackages $state.packages {
         dotnet build $state.project -c Release --no-restore -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm
     } 'build external browser-wasm Doroti product'
+    $demoGeneratedRoot = Join-Path $repoRoot 'DorotiDemoApp/obj/web/Release/net10.0/Doroti.Generated/wwwroot'
+    $hostGeneratedRoot = Join-Path $dorotiRoot 'src/Doroti.Host.Web/obj/Release/net10.0/Doroti.Web/wwwroot'
+    foreach ($generated in @(
+        (Join-Path $demoGeneratedRoot 'doroti_bootstrap.js'),
+        (Join-Path $demoGeneratedRoot 'plugins/echo.js'),
+        (Join-Path $hostGeneratedRoot 'doroti.loader.js'),
+        (Join-Path $hostGeneratedRoot 'doroti.web.js')
+    )) { Assert-True (Test-Path -LiteralPath $generated -PathType Leaf) "compiled TypeScript output $generated" }
     $externalBootstrap = Join-Path $state.projectRoot 'obj/web/Doroti.Generated/DorotiBootstrap.g.cs'
     $externalPlugins = Join-Path $state.projectRoot 'obj/web/Doroti.Generated/DorotiPluginRegistration.g.cs'
     Assert-True (Test-Path -LiteralPath $externalBootstrap -PathType Leaf) 'external SDK-owned Web bootstrap'
@@ -356,13 +404,52 @@ if ($Shard -eq 'Compile') {
     $negativeExit = $LASTEXITCODE
     Assert-True ($negativeExit -ne 0 -and (($negative -join "`n") -match 'DOROTIAPP004')) 'stable invalid target diagnostic DOROTIAPP004'
     $global:LASTEXITCODE = 0
+    $fixtureRoot = Join-Path $dorotiRoot 'validation/web-typescript'
+    $negativeRoot = Join-Path $repoRoot 'DorotiDemoApp/obj/web/typescript-negative'
+    Reset-SafeDirectory $negativeRoot (Join-Path $repoRoot 'DorotiDemoApp/obj/web')
+    function Invoke-TypeScriptNegative([string] $Name, [string] $ExpectedCode, [string[]] $Properties, [string] $Target = 'DorotiCompileTypeScript') {
+        $arguments = @('msbuild', $demoWebProject, '-nologo', "-t:$Target", '-p:Configuration=Release', '-p:DorotiTarget=Web', '-p:RuntimeIdentifier=browser-wasm') + $Properties
+        $output = @(& dotnet @arguments 2>&1)
+        $exitCode = $LASTEXITCODE
+        Assert-True ($exitCode -ne 0 -and (($output -join "`n") -match $ExpectedCode)) "TypeScript negative $Name $ExpectedCode"
+        $global:LASTEXITCODE = 0
+        return [ordered]@{ status='fail-closed-as-expected'; diagnostic=$ExpectedCode }
+    }
+    $missingCompiler = Join-Path $negativeRoot 'missing/tsc.exe'
+    $missingConfig = Join-Path $negativeRoot 'missing/tsconfig.json'
+    $compilerNegative = Invoke-TypeScriptNegative 'missing-compiler' 'DOROTIWEB013' @("-p:DorotiTypeScriptCompilerExecutable=$missingCompiler") 'DorotiValidateTypeScriptToolchain'
+    $configNegative = Invoke-TypeScriptNegative 'missing-config' 'DOROTIWEB011' @("-p:DorotiTypeScriptConfig=$missingConfig") 'DorotiValidateTypeScriptToolchain'
+    $emptySourceFixture = Join-Path $fixtureRoot 'empty-source'
+    $emptySourceNegative = Invoke-TypeScriptNegative 'empty-source' 'DOROTIWEB012' @("-p:DorotiTypeScriptConfig=$(Join-Path $emptySourceFixture 'tsconfig.json')", "-p:DorotiTypeScriptSourceRoot=$emptySourceFixture") 'DorotiValidateTypeScriptToolchain'
+    $sourceOutputNegative = Invoke-TypeScriptNegative 'source-output' 'DOROTIWEB014' @('-p:DorotiTypeScriptOutputRoot=Platforms/Web/wwwroot') 'DorotiValidateTypeScriptToolchain'
+    $invalidFixture = Join-Path $fixtureRoot 'invalid-syntax'
+    $invalidOutput = Join-Path $negativeRoot 'invalid-syntax'
+    [IO.Directory]::CreateDirectory($invalidOutput) | Out-Null
+    [IO.File]::WriteAllText((Join-Path $invalidOutput 'doroti_bootstrap.js'), 'stale-output', [Text.UTF8Encoding]::new($false))
+    $invalidNegative = Invoke-TypeScriptNegative 'syntax-and-stale' 'DOROTIWEB016' @(
+        "-p:DorotiTypeScriptConfig=$(Join-Path $invalidFixture 'tsconfig.json')",
+        "-p:DorotiTypeScriptSourceRoot=$invalidFixture",
+        "-p:DorotiTypeScriptOutputRoot=$invalidOutput",
+        "-p:DorotiTypeScriptExpectedOutput=$(Join-Path $invalidOutput 'doroti_bootstrap.js')"
+    )
+    Assert-Equal (Get-Content -LiteralPath (Join-Path $invalidOutput 'doroti_bootstrap.js') -Raw) 'stale-output' 'invalid TypeScript did not overwrite stale JavaScript'
+    $emptyEmitFixture = Join-Path $fixtureRoot 'empty-emit'
+    $emptyEmitOutput = Join-Path $negativeRoot 'empty-emit'
+    [IO.Directory]::CreateDirectory($emptyEmitOutput) | Out-Null
+    $emptyEmitNegative = Invoke-TypeScriptNegative 'empty-emit' 'DOROTIWEB017' @(
+        "-p:DorotiTypeScriptConfig=$(Join-Path $emptyEmitFixture 'tsconfig.json')",
+        "-p:DorotiTypeScriptSourceRoot=$emptyEmitFixture",
+        "-p:DorotiTypeScriptOutputRoot=$emptyEmitOutput",
+        "-p:DorotiTypeScriptExpectedOutput=$(Join-Path $emptyEmitOutput 'doroti_bootstrap.js')"
+    )
     $browserAssembly = Get-ChildItem (Join-Path $repoRoot 'DorotiDemoApp/bin/web/Release/net10.0/wwwroot/_framework') -File -Filter 'DorotiDemoApp*.wasm' | Where-Object Name -notmatch '\.(br|gz)$' | Select-Object -First 1
     Assert-True ($null -ne $browserAssembly -and $browserAssembly.Length -gt 0) 'DorotiDemoApp assembly in browser build'
     Write-Json (Join-Path $tmpRoot 'compile.json') ([ordered]@{
         status='pass'; browser=[ordered]@{ target='browser-wasm'; configuration='Release'; diagnostics=0; applicationAssembly=$browserAssembly.Name; applicationSha256=Get-Sha $browserAssembly.FullName }
         sharedSource=[ordered]@{ path='DorotiDemoApp/src/App.cs'; startup='DorotiDemoApp/Program.cs'; generatedBootstrap='obj/web/Doroti.Generated/DorotiBootstrap.g.cs'; generatedPluginRegistration='obj/web/Doroti.Generated/DorotiPluginRegistration.g.cs'; desktopCompile='win-x64-pass'; browserCompile='browser-wasm-pass'; compileItemIdentity='same-files' }
         externalAcceptance=[ordered]@{ project='template-created-DorotiWebProduct'; build='pass'; source='promoted-packages-only' }
-        invalidTarget=[ordered]@{ status='fail-closed-as-expected'; diagnostic='DOROTIAPP004' }
+        typeScript=[ordered]@{ version='7.0.0'; sourceCount=2; appOutput='obj/web/Release/net10.0/Doroti.Generated/wwwroot'; hostOutput='Doroti.Host.Web/obj/Release/net10.0/Doroti.Web/wwwroot' }
+        negative=[ordered]@{ invalidTarget=[ordered]@{ status='fail-closed-as-expected'; diagnostic='DOROTIAPP004' }; compiler=$compilerNegative; config=$configNegative; emptySource=$emptySourceNegative; sourceOutput=$sourceOutputNegative; syntaxAndStale=$invalidNegative; emptyEmit=$emptyEmitNegative }
         nativeSkiaLink='pass'; flutterOrDartCommands=0
     })
 }
@@ -376,6 +463,15 @@ if ($Shard -eq 'Publish') {
     Reset-SafeDirectory $publishB $tmpRoot
     Reset-SafeDirectory $externalPublish $state.external
     Invoke-Checked { dotnet clean $demoWebProject -c Release -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm --nologo } 'clean stale DorotiDemoApp Web intermediates'
+    foreach ($source in @(
+        (Join-Path $repoRoot 'DorotiDemoApp/Platforms/Web/tsconfig.json'),
+        (Join-Path $repoRoot 'DorotiDemoApp/Platforms/Web/src/doroti_bootstrap.ts'),
+        (Join-Path $repoRoot 'DorotiDemoApp/Platforms/Web/src/plugins/echo.ts')
+    )) { Assert-True (Test-Path -LiteralPath $source -PathType Leaf) "clean preserved TypeScript source $source" }
+    foreach ($generatedRoot in @(
+        (Join-Path $repoRoot 'DorotiDemoApp/obj/web/Release/net10.0/Doroti.Generated/wwwroot'),
+        (Join-Path $dorotiRoot 'src/Doroti.Host.Web/obj/Release/net10.0/Doroti.Web/wwwroot')
+    )) { Assert-True (-not (Test-Path -LiteralPath $generatedRoot)) "clean removed generated TypeScript output $generatedRoot" }
     Invoke-Checked { dotnet restore $demoWebProject --force-evaluate -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm } 'restore DorotiDemoApp Web product for publish'
     Invoke-Checked { dotnet publish $demoWebProject -c Release --no-restore -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm -o $publishA } 'first DorotiDemoApp browser-wasm publish'
     Invoke-Checked { dotnet publish $demoWebProject -c Release --no-restore -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm -o $publishB } 'repeat DorotiDemoApp browser-wasm publish'
@@ -394,9 +490,15 @@ if ($Shard -eq 'Publish') {
     $hashB = Get-IdentityHash $identityB
     Assert-Equal $hashA $hashB 'repeat deployment-neutral static identity'
     $index = Get-Content -LiteralPath (Join-Path $staticA 'index.html') -Raw
-    Assert-True ($index -match '_framework/blazor\.webassembly\.js') 'standard Blazor WebAssembly loader URL'
-    foreach ($relative in @('_framework/blazor.webassembly.js','_framework/dotnet.js','_content/Doroti.Host.Web/doroti.web.js','_content/Doroti.Host.Web/doroti.web.css','assets/doroti-mark.txt','locales/en-US.json','plugins/echo.js','doroti-app-manifest.json')) {
+    Assert-True ($index -match '_framework/blazor\.webassembly\.js" autostart="false"' -and $index -match '<script type="module" src="doroti_bootstrap\.js"></script>') 'explicit compiled Doroti bootstrap order'
+    Assert-True ($index -notmatch '<script[^>]+doroti_bootstrap\.js[^>]+async') 'non-async bootstrap module ordering'
+    foreach ($relative in @('_framework/blazor.webassembly.js','_framework/dotnet.js','doroti_bootstrap.js','_content/Doroti.Host.Web/doroti.loader.js','_content/Doroti.Host.Web/doroti.web.js','_content/Doroti.Host.Web/doroti.web.css','assets/doroti-mark.txt','locales/en-US.json','plugins/echo.js','doroti-app-manifest.json')) {
         Assert-True (Test-Path -LiteralPath (Join-Path $staticA $relative) -PathType Leaf) "published static asset $relative"
+    }
+    $forbiddenPublishFiles = @(Get-ChildItem -LiteralPath $publishA -File -Recurse | Where-Object { $_.Extension -eq '.ts' -or $_.Name -eq 'tsconfig.json' -or $_.Name -match '^tsc(\.exe)?$' })
+    Assert-Equal $forbiddenPublishFiles.Count 0 'TypeScript source and compiler publish leakage'
+    foreach ($relative in @('doroti_bootstrap.js','plugins/echo.js','_content/Doroti.Host.Web/doroti.loader.js','_content/Doroti.Host.Web/doroti.web.js')) {
+        Assert-True (-not (Get-Content -LiteralPath (Join-Path $staticA $relative) -Raw).Contains($repoRoot, [StringComparison]::OrdinalIgnoreCase)) "repository path absence in $relative"
     }
     $native = @(Get-ChildItem (Join-Path $staticA '_framework') -File -Filter 'dotnet.native.*.wasm' | Where-Object Name -notmatch '\.(br|gz)$')
     $skia = @(Get-ChildItem (Join-Path $staticA '_framework') -File -Filter 'SkiaSharp.*.wasm' | Where-Object Name -notmatch '\.(br|gz)$')
@@ -423,6 +525,9 @@ if ($Shard -eq 'Publish') {
     Assert-True ($externalAssets -notmatch [regex]::Escape($dorotiRoot)) 'external browser assets repository source fallback'
     $externalStatic = Join-Path $externalPublish 'wwwroot'
     Assert-True (Test-Path -LiteralPath (Join-Path $externalStatic '_content/Doroti.Host.Web/doroti.web.js') -PathType Leaf) 'external package-only host static asset'
+    Assert-True (Test-Path -LiteralPath (Join-Path $externalStatic '_content/Doroti.Host.Web/doroti.loader.js') -PathType Leaf) 'external package-only loader static asset'
+    Assert-True (Test-Path -LiteralPath (Join-Path $externalStatic 'doroti_bootstrap.js') -PathType Leaf) 'external package-only application bootstrap static asset'
+    Assert-True (Test-Path -LiteralPath (Join-Path $externalStatic 'plugins/echo.js') -PathType Leaf) 'external package-only plugin static asset'
     Assert-True (@(Get-ChildItem (Join-Path $externalStatic '_framework') -File -Filter 'DorotiWebProduct.*.wasm' | Where-Object Name -notmatch '\.(br|gz)$').Count -eq 1) 'external package-only C# app assembly'
     [IO.Directory]::CreateDirectory($releaseRoot) | Out-Null
     $artifactRoot = Join-Path $releaseRoot 'wwwroot'
@@ -431,12 +536,19 @@ if ($Shard -eq 'Publish') {
     $artifactIdentity = Get-StaticIdentity $artifactRoot
     Assert-Equal (Get-IdentityHash $artifactIdentity) $hashA 'copied release artifact identity'
     $appSource = Join-Path $repoRoot 'DorotiDemoApp/src/App.cs'
+    $webModules = [ordered]@{
+        applicationBootstrap=[ordered]@{ source='DorotiDemoApp/Platforms/Web/src/doroti_bootstrap.ts'; sourceSha256=Get-Sha (Join-Path $repoRoot 'DorotiDemoApp/Platforms/Web/src/doroti_bootstrap.ts'); artifact='doroti_bootstrap.js'; artifactSha256=Get-Sha (Join-Path $staticA 'doroti_bootstrap.js') }
+        applicationPlugin=[ordered]@{ source='DorotiDemoApp/Platforms/Web/src/plugins/echo.ts'; sourceSha256=Get-Sha (Join-Path $repoRoot 'DorotiDemoApp/Platforms/Web/src/plugins/echo.ts'); artifact='plugins/echo.js'; artifactSha256=Get-Sha (Join-Path $staticA 'plugins/echo.js') }
+        dorotiLoader=[ordered]@{ source='Doroti/src/Doroti.Host.Web/Web/doroti.loader.ts'; sourceSha256=Get-Sha (Join-Path $dorotiRoot 'src/Doroti.Host.Web/Web/doroti.loader.ts'); artifact='_content/Doroti.Host.Web/doroti.loader.js'; artifactSha256=Get-Sha (Join-Path $staticA '_content/Doroti.Host.Web/doroti.loader.js') }
+        browserInterop=[ordered]@{ source='Doroti/src/Doroti.Host.Web/Web/doroti.web.ts'; sourceSha256=Get-Sha (Join-Path $dorotiRoot 'src/Doroti.Host.Web/Web/doroti.web.ts'); artifact='_content/Doroti.Host.Web/doroti.web.js'; artifactSha256=Get-Sha (Join-Path $staticA '_content/Doroti.Host.Web/doroti.web.js') }
+    }
     $manifest = [ordered]@{
-        schemaVersion='doroti.static-artifact-manifest/v3'; scope='web-product'; target='browser-wasm'; version='0.2.0-beta'
+        schemaVersion='doroti.static-artifact-manifest/v4'; scope='web-product'; target='browser-wasm'; version='0.2.0-beta'
         deploymentRoot='wwwroot'; aggregateSha256=$hashA; repeatAggregateSha256=$hashB; fileCount=$artifactIdentity.Count
         application=[ordered]@{ source='DorotiDemoApp/src/App.cs'; bootstrap='DorotiDemoApp/Program.cs'; sourceSha256=Get-Sha $appSource; assembly=$app[0].Name; assemblySha256=Get-Sha $app[0].FullName; project='DorotiDemoApp.csproj' }
         runtime=[ordered]@{ frameworkVersion=$runtimeFrameworkVersion; coreLibWebCil=$publishedCoreLib[0].Name; coreLibSha256=Get-Sha $publishedCoreLib[0].FullName; nativeWasm=$native[0].Name; nativeSha256=Get-Sha $native[0].FullName; skiaWasm=@($skia | ForEach-Object { [ordered]@{ name=$_.Name; sha256=Get-Sha $_.FullName } }) }
-        packages=[ordered]@{ target='Doroti.Target.Web.browser-wasm/0.2.0-beta'; blazor='10.0.0'; skiaSharp='3.119.4' }
+        webModules=$webModules
+        packages=[ordered]@{ target='Doroti.Target.Web.browser-wasm/0.2.0-beta'; blazor='10.0.0'; skiaSharp='3.119.4'; typescriptMsBuild='7.0.0-private-build-only' }
         reference=[ordered]@{ upstream='AvaloniaUI/Avalonia'; revision='f159423f691946e713f454447a780d4677d8a0d2'; mode='behavior-reference-only' }
         files=$artifactIdentity
     }
@@ -450,7 +562,8 @@ if ($Shard -eq 'Publish') {
         externalAcceptance=[ordered]@{ consumer='repository-outside-source-tree'; source='template-and-promoted-packages-only'; create='pass'; restore='clean'; build='pass'; publish='pass' }
         staticFileCount=$identityA.Count; aggregateSha256=$hashA; repeatAggregateSha256=$hashB
         bootLoader='_framework/blazor.webassembly.js'; runtimeFrameworkVersion=$runtimeFrameworkVersion; coreLibWebCil=[ordered]@{ name=$publishedCoreLib[0].Name; sha256=Get-Sha $publishedCoreLib[0].FullName }; nativeWasm=[ordered]@{ name=$native[0].Name; sha256=Get-Sha $native[0].FullName }
-        skiaWasmCount=$skia.Count; appAssembly=$app[0].Name; resources=@('assets/doroti-mark.txt','locales/en-US.json'); plugin='plugins/echo.js'
+        skiaWasmCount=$skia.Count; appAssembly=$app[0].Name; resources=@('assets/doroti-mark.txt','locales/en-US.json')
+        webModules=$webModules; publishedTypeScriptSources=0; publishedTypeScriptCompilerAssets=0
         repositoryPrivateFallbacks=0; desktopNativeDependencies=0; avaloniaDependencies=0; canvasKitArtifacts=0
         missingStaticArtifacts=0; staticArtifactHashMismatches=0; flutterOrDartCommands=0
         artifactRoot='artifacts/web/0.2.0-beta/wwwroot'

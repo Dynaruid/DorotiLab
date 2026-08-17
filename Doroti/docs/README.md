@@ -1,6 +1,6 @@
 # Doroti documentation map
 
-Start with [ADR-019](adr/ADR-019-product-framework-source-ownership.md). It defines the current product-first development model and supersedes milestone-era assumptions that framework source must be regenerated as one compiler batch.
+Start with [ADR-019](adr/ADR-019-product-framework-source-ownership.md). For Web source and startup policy, continue with [ADR-020](adr/ADR-020-web-typescript-bootstrap.md).
 
 - `adr/`: durable decisions. Later ADRs supersede conflicting earlier decisions.
 - `architecture/`: implementation records from the G3-G7 bootstrap and migration period. Files named for a milestone preserve what was built and verified at that time; their `validate-g*`, `prepare-g*`, `promote-g*`, and review commands are retired historical commands.

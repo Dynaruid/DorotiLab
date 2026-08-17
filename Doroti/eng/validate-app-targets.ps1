@@ -92,6 +92,12 @@ function Invoke-GraphGate {
         } else {
             Assert-True (@($graph | Where-Object { $_ -like 'applicationDefinition=?*' }).Count -eq 0) 'Web XAML exclusion'
             Assert-True (@($graph | Where-Object { $_ -like 'compile=Platforms\Maui\*' -or $_ -like 'compile=Platforms\Windows\*' -or $_ -like 'compile=Platforms\MacCatalyst\*' }).Count -eq 0) 'Web desktop source exclusion'
+            Assert-True (@($graph | Where-Object { $_ -ceq 'typescriptVersion=7.0.0' }).Count -eq 1) 'Web TypeScript compiler version'
+            Assert-True (@($graph | Where-Object { $_ -ceq 'typescriptSourceCount=2' }).Count -eq 1) 'Web TypeScript source count'
+            Assert-True (@($graph | Where-Object { $_ -like 'typescriptOutputRoot=*obj\web\*\net10.0\Doroti.Generated\wwwroot' }).Count -eq 1) 'Web TypeScript isolated output root'
+        }
+        if ($target.Name -ne 'Web') {
+            Assert-True (@($graph | Where-Object { $_ -like 'typescript*=*' }).Count -eq 0) "$($target.Name) TypeScript graph exclusion"
         }
         Assert-True (@($graph | Where-Object { $_ -like 'mauiXaml=?*' }).Count -eq 0) "$($target.Name) MauiXaml count"
     }
@@ -121,6 +127,12 @@ function Invoke-BuildGate {
     Invoke-AppRestore 'MacCatalyst' 'maccatalyst-arm64'
     Invoke-Checked { dotnet build $project -c Release -p:DorotiTarget=MacCatalyst -p:RuntimeIdentifier=maccatalyst-arm64 --nologo --no-restore } 'Mac Catalyst cross-build failed'
     Invoke-Checked { dotnet build $project -c Release -p:DorotiTarget=Windows -p:RuntimeIdentifier=win-x64 --nologo --no-restore } 'Windows repeat build failed'
+    foreach ($nativeTarget in @('windows','maccatalyst')) {
+        $nativeAssets = Get-Content -LiteralPath (Join-Path (Split-Path $project -Parent) "obj/$nativeTarget/project.assets.json") -Raw
+        Assert-True ($nativeAssets -notmatch 'Microsoft\.TypeScript\.MSBuild') "$nativeTarget TypeScript package isolation"
+    }
+    $webAssets = Get-Content -LiteralPath (Join-Path (Split-Path $project -Parent) 'obj/web/project.assets.json') -Raw
+    Assert-True ($webAssets -match 'Microsoft\.TypeScript\.MSBuild/7\.0\.0') 'Web TypeScript package graph'
     foreach ($path in @($windowsGeneratedFiles + $windowsAssembly)) {
         Assert-True ([IO.File]::GetLastWriteTimeUtc($path) -eq $windowsWriteTimes[$path]) "Windows repeat build preserved $path"
     }
@@ -160,7 +172,7 @@ function Write-Evidence {
     Assert-True (Test-Path -LiteralPath $rawLivePath -PathType Leaf) 'Windows live input for evidence'
     $live = Get-Content -LiteralPath $rawLivePath -Raw | ConvertFrom-Json
     Write-Json $evidencePath ([ordered]@{
-        schemaVersion = 'doroti.app-targets-evidence/v2'
+        schemaVersion = 'doroti.app-targets-evidence/v3'
         scope = 'generated-application-bootstrap'
         capturedAtUtc = [DateTimeOffset]::UtcNow
         status = 'partial'
@@ -186,10 +198,11 @@ function Write-Evidence {
             status = 'pass'
             sequence = @('Windows','Web','MacCatalyst-cross-build','Windows-no-restore')
             windows = [ordered]@{ targetFramework='net10.0-windows10.0.19041.0';rid='win-x64' }
-            web = [ordered]@{ targetFramework='net10.0';rid='browser-wasm' }
+            web = [ordered]@{ targetFramework='net10.0';rid='browser-wasm';typeScriptMsBuild='7.0.0';sourceCount=2;outputRoot='obj/web/<configuration>/net10.0/Doroti.Generated/wwwroot' }
             macCatalyst = [ordered]@{ targetFramework='net10.0-maccatalyst';rid='maccatalyst-arm64';host='windows-cross-build-only' }
             startupNegative = 'pass-failed-closed-CS0311'
             requiredRegistrationNegative = 'pass-failed-closed-CS0239'
+            nativeTypeScriptPackageCount = 0
         }
         windowsLive = $live
         boundaries = [ordered]@{

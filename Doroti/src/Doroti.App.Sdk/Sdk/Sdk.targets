@@ -5,6 +5,13 @@
     <_DorotiBootstrapFile>$(_DorotiGeneratedDirectory)DorotiBootstrap.g.cs</_DorotiBootstrapFile>
     <_DorotiPluginRegistrationFile>$(_DorotiGeneratedDirectory)DorotiPluginRegistration.g.cs</_DorotiPluginRegistrationFile>
     <_DorotiWebRuntimeStampFile>$(_DorotiGeneratedDirectory)web-runtime-version.txt</_DorotiWebRuntimeStampFile>
+    <DorotiTypeScriptConfig Condition="'$(DorotiWebTypeScript)' == 'true'">$(MSBuildProjectDirectory)\Platforms\Web\tsconfig.json</DorotiTypeScriptConfig>
+    <DorotiTypeScriptSourceRoot Condition="'$(DorotiWebTypeScript)' == 'true'">$(MSBuildProjectDirectory)\Platforms\Web\src</DorotiTypeScriptSourceRoot>
+    <DorotiTypeScriptOutputRoot Condition="'$(DorotiWebTypeScript)' == 'true'">$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework)\Doroti.Generated\wwwroot</DorotiTypeScriptOutputRoot>
+    <DorotiTypeScriptExpectedOutput Condition="'$(DorotiWebTypeScript)' == 'true'">$(DorotiTypeScriptOutputRoot)\doroti_bootstrap.js</DorotiTypeScriptExpectedOutput>
+    <DorotiTypeScriptTypeRoots Condition="'$(DorotiWebTypeScript)' == 'true' and Exists('$(MSBuildThisFileDirectory)types\doroti-loader\index.d.ts')">$(MSBuildThisFileDirectory)types</DorotiTypeScriptTypeRoots>
+    <DorotiTypeScriptTypeRoots Condition="'$(DorotiWebTypeScript)' == 'true' and '$(DorotiTypeScriptTypeRoots)' == ''">$(MSBuildThisFileDirectory)..\..\Doroti.Host.Web\Web\types</DorotiTypeScriptTypeRoots>
+    <DorotiTypeScriptStaticBasePath Condition="'$(DorotiWebTypeScript)' == 'true'">wwwroot</DorotiTypeScriptStaticBasePath>
   </PropertyGroup>
 
   <!-- Restore-time mirrors; target packages publish the same descriptors through buildTransitive assets. -->
@@ -36,6 +43,7 @@
   </ItemGroup>
   <ItemGroup Condition="'$(DorotiTarget)' == 'Web'">
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="$(DorotiTypeScriptVersion)" PrivateAssets="all" Condition="'$(DorotiWebTypeScript)' == 'true'" />
     <PackageReference Include="Doroti.Target.Web.browser-wasm" Version="$(DorotiVersion)" Condition="'$(DorotiUseRepositoryProjects)' != 'true'" />
   </ItemGroup>
 
@@ -108,6 +116,9 @@
   </Target>
 
   <Target Name="WriteDorotiTargetGraph" DependsOnTargets="GenerateDorotiBootstrap">
+    <PropertyGroup Condition="'$(DorotiWebTypeScript)' == 'true'">
+      <_DorotiTypeScriptSourceCount>@(DorotiTypeScriptSource->Count())</_DorotiTypeScriptSourceCount>
+    </PropertyGroup>
     <ItemGroup>
       <_DorotiGraphLine Include="target=$(DorotiTarget)" />
       <_DorotiGraphLine Include="tfm=$(TargetFramework)" />
@@ -117,11 +128,17 @@
       <_DorotiGraphLine Include="compile=%(Compile.Identity)" />
       <_DorotiGraphLine Include="generatedBootstrap=$(_DorotiBootstrapFile)" />
       <_DorotiGraphLine Include="generatedPluginRegistration=$(_DorotiPluginRegistrationFile)" />
+      <_DorotiGraphLine Include="typescriptVersion=$(DorotiTypeScriptVersion)" Condition="'$(DorotiWebTypeScript)' == 'true'" />
+      <_DorotiGraphLine Include="typescriptConfig=$(DorotiTypeScriptConfig)" Condition="'$(DorotiWebTypeScript)' == 'true'" />
+      <_DorotiGraphLine Include="typescriptSourceCount=$(_DorotiTypeScriptSourceCount)" Condition="'$(DorotiWebTypeScript)' == 'true'" />
+      <_DorotiGraphLine Include="typescriptOutputRoot=$(DorotiTypeScriptOutputRoot)" Condition="'$(DorotiWebTypeScript)' == 'true'" />
       <_DorotiGraphLine Include="applicationDefinition=%(ApplicationDefinition.Identity)" />
       <_DorotiGraphLine Include="mauiXaml=%(MauiXaml.Identity)" />
     </ItemGroup>
     <WriteLinesToFile File="$(BaseIntermediateOutputPath)doroti-target-graph.txt" Overwrite="true" Lines="@(_DorotiGraphLine)" />
   </Target>
+
+  <Import Project="$(MSBuildThisFileDirectory)Doroti.TypeScript.targets" Condition="'$(DorotiWebTypeScript)' == 'true'" />
 
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk.BlazorWebAssembly" Condition="'$(DorotiTarget)' == 'Web'" />
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" Condition="'$(DorotiTarget)' != 'Web'" />

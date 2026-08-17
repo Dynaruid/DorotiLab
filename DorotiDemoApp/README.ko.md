@@ -12,8 +12,12 @@ DorotiDemoApp은 제품이 직접 소유하는 Doroti framework와 single-projec
 - `src/App.cs`: `Program`이 선택하는 target-neutral Material widget/state tree와 view configuration
 - `Platforms/Windows`: 얇은 WinUI shell, 선택적 platform hook과 manifest
 - `Platforms/MacCatalyst`: 얇은 UIKit delegate, 선택적 platform hook, plist와 entitlement
-- `Platforms/Web`: 사용자 소유 static asset. Blazor composition root는 host/SDK가 소유
-- `obj/<target>/Doroti.Generated`: SDK 소유 bootstrap과 plugin registration. 직접 수정하지 않음
+- `Platforms/Web/src`: 사용자 소유 TypeScript bootstrap 정책과 browser plugin
+- `Platforms/Web/wwwroot`: 직접 작성한 HTML, CSS 인접 resource, locale/asset, manifest. 생성 JavaScript는 두지 않음
+- `obj/web/<configuration>/net10.0/Doroti.Generated/wwwroot`: compile된 앱 bootstrap/plugin JavaScript
+- `obj/<target>/Doroti.Generated`: SDK 소유 C# bootstrap과 plugin registration. 직접 수정하지 않음
+
+`doroti_bootstrap.ts`는 Doroti loader를 통해 loading/error UI와 typed Blazor startup hook을 구성합니다. `Blazor.start()`는 `doroti.loader.ts`만 호출합니다. Release publish에는 `doroti_bootstrap.js`, `plugins/echo.js`, `_content/Doroti.Host.Web/doroti.loader.js`, `_content/Doroti.Host.Web/doroti.web.js`가 있으며 TypeScript source, `tsconfig.json`, compiler asset은 포함하지 않습니다.
 
 ## Build와 validation
 

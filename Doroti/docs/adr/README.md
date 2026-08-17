@@ -22,3 +22,5 @@ R3–R8 accept ADR-001 through ADR-015 as the contract baseline for subsequent i
 | [ADR-016](ADR-016-avalonia-host-first.md) | Official Avalonia host boundary and dependency matrix |
 | [ADR-017](ADR-017-source-ported-desktop-shell.md) | Source-ported Avalonia desktop shell product cutover |
 | [ADR-018](ADR-018-flutter-avalonia-boundary.md) | Flutter framework and Avalonia source-port ownership boundary |
+| [ADR-019](ADR-019-product-framework-source-ownership.md) | Product-owned framework source and ordinary development workflow |
+| [ADR-020](ADR-020-web-typescript-bootstrap.md) | TypeScript-owned Web bootstrap, loader, and browser interop |

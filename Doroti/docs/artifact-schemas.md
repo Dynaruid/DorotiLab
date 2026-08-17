@@ -83,6 +83,11 @@ Source inventory deliberately does not enumerate or hash an entire reference che
 | G7-3M Source/Build/Live/Package aggregate | `doroti.g7-macos-shell-evidence/v1` |
 | G7-3 browser toolchain/graph/compile/package aggregate | `doroti.g7-web-build-evidence/v2` |
 | G7-3 deployment-neutral browser static artifact hashes | `doroti.static-artifact-manifest/v1` |
+| Current TypeScript Web graph, fail-closed compile, package/publish, and browser boundary aggregate | `doroti.web-product-evidence/v2` |
+| Current Chromium TypeScript bootstrap stages, loaded modules, canvas, pointer, and explicit live boundaries | `doroti.web-browser-live-manual/v2` |
+| TypeScript loader stage, singleton start, stable diagnostic, and original-error contract fixture | `doroti.web-loader-contract/v1` |
+| Current deployment-neutral Web artifact hashes with TypeScript-source-to-JavaScript identity | `doroti.static-artifact-manifest/v4` |
+| Single-project target graph/build evidence with Web-only TypeScript isolation | `doroti.app-targets-evidence/v3` |
 | RID target capability manifest | `doroti.target-manifest/v1` |
 | RID target package manifest | `doroti.target-package/v1` |
 | Roadmap 2 to Roadmap 3 handoff contract | `doroti.roadmap2-handoff/v1` |

@@ -1,0 +1,69 @@
+<Project>
+  <PropertyGroup Condition="'$(DorotiWebTypeScript)' == 'true'">
+    <DorotiTypeScriptCompilerExecutable Condition="'$(DorotiTypeScriptCompilerExecutable)' == ''">$(TscExe)</DorotiTypeScriptCompilerExecutable>
+    <TscExe></TscExe>
+    <DorotiTypeScriptSourceMap Condition="'$(DorotiTypeScriptSourceMap)' == '' and '$(Configuration)' == 'Debug'">true</DorotiTypeScriptSourceMap>
+    <DorotiTypeScriptSourceMap Condition="'$(DorotiTypeScriptSourceMap)' == ''">false</DorotiTypeScriptSourceMap>
+    <DorotiTypeScriptCopyToOutputDirectory Condition="'$(DorotiTypeScriptCopyToOutputDirectory)' == ''">PreserveNewest</DorotiTypeScriptCopyToOutputDirectory>
+    <DorotiTypeScriptAdditionalArguments Condition="'$(DorotiTypeScriptTypeRoots)' != ''">--typeRoots &quot;$(DorotiTypeScriptTypeRoots)&quot;</DorotiTypeScriptAdditionalArguments>
+    <DorotiTypeScriptAdditionalArguments>$(DorotiTypeScriptAdditionalArguments) --sourceMap $(DorotiTypeScriptSourceMap) --outDir &quot;$(DorotiTypeScriptOutputRoot)&quot; --rootDir &quot;$(DorotiTypeScriptSourceRoot)&quot;</DorotiTypeScriptAdditionalArguments>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(DorotiWebTypeScript)' == 'true'">
+    <Content Remove="$(DorotiTypeScriptConfig)" />
+    <DorotiTypeScriptConfigInput Include="$(DorotiTypeScriptConfig)" />
+    <DorotiTypeScriptSource Include="$(DorotiTypeScriptSourceRoot)\**\*.ts" />
+  </ItemGroup>
+
+  <Target Name="DorotiValidateTypeScriptToolchain" Condition="'$(DorotiWebTypeScript)' == 'true'" BeforeTargets="PrepareForBuild">
+    <Error Code="DOROTIWEB010" Condition="'$(TypeScriptMSBuildVersion)' != '$(DorotiTypeScriptVersion)'" Text="Doroti Web requires Microsoft.TypeScript.MSBuild $(DorotiTypeScriptVersion); imported '$(TypeScriptMSBuildVersion)'." />
+    <Error Code="DOROTIWEB011" Condition="!Exists('$(DorotiTypeScriptConfig)')" Text="Doroti Web TypeScript config is missing: $(DorotiTypeScriptConfig)." />
+    <Error Code="DOROTIWEB012" Condition="'@(DorotiTypeScriptSource)' == ''" Text="Doroti Web TypeScript source set is empty under $(DorotiTypeScriptSourceRoot)." />
+    <Error Code="DOROTIWEB013" Condition="'$(DorotiTypeScriptCompilerExecutable)' == '' or !Exists('$(DorotiTypeScriptCompilerExecutable)')" Text="Doroti Web TypeScript compiler executable is unavailable for this build host: $(DorotiTypeScriptCompilerExecutable)." />
+    <Error Code="DOROTIWEB014" Condition="'$(DorotiTypeScriptOutputRoot)' == '' or !$([System.IO.Path]::GetFullPath('$(DorotiTypeScriptOutputRoot)').StartsWith($([System.IO.Path]::GetFullPath('$(BaseIntermediateOutputPath)')), System.StringComparison.OrdinalIgnoreCase))" Text="Doroti Web TypeScript output must remain under the target intermediate root: $(DorotiTypeScriptOutputRoot)." />
+    <Error Code="DOROTIWEB015" Condition="'$(DorotiTypeScriptTypeRoots)' != '' and !Exists('$(DorotiTypeScriptTypeRoots)')" Text="Doroti Web public TypeScript declarations are unavailable: $(DorotiTypeScriptTypeRoots)." />
+  </Target>
+
+  <Target Name="DorotiCompileTypeScript"
+          Condition="'$(DorotiWebTypeScript)' == 'true'"
+          DependsOnTargets="DorotiValidateTypeScriptToolchain"
+          BeforeTargets="Compile;ResolveProjectStaticWebAssets;ResolveCurrentProjectStaticWebAssetsInputs">
+    <MakeDir Directories="$(DorotiTypeScriptOutputRoot)" />
+    <Exec Command="&quot;$(DorotiTypeScriptCompilerExecutable)&quot; --project &quot;$(DorotiTypeScriptConfig)&quot; $(DorotiTypeScriptAdditionalArguments) --listEmittedFiles"
+          IgnoreExitCode="true" ConsoleToMSBuild="true">
+      <Output TaskParameter="ExitCode" PropertyName="DorotiTypeScriptExitCode" />
+      <Output TaskParameter="ConsoleOutput" ItemName="DorotiTypeScriptCompilerOutput" />
+    </Exec>
+    <Error Code="DOROTIWEB016" Condition="'$(DorotiTypeScriptExitCode)' != '0'" Text="Doroti Web TypeScript compilation failed. See compiler diagnostics above." />
+    <ItemGroup>
+      <DorotiTypeScriptGenerated Include="$(DorotiTypeScriptOutputRoot)\**\*.js" />
+      <DorotiTypeScriptGenerated Include="$(DorotiTypeScriptOutputRoot)\**\*.js.map" Condition="'$(DorotiTypeScriptSourceMap)' == 'true'" />
+    </ItemGroup>
+    <Error Code="DOROTIWEB017" Condition="'@(DorotiTypeScriptGenerated)' == '' or !Exists('$(DorotiTypeScriptExpectedOutput)')" Text="Doroti Web TypeScript compilation produced no usable JavaScript at $(DorotiTypeScriptOutputRoot)." />
+    <ItemGroup>
+      <FileWrites Include="@(DorotiTypeScriptGenerated)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="DorotiRegisterTypeScriptStaticAssets"
+          Condition="'$(DorotiWebTypeScript)' == 'true'"
+          DependsOnTargets="DorotiCompileTypeScript"
+          BeforeTargets="ResolveProjectStaticWebAssets;ResolveCurrentProjectStaticWebAssetsInputs">
+    <ItemGroup>
+      <_DorotiTypeScriptStaticAsset Include="$(DorotiTypeScriptOutputRoot)\**\*.js" />
+      <_DorotiTypeScriptStaticAsset Include="$(DorotiTypeScriptOutputRoot)\**\*.js.map" Condition="'$(DorotiTypeScriptSourceMap)' == 'true'" />
+      <_DorotiTypeScriptStaticAsset Update="@(_DorotiTypeScriptStaticAsset)">
+        <DorotiRelativePath>%(RecursiveDir)%(Filename)%(Extension)</DorotiRelativePath>
+      </_DorotiTypeScriptStaticAsset>
+      <Content Include="@(_DorotiTypeScriptStaticAsset)"
+               Link="$(DorotiTypeScriptStaticBasePath)\%(_DorotiTypeScriptStaticAsset.DorotiRelativePath)"
+               CopyToOutputDirectory="$(DorotiTypeScriptCopyToOutputDirectory)"
+               CopyToPublishDirectory="PreserveNewest" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="DorotiCleanTypeScript" Condition="'$(DorotiWebTypeScript)' == 'true'" AfterTargets="Clean">
+    <RemoveDir Directories="$(DorotiTypeScriptOutputRoot)"
+               Condition="Exists('$(DorotiTypeScriptOutputRoot)') and $([System.IO.Path]::GetFullPath('$(DorotiTypeScriptOutputRoot)').StartsWith($([System.IO.Path]::GetFullPath('$(BaseIntermediateOutputPath)')), System.StringComparison.OrdinalIgnoreCase))" />
+  </Target>
+</Project>

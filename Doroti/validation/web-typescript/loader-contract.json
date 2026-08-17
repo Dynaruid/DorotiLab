@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "doroti.web-loader-contract/v1",
+  "successStages": ["before-start", "starting", "started"],
+  "failureStage": "failed",
+  "singleStartOwner": "startPromise ??= runStart(options)",
+  "missingBlazorDiagnostic": "DOROTIWEB020",
+  "failedStageCallbackDiagnostic": "DOROTIWEB021",
+  "errorCallbackDiagnostic": "DOROTIWEB022",
+  "preserveOriginalError": true
+}
