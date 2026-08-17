@@ -5,11 +5,10 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$env:DOTNET_CLI_DO_NOT_USE_MSBUILD_SERVER = '1'
-$env:MSBUILDDISABLENODEREUSE = '1'
 $dorotiRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $repoRoot = (Resolve-Path (Join-Path $dorotiRoot '..')).Path
 $project = Join-Path $repoRoot 'DorotiDemoApp/DorotiDemoApp.csproj'
+$productSolution = Join-Path $dorotiRoot 'Doroti.Product.slnx'
 $templateRoot = Join-Path $dorotiRoot 'templates/Doroti.Templates/content/doroti-app'
 $descriptorContract = Join-Path $dorotiRoot 'validation/app-bootstrap/descriptor-contract/DescriptorContract.csproj'
 $syntheticProject = Join-Path $dorotiRoot 'validation/app-bootstrap/synthetic-fourth-host/SyntheticFourthHost.csproj'
@@ -38,6 +37,16 @@ function Write-Json([string] $Path, [object] $Value) {
     [IO.File]::WriteAllText($Path, $json, [Text.UTF8Encoding]::new($false))
 }
 
+function Invoke-AppRestore([string] $Target, [string] $Rid) {
+    if (-not $script:productRestoreComplete) {
+        Invoke-Checked { dotnet restore $productSolution --nologo } 'Doroti product dependency restore failed'
+        $script:productRestoreComplete = $true
+    }
+    Invoke-Checked {
+        dotnet restore $project --no-dependencies -p:DorotiTarget=$Target -p:RuntimeIdentifier=$Rid --nologo
+    } "$Target application restore failed"
+}
+
 function Invoke-GraphGate {
     $program = Get-Content -LiteralPath (Join-Path (Split-Path $project -Parent) 'Program.cs') -Raw
     Assert-True ($program -match 'public sealed class Program : IDorotiApplicationStartup') 'public target-neutral startup type'
@@ -63,7 +72,7 @@ function Invoke-GraphGate {
         [ordered]@{ Name='Web'; Rid='browser-wasm'; Graph='Web'; Host='BlazorWebAssembly'; Entry='Managed-Main' }
     )) {
         Invoke-Checked {
-            dotnet build $project -t:WriteDorotiTargetGraph -p:DorotiTarget=$($target.Name) -p:RuntimeIdentifier=$($target.Rid) --nologo
+            dotnet msbuild $project -t:WriteDorotiTargetGraph -p:DorotiTarget=$($target.Name) -p:RuntimeIdentifier=$($target.Rid) -nologo
         } "$($target.Name) target graph failed"
         $graphPath = Join-Path (Split-Path $project -Parent) "obj/$($target.Graph)/doroti-target-graph.txt"
         Assert-True (Test-Path -LiteralPath $graphPath -PathType Leaf) "$($target.Name) target graph output"
@@ -87,25 +96,45 @@ function Invoke-GraphGate {
         Assert-True (@($graph | Where-Object { $_ -like 'mauiXaml=?*' }).Count -eq 0) "$($target.Name) MauiXaml count"
     }
 
-    Invoke-Checked { dotnet build $syntheticProject -t:WriteDorotiTargetGraph --nologo } 'synthetic fourth host descriptor failed'
+    Invoke-Checked { dotnet msbuild $syntheticProject -t:WriteDorotiTargetGraph -nologo } 'synthetic fourth host descriptor failed'
     $syntheticGraph = Get-Content -LiteralPath (Join-Path (Split-Path $syntheticProject -Parent) 'obj/linux/doroti-target-graph.txt')
     Assert-True (@($syntheticGraph | Where-Object { $_ -ceq 'descriptor=Linux|SyntheticQt|Synthetic|Doroti.Target.Linux.Qt.linux-x64' }).Count -eq 1) 'synthetic fourth host descriptor identity'
 }
 
 function Invoke-BuildGate {
-    Invoke-Checked { dotnet build $project -c Release -p:DorotiTarget=Windows -p:RuntimeIdentifier=win-x64 --nologo } 'Windows Release build failed'
-    Invoke-Checked { dotnet build $project -c Release -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm --nologo } 'Web Release build failed'
-    Invoke-Checked { dotnet build $project -c Release -p:DorotiTarget=MacCatalyst -p:RuntimeIdentifier=maccatalyst-arm64 --nologo } 'Mac Catalyst cross-build failed'
+    Invoke-AppRestore 'Windows' 'win-x64'
+    Invoke-Checked { dotnet build $project -c Release -p:DorotiTarget=Windows -p:RuntimeIdentifier=win-x64 --nologo --no-restore } 'Windows Release build failed'
+    $windowsGeneratedFiles = @(
+        (Join-Path (Split-Path $project -Parent) 'obj/windows/Doroti.Generated/DorotiBootstrap.g.cs'),
+        (Join-Path (Split-Path $project -Parent) 'obj/windows/Doroti.Generated/DorotiPluginRegistration.g.cs')
+    )
+    $windowsAssembly = Join-Path (Split-Path $project -Parent) 'bin/windows/Release/net10.0-windows10.0.19041.0/win-x64/DorotiDemoApp.dll'
+    foreach ($path in @($windowsGeneratedFiles + $windowsAssembly)) {
+        Assert-True (Test-Path -LiteralPath $path -PathType Leaf) "Windows incremental build input $path"
+    }
+    $windowsWriteTimes = @{}
+    foreach ($path in @($windowsGeneratedFiles + $windowsAssembly)) {
+        $windowsWriteTimes[$path] = [IO.File]::GetLastWriteTimeUtc($path)
+    }
+    Invoke-AppRestore 'Web' 'browser-wasm'
+    Invoke-Checked { dotnet build $project -c Release -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm --nologo --no-restore } 'Web Release build failed'
+    Invoke-AppRestore 'MacCatalyst' 'maccatalyst-arm64'
+    Invoke-Checked { dotnet build $project -c Release -p:DorotiTarget=MacCatalyst -p:RuntimeIdentifier=maccatalyst-arm64 --nologo --no-restore } 'Mac Catalyst cross-build failed'
     Invoke-Checked { dotnet build $project -c Release -p:DorotiTarget=Windows -p:RuntimeIdentifier=win-x64 --nologo --no-restore } 'Windows repeat build failed'
-    $invalidStartup = @(& dotnet build $project -c Release -p:DorotiTarget=Windows -p:RuntimeIdentifier=win-x64 -p:DorotiApplicationType=System.String --nologo --no-restore 2>&1)
+    foreach ($path in @($windowsGeneratedFiles + $windowsAssembly)) {
+        Assert-True ([IO.File]::GetLastWriteTimeUtc($path) -eq $windowsWriteTimes[$path]) "Windows repeat build preserved $path"
+    }
+    $invalidStartup = @(& dotnet build $syntheticProject -c Release -p:DorotiApplicationType=System.String --nologo 2>&1)
     Assert-True ($LASTEXITCODE -ne 0 -and (($invalidStartup -join "`n") -match 'CS0311')) 'startup interface diagnostic fail-closed'
     $invalidRegistration = @(& dotnet build $invalidRegistrationProject -c Release --nologo 2>&1)
     Assert-True ($LASTEXITCODE -ne 0 -and (($invalidRegistration -join "`n") -match 'CS0239')) 'mandatory registration override fail-closed'
+    $global:LASTEXITCODE = 0
 }
 
 function Invoke-LiveGate {
+    Invoke-AppRestore 'Windows' 'win-x64'
     Invoke-Checked {
-        dotnet publish $project -c Release -p:DorotiTarget=Windows -p:RuntimeIdentifier=win-x64 -o $publishRoot --nologo
+        dotnet publish $project -c Release -p:DorotiTarget=Windows -p:RuntimeIdentifier=win-x64 -o $publishRoot --nologo --no-restore
     } 'Windows MAUI publish failed'
     if (Test-Path -LiteralPath $rawLivePath) { [IO.File]::Delete($rawLivePath) }
     $env:DOROTI_MAUI_EVIDENCE = $rawLivePath

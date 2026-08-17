@@ -71,7 +71,7 @@
     </ReadLinesFromFile>
     <RemoveDir Directories="$(IntermediateOutputPath)webcil" Condition="'$(_DorotiPreviousWebRuntimeVersion)' != '$(RuntimeFrameworkVersion)' and Exists('$(IntermediateOutputPath)webcil')" />
     <MakeDir Directories="$(_DorotiGeneratedDirectory)" />
-    <WriteLinesToFile File="$(_DorotiWebRuntimeStampFile)" Overwrite="true" Lines="$(RuntimeFrameworkVersion)" />
+    <WriteLinesToFile File="$(_DorotiWebRuntimeStampFile)" Overwrite="true" WriteOnlyWhenDifferent="true" Lines="$(RuntimeFrameworkVersion)" />
   </Target>
 
   <Target Name="GenerateDorotiBootstrap" DependsOnTargets="ValidateDorotiAppTarget" BeforeTargets="PrepareForBuild;CoreCompile">
@@ -100,8 +100,8 @@
       <_DorotiBootstrapLines Include="        global::UIKit.UIApplication.Main(args, null, typeof(global::$(RootNamespace).Platforms.MacCatalyst.AppDelegate))%3B" Condition="'@(DorotiTargetDescriptor->'%(NativeEntryKind)')' == 'UIKit-Main'" />
       <_DorotiBootstrapLines Include="}" />
     </ItemGroup>
-    <WriteLinesToFile File="$(_DorotiPluginRegistrationFile)" Overwrite="true" Lines="@(_DorotiPluginLines)" />
-    <WriteLinesToFile File="$(_DorotiBootstrapFile)" Overwrite="true" Lines="@(_DorotiBootstrapLines)" />
+    <WriteLinesToFile File="$(_DorotiPluginRegistrationFile)" Overwrite="true" WriteOnlyWhenDifferent="true" Lines="@(_DorotiPluginLines)" />
+    <WriteLinesToFile File="$(_DorotiBootstrapFile)" Overwrite="true" WriteOnlyWhenDifferent="true" Lines="@(_DorotiBootstrapLines)" />
     <ItemGroup>
       <FileWrites Include="$(_DorotiBootstrapFile);$(_DorotiPluginRegistrationFile)" />
     </ItemGroup>

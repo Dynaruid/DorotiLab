@@ -6,8 +6,6 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$env:DOTNET_CLI_DO_NOT_USE_MSBUILD_SERVER = '1'
-$env:MSBUILDDISABLENODEREUSE = '1'
 $dorotiRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $repoRoot = (Resolve-Path (Join-Path $dorotiRoot '..')).Path
 $migrationRoot = Join-Path $dorotiRoot 'migration/web'
@@ -17,6 +15,7 @@ $releaseRoot = Join-Path $dorotiRoot 'artifacts/web/0.2.0-beta'
 $hostProject = Join-Path $dorotiRoot 'src/Doroti.Host.Web/Doroti.Host.Web.csproj'
 $targetProject = Join-Path $dorotiRoot 'src/Doroti.Target.Web.browser-wasm/Doroti.Target.Web.browser-wasm.csproj'
 $templateProject = Join-Path $dorotiRoot 'templates/Doroti.Templates/Doroti.Templates.csproj'
+$productSolution = Join-Path $dorotiRoot 'Doroti.Product.slnx'
 $demoDesktopProject = Join-Path $repoRoot 'DorotiDemoApp/DorotiDemoApp.csproj'
 $demoWebProject = $demoDesktopProject
 $statePath = Join-Path $tmpRoot 'external-product.json'
@@ -36,6 +35,31 @@ function Invoke-Checked([scriptblock] $Command, [string] $Failure) {
     $global:LASTEXITCODE = 0
     & $Command | Out-Host
     if ($LASTEXITCODE -ne 0) { throw "$Failure (exit code $LASTEXITCODE)." }
+}
+
+function Invoke-WithNuGetPackages([string] $Packages, [scriptblock] $Command, [string] $Failure) {
+    $previousPackages = [Environment]::GetEnvironmentVariable('NUGET_PACKAGES', 'Process')
+    try {
+        $env:NUGET_PACKAGES = $Packages
+        Invoke-Checked $Command $Failure
+    }
+    finally {
+        if ($null -eq $previousPackages) {
+            Remove-Item Env:NUGET_PACKAGES -ErrorAction SilentlyContinue
+        } else {
+            $env:NUGET_PACKAGES = $previousPackages
+        }
+    }
+}
+
+function Invoke-DemoRestore([string] $Target, [string] $Rid) {
+    if (-not $script:productRestoreComplete) {
+        Invoke-Checked { dotnet restore $productSolution --nologo } 'Doroti product dependency restore failed'
+        $script:productRestoreComplete = $true
+    }
+    Invoke-Checked {
+        dotnet restore $demoDesktopProject --no-dependencies -p:DorotiTarget=$Target -p:RuntimeIdentifier=$Rid --nologo
+    } "$Target DorotiDemoApp restore failed"
 }
 
 function Write-Json([string] $Path, [object] $Value) {
@@ -90,7 +114,6 @@ function Get-ExternalState {
     Assert-True ($resolvedExternal.StartsWith($resolvedRoot, [StringComparison]::OrdinalIgnoreCase)) 'external consumer local-storage boundary'
     Assert-True (Test-Path -LiteralPath $state.project -PathType Leaf) 'external template-created project'
     Assert-True (Test-Path -LiteralPath $state.feed -PathType Container) 'external package feed'
-    $env:NUGET_PACKAGES = $state.packages
     return $state
 }
 
@@ -284,7 +307,6 @@ if ($Shard -eq 'Template') {
     Assert-True (Test-Path -LiteralPath $templatePackage -PathType Leaf) 'Doroti template package'
     $hive = Join-Path $external '.templateengine'
     $packages = Join-Path $external '.nuget/packages'
-    $env:NUGET_PACKAGES = $packages
     $projectRoot = Join-Path $external 'DorotiWebProduct'
     Invoke-Checked { dotnet new install $templatePackage --debug:custom-hive $hive } 'install Doroti template package'
     Invoke-Checked { dotnet new doroti-app --name DorotiWebProduct --output $projectRoot --debug:custom-hive $hive } 'create external Doroti C# application'
@@ -292,7 +314,9 @@ if ($Shard -eq 'Template') {
     $nugetConfig = Join-Path $projectRoot 'NuGet.Config'
     $escapedFeed = [Security.SecurityElement]::Escape($feed)
     [IO.File]::WriteAllText($nugetConfig, "<?xml version=`"1.0`" encoding=`"utf-8`"?><configuration><packageSources><clear/><add key=`"doroti-validation`" value=`"$escapedFeed`"/><add key=`"nuget.org`" value=`"https://api.nuget.org/v3/index.json`"/></packageSources></configuration>", [Text.UTF8Encoding]::new($false))
-    Invoke-Checked { dotnet restore $project --packages $packages --force --no-cache -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm --configfile $nugetConfig } 'restore external package-only product'
+    Invoke-WithNuGetPackages $packages {
+        dotnet restore $project --packages $packages --force --no-cache -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm --configfile $nugetConfig
+    } 'restore external package-only product'
     $createdFiles = @(Get-ChildItem -LiteralPath $projectRoot -File -Recurse)
     Assert-Equal @($createdFiles | Where-Object { $_.Extension -eq '.dart' -or $_.Name -in @('pubspec.yaml','.metadata','doroti.yaml') }).Count 0 'template Flutter/Dart files'
     Assert-Equal @($createdFiles | Where-Object { $_.DirectoryName -match '[\\/](android|ios|linux|macos)$' }).Count 0 'template unsupported platform directories'
@@ -315,9 +339,13 @@ if ($Shard -eq 'Template') {
 
 if ($Shard -eq 'Compile') {
     $state = Get-ExternalState
-    Invoke-Checked { dotnet build $demoDesktopProject -c Release -p:DorotiTarget=Windows -p:RuntimeIdentifier=win-x64 } 'build DorotiDemoApp desktop product'
-    Invoke-Checked { dotnet build $demoWebProject -c Release -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm } 'build DorotiDemoApp browser-wasm product'
-    Invoke-Checked { dotnet build $state.project -c Release --no-restore -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm } 'build external browser-wasm Doroti product'
+    Invoke-DemoRestore 'Windows' 'win-x64'
+    Invoke-Checked { dotnet build $demoDesktopProject -c Release -p:DorotiTarget=Windows -p:RuntimeIdentifier=win-x64 --no-restore } 'build DorotiDemoApp desktop product'
+    Invoke-DemoRestore 'Web' 'browser-wasm'
+    Invoke-Checked { dotnet build $demoWebProject -c Release -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm --no-restore } 'build DorotiDemoApp browser-wasm product'
+    Invoke-WithNuGetPackages $state.packages {
+        dotnet build $state.project -c Release --no-restore -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm
+    } 'build external browser-wasm Doroti product'
     $externalBootstrap = Join-Path $state.projectRoot 'obj/web/Doroti.Generated/DorotiBootstrap.g.cs'
     $externalPlugins = Join-Path $state.projectRoot 'obj/web/Doroti.Generated/DorotiPluginRegistration.g.cs'
     Assert-True (Test-Path -LiteralPath $externalBootstrap -PathType Leaf) 'external SDK-owned Web bootstrap'
@@ -327,6 +355,7 @@ if ($Shard -eq 'Compile') {
     $negative = @(& dotnet msbuild $demoWebProject -nologo -t:ValidateDorotiAppTarget -p:DorotiTarget=Web -p:RuntimeIdentifier=win-x64 2>&1)
     $negativeExit = $LASTEXITCODE
     Assert-True ($negativeExit -ne 0 -and (($negative -join "`n") -match 'DOROTIAPP004')) 'stable invalid target diagnostic DOROTIAPP004'
+    $global:LASTEXITCODE = 0
     $browserAssembly = Get-ChildItem (Join-Path $repoRoot 'DorotiDemoApp/bin/web/Release/net10.0/wwwroot/_framework') -File -Filter 'DorotiDemoApp*.wasm' | Where-Object Name -notmatch '\.(br|gz)$' | Select-Object -First 1
     Assert-True ($null -ne $browserAssembly -and $browserAssembly.Length -gt 0) 'DorotiDemoApp assembly in browser build'
     Write-Json (Join-Path $tmpRoot 'compile.json') ([ordered]@{
@@ -350,8 +379,12 @@ if ($Shard -eq 'Publish') {
     Invoke-Checked { dotnet restore $demoWebProject --force-evaluate -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm } 'restore DorotiDemoApp Web product for publish'
     Invoke-Checked { dotnet publish $demoWebProject -c Release --no-restore -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm -o $publishA } 'first DorotiDemoApp browser-wasm publish'
     Invoke-Checked { dotnet publish $demoWebProject -c Release --no-restore -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm -o $publishB } 'repeat DorotiDemoApp browser-wasm publish'
-    Invoke-Checked { dotnet restore $state.project --packages $state.packages --force --no-cache -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm "-p:RestoreAdditionalProjectSources=$($state.feed)" } 'restore external template product for acceptance publish'
-    Invoke-Checked { dotnet publish $state.project -c Release --no-restore -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm -o $externalPublish } 'publish external template/package-only product'
+    Invoke-WithNuGetPackages $state.packages {
+        dotnet restore $state.project --packages $state.packages --force --no-cache -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm "-p:RestoreAdditionalProjectSources=$($state.feed)"
+    } 'restore external template product for acceptance publish'
+    Invoke-WithNuGetPackages $state.packages {
+        dotnet publish $state.project -c Release --no-restore -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm -o $externalPublish
+    } 'publish external template/package-only product'
     $staticA = Join-Path $publishA 'wwwroot'
     $staticB = Join-Path $publishB 'wwwroot'
     $identityA = Get-StaticIdentity $staticA

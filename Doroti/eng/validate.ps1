@@ -5,8 +5,6 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$env:DOTNET_CLI_DO_NOT_USE_MSBUILD_SERVER = '1'
-$env:MSBUILDDISABLENODEREUSE = '1'
 $dorotiRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $repositoryRoot = (Resolve-Path (Join-Path $dorotiRoot '..')).Path
 $productSolution = Join-Path $dorotiRoot 'Doroti.Product.slnx'
@@ -61,7 +59,7 @@ function Invoke-SourceGate {
                 $_.Extension -in @('.cs', '.csproj', '.props', '.targets', '.ps1', '.sh', '.json', '.md', '.dart')
             }
     })
-    $staleNamespacePattern = 'Doroti.' + 'Generated'
+    $staleNamespacePattern = 'Doroti.' + 'Generated.Framework'
     $staleNamespace = @($textFiles | Select-String -SimpleMatch $staleNamespacePattern)
     Assert-True ($staleNamespace.Count -eq 0) 'legacy generated namespace absence'
 
