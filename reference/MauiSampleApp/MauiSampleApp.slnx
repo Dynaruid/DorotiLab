@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/android/">
+    <Project Path="android/DorotiOcr.Android.Binding/DorotiOcr.Android.Binding.csproj" />
+  </Folder>
+  <Folder Name="/macios/">
+    <Project Path="macios/DorotiOcr.MaciOS.Binding/DorotiOcr.MaciOS.Binding.csproj" />
+  </Folder>
+  <Folder Name="/sample/">
+    <Project Path="sample/MauiSampleApp.csproj" />
+  </Folder>
+</Solution>

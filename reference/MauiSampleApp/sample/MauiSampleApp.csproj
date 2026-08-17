@@ -1,0 +1,100 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net10.0-android</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('osx'))">$(TargetFrameworks);net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MauiSampleApp</RootNamespace>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <MauiVersion>10.0.90</MauiVersion>
+    <ApplicationTitle>Doroti OCR</ApplicationTitle>
+    <ApplicationId>dev.doroti.ocr</ApplicationId>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <WindowsPackageType>None</WindowsPackageType>
+    <AppxGeneratePriEnabled>true</AppxGeneratePriEnabled>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</TargetPlatformMinVersion>
+    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#6750A4" />
+    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#1D1B20" BaseSize="128,128" />
+    <MauiFont Include="Resources\Fonts\*" />
+    <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+    <ApplicationDefinition Include="Platforms\Windows\App.xaml" Generator="MSBuild:Compile" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+    <PackageReference Include="CommunityToolkit.Maui.Markup" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemDefinitionGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <AndroidMavenLibrary>
+      <Bind>false</Bind>
+      <VerifyDependencies>false</VerifyDependencies>
+    </AndroidMavenLibrary>
+  </ItemDefinitionGroup>
+
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <ProjectReference Include="..\android\DorotiOcr.Android.Binding\DorotiOcr.Android.Binding.csproj" />
+    <!-- OCR models from Google Maven. Bind=false: the slim Java wrapper is the bound API.
+         VerifyDependencies is off because the remaining POM edges are AndroidX packages MAUI already ships. -->
+    <AndroidMavenLibrary Include="com.google.mlkit:text-recognition" Version="16.0.1" Repository="Google" />
+    <AndroidMavenLibrary Include="com.google.mlkit:text-recognition-korean" Version="16.0.1" Repository="Google" />
+    <AndroidMavenLibrary Include="com.google.mlkit:text-recognition-bundled-common" Version="17.0.0" Repository="Google" />
+    <AndroidMavenLibrary Include="com.google.mlkit:common" Version="18.11.0" Repository="Google" />
+    <AndroidMavenLibrary Include="com.google.mlkit:vision-common" Version="17.3.0" Repository="Google" />
+    <AndroidMavenLibrary Include="com.google.mlkit:vision-interfaces" Version="16.3.0" Repository="Google" />
+    <AndroidMavenLibrary Include="com.google.android.gms:play-services-mlkit-text-recognition" Version="19.0.1" Repository="Google" />
+    <AndroidMavenLibrary Include="com.google.android.gms:play-services-mlkit-text-recognition-common" Version="19.1.0" Repository="Google" />
+    <AndroidMavenLibrary Include="com.google.android.gms:play-services-mlkit-text-recognition-korean" Version="16.0.1" Repository="Google" />
+    <AndroidMavenLibrary Include="com.google.android.gms:play-services-base" Version="18.5.0" Repository="Google" />
+    <AndroidMavenLibrary Include="com.google.android.gms:play-services-basement" Version="18.4.0" Repository="Google" />
+    <AndroidMavenLibrary Include="com.google.android.gms:play-services-tasks" Version="18.2.0" Repository="Google" />
+    <AndroidMavenLibrary Include="com.google.android.datatransport:transport-api" Version="2.2.1" Repository="Google" />
+    <AndroidMavenLibrary Include="com.google.android.datatransport:transport-backend-cct" Version="2.3.3" Repository="Google" />
+    <AndroidMavenLibrary Include="com.google.android.datatransport:transport-runtime" Version="2.2.6" Repository="Google" />
+    <AndroidMavenLibrary Include="com.google.firebase:firebase-components" Version="16.1.0" Repository="Google" />
+    <AndroidMavenLibrary Include="com.google.firebase:firebase-encoders" Version="16.1.0" Repository="Google" />
+    <AndroidMavenLibrary Include="com.google.firebase:firebase-encoders-json" Version="17.1.0" Repository="Google" />
+    <AndroidMavenLibrary Include="com.google.firebase:firebase-annotations" Version="16.0.0" Repository="Google" />
+    <AndroidMavenLibrary Include="com.google.android.odml:image" Version="1.0.0-beta1" Repository="Google" />
+    <AndroidMavenLibrary Include="javax.inject:javax.inject" Version="1" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+    <ProjectReference Include="..\macios\DorotiOcr.MaciOS.Binding\DorotiOcr.MaciOS.Binding.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">
+    <Compile Remove="Platforms\Windows\**\*.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'android'">
+    <Compile Remove="Platforms\Android\**\*.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'ios'">
+    <Compile Remove="Platforms\iOS\**\*.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'maccatalyst'">
+    <Compile Remove="Platforms\MacCatalyst\**\*.cs" />
+  </ItemGroup>
+
+  <Target Name="RejectXamlItems" BeforeTargets="PrepareForBuild">
+    <ItemGroup>
+      <_DisallowedXaml Include="@(MauiXaml)" />
+      <_DisallowedXaml Include="@(ApplicationDefinition)" Condition="'%(ApplicationDefinition.Identity)' != 'Platforms\Windows\App.xaml'" />
+    </ItemGroup>
+    <Error Code="DOROTIMAUIGATE001" Condition="'@(_DisallowedXaml)' != ''" Text="Only the Windows application bootstrap XAML is allowed in the MAUI OCR sample." />
+    <Error Code="DOROTIMAUIGATE002" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows' And ('@(MauiXaml)' != '' Or '@(ApplicationDefinition)' != '')" Text="Non-Windows targets must not contain XAML compile items." />
+  </Target>
+</Project>

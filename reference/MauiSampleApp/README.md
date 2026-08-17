@@ -1,50 +1,45 @@
-# Doroti MAUI C# Markup GPU feasibility probe
+# Doroti MAUI Native Library Interop OCR sample
 
-This M0 fixture validates the revised single-project MAUI contract from
-`work.md`: all application UI is built in C#, while Windows is allowed one
-empty `Platforms/Windows/App.xaml` application definition solely for WinUI
-resource and generated-entrypoint initialization. No page, shell, style, or
-application UI is defined in XAML.
+This fixture follows the [Maui.NativeLibraryInterop](https://github.com/CommunityToolkit/Maui.NativeLibraryInterop) layout: a slim native wrapper, a .NET binding project per platform, and a C# Markup MAUI app that consumes those bindings.
 
-The fixture uses .NET 10, Microsoft.Maui.Controls 10.0.90,
-CommunityToolkit.Maui.Markup 8.0.0, and SkiaSharp.Views.Maui.Controls 3.119.4.
-`MauiProgram` registers `UseMauiCommunityToolkitMarkup()`, and the shared
-application still constructs `Application -> Window -> ContentPage -> SKGLView`
-entirely in C#.
-
-The Windows `ApplicationDefinition` is required. Removing it and replacing the
-generated entrypoint with `Application.Start` builds, but live startup fails
-while WinUI constructs `XamlControlsResources` because application theme
-resources have not been initialized. The Markup Toolkit replaces UI XAML; it
-does not replace this WinUI bootstrap contract.
-
-Build and publish with:
-
-```powershell
-dotnet restore .\reference\MauiSampleApp\MauiSampleApp.csproj --locked-mode
-dotnet build .\reference\MauiSampleApp\MauiSampleApp.csproj `
-  -f net10.0-windows10.0.19041.0 -c Debug --no-restore
-dotnet publish .\reference\MauiSampleApp\MauiSampleApp.csproj `
-  -f net10.0-windows10.0.19041.0 -c Release --no-restore
+```text
+reference/MauiSampleApp/
+  android/
+    DorotiOcr.Android.Binding/     # .NET for Android binding
+    native/dorotiocr/              # Java wrapper + Gradle Maven deps
+  macios/
+    DorotiOcr.MaciOS.Binding/      # .NET for iOS / Mac Catalyst binding
+    native/DorotiOcr/              # Swift wrapper around Vision
+  sample/                          # .NET MAUI OCR app
 ```
 
-Set `DOROTI_MAUI_FEASIBILITY_EVIDENCE` to capture runtime GPU evidence. By
-default the app quits after three demand-driven frames. Set
-`DOROTI_MAUI_FEASIBILITY_AUTO_QUIT_FRAMES=0` to keep it open for resize and
-lifecycle probes.
+## Android (Maven)
 
-Verified on Windows on 2026-08-16:
+The Java wrapper depends on bundled on-device ML Kit from Google Maven:
 
-- Debug build and locked restore: PASS, zero warnings/errors.
-- Release publish/live: exit 0 after three frames.
-- Native view: `SKGLViewHandler+MauiSKSwapChainPanel`.
-- GPU context and GPU surface: non-null; no `SKCanvasView` fallback.
-- Demand-driven rendering: `HasRenderLoop=false`.
-- Live resize: surface changed from 1894x1014 to 1414x1003 pixels at density 2,
-  then the window closed with exit 0.
-- XAML scope: exactly one Windows bootstrap `ApplicationDefinition`; zero
-  shared/page/shell/style XAML files.
+- `com.google.mlkit:text-recognition:16.0.1` (Latin)
+- `com.google.mlkit:text-recognition-korean:16.0.1` (Korean)
 
-Mac Catalyst compiles package-only on the Windows host with zero warnings and
-errors. `SKMetalView`/Metal presentation, arm64 publish, resize/scale, and clean
-shutdown remain `notVerified` until run on a Mac arm64 host.
+`@(AndroidGradleProject)` builds that Gradle module. The MAUI app also declares the same artifacts with `@(AndroidMavenLibrary)` so .NET for Android downloads and packages the AARs instead of relying on a NuGet ML Kit wrapper.
+
+## Other platforms
+
+- iOS / Mac Catalyst: slim Swift API over `VNRecognizeTextRequest`
+- Windows: `Windows.Media.Ocr` in `Platforms/Windows` (no native binding project)
+
+UI stays C#. The only XAML file is the Windows WinUI bootstrap `App.xaml`.
+
+## Build
+
+From the repo root. JDK 17 is required for the Android Gradle wrapper.
+
+```powershell
+dotnet restore .\reference\MauiSampleApp\sample\MauiSampleApp.csproj --locked-mode
+dotnet build .\reference\MauiSampleApp\android\DorotiOcr.Android.Binding\DorotiOcr.Android.Binding.csproj -c Debug
+dotnet build .\reference\MauiSampleApp\sample\MauiSampleApp.csproj -f net10.0-android -c Debug
+dotnet build .\reference\MauiSampleApp\sample\MauiSampleApp.csproj -f net10.0-windows10.0.19041.0 -c Debug
+```
+
+The Mac Catalyst / iOS binding needs Xcode and is selected only when building on macOS.
+
+On a device or emulator, tap **Sample** then **Recognize text**. Gallery and camera pickers are also wired up.

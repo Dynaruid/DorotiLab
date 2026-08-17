@@ -1,0 +1,6 @@
+# Native Library Interop OCR sample
+
+android/native/.gradle/
+android/native/**/build/
+android/native/local.properties
+**/.DS_Store
