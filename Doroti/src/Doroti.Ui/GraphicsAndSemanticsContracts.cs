@@ -318,7 +318,12 @@ public sealed record SceneCommand(string Operation, object? Payload)
     internal object? HostPayload { get; init; }
 }
 
-internal sealed record ScenePicturePayload(Offset Offset, Picture Picture);
+internal sealed record ScenePicturePayload(
+    Offset Offset,
+    Picture Picture,
+    Rect? CanvasBounds,
+    bool IsComplexHint,
+    bool WillChangeHint);
 internal sealed record SceneOffsetPayload(double Dx, double Dy);
 internal sealed record SceneClipRectPayload(Rect Rect);
 internal sealed record SceneClipRRectPayload(RRect RRect);
@@ -327,7 +332,12 @@ internal sealed record SceneClipPathPayload(Path Path);
 internal sealed record SceneTransformPayload(IReadOnlyList<double> Matrix4);
 internal sealed record SceneOpacityPayload(double Opacity, Offset Offset);
 internal sealed record SceneColorFilterPayload(ColorFilterSnapshot Filter);
-internal sealed record SceneImageFilterPayload(ImageFilterSnapshot Filter, Offset Offset, Rect? Bounds);
+internal sealed record SceneImageFilterPayload(
+    ImageFilterSnapshot Filter,
+    Offset Offset,
+    Rect? Bounds,
+    object? CacheKey = null,
+    long CacheGeneration = 0);
 internal sealed record SceneShaderMaskPayload(ShaderSnapshot Shader, Rect MaskRect, BlendMode BlendMode);
 internal sealed record SceneBackdropFilterPayload(ImageFilterSnapshot Filter, BlendMode BlendMode, object? BackdropId);
 internal sealed record SceneRetainedPayload(IReadOnlyList<SceneCommand> Commands, ulong ViewId, long Generation);
@@ -532,12 +542,31 @@ public sealed class SceneBuilder
         _commands.Add(new("picture", new { offset, picture }));
 
     public void addPicture(Offset offset, Picture picture, bool isComplexHint = false, bool willChangeHint = false) =>
+        AddPicture(offset, picture, null, isComplexHint, willChangeHint);
+
+    public void addPicture(
+        Offset offset,
+        Picture picture,
+        Rect canvasBounds,
+        bool isComplexHint = false,
+        bool willChangeHint = false) =>
+        AddPicture(offset, picture, canvasBounds, isComplexHint, willChangeHint);
+
+    private void AddPicture(
+        Offset offset,
+        Picture picture,
+        Rect? canvasBounds,
+        bool isComplexHint,
+        bool willChangeHint) =>
         _commands.Add(new SceneCommand("picture", new { offset, picture = picture.Commands, isComplexHint, willChangeHint })
         {
-            HostPayload = new ScenePicturePayload(offset, picture),
+            HostPayload = new ScenePicturePayload(offset, picture, canvasBounds, isComplexHint, willChangeHint),
         });
 
-    public OffsetEngineLayer pushOffset(double dx, double dy, OffsetEngineLayer? oldLayer = null) =>
+    public OffsetEngineLayer pushOffset(
+        double dx,
+        double dy,
+        OffsetEngineLayer? oldLayer = null) =>
         Push(oldLayer, "offset", new { dx, dy }, new SceneOffsetPayload(dx, dy));
     public ClipRectEngineLayer pushClipRect(Rect rect, Clip clipBehavior = Clip.antiAlias, ClipRectEngineLayer? oldLayer = null) =>
         Push(oldLayer, "clipRect", new { rect, clipBehavior }, new SceneClipRectPayload(rect));
@@ -553,9 +582,12 @@ public sealed class SceneBuilder
         ImageFilter filter,
         Offset offset = default,
         ImageFilterEngineLayer? oldLayer = null,
-        Rect? bounds = null) =>
+        Rect? bounds = null,
+        object? cacheKey = null,
+        long cacheGeneration = 0) =>
         Push(oldLayer, "imageFilter", new { filter, offset, bounds },
-            new SceneImageFilterPayload(ImageFilterSnapshot.Capture(filter), offset, bounds));
+            new SceneImageFilterPayload(
+                ImageFilterSnapshot.Capture(filter), offset, bounds, cacheKey, cacheGeneration));
     public TransformEngineLayer pushTransform(IReadOnlyList<double> matrix4, TransformEngineLayer? oldLayer = null) =>
         Push(oldLayer, "transform", matrix4, new SceneTransformPayload(matrix4));
     public OpacityEngineLayer pushOpacity(long alpha, Offset offset = default, OpacityEngineLayer? oldLayer = null) =>
@@ -1311,7 +1343,13 @@ public sealed record SemanticsUpdateDelta(
         delta.changedProperties.HasFlag(SemanticsNodeProperty.children) ||
         delta.changedProperties.HasFlag(SemanticsNodeProperty.traversal));
     public bool IsGeometryOnly => changedNodes.Count != 0 && removedNodeIds.Count == 0 && changedNodes.All(delta => delta.IsGeometryOnly);
-    public bool RequiresImmediateFlush => HasTopologyChange || changedNodes.Any(delta =>
+    // A virtualized scroll routinely inserts and removes semantics nodes. Treating that
+    // topology churn as urgent bypasses the host's accessibility-rate limiter and makes
+    // native layout work compete with every visual frame. Existing interactive content
+    // mutations remain urgent; topology is flushed by the next bounded apply or by an
+    // explicit immediate/scrollEnd update.
+    public bool RequiresImmediateFlush => changedNodes.Any(delta =>
+        delta.previousContentHash != 0 &&
         (delta.changedProperties & (SemanticsNodeProperty.label |
                                     SemanticsNodeProperty.value |
                                     SemanticsNodeProperty.actions |

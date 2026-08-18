@@ -75,7 +75,7 @@ public class ScrollController : global::Doroti.Framework.Foundation.ChangeNotifi
     {
         DartRuntimePrimitives.Assert(() => !this._positions.Contains(position));
         this._positions.Add(position);
-        position.addListener(() => this.notifyListeners());
+        position.addListener(this.notifyListeners);
         this.onAttach?.Invoke(position);
     }
 
@@ -83,7 +83,7 @@ public class ScrollController : global::Doroti.Framework.Foundation.ChangeNotifi
     {
         DartRuntimePrimitives.Assert(() => this._positions.Contains(position));
         this.onDetach?.Invoke(position);
-        position.removeListener(() => this.notifyListeners());
+        position.removeListener(this.notifyListeners);
         this._positions.Remove(position);
     }
 
@@ -91,7 +91,7 @@ public class ScrollController : global::Doroti.Framework.Foundation.ChangeNotifi
     {
         foreach (ScrollPosition position__11669 in this._positions)
         {
-            position__11669.removeListener(() => this.notifyListeners());
+            position__11669.removeListener(this.notifyListeners);
         }
         base.dispose();
     }

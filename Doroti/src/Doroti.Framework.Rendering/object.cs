@@ -1053,6 +1053,16 @@ public class PipelineOwner : DiagnosticableTreeMixin
         }
     }
 
+    /// <summary>
+    /// Reports retained semantics work without consuming it. Hosts can use this to
+    /// coalesce geometry churn while a scroll is active and still force a final flush.
+    /// </summary>
+    public bool hasPendingSemanticsUpdate =>
+        this._semanticsOwner is not null &&
+        (this._nodesNeedingSemanticsUpdate.Count != 0 ||
+         this._nodesNeedingSemanticsGeometryUpdate.Count != 0 ||
+         this._children.Any(child => child.hasPendingSemanticsUpdate));
+
     public virtual List<DiagnosticsNode> debugDescribeChildren()
     {
         return new List<DiagnosticsNode>();

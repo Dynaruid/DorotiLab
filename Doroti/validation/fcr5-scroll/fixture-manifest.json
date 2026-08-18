@@ -5,7 +5,7 @@
     {
       "path": "packages/flutter/lib/src/widgets/scroll_controller.dart",
       "sha256": "9ba87baa5c81a8d000bc021d93053f49c9a5c4c867b5f838e23d0eb916da944a",
-      "anchors": ["Future<void> animateTo", "Future.wait<void>", "void jumpTo"]
+      "anchors": ["Future<void> animateTo", "Future.wait<void>", "position.addListener(notifyListeners)", "position.removeListener(notifyListeners)"]
     },
     {
       "path": "packages/flutter/lib/src/widgets/scroll_activity.dart",
@@ -15,7 +15,7 @@
     {
       "path": "packages/flutter/lib/src/widgets/scrollable.dart",
       "sha256": "419c2055fe3e8be10f21413b88bb838c24c7f068879c5882b470a15fa1b7b1b7",
-      "anchors": ["void _receivedPointerSignal", "void _handlePointerScroll", "replaceGestureRecognizers"]
+      "anchors": ["void _receivedPointerSignal", "_position.addListener(_scheduleLayoutChange)", "position.addListener(markNeedsSemanticsUpdate)"]
     },
     {
       "path": "packages/flutter/lib/src/widgets/scroll_view.dart",
@@ -25,7 +25,27 @@
     {
       "path": "packages/flutter/lib/src/widgets/scrollbar.dart",
       "sha256": "3ce9ba77df9d8b14560457301e6f68642ddaaf91e495d7208f84af2fe1dc91bd",
-      "anchors": ["PrimaryScrollController.maybeOf", "_effectiveScrollController", "_handlePointerScroll"]
+      "anchors": ["PrimaryScrollController.maybeOf", "fadeoutOpacityAnimation.addListener(notifyListeners)", "fadeoutOpacityAnimation.removeListener(notifyListeners)"]
+    },
+    {
+      "path": "packages/flutter/lib/src/widgets/single_child_scroll_view.dart",
+      "sha256": "a32bf494e7ed285f98cc7ba8a95e5db18715950c292e22481a86d36849e76c78",
+      "anchors": ["_offset.addListener(_hasScrolled)", "_offset.removeListener(_hasScrolled)", "bool get isRepaintBoundary => true"]
+    },
+    {
+      "path": "packages/flutter/lib/src/widgets/nested_scroll_view.dart",
+      "sha256": "ed8c4cdd8f0c900511d4a7f7206a1019e0ae9a4831448f85d64a828200bc7d61",
+      "anchors": ["position.addListener(_scheduleUpdateShadow)", "position.removeListener(_scheduleUpdateShadow)", "handle.addListener(markNeedsLayout)"]
+    },
+    {
+      "path": "packages/flutter/lib/src/widgets/overscroll_indicator.dart",
+      "sha256": "7af095929ebc288f10ff28032e662da179d001540180f676a63bd6f0539b378f",
+      "anchors": ["_overscrollNotifier.addListener(listener)", "_overscrollNotifier.removeListener(listener)", "class StretchingOverscrollIndicator"]
+    },
+    {
+      "path": "packages/flutter/lib/src/widgets/draggable_scrollable_sheet.dart",
+      "sha256": "fb5d895b579c6abbd395beeca6fc5fe5f0271042bec9088bf603e78b290a9d26",
+      "anchors": ["_currentSize.addListener(notifyListeners)", "_currentSize.removeListener(notifyListeners)", "void _onExtentReplaced"]
     },
     {
       "path": "packages/flutter/lib/src/rendering/viewport.dart",

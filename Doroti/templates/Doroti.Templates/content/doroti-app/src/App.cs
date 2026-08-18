@@ -17,7 +17,8 @@ public static class App
         () => new DorotiWidgetEntrypoint(CreateRootWidget);
 
     public static DorotiViewConfiguration ViewConfiguration { get; } =
-        new("Doroti C# App", new Size(720, 640), new UiColor(0xfffffbfeL));
+        new("Doroti C# App", new Size(720, 640),
+            new UiColor(0xfffffbfeL), new UiColor(0xff141218L));
 
     private static Widget CreateRootWidget()
     {

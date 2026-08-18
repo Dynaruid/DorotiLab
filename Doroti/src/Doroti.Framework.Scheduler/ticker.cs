@@ -98,6 +98,7 @@ public class Ticker
             });
         DartRuntimePrimitives.Assert(() => (_startTime is null));
         _future = new TickerFuture();
+        RecordAnimationPhase(DorotiFramePhase.animationStart);
         if (shouldScheduleTick)
         {
             scheduleTick();
@@ -123,6 +124,7 @@ public class Ticker
             return;
         }
         TickerFuture localFuture = _future!;
+        RecordAnimationPhase(DorotiFramePhase.animationEnd);
         _future = null;
         _startTime = null;
         DartRuntimePrimitives.Assert(() => !isActive);
@@ -204,6 +206,7 @@ public class Ticker
         if ((_future is not null))
         {
             TickerFuture localFuture__13113 = _future!;
+            RecordAnimationPhase(DorotiFramePhase.animationEnd);
             _future = null;
             DartRuntimePrimitives.Assert(() => !isActive);
             unscheduleTick();
@@ -213,7 +216,15 @@ public class Ticker
             {
                 _startTime = Duration.zero;
                 return true;
-            });
+        });
+    }
+
+    private void RecordAnimationPhase(DorotiFramePhase phase)
+    {
+        SchedulerBinding.instance.platformDispatcher.frameTrace.RecordTicker(
+            phase,
+            global::System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(this),
+            debugLabel ?? _onTick.Target?.GetType().Name ?? "Ticker");
     }
 
     public virtual string ToString(bool debugIncludeStack = false)

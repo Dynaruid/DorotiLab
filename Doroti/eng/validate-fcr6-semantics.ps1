@@ -39,7 +39,9 @@ foreach ($source in @($manifest.sources)) {
 $contracts = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Ui/GraphicsAndSemanticsContracts.cs')
 foreach ($anchor in @('SemanticsUpdateUrgency', 'SemanticsUpdateDiffer', 'SemanticsNodeProperty', 'ContentHash')) { Assert-True ($contracts.Contains($anchor, [StringComparison]::Ordinal)) "FCR-6 shared delta contract: $anchor" }
 $bridge = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Host.Maui/MauiSemanticsBridge.cs')
-foreach ($anchor in @('MinimumApplyInterval', 'SemanticsUpdateUrgency.scrollEnd', 'CancellationTokenSource', 'scheduleGeneration', 'InputTransparent = true', 'nativePropertyWrites')) { Assert-True ($bridge.Contains($anchor, [StringComparison]::Ordinal)) "FCR-6 MAUI bridge contract: $anchor" }
+foreach ($anchor in @('MinimumApplyInterval', 'SemanticsUpdateUrgency.scrollEnd', 'CancellationTokenSource', 'scheduleGeneration', 'InputTransparent = true', 'nativePropertyWrites', 'SynchronizeChildOrder', 'RecycleState', 'semanticsApplyEnd')) { Assert-True ($bridge.Contains($anchor, [StringComparison]::Ordinal)) "FCR-6 MAUI bridge contract: $anchor" }
+$widgetsBinding = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Widgets/binding.cs')
+foreach ($anchor in @('MinimumActiveScrollSemanticsInterval', 'HasActiveScrollActivity', 'hasPendingSemanticsUpdate', 'semanticsDeferred')) { Assert-True ($widgetsBinding.Contains($anchor, [StringComparison]::Ordinal)) "FCR-6 framework coalescing contract: $anchor" }
 
 Invoke-Contract 'Debug'
 Invoke-Contract 'Release'
@@ -47,8 +49,8 @@ $evidence = [ordered]@{
     schemaVersion = 'doroti.flutter-conformance-fcr6-evidence/v1'; status = 'partial'; capturedAt = [DateTime]::UtcNow.ToString('o')
     repositoryRevision = (& git -C $repositoryRoot rev-parse HEAD).Trim(); flutterRevision = $flutterRevision
     fixtureManifest = 'Doroti/validation/fcr6-semantics/fixture-manifest.json'
-    runtimeContract = [ordered]@{ status = 'pass'; debug = 'pass'; release = 'pass'; checks = @('node content hash excludes geometry', 'geometry-only delta is coalescible', 'label/selection/topology deltas are immediate', 'scroll-end urgency is explicit') }
-    hostContract = [ordered]@{ status = 'pass'; checks = @('15 fps minimum native apply interval', 'generation and cancellation fences suppress stale callbacks', 'changed native properties only are written', 'overlay is input-transparent to ordinary touch') }
+    runtimeContract = [ordered]@{ status = 'pass'; debug = 'pass'; release = 'pass'; checks = @('node content hash excludes geometry', 'geometry-only delta is coalescible', 'existing label and selection changes are immediate', 'virtualized topology churn is bounded', 'scroll-end urgency is explicit') }
+    hostContract = [ordered]@{ status = 'pass'; checks = @('15 fps framework semantics build interval is scoped to active scroll and flushes after scroll end', '15 fps minimum native apply interval includes automatic topology churn', 'generation and cancellation fences suppress stale callbacks', 'changed native properties only are written', 'native elements are pooled and child order changes incrementally', 'semantics build and native apply are frame-traced', 'overlay is input-transparent to ordinary touch') }
     acceptance = [ordered]@{ status = 'notVerified'; reason = 'No Android TalkBack or Windows UIA physical run was performed, and no device baseline has established the 10-percent UI-thread threshold.'; notRun = @('Android TalkBack focus/action/scroll physical checklist', 'Windows UIA focus/action/pass-through physical checklist', 'native semantics UI-thread baseline and 10-percent threshold', 'scroll-end dispatch observation on physical hardware') }
 }
 [IO.Directory]::CreateDirectory((Split-Path $evidencePath -Parent)) | Out-Null

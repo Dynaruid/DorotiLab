@@ -97,6 +97,7 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
         this._scrollbarOrientation = scrollbarOrientation;
         this._minOverscrollLength = minOverscrollLength ?? __minLength;
         this._ignorePointer = ignorePointer;
+        this.fadeoutOpacityAnimation.addListener(this.notifyListeners);
         System.Diagnostics.Debug.Assert(((radius is null) || (shape is null)));
         System.Diagnostics.Debug.Assert((__minLength >= 0L));
         System.Diagnostics.Debug.Assert(((minOverscrollLength is null) || (minOverscrollLength <= __minLength)));
@@ -692,7 +693,7 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
     public override string ToString() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual void dispose()
     {
-        this.fadeoutOpacityAnimation.removeListener(() => this.notifyListeners());
+        this.fadeoutOpacityAnimation.removeListener(this.notifyListeners);
         base.dispose();
     }
 
@@ -1500,7 +1501,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -1610,8 +1611,8 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier__18621.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier__18621.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier__18621;
     }
 

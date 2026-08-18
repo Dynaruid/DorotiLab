@@ -341,8 +341,8 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T> : State<
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier__18621.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier__18621.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier__18621;
     }
 
@@ -363,7 +363,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T> : State<
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         this._tickerModeNotifier = null;
         base.dispose();
     }
@@ -558,7 +558,7 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -793,8 +793,8 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier__18621.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier__18621.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier__18621;
     }
 
@@ -805,4 +805,3 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
     }
 
 }
-

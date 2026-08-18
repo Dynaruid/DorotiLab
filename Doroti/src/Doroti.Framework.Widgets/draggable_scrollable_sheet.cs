@@ -110,13 +110,13 @@ public class DraggableScrollableController : global::Doroti.Framework.Foundation
     {
         DartRuntimePrimitives.Assert(() => (this._attachedController is null), () => (object?)"Draggable scrollable controller is already attached to a sheet.");
         _attachedController = scrollController;
-        this._attachedController!.extent._currentSize.addListener(() => this.notifyListeners());
+        this._attachedController!.extent._currentSize.addListener(this.notifyListeners);
         this._attachedController!.onPositionDetached = (global::System.Action)this._disposeAnimationControllers;
     }
 
     internal virtual void _onExtentReplaced(_DraggableSheetExtent__draggable_scrollable_sheet previousExtent)
     {
-        this._attachedController!.extent._currentSize.addListener(() => this.notifyListeners());
+        this._attachedController!.extent._currentSize.addListener(this.notifyListeners);
         if ((((_DraggableSheetExtent__draggable_scrollable_sheet)previousExtent).currentSize != this._attachedController!.extent.currentSize))
         {
             notifyListeners();
@@ -131,7 +131,7 @@ public class DraggableScrollableController : global::Doroti.Framework.Foundation
         }
         else
         {
-            this._attachedController?.extent._currentSize.removeListener(() => this.notifyListeners());
+            this._attachedController?.extent._currentSize.removeListener(this.notifyListeners);
         }
         _disposeAnimationControllers();
         _attachedController = null;
@@ -767,4 +767,3 @@ internal class _SnappingSimulation__draggable_scrollable_sheet : global::Doroti.
     }
 
 }
-

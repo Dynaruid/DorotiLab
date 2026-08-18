@@ -23,8 +23,15 @@ Require(selectionDelta.RequiresImmediateFlush, "selection update flushes immedia
 Require(selectionDelta.changedNodes.Single(delta => delta.id == 1).changedProperties.HasFlag(SemanticsNodeProperty.selection), "selection delta is exact");
 
 var removedDelta = SemanticsUpdateDiffer.Diff(baseline, [root with { children = [] }]);
-Require(removedDelta.HasTopologyChange && removedDelta.RequiresImmediateFlush, "node removal flushes immediately");
+Require(removedDelta.HasTopologyChange && !removedDelta.RequiresImmediateFlush,
+    "virtualized topology churn remains bounded unless urgency is explicit");
 Require(removedDelta.removedNodeIds.SequenceEqual([1]), "removed identity is retained for native pruning");
+
+var inserted = Node(2, 0, 20, 40, 20, "Next", SemanticsAction.tap);
+var insertedDelta = SemanticsUpdateDiffer.Diff(baseline,
+    [root with { children = [1, 2] }, button, inserted]);
+Require(insertedDelta.HasTopologyChange && !insertedDelta.RequiresImmediateFlush,
+    "new virtualized nodes do not bypass the native apply interval");
 
 var end = new SemanticsUpdate(9, geometry, SemanticsUpdateUrgency.scrollEnd);
 Require(end.urgency == SemanticsUpdateUrgency.scrollEnd, "scroll end is an explicit immediate-host signal");

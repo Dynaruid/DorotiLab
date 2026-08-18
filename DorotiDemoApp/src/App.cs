@@ -512,5 +512,6 @@ internal static class App
         () => new MaterialDemoEntrypoint(DemoEntryMode.Home, requireExternalUia: false);
 
     internal static DorotiViewConfiguration ViewConfiguration { get; } =
-        new("Doroti Material Demo", new Size(720, 640), new UiColor(0xfffffbfeL));
+        new("Doroti Material Demo", new Size(720, 640),
+            new UiColor(0xfffffbfeL), new UiColor(0xff141218L));
 }

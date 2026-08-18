@@ -63,12 +63,96 @@ Assert-True ($scrollView.Contains('PrimaryScrollController.shouldInherit(context
 Assert-True ($scrollView.Contains('PrimaryScrollController.maybeOf(context)', [StringComparison]::Ordinal)) 'primary scroll view obtains the inherited controller'
 $scrollbar = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Widgets/scrollbar.cs')
 Assert-True ($scrollbar.Contains('((RawScrollbar)(object)this.widget).controller ?? (ScrollController)PrimaryScrollController.maybeOf(this.context)', [StringComparison]::Ordinal)) 'scrollbar resolves the same explicit-or-primary controller contract'
+Assert-True ($scrollbar.Contains('this.fadeoutOpacityAnimation.addListener(this.notifyListeners);', [StringComparison]::Ordinal)) 'scrollbar fade animation invalidates its painter'
+Assert-True ($scrollbar.Contains('this.fadeoutOpacityAnimation.removeListener(this.notifyListeners);', [StringComparison]::Ordinal)) 'scrollbar fade listener has stable removal identity'
+
+$singleChildScrollView = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Widgets/single_child_scroll_view.cs')
+Assert-True ($singleChildScrollView.Contains('this._offset.addListener(this._hasScrolled);', [StringComparison]::Ordinal)) 'single-child viewport observes scroll offsets with Flutter method-tear-off identity'
+Assert-True ($singleChildScrollView.Contains('this._offset.removeListener(this._hasScrolled);', [StringComparison]::Ordinal)) 'single-child viewport removes the same scroll listener'
+
+$scrollable = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Widgets/scrollable.cs')
+Assert-True ($scrollable.Contains('this._position.addListener(this._scheduleLayoutChange);', [StringComparison]::Ordinal)) 'scroll selection installs its initial position listener'
+Assert-True ($scrollable.Contains('this._position.addListener(this.markNeedsSemanticsUpdate);', [StringComparison]::Ordinal)) 'scroll semantics installs its initial position listener'
+
+$overscroll = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Widgets/overscroll_indicator.cs')
+Assert-True ($overscroll.Contains('this._overscrollNotifier.addListener(listener);', [StringComparison]::Ordinal)) 'overscroll forwards listener identity without a wrapper closure'
+Assert-True ($overscroll.Contains('this._overscrollNotifier.removeListener(listener);', [StringComparison]::Ordinal)) 'overscroll removes the forwarded listener identity'
+
+$scrollSources = Get-ChildItem -LiteralPath (Join-Path $dorotiRoot 'src/Doroti.Framework.Widgets') -Filter '*scroll*.cs' -File
+$unstableListenerPattern = '\.(?:addListener|removeListener)\(\(\) => this\.[A-Za-z_][A-Za-z0-9_]*\(\)\)'
+$unstableListeners = @($scrollSources | Select-String -Pattern $unstableListenerPattern)
+Assert-True ($unstableListeners.Count -eq 0) 'scroll sources contain no unstable instance-method listener wrappers'
+
+$lowerer = Read-Text (Join-Path $repositoryRoot 'tools/Doroti.DartToCSharp/src/Backend/CSharp/Lowering/FrameworkCSharpLowerer.G53Compatibility.cs')
+Assert-True ($lowerer.Contains('Retain CLR method-group', [StringComparison]::Ordinal)) 'compiler documents Flutter method-tear-off identity'
+Assert-True ($lowerer.Contains('this._overscrollNotifier.$1(listener);', [StringComparison]::Ordinal)) 'compiler preserves forwarded overscroll listener identity'
 
 $trace = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Ui/ScrollLifecycle.cs')
 foreach ($phase in @('nativeInput', 'pointerData', 'hitTest', 'gesture', 'activity', 'viewport', 'layout', 'paint', 'retainedLayer', 'raster', 'present', 'scrollbar', 'semantics')) {
     Assert-True ($trace.Contains($phase, [StringComparison]::Ordinal)) "scroll trace phase: $phase"
 }
 Assert-True ($trace.Contains('Consumers must supply the', [StringComparison]::Ordinal)) 'scroll trace prevents accidental cross-input attribution'
+
+$frameTrace = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Ui/FrameLifecycle.cs')
+foreach ($phase in @('scrollStart', 'scrollUpdate', 'scrollEnd', 'animationStart', 'animationEnd', 'rasterEnd', 'semanticsDeferred')) {
+    Assert-True ($frameTrace.Contains($phase, [StringComparison]::Ordinal)) "frame trace phase: $phase"
+}
+Assert-True ($frameTrace.Contains('private const int Capacity = 8192;', [StringComparison]::Ordinal)) 'frame trace retains complete high-refresh gestures'
+foreach ($field in @('ScrollPositionId', 'ScrollOffset', 'ScrollDelta', 'ScrollActivity', 'ScrollMinExtent', 'ScrollMaxExtent', 'TickerId', 'TickerLabel')) {
+    Assert-True ($frameTrace.Contains($field, [StringComparison]::Ordinal)) "frame trace diagnostic field: $field"
+}
+$scrollPosition = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Widgets/scroll_position.cs')
+Assert-True ($scrollPosition.Contains('recordScrollTrace(DorotiFramePhase.scrollStart)', [StringComparison]::Ordinal)) 'scroll position records actual start'
+Assert-True ($scrollPosition.Contains('recordScrollTrace(DorotiFramePhase.scrollUpdate, delta)', [StringComparison]::Ordinal)) 'scroll position records actual offset delta'
+Assert-True ($scrollPosition.Contains('recordScrollTrace(DorotiFramePhase.scrollEnd)', [StringComparison]::Ordinal)) 'scroll position records actual end'
+
+$sceneBuilder = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Ui/GraphicsAndSemanticsContracts.cs')
+Assert-True ($sceneBuilder.Contains('Rect? CanvasBounds,', [StringComparison]::Ordinal)) 'scene picture carries raster-cache bounds'
+Assert-True ($sceneBuilder.Contains('bool IsComplexHint,', [StringComparison]::Ordinal) -and
+    $sceneBuilder.Contains('bool WillChangeHint);', [StringComparison]::Ordinal)) 'scene picture carries Flutter raster-cache hints'
+$pictureLayer = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Rendering/layer.cs')
+Assert-True ($pictureLayer.Contains('this.canvasBounds,', [StringComparison]::Ordinal)) 'picture layer forwards cache bounds to the host'
+Assert-True ($sceneBuilder.Contains('object? CacheKey = null,', [StringComparison]::Ordinal) -and
+    $sceneBuilder.Contains('long CacheGeneration = 0);', [StringComparison]::Ordinal)) 'scene image filter carries stable cache identity and subtree generation'
+Assert-True ($pictureLayer.Contains('_filterCacheGeneration++;', [StringComparison]::Ordinal) -and
+    $pictureLayer.Contains('cacheKey: this, cacheGeneration: this._filterCacheGeneration', [StringComparison]::Ordinal)) 'image filter layer invalidates its retained output when the subtree changes'
+$mauiRaster = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Host.Maui/MauiSkiaCapabilities.cs')
+Assert-True ($mauiRaster.Contains('PictureRasterWarmupFrames = 2', [StringComparison]::Ordinal)) 'picture raster cache requires retained reuse before promotion'
+Assert-True ($mauiRaster.Contains('payload.WillChangeHint', [StringComparison]::Ordinal)) 'picture raster cache rejects changing content'
+Assert-True ($mauiRaster.Contains('MaxPictureRasterPixels', [StringComparison]::Ordinal) -and
+    $mauiRaster.Contains('TrimPictureRasterCache()', [StringComparison]::Ordinal)) 'picture raster cache is memory bounded'
+Assert-True ($mauiRaster.Contains('MaxImageFilterResources = 64', [StringComparison]::Ordinal) -and
+    $mauiRaster.Contains('GetImageFilter(backdrop.Filter)', [StringComparison]::Ordinal)) 'retained backdrop filters reuse a bounded native filter resource'
+$mauiHost = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Host.Maui/MauiHostAdapter.cs')
+Assert-True ($mauiHost.Contains('CompositionTarget.Rendering += HandleCompositionRendering;', [StringComparison]::Ordinal) -and
+    $mauiHost.Contains('CompositionTarget.Rendering -= HandleCompositionRendering;', [StringComparison]::Ordinal)) 'Windows host scopes compositor vsync to active framework animations'
+Assert-True ($mauiHost.Contains('_view.Dispatcher.Dispatch(UpdateCompositionVsyncSubscription)', [StringComparison]::Ordinal)) 'Windows host mutates the WinUI compositor event only through the MAUI UI dispatcher'
+Assert-True ($mauiHost.Contains('_pendingFrameCallback is null && _compositionVsyncRequested', [StringComparison]::Ordinal)) 'Windows host stops its vsync waiter after the terminal animation frame'
+Assert-True ($mauiHost.Contains('MinimumCompositionFrameInterval = TimeSpan.FromMilliseconds(10)', [StringComparison]::Ordinal) -and
+    $mauiHost.Contains('timestamp - _lastCompositionInvalidateTimestamp < MinimumCompositionFrameInterval', [StringComparison]::Ordinal)) 'Windows applies high-refresh backpressure before the ANGLE swap chain'
+Assert-True ($mauiHost.Contains('Android.Views.Choreographer.Instance!.PostFrameCallback(_androidFrameCallback)', [StringComparison]::Ordinal) -and
+    $mauiHost.Contains('Android.Views.Choreographer.Instance!.RemoveFrameCallback(_androidFrameCallback)', [StringComparison]::Ordinal)) 'Android host scopes framework animation requests to native display vsync'
+Assert-True ($mauiHost.Contains('nativeVsyncTimestamp ?? DorotiFrameClock.Now', [StringComparison]::Ordinal) -and
+    $mauiHost.Contains('compositorOwnsNextFrame = _androidFrameCallbackPosted', [StringComparison]::Ordinal)) 'Android frame timestamps and follow-up paints remain owned by Choreographer pacing'
+Assert-True ($mauiHost.Contains('_androidActiveTouchPointers.Count > 0', [StringComparison]::Ordinal) -and
+    $mauiHost.Contains('_pendingFrameCallback is null && _androidActiveTouchPointers.Count == 0', [StringComparison]::Ordinal)) 'Android keeps the display waiter pre-armed only while native touch is active'
+Assert-True ($mauiHost.Contains('_androidVsyncTimestamp = MapAndroidFrameTimestamp(frameTimeNanos)', [StringComparison]::Ordinal)) 'Android refreshes a delayed render request to the newest display-pulse timestamp'
+$mauiSurface = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Host.Maui/DorotiMauiSurface.cs')
+Assert-True ($mauiSurface.Contains('Dispatcher.DispatchDelayed(TimeSpan.Zero, () => CompleteNativePaint(completed))', [StringComparison]::Ordinal) -and
+    $mauiRaster.Contains('"native frame submitted"', [StringComparison]::Ordinal)) 'Windows records presentation after the native SKSwapChainPanel flush boundary'
+Assert-True ($mauiSurface.Contains('_ = Task.Run(() =>', [StringComparison]::Ordinal) -and
+    $mauiSurface.Contains('ScheduleEvidenceWrite();', [StringComparison]::Ordinal) -and
+    $mauiSurface.Contains('EvidenceWriteQuiescence', [StringComparison]::Ordinal)) 'live evidence waits for paint quiescence and stays off the native paint callback'
+Assert-True ($mauiRaster.Contains('#if !WINDOWS', [StringComparison]::Ordinal) -and
+    $mauiRaster.Contains('canvas.Flush();', [StringComparison]::Ordinal)) 'Windows leaves canvas and context flushing to SKSwapChainPanel'
+$imageFilterRenderer = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Skia.RuntimeEffects/DorotiSkiaImageFilterRenderer.cs')
+Assert-True ($imageFilterRenderer.Contains('cached.Generation != generation', [StringComparison]::Ordinal)) 'image filter output cache rejects stale subtree generations'
+$appTargetGate = Read-Text (Join-Path $dorotiRoot 'eng/validate-app-targets.ps1')
+foreach ($measurement in @('inputToOffsetMilliseconds', 'offsetToPresentMilliseconds', 'inputToPresentMilliseconds', 'animationPresentGaps')) {
+    Assert-True ($appTargetGate.Contains($measurement, [StringComparison]::Ordinal)) "Windows live scroll measurement: $measurement"
+}
+Assert-True ($appTargetGate.Contains('offset-to-present max 60 Hz budget', [StringComparison]::Ordinal)) 'Windows live gate rejects a single visible scroll hitch'
+Assert-True ($appTargetGate.Contains('input-to-present excellent-frame budget', [StringComparison]::Ordinal)) 'Windows live gate enforces the complete 16.6 ms visible interaction budget'
 
 Invoke-Contract 'Debug'
 Invoke-Contract 'Release'
@@ -81,11 +165,11 @@ $evidence = [ordered]@{
     fixtureManifest = 'Doroti/validation/fcr5-scroll/fixture-manifest.json'
     runtimeContract = [ordered]@{
         status = 'pass'; debug = 'pass'; release = 'pass'
-        checks = @('ScrollController.animateTo waits for the initial attached-position snapshot', 'DrivenScrollActivity initializes and observes its animation', 'scroll trace preserves one input sequence through its declared causal phases', 'trace capacity is bounded without sequence reuse')
+        checks = @('ScrollController.animateTo waits for the initial attached-position snapshot', 'DrivenScrollActivity initializes and observes its animation', 'Flutter method tear-offs keep stable CLR listener identity', 'scroll listener removal leaves no retained ChangeNotifier callback', 'scroll trace preserves one input sequence through its declared causal phases', 'frame trace retains actual scroll offsets and animation ownership for a complete high-refresh gesture', 'trace capacity is bounded without sequence reuse')
     }
     ownershipContract = [ordered]@{
         status = 'pass'
-        checks = @('ScrollView applies PrimaryScrollController.shouldInherit', 'RawScrollbar uses explicit controller or the inherited primary controller')
+        checks = @('ScrollView applies PrimaryScrollController.shouldInherit', 'RawScrollbar uses explicit controller or the inherited primary controller', 'scroll viewport, semantics, scrollbar, overscroll, nested-scroll, and ticker paths use stable listener identities', 'ScrollbarPainter observes and removes its fade animation listener symmetrically', 'PictureLayer forwards bounds and change hints to a bounded retained raster cache', 'ImageFilterLayer uses a stable cache identity with subtree generation invalidation', 'Windows drives framework animations from WinUI compositor vsync and marshals compositor subscriptions to the UI thread', 'Android keeps Choreographer pre-armed during native drag and advances delayed paints to the newest display pulse', 'Windows records present after the native swap-chain flush and keeps evidence serialization off the paint callback', 'Windows live gate measures input-to-offset, offset-to-present, complete input-to-present, and scroll-animation cadence including maxima')
     }
     acceptance = [ordered]@{
         status = 'notVerified'

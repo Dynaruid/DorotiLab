@@ -42,7 +42,8 @@ public sealed class MauiFrameworkHost : IDisposable
 
         textInput ??= new(new Entry(), new Editor());
         var host = new MauiHostAdapter(viewId, nativeView, textInput, configuration.logicalSize, semantics);
-        var graphics = new MauiSkiaCapabilities(viewId, host, configuration.backgroundColor);
+        var graphics = new MauiSkiaCapabilities(
+            viewId, host, configuration.backgroundColor, configuration.darkBackgroundColor);
         var messages = new MauiPlatformMessageCapability();
         var capabilities = new DorotiViewCapabilities(_targetIdentity)
             .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
@@ -66,6 +67,7 @@ public sealed class MauiFrameworkHost : IDisposable
             using var dispatcherScope = session.dispatcher.EnterScope();
             view = session.dispatcher.RegisterView(viewId, capabilities);
             graphics.AttachFrameworkTrace(view.FrameTrace);
+            host.AttachFrameworkTrace(view.FrameTrace);
             session.AttachView(view);
             _views.Add(viewId, (view, host, graphics));
             _sessions.Add(viewId, session);
@@ -96,11 +98,20 @@ public sealed class MauiFrameworkHost : IDisposable
         value.Host.EndPaint();
     }
 
-    internal void PaintSkiaSurface(ulong viewId, SkiaSharp.SKSurface surface, int pixelWidth, int pixelHeight)
+    internal MauiPaintCompletion? PaintSkiaSurface(
+        ulong viewId,
+        SkiaSharp.SKSurface surface,
+        int pixelWidth,
+        int pixelHeight)
     {
         if (!_views.TryGetValue(viewId, out var value))
             throw new KeyNotFoundException($"MAUI Doroti view {viewId} is not registered.");
-        value.Graphics.Paint(surface, pixelWidth, pixelHeight);
+        return value.Graphics.Paint(surface, pixelWidth, pixelHeight);
+    }
+
+    internal void CompletePaint(ulong viewId, MauiPaintCompletion completion)
+    {
+        if (_views.TryGetValue(viewId, out var value)) value.Graphics.CompletePaint(completion);
     }
 
     internal void NotifyLifecycle(ulong viewId, AppLifecycleState state)
@@ -143,7 +154,8 @@ public sealed class MauiFrameworkHost : IDisposable
 #endif
             "10.0.90", "4.151.1", value.Host.Snapshot, value.Graphics.Diagnostics,
             value.Host.InvalidationsRequested, value.Host.InvalidationsCoalesced,
-            value.Host.NativePointerEvents, value.Host.SemanticsDiagnostics, 0);
+            value.Host.NativePointerEvents, value.Host.FrameRequestsCoalesced,
+            value.Host.SemanticsDiagnostics, 0);
     }
 
 #if ANDROID

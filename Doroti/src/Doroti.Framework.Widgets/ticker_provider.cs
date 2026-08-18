@@ -188,7 +188,7 @@ public class _WidgetTicker__ticker_provider : global::Doroti.Framework.Scheduler
 {
     internal virtual WidgetTickerCreator _creator { get; private set; } = default!;
 
-    public _WidgetTicker__ticker_provider(global::System.Action<Duration> onTick, WidgetTickerCreator _creator, string? debugLabel = null) : base(onTick, debugLabel: debugLabel)
+    public _WidgetTicker__ticker_provider(global::System.Action<Duration> onTick, WidgetTickerCreator _creator, string? debugLabel = null) : base(onTick, debugLabel: debugLabel ?? _creator.GetType().Name)
     {
         this._creator = _creator;
     }

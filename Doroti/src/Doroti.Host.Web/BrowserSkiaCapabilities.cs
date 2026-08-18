@@ -347,7 +347,10 @@ internal sealed class BrowserSkiaCapabilities :
                                 (inputCanvas, inputWidth, inputHeight) =>
                                     DrawScene(inputCanvas, source, commandIndex + 1, matchingPop, inputWidth, inputHeight),
                                 RuntimeEffectBackend,
-                                _contextGeneration);
+                                _contextGeneration,
+                                image.CacheKey,
+                                image.CacheGeneration,
+                                out _);
                             commandIndex = matchingPop;
                             break;
                         }
@@ -451,7 +454,7 @@ internal sealed class BrowserSkiaCapabilities :
                 case "clipRSuperellipse" when command.HostPayload is CanvasClipRSuperellipsePayload clip: canvas.ClipRect(ToRect(clip.RSuperellipse.outerRect), SKClipOperation.Intersect, clip.DoAntiAlias); break;
                 case "clipPath" when command.HostPayload is CanvasClipPathPayload clip: canvas.ClipPath(ToPath(clip.Path), SKClipOperation.Intersect, true); break;
                 case "drawRect" when command.HostPayload is CanvasRectPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawRect(ToRect(draw.Rect), paint); break;
-                case "drawRRect" when command.HostPayload is CanvasRRectPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawPath(ToPath(draw.RRect), paint); break;
+                case "drawRRect" when command.HostPayload is CanvasRRectPayload draw: DrawRRect(canvas, draw); break;
                 case "drawDRRect" when command.HostPayload is CanvasDRRectPayload draw: DrawDRRect(canvas, draw); break;
                 case "drawRSuperellipse" when command.HostPayload is CanvasRSuperellipsePayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawRect(ToRect(draw.RSuperellipse.outerRect), paint); break;
                 case "drawPath" when command.HostPayload is CanvasPathPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawPath(ToPath(draw.Path), paint); break;
@@ -667,9 +670,30 @@ internal sealed class BrowserSkiaCapabilities :
     private static SKPath ToPath(RRect value)
     {
         using var builder = new SKPathBuilder();
-        builder.AddRoundRect(ToRect(value.outerRect), (float)value.tlRadiusX, (float)value.tlRadiusY,
-            SKPathDirection.Clockwise);
+        using var roundRect = new SKRoundRect();
+        roundRect.SetRectRadii(ToRect(value.outerRect),
+        [
+            new((float)value.tlRadius.x, (float)value.tlRadius.y),
+            new((float)value.trRadius.x, (float)value.trRadius.y),
+            new((float)value.brRadius.x, (float)value.brRadius.y),
+            new((float)value.blRadius.x, (float)value.blRadius.y),
+        ]);
+        builder.AddRoundRect(roundRect, SKPathDirection.Clockwise);
         return builder.Detach();
+    }
+
+    private void DrawRRect(SKCanvas canvas, CanvasRRectPayload draw)
+    {
+        using var paint = ToPaint(draw.Paint);
+        var rrect = draw.RRect;
+        if (rrect.tlRadius == Radius.zero && rrect.trRadius == Radius.zero &&
+            rrect.brRadius == Radius.zero && rrect.blRadius == Radius.zero)
+        {
+            canvas.DrawRect(ToRect(rrect.outerRect), paint);
+            return;
+        }
+        using var path = ToPath(rrect);
+        canvas.DrawPath(path, paint);
     }
 
     private void DrawDRRect(SKCanvas canvas, CanvasDRRectPayload draw)

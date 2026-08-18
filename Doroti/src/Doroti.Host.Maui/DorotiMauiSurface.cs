@@ -16,6 +16,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         WriteIndented = true,
     };
     private static readonly TimeSpan EvidenceWriteInterval = TimeSpan.FromSeconds(1);
+    private static readonly TimeSpan EvidenceWriteQuiescence = TimeSpan.FromMilliseconds(250);
     private readonly ulong _viewId;
     private readonly DorotiApplicationDescriptor _application;
     private DorotiApplicationBoundary? _boundary;
@@ -30,6 +31,8 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     private bool _disposed;
     private long _lastEvidenceWriteTimestamp;
     private long _lastEvidenceReplayed;
+    private long _evidenceWriteGeneration;
+    private int _evidenceWritePending;
     private Window? _window;
 
     public DorotiMauiSurface(
@@ -38,7 +41,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     {
         _application = application ?? throw new ArgumentNullException(nameof(application));
         _viewId = viewId;
-        var startupColor = application.ViewConfiguration.backgroundColor ?? new Doroti.Ui.Color(0xfffffbfeL);
+        var startupColor = ResolveBackgroundColor(Application.Current?.RequestedTheme ?? AppTheme.Unspecified);
         BackgroundColor = new Microsoft.Maui.Graphics.Color(
             (float)startupColor.r, (float)startupColor.g, (float)startupColor.b, (float)startupColor.a);
         _skiaView = new SKGLView
@@ -58,6 +61,8 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         HandlerChanged += HandleHandlerChanged;
         Loaded += HandleLoaded;
         Unloaded += HandleUnloaded;
+        if (Application.Current is { } currentApplication)
+            currentApplication.RequestedThemeChanged += HandleRequestedThemeChanged;
     }
 
     public MauiHostDiagnostics? Diagnostics => _host?.CaptureDiagnostics(
@@ -110,15 +115,27 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
             if (args.Surface is null || _skiaView.GRContext is null)
                 throw new InvalidOperationException("Strict Doroti MAUI mode requires a GPU-backed SKSurface and GRContext.");
             var nativeType = _skiaView.Handler?.PlatformView?.GetType().FullName ?? "unknown";
+            MauiPaintCompletion? completion = null;
             try
             {
                 _host.BeginPaint(_viewId, args, _skiaView.GRContext, nativeType);
-                _host.PaintSkiaSurface(_viewId, args.Surface, args.BackendRenderTarget.Width, args.BackendRenderTarget.Height);
-                WriteEvidence();
+                completion = _host.PaintSkiaSurface(
+                    _viewId, args.Surface, args.BackendRenderTarget.Width, args.BackendRenderTarget.Height);
             }
             finally
             {
                 _host.EndPaint(_viewId);
+            }
+            if (completion is { } completed)
+            {
+#if WINDOWS
+                // SKSwapChainPanel flushes its canvas and GRContext only after this
+                // PaintSurface callback returns. Queue completion so `present` and
+                // evidence describe the native submission rather than pre-flush work.
+                Dispatcher.DispatchDelayed(TimeSpan.Zero, () => CompleteNativePaint(completed));
+#else
+                CompleteNativePaint(completed);
+#endif
             }
         }
         catch (Exception exception)
@@ -128,34 +145,71 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         }
     }
 
+    private void CompleteNativePaint(MauiPaintCompletion completion)
+    {
+        if (_disposed || _host is null) return;
+        _host.CompletePaint(_viewId, completion);
+        ScheduleEvidenceWrite();
+    }
+
+    private void ScheduleEvidenceWrite()
+    {
+        if (!EvidenceEnabled()) return;
+        var generation = Interlocked.Increment(ref _evidenceWriteGeneration);
+        if (Interlocked.CompareExchange(ref _evidenceWritePending, 1, 0) != 0) return;
+        _ = Task.Run(() =>
+        {
+            try
+            {
+                while (true)
+                {
+                    Thread.Sleep(EvidenceWriteQuiescence);
+                    var latestGeneration = Interlocked.Read(ref _evidenceWriteGeneration);
+                    if (latestGeneration == generation) break;
+                    generation = latestGeneration;
+                }
+                WriteEvidence();
+            }
+            catch (Exception exception)
+            {
+                WriteFailure(exception);
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _evidenceWritePending, 0);
+                if (Interlocked.Read(ref _evidenceWriteGeneration) != generation)
+                    ScheduleEvidenceWrite();
+            }
+        });
+    }
+
     private void WriteEvidence()
     {
         var diagnostics = Diagnostics;
         if (diagnostics is null) return;
         var evidencePath = Environment.GetEnvironmentVariable("DOROTI_MAUI_EVIDENCE");
-        var shouldRequestReplay = !string.IsNullOrWhiteSpace(evidencePath) &&
-                                  diagnostics.Frame.Presented > 0 && diagnostics.Frame.Replayed == 0;
+        var shouldRequestReplay = diagnostics.Frame.Presented > 0 && diagnostics.Frame.Replayed == 0;
         var timestamp = Stopwatch.GetTimestamp();
-        var firstEvidence = _lastEvidenceWriteTimestamp == 0;
-        var firstReplay = diagnostics.Frame.Replayed > 0 && _lastEvidenceReplayed == 0;
+        var lastWrite = Interlocked.Read(ref _lastEvidenceWriteTimestamp);
+        var lastReplay = Interlocked.Read(ref _lastEvidenceReplayed);
+        var firstEvidence = lastWrite == 0;
+        var firstReplay = diagnostics.Frame.Replayed > 0 && lastReplay == 0;
         var intervalElapsed = !firstEvidence &&
-                              Stopwatch.GetElapsedTime(_lastEvidenceWriteTimestamp, timestamp) >= EvidenceWriteInterval;
+                              Stopwatch.GetElapsedTime(lastWrite, timestamp) >= EvidenceWriteInterval;
 
-        // Evidence collection must not serialize, log, and synchronously rewrite a file on every
-        // interactive frame. That work runs on the native paint path and can starve Android's
-        // TextureView compositor while a drag is producing frames.
+        // Evidence collection is coalesced onto one background writer. JSON serialization and
+        // file I/O must never occupy the native paint callback while an interaction is active.
         if (firstEvidence || firstReplay || intervalElapsed)
         {
             var json = JsonSerializer.Serialize(diagnostics, EvidenceJsonOptions);
             var path = evidencePath;
 #if ANDROID
-            path = System.IO.Path.Combine(Android.App.Application.Context.CacheDir?.AbsolutePath
-                ?? throw new InvalidOperationException("Android cache directory is unavailable."), "doroti-maui-evidence.json");
-            Android.Util.Log.Info("DorotiMauiEvidence", json.ReplaceLineEndings(string.Empty));
+            path = System.IO.Path.Combine(Android.App.Application.Context.ExternalCacheDir?.AbsolutePath
+                ?? throw new InvalidOperationException("Android external cache directory is unavailable."), "doroti-maui-evidence.json");
 #endif
             TryWriteText(path, json);
-            _lastEvidenceWriteTimestamp = timestamp;
-            _lastEvidenceReplayed = diagnostics.Frame.Replayed;
+            Interlocked.Exchange(ref _lastEvidenceWriteTimestamp, timestamp);
+            Interlocked.Exchange(ref _lastEvidenceReplayed, diagnostics.Frame.Replayed);
         }
 
         if (shouldRequestReplay)
@@ -169,8 +223,8 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         var path = Environment.GetEnvironmentVariable("DOROTI_MAUI_EVIDENCE");
 #if ANDROID
         Android.Util.Log.Error("DorotiMauiFailure", exception.ToString());
-        path = System.IO.Path.Combine(Android.App.Application.Context.CacheDir?.AbsolutePath
-            ?? throw new InvalidOperationException("Android cache directory is unavailable."), "doroti-maui-evidence.exception.txt");
+        path = System.IO.Path.Combine(Android.App.Application.Context.ExternalCacheDir?.AbsolutePath
+            ?? throw new InvalidOperationException("Android external cache directory is unavailable."), "doroti-maui-evidence.exception.txt");
 #endif
         TryWriteText(
 #if ANDROID
@@ -179,6 +233,19 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
             string.IsNullOrWhiteSpace(path) ? null : path + ".exception.txt",
 #endif
             exception.ToString());
+    }
+
+    private static bool EvidenceEnabled()
+    {
+        if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DOROTI_MAUI_EVIDENCE"))) return true;
+#if ANDROID
+        return string.Equals(
+            Microsoft.Maui.ApplicationModel.Platform.CurrentActivity?.Intent?.GetStringExtra("DOROTI_MAUI_EVIDENCE"),
+            "1",
+            StringComparison.Ordinal);
+#else
+        return false;
+#endif
     }
 
     private static void TryWriteText(string? path, string contents)
@@ -204,6 +271,8 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         HandlerChanged -= HandleHandlerChanged;
         Loaded -= HandleLoaded;
         Unloaded -= HandleUnloaded;
+        if (Application.Current is { } currentApplication)
+            currentApplication.RequestedThemeChanged -= HandleRequestedThemeChanged;
         DetachWindow();
         _host?.Dispose();
         _session?.Dispose();
@@ -244,6 +313,19 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     private void HandleDeactivated(object? sender, EventArgs args) => _host?.NotifyLifecycle(_viewId, AppLifecycleState.inactive);
     private void HandleResumed(object? sender, EventArgs args) => _host?.NotifyLifecycle(_viewId, AppLifecycleState.resumed);
     private void HandleStopped(object? sender, EventArgs args) => _host?.NotifyLifecycle(_viewId, AppLifecycleState.paused);
+    private void HandleRequestedThemeChanged(object? sender, AppThemeChangedEventArgs args)
+    {
+        var color = ResolveBackgroundColor(args.RequestedTheme);
+        BackgroundColor = new Microsoft.Maui.Graphics.Color(
+            (float)color.r, (float)color.g, (float)color.b, (float)color.a);
+    }
+
+    private Doroti.Ui.Color ResolveBackgroundColor(AppTheme theme) =>
+        theme == AppTheme.Dark
+            ? _application.ViewConfiguration.darkBackgroundColor ??
+              _application.ViewConfiguration.backgroundColor ?? new Doroti.Ui.Color(0xff141218L)
+            : _application.ViewConfiguration.backgroundColor ?? new Doroti.Ui.Color(0xfffffbfeL);
+
     private void HandleDestroying(object? sender, EventArgs args)
     {
         _host?.NotifyCloseRequested(_viewId);

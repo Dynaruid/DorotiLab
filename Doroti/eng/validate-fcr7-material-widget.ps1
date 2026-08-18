@@ -60,6 +60,7 @@ foreach ($anchor in @('ColorScheme.CreateFromSeed(', 'Brightness.light', 'Bright
     Assert-True ($app.Contains($anchor, [StringComparison]::Ordinal)) "Demo system theme/palette anchor: $anchor"
 }
 Assert-True (-not $app.Contains('home: new Material.Theme(data: theme', [StringComparison]::Ordinal)) 'Demo does not mask MaterialApp system theme with a fixed inner Theme'
+Assert-True ($app.Contains('new UiColor(0xfffffbfeL), new UiColor(0xff141218L)', [StringComparison]::Ordinal)) 'Demo native surface declares matching light and dark background colors'
 $inkSparkle = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Material/ink_sparkle.cs')
 Assert-True ($inkSparkle.Contains('splashFactory', [StringComparison]::Ordinal)) 'InkSparkle product factory anchor'
 $material = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Material/material.cs')
@@ -75,7 +76,14 @@ $webSkia = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Host.Web/BrowserSkiaCapa
 $mauiSkia = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Host.Maui/MauiSkiaCapabilities.cs')
 foreach ($hostSkia in @($webSkia, $mauiSkia)) {
     Assert-True ($hostSkia -match 'case "drawDRRect" when command\.HostPayload is CanvasDRRectPayload draw: DrawDRRect\(canvas, draw\)' -and $hostSkia -match 'SKPathFillType\.EvenOdd') 'toggleable drawDRRect native Skia mapping'
+    Assert-True ($hostSkia -match 'roundRect\.SetRectRadii' -and
+        $hostSkia -match 'rrect\.tlRadius == Radius\.zero' -and
+        $hostSkia -match 'canvas\.DrawRect\(ToRect\(rrect\.outerRect\), paint\)') 'Scaffold rectangle and per-corner RRect colors reach native Skia'
 }
+$viewContracts = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Ui/ViewContracts.cs')
+Assert-True ($viewContracts.Contains('Color? darkBackgroundColor = null', [StringComparison]::Ordinal)) 'view configuration carries a dark native surface color'
+Assert-True ($mauiSkia.Contains('_host.ConfigurationChanged += HandleConfigurationChanged;', [StringComparison]::Ordinal) -and
+    $mauiSkia.Contains('ResolveBackgroundColor(configuration.platformBrightness)', [StringComparison]::Ordinal)) 'MAUI back-buffer clear follows live platform brightness'
 
 Invoke-Contract 'Debug'
 Invoke-Contract 'Release'

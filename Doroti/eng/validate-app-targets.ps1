@@ -2,7 +2,9 @@
 param(
     [ValidateSet('All', 'Graph', 'Build', 'Live', 'WindowsLive', 'AndroidLive', 'AndroidPhysical', 'Evidence')]
     [string] $Shard = 'All',
-    [string] $AndroidSerial = ''
+    [string] $AndroidSerial = '',
+    [ValidateSet('Debug', 'Release')]
+    [string] $Configuration = 'Release'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -16,7 +18,7 @@ $descriptorContract = Join-Path $dorotiRoot 'validation/app-bootstrap/descriptor
 $syntheticProject = Join-Path $dorotiRoot 'validation/app-bootstrap/synthetic-fourth-host/SyntheticFourthHost.csproj'
 $invalidRegistrationProject = Join-Path $dorotiRoot 'validation/app-bootstrap/invalid-required-registration/InvalidRequiredRegistration.csproj'
 $tmpRoot = Join-Path $dorotiRoot '.doroti/tmp/app-targets'
-$publishRoot = Join-Path $tmpRoot 'windows-publish'
+$publishRoot = Join-Path $tmpRoot "windows-publish-$($Configuration.ToLowerInvariant())"
 $rawLivePath = Join-Path $tmpRoot 'windows-live.json'
 $rawAndroidLivePath = Join-Path $tmpRoot 'android-live.json'
 $evidencePath = Join-Path $dorotiRoot 'validation/evidence/app-targets-evidence.json'
@@ -97,17 +99,25 @@ public static class DorotiWindowsLiveInput
     $x = $rect.Left + [Math]::Max(80, [int]($width * 0.5))
     $y = $rect.Top + [Math]::Max(160, [int]($height * 0.55))
     Assert-True ([DorotiWindowsLiveInput]::SetCursorPos($x, $y)) 'Windows MAUI input cursor positioning'
-    foreach ($index in 0..5) {
-        [DorotiWindowsLiveInput]::mouse_event(0x0800, 0, 0, 4294967176, [UIntPtr]::Zero)
-        Start-Sleep -Milliseconds 80
+    # A precision-touchpad-like partial-delta burst exercises the repeated
+    # activity transitions where start/end jank was visible. Keep each delta
+    # far enough apart for WinUI to deliver it as an observable input instead
+    # of coalescing most of an 8 ms burst into only a few wheel events.
+    # Traverse the complete viewport in both directions. Short 180-pixel bursts
+    # never reached the lower BackdropFilter/lazy-list region and therefore
+    # could not detect missing lower children or end-of-scroll hitches.
+    foreach ($cycle in 0..1) {
+        foreach ($index in 0..31) {
+            [DorotiWindowsLiveInput]::mouse_event(0x0800, 0, 0, 4294967266, [UIntPtr]::Zero)
+            Start-Sleep -Milliseconds 40
+        }
+        Start-Sleep -Milliseconds 380
+        foreach ($index in 0..31) {
+            [DorotiWindowsLiveInput]::mouse_event(0x0800, 0, 0, 30, [UIntPtr]::Zero)
+            Start-Sleep -Milliseconds 40
+        }
+        Start-Sleep -Milliseconds 380
     }
-    [DorotiWindowsLiveInput]::mouse_event(0x0002, 0, 0, 0, [UIntPtr]::Zero)
-    foreach ($offset in 20, 40, 60, 80, 100, 120) {
-        [DorotiWindowsLiveInput]::SetCursorPos($x, $y - $offset) | Out-Null
-        Start-Sleep -Milliseconds 50
-    }
-    [DorotiWindowsLiveInput]::mouse_event(0x0004, 0, 0, 0, [UIntPtr]::Zero)
-    Start-Sleep -Seconds 2
 }
 
 function Write-Json([string] $Path, [object] $Value) {
@@ -131,6 +141,7 @@ function Measure-RenderedScreenshot([string] $Path) {
         $nonLight = 0
         $colored = 0
         $dark = 0
+        $black = 0
         for ($y = $top; $y -lt $bottom; $y += 12) {
             for ($x = $left; $x -lt $right; $x += 12) {
                 $pixel = $bitmap.GetPixel($x, $y)
@@ -140,6 +151,7 @@ function Measure-RenderedScreenshot([string] $Path) {
                 $minimum = [Math]::Min($pixel.R, [Math]::Min($pixel.G, $pixel.B))
                 if (($maximum - $minimum) -gt 25) { $colored++ }
                 if ($pixel.R -lt 32 -and $pixel.G -lt 32 -and $pixel.B -lt 32) { $dark++ }
+                if ($pixel.R -lt 4 -and $pixel.G -lt 4 -and $pixel.B -lt 4) { $black++ }
             }
         }
         Assert-True ($samples -gt 0) 'Android screenshot sample count'
@@ -151,6 +163,7 @@ function Measure-RenderedScreenshot([string] $Path) {
             nonLightRatio = [Math]::Round($nonLight / $samples, 4)
             coloredRatio = [Math]::Round($colored / $samples, 4)
             darkRatio = [Math]::Round($dark / $samples, 4)
+            blackRatio = [Math]::Round($black / $samples, 4)
         }
     }
     finally { $bitmap.Dispose() }
@@ -191,7 +204,14 @@ function Invoke-GraphGate {
     foreach ($token in @('RequestedThemeChanged', 'AppTheme.Dark', 'ConfigurationChanged?.Invoke(Configuration)')) {
         Assert-True ($mauiHost.IndexOf($token, [StringComparison]::Ordinal) -ge 0) "MAUI system theme token $token"
     }
+    foreach ($token in @('Choreographer.Instance!.PostFrameCallback', 'Choreographer.Instance!.RemoveFrameCallback',
+        'compositorOwnsNextFrame = _androidFrameCallbackPosted', '_androidActiveTouchPointers',
+        '_androidVsyncTimestamp = MapAndroidFrameTimestamp(frameTimeNanos)')) {
+        Assert-True ($mauiHost.IndexOf($token, [StringComparison]::Ordinal) -ge 0) "Android native frame pacing token $token"
+    }
     Assert-True ($mauiSurface -match 'MauiTextInputBridge' -and $mauiSurface -match 'MauiSemanticsBridge' -and $mauiSurface -match 'setSemanticsTreeEnabled\(true\)') 'MAUI native IME and semantics composition'
+    Assert-True ($mauiSurface -match 'GetStringExtra\("DOROTI_MAUI_EVIDENCE"\)' -and
+        $mauiSurface -match 'ExternalCacheDir') 'Android opt-in external evidence transport'
     Assert-True ($mauiSurface -notmatch 'AUTO_QUIT|auto_quit|Application\.Current\?\.Quit') 'MAUI application auto-quit absence'
     Assert-True ($mauiGraphics -match 'canvas\.Clear\(_backgroundColor\)' -and $mauiGraphics -match 'if \(frame is null\)') 'MAUI opaque startup surface clear'
     Assert-True ($mauiNativeInput -match 'KeyData' -and $mauiNativeInput -match '#if WINDOWS' -and $mauiNativeInput -match 'PressesBegan' -and $mauiNativeInput -match '#elif ANDROID') 'Windows, Mac Catalyst, and Android native keyboard bridges'
@@ -199,6 +219,7 @@ function Invoke-GraphGate {
     foreach ($root in @((Split-Path $project -Parent), $templateRoot)) {
         $appSource = Get-Content -LiteralPath (Join-Path $root 'src/App.cs') -Raw
         Assert-True ($appSource -match 'DorotiViewConfiguration[\s\S]*0xfffffbfeL') "$root startup background contract"
+        Assert-True ($appSource -match 'DorotiViewConfiguration[\s\S]*0xff141218L') "$root dark startup background contract"
         foreach ($token in @('ColorScheme.CreateFromSeed(', 'Brightness.light', 'Brightness.dark', 'theme:', 'darkTheme:', 'ThemeMode.system', 'Theme.of(context).colorScheme')) {
             Assert-True ($appSource.IndexOf($token, [StringComparison]::Ordinal) -ge 0) "$root system theme/palette token $token"
         }
@@ -331,7 +352,7 @@ function Invoke-BuildGate {
 function Invoke-WindowsLiveGate {
     Invoke-AppRestore 'Windows' 'win-x64'
     Invoke-Checked {
-        dotnet publish $project -c Release -p:DorotiTarget=Windows -p:RuntimeIdentifier=win-x64 -o $publishRoot --nologo --no-restore
+        dotnet publish $project -c $Configuration -p:DorotiTarget=Windows -p:RuntimeIdentifier=win-x64 -o $publishRoot --nologo --no-restore
     } 'Windows MAUI publish failed'
     if (Test-Path -LiteralPath $rawLivePath) { [IO.File]::Delete($rawLivePath) }
     $env:DOROTI_MAUI_EVIDENCE = $rawLivePath
@@ -348,7 +369,17 @@ function Invoke-WindowsLiveGate {
             Assert-True (-not $process.HasExited) 'Windows MAUI process survival while collecting evidence'
         }
         Assert-True ($null -ne $live -and [long]$live.Frame.Replayed -gt 0) 'Windows MAUI retained scene evidence timeout'
-        Invoke-WindowsInteractionStress $process
+        for ($inputAttempt = 0; $inputAttempt -lt 3; $inputAttempt++) {
+            Invoke-WindowsInteractionStress $process
+            for ($evidenceAttempt = 0; $evidenceAttempt -lt 30; $evidenceAttempt++) {
+                Start-Sleep -Milliseconds 100
+                try { $live = Get-Content -LiteralPath $rawLivePath -Raw | ConvertFrom-Json } catch { $live = $null }
+                if ($null -ne $live -and
+                    [long]$live.Frame.LastInputSequence -eq [long]$live.Frame.LastPresentedInputSequence) { break }
+            }
+            if ($null -ne $live -and [long]$live.NativePointerEvents -gt 0 -and
+                [long]$live.Frame.LastPresentedInputSequence -gt 0) { break }
+        }
     }
     finally {
         if (-not $process.HasExited) { Stop-Process -Id $process.Id -Force }
@@ -360,6 +391,136 @@ function Invoke-WindowsLiveGate {
     Assert-True ([long]$live.Frame.ShaderImageFiltersRendered -gt 0) 'Windows native ImageFilter.shader execution'
     Assert-True ([long]$live.Frame.Replayed -gt 0) 'Windows MAUI retained scene replay'
     Assert-True ([long]$live.NativePointerEvents -gt 0) 'Windows MAUI native wheel/drag input'
+    Assert-True ([long]$live.Frame.LastInputSequence -eq [long]$live.Frame.LastSubmittedInputSequence -and
+        [long]$live.Frame.LastSubmittedInputSequence -eq [long]$live.Frame.LastPresentedInputSequence -and
+        [long]$live.Frame.LastPresentedInputSequence -gt 0) 'Windows native input-to-present causal completion'
+    Assert-True ([long]$live.Frame.Dropped -eq 0 -and [long]$live.Frame.Superseded -eq 0) 'Windows frame delivery without drops or supersession'
+    $completedFrameMilliseconds = @()
+    $buildTimestampMicroseconds = $null
+    foreach ($entry in @($live.Frame.Trace)) {
+        if ([int]$entry.Phase -eq 7) { # DorotiFramePhase.build
+            $buildTimestampMicroseconds = [long]$entry.TimestampMicroseconds
+        }
+        elseif ([int]$entry.Phase -eq 14 -and $null -ne $buildTimestampMicroseconds) { # DorotiFramePhase.present
+            $completedFrameMilliseconds += (([long]$entry.TimestampMicroseconds - $buildTimestampMicroseconds) / 1000.0)
+            $buildTimestampMicroseconds = $null
+        }
+    }
+    Assert-True ($completedFrameMilliseconds.Count -ge 5) 'Windows completed frame timing sample count'
+    $sortedFrameMilliseconds = @($completedFrameMilliseconds | Sort-Object)
+    $p95Index = [Math]::Min($sortedFrameMilliseconds.Count - 1, [Math]::Ceiling($sortedFrameMilliseconds.Count * 0.95) - 1)
+    $p95FrameMilliseconds = [Math]::Round($sortedFrameMilliseconds[$p95Index], 3)
+    Assert-True ($p95FrameMilliseconds -le (1000.0 / 60.0)) "Windows build-to-present p95 60 Hz budget ($p95FrameMilliseconds ms)"
+    $trace = @($live.Frame.Trace)
+    $scrollStarts = @($trace | Where-Object { [int]$_.Phase -eq 20 }) # DorotiFramePhase.scrollStart
+    $scrollUpdates = @($trace | Where-Object {
+        [int]$_.Phase -eq 21 -and $null -ne $_.ScrollDelta -and
+        [Math]::Abs([double]$_.ScrollDelta) -gt 0
+    })
+    $scrollEnds = @($trace | Where-Object { [int]$_.Phase -eq 22 }) # DorotiFramePhase.scrollEnd
+    Assert-True ($scrollStarts.Count -ge 6 -and $scrollUpdates.Count -ge 6 -and $scrollEnds.Count -ge 6) 'Windows repeated scroll transition trace'
+    Assert-True (@($scrollUpdates | Where-Object { [long]$_.InputSequence -le 0 }).Count -eq 0) 'Windows scroll update input causality'
+    $inputToOffsetMilliseconds = @()
+    $offsetToPresentMilliseconds = @()
+    $inputToPresentMilliseconds = @()
+    foreach ($update in $scrollUpdates) {
+        $input = $trace | Where-Object {
+            [int]$_.Phase -eq 0 -and
+            [long]$_.InputSequence -eq [long]$update.InputSequence -and
+            [long]$_.TimestampMicroseconds -le [long]$update.TimestampMicroseconds
+        } | Select-Object -Last 1
+        $present = $trace | Where-Object {
+            [int]$_.Phase -eq 14 -and
+            [long]$_.TimestampMicroseconds -ge [long]$update.TimestampMicroseconds
+        } | Select-Object -First 1
+        if ($null -ne $input) {
+            $inputToOffsetMilliseconds += (([long]$update.TimestampMicroseconds - [long]$input.TimestampMicroseconds) / 1000.0)
+        }
+        if ($null -ne $present) {
+            $offsetToPresentMilliseconds += (([long]$present.TimestampMicroseconds - [long]$update.TimestampMicroseconds) / 1000.0)
+        }
+        if ($null -ne $input -and $null -ne $present) {
+            $inputToPresentMilliseconds += (([long]$present.TimestampMicroseconds - [long]$input.TimestampMicroseconds) / 1000.0)
+        }
+    }
+    Assert-True ($inputToOffsetMilliseconds.Count -eq $scrollUpdates.Count) 'Windows input-to-offset timing sample count'
+    Assert-True ($offsetToPresentMilliseconds.Count -eq $scrollUpdates.Count) 'Windows offset-to-present timing sample count'
+    Assert-True ($inputToPresentMilliseconds.Count -eq $scrollUpdates.Count) 'Windows input-to-present timing sample count'
+    $sortedInputToOffset = @($inputToOffsetMilliseconds | Sort-Object)
+    $sortedOffsetToPresent = @($offsetToPresentMilliseconds | Sort-Object)
+    $sortedInputToPresent = @($inputToPresentMilliseconds | Sort-Object)
+    $inputP95Index = [Math]::Min($sortedInputToOffset.Count - 1, [Math]::Ceiling($sortedInputToOffset.Count * 0.95) - 1)
+    $presentP95Index = [Math]::Min($sortedOffsetToPresent.Count - 1, [Math]::Ceiling($sortedOffsetToPresent.Count * 0.95) - 1)
+    $inputToOffsetP95 = [Math]::Round($sortedInputToOffset[$inputP95Index], 3)
+    $inputToOffsetMax = [Math]::Round($sortedInputToOffset[-1], 3)
+    $offsetToPresentP95 = [Math]::Round($sortedOffsetToPresent[$presentP95Index], 3)
+    $offsetToPresentMax = [Math]::Round($sortedOffsetToPresent[-1], 3)
+    $inputToPresentP95 = [Math]::Round($sortedInputToPresent[$presentP95Index], 3)
+    $inputToPresentMax = [Math]::Round($sortedInputToPresent[-1], 3)
+    $animationPresentGaps = @()
+    $animationStarts = @($trace | Where-Object {
+        [int]$_.Phase -eq 23 -and [long]$_.InputSequence -gt 0
+    })
+    foreach ($animationStart in $animationStarts) {
+        $animationEnd = $trace | Where-Object {
+            [int]$_.Phase -eq 24 -and
+            [long]$_.TickerId -eq [long]$animationStart.TickerId -and
+            [long]$_.TimestampMicroseconds -ge [long]$animationStart.TimestampMicroseconds
+        } | Select-Object -First 1
+        if ($null -eq $animationEnd) { continue }
+        $animationPresents = @($trace | Where-Object {
+            [int]$_.Phase -eq 14 -and
+            [long]$_.TimestampMicroseconds -ge [long]$animationStart.TimestampMicroseconds -and
+            [long]$_.TimestampMicroseconds -le [long]$animationEnd.TimestampMicroseconds
+        })
+        $firstAfterEnd = $trace | Where-Object {
+            [int]$_.Phase -eq 14 -and
+            [long]$_.TimestampMicroseconds -gt [long]$animationEnd.TimestampMicroseconds
+        } | Select-Object -First 1
+        if ($null -ne $firstAfterEnd) { $animationPresents += $firstAfterEnd }
+        for ($index = 1; $index -lt $animationPresents.Count; $index++) {
+            $animationPresentGaps += (([long]$animationPresents[$index].TimestampMicroseconds -
+                [long]$animationPresents[$index - 1].TimestampMicroseconds) / 1000.0)
+        }
+    }
+    Assert-True ($animationPresentGaps.Count -ge 5) 'Windows scroll animation cadence sample count'
+    $sortedAnimationPresentGaps = @($animationPresentGaps | Sort-Object)
+    $animationP95Index = [Math]::Min($sortedAnimationPresentGaps.Count - 1,
+        [Math]::Ceiling($sortedAnimationPresentGaps.Count * 0.95) - 1)
+    $animationPresentGapP95 = [Math]::Round($sortedAnimationPresentGaps[$animationP95Index], 3)
+    $animationPresentGapMax = [Math]::Round($sortedAnimationPresentGaps[-1], 3)
+    $live | Add-Member -NotePropertyName ScrollLatency -NotePropertyValue ([ordered]@{
+        configuration = $Configuration
+        sampleCount = $scrollUpdates.Count
+        startCount = $scrollStarts.Count
+        endCount = $scrollEnds.Count
+        firstInputToOffsetMilliseconds = [Math]::Round($inputToOffsetMilliseconds[0], 3)
+        firstOffsetToPresentMilliseconds = [Math]::Round($offsetToPresentMilliseconds[0], 3)
+        firstInputToPresentMilliseconds = [Math]::Round($inputToPresentMilliseconds[0], 3)
+        inputToOffsetP95Milliseconds = $inputToOffsetP95
+        inputToOffsetMaxMilliseconds = $inputToOffsetMax
+        offsetToPresentP95Milliseconds = $offsetToPresentP95
+        offsetToPresentMaxMilliseconds = $offsetToPresentMax
+        inputToPresentP95Milliseconds = $inputToPresentP95
+        inputToPresentMaxMilliseconds = $inputToPresentMax
+        animationPresentGapP95Milliseconds = $animationPresentGapP95
+        animationPresentGapMaxMilliseconds = $animationPresentGapMax
+        budgetMilliseconds = [Math]::Round((1000.0 / 60.0), 3)
+    }) -Force
+    Write-Json $rawLivePath $live
+    # The visible latency is the complete native-input-to-present interval.  A
+    # slow handler followed by an immediate present (or the inverse) must not be
+    # rejected as two independent budgets, nor allowed to hide a two-stage miss.
+    Assert-True ($inputToPresentMax -le 16.6) "Windows input-to-present excellent-frame budget ($inputToPresentMax ms)"
+    Assert-True ($offsetToPresentP95 -le (1000.0 / 60.0)) "Windows offset-to-present p95 60 Hz budget ($offsetToPresentP95 ms)"
+    Assert-True ($offsetToPresentMax -le (1000.0 / 60.0)) "Windows offset-to-present max 60 Hz budget ($offsetToPresentMax ms)"
+    Assert-True ($animationPresentGapP95 -le (1000.0 / 60.0)) "Windows scroll-animation present-gap p95 60 Hz budget ($animationPresentGapP95 ms)"
+    # CompositionTarget.Rendering timestamps naturally straddle the nominal
+    # 16.667 ms boundary.  A missed 60 Hz present is instead a gap of at least
+    # one and a half refresh intervals; keep p95 strict and reject that drop.
+    Assert-True ($animationPresentGapMax -lt (1.5 * (1000.0 / 60.0))) "Windows scroll-animation dropped-present threshold ($animationPresentGapMax ms)"
+    Assert-True ([long]$live.Frame.PictureRasterCacheEntries -gt 0 -and
+        [long]$live.Frame.PictureRasterCacheHits -gt [long]$live.Frame.PictureRasterCacheMisses) 'Windows retained picture raster cache reuse'
     Assert-True ([long]$live.Surface.MetricsGeneration -gt 3) 'Windows MAUI resize metrics transition'
     Assert-True ([long]$live.Semantics.UpdatesReceived -gt 0 -and
         [long]$live.Semantics.UpdatesApplied -gt 0) 'Windows typed semantics bridge'
@@ -402,6 +563,19 @@ function Invoke-AndroidLiveGate([bool] $RequirePhysical) {
     adb -s $AndroidSerial logcat -b all -c | Out-Null
     adb -s $AndroidSerial shell am force-stop --user 0 dev.doroti.demo | Out-Null
     try {
+        $androidEvidenceRemotePath = '/sdcard/Android/data/dev.doroti.demo/cache/doroti-maui-evidence.json'
+        $androidEvidenceLocalPath = Join-Path $tmpRoot "android-maui-evidence-$runtimeIdentifier.json"
+
+        function Read-AndroidEvidence {
+            $global:LASTEXITCODE = 0
+            adb -s $AndroidSerial pull $androidEvidenceRemotePath $androidEvidenceLocalPath 2>$null | Out-Null
+            if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $androidEvidenceLocalPath -PathType Leaf)) {
+                return $null
+            }
+            try { return Get-Content -LiteralPath $androidEvidenceLocalPath -Raw | ConvertFrom-Json }
+            catch { return $null }
+        }
+
         function Capture-AndroidBody([string] $Name) {
             $remotePath = "/sdcard/doroti-$Name.png"
             $localPath = Join-Path $tmpRoot "$Name-$runtimeIdentifier.png"
@@ -410,7 +584,10 @@ function Invoke-AndroidLiveGate([bool] $RequirePhysical) {
             return Measure-RenderedScreenshot $localPath
         }
 
-        Invoke-Checked { adb -s $AndroidSerial shell am start --user 0 -n $activity } 'Android activity launch failed'
+        adb -s $AndroidSerial shell rm -f $androidEvidenceRemotePath | Out-Null
+        Invoke-Checked {
+            adb -s $AndroidSerial shell am start --user 0 -n $activity --es DOROTI_MAUI_EVIDENCE 1
+        } 'Android activity launch failed'
         $appFocused = $false
         for ($attempt = 0; $attempt -lt 50; $attempt++) {
             $focusedWindow = (adb -s $AndroidSerial shell dumpsys window | Select-String -Pattern 'mCurrentFocus' | Select-Object -First 1).ToString()
@@ -419,16 +596,11 @@ function Invoke-AndroidLiveGate([bool] $RequirePhysical) {
         }
         Assert-True $appFocused 'Android foreground activity after launch'
         $launchScreenshot = Capture-AndroidBody 'android-launch-immediate'
-        Assert-True ($launchScreenshot.darkRatio -lt 0.8) 'Android non-black startup surface'
+        Assert-True ($launchScreenshot.blackRatio -lt 0.8) 'Android non-black startup surface'
         $json = $null
         for ($attempt = 0; $attempt -lt 30; $attempt++) {
             Start-Sleep -Seconds 1
-            $startupLog = @(adb -s $AndroidSerial logcat -d -s 'DorotiMauiEvidence:I' '*:S' -v raw)
-            foreach ($line in $startupLog) {
-                if ($line.TrimStart().StartsWith('{')) {
-                    try { $json = $line | ConvertFrom-Json } catch { }
-                }
-            }
+            $json = Read-AndroidEvidence
             if ($null -ne $json -and [long]$json.Frame.Presented -gt 0) { break }
         }
         Assert-True ($null -ne $json -and [long]$json.Frame.Presented -gt 0) 'Android startup frame before scroll'
@@ -459,6 +631,10 @@ function Invoke-AndroidLiveGate([bool] $RequirePhysical) {
             Assert-True ($captured.nonLightRatio -gt 0.05 -and $captured.coloredRatio -gt 0.02) "Android visible body after downward swipe $index"
             $scrollScreenshots += $captured
         }
+        $androidFramePacing = [ordered]@{
+            status = 'notVerified'
+            reason = 'The sustained frame-pacing gate runs only on AndroidPhysical.'
+        }
         if ($RequirePhysical) {
             # A canceled press timer used to remain queued behind a busy Android
             # event loop and fire after the tap recognizer had cleared its down
@@ -484,6 +660,47 @@ function Invoke-AndroidLiveGate([bool] $RequirePhysical) {
                     Invoke-Checked { adb -s $AndroidSerial shell input swipe $scrollX $fromY $scrollX $toY 180 } "Android stress swipe $index failed"
                 }
             }
+
+            adb -s $AndroidSerial shell dumpsys gfxinfo dev.doroti.demo reset | Out-Null
+            $pacingStopwatch = [Diagnostics.Stopwatch]::StartNew()
+            for ($index = 0; $index -lt 12; $index++) {
+                $upward = ($index % 2) -eq 0
+                $fromY = if ($upward) { $scrollBottom } else { $scrollTop }
+                $toY = if ($upward) { $scrollTop } else { $scrollBottom }
+                Invoke-Checked {
+                    adb -s $AndroidSerial shell input swipe $scrollX $fromY $scrollX $toY 500
+                } "Android pacing swipe $index failed"
+            }
+            $pacingStopwatch.Stop()
+            $gfxInfo = (adb -s $AndroidSerial shell dumpsys gfxinfo dev.doroti.demo | Out-String)
+            Assert-True ($gfxInfo -match 'Total frames rendered:\s*(\d+)') 'Android pacing total-frame metric'
+            $pacingFrames = [long]$Matches[1]
+            Assert-True ($gfxInfo -match '(?m)^\s*Janky frames:\s*(\d+)\s+\(([0-9.]+)%\)') 'Android pacing jank metric'
+            $pacingJankyFrames = [long]$Matches[1]
+            $pacingJankPercent = [double]$Matches[2]
+            Assert-True ($gfxInfo -match '95th percentile:\s*(\d+)ms') 'Android pacing p95 metric'
+            $pacingP95Milliseconds = [double]$Matches[1]
+            Assert-True ($gfxInfo -match 'Number Missed Vsync:\s*(\d+)') 'Android pacing missed-vsync metric'
+            $pacingMissedVsync = [long]$Matches[1]
+            $displayInfo = (adb -s $AndroidSerial shell dumpsys display | Out-String)
+            Assert-True ($displayInfo -match 'renderFrameRate\s+([0-9.]+)') 'Android active render refresh-rate metric'
+            $displayRefreshRate = [double]$Matches[1]
+            $pacingFramesPerSecond = $pacingFrames / $pacingStopwatch.Elapsed.TotalSeconds
+            $minimumSustainedFps = [Math]::Max(48.0, $displayRefreshRate * 0.60)
+            Assert-True ($pacingFramesPerSecond -ge $minimumSustainedFps) "Android sustained drag cadence ($([Math]::Round($pacingFramesPerSecond, 2)) fps)"
+            Assert-True ($pacingP95Milliseconds -le 16.0) "Android render-work p95 excellent-frame budget ($pacingP95Milliseconds ms)"
+            $androidFramePacing = [ordered]@{
+                status = 'pass'
+                displayRefreshRate = [Math]::Round($displayRefreshRate, 3)
+                durationSeconds = [Math]::Round($pacingStopwatch.Elapsed.TotalSeconds, 3)
+                renderedFrames = $pacingFrames
+                renderedFramesPerSecond = [Math]::Round($pacingFramesPerSecond, 3)
+                minimumSustainedFramesPerSecond = [Math]::Round($minimumSustainedFps, 3)
+                jankyFrames = $pacingJankyFrames
+                jankyFramePercent = $pacingJankPercent
+                renderWorkP95Milliseconds = $pacingP95Milliseconds
+                missedVsync = $pacingMissedVsync
+            }
             $fabX = [int]($screenWidth * 0.88)
             $fabY = [int]($screenHeight * 0.92)
             Invoke-Checked { adb -s $AndroidSerial shell input tap $fabX $fabY } 'Android FAB tap injection failed'
@@ -498,12 +715,7 @@ function Invoke-AndroidLiveGate([bool] $RequirePhysical) {
         }
         for ($attempt = 0; $attempt -lt 30; $attempt++) {
             Start-Sleep -Seconds 2
-            $log = @(adb -s $AndroidSerial logcat -d -s 'DorotiMauiEvidence:I' '*:S' -v raw)
-            foreach ($line in $log) {
-                if ($line.TrimStart().StartsWith('{')) {
-                    try { $json = $line | ConvertFrom-Json } catch { }
-                }
-            }
+            $json = Read-AndroidEvidence
             if ($null -ne $json -and [long]$json.Frame.Presented -ge 12 -and [long]$json.Frame.Replayed -gt 0) { break }
         }
         $appPid = (adb -s $AndroidSerial shell pidof dev.doroti.demo | Out-String).Trim()
@@ -520,10 +732,18 @@ function Invoke-AndroidLiveGate([bool] $RequirePhysical) {
         Assert-True ([long]$json.Frame.Presented -ge 12 -and [long]$json.Frame.Failed -eq 0) 'Android presented custom-shader frames'
         Assert-True ([long]$json.Frame.ShaderImageFiltersRendered -gt 0) 'Android native ImageFilter.shader execution'
         Assert-True ([long]$json.Frame.Replayed -gt 0) 'Android retained scene replay'
-        Assert-True ([long]$json.Semantics.UpdatesReceived -gt [long]$json.Semantics.UpdatesApplied) 'Android semantics update throttling'
-        Assert-True ([long]$json.Semantics.UpdatesCoalesced -gt 0) 'Android semantics latest-update coalescing'
+        $frameworkSemanticsDeferrals = @($json.Frame.Trace | Where-Object {
+            [string]$_.Reason -ceq 'active scroll accessibility rate limit'
+        }).Count
+        Assert-True ([long]$json.Semantics.UpdatesReceived -gt [long]$json.Semantics.UpdatesApplied -or
+            $frameworkSemanticsDeferrals -gt 0) 'Android semantics update throttling'
+        Assert-True ([long]$json.Semantics.UpdatesCoalesced -gt 0 -or
+            $frameworkSemanticsDeferrals -gt 0) 'Android semantics latest-update coalescing ownership'
         $naiveSemanticsRebuilds = [long]$json.Semantics.UpdatesApplied * [long]$json.Semantics.ActiveElements
         Assert-True ([long]$json.Semantics.ElementsCreated * 2 -lt $naiveSemanticsRebuilds) 'Android semantics native node reuse'
+        Assert-True ([long]$json.Semantics.ElementsReused -gt [long]$json.Semantics.ElementsCreated) 'Android semantics native element pooling'
+        $averageSemanticsApplyMicroseconds = [long]$json.Semantics.ApplyWorkMicroseconds / [Math]::Max(1, [long]$json.Semantics.UpdatesApplied)
+        Assert-True ($averageSemanticsApplyMicroseconds -lt 5000) 'Android semantics average native apply budget'
         Assert-True ([long]$json.Semantics.RetainedNodes -le 64) 'Android semantics reachable-node retention'
         Assert-True ([long]$json.SoftwareFallbackFrames -eq 0) 'Android software fallback count'
         Assert-True ([string]$json.Surface.NativeViewType -ceq 'SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKGLTextureView') 'Android MAUI native view type'
@@ -536,6 +756,7 @@ function Invoke-AndroidLiveGate([bool] $RequirePhysical) {
             deviceKind = if ($qemu -eq '1') { 'emulator' } else { 'physical' }
             automatedGpu = $json
             automatedScroll = if ($RequirePhysical) { 'pass-adb-up-4-down-2-stress-48-active-samples-8-fab-action' } else { 'pass-adb-up-4-down-2' }
+            automatedFramePacing = $androidFramePacing
             automatedPersistentDisplay = [ordered]@{
                 status = 'pass'
                 launchScreenshot = $launchScreenshot
@@ -634,4 +855,4 @@ if ($Shard -in @('All','Live','WindowsLive')) { Invoke-WindowsLiveGate }
 if ($Shard -eq 'AndroidLive') { Invoke-AndroidLiveGate $false }
 if ($Shard -eq 'AndroidPhysical') { Invoke-AndroidLiveGate $true }
 if (Test-Shard 'Evidence') { Write-Evidence }
-Write-Output "Doroti application target shard '$Shard': PASS"
+Write-Output "Doroti application target shard '$Shard' ($Configuration): PASS"

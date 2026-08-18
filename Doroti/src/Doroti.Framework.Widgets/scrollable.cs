@@ -665,8 +665,8 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier__18621.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier__18621.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier__18621;
     }
 
@@ -915,6 +915,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable : MultiSelectab
         this.state = state;
         this._position = position;
         this._autoScroller = new EdgeDraggingAutoScroller(state, velocityScalar: _kDefaultSelectToScrollVelocityScalar);
+        this._position.addListener(this._scheduleLayoutChange);
     }
 
     public virtual ScrollPosition position
@@ -927,9 +928,9 @@ internal class _ScrollableSelectionContainerDelegate__scrollable : MultiSelectab
             {
                 return;
             }
-            this._position.removeListener(() => this._scheduleLayoutChange());
+            this._position.removeListener(this._scheduleLayoutChange);
             _position = other;
-            this._position.addListener(() => this._scheduleLayoutChange());
+            this._position.addListener(this._scheduleLayoutChange);
         }
     }
     internal virtual void _scheduleLayoutChange()
@@ -1355,6 +1356,7 @@ public class _RenderScrollSemantics__scrollable : global::Doroti.Framework.Rende
         this._position = position;
         this._allowImplicitScrolling = allowImplicitScrolling;
         this._semanticChildCount = semanticChildCount;
+        this._position.addListener(this.markNeedsSemanticsUpdate);
     }
 
     public virtual ScrollPosition position
@@ -1367,9 +1369,9 @@ public class _RenderScrollSemantics__scrollable : global::Doroti.Framework.Rende
             {
                 return;
             }
-            this._position.removeListener(() => this.markNeedsSemanticsUpdate());
+            this._position.removeListener(this.markNeedsSemanticsUpdate);
             _position = __value;
-            this._position.addListener(() => this.markNeedsSemanticsUpdate());
+            this._position.addListener(this.markNeedsSemanticsUpdate);
             markNeedsSemanticsUpdate();
         }
     }

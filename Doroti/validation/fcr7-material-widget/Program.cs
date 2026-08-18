@@ -28,6 +28,8 @@ Require(lightTheme.brightness == Doroti.Ui.Brightness.light, "light palette pres
 Require(darkTheme.brightness == Doroti.Ui.Brightness.dark, "dark palette preserves dark brightness");
 Require(lightTheme.colorScheme.surface.value == lightSurface.value, "light palette accepts role overrides");
 Require(darkTheme.colorScheme.surface.value == darkSurface.value, "dark palette accepts role overrides");
+Require(lightTheme.scaffoldBackgroundColor.value == lightSurface.value, "light scaffold owns the light surface");
+Require(darkTheme.scaffoldBackgroundColor.value == darkSurface.value, "dark scaffold owns the dark surface");
 Require(lightTheme.colorScheme.primary.value != darkTheme.colorScheme.primary.value, "seed palette resolves brightness-specific roles");
 var systemThemeApp = new Doroti.Framework.Material.MaterialApp(
     theme: lightTheme,

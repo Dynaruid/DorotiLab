@@ -2,6 +2,12 @@ using Doroti.Ui;
 
 namespace Doroti.Host.Maui;
 
+internal readonly record struct MauiPaintCompletion(
+    long InputSequence,
+    long SceneSequence,
+    long SurfaceGeneration,
+    bool IsNewFrame);
+
 public sealed record MauiSurfaceSnapshot(
     int PixelWidth,
     int PixelHeight,
@@ -27,6 +33,14 @@ public sealed record MauiFrameDiagnostics(
     long LastInputSequence,
     long LastSubmittedInputSequence,
     long LastPresentedInputSequence,
+    long ImageFilterSurfacesCreated,
+    long ImageFilterSurfaceReuses,
+    long ActiveImageFilterSurfaces,
+    long ShaderImageFilterCacheHits,
+    long ShaderImageFilterCacheMisses,
+    long PictureRasterCacheHits,
+    long PictureRasterCacheMisses,
+    long PictureRasterCacheEntries,
     IReadOnlyList<DorotiFrameTraceEntry> Trace);
 
 public sealed record MauiSemanticsDiagnostics(
@@ -39,7 +53,11 @@ public sealed record MauiSemanticsDiagnostics(
     long NativePropertyWrites = 0,
     long ImmediateFlushes = 0,
     long StaleCallbacksSuppressed = 0,
-    long UpdatesSuppressed = 0);
+    long UpdatesSuppressed = 0,
+    long ElementsReused = 0,
+    long TopologyUpdatesApplied = 0,
+    long ApplyWorkMicroseconds = 0,
+    long MaxApplyWorkMicroseconds = 0);
 
 public sealed record MauiHostDiagnostics(
     string ApplicationSource,
@@ -53,12 +71,15 @@ public sealed record MauiHostDiagnostics(
     long InvalidationsRequested,
     long InvalidationsCoalesced,
     long NativePointerEvents,
+    long FrameRequestsCoalesced,
     MauiSemanticsDiagnostics Semantics,
     long SoftwareFallbackFrames);
 
 public interface IMauiSemanticsBridge
 {
     MauiSemanticsDiagnostics Diagnostics { get; }
+
+    void AttachFrameTrace(DorotiFrameTrace trace, ulong viewId);
 
     void Update(SemanticsUpdate update, Action<int, SemanticsAction, object?> performAction);
 
@@ -68,6 +89,12 @@ public interface IMauiSemanticsBridge
 internal sealed class NullMauiSemanticsBridge : IMauiSemanticsBridge
 {
     public MauiSemanticsDiagnostics Diagnostics { get; } = new(0, 0, 0, 0, 0, 0);
+
+    public void AttachFrameTrace(DorotiFrameTrace trace, ulong viewId)
+    {
+        _ = trace;
+        _ = viewId;
+    }
 
     public void Update(SemanticsUpdate update, Action<int, SemanticsAction, object?> performAction)
     {

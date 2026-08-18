@@ -1,8 +1,8 @@
 {
   "schemaVersion": "doroti.flutter-conformance-fcr6-evidence/v1",
   "status": "partial",
-  "capturedAt": "2026-08-18T07:23:12.3832843Z",
-  "repositoryRevision": "5204b022d85bbf05a149e8b4d65644a763be1537",
+  "capturedAt": "2026-08-18T11:08:12.1851372Z",
+  "repositoryRevision": "e128cea65eb1d689ee51405e48a204d60f6d42e7",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "fixtureManifest": "Doroti/validation/fcr6-semantics/fixture-manifest.json",
   "runtimeContract": {
@@ -12,16 +12,20 @@
     "checks": [
       "node content hash excludes geometry",
       "geometry-only delta is coalescible",
-      "label/selection/topology deltas are immediate",
+      "existing label and selection changes are immediate",
+      "virtualized topology churn is bounded",
       "scroll-end urgency is explicit"
     ]
   },
   "hostContract": {
     "status": "pass",
     "checks": [
-      "15 fps minimum native apply interval",
+      "15 fps framework semantics build interval is scoped to active scroll and flushes after scroll end",
+      "15 fps minimum native apply interval includes automatic topology churn",
       "generation and cancellation fences suppress stale callbacks",
       "changed native properties only are written",
+      "native elements are pooled and child order changes incrementally",
+      "semantics build and native apply are frame-traced",
       "overlay is input-transparent to ordinary touch"
     ]
   },

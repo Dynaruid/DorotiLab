@@ -193,12 +193,12 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
             }
             if (this.attached)
             {
-                this._offset.removeListener(() => this._hasScrolled());
+                this._offset.removeListener(this._hasScrolled);
             }
             _offset = __value;
             if (this.attached)
             {
-                this._offset.addListener(() => this._hasScrolled());
+                this._offset.addListener(this._hasScrolled);
             }
             markNeedsLayout();
         }
@@ -235,12 +235,12 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
     {
         base.attach(owner);
         this._child?.attach(owner);
-        this._offset.addListener(() => this._hasScrolled());
+        this._offset.addListener(this._hasScrolled);
     }
 
     public override void detach()
     {
-        this._offset.removeListener(() => this._hasScrolled());
+        this._offset.removeListener(this._hasScrolled);
         base.detach();
         this._child?.detach();
     }

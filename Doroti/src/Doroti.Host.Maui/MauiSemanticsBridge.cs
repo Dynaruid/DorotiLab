@@ -11,6 +11,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
     private readonly AbsoluteLayout _layer = layer;
     private readonly object _gate = new();
     private readonly Dictionary<int, NativeElementState> _elements = [];
+    private readonly Dictionary<NativeElementKind, Stack<NativeElementState>> _recycledElements = [];
     private readonly Dictionary<int, SemanticsNodeUpdate> _appliedNodes = [];
     private readonly CancellationTokenSource _lifetime = new();
     private PendingUpdate? _pending;
@@ -28,14 +29,29 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
     private long _immediateFlushes;
     private long _staleCallbacksSuppressed;
     private long _updatesSuppressed;
+    private long _elementsReused;
+    private long _topologyUpdatesApplied;
+    private long _applyWorkMicroseconds;
+    private long _maxApplyWorkMicroseconds;
     private long _lastApplyTimestamp;
+    private DorotiFrameTrace? _frameTrace;
+    private ulong _viewId;
 
     public MauiSemanticsDiagnostics Diagnostics => new(
         Interlocked.Read(ref _updatesReceived), Interlocked.Read(ref _updatesApplied),
         Interlocked.Read(ref _updatesCoalesced), Interlocked.Read(ref _elementsCreated),
         Interlocked.Read(ref _activeElements), Interlocked.Read(ref _retainedNodes),
         Interlocked.Read(ref _nativePropertyWrites), Interlocked.Read(ref _immediateFlushes),
-        Interlocked.Read(ref _staleCallbacksSuppressed), Interlocked.Read(ref _updatesSuppressed));
+        Interlocked.Read(ref _staleCallbacksSuppressed), Interlocked.Read(ref _updatesSuppressed),
+        Interlocked.Read(ref _elementsReused), Interlocked.Read(ref _topologyUpdatesApplied),
+        Interlocked.Read(ref _applyWorkMicroseconds), Interlocked.Read(ref _maxApplyWorkMicroseconds));
+
+    public void AttachFrameTrace(DorotiFrameTrace trace, ulong viewId)
+    {
+        ArgumentNullException.ThrowIfNull(trace);
+        _frameTrace = trace;
+        _viewId = viewId;
+    }
 
     public void Update(SemanticsUpdate update, Action<int, SemanticsAction, object?> performAction)
     {
@@ -63,7 +79,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
 
             _pending = new(update with { nodes = visibleNodes }, performAction);
             var immediate = update.urgency is SemanticsUpdateUrgency.immediate or SemanticsUpdateUrgency.scrollEnd ||
-                            delta.RequiresImmediateFlush || !delta.IsGeometryOnly;
+                            delta.RequiresImmediateFlush;
             if (_applyScheduled)
             {
                 Interlocked.Increment(ref _updatesCoalesced);
@@ -108,6 +124,7 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             _scheduleGeneration++;
             _appliedNodes.Clear();
             _elements.Clear();
+            _recycledElements.Clear();
             _lastReceivedGeneration = -1;
         }
         _layer.Dispatcher.Dispatch(() => _layer.Children.Clear());
@@ -133,9 +150,24 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             _applyScheduled = false;
         }
         if (pending is null) return;
-        Apply(pending.Update, pending.PerformAction);
-        Interlocked.Increment(ref _updatesApplied);
-        Interlocked.Exchange(ref _lastApplyTimestamp, Stopwatch.GetTimestamp());
+        var started = DorotiFrameClock.Now;
+        _frameTrace?.Record(DorotiFramePhase.semanticsApply, _viewId, started,
+            reason: $"generation {pending.Update.generation}");
+        try
+        {
+            Apply(pending.Update, pending.PerformAction);
+            Interlocked.Increment(ref _updatesApplied);
+        }
+        finally
+        {
+            var finished = DorotiFrameClock.Now;
+            var elapsedMicroseconds = Math.Max(0, (finished - started).Ticks / 10);
+            Interlocked.Add(ref _applyWorkMicroseconds, elapsedMicroseconds);
+            UpdateMaximum(ref _maxApplyWorkMicroseconds, elapsedMicroseconds);
+            _frameTrace?.Record(DorotiFramePhase.semanticsApplyEnd, _viewId, finished,
+                reason: $"generation {pending.Update.generation}");
+            Interlocked.Exchange(ref _lastApplyTimestamp, Stopwatch.GetTimestamp());
+        }
     }
 
     private TimeSpan RemainingApplyDelay()
@@ -175,39 +207,94 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
         var delta = SemanticsUpdateDiffer.Diff(_appliedNodes, update.nodes);
         var changedById = delta.changedNodes.ToDictionary(node => node.id);
         var rebuildOrder = delta.HasTopologyChange;
-        foreach (var staleId in delta.removedNodeIds)
+        if (rebuildOrder) Interlocked.Increment(ref _topologyUpdatesApplied);
+        _layer.BatchBegin();
+        try
         {
-            _elements.Remove(staleId);
-            _appliedNodes.Remove(staleId);
-        }
-
-        foreach (var node in update.nodes)
-        {
-            var kind = ElementKindFor(node);
-            if (!_elements.TryGetValue(node.id, out var state) || state.Kind != kind)
+            foreach (var staleId in delta.removedNodeIds)
             {
-                state = CreateState(kind);
-                _elements[node.id] = state;
-                Interlocked.Increment(ref _elementsCreated);
-                rebuildOrder = true;
-                UpdateState(state, node, performAction, AllProperties);
+                if (_elements.TryGetValue(staleId, out var staleState))
+                {
+                    _layer.Children.Remove(staleState.Element);
+                    RecycleState(staleState);
+                }
+                _elements.Remove(staleId);
+                _appliedNodes.Remove(staleId);
             }
-            else if (changedById.TryGetValue(node.id, out var nodeDelta))
-            {
-                UpdateState(state, node, performAction, nodeDelta.changedProperties);
-            }
-            _appliedNodes[node.id] = node;
-        }
 
-        if (rebuildOrder)
-        {
-            _layer.Children.Clear();
-            foreach (var node in update.nodes.OrderBy(node => node.indexInParent ?? int.MaxValue).ThenBy(node => node.id))
-                _layer.Children.Add(_elements[node.id].Element);
+            foreach (var node in update.nodes)
+            {
+                var kind = ElementKindFor(node);
+                if (!_elements.TryGetValue(node.id, out var state) || state.Kind != kind)
+                {
+                    if (state is not null)
+                    {
+                        _layer.Children.Remove(state.Element);
+                        RecycleState(state);
+                    }
+                    state = AcquireState(kind);
+                    _elements[node.id] = state;
+                    rebuildOrder = true;
+                    UpdateState(state, node, performAction, AllProperties);
+                }
+                else if (changedById.TryGetValue(node.id, out var nodeDelta))
+                {
+                    UpdateState(state, node, performAction, nodeDelta.changedProperties);
+                }
+                _appliedNodes[node.id] = node;
+            }
+
+            if (rebuildOrder)
+            {
+                SynchronizeChildOrder(update.nodes);
+            }
+            Interlocked.Exchange(ref _activeElements, _elements.Count);
+            Interlocked.Exchange(ref _retainedNodes, _appliedNodes.Count);
         }
-        Interlocked.Exchange(ref _activeElements, _elements.Count);
-        Interlocked.Exchange(ref _retainedNodes, _appliedNodes.Count);
-        _layer.SetValue(SemanticProperties.DescriptionProperty, $"Doroti semantics generation {update.generation}");
+        finally
+        {
+            _layer.BatchCommit();
+        }
+    }
+
+    private NativeElementState AcquireState(NativeElementKind kind)
+    {
+        if (_recycledElements.TryGetValue(kind, out var recycled) && recycled.TryPop(out var state))
+        {
+            Interlocked.Increment(ref _elementsReused);
+            return state;
+        }
+        Interlocked.Increment(ref _elementsCreated);
+        return CreateState(kind);
+    }
+
+    private void RecycleState(NativeElementState state)
+    {
+        state.Node = null;
+        state.PerformAction = null;
+        if (!_recycledElements.TryGetValue(state.Kind, out var recycled))
+        {
+            recycled = new Stack<NativeElementState>();
+            _recycledElements.Add(state.Kind, recycled);
+        }
+        recycled.Push(state);
+    }
+
+    private void SynchronizeChildOrder(IReadOnlyList<SemanticsNodeUpdate> nodes)
+    {
+        var index = 0;
+        foreach (var node in nodes.OrderBy(node => node.indexInParent ?? int.MaxValue).ThenBy(node => node.id))
+        {
+            var element = _elements[node.id].Element;
+            var currentIndex = _layer.Children.IndexOf(element);
+            if (currentIndex != index)
+            {
+                if (currentIndex >= 0) _layer.Children.RemoveAt(currentIndex);
+                _layer.Children.Insert(index, element);
+            }
+            index++;
+        }
+        while (_layer.Children.Count > index) _layer.Children.RemoveAt(_layer.Children.Count - 1);
     }
 
     private static NativeElementState CreateState(NativeElementKind kind)
@@ -305,10 +392,19 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
             }
             if ((properties & SemanticsNodeProperty.bounds) != 0)
             {
-                AbsoluteLayout.SetLayoutBounds(state.Element, new Microsoft.Maui.Graphics.Rect(node.rect.left, node.rect.top,
-                    Math.Max(0, node.rect.right - node.rect.left), Math.Max(0, node.rect.bottom - node.rect.top)));
-                AbsoluteLayout.SetLayoutFlags(state.Element, Microsoft.Maui.Layouts.AbsoluteLayoutFlags.None);
-                Interlocked.Increment(ref _nativePropertyWrites);
+                var bounds = new Microsoft.Maui.Graphics.Rect(node.rect.left, node.rect.top,
+                    Math.Max(0, node.rect.right - node.rect.left), Math.Max(0, node.rect.bottom - node.rect.top));
+                if (state.LayoutBounds != bounds)
+                {
+                    AbsoluteLayout.SetLayoutBounds(state.Element, bounds);
+                    state.LayoutBounds = bounds;
+                    Interlocked.Increment(ref _nativePropertyWrites);
+                }
+                if (!state.LayoutFlagsInitialized)
+                {
+                    AbsoluteLayout.SetLayoutFlags(state.Element, Microsoft.Maui.Layouts.AbsoluteLayoutFlags.None);
+                    state.LayoutFlagsInitialized = true;
+                }
             }
         }
         finally { state.Updating = false; }
@@ -323,6 +419,17 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
         SemanticsNodeProperty.actions | SemanticsNodeProperty.flags | SemanticsNodeProperty.role |
         SemanticsNodeProperty.children | SemanticsNodeProperty.traversal | SemanticsNodeProperty.selection;
 
+    private static void UpdateMaximum(ref long target, long candidate)
+    {
+        var current = Interlocked.Read(ref target);
+        while (candidate > current)
+        {
+            var observed = Interlocked.CompareExchange(ref target, candidate, current);
+            if (observed == current) return;
+            current = observed;
+        }
+    }
+
     private sealed record PendingUpdate(SemanticsUpdate Update, Action<int, SemanticsAction, object?> PerformAction);
     private enum NativeElementKind { Label, Button, TextField }
     private sealed class NativeElementState(NativeElementKind kind, View element)
@@ -333,6 +440,8 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
         internal Action<int, SemanticsAction, object?>? PerformAction { get; set; }
         internal string? Description { get; set; }
         internal SemanticHeadingLevel Heading { get; set; } = SemanticHeadingLevel.None;
+        internal Microsoft.Maui.Graphics.Rect? LayoutBounds { get; set; }
+        internal bool LayoutFlagsInitialized { get; set; }
         internal bool Updating { get; set; }
     }
 }

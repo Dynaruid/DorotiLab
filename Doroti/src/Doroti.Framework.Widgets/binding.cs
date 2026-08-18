@@ -329,6 +329,11 @@ public class RootElement : Element, RootElementMixin
 
 public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBinding, global::Doroti.Framework.Painting.PaintingBinding, global::Doroti.Framework.Semantics.SemanticsBinding, global::Doroti.Framework.Rendering.RendererBinding, WidgetsBinding
 {
+    private static readonly TimeSpan MinimumActiveScrollSemanticsInterval = TimeSpan.FromMilliseconds(1000.0 / 15.0);
+    private readonly object _semanticsFlushGate = new();
+    private TimeSpan _lastSemanticsFlushTimestamp = TimeSpan.MinValue;
+    private Timer? _deferredSemanticsFlush;
+
     public WidgetsFlutterBinding(PlatformDispatcher? platformDispatcher = null) : base(platformDispatcher) { }
 
     public virtual ImageCache _imageCache { get; set; } = default!;
@@ -918,7 +923,12 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
                 {
                     renderView__27663.compositeFrame();
                 }
-                this.rootPipelineOwner.flushSemantics();
+                if (shouldFlushSemantics(frameViewId))
+                {
+                    this.platformDispatcher.frameTrace.Record(DorotiFramePhase.semanticsBuild, frameViewId, DorotiFrameClock.Now);
+                    this.rootPipelineOwner.flushSemantics();
+                    this.platformDispatcher.frameTrace.Record(DorotiFramePhase.semanticsBuildEnd, frameViewId, DorotiFrameClock.Now);
+                }
                 this._firstFrameSent = true;
             }
             this.buildOwner!.finalizeTree();
@@ -928,6 +938,38 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
             this.debugBuildingDirtyElements = false;
         }
         this._needToReportFirstFrame = false;
+    }
+
+    private bool shouldFlushSemantics(ulong frameViewId)
+    {
+        if (!this.rootPipelineOwner.hasPendingSemanticsUpdate) return false;
+
+        var now = DorotiFrameClock.Now;
+        lock (_semanticsFlushGate)
+        {
+            if (!this.platformDispatcher.frameTrace.HasActiveScrollActivity ||
+                _lastSemanticsFlushTimestamp == TimeSpan.MinValue ||
+                now - _lastSemanticsFlushTimestamp >= MinimumActiveScrollSemanticsInterval)
+            {
+                _deferredSemanticsFlush?.cancel();
+                _deferredSemanticsFlush = null;
+                _lastSemanticsFlushTimestamp = now;
+                return true;
+            }
+
+            if (_deferredSemanticsFlush is null)
+            {
+                var delay = MinimumActiveScrollSemanticsInterval - (now - _lastSemanticsFlushTimestamp);
+                this.platformDispatcher.frameTrace.Record(DorotiFramePhase.semanticsDeferred, frameViewId, now,
+                    reason: "active scroll accessibility rate limit");
+                _deferredSemanticsFlush = new Timer((Duration)delay, () =>
+                {
+                    lock (_semanticsFlushGate) _deferredSemanticsFlush = null;
+                    if (this.rootPipelineOwner.hasPendingSemanticsUpdate) scheduleFrame();
+                });
+            }
+            return false;
+        }
     }
 
     protected async override Task performReassemble()

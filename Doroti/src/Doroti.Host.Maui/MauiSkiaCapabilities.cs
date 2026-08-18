@@ -16,13 +16,26 @@ internal sealed class MauiSkiaCapabilities :
     ISemanticsHostCapability,
     IDisposable
 {
+    private const int PictureRasterWarmupFrames = 2;
+    private const int PictureRasterComplexityThreshold = 8;
+    private const int MaxImageFilterResources = 64;
+    private const int MaxPictureRasterCacheEntries = 24;
+    private const long MaxPictureRasterPixels = 16L * 1024 * 1024;
+    private const long MaxCacheablePicturePixels = 4L * 1024 * 1024;
     private readonly ulong _viewId;
     private readonly MauiHostAdapter _host;
-    private readonly SKColor _backgroundColor;
+    private readonly UiColor? _lightBackgroundColor;
+    private readonly UiColor? _darkBackgroundColor;
+    private SKColor _backgroundColor;
     private readonly object _gate = new();
     private readonly object _paintGate = new();
     private readonly Dictionary<TextRenderKey, TextRenderResources> _textRenderResources = [];
     private readonly Dictionary<int, SemanticsNodeUpdate> _semantics = [];
+    private readonly Dictionary<Picture, PictureRasterCacheEntry> _pictureRasterCache =
+        new(ReferenceEqualityComparer.Instance);
+    private readonly Dictionary<Picture, int> _pictureRasterWarmups =
+        new(ReferenceEqualityComparer.Instance);
+    private readonly Dictionary<ImageFilterSnapshot, SKImageFilter> _imageFilterResources = [];
     private SceneFrame? _pendingFrame;
     private SceneFrame? _presentedFrame;
     private Action? _invalidate;
@@ -37,6 +50,11 @@ internal sealed class MauiSkiaCapabilities :
     private long _lastPresentedInputSequence;
     private long _contextGeneration;
     private long _shaderImageFiltersRendered;
+    private long _pictureRasterFrame;
+    private long _pictureRasterPixels;
+    private long _pictureRasterCacheHits;
+    private long _pictureRasterCacheMisses;
+    private long _pictureRasterCacheEntries;
     private bool _semanticsEnabled;
     private bool _disposed;
     private DorotiFrameTrace _frameTrace = new();
@@ -44,16 +62,20 @@ internal sealed class MauiSkiaCapabilities :
     private string RuntimeEffectBackend =>
         $"{DorotiSkiaRuntimeEffects.MauiGpuBackend}/{_viewId}";
 
-    internal MauiSkiaCapabilities(ulong viewId, MauiHostAdapter host, UiColor? backgroundColor)
+    internal MauiSkiaCapabilities(
+        ulong viewId,
+        MauiHostAdapter host,
+        UiColor? backgroundColor,
+        UiColor? darkBackgroundColor)
     {
         _viewId = viewId;
         _host = host;
-        backgroundColor ??= new UiColor(0xfffffbfeL);
-        _backgroundColor = new SKColor(
-            checked((byte)backgroundColor.red), checked((byte)backgroundColor.green),
-            checked((byte)backgroundColor.blue), checked((byte)backgroundColor.alpha));
+        _lightBackgroundColor = backgroundColor;
+        _darkBackgroundColor = darkBackgroundColor;
+        _backgroundColor = ResolveBackgroundColor(_host.Configuration.platformBrightness);
         _host.SemanticsAction += HandleSemanticsAction;
         _host.InputReceived += HandleInput;
+        _host.ConfigurationChanged += HandleConfigurationChanged;
     }
 
     private Action<SemanticsActionEvent>? _action;
@@ -63,12 +85,18 @@ internal sealed class MauiSkiaCapabilities :
     {
         get
         {
+            var imageFilterSurfaces = DorotiSkiaImageFilterRenderer.Diagnostics;
             lock (_gate)
                 return new(_submitted, _presented, _replayed, _failed, _contextGeneration,
                     _host.Snapshot.SurfaceGeneration, _pendingFrame is not null,
                     Volatile.Read(ref _shaderImageFiltersRendered),
                     "skiasharp-maui-skglview-gpu", _superseded, _dropped,
                     _host.InputSequence, _lastSubmittedInputSequence, _lastPresentedInputSequence,
+                    imageFilterSurfaces.Created, imageFilterSurfaces.Reused, imageFilterSurfaces.Active,
+                    imageFilterSurfaces.CacheHits, imageFilterSurfaces.CacheMisses,
+                    Volatile.Read(ref _pictureRasterCacheHits),
+                    Volatile.Read(ref _pictureRasterCacheMisses),
+                    Volatile.Read(ref _pictureRasterCacheEntries),
                     _frameTrace.Snapshot());
         }
     }
@@ -94,6 +122,12 @@ internal sealed class MauiSkiaCapabilities :
         }
         DorotiSkiaRuntimeEffects.InvalidateContext(
             RuntimeEffectBackend, contextGeneration);
+        DorotiSkiaImageFilterRenderer.InvalidateContext(
+            RuntimeEffectBackend, contextGeneration);
+        lock (_paintGate)
+        {
+            ClearPictureRasterCache();
+        }
         if (hasFrame) invalidate();
     }
 
@@ -129,14 +163,14 @@ internal sealed class MauiSkiaCapabilities :
         invalidate?.Invoke();
     }
 
-    internal void Paint(SKSurface surface, int pixelWidth, int pixelHeight)
+    internal MauiPaintCompletion? Paint(SKSurface surface, int pixelWidth, int pixelHeight)
     {
         ArgumentNullException.ThrowIfNull(surface);
         ObjectDisposedException.ThrowIf(_disposed, this);
-        lock (_paintGate) PaintCore(surface, pixelWidth, pixelHeight);
+        lock (_paintGate) return PaintCore(surface, pixelWidth, pixelHeight);
     }
 
-    private void PaintCore(SKSurface surface, int pixelWidth, int pixelHeight)
+    private MauiPaintCompletion? PaintCore(SKSurface surface, int pixelWidth, int pixelHeight)
     {
         SceneFrame? frame;
         bool isNewFrame;
@@ -155,8 +189,10 @@ internal sealed class MauiSkiaCapabilities :
         canvas.Clear(_backgroundColor);
         if (frame is null)
         {
+#if !WINDOWS
             canvas.Flush();
-            return;
+#endif
+            return null;
         }
         try
         {
@@ -165,29 +201,29 @@ internal sealed class MauiSkiaCapabilities :
             // RenderView's root transform has already converted logical coordinates
             // into physical pixels. Applying the browser DPR here would scale twice.
             var rasterStart = DorotiFrameClock.Now;
+            DorotiSkiaImageFilterRenderer.BeginFrame(RuntimeEffectBackend, _contextGeneration);
+            _pictureRasterFrame++;
             _frameTrace.Record(DorotiFramePhase.raster, _viewId, rasterStart,
                 frame.InputSequence, frame.SceneSequence, _host.Snapshot.SurfaceGeneration,
                 isNewFrame ? null : "retained scene replay", rasterStart - frame.SubmittedAt);
             DrawScene(canvas, frame.Commands, pixelWidth, pixelHeight);
+            var rasterEnd = DorotiFrameClock.Now;
+            _frameTrace.Record(DorotiFramePhase.rasterEnd, _viewId, rasterEnd,
+                frame.InputSequence, frame.SceneSequence, _host.Snapshot.SurfaceGeneration,
+                "Doroti draw complete", rasterEnd - rasterStart);
+#if !WINDOWS
             canvas.Flush();
+#endif
+            var surfaceGeneration = _host.Snapshot.SurfaceGeneration;
             lock (_gate)
             {
                 if (isNewFrame)
                 {
                     _presentedFrame = frame;
-                    _presented++;
-                    _lastPresentedInputSequence = frame.InputSequence;
-                    _frameTrace.Record(DorotiFramePhase.present, _viewId, DorotiFrameClock.Now,
-                        frame.InputSequence, frame.SceneSequence, _host.Snapshot.SurfaceGeneration);
-                }
-                else
-                {
-                    _replayed++;
-                    _frameTrace.Record(DorotiFramePhase.replay, _viewId, DorotiFrameClock.Now,
-                        frame.InputSequence, frame.SceneSequence, _host.Snapshot.SurfaceGeneration,
-                        "fresh native back buffer");
                 }
             }
+            return new MauiPaintCompletion(
+                frame.InputSequence, frame.SceneSequence, surfaceGeneration, isNewFrame);
         }
         catch
         {
@@ -201,6 +237,29 @@ internal sealed class MauiSkiaCapabilities :
                     "raster failure");
             }
             throw;
+        }
+    }
+
+    internal void CompletePaint(MauiPaintCompletion completion)
+    {
+        if (_disposed) return;
+        lock (_gate)
+        {
+            if (completion.IsNewFrame)
+            {
+                _presented++;
+                _lastPresentedInputSequence = completion.InputSequence;
+                _frameTrace.Record(DorotiFramePhase.present, _viewId, DorotiFrameClock.Now,
+                    completion.InputSequence, completion.SceneSequence, completion.SurfaceGeneration,
+                    "native frame submitted");
+            }
+            else
+            {
+                _replayed++;
+                _frameTrace.Record(DorotiFramePhase.replay, _viewId, DorotiFrameClock.Now,
+                    completion.InputSequence, completion.SceneSequence, completion.SurfaceGeneration,
+                    "fresh native back buffer submitted");
+            }
         }
     }
 
@@ -273,6 +332,8 @@ internal sealed class MauiSkiaCapabilities :
         _disposed = true;
         _host.SemanticsAction -= HandleSemanticsAction;
         _host.InputReceived -= HandleInput;
+        _host.ConfigurationChanged -= HandleConfigurationChanged;
+        DorotiSkiaImageFilterRenderer.ReleaseContext(RuntimeEffectBackend, _contextGeneration);
         lock (_paintGate)
         {
             lock (_gate)
@@ -283,6 +344,9 @@ internal sealed class MauiSkiaCapabilities :
             }
             foreach (var resources in _textRenderResources.Values) resources.Dispose();
             _textRenderResources.Clear();
+            foreach (var filter in _imageFilterResources.Values) filter.Dispose();
+            _imageFilterResources.Clear();
+            ClearPictureRasterCache();
         }
         _semantics.Clear();
     }
@@ -295,6 +359,22 @@ internal sealed class MauiSkiaCapabilities :
     private void HandleInput(long sequence, TimeSpan timestamp) =>
         _frameTrace.Record(DorotiFramePhase.input, _viewId, timestamp, sequence,
             surfaceGeneration: _host.Snapshot.SurfaceGeneration);
+
+    private void HandleConfigurationChanged(PlatformConfiguration configuration)
+    {
+        lock (_paintGate) _backgroundColor = ResolveBackgroundColor(configuration.platformBrightness);
+        _host.RequestInvalidate();
+    }
+
+    private SKColor ResolveBackgroundColor(Brightness brightness)
+    {
+        var color = brightness == Brightness.dark
+            ? _darkBackgroundColor ?? _lightBackgroundColor ?? new UiColor(0xff141218L)
+            : _lightBackgroundColor ?? new UiColor(0xfffffbfeL);
+        return new SKColor(
+            checked((byte)color.red), checked((byte)color.green),
+            checked((byte)color.blue), checked((byte)color.alpha));
+    }
 
     private sealed record SceneFrame(
         long SceneSequence,
@@ -333,11 +413,14 @@ internal sealed class MauiSkiaCapabilities :
                     case "picture" when command.HostPayload is ScenePicturePayload picture:
                         canvas.Save();
                         canvas.Translate((float)picture.Offset.dx, (float)picture.Offset.dy);
-                        DrawPicture(canvas, picture.Picture);
+                        DrawPictureLayer(canvas, picture);
                         canvas.Restore();
                         break;
                     case "offset" when command.HostPayload is SceneOffsetPayload offset:
-                        canvas.Save(); restoreCounts.Push(1); canvas.Translate((float)offset.Dx, (float)offset.Dy); break;
+                        canvas.Save();
+                        canvas.Translate((float)offset.Dx, (float)offset.Dy);
+                        restoreCounts.Push(1);
+                        break;
                     case "clipRect" when command.HostPayload is SceneClipRectPayload clip:
                         canvas.Save();
                         restoreCounts.Push(1);
@@ -377,7 +460,7 @@ internal sealed class MauiSkiaCapabilities :
                                     canvas.LocalClipBounds.Top - offset.Y,
                                     canvas.LocalClipBounds.Right - offset.X,
                                     canvas.LocalClipBounds.Bottom - offset.Y);
-                            if (DorotiSkiaImageFilterRenderer.Draw(
+                            var rendered = DorotiSkiaImageFilterRenderer.Draw(
                                 canvas,
                                 pixelWidth,
                                 pixelHeight,
@@ -389,7 +472,11 @@ internal sealed class MauiSkiaCapabilities :
                                 (inputCanvas, inputWidth, inputHeight) =>
                                     DrawScene(inputCanvas, source, commandIndex + 1, matchingPop, inputWidth, inputHeight),
                                 RuntimeEffectBackend,
-                                _contextGeneration))
+                                _contextGeneration,
+                                image.CacheKey,
+                                image.CacheGeneration,
+                                out var cacheHit);
+                            if (rendered && !cacheHit)
                                 Interlocked.Increment(ref _shaderImageFiltersRendered);
                             commandIndex = matchingPop;
                             break;
@@ -415,7 +502,6 @@ internal sealed class MauiSkiaCapabilities :
                         restoreCounts.Push(imageRestoreCount);
                         break;
                     case "backdropFilter" when command.HostPayload is SceneBackdropFilterPayload backdrop:
-                        using (var filter = ToImageFilter(backdrop.Filter))
                         using (var paint = new SKPaint { BlendMode = ToBlend(backdrop.BlendMode) })
                         {
                             var restoreCount = 1;
@@ -427,7 +513,7 @@ internal sealed class MauiSkiaCapabilities :
                             }
                             var layer = new SKCanvasSaveLayerRec
                             {
-                                Backdrop = filter,
+                                Backdrop = GetImageFilter(backdrop.Filter),
                                 Bounds = backdrop.Filter.Bounds is { } bounds ? ToRect(bounds) : null,
                                 Paint = paint,
                             };
@@ -495,7 +581,7 @@ internal sealed class MauiSkiaCapabilities :
                 case "clipRSuperellipse" when command.HostPayload is CanvasClipRSuperellipsePayload clip: canvas.ClipRect(ToRect(clip.RSuperellipse.outerRect), SKClipOperation.Intersect, clip.DoAntiAlias); break;
                 case "clipPath" when command.HostPayload is CanvasClipPathPayload clip: canvas.ClipPath(ToPath(clip.Path), SKClipOperation.Intersect, true); break;
                 case "drawRect" when command.HostPayload is CanvasRectPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawRect(ToRect(draw.Rect), paint); break;
-                case "drawRRect" when command.HostPayload is CanvasRRectPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawPath(ToPath(draw.RRect), paint); break;
+                case "drawRRect" when command.HostPayload is CanvasRRectPayload draw: DrawRRect(canvas, draw); break;
                 case "drawDRRect" when command.HostPayload is CanvasDRRectPayload draw: DrawDRRect(canvas, draw); break;
                 case "drawRSuperellipse" when command.HostPayload is CanvasRSuperellipsePayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawRect(ToRect(draw.RSuperellipse.outerRect), paint); break;
                 case "drawPath" when command.HostPayload is CanvasPathPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawPath(ToPath(draw.Path), paint); break;
@@ -529,6 +615,153 @@ internal sealed class MauiSkiaCapabilities :
                 default: throw new NotSupportedException($"Doroti MAUI canvas operation '{command.Operation}' has no Skia GPU mapping.");
             }
         }
+    }
+
+    private void DrawPictureLayer(SKCanvas canvas, ScenePicturePayload payload)
+    {
+        var picture = payload.Picture;
+        ObjectDisposedException.ThrowIf(picture.debugDisposed, picture);
+        if (payload.WillChangeHint || payload.CanvasBounds is not { } canvasBounds ||
+            !canvasBounds.IsFinite || canvasBounds.isEmpty ||
+            (!payload.IsComplexHint && picture.Commands.Count < PictureRasterComplexityThreshold) ||
+            canvas.Context is not { } context)
+        {
+            DrawPicture(canvas, picture);
+            return;
+        }
+
+        var mappedBounds = canvas.TotalMatrix.MapRect(ToRect(canvasBounds));
+        if (!IsFinite(mappedBounds) || mappedBounds.Width <= 0 || mappedBounds.Height <= 0)
+        {
+            DrawPicture(canvas, picture);
+            return;
+        }
+
+        if (mappedBounds.Width > MaxCacheablePicturePixels ||
+            mappedBounds.Height > MaxCacheablePicturePixels)
+        {
+            DrawPicture(canvas, picture);
+            return;
+        }
+
+        var width = checked((int)Math.Ceiling(mappedBounds.Width));
+        var height = checked((int)Math.Ceiling(mappedBounds.Height));
+        var pixels = (long)width * height;
+        if (pixels <= 0 || pixels > MaxCacheablePicturePixels)
+        {
+            DrawPicture(canvas, picture);
+            return;
+        }
+
+        var signature = PictureRasterTransform.From(canvas.TotalMatrix);
+        if (_pictureRasterCache.TryGetValue(picture, out var cached))
+        {
+            if (cached.Width == width && cached.Height == height && cached.Transform == signature)
+            {
+                cached.LastUsedFrame = _pictureRasterFrame;
+                DrawRasterImage(canvas, cached.Image, mappedBounds.Left, mappedBounds.Top);
+                Interlocked.Increment(ref _pictureRasterCacheHits);
+                return;
+            }
+            RemovePictureRaster(picture, cached);
+        }
+
+        var warmups = _pictureRasterWarmups.GetValueOrDefault(picture) + 1;
+        _pictureRasterWarmups[picture] = warmups;
+        if (warmups < PictureRasterWarmupFrames)
+        {
+            DrawPicture(canvas, picture);
+            return;
+        }
+
+        var info = new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
+        using var surface = SKSurface.Create(context, true, info)
+            ?? throw new InvalidOperationException(
+                $"Doroti picture raster cache could not allocate a {width}x{height} GPU surface.");
+        var rasterCanvas = surface.Canvas;
+        rasterCanvas.Clear(SKColors.Transparent);
+        rasterCanvas.Save();
+        rasterCanvas.Translate(-mappedBounds.Left, -mappedBounds.Top);
+        var matrix = canvas.TotalMatrix;
+        rasterCanvas.Concat(in matrix);
+        DrawPicture(rasterCanvas, picture);
+        rasterCanvas.Restore();
+        rasterCanvas.Flush();
+        var image = surface.Snapshot()
+            ?? throw new InvalidOperationException("Doroti picture raster cache could not snapshot its GPU surface.");
+        cached = new(image, width, height, signature, _pictureRasterFrame);
+        _pictureRasterCache.Add(picture, cached);
+        Interlocked.Increment(ref _pictureRasterCacheEntries);
+        _pictureRasterPixels += cached.Pixels;
+        _pictureRasterWarmups.Remove(picture);
+        TrimPictureRasterCache();
+        DrawRasterImage(canvas, image, mappedBounds.Left, mappedBounds.Top);
+        Interlocked.Increment(ref _pictureRasterCacheMisses);
+    }
+
+    private static void DrawRasterImage(SKCanvas canvas, SKImage image, float left, float top)
+    {
+        canvas.Save();
+        canvas.ResetMatrix();
+        canvas.DrawImage(image, left, top, SKSamplingOptions.Default);
+        canvas.Restore();
+    }
+
+    private void TrimPictureRasterCache()
+    {
+        while (_pictureRasterCache.Count > MaxPictureRasterCacheEntries ||
+               _pictureRasterPixels > MaxPictureRasterPixels)
+        {
+            var oldest = _pictureRasterCache.MinBy(pair => pair.Value.LastUsedFrame);
+            if (oldest.Key is null) break;
+            RemovePictureRaster(oldest.Key, oldest.Value);
+        }
+    }
+
+    private void RemovePictureRaster(Picture picture, PictureRasterCacheEntry cached)
+    {
+        _pictureRasterCache.Remove(picture);
+        Interlocked.Decrement(ref _pictureRasterCacheEntries);
+        _pictureRasterPixels -= cached.Pixels;
+        cached.Image.Dispose();
+    }
+
+    private void ClearPictureRasterCache()
+    {
+        foreach (var cached in _pictureRasterCache.Values) cached.Image.Dispose();
+        _pictureRasterCache.Clear();
+        _pictureRasterWarmups.Clear();
+        _pictureRasterPixels = 0;
+        Interlocked.Exchange(ref _pictureRasterCacheEntries, 0);
+    }
+
+    private readonly record struct PictureRasterTransform(
+        float ScaleX,
+        float SkewX,
+        float SkewY,
+        float ScaleY,
+        float Persp0,
+        float Persp1,
+        float Persp2)
+    {
+        internal static PictureRasterTransform From(SKMatrix matrix) => new(
+            matrix.ScaleX, matrix.SkewX, matrix.SkewY, matrix.ScaleY,
+            matrix.Persp0, matrix.Persp1, matrix.Persp2);
+    }
+
+    private sealed class PictureRasterCacheEntry(
+        SKImage image,
+        int width,
+        int height,
+        PictureRasterTransform transform,
+        long lastUsedFrame)
+    {
+        internal SKImage Image { get; } = image;
+        internal int Width { get; } = width;
+        internal int Height { get; } = height;
+        internal PictureRasterTransform Transform { get; } = transform;
+        internal long LastUsedFrame { get; set; } = lastUsedFrame;
+        internal long Pixels => (long)Width * Height;
     }
 
     private TextRenderResources GetTextRenderResources(string? fontFamily, float fontSize, SKColor color)
@@ -580,24 +813,38 @@ internal sealed class MauiSkiaCapabilities :
         return paint;
     }
 
-    private SKPaint FilterPaint(ImageFilterSnapshot filter) => new() { ImageFilter = ToImageFilter(filter) };
+    private SKPaint FilterPaint(ImageFilterSnapshot filter) => new() { ImageFilter = GetImageFilter(filter) };
 
-    private SKImageFilter ToImageFilter(ImageFilterSnapshot filter)
+    private SKImageFilter GetImageFilter(ImageFilterSnapshot filter)
+    {
+        if (_imageFilterResources.TryGetValue(filter, out var resource)) return resource;
+        if (_imageFilterResources.Count >= MaxImageFilterResources)
+        {
+            var oldest = _imageFilterResources.First();
+            _imageFilterResources.Remove(oldest.Key);
+            oldest.Value.Dispose();
+        }
+        resource = CreateImageFilter(filter);
+        _imageFilterResources.Add(filter, resource);
+        return resource;
+    }
+
+    private SKImageFilter CreateImageFilter(ImageFilterSnapshot filter)
     {
         if (filter.Shader is not null)
             throw new InvalidOperationException(
                 "Shader image filters must be rendered through Doroti's GPU offscreen input path.");
         if (filter.Outer is not null && filter.Inner is not null)
         {
-            using var outer = ToImageFilter(filter.Outer);
-            using var inner = ToImageFilter(filter.Inner);
+            using var outer = CreateImageFilter(filter.Outer);
+            using var inner = CreateImageFilter(filter.Inner);
             return SKImageFilter.CreateCompose(outer, inner);
         }
         if (filter.ColorFilter is not null)
         {
             using var color = ToColorFilter(filter.ColorFilter);
             if (filter.Inner is null) return SKImageFilter.CreateColorFilter(color);
-            using var inner = ToImageFilter(filter.Inner);
+            using var inner = CreateImageFilter(filter.Inner);
             return SKImageFilter.CreateColorFilter(color, inner);
         }
         if (filter.Matrix4 is not null)
@@ -747,9 +994,30 @@ internal sealed class MauiSkiaCapabilities :
     private static SKPath ToPath(RRect value)
     {
         using var builder = new SKPathBuilder();
-        builder.AddRoundRect(ToRect(value.outerRect), (float)value.tlRadiusX, (float)value.tlRadiusY,
-            SKPathDirection.Clockwise);
+        using var roundRect = new SKRoundRect();
+        roundRect.SetRectRadii(ToRect(value.outerRect),
+        [
+            new((float)value.tlRadius.x, (float)value.tlRadius.y),
+            new((float)value.trRadius.x, (float)value.trRadius.y),
+            new((float)value.brRadius.x, (float)value.brRadius.y),
+            new((float)value.blRadius.x, (float)value.blRadius.y),
+        ]);
+        builder.AddRoundRect(roundRect, SKPathDirection.Clockwise);
         return builder.Detach();
+    }
+
+    private void DrawRRect(SKCanvas canvas, CanvasRRectPayload draw)
+    {
+        using var paint = ToPaint(draw.Paint);
+        var rrect = draw.RRect;
+        if (rrect.tlRadius == Radius.zero && rrect.trRadius == Radius.zero &&
+            rrect.brRadius == Radius.zero && rrect.blRadius == Radius.zero)
+        {
+            canvas.DrawRect(ToRect(rrect.outerRect), paint);
+            return;
+        }
+        using var path = ToPath(rrect);
+        canvas.DrawPath(path, paint);
     }
 
     private void DrawDRRect(SKCanvas canvas, CanvasDRRectPayload draw)
@@ -765,6 +1033,9 @@ internal sealed class MauiSkiaCapabilities :
     }
 
     private static SKRect ToRect(Rect value) => new((float)value.left, (float)value.top, (float)value.right, (float)value.bottom);
+    private static bool IsFinite(SKRect value) =>
+        float.IsFinite(value.Left) && float.IsFinite(value.Top) &&
+        float.IsFinite(value.Right) && float.IsFinite(value.Bottom);
     private static SKColor ToColor(UiColor value) => new((byte)value.red, (byte)value.green, (byte)value.blue, (byte)value.alpha);
     private static SKBlendMode ToBlend(BlendMode value) => Enum.TryParse<SKBlendMode>(value.ToString(), true, out var result) ? result : SKBlendMode.SrcOver;
 

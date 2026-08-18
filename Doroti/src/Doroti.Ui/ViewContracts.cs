@@ -553,7 +553,11 @@ public interface IPlatformEnvironmentHostCapability
     event Action<PlatformConfiguration>? ConfigurationChanged;
 }
 
-public sealed record DorotiViewConfiguration(string title, Size logicalSize, Color? backgroundColor = null);
+public sealed record DorotiViewConfiguration(
+    string title,
+    Size logicalSize,
+    Color? backgroundColor = null,
+    Color? darkBackgroundColor = null);
 
 /// <summary>Legacy window facade bound to one explicit view rather than a process-global current window.</summary>
 public sealed class SingletonDorotiWindow(DorotiView view)

@@ -185,7 +185,7 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator : State<Gl
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -252,8 +252,8 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator : State<Gl
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier__18621.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier__18621.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier__18621;
     }
 
@@ -735,7 +735,7 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator : State
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -828,8 +828,8 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator : State
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier__18621.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier__18621.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier__18621;
     }
 
@@ -877,12 +877,12 @@ internal class _StretchController__overscroll_indicator : global::Doroti.Framewo
     }
     public virtual void addListener(global::System.Action listener)
     {
-        this._overscrollNotifier.addListener(() => listener());
+        this._overscrollNotifier.addListener(listener);
     }
 
     public virtual void removeListener(global::System.Action listener)
     {
-        this._overscrollNotifier.removeListener(() => listener());
+        this._overscrollNotifier.removeListener(listener);
     }
 
     internal virtual global::Doroti.Framework.Physics.SpringSimulation _createStretchSimulation(double velocity)
@@ -994,4 +994,3 @@ public class OverscrollIndicatorNotification : Notification, ViewportNotificatio
 
     public virtual long depth => this._depth;
 }
-

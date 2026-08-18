@@ -5,6 +5,9 @@ using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Controls;
 using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
+#if WINDOWS
+using Microsoft.UI.Xaml.Media;
+#endif
 using Locale = Doroti.Ui.Locale;
 using Rect = Doroti.Ui.Rect;
 using Size = Doroti.Ui.Size;
@@ -20,6 +23,12 @@ internal sealed class MauiHostAdapter :
     IPlatformServicesHostCapability,
     ITextInputHostCapability
 {
+#if WINDOWS
+    // Keep high-refresh compositor callbacks from outrunning the ANGLE swap
+    // chain. Common 120/144/165 Hz displays then issue one Doroti frame every
+    // two callbacks, while 60/90 Hz displays remain native-rate.
+    private static readonly TimeSpan MinimumCompositionFrameInterval = TimeSpan.FromMilliseconds(10);
+#endif
     private readonly ulong _viewId;
     private readonly SKGLView _view;
     private readonly object _gate = new();
@@ -42,6 +51,18 @@ internal sealed class MauiHostAdapter :
     private bool _invalidatePending;
     private bool _isPainting;
     private bool _invalidateAfterPaint;
+#if WINDOWS
+    private bool _compositionVsyncRequested;
+    private bool _compositionVsyncAttached;
+    private TimeSpan _lastCompositionInvalidateTimestamp = TimeSpan.MinValue;
+#elif ANDROID
+    private readonly AndroidFrameCallback _androidFrameCallback;
+    private readonly HashSet<ulong> _androidActiveTouchPointers = [];
+    private bool _androidFrameCallbackPosted;
+    private TimeSpan? _androidVsyncTimestamp;
+    private long _androidFrameTimeOriginNanos;
+    private TimeSpan _androidFrameTimeOrigin;
+#endif
     private bool _disposed;
 
     internal MauiHostAdapter(ulong viewId, SKGLView view, MauiTextInputBridge textInput,
@@ -53,6 +74,9 @@ internal sealed class MauiHostAdapter :
         _logicalSize = logicalSize ?? throw new ArgumentNullException(nameof(logicalSize));
         _density = Math.Max(1, DeviceDisplay.Current.MainDisplayInfo.Density);
         _semantics = semantics ?? new NullMauiSemanticsBridge();
+#if ANDROID
+        _androidFrameCallback = new AndroidFrameCallback(HandleAndroidFrame);
+#endif
         _view.HasRenderLoop = false;
         _view.EnableTouchEvents = true;
         _view.Touch += HandleTouch;
@@ -137,6 +161,7 @@ internal sealed class MauiHostAdapter :
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         ArgumentNullException.ThrowIfNull(callback);
+        var requestFrame = false;
         lock (_gate)
         {
             // Keep one host request pending. A delayed native paint must not
@@ -147,8 +172,16 @@ internal sealed class MauiHostAdapter :
                 return;
             }
             _pendingFrameCallback = callback;
+            requestFrame = true;
         }
+        if (!requestFrame) return;
+#if WINDOWS
+        SubscribeToCompositionVsync();
+#elif ANDROID
+        RequestAndroidVsync();
+#else
         RequestInvalidate();
+#endif
     }
 
     internal void BeginPaint(SKPaintGLSurfaceEventArgs args, object? context, string nativeViewType, string backend)
@@ -180,12 +213,18 @@ internal sealed class MauiHostAdapter :
         if (pixelSizeChanged || densityChanged)
             MetricsChanged?.Invoke(Metrics);
         Action<TimeSpan>? callback;
+        TimeSpan? nativeVsyncTimestamp = null;
         lock (_gate)
         {
             callback = _pendingFrameCallback;
             _pendingFrameCallback = null;
+#if ANDROID
+            nativeVsyncTimestamp = _androidVsyncTimestamp;
+            _androidVsyncTimestamp = null;
+#endif
         }
-        var now = DorotiFrameClock.ClampForward(DorotiFrameClock.Now, _lastVsyncTimestamp);
+        var now = DorotiFrameClock.ClampForward(
+            nativeVsyncTimestamp ?? DorotiFrameClock.Now, _lastVsyncTimestamp);
         _lastVsyncTimestamp = now;
         callback?.Invoke(now);
     }
@@ -194,25 +233,43 @@ internal sealed class MauiHostAdapter :
     {
         if (_disposed) return;
         var dispatch = false;
+#if WINDOWS
+        var unsubscribeVsync = false;
+#endif
         lock (_gate)
         {
             _isPainting = false;
+#if WINDOWS
+            if (_pendingFrameCallback is null && _compositionVsyncRequested)
+                unsubscribeVsync = true;
+#endif
             if (_invalidateAfterPaint)
             {
                 _invalidateAfterPaint = false;
-                if (!_invalidatePending)
+                var compositorOwnsNextFrame = false;
+#if WINDOWS
+                compositorOwnsNextFrame = _compositionVsyncRequested;
+#elif ANDROID
+                compositorOwnsNextFrame = _androidFrameCallbackPosted;
+#endif
+                if (!compositorOwnsNextFrame && !_invalidatePending)
                 {
                     _invalidatePending = true;
                     dispatch = true;
                 }
             }
         }
+#if WINDOWS
+        if (unsubscribeVsync) UnsubscribeFromCompositionVsync();
+#endif
         if (dispatch) _view.Dispatcher.Dispatch(_view.InvalidateSurface);
     }
 
     private object? _lastContext;
 
     internal event Action<int, SemanticsAction, object?>? SemanticsAction;
+
+    internal void AttachFrameworkTrace(DorotiFrameTrace trace) => _semantics.AttachFrameTrace(trace, _viewId);
 
     internal void UpdateSemantics(SemanticsUpdate update) =>
         _semantics.Update(update, (nodeId, action, arguments) =>
@@ -242,6 +299,182 @@ internal sealed class MauiHostAdapter :
         }
         _view.Dispatcher.Dispatch(_view.InvalidateSurface);
     }
+
+#if ANDROID
+    private void RequestAndroidVsync()
+    {
+        lock (_gate)
+        {
+            if (_disposed || _androidFrameCallbackPosted) return;
+            _androidFrameCallbackPosted = true;
+        }
+        _view.Dispatcher.Dispatch(PostAndroidFrameCallback);
+    }
+
+    private void PostAndroidFrameCallback()
+    {
+        lock (_gate)
+        {
+            if (_disposed ||
+                (_pendingFrameCallback is null && _androidActiveTouchPointers.Count == 0))
+            {
+                _androidFrameCallbackPosted = false;
+                return;
+            }
+        }
+        Android.Views.Choreographer.Instance!.PostFrameCallback(_androidFrameCallback);
+    }
+
+    private void HandleAndroidFrame(long frameTimeNanos)
+    {
+        var invalidate = false;
+        var repost = false;
+        lock (_gate)
+        {
+            _androidFrameCallbackPosted = false;
+            if (_disposed) return;
+            var touchActive = _androidActiveTouchPointers.Count > 0;
+            if (_pendingFrameCallback is null)
+            {
+                // Keep the display waiter armed while a finger is down. Input
+                // arriving late in this pulse can then use the very next pulse
+                // instead of registering after the GL paint has completed.
+                repost = touchActive;
+            }
+            else if (_isPainting)
+            {
+                // A callback queued during the active GL paint must survive to
+                // another pulse.
+                repost = true;
+            }
+            else if (_invalidatePending)
+            {
+                // The render thread has not consumed this request yet. Keep its
+                // timestamp current so a late paint does not animate from a
+                // pulse that the surface has already missed.
+                _androidVsyncTimestamp = MapAndroidFrameTimestamp(frameTimeNanos);
+                repost = touchActive;
+            }
+            else
+            {
+                _androidVsyncTimestamp = MapAndroidFrameTimestamp(frameTimeNanos);
+                _invalidatePending = true;
+                invalidate = true;
+                repost = touchActive;
+            }
+        }
+        if (repost) RequestAndroidVsync();
+        if (!invalidate) return;
+        Interlocked.Increment(ref _invalidationsRequested);
+        _view.InvalidateSurface();
+    }
+
+    private TimeSpan MapAndroidFrameTimestamp(long frameTimeNanos)
+    {
+        if (_androidFrameTimeOriginNanos == 0)
+        {
+            _androidFrameTimeOriginNanos = frameTimeNanos;
+            _androidFrameTimeOrigin = DorotiFrameClock.Now;
+        }
+        var elapsedNanos = Math.Max(0, frameTimeNanos - _androidFrameTimeOriginNanos);
+        return _androidFrameTimeOrigin + TimeSpan.FromTicks(elapsedNanos / 100);
+    }
+
+    private void CancelAndroidVsync()
+    {
+        lock (_gate)
+        {
+            _androidFrameCallbackPosted = false;
+            _androidActiveTouchPointers.Clear();
+        }
+        _view.Dispatcher.Dispatch(() =>
+            Android.Views.Choreographer.Instance!.RemoveFrameCallback(_androidFrameCallback));
+    }
+
+    private sealed class AndroidFrameCallback(Action<long> callback) :
+        Java.Lang.Object,
+        Android.Views.Choreographer.IFrameCallback
+    {
+        public void DoFrame(long frameTimeNanos) => callback(frameTimeNanos);
+    }
+#endif
+
+#if WINDOWS
+    private void SubscribeToCompositionVsync()
+    {
+        lock (_gate)
+        {
+            if (_compositionVsyncRequested) return;
+            _compositionVsyncRequested = true;
+        }
+        DispatchCompositionVsyncUpdate();
+    }
+
+    private void UnsubscribeFromCompositionVsync()
+    {
+        lock (_gate)
+        {
+            if (!_compositionVsyncRequested || _pendingFrameCallback is not null) return;
+            _compositionVsyncRequested = false;
+        }
+        DispatchCompositionVsyncUpdate();
+    }
+
+    private void DispatchCompositionVsyncUpdate() =>
+        _view.Dispatcher.Dispatch(UpdateCompositionVsyncSubscription);
+
+    private void UpdateCompositionVsyncSubscription()
+    {
+        bool shouldAttach;
+        bool shouldDetach;
+        lock (_gate)
+        {
+            shouldAttach = !_disposed && _compositionVsyncRequested && !_compositionVsyncAttached;
+            shouldDetach = (_disposed || !_compositionVsyncRequested) && _compositionVsyncAttached;
+        }
+
+        // CompositionTarget is a WinRT UI-thread event. Frame requests can
+        // originate in timers or framework microtasks, so both event mutations
+        // must cross the MAUI dispatcher before touching the compositor.
+        if (shouldAttach)
+        {
+            lock (_gate) _lastCompositionInvalidateTimestamp = TimeSpan.MinValue;
+            CompositionTarget.Rendering += HandleCompositionRendering;
+            lock (_gate) _compositionVsyncAttached = true;
+        }
+        else if (shouldDetach)
+        {
+            CompositionTarget.Rendering -= HandleCompositionRendering;
+            lock (_gate) _compositionVsyncAttached = false;
+        }
+    }
+
+    private void HandleCompositionRendering(object? sender, object args)
+    {
+        _ = sender;
+        _ = args;
+        if (_disposed) return;
+        var timestamp = DorotiFrameClock.Now;
+        lock (_gate)
+        {
+            if (_pendingFrameCallback is null || _invalidatePending) return;
+            // Flutter-style backpressure: retain the newest framework request,
+            // but do not feed ANGLE more swap-chain work than it can present.
+            // The first request after idle is always immediate.
+            if (_lastCompositionInvalidateTimestamp != TimeSpan.MinValue &&
+                timestamp - _lastCompositionInvalidateTimestamp < MinimumCompositionFrameInterval) return;
+            if (_isPainting)
+            {
+                _invalidateAfterPaint = true;
+                return;
+            }
+            _invalidatePending = true;
+            _lastCompositionInvalidateTimestamp = timestamp;
+        }
+        Interlocked.Increment(ref _invalidationsRequested);
+        _view.InvalidateSurface();
+    }
+#endif
 
     public void RequestFocus(ViewFocusState state, ViewFocusDirection direction)
     {
@@ -280,6 +513,15 @@ internal sealed class MauiHostAdapter :
     {
         if (_disposed) return;
         _disposed = true;
+#if WINDOWS
+        lock (_gate)
+        {
+            _compositionVsyncRequested = false;
+        }
+        DispatchCompositionVsyncUpdate();
+#elif ANDROID
+        CancelAndroidVsync();
+#endif
         _view.Touch -= HandleTouch;
         _view.SizeChanged -= HandleSizeChanged;
         _view.Focused -= HandleFocused;
@@ -335,6 +577,18 @@ internal sealed class MauiHostAdapter :
             _ => PointerChange.move,
         };
         var pointer = checked((ulong)Math.Max(0, args.Id));
+#if ANDROID
+        var keepAndroidVsyncArmed = false;
+        lock (_gate)
+        {
+            if (change == PointerChange.down)
+                _androidActiveTouchPointers.Add(pointer);
+            else if (change is PointerChange.up or PointerChange.cancel or PointerChange.remove)
+                _androidActiveTouchPointers.Remove(pointer);
+            keepAndroidVsyncArmed = _androidActiveTouchPointers.Count > 0;
+        }
+        if (keepAndroidVsyncArmed) RequestAndroidVsync();
+#endif
         var hasPrevious = _pointerPositions.TryGetValue(pointer, out var previous);
         var x = args.Location.X;
         var y = args.Location.Y;

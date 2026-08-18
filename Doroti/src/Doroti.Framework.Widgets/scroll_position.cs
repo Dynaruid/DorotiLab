@@ -425,22 +425,39 @@ public abstract class ScrollPosition : global::Doroti.Framework.Rendering.Viewpo
 
     public virtual void didStartScroll()
     {
+        recordScrollTrace(DorotiFramePhase.scrollStart);
         this.activity!.dispatchScrollStartNotification(copyWith(), ((ScrollContext)this.context).notificationContext);
     }
 
     public virtual void didUpdateScrollPositionBy(double delta)
     {
+        recordScrollTrace(DorotiFramePhase.scrollUpdate, delta);
         this.activity!.dispatchScrollUpdateNotification(copyWith(), ((ScrollContext)this.context).notificationContext!, delta);
     }
 
     public virtual void didEndScroll()
     {
+        recordScrollTrace(DorotiFramePhase.scrollEnd);
         this.activity!.dispatchScrollEndNotification(copyWith(), ((ScrollContext)this.context).notificationContext!);
         saveOffset();
         if (this.keepScrollOffset)
         {
             saveScrollOffset();
         }
+    }
+
+    private void recordScrollTrace(DorotiFramePhase phase, double? delta = null)
+    {
+        var dispatcher = PlatformDispatcher.instance;
+        dispatcher.frameTrace.RecordScroll(
+            phase,
+            dispatcher.implicitView?.viewId ?? 0,
+            global::System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(this),
+            pixels,
+            delta,
+            activity?.GetType().Name ?? "none",
+            hasContentDimensions ? minScrollExtent : null,
+            hasContentDimensions ? maxScrollExtent : null);
     }
 
     public virtual void didOverscrollBy(double value)

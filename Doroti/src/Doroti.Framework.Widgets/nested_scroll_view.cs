@@ -730,7 +730,7 @@ internal class _NestedScrollController__nested_scroll_view : ScrollController
         base.attach(position);
         this.coordinator.updateParent();
         this.coordinator.updateCanDrag();
-        position.addListener(() => this._scheduleUpdateShadow());
+        position.addListener(this._scheduleUpdateShadow);
         _scheduleUpdateShadow();
     }
 
@@ -738,7 +738,7 @@ internal class _NestedScrollController__nested_scroll_view : ScrollController
     {
         DartRuntimePrimitives.Assert(() => (position is _NestedScrollPosition__nested_scroll_view));
         (((_NestedScrollPosition__nested_scroll_view?)(object?)position)!).setParent(((ScrollController)(object)null));
-        ((_NestedScrollPosition__nested_scroll_view)position).removeListener(() => this._scheduleUpdateShadow());
+        ((_NestedScrollPosition__nested_scroll_view)position).removeListener(this._scheduleUpdateShadow);
         base.detach(((_NestedScrollPosition__nested_scroll_view)position));
         _scheduleUpdateShadow();
     }
@@ -1346,12 +1346,12 @@ public class RenderSliverOverlapInjector : global::Doroti.Framework.Rendering.Re
             }
             if (this.attached)
             {
-                this.handle.removeListener(() => this.markNeedsLayout());
+                this.handle.removeListener(this.markNeedsLayout);
             }
             _handle = __value;
             if (this.attached)
             {
-                this.handle.addListener(() => this.markNeedsLayout());
+                this.handle.addListener(this.markNeedsLayout);
                 if (((((SliverOverlapAbsorberHandle)this.handle).layoutExtent != this._currentLayoutExtent) || (((SliverOverlapAbsorberHandle)this.handle).scrollExtent != this._currentMaxExtent)))
                 {
                     markNeedsLayout();
@@ -1362,7 +1362,7 @@ public class RenderSliverOverlapInjector : global::Doroti.Framework.Rendering.Re
     public override void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
     {
         base.attach(owner);
-        this.handle.addListener(() => this.markNeedsLayout());
+        this.handle.addListener(this.markNeedsLayout);
         if (((((SliverOverlapAbsorberHandle)this.handle).layoutExtent != this._currentLayoutExtent) || (((SliverOverlapAbsorberHandle)this.handle).scrollExtent != this._currentMaxExtent)))
         {
             markNeedsLayout();
@@ -1371,7 +1371,7 @@ public class RenderSliverOverlapInjector : global::Doroti.Framework.Rendering.Re
 
     public override void detach()
     {
-        this.handle.removeListener(() => this.markNeedsLayout());
+        this.handle.removeListener(this.markNeedsLayout);
         base.detach();
     }
 
@@ -1514,4 +1514,3 @@ public class RenderNestedScrollViewViewport : global::Doroti.Framework.Rendering
     }
 
 }
-

@@ -1,8 +1,8 @@
 {
   "schemaVersion": "doroti.flutter-conformance-fcr5-evidence/v1",
   "status": "partial",
-  "capturedAt": "2026-08-18T07:23:07.0545445Z",
-  "repositoryRevision": "5204b022d85bbf05a149e8b4d65644a763be1537",
+  "capturedAt": "2026-08-18T11:08:06.1848270Z",
+  "repositoryRevision": "e128cea65eb1d689ee51405e48a204d60f6d42e7",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "fixtureManifest": "Doroti/validation/fcr5-scroll/fixture-manifest.json",
   "runtimeContract": {
@@ -12,7 +12,10 @@
     "checks": [
       "ScrollController.animateTo waits for the initial attached-position snapshot",
       "DrivenScrollActivity initializes and observes its animation",
+      "Flutter method tear-offs keep stable CLR listener identity",
+      "scroll listener removal leaves no retained ChangeNotifier callback",
       "scroll trace preserves one input sequence through its declared causal phases",
+      "frame trace retains actual scroll offsets and animation ownership for a complete high-refresh gesture",
       "trace capacity is bounded without sequence reuse"
     ]
   },
@@ -20,7 +23,15 @@
     "status": "pass",
     "checks": [
       "ScrollView applies PrimaryScrollController.shouldInherit",
-      "RawScrollbar uses explicit controller or the inherited primary controller"
+      "RawScrollbar uses explicit controller or the inherited primary controller",
+      "scroll viewport, semantics, scrollbar, overscroll, nested-scroll, and ticker paths use stable listener identities",
+      "ScrollbarPainter observes and removes its fade animation listener symmetrically",
+      "PictureLayer forwards bounds and change hints to a bounded retained raster cache",
+      "ImageFilterLayer uses a stable cache identity with subtree generation invalidation",
+      "Windows drives framework animations from WinUI compositor vsync and marshals compositor subscriptions to the UI thread",
+      "Android keeps Choreographer pre-armed during native drag and advances delayed paints to the newest display pulse",
+      "Windows records present after the native swap-chain flush and keeps evidence serialization off the paint callback",
+      "Windows live gate measures input-to-offset, offset-to-present, complete input-to-present, and scroll-animation cadence including maxima"
     ]
   },
   "acceptance": {

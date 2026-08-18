@@ -430,7 +430,12 @@ public class PictureLayer : Layer
     public override void addToScene(SceneBuilder builder)
     {
         DartRuntimePrimitives.Assert(() => (this.picture is not null));
-        builder.addPicture(Offset.zero, this.picture!, isComplexHint: this.isComplexHint, willChangeHint: this.willChangeHint);
+        builder.addPicture(
+            Offset.zero,
+            this.picture!,
+            this.canvasBounds,
+            isComplexHint: this.isComplexHint,
+            willChangeHint: this.willChangeHint);
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -939,7 +944,10 @@ public class OffsetLayer : ContainerLayer
 
     public override void addToScene(SceneBuilder builder)
     {
-        engineLayer = builder.pushOffset(this.offset.dx, this.offset.dy, oldLayer: ((global::Doroti.Ui.OffsetEngineLayer?)(object?)_engineLayer)!);
+        engineLayer = builder.pushOffset(
+            this.offset.dx,
+            this.offset.dy,
+            oldLayer: ((global::Doroti.Ui.OffsetEngineLayer?)(object?)_engineLayer)!);
         addChildrenToScene(builder);
         builder.pop();
     }
@@ -1364,6 +1372,7 @@ public class ImageFilterLayer : OffsetLayer
 {
     internal virtual ImageFilter? _imageFilter { get; set; } = default;
     internal virtual Rect? _bounds { get; set; } = default;
+    internal virtual long _filterCacheGeneration { get; set; }
 
     public ImageFilterLayer(ImageFilter? imageFilter = null, Offset offset = default) : base(offset: offset)
     {
@@ -1399,8 +1408,13 @@ public class ImageFilterLayer : OffsetLayer
     public override void addToScene(SceneBuilder builder)
     {
         DartRuntimePrimitives.Assert(() => (this.imageFilter is not null));
+        if (this._needsAddToScene)
+        {
+            _filterCacheGeneration++;
+        }
         engineLayer = builder.pushImageFilter(this.imageFilter!, offset: offset,
-            oldLayer: ((global::Doroti.Ui.ImageFilterEngineLayer?)(object?)_engineLayer)!, bounds: bounds);
+            oldLayer: ((global::Doroti.Ui.ImageFilterEngineLayer?)(object?)_engineLayer)!, bounds: bounds,
+            cacheKey: this, cacheGeneration: this._filterCacheGeneration);
         addChildrenToScene(builder);
         builder.pop();
     }
