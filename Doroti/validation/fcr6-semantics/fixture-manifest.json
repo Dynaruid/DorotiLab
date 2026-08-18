@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "doroti.flutter-conformance-fcr6-fixture/v1",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "sources": [
+    {
+      "path": "packages/flutter/lib/src/rendering/object.dart",
+      "sha256": "52e6bd8ecbe96044cfd1461940ab525ca06959f5bce040e94c3ea36a529c567b",
+      "anchors": ["void markNeedsSemanticsUpdate", "flushSemantics"]
+    },
+    {
+      "path": "packages/flutter/lib/src/semantics/semantics.dart",
+      "sha256": "a86457482df2ca1edf3ed3e9773cdb286386f8599046d433f49a742b65eab2ff",
+      "anchors": ["void sendSemanticsUpdate", "SemanticsUpdateBuilder"]
+    }
+  ]
+}

@@ -300,9 +300,9 @@
       "productSources": ["Doroti/src/Doroti.Framework.Semantics/semantics.cs"],
       "runtimeDependencyIds": ["runtime:semantics-bridge", "runtime:widget-rendering"],
       "hostConsumers": ["Doroti/src/Doroti.Host.Maui/MauiSemanticsBridge.cs", "DorotiDemoApp/src/App.cs"],
-      "testEvidence": ["Doroti/validation/evidence/app-targets-evidence.json", "Doroti/eng/validate-app-targets.ps1"],
-      "verification": "notVerified",
-      "note": "Node delta cost and critical-action immediacy are FCR-6; current evidence remains a boundary only."
+      "testEvidence": ["Doroti/eng/validate-fcr6-semantics.ps1", "Doroti/validation/fcr6-semantics/Program.cs", "Doroti/validation/evidence/flutter-conformance/fcr6-semantics-evidence.json"],
+      "verification": "partial",
+      "note": "FCR-6 contract-tests node-level content delta classification, 15-fps geometry eligibility, critical-update urgency, cancellation fencing, and touch pass-through. Android TalkBack, Windows UIA, and the measured 10-percent frame-budget threshold remain notVerified."
     }
   ],
   "dependencyContracts": [
@@ -375,7 +375,7 @@
       "disposition": "implemented",
       "productPaths": ["Doroti/src/Doroti.Ui/GraphicsAndSemanticsContracts.cs", "Doroti/src/Doroti.Ui/ViewContracts.cs"],
       "hostConsumers": ["Doroti/src/Doroti.Host.Maui/MauiFrameworkHost.cs", "Doroti/src/Doroti.Host.Web/BrowserFrameworkHost.cs"],
-      "testEvidence": ["Doroti/validation/evidence/app-targets-evidence.json", "Doroti/eng/validate-app-targets.ps1"]
+      "testEvidence": ["Doroti/eng/validate-fcr6-semantics.ps1", "Doroti/validation/evidence/flutter-conformance/fcr6-semantics-evidence.json"]
     },
     {
       "id": "runtime:scheduler-host",
@@ -420,7 +420,7 @@
       "disposition": "adapted",
       "productPaths": ["Doroti/src/Doroti.Host.Maui/MauiSemanticsBridge.cs", "Doroti/src/Doroti.Host.Maui/MauiSkiaCapabilities.cs"],
       "hostConsumers": ["DorotiDemoApp/src/App.cs"],
-      "testEvidence": ["Doroti/validation/evidence/app-targets-evidence.json", "Doroti/eng/validate-app-targets.ps1"]
+      "testEvidence": ["Doroti/eng/validate-fcr6-semantics.ps1", "Doroti/validation/evidence/flutter-conformance/fcr6-semantics-evidence.json"]
     }
   ],
   "patternPolicies": [

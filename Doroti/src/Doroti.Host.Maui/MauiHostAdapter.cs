@@ -218,6 +218,8 @@ internal sealed class MauiHostAdapter :
         _semantics.Update(update, (nodeId, action, arguments) =>
             SemanticsAction?.Invoke(nodeId, action, arguments));
 
+    internal void ClearSemantics() => _semantics.Clear();
+
     internal void RequestInvalidate()
     {
         Interlocked.Increment(ref _invalidationsRequested);
@@ -289,6 +291,8 @@ internal sealed class MauiHostAdapter :
             application.RequestedThemeChanged -= HandleRequestedThemeChanged;
         _nativeInput.Dispose();
         _textInput.Dispose();
+        if (_semantics is IDisposable semantics)
+            semantics.Dispose();
         lock (_gate)
         {
             _pendingFrameCallback = null;

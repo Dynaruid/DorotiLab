@@ -35,7 +35,11 @@ public sealed record MauiSemanticsDiagnostics(
     long UpdatesCoalesced,
     long ElementsCreated,
     long ActiveElements,
-    long RetainedNodes);
+    long RetainedNodes,
+    long NativePropertyWrites = 0,
+    long ImmediateFlushes = 0,
+    long StaleCallbacksSuppressed = 0,
+    long UpdatesSuppressed = 0);
 
 public sealed record MauiHostDiagnostics(
     string ApplicationSource,
@@ -57,6 +61,8 @@ public interface IMauiSemanticsBridge
     MauiSemanticsDiagnostics Diagnostics { get; }
 
     void Update(SemanticsUpdate update, Action<int, SemanticsAction, object?> performAction);
+
+    void Clear();
 }
 
 internal sealed class NullMauiSemanticsBridge : IMauiSemanticsBridge
@@ -68,4 +74,6 @@ internal sealed class NullMauiSemanticsBridge : IMauiSemanticsBridge
         _ = update;
         _ = performAction;
     }
+
+    public void Clear() { }
 }

@@ -1262,7 +1262,141 @@ public sealed record SemanticsNodeUpdate(
     long textSelectionBase = -1,
     long textSelectionExtent = -1);
 
-public sealed record SemanticsUpdate(long generation, IReadOnlyList<SemanticsNodeUpdate> nodes);
+public enum SemanticsUpdateUrgency
+{
+    /// <summary>Let the host classify the node delta. Geometry-only scroll work may be coalesced.</summary>
+    automatic,
+    /// <summary>Do not defer this update; it changes an assistive-technology interaction boundary.</summary>
+    immediate,
+    /// <summary>Flush the latest scroll geometry when a scroll activity reaches rest.</summary>
+    scrollEnd,
+}
+
+public sealed record SemanticsUpdate(
+    long generation,
+    IReadOnlyList<SemanticsNodeUpdate> nodes,
+    SemanticsUpdateUrgency urgency = SemanticsUpdateUrgency.automatic);
+
+[Flags]
+public enum SemanticsNodeProperty
+{
+    none = 0,
+    bounds = 1 << 0,
+    label = 1 << 1,
+    value = 1 << 2,
+    actions = 1 << 3,
+    flags = 1 << 4,
+    role = 1 << 5,
+    children = 1 << 6,
+    traversal = 1 << 7,
+    selection = 1 << 8,
+}
+
+public sealed record SemanticsNodeDelta(
+    int id,
+    SemanticsNodeProperty changedProperties,
+    int previousContentHash,
+    int contentHash)
+{
+    public bool IsGeometryOnly => changedProperties == SemanticsNodeProperty.bounds;
+}
+
+public sealed record SemanticsUpdateDelta(
+    IReadOnlyList<SemanticsNodeDelta> changedNodes,
+    IReadOnlyList<int> removedNodeIds)
+{
+    public bool HasChanges => changedNodes.Count != 0 || removedNodeIds.Count != 0;
+    public bool HasTopologyChange => removedNodeIds.Count != 0 || changedNodes.Any(delta =>
+        delta.previousContentHash == 0 ||
+        delta.changedProperties.HasFlag(SemanticsNodeProperty.children) ||
+        delta.changedProperties.HasFlag(SemanticsNodeProperty.traversal));
+    public bool IsGeometryOnly => changedNodes.Count != 0 && removedNodeIds.Count == 0 && changedNodes.All(delta => delta.IsGeometryOnly);
+    public bool RequiresImmediateFlush => HasTopologyChange || changedNodes.Any(delta =>
+        (delta.changedProperties & (SemanticsNodeProperty.label |
+                                    SemanticsNodeProperty.value |
+                                    SemanticsNodeProperty.actions |
+                                    SemanticsNodeProperty.flags |
+                                    SemanticsNodeProperty.role |
+                                    SemanticsNodeProperty.selection)) != 0);
+}
+
+/// <summary>
+/// Host-neutral semantics delta classifier. It keeps the framework's full node snapshots
+/// cheap for hosts that need native accessibility overlays, while making the set of native
+/// property writes and the 15-fps eligibility explicit.
+/// </summary>
+public static class SemanticsUpdateDiffer
+{
+    public static SemanticsUpdateDelta Diff(
+        IReadOnlyDictionary<int, SemanticsNodeUpdate> previous,
+        IReadOnlyList<SemanticsNodeUpdate> current)
+    {
+        ArgumentNullException.ThrowIfNull(previous);
+        ArgumentNullException.ThrowIfNull(current);
+
+        var changed = new List<SemanticsNodeDelta>();
+        var currentIds = new HashSet<int>();
+        foreach (var node in current)
+        {
+            currentIds.Add(node.id);
+            if (!previous.TryGetValue(node.id, out var oldNode))
+            {
+                changed.Add(new(node.id, AllProperties, 0, ContentHash(node)));
+                continue;
+            }
+
+            var properties = ChangedProperties(oldNode, node);
+            if (properties != SemanticsNodeProperty.none)
+                changed.Add(new(node.id, properties, ContentHash(oldNode), ContentHash(node)));
+        }
+
+        return new(changed, previous.Keys.Where(id => !currentIds.Contains(id)).OrderBy(id => id).ToArray());
+    }
+
+    public static int ContentHash(SemanticsNodeUpdate node)
+    {
+        var hash = new HashCode();
+        hash.Add(node.label, StringComparer.Ordinal);
+        hash.Add(node.value, StringComparer.Ordinal);
+        hash.Add(node.actions);
+        hash.Add(node.flags);
+        hash.Add(node.role);
+        hash.Add(node.traversalParent);
+        hash.Add(node.indexInParent);
+        hash.Add(node.textSelectionBase);
+        hash.Add(node.textSelectionExtent);
+        foreach (var child in node.children) hash.Add(child);
+        return hash.ToHashCode();
+    }
+
+    private const SemanticsNodeProperty AllProperties =
+        SemanticsNodeProperty.bounds |
+        SemanticsNodeProperty.label |
+        SemanticsNodeProperty.value |
+        SemanticsNodeProperty.actions |
+        SemanticsNodeProperty.flags |
+        SemanticsNodeProperty.role |
+        SemanticsNodeProperty.children |
+        SemanticsNodeProperty.traversal |
+        SemanticsNodeProperty.selection;
+
+    private static SemanticsNodeProperty ChangedProperties(SemanticsNodeUpdate previous, SemanticsNodeUpdate current)
+    {
+        var result = SemanticsNodeProperty.none;
+        if (previous.rect != current.rect) result |= SemanticsNodeProperty.bounds;
+        if (!string.Equals(previous.label, current.label, StringComparison.Ordinal)) result |= SemanticsNodeProperty.label;
+        if (!string.Equals(previous.value, current.value, StringComparison.Ordinal)) result |= SemanticsNodeProperty.value;
+        if (previous.actions != current.actions) result |= SemanticsNodeProperty.actions;
+        if (previous.flags != current.flags) result |= SemanticsNodeProperty.flags;
+        if (previous.role != current.role) result |= SemanticsNodeProperty.role;
+        if (!previous.children.SequenceEqual(current.children)) result |= SemanticsNodeProperty.children;
+        if (previous.traversalParent != current.traversalParent || previous.indexInParent != current.indexInParent)
+            result |= SemanticsNodeProperty.traversal;
+        if (previous.textSelectionBase != current.textSelectionBase || previous.textSelectionExtent != current.textSelectionExtent)
+            result |= SemanticsNodeProperty.selection;
+        return result;
+    }
+}
 
 public sealed class SemanticsUpdateBuilder
 {

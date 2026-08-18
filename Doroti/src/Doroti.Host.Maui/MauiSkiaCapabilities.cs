@@ -231,7 +231,11 @@ internal sealed class MauiSkiaCapabilities :
     public void SetEnabled(bool enabled, DartUiInvocation invocation)
     {
         _semanticsEnabled = enabled;
-        if (!enabled) _semantics.Clear();
+        if (!enabled)
+        {
+            _semantics.Clear();
+            _host.ClearSemantics();
+        }
     }
 
     public void Update(SemanticsUpdate update, DartUiInvocation invocation)
@@ -244,7 +248,7 @@ internal sealed class MauiSkiaCapabilities :
             .OrderBy(node => node.indexInParent ?? int.MaxValue)
             .ThenBy(node => node.id)
             .ToArray();
-        _host.UpdateSemantics(new SemanticsUpdate(update.generation, nodes));
+        _host.UpdateSemantics(new SemanticsUpdate(update.generation, nodes, update.urgency));
     }
 
     private static void PruneUnreachableSemantics(Dictionary<int, SemanticsNodeUpdate> nodes)
