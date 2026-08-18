@@ -13,13 +13,9 @@
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>C0 product cutover: source-ported desktop shell and generated/adopted Flutter framework packages.</PackageReleaseNotes>
+    <PackageReleaseNotes>MAUI and Web product hosts with product-owned C# framework packages.</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup Condition="'$(IsDorotiProduct)' == 'true'">
-    <ProjectReference Include="$(MSBuildThisFileDirectory)src\Doroti.Analyzers\Doroti.Analyzers.csproj"
-                      OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="false"
-                      PrivateAssets="all" />
     <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="/" Link="README.md" />
     <None Include="$(MSBuildThisFileDirectory)THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="licenses/" Link="THIRD-PARTY-NOTICES.md" />
   </ItemGroup>

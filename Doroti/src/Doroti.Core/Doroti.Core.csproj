@@ -1,6 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <AssemblyName>Doroti.Core</AssemblyName>
-    <IsDorotiProduct>true</IsDorotiProduct>
-  </PropertyGroup>
-</Project>

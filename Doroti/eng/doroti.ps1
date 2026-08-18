@@ -70,7 +70,6 @@ function Invoke-Doctor {
     $dotnet = Get-CommandResult 'dotnet' @('--version')
     $powerShell = [ordered]@{ available = $PSVersionTable.PSVersion.Major -ge 7; output = $PSVersionTable.PSVersion.ToString() }
     $flutterCheckout = Test-Path -LiteralPath (Join-Path $repositoryRoot 'reference/flutter-master') -PathType Container
-    $avaloniaCheckout = Test-Path -LiteralPath (Join-Path $repositoryRoot 'reference/Avalonia-main') -PathType Container
     $success = $dotnet.available -and $powerShell.available
     $report = [ordered]@{
         schemaVersion = 'doroti.doctor/v3'
@@ -80,8 +79,7 @@ function Invoke-Doctor {
         referenceTools = [ordered]@{
             requiredForProductDevelopment = $false
             flutterCheckout = $flutterCheckout
-            avaloniaCheckout = $avaloniaCheckout
-            note = 'Pinned sources are optional for reference comparison and migration work.'
+            note = 'The pinned Flutter source is optional for reference comparison and migration work.'
         }
     }
 
@@ -96,8 +94,7 @@ function Invoke-Doctor {
         '',
         "- .NET SDK: $($dotnet.output)",
         "- PowerShell: $($powerShell.output)",
-        "- Flutter reference checkout (optional): $flutterCheckout",
-        "- Avalonia reference checkout (optional): $avaloniaCheckout"
+        "- Flutter reference checkout (optional): $flutterCheckout"
     ) -join "`n"
     [System.IO.File]::WriteAllText((Join-Path $outputDirectory 'doctor.md'), $markdown + "`n", [System.Text.UTF8Encoding]::new($false))
     Write-Host "Doctor: $(if ($success) { 'PASS' } else { 'FAIL' })"
@@ -118,7 +115,6 @@ function Invoke-Audit {
 }
 
 function Invoke-MigrationAudit {
-    Invoke-Checked 'dotnet' @('run', '--project', (Join-Path $dorotiRoot 'tools/Doroti.AvaloniaPort/Doroti.AvaloniaPort.csproj'), '--', 'audit')
     Invoke-Checked 'dotnet' @('run', '--project', (Join-Path $dorotiRoot 'tools/Doroti.SourceTools/Doroti.SourceTools.csproj'), '--', 'audit')
 }
 

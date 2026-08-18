@@ -1191,7 +1191,7 @@ public abstract class TextInputControl
 
 /// <summary>
 /// Host-neutral bridge from Flutter Services text editing policy to the active
-/// view's native IME capability. No concrete Avalonia or platform type crosses
+/// view's native IME capability. No concrete platform type crosses
 /// this framework boundary.
 /// </summary>
 internal sealed class _HostTextInputControl : TextInputControl

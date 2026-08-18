@@ -5,7 +5,6 @@
     <IsDorotiProduct>true</IsDorotiProduct>
   </PropertyGroup>
   <ItemGroup>
-    <InternalsVisibleTo Include="Doroti.Host.Desktop.Framework" />
     <InternalsVisibleTo Include="Doroti.Host.Web" />
     <InternalsVisibleTo Include="Doroti.Host.Maui" />
     <InternalsVisibleTo Include="Doroti.Skia.RuntimeEffects" />

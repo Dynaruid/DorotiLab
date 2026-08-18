@@ -16,7 +16,6 @@ Dart-to-C# compiler와 고정 Flutter checkout은 선택적인 import·동작 re
 
 - `Doroti.Framework.*`: 제품이 소유하는 Foundation, Scheduler, Services, Physics, Animation, Gestures, Painting, Semantics, Rendering, Widgets, Cupertino, Material library
 - `Doroti.Runtime`, `Doroti.Ui`, `Doroti.Hosting`: runtime 의미와 target-neutral startup/builder/descriptor 계약
-- `Doroti.Engine`, `Doroti.Rendering`, `Doroti.Graphics`: frame scheduling, display output, graphics 계약
 - `Doroti.App.Sdk`: Windows, Mac Catalyst, Android, Web의 single-project target 선택과 generated native/Web bootstrap/plugin registration
 - `Doroti.Skia.RuntimeEffects`: native/Web host가 공유하는 fail-closed SkSL compiler와 uniform/image-sampler binder
 - `Doroti.Host.Maui`: host 소유 MAUI application/page lifecycle과 `SKGLView` GPU surface 통합
@@ -33,7 +32,7 @@ Windows Release build/publish와 실제 `MauiSKSwapChainPanel` GPU frame을 확�
 - 10.0.11의 .NET/ASP.NET/WindowsDesktop 및 browser-wasm runtime pack과 선택 target에 맞는 MAUI/WebAssembly workload
 - `Platforms/Web/tsconfig.json`이 있는 Web project에서만 restore하는 `Microsoft.TypeScript.MSBuild` 7.0.0
 
-`reference/flutter-master`와 `reference/Avalonia-main` checkout은 명시적인 reference 비교나 migration 작업에만 필요합니다. 해당 작업에서 Flutter가 필요하면 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 준비합니다.
+`reference/flutter-master` checkout은 명시적인 Flutter reference 비교나 migration 작업에만 필요합니다. 해당 작업에서 Flutter가 필요하면 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 준비합니다.
 
 ## 명령
 
@@ -54,7 +53,7 @@ pwsh -File ./Doroti/eng/doroti.ps1 validate
 | `validate` | Source 소유권, Release build, application target graph/build 검증 |
 | `validate -ValidationSuite Release` | Windows GPU live와 외부 Web template/package publish 시나리오 추가 |
 | `audit` | Repository-local storage와 현재 source 소유권 검사 |
-| `migration-audit` | Compiler, upstream selection, provenance audit를 명시적으로 실행 |
+| `migration-audit` | Compiler와 Flutter provenance audit를 명시적으로 실행 |
 | `release` | 통합 release suite, audit, pack, package 검사 |
 | `clean` | Doroti build output, artifact, 임시 local state 제거 |
 

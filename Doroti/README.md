@@ -16,7 +16,6 @@ See [ADR-019](docs/adr/ADR-019-product-framework-source-ownership.md) for the ow
 
 - `Doroti.Framework.*`: product-owned Foundation, Scheduler, Services, Physics, Animation, Gestures, Painting, Semantics, Rendering, Widgets, Cupertino, and Material libraries
 - `Doroti.Runtime`, `Doroti.Ui`, `Doroti.Hosting`: runtime semantics plus the target-neutral startup/builder/descriptor contract
-- `Doroti.Engine`, `Doroti.Rendering`, `Doroti.Graphics`: frame scheduling, display output, and graphics contracts
 - `Doroti.App.Sdk`: one-project Windows/Mac Catalyst/Android/Web selection plus generated native/Web bootstrap and plugin registration
 - `Doroti.Skia.RuntimeEffects`: shared fail-closed SkSL compiler and uniform/image-sampler binder used by native and Web hosts
 - `Doroti.Host.Maui`: host-owned MAUI application/page lifecycle and `SKGLView` GPU-surface integration
@@ -33,7 +32,7 @@ Windows Release build/publish and an actual `MauiSKSwapChainPanel` GPU frame are
 - .NET/ASP.NET/WindowsDesktop and browser-wasm runtime packs at 10.0.11, with matching MAUI/WebAssembly workloads
 - `Microsoft.TypeScript.MSBuild` 7.0.0 restored only for Web projects that contain `Platforms/Web/tsconfig.json`
 
-The `reference/flutter-master` and `reference/Avalonia-main` checkouts are needed only for explicit reference comparison or migration work. Prepare Flutter for such work with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`.
+The `reference/flutter-master` checkout is needed only for explicit Flutter reference comparison or migration work. Prepare Flutter for such work with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`.
 
 ## Commands
 
@@ -54,7 +53,7 @@ The active command surface is intentionally small:
 | `validate` | Run source ownership, Release build, and application target graph/build checks |
 | `validate -ValidationSuite Release` | Add Windows GPU live and external Web template/package publish scenarios |
 | `audit` | Check repository-local storage and current source ownership |
-| `migration-audit` | Explicitly run compiler, upstream selection, and provenance audits |
+| `migration-audit` | Explicitly run compiler and Flutter provenance audits |
 | `release` | Run the integrated release suite, audit, pack, and package inspection |
 | `clean` | Remove Doroti build output, artifacts, and temporary local state |
 

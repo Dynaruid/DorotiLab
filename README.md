@@ -9,7 +9,7 @@
 
 Doroti brings a shared C# widget, layout, painting, semantics, and rendering pipeline to Windows, Mac Catalyst, and the Web. Flutter remains the behavior reference for familiar Material and Cupertino APIs, while the maintained product implementation lives in `Doroti.Framework.*`.
 
-Doroti does not embed Flutter in a WebView and does not compose its UI from MAUI or Avalonia controls. Platform hosts provide the native window/view, GPU surface, input, text, clipboard, and accessibility capabilities; Doroti owns the widget and render trees.
+Doroti does not embed Flutter in a WebView and does not compose its UI from a platform control tree. Platform hosts provide the native window/view, GPU surface, input, text, clipboard, and accessibility capabilities; Doroti owns the widget and render trees.
 
 ## Current development model
 

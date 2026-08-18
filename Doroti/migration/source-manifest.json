@@ -2,26 +2,6 @@
   "schemaVersion": "doroti.source-manifest/v1",
   "sources": [
     {
-      "id": "avalonia",
-      "path": "../../reference/Avalonia-main",
-      "license": "licence.md",
-      "role": "Pinned Avalonia shell source closure for reviewed copy/adapt/port selection",
-      "upstreamRepository": "https://github.com/AvaloniaUI/Avalonia",
-      "upstreamRef": "main@2026-07-31",
-      "pinnedRevision": "git:f159423f691946e713f454447a780d4677d8a0d2",
-      "auditFiles": [
-        "src/Skia/Avalonia.Skia/FramebufferRenderTarget.cs",
-        "src/Skia/Avalonia.Skia/Gpu/OpenGl/GlRenderTarget.cs",
-        "src/Windows/Avalonia.Win32/DirectX/DxgiRenderTarget.cs",
-        "src/Windows/Avalonia.Win32/FramebufferManager.cs",
-        "src/Windows/Avalonia.Win32/Interop/UnmanagedMethods.cs",
-        "src/Windows/Avalonia.Win32/OpenGl/WglContext.cs",
-        "src/Windows/Avalonia.Win32/SimpleWindow.cs",
-        "src/Windows/Avalonia.Win32/WindowImpl.AppWndProc.cs",
-        "src/Windows/Avalonia.Win32/WindowImpl.cs"
-      ]
-    },
-    {
       "id": "flutter",
       "path": "../../reference/flutter-master",
       "license": "LICENSE",

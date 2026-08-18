@@ -19,18 +19,6 @@
       ],
       "flutterOrDartCommands": 0
     },
-    "reference": {
-      "status": "pass",
-      "upstream": "AvaloniaUI/Avalonia",
-      "revision": "f159423f691946e713f454447a780d4677d8a0d2",
-      "snapshotMode": "exact-git-object-reference",
-      "selectedSourceCount": 11,
-      "selectedCapabilityCount": 5,
-      "license": "MIT",
-      "copiedSources": 0,
-      "runtimeDependencies": 0,
-      "productCompileGraphIncluded": false
-    },
     "hosting": {
       "status": "pass",
       "razorComponents": [
@@ -84,7 +72,7 @@
         "typescriptMsBuild": "7.0.0"
       },
       "desktopNativeDependencies": 0,
-      "avaloniaDependencies": 0,
+      "legacyDesktopDependencies": 0,
       "canvasKitDependencies": 0,
       "userRazorFiles": 0,
       "flutterDartScaffoldFiles": 0,
@@ -350,7 +338,7 @@
     ]
   },
   "closure": {
-    "avaloniaProductDependencies": 0,
+    "legacyDesktopDependencies": 0,
     "desktopNativeDependencies": 0,
     "canvasKitArtifacts": 0,
     "repositoryPrivateFallbacks": 0,

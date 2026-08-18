@@ -1,7 +1,7 @@
 #Requires -Version 7.0
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('Toolchain', 'Reference', 'Hosting', 'Graph', 'Template', 'Compile', 'Publish')]
+    [ValidateSet('Toolchain', 'Hosting', 'Graph', 'Template', 'Compile', 'Publish')]
     [string] $Shard
 )
 
@@ -130,7 +130,7 @@ function Get-ExternalState {
 }
 
 function Write-Composite {
-    $names = @('toolchain', 'reference', 'hosting', 'graph', 'template', 'compile', 'publish')
+    $names = @('toolchain', 'hosting', 'graph', 'template', 'compile', 'publish')
     $shards = [ordered]@{}
     foreach ($name in $names) {
         $path = Join-Path $tmpRoot "$name.json"
@@ -147,7 +147,7 @@ function Write-Composite {
         shards = $shards
         manualBrowserLive = $manualBrowserLive
         closure = [ordered]@{
-            avaloniaProductDependencies = 0
+            legacyDesktopDependencies = 0
             desktopNativeDependencies = 0
             canvasKitArtifacts = 0
             repositoryPrivateFallbacks = 0
@@ -181,40 +181,6 @@ if ($Shard -eq 'Toolchain') {
         blazorWebAssemblySdk='available'; webAssemblySdk='available'; wasmTools='available'
         commands=@('dotnet --version','dotnet --list-sdks','dotnet workload list')
         flutterOrDartCommands=0
-    })
-}
-
-if ($Shard -eq 'Reference') {
-    $provenancePath = Join-Path $migrationRoot 'g7-browser-reference-provenance.json'
-    $selectionPath = Join-Path $migrationRoot 'g7-browser-reference-selection.json'
-    $provenance = Read-Json $provenancePath
-    $selection = Read-Json $selectionPath
-    $avaloniaRepo = Join-Path $repoRoot 'reference/Avalonia-main'
-    Assert-Equal $provenance.revision 'f159423f691946e713f454447a780d4677d8a0d2' 'Avalonia Browser reference revision'
-    $selected = @($provenance.selectedSources)
-    Assert-True ($selected.Count -ge 10) 'selected Avalonia behavior reference files'
-    foreach ($source in @($selected + $provenance.license)) {
-        $sourcePath = Join-Path $avaloniaRepo $source.path
-        Assert-True (Test-Path -LiteralPath $sourcePath -PathType Leaf) "reference source exists $($source.path)"
-        $actual = (& git hash-object -- $sourcePath).Trim()
-        Assert-Equal $LASTEXITCODE 0 "reference blob hash $($source.path)"
-        Assert-Equal $actual $source.gitBlobSha1 "reference blob $($source.path)"
-    }
-    Assert-Equal $provenance.productCompileGraphIncluded $false 'reference compile exclusion'
-    Assert-True (-not [string]::IsNullOrWhiteSpace($provenance.referenceRemovalCondition)) 'reference removal condition'
-    foreach ($capability in @($selection.capabilities)) {
-        Assert-True (@($capability.upstreamSymbols).Count -gt 0) "upstream symbols $($capability.id)"
-        Assert-True (-not [string]::IsNullOrWhiteSpace($capability.behavior)) "selected behavior $($capability.id)"
-        Assert-True ($capability.dorotiOwner -like 'Doroti.Host.Web.*') "independent Doroti owner $($capability.id)"
-        Assert-True (@($capability.independentImplementation).Count -gt 0) "independent implementation $($capability.id)"
-    }
-    $productFiles = @(Get-ChildItem (Join-Path $dorotiRoot 'src/Doroti.Host.Web'), (Join-Path $dorotiRoot 'src/Doroti.Target.Web.browser-wasm') -File -Recurse)
-    Assert-Equal @($productFiles | Select-String -Pattern '^\s*(namespace|using)\s+Avalonia' -CaseSensitive).Count 0 'Avalonia source namespace in product graph'
-    Write-Json (Join-Path $tmpRoot 'reference.json') ([ordered]@{
-        status='pass'; upstream=$provenance.upstream; revision=$provenance.revision
-        snapshotMode=$provenance.snapshotMode; selectedSourceCount=$selected.Count
-        selectedCapabilityCount=@($selection.capabilities).Count; license=$provenance.license.spdx
-        copiedSources=0; runtimeDependencies=0; productCompileGraphIncluded=$false
     })
 }
 
@@ -284,8 +250,8 @@ if ($Shard -eq 'Graph') {
     $templateFiles = @(Get-ChildItem -LiteralPath $templateRoot -File -Recurse)
     $graphFiles = @(Get-ChildItem (Join-Path $dorotiRoot 'src/Doroti.Host.Web'), (Join-Path $dorotiRoot 'src/Doroti.Target.Web.browser-wasm') -Include *.cs,*.csproj,*.razor,*.ts,*.json -File -Recurse |
         Where-Object { $_.FullName -notmatch '[\\/](bin|obj)[\\/]' -and $_.Name -ne 'packages.lock.json' })
-    $forbidden = @($graphFiles | Select-String -Pattern 'Doroti\.(Host\.Desktop|Shell\.|Vendor\.Avalonia|Target\.Windows|Target\.macOS)|Avalonia\.Controls|Win32|AppKit|NSOpenGL|WGL' -CaseSensitive)
-    Assert-Equal $forbidden.Count 0 'browser graph desktop/Avalonia dependency scan'
+    $forbidden = @($graphFiles | Select-String -Pattern 'Doroti\.(Host\.Desktop|Shell\.|Vendor\.|Target\.Windows\.win-x64|Target\.macOS)|Win32|AppKit|NSOpenGL|WGL' -CaseSensitive)
+    Assert-Equal $forbidden.Count 0 'browser graph legacy desktop dependency scan'
     Assert-True ($central -match 'SkiaSharp.Views.Blazor" Version="4.151.1"' -and $central -match 'SkiaSharp.NativeAssets.WebAssembly" Version="4.151.1"') 'SkiaSharp WebAssembly version set'
     Assert-True ($central -match 'Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0"') 'Blazor WebAssembly package pin'
     Assert-True ($central -match 'Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0"') 'Blazor WebAssembly DevServer package pin'
@@ -325,7 +291,7 @@ if ($Shard -eq 'Graph') {
     Assert-True ($templateSource -notmatch 'Router|EditForm|Microsoft\.AspNetCore\.Components\.Forms') 'router/forms/component UI dependency absence'
     Write-Json (Join-Path $tmpRoot 'graph.json') ([ordered]@{
         status='pass'; packageVersions=[ordered]@{ blazor='10.0.0'; skiaSharp='4.151.1'; typescriptMsBuild='7.0.0' }
-        desktopNativeDependencies=0; avaloniaDependencies=0; canvasKitDependencies=0
+        desktopNativeDependencies=0; legacyDesktopDependencies=0; canvasKitDependencies=0
         userRazorFiles=0; flutterDartScaffoldFiles=0; productFacingFlutterIdentifiers=0
         checkedInGeneratedJavaScript=0; webTypeScriptScope='template-demo-host-only'
         targetManifest=$manifest
@@ -551,7 +517,7 @@ if ($Shard -eq 'Publish') {
     Assert-Equal @($identityA | Where-Object path -match '(?i)canvaskit').Count 0 'CanvasKit artifacts'
     Assert-Equal @(Get-ChildItem -LiteralPath $publishA -File -Recurse | Where-Object FullName -match '[\\/]App[\\/](bin|obj)[\\/]').Count 0 'nested project build leakage into publish output'
     $assets = Get-Content -LiteralPath (Join-Path $repoRoot 'DorotiDemoApp/obj/web/project.assets.json') -Raw
-    Assert-True ($assets -notmatch 'Doroti\.(Host\.Desktop|Shell|Vendor\.Avalonia|Target\.Windows|Target\.macOS)') 'DorotiDemoApp browser assets desktop/Avalonia graph'
+    Assert-True ($assets -notmatch 'Doroti\.(Host\.Desktop|Shell|Vendor\.|Target\.Windows\.win-x64|Target\.macOS)') 'DorotiDemoApp browser assets legacy desktop graph'
     $externalAssets = Get-Content -LiteralPath (Join-Path $state.projectRoot 'obj/web/project.assets.json') -Raw
     Assert-True ($externalAssets -notmatch [regex]::Escape($dorotiRoot)) 'external browser assets repository source fallback'
     $externalStatic = Join-Path $externalPublish 'wwwroot'
@@ -580,7 +546,6 @@ if ($Shard -eq 'Publish') {
         runtime=[ordered]@{ frameworkVersion=$runtimeFrameworkVersion; coreLibWebCil=$publishedCoreLib[0].Name; coreLibSha256=Get-Sha $publishedCoreLib[0].FullName; nativeWasm=$native[0].Name; nativeSha256=Get-Sha $native[0].FullName; skiaWasm=@($skia | ForEach-Object { [ordered]@{ name=$_.Name; sha256=Get-Sha $_.FullName } }) }
         webModules=$webModules
         packages=[ordered]@{ target='Doroti.Target.Web.browser-wasm/0.2.0-beta'; blazor='10.0.0'; skiaSharp='4.151.1'; typescriptMsBuild='7.0.0-private-build-only' }
-        reference=[ordered]@{ upstream='AvaloniaUI/Avalonia'; revision='f159423f691946e713f454447a780d4677d8a0d2'; mode='behavior-reference-only' }
         files=$artifactIdentity
     }
     Write-Json (Join-Path $artifactRoot 'artifact-manifest.json') $manifest
@@ -595,7 +560,7 @@ if ($Shard -eq 'Publish') {
         bootLoader='_framework/blazor.webassembly.js'; runtimeFrameworkVersion=$runtimeFrameworkVersion; coreLibWebCil=[ordered]@{ name=$publishedCoreLib[0].Name; sha256=Get-Sha $publishedCoreLib[0].FullName }; nativeWasm=[ordered]@{ name=$native[0].Name; sha256=Get-Sha $native[0].FullName }
         skiaWasmCount=$skia.Count; appAssembly=$app[0].Name; resources=@('assets/doroti-mark.txt','locales/en-US.json')
         webModules=$webModules; publishedTypeScriptSources=0; publishedTypeScriptCompilerAssets=0
-        repositoryPrivateFallbacks=0; desktopNativeDependencies=0; avaloniaDependencies=0; canvasKitArtifacts=0
+        repositoryPrivateFallbacks=0; desktopNativeDependencies=0; legacyDesktopDependencies=0; canvasKitArtifacts=0
         missingStaticArtifacts=0; staticArtifactHashMismatches=0; flutterOrDartCommands=0
         artifactRoot='artifacts/web/0.2.0-beta/wwwroot'
     })

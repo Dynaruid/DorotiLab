@@ -125,7 +125,7 @@ function Invoke-TargetGate {
 function Invoke-ReleaseGate {
     & (Join-Path $PSScriptRoot 'validate-app-targets.ps1') -Shard Live
     & (Join-Path $PSScriptRoot 'validate-app-targets.ps1') -Shard Evidence
-    foreach ($shard in @('Toolchain', 'Reference', 'Hosting', 'Graph', 'Template', 'Compile', 'Publish')) {
+    foreach ($shard in @('Toolchain', 'Hosting', 'Graph', 'Template', 'Compile', 'Publish')) {
         & (Join-Path $PSScriptRoot 'validate-web-product.ps1') -Shard $shard
     }
     $completed.Add('release')

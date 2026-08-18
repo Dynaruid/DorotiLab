@@ -1,6 +1,6 @@
 namespace Doroti.Ui;
 
-/// <summary>The stable capability identifiers shared with migration/flutter-avalonia/capability-map.json.</summary>
+/// <summary>The stable capability identifiers shared with host capability evidence.</summary>
 public static class DorotiCapabilityIds
 {
     public const string WindowLifecycle = "window.lifecycle";

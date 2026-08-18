@@ -135,7 +135,7 @@ public readonly record struct DorotiTextInputConfiguration(
     bool enableSuggestions,
     string? actionLabel = null);
 
-/// <summary>Avalonia-backed IME transport. Editing policy remains in Flutter Services.</summary>
+/// <summary>Host-backed IME transport. Editing policy remains in Flutter Services.</summary>
 public interface ITextInputHostCapability
 {
     event Action<DorotiTextEditingState>? EditingStateChanged;

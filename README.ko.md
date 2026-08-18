@@ -9,7 +9,7 @@
 
 Doroti는 공용 C# widget, layout, painting, semantics, rendering pipeline을 Windows, Mac Catalyst와 Web에 제공합니다. 익숙한 Material/Cupertino API의 동작 reference는 Flutter이지만, 유지보수하는 제품 구현은 `Doroti.Framework.*`에 있습니다.
 
-Doroti는 Flutter를 WebView에 넣지 않으며 MAUI 또는 Avalonia control로 UI를 구성하지 않습니다. Platform host는 native window/view, GPU surface, input, text, clipboard, accessibility capability를 제공하고 Doroti가 widget/render tree를 소유합니다.
+Doroti는 Flutter를 WebView에 넣지 않으며 플랫폼 UI control tree로 UI를 구성하지 않습니다. Platform host는 native window/view, GPU surface, input, text, clipboard, accessibility capability를 제공하고 Doroti가 widget/render tree를 소유합니다.
 
 ## 현재 개발 방식
 

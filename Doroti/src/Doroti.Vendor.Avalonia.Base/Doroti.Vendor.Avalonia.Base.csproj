@@ -1,9 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <AssemblyName>Doroti.Vendor.Avalonia.Base</AssemblyName>
-    <IsDorotiProduct>true</IsDorotiProduct>
-  </PropertyGroup>
-  <ItemGroup>
-    <InternalsVisibleTo Include="Doroti.Host.Desktop" />
-  </ItemGroup>
-</Project>
