@@ -21,16 +21,39 @@ public static class App
 
     private static Widget CreateRootWidget()
     {
-        var theme = Material.ThemeData.Create(
-            useMaterial3: true,
-            colorSchemeSeed: new UiColor(0xff6750a4L),
-            scaffoldBackgroundColor: new UiColor(0xfffffbfeL));
         return new Material.MaterialApp(
             title: "Doroti C# App",
             color: new UiColor(0xff6750a4L),
+            theme: AppTheme.Light,
+            darkTheme: AppTheme.Dark,
+            themeMode: Material.ThemeMode.system,
             locale: new Locale("en", "US"),
             debugShowCheckedModeBanner: false,
-            home: new Material.Theme(data: theme, child: new CounterPage()));
+            home: new CounterPage());
+    }
+}
+
+public static class AppTheme
+{
+    private static readonly UiColor Seed = new(0xff6750a4L);
+
+    public static Material.ThemeData Light { get; } = Create(Brightness.light);
+    public static Material.ThemeData Dark { get; } = Create(Brightness.dark);
+
+    private static Material.ThemeData Create(Brightness brightness)
+    {
+        var isDark = brightness == Brightness.dark;
+        var palette = Material.ColorScheme.CreateFromSeed(
+            seedColor: Seed,
+            brightness: brightness,
+            surface: new UiColor(isDark ? 0xff141218L : 0xfffffbfeL),
+            surfaceContainer: new UiColor(isDark ? 0xff211f26L : 0xfff3edf7L),
+            surfaceContainerHigh: new UiColor(isDark ? 0xff2b2930L : 0xffece6f0L),
+            outline: new UiColor(isDark ? 0xff938f99L : 0xff79747eL));
+        return Material.ThemeData.Create(
+            useMaterial3: true,
+            colorScheme: palette,
+            scaffoldBackgroundColor: palette.surface);
     }
 }
 
@@ -55,30 +78,34 @@ public sealed class CounterPageState : State<CounterPage>
     private readonly FragmentShader _counterShader =
         FragmentProgram.fromSource(CounterShaderSource, "doroti-template-counter").fragmentShader();
 
-    public override Widget build(BuildContext context) => new Material.Scaffold(
-        appBar: new Material.AppBar(
-            title: new Text("Doroti C# single-project app"),
-            backgroundColor: new UiColor(0xffeaddffL),
-            foregroundColor: new UiColor(0xff21005dL)),
-        body: new Center(
-            child: new Column(
-                mainAxisAlignment: Doroti.Framework.Rendering.MainAxisAlignment.center,
-                spacing: 16,
-                children:
-                [
-                    new Text("Package asset: assets/doroti-mark.txt"),
-                    new Text("Localized resource: locales/en-US.json"),
-                    new ShaderMask(
-                        shaderCallback: bounds =>
-                        {
-                            _counterShader.setFloat(0, bounds.width);
-                            _counterShader.setFloat(1, bounds.height);
-                            _counterShader.setFloat(2, _count * 0.4);
-                            return _counterShader;
-                        },
-                        child: new Text($"Custom SkSL count: {_count}")),
-                    new Material.ElevatedButton(
-                        onPressed: () => setState(() => _count++),
-                        child: new Text("Increment")),
-                ])));
+    public override Widget build(BuildContext context)
+    {
+        var palette = Material.Theme.of(context).colorScheme;
+        return new Material.Scaffold(
+            appBar: new Material.AppBar(
+                title: new Text("Doroti C# single-project app"),
+                backgroundColor: palette.primaryContainer,
+                foregroundColor: palette.onPrimaryContainer),
+            body: new Center(
+                child: new Column(
+                    mainAxisAlignment: Doroti.Framework.Rendering.MainAxisAlignment.center,
+                    spacing: 16,
+                    children:
+                    [
+                        new Text("Package asset: assets/doroti-mark.txt"),
+                        new Text("Localized resource: locales/en-US.json"),
+                        new ShaderMask(
+                            shaderCallback: bounds =>
+                            {
+                                _counterShader.setFloat(0, bounds.width);
+                                _counterShader.setFloat(1, bounds.height);
+                                _counterShader.setFloat(2, _count * 0.4);
+                                return _counterShader;
+                            },
+                            child: new Text($"Custom SkSL count: {_count}")),
+                        new Material.ElevatedButton(
+                            onPressed: () => setState(() => _count++),
+                            child: new Text("Increment")),
+                    ])));
+    }
 }

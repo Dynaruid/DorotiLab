@@ -23,6 +23,8 @@ Dart-to-C# compiler와 고정 Flutter checkout은 선택적인 import·동작 re
 
 Web 실행 source는 TypeScript가 소유합니다. 앱은 `Platforms/Web/src/**/*.ts`, Doroti는 `src/Doroti.Host.Web/Web/*.ts`를 편집합니다. `Microsoft.TypeScript.MSBuild` 7.0.0이 target/configuration별 `obj`에 JavaScript를 만들며 publish에는 그 결과만 포함됩니다. 앱 도구로 Node, npm, Bun, bundler를 요구하지 않습니다. 자세한 결정은 [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md)에 있습니다.
 
+Material 앱은 `MaterialApp(theme:, darkTheme:, themeMode: ThemeMode.system)`으로 시스템 다크 모드를 따릅니다. `ColorScheme.CreateFromSeed`에 `Brightness.light`/`Brightness.dark`와 `surface`, `primary`, `outline` 같은 role override를 전달해 두 팔레트를 구성하고, widget은 `Theme.of(context).colorScheme`에서 현재 팔레트를 읽습니다. MAUI와 Web의 시스템 변경 전달 및 전체 예시는 [DorotiDemoApp 다크 모드 문서](../DorotiDemoApp/README.ko.md#시스템-다크-모드와-색-팔레트)를 참고하세요.
+
 Windows Release build/publish와 실제 `MauiSKSwapChainPanel` GPU frame을 확인했습니다. Android arm64 APK/AAB build와 실기기 `MauiSKGLTextureView` OpenGL ES custom-SkSL frame/replay도 자동 확인했습니다. Android x64 target은 x86_64 에뮬레이터에서 build한 뒤 반복 스크롤과 visible-content screenshot으로 지속 표시를 확인했습니다. Web compile/publish와 Mac Catalyst cross-build는 통과했지만 새 custom shader의 Web 및 Mac native presentation은 별도의 `notVerified` gate입니다.
 
 ## 요구 사항

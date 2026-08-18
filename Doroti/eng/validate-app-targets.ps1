@@ -188,6 +188,9 @@ function Invoke-GraphGate {
     foreach ($token in @('SKTouchDeviceType.Mouse','SKTouchDeviceType.Pen','SKTouchAction.WheelChanged','_textInput.SetClient','MauiNativeInput.Attach')) {
         Assert-True ($mauiHost.IndexOf($token, [StringComparison]::Ordinal) -ge 0) "MAUI interaction token $token"
     }
+    foreach ($token in @('RequestedThemeChanged', 'AppTheme.Dark', 'ConfigurationChanged?.Invoke(Configuration)')) {
+        Assert-True ($mauiHost.IndexOf($token, [StringComparison]::Ordinal) -ge 0) "MAUI system theme token $token"
+    }
     Assert-True ($mauiSurface -match 'MauiTextInputBridge' -and $mauiSurface -match 'MauiSemanticsBridge' -and $mauiSurface -match 'setSemanticsTreeEnabled\(true\)') 'MAUI native IME and semantics composition'
     Assert-True ($mauiSurface -notmatch 'AUTO_QUIT|auto_quit|Application\.Current\?\.Quit') 'MAUI application auto-quit absence'
     Assert-True ($mauiGraphics -match 'canvas\.Clear\(_backgroundColor\)' -and $mauiGraphics -match 'if \(frame is null\)') 'MAUI opaque startup surface clear'
@@ -196,6 +199,9 @@ function Invoke-GraphGate {
     foreach ($root in @((Split-Path $project -Parent), $templateRoot)) {
         $appSource = Get-Content -LiteralPath (Join-Path $root 'src/App.cs') -Raw
         Assert-True ($appSource -match 'DorotiViewConfiguration[\s\S]*0xfffffbfeL') "$root startup background contract"
+        foreach ($token in @('ColorScheme.CreateFromSeed(', 'Brightness.light', 'Brightness.dark', 'theme:', 'darkTheme:', 'ThemeMode.system', 'Theme.of(context).colorScheme')) {
+            Assert-True ($appSource.IndexOf($token, [StringComparison]::Ordinal) -ge 0) "$root system theme/palette token $token"
+        }
         Assert-True (-not (Test-Path -LiteralPath (Join-Path $root 'Platforms/Maui'))) "$root legacy Platforms/Maui absence"
         Assert-True (@(Get-ChildItem -LiteralPath (Join-Path $root 'Platforms') -Filter 'PlatformBootstrap.cs' -File -Recurse).Count -eq 0) "$root legacy PlatformBootstrap absence"
         $shaderPath = Join-Path $root 'Resources/Shaders/aurora.sksl'

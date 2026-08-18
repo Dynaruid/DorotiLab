@@ -12,6 +12,30 @@ using Semantics = Doroti.Framework.Widgets.Semantics;
 using Size = Doroti.Ui.Size;
 using UiColor = Doroti.Ui.Color;
 
+internal static class DemoTheme
+{
+    private static readonly UiColor Seed = new(0xff6750a4L);
+
+    internal static Material.ThemeData Light { get; } = Create(Brightness.light);
+    internal static Material.ThemeData Dark { get; } = Create(Brightness.dark);
+
+    private static Material.ThemeData Create(Brightness brightness)
+    {
+        var isDark = brightness == Brightness.dark;
+        var palette = Material.ColorScheme.CreateFromSeed(
+            seedColor: Seed,
+            brightness: brightness,
+            surface: new UiColor(isDark ? 0xff141218L : 0xfffffbfeL),
+            surfaceContainer: new UiColor(isDark ? 0xff211f26L : 0xfff3edf7L),
+            surfaceContainerHigh: new UiColor(isDark ? 0xff2b2930L : 0xffece6f0L),
+            outline: new UiColor(isDark ? 0xff938f99L : 0xff79747eL));
+        return Material.ThemeData.Create(
+            useMaterial3: true,
+            colorScheme: palette,
+            scaffoldBackgroundColor: palette.surface);
+    }
+}
+
 internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requireExternalUia) : IDorotiViewEntrypoint
 {
     private WidgetsFlutterBinding? _binding;
@@ -121,10 +145,6 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
 
     private Material.MaterialApp CreateRootApp()
     {
-        var theme = Material.ThemeData.Create(
-            useMaterial3: true,
-            colorSchemeSeed: new UiColor(0xff6750a4L),
-            scaffoldBackgroundColor: new UiColor(0xfffffbfeL));
         Widget Gallery() => new MaterialGallery(
                 state => GalleryState = state,
                 scaffold => RootScaffold = scaffold);
@@ -133,20 +153,24 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
             ? new Material.MaterialApp(
                 title: "Doroti Material Demo",
                 color: new UiColor(0xff6750a4L),
+                theme: DemoTheme.Light,
+                darkTheme: DemoTheme.Dark,
+                themeMode: Material.ThemeMode.system,
                 locale: new Locale("en", "US"),
                 debugShowCheckedModeBanner: false,
-                builder: (_, _) => new Material.Theme(
-                    data: theme,
-                    child: new Overlay(initialEntries:
-                    [
-                        new OverlayEntry(builder: _ => Gallery()),
-                    ])))
+                builder: (_, _) => new Overlay(initialEntries:
+                [
+                    new OverlayEntry(builder: _ => Gallery()),
+                ]))
             : new Material.MaterialApp(
                 title: "Doroti Material Demo",
                 color: new UiColor(0xff6750a4L),
+                theme: DemoTheme.Light,
+                darkTheme: DemoTheme.Dark,
+                themeMode: Material.ThemeMode.system,
                 locale: new Locale("en", "US"),
                 debugShowCheckedModeBanner: false,
-                home: new Material.Theme(data: theme, child: Gallery()));
+                home: Gallery());
     }
 }
 
@@ -284,6 +308,8 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
     public override Widget build(BuildContext context)
     {
         BuildCount++;
+        var palette = Material.Theme.of(context).colorScheme;
+        var interactionOverlay = palette.primary.withOpacity(0.13);
         _galleryFilterShader.setFloat(2, _slider * 6.2831853);
         var button = ActionSemantics(InteractiveLabels[0], new Material.ElevatedButton(
             onPressed: () => Mutate(() => _buttonCount++),
@@ -291,14 +317,14 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
         var checkbox = ActionSemantics(InteractiveLabels[1], new Material.Checkbox(
             value: _checked,
             semanticLabel: "Gallery checkbox",
-            activeColor: new UiColor(0xff6750a4L),
-            fillColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(0xff6750a4L)),
-            overlayColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(0x226750a4L)),
-            checkColor: new UiColor(0xffffffffL),
-            focusColor: new UiColor(0x226750a4L),
-            hoverColor: new UiColor(0x226750a4L),
+            activeColor: palette.primary,
+            fillColor: new WidgetStatePropertyAll<UiColor?>(palette.primary),
+            overlayColor: new WidgetStatePropertyAll<UiColor?>(interactionOverlay),
+            checkColor: palette.onPrimary,
+            focusColor: interactionOverlay,
+            hoverColor: interactionOverlay,
             splashRadius: 20,
-            side: new BorderSide(color: new UiColor(0xff49454fL), width: 2),
+            side: new BorderSide(color: palette.outline, width: 2),
             shape: new RoundedRectangleBorder(),
             materialTapTargetSize: Material.MaterialTapTargetSize.padded,
             visualDensity: Material.VisualDensity.standard,
@@ -306,30 +332,30 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
         var radio = ActionSemantics(InteractiveLabels[2], new Material.Radio<long>(
             value: 1,
             groupValue: _radio,
-            activeColor: new UiColor(0xff6750a4L),
-            fillColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(0xff6750a4L)),
+            activeColor: palette.primary,
+            fillColor: new WidgetStatePropertyAll<UiColor?>(palette.primary),
             backgroundColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(0x00000000L)),
-            overlayColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(0x226750a4L)),
-            focusColor: new UiColor(0x226750a4L),
-            hoverColor: new UiColor(0x226750a4L),
+            overlayColor: new WidgetStatePropertyAll<UiColor?>(interactionOverlay),
+            focusColor: interactionOverlay,
+            hoverColor: interactionOverlay,
             splashRadius: 20,
-            side: new BorderSide(color: new UiColor(0xff49454fL), width: 2),
+            side: new BorderSide(color: palette.outline, width: 2),
             materialTapTargetSize: Material.MaterialTapTargetSize.padded,
             visualDensity: Material.VisualDensity.standard,
             onChanged: value => Mutate(() => _radio = value)), () => _radio = _radio == 1 ? 0 : 1, _radio.ToString());
         var toggle = ActionSemantics(InteractiveLabels[3], new Material.Switch(
             value: _switched,
-            activeThumbColor: new UiColor(0xff6750a4L),
-            activeTrackColor: new UiColor(0xffd0bcffL),
-            inactiveThumbColor: new UiColor(0xff79747eL),
-            inactiveTrackColor: new UiColor(0xffe7e0ecL),
-            thumbColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(_switched ? 0xff6750a4L : 0xff79747eL)),
-            trackColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(_switched ? 0xffd0bcffL : 0xffe7e0ecL)),
-            trackOutlineColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(0xff79747eL)),
+            activeThumbColor: palette.primary,
+            activeTrackColor: palette.primaryContainer,
+            inactiveThumbColor: palette.onSurfaceVariant,
+            inactiveTrackColor: palette.surfaceContainerHighest,
+            thumbColor: new WidgetStatePropertyAll<UiColor?>(_switched ? palette.primary : palette.onSurfaceVariant),
+            trackColor: new WidgetStatePropertyAll<UiColor?>(_switched ? palette.primaryContainer : palette.surfaceContainerHighest),
+            trackOutlineColor: new WidgetStatePropertyAll<UiColor?>(palette.outline),
             trackOutlineWidth: new WidgetStatePropertyAll<double?>(1),
-            overlayColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(0x226750a4L)),
-            focusColor: new UiColor(0x226750a4L),
-            hoverColor: new UiColor(0x226750a4L),
+            overlayColor: new WidgetStatePropertyAll<UiColor?>(interactionOverlay),
+            focusColor: interactionOverlay,
+            hoverColor: interactionOverlay,
             splashRadius: 20,
             onChanged: value => Mutate(() => _switched = value)), () => _switched = !_switched, _switched.ToString());
         var slider = ActionSemantics(InteractiveLabels[4], new Material.Slider(
@@ -337,10 +363,10 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
             min: 0,
             max: 1,
             divisions: 10,
-            activeColor: new UiColor(0xff6750a4L),
-            inactiveColor: new UiColor(0xffcac4d0L),
-            thumbColor: new UiColor(0xff6750a4L),
-            overlayColor: new WidgetStatePropertyAll<UiColor?>(new UiColor(0x226750a4L)),
+            activeColor: palette.primary,
+            inactiveColor: palette.surfaceContainerHighest,
+            thumbColor: palette.primary,
+            overlayColor: new WidgetStatePropertyAll<UiColor?>(interactionOverlay),
             showValueIndicator: Material.ShowValueIndicator.never,
             onChanged: value => Mutate(() => _slider = value)), () => _slider = _slider < 0.7 ? 0.8 : 0.2, $"{_slider:F1}");
 
@@ -349,9 +375,10 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
             itemCount: 12,
             itemExtent: 30,
             itemBuilder: (_, index) => new Container(
-                color: new UiColor(index % 2 == 0 ? 0xff6750a4L : 0xfff4b400L),
+                color: index % 2 == 0 ? palette.primaryContainer : palette.tertiaryContainer,
                 child: new Text($"Lazy item {index + 1}",
-                    style: new Doroti.Framework.Painting.TextStyle(color: new UiColor(0xff000000L)))));
+                    style: new Doroti.Framework.Painting.TextStyle(
+                        color: index % 2 == 0 ? palette.onPrimaryContainer : palette.onTertiaryContainer))));
         var blurToggle = new Semantics(
             key: _blurToggleKey,
             container: true,
@@ -385,7 +412,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                                 child: new Container(color: new UiColor(0x01ffffffL))))),
                         new Positioned(left: 0, top: 0, right: 0, bottom: 0, child: new IgnorePointer(
                             child: new Container(
-                                color: new UiColor(0x55ffffffL),
+                                color: palette.surface.withOpacity(0.33),
                                 padding: EdgeInsets.CreateAll(12),
                                 child: new Column(
                                     crossAxisAlignment: Doroti.Framework.Rendering.CrossAxisAlignment.start,
@@ -400,10 +427,10 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
         var scaffold = new Material.Scaffold(
             appBar: new Material.AppBar(
                 title: new Text("Doroti Material Gallery"),
-                backgroundColor: new UiColor(0xffeaddffL),
-                foregroundColor: new UiColor(0xff21005dL),
-                iconTheme: new IconThemeData(color: new UiColor(0xff1d1b20L), size: 24),
-                actionsIconTheme: new IconThemeData(color: new UiColor(0xff49454fL), size: 24)),
+                backgroundColor: palette.primaryContainer,
+                foregroundColor: palette.onPrimaryContainer,
+                iconTheme: new IconThemeData(color: palette.onPrimaryContainer, size: 24),
+                actionsIconTheme: new IconThemeData(color: palette.onPrimaryContainer, size: 24)),
             body: new Material.Scrollbar(
                 controller: _scrollController,
                 thumbVisibility: true,
@@ -420,7 +447,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                             new Stack(children:
                             [
                                 new Text("Custom SkSL · shared GPU runtime effect · all targets",
-                                    style: new Doroti.Framework.Painting.TextStyle(color: new UiColor(0xff6750a4L))),
+                                    style: new Doroti.Framework.Painting.TextStyle(color: palette.primary)),
                                 new ExcludeSemantics(child: new ShaderMask(
                                     blendMode: Doroti.Ui.BlendMode.srcIn,
                                     shaderCallback: bounds =>
@@ -431,19 +458,20 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                                         return _galleryShader;
                                     },
                                     child: new Text("Custom SkSL · shared GPU runtime effect · all targets",
-                                        style: new Doroti.Framework.Painting.TextStyle(color: new UiColor(0xff6750a4L))))),
+                                        style: new Doroti.Framework.Painting.TextStyle(color: palette.primary)))),
                             ]),
                             new ImageFiltered(
                                 imageFilter: new ImageFilter(_galleryFilterShader, FilterQuality.low),
                                 child: new Container(
                                     width: 340,
                                     height: 48,
-                                    color: new UiColor(0xff6750a4L),
+                                    color: palette.primary,
                                     alignment: Alignment.center,
-                                    child: new Text("ImageFilter.shader · implicit child texture · GPU 2-pass"))),
+                                    child: new Text("ImageFilter.shader · implicit child texture · GPU 2-pass",
+                                        style: new Doroti.Framework.Painting.TextStyle(color: palette.onPrimary)))),
                             new Text("Reviewed Material · promoted product · strict Skia GPU"),
                             new Material.Card(
-                                color: new UiColor(0xfff3edf7L),
+                                color: palette.surfaceContainer,
                                 child: new Material.ListTile(
                                     title: new Text("Material components"),
                                     subtitle: new Text("Card + ListTile + local state"))),
@@ -455,8 +483,11 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                                 alignment: Alignment.center,
                                 children:
                                 [
-                                    new Container(width: 260, height: 56, color: new UiColor(_switched ? 0xffd0bcffL : 0xffb3261eL)),
-                                    new Text($"Stack state · {StateSignature}"),
+                                    new Container(width: 260, height: 56,
+                                        color: _switched ? palette.primaryContainer : palette.errorContainer),
+                                    new Text($"Stack state · {StateSignature}",
+                                        style: new Doroti.Framework.Painting.TextStyle(
+                                            color: _switched ? palette.onPrimaryContainer : palette.onErrorContainer)),
                                 ])),
                             new Row(spacing: 8, children: [blurToggle, new Text("Backdrop blur (native effect gate)")]),
                             new Text("Lazy ListView.builder + clipped backdrop panel"),
@@ -464,8 +495,8 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                         ])))),
             floatingActionButton: ActionSemantics(InteractiveLabels[5], new Material.FloatingActionButton(
                 tooltip: "Material action",
-                backgroundColor: new UiColor(0xffeaddffL),
-                foregroundColor: new UiColor(0xff21005dL),
+                backgroundColor: palette.primaryContainer,
+                foregroundColor: palette.onPrimaryContainer,
                 onPressed: () => Mutate(() => _fabCount++),
                 child: new Text("+")), () => _fabCount++, _fabCount.ToString()));
         widget.ScaffoldBuilt(scaffold);

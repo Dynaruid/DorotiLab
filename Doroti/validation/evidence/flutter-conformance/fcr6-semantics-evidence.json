@@ -1,8 +1,8 @@
 {
   "schemaVersion": "doroti.flutter-conformance-fcr6-evidence/v1",
   "status": "partial",
-  "capturedAt": "2026-08-18T06:17:09.5457764Z",
-  "repositoryRevision": "19c6be0132f0c2b930b210dd21c32c6f1a20788f",
+  "capturedAt": "2026-08-18T07:23:12.3832843Z",
+  "repositoryRevision": "5204b022d85bbf05a149e8b4d65644a763be1537",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "fixtureManifest": "Doroti/validation/fcr6-semantics/fixture-manifest.json",
   "runtimeContract": {

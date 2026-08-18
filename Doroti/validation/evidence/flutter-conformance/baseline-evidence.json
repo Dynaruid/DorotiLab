@@ -1,8 +1,8 @@
 {
   "schemaVersion": "doroti.flutter-conformance-baseline/v1",
   "milestone": "FCR-0",
-  "capturedAtUtc": "2026-08-18T06:15:52.9497473Z",
-  "repositoryRevision": "19c6be0132f0c2b930b210dd21c32c6f1a20788f",
+  "capturedAtUtc": "2026-08-18T07:22:38.5459931Z",
+  "repositoryRevision": "5204b022d85bbf05a149e8b4d65644a763be1537",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "matrix": "Doroti/validation/evidence/flutter-conformance/framework-parity-matrix.json",
   "inventory": {
@@ -3460,7 +3460,7 @@
       "status": "partial",
       "scenario": "DorotiDemoApp launch, idle repaint, wheel/drag scroll, Ink/FAB and frame survival",
       "sourceEvidence": "Doroti/validation/evidence/app-targets-evidence.json",
-      "sourceEvidenceCapturedAtUtc": "2026-08-18T15:10:46.0555882+09:00",
+      "sourceEvidenceCapturedAtUtc": "2026-08-18T15:22:38.8847905+09:00",
       "metrics": {
         "frameTimeMs": {
           "status": "notVerified",
@@ -3469,12 +3469,12 @@
         },
         "invalidationsRequested": {
           "status": "observed",
-          "value": 245,
+          "value": 243,
           "source": "app-targets-evidence.json"
         },
         "invalidationsCoalesced": {
           "status": "observed",
-          "value": 118,
+          "value": 117,
           "source": "app-targets-evidence.json"
         },
         "dirtyRenderCount": {
@@ -3504,12 +3504,12 @@
         },
         "submittedFrames": {
           "status": "observed",
-          "value": 120,
+          "value": 119,
           "source": "app-targets-evidence.json"
         },
         "presentedFrames": {
           "status": "observed",
-          "value": 120,
+          "value": 119,
           "source": "app-targets-evidence.json"
         },
         "failedFrames": {
@@ -3535,7 +3535,7 @@
       "status": "partial",
       "scenario": "DorotiDemoApp launch, automated scroll, Ink/FAB and persistent display",
       "sourceEvidence": "Doroti/validation/evidence/app-targets-evidence.json",
-      "sourceEvidenceCapturedAtUtc": "2026-08-18T15:10:46.0555882+09:00",
+      "sourceEvidenceCapturedAtUtc": "2026-08-18T15:22:38.8847905+09:00",
       "metrics": {
         "frameTimeMs": {
           "status": "notVerified",

@@ -5,6 +5,38 @@ var requiredComponents = new HashSet<string>(StringComparer.Ordinal)
 };
 var capturedComponents = new HashSet<string>(StringComparer.Ordinal);
 
+var seed = new Doroti.Ui.Color(0xff6750a4L);
+var lightSurface = new Doroti.Ui.Color(0xfffffbfeL);
+var darkSurface = new Doroti.Ui.Color(0xff141218L);
+var lightPalette = Doroti.Framework.Material.ColorScheme.CreateFromSeed(
+    seedColor: seed,
+    brightness: Doroti.Ui.Brightness.light,
+    surface: lightSurface);
+var darkPalette = Doroti.Framework.Material.ColorScheme.CreateFromSeed(
+    seedColor: seed,
+    brightness: Doroti.Ui.Brightness.dark,
+    surface: darkSurface);
+var lightTheme = Doroti.Framework.Material.ThemeData.Create(
+    colorScheme: lightPalette,
+    useMaterial3: true,
+    platform: Doroti.Framework.Foundation.TargetPlatform.windows);
+var darkTheme = Doroti.Framework.Material.ThemeData.Create(
+    colorScheme: darkPalette,
+    useMaterial3: true,
+    platform: Doroti.Framework.Foundation.TargetPlatform.windows);
+Require(lightTheme.brightness == Doroti.Ui.Brightness.light, "light palette preserves light brightness");
+Require(darkTheme.brightness == Doroti.Ui.Brightness.dark, "dark palette preserves dark brightness");
+Require(lightTheme.colorScheme.surface.value == lightSurface.value, "light palette accepts role overrides");
+Require(darkTheme.colorScheme.surface.value == darkSurface.value, "dark palette accepts role overrides");
+Require(lightTheme.colorScheme.primary.value != darkTheme.colorScheme.primary.value, "seed palette resolves brightness-specific roles");
+var systemThemeApp = new Doroti.Framework.Material.MaterialApp(
+    theme: lightTheme,
+    darkTheme: darkTheme,
+    themeMode: Doroti.Framework.Material.ThemeMode.system);
+Require(ReferenceEquals(systemThemeApp.theme, lightTheme), "MaterialApp retains the light palette");
+Require(ReferenceEquals(systemThemeApp.darkTheme, darkTheme), "MaterialApp retains the dark palette");
+Require(systemThemeApp.themeMode == Doroti.Framework.Material.ThemeMode.system, "MaterialApp follows platform brightness in system mode");
+
 var scenarios = new[]
 {
     Scenario("fab-press", "floating-action-button", ["default", "pressed", "focused", "disabled"], ["down", "hold", "up", "semantics"]),
@@ -24,7 +56,7 @@ foreach (var scenario in scenarios)
 
 Require(capturedComponents.SetEquals(["floating-action-button", "ink-well-sparkle", "scrollbar-list-sliver", "shader-mask-image-filter"]), "interactive/effect slice scenarios are complete");
 Require(requiredComponents.Contains("scaffold-background") && requiredComponents.Contains("app-bar-text"), "persistent scaffold and text coverage is explicit");
-Console.WriteLine($"FCR-7 material/widget runtime contract: PASS (configuration={ConfigurationName()})");
+Console.WriteLine($"FCR-7 material/widget runtime contract: PASS (configuration={ConfigurationName()}, system-theme-palettes=light+dark)");
 
 static Scenario Scenario(string id, string component, IReadOnlyList<string> states, IReadOnlyList<string> actions) => new(id, component, states, actions);
 static void Require(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }

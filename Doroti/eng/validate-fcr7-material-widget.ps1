@@ -56,6 +56,10 @@ foreach ($sourceId in @('material.scaffold', 'material.app-bar', 'material.float
 $app = Read-Text $appPath
 foreach ($component in @($fixture.components)) { Assert-True ($app.Contains([string]$component.productAnchor, [StringComparison]::Ordinal)) "Demo product anchor: $($component.id)" }
 foreach ($anchor in @('new Text(', 'ListView.CreateBuilder(', 'new ImageFiltered(', 'ActionSemantics(', 'floatingActionButton:', 'thumbVisibility: true')) { Assert-True ($app.Contains($anchor, [StringComparison]::Ordinal)) "Demo visual/interaction anchor: $anchor" }
+foreach ($anchor in @('ColorScheme.CreateFromSeed(', 'Brightness.light', 'Brightness.dark', 'theme: DemoTheme.Light', 'darkTheme: DemoTheme.Dark', 'themeMode: Material.ThemeMode.system', 'Theme.of(context).colorScheme')) {
+    Assert-True ($app.Contains($anchor, [StringComparison]::Ordinal)) "Demo system theme/palette anchor: $anchor"
+}
+Assert-True (-not $app.Contains('home: new Material.Theme(data: theme', [StringComparison]::Ordinal)) 'Demo does not mask MaterialApp system theme with a fixed inner Theme'
 $inkSparkle = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Material/ink_sparkle.cs')
 Assert-True ($inkSparkle.Contains('splashFactory', [StringComparison]::Ordinal)) 'InkSparkle product factory anchor'
 $material = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Material/material.cs')

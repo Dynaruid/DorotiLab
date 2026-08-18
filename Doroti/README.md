@@ -23,6 +23,8 @@ See [ADR-019](docs/adr/ADR-019-product-framework-source-ownership.md) for the ow
 
 Web execution source is TypeScript-owned. Applications edit `Platforms/Web/src/**/*.ts`; Doroti owns `src/Doroti.Host.Web/Web/*.ts`. `Microsoft.TypeScript.MSBuild` 7.0.0 compiles both into target/configuration-specific `obj` directories, and publish contains only the resulting JavaScript. Node, npm, Bun, and a bundler are not application requirements. See [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md).
 
+Material applications follow system dark mode with `MaterialApp(theme:, darkTheme:, themeMode: ThemeMode.system)`. Build both palettes with `ColorScheme.CreateFromSeed`, `Brightness.light`/`Brightness.dark`, and optional role overrides such as `surface`, `primary`, or `outline`; widgets read the active roles from `Theme.of(context).colorScheme`. See the [DorotiDemoApp dark-mode guide](../DorotiDemoApp/README.md#system-dark-mode-and-color-palettes) for the MAUI/Web change flow and a complete example.
+
 Windows Release build/publish and an actual `MauiSKSwapChainPanel` GPU frame are verified. Android arm64 APK/AAB build and an automated physical-device `MauiSKGLTextureView` OpenGL ES custom-SkSL frame/replay are verified. The Android x64 target is also built and repeatedly scrolled on an x86_64 emulator with persistent visible-content screenshot evidence. Web compile/publish and Mac Catalyst cross-build are verified; fresh Web and Mac native custom-shader presentation remain separate `notVerified` gates.
 
 ## Requirements

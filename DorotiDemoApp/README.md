@@ -20,6 +20,31 @@ The application is C#-only. Its build and validation flows do not generate or co
 
 `doroti_bootstrap.ts` configures loading/error UI and typed Blazor startup hooks through Doroti's loader. Only `doroti.loader.ts` calls `Blazor.start()`. Release publish exposes `doroti_bootstrap.js`, `plugins/echo.js`, `_content/Doroti.Host.Web/doroti.loader.js`, and `_content/Doroti.Host.Web/doroti.web.js`; it does not expose TypeScript source, `tsconfig.json`, or compiler assets.
 
+## System dark mode and color palettes
+
+The Demo and new `doroti-app` template use Flutter's `MaterialApp` contract. The MAUI host forwards Windows, Mac Catalyst, and Android system-theme changes, while the Web host forwards `prefers-color-scheme` changes, to `MediaQuery.platformBrightnessOf(context)`. `ThemeMode.system` then selects `theme` or `darkTheme` at runtime.
+
+Light and dark palettes can share a seed while overriding individual color roles:
+
+```csharp
+var lightPalette = Material.ColorScheme.CreateFromSeed(
+    seedColor: new UiColor(0xff6750a4L),
+    brightness: Brightness.light,
+    surface: new UiColor(0xfffffbfeL));
+var darkPalette = Material.ColorScheme.CreateFromSeed(
+    seedColor: new UiColor(0xff6750a4L),
+    brightness: Brightness.dark,
+    surface: new UiColor(0xff141218L));
+
+return new Material.MaterialApp(
+    theme: Material.ThemeData.Create(colorScheme: lightPalette, useMaterial3: true),
+    darkTheme: Material.ThemeData.Create(colorScheme: darkPalette, useMaterial3: true),
+    themeMode: Material.ThemeMode.system,
+    home: new CounterPage());
+```
+
+Inside widgets, use roles such as `primary`, `onPrimary`, `surfaceContainer`, and `onSurface` from `Material.Theme.of(context).colorScheme` instead of fixed colors. Set `themeMode` to `ThemeMode.light` or `ThemeMode.dark` to force a mode. See `DemoTheme` in [`src/App.cs`](src/App.cs) for the complete configuration.
+
 ## Run
 
 Commands are from the repository root. Each target restores against its own lock file (`packages.windows.lock.json`, `packages.maccatalyst.lock.json`, `packages.android.lock.json`, `packages.android-x64.lock.json`, `packages.web.lock.json`). SDK 10.0.400 and the `maui` / `wasm-tools` workloads are required.

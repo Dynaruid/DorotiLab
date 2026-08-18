@@ -20,6 +20,31 @@ DorotiDemoApp은 제품이 직접 소유하는 Doroti framework와 single-projec
 
 `doroti_bootstrap.ts`는 Doroti loader를 통해 loading/error UI와 typed Blazor startup hook을 구성합니다. `Blazor.start()`는 `doroti.loader.ts`만 호출합니다. Release publish에는 `doroti_bootstrap.js`, `plugins/echo.js`, `_content/Doroti.Host.Web/doroti.loader.js`, `_content/Doroti.Host.Web/doroti.web.js`가 있으며 TypeScript source, `tsconfig.json`, compiler asset은 포함하지 않습니다.
 
+## 시스템 다크 모드와 색 팔레트
+
+Demo와 새 `doroti-app` template은 Flutter와 같은 `MaterialApp` 계약을 사용합니다. MAUI host는 Windows, Mac Catalyst, Android의 시스템 theme 변경을, Web host는 `prefers-color-scheme` 변경을 `MediaQuery.platformBrightnessOf(context)`에 전달합니다. `ThemeMode.system`은 이 값에 따라 `theme`과 `darkTheme`을 런타임에 선택합니다.
+
+밝은/어두운 팔레트는 같은 seed에서 만들거나 각 색 role을 별도로 덮어쓸 수 있습니다.
+
+```csharp
+var lightPalette = Material.ColorScheme.CreateFromSeed(
+    seedColor: new UiColor(0xff6750a4L),
+    brightness: Brightness.light,
+    surface: new UiColor(0xfffffbfeL));
+var darkPalette = Material.ColorScheme.CreateFromSeed(
+    seedColor: new UiColor(0xff6750a4L),
+    brightness: Brightness.dark,
+    surface: new UiColor(0xff141218L));
+
+return new Material.MaterialApp(
+    theme: Material.ThemeData.Create(colorScheme: lightPalette, useMaterial3: true),
+    darkTheme: Material.ThemeData.Create(colorScheme: darkPalette, useMaterial3: true),
+    themeMode: Material.ThemeMode.system,
+    home: new CounterPage());
+```
+
+Widget에서는 고정 색 대신 `Material.Theme.of(context).colorScheme`의 `primary`, `onPrimary`, `surfaceContainer`, `onSurface` 같은 role을 사용합니다. 앱에서 강제로 고정하려면 `themeMode`를 `ThemeMode.light` 또는 `ThemeMode.dark`로 바꿉니다. 실제 구성 예시는 [`src/App.cs`](src/App.cs)의 `DemoTheme`에 있습니다.
+
 ## 실행
 
 명령은 저장소 루트에서 실행합니다. target마다 lock 파일이 다릅니다 (`packages.windows.lock.json`, `packages.maccatalyst.lock.json`, `packages.android.lock.json`, `packages.android-x64.lock.json`, `packages.web.lock.json`). SDK 10.0.400과 `maui` / `wasm-tools` workload가 필요합니다.
