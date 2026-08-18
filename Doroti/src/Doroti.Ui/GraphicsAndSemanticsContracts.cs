@@ -459,16 +459,51 @@ internal interface IDorotiImageHandle
     void Release();
 }
 
+public sealed record RetainedResourceDiagnostics(
+    long EngineLayersCreated,
+    long EngineLayersDisposed,
+    long ActiveEngineLayers,
+    long RetainedSnapshots,
+    long RetainedReuses);
+
 public class EngineLayer : IDisposable
 {
+    private static long _created;
+    private static long _disposedCount;
+    private static long _active;
+    private static long _retainedSnapshots;
+    private static long _retainedReuses;
     private int _disposed;
+
+    public EngineLayer()
+    {
+        Interlocked.Increment(ref _created);
+        Interlocked.Increment(ref _active);
+    }
+
     internal string? Operation { get; set; }
     internal IReadOnlyList<SceneCommand>? RetainedCommands { get; set; }
     internal ulong OwnerViewId { get; set; }
     internal long Generation { get; set; }
     public long debugGeneration => Generation;
     public bool debugDisposed => Volatile.Read(ref _disposed) != 0;
-    public void Dispose() => Interlocked.Exchange(ref _disposed, 1);
+    public static RetainedResourceDiagnostics debugResourceDiagnostics => new(
+        Interlocked.Read(ref _created),
+        Interlocked.Read(ref _disposedCount),
+        Interlocked.Read(ref _active),
+        Interlocked.Read(ref _retainedSnapshots),
+        Interlocked.Read(ref _retainedReuses));
+
+    internal static void RecordSnapshot() => Interlocked.Increment(ref _retainedSnapshots);
+    internal static void RecordReuse() => Interlocked.Increment(ref _retainedReuses);
+
+    public void Dispose()
+    {
+        if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
+        RetainedCommands = null;
+        Interlocked.Increment(ref _disposedCount);
+        Interlocked.Decrement(ref _active);
+    }
     public void dispose() => Dispose();
 }
 
@@ -536,6 +571,7 @@ public sealed class SceneBuilder
         var (layer, start) = _scopes.Pop();
         layer.RetainedCommands = Array.AsReadOnly(_commands.Skip(start).ToArray());
         layer.Generation = Interlocked.Increment(ref _nextRetainedGeneration);
+        EngineLayer.RecordSnapshot();
     }
     public void addRetained(EngineLayer layer)
     {
@@ -544,6 +580,7 @@ public sealed class SceneBuilder
         if (layer.RetainedCommands is null || layer.OwnerViewId != _viewId)
             throw new InvalidOperationException("A retained layer must be complete and owned by the same Flutter view.");
         _commands.Add(new SceneCommand("retained", layer) { HostPayload = new SceneRetainedPayload(layer.RetainedCommands, layer.OwnerViewId, layer.Generation) });
+        EngineLayer.RecordReuse();
     }
     public void addPerformanceOverlay(long enabledOptions, Rect bounds) => _commands.Add(new("performanceOverlay", new { enabledOptions, bounds }));
     public void addPlatformView(long viewId, Offset offset = default, double width = 0, double height = 0) =>

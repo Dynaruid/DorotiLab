@@ -1,8 +1,8 @@
 {
   "schemaVersion": "doroti.flutter-conformance-baseline/v1",
   "milestone": "FCR-0",
-  "capturedAtUtc": "2026-08-18T03:55:45.7353758Z",
-  "repositoryRevision": "40dbf0b57fa38d9e968a007f6f85cc0b52df8564",
+  "capturedAtUtc": "2026-08-18T04:04:18.3979727Z",
+  "repositoryRevision": "7d1073024655a1f0c2aeb0201a3ae9017e7414a9",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "matrix": "Doroti/validation/evidence/flutter-conformance/framework-parity-matrix.json",
   "inventory": {
@@ -104,7 +104,7 @@
           "runtime:dart-primitives"
         ],
         "disposition": "adapted",
-        "verification": "notVerified"
+        "verification": "partial"
       },
       {
         "id": "rendering.layer",
@@ -120,7 +120,7 @@
           "runtime:typed-lowering"
         ],
         "disposition": "adapted",
-        "verification": "notVerified"
+        "verification": "partial"
       },
       {
         "id": "rendering.view",
@@ -2299,12 +2299,12 @@
           {
             "path": "Doroti/src/Doroti.Framework.Rendering/layer.cs",
             "sourceOwner": "Doroti.Framework.Rendering",
-            "line": 346
+            "line": 367
           },
           {
             "path": "Doroti/src/Doroti.Framework.Rendering/layer.cs",
             "sourceOwner": "Doroti.Framework.Rendering",
-            "line": 346
+            "line": 367
           },
           {
             "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
@@ -2902,7 +2902,7 @@
           {
             "path": "Doroti/src/Doroti.Framework.Rendering/layer.cs",
             "sourceOwner": "Doroti.Framework.Rendering",
-            "line": 842
+            "line": 863
           },
           {
             "path": "Doroti/src/Doroti.Framework.Rendering/sliver.cs",

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "doroti.flutter-conformance-fcr4-evidence/v1",
+  "status": "partial",
+  "capturedAt": "2026-08-18T04:05:11.0856445Z",
+  "repositoryRevision": "7d1073024655a1f0c2aeb0201a3ae9017e7414a9",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "fixtureManifest": "Doroti/validation/fcr4-retained-rendering/fixture-manifest.json",
+  "runtimeContract": {
+    "status": "pass",
+    "debug": "pass",
+    "release": "pass",
+    "checks": [
+      "clean repaint boundary emits one retained node instead of re-recording its picture subtree",
+      "dirty scope records only its own subtree while an unchanged sibling remains retained and engine-layer ownership stays live",
+      "C1 color-filter scope retained-resource counters return to baseline after release"
+    ]
+  },
+  "hostContract": {
+    "status": "pass",
+    "checks": [
+      "MAUI GPU host recursively replays immutable retained payloads",
+      "fresh native back buffers clear app-owned background before retained replay",
+      "unimplemented C2 texture and platform-view scene operations fail with capability diagnostics rather than being ignored"
+    ]
+  },
+  "acceptance": {
+    "status": "notVerified",
+    "reason": "This contract does not execute Flutter-reference rendering, native GPU pixel differential, resize/context-recreation stress, or a physical retained-resource soak.",
+    "notRun": [
+      "Flutter reference differential for C0/C1 payload and pixels",
+      "Windows native resize/context recreation",
+      "Android physical scroll and animation repaint soak",
+      "C2 owner/target implementation matrix"
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 #Requires -Version 7.0
 param(
-    [ValidateSet('Source', 'Build', 'Targets', 'Fcr0', 'Fcr1', 'Fcr2', 'Fcr3', 'Developer', 'Release')]
+    [ValidateSet('Source', 'Build', 'Targets', 'Fcr0', 'Fcr1', 'Fcr2', 'Fcr3', 'Fcr4', 'Developer', 'Release')]
     [string] $Suite = 'Developer'
 )
 
@@ -134,6 +134,11 @@ function Invoke-Fcr3Gate {
     $completed.Add('fcr-3-scheduler')
 }
 
+function Invoke-Fcr4Gate {
+    Invoke-Checked { & (Join-Path $PSScriptRoot 'validate-fcr4-retained-rendering.ps1') } 'Flutter retained rendering FCR-4 validation failed'
+    $completed.Add('fcr-4-retained-rendering')
+}
+
 function Invoke-ReleaseGate {
     & (Join-Path $PSScriptRoot 'validate-app-targets.ps1') -Shard Live
     & (Join-Path $PSScriptRoot 'validate-app-targets.ps1') -Shard Evidence
@@ -151,12 +156,14 @@ switch ($Suite) {
     'Fcr1' { Invoke-Fcr1Gate }
     'Fcr2' { Invoke-Fcr2Gate }
     'Fcr3' { Invoke-Fcr3Gate }
+    'Fcr4' { Invoke-Fcr4Gate }
     'Developer' {
         Invoke-SourceGate
         Invoke-Fcr0Gate
         Invoke-Fcr1Gate
         Invoke-Fcr2Gate
         Invoke-Fcr3Gate
+        Invoke-Fcr4Gate
         Invoke-BuildGate
         Invoke-TargetGate
     }
@@ -166,6 +173,7 @@ switch ($Suite) {
         Invoke-Fcr1Gate
         Invoke-Fcr2Gate
         Invoke-Fcr3Gate
+        Invoke-Fcr4Gate
         Invoke-BuildGate
         Invoke-TargetGate
         Invoke-ReleaseGate

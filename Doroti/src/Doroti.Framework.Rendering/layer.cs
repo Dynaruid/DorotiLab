@@ -226,6 +226,21 @@ public abstract class Layer : DiagnosticableTreeMixin
             var __value = value is null ? null : (EngineLayer)(object)value;
             DartRuntimePrimitives.Assert(() => !this._debugMutationsLocked);
             DartRuntimePrimitives.Assert(() => !this._debugDisposed);
+            // Doroti's managed SceneBuilder deliberately returns the same engine-layer
+            // handle when a scope can be updated in place. Do not dispose that handle
+            // while installing it again; doing so would turn the next retained scene
+            // into a reference to an already-disposed resource.
+            if (ReferenceEquals(this._engineLayer, __value))
+            {
+                // A child may have updated its immutable retained payload while this
+                // managed handle stayed stable. Its parent still needs to rebuild if
+                // the child was composed outside the parent's current scene build.
+                if ((!this.alwaysNeedsAddToScene && (this.parent is not null) && !this.parent!.alwaysNeedsAddToScene))
+                {
+                    this.parent!.markNeedsAddToScene();
+                }
+                return;
+            }
             this._engineLayer?.dispose();
             _engineLayer = __value;
             if (!this.alwaysNeedsAddToScene)
@@ -297,9 +312,15 @@ public abstract class Layer : DiagnosticableTreeMixin
     internal virtual void _addToSceneWithRetainedRendering(SceneBuilder builder)
     {
         DartRuntimePrimitives.Assert(() => !this._debugMutationsLocked);
-        // The strict Doroti GPU host currently rebuilds the scene command stream each frame.
-        // Re-emitting the layer preserves Flutter retained-layer semantics without passing an
-        // opaque EngineLayer handle across the dart:ui/host boundary.
+        // This is the same retained-layer decision as Flutter: a clean layer with
+        // a completed engine handle contributes one immutable retained node. The
+        // host still replays that node into a fresh native back buffer when needed,
+        // but it does not re-record the unchanged subtree.
+        if ((!this._needsAddToScene && (this._engineLayer is not null)))
+        {
+            builder.addRetained(this._engineLayer!);
+            return;
+        }
         addToScene(builder);
         _needsAddToScene = false;
     }

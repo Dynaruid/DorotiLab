@@ -90,9 +90,9 @@
       "productSources": ["Doroti/src/Doroti.Framework.Rendering/object.cs"],
       "runtimeDependencyIds": ["runtime:typed-lowering", "runtime:scene-builder", "runtime:dart-primitives"],
       "hostConsumers": ["Doroti/src/Doroti.Hosting/DorotiHostSession.cs", "Doroti/src/Doroti.Host.Maui/MauiFrameworkHost.cs"],
-      "testEvidence": ["Doroti/eng/validate-app-targets.ps1", "Doroti/validation/evidence/app-targets-evidence.json"],
-      "verification": "notVerified",
-      "note": "Dirty propagation and repaint boundary behavior are inventory dependencies; retained rendering is FCR-4."
+      "testEvidence": ["Doroti/eng/validate-fcr4-retained-rendering.ps1", "Doroti/validation/fcr4-retained-rendering/Program.cs", "Doroti/validation/evidence/flutter-conformance/fcr4-retained-rendering-evidence.json"],
+      "verification": "partial",
+      "note": "Pinned-source FCR-4 contract verifies dirty repaint-boundary scoping and retained scene-node reuse; Flutter-reference rendering and native lifecycle/pixel differential remain notVerified."
     },
     {
       "id": "rendering.layer",
@@ -104,9 +104,9 @@
       "productSources": ["Doroti/src/Doroti.Framework.Rendering/layer.cs"],
       "runtimeDependencyIds": ["runtime:scene-builder", "runtime:skia-host", "runtime:typed-lowering"],
       "hostConsumers": ["Doroti/src/Doroti.Host.Maui/MauiSkiaCapabilities.cs", "Doroti/src/Doroti.Host.Web/BrowserSkiaCapabilities.cs"],
-      "testEvidence": ["Doroti/validation/evidence/app-targets-evidence.json", "Doroti/eng/validate-app-targets.ps1"],
-      "verification": "notVerified",
-      "note": "Engine-layer reuse and add-to-scene differential are recorded as open verification."
+      "testEvidence": ["Doroti/eng/validate-fcr4-retained-rendering.ps1", "Doroti/validation/fcr4-retained-rendering/Program.cs", "Doroti/validation/evidence/flutter-conformance/fcr4-retained-rendering-evidence.json"],
+      "verification": "partial",
+      "note": "Clean engine layers are emitted as immutable retained nodes and release counters are exercised in Debug/Release; Flutter-reference payload/pixel differential remains notVerified."
     },
     {
       "id": "rendering.view",

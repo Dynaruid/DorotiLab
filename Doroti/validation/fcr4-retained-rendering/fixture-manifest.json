@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "doroti.flutter-conformance-fcr4-fixture/v1",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "sources": [
+    {
+      "path": "packages/flutter/lib/src/rendering/object.dart",
+      "sha256": "52e6bd8ecbe96044cfd1461940ab525ca06959f5bce040e94c3ea36a529c567b",
+      "anchors": [
+        "class PaintingContext extends ClipContext",
+        "static void repaintCompositedChild",
+        "void markNeedsPaint()"
+      ]
+    },
+    {
+      "path": "packages/flutter/lib/src/rendering/layer.dart",
+      "sha256": "a783f1ee51c1a03667310826a1ab74945fc78b018d9eeb1ef719103d84e9302b",
+      "anchors": [
+        "void _addToSceneWithRetainedRendering",
+        "class PictureLayer extends Layer",
+        "class ContainerLayer extends Layer",
+        "void addChildrenToScene"
+      ]
+    }
+  ],
+  "coverage": {
+    "c0": ["picture", "offset", "clip", "transform", "opacity"],
+    "c1": ["colorFilter", "imageFilter", "shaderMask", "backdropFilter", "saveLayer"],
+    "c2": ["texture", "platformView", "imageNine", "points", "vertices", "atlas"]
+  }
+}

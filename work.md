@@ -170,6 +170,10 @@ FCR-1과 FCR-2는 병행 가능하다. FCR-3~FCR-5는 frame ownership을 먼저 
 
 ### FCR-4 — retained rendering, repaint boundary와 compositing parity
 
+현재 구현 상태 (2026-08-18): pinned Flutter `object.dart`/`layer.dart` symbol fixture와 Debug/Release FCR-4 contract를 추가했다. clean `Layer`는 동일 view 소유의 immutable retained command node 하나를 제출하고, dirty boundary만 다시 record하며 clean sibling은 retained node로 남는다. managed `SceneBuilder`가 in-place로 재사용한 engine handle을 다시 대입할 때 dispose하지 않도록 고쳤고, engine-layer create/dispose/active/snapshot/reuse counter가 release 뒤 baseline으로 돌아오는 계약을 추가했다. MAUI host는 retained payload를 재귀 replay하고 새 native back buffer는 app background로 clear한다. C2 texture/platform-view는 host mapping 부재 시 `NotSupportedException`으로 실패하며 silent 축약하지 않는다.
+
+아직 `notVerified`: Flutter reference의 C0/C1 payload·grouping·GPU pixel differential, native resize/context recreate와 foreground lifecycle, Android physical scroll/animation resource soak, image/shader/filter/paragraph/offscreen surface별 balance counter, 그리고 C2 전체 owner/target matrix. 따라서 FCR-4 완료 gate는 아직 닫지 않는다.
+
 작업:
 
 - `RenderObject` dirty propagation, `PaintingContext`, `RepaintBoundary`, `Layer._needsAddToScene`, engine-layer reuse와 scene lifecycle을 pinned Flutter source와 symbol 단위로 대조한다.
