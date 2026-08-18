@@ -95,9 +95,11 @@ public class BouncingScrollSimulation : global::Doroti.Framework.Physics.Simulat
             simulation__4144 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Physics.Simulation>(this._frictionSimulation);
         }
         return ((Func<global::Doroti.Framework.Physics.Simulation>)(() =>
-{            var __cascade = simulation__4144;
-            __cascade.tolerance = this.tolerance;
-            return __cascade;        }))();
+{
+    var __cascade = simulation__4144;
+    __cascade.tolerance = this.tolerance;
+    return __cascade;
+}))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -1,10 +1,10 @@
 using System.Runtime.InteropServices;
 using System.Text.Json;
-using Doroti.Hosting;
-using Doroti.Ui;
 using Doroti.Host.Desktop;
 using Doroti.Host.Desktop.Framework;
+using Doroti.Hosting;
 using Doroti.Platform;
+using Doroti.Ui;
 using Doroti.Vendor.Avalonia.Native;
 
 namespace Doroti.Target.macOS;

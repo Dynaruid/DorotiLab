@@ -96,9 +96,11 @@ public class BannerPainter : global::Doroti.Framework.Rendering.CustomPainter
     {
         _paintShadow = this.shadow.toPaint();
         _paintBanner = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.color;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.color;
+    return __cascade;
+}))();
         this._textPainter?.dispose();
         _textPainter = new global::Doroti.Framework.Painting.TextPainter(text: new global::Doroti.Framework.Painting.TextSpan(style: this.textStyle, text: this.message), textAlign: global::Doroti.Ui.TextAlign.center, textDirection: this.textDirection);
         _prepared = true;
@@ -111,12 +113,14 @@ public class BannerPainter : global::Doroti.Framework.Rendering.CustomPainter
             _prepare();
         }
         DartRuntimePrimitives.Ignore(((Func<Canvas>)(() =>
-{            var __cascade = canvas;
-            __cascade.translate(_translationX(size.width), _translationY(size.height));
-            __cascade.rotate(this._rotation);
-            __cascade.drawRect(BannerLibrary._kRect, this._paintShadow);
-            __cascade.drawRect(BannerLibrary._kRect, this._paintBanner);
-            return __cascade;        }))());
+{
+    var __cascade = canvas;
+    __cascade.translate(_translationX(size.width), _translationY(size.height));
+    __cascade.rotate(this._rotation);
+    __cascade.drawRect(BannerLibrary._kRect, this._paintShadow);
+    __cascade.drawRect(BannerLibrary._kRect, this._paintBanner);
+    return __cascade;
+}))());
         double width__5113 = (BannerLibrary._kOffset * 2.0);
         this._textPainter!.layout(minWidth: width__5113, maxWidth: width__5113);
         this._textPainter!.paint(canvas, (BannerLibrary._kRect.topLeft + new global::Doroti.Ui.Offset(0.0, (((BannerLibrary._kRect.height - this._textPainter!.height)) / 2.0))));

@@ -118,8 +118,9 @@ public class _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_se
 {
     internal virtual void _onChangedClipboardStatus()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     public override void initState()

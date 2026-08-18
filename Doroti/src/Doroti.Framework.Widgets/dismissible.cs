@@ -208,10 +208,12 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
             _ensureKeepAlive();
         }
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = this._moveController;
-            __cascade.addStatusListener((global::Doroti.Framework.Animation.AnimationStatus __status) => { _ = this._handleDismissStatusChanged(__status); });
-            __cascade.addListener(() => this._handleDismissUpdateValueChanged());
-            return __cascade;        }))());
+{
+    var __cascade = this._moveController;
+    __cascade.addStatusListener((global::Doroti.Framework.Animation.AnimationStatus __status) => { _ = this._handleDismissStatusChanged(__status); });
+    __cascade.addListener(() => this._handleDismissUpdateValueChanged());
+    return __cascade;
+}))());
         _updateMoveAnimation();
     }
 
@@ -290,9 +292,10 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
             _dragExtent = 0.0;
             this._moveController.value = 0.0;
         }
-        setState(((global::System.Action)(() => {
-_updateMoveAnimation();
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _updateMoveAnimation();
+        })));
     }
 
     internal virtual void _handleDragUpdate(global::Doroti.Framework.Gestures.DragUpdateDetails details)
@@ -381,9 +384,10 @@ _updateMoveAnimation();
         }
         if ((Math.Sign(oldDragExtent__14139) != Math.Sign(this._dragExtent)))
         {
-            setState(((global::System.Action)(() => {
-_updateMoveAnimation();
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _updateMoveAnimation();
+            })));
         }
         if (!((global::Doroti.Framework.Animation.AnimationController)this._moveController).isAnimating)
         {
@@ -565,15 +569,18 @@ _updateMoveAnimation();
         else
         {
             _resizeController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: ((Dismissible)this.widget).resizeDuration, vsync: this);
-            __cascade.addListener(() => this._handleResizeProgressChanged());
-            __cascade.addStatusListener(((AnimationStatusListener)((status) => updateKeepAlive())));
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: ((Dismissible)this.widget).resizeDuration, vsync: this);
+    __cascade.addListener(() => this._handleResizeProgressChanged());
+    __cascade.addStatusListener(((AnimationStatusListener)((status) => updateKeepAlive())));
+    return __cascade;
+}))();
             this._resizeController!.forward();
-            setState(((global::System.Action)(() => {
-_sizePriorToCollapse = ((BuildContext)this.context).size;
-_resizeAnimation = this._resizeController!.drive(new global::Doroti.Framework.Animation.CurveTween(curve: DismissibleLibrary._kResizeTimeCurve)).drive(new global::Doroti.Framework.Animation.Tween<double>(begin: 1.0, end: 0.0));
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _sizePriorToCollapse = ((BuildContext)this.context).size;
+                _resizeAnimation = this._resizeController!.drive(new global::Doroti.Framework.Animation.CurveTween(curve: DismissibleLibrary._kResizeTimeCurve)).drive(new global::Doroti.Framework.Animation.Tween<double>(begin: 1.0, end: 0.0));
+            })));
         }
     }
 
@@ -642,10 +649,12 @@ _resizeAnimation = this._resizeController!.drive(new global::Doroti.Framework.An
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");

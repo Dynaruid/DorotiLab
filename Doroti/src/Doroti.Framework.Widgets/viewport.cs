@@ -111,15 +111,17 @@ public class Viewport : MultiChildRenderObjectWidget
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderViewport)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderViewport>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.axisDirection = this.axisDirection;
-            __cascade.crossAxisDirection = ((this.crossAxisDirection ?? (global::Doroti.Framework.Painting.AxisDirection)Viewport.getDefaultCrossAxisDirection(context, this.axisDirection)));
-            __cascade.anchor = this.anchor;
-            __cascade.offset = this.offset;
-            __cascade.scrollCacheExtent = this._effectiveScrollCacheExtent;
-            __cascade.paintOrder = this.paintOrder;
-            __cascade.clipBehavior = this.clipBehavior;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.axisDirection = this.axisDirection;
+    __cascade.crossAxisDirection = ((this.crossAxisDirection ?? (global::Doroti.Framework.Painting.AxisDirection)Viewport.getDefaultCrossAxisDirection(context, this.axisDirection)));
+    __cascade.anchor = this.anchor;
+    __cascade.offset = this.offset;
+    __cascade.scrollCacheExtent = this._effectiveScrollCacheExtent;
+    __cascade.paintOrder = this.paintOrder;
+    __cascade.clipBehavior = this.clipBehavior;
+    return __cascade;
+}))());
     }
 
     public override MultiChildRenderObjectElement createElement() => DartRuntimePrimitives.ConvertValue<MultiChildRenderObjectElement>(new _ViewportElement__viewport(this));
@@ -239,11 +241,12 @@ internal class _ViewportElement__viewport : MultiChildRenderObjectElement, Notif
 
     public override void debugVisitOnstageChildren(global::System.Action<Element> visitor)
     {
-        this.children.where(((e) => {
-var renderSliver__12947 = ((global::Doroti.Framework.Rendering.RenderSliver?)(object?)((Element)e).renderObject!)!;
-return ((global::Doroti.Framework.Rendering.RenderSliver)renderSliver__12947).geometry!.visible;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})).forEach((__arg0) => ((global::System.Action<Element>)visitor)(__arg0));
+        this.children.where(((e) =>
+        {
+            var renderSliver__12947 = ((global::Doroti.Framework.Rendering.RenderSliver?)(object?)((Element)e).renderObject!)!;
+            return ((global::Doroti.Framework.Rendering.RenderSliver)renderSliver__12947).geometry!.visible;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })).forEach((__arg0) => ((global::System.Action<Element>)visitor)(__arg0));
     }
 
     public override void attachNotificationTree()
@@ -326,14 +329,16 @@ public class ShrinkWrappingViewport : MultiChildRenderObjectWidget
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderShrinkWrappingViewport)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderShrinkWrappingViewport>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.axisDirection = this.axisDirection;
-            __cascade.crossAxisDirection = ((this.crossAxisDirection ?? (global::Doroti.Framework.Painting.AxisDirection)Viewport.getDefaultCrossAxisDirection(context, this.axisDirection)));
-            __cascade.offset = this.offset;
-            __cascade.paintOrder = this.paintOrder;
-            __cascade.clipBehavior = this.clipBehavior;
-            __cascade.scrollCacheExtent = this._effectiveScrollCacheExtent;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.axisDirection = this.axisDirection;
+    __cascade.crossAxisDirection = ((this.crossAxisDirection ?? (global::Doroti.Framework.Painting.AxisDirection)Viewport.getDefaultCrossAxisDirection(context, this.axisDirection)));
+    __cascade.offset = this.offset;
+    __cascade.paintOrder = this.paintOrder;
+    __cascade.clipBehavior = this.clipBehavior;
+    __cascade.scrollCacheExtent = this._effectiveScrollCacheExtent;
+    return __cascade;
+}))());
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)

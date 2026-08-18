@@ -236,9 +236,11 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
             alignedTranslation__22069 = translation;
         }
         Matrix4 nextMatrix__22506 = ((Func<Matrix4>)(() =>
-{            var __cascade = matrix.clone();
-            __cascade.translateByDouble(alignedTranslation__22069.dx, alignedTranslation__22069.dy, 0, 1);
-            return __cascade;        }))();
+{
+    var __cascade = matrix.clone();
+    __cascade.translateByDouble(alignedTranslation__22069.dx, alignedTranslation__22069.dy, 0, 1);
+    return __cascade;
+}))();
         global::Doroti.Ui.Quad nextViewport__22748 = Interactive_viewerLibrary._transformViewport(nextMatrix__22506, this._viewport);
         if (this._boundaryRect.isInfinite)
         {
@@ -254,9 +256,11 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
         double currentScale__23832 = matrix.getMaxScaleOnAxis();
         var correctedTotalTranslation__23885 = new global::Doroti.Ui.Offset((nextTotalTranslation__23757.dx - (offendingDistance__23491.dx * currentScale__23832)), (nextTotalTranslation__23757.dy - (offendingDistance__23491.dy * currentScale__23832)));
         Matrix4 correctedMatrix__24417 = ((Func<Matrix4>)(() =>
-{            var __cascade = matrix.clone();
-            __cascade.setTranslation(new Vector3(correctedTotalTranslation__23885.dx, correctedTotalTranslation__23885.dy, 0.0));
-            return __cascade;        }))();
+{
+    var __cascade = matrix.clone();
+    __cascade.setTranslation(new Vector3(correctedTotalTranslation__23885.dx, correctedTotalTranslation__23885.dy, 0.0));
+    return __cascade;
+}))();
         global::Doroti.Ui.Quad correctedViewport__24621 = Interactive_viewerLibrary._transformViewport(correctedMatrix__24417, this._viewport);
         global::Doroti.Ui.Offset offendingCorrectedDistance__24706 = ((global::Doroti.Ui.Offset)(object?)Interactive_viewerLibrary._exceedsBy(boundariesAabbQuad__23279, correctedViewport__24621));
         if ((object.Equals(offendingCorrectedDistance__24706, Offset.zero)))
@@ -269,9 +273,11 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
         }
         var unidirectionalCorrectedTotalTranslation__25349 = new global::Doroti.Ui.Offset(((offendingCorrectedDistance__24706.dx == 0.0) ? correctedTotalTranslation__23885.dx : 0.0), ((offendingCorrectedDistance__24706.dy == 0.0) ? correctedTotalTranslation__23885.dy : 0.0));
         return ((Func<Matrix4>)(() =>
-{            var __cascade = matrix.clone();
-            __cascade.setTranslation(new Vector3(unidirectionalCorrectedTotalTranslation__25349.dx, unidirectionalCorrectedTotalTranslation__25349.dy, 0.0));
-            return __cascade;        }))();
+{
+    var __cascade = matrix.clone();
+    __cascade.setTranslation(new Vector3(unidirectionalCorrectedTotalTranslation__25349.dx, unidirectionalCorrectedTotalTranslation__25349.dy, 0.0));
+    return __cascade;
+}))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -287,9 +293,11 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
         double clampedTotalScale__26478 = Dart_uiLibrary.clampDouble(totalScale__26175, ((InteractiveViewer)this.widget).minScale, ((InteractiveViewer)this.widget).maxScale);
         double clampedScale__26574 = (clampedTotalScale__26478 / currentScale__26103);
         return ((Func<Matrix4>)(() =>
-{            var __cascade = matrix.clone();
-            __cascade.scaleByDouble(clampedScale__26574, clampedScale__26574, clampedScale__26574, 1);
-            return __cascade;        }))();
+{
+    var __cascade = matrix.clone();
+    __cascade.scaleByDouble(clampedScale__26574, clampedScale__26574, clampedScale__26574, 1);
+    return __cascade;
+}))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -301,11 +309,13 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
         }
         global::Doroti.Ui.Offset focalPointScene__26965 = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene(focalPoint));
         return ((Func<Matrix4>)(() =>
-{            var __cascade = matrix.clone();
-            __cascade.translateByDouble(focalPointScene__26965.dx, focalPointScene__26965.dy, 0, 1);
-            __cascade.rotateZ(-rotation);
-            __cascade.translateByDouble(-focalPointScene__26965.dx, -focalPointScene__26965.dy, 0, 1);
-            return __cascade;        }))();
+{
+    var __cascade = matrix.clone();
+    __cascade.translateByDouble(focalPointScene__26965.dx, focalPointScene__26965.dy, 0, 1);
+    __cascade.rotateZ(-rotation);
+    __cascade.translateByDouble(-focalPointScene__26965.dx, -focalPointScene__26965.dy, 0, 1);
+    return __cascade;
+}))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -577,8 +587,9 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
 
     internal virtual void _handleTransformation()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     public override void initState()
@@ -646,11 +657,12 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
         {
             DartRuntimePrimitives.Assert(() => (((InteractiveViewer)this.widget).builder is not null));
             DartRuntimePrimitives.Assert(() => !((InteractiveViewer)this.widget).constrained);
-            child__41696 = DartRuntimePrimitives.ConvertValue<Widget>(new LayoutBuilder(builder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, Widget>)((context, constraints) => {
-Matrix4 matrix__42339 = ((Matrix4)(object?)this._transformer.value);
-return ((Widget)(object?)new _InteractiveViewerBuilt__interactive_viewer(childKey: this._childKey, clipBehavior: ((InteractiveViewer)this.widget).clipBehavior, constrained: ((InteractiveViewer)this.widget).constrained, alignment: ((InteractiveViewer)this.widget).alignment, matrix: matrix__42339, child: ((InteractiveViewer)this.widget).builder!(context, Interactive_viewerLibrary._transformViewport(matrix__42339, (Offset.zero & ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).biggest)))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+            child__41696 = DartRuntimePrimitives.ConvertValue<Widget>(new LayoutBuilder(builder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, Widget>)((context, constraints) =>
+            {
+                Matrix4 matrix__42339 = ((Matrix4)(object?)this._transformer.value);
+                return ((Widget)(object?)new _InteractiveViewerBuilt__interactive_viewer(childKey: this._childKey, clipBehavior: ((InteractiveViewer)this.widget).clipBehavior, constrained: ((InteractiveViewer)this.widget).constrained, alignment: ((InteractiveViewer)this.widget).alignment, matrix: matrix__42339, child: ((InteractiveViewer)this.widget).builder!(context, Interactive_viewerLibrary._transformViewport(matrix__42339, (Offset.zero & ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).biggest)))));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }))));
         }
         return ((Widget)(object?)new Listener(key: this._parentKey, onPointerSignal: (global::System.Action<global::Doroti.Framework.Gestures.PointerSignalEvent>)this._receivedPointerSignal, child: new GestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.opaque, onScaleEnd: (global::System.Action<global::Doroti.Framework.Gestures.ScaleEndDetails>)this._onScaleEnd, onScaleStart: (global::System.Action<global::Doroti.Framework.Gestures.ScaleStartDetails>)this._onScaleStart, onScaleUpdate: (global::System.Action<global::Doroti.Framework.Gestures.ScaleUpdateDetails>)this._onScaleUpdate, trackpadScrollCausesScale: ((InteractiveViewer)this.widget).trackpadScrollCausesScale, trackpadScrollToScaleFactor: new global::Doroti.Ui.Offset(0, (-1L / ((InteractiveViewer)this.widget).scaleFactor)), child: child__41696)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -666,10 +678,12 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -802,9 +816,11 @@ public static partial class Interactive_viewerLibrary
     internal static global::Doroti.Ui.Quad _transformViewport(Matrix4 matrix, Rect viewport)
     {
         Matrix4 inverseMatrix__47697 = ((Func<Matrix4>)(() =>
-{            var __cascade = matrix.clone();
-            __cascade.invert();
-            return __cascade;        }))();
+{
+    var __cascade = matrix.clone();
+    __cascade.invert();
+    return __cascade;
+}))();
         return new global::Doroti.Ui.Quad(inverseMatrix__47697.transform3(new Vector3(viewport.topLeft.dx, viewport.topLeft.dy, 0.0)), inverseMatrix__47697.transform3(new Vector3(viewport.topRight.dx, viewport.topRight.dy, 0.0)), inverseMatrix__47697.transform3(new Vector3(viewport.bottomRight.dx, viewport.bottomRight.dy, 0.0)), inverseMatrix__47697.transform3(new Vector3(viewport.bottomLeft.dx, viewport.bottomLeft.dy, 0.0)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -815,11 +831,13 @@ public static partial class Interactive_viewerLibrary
     internal static global::Doroti.Ui.Quad _getAxisAlignedBoundingBoxWithRotation(Rect rect, double rotation)
     {
         var rotationMatrix__48311 = ((Func<Matrix4>)(() =>
-{            var __cascade = Matrix4.identity();
-            __cascade.translateByDouble((rect.size.width / 2L), (rect.size.height / 2L), 0, 1);
-            __cascade.rotateZ(rotation);
-            __cascade.translateByDouble((-rect.size.width / 2L), (-rect.size.height / 2L), 0, 1);
-            return __cascade;        }))();
+{
+    var __cascade = Matrix4.identity();
+    __cascade.translateByDouble((rect.size.width / 2L), (rect.size.height / 2L), 0, 1);
+    __cascade.rotateZ(rotation);
+    __cascade.translateByDouble((-rect.size.width / 2L), (-rect.size.height / 2L), 0, 1);
+    return __cascade;
+}))();
         var boundariesRotated__48528 = new global::Doroti.Ui.Quad(rotationMatrix__48311.transform3(new Vector3(rect.left, rect.top, 0.0)), rotationMatrix__48311.transform3(new Vector3(rect.right, rect.top, 0.0)), rotationMatrix__48311.transform3(new Vector3(rect.right, rect.bottom, 0.0)), rotationMatrix__48311.transform3(new Vector3(rect.left, rect.bottom, 0.0)));
         return ((global::Doroti.Ui.Quad)(object?)InteractiveViewer.getAxisAlignedBoundingBox(boundariesRotated__48528));
         throw new InvalidOperationException("Dart control flow completed without a value.");

@@ -296,10 +296,11 @@ internal class _RenderSliverResizingHeader__sliver_resizing_header : global::Dor
                     break;
                 }
         }
-        return result.addWithOutOfBandPosition(paintOffset: paintOffset__80149, hitTest: ((global::System.Func<BoxHitTestResult, bool>)((result) => {
-return child.hitTest(result, position: transformedPosition__80162);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        return result.addWithOutOfBandPosition(paintOffset: paintOffset__80149, hitTest: ((global::System.Func<BoxHitTestResult, bool>)((result) =>
+        {
+            return child.hitTest(result, position: transformedPosition__80162);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

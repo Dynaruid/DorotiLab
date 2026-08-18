@@ -125,8 +125,9 @@ public class _DesktopTextSelectionControlsToolbarState__desktop_text_selection :
 {
     internal virtual void _onChangedClipboardStatus()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     public override void initState()

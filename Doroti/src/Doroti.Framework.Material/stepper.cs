@@ -495,19 +495,38 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildVertical()
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ListView(controller: ((Stepper)this.widget).controller, shrinkWrap: true, physics: ((Stepper)this.widget).physics, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection29851 = new List<global::Doroti.Framework.Widgets.Widget>(); for (long i__29878 = 0L; (i__29878 < checked((long)(((Stepper)this.widget).steps.Count))); i__29878 += 1L) { __collection29851.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Column(key: this._keys[(int)(i__29878)], children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new InkWell(onTap: ((global::System.Action)((!object.Equals(((Stepper)this.widget).steps[(int)(i__29878)].state, StepState.disabled)) ? (() => {
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ListView(controller: ((Stepper)this.widget).controller, shrinkWrap: true, physics: ((Stepper)this.widget).physics, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() =>
+        {
+            var __collection29851 = new List<global::Doroti.Framework.Widgets.Widget>(); for (long i__29878 = 0L; (i__29878 < checked((long)(((Stepper)this.widget).steps.Count))); i__29878 += 1L)
+            {
+                __collection29851.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Column(key: this._keys[(int)(i__29878)], children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new InkWell(onTap: ((global::System.Action)((!object.Equals(((Stepper)this.widget).steps[(int)(i__29878)].state, StepState.disabled)) ? (() => {
 DartRuntimePrimitives.Ignore(Scrollable.ensureVisible(this._keys[(int)(i__29878)].currentContext!, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn, duration: ThemeLibrary.kThemeAnimationDuration));
 ((Stepper)this.widget).onStepTapped?.Invoke(i__29878);
-}) : null)), canRequestFocus: (!object.Equals(((Stepper)this.widget).steps[(int)(i__29878)].state, StepState.disabled)), child: _buildVerticalHeader(i__29878))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildVerticalBody(i__29878)) }))); } return __collection29851; }))()));
+}) : null)), canRequestFocus: (!object.Equals(((Stepper)this.widget).steps[(int)(i__29878)].state, StepState.disabled)), child: _buildVerticalHeader(i__29878))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildVerticalBody(i__29878)) })));
+            }
+            return __collection29851;
+        }))()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildHorizontal()
     {
         global::Doroti.Framework.Painting.EdgeInsetsGeometry effectiveHorizontalContentPadding__30936 = (((Stepper)this.widget).contentPadding ?? StepperLibrary._kDefaultHorizontalContentPadding);
-        var children__31051 = ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection31062 = new List<global::Doroti.Framework.Widgets.Widget>(); for (long i__31087 = 0L; (i__31087 < checked((long)(((Stepper)this.widget).steps.Count))); i__31087 += 1L) { __collection31062.AddRange(((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection31130 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection31130.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new InkResponse(onTap: ((global::System.Action)((!object.Equals(((Stepper)this.widget).steps[(int)(i__31087)].state, StepState.disabled)) ? (() => {
-((Stepper)this.widget).onStepTapped?.Invoke(i__31087);
-}) : null)), canRequestFocus: (!object.Equals(((Stepper)this.widget).steps[(int)(i__31087)].state, StepState.disabled)), child: new global::Doroti.Framework.Widgets.Row(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: (_isLabel() ? 104.0 : 72.0), child: new global::Doroti.Framework.Widgets.Column(mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.center, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection31654 = new List<global::Doroti.Framework.Widgets.Widget>(); if ((((Stepper)this.widget).steps[(int)(i__31087)].label is not null)) { __collection31654.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: 24.0))); } __collection31654.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Center(child: _buildIcon(i__31087)))); if ((((Stepper)this.widget).steps[(int)(i__31087)].label is not null)) { __collection31654.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: 24.0, child: _buildLabelText(i__31087)))); } return __collection31654; }))()))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: (this._stepIconMargin ?? global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: 12.0)), child: _buildHeaderText(i__31087))) })))); if (!_isLast(i__31087)) { __collection31130.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Padding(padding: (this._stepIconMargin ?? global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8.0)), child: new global::Doroti.Framework.Widgets.SizedBox(height: ((((Stepper)this.widget).steps[(int)(i__31087)].stepStyle?.connectorThickness ?? ((Stepper)this.widget).connectorThickness) ?? 1.0), child: new global::Doroti.Framework.Widgets.ColoredBox(color: ((((Stepper)this.widget).steps[(int)(i__31087)].stepStyle?.connectorColor ?? (Color)_connectorColor(((Stepper)this.widget).steps[(int)(i__31087)].isActive))))))))); } return __collection31130; }))()); } return __collection31062; }))();
+        var children__31051 = ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() =>
+        {
+            var __collection31062 = new List<global::Doroti.Framework.Widgets.Widget>(); for (long i__31087 = 0L; (i__31087 < checked((long)(((Stepper)this.widget).steps.Count))); i__31087 += 1L)
+            {
+                __collection31062.AddRange(((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() =>
+                {
+                    var __collection31130 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection31130.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new InkResponse(onTap: ((global::System.Action)((!object.Equals(((Stepper)this.widget).steps[(int)(i__31087)].state, StepState.disabled)) ? (() =>
+                    {
+                        ((Stepper)this.widget).onStepTapped?.Invoke(i__31087);
+                    }) : null)), canRequestFocus: (!object.Equals(((Stepper)this.widget).steps[(int)(i__31087)].state, StepState.disabled)), child: new global::Doroti.Framework.Widgets.Row(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: (_isLabel() ? 104.0 : 72.0), child: new global::Doroti.Framework.Widgets.Column(mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.center, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection31654 = new List<global::Doroti.Framework.Widgets.Widget>(); if ((((Stepper)this.widget).steps[(int)(i__31087)].label is not null)) { __collection31654.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: 24.0))); } __collection31654.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Center(child: _buildIcon(i__31087)))); if ((((Stepper)this.widget).steps[(int)(i__31087)].label is not null)) { __collection31654.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: 24.0, child: _buildLabelText(i__31087)))); } return __collection31654; }))()))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: (this._stepIconMargin ?? global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: 12.0)), child: _buildHeaderText(i__31087))) })))); if (!_isLast(i__31087)) { __collection31130.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Padding(padding: (this._stepIconMargin ?? global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8.0)), child: new global::Doroti.Framework.Widgets.SizedBox(height: ((((Stepper)this.widget).steps[(int)(i__31087)].stepStyle?.connectorThickness ?? ((Stepper)this.widget).connectorThickness) ?? 1.0), child: new global::Doroti.Framework.Widgets.ColoredBox(color: ((((Stepper)this.widget).steps[(int)(i__31087)].stepStyle?.connectorColor ?? (Color)_connectorColor(((Stepper)this.widget).steps[(int)(i__31087)].isActive))))))))); }
+                    return __collection31130;
+                }))());
+            }
+            return __collection31062;
+        }))();
         var stepPanels__32839 = new List<global::Doroti.Framework.Widgets.Widget>();
         for (var i__32877 = 0L; (i__32877 < checked((long)(((Stepper)this.widget).steps.Count))); i__32877 += 1L)
         {
@@ -543,10 +562,12 @@ DartRuntimePrimitives.Ignore(Scrollable.ensureVisible(this._keys[(int)(i__29878)
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -645,12 +666,16 @@ internal class _TrianglePainter__stepper : global::Doroti.Framework.Rendering.Cu
         double height__35408 = size.height;
         var points__35440 = new List<global::Doroti.Ui.Offset> { new global::Doroti.Ui.Offset(0.0, height__35408), new global::Doroti.Ui.Offset(@base__35326, height__35408), new global::Doroti.Ui.Offset(halfBase__35362, 0.0) };
         canvas.drawPath(((Func<Path>)(() =>
-{            var __cascade = new global::Doroti.Ui.Path();
-            __cascade.addPolygon(points__35440, true);
-            return __cascade;        }))(), ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.color;
-            return __cascade;        }))());
+{
+    var __cascade = new global::Doroti.Ui.Path();
+    __cascade.addPolygon(points__35440, true);
+    return __cascade;
+}))(), ((Func<Paint>)(() =>
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.color;
+    return __cascade;
+}))());
     }
 
 }

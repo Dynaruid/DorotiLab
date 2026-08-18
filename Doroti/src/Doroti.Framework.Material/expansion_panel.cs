@@ -221,9 +221,10 @@ internal class _ExpansionPanelListState__expansion_panel : global::Doroti.Framew
                     ((ExpansionPanelList)this.widget).expansionCallback!(childIndex__12676, false);
                 }
             }
-            setState(((global::System.Action)(() => {
-_currentOpenPanel = (isExpanded ? null : pressedChild__12462);
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _currentOpenPanel = (isExpanded ? null : pressedChild__12462);
+            })));
         }
         ((ExpansionPanelList)this.widget).expansionCallback?.Invoke(index, !isExpanded);
     }

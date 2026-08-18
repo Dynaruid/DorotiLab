@@ -454,10 +454,11 @@ internal class _ListWheelScrollViewState__list_wheel_scroll_view : State<ListWhe
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new NotificationListener<ScrollNotification>(onNotification: (global::System.Func<ScrollNotification, bool>)this._handleScrollNotification, child: new _FixedExtentScrollable__list_wheel_scroll_view(controller: this._effectiveController, physics: ((ListWheelScrollView)this.widget).physics, itemExtent: ((ListWheelScrollView)this.widget).itemExtent, restorationId: ((ListWheelScrollView)this.widget).restorationId, hitTestBehavior: ((ListWheelScrollView)this.widget).hitTestBehavior, scrollBehavior: ((((ListWheelScrollView)this.widget).scrollBehavior ?? (ScrollBehavior)ScrollConfiguration.of(context).copyWith(scrollbars: false))), dragStartBehavior: ((ListWheelScrollView)this.widget).dragStartBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, offset) => {
-return ((Widget)(object?)new ListWheelViewport(diameterRatio: ((ListWheelScrollView)this.widget).diameterRatio, perspective: ((ListWheelScrollView)this.widget).perspective, offAxisFraction: ((ListWheelScrollView)this.widget).offAxisFraction, useMagnifier: ((ListWheelScrollView)this.widget).useMagnifier, magnification: ((ListWheelScrollView)this.widget).magnification, overAndUnderCenterOpacity: ((ListWheelScrollView)this.widget).overAndUnderCenterOpacity, itemExtent: ((ListWheelScrollView)this.widget).itemExtent, squeeze: ((ListWheelScrollView)this.widget).squeeze, renderChildrenOutsideViewport: ((ListWheelScrollView)this.widget).renderChildrenOutsideViewport, offset: offset, childDelegate: ((ListWheelScrollView)this.widget).childDelegate, clipBehavior: ((ListWheelScrollView)this.widget).clipBehavior));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))));
+        return ((Widget)(object?)new NotificationListener<ScrollNotification>(onNotification: (global::System.Func<ScrollNotification, bool>)this._handleScrollNotification, child: new _FixedExtentScrollable__list_wheel_scroll_view(controller: this._effectiveController, physics: ((ListWheelScrollView)this.widget).physics, itemExtent: ((ListWheelScrollView)this.widget).itemExtent, restorationId: ((ListWheelScrollView)this.widget).restorationId, hitTestBehavior: ((ListWheelScrollView)this.widget).hitTestBehavior, scrollBehavior: ((((ListWheelScrollView)this.widget).scrollBehavior ?? (ScrollBehavior)ScrollConfiguration.of(context).copyWith(scrollbars: false))), dragStartBehavior: ((ListWheelScrollView)this.widget).dragStartBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, offset) =>
+        {
+            return ((Widget)(object?)new ListWheelViewport(diameterRatio: ((ListWheelScrollView)this.widget).diameterRatio, perspective: ((ListWheelScrollView)this.widget).perspective, offAxisFraction: ((ListWheelScrollView)this.widget).offAxisFraction, useMagnifier: ((ListWheelScrollView)this.widget).useMagnifier, magnification: ((ListWheelScrollView)this.widget).magnification, overAndUnderCenterOpacity: ((ListWheelScrollView)this.widget).overAndUnderCenterOpacity, itemExtent: ((ListWheelScrollView)this.widget).itemExtent, squeeze: ((ListWheelScrollView)this.widget).squeeze, renderChildrenOutsideViewport: ((ListWheelScrollView)this.widget).renderChildrenOutsideViewport, offset: offset, childDelegate: ((ListWheelScrollView)this.widget).childDelegate, clipBehavior: ((ListWheelScrollView)this.widget).clipBehavior));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -521,31 +522,33 @@ public class ListWheelElement : RenderObjectElement, global::Doroti.Framework.Re
     public virtual bool childExistsAt(long index) => DartRuntimePrimitives.ConvertValue<bool>((retrieveWidget(index) is not null));
     public virtual void createChild(long index, global::Doroti.Framework.Rendering.RenderBox? after)
     {
-        this.owner!.buildScope(this, ((global::System.Action)(() => {
-var insertFirst__33942 = (after is null);
-DartRuntimePrimitives.Assert(() => (insertFirst__33942 || (this._childElements.ContainsKey((index - 1L)))));
-Element? newChild__34056 = ((Element?)(object?)updateChild(this._childElements.GetValueOrDefault(index), retrieveWidget(index), index));
-if ((newChild__34056 is not null))
-{
-    this._childElements[index] = newChild__34056;
-}
-else
-{
-    this._childElements.Remove(index);
-}
-})));
+        this.owner!.buildScope(this, ((global::System.Action)(() =>
+        {
+            var insertFirst__33942 = (after is null);
+            DartRuntimePrimitives.Assert(() => (insertFirst__33942 || (this._childElements.ContainsKey((index - 1L)))));
+            Element? newChild__34056 = ((Element?)(object?)updateChild(this._childElements.GetValueOrDefault(index), retrieveWidget(index), index));
+            if ((newChild__34056 is not null))
+            {
+                this._childElements[index] = newChild__34056;
+            }
+            else
+            {
+                this._childElements.Remove(index);
+            }
+        })));
     }
 
     public virtual void removeChild(global::Doroti.Framework.Rendering.RenderBox child)
     {
         long index__34343 = DartRuntimePrimitives.ConvertValue<long>(((long)((dynamic)this.renderObject).indexOf(child)));
-        this.owner!.buildScope(this, ((global::System.Action)(() => {
-DartRuntimePrimitives.Assert(() => this._childElements.ContainsKey(index__34343));
-Element? result__34483 = ((Element?)(object?)updateChild(this._childElements.GetValueOrDefault(index__34343), ((Widget)(object)null), index__34343));
-DartRuntimePrimitives.Assert(() => (result__34483 is null));
-this._childElements.Remove(index__34343);
-DartRuntimePrimitives.Assert(() => !this._childElements.ContainsKey(index__34343));
-})));
+        this.owner!.buildScope(this, ((global::System.Action)(() =>
+        {
+            DartRuntimePrimitives.Assert(() => this._childElements.ContainsKey(index__34343));
+            Element? result__34483 = ((Element?)(object?)updateChild(this._childElements.GetValueOrDefault(index__34343), ((Widget)(object)null), index__34343));
+            DartRuntimePrimitives.Assert(() => (result__34483 is null));
+            this._childElements.Remove(index__34343);
+            DartRuntimePrimitives.Assert(() => !this._childElements.ContainsKey(index__34343));
+        })));
     }
 
     public override Element? updateChild(Element? child, Widget? newWidget, object? newSlot)
@@ -591,9 +594,10 @@ DartRuntimePrimitives.Assert(() => !this._childElements.ContainsKey(index__34343
 
     public override void visitChildren(global::System.Action<Element> visitor)
     {
-        this._childElements.forEach(((global::System.Action<long, Element>)((key, child) => {
-visitor(child);
-})));
+        this._childElements.forEach(((global::System.Action<long, Element>)((key, child) =>
+        {
+            visitor(child);
+        })));
     }
 
     public override void forgetChild(Element child)
@@ -656,19 +660,21 @@ public class ListWheelViewport : RenderObjectWidget
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderListWheelViewport)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderListWheelViewport>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.offset = this.offset;
-            __cascade.diameterRatio = this.diameterRatio;
-            __cascade.perspective = this.perspective;
-            __cascade.offAxisFraction = this.offAxisFraction;
-            __cascade.useMagnifier = this.useMagnifier;
-            __cascade.magnification = this.magnification;
-            __cascade.overAndUnderCenterOpacity = this.overAndUnderCenterOpacity;
-            __cascade.itemExtent = this.itemExtent;
-            __cascade.squeeze = this.squeeze;
-            __cascade.renderChildrenOutsideViewport = this.renderChildrenOutsideViewport;
-            __cascade.clipBehavior = this.clipBehavior;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.offset = this.offset;
+    __cascade.diameterRatio = this.diameterRatio;
+    __cascade.perspective = this.perspective;
+    __cascade.offAxisFraction = this.offAxisFraction;
+    __cascade.useMagnifier = this.useMagnifier;
+    __cascade.magnification = this.magnification;
+    __cascade.overAndUnderCenterOpacity = this.overAndUnderCenterOpacity;
+    __cascade.itemExtent = this.itemExtent;
+    __cascade.squeeze = this.squeeze;
+    __cascade.renderChildrenOutsideViewport = this.renderChildrenOutsideViewport;
+    __cascade.clipBehavior = this.clipBehavior;
+    return __cascade;
+}))());
     }
 
 }

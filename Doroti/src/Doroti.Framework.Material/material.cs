@@ -4,13 +4,13 @@
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/material.dart
 using System;
 using System.Collections.Generic;
-using Stopwatch = System.Diagnostics.Stopwatch;
 using System.Linq;
 using System.Threading.Tasks;
 using Doroti.Runtime;
 using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Doroti.Framework.Material;
 
@@ -135,12 +135,13 @@ internal class _MaterialState__material : global::Doroti.Framework.Widgets.State
         {
             contents__19116 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.AnimatedDefaultTextStyle(style: (((Material)this.widget).textStyle ?? Theme.of(context).textTheme.bodyMedium!), duration: ((Material)this.widget).animationDuration, child: contents__19116));
         }
-        contents__19116 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.LayoutChangedNotification>(onNotification: ((global::System.Func<global::Doroti.Framework.Widgets.LayoutChangedNotification, bool>)((notification) => {
-var renderer__19515 = ((_RenderInkFeatures__material?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)this._inkFeatureRenderer).currentContext!.findRenderObject()!)!;
-renderer__19515._didChangeLayout();
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: new _InkFeatures__material(key: this._inkFeatureRenderer, absorbHitTest: (!object.Equals(((Material)this.widget).type, MaterialType.transparency)), color: backgroundColor__18359, vsync: this, child: contents__19116)));
+        contents__19116 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.LayoutChangedNotification>(onNotification: ((global::System.Func<global::Doroti.Framework.Widgets.LayoutChangedNotification, bool>)((notification) =>
+        {
+            var renderer__19515 = ((_RenderInkFeatures__material?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)this._inkFeatureRenderer).currentContext!.findRenderObject()!)!;
+            renderer__19515._didChangeLayout();
+            return false;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), child: new _InkFeatures__material(key: this._inkFeatureRenderer, absorbHitTest: (!object.Equals(((Material)this.widget).type, MaterialType.transparency)), color: backgroundColor__18359, vsync: this, child: contents__19116)));
         global::Doroti.Framework.Painting.ShapeBorder? shape__19923 = ((((Material)this.widget).borderRadius is not null) ? new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: ((Material)this.widget).borderRadius!) : ((Material)this.widget).shape);
         if (((object.Equals(((Material)this.widget).type, MaterialType.canvas)) && (shape__19923 is null)))
         {
@@ -166,10 +167,12 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -340,10 +343,12 @@ internal class _InkFeatures__material : global::Doroti.Framework.Widgets.SingleC
     {
         var __renderObject = (_RenderInkFeatures__material)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderInkFeatures__material>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.color = this.color;
-            __cascade.absorbHitTest = this.absorbHitTest;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.color = this.color;
+    __cascade.absorbHitTest = this.absorbHitTest;
+    return __cascade;
+}))());
         DartRuntimePrimitives.Assert(() => (object.Equals(this.vsync, ((_RenderInkFeatures__material)__renderObject).vsync)));
     }
 
@@ -422,9 +427,11 @@ public abstract class InkFeature
         }
         double det__28566 = inverseTransform__28211.invert();
         return ((det__28566 != 0L) ? (((Func<Matrix4>)(() =>
-{            var __cascade = inverseTransform__28211;
-            __cascade.multiply(transform__28169);
-            return __cascade;        }))()) : null);
+{
+    var __cascade = inverseTransform__28211;
+    __cascade.multiply(transform__28169);
+    return __cascade;
+}))()) : null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

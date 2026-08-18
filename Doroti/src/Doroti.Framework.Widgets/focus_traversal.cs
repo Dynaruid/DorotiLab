@@ -19,16 +19,17 @@ public static partial class Focus_traversalLibrary
     internal static BuildContext? _getAncestor(BuildContext context, long count = 1)
     {
         BuildContext? target__1080 = default!;
-        context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) => {
-count--;
-if ((count == 0L))
-{
-    target__1080 = DartRuntimePrimitives.ConvertValue<BuildContext>(ancestor);
-    return false;
-}
-return true;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
+        {
+            count--;
+            if ((count == 0L))
+            {
+                target__1080 = DartRuntimePrimitives.ConvertValue<BuildContext>(ancestor);
+                return false;
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         return target__1080;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -226,10 +227,11 @@ public abstract class FocusTraversalPolicy : global::Doroti.Framework.Foundation
         {
             visitGroups(groups__21242.GetValueOrDefault(DartRuntimePrimitives.RequireReference(scopeGroupNode__21054))!);
         }
-        sortedDescendants__21804.removeWhere(((node) => {
-return ((!object.Equals(node, currentNode)) && !FocusTraversalPolicy._canRequestTraversalFocus(node));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        sortedDescendants__21804.removeWhere(((node) =>
+        {
+            return ((!object.Equals(node, currentNode)) && !FocusTraversalPolicy._canRequestTraversalFocus(node));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         DartRuntimePrimitives.Assert(() =>
             {
                 HashSet<FocusNode> difference__22923 = sortedDescendants__21804.toSet().difference<FocusNode>(((FocusScopeNode)scope).traversalDescendants.toSet());
@@ -409,33 +411,35 @@ public interface DirectionalFocusTraversalPolicyMixin
     public static IEnumerable<FocusNode> _sortByDistancePreferVertical(Offset target, IEnumerable<FocusNode> nodes)
     {
         List<FocusNode> sorted__39291 = nodes.ToList().ToList();
-        global::Doroti.Framework.Foundation.CollectionsLibrary.mergeSort<FocusNode>(sorted__39291, compare: ((nodeA, nodeB) => {
-global::Doroti.Ui.Offset a__39429 = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)((FocusNode)nodeA).rect).center));
-global::Doroti.Ui.Offset b__39473 = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)((FocusNode)nodeB).rect).center));
-long vertical__39514 = DirectionalFocusTraversalPolicyMixin._verticalCompare(target, a__39429, b__39473);
-if ((vertical__39514 == 0L))
-{
-    return DirectionalFocusTraversalPolicyMixin._horizontalCompare(target, a__39429, b__39473);
-}
-return vertical__39514;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        global::Doroti.Framework.Foundation.CollectionsLibrary.mergeSort<FocusNode>(sorted__39291, compare: ((nodeA, nodeB) =>
+        {
+            global::Doroti.Ui.Offset a__39429 = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)((FocusNode)nodeA).rect).center));
+            global::Doroti.Ui.Offset b__39473 = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)((FocusNode)nodeB).rect).center));
+            long vertical__39514 = DirectionalFocusTraversalPolicyMixin._verticalCompare(target, a__39429, b__39473);
+            if ((vertical__39514 == 0L))
+            {
+                return DirectionalFocusTraversalPolicyMixin._horizontalCompare(target, a__39429, b__39473);
+            }
+            return vertical__39514;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         return ((IEnumerable<FocusNode>)(object?)sorted__39291);
     }
     public static IEnumerable<FocusNode> _sortByDistancePreferHorizontal(Offset target, IEnumerable<FocusNode> nodes)
     {
         List<FocusNode> sorted__40003 = nodes.ToList().ToList();
-        global::Doroti.Framework.Foundation.CollectionsLibrary.mergeSort<FocusNode>(sorted__40003, compare: ((nodeA, nodeB) => {
-global::Doroti.Ui.Offset a__40141 = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)((FocusNode)nodeA).rect).center));
-global::Doroti.Ui.Offset b__40185 = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)((FocusNode)nodeB).rect).center));
-long horizontal__40226 = DirectionalFocusTraversalPolicyMixin._horizontalCompare(target, a__40141, b__40185);
-if ((horizontal__40226 == 0L))
-{
-    return DirectionalFocusTraversalPolicyMixin._verticalCompare(target, a__40141, b__40185);
-}
-return horizontal__40226;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        global::Doroti.Framework.Foundation.CollectionsLibrary.mergeSort<FocusNode>(sorted__40003, compare: ((nodeA, nodeB) =>
+        {
+            global::Doroti.Ui.Offset a__40141 = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)((FocusNode)nodeA).rect).center));
+            global::Doroti.Ui.Offset b__40185 = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)((FocusNode)nodeB).rect).center));
+            long horizontal__40226 = DirectionalFocusTraversalPolicyMixin._horizontalCompare(target, a__40141, b__40185);
+            if ((horizontal__40226 == 0L))
+            {
+                return DirectionalFocusTraversalPolicyMixin._verticalCompare(target, a__40141, b__40185);
+            }
+            return horizontal__40226;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         return ((IEnumerable<FocusNode>)(object?)sorted__40003);
     }
     public static long _verticalCompareClosestEdge(Offset target, Rect a, Rect b)
@@ -453,29 +457,31 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     public static IEnumerable<FocusNode> _sortClosestEdgesByDistancePreferHorizontal(Offset target, IEnumerable<FocusNode> nodes)
     {
         List<FocusNode> sorted__41660 = nodes.ToList().ToList();
-        global::Doroti.Framework.Foundation.CollectionsLibrary.mergeSort<FocusNode>(sorted__41660, compare: ((nodeA, nodeB) => {
-long horizontal__41795 = DirectionalFocusTraversalPolicyMixin._horizontalCompareClosestEdge(target, ((FocusNode)nodeA).rect, ((FocusNode)nodeB).rect);
-if ((horizontal__41795 == 0L))
-{
-    return DirectionalFocusTraversalPolicyMixin._verticalCompare(target, ((Offset)((dynamic)((FocusNode)nodeA).rect).center), ((Offset)((dynamic)((FocusNode)nodeB).rect).center));
-}
-return horizontal__41795;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        global::Doroti.Framework.Foundation.CollectionsLibrary.mergeSort<FocusNode>(sorted__41660, compare: ((nodeA, nodeB) =>
+        {
+            long horizontal__41795 = DirectionalFocusTraversalPolicyMixin._horizontalCompareClosestEdge(target, ((FocusNode)nodeA).rect, ((FocusNode)nodeB).rect);
+            if ((horizontal__41795 == 0L))
+            {
+                return DirectionalFocusTraversalPolicyMixin._verticalCompare(target, ((Offset)((dynamic)((FocusNode)nodeA).rect).center), ((Offset)((dynamic)((FocusNode)nodeB).rect).center));
+            }
+            return horizontal__41795;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         return ((IEnumerable<FocusNode>)(object?)sorted__41660);
     }
     public static IEnumerable<FocusNode> _sortClosestEdgesByDistancePreferVertical(Offset target, IEnumerable<FocusNode> nodes)
     {
         List<FocusNode> sorted__42482 = nodes.ToList().ToList();
-        global::Doroti.Framework.Foundation.CollectionsLibrary.mergeSort<FocusNode>(sorted__42482, compare: ((nodeA, nodeB) => {
-long vertical__42617 = DirectionalFocusTraversalPolicyMixin._verticalCompareClosestEdge(target, ((FocusNode)nodeA).rect, ((FocusNode)nodeB).rect);
-if ((vertical__42617 == 0L))
-{
-    return DirectionalFocusTraversalPolicyMixin._horizontalCompare(target, ((Offset)((dynamic)((FocusNode)nodeA).rect).center), ((Offset)((dynamic)((FocusNode)nodeB).rect).center));
-}
-return vertical__42617;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        global::Doroti.Framework.Foundation.CollectionsLibrary.mergeSort<FocusNode>(sorted__42482, compare: ((nodeA, nodeB) =>
+        {
+            long vertical__42617 = DirectionalFocusTraversalPolicyMixin._verticalCompareClosestEdge(target, ((FocusNode)nodeA).rect, ((FocusNode)nodeB).rect);
+            if ((vertical__42617 == 0L))
+            {
+                return DirectionalFocusTraversalPolicyMixin._horizontalCompare(target, ((Offset)((dynamic)((FocusNode)nodeA).rect).center), ((Offset)((dynamic)((FocusNode)nodeB).rect).center));
+            }
+            return vertical__42617;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         return ((IEnumerable<FocusNode>)(object?)sorted__42482);
     }
     public IEnumerable<FocusNode> _sortAndFilterHorizontally(TraversalDirection direction, Rect target, IEnumerable<FocusNode> nodes, bool forward = true);
@@ -508,10 +514,11 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
         base.changedScope(node: node, oldScope: oldScope);
         if ((oldScope is not null))
         {
-            this._policyData.GetValueOrDefault(oldScope)?.history.removeWhere(((entry) => {
-return (object.Equals(((_DirectionalPolicyDataEntry__focus_traversal)entry).node, node));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            this._policyData.GetValueOrDefault(oldScope)?.history.removeWhere(((entry) =>
+            {
+                return (object.Equals(((_DirectionalPolicyDataEntry__focus_traversal)entry).node, node));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
         }
     }
 
@@ -520,31 +527,32 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         IEnumerable<FocusNode> nodes__33125 = ((FocusNode)currentNode).nearestScope!.traversalDescendants;
         List<FocusNode> sorted__33207 = nodes__33125.ToList().ToList();
         var (vertical__33248, first__33263) = (direction switch { TraversalDirection.up => (((bool, bool))((true, false))), TraversalDirection.down => (((bool, bool))((true, true))), TraversalDirection.left => (((bool, bool))((false, false))), TraversalDirection.right => (((bool, bool))((false, true))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        global::Doroti.Framework.Foundation.CollectionsLibrary.mergeSort<FocusNode>(sorted__33207, compare: ((a, b) => {
-if (vertical__33248)
-{
-    if (first__33263)
-    {
-        return ((FocusNode)a).rect.top.CompareTo(((FocusNode)b).rect.top);
-    }
-    else
-    {
-        return ((FocusNode)b).rect.bottom.CompareTo(((FocusNode)a).rect.bottom);
-    }
-}
-else
-{
-    if (first__33263)
-    {
-        return ((FocusNode)a).rect.left.CompareTo(((FocusNode)b).rect.left);
-    }
-    else
-    {
-        return ((FocusNode)b).rect.right.CompareTo(((FocusNode)a).rect.right);
-    }
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        global::Doroti.Framework.Foundation.CollectionsLibrary.mergeSort<FocusNode>(sorted__33207, compare: ((a, b) =>
+        {
+            if (vertical__33248)
+            {
+                if (first__33263)
+                {
+                    return ((FocusNode)a).rect.top.CompareTo(((FocusNode)b).rect.top);
+                }
+                else
+                {
+                    return ((FocusNode)b).rect.bottom.CompareTo(((FocusNode)a).rect.bottom);
+                }
+            }
+            else
+            {
+                if (first__33263)
+                {
+                    return ((FocusNode)a).rect.left.CompareTo(((FocusNode)b).rect.left);
+                }
+                else
+                {
+                    return ((FocusNode)b).rect.right.CompareTo(((FocusNode)a).rect.right);
+                }
+            }
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         return sorted__33207.FirstOrDefault();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1049,10 +1057,11 @@ internal class _ReadingOrderDirectionalGroupData__focus_traversal : global::Doro
     {
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.TextDirection>("directionality", this.directionality));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Ui.Rect>("rect", this.rect));
-        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<string>("members", this.members.map<_ReadingOrderSortData__focus_traversal, string>(((member) => {
-return $"\"{((_ReadingOrderSortData__focus_traversal)member).node.debugLabel}\"({((_ReadingOrderSortData__focus_traversal)member).rect})";
-throw new InvalidOperationException("Dart closure completed without a value.");
-})).Cast<string>()));
+        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<string>("members", this.members.map<_ReadingOrderSortData__focus_traversal, string>(((member) =>
+        {
+            return $"\"{((_ReadingOrderSortData__focus_traversal)member).node.debugLabel}\"({((_ReadingOrderSortData__focus_traversal)member).rect})";
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })).Cast<string>()));
     }
 
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
@@ -1147,10 +1156,11 @@ public class ReadingOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocu
         List<_ReadingOrderSortData__focus_traversal> inBand(_ReadingOrderSortData__focus_traversal current, IEnumerable<_ReadingOrderSortData__focus_traversal> candidates)
         {
             var band__67351 = global::Doroti.Ui.Rect.fromLTRB(double.NegativeInfinity, ((_ReadingOrderSortData__focus_traversal)current).rect.top, double.PositiveInfinity, ((_ReadingOrderSortData__focus_traversal)current).rect.bottom);
-            return candidates.where(((item) => {
-return !((_ReadingOrderSortData__focus_traversal)item).rect.intersect(band__67351).isEmpty;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})).ToList();
+            return candidates.where(((item) =>
+            {
+                return !((_ReadingOrderSortData__focus_traversal)item).rect.intersect(band__67351).isEmpty;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })).ToList();
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         List<_ReadingOrderSortData__focus_traversal> inBandOfTop__67671 = inBand(topmost__67091, candidates.Cast<_ReadingOrderSortData__focus_traversal>()).ToList();
@@ -1183,10 +1193,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         base.changedScope(node: node, oldScope: oldScope);
         if ((oldScope is not null))
         {
-            this._policyData.GetValueOrDefault(oldScope)?.history.removeWhere(((entry) => {
-return (object.Equals(((_DirectionalPolicyDataEntry__focus_traversal)entry).node, node));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            this._policyData.GetValueOrDefault(oldScope)?.history.removeWhere(((entry) =>
+            {
+                return (object.Equals(((_DirectionalPolicyDataEntry__focus_traversal)entry).node, node));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
         }
     }
 
@@ -1195,31 +1206,32 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         IEnumerable<FocusNode> nodes__33125 = ((FocusNode)currentNode).nearestScope!.traversalDescendants;
         List<FocusNode> sorted__33207 = nodes__33125.ToList().ToList();
         var (vertical__33248, first__33263) = (direction switch { TraversalDirection.up => (((bool, bool))((true, false))), TraversalDirection.down => (((bool, bool))((true, true))), TraversalDirection.left => (((bool, bool))((false, false))), TraversalDirection.right => (((bool, bool))((false, true))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        global::Doroti.Framework.Foundation.CollectionsLibrary.mergeSort<FocusNode>(sorted__33207, compare: ((a, b) => {
-if (vertical__33248)
-{
-    if (first__33263)
-    {
-        return ((FocusNode)a).rect.top.CompareTo(((FocusNode)b).rect.top);
-    }
-    else
-    {
-        return ((FocusNode)b).rect.bottom.CompareTo(((FocusNode)a).rect.bottom);
-    }
-}
-else
-{
-    if (first__33263)
-    {
-        return ((FocusNode)a).rect.left.CompareTo(((FocusNode)b).rect.left);
-    }
-    else
-    {
-        return ((FocusNode)b).rect.right.CompareTo(((FocusNode)a).rect.right);
-    }
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        global::Doroti.Framework.Foundation.CollectionsLibrary.mergeSort<FocusNode>(sorted__33207, compare: ((a, b) =>
+        {
+            if (vertical__33248)
+            {
+                if (first__33263)
+                {
+                    return ((FocusNode)a).rect.top.CompareTo(((FocusNode)b).rect.top);
+                }
+                else
+                {
+                    return ((FocusNode)b).rect.bottom.CompareTo(((FocusNode)a).rect.bottom);
+                }
+            }
+            else
+            {
+                if (first__33263)
+                {
+                    return ((FocusNode)a).rect.left.CompareTo(((FocusNode)b).rect.left);
+                }
+                else
+                {
+                    return ((FocusNode)b).rect.right.CompareTo(((FocusNode)a).rect.right);
+                }
+            }
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         return sorted__33207.FirstOrDefault();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1698,11 +1710,12 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
                 unordered__78092.Add(node__78177);
             }
         }
-        global::Doroti.Framework.Foundation.CollectionsLibrary.mergeSort<_OrderedFocusInfo__focus_traversal>(ordered__78129, compare: ((a, b) => {
-DartRuntimePrimitives.Assert(() => (object.Equals(DartRuntimePrimitives.RuntimeType(((_OrderedFocusInfo__focus_traversal)a).order), DartRuntimePrimitives.RuntimeType(((_OrderedFocusInfo__focus_traversal)b).order))), () => (object?)$"When sorting nodes for determining focus order, the order ({((_OrderedFocusInfo__focus_traversal)a).order}) of " + $"node {((_OrderedFocusInfo__focus_traversal)a).node}, isn't the same type as the order ({((_OrderedFocusInfo__focus_traversal)b).order}) of {((_OrderedFocusInfo__focus_traversal)b).node}. " + "Incompatible order types can't be compared. Use a FocusTraversalGroup to group " + "similar orders together.");
-return ((_OrderedFocusInfo__focus_traversal)a).order.compareTo(((_OrderedFocusInfo__focus_traversal)b).order);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        global::Doroti.Framework.Foundation.CollectionsLibrary.mergeSort<_OrderedFocusInfo__focus_traversal>(ordered__78129, compare: ((a, b) =>
+        {
+            DartRuntimePrimitives.Assert(() => (object.Equals(DartRuntimePrimitives.RuntimeType(((_OrderedFocusInfo__focus_traversal)a).order), DartRuntimePrimitives.RuntimeType(((_OrderedFocusInfo__focus_traversal)b).order))), () => (object?)$"When sorting nodes for determining focus order, the order ({((_OrderedFocusInfo__focus_traversal)a).order}) of " + $"node {((_OrderedFocusInfo__focus_traversal)a).node}, isn't the same type as the order ({((_OrderedFocusInfo__focus_traversal)b).order}) of {((_OrderedFocusInfo__focus_traversal)b).node}. " + "Incompatible order types can't be compared. Use a FocusTraversalGroup to group " + "similar orders together.");
+            return ((_OrderedFocusInfo__focus_traversal)a).order.compareTo(((_OrderedFocusInfo__focus_traversal)b).order);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         return ordered__78129.map<_OrderedFocusInfo__focus_traversal, FocusNode>(((info) => ((_OrderedFocusInfo__focus_traversal)info).node)).followedBy(unordered__78092.Cast<FocusNode>());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1718,10 +1731,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         base.changedScope(node: node, oldScope: oldScope);
         if ((oldScope is not null))
         {
-            this._policyData.GetValueOrDefault(oldScope)?.history.removeWhere(((entry) => {
-return (object.Equals(((_DirectionalPolicyDataEntry__focus_traversal)entry).node, node));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            this._policyData.GetValueOrDefault(oldScope)?.history.removeWhere(((entry) =>
+            {
+                return (object.Equals(((_DirectionalPolicyDataEntry__focus_traversal)entry).node, node));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
         }
     }
 
@@ -1730,31 +1744,32 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         IEnumerable<FocusNode> nodes__33125 = ((FocusNode)currentNode).nearestScope!.traversalDescendants;
         List<FocusNode> sorted__33207 = nodes__33125.ToList().ToList();
         var (vertical__33248, first__33263) = (direction switch { TraversalDirection.up => (((bool, bool))((true, false))), TraversalDirection.down => (((bool, bool))((true, true))), TraversalDirection.left => (((bool, bool))((false, false))), TraversalDirection.right => (((bool, bool))((false, true))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        global::Doroti.Framework.Foundation.CollectionsLibrary.mergeSort<FocusNode>(sorted__33207, compare: ((a, b) => {
-if (vertical__33248)
-{
-    if (first__33263)
-    {
-        return ((FocusNode)a).rect.top.CompareTo(((FocusNode)b).rect.top);
-    }
-    else
-    {
-        return ((FocusNode)b).rect.bottom.CompareTo(((FocusNode)a).rect.bottom);
-    }
-}
-else
-{
-    if (first__33263)
-    {
-        return ((FocusNode)a).rect.left.CompareTo(((FocusNode)b).rect.left);
-    }
-    else
-    {
-        return ((FocusNode)b).rect.right.CompareTo(((FocusNode)a).rect.right);
-    }
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        global::Doroti.Framework.Foundation.CollectionsLibrary.mergeSort<FocusNode>(sorted__33207, compare: ((a, b) =>
+        {
+            if (vertical__33248)
+            {
+                if (first__33263)
+                {
+                    return ((FocusNode)a).rect.top.CompareTo(((FocusNode)b).rect.top);
+                }
+                else
+                {
+                    return ((FocusNode)b).rect.bottom.CompareTo(((FocusNode)a).rect.bottom);
+                }
+            }
+            else
+            {
+                if (first__33263)
+                {
+                    return ((FocusNode)a).rect.left.CompareTo(((FocusNode)b).rect.left);
+                }
+                else
+                {
+                    return ((FocusNode)b).rect.right.CompareTo(((FocusNode)a).rect.right);
+                }
+            }
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         return sorted__33207.FirstOrDefault();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

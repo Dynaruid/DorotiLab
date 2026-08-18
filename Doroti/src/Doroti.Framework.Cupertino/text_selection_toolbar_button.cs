@@ -157,12 +157,14 @@ internal class _LiveTextIconPainter__text_selection_toolbar_button : global::Dor
 {
     public virtual Color color { get; private set; } = default!;
     internal virtual Paint _painter { get; private set; } = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.strokeCap = StrokeCap.round;
-            __cascade.strokeJoin = StrokeJoin.round;
-            __cascade.strokeWidth = 1.0;
-            __cascade.style = PaintingStyle.stroke;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.strokeCap = StrokeCap.round;
+    __cascade.strokeJoin = StrokeJoin.round;
+    __cascade.strokeWidth = 1.0;
+    __cascade.style = PaintingStyle.stroke;
+    return __cascade;
+}))();
 
     internal _LiveTextIconPainter__text_selection_toolbar_button(Color color)
     {
@@ -176,16 +178,20 @@ internal class _LiveTextIconPainter__text_selection_toolbar_button : global::Dor
         canvas.translate((size.width / 2.0), (size.height / 2.0));
         var origin__7210 = new global::Doroti.Ui.Offset((-size.width / 2.0), (-size.height / 2.0));
         var path__7308 = ((Func<Path>)(() =>
-{            var __cascade = new global::Doroti.Ui.Path();
-            __cascade.moveTo(origin__7210.dx, (origin__7210.dy + 3.5));
-            __cascade.lineTo(origin__7210.dx, (origin__7210.dy + 1.0));
-            __cascade.arcToPoint(new global::Doroti.Ui.Offset((origin__7210.dx + 1.0), origin__7210.dy), radius: global::Doroti.Ui.Radius.circular(1));
-            __cascade.lineTo((origin__7210.dx + 3.5), origin__7210.dy);
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Path();
+    __cascade.moveTo(origin__7210.dx, (origin__7210.dy + 3.5));
+    __cascade.lineTo(origin__7210.dx, (origin__7210.dy + 1.0));
+    __cascade.arcToPoint(new global::Doroti.Ui.Offset((origin__7210.dx + 1.0), origin__7210.dy), radius: global::Doroti.Ui.Radius.circular(1));
+    __cascade.lineTo((origin__7210.dx + 3.5), origin__7210.dy);
+    return __cascade;
+}))();
         var rotationMatrix__7593 = ((Func<Matrix4>)(() =>
-{            var __cascade = Matrix4.identity();
-            __cascade.rotateZ((Dart_mathLibrary.pi / 2.0));
-            return __cascade;        }))();
+{
+    var __cascade = Matrix4.identity();
+    __cascade.rotateZ((Dart_mathLibrary.pi / 2.0));
+    return __cascade;
+}))();
         for (var i__7662 = 0L; (i__7662 < 4L); i__7662 += 1L)
         {
             canvas.drawPath(path__7308, this._painter);

@@ -257,15 +257,19 @@ internal class _CupertinoLinearActivityIndicator__activity_indicator : global::D
         this.progress = progress;
         this.color = color;
         this._backgroundPaint = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = CupertinoColors.systemFill;
-            __cascade.style = PaintingStyle.fill;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = CupertinoColors.systemFill;
+    __cascade.style = PaintingStyle.fill;
+    return __cascade;
+}))();
         this._progressPaint = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = (color ?? CupertinoColors.activeBlue);
-            __cascade.style = PaintingStyle.fill;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = (color ?? CupertinoColors.activeBlue);
+    __cascade.style = PaintingStyle.fill;
+    return __cascade;
+}))();
     }
 
     public override void paint(Canvas canvas, Size size)

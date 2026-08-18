@@ -53,10 +53,11 @@ public class ButtonBar : global::Doroti.Framework.Widgets.StatelessWidget
         ButtonBarThemeData barTheme__8754 = ButtonBarTheme.of(context);
         ButtonThemeData buttonTheme__8820 = parentButtonTheme__8680.copyWith(textTheme: ((this.buttonTextTheme ?? barTheme__8754.buttonTextTheme) ?? ButtonTextTheme.primary), minWidth: ((this.buttonMinWidth ?? barTheme__8754.buttonMinWidth) ?? 64.0), height: ((this.buttonHeight ?? barTheme__8754.buttonHeight) ?? 36.0), padding: ((this.buttonPadding ?? barTheme__8754.buttonPadding) ?? global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8.0)), alignedDropdown: ((this.buttonAlignedDropdown ?? barTheme__8754.buttonAlignedDropdown) ?? false), layoutBehavior: ((this.layoutBehavior ?? barTheme__8754.layoutBehavior) ?? ButtonBarLayoutBehavior.padded));
         double paddingUnit__9496 = (buttonTheme__8820.padding.horizontal / 4.0);
-        global::Doroti.Framework.Widgets.Widget child__9565 = ((global::Doroti.Framework.Widgets.Widget)(object?)ButtonTheme.CreateFromButtonThemeData(data: buttonTheme__8820, child: new _ButtonBarRow__button_bar(mainAxisAlignment: ((this.alignment ?? barTheme__8754.alignment) ?? global::Doroti.Framework.Rendering.MainAxisAlignment.end), mainAxisSize: ((this.mainAxisSize ?? barTheme__8754.mainAxisSize) ?? global::Doroti.Framework.Rendering.MainAxisSize.max), overflowDirection: ((this.overflowDirection ?? barTheme__8754.overflowDirection) ?? global::Doroti.Framework.Painting.VerticalDirection.down), overflowButtonSpacing: this.overflowButtonSpacing, children: this.children.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>(((child) => {
-return new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: paddingUnit__9496), child: child);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})).ToList())));
+        global::Doroti.Framework.Widgets.Widget child__9565 = ((global::Doroti.Framework.Widgets.Widget)(object?)ButtonTheme.CreateFromButtonThemeData(data: buttonTheme__8820, child: new _ButtonBarRow__button_bar(mainAxisAlignment: ((this.alignment ?? barTheme__8754.alignment) ?? global::Doroti.Framework.Rendering.MainAxisAlignment.end), mainAxisSize: ((this.mainAxisSize ?? barTheme__8754.mainAxisSize) ?? global::Doroti.Framework.Rendering.MainAxisSize.max), overflowDirection: ((this.overflowDirection ?? barTheme__8754.overflowDirection) ?? global::Doroti.Framework.Painting.VerticalDirection.down), overflowButtonSpacing: this.overflowButtonSpacing, children: this.children.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>(((child) =>
+        {
+            return new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: paddingUnit__9496), child: child);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })).ToList())));
         switch (buttonTheme__8820.layoutBehavior)
         {
             case var __constant10272 when (object.Equals(__constant10272, ButtonBarLayoutBehavior.padded)):
@@ -94,16 +95,18 @@ internal class _ButtonBarRow__button_bar : global::Doroti.Framework.Widgets.Flex
     {
         var __renderObject = (_RenderButtonBarRow__button_bar)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderButtonBarRow__button_bar>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.direction = this.direction;
-            __cascade.mainAxisAlignment = this.mainAxisAlignment;
-            __cascade.mainAxisSize = this.mainAxisSize;
-            __cascade.crossAxisAlignment = this.crossAxisAlignment;
-            __cascade.textDirection = getEffectiveTextDirection(context);
-            __cascade.verticalDirection = this.verticalDirection;
-            __cascade.textBaseline = this.textBaseline;
-            __cascade.overflowButtonSpacing = this.overflowButtonSpacing;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.direction = this.direction;
+    __cascade.mainAxisAlignment = this.mainAxisAlignment;
+    __cascade.mainAxisSize = this.mainAxisSize;
+    __cascade.crossAxisAlignment = this.crossAxisAlignment;
+    __cascade.textDirection = getEffectiveTextDirection(context);
+    __cascade.verticalDirection = this.verticalDirection;
+    __cascade.textBaseline = this.textBaseline;
+    __cascade.overflowButtonSpacing = this.overflowButtonSpacing;
+    return __cascade;
+}))());
     }
 
 }

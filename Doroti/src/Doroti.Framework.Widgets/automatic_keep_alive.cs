@@ -78,15 +78,16 @@ internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticK
             }
             else
             {
-                global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) => {
-if (!this.mounted)
-{
-    return;
-}
-ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>? childElement__5346 = ((ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>?)(object?)_getChildElement());
-DartRuntimePrimitives.Assert(() => (childElement__5346 is not null));
-_updateParentDataOfChild(childElement__5346!);
-})), debugLabel: "AutomaticKeepAlive.updateParentData");
+                global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+                {
+                    if (!this.mounted)
+                    {
+                        return;
+                    }
+                    ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>? childElement__5346 = ((ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>?)(object?)_getChildElement());
+                    DartRuntimePrimitives.Assert(() => (childElement__5346 is not null));
+                    _updateParentDataOfChild(childElement__5346!);
+                })), debugLabel: "AutomaticKeepAlive.updateParentData");
             }
         }
         return false;
@@ -98,9 +99,10 @@ _updateParentDataOfChild(childElement__5346!);
         DartRuntimePrimitives.Assert(() => this.mounted);
         var element__5871 = ((Element?)(object?)this.context)!;
         Element? childElement__5914 = default!;
-        element__5871.visitChildren(((global::System.Action<Element>)((child) => {
-childElement__5914 = child;
-})));
+        element__5871.visitChildren(((global::System.Action<Element>)((child) =>
+        {
+            childElement__5914 = child;
+        })));
         DartRuntimePrimitives.Assert(() => ((childElement__5914 is null) || (childElement__5914 is ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>)));
         return ((ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>?)(object?)childElement__5914)!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -114,40 +116,44 @@ childElement__5914 = child;
     internal virtual global::System.Action _createCallback(global::Doroti.Framework.Foundation.Listenable handle)
     {
         global::System.Action callback__7626 = default!;
-        return callback__7626 = (global::System.Action)(() => {
-DartRuntimePrimitives.Assert(() =>
-    {
-        if (!this.mounted)
+        return callback__7626 = (global::System.Action)(() =>
         {
-            throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("AutomaticKeepAlive handle triggered after AutomaticKeepAlive was disposed.\n" + "Widgets should always trigger their KeepAliveNotification handle when they are " + "deactivated, so that they (or their handle) do not send spurious events later " + "when they are no longer in the tree."));
-        }
-        return true;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    });
-this._handles!.remove(handle);
-handle.removeListener(() => callback__7626());
-if (!System.Linq.Enumerable.Any(this._handles!))
-{
-    if ((FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase) < FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
-    {
-        setState(((global::System.Action)(() => {
-_keepingAlive = false;
-})));
-    }
-    else
-    {
-        _keepingAlive = false;
-        DartAsyncRuntime.scheduleMicrotask((() => {
-if ((this.mounted && !System.Linq.Enumerable.Any(this._handles!)))
-{
-    setState(((global::System.Action)(() => {
-DartRuntimePrimitives.Assert(() => !this._keepingAlive);
-})));
-}
-}));
-    }
-}
-});
+            DartRuntimePrimitives.Assert(() =>
+                {
+                    if (!this.mounted)
+                    {
+                        throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("AutomaticKeepAlive handle triggered after AutomaticKeepAlive was disposed.\n" + "Widgets should always trigger their KeepAliveNotification handle when they are " + "deactivated, so that they (or their handle) do not send spurious events later " + "when they are no longer in the tree."));
+                    }
+                    return true;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                });
+            this._handles!.remove(handle);
+            handle.removeListener(() => callback__7626());
+            if (!System.Linq.Enumerable.Any(this._handles!))
+            {
+                if ((FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase) < FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
+                {
+                    setState(((global::System.Action)(() =>
+                    {
+                        _keepingAlive = false;
+                    })));
+                }
+                else
+                {
+                    _keepingAlive = false;
+                    DartAsyncRuntime.scheduleMicrotask((() =>
+                    {
+                        if ((this.mounted && !System.Linq.Enumerable.Any(this._handles!)))
+                        {
+                            setState(((global::System.Action)(() =>
+                            {
+                                DartRuntimePrimitives.Assert(() => !this._keepingAlive);
+                            })));
+                        }
+                    }));
+                }
+            }
+        });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

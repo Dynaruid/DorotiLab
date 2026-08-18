@@ -153,21 +153,24 @@ internal class _ExpansionTileState__expansion_tile : global::Doroti.Framework.Wi
         if ((object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)))
         {
             this._timer?.cancel();
-            _timer = new Timer(Duration.Create(seconds: 1L), (() => {
-DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(View.of(this.context), stateHint__21963, textDirection__21799).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) => {
-FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "material library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
-}))));
-this._timer?.cancel();
-_timer = null;
-}));
+            _timer = new Timer(Duration.Create(seconds: 1L), (() =>
+            {
+                DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(View.of(this.context), stateHint__21963, textDirection__21799).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) =>
+                {
+                    FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "material library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
+                }))));
+                this._timer?.cancel();
+                _timer = null;
+            }));
         }
         else
         {
             if ((!object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.android)))
             {
-                DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(View.of(this.context), stateHint__21963, textDirection__21799).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) => {
-FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "material library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
-}))));
+                DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(View.of(this.context), stateHint__21963, textDirection__21799).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) =>
+                {
+                    FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "material library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
+                }))));
             }
         }
         ((ExpansionTile)this.widget).onExpansionChanged?.Invoke(((global::Doroti.Framework.Widgets.ExpansibleController)this._tileController).isExpanded);
@@ -326,37 +329,45 @@ FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDet
     internal virtual void _updateShapeBorder(ThemeData theme)
     {
         DartRuntimePrimitives.Ignore(((Func<ShapeBorderTween>)(() =>
-{            var __cascade = this._borderTween;
-            __cascade.begin = ((((ExpansionTile)this.widget).collapsedShape ?? this._expansionTileTheme.collapsedShape) ?? new global::Doroti.Framework.Painting.Border(top: new global::Doroti.Framework.Painting.BorderSide(color: Colors.transparent), bottom: new global::Doroti.Framework.Painting.BorderSide(color: Colors.transparent)));
-            __cascade.end = ((((ExpansionTile)this.widget).shape ?? this._expansionTileTheme.shape) ?? new global::Doroti.Framework.Painting.Border(top: new global::Doroti.Framework.Painting.BorderSide(color: theme.dividerColor), bottom: new global::Doroti.Framework.Painting.BorderSide(color: theme.dividerColor)));
-            return __cascade;        }))());
+{
+    var __cascade = this._borderTween;
+    __cascade.begin = ((((ExpansionTile)this.widget).collapsedShape ?? this._expansionTileTheme.collapsedShape) ?? new global::Doroti.Framework.Painting.Border(top: new global::Doroti.Framework.Painting.BorderSide(color: Colors.transparent), bottom: new global::Doroti.Framework.Painting.BorderSide(color: Colors.transparent)));
+    __cascade.end = ((((ExpansionTile)this.widget).shape ?? this._expansionTileTheme.shape) ?? new global::Doroti.Framework.Painting.Border(top: new global::Doroti.Framework.Painting.BorderSide(color: theme.dividerColor), bottom: new global::Doroti.Framework.Painting.BorderSide(color: theme.dividerColor)));
+    return __cascade;
+}))());
     }
 
     internal virtual void _updateHeaderColor(ExpansionTileThemeData defaults)
     {
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.ColorTween>)(() =>
-{            var __cascade = this._headerColorTween;
-            __cascade.begin = ((((ExpansionTile)this.widget).collapsedTextColor ?? this._expansionTileTheme.collapsedTextColor) ?? defaults.collapsedTextColor);
-            __cascade.end = ((((ExpansionTile)this.widget).textColor ?? this._expansionTileTheme.textColor) ?? defaults.textColor);
-            return __cascade;        }))());
+{
+    var __cascade = this._headerColorTween;
+    __cascade.begin = ((((ExpansionTile)this.widget).collapsedTextColor ?? this._expansionTileTheme.collapsedTextColor) ?? defaults.collapsedTextColor);
+    __cascade.end = ((((ExpansionTile)this.widget).textColor ?? this._expansionTileTheme.textColor) ?? defaults.textColor);
+    return __cascade;
+}))());
     }
 
     internal virtual void _updateIconColor(ExpansionTileThemeData defaults)
     {
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.ColorTween>)(() =>
-{            var __cascade = this._iconColorTween;
-            __cascade.begin = ((((ExpansionTile)this.widget).collapsedIconColor ?? this._expansionTileTheme.collapsedIconColor) ?? defaults.collapsedIconColor);
-            __cascade.end = ((((ExpansionTile)this.widget).iconColor ?? this._expansionTileTheme.iconColor) ?? defaults.iconColor);
-            return __cascade;        }))());
+{
+    var __cascade = this._iconColorTween;
+    __cascade.begin = ((((ExpansionTile)this.widget).collapsedIconColor ?? this._expansionTileTheme.collapsedIconColor) ?? defaults.collapsedIconColor);
+    __cascade.end = ((((ExpansionTile)this.widget).iconColor ?? this._expansionTileTheme.iconColor) ?? defaults.iconColor);
+    return __cascade;
+}))());
     }
 
     internal virtual void _updateBackgroundColor()
     {
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.ColorTween>)(() =>
-{            var __cascade = this._backgroundColorTween;
-            __cascade.begin = (((ExpansionTile)this.widget).collapsedBackgroundColor ?? this._expansionTileTheme.collapsedBackgroundColor);
-            __cascade.end = (((ExpansionTile)this.widget).backgroundColor ?? this._expansionTileTheme.backgroundColor);
-            return __cascade;        }))());
+{
+    var __cascade = this._backgroundColorTween;
+    __cascade.begin = (((ExpansionTile)this.widget).collapsedBackgroundColor ?? this._expansionTileTheme.collapsedBackgroundColor);
+    __cascade.end = (((ExpansionTile)this.widget).backgroundColor ?? this._expansionTileTheme.backgroundColor);
+    return __cascade;
+}))());
     }
 
     internal virtual void _updateHeightFactorCurve()

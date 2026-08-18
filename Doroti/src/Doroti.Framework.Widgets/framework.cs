@@ -508,10 +508,11 @@ internal class _InactiveElements__framework
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        element.visitChildren(((global::System.Action<Element>)((child) => {
-DartRuntimePrimitives.Assert(() => (object.Equals(((Element)child)._parent, element)));
-_InactiveElements__framework._unmount(child);
-})));
+        element.visitChildren(((global::System.Action<Element>)((child) =>
+        {
+            DartRuntimePrimitives.Assert(() => (object.Equals(((Element)child)._parent, element)));
+            _InactiveElements__framework._unmount(child);
+        })));
         element.unmount();
         DartRuntimePrimitives.Assert(() => (object.Equals(((Element)element)._lifecycleState, _ElementLifecycle__framework.defunct)));
     }
@@ -520,9 +521,11 @@ _InactiveElements__framework._unmount(child);
     {
         _locked = true;
         List<Element> elements__91401 = ((Func<List<Element>>)(() =>
-{            var __cascade = this._elements.ToList();
-            __cascade.sort(Element._sort);
-            return __cascade;        }))().ToList();
+{
+    var __cascade = this._elements.ToList();
+    __cascade.sort(Element._sort);
+    return __cascade;
+}))().ToList();
         this._elements.Clear();
         try
         {
@@ -801,9 +804,11 @@ public class BuildOwner
     {
         this.onBuildScheduled = onBuildScheduled;
         this.focusManager = (focusManager ?? (((Func<FocusManager>)(() =>
-{            var __cascade = new FocusManager();
-            __cascade.registerGlobalHandlers();
-            return __cascade;        }))()));
+{
+    var __cascade = new FocusManager();
+    __cascade.registerGlobalHandlers();
+    return __cascade;
+}))()));
     }
 
     public virtual void scheduleBuildFor(Element element)
@@ -1045,55 +1050,59 @@ public class BuildOwner
         DartRuntimePrimitives.Assert(() =>
             {
                 var keyToParent__138423 = new DartMap<GlobalKeyBase, Element>();
-                this._debugGlobalKeyReservations?.forEach(((global::System.Action<Element, DartMap<Element, GlobalKeyBase>>)((parent, childToKey) => {
-if (((object.Equals(((Element)parent)._lifecycleState, _ElementLifecycle__framework.defunct)) || (((bool?)((dynamic)((Element)parent).renderObject)?.attached) == false)))
-{
-    return;
-}
-childToKey.forEach(((global::System.Action<Element, GlobalKeyBase>)((child, key) => {
-if ((((Element)child)._parent is null))
-{
-    return;
-}
-if ((keyToParent__138423.ContainsKey(key) && (!object.Equals(keyToParent__138423.GetValueOrDefault(key), parent))))
-{
-    Element older__139588 = keyToParent__138423.GetValueOrDefault(key)!;
-    var newer__139633 = parent;
-    global::Doroti.Framework.Foundation.FlutterError error__139680 = default!;
-    if ((older__139588.ToString() != newer__139633.ToString()))
-    {
-        error__139680 = new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Multiple widgets used the same GlobalKey."), new global::Doroti.Framework.Foundation.ErrorDescription($"The key {key} was used by multiple widgets. The parents of those widgets were:\n" + $"- {older__139588}\n" + $"- {newer__139633}\n" + "A GlobalKey can only be specified on one widget at a time in the widget tree.") });
-    }
-    else
-    {
-        error__139680 = new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Multiple widgets used the same GlobalKey."), new global::Doroti.Framework.Foundation.ErrorDescription($"The key {key} was used by multiple widgets. The parents of those widgets were " + "different widgets that both had the following description:\n" + $"  {parent}\n" + "A GlobalKey can only be specified on one widget at a time in the widget tree.") });
-    }
-    if ((!object.Equals(((Element)child)._parent, older__139588)))
-    {
-        older__139588.visitChildren(((global::System.Action<Element>)((currentChild) => {
-if ((object.Equals(currentChild, child)))
-{
-    older__139588.forgetChild(child);
-}
-})));
-    }
-    if ((!object.Equals(((Element)child)._parent, newer__139633)))
-    {
-        newer__139633.visitChildren(((global::System.Action<Element>)((currentChild) => {
-if ((object.Equals(currentChild, child)))
-{
-    newer__139633.forgetChild(child);
-}
-})));
-    }
-    throw DartRuntimePrimitives.AsException(error__139680);
-}
-else
-{
-    keyToParent__138423[key] = parent;
-}
-})));
-})));
+                this._debugGlobalKeyReservations?.forEach(((global::System.Action<Element, DartMap<Element, GlobalKeyBase>>)((parent, childToKey) =>
+                {
+                    if (((object.Equals(((Element)parent)._lifecycleState, _ElementLifecycle__framework.defunct)) || (((bool?)((dynamic)((Element)parent).renderObject)?.attached) == false)))
+                    {
+                        return;
+                    }
+                    childToKey.forEach(((global::System.Action<Element, GlobalKeyBase>)((child, key) =>
+                    {
+                        if ((((Element)child)._parent is null))
+                        {
+                            return;
+                        }
+                        if ((keyToParent__138423.ContainsKey(key) && (!object.Equals(keyToParent__138423.GetValueOrDefault(key), parent))))
+                        {
+                            Element older__139588 = keyToParent__138423.GetValueOrDefault(key)!;
+                            var newer__139633 = parent;
+                            global::Doroti.Framework.Foundation.FlutterError error__139680 = default!;
+                            if ((older__139588.ToString() != newer__139633.ToString()))
+                            {
+                                error__139680 = new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Multiple widgets used the same GlobalKey."), new global::Doroti.Framework.Foundation.ErrorDescription($"The key {key} was used by multiple widgets. The parents of those widgets were:\n" + $"- {older__139588}\n" + $"- {newer__139633}\n" + "A GlobalKey can only be specified on one widget at a time in the widget tree.") });
+                            }
+                            else
+                            {
+                                error__139680 = new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Multiple widgets used the same GlobalKey."), new global::Doroti.Framework.Foundation.ErrorDescription($"The key {key} was used by multiple widgets. The parents of those widgets were " + "different widgets that both had the following description:\n" + $"  {parent}\n" + "A GlobalKey can only be specified on one widget at a time in the widget tree.") });
+                            }
+                            if ((!object.Equals(((Element)child)._parent, older__139588)))
+                            {
+                                older__139588.visitChildren(((global::System.Action<Element>)((currentChild) =>
+                                {
+                                    if ((object.Equals(currentChild, child)))
+                                    {
+                                        older__139588.forgetChild(child);
+                                    }
+                                })));
+                            }
+                            if ((!object.Equals(((Element)child)._parent, newer__139633)))
+                            {
+                                newer__139633.visitChildren(((global::System.Action<Element>)((currentChild) =>
+                                {
+                                    if ((object.Equals(currentChild, child)))
+                                    {
+                                        newer__139633.forgetChild(child);
+                                    }
+                                })));
+                            }
+                            throw DartRuntimePrimitives.AsException(error__139680);
+                        }
+                        else
+                        {
+                            keyToParent__138423[key] = parent;
+                        }
+                    })));
+                })));
                 this._debugGlobalKeyReservations.Clear();
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -1392,9 +1401,10 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
     public virtual void reassemble()
     {
         markNeedsBuild();
-        visitChildren(((global::System.Action<Element>)((child) => {
-child.reassemble();
-})));
+        visitChildren(((global::System.Action<Element>)((child) =>
+        {
+            child.reassemble();
+        })));
     }
 
     internal virtual bool _debugIsDescendantOf(Element target)
@@ -1441,10 +1451,11 @@ child.reassemble();
         get
         {
             Element? next__164695 = default!;
-            visitChildren(((global::System.Action<Element>)((child) => {
-DartRuntimePrimitives.Assert(() => (next__164695 is null));
-next__164695 = child;
-})));
+            visitChildren(((global::System.Action<Element>)((child) =>
+            {
+                DartRuntimePrimitives.Assert(() => (next__164695 is null));
+                next__164695 = child;
+            })));
             return next__164695;
             return default!;
         }
@@ -1453,11 +1464,12 @@ next__164695 = child;
     {
         var information__164971 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
         var ancestors__165016 = new List<Element>();
-        visitAncestorElements(((global::System.Func<Element, bool>)((element) => {
-ancestors__165016.Add(element);
-return true;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        visitAncestorElements(((global::System.Func<Element, bool>)((element) =>
+        {
+            ancestors__165016.Add(element);
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         information__164971.Add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Element>($"The specific widget that could not find a {expectedAncestorType} ancestor was", this, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty));
         if (System.Linq.Enumerable.Any(ancestors__165016))
         {
@@ -1824,9 +1836,10 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         if ((this._depth < expectedDepth__190884))
         {
             _depth = expectedDepth__190884;
-            visitChildren(((global::System.Action<Element>)((child) => {
-child._updateDepth(expectedDepth__190884);
-})));
+            visitChildren(((global::System.Action<Element>)((child) =>
+            {
+                child._updateDepth(expectedDepth__190884);
+            })));
         }
     }
 
@@ -1838,25 +1851,28 @@ child._updateDepth(expectedDepth__190884);
         }
         _inDirtyList = false;
         _parentBuildScope = this._parent?.buildScope;
-        visitChildren(((global::System.Action<Element>)((child) => {
-child._updateBuildScopeRecursively();
-})));
+        visitChildren(((global::System.Action<Element>)((child) =>
+        {
+            child._updateBuildScopeRecursively();
+        })));
     }
 
     public virtual void detachRenderObject()
     {
-        visitChildren(((global::System.Action<Element>)((child) => {
-child.detachRenderObject();
-})));
+        visitChildren(((global::System.Action<Element>)((child) =>
+        {
+            child.detachRenderObject();
+        })));
         _slot = null;
     }
 
     public virtual void attachRenderObject(object? newSlot)
     {
         DartRuntimePrimitives.Assert(() => (this.slot is null));
-        visitChildren(((global::System.Action<Element>)((child) => {
-child.attachRenderObject(newSlot);
-})));
+        visitChildren(((global::System.Action<Element>)((child) =>
+        {
+            child.attachRenderObject(newSlot);
+        })));
         _slot = newSlot;
     }
 
@@ -2427,9 +2443,11 @@ child.attachRenderObject(newSlot);
         if (((deps__224858 is not null) && System.Linq.Enumerable.Any(deps__224858)))
         {
             List<InheritedElement> sortedDependencies__224958 = ((Func<List<InheritedElement>>)(() =>
-{            var __cascade = deps__224858.ToList();
-            __cascade.sort(((a, b) => ((Diagnosticable)a).toStringShort().CompareTo(((Diagnosticable)b).toStringShort())));
-            return __cascade;        }))().ToList();
+{
+    var __cascade = deps__224858.ToList();
+    __cascade.sort(((a, b) => ((Diagnosticable)a).toStringShort().CompareTo(((Diagnosticable)b).toStringShort())));
+    return __cascade;
+}))().ToList();
             List<global::Doroti.Framework.Foundation.DiagnosticsNode> diagnosticsDependencies__225170 = sortedDependencies__224958.map<InheritedElement, global::Doroti.Framework.Foundation.DiagnosticsNode>(((element) => ((Diagnosticable)((InheritedElement)element).widget).toDiagnosticsNode(style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.sparse))).ToList().ToList();
             properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<HashSet<InheritedElement>>("dependencies", deps__224858, description: diagnosticsDependencies__225170.ToString()));
         }
@@ -2438,9 +2456,10 @@ child.attachRenderObject(newSlot);
     public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
         var children__225670 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
-        visitChildren(((global::System.Action<Element>)((child) => {
-children__225670.Add(((Diagnosticable)child).toDiagnosticsNode());
-})));
+        visitChildren(((global::System.Action<Element>)((child) =>
+        {
+            children__225670.Add(((Diagnosticable)child).toDiagnosticsNode());
+        })));
         return children__225670;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

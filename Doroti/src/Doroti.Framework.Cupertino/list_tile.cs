@@ -183,19 +183,29 @@ internal class _CupertinoListTileState__list_tile : global::Doroti.Framework.Wid
         {
             return child__14186;
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.GestureDetector(onTapDown: ((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)((_) => { setState(((global::System.Action)(() => {
-_tapped = true;
-}))); })), onTapCancel: ((global::System.Action)(() => { setState(((global::System.Action)(() => {
-_tapped = false;
-}))); })), onTap: ((global::System.Action)(async () => {
-await DartAsyncRuntime.AwaitFutureOrValue<object?>(((CupertinoListTile)this.widget).onTap!());
-if (this.mounted)
-{
-    setState(((global::System.Action)(() => {
-_tapped = false;
-})));
-}
-})), behavior: global::Doroti.Framework.Rendering.HitTestBehavior.opaque, child: child__14186));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.GestureDetector(onTapDown: ((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)((_) =>
+        {
+            setState(((global::System.Action)(() =>
+            {
+                _tapped = true;
+            })));
+        })), onTapCancel: ((global::System.Action)(() =>
+        {
+            setState(((global::System.Action)(() =>
+            {
+                _tapped = false;
+            })));
+        })), onTap: ((global::System.Action)(async () =>
+        {
+            await DartAsyncRuntime.AwaitFutureOrValue<object?>(((CupertinoListTile)this.widget).onTap!());
+            if (this.mounted)
+            {
+                setState(((global::System.Action)(() =>
+                {
+                    _tapped = false;
+                })));
+            }
+        })), behavior: global::Doroti.Framework.Rendering.HitTestBehavior.opaque, child: child__14186));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

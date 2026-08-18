@@ -162,10 +162,11 @@ public class RawView : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new _RawViewInternal__view(view: this.view, deprecatedPipelineOwner: this._deprecatedPipelineOwner, deprecatedRenderView: this._deprecatedRenderView, builder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.PipelineOwner, Widget>)((context, owner) => {
-return ((Widget)(object?)new _ViewScope__view(view: this.view, child: new _PipelineOwnerScope__view(pipelineOwner: owner, child: this.child)));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((Widget)(object?)new _RawViewInternal__view(view: this.view, deprecatedPipelineOwner: this._deprecatedPipelineOwner, deprecatedRenderView: this._deprecatedRenderView, builder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.PipelineOwner, Widget>)((context, owner) =>
+        {
+            return ((Widget)(object?)new _ViewScope__view(view: this.view, child: new _PipelineOwnerScope__view(pipelineOwner: owner, child: this.child)));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -497,20 +498,21 @@ internal class _MultiChildComponentElement__view : Element
         }
         var hasAncestorRenderObjectElement__30315 = false;
         var ancestorWantsRenderObject__30363 = true;
-        visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) => {
-if (!ancestor.debugExpectsRenderObjectForSlot(slot))
-{
-    ancestorWantsRenderObject__30363 = false;
-    return false;
-}
-if ((ancestor is RenderObjectElement))
-{
-    hasAncestorRenderObjectElement__30315 = true;
-    return false;
-}
-return true;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
+        {
+            if (!ancestor.debugExpectsRenderObjectForSlot(slot))
+            {
+                ancestorWantsRenderObject__30363 = false;
+                return false;
+            }
+            if ((ancestor is RenderObjectElement))
+            {
+                hasAncestorRenderObjectElement__30315 = true;
+                return false;
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         if ((hasAncestorRenderObjectElement__30315 && ancestorWantsRenderObject__30363))
         {
             FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"The Element for {toStringShort()} cannot be inserted into slot \"{slot}\" of its ancestor. "), new global::Doroti.Framework.Foundation.ErrorDescription($"The ownership chain for the Element in question was:\n  {debugGetCreatorChain(10L)}"), new global::Doroti.Framework.Foundation.ErrorDescription("This Element allows the creation of multiple independent render trees, which cannot " + "be attached to an ancestor in an existing render tree. However, an ancestor RenderObject " + "is expecting that a child will be attached."), new global::Doroti.Framework.Foundation.ErrorHint($"Try moving the subtree that contains the {toStringShort()} widget into the " + "view property of a ViewAnchor widget or to the root of the widget tree, where " + "it is not expected to attach its RenderObject to its ancestor.") })));

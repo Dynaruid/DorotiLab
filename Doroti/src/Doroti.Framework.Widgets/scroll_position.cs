@@ -153,9 +153,10 @@ public abstract class ScrollPosition : global::Doroti.Framework.Rendering.Viewpo
         _impliedVelocity = (value - this.pixels);
         _pixels = value;
         notifyListeners();
-        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) => {
-_impliedVelocity = 0;
-})), debugLabel: "ScrollPosition.resetVelocity");
+        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+        {
+            _impliedVelocity = 0;
+        })), debugLabel: "ScrollPosition.resetVelocity");
     }
 
     public virtual void saveScrollOffset()

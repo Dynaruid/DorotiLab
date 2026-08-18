@@ -4,13 +4,13 @@
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/button_style_button.dart
 using System;
 using System.Collections.Generic;
-using Stopwatch = System.Diagnostics.Stopwatch;
 using System.Linq;
 using System.Threading.Tasks;
 using Doroti.Runtime;
 using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Doroti.Framework.Material;
 
@@ -95,8 +95,9 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
 
     public virtual void handleStatesControllerChange()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     public virtual global::Doroti.Framework.Widgets.WidgetStatesController statesController => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStatesController>((((ButtonStyleButton)this.widget).statesController ?? this.internalStatesController!));
@@ -180,10 +181,11 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
         }
         P? resolve<P>(global::System.Func<ButtonStyle?, global::Doroti.Framework.Widgets.WidgetStateProperty<P>?> getProperty)
         {
-            return effectiveValue(((style) => {
-return getProperty(style) is { } property ? property.resolve(this.statesController.value) : default;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return effectiveValue(((style) =>
+            {
+                return getProperty(style) is { } property ? property.resolve(this.statesController.value) : default;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         Color? effectiveIconColor()
@@ -243,15 +245,19 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             {
                 this.controller?.dispose();
                 controller = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: DartRuntimePrimitives.RequireValue(resolvedAnimationDuration__17641), vsync: this);
-            __cascade.addStatusListener(((AnimationStatusListener)((status) => {
-if ((object.Equals(status, global::Doroti.Framework.Animation.AnimationStatus.completed)))
 {
-    setState(((global::System.Action)(() => {
-})));
-}
-})));
-            return __cascade;        }))();
+    var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: DartRuntimePrimitives.RequireValue(resolvedAnimationDuration__17641), vsync: this);
+    __cascade.addStatusListener(((AnimationStatusListener)((status) =>
+    {
+        if ((object.Equals(status, global::Doroti.Framework.Animation.AnimationStatus.completed)))
+        {
+            setState(((global::System.Action)(() =>
+            {
+            })));
+        }
+    })));
+    return __cascade;
+}))();
             }
             resolvedBackgroundColor__15709 = this.backgroundColor;
             this.controller!.value = 0;
@@ -299,10 +305,12 @@ if ((object.Equals(status, global::Doroti.Framework.Animation.AnimationStatus.co
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -508,11 +516,12 @@ public class _RenderInputPadding__button_style_button : global::Doroti.Framework
             return true;
         }
         global::Doroti.Ui.Offset center__27754 = ((global::Doroti.Ui.Offset)(object?)this.child!.size.center(Offset.zero));
-        return result.addWithRawTransform(transform: MatrixUtils.forceToPoint(center__27754), position: center__27754, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, position) => {
-DartRuntimePrimitives.Assert(() => (object.Equals(position, center__27754)));
-return this.child!.hitTest(result, position: center__27754);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        return result.addWithRawTransform(transform: MatrixUtils.forceToPoint(center__27754), position: center__27754, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, position) =>
+        {
+            DartRuntimePrimitives.Assert(() => (object.Equals(position, center__27754)));
+            return this.child!.hitTest(result, position: center__27754);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

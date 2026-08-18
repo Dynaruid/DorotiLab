@@ -109,9 +109,11 @@ internal class _TwoDimensionalViewportElement__two_dimensional_viewport : Render
     public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
         List<Element> children__11839 = ((Func<List<Element>>)(() =>
-{            var __cascade = this._vicinityToChild.Values.ToList();
-            __cascade.sort(_compareChildren);
-            return __cascade;        }))().ToList();
+{
+    var __cascade = this._vicinityToChild.Values.ToList();
+    __cascade.sort(_compareChildren);
+    return __cascade;
+}))().ToList();
         return new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -135,23 +137,24 @@ internal class _TwoDimensionalViewportElement__two_dimensional_viewport : Render
     public virtual void _buildChild(ChildVicinity vicinity)
     {
         DartRuntimePrimitives.Assert(() => this._debugIsDoingLayout);
-        this.owner!.buildScope(this, ((global::System.Action)(() => {
-Widget? newWidget__12675 = ((Widget?)(object?)(((TwoDimensionalViewport?)(object?)this.widget)!).@delegate.build(this, vicinity));
-if ((newWidget__12675 is null))
-{
-    return;
-}
-Element? oldElement__12830 = ((Element?)(object?)_retrieveOldElement(newWidget__12675, vicinity));
-Element? newChild__12906 = ((Element?)(object?)updateChild(oldElement__12830, newWidget__12675, vicinity));
-DartRuntimePrimitives.Assert(() => (newChild__12906 is not null));
-DartRuntimePrimitives.Assert(() => (!this._newVicinityToChild!.ContainsKey(vicinity)));
-this._newVicinityToChild![vicinity] = newChild__12906!;
-if ((((Widget)newWidget__12675).key is not null))
-{
-    DartRuntimePrimitives.Assert(() => (!this._newKeyToChild!.ContainsKey(((Widget)newWidget__12675).key!)));
-    this._newKeyToChild![((Widget)newWidget__12675).key!] = newChild__12906;
-}
-})));
+        this.owner!.buildScope(this, ((global::System.Action)(() =>
+        {
+            Widget? newWidget__12675 = ((Widget?)(object?)(((TwoDimensionalViewport?)(object?)this.widget)!).@delegate.build(this, vicinity));
+            if ((newWidget__12675 is null))
+            {
+                return;
+            }
+            Element? oldElement__12830 = ((Element?)(object?)_retrieveOldElement(newWidget__12675, vicinity));
+            Element? newChild__12906 = ((Element?)(object?)updateChild(oldElement__12830, newWidget__12675, vicinity));
+            DartRuntimePrimitives.Assert(() => (newChild__12906 is not null));
+            DartRuntimePrimitives.Assert(() => (!this._newVicinityToChild!.ContainsKey(vicinity)));
+            this._newVicinityToChild![vicinity] = newChild__12906!;
+            if ((((Widget)newWidget__12675).key is not null))
+            {
+                DartRuntimePrimitives.Assert(() => (!this._newKeyToChild!.ContainsKey(((Widget)newWidget__12675).key!)));
+                this._newKeyToChild![((Widget)newWidget__12675).key!] = newChild__12906;
+            }
+        })));
     }
 
     internal virtual Element? _retrieveOldElement(Widget newWidget, ChildVicinity vicinity)
@@ -624,11 +627,12 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
             {
                 continue;
             }
-            bool isHit__36139 = result.addWithPaintOffset(offset: ((TwoDimensionalViewportParentData)childParentData__35967).paintOffset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, transformed) => {
-DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - DartRuntimePrimitives.RequireValue(((TwoDimensionalViewportParentData)childParentData__35967).paintOffset)))));
-return child__35893.hitTest(result, position: transformed);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+            bool isHit__36139 = result.addWithPaintOffset(offset: ((TwoDimensionalViewportParentData)childParentData__35967).paintOffset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, transformed) =>
+            {
+                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - DartRuntimePrimitives.RequireValue(((TwoDimensionalViewportParentData)childParentData__35967).paintOffset)))));
+                return child__35893.hitTest(result, position: transformed);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
             if (isHit__36139)
             {
                 return true;
@@ -800,16 +804,18 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         _didResize = false;
         _needsDelegateRebuild = false;
         _cacheKeepAlives();
-        invokeLayoutCallback<global::Doroti.Framework.Rendering.BoxConstraints>(((global::System.Action<global::Doroti.Framework.Rendering.BoxConstraints>)((_) => {
-this._childManager._endLayout();
-DartRuntimePrimitives.Assert(() => ((this._debugOrphans is { } __items48761 ? !System.Linq.Enumerable.Any(__items48761) : (bool?)null) ?? true));
-DartRuntimePrimitives.Assert(() => !System.Linq.Enumerable.Any(this._debugDanglingKeepAlives));
-DartRuntimePrimitives.Assert(() => !System.Linq.Enumerable.Any(this._keepAliveBucket.Values.where(((child) => {
-return !parentDataOf(child).keepAlive;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
-_reifyChildren();
-})));
+        invokeLayoutCallback<global::Doroti.Framework.Rendering.BoxConstraints>(((global::System.Action<global::Doroti.Framework.Rendering.BoxConstraints>)((_) =>
+        {
+            this._childManager._endLayout();
+            DartRuntimePrimitives.Assert(() => ((this._debugOrphans is { } __items48761 ? !System.Linq.Enumerable.Any(__items48761) : (bool?)null) ?? true));
+            DartRuntimePrimitives.Assert(() => !System.Linq.Enumerable.Any(this._debugDanglingKeepAlives));
+            DartRuntimePrimitives.Assert(() => !System.Linq.Enumerable.Any(this._keepAliveBucket.Values.where(((child) =>
+            {
+                return !parentDataOf(child).keepAlive;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }))));
+            _reifyChildren();
+        })));
     }
 
     internal virtual void _cacheKeepAlives()
@@ -828,15 +834,16 @@ _reifyChildren();
 
     internal virtual void _sortByYIndex()
     {
-        this._currentChildVicinities.sort(((a, b) => {
-long yComparison__49891 = ((ChildVicinity)a).yIndex.CompareTo(((ChildVicinity)b).yIndex);
-if ((yComparison__49891 != 0L))
-{
-    return yComparison__49891;
-}
-return ((ChildVicinity)a).xIndex.CompareTo(((ChildVicinity)b).xIndex);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        this._currentChildVicinities.sort(((a, b) =>
+        {
+            long yComparison__49891 = ((ChildVicinity)a).yIndex.CompareTo(((ChildVicinity)b).yIndex);
+            if ((yComparison__49891 != 0L))
+            {
+                return yComparison__49891;
+            }
+            return ((ChildVicinity)a).xIndex.CompareTo(((ChildVicinity)b).xIndex);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
     }
 
     internal virtual void _sortByXIndex()
@@ -929,9 +936,10 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         DartRuntimePrimitives.Assert(() => this.debugDoingThisLayout);
         if ((this._needsDelegateRebuild || ((!this._children.ContainsKey(vicinity) && !this._keepAliveBucket.ContainsKey(vicinity)))))
         {
-            invokeLayoutCallback<global::Doroti.Framework.Rendering.BoxConstraints>(((global::System.Action<global::Doroti.Framework.Rendering.BoxConstraints>)((_) => {
-this._childManager._buildChild(vicinity);
-})));
+            invokeLayoutCallback<global::Doroti.Framework.Rendering.BoxConstraints>(((global::System.Action<global::Doroti.Framework.Rendering.BoxConstraints>)((_) =>
+            {
+                this._childManager._buildChild(vicinity);
+            })));
         }
         else
         {

@@ -147,10 +147,11 @@ public class TrackingScrollController : ScrollController
     {
         base.attach(position);
         DartRuntimePrimitives.Assert(() => !this._positionToListener.ContainsKey(position));
-        this._positionToListener[position] = (global::System.Action)(() => {
-_lastUpdated = position;
-_lastUpdatedOffset = ((ScrollPosition)position).pixels;
-});
+        this._positionToListener[position] = (global::System.Action)(() =>
+        {
+            _lastUpdated = position;
+            _lastUpdatedOffset = ((ScrollPosition)position).pixels;
+        });
         position.addListener(this._positionToListener.GetValueOrDefault(position)!);
     }
 

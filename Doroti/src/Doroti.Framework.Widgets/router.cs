@@ -305,12 +305,13 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
         ((Router<T>)(object)this.widget).backButtonDispatcher?.removeCallback((global::System.Func<Future<bool>>)this._handleBackButtonDispatcherNotification);
         ((Router<T>)(object)this.widget).routerDelegate.removeListener(() => this._handleRouterDelegateNotification());
         _currentRouterTransaction = null;
-        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) => {
-if (!((dynamic)property)._disposed)
-{
-    property.removeListener((global::System.Action)(() => listener()));
-}
-})));
+        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
+        {
+            if (!((dynamic)property)._disposed)
+            {
+                property.removeListener((global::System.Action)(() => listener()));
+            }
+        })));
         this._bucket?.dispose();
         _bucket = null;
         base.dispose();
@@ -326,18 +327,19 @@ if (!((dynamic)property)._disposed)
 
     internal virtual global::System.Func<object, Future> _processParsedRouteInformation(object? transaction, global::System.Func<global::System.Func<T, Future>> delegateRouteSetter)
     {
-        return ((global::System.Func<object, Future>)(async (data) => {
-if ((!object.Equals(this._currentRouterTransaction, transaction)))
-{
-    return;
-}
-await delegateRouteSetter()(DartRuntimePrimitives.ConvertValue<T>(data));
-if ((object.Equals(this._currentRouterTransaction, transaction)))
-{
-    _rebuild();
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        return ((global::System.Func<object, Future>)(async (data) =>
+        {
+            if ((!object.Equals(this._currentRouterTransaction, transaction)))
+            {
+                return;
+            }
+            await delegateRouteSetter()(DartRuntimePrimitives.ConvertValue<T>(data));
+            if ((object.Equals(this._currentRouterTransaction, transaction)))
+            {
+                _rebuild();
+            }
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -356,29 +358,32 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     internal virtual global::System.Func<bool, Future<bool>> _handleRoutePopped(object? transaction)
     {
-        return ((global::System.Func<bool, Future<bool>>)((data) => {
-if ((!object.Equals(transaction, this._currentRouterTransaction)))
-{
-    return new global::Doroti.Framework.Foundation.SynchronousFuture<bool>(true);
-}
-_rebuild();
-return new global::Doroti.Framework.Foundation.SynchronousFuture<bool>(data);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        return ((global::System.Func<bool, Future<bool>>)((data) =>
+        {
+            if ((!object.Equals(transaction, this._currentRouterTransaction)))
+            {
+                return new global::Doroti.Framework.Foundation.SynchronousFuture<bool>(true);
+            }
+            _rebuild();
+            return new global::Doroti.Framework.Foundation.SynchronousFuture<bool>(data);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _rebuild()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
         _maybeNeedToReportRouteInformation();
     }
 
     internal virtual void _handleRouterDelegateNotification()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
         _maybeNeedToReportRouteInformation();
     }
 
@@ -770,10 +775,12 @@ internal class _BackButtonListenerState__router : State<BackButtonListener>
         BackButtonDispatcher? rootBackDispatcher__50813 = ((BackButtonDispatcher?)((dynamic)Router<object>.of<object>(this.context)).backButtonDispatcher);
         DartRuntimePrimitives.Assert(() => (rootBackDispatcher__50813 is not null), () => (object?)"The parent router must have a backButtonDispatcher to use this widget");
         dispatcher = DartRuntimePrimitives.ConvertValue<BackButtonDispatcher>(((Func<ChildBackButtonDispatcher>)(() =>
-{            var __cascade = rootBackDispatcher__50813!.createChildBackButtonDispatcher();
-            __cascade.addCallback((global::System.Func<Future<bool>>)((BackButtonListener)(object)this.widget).onBackButtonPressed);
-            __cascade.takePriority();
-            return __cascade;        }))());
+{
+    var __cascade = rootBackDispatcher__50813!.createChildBackButtonDispatcher();
+    __cascade.addCallback((global::System.Func<Future<bool>>)((BackButtonListener)(object)this.widget).onBackButtonPressed);
+    __cascade.takePriority();
+    return __cascade;
+}))());
         base.didChangeDependencies();
     }
 

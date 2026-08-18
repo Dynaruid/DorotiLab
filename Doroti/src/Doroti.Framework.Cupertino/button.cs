@@ -155,10 +155,11 @@ internal class _CupertinoButtonState__button : global::Doroti.Framework.Widgets.
     internal virtual global::Doroti.Framework.Animation.AnimationController _animationController { get; set; } = default!;
     internal virtual global::Doroti.Framework.Animation.Animation<double> _opacityAnimation { get; set; } = default!;
     public virtual bool isFocused { get; set; } = default!;
-    internal static global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> _defaultCursor = WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Framework.Services.MouseCursor>)((states) => {
-return ((global::Doroti.Framework.Services.MouseCursor)(object?)((!states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled) && global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb) ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.MouseCursor.defer));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+    internal static global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> _defaultCursor = WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Framework.Services.MouseCursor>)((states) =>
+    {
+        return ((global::Doroti.Framework.Services.MouseCursor)(object?)((!states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled) && global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb) ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.MouseCursor.defer));
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    })));
     internal virtual bool _buttonHeldDown { get; set; } = false;
     internal virtual bool _tapInProgress { get; set; } = false;
     private bool __late__actionMap_initialized;
@@ -216,9 +217,10 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     internal virtual void _handleTapDown(global::Doroti.Framework.Gestures.TapDownDetails @event)
     {
-        setState(((global::System.Action)(() => {
-_tapInProgress = true;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _tapInProgress = true;
+        })));
         if (!this._buttonHeldDown)
         {
             _buttonHeldDown = true;
@@ -228,9 +230,10 @@ _tapInProgress = true;
 
     internal virtual void _handleTapUp(global::Doroti.Framework.Gestures.TapUpDetails @event)
     {
-        setState(((global::System.Action)(() => {
-_tapInProgress = false;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _tapInProgress = false;
+        })));
         if (this._buttonHeldDown)
         {
             _buttonHeldDown = false;
@@ -246,9 +249,10 @@ _tapInProgress = false;
 
     internal virtual void _handleTapCancel()
     {
-        setState(((global::System.Action)(() => {
-_tapInProgress = false;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _tapInProgress = false;
+        })));
         if (this._buttonHeldDown)
         {
             _buttonHeldDown = false;
@@ -285,20 +289,22 @@ _tapInProgress = false;
         }
         bool wasHeldDown__14307 = this._buttonHeldDown;
         global::Doroti.Framework.Scheduler.TickerFuture ticker__14361 = (this._buttonHeldDown ? this._animationController.animateTo(1.0, duration: kFadeOutDuration, curve: global::Doroti.Framework.Animation.Curves.easeInOutCubicEmphasized) : this._animationController.animateTo(0.0, duration: kFadeInDuration, curve: global::Doroti.Framework.Animation.Curves.easeOutCubic));
-        DartRuntimePrimitives.Ignore(ticker__14361.then(((global::System.Func<object?, object>)((value) => {
-if ((this.mounted && (wasHeldDown__14307 != this._buttonHeldDown)))
-{
-    _animate();
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        DartRuntimePrimitives.Ignore(ticker__14361.then(((global::System.Func<object?, object>)((value) =>
+        {
+            if ((this.mounted && (wasHeldDown__14307 != this._buttonHeldDown)))
+            {
+                _animate();
+            }
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
     }
 
     internal virtual void _onShowFocusHighlight(bool showHighlight)
     {
-        setState(((global::System.Action)(() => {
-isFocused = showHighlight;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            isFocused = showHighlight;
+        })));
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
@@ -316,13 +322,17 @@ isFocused = showHighlight;
         var states__17482 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection17491 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (!enabled__15170) { __collection17491.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } if (this._tapInProgress) { __collection17491.Add(global::Doroti.Framework.Widgets.WidgetState.pressed); } if (this.isFocused) { __collection17491.Add(global::Doroti.Framework.Widgets.WidgetState.focused); } return __collection17491; }))();
         global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor__17666 = ((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((CupertinoButton)this.widget).mouseCursor, states__17482) ?? (global::Doroti.Framework.Services.MouseCursor)_defaultCursor.resolve(states__17482)));
         var shapeDecoration__17823 = new global::Doroti.Framework.Painting.ShapeDecoration(shape: new global::Doroti.Framework.Painting.RoundedSuperellipseBorder(side: ((enabled__15170 && this.isFocused) ? new global::Doroti.Framework.Painting.BorderSide(color: effectiveFocusOutlineColor__16501, width: 3.5, strokeAlign: global::Doroti.Framework.Painting.BorderSide.strokeAlignOutside) : global::Doroti.Framework.Painting.BorderSide.none), borderRadius: (((CupertinoButton)this.widget).borderRadius ?? ConstantsLibrary.kCupertinoButtonSizeBorderRadius.GetValueOrDefault(((CupertinoButton)this.widget).sizeStyle))), color: (((backgroundColor__15534 is not null) && !enabled__15170) ? CupertinoDynamicColor.resolve(((CupertinoButton)this.widget).disabledColor, context) : backgroundColor__15534));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.MouseRegion(cursor: effectiveMouseCursor__17666, child: new global::Doroti.Framework.Widgets.FocusableActionDetector(actions: this._actionMap, focusNode: ((CupertinoButton)this.widget).focusNode, autofocus: ((CupertinoButton)this.widget).autofocus, onFocusChange: (global::System.Action<bool>?)((CupertinoButton)this.widget).onFocusChange, onShowFocusHighlight: (global::System.Action<bool>)this._onShowFocusHighlight, enabled: enabled__15170, child: new global::Doroti.Framework.Widgets.RawGestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.opaque, gestures: new DartMap<Type, dynamic> { [typeof(global::Doroti.Framework.Gestures.TapGestureRecognizer)] = new global::Doroti.Framework.Widgets.GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.TapGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.TapGestureRecognizer(postAcceptSlopTolerance: null))), ((global::System.Action<global::Doroti.Framework.Gestures.TapGestureRecognizer>)((instance) => {
-instance.onTapDown = (global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)(enabled__15170 ? this._handleTapDown : null));
-instance.onTapUp = (global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>)((global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>)(enabled__15170 ? this._handleTapUp : null));
-instance.onTapCancel = (global::System.Action)((global::System.Action)(enabled__15170 ? this._handleTapCancel : null));
-instance.onTapMove = (global::System.Action<global::Doroti.Framework.Gestures.TapMoveDetails>)((global::System.Action<global::Doroti.Framework.Gestures.TapMoveDetails>)(enabled__15170 ? this._handleTapMove : null));
-instance.gestureSettings = gestureSettings__17409;
-}))) }, child: new global::Doroti.Framework.Widgets.Semantics(button: true, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: ((minimumSize__15212?.width ?? DartCollectionRuntime.NullableMapValue<double>(ConstantsLibrary.kCupertinoButtonMinSize, ((CupertinoButton)this.widget).sizeStyle)) ?? ConstantsLibrary.kMinInteractiveDimensionCupertino), minHeight: ((minimumSize__15212?.height ?? DartCollectionRuntime.NullableMapValue<double>(ConstantsLibrary.kCupertinoButtonMinSize, ((CupertinoButton)this.widget).sizeStyle)) ?? ConstantsLibrary.kMinInteractiveDimensionCupertino)), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._opacityAnimation, child: new global::Doroti.Framework.Widgets.DecoratedBox(decoration: shapeDecoration__17823, child: new global::Doroti.Framework.Widgets.Padding(padding: (((CupertinoButton)this.widget).padding ?? ConstantsLibrary.kCupertinoButtonPadding.GetValueOrDefault(((CupertinoButton)this.widget).sizeStyle)!), child: new global::Doroti.Framework.Widgets.Align(alignment: ((CupertinoButton)this.widget).alignment, widthFactor: 1.0, heightFactor: 1.0, child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: textStyle__16902, child: new global::Doroti.Framework.Widgets.IconTheme(data: iconTheme__17163, child: ((CupertinoButton)this.widget).child))))))))))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.MouseRegion(cursor: effectiveMouseCursor__17666, child: new global::Doroti.Framework.Widgets.FocusableActionDetector(actions: this._actionMap, focusNode: ((CupertinoButton)this.widget).focusNode, autofocus: ((CupertinoButton)this.widget).autofocus, onFocusChange: (global::System.Action<bool>?)((CupertinoButton)this.widget).onFocusChange, onShowFocusHighlight: (global::System.Action<bool>)this._onShowFocusHighlight, enabled: enabled__15170, child: new global::Doroti.Framework.Widgets.RawGestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.opaque, gestures: new DartMap<Type, dynamic>
+        {
+            [typeof(global::Doroti.Framework.Gestures.TapGestureRecognizer)] = new global::Doroti.Framework.Widgets.GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.TapGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.TapGestureRecognizer(postAcceptSlopTolerance: null))), ((global::System.Action<global::Doroti.Framework.Gestures.TapGestureRecognizer>)((instance) =>
+            {
+                instance.onTapDown = (global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)(enabled__15170 ? this._handleTapDown : null));
+                instance.onTapUp = (global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>)((global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>)(enabled__15170 ? this._handleTapUp : null));
+                instance.onTapCancel = (global::System.Action)((global::System.Action)(enabled__15170 ? this._handleTapCancel : null));
+                instance.onTapMove = (global::System.Action<global::Doroti.Framework.Gestures.TapMoveDetails>)((global::System.Action<global::Doroti.Framework.Gestures.TapMoveDetails>)(enabled__15170 ? this._handleTapMove : null));
+                instance.gestureSettings = gestureSettings__17409;
+            })))
+        }, child: new global::Doroti.Framework.Widgets.Semantics(button: true, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: ((minimumSize__15212?.width ?? DartCollectionRuntime.NullableMapValue<double>(ConstantsLibrary.kCupertinoButtonMinSize, ((CupertinoButton)this.widget).sizeStyle)) ?? ConstantsLibrary.kMinInteractiveDimensionCupertino), minHeight: ((minimumSize__15212?.height ?? DartCollectionRuntime.NullableMapValue<double>(ConstantsLibrary.kCupertinoButtonMinSize, ((CupertinoButton)this.widget).sizeStyle)) ?? ConstantsLibrary.kMinInteractiveDimensionCupertino)), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._opacityAnimation, child: new global::Doroti.Framework.Widgets.DecoratedBox(decoration: shapeDecoration__17823, child: new global::Doroti.Framework.Widgets.Padding(padding: (((CupertinoButton)this.widget).padding ?? ConstantsLibrary.kCupertinoButtonPadding.GetValueOrDefault(((CupertinoButton)this.widget).sizeStyle)!), child: new global::Doroti.Framework.Widgets.Align(alignment: ((CupertinoButton)this.widget).alignment, widthFactor: 1.0, heightFactor: 1.0, child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: textStyle__16902, child: new global::Doroti.Framework.Widgets.IconTheme(data: iconTheme__17163, child: ((CupertinoButton)this.widget).child))))))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

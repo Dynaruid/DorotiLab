@@ -46,10 +46,11 @@ public abstract class Feedback
         {
             return ((global::System.Action)(object)null);
         }
-        return ((global::System.Action)(() => {
-DartRuntimePrimitives.Ignore(Feedback.forTap(context));
-callback();
-}));
+        return ((global::System.Action)(() =>
+        {
+            DartRuntimePrimitives.Ignore(Feedback.forTap(context));
+            callback();
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -85,10 +86,11 @@ callback();
         {
             return ((global::System.Action)(object)null);
         }
-        return ((global::System.Action)(() => {
-DartRuntimePrimitives.Ignore(Feedback.forLongPress(context));
-callback();
-}));
+        return ((global::System.Action)(() =>
+        {
+            DartRuntimePrimitives.Ignore(Feedback.forLongPress(context));
+            callback();
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

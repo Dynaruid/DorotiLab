@@ -105,10 +105,12 @@ public static partial class SheetLibrary
         {
             global::Doroti.Framework.Widgets.Widget nestedNavigationContent(global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget> builder)
             {
-                return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NavigatorPopHandler<T>(onPopWithResult: ((global::System.Action<T?>)((result) => {
-DartRuntimePrimitives.Ignore(((global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState>)nestedNavigatorKey__9630).currentState!.maybePop<object>());
-})), child: new global::Doroti.Framework.Widgets.Navigator(key: nestedNavigatorKey__9630, initialRoute: "/", onGenerateInitialRoutes: ((global::System.Func<global::Doroti.Framework.Widgets.NavigatorState, string, List<dynamic>>)((navigator, initialRouteName) => {
-return ((List<object>)(object?)new List<global::Doroti.Framework.Widgets.Route<object?>> { new CupertinoPageRoute<object?>(builder: ((context) => {
+                return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NavigatorPopHandler<T>(onPopWithResult: ((global::System.Action<T?>)((result) =>
+                {
+                    DartRuntimePrimitives.Ignore(((global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState>)nestedNavigatorKey__9630).currentState!.maybePop<object>());
+                })), child: new global::Doroti.Framework.Widgets.Navigator(key: nestedNavigatorKey__9630, initialRoute: "/", onGenerateInitialRoutes: ((global::System.Func<global::Doroti.Framework.Widgets.NavigatorState, string, List<dynamic>>)((navigator, initialRouteName) =>
+                {
+                    return ((List<object>)(object?)new List<global::Doroti.Framework.Widgets.Route<object?>> { new CupertinoPageRoute<object?>(builder: ((context) => {
 return new global::Doroti.Framework.Widgets.PopScope<object>(canPop: false, onPopInvokedWithResult: ((global::System.Action<bool, object>)((didPop, result) => {
 if (didPop)
 {
@@ -118,8 +120,8 @@ Navigator.of(context, rootNavigator: true).pop<object>(result);
 })), child: builder(context));
 throw new InvalidOperationException("Dart closure completed without a value.");
 })) });
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))));
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                })))));
                 throw new InvalidOperationException("Dart control flow completed without a value.");
             }
             var route__11017 = new CupertinoSheetRoute<T>(scrollableBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.ScrollController, global::Doroti.Framework.Widgets.Widget>?)((context, controller) => nestedNavigationContent(((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((scrollableBuilder is not null) ? ((context) => scrollableBuilder(context, controller)) : effectiveBuilder__9579!))))), settings: settings, enableDrag: enableDrag, topGap: topGap);
@@ -273,10 +275,11 @@ internal class _CupertinoSheetTransitionState__sheet : global::Doroti.Framework.
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _StretchDragControllerProvider__sheet(controller: this._stretchDragController, child: global::Doroti.Framework.Widgets.SizedBox.CreateExpand(child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._stretchDragAnimation, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) => {
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: (MediaQuery.heightOf(context) * ((global::Doroti.Framework.Animation.Animation<double>)this._stretchDragAnimation).value)), child: _coverSheetSecondaryTransition(((CupertinoSheetTransition)(object)this.widget).secondaryRouteAnimation, _coverSheetPrimaryTransition(context, ((CupertinoSheetTransition)(object)this.widget).primaryRouteAnimation, ((CupertinoSheetTransition)(object)this.widget).linearTransition, ((CupertinoSheetTransition)(object)this.widget).child))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _StretchDragControllerProvider__sheet(controller: this._stretchDragController, child: global::Doroti.Framework.Widgets.SizedBox.CreateExpand(child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._stretchDragAnimation, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
+        {
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: (MediaQuery.heightOf(context) * ((global::Doroti.Framework.Animation.Animation<double>)this._stretchDragAnimation).value)), child: _coverSheetSecondaryTransition(((CupertinoSheetTransition)(object)this.widget).secondaryRouteAnimation, _coverSheetPrimaryTransition(context, ((CupertinoSheetTransition)(object)this.widget).primaryRouteAnimation, ((CupertinoSheetTransition)(object)this.widget).linearTransition, ((CupertinoSheetTransition)(object)this.widget).child))));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -538,13 +541,15 @@ internal class _CupertinoDragGestureDetectorState__sheet<T> : global::Doroti.Fra
         DartRuntimePrimitives.Assert(() => (this._stretchDragController is null));
         _stretchDragController = _StretchDragControllerProvider__sheet.maybeOf(this.context);
         _recognizer = ((Func<global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer>)(() =>
-{            var __cascade = new global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer(debugOwner: this);
-            __cascade.velocityTrackerBuilder = _cupertinoVelocityBuilder;
-            __cascade.onStart = this._handleDragStart;
-            __cascade.onUpdate = this._handleDragUpdate;
-            __cascade.onEnd = this._handleDragEnd;
-            __cascade.onCancel = this._handleDragCancel;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer(debugOwner: this);
+    __cascade.velocityTrackerBuilder = _cupertinoVelocityBuilder;
+    __cascade.onStart = this._handleDragStart;
+    __cascade.onUpdate = this._handleDragUpdate;
+    __cascade.onEnd = this._handleDragEnd;
+    __cascade.onCancel = this._handleDragCancel;
+    return __cascade;
+}))();
     }
 
     public override void didChangeDependencies()
@@ -558,13 +563,14 @@ internal class _CupertinoDragGestureDetectorState__sheet<T> : global::Doroti.Fra
         this._recognizer.dispose();
         if ((this._dragGestureController is not null))
         {
-            global::Doroti.Framework.Widgets.WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) => {
-if ((this._dragGestureController?.navigator.mounted ?? false))
-{
-    this._dragGestureController?.navigator.didStopUserGesture();
-}
-_dragGestureController = null;
-})));
+            global::Doroti.Framework.Widgets.WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+            {
+                if ((this._dragGestureController?.navigator.mounted ?? false))
+                {
+                    this._dragGestureController?.navigator.didStopUserGesture();
+                }
+                _dragGestureController = null;
+            })));
         }
         base.dispose();
     }
@@ -873,13 +879,14 @@ internal class _CupertinoDraggableScrollableSheetState__sheet<T> : global::Dorot
     {
         if ((this._dragGestureController is not null))
         {
-            global::Doroti.Framework.Widgets.WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) => {
-if ((this._dragGestureController?.navigator.mounted ?? false))
-{
-    this._dragGestureController?.navigator.didStopUserGesture();
-}
-_dragGestureController = null;
-})));
+            global::Doroti.Framework.Widgets.WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+            {
+                if ((this._dragGestureController?.navigator.mounted ?? false))
+                {
+                    this._dragGestureController?.navigator.didStopUserGesture();
+                }
+                _dragGestureController = null;
+            })));
         }
         this._scrollController.dispose();
         base.dispose();

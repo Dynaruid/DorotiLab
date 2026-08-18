@@ -173,10 +173,12 @@ public class DefaultPlatformMenuDelegate : PlatformMenuDelegate
             }
         }
         var windowMenu__12260 = new DartMap<string, object> { ["0"] = representation__11884 };
-        DartRuntimePrimitives.Ignore(this.channel.invokeMethod<object?>(Platform_menu_barLibrary._kMenuSetMethod, windowMenu__12260).then(((_) => {
-}), onError: ((error, stack) => {
-FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: error, stack: stack, library: "widget library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while setting the platform menu")));
-})));
+        DartRuntimePrimitives.Ignore(this.channel.invokeMethod<object?>(Platform_menu_barLibrary._kMenuSetMethod, windowMenu__12260).then(((_) =>
+        {
+        }), onError: ((error, stack) =>
+        {
+            FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: error, stack: stack, library: "widget library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while setting the platform menu")));
+        })));
     }
 
     internal virtual long _getId(PlatformMenuItem item)
@@ -354,19 +356,20 @@ public class PlatformMenu : PlatformMenuItem
             result__22001.AddRange(childItem__22068.toChannelRepresentation(@delegate, getId: (global::System.Func<PlatformMenuItem, long>)getId));
         }
         DartMap<string, object?>? previousItem__22456 = default!;
-        result__22001.removeWhere(((item) => {
-if (((previousItem__22456 is null) && (object.Equals(item.GetValueOrDefault(Platform_menu_barLibrary._kIsDividerKey), true))))
-{
-    return true;
-}
-if ((((previousItem__22456 is not null) && (object.Equals(previousItem__22456!.GetValueOrDefault(Platform_menu_barLibrary._kIsDividerKey), true))) && (object.Equals(item.GetValueOrDefault(Platform_menu_barLibrary._kIsDividerKey), true))))
-{
-    return true;
-}
-previousItem__22456 = item.cast<string, object>();
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        result__22001.removeWhere(((item) =>
+        {
+            if (((previousItem__22456 is null) && (object.Equals(item.GetValueOrDefault(Platform_menu_barLibrary._kIsDividerKey), true))))
+            {
+                return true;
+            }
+            if ((((previousItem__22456 is not null) && (object.Equals(previousItem__22456!.GetValueOrDefault(Platform_menu_barLibrary._kIsDividerKey), true))) && (object.Equals(item.GetValueOrDefault(Platform_menu_barLibrary._kIsDividerKey), true))))
+            {
+                return true;
+            }
+            previousItem__22456 = item.cast<string, object>();
+            return false;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         if (result__22001.LastOrDefault() is var __match22940 && DartPatternRuntime.IsMap(__match22940) && DartPatternRuntime.TryGetMapValue(__match22940, Platform_menu_barLibrary._kIsDividerKey, out var __entry22940_0) && __entry22940_0 is true)
         {
             result__22001.removeLast<DartMap<string, object>>();

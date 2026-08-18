@@ -39,11 +39,12 @@ public class DefaultSelectionStyle : InheritedTheme
 
     public static Widget merge(global::Doroti.Framework.Foundation.Key? key = null, Color? cursorColor = null, Color? selectionColor = null, global::Doroti.Framework.Services.MouseCursor? mouseCursor = null, Widget child = default!)
     {
-        return ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => {
-DefaultSelectionStyle parent__2224 = ((DefaultSelectionStyle)(object?)DefaultSelectionStyle.of(context));
-return ((Widget)(object?)new DefaultSelectionStyle(key: key, cursorColor: (cursorColor ?? ((DefaultSelectionStyle)parent__2224).cursorColor), selectionColor: (selectionColor ?? ((DefaultSelectionStyle)parent__2224).selectionColor), mouseCursor: (mouseCursor ?? ((DefaultSelectionStyle)parent__2224).mouseCursor), child: child));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        {
+            DefaultSelectionStyle parent__2224 = ((DefaultSelectionStyle)(object?)DefaultSelectionStyle.of(context));
+            return ((Widget)(object?)new DefaultSelectionStyle(key: key, cursorColor: (cursorColor ?? ((DefaultSelectionStyle)parent__2224).cursorColor), selectionColor: (selectionColor ?? ((DefaultSelectionStyle)parent__2224).selectionColor), mouseCursor: (mouseCursor ?? ((DefaultSelectionStyle)parent__2224).mouseCursor), child: child));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

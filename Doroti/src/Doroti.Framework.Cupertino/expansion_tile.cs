@@ -147,17 +147,19 @@ internal class _CupertinoExpansionTileState__expansion_tile : global::Doroti.Fra
             return child__7000;
         }
         DartRuntimePrimitives.Assert(() => (object.Equals(((CupertinoExpansionTile)this.widget).transitionMode, ExpansionTileTransitionMode.fade)));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) => {
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.OverlayPortal(controller: this._fadeController, overlayChildBuilder: ((context) => {
-global::Doroti.Framework.Widgets.BuildContext headerContext__7700 = ((global::Doroti.Framework.Widgets.GlobalKey<IState>)this._headerKey).currentContext!;
-var overlay__7762 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)Overlay.of(headerContext__7700).context.findRenderObject()!)!;
-var headerBox__7858 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)headerContext__7700.findRenderObject()!)!;
-global::Doroti.Ui.Offset headerOffset__7943 = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)headerBox__7858).localToGlobal(Offset.zero, ancestor: overlay__7762)));
-return new global::Doroti.Framework.Widgets.Positioned(top: (headerOffset__7943.dy + Expansion_tileLibrary._kHeaderHeight), left: headerOffset__7943.dx, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: constraints, child: new global::Doroti.Framework.Widgets.Visibility(visible: ((global::Doroti.Framework.Animation.Animation<double>)animation).isAnimating, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: animation, child: ((CupertinoExpansionTile)this.widget).child))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}), child: child__7000));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
+        {
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.OverlayPortal(controller: this._fadeController, overlayChildBuilder: ((context) =>
+            {
+                global::Doroti.Framework.Widgets.BuildContext headerContext__7700 = ((global::Doroti.Framework.Widgets.GlobalKey<IState>)this._headerKey).currentContext!;
+                var overlay__7762 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)Overlay.of(headerContext__7700).context.findRenderObject()!)!;
+                var headerBox__7858 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)headerContext__7700.findRenderObject()!)!;
+                global::Doroti.Ui.Offset headerOffset__7943 = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)headerBox__7858).localToGlobal(Offset.zero, ancestor: overlay__7762)));
+                return new global::Doroti.Framework.Widgets.Positioned(top: (headerOffset__7943.dy + Expansion_tileLibrary._kHeaderHeight), left: headerOffset__7943.dx, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: constraints, child: new global::Doroti.Framework.Widgets.Visibility(visible: ((global::Doroti.Framework.Animation.Animation<double>)animation).isAnimating, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: animation, child: ((CupertinoExpansionTile)this.widget).child))));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }), child: child__7000));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

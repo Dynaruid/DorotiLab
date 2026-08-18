@@ -44,23 +44,26 @@ internal class _CupertinoContextMenuActionState__context_menu_action : global::D
 
     public virtual void onTapDown(global::Doroti.Framework.Gestures.TapDownDetails details)
     {
-        setState(((global::System.Action)(() => {
-_isPressed = true;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _isPressed = true;
+        })));
     }
 
     public virtual void onTapUp(global::Doroti.Framework.Gestures.TapUpDetails details)
     {
-        setState(((global::System.Action)(() => {
-_isPressed = false;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _isPressed = false;
+        })));
     }
 
     public virtual void onTapCancel()
     {
-        setState(((global::System.Action)(() => {
-_isPressed = false;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _isPressed = false;
+        })));
     }
 
     internal virtual global::Doroti.Framework.Painting.TextStyle _textStyle

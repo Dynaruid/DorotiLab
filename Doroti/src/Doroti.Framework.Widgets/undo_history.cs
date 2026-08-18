@@ -178,10 +178,11 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framewo
     public override void initState()
     {
         base.initState();
-        _throttledPush = (global::System.Func<T, Timer>)Undo_historyLibrary._throttle<T>(duration: _kThrottleDuration, function: ((global::System.Action<T>)((currentValue) => {
-this._stack.push(currentValue);
-_updateState();
-})));
+        _throttledPush = (global::System.Func<T, Timer>)Undo_historyLibrary._throttle<T>(duration: _kThrottleDuration, function: ((global::System.Action<T>)((currentValue) =>
+        {
+            this._stack.push(currentValue);
+            _updateState();
+        })));
         _push();
         ((UndoHistory<T>)(object)this.widget).value.addListener(() => this._push());
         _handleFocus();
@@ -388,19 +389,21 @@ public static partial class Undo_historyLibrary
     {
         Timer? timer__14360 = default!;
         T arg__14376 = default!;
-        return ((global::System.Func<T, Timer>)((currentArg) => {
-arg__14376 = currentArg;
-if (((timer__14360 is not null) && timer__14360!.isActive))
-{
-    return timer__14360!;
-}
-timer__14360 = new Timer(duration, (() => {
-function(arg__14376);
-timer__14360 = null;
-}));
-return timer__14360!;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        return ((global::System.Func<T, Timer>)((currentArg) =>
+        {
+            arg__14376 = currentArg;
+            if (((timer__14360 is not null) && timer__14360!.isActive))
+            {
+                return timer__14360!;
+            }
+            timer__14360 = new Timer(duration, (() =>
+            {
+                function(arg__14376);
+                timer__14360 = null;
+            }));
+            return timer__14360!;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

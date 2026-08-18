@@ -219,11 +219,13 @@ internal class _NegativeClip__magnifier : global::Doroti.Framework.Rendering.Cus
     public override Path getClip(Size size)
     {
         return ((Func<Path>)(() =>
-{            var __cascade = new global::Doroti.Ui.Path();
-            __cascade.fillType = PathFillType.evenOdd;
-            __cascade.addRect(Rect.largest);
-            __cascade.addPath(this.shape.getInnerPath((Offset.zero & size)), Offset.zero);
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Path();
+    __cascade.fillType = PathFillType.evenOdd;
+    __cascade.addRect(Rect.largest);
+    __cascade.addPath(this.shape.getInnerPath((Offset.zero & size)), Offset.zero);
+    return __cascade;
+}))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -251,10 +253,12 @@ internal class _Magnifier__magnifier : SingleChildRenderObjectWidget
     {
         var __renderObject = (_RenderMagnification__magnifier)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderMagnification__magnifier>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.focalPointOffset = this.focalPointOffset;
-            __cascade.magnificationScale = this.magnificationScale;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.focalPointOffset = this.focalPointOffset;
+    __cascade.magnificationScale = this.magnificationScale;
+    return __cascade;
+}))());
     }
 
 }
@@ -304,10 +308,12 @@ public class _RenderMagnification__magnifier : global::Doroti.Framework.Renderin
     {
         global::Doroti.Ui.Offset thisCenter__22916 = ((global::Doroti.Ui.Offset)(object?)(global::Doroti.Framework.Painting.Alignment.center.alongSize(this.size) + offset));
         var matrix__22982 = ((Func<Matrix4>)(() =>
-{            var __cascade = Matrix4.identity();
-            __cascade.translateByDouble(((this.magnificationScale * ((((this.focalPointOffset.dx * -1L)) - thisCenter__22916.dx))) + thisCenter__22916.dx), ((this.magnificationScale * ((((this.focalPointOffset.dy * -1L)) - thisCenter__22916.dy))) + thisCenter__22916.dy), 0, 1);
-            __cascade.scaleByDouble(this.magnificationScale, this.magnificationScale, this.magnificationScale, 1);
-            return __cascade;        }))();
+{
+    var __cascade = Matrix4.identity();
+    __cascade.translateByDouble(((this.magnificationScale * ((((this.focalPointOffset.dx * -1L)) - thisCenter__22916.dx))) + thisCenter__22916.dx), ((this.magnificationScale * ((((this.focalPointOffset.dy * -1L)) - thisCenter__22916.dy))) + thisCenter__22916.dy), 0, 1);
+    __cascade.scaleByDouble(this.magnificationScale, this.magnificationScale, this.magnificationScale, 1);
+    return __cascade;
+}))();
         var filter__23345 = new global::Doroti.Ui.ImageFilter(matrix__22982.storage, filterQuality: FilterQuality.high);
         if ((this.layer is null))
         {

@@ -37,11 +37,12 @@ public class IndexedStack : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        var wrappedChildren__3375 = new List<Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(this.children.Count)))), ((i) => {
-var isSelected__3454 = (i == this.index);
-return new _VisibilityScope__indexed_stack(isVisible: isSelected__3454, child: new ExcludeFocus(excluding: !isSelected__3454, child: this.children[(int)(i)]));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        var wrappedChildren__3375 = new List<Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(this.children.Count)))), ((i) =>
+        {
+            var isSelected__3454 = (i == this.index);
+            return new _VisibilityScope__indexed_stack(isVisible: isSelected__3454, child: new ExcludeFocus(excluding: !isSelected__3454, child: this.children[(int)(i)]));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         return ((Widget)(object?)new _RawIndexedStack__indexed_stack(alignment: this.alignment, textDirection: this.textDirection, clipBehavior: this.clipBehavior, sizing: this.sizing, index: this.index, children: wrappedChildren__3375));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -81,13 +82,15 @@ public class _RawIndexedStack__indexed_stack : Stack
         var __renderObject = (global::Doroti.Framework.Rendering.RenderIndexedStack)(object)renderObject;
         DartRuntimePrimitives.Assert(() => _debugCheckHasDirectionality(context));
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderIndexedStack>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.index = this.index;
-            __cascade.fit = this.fit;
-            __cascade.clipBehavior = this.clipBehavior;
-            __cascade.alignment = this.alignment;
-            __cascade.textDirection = ((this.textDirection ?? (TextDirection)Directionality.maybeOf(context)));
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.index = this.index;
+    __cascade.fit = this.fit;
+    __cascade.clipBehavior = this.clipBehavior;
+    __cascade.alignment = this.alignment;
+    __cascade.textDirection = ((this.textDirection ?? (TextDirection)Directionality.maybeOf(context)));
+    return __cascade;
+}))());
     }
 
     public override MultiChildRenderObjectElement createElement()
@@ -172,11 +175,12 @@ public class Visibility : StatelessWidget
         {
             var scope__17013 = ((_VisibilityScope__indexed_stack?)(object?)context.dependOnInheritedElement(ancestor__16860))!;
             isVisible__16785 = ((_VisibilityScope__indexed_stack)scope__17013).isVisible;
-            ancestor__16860.visitAncestorElements(((global::System.Func<Element, bool>)((parent) => {
-ancestorContext__16811 = DartRuntimePrimitives.ConvertValue<BuildContext>(parent);
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+            ancestor__16860.visitAncestorElements(((global::System.Func<Element, bool>)((parent) =>
+            {
+                ancestorContext__16811 = DartRuntimePrimitives.ConvertValue<BuildContext>(parent);
+                return false;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
             ancestor__16860 = ancestorContext__16811.getElementForInheritedWidgetOfExactType<_VisibilityScope__indexed_stack>();
         }
         return isVisible__16785;
@@ -348,10 +352,12 @@ internal class _Visibility__indexed_stack : SingleChildRenderObjectWidget
     {
         var __renderObject = (_RenderVisibility__indexed_stack)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderVisibility__indexed_stack>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.visible = this.visible;
-            __cascade.maintainSemantics = this.maintainSemantics;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.visible = this.visible;
+    __cascade.maintainSemantics = this.maintainSemantics;
+    return __cascade;
+}))());
     }
 
 }
@@ -435,10 +441,12 @@ internal class _SliverVisibility__indexed_stack : SingleChildRenderObjectWidget
     {
         var __renderObject = (_RenderSliverVisibility__indexed_stack)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderSliverVisibility__indexed_stack>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.visible = this.visible;
-            __cascade.maintainSemantics = this.maintainSemantics;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.visible = this.visible;
+    __cascade.maintainSemantics = this.maintainSemantics;
+    return __cascade;
+}))());
     }
 
 }

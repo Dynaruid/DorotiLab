@@ -389,8 +389,9 @@ internal class _MenuAnchorState__menu_anchor : global::Doroti.Framework.Widgets.
 
     internal virtual void _handleAnimationStatusChanged(global::Doroti.Framework.Animation.AnimationStatus status)
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
         ((MenuAnchor)(object)this.widget).onAnimationStatusChanged?.Invoke(status);
     }
 
@@ -761,10 +762,11 @@ internal class _MenuItemButtonState__menu_anchor : global::Doroti.Framework.Widg
         {
             this._anchor?._root._menuController.close();
         }
-        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) => {
-global::Doroti.Framework.Widgets.FocusManager.instance.applyFocusChangesIfNeeded();
-((MenuItemButton)(object)this.widget).onPressed?.Invoke();
-})), debugLabel: "MenuAnchor.onPressed");
+        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+        {
+            global::Doroti.Framework.Widgets.FocusManager.instance.applyFocusChangesIfNeeded();
+            ((MenuItemButton)(object)this.widget).onPressed?.Invoke();
+        })), debugLabel: "MenuAnchor.onPressed");
     }
 
     internal virtual void _createInternalFocusNodeIfNeeded()
@@ -820,26 +822,27 @@ public class CheckboxMenuButton : global::Doroti.Framework.Widgets.StatelessWidg
     public virtual bool enabled => DartRuntimePrimitives.ConvertValue<bool>((this.onChanged is not null));
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new MenuItemButton(key: this.key, onPressed: ((global::System.Action)((this.onChanged is null) ? null : (() => {
-switch (this.value)
-{
-    case false:
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new MenuItemButton(key: this.key, onPressed: ((global::System.Action)((this.onChanged is null) ? null : (() =>
         {
-            this.onChanged!(true);
-            break;
-        }
-    case true:
-        {
-            this.onChanged!((this.tristate ? null : false));
-            break;
-        }
-    case null:
-        {
-            this.onChanged!(false);
-            break;
-        }
-}
-}))), onHover: (global::System.Action<bool>?)this.onHover, onFocusChange: (global::System.Action<bool>?)this.onFocusChange, focusNode: this.focusNode, style: this.style, shortcut: this.shortcut, statesController: this.statesController, leadingIcon: new global::Doroti.Framework.Widgets.ExcludeFocus(child: new global::Doroti.Framework.Widgets.IgnorePointer(child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxHeight: Checkbox.width, maxWidth: Checkbox.width), child: new Checkbox(tristate: this.tristate, value: this.value, onChanged: this.onChanged, isError: this.isError)))), clipBehavior: this.clipBehavior, trailingIcon: this.trailingIcon, closeOnActivate: this.closeOnActivate, child: this.child));
+            switch (this.value)
+            {
+                case false:
+                    {
+                        this.onChanged!(true);
+                        break;
+                    }
+                case true:
+                    {
+                        this.onChanged!((this.tristate ? null : false));
+                        break;
+                    }
+                case null:
+                    {
+                        this.onChanged!(false);
+                        break;
+                    }
+            }
+        }))), onHover: (global::System.Action<bool>?)this.onHover, onFocusChange: (global::System.Action<bool>?)this.onFocusChange, focusNode: this.focusNode, style: this.style, shortcut: this.shortcut, statesController: this.statesController, leadingIcon: new global::Doroti.Framework.Widgets.ExcludeFocus(child: new global::Doroti.Framework.Widgets.IgnorePointer(child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxHeight: Checkbox.width, maxWidth: Checkbox.width), child: new Checkbox(tristate: this.tristate, value: this.value, onChanged: this.onChanged, isError: this.isError)))), clipBehavior: this.clipBehavior, trailingIcon: this.trailingIcon, closeOnActivate: this.closeOnActivate, child: this.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -883,14 +886,15 @@ public class RadioMenuButton<T> : global::Doroti.Framework.Widgets.StatelessWidg
     public virtual bool enabled => DartRuntimePrimitives.ConvertValue<bool>((this.onChanged is not null));
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new MenuItemButton(key: this.key, onPressed: ((global::System.Action)((this.onChanged is null) ? null : (() => {
-if ((this.toggleable && EqualityComparer<T>.Default.Equals(this.groupValue, this.value)))
-{
-    this.onChanged!(default);
-    return;
-}
-this.onChanged!(this.value);
-}))), onHover: (global::System.Action<bool>?)this.onHover, onFocusChange: (global::System.Action<bool>?)this.onFocusChange, focusNode: this.focusNode, style: this.style, shortcut: this.shortcut, statesController: this.statesController, leadingIcon: new global::Doroti.Framework.Widgets.ExcludeFocus(child: new global::Doroti.Framework.Widgets.IgnorePointer(child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxHeight: Checkbox.width, maxWidth: Checkbox.width), child: new Radio<T>(value: this.value, groupValue: this.groupValue, onChanged: this.onChanged, toggleable: this.toggleable)))), clipBehavior: this.clipBehavior, trailingIcon: this.trailingIcon, closeOnActivate: this.closeOnActivate, child: this.child));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new MenuItemButton(key: this.key, onPressed: ((global::System.Action)((this.onChanged is null) ? null : (() =>
+        {
+            if ((this.toggleable && EqualityComparer<T>.Default.Equals(this.groupValue, this.value)))
+            {
+                this.onChanged!(default);
+                return;
+            }
+            this.onChanged!(this.value);
+        }))), onHover: (global::System.Action<bool>?)this.onHover, onFocusChange: (global::System.Action<bool>?)this.onFocusChange, focusNode: this.focusNode, style: this.style, shortcut: this.shortcut, statesController: this.statesController, leadingIcon: new global::Doroti.Framework.Widgets.ExcludeFocus(child: new global::Doroti.Framework.Widgets.IgnorePointer(child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxHeight: Checkbox.width, maxWidth: Checkbox.width), child: new Radio<T>(value: this.value, groupValue: this.groupValue, onChanged: this.onChanged, toggleable: this.toggleable)))), clipBehavior: this.clipBehavior, trailingIcon: this.trailingIcon, closeOnActivate: this.closeOnActivate, child: this.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -964,10 +968,14 @@ public class SubmenuButton : global::Doroti.Framework.Widgets.StatefulWidget
 
     public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
-        return ((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() => { var __collection71845 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>(); __collection71845.AddRange(this.menuChildren.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Foundation.DiagnosticsNode>(((child) => {
-return ((global::Doroti.Framework.Foundation.DiagnosticsNode)(object?)((Diagnosticable)child).toDiagnosticsNode());
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))); return __collection71845; }))();
+        return ((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() =>
+        {
+            var __collection71845 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>(); __collection71845.AddRange(this.menuChildren.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Foundation.DiagnosticsNode>(((child) =>
+            {
+                return ((global::Doroti.Framework.Foundation.DiagnosticsNode)(object?)((Diagnosticable)child).toDiagnosticsNode());
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }))); return __collection71845;
+        }))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1087,76 +1095,78 @@ internal class _SubmenuButtonState__menu_anchor : global::Doroti.Framework.Widge
         menuPaddingOffset__75078 += ((orientation__75217, Directionality.of(context)) switch { (global::Doroti.Framework.Painting.Axis.horizontal, TextDirection.rtl) => new global::Doroti.Ui.Offset(((global::Doroti.Framework.Painting.EdgeInsets)menuPadding__75158).right, 0), (global::Doroti.Framework.Painting.Axis.horizontal, TextDirection.ltr) => new global::Doroti.Ui.Offset(-((global::Doroti.Framework.Painting.EdgeInsets)menuPadding__75158).left, 0), (global::Doroti.Framework.Painting.Axis.vertical, TextDirection.rtl) => new global::Doroti.Ui.Offset(0, -((global::Doroti.Framework.Painting.EdgeInsets)menuPadding__75158).top), (global::Doroti.Framework.Painting.Axis.vertical, TextDirection.ltr) => new global::Doroti.Ui.Offset(0, -((global::Doroti.Framework.Painting.EdgeInsets)menuPadding__75158).top), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         var states__75808 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection75817 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (!this._enabled) { __collection75817.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } if (this._isHovered) { __collection75817.Add(global::Doroti.Framework.Widgets.WidgetState.hovered); } if (((global::Doroti.Framework.Widgets.FocusNode)this._buttonFocusNode).hasFocus) { __collection75817.Add(global::Doroti.Framework.Widgets.WidgetState.focused); } return __collection75817; }))();
         global::Doroti.Framework.Widgets.Widget submenuIcon__76000 = (((((SubmenuButton)(object)this.widget).submenuIcon?.resolve(states__75808) ?? (global::Doroti.Framework.Widgets.Widget)MenuTheme.of(context).submenuIcon?.resolve(states__75808))) ?? new global::Doroti.Framework.Widgets.Icon(Icons.arrow_right, size: Menu_anchorLibrary._kDefaultSubmenuIconSize));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Actions(actions: this.actions, child: new MenuAnchor(key: this._anchorKey, onAnimationStatusChanged: (AnimationStatusListener)this._handleAnimationStatusChanged, controller: this._menuController, childFocusNode: this._buttonFocusNode, alignmentOffset: menuPaddingOffset__75078, clipBehavior: ((SubmenuButton)(object)this.widget).clipBehavior, onClose: () => this._handleClose(), onOpen: () => this._handleOpen(), style: ((SubmenuButton)(object)this.widget).menuStyle, useRootOverlay: ((SubmenuButton)(object)this.widget).useRootOverlay, animated: ((SubmenuButton)(object)this.widget).animated, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MenuController, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>?)((context, controller, child) => {
-ButtonStyle mergedStyle__77143 = ((this.widget.themeStyleOf(context)?.merge(this.widget.defaultStyleOf(context)) ?? (ButtonStyle)this.widget.defaultStyleOf(context)));
-mergedStyle__77143 = (((SubmenuButton)(object)this.widget).style?.merge(mergedStyle__77143) ?? mergedStyle__77143);
-void toggleShowMenu()
-{
-    if (!this.mounted)
-    {
-        return;
-    }
-    if (global::Doroti.Framework.Animation.AnimationStatusMembers.isForwardOrCompleted(this._animationStatus))
-    {
-        controller.close();
-    }
-    else
-    {
-        controller.open();
-    }
-}
-void handlePointerExit(global::Doroti.Framework.Gestures.PointerExitEvent @event)
-{
-    if (this._isHovered)
-    {
-        ((SubmenuButton)(object)this.widget).onHover?.Invoke(false);
-        _isHovered = false;
-        _clearHoverOpenTimer();
-    }
-}
-void handlePointerHover(global::Doroti.Framework.Gestures.PointerHoverEvent @event)
-{
-    if (!this._isHovered)
-    {
-        _isHovered = true;
-        ((SubmenuButton)(object)this.widget).onHover?.Invoke(true);
-        _MenuAnchorState__menu_anchor root__78310 = _MenuAnchorState__menu_anchor._maybeOf(context)!._root;
-        if (((object.Equals(this._parent?._orientation, global::Doroti.Framework.Painting.Axis.horizontal)) && !((_MenuAnchorState__menu_anchor)root__78310)._menuController.isOpen))
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Actions(actions: this.actions, child: new MenuAnchor(key: this._anchorKey, onAnimationStatusChanged: (AnimationStatusListener)this._handleAnimationStatusChanged, controller: this._menuController, childFocusNode: this._buttonFocusNode, alignmentOffset: menuPaddingOffset__75078, clipBehavior: ((SubmenuButton)(object)this.widget).clipBehavior, onClose: () => this._handleClose(), onOpen: () => this._handleOpen(), style: ((SubmenuButton)(object)this.widget).menuStyle, useRootOverlay: ((SubmenuButton)(object)this.widget).useRootOverlay, animated: ((SubmenuButton)(object)this.widget).animated, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MenuController, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>?)((context, controller, child) =>
         {
-            return;
-        }
-        if (((global::Doroti.Framework.Widgets.FocusNode)this._buttonFocusNode).hasPrimaryFocus)
-        {
-            _clearHoverOpenTimer();
-            _maybeOpenMenuOnHoverOrFocus();
-        }
-        else
-        {
-            this._buttonFocusNode.requestFocus();
-        }
-    }
-}
-child = new global::Doroti.Framework.Widgets.MergeSemantics(child: new global::Doroti.Framework.Widgets.Semantics(expanded: (this._enabled && global::Doroti.Framework.Animation.AnimationStatusMembers.isForwardOrCompleted(this._animationStatus)), child: new TextButton(style: mergedStyle__77143, focusNode: this._buttonFocusNode, onFocusChange: ((global::System.Action<bool>)(this._enabled ? ((SubmenuButton)(object)this.widget).onFocusChange : null)), onPressed: ((global::System.Action)(this._enabled ? toggleShowMenu : null)), isSemanticButton: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? true : null), child: new _MenuItemLabel__menu_anchor(leadingIcon: ((SubmenuButton)(object)this.widget).leadingIcon, trailingIcon: ((SubmenuButton)(object)this.widget).trailingIcon, hasSubmenu: true, showDecoration: (object.Equals(((this._parent?._orientation ?? global::Doroti.Framework.Painting.Axis.horizontal)), global::Doroti.Framework.Painting.Axis.vertical)), submenuIcon: submenuIcon__76000, child: child))));
-if (!this._enabled)
-{
-    return child;
-}
-child = new global::Doroti.Framework.Widgets.MouseRegion(onHover: (global::System.Action<global::Doroti.Framework.Gestures.PointerHoverEvent>)handlePointerHover, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)handlePointerExit, child: child);
-if (Menu_anchorLibrary._platformSupportsAccelerators)
-{
-    return ((global::Doroti.Framework.Widgets.Widget)(object?)new MenuAcceleratorCallbackBinding(onInvoke: () => toggleShowMenu(), hasSubmenu: true, child: child));
-}
-return child;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), menuChildren: ((SubmenuButton)(object)this.widget).menuChildren, child: ((SubmenuButton)(object)this.widget).child)));
+            ButtonStyle mergedStyle__77143 = ((this.widget.themeStyleOf(context)?.merge(this.widget.defaultStyleOf(context)) ?? (ButtonStyle)this.widget.defaultStyleOf(context)));
+            mergedStyle__77143 = (((SubmenuButton)(object)this.widget).style?.merge(mergedStyle__77143) ?? mergedStyle__77143);
+            void toggleShowMenu()
+            {
+                if (!this.mounted)
+                {
+                    return;
+                }
+                if (global::Doroti.Framework.Animation.AnimationStatusMembers.isForwardOrCompleted(this._animationStatus))
+                {
+                    controller.close();
+                }
+                else
+                {
+                    controller.open();
+                }
+            }
+            void handlePointerExit(global::Doroti.Framework.Gestures.PointerExitEvent @event)
+            {
+                if (this._isHovered)
+                {
+                    ((SubmenuButton)(object)this.widget).onHover?.Invoke(false);
+                    _isHovered = false;
+                    _clearHoverOpenTimer();
+                }
+            }
+            void handlePointerHover(global::Doroti.Framework.Gestures.PointerHoverEvent @event)
+            {
+                if (!this._isHovered)
+                {
+                    _isHovered = true;
+                    ((SubmenuButton)(object)this.widget).onHover?.Invoke(true);
+                    _MenuAnchorState__menu_anchor root__78310 = _MenuAnchorState__menu_anchor._maybeOf(context)!._root;
+                    if (((object.Equals(this._parent?._orientation, global::Doroti.Framework.Painting.Axis.horizontal)) && !((_MenuAnchorState__menu_anchor)root__78310)._menuController.isOpen))
+                    {
+                        return;
+                    }
+                    if (((global::Doroti.Framework.Widgets.FocusNode)this._buttonFocusNode).hasPrimaryFocus)
+                    {
+                        _clearHoverOpenTimer();
+                        _maybeOpenMenuOnHoverOrFocus();
+                    }
+                    else
+                    {
+                        this._buttonFocusNode.requestFocus();
+                    }
+                }
+            }
+            child = new global::Doroti.Framework.Widgets.MergeSemantics(child: new global::Doroti.Framework.Widgets.Semantics(expanded: (this._enabled && global::Doroti.Framework.Animation.AnimationStatusMembers.isForwardOrCompleted(this._animationStatus)), child: new TextButton(style: mergedStyle__77143, focusNode: this._buttonFocusNode, onFocusChange: ((global::System.Action<bool>)(this._enabled ? ((SubmenuButton)(object)this.widget).onFocusChange : null)), onPressed: ((global::System.Action)(this._enabled ? toggleShowMenu : null)), isSemanticButton: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? true : null), child: new _MenuItemLabel__menu_anchor(leadingIcon: ((SubmenuButton)(object)this.widget).leadingIcon, trailingIcon: ((SubmenuButton)(object)this.widget).trailingIcon, hasSubmenu: true, showDecoration: (object.Equals(((this._parent?._orientation ?? global::Doroti.Framework.Painting.Axis.horizontal)), global::Doroti.Framework.Painting.Axis.vertical)), submenuIcon: submenuIcon__76000, child: child))));
+            if (!this._enabled)
+            {
+                return child;
+            }
+            child = new global::Doroti.Framework.Widgets.MouseRegion(onHover: (global::System.Action<global::Doroti.Framework.Gestures.PointerHoverEvent>)handlePointerHover, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)handlePointerExit, child: child);
+            if (Menu_anchorLibrary._platformSupportsAccelerators)
+            {
+                return ((global::Doroti.Framework.Widgets.Widget)(object?)new MenuAcceleratorCallbackBinding(onInvoke: () => toggleShowMenu(), hasSubmenu: true, child: child));
+            }
+            return child;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), menuChildren: ((SubmenuButton)(object)this.widget).menuChildren, child: ((SubmenuButton)(object)this.widget).child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _handleAnimationStatusChanged(global::Doroti.Framework.Animation.AnimationStatus status)
     {
-        setState(((global::System.Action)(() => {
-_animationStatus = status;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _animationStatus = status;
+        })));
         ((SubmenuButton)(object)this.widget).onAnimationStatusChanged?.Invoke(status);
     }
 
@@ -1165,10 +1175,11 @@ _animationStatus = status;
         if (!((global::Doroti.Framework.Widgets.FocusNode)this._buttonFocusNode).hasFocus)
         {
             _isOpenOnFocusEnabled = false;
-            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
-global::Doroti.Framework.Widgets.FocusManager.instance.applyFocusChangesIfNeeded();
-_isOpenOnFocusEnabled = true;
-})), debugLabel: "MenuAnchor.preventOpenOnFocus");
+            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) =>
+            {
+                global::Doroti.Framework.Widgets.FocusManager.instance.applyFocusChangesIfNeeded();
+                _isOpenOnFocusEnabled = true;
+            })), debugLabel: "MenuAnchor.preventOpenOnFocus");
         }
         ((SubmenuButton)(object)this.widget).onClose?.Invoke();
     }
@@ -1177,17 +1188,19 @@ _isOpenOnFocusEnabled = true;
     {
         if (!this._waitingToFocusMenu)
         {
-            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) => {
-if (this.mounted)
-{
-    this._buttonFocusNode.requestFocus();
-    _waitingToFocusMenu = false;
-}
-})), debugLabel: "MenuAnchor.focus");
+            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+            {
+                if (this.mounted)
+                {
+                    this._buttonFocusNode.requestFocus();
+                    _waitingToFocusMenu = false;
+                }
+            })), debugLabel: "MenuAnchor.focus");
             _waitingToFocusMenu = true;
         }
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
         ((SubmenuButton)(object)this.widget).onOpen?.Invoke();
     }
 
@@ -1238,9 +1251,10 @@ if (this.mounted)
             this._menuController.open();
             return;
         }
-        _hoverOpenTimer = new Timer(((SubmenuButton)(object)this.widget).hoverOpenDelay, (() => {
-this._menuController.open();
-}));
+        _hoverOpenTimer = new Timer(((SubmenuButton)(object)this.widget).hoverOpenDelay, (() =>
+        {
+            this._menuController.open();
+        }));
     }
 
     internal virtual void _clearHoverOpenTimer()
@@ -1287,10 +1301,12 @@ internal class _SubmenuDirectionalFocusAction__menu_anchor : global::Doroti.Fram
                 {
                     DartRuntimePrimitives.Assert(() => Menu_anchorLibrary._debugMenuInfo($"Moving to previous {typeof(MenuBar)} item"));
                     DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Widgets.FocusNode>)(() =>
-{            var __cascade = this._button;
-            __cascade.requestFocus();
-            __cascade.previousFocus();
-            return __cascade;        }))());
+{
+    var __cascade = this._button;
+    __cascade.requestFocus();
+    __cascade.previousFocus();
+    return __cascade;
+}))());
                     return null;
                 }
             case (global::Doroti.Framework.Painting.Axis.horizontal, TextDirection.ltr, global::Doroti.Framework.Widgets.TraversalDirection.right):
@@ -1298,10 +1314,12 @@ internal class _SubmenuDirectionalFocusAction__menu_anchor : global::Doroti.Fram
                 {
                     DartRuntimePrimitives.Assert(() => Menu_anchorLibrary._debugMenuInfo($"Moving to next {typeof(MenuBar)} item"));
                     DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Widgets.FocusNode>)(() =>
-{            var __cascade = this._button;
-            __cascade.requestFocus();
-            __cascade.nextFocus();
-            return __cascade;        }))());
+{
+    var __cascade = this._button;
+    __cascade.requestFocus();
+    __cascade.nextFocus();
+    return __cascade;
+}))());
                     return null;
                 }
             case (global::Doroti.Framework.Painting.Axis.horizontal, _, global::Doroti.Framework.Widgets.TraversalDirection.down):
@@ -1330,10 +1348,12 @@ internal class _SubmenuDirectionalFocusAction__menu_anchor : global::Doroti.Fram
                         if (this.isSubmenu)
                         {
                             DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Widgets.FocusNode?>)(() =>
-{            var __cascade = this._parent!.widget.childFocusNode;
-            __cascade.requestFocus();
-            __cascade.previousFocus();
-            return __cascade;        }))());
+{
+    var __cascade = this._parent!.widget.childFocusNode;
+    __cascade.requestFocus();
+    __cascade.previousFocus();
+    return __cascade;
+}))());
                         }
                         else
                         {
@@ -1371,12 +1391,13 @@ internal class _SubmenuDirectionalFocusAction__menu_anchor : global::Doroti.Fram
                     else
                     {
                         this._controller.open();
-                        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
-if (((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen)
-{
-    this._anchorState?._focusFirstMenuItem();
-}
-})));
+                        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) =>
+                        {
+                            if (((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen)
+                            {
+                                this._anchorState?._focusFirstMenuItem();
+                            }
+                        })));
                     }
                     return null;
                 }
@@ -1583,11 +1604,12 @@ internal class _MenuBarAnchorState__menu_anchor : _MenuAnchorState__menu_anchor
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         var child__101952 = new global::Doroti.Framework.Widgets.Actions(actions: this.actions, child: new global::Doroti.Framework.Widgets.Shortcuts(shortcuts: Menu_anchorLibrary._kMenuTraversalShortcuts, child: new _MenuPanel__menu_anchor(menuStyle: ((MenuAnchor)(object)this.widget).style, clipBehavior: ((MenuAnchor)(object)this.widget).clipBehavior, orientation: this._orientation, children: ((MenuAnchor)(object)this.widget).menuChildren)));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _MenuAnchorScope__menu_anchor(state: this, animationStatus: ((global::Doroti.Framework.Animation.AnimationController)this._animationController).status, child: new global::Doroti.Framework.Widgets.RawMenuAnchorGroup(controller: this._menuController, child: new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) => {
-bool isOpen__102535 = (MenuController.maybeIsOpenOf(context) ?? false);
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.FocusScope(node: this._menuScopeNode, skipTraversal: !isOpen__102535, canRequestFocus: isOpen__102535, descendantsAreFocusable: true, child: new global::Doroti.Framework.Widgets.ExcludeFocus(excluding: !isOpen__102535, child: child__101952)));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _MenuAnchorScope__menu_anchor(state: this, animationStatus: ((global::Doroti.Framework.Animation.AnimationController)this._animationController).status, child: new global::Doroti.Framework.Widgets.RawMenuAnchorGroup(controller: this._menuController, child: new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
+        {
+            bool isOpen__102535 = (MenuController.maybeIsOpenOf(context) ?? false);
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.FocusScope(node: this._menuScopeNode, skipTraversal: !isOpen__102535, canRequestFocus: isOpen__102535, descendantsAreFocusable: true, child: new global::Doroti.Framework.Widgets.ExcludeFocus(excluding: !isOpen__102535, child: child__101952)));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1783,10 +1805,11 @@ internal class _MenuAcceleratorLabelState__menu_anchor : global::Doroti.Framewor
     internal virtual bool _listenToKeyEvent(global::Doroti.Framework.Services.KeyEvent @event)
     {
         DartRuntimePrimitives.Assert(() => Menu_anchorLibrary._platformSupportsAccelerators);
-        setState(((global::System.Action)(() => {
-_showAccelerators = _MenuAcceleratorLabelState__menu_anchor._altIsPressed();
-_updateAcceleratorShortcut();
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _showAccelerators = _MenuAcceleratorLabelState__menu_anchor._altIsPressed();
+            _updateAcceleratorShortcut();
+        })));
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1805,9 +1828,10 @@ _updateAcceleratorShortcut();
 
     internal virtual void _updateDisplayLabel()
     {
-        _displayLabel = MenuAcceleratorLabel.stripAcceleratorMarkers(((MenuAcceleratorLabel)(object)this.widget).label, setIndex: ((global::System.Action<long>)((index) => {
-_acceleratorIndex = index;
-})));
+        _displayLabel = MenuAcceleratorLabel.stripAcceleratorMarkers(((MenuAcceleratorLabel)(object)this.widget).label, setIndex: ((global::System.Action<long>)((index) =>
+        {
+            _acceleratorIndex = index;
+        })));
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
@@ -2156,10 +2180,11 @@ internal class _MenuPanelState__menu_anchor : global::Doroti.Framework.Widgets.S
         }
         P? resolve<P>(global::System.Func<MenuStyle?, global::Doroti.Framework.Widgets.WidgetStateProperty<P>?> getProperty)
         {
-            return effectiveValue(((style) => {
-return getProperty(style) is { } property ? property.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>()) : default;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return effectiveValue(((style) =>
+            {
+                return getProperty(style) is { } property ? property.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>()) : default;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         global::Doroti.Ui.Color? backgroundColor__134664 = ((global::Doroti.Ui.Color?)(object?)resolve<global::Doroti.Ui.Color?>(((style) => style?.backgroundColor)));
@@ -2193,10 +2218,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         List<global::Doroti.Framework.Widgets.Widget> children__137350 = ((_MenuPanel__menu_anchor)(object)this.widget).children.ToList();
         if ((object.Equals(((_MenuPanel__menu_anchor)(object)this.widget).orientation, global::Doroti.Framework.Painting.Axis.horizontal)))
         {
-            children__137350 = children__137350.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>(((child) => {
-return new global::Doroti.Framework.Widgets.IntrinsicWidth(child: child);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})).ToList();
+            children__137350 = children__137350.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>(((child) =>
+            {
+                return new global::Doroti.Framework.Widgets.IntrinsicWidth(child: child);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })).ToList();
         }
         bool displayScrollbar__137568 = (_MenuAnchorState__menu_anchor._maybeAnimationStatusOf(context) switch { global::Doroti.Framework.Animation.AnimationStatus.completed => true, global::Doroti.Framework.Animation.AnimationStatus.forward or global::Doroti.Framework.Animation.AnimationStatus.reverse or global::Doroti.Framework.Animation.AnimationStatus.dismissed => false, null => false, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         global::Doroti.Framework.Widgets.Widget menuPanel__137830 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: resolvedPadding__136230, child: new global::Doroti.Framework.Widgets.ScrollConfiguration(behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false, overscroll: false, physics: new global::Doroti.Framework.Widgets.ClampingScrollPhysics()), child: new global::Doroti.Framework.Widgets.PrimaryScrollController(controller: this.scrollController, child: new Scrollbar(thumbVisibility: displayScrollbar__137568, child: new global::Doroti.Framework.Widgets.SingleChildScrollView(controller: this.scrollController, scrollDirection: ((_MenuPanel__menu_anchor)(object)this.widget).orientation, child: new global::Doroti.Framework.Widgets.Flex(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, textDirection: Directionality.of(context), direction: ((_MenuPanel__menu_anchor)(object)this.widget).orientation, mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, children: children__137350)))))));
@@ -2271,10 +2297,11 @@ internal class _Submenu__menu_anchor : global::Doroti.Framework.Widgets.Stateles
         }
         T? resolve<T>(global::System.Func<MenuStyle?, global::Doroti.Framework.Widgets.WidgetStateProperty<T>?> getProperty)
         {
-            return effectiveValue(((style) => {
-return ((T?)(object?)DartRuntimePrimitives.NullAware(getProperty(style), __target => __target.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>())));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return effectiveValue(((style) =>
+            {
+                return ((T?)(object?)DartRuntimePrimitives.NullAware(getProperty(style), __target => __target.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>())));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         global::Doroti.Framework.Widgets.WidgetStateMouseCursor mouseCursor__142157 = ((global::Doroti.Framework.Widgets.WidgetStateMouseCursor)(object?)new _MouseCursor__menu_anchor(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Framework.Services.MouseCursor?>)((states) => effectiveValue(((style) => style?.mouseCursor?.resolve(states)))))));
@@ -2285,14 +2312,16 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         double dx__143037 = Math.Max(0, densityAdjustment__142712.dx);
         global::Doroti.Framework.Painting.EdgeInsetsGeometry resolvedPadding__143106 = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)padding__142590.add(new global::Doroti.Framework.Painting.EdgeInsets(dx__143037, 0, dx__143037, 0)).clamp(global::Doroti.Framework.Painting.EdgeInsets.zero, global::Doroti.Framework.Painting.EdgeInsetsGeometry.infinity));
         global::Doroti.Ui.Rect anchorRect__143258 = ((global::Doroti.Ui.Rect)(object?)((this.layerLink is null) ? global::Doroti.Ui.Rect.fromLTRB((((global::Doroti.Framework.Widgets.RawMenuOverlayInfo)this.menuPosition).anchorRect.left + dx__143037), ((global::Doroti.Framework.Widgets.RawMenuOverlayInfo)this.menuPosition).anchorRect.top, ((global::Doroti.Framework.Widgets.RawMenuOverlayInfo)this.menuPosition).anchorRect.right, ((global::Doroti.Framework.Widgets.RawMenuOverlayInfo)this.menuPosition).anchorRect.bottom) : Rect.zero));
-        global::Doroti.Framework.Widgets.Widget menuPanel__143540 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.TapRegion(groupId: ((global::Doroti.Framework.Widgets.RawMenuOverlayInfo)this.menuPosition).tapRegionGroupId, consumeOutsideTaps: (((_MenuAnchorState__menu_anchor)this.anchor)._root._menuController.isOpen && this.anchor.widget.consumeOutsideTap), onTapOutside: ((global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)((@event) => {
-((_MenuAnchorState__menu_anchor)this.anchor)._menuController.close();
-})), child: new global::Doroti.Framework.Widgets.MouseRegion(cursor: mouseCursor__142157, hitTestBehavior: global::Doroti.Framework.Rendering.HitTestBehavior.deferToChild, child: new global::Doroti.Framework.Widgets.FocusScope(node: ((_MenuAnchorState__menu_anchor)this.anchor)._menuScopeNode, skipTraversal: true, child: new global::Doroti.Framework.Widgets.Actions(actions: new DartMap<Type, dynamic> { [typeof(global::Doroti.Framework.Widgets.DismissIntent)] = new global::Doroti.Framework.Widgets.DismissMenuAction(controller: ((_MenuAnchorState__menu_anchor)this.anchor)._menuController) }, child: new global::Doroti.Framework.Widgets.Shortcuts(shortcuts: Menu_anchorLibrary._kMenuTraversalShortcuts, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: this.fadeAnimation, alwaysIncludeSemantics: true, child: new _MenuPanel__menu_anchor(menuStyle: this.menuStyle, clipBehavior: this.clipBehavior, orientation: ((_MenuAnchorState__menu_anchor)this.anchor)._orientation, crossAxisUnconstrained: this.crossAxisUnconstrained, heightAnimation: this.heightAnimation, children: this.menuChildren))))))));
-        global::Doroti.Framework.Widgets.Widget layout__144826 = ((global::Doroti.Framework.Widgets.Widget)(object?)new Theme(data: Theme.of(context).copyWith(visualDensity: visualDensity__142337), child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateLoose(((global::Doroti.Framework.Widgets.RawMenuOverlayInfo)this.menuPosition).overlaySize), child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this.heightAnimation, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) => {
-global::Doroti.Framework.Widgets.MediaQueryData mediaQuery__145172 = ((global::Doroti.Framework.Widgets.MediaQueryData)(object?)MediaQuery.of(context));
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CustomSingleChildLayout(@delegate: new _MenuLayout__menu_anchor(anchorRect: anchorRect__143258, textDirection: textDirection__141416, avoidBounds: DisplayFeatureSubScreen.avoidBounds(mediaQuery__145172).toSet(), menuPadding: resolvedPadding__143106, alignment: alignment__142492, alignmentOffset: this.alignmentOffset, menuPosition: ((global::Doroti.Framework.Widgets.RawMenuOverlayInfo)this.menuPosition).position, orientation: ((_MenuAnchorState__menu_anchor)this.anchor)._orientation, parentOrientation: (((_MenuAnchorState__menu_anchor)this.anchor)._parent?._orientation ?? global::Doroti.Framework.Painting.Axis.horizontal), reservedPadding: this.reservedPadding, heightFactor: ((global::Doroti.Framework.Animation.Animation<double>)this.heightAnimation).value, mediaQueryData: mediaQuery__145172), child: menuPanel__143540));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))))));
+        global::Doroti.Framework.Widgets.Widget menuPanel__143540 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.TapRegion(groupId: ((global::Doroti.Framework.Widgets.RawMenuOverlayInfo)this.menuPosition).tapRegionGroupId, consumeOutsideTaps: (((_MenuAnchorState__menu_anchor)this.anchor)._root._menuController.isOpen && this.anchor.widget.consumeOutsideTap), onTapOutside: ((global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)((@event) =>
+        {
+            ((_MenuAnchorState__menu_anchor)this.anchor)._menuController.close();
+        })), child: new global::Doroti.Framework.Widgets.MouseRegion(cursor: mouseCursor__142157, hitTestBehavior: global::Doroti.Framework.Rendering.HitTestBehavior.deferToChild, child: new global::Doroti.Framework.Widgets.FocusScope(node: ((_MenuAnchorState__menu_anchor)this.anchor)._menuScopeNode, skipTraversal: true, child: new global::Doroti.Framework.Widgets.Actions(actions: new DartMap<Type, dynamic> { [typeof(global::Doroti.Framework.Widgets.DismissIntent)] = new global::Doroti.Framework.Widgets.DismissMenuAction(controller: ((_MenuAnchorState__menu_anchor)this.anchor)._menuController) }, child: new global::Doroti.Framework.Widgets.Shortcuts(shortcuts: Menu_anchorLibrary._kMenuTraversalShortcuts, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: this.fadeAnimation, alwaysIncludeSemantics: true, child: new _MenuPanel__menu_anchor(menuStyle: this.menuStyle, clipBehavior: this.clipBehavior, orientation: ((_MenuAnchorState__menu_anchor)this.anchor)._orientation, crossAxisUnconstrained: this.crossAxisUnconstrained, heightAnimation: this.heightAnimation, children: this.menuChildren))))))));
+        global::Doroti.Framework.Widgets.Widget layout__144826 = ((global::Doroti.Framework.Widgets.Widget)(object?)new Theme(data: Theme.of(context).copyWith(visualDensity: visualDensity__142337), child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateLoose(((global::Doroti.Framework.Widgets.RawMenuOverlayInfo)this.menuPosition).overlaySize), child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this.heightAnimation, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
+        {
+            global::Doroti.Framework.Widgets.MediaQueryData mediaQuery__145172 = ((global::Doroti.Framework.Widgets.MediaQueryData)(object?)MediaQuery.of(context));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CustomSingleChildLayout(@delegate: new _MenuLayout__menu_anchor(anchorRect: anchorRect__143258, textDirection: textDirection__141416, avoidBounds: DisplayFeatureSubScreen.avoidBounds(mediaQuery__145172).toSet(), menuPadding: resolvedPadding__143106, alignment: alignment__142492, alignmentOffset: this.alignmentOffset, menuPosition: ((global::Doroti.Framework.Widgets.RawMenuOverlayInfo)this.menuPosition).position, orientation: ((_MenuAnchorState__menu_anchor)this.anchor)._orientation, parentOrientation: (((_MenuAnchorState__menu_anchor)this.anchor)._parent?._orientation ?? global::Doroti.Framework.Painting.Axis.horizontal), reservedPadding: this.reservedPadding, heightFactor: ((global::Doroti.Framework.Animation.Animation<double>)this.heightAnimation).value, mediaQueryData: mediaQuery__145172), child: menuPanel__143540));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))))));
         if ((this.layerLink is null))
         {
             return layout__144826;
@@ -2505,26 +2534,27 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>?)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return (this._colors.onSurface.withOpacity(0.38));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-{
-    return (this._colors.onSurface);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-{
-    return (this._colors.onSurface);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-{
-    return (this._colors.onSurface);
-}
-return (this._colors.onSurface);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>?)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    return (this._colors.onSurface.withOpacity(0.38));
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                {
+                    return (this._colors.onSurface);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                {
+                    return (this._colors.onSurface);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                {
+                    return (this._colors.onSurface);
+                }
+                return (this._colors.onSurface);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -2532,26 +2562,27 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>?)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return (this._colors.onSurface.withOpacity(0.38));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-{
-    return (this._colors.onSurfaceVariant);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-{
-    return (this._colors.onSurfaceVariant);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-{
-    return (this._colors.onSurfaceVariant);
-}
-return (this._colors.onSurfaceVariant);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>?)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    return (this._colors.onSurface.withOpacity(0.38));
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                {
+                    return (this._colors.onSurfaceVariant);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                {
+                    return (this._colors.onSurfaceVariant);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                {
+                    return (this._colors.onSurfaceVariant);
+                }
+                return (this._colors.onSurfaceVariant);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -2584,22 +2615,23 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>?)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-{
-    return (this._colors.onSurface.withOpacity(0.1));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-{
-    return (this._colors.onSurface.withOpacity(0.08));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-{
-    return (this._colors.onSurface.withOpacity(0.1));
-}
-return (Colors.transparent);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>?)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                {
+                    return (this._colors.onSurface.withOpacity(0.1));
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                {
+                    return (this._colors.onSurface.withOpacity(0.08));
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                {
+                    return (this._colors.onSurface.withOpacity(0.1));
+                }
+                return (Colors.transparent);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }

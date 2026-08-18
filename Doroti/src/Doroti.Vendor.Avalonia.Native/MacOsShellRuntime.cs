@@ -167,9 +167,15 @@ internal sealed class MacOsShellWindow : IShellWindow, IShellInputService, IShel
     public void SetCursor(CursorKind cursor)
     {
         Verify();
-        NativeInterop.CursorSet(cursor switch { CursorKind.Click => 1, CursorKind.Text or CursorKind.VerticalText => 2,
-            CursorKind.Cell or CursorKind.Precise => 3, CursorKind.Grab or CursorKind.Grabbing => 4,
-            CursorKind.Forbidden or CursorKind.NoDrop => 5, _ => 0 });
+        NativeInterop.CursorSet(cursor switch
+        {
+            CursorKind.Click => 1,
+            CursorKind.Text or CursorKind.VerticalText => 2,
+            CursorKind.Cell or CursorKind.Precise => 3,
+            CursorKind.Grab or CursorKind.Grabbing => 4,
+            CursorKind.Forbidden or CursorKind.NoDrop => 5,
+            _ => 0
+        });
     }
 
     public void Present(ReadOnlySpan<byte> pixels, int width, int height, int rowBytes) =>
@@ -221,20 +227,37 @@ internal sealed class MacOsShellWindow : IShellWindow, IShellInputService, IShel
         {
             var state = kind == 5 ? ShellWindowState.Closed : kind == 3 && phase != 0 ? ShellWindowState.Minimized : ShellWindowState.Normal;
             if (kind == 3) SetMetrics(a, b, c, d, u0 / 1000d, state);
-            var eventKind = kind switch { 1 => ShellWindowEventKind.Activated, 2 => ShellWindowEventKind.Deactivated,
-                3 => ShellWindowEventKind.MetricsChanged, 4 => ShellWindowEventKind.CloseRequested, _ => ShellWindowEventKind.Closed };
+            var eventKind = kind switch
+            {
+                1 => ShellWindowEventKind.Activated,
+                2 => ShellWindowEventKind.Deactivated,
+                3 => ShellWindowEventKind.MetricsChanged,
+                4 => ShellWindowEventKind.CloseRequested,
+                _ => ShellWindowEventKind.Closed
+            };
             if (kind == 5) _metrics = _metrics with { State = ShellWindowState.Closed };
             WindowEvent?.Invoke(new(eventKind, _metrics)); return;
         }
         if (kind == 6)
         {
-            var pointerPhase = phase switch { 0 => PointerPhase.Added, 1 => PointerPhase.Hover, 2 => PointerPhase.Down,
-                3 => PointerPhase.Move, 4 => PointerPhase.Up, 5 => PointerPhase.Removed, _ => PointerPhase.Cancelled };
+            var pointerPhase = phase switch
+            {
+                0 => PointerPhase.Added,
+                1 => PointerPhase.Hover,
+                2 => PointerPhase.Down,
+                3 => PointerPhase.Move,
+                4 => PointerPhase.Up,
+                5 => PointerPhase.Removed,
+                _ => PointerPhase.Cancelled
+            };
             Pointer?.Invoke(new(new(windowId), 1, PointerDeviceKind.Mouse, pointerPhase, new(a, b), checked((uint)u0),
                 TimeSpan.FromSeconds(Environment.TickCount64 / 1000d), new(-c, -d), (InputModifiers)u1)); return;
         }
-        if (kind == 7) { Key?.Invoke(new(new(windowId), checked((uint)u0), checked((uint)u0), (KeyPhase)phase,
-            TimeSpan.FromSeconds(Environment.TickCount64 / 1000d), (InputModifiers)u1)); return; }
+        if (kind == 7)
+        {
+            Key?.Invoke(new(new(windowId), checked((uint)u0), checked((uint)u0), (KeyPhase)phase,
+            TimeSpan.FromSeconds(Environment.TickCount64 / 1000d), (InputModifiers)u1)); return;
+        }
         if (kind is >= 8 and <= 11) Text?.Invoke(new((ShellTextEventKind)(kind - 8), Marshal.PtrToStringUTF8(text) ?? string.Empty));
         if (kind == 12 && _accessibilityNodeId != 0) _ = InvokeAction(_accessibilityNodeId, SemanticsAction.Tap);
     }
@@ -272,5 +295,5 @@ internal sealed class MacOsOpenGlContext : IOpenGlWindowContext
     public void Dispose() { if (_context == 0) return; Verify(); NativeInterop.GlDestroy(_context); _context = 0; }
     private void Verify() { ObjectDisposedException.ThrowIf(_context == 0, this); if (Environment.CurrentManagedThreadId != _ownerThread) throw new InvalidOperationException("NSOpenGLContext is raster-thread affine."); }
     private static string Read(nint value) => Marshal.PtrToStringUTF8(value) ?? "unknown";
-    private sealed class Restore(nint previous) : IDisposable { private nint _previous = previous; public void Dispose() { var value=Interlocked.Exchange(ref _previous,0); NativeInterop.GlRestore(value); } }
+    private sealed class Restore(nint previous) : IDisposable { private nint _previous = previous; public void Dispose() { var value = Interlocked.Exchange(ref _previous, 0); NativeInterop.GlRestore(value); } }
 }

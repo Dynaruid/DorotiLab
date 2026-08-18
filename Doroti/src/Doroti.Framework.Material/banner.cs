@@ -180,9 +180,10 @@ internal class _MaterialBannerState__banner : global::Doroti.Framework.Widgets.S
         }
         materialBanner__13841 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SafeArea(child: materialBanner__13841));
         global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset> slideOutAnimation__15758 = ((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset>)(object?)new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: new global::Doroti.Ui.Offset(0.0, -1.0), end: Offset.zero).animate(this._slideOutCurvedAnimation!));
-        materialBanner__13841 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(container: true, liveRegion: true, onDismiss: ((global::System.Action)(() => {
-ScaffoldMessenger.of(context).removeCurrentMaterialBanner(reason: MaterialBannerClosedReason.dismiss);
-})), child: (accessibleNavigation__11676 ? materialBanner__13841 : new global::Doroti.Framework.Widgets.SlideTransition(position: slideOutAnimation__15758, child: materialBanner__13841))));
+        materialBanner__13841 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(container: true, liveRegion: true, onDismiss: ((global::System.Action)(() =>
+        {
+            ScaffoldMessenger.of(context).removeCurrentMaterialBanner(reason: MaterialBannerClosedReason.dismiss);
+        })), child: (accessibleNavigation__11676 ? materialBanner__13841 : new global::Doroti.Framework.Widgets.SlideTransition(position: slideOutAnimation__15758, child: materialBanner__13841))));
         global::Doroti.Framework.Widgets.Widget materialBannerTransition__16307 = default!;
         if (accessibleNavigation__11676)
         {
@@ -190,10 +191,11 @@ ScaffoldMessenger.of(context).removeCurrentMaterialBanner(reason: MaterialBanner
         }
         else
         {
-            materialBannerTransition__16307 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._heightAnimation!, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) => {
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.bottomStart, heightFactor: this._heightAnimation!.value, child: child));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: materialBanner__13841));
+            materialBannerTransition__16307 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._heightAnimation!, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
+            {
+                return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.bottomStart, heightFactor: this._heightAnimation!.value, child: child));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })), child: materialBanner__13841));
         }
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Hero(tag: $"<MaterialBanner Hero tag - {((MaterialBanner)this.widget).content}>", child: new global::Doroti.Framework.Widgets.ClipRect(child: materialBannerTransition__16307)));
         throw new InvalidOperationException("Dart control flow completed without a value.");

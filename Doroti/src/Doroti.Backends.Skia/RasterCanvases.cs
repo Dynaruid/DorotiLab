@@ -463,11 +463,11 @@ internal sealed class SoftwareRasterCanvas : IRasterCanvas
         var right = Math.Clamp((int)Math.Ceiling(layer.Bounds.Right), 0, _width);
         var bottom = Math.Clamp((int)Math.Ceiling(layer.Bounds.Bottom), 0, _height);
         for (var y = top; y < bottom; y++)
-        for (var x = left; x < right; x++)
-        {
-            if (layer.ClipPaths.All(path => Contains(path.Points, x + 0.5, y + 0.5, path.FillRule))) continue;
-            pixels.AsSpan(((y * _width) + x) * 4, 4).Clear();
-        }
+            for (var x = left; x < right; x++)
+            {
+                if (layer.ClipPaths.All(path => Contains(path.Points, x + 0.5, y + 0.5, path.FillRule))) continue;
+                pixels.AsSpan(((y * _width) + x) * 4, 4).Clear();
+            }
     }
 
     private sealed record ClipMask(IReadOnlyList<Offset> Points, PathFillRule FillRule);

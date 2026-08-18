@@ -4,13 +4,13 @@
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/ink_highlight.dart
 using System;
 using System.Collections.Generic;
-using Stopwatch = System.Diagnostics.Stopwatch;
 using System.Linq;
 using System.Threading.Tasks;
 using Doroti.Runtime;
 using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Doroti.Framework.Material;
 
@@ -39,11 +39,13 @@ public class InkHighlight : InteractiveInkFeature
         this._textDirection = textDirection;
         this._rectCallback = rectCallback;
         _alphaController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: DartRuntimePrimitives.RequireValue(__fadeDuration), vsync: ((MaterialInkController)this.controller).vsync);
-            __cascade.addListener(() => ((MaterialInkController)this.controller).markNeedsPaint());
-            __cascade.addStatusListener((AnimationStatusListener)this._handleAlphaStatusChanged);
-            __cascade.forward();
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: DartRuntimePrimitives.RequireValue(__fadeDuration), vsync: ((MaterialInkController)this.controller).vsync);
+    __cascade.addListener(() => ((MaterialInkController)this.controller).markNeedsPaint());
+    __cascade.addStatusListener((AnimationStatusListener)this._handleAlphaStatusChanged);
+    __cascade.forward();
+    return __cascade;
+}))();
         _alpha = this._alphaController.drive(new global::Doroti.Framework.Animation.IntTween(begin: 0L, end: this.color.alpha));
         this.controller.addInkFeature(this);
     }
@@ -109,9 +111,11 @@ public class InkHighlight : InteractiveInkFeature
     public override void paintFeature(Canvas canvas, Matrix4 transform)
     {
         var paint__4400 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.color.withAlpha(((global::Doroti.Framework.Animation.Animation<long>)this._alpha).value);
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.color.withAlpha(((global::Doroti.Framework.Animation.Animation<long>)this._alpha).value);
+    return __cascade;
+}))();
         global::Doroti.Ui.Offset? originOffset__4474 = ((global::Doroti.Ui.Offset?)(object?)MatrixUtils.getAsTranslation(transform));
         global::Doroti.Ui.Rect rect__4545 = ((global::Doroti.Ui.Rect)(object?)((this._rectCallback is not null) ? this._rectCallback() : (Offset.zero & ((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size)));
         if ((originOffset__4474 is null))

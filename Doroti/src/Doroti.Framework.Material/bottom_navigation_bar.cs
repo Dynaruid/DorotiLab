@@ -313,17 +313,21 @@ public class _BottomNavigationBarState__bottom_navigation_bar : global::Doroti.F
             animation__30460.dispose();
         }
         this._circles.Clear();
-        _controllers = new List<global::Doroti.Framework.Animation.AnimationController>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(((BottomNavigationBar)this.widget).items.Count)))), ((index) => {
-return ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: ThemeLibrary.kThemeAnimationDuration, vsync: this);
-            __cascade.addListener(() => this._rebuild());
-            return __cascade;        }))();
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
-        _animations = new List<global::Doroti.Framework.Animation.CurvedAnimation>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(((BottomNavigationBar)this.widget).items.Count)))), ((index) => {
-return new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._controllers[(int)(index)], curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn, reverseCurve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn.flipped);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        _controllers = new List<global::Doroti.Framework.Animation.AnimationController>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(((BottomNavigationBar)this.widget).items.Count)))), ((index) =>
+        {
+            return ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
+            {
+                var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: ThemeLibrary.kThemeAnimationDuration, vsync: this);
+                __cascade.addListener(() => this._rebuild());
+                return __cascade;
+            }))();
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
+        _animations = new List<global::Doroti.Framework.Animation.CurvedAnimation>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(((BottomNavigationBar)this.widget).items.Count)))), ((index) =>
+        {
+            return new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._controllers[(int)(index)], curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn, reverseCurve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn.flipped);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         this._controllers[(int)(((BottomNavigationBar)this.widget).currentIndex)].value = 1.0;
         _backgroundColor = ((BottomNavigationBar)this.widget).items[(int)(((BottomNavigationBar)this.widget).currentIndex)].backgroundColor;
     }
@@ -345,8 +349,9 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     internal virtual void _rebuild()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     public override void dispose()
@@ -388,18 +393,22 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         if ((((BottomNavigationBar)this.widget).items[(int)(index)].backgroundColor is not null))
         {
             this._circles.Enqueue(((Func<_Circle__bottom_navigation_bar>)(() =>
-{            var __cascade = new _Circle__bottom_navigation_bar(state: this, index: index, color: ((BottomNavigationBar)this.widget).items[(int)(index)].backgroundColor!, vsync: this);
-            __cascade.controller.addStatusListener(((AnimationStatusListener)((status) => {
-if (global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(status))
 {
-    setState(((global::System.Action)(() => {
-_Circle__bottom_navigation_bar circle__33134 = this._circles.Dequeue();
-_backgroundColor = ((_Circle__bottom_navigation_bar)circle__33134).color;
-circle__33134.dispose();
-})));
-}
-})));
-            return __cascade;        }))());
+    var __cascade = new _Circle__bottom_navigation_bar(state: this, index: index, color: ((BottomNavigationBar)this.widget).items[(int)(index)].backgroundColor!, vsync: this);
+    __cascade.controller.addStatusListener(((AnimationStatusListener)((status) =>
+    {
+        if (global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(status))
+        {
+            setState(((global::System.Action)(() =>
+            {
+                _Circle__bottom_navigation_bar circle__33134 = this._circles.Dequeue();
+                _backgroundColor = ((_Circle__bottom_navigation_bar)circle__33134).color;
+                circle__33134.dispose();
+            })));
+        }
+    })));
+    return __cascade;
+}))());
         }
     }
 
@@ -507,9 +516,10 @@ circle__33134.dispose();
         {
             var states__39363 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection39372 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if ((i__39312 == ((BottomNavigationBar)this.widget).currentIndex)) { __collection39372.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } return __collection39372; }))();
             global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor__39464 = ((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((BottomNavigationBar)this.widget).mouseCursor, states__39363) ?? (global::Doroti.Framework.Services.MouseCursor)bottomTheme__35153.mouseCursor?.resolve(states__39363))) ?? (global::Doroti.Framework.Services.MouseCursor)global::Doroti.Framework.Widgets.WidgetStateMouseCursor.clickable.resolve(states__39363)));
-            tiles__39279.Add(new _BottomNavigationTile__bottom_navigation_bar(this._effectiveType, ((BottomNavigationBar)this.widget).items[(int)(i__39312)], this._animations[(int)(i__39312)], ((BottomNavigationBar)this.widget).iconSize, key: ((BottomNavigationBar)this.widget).items[(int)(i__39312)].key, selectedIconTheme: (((BottomNavigationBar)this.widget).useLegacyColorScheme ? (((BottomNavigationBar)this.widget).selectedIconTheme ?? bottomTheme__35153.selectedIconTheme) : effectiveSelectedIconTheme__35776), unselectedIconTheme: (((BottomNavigationBar)this.widget).useLegacyColorScheme ? (((BottomNavigationBar)this.widget).unselectedIconTheme ?? bottomTheme__35153.unselectedIconTheme) : effectiveUnselectedIconTheme__36002), selectedLabelStyle: effectiveSelectedLabelStyle__35410, unselectedLabelStyle: effectiveUnselectedLabelStyle__35587, enableFeedback: ((((BottomNavigationBar)this.widget).enableFeedback ?? bottomTheme__35153.enableFeedback) ?? true), onTap: ((global::System.Action)(() => {
-((BottomNavigationBar)this.widget).onTap?.Invoke(i__39312);
-})), labelColorTween: (((BottomNavigationBar)this.widget).useLegacyColorScheme ? colorTween__36276 : labelColorTween__37147), iconColorTween: (((BottomNavigationBar)this.widget).useLegacyColorScheme ? colorTween__36276 : iconColorTween__38222), flex: _evaluateFlex(this._animations[(int)(i__39312)]), selected: (i__39312 == ((BottomNavigationBar)this.widget).currentIndex), showSelectedLabels: ((((BottomNavigationBar)this.widget).showSelectedLabels ?? bottomTheme__35153.showSelectedLabels) ?? true), showUnselectedLabels: (((((BottomNavigationBar)this.widget).showUnselectedLabels ?? bottomTheme__35153.showUnselectedLabels) ?? (bool)this._defaultShowUnselected)), indexLabel: localizations__35011.tabLabel(tabIndex: (i__39312 + 1L), tabCount: checked((long)(((BottomNavigationBar)this.widget).items.Count))), mouseCursor: effectiveMouseCursor__39464, layout: layout));
+            tiles__39279.Add(new _BottomNavigationTile__bottom_navigation_bar(this._effectiveType, ((BottomNavigationBar)this.widget).items[(int)(i__39312)], this._animations[(int)(i__39312)], ((BottomNavigationBar)this.widget).iconSize, key: ((BottomNavigationBar)this.widget).items[(int)(i__39312)].key, selectedIconTheme: (((BottomNavigationBar)this.widget).useLegacyColorScheme ? (((BottomNavigationBar)this.widget).selectedIconTheme ?? bottomTheme__35153.selectedIconTheme) : effectiveSelectedIconTheme__35776), unselectedIconTheme: (((BottomNavigationBar)this.widget).useLegacyColorScheme ? (((BottomNavigationBar)this.widget).unselectedIconTheme ?? bottomTheme__35153.unselectedIconTheme) : effectiveUnselectedIconTheme__36002), selectedLabelStyle: effectiveSelectedLabelStyle__35410, unselectedLabelStyle: effectiveUnselectedLabelStyle__35587, enableFeedback: ((((BottomNavigationBar)this.widget).enableFeedback ?? bottomTheme__35153.enableFeedback) ?? true), onTap: ((global::System.Action)(() =>
+            {
+                ((BottomNavigationBar)this.widget).onTap?.Invoke(i__39312);
+            })), labelColorTween: (((BottomNavigationBar)this.widget).useLegacyColorScheme ? colorTween__36276 : labelColorTween__37147), iconColorTween: (((BottomNavigationBar)this.widget).useLegacyColorScheme ? colorTween__36276 : iconColorTween__38222), flex: _evaluateFlex(this._animations[(int)(i__39312)]), selected: (i__39312 == ((BottomNavigationBar)this.widget).currentIndex), showSelectedLabels: ((((BottomNavigationBar)this.widget).showSelectedLabels ?? bottomTheme__35153.showSelectedLabels) ?? true), showUnselectedLabels: (((((BottomNavigationBar)this.widget).showUnselectedLabels ?? bottomTheme__35153.showUnselectedLabels) ?? (bool)this._defaultShowUnselected)), indexLabel: localizations__35011.tabLabel(tabIndex: (i__39312 + 1L), tabCount: checked((long)(((BottomNavigationBar)this.widget).items.Count))), mouseCursor: effectiveMouseCursor__39464, layout: layout));
         }
         return tiles__39279;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -539,10 +549,12 @@ circle__33134.dispose();
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -715,9 +727,11 @@ internal class _RadialPainter__bottom_navigation_bar : global::Doroti.Framework.
         foreach (_Circle__bottom_navigation_bar circle__46878 in this.circles)
         {
             var paint__46911 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = ((_Circle__bottom_navigation_bar)circle__46878).color;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = ((_Circle__bottom_navigation_bar)circle__46878).color;
+    return __cascade;
+}))();
             var rect__46962 = global::Doroti.Ui.Rect.fromLTWH(0.0, 0.0, size.width, size.height);
             canvas.clipRect(rect__46962);
             double leftFraction__47067 = (this.textDirection switch { TextDirection.rtl => (1.0 - ((_Circle__bottom_navigation_bar)circle__46878).horizontalLeadingOffset), TextDirection.ltr => ((_Circle__bottom_navigation_bar)circle__46878).horizontalLeadingOffset, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });

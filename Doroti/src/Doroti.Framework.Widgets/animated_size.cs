@@ -156,16 +156,18 @@ internal class _AnimatedSize__animated_size : SingleChildRenderObjectWidget
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderAnimatedSize)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderAnimatedSize>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.alignment = this.alignment;
-            __cascade.duration = this.duration;
-            __cascade.reverseDuration = this.reverseDuration;
-            __cascade.curve = this.curve;
-            __cascade.vsync = this.vsync;
-            __cascade.textDirection = Directionality.maybeOf(context);
-            __cascade.clipBehavior = this.clipBehavior;
-            __cascade.onEnd = this.onEnd;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.alignment = this.alignment;
+    __cascade.duration = this.duration;
+    __cascade.reverseDuration = this.reverseDuration;
+    __cascade.curve = this.curve;
+    __cascade.vsync = this.vsync;
+    __cascade.textDirection = Directionality.maybeOf(context);
+    __cascade.clipBehavior = this.clipBehavior;
+    __cascade.onEnd = this.onEnd;
+    return __cascade;
+}))());
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)

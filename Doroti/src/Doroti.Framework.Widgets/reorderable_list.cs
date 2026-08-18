@@ -276,42 +276,46 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
     public virtual void startItemDragReorder(long index, global::Doroti.Framework.Gestures.PointerDownEvent @event, global::Doroti.Framework.Gestures.MultiDragGestureRecognizer recognizer)
     {
         DartRuntimePrimitives.Assert(() => ((0L <= index) && (index < ((SliverReorderableList)this.widget).itemCount)));
-        setState(((global::System.Action)(() => {
-if ((this._dragInfo is not null))
-{
-    cancelReorder();
-}
-else
-{
-    if (((this._recognizer is not null) && (this._recognizerPointer != @event.pointer)))
-    {
-        this._recognizer!.dispose();
-        _recognizer = null;
-        _recognizerPointer = null;
-    }
-}
-if (this._items.ContainsKey(index))
-{
-    _dragIndex = index;
-    _recognizer = ((Func<global::Doroti.Framework.Gestures.MultiDragGestureRecognizer>)(() =>
-{            var __cascade = recognizer;
-            __cascade.onStart = this._dragStart;
-            __cascade.addPointer(@event);
-            return __cascade;        }))();
-    _recognizerPointer = @event.pointer;
-}
-else
-{
-    throw new Exception("Attempting to start a drag on a non-visible item");
-}
-})));
+        setState(((global::System.Action)(() =>
+        {
+            if ((this._dragInfo is not null))
+            {
+                cancelReorder();
+            }
+            else
+            {
+                if (((this._recognizer is not null) && (this._recognizerPointer != @event.pointer)))
+                {
+                    this._recognizer!.dispose();
+                    _recognizer = null;
+                    _recognizerPointer = null;
+                }
+            }
+            if (this._items.ContainsKey(index))
+            {
+                _dragIndex = index;
+                _recognizer = ((Func<global::Doroti.Framework.Gestures.MultiDragGestureRecognizer>)(() =>
+            {
+                var __cascade = recognizer;
+                __cascade.onStart = this._dragStart;
+                __cascade.addPointer(@event);
+                return __cascade;
+            }))();
+                _recognizerPointer = @event.pointer;
+            }
+            else
+            {
+                throw new Exception("Attempting to start a drag on a non-visible item");
+            }
+        })));
     }
 
     public virtual void cancelReorder()
     {
-        setState(((global::System.Action)(() => {
-_dragReset();
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _dragReset();
+        })));
     }
 
     internal virtual void _registerItem(_ReorderableItemState__reorderable_list item)
@@ -365,61 +369,64 @@ _dragReset();
 
     internal virtual void _dragUpdate(_DragInfo__reorderable_list item, Offset position, Offset delta)
     {
-        setState(((global::System.Action)(() => {
-this._overlayEntry?.markNeedsBuild();
-_dragUpdateItems();
-this._autoScroller?.startAutoScrollIfNecessary(this._dragTargetRect);
-})));
+        setState(((global::System.Action)(() =>
+        {
+            this._overlayEntry?.markNeedsBuild();
+            _dragUpdateItems();
+            this._autoScroller?.startAutoScrollIfNecessary(this._dragTargetRect);
+        })));
     }
 
     internal virtual void _dragCancel(_DragInfo__reorderable_list item)
     {
-        setState(((global::System.Action)(() => {
-_dragReset();
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _dragReset();
+        })));
     }
 
     internal virtual void _dragEnd(_DragInfo__reorderable_list item)
     {
-        setState(((global::System.Action)(() => {
-if (((DartRuntimePrimitives.RequireValue(this._insertIndex) - ((_DragInfo__reorderable_list)item).index) == 1L))
-{
-    _finalDropPosition = _itemOffsetAt((DartRuntimePrimitives.RequireValue(this._insertIndex) - 1L));
-}
-else
-{
-    if ((this._insertIndex == ((_DragInfo__reorderable_list)item).index))
-    {
-        _finalDropPosition = _itemOffsetAt(DartRuntimePrimitives.RequireValue(this._insertIndex));
-    }
-    else
-    {
-        if (this._reverse)
+        setState(((global::System.Action)(() =>
         {
-            if ((DartRuntimePrimitives.RequireValue(this._insertIndex) >= checked((long)(this._items.Count))))
+            if (((DartRuntimePrimitives.RequireValue(this._insertIndex) - ((_DragInfo__reorderable_list)item).index) == 1L))
             {
-                _finalDropPosition = (_itemOffsetAt((checked((long)(this._items.Count)) - 1L)) - Reorderable_listLibrary._extentOffset(((_DragInfo__reorderable_list)item).itemExtent, this._scrollDirection));
+                _finalDropPosition = _itemOffsetAt((DartRuntimePrimitives.RequireValue(this._insertIndex) - 1L));
             }
             else
             {
-                _finalDropPosition = (_itemOffsetAt(DartRuntimePrimitives.RequireValue(this._insertIndex)) + Reorderable_listLibrary._extentOffset(_itemExtentAt(DartRuntimePrimitives.RequireValue(this._insertIndex)), this._scrollDirection));
+                if ((this._insertIndex == ((_DragInfo__reorderable_list)item).index))
+                {
+                    _finalDropPosition = _itemOffsetAt(DartRuntimePrimitives.RequireValue(this._insertIndex));
+                }
+                else
+                {
+                    if (this._reverse)
+                    {
+                        if ((DartRuntimePrimitives.RequireValue(this._insertIndex) >= checked((long)(this._items.Count))))
+                        {
+                            _finalDropPosition = (_itemOffsetAt((checked((long)(this._items.Count)) - 1L)) - Reorderable_listLibrary._extentOffset(((_DragInfo__reorderable_list)item).itemExtent, this._scrollDirection));
+                        }
+                        else
+                        {
+                            _finalDropPosition = (_itemOffsetAt(DartRuntimePrimitives.RequireValue(this._insertIndex)) + Reorderable_listLibrary._extentOffset(_itemExtentAt(DartRuntimePrimitives.RequireValue(this._insertIndex)), this._scrollDirection));
+                        }
+                    }
+                    else
+                    {
+                        if ((DartRuntimePrimitives.RequireValue(this._insertIndex) == 0L))
+                        {
+                            _finalDropPosition = (_itemOffsetAt(0L) - Reorderable_listLibrary._extentOffset(((_DragInfo__reorderable_list)item).itemExtent, this._scrollDirection));
+                        }
+                        else
+                        {
+                            long atIndex__34881 = (DartRuntimePrimitives.RequireValue(this._insertIndex) - 1L);
+                            _finalDropPosition = (_itemOffsetAt(atIndex__34881) + Reorderable_listLibrary._extentOffset(_itemExtentAt(atIndex__34881), this._scrollDirection));
+                        }
+                    }
+                }
             }
-        }
-        else
-        {
-            if ((DartRuntimePrimitives.RequireValue(this._insertIndex) == 0L))
-            {
-                _finalDropPosition = (_itemOffsetAt(0L) - Reorderable_listLibrary._extentOffset(((_DragInfo__reorderable_list)item).itemExtent, this._scrollDirection));
-            }
-            else
-            {
-                long atIndex__34881 = (DartRuntimePrimitives.RequireValue(this._insertIndex) - 1L);
-                _finalDropPosition = (_itemOffsetAt(atIndex__34881) + Reorderable_listLibrary._extentOffset(_itemExtentAt(atIndex__34881), this._scrollDirection));
-            }
-        }
-    }
-}
-})));
+        })));
         ((SliverReorderableList)this.widget).onReorderEnd?.Invoke(DartRuntimePrimitives.RequireValue(this._insertIndex));
     }
 
@@ -428,9 +435,10 @@ else
         long oldIndex__35154 = DartRuntimePrimitives.RequireValue(this._dragIndex);
         long newIndex__35192 = DartRuntimePrimitives.RequireValue(this._insertIndex);
         _handleReorderItem(oldIndex__35154, newIndex__35192);
-        setState(((global::System.Action)(() => {
-_dragReset();
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _dragReset();
+        })));
     }
 
     internal virtual void _dragReset()
@@ -625,7 +633,7 @@ _dragReset();
         Widget child__40762 = this.widget.itemBuilder(context, index);
         DartRuntimePrimitives.Assert(() => (((Widget)child__40762).key is not null), () => (object?)"All list items must have a key");
         OverlayState overlay__40894 = ((OverlayState)(object?)Overlay.of(context, debugRequiredFor: this.widget));
-        return ((Widget)(object?)new _ReorderableItem__reorderable_list( _ReorderableItemGlobalKey__reorderable_list.Create(key: ((Widget)child__40762).key!, index: index, state: this), index: index, capturedThemes: InheritedTheme.capture(from: context, to: overlay__40894.context), child: _wrapWithSemantics(child__40762, index)));
+        return ((Widget)(object?)new _ReorderableItem__reorderable_list(_ReorderableItemGlobalKey__reorderable_list.Create(key: ((Widget)child__40762).key!, index: index, state: this), index: index, capturedThemes: InheritedTheme.capture(from: context, to: overlay__40894.context), child: _wrapWithSemantics(child__40762, index)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -710,10 +718,12 @@ _dragReset();
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -801,9 +811,10 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
             var dragging = value;
             if (this.mounted)
             {
-                setState(((global::System.Action)(() => {
-_dragging = dragging;
-})));
+                setState(((global::System.Action)(() =>
+                {
+                    _dragging = dragging;
+                })));
             }
         }
     }
@@ -889,18 +900,21 @@ _dragging = dragging;
                 if ((this._offsetAnimation is null))
                 {
                     _offsetAnimation = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(vsync: this._listState, duration: Duration.Create(milliseconds: 250L));
-            __cascade.addListener(() => this.rebuild());
-            __cascade.addStatusListener(((AnimationStatusListener)((status) => {
-if (global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(status))
 {
-    _startOffset = this._targetOffset;
-    this._offsetAnimation!.dispose();
-    _offsetAnimation = null;
-}
-})));
-            __cascade.forward();
-            return __cascade;        }))();
+    var __cascade = new global::Doroti.Framework.Animation.AnimationController(vsync: this._listState, duration: Duration.Create(milliseconds: 250L));
+    __cascade.addListener(() => this.rebuild());
+    __cascade.addStatusListener(((AnimationStatusListener)((status) =>
+    {
+        if (global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(status))
+        {
+            _startOffset = this._targetOffset;
+            this._offsetAnimation!.dispose();
+            _offsetAnimation = null;
+        }
+    })));
+    __cascade.forward();
+    return __cascade;
+}))();
                 }
                 else
                 {
@@ -947,8 +961,9 @@ if (global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(status
     {
         if (this.mounted)
         {
-            setState(((global::System.Action)(() => {
-})));
+            setState(((global::System.Action)(() =>
+            {
+            })));
         }
     }
 
@@ -984,9 +999,11 @@ public class ReorderableDragStartListener : StatelessWidget
         global::Doroti.Framework.Gestures.DeviceGestureSettings? gestureSettings__51361 = ((global::Doroti.Framework.Gestures.DeviceGestureSettings?)(object?)MediaQuery.maybeGestureSettingsOf(context));
         SliverReorderableListState? list__51461 = ((SliverReorderableListState?)(object?)SliverReorderableList.maybeOf(context));
         list__51461?.startItemDragReorder(index: this.index, @event: @event, recognizer: ((Func<global::Doroti.Framework.Gestures.MultiDragGestureRecognizer>)(() =>
-{            var __cascade = createRecognizer();
-            __cascade.gestureSettings = gestureSettings__51361;
-            return __cascade;        }))());
+{
+    var __cascade = createRecognizer();
+    __cascade.gestureSettings = gestureSettings__51361;
+    return __cascade;
+}))());
     }
 
 }
@@ -1052,15 +1069,18 @@ internal class _DragInfo__reorderable_list : global::Doroti.Framework.Gestures.D
     public virtual void startDrag()
     {
         _proxyAnimation = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(vsync: this.tickerProvider, duration: Duration.Create(milliseconds: 250L));
-            __cascade.addStatusListener(((AnimationStatusListener)((status) => {
-if (global::Doroti.Framework.Animation.AnimationStatusMembers.isDismissed(status))
 {
-    _dropCompleted();
-}
-})));
-            __cascade.forward();
-            return __cascade;        }))();
+    var __cascade = new global::Doroti.Framework.Animation.AnimationController(vsync: this.tickerProvider, duration: Duration.Create(milliseconds: 250L));
+    __cascade.addStatusListener(((AnimationStatusListener)((status) =>
+    {
+        if (global::Doroti.Framework.Animation.AnimationStatusMembers.isDismissed(status))
+        {
+            _dropCompleted();
+        }
+    })));
+    __cascade.forward();
+    return __cascade;
+}))();
     }
 
     public override void update(global::Doroti.Framework.Gestures.DragUpdateDetails details)
@@ -1148,17 +1168,18 @@ internal class _DragItemProxy__reorderable_list : StatelessWidget
     {
         Widget proxyChild__57524 = ((this.proxyDecorator is null ? this.child : this.proxyDecorator.Invoke(this.child, this.index, ((global::Doroti.Framework.Animation.AnimationController)this.animation).view)));
         global::Doroti.Ui.Offset overlayOrigin__57615 = ((global::Doroti.Ui.Offset)(object?)Reorderable_listLibrary._overlayOrigin(context));
-        return ((Widget)(object?)new MediaQuery(data: MediaQuery.of(context).removePadding(removeTop: true), child: new AnimatedBuilder(animation: this.animation, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) => {
-global::Doroti.Ui.Offset effectivePosition__58017 = ((global::Doroti.Ui.Offset)(object?)this.position);
-global::Doroti.Ui.Offset? dropPosition__58071 = ((global::Doroti.Ui.Offset?)(object?)((SliverReorderableListState)this.listState)._finalDropPosition);
-if ((dropPosition__58071 is not null))
-{
-    Offset dropPosition__58071__value58130 = DartRuntimePrimitives.RequireValue(dropPosition__58071);
-    effectivePosition__58017 = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp((DartRuntimePrimitives.RequireValue(dropPosition__58071__value58130) - overlayOrigin__57615), effectivePosition__58017, global::Doroti.Framework.Animation.Curves.easeOut.transform(((global::Doroti.Framework.Animation.AnimationController)this.animation).value)));
-}
-return ((Widget)(object?)new Positioned(left: effectivePosition__58017.dx, top: effectivePosition__58017.dy, child: new SizedBox(width: this.size.width, height: this.size.height, child: new OverflowBox(minWidth: ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).minWidth, minHeight: ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).minHeight, maxWidth: ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth, maxHeight: ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxHeight, alignment: ((object.Equals(((SliverReorderableListState)this.listState)._scrollDirection, global::Doroti.Framework.Painting.Axis.horizontal)) ? global::Doroti.Framework.Painting.Alignment.centerLeft : global::Doroti.Framework.Painting.Alignment.topCenter), child: child))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: proxyChild__57524)));
+        return ((Widget)(object?)new MediaQuery(data: MediaQuery.of(context).removePadding(removeTop: true), child: new AnimatedBuilder(animation: this.animation, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
+        {
+            global::Doroti.Ui.Offset effectivePosition__58017 = ((global::Doroti.Ui.Offset)(object?)this.position);
+            global::Doroti.Ui.Offset? dropPosition__58071 = ((global::Doroti.Ui.Offset?)(object?)((SliverReorderableListState)this.listState)._finalDropPosition);
+            if ((dropPosition__58071 is not null))
+            {
+                Offset dropPosition__58071__value58130 = DartRuntimePrimitives.RequireValue(dropPosition__58071);
+                effectivePosition__58017 = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp((DartRuntimePrimitives.RequireValue(dropPosition__58071__value58130) - overlayOrigin__57615), effectivePosition__58017, global::Doroti.Framework.Animation.Curves.easeOut.transform(((global::Doroti.Framework.Animation.AnimationController)this.animation).value)));
+            }
+            return ((Widget)(object?)new Positioned(left: effectivePosition__58017.dx, top: effectivePosition__58017.dy, child: new SizedBox(width: this.size.width, height: this.size.height, child: new OverflowBox(minWidth: ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).minWidth, minHeight: ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).minHeight, maxWidth: ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth, maxHeight: ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxHeight, alignment: ((object.Equals(((SliverReorderableListState)this.listState)._scrollDirection, global::Doroti.Framework.Painting.Axis.horizontal)) ? global::Doroti.Framework.Painting.Alignment.centerLeft : global::Doroti.Framework.Painting.Alignment.topCenter), child: child))));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), child: proxyChild__57524)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

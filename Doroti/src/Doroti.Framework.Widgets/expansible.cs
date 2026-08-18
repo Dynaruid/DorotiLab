@@ -208,25 +208,28 @@ internal class _ExpansibleState__expansible : State<Expansible>, SingleTickerPro
 
     internal virtual void _toggleExpansion()
     {
-        setState(((global::System.Action)(() => {
-if (((Expansible)this.widget).controller.isExpanded)
-{
-    this._animationController.forward();
-}
-else
-{
-    DartRuntimePrimitives.Ignore(this._animationController.reverse().then(((global::System.Func<object?, object>)((value) => {
-if (!this.mounted)
-{
-    return default!;
-}
-setState(((global::System.Action)(() => {
-})));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
-}
-PageStorage.maybeOf(this.context)?.writeState(this.context, ((Expansible)this.widget).controller.isExpanded);
-})));
+        setState(((global::System.Action)(() =>
+        {
+            if (((Expansible)this.widget).controller.isExpanded)
+            {
+                this._animationController.forward();
+            }
+            else
+            {
+                DartRuntimePrimitives.Ignore(this._animationController.reverse().then(((global::System.Func<object?, object>)((value) =>
+                {
+                    if (!this.mounted)
+                    {
+                        return default!;
+                    }
+                    setState(((global::System.Action)(() =>
+                    {
+                    })));
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }))));
+            }
+            PageStorage.maybeOf(this.context)?.writeState(this.context, ((Expansible)this.widget).controller.isExpanded);
+        })));
     }
 
     public override Widget build(BuildContext context)
@@ -235,12 +238,13 @@ PageStorage.maybeOf(this.context)?.writeState(this.context, ((Expansible)this.wi
         bool closed__16678 = (!((Expansible)this.widget).controller.isExpanded && this._animationController.isDismissed);
         bool shouldRemoveBody__16769 = (closed__16678 && !((Expansible)this.widget).maintainState);
         Widget result__16839 = ((Widget)(object?)new Offstage(offstage: closed__16678, child: new TickerMode(enabled: !closed__16678, child: this.widget.bodyBuilder(context, this._animationController))));
-        return ((Widget)(object?)new AnimatedBuilder(animation: ((global::Doroti.Framework.Animation.AnimationController)this._animationController).view, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) => {
-Widget header__17139 = this.widget.headerBuilder(context, this._animationController);
-Widget body__17222 = ((Widget)(object?)new ClipRect(child: new Align(heightFactor: ((global::Doroti.Framework.Animation.CurvedAnimation)this._heightFactor).value, child: child)));
-return this.widget.expansibleBuilder(context, header__17139, body__17222, this._animationController);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: (shouldRemoveBody__16769 ? null : result__16839)));
+        return ((Widget)(object?)new AnimatedBuilder(animation: ((global::Doroti.Framework.Animation.AnimationController)this._animationController).view, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
+        {
+            Widget header__17139 = this.widget.headerBuilder(context, this._animationController);
+            Widget body__17222 = ((Widget)(object?)new ClipRect(child: new Align(heightFactor: ((global::Doroti.Framework.Animation.CurvedAnimation)this._heightFactor).value, child: child)));
+            return this.widget.expansibleBuilder(context, header__17139, body__17222, this._animationController);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), child: (shouldRemoveBody__16769 ? null : result__16839)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

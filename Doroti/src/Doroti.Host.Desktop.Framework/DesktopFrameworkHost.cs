@@ -1,10 +1,10 @@
 using System.Globalization;
 using System.Runtime.InteropServices;
 using Doroti.Core;
-using Doroti.Hosting;
-using Doroti.Ui;
 using Doroti.Host.Desktop;
+using Doroti.Hosting;
 using Doroti.Platform;
+using Doroti.Ui;
 using GraphicsOffset = Doroti.Graphics.Offset;
 using GraphicsSize = Doroti.Graphics.Size;
 using PlatformAppLifecycleState = Doroti.Ui.AppLifecycleState;
@@ -682,42 +682,42 @@ internal sealed class DesktopPlatformServicesCapability(
     {
         cursor.SetCursor(window, value switch
         {
-        DorotiMouseCursorKind.basic => CursorKind.Basic,
-        DorotiMouseCursorKind.click => CursorKind.Click,
-        DorotiMouseCursorKind.forbidden => CursorKind.Forbidden,
-        DorotiMouseCursorKind.wait => CursorKind.Wait,
-        DorotiMouseCursorKind.progress => CursorKind.Progress,
-        DorotiMouseCursorKind.contextMenu => CursorKind.ContextMenu,
-        DorotiMouseCursorKind.help => CursorKind.Help,
-        DorotiMouseCursorKind.text => CursorKind.Text,
-        DorotiMouseCursorKind.verticalText => CursorKind.VerticalText,
-        DorotiMouseCursorKind.cell => CursorKind.Cell,
-        DorotiMouseCursorKind.precise => CursorKind.Precise,
-        DorotiMouseCursorKind.move => CursorKind.Move,
-        DorotiMouseCursorKind.grab => CursorKind.Grab,
-        DorotiMouseCursorKind.grabbing => CursorKind.Grabbing,
-        DorotiMouseCursorKind.noDrop => CursorKind.NoDrop,
-        DorotiMouseCursorKind.alias => CursorKind.Alias,
-        DorotiMouseCursorKind.copy => CursorKind.Copy,
-        DorotiMouseCursorKind.disappearing => CursorKind.Disappearing,
-        DorotiMouseCursorKind.allScroll => CursorKind.AllScroll,
-        DorotiMouseCursorKind.resizeLeftRight => CursorKind.ResizeLeftRight,
-        DorotiMouseCursorKind.resizeUpDown => CursorKind.ResizeUpDown,
-        DorotiMouseCursorKind.resizeUpLeftDownRight => CursorKind.ResizeUpLeftDownRight,
-        DorotiMouseCursorKind.resizeUpRightDownLeft => CursorKind.ResizeUpRightDownLeft,
-        DorotiMouseCursorKind.resizeUp => CursorKind.ResizeUp,
-        DorotiMouseCursorKind.resizeDown => CursorKind.ResizeDown,
-        DorotiMouseCursorKind.resizeLeft => CursorKind.ResizeLeft,
-        DorotiMouseCursorKind.resizeRight => CursorKind.ResizeRight,
-        DorotiMouseCursorKind.resizeUpLeft => CursorKind.ResizeUpLeft,
-        DorotiMouseCursorKind.resizeUpRight => CursorKind.ResizeUpRight,
-        DorotiMouseCursorKind.resizeDownLeft => CursorKind.ResizeDownLeft,
-        DorotiMouseCursorKind.resizeDownRight => CursorKind.ResizeDownRight,
-        DorotiMouseCursorKind.resizeColumn => CursorKind.ResizeColumn,
-        DorotiMouseCursorKind.resizeRow => CursorKind.ResizeRow,
-        DorotiMouseCursorKind.zoomIn => CursorKind.ZoomIn,
-        DorotiMouseCursorKind.zoomOut => CursorKind.ZoomOut,
-        DorotiMouseCursorKind.none => CursorKind.Hidden,
+            DorotiMouseCursorKind.basic => CursorKind.Basic,
+            DorotiMouseCursorKind.click => CursorKind.Click,
+            DorotiMouseCursorKind.forbidden => CursorKind.Forbidden,
+            DorotiMouseCursorKind.wait => CursorKind.Wait,
+            DorotiMouseCursorKind.progress => CursorKind.Progress,
+            DorotiMouseCursorKind.contextMenu => CursorKind.ContextMenu,
+            DorotiMouseCursorKind.help => CursorKind.Help,
+            DorotiMouseCursorKind.text => CursorKind.Text,
+            DorotiMouseCursorKind.verticalText => CursorKind.VerticalText,
+            DorotiMouseCursorKind.cell => CursorKind.Cell,
+            DorotiMouseCursorKind.precise => CursorKind.Precise,
+            DorotiMouseCursorKind.move => CursorKind.Move,
+            DorotiMouseCursorKind.grab => CursorKind.Grab,
+            DorotiMouseCursorKind.grabbing => CursorKind.Grabbing,
+            DorotiMouseCursorKind.noDrop => CursorKind.NoDrop,
+            DorotiMouseCursorKind.alias => CursorKind.Alias,
+            DorotiMouseCursorKind.copy => CursorKind.Copy,
+            DorotiMouseCursorKind.disappearing => CursorKind.Disappearing,
+            DorotiMouseCursorKind.allScroll => CursorKind.AllScroll,
+            DorotiMouseCursorKind.resizeLeftRight => CursorKind.ResizeLeftRight,
+            DorotiMouseCursorKind.resizeUpDown => CursorKind.ResizeUpDown,
+            DorotiMouseCursorKind.resizeUpLeftDownRight => CursorKind.ResizeUpLeftDownRight,
+            DorotiMouseCursorKind.resizeUpRightDownLeft => CursorKind.ResizeUpRightDownLeft,
+            DorotiMouseCursorKind.resizeUp => CursorKind.ResizeUp,
+            DorotiMouseCursorKind.resizeDown => CursorKind.ResizeDown,
+            DorotiMouseCursorKind.resizeLeft => CursorKind.ResizeLeft,
+            DorotiMouseCursorKind.resizeRight => CursorKind.ResizeRight,
+            DorotiMouseCursorKind.resizeUpLeft => CursorKind.ResizeUpLeft,
+            DorotiMouseCursorKind.resizeUpRight => CursorKind.ResizeUpRight,
+            DorotiMouseCursorKind.resizeDownLeft => CursorKind.ResizeDownLeft,
+            DorotiMouseCursorKind.resizeDownRight => CursorKind.ResizeDownRight,
+            DorotiMouseCursorKind.resizeColumn => CursorKind.ResizeColumn,
+            DorotiMouseCursorKind.resizeRow => CursorKind.ResizeRow,
+            DorotiMouseCursorKind.zoomIn => CursorKind.ZoomIn,
+            DorotiMouseCursorKind.zoomOut => CursorKind.ZoomOut,
+            DorotiMouseCursorKind.none => CursorKind.Hidden,
             _ => throw new ArgumentOutOfRangeException(nameof(value)),
         });
         _lastCursor = value;

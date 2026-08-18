@@ -117,10 +117,12 @@ public class _PathFrames__animated_icons
     {
         double opacity__6554 = DartRuntimePrimitives.RequireValue(Animated_iconsLibrary._interpolate<double>(opacities, progress, (a, b, t) => Dart_uiLibrary.lerpDouble(a, b, t) ?? 0.0));
         var paint__6634 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.style = PaintingStyle.fill;
-            __cascade.color = color.withOpacity((color.opacity * opacity__6554));
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.style = PaintingStyle.fill;
+    __cascade.color = color.withOpacity((color.opacity * opacity__6554));
+    return __cascade;
+}))();
         global::Doroti.Ui.Path path__6766 = ((global::Doroti.Ui.Path)(object?)uiPathFactory());
         foreach (_PathCommand__animated_icons command__6818 in commands)
         {

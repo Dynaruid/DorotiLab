@@ -4,13 +4,13 @@
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/ink_sparkle.dart
 using System;
 using System.Collections.Generic;
-using Stopwatch = System.Diagnostics.Stopwatch;
 using System.Linq;
 using System.Threading.Tasks;
 using Doroti.Runtime;
 using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Doroti.Framework.Material;
 
@@ -50,11 +50,13 @@ public class InkSparkle : InteractiveInkFeature
         _InkSparkleFactory__ink_sparkle.initializeShader();
         this.controller.addInkFeature(this);
         _animationController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: _animationDuration, vsync: ((MaterialInkController)this.controller).vsync);
-            __cascade.addListener(() => ((MaterialInkController)this.controller).markNeedsPaint());
-            __cascade.addStatusListener((AnimationStatusListener)this._handleStatusChanged);
-            __cascade.forward();
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: _animationDuration, vsync: ((MaterialInkController)this.controller).vsync);
+    __cascade.addListener(() => ((MaterialInkController)this.controller).markNeedsPaint());
+    __cascade.addStatusListener((AnimationStatusListener)this._handleStatusChanged);
+    __cascade.forward();
+    return __cascade;
+}))();
         _radiusScale = new global::Doroti.Framework.Animation.TweenSequence<double>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<double>> { new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn), weight: 75), new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.ConstantTween<double>(1.0), weight: 25) }).animate(this._animationController);
         var centerTween__5624 = new global::Doroti.Framework.Animation.Tween<global::System.Numerics.Vector2>(begin: new global::System.Numerics.Vector2(checked((float)this._position.dx), checked((float)this._position.dy)), end: new global::System.Numerics.Vector2(checked((float)(((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size.width / 2L)), checked((float)(((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size.height / 2L))));
         global::Doroti.Framework.Animation.Animation<double> centerProgress__5850 = ((global::Doroti.Framework.Animation.Animation<double>)(object?)new global::Doroti.Framework.Animation.TweenSequence<double>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<double>> { new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: 1.0), weight: 50), new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.ConstantTween<double>(1.0), weight: 50) }).animate(this._radiusScale));
@@ -108,9 +110,11 @@ public class InkSparkle : InteractiveInkFeature
         }
         _updateFragmentShader();
         var paint__10509 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.shader = this._fragmentShader;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.shader = this._fragmentShader;
+    return __cascade;
+}))();
         if ((this._clipCallback is not null))
         {
             canvas.drawRect(this._clipCallback(), paint__10509);
@@ -133,36 +137,38 @@ public class InkSparkle : InteractiveInkFeature
         double rotation2__11635 = ((turbulencePhase__11445 * _rotateLeft) + (2.0 * Dart_mathLibrary.pi));
         double rotation3__11711 = ((turbulencePhase__11445 * _rotateRight) + (2.75 * Dart_mathLibrary.pi));
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Ui.FragmentShader>)(() =>
-{            var __cascade = this._fragmentShader;
-            __cascade.setFloat(0L, (this._color.red / 255.0));
-            __cascade.setFloat(1L, (this._color.green / 255.0));
-            __cascade.setFloat(2L, (this._color.blue / 255.0));
-            __cascade.setFloat(3L, (this._color.alpha / 255.0));
-            __cascade.setFloat(4L, ((global::Doroti.Framework.Animation.Animation<double>)this._alpha).value);
-            __cascade.setFloat(5L, ((global::Doroti.Framework.Animation.Animation<double>)this._sparkleAlpha).value);
-            __cascade.setFloat(6L, 1.0);
-            __cascade.setFloat(7L, ((global::Doroti.Framework.Animation.Animation<double>)this._radiusScale).value);
-            __cascade.setFloat(8L, ((global::Doroti.Framework.Animation.Animation<global::System.Numerics.Vector2>)this._center).value.X);
-            __cascade.setFloat(9L, ((global::Doroti.Framework.Animation.Animation<global::System.Numerics.Vector2>)this._center).value.Y);
-            __cascade.setFloat(10L, this._targetRadius);
-            __cascade.setFloat(11L, (1.0 / this._width));
-            __cascade.setFloat(12L, (1.0 / this._height));
-            __cascade.setFloat(13L, (_noiseDensity / this._width));
-            __cascade.setFloat(14L, (_noiseDensity / this._height));
-            __cascade.setFloat(15L, (noisePhase__11511 / 1000.0));
-            __cascade.setFloat(16L, ((turbulenceScale__11405 * 0.5) + (((turbulencePhase__11445 * 0.01) * global::Doroti.Runtime.Dart_mathLibrary.cos((turbulenceScale__11405 * 0.55))))));
-            __cascade.setFloat(17L, ((turbulenceScale__11405 * 0.5) + (((turbulencePhase__11445 * 0.01) * global::Doroti.Runtime.Dart_mathLibrary.sin((turbulenceScale__11405 * 0.55))))));
-            __cascade.setFloat(18L, ((turbulenceScale__11405 * 0.2) + (((turbulencePhase__11445 * -0.0066) * global::Doroti.Runtime.Dart_mathLibrary.cos((turbulenceScale__11405 * 0.45))))));
-            __cascade.setFloat(19L, ((turbulenceScale__11405 * 0.2) + (((turbulencePhase__11445 * -0.0066) * global::Doroti.Runtime.Dart_mathLibrary.sin((turbulenceScale__11405 * 0.45))))));
-            __cascade.setFloat(20L, (turbulenceScale__11405 + (((turbulencePhase__11445 * -0.0066) * global::Doroti.Runtime.Dart_mathLibrary.cos((turbulenceScale__11405 * 0.35))))));
-            __cascade.setFloat(21L, (turbulenceScale__11405 + (((turbulencePhase__11445 * -0.0066) * global::Doroti.Runtime.Dart_mathLibrary.sin((turbulenceScale__11405 * 0.35))))));
-            __cascade.setFloat(22L, global::Doroti.Runtime.Dart_mathLibrary.cos(rotation1__11558));
-            __cascade.setFloat(23L, global::Doroti.Runtime.Dart_mathLibrary.sin(rotation1__11558));
-            __cascade.setFloat(24L, global::Doroti.Runtime.Dart_mathLibrary.cos(rotation2__11635));
-            __cascade.setFloat(25L, global::Doroti.Runtime.Dart_mathLibrary.sin(rotation2__11635));
-            __cascade.setFloat(26L, global::Doroti.Runtime.Dart_mathLibrary.cos(rotation3__11711));
-            __cascade.setFloat(27L, global::Doroti.Runtime.Dart_mathLibrary.sin(rotation3__11711));
-            return __cascade;        }))());
+{
+    var __cascade = this._fragmentShader;
+    __cascade.setFloat(0L, (this._color.red / 255.0));
+    __cascade.setFloat(1L, (this._color.green / 255.0));
+    __cascade.setFloat(2L, (this._color.blue / 255.0));
+    __cascade.setFloat(3L, (this._color.alpha / 255.0));
+    __cascade.setFloat(4L, ((global::Doroti.Framework.Animation.Animation<double>)this._alpha).value);
+    __cascade.setFloat(5L, ((global::Doroti.Framework.Animation.Animation<double>)this._sparkleAlpha).value);
+    __cascade.setFloat(6L, 1.0);
+    __cascade.setFloat(7L, ((global::Doroti.Framework.Animation.Animation<double>)this._radiusScale).value);
+    __cascade.setFloat(8L, ((global::Doroti.Framework.Animation.Animation<global::System.Numerics.Vector2>)this._center).value.X);
+    __cascade.setFloat(9L, ((global::Doroti.Framework.Animation.Animation<global::System.Numerics.Vector2>)this._center).value.Y);
+    __cascade.setFloat(10L, this._targetRadius);
+    __cascade.setFloat(11L, (1.0 / this._width));
+    __cascade.setFloat(12L, (1.0 / this._height));
+    __cascade.setFloat(13L, (_noiseDensity / this._width));
+    __cascade.setFloat(14L, (_noiseDensity / this._height));
+    __cascade.setFloat(15L, (noisePhase__11511 / 1000.0));
+    __cascade.setFloat(16L, ((turbulenceScale__11405 * 0.5) + (((turbulencePhase__11445 * 0.01) * global::Doroti.Runtime.Dart_mathLibrary.cos((turbulenceScale__11405 * 0.55))))));
+    __cascade.setFloat(17L, ((turbulenceScale__11405 * 0.5) + (((turbulencePhase__11445 * 0.01) * global::Doroti.Runtime.Dart_mathLibrary.sin((turbulenceScale__11405 * 0.55))))));
+    __cascade.setFloat(18L, ((turbulenceScale__11405 * 0.2) + (((turbulencePhase__11445 * -0.0066) * global::Doroti.Runtime.Dart_mathLibrary.cos((turbulenceScale__11405 * 0.45))))));
+    __cascade.setFloat(19L, ((turbulenceScale__11405 * 0.2) + (((turbulencePhase__11445 * -0.0066) * global::Doroti.Runtime.Dart_mathLibrary.sin((turbulenceScale__11405 * 0.45))))));
+    __cascade.setFloat(20L, (turbulenceScale__11405 + (((turbulencePhase__11445 * -0.0066) * global::Doroti.Runtime.Dart_mathLibrary.cos((turbulenceScale__11405 * 0.35))))));
+    __cascade.setFloat(21L, (turbulenceScale__11405 + (((turbulencePhase__11445 * -0.0066) * global::Doroti.Runtime.Dart_mathLibrary.sin((turbulenceScale__11405 * 0.35))))));
+    __cascade.setFloat(22L, global::Doroti.Runtime.Dart_mathLibrary.cos(rotation1__11558));
+    __cascade.setFloat(23L, global::Doroti.Runtime.Dart_mathLibrary.sin(rotation1__11558));
+    __cascade.setFloat(24L, global::Doroti.Runtime.Dart_mathLibrary.cos(rotation2__11635));
+    __cascade.setFloat(25L, global::Doroti.Runtime.Dart_mathLibrary.sin(rotation2__11635));
+    __cascade.setFloat(26L, global::Doroti.Runtime.Dart_mathLibrary.cos(rotation3__11711));
+    __cascade.setFloat(27L, global::Doroti.Runtime.Dart_mathLibrary.sin(rotation3__11711));
+    return __cascade;
+}))());
     }
 
     internal virtual void _transformCanvas(Canvas canvas, Matrix4 transform)

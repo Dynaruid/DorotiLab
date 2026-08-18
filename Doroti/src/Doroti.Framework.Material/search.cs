@@ -95,10 +95,12 @@ public abstract class SearchDelegate<T>
         _currentBody = null;
         this._focusNode?.unfocus();
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Widgets.NavigatorState>)(() =>
-{            var __cascade = Navigator.of(context);
-            __cascade.popUntil(((global::System.Func<dynamic, bool>)((route) => (object.Equals(route, this._route)))));
-            __cascade.pop(result);
-            return __cascade;        }))());
+{
+    var __cascade = Navigator.of(context);
+    __cascade.popUntil(((global::System.Func<dynamic, bool>)((route) => (object.Equals(route, this._route)))));
+    __cascade.pop(result);
+    return __cascade;
+}))());
     }
 
     internal virtual void _pop(global::Doroti.Framework.Widgets.BuildContext context)
@@ -106,10 +108,12 @@ public abstract class SearchDelegate<T>
         _currentBody = null;
         this._focusNode?.unfocus();
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Widgets.NavigatorState>)(() =>
-{            var __cascade = Navigator.of(context);
-            __cascade.popUntil(((global::System.Func<dynamic, bool>)((route) => (object.Equals(route, this._route)))));
-            __cascade.pop<object>(null);
-            return __cascade;        }))());
+{
+    var __cascade = Navigator.of(context);
+    __cascade.popUntil(((global::System.Func<dynamic, bool>)((route) => (object.Equals(route, this._route)))));
+    __cascade.pop<object>(null);
+    return __cascade;
+}))());
     }
 
     public virtual global::Doroti.Framework.Animation.Animation<double> transitionAnimation => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(this._proxyAnimation);
@@ -209,15 +213,16 @@ internal class _SearchPageState__search<T> : global::Doroti.Framework.Widgets.St
         {
             if (!__late_focusNode_initialized)
             {
-                __late_focusNode = new global::Doroti.Framework.Widgets.FocusNode(onKeyEvent: ((global::System.Func<global::Doroti.Framework.Widgets.FocusNode, global::Doroti.Framework.Services.KeyEvent, global::Doroti.Framework.Widgets.KeyEventResult>?)((node, @event) => {
-if (((@event is global::Doroti.Framework.Services.KeyDownEvent) && (object.Equals(((global::Doroti.Framework.Services.KeyDownEvent)@event).logicalKey, global::Doroti.Framework.Services.LogicalKeyboardKey.escape))))
-{
-    ((_SearchPage__search<T>)(object)this.widget).@delegate._pop(this.context);
-    return global::Doroti.Framework.Widgets.KeyEventResult.handled;
-}
-return global::Doroti.Framework.Widgets.KeyEventResult.ignored;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+                __late_focusNode = new global::Doroti.Framework.Widgets.FocusNode(onKeyEvent: ((global::System.Func<global::Doroti.Framework.Widgets.FocusNode, global::Doroti.Framework.Services.KeyEvent, global::Doroti.Framework.Widgets.KeyEventResult>?)((node, @event) =>
+                {
+                    if (((@event is global::Doroti.Framework.Services.KeyDownEvent) && (object.Equals(((global::Doroti.Framework.Services.KeyDownEvent)@event).logicalKey, global::Doroti.Framework.Services.LogicalKeyboardKey.escape))))
+                    {
+                        ((_SearchPage__search<T>)(object)this.widget).@delegate._pop(this.context);
+                        return global::Doroti.Framework.Widgets.KeyEventResult.handled;
+                    }
+                    return global::Doroti.Framework.Widgets.KeyEventResult.ignored;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                })));
                 __late_focusNode_initialized = true;
             }
             return __late_focusNode;
@@ -281,14 +286,16 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     internal virtual void _onQueryChanged()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     internal virtual void _onSearchBodyChanged()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)

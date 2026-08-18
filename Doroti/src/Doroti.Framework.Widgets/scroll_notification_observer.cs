@@ -138,15 +138,17 @@ public class ScrollNotificationObserverState : State<ScrollNotificationObserver>
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new NotificationListener<ScrollMetricsNotification>(onNotification: ((global::System.Func<ScrollMetricsNotification, bool>?)((notification) => {
-_notifyListeners(notification.asScrollUpdate());
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: new NotificationListener<ScrollNotification>(onNotification: ((global::System.Func<ScrollNotification, bool>?)((notification) => {
-_notifyListeners(notification);
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: new _ScrollNotificationObserverScope__scroll_notification_observer(scrollNotificationObserverState: this, child: ((ScrollNotificationObserver)this.widget).child))));
+        return ((Widget)(object?)new NotificationListener<ScrollMetricsNotification>(onNotification: ((global::System.Func<ScrollMetricsNotification, bool>?)((notification) =>
+        {
+            _notifyListeners(notification.asScrollUpdate());
+            return false;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), child: new NotificationListener<ScrollNotification>(onNotification: ((global::System.Func<ScrollNotification, bool>?)((notification) =>
+        {
+            _notifyListeners(notification);
+            return false;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), child: new _ScrollNotificationObserverScope__scroll_notification_observer(scrollNotificationObserverState: this, child: ((ScrollNotificationObserver)this.widget).child))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

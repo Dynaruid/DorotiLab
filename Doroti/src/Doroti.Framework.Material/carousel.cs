@@ -251,22 +251,23 @@ internal class _CarouselViewState__carousel : global::Doroti.Framework.Widgets.S
         double effectiveElevation__23975 = ((((CarouselView)this.widget).elevation ?? carouselTheme__23601.elevation) ?? 0.0);
         global::Doroti.Framework.Painting.ShapeBorder effectiveShape__24070 = ((((CarouselView)this.widget).shape ?? carouselTheme__23601.shape) ?? new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(28.0))));
         global::Doroti.Ui.Clip effectiveItemClipBehavior__24250 = ((((CarouselView)this.widget).itemClipBehavior ?? carouselTheme__23601.itemClipBehavior) ?? Clip.antiAlias);
-        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> effectiveOverlayColor__24401 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>)(object?)(((((CarouselView)this.widget).overlayColor ?? carouselTheme__23601.overlayColor) ?? (global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, CarouselView>)((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-{
-    return ((CarouselView)(object?)colorScheme__23670.onSurface.withOpacity(0.1));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-{
-    return ((CarouselView)(object?)colorScheme__23670.onSurface.withOpacity(0.08));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-{
-    return ((CarouselView)(object?)colorScheme__23670.onSurface.withOpacity(0.1));
-}
-return null;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))))));
+        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> effectiveOverlayColor__24401 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>)(object?)(((((CarouselView)this.widget).overlayColor ?? carouselTheme__23601.overlayColor) ?? (global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, CarouselView>)((states) =>
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+            {
+                return ((CarouselView)(object?)colorScheme__23670.onSurface.withOpacity(0.1));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+            {
+                return ((CarouselView)(object?)colorScheme__23670.onSurface.withOpacity(0.08));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+            {
+                return ((CarouselView)(object?)colorScheme__23670.onSurface.withOpacity(0.1));
+            }
+            return null;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))))));
         global::Doroti.Framework.Widgets.Widget contents__24985 = ((CarouselView)this.widget).children[(int)(index)];
         if (((CarouselView)this.widget).enableSplash)
         {
@@ -292,10 +293,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             if (((((CarouselView)this.widget).infinite && (((CarouselView)this.widget).itemCount is not null)) && (DartRuntimePrimitives.RequireValue(((CarouselView)this.widget).itemCount) > 0L)))
             {
                 long itemCount__26291 = DartRuntimePrimitives.RequireValue(((CarouselView)this.widget).itemCount);
-                effectiveBuilder__26135 = (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget?>)((context, index) => {
-return ((CarouselView)this.widget).itemBuilder!(context, (index % itemCount__26291));
-throw new InvalidOperationException("Dart closure completed without a value.");
-});
+                effectiveBuilder__26135 = (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget?>)((context, index) =>
+                {
+                    return ((CarouselView)this.widget).itemBuilder!(context, (index % itemCount__26291));
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                });
             }
             else
             {
@@ -319,12 +321,13 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         ThemeData theme__27443 = Theme.of(context);
         global::Doroti.Framework.Widgets.ScrollPhysics physics__27494 = (((CarouselView)this.widget).itemSnapping ? new CarouselScrollPhysics() : ScrollConfiguration.of(context).getScrollPhysics(context));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) => {
-double mainAxisExtent__27749 = (((CarouselView)this.widget).scrollDirection switch { global::Doroti.Framework.Painting.Axis.horizontal => ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth, global::Doroti.Framework.Painting.Axis.vertical => ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-_itemExtent = ((((CarouselView)this.widget).itemExtent is null) ? null : Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(((CarouselView)this.widget).itemExtent), 0, mainAxisExtent__27749));
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CustomScrollView(scrollDirection: ((CarouselView)this.widget).scrollDirection, reverse: ((CarouselView)this.widget).reverse, controller: this._controller, physics: physics__27494, clipBehavior: Clip.antiAlias, scrollCacheExtent: global::Doroti.Framework.Rendering.ScrollCacheExtent.CreateViewport(0.0), slivers: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildSliverCarousel(theme__27443)) }));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
+        {
+            double mainAxisExtent__27749 = (((CarouselView)this.widget).scrollDirection switch { global::Doroti.Framework.Painting.Axis.horizontal => ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth, global::Doroti.Framework.Painting.Axis.vertical => ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            _itemExtent = ((((CarouselView)this.widget).itemExtent is null) ? null : Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(((CarouselView)this.widget).itemExtent), 0, mainAxisExtent__27749));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CustomScrollView(scrollDirection: ((CarouselView)this.widget).scrollDirection, reverse: ((CarouselView)this.widget).reverse, controller: this._controller, physics: physics__27494, clipBehavior: Clip.antiAlias, scrollCacheExtent: global::Doroti.Framework.Rendering.ScrollCacheExtent.CreateViewport(0.0), slivers: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildSliverCarousel(theme__27443)) }));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -517,12 +520,14 @@ internal class _SliverWeightedCarousel__carousel : global::Doroti.Framework.Widg
     {
         var __renderObject = (_RenderSliverWeightedCarousel__carousel)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderSliverWeightedCarousel__carousel>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.consumeMaxWeight = this.consumeMaxWeight;
-            __cascade.shrinkExtent = this.shrinkExtent;
-            __cascade.weights = this.weights;
-            __cascade.infinite = this.infinite;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.consumeMaxWeight = this.consumeMaxWeight;
+    __cascade.shrinkExtent = this.shrinkExtent;
+    __cascade.weights = this.weights;
+    __cascade.infinite = this.infinite;
+    return __cascade;
+}))());
     }
 
 }

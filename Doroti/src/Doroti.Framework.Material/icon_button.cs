@@ -409,49 +409,51 @@ internal class _IconButtonDefaultsM3__icon_button : ButtonStyle
     }
 
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(Colors.transparent));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? foregroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return (this._colors.onSurface.withOpacity(0.38));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (this._colors.primary);
-}
-return (this._colors.onSurfaceVariant);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? foregroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
-        return (this._colors.primary.withOpacity(0.1));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+        {
+            return (this._colors.onSurface.withOpacity(0.38));
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            return (this._colors.primary);
+        }
+        return (this._colors.onSurfaceVariant);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    }));
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
-        return (this._colors.primary.withOpacity(0.08));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (this._colors.primary.withOpacity(0.1));
-    }
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-{
-    return (this._colors.onSurfaceVariant.withOpacity(0.1));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-{
-    return (this._colors.onSurfaceVariant.withOpacity(0.08));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-{
-    return (this._colors.onSurfaceVariant.withOpacity(0.1));
-}
-return (Colors.transparent);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+            {
+                return (this._colors.primary.withOpacity(0.1));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+            {
+                return (this._colors.primary.withOpacity(0.08));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+            {
+                return (this._colors.primary.withOpacity(0.1));
+            }
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+        {
+            return (this._colors.onSurfaceVariant.withOpacity(0.1));
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+        {
+            return (this._colors.onSurfaceVariant.withOpacity(0.08));
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+        {
+            return (this._colors.onSurfaceVariant.withOpacity(0.1));
+        }
+        return (Colors.transparent);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    }));
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<double>? elevation => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<double>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double>(0.0));
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(Colors.transparent));
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(Colors.transparent));
@@ -492,84 +494,87 @@ internal class _FilledIconButtonDefaultsM3__icon_button : ButtonStyle
         this.toggleable = toggleable;
     }
 
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return (this._colors.onSurface.withOpacity(0.12));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (this._colors.primary);
-}
-if (this.toggleable)
-{
-    return (this._colors.surfaceContainerHighest);
-}
-return (this._colors.primary);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? foregroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return (this._colors.onSurface.withOpacity(0.38));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (this._colors.onPrimary);
-}
-if (this.toggleable)
-{
-    return (this._colors.primary);
-}
-return (this._colors.onPrimary);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
-        return (this._colors.onPrimary.withOpacity(0.1));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+        {
+            return (this._colors.onSurface.withOpacity(0.12));
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            return (this._colors.primary);
+        }
+        if (this.toggleable)
+        {
+            return (this._colors.surfaceContainerHighest);
+        }
+        return (this._colors.primary);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    }));
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? foregroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
-        return (this._colors.onPrimary.withOpacity(0.08));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+        {
+            return (this._colors.onSurface.withOpacity(0.38));
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            return (this._colors.onPrimary);
+        }
+        if (this.toggleable)
+        {
+            return (this._colors.primary);
+        }
+        return (this._colors.onPrimary);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    }));
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
-        return (this._colors.onPrimary.withOpacity(0.1));
-    }
-}
-if (this.toggleable)
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-    {
-        return (this._colors.primary.withOpacity(0.1));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-    {
-        return (this._colors.primary.withOpacity(0.08));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (this._colors.primary.withOpacity(0.1));
-    }
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-{
-    return (this._colors.onPrimary.withOpacity(0.1));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-{
-    return (this._colors.onPrimary.withOpacity(0.08));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-{
-    return (this._colors.onPrimary.withOpacity(0.1));
-}
-return (Colors.transparent);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+            {
+                return (this._colors.onPrimary.withOpacity(0.1));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+            {
+                return (this._colors.onPrimary.withOpacity(0.08));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+            {
+                return (this._colors.onPrimary.withOpacity(0.1));
+            }
+        }
+        if (this.toggleable)
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+            {
+                return (this._colors.primary.withOpacity(0.1));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+            {
+                return (this._colors.primary.withOpacity(0.08));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+            {
+                return (this._colors.primary.withOpacity(0.1));
+            }
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+        {
+            return (this._colors.onPrimary.withOpacity(0.1));
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+        {
+            return (this._colors.onPrimary.withOpacity(0.08));
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+        {
+            return (this._colors.onPrimary.withOpacity(0.1));
+        }
+        return (Colors.transparent);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    }));
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<double>? elevation => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<double>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double>(0.0));
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(Colors.transparent));
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(Colors.transparent));
@@ -610,84 +615,87 @@ internal class _FilledTonalIconButtonDefaultsM3__icon_button : ButtonStyle
         this.toggleable = toggleable;
     }
 
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return (this._colors.onSurface.withOpacity(0.12));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (this._colors.secondaryContainer);
-}
-if (this.toggleable)
-{
-    return (this._colors.surfaceContainerHighest);
-}
-return (this._colors.secondaryContainer);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? foregroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return (this._colors.onSurface.withOpacity(0.38));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (this._colors.onSecondaryContainer);
-}
-if (this.toggleable)
-{
-    return (this._colors.onSurfaceVariant);
-}
-return (this._colors.onSecondaryContainer);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
-        return (this._colors.onSecondaryContainer.withOpacity(0.1));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+        {
+            return (this._colors.onSurface.withOpacity(0.12));
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            return (this._colors.secondaryContainer);
+        }
+        if (this.toggleable)
+        {
+            return (this._colors.surfaceContainerHighest);
+        }
+        return (this._colors.secondaryContainer);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    }));
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? foregroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
-        return (this._colors.onSecondaryContainer.withOpacity(0.08));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+        {
+            return (this._colors.onSurface.withOpacity(0.38));
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            return (this._colors.onSecondaryContainer);
+        }
+        if (this.toggleable)
+        {
+            return (this._colors.onSurfaceVariant);
+        }
+        return (this._colors.onSecondaryContainer);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    }));
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
-        return (this._colors.onSecondaryContainer.withOpacity(0.1));
-    }
-}
-if (this.toggleable)
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-    {
-        return (this._colors.onSurfaceVariant.withOpacity(0.1));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-    {
-        return (this._colors.onSurfaceVariant.withOpacity(0.08));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (this._colors.onSurfaceVariant.withOpacity(0.1));
-    }
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-{
-    return (this._colors.onSecondaryContainer.withOpacity(0.1));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-{
-    return (this._colors.onSecondaryContainer.withOpacity(0.08));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-{
-    return (this._colors.onSecondaryContainer.withOpacity(0.1));
-}
-return (Colors.transparent);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+            {
+                return (this._colors.onSecondaryContainer.withOpacity(0.1));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+            {
+                return (this._colors.onSecondaryContainer.withOpacity(0.08));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+            {
+                return (this._colors.onSecondaryContainer.withOpacity(0.1));
+            }
+        }
+        if (this.toggleable)
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+            {
+                return (this._colors.onSurfaceVariant.withOpacity(0.1));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+            {
+                return (this._colors.onSurfaceVariant.withOpacity(0.08));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+            {
+                return (this._colors.onSurfaceVariant.withOpacity(0.1));
+            }
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+        {
+            return (this._colors.onSecondaryContainer.withOpacity(0.1));
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+        {
+            return (this._colors.onSecondaryContainer.withOpacity(0.08));
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+        {
+            return (this._colors.onSecondaryContainer.withOpacity(0.1));
+        }
+        return (Colors.transparent);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    }));
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<double>? elevation => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<double>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double>(0.0));
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(Colors.transparent));
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(Colors.transparent));
@@ -728,65 +736,68 @@ internal class _OutlinedIconButtonDefaultsM3__icon_button : ButtonStyle
         this.toggleable = toggleable;
     }
 
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
-        return (this._colors.onSurface.withOpacity(0.12));
-    }
-    return (Colors.transparent);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (this._colors.inverseSurface);
-}
-return (Colors.transparent);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? foregroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return (this._colors.onSurface.withOpacity(0.38));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (this._colors.onInverseSurface);
-}
-return (this._colors.onSurfaceVariant);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+            {
+                return (this._colors.onSurface.withOpacity(0.12));
+            }
+            return (Colors.transparent);
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            return (this._colors.inverseSurface);
+        }
+        return (Colors.transparent);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    }));
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? foregroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
-        return (this._colors.onInverseSurface.withOpacity(0.1));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+        {
+            return (this._colors.onSurface.withOpacity(0.38));
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            return (this._colors.onInverseSurface);
+        }
+        return (this._colors.onSurfaceVariant);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    }));
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
-        return (this._colors.onInverseSurface.withOpacity(0.08));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (this._colors.onInverseSurface.withOpacity(0.08));
-    }
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-{
-    return (this._colors.onSurface.withOpacity(0.1));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-{
-    return (this._colors.onSurfaceVariant.withOpacity(0.08));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-{
-    return (this._colors.onSurfaceVariant.withOpacity(0.08));
-}
-return (Colors.transparent);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+            {
+                return (this._colors.onInverseSurface.withOpacity(0.1));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+            {
+                return (this._colors.onInverseSurface.withOpacity(0.08));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+            {
+                return (this._colors.onInverseSurface.withOpacity(0.08));
+            }
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+        {
+            return (this._colors.onSurface.withOpacity(0.1));
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+        {
+            return (this._colors.onSurfaceVariant.withOpacity(0.08));
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+        {
+            return (this._colors.onSurfaceVariant.withOpacity(0.08));
+        }
+        return (Colors.transparent);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    }));
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<double>? elevation => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<double>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double>(0.0));
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(Colors.transparent));
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(Colors.transparent));
@@ -794,21 +805,22 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>? minimumSize => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Size>(new global::Doroti.Ui.Size(40.0, 40.0)));
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>? maximumSize => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Size>(Size.infinite));
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<double>? iconSize => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<double>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double>(24.0));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.BorderSide?>? side => WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return null;
-}
-else
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.BorderSide?>? side => WidgetStateProperty.resolveWith((states) =>
     {
-        return (new global::Doroti.Framework.Painting.BorderSide(color: this._colors.onSurface.withOpacity(0.12)));
-    }
-    return (new global::Doroti.Framework.Painting.BorderSide(color: this._colors.outline));
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-});
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            return null;
+        }
+        else
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+            {
+                return (new global::Doroti.Framework.Painting.BorderSide(color: this._colors.onSurface.withOpacity(0.12)));
+            }
+            return (new global::Doroti.Framework.Painting.BorderSide(color: this._colors.outline));
+        }
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    });
     public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder>? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.StadiumBorder()));
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>>(global::Doroti.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable);
     public override VisualDensity? visualDensity => VisualDensity.standard;

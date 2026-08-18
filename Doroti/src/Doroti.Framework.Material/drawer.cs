@@ -166,10 +166,12 @@ public class DrawerControllerState : global::Doroti.Framework.Widgets.State<Draw
         base.initState();
         _controller = new global::Doroti.Framework.Animation.AnimationController(value: (((DrawerController)this.widget).isDrawerOpen ? 1.0 : 0.0), duration: DrawerLibrary._kBaseSettleDuration, vsync: this);
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = this._controller;
-            __cascade.addListener(() => this._animationChanged());
-            __cascade.addStatusListener((AnimationStatusListener)this._animationStatusChanged);
-            return __cascade;        }))());
+{
+    var __cascade = this._controller;
+    __cascade.addListener(() => this._animationChanged());
+    __cascade.addStatusListener((AnimationStatusListener)this._animationStatusChanged);
+    return __cascade;
+}))());
     }
 
     public override void dispose()
@@ -205,8 +207,9 @@ public class DrawerControllerState : global::Doroti.Framework.Widgets.State<Draw
 
     internal virtual void _animationChanged()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     internal virtual void _ensureHistoryEntry()

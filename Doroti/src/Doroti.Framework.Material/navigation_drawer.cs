@@ -88,17 +88,19 @@ public class NavigationDrawerDestination : global::Doroti.Framework.Widgets.Stat
         NavigationDrawerThemeData navigationDrawerTheme__10196 = NavigationDrawerTheme.of(context);
         NavigationDrawerThemeData defaults__10291 = ((NavigationDrawerThemeData)(object?)new _NavigationDrawerDefaultsM3__navigation_drawer(context));
         global::Doroti.Framework.Animation.Animation<double> animation__10369 = _NavigationDrawerDestinationInfo__navigation_drawer.of(context).selectedAnimation;
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _NavigationDestinationBuilder__navigation_drawer(buildIcon: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) => {
-global::Doroti.Framework.Widgets.Widget selectedIconWidget__10564 = ((global::Doroti.Framework.Widgets.Widget)(object?)IconTheme.merge(data: (navigationDrawerTheme__10196.iconTheme?.resolve((this.enabled ? selectedState__9998 : disabledState__10106)) ?? defaults__10291.iconTheme!.resolve((this.enabled ? selectedState__9998 : disabledState__10106))!), child: (this.selectedIcon ?? this.icon)));
-global::Doroti.Framework.Widgets.Widget unselectedIconWidget__10873 = ((global::Doroti.Framework.Widgets.Widget)(object?)IconTheme.merge(data: (navigationDrawerTheme__10196.iconTheme?.resolve((this.enabled ? unselectedState__10061 : disabledState__10106)) ?? defaults__10291.iconTheme!.resolve((this.enabled ? unselectedState__10061 : disabledState__10106))!), child: this.icon));
-return (((global::Doroti.Framework.Animation.Animation<double>)animation__10369).isForwardOrCompleted ? selectedIconWidget__10564 : unselectedIconWidget__10873);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), buildLabel: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) => {
-global::Doroti.Framework.Painting.TextStyle? effectiveSelectedLabelTextStyle__11320 = ((navigationDrawerTheme__10196.labelTextStyle?.resolve((this.enabled ? selectedState__9998 : disabledState__10106)) ?? (global::Doroti.Framework.Painting.TextStyle)defaults__10291.labelTextStyle!.resolve((this.enabled ? selectedState__9998 : disabledState__10106))));
-global::Doroti.Framework.Painting.TextStyle? effectiveUnselectedLabelTextStyle__11597 = ((navigationDrawerTheme__10196.labelTextStyle?.resolve((this.enabled ? unselectedState__10061 : disabledState__10106)) ?? (global::Doroti.Framework.Painting.TextStyle)defaults__10291.labelTextStyle!.resolve((this.enabled ? unselectedState__10061 : disabledState__10106))));
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DefaultTextStyle(style: (((global::Doroti.Framework.Animation.Animation<double>)animation__10369).isForwardOrCompleted ? effectiveSelectedLabelTextStyle__11320! : effectiveUnselectedLabelTextStyle__11597!), child: this.label));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), enabled: this.enabled, backgroundColor: this.backgroundColor));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _NavigationDestinationBuilder__navigation_drawer(buildIcon: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
+        {
+            global::Doroti.Framework.Widgets.Widget selectedIconWidget__10564 = ((global::Doroti.Framework.Widgets.Widget)(object?)IconTheme.merge(data: (navigationDrawerTheme__10196.iconTheme?.resolve((this.enabled ? selectedState__9998 : disabledState__10106)) ?? defaults__10291.iconTheme!.resolve((this.enabled ? selectedState__9998 : disabledState__10106))!), child: (this.selectedIcon ?? this.icon)));
+            global::Doroti.Framework.Widgets.Widget unselectedIconWidget__10873 = ((global::Doroti.Framework.Widgets.Widget)(object?)IconTheme.merge(data: (navigationDrawerTheme__10196.iconTheme?.resolve((this.enabled ? unselectedState__10061 : disabledState__10106)) ?? defaults__10291.iconTheme!.resolve((this.enabled ? unselectedState__10061 : disabledState__10106))!), child: this.icon));
+            return (((global::Doroti.Framework.Animation.Animation<double>)animation__10369).isForwardOrCompleted ? selectedIconWidget__10564 : unselectedIconWidget__10873);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), buildLabel: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
+        {
+            global::Doroti.Framework.Painting.TextStyle? effectiveSelectedLabelTextStyle__11320 = ((navigationDrawerTheme__10196.labelTextStyle?.resolve((this.enabled ? selectedState__9998 : disabledState__10106)) ?? (global::Doroti.Framework.Painting.TextStyle)defaults__10291.labelTextStyle!.resolve((this.enabled ? selectedState__9998 : disabledState__10106))));
+            global::Doroti.Framework.Painting.TextStyle? effectiveUnselectedLabelTextStyle__11597 = ((navigationDrawerTheme__10196.labelTextStyle?.resolve((this.enabled ? unselectedState__10061 : disabledState__10106)) ?? (global::Doroti.Framework.Painting.TextStyle)defaults__10291.labelTextStyle!.resolve((this.enabled ? unselectedState__10061 : disabledState__10106))));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DefaultTextStyle(style: (((global::Doroti.Framework.Animation.Animation<double>)animation__10369).isForwardOrCompleted ? effectiveSelectedLabelTextStyle__11320! : effectiveUnselectedLabelTextStyle__11597!), child: this.label));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), enabled: this.enabled, backgroundColor: this.backgroundColor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -149,10 +151,11 @@ internal class _NavigationDestinationSemantics__navigation_drawer : global::Doro
     {
         MaterialLocalizations localizations__16946 = MaterialLocalizations.of(context);
         _NavigationDrawerDestinationInfo__navigation_drawer destinationInfo__17040 = ((_NavigationDrawerDestinationInfo__navigation_drawer)(object?)_NavigationDrawerDestinationInfo__navigation_drawer.of(context));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _StatusTransitionWidgetBuilder__navigation_drawer(animation: ((_NavigationDrawerDestinationInfo__navigation_drawer)destinationInfo__17040).selectedAnimation, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) => {
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(selected: ((_NavigationDrawerDestinationInfo__navigation_drawer)destinationInfo__17040).selectedAnimation.isForwardOrCompleted, container: true, child: child));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: new global::Doroti.Framework.Widgets.Stack(alignment: global::Doroti.Framework.Painting.Alignment.center, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(this.child), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(label: localizations__16946.tabLabel(tabIndex: (((_NavigationDrawerDestinationInfo__navigation_drawer)destinationInfo__17040).index + 1L), tabCount: ((_NavigationDrawerDestinationInfo__navigation_drawer)destinationInfo__17040).totalNumberOfDestinations))) })));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _StatusTransitionWidgetBuilder__navigation_drawer(animation: ((_NavigationDrawerDestinationInfo__navigation_drawer)destinationInfo__17040).selectedAnimation, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
+        {
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(selected: ((_NavigationDrawerDestinationInfo__navigation_drawer)destinationInfo__17040).selectedAnimation.isForwardOrCompleted, container: true, child: child));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), child: new global::Doroti.Framework.Widgets.Stack(alignment: global::Doroti.Framework.Painting.Alignment.center, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(this.child), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(label: localizations__16946.tabLabel(tabIndex: (((_NavigationDrawerDestinationInfo__navigation_drawer)destinationInfo__17040).index + 1L), tabCount: ((_NavigationDrawerDestinationInfo__navigation_drawer)destinationInfo__17040).totalNumberOfDestinations))) })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -383,10 +386,11 @@ internal class _NavigationDrawerDefaultsM3__navigation_drawer : NavigationDrawer
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.IconThemeData?>?)(object?)WidgetStateProperty.resolveWith((states) => {
-return (new global::Doroti.Framework.Widgets.IconThemeData(size: 24.0, color: (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled) ? this._colors.onSurfaceVariant.withOpacity(0.38) : (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected) ? this._colors.onSecondaryContainer : this._colors.onSurfaceVariant))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.IconThemeData?>?)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                return (new global::Doroti.Framework.Widgets.IconThemeData(size: 24.0, color: (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled) ? this._colors.onSurfaceVariant.withOpacity(0.38) : (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected) ? this._colors.onSecondaryContainer : this._colors.onSurfaceVariant))));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -394,11 +398,12 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>?)(object?)WidgetStateProperty.resolveWith((states) => {
-global::Doroti.Framework.Painting.TextStyle style__27751 = this._textTheme.labelLarge!;
-return (style__27751.apply(color: (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled) ? this._colors.onSurfaceVariant.withOpacity(0.38) : (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected) ? this._colors.onSecondaryContainer : this._colors.onSurfaceVariant))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>?)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                global::Doroti.Framework.Painting.TextStyle style__27751 = this._textTheme.labelLarge!;
+                return (style__27751.apply(color: (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled) ? this._colors.onSurfaceVariant.withOpacity(0.38) : (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected) ? this._colors.onSecondaryContainer : this._colors.onSurfaceVariant))));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }

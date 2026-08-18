@@ -47,10 +47,11 @@ public static partial class LocalizationsLibrary
         {
             Future inputValue__2385 = (Future)((dynamic)@delegate__2334).load(locale);
             dynamic completedValue__2433 = default!;
-            Future<object> futureValue__2475 = inputValue__2385.then<object>((object? value) => {
-return completedValue__2433 = value;
-throw new InvalidOperationException("Dart closure completed without a value.");
-});
+            Future<object> futureValue__2475 = inputValue__2385.then<object>((object? value) =>
+            {
+                return completedValue__2433 = value;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            });
             if ((completedValue__2433 is not null))
             {
                 Type type__2672 = ((Type)((dynamic)@delegate__2334).type);
@@ -67,17 +68,18 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         {
             return ((Future<DartMap<Type, object>>)(object?)new global::Doroti.Framework.Foundation.SynchronousFuture<DartMap<Type, object>>(output__1893));
         }
-        return global::Doroti.Runtime.DartAsyncRuntime.wait<object>(pendingList__1939.map<_Pending__localizations, Future>(((p) => ((_Pending__localizations)p).futureValue))).then((global::System.Func<List<object>, DartMap<Type, object>>)((values) => {
-DartRuntimePrimitives.Assert(() => (checked((long)(values.Count)) == checked((long)(pendingList__1939!.Count))));
-for (var i__3352 = 0L; (i__3352 < checked((long)(values.Count))); i__3352 += 1L)
-{
-    Type type__3405 = ((Type)((dynamic)pendingList__1939![(int)(i__3352)].@delegate).type);
-    DartRuntimePrimitives.Assert(() => !output__1893.ContainsKey(type__3405));
-    output__1893[type__3405] = values[(int)(i__3352)];
-}
-return output__1893;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        return global::Doroti.Runtime.DartAsyncRuntime.wait<object>(pendingList__1939.map<_Pending__localizations, Future>(((p) => ((_Pending__localizations)p).futureValue))).then((global::System.Func<List<object>, DartMap<Type, object>>)((values) =>
+        {
+            DartRuntimePrimitives.Assert(() => (checked((long)(values.Count)) == checked((long)(pendingList__1939!.Count))));
+            for (var i__3352 = 0L; (i__3352 < checked((long)(values.Count))); i__3352 += 1L)
+            {
+                Type type__3405 = ((Type)((dynamic)pendingList__1939![(int)(i__3352)].@delegate).type);
+                DartRuntimePrimitives.Assert(() => !output__1893.ContainsKey(type__3405));
+                output__1893[type__3405] = values[(int)(i__3352)];
+            }
+            return output__1893;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -336,10 +338,11 @@ internal class _LocalizationsState__localizations : State<Localizations>
             return;
         }
         DartMap<Type, object>? typeToResources__24557 = default!;
-        Future<DartMap<Type, object>> typeToResourcesFuture__24611 = LocalizationsLibrary._loadAll(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(locale)), delegates__24425.Cast<dynamic>()).then((global::System.Func<DartMap<Type, object>, DartMap<Type, object>>)((value) => {
-return typeToResources__24557 = value.cast<Type, object>();
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        Future<DartMap<Type, object>> typeToResourcesFuture__24611 = LocalizationsLibrary._loadAll(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(locale)), delegates__24425.Cast<dynamic>()).then((global::System.Func<DartMap<Type, object>, DartMap<Type, object>>)((value) =>
+        {
+            return typeToResources__24557 = value.cast<Type, object>();
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         if ((typeToResources__24557 is not null))
         {
             _typeToResources = typeToResources__24557!;
@@ -348,16 +351,18 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         else
         {
             global::Doroti.Framework.Rendering.RendererBinding.instance.deferFirstFrame();
-            DartRuntimePrimitives.Ignore(typeToResourcesFuture__24611.then((global::System.Action<DartMap<Type, object>>)((value) => {
-if (this.mounted)
-{
-    setState(((global::System.Action)(() => {
-_typeToResources = value;
-this.locale = DartRuntimePrimitives.RequireValue(locale);
-})));
-}
-global::Doroti.Framework.Rendering.RendererBinding.instance.allowFirstFrame();
-})));
+            DartRuntimePrimitives.Ignore(typeToResourcesFuture__24611.then((global::System.Action<DartMap<Type, object>>)((value) =>
+            {
+                if (this.mounted)
+                {
+                    setState(((global::System.Action)(() =>
+                    {
+                        _typeToResources = value;
+                        this.locale = DartRuntimePrimitives.RequireValue(locale);
+                    })));
+                }
+                global::Doroti.Framework.Rendering.RendererBinding.instance.allowFirstFrame();
+            })));
         }
     }
 

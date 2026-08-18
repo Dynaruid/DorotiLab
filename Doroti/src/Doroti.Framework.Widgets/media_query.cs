@@ -318,11 +318,12 @@ public class MediaQuery : InheritedModel<_MediaQueryAspect__media_query>
 
     public static Widget applyTextStyleOverrides(global::Doroti.Framework.Foundation.Key? key = null, double? lineHeightScaleFactorOverride = default!, double? letterSpacingOverride = default!, double? wordSpacingOverride = default!, double? paragraphSpacingOverride = default!, Widget child = default!)
     {
-        return ((Widget)(object?)new Builder(key: key, builder: ((global::System.Func<BuildContext, Widget>)((context) => {
-DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-return ((Widget)(object?)new MediaQuery(data: MediaQuery.of(context).applyTextStyleOverrides(lineHeightScaleFactorOverride: lineHeightScaleFactorOverride, letterSpacingOverride: letterSpacingOverride, wordSpacingOverride: wordSpacingOverride, paragraphSpacingOverride: paragraphSpacingOverride), child: child));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((Widget)(object?)new Builder(key: key, builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        {
+            DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
+            return ((Widget)(object?)new MediaQuery(data: MediaQuery.of(context).applyTextStyleOverrides(lineHeightScaleFactorOverride: lineHeightScaleFactorOverride, letterSpacingOverride: letterSpacingOverride, wordSpacingOverride: wordSpacingOverride, paragraphSpacingOverride: paragraphSpacingOverride), child: child));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -340,11 +341,12 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     public static Widget withNoTextScaling(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!)
     {
-        return ((Widget)(object?)new Builder(key: key, builder: ((global::System.Func<BuildContext, Widget>)((context) => {
-DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-return ((Widget)(object?)new MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: global::Doroti.Framework.Painting.TextScaler.noScaling), child: child));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((Widget)(object?)new Builder(key: key, builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        {
+            DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
+            return ((Widget)(object?)new MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: global::Doroti.Framework.Painting.TextScaler.noScaling), child: child));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -354,12 +356,13 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         DartRuntimePrimitives.Assert(() => !double.IsNaN(maxScaleFactor));
         DartRuntimePrimitives.Assert(() => double.IsFinite(minScaleFactor));
         DartRuntimePrimitives.Assert(() => (minScaleFactor >= 0L));
-        return ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => {
-DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-MediaQueryData data__65806 = ((MediaQueryData)(object?)MediaQuery.of(context));
-return ((Widget)(object?)new MediaQuery(data: data__65806.copyWith(textScaler: ((MediaQueryData)data__65806).textScaler.clamp(minScaleFactor: minScaleFactor, maxScaleFactor: maxScaleFactor)), child: child));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        {
+            DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
+            MediaQueryData data__65806 = ((MediaQueryData)(object?)MediaQuery.of(context));
+            return ((Widget)(object?)new MediaQuery(data: data__65806.copyWith(textScaler: ((MediaQueryData)data__65806).textScaler.clamp(minScaleFactor: minScaleFactor, maxScaleFactor: maxScaleFactor)), child: child));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -527,9 +530,10 @@ internal class _MediaQueryFromViewState__media_query : State<_MediaQueryFromView
         var newData__107642 = MediaQueryData.CreateFromView(((_MediaQueryFromView__media_query)this.widget).view, platformData: this._parentData);
         if ((!object.Equals(newData__107642, this._data)))
         {
-            setState(((global::System.Action)(() => {
-_data = newData__107642;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _data = newData__107642;
+            })));
         }
     }
 

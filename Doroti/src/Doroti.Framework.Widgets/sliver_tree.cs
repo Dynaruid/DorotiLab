@@ -203,12 +203,14 @@ public class TreeSliver<T> : StatefulWidget
 
     public static Widget wrapChildToToggleNode(dynamic node, Widget child)
     {
-        return ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => {
-return ((Widget)(object?)new GestureDetector(onTap: ((global::System.Action)(() => {
-TreeSliverController.of(context).toggleNode(node);
-})), child: child));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        {
+            return ((Widget)(object?)new GestureDetector(onTap: ((global::System.Action)(() =>
+            {
+                TreeSliverController.of(context).toggleNode(node);
+            })), child: child));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -351,28 +353,30 @@ internal class _TreeSliverState__sliver_tree<T> : State<TreeSliver<T>>, TickerPr
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new _SliverTree__sliver_tree(itemCount: checked((long)(this._activeNodes.Count)), activeAnimations: this._activeAnimations.cast<global::Doroti.Framework.Foundation.UniqueKey, (long fromIndex, long toIndex, double value)>(), itemBuilder: ((global::System.Func<BuildContext, long, Widget?>)((context, index) => {
-TreeSliverNode<T> node__26145 = this._activeNodes[(int)(index)];
-Widget child__26188 = this.widget.treeNodeBuilder(context, node__26145, (((TreeSliver<T>)(object)this.widget).toggleAnimationStyle ?? TreeSliver<object>.defaultToggleAnimationStyle));
-if (((TreeSliver<T>)(object)this.widget).addRepaintBoundaries)
-{
-    child__26188 = DartRuntimePrimitives.ConvertValue<Widget>(new RepaintBoundary(child: child__26188));
-}
-if (((TreeSliver<T>)(object)this.widget).addSemanticIndexes)
-{
-    long? semanticIndex__26512 = this.widget.semanticIndexCallback(child__26188, index);
-    if ((semanticIndex__26512 is not null))
-    {
-        long semanticIndex__26512__value26586 = DartRuntimePrimitives.RequireValue(semanticIndex__26512);
-        child__26188 = DartRuntimePrimitives.ConvertValue<Widget>(new IndexedSemantics(index: (DartRuntimePrimitives.RequireValue(semanticIndex__26512__value26586) + ((TreeSliver<T>)(object)this.widget).semanticIndexOffset), child: child__26188));
-    }
-}
-return ((Widget?)(object?)new _TreeNodeParentDataWidget__sliver_tree(depth: DartRuntimePrimitives.RequireValue(((TreeSliverNode<T>)node__26145).depth), child: child__26188));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), itemExtentBuilder: ((ItemExtentBuilder)((index, dimensions) => {
-return this.widget.treeRowExtentBuilder(this._activeNodes[(int)(index)], dimensions);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), addAutomaticKeepAlives: ((TreeSliver<T>)(object)this.widget).addAutomaticKeepAlives, findChildIndexCallback: (global::System.Func<global::Doroti.Framework.Foundation.Key, long?>?)((TreeSliver<T>)(object)this.widget).findChildIndexCallback, indentation: ((TreeSliver<T>)(object)this.widget).indentation.value));
+        return ((Widget)(object?)new _SliverTree__sliver_tree(itemCount: checked((long)(this._activeNodes.Count)), activeAnimations: this._activeAnimations.cast<global::Doroti.Framework.Foundation.UniqueKey, (long fromIndex, long toIndex, double value)>(), itemBuilder: ((global::System.Func<BuildContext, long, Widget?>)((context, index) =>
+        {
+            TreeSliverNode<T> node__26145 = this._activeNodes[(int)(index)];
+            Widget child__26188 = this.widget.treeNodeBuilder(context, node__26145, (((TreeSliver<T>)(object)this.widget).toggleAnimationStyle ?? TreeSliver<object>.defaultToggleAnimationStyle));
+            if (((TreeSliver<T>)(object)this.widget).addRepaintBoundaries)
+            {
+                child__26188 = DartRuntimePrimitives.ConvertValue<Widget>(new RepaintBoundary(child: child__26188));
+            }
+            if (((TreeSliver<T>)(object)this.widget).addSemanticIndexes)
+            {
+                long? semanticIndex__26512 = this.widget.semanticIndexCallback(child__26188, index);
+                if ((semanticIndex__26512 is not null))
+                {
+                    long semanticIndex__26512__value26586 = DartRuntimePrimitives.RequireValue(semanticIndex__26512);
+                    child__26188 = DartRuntimePrimitives.ConvertValue<Widget>(new IndexedSemantics(index: (DartRuntimePrimitives.RequireValue(semanticIndex__26512__value26586) + ((TreeSliver<T>)(object)this.widget).semanticIndexOffset), child: child__26188));
+                }
+            }
+            return ((Widget?)(object?)new _TreeNodeParentDataWidget__sliver_tree(depth: DartRuntimePrimitives.RequireValue(((TreeSliverNode<T>)node__26145).depth), child: child__26188));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), itemExtentBuilder: ((ItemExtentBuilder)((index, dimensions) =>
+        {
+            return this.widget.treeRowExtentBuilder(this._activeNodes[(int)(index)], dimensions);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), addAutomaticKeepAlives: ((TreeSliver<T>)(object)this.widget).addAutomaticKeepAlives, findChildIndexCallback: (global::System.Func<global::Doroti.Framework.Foundation.Key, long?>?)((TreeSliver<T>)(object)this.widget).findChildIndexCallback, indentation: ((TreeSliver<T>)(object)this.widget).indentation.value));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -493,79 +497,85 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         {
             return;
         }
-        setState(((global::System.Action)(() => {
-node._expanded = !((TreeSliverNode<T>)node)._expanded;
-if ((((TreeSliver<T>)(object)this.widget).onNodeToggle is not null))
-{
-    ((TreeSliver<T>)(object)this.widget).onNodeToggle!(node);
-}
-if ((this._currentAnimationForParent.ContainsKey(node)))
-{
-    DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<(global::Doroti.Framework.Animation.CurvedAnimation animation, global::Doroti.Framework.Animation.AnimationController controller, global::Doroti.Framework.Foundation.UniqueKey key)>(this._currentAnimationForParent, node)).animation.dispose();
-}
-if (((object.Equals(((TreeSliver<T>)(object)this.widget).toggleAnimationStyle, global::Doroti.Framework.Animation.AnimationStyle.noAnimation)) || (object.Equals(((TreeSliver<T>)(object)this.widget).toggleAnimationStyle?.duration, Duration.zero))))
-{
-    _unpackActiveNodes();
-    return;
-}
-global::Doroti.Framework.Animation.AnimationController controller__32032 = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = (DartCollectionRuntime.NullableMapValue<(global::Doroti.Framework.Animation.CurvedAnimation animation, global::Doroti.Framework.Animation.AnimationController controller, global::Doroti.Framework.Foundation.UniqueKey key)>(this._currentAnimationForParent, node)?.controller ?? new global::Doroti.Framework.Animation.AnimationController(value: (((TreeSliverNode<T>)node)._expanded ? 0.0 : 1.0), vsync: this, duration: (((TreeSliver<T>)(object)this.widget).toggleAnimationStyle?.duration ?? TreeSliver<object>.defaultAnimationDuration)));
-            __cascade.addStatusListener(((AnimationStatusListener)((status) => {
-switch (status)
-{
-    case global::Doroti.Framework.Animation.AnimationStatus.dismissed:
-    case global::Doroti.Framework.Animation.AnimationStatus.completed:
+        setState(((global::System.Action)(() =>
         {
-            DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<(global::Doroti.Framework.Animation.CurvedAnimation animation, global::Doroti.Framework.Animation.AnimationController controller, global::Doroti.Framework.Foundation.UniqueKey key)>(this._currentAnimationForParent, node)).animation.dispose();
-            DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<(global::Doroti.Framework.Animation.CurvedAnimation animation, global::Doroti.Framework.Animation.AnimationController controller, global::Doroti.Framework.Foundation.UniqueKey key)>(this._currentAnimationForParent, node)).controller.dispose();
-            this._currentAnimationForParent.remove(node);
-            _updateActiveAnimations();
-            if (!((TreeSliverNode<T>)node)._expanded)
+            node._expanded = !((TreeSliverNode<T>)node)._expanded;
+            if ((((TreeSliver<T>)(object)this.widget).onNodeToggle is not null))
+            {
+                ((TreeSliver<T>)(object)this.widget).onNodeToggle!(node);
+            }
+            if ((this._currentAnimationForParent.ContainsKey(node)))
+            {
+                DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<(global::Doroti.Framework.Animation.CurvedAnimation animation, global::Doroti.Framework.Animation.AnimationController controller, global::Doroti.Framework.Foundation.UniqueKey key)>(this._currentAnimationForParent, node)).animation.dispose();
+            }
+            if (((object.Equals(((TreeSliver<T>)(object)this.widget).toggleAnimationStyle, global::Doroti.Framework.Animation.AnimationStyle.noAnimation)) || (object.Equals(((TreeSliver<T>)(object)this.widget).toggleAnimationStyle?.duration, Duration.zero))))
             {
                 _unpackActiveNodes();
+                return;
             }
-            break;
-        }
-    case global::Doroti.Framework.Animation.AnimationStatus.forward:
-    case global::Doroti.Framework.Animation.AnimationStatus.reverse:
-        break;
-}
-})));
-            __cascade.addListener(((global::System.Action)(() => {
-setState(((global::System.Action)(() => {
-_updateActiveAnimations();
-})));
-})));
-            return __cascade;        }))();
-switch (((global::Doroti.Framework.Animation.AnimationController)controller__32032).status)
-{
-    case global::Doroti.Framework.Animation.AnimationStatus.forward:
-    case global::Doroti.Framework.Animation.AnimationStatus.reverse:
-        {
-            controller__32032.stop();
-            break;
-        }
-    case global::Doroti.Framework.Animation.AnimationStatus.dismissed:
-    case global::Doroti.Framework.Animation.AnimationStatus.completed:
-        break;
-}
-var newAnimation__33705 = new global::Doroti.Framework.Animation.CurvedAnimation(parent: controller__32032, curve: (((TreeSliver<T>)(object)this.widget).toggleAnimationStyle?.curve ?? TreeSliver<object>.defaultAnimationCurve));
-this._currentAnimationForParent[node] = (animation: newAnimation__33705, controller: controller__32032, key: new global::Doroti.Framework.Foundation.UniqueKey());
-switch (((TreeSliverNode<T>)node)._expanded)
-{
-    case true:
-        {
-            _unpackActiveNodes();
-            controller__32032.forward();
-            break;
-        }
-    case false:
-        {
-            controller__32032.reverse();
-            break;
-        }
-}
-})));
+            global::Doroti.Framework.Animation.AnimationController controller__32032 = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
+            {
+                var __cascade = (DartCollectionRuntime.NullableMapValue<(global::Doroti.Framework.Animation.CurvedAnimation animation, global::Doroti.Framework.Animation.AnimationController controller, global::Doroti.Framework.Foundation.UniqueKey key)>(this._currentAnimationForParent, node)?.controller ?? new global::Doroti.Framework.Animation.AnimationController(value: (((TreeSliverNode<T>)node)._expanded ? 0.0 : 1.0), vsync: this, duration: (((TreeSliver<T>)(object)this.widget).toggleAnimationStyle?.duration ?? TreeSliver<object>.defaultAnimationDuration)));
+                __cascade.addStatusListener(((AnimationStatusListener)((status) =>
+                {
+                    switch (status)
+                    {
+                        case global::Doroti.Framework.Animation.AnimationStatus.dismissed:
+                        case global::Doroti.Framework.Animation.AnimationStatus.completed:
+                            {
+                                DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<(global::Doroti.Framework.Animation.CurvedAnimation animation, global::Doroti.Framework.Animation.AnimationController controller, global::Doroti.Framework.Foundation.UniqueKey key)>(this._currentAnimationForParent, node)).animation.dispose();
+                                DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<(global::Doroti.Framework.Animation.CurvedAnimation animation, global::Doroti.Framework.Animation.AnimationController controller, global::Doroti.Framework.Foundation.UniqueKey key)>(this._currentAnimationForParent, node)).controller.dispose();
+                                this._currentAnimationForParent.remove(node);
+                                _updateActiveAnimations();
+                                if (!((TreeSliverNode<T>)node)._expanded)
+                                {
+                                    _unpackActiveNodes();
+                                }
+                                break;
+                            }
+                        case global::Doroti.Framework.Animation.AnimationStatus.forward:
+                        case global::Doroti.Framework.Animation.AnimationStatus.reverse:
+                            break;
+                    }
+                })));
+                __cascade.addListener(((global::System.Action)(() =>
+                {
+                    setState(((global::System.Action)(() =>
+                    {
+                        _updateActiveAnimations();
+                    })));
+                })));
+                return __cascade;
+            }))();
+            switch (((global::Doroti.Framework.Animation.AnimationController)controller__32032).status)
+            {
+                case global::Doroti.Framework.Animation.AnimationStatus.forward:
+                case global::Doroti.Framework.Animation.AnimationStatus.reverse:
+                    {
+                        controller__32032.stop();
+                        break;
+                    }
+                case global::Doroti.Framework.Animation.AnimationStatus.dismissed:
+                case global::Doroti.Framework.Animation.AnimationStatus.completed:
+                    break;
+            }
+            var newAnimation__33705 = new global::Doroti.Framework.Animation.CurvedAnimation(parent: controller__32032, curve: (((TreeSliver<T>)(object)this.widget).toggleAnimationStyle?.curve ?? TreeSliver<object>.defaultAnimationCurve));
+            this._currentAnimationForParent[node] = (animation: newAnimation__33705, controller: controller__32032, key: new global::Doroti.Framework.Foundation.UniqueKey());
+            switch (((TreeSliverNode<T>)node)._expanded)
+            {
+                case true:
+                    {
+                        _unpackActiveNodes();
+                        controller__32032.forward();
+                        break;
+                    }
+                case false:
+                    {
+                        controller__32032.reverse();
+                        break;
+                    }
+            }
+        })));
     }
 
     public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
@@ -578,10 +588,12 @@ switch (((TreeSliverNode<T>)node)._expanded)
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -692,11 +704,13 @@ internal class _SliverTree__sliver_tree : SliverVariedExtentList
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderTreeSliver)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderTreeSliver>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.itemExtentBuilder = this.itemExtentBuilder;
-            __cascade.activeAnimations = this.activeAnimations;
-            __cascade.indentation = this.indentation;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.itemExtentBuilder = this.itemExtentBuilder;
+    __cascade.activeAnimations = this.activeAnimations;
+    __cascade.indentation = this.indentation;
+    return __cascade;
+}))());
     }
 
 }

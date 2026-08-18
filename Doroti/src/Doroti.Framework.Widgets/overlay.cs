@@ -110,9 +110,10 @@ public class OverlayEntry : global::Doroti.Framework.Foundation.Listenable
         ((OverlayState)overlay__9592)._entries.Remove(this);
         if ((object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
         {
-            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) => {
-overlay__9592._markDirty();
-})), debugLabel: "OverlayEntry.markDirty");
+            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) =>
+            {
+                overlay__9592._markDirty();
+            })), debugLabel: "OverlayEntry.markDirty");
         }
         else
         {
@@ -284,8 +285,9 @@ public class _OverlayEntryWidgetState__overlay : State<_OverlayEntryWidget__over
 
     internal virtual void _markNeedsBuild()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
 }
@@ -391,9 +393,10 @@ public class OverlayState : State<Overlay>, TickerProviderStateMixin<Overlay>
         DartRuntimePrimitives.Assert(() => _debugVerifyInsertPosition(above, below));
         DartRuntimePrimitives.Assert(() => _debugCanInsertEntry(entry));
         entry._overlay = this;
-        setState(((global::System.Action)(() => {
-this._entries.Insert(checked((int)_insertionIndex(below, above)), entry);
-})));
+        setState(((global::System.Action)(() =>
+        {
+            this._entries.Insert(checked((int)_insertionIndex(below, above)), entry);
+        })));
     }
 
     public virtual void insertAll(IEnumerable<OverlayEntry> entries, OverlayEntry? below = null, OverlayEntry? above = null)
@@ -409,9 +412,10 @@ this._entries.Insert(checked((int)_insertionIndex(below, above)), entry);
             DartRuntimePrimitives.Assert(() => (((OverlayEntry)entry__29663)._overlay is null));
             entry__29663._overlay = this;
         }
-        setState(((global::System.Action)(() => {
-this._entries.InsertRange(checked((int)_insertionIndex(below, above)), entries.Cast<OverlayEntry>());
-})));
+        setState(((global::System.Action)(() =>
+        {
+            this._entries.InsertRange(checked((int)_insertionIndex(below, above)), entries.Cast<OverlayEntry>());
+        })));
     }
 
     internal virtual bool _debugVerifyInsertPosition(OverlayEntry? above, OverlayEntry? below, IEnumerable<OverlayEntry>? newEntries = null)
@@ -442,20 +446,22 @@ this._entries.InsertRange(checked((int)_insertionIndex(below, above)), entries.C
         {
             entry__32527._overlay ??= this;
         }
-        setState(((global::System.Action)(() => {
-this._entries.Clear();
-this._entries.AddRange(newEntriesList__31689.Cast<OverlayEntry>());
-old__32464.ExceptWith(newEntriesList__31689);
-this._entries.InsertRange(checked((int)_insertionIndex(below, above)), old__32464);
-})));
+        setState(((global::System.Action)(() =>
+        {
+            this._entries.Clear();
+            this._entries.AddRange(newEntriesList__31689.Cast<OverlayEntry>());
+            old__32464.ExceptWith(newEntriesList__31689);
+            this._entries.InsertRange(checked((int)_insertionIndex(below, above)), old__32464);
+        })));
     }
 
     internal virtual void _markDirty()
     {
         if (this.mounted)
         {
-            setState(((global::System.Action)(() => {
-})));
+            setState(((global::System.Action)(() =>
+            {
+            })));
         }
     }
 
@@ -487,8 +493,9 @@ this._entries.InsertRange(checked((int)_insertionIndex(below, above)), old__3246
 
     internal virtual void _didChangeEntryOpacity()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     public override Widget build(BuildContext context)
@@ -536,10 +543,12 @@ this._entries.InsertRange(checked((int)_insertionIndex(below, above)), old__3246
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -635,10 +644,11 @@ internal class _WrappingOverlayState__overlay : State<_WrappingOverlay__overlay>
         {
             if (!__late__entry_initialized)
             {
-                __late__entry = new OverlayEntry(canSizeOverlay: true, opaque: true, builder: ((global::System.Func<BuildContext, Widget>)((context) => {
-return ((_WrappingOverlay__overlay)this.widget).child;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+                __late__entry = new OverlayEntry(canSizeOverlay: true, opaque: true, builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+                {
+                    return ((_WrappingOverlay__overlay)this.widget).child;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                })));
                 __late__entry_initialized = true;
             }
             return __late__entry;
@@ -654,10 +664,12 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     public override void dispose()
     {
         DartRuntimePrimitives.Ignore(((Func<OverlayEntry>)(() =>
-{            var __cascade = this._entry;
-            __cascade.remove();
-            __cascade.dispose();
-            return __cascade;        }))());
+{
+    var __cascade = this._entry;
+    __cascade.remove();
+    __cascade.dispose();
+    return __cascade;
+}))());
         base.dispose();
     }
 
@@ -695,12 +707,14 @@ public class _Theater__overlay : MultiChildRenderObjectWidget
     {
         var __renderObject = (_RenderTheater__overlay)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderTheater__overlay>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.skipCount = this.skipCount;
-            __cascade.textDirection = Directionality.of(context);
-            __cascade.clipBehavior = this.clipBehavior;
-            __cascade.alwaysSizeToContent = this.alwaysSizeToContent;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.skipCount = this.skipCount;
+    __cascade.textDirection = Directionality.of(context);
+    __cascade.clipBehavior = this.clipBehavior;
+    __cascade.alwaysSizeToContent = this.alwaysSizeToContent;
+    return __cascade;
+}))());
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -1214,18 +1228,19 @@ public class _RenderTheater__overlay : global::Doroti.Framework.Rendering.Render
                 offstageChildren__56843.Add(((Diagnosticable)child__56992).toDiagnosticsNode(name: $"offstage {count__56941}", style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.offstage));
             }
             var subcount__57536 = 1L;
-            childParentData__57113.visitOverlayPortalChildrenOnOverlayEntry(((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)((renderObject) => {
-var child__57657 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)renderObject)!;
-if (onstage__56960)
-{
-    onstageChildren__56893.Add(((Diagnosticable)child__57657).toDiagnosticsNode(name: $"onstage {count__56941} - {subcount__57536}"));
-}
-else
-{
-    offstageChildren__56843.Add(((Diagnosticable)child__57657).toDiagnosticsNode(name: $"offstage {count__56941} - {subcount__57536}", style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.offstage));
-}
-subcount__57536 += 1L;
-})));
+            childParentData__57113.visitOverlayPortalChildrenOnOverlayEntry(((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)((renderObject) =>
+            {
+                var child__57657 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)renderObject)!;
+                if (onstage__56960)
+                {
+                    onstageChildren__56893.Add(((Diagnosticable)child__57657).toDiagnosticsNode(name: $"onstage {count__56941} - {subcount__57536}"));
+                }
+                else
+                {
+                    offstageChildren__56843.Add(((Diagnosticable)child__57657).toDiagnosticsNode(name: $"offstage {count__56941} - {subcount__57536}", style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.offstage));
+                }
+                subcount__57536 += 1L;
+            })));
             child__56992 = childParentData__57113.nextSibling;
             count__56941 += 1L;
         }
@@ -1675,9 +1690,10 @@ internal class _OverlayPortalState__overlay : State<OverlayPortal>
     public virtual void show(long zOrderIndex)
     {
         DartRuntimePrimitives.Assert(() => (!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)), () => (object?)$"{DartRuntimePrimitives.RuntimeType(((OverlayPortal)this.widget).controller)}.show() should not be called during build.");
-        setState(((global::System.Action)(() => {
-_zOrderIndex = zOrderIndex;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _zOrderIndex = zOrderIndex;
+        })));
         this._locationCache?._debugMarkLocationInvalid();
         _locationCache = null;
     }
@@ -1685,9 +1701,10 @@ _zOrderIndex = zOrderIndex;
     public virtual void hide()
     {
         DartRuntimePrimitives.Assert(() => (!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)));
-        setState(((global::System.Action)(() => {
-_zOrderIndex = null;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _zOrderIndex = null;
+        })));
         this._locationCache?._debugMarkLocationInvalid();
         _locationCache = null;
     }
@@ -1875,11 +1892,12 @@ internal class _RenderTheaterMarker__overlay : InheritedWidget
             return ((InheritedElement)(object)null);
         }
         InheritedElement? ancestor__87166 = default!;
-        theaterMarkerElement.visitAncestorElements(((global::System.Func<Element, bool>)((element) => {
-ancestor__87166 = LookupBoundary.getElementForInheritedWidgetOfExactType<_RenderTheaterMarker__overlay>(element);
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        theaterMarkerElement.visitAncestorElements(((global::System.Func<Element, bool>)((element) =>
+        {
+            ancestor__87166 = LookupBoundary.getElementForInheritedWidgetOfExactType<_RenderTheaterMarker__overlay>(element);
+            return false;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         return ((ancestor__87166 is null) ? theaterMarkerElement : _RenderTheaterMarker__overlay._rootRenderTheaterMarkerOf(ancestor__87166));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -2130,9 +2148,10 @@ public class _RenderDeferredLayoutBox__overlay : global::Doroti.Framework.Render
         DartRuntimePrimitives.Assert(() => !this.debugNeedsLayout);
         if (shouldAddToDirtyList__96504)
         {
-            ((dynamic)treewalkParent).invokeLayoutCallback(((global::System.Action<global::Doroti.Framework.Rendering.BoxConstraints>)((_) => {
-markNeedsLayout();
-})));
+            ((dynamic)treewalkParent).invokeLayoutCallback(((global::System.Action<global::Doroti.Framework.Rendering.BoxConstraints>)((_) =>
+            {
+                markNeedsLayout();
+            })));
         }
     }
 

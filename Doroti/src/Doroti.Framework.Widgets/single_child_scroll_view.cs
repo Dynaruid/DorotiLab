@@ -62,22 +62,24 @@ public class SingleChildScrollView : StatelessWidget
         }
         bool effectivePrimary__11072 = (this.primary ?? ((this.controller is null) && PrimaryScrollController.shouldInherit(context, this.scrollDirection)));
         ScrollController? scrollController__11234 = (effectivePrimary__11072 ? PrimaryScrollController.maybeOf(context) : this.controller);
-        Widget scrollable__11355 = ((Widget)(object?)new Scrollable(dragStartBehavior: this.dragStartBehavior, axisDirection: axisDirection__10892, controller: scrollController__11234, physics: this.physics, restorationId: this.restorationId, clipBehavior: this.clipBehavior, hitTestBehavior: this.hitTestBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, offset) => {
-return ((Widget)(object?)new _SingleChildViewport__single_child_scroll_view(axisDirection: axisDirection__10892, offset: offset, clipBehavior: this.clipBehavior, child: contents__10944));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        Widget scrollable__11355 = ((Widget)(object?)new Scrollable(dragStartBehavior: this.dragStartBehavior, axisDirection: axisDirection__10892, controller: scrollController__11234, physics: this.physics, restorationId: this.restorationId, clipBehavior: this.clipBehavior, hitTestBehavior: this.hitTestBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, offset) =>
+        {
+            return ((Widget)(object?)new _SingleChildViewport__single_child_scroll_view(axisDirection: axisDirection__10892, offset: offset, clipBehavior: this.clipBehavior, child: contents__10944));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         ScrollViewKeyboardDismissBehavior effectiveKeyboardDismissBehavior__11941 = ((this.keyboardDismissBehavior ?? (ScrollViewKeyboardDismissBehavior)ScrollConfiguration.of(context).getKeyboardDismissBehavior(context)));
         if ((object.Equals(effectiveKeyboardDismissBehavior__11941, ScrollViewKeyboardDismissBehavior.onDrag)))
         {
-            scrollable__11355 = DartRuntimePrimitives.ConvertValue<Widget>(new NotificationListener<ScrollUpdateNotification>(child: scrollable__11355, onNotification: ((global::System.Func<ScrollUpdateNotification, bool>?)((notification) => {
-FocusScopeNode currentScope__12368 = ((FocusScopeNode)(object?)FocusScope.of(context));
-if ((((((ScrollUpdateNotification)notification).dragDetails is not null) && !currentScope__12368.hasPrimaryFocus) && currentScope__12368.hasFocus))
-{
-    FocusManager.instance.primaryFocus?.unfocus();
-}
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+            scrollable__11355 = DartRuntimePrimitives.ConvertValue<Widget>(new NotificationListener<ScrollUpdateNotification>(child: scrollable__11355, onNotification: ((global::System.Func<ScrollUpdateNotification, bool>?)((notification) =>
+            {
+                FocusScopeNode currentScope__12368 = ((FocusScopeNode)(object?)FocusScope.of(context));
+                if ((((((ScrollUpdateNotification)notification).dragDetails is not null) && !currentScope__12368.hasPrimaryFocus) && currentScope__12368.hasFocus))
+                {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                }
+                return false;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }))));
         }
         return ((effectivePrimary__11072 && (scrollController__11234 is not null)) ? PrimaryScrollController.CreateNone(child: scrollable__11355) : scrollable__11355);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -108,11 +110,13 @@ public class _SingleChildViewport__single_child_scroll_view : SingleChildRenderO
     {
         var __renderObject = (_RenderSingleChildViewport__single_child_scroll_view)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderSingleChildViewport__single_child_scroll_view>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.axisDirection = this.axisDirection;
-            __cascade.offset = this.offset;
-            __cascade.clipBehavior = this.clipBehavior;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.axisDirection = this.axisDirection;
+    __cascade.offset = this.offset;
+    __cascade.clipBehavior = this.clipBehavior;
+    return __cascade;
+}))());
     }
 
     public override SingleChildRenderObjectElement createElement()
@@ -420,11 +424,12 @@ public class _RenderSingleChildViewport__single_child_scroll_view : global::Doro
     {
         if ((this.child is not null))
         {
-            return result.addWithPaintOffset(offset: this._paintOffset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, transformed) => {
-DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position + -this._paintOffset))));
-return this.child!.hitTest(result, position: transformed);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+            return result.addWithPaintOffset(offset: this._paintOffset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, transformed) =>
+            {
+                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position + -this._paintOffset))));
+                return this.child!.hitTest(result, position: transformed);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");

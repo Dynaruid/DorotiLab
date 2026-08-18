@@ -49,14 +49,16 @@ public class OverflowBar : MultiChildRenderObjectWidget
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         DartRuntimePrimitives.Ignore(((Func<_RenderOverflowBar__overflow_bar>)(() =>
-{            var __cascade = (((_RenderOverflowBar__overflow_bar?)(object?)renderObject)!);
-            __cascade.spacing = this.spacing;
-            __cascade.alignment = this.alignment;
-            __cascade.overflowSpacing = this.overflowSpacing;
-            __cascade.overflowAlignment = this.overflowAlignment;
-            __cascade.overflowDirection = this.overflowDirection;
-            __cascade.textDirection = ((this.textDirection ?? (TextDirection)Directionality.of(context)));
-            return __cascade;        }))());
+{
+    var __cascade = (((_RenderOverflowBar__overflow_bar?)(object?)renderObject)!);
+    __cascade.spacing = this.spacing;
+    __cascade.alignment = this.alignment;
+    __cascade.overflowSpacing = this.overflowSpacing;
+    __cascade.overflowAlignment = this.overflowAlignment;
+    __cascade.overflowDirection = this.overflowDirection;
+    __cascade.textDirection = ((this.textDirection ?? (TextDirection)Directionality.of(context)));
+    return __cascade;
+}))());
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -807,11 +809,12 @@ internal class _RenderOverflowBar__overflow_bar : global::Doroti.Framework.Rende
         while ((child__140279 is not null))
         {
             var childParentData__140418 = ((_OverflowBarParentData__overflow_bar?)(object?)child__140279.parentData!)!;
-            bool isHit__140490 = result.addWithPaintOffset(offset: childParentData__140418.offset, position: position, hitTest: ((global::System.Func<BoxHitTestResult, Offset, bool>)((result, transformed) => {
-DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData__140418.offset))));
-return child__140279!.hitTest(result, position: transformed);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+            bool isHit__140490 = result.addWithPaintOffset(offset: childParentData__140418.offset, position: position, hitTest: ((global::System.Func<BoxHitTestResult, Offset, bool>)((result, transformed) =>
+            {
+                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData__140418.offset))));
+                return child__140279!.hitTest(result, position: transformed);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
             if (isHit__140490)
             {
                 return true;

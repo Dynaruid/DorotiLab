@@ -466,12 +466,14 @@ internal class _CupertinoBackGestureDetectorState__route<T> : global::Doroti.Fra
     {
         base.initState();
         _recognizer = ((Func<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>)(() =>
-{            var __cascade = new global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer(debugOwner: this);
-            __cascade.onStart = this._handleDragStart;
-            __cascade.onUpdate = this._handleDragUpdate;
-            __cascade.onEnd = this._handleDragEnd;
-            __cascade.onCancel = this._handleDragCancel;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer(debugOwner: this);
+    __cascade.onStart = this._handleDragStart;
+    __cascade.onUpdate = this._handleDragUpdate;
+    __cascade.onEnd = this._handleDragEnd;
+    __cascade.onCancel = this._handleDragCancel;
+    return __cascade;
+}))();
     }
 
     public override void dispose()
@@ -479,13 +481,14 @@ internal class _CupertinoBackGestureDetectorState__route<T> : global::Doroti.Fra
         this._recognizer.dispose();
         if ((this._backGestureController is not null))
         {
-            global::Doroti.Framework.Widgets.WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) => {
-if ((this._backGestureController?.navigator.mounted ?? false))
-{
-    this._backGestureController?.navigator.didStopUserGesture();
-}
-_backGestureController = null;
-})));
+            global::Doroti.Framework.Widgets.WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+            {
+                if ((this._backGestureController?.navigator.mounted ?? false))
+                {
+                    this._backGestureController?.navigator.didStopUserGesture();
+                }
+                _backGestureController = null;
+            })));
         }
         base.dispose();
     }
@@ -602,10 +605,11 @@ public class _CupertinoBackGestureController__route<T>
         if (((global::Doroti.Framework.Animation.AnimationController)this.controller).isAnimating)
         {
             AnimationStatusListener animationStatusCallback__30647 = default!;
-            animationStatusCallback__30647 = ((status) => {
-this.navigator.didStopUserGesture();
-this.controller.removeStatusListener((AnimationStatusListener)animationStatusCallback__30647);
-});
+            animationStatusCallback__30647 = ((status) =>
+            {
+                this.navigator.didStopUserGesture();
+                this.controller.removeStatusListener((AnimationStatusListener)animationStatusCallback__30647);
+            });
             this.controller.addStatusListener((AnimationStatusListener)animationStatusCallback__30647);
         }
         else
@@ -725,9 +729,11 @@ public class _CupertinoEdgeShadowPainter__route : global::Doroti.Framework.Paint
                 bandColorIndex__37405 += 1L;
             }
             var paint__37571 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = Dart_uiLibrary.Color.lerp(colors__35588[(int)(bandColorIndex__37405)], colors__35588[(int)((bandColorIndex__37405 + 1L))], (((dx__37438 % bandWidth__37044)) / bandWidth__37044))!;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = Dart_uiLibrary.Color.lerp(colors__35588[(int)(bandColorIndex__37405)], colors__35588[(int)((bandColorIndex__37405 + 1L))], (((dx__37438 % bandWidth__37044)) / bandWidth__37044))!;
+    return __cascade;
+}))();
             double x__37760 = (start__37239 + (shadowDirection__37215 * dx__37438));
             canvas.drawRect(global::Doroti.Ui.Rect.fromLTWH((x__37760 - 1.0), offset.dy, 1.0, shadowHeight__36984), paint__37571);
         }
@@ -836,10 +842,11 @@ public class CupertinoDialogRoute<T> : global::Doroti.Framework.Widgets.RawDialo
     internal virtual global::Doroti.Framework.Animation.CurvedAnimation? _fadeAnimation { get; set; } = default;
     internal static global::Doroti.Framework.Animation.Tween<double> _dialogScaleTween = new global::Doroti.Framework.Animation.Tween<double>(begin: 1.3, end: 1.0);
 
-    public CupertinoDialogRoute(global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget> builder, global::Doroti.Framework.Widgets.BuildContext context, bool barrierDismissible = true, Color? barrierColor = null, string? barrierLabel = null, Duration? transitionDuration = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>? transitionBuilder = null, global::Doroti.Framework.Widgets.RouteSettings? settings = null, bool? requestFocus = null, Offset? anchorPoint = null) : base(barrierDismissible: barrierDismissible, transitionDuration: transitionDuration ?? Duration.Create(milliseconds: 250), settings: settings, requestFocus: requestFocus, anchorPoint: anchorPoint, pageBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>)((context, animation, secondaryAnimation) => {
-return builder(context);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), transitionBuilder: ((transitionBuilder ?? (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>)RouteLibrary._buildCupertinoDialogTransitions)), barrierLabel: (barrierLabel ?? CupertinoLocalizations.of(context).modalBarrierDismissLabel), barrierColor: (barrierColor ?? CupertinoDynamicColor.resolve(RouteLibrary.kCupertinoModalBarrierColor, context)))
+    public CupertinoDialogRoute(global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget> builder, global::Doroti.Framework.Widgets.BuildContext context, bool barrierDismissible = true, Color? barrierColor = null, string? barrierLabel = null, Duration? transitionDuration = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>? transitionBuilder = null, global::Doroti.Framework.Widgets.RouteSettings? settings = null, bool? requestFocus = null, Offset? anchorPoint = null) : base(barrierDismissible: barrierDismissible, transitionDuration: transitionDuration ?? Duration.Create(milliseconds: 250), settings: settings, requestFocus: requestFocus, anchorPoint: anchorPoint, pageBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>)((context, animation, secondaryAnimation) =>
+    {
+        return builder(context);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    })), transitionBuilder: ((transitionBuilder ?? (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>)RouteLibrary._buildCupertinoDialogTransitions)), barrierLabel: (barrierLabel ?? CupertinoLocalizations.of(context).modalBarrierDismissLabel), barrierColor: (barrierColor ?? CupertinoDynamicColor.resolve(RouteLibrary.kCupertinoModalBarrierColor, context)))
     {
         this.transitionBuilder = transitionBuilder;
     }

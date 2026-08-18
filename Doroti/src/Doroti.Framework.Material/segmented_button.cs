@@ -98,18 +98,19 @@ public class SegmentedButtonState<T> : global::Doroti.Framework.Widgets.State<Se
         base.didUpdateWidget(oldWidget);
         if ((!object.Equals(oldWidget, this.widget)))
         {
-            this.statesControllers.removeWhere(((segment, controller) => {
-if (((SegmentedButton<T>)(object)this.widget).segments.Contains(segment))
-{
-    return false;
-}
-else
-{
-    controller.dispose();
-    return true;
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            this.statesControllers.removeWhere(((segment, controller) =>
+            {
+                if (((SegmentedButton<T>)(object)this.widget).segments.Contains(segment))
+                {
+                    return false;
+                }
+                else
+                {
+                    controller.dispose();
+                    return true;
+                }
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
         }
     }
 
@@ -189,15 +190,19 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                 IconAlignment effectiveIconAlignment__22465 = ((textButtonTheme__22390.style?.iconAlignment ?? segmentStyle__20173.iconAlignment) ?? IconAlignment.start);
                 content__21102 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, spacing: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(8L, 4L, scale__22299)), children: ((object.Equals(effectiveIconAlignment__22465, IconAlignment.start)) ? new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(icon__20724), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: label__20562)) } : new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: label__20562)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(icon__20724) })));
             }
-            global::Doroti.Framework.Widgets.Widget button__22943 = ((global::Doroti.Framework.Widgets.Widget)(object?)new TextButton(style: effectiveSegmentStyle__21129, statesController: controller__20915, onHover: ((global::System.Action<bool>)((hovering) => {
-setState(((global::System.Action)(() => {
-_hovering = hovering;
-})));
-})), onFocusChange: ((global::System.Action<bool>)((focused) => {
-setState(((global::System.Action)(() => {
-_focused = focused;
-})));
-})), onPressed: ((global::System.Action)(((this._enabled && ((ButtonSegment<T>)segment).enabled)) ? (() => { _handleOnPressed(((ButtonSegment<T>)segment).value); }) : null)), child: content__21102));
+            global::Doroti.Framework.Widgets.Widget button__22943 = ((global::Doroti.Framework.Widgets.Widget)(object?)new TextButton(style: effectiveSegmentStyle__21129, statesController: controller__20915, onHover: ((global::System.Action<bool>)((hovering) =>
+            {
+                setState(((global::System.Action)(() =>
+                {
+                    _hovering = hovering;
+                })));
+            })), onFocusChange: ((global::System.Action<bool>)((focused) =>
+            {
+                setState(((global::System.Action)(() =>
+                {
+                    _focused = focused;
+                })));
+            })), onPressed: ((global::System.Action)(((this._enabled && ((ButtonSegment<T>)segment).enabled)) ? (() => { _handleOnPressed(((ButtonSegment<T>)segment).value); }) : null)), child: content__21102));
             global::Doroti.Framework.Widgets.Widget buttonWithTooltip__23429 = ((((ButtonSegment<T>)segment).tooltip is not null) ? new Tooltip(message: ((ButtonSegment<T>)segment).tooltip, child: button__22943) : button__22943);
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.MergeSemantics(child: new global::Doroti.Framework.Widgets.Semantics(selected: segmentSelected__20645, inMutuallyExclusiveGroup: (((SegmentedButton<T>)(object)this.widget).multiSelectionEnabled ? null : true), child: buttonWithTooltip__23429)));
             throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -266,13 +271,15 @@ internal class _SegmentedButtonRenderWidget__segmented_button<T> : global::Dorot
     {
         var __renderObject = (_RenderSegmentedButton__segmented_button<T>)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderSegmentedButton__segmented_button<T>>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.segments = this.segments;
-            __cascade.enabledBorder = this.enabledBorder;
-            __cascade.disabledBorder = this.disabledBorder;
-            __cascade.direction = this.direction;
-            __cascade.textDirection = this.textDirection;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.segments = this.segments;
+    __cascade.enabledBorder = this.enabledBorder;
+    __cascade.disabledBorder = this.disabledBorder;
+    __cascade.direction = this.direction;
+    __cascade.textDirection = this.textDirection;
+    return __cascade;
+}))());
     }
 
 }
@@ -651,10 +658,12 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
             var childParentData__38741 = ((_SegmentedButtonContainerBoxParentData__segmented_button?)(object?)child__38576.parentData!)!;
             global::Doroti.Ui.Rect childRect__38837 = ((global::Doroti.Ui.Rect)(object?)((_SegmentedButtonContainerBoxParentData__segmented_button)childParentData__38741).surroundingRect!.outerRect.shift(offset));
             DartRuntimePrimitives.Ignore(((Func<Canvas>)(() =>
-{            var __cascade = ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas;
-            __cascade.save();
-            __cascade.clipPath(borderClipPath__38455);
-            return __cascade;        }))());
+{
+    var __cascade = ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas;
+    __cascade.save();
+    __cascade.clipPath(borderClipPath__38455);
+    return __cascade;
+}))());
             context.paintChild(child__38576, (childParentData__38741.offset + offset));
             ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.restore();
             double segmentLeft__39164 = default!;
@@ -682,16 +691,20 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
             if (this.segments[(int)(index__38634)].enabled)
             {
                 enabledClipPath__38655 = ((Func<Path>)(() =>
-{            var __cascade = ((enabledClipPath__38655 ?? new global::Doroti.Ui.Path()));
-            __cascade.addRect(segmentClipRect__39949);
-            return __cascade;        }))();
+{
+    var __cascade = ((enabledClipPath__38655 ?? new global::Doroti.Ui.Path()));
+    __cascade.addRect(segmentClipRect__39949);
+    return __cascade;
+}))();
             }
             else
             {
                 disabledClipPath__38682 = ((Func<Path>)(() =>
-{            var __cascade = ((disabledClipPath__38682 ?? new global::Doroti.Ui.Path()));
-            __cascade.addRect(segmentClipRect__39949);
-            return __cascade;        }))();
+{
+    var __cascade = ((disabledClipPath__38682 ?? new global::Doroti.Ui.Path()));
+    __cascade.addRect(segmentClipRect__39949);
+    return __cascade;
+}))();
             }
             if ((previousChild__38611 is not null))
             {
@@ -709,10 +722,12 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
                         var start__41019 = new global::Doroti.Ui.Offset(borderRect__38298.left, childRect__38837.top);
                         var end__41083 = new global::Doroti.Ui.Offset(borderRect__38298.right, childRect__38837.top);
                         DartRuntimePrimitives.Ignore(((Func<Canvas>)(() =>
-{            var __cascade = ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas;
-            __cascade.save();
-            __cascade.clipPath(borderClipPath__38455);
-            return __cascade;        }))());
+{
+    var __cascade = ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas;
+    __cascade.save();
+    __cascade.clipPath(borderClipPath__38455);
+    return __cascade;
+}))());
                         ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawLine(start__41019, end__41083, divider__40534.toPaint());
                         ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.restore();
                     }
@@ -735,17 +750,21 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
             else
             {
                 DartRuntimePrimitives.Ignore(((Func<Canvas>)(() =>
-{            var __cascade = ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas;
-            __cascade.save();
-            __cascade.clipPath(enabledClipPath__38655);
-            return __cascade;        }))());
+{
+    var __cascade = ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas;
+    __cascade.save();
+    __cascade.clipPath(enabledClipPath__38655);
+    return __cascade;
+}))());
                 this.enabledBorder.paint(((global::Doroti.Framework.Rendering.PaintingContext)context).canvas, borderRect__38298, textDirection: this.textDirection);
                 DartRuntimePrimitives.Ignore(((Func<Canvas>)(() =>
-{            var __cascade = ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas;
-            __cascade.restore();
-            __cascade.save();
-            __cascade.clipPath(disabledClipPath__38682);
-            return __cascade;        }))());
+{
+    var __cascade = ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas;
+    __cascade.restore();
+    __cascade.save();
+    __cascade.clipPath(disabledClipPath__38682);
+    return __cascade;
+}))());
                 this.disabledBorder.paint(((global::Doroti.Framework.Rendering.PaintingContext)context).canvas, borderRect__38298, textDirection: this.textDirection);
                 ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.restore();
             }
@@ -760,11 +779,12 @@ public class _RenderSegmentedButton__segmented_button<T> : global::Doroti.Framew
             var childParentData__42495 = ((_SegmentedButtonContainerBoxParentData__segmented_button?)(object?)child__42436.parentData!)!;
             if (((_SegmentedButtonContainerBoxParentData__segmented_button)childParentData__42495).surroundingRect!.contains(position))
             {
-                return result.addWithPaintOffset(offset: childParentData__42495.offset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, localOffset) => {
-DartRuntimePrimitives.Assert(() => (object.Equals(localOffset, (position - childParentData__42495.offset))));
-return child__42436!.hitTest(result, position: localOffset);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+                return result.addWithPaintOffset(offset: childParentData__42495.offset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, localOffset) =>
+                {
+                    DartRuntimePrimitives.Assert(() => (object.Equals(localOffset, (position - childParentData__42495.offset))));
+                    return child__42436!.hitTest(result, position: localOffset);
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                })));
             }
             child__42436 = childParentData__42495.previousSibling;
         }
@@ -1078,11 +1098,12 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         while ((child__140279 is not null))
         {
             var childParentData__140418 = ((ContainerBoxParentData<RenderBox>?)(object?)child__140279.parentData!)!;
-            bool isHit__140490 = result.addWithPaintOffset(offset: childParentData__140418.offset, position: position, hitTest: ((global::System.Func<BoxHitTestResult, Offset, bool>)((result, transformed) => {
-DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData__140418.offset))));
-return child__140279!.hitTest(result, position: transformed);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+            bool isHit__140490 = result.addWithPaintOffset(offset: childParentData__140418.offset, position: position, hitTest: ((global::System.Func<BoxHitTestResult, Offset, bool>)((result, transformed) =>
+            {
+                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData__140418.offset))));
+                return child__140279!.hitTest(result, position: transformed);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
             if (isHit__140490)
             {
                 return true;
@@ -1161,96 +1182,100 @@ internal class _SegmentedButtonDefaultsM3__segmented_button : SegmentedButtonThe
     {
         get
         {
-            return new ButtonStyle(textStyle: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle?>(Theme.of(this.context).textTheme.labelLarge), backgroundColor: WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return null;
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (this._colors.secondaryContainer);
-}
-return null;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}), foregroundColor: WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return (this._colors.onSurface.withOpacity(0.38));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-    {
-        return (this._colors.onSecondaryContainer);
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-    {
-        return (this._colors.onSecondaryContainer);
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (this._colors.onSecondaryContainer);
-    }
-    return (this._colors.onSecondaryContainer);
-}
-else
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-    {
-        return (this._colors.onSurface);
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-    {
-        return (this._colors.onSurface);
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (this._colors.onSurface);
-    }
-    return (this._colors.onSurface);
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-}), overlayColor: WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-    {
-        return (this._colors.onSecondaryContainer.withOpacity(0.1));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-    {
-        return (this._colors.onSecondaryContainer.withOpacity(0.08));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (this._colors.onSecondaryContainer.withOpacity(0.1));
-    }
-}
-else
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-    {
-        return (this._colors.onSurface.withOpacity(0.1));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-    {
-        return (this._colors.onSurface.withOpacity(0.08));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (this._colors.onSurface.withOpacity(0.1));
-    }
-}
-return null;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}), surfaceTintColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color>(Colors.transparent), elevation: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?>(0), iconSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?>(18.0), side: WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return (new global::Doroti.Framework.Painting.BorderSide(color: this._colors.onSurface.withOpacity(0.12)));
-}
-return (new global::Doroti.Framework.Painting.BorderSide(color: this._colors.outline));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}), shape: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.StadiumBorder()), minimumSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Size?>(new global::Doroti.Ui.Size(40.0)));
+            return new ButtonStyle(textStyle: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle?>(Theme.of(this.context).textTheme.labelLarge), backgroundColor: WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    return null;
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    return (this._colors.secondaryContainer);
+                }
+                return null;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }), foregroundColor: WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    return (this._colors.onSurface.withOpacity(0.38));
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                    {
+                        return (this._colors.onSecondaryContainer);
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                    {
+                        return (this._colors.onSecondaryContainer);
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                    {
+                        return (this._colors.onSecondaryContainer);
+                    }
+                    return (this._colors.onSecondaryContainer);
+                }
+                else
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                    {
+                        return (this._colors.onSurface);
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                    {
+                        return (this._colors.onSurface);
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                    {
+                        return (this._colors.onSurface);
+                    }
+                    return (this._colors.onSurface);
+                }
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }), overlayColor: WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                    {
+                        return (this._colors.onSecondaryContainer.withOpacity(0.1));
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                    {
+                        return (this._colors.onSecondaryContainer.withOpacity(0.08));
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                    {
+                        return (this._colors.onSecondaryContainer.withOpacity(0.1));
+                    }
+                }
+                else
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                    {
+                        return (this._colors.onSurface.withOpacity(0.1));
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                    {
+                        return (this._colors.onSurface.withOpacity(0.08));
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                    {
+                        return (this._colors.onSurface.withOpacity(0.1));
+                    }
+                }
+                return null;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }), surfaceTintColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color>(Colors.transparent), elevation: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?>(0), iconSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?>(18.0), side: WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    return (new global::Doroti.Framework.Painting.BorderSide(color: this._colors.onSurface.withOpacity(0.12)));
+                }
+                return (new global::Doroti.Framework.Painting.BorderSide(color: this._colors.outline));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }), shape: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.StadiumBorder()), minimumSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Size?>(new global::Doroti.Ui.Size(40.0)));
             return default!;
         }
     }

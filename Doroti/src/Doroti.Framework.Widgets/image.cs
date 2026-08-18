@@ -31,30 +31,33 @@ public static partial class ImageLibrary
         var completer__4928 = new Completer<object?>();
         global::Doroti.Framework.Painting.ImageStream stream__4979 = ((global::Doroti.Framework.Painting.ImageStream)(object?)((global::Doroti.Framework.Painting.ImageStream)((dynamic)provider).resolve(config__4859)));
         global::Doroti.Framework.Painting.ImageStreamListener? listener__5037 = default!;
-        listener__5037 = new global::Doroti.Framework.Painting.ImageStreamListener(((global::System.Action<global::Doroti.Framework.Painting.ImageInfo?, bool>)((image, sync) => {
-if (!completer__4928.isCompleted)
-{
-    completer__4928.complete();
-}
-global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) => {
-image?.dispose();
-stream__4979.removeListener(listener__5037!);
-})), debugLabel: "precacheImage.removeListener");
-})), onError: ((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((exception, stackTrace) => {
-if (!completer__4928.isCompleted)
-{
-    completer__4928.complete();
-}
-stream__4979.removeListener(listener__5037!);
-if ((onError is not null))
-{
-    onError(exception, stackTrace);
-}
-else
-{
-    FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(context: new global::Doroti.Framework.Foundation.ErrorDescription("image failed to precache"), library: "image resource service", exception: exception, stack: stackTrace, silent: true));
-}
-})));
+        listener__5037 = new global::Doroti.Framework.Painting.ImageStreamListener(((global::System.Action<global::Doroti.Framework.Painting.ImageInfo?, bool>)((image, sync) =>
+        {
+            if (!completer__4928.isCompleted)
+            {
+                completer__4928.complete();
+            }
+            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+            {
+                image?.dispose();
+                stream__4979.removeListener(listener__5037!);
+            })), debugLabel: "precacheImage.removeListener");
+        })), onError: ((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((exception, stackTrace) =>
+        {
+            if (!completer__4928.isCompleted)
+            {
+                completer__4928.complete();
+            }
+            stream__4979.removeListener(listener__5037!);
+            if ((onError is not null))
+            {
+                onError(exception, stackTrace);
+            }
+            else
+            {
+                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(context: new global::Doroti.Framework.Foundation.ErrorDescription("image failed to precache"), library: "image resource service", exception: exception, stack: stackTrace, silent: true));
+            }
+        })));
         stream__4979.addListener(listener__5037);
         return completer__4928.future;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -310,9 +313,10 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
     public virtual void didChangeAccessibilityFeatures()
     {
         base.didChangeAccessibilityFeatures();
-        setState(((global::System.Action)(() => {
-_updateInvertColors();
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _updateInvertColors();
+        })));
     }
 
     public override void reassemble()
@@ -339,21 +343,23 @@ _updateInvertColors();
         {
             _lastException = null;
             _lastStack = null;
-            _imageStreamListener = new global::Doroti.Framework.Painting.ImageStreamListener((global::System.Action<global::Doroti.Framework.Painting.ImageInfo, bool>)this._handleImageFrame, onChunk: ((global::System.Action<global::Doroti.Framework.Painting.ImageChunkEvent>)((((Image)this.widget).loadingBuilder is null) ? null : this._handleImageChunk)), onError: ((global::System.Action<object, global::System.Diagnostics.StackTrace?>)(((((Image)this.widget).errorBuilder is not null) || global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode) ? ((error, stackTrace) => {
-setState(((global::System.Action)(() => {
-_lastException = error;
-_lastStack = stackTrace;
-})));
-DartRuntimePrimitives.Assert(() =>
-    {
-        if ((((Image)this.widget).errorBuilder is null))
-        {
-            throw DartRuntimePrimitives.AsException(error);
-        }
-        return true;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    });
-}) : null)), reportErrors: (((Image)this.widget).errorBuilder is null));
+            _imageStreamListener = new global::Doroti.Framework.Painting.ImageStreamListener((global::System.Action<global::Doroti.Framework.Painting.ImageInfo, bool>)this._handleImageFrame, onChunk: ((global::System.Action<global::Doroti.Framework.Painting.ImageChunkEvent>)((((Image)this.widget).loadingBuilder is null) ? null : this._handleImageChunk)), onError: ((global::System.Action<object, global::System.Diagnostics.StackTrace?>)(((((Image)this.widget).errorBuilder is not null) || global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode) ? ((error, stackTrace) =>
+            {
+                setState(((global::System.Action)(() =>
+                {
+                    _lastException = error;
+                    _lastStack = stackTrace;
+                })));
+                DartRuntimePrimitives.Assert(() =>
+                    {
+                        if ((((Image)this.widget).errorBuilder is null))
+                        {
+                            throw DartRuntimePrimitives.AsException(error);
+                        }
+                        return true;
+                        throw new InvalidOperationException("Dart closure completed without a value.");
+                    });
+            }) : null)), reportErrors: (((Image)this.widget).errorBuilder is null));
         }
         return this._imageStreamListener!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -361,14 +367,15 @@ DartRuntimePrimitives.Assert(() =>
 
     internal virtual void _handleImageFrame(global::Doroti.Framework.Painting.ImageInfo imageInfo, bool synchronousCall)
     {
-        setState(((global::System.Action)(() => {
-_replaceImage(info: imageInfo);
-_loadingProgress = null;
-_lastException = null;
-_lastStack = null;
-_frameNumber = ((this._frameNumber is null) ? 0L : (DartRuntimePrimitives.RequireValue(this._frameNumber) + 1L));
-_wasSynchronouslyLoaded = (this._wasSynchronouslyLoaded | synchronousCall);
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _replaceImage(info: imageInfo);
+            _loadingProgress = null;
+            _lastException = null;
+            _lastStack = null;
+            _frameNumber = ((this._frameNumber is null) ? 0L : (DartRuntimePrimitives.RequireValue(this._frameNumber) + 1L));
+            _wasSynchronouslyLoaded = (this._wasSynchronouslyLoaded | synchronousCall);
+        })));
         if (this._isPaused)
         {
             _stopListeningToStream(keepStreamAlive: true);
@@ -378,11 +385,12 @@ _wasSynchronouslyLoaded = (this._wasSynchronouslyLoaded | synchronousCall);
     internal virtual void _handleImageChunk(global::Doroti.Framework.Painting.ImageChunkEvent @event)
     {
         DartRuntimePrimitives.Assert(() => (((Image)this.widget).loadingBuilder is not null));
-        setState(((global::System.Action)(() => {
-_loadingProgress = @event;
-_lastException = null;
-_lastStack = null;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _loadingProgress = @event;
+            _lastException = null;
+            _lastStack = null;
+        })));
     }
 
     internal virtual void _replaceImage(global::Doroti.Framework.Painting.ImageInfo? info)
@@ -407,15 +415,17 @@ _lastStack = null;
         }
         if (!((Image)this.widget).gaplessPlayback)
         {
-            setState(((global::System.Action)(() => {
-_replaceImage(info: ((global::Doroti.Framework.Painting.ImageInfo)(object)null));
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _replaceImage(info: ((global::Doroti.Framework.Painting.ImageInfo)(object)null));
+            })));
         }
-        setState(((global::System.Action)(() => {
-_loadingProgress = null;
-_frameNumber = null;
-_wasSynchronouslyLoaded = false;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _loadingProgress = null;
+            _frameNumber = null;
+            _wasSynchronouslyLoaded = false;
+        })));
         _imageStream = newStream;
         if (this._isListeningToStream)
         {
@@ -447,8 +457,9 @@ _wasSynchronouslyLoaded = false;
         }
         if (((this._imageStream!.completer is not null) && (((Image)this.widget).errorBuilder is not null)))
         {
-            this._imageStream!.completer!.addEphemeralErrorListener(((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((exception, stackTrace) => {
-})));
+            this._imageStream!.completer!.addEphemeralErrorListener(((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((exception, stackTrace) =>
+            {
+            })));
         }
         this._imageStream!.removeListener(_getListener());
         _isListeningToStream = false;

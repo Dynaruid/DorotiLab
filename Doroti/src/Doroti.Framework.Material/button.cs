@@ -162,14 +162,15 @@ internal class _RawMaterialButtonState__button : global::Doroti.Framework.Widget
 
     public virtual global::System.Action<bool> updateMaterialState(global::Doroti.Framework.Widgets.WidgetState key, global::System.Action<bool>? onChanged = null)
     {
-        return ((global::System.Action<bool>)((value) => {
-if ((this.materialStates.Contains(key) == value))
-{
-    return;
-}
-setMaterialState(key, value);
-onChanged?.Invoke(value);
-}));
+        return ((global::System.Action<bool>)((value) =>
+        {
+            if ((this.materialStates.Contains(key) == value))
+            {
+                return;
+            }
+            setMaterialState(key, value);
+            onChanged?.Invoke(value);
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -183,8 +184,9 @@ onChanged?.Invoke(value);
     {
         if (this.materialStates.Add(state))
         {
-            setState(((global::System.Action)(() => {
-})));
+            setState(((global::System.Action)(() =>
+            {
+            })));
         }
     }
 
@@ -192,8 +194,9 @@ onChanged?.Invoke(value);
     {
         if (this.materialStates.Remove(state))
         {
-            setState(((global::System.Action)(() => {
-})));
+            setState(((global::System.Action)(() =>
+            {
+            })));
         }
     }
 
@@ -352,11 +355,12 @@ public class _RenderInputPadding__button : global::Doroti.Framework.Rendering.Re
             return true;
         }
         global::Doroti.Ui.Offset center__18860 = ((global::Doroti.Ui.Offset)(object?)this.child!.size.center(Offset.zero));
-        return result.addWithRawTransform(transform: MatrixUtils.forceToPoint(center__18860), position: center__18860, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, position) => {
-DartRuntimePrimitives.Assert(() => (object.Equals(position, center__18860)));
-return this.child!.hitTest(result, position: center__18860);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        return result.addWithRawTransform(transform: MatrixUtils.forceToPoint(center__18860), position: center__18860, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, position) =>
+        {
+            DartRuntimePrimitives.Assert(() => (object.Equals(position, center__18860)));
+            return this.child!.hitTest(result, position: center__18860);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

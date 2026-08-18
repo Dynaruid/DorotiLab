@@ -250,27 +250,31 @@ internal class _FocusState__focus_scope : State<Focus>
         ((Focus)this.widget).onFocusChange?.Invoke(((FocusNode)this.focusNode).hasFocus);
         if ((this._hadPrimaryFocus != hasPrimaryFocus__27109))
         {
-            setState(((global::System.Action)(() => {
-_hadPrimaryFocus = hasPrimaryFocus__27109;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _hadPrimaryFocus = hasPrimaryFocus__27109;
+            })));
         }
         if ((this._couldRequestFocus != canRequestFocus__27169))
         {
-            setState(((global::System.Action)(() => {
-_couldRequestFocus = canRequestFocus__27169;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _couldRequestFocus = canRequestFocus__27169;
+            })));
         }
         if ((this._descendantsWereFocusable != descendantsAreFocusable__27229))
         {
-            setState(((global::System.Action)(() => {
-_descendantsWereFocusable = descendantsAreFocusable__27229;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _descendantsWereFocusable = descendantsAreFocusable__27229;
+            })));
         }
         if ((this._descendantsWereTraversable != descendantsAreTraversable__27305))
         {
-            setState(((global::System.Action)(() => {
-_descendantsWereTraversable = descendantsAreTraversable__27305;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _descendantsWereTraversable = descendantsAreTraversable__27305;
+            })));
         }
     }
 
@@ -402,10 +406,11 @@ internal class _DebugFocusBorder__focus_scope : StatelessWidget
     }
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new ListenableBuilder(listenable: this.node, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, _) => {
-return ((Widget)(object?)new DecoratedBox(decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: global::Doroti.Framework.Painting.Border.CreateAll(color: this._borderColor, width: 3.0)), position: global::Doroti.Framework.Rendering.DecorationPosition.foreground, child: this.child));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((Widget)(object?)new ListenableBuilder(listenable: this.node, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, _) =>
+        {
+            return ((Widget)(object?)new DecoratedBox(decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: global::Doroti.Framework.Painting.Border.CreateAll(color: this._borderColor, width: 3.0)), position: global::Doroti.Framework.Rendering.DecorationPosition.foreground, child: this.child));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

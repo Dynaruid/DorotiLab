@@ -51,11 +51,12 @@ public class DefaultTextStyle : InheritedTheme
 
     public static Widget merge(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.TextStyle? style = null, TextAlign? textAlign = null, bool? softWrap = null, global::Doroti.Framework.Painting.TextOverflow? overflow = null, long? maxLines = null, global::Doroti.Framework.Painting.TextWidthBasis? textWidthBasis = null, TextHeightBehavior? textHeightBehavior = null, Widget child = default!)
     {
-        return ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => {
-DefaultTextStyle parent__4908 = ((DefaultTextStyle)(object?)DefaultTextStyle.of(context));
-return ((Widget)(object?)new DefaultTextStyle(key: key, style: ((DefaultTextStyle)parent__4908).style.merge(style), textAlign: (textAlign ?? ((DefaultTextStyle)parent__4908).textAlign), softWrap: (softWrap ?? ((DefaultTextStyle)parent__4908).softWrap), overflow: (overflow ?? ((DefaultTextStyle)parent__4908).overflow), maxLines: (maxLines ?? ((DefaultTextStyle)parent__4908).maxLines), textWidthBasis: (textWidthBasis ?? ((DefaultTextStyle)parent__4908).textWidthBasis), textHeightBehavior: (textHeightBehavior ?? ((DefaultTextStyle)parent__4908).textHeightBehavior), child: child));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        {
+            DefaultTextStyle parent__4908 = ((DefaultTextStyle)(object?)DefaultTextStyle.of(context));
+            return ((Widget)(object?)new DefaultTextStyle(key: key, style: ((DefaultTextStyle)parent__4908).style.merge(style), textAlign: (textAlign ?? ((DefaultTextStyle)parent__4908).textAlign), softWrap: (softWrap ?? ((DefaultTextStyle)parent__4908).softWrap), overflow: (overflow ?? ((DefaultTextStyle)parent__4908).overflow), maxLines: (maxLines ?? ((DefaultTextStyle)parent__4908).maxLines), textWidthBasis: (textWidthBasis ?? ((DefaultTextStyle)parent__4908).textWidthBasis), textHeightBehavior: (textHeightBehavior ?? ((DefaultTextStyle)parent__4908).textHeightBehavior), child: child));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -795,14 +796,15 @@ internal class _OverridingTextStyleTextSpanUtils__text
 
     internal static global::Doroti.Framework.Painting.TextSpan _applyTextStyleOverrides(global::Doroti.Framework.Painting.TextStyle overrideTextStyle, global::Doroti.Framework.Painting.TextSpan textSpan)
     {
-        return new global::Doroti.Framework.Painting.TextSpan(text: ((global::Doroti.Framework.Painting.TextSpan)textSpan).text, children: ((global::Doroti.Framework.Painting.TextSpan)textSpan).children?.map<global::Doroti.Framework.Painting.InlineSpan, global::Doroti.Framework.Painting.InlineSpan>(((child) => {
-if (((child is global::Doroti.Framework.Painting.TextSpan) && (object.Equals(DartRuntimePrimitives.RuntimeType(((global::Doroti.Framework.Painting.TextSpan)child)), typeof(global::Doroti.Framework.Painting.TextSpan)))))
-{
-    return ((global::Doroti.Framework.Painting.InlineSpan)(object?)_OverridingTextStyleTextSpanUtils__text._applyTextStyleOverrides(overrideTextStyle, ((global::Doroti.Framework.Painting.TextSpan)child)));
-}
-return child;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})).ToList(), style: (textSpan.style?.merge(overrideTextStyle) ?? overrideTextStyle), recognizer: ((global::Doroti.Framework.Painting.TextSpan)textSpan).recognizer, mouseCursor: ((global::Doroti.Framework.Painting.TextSpan)textSpan).mouseCursor, onEnter: (global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>?)((global::Doroti.Framework.Painting.TextSpan)textSpan).onEnter, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>?)((global::Doroti.Framework.Painting.TextSpan)textSpan).onExit, semanticsLabel: ((global::Doroti.Framework.Painting.TextSpan)textSpan).semanticsLabel, semanticsIdentifier: ((global::Doroti.Framework.Painting.TextSpan)textSpan).semanticsIdentifier, locale: ((global::Doroti.Framework.Painting.TextSpan)textSpan).locale, spellOut: ((global::Doroti.Framework.Painting.TextSpan)textSpan).spellOut);
+        return new global::Doroti.Framework.Painting.TextSpan(text: ((global::Doroti.Framework.Painting.TextSpan)textSpan).text, children: ((global::Doroti.Framework.Painting.TextSpan)textSpan).children?.map<global::Doroti.Framework.Painting.InlineSpan, global::Doroti.Framework.Painting.InlineSpan>(((child) =>
+        {
+            if (((child is global::Doroti.Framework.Painting.TextSpan) && (object.Equals(DartRuntimePrimitives.RuntimeType(((global::Doroti.Framework.Painting.TextSpan)child)), typeof(global::Doroti.Framework.Painting.TextSpan)))))
+            {
+                return ((global::Doroti.Framework.Painting.InlineSpan)(object?)_OverridingTextStyleTextSpanUtils__text._applyTextStyleOverrides(overrideTextStyle, ((global::Doroti.Framework.Painting.TextSpan)child)));
+            }
+            return child;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })).ToList(), style: (textSpan.style?.merge(overrideTextStyle) ?? overrideTextStyle), recognizer: ((global::Doroti.Framework.Painting.TextSpan)textSpan).recognizer, mouseCursor: ((global::Doroti.Framework.Painting.TextSpan)textSpan).mouseCursor, onEnter: (global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>?)((global::Doroti.Framework.Painting.TextSpan)textSpan).onEnter, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>?)((global::Doroti.Framework.Painting.TextSpan)textSpan).onExit, semanticsLabel: ((global::Doroti.Framework.Painting.TextSpan)textSpan).semanticsLabel, semanticsIdentifier: ((global::Doroti.Framework.Painting.TextSpan)textSpan).semanticsIdentifier, locale: ((global::Doroti.Framework.Painting.TextSpan)textSpan).locale, spellOut: ((global::Doroti.Framework.Painting.TextSpan)textSpan).spellOut);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

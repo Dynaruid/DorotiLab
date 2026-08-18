@@ -56,14 +56,14 @@ public static class BgraRasterEffects
             case RasterColorFilterKind.LinearToSrgbGamma:
             case RasterColorFilterKind.SrgbToLinearGamma:
                 for (var offset = 0; offset < result.Length; offset += 4)
-                for (var channel = 0; channel < 3; channel++)
-                {
-                    var value = source[offset + channel] / 255d;
-                    var converted = filter.Kind == RasterColorFilterKind.LinearToSrgbGamma
-                        ? value <= 0.0031308 ? value * 12.92 : (1.055 * Math.Pow(value, 1 / 2.4)) - 0.055
-                        : value <= 0.04045 ? value / 12.92 : Math.Pow((value + 0.055) / 1.055, 2.4);
-                    result[offset + channel] = Channel(converted * 255);
-                }
+                    for (var channel = 0; channel < 3; channel++)
+                    {
+                        var value = source[offset + channel] / 255d;
+                        var converted = filter.Kind == RasterColorFilterKind.LinearToSrgbGamma
+                            ? value <= 0.0031308 ? value * 12.92 : (1.055 * Math.Pow(value, 1 / 2.4)) - 0.055
+                            : value <= 0.04045 ? value / 12.92 : Math.Pow((value + 0.055) / 1.055, 2.4);
+                        result[offset + channel] = Channel(converted * 255);
+                    }
                 return result;
             default:
                 throw new NotSupportedException($"Managed color-filter kind '{filter.Kind}' is unsupported.");
@@ -78,39 +78,39 @@ public static class BgraRasterEffects
         var right = Math.Clamp((int)Math.Ceiling(bounds.Right), 0, width);
         var bottom = Math.Clamp((int)Math.Ceiling(bounds.Bottom), 0, height);
         for (var y = top; y < bottom; y++)
-        for (var x = left; x < right; x++)
-        {
-            var offset = ((y * width) + x) * 4;
-            var sa = source[offset + 3] / 255d * opacity;
-            var da = destination[offset + 3] / 255d;
-            var sb = source[offset] / 255d * opacity;
-            var sg = source[offset + 1] / 255d * opacity;
-            var sr = source[offset + 2] / 255d * opacity;
-            var db = destination[offset] / 255d;
-            var dg = destination[offset + 1] / 255d;
-            var dr = destination[offset + 2] / 255d;
-            var (sourceFactor, destinationFactor) = mode switch
+            for (var x = left; x < right; x++)
             {
-                RasterBlendMode.Clear => (0d, 0d),
-                RasterBlendMode.Source => (1d, 0d),
-                RasterBlendMode.Destination => (0d, 1d),
-                RasterBlendMode.SourceOver => (1d, 1 - sa),
-                RasterBlendMode.DestinationOver => (1 - da, 1d),
-                RasterBlendMode.SourceIn => (da, 0d),
-                RasterBlendMode.DestinationIn => (0d, sa),
-                RasterBlendMode.SourceOut => (1 - da, 0d),
-                RasterBlendMode.DestinationOut => (0d, 1 - sa),
-                RasterBlendMode.SourceAtop => (da, 1 - sa),
-                RasterBlendMode.DestinationAtop => (1 - da, sa),
-                RasterBlendMode.Xor => (1 - da, 1 - sa),
-                RasterBlendMode.Plus => (1d, 1d),
-                _ => throw new NotSupportedException($"Managed blend mode '{mode}' is explicitly unsupported."),
-            };
-            destination[offset] = Channel(255 * Math.Min(1, (sb * sourceFactor) + (db * destinationFactor)));
-            destination[offset + 1] = Channel(255 * Math.Min(1, (sg * sourceFactor) + (dg * destinationFactor)));
-            destination[offset + 2] = Channel(255 * Math.Min(1, (sr * sourceFactor) + (dr * destinationFactor)));
-            destination[offset + 3] = Channel(255 * Math.Min(1, (sa * sourceFactor) + (da * destinationFactor)));
-        }
+                var offset = ((y * width) + x) * 4;
+                var sa = source[offset + 3] / 255d * opacity;
+                var da = destination[offset + 3] / 255d;
+                var sb = source[offset] / 255d * opacity;
+                var sg = source[offset + 1] / 255d * opacity;
+                var sr = source[offset + 2] / 255d * opacity;
+                var db = destination[offset] / 255d;
+                var dg = destination[offset + 1] / 255d;
+                var dr = destination[offset + 2] / 255d;
+                var (sourceFactor, destinationFactor) = mode switch
+                {
+                    RasterBlendMode.Clear => (0d, 0d),
+                    RasterBlendMode.Source => (1d, 0d),
+                    RasterBlendMode.Destination => (0d, 1d),
+                    RasterBlendMode.SourceOver => (1d, 1 - sa),
+                    RasterBlendMode.DestinationOver => (1 - da, 1d),
+                    RasterBlendMode.SourceIn => (da, 0d),
+                    RasterBlendMode.DestinationIn => (0d, sa),
+                    RasterBlendMode.SourceOut => (1 - da, 0d),
+                    RasterBlendMode.DestinationOut => (0d, 1 - sa),
+                    RasterBlendMode.SourceAtop => (da, 1 - sa),
+                    RasterBlendMode.DestinationAtop => (1 - da, sa),
+                    RasterBlendMode.Xor => (1 - da, 1 - sa),
+                    RasterBlendMode.Plus => (1d, 1d),
+                    _ => throw new NotSupportedException($"Managed blend mode '{mode}' is explicitly unsupported."),
+                };
+                destination[offset] = Channel(255 * Math.Min(1, (sb * sourceFactor) + (db * destinationFactor)));
+                destination[offset + 1] = Channel(255 * Math.Min(1, (sg * sourceFactor) + (dg * destinationFactor)));
+                destination[offset + 2] = Channel(255 * Math.Min(1, (sr * sourceFactor) + (dr * destinationFactor)));
+                destination[offset + 3] = Channel(255 * Math.Min(1, (sa * sourceFactor) + (da * destinationFactor)));
+            }
     }
 
     private static byte[] Blur(byte[] source, int width, int height, double sigmaX, double sigmaY, RasterTileMode tileMode)
@@ -129,19 +129,19 @@ public static class BgraRasterEffects
         for (var index = 0; index < weights.Length; index++) weights[index] /= sum;
         var result = new byte[source.Length];
         for (var y = 0; y < height; y++)
-        for (var x = 0; x < width; x++)
-        for (var channel = 0; channel < 4; channel++)
-        {
-            var total = 0d;
-            for (var kernel = -radius; kernel <= radius; kernel++)
-            {
-                var sampleX = horizontal ? Resolve(x + kernel, width, tileMode) : x;
-                var sampleY = horizontal ? y : Resolve(y + kernel, height, tileMode);
-                if (sampleX < 0 || sampleY < 0) continue;
-                total += source[((sampleY * width + sampleX) * 4) + channel] * weights[kernel + radius];
-            }
-            result[((y * width + x) * 4) + channel] = Channel(total);
-        }
+            for (var x = 0; x < width; x++)
+                for (var channel = 0; channel < 4; channel++)
+                {
+                    var total = 0d;
+                    for (var kernel = -radius; kernel <= radius; kernel++)
+                    {
+                        var sampleX = horizontal ? Resolve(x + kernel, width, tileMode) : x;
+                        var sampleY = horizontal ? y : Resolve(y + kernel, height, tileMode);
+                        if (sampleX < 0 || sampleY < 0) continue;
+                        total += source[((sampleY * width + sampleX) * 4) + channel] * weights[kernel + radius];
+                    }
+                    result[((y * width + x) * 4) + channel] = Channel(total);
+                }
         return result;
     }
 

@@ -78,13 +78,15 @@ public class SnapshotWidget : SingleChildRenderObjectWidget
     {
         global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context);
         DartRuntimePrimitives.Ignore(((Func<_RenderSnapshotWidget__snapshot_widget>)(() =>
-{            var __cascade = (((_RenderSnapshotWidget__snapshot_widget?)(object?)renderObject)!);
-            __cascade.controller = this.controller;
-            __cascade.mode = this.mode;
-            __cascade.devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
-            __cascade.painter = this.painter;
-            __cascade.autoresize = this.autoresize;
-            return __cascade;        }))());
+{
+    var __cascade = (((_RenderSnapshotWidget__snapshot_widget?)(object?)renderObject)!);
+    __cascade.controller = this.controller;
+    __cascade.mode = this.mode;
+    __cascade.devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
+    __cascade.painter = this.painter;
+    __cascade.autoresize = this.autoresize;
+    return __cascade;
+}))());
     }
 
 }
@@ -346,9 +348,11 @@ internal class _DefaultSnapshotPainter__snapshot_widget : SnapshotPainter
         var src__17443 = global::Doroti.Ui.Rect.fromLTWH(0, 0, sourceSize.width, sourceSize.height);
         var dst__17517 = global::Doroti.Ui.Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height);
         var paint__17595 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.filterQuality = FilterQuality.medium;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.filterQuality = FilterQuality.medium;
+    return __cascade;
+}))();
         ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawImageRect(image, src__17443, dst__17517, paint__17595);
     }
 

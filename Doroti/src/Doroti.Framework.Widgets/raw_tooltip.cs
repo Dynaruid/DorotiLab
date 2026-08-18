@@ -204,9 +204,11 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
         get
         {
             return _backingController ??= ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: ((RawTooltip)this.widget).animationStyle.duration, reverseDuration: ((RawTooltip)this.widget).animationStyle.reverseDuration, vsync: this);
-            __cascade.addStatusListener((AnimationStatusListener)this._handleStatusChanged);
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: ((RawTooltip)this.widget).animationStyle.duration, reverseDuration: ((RawTooltip)this.widget).animationStyle.reverseDuration, vsync: this);
+    __cascade.addStatusListener((AnimationStatusListener)this._handleStatusChanged);
+    return __cascade;
+}))();
             return default!;
         }
     }
@@ -294,23 +296,27 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
                 {
                     global::Doroti.Framework.Gestures.LongPressGestureRecognizer recognizer__23157 = _longPressRecognizer ??= new global::Doroti.Framework.Gestures.LongPressGestureRecognizer(debugOwner: this, supportedDevices: triggerModeDeviceKinds__22757);
                     DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>)(() =>
-{            var __cascade = recognizer__23157;
-            __cascade.onLongPressCancel = this._handleTapToDismiss;
-            __cascade.onLongPress = this._handleLongPress;
-            __cascade.onLongPressUp = this._handlePressUp;
-            __cascade.addPointer(@event);
-            return __cascade;        }))());
+{
+    var __cascade = recognizer__23157;
+    __cascade.onLongPressCancel = this._handleTapToDismiss;
+    __cascade.onLongPress = this._handleLongPress;
+    __cascade.onLongPressUp = this._handlePressUp;
+    __cascade.addPointer(@event);
+    return __cascade;
+}))());
                     break;
                 }
             case TooltipTriggerMode.tap:
                 {
                     global::Doroti.Framework.Gestures.TapGestureRecognizer recognizer__23553 = _tapRecognizer ??= new global::Doroti.Framework.Gestures.TapGestureRecognizer(debugOwner: this, supportedDevices: triggerModeDeviceKinds__22757);
                     DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.TapGestureRecognizer>)(() =>
-{            var __cascade = recognizer__23553;
-            __cascade.onTapCancel = this._handleTapToDismiss;
-            __cascade.onTap = this._handleTap;
-            __cascade.addPointer(@event);
-            return __cascade;        }))());
+{
+    var __cascade = recognizer__23553;
+    __cascade.onTapCancel = this._handleTapToDismiss;
+    __cascade.onTap = this._handleTap;
+    __cascade.addPointer(@event);
+    return __cascade;
+}))());
                     break;
                 }
             case TooltipTriggerMode.manual:

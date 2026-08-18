@@ -350,12 +350,18 @@ internal class _RawChipState__chip : global::Doroti.Framework.Widgets.State<RawC
         DartRuntimePrimitives.Assert(() => ((((RawChip)this.widget).onSelected is null) || (((RawChip)this.widget).onPressed is null)));
         base.initState();
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Widgets.WidgetStatesController>)(() =>
-{            var __cascade = this.statesController;
-            __cascade.update(global::Doroti.Framework.Widgets.WidgetState.disabled, !((RawChip)this.widget).isEnabled);
-            __cascade.update(global::Doroti.Framework.Widgets.WidgetState.selected, ((RawChip)this.widget).selected);
-            __cascade.addListener(((global::System.Action)(() => { setState(((global::System.Action)(() => {
-}))); })));
-            return __cascade;        }))());
+{
+    var __cascade = this.statesController;
+    __cascade.update(global::Doroti.Framework.Widgets.WidgetState.disabled, !((RawChip)this.widget).isEnabled);
+    __cascade.update(global::Doroti.Framework.Widgets.WidgetState.selected, ((RawChip)this.widget).selected);
+    __cascade.addListener(((global::System.Action)(() =>
+    {
+        setState(((global::System.Action)(() =>
+        {
+        })));
+    })));
+    return __cascade;
+}))());
         selectController = new global::Doroti.Framework.Animation.AnimationController(duration: (((RawChip)this.widget).chipAnimationStyle?.selectAnimation?.duration ?? ChipLibrary._kSelectDuration), reverseDuration: ((RawChip)this.widget).chipAnimationStyle?.selectAnimation?.reverseDuration, value: (((RawChip)this.widget).selected ? 1.0 : 0.0), vsync: this);
         selectionFade = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this.selectController, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
         avatarDrawerController = new global::Doroti.Framework.Animation.AnimationController(duration: (((RawChip)this.widget).chipAnimationStyle?.avatarDrawerAnimation?.duration ?? ChipLibrary._kDrawerDuration), reverseDuration: ((RawChip)this.widget).chipAnimationStyle?.avatarDrawerAnimation?.reverseDuration, value: ((this.hasAvatar || ((RawChip)this.widget).selected) ? 1.0 : 0.0), vsync: this);
@@ -408,9 +414,10 @@ internal class _RawChipState__chip : global::Doroti.Framework.Widgets.State<RawC
             return;
         }
         this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.pressed, true);
-        setState(((global::System.Action)(() => {
-_isTapping = true;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _isTapping = true;
+        })));
     }
 
     internal virtual void _handleTapCancel()
@@ -420,9 +427,10 @@ _isTapping = true;
             return;
         }
         this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.pressed, false);
-        setState(((global::System.Action)(() => {
-_isTapping = false;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _isTapping = false;
+        })));
     }
 
     internal virtual void _handleTap()
@@ -432,9 +440,10 @@ _isTapping = false;
             return;
         }
         this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.pressed, false);
-        setState(((global::System.Action)(() => {
-_isTapping = false;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _isTapping = false;
+        })));
         ((RawChip)this.widget).onSelected?.Invoke(!((RawChip)this.widget).selected);
         ((RawChip)this.widget).onPressed?.Invoke();
     }
@@ -482,57 +491,61 @@ _isTapping = false;
         base.didUpdateWidget(oldWidget);
         if ((((RawChip)oldWidget).isEnabled != ((RawChip)this.widget).isEnabled))
         {
-            setState(((global::System.Action)(() => {
-this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.disabled, !((RawChip)this.widget).isEnabled);
-if (((RawChip)this.widget).isEnabled)
-{
-    this.enableController.forward();
-}
-else
-{
-    this.enableController.reverse();
-}
-})));
+            setState(((global::System.Action)(() =>
+            {
+                this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.disabled, !((RawChip)this.widget).isEnabled);
+                if (((RawChip)this.widget).isEnabled)
+                {
+                    this.enableController.forward();
+                }
+                else
+                {
+                    this.enableController.reverse();
+                }
+            })));
         }
         if (((!object.Equals(((RawChip)oldWidget).avatar, ((RawChip)this.widget).avatar)) || (((RawChip)oldWidget).selected != ((RawChip)this.widget).selected)))
         {
-            setState(((global::System.Action)(() => {
-if ((this.hasAvatar || ((RawChip)this.widget).selected))
-{
-    this.avatarDrawerController.forward();
-}
-else
-{
-    this.avatarDrawerController.reverse();
-}
-})));
+            setState(((global::System.Action)(() =>
+            {
+                if ((this.hasAvatar || ((RawChip)this.widget).selected))
+                {
+                    this.avatarDrawerController.forward();
+                }
+                else
+                {
+                    this.avatarDrawerController.reverse();
+                }
+            })));
         }
         if ((((RawChip)oldWidget).selected != ((RawChip)this.widget).selected))
         {
-            setState(((global::System.Action)(() => {
-this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.selected, ((RawChip)this.widget).selected);
-if (((RawChip)this.widget).selected)
-{
-    this.selectController.forward();
-}
-else
-{
-    this.selectController.reverse();
-}
-})));
+            setState(((global::System.Action)(() =>
+            {
+                this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.selected, ((RawChip)this.widget).selected);
+                if (((RawChip)this.widget).selected)
+                {
+                    this.selectController.forward();
+                }
+                else
+                {
+                    this.selectController.reverse();
+                }
+            })));
         }
         if ((!object.Equals((global::System.Action?)((RawChip)oldWidget).onDeleted, (global::System.Action?)((RawChip)this.widget).onDeleted)))
         {
-            setState(((global::System.Action)(() => {
-if (this.hasDeleteButton)
-{
-    this.deleteDrawerController.forward();
-}
-else
-{
-    this.deleteDrawerController.reverse();
-}
-})));
+            setState(((global::System.Action)(() =>
+            {
+                if (this.hasDeleteButton)
+                {
+                    this.deleteDrawerController.forward();
+                }
+                else
+                {
+                    this.deleteDrawerController.reverse();
+                }
+            })));
         }
     }
 
@@ -594,14 +607,17 @@ else
         double effectiveTextScale__50242 = (MediaQuery.textScalerOf(context).scale(defaultFontSize__50169) / 14.0);
         global::Doroti.Framework.Painting.EdgeInsetsGeometry defaultLabelPadding__50364 = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)EdgeInsets.lerp(global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8.0), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4.0), Dart_uiLibrary.clampDouble((effectiveTextScale__50242 - 1.0), 0.0, 1.0))!);
         global::Doroti.Framework.Painting.EdgeInsetsGeometry labelPadding__50598 = (((((RawChip)this.widget).labelPadding ?? chipTheme__47161.labelPadding) ?? chipDefaults__47296.labelPadding) ?? defaultLabelPadding__50364);
-        global::Doroti.Framework.Widgets.Widget result__50756 = ((global::Doroti.Framework.Widgets.Widget)(object?)new Material(elevation: (this.isTapping ? pressElevation__48015 : elevation__47914), shadowColor: (((RawChip)this.widget).selected ? selectedShadowColor__48388 : shadowColor__48144), surfaceTintColor: surfaceTintColor__48256, animationDuration: pressedAnimationDuration, shape: resolvedShape__47837, clipBehavior: ((RawChip)this.widget).clipBehavior, child: new InkWell(onFocusChange: ((value) => {
-this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.focused, value);
-}), focusNode: ((RawChip)this.widget).focusNode, autofocus: ((RawChip)this.widget).autofocus, canRequestFocus: ((RawChip)this.widget).isEnabled, onTap: ((global::System.Action)(this.canTap ? this._handleTap : null)), onTapDown: ((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)(this.canTap ? this._handleTapDown : null)), onTapCancel: ((global::System.Action)(this.canTap ? this._handleTapCancel : null)), onHover: ((global::System.Action<bool>)(this.canTap ? ((value) => {
-this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.hovered, value);
-}) : null)), mouseCursor: ((RawChip)this.widget).mouseCursor, hoverColor: ((((((RawChip)this.widget).color ?? chipTheme__47161.color)) is null) ? null : Colors.transparent), customBorder: resolvedShape__47837, child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: global::Doroti.Framework.Foundation.Listenable.CreateMerge(new List<global::Doroti.Framework.Foundation.Listenable> { this.selectController, this.enableController }.Cast<global::Doroti.Framework.Foundation.Listenable?>()), builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) => {
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new Ink(decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shape: resolvedShape__47837, color: _getBackgroundColor(theme__47110, chipTheme__47161, chipDefaults__47296)), child: child));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: _wrapWithTooltip(tooltip: ((RawChip)this.widget).tooltip, enabled: ((((RawChip)this.widget).onPressed is not null) || (((RawChip)this.widget).onSelected is not null)), child: new _ChipRenderWidget__chip(theme: new _ChipRenderTheme__chip(label: new global::Doroti.Framework.Widgets.DefaultTextStyle(overflow: global::Doroti.Framework.Painting.TextOverflow.fade, textAlign: global::Doroti.Ui.TextAlign.start, maxLines: 1L, softWrap: false, style: resolvedLabelStyle__49624, child: ((RawChip)this.widget).label), avatar: new global::Doroti.Framework.Widgets.AnimatedSwitcher(duration: ChipLibrary._kDrawerDuration, switchInCurve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn, child: avatar__49720), deleteIcon: new global::Doroti.Framework.Widgets.AnimatedSwitcher(duration: ChipLibrary._kDrawerDuration, switchInCurve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn, child: _buildDeleteIcon(context, theme__47110, chipTheme__47161, chipDefaults__47296)), brightness: brightness__47217, padding: padding__48803.resolve(textDirection__47763), visualDensity: (((RawChip)this.widget).visualDensity ?? theme__47110.visualDensity), labelPadding: labelPadding__50598.resolve(textDirection__47763), showAvatar: this.hasAvatar, showCheckmark: showCheckmark__48670, checkmarkColor: checkmarkColor__48548, canTapBody: this.canTap), value: ((RawChip)this.widget).selected, checkmarkAnimation: this.checkmarkAnimation, enableAnimation: this.enableAnimation, avatarDrawerAnimation: this.avatarDrawerAnimation, deleteDrawerAnimation: this.deleteDrawerAnimation, isEnabled: ((RawChip)this.widget).isEnabled, avatarBorder: ((RawChip)this.widget).avatarBorder, avatarBoxConstraints: avatarBoxConstraints__49151, deleteIconBoxConstraints: deleteIconBoxConstraints__49271))))));
+        global::Doroti.Framework.Widgets.Widget result__50756 = ((global::Doroti.Framework.Widgets.Widget)(object?)new Material(elevation: (this.isTapping ? pressElevation__48015 : elevation__47914), shadowColor: (((RawChip)this.widget).selected ? selectedShadowColor__48388 : shadowColor__48144), surfaceTintColor: surfaceTintColor__48256, animationDuration: pressedAnimationDuration, shape: resolvedShape__47837, clipBehavior: ((RawChip)this.widget).clipBehavior, child: new InkWell(onFocusChange: ((value) =>
+        {
+            this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.focused, value);
+        }), focusNode: ((RawChip)this.widget).focusNode, autofocus: ((RawChip)this.widget).autofocus, canRequestFocus: ((RawChip)this.widget).isEnabled, onTap: ((global::System.Action)(this.canTap ? this._handleTap : null)), onTapDown: ((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)(this.canTap ? this._handleTapDown : null)), onTapCancel: ((global::System.Action)(this.canTap ? this._handleTapCancel : null)), onHover: ((global::System.Action<bool>)(this.canTap ? ((value) =>
+        {
+            this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.hovered, value);
+        }) : null)), mouseCursor: ((RawChip)this.widget).mouseCursor, hoverColor: ((((((RawChip)this.widget).color ?? chipTheme__47161.color)) is null) ? null : Colors.transparent), customBorder: resolvedShape__47837, child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: global::Doroti.Framework.Foundation.Listenable.CreateMerge(new List<global::Doroti.Framework.Foundation.Listenable> { this.selectController, this.enableController }.Cast<global::Doroti.Framework.Foundation.Listenable?>()), builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
+        {
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new Ink(decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shape: resolvedShape__47837, color: _getBackgroundColor(theme__47110, chipTheme__47161, chipDefaults__47296)), child: child));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), child: _wrapWithTooltip(tooltip: ((RawChip)this.widget).tooltip, enabled: ((((RawChip)this.widget).onPressed is not null) || (((RawChip)this.widget).onSelected is not null)), child: new _ChipRenderWidget__chip(theme: new _ChipRenderTheme__chip(label: new global::Doroti.Framework.Widgets.DefaultTextStyle(overflow: global::Doroti.Framework.Painting.TextOverflow.fade, textAlign: global::Doroti.Ui.TextAlign.start, maxLines: 1L, softWrap: false, style: resolvedLabelStyle__49624, child: ((RawChip)this.widget).label), avatar: new global::Doroti.Framework.Widgets.AnimatedSwitcher(duration: ChipLibrary._kDrawerDuration, switchInCurve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn, child: avatar__49720), deleteIcon: new global::Doroti.Framework.Widgets.AnimatedSwitcher(duration: ChipLibrary._kDrawerDuration, switchInCurve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn, child: _buildDeleteIcon(context, theme__47110, chipTheme__47161, chipDefaults__47296)), brightness: brightness__47217, padding: padding__48803.resolve(textDirection__47763), visualDensity: (((RawChip)this.widget).visualDensity ?? theme__47110.visualDensity), labelPadding: labelPadding__50598.resolve(textDirection__47763), showAvatar: this.hasAvatar, showCheckmark: showCheckmark__48670, checkmarkColor: checkmarkColor__48548, canTapBody: this.canTap), value: ((RawChip)this.widget).selected, checkmarkAnimation: this.checkmarkAnimation, enableAnimation: this.enableAnimation, avatarDrawerAnimation: this.avatarDrawerAnimation, deleteDrawerAnimation: this.deleteDrawerAnimation, isEnabled: ((RawChip)this.widget).isEnabled, avatarBorder: ((RawChip)this.widget).avatarBorder, avatarBoxConstraints: avatarBoxConstraints__49151, deleteIconBoxConstraints: deleteIconBoxConstraints__49271))))));
         global::Doroti.Framework.Rendering.BoxConstraints constraints__54183 = default!;
         global::Doroti.Ui.Offset densityAdjustment__54213 = ((global::Doroti.Ui.Offset)(object?)((((RawChip)this.widget).visualDensity ?? theme__47110.visualDensity)).baseSizeAdjustment);
         switch ((((RawChip)this.widget).materialTapTargetSize ?? theme__47110.materialTapTargetSize))
@@ -632,10 +648,12 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -764,11 +782,12 @@ public class _RenderChipRedirectingHitDetection__chip : global::Doroti.Framework
             return false;
         }
         var offset__57727 = new global::Doroti.Ui.Offset(position.dx, (this.size.height / 2L));
-        return result.addWithRawTransform(transform: MatrixUtils.forceToPoint(offset__57727), position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, position) => {
-DartRuntimePrimitives.Assert(() => (object.Equals(position, offset__57727)));
-return this.child!.hitTest(result, position: offset__57727);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        return result.addWithRawTransform(transform: MatrixUtils.forceToPoint(offset__57727), position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, position) =>
+        {
+            DartRuntimePrimitives.Assert(() => (object.Equals(position, offset__57727)));
+            return this.child!.hitTest(result, position: offset__57727);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -812,19 +831,21 @@ internal class _ChipRenderWidget__chip : global::Doroti.Framework.Widgets.Slotte
     {
         var __renderObject = (_RenderChip__chip)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderChip__chip>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.theme = this.theme;
-            __cascade.textDirection = Directionality.of(context);
-            __cascade.value = this.value;
-            __cascade.isEnabled = this.isEnabled;
-            __cascade.checkmarkAnimation = this.checkmarkAnimation;
-            __cascade.avatarDrawerAnimation = this.avatarDrawerAnimation;
-            __cascade.deleteDrawerAnimation = this.deleteDrawerAnimation;
-            __cascade.enableAnimation = this.enableAnimation;
-            __cascade.avatarBorder = this.avatarBorder;
-            __cascade.avatarBoxConstraints = this.avatarBoxConstraints;
-            __cascade.deleteIconBoxConstraints = this.deleteIconBoxConstraints;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.theme = this.theme;
+    __cascade.textDirection = Directionality.of(context);
+    __cascade.value = this.value;
+    __cascade.isEnabled = this.isEnabled;
+    __cascade.checkmarkAnimation = this.checkmarkAnimation;
+    __cascade.avatarDrawerAnimation = this.avatarDrawerAnimation;
+    __cascade.deleteDrawerAnimation = this.deleteDrawerAnimation;
+    __cascade.enableAnimation = this.enableAnimation;
+    __cascade.avatarBorder = this.avatarBorder;
+    __cascade.avatarBoxConstraints = this.avatarBoxConstraints;
+    __cascade.deleteIconBoxConstraints = this.deleteIconBoxConstraints;
+    return __cascade;
+}))());
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
@@ -1069,11 +1090,12 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
         bool hitIsOnDeleteIcon__68246 = ChipLibrary._hitIsOnDeleteIcon(padding: ((_ChipRenderTheme__chip)this.theme).padding, labelPadding: ((_ChipRenderTheme__chip)this.theme).labelPadding, tapPosition: position, chipSize: this.size, deleteButtonSize: ((global::Doroti.Framework.Rendering.RenderBox)this.deleteIcon).size, textDirection: this.textDirection);
         global::Doroti.Framework.Rendering.RenderBox hitTestChild__68511 = (hitIsOnDeleteIcon__68246 ? this.deleteIcon : this.label);
         global::Doroti.Ui.Offset center__68584 = ((global::Doroti.Ui.Offset)(object?)((global::Doroti.Framework.Rendering.RenderBox)hitTestChild__68511).size.center(Offset.zero));
-        return result.addWithRawTransform(transform: MatrixUtils.forceToPoint(center__68584), position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, position) => {
-DartRuntimePrimitives.Assert(() => (object.Equals(position, center__68584)));
-return hitTestChild__68511.hitTest(result, position: center__68584);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        return result.addWithRawTransform(transform: MatrixUtils.forceToPoint(center__68584), position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, position) =>
+        {
+            DartRuntimePrimitives.Assert(() => (object.Equals(position, center__68584)));
+            return hitTestChild__68511.hitTest(result, position: center__68584);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1226,11 +1248,13 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         var fadeTween__76565 = new global::Doroti.Framework.Animation.ColorTween(begin: Colors.transparent, end: paintColor__76178);
         paintColor__76178 = ((object.Equals(((global::Doroti.Framework.Animation.Animation<double>)this.checkmarkAnimation).status, global::Doroti.Framework.Animation.AnimationStatus.reverse)) ? fadeTween__76565.evaluate(this.checkmarkAnimation) : paintColor__76178);
         var paint__76786 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = paintColor__76178!;
-            __cascade.style = PaintingStyle.stroke;
-            __cascade.strokeWidth = ((ChipLibrary._kCheckmarkStrokeWidth * ((global::Doroti.Framework.Rendering.RenderBox)this.avatar).size.height) / 24.0);
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = paintColor__76178!;
+    __cascade.style = PaintingStyle.stroke;
+    __cascade.strokeWidth = ((ChipLibrary._kCheckmarkStrokeWidth * ((global::Doroti.Framework.Rendering.RenderBox)this.avatar).size.height) / 24.0);
+    return __cascade;
+}))();
         double t__76958 = ((object.Equals(((global::Doroti.Framework.Animation.Animation<double>)this.checkmarkAnimation).status, global::Doroti.Framework.Animation.AnimationStatus.reverse)) ? 1.0 : ((global::Doroti.Framework.Animation.Animation<double>)this.checkmarkAnimation).value);
         if ((t__76958 == 0.0))
         {
@@ -1267,10 +1291,12 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             {
                 global::Doroti.Ui.Rect avatarRect__78210 = ((global::Doroti.Ui.Rect)(object?)_RenderChip__chip._boxRect(this.avatar).shift(offset));
                 var darkenPaint__78269 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = selectionScrimTween.evaluate(this.checkmarkAnimation)!;
-            __cascade.blendMode = BlendMode.srcATop;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = selectionScrimTween.evaluate(this.checkmarkAnimation)!;
+    __cascade.blendMode = BlendMode.srcATop;
+    return __cascade;
+}))();
                 if (this.avatarBorder!.preferPaintInterior)
                 {
                     this.avatarBorder!.paintInterior(((global::Doroti.Framework.Rendering.PaintingContext)context).canvas, avatarRect__78210, darkenPaint__78269);
@@ -1311,9 +1337,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             if ((disabledColorAlpha__79596 != 255L))
             {
                 ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.saveLayer(_RenderChip__chip._boxRect(this.avatar).shift(offset).inflate(20.0), ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = disabledColor__79550;
-            return __cascade;        }))());
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = disabledColor__79550;
+    return __cascade;
+}))());
             }
             paintWithOverlay(context, offset);
             if ((disabledColorAlpha__79596 != 255L))
@@ -1336,14 +1364,16 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         {
             if (this.needsCompositing)
             {
-                this._labelOpacityLayerHandler.layer = context.pushOpacity(offset, disabledColorAlpha__80719, ((global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)((context, offset) => {
-context.paintChild(child, (_RenderChip__chip._boxParentData(child).offset + offset));
-})), oldLayer: ((global::Doroti.Framework.Rendering.LayerHandle<global::Doroti.Framework.Rendering.OpacityLayer>)this._labelOpacityLayerHandler).layer);
+                this._labelOpacityLayerHandler.layer = context.pushOpacity(offset, disabledColorAlpha__80719, ((global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)((context, offset) =>
+                {
+                    context.paintChild(child, (_RenderChip__chip._boxParentData(child).offset + offset));
+                })), oldLayer: ((global::Doroti.Framework.Rendering.LayerHandle<global::Doroti.Framework.Rendering.OpacityLayer>)this._labelOpacityLayerHandler).layer);
                 if (isDeleteIcon)
                 {
-                    this._deleteIconOpacityLayerHandler.layer = context.pushOpacity(offset, disabledColorAlpha__80719, ((global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)((context, offset) => {
-context.paintChild(child, (_RenderChip__chip._boxParentData(child).offset + offset));
-})), oldLayer: ((global::Doroti.Framework.Rendering.LayerHandle<global::Doroti.Framework.Rendering.OpacityLayer>)this._deleteIconOpacityLayerHandler).layer);
+                    this._deleteIconOpacityLayerHandler.layer = context.pushOpacity(offset, disabledColorAlpha__80719, ((global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)((context, offset) =>
+                    {
+                        context.paintChild(child, (_RenderChip__chip._boxParentData(child).offset + offset));
+                    })), oldLayer: ((global::Doroti.Framework.Rendering.LayerHandle<global::Doroti.Framework.Rendering.OpacityLayer>)this._deleteIconOpacityLayerHandler).layer);
                 }
             }
             else
@@ -1352,9 +1382,11 @@ context.paintChild(child, (_RenderChip__chip._boxParentData(child).offset + offs
                 this._deleteIconOpacityLayerHandler.layer = null;
                 global::Doroti.Ui.Rect childRect__81617 = ((global::Doroti.Ui.Rect)(object?)_RenderChip__chip._boxRect(child).shift(offset));
                 ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.saveLayer(childRect__81617.inflate(20.0), ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this._disabledColor;
-            return __cascade;        }))());
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this._disabledColor;
+    return __cascade;
+}))());
                 context.paintChild(child, (_RenderChip__chip._boxParentData(child).offset + offset));
                 ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.restore();
             }
@@ -1411,24 +1443,29 @@ context.paintChild(child, (_RenderChip__chip._boxParentData(child).offset + offs
 
     public override void debugPaint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        DartRuntimePrimitives.Assert(() => (!_debugShowTapTargetOutlines || ((global::System.Func<bool>)(() => {
-var outlinePaint__83467 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = new global::Doroti.Ui.Color(4286578688L);
-            __cascade.strokeWidth = 1.0;
-            __cascade.style = PaintingStyle.stroke;
-            return __cascade;        }))();
-if (this.deleteIconShowing)
-{
-    ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRect(this._deleteButtonRect.shift(offset), outlinePaint__83467);
-}
-((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRect(this._pressRect.shift(offset), ((Func<Paint>)(() =>
-{            var __cascade = outlinePaint__83467;
-            __cascade.color = new global::Doroti.Ui.Color(4278222848L);
-            return __cascade;        }))());
-return true;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))()));
+        DartRuntimePrimitives.Assert(() => (!_debugShowTapTargetOutlines || ((global::System.Func<bool>)(() =>
+        {
+            var outlinePaint__83467 = ((Func<Paint>)(() =>
+            {
+                var __cascade = new global::Doroti.Ui.Paint();
+                __cascade.color = new global::Doroti.Ui.Color(4286578688L);
+                __cascade.strokeWidth = 1.0;
+                __cascade.style = PaintingStyle.stroke;
+                return __cascade;
+            }))();
+            if (this.deleteIconShowing)
+            {
+                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRect(this._deleteButtonRect.shift(offset), outlinePaint__83467);
+            }
+            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRect(this._pressRect.shift(offset), ((Func<Paint>)(() =>
+            {
+                var __cascade = outlinePaint__83467;
+                __cascade.color = new global::Doroti.Ui.Color(4278222848L);
+                return __cascade;
+            }))());
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))()));
     }
 
     public override bool hitTestSelf(Offset position) => DartRuntimePrimitives.ConvertValue<bool>((this._deleteButtonRect.contains(position) || this._pressRect.contains(position)));

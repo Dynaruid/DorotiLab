@@ -277,26 +277,29 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
     public virtual bool isButton => DartRuntimePrimitives.ConvertValue<bool>((!canRequestFocus() || this.selectOnly));
     public virtual void refreshLeadingPadding()
     {
-        global::Doroti.Framework.Widgets.WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) => {
-if (!this.mounted)
-{
-    return;
-}
-setState(((global::System.Action)(() => {
-leadingPadding = getWidth(this._leadingKey);
-})));
-})), debugLabel: "DropdownMenu.refreshLeadingPadding");
+        global::Doroti.Framework.Widgets.WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+        {
+            if (!this.mounted)
+            {
+                return;
+            }
+            setState(((global::System.Action)(() =>
+            {
+                leadingPadding = getWidth(this._leadingKey);
+            })));
+        })), debugLabel: "DropdownMenu.refreshLeadingPadding");
     }
 
     public virtual void scrollToHighlight()
     {
-        global::Doroti.Framework.Widgets.WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) => {
-global::Doroti.Framework.Widgets.BuildContext? highlightContext__31715 = this.buttonItemKeys[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))].currentContext;
-if ((highlightContext__31715 is not null))
-{
-    DartRuntimePrimitives.Ignore(Scrollable.of(highlightContext__31715).position.ensureVisible(highlightContext__31715.findRenderObject()!));
-}
-})), debugLabel: "DropdownMenu.scrollToHighlight");
+        global::Doroti.Framework.Widgets.WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+        {
+            global::Doroti.Framework.Widgets.BuildContext? highlightContext__31715 = this.buttonItemKeys[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))].currentContext;
+            if ((highlightContext__31715 is not null))
+            {
+                DartRuntimePrimitives.Ignore(Scrollable.of(highlightContext__31715).position.ensureVisible(highlightContext__31715.findRenderObject()!));
+            }
+        })), debugLabel: "DropdownMenu.scrollToHighlight");
     }
 
     public virtual double? getWidth(global::Doroti.Framework.Widgets.GlobalKey<IState> key)
@@ -390,22 +393,23 @@ if ((highlightContext__31715 is not null))
                 double horizontalPadding__37958 = ((padding__34534 + Dropdown_menuLibrary._kDefaultHorizontalPadding) + effectiveInputStartGap__33864);
                 label__37855 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: (DartRuntimePrimitives.RequireValue(((DropdownMenu<T>)(object)this.widget).width) - horizontalPadding__37958)), child: label__37855));
             }
-            global::Doroti.Framework.Widgets.Widget menuItemButton__38232 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ExcludeFocus(child: new global::Doroti.Framework.Widgets.ExcludeSemantics(excluding: excludeSemantics, child: new MenuItemButton(key: (enableScrollToHighlight ? this.buttonItemKeys[(int)(i__33980)] : null), statesController: (entryIsSelected__35710 ? this._highlightedItemStatesController : null), style: effectiveStyle__34687, leadingIcon: ((DropdownMenuEntry<T>)entry__34055).leadingIcon, trailingIcon: ((DropdownMenuEntry<T>)entry__34055).trailingIcon, closeOnActivate: (object.Equals(((DropdownMenu<T>)(object)this.widget).closeBehavior, DropdownMenuCloseBehavior.all)), onPressed: ((global::System.Action)((((DropdownMenuEntry<T>)entry__34055).enabled && ((DropdownMenu<T>)(object)this.widget).enabled) ? (() => {
-if (!this.mounted)
-{
-    ((DropdownMenu<T>)(object)this.widget).controller?.value = new global::Doroti.Framework.Services.TextEditingValue(text: ((DropdownMenuEntry<T>)entry__34055).label, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: ((DropdownMenuEntry<T>)entry__34055).label.Length));
-    ((DropdownMenu<T>)(object)this.widget).onSelected?.Invoke(((DropdownMenuEntry<T>)entry__34055).value);
-    return;
-}
-this._effectiveTextEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(text: ((DropdownMenuEntry<T>)entry__34055).label, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: ((DropdownMenuEntry<T>)entry__34055).label.Length));
-currentHighlight = (((DropdownMenu<T>)(object)this.widget).enableSearch ? i__33980 : null);
-((DropdownMenu<T>)(object)this.widget).onSelected?.Invoke(((DropdownMenuEntry<T>)entry__34055).value);
-_enableFilter = false;
-if ((object.Equals(((DropdownMenu<T>)(object)this.widget).closeBehavior, DropdownMenuCloseBehavior.self)))
-{
-    this._controller.close();
-}
-}) : null)), requestFocusOnHover: false, child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: effectiveInputStartGap__33864), child: label__37855)))));
+            global::Doroti.Framework.Widgets.Widget menuItemButton__38232 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ExcludeFocus(child: new global::Doroti.Framework.Widgets.ExcludeSemantics(excluding: excludeSemantics, child: new MenuItemButton(key: (enableScrollToHighlight ? this.buttonItemKeys[(int)(i__33980)] : null), statesController: (entryIsSelected__35710 ? this._highlightedItemStatesController : null), style: effectiveStyle__34687, leadingIcon: ((DropdownMenuEntry<T>)entry__34055).leadingIcon, trailingIcon: ((DropdownMenuEntry<T>)entry__34055).trailingIcon, closeOnActivate: (object.Equals(((DropdownMenu<T>)(object)this.widget).closeBehavior, DropdownMenuCloseBehavior.all)), onPressed: ((global::System.Action)((((DropdownMenuEntry<T>)entry__34055).enabled && ((DropdownMenu<T>)(object)this.widget).enabled) ? (() =>
+            {
+                if (!this.mounted)
+                {
+                    ((DropdownMenu<T>)(object)this.widget).controller?.value = new global::Doroti.Framework.Services.TextEditingValue(text: ((DropdownMenuEntry<T>)entry__34055).label, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: ((DropdownMenuEntry<T>)entry__34055).label.Length));
+                    ((DropdownMenu<T>)(object)this.widget).onSelected?.Invoke(((DropdownMenuEntry<T>)entry__34055).value);
+                    return;
+                }
+                this._effectiveTextEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(text: ((DropdownMenuEntry<T>)entry__34055).label, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: ((DropdownMenuEntry<T>)entry__34055).label.Length));
+                currentHighlight = (((DropdownMenu<T>)(object)this.widget).enableSearch ? i__33980 : null);
+                ((DropdownMenu<T>)(object)this.widget).onSelected?.Invoke(((DropdownMenuEntry<T>)entry__34055).value);
+                _enableFilter = false;
+                if ((object.Equals(((DropdownMenu<T>)(object)this.widget).closeBehavior, DropdownMenuCloseBehavior.self)))
+                {
+                    this._controller.close();
+                }
+            }) : null)), requestFocusOnHover: false, child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: effectiveInputStartGap__33864), child: label__37855)))));
             result__33946.Add(menuItemButton__38232);
         }
         return result__33946;
@@ -414,42 +418,44 @@ if ((object.Equals(((DropdownMenu<T>)(object)this.widget).closeBehavior, Dropdow
 
     public virtual void handleUpKey(_ArrowUpIntent__dropdown_menu __unused0)
     {
-        setState(((global::System.Action)(() => {
-if (((!((DropdownMenu<T>)(object)this.widget).enabled || !this._menuHasEnabledItem) || !((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen))
-{
-    return;
-}
-_enableFilter = false;
-_enableSearch = false;
-currentHighlight ??= 0L;
-currentHighlight = (((DartRuntimePrimitives.RequireValue(this.currentHighlight) - 1L)) % checked((long)(this.filteredEntries.Count)));
-while (!this.filteredEntries[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))].enabled)
-{
-    currentHighlight = (((DartRuntimePrimitives.RequireValue(this.currentHighlight) - 1L)) % checked((long)(this.filteredEntries.Count)));
-}
-string currentLabel__41369 = this.filteredEntries[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))].label;
-this._effectiveTextEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(text: currentLabel__41369, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: currentLabel__41369.Length));
-})));
+        setState(((global::System.Action)(() =>
+        {
+            if (((!((DropdownMenu<T>)(object)this.widget).enabled || !this._menuHasEnabledItem) || !((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen))
+            {
+                return;
+            }
+            _enableFilter = false;
+            _enableSearch = false;
+            currentHighlight ??= 0L;
+            currentHighlight = (((DartRuntimePrimitives.RequireValue(this.currentHighlight) - 1L)) % checked((long)(this.filteredEntries.Count)));
+            while (!this.filteredEntries[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))].enabled)
+            {
+                currentHighlight = (((DartRuntimePrimitives.RequireValue(this.currentHighlight) - 1L)) % checked((long)(this.filteredEntries.Count)));
+            }
+            string currentLabel__41369 = this.filteredEntries[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))].label;
+            this._effectiveTextEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(text: currentLabel__41369, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: currentLabel__41369.Length));
+        })));
     }
 
     public virtual void handleDownKey(_ArrowDownIntent__dropdown_menu __unused0)
     {
-        setState(((global::System.Action)(() => {
-if (((!((DropdownMenu<T>)(object)this.widget).enabled || !this._menuHasEnabledItem) || !((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen))
-{
-    return;
-}
-_enableFilter = false;
-_enableSearch = false;
-currentHighlight ??= -1L;
-currentHighlight = (((DartRuntimePrimitives.RequireValue(this.currentHighlight) + 1L)) % checked((long)(this.filteredEntries.Count)));
-while (!this.filteredEntries[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))].enabled)
-{
-    currentHighlight = (((DartRuntimePrimitives.RequireValue(this.currentHighlight) + 1L)) % checked((long)(this.filteredEntries.Count)));
-}
-string currentLabel__42102 = this.filteredEntries[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))].label;
-this._effectiveTextEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(text: currentLabel__42102, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: currentLabel__42102.Length));
-})));
+        setState(((global::System.Action)(() =>
+        {
+            if (((!((DropdownMenu<T>)(object)this.widget).enabled || !this._menuHasEnabledItem) || !((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen))
+            {
+                return;
+            }
+            _enableFilter = false;
+            _enableSearch = false;
+            currentHighlight ??= -1L;
+            currentHighlight = (((DartRuntimePrimitives.RequireValue(this.currentHighlight) + 1L)) % checked((long)(this.filteredEntries.Count)));
+            while (!this.filteredEntries[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))].enabled)
+            {
+                currentHighlight = (((DartRuntimePrimitives.RequireValue(this.currentHighlight) + 1L)) % checked((long)(this.filteredEntries.Count)));
+            }
+            string currentLabel__42102 = this.filteredEntries[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))].label;
+            this._effectiveTextEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(text: currentLabel__42102, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: currentLabel__42102.Length));
+        })));
     }
 
     public virtual void handleEnterKey(_EnterIntent__dropdown_menu __unused0)
@@ -482,8 +488,9 @@ this._effectiveTextEditingController.value = new global::Doroti.Framework.Servic
                 this._internalFocusNode.requestFocus();
             }
         }
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     internal virtual void _handleSubmitted()
@@ -550,22 +557,24 @@ this._effectiveTextEditingController.value = new global::Doroti.Framework.Servic
         double? anchorWidth__45717 = getWidth(this._anchorKey);
         if ((((DropdownMenu<T>)(object)this.widget).width is not null))
         {
-            effectiveMenuStyle__45617 = effectiveMenuStyle__45617.copyWith(minimumSize: WidgetStateProperty.resolveWith<global::Doroti.Ui.Size?>((states) => {
-double? effectiveMaximumWidth__45953 = effectiveMenuStyle__45617!.maximumSize?.resolve(states)?.width;
-return new global::Doroti.Ui.Size(Math.Min(DartRuntimePrimitives.RequireValue(((DropdownMenu<T>)(object)this.widget).width), (effectiveMaximumWidth__45953 ?? DartRuntimePrimitives.RequireValue(((DropdownMenu<T>)(object)this.widget).width))), 0.0);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            effectiveMenuStyle__45617 = effectiveMenuStyle__45617.copyWith(minimumSize: WidgetStateProperty.resolveWith<global::Doroti.Ui.Size?>((states) =>
+            {
+                double? effectiveMaximumWidth__45953 = effectiveMenuStyle__45617!.maximumSize?.resolve(states)?.width;
+                return new global::Doroti.Ui.Size(Math.Min(DartRuntimePrimitives.RequireValue(((DropdownMenu<T>)(object)this.widget).width), (effectiveMaximumWidth__45953 ?? DartRuntimePrimitives.RequireValue(((DropdownMenu<T>)(object)this.widget).width))), 0.0);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
         }
         else
         {
             if ((anchorWidth__45717 is not null))
             {
                 double anchorWidth__45717__value46193 = DartRuntimePrimitives.RequireValue(anchorWidth__45717);
-                effectiveMenuStyle__45617 = effectiveMenuStyle__45617.copyWith(minimumSize: WidgetStateProperty.resolveWith<global::Doroti.Ui.Size?>((states) => {
-double? effectiveMaximumWidth__46384 = effectiveMenuStyle__45617!.maximumSize?.resolve(states)?.width;
-return new global::Doroti.Ui.Size(Math.Min(DartRuntimePrimitives.RequireValue(anchorWidth__45717__value46193), (effectiveMaximumWidth__46384 ?? DartRuntimePrimitives.RequireValue(anchorWidth__45717__value46193))), 0.0);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+                effectiveMenuStyle__45617 = effectiveMenuStyle__45617.copyWith(minimumSize: WidgetStateProperty.resolveWith<global::Doroti.Ui.Size?>((states) =>
+                {
+                    double? effectiveMaximumWidth__46384 = effectiveMenuStyle__45617!.maximumSize?.resolve(states)?.width;
+                    return new global::Doroti.Ui.Size(Math.Min(DartRuntimePrimitives.RequireValue(anchorWidth__45717__value46193), (effectiveMaximumWidth__46384 ?? DartRuntimePrimitives.RequireValue(anchorWidth__45717__value46193))), 0.0);
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }));
             }
         }
         if ((((DropdownMenu<T>)(object)this.widget).menuHeight is not null))
@@ -574,36 +583,42 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         }
         InputDecorationThemeData effectiveInputDecorationTheme__46851 = ((((DropdownMenu<T>)(object)this.widget).inputDecorationTheme ?? theme__44092.inputDecorationTheme) ?? defaults__44163.inputDecorationTheme!);
         global::Doroti.Framework.Services.MouseCursor? effectiveMouseCursor__47008 = ((global::Doroti.Framework.Services.MouseCursor?)(object?)(((object)((DropdownMenu<T>)(object)this.widget).enabled) switch { true => (this.isButton ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.SystemMouseCursors.text), false => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Services.SystemMouseCursor>(null), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        global::Doroti.Framework.Widgets.Widget menuAnchor__47174 = ((global::Doroti.Framework.Widgets.Widget)(object?)new MenuAnchor(style: effectiveMenuStyle__45617, alignmentOffset: ((DropdownMenu<T>)(object)this.widget).alignmentOffset, reservedPadding: global::Doroti.Framework.Painting.EdgeInsets.zero, controller: this._controller, menuChildren: menu__45106, crossAxisUnconstrained: false, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MenuController, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>?)((context, controller, child) => {
-DartRuntimePrimitives.Assert(() => (this._initialMenu is not null));
-global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MenuController, InputDecoration> decorationBuilder__47577 = ((((DropdownMenu<T>)(object)this.widget).decorationBuilder ?? (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MenuController, InputDecoration>)this._buildDefaultDecoration));
-InputDecoration decoration__47686 = decorationBuilder__47577(context, controller);
-if ((((InputDecoration)decoration__47686).suffixIcon is null))
-{
-    decoration__47686 = decoration__47686.copyWith(suffixIcon: _buildDefaultSuffixIcon(context, controller));
-}
-InputDecoration effectiveDecoration__48040 = ((InputDecoration)(object?)decoration__47686.applyDefaults(effectiveInputDecorationTheme__46851));
-InputDecoration textFieldDecoration__48170 = ((((InputDecoration)effectiveDecoration__48040).prefixIcon is null) ? effectiveDecoration__48040 : effectiveDecoration__48040.copyWith(prefixIcon: new global::Doroti.Framework.Widgets.SizedBox(key: this._leadingKey, child: ((InputDecoration)effectiveDecoration__48040).prefixIcon)));
-MaterialLocalizations localizations__48566 = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
-global::Doroti.Framework.Widgets.Widget textField__48638 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(button: this.isButton, hint: ((object.Equals(Theme.of(context).platform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)) ? (((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen ? ((MaterialLocalizations)localizations__48566).collapsedHint : ((MaterialLocalizations)localizations__48566).expandedHint) : null), expanded: ((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen, onExpand: ((global::System.Action)(((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen ? null : (() => {
-this._controller.open();
-}))), onCollapse: ((global::System.Action)(!((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen ? null : (() => {
-this._controller.close();
-}))), child: new global::Doroti.Framework.Widgets.ExcludeSemantics(excluding: (this.isButton && global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb), child: new TextField(key: this._anchorKey, enabled: ((DropdownMenu<T>)(object)this.widget).enabled, mouseCursor: effectiveMouseCursor__47008, focusNode: ((DropdownMenu<T>)(object)this.widget).focusNode, canRequestFocus: canRequestFocus(), enableInteractiveSelection: !this.isButton, readOnly: this.isButton, keyboardType: ((DropdownMenu<T>)(object)this.widget).keyboardType, textAlign: ((DropdownMenu<T>)(object)this.widget).textAlign, textAlignVertical: global::Doroti.Framework.Painting.TextAlignVertical.center, maxLines: ((DropdownMenu<T>)(object)this.widget).maxLines, textInputAction: ((DropdownMenu<T>)(object)this.widget).textInputAction, cursorHeight: ((DropdownMenu<T>)(object)this.widget).cursorHeight, style: effectiveTextStyle__45449, controller: this._effectiveTextEditingController, onSubmitted: ((_) => { _handleSubmitted(); }), onTap: ((global::System.Action)(!((DropdownMenu<T>)(object)this.widget).enabled ? null : (() => {
-handlePressed(controller, focusForKeyboard: !canRequestFocus());
-}))), onChanged: ((text) => {
-controller.open();
-setState(((global::System.Action)(() => {
-filteredEntries = ((DropdownMenu<T>)(object)this.widget).dropdownMenuEntries;
-_enableFilter = ((DropdownMenu<T>)(object)this.widget).enableFilter;
-_enableSearch = ((DropdownMenu<T>)(object)this.widget).enableSearch;
-})));
-}), inputFormatters: ((DropdownMenu<T>)(object)this.widget).inputFormatters, decoration: textFieldDecoration__48170, restorationId: ((DropdownMenu<T>)(object)this.widget).restorationId, scrollPadding: ((DropdownMenu<T>)(object)this.widget).scrollPadding))));
-global::Doroti.Framework.Widgets.Widget? effectiveLabel__51312 = (((InputDecoration)effectiveDecoration__48040).label ?? (((((InputDecoration)effectiveDecoration__48040).labelText is not null) ? new global::Doroti.Framework.Widgets.Text(((InputDecoration)effectiveDecoration__48040).labelText!) : null)));
-global::Doroti.Framework.Widgets.Widget body__51699 = ((((DropdownMenu<T>)(object)this.widget).expandedInsets is not null) ? textField__48638 : new _DropdownMenuBody__dropdown_menu(width: ((DropdownMenu<T>)(object)this.widget).width, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection52521 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection52521.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(textField__48638)); __collection52521.AddRange(this._initialMenu!); if ((effectiveLabel__51312 is not null)) { __collection52521.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ExcludeSemantics(child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4.0), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: effectiveTextStyle__45449!, child: effectiveLabel__51312))))); } __collection52521.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>((((InputDecoration)effectiveDecoration__48040).suffixIcon ?? global::Doroti.Framework.Widgets.SizedBox.CreateShrink()))); __collection52521.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateAll(8.0), child: (((InputDecoration)effectiveDecoration__48040).prefixIcon ?? global::Doroti.Framework.Widgets.SizedBox.CreateShrink())))); return __collection52521; }))()));
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Shortcuts(shortcuts: (this.selectOnly ? _selectOnlyShortcuts : _editableShortcuts), child: body__51699));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        global::Doroti.Framework.Widgets.Widget menuAnchor__47174 = ((global::Doroti.Framework.Widgets.Widget)(object?)new MenuAnchor(style: effectiveMenuStyle__45617, alignmentOffset: ((DropdownMenu<T>)(object)this.widget).alignmentOffset, reservedPadding: global::Doroti.Framework.Painting.EdgeInsets.zero, controller: this._controller, menuChildren: menu__45106, crossAxisUnconstrained: false, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MenuController, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>?)((context, controller, child) =>
+        {
+            DartRuntimePrimitives.Assert(() => (this._initialMenu is not null));
+            global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MenuController, InputDecoration> decorationBuilder__47577 = ((((DropdownMenu<T>)(object)this.widget).decorationBuilder ?? (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MenuController, InputDecoration>)this._buildDefaultDecoration));
+            InputDecoration decoration__47686 = decorationBuilder__47577(context, controller);
+            if ((((InputDecoration)decoration__47686).suffixIcon is null))
+            {
+                decoration__47686 = decoration__47686.copyWith(suffixIcon: _buildDefaultSuffixIcon(context, controller));
+            }
+            InputDecoration effectiveDecoration__48040 = ((InputDecoration)(object?)decoration__47686.applyDefaults(effectiveInputDecorationTheme__46851));
+            InputDecoration textFieldDecoration__48170 = ((((InputDecoration)effectiveDecoration__48040).prefixIcon is null) ? effectiveDecoration__48040 : effectiveDecoration__48040.copyWith(prefixIcon: new global::Doroti.Framework.Widgets.SizedBox(key: this._leadingKey, child: ((InputDecoration)effectiveDecoration__48040).prefixIcon)));
+            MaterialLocalizations localizations__48566 = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
+            global::Doroti.Framework.Widgets.Widget textField__48638 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(button: this.isButton, hint: ((object.Equals(Theme.of(context).platform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)) ? (((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen ? ((MaterialLocalizations)localizations__48566).collapsedHint : ((MaterialLocalizations)localizations__48566).expandedHint) : null), expanded: ((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen, onExpand: ((global::System.Action)(((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen ? null : (() =>
+            {
+                this._controller.open();
+            }))), onCollapse: ((global::System.Action)(!((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen ? null : (() =>
+            {
+                this._controller.close();
+            }))), child: new global::Doroti.Framework.Widgets.ExcludeSemantics(excluding: (this.isButton && global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb), child: new TextField(key: this._anchorKey, enabled: ((DropdownMenu<T>)(object)this.widget).enabled, mouseCursor: effectiveMouseCursor__47008, focusNode: ((DropdownMenu<T>)(object)this.widget).focusNode, canRequestFocus: canRequestFocus(), enableInteractiveSelection: !this.isButton, readOnly: this.isButton, keyboardType: ((DropdownMenu<T>)(object)this.widget).keyboardType, textAlign: ((DropdownMenu<T>)(object)this.widget).textAlign, textAlignVertical: global::Doroti.Framework.Painting.TextAlignVertical.center, maxLines: ((DropdownMenu<T>)(object)this.widget).maxLines, textInputAction: ((DropdownMenu<T>)(object)this.widget).textInputAction, cursorHeight: ((DropdownMenu<T>)(object)this.widget).cursorHeight, style: effectiveTextStyle__45449, controller: this._effectiveTextEditingController, onSubmitted: ((_) => { _handleSubmitted(); }), onTap: ((global::System.Action)(!((DropdownMenu<T>)(object)this.widget).enabled ? null : (() =>
+            {
+                handlePressed(controller, focusForKeyboard: !canRequestFocus());
+            }))), onChanged: ((text) =>
+            {
+                controller.open();
+                setState(((global::System.Action)(() =>
+                {
+                    filteredEntries = ((DropdownMenu<T>)(object)this.widget).dropdownMenuEntries;
+                    _enableFilter = ((DropdownMenu<T>)(object)this.widget).enableFilter;
+                    _enableSearch = ((DropdownMenu<T>)(object)this.widget).enableSearch;
+                })));
+            }), inputFormatters: ((DropdownMenu<T>)(object)this.widget).inputFormatters, decoration: textFieldDecoration__48170, restorationId: ((DropdownMenu<T>)(object)this.widget).restorationId, scrollPadding: ((DropdownMenu<T>)(object)this.widget).scrollPadding))));
+            global::Doroti.Framework.Widgets.Widget? effectiveLabel__51312 = (((InputDecoration)effectiveDecoration__48040).label ?? (((((InputDecoration)effectiveDecoration__48040).labelText is not null) ? new global::Doroti.Framework.Widgets.Text(((InputDecoration)effectiveDecoration__48040).labelText!) : null)));
+            global::Doroti.Framework.Widgets.Widget body__51699 = ((((DropdownMenu<T>)(object)this.widget).expandedInsets is not null) ? textField__48638 : new _DropdownMenuBody__dropdown_menu(width: ((DropdownMenu<T>)(object)this.widget).width, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection52521 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection52521.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(textField__48638)); __collection52521.AddRange(this._initialMenu!); if ((effectiveLabel__51312 is not null)) { __collection52521.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ExcludeSemantics(child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4.0), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: effectiveTextStyle__45449!, child: effectiveLabel__51312))))); } __collection52521.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>((((InputDecoration)effectiveDecoration__48040).suffixIcon ?? global::Doroti.Framework.Widgets.SizedBox.CreateShrink()))); __collection52521.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateAll(8.0), child: (((InputDecoration)effectiveDecoration__48040).prefixIcon ?? global::Doroti.Framework.Widgets.SizedBox.CreateShrink())))); return __collection52521; }))()));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Shortcuts(shortcuts: (this.selectOnly ? _selectOnlyShortcuts : _editableShortcuts), child: body__51699));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         if (((DropdownMenu<T>)(object)this.widget).expandedInsets is global::Doroti.Framework.Painting.EdgeInsetsGeometry padding__53820)
         {
             menuAnchor__47174 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: padding__53820.clamp(global::Doroti.Framework.Painting.EdgeInsets.zero, global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: double.PositiveInfinity, right: double.PositiveInfinity).add(global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(end: double.PositiveInfinity, start: double.PositiveInfinity))), child: menuAnchor__47174));
@@ -622,9 +637,10 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     internal virtual global::Doroti.Framework.Widgets.Widget? _buildDefaultSuffixIcon(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.MenuController controller)
     {
         bool isCollapsed__56223 = (((DropdownMenu<T>)(object)this.widget).inputDecorationTheme?.isCollapsed ?? false);
-        return ((global::Doroti.Framework.Widgets.Widget?)(object?)(((DropdownMenu<T>)(object)this.widget).showTrailingIcon ? new global::Doroti.Framework.Widgets.Padding(padding: (isCollapsed__56223 ? global::Doroti.Framework.Painting.EdgeInsets.zero : global::Doroti.Framework.Painting.EdgeInsets.CreateAll(4.0)), child: new global::Doroti.Framework.Widgets.ExcludeSemantics(excluding: this.isButton, child: new IconButton(focusNode: this._trailingIconButtonFocusNode, isSelected: ((global::Doroti.Framework.Widgets.MenuController)controller).isOpen, constraints: ((DropdownMenu<T>)(object)this.widget).inputDecorationTheme?.suffixIconConstraints, padding: (isCollapsed__56223 ? global::Doroti.Framework.Painting.EdgeInsets.zero : null), icon: (((DropdownMenu<T>)(object)this.widget).trailingIcon ?? new global::Doroti.Framework.Widgets.Icon(Icons.arrow_drop_down)), selectedIcon: (((DropdownMenu<T>)(object)this.widget).selectedTrailingIcon ?? new global::Doroti.Framework.Widgets.Icon(Icons.arrow_drop_up)), onPressed: ((global::System.Action)(!((DropdownMenu<T>)(object)this.widget).enabled ? null : (() => {
-handlePressed(controller);
-})))))) : null));
+        return ((global::Doroti.Framework.Widgets.Widget?)(object?)(((DropdownMenu<T>)(object)this.widget).showTrailingIcon ? new global::Doroti.Framework.Widgets.Padding(padding: (isCollapsed__56223 ? global::Doroti.Framework.Painting.EdgeInsets.zero : global::Doroti.Framework.Painting.EdgeInsets.CreateAll(4.0)), child: new global::Doroti.Framework.Widgets.ExcludeSemantics(excluding: this.isButton, child: new IconButton(focusNode: this._trailingIconButtonFocusNode, isSelected: ((global::Doroti.Framework.Widgets.MenuController)controller).isOpen, constraints: ((DropdownMenu<T>)(object)this.widget).inputDecorationTheme?.suffixIconConstraints, padding: (isCollapsed__56223 ? global::Doroti.Framework.Painting.EdgeInsets.zero : null), icon: (((DropdownMenu<T>)(object)this.widget).trailingIcon ?? new global::Doroti.Framework.Widgets.Icon(Icons.arrow_drop_down)), selectedIcon: (((DropdownMenu<T>)(object)this.widget).selectedTrailingIcon ?? new global::Doroti.Framework.Widgets.Icon(Icons.arrow_drop_up)), onPressed: ((global::System.Action)(!((DropdownMenu<T>)(object)this.widget).enabled ? null : (() =>
+        {
+            handlePressed(controller);
+        })))))) : null));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -872,11 +888,12 @@ public class _RenderDropdownMenuBody__dropdown_menu : global::Doroti.Framework.R
         if ((child__64445 is not null))
         {
             var childParentData__64502 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__64445.parentData!)!;
-            bool isHit__64587 = result.addWithPaintOffset(offset: childParentData__64502.offset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, transformed) => {
-DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData__64502.offset))));
-return child__64445.hitTest(result, position: transformed);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+            bool isHit__64587 = result.addWithPaintOffset(offset: childParentData__64502.offset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, transformed) =>
+            {
+                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData__64502.offset))));
+                return child__64445.hitTest(result, position: transformed);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
             if (isHit__64587)
             {
                 return true;
@@ -888,13 +905,14 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     public override void visitChildrenForSemantics(global::System.Action<global::Doroti.Framework.Rendering.RenderObject> visitor)
     {
-        visitChildren(((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)((renderObjectChild) => {
-var child__65228 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)renderObjectChild)!;
-if ((object.Equals(child__65228, this.firstChild)))
-{
-    visitor(((global::Doroti.Framework.Rendering.RenderBox)renderObjectChild));
-}
-})));
+        visitChildren(((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)((renderObjectChild) =>
+        {
+            var child__65228 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)renderObjectChild)!;
+            if ((object.Equals(child__65228, this.firstChild)))
+            {
+                visitor(((global::Doroti.Framework.Rendering.RenderBox)renderObjectChild));
+            }
+        })));
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -1203,11 +1221,12 @@ if ((object.Equals(child__65228, this.firstChild)))
         while ((child__140279 is not null))
         {
             var childParentData__140418 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__140279.parentData!)!;
-            bool isHit__140490 = result.addWithPaintOffset(offset: childParentData__140418.offset, position: position, hitTest: ((global::System.Func<BoxHitTestResult, Offset, bool>)((result, transformed) => {
-DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData__140418.offset))));
-return child__140279!.hitTest(result, position: transformed);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+            bool isHit__140490 = result.addWithPaintOffset(offset: childParentData__140418.offset, position: position, hitTest: ((global::System.Func<BoxHitTestResult, Offset, bool>)((result, transformed) =>
+            {
+                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData__140418.offset))));
+                return child__140279!.hitTest(result, position: transformed);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
             if (isHit__140490)
             {
                 return true;

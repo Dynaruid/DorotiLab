@@ -112,9 +112,11 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
         get
         {
             return (((RawAutocomplete<T>)(object)this.widget).textEditingController ?? (_internalTextEditingController ??= ((Func<TextEditingController>)(() =>
-{            var __cascade = new TextEditingController();
-            __cascade.addListener(() => this._onChangedField());
-            return __cascade;        }))()));
+{
+    var __cascade = new TextEditingController();
+    __cascade.addListener(() => this._onChangedField());
+    return __cascade;
+}))()));
             return default!;
         }
     }
@@ -123,9 +125,11 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
         get
         {
             return (((RawAutocomplete<T>)(object)this.widget).focusNode ?? (_internalFocusNode ??= ((Func<FocusNode>)(() =>
-{            var __cascade = new FocusNode();
-            __cascade.addListener(() => this._onFocusChange());
-            return __cascade;        }))()));
+{
+    var __cascade = new FocusNode();
+    __cascade.addListener(() => this._onFocusChange());
+    return __cascade;
+}))()));
             return default!;
         }
     }
@@ -163,9 +167,10 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
         }
         WidgetsLocalizations localizations__18078 = ((WidgetsLocalizations)(object?)WidgetsLocalizations.of(this.context));
         string optionsHint__18145 = (resultsAvailable ? ((WidgetsLocalizations)localizations__18078).searchResultsFound : ((WidgetsLocalizations)localizations__18078).noResultsFound);
-        DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(View.of(this.context), optionsHint__18145, ((WidgetsLocalizations)localizations__18078).textDirection).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) => {
-FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
-}))));
+        DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(View.of(this.context), optionsHint__18145, ((WidgetsLocalizations)localizations__18078).textDirection).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) =>
+        {
+            FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
+        }))));
     }
 
     internal async virtual Future _onChangedField()
@@ -298,9 +303,11 @@ FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDet
         }
         global::Doroti.Ui.Size fieldSize__23175 = ((global::Doroti.Ui.Size)(object?)((OverlayChildLayoutInfo)layoutInfo).childSize);
         Matrix4 invertTransform__23227 = ((Func<Matrix4>)(() =>
-{            var __cascade = ((OverlayChildLayoutInfo)layoutInfo).childPaintTransform.clone();
-            __cascade.invert();
-            return __cascade;        }))();
+{
+    var __cascade = ((OverlayChildLayoutInfo)layoutInfo).childPaintTransform.clone();
+    __cascade.invert();
+    return __cascade;
+}))();
         global::Doroti.Framework.Painting.EdgeInsets mediaQueryPadding__23317 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
         global::Doroti.Framework.Painting.EdgeInsets viewInsets__23389 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.viewInsetsOf(context));
         global::Doroti.Ui.Rect overlayRect__23452 = ((global::Doroti.Ui.Rect)(object?)mediaQueryPadding__23317.deflateRect(viewInsets__23389.deflateRect((Offset.zero & ((OverlayChildLayoutInfo)layoutInfo).overlaySize))));
@@ -312,9 +319,11 @@ FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDet
         var optionsViewBoundingBox__24349 = new global::Doroti.Ui.Size(fieldSize__23175.width, Math.Max(optionsViewMaxHeight__24217, _kMinUsableHeight));
         double originY__24485 = (opensUp__23981 ? overlayRectInField__23756.top : (overlayRectInField__23756.bottom - optionsViewBoundingBox__24349.height));
         Matrix4 transform__24624 = ((Func<Matrix4>)(() =>
-{            var __cascade = ((OverlayChildLayoutInfo)layoutInfo).childPaintTransform.clone();
-            __cascade.translateByDouble(0.0, originY__24485, 0, 1);
-            return __cascade;        }))();
+{
+    var __cascade = ((OverlayChildLayoutInfo)layoutInfo).childPaintTransform.clone();
+    __cascade.translateByDouble(0.0, originY__24485, 0, 1);
+    return __cascade;
+}))();
         Widget child__24739 = ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => this.widget.optionsViewBuilder(context, this._select, this._options)))));
         return ((Widget)(object?)new Transform(transform: transform__24624, child: new Align(alignment: global::Doroti.Framework.Painting.Alignment.topLeft, child: new ConstrainedBox(constraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(optionsViewBoundingBox__24349), child: new Align(alignment: (opensUp__23981 ? global::Doroti.Framework.Painting.AlignmentDirectional.bottomStart : global::Doroti.Framework.Painting.AlignmentDirectional.topStart), child: new TextFieldTapRegion(child: new AutocompleteHighlightedOption(highlightIndexNotifier: this._highlightedOptionIndex, child: new ExcludeFocus(child: child__24739))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");

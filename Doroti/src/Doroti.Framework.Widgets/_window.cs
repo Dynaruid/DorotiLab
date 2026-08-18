@@ -846,14 +846,16 @@ internal class _WindowManagerState___window : State<WindowManagerIo>
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new _WindowRegistryScope___window(registry: this._registry, child: new ListenableBuilder(listenable: this._registry, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) => {
-List<Widget> subViews__90295 = ((WindowRegistryIo)this._registry).windows.map<WindowEntryIo, StatelessWidget>(((entry) => {
-return (((WindowEntryIo)entry).controller switch { DialogWindowControllerIo dialog__90440 => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new DialogWindowIo(controller: dialog__90440, child: entry.builder(context))), WindowControllerIo regular__90601 => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new WindowIo(controller: regular__90601, child: entry.builder(context))), TooltipWindowControllerIo tooltip__90765 => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new TooltipWindowIo(controller: tooltip__90765, child: entry.builder(context))), PopupWindowControllerIo popup__90934 => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new PopupWindowIo(controller: popup__90934, child: entry.builder(context))), SatelliteWindowControllerIo satellite__91101 => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new SatelliteWindowIo(controller: satellite__91101, child: entry.builder(context))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-throw new InvalidOperationException("Dart closure completed without a value.");
-})).ToList().Cast<Widget>().ToList();
-return ((Widget)(object?)new ViewCollection(views: subViews__90295));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))));
+        return ((Widget)(object?)new _WindowRegistryScope___window(registry: this._registry, child: new ListenableBuilder(listenable: this._registry, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
+        {
+            List<Widget> subViews__90295 = ((WindowRegistryIo)this._registry).windows.map<WindowEntryIo, StatelessWidget>(((entry) =>
+            {
+                return (((WindowEntryIo)entry).controller switch { DialogWindowControllerIo dialog__90440 => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new DialogWindowIo(controller: dialog__90440, child: entry.builder(context))), WindowControllerIo regular__90601 => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new WindowIo(controller: regular__90601, child: entry.builder(context))), TooltipWindowControllerIo tooltip__90765 => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new TooltipWindowIo(controller: tooltip__90765, child: entry.builder(context))), PopupWindowControllerIo popup__90934 => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new PopupWindowIo(controller: popup__90934, child: entry.builder(context))), SatelliteWindowControllerIo satellite__91101 => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new SatelliteWindowIo(controller: satellite__91101, child: entry.builder(context))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })).ToList().Cast<Widget>().ToList();
+            return ((Widget)(object?)new ViewCollection(views: subViews__90295));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

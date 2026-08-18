@@ -35,10 +35,12 @@ public class AnnotatedRegion<T> : SingleChildRenderObjectWidget
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderAnnotatedRegion<T>)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderAnnotatedRegion<T>>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.value = this.value;
-            __cascade.sized = this.sized;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.value = this.value;
+    __cascade.sized = this.sized;
+    return __cascade;
+}))());
     }
 
 }

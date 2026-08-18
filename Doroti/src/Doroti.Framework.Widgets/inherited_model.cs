@@ -38,11 +38,12 @@ public abstract class InheritedModel<T> : InheritedWidget where T : notnull
             return;
         }
         Element? modelParent__6302 = default!;
-        model__6012.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) => {
-modelParent__6302 = ancestor;
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        model__6012.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
+        {
+            modelParent__6302 = ancestor;
+            return false;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         if ((modelParent__6302 is null))
         {
             return;
@@ -99,9 +100,11 @@ public class InheritedModelElement<T> : InheritedElement
         {
             DartRuntimePrimitives.Assert(() => (aspect is T));
             setDependencies(dependent, ((Func<HashSet<T>>)(() =>
-{            var __cascade = ((dependencies__8322 ?? new HashSet<T>()));
-            __cascade.Add(((T?)(object?)aspect)!);
-            return __cascade;        }))());
+{
+    var __cascade = ((dependencies__8322 ?? new HashSet<T>()));
+    __cascade.Add(((T?)(object?)aspect)!);
+    return __cascade;
+}))());
         }
     }
 

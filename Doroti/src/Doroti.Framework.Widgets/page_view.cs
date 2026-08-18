@@ -551,23 +551,25 @@ internal class _PageViewState__page_view : State<PageView>
     {
         global::Doroti.Framework.Painting.AxisDirection axisDirection__35123 = _getDirection(context);
         ScrollPhysics physics__35187 = ((ScrollPhysics)(object?)new _ForceImplicitScrollPhysics__page_view(allowImplicitScrolling: ((PageView)this.widget).allowImplicitScrolling).applyTo((((PageView)this.widget).pageSnapping ? Page_viewLibrary._kPagePhysics.applyTo(((((PageView)this.widget).physics ?? (ScrollPhysics)((PageView)this.widget).scrollBehavior?.getScrollPhysics(context)))) : ((((PageView)this.widget).physics ?? (ScrollPhysics)((PageView)this.widget).scrollBehavior?.getScrollPhysics(context))))));
-        return ((Widget)(object?)new NotificationListener<ScrollNotification>(onNotification: ((global::System.Func<ScrollNotification, bool>?)((notification) => {
-if ((((notification.depth == 0L) && (((PageView)this.widget).onPageChanged is not null)) && (notification is ScrollUpdateNotification)))
-{
-    var metrics__35832 = ((PageMetrics?)(object?)((ScrollUpdateNotification)notification).metrics)!;
-    long currentPage__35899 = DartRuntimePrimitives.RequireValue(((PageMetrics)metrics__35832).page).round();
-    if ((currentPage__35899 != this._lastReportedPage))
-    {
-        _lastReportedPage = currentPage__35899;
-        ((PageView)this.widget).onPageChanged!(currentPage__35899);
-    }
-}
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: new Scrollable(dragStartBehavior: ((PageView)this.widget).dragStartBehavior, axisDirection: axisDirection__35123, controller: this._controller, physics: physics__35187, restorationId: ((PageView)this.widget).restorationId, hitTestBehavior: ((PageView)this.widget).hitTestBehavior, scrollBehavior: ((((PageView)this.widget).scrollBehavior ?? (ScrollBehavior)ScrollConfiguration.of(context).copyWith(scrollbars: false))), viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, position) => {
-return ((Widget)(object?)new Viewport(scrollCacheExtent: ((PageView)this.widget).scrollCacheExtent, axisDirection: axisDirection__35123, offset: position, clipBehavior: ((PageView)this.widget).clipBehavior, slivers: new List<Widget> { new SliverFillViewport(viewportFraction: ((PageController)this._controller).viewportFraction, @delegate: ((PageView)this.widget).childrenDelegate, padEnds: ((PageView)this.widget).padEnds, allowImplicitScrolling: ((PageView)this.widget).allowImplicitScrolling) }));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))));
+        return ((Widget)(object?)new NotificationListener<ScrollNotification>(onNotification: ((global::System.Func<ScrollNotification, bool>?)((notification) =>
+        {
+            if ((((notification.depth == 0L) && (((PageView)this.widget).onPageChanged is not null)) && (notification is ScrollUpdateNotification)))
+            {
+                var metrics__35832 = ((PageMetrics?)(object?)((ScrollUpdateNotification)notification).metrics)!;
+                long currentPage__35899 = DartRuntimePrimitives.RequireValue(((PageMetrics)metrics__35832).page).round();
+                if ((currentPage__35899 != this._lastReportedPage))
+                {
+                    _lastReportedPage = currentPage__35899;
+                    ((PageView)this.widget).onPageChanged!(currentPage__35899);
+                }
+            }
+            return false;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), child: new Scrollable(dragStartBehavior: ((PageView)this.widget).dragStartBehavior, axisDirection: axisDirection__35123, controller: this._controller, physics: physics__35187, restorationId: ((PageView)this.widget).restorationId, hitTestBehavior: ((PageView)this.widget).hitTestBehavior, scrollBehavior: ((((PageView)this.widget).scrollBehavior ?? (ScrollBehavior)ScrollConfiguration.of(context).copyWith(scrollbars: false))), viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, position) =>
+        {
+            return ((Widget)(object?)new Viewport(scrollCacheExtent: ((PageView)this.widget).scrollCacheExtent, axisDirection: axisDirection__35123, offset: position, clipBehavior: ((PageView)this.widget).clipBehavior, slivers: new List<Widget> { new SliverFillViewport(viewportFraction: ((PageController)this._controller).viewportFraction, @delegate: ((PageView)this.widget).childrenDelegate, padEnds: ((PageView)this.widget).padEnds, allowImplicitScrolling: ((PageView)this.widget).allowImplicitScrolling) }));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

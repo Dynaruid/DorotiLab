@@ -70,19 +70,25 @@ internal class _StreamBuilderBaseState__async<T, S> : State<StreamBuilderBase<T,
     {
         if ((((StreamBuilderBase<T, S>)(object)this.widget).stream is not null))
         {
-            _subscription = ((StreamBuilderBase<T, S>)(object)this.widget).stream!.listen(((global::System.Action<T>)((data) => {
-setState(((global::System.Action)(() => {
-_summary = this.widget.afterData(this._summary, data);
-})));
-})), onError: ((error, stackTrace) => {
-setState(((global::System.Action)(() => {
-_summary = this.widget.afterError(this._summary, error, stackTrace);
-})));
-}), onDone: ((global::System.Action)(() => {
-setState(((global::System.Action)(() => {
-_summary = this.widget.afterDone(this._summary);
-})));
-})));
+            _subscription = ((StreamBuilderBase<T, S>)(object)this.widget).stream!.listen(((global::System.Action<T>)((data) =>
+            {
+                setState(((global::System.Action)(() =>
+                {
+                    _summary = this.widget.afterData(this._summary, data);
+                })));
+            })), onError: ((error, stackTrace) =>
+            {
+                setState(((global::System.Action)(() =>
+                {
+                    _summary = this.widget.afterError(this._summary, error, stackTrace);
+                })));
+            }), onDone: ((global::System.Action)(() =>
+            {
+                setState(((global::System.Action)(() =>
+                {
+                    _summary = this.widget.afterDone(this._summary);
+                })));
+            })));
             _summary = this.widget.afterConnected(this._summary);
         }
     }
@@ -268,30 +274,34 @@ internal class _FutureBuilderState__async<T> : State<FutureBuilder<T>>
         }
         var callbackIdentity__24941 = new object();
         _activeCallbackIdentity = callbackIdentity__24941;
-        DartRuntimePrimitives.Ignore(((FutureBuilder<T>)(object)this.widget).future!.then(((data) => {
-if ((object.Equals(this._activeCallbackIdentity, callbackIdentity__24941)))
-{
-    setState(((global::System.Action)(() => {
-_snapshot = AsyncSnapshot<T>.CreateWithData(ConnectionState.done, data);
-})));
-}
-}), onError: ((error, stackTrace) => {
-if ((object.Equals(this._activeCallbackIdentity, callbackIdentity__24941)))
-{
-    setState(((global::System.Action)(() => {
-_snapshot = AsyncSnapshot<T>.CreateWithError(ConnectionState.done, error, stackTrace);
-})));
-}
-DartRuntimePrimitives.Assert(() =>
-    {
-        if (FutureBuilder<object>.debugRethrowError)
+        DartRuntimePrimitives.Ignore(((FutureBuilder<T>)(object)this.widget).future!.then(((data) =>
         {
-            DartRuntimePrimitives.Ignore(new Future<object>(error, stackTrace));
-        }
-        return true;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    });
-})));
+            if ((object.Equals(this._activeCallbackIdentity, callbackIdentity__24941)))
+            {
+                setState(((global::System.Action)(() =>
+                {
+                    _snapshot = AsyncSnapshot<T>.CreateWithData(ConnectionState.done, data);
+                })));
+            }
+        }), onError: ((error, stackTrace) =>
+        {
+            if ((object.Equals(this._activeCallbackIdentity, callbackIdentity__24941)))
+            {
+                setState(((global::System.Action)(() =>
+                {
+                    _snapshot = AsyncSnapshot<T>.CreateWithError(ConnectionState.done, error, stackTrace);
+                })));
+            }
+            DartRuntimePrimitives.Assert(() =>
+                {
+                    if (FutureBuilder<object>.debugRethrowError)
+                    {
+                        DartRuntimePrimitives.Ignore(new Future<object>(error, stackTrace));
+                    }
+                    return true;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                });
+        })));
         if ((!object.Equals(((AsyncSnapshot<T>)this._snapshot).connectionState, ConnectionState.done)))
         {
             _snapshot = this._snapshot.inState(ConnectionState.waiting);

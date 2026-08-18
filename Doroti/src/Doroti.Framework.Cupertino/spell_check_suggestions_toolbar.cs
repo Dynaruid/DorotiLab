@@ -55,13 +55,14 @@ public class CupertinoSpellCheckSuggestionsToolbar : global::Doroti.Framework.Wi
         var buttonItems__3440 = new List<global::Doroti.Framework.Widgets.ContextMenuButtonItem>();
         foreach (string suggestion__3537 in ((global::Doroti.Framework.Services.SuggestionSpan)spanAtCursorIndex__2816).suggestions.take(Spell_check_suggestions_toolbarLibrary._kMaxSuggestions))
         {
-            buttonItems__3440.Add(new global::Doroti.Framework.Widgets.ContextMenuButtonItem(onPressed: ((global::System.Action)(() => {
-if (!editableTextState.mounted)
-{
-    return;
-}
-CupertinoSpellCheckSuggestionsToolbar._replaceText(editableTextState, suggestion__3537, ((global::Doroti.Framework.Services.SuggestionSpan)spanAtCursorIndex__2816).range);
-})), label: suggestion__3537));
+            buttonItems__3440.Add(new global::Doroti.Framework.Widgets.ContextMenuButtonItem(onPressed: ((global::System.Action)(() =>
+            {
+                if (!editableTextState.mounted)
+                {
+                    return;
+                }
+                CupertinoSpellCheckSuggestionsToolbar._replaceText(editableTextState, suggestion__3537, ((global::Doroti.Framework.Services.SuggestionSpan)spanAtCursorIndex__2816).range);
+            })), label: suggestion__3537));
         }
         return buttonItems__3440;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -72,21 +73,23 @@ CupertinoSpellCheckSuggestionsToolbar._replaceText(editableTextState, suggestion
         DartRuntimePrimitives.Assert(() => (!editableTextState.widget.readOnly && !editableTextState.widget.obscureText));
         global::Doroti.Framework.Services.TextEditingValue newValue__4266 = ((global::Doroti.Framework.Services.TextEditingValue)(object?)((global::Doroti.Framework.Widgets.EditableTextState)editableTextState).textEditingValue.replaced(replacementRange, text).copyWith(selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: (replacementRange.start + text.Length))));
         editableTextState.userUpdateTextEditingValue(newValue__4266, global::Doroti.Framework.Services.SelectionChangedCause.toolbar);
-        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) => {
-if (editableTextState.mounted)
-{
-    editableTextState.bringIntoView(((global::Doroti.Framework.Widgets.EditableTextState)editableTextState).textEditingValue.selection.extent);
-}
-})), debugLabel: "SpellCheckSuggestions.bringIntoView");
+        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) =>
+        {
+            if (editableTextState.mounted)
+            {
+                editableTextState.bringIntoView(((global::Doroti.Framework.Widgets.EditableTextState)editableTextState).textEditingValue.selection.extent);
+            }
+        })), debugLabel: "SpellCheckSuggestions.bringIntoView");
         editableTextState.hideToolbar();
     }
 
     internal virtual List<global::Doroti.Framework.Widgets.Widget> _buildToolbarButtons(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return this.buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, CupertinoTextSelectionToolbarButton>(((buttonItem) => {
-return CupertinoTextSelectionToolbarButton.CreateButtonItem(buttonItem: buttonItem);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})).Cast<global::Doroti.Framework.Widgets.Widget>().ToList();
+        return this.buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, CupertinoTextSelectionToolbarButton>(((buttonItem) =>
+        {
+            return CupertinoTextSelectionToolbarButton.CreateButtonItem(buttonItem: buttonItem);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })).Cast<global::Doroti.Framework.Widgets.Widget>().ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

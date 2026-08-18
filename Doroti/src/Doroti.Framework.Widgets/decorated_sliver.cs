@@ -35,11 +35,13 @@ public class DecoratedSliver : SingleChildRenderObjectWidget
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderDecoratedSliver)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderDecoratedSliver>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.decoration = this.decoration;
-            __cascade.position = this.position;
-            __cascade.configuration = global::Doroti.Framework.Widgets.ImageLibrary.createLocalImageConfiguration(context);
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.decoration = this.decoration;
+    __cascade.position = this.position;
+    __cascade.configuration = global::Doroti.Framework.Widgets.ImageLibrary.createLocalImageConfiguration(context);
+    return __cascade;
+}))());
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)

@@ -53,11 +53,12 @@ internal class _TweenAnimationBuilderState__tween_animation_builder<T> : Animate
     public override void forEachTween(global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?> visitor)
     {
         DartRuntimePrimitives.Assert(() => (((TweenAnimationBuilder<T>)(object)this.widget).tween.end is not null), () => (object?)"Tween provided to TweenAnimationBuilder must have non-null Tween.end value.");
-        _currentTween = ((global::Doroti.Framework.Animation.Tween<T>?)(object?)visitor(this._currentTween, ((TweenAnimationBuilder<T>)(object)this.widget).tween.end, ((value) => {
-DartRuntimePrimitives.Assert(() => false);
-throw new InvalidOperationException("Constructor will never be called because null is never provided as current tween.");
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))!;
+        _currentTween = ((global::Doroti.Framework.Animation.Tween<T>?)(object?)visitor(this._currentTween, ((TweenAnimationBuilder<T>)(object)this.widget).tween.end, ((value) =>
+        {
+            DartRuntimePrimitives.Assert(() => false);
+            throw new InvalidOperationException("Constructor will never be called because null is never provided as current tween.");
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })))!;
     }
 
     public override Widget build(BuildContext context)

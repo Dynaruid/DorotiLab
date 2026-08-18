@@ -32,9 +32,11 @@ internal class _GridPaperPainter__grid_paper : global::Doroti.Framework.Renderin
     public override void paint(Canvas canvas, Size size)
     {
         var linePaint__568 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.color;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.color;
+    return __cascade;
+}))();
         double allDivisions__621 = ((this.divisions * this.subdivisions)).toDouble();
         for (var x__688 = 0.0; (x__688 <= size.width); x__688 += (this.interval / allDivisions__621))
         {

@@ -114,11 +114,12 @@ internal class _RepeatingAnimationBuilderState__repeating_animation_builder<T> :
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new AnimatedBuilder(animation: this._curvedAnimation, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) => {
-T value__6251 = ((T)(object?)((RepeatingAnimationBuilder<T>)(object)this.widget).animatable.transform(((global::Doroti.Framework.Animation.CurvedAnimation)this._curvedAnimation).value));
-return this.widget.builder(context, value__6251, child);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: ((RepeatingAnimationBuilder<T>)(object)this.widget).child));
+        return ((Widget)(object?)new AnimatedBuilder(animation: this._curvedAnimation, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
+        {
+            T value__6251 = ((T)(object?)((RepeatingAnimationBuilder<T>)(object)this.widget).animatable.transform(((global::Doroti.Framework.Animation.CurvedAnimation)this._curvedAnimation).value));
+            return this.widget.builder(context, value__6251, child);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), child: ((RepeatingAnimationBuilder<T>)(object)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -169,12 +169,13 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
     public override void initState()
     {
         base.initState();
-        this.controller.addStatusListener(((AnimationStatusListener)((status) => {
-if (global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(status))
-{
-    ((ImplicitlyAnimatedWidget)(object)this.widget).onEnd?.Invoke();
-}
-})));
+        this.controller.addStatusListener(((AnimationStatusListener)((status) =>
+        {
+            if (global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(status))
+            {
+                ((ImplicitlyAnimatedWidget)(object)this.widget).onEnd?.Invoke();
+            }
+        })));
         _constructTweens();
         didUpdateTweens();
     }
@@ -190,15 +191,18 @@ if (global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(status
         this.controller.duration = ((ImplicitlyAnimatedWidget)(object)this.widget).duration;
         if (_constructTweens())
         {
-            forEachTween(((global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?>)((tween, targetValue, constructor) => {
-return ((Func<global::Doroti.Framework.Animation.IDartTween?>)(() =>
-{            var __cascade = tween;
-            if (__cascade is null) return null;
-            __cascade.begin = tween.evaluate(this._animation);
-            __cascade.end = targetValue;
-            return __cascade;        }))();
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+            forEachTween(((global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?>)((tween, targetValue, constructor) =>
+            {
+                return ((Func<global::Doroti.Framework.Animation.IDartTween?>)(() =>
+                {
+                    var __cascade = tween;
+                    if (__cascade is null) return null;
+                    __cascade.begin = tween.evaluate(this._animation);
+                    __cascade.end = targetValue;
+                    return __cascade;
+                }))();
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
             this.controller.forward(from: 0.0);
             didUpdateTweens();
         }
@@ -231,26 +235,27 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     internal virtual bool _constructTweens()
     {
         var shouldStartAnimation__16124 = false;
-        forEachTween(((global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?>)((tween, targetValue, constructor) => {
-if ((targetValue is not null))
-{
-    tween ??= constructor(targetValue);
-    if ((!object.Equals(targetValue, ((tween.end ?? tween.begin)))))
-    {
-        shouldStartAnimation__16124 = true;
-    }
-    else
-    {
-        tween.end ??= tween.begin;
-    }
-}
-else
-{
-    tween = null;
-}
-return tween;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        forEachTween(((global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?>)((tween, targetValue, constructor) =>
+        {
+            if ((targetValue is not null))
+            {
+                tween ??= constructor(targetValue);
+                if ((!object.Equals(targetValue, ((tween.end ?? tween.begin)))))
+                {
+                    shouldStartAnimation__16124 = true;
+                }
+                else
+                {
+                    tween.end ??= tween.begin;
+                }
+            }
+            else
+            {
+                tween = null;
+            }
+            return tween;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         return shouldStartAnimation__16124;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -326,8 +331,9 @@ public abstract class AnimatedWidgetBaseState<T> : ImplicitlyAnimatedWidgetState
 
     internal virtual void _handleAnimationChanged()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
 }

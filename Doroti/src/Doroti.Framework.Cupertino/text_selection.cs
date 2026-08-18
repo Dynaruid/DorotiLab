@@ -42,16 +42,20 @@ internal class _CupertinoTextSelectionHandlePainter__text_selection : global::Do
     {
         var halfStrokeWidth__1132 = 1.0;
         var paint__1165 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.color;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.color;
+    return __cascade;
+}))();
         var circle__1207 = global::Doroti.Ui.Rect.fromCircle(center: new global::Doroti.Ui.Offset(Text_selectionLibrary._kSelectionHandleRadius, Text_selectionLibrary._kSelectionHandleRadius), radius: Text_selectionLibrary._kSelectionHandleRadius);
         var line__1367 = global::Doroti.Ui.Rect.fromPoints(new global::Doroti.Ui.Offset((Text_selectionLibrary._kSelectionHandleRadius - halfStrokeWidth__1132), ((2L * Text_selectionLibrary._kSelectionHandleRadius) - Text_selectionLibrary._kSelectionHandleOverlap)), new global::Doroti.Ui.Offset((Text_selectionLibrary._kSelectionHandleRadius + halfStrokeWidth__1132), size.height));
         var path__1622 = ((Func<Path>)(() =>
-{            var __cascade = new global::Doroti.Ui.Path();
-            __cascade.addOval(circle__1207);
-            __cascade.addRect(line__1367);
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Path();
+    __cascade.addOval(circle__1207);
+    __cascade.addRect(line__1367);
+    return __cascade;
+}))();
         canvas.drawPath(path__1622, paint__1165);
     }
 
@@ -116,11 +120,13 @@ public class CupertinoTextSelectionControls : global::Doroti.Framework.Widgets.T
                     desiredSize__4108 = getHandleSize(textLineHeight);
                     handle__4138 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.SizedBox.CreateFromSize(size: desiredSize__4108, child: customPaint__4164));
                     return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Transform(transform: ((Func<Matrix4>)(() =>
-{            var __cascade = Matrix4.identity();
-            __cascade.translateByDouble((desiredSize__4108.width / 2L), (desiredSize__4108.height / 2L), 0, 1);
-            __cascade.rotateZ(Dart_mathLibrary.pi);
-            __cascade.translateByDouble((-desiredSize__4108.width / 2L), (-desiredSize__4108.height / 2L), 0, 1);
-            return __cascade;        }))(), child: handle__4138));
+{
+    var __cascade = Matrix4.identity();
+    __cascade.translateByDouble((desiredSize__4108.width / 2L), (desiredSize__4108.height / 2L), 0, 1);
+    __cascade.rotateZ(Dart_mathLibrary.pi);
+    __cascade.translateByDouble((-desiredSize__4108.width / 2L), (-desiredSize__4108.height / 2L), 0, 1);
+    return __cascade;
+}))(), child: handle__4138));
                 }
             case global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed:
                 {
@@ -199,8 +205,9 @@ public class _CupertinoTextSelectionControlsToolbarState__text_selection : globa
 {
     internal virtual void _onChangedClipboardStatus()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     public override void initState()

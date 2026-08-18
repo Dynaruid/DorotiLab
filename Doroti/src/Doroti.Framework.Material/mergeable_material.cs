@@ -4,13 +4,13 @@
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/mergeable_material.dart
 using System;
 using System.Collections.Generic;
-using Stopwatch = System.Diagnostics.Stopwatch;
 using System.Linq;
 using System.Threading.Tasks;
 using Doroti.Runtime;
 using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Doroti.Framework.Material;
 
@@ -182,8 +182,9 @@ internal class _MergeableMaterialState__mergeable_material : global::Doroti.Fram
 
     internal virtual void _handleTick()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     internal virtual bool _debugHasConsecutiveGaps(List<MergeableMaterialItem> children)
@@ -307,10 +308,12 @@ internal class _MergeableMaterialState__mergeable_material : global::Doroti.Fram
                             }
                             _insertChild(startOld__9449, newChildren__9125[(int)(startNew__9421)]);
                             DartRuntimePrimitives.Ignore(((Func<_AnimationTuple__mergeable_material>)(() =>
-{            var __cascade = this._animationTuples.GetValueOrDefault(newChildren__9125[(int)(startNew__9421)].key)!;
-            __cascade.gapStart = gapSizeSum__10064;
-            __cascade.controller.forward();
-            return __cascade;        }))());
+{
+    var __cascade = this._animationTuples.GetValueOrDefault(newChildren__9125[(int)(startNew__9421)].key)!;
+    __cascade.gapStart = gapSizeSum__10064;
+    __cascade.controller.forward();
+    return __cascade;
+}))());
                             j__9179 += 1L;
                         }
                         else
@@ -361,10 +364,12 @@ internal class _MergeableMaterialState__mergeable_material : global::Doroti.Fram
                                         MaterialGap newChild__12196__as12243 = (MaterialGap)newChild__12196;
                                         this._animationTuples[newChild__12196__as12243.key]!.gapStart = ((gapSize__11427 * ((MaterialGap)((MaterialGap)newChild__12196__as12243)).size) / gapSizeSum__11695);
                                         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = this._animationTuples.GetValueOrDefault(((MaterialGap)newChild__12196__as12243).key)!.controller;
-            __cascade.value = 0.0;
-            __cascade.forward();
-            return __cascade;        }))());
+{
+    var __cascade = this._animationTuples.GetValueOrDefault(((MaterialGap)newChild__12196__as12243).key)!.controller;
+    __cascade.value = 0.0;
+    __cascade.forward();
+    return __cascade;
+}))());
                                     }
                                 }
                             }
@@ -407,10 +412,12 @@ internal class _MergeableMaterialState__mergeable_material : global::Doroti.Fram
                             _insertChild(startOld__9449, gap__13524);
                             this._animationTuples[gap__13524.key]!.gapStart = 0.0;
                             DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = this._animationTuples.GetValueOrDefault(gap__13524.key)!.controller;
-            __cascade.value = 1.0;
-            __cascade.reverse();
-            return __cascade;        }))());
+{
+    var __cascade = this._animationTuples.GetValueOrDefault(gap__13524.key)!.controller;
+    __cascade.value = 1.0;
+    __cascade.reverse();
+    return __cascade;
+}))());
                             j__9179 += 1L;
                         }
                     }
@@ -570,10 +577,12 @@ internal class _MergeableMaterialState__mergeable_material : global::Doroti.Fram
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -680,10 +689,12 @@ internal class _MergeableMaterialListBody__mergeable_material : global::Doroti.F
         var __renderObject = (global::Doroti.Framework.Rendering.RenderListBody)(object)renderObject;
         var materialRenderListBody__20540 = ((_RenderMergeableMaterialListBody__mergeable_material?)(object?)__renderObject)!;
         DartRuntimePrimitives.Ignore(((Func<_RenderMergeableMaterialListBody__mergeable_material>)(() =>
-{            var __cascade = materialRenderListBody__20540;
-            __cascade.axisDirection = _getDirection(context);
-            __cascade.elevation = this.elevation;
-            return __cascade;        }))());
+{
+    var __cascade = materialRenderListBody__20540;
+    __cascade.axisDirection = _getDirection(context);
+    __cascade.elevation = this.elevation;
+    return __cascade;
+}))());
     }
 
 }
@@ -716,9 +727,11 @@ internal class _RenderMergeableMaterialListBody__mergeable_material : global::Do
         if ((this.elevation != 0L))
         {
             canvas.drawShadow(((Func<Path>)(() =>
-{            var __cascade = new global::Doroti.Ui.Path();
-            __cascade.addRRect(MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.toRRect(rect));
-            return __cascade;        }))(), Colors.black, this.elevation, true);
+{
+    var __cascade = new global::Doroti.Ui.Path();
+    __cascade.addRRect(MaterialLibrary.kMaterialEdges.GetValueOrDefault(MaterialType.card)!.toRRect(rect));
+    return __cascade;
+}))(), Colors.black, this.elevation, true);
         }
     }
 

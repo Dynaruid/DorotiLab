@@ -4,13 +4,13 @@
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/theme_data.dart
 using System;
 using System.Collections.Generic;
-using Stopwatch = System.Diagnostics.Stopwatch;
 using System.Linq;
 using System.Threading.Tasks;
 using Doroti.Runtime;
 using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Doroti.Framework.Material;
 
@@ -440,34 +440,36 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
                 }
             }
         }
-        return new ThemeData(adaptationMap: ((adaptations is not null) ? ThemeData._createAdaptationMap(adaptations.Cast<Adaptation<object>>()) : this.adaptationMap), applyElevationOverlayColor: (applyElevationOverlayColor ?? this.applyElevationOverlayColor), cupertinoOverrideTheme: (cupertinoOverrideTheme ?? this.cupertinoOverrideTheme), extensions: (((extensions is not null)) ? ThemeData._themeExtensionIterableToMap(extensions) : this.extensions), inputDecorationTheme: (((InputDecorationThemeData?)(object?)inputDecorationTheme)! ?? this.inputDecorationTheme), materialTapTargetSize: (materialTapTargetSize ?? this.materialTapTargetSize), pageTransitionsTheme: (pageTransitionsTheme ?? this.pageTransitionsTheme), platform: (platform ?? this.platform), scrollbarTheme: (scrollbarTheme ?? this.scrollbarTheme), splashFactory: (splashFactory ?? this.splashFactory), useMaterial3: (useMaterial3 ?? this.useMaterial3), visualDensity: (visualDensity ?? this.visualDensity), canvasColor: (canvasColor ?? this.canvasColor), cardColor: (cardColor ?? this.cardColor), colorScheme: ((colorScheme ?? this.colorScheme)).copyWith(brightness: brightness), disabledColor: (disabledColor ?? this.disabledColor), dividerColor: (dividerColor ?? this.dividerColor), focusColor: (focusColor ?? this.focusColor), highlightColor: (highlightColor ?? this.highlightColor), hintColor: (hintColor ?? this.hintColor), hoverColor: (hoverColor ?? this.hoverColor), primaryColor: (primaryColor ?? this.primaryColor), primaryColorDark: (primaryColorDark ?? this.primaryColorDark), primaryColorLight: (primaryColorLight ?? this.primaryColorLight), scaffoldBackgroundColor: (scaffoldBackgroundColor ?? this.scaffoldBackgroundColor), secondaryHeaderColor: (secondaryHeaderColor ?? this.secondaryHeaderColor), shadowColor: (shadowColor ?? this.shadowColor), splashColor: (splashColor ?? this.splashColor), unselectedWidgetColor: (unselectedWidgetColor ?? this.unselectedWidgetColor), iconTheme: (iconTheme ?? this.iconTheme), primaryIconTheme: (primaryIconTheme ?? this.primaryIconTheme), primaryTextTheme: (primaryTextTheme ?? this.primaryTextTheme), textTheme: (textTheme ?? this.textTheme), typography: (typography ?? this.typography), actionIconTheme: (actionIconTheme ?? this.actionIconTheme), appBarTheme: ((global::System.Func<AppBarThemeData>)(() => {
-if ((appBarTheme is not null))
-{
-    if ((appBarTheme is AppBarTheme))
-    {
-        AppBarTheme appBarTheme__as70567 = (AppBarTheme)appBarTheme;
-        return ((AppBarTheme)appBarTheme__as70567).data;
-    }
-    else
-    {
-        if ((appBarTheme is not AppBarThemeData))
+        return new ThemeData(adaptationMap: ((adaptations is not null) ? ThemeData._createAdaptationMap(adaptations.Cast<Adaptation<object>>()) : this.adaptationMap), applyElevationOverlayColor: (applyElevationOverlayColor ?? this.applyElevationOverlayColor), cupertinoOverrideTheme: (cupertinoOverrideTheme ?? this.cupertinoOverrideTheme), extensions: (((extensions is not null)) ? ThemeData._themeExtensionIterableToMap(extensions) : this.extensions), inputDecorationTheme: (((InputDecorationThemeData?)(object?)inputDecorationTheme)! ?? this.inputDecorationTheme), materialTapTargetSize: (materialTapTargetSize ?? this.materialTapTargetSize), pageTransitionsTheme: (pageTransitionsTheme ?? this.pageTransitionsTheme), platform: (platform ?? this.platform), scrollbarTheme: (scrollbarTheme ?? this.scrollbarTheme), splashFactory: (splashFactory ?? this.splashFactory), useMaterial3: (useMaterial3 ?? this.useMaterial3), visualDensity: (visualDensity ?? this.visualDensity), canvasColor: (canvasColor ?? this.canvasColor), cardColor: (cardColor ?? this.cardColor), colorScheme: ((colorScheme ?? this.colorScheme)).copyWith(brightness: brightness), disabledColor: (disabledColor ?? this.disabledColor), dividerColor: (dividerColor ?? this.dividerColor), focusColor: (focusColor ?? this.focusColor), highlightColor: (highlightColor ?? this.highlightColor), hintColor: (hintColor ?? this.hintColor), hoverColor: (hoverColor ?? this.hoverColor), primaryColor: (primaryColor ?? this.primaryColor), primaryColorDark: (primaryColorDark ?? this.primaryColorDark), primaryColorLight: (primaryColorLight ?? this.primaryColorLight), scaffoldBackgroundColor: (scaffoldBackgroundColor ?? this.scaffoldBackgroundColor), secondaryHeaderColor: (secondaryHeaderColor ?? this.secondaryHeaderColor), shadowColor: (shadowColor ?? this.shadowColor), splashColor: (splashColor ?? this.splashColor), unselectedWidgetColor: (unselectedWidgetColor ?? this.unselectedWidgetColor), iconTheme: (iconTheme ?? this.iconTheme), primaryIconTheme: (primaryIconTheme ?? this.primaryIconTheme), primaryTextTheme: (primaryTextTheme ?? this.primaryTextTheme), textTheme: (textTheme ?? this.textTheme), typography: (typography ?? this.typography), actionIconTheme: (actionIconTheme ?? this.actionIconTheme), appBarTheme: ((global::System.Func<AppBarThemeData>)(() =>
         {
-            throw DartRuntimePrimitives.AsException(new DartArgumentError("appBarTheme must be either a AppBarThemeData or a AppBarTheme"));
-        }
-    }
-}
-return (((AppBarThemeData?)(object?)appBarTheme)! ?? this.appBarTheme);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))(), badgeTheme: (badgeTheme ?? this.badgeTheme), bannerTheme: (bannerTheme ?? this.bannerTheme), bottomAppBarTheme: (bottomAppBarTheme ?? this.bottomAppBarTheme), bottomNavigationBarTheme: (bottomNavigationBarTheme ?? this.bottomNavigationBarTheme), bottomSheetTheme: (bottomSheetTheme ?? this.bottomSheetTheme), buttonTheme: (buttonTheme ?? this.buttonTheme), cardTheme: (cardTheme ?? this.cardTheme), carouselViewTheme: (carouselViewTheme ?? this.carouselViewTheme), checkboxTheme: (checkboxTheme ?? this.checkboxTheme), chipTheme: (chipTheme ?? this.chipTheme), dataTableTheme: (dataTableTheme ?? this.dataTableTheme), datePickerTheme: (datePickerTheme ?? this.datePickerTheme), dialogTheme: (dialogTheme ?? this.dialogTheme), dividerTheme: (dividerTheme ?? this.dividerTheme), drawerTheme: (drawerTheme ?? this.drawerTheme), dropdownMenuTheme: (dropdownMenuTheme ?? this.dropdownMenuTheme), elevatedButtonTheme: (elevatedButtonTheme ?? this.elevatedButtonTheme), expansionTileTheme: (expansionTileTheme ?? this.expansionTileTheme), filledButtonTheme: (filledButtonTheme ?? this.filledButtonTheme), floatingActionButtonTheme: (floatingActionButtonTheme ?? this.floatingActionButtonTheme), iconButtonTheme: (iconButtonTheme ?? this.iconButtonTheme), listTileTheme: (listTileTheme ?? this.listTileTheme), menuBarTheme: (menuBarTheme ?? this.menuBarTheme), menuButtonTheme: (menuButtonTheme ?? this.menuButtonTheme), menuTheme: (menuTheme ?? this.menuTheme), navigationBarTheme: (navigationBarTheme ?? this.navigationBarTheme), navigationDrawerTheme: (navigationDrawerTheme ?? this.navigationDrawerTheme), navigationRailTheme: (navigationRailTheme ?? this.navigationRailTheme), outlinedButtonTheme: (outlinedButtonTheme ?? this.outlinedButtonTheme), popupMenuTheme: (popupMenuTheme ?? this.popupMenuTheme), progressIndicatorTheme: (progressIndicatorTheme ?? this.progressIndicatorTheme), radioTheme: (radioTheme ?? this.radioTheme), searchBarTheme: (searchBarTheme ?? this.searchBarTheme), searchViewTheme: (searchViewTheme ?? this.searchViewTheme), segmentedButtonTheme: (segmentedButtonTheme ?? this.segmentedButtonTheme), sliderTheme: (sliderTheme ?? this.sliderTheme), snackBarTheme: (snackBarTheme ?? this.snackBarTheme), switchTheme: (switchTheme ?? this.switchTheme), tabBarTheme: (tabBarTheme ?? this.tabBarTheme), textButtonTheme: (textButtonTheme ?? this.textButtonTheme), textSelectionTheme: (textSelectionTheme ?? this.textSelectionTheme), timePickerTheme: (timePickerTheme ?? this.timePickerTheme), toggleButtonsTheme: (toggleButtonsTheme ?? this.toggleButtonsTheme), tooltipTheme: (tooltipTheme ?? this.tooltipTheme), buttonBarTheme: (buttonBarTheme ?? this._buttonBarTheme), dialogBackgroundColor: (dialogBackgroundColor ?? this.dialogBackgroundColor), indicatorColor: (indicatorColor ?? this.indicatorColor));
+            if ((appBarTheme is not null))
+            {
+                if ((appBarTheme is AppBarTheme))
+                {
+                    AppBarTheme appBarTheme__as70567 = (AppBarTheme)appBarTheme;
+                    return ((AppBarTheme)appBarTheme__as70567).data;
+                }
+                else
+                {
+                    if ((appBarTheme is not AppBarThemeData))
+                    {
+                        throw DartRuntimePrimitives.AsException(new DartArgumentError("appBarTheme must be either a AppBarThemeData or a AppBarTheme"));
+                    }
+                }
+            }
+            return (((AppBarThemeData?)(object?)appBarTheme)! ?? this.appBarTheme);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))(), badgeTheme: (badgeTheme ?? this.badgeTheme), bannerTheme: (bannerTheme ?? this.bannerTheme), bottomAppBarTheme: (bottomAppBarTheme ?? this.bottomAppBarTheme), bottomNavigationBarTheme: (bottomNavigationBarTheme ?? this.bottomNavigationBarTheme), bottomSheetTheme: (bottomSheetTheme ?? this.bottomSheetTheme), buttonTheme: (buttonTheme ?? this.buttonTheme), cardTheme: (cardTheme ?? this.cardTheme), carouselViewTheme: (carouselViewTheme ?? this.carouselViewTheme), checkboxTheme: (checkboxTheme ?? this.checkboxTheme), chipTheme: (chipTheme ?? this.chipTheme), dataTableTheme: (dataTableTheme ?? this.dataTableTheme), datePickerTheme: (datePickerTheme ?? this.datePickerTheme), dialogTheme: (dialogTheme ?? this.dialogTheme), dividerTheme: (dividerTheme ?? this.dividerTheme), drawerTheme: (drawerTheme ?? this.drawerTheme), dropdownMenuTheme: (dropdownMenuTheme ?? this.dropdownMenuTheme), elevatedButtonTheme: (elevatedButtonTheme ?? this.elevatedButtonTheme), expansionTileTheme: (expansionTileTheme ?? this.expansionTileTheme), filledButtonTheme: (filledButtonTheme ?? this.filledButtonTheme), floatingActionButtonTheme: (floatingActionButtonTheme ?? this.floatingActionButtonTheme), iconButtonTheme: (iconButtonTheme ?? this.iconButtonTheme), listTileTheme: (listTileTheme ?? this.listTileTheme), menuBarTheme: (menuBarTheme ?? this.menuBarTheme), menuButtonTheme: (menuButtonTheme ?? this.menuButtonTheme), menuTheme: (menuTheme ?? this.menuTheme), navigationBarTheme: (navigationBarTheme ?? this.navigationBarTheme), navigationDrawerTheme: (navigationDrawerTheme ?? this.navigationDrawerTheme), navigationRailTheme: (navigationRailTheme ?? this.navigationRailTheme), outlinedButtonTheme: (outlinedButtonTheme ?? this.outlinedButtonTheme), popupMenuTheme: (popupMenuTheme ?? this.popupMenuTheme), progressIndicatorTheme: (progressIndicatorTheme ?? this.progressIndicatorTheme), radioTheme: (radioTheme ?? this.radioTheme), searchBarTheme: (searchBarTheme ?? this.searchBarTheme), searchViewTheme: (searchViewTheme ?? this.searchViewTheme), segmentedButtonTheme: (segmentedButtonTheme ?? this.segmentedButtonTheme), sliderTheme: (sliderTheme ?? this.sliderTheme), snackBarTheme: (snackBarTheme ?? this.snackBarTheme), switchTheme: (switchTheme ?? this.switchTheme), tabBarTheme: (tabBarTheme ?? this.tabBarTheme), textButtonTheme: (textButtonTheme ?? this.textButtonTheme), textSelectionTheme: (textSelectionTheme ?? this.textSelectionTheme), timePickerTheme: (timePickerTheme ?? this.timePickerTheme), toggleButtonsTheme: (toggleButtonsTheme ?? this.toggleButtonsTheme), tooltipTheme: (tooltipTheme ?? this.tooltipTheme), buttonBarTheme: (buttonBarTheme ?? this._buttonBarTheme), dialogBackgroundColor: (dialogBackgroundColor ?? this.dialogBackgroundColor), indicatorColor: (indicatorColor ?? this.indicatorColor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static ThemeData localize(ThemeData baseTheme, TextTheme localTextGeometry)
     {
-        return ((ThemeData)(object?)_localizedThemeDataCache.putIfAbsent(new _IdentityThemeDataCacheKey__theme_data(baseTheme, localTextGeometry), (() => {
-return baseTheme.copyWith(primaryTextTheme: localTextGeometry.merge(((ThemeData)baseTheme).primaryTextTheme), textTheme: localTextGeometry.merge(((ThemeData)baseTheme).textTheme));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        return ((ThemeData)(object?)_localizedThemeDataCache.putIfAbsent(new _IdentityThemeDataCacheKey__theme_data(baseTheme, localTextGeometry), (() =>
+        {
+            return baseTheme.copyWith(primaryTextTheme: localTextGeometry.merge(((ThemeData)baseTheme).primaryTextTheme), textTheme: localTextGeometry.merge(((ThemeData)baseTheme).textTheme));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -485,11 +487,12 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     internal static DartMap<object, ThemeExtension<object>> _lerpThemeExtensions(ThemeData a, ThemeData b, double t)
     {
-        DartMap<object, ThemeExtension<object>> newExtensions__77396 = ((ThemeData)a).extensions.map<object, ThemeExtension<object>, object, ThemeExtension<object>>(((id, extensionA) => {
-ThemeExtension<object>? extensionB__77535 = ((ThemeData)b).extensions.GetValueOrDefault(id);
-return new MapEntry<object, ThemeExtension<object>>(id, extensionA.lerp(extensionB__77535, t));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        DartMap<object, ThemeExtension<object>> newExtensions__77396 = ((ThemeData)a).extensions.map<object, ThemeExtension<object>, object, ThemeExtension<object>>(((id, extensionA) =>
+        {
+            ThemeExtension<object>? extensionB__77535 = ((ThemeData)b).extensions.GetValueOrDefault(id);
+            return new MapEntry<object, ThemeExtension<object>>(id, extensionA.lerp(extensionB__77535, t));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         newExtensions__77396.addEntries(((ThemeData)b).extensions.entries.where(((entry) => !((ThemeData)a).extensions.ContainsKey(entry.key))).Cast<MapEntry<object, ThemeExtension<object>>>());
         return newExtensions__77396;
         throw new InvalidOperationException("Dart control flow completed without a value.");

@@ -33,11 +33,12 @@ public class KeyboardListener : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new Focus(focusNode: this.focusNode, autofocus: this.autofocus, includeSemantics: this.includeSemantics, onKeyEvent: ((global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>?)((node, @event) => {
-this.onKeyEvent?.Invoke(@event);
-return KeyEventResult.ignored;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: this.child));
+        return ((Widget)(object?)new Focus(focusNode: this.focusNode, autofocus: this.autofocus, includeSemantics: this.includeSemantics, onKeyEvent: ((global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>?)((node, @event) =>
+        {
+            this.onKeyEvent?.Invoke(@event);
+            return KeyEventResult.ignored;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), child: this.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

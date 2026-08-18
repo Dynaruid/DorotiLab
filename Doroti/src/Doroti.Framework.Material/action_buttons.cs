@@ -28,16 +28,17 @@ public abstract class _ActionButton__action_buttons : IconButton
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new IconButton(key: StandardComponentTypeMembers.key(DartRuntimePrimitives.RequireValue(this.standardComponent)), icon: this.icon, style: this.style, color: this.color, tooltip: _getTooltip(context), onPressed: (() => {
-if ((this.onPressed is not null))
-{
-    this.onPressed!();
-}
-else
-{
-    _onPressedCallback(context);
-}
-})));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new IconButton(key: StandardComponentTypeMembers.key(DartRuntimePrimitives.RequireValue(this.standardComponent)), icon: this.icon, style: this.style, color: this.color, tooltip: _getTooltip(context), onPressed: (() =>
+        {
+            if ((this.onPressed is not null))
+            {
+                this.onPressed!();
+            }
+            else
+            {
+                _onPressedCallback(context);
+            }
+        })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -103,36 +104,39 @@ public class BackButtonIcon : global::Doroti.Framework.Widgets.StatelessWidget
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ActionIcon__action_buttons(iconBuilderCallback: ((global::System.Func<ActionIconThemeData?, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?>)((actionIconTheme) => {
-return ((Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)(object?)actionIconTheme?.backButtonIconBuilder);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), getIcon: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.IconData>)((context) => {
-if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
-{
-    return Icons.arrow_back;
-}
-switch (Theme.of(context).platform)
-{
-    case global::Doroti.Framework.Foundation.TargetPlatform.android:
-    case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-    case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-    case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ActionIcon__action_buttons(iconBuilderCallback: ((global::System.Func<ActionIconThemeData?, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?>)((actionIconTheme) =>
         {
-            return Icons.arrow_back;
-        }
-    case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-    case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            return ((Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)(object?)actionIconTheme?.backButtonIconBuilder);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), getIcon: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.IconData>)((context) =>
         {
-            return Icons.arrow_back_ios_new_rounded;
-        }
-    default:
-        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), getAndroidSemanticsLabel: ((global::System.Func<MaterialLocalizations, string>)((materialLocalization) => {
-return ((MaterialLocalizations)materialLocalization).backButtonTooltip;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+            if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
+            {
+                return Icons.arrow_back;
+            }
+            switch (Theme.of(context).platform)
+            {
+                case global::Doroti.Framework.Foundation.TargetPlatform.android:
+                case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
+                case global::Doroti.Framework.Foundation.TargetPlatform.linux:
+                case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+                    {
+                        return Icons.arrow_back;
+                    }
+                case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+                case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+                    {
+                        return Icons.arrow_back_ios_new_rounded;
+                    }
+                default:
+                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+            }
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), getAndroidSemanticsLabel: ((global::System.Func<MaterialLocalizations, string>)((materialLocalization) =>
+        {
+            return ((MaterialLocalizations)materialLocalization).backButtonTooltip;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -161,13 +165,15 @@ public class CloseButtonIcon : global::Doroti.Framework.Widgets.StatelessWidget
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ActionIcon__action_buttons(iconBuilderCallback: ((global::System.Func<ActionIconThemeData?, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?>)((actionIconTheme) => {
-return ((Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)(object?)actionIconTheme?.closeButtonIconBuilder);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), getIcon: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.IconData>)((context) => Icons.close)), getAndroidSemanticsLabel: ((global::System.Func<MaterialLocalizations, string>)((materialLocalization) => {
-return ((MaterialLocalizations)materialLocalization).closeButtonTooltip;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ActionIcon__action_buttons(iconBuilderCallback: ((global::System.Func<ActionIconThemeData?, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?>)((actionIconTheme) =>
+        {
+            return ((Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)(object?)actionIconTheme?.closeButtonIconBuilder);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), getIcon: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.IconData>)((context) => Icons.close)), getAndroidSemanticsLabel: ((global::System.Func<MaterialLocalizations, string>)((materialLocalization) =>
+        {
+            return ((MaterialLocalizations)materialLocalization).closeButtonTooltip;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -196,13 +202,15 @@ public class DrawerButtonIcon : global::Doroti.Framework.Widgets.StatelessWidget
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ActionIcon__action_buttons(iconBuilderCallback: ((global::System.Func<ActionIconThemeData?, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?>)((actionIconTheme) => {
-return ((Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)(object?)actionIconTheme?.drawerButtonIconBuilder);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), getIcon: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.IconData>)((context) => Icons.menu)), getAndroidSemanticsLabel: ((global::System.Func<MaterialLocalizations, string>)((materialLocalization) => {
-return ((MaterialLocalizations)materialLocalization).openAppDrawerTooltip;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ActionIcon__action_buttons(iconBuilderCallback: ((global::System.Func<ActionIconThemeData?, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?>)((actionIconTheme) =>
+        {
+            return ((Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)(object?)actionIconTheme?.drawerButtonIconBuilder);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), getIcon: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.IconData>)((context) => Icons.menu)), getAndroidSemanticsLabel: ((global::System.Func<MaterialLocalizations, string>)((materialLocalization) =>
+        {
+            return ((MaterialLocalizations)materialLocalization).openAppDrawerTooltip;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -231,13 +239,15 @@ public class EndDrawerButtonIcon : global::Doroti.Framework.Widgets.StatelessWid
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ActionIcon__action_buttons(iconBuilderCallback: ((global::System.Func<ActionIconThemeData?, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?>)((actionIconTheme) => {
-return ((Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)(object?)actionIconTheme?.endDrawerButtonIconBuilder);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), getIcon: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.IconData>)((context) => Icons.menu)), getAndroidSemanticsLabel: ((global::System.Func<MaterialLocalizations, string>)((materialLocalization) => {
-return ((MaterialLocalizations)materialLocalization).openAppDrawerTooltip;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ActionIcon__action_buttons(iconBuilderCallback: ((global::System.Func<ActionIconThemeData?, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?>)((actionIconTheme) =>
+        {
+            return ((Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)(object?)actionIconTheme?.endDrawerButtonIconBuilder);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), getIcon: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.IconData>)((context) => Icons.menu)), getAndroidSemanticsLabel: ((global::System.Func<MaterialLocalizations, string>)((materialLocalization) =>
+        {
+            return ((MaterialLocalizations)materialLocalization).openAppDrawerTooltip;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

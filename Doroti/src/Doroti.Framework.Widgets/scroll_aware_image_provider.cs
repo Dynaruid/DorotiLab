@@ -39,9 +39,10 @@ public class ScrollAwareImageProvider<T> : global::Doroti.Framework.Painting.Ima
         }
         if (Scrollable.recommendDeferredLoadingForContext(buildContext))
         {
-            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.scheduleFrameCallback(((global::System.Action<Duration>)((_) => {
-DartAsyncRuntime.scheduleMicrotask((() => { resolveStreamForKey(configuration, stream, key, (global::System.Action<object, global::System.Diagnostics.StackTrace?>)handleError); }));
-})));
+            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.scheduleFrameCallback(((global::System.Action<Duration>)((_) =>
+            {
+                DartAsyncRuntime.scheduleMicrotask((() => { resolveStreamForKey(configuration, stream, key, (global::System.Action<object, global::System.Diagnostics.StackTrace?>)handleError); }));
+            })));
             return;
         }
         this.imageProvider.resolveStreamForKey(configuration, stream, key, (global::System.Action<object, global::System.Diagnostics.StackTrace?>)handleError);

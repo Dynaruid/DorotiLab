@@ -268,12 +268,13 @@ internal class _RestorationScopeState__restoration : State<RestorationScope>, Re
 
     public override void dispose()
     {
-        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) => {
-if (!((dynamic)property)._disposed)
-{
-    property.removeListener((global::System.Action)(() => listener()));
-}
-})));
+        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
+        {
+            if (!((dynamic)property)._disposed)
+            {
+                property.removeListener((global::System.Action)(() => listener()));
+            }
+        })));
         this._bucket?.dispose();
         this._bucket = null;
         base.dispose();
@@ -350,19 +351,21 @@ internal class _RootRestorationScopeState__restoration : State<RootRestorationSc
         {
             _isLoadingRootBucket = true;
             global::Doroti.Framework.Rendering.RendererBinding.instance.deferFirstFrame();
-            DartRuntimePrimitives.Ignore(global::Doroti.Framework.Services.ServicesBinding.instance.restorationManager.rootBucket.then((global::System.Action<global::Doroti.Framework.Services.RestorationBucket?>)((bucket) => {
-_isLoadingRootBucket = false;
-if (this.mounted)
-{
-    global::Doroti.Framework.Services.ServicesBinding.instance.restorationManager.addListener(() => this._replaceRootBucket());
-    setState(((global::System.Action)(() => {
-_rootBucket = bucket;
-_rootBucketValid = true;
-_okToRenderBlankContainer = false;
-})));
-}
-global::Doroti.Framework.Rendering.RendererBinding.instance.allowFirstFrame();
-})));
+            DartRuntimePrimitives.Ignore(global::Doroti.Framework.Services.ServicesBinding.instance.restorationManager.rootBucket.then((global::System.Action<global::Doroti.Framework.Services.RestorationBucket?>)((bucket) =>
+            {
+                _isLoadingRootBucket = false;
+                if (this.mounted)
+                {
+                    global::Doroti.Framework.Services.ServicesBinding.instance.restorationManager.addListener(() => this._replaceRootBucket());
+                    setState(((global::System.Action)(() =>
+                    {
+                        _rootBucket = bucket;
+                        _rootBucketValid = true;
+                        _okToRenderBlankContainer = false;
+                    })));
+                }
+                global::Doroti.Framework.Rendering.RendererBinding.instance.allowFirstFrame();
+            })));
         }
     }
 

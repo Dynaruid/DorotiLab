@@ -227,8 +227,9 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
             ((RawMenuAnchor)(object)this.widget).childFocusNode?.requestFocus();
         }
         ((RawMenuAnchor)(object)this.widget).onOpen?.Invoke();
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     public virtual void close(bool inDispose = false)
@@ -247,9 +248,10 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
         {
             if (!inDispose)
             {
-                global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) => {
-this._overlayController.hide();
-})), debugLabel: "MenuAnchor.hide");
+                global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+                {
+                    this._overlayController.hide();
+                })), debugLabel: "MenuAnchor.hide");
             }
         }
         if (!inDispose)
@@ -258,17 +260,19 @@ this._overlayController.hide();
             ((RawMenuAnchor)(object)this.widget).onClose?.Invoke();
             if ((this.mounted && (!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks))))
             {
-                setState(((global::System.Action)(() => {
-})));
+                setState(((global::System.Action)(() =>
+                {
+                })));
             }
         }
     }
 
     public virtual void handleOpenRequest(Offset? position = null)
     {
-        this.widget.onOpenRequested(position, (() => {
-open(position: position);
-}));
+        this.widget.onOpenRequested(position, (() =>
+        {
+            open(position: position);
+        }));
     }
 
     public virtual void handleCloseRequest()
@@ -279,12 +283,13 @@ open(position: position);
         }
         else
         {
-            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) => {
-if (this.mounted)
-{
-    this.widget.onCloseRequested(() => this.close(default));
-}
-})), debugLabel: "RawMenuAnchor.handleCloseRequest");
+            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+            {
+                if (this.mounted)
+                {
+                    this.widget.onCloseRequested(() => this.close(default));
+                }
+            })), debugLabel: "RawMenuAnchor.handleCloseRequest");
         }
         requestChildrenClose();
     }
@@ -301,10 +306,11 @@ if (this.mounted)
 
     public virtual Widget buildAnchor(BuildContext context)
     {
-        Widget child__30309 = ((Widget)(object?)new Shortcuts(includeSemantics: false, shortcuts: Raw_menu_anchorLibrary._kMenuTraversalShortcuts, child: new TapRegion(groupId: ((MenuController)((dynamic)this.root).menuController), consumeOutsideTaps: (((bool)((dynamic)this.root).isOpen) && ((RawMenuAnchor)(object)this.widget).consumeOutsideTaps), onTapOutside: (global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)this.handleOutsideTap, child: new Builder(key: this._anchorKey, builder: ((global::System.Func<BuildContext, Widget>)((context) => {
-return (((((RawMenuAnchor)(object)this.widget).builder is null ? ((RawMenuAnchor)(object)this.widget).child : ((RawMenuAnchor)(object)this.widget).builder.Invoke(context, this.menuController, ((RawMenuAnchor)(object)this.widget).child))) ?? new SizedBox());
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))))));
+        Widget child__30309 = ((Widget)(object?)new Shortcuts(includeSemantics: false, shortcuts: Raw_menu_anchorLibrary._kMenuTraversalShortcuts, child: new TapRegion(groupId: ((MenuController)((dynamic)this.root).menuController), consumeOutsideTaps: (((bool)((dynamic)this.root).isOpen) && ((RawMenuAnchor)(object)this.widget).consumeOutsideTaps), onTapOutside: (global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)this.handleOutsideTap, child: new Builder(key: this._anchorKey, builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        {
+            return (((((RawMenuAnchor)(object)this.widget).builder is null ? ((RawMenuAnchor)(object)this.widget).child : ((RawMenuAnchor)(object)this.widget).builder.Invoke(context, this.menuController, ((RawMenuAnchor)(object)this.widget).child))) ?? new SizedBox());
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))))));
         return ((Widget)(object?)OverlayPortal.CreateOverlayChildLayoutBuilder(controller: this._overlayController, overlayChildBuilder: this._buildOverlay, overlayLocation: (this.useRootOverlay ? OverlayChildLocation.rootOverlay : OverlayChildLocation.nearestOverlay), child: child__30309));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -410,15 +416,18 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         ((dynamic)this._parent)?._childChangedOpenState();
         if ((!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
         {
-            setState(((global::System.Action)(() => {
-})));
+            setState(((global::System.Action)(() =>
+            {
+            })));
         }
         else
         {
-            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
-setState(((global::System.Action)(() => {
-})));
-})));
+            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) =>
+            {
+                setState(((global::System.Action)(() =>
+                {
+                })));
+            })));
         }
     }
 
@@ -509,18 +518,21 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
         {
             if ((!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
             {
-                setState(((global::System.Action)(() => {
-})));
+                setState(((global::System.Action)(() =>
+                {
+                })));
             }
             else
             {
-                global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
-if (this.mounted)
-{
-    setState(((global::System.Action)(() => {
-})));
-}
-})));
+                global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) =>
+                {
+                    if (this.mounted)
+                    {
+                        setState(((global::System.Action)(() =>
+                        {
+                        })));
+                    }
+                })));
             }
         }
     }
@@ -644,15 +656,18 @@ if (this.mounted)
         ((dynamic)this._parent)?._childChangedOpenState();
         if ((!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
         {
-            setState(((global::System.Action)(() => {
-})));
+            setState(((global::System.Action)(() =>
+            {
+            })));
         }
         else
         {
-            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
-setState(((global::System.Action)(() => {
-})));
-})));
+            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) =>
+            {
+                setState(((global::System.Action)(() =>
+                {
+                })));
+            })));
         }
     }
 

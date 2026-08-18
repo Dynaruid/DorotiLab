@@ -74,10 +74,11 @@ public class PageStorageBucket
         var keys__2424 = new List<PageStorageKey<object>>();
         if (PageStorageBucket._maybeAddKey(context, keys__2424))
         {
-            context.visitAncestorElements(((global::System.Func<Element, bool>)((element) => {
-return PageStorageBucket._maybeAddKey(element, keys__2424);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+            context.visitAncestorElements(((global::System.Func<Element, bool>)((element) =>
+            {
+                return PageStorageBucket._maybeAddKey(element, keys__2424);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
         }
         return keys__2424;
         throw new InvalidOperationException("Dart control flow completed without a value.");

@@ -106,10 +106,11 @@ public class AdaptiveTextSelectionToolbar : global::Doroti.Framework.Widgets.Sta
         {
             case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
                 {
-                    return buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, global::Doroti.Framework.Widgets.Widget>(((buttonItem) => {
-return CupertinoTextSelectionToolbarButton.CreateButtonItem(buttonItem: buttonItem);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+                    return buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, global::Doroti.Framework.Widgets.Widget>(((buttonItem) =>
+                    {
+                        return CupertinoTextSelectionToolbarButton.CreateButtonItem(buttonItem: buttonItem);
+                        throw new InvalidOperationException("Dart closure completed without a value.");
+                    }));
                 }
             case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
             case global::Doroti.Framework.Foundation.TargetPlatform.android:
@@ -125,17 +126,19 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             case global::Doroti.Framework.Foundation.TargetPlatform.linux:
             case global::Doroti.Framework.Foundation.TargetPlatform.windows:
                 {
-                    return buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, global::Doroti.Framework.Widgets.Widget>(((buttonItem) => {
-return DesktopTextSelectionToolbarButton.CreateText(context: context, onPressed: () => ((global::Doroti.Framework.Widgets.ContextMenuButtonItem)buttonItem).onPressed(), text: AdaptiveTextSelectionToolbar.getButtonLabel(context, buttonItem));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+                    return buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, global::Doroti.Framework.Widgets.Widget>(((buttonItem) =>
+                    {
+                        return DesktopTextSelectionToolbarButton.CreateText(context: context, onPressed: () => ((global::Doroti.Framework.Widgets.ContextMenuButtonItem)buttonItem).onPressed(), text: AdaptiveTextSelectionToolbar.getButtonLabel(context, buttonItem));
+                        throw new InvalidOperationException("Dart closure completed without a value.");
+                    }));
                 }
             case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
                 {
-                    return buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, global::Doroti.Framework.Widgets.Widget>(((buttonItem) => {
-return CupertinoDesktopTextSelectionToolbarButton.CreateText(onPressed: ((global::Doroti.Framework.Widgets.ContextMenuButtonItem)buttonItem).onPressed, text: AdaptiveTextSelectionToolbar.getButtonLabel(context, buttonItem));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+                    return buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, global::Doroti.Framework.Widgets.Widget>(((buttonItem) =>
+                    {
+                        return CupertinoDesktopTextSelectionToolbarButton.CreateText(onPressed: ((global::Doroti.Framework.Widgets.ContextMenuButtonItem)buttonItem).onPressed, text: AdaptiveTextSelectionToolbar.getButtonLabel(context, buttonItem));
+                        throw new InvalidOperationException("Dart closure completed without a value.");
+                    }));
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");

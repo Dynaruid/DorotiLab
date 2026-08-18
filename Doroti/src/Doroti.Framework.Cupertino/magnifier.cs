@@ -52,10 +52,16 @@ internal class _CupertinoTextMagnifierState__magnifier : global::Doroti.Framewor
     {
         base.initState();
         _ioAnimationController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(value: 0, vsync: this, duration: CupertinoMagnifier._kInOutAnimationDuration);
-            __cascade.addListener(((global::System.Action)(() => { setState(((global::System.Action)(() => {
-}))); })));
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Animation.AnimationController(value: 0, vsync: this, duration: CupertinoMagnifier._kInOutAnimationDuration);
+    __cascade.addListener(((global::System.Action)(() =>
+    {
+        setState(((global::System.Action)(() =>
+        {
+        })));
+    })));
+    return __cascade;
+}))();
         ((CupertinoTextMagnifier)this.widget).controller.animationController = this._ioAnimationController;
         ((CupertinoTextMagnifier)this.widget).magnifierInfo.addListener(() => this._determineMagnifierPositionAndFocalPoint());
         _ioCurvedAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._ioAnimationController, curve: ((CupertinoTextMagnifier)this.widget).animationCurve);
@@ -117,10 +123,11 @@ internal class _CupertinoTextMagnifierState__magnifier : global::Doroti.Framewor
         var rawMagnifierPosition__6504 = new global::Doroti.Ui.Offset((((global::Doroti.Framework.Widgets.MagnifierInfo)textEditingContext__5306).globalGesturePosition.dx - (CupertinoMagnifier.kDefaultSize.width / 2L)), (verticalPositionOfLens__6199 - ((CupertinoMagnifier.kDefaultSize.height - CupertinoMagnifier.kMagnifierAboveFocalPoint))));
         global::Doroti.Ui.Rect screenRect__6783 = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & MediaQuery.sizeOf(this.context)));
         global::Doroti.Ui.Offset adjustedMagnifierPosition__6956 = ((global::Doroti.Ui.Offset)(object?)MagnifierController.shiftWithinBounds(bounds: global::Doroti.Ui.Rect.fromLTRB((screenRect__6783.left + ((CupertinoTextMagnifier)this.widget).horizontalScreenEdgePadding), (screenRect__6783.top - ((CupertinoMagnifier.kDefaultSize.height + CupertinoMagnifier.kMagnifierAboveFocalPoint))), (screenRect__6783.right - ((CupertinoTextMagnifier)this.widget).horizontalScreenEdgePadding), (screenRect__6783.bottom + ((CupertinoMagnifier.kDefaultSize.height + CupertinoMagnifier.kMagnifierAboveFocalPoint)))), rect: (rawMagnifierPosition__6504 & CupertinoMagnifier.kDefaultSize)).topLeft);
-        setState(((global::System.Action)(() => {
-_currentAdjustedMagnifierPosition = adjustedMagnifierPosition__6956;
-_verticalFocalPointAdjustment = (verticalCenterOfCurrentLine__5427 - verticalPositionOfLens__6199);
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _currentAdjustedMagnifierPosition = adjustedMagnifierPosition__6956;
+            _verticalFocalPointAdjustment = (verticalCenterOfCurrentLine__5427 - verticalPositionOfLens__6199);
+        })));
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)

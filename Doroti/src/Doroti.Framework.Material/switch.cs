@@ -312,10 +312,12 @@ internal class _MaterialSwitchState__switch : global::Doroti.Framework.Widgets.S
                                 case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
                                     {
                                         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.CurvedAnimation>)(() =>
-{            var __cascade = this.position;
-            __cascade.curve = global::Doroti.Framework.Animation.Curves.linear;
-            __cascade.reverseCurve = global::Doroti.Framework.Animation.Curves.linear;
-            return __cascade;        }))());
+{
+    var __cascade = this.position;
+    __cascade.curve = global::Doroti.Framework.Animation.Curves.linear;
+    __cascade.reverseCurve = global::Doroti.Framework.Animation.Curves.linear;
+    return __cascade;
+}))());
                                         break;
                                     }
                             }
@@ -355,18 +357,22 @@ internal class _MaterialSwitchState__switch : global::Doroti.Framework.Widgets.S
         if (Theme.of(this.context).useMaterial3)
         {
             DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.CurvedAnimation>)(() =>
-{            var __cascade = this.position;
-            __cascade.curve = global::Doroti.Framework.Animation.Curves.easeOutBack;
-            __cascade.reverseCurve = global::Doroti.Framework.Animation.Curves.easeOutBack.flipped;
-            return __cascade;        }))());
+{
+    var __cascade = this.position;
+    __cascade.curve = global::Doroti.Framework.Animation.Curves.easeOutBack;
+    __cascade.reverseCurve = global::Doroti.Framework.Animation.Curves.easeOutBack.flipped;
+    return __cascade;
+}))());
         }
         else
         {
             DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.CurvedAnimation>)(() =>
-{            var __cascade = this.position;
-            __cascade.curve = global::Doroti.Framework.Animation.Curves.easeIn;
-            __cascade.reverseCurve = global::Doroti.Framework.Animation.Curves.easeOut;
-            return __cascade;        }))());
+{
+    var __cascade = this.position;
+    __cascade.curve = global::Doroti.Framework.Animation.Curves.easeIn;
+    __cascade.reverseCurve = global::Doroti.Framework.Animation.Curves.easeOut;
+    return __cascade;
+}))());
         }
     }
 
@@ -374,18 +380,19 @@ internal class _MaterialSwitchState__switch : global::Doroti.Framework.Widgets.S
     {
         get
         {
-            return WidgetStateProperty.resolveWith<Color?>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, Color?>)((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return ((_MaterialSwitch__switch)this.widget).inactiveThumbColor;
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return ((_MaterialSwitch__switch)this.widget).activeThumbColor;
-}
-return ((_MaterialSwitch__switch)this.widget).inactiveThumbColor;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+            return WidgetStateProperty.resolveWith<Color?>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, Color?>)((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    return ((_MaterialSwitch__switch)this.widget).inactiveThumbColor;
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    return ((_MaterialSwitch__switch)this.widget).activeThumbColor;
+                }
+                return ((_MaterialSwitch__switch)this.widget).inactiveThumbColor;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
             return default!;
         }
     }
@@ -393,14 +400,15 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return WidgetStateProperty.resolveWith<Color?>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, Color?>)((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return ((_MaterialSwitch__switch)this.widget).activeTrackColor;
-}
-return ((_MaterialSwitch__switch)this.widget).inactiveTrackColor;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+            return WidgetStateProperty.resolveWith<Color?>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, Color?>)((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    return ((_MaterialSwitch__switch)this.widget).activeTrackColor;
+                }
+                return ((_MaterialSwitch__switch)this.widget).inactiveTrackColor;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
             return default!;
         }
     }
@@ -464,10 +472,12 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         if (this.isInteractive)
         {
             DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.CurvedAnimation>)(() =>
-{            var __cascade = this.position;
-            __cascade.curve = global::Doroti.Framework.Animation.Curves.linear;
-            __cascade.reverseCurve = null;
-            return __cascade;        }))());
+{
+    var __cascade = this.position;
+    __cascade.curve = global::Doroti.Framework.Animation.Curves.linear;
+    __cascade.reverseCurve = null;
+    return __cascade;
+}))());
             double delta__31437 = (DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).primaryDelta) / this._trackInnerLength);
             this.positionController.value += (Directionality.of(this.context) switch { TextDirection.rtl => -delta__31437, TextDirection.ltr => delta__31437, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         }
@@ -478,9 +488,10 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         if (((((global::Doroti.Framework.Animation.CurvedAnimation)this.position).value >= 0.5) != ((_MaterialSwitch__switch)this.widget).value))
         {
             ((_MaterialSwitch__switch)this.widget).onChanged?.Invoke(!((_MaterialSwitch__switch)this.widget).value);
-            setState(((global::System.Action)(() => {
-_needsPositionAnimation = true;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _needsPositionAnimation = true;
+            })));
         }
         else
         {
@@ -551,13 +562,17 @@ _needsPositionAnimation = true;
         }
         this.positionController.duration = Duration.Create(milliseconds: ((_SwitchConfig__switch)switchConfig__32751).toggleDuration);
         HashSet<global::Doroti.Framework.Widgets.WidgetState> activeStates__34504 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
-{            var __cascade = this.states;
-            __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.selected);
-            return __cascade;        }))();
+{
+    var __cascade = this.states;
+    __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.selected);
+    return __cascade;
+}))();
         HashSet<global::Doroti.Framework.Widgets.WidgetState> inactiveStates__34581 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
-{            var __cascade = this.states;
-            __cascade.Remove(global::Doroti.Framework.Widgets.WidgetState.selected);
-            return __cascade;        }))();
+{
+    var __cascade = this.states;
+    __cascade.Remove(global::Doroti.Framework.Widgets.WidgetState.selected);
+    return __cascade;
+}))();
         global::Doroti.Ui.Color? activeThumbColor__34654 = ((global::Doroti.Ui.Color?)(object?)((((((_MaterialSwitch__switch)this.widget).thumbColor?.resolve(activeStates__34504) ?? (Color)this._widgetThumbColor.resolve(activeStates__34504))) ?? (Color)switchTheme__32572.thumbColor?.resolve(activeStates__34504))));
         global::Doroti.Ui.Color effectiveActiveThumbColor__34847 = ((global::Doroti.Ui.Color)(object?)(activeThumbColor__34654 ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__32785.thumbColor).resolve(activeStates__34504)!));
         global::Doroti.Ui.Color? inactiveThumbColor__34965 = ((global::Doroti.Ui.Color?)(object?)((((((_MaterialSwitch__switch)this.widget).thumbColor?.resolve(inactiveStates__34581) ?? (Color)this._widgetThumbColor.resolve(inactiveStates__34581))) ?? (Color)switchTheme__32572.thumbColor?.resolve(inactiveStates__34581))));
@@ -573,85 +588,96 @@ _needsPositionAnimation = true;
         global::Doroti.Ui.Color effectiveActiveIconColor__37186 = ((global::Doroti.Ui.Color)(object?)((effectiveActiveIcon__36909?.color ?? (Color)((_SwitchConfig__switch)switchConfig__32751).iconColor.resolve(activeStates__34504))));
         global::Doroti.Ui.Color effectiveInactiveIconColor__37313 = ((global::Doroti.Ui.Color)(object?)((effectiveInactiveIcon__37044?.color ?? (Color)((_SwitchConfig__switch)switchConfig__32751).iconColor.resolve(inactiveStates__34581))));
         HashSet<global::Doroti.Framework.Widgets.WidgetState> focusedStates__37458 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
-{            var __cascade = this.states;
-            __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.focused);
-            return __cascade;        }))();
+{
+    var __cascade = this.states;
+    __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.focused);
+    return __cascade;
+}))();
         global::Doroti.Ui.Color effectiveFocusOverlayColor__37524 = ((global::Doroti.Ui.Color)(object?)(((((((_MaterialSwitch__switch)this.widget).overlayColor?.resolve(focusedStates__37458) ?? ((_MaterialSwitch__switch)this.widget).focusColor) ?? (Color)switchTheme__32572.overlayColor?.resolve(focusedStates__37458))) ?? ((applyCupertinoTheme__32803 ? global::Doroti.Framework.Painting.HSLColor.CreateFromColor(cupertinoPrimaryColor__32627.withOpacity(0.8)).withLightness(0.69).withSaturation(0.835).toColor() : null))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__32785.overlayColor).resolve(focusedStates__37458)!));
         HashSet<global::Doroti.Framework.Widgets.WidgetState> hoveredStates__37992 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
-{            var __cascade = this.states;
-            __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.hovered);
-            return __cascade;        }))();
+{
+    var __cascade = this.states;
+    __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.hovered);
+    return __cascade;
+}))();
         global::Doroti.Ui.Color effectiveHoverOverlayColor__38058 = ((global::Doroti.Ui.Color)(object?)((((((_MaterialSwitch__switch)this.widget).overlayColor?.resolve(hoveredStates__37992) ?? ((_MaterialSwitch__switch)this.widget).hoverColor) ?? (Color)switchTheme__32572.overlayColor?.resolve(hoveredStates__37992))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__32785.overlayColor).resolve(hoveredStates__37992)!));
         var activePressedStates__38298 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
-{            var __cascade = activeStates__34504;
-            __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.pressed);
-            return __cascade;        }))();
+{
+    var __cascade = activeStates__34504;
+    __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.pressed);
+    return __cascade;
+}))();
         global::Doroti.Ui.Color effectiveActivePressedThumbColor__38376 = ((global::Doroti.Ui.Color)(object?)(((((((_MaterialSwitch__switch)this.widget).thumbColor?.resolve(activePressedStates__38298) ?? (Color)this._widgetThumbColor.resolve(activePressedStates__38298))) ?? (Color)switchTheme__32572.thumbColor?.resolve(activePressedStates__38298))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__32785.thumbColor).resolve(activePressedStates__38298)!));
         global::Doroti.Ui.Color effectiveActivePressedOverlayColor__38668 = ((global::Doroti.Ui.Color)(object?)((((((_MaterialSwitch__switch)this.widget).overlayColor?.resolve(activePressedStates__38298) ?? (Color)switchTheme__32572.overlayColor?.resolve(activePressedStates__38298))) ?? activeThumbColor__34654?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__32785.overlayColor).resolve(activePressedStates__38298)!));
         var inactivePressedStates__38966 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
-{            var __cascade = inactiveStates__34581;
-            __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.pressed);
-            return __cascade;        }))();
+{
+    var __cascade = inactiveStates__34581;
+    __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.pressed);
+    return __cascade;
+}))();
         global::Doroti.Ui.Color effectiveInactivePressedThumbColor__39048 = ((global::Doroti.Ui.Color)(object?)(((((((_MaterialSwitch__switch)this.widget).thumbColor?.resolve(inactivePressedStates__38966) ?? (Color)this._widgetThumbColor.resolve(inactivePressedStates__38966))) ?? (Color)switchTheme__32572.thumbColor?.resolve(inactivePressedStates__38966))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__32785.thumbColor).resolve(inactivePressedStates__38966)!));
         global::Doroti.Ui.Color effectiveInactivePressedOverlayColor__39350 = ((global::Doroti.Ui.Color)(object?)((((((_MaterialSwitch__switch)this.widget).overlayColor?.resolve(inactivePressedStates__38966) ?? (Color)switchTheme__32572.overlayColor?.resolve(inactivePressedStates__38966))) ?? inactiveThumbColor__34965?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__32785.overlayColor).resolve(inactivePressedStates__38966)!));
-        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> effectiveMouseCursor__39691 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>)(object?)WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>((states) => {
-return WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((_MaterialSwitch__switch)this.widget).mouseCursor, states)
-    ?? switchTheme__32572.mouseCursor?.resolve(states)
-    ?? global::Doroti.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable.resolve(states);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> effectiveMouseCursor__39691 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>)(object?)WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>((states) =>
+        {
+            return WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((_MaterialSwitch__switch)this.widget).mouseCursor, states)
+                ?? switchTheme__32572.mouseCursor?.resolve(states)
+                ?? global::Doroti.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable.resolve(states);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         double effectiveActiveThumbRadius__40029 = ((effectiveActiveIcon__36909 is null) ? ((_SwitchConfig__switch)switchConfig__32751).activeThumbRadius : ((_SwitchConfig__switch)switchConfig__32751).thumbRadiusWithIcon);
         double effectiveInactiveThumbRadius__40188 = (((effectiveInactiveIcon__37044 is null) && (((_MaterialSwitch__switch)this.widget).inactiveThumbImage is null)) ? ((_SwitchConfig__switch)switchConfig__32751).inactiveThumbRadius : ((_SwitchConfig__switch)switchConfig__32751).thumbRadiusWithIcon);
         double effectiveSplashRadius__40398 = ((((_MaterialSwitch__switch)this.widget).splashRadius ?? switchTheme__32572.splashRadius) ?? DartRuntimePrimitives.RequireValue(defaults__32785.splashRadius));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(toggled: ((_MaterialSwitch__switch)this.widget).value, child: new global::Doroti.Framework.Widgets.GestureDetector(excludeFromSemantics: true, onHorizontalDragStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._handleDragStart, onHorizontalDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handleDragUpdate, onHorizontalDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._handleDragEnd, dragStartBehavior: ((_MaterialSwitch__switch)this.widget).dragStartBehavior, child: new global::Doroti.Framework.Widgets.Opacity(opacity: ((this.onChanged is null) ? disabledOpacity__32843 : 1), child: buildToggleable(mouseCursor: effectiveMouseCursor__39691, focusNode: ((_MaterialSwitch__switch)this.widget).focusNode, onFocusChange: (global::System.Action<bool>?)((_MaterialSwitch__switch)this.widget).onFocusChange, autofocus: ((_MaterialSwitch__switch)this.widget).autofocus, size: ((_MaterialSwitch__switch)this.widget).size, painter: ((Func<_SwitchPainter__switch>)(() =>
-{            var __cascade = this._painter;
-            __cascade.position = this.position;
-            __cascade.reaction = this.reaction;
-            __cascade.reactionFocusFade = this.reactionFocusFade;
-            __cascade.reactionHoverFade = this.reactionHoverFade;
-            __cascade.inactiveReactionColor = effectiveInactivePressedOverlayColor__39350;
-            __cascade.reactionColor = effectiveActivePressedOverlayColor__38668;
-            __cascade.hoverColor = effectiveHoverOverlayColor__38058;
-            __cascade.focusColor = effectiveFocusOverlayColor__37524;
-            __cascade.splashRadius = effectiveSplashRadius__40398;
-            __cascade.downPosition = this.downPosition;
-            __cascade.isFocused = this.states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused);
-            __cascade.isHovered = this.states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered);
-            __cascade.activeColor = effectiveActiveThumbColor__34847;
-            __cascade.inactiveColor = effectiveInactiveThumbColor__35166;
-            __cascade.activePressedColor = effectiveActivePressedThumbColor__38376;
-            __cascade.inactivePressedColor = effectiveInactivePressedThumbColor__39048;
-            __cascade.activeThumbImage = ((_MaterialSwitch__switch)this.widget).activeThumbImage;
-            __cascade.onActiveThumbImageError = ((_MaterialSwitch__switch)this.widget).onActiveThumbImageError;
-            __cascade.inactiveThumbImage = ((_MaterialSwitch__switch)this.widget).inactiveThumbImage;
-            __cascade.onInactiveThumbImageError = ((_MaterialSwitch__switch)this.widget).onInactiveThumbImageError;
-            __cascade.activeTrackColor = effectiveActiveTrackColor__35289;
-            __cascade.activeTrackOutlineColor = effectiveActiveTrackOutlineColor__35687;
-            __cascade.activeTrackOutlineWidth = effectiveActiveTrackOutlineWidth__35922;
-            __cascade.inactiveTrackColor = effectiveInactiveTrackColor__36156;
-            __cascade.inactiveTrackOutlineColor = effectiveInactiveTrackOutlineColor__36424;
-            __cascade.inactiveTrackOutlineWidth = effectiveInactiveTrackOutlineWidth__36667;
-            __cascade.configuration = global::Doroti.Framework.Widgets.ImageLibrary.createLocalImageConfiguration(context);
-            __cascade.isInteractive = this.isInteractive;
-            __cascade.trackInnerLength = this._trackInnerLength;
-            __cascade.textDirection = Directionality.of(context);
-            __cascade.surfaceColor = theme__32525.colorScheme.surface;
-            __cascade.inactiveThumbRadius = effectiveInactiveThumbRadius__40188;
-            __cascade.activeThumbRadius = effectiveActiveThumbRadius__40029;
-            __cascade.pressedThumbRadius = ((_SwitchConfig__switch)switchConfig__32751).pressedThumbRadius;
-            __cascade.thumbOffset = ((_SwitchConfig__switch)switchConfig__32751).thumbOffset;
-            __cascade.trackHeight = ((_SwitchConfig__switch)switchConfig__32751).trackHeight;
-            __cascade.trackWidth = ((_SwitchConfig__switch)switchConfig__32751).trackWidth;
-            __cascade.activeIconColor = effectiveActiveIconColor__37186;
-            __cascade.inactiveIconColor = effectiveInactiveIconColor__37313;
-            __cascade.activeIcon = effectiveActiveIcon__36909;
-            __cascade.inactiveIcon = effectiveInactiveIcon__37044;
-            __cascade.iconTheme = IconTheme.of(context);
-            __cascade.thumbShadow = ((_SwitchConfig__switch)switchConfig__32751).thumbShadow;
-            __cascade.transitionalThumbSize = ((_SwitchConfig__switch)switchConfig__32751).transitionalThumbSize;
-            __cascade.positionController = this.positionController;
-            __cascade.isCupertino = this.isCupertino;
-            return __cascade;        }))())))));
+{
+    var __cascade = this._painter;
+    __cascade.position = this.position;
+    __cascade.reaction = this.reaction;
+    __cascade.reactionFocusFade = this.reactionFocusFade;
+    __cascade.reactionHoverFade = this.reactionHoverFade;
+    __cascade.inactiveReactionColor = effectiveInactivePressedOverlayColor__39350;
+    __cascade.reactionColor = effectiveActivePressedOverlayColor__38668;
+    __cascade.hoverColor = effectiveHoverOverlayColor__38058;
+    __cascade.focusColor = effectiveFocusOverlayColor__37524;
+    __cascade.splashRadius = effectiveSplashRadius__40398;
+    __cascade.downPosition = this.downPosition;
+    __cascade.isFocused = this.states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused);
+    __cascade.isHovered = this.states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered);
+    __cascade.activeColor = effectiveActiveThumbColor__34847;
+    __cascade.inactiveColor = effectiveInactiveThumbColor__35166;
+    __cascade.activePressedColor = effectiveActivePressedThumbColor__38376;
+    __cascade.inactivePressedColor = effectiveInactivePressedThumbColor__39048;
+    __cascade.activeThumbImage = ((_MaterialSwitch__switch)this.widget).activeThumbImage;
+    __cascade.onActiveThumbImageError = ((_MaterialSwitch__switch)this.widget).onActiveThumbImageError;
+    __cascade.inactiveThumbImage = ((_MaterialSwitch__switch)this.widget).inactiveThumbImage;
+    __cascade.onInactiveThumbImageError = ((_MaterialSwitch__switch)this.widget).onInactiveThumbImageError;
+    __cascade.activeTrackColor = effectiveActiveTrackColor__35289;
+    __cascade.activeTrackOutlineColor = effectiveActiveTrackOutlineColor__35687;
+    __cascade.activeTrackOutlineWidth = effectiveActiveTrackOutlineWidth__35922;
+    __cascade.inactiveTrackColor = effectiveInactiveTrackColor__36156;
+    __cascade.inactiveTrackOutlineColor = effectiveInactiveTrackOutlineColor__36424;
+    __cascade.inactiveTrackOutlineWidth = effectiveInactiveTrackOutlineWidth__36667;
+    __cascade.configuration = global::Doroti.Framework.Widgets.ImageLibrary.createLocalImageConfiguration(context);
+    __cascade.isInteractive = this.isInteractive;
+    __cascade.trackInnerLength = this._trackInnerLength;
+    __cascade.textDirection = Directionality.of(context);
+    __cascade.surfaceColor = theme__32525.colorScheme.surface;
+    __cascade.inactiveThumbRadius = effectiveInactiveThumbRadius__40188;
+    __cascade.activeThumbRadius = effectiveActiveThumbRadius__40029;
+    __cascade.pressedThumbRadius = ((_SwitchConfig__switch)switchConfig__32751).pressedThumbRadius;
+    __cascade.thumbOffset = ((_SwitchConfig__switch)switchConfig__32751).thumbOffset;
+    __cascade.trackHeight = ((_SwitchConfig__switch)switchConfig__32751).trackHeight;
+    __cascade.trackWidth = ((_SwitchConfig__switch)switchConfig__32751).trackWidth;
+    __cascade.activeIconColor = effectiveActiveIconColor__37186;
+    __cascade.inactiveIconColor = effectiveInactiveIconColor__37313;
+    __cascade.activeIcon = effectiveActiveIcon__36909;
+    __cascade.inactiveIcon = effectiveInactiveIcon__37044;
+    __cascade.iconTheme = IconTheme.of(context);
+    __cascade.thumbShadow = ((_SwitchConfig__switch)switchConfig__32751).thumbShadow;
+    __cascade.transitionalThumbSize = ((_SwitchConfig__switch)switchConfig__32751).transitionalThumbSize;
+    __cascade.positionController = this.positionController;
+    __cascade.isCupertino = this.isCupertino;
+    return __cascade;
+}))())))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -665,10 +691,12 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -775,9 +803,10 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         if (this.isInteractive)
         {
-            setState(((global::System.Action)(() => {
-this._downPosition = ((global::Doroti.Framework.Gestures.TapDownDetails)details).localPosition;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                this._downPosition = ((global::Doroti.Framework.Gestures.TapDownDetails)details).localPosition;
+            })));
             this._reactionController.forward();
         }
     }
@@ -813,9 +842,10 @@ this._downPosition = ((global::Doroti.Framework.Gestures.TapDownDetails)details)
     {
         if ((this._downPosition is not null))
         {
-            setState(((global::System.Action)(() => {
-this._downPosition = null;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                this._downPosition = null;
+            })));
         }
         this._reactionController.reverse();
     }
@@ -824,9 +854,10 @@ this._downPosition = null;
     {
         if ((focused != this._focused))
         {
-            setState(((global::System.Action)(() => {
-this._focused = focused;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                this._focused = focused;
+            })));
             if (focused)
             {
                 this._reactionFocusFadeController.forward();
@@ -842,9 +873,10 @@ this._focused = focused;
     {
         if ((hovering != this._hovering))
         {
-            setState(((global::System.Action)(() => {
-this._hovering = hovering;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                this._hovering = hovering;
+            })));
             if (hovering)
             {
                 this._reactionHoverFadeController.forward();
@@ -1499,9 +1531,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
         dynamic thumbImage__59586 = ((currentValue__53365 < 0.5) ? this.inactiveThumbImage : this.activeThumbImage);
         global::System.Action<object, global::System.Diagnostics.StackTrace?>? thumbErrorListener__59690 = ((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((currentValue__53365 < 0.5) ? this.onInactiveThumbImageError : this.onActiveThumbImageError));
         var paint__59812 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = trackColor__58228;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = trackColor__58228;
+    return __cascade;
+}))();
         global::Doroti.Ui.Offset trackPaintOffset__59867 = ((global::Doroti.Ui.Offset)(object?)_computeTrackPaintOffset(size, this.trackWidth, this.trackHeight));
         global::Doroti.Ui.Offset thumbPaintOffset__59960 = ((global::Doroti.Ui.Offset)(object?)_computeThumbPaintOffset(trackPaintOffset__59867, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(thumbSize__57038)), visualPosition__53414));
         var radialReactionOrigin__60085 = new global::Doroti.Ui.Offset((thumbPaintOffset__59960.dx + (DartRuntimePrimitives.RequireValue(thumbSize__57038).height / 2L)), (size.height / 2L));
@@ -1540,11 +1574,13 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
             var outlineTrackRect__62277 = global::Doroti.Ui.Rect.fromLTWH((trackPaintOffset.dx + 1L), (trackPaintOffset.dy + 1L), (this.trackWidth - 2L), (this.trackHeight - 2L));
             var outlineTrackRRect__62447 = global::Doroti.Ui.RRect.fromRectAndRadius(outlineTrackRect__62277, global::Doroti.Ui.Radius.circular(trackRadius__62038));
             var outlinePaint__62578 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.style = PaintingStyle.stroke;
-            __cascade.strokeWidth = (trackOutlineWidth ?? 2.0);
-            __cascade.color = trackOutlineColor;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.style = PaintingStyle.stroke;
+    __cascade.strokeWidth = (trackOutlineWidth ?? 2.0);
+    __cascade.color = trackOutlineColor;
+    return __cascade;
+}))();
             canvas.drawRRect(outlineTrackRRect__62447, outlinePaint__62578);
         }
         if (this.isCupertino)
@@ -1553,11 +1589,13 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
             {
                 global::Doroti.Ui.RRect focusedOutline__62857 = ((global::Doroti.Ui.RRect)(object?)trackRRect__62079.inflate(1.75));
                 var focusedPaint__62914 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.style = PaintingStyle.stroke;
-            __cascade.color = this.focusColor;
-            __cascade.strokeWidth = SwitchLibrary._kCupertinoFocusTrackOutline;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.style = PaintingStyle.stroke;
+    __cascade.color = this.focusColor;
+    __cascade.strokeWidth = SwitchLibrary._kCupertinoFocusTrackOutline;
+    return __cascade;
+}))();
                 canvas.drawRRect(focusedOutline__62857, focusedPaint__62914);
             }
             canvas.clipRRect(trackRRect__62079);
@@ -1595,10 +1633,12 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
                 List<global::Doroti.Ui.Shadow>? iconShadows__64916 = (((global::Doroti.Framework.Widgets.Icon)thumbIcon).shadows ?? this.iconTheme?.shadows).ToList();
                 var textSpan__64986 = new global::Doroti.Framework.Painting.TextSpan(text: char.ConvertFromUtf32(checked((int)((global::Doroti.Framework.Widgets.IconData)iconData__64558).codePoint)), style: new global::Doroti.Framework.Painting.TextStyle(fontVariations: ((Func<List<global::Doroti.Ui.FontVariation>>)(() => { var __collection65120 = new List<global::Doroti.Ui.FontVariation>(); if ((iconFill__64682 is not null)) { __collection65120.Add(new global::Doroti.Ui.FontVariation("FILL", DartRuntimePrimitives.RequireValue(iconFill__64682))); } if ((iconWeight__64608 is not null)) { __collection65120.Add(new global::Doroti.Ui.FontVariation("wght", DartRuntimePrimitives.RequireValue(iconWeight__64608))); } if ((iconGrade__64750 is not null)) { __collection65120.Add(new global::Doroti.Ui.FontVariation("GRAD", DartRuntimePrimitives.RequireValue(iconGrade__64750))); } if ((iconOpticalSize__64821 is not null)) { __collection65120.Add(new global::Doroti.Ui.FontVariation("opsz", DartRuntimePrimitives.RequireValue(iconOpticalSize__64821))); } return __collection65120; }))(), color: iconColor__64384, fontSize: iconSize__64480, inherit: false, fontFamily: ((global::Doroti.Framework.Widgets.IconData)iconData__64558).fontFamily, package: ((global::Doroti.Framework.Widgets.IconData)iconData__64558).fontPackage, shadows: iconShadows__64916));
                 DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
-{            var __cascade = this._textPainter;
-            __cascade.textDirection = this.textDirection;
-            __cascade.text = textSpan__64986;
-            return __cascade;        }))());
+{
+    var __cascade = this._textPainter;
+    __cascade.textDirection = this.textDirection;
+    __cascade.text = textSpan__64986;
+    return __cascade;
+}))());
                 this._textPainter.layout();
                 double additionalHorizontalOffset__65828 = (((thumbSize.width - iconSize__64480)) / 2L);
                 double additionalVerticalOffset__65912 = (((thumbSize.height - iconSize__64480)) / 2L);
@@ -1623,9 +1663,11 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
             }
         }
         canvas.drawRRect(thumbBounds__66315.inflate(0.5), ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = new global::Doroti.Ui.Color(167772160L);
-            return __cascade;        }))());
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = new global::Doroti.Ui.Color(167772160L);
+    return __cascade;
+}))());
     }
 
     public override void dispose()
@@ -1704,14 +1746,15 @@ internal class _SwitchDefaultsCupertino__switch : SwitchThemeData
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return (global::Doroti.Framework.Services.SystemMouseCursors.basic);
-}
-return ((global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.SystemMouseCursors.basic));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    return (global::Doroti.Framework.Services.SystemMouseCursors.basic);
+                }
+                return ((global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.SystemMouseCursors.basic));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -1720,14 +1763,15 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (CupertinoDynamicColor.resolve(CupertinoColors.systemGreen, this.context));
-}
-return (CupertinoDynamicColor.resolve(CupertinoColors.secondarySystemFill, this.context));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    return (CupertinoDynamicColor.resolve(CupertinoColors.systemGreen, this.context));
+                }
+                return (CupertinoDynamicColor.resolve(CupertinoColors.secondarySystemFill, this.context));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -1736,14 +1780,15 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-{
-    return (global::Doroti.Framework.Painting.HSLColor.CreateFromColor(CupertinoDynamicColor.resolve(CupertinoColors.systemGreen, this.context).withOpacity(0.8)).withLightness(0.69).withSaturation(0.835).toColor());
-}
-return (Colors.transparent);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                {
+                    return (global::Doroti.Framework.Painting.HSLColor.CreateFromColor(CupertinoDynamicColor.resolve(CupertinoColors.systemGreen, this.context).withOpacity(0.8)).withLightness(0.69).withSaturation(0.835).toColor());
+                }
+                return (Colors.transparent);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -1770,14 +1815,15 @@ internal class _SwitchConfigCupertino__switch : _SwitchConfig__switch
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return (this._colors.onSurface.withOpacity(0.38));
-}
-return (this._colors.onPrimaryContainer);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    return (this._colors.onSurface.withOpacity(0.38));
+                }
+                return (this._colors.onPrimaryContainer);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -1837,18 +1883,19 @@ internal class _SwitchDefaultsM2__switch : SwitchThemeData
         get
         {
             var isDark__72847 = (object.Equals(this._theme.brightness, Brightness.dark));
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return ((isDark__72847 ? Colors.grey.shade800 : Colors.grey.shade400));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (this._colors.secondary);
-}
-return ((isDark__72847 ? Colors.grey.shade400 : Colors.grey.shade50));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    return ((isDark__72847 ? Colors.grey.shade800 : Colors.grey.shade400));
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    return (this._colors.secondary);
+                }
+                return ((isDark__72847 ? Colors.grey.shade400 : Colors.grey.shade50));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -1858,19 +1905,20 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         {
             var isDark__73334 = (object.Equals(this._theme.brightness, Brightness.dark));
             var black32__73391 = new global::Doroti.Ui.Color(1375731712L);
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return ((isDark__73334 ? Colors.white10 : Colors.black12));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    global::Doroti.Ui.Color activeColor__73705 = ((global::Doroti.Ui.Color)(object?)this._colors.secondary);
-    return (activeColor__73705.withAlpha(128L));
-}
-return ((isDark__73334 ? Colors.white30 : black32__73391));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    return ((isDark__73334 ? Colors.white10 : Colors.black12));
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    global::Doroti.Ui.Color activeColor__73705 = ((global::Doroti.Ui.Color)(object?)this._colors.secondary);
+                    return (activeColor__73705.withAlpha(128L));
+                }
+                return ((isDark__73334 ? Colors.white30 : black32__73391));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -1881,22 +1929,23 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-{
-    return (this.thumbColor.resolve(states).withAlpha(ConstantsLibrary.kRadialReactionAlpha));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-{
-    return (this._theme.hoverColor);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-{
-    return (this._theme.focusColor);
-}
-return null;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                {
+                    return (this.thumbColor.resolve(states).withAlpha(ConstantsLibrary.kRadialReactionAlpha));
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                {
+                    return (this._theme.hoverColor);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                {
+                    return (this._theme.focusColor);
+                }
+                return null;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -1931,46 +1980,47 @@ internal class _SwitchDefaultsM3__switch : SwitchThemeData
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-    {
-        return (this._colors.surface.withOpacity(1.0));
-    }
-    return (this._colors.onSurface.withOpacity(0.38));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-    {
-        return (this._colors.primaryContainer);
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-    {
-        return (this._colors.primaryContainer);
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (this._colors.primaryContainer);
-    }
-    return (this._colors.onPrimary);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-{
-    return (this._colors.onSurfaceVariant);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-{
-    return (this._colors.onSurfaceVariant);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-{
-    return (this._colors.onSurfaceVariant);
-}
-return (this._colors.outline);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                    {
+                        return (this._colors.surface.withOpacity(1.0));
+                    }
+                    return (this._colors.onSurface.withOpacity(0.38));
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                    {
+                        return (this._colors.primaryContainer);
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                    {
+                        return (this._colors.primaryContainer);
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                    {
+                        return (this._colors.primaryContainer);
+                    }
+                    return (this._colors.onPrimary);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                {
+                    return (this._colors.onSurfaceVariant);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                {
+                    return (this._colors.onSurfaceVariant);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                {
+                    return (this._colors.onSurfaceVariant);
+                }
+                return (this._colors.outline);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -1978,46 +2028,47 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-    {
-        return (this._colors.onSurface.withOpacity(0.12));
-    }
-    return (this._colors.surfaceContainerHighest.withOpacity(0.12));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-    {
-        return (this._colors.primary);
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-    {
-        return (this._colors.primary);
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (this._colors.primary);
-    }
-    return (this._colors.primary);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-{
-    return (this._colors.surfaceContainerHighest);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-{
-    return (this._colors.surfaceContainerHighest);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-{
-    return (this._colors.surfaceContainerHighest);
-}
-return (this._colors.surfaceContainerHighest);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                    {
+                        return (this._colors.onSurface.withOpacity(0.12));
+                    }
+                    return (this._colors.surfaceContainerHighest.withOpacity(0.12));
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                    {
+                        return (this._colors.primary);
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                    {
+                        return (this._colors.primary);
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                    {
+                        return (this._colors.primary);
+                    }
+                    return (this._colors.primary);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                {
+                    return (this._colors.surfaceContainerHighest);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                {
+                    return (this._colors.surfaceContainerHighest);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                {
+                    return (this._colors.surfaceContainerHighest);
+                }
+                return (this._colors.surfaceContainerHighest);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -2025,18 +2076,19 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (Colors.transparent);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return (this._colors.onSurface.withOpacity(0.12));
-}
-return (this._colors.outline);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    return (Colors.transparent);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    return (this._colors.onSurface.withOpacity(0.12));
+                }
+                return (this._colors.outline);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -2044,38 +2096,39 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-    {
-        return (this._colors.primary.withOpacity(0.1));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-    {
-        return (this._colors.primary.withOpacity(0.08));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (this._colors.primary.withOpacity(0.1));
-    }
-    return null;
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-{
-    return (this._colors.onSurface.withOpacity(0.1));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-{
-    return (this._colors.onSurface.withOpacity(0.08));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-{
-    return (this._colors.onSurface.withOpacity(0.1));
-}
-return null;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                    {
+                        return (this._colors.primary.withOpacity(0.1));
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                    {
+                        return (this._colors.primary.withOpacity(0.08));
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                    {
+                        return (this._colors.primary.withOpacity(0.1));
+                    }
+                    return null;
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                {
+                    return (this._colors.onSurface.withOpacity(0.1));
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                {
+                    return (this._colors.onSurface.withOpacity(0.08));
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                {
+                    return (this._colors.onSurface.withOpacity(0.1));
+                }
+                return null;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -2109,46 +2162,47 @@ internal class _SwitchConfigM3__switch : _SwitchConfig__switch
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-    {
-        return (this._colors.onSurface.withOpacity(0.38));
-    }
-    return (this._colors.surfaceContainerHighest.withOpacity(0.38));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-    {
-        return (this._colors.onPrimaryContainer);
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-    {
-        return (this._colors.onPrimaryContainer);
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (this._colors.onPrimaryContainer);
-    }
-    return (this._colors.onPrimaryContainer);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-{
-    return (this._colors.surfaceContainerHighest);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-{
-    return (this._colors.surfaceContainerHighest);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-{
-    return (this._colors.surfaceContainerHighest);
-}
-return (this._colors.surfaceContainerHighest);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                    {
+                        return (this._colors.onSurface.withOpacity(0.38));
+                    }
+                    return (this._colors.surfaceContainerHighest.withOpacity(0.38));
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                    {
+                        return (this._colors.onPrimaryContainer);
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                    {
+                        return (this._colors.onPrimaryContainer);
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                    {
+                        return (this._colors.onPrimaryContainer);
+                    }
+                    return (this._colors.onPrimaryContainer);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                {
+                    return (this._colors.surfaceContainerHighest);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                {
+                    return (this._colors.surfaceContainerHighest);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                {
+                    return (this._colors.surfaceContainerHighest);
+                }
+                return (this._colors.surfaceContainerHighest);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }

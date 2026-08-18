@@ -4,13 +4,13 @@
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/ink_well.dart
 using System;
 using System.Collections.Generic;
-using Stopwatch = System.Diagnostics.Stopwatch;
 using System.Linq;
 using System.Threading.Tasks;
 using Doroti.Runtime;
 using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Doroti.Framework.Material;
 
@@ -386,9 +386,10 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
             }
             ((_InkResponseStateWidget__ink_well)this.widget).onTap?.Invoke();
         }
-        _activationTimer = new Timer(_activationDuration, (() => {
-updateHighlight(_HighlightType__ink_well.pressed, value: false);
-}));
+        _activationTimer = new Timer(_activationDuration, (() =>
+        {
+            updateHighlight(_HighlightType__ink_well.pressed, value: false);
+        }));
     }
 
     public virtual void simulateTap(global::Doroti.Framework.Widgets.Intent? intent = null)
@@ -405,8 +406,9 @@ updateHighlight(_HighlightType__ink_well.pressed, value: false);
 
     public virtual void handleStatesControllerChange()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     public virtual global::Doroti.Framework.Widgets.WidgetStatesController statesController => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStatesController>((((_InkResponseStateWidget__ink_well)this.widget).statesController ?? this.internalStatesController!));
@@ -634,9 +636,10 @@ updateHighlight(_HighlightType__ink_well.pressed, value: false);
         {
             return;
         }
-        setState(((global::System.Action)(() => {
-updateFocusHighlights();
-})));
+        setState(((global::System.Action)(() =>
+        {
+            updateFocusHighlights();
+        })));
     }
 
     internal virtual bool _shouldShowFocus => (MediaQuery.maybeNavigationModeOf(this.context) switch { global::Doroti.Framework.Widgets.NavigationMode.traditional => (this.enabled && this._hasFocus), null => (this.enabled && this._hasFocus), global::Doroti.Framework.Widgets.NavigationMode.directional => this._hasFocus, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });

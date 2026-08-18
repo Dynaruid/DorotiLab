@@ -182,8 +182,11 @@ internal sealed partial class FrameworkCSharpLowerer
             return "global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform";
         }
         if (Regex.IsMatch(expression, @"^[A-Za-z_]\w*$", RegexOptions.CultureInvariant) &&
-            FindGlobalDeclaration(expression) is { Ast.Kind: CoreNodeKind.ClassDeclaration or
-                CoreNodeKind.MixinDeclaration or CoreNodeKind.ExtensionTypeDeclaration })
+            FindGlobalDeclaration(expression) is
+            {
+                Ast.Kind: CoreNodeKind.ClassDeclaration or
+                CoreNodeKind.MixinDeclaration or CoreNodeKind.ExtensionTypeDeclaration
+            })
         {
             return $"typeof({MapType(expression)})";
         }

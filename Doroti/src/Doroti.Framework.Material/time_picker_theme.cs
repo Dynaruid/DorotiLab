@@ -4,13 +4,13 @@
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/time_picker_theme.dart
 using System;
 using System.Collections.Generic;
-using Stopwatch = System.Diagnostics.Stopwatch;
 using System.Linq;
 using System.Threading.Tasks;
 using Doroti.Runtime;
 using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Doroti.Framework.Material;
 
@@ -78,14 +78,15 @@ public class TimePickerThemeData : global::Doroti.Framework.Foundation.Diagnosti
             {
                 return this._dayPeriodColor;
             }
-            return ((Color?)(object?)global::Doroti.Framework.Widgets.WidgetStateColor.CreateResolveWith(((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return this._dayPeriodColor;
-}
-return Colors.transparent;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+            return ((Color?)(object?)global::Doroti.Framework.Widgets.WidgetStateColor.CreateResolveWith(((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    return this._dayPeriodColor;
+                }
+                return Colors.transparent;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
             return default!;
         }
     }

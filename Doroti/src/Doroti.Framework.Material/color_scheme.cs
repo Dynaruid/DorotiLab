@@ -4,15 +4,16 @@
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/color_scheme.dart
 using System;
 using System.Collections.Generic;
-using Stopwatch = System.Diagnostics.Stopwatch;
 using System.Linq;
 using System.Threading.Tasks;
 using Doroti.Runtime;
 using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Doroti.Framework.Material;
+
 internal sealed class QuantizerResult
 {
     internal DartMap<long, long> colorToCount { get; } = new();
@@ -638,36 +639,39 @@ public class ColorScheme : global::Doroti.Framework.Foundation.Diagnosticable
         global::Doroti.Framework.Painting.ImageStreamListener listener__84322 = default!;
         global::Doroti.Ui.Image scaledImage__84350 = default!;
         Timer? loadFailureTimeout__84374 = default!;
-        listener__84322 = new global::Doroti.Framework.Painting.ImageStreamListener(((global::System.Action<global::Doroti.Framework.Painting.ImageInfo, bool>)(async (info, sync) => {
-loadFailureTimeout__84374?.cancel();
-stream__84132.removeListener(listener__84322);
-global::Doroti.Ui.Image image__84575 = ((global::Doroti.Ui.Image)(object?)((global::Doroti.Framework.Painting.ImageInfo)info).image);
-long width__84613 = image__84575.width;
-long height__84652 = image__84575.height;
-double paintWidth__84690 = width__84613.toDouble();
-double paintHeight__84736 = height__84652.toDouble();
-DartRuntimePrimitives.Assert(() => ((width__84613 > 0L) && (height__84652 > 0L)));
-bool rescale__84830 = ((width__84613 > maxDimension__84088) || (height__84652 > maxDimension__84088));
-if (rescale__84830)
-{
-    paintWidth__84690 = (((width__84613 > height__84652)) ? maxDimension__84088 : (((maxDimension__84088 / height__84652)) * width__84613));
-    paintHeight__84736 = (((height__84652 > width__84613)) ? maxDimension__84088 : (((maxDimension__84088 / width__84613)) * height__84652));
-}
-var pictureRecorder__85115 = new global::Doroti.Ui.PictureRecorder();
-var canvas__85169 = new global::Doroti.Ui.Canvas(pictureRecorder__85115);
-global::Doroti.Framework.Painting.Decoration_imageLibrary.paintImage(canvas: canvas__85169, rect: global::Doroti.Ui.Rect.fromLTRB(0, 0, paintWidth__84690, paintHeight__84736), image: image__84575, filterQuality: FilterQuality.none);
-global::Doroti.Ui.Picture picture__85417 = ((global::Doroti.Ui.Picture)(object?)pictureRecorder__85115.endRecording());
-scaledImage__84350 = await picture__85417.toImage(paintWidth__84690.toInt(), paintHeight__84736.toInt());
-imageCompleter__84253.complete(((global::Doroti.Framework.Painting.ImageInfo)info).image);
-})), onError: ((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((exception, stackTrace) => {
-loadFailureTimeout__84374?.cancel();
-stream__84132.removeListener(listener__84322);
-imageCompleter__84253.completeError(new Exception($"Failed to render image: {exception}"), stackTrace);
-})));
-        loadFailureTimeout__84374 = new Timer(Duration.Create(seconds: 5L), (() => {
-stream__84132.removeListener(listener__84322);
-imageCompleter__84253.completeError(new TimeoutException("Timeout occurred trying to load image"));
-}));
+        listener__84322 = new global::Doroti.Framework.Painting.ImageStreamListener(((global::System.Action<global::Doroti.Framework.Painting.ImageInfo, bool>)(async (info, sync) =>
+        {
+            loadFailureTimeout__84374?.cancel();
+            stream__84132.removeListener(listener__84322);
+            global::Doroti.Ui.Image image__84575 = ((global::Doroti.Ui.Image)(object?)((global::Doroti.Framework.Painting.ImageInfo)info).image);
+            long width__84613 = image__84575.width;
+            long height__84652 = image__84575.height;
+            double paintWidth__84690 = width__84613.toDouble();
+            double paintHeight__84736 = height__84652.toDouble();
+            DartRuntimePrimitives.Assert(() => ((width__84613 > 0L) && (height__84652 > 0L)));
+            bool rescale__84830 = ((width__84613 > maxDimension__84088) || (height__84652 > maxDimension__84088));
+            if (rescale__84830)
+            {
+                paintWidth__84690 = (((width__84613 > height__84652)) ? maxDimension__84088 : (((maxDimension__84088 / height__84652)) * width__84613));
+                paintHeight__84736 = (((height__84652 > width__84613)) ? maxDimension__84088 : (((maxDimension__84088 / width__84613)) * height__84652));
+            }
+            var pictureRecorder__85115 = new global::Doroti.Ui.PictureRecorder();
+            var canvas__85169 = new global::Doroti.Ui.Canvas(pictureRecorder__85115);
+            global::Doroti.Framework.Painting.Decoration_imageLibrary.paintImage(canvas: canvas__85169, rect: global::Doroti.Ui.Rect.fromLTRB(0, 0, paintWidth__84690, paintHeight__84736), image: image__84575, filterQuality: FilterQuality.none);
+            global::Doroti.Ui.Picture picture__85417 = ((global::Doroti.Ui.Picture)(object?)pictureRecorder__85115.endRecording());
+            scaledImage__84350 = await picture__85417.toImage(paintWidth__84690.toInt(), paintHeight__84736.toInt());
+            imageCompleter__84253.complete(((global::Doroti.Framework.Painting.ImageInfo)info).image);
+        })), onError: ((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((exception, stackTrace) =>
+        {
+            loadFailureTimeout__84374?.cancel();
+            stream__84132.removeListener(listener__84322);
+            imageCompleter__84253.completeError(new Exception($"Failed to render image: {exception}"), stackTrace);
+        })));
+        loadFailureTimeout__84374 = new Timer(Duration.Create(seconds: 5L), (() =>
+        {
+            stream__84132.removeListener(listener__84322);
+            imageCompleter__84253.completeError(new TimeoutException("Timeout occurred trying to load image"));
+        }));
         stream__84132.addListener(listener__84322);
         await imageCompleter__84253.future;
         return ((global::Doroti.Ui.Image)(object?)scaledImage__84350);

@@ -62,13 +62,14 @@ public class TickerMode : StatefulWidget
 
     public static Widget merge(global::Doroti.Framework.Foundation.Key? key = null, bool? enabled = null, bool? forceFrames = null, Widget child = default!)
     {
-        return ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => {
-_EffectiveTickerMode__ticker_provider? parent__8863 = ((_EffectiveTickerMode__ticker_provider?)(object?)context.dependOnInheritedWidgetOfExactType<_EffectiveTickerMode__ticker_provider>());
-bool parentEnabled__8972 = (parent__8863?.enabled ?? TickerModeData.fallback.enabled);
-bool parentForce__9059 = (parent__8863?.forceFrames ?? TickerModeData.fallback.forceFrames);
-return ((Widget)(object?)new TickerMode(key: key, enabled: (enabled ?? parentEnabled__8972), forceFrames: (forceFrames ?? parentForce__9059), child: child));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        {
+            _EffectiveTickerMode__ticker_provider? parent__8863 = ((_EffectiveTickerMode__ticker_provider?)(object?)context.dependOnInheritedWidgetOfExactType<_EffectiveTickerMode__ticker_provider>());
+            bool parentEnabled__8972 = (parent__8863?.enabled ?? TickerModeData.fallback.enabled);
+            bool parentForce__9059 = (parent__8863?.forceFrames ?? TickerModeData.fallback.forceFrames);
+            return ((Widget)(object?)new TickerMode(key: key, enabled: (enabled ?? parentEnabled__8972), forceFrames: (forceFrames ?? parentForce__9059), child: child));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

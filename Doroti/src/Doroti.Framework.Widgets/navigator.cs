@@ -87,15 +87,18 @@ public abstract class Route<T> : _RoutePlaceholder__navigator
     public virtual global::Doroti.Framework.Scheduler.TickerFuture didPush()
     {
         return ((Func<global::Doroti.Framework.Scheduler.TickerFuture>)(() =>
-{            var __cascade = global::Doroti.Framework.Scheduler.TickerFuture.CreateComplete();
-            __cascade.then(((global::System.Func<object?, object>)((_) => {
-if (this.requestFocus)
 {
-    this.navigator!.focusNode.enclosingScope?.requestFocus();
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
-            return __cascade;        }))();
+    var __cascade = global::Doroti.Framework.Scheduler.TickerFuture.CreateComplete();
+    __cascade.then(((global::System.Func<object?, object>)((_) =>
+    {
+        if (this.requestFocus)
+        {
+            this.navigator!.focusNode.enclosingScope?.requestFocus();
+        }
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    })));
+    return __cascade;
+}))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -103,10 +106,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         if (this.requestFocus)
         {
-            DartRuntimePrimitives.Ignore(global::Doroti.Framework.Scheduler.TickerFuture.CreateComplete().then(((global::System.Func<object?, object>)((_) => {
-this.navigator?.focusNode.enclosingScope?.requestFocus();
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+            DartRuntimePrimitives.Ignore(global::Doroti.Framework.Scheduler.TickerFuture.CreateComplete().then(((global::System.Func<object?, object>)((_) =>
+            {
+                this.navigator?.focusNode.enclosingScope?.requestFocus();
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }))));
         }
     }
 
@@ -942,26 +946,27 @@ public class _RouteEntry__navigator : RouteTransitionRecord
         {
             global::Doroti.Framework.Scheduler.TickerFuture routeFuture__132823 = ((global::Doroti.Framework.Scheduler.TickerFuture)(object?)((global::Doroti.Framework.Scheduler.TickerFuture)((dynamic)this.route).didPush()));
             currentState = _RouteLifecycle__navigator.pushing;
-            routeFuture__132823.whenCompleteOrCancel(((global::System.Action)(() => {
-if ((object.Equals(this.currentState, _RouteLifecycle__navigator.pushing)))
-{
-    currentState = _RouteLifecycle__navigator.idle;
-    DartRuntimePrimitives.Assert(() => !((NavigatorState)navigator)._debugLocked);
-    DartRuntimePrimitives.Assert(() =>
-        {
-            navigator._debugLocked = true;
-            return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
-    navigator._flushHistoryUpdates();
-    DartRuntimePrimitives.Assert(() =>
-        {
-            navigator._debugLocked = false;
-            return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        });
-}
-})));
+            routeFuture__132823.whenCompleteOrCancel(((global::System.Action)(() =>
+            {
+                if ((object.Equals(this.currentState, _RouteLifecycle__navigator.pushing)))
+                {
+                    currentState = _RouteLifecycle__navigator.idle;
+                    DartRuntimePrimitives.Assert(() => !((NavigatorState)navigator)._debugLocked);
+                    DartRuntimePrimitives.Assert(() =>
+                        {
+                            navigator._debugLocked = true;
+                            return true;
+                            throw new InvalidOperationException("Dart closure completed without a value.");
+                        });
+                    navigator._flushHistoryUpdates();
+                    DartRuntimePrimitives.Assert(() =>
+                        {
+                            navigator._debugLocked = false;
+                            return true;
+                            throw new InvalidOperationException("Dart closure completed without a value.");
+                        });
+                }
+            })));
         }
         else
         {
@@ -995,30 +1000,32 @@ if ((object.Equals(this.currentState, _RouteLifecycle__navigator.pushing)))
         lastAnnouncedPoppedNextRoute = new WeakReference<object>(poppedRoute);
         if ((this.lastFocusNode is not null))
         {
-            DartRuntimePrimitives.Ignore(((Completer<object>)((dynamic)poppedRoute)._disposeCompleter).future.then((global::System.Func<object, Future<object>>)(async (result) => {
-switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
-{
-    case global::Doroti.Framework.Foundation.TargetPlatform.android:
-        {
-            long? reFocusNode__134891 = this.lastFocusNode;
-            await new Future(NavigatorLibrary._kAndroidRefocusingDelayDuration);
-            await global::Doroti.Framework.Services.SystemChannels.accessibility.send(new global::Doroti.Framework.Semantics.FocusSemanticEvent().toMap(nodeId: reFocusNode__134891));
-            break;
-        }
-    case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-        {
-            await global::Doroti.Framework.Services.SystemChannels.accessibility.send(new global::Doroti.Framework.Semantics.FocusSemanticEvent().toMap(nodeId: this.lastFocusNode));
-            break;
-        }
-    default:
-        {
-            break;
-        }
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-})).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((error, stackTrace) => {
-FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: error, stack: stackTrace, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while restoring focus in the navigator")));
-}))));
+            DartRuntimePrimitives.Ignore(((Completer<object>)((dynamic)poppedRoute)._disposeCompleter).future.then((global::System.Func<object, Future<object>>)(async (result) =>
+            {
+                switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
+                {
+                    case global::Doroti.Framework.Foundation.TargetPlatform.android:
+                        {
+                            long? reFocusNode__134891 = this.lastFocusNode;
+                            await new Future(NavigatorLibrary._kAndroidRefocusingDelayDuration);
+                            await global::Doroti.Framework.Services.SystemChannels.accessibility.send(new global::Doroti.Framework.Semantics.FocusSemanticEvent().toMap(nodeId: reFocusNode__134891));
+                            break;
+                        }
+                    case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+                        {
+                            await global::Doroti.Framework.Services.SystemChannels.accessibility.send(new global::Doroti.Framework.Semantics.FocusSemanticEvent().toMap(nodeId: this.lastFocusNode));
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((error, stackTrace) =>
+            {
+                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: error, stack: stackTrace, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while restoring focus in the navigator")));
+            }))));
         }
     }
 
@@ -1140,26 +1147,28 @@ FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDet
         foreach (var entry__140615 in mountedEntries__140253)
         {
             global::System.Action listener__140666 = default!;
-            listener__140666 = (global::System.Action)(() => {
-DartRuntimePrimitives.Assert(() => (mounted__140429 > 0L));
-DartRuntimePrimitives.Assert(() => !((OverlayEntry)entry__140615).mounted);
-mounted__140429--;
-entry__140615.removeListener(() => listener__140666());
-if ((mounted__140429 == 0L))
-{
-    DartRuntimePrimitives.Assert(() => ((List<OverlayEntry>)((dynamic)this.route).overlayEntries).All(((e) => !((OverlayEntry)e).mounted)));
-    DartAsyncRuntime.scheduleMicrotask((() => {
-if (!((NavigatorState)navigator__140512)._entryWaitingForSubTreeDisposal.Remove(this))
-{
-    DartRuntimePrimitives.Assert(() => (!((bool)((dynamic)this.route)._installed) && !navigator__140512.mounted));
-    return;
-}
-DartRuntimePrimitives.Assert(() => (object.Equals(this.currentState, _RouteLifecycle__navigator.disposing)));
-forcedDispose();
-}));
-    return;
-}
-});
+            listener__140666 = (global::System.Action)(() =>
+            {
+                DartRuntimePrimitives.Assert(() => (mounted__140429 > 0L));
+                DartRuntimePrimitives.Assert(() => !((OverlayEntry)entry__140615).mounted);
+                mounted__140429--;
+                entry__140615.removeListener(() => listener__140666());
+                if ((mounted__140429 == 0L))
+                {
+                    DartRuntimePrimitives.Assert(() => ((List<OverlayEntry>)((dynamic)this.route).overlayEntries).All(((e) => !((OverlayEntry)e).mounted)));
+                    DartAsyncRuntime.scheduleMicrotask((() =>
+                    {
+                        if (!((NavigatorState)navigator__140512)._entryWaitingForSubTreeDisposal.Remove(this))
+                        {
+                            DartRuntimePrimitives.Assert(() => (!((bool)((dynamic)this.route)._installed) && !navigator__140512.mounted));
+                            return;
+                        }
+                        DartRuntimePrimitives.Assert(() => (object.Equals(this.currentState, _RouteLifecycle__navigator.disposing)));
+                        forcedDispose();
+                    }));
+                    return;
+                }
+            });
             entry__140615.addListener(() => listener__140666());
         }
     }
@@ -1461,13 +1470,14 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
             case global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks:
             case global::Doroti.Framework.Scheduler.SchedulerPhase.transientCallbacks:
                 {
-                    global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) => {
-if (!this.mounted)
-{
-    return;
-}
-new NavigationNotification(canHandlePop: _getNavigatorCanHandlePop()).dispatch(this.context);
-})), debugLabel: "Navigator.dispatchNotification");
+                    global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+                    {
+                        if (!this.mounted)
+                        {
+                            return;
+                        }
+                        new NavigationNotification(canHandlePop: _getNavigatorCanHandlePop()).dispatch(this.context);
+                    })), debugLabel: "Navigator.dispatchNotification");
                     break;
                 }
         }
@@ -1618,11 +1628,12 @@ new NavigationNotification(canHandlePop: _getNavigatorCanHandlePop()).dispatch(t
 
     internal virtual void _forcedDisposeAllRouteEntries()
     {
-        this._entryWaitingForSubTreeDisposal.removeWhere(((entry) => {
-entry.forcedDispose();
-return true;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        this._entryWaitingForSubTreeDisposal.removeWhere(((entry) =>
+        {
+            entry.forcedDispose();
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         while (System.Linq.Enumerable.Any(this._history))
         {
             NavigatorState._disposeRouteEntry(this._history.removeLast(), graceful: false);
@@ -1659,17 +1670,18 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                         if ((newHeroController.navigator is not null))
                         {
                             NavigatorState previousOwner__157803 = newHeroController.navigator!;
-                            global::Doroti.Framework.Services.ServicesBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) => {
-if ((object.Equals(this._heroControllerFromScope, newHeroController)))
-{
-    var hasHeroControllerOwnerShip__158100 = (object.Equals(this._heroControllerFromScope!.navigator, this));
-    if ((!hasHeroControllerOwnerShip__158100 || (object.Equals(((NavigatorState)previousOwner__157803)._heroControllerFromScope, newHeroController))))
-    {
-        NavigatorState otherOwner__158347 = (hasHeroControllerOwnerShip__158100 ? previousOwner__157803 : this._heroControllerFromScope!.navigator!);
-        FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: global::Doroti.Framework.Foundation.FlutterError.Create("A HeroController can not be shared by multiple Navigators. " + "The Navigators that share the same HeroController are:\n" + $"- {this}\n" + $"- {otherOwner__158347}\n" + "Please create a HeroControllerScope for each Navigator or " + "use a HeroControllerScope.none to prevent subtree from " + "receiving a HeroController."), library: "widget library", stack: new global::System.Diagnostics.StackTrace(true)));
-    }
-}
-})), debugLabel: "Navigator.checkHeroControllerOwnership");
+                            global::Doroti.Framework.Services.ServicesBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timestamp) =>
+                            {
+                                if ((object.Equals(this._heroControllerFromScope, newHeroController)))
+                                {
+                                    var hasHeroControllerOwnerShip__158100 = (object.Equals(this._heroControllerFromScope!.navigator, this));
+                                    if ((!hasHeroControllerOwnerShip__158100 || (object.Equals(((NavigatorState)previousOwner__157803)._heroControllerFromScope, newHeroController))))
+                                    {
+                                        NavigatorState otherOwner__158347 = (hasHeroControllerOwnerShip__158100 ? previousOwner__157803 : this._heroControllerFromScope!.navigator!);
+                                        FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: global::Doroti.Framework.Foundation.FlutterError.Create("A HeroController can not be shared by multiple Navigators. " + "The Navigators that share the same HeroController are:\n" + $"- {this}\n" + $"- {otherOwner__158347}\n" + "Please create a HeroControllerScope for each Navigator or " + "use a HeroControllerScope.none to prevent subtree from " + "receiving a HeroController."), library: "widget library", stack: new global::System.Diagnostics.StackTrace(true)));
+                                    }
+                                }
+                            })), debugLabel: "Navigator.checkHeroControllerOwnership");
                         }
                         return true;
                         throw new InvalidOperationException("Dart closure completed without a value.");
@@ -1798,12 +1810,13 @@ if ((object.Equals(this._heroControllerFromScope, newHeroController)))
         global::Doroti.Framework.Services.ServicesBinding.instance.accessibilityFocus.removeListener(() => this._recordLastFocus());
         this._history.removeListener(() => this._handleHistoryChanged());
         this._history.dispose();
-        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) => {
-if (!((dynamic)property)._disposed)
-{
-    property.removeListener((global::System.Action)(() => listener()));
-}
-})));
+        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
+        {
+            if (!((dynamic)property)._disposed)
+            {
+                property.removeListener((global::System.Action)(() => listener()));
+            }
+        })));
         this._bucket?.dispose();
         _bucket = null;
         base.dispose();
@@ -2979,9 +2992,10 @@ if (!((dynamic)property)._disposed)
         if ((object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.idle)))
         {
             global::Doroti.Framework.Rendering.RenderAbsorbPointer? absorber__224092 = ((global::Doroti.Framework.Rendering.RenderAbsorbPointer?)(object?)((GlobalKey<OverlayState>)this._overlayKey).currentContext?.findAncestorRenderObjectOfType<global::Doroti.Framework.Rendering.RenderAbsorbPointer>());
-            setState(((global::System.Action)(() => {
-absorber__224092?.absorbing = true;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                absorber__224092?.absorbing = true;
+            })));
         }
         this._activePointers.ToList().forEach((__arg0) => ((global::System.Action<long>)WidgetsBinding.instance.cancelPointer)(__arg0));
     }
@@ -3034,10 +3048,12 @@ absorber__224092?.absorbing = true;
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -3345,9 +3361,11 @@ internal class _NamedRestorationInformation__navigator : _RestorationInformation
     public override List<object> computeSerializableData()
     {
         return ((Func<List<object>>)(() =>
-{            var __cascade = base.computeSerializableData();
-            __cascade.AddRange(new List<object> { this.restorationScopeId, this.name }.Cast<object>());
-            return __cascade;        }))();
+{
+    var __cascade = base.computeSerializableData();
+    __cascade.AddRange(new List<object> { this.restorationScopeId, this.name }.Cast<object>());
+    return __cascade;
+}))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3390,9 +3408,11 @@ internal class _AnonymousRestorationInformation__navigator : _RestorationInforma
         global::Doroti.Ui.CallbackHandle? handle__230857 = ((global::Doroti.Ui.CallbackHandle?)(object?)Dart_uiLibrary.PluginUtilities.getCallbackHandle(this.routeBuilder));
         DartRuntimePrimitives.Assert(() => (handle__230857 is not null));
         return ((Func<List<object>>)(() =>
-{            var __cascade = base.computeSerializableData();
-            __cascade.AddRange(new List<object> { this.restorationScopeId, handle__230857!.toRawHandle() }.Cast<object>());
-            return __cascade;        }))();
+{
+    var __cascade = base.computeSerializableData();
+    __cascade.AddRange(new List<object> { this.restorationScopeId, handle__230857!.toRawHandle() }.Cast<object>());
+    return __cascade;
+}))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3643,16 +3663,17 @@ public class RestorableRouteFuture<T> : RestorableProperty<string?>
         _route = this._navigator._getRouteById<T>(id);
         DartRuntimePrimitives.Assert(() => (this._route is not null));
         this.route!.restorationScopeId.addListener(() => this.notifyListeners());
-        DartRuntimePrimitives.Ignore(this.route!.popped.then((global::System.Action<object>)((result) => {
-if (this._disposed)
-{
-    return;
-}
-this._route?.restorationScopeId.removeListener(() => this.notifyListeners());
-_route = null;
-notifyListeners();
-this.onComplete?.Invoke(((T?)(object?)result)!);
-})));
+        DartRuntimePrimitives.Ignore(this.route!.popped.then((global::System.Action<object>)((result) =>
+        {
+            if (this._disposed)
+            {
+                return;
+            }
+            this._route?.restorationScopeId.removeListener(() => this.notifyListeners());
+            _route = null;
+            notifyListeners();
+            this.onComplete?.Invoke(((T?)(object?)result)!);
+        })));
     }
 
     internal static NavigatorState _defaultNavigatorFinder(BuildContext context) => Navigator.of(context);

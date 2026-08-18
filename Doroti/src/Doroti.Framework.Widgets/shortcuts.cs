@@ -57,9 +57,11 @@ public class KeySet<T> where T : global::Doroti.Framework.Services.KeyboardKey
     public KeySet(T key1, T? key2 = default, T? key3 = default, T? key4 = default)
     {
         this._keys = ((Func<HashSet<T>>)(() =>
-{            var __cascade = new HashSet<T>();
-            __cascade.Add(key1);
-            return __cascade;        }))();
+{
+    var __cascade = new HashSet<T>();
+    __cascade.Add(key1);
+    return __cascade;
+}))();
     }
 
     public static KeySet<T> CreateFromSet(HashSet<T> keys)
@@ -189,25 +191,28 @@ public class LogicalKeySet : KeySet<global::Doroti.Framework.Services.LogicalKey
     public virtual string debugDescribeKeys()
     {
         List<global::Doroti.Framework.Services.LogicalKeyboardKey> sortedKeys__13441 = ((Func<List<global::Doroti.Framework.Services.LogicalKeyboardKey>>)(() =>
-{            var __cascade = this.keys.ToList();
-            __cascade.sort(((a, b) => {
-bool aIsModifier__13666 = (System.Linq.Enumerable.Any(((global::Doroti.Framework.Services.LogicalKeyboardKey)a).synonyms) || _modifiers.Contains(a));
-bool bIsModifier__13748 = (System.Linq.Enumerable.Any(((global::Doroti.Framework.Services.LogicalKeyboardKey)b).synonyms) || _modifiers.Contains(b));
-if ((aIsModifier__13666 && !bIsModifier__13748))
 {
-    return -1L;
-}
-else
-{
-    if ((bIsModifier__13748 && !aIsModifier__13666))
+    var __cascade = this.keys.ToList();
+    __cascade.sort(((a, b) =>
     {
-        return 1L;
-    }
-}
-return ((global::Doroti.Framework.Services.LogicalKeyboardKey)a).debugName!.CompareTo(((global::Doroti.Framework.Services.LogicalKeyboardKey)b).debugName!);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
-            return __cascade;        }))().ToList();
+        bool aIsModifier__13666 = (System.Linq.Enumerable.Any(((global::Doroti.Framework.Services.LogicalKeyboardKey)a).synonyms) || _modifiers.Contains(a));
+        bool bIsModifier__13748 = (System.Linq.Enumerable.Any(((global::Doroti.Framework.Services.LogicalKeyboardKey)b).synonyms) || _modifiers.Contains(b));
+        if ((aIsModifier__13666 && !bIsModifier__13748))
+        {
+            return -1L;
+        }
+        else
+        {
+            if ((bIsModifier__13748 && !aIsModifier__13666))
+            {
+                return 1L;
+            }
+        }
+        return ((global::Doroti.Framework.Services.LogicalKeyboardKey)a).debugName!.CompareTo(((global::Doroti.Framework.Services.LogicalKeyboardKey)b).debugName!);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    }));
+    return __cascade;
+}))().ToList();
         return string.Join(" + ", sortedKeys__13441.map<global::Doroti.Framework.Services.LogicalKeyboardKey, string>(((key) => ((global::Doroti.Framework.Services.LogicalKeyboardKey)key).debugName.ToString())));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -490,13 +495,14 @@ public class ShortcutManager : ChangeNotifier, global::Doroti.Framework.Foundati
     internal static DartMap<global::Doroti.Framework.Services.LogicalKeyboardKey?, List<_ActivatorIntentPair__shortcuts>> _indexShortcuts(DartMap<ShortcutActivator, Intent> source)
     {
         var result__33702 = new DartMap<global::Doroti.Framework.Services.LogicalKeyboardKey?, List<_ActivatorIntentPair__shortcuts>>();
-        source.forEach(((global::System.Action<ShortcutActivator, Intent>)((activator, intent) => {
-IEnumerable<global::Doroti.Framework.Services.LogicalKeyboardKey?>? nullableTriggers__33952 = ((IEnumerable<global::Doroti.Framework.Services.LogicalKeyboardKey?>?)(object?)((ShortcutActivator)activator).triggers);
-foreach (global::Doroti.Framework.Services.LogicalKeyboardKey? trigger__34028 in (nullableTriggers__33952 ?? new List<global::Doroti.Framework.Services.LogicalKeyboardKey?> { null }))
-{
-    result__33702.putIfAbsent(trigger__34028, (() => new List<_ActivatorIntentPair__shortcuts>())).Add(new _ActivatorIntentPair__shortcuts(activator, intent));
-}
-})));
+        source.forEach(((global::System.Action<ShortcutActivator, Intent>)((activator, intent) =>
+        {
+            IEnumerable<global::Doroti.Framework.Services.LogicalKeyboardKey?>? nullableTriggers__33952 = ((IEnumerable<global::Doroti.Framework.Services.LogicalKeyboardKey?>?)(object?)((ShortcutActivator)activator).triggers);
+            foreach (global::Doroti.Framework.Services.LogicalKeyboardKey? trigger__34028 in (nullableTriggers__33952 ?? new List<global::Doroti.Framework.Services.LogicalKeyboardKey?> { null }))
+            {
+                result__33702.putIfAbsent(trigger__34028, (() => new List<_ActivatorIntentPair__shortcuts>())).Add(new _ActivatorIntentPair__shortcuts(activator, intent));
+            }
+        })));
         return result__33702;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -700,15 +706,16 @@ public class CallbackShortcuts : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new Focus(canRequestFocus: false, skipTraversal: true, onKeyEvent: ((global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>?)((node, @event) => {
-KeyEventResult result__47674 = KeyEventResult.ignored;
-foreach (ShortcutActivator activator__47830 in this.bindings.Keys)
-{
-    result__47674 = (_applyKeyEventBinding(activator__47830, @event) ? KeyEventResult.handled : result__47674);
-}
-return result__47674;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: this.child));
+        return ((Widget)(object?)new Focus(canRequestFocus: false, skipTraversal: true, onKeyEvent: ((global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>?)((node, @event) =>
+        {
+            KeyEventResult result__47674 = KeyEventResult.ignored;
+            foreach (ShortcutActivator activator__47830 in this.bindings.Keys)
+            {
+                result__47674 = (_applyKeyEventBinding(activator__47830, @event) ? KeyEventResult.handled : result__47674);
+            }
+            return result__47674;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), child: this.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -776,13 +783,14 @@ public class ShortcutRegistry : ChangeNotifier
     {
         if (!this._notificationScheduled)
         {
-            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) => {
-_notificationScheduled = false;
-if (!this._disposed)
-{
-    notifyListeners();
-}
-})), debugLabel: "ShortcutRegistry.notifyListeners");
+            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+            {
+                _notificationScheduled = false;
+                if (!this._disposed)
+                {
+                    notifyListeners();
+                }
+            })), debugLabel: "ShortcutRegistry.notifyListeners");
             _notificationScheduled = true;
         }
     }

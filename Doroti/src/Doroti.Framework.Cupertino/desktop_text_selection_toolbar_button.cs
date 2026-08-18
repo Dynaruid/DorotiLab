@@ -68,16 +68,18 @@ internal class _CupertinoDesktopTextSelectionToolbarButtonState__desktop_text_se
 
     internal virtual void _onEnter(global::Doroti.Framework.Gestures.PointerEnterEvent @event)
     {
-        setState(((global::System.Action)(() => {
-_isHovered = true;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _isHovered = true;
+        })));
     }
 
     internal virtual void _onExit(global::Doroti.Framework.Gestures.PointerExitEvent @event)
     {
-        setState(((global::System.Action)(() => {
-_isHovered = false;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _isHovered = false;
+        })));
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)

@@ -217,11 +217,13 @@ internal class _AutoScaleInlineWidget__widget_span : SingleChildRenderObjectWidg
     {
         var __renderObject = (_RenderScaledInlineWidget__widget_span)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderScaledInlineWidget__widget_span>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.alignment = this.span.alignment;
-            __cascade.baseline = this.span.baseline;
-            __cascade.scale = this.textScaleFactor;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.alignment = this.span.alignment;
+    __cascade.baseline = this.span.baseline;
+    __cascade.scale = this.textScaleFactor;
+    return __cascade;
+}))());
     }
 
 }

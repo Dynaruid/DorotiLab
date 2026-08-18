@@ -53,8 +53,9 @@ internal class _StatusTransitionState__status_transitions : State<StatusTransiti
 
     internal virtual void _animationStatusChanged(global::Doroti.Framework.Animation.AnimationStatus status)
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     public override Widget build(BuildContext context)

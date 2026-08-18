@@ -262,9 +262,10 @@ internal class _SensitiveContentState__sensitive_content : State<SensitiveConten
 
     public override void dispose()
     {
-        DartRuntimePrimitives.Ignore(SensitiveContentHost.unregister(((SensitiveContent)this.widget).sensitivity).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) => {
-FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while unregistering sensitive content")));
-}))));
+        DartRuntimePrimitives.Ignore(SensitiveContentHost.unregister(((SensitiveContent)this.widget).sensitivity).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) =>
+        {
+            FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while unregistering sensitive content")));
+        }))));
         base.dispose();
     }
 
@@ -286,14 +287,15 @@ FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDet
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new FutureBuilder<object?>(future: DartRuntimePrimitives.ConvertValue<Future<object?>>(this._sensitiveContentRegistrationFuture), builder: ((global::System.Func<BuildContext, AsyncSnapshot<object?>, Widget>)((context, snapshot) => {
-if ((object.Equals(((AsyncSnapshot<object?>)snapshot).connectionState, ConnectionState.done)))
-{
-    return ((SensitiveContent)this.widget).child;
-}
-return ((Widget)(object?)SizedBox.CreateShrink());
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((Widget)(object?)new FutureBuilder<object?>(future: DartRuntimePrimitives.ConvertValue<Future<object?>>(this._sensitiveContentRegistrationFuture), builder: ((global::System.Func<BuildContext, AsyncSnapshot<object?>, Widget>)((context, snapshot) =>
+        {
+            if ((object.Equals(((AsyncSnapshot<object?>)snapshot).connectionState, ConnectionState.done)))
+            {
+                return ((SensitiveContent)this.widget).child;
+            }
+            return ((Widget)(object?)SizedBox.CreateShrink());
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

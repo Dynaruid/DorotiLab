@@ -305,9 +305,11 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
         if (((!((global::Doroti.Framework.Animation.Animation<double>)this.reaction).isDismissed || !((global::Doroti.Framework.Animation.Animation<double>)this.reactionFocusFade).isDismissed) || !((global::Doroti.Framework.Animation.Animation<double>)this.reactionHoverFade).isDismissed))
         {
             var reactionPaint__22305 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = Dart_uiLibrary.Color.lerp(Dart_uiLibrary.Color.lerp(Dart_uiLibrary.Color.lerp(this.inactiveReactionColor, this.reactionColor, ((global::Doroti.Framework.Animation.Animation<double>)this.position).value), this.hoverColor, ((global::Doroti.Framework.Animation.Animation<double>)this.reactionHoverFade).value), this.focusColor, ((global::Doroti.Framework.Animation.Animation<double>)this.reactionFocusFade).value)!;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = Dart_uiLibrary.Color.lerp(Dart_uiLibrary.Color.lerp(Dart_uiLibrary.Color.lerp(this.inactiveReactionColor, this.reactionColor, ((global::Doroti.Framework.Animation.Animation<double>)this.position).value), this.hoverColor, ((global::Doroti.Framework.Animation.Animation<double>)this.reactionHoverFade).value), this.focusColor, ((global::Doroti.Framework.Animation.Animation<double>)this.reactionFocusFade).value)!;
+    return __cascade;
+}))();
             global::Doroti.Framework.Animation.Animatable<double> radialReactionRadiusTween__22633 = ((global::Doroti.Framework.Animation.Animatable<double>)(object?)new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: this.splashRadius));
             double reactionRadius__22751 = ((this.isFocused || this.isHovered) ? this.splashRadius : radialReactionRadiusTween__22633.evaluate(this.reaction));
             if ((reactionRadius__22751 > 0.0))

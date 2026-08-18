@@ -233,8 +233,9 @@ internal class _AppBarState__app_bar : global::Doroti.Framework.Widgets.State<Ap
             }
             if ((this._scrolledUnder != oldScrolledUnder__34458))
             {
-                setState(((global::System.Action)(() => {
-})));
+                setState(((global::System.Action)(() =>
+                {
+                })));
             }
         }
     }
@@ -801,10 +802,12 @@ internal class _SliverAppBarState__app_bar : global::Doroti.Framework.Widgets.St
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -998,11 +1001,13 @@ internal class _ExpandedTitleWithPadding__app_bar : global::Doroti.Framework.Wid
         var __renderObject = (_RenderExpandedTitleBox__app_bar)(object)renderObject;
         global::Doroti.Ui.TextDirection textDirection__91117 = Directionality.of(context);
         DartRuntimePrimitives.Ignore(((Func<_RenderExpandedTitleBox__app_bar>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.padding = this.padding.resolve(textDirection__91117);
-            __cascade.titleAlignment = global::Doroti.Framework.Painting.AlignmentDirectional.bottomStart.resolve(textDirection__91117);
-            __cascade.maxExtent = this.maxExtent;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.padding = this.padding.resolve(textDirection__91117);
+    __cascade.titleAlignment = global::Doroti.Framework.Painting.AlignmentDirectional.bottomStart.resolve(textDirection__91117);
+    __cascade.maxExtent = this.maxExtent;
+    return __cascade;
+}))());
     }
 
 }

@@ -39,24 +39,27 @@ internal class _NavigatorPopHandlerState__navigator_pop_handler<T> : State<Navig
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new PopScope<T>(canPop: (!((NavigatorPopHandler<T>)(object)this.widget).enabled || this._canPop), onPopInvokedWithResult: ((global::System.Action<bool, T?>)((didPop, result) => {
-if (didPop)
-{
-    return;
-}
-((NavigatorPopHandler<T>)(object)this.widget).onPop?.Invoke();
-((NavigatorPopHandler<T>)(object)this.widget).onPopWithResult?.Invoke(result);
-})), child: new NotificationListener<NavigationNotification>(onNotification: ((global::System.Func<NavigationNotification, bool>?)((notification) => {
-bool nextCanPop__4598 = !((NavigationNotification)notification).canHandlePop;
-if ((nextCanPop__4598 != this._canPop))
-{
-    setState(((global::System.Action)(() => {
-_canPop = nextCanPop__4598;
-})));
-}
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: ((NavigatorPopHandler<T>)(object)this.widget).child)));
+        return ((Widget)(object?)new PopScope<T>(canPop: (!((NavigatorPopHandler<T>)(object)this.widget).enabled || this._canPop), onPopInvokedWithResult: ((global::System.Action<bool, T?>)((didPop, result) =>
+        {
+            if (didPop)
+            {
+                return;
+            }
+            ((NavigatorPopHandler<T>)(object)this.widget).onPop?.Invoke();
+            ((NavigatorPopHandler<T>)(object)this.widget).onPopWithResult?.Invoke(result);
+        })), child: new NotificationListener<NavigationNotification>(onNotification: ((global::System.Func<NavigationNotification, bool>?)((notification) =>
+        {
+            bool nextCanPop__4598 = !((NavigationNotification)notification).canHandlePop;
+            if ((nextCanPop__4598 != this._canPop))
+            {
+                setState(((global::System.Action)(() =>
+                {
+                    _canPop = nextCanPop__4598;
+                })));
+            }
+            return false;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), child: ((NavigatorPopHandler<T>)(object)this.widget).child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

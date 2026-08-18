@@ -138,8 +138,9 @@ public class _TextSelectionControlsToolbarState__text_selection : global::Doroti
 
     internal virtual void _onChangedClipboardStatus()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     public override void initState()
@@ -203,10 +204,11 @@ public class _TextSelectionControlsToolbarState__text_selection : global::Doroti
         {
             return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new TextSelectionToolbar(anchorAbove: anchorAbove__8110, anchorBelow: anchorBelow__8236, children: itemDatas__8780.asMap().entries.map<MapEntry<long, _TextSelectionToolbarItemData__text_selection>, TextSelectionToolbarTextButton>(((entry) => {
-return new TextSelectionToolbarTextButton(padding: TextSelectionToolbarTextButton.getPadding(entry.key, checked((long)(itemDatas__8780.Count))), alignment: global::Doroti.Framework.Painting.AlignmentDirectional.centerStart, onPressed: () => entry.value.onPressed(), child: new global::Doroti.Framework.Widgets.Text(entry.value.label));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})).ToList().Cast<global::Doroti.Framework.Widgets.Widget>().ToList()));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new TextSelectionToolbar(anchorAbove: anchorAbove__8110, anchorBelow: anchorBelow__8236, children: itemDatas__8780.asMap().entries.map<MapEntry<long, _TextSelectionToolbarItemData__text_selection>, TextSelectionToolbarTextButton>(((entry) =>
+        {
+            return new TextSelectionToolbarTextButton(padding: TextSelectionToolbarTextButton.getPadding(entry.key, checked((long)(itemDatas__8780.Count))), alignment: global::Doroti.Framework.Painting.AlignmentDirectional.centerStart, onPressed: () => entry.value.onPressed(), child: new global::Doroti.Framework.Widgets.Text(entry.value.label));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })).ToList().Cast<global::Doroti.Framework.Widgets.Widget>().ToList()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -220,10 +222,12 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -289,17 +293,21 @@ internal class _TextSelectionHandlePainter__text_selection : global::Doroti.Fram
     public override void paint(Canvas canvas, Size size)
     {
         var paint__10544 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.color;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.color;
+    return __cascade;
+}))();
         double radius__10593 = (size.width / 2.0);
         var circle__10630 = global::Doroti.Ui.Rect.fromCircle(center: new global::Doroti.Ui.Offset(radius__10593, radius__10593), radius: radius__10593);
         var point__10714 = global::Doroti.Ui.Rect.fromLTWH(0.0, 0.0, radius__10593, radius__10593);
         var path__10773 = ((Func<Path>)(() =>
-{            var __cascade = new global::Doroti.Ui.Path();
-            __cascade.addOval(circle__10630);
-            __cascade.addRect(point__10714);
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Path();
+    __cascade.addOval(circle__10630);
+    __cascade.addRect(point__10714);
+    return __cascade;
+}))();
         canvas.drawPath(path__10773, paint__10544);
     }
 

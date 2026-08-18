@@ -411,20 +411,24 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
     {
         var buffer__35986 = new StringBuffer();
         DartRuntimePrimitives.Ignore(((Func<StringBuffer>)(() =>
-{            var __cascade = buffer__35986;
-            __cascade.write(formatHour(timeOfDay, alwaysUse24HourFormat: alwaysUse24HourFormat));
-            __cascade.write(":");
-            __cascade.write(formatMinute(timeOfDay));
-            return __cascade;        }))());
+{
+    var __cascade = buffer__35986;
+    __cascade.write(formatHour(timeOfDay, alwaysUse24HourFormat: alwaysUse24HourFormat));
+    __cascade.write(":");
+    __cascade.write(formatMinute(timeOfDay));
+    return __cascade;
+}))());
         if (alwaysUse24HourFormat)
         {
             return $"{buffer__35986}";
         }
         DartRuntimePrimitives.Ignore(((Func<StringBuffer>)(() =>
-{            var __cascade = buffer__35986;
-            __cascade.write(" ");
-            __cascade.write(_formatDayPeriod(timeOfDay));
-            return __cascade;        }))());
+{
+    var __cascade = buffer__35986;
+    __cascade.write(" ");
+    __cascade.write(_formatDayPeriod(timeOfDay));
+    return __cascade;
+}))());
         return $"{buffer__35986}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

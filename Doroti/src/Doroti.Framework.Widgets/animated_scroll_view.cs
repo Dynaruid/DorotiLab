@@ -255,10 +255,11 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T> : State<
 
     internal virtual global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, Widget> _toRemovedItemBuilder(global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget> builder, long index)
     {
-        return ((global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, Widget>)((context, animation) => {
-return builder(context, index, animation);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        return ((global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, Widget>)((context, animation) =>
+        {
+            return builder(context, index, animation);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -294,10 +295,12 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -613,11 +616,12 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
 
     internal virtual SliverChildDelegate _createDelegate()
     {
-        return ((SliverChildDelegate)(object?)new SliverChildBuilderDelegate((global::System.Func<BuildContext, long, Widget>)this._itemBuilder, childCount: this._itemsCount, findChildIndexCallback: ((global::System.Func<global::Doroti.Framework.Foundation.Key, long?>)((((_SliverAnimatedMultiBoxAdaptor__animated_scroll_view)(object)this.widget).findChildIndexCallback is null) ? null : ((key) => {
-long? index__50560 = ((_SliverAnimatedMultiBoxAdaptor__animated_scroll_view)(object)this.widget).findChildIndexCallback!(key);
-return ((index__50560 is not null) ? _indexToItemIndex(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(index__50560))) : null);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))));
+        return ((SliverChildDelegate)(object?)new SliverChildBuilderDelegate((global::System.Func<BuildContext, long, Widget>)this._itemBuilder, childCount: this._itemsCount, findChildIndexCallback: ((global::System.Func<global::Doroti.Framework.Foundation.Key, long?>)((((_SliverAnimatedMultiBoxAdaptor__animated_scroll_view)(object)this.widget).findChildIndexCallback is null) ? null : ((key) =>
+        {
+            long? index__50560 = ((_SliverAnimatedMultiBoxAdaptor__animated_scroll_view)(object)this.widget).findChildIndexCallback!(key);
+            return ((index__50560 is not null) ? _indexToItemIndex(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(index__50560))) : null);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -655,18 +659,22 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         }
         var controller__52221 = new global::Doroti.Framework.Animation.AnimationController(duration: DartRuntimePrimitives.RequireValue(duration), vsync: this);
         var incomingItem__52298 = new _ActiveItem__animated_scroll_view(controller__52221, itemIndex__51748);
-        setState(((global::System.Action)(() => {
-DartRuntimePrimitives.Ignore(((Func<List<_ActiveItem__animated_scroll_view>>)(() =>
-{            var __cascade = this._incomingItems;
-            __cascade.Add(incomingItem__52298);
-            __cascade.sort();
-            return __cascade;        }))());
-_itemsCount += 1L;
-})));
-        DartRuntimePrimitives.Ignore(controller__52221.forward().then(((global::System.Func<object?, object>)((_) => {
-_removeActiveItemAt(this._incomingItems, ((_ActiveItem__animated_scroll_view)incomingItem__52298).itemIndex)!.controller!.dispose();
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        setState(((global::System.Action)(() =>
+        {
+            DartRuntimePrimitives.Ignore(((Func<List<_ActiveItem__animated_scroll_view>>)(() =>
+            {
+                var __cascade = this._incomingItems;
+                __cascade.Add(incomingItem__52298);
+                __cascade.sort();
+                return __cascade;
+            }))());
+            _itemsCount += 1L;
+        })));
+        DartRuntimePrimitives.Ignore(controller__52221.forward().then(((global::System.Func<object?, object>)((_) =>
+        {
+            _removeActiveItemAt(this._incomingItems, ((_ActiveItem__animated_scroll_view)incomingItem__52298).itemIndex)!.controller!.dispose();
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
     }
 
     public virtual void insertAllItems(long index, long length, Duration? duration = null)
@@ -686,32 +694,36 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         _ActiveItem__animated_scroll_view? incomingItem__53982 = ((_ActiveItem__animated_scroll_view?)(object?)_removeActiveItemAt(this._incomingItems, itemIndex__53803));
         global::Doroti.Framework.Animation.AnimationController controller__54075 = (incomingItem__53982?.controller ?? new global::Doroti.Framework.Animation.AnimationController(duration: DartRuntimePrimitives.RequireValue(duration), value: 1.0, vsync: this));
         var outgoingItem__54208 = _ActiveItem__animated_scroll_view.CreateOutgoing(controller__54075, itemIndex__53803, (global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, Widget>)builder);
-        setState(((global::System.Action)(() => {
-DartRuntimePrimitives.Ignore(((Func<List<_ActiveItem__animated_scroll_view>>)(() =>
-{            var __cascade = this._outgoingItems;
-            __cascade.Add(outgoingItem__54208);
-            __cascade.sort();
-            return __cascade;        }))());
-})));
-        DartRuntimePrimitives.Ignore(controller__54075.reverse().then(((global::System.Func<object?, object>)((value) => {
-_removeActiveItemAt(this._outgoingItems, ((_ActiveItem__animated_scroll_view)outgoingItem__54208).itemIndex)!.controller!.dispose();
-foreach (_ActiveItem__animated_scroll_view item__54637 in this._incomingItems)
-{
-    if ((((_ActiveItem__animated_scroll_view)item__54637).itemIndex > ((_ActiveItem__animated_scroll_view)outgoingItem__54208).itemIndex))
-    {
-        item__54637.itemIndex -= 1L;
-    }
-}
-foreach (_ActiveItem__animated_scroll_view item__54796 in this._outgoingItems)
-{
-    if ((((_ActiveItem__animated_scroll_view)item__54796).itemIndex > ((_ActiveItem__animated_scroll_view)outgoingItem__54208).itemIndex))
-    {
-        item__54796.itemIndex -= 1L;
-    }
-}
-setState(((global::System.Action)(() => { _ = _itemsCount -= 1L; })));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        setState(((global::System.Action)(() =>
+        {
+            DartRuntimePrimitives.Ignore(((Func<List<_ActiveItem__animated_scroll_view>>)(() =>
+            {
+                var __cascade = this._outgoingItems;
+                __cascade.Add(outgoingItem__54208);
+                __cascade.sort();
+                return __cascade;
+            }))());
+        })));
+        DartRuntimePrimitives.Ignore(controller__54075.reverse().then(((global::System.Func<object?, object>)((value) =>
+        {
+            _removeActiveItemAt(this._outgoingItems, ((_ActiveItem__animated_scroll_view)outgoingItem__54208).itemIndex)!.controller!.dispose();
+            foreach (_ActiveItem__animated_scroll_view item__54637 in this._incomingItems)
+            {
+                if ((((_ActiveItem__animated_scroll_view)item__54637).itemIndex > ((_ActiveItem__animated_scroll_view)outgoingItem__54208).itemIndex))
+                {
+                    item__54637.itemIndex -= 1L;
+                }
+            }
+            foreach (_ActiveItem__animated_scroll_view item__54796 in this._outgoingItems)
+            {
+                if ((((_ActiveItem__animated_scroll_view)item__54796).itemIndex > ((_ActiveItem__animated_scroll_view)outgoingItem__54208).itemIndex))
+                {
+                    item__54796.itemIndex -= 1L;
+                }
+            }
+            setState(((global::System.Action)(() => { _ = _itemsCount -= 1L; })));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
     }
 
     public virtual void removeAllItems(global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, Widget> builder, Duration? duration = null)
@@ -735,10 +747,12 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");

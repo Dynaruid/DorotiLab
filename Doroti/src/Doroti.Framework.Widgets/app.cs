@@ -242,7 +242,8 @@ public class WidgetsApp : StatefulWidget
 
     public static bool debugShowWidgetInspectorOverride
     {
-        get{
+        get
+        {
             return WidgetsBinding.instance.debugShowWidgetInspectorOverrideNotifier.value;
             return default!;
         }
@@ -520,10 +521,11 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
             if (this._usesNavigator)
             {
                 DartRuntimePrimitives.Assert(() => (this._navigator is not null));
-                routing__71625 = DartRuntimePrimitives.ConvertValue<Widget>(new FocusScope(debugLabel: "Navigator Scope", autofocus: true, child: new Navigator(clipBehavior: Clip.none, restorationScopeId: "nav", key: this._navigator, initialRoute: this._initialRouteName, onGenerateRoute: (global::System.Func<RouteSettings, dynamic>)this._onGenerateRoute, onGenerateInitialRoutes: ((global::System.Func<NavigatorState, string, List<dynamic>>)((((WidgetsApp)this.widget).onGenerateInitialRoutes is null) ? Navigator.defaultGenerateInitialRoutes : ((navigator, initialRouteName) => {
-return ((List<object>)(object?)((WidgetsApp)this.widget).onGenerateInitialRoutes!(initialRouteName));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))), onUnknownRoute: (global::System.Func<RouteSettings, dynamic>)this._onUnknownRoute, observers: ((WidgetsApp)this.widget).navigatorObservers!, routeTraversalEdgeBehavior: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? TraversalEdgeBehavior.leaveDorotiView : TraversalEdgeBehavior.parentScope), reportsRouteUpdateToEngine: true)));
+                routing__71625 = DartRuntimePrimitives.ConvertValue<Widget>(new FocusScope(debugLabel: "Navigator Scope", autofocus: true, child: new Navigator(clipBehavior: Clip.none, restorationScopeId: "nav", key: this._navigator, initialRoute: this._initialRouteName, onGenerateRoute: (global::System.Func<RouteSettings, dynamic>)this._onGenerateRoute, onGenerateInitialRoutes: ((global::System.Func<NavigatorState, string, List<dynamic>>)((((WidgetsApp)this.widget).onGenerateInitialRoutes is null) ? Navigator.defaultGenerateInitialRoutes : ((navigator, initialRouteName) =>
+                {
+                    return ((List<object>)(object?)((WidgetsApp)this.widget).onGenerateInitialRoutes!(initialRouteName));
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }))), onUnknownRoute: (global::System.Func<RouteSettings, dynamic>)this._onUnknownRoute, observers: ((WidgetsApp)this.widget).navigatorObservers!, routeTraversalEdgeBehavior: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? TraversalEdgeBehavior.leaveDorotiView : TraversalEdgeBehavior.parentScope), reportsRouteUpdateToEngine: true)));
             }
             else
             {
@@ -536,10 +538,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         Widget result__73151 = default!;
         if ((((WidgetsApp)this.widget).builder is not null))
         {
-            result__73151 = DartRuntimePrimitives.ConvertValue<Widget>(new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => {
-return ((WidgetsApp)this.widget).builder!(context, routing__71625);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+            result__73151 = DartRuntimePrimitives.ConvertValue<Widget>(new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+            {
+                return ((WidgetsApp)this.widget).builder!(context, routing__71625);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }))));
         }
         else
         {
@@ -562,14 +565,15 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             {
                 if (!WidgetsBinding.instance.debugExcludeRootWidgetInspector)
                 {
-                    result__73151 = DartRuntimePrimitives.ConvertValue<Widget>(new ValueListenableBuilder<bool>(valueListenable: WidgetsBinding.instance.debugShowWidgetInspectorOverrideNotifier, builder: ((global::System.Func<BuildContext, bool, Widget?, Widget>)((context, debugShowWidgetInspectorOverride, child) => {
-if ((((WidgetsApp)this.widget).debugShowWidgetInspector || debugShowWidgetInspectorOverride))
-{
-    return ((Widget)(object?)new WidgetInspector(exitWidgetSelectionButtonBuilder: (ExitWidgetSelectionButtonBuilder?)((WidgetsApp)this.widget).exitWidgetSelectionButtonBuilder, moveExitWidgetSelectionButtonBuilder: (MoveExitWidgetSelectionButtonBuilder?)((WidgetsApp)this.widget).moveExitWidgetSelectionButtonBuilder, tapBehaviorButtonBuilder: (TapBehaviorButtonBuilder?)((WidgetsApp)this.widget).tapBehaviorButtonBuilder, child: child!));
-}
-return child!;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: result__73151));
+                    result__73151 = DartRuntimePrimitives.ConvertValue<Widget>(new ValueListenableBuilder<bool>(valueListenable: WidgetsBinding.instance.debugShowWidgetInspectorOverrideNotifier, builder: ((global::System.Func<BuildContext, bool, Widget?, Widget>)((context, debugShowWidgetInspectorOverride, child) =>
+                    {
+                        if ((((WidgetsApp)this.widget).debugShowWidgetInspector || debugShowWidgetInspectorOverride))
+                        {
+                            return ((Widget)(object?)new WidgetInspector(exitWidgetSelectionButtonBuilder: (ExitWidgetSelectionButtonBuilder?)((WidgetsApp)this.widget).exitWidgetSelectionButtonBuilder, moveExitWidgetSelectionButtonBuilder: (MoveExitWidgetSelectionButtonBuilder?)((WidgetsApp)this.widget).moveExitWidgetSelectionButtonBuilder, tapBehaviorButtonBuilder: (TapBehaviorButtonBuilder?)((WidgetsApp)this.widget).tapBehaviorButtonBuilder, child: child!));
+                        }
+                        return child!;
+                        throw new InvalidOperationException("Dart closure completed without a value.");
+                    })), child: result__73151));
                 }
                 if ((((WidgetsApp)this.widget).debugShowCheckedModeBanner && WidgetsApp.debugAllowBannerOverride))
                 {
@@ -578,22 +582,24 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        result__73151 = DartRuntimePrimitives.ConvertValue<Widget>(new Focus(canRequestFocus: false, onKeyEvent: ((global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>?)((node, @event) => {
-if (((((@event is not global::Doroti.Framework.Services.KeyDownEvent) && (@event is not global::Doroti.Framework.Services.KeyRepeatEvent))) || (!object.Equals(((global::Doroti.Framework.Services.KeyEvent)@event).logicalKey, global::Doroti.Framework.Services.LogicalKeyboardKey.escape))))
-{
-    return KeyEventResult.ignored;
-}
-return (RawTooltip.dismissAllToolTips() ? KeyEventResult.handled : KeyEventResult.ignored);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: result__73151));
+        result__73151 = DartRuntimePrimitives.ConvertValue<Widget>(new Focus(canRequestFocus: false, onKeyEvent: ((global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>?)((node, @event) =>
+        {
+            if (((((@event is not global::Doroti.Framework.Services.KeyDownEvent) && (@event is not global::Doroti.Framework.Services.KeyRepeatEvent))) || (!object.Equals(((global::Doroti.Framework.Services.KeyEvent)@event).logicalKey, global::Doroti.Framework.Services.LogicalKeyboardKey.escape))))
+            {
+                return KeyEventResult.ignored;
+            }
+            return (RawTooltip.dismissAllToolTips() ? KeyEventResult.handled : KeyEventResult.ignored);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), child: result__73151));
         Widget? title__75556 = default!;
         if ((((WidgetsApp)this.widget).onGenerateTitle is not null))
         {
-            title__75556 = DartRuntimePrimitives.ConvertValue<Widget>(new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => {
-string title__75882 = ((WidgetsApp)this.widget).onGenerateTitle!(context);
-return ((Widget)(object?)new Title(title: title__75882, color: ((WidgetsApp)this.widget).color.withOpacity(1.0), child: result__73151));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+            title__75556 = DartRuntimePrimitives.ConvertValue<Widget>(new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+            {
+                string title__75882 = ((WidgetsApp)this.widget).onGenerateTitle!(context);
+                return ((Widget)(object?)new Title(title: title__75882, color: ((WidgetsApp)this.widget).color.withOpacity(1.0), child: result__73151));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }))));
         }
         else
         {
@@ -606,10 +612,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                 title__75556 = DartRuntimePrimitives.ConvertValue<Widget>(new Title(title: (((WidgetsApp)this.widget).title ?? ""), color: ((WidgetsApp)this.widget).color.withOpacity(1.0), child: result__73151));
             }
         }
-        return ((Widget)(object?)new RootRestorationScope(restorationId: ((WidgetsApp)this.widget).restorationScopeId, child: new SharedAppData(child: new NotificationListener<NavigationNotification>(onNotification: ((((WidgetsApp)this.widget).onNavigationNotification ?? (global::System.Func<NavigationNotification, bool>)this._defaultOnNavigationNotification)), child: new Shortcuts(debugLabel: "<Default WidgetsApp Shortcuts>", shortcuts: ((((WidgetsApp)this.widget).shortcuts ?? (DartMap<ShortcutActivator, Intent>)WidgetsApp.defaultShortcuts)), child: new DefaultTextEditingShortcuts(child: new Actions(actions: (((WidgetsApp)this.widget).actions ?? new DartMap<Type, dynamic> { [typeof(ScrollIntent)] = Action<ScrollIntent>.CreateOverridable(context: context, defaultAction: new ScrollAction()) }), child: new FocusTraversalGroup(policy: new ReadingOrderTraversalPolicy(), child: new TapRegionSurface(child: new ShortcutRegistrar(child: new ListenableBuilder(listenable: this._localizationsResolver, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, _) => {
-return ((Widget)(object?)new Localizations(isApplicationLevel: true, locale: ((LocalizationsResolver)this._localizationsResolver).locale, delegates: ((LocalizationsResolver)this._localizationsResolver).localizationsDelegates.ToList(), child: (title__75556 ?? result__73151)));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))))))))))));
+        return ((Widget)(object?)new RootRestorationScope(restorationId: ((WidgetsApp)this.widget).restorationScopeId, child: new SharedAppData(child: new NotificationListener<NavigationNotification>(onNotification: ((((WidgetsApp)this.widget).onNavigationNotification ?? (global::System.Func<NavigationNotification, bool>)this._defaultOnNavigationNotification)), child: new Shortcuts(debugLabel: "<Default WidgetsApp Shortcuts>", shortcuts: ((((WidgetsApp)this.widget).shortcuts ?? (DartMap<ShortcutActivator, Intent>)WidgetsApp.defaultShortcuts)), child: new DefaultTextEditingShortcuts(child: new Actions(actions: (((WidgetsApp)this.widget).actions ?? new DartMap<Type, dynamic> { [typeof(ScrollIntent)] = Action<ScrollIntent>.CreateOverridable(context: context, defaultAction: new ScrollAction()) }), child: new FocusTraversalGroup(policy: new ReadingOrderTraversalPolicy(), child: new TapRegionSurface(child: new ShortcutRegistrar(child: new ListenableBuilder(listenable: this._localizationsResolver, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, _) =>
+        {
+            return ((Widget)(object?)new Localizations(isApplicationLevel: true, locale: ((LocalizationsResolver)this._localizationsResolver).locale, delegates: ((LocalizationsResolver)this._localizationsResolver).localizationsDelegates.ToList(), child: (title__75556 ?? result__73151)));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })))))))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

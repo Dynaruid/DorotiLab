@@ -4,13 +4,13 @@
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/date_picker_theme.dart
 using System;
 using System.Collections.Generic;
-using Stopwatch = System.Diagnostics.Stopwatch;
 using System.Linq;
 using System.Threading.Tasks;
 using Doroti.Runtime;
 using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Doroti.Framework.Material;
 
@@ -349,78 +349,82 @@ internal class _DatePickerDefaultsM2__date_picker_theme : DatePickerThemeData
     public override global::Doroti.Framework.Painting.TextStyle? headerHelpStyle => ((TextTheme)this._textTheme).labelSmall;
     public override global::Doroti.Framework.Painting.TextStyle? weekdayStyle => ((TextTheme)this._textTheme).bodySmall?.apply(color: ((ColorScheme)this._colors).onSurface.withOpacity(0.6));
     public override global::Doroti.Framework.Painting.TextStyle? dayStyle => ((TextTheme)this._textTheme).bodySmall;
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dayForegroundColor => WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (((ColorScheme)this._colors).onPrimary);
-}
-else
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dayForegroundColor => WidgetStateProperty.resolveWith((states) =>
     {
-        return (((ColorScheme)this._colors).onSurface.withOpacity(0.38));
-    }
-}
-return (((ColorScheme)this._colors).onSurface);
-throw new InvalidOperationException("Dart closure completed without a value.");
-});
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dayBackgroundColor => WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (((ColorScheme)this._colors).primary);
-}
-return null;
-throw new InvalidOperationException("Dart closure completed without a value.");
-});
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dayOverlayColor => WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            return (((ColorScheme)this._colors).onPrimary);
+        }
+        else
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+            {
+                return (((ColorScheme)this._colors).onSurface.withOpacity(0.38));
+            }
+        }
+        return (((ColorScheme)this._colors).onSurface);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    });
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dayBackgroundColor => WidgetStateProperty.resolveWith((states) =>
     {
-        return (((ColorScheme)this._colors).onPrimary.withOpacity(0.38));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            return (((ColorScheme)this._colors).primary);
+        }
+        return null;
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    });
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dayOverlayColor => WidgetStateProperty.resolveWith((states) =>
     {
-        return (((ColorScheme)this._colors).onPrimary.withOpacity(0.08));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+            {
+                return (((ColorScheme)this._colors).onPrimary.withOpacity(0.38));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+            {
+                return (((ColorScheme)this._colors).onPrimary.withOpacity(0.08));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+            {
+                return (((ColorScheme)this._colors).onPrimary.withOpacity(0.12));
+            }
+        }
+        else
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+            {
+                return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.12));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+            {
+                return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.08));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+            {
+                return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.12));
+            }
+        }
+        return null;
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    });
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? todayForegroundColor => WidgetStateProperty.resolveWith((states) =>
     {
-        return (((ColorScheme)this._colors).onPrimary.withOpacity(0.12));
-    }
-}
-else
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-    {
-        return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.12));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-    {
-        return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.08));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.12));
-    }
-}
-return null;
-throw new InvalidOperationException("Dart closure completed without a value.");
-});
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? todayForegroundColor => WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (((ColorScheme)this._colors).onPrimary);
-}
-else
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-    {
-        return (((ColorScheme)this._colors).onSurface.withOpacity(0.38));
-    }
-}
-return (((ColorScheme)this._colors).primary);
-throw new InvalidOperationException("Dart closure completed without a value.");
-});
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            return (((ColorScheme)this._colors).onPrimary);
+        }
+        else
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+            {
+                return (((ColorScheme)this._colors).onSurface.withOpacity(0.38));
+            }
+        }
+        return (((ColorScheme)this._colors).primary);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    });
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? todayBackgroundColor => this.dayBackgroundColor;
     public override global::Doroti.Framework.Painting.BorderSide? todayBorder => new global::Doroti.Framework.Painting.BorderSide(color: ((ColorScheme)this._colors).primary);
     public override global::Doroti.Framework.Painting.TextStyle? yearStyle => ((TextTheme)this._textTheme).bodyLarge;
@@ -432,40 +436,41 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     public override global::Doroti.Framework.Painting.TextStyle? rangePickerHeaderHeadlineStyle => ((TextTheme)this._textTheme).headlineSmall;
     public override global::Doroti.Framework.Painting.TextStyle? rangePickerHeaderHelpStyle => ((TextTheme)this._textTheme).labelSmall;
     public override Color? rangeSelectionBackgroundColor => ((ColorScheme)this._colors).primary.withOpacity(0.12);
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? rangeSelectionOverlayColor => WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? rangeSelectionOverlayColor => WidgetStateProperty.resolveWith((states) =>
     {
-        return (((ColorScheme)this._colors).onPrimary.withOpacity(0.38));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-    {
-        return (((ColorScheme)this._colors).onPrimary.withOpacity(0.08));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (((ColorScheme)this._colors).onPrimary.withOpacity(0.12));
-    }
-}
-else
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-    {
-        return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.12));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-    {
-        return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.08));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.12));
-    }
-}
-return null;
-throw new InvalidOperationException("Dart closure completed without a value.");
-});
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+            {
+                return (((ColorScheme)this._colors).onPrimary.withOpacity(0.38));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+            {
+                return (((ColorScheme)this._colors).onPrimary.withOpacity(0.08));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+            {
+                return (((ColorScheme)this._colors).onPrimary.withOpacity(0.12));
+            }
+        }
+        else
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+            {
+                return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.12));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+            {
+                return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.08));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+            {
+                return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.12));
+            }
+        }
+        return null;
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    });
 }
 
 internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
@@ -546,157 +551,165 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
     public override global::Doroti.Framework.Painting.TextStyle? headerHelpStyle => ((TextTheme)this._textTheme).labelLarge;
     public override global::Doroti.Framework.Painting.TextStyle? weekdayStyle => ((TextTheme)this._textTheme).bodyLarge?.apply(color: ((ColorScheme)this._colors).onSurface);
     public override global::Doroti.Framework.Painting.TextStyle? dayStyle => ((TextTheme)this._textTheme).bodyLarge;
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dayForegroundColor => WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (((ColorScheme)this._colors).onPrimary);
-}
-else
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dayForegroundColor => WidgetStateProperty.resolveWith((states) =>
     {
-        return (((ColorScheme)this._colors).onSurface.withOpacity(0.38));
-    }
-}
-return (((ColorScheme)this._colors).onSurface);
-throw new InvalidOperationException("Dart closure completed without a value.");
-});
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dayBackgroundColor => WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (((ColorScheme)this._colors).primary);
-}
-return null;
-throw new InvalidOperationException("Dart closure completed without a value.");
-});
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dayOverlayColor => WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            return (((ColorScheme)this._colors).onPrimary);
+        }
+        else
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+            {
+                return (((ColorScheme)this._colors).onSurface.withOpacity(0.38));
+            }
+        }
+        return (((ColorScheme)this._colors).onSurface);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    });
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dayBackgroundColor => WidgetStateProperty.resolveWith((states) =>
     {
-        return (((ColorScheme)this._colors).onPrimary.withOpacity(0.1));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            return (((ColorScheme)this._colors).primary);
+        }
+        return null;
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    });
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? dayOverlayColor => WidgetStateProperty.resolveWith((states) =>
     {
-        return (((ColorScheme)this._colors).onPrimary.withOpacity(0.08));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+            {
+                return (((ColorScheme)this._colors).onPrimary.withOpacity(0.1));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+            {
+                return (((ColorScheme)this._colors).onPrimary.withOpacity(0.08));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+            {
+                return (((ColorScheme)this._colors).onPrimary.withOpacity(0.1));
+            }
+        }
+        else
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+            {
+                return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.1));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+            {
+                return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.08));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+            {
+                return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.1));
+            }
+        }
+        return null;
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    });
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? todayForegroundColor => WidgetStateProperty.resolveWith((states) =>
     {
-        return (((ColorScheme)this._colors).onPrimary.withOpacity(0.1));
-    }
-}
-else
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-    {
-        return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.1));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-    {
-        return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.08));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.1));
-    }
-}
-return null;
-throw new InvalidOperationException("Dart closure completed without a value.");
-});
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? todayForegroundColor => WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (((ColorScheme)this._colors).onPrimary);
-}
-else
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-    {
-        return (((ColorScheme)this._colors).primary.withOpacity(0.38));
-    }
-}
-return (((ColorScheme)this._colors).primary);
-throw new InvalidOperationException("Dart closure completed without a value.");
-});
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            return (((ColorScheme)this._colors).onPrimary);
+        }
+        else
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+            {
+                return (((ColorScheme)this._colors).primary.withOpacity(0.38));
+            }
+        }
+        return (((ColorScheme)this._colors).primary);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    });
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? todayBackgroundColor => this.dayBackgroundColor;
     public override global::Doroti.Framework.Painting.BorderSide? todayBorder => new global::Doroti.Framework.Painting.BorderSide(color: ((ColorScheme)this._colors).primary);
     public override global::Doroti.Framework.Painting.TextStyle? yearStyle => ((TextTheme)this._textTheme).bodyLarge;
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? yearForegroundColor => WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (((ColorScheme)this._colors).onPrimary);
-}
-else
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? yearForegroundColor => WidgetStateProperty.resolveWith((states) =>
     {
-        return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.38));
-    }
-}
-return (((ColorScheme)this._colors).onSurfaceVariant);
-throw new InvalidOperationException("Dart closure completed without a value.");
-});
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? yearBackgroundColor => WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (((ColorScheme)this._colors).primary);
-}
-return null;
-throw new InvalidOperationException("Dart closure completed without a value.");
-});
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? yearOverlayColor => WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            return (((ColorScheme)this._colors).onPrimary);
+        }
+        else
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+            {
+                return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.38));
+            }
+        }
+        return (((ColorScheme)this._colors).onSurfaceVariant);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    });
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? yearBackgroundColor => WidgetStateProperty.resolveWith((states) =>
     {
-        return (((ColorScheme)this._colors).onPrimary.withOpacity(0.1));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            return (((ColorScheme)this._colors).primary);
+        }
+        return null;
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    });
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? yearOverlayColor => WidgetStateProperty.resolveWith((states) =>
     {
-        return (((ColorScheme)this._colors).onPrimary.withOpacity(0.08));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (((ColorScheme)this._colors).onPrimary.withOpacity(0.1));
-    }
-}
-else
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-    {
-        return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.1));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-    {
-        return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.08));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.1));
-    }
-}
-return null;
-throw new InvalidOperationException("Dart closure completed without a value.");
-});
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+            {
+                return (((ColorScheme)this._colors).onPrimary.withOpacity(0.1));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+            {
+                return (((ColorScheme)this._colors).onPrimary.withOpacity(0.08));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+            {
+                return (((ColorScheme)this._colors).onPrimary.withOpacity(0.1));
+            }
+        }
+        else
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+            {
+                return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.1));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+            {
+                return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.08));
+            }
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+            {
+                return (((ColorScheme)this._colors).onSurfaceVariant.withOpacity(0.1));
+            }
+        }
+        return null;
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    });
     public override Color? rangePickerShadowColor => Colors.transparent;
     public override Color? rangePickerSurfaceTintColor => Colors.transparent;
     public override Color? rangeSelectionBackgroundColor => ((ColorScheme)this._colors).secondaryContainer;
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? rangeSelectionOverlayColor => WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-{
-    return (((ColorScheme)this._colors).onPrimaryContainer.withOpacity(0.1));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-{
-    return (((ColorScheme)this._colors).onPrimaryContainer.withOpacity(0.08));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-{
-    return (((ColorScheme)this._colors).onPrimaryContainer.withOpacity(0.1));
-}
-return null;
-throw new InvalidOperationException("Dart closure completed without a value.");
-});
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? rangeSelectionOverlayColor => WidgetStateProperty.resolveWith((states) =>
+    {
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+        {
+            return (((ColorScheme)this._colors).onPrimaryContainer.withOpacity(0.1));
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+        {
+            return (((ColorScheme)this._colors).onPrimaryContainer.withOpacity(0.08));
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+        {
+            return (((ColorScheme)this._colors).onPrimaryContainer.withOpacity(0.1));
+        }
+        return null;
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    });
     public override Color? rangePickerHeaderBackgroundColor => Colors.transparent;
     public override Color? rangePickerHeaderForegroundColor => ((ColorScheme)this._colors).onSurfaceVariant;
     public override global::Doroti.Framework.Painting.TextStyle? rangePickerHeaderHeadlineStyle => ((TextTheme)this._textTheme).titleLarge;

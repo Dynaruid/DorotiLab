@@ -158,14 +158,15 @@ internal class _FadeInImageState__fade_in_image : State<FadeInImage>
 
     public override Widget build(BuildContext context)
     {
-        Widget result__17561 = ((Widget)(object?)_image(image: ((FadeInImage)this.widget).image, errorBuilder: (global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>?)((FadeInImage)this.widget).imageErrorBuilder, opacity: this._imageAnimation, fit: ((FadeInImage)this.widget).fit, color: ((FadeInImage)this.widget).color, colorBlendMode: ((FadeInImage)this.widget).colorBlendMode, filterQuality: ((FadeInImage)this.widget).filterQuality, frameBuilder: ((global::System.Func<BuildContext, Widget, long?, bool, Widget>?)((context, child, frame, wasSynchronouslyLoaded) => {
-if ((wasSynchronouslyLoaded || (frame is not null)))
-{
-    targetLoaded = true;
-}
-return ((Widget)(object?)new _AnimatedFadeOutFadeIn__fade_in_image(target: child, targetProxyAnimation: this._imageAnimation, placeholder: _image(image: ((FadeInImage)this.widget).placeholder, errorBuilder: (global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>?)((FadeInImage)this.widget).placeholderErrorBuilder, opacity: this._placeholderAnimation, color: ((FadeInImage)this.widget).placeholderColor, colorBlendMode: ((FadeInImage)this.widget).placeholderColorBlendMode, fit: (((FadeInImage)this.widget).placeholderFit ?? ((FadeInImage)this.widget).fit), filterQuality: (((FadeInImage)this.widget).placeholderFilterQuality ?? ((FadeInImage)this.widget).filterQuality)), placeholderProxyAnimation: this._placeholderAnimation, isTargetLoaded: this.targetLoaded, wasSynchronouslyLoaded: wasSynchronouslyLoaded, fadeInDuration: ((FadeInImage)this.widget).fadeInDuration, fadeOutDuration: ((FadeInImage)this.widget).fadeOutDuration, fadeInCurve: ((FadeInImage)this.widget).fadeInCurve, fadeOutCurve: ((FadeInImage)this.widget).fadeOutCurve));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        Widget result__17561 = ((Widget)(object?)_image(image: ((FadeInImage)this.widget).image, errorBuilder: (global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>?)((FadeInImage)this.widget).imageErrorBuilder, opacity: this._imageAnimation, fit: ((FadeInImage)this.widget).fit, color: ((FadeInImage)this.widget).color, colorBlendMode: ((FadeInImage)this.widget).colorBlendMode, filterQuality: ((FadeInImage)this.widget).filterQuality, frameBuilder: ((global::System.Func<BuildContext, Widget, long?, bool, Widget>?)((context, child, frame, wasSynchronouslyLoaded) =>
+        {
+            if ((wasSynchronouslyLoaded || (frame is not null)))
+            {
+                targetLoaded = true;
+            }
+            return ((Widget)(object?)new _AnimatedFadeOutFadeIn__fade_in_image(target: child, targetProxyAnimation: this._imageAnimation, placeholder: _image(image: ((FadeInImage)this.widget).placeholder, errorBuilder: (global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>?)((FadeInImage)this.widget).placeholderErrorBuilder, opacity: this._placeholderAnimation, color: ((FadeInImage)this.widget).placeholderColor, colorBlendMode: ((FadeInImage)this.widget).placeholderColorBlendMode, fit: (((FadeInImage)this.widget).placeholderFit ?? ((FadeInImage)this.widget).fit), filterQuality: (((FadeInImage)this.widget).placeholderFilterQuality ?? ((FadeInImage)this.widget).filterQuality)), placeholderProxyAnimation: this._placeholderAnimation, isTargetLoaded: this.targetLoaded, wasSynchronouslyLoaded: wasSynchronouslyLoaded, fadeInDuration: ((FadeInImage)this.widget).fadeInDuration, fadeOutDuration: ((FadeInImage)this.widget).fadeOutDuration, fadeInCurve: ((FadeInImage)this.widget).fadeInCurve, fadeOutCurve: ((FadeInImage)this.widget).fadeOutCurve));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         if (!((FadeInImage)this.widget).excludeFromSemantics)
         {
             result__17561 = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(container: (((FadeInImage)this.widget).imageSemanticLabel is not null), image: true, label: (((FadeInImage)this.widget).imageSemanticLabel ?? ""), child: result__17561));
@@ -227,15 +228,19 @@ internal class _AnimatedFadeOutFadeInState__fade_in_image : ImplicitlyAnimatedWi
             return;
         }
         _placeholderOpacityAnimation = ((Func<global::Doroti.Framework.Animation.Animation<double>>)(() =>
-{            var __cascade = this.animation.drive(new global::Doroti.Framework.Animation.TweenSequence<double>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<double>> { new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: this._placeholderOpacity!.chain(new global::Doroti.Framework.Animation.CurveTween(curve: ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).fadeOutCurve)), weight: ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).fadeOutDuration.inMilliseconds.toDouble()), new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.ConstantTween<double>(0), weight: ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).fadeInDuration.inMilliseconds.toDouble()) }));
-            __cascade.addStatusListener(((AnimationStatusListener)((status) => {
-if (this._placeholderOpacityAnimation!.isCompleted)
 {
-    setState(((global::System.Action)(() => {
-})));
-}
-})));
-            return __cascade;        }))();
+    var __cascade = this.animation.drive(new global::Doroti.Framework.Animation.TweenSequence<double>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<double>> { new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: this._placeholderOpacity!.chain(new global::Doroti.Framework.Animation.CurveTween(curve: ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).fadeOutCurve)), weight: ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).fadeOutDuration.inMilliseconds.toDouble()), new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.ConstantTween<double>(0), weight: ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).fadeInDuration.inMilliseconds.toDouble()) }));
+    __cascade.addStatusListener(((AnimationStatusListener)((status) =>
+    {
+        if (this._placeholderOpacityAnimation!.isCompleted)
+        {
+            setState(((global::System.Action)(() =>
+            {
+            })));
+        }
+    })));
+    return __cascade;
+}))();
         _targetOpacityAnimation = this.animation.drive(new global::Doroti.Framework.Animation.TweenSequence<double>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<double>> { new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: new global::Doroti.Framework.Animation.ConstantTween<double>(0), weight: ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).fadeOutDuration.inMilliseconds.toDouble()), new global::Doroti.Framework.Animation.TweenSequenceItem<double>(tween: this._targetOpacity!.chain(new global::Doroti.Framework.Animation.CurveTween(curve: ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).fadeInCurve)), weight: ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).fadeInDuration.inMilliseconds.toDouble()) }));
         ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).targetProxyAnimation.parent = this._targetOpacityAnimation;
         ((_AnimatedFadeOutFadeIn__fade_in_image)this.widget).placeholderProxyAnimation.parent = this._placeholderOpacityAnimation;

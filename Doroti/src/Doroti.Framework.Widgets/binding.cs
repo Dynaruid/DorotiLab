@@ -171,10 +171,12 @@ public static partial class BindingLibrary
     {
         DartRuntimePrimitives.Assert(() => binding.debugCheckZone(debugEntryPoint));
         DartRuntimePrimitives.Ignore(((Func<WidgetsBinding>)(() =>
-{            var __cascade = binding;
-            __cascade.scheduleAttachRootWidget(app);
-            __cascade.scheduleWarmUpFrame();
-            return __cascade;        }))());
+{
+    var __cascade = binding;
+    __cascade.scheduleAttachRootWidget(app);
+    __cascade.scheduleWarmUpFrame();
+    return __cascade;
+}))());
     }
 }
 
@@ -222,14 +224,16 @@ public class RootWidget : Widget
     {
         if ((element is null))
         {
-            owner.lockState(((global::System.Action)(() => {
-element = createElement();
-DartRuntimePrimitives.Assert(() => (element is not null));
-element!.assignOwner(owner);
-})));
-            owner.buildScope(element!, ((global::System.Action)(() => {
-element!.mount(((Element)(object)null), null);
-})));
+            owner.lockState(((global::System.Action)(() =>
+            {
+                element = createElement();
+                DartRuntimePrimitives.Assert(() => (element is not null));
+                element!.assignOwner(owner);
+            })));
+            owner.buildScope(element!, ((global::System.Action)(() =>
+            {
+                element!.mount(((Element)(object)null), null);
+            })));
         }
         else
         {
@@ -370,13 +374,16 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         {
             if (!__late_pipelineOwner_initialized)
             {
-                __late_pipelineOwner = new PipelineOwner(onSemanticsOwnerCreated: ((global::System.Action)(() => {
-(((RenderView?)(object?)((PipelineOwner)this.pipelineOwner).rootNode)!)?.scheduleInitialSemantics();
-})), onSemanticsUpdate: ((global::System.Action<SemanticsUpdate>)((update) => {
-(((RenderView?)(object?)((PipelineOwner)this.pipelineOwner).rootNode)!)?.updateSemantics(update);
-})), onSemanticsOwnerDisposed: ((global::System.Action)(() => {
-(((RenderView?)(object?)((PipelineOwner)this.pipelineOwner).rootNode)!)?.clearSemantics();
-})));
+                __late_pipelineOwner = new PipelineOwner(onSemanticsOwnerCreated: ((global::System.Action)(() =>
+                {
+                    (((RenderView?)(object?)((PipelineOwner)this.pipelineOwner).rootNode)!)?.scheduleInitialSemantics();
+                })), onSemanticsUpdate: ((global::System.Action<SemanticsUpdate>)((update) =>
+                {
+                    (((RenderView?)(object?)((PipelineOwner)this.pipelineOwner).rootNode)!)?.updateSemantics(update);
+                })), onSemanticsOwnerDisposed: ((global::System.Action)(() =>
+                {
+                    (((RenderView?)(object?)((PipelineOwner)this.pipelineOwner).rootNode)!)?.clearSemantics();
+                })));
                 __late_pipelineOwner_initialized = true;
             }
             return __late_pipelineOwner;
@@ -631,103 +638,116 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         base.initServiceExtensions();
         DartRuntimePrimitives.Assert(() =>
             {
-                registerBoolServiceExtension(name: RenderingServiceExtensions.invertOversizedImages.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Painting.DebugLibrary.debugInvertOversizedImages)), setter: ((Func<bool, Future>)(async (value) => {
-if ((global::Doroti.Framework.Painting.DebugLibrary.debugInvertOversizedImages != value))
-{
-    global::Doroti.Framework.Painting.DebugLibrary.debugInvertOversizedImages = value;
-    global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugPaint.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled)), setter: ((Func<bool, Future>)(async (value) => {
-if ((global::Doroti.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled == value))
-{
-    return;
-}
-global::Doroti.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled = value;
-global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugPaintBaselinesEnabled.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugPaintBaselinesEnabled)), setter: ((Func<bool, Future>)(async (value) => {
-if ((global::Doroti.Framework.Rendering.DebugLibrary.debugPaintBaselinesEnabled == value))
-{
-    return;
-}
-global::Doroti.Framework.Rendering.DebugLibrary.debugPaintBaselinesEnabled = value;
-global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.repaintRainbow.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled)), setter: ((Func<bool, Future>)(async (value) => {
-bool repaint__4659 = (global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled && !value);
-global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled = value;
-if (repaint__4659)
-{
-    global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
-                registerServiceExtension(name: RenderingServiceExtensions.debugDumpLayerTree.ToString(), callback: ((global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)(async (parameters) => {
-return new DartMap<string, object> { ["data"] = global::Doroti.Framework.Rendering.BindingLibrary._debugCollectLayerTrees() };
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisableClipLayers.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugDisableClipLayers)), setter: ((Func<bool, Future>)(async (value) => {
-if ((global::Doroti.Framework.Rendering.DebugLibrary.debugDisableClipLayers == value))
-{
-    return;
-}
-global::Doroti.Framework.Rendering.DebugLibrary.debugDisableClipLayers = value;
-global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisablePhysicalShapeLayers.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugDisablePhysicalShapeLayers)), setter: ((Func<bool, Future>)(async (value) => {
-if ((global::Doroti.Framework.Rendering.DebugLibrary.debugDisablePhysicalShapeLayers == value))
-{
-    return;
-}
-global::Doroti.Framework.Rendering.DebugLibrary.debugDisablePhysicalShapeLayers = value;
-global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
-                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisableOpacityLayers.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugDisableOpacityLayers)), setter: ((Func<bool, Future>)(async (value) => {
-if ((global::Doroti.Framework.Rendering.DebugLibrary.debugDisableOpacityLayers == value))
-{
-    return;
-}
-global::Doroti.Framework.Rendering.DebugLibrary.debugDisableOpacityLayers = value;
-global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+                registerBoolServiceExtension(name: RenderingServiceExtensions.invertOversizedImages.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Painting.DebugLibrary.debugInvertOversizedImages)), setter: ((Func<bool, Future>)(async (value) =>
+                {
+                    if ((global::Doroti.Framework.Painting.DebugLibrary.debugInvertOversizedImages != value))
+                    {
+                        global::Doroti.Framework.Painting.DebugLibrary.debugInvertOversizedImages = value;
+                        global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
+                    }
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                })));
+                registerBoolServiceExtension(name: RenderingServiceExtensions.debugPaint.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled)), setter: ((Func<bool, Future>)(async (value) =>
+                {
+                    if ((global::Doroti.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled == value))
+                    {
+                        return;
+                    }
+                    global::Doroti.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled = value;
+                    global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                })));
+                registerBoolServiceExtension(name: RenderingServiceExtensions.debugPaintBaselinesEnabled.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugPaintBaselinesEnabled)), setter: ((Func<bool, Future>)(async (value) =>
+                {
+                    if ((global::Doroti.Framework.Rendering.DebugLibrary.debugPaintBaselinesEnabled == value))
+                    {
+                        return;
+                    }
+                    global::Doroti.Framework.Rendering.DebugLibrary.debugPaintBaselinesEnabled = value;
+                    global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                })));
+                registerBoolServiceExtension(name: RenderingServiceExtensions.repaintRainbow.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled)), setter: ((Func<bool, Future>)(async (value) =>
+                {
+                    bool repaint__4659 = (global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled && !value);
+                    global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled = value;
+                    if (repaint__4659)
+                    {
+                        global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
+                    }
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                })));
+                registerServiceExtension(name: RenderingServiceExtensions.debugDumpLayerTree.ToString(), callback: ((global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)(async (parameters) =>
+                {
+                    return new DartMap<string, object> { ["data"] = global::Doroti.Framework.Rendering.BindingLibrary._debugCollectLayerTrees() };
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                })));
+                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisableClipLayers.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugDisableClipLayers)), setter: ((Func<bool, Future>)(async (value) =>
+                {
+                    if ((global::Doroti.Framework.Rendering.DebugLibrary.debugDisableClipLayers == value))
+                    {
+                        return;
+                    }
+                    global::Doroti.Framework.Rendering.DebugLibrary.debugDisableClipLayers = value;
+                    global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                })));
+                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisablePhysicalShapeLayers.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugDisablePhysicalShapeLayers)), setter: ((Func<bool, Future>)(async (value) =>
+                {
+                    if ((global::Doroti.Framework.Rendering.DebugLibrary.debugDisablePhysicalShapeLayers == value))
+                    {
+                        return;
+                    }
+                    global::Doroti.Framework.Rendering.DebugLibrary.debugDisablePhysicalShapeLayers = value;
+                    global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                })));
+                registerBoolServiceExtension(name: RenderingServiceExtensions.debugDisableOpacityLayers.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugDisableOpacityLayers)), setter: ((Func<bool, Future>)(async (value) =>
+                {
+                    if ((global::Doroti.Framework.Rendering.DebugLibrary.debugDisableOpacityLayers == value))
+                    {
+                        return;
+                    }
+                    global::Doroti.Framework.Rendering.DebugLibrary.debugDisableOpacityLayers = value;
+                    global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                })));
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
-            registerServiceExtension(name: RenderingServiceExtensions.debugDumpRenderTree.ToString(), callback: ((global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)(async (parameters) => {
-return new DartMap<string, object> { ["data"] = global::Doroti.Framework.Rendering.BindingLibrary._debugCollectRenderTrees() };
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
-            registerServiceExtension(name: RenderingServiceExtensions.debugDumpSemanticsTreeInTraversalOrder.ToString(), callback: ((global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)(async (parameters) => {
-return new DartMap<string, object> { ["data"] = global::Doroti.Framework.Rendering.BindingLibrary._debugCollectSemanticsTrees(global::Doroti.Framework.Semantics.DebugSemanticsDumpOrder.traversalOrder) };
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
-            registerServiceExtension(name: RenderingServiceExtensions.debugDumpSemanticsTreeInInverseHitTestOrder.ToString(), callback: ((global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)(async (parameters) => {
-return new DartMap<string, object> { ["data"] = global::Doroti.Framework.Rendering.BindingLibrary._debugCollectSemanticsTrees(global::Doroti.Framework.Semantics.DebugSemanticsDumpOrder.inverseHitTest) };
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
-            registerBoolServiceExtension(name: RenderingServiceExtensions.profileRenderObjectPaints.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugProfilePaintsEnabled)), setter: ((Func<bool, Future>)(async (value) => {
-if ((global::Doroti.Framework.Rendering.DebugLibrary.debugProfilePaintsEnabled != value))
-{
-    global::Doroti.Framework.Rendering.DebugLibrary.debugProfilePaintsEnabled = value;
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
-            registerBoolServiceExtension(name: RenderingServiceExtensions.profileRenderObjectLayouts.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled)), setter: ((Func<bool, Future>)(async (value) => {
-if ((global::Doroti.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled != value))
-{
-    global::Doroti.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled = value;
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+            registerServiceExtension(name: RenderingServiceExtensions.debugDumpRenderTree.ToString(), callback: ((global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)(async (parameters) =>
+            {
+                return new DartMap<string, object> { ["data"] = global::Doroti.Framework.Rendering.BindingLibrary._debugCollectRenderTrees() };
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
+            registerServiceExtension(name: RenderingServiceExtensions.debugDumpSemanticsTreeInTraversalOrder.ToString(), callback: ((global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)(async (parameters) =>
+            {
+                return new DartMap<string, object> { ["data"] = global::Doroti.Framework.Rendering.BindingLibrary._debugCollectSemanticsTrees(global::Doroti.Framework.Semantics.DebugSemanticsDumpOrder.traversalOrder) };
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
+            registerServiceExtension(name: RenderingServiceExtensions.debugDumpSemanticsTreeInInverseHitTestOrder.ToString(), callback: ((global::System.Func<DartMap<string, string>, Future<DartMap<string, object>>>)(async (parameters) =>
+            {
+                return new DartMap<string, object> { ["data"] = global::Doroti.Framework.Rendering.BindingLibrary._debugCollectSemanticsTrees(global::Doroti.Framework.Semantics.DebugSemanticsDumpOrder.inverseHitTest) };
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
+            registerBoolServiceExtension(name: RenderingServiceExtensions.profileRenderObjectPaints.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugProfilePaintsEnabled)), setter: ((Func<bool, Future>)(async (value) =>
+            {
+                if ((global::Doroti.Framework.Rendering.DebugLibrary.debugProfilePaintsEnabled != value))
+                {
+                    global::Doroti.Framework.Rendering.DebugLibrary.debugProfilePaintsEnabled = value;
+                }
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
+            registerBoolServiceExtension(name: RenderingServiceExtensions.profileRenderObjectLayouts.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled)), setter: ((Func<bool, Future>)(async (value) =>
+            {
+                if ((global::Doroti.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled != value))
+                {
+                    global::Doroti.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled = value;
+                }
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
         }
     }
 
@@ -793,12 +813,13 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     public virtual void initMouseTracker(MouseTracker? tracker = null)
     {
         this._mouseTracker?.dispose();
-        this._mouseTracker = (tracker ?? new MouseTracker(((global::System.Func<Offset, long, global::Doroti.Framework.Gestures.HitTestResult>)((position, viewId) => {
-var result__18519 = new global::Doroti.Framework.Gestures.HitTestResult();
-hitTestInView(result__18519, position, viewId);
-return result__18519;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        this._mouseTracker = (tracker ?? new MouseTracker(((global::System.Func<Offset, long, global::Doroti.Framework.Gestures.HitTestResult>)((position, viewId) =>
+        {
+            var result__18519 = new global::Doroti.Framework.Gestures.HitTestResult();
+            hitTestInView(result__18519, position, viewId);
+            return result__18519;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
     }
 
     public override void dispatchEvent(global::Doroti.Framework.Gestures.PointerEvent @event, global::Doroti.Framework.Gestures.HitTestResult result)
@@ -816,10 +837,12 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb);
         var methodChannel__21314 = new global::Doroti.Framework.Services.MethodChannel("flutter/service_worker");
-        DartRuntimePrimitives.Ignore(methodChannel__21314.invokeMethod<object?>("first-frame").then(((_) => {
-}), onError: ((error, stack) => {
-FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: error, stack: stack, library: "rendering library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending the first-frame event")));
-})));
+        DartRuntimePrimitives.Ignore(methodChannel__21314.invokeMethod<object?>("first-frame").then(((_) =>
+        {
+        }), onError: ((error, stack) =>
+        {
+            FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: error, stack: stack, library: "rendering library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending the first-frame event")));
+        })));
     }
 
     public virtual void _handlePersistentFrameCallback(Duration timeStamp)
@@ -837,16 +860,17 @@ FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDet
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) => {
-DartRuntimePrimitives.Assert(() => this._debugMouseTrackerUpdateScheduled);
-DartRuntimePrimitives.Assert(() =>
-    {
-        this._debugMouseTrackerUpdateScheduled = false;
-        return true;
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    });
-this._mouseTracker!.updateAllDevices();
-})), debugLabel: "RendererBinding.mouseTrackerUpdate");
+        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) =>
+        {
+            DartRuntimePrimitives.Assert(() => this._debugMouseTrackerUpdateScheduled);
+            DartRuntimePrimitives.Assert(() =>
+                {
+                    this._debugMouseTrackerUpdateScheduled = false;
+                    return true;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                });
+            this._mouseTracker!.updateAllDevices();
+        })), debugLabel: "RendererBinding.mouseTrackerUpdate");
     }
 
     public virtual bool sendFramesToEngine => DartRuntimePrimitives.ConvertValue<bool>((this._firstFrameSent || (this._firstFrameDeferredCount == 0L)));
@@ -936,10 +960,11 @@ this._mouseTracker!.updateAllDevices();
     public virtual Future _forceRepaint()
     {
         global::System.Action<RenderObject> visitor__28613 = default!;
-        visitor__28613 = (global::System.Action<RenderObject>)((child) => {
-((dynamic)child).markNeedsPaint();
-((dynamic)child).visitChildren((global::System.Action<RenderObject>)visitor__28613);
-});
+        visitor__28613 = (global::System.Action<RenderObject>)((child) =>
+        {
+            ((dynamic)child).markNeedsPaint();
+            ((dynamic)child).visitChildren((global::System.Action<RenderObject>)visitor__28613);
+        });
         foreach (RenderView renderView__28758 in this.renderViews)
         {
             renderView__28758.visitChildren((global::System.Action<RenderObject>)visitor__28613);
@@ -950,7 +975,8 @@ this._mouseTracker!.updateAllDevices();
 
     public virtual bool debugShowWidgetInspectorOverride
     {
-        get{
+        get
+        {
             return ((global::Doroti.Framework.Foundation.ValueNotifier<bool>)this.debugShowWidgetInspectorOverrideNotifier).value;
             return default!;
         }
@@ -1002,10 +1028,14 @@ this._mouseTracker!.updateAllDevices();
 
     public virtual DartMap<string, List<DartMap<string, string>>> _formatEvaluationResult(List<ViolationIo> violations)
     {
-        return new DartMap<string, List<DartMap<string, string>>> { ["result"] = violations.map<ViolationIo, DartMap<string, string>>(((violation) => {
-return new DartMap<string, string> { ["nodeId"] = ((ViolationIo)violation).node.id.ToString(), ["message"] = ((ViolationIo)violation).reason };
-throw new InvalidOperationException("Dart closure completed without a value.");
-})).ToList() };
+        return new DartMap<string, List<DartMap<string, string>>>
+        {
+            ["result"] = violations.map<ViolationIo, DartMap<string, string>>(((violation) =>
+            {
+                return new DartMap<string, string> { ["nodeId"] = ((ViolationIo)violation).node.id.ToString(), ["message"] = ((ViolationIo)violation).reason };
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })).ToList()
+        };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1116,9 +1146,10 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                 FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception__41994, stack: stack__42005, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while dispatching notifications for WidgetsBindingObserver.didPopRoute")));
             }
         }
-        DartRuntimePrimitives.Ignore(SystemNavigator.pop().catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) => {
-FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while popping route")));
-}))));
+        DartRuntimePrimitives.Ignore(SystemNavigator.pop().catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) =>
+        {
+            FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while popping route")));
+        }))));
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1327,9 +1358,10 @@ FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDet
 
     public virtual void scheduleAttachRootWidget(Widget rootWidget)
     {
-        global::Doroti.Runtime.Timer.run((() => {
-attachRootWidget(rootWidget);
-}));
+        global::Doroti.Runtime.Timer.run((() =>
+        {
+            attachRootWidget(rootWidget);
+        }));
     }
 
     public virtual void attachRootWidget(Widget rootWidget)
@@ -1357,7 +1389,8 @@ attachRootWidget(rootWidget);
 
     public virtual WindowingOwnerIo windowingOwner
     {
-        get{
+        get
+        {
             if (!global::Doroti.Framework.Foundation._featuresLibrary.isWindowingEnabled)
             {
                 throw new NotSupportedException("Windowing APIs are not enabled.\n\nWindowing APIs are currently experimental. Do not use windowing APIs in\nproduction applications or plugins published to pub.dev.\n\nTo try experimental windowing APIs:\n1. Switch to Flutter's main release channel.\n2. Turn on the windowing feature flag.\n\nSee: https://github.com/flutter/flutter/issues/30701.\n");

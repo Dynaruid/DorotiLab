@@ -192,11 +192,13 @@ internal class _SliverFloatingHeader__sliver_floating_header : SingleChildRender
     {
         var __renderObject = (_RenderSliverFloatingHeader__sliver_floating_header)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderSliverFloatingHeader__sliver_floating_header>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.vsync = this.vsync;
-            __cascade.animationStyle = this.animationStyle;
-            __cascade.snapMode = this.snapMode;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.vsync = this.vsync;
+    __cascade.animationStyle = this.animationStyle;
+    __cascade.snapMode = this.snapMode;
+    return __cascade;
+}))());
     }
 
 }
@@ -253,15 +255,18 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : global::Dorot
             if (headerIsPartiallyVisible__7235)
             {
                 snapController ??= ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(vsync: this.vsync!);
-            __cascade.addListener(((global::System.Action)(() => {
-if ((this.effectiveScrollOffset != ((global::Doroti.Framework.Animation.Animation<double>)this.snapAnimation).value))
 {
-    effectiveScrollOffset = ((global::Doroti.Framework.Animation.Animation<double>)this.snapAnimation).value;
-    markNeedsLayout();
-}
-})));
-            return __cascade;        }))();
+    var __cascade = new global::Doroti.Framework.Animation.AnimationController(vsync: this.vsync!);
+    __cascade.addListener(((global::System.Action)(() =>
+    {
+        if ((this.effectiveScrollOffset != ((global::Doroti.Framework.Animation.Animation<double>)this.snapAnimation).value))
+        {
+            effectiveScrollOffset = ((global::Doroti.Framework.Animation.Animation<double>)this.snapAnimation).value;
+            markNeedsLayout();
+        }
+    })));
+    return __cascade;
+}))();
                 this.snapController!.duration = (direction__7176 switch { global::Doroti.Framework.Rendering.ScrollDirection.forward => (this.animationStyle?.duration ?? Duration.Create(milliseconds: 300L)), _ => (this.animationStyle?.reverseDuration ?? Duration.Create(milliseconds: 300L)) });
                 snapAnimation = this.snapController!.drive(new global::Doroti.Framework.Animation.Tween<double>(begin: this.effectiveScrollOffset, end: (direction__7176 switch { global::Doroti.Framework.Rendering.ScrollDirection.forward => 0, _ => this.childExtent })).chain(new global::Doroti.Framework.Animation.CurveTween(curve: (direction__7176 switch { global::Doroti.Framework.Rendering.ScrollDirection.forward => (this.animationStyle?.curve ?? global::Doroti.Framework.Animation.Curves.easeInOut), _ => (this.animationStyle?.reverseCurve ?? global::Doroti.Framework.Animation.Curves.easeInOut) }))));
                 this.snapController!.forward(from: 0.0);

@@ -261,14 +261,16 @@ public class TextSelectionOverlay
             endHandleType__20972 = (endHandleDirection__21483 switch { TextDirection.ltr => global::Doroti.Framework.Rendering.TextSelectionHandleType.right, TextDirection.rtl => global::Doroti.Framework.Rendering.TextSelectionHandleType.left, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         }
         DartRuntimePrimitives.Ignore(((Func<SelectionOverlay>)(() =>
-{            var __cascade = this._selectionOverlay;
-            __cascade.startHandleType = startHandleType__20921;
-            __cascade.lineHeightAtStart = _getStartGlyphHeight();
-            __cascade.endHandleType = endHandleType__20972;
-            __cascade.lineHeightAtEnd = _getEndGlyphHeight();
-            __cascade.selectionEndpoints = endpoints__20789;
-            __cascade.toolbarLocation = ((global::Doroti.Framework.Rendering.RenderEditable)this.renderObject).lastSecondaryTapDownPosition;
-            return __cascade;        }))());
+{
+    var __cascade = this._selectionOverlay;
+    __cascade.startHandleType = startHandleType__20921;
+    __cascade.lineHeightAtStart = _getStartGlyphHeight();
+    __cascade.endHandleType = endHandleType__20972;
+    __cascade.lineHeightAtEnd = _getEndGlyphHeight();
+    __cascade.selectionEndpoints = endpoints__20789;
+    __cascade.toolbarLocation = ((global::Doroti.Framework.Rendering.RenderEditable)this.renderObject).lastSecondaryTapDownPosition;
+    return __cascade;
+}))());
     }
 
     public virtual void updateForScroll()
@@ -873,13 +875,15 @@ public class SelectionOverlay
         }
         OverlayState overlay__63148 = ((OverlayState)(object?)Overlay.of(this.context, rootOverlay: true, debugRequiredFor: this.debugRequiredFor));
         CapturedThemes capturedThemes__63285 = ((CapturedThemes)(object?)InheritedTheme.capture(from: this.context, to: overlay__63148.context));
-        _handles = (end: new OverlayEntry(builder: ((global::System.Func<BuildContext, Widget>)((context) => {
-return ((Widget)(object?)capturedThemes__63285.wrap(_buildEndHandle(context)));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))), start: new OverlayEntry(builder: ((global::System.Func<BuildContext, Widget>)((context) => {
-return ((Widget)(object?)capturedThemes__63285.wrap(_buildStartHandle(context)));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        _handles = (end: new OverlayEntry(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        {
+            return ((Widget)(object?)capturedThemes__63285.wrap(_buildEndHandle(context)));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))), start: new OverlayEntry(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        {
+            return ((Widget)(object?)capturedThemes__63285.wrap(_buildStartHandle(context)));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         overlay__63148.insertAll(new List<OverlayEntry> { DartRuntimePrimitives.RequireValue(this._handles).start, DartRuntimePrimitives.RequireValue(this._handles).end }.Cast<OverlayEntry>());
     }
 
@@ -912,10 +916,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             return;
         }
         var renderBox__64762 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)context.findRenderObject()!)!;
-        this._contextMenuController.show(context: context, contextMenuBuilder: ((global::System.Func<BuildContext, Widget>)((context) => {
-return ((Widget)(object?)new _SelectionToolbarWrapper__text_selection(visibility: this.toolbarVisible, layerLink: this.toolbarLayerLink, offset: -((Offset)((dynamic)renderBox__64762).localToGlobal(Offset.zero)), child: contextMenuBuilder(context)));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        this._contextMenuController.show(context: context, contextMenuBuilder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        {
+            return ((Widget)(object?)new _SelectionToolbarWrapper__text_selection(visibility: this.toolbarVisible, layerLink: this.toolbarLayerLink, offset: -((Offset)((dynamic)renderBox__64762).localToGlobal(Offset.zero)), child: contextMenuBuilder(context)));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
     }
 
     public virtual void showSpellCheckSuggestionsToolbar(BuildContext? context = null, global::System.Func<BuildContext, Widget> builder = default!)
@@ -925,10 +930,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             return;
         }
         var renderBox__65451 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)context.findRenderObject()!)!;
-        this._spellCheckToolbarController.show(context: context, contextMenuBuilder: ((global::System.Func<BuildContext, Widget>)((context) => {
-return ((Widget)(object?)new _SelectionToolbarWrapper__text_selection(layerLink: this.toolbarLayerLink, offset: -((Offset)((dynamic)renderBox__65451).localToGlobal(Offset.zero)), child: builder(context)));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        this._spellCheckToolbarController.show(context: context, contextMenuBuilder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        {
+            return ((Widget)(object?)new _SelectionToolbarWrapper__text_selection(layerLink: this.toolbarLayerLink, offset: -((Offset)((dynamic)renderBox__65451).localToGlobal(Offset.zero)), child: builder(context)));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
     }
 
     public virtual void markNeedsBuild()
@@ -944,23 +950,24 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                 return;
             }
             _buildScheduled = true;
-            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) => {
-_buildScheduled = false;
-this._handles?.start.markNeedsBuild();
-this._handles?.end.markNeedsBuild();
-this._toolbar?.markNeedsBuild();
-if (((ContextMenuController)this._contextMenuController).isShown)
-{
-    this._contextMenuController.markNeedsBuild();
-}
-else
-{
-    if (((ContextMenuController)this._spellCheckToolbarController).isShown)
-    {
-        this._spellCheckToolbarController.markNeedsBuild();
-    }
-}
-})), debugLabel: "SelectionOverlay.markNeedsBuild");
+            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) =>
+            {
+                _buildScheduled = false;
+                this._handles?.start.markNeedsBuild();
+                this._handles?.end.markNeedsBuild();
+                this._toolbar?.markNeedsBuild();
+                if (((ContextMenuController)this._contextMenuController).isShown)
+                {
+                    this._contextMenuController.markNeedsBuild();
+                }
+                else
+                {
+                    if (((ContextMenuController)this._spellCheckToolbarController).isShown)
+                    {
+                        this._spellCheckToolbarController.markNeedsBuild();
+                    }
+                }
+            })), debugLabel: "SelectionOverlay.markNeedsBuild");
         }
         else
         {
@@ -1058,10 +1065,11 @@ else
         bool isMultiline__71259 = ((this.selectionEndpoints.Last().point.dy - this.selectionEndpoints.First().point.dy) > (this.lineHeightAtEnd / 2L));
         double midX__71518 = (isMultiline__71259 ? (editingRegion__71087.width / 2L) : (((this.selectionEndpoints.First().point.dx + this.selectionEndpoints.Last().point.dx)) / 2L));
         var midpoint__71668 = new global::Doroti.Ui.Offset(midX__71518, (this.selectionEndpoints.First().point.dy - this.lineHeightAtStart));
-        return ((Widget)(object?)new _SelectionToolbarWrapper__text_selection(visibility: this.toolbarVisible, layerLink: this.toolbarLayerLink, offset: -editingRegion__71087.topLeft, child: new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => {
-return ((Widget)(object?)this.selectionControls!.buildToolbar(context, editingRegion__71087, this.lineHeightAtStart, midpoint__71668, this.selectionEndpoints, this.selectionDelegate!, this.clipboardStatus, this.toolbarLocation));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))));
+        return ((Widget)(object?)new _SelectionToolbarWrapper__text_selection(visibility: this.toolbarVisible, layerLink: this.toolbarLayerLink, offset: -editingRegion__71087.topLeft, child: new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        {
+            return ((Widget)(object?)this.selectionControls!.buildToolbar(context, editingRegion__71087, this.lineHeightAtStart, midpoint__71668, this.selectionEndpoints, this.selectionDelegate!, this.clipboardStatus, this.toolbarLocation));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1310,16 +1318,22 @@ internal class _SelectionHandleOverlayState__text_selection : State<_SelectionHa
         global::Doroti.Framework.Rendering.RelativeRect padding__78702 = (interactiveRect__78476.isEmpty ? global::Doroti.Framework.Rendering.RelativeRect.fill : new global::Doroti.Framework.Rendering.RelativeRect(Math.Max((((interactiveRect__78476.width - handleRect__78275.width)) / 2L), 0), Math.Max((((interactiveRect__78476.height - handleRect__78275.height)) / 2L), 0), Math.Max((((interactiveRect__78476.width - handleRect__78275.width)) / 2L), 0), Math.Max((((interactiveRect__78476.height - handleRect__78275.height)) / 2L), 0)));
         global::Doroti.Ui.Offset handleAnchor__79124 = ((global::Doroti.Ui.Offset)(object?)((_SelectionHandleOverlay__text_selection)this.widget).selectionControls.getHandleAnchor(((_SelectionHandleOverlay__text_selection)this.widget).type, ((_SelectionHandleOverlay__text_selection)this.widget).preferredLineHeight));
         bool eagerlyAcceptDragWhenCollapsed__79446 = ((object.Equals(((_SelectionHandleOverlay__text_selection)this.widget).type, global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed)) && (object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)));
-        return ((Widget)(object?)new CompositedTransformFollower(link: ((_SelectionHandleOverlay__text_selection)this.widget).handleLayerLink, offset: (-handleAnchor__79124 - new global::Doroti.Ui.Offset(((global::Doroti.Framework.Rendering.RelativeRect)padding__78702).left, ((global::Doroti.Framework.Rendering.RelativeRect)padding__78702).top)), showWhenUnlinked: false, child: new FadeTransition(opacity: this._opacity, child: new SizedBox(width: interactiveRect__78476.width, height: interactiveRect__78476.height, child: new Align(alignment: global::Doroti.Framework.Painting.Alignment.topLeft, child: new RawGestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.translucent, gestures: new DartMap<Type, dynamic> { [typeof(global::Doroti.Framework.Gestures.PanGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.PanGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.PanGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.PanGestureRecognizer(debugOwner: this, supportedDevices: new HashSet<PointerDeviceKind> { PointerDeviceKind.touch, PointerDeviceKind.stylus, PointerDeviceKind.unknown }))), ((global::System.Action<global::Doroti.Framework.Gestures.PanGestureRecognizer>)((instance) => {
-DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.PanGestureRecognizer>)(() =>
-{            var __cascade = instance;
-            __cascade.dragStartBehavior = ((_SelectionHandleOverlay__text_selection)this.widget).dragStartBehavior;
-            __cascade.gestureSettings = (eagerlyAcceptDragWhenCollapsed__79446 ? new global::Doroti.Framework.Gestures.DeviceGestureSettings(touchSlop: 1.0) : null);
-            __cascade.onStart = ((_SelectionHandleOverlay__text_selection)this.widget).onSelectionHandleDragStart;
-            __cascade.onUpdate = ((_SelectionHandleOverlay__text_selection)this.widget).onSelectionHandleDragUpdate;
-            __cascade.onEnd = ((_SelectionHandleOverlay__text_selection)this.widget).onSelectionHandleDragEnd;
-            return __cascade;        }))());
-}))) }, child: new Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: ((global::Doroti.Framework.Rendering.RelativeRect)padding__78702).left, top: ((global::Doroti.Framework.Rendering.RelativeRect)padding__78702).top, right: ((global::Doroti.Framework.Rendering.RelativeRect)padding__78702).right, bottom: ((global::Doroti.Framework.Rendering.RelativeRect)padding__78702).bottom), child: ((_SelectionHandleOverlay__text_selection)this.widget).selectionControls.buildHandle(context, ((_SelectionHandleOverlay__text_selection)this.widget).type, ((_SelectionHandleOverlay__text_selection)this.widget).preferredLineHeight, () => ((_SelectionHandleOverlay__text_selection)this.widget).onSelectionHandleTapped()))))))));
+        return ((Widget)(object?)new CompositedTransformFollower(link: ((_SelectionHandleOverlay__text_selection)this.widget).handleLayerLink, offset: (-handleAnchor__79124 - new global::Doroti.Ui.Offset(((global::Doroti.Framework.Rendering.RelativeRect)padding__78702).left, ((global::Doroti.Framework.Rendering.RelativeRect)padding__78702).top)), showWhenUnlinked: false, child: new FadeTransition(opacity: this._opacity, child: new SizedBox(width: interactiveRect__78476.width, height: interactiveRect__78476.height, child: new Align(alignment: global::Doroti.Framework.Painting.Alignment.topLeft, child: new RawGestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.translucent, gestures: new DartMap<Type, dynamic>
+        {
+            [typeof(global::Doroti.Framework.Gestures.PanGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.PanGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.PanGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.PanGestureRecognizer(debugOwner: this, supportedDevices: new HashSet<PointerDeviceKind> { PointerDeviceKind.touch, PointerDeviceKind.stylus, PointerDeviceKind.unknown }))), ((global::System.Action<global::Doroti.Framework.Gestures.PanGestureRecognizer>)((instance) =>
+            {
+                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.PanGestureRecognizer>)(() =>
+                {
+                    var __cascade = instance;
+                    __cascade.dragStartBehavior = ((_SelectionHandleOverlay__text_selection)this.widget).dragStartBehavior;
+                    __cascade.gestureSettings = (eagerlyAcceptDragWhenCollapsed__79446 ? new global::Doroti.Framework.Gestures.DeviceGestureSettings(touchSlop: 1.0) : null);
+                    __cascade.onStart = ((_SelectionHandleOverlay__text_selection)this.widget).onSelectionHandleDragStart;
+                    __cascade.onUpdate = ((_SelectionHandleOverlay__text_selection)this.widget).onSelectionHandleDragUpdate;
+                    __cascade.onEnd = ((_SelectionHandleOverlay__text_selection)this.widget).onSelectionHandleDragEnd;
+                    return __cascade;
+                }))());
+            })))
+        }, child: new Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: ((global::Doroti.Framework.Rendering.RelativeRect)padding__78702).left, top: ((global::Doroti.Framework.Rendering.RelativeRect)padding__78702).top, right: ((global::Doroti.Framework.Rendering.RelativeRect)padding__78702).right, bottom: ((global::Doroti.Framework.Rendering.RelativeRect)padding__78702).bottom), child: ((_SelectionHandleOverlay__text_selection)this.widget).selectionControls.buildHandle(context, ((_SelectionHandleOverlay__text_selection)this.widget).type, ((_SelectionHandleOverlay__text_selection)this.widget).preferredLineHeight, () => ((_SelectionHandleOverlay__text_selection)this.widget).onSelectionHandleTapped()))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1550,13 +1564,14 @@ public class TextSelectionGestureDetectorBuilder
                         bool stylusEnabled__95161 = (kind__94347 switch { PointerDeviceKind.stylus => this.editableText.widget.stylusHandwritingEnabled, PointerDeviceKind.invertedStylus => this.editableText.widget.stylusHandwritingEnabled, _ => false });
                         if (stylusEnabled__95161)
                         {
-                            DartRuntimePrimitives.Ignore(Scribe.isFeatureAvailable().then((global::System.Action<bool>)((isAvailable) => {
-if (isAvailable)
-{
-    this.renderEditable.selectPosition(cause: global::Doroti.Framework.Services.SelectionChangedCause.stylusHandwriting);
-    DartRuntimePrimitives.Ignore(Scribe.startStylusHandwriting());
-}
-})));
+                            DartRuntimePrimitives.Ignore(Scribe.isFeatureAvailable().then((global::System.Action<bool>)((isAvailable) =>
+                            {
+                                if (isAvailable)
+                                {
+                                    this.renderEditable.selectPosition(cause: global::Doroti.Framework.Services.SelectionChangedCause.stylusHandwriting);
+                                    DartRuntimePrimitives.Ignore(Scribe.startStylusHandwriting());
+                                }
+                            })));
                         }
                     }
                     break;
@@ -2435,24 +2450,30 @@ internal class _TextSelectionGestureDetectorState__text_selection : State<TextSe
     public override Widget build(BuildContext context)
     {
         var gestures__141878 = new DartMap<Type, dynamic>();
-        gestures__141878[typeof(global::Doroti.Framework.Gestures.TapGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.TapGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.TapGestureRecognizer(debugOwner: this))), ((global::System.Action<global::Doroti.Framework.Gestures.TapGestureRecognizer>)((instance) => {
-DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.TapGestureRecognizer>)(() =>
-{            var __cascade = instance;
-            __cascade.onSecondaryTap = ((TextSelectionGestureDetector)this.widget).onSecondaryTap;
-            __cascade.onSecondaryTapDown = ((TextSelectionGestureDetector)this.widget).onSecondaryTapDown;
-            return __cascade;        }))());
-})));
+        gestures__141878[typeof(global::Doroti.Framework.Gestures.TapGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.TapGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.TapGestureRecognizer(debugOwner: this))), ((global::System.Action<global::Doroti.Framework.Gestures.TapGestureRecognizer>)((instance) =>
+        {
+            DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.TapGestureRecognizer>)(() =>
+            {
+                var __cascade = instance;
+                __cascade.onSecondaryTap = ((TextSelectionGestureDetector)this.widget).onSecondaryTap;
+                __cascade.onSecondaryTapDown = ((TextSelectionGestureDetector)this.widget).onSecondaryTapDown;
+                return __cascade;
+            }))());
+        })));
         if (((((((TextSelectionGestureDetector)this.widget).onSingleLongTapStart is not null) || (((TextSelectionGestureDetector)this.widget).onSingleLongTapMoveUpdate is not null)) || (((TextSelectionGestureDetector)this.widget).onSingleLongTapEnd is not null)) || (((TextSelectionGestureDetector)this.widget).onSingleLongTapCancel is not null)))
         {
-            gestures__141878[typeof(global::Doroti.Framework.Gestures.LongPressGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.LongPressGestureRecognizer(debugOwner: this, supportedDevices: new HashSet<PointerDeviceKind> { PointerDeviceKind.touch }))), ((global::System.Action<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>)((instance) => {
-DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>)(() =>
-{            var __cascade = instance;
-            __cascade.onLongPressStart = this._handleLongPressStart;
-            __cascade.onLongPressMoveUpdate = this._handleLongPressMoveUpdate;
-            __cascade.onLongPressEnd = this._handleLongPressEnd;
-            __cascade.onLongPressCancel = this._handleLongPressCancel;
-            return __cascade;        }))());
-})));
+            gestures__141878[typeof(global::Doroti.Framework.Gestures.LongPressGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.LongPressGestureRecognizer(debugOwner: this, supportedDevices: new HashSet<PointerDeviceKind> { PointerDeviceKind.touch }))), ((global::System.Action<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>)((instance) =>
+            {
+                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>)(() =>
+                {
+                    var __cascade = instance;
+                    __cascade.onLongPressStart = this._handleLongPressStart;
+                    __cascade.onLongPressMoveUpdate = this._handleLongPressMoveUpdate;
+                    __cascade.onLongPressEnd = this._handleLongPressEnd;
+                    __cascade.onLongPressCancel = this._handleLongPressCancel;
+                    return __cascade;
+                }))());
+            })));
         }
         if ((((((TextSelectionGestureDetector)this.widget).onDragSelectionStart is not null) || (((TextSelectionGestureDetector)this.widget).onDragSelectionUpdate is not null)) || (((TextSelectionGestureDetector)this.widget).onDragSelectionEnd is not null)))
         {
@@ -2462,54 +2483,63 @@ DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.LongPressG
                 case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
                 case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
                     {
-                        gestures__141878[typeof(global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer(debugOwner: this))), ((global::System.Action<global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer>)((instance) => {
-DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer>)(() =>
-{            var __cascade = instance;
-            __cascade.dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.down;
-            __cascade.eagerVictoryOnDrag = (!object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS));
-            __cascade.onTapTrackStart = this._handleTapTrackStart;
-            __cascade.onTapTrackReset = this._handleTapTrackReset;
-            __cascade.onTapDown = this._handleTapDown;
-            __cascade.onDragStart = this._handleDragStart;
-            __cascade.onDragUpdate = this._handleDragUpdate;
-            __cascade.onDragEnd = this._handleDragEnd;
-            __cascade.onTapUp = this._handleTapUp;
-            __cascade.onCancel = this._handleTapCancel;
-            return __cascade;        }))());
-})));
+                        gestures__141878[typeof(global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer(debugOwner: this))), ((global::System.Action<global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer>)((instance) =>
+                        {
+                            DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.TapAndHorizontalDragGestureRecognizer>)(() =>
+                            {
+                                var __cascade = instance;
+                                __cascade.dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.down;
+                                __cascade.eagerVictoryOnDrag = (!object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS));
+                                __cascade.onTapTrackStart = this._handleTapTrackStart;
+                                __cascade.onTapTrackReset = this._handleTapTrackReset;
+                                __cascade.onTapDown = this._handleTapDown;
+                                __cascade.onDragStart = this._handleDragStart;
+                                __cascade.onDragUpdate = this._handleDragUpdate;
+                                __cascade.onDragEnd = this._handleDragEnd;
+                                __cascade.onTapUp = this._handleTapUp;
+                                __cascade.onCancel = this._handleTapCancel;
+                                return __cascade;
+                            }))());
+                        })));
                         break;
                     }
                 case global::Doroti.Framework.Foundation.TargetPlatform.linux:
                 case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
                 case global::Doroti.Framework.Foundation.TargetPlatform.windows:
                     {
-                        gestures__141878[typeof(global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer(debugOwner: this))), ((global::System.Action<global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer>)((instance) => {
-DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer>)(() =>
-{            var __cascade = instance;
-            __cascade.dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.down;
-            __cascade.onTapTrackStart = this._handleTapTrackStart;
-            __cascade.onTapTrackReset = this._handleTapTrackReset;
-            __cascade.onTapDown = this._handleTapDown;
-            __cascade.onDragStart = this._handleDragStart;
-            __cascade.onDragUpdate = this._handleDragUpdate;
-            __cascade.onDragEnd = this._handleDragEnd;
-            __cascade.onTapUp = this._handleTapUp;
-            __cascade.onCancel = this._handleTapCancel;
-            return __cascade;        }))());
-})));
+                        gestures__141878[typeof(global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer(debugOwner: this))), ((global::System.Action<global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer>)((instance) =>
+                        {
+                            DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.TapAndPanGestureRecognizer>)(() =>
+                            {
+                                var __cascade = instance;
+                                __cascade.dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.down;
+                                __cascade.onTapTrackStart = this._handleTapTrackStart;
+                                __cascade.onTapTrackReset = this._handleTapTrackReset;
+                                __cascade.onTapDown = this._handleTapDown;
+                                __cascade.onDragStart = this._handleDragStart;
+                                __cascade.onDragUpdate = this._handleDragUpdate;
+                                __cascade.onDragEnd = this._handleDragEnd;
+                                __cascade.onTapUp = this._handleTapUp;
+                                __cascade.onCancel = this._handleTapCancel;
+                                return __cascade;
+                            }))());
+                        })));
                         break;
                     }
             }
         }
         if (((((TextSelectionGestureDetector)this.widget).onForcePressStart is not null) || (((TextSelectionGestureDetector)this.widget).onForcePressEnd is not null)))
         {
-            gestures__141878[typeof(global::Doroti.Framework.Gestures.ForcePressGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.ForcePressGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.ForcePressGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.ForcePressGestureRecognizer(debugOwner: this))), ((global::System.Action<global::Doroti.Framework.Gestures.ForcePressGestureRecognizer>)((instance) => {
-DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.ForcePressGestureRecognizer>)(() =>
-{            var __cascade = instance;
-            __cascade.onStart = ((global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>)((((TextSelectionGestureDetector)this.widget).onForcePressStart is not null) ? this._forcePressStarted : null));
-            __cascade.onEnd = ((global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>)((((TextSelectionGestureDetector)this.widget).onForcePressEnd is not null) ? this._forcePressEnded : null));
-            return __cascade;        }))());
-})));
+            gestures__141878[typeof(global::Doroti.Framework.Gestures.ForcePressGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.ForcePressGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.ForcePressGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.ForcePressGestureRecognizer(debugOwner: this))), ((global::System.Action<global::Doroti.Framework.Gestures.ForcePressGestureRecognizer>)((instance) =>
+            {
+                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.ForcePressGestureRecognizer>)(() =>
+                {
+                    var __cascade = instance;
+                    __cascade.onStart = ((global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>)((((TextSelectionGestureDetector)this.widget).onForcePressStart is not null) ? this._forcePressStarted : null));
+                    __cascade.onEnd = ((global::System.Action<global::Doroti.Framework.Gestures.ForcePressDetails>)((((TextSelectionGestureDetector)this.widget).onForcePressEnd is not null) ? this._forcePressEnded : null));
+                    return __cascade;
+                }))());
+            })));
         }
         return ((Widget)(object?)new RawGestureDetector(gestures: gestures__141878, excludeFromSemantics: true, behavior: ((TextSelectionGestureDetector)this.widget).behavior, child: ((TextSelectionGestureDetector)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");

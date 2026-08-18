@@ -201,7 +201,8 @@ public class Future<T> : Future
 
     public Future(object error, System.Diagnostics.StackTrace? stackTrace)
         : this(Task.FromException<T>(error as Exception ??
-            new Exception(error?.ToString() ?? "Dart Future.error", new Exception(stackTrace?.ToString())))) { }
+            new Exception(error?.ToString() ?? "Dart Future.error", new Exception(stackTrace?.ToString()))))
+    { }
 
     private static async Task<T> DelayAsync(Duration delay)
     {

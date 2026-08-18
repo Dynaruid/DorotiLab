@@ -66,15 +66,16 @@ public abstract class TwoDimensionalScrollView : StatelessWidget
         ScrollViewKeyboardDismissBehavior effectiveKeyboardDismissBehavior__8241 = ((this.keyboardDismissBehavior ?? (ScrollViewKeyboardDismissBehavior)ScrollConfiguration.of(context).getKeyboardDismissBehavior(context)));
         if ((object.Equals(effectiveKeyboardDismissBehavior__8241, ScrollViewKeyboardDismissBehavior.onDrag)))
         {
-            return ((Widget)(object?)new NotificationListener<ScrollUpdateNotification>(child: scrollableResult__7988, onNotification: ((global::System.Func<ScrollUpdateNotification, bool>?)((notification) => {
-FocusScopeNode currentScope__8668 = ((FocusScopeNode)(object?)FocusScope.of(context));
-if ((((((ScrollUpdateNotification)notification).dragDetails is not null) && !currentScope__8668.hasPrimaryFocus) && currentScope__8668.hasFocus))
-{
-    FocusManager.instance.primaryFocus?.unfocus();
-}
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+            return ((Widget)(object?)new NotificationListener<ScrollUpdateNotification>(child: scrollableResult__7988, onNotification: ((global::System.Func<ScrollUpdateNotification, bool>?)((notification) =>
+            {
+                FocusScopeNode currentScope__8668 = ((FocusScopeNode)(object?)FocusScope.of(context));
+                if ((((((ScrollUpdateNotification)notification).dragDetails is not null) && !currentScope__8668.hasPrimaryFocus) && currentScope__8668.hasFocus))
+                {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                }
+                return false;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }))));
         }
         return scrollableResult__7988;
         throw new InvalidOperationException("Dart control flow completed without a value.");

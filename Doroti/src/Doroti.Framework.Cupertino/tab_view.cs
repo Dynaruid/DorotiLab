@@ -72,9 +72,11 @@ internal class _CupertinoTabViewState__tab_view : global::Doroti.Framework.Widge
     internal virtual void _updateObservers()
     {
         _navigatorObservers = ((Func<List<global::Doroti.Framework.Widgets.NavigatorObserver>>)(() =>
-{            var __cascade = new List<global::Doroti.Framework.Widgets.NavigatorObserver>(DartRuntimePrimitives.ConvertEnumerable<global::Doroti.Framework.Widgets.NavigatorObserver>(((CupertinoTabView)this.widget).navigatorObservers));
-            __cascade.Add(this._heroController);
-            return __cascade;        }))();
+{
+    var __cascade = new List<global::Doroti.Framework.Widgets.NavigatorObserver>(DartRuntimePrimitives.ConvertEnumerable<global::Doroti.Framework.Widgets.NavigatorObserver>(((CupertinoTabView)this.widget).navigatorObservers));
+    __cascade.Add(this._heroController);
+    return __cascade;
+}))();
     }
 
     internal virtual global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState> _navigatorKey
@@ -94,13 +96,14 @@ internal class _CupertinoTabViewState__tab_view : global::Doroti.Framework.Widge
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         global::Doroti.Framework.Widgets.Widget child__6797 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Navigator(key: this._navigatorKey, onGenerateRoute: (global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic>)this._onGenerateRoute, onUnknownRoute: (global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic>)this._onUnknownRoute, observers: this._navigatorObservers, restorationScopeId: ((CupertinoTabView)this.widget).restorationScopeId));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NavigatorPopHandler<object>(enabled: this._isActive, onPop: ((global::System.Action)(() => {
-if (!this._isActive)
-{
-    return;
-}
-DartRuntimePrimitives.Ignore(((global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState>)this._navigatorKey).currentState!.maybePop<object>());
-})), child: child__6797));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NavigatorPopHandler<object>(enabled: this._isActive, onPop: ((global::System.Action)(() =>
+        {
+            if (!this._isActive)
+            {
+                return;
+            }
+            DartRuntimePrimitives.Ignore(((global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState>)this._navigatorKey).currentState!.maybePop<object>());
+        })), child: child__6797));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

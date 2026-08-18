@@ -63,15 +63,16 @@ public class LookupBoundary : InheritedWidget
     public static T? findAncestorWidgetOfExactType<T>(BuildContext context) where T : Widget
     {
         Element? target__8413 = default!;
-        context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) => {
-if ((object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(T))))
-{
-    target__8413 = ancestor;
-    return false;
-}
-return (!object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary)));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
+        {
+            if ((object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(T))))
+            {
+                target__8413 = ancestor;
+                return false;
+            }
+            return (!object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary)));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         return ((T?)(object?)target__8413?.widget)!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -79,15 +80,16 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     public static T? findAncestorStateOfType<T>(BuildContext context) where T : IState
     {
         StatefulElement? target__9446 = default!;
-        context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) => {
-if (((ancestor is StatefulElement) && (((StatefulElement)((StatefulElement)ancestor)).state is T)))
-{
-    target__9446 = ((StatefulElement)ancestor);
-    return false;
-}
-return (!object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary)));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
+        {
+            if (((ancestor is StatefulElement) && (((StatefulElement)((StatefulElement)ancestor)).state is T)))
+            {
+                target__9446 = ((StatefulElement)ancestor);
+                return false;
+            }
+            return (!object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary)));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         return ((T?)(object?)target__9446?.state)!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -95,14 +97,15 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     public static T? findRootAncestorStateOfType<T>(BuildContext context) where T : IState
     {
         StatefulElement? target__10438 = default!;
-        context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) => {
-if (((ancestor is StatefulElement) && (((StatefulElement)((StatefulElement)ancestor)).state is T)))
-{
-    target__10438 = ((StatefulElement)ancestor);
-}
-return (!object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary)));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
+        {
+            if (((ancestor is StatefulElement) && (((StatefulElement)((StatefulElement)ancestor)).state is T)))
+            {
+                target__10438 = ((StatefulElement)ancestor);
+            }
+            return (!object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary)));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         return ((T?)(object?)target__10438?.state)!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -110,35 +113,38 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     public static T? findAncestorRenderObjectOfType<T>(BuildContext context) where T : global::Doroti.Framework.Rendering.RenderObject
     {
         Element? target__11491 = default!;
-        context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) => {
-if (((ancestor is RenderObjectElement) && (((RenderObjectElement)((RenderObjectElement)ancestor)).renderObject is T)))
-{
-    target__11491 = DartRuntimePrimitives.ConvertValue<Element>(((RenderObjectElement)ancestor));
-    return false;
-}
-return (!object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary)));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
+        {
+            if (((ancestor is RenderObjectElement) && (((RenderObjectElement)((RenderObjectElement)ancestor)).renderObject is T)))
+            {
+                target__11491 = DartRuntimePrimitives.ConvertValue<Element>(((RenderObjectElement)ancestor));
+                return false;
+            }
+            return (!object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary)));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         return ((T?)(object?)target__11491?.renderObject)!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static void visitAncestorElements(BuildContext context, global::System.Func<Element, bool> visitor)
     {
-        context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) => {
-return (visitor(ancestor) && (!object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
+        {
+            return (visitor(ancestor) && (!object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary))));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
     }
 
     public static void visitChildElements(BuildContext context, global::System.Action<Element> visitor)
     {
-        context.visitChildElements(((global::System.Action<Element>)((child) => {
-if ((!object.Equals(DartRuntimePrimitives.RuntimeType(((Element)child).widget), typeof(LookupBoundary))))
-{
-    visitor(child);
-}
-})));
+        context.visitChildElements(((global::System.Action<Element>)((child) =>
+        {
+            if ((!object.Equals(DartRuntimePrimitives.RuntimeType(((Element)child).widget), typeof(LookupBoundary))))
+            {
+                visitor(child);
+            }
+        })));
     }
 
     public static bool debugIsHidingAncestorWidgetOfExactType<T>(BuildContext context) where T : Widget
@@ -148,16 +154,17 @@ if ((!object.Equals(DartRuntimePrimitives.RuntimeType(((Element)child).widget), 
             {
                 var hiddenByBoundary__13439 = false;
                 var ancestorFound__13475 = false;
-                context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) => {
-if ((object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(T))))
-{
-    ancestorFound__13475 = true;
-    return false;
-}
-hiddenByBoundary__13439 = (hiddenByBoundary__13439 || (object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary))));
-return true;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+                context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
+                {
+                    if ((object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(T))))
+                    {
+                        ancestorFound__13475 = true;
+                        return false;
+                    }
+                    hiddenByBoundary__13439 = (hiddenByBoundary__13439 || (object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary))));
+                    return true;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                })));
                 result__13405 = (ancestorFound__13475 & hiddenByBoundary__13439);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -173,16 +180,17 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             {
                 var hiddenByBoundary__14248 = false;
                 var ancestorFound__14284 = false;
-                context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) => {
-if (((ancestor is StatefulElement) && (((StatefulElement)((StatefulElement)ancestor)).state is T)))
-{
-    ancestorFound__14284 = true;
-    return false;
-}
-hiddenByBoundary__14248 = (hiddenByBoundary__14248 || (object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary))));
-return true;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+                context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
+                {
+                    if (((ancestor is StatefulElement) && (((StatefulElement)((StatefulElement)ancestor)).state is T)))
+                    {
+                        ancestorFound__14284 = true;
+                        return false;
+                    }
+                    hiddenByBoundary__14248 = (hiddenByBoundary__14248 || (object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary))));
+                    return true;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                })));
                 result__14214 = (ancestorFound__14284 & hiddenByBoundary__14248);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -198,16 +206,17 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             {
                 var hiddenByBoundary__15115 = false;
                 var ancestorFound__15151 = false;
-                context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) => {
-if (((ancestor is RenderObjectElement) && (((RenderObjectElement)((RenderObjectElement)ancestor)).renderObject is T)))
-{
-    ancestorFound__15151 = true;
-    return false;
-}
-hiddenByBoundary__15115 = (hiddenByBoundary__15115 || (object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary))));
-return true;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+                context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
+                {
+                    if (((ancestor is RenderObjectElement) && (((RenderObjectElement)((RenderObjectElement)ancestor)).renderObject is T)))
+                    {
+                        ancestorFound__15151 = true;
+                        return false;
+                    }
+                    hiddenByBoundary__15115 = (hiddenByBoundary__15115 || (object.Equals(DartRuntimePrimitives.RuntimeType(((Element)ancestor).widget), typeof(LookupBoundary))));
+                    return true;
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                })));
                 result__15081 = (ancestorFound__15151 & hiddenByBoundary__15115);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");

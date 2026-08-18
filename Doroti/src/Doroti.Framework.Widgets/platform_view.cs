@@ -184,9 +184,10 @@ internal class _AndroidViewState__platform_view : State<AndroidView>
     internal virtual void _createNewAndroidView()
     {
         _id = global::Doroti.Framework.Services.Platform_viewsLibrary.platformViewsRegistry.getNextPlatformViewId();
-        _controller = PlatformViewsService.initAndroidView(id: DartRuntimePrimitives.RequireValue(this._id), viewType: ((AndroidView)this.widget).viewType, layoutDirection: DartRuntimePrimitives.RequireValue(this._layoutDirection), creationParams: ((AndroidView)this.widget).creationParams, creationParamsCodec: ((AndroidView)this.widget).creationParamsCodec, onFocus: ((global::System.Action)(() => {
-this._focusNode!.requestFocus();
-})));
+        _controller = PlatformViewsService.initAndroidView(id: DartRuntimePrimitives.RequireValue(this._id), viewType: ((AndroidView)this.widget).viewType, layoutDirection: DartRuntimePrimitives.RequireValue(this._layoutDirection), creationParams: ((AndroidView)this.widget).creationParams, creationParamsCodec: ((AndroidView)this.widget).creationParamsCodec, onFocus: ((global::System.Action)(() =>
+        {
+            this._focusNode!.requestFocus();
+        })));
         if ((((AndroidView)this.widget).onPlatformViewCreated is not null))
         {
             this._controller.addOnPlatformViewCreatedListener(((AndroidView)this.widget).onPlatformViewCreated!);
@@ -201,28 +202,30 @@ this._focusNode!.requestFocus();
         }
         if (!isFocused)
         {
-            DartRuntimePrimitives.Ignore(this._controller.clearFocus().catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((e, stack) => {
-if ((e is global::Doroti.Framework.Services.MissingPluginException))
-{
-    return;
-}
-else
-{
-    FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: e, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while clearing the platform view focus")));
-}
-}))));
+            DartRuntimePrimitives.Ignore(this._controller.clearFocus().catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((e, stack) =>
+            {
+                if ((e is global::Doroti.Framework.Services.MissingPluginException))
+                {
+                    return;
+                }
+                else
+                {
+                    FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: e, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while clearing the platform view focus")));
+                }
+            }))));
             return;
         }
-        DartRuntimePrimitives.Ignore(global::Doroti.Framework.Services.SystemChannels.textInput.invokeMethod<object?>("TextInput.setPlatformViewClient", new DartMap<string, object> { ["platformViewId"] = this._id }).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((e, stack) => {
-if ((e is global::Doroti.Framework.Services.MissingPluginException))
-{
-    return;
-}
-else
-{
-    FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: e, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while setting the platform view client")));
-}
-}))));
+        DartRuntimePrimitives.Ignore(global::Doroti.Framework.Services.SystemChannels.textInput.invokeMethod<object?>("TextInput.setPlatformViewClient", new DartMap<string, object> { ["platformViewId"] = this._id }).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((e, stack) =>
+        {
+            if ((e is global::Doroti.Framework.Services.MissingPluginException))
+            {
+                return;
+            }
+            else
+            {
+                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: e, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while setting the platform view client")));
+            }
+        }))));
     }
 
 }
@@ -319,10 +322,11 @@ internal abstract class _DarwinViewState__platform_view<PlatformViewT, Controlle
                 return;
             }
             this.widget.onPlatformViewCreated?.Invoke(id__37391);
-            setState(((global::System.Action)(() => {
-_controller = controller__37467;
-focusNode = new FocusNode(debugLabel: $"UiKitView(id: {id__37391})");
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _controller = controller__37467;
+                focusNode = new FocusNode(debugLabel: $"UiKitView(id: {id__37391})");
+            })));
         }
         catch (Exception error__37779)
         {
@@ -338,10 +342,12 @@ focusNode = new FocusNode(debugLabel: $"UiKitView(id: {id__37391})");
         {
             return;
         }
-        DartRuntimePrimitives.Ignore(global::Doroti.Framework.Services.SystemChannels.textInput.invokeMethod<object?>("TextInput.setPlatformViewClient", new DartMap<string, object> { ["platformViewId"] = ((DarwinPlatformViewController)(object)controller).id }).then(((_) => {
-}), onError: ((error, stack) => {
-FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: error, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while setting the platform view client")));
-})));
+        DartRuntimePrimitives.Ignore(global::Doroti.Framework.Services.SystemChannels.textInput.invokeMethod<object?>("TextInput.setPlatformViewClient", new DartMap<string, object> { ["platformViewId"] = ((DarwinPlatformViewController)(object)controller).id }).then(((_) =>
+        {
+        }), onError: ((error, stack) =>
+        {
+            FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: error, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while setting the platform view client")));
+        })));
     }
 
 }
@@ -350,9 +356,10 @@ internal class _UiKitViewState__platform_view : _DarwinViewState__platform_view<
 {
     public async override Future<global::Doroti.Framework.Services.UiKitViewController> createNewViewController(long id)
     {
-        return await PlatformViewsService.initUiKitView(id: id, viewType: this.widget.viewType, gestureBlockingPolicy: this.widget.gestureBlockingPolicy, layoutDirection: DartRuntimePrimitives.RequireValue(this._layoutDirection), creationParams: this.widget.creationParams, creationParamsCodec: this.widget.creationParamsCodec, onFocus: ((global::System.Action)(() => {
-this.focusNode?.requestFocus();
-})));
+        return await PlatformViewsService.initUiKitView(id: id, viewType: this.widget.viewType, gestureBlockingPolicy: this.widget.gestureBlockingPolicy, layoutDirection: DartRuntimePrimitives.RequireValue(this._layoutDirection), creationParams: this.widget.creationParams, creationParamsCodec: this.widget.creationParamsCodec, onFocus: ((global::System.Action)(() =>
+        {
+            this.focusNode?.requestFocus();
+        })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -368,9 +375,10 @@ internal class _AppKitViewState__platform_view : _DarwinViewState__platform_view
 {
     public async override Future<global::Doroti.Framework.Services.AppKitViewController> createNewViewController(long id)
     {
-        return await PlatformViewsService.initAppKitView(id: id, viewType: this.widget.viewType, layoutDirection: DartRuntimePrimitives.RequireValue(this._layoutDirection), creationParams: this.widget.creationParams, creationParamsCodec: this.widget.creationParamsCodec, onFocus: ((global::System.Action)(() => {
-this.focusNode?.requestFocus();
-})));
+        return await PlatformViewsService.initAppKitView(id: id, viewType: this.widget.viewType, layoutDirection: DartRuntimePrimitives.RequireValue(this._layoutDirection), creationParams: this.widget.creationParams, creationParamsCodec: this.widget.creationParamsCodec, onFocus: ((global::System.Action)(() =>
+        {
+            this.focusNode?.requestFocus();
+        })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -426,11 +434,13 @@ internal abstract class _DarwinPlatformView__platform_view<TController, TRender>
     {
         var __renderObject = (TRender)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<TRender>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.viewController = this.controller;
-            __cascade.hitTestBehavior = this.hitTestBehavior;
-            __cascade.updateGestureRecognizers(this.gestureRecognizers);
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.viewController = this.controller;
+    __cascade.hitTestBehavior = this.hitTestBehavior;
+    __cascade.updateGestureRecognizers(this.gestureRecognizers);
+    return __cascade;
+}))());
     }
 
 }
@@ -517,12 +527,13 @@ internal class _PlatformViewLinkState__platform_view : State<PlatformViewLink>
         }
         if (!this._platformViewCreated)
         {
-            return ((Widget)(object?)new _PlatformViewPlaceHolder__platform_view(onLayout: ((global::System.Action<Size, Offset>)((size, position) => {
-if ((((global::Doroti.Framework.Services.PlatformViewController)controller__47607).awaitingCreation && !size.isEmpty))
-{
-    DartRuntimePrimitives.Ignore(controller__47607.create(size: size, position: position));
-}
-}))));
+            return ((Widget)(object?)new _PlatformViewPlaceHolder__platform_view(onLayout: ((global::System.Action<Size, Offset>)((size, position) =>
+            {
+                if ((((global::Doroti.Framework.Services.PlatformViewController)controller__47607).awaitingCreation && !size.isEmpty))
+                {
+                    DartRuntimePrimitives.Ignore(controller__47607.create(size: size, position: position));
+                }
+            }))));
         }
         _surface ??= this.widget._surfaceFactory(context, controller__47607);
         return ((Widget)(object?)new Focus(focusNode: this._focusNode, onFocusChange: this._handleFrameworkFocusChanged, child: this._surface!));
@@ -557,9 +568,10 @@ if ((((global::Doroti.Framework.Services.PlatformViewController)controller__4760
     {
         if (this.mounted)
         {
-            setState(((global::System.Action)(() => {
-_platformViewCreated = true;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _platformViewCreated = true;
+            })));
         }
     }
 
@@ -569,9 +581,10 @@ _platformViewCreated = true;
         {
             DartRuntimePrimitives.Ignore(this._controller?.clearFocus());
         }
-        DartRuntimePrimitives.Ignore(global::Doroti.Framework.Services.SystemChannels.textInput.invokeMethod<object?>("TextInput.setPlatformViewClient", new DartMap<string, object> { ["platformViewId"] = this._id }).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((error, stack) => {
-FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: error, stack: stack, library: "widget library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while handling framework focus changed on platform view")));
-}))));
+        DartRuntimePrimitives.Ignore(global::Doroti.Framework.Services.SystemChannels.textInput.invokeMethod<object?>("TextInput.setPlatformViewClient", new DartMap<string, object> { ["platformViewId"] = this._id }).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((error, stack) =>
+        {
+            FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: error, stack: stack, library: "widget library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while handling framework focus changed on platform view")));
+        }))));
     }
 
     internal virtual void _handlePlatformFocusChanged(bool isFocused)
@@ -616,11 +629,13 @@ public class PlatformViewSurface : LeafRenderObjectWidget
     {
         var __renderObject = (global::Doroti.Framework.Rendering.PlatformViewRenderBox)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.PlatformViewRenderBox>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.controller = this.controller;
-            __cascade.hitTestBehavior = this.hitTestBehavior;
-            __cascade.updateGestureRecognizers(this.gestureRecognizers);
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.controller = this.controller;
+    __cascade.hitTestBehavior = this.hitTestBehavior;
+    __cascade.updateGestureRecognizers(this.gestureRecognizers);
+    return __cascade;
+}))());
     }
 
 }
@@ -678,8 +693,9 @@ internal class _AndroidViewSurfaceState__platform_view : State<AndroidViewSurfac
 
     internal virtual void _onPlatformViewCreated(long __unused0)
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
 }
@@ -732,13 +748,14 @@ public class _PlatformViewPlaceholderBox__platform_view : global::Doroti.Framewo
     public override void performLayout()
     {
         base.performLayout();
-        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) => {
-if (!this.attached)
-{
-    return;
-}
-this.onLayout(this.size, localToGlobal(Offset.zero));
-})), debugLabel: "PlatformViewPlaceholderBox.onLayout");
+        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+        {
+            if (!this.attached)
+            {
+                return;
+            }
+            this.onLayout(this.size, localToGlobal(Offset.zero));
+        })), debugLabel: "PlatformViewPlaceholderBox.onLayout");
     }
 
 }

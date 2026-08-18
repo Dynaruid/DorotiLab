@@ -194,26 +194,27 @@ public class GestureDetector : StatelessWidget
         this.trackpadScrollCausesScale = trackpadScrollCausesScale;
         this.trackpadScrollToScaleFactor = __trackpadScrollToScaleFactor;
         this.supportedDevices = supportedDevices;
-        System.Diagnostics.Debug.Assert(((global::System.Func<bool>)(() => {
-bool haveVerticalDrag__11362 = (((onVerticalDragStart is not null) || (onVerticalDragUpdate is not null)) || (onVerticalDragEnd is not null));
-bool haveHorizontalDrag__11530 = (((onHorizontalDragStart is not null) || (onHorizontalDragUpdate is not null)) || (onHorizontalDragEnd is not null));
-bool havePan__11706 = (((onPanStart is not null) || (onPanUpdate is not null)) || (onPanEnd is not null));
-bool haveScale__11799 = (((onScaleStart is not null) || (onScaleUpdate is not null)) || (onScaleEnd is not null));
-if ((havePan__11706 || haveScale__11799))
-{
-    if ((havePan__11706 && haveScale__11799))
-    {
-        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Incorrect GestureDetector arguments."), new global::Doroti.Framework.Foundation.ErrorDescription("Having both a pan gesture recognizer and a scale gesture recognizer is redundant; scale is a superset of pan."), new global::Doroti.Framework.Foundation.ErrorHint("Just use the scale gesture recognizer.") }));
-    }
-    var recognizer__12382 = (havePan__11706 ? "pan" : "scale");
-    if ((haveVerticalDrag__11362 && haveHorizontalDrag__11530))
-    {
-        throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Incorrect GestureDetector arguments.\n" + $"Simultaneously having a vertical drag gesture recognizer, a horizontal drag gesture recognizer, and a {recognizer__12382} gesture recognizer " + $"will result in the {recognizer__12382} gesture recognizer being ignored, since the other two will catch all drags."));
-    }
-}
-return true;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))());
+        System.Diagnostics.Debug.Assert(((global::System.Func<bool>)(() =>
+        {
+            bool haveVerticalDrag__11362 = (((onVerticalDragStart is not null) || (onVerticalDragUpdate is not null)) || (onVerticalDragEnd is not null));
+            bool haveHorizontalDrag__11530 = (((onHorizontalDragStart is not null) || (onHorizontalDragUpdate is not null)) || (onHorizontalDragEnd is not null));
+            bool havePan__11706 = (((onPanStart is not null) || (onPanUpdate is not null)) || (onPanEnd is not null));
+            bool haveScale__11799 = (((onScaleStart is not null) || (onScaleUpdate is not null)) || (onScaleEnd is not null));
+            if ((havePan__11706 || haveScale__11799))
+            {
+                if ((havePan__11706 && haveScale__11799))
+                {
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Incorrect GestureDetector arguments."), new global::Doroti.Framework.Foundation.ErrorDescription("Having both a pan gesture recognizer and a scale gesture recognizer is redundant; scale is a superset of pan."), new global::Doroti.Framework.Foundation.ErrorHint("Just use the scale gesture recognizer.") }));
+                }
+                var recognizer__12382 = (havePan__11706 ? "pan" : "scale");
+                if ((haveVerticalDrag__11362 && haveHorizontalDrag__11530))
+                {
+                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Incorrect GestureDetector arguments.\n" + $"Simultaneously having a vertical drag gesture recognizer, a horizontal drag gesture recognizer, and a {recognizer__12382} gesture recognizer " + $"will result in the {recognizer__12382} gesture recognizer being ignored, since the other two will catch all drags."));
+                }
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))());
     }
 
     public override Widget build(BuildContext context)
@@ -223,149 +224,173 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         ScrollBehavior configuration__41555 = ((ScrollBehavior)(object?)ScrollConfiguration.of(context));
         if ((((((((((((this.onTapDown is not null) || (this.onTapUp is not null)) || (this.onTap is not null)) || (this.onTapCancel is not null)) || (this.onSecondaryTap is not null)) || (this.onSecondaryTapDown is not null)) || (this.onSecondaryTapUp is not null)) || (this.onSecondaryTapCancel is not null)) || (this.onTertiaryTapDown is not null)) || (this.onTertiaryTapUp is not null)) || (this.onTertiaryTapCancel is not null)))
         {
-            gestures__41388[typeof(global::Doroti.Framework.Gestures.TapGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.TapGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.TapGestureRecognizer(debugOwner: this, supportedDevices: this.supportedDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.TapGestureRecognizer>)((instance) => {
-DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.TapGestureRecognizer>)(() =>
-{            var __cascade = instance;
-            __cascade.onTapDown = this.onTapDown;
-            __cascade.onTapUp = this.onTapUp;
-            __cascade.onTap = this.onTap;
-            __cascade.onTapCancel = this.onTapCancel;
-            __cascade.onSecondaryTap = this.onSecondaryTap;
-            __cascade.onSecondaryTapDown = this.onSecondaryTapDown;
-            __cascade.onSecondaryTapUp = this.onSecondaryTapUp;
-            __cascade.onSecondaryTapCancel = this.onSecondaryTapCancel;
-            __cascade.onTertiaryTapDown = this.onTertiaryTapDown;
-            __cascade.onTertiaryTapUp = this.onTertiaryTapUp;
-            __cascade.onTertiaryTapCancel = this.onTertiaryTapCancel;
-            __cascade.gestureSettings = gestureSettings__41468;
-            __cascade.supportedDevices = this.supportedDevices;
-            return __cascade;        }))());
-})));
+            gestures__41388[typeof(global::Doroti.Framework.Gestures.TapGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.TapGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.TapGestureRecognizer(debugOwner: this, supportedDevices: this.supportedDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.TapGestureRecognizer>)((instance) =>
+            {
+                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.TapGestureRecognizer>)(() =>
+                {
+                    var __cascade = instance;
+                    __cascade.onTapDown = this.onTapDown;
+                    __cascade.onTapUp = this.onTapUp;
+                    __cascade.onTap = this.onTap;
+                    __cascade.onTapCancel = this.onTapCancel;
+                    __cascade.onSecondaryTap = this.onSecondaryTap;
+                    __cascade.onSecondaryTapDown = this.onSecondaryTapDown;
+                    __cascade.onSecondaryTapUp = this.onSecondaryTapUp;
+                    __cascade.onSecondaryTapCancel = this.onSecondaryTapCancel;
+                    __cascade.onTertiaryTapDown = this.onTertiaryTapDown;
+                    __cascade.onTertiaryTapUp = this.onTertiaryTapUp;
+                    __cascade.onTertiaryTapCancel = this.onTertiaryTapCancel;
+                    __cascade.gestureSettings = gestureSettings__41468;
+                    __cascade.supportedDevices = this.supportedDevices;
+                    return __cascade;
+                }))());
+            })));
         }
         if ((((this.onDoubleTap is not null) || (this.onDoubleTapDown is not null)) || (this.onDoubleTapCancel is not null)))
         {
-            gestures__41388[typeof(global::Doroti.Framework.Gestures.DoubleTapGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.DoubleTapGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.DoubleTapGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.DoubleTapGestureRecognizer(debugOwner: this, supportedDevices: this.supportedDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.DoubleTapGestureRecognizer>)((instance) => {
-DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.DoubleTapGestureRecognizer>)(() =>
-{            var __cascade = instance;
-            __cascade.onDoubleTapDown = this.onDoubleTapDown;
-            __cascade.onDoubleTap = this.onDoubleTap;
-            __cascade.onDoubleTapCancel = this.onDoubleTapCancel;
-            __cascade.gestureSettings = gestureSettings__41468;
-            __cascade.supportedDevices = this.supportedDevices;
-            return __cascade;        }))());
-})));
+            gestures__41388[typeof(global::Doroti.Framework.Gestures.DoubleTapGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.DoubleTapGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.DoubleTapGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.DoubleTapGestureRecognizer(debugOwner: this, supportedDevices: this.supportedDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.DoubleTapGestureRecognizer>)((instance) =>
+            {
+                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.DoubleTapGestureRecognizer>)(() =>
+                {
+                    var __cascade = instance;
+                    __cascade.onDoubleTapDown = this.onDoubleTapDown;
+                    __cascade.onDoubleTap = this.onDoubleTap;
+                    __cascade.onDoubleTapCancel = this.onDoubleTapCancel;
+                    __cascade.gestureSettings = gestureSettings__41468;
+                    __cascade.supportedDevices = this.supportedDevices;
+                    return __cascade;
+                }))());
+            })));
         }
         if ((((((((((((((((((((((this.onLongPressDown is not null) || (this.onLongPressCancel is not null)) || (this.onLongPress is not null)) || (this.onLongPressStart is not null)) || (this.onLongPressMoveUpdate is not null)) || (this.onLongPressUp is not null)) || (this.onLongPressEnd is not null)) || (this.onSecondaryLongPressDown is not null)) || (this.onSecondaryLongPressCancel is not null)) || (this.onSecondaryLongPress is not null)) || (this.onSecondaryLongPressStart is not null)) || (this.onSecondaryLongPressMoveUpdate is not null)) || (this.onSecondaryLongPressUp is not null)) || (this.onSecondaryLongPressEnd is not null)) || (this.onTertiaryLongPressDown is not null)) || (this.onTertiaryLongPressCancel is not null)) || (this.onTertiaryLongPress is not null)) || (this.onTertiaryLongPressStart is not null)) || (this.onTertiaryLongPressMoveUpdate is not null)) || (this.onTertiaryLongPressUp is not null)) || (this.onTertiaryLongPressEnd is not null)))
         {
-            gestures__41388[typeof(global::Doroti.Framework.Gestures.LongPressGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.LongPressGestureRecognizer(debugOwner: this, supportedDevices: this.supportedDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>)((instance) => {
-DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>)(() =>
-{            var __cascade = instance;
-            __cascade.onLongPressDown = this.onLongPressDown;
-            __cascade.onLongPressCancel = this.onLongPressCancel;
-            __cascade.onLongPress = this.onLongPress;
-            __cascade.onLongPressStart = this.onLongPressStart;
-            __cascade.onLongPressMoveUpdate = this.onLongPressMoveUpdate;
-            __cascade.onLongPressUp = this.onLongPressUp;
-            __cascade.onLongPressEnd = this.onLongPressEnd;
-            __cascade.onSecondaryLongPressDown = this.onSecondaryLongPressDown;
-            __cascade.onSecondaryLongPressCancel = this.onSecondaryLongPressCancel;
-            __cascade.onSecondaryLongPress = this.onSecondaryLongPress;
-            __cascade.onSecondaryLongPressStart = this.onSecondaryLongPressStart;
-            __cascade.onSecondaryLongPressMoveUpdate = this.onSecondaryLongPressMoveUpdate;
-            __cascade.onSecondaryLongPressUp = this.onSecondaryLongPressUp;
-            __cascade.onSecondaryLongPressEnd = this.onSecondaryLongPressEnd;
-            __cascade.onTertiaryLongPressDown = this.onTertiaryLongPressDown;
-            __cascade.onTertiaryLongPressCancel = this.onTertiaryLongPressCancel;
-            __cascade.onTertiaryLongPress = this.onTertiaryLongPress;
-            __cascade.onTertiaryLongPressStart = this.onTertiaryLongPressStart;
-            __cascade.onTertiaryLongPressMoveUpdate = this.onTertiaryLongPressMoveUpdate;
-            __cascade.onTertiaryLongPressUp = this.onTertiaryLongPressUp;
-            __cascade.onTertiaryLongPressEnd = this.onTertiaryLongPressEnd;
-            __cascade.gestureSettings = gestureSettings__41468;
-            __cascade.supportedDevices = this.supportedDevices;
-            return __cascade;        }))());
-})));
+            gestures__41388[typeof(global::Doroti.Framework.Gestures.LongPressGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.LongPressGestureRecognizer(debugOwner: this, supportedDevices: this.supportedDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>)((instance) =>
+            {
+                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.LongPressGestureRecognizer>)(() =>
+                {
+                    var __cascade = instance;
+                    __cascade.onLongPressDown = this.onLongPressDown;
+                    __cascade.onLongPressCancel = this.onLongPressCancel;
+                    __cascade.onLongPress = this.onLongPress;
+                    __cascade.onLongPressStart = this.onLongPressStart;
+                    __cascade.onLongPressMoveUpdate = this.onLongPressMoveUpdate;
+                    __cascade.onLongPressUp = this.onLongPressUp;
+                    __cascade.onLongPressEnd = this.onLongPressEnd;
+                    __cascade.onSecondaryLongPressDown = this.onSecondaryLongPressDown;
+                    __cascade.onSecondaryLongPressCancel = this.onSecondaryLongPressCancel;
+                    __cascade.onSecondaryLongPress = this.onSecondaryLongPress;
+                    __cascade.onSecondaryLongPressStart = this.onSecondaryLongPressStart;
+                    __cascade.onSecondaryLongPressMoveUpdate = this.onSecondaryLongPressMoveUpdate;
+                    __cascade.onSecondaryLongPressUp = this.onSecondaryLongPressUp;
+                    __cascade.onSecondaryLongPressEnd = this.onSecondaryLongPressEnd;
+                    __cascade.onTertiaryLongPressDown = this.onTertiaryLongPressDown;
+                    __cascade.onTertiaryLongPressCancel = this.onTertiaryLongPressCancel;
+                    __cascade.onTertiaryLongPress = this.onTertiaryLongPress;
+                    __cascade.onTertiaryLongPressStart = this.onTertiaryLongPressStart;
+                    __cascade.onTertiaryLongPressMoveUpdate = this.onTertiaryLongPressMoveUpdate;
+                    __cascade.onTertiaryLongPressUp = this.onTertiaryLongPressUp;
+                    __cascade.onTertiaryLongPressEnd = this.onTertiaryLongPressEnd;
+                    __cascade.gestureSettings = gestureSettings__41468;
+                    __cascade.supportedDevices = this.supportedDevices;
+                    return __cascade;
+                }))());
+            })));
         }
         if ((((((this.onVerticalDragDown is not null) || (this.onVerticalDragStart is not null)) || (this.onVerticalDragUpdate is not null)) || (this.onVerticalDragEnd is not null)) || (this.onVerticalDragCancel is not null)))
         {
-            gestures__41388[typeof(global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer(debugOwner: this, supportedDevices: this.supportedDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer>)((instance) => {
-DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer>)(() =>
-{            var __cascade = instance;
-            __cascade.onDown = this.onVerticalDragDown;
-            __cascade.onStart = this.onVerticalDragStart;
-            __cascade.onUpdate = this.onVerticalDragUpdate;
-            __cascade.onEnd = this.onVerticalDragEnd;
-            __cascade.onCancel = this.onVerticalDragCancel;
-            __cascade.dragStartBehavior = this.dragStartBehavior;
-            __cascade.multitouchDragStrategy = configuration__41555.getMultitouchDragStrategy(context);
-            __cascade.gestureSettings = gestureSettings__41468;
-            __cascade.supportedDevices = this.supportedDevices;
-            return __cascade;        }))());
-})));
+            gestures__41388[typeof(global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer(debugOwner: this, supportedDevices: this.supportedDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer>)((instance) =>
+            {
+                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer>)(() =>
+                {
+                    var __cascade = instance;
+                    __cascade.onDown = this.onVerticalDragDown;
+                    __cascade.onStart = this.onVerticalDragStart;
+                    __cascade.onUpdate = this.onVerticalDragUpdate;
+                    __cascade.onEnd = this.onVerticalDragEnd;
+                    __cascade.onCancel = this.onVerticalDragCancel;
+                    __cascade.dragStartBehavior = this.dragStartBehavior;
+                    __cascade.multitouchDragStrategy = configuration__41555.getMultitouchDragStrategy(context);
+                    __cascade.gestureSettings = gestureSettings__41468;
+                    __cascade.supportedDevices = this.supportedDevices;
+                    return __cascade;
+                }))());
+            })));
         }
         if ((((((this.onHorizontalDragDown is not null) || (this.onHorizontalDragStart is not null)) || (this.onHorizontalDragUpdate is not null)) || (this.onHorizontalDragEnd is not null)) || (this.onHorizontalDragCancel is not null)))
         {
-            gestures__41388[typeof(global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer(debugOwner: this, supportedDevices: this.supportedDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>)((instance) => {
-DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>)(() =>
-{            var __cascade = instance;
-            __cascade.onDown = this.onHorizontalDragDown;
-            __cascade.onStart = this.onHorizontalDragStart;
-            __cascade.onUpdate = this.onHorizontalDragUpdate;
-            __cascade.onEnd = this.onHorizontalDragEnd;
-            __cascade.onCancel = this.onHorizontalDragCancel;
-            __cascade.dragStartBehavior = this.dragStartBehavior;
-            __cascade.multitouchDragStrategy = configuration__41555.getMultitouchDragStrategy(context);
-            __cascade.gestureSettings = gestureSettings__41468;
-            __cascade.supportedDevices = this.supportedDevices;
-            return __cascade;        }))());
-})));
+            gestures__41388[typeof(global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer(debugOwner: this, supportedDevices: this.supportedDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>)((instance) =>
+            {
+                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>)(() =>
+                {
+                    var __cascade = instance;
+                    __cascade.onDown = this.onHorizontalDragDown;
+                    __cascade.onStart = this.onHorizontalDragStart;
+                    __cascade.onUpdate = this.onHorizontalDragUpdate;
+                    __cascade.onEnd = this.onHorizontalDragEnd;
+                    __cascade.onCancel = this.onHorizontalDragCancel;
+                    __cascade.dragStartBehavior = this.dragStartBehavior;
+                    __cascade.multitouchDragStrategy = configuration__41555.getMultitouchDragStrategy(context);
+                    __cascade.gestureSettings = gestureSettings__41468;
+                    __cascade.supportedDevices = this.supportedDevices;
+                    return __cascade;
+                }))());
+            })));
         }
         if ((((((this.onPanDown is not null) || (this.onPanStart is not null)) || (this.onPanUpdate is not null)) || (this.onPanEnd is not null)) || (this.onPanCancel is not null)))
         {
-            gestures__41388[typeof(global::Doroti.Framework.Gestures.PanGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.PanGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.PanGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.PanGestureRecognizer(debugOwner: this, supportedDevices: this.supportedDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.PanGestureRecognizer>)((instance) => {
-DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.PanGestureRecognizer>)(() =>
-{            var __cascade = instance;
-            __cascade.onDown = this.onPanDown;
-            __cascade.onStart = this.onPanStart;
-            __cascade.onUpdate = this.onPanUpdate;
-            __cascade.onEnd = this.onPanEnd;
-            __cascade.onCancel = this.onPanCancel;
-            __cascade.dragStartBehavior = this.dragStartBehavior;
-            __cascade.multitouchDragStrategy = configuration__41555.getMultitouchDragStrategy(context);
-            __cascade.gestureSettings = gestureSettings__41468;
-            __cascade.supportedDevices = this.supportedDevices;
-            return __cascade;        }))());
-})));
+            gestures__41388[typeof(global::Doroti.Framework.Gestures.PanGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.PanGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.PanGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.PanGestureRecognizer(debugOwner: this, supportedDevices: this.supportedDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.PanGestureRecognizer>)((instance) =>
+            {
+                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.PanGestureRecognizer>)(() =>
+                {
+                    var __cascade = instance;
+                    __cascade.onDown = this.onPanDown;
+                    __cascade.onStart = this.onPanStart;
+                    __cascade.onUpdate = this.onPanUpdate;
+                    __cascade.onEnd = this.onPanEnd;
+                    __cascade.onCancel = this.onPanCancel;
+                    __cascade.dragStartBehavior = this.dragStartBehavior;
+                    __cascade.multitouchDragStrategy = configuration__41555.getMultitouchDragStrategy(context);
+                    __cascade.gestureSettings = gestureSettings__41468;
+                    __cascade.supportedDevices = this.supportedDevices;
+                    return __cascade;
+                }))());
+            })));
         }
         if ((((this.onScaleStart is not null) || (this.onScaleUpdate is not null)) || (this.onScaleEnd is not null)))
         {
-            gestures__41388[typeof(global::Doroti.Framework.Gestures.ScaleGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.ScaleGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.ScaleGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.ScaleGestureRecognizer(debugOwner: this, supportedDevices: this.supportedDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.ScaleGestureRecognizer>)((instance) => {
-DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.ScaleGestureRecognizer>)(() =>
-{            var __cascade = instance;
-            __cascade.onStart = this.onScaleStart;
-            __cascade.onUpdate = this.onScaleUpdate;
-            __cascade.onEnd = this.onScaleEnd;
-            __cascade.dragStartBehavior = this.dragStartBehavior;
-            __cascade.gestureSettings = gestureSettings__41468;
-            __cascade.trackpadScrollCausesScale = this.trackpadScrollCausesScale;
-            __cascade.trackpadScrollToScaleFactor = this.trackpadScrollToScaleFactor;
-            __cascade.supportedDevices = this.supportedDevices;
-            return __cascade;        }))());
-})));
+            gestures__41388[typeof(global::Doroti.Framework.Gestures.ScaleGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.ScaleGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.ScaleGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.ScaleGestureRecognizer(debugOwner: this, supportedDevices: this.supportedDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.ScaleGestureRecognizer>)((instance) =>
+            {
+                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.ScaleGestureRecognizer>)(() =>
+                {
+                    var __cascade = instance;
+                    __cascade.onStart = this.onScaleStart;
+                    __cascade.onUpdate = this.onScaleUpdate;
+                    __cascade.onEnd = this.onScaleEnd;
+                    __cascade.dragStartBehavior = this.dragStartBehavior;
+                    __cascade.gestureSettings = gestureSettings__41468;
+                    __cascade.trackpadScrollCausesScale = this.trackpadScrollCausesScale;
+                    __cascade.trackpadScrollToScaleFactor = this.trackpadScrollToScaleFactor;
+                    __cascade.supportedDevices = this.supportedDevices;
+                    return __cascade;
+                }))());
+            })));
         }
         if (((((this.onForcePressStart is not null) || (this.onForcePressPeak is not null)) || (this.onForcePressUpdate is not null)) || (this.onForcePressEnd is not null)))
         {
-            gestures__41388[typeof(global::Doroti.Framework.Gestures.ForcePressGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.ForcePressGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.ForcePressGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.ForcePressGestureRecognizer(debugOwner: this, supportedDevices: this.supportedDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.ForcePressGestureRecognizer>)((instance) => {
-DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.ForcePressGestureRecognizer>)(() =>
-{            var __cascade = instance;
-            __cascade.onStart = this.onForcePressStart;
-            __cascade.onPeak = this.onForcePressPeak;
-            __cascade.onUpdate = this.onForcePressUpdate;
-            __cascade.onEnd = this.onForcePressEnd;
-            __cascade.gestureSettings = gestureSettings__41468;
-            __cascade.supportedDevices = this.supportedDevices;
-            return __cascade;        }))());
-})));
+            gestures__41388[typeof(global::Doroti.Framework.Gestures.ForcePressGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.ForcePressGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.ForcePressGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.ForcePressGestureRecognizer(debugOwner: this, supportedDevices: this.supportedDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.ForcePressGestureRecognizer>)((instance) =>
+            {
+                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.ForcePressGestureRecognizer>)(() =>
+                {
+                    var __cascade = instance;
+                    __cascade.onStart = this.onForcePressStart;
+                    __cascade.onPeak = this.onForcePressPeak;
+                    __cascade.onUpdate = this.onForcePressUpdate;
+                    __cascade.onEnd = this.onForcePressEnd;
+                    __cascade.gestureSettings = gestureSettings__41468;
+                    __cascade.supportedDevices = this.supportedDevices;
+                    return __cascade;
+                }))());
+            })));
         }
         return ((Widget)(object?)new RawGestureDetector(gestures: gestures__41388, behavior: this.behavior, excludeFromSemantics: this.excludeFromSemantics, child: this.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -577,9 +602,11 @@ internal class _GestureSemantics__gesture_detector : SingleChildRenderObjectWidg
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
         var renderObject__65101 = ((Func<global::Doroti.Framework.Rendering.RenderSemanticsGestureHandler>)(() =>
-{            var __cascade = new global::Doroti.Framework.Rendering.RenderSemanticsGestureHandler();
-            __cascade.behavior = this.behavior;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Rendering.RenderSemanticsGestureHandler();
+    __cascade.behavior = this.behavior;
+    return __cascade;
+}))();
         this.assignSemantics(renderObject__65101);
         return ((global::Doroti.Framework.Rendering.RenderObject)(object?)renderObject__65101);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -636,12 +663,14 @@ internal class _DefaultSemanticsGestureDelegate__gesture_detector : SemanticsGes
         DartRuntimePrimitives.Assert(() => !this.detectorState.widget.excludeFromSemantics);
         DartMap<Type, global::Doroti.Framework.Gestures.GestureRecognizer> recognizers__67577 = ((RawGestureDetectorState)this.detectorState)._recognizers!;
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderSemanticsGestureHandler>)(() =>
-{            var __cascade = renderObject;
-            __cascade.onTap = _getTapHandler(renderObject, recognizers__67577);
-            __cascade.onLongPress = _getLongPressHandler(renderObject, recognizers__67577);
-            __cascade.onHorizontalDragUpdate = _getHorizontalDragUpdateHandler(renderObject, recognizers__67577);
-            __cascade.onVerticalDragUpdate = _getVerticalDragUpdateHandler(renderObject, recognizers__67577);
-            return __cascade;        }))());
+{
+    var __cascade = renderObject;
+    __cascade.onTap = _getTapHandler(renderObject, recognizers__67577);
+    __cascade.onLongPress = _getLongPressHandler(renderObject, recognizers__67577);
+    __cascade.onHorizontalDragUpdate = _getHorizontalDragUpdateHandler(renderObject, recognizers__67577);
+    __cascade.onVerticalDragUpdate = _getVerticalDragUpdateHandler(renderObject, recognizers__67577);
+    return __cascade;
+}))());
     }
 
     internal virtual global::System.Action? _getTapHandler(global::Doroti.Framework.Rendering.RenderObject renderObject, DartMap<Type, global::Doroti.Framework.Gestures.GestureRecognizer> recognizers)
@@ -651,13 +680,14 @@ internal class _DefaultSemanticsGestureDelegate__gesture_detector : SemanticsGes
         {
             return ((global::System.Action)(object)null);
         }
-        return ((global::System.Action)(() => {
-global::Doroti.Ui.Offset localCenter__68232 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)((dynamic)_DefaultSemanticsGestureDelegate__gesture_detector._getLocalRectFromRenderObject(renderObject)).center)));
-global::Doroti.Ui.Offset globalCenter__68317 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, localCenter__68232)));
-((global::Doroti.Framework.Gestures.TapGestureRecognizer)tap__68082).onTapDown?.Invoke(new global::Doroti.Framework.Gestures.TapDownDetails(globalPosition: globalCenter__68317, localPosition: localCenter__68232, kind: PointerDeviceKind.unknown));
-((global::Doroti.Framework.Gestures.TapGestureRecognizer)tap__68082).onTapUp?.Invoke(new global::Doroti.Framework.Gestures.TapUpDetails(globalPosition: globalCenter__68317, localPosition: localCenter__68232, kind: PointerDeviceKind.unknown));
-((global::Doroti.Framework.Gestures.TapGestureRecognizer)tap__68082).onTap?.Invoke();
-}));
+        return ((global::System.Action)(() =>
+        {
+            global::Doroti.Ui.Offset localCenter__68232 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)((dynamic)_DefaultSemanticsGestureDelegate__gesture_detector._getLocalRectFromRenderObject(renderObject)).center)));
+            global::Doroti.Ui.Offset globalCenter__68317 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, localCenter__68232)));
+            ((global::Doroti.Framework.Gestures.TapGestureRecognizer)tap__68082).onTapDown?.Invoke(new global::Doroti.Framework.Gestures.TapDownDetails(globalPosition: globalCenter__68317, localPosition: localCenter__68232, kind: PointerDeviceKind.unknown));
+            ((global::Doroti.Framework.Gestures.TapGestureRecognizer)tap__68082).onTapUp?.Invoke(new global::Doroti.Framework.Gestures.TapUpDetails(globalPosition: globalCenter__68317, localPosition: localCenter__68232, kind: PointerDeviceKind.unknown));
+            ((global::Doroti.Framework.Gestures.TapGestureRecognizer)tap__68082).onTap?.Invoke();
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -668,15 +698,16 @@ global::Doroti.Ui.Offset globalCenter__68317 = ((global::Doroti.Ui.Offset)(objec
         {
             return ((global::System.Action)(object)null);
         }
-        return ((global::System.Action)(() => {
-global::Doroti.Ui.Offset localCenter__69119 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)((dynamic)_DefaultSemanticsGestureDelegate__gesture_detector._getLocalRectFromRenderObject(renderObject)).center)));
-global::Doroti.Ui.Offset globalCenter__69204 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, localCenter__69119)));
-((global::Doroti.Framework.Gestures.LongPressGestureRecognizer)longPress__68945).onLongPressDown?.Invoke(new global::Doroti.Framework.Gestures.LongPressDownDetails(localPosition: localCenter__69119, globalPosition: globalCenter__69204));
-((global::Doroti.Framework.Gestures.LongPressGestureRecognizer)longPress__68945).onLongPressStart?.Invoke(new global::Doroti.Framework.Gestures.LongPressStartDetails(localPosition: localCenter__69119, globalPosition: globalCenter__69204));
-((global::Doroti.Framework.Gestures.LongPressGestureRecognizer)longPress__68945).onLongPress?.Invoke();
-((global::Doroti.Framework.Gestures.LongPressGestureRecognizer)longPress__68945).onLongPressEnd?.Invoke(new global::Doroti.Framework.Gestures.LongPressEndDetails(localPosition: localCenter__69119, globalPosition: globalCenter__69204));
-((global::Doroti.Framework.Gestures.LongPressGestureRecognizer)longPress__68945).onLongPressUp?.Invoke();
-}));
+        return ((global::System.Action)(() =>
+        {
+            global::Doroti.Ui.Offset localCenter__69119 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)((dynamic)_DefaultSemanticsGestureDelegate__gesture_detector._getLocalRectFromRenderObject(renderObject)).center)));
+            global::Doroti.Ui.Offset globalCenter__69204 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, localCenter__69119)));
+            ((global::Doroti.Framework.Gestures.LongPressGestureRecognizer)longPress__68945).onLongPressDown?.Invoke(new global::Doroti.Framework.Gestures.LongPressDownDetails(localPosition: localCenter__69119, globalPosition: globalCenter__69204));
+            ((global::Doroti.Framework.Gestures.LongPressGestureRecognizer)longPress__68945).onLongPressStart?.Invoke(new global::Doroti.Framework.Gestures.LongPressStartDetails(localPosition: localCenter__69119, globalPosition: globalCenter__69204));
+            ((global::Doroti.Framework.Gestures.LongPressGestureRecognizer)longPress__68945).onLongPress?.Invoke();
+            ((global::Doroti.Framework.Gestures.LongPressGestureRecognizer)longPress__68945).onLongPressEnd?.Invoke(new global::Doroti.Framework.Gestures.LongPressEndDetails(localPosition: localCenter__69119, globalPosition: globalCenter__69204));
+            ((global::Doroti.Framework.Gestures.LongPressGestureRecognizer)longPress__68945).onLongPressUp?.Invoke();
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -684,34 +715,37 @@ global::Doroti.Ui.Offset globalCenter__69204 = ((global::Doroti.Ui.Offset)(objec
     {
         var horizontal__69924 = ((global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer?)(object?)recognizers.GetValueOrDefault(typeof(global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer)))!;
         var pan__70037 = ((global::Doroti.Framework.Gestures.PanGestureRecognizer?)(object?)recognizers.GetValueOrDefault(typeof(global::Doroti.Framework.Gestures.PanGestureRecognizer)))!;
-        global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? horizontalHandler__70141 = DartRuntimePrimitives.ConvertValue<global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>>(((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)((horizontal__69924 is null) ? null : ((details) => {
-global::Doroti.Ui.Offset localCenter__70260 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)((dynamic)_DefaultSemanticsGestureDelegate__gesture_detector._getLocalRectFromRenderObject(renderObject)).center)));
-global::Doroti.Ui.Offset globalCenter__70351 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, localCenter__70260)));
-global::Doroti.Ui.Offset newLocalOffset__70444 = ((global::Doroti.Ui.Offset)(object?)(localCenter__70260 + ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).delta));
-global::Doroti.Ui.Offset newGlobalOffset__70515 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, newLocalOffset__70444)));
-horizontal__69924.onDown?.Invoke(new global::Doroti.Framework.Gestures.DragDownDetails(localPosition: localCenter__70260, globalPosition: globalCenter__70351));
-horizontal__69924.onStart?.Invoke(new global::Doroti.Framework.Gestures.DragStartDetails(localPosition: localCenter__70260, globalPosition: globalCenter__70351));
-horizontal__69924.onUpdate?.Invoke(details);
-horizontal__69924.onEnd?.Invoke(new global::Doroti.Framework.Gestures.DragEndDetails(primaryVelocity: 0.0, localPosition: newLocalOffset__70444, globalPosition: newGlobalOffset__70515));
-}))));
-        global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? panHandler__71204 = DartRuntimePrimitives.ConvertValue<global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>>(((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)((pan__70037 is null) ? null : ((details) => {
-global::Doroti.Ui.Offset localCenter__71309 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)((dynamic)_DefaultSemanticsGestureDelegate__gesture_detector._getLocalRectFromRenderObject(renderObject)).center)));
-global::Doroti.Ui.Offset globalCenter__71400 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, localCenter__71309)));
-global::Doroti.Ui.Offset newLocalOffset__71493 = ((global::Doroti.Ui.Offset)(object?)(localCenter__71309 + ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).delta));
-global::Doroti.Ui.Offset newGlobalOffset__71564 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, newLocalOffset__71493)));
-pan__70037.onDown?.Invoke(new global::Doroti.Framework.Gestures.DragDownDetails(localPosition: localCenter__71309, globalPosition: globalCenter__71400));
-pan__70037.onStart?.Invoke(new global::Doroti.Framework.Gestures.DragStartDetails(localPosition: localCenter__71309, globalPosition: globalCenter__71400));
-pan__70037.onUpdate?.Invoke(details);
-pan__70037.onEnd?.Invoke(new global::Doroti.Framework.Gestures.DragEndDetails(localPosition: newLocalOffset__71493, globalPosition: newGlobalOffset__71564));
-}))));
+        global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? horizontalHandler__70141 = DartRuntimePrimitives.ConvertValue<global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>>(((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)((horizontal__69924 is null) ? null : ((details) =>
+        {
+            global::Doroti.Ui.Offset localCenter__70260 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)((dynamic)_DefaultSemanticsGestureDelegate__gesture_detector._getLocalRectFromRenderObject(renderObject)).center)));
+            global::Doroti.Ui.Offset globalCenter__70351 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, localCenter__70260)));
+            global::Doroti.Ui.Offset newLocalOffset__70444 = ((global::Doroti.Ui.Offset)(object?)(localCenter__70260 + ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).delta));
+            global::Doroti.Ui.Offset newGlobalOffset__70515 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, newLocalOffset__70444)));
+            horizontal__69924.onDown?.Invoke(new global::Doroti.Framework.Gestures.DragDownDetails(localPosition: localCenter__70260, globalPosition: globalCenter__70351));
+            horizontal__69924.onStart?.Invoke(new global::Doroti.Framework.Gestures.DragStartDetails(localPosition: localCenter__70260, globalPosition: globalCenter__70351));
+            horizontal__69924.onUpdate?.Invoke(details);
+            horizontal__69924.onEnd?.Invoke(new global::Doroti.Framework.Gestures.DragEndDetails(primaryVelocity: 0.0, localPosition: newLocalOffset__70444, globalPosition: newGlobalOffset__70515));
+        }))));
+        global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? panHandler__71204 = DartRuntimePrimitives.ConvertValue<global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>>(((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)((pan__70037 is null) ? null : ((details) =>
+        {
+            global::Doroti.Ui.Offset localCenter__71309 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)((dynamic)_DefaultSemanticsGestureDelegate__gesture_detector._getLocalRectFromRenderObject(renderObject)).center)));
+            global::Doroti.Ui.Offset globalCenter__71400 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, localCenter__71309)));
+            global::Doroti.Ui.Offset newLocalOffset__71493 = ((global::Doroti.Ui.Offset)(object?)(localCenter__71309 + ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).delta));
+            global::Doroti.Ui.Offset newGlobalOffset__71564 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, newLocalOffset__71493)));
+            pan__70037.onDown?.Invoke(new global::Doroti.Framework.Gestures.DragDownDetails(localPosition: localCenter__71309, globalPosition: globalCenter__71400));
+            pan__70037.onStart?.Invoke(new global::Doroti.Framework.Gestures.DragStartDetails(localPosition: localCenter__71309, globalPosition: globalCenter__71400));
+            pan__70037.onUpdate?.Invoke(details);
+            pan__70037.onEnd?.Invoke(new global::Doroti.Framework.Gestures.DragEndDetails(localPosition: newLocalOffset__71493, globalPosition: newGlobalOffset__71564));
+        }))));
         if (((horizontalHandler__70141 is null) && (panHandler__71204 is null)))
         {
             return ((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)(object)null);
         }
-        return ((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)((details) => {
-horizontalHandler__70141?.Invoke(details);
-panHandler__71204?.Invoke(details);
-}));
+        return ((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)((details) =>
+        {
+            horizontalHandler__70141?.Invoke(details);
+            panHandler__71204?.Invoke(details);
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -719,34 +753,37 @@ panHandler__71204?.Invoke(details);
     {
         var vertical__72465 = ((global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer?)(object?)recognizers.GetValueOrDefault(typeof(global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer)))!;
         var pan__72564 = ((global::Doroti.Framework.Gestures.PanGestureRecognizer?)(object?)recognizers.GetValueOrDefault(typeof(global::Doroti.Framework.Gestures.PanGestureRecognizer)))!;
-        global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? verticalHandler__72668 = DartRuntimePrimitives.ConvertValue<global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>>(((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)((vertical__72465 is null) ? null : ((details) => {
-global::Doroti.Ui.Offset localCenter__72783 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)((dynamic)_DefaultSemanticsGestureDelegate__gesture_detector._getLocalRectFromRenderObject(renderObject)).center)));
-global::Doroti.Ui.Offset globalCenter__72874 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, localCenter__72783)));
-global::Doroti.Ui.Offset newLocalOffset__72967 = ((global::Doroti.Ui.Offset)(object?)(localCenter__72783 + ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).delta));
-global::Doroti.Ui.Offset newGlobalOffset__73038 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, newLocalOffset__72967)));
-vertical__72465.onDown?.Invoke(new global::Doroti.Framework.Gestures.DragDownDetails(localPosition: localCenter__72783, globalPosition: globalCenter__72874));
-vertical__72465.onStart?.Invoke(new global::Doroti.Framework.Gestures.DragStartDetails(localPosition: localCenter__72783, globalPosition: globalCenter__72874));
-vertical__72465.onUpdate?.Invoke(details);
-vertical__72465.onEnd?.Invoke(new global::Doroti.Framework.Gestures.DragEndDetails(primaryVelocity: 0.0, localPosition: newLocalOffset__72967, globalPosition: newGlobalOffset__73038));
-}))));
-        global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? panHandler__73719 = DartRuntimePrimitives.ConvertValue<global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>>(((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)((pan__72564 is null) ? null : ((details) => {
-global::Doroti.Ui.Offset localCenter__73824 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)((dynamic)_DefaultSemanticsGestureDelegate__gesture_detector._getLocalRectFromRenderObject(renderObject)).center)));
-global::Doroti.Ui.Offset globalCenter__73915 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, localCenter__73824)));
-global::Doroti.Ui.Offset newLocalOffset__74008 = ((global::Doroti.Ui.Offset)(object?)(localCenter__73824 + ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).delta));
-global::Doroti.Ui.Offset newGlobalOffset__74079 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, newLocalOffset__74008)));
-pan__72564.onDown?.Invoke(new global::Doroti.Framework.Gestures.DragDownDetails(localPosition: localCenter__73824, globalPosition: globalCenter__73915));
-pan__72564.onStart?.Invoke(new global::Doroti.Framework.Gestures.DragStartDetails(localPosition: localCenter__73824, globalPosition: globalCenter__73915));
-pan__72564.onUpdate?.Invoke(details);
-pan__72564.onEnd?.Invoke(new global::Doroti.Framework.Gestures.DragEndDetails(localPosition: newLocalOffset__74008, globalPosition: newGlobalOffset__74079));
-}))));
+        global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? verticalHandler__72668 = DartRuntimePrimitives.ConvertValue<global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>>(((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)((vertical__72465 is null) ? null : ((details) =>
+        {
+            global::Doroti.Ui.Offset localCenter__72783 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)((dynamic)_DefaultSemanticsGestureDelegate__gesture_detector._getLocalRectFromRenderObject(renderObject)).center)));
+            global::Doroti.Ui.Offset globalCenter__72874 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, localCenter__72783)));
+            global::Doroti.Ui.Offset newLocalOffset__72967 = ((global::Doroti.Ui.Offset)(object?)(localCenter__72783 + ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).delta));
+            global::Doroti.Ui.Offset newGlobalOffset__73038 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, newLocalOffset__72967)));
+            vertical__72465.onDown?.Invoke(new global::Doroti.Framework.Gestures.DragDownDetails(localPosition: localCenter__72783, globalPosition: globalCenter__72874));
+            vertical__72465.onStart?.Invoke(new global::Doroti.Framework.Gestures.DragStartDetails(localPosition: localCenter__72783, globalPosition: globalCenter__72874));
+            vertical__72465.onUpdate?.Invoke(details);
+            vertical__72465.onEnd?.Invoke(new global::Doroti.Framework.Gestures.DragEndDetails(primaryVelocity: 0.0, localPosition: newLocalOffset__72967, globalPosition: newGlobalOffset__73038));
+        }))));
+        global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>? panHandler__73719 = DartRuntimePrimitives.ConvertValue<global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>>(((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)((pan__72564 is null) ? null : ((details) =>
+        {
+            global::Doroti.Ui.Offset localCenter__73824 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)((dynamic)_DefaultSemanticsGestureDelegate__gesture_detector._getLocalRectFromRenderObject(renderObject)).center)));
+            global::Doroti.Ui.Offset globalCenter__73915 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, localCenter__73824)));
+            global::Doroti.Ui.Offset newLocalOffset__74008 = ((global::Doroti.Ui.Offset)(object?)(localCenter__73824 + ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).delta));
+            global::Doroti.Ui.Offset newGlobalOffset__74079 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(_DefaultSemanticsGestureDelegate__gesture_detector._transformOffsetToGlobal(renderObject, newLocalOffset__74008)));
+            pan__72564.onDown?.Invoke(new global::Doroti.Framework.Gestures.DragDownDetails(localPosition: localCenter__73824, globalPosition: globalCenter__73915));
+            pan__72564.onStart?.Invoke(new global::Doroti.Framework.Gestures.DragStartDetails(localPosition: localCenter__73824, globalPosition: globalCenter__73915));
+            pan__72564.onUpdate?.Invoke(details);
+            pan__72564.onEnd?.Invoke(new global::Doroti.Framework.Gestures.DragEndDetails(localPosition: newLocalOffset__74008, globalPosition: newGlobalOffset__74079));
+        }))));
         if (((verticalHandler__72668 is null) && (panHandler__73719 is null)))
         {
             return ((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)(object)null);
         }
-        return ((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)((details) => {
-verticalHandler__72668?.Invoke(details);
-panHandler__73719?.Invoke(details);
-}));
+        return ((global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)((details) =>
+        {
+            verticalHandler__72668?.Invoke(details);
+            panHandler__73719?.Invoke(details);
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

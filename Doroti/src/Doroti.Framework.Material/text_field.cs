@@ -483,12 +483,13 @@ internal class _TextFieldState__text_field : global::Doroti.Framework.Widgets.St
         this._controller?.dispose();
         this._statesController.removeListener(() => this._handleStatesControllerChange());
         this._internalStatesController?.dispose();
-        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) => {
-if (!((dynamic)property)._disposed)
-{
-    property.removeListener((global::System.Action)(() => listener()));
-}
-})));
+        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
+        {
+            if (!((dynamic)property)._disposed)
+            {
+                property.removeListener((global::System.Action)(() => listener()));
+            }
+        })));
         this._bucket?.dispose();
         _bucket = null;
         base.dispose();
@@ -532,8 +533,9 @@ if (!((dynamic)property)._disposed)
 
     internal virtual void _handleFocusChanged()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
         this._statesController.update(global::Doroti.Framework.Widgets.WidgetState.focused, ((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).hasFocus);
     }
 
@@ -542,9 +544,10 @@ if (!((dynamic)property)._disposed)
         bool willShowSelectionHandles__54085 = _shouldShowSelectionHandles(cause);
         if ((willShowSelectionHandles__54085 != this._showSelectionHandles))
         {
-            setState(((global::System.Action)(() => {
-_showSelectionHandles = willShowSelectionHandles__54085;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _showSelectionHandles = willShowSelectionHandles__54085;
+            })));
         }
         switch (Theme.of(this.context).platform)
         {
@@ -595,17 +598,19 @@ _showSelectionHandles = willShowSelectionHandles__54085;
     {
         if ((hovering != this._isHovering))
         {
-            setState(((global::System.Action)(() => {
-_isHovering = hovering;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _isHovering = hovering;
+            })));
             this._statesController.update(global::Doroti.Framework.Widgets.WidgetState.hovered, this._isHovering);
         }
     }
 
     internal virtual void _handleStatesControllerChange()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     internal virtual global::Doroti.Framework.Widgets.WidgetStatesController _statesController => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStatesController>((((TextField)this.widget).statesController ?? this._internalStatesController!));
@@ -712,15 +717,17 @@ _isHovering = hovering;
                     selectionColor__60035 = (((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle__58166).selectionColor ?? cupertinoTheme__61104.primaryColor.withOpacity(0.4));
                     cursorRadius__60103 ??= global::Doroti.Ui.Radius.circular(2.0);
                     cursorOffset__59976 = new global::Doroti.Ui.Offset((Selectable_textLibrary.iOSHorizontalOffset / MediaQuery.devicePixelRatioOf(context)), 0);
-                    handleDidGainAccessibilityFocus__60157 = (global::System.Action)(() => {
-if ((!((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).hasFocus && ((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).canRequestFocus))
-{
-    this._effectiveFocusNode.requestFocus();
-}
-});
-                    handleDidLoseAccessibilityFocus__60208 = (global::System.Action)(() => {
-this._effectiveFocusNode.unfocus();
-});
+                    handleDidGainAccessibilityFocus__60157 = (global::System.Action)(() =>
+                    {
+                        if ((!((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).hasFocus && ((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).canRequestFocus))
+                        {
+                            this._effectiveFocusNode.requestFocus();
+                        }
+                    });
+                    handleDidLoseAccessibilityFocus__60208 = (global::System.Action)(() =>
+                    {
+                        this._effectiveFocusNode.unfocus();
+                    });
                     break;
                 }
             case global::Doroti.Framework.Foundation.TargetPlatform.android:
@@ -742,15 +749,17 @@ this._effectiveFocusNode.unfocus();
                     cursorOpacityAnimates__59910 ??= false;
                     cursorColor__60006 = (this._hasError ? this._errorColor : ((((TextField)this.widget).cursorColor ?? ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle__58166).cursorColor) ?? theme__58107.colorScheme.primary));
                     selectionColor__60035 = (((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle__58166).selectionColor ?? theme__58107.colorScheme.primary.withOpacity(0.4));
-                    handleDidGainAccessibilityFocus__60157 = (global::System.Action)(() => {
-if ((!((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).hasFocus && ((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).canRequestFocus))
-{
-    this._effectiveFocusNode.requestFocus();
-}
-});
-                    handleDidLoseAccessibilityFocus__60208 = (global::System.Action)(() => {
-this._effectiveFocusNode.unfocus();
-});
+                    handleDidGainAccessibilityFocus__60157 = (global::System.Action)(() =>
+                    {
+                        if ((!((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).hasFocus && ((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).canRequestFocus))
+                        {
+                            this._effectiveFocusNode.requestFocus();
+                        }
+                    });
+                    handleDidLoseAccessibilityFocus__60208 = (global::System.Action)(() =>
+                    {
+                        this._effectiveFocusNode.unfocus();
+                    });
                     break;
                 }
             case global::Doroti.Framework.Foundation.TargetPlatform.windows:
@@ -761,25 +770,28 @@ this._effectiveFocusNode.unfocus();
                     cursorOpacityAnimates__59910 ??= false;
                     cursorColor__60006 = (this._hasError ? this._errorColor : ((((TextField)this.widget).cursorColor ?? ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle__58166).cursorColor) ?? theme__58107.colorScheme.primary));
                     selectionColor__60035 = (((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle__58166).selectionColor ?? theme__58107.colorScheme.primary.withOpacity(0.4));
-                    handleDidGainAccessibilityFocus__60157 = (global::System.Action)(() => {
-if ((!((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).hasFocus && ((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).canRequestFocus))
-{
-    this._effectiveFocusNode.requestFocus();
-}
-});
-                    handleDidLoseAccessibilityFocus__60208 = (global::System.Action)(() => {
-this._effectiveFocusNode.unfocus();
-});
+                    handleDidGainAccessibilityFocus__60157 = (global::System.Action)(() =>
+                    {
+                        if ((!((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).hasFocus && ((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).canRequestFocus))
+                        {
+                            this._effectiveFocusNode.requestFocus();
+                        }
+                    });
+                    handleDidLoseAccessibilityFocus__60208 = (global::System.Action)(() =>
+                    {
+                        this._effectiveFocusNode.unfocus();
+                    });
                     break;
                 }
         }
         global::Doroti.Framework.Widgets.Widget child__64443 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.RepaintBoundary(child: new global::Doroti.Framework.Widgets.UnmanagedRestorationScope(bucket: this.bucket, child: new global::Doroti.Framework.Widgets.EditableText(key: this.editableTextKey, readOnly: (((TextField)this.widget).readOnly || !this._isEnabled), toolbarOptions: ((TextField)this.widget).toolbarOptions, showCursor: ((TextField)this.widget).showCursor, showSelectionHandles: this._showSelectionHandles, controller: controller__58627, focusNode: focusNode__58682, undoController: ((TextField)this.widget).undoController, keyboardType: ((TextField)this.widget).keyboardType, textInputAction: ((TextField)this.widget).textInputAction, textCapitalization: ((TextField)this.widget).textCapitalization, style: style__58364, strutStyle: ((TextField)this.widget).strutStyle, textAlign: ((TextField)this.widget).textAlign, textDirection: ((TextField)this.widget).textDirection, autofocus: ((TextField)this.widget).autofocus, obscuringCharacter: ((TextField)this.widget).obscuringCharacter, obscureText: ((TextField)this.widget).obscureText, autocorrect: ((TextField)this.widget).autocorrect, smartDashesType: ((TextField)this.widget).smartDashesType, smartQuotesType: ((TextField)this.widget).smartQuotesType, enableSuggestions: ((TextField)this.widget).enableSuggestions, maxLines: ((TextField)this.widget).maxLines, minLines: ((TextField)this.widget).minLines, expands: ((TextField)this.widget).expands, selectionColor: (((global::Doroti.Framework.Widgets.FocusNode)focusNode__58682).hasFocus ? selectionColor__60035 : null), selectionControls: (((TextField)this.widget).selectionEnabled ? textSelectionControls__59813 : null), onChanged: (global::System.Action<string>?)((TextField)this.widget).onChanged, onSelectionChanged: (global::System.Action<global::Doroti.Framework.Services.TextSelection, global::Doroti.Framework.Services.SelectionChangedCause?>)this._handleSelectionChanged, onEditingComplete: () => ((TextField)this.widget).onEditingComplete(), onSubmitted: (global::System.Action<string>?)((TextField)this.widget).onSubmitted, onAppPrivateCommand: (global::System.Action<string, DartMap<string, object>>?)((TextField)this.widget).onAppPrivateCommand, groupId: ((TextField)this.widget).groupId, onSelectionHandleTapped: () => this._handleSelectionHandleTapped(), onTapOutside: (global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>?)((TextField)this.widget).onTapOutside, onTapUpOutside: (global::System.Action<global::Doroti.Framework.Gestures.PointerUpEvent>?)((TextField)this.widget).onTapUpOutside, inputFormatters: formatters__58725, rendererIgnoresPointer: true, mouseCursor: global::Doroti.Framework.Services.MouseCursor.defer, cursorWidth: ((TextField)this.widget).cursorWidth, cursorHeight: ((TextField)this.widget).cursorHeight, cursorRadius: cursorRadius__60103, cursorColor: cursorColor__60006, selectionHeightStyle: ((TextField)this.widget).selectionHeightStyle, selectionWidthStyle: ((TextField)this.widget).selectionWidthStyle, cursorOpacityAnimates: cursorOpacityAnimates__59910 ?? false, cursorOffset: cursorOffset__59976, paintCursorAboveText: paintCursorAboveText__59878, backgroundCursorColor: CupertinoColors.inactiveGray, scrollPadding: ((TextField)this.widget).scrollPadding, keyboardAppearance: keyboardAppearance__58527, enableInteractiveSelection: ((TextField)this.widget).enableInteractiveSelection, selectAllOnFocus: ((TextField)this.widget).selectAllOnFocus ?? false, dragStartBehavior: ((TextField)this.widget).dragStartBehavior, scrollController: ((TextField)this.widget).scrollController, scrollPhysics: ((TextField)this.widget).scrollPhysics, autofillHints: ((TextField)this.widget).autofillHints.Cast<string>(), autofillClient: this, autocorrectionTextRectColor: autocorrectionTextRectColor__60062, clipBehavior: ((TextField)this.widget).clipBehavior, restorationId: "editable", scribbleEnabled: ((TextField)this.widget).scribbleEnabled, stylusHandwritingEnabled: ((TextField)this.widget).stylusHandwritingEnabled, enableIMEPersonalizedLearning: ((TextField)this.widget).enableIMEPersonalizedLearning, enableInlinePrediction: ((TextField)this.widget).enableInlinePrediction, contentInsertionConfiguration: ((TextField)this.widget).contentInsertionConfiguration, contextMenuBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.EditableTextState, global::Doroti.Framework.Widgets.Widget>?)((TextField)this.widget).contextMenuBuilder, spellCheckConfiguration: spellCheckConfiguration__59242, magnifierConfiguration: (((TextField)this.widget).magnifierConfiguration ?? TextMagnifier.adaptiveMagnifierConfiguration), hintLocales: ((TextField)this.widget).hintLocales))));
         if ((((TextField)this.widget).decoration is not null))
         {
-            child__64443 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: global::Doroti.Framework.Foundation.Listenable.CreateMerge(new List<global::Doroti.Framework.Foundation.Listenable> { focusNode__58682, controller__58627 }.Cast<global::Doroti.Framework.Foundation.Listenable?>()), builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) => {
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new InputDecorator(decoration: _getEffectiveDecoration(), baseStyle: ((TextField)this.widget).style, textAlign: ((TextField)this.widget).textAlign, textAlignVertical: ((TextField)this.widget).textAlignVertical, isHovering: this._isHovering, isFocused: ((global::Doroti.Framework.Widgets.FocusNode)focusNode__58682).hasFocus, isEmpty: (controller__58627.value.text.Length == 0), expands: ((TextField)this.widget).expands, child: child));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: child__64443));
+            child__64443 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: global::Doroti.Framework.Foundation.Listenable.CreateMerge(new List<global::Doroti.Framework.Foundation.Listenable> { focusNode__58682, controller__58627 }.Cast<global::Doroti.Framework.Foundation.Listenable?>()), builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
+            {
+                return ((global::Doroti.Framework.Widgets.Widget)(object?)new InputDecorator(decoration: _getEffectiveDecoration(), baseStyle: ((TextField)this.widget).style, textAlign: ((TextField)this.widget).textAlign, textAlignVertical: ((TextField)this.widget).textAlignVertical, isHovering: this._isHovering, isFocused: ((global::Doroti.Framework.Widgets.FocusNode)focusNode__58682).hasFocus, isEmpty: (controller__58627.value.text.Length == 0), expands: ((TextField)this.widget).expands, child: child));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })), child: child__64443));
         }
         global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor__68947 = ((global::Doroti.Framework.Services.MouseCursor)(object?)WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor>((((TextField)this.widget).mouseCursor ?? global::Doroti.Framework.Widgets.WidgetStateMouseCursor.textable), this._statesController.value));
         long? semanticsMaxValueLength__69129 = default!;
@@ -791,29 +803,32 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         {
             semanticsMaxValueLength__69129 = null;
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.MouseRegion(cursor: effectiveMouseCursor__68947, onEnter: ((global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)((@event) => { _handleHover(true); })), onExit: ((global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)((@event) => { _handleHover(false); })), child: new global::Doroti.Framework.Widgets.TextFieldTapRegion(child: new global::Doroti.Framework.Widgets.IgnorePointer(ignoring: (((TextField)this.widget).ignorePointers ?? !this._isEnabled), child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: controller__58627, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) => {
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(enabled: this._isEnabled, maxValueLength: semanticsMaxValueLength__69129, currentValueLength: this._currentLength, onTap: ((global::System.Action)(((TextField)this.widget).readOnly ? null : (() => {
-if (!((global::Doroti.Framework.Widgets.TextEditingController)this._effectiveController).selection.isValid)
-{
-    this._effectiveController.selection = global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: ((global::Doroti.Framework.Widgets.TextEditingController)this._effectiveController).text.Length);
-}
-_requestKeyboard();
-}))), onDidGainAccessibilityFocus: () => handleDidGainAccessibilityFocus__60157(), onDidLoseAccessibilityFocus: () => handleDidLoseAccessibilityFocus__60208(), onFocus: ((global::System.Action)(this._isEnabled ? (() => {
-DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).canRequestFocus, () => (object?)"Received SemanticsAction.focus from the engine. However, the FocusNode " + "of this text field cannot gain focus. This likely indicates a bug. " + "If this text field cannot be focused (e.g. because it is not " + "enabled), then its corresponding semantics node must be configured " + "such that the assistive technology cannot request focus on it.");
-if ((((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).canRequestFocus && !((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).hasFocus))
-{
-    this._effectiveFocusNode.requestFocus();
-}
-else
-{
-    if (!((TextField)this.widget).readOnly)
-    {
-        _requestKeyboard();
-    }
-}
-}) : null)), child: child));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: this._selectionGestureDetectorBuilder.buildGestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.translucent, child: child__64443))))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.MouseRegion(cursor: effectiveMouseCursor__68947, onEnter: ((global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)((@event) => { _handleHover(true); })), onExit: ((global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)((@event) => { _handleHover(false); })), child: new global::Doroti.Framework.Widgets.TextFieldTapRegion(child: new global::Doroti.Framework.Widgets.IgnorePointer(ignoring: (((TextField)this.widget).ignorePointers ?? !this._isEnabled), child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: controller__58627, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
+        {
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(enabled: this._isEnabled, maxValueLength: semanticsMaxValueLength__69129, currentValueLength: this._currentLength, onTap: ((global::System.Action)(((TextField)this.widget).readOnly ? null : (() =>
+            {
+                if (!((global::Doroti.Framework.Widgets.TextEditingController)this._effectiveController).selection.isValid)
+                {
+                    this._effectiveController.selection = global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: ((global::Doroti.Framework.Widgets.TextEditingController)this._effectiveController).text.Length);
+                }
+                _requestKeyboard();
+            }))), onDidGainAccessibilityFocus: () => handleDidGainAccessibilityFocus__60157(), onDidLoseAccessibilityFocus: () => handleDidLoseAccessibilityFocus__60208(), onFocus: ((global::System.Action)(this._isEnabled ? (() =>
+            {
+                DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).canRequestFocus, () => (object?)"Received SemanticsAction.focus from the engine. However, the FocusNode " + "of this text field cannot gain focus. This likely indicates a bug. " + "If this text field cannot be focused (e.g. because it is not " + "enabled), then its corresponding semantics node must be configured " + "such that the assistive technology cannot request focus on it.");
+                if ((((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).canRequestFocus && !((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).hasFocus))
+                {
+                    this._effectiveFocusNode.requestFocus();
+                }
+                else
+                {
+                    if (!((TextField)this.widget).readOnly)
+                    {
+                        _requestKeyboard();
+                    }
+                }
+            }) : null)), child: child));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), child: this._selectionGestureDetectorBuilder.buildGestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.translucent, child: child__64443))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -990,15 +1005,16 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
 public static partial class Text_fieldLibrary
 {
-    internal static global::Doroti.Framework.Painting.TextStyle? _m2StateInputStyle(global::Doroti.Framework.Widgets.BuildContext context) => global::Doroti.Framework.Widgets.WidgetStateTextStyle.CreateResolveWith(((states) => {
-ThemeData theme__72935 = Theme.of(context);
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return new global::Doroti.Framework.Painting.TextStyle(color: theme__72935.disabledColor);
-}
-return new global::Doroti.Framework.Painting.TextStyle(color: theme__72935.textTheme.titleMedium?.color);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+    internal static global::Doroti.Framework.Painting.TextStyle? _m2StateInputStyle(global::Doroti.Framework.Widgets.BuildContext context) => global::Doroti.Framework.Widgets.WidgetStateTextStyle.CreateResolveWith(((states) =>
+    {
+        ThemeData theme__72935 = Theme.of(context);
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+        {
+            return new global::Doroti.Framework.Painting.TextStyle(color: theme__72935.disabledColor);
+        }
+        return new global::Doroti.Framework.Painting.TextStyle(color: theme__72935.textTheme.titleMedium?.color);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    }));
 }
 
 public static partial class Text_fieldLibrary
@@ -1008,14 +1024,15 @@ public static partial class Text_fieldLibrary
 
 public static partial class Text_fieldLibrary
 {
-    internal static global::Doroti.Framework.Painting.TextStyle? _m3StateInputStyle(global::Doroti.Framework.Widgets.BuildContext context) => global::Doroti.Framework.Widgets.WidgetStateTextStyle.CreateResolveWith(((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return new global::Doroti.Framework.Painting.TextStyle(color: Theme.of(context).textTheme.bodyLarge!.color?.withOpacity(0.38));
-}
-return new global::Doroti.Framework.Painting.TextStyle(color: Theme.of(context).textTheme.bodyLarge!.color);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+    internal static global::Doroti.Framework.Painting.TextStyle? _m3StateInputStyle(global::Doroti.Framework.Widgets.BuildContext context) => global::Doroti.Framework.Widgets.WidgetStateTextStyle.CreateResolveWith(((states) =>
+    {
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+        {
+            return new global::Doroti.Framework.Painting.TextStyle(color: Theme.of(context).textTheme.bodyLarge!.color?.withOpacity(0.38));
+        }
+        return new global::Doroti.Framework.Painting.TextStyle(color: Theme.of(context).textTheme.bodyLarge!.color);
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    }));
 }
 
 public static partial class Text_fieldLibrary

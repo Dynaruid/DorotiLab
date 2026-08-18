@@ -190,10 +190,11 @@ public class _SliverPersistentHeaderElement__sliver_persistent_header : RenderOb
 
     internal virtual void _build(double shrinkOffset, bool overlapsContent)
     {
-        this.owner!.buildScope(this, ((global::System.Action)(() => {
-var sliverPersistentHeaderRenderObjectWidget__11463 = ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)(object?)this.widget)!;
-_updateChild(((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header)sliverPersistentHeaderRenderObjectWidget__11463).@delegate, shrinkOffset, overlapsContent);
-})));
+        this.owner!.buildScope(this, ((global::System.Action)(() =>
+        {
+            var sliverPersistentHeaderRenderObjectWidget__11463 = ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)(object?)this.widget)!;
+            _updateChild(((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header)sliverPersistentHeaderRenderObjectWidget__11463).@delegate, shrinkOffset, overlapsContent);
+        })));
     }
 
     public override void forgetChild(Element child)
@@ -320,10 +321,12 @@ internal class _SliverPinnedPersistentHeader__sliver_persistent_header : _Sliver
     {
         var __renderObject = (_RenderSliverPinnedPersistentHeaderForWidgets__sliver_persistent_header)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderSliverPinnedPersistentHeaderForWidgets__sliver_persistent_header>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.stretchConfiguration = ((SliverPersistentHeaderDelegate)this.@delegate).stretchConfiguration;
-            __cascade.showOnScreenConfiguration = ((SliverPersistentHeaderDelegate)this.@delegate).showOnScreenConfiguration;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.stretchConfiguration = ((SliverPersistentHeaderDelegate)this.@delegate).stretchConfiguration;
+    __cascade.showOnScreenConfiguration = ((SliverPersistentHeaderDelegate)this.@delegate).showOnScreenConfiguration;
+    return __cascade;
+}))());
     }
 
 }

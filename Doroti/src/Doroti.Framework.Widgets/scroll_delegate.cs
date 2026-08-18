@@ -325,16 +325,17 @@ internal class _SelectionKeepAliveState__scroll_delegate : State<_SelectionKeepA
     }
     public virtual global::System.Action listensTo(global::Doroti.Framework.Rendering.Selectable selectable)
     {
-        return ((global::System.Action)(() => {
-if (selectable.value.hasSelection)
-{
-    _updateSelectablesWithSelections(selectable, add: true);
-}
-else
-{
-    _updateSelectablesWithSelections(selectable, add: false);
-}
-}));
+        return ((global::System.Action)(() =>
+        {
+            if (selectable.value.hasSelection)
+            {
+                _updateSelectablesWithSelections(selectable, add: true);
+            }
+            else
+            {
+                _updateSelectablesWithSelections(selectable, add: false);
+            }
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

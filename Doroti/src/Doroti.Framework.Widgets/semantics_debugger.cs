@@ -66,45 +66,51 @@ internal class _SemanticsDebuggerState__semantics_debugger : State<SemanticsDebu
 
     public virtual void didChangeMetrics()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     internal virtual void _update()
     {
         _generation++;
-        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) => {
-if (this.mounted)
-{
-    setState(((global::System.Action)(() => {
-})));
-}
-})), debugLabel: "SemanticsDebugger.update");
+        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+        {
+            if (this.mounted)
+            {
+                setState(((global::System.Action)(() =>
+                {
+                })));
+            }
+        })), debugLabel: "SemanticsDebugger.update");
     }
 
     internal virtual void _handlePointerDown(global::Doroti.Framework.Gestures.PointerDownEvent @event)
     {
-        setState(((global::System.Action)(() => {
-_lastPointerDownLocation = (@event.position * View.of(this.context).devicePixelRatio);
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _lastPointerDownLocation = (@event.position * View.of(this.context).devicePixelRatio);
+        })));
     }
 
     internal virtual void _handleTap()
     {
         DartRuntimePrimitives.Assert(() => (this._lastPointerDownLocation is not null));
         _performAction(DartRuntimePrimitives.RequireValue(this._lastPointerDownLocation), SemanticsAction.tap);
-        setState(((global::System.Action)(() => {
-_lastPointerDownLocation = null;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _lastPointerDownLocation = null;
+        })));
     }
 
     internal virtual void _handleLongPress()
     {
         DartRuntimePrimitives.Assert(() => (this._lastPointerDownLocation is not null));
         _performAction(DartRuntimePrimitives.RequireValue(this._lastPointerDownLocation), SemanticsAction.longPress);
-        setState(((global::System.Action)(() => {
-_lastPointerDownLocation = null;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _lastPointerDownLocation = null;
+        })));
     }
 
     internal virtual void _handlePanEnd(global::Doroti.Framework.Gestures.DragEndDetails details)
@@ -139,9 +145,10 @@ _lastPointerDownLocation = null;
                 _performAction(DartRuntimePrimitives.RequireValue(this._lastPointerDownLocation), SemanticsAction.scrollDown);
             }
         }
-        setState(((global::System.Action)(() => {
-_lastPointerDownLocation = null;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _lastPointerDownLocation = null;
+        })));
     }
 
     internal virtual void _performAction(Offset position, SemanticsAction action)
@@ -294,12 +301,14 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : global::Doroti.Fr
         canvas.save();
         canvas.clipRect(rect__9746);
         var textPainter__9820 = ((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
-{            var __cascade = new global::Doroti.Framework.Painting.TextPainter();
-            __cascade.text = new global::Doroti.Framework.Painting.TextSpan(style: this.labelStyle, text: message__9656);
-            __cascade.textDirection = TextDirection.ltr;
-            __cascade.textAlign = global::Doroti.Ui.TextAlign.center;
-            __cascade.layout(maxWidth: rect__9746.width);
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Painting.TextPainter();
+    __cascade.text = new global::Doroti.Framework.Painting.TextSpan(style: this.labelStyle, text: message__9656);
+    __cascade.textDirection = TextDirection.ltr;
+    __cascade.textAlign = global::Doroti.Ui.TextAlign.center;
+    __cascade.layout(maxWidth: rect__9746.width);
+    return __cascade;
+}))();
         textPainter__9820.paint(canvas, global::Doroti.Framework.Painting.Alignment.center.inscribe(((global::Doroti.Framework.Painting.TextPainter)textPainter__9820).size, rect__9746).topLeft);
         textPainter__9820.dispose();
         canvas.restore();
@@ -312,11 +321,12 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : global::Doroti.Fr
             return 1L;
         }
         var childrenDepth__10383 = 0L;
-        node.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) => {
-childrenDepth__10383 = Math.Max(childrenDepth__10383, _findDepth(child));
-return true;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        node.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) =>
+        {
+            childrenDepth__10383 = Math.Max(childrenDepth__10383, _findDepth(child));
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         return (childrenDepth__10383 + 1L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -340,26 +350,32 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             if (innerRect__10987.isEmpty)
             {
                 var fill__11070 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = lineColor__10921;
-            __cascade.style = PaintingStyle.fill;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = lineColor__10921;
+    __cascade.style = PaintingStyle.fill;
+    return __cascade;
+}))();
                 canvas.drawRect(rect__10860, fill__11070);
             }
             else
             {
                 var fill__11221 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = new global::Doroti.Ui.Color(4294967295L);
-            __cascade.style = PaintingStyle.fill;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = new global::Doroti.Ui.Color(4294967295L);
+    __cascade.style = PaintingStyle.fill;
+    return __cascade;
+}))();
                 canvas.drawRect(rect__10860, fill__11221);
                 var line__11371 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.strokeWidth = (rank * 2.0);
-            __cascade.color = lineColor__10921;
-            __cascade.style = PaintingStyle.stroke;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.strokeWidth = (rank * 2.0);
+    __cascade.color = lineColor__10921;
+    __cascade.style = PaintingStyle.stroke;
+    return __cascade;
+}))();
                 canvas.drawRect(innerRect__10987, line__11371);
             }
             _paintMessage(canvas, node);
@@ -369,12 +385,13 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             long childRank__11651 = (rank - 1L);
             long childLevel__11689 = (level + 1L);
             var childIndex__11723 = 0L;
-            node.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) => {
-_paint(canvas, child, childRank__11651, childIndex__11723, childLevel__11689);
-childIndex__11723 += 1L;
-return true;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+            node.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) =>
+            {
+                _paint(canvas, child, childRank__11651, childIndex__11723, childLevel__11689);
+                childIndex__11723 += 1L;
+                return true;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
         }
         canvas.restore();
     }

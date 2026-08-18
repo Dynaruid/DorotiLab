@@ -421,15 +421,17 @@ internal class _DialogPopScope__dialog : global::Doroti.Framework.Widgets.Statel
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.PopScope<object>(canPop: false, onPopInvokedWithResult: ((global::System.Action<bool, object>)((didPop, result) => {
-if (!didPop)
-{
-    this.onPop?.Invoke(result);
-}
-})), child: new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) => {
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new _NavigatorShim__dialog(onPop: (global::System.Action<object>?)this.onPop, child: this.child));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.PopScope<object>(canPop: false, onPopInvokedWithResult: ((global::System.Action<bool, object>)((didPop, result) =>
+        {
+            if (!didPop)
+            {
+                this.onPop?.Invoke(result);
+            }
+        })), child: new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
+        {
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new _NavigatorShim__dialog(onPop: (global::System.Action<object>?)this.onPop, child: this.child));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -448,11 +450,12 @@ internal class _NavigatorShim__dialog : global::Doroti.Framework.Widgets.Statele
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.HeroControllerScope.CreateNone(child: new global::Doroti.Framework.Widgets.Navigator(pages: new List<global::Doroti.Framework.Widgets.Page<object?>> { new _DialogContentPage__dialog(child: this.child) }.Cast<global::Doroti.Framework.Widgets.Page<object>>().ToList(), onPopPage: ((global::System.Func<dynamic, object, bool>?)((route, result) => {
-this.onPop?.Invoke(result);
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.HeroControllerScope.CreateNone(child: new global::Doroti.Framework.Widgets.Navigator(pages: new List<global::Doroti.Framework.Widgets.Page<object?>> { new _DialogContentPage__dialog(child: this.child) }.Cast<global::Doroti.Framework.Widgets.Page<object>>().ToList(), onPopPage: ((global::System.Func<dynamic, object, bool>?)((route, result) =>
+        {
+            this.onPop?.Invoke(result);
+            return false;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -469,10 +472,11 @@ internal class _DialogContentPage__dialog : global::Doroti.Framework.Widgets.Pag
 
     public override global::Doroti.Framework.Widgets.Route<object?> createRoute(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Route<object?>)(object?)new global::Doroti.Framework.Widgets.PageRouteBuilder<object?>(settings: this, pageBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>)((context, animation, secondaryAnimation) => {
-return this.child;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), transitionDuration: Duration.zero, reverseTransitionDuration: Duration.zero));
+        return ((global::Doroti.Framework.Widgets.Route<object?>)(object?)new global::Doroti.Framework.Widgets.PageRouteBuilder<object?>(settings: this, pageBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>)((context, animation, secondaryAnimation) =>
+        {
+            return this.child;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), transitionDuration: Duration.zero, reverseTransitionDuration: Duration.zero));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -486,20 +490,23 @@ public static partial class DialogLibrary
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
         global::Doroti.Framework.Widgets.CapturedThemes themes__60281 = ((global::Doroti.Framework.Widgets.CapturedThemes)(object?)InheritedTheme.capture(from: context, to: Navigator.of(context, rootNavigator: useRootNavigator).context));
         global::Doroti.Framework.Widgets.NavigatorState navigator__60433 = ((global::Doroti.Framework.Widgets.NavigatorState)(object?)Navigator.of(context, rootNavigator: useRootNavigator));
-        return global::Doroti.Framework.Widgets.DialogLibrary.showRawDialog(context: context, useRootNavigator: useRootNavigator, routeSettings: routeSettings, fullscreenDialog: fullscreenDialog, routeBuilder: ((routeContext, _) => {
-return new DialogRoute<T>(context: routeContext, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)builder, barrierColor: (((barrierColor ?? DialogTheme.of(context).barrierColor) ?? Theme.of(context).dialogTheme.barrierColor) ?? Colors.black54), barrierDismissible: barrierDismissible, barrierLabel: barrierLabel, useSafeArea: useSafeArea, settings: routeSettings, themes: themes__60281, anchorPoint: anchorPoint, traversalEdgeBehavior: (traversalEdgeBehavior ?? global::Doroti.Framework.Widgets.TraversalEdgeBehavior.closedLoop), requestFocus: requestFocus, animationStyle: animationStyle, fullscreenDialog: fullscreenDialog);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}), builder: ((routeContext) => {
-global::Doroti.Ui.TextDirection textDirection__61736 = Directionality.of(context);
-ThemeData themeData__61802 = Theme.of(context);
-global::Doroti.Framework.Widgets.MediaQueryData mediaQuery__61860 = ((global::Doroti.Framework.Widgets.MediaQueryData)(object?)MediaQuery.of(context));
-global::Doroti.Framework.Widgets.Widget dialogContent__61916 = ((global::Doroti.Framework.Widgets.Widget)(object?)new _DialogPopScope__dialog(onPop: Navigator.of(navigator__60433.context).pop, child: new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((innerContext) => {
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new _FullWindowDialogWrapper__dialog(child: builder(innerContext)));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))));
-return new global::Doroti.Framework.Widgets.Directionality(textDirection: textDirection__61736, child: new Theme(data: themeData__61802, child: new global::Doroti.Framework.Widgets.MediaQuery(data: mediaQuery__61860, child: dialogContent__61916)));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        return global::Doroti.Framework.Widgets.DialogLibrary.showRawDialog(context: context, useRootNavigator: useRootNavigator, routeSettings: routeSettings, fullscreenDialog: fullscreenDialog, routeBuilder: ((routeContext, _) =>
+        {
+            return new DialogRoute<T>(context: routeContext, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)builder, barrierColor: (((barrierColor ?? DialogTheme.of(context).barrierColor) ?? Theme.of(context).dialogTheme.barrierColor) ?? Colors.black54), barrierDismissible: barrierDismissible, barrierLabel: barrierLabel, useSafeArea: useSafeArea, settings: routeSettings, themes: themes__60281, anchorPoint: anchorPoint, traversalEdgeBehavior: (traversalEdgeBehavior ?? global::Doroti.Framework.Widgets.TraversalEdgeBehavior.closedLoop), requestFocus: requestFocus, animationStyle: animationStyle, fullscreenDialog: fullscreenDialog);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }), builder: ((routeContext) =>
+        {
+            global::Doroti.Ui.TextDirection textDirection__61736 = Directionality.of(context);
+            ThemeData themeData__61802 = Theme.of(context);
+            global::Doroti.Framework.Widgets.MediaQueryData mediaQuery__61860 = ((global::Doroti.Framework.Widgets.MediaQueryData)(object?)MediaQuery.of(context));
+            global::Doroti.Framework.Widgets.Widget dialogContent__61916 = ((global::Doroti.Framework.Widgets.Widget)(object?)new _DialogPopScope__dialog(onPop: Navigator.of(navigator__60433.context).pop, child: new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((innerContext) =>
+            {
+                return ((global::Doroti.Framework.Widgets.Widget)(object?)new _FullWindowDialogWrapper__dialog(child: builder(innerContext)));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })))));
+            return new global::Doroti.Framework.Widgets.Directionality(textDirection: textDirection__61736, child: new Theme(data: themeData__61802, child: new global::Doroti.Framework.Widgets.MediaQuery(data: mediaQuery__61860, child: dialogContent__61916)));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -549,17 +556,18 @@ public class DialogRoute<T> : global::Doroti.Framework.Widgets.RawDialogRoute<T>
     internal virtual global::Doroti.Framework.Animation.CurvedAnimation? _curvedAnimation { get; set; } = default;
     internal virtual global::Doroti.Framework.Animation.AnimationStyle? _animationStyle { get; private set; }
 
-    public DialogRoute(global::Doroti.Framework.Widgets.BuildContext context, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget> builder, global::Doroti.Framework.Widgets.CapturedThemes? themes = null, Color? barrierColor = default!, bool barrierDismissible = true, string? barrierLabel = null, bool useSafeArea = true, global::Doroti.Framework.Widgets.RouteSettings? settings = null, bool? requestFocus = null, Offset? anchorPoint = null, global::Doroti.Framework.Widgets.TraversalEdgeBehavior? traversalEdgeBehavior = null, bool fullscreenDialog = false, global::Doroti.Framework.Animation.AnimationStyle? animationStyle = null) : base(barrierColor: barrierColor ?? Colors.black54, barrierDismissible: barrierDismissible, settings: settings, requestFocus: requestFocus, anchorPoint: anchorPoint, traversalEdgeBehavior: traversalEdgeBehavior, fullscreenDialog: fullscreenDialog, pageBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>)((buildContext, animation, secondaryAnimation) => {
-global::Doroti.Framework.Widgets.Widget pageChild__68121 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Builder(builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)builder));
-global::Doroti.Framework.Widgets.Widget dialog__68182 = (themes?.wrap(pageChild__68121) ?? pageChild__68121);
-if (useSafeArea)
-{
-    dialog__68182 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SafeArea(child: dialog__68182));
-}
-dialog__68182 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(hitTestBehavior: SemanticsHitTestBehavior.opaque, child: dialog__68182));
-return dialog__68182;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), barrierLabel: (barrierLabel ?? MaterialLocalizations.of(context).modalBarrierDismissLabel), transitionDuration: (animationStyle?.duration ?? Duration.Create(milliseconds: 150L)), transitionBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>)DialogLibrary._buildMaterialDialogTransitions)
+    public DialogRoute(global::Doroti.Framework.Widgets.BuildContext context, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget> builder, global::Doroti.Framework.Widgets.CapturedThemes? themes = null, Color? barrierColor = default!, bool barrierDismissible = true, string? barrierLabel = null, bool useSafeArea = true, global::Doroti.Framework.Widgets.RouteSettings? settings = null, bool? requestFocus = null, Offset? anchorPoint = null, global::Doroti.Framework.Widgets.TraversalEdgeBehavior? traversalEdgeBehavior = null, bool fullscreenDialog = false, global::Doroti.Framework.Animation.AnimationStyle? animationStyle = null) : base(barrierColor: barrierColor ?? Colors.black54, barrierDismissible: barrierDismissible, settings: settings, requestFocus: requestFocus, anchorPoint: anchorPoint, traversalEdgeBehavior: traversalEdgeBehavior, fullscreenDialog: fullscreenDialog, pageBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>)((buildContext, animation, secondaryAnimation) =>
+    {
+        global::Doroti.Framework.Widgets.Widget pageChild__68121 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Builder(builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)builder));
+        global::Doroti.Framework.Widgets.Widget dialog__68182 = (themes?.wrap(pageChild__68121) ?? pageChild__68121);
+        if (useSafeArea)
+        {
+            dialog__68182 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SafeArea(child: dialog__68182));
+        }
+        dialog__68182 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(hitTestBehavior: SemanticsHitTestBehavior.opaque, child: dialog__68182));
+        return dialog__68182;
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    })), barrierLabel: (barrierLabel ?? MaterialLocalizations.of(context).modalBarrierDismissLabel), transitionDuration: (animationStyle?.duration ?? Duration.Create(milliseconds: 150L)), transitionBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>)DialogLibrary._buildMaterialDialogTransitions)
     {
         this._animationStyle = animationStyle;
     }

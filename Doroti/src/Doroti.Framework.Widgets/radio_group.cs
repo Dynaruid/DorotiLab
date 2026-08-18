@@ -80,14 +80,15 @@ internal class _RadioGroupState__radio_group<T> : State<RadioGroup<T>>, RadioGro
         {
             return true;
         }
-        WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) => {
-_debugHasScheduledSingleSelectionCheck = false;
-if ((!this.mounted || _debugCheckOnlySingleSelection()))
-{
-    return;
-}
-throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("RadioGroupPolicy can't be used for a radio group that allows multiple selection."));
-})), debugLabel: "RadioGroup.singleSelectionCheck");
+        WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+        {
+            _debugHasScheduledSingleSelectionCheck = false;
+            if ((!this.mounted || _debugCheckOnlySingleSelection()))
+            {
+                return;
+            }
+            throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("RadioGroupPolicy can't be used for a radio group that allows multiple selection."));
+        })), debugLabel: "RadioGroup.singleSelectionCheck");
         _debugHasScheduledSingleSelectionCheck = true;
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");

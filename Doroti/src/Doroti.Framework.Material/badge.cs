@@ -123,13 +123,15 @@ internal class _Badge__badge : global::Doroti.Framework.Widgets.SingleChildRende
     {
         var __renderObject = (_RenderBadge__badge)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderBadge__badge>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.alignment = this.alignment;
-            __cascade.offset = this.offset;
-            __cascade.widthOffset = this.widthOffset;
-            __cascade.hasLabel = this.hasLabel;
-            __cascade.textDirection = Directionality.maybeOf(context);
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.alignment = this.alignment;
+    __cascade.offset = this.offset;
+    __cascade.widthOffset = this.widthOffset;
+    __cascade.hasLabel = this.hasLabel;
+    __cascade.textDirection = Directionality.maybeOf(context);
+    return __cascade;
+}))());
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)

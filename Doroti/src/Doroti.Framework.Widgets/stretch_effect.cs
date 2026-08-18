@@ -149,10 +149,12 @@ internal class _StretchEffectPainter__stretch_effect : global::Doroti.Framework.
     public override void paint(Canvas canvas, Size size)
     {
         var paint__7473 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = global::Doroti.Ui.Color.fromARGB(1L, 0L, 0L, 0L);
-            __cascade.style = PaintingStyle.fill;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = global::Doroti.Ui.Color.fromARGB(1L, 0L, 0L, 0L);
+    __cascade.style = PaintingStyle.fill;
+    return __cascade;
+}))();
         canvas.drawPoints(global::Doroti.Ui.PointMode.points, new List<global::Doroti.Ui.Offset> { Offset.zero, new global::Doroti.Ui.Offset((size.width - 1L), 0), new global::Doroti.Ui.Offset(0, (size.height - 1L)), new global::Doroti.Ui.Offset((size.width - 1L), (size.height - 1L)) }, paint__7473);
     }
 

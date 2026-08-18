@@ -96,14 +96,16 @@ internal class _AnimatedCrossFadeState__animated_cross_fade : State<AnimatedCros
         }
         _firstAnimation = _initAnimation(((AnimatedCrossFade)this.widget).firstCurve, true);
         _secondAnimation = _initAnimation(((AnimatedCrossFade)this.widget).secondCurve, false);
-        this._controller.addStatusListener(((AnimationStatusListener)((status) => {
-setState(((global::System.Action)(() => {
-})));
-if (((object.Equals(status, global::Doroti.Framework.Animation.AnimationStatus.completed)) || (object.Equals(status, global::Doroti.Framework.Animation.AnimationStatus.dismissed))))
-{
-    ((AnimatedCrossFade)this.widget).onEnd?.Invoke();
-}
-})));
+        this._controller.addStatusListener(((AnimationStatusListener)((status) =>
+        {
+            setState(((global::System.Action)(() =>
+            {
+            })));
+            if (((object.Equals(status, global::Doroti.Framework.Animation.AnimationStatus.completed)) || (object.Equals(status, global::Doroti.Framework.Animation.AnimationStatus.dismissed))))
+            {
+                ((AnimatedCrossFade)this.widget).onEnd?.Invoke();
+            }
+        })));
     }
 
     internal virtual global::Doroti.Framework.Animation.Animation<double> _initAnimation(global::Doroti.Framework.Animation.Curve curve, bool inverted)
@@ -231,10 +233,12 @@ if (((object.Equals(status, global::Doroti.Framework.Animation.AnimationStatus.c
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");

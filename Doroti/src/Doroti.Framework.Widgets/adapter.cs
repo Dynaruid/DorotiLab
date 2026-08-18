@@ -37,14 +37,16 @@ public class RenderObjectToWidgetAdapter<T> : RenderObjectWidget where T : globa
     {
         if ((element is null))
         {
-            owner.lockState(((global::System.Action)(() => {
-element = createElement();
-DartRuntimePrimitives.Assert(() => (element is not null));
-element!.assignOwner(owner);
-})));
-            owner.buildScope(element!, ((global::System.Action)(() => {
-element!.mount(((Element)(object)null), null);
-})));
+            owner.lockState(((global::System.Action)(() =>
+            {
+                element = createElement();
+                DartRuntimePrimitives.Assert(() => (element is not null));
+                element!.assignOwner(owner);
+            })));
+            owner.buildScope(element!, ((global::System.Action)(() =>
+            {
+                element!.mount(((Element)(object)null), null);
+            })));
         }
         else
         {

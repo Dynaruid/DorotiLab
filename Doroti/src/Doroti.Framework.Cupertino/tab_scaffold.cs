@@ -131,8 +131,9 @@ internal class _CupertinoTabScaffoldState__tab_scaffold : global::Doroti.Framewo
     internal virtual void _onCurrentIndexChange()
     {
         DartRuntimePrimitives.Assert(() => ((((CupertinoTabController)this._controller).index >= 0L) && (((CupertinoTabController)this._controller).index < checked((long)(((CupertinoTabScaffold)this.widget).tabBar.items.Count)))), () => (object?)$"The {this.GetType()}'s current index {((CupertinoTabController)this._controller).index} is " + $"out of bounds for the tab bar with {checked((long)(((CupertinoTabScaffold)this.widget).tabBar.items.Count))} tabs");
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     public override void didUpdateWidget(CupertinoTabScaffold oldWidget)
@@ -191,12 +192,13 @@ this._controller.index = newIndex;
             this._controller.removeListener(() => this._onCurrentIndexChange());
         }
         this._internalController?.dispose();
-        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) => {
-if (!((dynamic)property)._disposed)
-{
-    property.removeListener((global::System.Action)(() => listener()));
-}
-})));
+        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
+        {
+            if (!((dynamic)property)._disposed)
+            {
+                property.removeListener((global::System.Action)(() => listener()));
+            }
+        })));
         this._bucket?.dispose();
         _bucket = null;
         base.dispose();
@@ -476,15 +478,17 @@ public class _TabSwitchingViewState__tab_scaffold : global::Doroti.Framework.Wid
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(fit: global::Doroti.Framework.Rendering.StackFit.expand, children: new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)((_TabSwitchingView__tab_scaffold)this.widget).tabCount)), ((index) => {
-var active__18777 = (index == ((_TabSwitchingView__tab_scaffold)this.widget).currentTabIndex);
-this.shouldBuildTab[(int)(index)] = (active__18777 || this.shouldBuildTab[(int)(index)]);
-return new global::Doroti.Framework.Widgets.HeroMode(enabled: active__18777, child: new global::Doroti.Framework.Widgets.Offstage(offstage: !active__18777, child: new global::Doroti.Framework.Widgets.TickerMode(enabled: active__18777, child: new global::Doroti.Framework.Widgets.FocusScope(node: this.tabFocusNodes[(int)(index)], child: new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) => {
-return (this.shouldBuildTab[(int)(index)] ? this.widget.tabBuilder(context, index) : global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(fit: global::Doroti.Framework.Rendering.StackFit.expand, children: new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)((_TabSwitchingView__tab_scaffold)this.widget).tabCount)), ((index) =>
+        {
+            var active__18777 = (index == ((_TabSwitchingView__tab_scaffold)this.widget).currentTabIndex);
+            this.shouldBuildTab[(int)(index)] = (active__18777 || this.shouldBuildTab[(int)(index)]);
+            return new global::Doroti.Framework.Widgets.HeroMode(enabled: active__18777, child: new global::Doroti.Framework.Widgets.Offstage(offstage: !active__18777, child: new global::Doroti.Framework.Widgets.TickerMode(enabled: active__18777, child: new global::Doroti.Framework.Widgets.FocusScope(node: this.tabFocusNodes[(int)(index)], child: new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
+            {
+                return (this.shouldBuildTab[(int)(index)] ? this.widget.tabBuilder(context, index) : global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })))))));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

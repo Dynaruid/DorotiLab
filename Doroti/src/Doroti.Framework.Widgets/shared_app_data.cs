@@ -93,10 +93,11 @@ internal class _SharedAppDataState__shared_app_data : State<SharedAppData>
     {
         if ((!object.Equals(this.data.GetValueOrDefault(key), value)))
         {
-            setState(((global::System.Action)(() => {
-data = new DartMap<object, object?>(this.data);
-this.data[key] = value;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                data = new DartMap<object, object?>(this.data);
+                this.data[key] = value;
+            })));
         }
     }
 

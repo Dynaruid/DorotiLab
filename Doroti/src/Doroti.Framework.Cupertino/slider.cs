@@ -135,10 +135,12 @@ internal class _CupertinoSliderState__slider : global::Doroti.Framework.Widgets.
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -248,17 +250,19 @@ internal class _CupertinoSliderRenderObjectWidget__slider : global::Doroti.Frame
         var __renderObject = (_RenderCupertinoSlider__slider)(object)renderObject;
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
         DartRuntimePrimitives.Ignore(((Func<_RenderCupertinoSlider__slider>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.value = this.value;
-            __cascade.divisions = this.divisions;
-            __cascade.activeColor = this.activeColor;
-            __cascade.thumbColor = CupertinoDynamicColor.resolve(this.thumbColor, context);
-            __cascade.trackColor = CupertinoDynamicColor.resolve(CupertinoColors.systemFill, context);
-            __cascade.onChanged = this.onChanged;
-            __cascade.onChangeStart = this.onChangeStart;
-            __cascade.onChangeEnd = this.onChangeEnd;
-            __cascade.textDirection = Directionality.of(context);
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.value = this.value;
+    __cascade.divisions = this.divisions;
+    __cascade.activeColor = this.activeColor;
+    __cascade.thumbColor = CupertinoDynamicColor.resolve(this.thumbColor, context);
+    __cascade.trackColor = CupertinoDynamicColor.resolve(CupertinoColors.systemFill, context);
+    __cascade.onChanged = this.onChanged;
+    __cascade.onChangeStart = this.onChangeStart;
+    __cascade.onChangeEnd = this.onChangeEnd;
+    __cascade.textDirection = Directionality.of(context);
+    return __cascade;
+}))());
     }
 
 }
@@ -323,15 +327,19 @@ public class _RenderCupertinoSlider__slider : global::Doroti.Framework.Rendering
         this._textDirection = textDirection;
         System.Diagnostics.Debug.Assert(((value >= 0.0) && (value <= 1.0)));
         _drag = ((Func<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>)(() =>
-{            var __cascade = new global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer();
-            __cascade.onStart = this._handleDragStart;
-            __cascade.onUpdate = this._handleDragUpdate;
-            __cascade.onEnd = this._handleDragEnd;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer();
+    __cascade.onStart = this._handleDragStart;
+    __cascade.onUpdate = this._handleDragUpdate;
+    __cascade.onEnd = this._handleDragEnd;
+    return __cascade;
+}))();
         _position = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(value: DartRuntimePrimitives.RequireValue(value), duration: SliderLibrary._kDiscreteTransitionDuration, vsync: vsync);
-            __cascade.addListener(() => this.markNeedsPaint());
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Animation.AnimationController(value: DartRuntimePrimitives.RequireValue(value), duration: SliderLibrary._kDiscreteTransitionDuration, vsync: vsync);
+    __cascade.addListener(() => this.markNeedsPaint());
+    return __cascade;
+}))();
     }
 
     public virtual double value
@@ -543,17 +551,21 @@ public class _RenderCupertinoSlider__slider : global::Doroti.Framework.Rendering
         if ((visualPosition__17966 > 0.0))
         {
             var paint__18613 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = rightColor__18005;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = rightColor__18005;
+    return __cascade;
+}))();
             canvas__18544.drawRRect(global::Doroti.Ui.RRect.fromLTRBXY(trackLeft__18281, trackTop__18334, trackActive__18486, trackBottom__18381, 1.0, 1.0), paint__18613);
         }
         if ((visualPosition__17966 < 1.0))
         {
             var paint__18954 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = leftColor__17988;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = leftColor__17988;
+    return __cascade;
+}))();
             canvas__18544.drawRRect(global::Doroti.Ui.RRect.fromLTRBXY(trackActive__18486, trackTop__18334, trackRight__18431, trackBottom__18381, 1.0, 1.0), paint__18954);
         }
         var thumbCenter__19261 = new global::Doroti.Ui.Offset(trackActive__18486, trackCenter__18219);

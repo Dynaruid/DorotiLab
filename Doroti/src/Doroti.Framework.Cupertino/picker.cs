@@ -284,10 +284,12 @@ internal class _CupertinoPickerSemantics__picker : global::Doroti.Framework.Widg
         var __renderObject = (_RenderCupertinoPickerSemantics__picker)(object)renderObject;
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
         DartRuntimePrimitives.Ignore(((Func<_RenderCupertinoPickerSemantics__picker>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.textDirection = Directionality.of(context);
-            __cascade.controller = this.scrollController;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.textDirection = Directionality.of(context);
+    __cascade.controller = this.scrollController;
+    return __cascade;
+}))());
     }
 
 }
@@ -381,12 +383,13 @@ public class _RenderCupertinoPickerSemantics__picker : global::Doroti.Framework.
         }
         global::Doroti.Framework.Semantics.SemanticsNode scrollable__20946 = children.First();
         var indexedChildren__20985 = new DartMap<long, global::Doroti.Framework.Semantics.SemanticsNode>();
-        scrollable__20946.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) => {
-DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Semantics.SemanticsNode)child).indexInParent is not null));
-indexedChildren__20985[DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsNode)child).indexInParent)] = child;
-return true;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        scrollable__20946.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) =>
+        {
+            DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Semantics.SemanticsNode)child).indexInParent is not null));
+            indexedChildren__20985[DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsNode)child).indexInParent)] = child;
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         if ((!indexedChildren__20985.ContainsKey(this._currentIndex)))
         {
             node.updateWith(config: config);

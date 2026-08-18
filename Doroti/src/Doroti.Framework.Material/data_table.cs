@@ -287,14 +287,15 @@ public class DataTable : global::Doroti.Framework.Widgets.StatelessWidget
         DataTableThemeData dataTableTheme__38911 = DataTableTheme.of(context);
         global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? effectiveHeadingRowColor__38995 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)(object?)((this.headingRowColor ?? dataTableTheme__38911.headingRowColor) ?? theme__38855.dataTableTheme.headingRowColor));
         global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? effectiveDataRowColor__39160 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)(object?)((this.dataRowColor ?? dataTableTheme__38911.dataRowColor) ?? theme__38855.dataTableTheme.dataRowColor));
-        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> defaultRowColor__39312 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (theme__38855.colorScheme.primary.withOpacity(0.08));
-}
-return null;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> defaultRowColor__39312 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>)(object?)WidgetStateProperty.resolveWith((states) =>
+        {
+            if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+            {
+                return (theme__38855.colorScheme.primary.withOpacity(0.08));
+            }
+            return null;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         bool anyRowSelectable__39564 = this.rows.any(((row) => (((DataRow)row).onSelectChanged is not null)));
         bool displayCheckboxColumn__39654 = (this.showCheckboxColumn && anyRowSelectable__39564);
         IEnumerable<DataRow> rowsWithCheckbox__39746 = (displayCheckboxColumn__39654 ? this.rows.where(((row) => (((DataRow)row).onSelectChanged is not null))) : new List<DataRow>());
@@ -307,18 +308,19 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         double effectiveCheckboxHorizontalMarginEnd__40653 = (((this.checkboxHorizontalMargin ?? dataTableTheme__38911.checkboxHorizontalMargin) ?? theme__38855.dataTableTheme.checkboxHorizontalMargin) ?? (effectiveHorizontalMargin__40224 / 2.0));
         double effectiveColumnSpacing__40894 = (((this.columnSpacing ?? dataTableTheme__38911.columnSpacing) ?? theme__38855.dataTableTheme.columnSpacing) ?? _columnSpacing);
         var tableColumns__41065 = new List<global::Doroti.Framework.Rendering.TableColumnWidth>(System.Linq.Enumerable.Repeat<global::Doroti.Framework.Rendering.TableColumnWidth>(new _NullTableColumnWidth__data_table(), checked((int)(checked((long)(this.columns.Count)) + ((displayCheckboxColumn__39654 ? 1L : 0L))))));
-        var tableRows__41221 = new List<global::Doroti.Framework.Widgets.TableRow>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)(checked((long)(this.rows.Count)) + 1L))), ((index) => {
-bool isSelected__41352 = ((index > 0L) && this.rows[(int)((index - 1L))].selected);
-bool isDisabled__41423 = (((index > 0L) && anyRowSelectable__39564) && (this.rows[(int)((index - 1L))].onSelectChanged is null));
-var states__41536 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection41545 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (isSelected__41352) { __collection41545.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } if (isDisabled__41423) { __collection41545.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } return __collection41545; }))();
-global::Doroti.Ui.Color? resolvedDataRowColor__41688 = ((global::Doroti.Ui.Color?)(object?)((index > 0L) ? ((this.rows[(int)((index - 1L))].color ?? effectiveDataRowColor__39160))?.resolve(states__41536) : null));
-global::Doroti.Ui.Color? resolvedHeadingRowColor__41842 = ((global::Doroti.Ui.Color?)(object?)effectiveHeadingRowColor__38995?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>()));
-var rowColor__41934 = ((index > 0L) ? resolvedDataRowColor__41688 : resolvedHeadingRowColor__41842);
-global::Doroti.Framework.Painting.BorderSide borderSide__42030 = ((global::Doroti.Framework.Painting.BorderSide)(object?)Divider.createBorderSide(context, width: (((this.dividerThickness ?? dataTableTheme__38911.dividerThickness) ?? theme__38855.dataTableTheme.dividerThickness) ?? _dividerThickness)));
-global::Doroti.Framework.Painting.Border? border__42309 = (this.showBottomBorder ? new global::Doroti.Framework.Painting.Border(bottom: borderSide__42030) : ((index == 0L) ? null : new global::Doroti.Framework.Painting.Border(top: borderSide__42030)));
-return new global::Doroti.Framework.Widgets.TableRow(key: ((index == 0L) ? _headingRowKey : this.rows[(int)((index - 1L))].key), decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: border__42309, color: ((rowColor__41934 ?? (Color)defaultRowColor__39312.resolve(states__41536)))), children: new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Repeat<global::Doroti.Framework.Widgets.Widget>(new _NullWidget__data_table(), checked((int)checked((long)(tableColumns__41065.Count))))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        var tableRows__41221 = new List<global::Doroti.Framework.Widgets.TableRow>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)(checked((long)(this.rows.Count)) + 1L))), ((index) =>
+        {
+            bool isSelected__41352 = ((index > 0L) && this.rows[(int)((index - 1L))].selected);
+            bool isDisabled__41423 = (((index > 0L) && anyRowSelectable__39564) && (this.rows[(int)((index - 1L))].onSelectChanged is null));
+            var states__41536 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection41545 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (isSelected__41352) { __collection41545.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } if (isDisabled__41423) { __collection41545.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } return __collection41545; }))();
+            global::Doroti.Ui.Color? resolvedDataRowColor__41688 = ((global::Doroti.Ui.Color?)(object?)((index > 0L) ? ((this.rows[(int)((index - 1L))].color ?? effectiveDataRowColor__39160))?.resolve(states__41536) : null));
+            global::Doroti.Ui.Color? resolvedHeadingRowColor__41842 = ((global::Doroti.Ui.Color?)(object?)effectiveHeadingRowColor__38995?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>()));
+            var rowColor__41934 = ((index > 0L) ? resolvedDataRowColor__41688 : resolvedHeadingRowColor__41842);
+            global::Doroti.Framework.Painting.BorderSide borderSide__42030 = ((global::Doroti.Framework.Painting.BorderSide)(object?)Divider.createBorderSide(context, width: (((this.dividerThickness ?? dataTableTheme__38911.dividerThickness) ?? theme__38855.dataTableTheme.dividerThickness) ?? _dividerThickness)));
+            global::Doroti.Framework.Painting.Border? border__42309 = (this.showBottomBorder ? new global::Doroti.Framework.Painting.Border(bottom: borderSide__42030) : ((index == 0L) ? null : new global::Doroti.Framework.Painting.Border(top: borderSide__42030)));
+            return new global::Doroti.Framework.Widgets.TableRow(key: ((index == 0L) ? _headingRowKey : this.rows[(int)((index - 1L))].key), decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: border__42309, color: ((rowColor__41934 ?? (Color)defaultRowColor__39312.resolve(states__41536)))), children: new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Repeat<global::Doroti.Framework.Widgets.Widget>(new _NullWidget__data_table(), checked((int)checked((long)(tableColumns__41065.Count))))));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         long rowIndex__42811 = default!;
         var displayColumnIndex__42830 = 0L;
         if (displayCheckboxColumn__39654)
@@ -389,34 +391,35 @@ public class TableRowInkWell : InkResponse
 
     public virtual RectCallback getRectCallback(global::Doroti.Framework.Rendering.RenderBox referenceBox)
     {
-        return ((RectCallback)(object?)(() => {
-global::Doroti.Framework.Rendering.RenderObject cell__49195 = ((global::Doroti.Framework.Rendering.RenderObject)(object?)referenceBox);
-global::Doroti.Framework.Rendering.RenderObject? table__49236 = ((global::Doroti.Framework.Rendering.RenderObject)cell__49195).parent;
-var transform__49269 = Matrix4.identity();
-while ((true && (table__49236 is not global::Doroti.Framework.Rendering.RenderTable)))
-{
-    ((dynamic)table__49236).applyPaintTransform(cell__49195, transform__49269);
-    DartRuntimePrimitives.Assert(() => (object.Equals(table__49236, ((global::Doroti.Framework.Rendering.RenderObject)cell__49195).parent)));
-    cell__49195 = table__49236;
-    table__49236 = ((global::Doroti.Framework.Rendering.RenderObject)table__49236).parent;
-}
-if ((table__49236 is global::Doroti.Framework.Rendering.RenderTable))
-{
-    global::Doroti.Framework.Rendering.RenderTable table__49236__as49524 = (global::Doroti.Framework.Rendering.RenderTable)table__49236;
-    var cellParentData__49562 = ((global::Doroti.Framework.Rendering.TableCellParentData?)(object?)((global::Doroti.Framework.Rendering.RenderObject)cell__49195).parentData!)!;
-    DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.TableCellParentData)cellParentData__49562).y is not null));
-    global::Doroti.Ui.Rect rect__49681 = ((global::Doroti.Ui.Rect)(object?)((global::Doroti.Framework.Rendering.RenderTable)table__49236__as49524).getRowBox(DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Rendering.TableCellParentData)cellParentData__49562).y)));
-    ((global::Doroti.Framework.Rendering.RenderTable)table__49236__as49524).applyPaintTransform(cell__49195, transform__49269);
-    global::Doroti.Ui.Offset? offset__49929 = ((global::Doroti.Ui.Offset?)(object?)MatrixUtils.getAsTranslation(transform__49269));
-    if ((offset__49929 is not null))
-    {
-        Offset offset__49929__value49991 = DartRuntimePrimitives.RequireValue(offset__49929);
-        return rect__49681.shift(-DartRuntimePrimitives.RequireValue(offset__49929__value49991));
-    }
-}
-return Rect.zero;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        return ((RectCallback)(object?)(() =>
+        {
+            global::Doroti.Framework.Rendering.RenderObject cell__49195 = ((global::Doroti.Framework.Rendering.RenderObject)(object?)referenceBox);
+            global::Doroti.Framework.Rendering.RenderObject? table__49236 = ((global::Doroti.Framework.Rendering.RenderObject)cell__49195).parent;
+            var transform__49269 = Matrix4.identity();
+            while ((true && (table__49236 is not global::Doroti.Framework.Rendering.RenderTable)))
+            {
+                ((dynamic)table__49236).applyPaintTransform(cell__49195, transform__49269);
+                DartRuntimePrimitives.Assert(() => (object.Equals(table__49236, ((global::Doroti.Framework.Rendering.RenderObject)cell__49195).parent)));
+                cell__49195 = table__49236;
+                table__49236 = ((global::Doroti.Framework.Rendering.RenderObject)table__49236).parent;
+            }
+            if ((table__49236 is global::Doroti.Framework.Rendering.RenderTable))
+            {
+                global::Doroti.Framework.Rendering.RenderTable table__49236__as49524 = (global::Doroti.Framework.Rendering.RenderTable)table__49236;
+                var cellParentData__49562 = ((global::Doroti.Framework.Rendering.TableCellParentData?)(object?)((global::Doroti.Framework.Rendering.RenderObject)cell__49195).parentData!)!;
+                DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.TableCellParentData)cellParentData__49562).y is not null));
+                global::Doroti.Ui.Rect rect__49681 = ((global::Doroti.Ui.Rect)(object?)((global::Doroti.Framework.Rendering.RenderTable)table__49236__as49524).getRowBox(DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Rendering.TableCellParentData)cellParentData__49562).y)));
+                ((global::Doroti.Framework.Rendering.RenderTable)table__49236__as49524).applyPaintTransform(cell__49195, transform__49269);
+                global::Doroti.Ui.Offset? offset__49929 = ((global::Doroti.Ui.Offset?)(object?)MatrixUtils.getAsTranslation(transform__49269));
+                if ((offset__49929 is not null))
+                {
+                    Offset offset__49929__value49991 = DartRuntimePrimitives.RequireValue(offset__49929);
+                    return rect__49681.shift(-DartRuntimePrimitives.RequireValue(offset__49929__value49991));
+                }
+            }
+            return Rect.zero;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -464,16 +467,20 @@ public class _SortArrowState__data_table : global::Doroti.Framework.Widgets.Stat
         base.initState();
         _up = ((_SortArrow__data_table)this.widget).up;
         _opacityAnimation = ((Func<global::Doroti.Framework.Animation.CurvedAnimation>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.CurvedAnimation(parent: _opacityController = new global::Doroti.Framework.Animation.AnimationController(duration: ((_SortArrow__data_table)this.widget).duration, vsync: this), curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
-            __cascade.addListener(() => this._rebuild());
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Animation.CurvedAnimation(parent: _opacityController = new global::Doroti.Framework.Animation.AnimationController(duration: ((_SortArrow__data_table)this.widget).duration, vsync: this), curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
+    __cascade.addListener(() => this._rebuild());
+    return __cascade;
+}))();
         this._opacityController.value = (((_SortArrow__data_table)this.widget).visible ? 1.0 : 0.0);
         _orientationController = new global::Doroti.Framework.Animation.AnimationController(duration: ((_SortArrow__data_table)this.widget).duration, vsync: this);
         _orientationAnimation = ((Func<global::Doroti.Framework.Animation.Animation<double>>)(() =>
-{            var __cascade = this._orientationController.drive(_turnTween);
-            __cascade.addListener(() => this._rebuild());
-            __cascade.addStatusListener((AnimationStatusListener)this._resetOrientationAnimation);
-            return __cascade;        }))();
+{
+    var __cascade = this._orientationController.drive(_turnTween);
+    __cascade.addListener(() => this._rebuild());
+    __cascade.addStatusListener((AnimationStatusListener)this._resetOrientationAnimation);
+    return __cascade;
+}))();
         if (((_SortArrow__data_table)this.widget).visible)
         {
             _orientationOffset = (DartRuntimePrimitives.RequireValue(((_SortArrow__data_table)this.widget).up) ? 0.0 : Dart_mathLibrary.pi);
@@ -482,8 +489,9 @@ public class _SortArrowState__data_table : global::Doroti.Framework.Widgets.Stat
 
     internal virtual void _rebuild()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     internal virtual void _resetOrientationAnimation(global::Doroti.Framework.Animation.AnimationStatus status)
@@ -560,9 +568,11 @@ public class _SortArrowState__data_table : global::Doroti.Framework.Widgets.Stat
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._opacityAnimation, child: new global::Doroti.Framework.Widgets.Transform(transform: ((Func<Matrix4>)(() =>
-{            var __cascade = Matrix4.rotationZ((this._orientationOffset + ((global::Doroti.Framework.Animation.Animation<double>)this._orientationAnimation).value));
-            __cascade.setTranslationRaw(0.0, _arrowIconBaselineOffset, 0.0);
-            return __cascade;        }))(), alignment: global::Doroti.Framework.Painting.Alignment.center, child: new global::Doroti.Framework.Widgets.Icon(Icons.arrow_upward, size: _arrowIconSize))));
+{
+    var __cascade = Matrix4.rotationZ((this._orientationOffset + ((global::Doroti.Framework.Animation.Animation<double>)this._orientationAnimation).value));
+    __cascade.setTranslationRaw(0.0, _arrowIconBaselineOffset, 0.0);
+    return __cascade;
+}))(), alignment: global::Doroti.Framework.Painting.Alignment.center, child: new global::Doroti.Framework.Widgets.Icon(Icons.arrow_upward, size: _arrowIconSize))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -576,10 +586,12 @@ public class _SortArrowState__data_table : global::Doroti.Framework.Widgets.Stat
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");

@@ -174,12 +174,16 @@ public class _SegmentedControlState__segmented_control<T> : global::Doroti.Frame
     public virtual global::Doroti.Framework.Animation.AnimationController createAnimationController()
     {
         return ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: Segmented_controlLibrary._kFadeDuration, vsync: this);
-            __cascade.addListener(((global::System.Action)(() => {
-setState(((global::System.Action)(() => {
-})));
-})));
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: Segmented_controlLibrary._kFadeDuration, vsync: this);
+    __cascade.addListener(((global::System.Action)(() =>
+    {
+        setState(((global::System.Action)(() =>
+        {
+        })));
+    })));
+    return __cascade;
+}))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -322,17 +326,19 @@ setState(((global::System.Action)(() => {
     {
         if (((this._pressedKey is null) && !EqualityComparer<T>.Default.Equals(currentKey, ((CupertinoSegmentedControl<T>)(object)this.widget).groupValue)))
         {
-            setState(((global::System.Action)(() => {
-_pressedKey = currentKey;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _pressedKey = currentKey;
+            })));
         }
     }
 
     internal virtual void _onTapCancel()
     {
-        setState(((global::System.Action)(() => {
-_pressedKey = default(T);
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _pressedKey = default(T);
+        })));
     }
 
     internal virtual void _onTap(T currentKey)
@@ -349,9 +355,10 @@ _pressedKey = default(T);
                 this.widget.onValueChanged(currentKey);
             }
         }
-        setState(((global::System.Action)(() => {
-_pressedKey = default(T);
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _pressedKey = default(T);
+        })));
     }
 
     public virtual global::Doroti.Ui.Color? getTextColor(long index, T currentKey)
@@ -410,26 +417,29 @@ _pressedKey = default(T);
             global::Doroti.Framework.Widgets.Widget child__16629 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Center(child: ((CupertinoSegmentedControl<T>)(object)this.widget).children.GetValueOrDefault(currentKey__16207)));
             bool isEnabled__16699 = !((CupertinoSegmentedControl<T>)(object)this.widget).disabledChildren.Contains(currentKey__16207);
             global::Doroti.Framework.Widgets.GlobalKey<_SegmentButtonState__segmented_control<T>> segmentKey__16805 = this._segmentKeys.putIfAbsent(currentKey__16207, (() => global::Doroti.Framework.Widgets.GlobalKey<_SegmentButtonState__segmented_control<T>>.Create()));
-            child__16629 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _SegmentButton__segmented_control<T>(key: segmentKey__16805, value: currentKey__16207, enabled: isEnabled__16699, child: new global::Doroti.Framework.Widgets.MouseRegion(cursor: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.MouseCursor.defer), child: new global::Doroti.Framework.Widgets.GestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.opaque, onTapDown: ((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)(isEnabled__16699 ? ((@event) => {
-_onTapDown(currentKey__16207);
-}) : null)), onTapCancel: ((global::System.Action)(isEnabled__16699 ? this._onTapCancel : null)), onTap: ((global::System.Action)(() => {
-if (isEnabled__16699)
-{
-    DartRuntimePrimitives.NullAware(this._segmentKeys.GetValueOrDefault(currentKey__16207), __target => __target.currentState)?.requestFocus();
-}
-_onTap(currentKey__16207);
-})), child: new global::Doroti.Framework.Widgets.IconTheme(data: iconTheme__16548, child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: textStyle__16422, child: new global::Doroti.Framework.Widgets.Semantics(button: true, inMutuallyExclusiveGroup: true, selected: EqualityComparer<T>.Default.Equals(((CupertinoSegmentedControl<T>)(object)this.widget).groupValue, currentKey__16207), child: child__16629)))))));
+            child__16629 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _SegmentButton__segmented_control<T>(key: segmentKey__16805, value: currentKey__16207, enabled: isEnabled__16699, child: new global::Doroti.Framework.Widgets.MouseRegion(cursor: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.MouseCursor.defer), child: new global::Doroti.Framework.Widgets.GestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.opaque, onTapDown: ((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)(isEnabled__16699 ? ((@event) =>
+            {
+                _onTapDown(currentKey__16207);
+            }) : null)), onTapCancel: ((global::System.Action)(isEnabled__16699 ? this._onTapCancel : null)), onTap: ((global::System.Action)(() =>
+            {
+                if (isEnabled__16699)
+                {
+                    DartRuntimePrimitives.NullAware(this._segmentKeys.GetValueOrDefault(currentKey__16207), __target => __target.currentState)?.requestFocus();
+                }
+                _onTap(currentKey__16207);
+            })), child: new global::Doroti.Framework.Widgets.IconTheme(data: iconTheme__16548, child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: textStyle__16422, child: new global::Doroti.Framework.Widgets.Semantics(button: true, inMutuallyExclusiveGroup: true, selected: EqualityComparer<T>.Default.Equals(((CupertinoSegmentedControl<T>)(object)this.widget).groupValue, currentKey__16207), child: child__16629)))))));
             backgroundColors__16094.Add(getBackgroundColor(index__16132, currentKey__16207)!);
             gestureChildren__16054.Add(child__16629);
             index__16132 += 1L;
         }
         global::Doroti.Framework.Widgets.Widget box__18205 = ((global::Doroti.Framework.Widgets.Widget)(object?)new _SegmentedControlRenderWidget__segmented_control<T>(selectedIndex: selectedIndex__16152, pressedIndex: pressedIndex__16176, backgroundColors: backgroundColors__16094, borderColor: this._borderColor!, children: gestureChildren__16054));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Actions(actions: new DartMap<Type, dynamic> { [typeof(global::Doroti.Framework.Widgets.VoidCallbackIntent)] = new global::Doroti.Framework.Widgets.VoidCallbackAction() }, child: new global::Doroti.Framework.Widgets.RadioGroup<T>(groupValue: ((CupertinoSegmentedControl<T>)(object)this.widget).groupValue, onChanged: ((global::System.Action<T?>)((value) => {
-if (((value is not null) && !((CupertinoSegmentedControl<T>)(object)this.widget).disabledChildren.Contains(value)))
-{
-    this.widget.onValueChanged(value);
-}
-})), child: new global::Doroti.Framework.Widgets.Padding(padding: (((CupertinoSegmentedControl<T>)(object)this.widget).padding ?? Segmented_controlLibrary._kHorizontalItemPadding), child: new global::Doroti.Framework.Widgets.UnconstrainedBox(constrainedAxis: global::Doroti.Framework.Painting.Axis.horizontal, child: box__18205)))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Actions(actions: new DartMap<Type, dynamic> { [typeof(global::Doroti.Framework.Widgets.VoidCallbackIntent)] = new global::Doroti.Framework.Widgets.VoidCallbackAction() }, child: new global::Doroti.Framework.Widgets.RadioGroup<T>(groupValue: ((CupertinoSegmentedControl<T>)(object)this.widget).groupValue, onChanged: ((global::System.Action<T?>)((value) =>
+        {
+            if (((value is not null) && !((CupertinoSegmentedControl<T>)(object)this.widget).disabledChildren.Contains(value)))
+            {
+                this.widget.onValueChanged(value);
+            }
+        })), child: new global::Doroti.Framework.Widgets.Padding(padding: (((CupertinoSegmentedControl<T>)(object)this.widget).padding ?? Segmented_controlLibrary._kHorizontalItemPadding), child: new global::Doroti.Framework.Widgets.UnconstrainedBox(constrainedAxis: global::Doroti.Framework.Painting.Axis.horizontal, child: box__18205)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -443,10 +453,12 @@ if (((value is not null) && !((CupertinoSegmentedControl<T>)(object)this.widget)
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -525,13 +537,15 @@ internal class _SegmentedControlRenderWidget__segmented_control<T> : global::Dor
     {
         var __renderObject = (_RenderSegmentedControl__segmented_control<T>)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderSegmentedControl__segmented_control<T>>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.textDirection = Directionality.of(context);
-            __cascade.selectedIndex = this.selectedIndex;
-            __cascade.pressedIndex = this.pressedIndex;
-            __cascade.backgroundColors = this.backgroundColors;
-            __cascade.borderColor = this.borderColor;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.textDirection = Directionality.of(context);
+    __cascade.selectedIndex = this.selectedIndex;
+    __cascade.pressedIndex = this.pressedIndex;
+    __cascade.backgroundColors = this.backgroundColors;
+    __cascade.borderColor = this.borderColor;
+    return __cascade;
+}))());
     }
 
 }
@@ -832,16 +846,20 @@ public class _RenderSegmentedControl__segmented_control<T> : global::Doroti.Fram
     {
         var childParentData__27879 = ((_SegmentedControlContainerBoxParentData__segmented_control?)(object?)child.parentData!)!;
         ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRSuperellipse(((_SegmentedControlContainerBoxParentData__segmented_control)childParentData__27879).surroundingRect!.shift(offset), ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.backgroundColors[(int)(childIndex)];
-            __cascade.style = PaintingStyle.fill;
-            return __cascade;        }))());
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.backgroundColors[(int)(childIndex)];
+    __cascade.style = PaintingStyle.fill;
+    return __cascade;
+}))());
         ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRSuperellipse(((_SegmentedControlContainerBoxParentData__segmented_control)childParentData__27879).surroundingRect!.shift(offset), ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.borderColor;
-            __cascade.strokeWidth = 1.0;
-            __cascade.style = PaintingStyle.stroke;
-            return __cascade;        }))());
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.borderColor;
+    __cascade.strokeWidth = 1.0;
+    __cascade.style = PaintingStyle.stroke;
+    return __cascade;
+}))());
         context.paintChild(child, (childParentData__27879.offset + offset));
     }
 
@@ -853,11 +871,12 @@ public class _RenderSegmentedControl__segmented_control<T> : global::Doroti.Fram
             var childParentData__28603 = ((_SegmentedControlContainerBoxParentData__segmented_control?)(object?)child__28544.parentData!)!;
             if (((_SegmentedControlContainerBoxParentData__segmented_control)childParentData__28603).surroundingRect!.outerRect.contains(position))
             {
-                return result.addWithPaintOffset(offset: childParentData__28603.offset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, localOffset) => {
-DartRuntimePrimitives.Assert(() => (object.Equals(localOffset, (position - childParentData__28603.offset))));
-return child__28544!.hitTest(result, position: localOffset);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+                return result.addWithPaintOffset(offset: childParentData__28603.offset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, localOffset) =>
+                {
+                    DartRuntimePrimitives.Assert(() => (object.Equals(localOffset, (position - childParentData__28603.offset))));
+                    return child__28544!.hitTest(result, position: localOffset);
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                })));
             }
             child__28544 = childParentData__28603.previousSibling;
         }
@@ -1171,11 +1190,12 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         while ((child__140279 is not null))
         {
             var childParentData__140418 = ((ContainerBoxParentData<RenderBox>?)(object?)child__140279.parentData!)!;
-            bool isHit__140490 = result.addWithPaintOffset(offset: childParentData__140418.offset, position: position, hitTest: ((global::System.Func<BoxHitTestResult, Offset, bool>)((result, transformed) => {
-DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData__140418.offset))));
-return child__140279!.hitTest(result, position: transformed);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+            bool isHit__140490 = result.addWithPaintOffset(offset: childParentData__140418.offset, position: position, hitTest: ((global::System.Func<BoxHitTestResult, Offset, bool>)((result, transformed) =>
+            {
+                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData__140418.offset))));
+                return child__140279!.hitTest(result, position: transformed);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
             if (isHit__140490)
             {
                 return true;

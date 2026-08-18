@@ -405,9 +405,11 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
         get
         {
             return ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.color.withOpacity((this.color.opacity * ((global::Doroti.Framework.Animation.Animation<double>)this.fadeoutOpacityAnimation).value));
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.color.withOpacity((this.color.opacity * ((global::Doroti.Framework.Animation.Animation<double>)this.fadeoutOpacityAnimation).value));
+    return __cascade;
+}))();
             return default!;
         }
     }
@@ -422,16 +424,20 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
         if (isBorder)
         {
             return ((global::Doroti.Ui.Paint)(object?)((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.trackBorderColor.withOpacity((this.trackBorderColor.opacity * ((global::Doroti.Framework.Animation.Animation<double>)this.fadeoutOpacityAnimation).value));
-            __cascade.style = PaintingStyle.stroke;
-            __cascade.strokeWidth = 1.0;
-            return __cascade;        }))());
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.trackBorderColor.withOpacity((this.trackBorderColor.opacity * ((global::Doroti.Framework.Animation.Animation<double>)this.fadeoutOpacityAnimation).value));
+    __cascade.style = PaintingStyle.stroke;
+    __cascade.strokeWidth = 1.0;
+    return __cascade;
+}))());
         }
         return ((global::Doroti.Ui.Paint)(object?)((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.trackColor.withOpacity((this.trackColor.opacity * ((global::Doroti.Framework.Animation.Animation<double>)this.fadeoutOpacityAnimation).value));
-            return __cascade;        }))());
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.trackColor.withOpacity((this.trackColor.opacity * ((global::Doroti.Framework.Animation.Animation<double>)this.fadeoutOpacityAnimation).value));
+    return __cascade;
+}))());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -784,9 +790,11 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
     {
         base.initState();
         _fadeoutAnimationController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(vsync: this, duration: ((RawScrollbar)(object)this.widget).fadeDuration);
-            __cascade.addStatusListener((AnimationStatusListener)this._validateInteractions);
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Animation.AnimationController(vsync: this, duration: ((RawScrollbar)(object)this.widget).fadeDuration);
+    __cascade.addStatusListener((AnimationStatusListener)this._validateInteractions);
+    return __cascade;
+}))();
         _fadeoutOpacityAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._fadeoutAnimationController, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
         scrollbarPainter = new ScrollbarPainter(color: (((RawScrollbar)(object)this.widget).thumbColor ?? new global::Doroti.Ui.Color(1723645116L)), fadeoutOpacityAnimation: this._fadeoutOpacityAnimation, thickness: (((RawScrollbar)(object)this.widget).thickness ?? ScrollbarLibrary._kScrollbarThickness), radius: ((RawScrollbar)(object)this.widget).radius, trackRadius: ((RawScrollbar)(object)this.widget).trackRadius, scrollbarOrientation: ((RawScrollbar)(object)this.widget).scrollbarOrientation, mainAxisMargin: ((RawScrollbar)(object)this.widget).mainAxisMargin, shape: ((RawScrollbar)(object)this.widget).shape, crossAxisMargin: ((RawScrollbar)(object)this.widget).crossAxisMargin, minLength: ((RawScrollbar)(object)this.widget).minThumbLength, minOverscrollLength: (((RawScrollbar)(object)this.widget).minOverscrollLength ?? ((RawScrollbar)(object)this.widget).minThumbLength));
     }
@@ -803,9 +811,10 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T> where 
         {
             return true;
         }
-        WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) => {
-DartRuntimePrimitives.Assert(() => _debugCheckHasValidScrollPosition());
-})), debugLabel: "RawScrollbar.checkScrollPosition");
+        WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) =>
+        {
+            DartRuntimePrimitives.Assert(() => _debugCheckHasValidScrollPosition());
+        })), debugLabel: "RawScrollbar.checkScrollPosition");
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -889,23 +898,25 @@ DartRuntimePrimitives.Assert(() => _debugCheckHasValidScrollPosition());
     {
         global::Doroti.Ui.TextDirection textDirection__58654 = Directionality.of(this.context);
         DartRuntimePrimitives.Ignore(((Func<ScrollbarPainter>)(() =>
-{            var __cascade = this.scrollbarPainter;
-            __cascade.color = (((RawScrollbar)(object)this.widget).thumbColor ?? new global::Doroti.Ui.Color(1723645116L));
-            __cascade.trackRadius = ((RawScrollbar)(object)this.widget).trackRadius;
-            __cascade.trackColor = (this._showTrack ? (((RawScrollbar)(object)this.widget).trackColor ?? new global::Doroti.Ui.Color(134217728L)) : new global::Doroti.Ui.Color(0L));
-            __cascade.trackBorderColor = (this._showTrack ? (((RawScrollbar)(object)this.widget).trackBorderColor ?? new global::Doroti.Ui.Color(436207616L)) : new global::Doroti.Ui.Color(0L));
-            __cascade.textDirection = textDirection__58654;
-            __cascade.thickness = (((RawScrollbar)(object)this.widget).thickness ?? ScrollbarLibrary._kScrollbarThickness);
-            __cascade.radius = ((RawScrollbar)(object)this.widget).radius;
-            __cascade.padding = (((((RawScrollbar)(object)this.widget).padding ?? (global::Doroti.Framework.Painting.EdgeInsetsGeometry)MediaQuery.paddingOf(this.context)))).resolve(textDirection__58654);
-            __cascade.scrollbarOrientation = ((RawScrollbar)(object)this.widget).scrollbarOrientation;
-            __cascade.mainAxisMargin = ((RawScrollbar)(object)this.widget).mainAxisMargin;
-            __cascade.shape = ((RawScrollbar)(object)this.widget).shape;
-            __cascade.crossAxisMargin = ((RawScrollbar)(object)this.widget).crossAxisMargin;
-            __cascade.minLength = ((RawScrollbar)(object)this.widget).minThumbLength;
-            __cascade.minOverscrollLength = (((RawScrollbar)(object)this.widget).minOverscrollLength ?? ((RawScrollbar)(object)this.widget).minThumbLength);
-            __cascade.ignorePointer = !this.enableGestures;
-            return __cascade;        }))());
+{
+    var __cascade = this.scrollbarPainter;
+    __cascade.color = (((RawScrollbar)(object)this.widget).thumbColor ?? new global::Doroti.Ui.Color(1723645116L));
+    __cascade.trackRadius = ((RawScrollbar)(object)this.widget).trackRadius;
+    __cascade.trackColor = (this._showTrack ? (((RawScrollbar)(object)this.widget).trackColor ?? new global::Doroti.Ui.Color(134217728L)) : new global::Doroti.Ui.Color(0L));
+    __cascade.trackBorderColor = (this._showTrack ? (((RawScrollbar)(object)this.widget).trackBorderColor ?? new global::Doroti.Ui.Color(436207616L)) : new global::Doroti.Ui.Color(0L));
+    __cascade.textDirection = textDirection__58654;
+    __cascade.thickness = (((RawScrollbar)(object)this.widget).thickness ?? ScrollbarLibrary._kScrollbarThickness);
+    __cascade.radius = ((RawScrollbar)(object)this.widget).radius;
+    __cascade.padding = (((((RawScrollbar)(object)this.widget).padding ?? (global::Doroti.Framework.Painting.EdgeInsetsGeometry)MediaQuery.paddingOf(this.context)))).resolve(textDirection__58654);
+    __cascade.scrollbarOrientation = ((RawScrollbar)(object)this.widget).scrollbarOrientation;
+    __cascade.mainAxisMargin = ((RawScrollbar)(object)this.widget).mainAxisMargin;
+    __cascade.shape = ((RawScrollbar)(object)this.widget).shape;
+    __cascade.crossAxisMargin = ((RawScrollbar)(object)this.widget).crossAxisMargin;
+    __cascade.minLength = ((RawScrollbar)(object)this.widget).minThumbLength;
+    __cascade.minOverscrollLength = (((RawScrollbar)(object)this.widget).minOverscrollLength ?? ((RawScrollbar)(object)this.widget).minThumbLength);
+    __cascade.ignorePointer = !this.enableGestures;
+    return __cascade;
+}))());
     }
 
     public override void didUpdateWidget(T oldWidget)
@@ -931,20 +942,21 @@ DartRuntimePrimitives.Assert(() => _debugCheckHasValidScrollPosition());
         if (!this.showScrollbar)
         {
             this._fadeoutTimer?.cancel();
-            _fadeoutTimer = new Timer(((RawScrollbar)(object)this.widget).timeToFade, (() => {
-if (!this._isDisposed)
-{
-    try
-    {
-        this._fadeoutAnimationController.reverse();
-    }
-    catch (ObjectDisposedException)
-    {
-        // The host dispatcher can finish before a delayed scrollbar fade.
-    }
-}
-_fadeoutTimer = null;
-}));
+            _fadeoutTimer = new Timer(((RawScrollbar)(object)this.widget).timeToFade, (() =>
+            {
+                if (!this._isDisposed)
+                {
+                    try
+                    {
+                        this._fadeoutAnimationController.reverse();
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // The host dispatcher can finish before a delayed scrollbar fade.
+                    }
+                }
+                _fadeoutTimer = null;
+            }));
         }
     }
 
@@ -1197,15 +1209,17 @@ _fadeoutTimer = null;
         }
         if ((!object.Equals(((ScrollMetrics)metrics__71772).axis, this._axis)))
         {
-            setState(((global::System.Action)(() => {
-_axis = ((ScrollMetrics)metrics__71772).axis;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _axis = ((ScrollMetrics)metrics__71772).axis;
+            })));
         }
         if ((this._maxScrollExtentPermitsScrolling != (((ScrollMetricsNotification)notification).metrics.maxScrollExtent > 0.0)))
         {
-            setState(((global::System.Action)(() => {
-_maxScrollExtentPermitsScrolling = !this._maxScrollExtentPermitsScrolling;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _maxScrollExtentPermitsScrolling = !this._maxScrollExtentPermitsScrolling;
+            })));
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1336,9 +1350,10 @@ _maxScrollExtentPermitsScrolling = !this._maxScrollExtentPermitsScrolling;
                         break;
                     }
             }
-            gestures__75996[typeof(_TrackTapGestureRecognizer__scrollbar)] = new GestureRecognizerFactoryWithHandlers<_TrackTapGestureRecognizer__scrollbar>(((global::System.Func<_TrackTapGestureRecognizer__scrollbar>)(() => new _TrackTapGestureRecognizer__scrollbar(debugOwner: this, customPaintKey: this._scrollbarPainterKey))), ((global::System.Action<_TrackTapGestureRecognizer__scrollbar>)((instance) => {
-instance.onTapDown = this.handleTrackTapDown;
-})));
+            gestures__75996[typeof(_TrackTapGestureRecognizer__scrollbar)] = new GestureRecognizerFactoryWithHandlers<_TrackTapGestureRecognizer__scrollbar>(((global::System.Func<_TrackTapGestureRecognizer__scrollbar>)(() => new _TrackTapGestureRecognizer__scrollbar(debugOwner: this, customPaintKey: this._scrollbarPainterKey))), ((global::System.Action<_TrackTapGestureRecognizer__scrollbar>)((instance) =>
+            {
+                instance.onTapDown = this.handleTrackTapDown;
+            })));
             return gestures__75996;
             return default!;
         }
@@ -1493,47 +1508,49 @@ instance.onTapDown = this.handleTrackTapDown;
     public override Widget build(BuildContext context)
     {
         updateScrollbarPainter();
-        return ((Widget)(object?)new NotificationListener<ScrollMetricsNotification>(onNotification: (global::System.Func<ScrollMetricsNotification, bool>)this._handleScrollMetricsNotification, child: new NotificationListener<ScrollNotification>(onNotification: (global::System.Func<ScrollNotification, bool>)this._handleScrollNotification, child: new RepaintBoundary(child: new Listener(onPointerSignal: (global::System.Action<global::Doroti.Framework.Gestures.PointerSignalEvent>)this._receivedPointerSignal, child: new RawGestureDetector(key: this._gestureDetectorKey, gestures: this._gestures, child: new MouseRegion(onExit: ((global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)((@event) => {
-switch (@event.kind)
-{
-    case PointerDeviceKind.mouse:
-    case PointerDeviceKind.trackpad:
+        return ((Widget)(object?)new NotificationListener<ScrollMetricsNotification>(onNotification: (global::System.Func<ScrollMetricsNotification, bool>)this._handleScrollMetricsNotification, child: new NotificationListener<ScrollNotification>(onNotification: (global::System.Func<ScrollNotification, bool>)this._handleScrollNotification, child: new RepaintBoundary(child: new Listener(onPointerSignal: (global::System.Action<global::Doroti.Framework.Gestures.PointerSignalEvent>)this._receivedPointerSignal, child: new RawGestureDetector(key: this._gestureDetectorKey, gestures: this._gestures, child: new MouseRegion(onExit: ((global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)((@event) =>
         {
-            if (this.enableGestures)
+            switch (@event.kind)
             {
-                handleHoverExit(@event);
+                case PointerDeviceKind.mouse:
+                case PointerDeviceKind.trackpad:
+                    {
+                        if (this.enableGestures)
+                        {
+                            handleHoverExit(@event);
+                        }
+                        break;
+                    }
+                case PointerDeviceKind.stylus:
+                case PointerDeviceKind.invertedStylus:
+                case PointerDeviceKind.unknown:
+                case PointerDeviceKind.touch:
+                    {
+                        break;
+                    }
             }
-            break;
-        }
-    case PointerDeviceKind.stylus:
-    case PointerDeviceKind.invertedStylus:
-    case PointerDeviceKind.unknown:
-    case PointerDeviceKind.touch:
+        })), onHover: ((global::System.Action<global::Doroti.Framework.Gestures.PointerHoverEvent>)((@event) =>
         {
-            break;
-        }
-}
-})), onHover: ((global::System.Action<global::Doroti.Framework.Gestures.PointerHoverEvent>)((@event) => {
-switch (@event.kind)
-{
-    case PointerDeviceKind.mouse:
-    case PointerDeviceKind.trackpad:
-        {
-            if (this.enableGestures)
+            switch (@event.kind)
             {
-                handleHover(@event);
+                case PointerDeviceKind.mouse:
+                case PointerDeviceKind.trackpad:
+                    {
+                        if (this.enableGestures)
+                        {
+                            handleHover(@event);
+                        }
+                        break;
+                    }
+                case PointerDeviceKind.stylus:
+                case PointerDeviceKind.invertedStylus:
+                case PointerDeviceKind.unknown:
+                case PointerDeviceKind.touch:
+                    {
+                        break;
+                    }
             }
-            break;
-        }
-    case PointerDeviceKind.stylus:
-    case PointerDeviceKind.invertedStylus:
-    case PointerDeviceKind.unknown:
-    case PointerDeviceKind.touch:
-        {
-            break;
-        }
-}
-})), child: new CustomPaint(key: this._scrollbarPainterKey, foregroundPainter: new _ScrollbarCustomPainterAdapter(this.scrollbarPainter), child: new RepaintBoundary(child: ((RawScrollbar)(object)this.widget).child)))))))));
+        })), child: new CustomPaint(key: this._scrollbarPainterKey, foregroundPainter: new _ScrollbarCustomPainterAdapter(this.scrollbarPainter), child: new RepaintBoundary(child: ((RawScrollbar)(object)this.widget).child)))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1547,10 +1564,12 @@ switch (@event.kind)
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");

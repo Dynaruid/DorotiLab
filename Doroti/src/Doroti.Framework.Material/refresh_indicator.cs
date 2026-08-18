@@ -252,10 +252,11 @@ public class RefreshIndicatorState : global::Doroti.Framework.Widgets.State<Refr
         }
         if (_shouldStart(notification))
         {
-            setState(((global::System.Action)(() => {
-_status = RefreshIndicatorStatus.drag;
-((RefreshIndicator)this.widget).onStatusChange?.Invoke(this._status);
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _status = RefreshIndicatorStatus.drag;
+                ((RefreshIndicator)this.widget).onStatusChange?.Invoke(this._status);
+            })));
             return false;
         }
         bool? indicatorAtTopNow__16583 = (((global::Doroti.Framework.Widgets.ScrollNotification)notification).metrics.axisDirection switch { global::Doroti.Framework.Painting.AxisDirection.down => true, global::Doroti.Framework.Painting.AxisDirection.up => true, global::Doroti.Framework.Painting.AxisDirection.left => DartRuntimePrimitives.ConvertValue<bool>(null), global::Doroti.Framework.Painting.AxisDirection.right => DartRuntimePrimitives.ConvertValue<bool>(null), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
@@ -415,10 +416,11 @@ _status = RefreshIndicatorStatus.drag;
     {
         await Future.value();
         DartRuntimePrimitives.Assert(() => ((object.Equals(newMode, RefreshIndicatorStatus.canceled)) || (object.Equals(newMode, RefreshIndicatorStatus.done))));
-        setState(((global::System.Action)(() => {
-_status = newMode;
-((RefreshIndicator)this.widget).onStatusChange?.Invoke(this._status);
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _status = newMode;
+            ((RefreshIndicator)this.widget).onStatusChange?.Invoke(this._status);
+        })));
         switch (DartRuntimePrimitives.RequireValue(this._status))
         {
             case RefreshIndicatorStatus.done:
@@ -444,9 +446,10 @@ _status = newMode;
         {
             _dragOffset = null;
             _isIndicatorAtTop = null;
-            setState(((global::System.Action)(() => {
-_status = null;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _status = null;
+            })));
         }
     }
 
@@ -458,23 +461,26 @@ _status = null;
         DartRuntimePrimitives.Ignore(_pendingRefreshFuture = completer__21801.future);
         _status = RefreshIndicatorStatus.snap;
         ((RefreshIndicator)this.widget).onStatusChange?.Invoke(this._status);
-        DartRuntimePrimitives.Ignore(this._positionController.animateTo((1.0 / Refresh_indicatorLibrary._kDragSizeFactorLimit), duration: Refresh_indicatorLibrary._kIndicatorSnapDuration).then(((global::System.Func<object?, object>)((value) => {
-if ((this.mounted && (object.Equals(this._status, RefreshIndicatorStatus.snap))))
-{
-    setState(((global::System.Action)(() => {
-_status = RefreshIndicatorStatus.refresh;
-})));
-    Future refreshResult__22362 = this.widget.onRefresh();
-    DartRuntimePrimitives.Ignore(refreshResult__22362.whenComplete((() => {
-if ((this.mounted && (object.Equals(this._status, RefreshIndicatorStatus.refresh))))
-{
-    completer__21801.complete();
-    DartRuntimePrimitives.Ignore(_dismiss(RefreshIndicatorStatus.done));
-}
-})));
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        DartRuntimePrimitives.Ignore(this._positionController.animateTo((1.0 / Refresh_indicatorLibrary._kDragSizeFactorLimit), duration: Refresh_indicatorLibrary._kIndicatorSnapDuration).then(((global::System.Func<object?, object>)((value) =>
+        {
+            if ((this.mounted && (object.Equals(this._status, RefreshIndicatorStatus.snap))))
+            {
+                setState(((global::System.Action)(() =>
+                {
+                    _status = RefreshIndicatorStatus.refresh;
+                })));
+                Future refreshResult__22362 = this.widget.onRefresh();
+                DartRuntimePrimitives.Ignore(refreshResult__22362.whenComplete((() =>
+                {
+                    if ((this.mounted && (object.Equals(this._status, RefreshIndicatorStatus.refresh))))
+                    {
+                        completer__21801.complete();
+                        DartRuntimePrimitives.Ignore(_dismiss(RefreshIndicatorStatus.done));
+                    }
+                })));
+            }
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
     }
 
     public virtual Future show(bool atTop = true)
@@ -510,44 +516,52 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                 return true;
             });
         bool showIndeterminateIndicator__24510 = ((object.Equals(this._status, RefreshIndicatorStatus.refresh)) || (object.Equals(this._status, RefreshIndicatorStatus.done)));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection24667 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection24667.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(child__23971)); if ((this._status is not null)) { __collection24667.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Positioned(top: (DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? ((RefreshIndicator)this.widget).edgeOffset : null), bottom: (!DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? ((RefreshIndicator)this.widget).edgeOffset : null), left: 0.0, right: 0.0, child: new global::Doroti.Framework.Widgets.SizeTransition(alignment: new global::Doroti.Framework.Painting.AlignmentDirectional(-1.0, (DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? 1.0 : -1.0)), sizeFactor: this._positionFactor, child: new global::Doroti.Framework.Widgets.Padding(padding: (DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: ((RefreshIndicator)this.widget).displacement) : global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: ((RefreshIndicator)this.widget).displacement)), child: new global::Doroti.Framework.Widgets.Align(alignment: (DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? global::Doroti.Framework.Painting.Alignment.topCenter : global::Doroti.Framework.Painting.Alignment.bottomCenter), child: new global::Doroti.Framework.Widgets.ScaleTransition(scale: this._scaleFactor, child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._positionController, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) => {
-global::Doroti.Framework.Widgets.Widget materialIndicator__25739 = ((global::Doroti.Framework.Widgets.Widget)(object?)new RefreshProgressIndicator(semanticsLabel: (((RefreshIndicator)this.widget).semanticsLabel ?? MaterialLocalizations.of(context).refreshIndicatorSemanticLabel), semanticsValue: ((RefreshIndicator)this.widget).semanticsValue, value: (showIndeterminateIndicator__24510 ? null : ((global::Doroti.Framework.Animation.Animation<double>)this._value).value), valueColor: this._valueColor, backgroundColor: ((RefreshIndicator)this.widget).backgroundColor, strokeWidth: ((RefreshIndicator)this.widget).strokeWidth, elevation: ((RefreshIndicator)this.widget).elevation));
-global::Doroti.Framework.Widgets.Widget cupertinoIndicator__26422 = ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoActivityIndicator(color: ((RefreshIndicator)this.widget).color));
-switch (((RefreshIndicator)this.widget)._indicatorType)
-{
-    case _IndicatorType__refresh_indicator.material:
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() =>
         {
-            return materialIndicator__25739;
-        }
-    case _IndicatorType__refresh_indicator.adaptive:
-        {
-            ThemeData theme__26814 = Theme.of(context);
-            switch (theme__26814.platform)
+            var __collection24667 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection24667.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(child__23971)); if ((this._status is not null))
             {
-                case global::Doroti.Framework.Foundation.TargetPlatform.android:
-                case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-                case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-                case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+                __collection24667.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Positioned(top: (DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? ((RefreshIndicator)this.widget).edgeOffset : null), bottom: (!DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? ((RefreshIndicator)this.widget).edgeOffset : null), left: 0.0, right: 0.0, child: new global::Doroti.Framework.Widgets.SizeTransition(alignment: new global::Doroti.Framework.Painting.AlignmentDirectional(-1.0, (DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? 1.0 : -1.0)), sizeFactor: this._positionFactor, child: new global::Doroti.Framework.Widgets.Padding(padding: (DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: ((RefreshIndicator)this.widget).displacement) : global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: ((RefreshIndicator)this.widget).displacement)), child: new global::Doroti.Framework.Widgets.Align(alignment: (DartRuntimePrimitives.RequireValue(this._isIndicatorAtTop) ? global::Doroti.Framework.Painting.Alignment.topCenter : global::Doroti.Framework.Painting.Alignment.bottomCenter), child: new global::Doroti.Framework.Widgets.ScaleTransition(scale: this._scaleFactor, child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._positionController, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
+                {
+                    global::Doroti.Framework.Widgets.Widget materialIndicator__25739 = ((global::Doroti.Framework.Widgets.Widget)(object?)new RefreshProgressIndicator(semanticsLabel: (((RefreshIndicator)this.widget).semanticsLabel ?? MaterialLocalizations.of(context).refreshIndicatorSemanticLabel), semanticsValue: ((RefreshIndicator)this.widget).semanticsValue, value: (showIndeterminateIndicator__24510 ? null : ((global::Doroti.Framework.Animation.Animation<double>)this._value).value), valueColor: this._valueColor, backgroundColor: ((RefreshIndicator)this.widget).backgroundColor, strokeWidth: ((RefreshIndicator)this.widget).strokeWidth, elevation: ((RefreshIndicator)this.widget).elevation));
+                    global::Doroti.Framework.Widgets.Widget cupertinoIndicator__26422 = ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoActivityIndicator(color: ((RefreshIndicator)this.widget).color));
+                    switch (((RefreshIndicator)this.widget)._indicatorType)
                     {
-                        return materialIndicator__25739;
+                        case _IndicatorType__refresh_indicator.material:
+                            {
+                                return materialIndicator__25739;
+                            }
+                        case _IndicatorType__refresh_indicator.adaptive:
+                            {
+                                ThemeData theme__26814 = Theme.of(context);
+                                switch (theme__26814.platform)
+                                {
+                                    case global::Doroti.Framework.Foundation.TargetPlatform.android:
+                                    case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
+                                    case global::Doroti.Framework.Foundation.TargetPlatform.linux:
+                                    case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+                                        {
+                                            return materialIndicator__25739;
+                                        }
+                                    case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+                                    case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+                                        {
+                                            return cupertinoIndicator__26422;
+                                        }
+                                    default:
+                                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                                }
+                                break;
+                            }
+                        case _IndicatorType__refresh_indicator.noSpinner:
+                            {
+                                return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Container());
+                            }
                     }
-                case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-                case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
-                    {
-                        return cupertinoIndicator__26422;
-                    }
-                default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                }))))))))));
             }
-            break;
-        }
-    case _IndicatorType__refresh_indicator.noSpinner:
-        {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Container());
-        }
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))))))))); } return __collection24667; }))()));
+            return __collection24667;
+        }))()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -561,10 +575,12 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");

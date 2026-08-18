@@ -57,13 +57,17 @@ public class CupertinoThumbPainter
             canvas.drawRRect(thumbShape__2130.shift(shadow__2242.offset), shadow__2242.toPaint());
         }
         canvas.drawRRect(thumbShape__2130.inflate(0.5), ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = Thumb_painterLibrary._kThumbBorderColor;
-            return __cascade;        }))());
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = Thumb_painterLibrary._kThumbBorderColor;
+    return __cascade;
+}))());
         canvas.drawRRect(thumbShape__2130, ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.color;
-            return __cascade;        }))());
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.color;
+    return __cascade;
+}))());
     }
 
 }

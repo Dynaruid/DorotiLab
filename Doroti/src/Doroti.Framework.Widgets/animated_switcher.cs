@@ -163,19 +163,21 @@ internal class _AnimatedSwitcherState__animated_switcher : State<AnimatedSwitche
     internal virtual _ChildEntry__animated_switcher _newEntry(Widget child, global::System.Func<Widget, global::Doroti.Framework.Animation.Animation<double>, Widget> builder, global::Doroti.Framework.Animation.AnimationController controller, global::Doroti.Framework.Animation.CurvedAnimation animation)
     {
         var entry__13552 = new _ChildEntry__animated_switcher(widgetChild: child, transition: KeyedSubtree.CreateWrap(builder(child, animation), this._childNumber), animation: animation, controller: controller);
-        animation.addStatusListener(((AnimationStatusListener)((status) => {
-if (global::Doroti.Framework.Animation.AnimationStatusMembers.isDismissed(status))
-{
-    setState(((global::System.Action)(() => {
-DartRuntimePrimitives.Assert(() => this.mounted);
-DartRuntimePrimitives.Assert(() => this._outgoingEntries.Contains(entry__13552));
-this._outgoingEntries.Remove(entry__13552);
-_markChildWidgetCacheAsDirty();
-})));
-    controller.dispose();
-    animation.dispose();
-}
-})));
+        animation.addStatusListener(((AnimationStatusListener)((status) =>
+        {
+            if (global::Doroti.Framework.Animation.AnimationStatusMembers.isDismissed(status))
+            {
+                setState(((global::System.Action)(() =>
+                {
+                    DartRuntimePrimitives.Assert(() => this.mounted);
+                    DartRuntimePrimitives.Assert(() => this._outgoingEntries.Contains(entry__13552));
+                    this._outgoingEntries.Remove(entry__13552);
+                    _markChildWidgetCacheAsDirty();
+                })));
+                controller.dispose();
+                animation.dispose();
+            }
+        })));
         return entry__13552;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -243,10 +245,12 @@ _markChildWidgetCacheAsDirty();
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");

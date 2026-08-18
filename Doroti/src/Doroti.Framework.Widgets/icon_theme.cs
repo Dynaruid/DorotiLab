@@ -25,10 +25,11 @@ public class IconTheme : InheritedTheme
 
     public static Widget merge(global::Doroti.Framework.Foundation.Key? key = null, IconThemeData data = default!, Widget child = default!)
     {
-        return ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => {
-return ((Widget)(object?)new IconTheme(key: key, data: IconTheme._getInheritedIconThemeData(context).merge(data), child: child));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        {
+            return ((Widget)(object?)new IconTheme(key: key, data: IconTheme._getInheritedIconThemeData(context).merge(data), child: child));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

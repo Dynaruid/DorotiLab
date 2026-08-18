@@ -29,10 +29,12 @@ public class ImageFiltered : SingleChildRenderObjectWidget
     public override void updateRenderObject(BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         DartRuntimePrimitives.Ignore(((Func<_ImageFilterRenderObject__image_filter>)(() =>
-{            var __cascade = (((_ImageFilterRenderObject__image_filter?)(object?)renderObject)!);
-            __cascade.enabled = this.enabled;
-            __cascade.imageFilter = this.imageFilter;
-            return __cascade;        }))());
+{
+    var __cascade = (((_ImageFilterRenderObject__image_filter?)(object?)renderObject)!);
+    __cascade.enabled = this.enabled;
+    __cascade.imageFilter = this.imageFilter;
+    return __cascade;
+}))());
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)

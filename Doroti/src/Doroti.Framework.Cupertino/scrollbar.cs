@@ -101,26 +101,29 @@ internal class _CupertinoScrollbarState__scrollbar : global::Doroti.Framework.Wi
     {
         base.initState();
         _thicknessAnimationController = new global::Doroti.Framework.Animation.AnimationController(vsync: this, duration: ScrollbarLibrary._kScrollbarResizeDuration);
-        this._thicknessAnimationController.addListener(((global::System.Action)(() => {
-updateScrollbarPainter();
-})));
+        this._thicknessAnimationController.addListener(((global::System.Action)(() =>
+        {
+            updateScrollbarPainter();
+        })));
     }
 
     public override void updateScrollbarPainter()
     {
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Widgets.ScrollbarPainter>)(() =>
-{            var __cascade = this.scrollbarPainter;
-            __cascade.color = CupertinoDynamicColor.resolve(ScrollbarLibrary._kScrollbarColor, this.context);
-            __cascade.textDirection = Directionality.of(this.context);
-            __cascade.thickness = this._thickness;
-            __cascade.mainAxisMargin = this.widget.mainAxisMargin;
-            __cascade.crossAxisMargin = ScrollbarLibrary._kScrollbarCrossAxisMargin;
-            __cascade.radius = this._radius;
-            __cascade.padding = MediaQuery.paddingOf(this.context);
-            __cascade.minLength = ScrollbarLibrary._kScrollbarMinLength;
-            __cascade.minOverscrollLength = ScrollbarLibrary._kScrollbarMinOverscrollLength;
-            __cascade.scrollbarOrientation = this.widget.scrollbarOrientation;
-            return __cascade;        }))());
+{
+    var __cascade = this.scrollbarPainter;
+    __cascade.color = CupertinoDynamicColor.resolve(ScrollbarLibrary._kScrollbarColor, this.context);
+    __cascade.textDirection = Directionality.of(this.context);
+    __cascade.thickness = this._thickness;
+    __cascade.mainAxisMargin = this.widget.mainAxisMargin;
+    __cascade.crossAxisMargin = ScrollbarLibrary._kScrollbarCrossAxisMargin;
+    __cascade.radius = this._radius;
+    __cascade.padding = MediaQuery.paddingOf(this.context);
+    __cascade.minLength = ScrollbarLibrary._kScrollbarMinLength;
+    __cascade.minOverscrollLength = ScrollbarLibrary._kScrollbarMinOverscrollLength;
+    __cascade.scrollbarOrientation = this.widget.scrollbarOrientation;
+    return __cascade;
+}))());
     }
 
     public override void handleThumbPressStart(Offset localPosition)

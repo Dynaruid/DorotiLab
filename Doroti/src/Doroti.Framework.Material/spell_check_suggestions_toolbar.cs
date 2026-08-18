@@ -54,21 +54,23 @@ public class SpellCheckSuggestionsToolbar : global::Doroti.Framework.Widgets.Sta
         var buttonItems__3523 = new List<global::Doroti.Framework.Widgets.ContextMenuButtonItem>();
         foreach (string suggestion__3620 in ((global::Doroti.Framework.Services.SuggestionSpan)spanAtCursorIndex__3301).suggestions.take(Spell_check_suggestions_toolbarLibrary._kMaxSuggestions))
         {
-            buttonItems__3523.Add(new global::Doroti.Framework.Widgets.ContextMenuButtonItem(onPressed: ((global::System.Action)(() => {
-if (!editableTextState.mounted)
-{
-    return;
-}
-SpellCheckSuggestionsToolbar._replaceText(editableTextState, suggestion__3620, ((global::Doroti.Framework.Services.SuggestionSpan)spanAtCursorIndex__3301).range);
-})), label: suggestion__3620));
+            buttonItems__3523.Add(new global::Doroti.Framework.Widgets.ContextMenuButtonItem(onPressed: ((global::System.Action)(() =>
+            {
+                if (!editableTextState.mounted)
+                {
+                    return;
+                }
+                SpellCheckSuggestionsToolbar._replaceText(editableTextState, suggestion__3620, ((global::Doroti.Framework.Services.SuggestionSpan)spanAtCursorIndex__3301).range);
+            })), label: suggestion__3620));
         }
-        var deleteButton__4041 = new global::Doroti.Framework.Widgets.ContextMenuButtonItem(onPressed: ((global::System.Action)(() => {
-if (!editableTextState.mounted)
-{
-    return;
-}
-SpellCheckSuggestionsToolbar._replaceText(editableTextState, "", ((global::Doroti.Framework.Widgets.EditableTextState)editableTextState).currentTextEditingValue.composing);
-})), type: global::Doroti.Framework.Widgets.ContextMenuButtonType.delete);
+        var deleteButton__4041 = new global::Doroti.Framework.Widgets.ContextMenuButtonItem(onPressed: ((global::System.Action)(() =>
+        {
+            if (!editableTextState.mounted)
+            {
+                return;
+            }
+            SpellCheckSuggestionsToolbar._replaceText(editableTextState, "", ((global::Doroti.Framework.Widgets.EditableTextState)editableTextState).currentTextEditingValue.composing);
+        })), type: global::Doroti.Framework.Widgets.ContextMenuButtonType.delete);
         buttonItems__3523.Add(deleteButton__4041);
         return buttonItems__3523;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -79,12 +81,13 @@ SpellCheckSuggestionsToolbar._replaceText(editableTextState, "", ((global::Dorot
         DartRuntimePrimitives.Assert(() => (!editableTextState.widget.readOnly && !editableTextState.widget.obscureText));
         global::Doroti.Framework.Services.TextEditingValue newValue__4710 = ((global::Doroti.Framework.Services.TextEditingValue)(object?)((global::Doroti.Framework.Widgets.EditableTextState)editableTextState).textEditingValue.replaced(replacementRange, text));
         editableTextState.userUpdateTextEditingValue(newValue__4710, global::Doroti.Framework.Services.SelectionChangedCause.toolbar);
-        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) => {
-if (editableTextState.mounted)
-{
-    editableTextState.bringIntoView(((global::Doroti.Framework.Widgets.EditableTextState)editableTextState).textEditingValue.selection.extent);
-}
-})), debugLabel: "SpellCheckerSuggestionsToolbar.bringIntoView");
+        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) =>
+        {
+            if (editableTextState.mounted)
+            {
+                editableTextState.bringIntoView(((global::Doroti.Framework.Widgets.EditableTextState)editableTextState).textEditingValue.selection.extent);
+            }
+        })), debugLabel: "SpellCheckerSuggestionsToolbar.bringIntoView");
         editableTextState.hideToolbar();
     }
 
@@ -96,15 +99,16 @@ if (editableTextState.mounted)
 
     internal virtual List<global::Doroti.Framework.Widgets.Widget> _buildToolbarButtons(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return this.buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, global::Doroti.Framework.Widgets.Widget>(((buttonItem) => {
-var button__5837 = new TextSelectionToolbarTextButton(padding: new global::Doroti.Framework.Painting.EdgeInsets(20, 0, 0, 0), onPressed: () => ((global::Doroti.Framework.Widgets.ContextMenuButtonItem)buttonItem).onPressed(), alignment: global::Doroti.Framework.Painting.Alignment.centerLeft, child: new global::Doroti.Framework.Widgets.Text(AdaptiveTextSelectionToolbar.getButtonLabel(context, buttonItem), style: ((object.Equals(((global::Doroti.Framework.Widgets.ContextMenuButtonItem)buttonItem).type, global::Doroti.Framework.Widgets.ContextMenuButtonType.delete)) ? new global::Doroti.Framework.Painting.TextStyle(color: Colors.blue) : null)));
-if ((!object.Equals(((global::Doroti.Framework.Widgets.ContextMenuButtonItem)buttonItem).type, global::Doroti.Framework.Widgets.ContextMenuButtonType.delete)))
-{
-    return ((global::Doroti.Framework.Widgets.Widget)(object?)button__5837);
-}
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DecoratedBox(decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: new global::Doroti.Framework.Painting.Border(top: new global::Doroti.Framework.Painting.BorderSide(color: Colors.grey))), child: button__5837));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})).ToList();
+        return this.buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, global::Doroti.Framework.Widgets.Widget>(((buttonItem) =>
+        {
+            var button__5837 = new TextSelectionToolbarTextButton(padding: new global::Doroti.Framework.Painting.EdgeInsets(20, 0, 0, 0), onPressed: () => ((global::Doroti.Framework.Widgets.ContextMenuButtonItem)buttonItem).onPressed(), alignment: global::Doroti.Framework.Painting.Alignment.centerLeft, child: new global::Doroti.Framework.Widgets.Text(AdaptiveTextSelectionToolbar.getButtonLabel(context, buttonItem), style: ((object.Equals(((global::Doroti.Framework.Widgets.ContextMenuButtonItem)buttonItem).type, global::Doroti.Framework.Widgets.ContextMenuButtonType.delete)) ? new global::Doroti.Framework.Painting.TextStyle(color: Colors.blue) : null)));
+            if ((!object.Equals(((global::Doroti.Framework.Widgets.ContextMenuButtonItem)buttonItem).type, global::Doroti.Framework.Widgets.ContextMenuButtonType.delete)))
+            {
+                return ((global::Doroti.Framework.Widgets.Widget)(object?)button__5837);
+            }
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DecoratedBox(decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: new global::Doroti.Framework.Painting.Border(top: new global::Doroti.Framework.Painting.BorderSide(color: Colors.grey))), child: button__5837));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })).ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -4,13 +4,13 @@
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/ink_ripple.dart
 using System;
 using System.Collections.Generic;
-using Stopwatch = System.Diagnostics.Stopwatch;
 using System.Linq;
 using System.Threading.Tasks;
 using Doroti.Runtime;
 using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Doroti.Framework.Material;
 
@@ -113,22 +113,28 @@ public class InkRipple : InteractiveInkFeature
         this._targetRadius = (radius ?? Ink_rippleLibrary._getTargetRadius(referenceBox, containedInkWell, rectCallback, position));
         this._clipCallback = Ink_rippleLibrary._getClipCallback(referenceBox, containedInkWell, rectCallback);
         _fadeInController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: Ink_rippleLibrary._kFadeInDuration, vsync: ((MaterialInkController)controller).vsync);
-            __cascade.addListener(() => ((MaterialInkController)controller).markNeedsPaint());
-            __cascade.forward();
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: Ink_rippleLibrary._kFadeInDuration, vsync: ((MaterialInkController)controller).vsync);
+    __cascade.addListener(() => ((MaterialInkController)controller).markNeedsPaint());
+    __cascade.forward();
+    return __cascade;
+}))();
         _fadeIn = this._fadeInController.drive(new global::Doroti.Framework.Animation.IntTween(begin: 0L, end: color.alpha));
         _radiusController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: Ink_rippleLibrary._kUnconfirmedRippleDuration, vsync: ((MaterialInkController)controller).vsync);
-            __cascade.addListener(() => ((MaterialInkController)controller).markNeedsPaint());
-            __cascade.forward();
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: Ink_rippleLibrary._kUnconfirmedRippleDuration, vsync: ((MaterialInkController)controller).vsync);
+    __cascade.addListener(() => ((MaterialInkController)controller).markNeedsPaint());
+    __cascade.forward();
+    return __cascade;
+}))();
         _radius = this._radiusController.drive(new global::Doroti.Framework.Animation.Tween<double>(begin: (this._targetRadius * 0.3), end: (this._targetRadius + 5.0)).chain(_easeCurveTween));
         _fadeOutController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: Ink_rippleLibrary._kFadeOutDuration, vsync: ((MaterialInkController)controller).vsync);
-            __cascade.addListener(() => ((MaterialInkController)controller).markNeedsPaint());
-            __cascade.addStatusListener((AnimationStatusListener)this._handleAlphaStatusChanged);
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: Ink_rippleLibrary._kFadeOutDuration, vsync: ((MaterialInkController)controller).vsync);
+    __cascade.addListener(() => ((MaterialInkController)controller).markNeedsPaint());
+    __cascade.addStatusListener((AnimationStatusListener)this._handleAlphaStatusChanged);
+    return __cascade;
+}))();
         _fadeOut = this._fadeOutController.drive(new global::Doroti.Framework.Animation.IntTween(begin: color.alpha, end: 0L).chain(_fadeOutIntervalTween));
         controller.addInkFeature(this);
     }
@@ -136,10 +142,12 @@ public class InkRipple : InteractiveInkFeature
     public override void confirm()
     {
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = this._radiusController;
-            __cascade.duration = Ink_rippleLibrary._kRadiusDuration;
-            __cascade.forward();
-            return __cascade;        }))());
+{
+    var __cascade = this._radiusController;
+    __cascade.duration = Ink_rippleLibrary._kRadiusDuration;
+    __cascade.forward();
+    return __cascade;
+}))());
         this._fadeInController.forward();
         this._fadeOutController.animateTo(1.0, duration: Ink_rippleLibrary._kFadeOutDuration);
     }
@@ -175,9 +183,11 @@ public class InkRipple : InteractiveInkFeature
     {
         long alpha__8310 = (((global::Doroti.Framework.Animation.AnimationController)this._fadeInController).isAnimating ? ((global::Doroti.Framework.Animation.Animation<long>)this._fadeIn).value : ((global::Doroti.Framework.Animation.Animation<long>)this._fadeOut).value);
         var paint__8392 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.color.withAlpha(alpha__8310);
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.color.withAlpha(alpha__8310);
+    return __cascade;
+}))();
         global::Doroti.Ui.Rect? rect__8457 = ((global::Doroti.Ui.Rect?)(object?)this._clipCallback?.Invoke());
         global::Doroti.Ui.Offset center__8560 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(this._position, ((rect__8457 is not null) ? ((Offset)((dynamic)DartRuntimePrimitives.RequireValue(rect__8457)).center) : ((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size.center(Offset.zero)), global::Doroti.Framework.Animation.Curves.ease.transform(((global::Doroti.Framework.Animation.AnimationController)this._radiusController).value))));
         paintInkCircle(canvas: canvas, transform: transform, paint: paint__8392, center: center__8560, textDirection: this._textDirection, radius: ((global::Doroti.Framework.Animation.Animation<double>)this._radius).value, customBorder: this.customBorder, borderRadius: this._borderRadius, clipCallback: (global::System.Func<Rect>?)this._clipCallback);

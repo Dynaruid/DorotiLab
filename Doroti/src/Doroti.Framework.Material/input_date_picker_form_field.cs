@@ -89,12 +89,14 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field : gl
         base.didUpdateWidget(oldWidget);
         if ((!object.Equals(((InputDatePickerFormField)this.widget).initialDate, ((InputDatePickerFormField)oldWidget).initialDate)))
         {
-            global::Doroti.Framework.Widgets.WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) => {
-setState(((global::System.Action)(() => {
-_selectedDate = ((InputDatePickerFormField)this.widget).initialDate;
-_updateValueForSelectedDate();
-})));
-})), debugLabel: "InputDatePickerFormField.update");
+            global::Doroti.Framework.Widgets.WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+            {
+                setState(((global::System.Action)(() =>
+                {
+                    _selectedDate = ((InputDatePickerFormField)this.widget).initialDate;
+                    _updateValueForSelectedDate();
+                })));
+            })), debugLabel: "InputDatePickerFormField.update");
         }
     }
 

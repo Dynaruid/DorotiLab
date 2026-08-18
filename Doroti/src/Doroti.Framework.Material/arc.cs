@@ -33,8 +33,8 @@ public class MaterialPointArcTween : global::Doroti.Framework.Animation.Tween<Of
 
     internal virtual void _initialize()
     {
-        
-        
+
+
         global::Doroti.Ui.Offset begin__1824 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(this.begin));
         global::Doroti.Ui.Offset end__1862 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(this.end));
         global::Doroti.Ui.Offset delta__2031 = ((global::Doroti.Ui.Offset)(object?)(DartRuntimePrimitives.RequireValue(end__1862) - DartRuntimePrimitives.RequireValue(begin__1824)));
@@ -271,8 +271,8 @@ public class MaterialRectArcTween : global::Doroti.Framework.Animation.RectTween
 
     internal virtual void _initialize()
     {
-        
-        
+
+
         global::Doroti.Ui.Offset centersVector__8156 = ((global::Doroti.Ui.Offset)(object?)(((Offset)((dynamic)DartRuntimePrimitives.RequireValue(this.end)).center) - ((Offset)((dynamic)DartRuntimePrimitives.RequireValue(this.begin)).center)));
         _Diagonal__arc diagonal__8221 = ArcLibrary._maxBy<_Diagonal__arc>(ArcLibrary._allDiagonals.Cast<_Diagonal__arc>(), ((d) => _diagonalSupport(centersVector__8156, d)));
         _beginArc = new MaterialPointArcTween(begin: _cornerFor(DartRuntimePrimitives.RequireValue(this.begin), ((_Diagonal__arc)diagonal__8221).beginId), end: _cornerFor(DartRuntimePrimitives.RequireValue(this.end), ((_Diagonal__arc)diagonal__8221).beginId));
@@ -387,8 +387,8 @@ public class MaterialRectCenterArcTween : global::Doroti.Framework.Animation.Rec
 
     internal virtual void _initialize()
     {
-        
-        
+
+
         _centerArc = new MaterialPointArcTween(begin: ((Offset)((dynamic)DartRuntimePrimitives.RequireValue(this.begin)).center), end: ((Offset)((dynamic)DartRuntimePrimitives.RequireValue(this.end)).center));
         _dirty = false;
     }

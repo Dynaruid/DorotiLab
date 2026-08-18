@@ -51,10 +51,11 @@ public class Autocomplete<T> : global::Doroti.Framework.Widgets.StatelessWidget
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.RawAutocomplete<T>(displayStringForOption: (global::System.Func<T, string>)this.displayStringForOption, fieldViewBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.TextEditingController, global::Doroti.Framework.Widgets.FocusNode, global::System.Action, global::Doroti.Framework.Widgets.Widget>)this.fieldViewBuilder, focusNode: this.focusNode, textEditingController: this.textEditingController, initialValue: this.initialValue, optionsBuilder: (global::System.Func<global::Doroti.Framework.Services.TextEditingValue, object>)this.optionsBuilder, optionsViewOpenDirection: this.optionsViewOpenDirection, optionsViewBuilder: ((this.optionsViewBuilder ?? (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::System.Action<T>, IEnumerable<T>, global::Doroti.Framework.Widgets.Widget>)((context, onSelected, options) => {
-return new _AutocompleteOptions__autocomplete<T>(displayStringForOption: (global::System.Func<T, string>)this.displayStringForOption, onSelected: (global::System.Action<T>)onSelected, options: options.Cast<T>(), openDirection: this.optionsViewOpenDirection, optionsMaxHeight: this.optionsMaxHeight);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))), onSelected: (global::System.Action<T>?)this.onSelected));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.RawAutocomplete<T>(displayStringForOption: (global::System.Func<T, string>)this.displayStringForOption, fieldViewBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.TextEditingController, global::Doroti.Framework.Widgets.FocusNode, global::System.Action, global::Doroti.Framework.Widgets.Widget>)this.fieldViewBuilder, focusNode: this.focusNode, textEditingController: this.textEditingController, initialValue: this.initialValue, optionsBuilder: (global::System.Func<global::Doroti.Framework.Services.TextEditingValue, object>)this.optionsBuilder, optionsViewOpenDirection: this.optionsViewOpenDirection, optionsViewBuilder: ((this.optionsViewBuilder ?? (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::System.Action<T>, IEnumerable<T>, global::Doroti.Framework.Widgets.Widget>)((context, onSelected, options) =>
+        {
+            return new _AutocompleteOptions__autocomplete<T>(displayStringForOption: (global::System.Func<T, string>)this.displayStringForOption, onSelected: (global::System.Action<T>)onSelected, options: options.Cast<T>(), openDirection: this.optionsViewOpenDirection, optionsMaxHeight: this.optionsMaxHeight);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))), onSelected: (global::System.Action<T>?)this.onSelected));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -75,9 +76,10 @@ internal class _AutocompleteField__autocomplete : global::Doroti.Framework.Widge
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new TextFormField(controller: this.textEditingController, focusNode: this.focusNode, onFieldSubmitted: ((value) => {
-this.onFieldSubmitted();
-})));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new TextFormField(controller: this.textEditingController, focusNode: this.focusNode, onFieldSubmitted: ((value) =>
+        {
+            this.onFieldSubmitted();
+        })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -136,21 +138,22 @@ internal class _AutocompleteOptionsListState__autocomplete<T> : global::Doroti.F
         base.didUpdateWidget(oldWidget);
         if ((((_AutocompleteOptionsList__autocomplete<T>)(object)this.widget).highlightedIndex != ((_AutocompleteOptionsList__autocomplete<T>)oldWidget).highlightedIndex))
         {
-            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) => {
-if (!this.mounted)
-{
-    return;
-}
-global::Doroti.Framework.Widgets.BuildContext? highlightedContext__8428 = new global::Doroti.Framework.Widgets.GlobalObjectKey<IState>(((_AutocompleteOptionsList__autocomplete<T>)(object)this.widget).options.elementAt(((_AutocompleteOptionsList__autocomplete<T>)(object)this.widget).highlightedIndex)).currentContext;
-if ((highlightedContext__8428 is null))
-{
-    this._scrollController.jumpTo(((((_AutocompleteOptionsList__autocomplete<T>)(object)this.widget).highlightedIndex == 0L) ? 0.0 : ((global::Doroti.Framework.Widgets.ScrollController)this._scrollController).position.maxScrollExtent));
-}
-else
-{
-    DartRuntimePrimitives.Ignore(Scrollable.ensureVisible(highlightedContext__8428, alignment: 0.5));
-}
-})), debugLabel: "AutocompleteOptions.ensureVisible");
+            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+            {
+                if (!this.mounted)
+                {
+                    return;
+                }
+                global::Doroti.Framework.Widgets.BuildContext? highlightedContext__8428 = new global::Doroti.Framework.Widgets.GlobalObjectKey<IState>(((_AutocompleteOptionsList__autocomplete<T>)(object)this.widget).options.elementAt(((_AutocompleteOptionsList__autocomplete<T>)(object)this.widget).highlightedIndex)).currentContext;
+                if ((highlightedContext__8428 is null))
+                {
+                    this._scrollController.jumpTo(((((_AutocompleteOptionsList__autocomplete<T>)(object)this.widget).highlightedIndex == 0L) ? 0.0 : ((global::Doroti.Framework.Widgets.ScrollController)this._scrollController).position.maxScrollExtent));
+                }
+                else
+                {
+                    DartRuntimePrimitives.Ignore(Scrollable.ensureVisible(highlightedContext__8428, alignment: 0.5));
+                }
+            })), debugLabel: "AutocompleteOptions.ensureVisible");
         }
     }
 
@@ -163,17 +166,20 @@ else
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         long highlightedIndex__9061 = AutocompleteHighlightedOption.of(context);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.ListView.CreateBuilder(padding: global::Doroti.Framework.Painting.EdgeInsets.zero, shrinkWrap: true, controller: this._scrollController, itemCount: ((_AutocompleteOptionsList__autocomplete<T>)(object)this.widget).options.Count(), itemBuilder: ((context, index) => {
-T option__9357 = ((_AutocompleteOptionsList__autocomplete<T>)(object)this.widget).options.elementAt(index);
-return new global::Doroti.Framework.Widgets.Semantics(button: true, child: new InkWell(key: new global::Doroti.Framework.Widgets.GlobalObjectKey<IState>(option__9357), onTap: (() => {
-this.widget.onSelected(option__9357);
-}), child: new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) => {
-var highlight__9695 = (highlightedIndex__9061 == index);
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Container(color: (highlight__9695 ? Theme.of(context).focusColor : null), padding: global::Doroti.Framework.Painting.EdgeInsets.CreateAll(16.0), child: new global::Doroti.Framework.Widgets.Text(this.widget.displayStringForOption(option__9357))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.ListView.CreateBuilder(padding: global::Doroti.Framework.Painting.EdgeInsets.zero, shrinkWrap: true, controller: this._scrollController, itemCount: ((_AutocompleteOptionsList__autocomplete<T>)(object)this.widget).options.Count(), itemBuilder: ((context, index) =>
+        {
+            T option__9357 = ((_AutocompleteOptionsList__autocomplete<T>)(object)this.widget).options.elementAt(index);
+            return new global::Doroti.Framework.Widgets.Semantics(button: true, child: new InkWell(key: new global::Doroti.Framework.Widgets.GlobalObjectKey<IState>(option__9357), onTap: (() =>
+            {
+                this.widget.onSelected(option__9357);
+            }), child: new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
+            {
+                var highlight__9695 = (highlightedIndex__9061 == index);
+                return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Container(color: (highlight__9695 ? Theme.of(context).focusColor : null), padding: global::Doroti.Framework.Painting.EdgeInsets.CreateAll(16.0), child: new global::Doroti.Framework.Widgets.Text(this.widget.displayStringForOption(option__9357))));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })))));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

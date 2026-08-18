@@ -94,9 +94,10 @@ public class FormState : State<Form>
 
     internal virtual void _forceRebuild()
     {
-        setState(((global::System.Action)(() => {
-++_generation;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            ++_generation;
+        })));
     }
 
     internal virtual void _register(dynamic field)
@@ -226,25 +227,27 @@ public class FormState : State<Form>
             global::Doroti.Ui.TextDirection directionality__13387 = Directionality.of(this.context);
             if ((object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)))
             {
-                global::Doroti.Runtime.DartAsyncRuntime.unawaited(new Future((async () => {
-await new Future(FormLibrary._kIOSAnnouncementDelayDuration);
-try
-{
-    await SemanticsService.sendAnnouncement(view, errorMessage__12596, directionality__13387, assertiveness: global::Doroti.Framework.Semantics.Assertiveness.assertive);
-}
-catch (Exception exception__13865)
-{
-    var stack__13876 = new System.Diagnostics.StackTrace();
-    FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception__13865, stack: stack__13876, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+                global::Doroti.Runtime.DartAsyncRuntime.unawaited(new Future((async () =>
+                {
+                    await new Future(FormLibrary._kIOSAnnouncementDelayDuration);
+                    try
+                    {
+                        await SemanticsService.sendAnnouncement(view, errorMessage__12596, directionality__13387, assertiveness: global::Doroti.Framework.Semantics.Assertiveness.assertive);
+                    }
+                    catch (Exception exception__13865)
+                    {
+                        var stack__13876 = new System.Diagnostics.StackTrace();
+                        FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception__13865, stack: stack__13876, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
+                    }
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                })));
             }
             else
             {
-                DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(view, errorMessage__12596, directionality__13387, assertiveness: global::Doroti.Framework.Semantics.Assertiveness.assertive).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) => {
-FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
-}))));
+                DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(view, errorMessage__12596, directionality__13387, assertiveness: global::Doroti.Framework.Semantics.Assertiveness.assertive).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) =>
+                {
+                    FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
+                }))));
             }
         }
         return !hasError__12570;
@@ -344,27 +347,30 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
 
     public virtual void reset()
     {
-        setState(((global::System.Action)(() => {
-_value = ((FormField<T>)(object)this.widget).initialValue;
-_clearErrorInternal();
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _value = ((FormField<T>)(object)this.widget).initialValue;
+            _clearErrorInternal();
+        })));
         ((FormField<T>)(object)this.widget).onReset?.Invoke();
         Form.maybeOf(this.context)?._fieldDidChange();
     }
 
     public virtual void clearError()
     {
-        setState(((global::System.Action)(() => {
-_clearErrorInternal();
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _clearErrorInternal();
+        })));
         Form.maybeOf(this.context)?._fieldDidChange();
     }
 
     public virtual bool validate()
     {
-        setState(((global::System.Action)(() => {
-_validate();
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _validate();
+        })));
         return !this.hasError;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -394,10 +400,11 @@ _validate();
 
     public virtual void didChange(T? value)
     {
-        setState(((global::System.Action)(() => {
-_value = value;
-this._hasInteractedByUser.value = true;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _value = value;
+            this._hasInteractedByUser.value = true;
+        })));
         Form.maybeOf(this.context)?._fieldDidChange();
     }
 
@@ -455,12 +462,13 @@ this._hasInteractedByUser.value = true;
         {
             case AutovalidateMode.always:
                 {
-                    WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) => {
-if (((((FormField<T>)(object)this.widget).enabled && !this.hasError) && !this.isValid))
-{
-    validate();
-}
-})));
+                    WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
+                    {
+                        if (((((FormField<T>)(object)this.widget).enabled && !this.hasError) && !this.isValid))
+                        {
+                            validate();
+                        }
+                    })));
                     break;
                 }
             case AutovalidateMode.onUnfocus:
@@ -479,12 +487,13 @@ if (((((FormField<T>)(object)this.widget).enabled && !this.hasError) && !this.is
         this._errorText.dispose();
         this._focusNode.dispose();
         this._hasInteractedByUser.dispose();
-        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) => {
-if (!((dynamic)property)._disposed)
-{
-    property.removeListener((global::System.Action)(() => listener()));
-}
-})));
+        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
+        {
+            if (!((dynamic)property)._disposed)
+            {
+                property.removeListener((global::System.Action)(() => listener()));
+            }
+        })));
         this._bucket?.dispose();
         _bucket = null;
         base.dispose();
@@ -528,14 +537,16 @@ if (!((dynamic)property)._disposed)
         Widget child__28942 = ((Widget)(object?)new Semantics(validationResult: (this.hasError ? SemanticsValidationResult.invalid : SemanticsValidationResult.valid), child: this.widget.builder(this)));
         if ((((object.Equals(Form.maybeOf(context)?.widget.autovalidateMode, AutovalidateMode.onUnfocus)) && (!object.Equals(((FormField<T>)(object)this.widget).autovalidateMode, AutovalidateMode.always))) || (object.Equals(((FormField<T>)(object)this.widget).autovalidateMode, AutovalidateMode.onUnfocus))))
         {
-            return ((Widget)(object?)new Focus(canRequestFocus: false, skipTraversal: true, onFocusChange: ((global::System.Action<bool>)((value) => {
-if (!DartRuntimePrimitives.RequireValue(value))
-{
-    setState(((global::System.Action)(() => {
-_validate();
-})));
-}
-})), focusNode: this._focusNode, child: child__28942));
+            return ((Widget)(object?)new Focus(canRequestFocus: false, skipTraversal: true, onFocusChange: ((global::System.Action<bool>)((value) =>
+            {
+                if (!DartRuntimePrimitives.RequireValue(value))
+                {
+                    setState(((global::System.Action)(() =>
+                    {
+                        _validate();
+                    })));
+                }
+            })), focusNode: this._focusNode, child: child__28942));
         }
         return child__28942;
         throw new InvalidOperationException("Dart control flow completed without a value.");

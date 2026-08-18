@@ -110,23 +110,25 @@ public abstract class ScrollView : StatelessWidget
         global::Doroti.Framework.Painting.AxisDirection axisDirection__20884 = getDirection(context);
         bool effectivePrimary__20939 = (this.primary ?? ((this.controller is null) && PrimaryScrollController.shouldInherit(context, this.scrollDirection)));
         ScrollController? scrollController__21101 = (effectivePrimary__20939 ? PrimaryScrollController.maybeOf(context) : this.controller);
-        var scrollable__21221 = new Scrollable(dragStartBehavior: this.dragStartBehavior, axisDirection: axisDirection__20884, controller: scrollController__21101, physics: this.physics, scrollBehavior: this.scrollBehavior, semanticChildCount: this.semanticChildCount, restorationId: this.restorationId, hitTestBehavior: this.hitTestBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, offset) => {
-return ((Widget)(object?)buildViewport(context, offset, axisDirection__20884, slivers__20827));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), clipBehavior: this.clipBehavior);
+        var scrollable__21221 = new Scrollable(dragStartBehavior: this.dragStartBehavior, axisDirection: axisDirection__20884, controller: scrollController__21101, physics: this.physics, scrollBehavior: this.scrollBehavior, semanticChildCount: this.semanticChildCount, restorationId: this.restorationId, hitTestBehavior: this.hitTestBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, offset) =>
+        {
+            return ((Widget)(object?)buildViewport(context, offset, axisDirection__20884, slivers__20827));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), clipBehavior: this.clipBehavior);
         Widget scrollableResult__21756 = ((effectivePrimary__20939 && (scrollController__21101 is not null)) ? PrimaryScrollController.CreateNone(child: scrollable__21221) : scrollable__21221);
         ScrollViewKeyboardDismissBehavior effectiveKeyboardDismissBehavior__22037 = this.keyboardDismissBehavior ?? ScrollViewKeyboardDismissBehavior.manual;
         if ((object.Equals(effectiveKeyboardDismissBehavior__22037, ScrollViewKeyboardDismissBehavior.onDrag)))
         {
-            return ((Widget)(object?)new NotificationListener<ScrollUpdateNotification>(child: scrollableResult__21756, onNotification: ((global::System.Func<ScrollUpdateNotification, bool>?)((notification) => {
-FocusScopeNode currentScope__22527 = ((FocusScopeNode)(object?)FocusScope.of(context));
-if ((((((ScrollUpdateNotification)notification).dragDetails is not null) && !currentScope__22527.hasPrimaryFocus) && currentScope__22527.hasFocus))
-{
-    FocusManager.instance.primaryFocus?.unfocus();
-}
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+            return ((Widget)(object?)new NotificationListener<ScrollUpdateNotification>(child: scrollableResult__21756, onNotification: ((global::System.Func<ScrollUpdateNotification, bool>?)((notification) =>
+            {
+                FocusScopeNode currentScope__22527 = ((FocusScopeNode)(object?)FocusScope.of(context));
+                if ((((((ScrollUpdateNotification)notification).dragDetails is not null) && !currentScope__22527.hasPrimaryFocus) && currentScope__22527.hasFocus))
+                {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                }
+                return false;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }))));
         }
         else
         {
@@ -236,22 +238,25 @@ public class ListView : BoxScrollView
         __instance.itemExtent = null;
         __instance.itemExtentBuilder = null;
         __instance.prototypeItem = null;
-        __instance.childrenDelegate = new SliverChildBuilderDelegate(((global::System.Func<BuildContext, long, Widget?>)((context, index) => {
-long itemIndex__64623 = (checked((long)(index / 2L)));
-if (((checked((long)(index)) & 1L) == 0L))
-{
-    return itemBuilder(context, itemIndex__64623);
-}
-return separatorBuilder(context, itemIndex__64623);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), findChildIndexCallback: ((global::System.Func<global::Doroti.Framework.Foundation.Key, long?>)((findItemIndexCallback is not null) ? ((key) => {
-long? itemIndex__64930 = findItemIndexCallback(key);
-return ((itemIndex__64930 is null) ? null : (DartRuntimePrimitives.RequireValue(itemIndex__64930) * 2L));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}) : findChildIndexCallback)), childCount: ListView._computeActualChildCount(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(itemCount))), addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes, semanticIndexCallback: ((global::System.Func<Widget, long, long?>)((widget, index) => {
-return (((checked((long)(index)) & 1L) == 0L) ? (checked((long)(index / 2L))) : null);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        __instance.childrenDelegate = new SliverChildBuilderDelegate(((global::System.Func<BuildContext, long, Widget?>)((context, index) =>
+        {
+            long itemIndex__64623 = (checked((long)(index / 2L)));
+            if (((checked((long)(index)) & 1L) == 0L))
+            {
+                return itemBuilder(context, itemIndex__64623);
+            }
+            return separatorBuilder(context, itemIndex__64623);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), findChildIndexCallback: ((global::System.Func<global::Doroti.Framework.Foundation.Key, long?>)((findItemIndexCallback is not null) ? ((key) =>
+        {
+            long? itemIndex__64930 = findItemIndexCallback(key);
+            return ((itemIndex__64930 is null) ? null : (DartRuntimePrimitives.RequireValue(itemIndex__64930) * 2L));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }) : findChildIndexCallback)), childCount: ListView._computeActualChildCount(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(itemCount))), addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes, semanticIndexCallback: ((global::System.Func<Widget, long, long?>)((widget, index) =>
+        {
+            return (((checked((long)(index)) & 1L) == 0L) ? (checked((long)(index / 2L))) : null);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         return __instance;
     }
 

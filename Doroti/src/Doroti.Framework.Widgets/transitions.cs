@@ -63,8 +63,9 @@ internal class _AnimatedState__transitions : State<AnimatedWidget>
         {
             return;
         }
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     public override Widget build(BuildContext context) => this.widget.build(context);
@@ -195,10 +196,12 @@ public class FadeTransition : SingleChildRenderObjectWidget
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderAnimatedOpacity)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderAnimatedOpacity>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.opacity = this.opacity;
-            __cascade.alwaysIncludeSemantics = this.alwaysIncludeSemantics;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.opacity = this.opacity;
+    __cascade.alwaysIncludeSemantics = this.alwaysIncludeSemantics;
+    return __cascade;
+}))());
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -231,10 +234,12 @@ public class SliverFadeTransition : SingleChildRenderObjectWidget
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderSliverAnimatedOpacity)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderSliverAnimatedOpacity>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.opacity = this.opacity;
-            __cascade.alwaysIncludeSemantics = this.alwaysIncludeSemantics;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.opacity = this.opacity;
+    __cascade.alwaysIncludeSemantics = this.alwaysIncludeSemantics;
+    return __cascade;
+}))());
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)

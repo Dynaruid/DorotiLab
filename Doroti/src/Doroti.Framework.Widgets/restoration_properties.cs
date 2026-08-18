@@ -20,7 +20,8 @@ public abstract class RestorableValue<T> : RestorableProperty<T>
 
     public virtual T value
     {
-        get{
+        get
+        {
             DartRuntimePrimitives.Assert(() => this.isRegistered);
             return ((T?)(object?)this._value)!;
             return default!;

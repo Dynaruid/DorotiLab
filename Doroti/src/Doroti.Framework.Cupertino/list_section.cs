@@ -196,10 +196,11 @@ public class CupertinoListSection : global::Doroti.Framework.Widgets.StatelessWi
             {
                 childrenWithDividers__18195.Add(longDivider__16590);
             }
-            this.children!.GetRange(0L, (checked((long)(this.children!.Count)) - 1L)).forEach(((global::System.Action<global::Doroti.Framework.Widgets.Widget>)((widget) => {
-childrenWithDividers__18195.Add(widget);
-childrenWithDividers__18195.Add(shortDivider__16720);
-})));
+            this.children!.GetRange(0L, (checked((long)(this.children!.Count)) - 1L)).forEach(((global::System.Action<global::Doroti.Framework.Widgets.Widget>)((widget) =>
+            {
+                childrenWithDividers__18195.Add(widget);
+                childrenWithDividers__18195.Add(shortDivider__16720);
+            })));
             childrenWithDividers__18195.Add(this.children!.Last());
             if ((object.Equals(this.type, CupertinoListSectionType.@base)))
             {

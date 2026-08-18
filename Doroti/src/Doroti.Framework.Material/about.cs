@@ -41,9 +41,10 @@ public class AboutListTile : global::Doroti.Framework.Widgets.StatelessWidget
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new ListTile(leading: this.icon, title: (this.child ?? new global::Doroti.Framework.Widgets.Text(MaterialLocalizations.of(context).aboutListTileTitle((this.applicationName ?? AboutLibrary._defaultApplicationName(context))))), dense: this.dense, onTap: ((global::System.Action)(() => {
-AboutLibrary.showAboutDialog(context: context, applicationName: this.applicationName, applicationVersion: this.applicationVersion, applicationIcon: this.applicationIcon, applicationLegalese: this.applicationLegalese, children: this.aboutBoxChildren);
-}))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new ListTile(leading: this.icon, title: (this.child ?? new global::Doroti.Framework.Widgets.Text(MaterialLocalizations.of(context).aboutListTileTitle((this.applicationName ?? AboutLibrary._defaultApplicationName(context))))), dense: this.dense, onTap: ((global::System.Action)(() =>
+        {
+            AboutLibrary.showAboutDialog(context: context, applicationName: this.applicationName, applicationVersion: this.applicationVersion, applicationIcon: this.applicationIcon, applicationLegalese: this.applicationLegalese, children: this.aboutBoxChildren);
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -53,10 +54,11 @@ public static partial class AboutLibrary
 {
     public static void showAboutDialog(global::Doroti.Framework.Widgets.BuildContext context, string? applicationName = null, string? applicationVersion = null, global::Doroti.Framework.Widgets.Widget? applicationIcon = null, string? applicationLegalese = null, List<global::Doroti.Framework.Widgets.Widget>? children = null, bool barrierDismissible = true, Color? barrierColor = null, string? barrierLabel = null, bool useRootNavigator = true, global::Doroti.Framework.Widgets.RouteSettings? routeSettings = null, Offset? anchorPoint = null)
     {
-        DartRuntimePrimitives.Ignore(DialogLibrary.showDialog<object?>(context: context, barrierDismissible: barrierDismissible, barrierColor: barrierColor, barrierLabel: barrierLabel, useRootNavigator: useRootNavigator, builder: ((context) => {
-return new AboutDialog(applicationName: applicationName, applicationVersion: applicationVersion, applicationIcon: applicationIcon, applicationLegalese: applicationLegalese, children: children);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}), routeSettings: routeSettings, anchorPoint: DartRuntimePrimitives.RequireValue(anchorPoint)));
+        DartRuntimePrimitives.Ignore(DialogLibrary.showDialog<object?>(context: context, barrierDismissible: barrierDismissible, barrierColor: barrierColor, barrierLabel: barrierLabel, useRootNavigator: useRootNavigator, builder: ((context) =>
+        {
+            return new AboutDialog(applicationName: applicationName, applicationVersion: applicationVersion, applicationIcon: applicationIcon, applicationLegalese: applicationLegalese, children: children);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }), routeSettings: routeSettings, anchorPoint: DartRuntimePrimitives.RequireValue(anchorPoint)));
     }
 }
 
@@ -64,10 +66,11 @@ public static partial class AboutLibrary
 {
     public static void showAdaptiveAboutDialog(global::Doroti.Framework.Widgets.BuildContext context, string? applicationName = null, string? applicationVersion = null, global::Doroti.Framework.Widgets.Widget? applicationIcon = null, string? applicationLegalese = null, List<global::Doroti.Framework.Widgets.Widget>? children = null, bool barrierDismissible = true, Color? barrierColor = null, string? barrierLabel = null, bool useRootNavigator = true, global::Doroti.Framework.Widgets.RouteSettings? routeSettings = null, Offset? anchorPoint = null)
     {
-        DartRuntimePrimitives.Ignore(DialogLibrary.showAdaptiveDialog<object?>(context: context, barrierDismissible: barrierDismissible, barrierColor: barrierColor, barrierLabel: barrierLabel, useRootNavigator: useRootNavigator, builder: ((context) => {
-return AboutDialog.CreateAdaptive(applicationName: applicationName, applicationVersion: applicationVersion, applicationIcon: applicationIcon, applicationLegalese: applicationLegalese, children: children);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}), routeSettings: routeSettings, anchorPoint: anchorPoint));
+        DartRuntimePrimitives.Ignore(DialogLibrary.showAdaptiveDialog<object?>(context: context, barrierDismissible: barrierDismissible, barrierColor: barrierColor, barrierLabel: barrierLabel, useRootNavigator: useRootNavigator, builder: ((context) =>
+        {
+            return AboutDialog.CreateAdaptive(applicationName: applicationName, applicationVersion: applicationVersion, applicationIcon: applicationIcon, applicationLegalese: applicationLegalese, children: children);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }), routeSettings: routeSettings, anchorPoint: anchorPoint));
     }
 }
 
@@ -271,40 +274,43 @@ internal class _PackagesViewState__about : global::Doroti.Framework.Widgets.Stat
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.FutureBuilder<_LicenseData__about>(future: this.licenses, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.AsyncSnapshot<_LicenseData__about>, global::Doroti.Framework.Widgets.Widget>)((context, snapshot) => {
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.LayoutBuilder(key: new global::Doroti.Framework.Foundation.ValueKey<global::Doroti.Framework.Widgets.ConnectionState>(((global::Doroti.Framework.Widgets.AsyncSnapshot<_LicenseData__about>)snapshot).connectionState), builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) => {
-switch (((global::Doroti.Framework.Widgets.AsyncSnapshot<_LicenseData__about>)snapshot).connectionState)
-{
-    case global::Doroti.Framework.Widgets.ConnectionState.done:
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.FutureBuilder<_LicenseData__about>(future: this.licenses, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.AsyncSnapshot<_LicenseData__about>, global::Doroti.Framework.Widgets.Widget>)((context, snapshot) =>
         {
-            if (((global::Doroti.Framework.Widgets.AsyncSnapshot<_LicenseData__about>)snapshot).hasError)
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.LayoutBuilder(key: new global::Doroti.Framework.Foundation.ValueKey<global::Doroti.Framework.Widgets.ConnectionState>(((global::Doroti.Framework.Widgets.AsyncSnapshot<_LicenseData__about>)snapshot).connectionState), builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
             {
-                DartRuntimePrimitives.Assert(() =>
-                    {
-                        FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: ((global::Doroti.Framework.Widgets.AsyncSnapshot<_LicenseData__about>)snapshot).error!, stack: ((global::Doroti.Framework.Widgets.AsyncSnapshot<_LicenseData__about>)snapshot).stackTrace, context: new global::Doroti.Framework.Foundation.ErrorDescription("while decoding the license file")));
-                        return true;
-                    });
-                return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Text(((string)((dynamic)((global::Doroti.Framework.Widgets.AsyncSnapshot<_LicenseData__about>)snapshot).error).ToString()))));
-            }
-            _initDefaultDetailPage(((global::Doroti.Framework.Widgets.AsyncSnapshot<_LicenseData__about>)snapshot).data!, context);
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ValueListenableBuilder<long?>(valueListenable: ((_PackagesView__about)this.widget).selectedId, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long?, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, selectedId, _) => {
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Center(child: new Material(color: Theme.of(context).cardColor, elevation: 4.0, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: 600.0), child: _packagesList(context, selectedId, ((global::Doroti.Framework.Widgets.AsyncSnapshot<_LicenseData__about>)snapshot).data!, ((_PackagesView__about)this.widget).isLateral)))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
-        }
-    case global::Doroti.Framework.Widgets.ConnectionState.none:
-    case global::Doroti.Framework.Widgets.ConnectionState.active:
-    case global::Doroti.Framework.Widgets.ConnectionState.waiting:
-        {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new Material(color: Theme.of(context).cardColor, child: new global::Doroti.Framework.Widgets.Column(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(((_PackagesView__about)this.widget).about), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Center(child: new CircularProgressIndicator())) })));
-        }
-    default:
-        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+                switch (((global::Doroti.Framework.Widgets.AsyncSnapshot<_LicenseData__about>)snapshot).connectionState)
+                {
+                    case global::Doroti.Framework.Widgets.ConnectionState.done:
+                        {
+                            if (((global::Doroti.Framework.Widgets.AsyncSnapshot<_LicenseData__about>)snapshot).hasError)
+                            {
+                                DartRuntimePrimitives.Assert(() =>
+                                    {
+                                        FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: ((global::Doroti.Framework.Widgets.AsyncSnapshot<_LicenseData__about>)snapshot).error!, stack: ((global::Doroti.Framework.Widgets.AsyncSnapshot<_LicenseData__about>)snapshot).stackTrace, context: new global::Doroti.Framework.Foundation.ErrorDescription("while decoding the license file")));
+                                        return true;
+                                    });
+                                return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Text(((string)((dynamic)((global::Doroti.Framework.Widgets.AsyncSnapshot<_LicenseData__about>)snapshot).error).ToString()))));
+                            }
+                            _initDefaultDetailPage(((global::Doroti.Framework.Widgets.AsyncSnapshot<_LicenseData__about>)snapshot).data!, context);
+                            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ValueListenableBuilder<long?>(valueListenable: ((_PackagesView__about)this.widget).selectedId, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long?, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, selectedId, _) =>
+                            {
+                                return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Center(child: new Material(color: Theme.of(context).cardColor, elevation: 4.0, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: 600.0), child: _packagesList(context, selectedId, ((global::Doroti.Framework.Widgets.AsyncSnapshot<_LicenseData__about>)snapshot).data!, ((_PackagesView__about)this.widget).isLateral)))));
+                                throw new InvalidOperationException("Dart closure completed without a value.");
+                            }))));
+                        }
+                    case global::Doroti.Framework.Widgets.ConnectionState.none:
+                    case global::Doroti.Framework.Widgets.ConnectionState.active:
+                    case global::Doroti.Framework.Widgets.ConnectionState.waiting:
+                        {
+                            return ((global::Doroti.Framework.Widgets.Widget)(object?)new Material(color: Theme.of(context).cardColor, child: new global::Doroti.Framework.Widgets.Column(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(((_PackagesView__about)this.widget).about), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Center(child: new CircularProgressIndicator())) })));
+                        }
+                    default:
+                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                }
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }))));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -323,20 +329,22 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         global::Doroti.Framework.Painting.EdgeInsets safeAreaPadding__28846 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
         var padding__28905 = global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: ((global::Doroti.Framework.Painting.EdgeInsets)safeAreaPadding__28846).left, right: ((global::Doroti.Framework.Painting.EdgeInsets)safeAreaPadding__28846).right, bottom: ((global::Doroti.Framework.Painting.EdgeInsets)safeAreaPadding__28846).bottom);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.ListView.CreateBuilder(padding: padding__28905, itemCount: (checked((long)(((_LicenseData__about)data).packages.Count)) + 1L), itemBuilder: ((context, index) => {
-if ((index == 0L))
-{
-    return ((_PackagesView__about)this.widget).about;
-}
-long packageIndex__29283 = (index - 1L);
-string packageName__29330 = ((_LicenseData__about)data).packages[(int)(packageIndex__29283)];
-List<long> bindings__29397 = ((_LicenseData__about)data).packageLicenseBindings.GetValueOrDefault(packageName__29330)!.ToList();
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new _PackageListTile__about(packageName: packageName__29330, index: packageIndex__29283, isSelected: (drawSelection && (packageIndex__29283 == ((selectedId ?? 0L)))), numberLicenses: checked((long)(bindings__29397.Count)), onTap: ((global::System.Action)(() => {
-((_PackagesView__about)this.widget).selectedId.value = packageIndex__29283;
-_MasterDetailFlow__about.of(context).openDetailPage(new _DetailArguments__about(packageName__29330, bindings__29397.map<long, global::Doroti.Framework.Foundation.LicenseEntry>(((i) => ((_LicenseData__about)data).licenses[(int)(i)])).ToList()));
-}))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.ListView.CreateBuilder(padding: padding__28905, itemCount: (checked((long)(((_LicenseData__about)data).packages.Count)) + 1L), itemBuilder: ((context, index) =>
+        {
+            if ((index == 0L))
+            {
+                return ((_PackagesView__about)this.widget).about;
+            }
+            long packageIndex__29283 = (index - 1L);
+            string packageName__29330 = ((_LicenseData__about)data).packages[(int)(packageIndex__29283)];
+            List<long> bindings__29397 = ((_LicenseData__about)data).packageLicenseBindings.GetValueOrDefault(packageName__29330)!.ToList();
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new _PackageListTile__about(packageName: packageName__29330, index: packageIndex__29283, isSelected: (drawSelection && (packageIndex__29283 == ((selectedId ?? 0L)))), numberLicenses: checked((long)(bindings__29397.Count)), onTap: ((global::System.Action)(() =>
+            {
+                ((_PackagesView__about)this.widget).selectedId.value = packageIndex__29283;
+                _MasterDetailFlow__about.of(context).openDetailPage(new _DetailArguments__about(packageName__29330, bindings__29397.map<long, global::Doroti.Framework.Foundation.LicenseEntry>(((i) => ((_LicenseData__about)data).licenses[(int)(i)])).ToList()));
+            }))));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -396,18 +404,19 @@ public class _LicenseData__about
 
     public virtual void sortPackages(global::System.Func<string, string, long>? compare = null)
     {
-        this.packages.sort(((compare ?? (global::System.Func<string, string, long>)((a, b) => {
-if ((a == this.firstPackage))
-{
-    return -1L;
-}
-if ((b == this.firstPackage))
-{
-    return 1L;
-}
-return a.toLowerCase().CompareTo(b.toLowerCase());
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        this.packages.sort(((compare ?? (global::System.Func<string, string, long>)((a, b) =>
+        {
+            if ((a == this.firstPackage))
+            {
+                return -1L;
+            }
+            if ((b == this.firstPackage))
+            {
+                return 1L;
+            }
+            return a.toLowerCase().CompareTo(b.toLowerCase());
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
     }
 
 }
@@ -471,8 +480,9 @@ internal class _PackageLicensePageState__about : global::Doroti.Framework.Widget
         DartRuntimePrimitives.Assert(() =>
             {
                 global::Doroti.Runtime.Flow flow__34221 = global::Doroti.Runtime.Flow.begin();
-                Timeline.timeSync("_initLicenses()", (() => {
-}), flow: flow__34221);
+                Timeline.timeSync("_initLicenses()", (() =>
+                {
+                }), flow: flow__34221);
                 debugFlowId__34170 = flow__34221.id;
                 return true;
             });
@@ -484,8 +494,9 @@ internal class _PackageLicensePageState__about : global::Doroti.Framework.Widget
             }
             DartRuntimePrimitives.Assert(() =>
                 {
-                    Timeline.timeSync("_initLicenses()", (() => {
-}), flow: global::Doroti.Runtime.Flow.step(debugFlowId__34170));
+                    Timeline.timeSync("_initLicenses()", (() =>
+                    {
+                    }), flow: global::Doroti.Runtime.Flow.step(debugFlowId__34170));
                     return true;
                 });
             List<global::Doroti.Framework.Foundation.LicenseParagraph> paragraphs__34642 = (await global::Doroti.Framework.Scheduler.SchedulerBinding.instance.scheduleTask<List<global::Doroti.Framework.Foundation.LicenseParagraph>>((global::System.Func<object>)(() => ((global::Doroti.Framework.Foundation.LicenseEntry)license__34391).paragraphs.toList()), global::Doroti.Framework.Scheduler.Priority.animation, debugLabel: "License")).ToList();
@@ -493,29 +504,32 @@ internal class _PackageLicensePageState__about : global::Doroti.Framework.Widget
             {
                 return;
             }
-            setState(((global::System.Action)(() => {
-this._licenses.Add(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateAll(18.0), child: new Divider()));
-foreach (var paragraph__35027 in paragraphs__34642)
-{
-    if ((((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph__35027).indent == global::Doroti.Framework.Foundation.LicenseParagraph.centeredIndent))
-    {
-        this._licenses.Add(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: 16.0), child: new global::Doroti.Framework.Widgets.Text(((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph__35027).text, style: new global::Doroti.Framework.Painting.TextStyle(fontWeight: FontWeight.bold), textAlign: global::Doroti.Ui.TextAlign.center)));
-    }
-    else
-    {
-        DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph__35027).indent >= 0L));
-        this._licenses.Add(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(top: 8.0, start: (16.0 * ((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph__35027).indent)), child: new global::Doroti.Framework.Widgets.Text(((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph__35027).text)));
-    }
-}
-})));
+            setState(((global::System.Action)(() =>
+            {
+                this._licenses.Add(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateAll(18.0), child: new Divider()));
+                foreach (var paragraph__35027 in paragraphs__34642)
+                {
+                    if ((((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph__35027).indent == global::Doroti.Framework.Foundation.LicenseParagraph.centeredIndent))
+                    {
+                        this._licenses.Add(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: 16.0), child: new global::Doroti.Framework.Widgets.Text(((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph__35027).text, style: new global::Doroti.Framework.Painting.TextStyle(fontWeight: FontWeight.bold), textAlign: global::Doroti.Ui.TextAlign.center)));
+                    }
+                    else
+                    {
+                        DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph__35027).indent >= 0L));
+                        this._licenses.Add(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(top: 8.0, start: (16.0 * ((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph__35027).indent)), child: new global::Doroti.Framework.Widgets.Text(((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph__35027).text)));
+                    }
+                }
+            })));
         }
-        setState(((global::System.Action)(() => {
-_loaded = true;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _loaded = true;
+        })));
         DartRuntimePrimitives.Assert(() =>
             {
-                Timeline.timeSync("Build scheduled", (() => {
-}), flow: global::Doroti.Runtime.Flow.end(debugFlowId__34170));
+                Timeline.timeSync("Build scheduled", (() =>
+                {
+                }), flow: global::Doroti.Runtime.Flow.end(debugFlowId__34170));
                 return true;
             });
     }
@@ -747,15 +761,16 @@ internal class _MasterDetailFlowState__about : global::Doroti.Framework.Widgets.
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) => {
-double availableWidth__47062 = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth;
-if ((availableWidth__47062 >= AboutLibrary._materialWideDisplayThreshold))
-{
-    return ((global::Doroti.Framework.Widgets.Widget)(object?)_lateralUI(context));
-}
-return ((global::Doroti.Framework.Widgets.Widget)(object?)_nestedUI(context));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
+        {
+            double availableWidth__47062 = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth;
+            if ((availableWidth__47062 >= AboutLibrary._materialWideDisplayThreshold))
+            {
+                return ((global::Doroti.Framework.Widgets.Widget)(object?)_lateralUI(context));
+            }
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)_nestedUI(context));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -763,54 +778,61 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         _builtLayout = _LayoutMode__about.nested;
         MaterialPageRoute<object?> masterPageRoute__47384 = ((MaterialPageRoute<object?>)(object?)_masterPageRoute(context));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NavigatorPopHandler<object>(onPop: ((global::System.Action)(() => {
-DartRuntimePrimitives.Ignore(((global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState>)this._navigatorKey).currentState!.maybePop<object>());
-})), child: new global::Doroti.Framework.Widgets.Navigator(key: this._navigatorKey, initialRoute: "initial", onGenerateInitialRoutes: ((global::System.Func<global::Doroti.Framework.Widgets.NavigatorState, string, List<dynamic>>)((navigator, initialRoute) => {
-return ((List<object>)(object?)(this.focus switch { _Focus__about.master => new List<global::Doroti.Framework.Widgets.Route<object?>> { masterPageRoute__47384 }, _Focus__about.detail => new List<global::Doroti.Framework.Widgets.Route<object?>> { masterPageRoute__47384, _detailPageRoute(this._cachedDetailArguments) }, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), onGenerateRoute: ((global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic>?)((settings) => {
-switch (((global::Doroti.Framework.Widgets.RouteSettings)settings).name)
-{
-    case var __constant48074 when (object.Equals(__constant48074, AboutLibrary._navMaster)):
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NavigatorPopHandler<object>(onPop: ((global::System.Action)(() =>
         {
-            focus = _Focus__about.master;
-            return masterPageRoute__47384;
-        }
-    case var __constant48231 when (object.Equals(__constant48231, AboutLibrary._navDetail)):
+            DartRuntimePrimitives.Ignore(((global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState>)this._navigatorKey).currentState!.maybePop<object>());
+        })), child: new global::Doroti.Framework.Widgets.Navigator(key: this._navigatorKey, initialRoute: "initial", onGenerateInitialRoutes: ((global::System.Func<global::Doroti.Framework.Widgets.NavigatorState, string, List<dynamic>>)((navigator, initialRoute) =>
         {
-            focus = _Focus__about.detail;
-            _cachedDetailArguments = ((global::Doroti.Framework.Widgets.RouteSettings)settings).arguments;
-            return _detailPageRoute(this._cachedDetailArguments);
-        }
-    default:
+            return ((List<object>)(object?)(this.focus switch { _Focus__about.master => new List<global::Doroti.Framework.Widgets.Route<object?>> { masterPageRoute__47384 }, _Focus__about.detail => new List<global::Doroti.Framework.Widgets.Route<object?>> { masterPageRoute__47384, _detailPageRoute(this._cachedDetailArguments) }, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), onGenerateRoute: ((global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic>?)((settings) =>
         {
-            throw new Exception($"Unknown route {(((global::Doroti.Framework.Widgets.RouteSettings)settings).name)}");
-        }
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))));
+            switch (((global::Doroti.Framework.Widgets.RouteSettings)settings).name)
+            {
+                case var __constant48074 when (object.Equals(__constant48074, AboutLibrary._navMaster)):
+                    {
+                        focus = _Focus__about.master;
+                        return masterPageRoute__47384;
+                    }
+                case var __constant48231 when (object.Equals(__constant48231, AboutLibrary._navDetail)):
+                    {
+                        focus = _Focus__about.detail;
+                        _cachedDetailArguments = ((global::Doroti.Framework.Widgets.RouteSettings)settings).arguments;
+                        return _detailPageRoute(this._cachedDetailArguments);
+                    }
+                default:
+                    {
+                        throw new Exception($"Unknown route {(((global::Doroti.Framework.Widgets.RouteSettings)settings).name)}");
+                    }
+            }
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual MaterialPageRoute<object?> _masterPageRoute(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((MaterialPageRoute<object?>)(object?)new MaterialPageRoute<object>(builder: ((c) => {
-return new global::Doroti.Framework.Widgets.BlockSemantics(child: new _MasterPage__about(leading: (Navigator.of(context).canPop() ? new BackButton(onPressed: ((global::System.Action)(() => {
-Navigator.of(context).pop<object>();
-}))) : null), title: ((_MasterDetailFlow__about)this.widget).title, masterViewBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, bool, global::Doroti.Framework.Widgets.Widget>)((_MasterDetailFlow__about)this.widget).masterViewBuilder));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        return ((MaterialPageRoute<object?>)(object?)new MaterialPageRoute<object>(builder: ((c) =>
+        {
+            return new global::Doroti.Framework.Widgets.BlockSemantics(child: new _MasterPage__about(leading: (Navigator.of(context).canPop() ? new BackButton(onPressed: ((global::System.Action)(() =>
+            {
+                Navigator.of(context).pop<object>();
+            }))) : null), title: ((_MasterDetailFlow__about)this.widget).title, masterViewBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, bool, global::Doroti.Framework.Widgets.Widget>)((_MasterDetailFlow__about)this.widget).masterViewBuilder));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual MaterialPageRoute<object?> _detailPageRoute(object? arguments)
     {
-        return new MaterialPageRoute<object?>(builder: ((context) => {
-return new global::Doroti.Framework.Widgets.PopScope<object?>(onPopInvokedWithResult: ((global::System.Action<bool, object?>)((didPop, result) => {
-focus = _Focus__about.master;
-})), child: new global::Doroti.Framework.Widgets.BlockSemantics(child: this.widget.detailPageBuilder(context, arguments, null)));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        return new MaterialPageRoute<object?>(builder: ((context) =>
+        {
+            return new global::Doroti.Framework.Widgets.PopScope<object?>(onPopInvokedWithResult: ((global::System.Action<bool, object?>)((didPop, result) =>
+            {
+                focus = _Focus__about.master;
+            })), child: new global::Doroti.Framework.Widgets.BlockSemantics(child: this.widget.detailPageBuilder(context, arguments, null)));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -957,10 +979,11 @@ internal class _DetailView__about : global::Doroti.Framework.Widgets.StatelessWi
         }
         double screenHeight__56694 = MediaQuery.heightOf(context);
         double minHeight__56756 = (((screenHeight__56694 - ConstantsLibrary.kToolbarHeight)) / screenHeight__56694);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DraggableScrollableSheet(initialChildSize: minHeight__56756, minChildSize: minHeight__56756, expand: false, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.ScrollController, global::Doroti.Framework.Widgets.Widget>)((context, controller) => {
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.MouseRegion(child: new Card(color: Theme.of(context).cardColor, elevation: AboutLibrary._kCardElevation, clipBehavior: Clip.antiAlias, margin: new global::Doroti.Framework.Painting.EdgeInsets(AboutLibrary._kCardElevation, 0.0, AboutLibrary._kCardElevation, 0.0), shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateVertical(top: global::Doroti.Ui.Radius.circular(3.0))), child: this._builder(context, this._arguments, controller))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DraggableScrollableSheet(initialChildSize: minHeight__56756, minChildSize: minHeight__56756, expand: false, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.ScrollController, global::Doroti.Framework.Widgets.Widget>)((context, controller) =>
+        {
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.MouseRegion(child: new Card(color: Theme.of(context).cardColor, elevation: AboutLibrary._kCardElevation, clipBehavior: Clip.antiAlias, margin: new global::Doroti.Framework.Painting.EdgeInsets(AboutLibrary._kCardElevation, 0.0, AboutLibrary._kCardElevation, 0.0), shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateVertical(top: global::Doroti.Ui.Radius.circular(3.0))), child: this._builder(context, this._arguments, controller))));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -131,9 +131,11 @@ internal class _LinearProgressIndicatorPainter__progress_indicator : global::Dor
             double right__8435 = (((isLtr__8290 ? endFraction : (1L - startFraction))) * size.width);
             var rect__8512 = global::Doroti.Ui.Rect.fromLTRB(left__8353, 0, right__8435, size.height);
             var paint__8575 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = color;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = color;
+    return __cascade;
+}))();
             if ((this.indicatorBorderRadius is not null))
             {
                 global::Doroti.Ui.RRect rrect__8671 = ((global::Doroti.Ui.RRect)(object?)this.indicatorBorderRadius!.resolve(this.textDirection).toRRect(rect__8512));
@@ -149,9 +151,11 @@ internal class _LinearProgressIndicatorPainter__progress_indicator : global::Dor
             double maxRadius__8964 = (size.height / 2L);
             double radius__9012 = Math.Min(DartRuntimePrimitives.RequireValue(this.stopIndicatorRadius), maxRadius__8964);
             var indicatorPaint__9076 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.stopIndicatorColor!;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.stopIndicatorColor!;
+    return __cascade;
+}))();
             global::Doroti.Ui.Offset position__9150 = ((global::Doroti.Ui.Offset)(object?)(this.textDirection switch { TextDirection.rtl => new global::Doroti.Ui.Offset(maxRadius__8964, maxRadius__8964), TextDirection.ltr => new global::Doroti.Ui.Offset((size.width - maxRadius__8964), maxRadius__8964), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
             canvas.drawCircle(position__9150, radius__9012, indicatorPaint__9076);
         }
@@ -326,10 +330,11 @@ internal class _LinearProgressIndicatorState__progress_indicator : global::Dorot
         {
             return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildIndicator(context, ((global::Doroti.Framework.Animation.AnimationController)this._controller).value, textDirection__25996));
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: ((global::Doroti.Framework.Animation.AnimationController)this._controller).view, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) => {
-return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildIndicator(context, ((global::Doroti.Framework.Animation.AnimationController)this._controller).value, textDirection__25996));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: ((global::Doroti.Framework.Animation.AnimationController)this._controller).view, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
+        {
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildIndicator(context, ((global::Doroti.Framework.Animation.AnimationController)this._controller).value, textDirection__25996));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -430,11 +435,13 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : global::D
     public override void paint(Canvas canvas, Size size)
     {
         var paint__27905 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.valueColor;
-            __cascade.strokeWidth = this.strokeWidth;
-            __cascade.style = PaintingStyle.stroke;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.valueColor;
+    __cascade.strokeWidth = this.strokeWidth;
+    __cascade.style = PaintingStyle.stroke;
+    return __cascade;
+}))();
         double strokeOffset__28161 = ((this.strokeWidth / 2L) * -this.strokeAlign);
         var arcBaseOffset__28218 = new global::Doroti.Ui.Offset(strokeOffset__28161, strokeOffset__28161);
         var arcActualSize__28280 = new global::Doroti.Ui.Size((size.width - (strokeOffset__28161 * 2L)), (size.height - (strokeOffset__28161 * 2L)));
@@ -442,12 +449,14 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : global::D
         if ((this.trackColor is not null))
         {
             var backgroundPaint__28467 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.trackColor!;
-            __cascade.strokeWidth = this.strokeWidth;
-            __cascade.strokeCap = (this.strokeCap ?? StrokeCap.round);
-            __cascade.style = PaintingStyle.stroke;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.trackColor!;
+    __cascade.strokeWidth = this.strokeWidth;
+    __cascade.strokeCap = (this.strokeCap ?? StrokeCap.round);
+    __cascade.style = PaintingStyle.stroke;
+    return __cascade;
+}))();
             if (((hasGap__28380 && (this.value is not null)) && (DartRuntimePrimitives.RequireValue(this.value) > _epsilon)))
             {
                 double value__value28734 = DartRuntimePrimitives.RequireValue(value);
@@ -637,40 +646,21 @@ internal class _CircularProgressIndicatorState__progress_indicator : global::Dor
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildAnimation()
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._controller, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) => {
-return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildMaterialIndicator(context, _strokeHeadTween.evaluate(this._controller), _strokeTailTween.evaluate(this._controller), _offsetTween.evaluate(this._controller), _rotationTween.evaluate(this._controller)));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._controller, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
+        {
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildMaterialIndicator(context, _strokeHeadTween.evaluate(this._controller), _strokeTailTween.evaluate(this._controller), _offsetTween.evaluate(this._controller), _rotationTween.evaluate(this._controller)));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) => {
-switch (((CircularProgressIndicator)this.widget)._indicatorType)
-{
-    case _ActivityIndicatorType__progress_indicator.material:
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
         {
-            if ((this.widget._effectiveValue is not null))
+            switch (((CircularProgressIndicator)this.widget)._indicatorType)
             {
-                return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildMaterialIndicator(context, 0.0, 0.0, 0, 0.0));
-            }
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildAnimation());
-        }
-    case _ActivityIndicatorType__progress_indicator.adaptive:
-        {
-            ThemeData theme__48583 = Theme.of(context);
-            switch (theme__48583.platform)
-            {
-                case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-                case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
-                    {
-                        return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildCupertinoIndicator(context));
-                    }
-                case global::Doroti.Framework.Foundation.TargetPlatform.android:
-                case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-                case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-                case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+                case _ActivityIndicatorType__progress_indicator.material:
                     {
                         if ((this.widget._effectiveValue is not null))
                         {
@@ -678,14 +668,35 @@ switch (((CircularProgressIndicator)this.widget)._indicatorType)
                         }
                         return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildAnimation());
                     }
-                default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                case _ActivityIndicatorType__progress_indicator.adaptive:
+                    {
+                        ThemeData theme__48583 = Theme.of(context);
+                        switch (theme__48583.platform)
+                        {
+                            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+                            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+                                {
+                                    return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildCupertinoIndicator(context));
+                                }
+                            case global::Doroti.Framework.Foundation.TargetPlatform.android:
+                            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
+                            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
+                            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+                                {
+                                    if ((this.widget._effectiveValue is not null))
+                                    {
+                                        return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildMaterialIndicator(context, 0.0, 0.0, 0, 0.0));
+                                    }
+                                    return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildAnimation());
+                                }
+                            default:
+                                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                        }
+                        break;
+                    }
             }
-            break;
-        }
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -766,18 +777,22 @@ internal class _RefreshProgressIndicatorPainter__progress_indicator : _CircularP
         double innerRadius__50360 = (radius__50046 - arrowheadRadius__50289);
         double outerRadius__50417 = (radius__50046 + arrowheadRadius__50289);
         var path__50468 = ((Func<Path>)(() =>
-{            var __cascade = new global::Doroti.Ui.Path();
-            __cascade.moveTo((radius__50046 + (ux__49926 * innerRadius__50360)), (radius__50046 + (uy__49966 * innerRadius__50360)));
-            __cascade.lineTo((radius__50046 + (ux__49926 * outerRadius__50417)), (radius__50046 + (uy__49966 * outerRadius__50417)));
-            __cascade.lineTo(arrowheadPointX__50090, arrowheadPointY__50190);
-            __cascade.close();
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Path();
+    __cascade.moveTo((radius__50046 + (ux__49926 * innerRadius__50360)), (radius__50046 + (uy__49966 * innerRadius__50360)));
+    __cascade.lineTo((radius__50046 + (ux__49926 * outerRadius__50417)), (radius__50046 + (uy__49966 * outerRadius__50417)));
+    __cascade.lineTo(arrowheadPointX__50090, arrowheadPointY__50190);
+    __cascade.close();
+    return __cascade;
+}))();
         var paint__50697 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.valueColor;
-            __cascade.strokeWidth = this.strokeWidth;
-            __cascade.style = PaintingStyle.fill;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.valueColor;
+    __cascade.strokeWidth = this.strokeWidth;
+    __cascade.style = PaintingStyle.fill;
+    return __cascade;
+}))();
         canvas.drawPath(path__50468, paint__50697);
     }
 
@@ -862,10 +877,11 @@ internal class _RefreshProgressIndicatorState__progress_indicator : _CircularPro
 
     internal override global::Doroti.Framework.Widgets.Widget _buildAnimation()
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._controller, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) => {
-return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildMaterialIndicator(context, (1.05 * _CircularProgressIndicatorState__progress_indicator._strokeHeadTween.transform(((global::Doroti.Framework.Animation.AnimationController)this._controller).value)), _CircularProgressIndicatorState__progress_indicator._strokeTailTween.transform(((global::Doroti.Framework.Animation.AnimationController)this._controller).value), _CircularProgressIndicatorState__progress_indicator._offsetTween.transform(((global::Doroti.Framework.Animation.AnimationController)this._controller).value), _CircularProgressIndicatorState__progress_indicator._rotationTween.transform(((global::Doroti.Framework.Animation.AnimationController)this._controller).value)));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._controller, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
+        {
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildMaterialIndicator(context, (1.05 * _CircularProgressIndicatorState__progress_indicator._strokeHeadTween.transform(((global::Doroti.Framework.Animation.AnimationController)this._controller).value)), _CircularProgressIndicatorState__progress_indicator._strokeTailTween.transform(((global::Doroti.Framework.Animation.AnimationController)this._controller).value), _CircularProgressIndicatorState__progress_indicator._offsetTween.transform(((global::Doroti.Framework.Animation.AnimationController)this._controller).value), _CircularProgressIndicatorState__progress_indicator._rotationTween.transform(((global::Doroti.Framework.Animation.AnimationController)this._controller).value)));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

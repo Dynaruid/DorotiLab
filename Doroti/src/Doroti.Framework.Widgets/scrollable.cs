@@ -330,12 +330,13 @@ public class ScrollableState : State<Scrollable>, TickerProviderStateMixin<Scrol
         }
         this.position.dispose();
         this._persistedScrollOffset.dispose();
-        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) => {
-if (!((dynamic)property)._disposed)
-{
-    property.removeListener((global::System.Action)(() => listener()));
-}
-})));
+        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
+        {
+            if (!((dynamic)property)._disposed)
+            {
+                property.removeListener((global::System.Action)(() => listener()));
+            }
+        })));
         this._bucket?.dispose();
         _bucket = null;
         base.dispose();
@@ -366,46 +367,58 @@ if (!((dynamic)property)._disposed)
             {
                 case global::Doroti.Framework.Painting.Axis.vertical:
                     {
-                        _gestureRecognizers = new DartMap<Type, dynamic> { [typeof(global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer(supportedDevices: ((ScrollBehavior)this._configuration).dragDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer>)((instance) => {
-DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer>)(() =>
-{            var __cascade = instance;
-            __cascade.onDown = this._handleDragDown;
-            __cascade.onStart = this._handleDragStart;
-            __cascade.onUpdate = this._handleDragUpdate;
-            __cascade.onEnd = this._handleDragEnd;
-            __cascade.onCancel = this._handleDragCancel;
-            __cascade.minFlingDistance = this._physics?.minFlingDistance;
-            __cascade.minFlingVelocity = this._physics?.minFlingVelocity;
-            __cascade.maxFlingVelocity = this._physics?.maxFlingVelocity;
-            __cascade.velocityTrackerBuilder = this._configuration.velocityTrackerBuilder(this.context);
-            __cascade.dragStartBehavior = ((Scrollable)this.widget).dragStartBehavior;
-            __cascade.multitouchDragStrategy = this._configuration.getMultitouchDragStrategy(this.context);
-            __cascade.gestureSettings = this._mediaQueryGestureSettings;
-            __cascade.supportedDevices = ((ScrollBehavior)this._configuration).dragDevices;
-            return __cascade;        }))());
-}))) };
+                        _gestureRecognizers = new DartMap<Type, dynamic>
+                        {
+                            [typeof(global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer(supportedDevices: ((ScrollBehavior)this._configuration).dragDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer>)((instance) =>
+                            {
+                                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.VerticalDragGestureRecognizer>)(() =>
+                                {
+                                    var __cascade = instance;
+                                    __cascade.onDown = this._handleDragDown;
+                                    __cascade.onStart = this._handleDragStart;
+                                    __cascade.onUpdate = this._handleDragUpdate;
+                                    __cascade.onEnd = this._handleDragEnd;
+                                    __cascade.onCancel = this._handleDragCancel;
+                                    __cascade.minFlingDistance = this._physics?.minFlingDistance;
+                                    __cascade.minFlingVelocity = this._physics?.minFlingVelocity;
+                                    __cascade.maxFlingVelocity = this._physics?.maxFlingVelocity;
+                                    __cascade.velocityTrackerBuilder = this._configuration.velocityTrackerBuilder(this.context);
+                                    __cascade.dragStartBehavior = ((Scrollable)this.widget).dragStartBehavior;
+                                    __cascade.multitouchDragStrategy = this._configuration.getMultitouchDragStrategy(this.context);
+                                    __cascade.gestureSettings = this._mediaQueryGestureSettings;
+                                    __cascade.supportedDevices = ((ScrollBehavior)this._configuration).dragDevices;
+                                    return __cascade;
+                                }))());
+                            })))
+                        };
                         break;
                     }
                 case global::Doroti.Framework.Painting.Axis.horizontal:
                     {
-                        _gestureRecognizers = new DartMap<Type, dynamic> { [typeof(global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer(supportedDevices: ((ScrollBehavior)this._configuration).dragDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>)((instance) => {
-DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>)(() =>
-{            var __cascade = instance;
-            __cascade.onDown = this._handleDragDown;
-            __cascade.onStart = this._handleDragStart;
-            __cascade.onUpdate = this._handleDragUpdate;
-            __cascade.onEnd = this._handleDragEnd;
-            __cascade.onCancel = this._handleDragCancel;
-            __cascade.minFlingDistance = this._physics?.minFlingDistance;
-            __cascade.minFlingVelocity = this._physics?.minFlingVelocity;
-            __cascade.maxFlingVelocity = this._physics?.maxFlingVelocity;
-            __cascade.velocityTrackerBuilder = this._configuration.velocityTrackerBuilder(this.context);
-            __cascade.dragStartBehavior = ((Scrollable)this.widget).dragStartBehavior;
-            __cascade.multitouchDragStrategy = this._configuration.getMultitouchDragStrategy(this.context);
-            __cascade.gestureSettings = this._mediaQueryGestureSettings;
-            __cascade.supportedDevices = ((ScrollBehavior)this._configuration).dragDevices;
-            return __cascade;        }))());
-}))) };
+                        _gestureRecognizers = new DartMap<Type, dynamic>
+                        {
+                            [typeof(global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer(supportedDevices: ((ScrollBehavior)this._configuration).dragDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>)((instance) =>
+                            {
+                                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>)(() =>
+                                {
+                                    var __cascade = instance;
+                                    __cascade.onDown = this._handleDragDown;
+                                    __cascade.onStart = this._handleDragStart;
+                                    __cascade.onUpdate = this._handleDragUpdate;
+                                    __cascade.onEnd = this._handleDragEnd;
+                                    __cascade.onCancel = this._handleDragCancel;
+                                    __cascade.minFlingDistance = this._physics?.minFlingDistance;
+                                    __cascade.minFlingVelocity = this._physics?.minFlingVelocity;
+                                    __cascade.maxFlingVelocity = this._physics?.maxFlingVelocity;
+                                    __cascade.velocityTrackerBuilder = this._configuration.velocityTrackerBuilder(this.context);
+                                    __cascade.dragStartBehavior = ((Scrollable)this.widget).dragStartBehavior;
+                                    __cascade.multitouchDragStrategy = this._configuration.getMultitouchDragStrategy(this.context);
+                                    __cascade.gestureSettings = this._mediaQueryGestureSettings;
+                                    __cascade.supportedDevices = ((ScrollBehavior)this._configuration).dragDevices;
+                                    return __cascade;
+                                }))());
+                            })))
+                        };
                         break;
                     }
             }
@@ -606,10 +619,12 @@ DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.Horizontal
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -924,14 +939,15 @@ internal class _ScrollableSelectionContainerDelegate__scrollable : MultiSelectab
             return;
         }
         _scheduledLayoutChange = true;
-        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) => {
-if (!this._scheduledLayoutChange)
-{
-    return;
-}
-_scheduledLayoutChange = false;
-layoutDidChange();
-})), debugLabel: "ScrollableSelectionContainer.layoutDidChange");
+        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+        {
+            if (!this._scheduledLayoutChange)
+            {
+                return;
+            }
+            _scheduledLayoutChange = false;
+            layoutDidChange();
+        })), debugLabel: "ScrollableSelectionContainer.layoutDidChange");
     }
 
     public override void didChangeSelectables()
@@ -1313,12 +1329,14 @@ internal class _ScrollSemantics__scrollable : SingleChildRenderObjectWidget
     {
         var __renderObject = (_RenderScrollSemantics__scrollable)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderScrollSemantics__scrollable>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.allowImplicitScrolling = this.allowImplicitScrolling;
-            __cascade.axis = this.axis;
-            __cascade.position = this.position;
-            __cascade.semanticChildCount = this.semanticChildCount;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.allowImplicitScrolling = this.allowImplicitScrolling;
+    __cascade.axis = this.axis;
+    __cascade.position = this.position;
+    __cascade.semanticChildCount = this.semanticChildCount;
+    return __cascade;
+}))());
     }
 
 }
@@ -1393,19 +1411,23 @@ public class _RenderScrollSemantics__scrollable : global::Doroti.Framework.Rende
     {
         base.describeSemanticsConfiguration(config);
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Semantics.SemanticsConfiguration>)(() =>
-{            var __cascade = config;
-            __cascade.isSemanticBoundary = true;
-            __cascade.hasImplicitScrolling = this.allowImplicitScrolling;
-            return __cascade;        }))());
+{
+    var __cascade = config;
+    __cascade.isSemanticBoundary = true;
+    __cascade.hasImplicitScrolling = this.allowImplicitScrolling;
+    return __cascade;
+}))());
         if (((ScrollPosition)this.position).haveDimensions)
         {
             DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Semantics.SemanticsConfiguration>)(() =>
-{            var __cascade = config;
-            __cascade.scrollPosition = ((ScrollPosition)this._position).pixels;
-            __cascade.scrollExtentMax = ((ScrollPosition)this._position).maxScrollExtent;
-            __cascade.scrollExtentMin = ((ScrollPosition)this._position).minScrollExtent;
-            __cascade.scrollChildCount = this.semanticChildCount;
-            return __cascade;        }))());
+{
+    var __cascade = config;
+    __cascade.scrollPosition = ((ScrollPosition)this._position).pixels;
+    __cascade.scrollExtentMax = ((ScrollPosition)this._position).maxScrollExtent;
+    __cascade.scrollExtentMin = ((ScrollPosition)this._position).minScrollExtent;
+    __cascade.scrollChildCount = this.semanticChildCount;
+    return __cascade;
+}))());
             if (((((ScrollPosition)this.position).maxScrollExtent > ((ScrollPosition)this.position).minScrollExtent) && this.allowImplicitScrolling))
             {
                 config.onScrollToOffset = (global::System.Action<Offset>)this._onScrollToOffset;
@@ -1619,13 +1641,15 @@ public class TwoDimensionalScrollableState : State<TwoDimensionalScrollable>
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(((TwoDimensionalScrollable)this.widget).verticalDetails.direction), global::Doroti.Framework.Painting.Axis.vertical)), () => (object?)"TwoDimensionalScrollable.verticalDetails are not Axis.vertical.");
         DartRuntimePrimitives.Assert(() => (object.Equals(global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionToAxis(((TwoDimensionalScrollable)this.widget).horizontalDetails.direction), global::Doroti.Framework.Painting.Axis.horizontal)), () => (object?)"TwoDimensionalScrollable.horizontalDetails are not Axis.horizontal.");
-        Widget result__80791 = ((Widget)(object?)new RestorationScope(restorationId: ((TwoDimensionalScrollable)this.widget).restorationId, child: new _VerticalOuterDimension__scrollable(key: this._verticalOuterScrollableKey, horizontalKey: this._horizontalInnerScrollableKey, axisDirection: ((TwoDimensionalScrollable)this.widget).verticalDetails.direction, controller: (((TwoDimensionalScrollable)this.widget).verticalDetails.controller ?? this._verticalFallbackController!), physics: ((TwoDimensionalScrollable)this.widget).verticalDetails.physics, clipBehavior: ((((TwoDimensionalScrollable)this.widget).verticalDetails.clipBehavior ?? ((TwoDimensionalScrollable)this.widget).verticalDetails.decorationClipBehavior) ?? Clip.hardEdge), incrementCalculator: (global::System.Func<ScrollIncrementDetails, double>?)((TwoDimensionalScrollable)this.widget).incrementCalculator, excludeFromSemantics: ((TwoDimensionalScrollable)this.widget).excludeFromSemantics, restorationId: "OuterVerticalTwoDimensionalScrollable", dragStartBehavior: ((TwoDimensionalScrollable)this.widget).dragStartBehavior, diagonalDragBehavior: ((TwoDimensionalScrollable)this.widget).diagonalDragBehavior, hitTestBehavior: ((TwoDimensionalScrollable)this.widget).hitTestBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, verticalOffset) => {
-return ((Widget)(object?)new _HorizontalInnerDimension__scrollable(key: this._horizontalInnerScrollableKey, verticalOuterKey: this._verticalOuterScrollableKey, axisDirection: ((TwoDimensionalScrollable)this.widget).horizontalDetails.direction, controller: (((TwoDimensionalScrollable)this.widget).horizontalDetails.controller ?? this._horizontalFallbackController!), physics: ((TwoDimensionalScrollable)this.widget).horizontalDetails.physics, clipBehavior: ((((TwoDimensionalScrollable)this.widget).horizontalDetails.clipBehavior ?? ((TwoDimensionalScrollable)this.widget).horizontalDetails.decorationClipBehavior) ?? Clip.hardEdge), incrementCalculator: (global::System.Func<ScrollIncrementDetails, double>?)((TwoDimensionalScrollable)this.widget).incrementCalculator, excludeFromSemantics: ((TwoDimensionalScrollable)this.widget).excludeFromSemantics, restorationId: "InnerHorizontalTwoDimensionalScrollable", dragStartBehavior: ((TwoDimensionalScrollable)this.widget).dragStartBehavior, diagonalDragBehavior: ((TwoDimensionalScrollable)this.widget).diagonalDragBehavior, hitTestBehavior: ((TwoDimensionalScrollable)this.widget).hitTestBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, horizontalOffset) => {
-return this.widget.viewportBuilder(context, verticalOffset, horizontalOffset);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))));
+        Widget result__80791 = ((Widget)(object?)new RestorationScope(restorationId: ((TwoDimensionalScrollable)this.widget).restorationId, child: new _VerticalOuterDimension__scrollable(key: this._verticalOuterScrollableKey, horizontalKey: this._horizontalInnerScrollableKey, axisDirection: ((TwoDimensionalScrollable)this.widget).verticalDetails.direction, controller: (((TwoDimensionalScrollable)this.widget).verticalDetails.controller ?? this._verticalFallbackController!), physics: ((TwoDimensionalScrollable)this.widget).verticalDetails.physics, clipBehavior: ((((TwoDimensionalScrollable)this.widget).verticalDetails.clipBehavior ?? ((TwoDimensionalScrollable)this.widget).verticalDetails.decorationClipBehavior) ?? Clip.hardEdge), incrementCalculator: (global::System.Func<ScrollIncrementDetails, double>?)((TwoDimensionalScrollable)this.widget).incrementCalculator, excludeFromSemantics: ((TwoDimensionalScrollable)this.widget).excludeFromSemantics, restorationId: "OuterVerticalTwoDimensionalScrollable", dragStartBehavior: ((TwoDimensionalScrollable)this.widget).dragStartBehavior, diagonalDragBehavior: ((TwoDimensionalScrollable)this.widget).diagonalDragBehavior, hitTestBehavior: ((TwoDimensionalScrollable)this.widget).hitTestBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, verticalOffset) =>
+        {
+            return ((Widget)(object?)new _HorizontalInnerDimension__scrollable(key: this._horizontalInnerScrollableKey, verticalOuterKey: this._verticalOuterScrollableKey, axisDirection: ((TwoDimensionalScrollable)this.widget).horizontalDetails.direction, controller: (((TwoDimensionalScrollable)this.widget).horizontalDetails.controller ?? this._horizontalFallbackController!), physics: ((TwoDimensionalScrollable)this.widget).horizontalDetails.physics, clipBehavior: ((((TwoDimensionalScrollable)this.widget).horizontalDetails.clipBehavior ?? ((TwoDimensionalScrollable)this.widget).horizontalDetails.decorationClipBehavior) ?? Clip.hardEdge), incrementCalculator: (global::System.Func<ScrollIncrementDetails, double>?)((TwoDimensionalScrollable)this.widget).incrementCalculator, excludeFromSemantics: ((TwoDimensionalScrollable)this.widget).excludeFromSemantics, restorationId: "InnerHorizontalTwoDimensionalScrollable", dragStartBehavior: ((TwoDimensionalScrollable)this.widget).dragStartBehavior, diagonalDragBehavior: ((TwoDimensionalScrollable)this.widget).diagonalDragBehavior, hitTestBehavior: ((TwoDimensionalScrollable)this.widget).hitTestBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, horizontalOffset) =>
+            {
+                return this.widget.viewportBuilder(context, verticalOffset, horizontalOffset);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }))));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })))));
         return ((Widget)(object?)new _TwoDimensionalScrollableScope__scrollable(twoDimensionalScrollable: this, child: result__80791));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1864,22 +1888,28 @@ internal class _VerticalOuterDimensionState__scrollable : ScrollableState
                 {
                     if (value)
                     {
-                        _gestureRecognizers = new DartMap<Type, dynamic> { [typeof(global::Doroti.Framework.Gestures.PanGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.PanGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.PanGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.PanGestureRecognizer(supportedDevices: ((ScrollBehavior)this._configuration).dragDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.PanGestureRecognizer>)((instance) => {
-DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.PanGestureRecognizer>)(() =>
-{            var __cascade = instance;
-            __cascade.onDown = this._handleDragDown;
-            __cascade.onStart = this._handleDragStart;
-            __cascade.onUpdate = this._handleDragUpdate;
-            __cascade.onEnd = this._handleDragEnd;
-            __cascade.onCancel = this._handleDragCancel;
-            __cascade.minFlingDistance = this._physics?.minFlingDistance;
-            __cascade.minFlingVelocity = this._physics?.minFlingVelocity;
-            __cascade.maxFlingVelocity = this._physics?.maxFlingVelocity;
-            __cascade.velocityTrackerBuilder = this._configuration.velocityTrackerBuilder(this.context);
-            __cascade.dragStartBehavior = this.widget.dragStartBehavior;
-            __cascade.gestureSettings = this._mediaQueryGestureSettings;
-            return __cascade;        }))());
-}))) };
+                        _gestureRecognizers = new DartMap<Type, dynamic>
+                        {
+                            [typeof(global::Doroti.Framework.Gestures.PanGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.PanGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.PanGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.PanGestureRecognizer(supportedDevices: ((ScrollBehavior)this._configuration).dragDevices))), ((global::System.Action<global::Doroti.Framework.Gestures.PanGestureRecognizer>)((instance) =>
+                            {
+                                DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Gestures.PanGestureRecognizer>)(() =>
+                                {
+                                    var __cascade = instance;
+                                    __cascade.onDown = this._handleDragDown;
+                                    __cascade.onStart = this._handleDragStart;
+                                    __cascade.onUpdate = this._handleDragUpdate;
+                                    __cascade.onEnd = this._handleDragEnd;
+                                    __cascade.onCancel = this._handleDragCancel;
+                                    __cascade.minFlingDistance = this._physics?.minFlingDistance;
+                                    __cascade.minFlingVelocity = this._physics?.minFlingVelocity;
+                                    __cascade.maxFlingVelocity = this._physics?.maxFlingVelocity;
+                                    __cascade.velocityTrackerBuilder = this._configuration.velocityTrackerBuilder(this.context);
+                                    __cascade.dragStartBehavior = this.widget.dragStartBehavior;
+                                    __cascade.gestureSettings = this._mediaQueryGestureSettings;
+                                    return __cascade;
+                                }))());
+                            })))
+                        };
                         _handleDragCancel();
                         _lastCanDrag = value;
                         _lastAxisDirection = this.widget.axis;

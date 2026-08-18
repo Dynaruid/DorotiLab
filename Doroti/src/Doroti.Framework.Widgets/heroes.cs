@@ -135,9 +135,10 @@ public class _HeroState__heroes : State<Hero>
         DartRuntimePrimitives.Assert(() => this.mounted);
         var box__16348 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
         DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Rendering.RenderBox)box__16348).hasSize);
-        setState(((global::System.Action)(() => {
-_placeholderSize = ((global::Doroti.Framework.Rendering.RenderBox)box__16348).size;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _placeholderSize = ((global::Doroti.Framework.Rendering.RenderBox)box__16348).size;
+        })));
     }
 
     public virtual void endFlight(bool keepPlaceholder = false)
@@ -149,8 +150,9 @@ _placeholderSize = ((global::Doroti.Framework.Rendering.RenderBox)box__16348).si
         _placeholderSize = null;
         if (this.mounted)
         {
-            setState(((global::System.Action)(() => {
-})));
+            setState(((global::System.Action)(() =>
+            {
+            })));
         }
     }
 
@@ -335,12 +337,13 @@ internal class _HeroFlight__heroes
     {
         shuttle ??= this.manifest.shuttleBuilder(context, ((_HeroFlightManifest__heroes)this.manifest).animation, ((_HeroFlightManifest__heroes)this.manifest).type, ((_HeroFlightManifest__heroes)this.manifest).fromHero.context, ((_HeroFlightManifest__heroes)this.manifest).toHero.context);
         DartRuntimePrimitives.Assert(() => (this.shuttle is not null));
-        return ((Widget)(object?)new AnimatedBuilder(animation: this._proxyAnimation, child: this.shuttle, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) => {
-global::Doroti.Ui.Rect rect__22996 = ((global::Doroti.Ui.Rect)(object?)DartRuntimePrimitives.RequireValue(this.heroRectTween.evaluate(this._proxyAnimation)));
-var offsets__23059 = global::Doroti.Framework.Rendering.RelativeRect.CreateFromSize(rect__22996, ((_HeroFlightManifest__heroes)this.manifest).navigatorSize);
-return ((Widget)(object?)new Positioned(top: ((global::Doroti.Framework.Rendering.RelativeRect)offsets__23059).top, right: ((global::Doroti.Framework.Rendering.RelativeRect)offsets__23059).right, bottom: ((global::Doroti.Framework.Rendering.RelativeRect)offsets__23059).bottom, left: ((global::Doroti.Framework.Rendering.RelativeRect)offsets__23059).left, child: new IgnorePointer(child: new FadeTransition(opacity: this._heroOpacity, child: child))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((Widget)(object?)new AnimatedBuilder(animation: this._proxyAnimation, child: this.shuttle, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
+        {
+            global::Doroti.Ui.Rect rect__22996 = ((global::Doroti.Ui.Rect)(object?)DartRuntimePrimitives.RequireValue(this.heroRectTween.evaluate(this._proxyAnimation)));
+            var offsets__23059 = global::Doroti.Framework.Rendering.RelativeRect.CreateFromSize(rect__22996, ((_HeroFlightManifest__heroes)this.manifest).navigatorSize);
+            return ((Widget)(object?)new Positioned(top: ((global::Doroti.Framework.Rendering.RelativeRect)offsets__23059).top, right: ((global::Doroti.Framework.Rendering.RelativeRect)offsets__23059).right, bottom: ((global::Doroti.Framework.Rendering.RelativeRect)offsets__23059).bottom, left: ((global::Doroti.Framework.Rendering.RelativeRect)offsets__23059).left, child: new IgnorePointer(child: new FadeTransition(opacity: this._heroOpacity, child: child))));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -649,13 +652,14 @@ public class HeroController : NavigatorObserver
         else
         {
             ((dynamic)toRoute).offstage = (((global::Doroti.Framework.Animation.Animation<double>?)((dynamic)toRoute).animation)!.value == 0.0);
-            WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((value) => {
-if (((((NavigatorState?)((dynamic)fromRoute).navigator) is null) || (((NavigatorState?)((dynamic)toRoute).navigator) is null)))
-{
-    return;
-}
-_startHeroTransition(fromRoute, toRoute, flightType__36140, isUserGestureTransition);
-})), debugLabel: "HeroController.startTransition");
+            WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((value) =>
+            {
+                if (((((NavigatorState?)((dynamic)fromRoute).navigator) is null) || (((NavigatorState?)((dynamic)toRoute).navigator) is null)))
+                {
+                    return;
+                }
+                _startHeroTransition(fromRoute, toRoute, flightType__36140, isUserGestureTransition);
+            })), debugLabel: "HeroController.startTransition");
         }
     }
 
@@ -696,9 +700,11 @@ _startHeroTransition(fromRoute, toRoute, flightType__36140, isUserGestureTransit
                 else
                 {
                     this._flights[tag__40512] = ((Func<_HeroFlight__heroes>)(() =>
-{            var __cascade = new _HeroFlight__heroes((global::System.Action<_HeroFlight__heroes>)this._handleFlightEnded);
-            __cascade.start(manifest__40730);
-            return __cascade;        }))();
+{
+    var __cascade = new _HeroFlight__heroes((global::System.Action<_HeroFlight__heroes>)this._handleFlightEnded);
+    __cascade.start(manifest__40730);
+    return __cascade;
+}))();
                 }
             }
             else
@@ -728,10 +734,11 @@ _startHeroTransition(fromRoute, toRoute, flightType__36140, isUserGestureTransit
         }
         global::Doroti.Framework.Painting.EdgeInsets fromHeroPadding__43066 = ((MediaQueryData)fromMediaQueryData__42886).padding;
         global::Doroti.Framework.Painting.EdgeInsets toHeroPadding__43133 = ((MediaQueryData)toMediaQueryData__42806).padding;
-        return ((Widget)(object?)new AnimatedBuilder(animation: animation, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) => {
-return ((Widget)(object?)new MediaQuery(data: toMediaQueryData__42806.copyWith(padding: (((object.Equals(flightDirection, HeroFlightDirection.push))) ? new EdgeInsetsTween(begin: fromHeroPadding__43066, end: toHeroPadding__43133).evaluate(animation) : new EdgeInsetsTween(begin: toHeroPadding__43133, end: fromHeroPadding__43066).evaluate(animation))), child: ((Hero)toHero__42740).child));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((Widget)(object?)new AnimatedBuilder(animation: animation, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
+        {
+            return ((Widget)(object?)new MediaQuery(data: toMediaQueryData__42806.copyWith(padding: (((object.Equals(flightDirection, HeroFlightDirection.push))) ? new EdgeInsetsTween(begin: fromHeroPadding__43066, end: toHeroPadding__43133).evaluate(animation) : new EdgeInsetsTween(begin: toHeroPadding__43133, end: fromHeroPadding__43066).evaluate(animation))), child: ((Hero)toHero__42740).child));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

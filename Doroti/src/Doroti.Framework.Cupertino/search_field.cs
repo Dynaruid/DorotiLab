@@ -214,12 +214,13 @@ internal class _CupertinoSearchTextFieldState__search_field : global::Doroti.Fra
         {
             this._controller?.dispose();
         }
-        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) => {
-if (!((dynamic)property)._disposed)
-{
-    property.removeListener((global::System.Action)(() => listener()));
-}
-})));
+        this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
+        {
+            if (!((dynamic)property)._disposed)
+            {
+                property.removeListener((global::System.Action)(() => listener()));
+            }
+        })));
         this._bucket?.dispose();
         _bucket = null;
         base.dispose();
@@ -258,9 +259,10 @@ if (!((dynamic)property)._disposed)
         {
             global::Doroti.Framework.Widgets.ScrollUpdateNotification notification__as17708 = (global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification;
             double currentHeight__17771 = (((global::Doroti.Framework.Widgets.BuildContext)this.context).size?.height ?? 0.0);
-            setState(((global::System.Action)(() => {
-_fadeExtent = _CupertinoSearchTextFieldState__search_field._calculateScrollOpacity(currentHeight__17771, (this._scaledIconSize + Math.Max(((CupertinoSearchTextField)this.widget).prefixInsets.vertical, ((CupertinoSearchTextField)this.widget).suffixInsets.vertical)));
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _fadeExtent = _CupertinoSearchTextFieldState__search_field._calculateScrollOpacity(currentHeight__17771, (this._scaledIconSize + Math.Max(((CupertinoSearchTextField)this.widget).prefixInsets.vertical, ((CupertinoSearchTextField)this.widget).suffixInsets.vertical)));
+            })));
         }
     }
 

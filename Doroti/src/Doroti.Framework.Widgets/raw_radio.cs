@@ -175,10 +175,12 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<_WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -272,9 +274,10 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
     {
         if (this.isInteractive)
         {
-            setState(((global::System.Action)(() => {
-this._downPosition = ((global::Doroti.Framework.Gestures.TapDownDetails)details).localPosition;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                this._downPosition = ((global::Doroti.Framework.Gestures.TapDownDetails)details).localPosition;
+            })));
             this._reactionController.forward();
         }
     }
@@ -310,9 +313,10 @@ this._downPosition = ((global::Doroti.Framework.Gestures.TapDownDetails)details)
     {
         if ((this._downPosition is not null))
         {
-            setState(((global::System.Action)(() => {
-this._downPosition = null;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                this._downPosition = null;
+            })));
         }
         this._reactionController.reverse();
     }
@@ -321,9 +325,10 @@ this._downPosition = null;
     {
         if ((focused != this._focused))
         {
-            setState(((global::System.Action)(() => {
-this._focused = focused;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                this._focused = focused;
+            })));
             if (focused)
             {
                 this._reactionFocusFadeController.forward();
@@ -339,9 +344,10 @@ this._focused = focused;
     {
         if ((hovering != this._hovering))
         {
-            setState(((global::System.Action)(() => {
-this._hovering = hovering;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                this._hovering = hovering;
+            })));
             if (hovering)
             {
                 this._reactionHoverFadeController.forward();

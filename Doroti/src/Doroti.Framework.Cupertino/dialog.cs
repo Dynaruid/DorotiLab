@@ -233,17 +233,19 @@ internal class _CupertinoAlertDialogState__dialog : global::Doroti.Framework.Wid
     {
         if (isPressed)
         {
-            setState(((global::System.Action)(() => {
-_pressedIndex = actionIndex;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _pressedIndex = actionIndex;
+            })));
         }
         else
         {
             if ((this._pressedIndex == actionIndex))
             {
-                setState(((global::System.Action)(() => {
-_pressedIndex = null;
-})));
+                setState(((global::System.Action)(() =>
+                {
+                    _pressedIndex = null;
+                })));
             }
         }
     }
@@ -265,22 +267,23 @@ _pressedIndex = null;
     {
         global::Doroti.Ui.Color backgroundColor__13563 = ((global::Doroti.Ui.Color)(object?)CupertinoDynamicColor.resolve(DialogLibrary._kDialogColor, context));
         global::Doroti.Ui.Color dividerColor__13652 = ((global::Doroti.Ui.Color)(object?)CupertinoDynamicColor.resolve(CupertinoColors.separator, context));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.MediaQuery.CreateRemovePadding(removeLeft: true, removeTop: true, removeRight: true, removeBottom: true, context: context, child: new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) => {
-global::Doroti.Framework.Widgets.Widget? contentSection__14194 = ((global::Doroti.Framework.Widgets.Widget?)(object?)_buildContent(context));
-global::Doroti.Framework.Widgets.Widget? actionsSection__14259 = ((global::Doroti.Framework.Widgets.Widget?)(object?)_buildActions());
-if ((actionsSection__14259 is null))
-{
-    return (contentSection__14194 ?? new global::Doroti.Framework.Widgets.LimitedBox(maxWidth: 0, child: new global::Doroti.Framework.Widgets.SizedBox(width: double.PositiveInfinity, height: 0)));
-}
-global::Doroti.Framework.Widgets.Widget scrolledActionsSection__14504 = ((global::Doroti.Framework.Widgets.Widget)(object?)new _OverscrollBackground__dialog(color: backgroundColor__13563, child: actionsSection__14259));
-if ((contentSection__14194 is null))
-{
-    return scrolledActionsSection__14504;
-}
-double actionsMinHeight__14901 = (DialogLibrary._isInAccessibilityMode(context) ? ((((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight / 2L) + DialogLibrary._kDividerThickness) : (DialogLibrary._kDialogActionsSectionMinHeight + DialogLibrary._kDividerThickness));
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new _PriorityColumn__dialog(top: contentSection__14194, bottom: new global::Doroti.Framework.Widgets.Column(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: double.PositiveInfinity, child: new _Divider__dialog(dividerColor: dividerColor__13652, hiddenColor: backgroundColor__13563, hidden: false))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: scrolledActionsSection__14504)) }), bottomMinHeight: actionsMinHeight__14901));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.MediaQuery.CreateRemovePadding(removeLeft: true, removeTop: true, removeRight: true, removeBottom: true, context: context, child: new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
+        {
+            global::Doroti.Framework.Widgets.Widget? contentSection__14194 = ((global::Doroti.Framework.Widgets.Widget?)(object?)_buildContent(context));
+            global::Doroti.Framework.Widgets.Widget? actionsSection__14259 = ((global::Doroti.Framework.Widgets.Widget?)(object?)_buildActions());
+            if ((actionsSection__14259 is null))
+            {
+                return (contentSection__14194 ?? new global::Doroti.Framework.Widgets.LimitedBox(maxWidth: 0, child: new global::Doroti.Framework.Widgets.SizedBox(width: double.PositiveInfinity, height: 0)));
+            }
+            global::Doroti.Framework.Widgets.Widget scrolledActionsSection__14504 = ((global::Doroti.Framework.Widgets.Widget)(object?)new _OverscrollBackground__dialog(color: backgroundColor__13563, child: actionsSection__14259));
+            if ((contentSection__14194 is null))
+            {
+                return scrolledActionsSection__14504;
+            }
+            double actionsMinHeight__14901 = (DialogLibrary._isInAccessibilityMode(context) ? ((((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight / 2L) + DialogLibrary._kDividerThickness) : (DialogLibrary._kDialogActionsSectionMinHeight + DialogLibrary._kDividerThickness));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new _PriorityColumn__dialog(top: contentSection__14194, bottom: new global::Doroti.Framework.Widgets.Column(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: double.PositiveInfinity, child: new _Divider__dialog(dividerColor: dividerColor__13652, hiddenColor: backgroundColor__13563, hidden: false))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: scrolledActionsSection__14504)) }), bottomMinHeight: actionsMinHeight__14901));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -288,10 +291,11 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         CupertinoLocalizations localizations__15755 = ((CupertinoLocalizations)(object?)CupertinoLocalizations.of(context));
         bool isInAccessibilityMode__15822 = DialogLibrary._isInAccessibilityMode(context);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoUserInterfaceLevel(data: CupertinoUserInterfaceLevelData.elevated, child: MediaQuery.withClampedTextScaling(minScaleFactor: 1.0, child: new global::Doroti.Framework.Widgets.ScrollConfiguration(behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false), child: new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) => {
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedPadding(padding: (MediaQuery.viewInsetsOf(context).op_Add(global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 40.0, vertical: 24.0))), duration: ((CupertinoAlertDialog)this.widget).insetAnimationDuration, curve: ((CupertinoAlertDialog)this.widget).insetAnimationCurve, child: global::Doroti.Framework.Widgets.MediaQuery.CreateRemoveViewInsets(removeLeft: true, removeTop: true, removeRight: true, removeBottom: true, context: context, child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: DialogLibrary._kDialogEdgePadding), child: new global::Doroti.Framework.Widgets.SizedBox(width: (isInAccessibilityMode__15822 ? DialogLibrary._kAccessibilityCupertinoDialogWidth : DialogLibrary._kCupertinoDialogWidth), child: new _ActionSheetGestureDetector__dialog(child: new CupertinoPopupSurface(isSurfacePainted: false, child: new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.alertDialog, namesRoute: true, scopesRoute: true, explicitChildNodes: true, label: ((CupertinoLocalizations)localizations__15755).alertDialogLabel, child: _buildBody(context))))))))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoUserInterfaceLevel(data: CupertinoUserInterfaceLevelData.elevated, child: MediaQuery.withClampedTextScaling(minScaleFactor: 1.0, child: new global::Doroti.Framework.Widgets.ScrollConfiguration(behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false), child: new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
+        {
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedPadding(padding: (MediaQuery.viewInsetsOf(context).op_Add(global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 40.0, vertical: 24.0))), duration: ((CupertinoAlertDialog)this.widget).insetAnimationDuration, curve: ((CupertinoAlertDialog)this.widget).insetAnimationCurve, child: global::Doroti.Framework.Widgets.MediaQuery.CreateRemoveViewInsets(removeLeft: true, removeTop: true, removeRight: true, removeBottom: true, context: context, child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: DialogLibrary._kDialogEdgePadding), child: new global::Doroti.Framework.Widgets.SizedBox(width: (isInAccessibilityMode__15822 ? DialogLibrary._kAccessibilityCupertinoDialogWidth : DialogLibrary._kCupertinoDialogWidth), child: new _ActionSheetGestureDetector__dialog(child: new CupertinoPopupSurface(isSurfacePainted: false, child: new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.alertDialog, namesRoute: true, scopesRoute: true, explicitChildNodes: true, label: ((CupertinoLocalizations)localizations__15755).alertDialogLabel, child: _buildBody(context))))))))));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -442,12 +446,14 @@ internal class _TargetSelectionGestureRecognizer__dialog : global::Doroti.Framew
         this.hitTest = hitTest;
         this._slidingTap = new _SlidingTapGestureRecognizer__dialog(debugOwner: debugOwner);
         DartRuntimePrimitives.Ignore(((Func<_SlidingTapGestureRecognizer__dialog>)(() =>
-{            var __cascade = this._slidingTap;
-            __cascade.onDown = this._onDown;
-            __cascade.onResponsiveUpdate = this._onUpdate;
-            __cascade.onResponsiveEnd = this._onEnd;
-            __cascade.onCancel = this._onCancel;
-            return __cascade;        }))());
+{
+    var __cascade = this._slidingTap;
+    __cascade.onDown = this._onDown;
+    __cascade.onResponsiveUpdate = this._onUpdate;
+    __cascade.onResponsiveEnd = this._onEnd;
+    __cascade.onCancel = this._onCancel;
+    return __cascade;
+}))());
     }
 
     public virtual void acceptGesture(long pointer)
@@ -497,10 +503,12 @@ internal class _TargetSelectionGestureRecognizer__dialog : global::Doroti.Framew
                 target__34645.didLeave();
             }
             DartRuntimePrimitives.Ignore(((Func<List<_SlideTarget__dialog>>)(() =>
-{            var __cascade = this._currentTargets;
-            __cascade.Clear();
-            __cascade.AddRange(foundTargets__34013.Cast<_SlideTarget__dialog>());
-            return __cascade;        }))());
+{
+    var __cascade = this._currentTargets;
+    __cascade.Clear();
+    __cascade.AddRange(foundTargets__34013.Cast<_SlideTarget__dialog>());
+    return __cascade;
+}))());
             var enabled__34791 = true;
             foreach (_SlideTarget__dialog target__34837 in this._currentTargets)
             {
@@ -562,8 +570,9 @@ internal class _ActionSheetGestureDetector__dialog : global::Doroti.Framework.Wi
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         var gestures__36439 = new DartMap<Type, dynamic>();
-        gestures__36439[typeof(_TargetSelectionGestureRecognizer__dialog)] = new global::Doroti.Framework.Widgets.GestureRecognizerFactoryWithHandlers<_TargetSelectionGestureRecognizer__dialog>(((global::System.Func<_TargetSelectionGestureRecognizer__dialog>)(() => new _TargetSelectionGestureRecognizer__dialog(debugOwner: this, hitTest: ((global::System.Func<Offset, global::Doroti.Framework.Gestures.HitTestResult>)((globalPosition) => _hitTest(context, globalPosition)))))), ((global::System.Action<_TargetSelectionGestureRecognizer__dialog>)((instance) => {
-})));
+        gestures__36439[typeof(_TargetSelectionGestureRecognizer__dialog)] = new global::Doroti.Framework.Widgets.GestureRecognizerFactoryWithHandlers<_TargetSelectionGestureRecognizer__dialog>(((global::System.Func<_TargetSelectionGestureRecognizer__dialog>)(() => new _TargetSelectionGestureRecognizer__dialog(debugOwner: this, hitTest: ((global::System.Func<Offset, global::Doroti.Framework.Gestures.HitTestResult>)((globalPosition) => _hitTest(context, globalPosition)))))), ((global::System.Action<_TargetSelectionGestureRecognizer__dialog>)((instance) =>
+        {
+        })));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.RawGestureDetector(excludeFromSemantics: true, gestures: gestures__36439, child: this.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -627,16 +636,18 @@ internal class _CupertinoActionSheetState__dialog : global::Doroti.Framework.Wid
         {
             if ((this._pressedIndex == actionIndex))
             {
-                setState(((global::System.Action)(() => {
-_pressedIndex = null;
-})));
+                setState(((global::System.Action)(() =>
+                {
+                    _pressedIndex = null;
+                })));
             }
         }
         else
         {
-            setState(((global::System.Action)(() => {
-_pressedIndex = actionIndex;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _pressedIndex = actionIndex;
+            })));
         }
     }
 
@@ -644,9 +655,10 @@ _pressedIndex = actionIndex;
     {
         DartRuntimePrimitives.Assert(() => (((CupertinoActionSheet)this.widget).cancelButton is not null));
         double cancelPadding__43414 = (((((((CupertinoActionSheet)this.widget).actions is not null) || (((CupertinoActionSheet)this.widget).message is not null)) || (((CupertinoActionSheet)this.widget).title is not null))) ? DialogLibrary._kActionSheetCancelButtonPadding : 0.0);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: cancelPadding__43414), child: CupertinoFocusHalo.CreateWithRRect(borderRadius: ConstantsLibrary.kCupertinoButtonSizeBorderRadius.GetValueOrDefault(CupertinoButtonSize.large)!, child: new _ActionSheetButtonBackground__dialog(isCancel: true, pressed: (this._pressedIndex == _kCancelButtonIndex), onPressStateChange: ((global::System.Action<bool>)((state) => {
-_onPressedUpdate(_kCancelButtonIndex, state);
-})), child: ((CupertinoActionSheet)this.widget).cancelButton!))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: cancelPadding__43414), child: CupertinoFocusHalo.CreateWithRRect(borderRadius: ConstantsLibrary.kCupertinoButtonSizeBorderRadius.GetValueOrDefault(CupertinoButtonSize.large)!, child: new _ActionSheetButtonBackground__dialog(isCancel: true, pressed: (this._pressedIndex == _kCancelButtonIndex), onPressStateChange: ((global::System.Action<bool>)((state) =>
+        {
+            _onPressedUpdate(_kCancelButtonIndex, state);
+        })), child: ((CupertinoActionSheet)this.widget).cancelButton!))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -757,9 +769,10 @@ internal class _CupertinoActionSheetActionState__dialog : global::Doroti.Framewo
 
     internal virtual void _onShowFocusHighlight(bool showHighlight)
     {
-        setState(((global::System.Action)(() => {
-_showHighlight = showHighlight;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _showHighlight = showHighlight;
+        })));
     }
 
     internal virtual void _handleTap(global::Doroti.Framework.Widgets.Intent? __unused0 = null)
@@ -937,10 +950,11 @@ internal class _OverscrollBackgroundState__dialog : global::Doroti.Framework.Wid
     internal virtual bool _onScrollUpdate(global::Doroti.Framework.Widgets.ScrollUpdateNotification notification)
     {
         global::Doroti.Framework.Widgets.ScrollMetrics metrics__63291 = notification.metrics;
-        setState(((global::System.Action)(() => {
-_topOverscroll = Math.Min(Math.Max((((global::Doroti.Framework.Widgets.ScrollMetrics)metrics__63291).minScrollExtent - ((global::Doroti.Framework.Widgets.ScrollMetrics)metrics__63291).pixels), 0), ((global::Doroti.Framework.Widgets.ScrollMetrics)metrics__63291).viewportDimension);
-_bottomOverscroll = Math.Min(Math.Max((((global::Doroti.Framework.Widgets.ScrollMetrics)metrics__63291).pixels - ((global::Doroti.Framework.Widgets.ScrollMetrics)metrics__63291).maxScrollExtent), 0), ((global::Doroti.Framework.Widgets.ScrollMetrics)metrics__63291).viewportDimension);
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _topOverscroll = Math.Min(Math.Max((((global::Doroti.Framework.Widgets.ScrollMetrics)metrics__63291).minScrollExtent - ((global::Doroti.Framework.Widgets.ScrollMetrics)metrics__63291).pixels), 0), ((global::Doroti.Framework.Widgets.ScrollMetrics)metrics__63291).viewportDimension);
+            _bottomOverscroll = Math.Min(Math.Max((((global::Doroti.Framework.Widgets.ScrollMetrics)metrics__63291).pixels - ((global::Doroti.Framework.Widgets.ScrollMetrics)metrics__63291).maxScrollExtent), 0), ((global::Doroti.Framework.Widgets.ScrollMetrics)metrics__63291).viewportDimension);
+        })));
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -988,9 +1002,10 @@ internal class _ActionSheetActionSection__dialog : global::Doroti.Framework.Widg
             {
                 column__65501.Add(new _Divider__dialog(dividerColor: this.dividerColor, hiddenColor: DialogLibrary._kActionSheetBackgroundColor, hidden: ((this.pressedIndex == (actionIndex__65535 - 1L)) || (this.pressedIndex == actionIndex__65535))));
             }
-            column__65501.Add(new _ActionSheetButtonBackground__dialog(pressed: (this.pressedIndex == actionIndex__65535), onPressStateChange: ((global::System.Action<bool>)((state) => {
-this.onPressedUpdate(actionIndex__65535, state);
-})), child: this.actions![(int)(actionIndex__65535)]));
+            column__65501.Add(new _ActionSheetButtonBackground__dialog(pressed: (this.pressedIndex == actionIndex__65535), onPressStateChange: ((global::System.Action<bool>)((state) =>
+            {
+                this.onPressedUpdate(actionIndex__65535, state);
+            })), child: this.actions![(int)(actionIndex__65535)]));
         }
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoScrollbar(controller: this.scrollController, child: new global::Doroti.Framework.Widgets.SingleChildScrollView(controller: this.scrollController, child: new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, children: column__65501))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1118,9 +1133,10 @@ internal class _CupertinoAlertActionSection__dialog : global::Doroti.Framework.W
             {
                 column__72903.Add(new _Divider__dialog(dividerColor: dividerColor__72810, hiddenColor: dialogColor__72626, hidden: ((this.pressedIndex == (actionIndex__72937 - 1L)) || (this.pressedIndex == actionIndex__72937))));
             }
-            column__72903.Add(new _AlertDialogButtonBackground__dialog(idleColor: dialogColor__72626, pressedColor: dialogPressedColor__72711, pressed: (this.pressedIndex == actionIndex__72937), onPressStateChange: ((global::System.Action<bool>)((state) => {
-this.onPressedUpdate(actionIndex__72937, state);
-})), child: this.actions[(int)(actionIndex__72937)]));
+            column__72903.Add(new _AlertDialogButtonBackground__dialog(idleColor: dialogColor__72626, pressedColor: dialogPressedColor__72711, pressed: (this.pressedIndex == actionIndex__72937), onPressStateChange: ((global::System.Action<bool>)((state) =>
+            {
+                this.onPressedUpdate(actionIndex__72937, state);
+            })), child: this.actions[(int)(actionIndex__72937)]));
         }
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoScrollbar(controller: this.scrollController, child: new global::Doroti.Framework.Widgets.SingleChildScrollView(controller: this.scrollController, child: new _AlertDialogActionsLayout__dialog(dividerThickness: DialogLibrary._kDividerThickness, children: column__72903))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1296,10 +1312,12 @@ internal class _AlertDialogActionsLayout__dialog : global::Doroti.Framework.Widg
     {
         var __renderObject = (_RenderAlertDialogActionsLayout__dialog)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderAlertDialogActionsLayout__dialog>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.dividerThickness = this._dividerThickness;
-            __cascade.textDirection = Directionality.of(context);
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.dividerThickness = this._dividerThickness;
+    __cascade.textDirection = Directionality.of(context);
+    return __cascade;
+}))());
     }
 
 }
@@ -1336,9 +1354,10 @@ public class _RenderAlertDialogActionsLayout__dialog : global::Doroti.Framework.
         }
         double slotWidth__85311 = horizontalSlotWidthFor(overallWidth: width);
         double height__85379 = 0;
-        _forEachSlot(((global::System.Action<global::Doroti.Framework.Rendering.RenderBox>)((slot) => {
-height__85379 = Math.Max(height__85379, slot.getMinIntrinsicHeight(slotWidth__85311));
-})));
+        _forEachSlot(((global::System.Action<global::Doroti.Framework.Rendering.RenderBox>)((slot) =>
+        {
+            height__85379 = Math.Max(height__85379, slot.getMinIntrinsicHeight(slotWidth__85311));
+        })));
         return height__85379;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1351,9 +1370,10 @@ height__85379 = Math.Max(height__85379, slot.getMinIntrinsicHeight(slotWidth__85
         }
         double slotWidth__85711 = horizontalSlotWidthFor(overallWidth: width);
         double height__85779 = 0;
-        _forEachSlot(((global::System.Action<global::Doroti.Framework.Rendering.RenderBox>)((slot) => {
-height__85779 = Math.Max(height__85779, slot.getMaxIntrinsicHeight(slotWidth__85711));
-})));
+        _forEachSlot(((global::System.Action<global::Doroti.Framework.Rendering.RenderBox>)((slot) =>
+        {
+            height__85779 = Math.Max(height__85779, slot.getMaxIntrinsicHeight(slotWidth__85711));
+        })));
         return height__85779;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

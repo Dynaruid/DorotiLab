@@ -177,18 +177,19 @@ internal class _CheckboxState__checkbox : global::Doroti.Framework.Widgets.State
     {
         get
         {
-            return WidgetStateProperty.resolveWith<Color?>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, Color?>)((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return null;
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return ((Checkbox)this.widget).activeColor;
-}
-return null;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+            return WidgetStateProperty.resolveWith<Color?>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, Color?>)((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    return null;
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    return ((Checkbox)this.widget).activeColor;
+                }
+                return null;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
             return default!;
         }
     }
@@ -245,18 +246,23 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         VisualDensity effectiveVisualDensity__18184 = ((((Checkbox)this.widget).visualDensity ?? checkboxTheme__17775.visualDensity) ?? defaults__17846.visualDensity!);
         global::Doroti.Ui.Size size__18306 = ((global::Doroti.Ui.Size)(object?)(effectiveMaterialTapTargetSize__17999 switch { var __constant18361 when (object.Equals(__constant18361, MaterialTapTargetSize.padded)) => new global::Doroti.Ui.Size(ConstantsLibrary.kMinInteractiveDimension, ConstantsLibrary.kMinInteractiveDimension), var __constant18488 when (object.Equals(__constant18488, MaterialTapTargetSize.shrinkWrap)) => new global::Doroti.Ui.Size((ConstantsLibrary.kMinInteractiveDimension - 8.0), (ConstantsLibrary.kMinInteractiveDimension - 8.0)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
         size__18306 += effectiveVisualDensity__18184.baseSizeAdjustment;
-        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> effectiveMouseCursor__18731 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>)(object?)WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>((states) => {
-return (((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((Checkbox)this.widget).mouseCursor, states) ?? (global::Doroti.Framework.Services.MouseCursor)checkboxTheme__17775.mouseCursor?.resolve(states))) ?? (global::Doroti.Framework.Services.MouseCursor)global::Doroti.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable.resolve(states))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> effectiveMouseCursor__18731 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>)(object?)WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>((states) =>
+        {
+            return (((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((Checkbox)this.widget).mouseCursor, states) ?? (global::Doroti.Framework.Services.MouseCursor)checkboxTheme__17775.mouseCursor?.resolve(states))) ?? (global::Doroti.Framework.Services.MouseCursor)global::Doroti.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable.resolve(states))));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         HashSet<global::Doroti.Framework.Widgets.WidgetState> activeStates__19180 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
-{            var __cascade = this.states;
-            __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.selected);
-            return __cascade;        }))();
+{
+    var __cascade = this.states;
+    __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.selected);
+    return __cascade;
+}))();
         HashSet<global::Doroti.Framework.Widgets.WidgetState> inactiveStates__19257 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
-{            var __cascade = this.states;
-            __cascade.Remove(global::Doroti.Framework.Widgets.WidgetState.selected);
-            return __cascade;        }))();
+{
+    var __cascade = this.states;
+    __cascade.Remove(global::Doroti.Framework.Widgets.WidgetState.selected);
+    return __cascade;
+}))();
         if (((Checkbox)this.widget).isError)
         {
             activeStates__19180.Add(global::Doroti.Framework.Widgets.WidgetState.error);
@@ -269,32 +275,40 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         global::Doroti.Framework.Painting.BorderSide activeSide__20048 = (((_resolveSide(((Checkbox)this.widget).side, activeStates__19180) ?? (global::Doroti.Framework.Painting.BorderSide)_resolveSide(checkboxTheme__17775.side, activeStates__19180))) ?? _resolveSide(defaults__17846.side, activeStates__19180)!);
         global::Doroti.Framework.Painting.BorderSide inactiveSide__20243 = (((_resolveSide(((Checkbox)this.widget).side, inactiveStates__19257) ?? (global::Doroti.Framework.Painting.BorderSide)_resolveSide(checkboxTheme__17775.side, inactiveStates__19257))) ?? _resolveSide(defaults__17846.side, inactiveStates__19257)!);
         HashSet<global::Doroti.Framework.Widgets.WidgetState> focusedStates__20453 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
-{            var __cascade = this.states;
-            __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.focused);
-            return __cascade;        }))();
+{
+    var __cascade = this.states;
+    __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.focused);
+    return __cascade;
+}))();
         if (((Checkbox)this.widget).isError)
         {
             focusedStates__20453.Add(global::Doroti.Framework.Widgets.WidgetState.error);
         }
         global::Doroti.Ui.Color effectiveFocusOverlayColor__20589 = ((global::Doroti.Ui.Color)(object?)((((((Checkbox)this.widget).overlayColor?.resolve(focusedStates__20453) ?? ((Checkbox)this.widget).focusColor) ?? (Color)checkboxTheme__17775.overlayColor?.resolve(focusedStates__20453))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__17846.overlayColor).resolve(focusedStates__20453)!));
         HashSet<global::Doroti.Framework.Widgets.WidgetState> hoveredStates__20848 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
-{            var __cascade = this.states;
-            __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.hovered);
-            return __cascade;        }))();
+{
+    var __cascade = this.states;
+    __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.hovered);
+    return __cascade;
+}))();
         if (((Checkbox)this.widget).isError)
         {
             hoveredStates__20848.Add(global::Doroti.Framework.Widgets.WidgetState.error);
         }
         global::Doroti.Ui.Color effectiveHoverOverlayColor__20984 = ((global::Doroti.Ui.Color)(object?)((((((Checkbox)this.widget).overlayColor?.resolve(hoveredStates__20848) ?? ((Checkbox)this.widget).hoverColor) ?? (Color)checkboxTheme__17775.overlayColor?.resolve(hoveredStates__20848))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__17846.overlayColor).resolve(hoveredStates__20848)!));
         var activePressedStates__21226 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
-{            var __cascade = activeStates__19180;
-            __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.pressed);
-            return __cascade;        }))();
+{
+    var __cascade = activeStates__19180;
+    __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.pressed);
+    return __cascade;
+}))();
         global::Doroti.Ui.Color effectiveActivePressedOverlayColor__21304 = ((global::Doroti.Ui.Color)(object?)((((((Checkbox)this.widget).overlayColor?.resolve(activePressedStates__21226) ?? (Color)checkboxTheme__17775.overlayColor?.resolve(activePressedStates__21226))) ?? activeColor__19449?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__17846.overlayColor).resolve(activePressedStates__21226)!));
         var inactivePressedStates__21599 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
-{            var __cascade = inactiveStates__19257;
-            __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.pressed);
-            return __cascade;        }))();
+{
+    var __cascade = inactiveStates__19257;
+    __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.pressed);
+    return __cascade;
+}))();
         global::Doroti.Ui.Color effectiveInactivePressedOverlayColor__21681 = ((global::Doroti.Ui.Color)(object?)((((((Checkbox)this.widget).overlayColor?.resolve(inactivePressedStates__21599) ?? (Color)checkboxTheme__17775.overlayColor?.resolve(inactivePressedStates__21599))) ?? inactiveColor__19735?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__17846.overlayColor).resolve(inactivePressedStates__21599)!));
         if ((this.downPosition is not null))
         {
@@ -302,34 +316,38 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             effectiveFocusOverlayColor__20589 = (this.states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected) ? effectiveActivePressedOverlayColor__21304 : effectiveInactivePressedOverlayColor__21681);
         }
         HashSet<global::Doroti.Framework.Widgets.WidgetState> checkStates__22382 = (((Checkbox)this.widget).isError ? (((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
-{            var __cascade = this.states;
-            __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.error);
-            return __cascade;        }))()) : this.states);
+{
+    var __cascade = this.states;
+    __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.error);
+    return __cascade;
+}))()) : this.states);
         global::Doroti.Ui.Color effectiveCheckColor__22472 = ((global::Doroti.Ui.Color)(object?)(((((Checkbox)this.widget).checkColor ?? (Color)checkboxTheme__17775.checkColor?.resolve(checkStates__22382))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__17846.checkColor).resolve(checkStates__22382)!));
         double effectiveSplashRadius__22651 = ((((Checkbox)this.widget).splashRadius ?? checkboxTheme__17775.splashRadius) ?? DartRuntimePrimitives.RequireValue(defaults__17846.splashRadius));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(label: ((Checkbox)this.widget).semanticLabel, @checked: (((Checkbox)this.widget).value ?? false), mixed: (((Checkbox)this.widget).tristate ? (((Checkbox)this.widget).value is null) : null), child: buildToggleable(mouseCursor: effectiveMouseCursor__18731, focusNode: ((Checkbox)this.widget).focusNode, autofocus: ((Checkbox)this.widget).autofocus, size: size__18306, painter: ((Func<_CheckboxPainter__checkbox>)(() =>
-{            var __cascade = this._painter;
-            __cascade.position = this.position;
-            __cascade.reaction = this.reaction;
-            __cascade.reactionFocusFade = this.reactionFocusFade;
-            __cascade.reactionHoverFade = this.reactionHoverFade;
-            __cascade.inactiveReactionColor = effectiveInactivePressedOverlayColor__21681;
-            __cascade.reactionColor = effectiveActivePressedOverlayColor__21304;
-            __cascade.hoverColor = effectiveHoverOverlayColor__20984;
-            __cascade.focusColor = effectiveFocusOverlayColor__20589;
-            __cascade.splashRadius = effectiveSplashRadius__22651;
-            __cascade.downPosition = this.downPosition;
-            __cascade.isFocused = this.states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused);
-            __cascade.isHovered = this.states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered);
-            __cascade.activeColor = effectiveActiveColor__19636;
-            __cascade.inactiveColor = effectiveInactiveColor__19930;
-            __cascade.checkColor = effectiveCheckColor__22472;
-            __cascade.value = this.value;
-            __cascade.previousValue = this._previousValue;
-            __cascade.shape = ((((Checkbox)this.widget).shape ?? checkboxTheme__17775.shape) ?? defaults__17846.shape!);
-            __cascade.activeSide = activeSide__20048;
-            __cascade.inactiveSide = inactiveSide__20243;
-            return __cascade;        }))())));
+{
+    var __cascade = this._painter;
+    __cascade.position = this.position;
+    __cascade.reaction = this.reaction;
+    __cascade.reactionFocusFade = this.reactionFocusFade;
+    __cascade.reactionHoverFade = this.reactionHoverFade;
+    __cascade.inactiveReactionColor = effectiveInactivePressedOverlayColor__21681;
+    __cascade.reactionColor = effectiveActivePressedOverlayColor__21304;
+    __cascade.hoverColor = effectiveHoverOverlayColor__20984;
+    __cascade.focusColor = effectiveFocusOverlayColor__20589;
+    __cascade.splashRadius = effectiveSplashRadius__22651;
+    __cascade.downPosition = this.downPosition;
+    __cascade.isFocused = this.states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused);
+    __cascade.isHovered = this.states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered);
+    __cascade.activeColor = effectiveActiveColor__19636;
+    __cascade.inactiveColor = effectiveInactiveColor__19930;
+    __cascade.checkColor = effectiveCheckColor__22472;
+    __cascade.value = this.value;
+    __cascade.previousValue = this._previousValue;
+    __cascade.shape = ((((Checkbox)this.widget).shape ?? checkboxTheme__17775.shape) ?? defaults__17846.shape!);
+    __cascade.activeSide = activeSide__20048;
+    __cascade.inactiveSide = inactiveSide__20243;
+    return __cascade;
+}))())));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -343,10 +361,12 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -440,9 +460,10 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         if (this.isInteractive)
         {
-            setState(((global::System.Action)(() => {
-this._downPosition = ((global::Doroti.Framework.Gestures.TapDownDetails)details).localPosition;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                this._downPosition = ((global::Doroti.Framework.Gestures.TapDownDetails)details).localPosition;
+            })));
             this._reactionController.forward();
         }
     }
@@ -478,9 +499,10 @@ this._downPosition = ((global::Doroti.Framework.Gestures.TapDownDetails)details)
     {
         if ((this._downPosition is not null))
         {
-            setState(((global::System.Action)(() => {
-this._downPosition = null;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                this._downPosition = null;
+            })));
         }
         this._reactionController.reverse();
     }
@@ -489,9 +511,10 @@ this._downPosition = null;
     {
         if ((focused != this._focused))
         {
-            setState(((global::System.Action)(() => {
-this._focused = focused;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                this._focused = focused;
+            })));
             if (focused)
             {
                 this._reactionFocusFadeController.forward();
@@ -507,9 +530,10 @@ this._focused = focused;
     {
         if ((hovering != this._hovering))
         {
-            setState(((global::System.Action)(() => {
-this._hovering = hovering;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                this._hovering = hovering;
+            })));
             if (hovering)
             {
                 this._reactionHoverFadeController.forward();
@@ -657,11 +681,13 @@ internal class _CheckboxPainter__checkbox : global::Doroti.Framework.Widgets.Tog
     internal virtual global::Doroti.Ui.Paint _createStrokePaint()
     {
         return ((global::Doroti.Ui.Paint)(object?)((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.checkColor;
-            __cascade.style = PaintingStyle.stroke;
-            __cascade.strokeWidth = CheckboxLibrary._kStrokeWidth;
-            return __cascade;        }))());
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.checkColor;
+    __cascade.style = PaintingStyle.stroke;
+    __cascade.strokeWidth = CheckboxLibrary._kStrokeWidth;
+    return __cascade;
+}))());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -728,9 +754,11 @@ internal class _CheckboxPainter__checkbox : global::Doroti.Framework.Widgets.Tog
             double t__28976 = ((this.value == false) ? (1.0 - tNormalized__28616) : tNormalized__28616);
             global::Doroti.Ui.Rect outer__29047 = ((global::Doroti.Ui.Rect)(object?)_outerRectAt(origin__28530, t__28976));
             var paint__29092 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = _colorAt(t__28976);
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = _colorAt(t__28976);
+    return __cascade;
+}))();
             if ((t__28976 <= 0.5))
             {
                 global::Doroti.Framework.Painting.BorderSide border__29178 = ((global::Doroti.Framework.Painting.BorderSide)(object?)BorderSide.lerp(this.inactiveSide, this.activeSide, t__28976));
@@ -754,9 +782,11 @@ internal class _CheckboxPainter__checkbox : global::Doroti.Framework.Widgets.Tog
         {
             global::Doroti.Ui.Rect outer__29681 = ((global::Doroti.Ui.Rect)(object?)_outerRectAt(origin__28530, 1.0));
             var paint__29728 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = _colorAt(1.0);
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = _colorAt(1.0);
+    return __cascade;
+}))();
             _drawBox(canvas, outer__29681, paint__29728, this.activeSide);
             if ((tNormalized__28616 <= 0.5))
             {
@@ -802,22 +832,23 @@ internal class _CheckboxDefaultsM2__checkbox : CheckboxThemeData
     {
         get
         {
-            return global::Doroti.Framework.Widgets.WidgetStateBorderSide.CreateResolveWith(((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-    {
-        return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: Colors.transparent);
-    }
-    return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: this._theme.disabledColor);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: Colors.transparent);
-}
-return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: this._theme.unselectedWidgetColor);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return global::Doroti.Framework.Widgets.WidgetStateBorderSide.CreateResolveWith(((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                    {
+                        return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: Colors.transparent);
+                    }
+                    return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: this._theme.disabledColor);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: Colors.transparent);
+                }
+                return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: this._theme.unselectedWidgetColor);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -825,22 +856,23 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-    {
-        return (this._theme.disabledColor);
-    }
-    return (Colors.transparent);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (this._colors.secondary);
-}
-return (Colors.transparent);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                    {
+                        return (this._theme.disabledColor);
+                    }
+                    return (Colors.transparent);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    return (this._colors.secondary);
+                }
+                return (Colors.transparent);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -856,22 +888,23 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-{
-    return (this.fillColor.resolve(states).withAlpha(ConstantsLibrary.kRadialReactionAlpha));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-{
-    return (this._theme.hoverColor);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-{
-    return (this._theme.focusColor);
-}
-return (Colors.transparent);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                {
+                    return (this.fillColor.resolve(states).withAlpha(ConstantsLibrary.kRadialReactionAlpha));
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                {
+                    return (this._theme.hoverColor);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                {
+                    return (this._theme.focusColor);
+                }
+                return (Colors.transparent);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -896,38 +929,39 @@ internal class _CheckboxDefaultsM3__checkbox : CheckboxThemeData
     {
         get
         {
-            return global::Doroti.Framework.Widgets.WidgetStateBorderSide.CreateResolveWith(((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-    {
-        return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: Colors.transparent);
-    }
-    return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: this._colors.onSurface.withOpacity(0.38));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return new global::Doroti.Framework.Painting.BorderSide(width: 0.0, color: Colors.transparent);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.error))
-{
-    return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: this._colors.error);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-{
-    return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: this._colors.onSurface);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-{
-    return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: this._colors.onSurface);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-{
-    return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: this._colors.onSurface);
-}
-return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: this._colors.onSurfaceVariant);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return global::Doroti.Framework.Widgets.WidgetStateBorderSide.CreateResolveWith(((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                    {
+                        return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: Colors.transparent);
+                    }
+                    return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: this._colors.onSurface.withOpacity(0.38));
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    return new global::Doroti.Framework.Painting.BorderSide(width: 0.0, color: Colors.transparent);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.error))
+                {
+                    return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: this._colors.error);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                {
+                    return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: this._colors.onSurface);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                {
+                    return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: this._colors.onSurface);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                {
+                    return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: this._colors.onSurface);
+                }
+                return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: this._colors.onSurfaceVariant);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -935,26 +969,27 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-    {
-        return (this._colors.onSurface.withOpacity(0.38));
-    }
-    return (Colors.transparent);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.error))
-    {
-        return (this._colors.error);
-    }
-    return (this._colors.primary);
-}
-return (Colors.transparent);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                    {
+                        return (this._colors.onSurface.withOpacity(0.38));
+                    }
+                    return (Colors.transparent);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.error))
+                    {
+                        return (this._colors.error);
+                    }
+                    return (this._colors.primary);
+                }
+                return (Colors.transparent);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -962,26 +997,27 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-    {
-        return (this._colors.surface);
-    }
-    return (Colors.transparent);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.error))
-    {
-        return (this._colors.onError);
-    }
-    return (this._colors.onPrimary);
-}
-return (Colors.transparent);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                    {
+                        return (this._colors.surface);
+                    }
+                    return (Colors.transparent);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.error))
+                    {
+                        return (this._colors.onError);
+                    }
+                    return (this._colors.onPrimary);
+                }
+                return (Colors.transparent);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }
@@ -989,53 +1025,54 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) => {
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.error))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-    {
-        return (this._colors.error.withOpacity(0.1));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-    {
-        return (this._colors.error.withOpacity(0.08));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (this._colors.error.withOpacity(0.1));
-    }
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-    {
-        return (this._colors.onSurface.withOpacity(0.1));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-    {
-        return (this._colors.primary.withOpacity(0.08));
-    }
-    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-    {
-        return (this._colors.primary.withOpacity(0.1));
-    }
-    return (Colors.transparent);
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-{
-    return (this._colors.primary.withOpacity(0.1));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-{
-    return (this._colors.onSurface.withOpacity(0.08));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-{
-    return (this._colors.onSurface.withOpacity(0.1));
-}
-return (Colors.transparent);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) =>
+            {
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.error))
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                    {
+                        return (this._colors.error.withOpacity(0.1));
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                    {
+                        return (this._colors.error.withOpacity(0.08));
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                    {
+                        return (this._colors.error.withOpacity(0.1));
+                    }
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+                {
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                    {
+                        return (this._colors.onSurface.withOpacity(0.1));
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                    {
+                        return (this._colors.primary.withOpacity(0.08));
+                    }
+                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                    {
+                        return (this._colors.primary.withOpacity(0.1));
+                    }
+                    return (Colors.transparent);
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
+                {
+                    return (this._colors.primary.withOpacity(0.1));
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
+                {
+                    return (this._colors.onSurface.withOpacity(0.08));
+                }
+                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
+                {
+                    return (this._colors.onSurface.withOpacity(0.1));
+                }
+                return (Colors.transparent);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             return default!;
         }
     }

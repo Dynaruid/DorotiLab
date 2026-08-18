@@ -4,13 +4,13 @@
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/input_border.dart
 using System;
 using System.Collections.Generic;
-using Stopwatch = System.Diagnostics.Stopwatch;
 using System.Linq;
 using System.Threading.Tasks;
 using Doroti.Runtime;
 using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Doroti.Framework.Material;
 
@@ -43,18 +43,22 @@ internal class _NoInputBorder__input_border : InputBorder
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
         return ((Func<Path>)(() =>
-{            var __cascade = new global::Doroti.Ui.Path();
-            __cascade.addRect(rect);
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Path();
+    __cascade.addRect(rect);
+    return __cascade;
+}))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
     {
         return ((Func<Path>)(() =>
-{            var __cascade = new global::Doroti.Ui.Path();
-            __cascade.addRect(rect);
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Path();
+    __cascade.addRect(rect);
+    return __cascade;
+}))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -104,18 +108,22 @@ public class UnderlineInputBorder : InputBorder
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
         return ((Func<Path>)(() =>
-{            var __cascade = new global::Doroti.Ui.Path();
-            __cascade.addRect(global::Doroti.Ui.Rect.fromLTWH(rect.left, rect.top, rect.width, Math.Max(0.0, (rect.height - ((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width))));
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Path();
+    __cascade.addRect(global::Doroti.Ui.Rect.fromLTWH(rect.left, rect.top, rect.width, Math.Max(0.0, (rect.height - ((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width))));
+    return __cascade;
+}))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
     {
         return ((Func<Path>)(() =>
-{            var __cascade = new global::Doroti.Ui.Path();
-            __cascade.addRRect(this.borderRadius.resolve(textDirection).toRRect(rect));
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Path();
+    __cascade.addRRect(this.borderRadius.resolve(textDirection).toRRect(rect));
+    return __cascade;
+}))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -250,18 +258,22 @@ public class OutlineInputBorder : InputBorder
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
         return ((Func<Path>)(() =>
-{            var __cascade = new global::Doroti.Ui.Path();
-            __cascade.addRRect(this.borderRadius.resolve(textDirection).toRRect(rect).deflate(((global::Doroti.Framework.Painting.BorderSide)this.borderSide).strokeInset));
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Path();
+    __cascade.addRRect(this.borderRadius.resolve(textDirection).toRRect(rect).deflate(((global::Doroti.Framework.Painting.BorderSide)this.borderSide).strokeInset));
+    return __cascade;
+}))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
     {
         return ((Func<Path>)(() =>
-{            var __cascade = new global::Doroti.Ui.Path();
-            __cascade.addRRect(this.borderRadius.resolve(textDirection).toRRect(rect));
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Path();
+    __cascade.addRRect(this.borderRadius.resolve(textDirection).toRRect(rect));
+    return __cascade;
+}))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -460,9 +472,11 @@ public class ShapedInputBorder : InputBorder
         var gapLeft__25693 = start;
         double gapRight__25727 = (start + extent);
         var gapRect__25931 = ((Func<Path>)(() =>
-{            var __cascade = new global::Doroti.Ui.Path();
-            __cascade.addRect(global::Doroti.Ui.Rect.fromLTRB(Dart_uiLibrary.clampDouble(gapLeft__25693, rect.left, rect.right), (rect.top - 1.0), Dart_uiLibrary.clampDouble(gapRight__25727, rect.left, rect.right), (rect.top + 1.0)));
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Path();
+    __cascade.addRect(global::Doroti.Ui.Rect.fromLTRB(Dart_uiLibrary.clampDouble(gapLeft__25693, rect.left, rect.right), (rect.top - 1.0), Dart_uiLibrary.clampDouble(gapRight__25727, rect.left, rect.right), (rect.top + 1.0)));
+    return __cascade;
+}))();
         return ((global::Doroti.Ui.Path)(object?)Dart_uiLibrary.Path.combine(PathOperation.difference, outerPath__25345, gapRect__25931));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

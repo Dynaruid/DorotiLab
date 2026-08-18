@@ -62,9 +62,10 @@ internal class _ValueListenableBuilderState__value_listenable_builder<T> : State
 
     internal virtual void _valueChanged()
     {
-        setState(((global::System.Action)(() => {
-this.value = ((ValueListenableBuilder<T>)(object)this.widget).valueListenable.value;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            this.value = ((ValueListenableBuilder<T>)(object)this.widget).valueListenable.value;
+        })));
     }
 
     public override Widget build(BuildContext context)

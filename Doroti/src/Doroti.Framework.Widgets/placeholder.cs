@@ -28,18 +28,22 @@ internal class _PlaceholderPainter__placeholder : global::Doroti.Framework.Rende
     public override void paint(Canvas canvas, Size size)
     {
         var paint__498 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.color;
-            __cascade.style = PaintingStyle.stroke;
-            __cascade.strokeWidth = this.strokeWidth;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.color;
+    __cascade.style = PaintingStyle.stroke;
+    __cascade.strokeWidth = this.strokeWidth;
+    return __cascade;
+}))();
         global::Doroti.Ui.Rect rect__623 = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & size));
         var path__660 = ((Func<Path>)(() =>
-{            var __cascade = new global::Doroti.Ui.Path();
-            __cascade.addRect(rect__623);
-            __cascade.addPolygon(new List<global::Doroti.Ui.Offset> { rect__623.topRight, rect__623.bottomLeft }, false);
-            __cascade.addPolygon(new List<global::Doroti.Ui.Offset> { rect__623.topLeft, rect__623.bottomRight }, false);
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Path();
+    __cascade.addRect(rect__623);
+    __cascade.addPolygon(new List<global::Doroti.Ui.Offset> { rect__623.topRight, rect__623.bottomLeft }, false);
+    __cascade.addPolygon(new List<global::Doroti.Ui.Offset> { rect__623.topLeft, rect__623.bottomRight }, false);
+    return __cascade;
+}))();
         canvas.drawPath(path__660, paint__498);
     }
 

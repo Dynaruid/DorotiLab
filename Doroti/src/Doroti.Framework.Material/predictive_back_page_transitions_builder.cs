@@ -26,14 +26,15 @@ public class PredictiveBackPageTransitionsBuilder : global::Doroti.Framework.Wid
     public override Duration transitionDuration => Duration.Create(milliseconds: FadeForwardsPageTransitionsBuilder.kTransitionMilliseconds);
     public override global::Doroti.Framework.Widgets.Widget buildTransitions<T>(global::Doroti.Framework.Widgets.PageRoute<T> route, global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _PredictiveBackGestureDetector__predictive_back_page_transitions_builder(route: route, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, _PredictiveBackPhase__predictive_back_page_transitions_builder, global::Doroti.Framework.Services.PredictiveBackEvent?, global::Doroti.Framework.Services.PredictiveBackEvent?, global::Doroti.Framework.Widgets.Widget>)((context, phase, startBackEvent, currentBackEvent) => {
-if (route.popGestureInProgress)
-{
-    return ((global::Doroti.Framework.Widgets.Widget)(object?)new _PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder(isDelegatedTransition: true, animation: animation, phase: phase, secondaryAnimation: secondaryAnimation, startBackEvent: startBackEvent, currentBackEvent: currentBackEvent, child: child));
-}
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new FadeForwardsPageTransitionsBuilder(backgroundColor: this.fallbackColor).buildTransitions(route, context, animation, secondaryAnimation, child));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _PredictiveBackGestureDetector__predictive_back_page_transitions_builder(route: route, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, _PredictiveBackPhase__predictive_back_page_transitions_builder, global::Doroti.Framework.Services.PredictiveBackEvent?, global::Doroti.Framework.Services.PredictiveBackEvent?, global::Doroti.Framework.Widgets.Widget>)((context, phase, startBackEvent, currentBackEvent) =>
+        {
+            if (route.popGestureInProgress)
+            {
+                return ((global::Doroti.Framework.Widgets.Widget)(object?)new _PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder(isDelegatedTransition: true, animation: animation, phase: phase, secondaryAnimation: secondaryAnimation, startBackEvent: startBackEvent, currentBackEvent: currentBackEvent, child: child));
+            }
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new FadeForwardsPageTransitionsBuilder(backgroundColor: this.fallbackColor).buildTransitions(route, context, animation, secondaryAnimation, child));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -50,14 +51,15 @@ public class PredictiveBackFullscreenPageTransitionsBuilder : global::Doroti.Fra
 
     public override global::Doroti.Framework.Widgets.Widget buildTransitions<T>(global::Doroti.Framework.Widgets.PageRoute<T> route, global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, global::Doroti.Framework.Widgets.Widget child)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _PredictiveBackGestureDetector__predictive_back_page_transitions_builder(route: route, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, _PredictiveBackPhase__predictive_back_page_transitions_builder, global::Doroti.Framework.Services.PredictiveBackEvent?, global::Doroti.Framework.Services.PredictiveBackEvent?, global::Doroti.Framework.Widgets.Widget>)((context, phase, startBackEvent, currentBackEvent) => {
-if (route.popGestureInProgress)
-{
-    return ((global::Doroti.Framework.Widgets.Widget)(object?)new _PredictiveBackFullscreenPageTransition__predictive_back_page_transitions_builder(animation: animation, secondaryAnimation: secondaryAnimation, getIsCurrent: ((global::System.Func<bool>)(() => route.isCurrent)), phase: phase, child: child));
-}
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new ZoomPageTransitionsBuilder(backgroundColor: this.fallbackColor).buildTransitions(route, context, animation, secondaryAnimation, child));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _PredictiveBackGestureDetector__predictive_back_page_transitions_builder(route: route, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, _PredictiveBackPhase__predictive_back_page_transitions_builder, global::Doroti.Framework.Services.PredictiveBackEvent?, global::Doroti.Framework.Services.PredictiveBackEvent?, global::Doroti.Framework.Widgets.Widget>)((context, phase, startBackEvent, currentBackEvent) =>
+        {
+            if (route.popGestureInProgress)
+            {
+                return ((global::Doroti.Framework.Widgets.Widget)(object?)new _PredictiveBackFullscreenPageTransition__predictive_back_page_transitions_builder(animation: animation, secondaryAnimation: secondaryAnimation, getIsCurrent: ((global::System.Func<bool>)(() => route.isCurrent)), phase: phase, child: child));
+            }
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new ZoomPageTransitionsBuilder(backgroundColor: this.fallbackColor).buildTransitions(route, context, animation, secondaryAnimation, child));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -314,11 +316,12 @@ internal class _PredictiveBackSharedElementPageTransitionState__predictive_back_
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: ((_PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder)this.widget).animation, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) => {
-_lastBounceAnimationValue = ((global::Doroti.Framework.Animation.ProxyAnimation)this._bounceAnimation).value;
-return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.Transform.CreateScale(scale: this._scaleTween.evaluate(this._bounceAnimation), child: global::Doroti.Framework.Widgets.Transform.CreateTranslate(offset: (((_PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder)this.widget).phase switch { _PredictiveBackPhase__predictive_back_page_transitions_builder.commit => ((global::Doroti.Framework.Animation.Animation<Offset>)this._positionAnimation).value, _ => _lastDrag = new global::Doroti.Ui.Offset(((global::Doroti.Framework.Animation.Animation<Offset>)this._positionAnimation).value.dx, _getYShiftPosition(MediaQuery.heightOf(context))) }), child: new global::Doroti.Framework.Widgets.Opacity(opacity: this._opacityTween.evaluate(this._commitAnimation), child: new global::Doroti.Framework.Widgets.ClipRRect(borderRadius: (MediaQuery.displayCornerRadiiOf(context) ?? global::Doroti.Framework.Painting.BorderRadius.CreateCircular(this._borderRadiusTween.evaluate(this._bounceAnimation))), child: child)))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: ((_PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder)this.widget).child));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: ((_PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder)this.widget).animation, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
+        {
+            _lastBounceAnimationValue = ((global::Doroti.Framework.Animation.ProxyAnimation)this._bounceAnimation).value;
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.Transform.CreateScale(scale: this._scaleTween.evaluate(this._bounceAnimation), child: global::Doroti.Framework.Widgets.Transform.CreateTranslate(offset: (((_PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder)this.widget).phase switch { _PredictiveBackPhase__predictive_back_page_transitions_builder.commit => ((global::Doroti.Framework.Animation.Animation<Offset>)this._positionAnimation).value, _ => _lastDrag = new global::Doroti.Ui.Offset(((global::Doroti.Framework.Animation.Animation<Offset>)this._positionAnimation).value.dx, _getYShiftPosition(MediaQuery.heightOf(context))) }), child: new global::Doroti.Framework.Widgets.Opacity(opacity: this._opacityTween.evaluate(this._commitAnimation), child: new global::Doroti.Framework.Widgets.ClipRRect(borderRadius: (MediaQuery.displayCornerRadiiOf(context) ?? global::Doroti.Framework.Painting.BorderRadius.CreateCircular(this._borderRadiusTween.evaluate(this._bounceAnimation))), child: child)))));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), child: ((_PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

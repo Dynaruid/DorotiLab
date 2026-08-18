@@ -417,10 +417,12 @@ public class DrivenScrollActivity : ScrollActivity
         var __instance = new DrivenScrollActivity(default!, default!, default!, default!, default!, default!);
         __instance._completer = new Completer<object?>();
         __instance._controller = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = global::Doroti.Framework.Animation.AnimationController.CreateUnbounded(debugLabel: global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(__instance, "DrivenScrollActivity"), vsync: vsync);
-            __cascade.addListener(() => __instance._tick());
-            __cascade.animateWith(simulation).whenComplete(() => { ((Action)__instance._end)(); return default!; });
-            return __cascade;        }))();
+{
+    var __cascade = global::Doroti.Framework.Animation.AnimationController.CreateUnbounded(debugLabel: global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(__instance, "DrivenScrollActivity"), vsync: vsync);
+    __cascade.addListener(() => __instance._tick());
+    __cascade.animateWith(simulation).whenComplete(() => { ((Action)__instance._end)(); return default!; });
+    return __cascade;
+}))();
         return __instance;
     }
 

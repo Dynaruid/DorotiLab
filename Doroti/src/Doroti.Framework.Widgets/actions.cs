@@ -19,11 +19,12 @@ public static partial class ActionsLibrary
     internal static BuildContext _getParent(BuildContext context)
     {
         BuildContext parent__1462 = default!;
-        context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) => {
-parent__1462 = DartRuntimePrimitives.ConvertValue<BuildContext>(ancestor);
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
+        {
+            parent__1462 = DartRuntimePrimitives.ConvertValue<BuildContext>(ancestor);
+            return false;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         return parent__1462;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -345,16 +346,17 @@ public class Actions : StatefulWidget
     internal static ActionDispatcher _findDispatcher(BuildContext context)
     {
         ActionDispatcher? dispatcher__32285 = default!;
-        Actions._visitActionsAncestors(context, ((global::System.Func<InheritedElement, bool>)((element) => {
-ActionDispatcher? found__32392 = (((_ActionsScope__actions?)(object?)element.widget)!).dispatcher;
-if ((found__32392 is not null))
-{
-    dispatcher__32285 = found__32392;
-    return true;
-}
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        Actions._visitActionsAncestors(context, ((global::System.Func<InheritedElement, bool>)((element) =>
+        {
+            ActionDispatcher? found__32392 = (((_ActionsScope__actions?)(object?)element.widget)!).dispatcher;
+            if ((found__32392 is not null))
+            {
+                dispatcher__32285 = found__32392;
+                return true;
+            }
+            return false;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         return (dispatcher__32285 ?? new ActionDispatcher());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -364,12 +366,13 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         dynamic action__33514 = Actions.maybeFind<T>(context);
         if (((action__33514 is not null) && ((bool)((dynamic)action__33514)._isEnabled(intent, context))))
         {
-            return ((global::System.Action)(() => {
-if (((bool)((dynamic)action__33514)._isEnabled(intent, context)))
-{
-    Actions.of(context).invokeAction(action__33514, intent, context);
-}
-}));
+            return ((global::System.Action)(() =>
+            {
+                if (((bool)((dynamic)action__33514)._isEnabled(intent, context)))
+                {
+                    Actions.of(context).invokeAction(action__33514, intent, context);
+                }
+            }));
         }
         return ((global::System.Action)(object)null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -395,18 +398,19 @@ if (((bool)((dynamic)action__33514)._isEnabled(intent, context)))
     public static Action<T>? maybeFind<T>(BuildContext context, T? intent = default) where T : Intent
     {
         dynamic action__37058 = default!;
-        Actions._visitActionsAncestors(context, ((global::System.Func<InheritedElement, bool>)((element) => {
-var actions__37143 = ((_ActionsScope__actions?)(object?)element.widget)!;
-dynamic result__37214 = Actions._getActionForIntent<T>(actions__37143, intent);
-if ((result__37214 is not null))
-{
-    context.dependOnInheritedElement(element);
-    action__37058 = result__37214;
-    return true;
-}
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        Actions._visitActionsAncestors(context, ((global::System.Func<InheritedElement, bool>)((element) =>
+        {
+            var actions__37143 = ((_ActionsScope__actions?)(object?)element.widget)!;
+            dynamic result__37214 = Actions._getActionForIntent<T>(actions__37143, intent);
+            if ((result__37214 is not null))
+            {
+                context.dependOnInheritedElement(element);
+                action__37058 = result__37214;
+                return true;
+            }
+            return false;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         if (action__37058 is Action<T> action__37464)
         {
             return action__37464;
@@ -423,17 +427,18 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     internal static dynamic _maybeFindWithoutDependingOn<T>(BuildContext context, T? intent) where T : Intent
     {
         dynamic action__38359 = default!;
-        Actions._visitActionsAncestors(context, ((global::System.Func<InheritedElement, bool>)((element) => {
-var actions__38445 = ((_ActionsScope__actions?)(object?)element.widget)!;
-dynamic result__38516 = Actions._getActionForIntent<T>(actions__38445, intent);
-if ((result__38516 is not null))
-{
-    action__38359 = result__38516;
-    return true;
-}
-return false;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        Actions._visitActionsAncestors(context, ((global::System.Func<InheritedElement, bool>)((element) =>
+        {
+            var actions__38445 = ((_ActionsScope__actions?)(object?)element.widget)!;
+            dynamic result__38516 = Actions._getActionForIntent<T>(actions__38445, intent);
+            if ((result__38516 is not null))
+            {
+                action__38359 = result__38516;
+                return true;
+            }
+            return false;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         return action__38359;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -456,16 +461,17 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     public static object? invoke<T>(BuildContext context, T intent) where T : Intent
     {
         object? returnValue__40136 = default!;
-        bool actionFound__40165 = Actions._visitActionsAncestors(context, ((global::System.Func<InheritedElement, bool>)((element) => {
-var actions__40252 = ((_ActionsScope__actions?)(object?)element.widget)!;
-dynamic result__40323 = Actions._getActionForIntent(actions__40252, intent);
-if (((result__40323 is not null) && ((bool)((dynamic)result__40323)._isEnabled(intent, context))))
-{
-    returnValue__40136 = Actions._findDispatcher(element).invokeAction(result__40323, intent, context);
-}
-return (result__40323 is not null);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        bool actionFound__40165 = Actions._visitActionsAncestors(context, ((global::System.Func<InheritedElement, bool>)((element) =>
+        {
+            var actions__40252 = ((_ActionsScope__actions?)(object?)element.widget)!;
+            dynamic result__40323 = Actions._getActionForIntent(actions__40252, intent);
+            if (((result__40323 is not null) && ((bool)((dynamic)result__40323)._isEnabled(intent, context))))
+            {
+                returnValue__40136 = Actions._findDispatcher(element).invokeAction(result__40323, intent, context);
+            }
+            return (result__40323 is not null);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         DartRuntimePrimitives.Assert(() =>
             {
                 if (!actionFound__40165)
@@ -482,16 +488,17 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     public static object? maybeInvoke<T>(BuildContext context, T intent) where T : Intent
     {
         object? returnValue__42255 = default!;
-        Actions._visitActionsAncestors(context, ((global::System.Func<InheritedElement, bool>)((element) => {
-var actions__42345 = ((_ActionsScope__actions?)(object?)element.widget)!;
-dynamic result__42416 = Actions._getActionForIntent(actions__42345, intent);
-if (((result__42416 is not null) && ((bool)((dynamic)result__42416)._isEnabled(intent, context))))
-{
-    returnValue__42255 = Actions._findDispatcher(element).invokeAction(result__42416, intent, context);
-}
-return (result__42416 is not null);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        Actions._visitActionsAncestors(context, ((global::System.Func<InheritedElement, bool>)((element) =>
+        {
+            var actions__42345 = ((_ActionsScope__actions?)(object?)element.widget)!;
+            dynamic result__42416 = Actions._getActionForIntent(actions__42345, intent);
+            if (((result__42416 is not null) && ((bool)((dynamic)result__42416)._isEnabled(intent, context))))
+            {
+                returnValue__42255 = Actions._findDispatcher(element).invokeAction(result__42416, intent, context);
+            }
+            return (result__42416 is not null);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         return returnValue__42255;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -519,9 +526,10 @@ internal class _ActionsState__actions : State<Actions>
 
     internal virtual void _handleActionChanged(dynamic action)
     {
-        setState(((global::System.Action)(() => {
-rebuildKey = new object();
-})));
+        setState(((global::System.Action)(() =>
+        {
+            rebuildKey = new object();
+        })));
     }
 
     internal virtual void _updateActionListeners()
@@ -636,9 +644,10 @@ internal class _FocusableActionDetectorState__actions : State<FocusableActionDet
     public override void initState()
     {
         base.initState();
-        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) => {
-_updateHighlightMode(FocusManager.instance.highlightMode);
-})), debugLabel: "FocusableActionDetector.updateHighlightMode");
+        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) =>
+        {
+            _updateHighlightMode(FocusManager.instance.highlightMode);
+        })), debugLabel: "FocusableActionDetector.updateHighlightMode");
         FocusManager.instance.addHighlightModeListener((global::System.Action<FocusHighlightMode>)this._handleFocusHighlightModeChange);
     }
 
@@ -650,9 +659,10 @@ _updateHighlightMode(FocusManager.instance.highlightMode);
 
     internal virtual void _updateHighlightMode(FocusHighlightMode mode)
     {
-        _mayTriggerCallback(task: ((global::System.Action)(() => {
-_canShowHighlight = (FocusManager.instance.highlightMode switch { FocusHighlightMode.touch => false, FocusHighlightMode.traditional => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-})));
+        _mayTriggerCallback(task: ((global::System.Action)(() =>
+        {
+            _canShowHighlight = (FocusManager.instance.highlightMode switch { FocusHighlightMode.touch => false, FocusHighlightMode.traditional => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        })));
     }
 
     internal virtual void _handleFocusHighlightModeChange(FocusHighlightMode mode)
@@ -668,9 +678,10 @@ _canShowHighlight = (FocusManager.instance.highlightMode switch { FocusHighlight
     {
         if (!this._hovering)
         {
-            _mayTriggerCallback(task: ((global::System.Action)(() => {
-_hovering = true;
-})));
+            _mayTriggerCallback(task: ((global::System.Action)(() =>
+            {
+                _hovering = true;
+            })));
         }
     }
 
@@ -678,9 +689,10 @@ _hovering = true;
     {
         if (this._hovering)
         {
-            _mayTriggerCallback(task: ((global::System.Action)(() => {
-_hovering = false;
-})));
+            _mayTriggerCallback(task: ((global::System.Action)(() =>
+            {
+                _hovering = false;
+            })));
         }
     }
 
@@ -688,9 +700,10 @@ _hovering = false;
     {
         if ((this._focused != focused))
         {
-            _mayTriggerCallback(task: ((global::System.Action)(() => {
-_focused = focused;
-})));
+            _mayTriggerCallback(task: ((global::System.Action)(() =>
+            {
+                _focused = focused;
+            })));
             ((FocusableActionDetector)(object)this.widget).onFocusChange?.Invoke(this._focused);
         }
     }
@@ -734,9 +747,10 @@ _focused = focused;
         base.didUpdateWidget(oldWidget);
         if ((((FocusableActionDetector)(object)this.widget).enabled != ((FocusableActionDetector)oldWidget).enabled))
         {
-            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) => {
-_mayTriggerCallback(oldWidget: oldWidget);
-})), debugLabel: "FocusableActionDetector.mayTriggerCallback");
+            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) =>
+            {
+                _mayTriggerCallback(oldWidget: oldWidget);
+            })), debugLabel: "FocusableActionDetector.mayTriggerCallback");
         }
     }
 

@@ -110,19 +110,21 @@ public class NestedScrollViewState : State<NestedScrollView>
         bool newHasScrolledBody__20173 = this._coordinator!.hasScrolledBody;
         if ((this._lastHasScrolledBody != newHasScrolledBody__20173))
         {
-            setState(((global::System.Action)(() => {
-})));
+            setState(((global::System.Action)(() =>
+            {
+            })));
         }
     }
 
     public override Widget build(BuildContext context)
     {
         ScrollPhysics scrollPhysics__20789 = (((((NestedScrollView)this.widget).physics?.applyTo(new ClampingScrollPhysics()) ?? (ScrollPhysics)((NestedScrollView)this.widget).scrollBehavior?.getScrollPhysics(context).applyTo(new ClampingScrollPhysics()))) ?? new ClampingScrollPhysics());
-        return ((Widget)(object?)new _InheritedNestedScrollView__nested_scroll_view(state: this, child: new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => {
-_lastHasScrolledBody = this._coordinator!.hasScrolledBody;
-return ((Widget)(object?)new _NestedScrollViewCustomScrollView__nested_scroll_view(dragStartBehavior: ((NestedScrollView)this.widget).dragStartBehavior, scrollDirection: ((NestedScrollView)this.widget).scrollDirection, reverse: ((NestedScrollView)this.widget).reverse, physics: scrollPhysics__20789, scrollBehavior: ((((NestedScrollView)this.widget).scrollBehavior ?? (ScrollBehavior)ScrollConfiguration.of(context).copyWith(scrollbars: false))), controller: this._coordinator!._outerController, slivers: this.widget._buildSlivers(context, this._coordinator!._innerController, DartRuntimePrimitives.RequireValue(this._lastHasScrolledBody)), handle: this._absorberHandle, clipBehavior: ((NestedScrollView)this.widget).clipBehavior, restorationId: ((NestedScrollView)this.widget).restorationId, hitTestBehavior: ((NestedScrollView)this.widget).hitTestBehavior));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})))));
+        return ((Widget)(object?)new _InheritedNestedScrollView__nested_scroll_view(state: this, child: new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        {
+            _lastHasScrolledBody = this._coordinator!.hasScrolledBody;
+            return ((Widget)(object?)new _NestedScrollViewCustomScrollView__nested_scroll_view(dragStartBehavior: ((NestedScrollView)this.widget).dragStartBehavior, scrollDirection: ((NestedScrollView)this.widget).scrollDirection, reverse: ((NestedScrollView)this.widget).reverse, physics: scrollPhysics__20789, scrollBehavior: ((((NestedScrollView)this.widget).scrollBehavior ?? (ScrollBehavior)ScrollConfiguration.of(context).copyWith(scrollbars: false))), controller: this._coordinator!._outerController, slivers: this.widget._buildSlivers(context, this._coordinator!._innerController, DartRuntimePrimitives.RequireValue(this._lastHasScrolledBody)), handle: this._absorberHandle, clipBehavior: ((NestedScrollView)this.widget).clipBehavior, restorationId: ((NestedScrollView)this.widget).restorationId, hitTestBehavior: ((NestedScrollView)this.widget).hitTestBehavior));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -315,10 +317,11 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
 
     public virtual void goBallistic(double velocity)
     {
-        beginActivity(createOuterBallisticScrollActivity(velocity), ((global::System.Func<_NestedScrollPosition__nested_scroll_view, ScrollActivity>)((position) => {
-return ((ScrollActivity)(object?)createInnerBallisticScrollActivity(position, velocity));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        beginActivity(createOuterBallisticScrollActivity(velocity), ((global::System.Func<_NestedScrollPosition__nested_scroll_view, ScrollActivity>)((position) =>
+        {
+            return ((ScrollActivity)(object?)createInnerBallisticScrollActivity(position, velocity));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
     }
 
     public virtual ScrollActivity createOuterBallisticScrollActivity(double velocity)
@@ -490,12 +493,13 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         DrivenScrollActivity outerActivity__35971 = ((DrivenScrollActivity)(object?)this._outerPosition!.createDrivenScrollActivity(nestOffset(to, this._outerPosition!), duration, curve));
         var resultFutures__36116 = new List<Future> { ((DrivenScrollActivity)outerActivity__35971).done };
-        beginActivity(outerActivity__35971, ((global::System.Func<_NestedScrollPosition__nested_scroll_view, ScrollActivity>)((position) => {
-DrivenScrollActivity innerActivity__36269 = ((DrivenScrollActivity)(object?)position.createDrivenScrollActivity(nestOffset(to, position), duration, curve));
-resultFutures__36116.Add(((DrivenScrollActivity)innerActivity__36269).done);
-return ((ScrollActivity)(object?)innerActivity__36269);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        beginActivity(outerActivity__35971, ((global::System.Func<_NestedScrollPosition__nested_scroll_view, ScrollActivity>)((position) =>
+        {
+            DrivenScrollActivity innerActivity__36269 = ((DrivenScrollActivity)(object?)position.createDrivenScrollActivity(nestOffset(to, position), duration, curve));
+            resultFutures__36116.Add(((DrivenScrollActivity)innerActivity__36269).done);
+            return ((ScrollActivity)(object?)innerActivity__36269);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         await global::Doroti.Runtime.DartAsyncRuntime.wait<object?>(resultFutures__36116);
     }
 
@@ -741,9 +745,10 @@ internal class _NestedScrollController__nested_scroll_view : ScrollController
 
     internal virtual void _scheduleUpdateShadow()
     {
-        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) => {
-this.coordinator.updateShadow();
-})), debugLabel: "NestedScrollController.updateShadow");
+        global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+        {
+            this.coordinator.updateShadow();
+        })), debugLabel: "NestedScrollController.updateShadow");
     }
 
     public virtual IEnumerable<_NestedScrollPosition__nested_scroll_view> nestedPositions
@@ -1387,11 +1392,13 @@ public class RenderSliverOverlapInjector : global::Doroti.Framework.Rendering.Re
                 if (global::Doroti.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled)
                 {
                     var paint__70876 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = new global::Doroti.Ui.Color(4291598643L);
-            __cascade.strokeWidth = 3.0;
-            __cascade.style = PaintingStyle.stroke;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = new global::Doroti.Ui.Color(4291598643L);
+    __cascade.strokeWidth = 3.0;
+    __cascade.style = PaintingStyle.stroke;
+    return __cascade;
+}))();
                     global::Doroti.Ui.Offset start__71023 = default!;
                     global::Doroti.Ui.Offset end__71030 = default!;
                     global::Doroti.Ui.Offset delta__71035 = default!;
@@ -1451,14 +1458,16 @@ public class NestedScrollViewViewport : Viewport
     {
         var __renderObject = (RenderNestedScrollViewViewport)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<RenderNestedScrollViewViewport>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.axisDirection = this.axisDirection;
-            __cascade.crossAxisDirection = ((this.crossAxisDirection ?? (global::Doroti.Framework.Painting.AxisDirection)Viewport.getDefaultCrossAxisDirection(context, this.axisDirection)));
-            __cascade.anchor = this.anchor;
-            __cascade.offset = this.offset;
-            __cascade.handle = this.handle;
-            __cascade.clipBehavior = this.clipBehavior;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.axisDirection = this.axisDirection;
+    __cascade.crossAxisDirection = ((this.crossAxisDirection ?? (global::Doroti.Framework.Painting.AxisDirection)Viewport.getDefaultCrossAxisDirection(context, this.axisDirection)));
+    __cascade.anchor = this.anchor;
+    __cascade.offset = this.offset;
+    __cascade.handle = this.handle;
+    __cascade.clipBehavior = this.clipBehavior;
+    return __cascade;
+}))());
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)

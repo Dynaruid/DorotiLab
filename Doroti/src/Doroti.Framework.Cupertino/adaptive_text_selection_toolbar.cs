@@ -71,19 +71,21 @@ public class CupertinoAdaptiveTextSelectionToolbar : global::Doroti.Framework.Wi
             case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
             case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
                 {
-                    return buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, global::Doroti.Framework.Widgets.Widget>(((buttonItem) => {
-return CupertinoTextSelectionToolbarButton.CreateButtonItem(buttonItem: buttonItem);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+                    return buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, global::Doroti.Framework.Widgets.Widget>(((buttonItem) =>
+                    {
+                        return CupertinoTextSelectionToolbarButton.CreateButtonItem(buttonItem: buttonItem);
+                        throw new InvalidOperationException("Dart closure completed without a value.");
+                    }));
                 }
             case global::Doroti.Framework.Foundation.TargetPlatform.linux:
             case global::Doroti.Framework.Foundation.TargetPlatform.windows:
             case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
                 {
-                    return buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, global::Doroti.Framework.Widgets.Widget>(((buttonItem) => {
-return CupertinoDesktopTextSelectionToolbarButton.CreateButtonItem(buttonItem: buttonItem);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+                    return buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, global::Doroti.Framework.Widgets.Widget>(((buttonItem) =>
+                    {
+                        return CupertinoDesktopTextSelectionToolbarButton.CreateButtonItem(buttonItem: buttonItem);
+                        throw new InvalidOperationException("Dart closure completed without a value.");
+                    }));
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");

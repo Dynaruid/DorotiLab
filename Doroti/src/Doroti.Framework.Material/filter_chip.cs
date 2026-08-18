@@ -206,22 +206,23 @@ internal class _FilterChipDefaultsM3__filter_chip : ChipThemeData
     public override double? elevation => ((object.Equals(this._chipVariant, _ChipVariant__filter_chip.flat)) ? 0.0 : (this.isEnabled ? 1.0 : 0.0));
     public override double? pressElevation => 1.0;
     public override global::Doroti.Framework.Painting.TextStyle? labelStyle => this._textTheme.labelLarge?.copyWith(color: (this.isEnabled ? (this.isSelected ? this._colors.onSecondaryContainer : this._colors.onSurfaceVariant) : this._colors.onSurface));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) => {
-if ((states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected) && states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled)))
-{
-    return (((object.Equals(this._chipVariant, _ChipVariant__filter_chip.flat)) ? this._colors.onSurface.withOpacity(0.12) : this._colors.onSurface.withOpacity(0.12)));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-{
-    return (((object.Equals(this._chipVariant, _ChipVariant__filter_chip.flat)) ? null : this._colors.onSurface.withOpacity(0.12)));
-}
-if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-{
-    return (((object.Equals(this._chipVariant, _ChipVariant__filter_chip.flat)) ? this._colors.secondaryContainer : this._colors.secondaryContainer));
-}
-return (((object.Equals(this._chipVariant, _ChipVariant__filter_chip.flat)) ? null : this._colors.surfaceContainerLow));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
+    {
+        if ((states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected) && states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled)))
+        {
+            return (((object.Equals(this._chipVariant, _ChipVariant__filter_chip.flat)) ? this._colors.onSurface.withOpacity(0.12) : this._colors.onSurface.withOpacity(0.12)));
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
+        {
+            return (((object.Equals(this._chipVariant, _ChipVariant__filter_chip.flat)) ? null : this._colors.onSurface.withOpacity(0.12)));
+        }
+        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
+        {
+            return (((object.Equals(this._chipVariant, _ChipVariant__filter_chip.flat)) ? this._colors.secondaryContainer : this._colors.secondaryContainer));
+        }
+        return (((object.Equals(this._chipVariant, _ChipVariant__filter_chip.flat)) ? null : this._colors.surfaceContainerLow));
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    }));
     public virtual global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((object.Equals(this._chipVariant, _ChipVariant__filter_chip.flat)) ? Colors.transparent : this._colors.shadow));
     public virtual global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
     public virtual global::Doroti.Ui.Color? checkmarkColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>((this.isEnabled ? (this.isSelected ? this._colors.onSecondaryContainer : this._colors.primary) : this._colors.onSurface));

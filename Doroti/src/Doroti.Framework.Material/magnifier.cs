@@ -16,29 +16,30 @@ namespace Doroti.Framework.Material;
 
 public class TextMagnifier : global::Doroti.Framework.Widgets.StatefulWidget
 {
-    public static global::Doroti.Framework.Widgets.TextMagnifierConfiguration adaptiveMagnifierConfiguration = new global::Doroti.Framework.Widgets.TextMagnifierConfiguration(shouldDisplayHandlesInMagnifier: (object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)), magnifierBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MagnifierController, global::Doroti.Framework.Foundation.ValueNotifier<global::Doroti.Framework.Widgets.MagnifierInfo>, global::Doroti.Framework.Widgets.Widget?>?)((context, controller, magnifierInfo) => {
-switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
-{
-    case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+    public static global::Doroti.Framework.Widgets.TextMagnifierConfiguration adaptiveMagnifierConfiguration = new global::Doroti.Framework.Widgets.TextMagnifierConfiguration(shouldDisplayHandlesInMagnifier: (object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)), magnifierBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MagnifierController, global::Doroti.Framework.Foundation.ValueNotifier<global::Doroti.Framework.Widgets.MagnifierInfo>, global::Doroti.Framework.Widgets.Widget?>?)((context, controller, magnifierInfo) =>
+    {
+        switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
         {
-            return ((global::Doroti.Framework.Widgets.Widget?)(object?)new CupertinoTextMagnifier(controller: controller, magnifierInfo: magnifierInfo));
+            case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+                {
+                    return ((global::Doroti.Framework.Widgets.Widget?)(object?)new CupertinoTextMagnifier(controller: controller, magnifierInfo: magnifierInfo));
+                }
+            case global::Doroti.Framework.Foundation.TargetPlatform.android:
+                {
+                    return ((global::Doroti.Framework.Widgets.Widget?)(object?)new TextMagnifier(magnifierInfo: magnifierInfo));
+                }
+            case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
+            case global::Doroti.Framework.Foundation.TargetPlatform.linux:
+            case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+            case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+                {
+                    return null;
+                }
+            default:
+                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
-    case global::Doroti.Framework.Foundation.TargetPlatform.android:
-        {
-            return ((global::Doroti.Framework.Widgets.Widget?)(object?)new TextMagnifier(magnifierInfo: magnifierInfo));
-        }
-    case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-    case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-    case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
-    case global::Doroti.Framework.Foundation.TargetPlatform.windows:
-        {
-            return null;
-        }
-    default:
-        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
-}
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        throw new InvalidOperationException("Dart closure completed without a value.");
+    })));
     public static Duration jumpBetweenLinesAnimationDuration = Duration.Create(milliseconds: 70L);
     public virtual global::Doroti.Framework.Foundation.ValueNotifier<global::Doroti.Framework.Widgets.MagnifierInfo> magnifierInfo { get; private set; } = default!;
 
@@ -114,15 +115,20 @@ internal class _TextMagnifierState__magnifier : global::Doroti.Framework.Widgets
             {
                 this._positionShouldBeAnimatedTimer!.cancel();
             }
-            positionShouldBeAnimated__8587 = new Timer(TextMagnifier.jumpBetweenLinesAnimationDuration, (() => { setState(((global::System.Action)(() => {
-_positionShouldBeAnimatedTimer = null;
-}))); }));
+            positionShouldBeAnimated__8587 = new Timer(TextMagnifier.jumpBetweenLinesAnimationDuration, (() =>
+            {
+                setState(((global::System.Action)(() =>
+                {
+                    _positionShouldBeAnimatedTimer = null;
+                })));
+            }));
         }
-        setState(((global::System.Action)(() => {
-_magnifierPosition = finalMagnifierPosition__6491;
-_positionShouldBeAnimatedTimer = positionShouldBeAnimated__8587;
-_extraFocalPointOffset = focalPointAdjustmentForScreenBoundsAdjustment__8407;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _magnifierPosition = finalMagnifierPosition__6491;
+            _positionShouldBeAnimatedTimer = positionShouldBeAnimated__8587;
+            _extraFocalPointOffset = focalPointAdjustmentForScreenBoundsAdjustment__8407;
+        })));
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)

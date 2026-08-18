@@ -333,17 +333,19 @@ public class TapRegion : SingleChildRenderObjectWidget
         var __renderObject = (RenderTapRegion)(object)renderObject;
         bool isCurrent__23765 = (ModalRoute<object>.isCurrentOf(context) ?? true);
         DartRuntimePrimitives.Ignore(((Func<RenderTapRegion>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.registry = TapRegionRegistry.maybeOf(context);
-            __cascade.enabled = this.enabled;
-            __cascade.consumeOutsideTaps = (isCurrent__23765 && this.consumeOutsideTaps);
-            __cascade.behavior = this.behavior;
-            __cascade.groupId = this.groupId;
-            __cascade.onTapOutside = ((global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)(isCurrent__23765 ? this.onTapOutside : null));
-            __cascade.onTapInside = this.onTapInside;
-            __cascade.onTapUpOutside = ((global::System.Action<global::Doroti.Framework.Gestures.PointerUpEvent>)(isCurrent__23765 ? this.onTapUpOutside : null));
-            __cascade.onTapUpInside = this.onTapUpInside;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.registry = TapRegionRegistry.maybeOf(context);
+    __cascade.enabled = this.enabled;
+    __cascade.consumeOutsideTaps = (isCurrent__23765 && this.consumeOutsideTaps);
+    __cascade.behavior = this.behavior;
+    __cascade.groupId = this.groupId;
+    __cascade.onTapOutside = ((global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)(isCurrent__23765 ? this.onTapOutside : null));
+    __cascade.onTapInside = this.onTapInside;
+    __cascade.onTapUpOutside = ((global::System.Action<global::Doroti.Framework.Gestures.PointerUpEvent>)(isCurrent__23765 ? this.onTapUpOutside : null));
+    __cascade.onTapUpInside = this.onTapUpInside;
+    return __cascade;
+}))());
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             __renderObject.debugLabel = this.debugLabel;

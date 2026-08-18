@@ -273,21 +273,22 @@ public class ListTile : global::Doroti.Framework.Widgets.StatelessWidget
     internal virtual global::Doroti.Framework.Widgets.Widget? _findIntermediateWidget(global::Doroti.Framework.Widgets.BuildContext context)
     {
         global::Doroti.Framework.Widgets.Widget? intermediateWidget__45010 = default!;
-        (((global::Doroti.Framework.Widgets.Element?)(object?)context)!).visitAncestorElements(((global::System.Func<global::Doroti.Framework.Widgets.Element, bool>)((ancestor) => {
-if ((((global::Doroti.Framework.Widgets.Element)ancestor).widget is Material))
-{
-    return false;
-}
-global::Doroti.Framework.Widgets.Widget widget__45188 = ((global::Doroti.Framework.Widgets.Element)ancestor).widget;
-global::Doroti.Ui.Color? color__45233 = ((global::Doroti.Ui.Color?)(object?)(widget__45188 switch { global::Doroti.Framework.Widgets.ColoredBox { color: global::Doroti.Ui.Color color__45291 } __object45267 => color__45291, global::Doroti.Framework.Widgets.DecoratedBox { decoration: global::Doroti.Framework.Painting.BoxDecoration { color: global::Doroti.Ui.Color color__45369 } __object45341 } __object45316 => color__45369, global::Doroti.Framework.Widgets.DecoratedBox { decoration: global::Doroti.Framework.Painting.ShapeDecoration { color: global::Doroti.Ui.Color color__45450 } __object45420 } __object45395 => color__45450, _ => DartRuntimePrimitives.ConvertValue<Color>(null) }));
-if (((color__45233 is not null) && (color__45233.a > 0L)))
-{
-    intermediateWidget__45010 = widget__45188;
-    return false;
-}
-return true;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        (((global::Doroti.Framework.Widgets.Element?)(object?)context)!).visitAncestorElements(((global::System.Func<global::Doroti.Framework.Widgets.Element, bool>)((ancestor) =>
+        {
+            if ((((global::Doroti.Framework.Widgets.Element)ancestor).widget is Material))
+            {
+                return false;
+            }
+            global::Doroti.Framework.Widgets.Widget widget__45188 = ((global::Doroti.Framework.Widgets.Element)ancestor).widget;
+            global::Doroti.Ui.Color? color__45233 = ((global::Doroti.Ui.Color?)(object?)(widget__45188 switch { global::Doroti.Framework.Widgets.ColoredBox { color: global::Doroti.Ui.Color color__45291 } __object45267 => color__45291, global::Doroti.Framework.Widgets.DecoratedBox { decoration: global::Doroti.Framework.Painting.BoxDecoration { color: global::Doroti.Ui.Color color__45369 } __object45341 } __object45316 => color__45369, global::Doroti.Framework.Widgets.DecoratedBox { decoration: global::Doroti.Framework.Painting.ShapeDecoration { color: global::Doroti.Ui.Color color__45450 } __object45420 } __object45395 => color__45450, _ => DartRuntimePrimitives.ConvertValue<Color>(null) }));
+            if (((color__45233 is not null) && (color__45233.a > 0L)))
+            {
+                intermediateWidget__45010 = widget__45188;
+                return false;
+            }
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         return intermediateWidget__45010;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -392,19 +393,21 @@ internal class _ListTile__list_tile : global::Doroti.Framework.Widgets.SlottedMu
     {
         var __renderObject = (_RenderListTile__list_tile)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderListTile__list_tile>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.isThreeLine = this.isThreeLine;
-            __cascade.isDense = this.isDense;
-            __cascade.visualDensity = this.visualDensity;
-            __cascade.textDirection = this.textDirection;
-            __cascade.titleBaselineType = this.titleBaselineType;
-            __cascade.subtitleBaselineType = this.subtitleBaselineType;
-            __cascade.horizontalTitleGap = this.horizontalTitleGap;
-            __cascade.minLeadingWidth = this.minLeadingWidth;
-            __cascade.minTileHeight = this.minTileHeight;
-            __cascade.minVerticalPadding = this.minVerticalPadding;
-            __cascade.titleAlignment = this.titleAlignment;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.isThreeLine = this.isThreeLine;
+    __cascade.isDense = this.isDense;
+    __cascade.visualDensity = this.visualDensity;
+    __cascade.textDirection = this.textDirection;
+    __cascade.titleBaselineType = this.titleBaselineType;
+    __cascade.subtitleBaselineType = this.subtitleBaselineType;
+    __cascade.horizontalTitleGap = this.horizontalTitleGap;
+    __cascade.minLeadingWidth = this.minLeadingWidth;
+    __cascade.minTileHeight = this.minTileHeight;
+    __cascade.minVerticalPadding = this.minVerticalPadding;
+    __cascade.titleAlignment = this.titleAlignment;
+    return __cascade;
+}))());
     }
 
 }
@@ -798,11 +801,12 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
         foreach (global::Doroti.Framework.Rendering.RenderBox child__63321 in this.children)
         {
             var parentData__63354 = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)child__63321.parentData!)!;
-            bool isHit__63420 = result.addWithPaintOffset(offset: ((global::Doroti.Framework.Rendering.BoxParentData)parentData__63354).offset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, transformed) => {
-DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - ((global::Doroti.Framework.Rendering.BoxParentData)parentData__63354).offset))));
-return child__63321.hitTest(result, position: transformed);
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+            bool isHit__63420 = result.addWithPaintOffset(offset: ((global::Doroti.Framework.Rendering.BoxParentData)parentData__63354).offset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, transformed) =>
+            {
+                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - ((global::Doroti.Framework.Rendering.BoxParentData)parentData__63354).offset))));
+                return child__63321.hitTest(result, position: transformed);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })));
             if (isHit__63420)
             {
                 return true;

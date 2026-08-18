@@ -55,11 +55,13 @@ internal class _CupertinoFocusHaloState__cupertino_focus_halo : global::Doroti.F
     internal virtual global::Doroti.Ui.Color _effectiveFocusOutlineColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(global::Doroti.Framework.Painting.HSLColor.CreateFromColor(CupertinoColors.activeBlue.withOpacity(ConstantsLibrary.kCupertinoFocusColorOpacity)).withLightness(ConstantsLibrary.kCupertinoFocusColorBrightness).withSaturation(ConstantsLibrary.kCupertinoFocusColorSaturation).toColor());
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Focus(canRequestFocus: false, skipTraversal: true, includeSemantics: false, onFocusChange: ((global::System.Action<bool>)((hasFocus) => {
-setState(((global::System.Action)(() => {
-_childHasFocus = hasFocus;
-})));
-})), child: new global::Doroti.Framework.Widgets.DecoratedBox(position: global::Doroti.Framework.Rendering.DecorationPosition.foreground, decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shape: this.widget._shapeBuilder(((CupertinoFocusHalo)this.widget)._borderRadius, (this._childHasFocus ? new global::Doroti.Framework.Painting.BorderSide(color: this._effectiveFocusOutlineColor, width: 3.5) : global::Doroti.Framework.Painting.BorderSide.none))), child: ((CupertinoFocusHalo)this.widget).child)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Focus(canRequestFocus: false, skipTraversal: true, includeSemantics: false, onFocusChange: ((global::System.Action<bool>)((hasFocus) =>
+        {
+            setState(((global::System.Action)(() =>
+            {
+                _childHasFocus = hasFocus;
+            })));
+        })), child: new global::Doroti.Framework.Widgets.DecoratedBox(position: global::Doroti.Framework.Rendering.DecorationPosition.foreground, decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shape: this.widget._shapeBuilder(((CupertinoFocusHalo)this.widget)._borderRadius, (this._childHasFocus ? new global::Doroti.Framework.Painting.BorderSide(color: this._effectiveFocusOutlineColor, width: 3.5) : global::Doroti.Framework.Painting.BorderSide.none))), child: ((CupertinoFocusHalo)this.widget).child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

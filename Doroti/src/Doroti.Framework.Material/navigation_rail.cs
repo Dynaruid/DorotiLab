@@ -182,12 +182,22 @@ internal class _NavigationRailState__navigation_rail : global::Doroti.Framework.
         global::Doroti.Framework.Painting.ShapeBorder? indicatorShape__19273 = ((((NavigationRail)this.widget).indicatorShape ?? navigationRailTheme__17223.indicatorShape) ?? defaults__17312.indicatorShape);
         global::Doroti.Framework.Widgets.IconThemeData effectiveUnselectedIconTheme__19618 = (Theme.of(context).useMaterial3 ? unselectedIconTheme__18424 : unselectedIconTheme__18424.copyWith(opacity: (((global::Doroti.Framework.Widgets.IconThemeData)unselectedIconTheme__18424).opacity ?? defaults__17312.unselectedIconTheme!.opacity)));
         var isRTLDirection__19865 = (object.Equals(Directionality.of(context), TextDirection.rtl));
-        global::Doroti.Framework.Widgets.Widget mainGroup__19943 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Column(mainAxisSize: ((((NavigationRail)this.widget).mainAxisAlignment is not null) ? global::Doroti.Framework.Rendering.MainAxisSize.max : global::Doroti.Framework.Rendering.MainAxisSize.min), mainAxisAlignment: (((NavigationRail)this.widget).mainAxisAlignment ?? global::Doroti.Framework.Rendering.MainAxisAlignment.start), children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection20149 = new List<global::Doroti.Framework.Widgets.Widget>(); if ((!((NavigationRail)this.widget).leadingAtTop && (((NavigationRail)this.widget).leading is not null))) { __collection20149.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(((NavigationRail)this.widget).leading!), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Navigation_railLibrary._verticalSpacer) }); } for (long i__20314 = 0L; (i__20314 < checked((long)(((NavigationRail)this.widget).destinations.Count))); i__20314 += 1L) { __collection20149.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _RailDestination__navigation_rail(minWidth: minWidth__17791, minExtendedWidth: minExtendedWidth__17890, extendedTransitionAnimation: this._extendedAnimation, selected: (((NavigationRail)this.widget).selectedIndex == i__20314), icon: ((((NavigationRail)this.widget).selectedIndex == i__20314) ? ((NavigationRail)this.widget).destinations[(int)(i__20314)].selectedIcon : ((NavigationRail)this.widget).destinations[(int)(i__20314)].icon), label: ((NavigationRail)this.widget).destinations[(int)(i__20314)].label, destinationAnimation: this._destinationAnimations[(int)(i__20314)], labelType: labelType__18905, iconTheme: ((((NavigationRail)this.widget).selectedIndex == i__20314) ? selectedIconTheme__18598 : effectiveUnselectedIconTheme__19618), labelTextStyle: ((((NavigationRail)this.widget).selectedIndex == i__20314) ? selectedLabelTextStyle__18238 : unselectedLabelTextStyle__18048), padding: ((NavigationRail)this.widget).destinations[(int)(i__20314)].padding, useIndicator: useIndicator__19014, indicatorColor: (useIndicator__19014 ? indicatorColor__19137 : null), indicatorShape: (useIndicator__19014 ? indicatorShape__19273 : null), onTap: ((global::System.Action)(() => {
-if ((((NavigationRail)this.widget).onDestinationSelected is not null))
-{
-    ((NavigationRail)this.widget).onDestinationSelected!(i__20314);
-}
-})), indexLabel: localizations__17477.tabLabel(tabIndex: (i__20314 + 1L), tabCount: checked((long)(((NavigationRail)this.widget).destinations.Count))), disabled: ((NavigationRail)this.widget).destinations[(int)(i__20314)].disabled))); } if ((!((NavigationRail)this.widget).trailingAtBottom && (((NavigationRail)this.widget).trailing is not null))) { __collection20149.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(((NavigationRail)this.widget).trailing!)); } return __collection20149; }))()));
+        global::Doroti.Framework.Widgets.Widget mainGroup__19943 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Column(mainAxisSize: ((((NavigationRail)this.widget).mainAxisAlignment is not null) ? global::Doroti.Framework.Rendering.MainAxisSize.max : global::Doroti.Framework.Rendering.MainAxisSize.min), mainAxisAlignment: (((NavigationRail)this.widget).mainAxisAlignment ?? global::Doroti.Framework.Rendering.MainAxisAlignment.start), children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() =>
+        {
+            var __collection20149 = new List<global::Doroti.Framework.Widgets.Widget>(); if ((!((NavigationRail)this.widget).leadingAtTop && (((NavigationRail)this.widget).leading is not null))) { __collection20149.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(((NavigationRail)this.widget).leading!), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Navigation_railLibrary._verticalSpacer) }); }
+            for (long i__20314 = 0L; (i__20314 < checked((long)(((NavigationRail)this.widget).destinations.Count))); i__20314 += 1L)
+            {
+                __collection20149.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _RailDestination__navigation_rail(minWidth: minWidth__17791, minExtendedWidth: minExtendedWidth__17890, extendedTransitionAnimation: this._extendedAnimation, selected: (((NavigationRail)this.widget).selectedIndex == i__20314), icon: ((((NavigationRail)this.widget).selectedIndex == i__20314) ? ((NavigationRail)this.widget).destinations[(int)(i__20314)].selectedIcon : ((NavigationRail)this.widget).destinations[(int)(i__20314)].icon), label: ((NavigationRail)this.widget).destinations[(int)(i__20314)].label, destinationAnimation: this._destinationAnimations[(int)(i__20314)], labelType: labelType__18905, iconTheme: ((((NavigationRail)this.widget).selectedIndex == i__20314) ? selectedIconTheme__18598 : effectiveUnselectedIconTheme__19618), labelTextStyle: ((((NavigationRail)this.widget).selectedIndex == i__20314) ? selectedLabelTextStyle__18238 : unselectedLabelTextStyle__18048), padding: ((NavigationRail)this.widget).destinations[(int)(i__20314)].padding, useIndicator: useIndicator__19014, indicatorColor: (useIndicator__19014 ? indicatorColor__19137 : null), indicatorShape: (useIndicator__19014 ? indicatorShape__19273 : null), onTap: ((global::System.Action)(() =>
+                {
+                    if ((((NavigationRail)this.widget).onDestinationSelected is not null))
+                    {
+                        ((NavigationRail)this.widget).onDestinationSelected!(i__20314);
+                    }
+                })), indexLabel: localizations__17477.tabLabel(tabIndex: (i__20314 + 1L), tabCount: checked((long)(((NavigationRail)this.widget).destinations.Count))), disabled: ((NavigationRail)this.widget).destinations[(int)(i__20314)].disabled)));
+            }
+            if ((!((NavigationRail)this.widget).trailingAtBottom && (((NavigationRail)this.widget).trailing is not null))) { __collection20149.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(((NavigationRail)this.widget).trailing!)); }
+            return __collection20149;
+        }))()));
         if (((NavigationRail)this.widget).scrollable)
         {
             mainGroup__19943 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SingleChildScrollView(child: mainGroup__19943));
@@ -208,13 +218,16 @@ if ((((NavigationRail)this.widget).onDestinationSelected is not null))
 
     internal virtual void _initControllers()
     {
-        _destinationControllers = new List<global::Doroti.Framework.Animation.AnimationController>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(((NavigationRail)this.widget).destinations.Count)))), ((index) => {
-return ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: ThemeLibrary.kThemeAnimationDuration, vsync: this);
-            __cascade.addListener(() => this._rebuild());
-            return __cascade;        }))();
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        _destinationControllers = new List<global::Doroti.Framework.Animation.AnimationController>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(((NavigationRail)this.widget).destinations.Count)))), ((index) =>
+        {
+            return ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
+            {
+                var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: ThemeLibrary.kThemeAnimationDuration, vsync: this);
+                __cascade.addListener(() => this._rebuild());
+                return __cascade;
+            }))();
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         _destinationAnimations = this._destinationControllers.map<global::Doroti.Framework.Animation.AnimationController, global::Doroti.Framework.Animation.Animation<double>>(((controller) => ((global::Doroti.Framework.Animation.AnimationController)controller).view)).ToList();
         if ((((NavigationRail)this.widget).selectedIndex is not null))
         {
@@ -222,9 +235,10 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         }
         _extendedController = new global::Doroti.Framework.Animation.AnimationController(duration: ThemeLibrary.kThemeAnimationDuration, vsync: this, value: (((NavigationRail)this.widget).extended ? 1.0 : 0.0));
         _extendedAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._extendedController, curve: global::Doroti.Framework.Animation.Curves.easeInOut);
-        this._extendedController.addListener(((global::System.Action)(() => {
-_rebuild();
-})));
+        this._extendedController.addListener(((global::System.Action)(() =>
+        {
+            _rebuild();
+        })));
     }
 
     internal virtual void _resetState()
@@ -235,8 +249,9 @@ _rebuild();
 
     internal virtual void _rebuild()
     {
-        setState(((global::System.Action)(() => {
-})));
+        setState(((global::System.Action)(() =>
+        {
+        })));
     }
 
     public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
@@ -249,10 +264,12 @@ _rebuild();
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
         TickerModeData values__17506 = this._tickerModeNotifier!.value;
         var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
-{            var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-            __cascade.muted = !((TickerModeData)values__17506).enabled;
-            __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
-            return __cascade;        }))();
+{
+    var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
+    __cascade.muted = !((TickerModeData)values__17506).enabled;
+    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    return __cascade;
+}))();
         this._tickers!.Add(result__17553);
         return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -486,10 +503,11 @@ internal class _IndicatorInkWell__navigation_rail : InkResponse
             {
                 indicatorHorizontalCenter__38453 = (boxWidth__38404 - indicatorHorizontalCenter__38453);
             }
-            return ((RectCallback?)(object?)(() => {
-return global::Doroti.Ui.Rect.fromLTWH((indicatorHorizontalCenter__38453 - ((Navigation_railLibrary._kCircularIndicatorDiameter / 2L))), this.indicatorOffset.dy, Navigation_railLibrary._kCircularIndicatorDiameter, Navigation_barLibrary._kIndicatorHeight);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return ((RectCallback?)(object?)(() =>
+            {
+                return global::Doroti.Ui.Rect.fromLTWH((indicatorHorizontalCenter__38453 - ((Navigation_railLibrary._kCircularIndicatorDiameter / 2L))), this.indicatorOffset.dy, Navigation_railLibrary._kCircularIndicatorDiameter, Navigation_barLibrary._kIndicatorHeight);
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");

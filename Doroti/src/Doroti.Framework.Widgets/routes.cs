@@ -173,9 +173,11 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute
         _controller = createAnimationController();
         DartRuntimePrimitives.Assert(() => (this._controller is not null), () => (object?)$"{this.GetType()}.createAnimationController() returned null.");
         _animation = ((Func<global::Doroti.Framework.Animation.Animation<double>>)(() =>
-{            var __cascade = createAnimation();
-            __cascade.addStatusListener((AnimationStatusListener)this._handleStatusChanged);
-            return __cascade;        }))();
+{
+    var __cascade = createAnimation();
+    __cascade.addStatusListener((AnimationStatusListener)this._handleStatusChanged);
+    return __cascade;
+}))();
         DartRuntimePrimitives.Assert(() => (this._animation is not null), () => (object?)$"{this.GetType()}.createAnimation() returned null.");
         base.install();
         if ((this._animation!.isCompleted && System.Linq.Enumerable.Any(this.overlayEntries)))
@@ -286,21 +288,23 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute
                             }
                         }
                     }
-                    _trainHoppingListenerRemover = (global::System.Action)(() => {
-nextTrain__16246.removeStatusListener((AnimationStatusListener)jumpOnAnimationEnd);
-newAnimation__17180?.dispose();
-});
+                    _trainHoppingListenerRemover = (global::System.Action)(() =>
+                    {
+                        nextTrain__16246.removeStatusListener((AnimationStatusListener)jumpOnAnimationEnd);
+                        newAnimation__17180?.dispose();
+                    });
                     nextTrain__16246.addStatusListener((AnimationStatusListener)jumpOnAnimationEnd);
-                    newAnimation__17180 = new global::Doroti.Framework.Animation.TrainHoppingAnimation(currentTrain__16105, nextTrain__16246, onSwitchedTrain: ((global::System.Action)(() => {
-DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Framework.Animation.ProxyAnimation)this._secondaryAnimation).parent, newAnimation__17180)));
-DartRuntimePrimitives.Assert(() => (object.Equals(newAnimation__17180!.currentTrain, ((global::Doroti.Framework.Animation.Animation<double>?)((dynamic)nextRoute__as15851)._animation))));
-_setSecondaryAnimation(newAnimation__17180!.currentTrain, ((Future<object>)((dynamic)nextRoute__as15851).completed));
-if ((this._trainHoppingListenerRemover is not null))
-{
-    this._trainHoppingListenerRemover!();
-    _trainHoppingListenerRemover = null;
-}
-})));
+                    newAnimation__17180 = new global::Doroti.Framework.Animation.TrainHoppingAnimation(currentTrain__16105, nextTrain__16246, onSwitchedTrain: ((global::System.Action)(() =>
+                    {
+                        DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Framework.Animation.ProxyAnimation)this._secondaryAnimation).parent, newAnimation__17180)));
+                        DartRuntimePrimitives.Assert(() => (object.Equals(newAnimation__17180!.currentTrain, ((global::Doroti.Framework.Animation.Animation<double>?)((dynamic)nextRoute__as15851)._animation))));
+                        _setSecondaryAnimation(newAnimation__17180!.currentTrain, ((Future<object>)((dynamic)nextRoute__as15851).completed));
+                        if ((this._trainHoppingListenerRemover is not null))
+                        {
+                            this._trainHoppingListenerRemover!();
+                            _trainHoppingListenerRemover = null;
+                        }
+                    })));
                     _setSecondaryAnimation(newAnimation__17180, ((Future<object>)((dynamic)nextRoute__as15851).completed));
                 }
             }
@@ -321,17 +325,18 @@ if ((this._trainHoppingListenerRemover is not null))
         this._secondaryAnimation.parent = animation;
         if (disposed is not null)
         {
-            DartRuntimePrimitives.Ignore(disposed.then((global::System.Action<object>)((_) => {
-if ((object.Equals(((global::Doroti.Framework.Animation.ProxyAnimation)this._secondaryAnimation).parent, animation)))
-{
-    this._secondaryAnimation.parent = global::Doroti.Framework.Animation.AnimationsLibrary.kAlwaysDismissedAnimation;
-    if ((animation is global::Doroti.Framework.Animation.TrainHoppingAnimation))
-    {
-        global::Doroti.Framework.Animation.TrainHoppingAnimation animation__as19490 = (global::Doroti.Framework.Animation.TrainHoppingAnimation)animation;
-        ((global::Doroti.Framework.Animation.TrainHoppingAnimation)animation__as19490).dispose();
-    }
-}
-})));
+            DartRuntimePrimitives.Ignore(disposed.then((global::System.Action<object>)((_) =>
+            {
+                if ((object.Equals(((global::Doroti.Framework.Animation.ProxyAnimation)this._secondaryAnimation).parent, animation)))
+                {
+                    this._secondaryAnimation.parent = global::Doroti.Framework.Animation.AnimationsLibrary.kAlwaysDismissedAnimation;
+                    if ((animation is global::Doroti.Framework.Animation.TrainHoppingAnimation))
+                    {
+                        global::Doroti.Framework.Animation.TrainHoppingAnimation animation__as19490 = (global::Doroti.Framework.Animation.TrainHoppingAnimation)animation;
+                        ((global::Doroti.Framework.Animation.TrainHoppingAnimation)animation__as19490).dispose();
+                    }
+                }
+            })));
         }
     }
 
@@ -386,10 +391,11 @@ if ((object.Equals(((global::Doroti.Framework.Animation.ProxyAnimation)this._sec
         if ((this._controller?.isAnimating ?? false))
         {
             AnimationStatusListener animationStatusCallback__23538 = default!;
-            animationStatusCallback__23538 = ((status) => {
-this.navigator?.didStopUserGesture();
-this._controller!.removeStatusListener((AnimationStatusListener)animationStatusCallback__23538);
-});
+            animationStatusCallback__23538 = ((status) =>
+            {
+                this.navigator?.didStopUserGesture();
+                this._controller!.removeStatusListener((AnimationStatusListener)animationStatusCallback__23538);
+            });
             this._controller!.addStatusListener((AnimationStatusListener)animationStatusCallback__23538);
         }
         else
@@ -612,9 +618,10 @@ public class _ModalScopeState__routes<T> : State<_ModalScope__routes<T>>
 
     internal virtual void _forceRebuildPage()
     {
-        setState(((global::System.Action)(() => {
-_page = null;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _page = null;
+        })));
     }
 
     public override void dispose()
@@ -652,25 +659,30 @@ _page = null;
     public override Widget build(BuildContext context)
     {
         this.focusScopeNode.skipTraversal = !((_ModalScope__routes<T>)(object)this.widget).route.isCurrent;
-        return ((Widget)(object?)new AnimatedBuilder(animation: ((_ModalScope__routes<T>)(object)this.widget).route.restorationScopeId, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) => {
-DartRuntimePrimitives.Assert(() => (child is not null));
-return ((Widget)(object?)new RestorationScope(restorationId: ((_ModalScope__routes<T>)(object)this.widget).route.restorationScopeId.value, child: child!));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: new _ModalScopeStatus__routes(route: ((_ModalScope__routes<T>)(object)this.widget).route, isCurrent: ((_ModalScope__routes<T>)(object)this.widget).route.isCurrent, canPop: ((_ModalScope__routes<T>)(object)this.widget).route.canPop, opaque: ((_ModalScope__routes<T>)(object)this.widget).route.opaque, impliesAppBarDismissal: ((_ModalScope__routes<T>)(object)this.widget).route.impliesAppBarDismissal, child: new Offstage(offstage: ((_ModalScope__routes<T>)(object)this.widget).route.offstage, child: new PageStorage(bucket: ((_ModalScope__routes<T>)(object)this.widget).route._storageBucket, child: new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => {
-return ((Widget)(object?)new Actions(actions: new DartMap<Type, dynamic> { [typeof(DismissIntent)] = new _DismissModalAction__routes(context) }, child: new PrimaryScrollController(controller: this.primaryScrollController, child: FocusScope.CreateWithExternalFocusNode(focusScopeNode: this.focusScopeNode, child: new RepaintBoundary(child: new ListenableBuilder(listenable: this._listenable, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) => {
-return ((Widget)(object?)((_ModalScope__routes<T>)(object)this.widget).route._buildFlexibleTransitions(context, ((_ModalScope__routes<T>)(object)this.widget).route.animation!, ((_ModalScope__routes<T>)(object)this.widget).route.secondaryAnimation!, new ListenableBuilder(listenable: (((_ModalScope__routes<T>)(object)this.widget).route.navigator?.userGestureInProgressNotifier ?? new global::Doroti.Framework.Foundation.ValueNotifier<bool>(false)), builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) => {
-bool ignoreEvents__44972 = this._shouldIgnoreFocusRequest;
-this.focusScopeNode.canRequestFocus = !ignoreEvents__44972;
-return ((Widget)(object?)new IgnorePointer(ignoring: ignoreEvents__44972, child: child));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: child)));
-throw new InvalidOperationException("Dart closure completed without a value.");
-})), child: _page ??= new RepaintBoundary(key: ((_ModalScope__routes<T>)(object)this.widget).route._subtreeKey, child: new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => {
-return ((Widget)(object?)((_ModalScope__routes<T>)(object)this.widget).route.buildPage(context, ((_ModalScope__routes<T>)(object)this.widget).route.animation!, ((_ModalScope__routes<T>)(object)this.widget).route.secondaryAnimation!));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))))))))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))))))));
+        return ((Widget)(object?)new AnimatedBuilder(animation: ((_ModalScope__routes<T>)(object)this.widget).route.restorationScopeId, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
+        {
+            DartRuntimePrimitives.Assert(() => (child is not null));
+            return ((Widget)(object?)new RestorationScope(restorationId: ((_ModalScope__routes<T>)(object)this.widget).route.restorationScopeId.value, child: child!));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })), child: new _ModalScopeStatus__routes(route: ((_ModalScope__routes<T>)(object)this.widget).route, isCurrent: ((_ModalScope__routes<T>)(object)this.widget).route.isCurrent, canPop: ((_ModalScope__routes<T>)(object)this.widget).route.canPop, opaque: ((_ModalScope__routes<T>)(object)this.widget).route.opaque, impliesAppBarDismissal: ((_ModalScope__routes<T>)(object)this.widget).route.impliesAppBarDismissal, child: new Offstage(offstage: ((_ModalScope__routes<T>)(object)this.widget).route.offstage, child: new PageStorage(bucket: ((_ModalScope__routes<T>)(object)this.widget).route._storageBucket, child: new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+        {
+            return ((Widget)(object?)new Actions(actions: new DartMap<Type, dynamic> { [typeof(DismissIntent)] = new _DismissModalAction__routes(context) }, child: new PrimaryScrollController(controller: this.primaryScrollController, child: FocusScope.CreateWithExternalFocusNode(focusScopeNode: this.focusScopeNode, child: new RepaintBoundary(child: new ListenableBuilder(listenable: this._listenable, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
+            {
+                return ((Widget)(object?)((_ModalScope__routes<T>)(object)this.widget).route._buildFlexibleTransitions(context, ((_ModalScope__routes<T>)(object)this.widget).route.animation!, ((_ModalScope__routes<T>)(object)this.widget).route.secondaryAnimation!, new ListenableBuilder(listenable: (((_ModalScope__routes<T>)(object)this.widget).route.navigator?.userGestureInProgressNotifier ?? new global::Doroti.Framework.Foundation.ValueNotifier<bool>(false)), builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
+                {
+                    bool ignoreEvents__44972 = this._shouldIgnoreFocusRequest;
+                    this.focusScopeNode.canRequestFocus = !ignoreEvents__44972;
+                    return ((Widget)(object?)new IgnorePointer(ignoring: ignoreEvents__44972, child: child));
+                    throw new InvalidOperationException("Dart closure completed without a value.");
+                })), child: child)));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            })), child: _page ??= new RepaintBoundary(key: ((_ModalScope__routes<T>)(object)this.widget).route._subtreeKey, child: new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
+            {
+                return ((Widget)(object?)((_ModalScope__routes<T>)(object)this.widget).route.buildPage(context, ((_ModalScope__routes<T>)(object)this.widget).route.animation!, ((_ModalScope__routes<T>)(object)this.widget).route.secondaryAnimation!));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }))))))))));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -736,10 +748,11 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>
 
     public static global::System.Func<dynamic, bool> withName(string name)
     {
-        return ((global::System.Func<dynamic, bool>)((route) => {
-return ((!((bool)((dynamic)route).willHandlePopInternally) && (route is ModalRoute<T>)) && (((RouteSettings)((dynamic)route).settings).ToString() == name));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        return ((global::System.Func<dynamic, bool>)((route) =>
+        {
+            return ((!((bool)((dynamic)route).willHandlePopInternally) && (route is ModalRoute<T>)) && (((RouteSettings)((dynamic)route).settings).ToString() == name));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -830,9 +843,10 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             {
                 return;
             }
-            setState(((global::System.Action)(() => {
-_offstage = __value;
-})));
+            setState(((global::System.Action)(() =>
+            {
+                _offstage = __value;
+            })));
             this._animationProxy!.parent = (this._offstage ? global::Doroti.Framework.Animation.AnimationsLibrary.kAlwaysCompleteAnimation : base.animation);
             this._secondaryAnimationProxy!.parent = (this._offstage ? global::Doroti.Framework.Animation.AnimationsLibrary.kAlwaysDismissedAnimation : base.secondaryAnimation);
             changedInternalState();
@@ -933,13 +947,14 @@ _offstage = __value;
             case global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks:
             case global::Doroti.Framework.Scheduler.SchedulerPhase.transientCallbacks:
                 {
-                    global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) => {
-if (!((this.subtreeContext?.mounted ?? false)))
-{
-    return;
-}
-notification__82227.dispatch(this.subtreeContext);
-})), debugLabel: "ModalRoute.dispatchNotification");
+                    global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
+                    {
+                        if (!((this.subtreeContext?.mounted ?? false)))
+                        {
+                            return;
+                        }
+                        notification__82227.dispatch(this.subtreeContext);
+                    })), debugLabel: "ModalRoute.dispatchNotification");
                     break;
                 }
         }
@@ -995,8 +1010,9 @@ notification__82227.dispatch(this.subtreeContext);
         base.changedInternalState();
         if ((!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
         {
-            setState(((global::System.Action)(() => {
-})));
+            setState(((global::System.Action)(() =>
+            {
+            })));
             this._modalBarrier.markNeedsBuild();
         }
         this._modalScope.maintainState = this.maintainState;
@@ -1097,12 +1113,13 @@ notification__82227.dispatch(this.subtreeContext);
             DartRuntimePrimitives.Assert(() => (this._entriesImpliesAppBarDismissal == 0L));
             if ((object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
             {
-                global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) => {
-if (this.isActive)
-{
-    changedInternalState();
-}
-})), debugLabel: "LocalHistoryRoute.changedInternalState");
+                global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) =>
+                {
+                    if (this.isActive)
+                    {
+                        changedInternalState();
+                    }
+                })), debugLabel: "LocalHistoryRoute.changedInternalState");
             }
             else
             {

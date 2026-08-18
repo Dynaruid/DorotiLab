@@ -78,10 +78,12 @@ public class Icon : StatelessWidget
         if ((this.blendMode is not null))
         {
             foreground__10641 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.blendMode = DartRuntimePrimitives.RequireValue(this.blendMode);
-            __cascade.color = iconColor__10591;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.blendMode = DartRuntimePrimitives.RequireValue(this.blendMode);
+    __cascade.color = iconColor__10591;
+    return __cascade;
+}))();
             iconColor__10591 = DartRuntimePrimitives.ConvertValue<Color>(null);
         }
         var fontStyle__10977 = new global::Doroti.Framework.Painting.TextStyle(fontVariations: new List<global::Doroti.Ui.FontVariation>(), inherit: false, color: iconColor__10591, fontSize: iconSize__9890, fontFamily: ((IconData)icon__10351).fontFamily, fontWeight: this.fontWeight, package: ((IconData)icon__10351).fontPackage, fontFamilyFallback: ((IconData)icon__10351).fontFamilyFallback, shadows: iconShadows__10286, height: 1.0, leadingDistribution: TextLeadingDistribution.even, foreground: foreground__10641);
@@ -93,9 +95,11 @@ public class Icon : StatelessWidget
                 case TextDirection.rtl:
                     {
                         iconWidget__11796 = DartRuntimePrimitives.ConvertValue<Widget>(new Transform(transform: ((Func<Matrix4>)(() =>
-{            var __cascade = Matrix4.identity();
-            __cascade.scaleByDouble(-1.0, 1.0, 1.0, 1);
-            return __cascade;        }))(), alignment: global::Doroti.Framework.Painting.Alignment.center, transformHitTests: false, child: iconWidget__11796));
+{
+    var __cascade = Matrix4.identity();
+    __cascade.scaleByDouble(-1.0, 1.0, 1.0, 1);
+    return __cascade;
+}))(), alignment: global::Doroti.Framework.Painting.Alignment.center, transformHitTests: false, child: iconWidget__11796));
                         break;
                     }
                 case TextDirection.ltr:

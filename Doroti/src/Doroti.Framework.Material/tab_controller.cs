@@ -85,13 +85,14 @@ public class TabController : global::Doroti.Framework.Foundation.ChangeNotifier
             Duration duration__value7060 = DartRuntimePrimitives.RequireValue(duration);
             _indexIsChangingCount += 1L;
             notifyListeners();
-            this._animationController!.animateTo(this._index.toDouble(), duration: DartRuntimePrimitives.RequireValue(duration__value7060), curve: curve!).whenCompleteOrCancel(((global::System.Action)(() => {
-if ((this._animationController is not null))
-{
-    _indexIsChangingCount -= 1L;
-    notifyListeners();
-}
-})));
+            this._animationController!.animateTo(this._index.toDouble(), duration: DartRuntimePrimitives.RequireValue(duration__value7060), curve: curve!).whenCompleteOrCancel(((global::System.Action)(() =>
+            {
+                if ((this._animationController is not null))
+                {
+                    _indexIsChangingCount -= 1L;
+                    notifyListeners();
+                }
+            })));
         }
         else
         {

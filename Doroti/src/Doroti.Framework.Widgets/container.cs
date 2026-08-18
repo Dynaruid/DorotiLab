@@ -35,11 +35,13 @@ public class DecoratedBox : SingleChildRenderObjectWidget
     {
         var __renderObject = (global::Doroti.Framework.Rendering.RenderDecoratedBox)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Rendering.RenderDecoratedBox>)(() =>
-{            var __cascade = __renderObject;
-            __cascade.decoration = this.decoration;
-            __cascade.configuration = global::Doroti.Framework.Widgets.ImageLibrary.createLocalImageConfiguration(context);
-            __cascade.position = this.position;
-            return __cascade;        }))());
+{
+    var __cascade = __renderObject;
+    __cascade.decoration = this.decoration;
+    __cascade.configuration = global::Doroti.Framework.Widgets.ImageLibrary.createLocalImageConfiguration(context);
+    __cascade.position = this.position;
+    return __cascade;
+}))());
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)

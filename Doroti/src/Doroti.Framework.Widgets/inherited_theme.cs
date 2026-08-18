@@ -42,29 +42,30 @@ public abstract class InheritedTheme : InheritedWidget
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        from.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) => {
-if ((object.Equals(ancestor, to)))
-{
-    DartRuntimePrimitives.Assert(() =>
+        from.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
         {
-            debugDidFindAncestor__4133 = true;
+            if ((object.Equals(ancestor, to)))
+            {
+                DartRuntimePrimitives.Assert(() =>
+                    {
+                        debugDidFindAncestor__4133 = true;
+                        return true;
+                        throw new InvalidOperationException("Dart closure completed without a value.");
+                    });
+                return false;
+            }
+            if (ancestor is InheritedElement { widget: InheritedTheme theme__4517 } __object4471)
+            {
+                Type themeType__4546 = DartRuntimePrimitives.RuntimeType(theme__4517);
+                if (!themeTypes__4096.Contains(themeType__4546))
+                {
+                    themeTypes__4096.Add(themeType__4546);
+                    themes__4057.Add(theme__4517);
+                }
+            }
             return true;
             throw new InvalidOperationException("Dart closure completed without a value.");
-        });
-    return false;
-}
-if (ancestor is InheritedElement { widget: InheritedTheme theme__4517 } __object4471)
-{
-    Type themeType__4546 = DartRuntimePrimitives.RuntimeType(theme__4517);
-    if (!themeTypes__4096.Contains(themeType__4546))
-    {
-        themeTypes__4096.Add(themeType__4546);
-        themes__4057.Add(theme__4517);
-    }
-}
-return true;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        })));
         DartRuntimePrimitives.Assert(() => debugDidFindAncestor__4133, () => (object?)"The provided `to` context must be an ancestor of the `from` context.");
         return new CapturedThemes(themes__4057);
         throw new InvalidOperationException("Dart control flow completed without a value.");

@@ -219,25 +219,27 @@ internal class _CalendarDatePickerState__calendar_date_picker : global::Doroti.F
     internal virtual void _handleModeChanged(DatePickerMode mode)
     {
         _vibrate();
-        setState(((global::System.Action)(() => {
-_mode = mode;
-if (this._selectedDate is DateTime selected__10936)
-{
-    string message__10969 = (mode switch { DatePickerMode.day => ((CalendarDatePicker)this.widget).calendarDelegate.formatMonthYear(selected__10936, this._localizations), DatePickerMode.year => ((CalendarDatePicker)this.widget).calendarDelegate.formatYear(selected__10936.Year, this._localizations), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-    _announce(message__10969);
-}
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _mode = mode;
+            if (this._selectedDate is DateTime selected__10936)
+            {
+                string message__10969 = (mode switch { DatePickerMode.day => ((CalendarDatePicker)this.widget).calendarDelegate.formatMonthYear(selected__10936, this._localizations), DatePickerMode.year => ((CalendarDatePicker)this.widget).calendarDelegate.formatYear(selected__10936.Year, this._localizations), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                _announce(message__10969);
+            }
+        })));
     }
 
     internal virtual void _handleMonthChanged(DateTime date)
     {
-        setState(((global::System.Action)(() => {
-if (((this._currentDisplayedMonthDate.Year != date.Year) || (this._currentDisplayedMonthDate.Month != date.Month)))
-{
-    _currentDisplayedMonthDate = ((CalendarDatePicker)this.widget).calendarDelegate.getMonth(date.Year, date.Month);
-    ((CalendarDatePicker)this.widget).onDisplayedMonthChanged?.Invoke(this._currentDisplayedMonthDate);
-}
-})));
+        setState(((global::System.Action)(() =>
+        {
+            if (((this._currentDisplayedMonthDate.Year != date.Year) || (this._currentDisplayedMonthDate.Month != date.Month)))
+            {
+                _currentDisplayedMonthDate = ((CalendarDatePicker)this.widget).calendarDelegate.getMonth(date.Year, date.Month);
+                ((CalendarDatePicker)this.widget).onDisplayedMonthChanged?.Invoke(this._currentDisplayedMonthDate);
+            }
+        })));
     }
 
     internal virtual void _handleYearChanged(DateTime value)
@@ -257,42 +259,44 @@ if (((this._currentDisplayedMonthDate.Year != date.Year) || (this._currentDispla
                 value = ((CalendarDatePicker)this.widget).lastDate;
             }
         }
-        setState(((global::System.Action)(() => {
-_mode = DatePickerMode.day;
-_handleMonthChanged(value);
-if (_isSelectable(value))
-{
-    _selectedDate = value;
-    this.widget.onDateChanged(DartRuntimePrimitives.RequireValue(this._selectedDate));
-}
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _mode = DatePickerMode.day;
+            _handleMonthChanged(value);
+            if (_isSelectable(value))
+            {
+                _selectedDate = value;
+                this.widget.onDateChanged(DartRuntimePrimitives.RequireValue(this._selectedDate));
+            }
+        })));
     }
 
     internal virtual void _handleDayChanged(DateTime value)
     {
         _vibrate();
-        setState(((global::System.Action)(() => {
-_selectedDate = value;
-this.widget.onDateChanged(DartRuntimePrimitives.RequireValue(this._selectedDate));
-switch (Theme.of(this.context).platform)
-{
-    case global::Doroti.Framework.Foundation.TargetPlatform.linux:
-    case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
-    case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+        setState(((global::System.Action)(() =>
         {
-            bool isToday__12642 = ((CalendarDatePicker)this.widget).calendarDelegate.isSameDay(((CalendarDatePicker)this.widget).currentDate, this._selectedDate);
-            var semanticLabelSuffix__12738 = (isToday__12642 ? $", {((MaterialLocalizations)this._localizations).currentDateLabel}" : "");
-            DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(View.of(this.context), $"{((MaterialLocalizations)this._localizations).selectedDateLabel} {((CalendarDatePicker)this.widget).calendarDelegate.formatFullDate(DartRuntimePrimitives.RequireValue(this._selectedDate), this._localizations)}{semanticLabelSuffix__12738}", this._textDirection).catchError(Calendar_date_pickerLibrary._reportAnnouncementError));
-            break;
-        }
-    case global::Doroti.Framework.Foundation.TargetPlatform.android:
-    case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
-    case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
-        {
-            break;
-        }
-}
-})));
+            _selectedDate = value;
+            this.widget.onDateChanged(DartRuntimePrimitives.RequireValue(this._selectedDate));
+            switch (Theme.of(this.context).platform)
+            {
+                case global::Doroti.Framework.Foundation.TargetPlatform.linux:
+                case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
+                case global::Doroti.Framework.Foundation.TargetPlatform.windows:
+                    {
+                        bool isToday__12642 = ((CalendarDatePicker)this.widget).calendarDelegate.isSameDay(((CalendarDatePicker)this.widget).currentDate, this._selectedDate);
+                        var semanticLabelSuffix__12738 = (isToday__12642 ? $", {((MaterialLocalizations)this._localizations).currentDateLabel}" : "");
+                        DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(View.of(this.context), $"{((MaterialLocalizations)this._localizations).selectedDateLabel} {((CalendarDatePicker)this.widget).calendarDelegate.formatFullDate(DartRuntimePrimitives.RequireValue(this._selectedDate), this._localizations)}{semanticLabelSuffix__12738}", this._textDirection).catchError(Calendar_date_pickerLibrary._reportAnnouncementError));
+                        break;
+                    }
+                case global::Doroti.Framework.Foundation.TargetPlatform.android:
+                case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
+                case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
+                    {
+                        break;
+                    }
+            }
+        })));
     }
 
     internal virtual bool _isSelectable(DateTime date)
@@ -549,19 +553,20 @@ internal class _MonthPickerState__calendar_date_picker : global::Doroti.Framewor
 
     internal virtual void _handleMonthPageChanged(long monthPage)
     {
-        setState(((global::System.Action)(() => {
-DateTime monthDate__25217 = ((_MonthPicker__calendar_date_picker)this.widget).calendarDelegate.addMonthsToMonthDate(((_MonthPicker__calendar_date_picker)this.widget).firstDate, monthPage);
-if (!((_MonthPicker__calendar_date_picker)this.widget).calendarDelegate.isSameMonth(this._currentMonth, monthDate__25217))
-{
-    _currentMonth = ((_MonthPicker__calendar_date_picker)this.widget).calendarDelegate.getMonth(monthDate__25217.Year, monthDate__25217.Month);
-    this.widget.onDisplayedMonthChanged(this._currentMonth);
-    if (((this._focusedDay is not null) && !((_MonthPicker__calendar_date_picker)this.widget).calendarDelegate.isSameMonth(this._focusedDay, this._currentMonth)))
-    {
-        _focusedDay = _focusableDayForMonth(this._currentMonth, DartRuntimePrimitives.RequireValue(this._focusedDay).Day);
-    }
-    _announce(((_MonthPicker__calendar_date_picker)this.widget).calendarDelegate.formatMonthYear(this._currentMonth, this._localizations));
-}
-})));
+        setState(((global::System.Action)(() =>
+        {
+            DateTime monthDate__25217 = ((_MonthPicker__calendar_date_picker)this.widget).calendarDelegate.addMonthsToMonthDate(((_MonthPicker__calendar_date_picker)this.widget).firstDate, monthPage);
+            if (!((_MonthPicker__calendar_date_picker)this.widget).calendarDelegate.isSameMonth(this._currentMonth, monthDate__25217))
+            {
+                _currentMonth = ((_MonthPicker__calendar_date_picker)this.widget).calendarDelegate.getMonth(monthDate__25217.Year, monthDate__25217.Month);
+                this.widget.onDisplayedMonthChanged(this._currentMonth);
+                if (((this._focusedDay is not null) && !((_MonthPicker__calendar_date_picker)this.widget).calendarDelegate.isSameMonth(this._focusedDay, this._currentMonth)))
+                {
+                    _focusedDay = _focusableDayForMonth(this._currentMonth, DartRuntimePrimitives.RequireValue(this._focusedDay).Day);
+                }
+                _announce(((_MonthPicker__calendar_date_picker)this.widget).calendarDelegate.formatMonthYear(this._currentMonth, this._localizations));
+            }
+        })));
     }
 
     internal virtual DateTime? _focusableDayForMonth(DateTime month, long preferredDay)
@@ -634,26 +639,27 @@ if (!((_MonthPicker__calendar_date_picker)this.widget).calendarDelegate.isSameMo
     }
     internal virtual void _handleGridFocusChange(bool focused)
     {
-        setState(((global::System.Action)(() => {
-if ((focused && (this._focusedDay is null)))
-{
-    if (((_MonthPicker__calendar_date_picker)this.widget).calendarDelegate.isSameMonth(((_MonthPicker__calendar_date_picker)this.widget).selectedDate, this._currentMonth))
-    {
-        _focusedDay = ((_MonthPicker__calendar_date_picker)this.widget).selectedDate;
-    }
-    else
-    {
-        if (((_MonthPicker__calendar_date_picker)this.widget).calendarDelegate.isSameMonth(((_MonthPicker__calendar_date_picker)this.widget).currentDate, this._currentMonth))
+        setState(((global::System.Action)(() =>
         {
-            _focusedDay = _focusableDayForMonth(this._currentMonth, ((_MonthPicker__calendar_date_picker)this.widget).currentDate.Day);
-        }
-        else
-        {
-            _focusedDay = _focusableDayForMonth(this._currentMonth, 1L);
-        }
-    }
-}
-})));
+            if ((focused && (this._focusedDay is null)))
+            {
+                if (((_MonthPicker__calendar_date_picker)this.widget).calendarDelegate.isSameMonth(((_MonthPicker__calendar_date_picker)this.widget).selectedDate, this._currentMonth))
+                {
+                    _focusedDay = ((_MonthPicker__calendar_date_picker)this.widget).selectedDate;
+                }
+                else
+                {
+                    if (((_MonthPicker__calendar_date_picker)this.widget).calendarDelegate.isSameMonth(((_MonthPicker__calendar_date_picker)this.widget).currentDate, this._currentMonth))
+                    {
+                        _focusedDay = _focusableDayForMonth(this._currentMonth, ((_MonthPicker__calendar_date_picker)this.widget).currentDate.Day);
+                    }
+                    else
+                    {
+                        _focusedDay = _focusableDayForMonth(this._currentMonth, 1L);
+                    }
+                }
+            }
+        })));
     }
 
     internal virtual void _handleGridNextFocus(global::Doroti.Framework.Widgets.NextFocusIntent intent)
@@ -671,18 +677,19 @@ if ((focused && (this._focusedDay is null)))
     internal virtual void _handleDirectionFocus(global::Doroti.Framework.Widgets.DirectionalFocusIntent intent)
     {
         DartRuntimePrimitives.Assert(() => (this._focusedDay is not null));
-        setState(((global::System.Action)(() => {
-DateTime? nextDate__29939 = _nextDateInDirection(DartRuntimePrimitives.RequireValue(this._focusedDay), ((global::Doroti.Framework.Widgets.DirectionalFocusIntent)intent).direction);
-if ((nextDate__29939 is not null))
-{
-    DateTime nextDate__29939__value30014 = DartRuntimePrimitives.RequireValue(nextDate__29939);
-    _focusedDay = DartRuntimePrimitives.RequireValue(nextDate__29939__value30014);
-    if (!((_MonthPicker__calendar_date_picker)this.widget).calendarDelegate.isSameMonth(this._focusedDay, this._currentMonth))
-    {
-        _showMonth(DartRuntimePrimitives.RequireValue(this._focusedDay));
-    }
-}
-})));
+        setState(((global::System.Action)(() =>
+        {
+            DateTime? nextDate__29939 = _nextDateInDirection(DartRuntimePrimitives.RequireValue(this._focusedDay), ((global::Doroti.Framework.Widgets.DirectionalFocusIntent)intent).direction);
+            if ((nextDate__29939 is not null))
+            {
+                DateTime nextDate__29939__value30014 = DartRuntimePrimitives.RequireValue(nextDate__29939);
+                _focusedDay = DartRuntimePrimitives.RequireValue(nextDate__29939__value30014);
+                if (!((_MonthPicker__calendar_date_picker)this.widget).calendarDelegate.isSameMonth(this._focusedDay, this._currentMonth))
+                {
+                    _showMonth(DartRuntimePrimitives.RequireValue(this._focusedDay));
+                }
+            }
+        })));
     }
 
     internal virtual long _dayDirectionOffset(global::Doroti.Framework.Widgets.TraversalDirection traversalDirection, TextDirection textDirection)
@@ -920,10 +927,11 @@ internal class _DayState__calendar_date_picker : global::Doroti.Framework.Widget
         }
         P? resolve<P>(global::System.Func<DatePickerThemeData?, global::Doroti.Framework.Widgets.WidgetStateProperty<P>?> getProperty, HashSet<global::Doroti.Framework.Widgets.WidgetState> states)
         {
-            return effectiveValue(((theme) => {
-return getProperty(theme) is { } property ? property.resolve(states) : default;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return effectiveValue(((theme) =>
+            {
+                return getProperty(theme) is { } property ? property.resolve(states) : default;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         MaterialLocalizations localizations__44294 = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
@@ -1059,10 +1067,11 @@ internal class _YearPickerState__calendar_date_picker : global::Doroti.Framework
         }
         P? resolve<P>(global::System.Func<DatePickerThemeData?, global::Doroti.Framework.Widgets.WidgetStateProperty<P>?> getProperty, HashSet<global::Doroti.Framework.Widgets.WidgetState> states)
         {
-            return effectiveValue(((theme) => {
-return getProperty(theme) is { } property ? property.resolve(states) : default;
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+            return effectiveValue(((theme) =>
+            {
+                return getProperty(theme) is { } property ? property.resolve(states) : default;
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         double textScaleFactor__53401 = (MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 3.0).scale(Calendar_date_pickerLibrary._fontSizeToScale) / Calendar_date_pickerLibrary._fontSizeToScale);

@@ -4,13 +4,13 @@
 // Doroti typed semantic compiler 3.0.0; source: ../../../reference/flutter-master/packages/flutter/lib/src/material/ink_splash.dart
 using System;
 using System.Collections.Generic;
-using Stopwatch = System.Diagnostics.Stopwatch;
 using System.Linq;
 using System.Threading.Tasks;
 using Doroti.Runtime;
 using Doroti.Ui;
 using static Doroti.Runtime.FoundationRuntimePorts;
 using Match = Doroti.Runtime.DartMatch;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Doroti.Framework.Material;
 
@@ -116,16 +116,20 @@ public class InkSplash : InteractiveInkFeature
         this._repositionToReferenceBox = !containedInkWell;
         this._textDirection = textDirection;
         _radiusController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: Ink_splashLibrary._kUnconfirmedSplashDuration, vsync: ((MaterialInkController)controller).vsync);
-            __cascade.addListener(() => ((MaterialInkController)controller).markNeedsPaint());
-            __cascade.forward();
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: Ink_splashLibrary._kUnconfirmedSplashDuration, vsync: ((MaterialInkController)controller).vsync);
+    __cascade.addListener(() => ((MaterialInkController)controller).markNeedsPaint());
+    __cascade.forward();
+    return __cascade;
+}))();
         _radius = this._radiusController.drive(new global::Doroti.Framework.Animation.Tween<double>(begin: Ink_splashLibrary._kSplashInitialSize, end: this._targetRadius));
         _alphaController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: Ink_splashLibrary._kSplashFadeDuration, vsync: ((MaterialInkController)controller).vsync);
-            __cascade.addListener(() => ((MaterialInkController)controller).markNeedsPaint());
-            __cascade.addStatusListener((AnimationStatusListener)this._handleAlphaStatusChanged);
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: Ink_splashLibrary._kSplashFadeDuration, vsync: ((MaterialInkController)controller).vsync);
+    __cascade.addListener(() => ((MaterialInkController)controller).markNeedsPaint());
+    __cascade.addStatusListener((AnimationStatusListener)this._handleAlphaStatusChanged);
+    return __cascade;
+}))();
         _alpha = this._alphaController!.drive(new global::Doroti.Framework.Animation.IntTween(begin: color.alpha, end: 0L));
         controller.addInkFeature(this);
     }
@@ -134,10 +138,12 @@ public class InkSplash : InteractiveInkFeature
     {
         long duration__6493 = ((this._targetRadius / Ink_splashLibrary._kSplashConfirmedVelocity)).floor();
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
-{            var __cascade = this._radiusController;
-            __cascade.duration = Duration.Create(milliseconds: duration__6493);
-            __cascade.forward();
-            return __cascade;        }))());
+{
+    var __cascade = this._radiusController;
+    __cascade.duration = Duration.Create(milliseconds: duration__6493);
+    __cascade.forward();
+    return __cascade;
+}))());
         this._alphaController!.forward();
     }
 
@@ -165,9 +171,11 @@ public class InkSplash : InteractiveInkFeature
     public override void paintFeature(Canvas canvas, Matrix4 transform)
     {
         var paint__7103 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = this.color.withAlpha(((global::Doroti.Framework.Animation.Animation<long>)this._alpha).value);
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = this.color.withAlpha(((global::Doroti.Framework.Animation.Animation<long>)this._alpha).value);
+    return __cascade;
+}))();
         global::Doroti.Ui.Offset? center__7171 = ((global::Doroti.Ui.Offset?)(object?)this._position);
         if (this._repositionToReferenceBox)
         {

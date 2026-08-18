@@ -72,10 +72,16 @@ public class _AccountDetailsState__user_accounts_drawer_header : global::Doroti.
         base.initState();
         _controller = new global::Doroti.Framework.Animation.AnimationController(value: (((_AccountDetails__user_accounts_drawer_header)this.widget).isOpen ? 1.0 : 0.0), duration: Duration.Create(milliseconds: 200L), vsync: this);
         _animation = ((Func<global::Doroti.Framework.Animation.CurvedAnimation>)(() =>
-{            var __cascade = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._controller, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn, reverseCurve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn.flipped);
-            __cascade.addListener(((global::System.Action)(() => { setState(((global::System.Action)(() => {
-}))); })));
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._controller, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn, reverseCurve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn.flipped);
+    __cascade.addListener(((global::System.Action)(() =>
+    {
+        setState(((global::System.Action)(() =>
+        {
+        })));
+    })));
+    return __cascade;
+}))();
     }
 
     public override void dispose()
@@ -287,9 +293,10 @@ internal class _UserAccountsDrawerHeaderState__user_accounts_drawer_header : glo
 
     internal virtual void _handleDetailsPressed()
     {
-        setState(((global::System.Action)(() => {
-_isOpen = !this._isOpen;
-})));
+        setState(((global::System.Action)(() =>
+        {
+            _isOpen = !this._isOpen;
+        })));
         ((UserAccountsDrawerHeader)this.widget).onDetailsPressed!();
     }
 

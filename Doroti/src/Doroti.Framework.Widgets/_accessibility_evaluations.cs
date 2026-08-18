@@ -86,11 +86,12 @@ public class MinimumTapTargetEvaluationIo : AccessibilityEvaluationIo
     internal virtual List<ViolationIo> _traverse(DorotiView view, global::Doroti.Framework.Semantics.SemanticsNode node)
     {
         var violations__3530 = new List<ViolationIo>();
-        node.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) => {
-violations__3530.AddRange(_traverse(view, child));
-return true;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        node.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) =>
+        {
+            violations__3530.AddRange(_traverse(view, child));
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         if (((global::Doroti.Framework.Semantics.SemanticsNode)node).isMergedIntoParent)
         {
             return violations__3530;
@@ -175,11 +176,12 @@ public class LabeledTapTargetEvaluationIo : AccessibilityEvaluationIo
     internal virtual List<ViolationIo> _traverse(global::Doroti.Framework.Semantics.SemanticsNode node)
     {
         var violations__6676 = new List<ViolationIo>();
-        node.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) => {
-violations__6676.AddRange(_traverse(child));
-return true;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        node.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) =>
+        {
+            violations__6676.AddRange(_traverse(child));
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         if ((((((global::Doroti.Framework.Semantics.SemanticsNode)node).isMergedIntoParent || ((global::Doroti.Framework.Semantics.SemanticsNode)node).isInvisible) || ((global::Doroti.Framework.Semantics.SemanticsNode)node).flagsCollection.isHidden) || ((global::Doroti.Framework.Semantics.SemanticsNode)node).flagsCollection.isTextField))
         {
             return violations__6676;
@@ -233,11 +235,12 @@ public abstract class _ContrastEvaluation___accessibility_evaluations : Accessib
         }
         global::Doroti.Framework.Semantics.SemanticsData data__8749 = ((global::Doroti.Framework.Semantics.SemanticsData)(object?)node.getSemanticsData());
         var children__8791 = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
-        node.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) => {
-children__8791.Add(child);
-return true;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        node.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) =>
+        {
+            children__8791.Add(child);
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         foreach (var child__8937 in children__8791)
         {
             violations__8622.AddRange((await _evaluateNode(child__8937, image, byteData, renderView)).Cast<ViolationIo>());
@@ -517,11 +520,12 @@ public static partial class _accessibility_evaluationsLibrary
                 rgbaToCount__23252.update(getPixel(data, x__23422, y__23465), ((count) => (count + 1L)), ifAbsent: (() => 1L));
             }
         }
-        return rgbaToCount__23252.map<long, long, Color, long>(((rgba, count) => {
-long argb__23674 = (((rgba << (int)(24L))) | (((rgba >> (int)(8L))) & 4294967295L));
-return new MapEntry<global::Doroti.Ui.Color, long>(new global::Doroti.Ui.Color(argb__23674), count);
-throw new InvalidOperationException("Dart closure completed without a value.");
-}));
+        return rgbaToCount__23252.map<long, long, Color, long>(((rgba, count) =>
+        {
+            long argb__23674 = (((rgba << (int)(24L))) | (((rgba >> (int)(8L))) & 4294967295L));
+            return new MapEntry<global::Doroti.Ui.Color, long>(new global::Doroti.Ui.Color(argb__23674), count);
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -531,13 +535,14 @@ public static partial class _accessibility_evaluationsLibrary
     internal static IEnumerable<Element> _collectElementsByText(Element root, string text)
     {
         var result__23862 = new List<Element>();
-        root.visitChildren(((global::System.Action<Element>)((child) => {
-if (((((Element)child).widget is Text) && ((((Text?)(object?)((Element)child).widget)!).data == text)))
-{
-    result__23862.Add(child);
-}
-result__23862.AddRange(_accessibility_evaluationsLibrary._collectElementsByText(child, text).Cast<Element>());
-})));
+        root.visitChildren(((global::System.Action<Element>)((child) =>
+        {
+            if (((((Element)child).widget is Text) && ((((Text?)(object?)((Element)child).widget)!).data == text)))
+            {
+                result__23862.Add(child);
+            }
+            result__23862.AddRange(_accessibility_evaluationsLibrary._collectElementsByText(child, text).Cast<Element>());
+        })));
         return ((IEnumerable<Element>)(object?)result__23862);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -602,12 +607,13 @@ public class UnlabeledLeafNodeEvaluationIo : AccessibilityEvaluationIo
     {
         var violations__27117 = new List<ViolationIo>();
         var hasChildren__27153 = false;
-        node.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) => {
-hasChildren__27153 = true;
-violations__27117.AddRange(_traverse(child));
-return true;
-throw new InvalidOperationException("Dart closure completed without a value.");
-})));
+        node.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) =>
+        {
+            hasChildren__27153 = true;
+            violations__27117.AddRange(_traverse(child));
+            return true;
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        })));
         if ((((global::Doroti.Framework.Semantics.SemanticsNode)node).isInvisible || ((global::Doroti.Framework.Semantics.SemanticsNode)node).flagsCollection.isHidden))
         {
             return violations__27117;
@@ -656,12 +662,13 @@ public class TitleEvaluationIo : AccessibilityEvaluationIo
             return true;
         }
         var found__29018 = false;
-        element.visitChildren(((global::System.Action<Element>)((child) => {
-if (!found__29018)
-{
-    found__29018 = _hasTitleWidget(child);
-}
-})));
+        element.visitChildren(((global::System.Action<Element>)((child) =>
+        {
+            if (!found__29018)
+            {
+                found__29018 = _hasTitleWidget(child);
+            }
+        })));
         return found__29018;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

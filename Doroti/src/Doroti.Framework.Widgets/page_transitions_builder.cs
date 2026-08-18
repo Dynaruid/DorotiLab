@@ -126,18 +126,20 @@ internal class _OpenUpwardsPageTransitionState__page_transitions_builder : State
 
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new LayoutBuilder(builder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, Widget>)((context, constraints) => {
-global::Doroti.Ui.Size size__9387 = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Framework.Rendering.BoxConstraints)constraints).biggest);
-global::Doroti.Framework.Animation.Animation<double> clipAnimation__9509 = ((global::Doroti.Framework.Animation.Animation<double>)(object?)new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: size__9387.height).animate(this._primaryAnimation));
-global::Doroti.Framework.Animation.Animation<double> opacityAnimation__9661 = ((global::Doroti.Framework.Animation.Animation<double>)(object?)_OpenUpwardsPageTransition__page_transitions_builder._scrimOpacityTween.animate(this._primaryAnimation));
-global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset> primaryTranslationAnimation__9799 = ((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset>)(object?)_OpenUpwardsPageTransition__page_transitions_builder._primaryTranslationTween.animate(this._primaryAnimation));
-global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset> secondaryTranslationAnimation__9968 = ((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset>)(object?)_OpenUpwardsPageTransition__page_transitions_builder._secondaryTranslationTween.animate(this._secondaryTranslationCurvedAnimation));
-return ((Widget)(object?)new AnimatedBuilder(animation: global::Doroti.Framework.Foundation.Listenable.CreateMerge(new List<global::Doroti.Framework.Foundation.Listenable> { ((_OpenUpwardsPageTransition__page_transitions_builder)this.widget).animation, ((_OpenUpwardsPageTransition__page_transitions_builder)this.widget).secondaryAnimation }.Cast<global::Doroti.Framework.Foundation.Listenable?>()), builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) => {
-return ((Widget)(object?)new ColoredBox(color: _OpenUpwardsPageTransition__page_transitions_builder._scrimColor.withOpacity(((global::Doroti.Framework.Animation.Animation<double>)opacityAnimation__9661).value), child: new Align(alignment: global::Doroti.Framework.Painting.Alignment.bottomLeft, child: new ClipRect(child: new SizedBox(height: ((global::Doroti.Framework.Animation.Animation<double>)clipAnimation__9509).value, child: new OverflowBox(alignment: global::Doroti.Framework.Painting.Alignment.bottomLeft, maxHeight: size__9387.height, child: new FractionalTranslation(translation: ((global::Doroti.Framework.Animation.Animation<Offset>)secondaryTranslationAnimation__9968).value, child: new FractionalTranslation(translation: ((global::Doroti.Framework.Animation.Animation<Offset>)primaryTranslationAnimation__9799).value, child: ((_OpenUpwardsPageTransition__page_transitions_builder)this.widget).child))))))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
-throw new InvalidOperationException("Dart closure completed without a value.");
-}))));
+        return ((Widget)(object?)new LayoutBuilder(builder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, Widget>)((context, constraints) =>
+        {
+            global::Doroti.Ui.Size size__9387 = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Framework.Rendering.BoxConstraints)constraints).biggest);
+            global::Doroti.Framework.Animation.Animation<double> clipAnimation__9509 = ((global::Doroti.Framework.Animation.Animation<double>)(object?)new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: size__9387.height).animate(this._primaryAnimation));
+            global::Doroti.Framework.Animation.Animation<double> opacityAnimation__9661 = ((global::Doroti.Framework.Animation.Animation<double>)(object?)_OpenUpwardsPageTransition__page_transitions_builder._scrimOpacityTween.animate(this._primaryAnimation));
+            global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset> primaryTranslationAnimation__9799 = ((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset>)(object?)_OpenUpwardsPageTransition__page_transitions_builder._primaryTranslationTween.animate(this._primaryAnimation));
+            global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset> secondaryTranslationAnimation__9968 = ((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset>)(object?)_OpenUpwardsPageTransition__page_transitions_builder._secondaryTranslationTween.animate(this._secondaryTranslationCurvedAnimation));
+            return ((Widget)(object?)new AnimatedBuilder(animation: global::Doroti.Framework.Foundation.Listenable.CreateMerge(new List<global::Doroti.Framework.Foundation.Listenable> { ((_OpenUpwardsPageTransition__page_transitions_builder)this.widget).animation, ((_OpenUpwardsPageTransition__page_transitions_builder)this.widget).secondaryAnimation }.Cast<global::Doroti.Framework.Foundation.Listenable?>()), builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
+            {
+                return ((Widget)(object?)new ColoredBox(color: _OpenUpwardsPageTransition__page_transitions_builder._scrimColor.withOpacity(((global::Doroti.Framework.Animation.Animation<double>)opacityAnimation__9661).value), child: new Align(alignment: global::Doroti.Framework.Painting.Alignment.bottomLeft, child: new ClipRect(child: new SizedBox(height: ((global::Doroti.Framework.Animation.Animation<double>)clipAnimation__9509).value, child: new OverflowBox(alignment: global::Doroti.Framework.Painting.Alignment.bottomLeft, maxHeight: size__9387.height, child: new FractionalTranslation(translation: ((global::Doroti.Framework.Animation.Animation<Offset>)secondaryTranslationAnimation__9968).value, child: new FractionalTranslation(translation: ((global::Doroti.Framework.Animation.Animation<Offset>)primaryTranslationAnimation__9799).value, child: ((_OpenUpwardsPageTransition__page_transitions_builder)this.widget).child))))))));
+                throw new InvalidOperationException("Dart closure completed without a value.");
+            }))));
+            throw new InvalidOperationException("Dart closure completed without a value.");
+        }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

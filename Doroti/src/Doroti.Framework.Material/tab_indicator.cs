@@ -69,14 +69,18 @@ public class UnderlineTabIndicator : global::Doroti.Framework.Painting.Decoratio
         if ((this.borderRadius is not null))
         {
             return ((Func<Path>)(() =>
-{            var __cascade = new global::Doroti.Ui.Path();
-            __cascade.addRRect(this.borderRadius!.toRRect(_indicatorRectFor(rect, textDirection)));
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Path();
+    __cascade.addRRect(this.borderRadius!.toRRect(_indicatorRectFor(rect, textDirection)));
+    return __cascade;
+}))();
         }
         return ((Func<Path>)(() =>
-{            var __cascade = new global::Doroti.Ui.Path();
-            __cascade.addRect(_indicatorRectFor(rect, textDirection));
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Path();
+    __cascade.addRect(_indicatorRectFor(rect, textDirection));
+    return __cascade;
+}))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -102,9 +106,11 @@ internal class _UnderlinePainter__tab_indicator : global::Doroti.Framework.Paint
         if ((this.borderRadius is not null))
         {
             paint__3469 = ((Func<Paint>)(() =>
-{            var __cascade = new global::Doroti.Ui.Paint();
-            __cascade.color = ((UnderlineTabIndicator)this.decoration).borderSide.color;
-            return __cascade;        }))();
+{
+    var __cascade = new global::Doroti.Ui.Paint();
+    __cascade.color = ((UnderlineTabIndicator)this.decoration).borderSide.color;
+    return __cascade;
+}))();
             global::Doroti.Ui.Rect indicator__3585 = ((global::Doroti.Ui.Rect)(object?)this.decoration._indicatorRectFor(rect__3346, textDirection__3407));
             var rrect__3660 = global::Doroti.Ui.RRect.fromRectAndCorners(indicator__3585, topLeft: this.borderRadius!.topLeft, topRight: this.borderRadius!.topRight, bottomRight: this.borderRadius!.bottomRight, bottomLeft: this.borderRadius!.bottomLeft);
             canvas.drawRRect(rrect__3660, paint__3469);
@@ -112,9 +118,11 @@ internal class _UnderlinePainter__tab_indicator : global::Doroti.Framework.Paint
         else
         {
             paint__3469 = ((Func<Paint>)(() =>
-{            var __cascade = ((UnderlineTabIndicator)this.decoration).borderSide.toPaint();
-            __cascade.strokeCap = StrokeCap.square;
-            return __cascade;        }))();
+{
+    var __cascade = ((UnderlineTabIndicator)this.decoration).borderSide.toPaint();
+    __cascade.strokeCap = StrokeCap.square;
+    return __cascade;
+}))();
             global::Doroti.Ui.Rect indicator__4043 = ((global::Doroti.Ui.Rect)(object?)this.decoration._indicatorRectFor(rect__3346, textDirection__3407).deflate((((UnderlineTabIndicator)this.decoration).borderSide.width / 2.0)));
             canvas.drawLine(indicator__4043.bottomLeft, indicator__4043.bottomRight, paint__3469);
         }
