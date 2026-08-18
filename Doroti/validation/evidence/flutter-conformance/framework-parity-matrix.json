@@ -39,6 +39,48 @@
       "note": "Interactive ink state and pointer routing are inventoried here; animation semantic differential belongs to FCR-2/FCR-7."
     },
     {
+      "id": "material.scaffold",
+      "area": "Material",
+      "flutterSource": "packages/flutter/lib/src/material/scaffold.dart",
+      "sourceSha256": "1993b5dc8db2aada1ce979f23dd353fcc417b0705ede9ed082972a8f0e05f596",
+      "owner": "Doroti.Framework.Material",
+      "disposition": "adapted",
+      "productSources": ["Doroti/src/Doroti.Framework.Material/scaffold.cs"],
+      "runtimeDependencyIds": ["runtime:widget-rendering", "runtime:scene-builder", "runtime:semantics-bridge"],
+      "hostConsumers": ["DorotiDemoApp/src/App.cs", "Doroti/src/Doroti.Host.Maui/MauiFrameworkHost.cs"],
+      "testEvidence": ["Doroti/eng/validate-fcr7-material-widget.ps1", "Doroti/validation/fcr7-material-widget/fixture-manifest.json", "Doroti/validation/evidence/flutter-conformance/fcr7-material-widget-evidence.json"],
+      "verification": "partial",
+      "note": "FCR-7 fixes the opaque-Scaffold versus transparent-shell fixture and persistent background checks; paired raster capture remains notVerified."
+    },
+    {
+      "id": "material.app-bar",
+      "area": "Material",
+      "flutterSource": "packages/flutter/lib/src/material/app_bar.dart",
+      "sourceSha256": "40e3e93e76112ac9d732b6f10aa4f7d88e86b744a1ee2c277e3380cd95a084ff",
+      "owner": "Doroti.Framework.Material",
+      "disposition": "adapted",
+      "productSources": ["Doroti/src/Doroti.Framework.Material/app_bar.cs"],
+      "runtimeDependencyIds": ["runtime:widget-rendering", "runtime:scene-builder", "runtime:semantics-bridge"],
+      "hostConsumers": ["DorotiDemoApp/src/App.cs", "Doroti/src/Doroti.Host.Maui/MauiFrameworkHost.cs"],
+      "testEvidence": ["Doroti/eng/validate-fcr7-material-widget.ps1", "Doroti/validation/fcr7-material-widget/fixture-manifest.json", "Doroti/validation/evidence/flutter-conformance/fcr7-material-widget-evidence.json"],
+      "verification": "partial",
+      "note": "FCR-7 records default/scrolled-under visual states and text semantics; paired raster capture remains notVerified."
+    },
+    {
+      "id": "material.floating-action-button",
+      "area": "Material",
+      "flutterSource": "packages/flutter/lib/src/material/floating_action_button.dart",
+      "sourceSha256": "47f3128df9d552f06c931fdcd3baa922f379baa4ca18bffa37b4e67da4cce1f2",
+      "owner": "Doroti.Framework.Material",
+      "disposition": "adapted",
+      "productSources": ["Doroti/src/Doroti.Framework.Material/floating_action_button.cs"],
+      "runtimeDependencyIds": ["runtime:dart-primitives", "runtime:widget-rendering", "runtime:semantics-bridge"],
+      "hostConsumers": ["DorotiDemoApp/src/App.cs", "Doroti/src/Doroti.Host.Maui/MauiNativeInput.cs"],
+      "testEvidence": ["Doroti/eng/validate-fcr7-material-widget.ps1", "Doroti/validation/fcr7-material-widget/fixture-manifest.json", "Doroti/validation/evidence/flutter-conformance/fcr7-material-widget-evidence.json"],
+      "verification": "partial",
+      "note": "FCR-7 fixes coordinate and semantics-tap callback/state coverage; paired pressed/disabled raster capture remains notVerified."
+    },
+    {
       "id": "material.theme-data",
       "area": "Material",
       "flutterSource": "packages/flutter/lib/src/material/theme_data.dart",

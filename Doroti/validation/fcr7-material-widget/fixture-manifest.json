@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "doroti.flutter-conformance-fcr7-fixture/v1",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "captureEnvironment": {
+    "logicalViewport": { "width": 720, "height": 640 },
+    "devicePixelRatio": 1.0,
+    "font": "Roboto",
+    "locale": "en_US",
+    "theme": { "useMaterial3": true, "colorSchemeSeed": "#FF6750A4" },
+    "time": { "animationEpochMicros": 0, "seed": 1729 }
+  },
+  "backgroundOwnership": [
+    { "fixture": "transparent-shell", "appBackground": "transparent", "shellBackground": "#FF101014", "expectedOwner": "shell" },
+    { "fixture": "opaque-scaffold", "appBackground": "#FFFFFBFE", "shellBackground": "#FF101014", "expectedOwner": "scaffold" }
+  ],
+  "sources": [
+    { "path": "packages/flutter/lib/src/material/scaffold.dart", "sha256": "1993b5dc8db2aada1ce979f23dd353fcc417b0705ede9ed082972a8f0e05f596", "anchors": ["class Scaffold extends StatefulWidget", "floatingActionButton"] },
+    { "path": "packages/flutter/lib/src/material/app_bar.dart", "sha256": "40e3e93e76112ac9d732b6f10aa4f7d88e86b744a1ee2c277e3380cd95a084ff", "anchors": ["class AppBar extends StatefulWidget", "WidgetState.scrolledUnder"] },
+    { "path": "packages/flutter/lib/src/material/floating_action_button.dart", "sha256": "47f3128df9d552f06c931fdcd3baa922f379baa4ca18bffa37b4e67da4cce1f2", "anchors": ["class FloatingActionButton extends StatelessWidget", "required this.onPressed"] },
+    { "path": "packages/flutter/lib/src/material/ink_well.dart", "sha256": "8fdb01e4dd98bb251df68814c0416692ca0771cfb78a1f73f43f8ae6416a70ab", "anchors": ["final GestureTapCallback? onTap", "WidgetState.hovered", "WidgetState.focused", "WidgetState.disabled"] },
+    { "path": "packages/flutter/lib/src/material/ink_sparkle.dart", "sha256": "6bf9f6a89317cfbc7bad9fbb282f71969f4bee077f155367632f3cfb9d87bf02", "anchors": ["class InkSparkle extends InteractiveInkFeature", "FragmentProgram.fromAsset"] },
+    { "path": "packages/flutter/lib/src/material/scrollbar.dart", "sha256": "eec0a2ca2cbc3cc63f93ff959033d67d8ab3aa6c100800477a87449a70aae3eb", "anchors": ["class Scrollbar extends StatelessWidget", "thumbVisibility"] },
+    { "path": "packages/flutter/lib/src/widgets/scroll_view.dart", "sha256": "427a3070dd0c8cb7403f1abcd38d73359387863ecdeeaa49c3ab0225eff7b175", "anchors": ["class ListView extends BoxScrollView"] },
+    { "path": "packages/flutter/lib/src/widgets/sliver.dart", "sha256": "4abc19b17757b964a4ae0bfeada7a6a6711605c8b429b4dd1547f10d35e4ddb2", "anchors": ["class SliverList extends SliverMultiBoxAdaptorWidget"] }
+  ],
+  "components": [
+    { "id": "scaffold-background", "productAnchor": "new Material.Scaffold(", "requirements": ["opaque-scaffold", "transparent-shell", "pixelDiff", "stateTrace"] },
+    { "id": "app-bar-text", "productAnchor": "new Material.AppBar(", "requirements": ["default", "scrolledUnder", "pixelDiff", "semantics"] },
+    { "id": "floating-action-button", "productAnchor": "new Material.FloatingActionButton(", "requirements": ["default", "pressed", "disabled", "callback", "semantics"] },
+    { "id": "ink-well-sparkle", "productAnchor": "new Material.ElevatedButton(", "requirements": ["cold", "warm", "down", "hold", "move", "up", "pixelDiff", "stateTrace"] },
+    { "id": "scrollbar-list-sliver", "productAnchor": "Material.Scrollbar(", "requirements": ["top", "middle", "end", "scroll", "thumb", "semantics"] },
+    { "id": "shader-mask-image-filter", "productAnchor": "new ShaderMask(", "requirements": ["cold", "warm", "pixelDiff", "stateTrace"] }
+  ],
+  "replayScenarios": [
+    { "id": "fab-press", "component": "floating-action-button", "states": ["default", "pressed", "focused", "disabled"], "sequence": ["down@680,580", "hold@680,580:100ms", "up@680,580", "semantics:tap"] },
+    { "id": "ink-cold-warm", "component": "ink-well-sparkle", "states": ["cold", "warm", "hovered", "pressed"], "sequence": ["hover@160,280", "down@160,280", "move@176,280", "hold@176,280:100ms", "up@176,280"] },
+    { "id": "scrollbar-range", "component": "scrollbar-list-sliver", "states": ["top", "middle", "end"], "sequence": ["scroll@360,420:-240", "scroll@360,420:-240", "semantics:scrollDown", "semantics:scrollUp"] },
+    { "id": "effects-cold-warm", "component": "shader-mask-image-filter", "states": ["cold", "warm"], "sequence": ["frame@0us", "frame@16667us", "frame@33334us"] }
+  ],
+  "comparison": {
+    "requires": ["flutterCapture", "dorotiCapture", "pixelDiff", "stateTrace", "semanticsTrace"],
+    "pixelDiff": { "metric": "perChannelAbsoluteError", "tolerance": "target-specific; recorded with cause classification" },
+    "passPromotion": "A component is PASS only when source/asset/render/hit-test/semantics closure and both target captures exist."
+  }
+}

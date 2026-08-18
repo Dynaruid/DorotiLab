@@ -1,6 +1,6 @@
 # Doroti Flutter Conformance & Smooth Rendering Upgrade
 
-> 상태: **ACTIVE PLAN — FCR-0 inventory/contract gate, FCR-1 framework shader contract, FCR-2 typed semantic/runtime contract, FCR-3 scheduler/frame-ownership, FCR-4 retained-rendering 및 FCR-5 scroll ownership/runtime contract 구현 완료; Flutter differential, native live/physical·soak acceptance는 후속 gate로 남음**
+> 상태: **ACTIVE PLAN — FCR-0~FCR-7 구조 계약과 representative fixture 구현 완료; Flutter differential, native live/physical·soak acceptance는 후속 gate로 남음**
 > 작성일: 2026-08-18
 > Doroti 기준 revision: `3fd08b3` + 이 문서 변경
 > Flutter source pin: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
@@ -253,6 +253,10 @@ native pointer/wheel
 - node identity 재사용, stale node 제거, action routing과 overlay pass-through가 physical에서 통과한다.
 
 ### FCR-7 — Material/Widget source slice의 시각·동작 parity
+
+현재 구현 상태 (2026-08-18): `Doroti/validation/fcr7-material-widget/fixture-manifest.json`이 pinned Flutter Material/Widget source hash와 대표 slice, 720×640/DPR 1/font/theme/locale/time-seed, transparent-shell/opaque-Scaffold 배경 owner, 좌표·hover·scroll·frame·semantics replay를 고정한다. `validate-fcr7-material-widget.ps1`와 Debug/Release contract는 fixture 및 실제 Demo source anchor를 검증한다.
+
+아직 `notVerified`: paired Flutter/Doroti raster·state·semantics capture, pixel diff 및 원인 분류, Windows live와 Android physical capture. 그러므로 이 구조 gate만으로 어느 component도 visual parity `PASS`로 승격하지 않는다.
 
 작업:
 

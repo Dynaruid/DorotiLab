@@ -1,6 +1,6 @@
 #Requires -Version 7.0
 param(
-    [ValidateSet('Source', 'Build', 'Targets', 'Fcr0', 'Fcr1', 'Fcr2', 'Fcr3', 'Fcr4', 'Fcr5', 'Fcr6', 'Developer', 'Release')]
+    [ValidateSet('Source', 'Build', 'Targets', 'Fcr0', 'Fcr1', 'Fcr2', 'Fcr3', 'Fcr4', 'Fcr5', 'Fcr6', 'Fcr7', 'Developer', 'Release')]
     [string] $Suite = 'Developer'
 )
 
@@ -149,6 +149,11 @@ function Invoke-Fcr6Gate {
     $completed.Add('fcr-6-semantics')
 }
 
+function Invoke-Fcr7Gate {
+    Invoke-Checked { & (Join-Path $PSScriptRoot 'validate-fcr7-material-widget.ps1') } 'Material/widget FCR-7 validation failed'
+    $completed.Add('fcr-7-material-widget')
+}
+
 function Invoke-ReleaseGate {
     & (Join-Path $PSScriptRoot 'validate-app-targets.ps1') -Shard Live
     & (Join-Path $PSScriptRoot 'validate-app-targets.ps1') -Shard Evidence
@@ -169,6 +174,7 @@ switch ($Suite) {
     'Fcr4' { Invoke-Fcr4Gate }
     'Fcr5' { Invoke-Fcr5Gate }
     'Fcr6' { Invoke-Fcr6Gate }
+    'Fcr7' { Invoke-Fcr7Gate }
     'Developer' {
         Invoke-SourceGate
         Invoke-Fcr0Gate
@@ -178,6 +184,7 @@ switch ($Suite) {
         Invoke-Fcr4Gate
         Invoke-Fcr5Gate
         Invoke-Fcr6Gate
+        Invoke-Fcr7Gate
         Invoke-BuildGate
         Invoke-TargetGate
     }
@@ -190,6 +197,7 @@ switch ($Suite) {
         Invoke-Fcr4Gate
         Invoke-Fcr5Gate
         Invoke-Fcr6Gate
+        Invoke-Fcr7Gate
         Invoke-BuildGate
         Invoke-TargetGate
         Invoke-ReleaseGate
