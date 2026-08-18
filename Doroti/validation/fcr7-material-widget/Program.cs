@@ -1,3 +1,8 @@
+using Doroti.Framework.Animation;
+using Doroti.Framework.Painting;
+using Doroti.Framework.Widgets;
+using Doroti.Ui;
+
 var requiredComponents = new HashSet<string>(StringComparer.Ordinal)
 {
     "scaffold-background", "app-bar-text", "floating-action-button",
@@ -38,6 +43,7 @@ var systemThemeApp = new Doroti.Framework.Material.MaterialApp(
 Require(ReferenceEquals(systemThemeApp.theme, lightTheme), "MaterialApp retains the light palette");
 Require(ReferenceEquals(systemThemeApp.darkTheme, darkTheme), "MaterialApp retains the dark palette");
 Require(systemThemeApp.themeMode == Doroti.Framework.Material.ThemeMode.system, "MaterialApp follows platform brightness in system mode");
+VerifyScrollbarAlphaContract();
 
 var widgetsBinding = (Doroti.Framework.Widgets.WidgetsFlutterBinding)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(
     typeof(Doroti.Framework.Widgets.WidgetsFlutterBinding));
@@ -76,6 +82,73 @@ Console.WriteLine($"FCR-7 material/widget runtime contract: PASS (configuration=
 
 static Scenario Scenario(string id, string component, IReadOnlyList<string> states, IReadOnlyList<string> actions) => new(id, component, states, actions);
 static void Require(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
+
+static void VerifyScrollbarAlphaContract()
+{
+    var androidIdlePeak = new Color(0xff5f6368L);
+    var fadeFrames = new[]
+    {
+        CaptureScrollbarFrame(androidIdlePeak, 1.0, 0),
+        CaptureScrollbarFrame(androidIdlePeak, 1.0, 600),
+        CaptureScrollbarFrame(androidIdlePeak, 0.5, 750),
+        CaptureScrollbarFrame(androidIdlePeak, 0.0, 900),
+    };
+    Require(fadeFrames.Select(frame => frame.ThumbAlpha).SequenceEqual([255, 255, 128, 0]),
+        "transient Android thumb holds through 600 ms and fades to zero over the next 300 ms");
+    Require(fadeFrames.Zip(fadeFrames.Skip(1), (left, right) => right.ThumbAlpha <= left.ThumbAlpha).All(value => value),
+        "transient thumb alpha is monotonically non-increasing during fade");
+    Require(fadeFrames.Where(frame => frame.FadeValue > 0).All(frame => frame.TrackAlpha == 0),
+        "the transparent track remains distinct from the fading thumb");
+
+    var alwaysVisibleFrames = new[] { 0, 600, 750, 900 }
+        .Select(timestamp => CaptureScrollbarFrame(androidIdlePeak, 1.0, timestamp))
+        .ToArray();
+    Require(alwaysVisibleFrames.All(frame => frame.ThumbAlpha == 255),
+        "thumbVisibility true keeps the Flutter Android idle peak fully visible instead of starting fade");
+
+    var themedThumb = Color.fromARGB(102, 255, 0, 0);
+    var themedPeak = CaptureScrollbarFrame(themedThumb, 1.0, 0);
+    var themedMid = CaptureScrollbarFrame(themedThumb, 0.5, 150);
+    Require(themedPeak.ThumbAlpha == 102 && themedMid.ThumbAlpha == 51,
+        "an explicit semitransparent ScrollbarTheme thumb color is multiplied by fade exactly once");
+    Require(themedPeak.Commands.Last(command => command.Operation == "drawRect").Arguments[4] == themedThumb.value,
+        "retained draw command snapshots the framework paint ARGB without dropping alpha");
+
+    var whiteComposite = Doroti.Ui.Dart_uiLibrary.Color.alphaBlend(themedThumb, new Color(0xffffffffL));
+    var blackComposite = Doroti.Ui.Dart_uiLibrary.Color.alphaBlend(themedThumb, new Color(0xff000000L));
+    Require(whiteComposite.value == 0xffff9999 && blackComposite.value == 0xff660000,
+        "known white and black backgrounds recover the expected effective alpha for the themed thumb");
+}
+
+static ScrollbarAlphaFrame CaptureScrollbarFrame(Color thumbColor, double fadeValue, int timestampMilliseconds)
+{
+    var animation = new MutableAnimation(fadeValue);
+    var painter = new ScrollbarPainter(
+        color: thumbColor,
+        fadeoutOpacityAnimation: animation,
+        trackColor: new Color(0x00000000L),
+        trackBorderColor: new Color(0x00000000L),
+        textDirection: TextDirection.ltr,
+        thickness: 6,
+        padding: EdgeInsets.zero);
+    painter.update(new FixedScrollMetrics(
+        minScrollExtent: 0,
+        maxScrollExtent: 840,
+        pixels: 210,
+        viewportDimension: 240,
+        axisDirection: AxisDirection.down,
+        devicePixelRatio: 1), AxisDirection.down);
+    var commands = new List<PathCommand>();
+    painter.paint(new Canvas(commands), new Size(720, 360));
+    var rectangles = commands.Where(command => command.Operation == "drawRect").ToArray();
+    var trackAlpha = rectangles.Length == 0 ? 0 : Alpha(rectangles[0]);
+    var thumbAlpha = rectangles.Length < 2 ? 0 : Alpha(rectangles[^1]);
+    painter.dispose();
+    return new(timestampMilliseconds, fadeValue, trackAlpha, thumbAlpha, commands);
+}
+
+static int Alpha(PathCommand command) => (int)(((uint)command.Arguments[4] >> 24) & 0xff);
+
 static string ConfigurationName() =>
 #if DEBUG
     "Debug";
@@ -84,6 +157,28 @@ static string ConfigurationName() =>
 #endif
 
 sealed record Scenario(string Id, string Component, IReadOnlyList<string> States, IReadOnlyList<string> Actions);
+
+sealed record ScrollbarAlphaFrame(
+    int TimestampMilliseconds,
+    double FadeValue,
+    int TrackAlpha,
+    int ThumbAlpha,
+    IReadOnlyList<PathCommand> Commands);
+
+sealed class MutableAnimation : Animation<double>
+{
+    private readonly HashSet<Action> _listeners = [];
+
+    public MutableAnimation(double value) => Value = value;
+
+    public double Value { get; private set; }
+    public override double value => Value;
+    public override AnimationStatus status => Value <= 0 ? AnimationStatus.dismissed : AnimationStatus.forward;
+    public override void addListener(Action listener) => _listeners.Add(listener);
+    public override void removeListener(Action listener) => _listeners.Remove(listener);
+    public override void addStatusListener(AnimationStatusListener listener) { }
+    public override void removeStatusListener(AnimationStatusListener listener) { }
+}
 
 sealed class EnvironmentObserverProbe : Doroti.Framework.Widgets.WidgetsBindingObserver
 {

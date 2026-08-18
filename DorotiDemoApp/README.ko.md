@@ -45,6 +45,12 @@ return new Material.MaterialApp(
 
 Widget에서는 고정 색 대신 `Material.Theme.of(context).colorScheme`의 `primary`, `onPrimary`, `surfaceContainer`, `onSurface` 같은 role을 사용합니다. 앱에서 강제로 고정하려면 `themeMode`를 `ThemeMode.light` 또는 `ThemeMode.dark`로 바꿉니다. 실제 구성 예시는 [`src/App.cs`](src/App.cs)의 `DemoTheme`에 있습니다.
 
+## 중첩 스크롤과 Android 스크롤바 정책
+
+Material gallery는 세로 `SingleChildScrollView` 안에 별도 세로 `ListView.builder`를 둔 중첩 회귀 surface입니다. 두 scrollable은 `_outerScrollController`와 `_innerScrollController`를 따로 사용하고, `fcr5-outer-scrollbar`와 `fcr5-inner-scrollbar` key로 식별됩니다. Inner list는 170 logical pixel viewport 안에 24개 × 30 logical pixel 항목을 두므로 outer와 viewport/content/offset 수치가 분명히 다릅니다. Inner 알림은 계속 bubble하지만 기본 `notification.depth == 0` predicate 때문에 각 scrollbar는 가장 가까운 scrollable의 메트릭만 반영합니다.
+
+Demo의 Android scrollbar는 `thumbVisibility`를 지정하지 않는 transient 정책입니다. Pinned Flutter와 같이 idle peak의 resolved thumb alpha는 255이고, 스크롤 종료 뒤 600 ms 동안 유지된 다음 300 ms 동안 alpha 0까지 fade합니다. `thumbVisibility: true`는 fade를 끄고 peak를 계속 표시하므로 이 demo에서는 사용하지 않습니다. Peak 자체를 반투명하게 해야 하는 제품은 공용 `ScrollbarThemeData.thumbColor`에 상태별 alpha를 명시해야 하며, framework의 Android 기본색을 바꾸지 않습니다.
+
 ## 실행
 
 명령은 저장소 루트에서 실행합니다. target마다 lock 파일이 다릅니다 (`packages.windows.lock.json`, `packages.maccatalyst.lock.json`, `packages.android.lock.json`, `packages.android-x64.lock.json`, `packages.web.lock.json`). SDK 10.0.400과 `maui` / `wasm-tools` workload가 필요합니다.

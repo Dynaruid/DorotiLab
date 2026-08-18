@@ -1,10 +1,16 @@
+using System.Reflection;
+using Doroti.Framework.Animation;
 using Doroti.Framework.Foundation;
+using Doroti.Framework.Painting;
+using Doroti.Framework.Widgets;
 using Doroti.Ui;
 
 VerifyMethodTearOffListenerRemoval();
 VerifyOneInputKeepsOneCausalIdentity();
 VerifyTraceIsBoundedWithoutReusingSequenceNumbers();
 VerifyFrameTraceKeepsScrollAndAnimationTransitions();
+VerifyScrollMetricsDepthConversion();
+VerifyNestedScrollbarOwnership();
 
 Console.WriteLine($"FCR-5 scroll runtime contract: PASS (configuration={ConfigurationName()})");
 
@@ -117,6 +123,89 @@ static void VerifyFrameTraceKeepsScrollAndAnimationTransitions()
         "frame-trace eviction does not reuse sequence numbers");
 }
 
+static void VerifyScrollMetricsDepthConversion()
+{
+    var metrics = Metrics(min: 0, max: 840, pixels: 120, viewport: 240);
+    foreach (var depth in new long[] { 0, 1, 2 })
+    {
+        var metricsNotification = new ScrollMetricsNotification(metrics, null!) { _depth = depth };
+        var update = metricsNotification.asScrollUpdate();
+        Require(update.depth == depth,
+            $"ScrollMetricsNotification.asScrollUpdate preserves depth {depth}");
+        Require(Scroll_notificationLibrary.defaultScrollNotificationPredicate(update) == (depth == 0),
+            $"the default predicate accepts only local depth for depth {depth}");
+    }
+}
+
+static void VerifyNestedScrollbarOwnership()
+{
+    var outer = new ScrollbarOwnershipProbe("outer-scrollbar");
+    var inner = new ScrollbarOwnershipProbe("inner-scrollbar");
+    var outerInitial = Metrics(min: 0, max: 1_200, pixels: 180, viewport: 360);
+    var innerInitial = Metrics(min: 0, max: 420, pixels: 30, viewport: 120);
+
+    outer.HandleMetrics(new ScrollMetricsNotification(outerInitial, null!), "outer-position");
+    inner.HandleMetrics(new ScrollMetricsNotification(innerInitial, null!), "inner-position");
+    var outerBeforeInner = outer.Snapshot();
+
+    inner.Handle(new ScrollStartNotification(innerInitial, null!), "inner-position", "start");
+    var remoteStart = new ScrollStartNotification(innerInitial, null!) { _depth = 1 };
+    outer.Handle(remoteStart, "inner-position", "start");
+
+    var innerProgress = Metrics(min: 0, max: 420, pixels: 210, viewport: 120);
+    inner.Handle(new ScrollUpdateNotification(innerProgress, null!, scrollDelta: 180, depth: 0),
+        "inner-position", "update");
+    outer.Handle(new ScrollUpdateNotification(innerProgress, null!, scrollDelta: 180, depth: 1),
+        "inner-position", "update");
+
+    inner.Handle(new ScrollEndNotification(innerProgress, null!), "inner-position", "end");
+    var remoteEnd = new ScrollEndNotification(innerProgress, null!) { _depth = 1 };
+    outer.Handle(remoteEnd, "inner-position", "end");
+
+    var innerResized = Metrics(min: 0, max: 510, pixels: 240, viewport: 90);
+    var resizedMetrics = new ScrollMetricsNotification(innerResized, null!);
+    inner.HandleMetrics(resizedMetrics, "inner-position");
+    resizedMetrics._depth = 1;
+    outer.HandleMetrics(resizedMetrics, "inner-position");
+
+    Require(outer.Snapshot() == outerBeforeInner,
+        "inner start/update/end and viewport metrics leave the outer painter metrics, thumb, and fade ownership unchanged");
+    Require(inner.LastMetrics == MetricsSnapshot.From(innerResized),
+        "the inner scrollbar receives the resized inner metrics");
+    Require(inner.Snapshot().Thumb != outerBeforeInner.Thumb,
+        "numerically distinct inner content and viewport metrics produce a distinct inner thumb");
+
+    var innerBeforeOuter = inner.Snapshot();
+    var outerProgress = Metrics(min: 0, max: 1_200, pixels: 600, viewport: 360);
+    outer.Handle(new ScrollUpdateNotification(outerProgress, null!, scrollDelta: 420, depth: 0),
+        "outer-position", "update");
+    Require(outer.LastMetrics == MetricsSnapshot.From(outerProgress),
+        "an outer drag starts with and keeps outer metrics without a recovery update");
+    Require(inner.Snapshot() == innerBeforeOuter,
+        "an outer drag does not mutate the inner scrollbar state");
+
+    Require(outer.Diagnostics.Where(entry => entry.Source == "inner-position").All(entry => entry.Depth == 1 && !entry.Accepted),
+        "every bubbled inner event is diagnosed as remote and rejected by the outer scrollbar");
+    Require(inner.Diagnostics.Where(entry => entry.Source == "inner-position").All(entry => entry.Depth == 0 && entry.Accepted),
+        "the same inner event sequence is local and accepted by the inner scrollbar");
+
+    foreach (var entry in outer.Diagnostics.Concat(inner.Diagnostics))
+    {
+        Console.WriteLine(
+            $"FCR-5 notification receiver={entry.Receiver}; source={entry.Source}; event={entry.EventType}; " +
+            $"depth={entry.Depth}; axis={entry.Axis}; pixels={entry.Pixels}; viewport={entry.Viewport}; " +
+            $"min={entry.Min}; max={entry.Max}; accepted={entry.Accepted}");
+    }
+}
+
+static FixedScrollMetrics Metrics(double min, double max, double pixels, double viewport) => new(
+    minScrollExtent: min,
+    maxScrollExtent: max,
+    pixels: pixels,
+    viewportDimension: viewport,
+    axisDirection: AxisDirection.down,
+    devicePixelRatio: 1);
+
 static string ConfigurationName() =>
 #if DEBUG
     "Debug";
@@ -134,4 +223,108 @@ sealed class ListenerProbe
     public int CallCount { get; private set; }
 
     public void OnChanged() => CallCount++;
+}
+
+sealed class ScrollbarOwnershipProbe
+{
+    private static readonly PropertyInfo ThumbRectProperty = typeof(ScrollbarPainter).GetProperty(
+        "_thumbRect", BindingFlags.Instance | BindingFlags.NonPublic)
+        ?? throw new InvalidOperationException("ScrollbarPainter._thumbRect is unavailable.");
+    private readonly ScrollbarPainter _painter = new(
+        color: new Color(0xff202124L),
+        fadeoutOpacityAnimation: new AlwaysStoppedAnimation<double>(1),
+        textDirection: TextDirection.ltr,
+        thickness: 6,
+        padding: EdgeInsets.zero);
+
+    public ScrollbarOwnershipProbe(string identity) => Identity = identity;
+
+    public string Identity { get; }
+    public int AcceptedEventCount { get; private set; }
+    public int FadeOwnershipTransitions { get; private set; }
+    public MetricsSnapshot? LastMetrics { get; private set; }
+    public ThumbSnapshot? LastThumb { get; private set; }
+    public List<ScrollDiagnostic> Diagnostics { get; } = [];
+
+    public void HandleMetrics(ScrollMetricsNotification notification, string source)
+    {
+        Handle(notification.asScrollUpdate(), source, "metrics");
+    }
+
+    public void Handle(ScrollNotification notification, string source, string eventType)
+    {
+        var accepted = Scroll_notificationLibrary.defaultScrollNotificationPredicate(notification);
+        Diagnostics.Add(ScrollDiagnostic.From(Identity, source, eventType, notification, accepted));
+        if (!accepted) return;
+
+        AcceptedEventCount++;
+        if (notification is ScrollStartNotification or ScrollEndNotification || eventType == "metrics")
+            FadeOwnershipTransitions++;
+        LastMetrics = MetricsSnapshot.From(notification.metrics);
+        _painter.update(notification.metrics, notification.metrics.axisDirection);
+        var commands = new List<PathCommand>();
+        _painter.paint(new Canvas(commands), new Size(720, 360));
+        var rect = (Rect?)ThumbRectProperty.GetValue(_painter)
+            ?? throw new InvalidOperationException("Accepted scroll metrics did not produce a thumb rect.");
+        LastThumb = new(rect.left, rect.top, rect.right, rect.bottom);
+    }
+
+    public ScrollbarSnapshot Snapshot() => new(
+        AcceptedEventCount,
+        FadeOwnershipTransitions,
+        LastMetrics,
+        LastThumb);
+}
+
+sealed record MetricsSnapshot(
+    Axis Axis,
+    double Pixels,
+    double Viewport,
+    double Min,
+    double Max)
+{
+    public static MetricsSnapshot From(ScrollMetrics metrics) => new(
+        metrics.axis,
+        metrics.pixels,
+        metrics.viewportDimension,
+        metrics.minScrollExtent,
+        metrics.maxScrollExtent);
+}
+
+sealed record ThumbSnapshot(double Left, double Top, double Right, double Bottom);
+
+sealed record ScrollbarSnapshot(
+    int AcceptedEventCount,
+    int FadeOwnershipTransitions,
+    MetricsSnapshot? Metrics,
+    ThumbSnapshot? Thumb);
+
+sealed record ScrollDiagnostic(
+    string Receiver,
+    string Source,
+    string EventType,
+    long Depth,
+    Axis Axis,
+    double Pixels,
+    double Viewport,
+    double Min,
+    double Max,
+    bool Accepted)
+{
+    public static ScrollDiagnostic From(
+        string receiver,
+        string source,
+        string eventType,
+        ScrollNotification notification,
+        bool accepted) => new(
+            receiver,
+            source,
+            eventType,
+            notification.depth,
+            notification.metrics.axis,
+            notification.metrics.pixels,
+            notification.metrics.viewportDimension,
+            notification.metrics.minScrollExtent,
+            notification.metrics.maxScrollExtent,
+            accepted);
 }

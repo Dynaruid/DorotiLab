@@ -220,13 +220,16 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
     private double _slider = 0.2;
     private int _fabCount;
     private bool _blurEnabled = true;
-    private readonly ScrollController _scrollController = new();
+    private readonly ScrollController _outerScrollController = new();
+    private readonly ScrollController _innerScrollController = new();
     private readonly FragmentShader _galleryShader =
         FragmentProgram.fromSource(GalleryShaderSource, "doroti-demo-gallery").fragmentShader();
     private readonly FragmentShader _galleryFilterShader =
         FragmentProgram.fromSource(GalleryFilterShaderSource, "doroti-demo-image-filter").fragmentShader();
     private readonly GlobalKey<IState> _blurToggleKey = new("g6-backdrop-blur-toggle");
     private readonly GlobalKey<IState> _backdropPanelKey = new("g6-backdrop-blur-panel");
+    private readonly GlobalKey<IState> _outerScrollbarKey = new("fcr5-outer-scrollbar");
+    private readonly GlobalKey<IState> _innerScrollbarKey = new("fcr5-inner-scrollbar");
 
     internal int InteractionCount { get; private set; }
     internal int EffectInteractionCount { get; private set; }
@@ -244,7 +247,8 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
 
     public override void dispose()
     {
-        _scrollController.dispose();
+        _innerScrollController.dispose();
+        _outerScrollController.dispose();
         base.dispose();
     }
 
@@ -371,14 +375,19 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
             onChanged: value => Mutate(() => _slider = value)), () => _slider = _slider < 0.7 ? 0.8 : 0.2, $"{_slider:F1}");
 
         var lazyList = ListView.CreateBuilder(
+            controller: _innerScrollController,
             primary: false,
-            itemCount: 12,
+            itemCount: 24,
             itemExtent: 30,
             itemBuilder: (_, index) => new Container(
                 color: index % 2 == 0 ? palette.primaryContainer : palette.tertiaryContainer,
                 child: new Text($"Lazy item {index + 1}",
                     style: new Doroti.Framework.Painting.TextStyle(
                         color: index % 2 == 0 ? palette.onPrimaryContainer : palette.onTertiaryContainer))));
+        var nestedInnerScroll = new Material.Scrollbar(
+            key: _innerScrollbarKey,
+            controller: _innerScrollController,
+            child: lazyList);
         var blurToggle = new Semantics(
             key: _blurToggleKey,
             container: true,
@@ -397,7 +406,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
         var effectPanel = new SizedBox(height: 180, child: new Stack(
             children:
             [
-                new Positioned(left: 0, top: 0, right: 0, height: 170, child: lazyList),
+                new Positioned(left: 0, top: 0, right: 0, height: 170, child: nestedInnerScroll),
                 new Positioned(left: 64, top: 30, width: 560, height: 100, child: new SizedBox(
                     key: _backdropPanelKey,
                     width: 560,
@@ -432,10 +441,10 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                 iconTheme: new IconThemeData(color: palette.onPrimaryContainer, size: 24),
                 actionsIconTheme: new IconThemeData(color: palette.onPrimaryContainer, size: 24)),
             body: new Material.Scrollbar(
-                controller: _scrollController,
-                thumbVisibility: true,
+                key: _outerScrollbarKey,
+                controller: _outerScrollController,
                 child: new SingleChildScrollView(
-                    controller: _scrollController,
+                    controller: _outerScrollController,
                     primary: false,
                     child: new Container(
                     padding: EdgeInsets.CreateAll(16),
@@ -490,6 +499,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                                             color: _switched ? palette.onPrimaryContainer : palette.onErrorContainer)),
                                 ])),
                             new Row(spacing: 8, children: [blurToggle, new Text("Backdrop blur (native effect gate)")]),
+                            new Text("Nested scroll regression · outer/inner controllers · transient Android scrollbar"),
                             new Text("Lazy ListView.builder + clipped backdrop panel"),
                             effectPanel,
                         ])))),

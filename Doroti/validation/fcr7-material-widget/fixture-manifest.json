@@ -9,6 +9,14 @@
     "theme": { "useMaterial3": true, "colorSchemeSeed": "#FF6750A4" },
     "time": { "animationEpochMicros": 0, "seed": 1729 }
   },
+  "scrollbarAlphaScenarios": [
+    { "id": "android-idle-peak", "thumbVisibility": false, "timestampMilliseconds": 0, "fadeValue": 1.0, "expectedAlpha": 255 },
+    { "id": "android-transient-hold", "thumbVisibility": false, "timestampMilliseconds": 600, "fadeValue": 1.0, "expectedAlpha": 255 },
+    { "id": "android-transient-mid-fade", "thumbVisibility": false, "timestampMilliseconds": 750, "fadeValue": 0.5, "expectedAlpha": 128 },
+    { "id": "android-transient-fade-end", "thumbVisibility": false, "timestampMilliseconds": 900, "fadeValue": 0.0, "expectedAlpha": 0 },
+    { "id": "android-always-visible", "thumbVisibility": true, "timestampMilliseconds": 900, "fadeValue": 1.0, "expectedAlpha": 255 },
+    { "id": "explicit-semitransparent-theme", "thumbVisibility": true, "timestampMilliseconds": 0, "fadeValue": 1.0, "thumbArgb": "#66FF0000", "expectedAlpha": 102, "backgrounds": ["#FFFFFFFF", "#FF000000"] }
+  ],
   "backgroundOwnership": [
     { "fixture": "transparent-shell", "appBackground": "transparent", "shellBackground": "#FF101014", "expectedOwner": "shell" },
     { "fixture": "opaque-scaffold", "appBackground": "#FFFFFBFE", "shellBackground": "#FF101014", "expectedOwner": "scaffold" }

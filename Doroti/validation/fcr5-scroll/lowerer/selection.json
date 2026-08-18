@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "doroti.converter-selection/v4",
+  "converterVersion": "3.0.0",
+  "migrationIrVersion": "3.0.0",
+  "generationMode": "framework-semantic",
+  "compatibilityProfile": "flutter-framework-f0",
+  "outputNamespace": "Doroti.Validation.Fcr5Scroll.Lowerer",
+  "outputAssemblyName": "Doroti.Validation.Fcr5Scroll.Lowerer",
+  "flutterBaseline": "flutter-baseline.json",
+  "inputs": [
+    {
+      "path": "constructor_depth_fixture.dart",
+      "library": "package:flutter/src/widgets/constructor_depth_fixture.dart",
+      "symbols": ["*"]
+    }
+  ]
+}

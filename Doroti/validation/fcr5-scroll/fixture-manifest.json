@@ -28,6 +28,31 @@
       "anchors": ["PrimaryScrollController.maybeOf", "fadeoutOpacityAnimation.addListener(notifyListeners)", "fadeoutOpacityAnimation.removeListener(notifyListeners)"]
     },
     {
+      "path": "packages/flutter/lib/src/widgets/scroll_notification.dart",
+      "sha256": "98a64295f511219a213a71cec65843ce17cfe46da7289a4b1e0ce95d7ac1d845",
+      "anchors": ["class ScrollUpdateNotification extends ScrollNotification", "if (depth != null)", "_depth = depth", "bool defaultScrollNotificationPredicate"]
+    },
+    {
+      "path": "packages/flutter/lib/src/widgets/scroll_position.dart",
+      "sha256": "6a53c8564d5e873f47f6dad6069575ee7fb53b1a8edf6b8fc5b5d7ce85778039",
+      "anchors": ["class ScrollMetricsNotification", "ScrollUpdateNotification asScrollUpdate()", "depth: depth"]
+    },
+    {
+      "path": "packages/flutter/test/widgets/scroll_notification_test.dart",
+      "sha256": "2708071177c63c126e2ce6401c068f9ddaeb9bc8efbbe685c94ca90569c3a4bb",
+      "anchors": ["Scroll notification depth", "expect(depth0Values", "expect(depth1Values"]
+    },
+    {
+      "path": "packages/flutter/test/widgets/scrollbar_test.dart",
+      "sha256": "fa86cdf0f06136598cb77cb50be111d624eb7d12085e6ff865c5f3e78c652c25",
+      "anchors": ["notificationPredicate depth test.", "depths.add(notification.depth)", "notification.depth == 0"]
+    },
+    {
+      "path": "packages/flutter/test/material/scrollbar_test.dart",
+      "sha256": "c2a64f8fa8a5f617e46668907e888e3fcc6abea994470b69b465b647c62c8644",
+      "anchors": ["On first render with thumbVisibility: true, the thumb shows", "On first render with thumbVisibility: false, the thumb is hidden"]
+    },
+    {
       "path": "packages/flutter/lib/src/widgets/single_child_scroll_view.dart",
       "sha256": "a32bf494e7ed285f98cc7ba8a95e5db18715950c292e22481a86d36849e76c78",
       "anchors": ["_offset.addListener(_hasScrolled)", "_offset.removeListener(_hasScrolled)", "bool get isRepaintBoundary => true"]

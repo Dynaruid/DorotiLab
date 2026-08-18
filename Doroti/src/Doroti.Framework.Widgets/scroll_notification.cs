@@ -78,6 +78,11 @@ public class ScrollUpdateNotification : ScrollNotification
     {
         this.dragDetails = dragDetails;
         this.scrollDelta = scrollDelta;
+        if ((depth is not null))
+        {
+            long depth__value8172 = DartRuntimePrimitives.RequireValue(depth);
+            _depth = DartRuntimePrimitives.RequireValue(depth__value8172);
+        }
     }
 
     public override void debugFillDescription(List<string> description)
@@ -167,4 +172,3 @@ public static partial class Scroll_notificationLibrary
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
-

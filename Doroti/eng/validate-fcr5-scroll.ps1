@@ -7,8 +7,12 @@ $dorotiRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $repositoryRoot = [IO.Path]::GetFullPath((Join-Path $dorotiRoot '..'))
 $flutterRoot = Join-Path $repositoryRoot 'reference/flutter-master'
 $manifestPath = Join-Path $dorotiRoot 'validation/fcr5-scroll/fixture-manifest.json'
+$expectedFailurePath = Join-Path $dorotiRoot 'validation/fcr5-scroll/expected-failure.json'
 $contractProject = Join-Path $dorotiRoot 'validation/fcr5-scroll/Doroti.Validation.Fcr5Scroll.csproj'
 $evidencePath = Join-Path $dorotiRoot 'validation/evidence/flutter-conformance/fcr5-scroll-evidence.json'
+$lowererProject = Join-Path $repositoryRoot 'tools/Doroti.DartToCSharp/Doroti.DartToCSharp.csproj'
+$lowererFixtureManifest = Join-Path $dorotiRoot 'validation/fcr5-scroll/lowerer/selection.json'
+$scrollNotificationManifest = Join-Path $dorotiRoot 'validation/fcr5-scroll/lowerer/scroll_notification_selection.json'
 
 function Assert-True([bool] $Condition, [string] $Name) {
     if (-not $Condition) { throw "$Name failed." }
@@ -17,6 +21,70 @@ function Assert-True([bool] $Condition, [string] $Name) {
 function Read-Text([string] $Path) {
     Assert-True (Test-Path -LiteralPath $Path -PathType Leaf) "source exists: $Path"
     return Get-Content -Raw -LiteralPath $Path
+}
+
+function Invoke-DotnetProcess([string[]] $Arguments, [string] $Name) {
+    $stdout = Join-Path ([IO.Path]::GetTempPath()) ("doroti-fcr5-process-$([guid]::NewGuid()).log")
+    try {
+        $process = Start-Process dotnet -ArgumentList $Arguments -NoNewWindow -PassThru `
+            -RedirectStandardOutput $stdout -RedirectStandardError "$stdout.err"
+        Assert-True ($process.WaitForExit(1200000)) "$Name timeout"
+        $output = ((Get-Content -Raw -LiteralPath $stdout) + (Get-Content -Raw -LiteralPath "$stdout.err"))
+        Assert-True ($process.ExitCode -eq 0) "$Name exit: $output"
+        return $output
+    }
+    finally { Remove-Item -LiteralPath $stdout, "$stdout.err" -Force -ErrorAction SilentlyContinue }
+}
+
+function New-Fcr5TempDirectory([string] $Label) {
+    $path = Join-Path ([IO.Path]::GetTempPath()) ("doroti-fcr5-$Label-$([guid]::NewGuid())")
+    [IO.Directory]::CreateDirectory($path) | Out-Null
+    return [IO.Path]::GetFullPath($path)
+}
+
+function Remove-Fcr5TempDirectory([string] $Path) {
+    $resolved = [IO.Path]::GetFullPath($Path)
+    $tempRoot = [IO.Path]::GetFullPath([IO.Path]::GetTempPath())
+    Assert-True ($resolved.StartsWith($tempRoot, [StringComparison]::OrdinalIgnoreCase)) "temporary output is inside system temp: $resolved"
+    if (Test-Path -LiteralPath $resolved) { [IO.Directory]::Delete($resolved, $true) }
+}
+
+function Invoke-LowererFixture([string] $Configuration) {
+    $output = New-Fcr5TempDirectory "lowerer-$Configuration"
+    try {
+        Invoke-DotnetProcess @('run', '--project', $lowererProject, '-c', $Configuration, '--',
+            '--manifest', $lowererFixtureManifest, '--output', $output, '--parallelism', '1') `
+            "FCR-5 lowerer fixture ($Configuration)" | Out-Null
+        $generatedPath = Join-Path $output 'constructor_depth_fixture.g.cs'
+        $generated = Read-Text $generatedPath
+        foreach ($anchor in @(
+            'public UpdateNotification(string source, long? depth = null) : base(source: source)',
+            'if ((depth is not null))',
+            '_depth = DartRuntimePrimitives.RequireValue(')) {
+            Assert-True ($generated.Contains($anchor, [StringComparison]::Ordinal)) "lowerer constructor-depth anchor ($Configuration): $anchor"
+        }
+        $generatedProject = Join-Path $output 'Doroti.Validation.Fcr5Scroll.Lowerer.csproj'
+        Invoke-DotnetProcess @('build', $generatedProject, '-c', $Configuration, '--nologo',
+            "-p:DorotiRepositoryRoot=$dorotiRoot") "FCR-5 generated lowerer fixture build ($Configuration)" | Out-Null
+    }
+    finally { Remove-Fcr5TempDirectory $output }
+}
+
+function Invoke-ScrollNotificationRegeneration([string] $Configuration) {
+    $output = New-Fcr5TempDirectory "scroll-notification-$Configuration"
+    try {
+        Invoke-DotnetProcess @('run', '--project', $lowererProject, '-c', $Configuration, '--',
+            '--manifest', $scrollNotificationManifest, '--output', $output, '--parallelism', '1') `
+            "FCR-5 scroll_notification regeneration ($Configuration)" | Out-Null
+        $generatedPath = Join-Path $output 'projects/Widgets/scroll_notification.g.cs'
+        $generated = Read-Text $generatedPath
+        $constructor = [regex]::Match(
+            $generated,
+            'public ScrollUpdateNotification\([\s\S]{0,500}?if \(\(depth is not null\)\)[\s\S]{0,300}?_depth = DartRuntimePrimitives\.RequireValue\(').Value
+        Assert-True ($constructor.Length -gt 0) "regenerated ScrollUpdateNotification preserves nullable depth ($Configuration)"
+        return (Get-FileHash -Algorithm SHA256 -LiteralPath $generatedPath).Hash.ToLowerInvariant()
+    }
+    finally { Remove-Fcr5TempDirectory $output }
 }
 
 function Invoke-Contract([string] $Configuration) {
@@ -40,6 +108,10 @@ function Invoke-Contract([string] $Configuration) {
 Assert-True (Test-Path -LiteralPath $flutterRoot -PathType Container) 'pinned Flutter checkout exists'
 $manifest = Get-Content -Raw -LiteralPath $manifestPath | ConvertFrom-Json
 Assert-True ([string]$manifest.schemaVersion -eq 'doroti.flutter-conformance-fcr5-fixture/v1') 'FCR-5 fixture schema'
+$expectedFailure = Get-Content -Raw -LiteralPath $expectedFailurePath | ConvertFrom-Json
+Assert-True ([string]$expectedFailure.schemaVersion -eq 'doroti.flutter-conformance-fcr5-expected-failure/v1' -and
+    [string]$expectedFailure.status -eq 'expectedFailure' -and $expectedFailure.expectedDepth -eq 1 -and
+    $expectedFailure.reviewedGeneratedDepth -eq 0) 'pre-fix depth-loss evidence is retained explicitly'
 $flutterRevision = (& git -C $flutterRoot rev-parse HEAD).Trim()
 Assert-True ($flutterRevision -eq [string]$manifest.flutterRevision) "Flutter revision pin: expected $($manifest.flutterRevision), got $flutterRevision"
 foreach ($source in @($manifest.sources)) {
@@ -86,6 +158,10 @@ Assert-True ($unstableListeners.Count -eq 0) 'scroll sources contain no unstable
 $lowerer = Read-Text (Join-Path $repositoryRoot 'tools/Doroti.DartToCSharp/src/Backend/CSharp/Lowering/FrameworkCSharpLowerer.G53Compatibility.cs')
 Assert-True ($lowerer.Contains('Retain CLR method-group', [StringComparison]::Ordinal)) 'compiler documents Flutter method-tear-off identity'
 Assert-True ($lowerer.Contains('this._overscrollNotifier.$1(listener);', [StringComparison]::Ordinal)) 'compiler preserves forwarded overscroll listener identity'
+$constructorLowerer = Read-Text (Join-Path $repositoryRoot 'tools/Doroti.DartToCSharp/src/Backend/CSharp/Lowering/FrameworkCSharpLowerer.Declarations.cs')
+Assert-True ($constructorLowerer.Contains('var generativeConstructorBody = constructor.Ast.Children', [StringComparison]::Ordinal) -and
+    $constructorLowerer.Contains('EmitBlockBody(', [StringComparison]::Ordinal)) 'lowerer emits generative constructor block bodies by AST rule'
+Assert-True (-not $constructorLowerer.Contains('ScrollUpdateNotification', [StringComparison]::Ordinal)) 'constructor-body lowering is not a ScrollUpdateNotification string special case'
 
 $trace = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Ui/ScrollLifecycle.cs')
 foreach ($phase in @('nativeInput', 'pointerData', 'hitTest', 'gesture', 'activity', 'viewport', 'layout', 'paint', 'retainedLayer', 'raster', 'present', 'scrollbar', 'semantics')) {
@@ -105,6 +181,10 @@ $scrollPosition = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Widgets
 Assert-True ($scrollPosition.Contains('recordScrollTrace(DorotiFramePhase.scrollStart)', [StringComparison]::Ordinal)) 'scroll position records actual start'
 Assert-True ($scrollPosition.Contains('recordScrollTrace(DorotiFramePhase.scrollUpdate, delta)', [StringComparison]::Ordinal)) 'scroll position records actual offset delta'
 Assert-True ($scrollPosition.Contains('recordScrollTrace(DorotiFramePhase.scrollEnd)', [StringComparison]::Ordinal)) 'scroll position records actual end'
+$scrollNotification = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Widgets/scroll_notification.cs')
+Assert-True ($scrollNotification.Contains('if ((depth is not null))', [StringComparison]::Ordinal) -and
+    $scrollNotification.Contains('_depth = DartRuntimePrimitives.RequireValue(', [StringComparison]::Ordinal)) 'reviewed ScrollUpdateNotification preserves regenerated depth assignment'
+Assert-True ($scrollPosition.Contains('depth: this.depth', [StringComparison]::Ordinal)) 'metrics-to-update conversion forwards current notification depth'
 
 $sceneBuilder = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Ui/GraphicsAndSemanticsContracts.cs')
 Assert-True ($sceneBuilder.Contains('Rect? CanvasBounds,', [StringComparison]::Ordinal)) 'scene picture carries raster-cache bounds'
@@ -154,6 +234,11 @@ foreach ($measurement in @('inputToOffsetMilliseconds', 'offsetToPresentMillisec
 Assert-True ($appTargetGate.Contains('offset-to-present max 60 Hz budget', [StringComparison]::Ordinal)) 'Windows live gate rejects a single visible scroll hitch'
 Assert-True ($appTargetGate.Contains('input-to-present excellent-frame budget', [StringComparison]::Ordinal)) 'Windows live gate enforces the complete 16.6 ms visible interaction budget'
 
+Invoke-LowererFixture 'Debug'
+Invoke-LowererFixture 'Release'
+$debugRegenerationHash = Invoke-ScrollNotificationRegeneration 'Debug'
+$releaseRegenerationHash = Invoke-ScrollNotificationRegeneration 'Release'
+Assert-True ($debugRegenerationHash -eq $releaseRegenerationHash) 'scroll_notification regeneration is configuration-independent and deterministic'
 Invoke-Contract 'Debug'
 Invoke-Contract 'Release'
 $evidence = [ordered]@{
@@ -163,9 +248,14 @@ $evidence = [ordered]@{
     repositoryRevision = (& git -C $repositoryRoot rev-parse HEAD).Trim()
     flutterRevision = $flutterRevision
     fixtureManifest = 'Doroti/validation/fcr5-scroll/fixture-manifest.json'
+    beforeFix = [ordered]@{ status = 'expectedFailure'; evidence = 'Doroti/validation/fcr5-scroll/expected-failure.json'; expectedDepth = 1; reviewedGeneratedDepth = 0 }
     runtimeContract = [ordered]@{
         status = 'pass'; debug = 'pass'; release = 'pass'
-        checks = @('ScrollController.animateTo waits for the initial attached-position snapshot', 'DrivenScrollActivity initializes and observes its animation', 'Flutter method tear-offs keep stable CLR listener identity', 'scroll listener removal leaves no retained ChangeNotifier callback', 'scroll trace preserves one input sequence through its declared causal phases', 'frame trace retains actual scroll offsets and animation ownership for a complete high-refresh gesture', 'trace capacity is bounded without sequence reuse')
+        checks = @('ScrollController.animateTo waits for the initial attached-position snapshot', 'DrivenScrollActivity initializes and observes its animation', 'Flutter method tear-offs keep stable CLR listener identity', 'scroll listener removal leaves no retained ChangeNotifier callback', 'ScrollMetricsNotification preserves depth 0, 1, and 2 through asScrollUpdate', 'default predicate accepts only depth 0', 'nested inner start/update/end/viewport metrics update only the inner painter while outer metrics/thumb/fade ownership stay unchanged', 'reverse outer update leaves inner ownership unchanged', 'scroll trace preserves one input sequence through its declared causal phases', 'frame trace retains actual scroll offsets and animation ownership for a complete high-refresh gesture', 'trace capacity is bounded without sequence reuse')
+    }
+    lowererContract = [ordered]@{
+        status = 'pass'; debug = 'pass'; release = 'pass'; regenerationSha256 = $releaseRegenerationHash
+        checks = @('nullable named depth parameter', 'super-formal forwarding', 'constructor block null check', 'mixin-private depth assignment', 'actual pinned scroll_notification.dart regeneration', 'Debug/Release deterministic output')
     }
     ownershipContract = [ordered]@{
         status = 'pass'

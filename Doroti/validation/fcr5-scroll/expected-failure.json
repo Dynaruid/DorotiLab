@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "doroti.flutter-conformance-fcr5-expected-failure/v1",
+  "capturedAtUtc": "2026-08-18T00:00:00Z",
+  "repositoryRevision": "e255141b47dc72b144f1e9c6659eea26e3a512a6",
+  "reviewedProductBlob": "0ee204b16dc735354135394f0514252a5e35e424",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "flutterSourceSha256": "98a64295f511219a213a71cec65843ce17cfe46da7289a4b1e0ce95d7ac1d845",
+  "status": "expectedFailure",
+  "case": "ScrollMetricsNotification depth 1 converted through asScrollUpdate",
+  "expectedDepth": 1,
+  "reviewedGeneratedDepth": 0,
+  "cause": "The reviewed ScrollUpdateNotification constructor accepted nullable depth but did not assign it to ViewportNotificationMixin._depth."
+}

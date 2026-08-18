@@ -1,10 +1,16 @@
 {
   "schemaVersion": "doroti.flutter-conformance-fcr5-evidence/v1",
   "status": "partial",
-  "capturedAt": "2026-08-18T11:08:06.1848270Z",
-  "repositoryRevision": "e128cea65eb1d689ee51405e48a204d60f6d42e7",
+  "capturedAt": "2026-08-18T12:21:43.4007838Z",
+  "repositoryRevision": "e255141b47dc72b144f1e9c6659eea26e3a512a6",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "fixtureManifest": "Doroti/validation/fcr5-scroll/fixture-manifest.json",
+  "beforeFix": {
+    "status": "expectedFailure",
+    "evidence": "Doroti/validation/fcr5-scroll/expected-failure.json",
+    "expectedDepth": 1,
+    "reviewedGeneratedDepth": 0
+  },
   "runtimeContract": {
     "status": "pass",
     "debug": "pass",
@@ -14,9 +20,27 @@
       "DrivenScrollActivity initializes and observes its animation",
       "Flutter method tear-offs keep stable CLR listener identity",
       "scroll listener removal leaves no retained ChangeNotifier callback",
+      "ScrollMetricsNotification preserves depth 0, 1, and 2 through asScrollUpdate",
+      "default predicate accepts only depth 0",
+      "nested inner start/update/end/viewport metrics update only the inner painter while outer metrics/thumb/fade ownership stay unchanged",
+      "reverse outer update leaves inner ownership unchanged",
       "scroll trace preserves one input sequence through its declared causal phases",
       "frame trace retains actual scroll offsets and animation ownership for a complete high-refresh gesture",
       "trace capacity is bounded without sequence reuse"
+    ]
+  },
+  "lowererContract": {
+    "status": "pass",
+    "debug": "pass",
+    "release": "pass",
+    "regenerationSha256": "1013ee77c1ca4b3886d5623947c5a22a9c3bfdeb38c40c059905abb8842b0574",
+    "checks": [
+      "nullable named depth parameter",
+      "super-formal forwarding",
+      "constructor block null check",
+      "mixin-private depth assignment",
+      "actual pinned scroll_notification.dart regeneration",
+      "Debug/Release deterministic output"
     ]
   },
   "ownershipContract": {

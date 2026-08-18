@@ -41,6 +41,10 @@ foreach ($source in @($fixture.sources)) {
 Assert-True ($fixture.captureEnvironment.logicalViewport.width -eq 720 -and $fixture.captureEnvironment.logicalViewport.height -eq 640) 'fixed logical viewport'
 Assert-True ($fixture.captureEnvironment.devicePixelRatio -eq 1.0) 'fixed DPR'
 Assert-True (@($fixture.backgroundOwnership).Count -eq 2) 'transparent and opaque background fixtures'
+Assert-True (@($fixture.scrollbarAlphaScenarios).Count -eq 6) 'Android peak, visibility, fade, and explicit theme alpha fixtures'
+$transientAlpha = @($fixture.scrollbarAlphaScenarios | Where-Object { $_.id -like 'android-transient-*' })
+Assert-True (($transientAlpha | Sort-Object timestampMilliseconds | ForEach-Object expectedAlpha) -join ',' -eq '255,128,0') 'transient Android alpha decreases from hold through fade end'
+Assert-True (@($fixture.scrollbarAlphaScenarios | Where-Object { $_.id -eq 'explicit-semitransparent-theme' -and $_.backgrounds.Count -eq 2 }).Count -eq 1) 'explicit alpha uses two known backgrounds'
 Assert-True (@($fixture.components).Count -eq 6) 'fixed representative component slice'
 foreach ($scenario in @($fixture.replayScenarios)) {
     Assert-True (@($scenario.states).Count -ge 2) "multi-state scenario: $($scenario.id)"
@@ -55,7 +59,8 @@ foreach ($sourceId in @('material.scaffold', 'material.app-bar', 'material.float
 
 $app = Read-Text $appPath
 foreach ($component in @($fixture.components)) { Assert-True ($app.Contains([string]$component.productAnchor, [StringComparison]::Ordinal)) "Demo product anchor: $($component.id)" }
-foreach ($anchor in @('new Text(', 'ListView.CreateBuilder(', 'new ImageFiltered(', 'ActionSemantics(', 'floatingActionButton:', 'thumbVisibility: true')) { Assert-True ($app.Contains($anchor, [StringComparison]::Ordinal)) "Demo visual/interaction anchor: $anchor" }
+foreach ($anchor in @('new Text(', 'ListView.CreateBuilder(', 'new ImageFiltered(', 'ActionSemantics(', 'floatingActionButton:', '_outerScrollController', '_innerScrollController', '_outerScrollbarKey', '_innerScrollbarKey', 'itemCount: 24')) { Assert-True ($app.Contains($anchor, [StringComparison]::Ordinal)) "Demo visual/interaction anchor: $anchor" }
+Assert-True (-not $app.Contains('thumbVisibility: true', [StringComparison]::Ordinal)) 'Demo Android scrollbar uses transient visibility instead of forcing the peak visible'
 foreach ($anchor in @('ColorScheme.CreateFromSeed(', 'Brightness.light', 'Brightness.dark', 'theme: DemoTheme.Light', 'darkTheme: DemoTheme.Dark', 'themeMode: Material.ThemeMode.system', 'Theme.of(context).colorScheme')) {
     Assert-True ($app.Contains($anchor, [StringComparison]::Ordinal)) "Demo system theme/palette anchor: $anchor"
 }
@@ -80,6 +85,15 @@ foreach ($hostSkia in @($webSkia, $mauiSkia)) {
         $hostSkia -match 'rrect\.tlRadius == Radius\.zero' -and
         $hostSkia -match 'canvas\.DrawRect\(ToRect\(rrect\.outerRect\), paint\)') 'Scaffold rectangle and per-corner RRect colors reach native Skia'
 }
+$materialScrollbar = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Material/scrollbar.cs')
+Assert-True (($materialScrollbar | Select-String -Pattern 'highlightColor\.withOpacity\(1\.0\)' -AllMatches).Matches.Count -eq 2) 'light and dark Android idle thumb keep pinned Flutter alpha 255'
+$widgetScrollbar = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Widgets/scrollbar.cs')
+Assert-True ($widgetScrollbar.Contains('_kScrollbarTimeToFade = Duration.Create(milliseconds: 600L)', [StringComparison]::Ordinal) -and
+    $widgetScrollbar.Contains('_kScrollbarFadeDuration = Duration.Create(milliseconds: 300L)', [StringComparison]::Ordinal)) 'transient scrollbar uses Flutter 600 ms hold and 300 ms fade'
+Assert-True ($widgetScrollbar.Contains('this.color.opacity * ((global::Doroti.Framework.Animation.Animation<double>)this.fadeoutOpacityAnimation).value', [StringComparison]::Ordinal)) 'ScrollbarPainter multiplies resolved thumb alpha by fade exactly once'
+Assert-True ($mauiSkia.Contains('Color = ToColor(value.Color)', [StringComparison]::Ordinal) -and
+    $mauiSkia.Contains('new((byte)value.red, (byte)value.green, (byte)value.blue, (byte)value.alpha)', [StringComparison]::Ordinal) -and
+    $mauiSkia.Contains('SKBlendMode.SrcOver', [StringComparison]::Ordinal)) 'MAUI retained PaintSnapshot preserves alpha and SrcOver blending'
 $viewContracts = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Ui/ViewContracts.cs')
 Assert-True ($viewContracts.Contains('Color? darkBackgroundColor = null', [StringComparison]::Ordinal)) 'view configuration carries a dark native surface color'
 Assert-True ($mauiSkia.Contains('_host.ConfigurationChanged += HandleConfigurationChanged;', [StringComparison]::Ordinal) -and
@@ -109,7 +123,8 @@ $evidence = [ordered]@{
     schemaVersion = 'doroti.flutter-conformance-fcr7-evidence/v1'; status = 'partial'; capturedAt = [DateTime]::UtcNow.ToString('o')
     repositoryRevision = (& git -C $repositoryRoot rev-parse HEAD).Trim(); flutterRevision = $flutterRevision
     fixtureManifest = 'Doroti/validation/fcr7-material-widget/fixture-manifest.json'
-    structuralContract = [ordered]@{ status = 'pass'; debug = 'pass'; release = 'pass'; checks = @('pinned Flutter material/widget source hashes and anchors', 'fixed viewport/DPR/font/theme/locale/time-seed fixture', 'transparent shell versus opaque Scaffold ownership', 'coordinate, hover, scroll, frame, and semantics replay coverage', 'Demo source slice anchors') }
+    structuralContract = [ordered]@{ status = 'pass'; debug = 'pass'; release = 'pass'; checks = @('pinned Flutter material/widget source hashes and anchors', 'fixed viewport/DPR/font/theme/locale/time-seed fixture', 'transparent shell versus opaque Scaffold ownership', 'coordinate, hover, scroll, frame, and semantics replay coverage', 'Demo source slice anchors', 'distinct outer and inner scroll controllers and scrollbar keys', 'Demo uses transient Android visibility') }
+    scrollbarAlphaContract = [ordered]@{ status = 'partial'; painterAndCommand = 'pass'; hostMapping = 'pass-static'; finalPixel = 'notVerified'; checks = @('Android idle peak alpha 255', 'thumbVisibility true remains visible', '600 ms hold then 300 ms monotonic fade to zero', 'explicit theme alpha multiplied by fade once', 'transparent track separate from thumb', 'known white and black background composites', 'PaintSnapshot alpha to MAUI SKColor alpha with SrcOver') }
     differential = [ordered]@{ status = 'notVerified'; reason = 'No paired Flutter and Doroti raster/state/semantics captures were executed by this structural gate.'; required = @($fixture.comparison.requires) }
     targets = [ordered]@{
         windowsLive = [ordered]@{ status = 'notVerified'; reason = 'No Windows live paired capture was run.' }
@@ -117,7 +132,7 @@ $evidence = [ordered]@{
         webBrowserLive = [ordered]@{ status = 'notVerified' }
         macCatalystNative = [ordered]@{ status = 'notVerified' }
     }
-    notRun = @('Flutter reference capture', 'Doroti capture', 'per-channel pixel-diff measurement and cause classification', 'FAB/Ink/Scrollbar state trace comparison', 'Windows live paired capture', 'Android physical paired capture')
+    notRun = @('Flutter reference capture', 'Doroti capture', 'final Android physical pixel alpha recovery', 'per-channel pixel-diff measurement and cause classification', 'FAB/Ink/Scrollbar state trace comparison', 'Windows live paired capture', 'Android physical paired capture')
 }
 [IO.Directory]::CreateDirectory((Split-Path $evidencePath -Parent)) | Out-Null
 [IO.File]::WriteAllText($evidencePath, (($evidence | ConvertTo-Json -Depth 24) -replace "`r`n", "`n") + "`n", [Text.UTF8Encoding]::new($false))

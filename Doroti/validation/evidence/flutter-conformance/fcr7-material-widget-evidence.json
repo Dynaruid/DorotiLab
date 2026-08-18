@@ -1,8 +1,8 @@
 {
   "schemaVersion": "doroti.flutter-conformance-fcr7-evidence/v1",
   "status": "partial",
-  "capturedAt": "2026-08-18T11:54:49.9362861Z",
-  "repositoryRevision": "66272147c65926f4a81c6dab9f71cc7d60d8fa11",
+  "capturedAt": "2026-08-18T12:22:27.7030680Z",
+  "repositoryRevision": "e255141b47dc72b144f1e9c6659eea26e3a512a6",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "fixtureManifest": "Doroti/validation/fcr7-material-widget/fixture-manifest.json",
   "structuralContract": {
@@ -14,7 +14,24 @@
       "fixed viewport/DPR/font/theme/locale/time-seed fixture",
       "transparent shell versus opaque Scaffold ownership",
       "coordinate, hover, scroll, frame, and semantics replay coverage",
-      "Demo source slice anchors"
+      "Demo source slice anchors",
+      "distinct outer and inner scroll controllers and scrollbar keys",
+      "Demo uses transient Android visibility"
+    ]
+  },
+  "scrollbarAlphaContract": {
+    "status": "partial",
+    "painterAndCommand": "pass",
+    "hostMapping": "pass-static",
+    "finalPixel": "notVerified",
+    "checks": [
+      "Android idle peak alpha 255",
+      "thumbVisibility true remains visible",
+      "600 ms hold then 300 ms monotonic fade to zero",
+      "explicit theme alpha multiplied by fade once",
+      "transparent track separate from thumb",
+      "known white and black background composites",
+      "PaintSnapshot alpha to MAUI SKColor alpha with SrcOver"
     ]
   },
   "differential": {
@@ -47,6 +64,7 @@
   "notRun": [
     "Flutter reference capture",
     "Doroti capture",
+    "final Android physical pixel alpha recovery",
     "per-channel pixel-diff measurement and cause classification",
     "FAB/Ink/Scrollbar state trace comparison",
     "Windows live paired capture",

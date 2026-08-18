@@ -216,7 +216,27 @@ function Invoke-AndroidPhysicalShard {
         status = 'pass'
         command = "validate-app-targets.ps1 -Shard AndroidPhysical -AndroidSerial $AndroidSerial"
         device = [ordered]@{ serial = $AndroidSerial; model = [string]$live.model; api = [string]$live.api; abi = [string]$live.abi; rid = [string]$live.rid }
-        measurements = $live.automatedGpu
+        measurements = [ordered]@{
+            targetFramework = [string]$live.automatedGpu.targetFramework
+            rid = [string]$live.automatedGpu.rid
+            surface = $live.automatedGpu.surface
+            frame = [ordered]@{
+                submitted = [long]$live.automatedGpu.frame.submitted
+                presented = [long]$live.automatedGpu.frame.presented
+                replayed = [long]$live.automatedGpu.frame.replayed
+                failed = [long]$live.automatedGpu.frame.failed
+                dropped = [long]$live.automatedGpu.frame.dropped
+                backend = [string]$live.automatedGpu.frame.backend
+                lastInputSequence = [long]$live.automatedGpu.frame.lastInputSequence
+                lastPresentedInputSequence = [long]$live.automatedGpu.frame.lastPresentedInputSequence
+            }
+            softwareFallbackFrames = [long]$live.automatedGpu.softwareFallbackFrames
+            semantics = [ordered]@{
+                updatesReceived = [long]$live.automatedGpu.semantics.updatesReceived
+                updatesApplied = [long]$live.automatedGpu.semantics.updatesApplied
+            }
+            framePacing = $live.automatedFramePacing
+        }
         scrollStress = [string]$live.automatedScroll
         persistentDisplay = $live.automatedPersistentDisplay
         artifact = Get-RelativePath $androidRawPath

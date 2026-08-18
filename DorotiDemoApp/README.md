@@ -45,6 +45,12 @@ return new Material.MaterialApp(
 
 Inside widgets, use roles such as `primary`, `onPrimary`, `surfaceContainer`, and `onSurface` from `Material.Theme.of(context).colorScheme` instead of fixed colors. Set `themeMode` to `ThemeMode.light` or `ThemeMode.dark` to force a mode. See `DemoTheme` in [`src/App.cs`](src/App.cs) for the complete configuration.
 
+## Nested scrolling and Android scrollbar policy
+
+The Material gallery is a vertical nested-scroll regression surface: a `ListView.builder` lives inside a separate `SingleChildScrollView`. The two scrollables use `_outerScrollController` and `_innerScrollController`, and their scrollbars are identified by the `fcr5-outer-scrollbar` and `fcr5-inner-scrollbar` keys. The inner list has 24 × 30 logical-pixel rows in a 170 logical-pixel viewport, so its viewport, content extent, and offset are numerically distinct from the outer scrollable. Inner notifications continue to bubble, while the default `notification.depth == 0` predicate keeps each scrollbar bound to its nearest scrollable.
+
+The demo leaves `thumbVisibility` unset, so Android uses the transient Flutter policy. The resolved idle peak alpha is 255, remains visible for 600 ms after scrolling ends, and then fades to alpha 0 over 300 ms. `thumbVisibility: true` disables that fade and keeps the peak visible, so the demo does not use it. Products that require a semitransparent peak should declare state-specific alpha through the public `ScrollbarThemeData.thumbColor` contract instead of changing the framework Android default.
+
 ## Run
 
 Commands are from the repository root. Each target restores against its own lock file (`packages.windows.lock.json`, `packages.maccatalyst.lock.json`, `packages.android.lock.json`, `packages.android-x64.lock.json`, `packages.web.lock.json`). SDK 10.0.400 and the `maui` / `wasm-tools` workloads are required.

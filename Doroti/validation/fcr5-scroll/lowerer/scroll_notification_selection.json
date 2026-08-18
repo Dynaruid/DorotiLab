@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "doroti.converter-selection/v4",
+  "converterVersion": "3.0.0",
+  "migrationIrVersion": "3.0.0",
+  "generationMode": "framework-semantic",
+  "compatibilityProfile": "flutter-framework",
+  "outputNamespace": "Doroti.Framework.Widgets",
+  "outputAssemblyName": "Doroti.Framework.Widgets.ScrollNotificationFixture",
+  "flutterBaseline": "flutter-baseline.json",
+  "frameworkMilestone": "FCR-5",
+  "inputs": [
+    {
+      "path": "../../../../reference/flutter-master/packages/flutter/lib/src/widgets/scroll_notification.dart",
+      "library": "package:flutter/src/widgets/scroll_notification.dart",
+      "symbols": ["*"]
+    }
+  ]
+}

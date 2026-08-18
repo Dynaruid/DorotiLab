@@ -1,11 +1,11 @@
 {
   "schemaVersion": "doroti.flutter-conformance-fcr8-evidence/v1",
   "milestone": "FCR-8",
-  "capturedAtUtc": "2026-08-18T07:23:19.6388842+00:00",
+  "capturedAtUtc": "2026-08-18T12:38:55.9439738+00:00",
   "status": "partial",
-  "repositoryRevision": "5204b022d85bbf05a149e8b4d65644a763be1537",
+  "repositoryRevision": "e255141b47dc72b144f1e9c6659eea26e3a512a6",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
-  "sourceFingerprintSha256": "7a781ee1746ea2aad07e4a5202ce9fa8db0adce02cedaa4fdf241e06c9da2d60",
+  "sourceFingerprintSha256": "b7cada8195f0a8390c0b51ff783ea38539be12aa85ba4482b3f770413ae733ed",
   "shards": [
     "Inventory",
     "Contracts",
@@ -45,7 +45,9 @@
         "macCatalystNative": "notVerified on Windows host",
         "screenReaderImeStylus": "notVerified unless separately executed"
       },
-      "connectedAndroidSerials": []
+      "connectedAndroidSerials": [
+        "R3CY30KZA4B"
+      ]
     },
     "contracts": {
       "status": "pass",
@@ -66,8 +68,323 @@
       "reason": "WindowsLive shard was not run for this source fingerprint."
     },
     "androidPhysical": {
-      "status": "notVerified",
-      "reason": "AndroidPhysical requires an explicit connected physical serial."
+      "status": "pass",
+      "command": "validate-app-targets.ps1 -Shard AndroidPhysical -AndroidSerial R3CY30KZA4B",
+      "device": {
+        "serial": "R3CY30KZA4B",
+        "model": "SM-S931N",
+        "api": "36",
+        "abi": "arm64-v8a",
+        "rid": "android-arm64"
+      },
+      "measurements": {
+        "targetFramework": ".NETCoreApp,Version=v10.0/Android,Version=21.0",
+        "rid": "android-arm64",
+        "surface": {
+          "pixelWidth": 1080,
+          "pixelHeight": 2192,
+          "devicePixelRatio": 3,
+          "metricsGeneration": 3,
+          "contextGeneration": 1,
+          "surfaceGeneration": 2,
+          "nativeViewType": "SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKGLTextureView",
+          "graphicsBackend": "android-arm64/Android/MauiSKGLTextureView/OpenGL-ES-Skia"
+        },
+        "frame": {
+          "submitted": 2944,
+          "presented": 2944,
+          "replayed": 8,
+          "failed": 0,
+          "dropped": 0,
+          "backend": "skiasharp-maui-skglview-gpu",
+          "lastInputSequence": 2178,
+          "lastPresentedInputSequence": 2178
+        },
+        "softwareFallbackFrames": 0,
+        "semantics": {
+          "updatesReceived": 295,
+          "updatesApplied": 290
+        },
+        "framePacing": {
+          "status": "pass",
+          "displayRefreshRate": 120.0,
+          "durationSeconds": 6.934,
+          "renderedFrames": 737,
+          "renderedFramesPerSecond": 106.287,
+          "minimumSustainedFramesPerSecond": 72.0,
+          "jankyFrames": 39,
+          "jankyFramePercent": 5.29,
+          "renderWorkP95Milliseconds": 10.0,
+          "missedVsync": 0
+        }
+      },
+      "scrollStress": "pass-adb-up-4-down-2-stress-48-active-samples-8-fab-action",
+      "persistentDisplay": {
+        "status": "pass",
+        "launchScreenshot": {
+          "width": 1080,
+          "height": 2340,
+          "sampleRegion": {
+            "left": 22,
+            "top": 281,
+            "right": 918,
+            "bottom": 1966
+          },
+          "sampleCount": 10575,
+          "nonLightRatio": 1.0,
+          "coloredRatio": 0.0,
+          "darkRatio": 1.0,
+          "blackRatio": 0.0
+        },
+        "initialScreenshot": {
+          "width": 1080,
+          "height": 2340,
+          "sampleRegion": {
+            "left": 22,
+            "top": 281,
+            "right": 918,
+            "bottom": 1966
+          },
+          "sampleCount": 10575,
+          "nonLightRatio": 1.0,
+          "coloredRatio": 0.1765,
+          "darkRatio": 0.6706,
+          "blackRatio": 0.0
+        },
+        "swipeScreenshots": [
+          {
+            "width": 1080,
+            "height": 2340,
+            "sampleRegion": {
+              "left": 22,
+              "top": 281,
+              "right": 918,
+              "bottom": 1966
+            },
+            "sampleCount": 10575,
+            "nonLightRatio": 1.0,
+            "coloredRatio": 0.2171,
+            "darkRatio": 0.6925,
+            "blackRatio": 0.0
+          },
+          {
+            "width": 1080,
+            "height": 2340,
+            "sampleRegion": {
+              "left": 22,
+              "top": 281,
+              "right": 918,
+              "bottom": 1966
+            },
+            "sampleCount": 10575,
+            "nonLightRatio": 1.0,
+            "coloredRatio": 0.2202,
+            "darkRatio": 0.6824,
+            "blackRatio": 0.0
+          },
+          {
+            "width": 1080,
+            "height": 2340,
+            "sampleRegion": {
+              "left": 22,
+              "top": 281,
+              "right": 918,
+              "bottom": 1966
+            },
+            "sampleCount": 10575,
+            "nonLightRatio": 1.0,
+            "coloredRatio": 0.2284,
+            "darkRatio": 0.6824,
+            "blackRatio": 0.0
+          },
+          {
+            "width": 1080,
+            "height": 2340,
+            "sampleRegion": {
+              "left": 22,
+              "top": 281,
+              "right": 918,
+              "bottom": 1966
+            },
+            "sampleCount": 10575,
+            "nonLightRatio": 1.0,
+            "coloredRatio": 0.2284,
+            "darkRatio": 0.6824,
+            "blackRatio": 0.0
+          },
+          {
+            "width": 1080,
+            "height": 2340,
+            "sampleRegion": {
+              "left": 22,
+              "top": 281,
+              "right": 918,
+              "bottom": 1966
+            },
+            "sampleCount": 10575,
+            "nonLightRatio": 1.0,
+            "coloredRatio": 0.1809,
+            "darkRatio": 0.6605,
+            "blackRatio": 0.0
+          },
+          {
+            "width": 1080,
+            "height": 2340,
+            "sampleRegion": {
+              "left": 22,
+              "top": 281,
+              "right": 918,
+              "bottom": 1966
+            },
+            "sampleCount": 10575,
+            "nonLightRatio": 1.0,
+            "coloredRatio": 0.1752,
+            "darkRatio": 0.6731,
+            "blackRatio": 0.0
+          },
+          {
+            "width": 1080,
+            "height": 2340,
+            "sampleRegion": {
+              "left": 22,
+              "top": 281,
+              "right": 918,
+              "bottom": 1966
+            },
+            "sampleCount": 10575,
+            "nonLightRatio": 1.0,
+            "coloredRatio": 0.1314,
+            "darkRatio": 0.7146,
+            "blackRatio": 0.0
+          },
+          {
+            "width": 1080,
+            "height": 2340,
+            "sampleRegion": {
+              "left": 22,
+              "top": 281,
+              "right": 918,
+              "bottom": 1966
+            },
+            "sampleCount": 10575,
+            "nonLightRatio": 1.0,
+            "coloredRatio": 0.1452,
+            "darkRatio": 0.697,
+            "blackRatio": 0.0
+          },
+          {
+            "width": 1080,
+            "height": 2340,
+            "sampleRegion": {
+              "left": 22,
+              "top": 281,
+              "right": 918,
+              "bottom": 1966
+            },
+            "sampleCount": 10575,
+            "nonLightRatio": 1.0,
+            "coloredRatio": 0.111,
+            "darkRatio": 0.7308,
+            "blackRatio": 0.0
+          },
+          {
+            "width": 1080,
+            "height": 2340,
+            "sampleRegion": {
+              "left": 22,
+              "top": 281,
+              "right": 918,
+              "bottom": 1966
+            },
+            "sampleCount": 10575,
+            "nonLightRatio": 1.0,
+            "coloredRatio": 0.1178,
+            "darkRatio": 0.7268,
+            "blackRatio": 0.0
+          },
+          {
+            "width": 1080,
+            "height": 2340,
+            "sampleRegion": {
+              "left": 22,
+              "top": 281,
+              "right": 918,
+              "bottom": 1966
+            },
+            "sampleCount": 10575,
+            "nonLightRatio": 1.0,
+            "coloredRatio": 0.138,
+            "darkRatio": 0.7043,
+            "blackRatio": 0.0
+          },
+          {
+            "width": 1080,
+            "height": 2340,
+            "sampleRegion": {
+              "left": 22,
+              "top": 281,
+              "right": 918,
+              "bottom": 1966
+            },
+            "sampleCount": 10575,
+            "nonLightRatio": 1.0,
+            "coloredRatio": 0.1243,
+            "darkRatio": 0.7172,
+            "blackRatio": 0.0
+          },
+          {
+            "width": 1080,
+            "height": 2340,
+            "sampleRegion": {
+              "left": 22,
+              "top": 281,
+              "right": 918,
+              "bottom": 1966
+            },
+            "sampleCount": 10575,
+            "nonLightRatio": 1.0,
+            "coloredRatio": 0.1109,
+            "darkRatio": 0.7351,
+            "blackRatio": 0.0
+          },
+          {
+            "width": 1080,
+            "height": 2340,
+            "sampleRegion": {
+              "left": 22,
+              "top": 281,
+              "right": 918,
+              "bottom": 1966
+            },
+            "sampleCount": 10575,
+            "nonLightRatio": 1.0,
+            "coloredRatio": 0.1452,
+            "darkRatio": 0.6981,
+            "blackRatio": 0.0
+          }
+        ],
+        "settledScreenshot": {
+          "width": 1080,
+          "height": 2340,
+          "sampleRegion": {
+            "left": 22,
+            "top": 281,
+            "right": 918,
+            "bottom": 1966
+          },
+          "sampleCount": 10575,
+          "nonLightRatio": 1.0,
+          "coloredRatio": 0.1765,
+          "darkRatio": 0.6706,
+          "blackRatio": 0.0
+        }
+      },
+      "artifact": "Doroti/.doroti/tmp/app-targets/android-live.json",
+      "artifactSha256": "ff4502a3622370bfb0a0591f865d1fbb73e818168ddb600e0149dccc014c89a5",
+      "acceptanceBoundary": {
+        "manualPersistentDisplay": "notVerified",
+        "imeTalkBackStylusMouse": "notVerified"
+      }
     },
     "soak": {
       "status": "notVerified",
