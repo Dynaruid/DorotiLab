@@ -20,7 +20,6 @@
 **/[Aa]rtifacts/
 /Regolith/migration/generated/
 /Regolith/migration/promotions/
-/Doroti/migration/generated-candidates/
 
 # Local converter/migration scratch and regenerable IR dumps.
 /.tmp/

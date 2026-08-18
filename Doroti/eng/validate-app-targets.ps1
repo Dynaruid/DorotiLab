@@ -19,7 +19,7 @@ $tmpRoot = Join-Path $dorotiRoot '.doroti/tmp/app-targets'
 $publishRoot = Join-Path $tmpRoot 'windows-publish'
 $rawLivePath = Join-Path $tmpRoot 'windows-live.json'
 $rawAndroidLivePath = Join-Path $tmpRoot 'android-live.json'
-$evidencePath = Join-Path $dorotiRoot 'migration/maui/app-targets-evidence.json'
+$evidencePath = Join-Path $dorotiRoot 'validation/evidence/app-targets-evidence.json'
 [IO.Directory]::CreateDirectory($tmpRoot) | Out-Null
 
 function Test-Shard([string] $Name) { return $Shard -eq 'All' -or $Shard -eq $Name }

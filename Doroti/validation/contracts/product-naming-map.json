@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "doroti.product-naming-contract/v1",
+  "status": "pass",
+  "projectMappings": [
+    { "old": "Doroti.Flutter.Runtime", "new": "Doroti.Runtime" },
+    { "old": "Doroti.Flutter.Ui", "new": "Doroti.Ui" },
+    { "old": "Doroti.Flutter.Hosting", "new": "Doroti.Hosting" },
+    { "old": "Doroti.Flutter.Framework.Foundation", "new": "Doroti.Framework.Foundation" },
+    { "old": "Doroti.Flutter.Framework.Scheduler", "new": "Doroti.Framework.Scheduler" },
+    { "old": "Doroti.Flutter.Framework.Services", "new": "Doroti.Framework.Services" },
+    { "old": "Doroti.Flutter.Framework.Widgets", "new": "Doroti.Framework.Widgets" },
+    { "old": "Doroti.Flutter.Framework.WidgetPreviews", "new": "Doroti.Framework.WidgetPreviews" },
+    { "old": "Doroti.Flutter.Framework.Physics", "new": "Doroti.Framework.Physics" },
+    { "old": "Doroti.Flutter.Framework.Animation", "new": "Doroti.Framework.Animation" },
+    { "old": "Doroti.Flutter.Framework.Gestures", "new": "Doroti.Framework.Gestures" },
+    { "old": "Doroti.Flutter.Framework.Painting", "new": "Doroti.Framework.Painting" },
+    { "old": "Doroti.Flutter.Framework.Semantics", "new": "Doroti.Framework.Semantics" },
+    { "old": "Doroti.Flutter.Framework.Rendering", "new": "Doroti.Framework.Rendering" },
+    { "old": "Doroti.Flutter.Framework.Material", "new": "Doroti.Framework.Material" },
+    { "old": "Doroti.Flutter.Framework.Cupertino", "new": "Doroti.Framework.Cupertino" },
+    { "old": "Doroti.Host.Desktop.Flutter", "new": "Doroti.Host.Desktop.Framework" }
+  ]
+}

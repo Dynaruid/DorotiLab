@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "doroti.web-browser-live-manual/v2",
+  "capturedAtUtc": "2026-08-17T05:38:18Z",
+  "status": "pass-basic-pointer",
+  "browser": "Chromium extension session",
+  "source": "Doroti/artifacts/web/0.2.0-beta/wwwroot",
+  "artifactAggregateSha256": "9b42b11881ade6fccfacb5ad7fe50eb5e7056eb46f6c811ffe1ea49927585f44",
+  "runtimeFrameworkVersion": "10.0.11",
+  "coreLibAsset": "System.Private.CoreLib.acqhqif0l6.wasm",
+  "presented": {
+    "status": "pass",
+    "canvasCssPixels": "1280x609",
+    "canvasBackingPixels": "2560x1218",
+    "visibleContent": "Material controls, lazy list, clipped backdrop panel and FAB"
+  },
+  "bootstrap": {
+    "status": "pass",
+    "stages": ["before-start", "starting", "started"],
+    "configured": true,
+    "bootIntegrityObserved": true,
+    "bootstrapError": null
+  },
+  "liveLoadedModules": [
+    "doroti_bootstrap.js",
+    "_content/Doroti.Host.Web/doroti.loader.js",
+    "_content/Doroti.Host.Web/doroti.web.js"
+  ],
+  "publishedModuleOnly": "plugins/echo.js",
+  "input": {
+    "status": "pass-basic-pointer",
+    "action": "click rendered FAB",
+    "stateBefore": "fab=0",
+    "stateAfter": "fab=1"
+  },
+  "consoleErrors": 0,
+  "notVerified": [
+    "keyboard",
+    "IME",
+    "clipboard",
+    "resize",
+    "interactive ARIA actions",
+    "browser-live plugin invocation",
+    "physical acceptance",
+    "cross-target parity"
+  ]
+}
+

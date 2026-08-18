@@ -1,9 +1,0 @@
-{
-  "schemaVersion": "doroti.render-tree-golden/v1",
-  "logicalWidth": 32,
-  "logicalHeight": 24,
-  "scales": [
-    { "devicePixelRatio": 1.0, "pixelWidth": 32, "pixelHeight": 24 },
-    { "devicePixelRatio": 1.5, "pixelWidth": 48, "pixelHeight": 36 }
-  ]
-}

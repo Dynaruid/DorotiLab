@@ -28,6 +28,5 @@
     <Project Path="templates/Doroti.Templates/Doroti.Templates.csproj" />
   </Folder>
   <Project Path="../tools/Doroti.DartToCSharp/Doroti.DartToCSharp.csproj" />
-  <Project Path="tools/Doroti.SourceTools/Doroti.SourceTools.csproj" />
   <Project Path="tools/Doroti.Tooling/Doroti.Tooling.csproj" />
 </Solution>

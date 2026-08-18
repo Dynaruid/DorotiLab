@@ -83,13 +83,13 @@ FCR-1과 FCR-2는 병행 가능하다. FCR-3~FCR-5는 frame ownership을 먼저 
 - Flutter import와 `fromAsset` 호출, shader/font/data 파일을 스캔해 package manifest와 대조한다.
 - 도달 가능한 stub/no-op, dynamic arithmetic, unobserved Future, debug/release 민감 패턴을 분류한다. 단순 문자열 검색 결과를 바로 결함으로 세지 않고 실제 Flutter 의미와 reachability를 확인한다.
 - 현재 Android/Windows에서 동일 Demo 시나리오의 frame time, invalidation, dirty render/layer 수, scene command 수, allocation/GC, semantics 작업량과 input-to-present를 수집한다.
-- 기존 `g6-scene-operation-matrix.json`을 현재 코드에서 다시 생성해 stale 상태를 제거한다.
+- 이전 scene-operation matrix에 의존하지 않고 현재 코드에서 필요한 항목을 다시 생성해 stale 상태를 제거한다.
 
 산출물:
 
-- `Doroti/migration/flutter-conformance/framework-parity-matrix.json`
-- `Doroti/migration/flutter-conformance/baseline-evidence.json`
-- `Doroti/eng/validate-flutter-conformance.ps1`의 `Inventory` shard
+- `Doroti/validation/evidence/flutter-conformance/framework-parity-matrix.json`
+- `Doroti/validation/evidence/flutter-conformance/baseline-evidence.json`
+- 대표 `Doroti/eng/validate.ps1` capability gate
 
 완료 gate:
 

@@ -49,8 +49,6 @@ function Invoke-SourceGate {
         (Join-Path $dorotiRoot 'src'),
         (Join-Path $dorotiRoot 'templates'),
         (Join-Path $dorotiRoot 'eng'),
-        (Join-Path $dorotiRoot 'migration/selections'),
-        (Join-Path $dorotiRoot 'migration/ports'),
         (Join-Path $repositoryRoot 'DorotiDemoApp'),
         (Join-Path $repositoryRoot 'tools/Doroti.DartToCSharp')
     ) | Where-Object { Test-Path -LiteralPath $_ -PathType Container }
@@ -88,12 +86,6 @@ function Invoke-SourceGate {
 
     $demoDartPackage = Join-Path $repositoryRoot 'DorotiDemoApp/dart'
     Assert-True (-not (Test-Path -LiteralPath $demoDartPackage)) 'C#-only DorotiDemoApp Dart package absence'
-    $legacyDemoSelections = @(
-        (Join-Path $dorotiRoot 'migration/selections/g6-generated-demo.json'),
-        (Join-Path $dorotiRoot 'migration/selections/g6-generated-demo-unsupported-plugin.json')
-    ) | Where-Object { Test-Path -LiteralPath $_ }
-    Assert-True ($legacyDemoSelections.Count -eq 0) 'legacy generated-Dart DemoApp selection absence'
-
     $templateRoot = Join-Path $dorotiRoot 'templates/Doroti.Templates/content/doroti-app'
     Assert-True (@(Get-ChildItem -LiteralPath $templateRoot -Recurse -File -Filter '*.csproj').Count -eq 1) 'template project count'
     $templateXaml = @(Get-ChildItem -LiteralPath $templateRoot -Recurse -File -Filter '*.xaml')

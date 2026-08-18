@@ -12,7 +12,7 @@
     <Deterministic>true</Deterministic>
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
     <IsPackable>false</IsPackable>
-    <DefaultItemExcludes>$(DefaultItemExcludes);$(MSBuildThisFileDirectory)migration\generated\**;$(MSBuildThisFileDirectory)migration\generated-candidates\**;$(MSBuildThisFileDirectory)migration\promotions\**;$(MSBuildThisFileDirectory)artifacts\**</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(MSBuildThisFileDirectory)artifacts\**</DefaultItemExcludes>
   </PropertyGroup>
   <PropertyGroup Condition="'$(IsDorotiProduct)' == 'true'">
     <IsPackable>true</IsPackable>

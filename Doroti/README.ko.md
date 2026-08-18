@@ -8,7 +8,7 @@ Doroti는 MAUI Windows, MAUI Mac Catalyst, MAUI Android, Blazor WebAssembly에�
 
 `src/Doroti.Framework.*`는 직접 유지보수하는 제품 source입니다. 공개 namespace는 project, assembly, package 이름과 같은 `Doroti.Framework.*`입니다. 기능 추가와 정확성 수정은 소유 framework/runtime/host project에서 직접 수행하고, 바뀐 공용 계약의 모든 consumer를 함께 고칩니다.
 
-Dart-to-C# compiler와 고정 Flutter checkout은 선택적인 import·동작 reference 도구로 남습니다. 일반 build의 필수 조건이 아니며 제품 source를 덮어쓰지 않습니다. Compiler candidate는 명시적으로 검토·채택하기 전까지 격리 workspace나 `migration/`에만 둡니다.
+Dart-to-C# compiler와 고정 Flutter checkout은 선택적인 import·동작 reference 도구로 남습니다. 일반 build의 필수 조건이 아니며 제품 source를 덮어쓰지 않습니다. Compiler 출력은 명시적으로 검토·채택하기 전까지 격리 workspace에만 둡니다.
 
 소유권 결정은 [ADR-019](docs/adr/ADR-019-product-framework-source-ownership.md), 현재 우선순위는 root [작업 목록](../work.md)을 참고하세요.
 
@@ -32,7 +32,7 @@ Windows Release build/publish와 실제 `MauiSKSwapChainPanel` GPU frame을 확�
 - 10.0.11의 .NET/ASP.NET/WindowsDesktop 및 browser-wasm runtime pack과 선택 target에 맞는 MAUI/WebAssembly workload
 - `Platforms/Web/tsconfig.json`이 있는 Web project에서만 restore하는 `Microsoft.TypeScript.MSBuild` 7.0.0
 
-`reference/flutter-master` checkout은 명시적인 Flutter reference 비교나 migration 작업에만 필요합니다. 해당 작업에서 Flutter가 필요하면 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 준비합니다.
+`reference/flutter-master` checkout은 명시적인 Flutter reference 비교에만 필요합니다. 필요하면 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 준비합니다.
 
 ## 명령
 
@@ -53,7 +53,6 @@ pwsh -File ./Doroti/eng/doroti.ps1 validate
 | `validate` | Source 소유권, Release build, application target graph/build 검증 |
 | `validate -ValidationSuite Release` | Windows GPU live와 외부 Web template/package publish 시나리오 추가 |
 | `audit` | Repository-local storage와 현재 source 소유권 검사 |
-| `migration-audit` | Compiler와 Flutter provenance audit를 명시적으로 실행 |
 | `release` | 통합 release suite, audit, pack, package 검사 |
 | `clean` | Doroti build output, artifact, 임시 local state 제거 |
 
@@ -64,7 +63,8 @@ pwsh -File ./Doroti/eng/doroti.ps1 validate
 - 제품 framework 변경은 `src/Doroti.Framework.*`에서 수행하며 compiler 소유 `.g.cs`는 이 경로에서 compile하지 않습니다.
 - 공용 동작은 가장 낮은 소유 framework/runtime/rendering/host 계약에서 고칩니다.
 - Reference 비교, build, native live, browser live, physical, cross-target 결과를 구분합니다.
-- `migration/`에는 provenance, 과거 selection, 검토한 import 입력과 committed evidence를 둡니다.
+- `validation/contracts/`에는 활성 validator가 읽는 작은 machine-readable contract를 둡니다.
+- `validation/evidence/`에는 활성 target/Web validator가 만든 committed summary를 둡니다.
 - `.doroti/`와 `artifacts/`에는 임시 tool·validation output을 둡니다.
 - Repository JSON은 `System.Text.Json`을 사용합니다.
 
@@ -75,8 +75,8 @@ pwsh -File ./Doroti/eng/doroti.ps1 validate
 | [`src/`](src/) | 제품 framework, runtime, renderer, host, target, SDK, analyzer |
 | [`templates/`](templates/) | Single-project `doroti-app` template |
 | [`eng/`](eng/) | 간소화한 build, validation, release, storage, 선택적 reference workflow |
-| [`tools/`](tools/) | Source/provenance 및 진단 도구 |
-| [`migration/`](migration/) | 과거 변환 입력, provenance와 evidence |
+| [`tools/`](tools/) | 선택적 Dart/Flutter compiler와 shared tooling |
+| [`validation/`](validation/) | 활성 validation contract, fixture와 evidence |
 | [`docs/`](docs/) | 현재 ADR과 역사 architecture 기록 |
 
 Doroti는 repository의 BSD 3-Clause license로 배포합니다. Upstream source와 package 표시는 [third-party notices](THIRD-PARTY-NOTICES.md)를 참고하세요.

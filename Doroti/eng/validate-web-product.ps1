@@ -8,7 +8,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $dorotiRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $repoRoot = (Resolve-Path (Join-Path $dorotiRoot '..')).Path
-$migrationRoot = Join-Path $dorotiRoot 'migration/web'
+$evidenceRoot = Join-Path $dorotiRoot 'validation/evidence/web'
 $tmpRoot = Join-Path $dorotiRoot '.doroti/tmp/web-product'
 $externalTmpRoot = Join-Path $repoRoot '.doroti/tmp/web-product'
 $releaseRoot = Join-Path $dorotiRoot 'artifacts/web/0.2.0-beta'
@@ -21,7 +21,7 @@ $productSolution = Join-Path $dorotiRoot 'Doroti.Product.slnx'
 $demoDesktopProject = Join-Path $repoRoot 'DorotiDemoApp/DorotiDemoApp.csproj'
 $demoWebProject = $demoDesktopProject
 $statePath = Join-Path $tmpRoot 'external-product.json'
-[IO.Directory]::CreateDirectory($migrationRoot) | Out-Null
+[IO.Directory]::CreateDirectory($evidenceRoot) | Out-Null
 [IO.Directory]::CreateDirectory($tmpRoot) | Out-Null
 [IO.Directory]::CreateDirectory($externalTmpRoot) | Out-Null
 
@@ -137,9 +137,9 @@ function Write-Composite {
         $shards[$name] = if (Test-Path -LiteralPath $path) { Read-Json $path } else { [ordered]@{ status='notVerified' } }
     }
     $pass = @($names | Where-Object { $shards[$_].status -ne 'pass' }).Count -eq 0
-    $manualBrowserPath = Join-Path $migrationRoot 'web-browser-live-manual.json'
+    $manualBrowserPath = Join-Path $evidenceRoot 'web-browser-live-manual.json'
     $manualBrowserLive = if (Test-Path -LiteralPath $manualBrowserPath) { Read-Json $manualBrowserPath } else { [ordered]@{ status='notVerified' } }
-    Write-Json (Join-Path $migrationRoot 'web-product-evidence.json') ([ordered]@{
+    Write-Json (Join-Path $evidenceRoot 'web-product-evidence.json') ([ordered]@{
         schemaVersion = 'doroti.web-product-evidence/v2'
         scope = 'web-product'
         status = $(if ($pass) { 'pass' } else { 'partial' })
@@ -306,7 +306,7 @@ if ($Shard -eq 'Template') {
     $external = Join-Path $externalTmpRoot ("external-" + [Guid]::NewGuid().ToString('N'))
     Reset-SafeDirectory $feed $tmpRoot
     Reset-SafeDirectory $external $externalTmpRoot
-    $mapping = Read-Json (Join-Path $dorotiRoot 'migration/product-naming/g7-doroti-naming-map.json')
+    $mapping = Read-Json (Join-Path $dorotiRoot 'validation/contracts/product-naming-map.json')
     $packageProjects = [Collections.Generic.List[string]]::new()
     $requiredPackages = @(
         'Doroti.Runtime', 'Doroti.Ui', 'Doroti.Hosting', 'Doroti.Skia.RuntimeEffects',

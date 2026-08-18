@@ -8,7 +8,7 @@ Doroti is a C#/.NET UI framework with a shared widget, layout, painting, semanti
 
 `src/Doroti.Framework.*` is maintained product source. Its public namespaces are `Doroti.Framework.*`, matching the project, assembly, and package names. Add features and fix correctness directly in the owning framework/runtime/host project, then update every consumer of the shared contract.
 
-The Dart-to-C# compiler and pinned Flutter checkout remain optional import and behavior-reference tools. They do not overwrite product source and are not required for ordinary builds. Compiler candidates stay in isolated workspaces or `migration/` until explicitly reviewed and adopted.
+The Dart-to-C# compiler and pinned Flutter checkout remain optional import and behavior-reference tools. They do not overwrite product source and are not required for ordinary builds. Compiler output stays in isolated workspaces until explicitly reviewed and adopted.
 
 See [ADR-019](docs/adr/ADR-019-product-framework-source-ownership.md) for the ownership decision and the root [work list](../work.md) for active priorities.
 
@@ -32,7 +32,7 @@ Windows Release build/publish and an actual `MauiSKSwapChainPanel` GPU frame are
 - .NET/ASP.NET/WindowsDesktop and browser-wasm runtime packs at 10.0.11, with matching MAUI/WebAssembly workloads
 - `Microsoft.TypeScript.MSBuild` 7.0.0 restored only for Web projects that contain `Platforms/Web/tsconfig.json`
 
-The `reference/flutter-master` checkout is needed only for explicit Flutter reference comparison or migration work. Prepare Flutter for such work with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`.
+The `reference/flutter-master` checkout is needed only for explicit Flutter reference comparison. Prepare Flutter for that work with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`.
 
 ## Commands
 
@@ -53,7 +53,6 @@ The active command surface is intentionally small:
 | `validate` | Run source ownership, Release build, and application target graph/build checks |
 | `validate -ValidationSuite Release` | Add Windows GPU live and external Web template/package publish scenarios |
 | `audit` | Check repository-local storage and current source ownership |
-| `migration-audit` | Explicitly run compiler and Flutter provenance audits |
 | `release` | Run the integrated release suite, audit, pack, and package inspection |
 | `clean` | Remove Doroti build output, artifacts, and temporary local state |
 
@@ -64,7 +63,8 @@ Direct suite entry points are [validate.ps1](eng/validate.ps1), [validate-app-ta
 - Product framework changes belong in `src/Doroti.Framework.*`; no compiler-owned `.g.cs` file is compiled there.
 - Fix shared behavior at the lowest owning framework/runtime/rendering/host contract.
 - Keep reference comparison, build, native live, browser live, physical, and cross-target claims distinct.
-- `migration/` stores provenance, historical selections, reviewed import inputs, and committed evidence.
+- `validation/contracts/` stores small machine-readable contracts consumed by active validators.
+- `validation/evidence/` stores committed summaries produced by active target and Web validators.
 - `.doroti/` and `artifacts/` store transient tool and validation output.
 - All repository JSON uses `System.Text.Json`.
 
@@ -75,8 +75,8 @@ Direct suite entry points are [validate.ps1](eng/validate.ps1), [validate-app-ta
 | [`src/`](src/) | Product framework, runtime, renderer, hosts, targets, SDK, and analyzers |
 | [`templates/`](templates/) | The single-project `doroti-app` template |
 | [`eng/`](eng/) | Compact build, validation, release, storage, and optional reference workflows |
-| [`tools/`](tools/) | Source/provenance and diagnostic tooling |
-| [`migration/`](migration/) | Historical conversion inputs, provenance, and evidence |
+| [`tools/`](tools/) | Optional Dart/Flutter compiler and shared tooling |
+| [`validation/`](validation/) | Active validation contracts, fixtures, and committed evidence |
 | [`docs/`](docs/) | Current ADRs plus historical architecture records |
 
 Doroti is distributed under the repository BSD 3-Clause license. See [third-party notices](THIRD-PARTY-NOTICES.md) for upstream source and package attribution.

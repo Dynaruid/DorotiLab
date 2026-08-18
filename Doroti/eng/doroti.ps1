@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet('doctor', 'build', 'validate', 'audit', 'migration-audit', 'release', 'clean')]
+    [ValidateSet('doctor', 'build', 'validate', 'audit', 'release', 'clean')]
     [string] $Command = 'doctor',
 
     [ValidateSet('Source', 'Build', 'Targets', 'Developer', 'Release')]
@@ -114,10 +114,6 @@ function Invoke-Audit {
     & (Join-Path $PSScriptRoot 'validate.ps1') -Suite Source
 }
 
-function Invoke-MigrationAudit {
-    Invoke-Checked 'dotnet' @('run', '--project', (Join-Path $dorotiRoot 'tools/Doroti.SourceTools/Doroti.SourceTools.csproj'), '--', 'audit')
-}
-
 function Invoke-Release {
     & (Join-Path $PSScriptRoot 'validate.ps1') -Suite Release
     Invoke-Audit
@@ -133,7 +129,7 @@ function Invoke-Release {
         $archive = [System.IO.Compression.ZipFile]::OpenRead($packagePath.FullName)
         try {
             $entries = @($archive.Entries | ForEach-Object { $_.FullName })
-            if ($entries | Where-Object { $_ -match '\.(dart|yaml|lock)$' -or $_ -match 'migration/(fixtures|generated|cache)' }) {
+            if ($entries | Where-Object { $_ -match '\.(dart|yaml|lock)$' }) {
                 throw "Package contains compiler/source snapshot content: $($packagePath.Name)"
             }
             $nuspec = $archive.Entries | Where-Object { $_.FullName -like '*.nuspec' } | Select-Object -First 1
@@ -181,7 +177,6 @@ switch ($Command) {
     'build' { Invoke-Build }
     'validate' { Invoke-Validation }
     'audit' { Invoke-Audit }
-    'migration-audit' { Invoke-MigrationAudit }
     'release' { Invoke-Release }
     'clean' { Invoke-Clean }
 }

@@ -1,8 +1,0 @@
-{
-  "schemaVersion": "doroti.software-golden/v1",
-  "scene": "r5-layer-scene",
-  "width": 16,
-  "height": 16,
-  "pixelFormat": "bgra8888-premultiplied",
-  "skiaAverageByteTolerance": 12
-}
