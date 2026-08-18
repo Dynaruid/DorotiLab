@@ -23,7 +23,7 @@ internal sealed class MauiHostAdapter :
     private readonly ulong _viewId;
     private readonly SKGLView _view;
     private readonly object _gate = new();
-    private readonly Queue<Action<TimeSpan>> _frameCallbacks = [];
+    private Action<TimeSpan>? _pendingFrameCallback;
     private readonly IMauiSemanticsBridge _semantics;
     private readonly MauiTextInputBridge _textInput;
     private readonly Dictionary<ulong, (double X, double Y)> _pointerPositions = [];
@@ -36,6 +36,9 @@ internal sealed class MauiHostAdapter :
     private long _invalidationsRequested;
     private long _invalidationsCoalesced;
     private long _nativePointerEvents;
+    private long _inputSequence;
+    private long _frameRequestsCoalesced;
+    private TimeSpan _lastVsyncTimestamp;
     private bool _invalidatePending;
     private bool _isPainting;
     private bool _invalidateAfterPaint;
@@ -70,6 +73,8 @@ internal sealed class MauiHostAdapter :
     internal long InvalidationsRequested => Interlocked.Read(ref _invalidationsRequested);
     internal long InvalidationsCoalesced => Interlocked.Read(ref _invalidationsCoalesced);
     internal long NativePointerEvents => Interlocked.Read(ref _nativePointerEvents);
+    internal long InputSequence => Interlocked.Read(ref _inputSequence);
+    internal long FrameRequestsCoalesced => Interlocked.Read(ref _frameRequestsCoalesced);
     internal MauiSemanticsDiagnostics SemanticsDiagnostics => _semantics.Diagnostics;
     public ViewMetrics Metrics => new(
         new Size(_logicalSize.width * _density, _logicalSize.height * _density), _density,
@@ -100,6 +105,7 @@ internal sealed class MauiHostAdapter :
     public event Action<RawFocusData>? FocusData;
     public event Action<DorotiTextEditingState>? EditingStateChanged;
     public event Action<DorotiTextInputAction>? ActionPerformed;
+    internal event Action<long, TimeSpan>? InputReceived;
 
     public void Show()
     {
@@ -131,7 +137,17 @@ internal sealed class MauiHostAdapter :
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         ArgumentNullException.ThrowIfNull(callback);
-        lock (_gate) _frameCallbacks.Enqueue(callback);
+        lock (_gate)
+        {
+            // Keep one host request pending. A delayed native paint must not
+            // accumulate framework callbacks behind it.
+            if (_pendingFrameCallback is not null)
+            {
+                Interlocked.Increment(ref _frameRequestsCoalesced);
+                return;
+            }
+            _pendingFrameCallback = callback;
+        }
         RequestInvalidate();
     }
 
@@ -163,14 +179,15 @@ internal sealed class MauiHostAdapter :
             _metricsGeneration, _contextGeneration, _surfaceGeneration, nativeViewType, backend);
         if (pixelSizeChanged || densityChanged)
             MetricsChanged?.Invoke(Metrics);
-        Action<TimeSpan>[] callbacks;
+        Action<TimeSpan>? callback;
         lock (_gate)
         {
-            callbacks = _frameCallbacks.ToArray();
-            _frameCallbacks.Clear();
+            callback = _pendingFrameCallback;
+            _pendingFrameCallback = null;
         }
-        var now = TimeSpan.FromTicks(DateTime.UtcNow.Ticks);
-        foreach (var callback in callbacks) callback(now);
+        var now = DorotiFrameClock.ClampForward(DorotiFrameClock.Now, _lastVsyncTimestamp);
+        _lastVsyncTimestamp = now;
+        callback?.Invoke(now);
     }
 
     internal void EndPaint()
@@ -274,7 +291,7 @@ internal sealed class MauiHostAdapter :
         _textInput.Dispose();
         lock (_gate)
         {
-            _frameCallbacks.Clear();
+            _pendingFrameCallback = null;
             _invalidateAfterPaint = false;
             _isPainting = false;
         }
@@ -300,6 +317,9 @@ internal sealed class MauiHostAdapter :
     {
         _ = sender;
         Interlocked.Increment(ref _nativePointerEvents);
+        var inputSequence = Interlocked.Increment(ref _inputSequence);
+        var timestamp = DorotiFrameClock.Now;
+        InputReceived?.Invoke(inputSequence, timestamp);
         var change = args.ActionType switch
         {
             SKTouchAction.Pressed => PointerChange.down,
@@ -326,7 +346,7 @@ internal sealed class MauiHostAdapter :
             SKTouchDeviceType.Pen => PointerDeviceKind.stylus,
             _ => PointerDeviceKind.touch,
         };
-        PointerData?.Invoke(new([new(_viewId, TimeSpan.FromTicks(DateTime.UtcNow.Ticks), change,
+        PointerData?.Invoke(new([new(_viewId, timestamp, change,
             kind, pointer, x, y,
             hasPrevious ? x - previous.X : 0, hasPrevious ? y - previous.Y : 0, buttons,
             scrollDeltaX: 0, scrollDeltaY: args.ActionType == SKTouchAction.WheelChanged ? -args.WheelDelta : 0,
@@ -338,13 +358,13 @@ internal sealed class MauiHostAdapter :
     }
 
     private void HandleFocused(object? sender, FocusEventArgs args) =>
-        FocusData?.Invoke(new(_viewId, true, TimeSpan.FromTicks(DateTime.UtcNow.Ticks)));
+        FocusData?.Invoke(new(_viewId, true, DorotiFrameClock.Now));
 
     private void HandleUnfocused(object? sender, FocusEventArgs args) =>
-        FocusData?.Invoke(new(_viewId, false, TimeSpan.FromTicks(DateTime.UtcNow.Ticks)));
+        FocusData?.Invoke(new(_viewId, false, DorotiFrameClock.Now));
 
     private void HandleTextFocusChanged(bool focused) =>
-        FocusData?.Invoke(new(_viewId, focused, TimeSpan.FromTicks(DateTime.UtcNow.Ticks)));
+        FocusData?.Invoke(new(_viewId, focused, DorotiFrameClock.Now));
 
     private void HandleEditingStateChanged(DorotiTextEditingState state) => EditingStateChanged?.Invoke(state);
     private void HandleActionPerformed(DorotiTextInputAction action) => ActionPerformed?.Invoke(action);

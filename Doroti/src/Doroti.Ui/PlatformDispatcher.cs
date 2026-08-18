@@ -10,6 +10,7 @@ public sealed class PlatformDispatcher : IDisposable
     private readonly object _dispatchGate = new();
     private readonly Dictionary<ulong, DorotiView> _views = [];
     private readonly DartMicrotaskQueue _microtasks = new();
+    private readonly DorotiFrameTrace _frameTrace = new();
     private readonly IDartPerformanceModeCapability? _performanceModeCapability;
     private readonly HashSet<Guid> _backgroundIsolates = [];
     private ChannelBuffers? _channelBuffers;
@@ -34,6 +35,8 @@ public sealed class PlatformDispatcher : IDisposable
             null,
             DartUiInvocation.Managed("dart:ui#PlatformDispatcher.instance"),
             "no dispatcher is active in the current execution context");
+
+    public DorotiFrameTrace frameTrace => _frameTrace;
 
     public IDisposable EnterScope()
     {
@@ -400,10 +403,12 @@ public sealed class PlatformDispatcher : IDisposable
         DispatchWithEnvironment(view, () =>
         {
             Interlocked.Increment(ref _frameNumber);
+            _frameTrace.Record(DorotiFramePhase.beginFrame, view.viewId, timestamp);
             onBeginFrame?.Invoke(timestamp);
             beginFrame?.Invoke(view, timestamp);
             onDrawFrame?.Invoke();
             drawFrame?.Invoke(view);
+            _frameTrace.Record(DorotiFramePhase.drawFrame, view.viewId, DorotiFrameClock.Now);
         });
     }
 
@@ -573,6 +578,7 @@ public sealed class DorotiView : IDisposable
     }
 
     public ulong viewId { get; }
+    internal DorotiFrameTrace FrameTrace => _dispatcher.frameTrace;
 
     public string targetIdentity => _capabilities.TargetIdentity;
 
@@ -670,6 +676,8 @@ public sealed class DorotiView : IDisposable
             viewId,
             DorotiCapabilityIds.ViewFrameDispatch,
             invocation);
+        _dispatcher.frameTrace.Record(DorotiFramePhase.scheduleFrame, viewId, DorotiFrameClock.Now,
+            reason: invocation.ElementId);
         frameHost.ScheduleFrame(timestamp => _dispatcher.DispatchFrame(this, timestamp));
     }
 

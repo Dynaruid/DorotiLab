@@ -1,6 +1,6 @@
 #Requires -Version 7.0
 param(
-    [ValidateSet('Source', 'Build', 'Targets', 'Fcr0', 'Fcr1', 'Fcr2', 'Developer', 'Release')]
+    [ValidateSet('Source', 'Build', 'Targets', 'Fcr0', 'Fcr1', 'Fcr2', 'Fcr3', 'Developer', 'Release')]
     [string] $Suite = 'Developer'
 )
 
@@ -129,6 +129,11 @@ function Invoke-Fcr2Gate {
     $completed.Add('fcr-2-dart-csharp-semantics')
 }
 
+function Invoke-Fcr3Gate {
+    Invoke-Checked { & (Join-Path $PSScriptRoot 'validate-fcr3-scheduler.ps1') } 'Flutter scheduler FCR-3 validation failed'
+    $completed.Add('fcr-3-scheduler')
+}
+
 function Invoke-ReleaseGate {
     & (Join-Path $PSScriptRoot 'validate-app-targets.ps1') -Shard Live
     & (Join-Path $PSScriptRoot 'validate-app-targets.ps1') -Shard Evidence
@@ -145,11 +150,13 @@ switch ($Suite) {
     'Fcr0' { Invoke-Fcr0Gate }
     'Fcr1' { Invoke-Fcr1Gate }
     'Fcr2' { Invoke-Fcr2Gate }
+    'Fcr3' { Invoke-Fcr3Gate }
     'Developer' {
         Invoke-SourceGate
         Invoke-Fcr0Gate
         Invoke-Fcr1Gate
         Invoke-Fcr2Gate
+        Invoke-Fcr3Gate
         Invoke-BuildGate
         Invoke-TargetGate
     }
@@ -158,6 +165,7 @@ switch ($Suite) {
         Invoke-Fcr0Gate
         Invoke-Fcr1Gate
         Invoke-Fcr2Gate
+        Invoke-Fcr3Gate
         Invoke-BuildGate
         Invoke-TargetGate
         Invoke-ReleaseGate

@@ -76,9 +76,9 @@
       "productSources": ["Doroti/src/Doroti.Framework.Scheduler/binding.cs"],
       "runtimeDependencyIds": ["runtime:scheduler-host", "runtime:dart-primitives"],
       "hostConsumers": ["Doroti/src/Doroti.Hosting/DorotiHostSession.cs", "Doroti/src/Doroti.Host.Maui/DorotiMauiSurface.cs"],
-      "testEvidence": ["Doroti/eng/validate-app-targets.ps1", "Doroti/validation/evidence/app-targets-evidence.json"],
-      "verification": "notVerified",
-      "note": "Phase ordering and timestamp trace closure is intentionally deferred to FCR-3."
+      "testEvidence": ["Doroti/eng/validate-fcr3-scheduler.ps1", "Doroti/validation/fcr3-scheduler/Program.cs", "Doroti/validation/evidence/flutter-conformance/fcr3-scheduler-evidence.json"],
+      "verification": "partial",
+      "note": "FCR-3 establishes scheduler ordering, monotonic timestamp, coalescing, immutable latest-scene ownership, and input-to-present trace contracts. Native lifecycle and Flutter-reference execution remain notVerified."
     },
     {
       "id": "rendering.object",

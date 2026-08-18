@@ -1,6 +1,6 @@
 # Doroti Flutter Conformance & Smooth Rendering Upgrade
 
-> 상태: **ACTIVE PLAN — FCR-0 inventory/contract gate, FCR-1 framework shader contract와 FCR-2 typed semantic/runtime contract 구현 완료; app interaction·differential·live/physical 검증은 후속 gate로 남음**
+> 상태: **ACTIVE PLAN — FCR-0 inventory/contract gate, FCR-1 framework shader contract, FCR-2 typed semantic/runtime contract와 FCR-3 scheduler/frame-ownership contract 구현 완료; app interaction·differential·live/physical 검증은 후속 gate로 남음**
 > 작성일: 2026-08-18
 > Doroti 기준 revision: `3fd08b3` + 이 문서 변경
 > Flutter source pin: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
@@ -148,6 +148,10 @@ FCR-1과 FCR-2는 병행 가능하다. FCR-3~FCR-5는 frame ownership을 먼저 
 - 새 번역에서 금지 패턴이 재생성되면 CI가 source symbol과 함께 실패한다.
 
 ### FCR-3 — Flutter식 scheduler, frame coalescing과 ownership
+
+현재 구현 상태 (2026-08-18): `DorotiFrameClock`가 native input, vsync, framework dispatch와 terminal raster의 단조 시간 기준을 제공한다. Scheduler는 transient → mid-frame microtask → persistent → post-frame 순서를 bounded trace로 남기며 stale vsync가 시간을 되돌리지 않게 한다. MAUI host는 callback queue 대신 하나의 pending request만 유지하고, raster가 늦을 때 immutable command-array latest scene만 교체한다. input sequence와 scene sequence는 submit/raster/present/replay/superseded/failed trace에 함께 보존된다. `validate-fcr3-scheduler.ps1` 및 Debug/Release fixture가 이 구조적 계약을 검증한다.
+
+아직 `notVerified`: Flutter reference 실행과의 실제 callback trace differential, Windows resize/context recreate/foreground lifecycle stress, Android physical lifecycle stress, 그리고 60초 앱 interaction trace의 deadlock·duplicate callback·use-after-dispose·process survival acceptance.
 
 작업:
 

@@ -65,6 +65,7 @@ public sealed class MauiFrameworkHost : IDisposable
         {
             using var dispatcherScope = session.dispatcher.EnterScope();
             view = session.dispatcher.RegisterView(viewId, capabilities);
+            graphics.AttachFrameworkTrace(view.FrameTrace);
             session.AttachView(view);
             _views.Add(viewId, (view, host, graphics));
             _sessions.Add(viewId, session);

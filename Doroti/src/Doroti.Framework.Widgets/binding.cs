@@ -897,18 +897,23 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
 
     public virtual void drawFrame()
     {
+        var frameViewId = this.platformDispatcher.implicitView?.viewId ?? 0;
         this.debugBuildingDirtyElements = true;
         try
         {
+            this.platformDispatcher.frameTrace.Record(DorotiFramePhase.build, frameViewId, DorotiFrameClock.Now);
             if (this.rootElement is not null)
             {
                 this.buildOwner!.buildScope(this.rootElement);
             }
+            this.platformDispatcher.frameTrace.Record(DorotiFramePhase.layout, frameViewId, DorotiFrameClock.Now);
             this.rootPipelineOwner.flushLayout();
             this.rootPipelineOwner.flushCompositingBits();
+            this.platformDispatcher.frameTrace.Record(DorotiFramePhase.paint, frameViewId, DorotiFrameClock.Now);
             this.rootPipelineOwner.flushPaint();
             if (this.sendFramesToEngine)
             {
+                this.platformDispatcher.frameTrace.Record(DorotiFramePhase.sceneBuild, frameViewId, DorotiFrameClock.Now);
                 foreach (RenderView renderView__27663 in this.renderViews)
                 {
                     renderView__27663.compositeFrame();

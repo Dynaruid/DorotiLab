@@ -30,10 +30,16 @@ internal sealed class MauiSkiaCapabilities :
     private long _presented;
     private long _replayed;
     private long _failed;
+    private long _superseded;
+    private long _dropped;
+    private long _nextSceneSequence;
+    private long _lastSubmittedInputSequence;
+    private long _lastPresentedInputSequence;
     private long _contextGeneration;
     private long _shaderImageFiltersRendered;
     private bool _semanticsEnabled;
     private bool _disposed;
+    private DorotiFrameTrace _frameTrace = new();
 
     private string RuntimeEffectBackend =>
         $"{DorotiSkiaRuntimeEffects.MauiGpuBackend}/{_viewId}";
@@ -47,6 +53,7 @@ internal sealed class MauiSkiaCapabilities :
             checked((byte)backgroundColor.red), checked((byte)backgroundColor.green),
             checked((byte)backgroundColor.blue), checked((byte)backgroundColor.alpha));
         _host.SemanticsAction += HandleSemanticsAction;
+        _host.InputReceived += HandleInput;
     }
 
     private Action<SemanticsActionEvent>? _action;
@@ -60,8 +67,16 @@ internal sealed class MauiSkiaCapabilities :
                 return new(_submitted, _presented, _replayed, _failed, _contextGeneration,
                     _host.Snapshot.SurfaceGeneration, _pendingFrame is not null,
                     Volatile.Read(ref _shaderImageFiltersRendered),
-                    "skiasharp-maui-skglview-gpu");
+                    "skiasharp-maui-skglview-gpu", _superseded, _dropped,
+                    _host.InputSequence, _lastSubmittedInputSequence, _lastPresentedInputSequence,
+                    _frameTrace.Snapshot());
         }
+    }
+
+    internal void AttachFrameworkTrace(DorotiFrameTrace frameTrace)
+    {
+        ArgumentNullException.ThrowIfNull(frameTrace);
+        lock (_gate) _frameTrace = frameTrace;
     }
 
     internal void AttachSurface(Action invalidate)
@@ -90,11 +105,26 @@ internal sealed class MauiSkiaCapabilities :
             throw new DorotiCapabilityException(DorotiCapabilityIds.GraphicsScene, viewId, invocation,
                 "scene/view ownership mismatch", "browser-wasm/document-canvas-webgl2");
         Action? invalidate;
+        var timestamp = DorotiFrameClock.Now;
         lock (_gate)
         {
-            _pendingFrame = new(scene.Commands);
+            var sceneSequence = ++_nextSceneSequence;
+            var inputSequence = _host.InputSequence;
+            if (_pendingFrame is { } pending)
+            {
+                _superseded++;
+                _frameTrace.Record(DorotiFramePhase.superseded, _viewId, timestamp,
+                    pending.InputSequence, pending.SceneSequence, _host.Snapshot.SurfaceGeneration,
+                    "latest immutable scene replaced before raster");
+            }
+            // The producer hands raster an immutable command array. It never
+            // mutates or disposes a scene currently being consumed by Paint.
+            _pendingFrame = new(sceneSequence, inputSequence, timestamp, scene.Commands.ToArray());
             _submitted++;
+            _lastSubmittedInputSequence = inputSequence;
             invalidate = _invalidate;
+            _frameTrace.Record(DorotiFramePhase.sceneSubmitted, _viewId, timestamp,
+                inputSequence, sceneSequence, _host.Snapshot.SurfaceGeneration, invocation.ElementId);
         }
         invalidate?.Invoke();
     }
@@ -134,6 +164,10 @@ internal sealed class MauiSkiaCapabilities :
             // Replay the last successful framework scene when no replacement is pending.
             // RenderView's root transform has already converted logical coordinates
             // into physical pixels. Applying the browser DPR here would scale twice.
+            var rasterStart = DorotiFrameClock.Now;
+            _frameTrace.Record(DorotiFramePhase.raster, _viewId, rasterStart,
+                frame.InputSequence, frame.SceneSequence, _host.Snapshot.SurfaceGeneration,
+                isNewFrame ? null : "retained scene replay", rasterStart - frame.SubmittedAt);
             DrawScene(canvas, frame.Commands, pixelWidth, pixelHeight);
             canvas.Flush();
             lock (_gate)
@@ -142,10 +176,16 @@ internal sealed class MauiSkiaCapabilities :
                 {
                     _presentedFrame = frame;
                     _presented++;
+                    _lastPresentedInputSequence = frame.InputSequence;
+                    _frameTrace.Record(DorotiFramePhase.present, _viewId, DorotiFrameClock.Now,
+                        frame.InputSequence, frame.SceneSequence, _host.Snapshot.SurfaceGeneration);
                 }
                 else
                 {
                     _replayed++;
+                    _frameTrace.Record(DorotiFramePhase.replay, _viewId, DorotiFrameClock.Now,
+                        frame.InputSequence, frame.SceneSequence, _host.Snapshot.SurfaceGeneration,
+                        "fresh native back buffer");
                 }
             }
         }
@@ -154,7 +194,11 @@ internal sealed class MauiSkiaCapabilities :
             lock (_gate)
             {
                 if (isNewFrame && _pendingFrame is null) _pendingFrame = frame;
+                else if (isNewFrame) _dropped++;
                 _failed++;
+                _frameTrace.Record(DorotiFramePhase.failed, _viewId, DorotiFrameClock.Now,
+                    frame.InputSequence, frame.SceneSequence, _host.Snapshot.SurfaceGeneration,
+                    "raster failure");
             }
             throw;
         }
@@ -224,6 +268,7 @@ internal sealed class MauiSkiaCapabilities :
         if (_disposed) return;
         _disposed = true;
         _host.SemanticsAction -= HandleSemanticsAction;
+        _host.InputReceived -= HandleInput;
         lock (_paintGate)
         {
             lock (_gate)
@@ -243,7 +288,15 @@ internal sealed class MauiSkiaCapabilities :
         if (!_disposed) _action?.Invoke(new(_viewId, nodeId, action, arguments));
     }
 
-    private sealed record SceneFrame(IReadOnlyList<SceneCommand> Commands);
+    private void HandleInput(long sequence, TimeSpan timestamp) =>
+        _frameTrace.Record(DorotiFramePhase.input, _viewId, timestamp, sequence,
+            surfaceGeneration: _host.Snapshot.SurfaceGeneration);
+
+    private sealed record SceneFrame(
+        long SceneSequence,
+        long InputSequence,
+        TimeSpan SubmittedAt,
+        IReadOnlyList<SceneCommand> Commands);
 
     private void DrawScene(
         SKCanvas canvas,

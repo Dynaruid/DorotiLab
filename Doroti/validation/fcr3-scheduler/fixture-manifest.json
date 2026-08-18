@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "doroti.flutter-conformance-fcr3-fixture/v1",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "sources": [
+    {
+      "path": "packages/flutter/lib/src/scheduler/binding.dart",
+      "sha256": "c8cdd9e9b7b977d847e9bde6ea2381e366f6bd8597d08069b66651f17cc0ee7c",
+      "anchors": [
+        "enum SchedulerPhase",
+        "void handleBeginFrame(Duration? rawTimeStamp)",
+        "void handleDrawFrame()",
+        "SchedulerPhase.transientCallbacks",
+        "SchedulerPhase.persistentCallbacks",
+        "SchedulerPhase.postFrameCallbacks"
+      ]
+    }
+  ],
+  "expectedOrdering": [
+    "transientCallbacks",
+    "midFrameMicrotasks",
+    "persistentCallbacks",
+    "postFrameCallbacks"
+  ]
+}

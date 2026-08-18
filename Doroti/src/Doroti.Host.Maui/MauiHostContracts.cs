@@ -21,7 +21,13 @@ public sealed record MauiFrameDiagnostics(
     long SurfaceGeneration,
     bool PendingScene,
     long ShaderImageFiltersRendered,
-    string Backend);
+    string Backend,
+    long Superseded,
+    long Dropped,
+    long LastInputSequence,
+    long LastSubmittedInputSequence,
+    long LastPresentedInputSequence,
+    IReadOnlyList<DorotiFrameTraceEntry> Trace);
 
 public sealed record MauiSemanticsDiagnostics(
     long UpdatesReceived,

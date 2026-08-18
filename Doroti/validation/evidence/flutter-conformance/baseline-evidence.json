@@ -1,8 +1,8 @@
 {
   "schemaVersion": "doroti.flutter-conformance-baseline/v1",
   "milestone": "FCR-0",
-  "capturedAtUtc": "2026-08-18T03:34:24.9687828Z",
-  "repositoryRevision": "dd020d30305460f50fc75515d77db467a79177aa",
+  "capturedAtUtc": "2026-08-18T03:55:45.7353758Z",
+  "repositoryRevision": "40dbf0b57fa38d9e968a007f6f85cc0b52df8564",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "matrix": "Doroti/validation/evidence/flutter-conformance/framework-parity-matrix.json",
   "inventory": {
@@ -88,7 +88,7 @@
           "runtime:dart-primitives"
         ],
         "disposition": "adapted",
-        "verification": "notVerified"
+        "verification": "partial"
       },
       {
         "id": "rendering.object",
@@ -2796,27 +2796,22 @@
           {
             "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
             "sourceOwner": "Doroti.Framework.Scheduler",
-            "line": 176
+            "line": 177
           },
           {
             "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
             "sourceOwner": "Doroti.Framework.Scheduler",
-            "line": 179
+            "line": 180
           },
           {
             "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
             "sourceOwner": "Doroti.Framework.Scheduler",
-            "line": 184
+            "line": 185
           },
           {
             "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
             "sourceOwner": "Doroti.Framework.Scheduler",
-            "line": 208
-          },
-          {
-            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
-            "sourceOwner": "Doroti.Framework.Scheduler",
-            "line": 295
+            "line": 209
           },
           {
             "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
@@ -2826,57 +2821,62 @@
           {
             "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
             "sourceOwner": "Doroti.Framework.Scheduler",
-            "line": 332
+            "line": 297
           },
           {
             "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
             "sourceOwner": "Doroti.Framework.Scheduler",
-            "line": 363
+            "line": 333
           },
           {
             "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
             "sourceOwner": "Doroti.Framework.Scheduler",
-            "line": 370
+            "line": 364
           },
           {
             "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
             "sourceOwner": "Doroti.Framework.Scheduler",
-            "line": 386
+            "line": 371
           },
           {
             "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
             "sourceOwner": "Doroti.Framework.Scheduler",
-            "line": 400
+            "line": 387
           },
           {
             "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
             "sourceOwner": "Doroti.Framework.Scheduler",
-            "line": 414
+            "line": 401
           },
           {
             "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
             "sourceOwner": "Doroti.Framework.Scheduler",
-            "line": 436
+            "line": 415
           },
           {
             "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
             "sourceOwner": "Doroti.Framework.Scheduler",
-            "line": 526
+            "line": 437
           },
           {
             "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
             "sourceOwner": "Doroti.Framework.Scheduler",
-            "line": 545
+            "line": 529
           },
           {
             "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
             "sourceOwner": "Doroti.Framework.Scheduler",
-            "line": 578
+            "line": 550
           },
           {
             "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
             "sourceOwner": "Doroti.Framework.Scheduler",
-            "line": 582
+            "line": 585
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 589
           }
         ],
         "ownerlessCandidateCount": 0,
