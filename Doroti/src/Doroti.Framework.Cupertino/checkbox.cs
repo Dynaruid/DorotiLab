@@ -686,7 +686,7 @@ internal class _CheckboxPainter__checkbox : global::Doroti.Framework.Widgets.Tog
         canvas.drawLine((origin + start__22422), (origin + end__22511), paint);
     }
 
-    public virtual void paint(Canvas canvas, Size size)
+    public override void paint(Canvas canvas, Size size)
     {
         global::Doroti.Ui.Paint strokePaint__22720 = ((global::Doroti.Ui.Paint)(object?)_createStrokePaint());
         var origin__22766 = ((size / 2.0) - (new global::Doroti.Ui.Size(CupertinoCheckbox.width) / 2.0));

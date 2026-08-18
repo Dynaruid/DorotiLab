@@ -1,8 +1,8 @@
 {
   "schemaVersion": "doroti.flutter-conformance-fcr7-evidence/v1",
   "status": "partial",
-  "capturedAt": "2026-08-18T04:55:00.0052738Z",
-  "repositoryRevision": "68d2887d589bcedf774d6c35df71463febbf417c",
+  "capturedAt": "2026-08-18T06:17:13.2942625Z",
+  "repositoryRevision": "19c6be0132f0c2b930b210dd21c32c6f1a20788f",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "fixtureManifest": "Doroti/validation/fcr7-material-widget/fixture-manifest.json",
   "structuralContract": {

@@ -1,8 +1,8 @@
 {
   "schemaVersion": "doroti.flutter-conformance-baseline/v1",
   "milestone": "FCR-0",
-  "capturedAtUtc": "2026-08-18T04:53:30.5016437Z",
-  "repositoryRevision": "68d2887d589bcedf774d6c35df71463febbf417c",
+  "capturedAtUtc": "2026-08-18T06:15:52.9497473Z",
+  "repositoryRevision": "19c6be0132f0c2b930b210dd21c32c6f1a20788f",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "matrix": "Doroti/validation/evidence/flutter-conformance/framework-parity-matrix.json",
   "inventory": {
@@ -3460,7 +3460,7 @@
       "status": "partial",
       "scenario": "DorotiDemoApp launch, idle repaint, wheel/drag scroll, Ink/FAB and frame survival",
       "sourceEvidence": "Doroti/validation/evidence/app-targets-evidence.json",
-      "sourceEvidenceCapturedAtUtc": "2026-08-18T00:45:39.7203228+09:00",
+      "sourceEvidenceCapturedAtUtc": "2026-08-18T15:10:46.0555882+09:00",
       "metrics": {
         "frameTimeMs": {
           "status": "notVerified",
@@ -3469,12 +3469,12 @@
         },
         "invalidationsRequested": {
           "status": "observed",
-          "value": 110,
+          "value": 245,
           "source": "app-targets-evidence.json"
         },
         "invalidationsCoalesced": {
           "status": "observed",
-          "value": 55,
+          "value": 118,
           "source": "app-targets-evidence.json"
         },
         "dirtyRenderCount": {
@@ -3504,12 +3504,12 @@
         },
         "submittedFrames": {
           "status": "observed",
-          "value": 54,
+          "value": 120,
           "source": "app-targets-evidence.json"
         },
         "presentedFrames": {
           "status": "observed",
-          "value": 54,
+          "value": 120,
           "source": "app-targets-evidence.json"
         },
         "failedFrames": {
@@ -3519,15 +3519,15 @@
         },
         "nativePointerEvents": {
           "status": "observed",
-          "value": 0,
+          "value": 8,
           "source": "app-targets-evidence.json"
         },
         "semanticsWork": {
           "status": "observed",
-          "updatesReceived": 1,
-          "updatesApplied": 1,
+          "updatesReceived": 6,
+          "updatesApplied": 6,
           "updatesCoalesced": 0,
-          "activeElements": 25
+          "activeElements": 29
         }
       }
     },
@@ -3535,7 +3535,7 @@
       "status": "partial",
       "scenario": "DorotiDemoApp launch, automated scroll, Ink/FAB and persistent display",
       "sourceEvidence": "Doroti/validation/evidence/app-targets-evidence.json",
-      "sourceEvidenceCapturedAtUtc": "2026-08-18T00:45:39.7203228+09:00",
+      "sourceEvidenceCapturedAtUtc": "2026-08-18T15:10:46.0555882+09:00",
       "metrics": {
         "frameTimeMs": {
           "status": "notVerified",

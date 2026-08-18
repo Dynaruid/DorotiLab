@@ -460,7 +460,7 @@ internal class _RadioPainter__radio : global::Doroti.Framework.Widgets.Toggleabl
             notifyListeners();
         }
     }
-    public virtual void paint(Canvas canvas, Size size)
+    public override void paint(Canvas canvas, Size size)
     {
         paintRadialReaction(canvas: canvas, origin: size.center(Offset.zero));
         global::Doroti.Ui.Rect rect__30624 = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & size));

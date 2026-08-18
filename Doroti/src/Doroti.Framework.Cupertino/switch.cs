@@ -1100,7 +1100,7 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
         }
     }
 
-    public virtual void paint(Canvas canvas, Size size)
+    public override void paint(Canvas canvas, Size size)
     {
         double currentValue__36255 = ((global::Doroti.Framework.Animation.Animation<double>)this.position).value;
         double visualPosition__36304 = (this.textDirection switch { TextDirection.rtl => (1.0 - currentValue__36255), TextDirection.ltr => currentValue__36255, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });

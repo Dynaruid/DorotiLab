@@ -210,6 +210,7 @@ if ($Shard -eq 'Hosting') {
     foreach ($token in @('releasePressedKeys','setViewFocus','dispatchSemanticsAction','applySemanticsFlags','languagechange','prefers-color-scheme')) {
         Assert-True ($script.Contains($token, [StringComparison]::Ordinal)) "browser interaction token $token"
     }
+    Assert-True ($script -match 'element\.style\.pointerEvents = "none"' -and $script -match 'event\.stopPropagation\(\)' -and $script -notmatch 'element\.style\.pointerEvents = "auto"') 'semantics overlay ordinary-pointer pass-through and action bubbling boundary'
     Assert-True ($keyMap -match 'HidPlane' -and $keyMap -match 'LogicalKeys' -and $contracts -notmatch 'StableKey\(') 'Flutter-compatible browser key identifiers'
     Assert-True ($script -notmatch 'getContext\(["'']2d["'']' -and $script -notmatch 'canvaskit') 'software and CanvasKit fallback absence'
     $managedImports = @([regex]::Matches($contracts, 'JSImport\("([A-Za-z0-9]+)"') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
@@ -253,22 +254,22 @@ if ($Shard -eq 'Graph') {
     $forbidden = @($graphFiles | Select-String -Pattern 'Doroti\.(Host\.Desktop|Shell\.|Vendor\.|Target\.Windows\.win-x64|Target\.macOS)|Win32|AppKit|NSOpenGL|WGL' -CaseSensitive)
     Assert-Equal $forbidden.Count 0 'browser graph legacy desktop dependency scan'
     Assert-True ($central -match 'SkiaSharp.Views.Blazor" Version="4.151.1"' -and $central -match 'SkiaSharp.NativeAssets.WebAssembly" Version="4.151.1"') 'SkiaSharp WebAssembly version set'
-    Assert-True ($central -match 'Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0"') 'Blazor WebAssembly package pin'
-    Assert-True ($central -match 'Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0"') 'Blazor WebAssembly DevServer package pin'
+    Assert-True ($central -match 'Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.11"') 'Blazor WebAssembly package pin'
+    Assert-True ($central -match 'Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.11"') 'Blazor WebAssembly DevServer package pin'
     Assert-True ($sdkTargets -match 'Microsoft.AspNetCore.Components.WebAssembly.DevServer') 'Web run uses Blazor DevServer'
     Assert-True (Test-Path -LiteralPath (Join-Path $repoRoot 'DorotiDemoApp/Properties/launchSettings.json')) 'DorotiDemoApp Web launchSettings'
     Assert-True (Test-Path -LiteralPath (Join-Path $templateRoot 'Properties/launchSettings.json')) 'template Web launchSettings'
     Assert-True ($central -match 'Microsoft.TypeScript.MSBuild" Version="7.0.0"') 'TypeScript MSBuild package pin'
     Assert-True ($hostCsproj -match 'SkiaSharp.Views.Blazor' -and $hostCsproj -match 'SkiaSharp.NativeAssets.WebAssembly') 'Web host Skia package graph'
     Assert-True ($targetCsproj -match 'Microsoft.AspNetCore.Components.WebAssembly' -and $targetCsproj -match 'buildTransitive') 'target Blazor build contract'
-    Assert-True ($sdkProps -match '<RuntimeFrameworkVersion.+>10\.0\.11</RuntimeFrameworkVersion>' -and $targetProps -match '<RuntimeFrameworkVersion.+>10\.0\.11</RuntimeFrameworkVersion>') 'browser runtime patch contract'
+    Assert-True ($sdkProps -match '<DorotiWebRuntimeVersion.+>10\.0\.11</DorotiWebRuntimeVersion>' -and $sdkProps -match '<RuntimeFrameworkVersion.+>\$\(DorotiWebRuntimeVersion\)</RuntimeFrameworkVersion>' -and $targetProps -match '<RuntimeFrameworkVersion.+>10\.0\.11</RuntimeFrameworkVersion>') 'browser runtime patch contract'
     Assert-True ($sdkTargets -match 'InvalidateDorotiWebRuntimeCache' -and $sdkTargets -match 'web-runtime-version\.txt' -and $sdkTargets -match 'RemoveDir Directories="\$\(IntermediateOutputPath\)webcil"') 'browser runtime cache invalidation contract'
     Assert-True ($sdkTargets -match 'Microsoft.TypeScript.MSBuild' -and $sdkTargets -match 'Doroti.TypeScript.targets') 'Web-only TypeScript SDK activation'
     Assert-True ($demoWebProjectText -match 'Doroti.App.Sdk' -and $demoWebProjectText -match 'Doroti.Target.Web.browser-wasm') 'DorotiDemoApp single-project target selector'
     Assert-Equal $manifest.rid 'browser-wasm' 'browser target RID'
     Assert-Equal $manifest.graphicsBackend 'webgl2-browser-gpu-required' 'browser GPU policy'
     Assert-Equal $manifest.skiaSharpVersion '4.151.1' 'manifest SkiaSharp version'
-    Assert-Equal $manifest.blazorWebAssemblyVersion '10.0.0' 'manifest Blazor version'
+    Assert-Equal $manifest.blazorWebAssemblyVersion '10.0.11' 'manifest Blazor version'
     Assert-Equal @($templateFiles | Where-Object { $_.Extension -in @('.dart') -or $_.Name -in @('pubspec.yaml','.metadata','doroti.yaml') }).Count 0 'template Flutter/Dart scaffold files'
     Assert-Equal @($templateFiles | Where-Object Extension -eq '.razor').Count 0 'user-owned Razor files'
     Assert-Equal @($templateFiles | Where-Object Name -eq 'PlatformBootstrap.cs').Count 0 'legacy app-owned Web bootstrap files'
@@ -290,7 +291,7 @@ if ($Shard -eq 'Graph') {
     Assert-True ($templateSource -notmatch '\bFlutter[A-Za-z0-9_]*\b') 'product-facing Flutter identifiers in template source'
     Assert-True ($templateSource -notmatch 'Router|EditForm|Microsoft\.AspNetCore\.Components\.Forms') 'router/forms/component UI dependency absence'
     Write-Json (Join-Path $tmpRoot 'graph.json') ([ordered]@{
-        status='pass'; packageVersions=[ordered]@{ blazor='10.0.0'; skiaSharp='4.151.1'; typescriptMsBuild='7.0.0' }
+        status='pass'; packageVersions=[ordered]@{ blazor='10.0.11'; skiaSharp='4.151.1'; typescriptMsBuild='7.0.0' }
         desktopNativeDependencies=0; legacyDesktopDependencies=0; canvasKitDependencies=0
         userRazorFiles=0; flutterDartScaffoldFiles=0; productFacingFlutterIdentifiers=0
         checkedInGeneratedJavaScript=0; webTypeScriptScope='template-demo-host-only'
@@ -545,7 +546,7 @@ if ($Shard -eq 'Publish') {
         application=[ordered]@{ source='DorotiDemoApp/src/App.cs'; bootstrap='DorotiDemoApp/Program.cs'; sourceSha256=Get-Sha $appSource; assembly=$app[0].Name; assemblySha256=Get-Sha $app[0].FullName; project='DorotiDemoApp.csproj' }
         runtime=[ordered]@{ frameworkVersion=$runtimeFrameworkVersion; coreLibWebCil=$publishedCoreLib[0].Name; coreLibSha256=Get-Sha $publishedCoreLib[0].FullName; nativeWasm=$native[0].Name; nativeSha256=Get-Sha $native[0].FullName; skiaWasm=@($skia | ForEach-Object { [ordered]@{ name=$_.Name; sha256=Get-Sha $_.FullName } }) }
         webModules=$webModules
-        packages=[ordered]@{ target='Doroti.Target.Web.browser-wasm/0.2.0-beta'; blazor='10.0.0'; skiaSharp='4.151.1'; typescriptMsBuild='7.0.0-private-build-only' }
+        packages=[ordered]@{ target='Doroti.Target.Web.browser-wasm/0.2.0-beta'; blazor='10.0.11'; skiaSharp='4.151.1'; typescriptMsBuild='7.0.0-private-build-only' }
         files=$artifactIdentity
     }
     Write-Json (Join-Path $artifactRoot 'artifact-manifest.json') $manifest

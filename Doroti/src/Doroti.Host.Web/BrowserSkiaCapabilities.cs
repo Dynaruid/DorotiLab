@@ -452,6 +452,7 @@ internal sealed class BrowserSkiaCapabilities :
                 case "clipPath" when command.HostPayload is CanvasClipPathPayload clip: canvas.ClipPath(ToPath(clip.Path), SKClipOperation.Intersect, true); break;
                 case "drawRect" when command.HostPayload is CanvasRectPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawRect(ToRect(draw.Rect), paint); break;
                 case "drawRRect" when command.HostPayload is CanvasRRectPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawPath(ToPath(draw.RRect), paint); break;
+                case "drawDRRect" when command.HostPayload is CanvasDRRectPayload draw: DrawDRRect(canvas, draw); break;
                 case "drawRSuperellipse" when command.HostPayload is CanvasRSuperellipsePayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawRect(ToRect(draw.RSuperellipse.outerRect), paint); break;
                 case "drawPath" when command.HostPayload is CanvasPathPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawPath(ToPath(draw.Path), paint); break;
                 case "drawPaint" when command.HostPayload is PaintSnapshot draw: using (var paint = ToPaint(draw)) canvas.DrawPaint(paint); break;
@@ -669,6 +670,18 @@ internal sealed class BrowserSkiaCapabilities :
         builder.AddRoundRect(ToRect(value.outerRect), (float)value.tlRadiusX, (float)value.tlRadiusY,
             SKPathDirection.Clockwise);
         return builder.Detach();
+    }
+
+    private void DrawDRRect(SKCanvas canvas, CanvasDRRectPayload draw)
+    {
+        using var paint = ToPaint(draw.Paint);
+        using var builder = new SKPathBuilder { FillType = SKPathFillType.EvenOdd };
+        builder.AddRoundRect(ToRect(draw.Outer.outerRect), (float)draw.Outer.tlRadiusX, (float)draw.Outer.tlRadiusY,
+            SKPathDirection.Clockwise);
+        builder.AddRoundRect(ToRect(draw.Inner.outerRect), (float)draw.Inner.tlRadiusX, (float)draw.Inner.tlRadiusY,
+            SKPathDirection.Clockwise);
+        using var path = builder.Detach();
+        canvas.DrawPath(path, paint);
     }
 
     private static SKRect ToRect(Rect value) => new((float)value.left, (float)value.top, (float)value.right, (float)value.bottom);

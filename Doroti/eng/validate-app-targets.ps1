@@ -38,6 +38,78 @@ function Invoke-Checked([scriptblock] $Command, [string] $Failure) {
     if ($LASTEXITCODE -ne 0) { throw "$Failure (exit code $LASTEXITCODE)." }
 }
 
+function Invoke-WindowsInteractionStress([Diagnostics.Process] $Process) {
+    if ($null -eq ('DorotiWindowsLiveInput' -as [type])) {
+        Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+
+public static class DorotiWindowsLiveInput
+{
+    [StructLayout(LayoutKind.Sequential)]
+    public struct RECT { public int Left; public int Top; public int Right; public int Bottom; }
+
+    [DllImport("user32.dll")]
+    public static extern bool GetWindowRect(IntPtr hWnd, out RECT rect);
+
+    [DllImport("user32.dll")]
+    public static extern bool SetWindowPos(IntPtr hWnd, IntPtr after, int x, int y, int width, int height, uint flags);
+
+    [DllImport("user32.dll")]
+    public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+    [DllImport("user32.dll")]
+    public static extern bool ShowWindow(IntPtr hWnd, int command);
+
+    [DllImport("user32.dll")]
+    public static extern bool SetCursorPos(int x, int y);
+
+    [DllImport("user32.dll")]
+    public static extern void mouse_event(uint flags, uint dx, uint dy, uint data, UIntPtr extraInfo);
+}
+'@
+    }
+
+    $window = [IntPtr]::Zero
+    for ($attempt = 0; $attempt -lt 100; $attempt++) {
+        $Process.Refresh()
+        if ($Process.HasExited) { break }
+        $window = $Process.MainWindowHandle
+        if ($window -ne [IntPtr]::Zero) { break }
+        Start-Sleep -Milliseconds 100
+    }
+    Assert-True ($window -ne [IntPtr]::Zero) 'Windows MAUI native window handle'
+    $rect = [DorotiWindowsLiveInput+RECT]::new()
+    Assert-True ([DorotiWindowsLiveInput]::GetWindowRect($window, [ref]$rect)) 'Windows MAUI initial window bounds'
+    $width = $rect.Right - $rect.Left
+    $height = $rect.Bottom - $rect.Top
+    [DorotiWindowsLiveInput]::ShowWindow($window, 5) | Out-Null
+    [DorotiWindowsLiveInput]::SetForegroundWindow($window) | Out-Null
+
+    # Two real native resize transitions exercise metrics invalidation and swap-chain replay.
+    Assert-True ([DorotiWindowsLiveInput]::SetWindowPos($window, [IntPtr]::Zero, $rect.Left, $rect.Top,
+        $width + 160, $height + 120, 0x0004)) 'Windows MAUI grow resize'
+    Start-Sleep -Milliseconds 750
+    Assert-True ([DorotiWindowsLiveInput]::SetWindowPos($window, [IntPtr]::Zero, $rect.Left, $rect.Top,
+        $width, $height, 0x0004)) 'Windows MAUI restore resize'
+    Start-Sleep -Milliseconds 750
+
+    $x = $rect.Left + [Math]::Max(80, [int]($width * 0.5))
+    $y = $rect.Top + [Math]::Max(160, [int]($height * 0.55))
+    Assert-True ([DorotiWindowsLiveInput]::SetCursorPos($x, $y)) 'Windows MAUI input cursor positioning'
+    foreach ($index in 0..5) {
+        [DorotiWindowsLiveInput]::mouse_event(0x0800, 0, 0, 4294967176, [UIntPtr]::Zero)
+        Start-Sleep -Milliseconds 80
+    }
+    [DorotiWindowsLiveInput]::mouse_event(0x0002, 0, 0, 0, [UIntPtr]::Zero)
+    foreach ($offset in 20, 40, 60, 80, 100, 120) {
+        [DorotiWindowsLiveInput]::SetCursorPos($x, $y - $offset) | Out-Null
+        Start-Sleep -Milliseconds 50
+    }
+    [DorotiWindowsLiveInput]::mouse_event(0x0004, 0, 0, 0, [UIntPtr]::Zero)
+    Start-Sleep -Seconds 2
+}
+
 function Write-Json([string] $Path, [object] $Value) {
     [IO.Directory]::CreateDirectory((Split-Path $Path -Parent)) | Out-Null
     $json = (($Value | ConvertTo-Json -Depth 64) -replace "`r`n", "`n") + "`n"
@@ -270,6 +342,7 @@ function Invoke-WindowsLiveGate {
             Assert-True (-not $process.HasExited) 'Windows MAUI process survival while collecting evidence'
         }
         Assert-True ($null -ne $live -and [long]$live.Frame.Replayed -gt 0) 'Windows MAUI retained scene evidence timeout'
+        Invoke-WindowsInteractionStress $process
     }
     finally {
         if (-not $process.HasExited) { Stop-Process -Id $process.Id -Force }
@@ -280,9 +353,13 @@ function Invoke-WindowsLiveGate {
     Assert-True ([long]$live.Frame.Presented -gt 0 -and [long]$live.Frame.Failed -eq 0) 'Windows MAUI presented frame'
     Assert-True ([long]$live.Frame.ShaderImageFiltersRendered -gt 0) 'Windows native ImageFilter.shader execution'
     Assert-True ([long]$live.Frame.Replayed -gt 0) 'Windows MAUI retained scene replay'
+    Assert-True ([long]$live.NativePointerEvents -gt 0) 'Windows MAUI native wheel/drag input'
+    Assert-True ([long]$live.Surface.MetricsGeneration -gt 3) 'Windows MAUI resize metrics transition'
     Assert-True ([long]$live.Semantics.UpdatesReceived -gt 0 -and
         [long]$live.Semantics.UpdatesApplied -gt 0) 'Windows typed semantics bridge'
-    Assert-True ([long]$live.Semantics.ElementsCreated -eq [long]$live.Semantics.ActiveElements) 'Windows initial semantics node reuse baseline'
+    Assert-True ([long]$live.Semantics.ActiveElements -gt 0 -and
+        [long]$live.Semantics.RetainedNodes -eq [long]$live.Semantics.ActiveElements -and
+        [long]$live.Semantics.ActiveElements -le [long]$live.Semantics.ElementsCreated) 'Windows semantics active-node retention after interaction'
     Assert-True ([long]$live.SoftwareFallbackFrames -eq 0) 'Windows MAUI software fallback count'
     Assert-True ([string]$live.Surface.NativeViewType -match 'MauiSKSwapChainPanel') 'Windows MAUI native view type'
     Assert-True ([string]$live.Surface.GraphicsBackend -ceq 'win-x64/winui3/SKSwapChainPanel/ANGLE-DirectX-Skia') 'Windows MAUI backend identity'

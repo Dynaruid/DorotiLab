@@ -55,6 +55,10 @@ static void VerifyNullableAndAsyncSemantics(List<DartFutureDiagnostic> diagnosti
     var nullableResult = Future<int?>.value(null).asTask().GetAwaiter().GetResult();
     Require(nullableResult is null, "nullable Future result remains null");
 
+    Future? nullAwareInvocationResult = null;
+    DartRuntimePrimitives.Ignore(nullAwareInvocationResult);
+    Require(diagnostics.Count == 0, "discarded null-aware Future invocation is a no-op");
+
     var completer = new Completer<int>();
     completer.complete(Future<int>.value(7));
     Require(completer.future.asTask().GetAwaiter().GetResult() == 7, "Completer observes Future completion");

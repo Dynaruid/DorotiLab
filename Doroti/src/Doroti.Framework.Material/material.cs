@@ -301,7 +301,7 @@ public class _RenderInkFeatures__material : global::Doroti.Framework.Rendering.R
     public override bool hitTestSelf(Offset position) => this.absorbHitTest;
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        List<InkFeature>? inkFeatures__23989 = this._inkFeatures?.ToList();
+        List<InkFeature>? inkFeatures__23989 = this._inkFeatures;
         if (((inkFeatures__23989 is not null) && System.Linq.Enumerable.Any(inkFeatures__23989)))
         {
             global::Doroti.Ui.Canvas canvas__24093 = ((global::Doroti.Ui.Canvas)(object?)((global::Doroti.Framework.Rendering.PaintingContext)context).canvas);

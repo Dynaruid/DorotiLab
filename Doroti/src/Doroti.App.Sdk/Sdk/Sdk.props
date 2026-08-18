@@ -34,7 +34,8 @@
     <UseMaui Condition="'$(DorotiTarget)' == 'Android'">true</UseMaui>
     <TargetFramework Condition="'$(DorotiTarget)' == 'Web'">net10.0</TargetFramework>
     <RuntimeIdentifier Condition="'$(DorotiTarget)' == 'Web' and '$(RuntimeIdentifier)' == ''">browser-wasm</RuntimeIdentifier>
-    <RuntimeFrameworkVersion Condition="'$(DorotiTarget)' == 'Web' and '$(RuntimeFrameworkVersion)' == ''">10.0.11</RuntimeFrameworkVersion>
+    <DorotiWebRuntimeVersion Condition="'$(DorotiWebRuntimeVersion)' == ''">10.0.11</DorotiWebRuntimeVersion>
+    <RuntimeFrameworkVersion Condition="'$(DorotiTarget)' == 'Web' and '$(RuntimeFrameworkVersion)' == ''">$(DorotiWebRuntimeVersion)</RuntimeFrameworkVersion>
     <OutputType>Exe</OutputType>
     <LangVersion>14.0</LangVersion>
     <Nullable>enable</Nullable>

@@ -455,7 +455,7 @@ internal class _RadioPainter__radio : global::Doroti.Framework.Widgets.Toggleabl
         canvas.drawCircle(center, RadioLibrary._kOuterRadius, borderPaint__17105);
     }
 
-    public virtual void paint(Canvas canvas, Size size)
+    public override void paint(Canvas canvas, Size size)
     {
         global::Doroti.Ui.Offset center__17376 = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)((Offset.zero & size))).center));
         if (this.checkmarkStyle)

@@ -1,0 +1,145 @@
+{
+  "schemaVersion": "doroti.flutter-conformance-fcr8-evidence/v1",
+  "milestone": "FCR-8",
+  "capturedAtUtc": "2026-08-18T06:17:13.9063904+00:00",
+  "status": "partial",
+  "repositoryRevision": "19c6be0132f0c2b930b210dd21c32c6f1a20788f",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "sourceFingerprintSha256": "6b20cd11dfbd6b80434c5ac465471387537538f3c7815fe7c2c9ac1468a59ac8",
+  "shards": [
+    "Inventory",
+    "Contracts",
+    "Differential",
+    "WindowsLive",
+    "AndroidPhysical",
+    "Soak",
+    "Evidence"
+  ],
+  "developerRepresentative": [
+    "Inventory",
+    "Contracts",
+    "Differential",
+    "Evidence"
+  ],
+  "explicitAcceptance": [
+    "WindowsLive",
+    "AndroidPhysical",
+    "Soak"
+  ],
+  "results": {
+    "inventory": {
+      "status": "pass",
+      "representativeComponents": [
+        "scaffold-background",
+        "app-bar-text",
+        "floating-action-button",
+        "ink-well-sparkle",
+        "scrollbar-list-sliver",
+        "shader-mask-image-filter"
+      ],
+      "sourceSliceCount": 24,
+      "targetBoundary": {
+        "windowsLive": "explicit shard",
+        "androidPhysical": "explicit serial required",
+        "webBrowserLive": "manual browser evidence",
+        "macCatalystNative": "notVerified on Windows host",
+        "screenReaderImeStylus": "notVerified unless separately executed"
+      },
+      "connectedAndroidSerials": []
+    },
+    "contracts": {
+      "status": "pass",
+      "fcr7StructuralContract": "pass-debug-release",
+      "checks": [
+        "Flutter pin and representative fixture closure",
+        "Toggleable painter and nullable hit-test bridge",
+        "Web semantics pointer pass-through and keyboard action isolation",
+        "FCR-7 target claims remain separate from structural PASS"
+      ]
+    },
+    "differential": {
+      "status": "notVerified",
+      "reason": "Paired pinned-Flutter and Doroti raster/state/semantics captures have not been executed."
+    },
+    "windowsLive": {
+      "status": "pass",
+      "command": "validate-app-targets.ps1 -Shard WindowsLive",
+      "device": {
+        "os": "Microsoft Windows NT 10.0.26200.0",
+        "rid": "win-x64",
+        "backend": "win-x64/winui3/SKSwapChainPanel/ANGLE-DirectX-Skia"
+      },
+      "measurements": {
+        "presented": 119,
+        "replayed": 63,
+        "failed": 0,
+        "dropped": 0,
+        "superseded": 0,
+        "shaderImageFiltersRendered": 170,
+        "softwareFallbackFrames": 0,
+        "nativePointerEvents": 8,
+        "metricsGeneration": 7,
+        "contextGeneration": 1,
+        "activeSemanticsElements": 29,
+        "retainedSemanticsNodes": 29
+      },
+      "artifact": "Doroti/.doroti/tmp/app-targets/windows-live.json",
+      "artifactSha256": "709fc173536ec32f505d4b40a3bc5fe1dc0c3088001fe6f8b06e4fbb6c93503b",
+      "interaction": "pass-native-wheel-drag-two-resize-transitions",
+      "dpiTransition": "notVerified-same-monitor-run"
+    },
+    "androidPhysical": {
+      "status": "notVerified",
+      "reason": "AndroidPhysical requires an explicit connected physical serial."
+    },
+    "soak": {
+      "status": "notVerified",
+      "reason": "Soak shard was not run for this source fingerprint."
+    },
+    "webBrowserLive": {
+      "status": "pass",
+      "evidence": "Doroti/validation/evidence/web/web-browser-live-manual.json",
+      "detail": {
+        "status": "pass",
+        "ordinaryPointerSurface": "canvas",
+        "stateTransitions": [
+          "checkbox: checked=False -> checked=True",
+          "radio: radio=0 -> radio=1",
+          "switch: switch=False -> switch=True",
+          "slider: slider=0.2 -> slider=0.0",
+          "button: button=0 -> button=1",
+          "FAB: fab=0 -> fab=1"
+        ],
+        "wheel": "pass: visible lazy children changed from item 1 to items 7-12",
+        "keyboardSemantics": "pass: Enter on aria-label G6 Material checkbox changed checked=False to checked=True",
+        "semanticsPointerBoundary": "pass: elementsFromPoint over toggle controls resolved to CANVAS, MAIN, HTML"
+      }
+    },
+    "macCatalystNative": {
+      "status": "notVerified",
+      "reason": "Native Mac Catalyst execution requires Apple Silicon macOS."
+    },
+    "screenReaderImeStylus": {
+      "status": "notVerified",
+      "reason": "No current physical accessibility/input acceptance run."
+    }
+  },
+  "completionGate": {
+    "status": "notVerified",
+    "requires": [
+      "paired differential PASS",
+      "Windows live interaction/stability PASS",
+      "Android physical correctness/stability PASS",
+      "soak and resource plateau PASS"
+    ],
+    "zeroTolerance": [
+      "crash",
+      "ANR",
+      "fatal log",
+      "unobserved exception",
+      "failed frame",
+      "software fallback",
+      "resource leak"
+    ]
+  }
+}

@@ -58,6 +58,20 @@ foreach ($component in @($fixture.components)) { Assert-True ($app.Contains([str
 foreach ($anchor in @('new Text(', 'ListView.CreateBuilder(', 'new ImageFiltered(', 'ActionSemantics(', 'floatingActionButton:', 'thumbVisibility: true')) { Assert-True ($app.Contains($anchor, [StringComparison]::Ordinal)) "Demo visual/interaction anchor: $anchor" }
 $inkSparkle = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Material/ink_sparkle.cs')
 Assert-True ($inkSparkle.Contains('splashFactory', [StringComparison]::Ordinal)) 'InkSparkle product factory anchor'
+$material = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Material/material.cs')
+Assert-True ($material -match 'List<InkFeature>\? inkFeatures__\d+ = this\._inkFeatures;' -and $material -notmatch 'List<InkFeature>\? inkFeatures__\d+ = this\._inkFeatures\?\.ToList\(\);') 'Material ink feature paint preserves Dart list identity'
+$toggleable = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Widgets/toggleable.cs')
+$basic = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Widgets/basic.cs')
+Assert-True ($toggleable -match 'class ToggleableCustomPainterAdapter' -and $toggleable -match '_owner\.paint\(canvas, size\)') 'Toggleable CustomPainter adapter preserves Flutter paint dispatch'
+Assert-True ($toggleable -match 'public virtual bool\? hitTest\(Offset position\) => null;') 'ToggleablePainter preserves Flutter null hit-test default'
+Assert-True ($basic -match 'new ToggleableCustomPainterAdapter\(painter\)' -and $basic -notmatch 'CustomPaint\(Size size, ToggleablePainter painter\) : this\(size: size, painter: \(global::Doroti\.Framework\.Rendering\.CustomPainter\?\)null\)') 'Toggleable CustomPaint does not discard its painter'
+$layers = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Rendering/layer.cs')
+Assert-True ($layers -match '_engineLayer is null or global::Doroti\.Ui\.OpacityEngineLayer' -and $layers -match '_engineLayer is null or global::Doroti\.Ui\.OffsetEngineLayer') 'nullable retained opacity engine-layer type contract'
+$webSkia = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Host.Web/BrowserSkiaCapabilities.cs')
+$mauiSkia = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Host.Maui/MauiSkiaCapabilities.cs')
+foreach ($hostSkia in @($webSkia, $mauiSkia)) {
+    Assert-True ($hostSkia -match 'case "drawDRRect" when command\.HostPayload is CanvasDRRectPayload draw: DrawDRRect\(canvas, draw\)' -and $hostSkia -match 'SKPathFillType\.EvenOdd') 'toggleable drawDRRect native Skia mapping'
+}
 
 Invoke-Contract 'Debug'
 Invoke-Contract 'Release'

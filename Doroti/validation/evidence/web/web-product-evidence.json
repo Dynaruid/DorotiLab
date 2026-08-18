@@ -152,59 +152,113 @@
       "browserHost": "obj/web/Doroti.Generated/DorotiBootstrap.g.cs"
     },
     "compile": {
-      "status": "notVerified"
+      "status": "pass",
+      "browser": {
+        "target": "browser-wasm",
+        "configuration": "Release",
+        "diagnostics": 0,
+        "applicationAssembly": "DorotiDemoApp.oze19or4us.wasm",
+        "applicationSha256": "24bb3422d807b16d40879a77dd4e33695e7b1a8adc6f964ab12234cc88065011"
+      },
+      "sharedSource": {
+        "path": "DorotiDemoApp/src/App.cs",
+        "startup": "DorotiDemoApp/Program.cs",
+        "generatedBootstrap": "obj/web/Doroti.Generated/DorotiBootstrap.g.cs",
+        "generatedPluginRegistration": "obj/web/Doroti.Generated/DorotiPluginRegistration.g.cs",
+        "desktopCompile": "win-x64-pass",
+        "browserCompile": "browser-wasm-pass",
+        "compileItemIdentity": "same-files"
+      },
+      "externalAcceptance": {
+        "project": "template-created-DorotiWebProduct",
+        "build": "pass",
+        "source": "promoted-packages-only"
+      },
+      "typeScript": {
+        "version": "7.0.0",
+        "sourceCount": 2,
+        "appOutput": "obj/web/Release/net10.0/Doroti.Generated/wwwroot",
+        "hostOutput": "Doroti.Host.Web/obj/Release/net10.0/Doroti.Web/wwwroot"
+      },
+      "negative": {
+        "invalidTarget": {
+          "status": "fail-closed-as-expected",
+          "diagnostic": "DOROTIAPP004"
+        },
+        "compiler": {
+          "status": "fail-closed-as-expected",
+          "diagnostic": "DOROTIWEB013"
+        },
+        "config": {
+          "status": "fail-closed-as-expected",
+          "diagnostic": "DOROTIWEB011"
+        },
+        "emptySource": {
+          "status": "fail-closed-as-expected",
+          "diagnostic": "DOROTIWEB012"
+        },
+        "sourceOutput": {
+          "status": "fail-closed-as-expected",
+          "diagnostic": "DOROTIWEB014"
+        },
+        "syntaxAndStale": {
+          "status": "fail-closed-as-expected",
+          "diagnostic": "DOROTIWEB016"
+        },
+        "emptyEmit": {
+          "status": "fail-closed-as-expected",
+          "diagnostic": "DOROTIWEB017"
+        }
+      },
+      "nativeSkiaLink": "pass",
+      "flutterOrDartCommands": 0
     },
     "publish": {
       "status": "notVerified"
     }
   },
   "manualBrowserLive": {
-    "schemaVersion": "doroti.web-browser-live-manual/v2",
-    "capturedAtUtc": "2026-08-17T05:38:18Z",
-    "status": "pass-basic-pointer",
+    "schemaVersion": "doroti.web-browser-live-manual/v3",
+    "capturedAtUtc": "2026-08-18T06:03:00Z",
+    "status": "pass-interaction",
     "browser": "Chromium extension session",
-    "source": "Doroti/artifacts/web/0.2.0-beta/wwwroot",
-    "artifactAggregateSha256": "9b42b11881ade6fccfacb5ad7fe50eb5e7056eb46f6c811ffe1ea49927585f44",
+    "source": "DorotiDemoApp Debug browser-wasm native build served by Blazor development server",
+    "sourceFingerprintSha256": "6b20cd11dfbd6b80434c5ac465471387537538f3c7815fe7c2c9ac1468a59ac8",
     "runtimeFrameworkVersion": "10.0.11",
-    "coreLibAsset": "System.Private.CoreLib.acqhqif0l6.wasm",
     "presented": {
       "status": "pass",
       "canvasCssPixels": "1280x609",
-      "canvasBackingPixels": "2560x1218",
-      "visibleContent": "Material controls, lazy list, clipped backdrop panel and FAB"
+      "visibleContent": "Material controls including painted checkbox, radio, switch and slider; lazy list, clipped backdrop panel and FAB"
     },
     "bootstrap": {
       "status": "pass",
-      "stages": [
-        "before-start",
-        "starting",
-        "started"
-      ],
       "configured": true,
-      "bootIntegrityObserved": true,
       "bootstrapError": null
     },
-    "liveLoadedModules": [
-      "doroti_bootstrap.js",
-      "_content/Doroti.Host.Web/doroti.loader.js",
-      "_content/Doroti.Host.Web/doroti.web.js"
-    ],
-    "publishedModuleOnly": "plugins/echo.js",
     "input": {
-      "status": "pass-basic-pointer",
-      "action": "click rendered FAB",
-      "stateBefore": "fab=0",
-      "stateAfter": "fab=1"
+      "status": "pass",
+      "ordinaryPointerSurface": "canvas",
+      "stateTransitions": [
+        "checkbox: checked=False -> checked=True",
+        "radio: radio=0 -> radio=1",
+        "switch: switch=False -> switch=True",
+        "slider: slider=0.2 -> slider=0.0",
+        "button: button=0 -> button=1",
+        "FAB: fab=0 -> fab=1"
+      ],
+      "wheel": "pass: visible lazy children changed from item 1 to items 7-12",
+      "keyboardSemantics": "pass: Enter on aria-label G6 Material checkbox changed checked=False to checked=True",
+      "semanticsPointerBoundary": "pass: elementsFromPoint over toggle controls resolved to CANVAS, MAIN, HTML"
     },
     "consoleErrors": 0,
     "notVerified": [
-      "keyboard",
       "IME",
       "clipboard",
-      "resize",
-      "interactive ARIA actions",
+      "resize and DPR transition",
       "browser-live plugin invocation",
+      "screen reader announcement quality",
       "physical acceptance",
+      "paired Flutter raster differential",
       "cross-target parity"
     ]
   },

@@ -47,8 +47,8 @@
     <PackageReference Include="Doroti.Target.$(DorotiTarget).Maui.$(RuntimeIdentifier)" Version="$(DorotiVersion)" Condition="'$(DorotiUseRepositoryProjects)' != 'true'" />
   </ItemGroup>
   <ItemGroup Condition="'$(DorotiTarget)' == 'Web'">
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(DorotiWebRuntimeVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="$(DorotiWebRuntimeVersion)" PrivateAssets="all" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="$(DorotiTypeScriptVersion)" PrivateAssets="all" Condition="'$(DorotiWebTypeScript)' == 'true'" />
     <PackageReference Include="Doroti.Target.Web.browser-wasm" Version="$(DorotiVersion)" Condition="'$(DorotiUseRepositoryProjects)' != 'true'" />
   </ItemGroup>

@@ -1,6 +1,6 @@
 #Requires -Version 7.0
 param(
-    [ValidateSet('Source', 'Build', 'Targets', 'Fcr0', 'Fcr1', 'Fcr2', 'Fcr3', 'Fcr4', 'Fcr5', 'Fcr6', 'Fcr7', 'Developer', 'Release')]
+    [ValidateSet('Source', 'Build', 'Targets', 'Fcr0', 'Fcr1', 'Fcr2', 'Fcr3', 'Fcr4', 'Fcr5', 'Fcr6', 'Fcr7', 'Fcr8', 'Developer', 'Release')]
     [string] $Suite = 'Developer'
 )
 
@@ -154,6 +154,13 @@ function Invoke-Fcr7Gate {
     $completed.Add('fcr-7-material-widget')
 }
 
+function Invoke-Fcr8DeveloperGate {
+    foreach ($shard in @('Inventory', 'Contracts', 'Differential', 'Evidence')) {
+        Invoke-Checked { & (Join-Path $PSScriptRoot 'validate-fcr8-stability.ps1') -Shard $shard } "FCR-8 stability shard '$shard' failed"
+    }
+    $completed.Add('fcr-8-stability-representative')
+}
+
 function Invoke-ReleaseGate {
     & (Join-Path $PSScriptRoot 'validate-app-targets.ps1') -Shard Live
     & (Join-Path $PSScriptRoot 'validate-app-targets.ps1') -Shard Evidence
@@ -175,6 +182,10 @@ switch ($Suite) {
     'Fcr5' { Invoke-Fcr5Gate }
     'Fcr6' { Invoke-Fcr6Gate }
     'Fcr7' { Invoke-Fcr7Gate }
+    'Fcr8' {
+        Invoke-Fcr7Gate
+        Invoke-Fcr8DeveloperGate
+    }
     'Developer' {
         Invoke-SourceGate
         Invoke-Fcr0Gate
@@ -185,6 +196,7 @@ switch ($Suite) {
         Invoke-Fcr5Gate
         Invoke-Fcr6Gate
         Invoke-Fcr7Gate
+        Invoke-Fcr8DeveloperGate
         Invoke-BuildGate
         Invoke-TargetGate
     }
@@ -198,6 +210,7 @@ switch ($Suite) {
         Invoke-Fcr5Gate
         Invoke-Fcr6Gate
         Invoke-Fcr7Gate
+        Invoke-Fcr8DeveloperGate
         Invoke-BuildGate
         Invoke-TargetGate
         Invoke-ReleaseGate

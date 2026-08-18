@@ -188,8 +188,17 @@ public static class DartRuntimePrimitives
         }
     }
 
-    /// <summary>Compatibility path for already-emitted product source.</summary>
-    public static void Ignore(Future future) => Observe(future);
+    /// <summary>
+    /// Observes a discarded Future when a Dart null-aware invocation produced one.
+    /// A null result means the receiver was null and the invocation did not run.
+    /// </summary>
+    public static void Ignore(Future? future)
+    {
+        if (future is not null)
+        {
+            Observe(future);
+        }
+    }
 
     public static void Ignore<T>(T value)
     {

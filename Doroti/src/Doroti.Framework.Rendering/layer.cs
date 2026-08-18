@@ -1553,12 +1553,12 @@ public class OpacityLayer : OffsetLayer
         long realizedAlpha__74987 = DartRuntimePrimitives.RequireValue(this.alpha);
         if ((enabled__74627 && (realizedAlpha__74987 < 255L)))
         {
-            DartRuntimePrimitives.Assert(() => (_engineLayer is global::Doroti.Ui.OpacityEngineLayer));
+            DartRuntimePrimitives.Assert(() => (_engineLayer is null or global::Doroti.Ui.OpacityEngineLayer));
             engineLayer = builder.pushOpacity(realizedAlpha__74987, offset: offset, oldLayer: ((global::Doroti.Ui.OpacityEngineLayer?)(object?)_engineLayer)!);
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => (_engineLayer is global::Doroti.Ui.OffsetEngineLayer));
+            DartRuntimePrimitives.Assert(() => (_engineLayer is null or global::Doroti.Ui.OffsetEngineLayer));
             engineLayer = builder.pushOffset(offset.dx, offset.dy, oldLayer: ((global::Doroti.Ui.OffsetEngineLayer?)(object?)_engineLayer)!);
         }
         addChildrenToScene(builder);

@@ -290,9 +290,10 @@ public class CustomPaint : SingleChildRenderObjectWidget
         System.Diagnostics.Debug.Assert((((painter is not null) || (foregroundPainter is not null)) || ((!isComplex && !willChange))));
     }
 
-    public CustomPaint(Size size, ToggleablePainter painter) : this(size: size, painter: (global::Doroti.Framework.Rendering.CustomPainter?)null)
+    public CustomPaint(Size size, ToggleablePainter painter) : this(
+        size: size,
+        painter: new ToggleableCustomPainterAdapter(painter))
     {
-        _ = painter;
     }
 
     public CustomPaint(global::Doroti.Framework.Foundation.Key? key = null, object? painter = null, object? foregroundPainter = null, Size size = default, bool isComplex = false, bool willChange = false, Widget? child = null) : this(

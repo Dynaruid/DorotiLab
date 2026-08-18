@@ -1,8 +1,8 @@
 {
   "schemaVersion": "doroti.flutter-conformance-fcr4-evidence/v1",
   "status": "partial",
-  "capturedAt": "2026-08-18T04:37:29.1273874Z",
-  "repositoryRevision": "f366895d35ff465265f701590e0f8673faebda10",
+  "capturedAt": "2026-08-18T06:16:57.3794925Z",
+  "repositoryRevision": "19c6be0132f0c2b930b210dd21c32c6f1a20788f",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "fixtureManifest": "Doroti/validation/fcr4-retained-rendering/fixture-manifest.json",
   "runtimeContract": {

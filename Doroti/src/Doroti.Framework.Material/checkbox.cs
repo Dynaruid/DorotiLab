@@ -743,7 +743,7 @@ internal class _CheckboxPainter__checkbox : global::Doroti.Framework.Widgets.Tog
         canvas.drawLine((origin + drawStart__28167), (origin + drawEnd__28231), paint);
     }
 
-    public virtual void paint(Canvas canvas, Size size)
+    public override void paint(Canvas canvas, Size size)
     {
         paintRadialReaction(canvas: canvas, origin: size.center(Offset.zero));
         global::Doroti.Ui.Paint strokePaint__28484 = ((global::Doroti.Ui.Paint)(object?)_createStrokePaint());

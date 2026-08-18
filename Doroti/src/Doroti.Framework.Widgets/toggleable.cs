@@ -319,6 +319,8 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
         }
     }
 
+    public abstract void paint(Canvas canvas, Size size);
+
     public virtual void dispose()
     {
         this._position?.removeListener(() => this.notifyListeners());
@@ -329,8 +331,31 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
     }
 
     public virtual bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate) => true;
-    public virtual bool? hitTest(Offset position) => DartRuntimePrimitives.ConvertValue<bool>(null);
+    public virtual bool? hitTest(Offset position) => null;
     public virtual global::System.Func<Size, List<global::Doroti.Framework.Rendering.CustomPainterSemantics>>? semanticsBuilder => DartRuntimePrimitives.ConvertValue<global::System.Func<Size, List<global::Doroti.Framework.Rendering.CustomPainterSemantics>>>(null);
     public virtual bool shouldRebuildSemantics(global::Doroti.Framework.Rendering.CustomPainter oldDelegate) => false;
     public override string ToString() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+}
+
+internal sealed class ToggleableCustomPainterAdapter : global::Doroti.Framework.Rendering.CustomPainter
+{
+    private readonly ToggleablePainter _owner;
+
+    internal ToggleableCustomPainterAdapter(ToggleablePainter owner) : base(owner) =>
+        _owner = owner ?? throw new ArgumentNullException(nameof(owner));
+
+    public override void paint(Canvas canvas, Size size) => _owner.paint(canvas, size);
+
+    public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate) =>
+        oldDelegate is not ToggleableCustomPainterAdapter other || !ReferenceEquals(_owner, other._owner);
+
+    public override bool? hitTest(Offset position) => _owner.hitTest(position);
+
+    public override global::System.Func<Size, List<global::Doroti.Framework.Rendering.CustomPainterSemantics>>? semanticsBuilder =>
+        _owner.semanticsBuilder;
+
+    public override bool shouldRebuildSemantics(global::Doroti.Framework.Rendering.CustomPainter oldDelegate) =>
+        oldDelegate is not ToggleableCustomPainterAdapter other ||
+        !ReferenceEquals(_owner, other._owner) ||
+        _owner.shouldRebuildSemantics(oldDelegate);
 }

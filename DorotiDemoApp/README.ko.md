@@ -86,16 +86,19 @@ dotnet publish ./DorotiDemoApp/DorotiDemoApp.csproj -c Release -p:DorotiTarget=W
 dotnet publish ./DorotiDemoApp/DorotiDemoApp.csproj -c Release -p:DorotiTarget=MacCatalyst -p:RuntimeIdentifier=maccatalyst-arm64
 
 pwsh -File ./Doroti/eng/doroti.ps1 validate
+pwsh -File ./Doroti/eng/doroti.ps1 validate -ValidationSuite Fcr8
 pwsh -File ./Doroti/eng/doroti.ps1 validate -ValidationSuite Release
-pwsh -File ./Doroti/eng/validate-app-targets.ps1 -Shard AndroidLive -AndroidSerial <adb-serial>
+pwsh -File ./Doroti/eng/validate-fcr8-stability.ps1 -Shard WindowsLive
+pwsh -File ./Doroti/eng/validate-fcr8-stability.ps1 -Shard AndroidPhysical -AndroidSerial <adb-serial>
+pwsh -File ./Doroti/eng/validate-fcr8-stability.ps1 -Shard Soak -SoakSeconds 300
 ```
 
-Developer suite는 공통 descriptor, generated bootstrap, custom shader 계약, synthetic fourth-host 확장점과 네 target graph/build를 확인합니다. Android live gate에는 .NET Android workload, Android SDK/JDK와 arm64 실기기 또는 x86_64 에뮬레이터가 필요합니다. Release suite는 실제 Windows `MauiSKSwapChainPanel` GPU frame과 저장소 밖 Web template/package publish 시나리오를 추가합니다. Repository는 SDK 10.0.400과 Web runtime 10.0.11을 고정하며, runtime patch 변경 시 version stamp가 stale WebCIL publish cache를 무효화합니다.
+Developer suite는 공통 descriptor, generated bootstrap, custom shader 계약, synthetic fourth-host 확장점, 네 target graph/build와 FCR-8 `Inventory`/`Contracts`/`Differential`/`Evidence` representative gate를 확인합니다. 실제 Windows/Android/soak acceptance는 위의 명시 shard로 분리됩니다. Android physical에는 .NET Android workload, Android SDK/JDK와 arm64 실기기가 필요합니다. Release suite는 실제 Windows `MauiSKSwapChainPanel` GPU frame과 저장소 밖 Web template/package publish 시나리오를 추가합니다. Repository는 SDK 10.0.400과 Web runtime 10.0.11을 고정하며, runtime patch 변경 시 version stamp가 stale WebCIL publish cache를 무효화합니다.
 
 현재 모든 target의 custom shader는 SkiaSharp 4.151.1과 SkSL을 사용합니다. `FragmentProgram.fromSource(...)`를 쓰거나 `Resources/Shaders/*.sksl` asset을 target별 application manifest에 등록한 뒤 `await FragmentProgram.fromAsset(...)`으로 읽습니다. `FragmentShader`에 float/image sampler uniform을 설정하고 `Paint.shader`, `ShaderMask.shaderCallback`, `ImageFilter.shader`에서 사용할 수 있습니다. `ImageFilter.shader`는 bounded child를 같은 GPU context의 offscreen texture로 캡처하고, 첫 `float2` uniform에 texture 크기, 첫 shader sampler에 filtered child를 implicit input으로 바인딩합니다. Flutter Android stretch도 이 경로의 내장 SkSL을 사용합니다. GPU surface 생성이나 compile/binding 실패는 software renderer로 우회하지 않고 fail-closed 합니다.
 
-Mac Catalyst Windows-host cross-build는 확인했지만 native publish/run에는 Apple Silicon macOS가 필요합니다. Android 16/API 36 arm64 실기기에서 SkiaSharp 4.151.1, custom SkSL과 `ImageFilter.shader` GPU 실행, 반복 스크롤 뒤 렌더링 및 visible-content screenshot을 자동 확인했습니다. x86_64 패키지 build도 통과했습니다. 실기기의 수동 지속 표시, IME, TalkBack, stylus, mouse acceptance는 별도입니다. 기존 Chromium smoke의 WebGL2/basic pointer 상태 전이는 유지되지만 새 `ImageFilter.shader`의 browser-live 확인은 `notVerified`입니다.
+Mac Catalyst Windows-host cross-build는 확인했지만 native publish/run에는 Apple Silicon macOS가 필요합니다. 현재 Chromium live에서는 Web runtime 10.0.11로 visible GPU surface, checkbox/radio/switch/slider/button/FAB 포인터 상태 전이, wheel scroll과 keyboard semantics action을 확인했고 console error는 0입니다. Windows live에서는 native wheel/drag 8건, 두 번의 resize, swap-chain replay와 shader frame을 확인했으며 failed/software-fallback frame은 0입니다. Android physical, paired Flutter raster differential, soak/resource plateau, IME/TalkBack/stylus/mouse acceptance는 현재 실행 전이므로 `notVerified`입니다.
 
-현재 evidence는 [app target evidence](../Doroti/migration/maui/app-targets-evidence.json), [Web product evidence](../Doroti/migration/web/web-product-evidence.json), [수동 browser evidence](../Doroti/migration/web/web-browser-live-manual.json)에 기록합니다. 과거 Win32/AppKit 및 G4-G7 evidence는 predecessor-only로 보존합니다.
+현재 evidence는 [FCR-8 stability evidence](../Doroti/validation/evidence/flutter-conformance/fcr8-stability-evidence.json), [app target evidence](../Doroti/validation/evidence/app-targets-evidence.json), [Web product evidence](../Doroti/validation/evidence/web/web-product-evidence.json), [수동 browser evidence](../Doroti/validation/evidence/web/web-browser-live-manual.json)에 기록합니다. 과거 Win32/AppKit 및 G4-G7 evidence는 predecessor-only로 보존합니다.
 
 Source 소유권과 명령 설명은 [Doroti runtime README](../Doroti/README.ko.md)를 참고하세요.

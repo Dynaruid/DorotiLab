@@ -414,8 +414,22 @@ export function updateSemantics(hostId: number, json: string): void {
     const actions = node.actions ?? 0;
     if (actions !== 0) {
       element.tabIndex = 0;
-      element.style.pointerEvents = "auto";
-      if ((actions & 1) !== 0) element.addEventListener("click", () => dispatchSemantics(host, node.id, 1));
+      // The semantics tree is an accessibility projection over the canvas. It must not
+      // steal ordinary mouse/touch input from Flutter's pointer/gesture pipeline.
+      element.style.pointerEvents = "none";
+      if ((actions & 1) !== 0) {
+        element.addEventListener("click", (event) => {
+          event.stopPropagation();
+          dispatchSemantics(host, node.id, 1);
+        });
+        element.addEventListener("keydown", (event) => {
+          const key = event as KeyboardEvent;
+          if (key.key !== "Enter" && key.key !== " ") return;
+          key.preventDefault();
+          key.stopPropagation();
+          dispatchSemantics(host, node.id, 1);
+        });
+      }
       if ((actions & (1 << 6)) !== 0) element.addEventListener("keydown", (event) => {
         if ((event as KeyboardEvent).key === "ArrowUp") dispatchSemantics(host, node.id, 1 << 6);
       });
