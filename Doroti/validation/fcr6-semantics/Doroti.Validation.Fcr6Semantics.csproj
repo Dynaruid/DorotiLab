@@ -5,5 +5,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Doroti.Ui\Doroti.Ui.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Framework.Widgets\Doroti.Framework.Widgets.csproj" />
   </ItemGroup>
 </Project>

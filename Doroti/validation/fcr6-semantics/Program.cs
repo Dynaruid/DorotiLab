@@ -1,4 +1,6 @@
 using Doroti.Ui;
+using Doroti.Framework.Foundation;
+using Doroti.Framework.Widgets;
 
 var root = Node(0, 0, 0, 100, 100, "root", children: [1]);
 var button = Node(1, 0, 0, 40, 20, "Save", SemanticsAction.tap);
@@ -35,6 +37,15 @@ Require(insertedDelta.HasTopologyChange && !insertedDelta.RequiresImmediateFlush
 
 var end = new SemanticsUpdate(9, geometry, SemanticsUpdateUrgency.scrollEnd);
 Require(end.urgency == SemanticsUpdateUrgency.scrollEnd, "scroll end is an explicit immediate-host signal");
+
+var focusNode = new FocusNode();
+Require(Focus.CreateSemanticsFocusAction(TargetPlatform.windows, false, focusNode) is null,
+    "a non-focusable semantics node does not publish a callable focus action");
+var focusAction = Focus.CreateSemanticsFocusAction(TargetPlatform.windows, true, focusNode);
+Require(focusAction is not null, "a focusable Windows semantics node publishes a focus action");
+focusAction!();
+Require(Focus.CreateSemanticsFocusAction(TargetPlatform.iOS, true, focusNode) is null,
+    "iOS keeps Flutter's semantics focus-action exclusion");
 Console.WriteLine($"FCR-6 semantics runtime contract: PASS (configuration={ConfigurationName()})");
 
 static SemanticsNodeUpdate Node(int id, double x, double y, double width, double height, string label,

@@ -328,6 +328,38 @@ Release 자동 검증:
 
 주의: `WindowsLive`는 실제 창을 표시하고 포커스를 준 뒤 mouse wheel 입력을 보낸다.
 
+## Windows 창 비활성화/캡처 종료 조사
+
+`dotnet run --project ./DorotiDemoApp/DorotiDemoApp.csproj -p:DorotiTarget=Windows`로 렌더가 끝난 뒤 다른 창을 활성화하거나 `Win+Shift+S`를 시작할 때 종료되는 경로를 조사했다.
+
+최종적으로 확보한 managed exception evidence는 다음 경로다.
+
+```text
+MauiSemanticsBridge native element Focused
+→ SemanticsAction.focus
+→ RenderSemanticsAnnotations._performFocus
+→ _FocusState__focus_scope.build callback
+→ NullReferenceException
+```
+
+Flutter 원본은 포커스할 수 없는 semantics 노드에 `onFocus: null`을 게시한다. Doroti의 reviewed C# 포트는 조건식 결과가 null이어도 바깥에 항상 호출 가능한 래퍼를 만들고, UIA 포커스가 들어오면 그 안의 null delegate를 호출하고 있었다.
+
+수정 내용:
+
+- `Focus.CreateSemanticsFocusAction`에서 Flutter와 같은 조건으로 실제 nullable action을 만든다.
+- 포커스 불가능 노드와 iOS는 `null`, 포커스 가능한 Windows 노드만 `requestFocus()` 액션을 게시한다.
+- FCR-6 Debug/Release 계약에 세 경우와 실제 focus action 호출을 추가했다.
+- Windows의 숨김 `Entry`/`Editor`는 idle 상태의 XAML tree에서 제거하고 실제 text input client가 있을 때만 붙인다.
+
+검증 상태:
+
+- `Doroti/eng/validate-fcr6-semantics.ps1`: Debug/Release PASS
+- Windows Debug build: 경고 0, 오류 0
+- 수정 전 live evidence: `NullReferenceException` 스택 확보
+- 수정 후 실제 창 비활성화/재활성화와 `Win+Shift+S`: 사용자의 작업을 더 방해하지 않기 위해 이번 단계에서는 **notVerified**
+
+Windows App SDK `2.2.0` 직접 고정도 대조했지만 캡처 전에 같은 managed focus exception이 재현되어 폐기했고, 패키지 그래프와 lock은 기존 `1.8.260508005`로 복원했다. 수정 후에도 `0x8001010E (RPC_E_WRONG_THREAD)`가 별도로 재현될 때만 WinUI cross-process UIA 문제와 Windows 전용 virtual provider 교체를 다음 단계로 다룬다.
+
 ## 주요 변경 파일
 
 - `Doroti/src/Doroti.Host.Maui/MauiHostAdapter.cs`

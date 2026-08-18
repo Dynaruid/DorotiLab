@@ -1,8 +1,8 @@
 {
   "schemaVersion": "doroti.flutter-conformance-fcr6-evidence/v1",
   "status": "partial",
-  "capturedAt": "2026-08-18T11:08:12.1851372Z",
-  "repositoryRevision": "e128cea65eb1d689ee51405e48a204d60f6d42e7",
+  "capturedAt": "2026-08-18T13:35:27.1893282Z",
+  "repositoryRevision": "5960b082eb33293bf6536a5df39c2efa968caeba",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "fixtureManifest": "Doroti/validation/fcr6-semantics/fixture-manifest.json",
   "runtimeContract": {
@@ -14,7 +14,8 @@
       "geometry-only delta is coalescible",
       "existing label and selection changes are immediate",
       "virtualized topology churn is bounded",
-      "scroll-end urgency is explicit"
+      "scroll-end urgency is explicit",
+      "non-focusable semantics omit focus actions while focusable Windows actions invoke safely"
     ]
   },
   "hostContract": {

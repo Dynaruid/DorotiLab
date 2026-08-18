@@ -7,15 +7,27 @@ public sealed class MauiTextInputBridge : IDisposable
 {
     private readonly Entry _entry;
     private readonly Editor _editor;
+    private readonly Layout? _visualHost;
+    private readonly bool _attachOnDemand;
     private InputView _active;
     private DorotiTextInputConfiguration _configuration;
+    private bool _hasClient;
+    private bool _suspended;
     private bool _updating;
     private bool _disposed;
 
-    internal MauiTextInputBridge(Entry entry, Editor editor)
+    internal MauiTextInputBridge(
+        Entry entry,
+        Editor editor,
+        Layout? visualHost = null,
+        bool attachOnDemand = false)
     {
         _entry = entry;
         _editor = editor;
+        _visualHost = visualHost;
+        _attachOnDemand = attachOnDemand;
+        if (_attachOnDemand && _visualHost is null)
+            throw new ArgumentNullException(nameof(visualHost), "On-demand MAUI text input requires a visual host.");
         _active = entry;
         _entry.TextChanged += HandleTextChanged;
         _editor.TextChanged += HandleTextChanged;
@@ -36,6 +48,7 @@ public sealed class MauiTextInputBridge : IDisposable
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         _configuration = configuration;
+        _hasClient = true;
         var next = configuration.inputType == DorotiTextInputType.multiline ? (InputView)_editor : _entry;
         if (!ReferenceEquals(_active, next))
         {
@@ -44,7 +57,7 @@ public sealed class MauiTextInputBridge : IDisposable
         }
         Configure(_active, configuration);
         UpdateState(state);
-        _active.Dispatcher.Dispatch(() => _active.Focus());
+        AttachActiveInput(requestFocus: true);
     }
 
     internal void UpdateState(DorotiTextEditingState state)
@@ -77,10 +90,68 @@ public sealed class MauiTextInputBridge : IDisposable
     internal void ClearClient()
     {
         if (_disposed) return;
+        _hasClient = false;
         _active.Unfocus();
         _active.Text = string.Empty;
         _active.WidthRequest = 1;
         _active.HeightRequest = 1;
+        DetachInputs();
+    }
+
+    internal void Suspend()
+    {
+        if (_disposed || !_attachOnDemand) return;
+        _suspended = true;
+        _active.Unfocus();
+        DetachInputs();
+    }
+
+    internal void Resume()
+    {
+        if (_disposed || !_attachOnDemand) return;
+        _suspended = false;
+        if (_hasClient) AttachActiveInput(requestFocus: true);
+    }
+
+    private void AttachActiveInput(bool requestFocus)
+    {
+        if (!_attachOnDemand)
+        {
+            if (requestFocus) _active.Dispatcher.Dispatch(() => _active.Focus());
+            return;
+        }
+        if (_visualHost is null || _suspended || !_hasClient) return;
+        var expected = _active;
+        DispatchVisualMutation(() =>
+        {
+            if (_disposed || _suspended || !_hasClient || !ReferenceEquals(expected, _active)) return;
+            foreach (var input in Inputs)
+            {
+                if (!ReferenceEquals(input, expected) && ReferenceEquals(input.Parent, _visualHost))
+                    _visualHost.Children.Remove(input);
+            }
+            if (expected.Parent is null) _visualHost.Children.Add(expected);
+            if (requestFocus) expected.Focus();
+        });
+    }
+
+    private void DetachInputs()
+    {
+        if (!_attachOnDemand || _visualHost is null) return;
+        DispatchVisualMutation(() =>
+        {
+            foreach (var input in Inputs)
+            {
+                if (ReferenceEquals(input.Parent, _visualHost)) _visualHost.Children.Remove(input);
+            }
+        });
+    }
+
+    private void DispatchVisualMutation(Action mutation)
+    {
+        if (_visualHost is null) return;
+        if (_visualHost.Dispatcher.IsDispatchRequired) _visualHost.Dispatcher.Dispatch(mutation);
+        else mutation();
     }
 
     private static void Configure(InputView input, DorotiTextInputConfiguration configuration)
@@ -157,5 +228,6 @@ public sealed class MauiTextInputBridge : IDisposable
         _editor.Focused -= HandleFocused;
         _entry.Unfocused -= HandleUnfocused;
         _editor.Unfocused -= HandleUnfocused;
+        DetachInputs();
     }
 }

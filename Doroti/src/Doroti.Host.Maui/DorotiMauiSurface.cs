@@ -52,10 +52,16 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         _singleLineInput = CreateHiddenInput<Entry>();
         _multilineInput = CreateHiddenInput<Editor>();
         _semanticsLayer = new AbsoluteLayout { InputTransparent = true, CascadeInputTransparent = false };
+#if WINDOWS
+        _textInput = new(_singleLineInput, _multilineInput, this, attachOnDemand: true);
+#else
         _textInput = new(_singleLineInput, _multilineInput);
+#endif
         Children.Add(_skiaView);
+#if !WINDOWS
         Children.Add(_singleLineInput);
         Children.Add(_multilineInput);
+#endif
         Children.Add(_semanticsLayer);
         _skiaView.PaintSurface += PaintGpuSurface;
         HandlerChanged += HandleHandlerChanged;
@@ -283,15 +289,21 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         _textInput.Dispose();
     }
 
-    private static T CreateHiddenInput<T>() where T : InputView, new() => new()
+    private static T CreateHiddenInput<T>() where T : InputView, new()
     {
-        Opacity = 0.01,
-        WidthRequest = 1,
-        HeightRequest = 1,
-        HorizontalOptions = LayoutOptions.Start,
-        VerticalOptions = LayoutOptions.Start,
-        ZIndex = 1,
-    };
+        var input = new T
+        {
+            Opacity = 0.01,
+            WidthRequest = 1,
+            HeightRequest = 1,
+            HorizontalOptions = LayoutOptions.Start,
+            VerticalOptions = LayoutOptions.Start,
+            ZIndex = 1,
+        };
+        AutomationProperties.SetExcludedWithChildren(input, true);
+        AutomationProperties.SetIsInAccessibleTree(input, false);
+        return input;
+    }
 
     private void HandleLoaded(object? sender, EventArgs args)
     {
@@ -309,10 +321,37 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     private void HandleUnloaded(object? sender, EventArgs args) =>
         _host?.NotifyLifecycle(_viewId, AppLifecycleState.detached);
 
-    private void HandleActivated(object? sender, EventArgs args) => _host?.NotifyLifecycle(_viewId, AppLifecycleState.resumed);
-    private void HandleDeactivated(object? sender, EventArgs args) => _host?.NotifyLifecycle(_viewId, AppLifecycleState.inactive);
-    private void HandleResumed(object? sender, EventArgs args) => _host?.NotifyLifecycle(_viewId, AppLifecycleState.resumed);
-    private void HandleStopped(object? sender, EventArgs args) => _host?.NotifyLifecycle(_viewId, AppLifecycleState.paused);
+    private void HandleActivated(object? sender, EventArgs args)
+    {
+#if WINDOWS
+        _textInput.Resume();
+#endif
+        _host?.NotifyLifecycle(_viewId, AppLifecycleState.resumed);
+    }
+
+    private void HandleDeactivated(object? sender, EventArgs args)
+    {
+#if WINDOWS
+        _textInput.Suspend();
+#endif
+        _host?.NotifyLifecycle(_viewId, AppLifecycleState.inactive);
+    }
+
+    private void HandleResumed(object? sender, EventArgs args)
+    {
+#if WINDOWS
+        _textInput.Resume();
+#endif
+        _host?.NotifyLifecycle(_viewId, AppLifecycleState.resumed);
+    }
+
+    private void HandleStopped(object? sender, EventArgs args)
+    {
+#if WINDOWS
+        _textInput.Suspend();
+#endif
+        _host?.NotifyLifecycle(_viewId, AppLifecycleState.paused);
+    }
     private void HandleRequestedThemeChanged(object? sender, AppThemeChangedEventArgs args)
     {
         var color = ResolveBackgroundColor(args.RequestedTheme);

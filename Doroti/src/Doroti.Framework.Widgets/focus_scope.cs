@@ -28,6 +28,14 @@ public class Focus : StatefulWidget
     internal virtual bool? _descendantsAreFocusable { get; private set; }
     internal virtual bool? _descendantsAreTraversable { get; private set; }
     public virtual bool includeSemantics { get; private set; } = default!;
+
+    internal static global::System.Action? CreateSemanticsFocusAction(
+        global::Doroti.Framework.Foundation.TargetPlatform targetPlatform,
+        bool couldRequestFocus,
+        FocusNode focusNode) =>
+        targetPlatform != global::Doroti.Framework.Foundation.TargetPlatform.iOS && couldRequestFocus
+            ? () => focusNode.requestFocus()
+            : null;
     internal virtual string? _debugLabel { get; private set; }
 
     public Focus(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, FocusNode? focusNode = null, FocusNode? parentNode = null, bool autofocus = false, global::System.Action<bool>? onFocusChange = null, global::System.Func<FocusNode, global::Doroti.Framework.Services.KeyEvent, KeyEventResult>? onKeyEvent = null, global::System.Func<FocusNode, global::Doroti.Framework.Services.RawKeyEvent, KeyEventResult>? onKey = null, bool? canRequestFocus = null, bool? skipTraversal = null, bool? descendantsAreFocusable = null, bool? descendantsAreTraversable = null, bool includeSemantics = true, string? debugLabel = null) : base(key: key)
@@ -284,7 +292,14 @@ internal class _FocusState__focus_scope : State<Focus>
         Widget child__28232 = ((Focus)this.widget).child;
         if (((Focus)this.widget).includeSemantics)
         {
-            child__28232 = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(onFocus: () => ((global::System.Action<FocusNode?>)(((!object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)) && this._couldRequestFocus) ? ((FocusNode)this.focusNode).requestFocus : null))(default), focusable: this._couldRequestFocus, focused: (this._couldRequestFocus ? this._hadPrimaryFocus : null), child: ((Focus)this.widget).child));
+            child__28232 = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(
+                onFocus: Focus.CreateSemanticsFocusAction(
+                    global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform,
+                    this._couldRequestFocus,
+                    (FocusNode)this.focusNode),
+                focusable: this._couldRequestFocus,
+                focused: (this._couldRequestFocus ? this._hadPrimaryFocus : null),
+                child: ((Focus)this.widget).child));
         }
         DartRuntimePrimitives.Assert(() =>
             {
