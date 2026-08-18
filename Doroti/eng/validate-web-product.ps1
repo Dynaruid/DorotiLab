@@ -263,7 +263,7 @@ if ($Shard -eq 'Graph') {
     Assert-True ($hostCsproj -match 'SkiaSharp.Views.Blazor' -and $hostCsproj -match 'SkiaSharp.NativeAssets.WebAssembly') 'Web host Skia package graph'
     Assert-True ($targetCsproj -match 'Microsoft.AspNetCore.Components.WebAssembly' -and $targetCsproj -match 'buildTransitive') 'target Blazor build contract'
     Assert-True ($sdkProps -match '<DorotiWebRuntimeVersion.+>10\.0\.11</DorotiWebRuntimeVersion>' -and $sdkProps -match '<RuntimeFrameworkVersion.+>\$\(DorotiWebRuntimeVersion\)</RuntimeFrameworkVersion>' -and $targetProps -match '<RuntimeFrameworkVersion.+>10\.0\.11</RuntimeFrameworkVersion>') 'browser runtime patch contract'
-    Assert-True ($sdkTargets -match 'InvalidateDorotiWebRuntimeCache' -and $sdkTargets -match 'web-runtime-version\.txt' -and $sdkTargets -match 'RemoveDir Directories="\$\(IntermediateOutputPath\)webcil"') 'browser runtime cache invalidation contract'
+    Assert-True ($sdkTargets -match 'InvalidateDorotiWebRuntimeCache' -and $sdkTargets -match 'web-runtime-version\.txt' -and $sdkTargets -match '<_DorotiWebRuntimeClosure>\$\(RuntimeFrameworkVersion\)\|\$\(SkiaSharpVersion\)</_DorotiWebRuntimeClosure>' -and $sdkTargets -match 'RemoveDir Directories="\$\(IntermediateOutputPath\)webcil"') 'browser runtime and Skia cache invalidation contract'
     Assert-True ($sdkTargets -match 'Microsoft.TypeScript.MSBuild' -and $sdkTargets -match 'Doroti.TypeScript.targets') 'Web-only TypeScript SDK activation'
     Assert-True ($demoWebProjectText -match 'Doroti.App.Sdk' -and $demoWebProjectText -match 'Doroti.Target.Web.browser-wasm') 'DorotiDemoApp single-project target selector'
     Assert-Equal $manifest.rid 'browser-wasm' 'browser target RID'

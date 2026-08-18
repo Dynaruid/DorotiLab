@@ -372,6 +372,96 @@ internal sealed partial class FrameworkCSharpLowerer
                         throw new InvalidOperationException("Rendering a scene requires an implicit Flutter view."));
                 """,
                 StringComparison.Ordinal);
+            // RendererBinding and SemanticsBinding provide the first flattened
+            // implementation of these callbacks, but WidgetsBinding is the
+            // right-most Dart mixin and must also notify its observers. Preserve
+            // both the lower-level side effects and the WidgetsBinding contract.
+            source = source.ReplaceGeneratedLocalPattern(
+                """
+                        this._accessibilityFeatures = this.platformDispatcher.accessibilityFeatures;
+                    }
+                """,
+                """
+                        this._accessibilityFeatures = this.platformDispatcher.accessibilityFeatures;
+                        foreach (var observer in new List<WidgetsBindingObserver>(this._observers))
+                        {
+                            try
+                            {
+                                observer.didChangeAccessibilityFeatures();
+                            }
+                            catch (Exception exception)
+                            {
+                                var stack = new System.Diagnostics.StackTrace();
+                                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while dispatching notifications for WidgetsBindingObserver.didChangeAccessibilityFeatures")));
+                            }
+                        }
+                    }
+                """,
+                StringComparison.Ordinal);
+            source = source.ReplaceGeneratedLocalPattern(
+                """
+                            scheduleForcedFrame();
+                        }
+                    }
+
+                    public virtual void handleTextScaleFactorChanged()
+                    {
+                    }
+
+                    public virtual void handlePlatformBrightnessChanged()
+                    {
+                    }
+                """,
+                """
+                            scheduleForcedFrame();
+                        }
+                        foreach (var observer in new List<WidgetsBindingObserver>(this._observers))
+                        {
+                            try
+                            {
+                                observer.didChangeMetrics();
+                            }
+                            catch (Exception exception)
+                            {
+                                var stack = new System.Diagnostics.StackTrace();
+                                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while dispatching notifications for WidgetsBindingObserver.didChangeMetrics")));
+                            }
+                        }
+                    }
+
+                    public virtual void handleTextScaleFactorChanged()
+                    {
+                        foreach (var observer in new List<WidgetsBindingObserver>(this._observers))
+                        {
+                            try
+                            {
+                                observer.didChangeTextScaleFactor();
+                            }
+                            catch (Exception exception)
+                            {
+                                var stack = new System.Diagnostics.StackTrace();
+                                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while dispatching notifications for WidgetsBindingObserver.didChangeTextScaleFactor")));
+                            }
+                        }
+                    }
+
+                    public virtual void handlePlatformBrightnessChanged()
+                    {
+                        foreach (var observer in new List<WidgetsBindingObserver>(this._observers))
+                        {
+                            try
+                            {
+                                observer.didChangePlatformBrightness();
+                            }
+                            catch (Exception exception)
+                            {
+                                var stack = new System.Diagnostics.StackTrace();
+                                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while dispatching notifications for WidgetsBindingObserver.didChangePlatformBrightness")));
+                            }
+                        }
+                    }
+                """,
+                StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/rendering/proxy_box.dart", StringComparison.Ordinal))

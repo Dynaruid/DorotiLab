@@ -731,7 +731,7 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
     public override bool updateShouldNotifyDependent(InheritedModel<_WindowControllerAspect___window> oldWidget, HashSet<_WindowControllerAspect___window> dependencies)
     {
         var __oldWidget = (WindowScopeIo)(object)oldWidget;
-        var __dependencies = (HashSet<object>)(object)dependencies;
+        var __dependencies = new HashSet<object>(dependencies.Cast<object>());
         return __dependencies.any(((dependency) => ((dependency is _WindowControllerAspect___window) && (((_WindowControllerAspect___window)dependency) switch { _WindowControllerAspect___window.contentSize => (!object.Equals(this._contentSize, ((WindowScopeIo)__oldWidget)._contentSize)), _WindowControllerAspect___window.title => (this._title != ((WindowScopeIo)__oldWidget)._title), _WindowControllerAspect___window.activated => (this._isActivated != ((WindowScopeIo)__oldWidget)._isActivated), _WindowControllerAspect___window.maximized => (this._isMaximized != ((WindowScopeIo)__oldWidget)._isMaximized), _WindowControllerAspect___window.minimized => (this._isMinimized != ((WindowScopeIo)__oldWidget)._isMinimized), _WindowControllerAspect___window.fullscreen => (this._isFullscreen != ((WindowScopeIo)__oldWidget)._isFullscreen), _WindowControllerAspect___window.destroyed => (this._isDestroyed != ((WindowScopeIo)__oldWidget)._isDestroyed), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -860,4 +860,3 @@ internal class _WindowManagerState___window : State<WindowManagerIo>
     }
 
 }
-

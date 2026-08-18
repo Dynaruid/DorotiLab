@@ -1,8 +1,28 @@
+:root {
+  color-scheme: light dark;
+  --doroti-surface-background: #fffbfe;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --doroti-surface-background: #141218;
+  }
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: var(--doroti-surface-background);
+}
+
 .doroti-root {
   position: fixed;
   inset: 0;
   overflow: hidden;
-  background: #fffbfe;
+  background: var(--doroti-surface-background);
 }
 
 .doroti-root > canvas {

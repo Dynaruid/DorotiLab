@@ -612,6 +612,18 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
     public virtual void handleAccessibilityFeaturesChanged()
     {
         this._accessibilityFeatures = this.platformDispatcher.accessibilityFeatures;
+        foreach (var observer in new List<WidgetsBindingObserver>(this._observers))
+        {
+            try
+            {
+                observer.didChangeAccessibilityFeatures();
+            }
+            catch (Exception exception)
+            {
+                var stack = new System.Diagnostics.StackTrace();
+                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while dispatching notifications for WidgetsBindingObserver.didChangeAccessibilityFeatures")));
+            }
+        }
     }
 
     public virtual global::Doroti.Ui.SemanticsUpdateBuilder createSemanticsUpdateBuilder()
@@ -805,14 +817,50 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         {
             scheduleForcedFrame();
         }
+        foreach (var observer in new List<WidgetsBindingObserver>(this._observers))
+        {
+            try
+            {
+                observer.didChangeMetrics();
+            }
+            catch (Exception exception)
+            {
+                var stack = new System.Diagnostics.StackTrace();
+                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while dispatching notifications for WidgetsBindingObserver.didChangeMetrics")));
+            }
+        }
     }
 
     public virtual void handleTextScaleFactorChanged()
     {
+        foreach (var observer in new List<WidgetsBindingObserver>(this._observers))
+        {
+            try
+            {
+                observer.didChangeTextScaleFactor();
+            }
+            catch (Exception exception)
+            {
+                var stack = new System.Diagnostics.StackTrace();
+                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while dispatching notifications for WidgetsBindingObserver.didChangeTextScaleFactor")));
+            }
+        }
     }
 
     public virtual void handlePlatformBrightnessChanged()
     {
+        foreach (var observer in new List<WidgetsBindingObserver>(this._observers))
+        {
+            try
+            {
+                observer.didChangePlatformBrightness();
+            }
+            catch (Exception exception)
+            {
+                var stack = new System.Diagnostics.StackTrace();
+                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while dispatching notifications for WidgetsBindingObserver.didChangePlatformBrightness")));
+            }
+        }
     }
 
     public virtual void initMouseTracker(MouseTracker? tracker = null)

@@ -84,6 +84,24 @@ $viewContracts = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Ui/ViewContracts.c
 Assert-True ($viewContracts.Contains('Color? darkBackgroundColor = null', [StringComparison]::Ordinal)) 'view configuration carries a dark native surface color'
 Assert-True ($mauiSkia.Contains('_host.ConfigurationChanged += HandleConfigurationChanged;', [StringComparison]::Ordinal) -and
     $mauiSkia.Contains('ResolveBackgroundColor(configuration.platformBrightness)', [StringComparison]::Ordinal)) 'MAUI back-buffer clear follows live platform brightness'
+$webHost = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Host.Web/Web/doroti.web.ts')
+Assert-True ($webHost.Contains('matchMedia?.("(prefers-color-scheme: dark)")', [StringComparison]::Ordinal) -and
+    $webHost.Contains('observe(colorScheme, "change", () => emit(host))', [StringComparison]::Ordinal)) 'Web host observes and emits live prefers-color-scheme changes'
+$webCss = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Host.Web/wwwroot/doroti.web.css')
+Assert-True ($webCss.Contains('@media (prefers-color-scheme: dark)', [StringComparison]::Ordinal) -and
+    $webCss.Contains('--doroti-surface-background: #141218', [StringComparison]::Ordinal)) 'Web loading and transparent surfaces follow prefers-color-scheme'
+$widgetsBinding = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Widgets/binding.cs')
+Assert-True ($widgetsBinding.Contains('observer.didChangePlatformBrightness();', [StringComparison]::Ordinal) -and
+    $widgetsBinding.Contains('WidgetsBindingObserver.didChangePlatformBrightness', [StringComparison]::Ordinal)) 'WidgetsBinding forwards live platform brightness to MediaQuery observers'
+$mediaQuery = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Widgets/media_query.cs')
+Assert-True (-not $mediaQuery.Contains('(HashSet<object>)(object)dependencies', [StringComparison]::Ordinal) -and
+    $mediaQuery.Contains('new HashSet<object>(dependencies.Cast<object>())', [StringComparison]::Ordinal)) 'MediaQuery evaluates typed aspect dependencies without an invariant collection cast'
+$lowerer = Read-Text (Join-Path $repositoryRoot 'tools/Doroti.DartToCSharp/src/Backend/CSharp/Lowering/FrameworkCSharpLowerer.G53Compatibility.cs')
+Assert-True ($lowerer.Contains('observer.didChangePlatformBrightness();', [StringComparison]::Ordinal) -and
+    $lowerer.Contains('right-most Dart mixin', [StringComparison]::Ordinal)) 'Dart-to-CSharp regeneration retains environment observer dispatch'
+$memberLowerer = Read-Text (Join-Path $repositoryRoot 'tools/Doroti.DartToCSharp/src/Backend/CSharp/Lowering/FrameworkCSharpLowerer.Members.cs')
+Assert-True ($memberLowerer.Contains('new HashSet<object>({parameterName}.Cast<object>())', [StringComparison]::Ordinal) -and
+    $memberLowerer.Contains('method.Name == "updateShouldNotifyDependent"', [StringComparison]::Ordinal)) 'Dart-to-CSharp regeneration avoids invariant InheritedModel dependency casts'
 
 Invoke-Contract 'Debug'
 Invoke-Contract 'Release'

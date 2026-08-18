@@ -1363,7 +1363,19 @@ internal sealed partial class FrameworkCSharpLowerer
             {
                 var renamed = renamedOverrideParameters.FirstOrDefault(item => item.Source == narrowed.Name);
                 var parameterName = string.IsNullOrEmpty(renamed.Contract) ? narrowed.Name : renamed.Contract;
-                if (narrowed.SourceType.EndsWith("?", StringComparison.Ordinal))
+                if (method.Name == "updateShouldNotifyDependent" && sourceParameters.Length == 2 &&
+                    narrowed.Name == sourceParameters[1].Name &&
+                    narrowed.SourceType == "HashSet<object>" &&
+                    parameters.Length == 2 &&
+                    MapType(parameters[1].Type).StartsWith("HashSet<", StringComparison.Ordinal))
+                {
+                    // InheritedModel<T> stores dependencies as HashSet<T>. Dart's
+                    // override may expose Set<Object>, but CLR generic collections
+                    // are invariant. Copy the tiny dependency set into its source
+                    // view instead of emitting an invalid HashSet<T> cast.
+                    builder.AppendLine($"        var {narrowed.Local} = new HashSet<object>({parameterName}.Cast<object>());");
+                }
+                else if (narrowed.SourceType.EndsWith("?", StringComparison.Ordinal))
                 {
                     builder.AppendLine($"        var {narrowed.Local} = {parameterName} is null ? null : ({narrowed.SourceType.TrimEnd('?')})(object){parameterName};");
                 }

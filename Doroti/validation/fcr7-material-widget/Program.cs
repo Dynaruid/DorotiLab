@@ -39,6 +39,20 @@ Require(ReferenceEquals(systemThemeApp.theme, lightTheme), "MaterialApp retains 
 Require(ReferenceEquals(systemThemeApp.darkTheme, darkTheme), "MaterialApp retains the dark palette");
 Require(systemThemeApp.themeMode == Doroti.Framework.Material.ThemeMode.system, "MaterialApp follows platform brightness in system mode");
 
+var widgetsBinding = (Doroti.Framework.Widgets.WidgetsFlutterBinding)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(
+    typeof(Doroti.Framework.Widgets.WidgetsFlutterBinding));
+widgetsBinding._observers = [];
+widgetsBinding._backGestureObservers = [];
+var environmentProbe = new EnvironmentObserverProbe();
+widgetsBinding.addObserver(environmentProbe);
+widgetsBinding.handleTextScaleFactorChanged();
+widgetsBinding.handlePlatformBrightnessChanged();
+Require(environmentProbe.TextScaleChanges == 1, "WidgetsBinding forwards text-scale changes to MediaQuery observers");
+Require(environmentProbe.BrightnessChanges == 1, "WidgetsBinding forwards live platform-brightness changes to MediaQuery observers");
+Require(widgetsBinding.removeObserver(environmentProbe), "WidgetsBinding removes the environment observer");
+widgetsBinding.handlePlatformBrightnessChanged();
+Require(environmentProbe.BrightnessChanges == 1, "removed environment observer no longer receives brightness changes");
+
 var scenarios = new[]
 {
     Scenario("fab-press", "floating-action-button", ["default", "pressed", "focused", "disabled"], ["down", "hold", "up", "semantics"]),
@@ -70,3 +84,12 @@ static string ConfigurationName() =>
 #endif
 
 sealed record Scenario(string Id, string Component, IReadOnlyList<string> States, IReadOnlyList<string> Actions);
+
+sealed class EnvironmentObserverProbe : Doroti.Framework.Widgets.WidgetsBindingObserver
+{
+    public int TextScaleChanges { get; private set; }
+    public int BrightnessChanges { get; private set; }
+
+    public void didChangeTextScaleFactor() => TextScaleChanges++;
+    public void didChangePlatformBrightness() => BrightnessChanges++;
+}

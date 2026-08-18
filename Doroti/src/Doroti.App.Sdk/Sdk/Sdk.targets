@@ -5,6 +5,7 @@
     <_DorotiBootstrapFile>$(_DorotiGeneratedDirectory)DorotiBootstrap.g.cs</_DorotiBootstrapFile>
     <_DorotiPluginRegistrationFile>$(_DorotiGeneratedDirectory)DorotiPluginRegistration.g.cs</_DorotiPluginRegistrationFile>
     <_DorotiWebRuntimeStampFile>$(_DorotiGeneratedDirectory)web-runtime-version.txt</_DorotiWebRuntimeStampFile>
+    <_DorotiWebRuntimeClosure>$(RuntimeFrameworkVersion)|$(SkiaSharpVersion)</_DorotiWebRuntimeClosure>
     <DorotiTypeScriptConfig Condition="'$(DorotiWebTypeScript)' == 'true'">$(MSBuildProjectDirectory)/Platforms/Web/tsconfig.json</DorotiTypeScriptConfig>
     <DorotiTypeScriptSourceRoot Condition="'$(DorotiWebTypeScript)' == 'true'">$(MSBuildProjectDirectory)/Platforms/Web/src</DorotiTypeScriptSourceRoot>
     <DorotiTypeScriptOutputRoot Condition="'$(DorotiWebTypeScript)' == 'true'">$(BaseIntermediateOutputPath)$(Configuration)/$(TargetFramework)/Doroti.Generated/wwwroot</DorotiTypeScriptOutputRoot>
@@ -82,11 +83,11 @@
 
   <Target Name="InvalidateDorotiWebRuntimeCache" BeforeTargets="PrepareForBuild" Condition="'$(DorotiTarget)' == 'Web'">
     <ReadLinesFromFile File="$(_DorotiWebRuntimeStampFile)" Condition="Exists('$(_DorotiWebRuntimeStampFile)')">
-      <Output TaskParameter="Lines" PropertyName="_DorotiPreviousWebRuntimeVersion" />
+      <Output TaskParameter="Lines" PropertyName="_DorotiPreviousWebRuntimeClosure" />
     </ReadLinesFromFile>
-    <RemoveDir Directories="$(IntermediateOutputPath)webcil" Condition="'$(_DorotiPreviousWebRuntimeVersion)' != '$(RuntimeFrameworkVersion)' and Exists('$(IntermediateOutputPath)webcil')" />
+    <RemoveDir Directories="$(IntermediateOutputPath)webcil" Condition="'$(_DorotiPreviousWebRuntimeClosure)' != '$(_DorotiWebRuntimeClosure)' and Exists('$(IntermediateOutputPath)webcil')" />
     <MakeDir Directories="$(_DorotiGeneratedDirectory)" />
-    <WriteLinesToFile File="$(_DorotiWebRuntimeStampFile)" Overwrite="true" WriteOnlyWhenDifferent="true" Lines="$(RuntimeFrameworkVersion)" />
+    <WriteLinesToFile File="$(_DorotiWebRuntimeStampFile)" Overwrite="true" WriteOnlyWhenDifferent="true" Lines="$(_DorotiWebRuntimeClosure)" />
   </Target>
 
   <Target Name="GenerateDorotiBootstrap" DependsOnTargets="ValidateDorotiAppTarget" BeforeTargets="PrepareForBuild;CoreCompile">
