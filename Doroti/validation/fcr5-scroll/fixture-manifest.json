@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "doroti.flutter-conformance-fcr5-fixture/v1",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "sources": [
+    {
+      "path": "packages/flutter/lib/src/widgets/scroll_controller.dart",
+      "sha256": "9ba87baa5c81a8d000bc021d93053f49c9a5c4c867b5f838e23d0eb916da944a",
+      "anchors": ["Future<void> animateTo", "Future.wait<void>", "void jumpTo"]
+    },
+    {
+      "path": "packages/flutter/lib/src/widgets/scroll_activity.dart",
+      "sha256": "dc183614b29388190ca870a9a9a7bb23bd0b7164f5d81fc11ffe65de582c944e",
+      "anchors": ["class DragScrollActivity", "class BallisticScrollActivity", "class DrivenScrollActivity"]
+    },
+    {
+      "path": "packages/flutter/lib/src/widgets/scrollable.dart",
+      "sha256": "419c2055fe3e8be10f21413b88bb838c24c7f068879c5882b470a15fa1b7b1b7",
+      "anchors": ["void _receivedPointerSignal", "void _handlePointerScroll", "replaceGestureRecognizers"]
+    },
+    {
+      "path": "packages/flutter/lib/src/widgets/scroll_view.dart",
+      "sha256": "427a3070dd0c8cb7403f1abcd38d73359387863ecdeeaa49c3ab0225eff7b175",
+      "anchors": ["PrimaryScrollController.shouldInherit", "final ScrollController? scrollController", "PrimaryScrollController.none"]
+    },
+    {
+      "path": "packages/flutter/lib/src/widgets/scrollbar.dart",
+      "sha256": "3ce9ba77df9d8b14560457301e6f68642ddaaf91e495d7208f84af2fe1dc91bd",
+      "anchors": ["PrimaryScrollController.maybeOf", "_effectiveScrollController", "_handlePointerScroll"]
+    },
+    {
+      "path": "packages/flutter/lib/src/rendering/viewport.dart",
+      "sha256": "043257575c9565397ccf071fcd26b9196a746497f780371870f6fc40eccd6314",
+      "anchors": ["class RenderViewport", "SliverPaintOrder", "cacheExtent"]
+    },
+    {
+      "path": "packages/flutter/lib/src/rendering/sliver_multi_box_adaptor.dart",
+      "sha256": "fe12cb7030e229482dc97ca8429414dc6fc1b781b9efd7f8d7f26c3ac3a89a4c",
+      "anchors": ["class RenderSliverMultiBoxAdaptor", "_keepAliveBucket", "collectGarbage"]
+    }
+  ]
+}

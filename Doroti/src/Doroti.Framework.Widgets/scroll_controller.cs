@@ -51,7 +51,15 @@ public class ScrollController : global::Doroti.Framework.Foundation.ChangeNotifi
     public async virtual Future animateTo(double offset, Duration duration, global::Doroti.Framework.Animation.Curve curve)
     {
         DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(this._positions), () => (object?)"ScrollController not attached to any scroll views.");
-        await global::Doroti.Runtime.DartAsyncRuntime.wait<object?>(new List<Future>());
+        // Snapshot before starting an animation. A position may detach while a
+        // sibling is animating, but Flutter's controller waits for every
+        // position that was attached at invocation time.
+        var futures = new List<Future>();
+        foreach (var position in this._positions.ToArray())
+        {
+            futures.Add(position.animateTo(offset, duration: duration, curve: curve));
+        }
+        await global::Doroti.Runtime.DartAsyncRuntime.wait<object?>(futures);
     }
 
     public virtual void jumpTo(double value)
@@ -182,4 +190,3 @@ public class TrackingScrollController : ScrollController
     }
 
 }
-

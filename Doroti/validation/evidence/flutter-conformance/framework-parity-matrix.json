@@ -129,12 +129,26 @@
       "sourceSha256": "419c2055fe3e8be10f21413b88bb838c24c7f068879c5882b470a15fa1b7b1b7",
       "owner": "Doroti.Framework.Widgets",
       "disposition": "adapted",
-      "productSources": ["Doroti/src/Doroti.Framework.Widgets/scrollable.cs"],
+      "productSources": ["Doroti/src/Doroti.Framework.Widgets/scrollable.cs", "Doroti/src/Doroti.Ui/ScrollLifecycle.cs"],
       "runtimeDependencyIds": ["runtime:scroll-input", "runtime:scheduler-host", "runtime:widget-rendering", "runtime:semantics-bridge"],
       "hostConsumers": ["DorotiDemoApp/src/App.cs", "Doroti/src/Doroti.Host.Maui/MauiNativeInput.cs"],
-      "testEvidence": ["Doroti/validation/evidence/app-targets-evidence.json", "Doroti/eng/validate-app-targets.ps1"],
-      "verification": "notVerified",
-      "note": "The full pointer-to-present causal chain is a FCR-5 gate."
+      "testEvidence": ["Doroti/eng/validate-fcr5-scroll.ps1", "Doroti/validation/fcr5-scroll/Program.cs", "Doroti/validation/evidence/flutter-conformance/fcr5-scroll-evidence.json"],
+      "verification": "partial",
+      "note": "FCR-5 fixes source-level pointer/position ownership and defines a bounded input-sequence trace ABI; native pointer-to-present capture remains notVerified."
+    },
+    {
+      "id": "widgets.scroll-controller",
+      "area": "Widgets",
+      "flutterSource": "packages/flutter/lib/src/widgets/scroll_controller.dart",
+      "sourceSha256": "9ba87baa5c81a8d000bc021d93053f49c9a5c4c867b5f838e23d0eb916da944a",
+      "owner": "Doroti.Framework.Widgets",
+      "disposition": "adapted",
+      "productSources": ["Doroti/src/Doroti.Framework.Widgets/scroll_controller.cs"],
+      "runtimeDependencyIds": ["runtime:scroll-input", "runtime:scheduler-host"],
+      "hostConsumers": ["DorotiDemoApp/src/App.cs", "Doroti/src/Doroti.Host.Maui/MauiNativeInput.cs"],
+      "testEvidence": ["Doroti/eng/validate-fcr5-scroll.ps1", "Doroti/validation/fcr5-scroll/Program.cs", "Doroti/validation/evidence/flutter-conformance/fcr5-scroll-evidence.json"],
+      "verification": "partial",
+      "note": "The controller now waits for the invocation-time position snapshot; live animation and multi-client differential remain notVerified."
     },
     {
       "id": "widgets.scroll-activity",
@@ -146,9 +160,9 @@
       "productSources": ["Doroti/src/Doroti.Framework.Widgets/scroll_activity.cs"],
       "runtimeDependencyIds": ["runtime:scroll-input", "runtime:scheduler-host"],
       "hostConsumers": ["DorotiDemoApp/src/App.cs", "Doroti/src/Doroti.Host.Maui/MauiNativeInput.cs"],
-      "testEvidence": ["Doroti/eng/validate-app-targets.ps1", "Doroti/validation/evidence/app-targets-evidence.json"],
-      "verification": "notVerified",
-      "note": "Drag, ballistic and driven activity state transitions are not promoted by this structural gate."
+      "testEvidence": ["Doroti/eng/validate-fcr5-scroll.ps1", "Doroti/validation/fcr5-scroll/Program.cs", "Doroti/validation/evidence/flutter-conformance/fcr5-scroll-evidence.json"],
+      "verification": "partial",
+      "note": "Driven activity construction and completion observation are contract-tested; drag/ballistic state differential is notVerified."
     },
     {
       "id": "widgets.scroll-position",
@@ -160,9 +174,9 @@
       "productSources": ["Doroti/src/Doroti.Framework.Widgets/scroll_position.cs"],
       "runtimeDependencyIds": ["runtime:scroll-input", "runtime:widget-rendering", "runtime:semantics-bridge"],
       "hostConsumers": ["DorotiDemoApp/src/App.cs", "Doroti/src/Doroti.Host.Maui/MauiSemanticsBridge.cs"],
-      "testEvidence": ["Doroti/validation/evidence/app-targets-evidence.json", "Doroti/eng/validate-app-targets.ps1"],
-      "verification": "notVerified",
-      "note": "Offset, viewport metrics and Scrollbar ownership are tracked as separate runtime dependencies."
+      "testEvidence": ["Doroti/eng/validate-fcr5-scroll.ps1", "Doroti/validation/fcr5-scroll/Program.cs", "Doroti/validation/evidence/flutter-conformance/fcr5-scroll-evidence.json"],
+      "verification": "partial",
+      "note": "Offset, viewport metrics and Scrollbar ownership have a structural contract; their input-sequence differential remains notVerified."
     },
     {
       "id": "widgets.scroll-position-with-single-context",
@@ -188,9 +202,9 @@
       "productSources": ["Doroti/src/Doroti.Framework.Widgets/scroll_view.cs"],
       "runtimeDependencyIds": ["runtime:scroll-input", "runtime:widget-rendering", "runtime:semantics-bridge"],
       "hostConsumers": ["DorotiDemoApp/src/App.cs"],
-      "testEvidence": ["Doroti/validation/evidence/app-targets-evidence.json", "Doroti/eng/validate-app-targets.ps1"],
-      "verification": "notVerified",
-      "note": "Lazy child lifecycle and cacheExtent measurements are reserved for FCR-5."
+      "testEvidence": ["Doroti/eng/validate-fcr5-scroll.ps1", "Doroti/validation/fcr5-scroll/Program.cs", "Doroti/validation/evidence/flutter-conformance/fcr5-scroll-evidence.json"],
+      "verification": "partial",
+      "note": "PrimaryScrollController inheritance is contract-tested; lazy child lifecycle and cacheExtent measurements remain notVerified."
     },
     {
       "id": "widgets.scrollbar",
@@ -202,9 +216,9 @@
       "productSources": ["Doroti/src/Doroti.Framework.Widgets/scrollbar.cs"],
       "runtimeDependencyIds": ["runtime:scroll-input", "runtime:semantics-bridge", "runtime:widget-rendering"],
       "hostConsumers": ["DorotiDemoApp/src/App.cs", "Doroti/src/Doroti.Host.Maui/MauiSemanticsBridge.cs"],
-      "testEvidence": ["Doroti/validation/evidence/app-targets-evidence.json", "Doroti/eng/validate-app-targets.ps1"],
-      "verification": "notVerified",
-      "note": "PrimaryScrollController and Scrollbar thumb behavior require the same input sequence differential."
+      "testEvidence": ["Doroti/eng/validate-fcr5-scroll.ps1", "Doroti/validation/fcr5-scroll/Program.cs", "Doroti/validation/evidence/flutter-conformance/fcr5-scroll-evidence.json"],
+      "verification": "partial",
+      "note": "Explicit-or-primary controller ownership is contract-tested; thumb behavior under the same input sequence remains notVerified."
     },
     {
       "id": "rendering.viewport",

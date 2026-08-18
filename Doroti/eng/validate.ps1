@@ -1,6 +1,6 @@
 #Requires -Version 7.0
 param(
-    [ValidateSet('Source', 'Build', 'Targets', 'Fcr0', 'Fcr1', 'Fcr2', 'Fcr3', 'Fcr4', 'Developer', 'Release')]
+    [ValidateSet('Source', 'Build', 'Targets', 'Fcr0', 'Fcr1', 'Fcr2', 'Fcr3', 'Fcr4', 'Fcr5', 'Developer', 'Release')]
     [string] $Suite = 'Developer'
 )
 
@@ -139,6 +139,11 @@ function Invoke-Fcr4Gate {
     $completed.Add('fcr-4-retained-rendering')
 }
 
+function Invoke-Fcr5Gate {
+    Invoke-Checked { & (Join-Path $PSScriptRoot 'validate-fcr5-scroll.ps1') } 'Flutter scroll/viewport FCR-5 validation failed'
+    $completed.Add('fcr-5-scroll')
+}
+
 function Invoke-ReleaseGate {
     & (Join-Path $PSScriptRoot 'validate-app-targets.ps1') -Shard Live
     & (Join-Path $PSScriptRoot 'validate-app-targets.ps1') -Shard Evidence
@@ -157,6 +162,7 @@ switch ($Suite) {
     'Fcr2' { Invoke-Fcr2Gate }
     'Fcr3' { Invoke-Fcr3Gate }
     'Fcr4' { Invoke-Fcr4Gate }
+    'Fcr5' { Invoke-Fcr5Gate }
     'Developer' {
         Invoke-SourceGate
         Invoke-Fcr0Gate
@@ -164,6 +170,7 @@ switch ($Suite) {
         Invoke-Fcr2Gate
         Invoke-Fcr3Gate
         Invoke-Fcr4Gate
+        Invoke-Fcr5Gate
         Invoke-BuildGate
         Invoke-TargetGate
     }
@@ -174,6 +181,7 @@ switch ($Suite) {
         Invoke-Fcr2Gate
         Invoke-Fcr3Gate
         Invoke-Fcr4Gate
+        Invoke-Fcr5Gate
         Invoke-BuildGate
         Invoke-TargetGate
         Invoke-ReleaseGate

@@ -410,6 +410,16 @@ public class DrivenScrollActivity : ScrollActivity
     public DrivenScrollActivity(ScrollActivityDelegate @delegate, double from, double to, Duration duration, global::Doroti.Framework.Animation.Curve curve, global::Doroti.Framework.Scheduler.TickerProvider vsync) : base(@delegate)
     {
         System.Diagnostics.Debug.Assert((duration > Duration.zero));
+        _completer = new Completer<object?>();
+        _controller = global::Doroti.Framework.Animation.AnimationController.CreateUnbounded(
+            value: from,
+            debugLabel: global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "DrivenScrollActivity"),
+            vsync: vsync);
+        _controller.addListener(this._tick);
+        DartRuntimePrimitives.Observe(
+            _controller.animateTo(to, duration: duration, curve: curve)
+                .whenComplete(() => { this._end(); return default!; }),
+            "DrivenScrollActivity.animateTo");
     }
 
     public static DrivenScrollActivity CreateSimulation(ScrollActivityDelegate @delegate, global::Doroti.Framework.Physics.Simulation simulation, global::Doroti.Framework.Scheduler.TickerProvider vsync)

@@ -1,6 +1,6 @@
 # Doroti Flutter Conformance & Smooth Rendering Upgrade
 
-> 상태: **ACTIVE PLAN — FCR-0 inventory/contract gate, FCR-1 framework shader contract, FCR-2 typed semantic/runtime contract와 FCR-3 scheduler/frame-ownership contract 구현 완료; app interaction·differential·live/physical 검증은 후속 gate로 남음**
+> 상태: **ACTIVE PLAN — FCR-0 inventory/contract gate, FCR-1 framework shader contract, FCR-2 typed semantic/runtime contract, FCR-3 scheduler/frame-ownership, FCR-4 retained-rendering 및 FCR-5 scroll ownership/runtime contract 구현 완료; Flutter differential, native live/physical·soak acceptance는 후속 gate로 남음**
 > 작성일: 2026-08-18
 > Doroti 기준 revision: `3fd08b3` + 이 문서 변경
 > Flutter source pin: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
@@ -191,6 +191,10 @@ FCR-1과 FCR-2는 병행 가능하다. FCR-3~FCR-5는 frame ownership을 먼저 
 - C0/C1의 reference differential이 더 이상 `notVerified`가 아니며 C2 미지원은 정확한 capability 진단을 낸다.
 
 ### FCR-5 — Flutter식 scroll/viewport/sliver 경로와 성능
+
+현재 구현 상태 (2026-08-18): pinned Flutter scroll source fixture와 Debug/Release `FCR-5` runtime contract를 추가했다. `ScrollController.animateTo`는 호출 시점 attached `ScrollPosition` snapshot 전체의 `animateTo` completion을 기다리며, `DrivenScrollActivity`는 `from` value의 unbounded controller를 만들고 completion failure를 관찰한다. `ScrollView`의 PrimaryScrollController 선택과 RawScrollbar의 explicit-or-primary controller resolution은 source contract로 고정했다. `DorotiScrollTrace`는 native input/PointerData부터 hit test, gesture, activity, viewport, layout, paint, retained layer, raster, present, Scrollbar, semantics까지 하나의 input sequence로 기록할 bounded trace ABI를 제공한다. `validate-fcr5-scroll.ps1`가 Flutter pin/hash/anchor, ownership, source implementation, Debug/Release trace contract와 evidence schema를 검증한다.
+
+아직 `notVerified`: trace ABI가 실제 Android/Windows native packet-to-present capture 전체에 연결되는 것, Flutter reference drag/hold/ballistic/driven differential, lazy child/cacheExtent/keepAlive 및 cache hit/miss/eviction measurement, Android 60초 physical alternating scroll, Windows wheel/drag live acceptance와 process survival. 따라서 FCR-5 performance/physical 완료 gate는 아직 닫지 않는다.
 
 작업:
 

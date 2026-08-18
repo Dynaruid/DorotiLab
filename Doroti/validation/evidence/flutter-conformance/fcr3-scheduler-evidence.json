@@ -1,8 +1,8 @@
 {
   "schemaVersion": "doroti.flutter-conformance-fcr3-evidence/v1",
   "status": "partial",
-  "capturedAt": "2026-08-18T03:50:41.4961984Z",
-  "repositoryRevision": "40dbf0b57fa38d9e968a007f6f85cc0b52df8564",
+  "capturedAt": "2026-08-18T04:19:49.9932351Z",
+  "repositoryRevision": "9a0322ad3c897f96e96b43b9c7fce2cdc9694284",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "fixtureManifest": "Doroti/validation/fcr3-scheduler/fixture-manifest.json",
   "runtimeContract": {

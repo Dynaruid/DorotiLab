@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "doroti.flutter-conformance-fcr5-evidence/v1",
+  "status": "partial",
+  "capturedAt": "2026-08-18T04:25:21.0281506Z",
+  "repositoryRevision": "9a0322ad3c897f96e96b43b9c7fce2cdc9694284",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "fixtureManifest": "Doroti/validation/fcr5-scroll/fixture-manifest.json",
+  "runtimeContract": {
+    "status": "pass",
+    "debug": "pass",
+    "release": "pass",
+    "checks": [
+      "ScrollController.animateTo waits for the initial attached-position snapshot",
+      "DrivenScrollActivity initializes and observes its animation",
+      "scroll trace preserves one input sequence through its declared causal phases",
+      "trace capacity is bounded without sequence reuse"
+    ]
+  },
+  "ownershipContract": {
+    "status": "pass",
+    "checks": [
+      "ScrollView applies PrimaryScrollController.shouldInherit",
+      "RawScrollbar uses explicit controller or the inherited primary controller"
+    ]
+  },
+  "acceptance": {
+    "status": "notVerified",
+    "reason": "This structural contract does not execute Flutter-reference differential, a real native pointer-to-present capture, lazy-child/cache measurement, Android physical 60-second scroll, or Windows live wheel/drag.",
+    "notRun": [
+      "Flutter drag/hold/ballistic/driven differential",
+      "lazy child create/dispose and keepAlive/cacheExtent measurement",
+      "text/shader/paint cache hit-miss-eviction measurement",
+      "Android physical 60-second alternating drag/ballistic scroll",
+      "Windows native wheel/drag presentation and process-survival acceptance"
+    ]
+  }
+}
