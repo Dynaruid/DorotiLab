@@ -54,6 +54,7 @@ public class Size : IEquatable<Size>, IDartTweenValue<Size>
     public static Size zero { get; } = new(0, 0);
     public static Size infinite { get; } = new(double.PositiveInfinity, double.PositiveInfinity);
     public static Size fromOffset(Offset value) => new(value.dx, value.dy);
+    public static Size fromRadius(double radius) => new(radius * 2, radius * 2);
     public static Size square(double dimension) => new(dimension, dimension);
     public static Size CreateSquare(double dimension) => square(dimension);
     public static Size? lerp(Size? a, Size? b, double t)

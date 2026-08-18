@@ -8,6 +8,8 @@ $repositoryRoot = [IO.Path]::GetFullPath((Join-Path $dorotiRoot '..'))
 $flutterRoot = Join-Path $repositoryRoot 'reference/flutter-master'
 $fixturePath = Join-Path $dorotiRoot 'validation/fcr7-material-widget/fixture-manifest.json'
 $contractProject = Join-Path $dorotiRoot 'validation/fcr7-material-widget/Doroti.Validation.Fcr7MaterialWidget.csproj'
+$lowererProject = Join-Path $repositoryRoot 'tools/Doroti.DartToCSharp/Doroti.DartToCSharp.csproj'
+$lowererFixtureManifest = Join-Path $dorotiRoot 'validation/fcr7-material-widget/lowerer/selection.json'
 $evidencePath = Join-Path $dorotiRoot 'validation/evidence/flutter-conformance/fcr7-material-widget-evidence.json'
 $matrixPath = Join-Path $dorotiRoot 'validation/evidence/flutter-conformance/framework-parity-matrix.json'
 $appPath = Join-Path $repositoryRoot 'DorotiDemoApp/src/App.cs'
@@ -24,6 +26,30 @@ function Invoke-Contract([string] $Configuration) {
         Assert-True ($output.Contains("FCR-7 material/widget runtime contract: PASS (configuration=$Configuration", [StringComparison]::Ordinal)) "FCR-7 runtime contract result ($Configuration)"
     }
     finally { Remove-Item -LiteralPath $stdout, "$stdout.err" -Force -ErrorAction SilentlyContinue }
+}
+
+function Invoke-LowererFixture {
+    $output = Join-Path ([IO.Path]::GetTempPath()) ("doroti-fcr7-size-radius-$([guid]::NewGuid())")
+    [IO.Directory]::CreateDirectory($output) | Out-Null
+    try {
+        $stdout = Join-Path $output 'lowerer.log'
+        $process = Start-Process dotnet -ArgumentList @('run', '--project', $lowererProject, '-c', 'Debug', '--',
+            '--manifest', $lowererFixtureManifest, '--output', (Join-Path $output 'generated'), '--parallelism', '1') `
+            -NoNewWindow -PassThru -RedirectStandardOutput $stdout -RedirectStandardError "$stdout.err"
+        Assert-True ($process.WaitForExit(1200000)) 'FCR-7 Size.fromRadius lowerer fixture timeout'
+        $processOutput = ((Get-Content -Raw -LiteralPath $stdout) + (Get-Content -Raw -LiteralPath "$stdout.err"))
+        Assert-True ($process.ExitCode -eq 0) "FCR-7 Size.fromRadius lowerer fixture exit: $processOutput"
+        $generatedPath = Join-Path $output 'generated/projects/Material/slider_value_indicator_shape.g.cs'
+        $generated = Read-Text $generatedPath
+        Assert-True ($generated.Contains('global::Doroti.Ui.Size.fromRadius(this.overlayRadius)', [StringComparison]::Ordinal)) 'lowerer preserves Size.fromRadius factory identity'
+        Assert-True (-not $generated.Contains('new global::Doroti.Ui.Size(this.overlayRadius)', [StringComparison]::Ordinal)) 'lowerer does not collapse radius semantics into the square constructor'
+    }
+    finally {
+        $resolved = [IO.Path]::GetFullPath($output)
+        $tempRoot = [IO.Path]::GetFullPath([IO.Path]::GetTempPath())
+        Assert-True ($resolved.StartsWith($tempRoot, [StringComparison]::OrdinalIgnoreCase)) 'FCR-7 lowerer output stays inside the system temp directory'
+        if (Test-Path -LiteralPath $resolved) { [IO.Directory]::Delete($resolved, $true) }
+    }
 }
 
 Assert-True (Test-Path -LiteralPath $flutterRoot -PathType Container) 'pinned Flutter checkout exists'
@@ -45,7 +71,7 @@ Assert-True (@($fixture.scrollbarAlphaScenarios).Count -eq 6) 'Android peak, vis
 $transientAlpha = @($fixture.scrollbarAlphaScenarios | Where-Object { $_.id -like 'android-transient-*' })
 Assert-True (($transientAlpha | Sort-Object timestampMilliseconds | ForEach-Object expectedAlpha) -join ',' -eq '255,128,0') 'transient Android alpha decreases from hold through fade end'
 Assert-True (@($fixture.scrollbarAlphaScenarios | Where-Object { $_.id -eq 'explicit-semitransparent-theme' -and $_.backgrounds.Count -eq 2 }).Count -eq 1) 'explicit alpha uses two known backgrounds'
-Assert-True (@($fixture.components).Count -eq 6) 'fixed representative component slice'
+Assert-True (@($fixture.components).Count -eq 7) 'fixed representative component slice'
 foreach ($scenario in @($fixture.replayScenarios)) {
     Assert-True (@($scenario.states).Count -ge 2) "multi-state scenario: $($scenario.id)"
     Assert-True (@($scenario.sequence).Count -gt 0) "replay sequence: $($scenario.id)"
@@ -117,13 +143,27 @@ $memberLowerer = Read-Text (Join-Path $repositoryRoot 'tools/Doroti.DartToCSharp
 Assert-True ($memberLowerer.Contains('new HashSet<object>({parameterName}.Cast<object>())', [StringComparison]::Ordinal) -and
     $memberLowerer.Contains('method.Name == "updateShouldNotifyDependent"', [StringComparison]::Ordinal)) 'Dart-to-CSharp regeneration avoids invariant InheritedModel dependency casts'
 
+$viewContracts = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Ui/ViewContracts.cs')
+$sliderOverlay = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Material/slider_value_indicator_shape.cs')
+$sliderParts = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Material/slider_parts.cs')
+$rangeSliderParts = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Material/range_slider_parts.cs')
+$materialSwitch = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Framework.Material/switch.cs')
+$lowererTypes = Read-Text (Join-Path $repositoryRoot 'tools/Doroti.DartToCSharp/src/Backend/CSharp/Lowering/FrameworkCSharpLowerer.Types.cs')
+Assert-True ($viewContracts.Contains('public static Size fromRadius(double radius) => new(radius * 2, radius * 2);', [StringComparison]::Ordinal)) 'dart:ui Size.fromRadius returns a diameter-sized box'
+Assert-True ($sliderOverlay.Contains('Size.fromRadius(this.overlayRadius)', [StringComparison]::Ordinal)) 'slider overlay preferred size preserves radius semantics'
+Assert-True ((($sliderParts | Select-String -Pattern 'Size\.fromRadius\(' -AllMatches).Matches.Count -eq 2) -and
+    (($rangeSliderParts | Select-String -Pattern 'Size\.fromRadius\(' -AllMatches).Matches.Count -eq 2)) 'slider, range-slider thumb and tick sizes preserve radius semantics'
+Assert-True (($materialSwitch | Select-String -Pattern 'Size\.fromRadius\(' -AllMatches).Matches.Count -eq 3) 'Material Switch pressed thumb sizes preserve radius semantics'
+Assert-True ($lowererTypes.Contains('simple is "Size" or "Radius"', [StringComparison]::Ordinal)) 'lowerer routes external Size named constructors to their static factories'
+
+Invoke-LowererFixture
 Invoke-Contract 'Debug'
 Invoke-Contract 'Release'
 $evidence = [ordered]@{
     schemaVersion = 'doroti.flutter-conformance-fcr7-evidence/v1'; status = 'partial'; capturedAt = [DateTime]::UtcNow.ToString('o')
     repositoryRevision = (& git -C $repositoryRoot rev-parse HEAD).Trim(); flutterRevision = $flutterRevision
     fixtureManifest = 'Doroti/validation/fcr7-material-widget/fixture-manifest.json'
-    structuralContract = [ordered]@{ status = 'pass'; debug = 'pass'; release = 'pass'; checks = @('pinned Flutter material/widget source hashes and anchors', 'fixed viewport/DPR/font/theme/locale/time-seed fixture', 'transparent shell versus opaque Scaffold ownership', 'coordinate, hover, scroll, frame, and semantics replay coverage', 'Demo source slice anchors', 'distinct outer and inner scroll controllers and scrollbar keys', 'Demo uses transient Android visibility') }
+    structuralContract = [ordered]@{ status = 'pass'; debug = 'pass'; release = 'pass'; checks = @('pinned Flutter material/widget source hashes and anchors', 'fixed viewport/DPR/font/theme/locale/time-seed fixture', 'transparent shell versus opaque Scaffold ownership', 'coordinate, hover, drag, scroll, frame, and semantics replay coverage', 'pinned Flutter Size.fromRadius lowerer output', 'Slider overlay/thumb/tick full-diameter geometry', 'Demo source slice anchors', 'distinct outer and inner scroll controllers and scrollbar keys', 'Demo uses transient Android visibility') }
     scrollbarAlphaContract = [ordered]@{ status = 'partial'; painterAndCommand = 'pass'; hostMapping = 'pass-static'; finalPixel = 'notVerified'; checks = @('Android idle peak alpha 255', 'thumbVisibility true remains visible', '600 ms hold then 300 ms monotonic fade to zero', 'explicit theme alpha multiplied by fade once', 'transparent track separate from thumb', 'known white and black background composites', 'PaintSnapshot alpha to MAUI SKColor alpha with SrcOver') }
     differential = [ordered]@{ status = 'notVerified'; reason = 'No paired Flutter and Doroti raster/state/semantics captures were executed by this structural gate.'; required = @($fixture.comparison.requires) }
     targets = [ordered]@{
@@ -132,7 +172,7 @@ $evidence = [ordered]@{
         webBrowserLive = [ordered]@{ status = 'notVerified' }
         macCatalystNative = [ordered]@{ status = 'notVerified' }
     }
-    notRun = @('Flutter reference capture', 'Doroti capture', 'final Android physical pixel alpha recovery', 'per-channel pixel-diff measurement and cause classification', 'FAB/Ink/Scrollbar state trace comparison', 'Windows live paired capture', 'Android physical paired capture')
+    notRun = @('Flutter reference capture', 'Doroti capture', 'final Android physical pixel alpha recovery', 'per-channel pixel-diff measurement and cause classification', 'FAB/Ink/Scrollbar/Slider state trace comparison', 'Windows live paired capture', 'Android physical paired capture')
 }
 [IO.Directory]::CreateDirectory((Split-Path $evidencePath -Parent)) | Out-Null
 [IO.File]::WriteAllText($evidencePath, (($evidence | ConvertTo-Json -Depth 24) -replace "`r`n", "`n") + "`n", [Text.UTF8Encoding]::new($false))

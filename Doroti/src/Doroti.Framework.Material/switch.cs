@@ -1444,8 +1444,8 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
                 _pressedInactiveThumbRadius = this.inactiveThumbRadius;
             }
         }
-        var inactiveThumbSize__54885 = (this.isCupertino ? new global::Doroti.Ui.Size(((DartRuntimePrimitives.RequireValue(this._pressedInactiveThumbRadius) * 2L) + DartRuntimePrimitives.RequireValue(this._pressedThumbExtension)), (DartRuntimePrimitives.RequireValue(this._pressedInactiveThumbRadius) * 2L)) : new global::Doroti.Ui.Size(((this._pressedInactiveThumbRadius ?? (double)this.inactiveThumbRadius))));
-        var activeThumbSize__55152 = (this.isCupertino ? new global::Doroti.Ui.Size(((DartRuntimePrimitives.RequireValue(this._pressedActiveThumbRadius) * 2L) + DartRuntimePrimitives.RequireValue(this._pressedThumbExtension)), (DartRuntimePrimitives.RequireValue(this._pressedActiveThumbRadius) * 2L)) : new global::Doroti.Ui.Size(((this._pressedActiveThumbRadius ?? (double)this.activeThumbRadius))));
+        var inactiveThumbSize__54885 = (this.isCupertino ? new global::Doroti.Ui.Size(((DartRuntimePrimitives.RequireValue(this._pressedInactiveThumbRadius) * 2L) + DartRuntimePrimitives.RequireValue(this._pressedThumbExtension)), (DartRuntimePrimitives.RequireValue(this._pressedInactiveThumbRadius) * 2L)) : global::Doroti.Ui.Size.fromRadius(((this._pressedInactiveThumbRadius ?? (double)this.inactiveThumbRadius))));
+        var activeThumbSize__55152 = (this.isCupertino ? new global::Doroti.Ui.Size(((DartRuntimePrimitives.RequireValue(this._pressedActiveThumbRadius) * 2L) + DartRuntimePrimitives.RequireValue(this._pressedThumbExtension)), (DartRuntimePrimitives.RequireValue(this._pressedActiveThumbRadius) * 2L)) : global::Doroti.Ui.Size.fromRadius(((this._pressedActiveThumbRadius ?? (double)this.activeThumbRadius))));
         global::Doroti.Framework.Animation.Animation<Size> thumbSizeAnimation(bool isForward)
         {
             List<global::Doroti.Framework.Animation.TweenSequenceItem<global::Doroti.Ui.Size>> thumbSizeSequence__55492 = default!;
@@ -1483,7 +1483,7 @@ internal class _SwitchPainter__switch : global::Doroti.Framework.Widgets.Togglea
         {
             if (((global::Doroti.Framework.Animation.Animation<double>)this.reaction).isCompleted)
             {
-                thumbSize__57038 = new global::Doroti.Ui.Size(this.pressedThumbRadius);
+                thumbSize__57038 = global::Doroti.Ui.Size.fromRadius(this.pressedThumbRadius);
             }
             else
             {

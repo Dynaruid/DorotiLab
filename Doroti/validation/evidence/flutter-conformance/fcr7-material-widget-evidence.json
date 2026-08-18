@@ -1,8 +1,8 @@
 {
   "schemaVersion": "doroti.flutter-conformance-fcr7-evidence/v1",
   "status": "partial",
-  "capturedAt": "2026-08-18T12:22:27.7030680Z",
-  "repositoryRevision": "e255141b47dc72b144f1e9c6659eea26e3a512a6",
+  "capturedAt": "2026-08-18T13:53:07.2448158Z",
+  "repositoryRevision": "f2f1d4ed97c1b1c32117d4f410583276fc4c8937",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "fixtureManifest": "Doroti/validation/fcr7-material-widget/fixture-manifest.json",
   "structuralContract": {
@@ -13,7 +13,9 @@
       "pinned Flutter material/widget source hashes and anchors",
       "fixed viewport/DPR/font/theme/locale/time-seed fixture",
       "transparent shell versus opaque Scaffold ownership",
-      "coordinate, hover, scroll, frame, and semantics replay coverage",
+      "coordinate, hover, drag, scroll, frame, and semantics replay coverage",
+      "pinned Flutter Size.fromRadius lowerer output",
+      "Slider overlay/thumb/tick full-diameter geometry",
       "Demo source slice anchors",
       "distinct outer and inner scroll controllers and scrollbar keys",
       "Demo uses transient Android visibility"
@@ -66,7 +68,7 @@
     "Doroti capture",
     "final Android physical pixel alpha recovery",
     "per-channel pixel-diff measurement and cause classification",
-    "FAB/Ink/Scrollbar state trace comparison",
+    "FAB/Ink/Scrollbar/Slider state trace comparison",
     "Windows live paired capture",
     "Android physical paired capture"
   ]

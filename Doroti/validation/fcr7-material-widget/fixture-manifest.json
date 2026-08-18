@@ -28,6 +28,9 @@
     { "path": "packages/flutter/lib/src/material/ink_well.dart", "sha256": "8fdb01e4dd98bb251df68814c0416692ca0771cfb78a1f73f43f8ae6416a70ab", "anchors": ["final GestureTapCallback? onTap", "WidgetState.hovered", "WidgetState.focused", "WidgetState.disabled"] },
     { "path": "packages/flutter/lib/src/material/ink_sparkle.dart", "sha256": "6bf9f6a89317cfbc7bad9fbb282f71969f4bee077f155367632f3cfb9d87bf02", "anchors": ["class InkSparkle extends InteractiveInkFeature", "FragmentProgram.fromAsset"] },
     { "path": "packages/flutter/lib/src/material/scrollbar.dart", "sha256": "eec0a2ca2cbc3cc63f93ff959033d67d8ab3aa6c100800477a87449a70aae3eb", "anchors": ["class Scrollbar extends StatelessWidget", "thumbVisibility"] },
+    { "path": "packages/flutter/lib/src/material/slider.dart", "sha256": "ae1933aee4a78198185dc21053985c9dfac138a52d8a449545578693f6304ed2", "anchors": ["class Slider extends StatefulWidget", "class _RenderSlider extends RenderBox"] },
+    { "path": "packages/flutter/lib/src/material/slider_parts.dart", "sha256": "b0dcee672ab4bba6c033c15c86f899e26d8d57780c851233c5214a771193e1d4", "anchors": ["class RoundSliderThumbShape extends SliderComponentShape", "Size.fromRadius(isEnabled ? enabledThumbRadius : _disabledThumbRadius)"] },
+    { "path": "packages/flutter/lib/src/material/slider_value_indicator_shape.dart", "sha256": "62d318fadff2ad499aad8bad6b385dc951a9d851e3276b7c9989db16d4ee5aed", "anchors": ["class RoundSliderOverlayShape extends SliderComponentShape", "Size.fromRadius(overlayRadius)"] },
     { "path": "packages/flutter/lib/src/widgets/scroll_view.dart", "sha256": "427a3070dd0c8cb7403f1abcd38d73359387863ecdeeaa49c3ab0225eff7b175", "anchors": ["class ListView extends BoxScrollView"] },
     { "path": "packages/flutter/lib/src/widgets/sliver.dart", "sha256": "4abc19b17757b964a4ae0bfeada7a6a6711605c8b429b4dd1547f10d35e4ddb2", "anchors": ["class SliverList extends SliverMultiBoxAdaptorWidget"] }
   ],
@@ -37,12 +40,14 @@
     { "id": "floating-action-button", "productAnchor": "new Material.FloatingActionButton(", "requirements": ["default", "pressed", "disabled", "callback", "semantics"] },
     { "id": "ink-well-sparkle", "productAnchor": "new Material.ElevatedButton(", "requirements": ["cold", "warm", "down", "hold", "move", "up", "pixelDiff", "stateTrace"] },
     { "id": "scrollbar-list-sliver", "productAnchor": "Material.Scrollbar(", "requirements": ["top", "middle", "end", "scroll", "thumb", "semantics"] },
+    { "id": "slider-overlay", "productAnchor": "new Material.Slider(", "requirements": ["idle", "hovered", "dragged", "released", "fullRadiusOverlay", "stateTrace"] },
     { "id": "shader-mask-image-filter", "productAnchor": "new ShaderMask(", "requirements": ["cold", "warm", "pixelDiff", "stateTrace"] }
   ],
   "replayScenarios": [
     { "id": "fab-press", "component": "floating-action-button", "states": ["default", "pressed", "focused", "disabled"], "sequence": ["down@680,580", "hold@680,580:100ms", "up@680,580", "semantics:tap"] },
     { "id": "ink-cold-warm", "component": "ink-well-sparkle", "states": ["cold", "warm", "hovered", "pressed"], "sequence": ["hover@160,280", "down@160,280", "move@176,280", "hold@176,280:100ms", "up@176,280"] },
     { "id": "scrollbar-range", "component": "scrollbar-list-sliver", "states": ["top", "middle", "end"], "sequence": ["scroll@360,420:-240", "scroll@360,420:-240", "semantics:scrollDown", "semantics:scrollUp"] },
+    { "id": "slider-hover-drag", "component": "slider-overlay", "states": ["idle", "hovered", "dragged", "released"], "sequence": ["hover@64,420", "down@64,420", "move@144,420", "hold@144,420:100ms", "up@144,420"] },
     { "id": "effects-cold-warm", "component": "shader-mask-image-filter", "states": ["cold", "warm"], "sequence": ["frame@0us", "frame@16667us", "frame@33334us"] }
   ],
   "comparison": {

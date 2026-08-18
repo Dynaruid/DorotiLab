@@ -6,7 +6,7 @@ using Doroti.Ui;
 var requiredComponents = new HashSet<string>(StringComparer.Ordinal)
 {
     "scaffold-background", "app-bar-text", "floating-action-button",
-    "ink-well-sparkle", "scrollbar-list-sliver", "shader-mask-image-filter",
+    "ink-well-sparkle", "scrollbar-list-sliver", "slider-overlay", "shader-mask-image-filter",
 };
 var capturedComponents = new HashSet<string>(StringComparer.Ordinal);
 
@@ -44,6 +44,7 @@ Require(ReferenceEquals(systemThemeApp.theme, lightTheme), "MaterialApp retains 
 Require(ReferenceEquals(systemThemeApp.darkTheme, darkTheme), "MaterialApp retains the dark palette");
 Require(systemThemeApp.themeMode == Doroti.Framework.Material.ThemeMode.system, "MaterialApp follows platform brightness in system mode");
 VerifyScrollbarAlphaContract();
+VerifyRadiusSizedMaterialShapes();
 
 var widgetsBinding = (Doroti.Framework.Widgets.WidgetsFlutterBinding)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(
     typeof(Doroti.Framework.Widgets.WidgetsFlutterBinding));
@@ -64,6 +65,7 @@ var scenarios = new[]
     Scenario("fab-press", "floating-action-button", ["default", "pressed", "focused", "disabled"], ["down", "hold", "up", "semantics"]),
     Scenario("ink-cold-warm", "ink-well-sparkle", ["cold", "warm", "hovered", "pressed"], ["hover", "down", "move", "hold", "up"]),
     Scenario("scrollbar-range", "scrollbar-list-sliver", ["top", "middle", "end"], ["scroll", "semantics"]),
+    Scenario("slider-hover-drag", "slider-overlay", ["idle", "hovered", "dragged", "released"], ["hover", "down", "move", "hold", "up"]),
     Scenario("effects-cold-warm", "shader-mask-image-filter", ["cold", "warm"], ["frame"]),
 };
 
@@ -76,7 +78,7 @@ foreach (var scenario in scenarios)
     capturedComponents.Add(scenario.Component);
 }
 
-Require(capturedComponents.SetEquals(["floating-action-button", "ink-well-sparkle", "scrollbar-list-sliver", "shader-mask-image-filter"]), "interactive/effect slice scenarios are complete");
+Require(capturedComponents.SetEquals(["floating-action-button", "ink-well-sparkle", "scrollbar-list-sliver", "slider-overlay", "shader-mask-image-filter"]), "interactive/effect slice scenarios are complete");
 Require(requiredComponents.Contains("scaffold-background") && requiredComponents.Contains("app-bar-text"), "persistent scaffold and text coverage is explicit");
 Console.WriteLine($"FCR-7 material/widget runtime contract: PASS (configuration={ConfigurationName()}, system-theme-palettes=light+dark)");
 
@@ -118,6 +120,29 @@ static void VerifyScrollbarAlphaContract()
     var blackComposite = Doroti.Ui.Dart_uiLibrary.Color.alphaBlend(themedThumb, new Color(0xff000000L));
     Require(whiteComposite.value == 0xffff9999 && blackComposite.value == 0xff660000,
         "known white and black backgrounds recover the expected effective alpha for the themed thumb");
+}
+
+static void VerifyRadiusSizedMaterialShapes()
+{
+    var radiusSize = Size.fromRadius(24);
+    Require(radiusSize.width == 48 && radiusSize.height == 48,
+        "Size.fromRadius converts radius to a full diameter on both axes");
+
+    var sliderTheme = new Doroti.Framework.Material.SliderThemeData(trackHeight: 4);
+    var overlaySize = new Doroti.Framework.Material.RoundSliderOverlayShape().getPreferredSize(true, false);
+    var thumbSize = new Doroti.Framework.Material.RoundSliderThumbShape().getPreferredSize(true, false);
+    var tickSize = new Doroti.Framework.Material.RoundSliderTickMarkShape().getPreferredSize(sliderTheme, true);
+    var rangeThumbSize = new Doroti.Framework.Material.RoundRangeSliderThumbShape().getPreferredSize(true, false);
+    var rangeTickSize = new Doroti.Framework.Material.RoundRangeSliderTickMarkShape().getPreferredSize(sliderTheme, true);
+
+    Require(overlaySize.width == 48 && overlaySize.height == 48,
+        "the default 24 logical-pixel slider overlay reserves its full 48 logical-pixel diameter");
+    Require(thumbSize.width == 20 && thumbSize.height == 20 &&
+            rangeThumbSize.width == 20 && rangeThumbSize.height == 20,
+        "slider and range-slider thumbs report their full enabled diameter");
+    Require(tickSize.width == 2 && tickSize.height == 2 &&
+            rangeTickSize.width == 2 && rangeTickSize.height == 2,
+        "slider and range-slider tick marks report their full radius-derived diameter");
 }
 
 static ScrollbarAlphaFrame CaptureScrollbarFrame(Color thumbColor, double fadeValue, int timestampMilliseconds)

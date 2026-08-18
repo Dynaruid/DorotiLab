@@ -445,7 +445,7 @@ internal sealed partial class FrameworkCSharpLowerer
     {
         var mapped = typeName.TrimEnd('?');
         var simple = mapped[(mapped.LastIndexOf('.') + 1)..];
-        return simple is "Radius" or "Rect" or "RRect" or "RSuperellipse" or "Color" or "ColorFilter" or "MaskFilter" or
+        return simple is "Size" or "Radius" or "Rect" or "RRect" or "RSuperellipse" or "Color" or "ColorFilter" or "MaskFilter" or
             "Gradient" or "ImageShader" or "Matrix4" or "ParagraphStyle" or "TextStyle" or "StrutStyle";
     }
 

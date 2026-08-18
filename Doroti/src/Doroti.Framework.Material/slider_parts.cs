@@ -227,7 +227,7 @@ public class RoundSliderTickMarkShape : SliderTickMarkShape
     public virtual Size getPreferredSize(SliderThemeData sliderTheme, bool isEnabled)
     {
         DartRuntimePrimitives.Assert(() => (sliderTheme.trackHeight is not null));
-        return new global::Doroti.Ui.Size((this.tickMarkRadius ?? (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 4L)));
+        return global::Doroti.Ui.Size.fromRadius((this.tickMarkRadius ?? (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 4L)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -288,7 +288,7 @@ public class RoundSliderThumbShape : SliderComponentShape
     internal virtual double _disabledThumbRadius => DartRuntimePrimitives.ConvertValue<double>((this.disabledThumbRadius ?? this.enabledThumbRadius));
     public virtual global::Doroti.Ui.Size getPreferredSize(bool isEnabled, bool isDiscrete)
     {
-        return new global::Doroti.Ui.Size((isEnabled ? this.enabledThumbRadius : this._disabledThumbRadius));
+        return global::Doroti.Ui.Size.fromRadius((isEnabled ? this.enabledThumbRadius : this._disabledThumbRadius));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -43,7 +43,7 @@ public class RoundSliderOverlayShape : SliderComponentShape
 
     public virtual Size getPreferredSize(bool isEnabled, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter? labelPainter = null, double? textScaleFactor = null)
     {
-        return new global::Doroti.Ui.Size(this.overlayRadius);
+        return global::Doroti.Ui.Size.fromRadius(this.overlayRadius);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

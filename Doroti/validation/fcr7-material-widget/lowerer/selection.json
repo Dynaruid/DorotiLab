@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "doroti.converter-selection/v4",
+  "converterVersion": "3.0.0",
+  "migrationIrVersion": "3.0.0",
+  "generationMode": "framework-semantic",
+  "compatibilityProfile": "flutter-framework",
+  "outputNamespace": "Doroti.Validation.Fcr7MaterialWidget.Lowerer",
+  "outputAssemblyName": "Doroti.Validation.Fcr7MaterialWidget.Lowerer",
+  "flutterBaseline": "flutter-baseline.json",
+  "frameworkMilestone": "FCR-7",
+  "inputs": [
+    {
+      "path": "../../../../reference/flutter-master/packages/flutter/lib/src/material/slider_value_indicator_shape.dart",
+      "library": "package:flutter/src/material/slider_value_indicator_shape.dart",
+      "symbols": ["*"]
+    }
+  ]
+}
