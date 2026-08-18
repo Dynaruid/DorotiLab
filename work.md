@@ -1,6 +1,6 @@
 # Doroti Flutter Conformance & Smooth Rendering Upgrade
 
-> 상태: **ACTIVE PLAN — FCR-0 inventory/contract gate 구현 완료; timing·differential·physical 검증은 후속 gate로 남음**
+> 상태: **ACTIVE PLAN — FCR-0 inventory/contract gate, FCR-1 framework shader contract와 FCR-2 typed semantic/runtime contract 구현 완료; app interaction·differential·live/physical 검증은 후속 gate로 남음**
 > 작성일: 2026-08-18
 > Doroti 기준 revision: `3fd08b3` + 이 문서 변경
 > Flutter source pin: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
@@ -100,6 +100,10 @@ FCR-1과 FCR-2는 병행 가능하다. FCR-3~FCR-5는 frame ownership을 먼저 
 
 ### FCR-1 — framework asset과 runtime-effect 파이프라인 통합
 
+현재 구현 상태 (2026-08-18): `Doroti/validation/evidence/flutter-conformance/framework-shader-manifest.json`을 공용 manifest로 두고, `Doroti.Ui.FrameworkShaderLoader`가 InkSparkle/StretchEffect의 embedded asset을 비동기 로드·hash/ABI 검증한다. StretchEffect의 C# inline shader fork는 `Shaders/stretch_effect.sksl` embedded resource로 이동했다. Skia runtime-effect cache는 adapted source SHA-256, backend, graphics-context generation을 key로 사용하며 context 재생성 때 이전 generation을 폐기한다. 지원하지 않는 backend는 투명/임의 fallback 없이 capability diagnostic과 예외를 낸다. `validate-framework-shaders.ps1`와 runtime contract는 이 경계를 검증한다.
+
+아직 `notVerified`: cold first interaction부터 완료 후 repaint까지의 실제 GPU frame capture, 100회 반복과 context loss/recreate resource plateau, Flutter reference와 Doroti raster differential, Android physical 및 Windows live presentation.
+
 작업:
 
 - InkSparkle/StretchEffect의 개별 로딩을 공용 framework asset manifest와 loader로 통합한다.
@@ -118,6 +122,10 @@ FCR-1과 FCR-2는 병행 가능하다. FCR-3~FCR-5는 frame ownership을 먼저 
 - Android physical과 Windows live에서 실제 GPU presentation을 각각 증명한다.
 
 ### FCR-2 — Dart→C# 번역 의미와 runtime primitive 강화
+
+현재 구현 상태 (2026-08-18): `Doroti/validation/fcr2-semantics/flutter-animation-fixture.dart`가 pinned Flutter `tween.dart`, `geometry.dart`, `consolidate_response.dart`에서 추출한 최소 의미 fixture와 provenance/hash를 보유한다. `DartRuntimePrimitives.LerpTweenValue`와 `IDartTweenValue<T>`를 통해 Offset/Size/Rect/Vector2/double generic Tween 산술을 typed 경로로 고정했고, `Tween<T>`의 dynamic binder를 제거했다. Future discard는 `Observe`/diagnostic sink으로 관찰하며, Future error handler와 Completer completion은 awaitable continuation으로 처리하고 timer dispose race를 유지한다. Constructor assert는 Dart assert primitive을 사용해 Debug/Release 차이를 보존한다. `validate-fcr2-semantics.ps1`와 Debug/Release runtime contract가 이 경계를 검증한다.
+
+아직 `notVerified`: InkSparkle을 포함한 실제 `DorotiDemoApp` 60초 interaction log, 새 compiler revision으로 선택 framework 전체를 재생성한 source diff, Flutter/Doroti animation raster differential, Android physical 및 Windows live acceptance.
 
 작업:
 

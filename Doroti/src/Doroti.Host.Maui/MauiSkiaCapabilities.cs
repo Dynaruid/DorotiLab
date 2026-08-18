@@ -35,6 +35,9 @@ internal sealed class MauiSkiaCapabilities :
     private bool _semanticsEnabled;
     private bool _disposed;
 
+    private string RuntimeEffectBackend =>
+        $"{DorotiSkiaRuntimeEffects.MauiGpuBackend}/{_viewId}";
+
     internal MauiSkiaCapabilities(ulong viewId, MauiHostAdapter host, UiColor? backgroundColor)
     {
         _viewId = viewId;
@@ -66,12 +69,16 @@ internal sealed class MauiSkiaCapabilities :
         ArgumentNullException.ThrowIfNull(invalidate);
         ObjectDisposedException.ThrowIf(_disposed, this);
         bool hasFrame;
+        long contextGeneration;
         lock (_gate)
         {
             _invalidate = invalidate;
             _contextGeneration++;
+            contextGeneration = _contextGeneration;
             hasFrame = _pendingFrame is not null || _presentedFrame is not null;
         }
+        DorotiSkiaRuntimeEffects.InvalidateContext(
+            RuntimeEffectBackend, contextGeneration);
         if (hasFrame) invalidate();
     }
 
@@ -323,7 +330,9 @@ internal sealed class MauiSkiaCapabilities :
                                 ToSamplingOptions(image.Filter.FilterQuality),
                                 CreateImageShader,
                                 (inputCanvas, inputWidth, inputHeight) =>
-                                    DrawScene(inputCanvas, source, commandIndex + 1, matchingPop, inputWidth, inputHeight)))
+                                    DrawScene(inputCanvas, source, commandIndex + 1, matchingPop, inputWidth, inputHeight),
+                                RuntimeEffectBackend,
+                                _contextGeneration))
                                 Interlocked.Increment(ref _shaderImageFiltersRendered);
                             commandIndex = matchingPop;
                             break;
@@ -497,7 +506,7 @@ internal sealed class MauiSkiaCapabilities :
         }
     }
 
-    private static SKPaint ToPaint(PaintSnapshot value)
+    private SKPaint ToPaint(PaintSnapshot value)
     {
         var paint = new SKPaint
         {
@@ -513,9 +522,9 @@ internal sealed class MauiSkiaCapabilities :
         return paint;
     }
 
-    private static SKPaint FilterPaint(ImageFilterSnapshot filter) => new() { ImageFilter = ToImageFilter(filter) };
+    private SKPaint FilterPaint(ImageFilterSnapshot filter) => new() { ImageFilter = ToImageFilter(filter) };
 
-    private static SKImageFilter ToImageFilter(ImageFilterSnapshot filter)
+    private SKImageFilter ToImageFilter(ImageFilterSnapshot filter)
     {
         if (filter.Shader is not null)
             throw new InvalidOperationException(
@@ -547,11 +556,12 @@ internal sealed class MauiSkiaCapabilities :
             });
     }
 
-    private static SKShader ToShader(ShaderSnapshot value) => value switch
+    private SKShader ToShader(ShaderSnapshot value) => value switch
     {
         GradientShaderSnapshot gradient => ToGradientShader(gradient),
         ImageShaderSnapshot image => ToImageShader(image),
-        FragmentShaderSnapshot fragment => DorotiSkiaRuntimeEffects.CreateShader(fragment, CreateImageShader),
+        FragmentShaderSnapshot fragment => DorotiSkiaRuntimeEffects.CreateShader(
+            fragment, CreateImageShader, RuntimeEffectBackend, _contextGeneration),
         UnsupportedShaderSnapshot unsupported => throw new NotSupportedException(
             $"The Doroti MAUI backend rejects shader family '{unsupported.Family}'."),
         _ => throw new NotSupportedException($"The Doroti MAUI backend rejects shader snapshot '{value.GetType().Name}'."),

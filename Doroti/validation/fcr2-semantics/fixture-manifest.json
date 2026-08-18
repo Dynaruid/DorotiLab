@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "doroti.flutter-conformance-fcr2-fixture/v1",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "fixture": "Doroti/validation/fcr2-semantics/flutter-animation-fixture.dart",
+  "sources": [
+    {
+      "path": "packages/flutter/lib/src/animation/tween.dart",
+      "sha256": "9e1262f70e9401bb76c9b99b02a071be250d1ebdf9d4cee5b28f374044b206a6",
+      "anchors": ["class Tween<T extends Object?>", "T lerp(double t)", "return begin as T", "return end as T"]
+    },
+    {
+      "path": "packages/flutter/lib/src/painting/geometry.dart",
+      "sha256": "b2b26e1dafcfc236f9c9a5cb4f17b5490357bbf3ea84acef9fec9397d563460b",
+      "anchors": ["Offset positionDependentBox", "math.min", "math.max", "return Offset(x, y)"]
+    },
+    {
+      "path": "packages/flutter/lib/src/foundation/consolidate_response.dart",
+      "sha256": "616d2c318f53ad212dfa852d415bf6dcbcbe7d5edb37d696328051e64ebe0608",
+      "anchors": ["completer.completeError", "subscription.cancel()", "return completer.future"]
+    }
+  ],
+  "semanticCases": [
+    "Offset/Size/Rect typed lerp",
+    "generic Tween and Animatable endpoint selection",
+    "double precision before explicit float host conversion",
+    "nullable Future result and callback",
+    "Future error/cancellation and Completer completion",
+    "timer cancellation after host callback enqueue",
+    "collection mutation through a snapshot and pattern switch",
+    "Debug assert versus Release assert elision"
+  ]
+}

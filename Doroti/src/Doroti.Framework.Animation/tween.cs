@@ -115,10 +115,10 @@ internal class _ChainedEvaluation__tween<T> : Animatable<T>
 
 public interface IDartTween
 {
-    dynamic? begin { get; set; }
-    dynamic? end { get; set; }
-    dynamic evaluate(Animation<double> animation);
-    dynamic transform(double t);
+    object? begin { get; set; }
+    object? end { get; set; }
+    object? evaluate(Animation<double> animation);
+    object? transform(double t);
 }
 
 public class Tween<T> : Animatable<T>, IDartTween
@@ -136,36 +136,10 @@ public class Tween<T> : Animatable<T>, IDartTween
     {
         DartRuntimePrimitives.Assert(() => (this.begin is not null));
         DartRuntimePrimitives.Assert(() => (this.end is not null));
-        // Dart Offset arithmetic accepts a double interpolation factor. The
-        // typed C# boundary represents that value as Vector2, whose operator*
-        // only accepts float; routing through Vector2.Lerp preserves Flutter's
-        // Tween<Offset> behavior without a dynamic binder failure.
-        if (typeof(T) == typeof(global::System.Numerics.Vector2))
-        {
-            var beginVector = (global::System.Numerics.Vector2)(object)this.begin!;
-            var endVector = (global::System.Numerics.Vector2)(object)this.end!;
-            return (T)(object)global::System.Numerics.Vector2.Lerp(beginVector, endVector, checked((float)t));
-        }
-        DartRuntimePrimitives.Assert(() =>
-            {
-                object result__11290 = default!;
-                try
-                {
-                    result__11290 = (((dynamic)(((object?)(object?)this.begin)!)) + ((dynamic)(((dynamic)((((dynamic)(((object?)(object?)this.end)!)) - ((dynamic)(((object?)(object?)this.begin)!))))) * ((dynamic)t))));
-                    _ = ((T?)(object?)result__11290)!;
-                    return true;
-                }
-                catch (NoSuchMethodError)
-                {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"Cannot lerp between \"{this.begin}\" and \"{this.end}\"."), new ErrorDescription($"The type {DartRuntimePrimitives.RuntimeType(this.begin)} might not fully implement `+`, `-`, and/or `*`. " + "See \"Types with special considerations\" at https://api.flutter.dev/flutter/animation/Tween-class.html " + "for more information.") });
-                }
-                catch (TypeError)
-                {
-                    throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"Cannot lerp between \"{this.begin}\" and \"{this.end}\"."), new ErrorDescription($"The type {DartRuntimePrimitives.RuntimeType(this.begin)} returned a {DartRuntimePrimitives.RuntimeType(result__11290)} after " + "multiplication with a double value. " + "See \"Types with special considerations\" at https://api.flutter.dev/flutter/animation/Tween-class.html " + "for more information.") });
-                }
-            });
-        return ((T?)(object?)(((dynamic)(((object?)(object?)this.begin)!)) + ((dynamic)(((dynamic)((((dynamic)(((object?)(object?)this.end)!)) - ((dynamic)(((object?)(object?)this.begin)!))))) * ((dynamic)t)))))!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        return DartRuntimePrimitives.LerpTweenValue(
+            DartRuntimePrimitives.RequireNonNull(this.begin),
+            DartRuntimePrimitives.RequireNonNull(this.end),
+            t);
     }
 
     public override T transform(double t)
@@ -184,10 +158,10 @@ public class Tween<T> : Animatable<T>, IDartTween
 
     public override string ToString() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Animatable"))}({this.begin} → {this.end})";
 
-    dynamic? IDartTween.begin { get => begin; set => begin = (T?)value; }
-    dynamic? IDartTween.end { get => end; set => end = (T?)value; }
-    dynamic IDartTween.evaluate(Animation<double> animation) => evaluate(animation)!;
-    dynamic IDartTween.transform(double t) => transform(t)!;
+    object? IDartTween.begin { get => begin; set => begin = value is null ? default : DartRuntimePrimitives.ConvertValue<T>(value); }
+    object? IDartTween.end { get => end; set => end = value is null ? default : DartRuntimePrimitives.ConvertValue<T>(value); }
+    object? IDartTween.evaluate(Animation<double> animation) => evaluate(animation);
+    object? IDartTween.transform(double t) => transform(t);
 }
 
 public class ReverseTween<T> : Tween<T>

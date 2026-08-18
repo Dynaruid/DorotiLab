@@ -4,7 +4,7 @@ param(
     [ValidateSet('doctor', 'build', 'validate', 'audit', 'release', 'clean')]
     [string] $Command = 'doctor',
 
-    [ValidateSet('Source', 'Build', 'Targets', 'Fcr0', 'Developer', 'Release')]
+    [ValidateSet('Source', 'Build', 'Targets', 'Fcr0', 'Fcr1', 'Fcr2', 'Developer', 'Release')]
     [string] $ValidationSuite = 'Developer'
 )
 

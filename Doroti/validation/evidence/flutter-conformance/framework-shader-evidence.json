@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "doroti.flutter-conformance-framework-shader-evidence/v1",
+  "status": "partial",
+  "capturedAt": "2026-08-18",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "dorotiRevision": "dd020d30305460f50fc75515d77db467a79177aa",
+  "assetClosure": {
+    "status": "pass",
+    "manifest": "Doroti/validation/evidence/flutter-conformance/framework-shader-manifest.json",
+    "assets": [
+      { "id": "material.ink-sparkle", "sourcePin": "pass", "adaptedHash": "pass", "abi": "pass", "embedded": "pass" },
+      { "id": "widgets.stretch-effect", "sourcePin": "pass", "adaptedHash": "pass", "abi": "pass", "embedded": "pass" }
+    ]
+  },
+  "runtimeContract": {
+    "status": "pass",
+    "command": "pwsh -NoProfile -File .\\Doroti\\eng\\validate-framework-shaders.ps1",
+    "checks": [
+      "async asset load and error observation",
+      "uniform/sampler ABI validation",
+      "source hash + backend + context generation cache key",
+      "context generation invalidation and recompile",
+      "unsupported backend capability diagnostic",
+      "InkSparkle, StretchEffect, custom shader, and ImageFilter.shader paths"
+    ]
+  },
+  "productBuild": { "status": "pass", "command": "dotnet build Doroti/Doroti.Product.slnx -c Release --no-restore --nologo" },
+  "targets": {
+    "windowsLiveGpu": { "status": "notVerified", "reason": "FCR-1 physical/live shader interaction and context-recreate capture was not run by this contract gate." },
+    "androidPhysicalGpu": { "status": "notVerified", "reason": "FCR-1 100-interaction and context-recreate physical capture was not run by this contract gate." },
+    "macCatalystNative": { "status": "notVerified" },
+    "webBrowserLive": { "status": "notVerified" }
+  },
+  "differential": {
+    "status": "notVerified",
+    "reason": "The contract validates source closure, ABI, compilation, and cache lifecycle; Flutter/Doroti raster capture comparison remains a follow-up gate."
+  },
+  "acceptance": {
+    "status": "notVerified",
+    "reason": "Cold interaction, 100 repetitions, context recreate resource plateau, and physical GPU presentation remain target-specific gates."
+  }
+}

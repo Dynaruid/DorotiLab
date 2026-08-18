@@ -3055,8 +3055,8 @@ public class RenderMouseRegion : RenderProxyBoxWithHitTestBehavior, global::Doro
     public virtual Action<global::Doroti.Framework.Gestures.PointerExitEvent>? onExit { get; set; } = default;
     internal virtual MouseCursor _cursor { get; set; } = default!;
     internal virtual bool _validForMouseTracker { get; set; } = default!;
-    dynamic global::Doroti.Framework.Services.IMouseTrackerAnnotation.onEnter => this.onEnter;
-    dynamic global::Doroti.Framework.Services.IMouseTrackerAnnotation.onExit => this.onExit;
+    global::Doroti.Framework.Services.IMouseTrackerCallback? global::Doroti.Framework.Services.IMouseTrackerAnnotation.onEnter => this.onEnter is null ? null : new global::Doroti.Framework.Services.MouseTrackerCallback<global::Doroti.Framework.Gestures.PointerEnterEvent>(this.onEnter);
+    global::Doroti.Framework.Services.IMouseTrackerCallback? global::Doroti.Framework.Services.IMouseTrackerAnnotation.onExit => this.onExit is null ? null : new global::Doroti.Framework.Services.MouseTrackerCallback<global::Doroti.Framework.Gestures.PointerExitEvent>(this.onExit);
 
     public RenderMouseRegion(Action<global::Doroti.Framework.Gestures.PointerEnterEvent>? onEnter = null, Action<global::Doroti.Framework.Gestures.PointerHoverEvent>? onHover = null, Action<global::Doroti.Framework.Gestures.PointerExitEvent>? onExit = null, MouseCursor cursor = default!, bool validForMouseTracker = true, bool opaque = true, RenderBox? child = null, HitTestBehavior? hitTestBehavior = HitTestBehavior.opaque) : base(child: child, behavior: (hitTestBehavior ?? HitTestBehavior.opaque))
     {

@@ -412,11 +412,11 @@ internal sealed partial class FrameworkCSharpLowerer
                         }
                         builder.Append(prefix);
                         var wrapsDiscard = false;
-                        if (expression.StaticType?.StartsWith("Future<", StringComparison.Ordinal) == true)
+                        if (ExpressionProducesFuture(expression))
                         {
                             // Dart deliberately permits an unawaited Future expression. Preserve
-                            // that behavior while making the discard explicit to the C# compiler.
-                            builder.Append("DartRuntimePrimitives.Ignore(");
+                            // that behavior while making completion failures observable.
+                            builder.Append("DartRuntimePrimitives.Observe(");
                             wrapsDiscard = true;
                         }
                         else if (expression.Kind is not (CoreNodeKind.MethodInvocation or CoreNodeKind.FunctionExpressionInvocation or

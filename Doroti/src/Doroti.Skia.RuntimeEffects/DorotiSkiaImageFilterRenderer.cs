@@ -14,7 +14,9 @@ internal static class DorotiSkiaImageFilterRenderer
         SKPoint childOffset,
         SKSamplingOptions inputSampling,
         Func<Image, SKShader> imageShaderFactory,
-        Action<SKCanvas, int, int> drawChild)
+        Action<SKCanvas, int, int> drawChild,
+        string backend,
+        long contextGeneration)
     {
         ArgumentNullException.ThrowIfNull(target);
         ArgumentNullException.ThrowIfNull(shader);
@@ -60,7 +62,9 @@ internal static class DorotiSkiaImageFilterRenderer
             shader,
             inputImage,
             inputSampling,
-            imageShaderFactory);
+            imageShaderFactory,
+            backend,
+            contextGeneration);
         using var paint = new SKPaint { Shader = runtimeShader, BlendMode = SKBlendMode.SrcOver };
         target.Save();
         target.ResetMatrix();

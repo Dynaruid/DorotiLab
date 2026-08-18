@@ -17,12 +17,12 @@
       "sourceSha256": "6bf9f6a89317cfbc7bad9fbb282f71969f4bee077f155367632f3cfb9d87bf02",
       "owner": "Doroti.Framework.Material",
       "disposition": "adapted",
-      "productSources": ["Doroti/src/Doroti.Framework.Material/ink_sparkle.cs"],
+      "productSources": ["Doroti/src/Doroti.Framework.Material/ink_sparkle.cs", "Doroti/src/Doroti.Ui/FrameworkShaderAssets.cs"],
       "runtimeDependencyIds": ["asset:ink-sparkle-shader", "runtime:fragment-program", "runtime:skia-host"],
       "hostConsumers": ["DorotiDemoApp/src/App.cs", "Doroti/src/Doroti.Host.Maui/MauiSkiaCapabilities.cs"],
-      "testEvidence": ["Doroti/validation/runtime-shader-contract/Program.cs", "Doroti/validation/evidence/app-targets-evidence.json"],
+      "testEvidence": ["Doroti/validation/runtime-shader-contract/Program.cs", "Doroti/eng/validate-framework-shaders.ps1", "Doroti/validation/evidence/flutter-conformance/framework-shader-manifest.json"],
       "verification": "notVerified",
-      "note": "Flutter loads shaders/ink_sparkle.frag asynchronously; Doroti currently embeds an adapted SKSL resource and fails closed when it is absent."
+      "note": "Flutter loads shaders/ink_sparkle.frag asynchronously; Doroti now uses the common manifest/loader and fails closed on missing or hash/ABI-invalid bytes."
     },
     {
       "id": "material.ink-well",
@@ -59,12 +59,12 @@
       "sourceSha256": "38b836b2bf10837d94521ce17a767c324c41c8d59f26e3c813a18599899656d1",
       "owner": "Doroti.Framework.Widgets",
       "disposition": "adapted",
-      "productSources": ["Doroti/src/Doroti.Framework.Widgets/stretch_effect.cs"],
+      "productSources": ["Doroti/src/Doroti.Framework.Widgets/stretch_effect.cs", "Doroti/src/Doroti.Framework.Widgets/Shaders/stretch_effect.sksl", "Doroti/src/Doroti.Ui/FrameworkShaderAssets.cs"],
       "runtimeDependencyIds": ["asset:stretch-effect-shader", "runtime:fragment-program", "runtime:skia-host"],
       "hostConsumers": ["Doroti/src/Doroti.Host.Maui/MauiSkiaCapabilities.cs", "DorotiDemoApp/src/App.cs"],
-      "testEvidence": ["Doroti/validation/runtime-shader-contract/Program.cs", "Doroti/validation/evidence/app-targets-evidence.json"],
+      "testEvidence": ["Doroti/validation/runtime-shader-contract/Program.cs", "Doroti/eng/validate-framework-shaders.ps1", "Doroti/validation/evidence/flutter-conformance/framework-shader-manifest.json"],
       "verification": "notVerified",
-      "note": "The current port keeps the Flutter shader source as a C# string; this is an explicit FCR-1 follow-up, not a silent omission."
+      "note": "The adapted shader is an embedded SKSL asset owned by the common framework manifest; the Flutter source pin and adapted hash remain separate."
     },
     {
       "id": "scheduler.binding",
@@ -300,10 +300,10 @@
       "sourceSha256": "ed126d87b7df031187485bc37345a84aac211ee5efdeeb488ba28f6b0b817592",
       "owner": "Doroti.Framework.Material",
       "disposition": "adapted",
-      "productPaths": ["Doroti/src/Doroti.Framework.Material/Shaders/ink_sparkle.sksl", "Doroti/src/Doroti.Framework.Material/Doroti.Framework.Material.csproj", "Doroti/src/Doroti.Framework.Material/ink_sparkle.cs"],
+      "productPaths": ["Doroti/src/Doroti.Framework.Material/Shaders/ink_sparkle.sksl", "Doroti/src/Doroti.Framework.Material/Doroti.Framework.Material.csproj", "Doroti/src/Doroti.Framework.Material/ink_sparkle.cs", "Doroti/src/Doroti.Ui/FrameworkShaderAssets.cs", "Doroti/validation/evidence/flutter-conformance/framework-shader-manifest.json"],
       "hostConsumers": ["Doroti/src/Doroti.Host.Maui/MauiSkiaCapabilities.cs", "Doroti/src/Doroti.Host.Web/BrowserSkiaCapabilities.cs"],
-      "testEvidence": ["Doroti/validation/runtime-shader-contract/Program.cs", "Doroti/validation/evidence/app-targets-evidence.json"],
-      "note": "Source and adapted resource are intentionally not byte-identical; source pin and package closure are checked."
+      "testEvidence": ["Doroti/validation/runtime-shader-contract/Program.cs", "Doroti/eng/validate-framework-shaders.ps1", "Doroti/validation/evidence/flutter-conformance/framework-shader-manifest.json"],
+      "note": "Source and adapted resource are intentionally not byte-identical; the common manifest records source pin, adapted hash, ABI, owner, license, and target support."
     },
     {
       "id": "asset:stretch-effect-shader",
@@ -313,17 +313,17 @@
       "sourceSha256": "704a646ce01cebbc525fc4801c7fef3d4fc5c7ed36e3270c73b44ad5d8f0b204",
       "owner": "Doroti.Framework.Widgets",
       "disposition": "adapted",
-      "productPaths": ["Doroti/src/Doroti.Framework.Widgets/stretch_effect.cs"],
+      "productPaths": ["Doroti/src/Doroti.Framework.Widgets/Shaders/stretch_effect.sksl", "Doroti/src/Doroti.Framework.Widgets/Doroti.Framework.Widgets.csproj", "Doroti/src/Doroti.Framework.Widgets/stretch_effect.cs", "Doroti/src/Doroti.Ui/FrameworkShaderAssets.cs", "Doroti/validation/evidence/flutter-conformance/framework-shader-manifest.json"],
       "hostConsumers": ["Doroti/src/Doroti.Host.Maui/MauiSkiaCapabilities.cs"],
-      "testEvidence": ["Doroti/validation/runtime-shader-contract/Program.cs", "Doroti/validation/evidence/app-targets-evidence.json"],
-      "note": "The current inline C# source is an explicit FCR-1 migration item."
+      "testEvidence": ["Doroti/validation/runtime-shader-contract/Program.cs", "Doroti/eng/validate-framework-shaders.ps1", "Doroti/validation/evidence/flutter-conformance/framework-shader-manifest.json"],
+      "note": "The common loader verifies the embedded adapted asset and its uniform/sampler ABI before exposing a FragmentProgram."
     },
     {
       "id": "runtime:fragment-program",
       "kind": "runtime",
       "owner": "Doroti.Ui",
       "disposition": "implemented",
-      "productPaths": ["Doroti/src/Doroti.Ui/DartUiValues.cs", "Doroti/src/Doroti.Skia.RuntimeEffects/DorotiSkiaRuntimeEffects.cs"],
+      "productPaths": ["Doroti/src/Doroti.Ui/DartUiValues.cs", "Doroti/src/Doroti.Ui/FrameworkShaderAssets.cs", "Doroti/src/Doroti.Skia.RuntimeEffects/DorotiSkiaRuntimeEffects.cs"],
       "hostConsumers": ["Doroti/src/Doroti.Host.Maui/MauiSkiaCapabilities.cs", "Doroti/src/Doroti.Host.Web/BrowserSkiaCapabilities.cs"],
       "testEvidence": ["Doroti/validation/runtime-shader-contract/Program.cs"]
     },

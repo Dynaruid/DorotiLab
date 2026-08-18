@@ -47,7 +47,7 @@ public class InkSparkle : InteractiveInkFeature
         this._targetRadius = (((radius ?? Ink_sparkleLibrary._getTargetRadius(referenceBox, containedInkWell, rectCallback, position))) * _targetRadiusMultiplier);
         this._clipCallback = Ink_sparkleLibrary._getClipCallback(referenceBox, containedInkWell, rectCallback);
         System.Diagnostics.Debug.Assert((containedInkWell || (rectCallback is null)));
-        _InkSparkleFactory__ink_sparkle.initializeShader();
+        _InkSparkleFactory__ink_sparkle.initializeShader(() => this.controller.markNeedsPaint());
         this.controller.addInkFeature(this);
         _animationController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
@@ -225,18 +225,21 @@ internal class _InkSparkleFactory__ink_sparkle : InteractiveInkFeatureFactory
         return __instance;
     }
 
-    public static void initializeShader()
+    public static void initializeShader(global::System.Action? onReady = null)
     {
-        if (!_initCalled)
+        if (_program is not null)
         {
-            using var stream = typeof(InkSparkle).Assembly.GetManifestResourceStream(
-                "Doroti.Framework.Material.Shaders.ink_sparkle.sksl")
-                ?? throw new InvalidDataException("Doroti Material InkSparkle shader resource is missing.");
-            using var reader = new System.IO.StreamReader(stream);
-            _program = global::Doroti.Ui.FragmentProgram.fromSource(
-                reader.ReadToEnd(), "shaders/ink_sparkle.frag");
-            _initCalled = true;
+            onReady?.Invoke();
+            return;
         }
+        _initCalled = true;
+        global::Doroti.Ui.FrameworkShaderLoader.BeginLoad(
+            "material.ink-sparkle",
+            program =>
+            {
+                _program = program;
+                onReady?.Invoke();
+            });
     }
 
     public virtual InteractiveInkFeature create(MaterialInkController controller, global::Doroti.Framework.Rendering.RenderBox referenceBox, Offset position, Color color, TextDirection textDirection, bool containedInkWell = false, global::System.Func<Rect>? rectCallback = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, double? radius = null, global::System.Action? onRemoved = null)

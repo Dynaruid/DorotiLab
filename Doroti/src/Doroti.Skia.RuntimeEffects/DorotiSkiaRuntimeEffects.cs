@@ -1,26 +1,51 @@
 using System.Collections.Concurrent;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using Doroti.Ui;
 using SkiaSharp;
 
 namespace Doroti.Skia.RuntimeEffects;
 
+public sealed record DorotiShaderCapabilityDiagnostic(
+    string Code,
+    string Backend,
+    string ShaderName,
+    string Message);
+
 public static partial class DorotiSkiaRuntimeEffects
 {
-    private static readonly ConcurrentDictionary<string, Lazy<CompiledRuntimeEffect>> EffectCache =
-        new(StringComparer.Ordinal);
+    public const string ValidationBackend = "runtime-shader-contract";
+    public const string MauiGpuBackend = "skiasharp-maui-skglview-gpu";
+    public const string WebGpuBackend = "skiasharp-skglview-webgl2-gpu";
+
+    private static readonly IReadOnlySet<string> SupportedBackends =
+        new HashSet<string>(StringComparer.Ordinal)
+        {
+            ValidationBackend,
+            MauiGpuBackend,
+            WebGpuBackend,
+        };
+    private static readonly ConcurrentDictionary<RuntimeEffectCacheKey, Lazy<CompiledRuntimeEffect>> EffectCache = [];
     private static long _compiledEffectCount;
+
+    public static event Action<DorotiShaderCapabilityDiagnostic>? CapabilityDiagnostic;
 
     internal static long CompiledEffectCountForValidation => Interlocked.Read(ref _compiledEffectCount);
 
+    internal static int CompiledCacheEntryCountForValidation => EffectCache.Count;
+
     internal static SKShader CreateShader(
         FragmentShaderSnapshot snapshot,
-        Func<Image, SKShader> imageShaderFactory)
+        Func<Image, SKShader> imageShaderFactory,
+        string backend = ValidationBackend,
+        long contextGeneration = 0)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
         ArgumentNullException.ThrowIfNull(imageShaderFactory);
         var state = snapshot.State;
-        var compiled = GetCompiledEffect(state);
+        EnsureBackendSupported(backend, state.DebugName);
+        var compiled = GetCompiledEffect(state, backend, contextGeneration);
         var effect = compiled.Effect;
         using var uniforms = new SKRuntimeEffectUniforms(effect);
         BindFloats(compiled, uniforms, state);
@@ -54,13 +79,16 @@ public static partial class DorotiSkiaRuntimeEffects
         FragmentShaderSnapshot snapshot,
         SKImage input,
         SKSamplingOptions inputSampling,
-        Func<Image, SKShader> imageShaderFactory)
+        Func<Image, SKShader> imageShaderFactory,
+        string backend = ValidationBackend,
+        long contextGeneration = 0)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(imageShaderFactory);
         var state = snapshot.State;
-        var compiled = GetCompiledEffect(state);
+        EnsureBackendSupported(backend, state.DebugName);
+        var compiled = GetCompiledEffect(state, backend, contextGeneration);
         var effect = compiled.Effect;
         if (effect.Children.Count == 0)
             throw new InvalidDataException(
@@ -115,6 +143,24 @@ public static partial class DorotiSkiaRuntimeEffects
             ?? throw new InvalidDataException($"Doroti fragment program '{debugName}' failed SkSL compilation: {errors}");
     }
 
+    /// <summary>
+    /// Removes effects compiled for prior graphics-context generations. Native shaders
+    /// created from the old generation must be gone before the host calls this method.
+    /// </summary>
+    public static void InvalidateContext(string backend, long currentContextGeneration)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(backend);
+        foreach (var pair in EffectCache.ToArray())
+        {
+            if (!string.Equals(pair.Key.Backend, backend, StringComparison.Ordinal) ||
+                pair.Key.ContextGeneration == currentContextGeneration ||
+                !EffectCache.TryRemove(pair.Key, out var removed) ||
+                !removed.IsValueCreated)
+                continue;
+            removed.Value.Dispose();
+        }
+    }
+
     private static void BindFloats(
         CompiledRuntimeEffect compiled,
         SKRuntimeEffectUniforms uniforms,
@@ -158,11 +204,17 @@ public static partial class DorotiSkiaRuntimeEffects
                 match.Groups["array"].Success ? int.Parse(match.Groups["array"].Value) : 1))
             .ToDictionary(item => item.Name, StringComparer.Ordinal);
 
-    private static CompiledRuntimeEffect GetCompiledEffect(FragmentShaderState state)
+    private static CompiledRuntimeEffect GetCompiledEffect(
+        FragmentShaderState state,
+        string backend,
+        long contextGeneration)
     {
-        var lazy = EffectCache.GetOrAdd(state.Source, source =>
+        var sourceHash = Convert.ToHexString(
+            SHA256.HashData(Encoding.UTF8.GetBytes(state.Source))).ToLowerInvariant();
+        var key = new RuntimeEffectCacheKey(sourceHash, backend, contextGeneration);
+        var lazy = EffectCache.GetOrAdd(key, _ =>
             new Lazy<CompiledRuntimeEffect>(
-                () => CompileEffect(source, state.DebugName),
+                () => CompileEffect(state.Source, state.DebugName),
                 LazyThreadSafetyMode.ExecutionAndPublication));
         try
         {
@@ -170,9 +222,40 @@ public static partial class DorotiSkiaRuntimeEffects
         }
         catch
         {
-            ((ICollection<KeyValuePair<string, Lazy<CompiledRuntimeEffect>>>)EffectCache)
-                .Remove(new(state.Source, lazy));
+            ((ICollection<KeyValuePair<RuntimeEffectCacheKey, Lazy<CompiledRuntimeEffect>>>)EffectCache)
+                .Remove(new(key, lazy));
             throw;
+        }
+    }
+
+    private static void EnsureBackendSupported(string backend, string shaderName)
+    {
+        if (SupportedBackends.Contains(backend) ||
+            backend.StartsWith(MauiGpuBackend + "/", StringComparison.Ordinal) ||
+            backend.StartsWith(WebGpuBackend + "/", StringComparison.Ordinal))
+            return;
+        var message =
+            $"Runtime effect '{shaderName}' is unsupported on backend '{backend}'. " +
+            "The shader was not replaced with a transparent or arbitrary fallback.";
+        PublishDiagnostic(new DorotiShaderCapabilityDiagnostic(
+            "DOROTI_SHADER_BACKEND_UNSUPPORTED", backend, shaderName, message));
+        throw new DorotiCapabilityException(
+            DorotiCapabilityIds.GraphicsScene,
+            null,
+            DartUiInvocation.Managed($"runtime-effect:{shaderName}"),
+            message,
+            backend);
+    }
+
+    private static void PublishDiagnostic(DorotiShaderCapabilityDiagnostic diagnostic)
+    {
+        try
+        {
+            CapabilityDiagnostic?.Invoke(diagnostic);
+        }
+        catch
+        {
+            // A diagnostic observer cannot hide the capability failure itself.
         }
     }
 
@@ -205,7 +288,15 @@ public static partial class DorotiSkiaRuntimeEffects
 
     private sealed record CompiledRuntimeEffect(
         SKRuntimeEffect Effect,
-        IReadOnlyDictionary<string, UniformDeclaration> UniformDeclarations);
+        IReadOnlyDictionary<string, UniformDeclaration> UniformDeclarations) : IDisposable
+    {
+        public void Dispose() => Effect.Dispose();
+    }
+
+    private sealed record RuntimeEffectCacheKey(
+        string SourceSha256,
+        string Backend,
+        long ContextGeneration);
 
     [GeneratedRegex(@"(?m)^\s*(?:layout\s*\([^)]*\)\s*)?uniform\s+(?<type>(?:float|half)(?:[234](?:x[234])?)?)\s+(?<name>[A-Za-z_]\w*)\s*(?:\[\s*(?<array>\d+)\s*\])?\s*;")]
     private static partial Regex UniformDeclarationRegex();

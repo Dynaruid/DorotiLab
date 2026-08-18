@@ -1,8 +1,8 @@
 {
   "schemaVersion": "doroti.flutter-conformance-baseline/v1",
   "milestone": "FCR-0",
-  "capturedAtUtc": "2026-08-18T02:43:38.1090009Z",
-  "repositoryRevision": "89cc57f2980e4c8110009e156b29aa5a608c9c1e",
+  "capturedAtUtc": "2026-08-18T03:34:24.9687828Z",
+  "repositoryRevision": "dd020d30305460f50fc75515d77db467a79177aa",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "matrix": "Doroti/validation/evidence/flutter-conformance/framework-parity-matrix.json",
   "inventory": {
@@ -15,7 +15,8 @@
         "flutterSource": "packages/flutter/lib/src/material/ink_sparkle.dart",
         "sourceSha256": "6bf9f6a89317cfbc7bad9fbb282f71969f4bee077f155367632f3cfb9d87bf02",
         "productSources": [
-          "Doroti/src/Doroti.Framework.Material/ink_sparkle.cs"
+          "Doroti/src/Doroti.Framework.Material/ink_sparkle.cs",
+          "Doroti/src/Doroti.Ui/FrameworkShaderAssets.cs"
         ],
         "runtimeDependencyIds": [
           "asset:ink-sparkle-shader",
@@ -62,7 +63,9 @@
         "flutterSource": "packages/flutter/lib/src/widgets/stretch_effect.dart",
         "sourceSha256": "38b836b2bf10837d94521ce17a767c324c41c8d59f26e3c813a18599899656d1",
         "productSources": [
-          "Doroti/src/Doroti.Framework.Widgets/stretch_effect.cs"
+          "Doroti/src/Doroti.Framework.Widgets/stretch_effect.cs",
+          "Doroti/src/Doroti.Framework.Widgets/Shaders/stretch_effect.sksl",
+          "Doroti/src/Doroti.Ui/FrameworkShaderAssets.cs"
         ],
         "runtimeDependencyIds": [
           "asset:stretch-effect-shader",
@@ -2643,7 +2646,7 @@
           {
             "path": "Doroti/src/Doroti.Framework.Material/ink_sparkle.cs",
             "sourceOwner": "Doroti.Framework.Material",
-            "line": 256
+            "line": 259
           },
           {
             "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",

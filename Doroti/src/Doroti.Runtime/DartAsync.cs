@@ -46,7 +46,7 @@ public sealed class Timer : IDisposable
     public static void run(Action callback)
     {
         ArgumentNullException.ThrowIfNull(callback);
-        _ = Task.Run(callback);
+        DartRuntimePrimitives.ObserveTask(Task.Run(callback), "Timer.run");
     }
 
     public void cancel()
@@ -77,7 +77,13 @@ public static class DartAsyncRuntime
 {
     private static readonly AsyncLocal<Action<Action>?> MicrotaskScheduler = new();
 
-    public static void unawaited(object? future) => _ = future;
+    public static void unawaited(object? future)
+    {
+        if (future is Future dartFuture)
+        {
+            DartRuntimePrimitives.Observe(dartFuture, "Dart unawaited");
+        }
+    }
 
     public static Future wait(IEnumerable<Future> futures) =>
         Future.fromTask(Task.WhenAll(futures.Select(future => future.asTask())));
@@ -102,7 +108,7 @@ public static class DartAsyncRuntime
         var scheduler = MicrotaskScheduler.Value;
         if (scheduler is null)
         {
-            _ = Task.Run(callback);
+            DartRuntimePrimitives.ObserveTask(Task.Run(callback), "scheduleMicrotask");
         }
         else
         {
@@ -116,7 +122,7 @@ public static class DartAsyncRuntime
     {
         if (scheduler is null)
         {
-            _ = Task.Run(callback);
+            DartRuntimePrimitives.ObserveTask(Task.Run(callback), "captured async callback");
             return;
         }
         scheduler(callback);
@@ -148,6 +154,23 @@ public static class DartAsyncRuntime
     }
 
     public static Task<object?> AwaitObject(Future future) => future.asObjectTask();
+
+    internal static async Task InvokeErrorHandlerAsync(Delegate handler, Exception error)
+    {
+        ArgumentNullException.ThrowIfNull(handler);
+        var result = handler.Method.GetParameters().Length > 1
+            ? handler.DynamicInvoke(error, new System.Diagnostics.StackTrace())
+            : handler.DynamicInvoke(error);
+        switch (result)
+        {
+            case Future future:
+                await future.asTask().ConfigureAwait(false);
+                break;
+            case Task task:
+                await task.ConfigureAwait(false);
+                break;
+        }
+    }
 
     private sealed class MicrotaskSchedulerScope(Action<Action>? previous) : IDisposable
     {
@@ -258,7 +281,7 @@ public class Future<T> : Future
     public Stream<T> asStream()
     {
         var controller = new StreamController<T>();
-        _ = PublishAsync();
+        DartRuntimePrimitives.ObserveTask(PublishAsync(), "Future.asStream");
         return controller.stream;
 
         async Task PublishAsync()
@@ -315,7 +338,7 @@ public class Future<T> : Future
         }
         catch (Exception error) when (onError is not null)
         {
-            _ = onError.DynamicInvoke(error, new System.Diagnostics.StackTrace());
+            await DartAsyncRuntime.InvokeErrorHandlerAsync(onError, error);
             return default!;
         }
     }
@@ -334,7 +357,7 @@ public class Future<T> : Future
         }
         catch (Exception error) when (onError is not null)
         {
-            _ = onError.DynamicInvoke(error, new System.Diagnostics.StackTrace());
+            await DartAsyncRuntime.InvokeErrorHandlerAsync(onError, error);
             return default!;
         }
     }
@@ -342,7 +365,7 @@ public class Future<T> : Future
     private static async Task ThenActionAsync(Task<T> task, Action<T> callback, Delegate? onError)
     {
         try { callback(await task.ConfigureAwait(false)); }
-        catch (Exception error) when (onError is not null) { _ = onError.DynamicInvoke(error, new System.Diagnostics.StackTrace()); }
+        catch (Exception error) when (onError is not null) { await DartAsyncRuntime.InvokeErrorHandlerAsync(onError!, error); }
     }
 
     private static async Task<T> CatchAsync(Task<T> task, Delegate onError, Func<object, bool>? test)
@@ -490,7 +513,7 @@ public class Future
         }
         catch (Exception error) when (onError is not null)
         {
-            _ = onError.DynamicInvoke(error, new System.Diagnostics.StackTrace());
+            await DartAsyncRuntime.InvokeErrorHandlerAsync(onError, error);
         }
     }
 
@@ -508,7 +531,7 @@ public class Future
         }
         catch (Exception error) when (onError is not null)
         {
-            _ = onError.DynamicInvoke(error, new System.Diagnostics.StackTrace());
+            await DartAsyncRuntime.InvokeErrorHandlerAsync(onError, error);
             return default!;
         }
     }
@@ -563,16 +586,30 @@ public sealed class Completer<T>
 
     public void complete() => _source.TrySetResult(default!);
 
-    public async void complete(Future<T> value)
+    public void complete(Future<T> value) => CompleteAsync(value.asTask());
+
+    public void complete(Task<T> value) => CompleteAsync(value);
+
+    private void CompleteAsync(Task<T> value)
     {
-        try { _source.TrySetResult(await value); }
-        catch (Exception error) { _source.TrySetException(error); }
+        ArgumentNullException.ThrowIfNull(value);
+        _ = CompleteCoreAsync(value);
     }
 
-    public async void complete(Task<T> value)
+    private async Task CompleteCoreAsync(Task<T> value)
     {
-        try { _source.TrySetResult(await value.ConfigureAwait(false)); }
-        catch (Exception error) { _source.TrySetException(error); }
+        try
+        {
+            _source.TrySetResult(await value.ConfigureAwait(false));
+        }
+        catch (OperationCanceledException)
+        {
+            _source.TrySetCanceled();
+        }
+        catch (Exception error)
+        {
+            _source.TrySetException(error);
+        }
     }
 
     public void completeError(object error) => _source.TrySetException(error as Exception ?? new Exception(error?.ToString() ?? "null"));
@@ -785,11 +822,11 @@ public sealed class StreamController<T>
             throw new InvalidOperationException("A single-subscription Stream can only be listened to once.");
         }
         _wasListened = true;
-        if (_onListen is not null) _ = _onListen();
+        if (_onListen is not null) DartRuntimePrimitives.ObserveTask(_onListen(), "Stream.onListen");
         var subscription = new StreamSubscription<T>(onData, onError, onDone, item =>
         {
             _listeners.Remove(item);
-            if (_listeners.Count == 0 && _onCancel is not null) _ = _onCancel();
+            if (_listeners.Count == 0 && _onCancel is not null) DartRuntimePrimitives.ObserveTask(_onCancel(), "Stream.onCancel");
         });
         _listeners.Add(subscription);
         return subscription;

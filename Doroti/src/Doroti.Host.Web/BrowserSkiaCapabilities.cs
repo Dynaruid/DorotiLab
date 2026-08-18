@@ -31,6 +31,9 @@ internal sealed class BrowserSkiaCapabilities :
     private bool _semanticsEnabled;
     private bool _disposed;
 
+    private string RuntimeEffectBackend =>
+        $"{DorotiSkiaRuntimeEffects.WebGpuBackend}/{_viewId}";
+
     internal BrowserSkiaCapabilities(ulong viewId, BrowserHostAdapter host)
     {
         _viewId = viewId;
@@ -57,12 +60,16 @@ internal sealed class BrowserSkiaCapabilities :
         ArgumentNullException.ThrowIfNull(invalidate);
         ObjectDisposedException.ThrowIf(_disposed, this);
         bool hasFrame;
+        long contextGeneration;
         lock (_gate)
         {
             _invalidate = invalidate;
             _contextGeneration++;
+            contextGeneration = _contextGeneration;
             hasFrame = _pendingFrame is not null || _presentedFrame is not null;
         }
+        DorotiSkiaRuntimeEffects.InvalidateContext(
+            RuntimeEffectBackend, contextGeneration);
         if (hasFrame) invalidate();
     }
 
@@ -259,14 +266,14 @@ internal sealed class BrowserSkiaCapabilities :
 
     private sealed record SceneFrame(IReadOnlyList<SceneCommand> Commands);
 
-    private static void DrawScene(
+    private void DrawScene(
         SKCanvas canvas,
         IReadOnlyList<SceneCommand> commands,
         int pixelWidth,
         int pixelHeight) =>
         DrawScene(canvas, commands, 0, commands.Count, pixelWidth, pixelHeight);
 
-    private static void DrawScene(
+    private void DrawScene(
         SKCanvas canvas,
         IReadOnlyList<SceneCommand> commands,
         int start,
@@ -338,7 +345,9 @@ internal sealed class BrowserSkiaCapabilities :
                                 ToSamplingOptions(image.Filter.FilterQuality),
                                 CreateImageShader,
                                 (inputCanvas, inputWidth, inputHeight) =>
-                                    DrawScene(inputCanvas, source, commandIndex + 1, matchingPop, inputWidth, inputHeight));
+                                    DrawScene(inputCanvas, source, commandIndex + 1, matchingPop, inputWidth, inputHeight),
+                                RuntimeEffectBackend,
+                                _contextGeneration);
                             commandIndex = matchingPop;
                             break;
                         }
@@ -417,7 +426,7 @@ internal sealed class BrowserSkiaCapabilities :
         "transform" or "opacity" or "colorFilter" or "shaderMask" or "imageFilter" or
         "backdropFilter";
 
-    private static void DrawPicture(SKCanvas canvas, Picture picture)
+    private void DrawPicture(SKCanvas canvas, Picture picture)
     {
         ObjectDisposedException.ThrowIf(picture.debugDisposed, picture);
         foreach (var command in picture.Commands)
@@ -474,7 +483,7 @@ internal sealed class BrowserSkiaCapabilities :
         }
     }
 
-    private static SKPaint ToPaint(PaintSnapshot value)
+    private SKPaint ToPaint(PaintSnapshot value)
     {
         var paint = new SKPaint
         {
@@ -490,9 +499,9 @@ internal sealed class BrowserSkiaCapabilities :
         return paint;
     }
 
-    private static SKPaint FilterPaint(ImageFilterSnapshot filter) => new() { ImageFilter = ToImageFilter(filter) };
+    private SKPaint FilterPaint(ImageFilterSnapshot filter) => new() { ImageFilter = ToImageFilter(filter) };
 
-    private static SKImageFilter ToImageFilter(ImageFilterSnapshot filter)
+    private SKImageFilter ToImageFilter(ImageFilterSnapshot filter)
     {
         if (filter.Shader is not null)
             throw new InvalidOperationException(
@@ -524,11 +533,12 @@ internal sealed class BrowserSkiaCapabilities :
             });
     }
 
-    private static SKShader ToShader(ShaderSnapshot value) => value switch
+    private SKShader ToShader(ShaderSnapshot value) => value switch
     {
         GradientShaderSnapshot gradient => ToGradientShader(gradient),
         ImageShaderSnapshot image => ToImageShader(image),
-        FragmentShaderSnapshot fragment => DorotiSkiaRuntimeEffects.CreateShader(fragment, CreateImageShader),
+        FragmentShaderSnapshot fragment => DorotiSkiaRuntimeEffects.CreateShader(
+            fragment, CreateImageShader, RuntimeEffectBackend, _contextGeneration),
         UnsupportedShaderSnapshot unsupported => throw new NotSupportedException(
             $"The Doroti browser backend rejects shader family '{unsupported.Family}'."),
         _ => throw new NotSupportedException($"The Doroti browser backend rejects shader snapshot '{value.GetType().Name}'."),

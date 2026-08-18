@@ -1,3 +1,5 @@
+using Doroti.Runtime;
+
 namespace Doroti.Ui;
 
 public sealed record DisplayCornerRadii(
@@ -6,7 +8,7 @@ public sealed record DisplayCornerRadii(
     double bottomRight,
     double bottomLeft);
 
-public readonly record struct Offset(double dx, double dy)
+public readonly record struct Offset(double dx, double dy) : IDartTweenValue<Offset>
 {
     public static Offset zero { get; } = new(0, 0);
     public static Offset infinite { get; } = new(double.PositiveInfinity, double.PositiveInfinity);
@@ -32,9 +34,10 @@ public readonly record struct Offset(double dx, double dy)
     public static Rect operator &(Offset offset, Size size) => new(offset.dx, offset.dy, offset.dx + size.width, offset.dy + size.height);
     public Offset translate(double translateX, double translateY) => new(dx + translateX, dy + translateY);
     public Offset scale(double scaleX, double scaleY) => new(dx * scaleX, dy * scaleY);
+    public Offset LerpTo(Offset end, double t) => new(dx + ((end.dx - dx) * t), dy + ((end.dy - dy) * t));
 }
 
-public class Size : IEquatable<Size>
+public class Size : IEquatable<Size>, IDartTweenValue<Size>
 {
     public Size(double dimension) : this(dimension, dimension) { }
 
@@ -89,6 +92,7 @@ public class Size : IEquatable<Size>
     public static bool operator >(Size left, Size right) => left.width > right.width && left.height > right.height;
     public static bool operator <=(Size left, Size right) => left.width <= right.width && left.height <= right.height;
     public static bool operator >=(Size left, Size right) => left.width >= right.width && left.height >= right.height;
+    public Size LerpTo(Size end, double t) => new(width + ((end.width - width) * t), height + ((end.height - height) * t));
     public bool Equals(Size? other) => other is not null && width.Equals(other.width) && height.Equals(other.height);
     public override bool Equals(object? obj) => obj is Size other && Equals(other);
     public override int GetHashCode() => HashCode.Combine(width, height);
@@ -101,7 +105,7 @@ public readonly record struct ViewConstraints(double minWidth, double maxWidth, 
     public static ViewConstraints tight(Size size) => new(size.width, size.width, size.height, size.height);
 }
 
-public readonly record struct Rect(double left, double top, double right, double bottom)
+public readonly record struct Rect(double left, double top, double right, double bottom) : IDartTweenValue<Rect>
 {
     public static Rect zero { get; } = new(0, 0, 0, 0);
     public static Rect largest { get; } = new(double.MinValue, double.MinValue, double.MaxValue, double.MaxValue);
@@ -139,6 +143,11 @@ public readonly record struct Rect(double left, double top, double right, double
     public Rect expandToInclude(Rect other) => new(Math.Min(left, other.left), Math.Min(top, other.top), Math.Max(right, other.right), Math.Max(bottom, other.bottom));
     public bool overlaps(Rect other) => left < other.right && other.left < right && top < other.bottom && other.top < bottom;
     public bool contains(Offset offset) => offset.dx >= left && offset.dx < right && offset.dy >= top && offset.dy < bottom;
+    public Rect LerpTo(Rect end, double t) => new(
+        left + ((end.left - left) * t),
+        top + ((end.top - top) * t),
+        right + ((end.right - right) * t),
+        bottom + ((end.bottom - bottom) * t));
 }
 
 public readonly record struct ViewPadding(double left, double top, double right, double bottom)

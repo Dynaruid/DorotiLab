@@ -17,6 +17,7 @@
     <ProjectReference Include="..\Doroti.Framework.Painting\Doroti.Framework.Painting.csproj" />
     <ProjectReference Include="..\Doroti.Framework.Semantics\Doroti.Framework.Semantics.csproj" />
     <ProjectReference Include="..\Doroti.Framework.Rendering\Doroti.Framework.Rendering.csproj" />
+    <EmbeddedResource Include="Shaders\stretch_effect.sksl" LogicalName="Doroti.Framework.Widgets.Shaders.stretch_effect.sksl" />
     <Compile Remove="_html_element_view_web.cs" />
     <Compile Remove="_platform_selectable_region_context_menu_web.cs" />
     <Compile Remove="_web_browser_detection_web.cs" />

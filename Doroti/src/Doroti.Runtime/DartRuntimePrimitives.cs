@@ -8,9 +8,21 @@ public sealed class NoSuchMethodError(object? message = null) : Exception(messag
 
 public sealed class TypeError(object? message = null) : Exception(message?.ToString() ?? "Dart type error.");
 
+/// <summary>Describes a Future that completed without an explicit await.</summary>
+public sealed record DartFutureDiagnostic(string Operation, Exception Exception);
+
+/// <summary>Typed value contract used by the generic Dart Tween lowering.</summary>
+public interface IDartTweenValue<T>
+{
+    T LerpTo(T end, double t);
+}
+
 /// <summary>Runtime bindings for Dart semantics that do not belong to a Flutter framework type.</summary>
 public static class DartRuntimePrimitives
 {
+    /// <summary>Host error sink for intentionally unawaited Futures.</summary>
+    public static Action<DartFutureDiagnostic>? FutureDiagnosticSink { get; set; }
+
     // Kept non-const so Roslyn does not reject the explicit Dart fallback arm
     // after proving that all currently named CLR enum members were matched.
     public static bool NonExhaustiveSwitchGuard => true;
@@ -80,7 +92,7 @@ public static class DartRuntimePrimitives
     }
 
     public static Action? AdaptAsyncCallback(Func<Future>? callback) =>
-        callback is null ? null : () => Ignore(callback());
+        callback is null ? null : () => Observe(callback(), "adapted async callback");
 
     public static System.Diagnostics.StackTrace StackTraceFrom(object? value) =>
         value is System.Diagnostics.StackTrace stackTrace ? stackTrace : new System.Diagnostics.StackTrace(true);
@@ -138,7 +150,90 @@ public static class DartRuntimePrimitives
 
     public static void Noop() { }
 
-    public static void Ignore<T>(T value) => _ = value;
+    /// <summary>Observes an intentionally fire-and-forget Future.</summary>
+    public static void Observe(Future future, string operation = "fire-and-forget")
+    {
+        ArgumentNullException.ThrowIfNull(future);
+        ObserveTask(future.asTask(), operation);
+    }
+
+    /// <summary>Observes a task created by a host callback or scheduler.</summary>
+    public static void ObserveTask(Task task, string operation = "fire-and-forget")
+    {
+        ArgumentNullException.ThrowIfNull(task);
+        _ = ObserveTaskAsync(task, operation);
+    }
+
+    private static async Task ObserveTaskAsync(Task task, string operation)
+    {
+        try
+        {
+            await task.ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            // Cancellation is an expected Dart Future completion state.
+        }
+        catch (Exception error)
+        {
+            try
+            {
+                FutureDiagnosticSink?.Invoke(new DartFutureDiagnostic(operation, error));
+            }
+            catch (Exception diagnosticError)
+            {
+                Debug.WriteLine($"Doroti Future diagnostic sink failed: {diagnosticError}");
+            }
+            Debug.WriteLine($"Doroti unobserved Future failure in {operation}: {error}");
+        }
+    }
+
+    /// <summary>Compatibility path for already-emitted product source.</summary>
+    public static void Ignore(Future future) => Observe(future);
+
+    public static void Ignore<T>(T value)
+    {
+        if (value is Future future)
+        {
+            Observe(future);
+        }
+    }
+
+    /// <summary>Typed implementation of Dart Tween's default interpolation.</summary>
+    public static T LerpTweenValue<T>(T begin, T end, double t)
+    {
+        if (begin is IDartTweenValue<T> typedBegin)
+        {
+            return typedBegin.LerpTo(end, t);
+        }
+        if (typeof(T) == typeof(double))
+        {
+            var result = (double)(object)begin! + (((double)(object)end! - (double)(object)begin!) * t);
+            return (T)(object)result;
+        }
+        if (typeof(T) == typeof(float))
+        {
+            var result = (float)((float)(object)begin! + (((float)(object)end! - (float)(object)begin!) * (float)t));
+            return (T)(object)result;
+        }
+        if (typeof(T) == typeof(global::System.Numerics.Vector2))
+        {
+            var beginVector = (global::System.Numerics.Vector2)(object)begin!;
+            var endVector = (global::System.Numerics.Vector2)(object)end!;
+            return (T)(object)global::System.Numerics.Vector2.Lerp(beginVector, endVector, checked((float)t));
+        }
+        throw new TypeError($"Tween<{typeof(T).Name}> requires a typed IDartTweenValue<T> implementation.");
+    }
+
+    /// <summary>Implements the runtime cast performed by Dart's <c>as T</c>.</summary>
+    public static T RequireNonNull<T>(T? value)
+    {
+        if (value is null)
+        {
+            throw new TypeError("A non-null Tween value was required.");
+        }
+        return value!;
+    }
 
     /// <summary>Evaluates a Dart void expression used in a dynamic value context.</summary>
     public static object? CaptureVoid(Action action)
@@ -162,7 +257,7 @@ public static class DartRuntimePrimitives
         ArgumentNullException.ThrowIfNull(condition);
         if (!condition())
         {
-            throw new InvalidOperationException("A transpiled Dart assert failed.");
+            throw new AssertionError("A transpiled Dart assert failed.");
         }
     }
 
@@ -173,7 +268,7 @@ public static class DartRuntimePrimitives
         ArgumentNullException.ThrowIfNull(message);
         if (!condition())
         {
-            throw new InvalidOperationException(message()?.ToString() ?? "A transpiled Dart assert failed.");
+            throw new AssertionError(message()?.ToString() ?? "A transpiled Dart assert failed.");
         }
     }
 

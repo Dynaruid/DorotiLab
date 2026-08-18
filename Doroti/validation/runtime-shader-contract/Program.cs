@@ -16,13 +16,11 @@ const string source = """
     """;
 
 DorotiSkiaRuntimeEffects.Validate(source, "runtime-shader-contract");
-using (var inkSparkleStream = typeof(Doroti.Framework.Material.InkSparkle).Assembly
-           .GetManifestResourceStream("Doroti.Framework.Material.Shaders.ink_sparkle.sksl")
-       ?? throw new InvalidOperationException("The Material InkSparkle shader was not embedded."))
-using (var inkSparkleReader = new StreamReader(inkSparkleStream))
-{
-    DorotiSkiaRuntimeEffects.Validate(inkSparkleReader.ReadToEnd(), "shaders/ink_sparkle.frag");
-}
+if (FrameworkShaderManifest.SchemaVersion != "doroti.framework-shader-manifest/v1" ||
+    FrameworkShaderManifest.Assets.Count != 2)
+    throw new InvalidOperationException("The closed framework shader manifest is incomplete.");
+var inkSparkleProgram = await FrameworkShaderLoader.LoadProgram("material.ink-sparkle").asTask();
+DorotiSkiaRuntimeEffects.Validate(inkSparkleProgram.source, "shaders/ink_sparkle.frag");
 var offsetTween = new Doroti.Framework.Animation.Tween<System.Numerics.Vector2>(
     begin: new System.Numerics.Vector2(10, 20),
     end: new System.Numerics.Vector2(30, 60));
@@ -49,6 +47,25 @@ using (var cachedNativeShader = DorotiSkiaRuntimeEffects.CreateShader(
     _ => throw new InvalidOperationException("The scalar-uniform fixture declares no image sampler.")))
 {
 }
+var compiledBeforeContextRecreate = DorotiSkiaRuntimeEffects.CompiledEffectCountForValidation;
+using (var contextShader = DorotiSkiaRuntimeEffects.CreateShader(
+    new FragmentShaderSnapshot(shader.CaptureState()),
+    _ => throw new InvalidOperationException("The scalar-uniform fixture declares no image sampler."),
+    DorotiSkiaRuntimeEffects.ValidationBackend,
+    contextGeneration: 11))
+{
+}
+DorotiSkiaRuntimeEffects.InvalidateContext(DorotiSkiaRuntimeEffects.ValidationBackend, 12);
+using (var recreatedContextShader = DorotiSkiaRuntimeEffects.CreateShader(
+    new FragmentShaderSnapshot(shader.CaptureState()),
+    _ => throw new InvalidOperationException("The scalar-uniform fixture declares no image sampler."),
+    DorotiSkiaRuntimeEffects.ValidationBackend,
+    contextGeneration: 12))
+{
+}
+if (DorotiSkiaRuntimeEffects.CompiledEffectCountForValidation != compiledBeforeContextRecreate + 2)
+    throw new InvalidOperationException(
+        "Runtime-effect cache did not separate and recreate graphics-context generations.");
 
 const string imageFilterSource = """
     uniform float2 uSize;
@@ -97,18 +114,33 @@ using (var inputBitmap = new SKBitmap(new SKImageInfo(2, 1, SKColorType.Rgba8888
 }
 filterShader.dispose();
 
-var stretchShaderType = typeof(Doroti.Framework.Widgets.StretchEffect).Assembly.GetType(
-    "Doroti.Framework.Widgets._StretchEffectShader__stretch_effect",
-    throwOnError: true)!;
-var stretchShaderSource = (string)stretchShaderType.GetField(
-    "_source",
-    BindingFlags.Static | BindingFlags.NonPublic)!.GetRawConstantValue()!;
-DorotiSkiaRuntimeEffects.Validate(stretchShaderSource, "doroti-framework-stretch-effect");
-var stretchShader = FragmentProgram.fromSource(
-    stretchShaderSource,
-    "doroti-framework-stretch-effect").fragmentShader();
+var stretchProgram = await FrameworkShaderLoader.LoadProgram("widgets.stretch-effect").asTask();
+DorotiSkiaRuntimeEffects.Validate(stretchProgram.source, "shaders/stretch_effect.frag");
+var stretchShader = stretchProgram.fragmentShader();
 _ = new ImageFilter(stretchShader);
 stretchShader.dispose();
+
+DorotiShaderCapabilityDiagnostic? unsupportedDiagnostic = null;
+void CaptureUnsupportedDiagnostic(DorotiShaderCapabilityDiagnostic diagnostic) => unsupportedDiagnostic = diagnostic;
+DorotiSkiaRuntimeEffects.CapabilityDiagnostic += CaptureUnsupportedDiagnostic;
+try
+{
+    using var unsupportedShader = DorotiSkiaRuntimeEffects.CreateShader(
+        new FragmentShaderSnapshot(shader.CaptureState()),
+        _ => throw new InvalidOperationException("The scalar-uniform fixture declares no image sampler."),
+        "software-raster",
+        contextGeneration: 1);
+    throw new InvalidOperationException("An unsupported backend unexpectedly accepted a runtime effect.");
+}
+catch (DorotiCapabilityException error) when (error.Message.Contains("unsupported", StringComparison.OrdinalIgnoreCase))
+{
+}
+finally
+{
+    DorotiSkiaRuntimeEffects.CapabilityDiagnostic -= CaptureUnsupportedDiagnostic;
+}
+if (unsupportedDiagnostic?.Code != "DOROTI_SHADER_BACKEND_UNSUPPORTED")
+    throw new InvalidOperationException("Unsupported runtime-effect backends did not emit a capability diagnostic.");
 
 try
 {

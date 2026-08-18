@@ -506,10 +506,10 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             builder.AppendLine("public interface IMouseTrackerAnnotation");
             builder.AppendLine("{");
-            builder.AppendLine("    dynamic onEnter => ((dynamic)this).onEnter;");
-            builder.AppendLine("    dynamic onExit => ((dynamic)this).onExit;");
-            builder.AppendLine("    MouseCursor cursor => (MouseCursor)((dynamic)this).cursor;");
-            builder.AppendLine("    bool validForMouseTracker => (bool)((dynamic)this).validForMouseTracker;");
+            builder.AppendLine("    global::Doroti.Framework.Services.IMouseTrackerCallback? onEnter { get; }");
+            builder.AppendLine("    global::Doroti.Framework.Services.IMouseTrackerCallback? onExit { get; }");
+            builder.AppendLine("    MouseCursor cursor { get; }");
+            builder.AppendLine("    bool validForMouseTracker { get; }");
             builder.AppendLine("}");
             builder.AppendLine();
             bases.Add("IMouseTrackerAnnotation");
@@ -593,8 +593,8 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         if (!isInterface && declaration.Name == "RenderMouseRegion")
         {
-            builder.AppendLine("    dynamic global::Doroti.Framework.Services.IMouseTrackerAnnotation.onEnter => this.onEnter;");
-            builder.AppendLine("    dynamic global::Doroti.Framework.Services.IMouseTrackerAnnotation.onExit => this.onExit;");
+            builder.AppendLine("    global::Doroti.Framework.Services.IMouseTrackerCallback? global::Doroti.Framework.Services.IMouseTrackerAnnotation.onEnter => this.onEnter is null ? null : new global::Doroti.Framework.Services.MouseTrackerCallback<global::Doroti.Framework.Gestures.PointerEnterEvent>(this.onEnter);");
+            builder.AppendLine("    global::Doroti.Framework.Services.IMouseTrackerCallback? global::Doroti.Framework.Services.IMouseTrackerAnnotation.onExit => this.onExit is null ? null : new global::Doroti.Framework.Services.MouseTrackerCallback<global::Doroti.Framework.Gestures.PointerExitEvent>(this.onExit);");
         }
         // Concrete storage for mixin interface fields used by this class.
         if (!isMixinDeclaration)
@@ -1374,7 +1374,7 @@ internal sealed partial class FrameworkCSharpLowerer
                     SafeIdentifier(parameter.Name),
                     SyntheticIdentifier(parameter.Name));
             }
-            builder.Append("        System.Diagnostics.Debug.Assert(").Append(conditionSyntax).AppendLine(");");
+            builder.Append("        DartRuntimePrimitives.Assert(() => ").Append(conditionSyntax).AppendLine(");");
         }
         var generativeConstructorBody = constructor.Ast.Children
             .FirstOrDefault(item => item.Kind == CoreNodeKind.BlockFunctionBody)?
