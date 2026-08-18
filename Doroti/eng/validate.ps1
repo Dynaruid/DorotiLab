@@ -1,6 +1,6 @@
 #Requires -Version 7.0
 param(
-    [ValidateSet('Source', 'Build', 'Targets', 'Developer', 'Release')]
+    [ValidateSet('Source', 'Build', 'Targets', 'Fcr0', 'Developer', 'Release')]
     [string] $Suite = 'Developer'
 )
 
@@ -114,6 +114,11 @@ function Invoke-TargetGate {
     $completed.Add('targets')
 }
 
+function Invoke-Fcr0Gate {
+    Invoke-Checked { & (Join-Path $PSScriptRoot 'validate-flutter-conformance.ps1') } 'Flutter conformance FCR-0 validation failed'
+    $completed.Add('fcr-0-conformance')
+}
+
 function Invoke-ReleaseGate {
     & (Join-Path $PSScriptRoot 'validate-app-targets.ps1') -Shard Live
     & (Join-Path $PSScriptRoot 'validate-app-targets.ps1') -Shard Evidence
@@ -127,13 +132,16 @@ switch ($Suite) {
     'Source' { Invoke-SourceGate }
     'Build' { Invoke-BuildGate }
     'Targets' { Invoke-TargetGate }
+    'Fcr0' { Invoke-Fcr0Gate }
     'Developer' {
         Invoke-SourceGate
+        Invoke-Fcr0Gate
         Invoke-BuildGate
         Invoke-TargetGate
     }
     'Release' {
         Invoke-SourceGate
+        Invoke-Fcr0Gate
         Invoke-BuildGate
         Invoke-TargetGate
         Invoke-ReleaseGate

@@ -11,5 +11,6 @@ Current commands are:
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 build
 pwsh -File ./Doroti/eng/doroti.ps1 validate
+pwsh -File ./Doroti/eng/doroti.ps1 validate -ValidationSuite Fcr0
 pwsh -File ./Doroti/eng/doroti.ps1 validate -ValidationSuite Release
 ```

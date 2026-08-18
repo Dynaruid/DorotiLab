@@ -1,6 +1,6 @@
 # Doroti Flutter Conformance & Smooth Rendering Upgrade
 
-> 상태: **ACTIVE PLAN — 조사·설계 완료, 구현은 아직 시작하지 않음**
+> 상태: **ACTIVE PLAN — FCR-0 inventory/contract gate 구현 완료; timing·differential·physical 검증은 후속 gate로 남음**
 > 작성일: 2026-08-18
 > Doroti 기준 revision: `3fd08b3` + 이 문서 변경
 > Flutter source pin: `56b8e1a851a594b1a154f8ea93270807dab22b9a`

@@ -1,0 +1,3111 @@
+{
+  "schemaVersion": "doroti.flutter-conformance-baseline/v1",
+  "milestone": "FCR-0",
+  "capturedAtUtc": "2026-08-18T02:43:38.1090009Z",
+  "repositoryRevision": "89cc57f2980e4c8110009e156b29aa5a608c9c1e",
+  "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+  "matrix": "Doroti/validation/evidence/flutter-conformance/framework-parity-matrix.json",
+  "inventory": {
+    "status": "pass",
+    "sourceCount": 20,
+    "sourceEntries": [
+      {
+        "id": "material.ink-sparkle",
+        "area": "Material",
+        "flutterSource": "packages/flutter/lib/src/material/ink_sparkle.dart",
+        "sourceSha256": "6bf9f6a89317cfbc7bad9fbb282f71969f4bee077f155367632f3cfb9d87bf02",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Material/ink_sparkle.cs"
+        ],
+        "runtimeDependencyIds": [
+          "asset:ink-sparkle-shader",
+          "runtime:fragment-program",
+          "runtime:skia-host"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      },
+      {
+        "id": "material.ink-well",
+        "area": "Material",
+        "flutterSource": "packages/flutter/lib/src/material/ink_well.dart",
+        "sourceSha256": "8fdb01e4dd98bb251df68814c0416692ca0771cfb78a1f73f43f8ae6416a70ab",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Material/ink_well.cs"
+        ],
+        "runtimeDependencyIds": [
+          "runtime:dart-primitives",
+          "runtime:widget-rendering",
+          "runtime:semantics-bridge"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      },
+      {
+        "id": "material.theme-data",
+        "area": "Material",
+        "flutterSource": "packages/flutter/lib/src/material/theme_data.dart",
+        "sourceSha256": "bc0458fef7d00d32f187bf263e1314018ad06b0ebe39aeb61d607fdc012ff884",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Material/theme_data.cs"
+        ],
+        "runtimeDependencyIds": [
+          "runtime:dart-primitives",
+          "runtime:widget-rendering"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      },
+      {
+        "id": "widgets.stretch-effect",
+        "area": "Widgets",
+        "flutterSource": "packages/flutter/lib/src/widgets/stretch_effect.dart",
+        "sourceSha256": "38b836b2bf10837d94521ce17a767c324c41c8d59f26e3c813a18599899656d1",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Widgets/stretch_effect.cs"
+        ],
+        "runtimeDependencyIds": [
+          "asset:stretch-effect-shader",
+          "runtime:fragment-program",
+          "runtime:skia-host"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      },
+      {
+        "id": "scheduler.binding",
+        "area": "Scheduler",
+        "flutterSource": "packages/flutter/lib/src/scheduler/binding.dart",
+        "sourceSha256": "c8cdd9e9b7b977d847e9bde6ea2381e366f6bd8597d08069b66651f17cc0ee7c",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Scheduler/binding.cs"
+        ],
+        "runtimeDependencyIds": [
+          "runtime:scheduler-host",
+          "runtime:dart-primitives"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      },
+      {
+        "id": "rendering.object",
+        "area": "Rendering",
+        "flutterSource": "packages/flutter/lib/src/rendering/object.dart",
+        "sourceSha256": "52e6bd8ecbe96044cfd1461940ab525ca06959f5bce040e94c3ea36a529c567b",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Rendering/object.cs"
+        ],
+        "runtimeDependencyIds": [
+          "runtime:typed-lowering",
+          "runtime:scene-builder",
+          "runtime:dart-primitives"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      },
+      {
+        "id": "rendering.layer",
+        "area": "Rendering",
+        "flutterSource": "packages/flutter/lib/src/rendering/layer.dart",
+        "sourceSha256": "a783f1ee51c1a03667310826a1ab74945fc78b018d9eeb1ef719103d84e9302b",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Rendering/layer.cs"
+        ],
+        "runtimeDependencyIds": [
+          "runtime:scene-builder",
+          "runtime:skia-host",
+          "runtime:typed-lowering"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      },
+      {
+        "id": "rendering.view",
+        "area": "Rendering",
+        "flutterSource": "packages/flutter/lib/src/rendering/view.dart",
+        "sourceSha256": "f5257d0768d55f1ad7756702a66b25fa5d5b77f1c571af95172f4c94ff50d1c7",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Rendering/view.cs"
+        ],
+        "runtimeDependencyIds": [
+          "runtime:scene-builder",
+          "runtime:scheduler-host",
+          "runtime:skia-host"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      },
+      {
+        "id": "widgets.scrollable",
+        "area": "Widgets",
+        "flutterSource": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "sourceSha256": "419c2055fe3e8be10f21413b88bb838c24c7f068879c5882b470a15fa1b7b1b7",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Widgets/scrollable.cs"
+        ],
+        "runtimeDependencyIds": [
+          "runtime:scroll-input",
+          "runtime:scheduler-host",
+          "runtime:widget-rendering",
+          "runtime:semantics-bridge"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      },
+      {
+        "id": "widgets.scroll-activity",
+        "area": "Widgets",
+        "flutterSource": "packages/flutter/lib/src/widgets/scroll_activity.dart",
+        "sourceSha256": "dc183614b29388190ca870a9a9a7bb23bd0b7164f5d81fc11ffe65de582c944e",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Widgets/scroll_activity.cs"
+        ],
+        "runtimeDependencyIds": [
+          "runtime:scroll-input",
+          "runtime:scheduler-host"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      },
+      {
+        "id": "widgets.scroll-position",
+        "area": "Widgets",
+        "flutterSource": "packages/flutter/lib/src/widgets/scroll_position.dart",
+        "sourceSha256": "6a53c8564d5e873f47f6dad6069575ee7fb53b1a8edf6b8fc5b5d7ce85778039",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Widgets/scroll_position.cs"
+        ],
+        "runtimeDependencyIds": [
+          "runtime:scroll-input",
+          "runtime:widget-rendering",
+          "runtime:semantics-bridge"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      },
+      {
+        "id": "widgets.scroll-position-with-single-context",
+        "area": "Widgets",
+        "flutterSource": "packages/flutter/lib/src/widgets/scroll_position_with_single_context.dart",
+        "sourceSha256": "eeb706e482499278e1d6802cb1b7e53656eb6ea06c9dec4df252f77db2470bd4",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Widgets/scroll_position_with_single_context.cs"
+        ],
+        "runtimeDependencyIds": [
+          "runtime:scroll-input",
+          "runtime:scheduler-host"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      },
+      {
+        "id": "widgets.scroll-view",
+        "area": "Widgets",
+        "flutterSource": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "sourceSha256": "427a3070dd0c8cb7403f1abcd38d73359387863ecdeeaa49c3ab0225eff7b175",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Widgets/scroll_view.cs"
+        ],
+        "runtimeDependencyIds": [
+          "runtime:scroll-input",
+          "runtime:widget-rendering",
+          "runtime:semantics-bridge"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      },
+      {
+        "id": "widgets.scrollbar",
+        "area": "Widgets",
+        "flutterSource": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "sourceSha256": "3ce9ba77df9d8b14560457301e6f68642ddaaf91e495d7208f84af2fe1dc91bd",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Widgets/scrollbar.cs"
+        ],
+        "runtimeDependencyIds": [
+          "runtime:scroll-input",
+          "runtime:semantics-bridge",
+          "runtime:widget-rendering"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      },
+      {
+        "id": "rendering.viewport",
+        "area": "Rendering",
+        "flutterSource": "packages/flutter/lib/src/rendering/viewport.dart",
+        "sourceSha256": "043257575c9565397ccf071fcd26b9196a746497f780371870f6fc40eccd6314",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Rendering/viewport.cs"
+        ],
+        "runtimeDependencyIds": [
+          "runtime:scroll-input",
+          "runtime:scene-builder",
+          "runtime:widget-rendering"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      },
+      {
+        "id": "rendering.sliver",
+        "area": "Rendering",
+        "flutterSource": "packages/flutter/lib/src/rendering/sliver.dart",
+        "sourceSha256": "93c5c0c65af042f64e16fcd125f1e85eab5c84846e2fe25bee3eddd090b2c3f2",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Rendering/sliver.cs"
+        ],
+        "runtimeDependencyIds": [
+          "runtime:scroll-input",
+          "runtime:scene-builder",
+          "runtime:widget-rendering"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      },
+      {
+        "id": "widgets.viewport",
+        "area": "Widgets",
+        "flutterSource": "packages/flutter/lib/src/widgets/viewport.dart",
+        "sourceSha256": "a8c7df942f89976706c93288046e850c2b54fc3fb9ec9ff9322fa0f538d8caa3",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Widgets/viewport.cs"
+        ],
+        "runtimeDependencyIds": [
+          "runtime:scroll-input",
+          "runtime:widget-rendering",
+          "runtime:scene-builder"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      },
+      {
+        "id": "widgets.sliver",
+        "area": "Widgets",
+        "flutterSource": "packages/flutter/lib/src/widgets/sliver.dart",
+        "sourceSha256": "4abc19b17757b964a4ae0bfeada7a6a6711605c8b429b4dd1547f10d35e4ddb2",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Widgets/sliver.cs"
+        ],
+        "runtimeDependencyIds": [
+          "runtime:scroll-input",
+          "runtime:widget-rendering",
+          "runtime:semantics-bridge"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      },
+      {
+        "id": "gestures.resampler",
+        "area": "Gestures",
+        "flutterSource": "packages/flutter/lib/src/gestures/resampler.dart",
+        "sourceSha256": "9490a58c12979b8204f71a91a5779cee1d2d67e521cb99398f2fcbf08bb15548",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Gestures/resampler.cs"
+        ],
+        "runtimeDependencyIds": [
+          "runtime:scroll-input",
+          "runtime:scheduler-host"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      },
+      {
+        "id": "semantics.semantics",
+        "area": "Semantics",
+        "flutterSource": "packages/flutter/lib/src/semantics/semantics.dart",
+        "sourceSha256": "a86457482df2ca1edf3ed3e9773cdb286386f8599046d433f49a742b65eab2ff",
+        "productSources": [
+          "Doroti/src/Doroti.Framework.Semantics/semantics.cs"
+        ],
+        "runtimeDependencyIds": [
+          "runtime:semantics-bridge",
+          "runtime:widget-rendering"
+        ],
+        "disposition": "adapted",
+        "verification": "notVerified"
+      }
+    ],
+    "importReferenceCount": 272,
+    "importReferences": [
+      {
+        "source": "packages/flutter/lib/src/material/ink_sparkle.dart",
+        "import": "dart:math",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/ink_sparkle.dart",
+        "import": "dart:ui",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/ink_sparkle.dart",
+        "import": "package:flutter/widgets.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/ink_sparkle.dart",
+        "import": "package:vector_math/vector_math_64.dart",
+        "owner": "Flutter package dependency: package:vector_math",
+        "disposition": "notVerified",
+        "resolved": false
+      },
+      {
+        "source": "packages/flutter/lib/src/material/ink_sparkle.dart",
+        "import": "ink_well.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/ink_sparkle.dart",
+        "import": "material.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/ink_well.dart",
+        "import": "dart:async",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/ink_well.dart",
+        "import": "dart:collection",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/ink_well.dart",
+        "import": "package:flutter/foundation.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/ink_well.dart",
+        "import": "package:flutter/gestures.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/ink_well.dart",
+        "import": "package:flutter/rendering.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/ink_well.dart",
+        "import": "package:flutter/widgets.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/ink_well.dart",
+        "import": "debug.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/ink_well.dart",
+        "import": "ink_highlight.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/ink_well.dart",
+        "import": "material.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/ink_well.dart",
+        "import": "material_state.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/ink_well.dart",
+        "import": "theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "dart:ui",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "package:flutter/cupertino.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "package:flutter/foundation.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "action_buttons.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "action_icons_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "app_bar_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "badge_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "banner_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "bottom_app_bar_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "bottom_navigation_bar_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "bottom_sheet_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "button_bar_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "button_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "card_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "carousel_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "checkbox_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "chip_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "color_scheme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "colors.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "constants.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "data_table_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "date_picker_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "dialog_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "divider_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "drawer_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "dropdown_menu_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "elevated_button.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "elevated_button_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "expansion_tile_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "filled_button.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "filled_button_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "floating_action_button_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "icon_button_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "ink_ripple.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "ink_sparkle.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "ink_splash.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "ink_well.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "input_decorator.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "list_tile.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "list_tile_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "menu_bar_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "menu_button_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "menu_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "navigation_bar_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "navigation_drawer_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "navigation_rail_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "outlined_button.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "outlined_button_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "page_transitions_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "popup_menu_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "progress_indicator_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "radio_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "scrollbar_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "search_bar_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "search_view_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "segmented_button_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "slider_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "snack_bar_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "switch_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "tab_bar_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "text_button.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "text_button_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "text_selection_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "text_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "time_picker_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "toggle_buttons_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "tooltip_theme.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/material/theme_data.dart",
+        "import": "typography.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/stretch_effect.dart",
+        "import": "dart:ui",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/stretch_effect.dart",
+        "import": "package:flutter/foundation.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/stretch_effect.dart",
+        "import": "package:flutter/rendering.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/stretch_effect.dart",
+        "import": "basic.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/stretch_effect.dart",
+        "import": "framework.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/stretch_effect.dart",
+        "import": "image_filter.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/scheduler/binding.dart",
+        "import": "dart:async",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/scheduler/binding.dart",
+        "import": "dart:collection",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/scheduler/binding.dart",
+        "import": "dart:developer",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/scheduler/binding.dart",
+        "import": "dart:ui",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/scheduler/binding.dart",
+        "import": "package:collection/collection.dart",
+        "owner": "Flutter package dependency: package:collection",
+        "disposition": "notVerified",
+        "resolved": false
+      },
+      {
+        "source": "packages/flutter/lib/src/scheduler/binding.dart",
+        "import": "package:flutter/foundation.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/scheduler/binding.dart",
+        "import": "debug.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/scheduler/binding.dart",
+        "import": "priority.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/scheduler/binding.dart",
+        "import": "service_extensions.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/object.dart",
+        "import": "dart:ui",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/object.dart",
+        "import": "package:flutter/animation.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/object.dart",
+        "import": "package:flutter/foundation.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/object.dart",
+        "import": "package:flutter/gestures.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/object.dart",
+        "import": "package:flutter/painting.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/object.dart",
+        "import": "package:flutter/scheduler.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/object.dart",
+        "import": "package:flutter/semantics.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/object.dart",
+        "import": "binding.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/object.dart",
+        "import": "debug.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/object.dart",
+        "import": "layer.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/layer.dart",
+        "import": "dart:ui",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/layer.dart",
+        "import": "package:flutter/foundation.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/layer.dart",
+        "import": "package:flutter/gestures.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/layer.dart",
+        "import": "package:flutter/painting.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/layer.dart",
+        "import": "package:flutter/scheduler.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/layer.dart",
+        "import": "package:vector_math/vector_math_64.dart",
+        "owner": "Flutter package dependency: package:vector_math",
+        "disposition": "notVerified",
+        "resolved": false
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/layer.dart",
+        "import": "debug.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/view.dart",
+        "import": "dart:io",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/view.dart",
+        "import": "dart:ui",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/view.dart",
+        "import": "package:flutter/foundation.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/view.dart",
+        "import": "package:flutter/services.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/view.dart",
+        "import": "binding.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/view.dart",
+        "import": "box.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/view.dart",
+        "import": "debug.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/view.dart",
+        "import": "layer.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/view.dart",
+        "import": "object.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "dart:async",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "dart:math",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "package:flutter/foundation.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "package:flutter/gestures.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "package:flutter/rendering.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "package:flutter/scheduler.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "package:flutter/services.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "basic.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "framework.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "gesture_detector.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "media_query.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "notification_listener.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "restoration.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "restoration_properties.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "scroll_activity.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "scroll_configuration.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "scroll_context.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "scroll_controller.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "scroll_physics.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "scroll_position.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "scrollable_helpers.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "selectable_region.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "selection_container.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "ticker_provider.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "view.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollable.dart",
+        "import": "viewport.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_activity.dart",
+        "import": "dart:async",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_activity.dart",
+        "import": "dart:math",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_activity.dart",
+        "import": "package:flutter/foundation.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_activity.dart",
+        "import": "package:flutter/gestures.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_activity.dart",
+        "import": "package:flutter/rendering.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_activity.dart",
+        "import": "basic.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_activity.dart",
+        "import": "framework.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_activity.dart",
+        "import": "scroll_metrics.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_activity.dart",
+        "import": "scroll_notification.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position.dart",
+        "import": "dart:async",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position.dart",
+        "import": "package:flutter/foundation.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position.dart",
+        "import": "package:flutter/gestures.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position.dart",
+        "import": "package:flutter/physics.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position.dart",
+        "import": "package:flutter/rendering.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position.dart",
+        "import": "package:flutter/scheduler.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position.dart",
+        "import": "basic.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position.dart",
+        "import": "framework.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position.dart",
+        "import": "notification_listener.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position.dart",
+        "import": "page_storage.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position.dart",
+        "import": "scroll_activity.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position.dart",
+        "import": "scroll_context.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position.dart",
+        "import": "scroll_metrics.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position.dart",
+        "import": "scroll_notification.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position.dart",
+        "import": "scroll_physics.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position_with_single_context.dart",
+        "import": "dart:math",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position_with_single_context.dart",
+        "import": "package:flutter/foundation.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position_with_single_context.dart",
+        "import": "package:flutter/gestures.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position_with_single_context.dart",
+        "import": "package:flutter/physics.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position_with_single_context.dart",
+        "import": "package:flutter/rendering.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position_with_single_context.dart",
+        "import": "basic.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position_with_single_context.dart",
+        "import": "scroll_activity.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position_with_single_context.dart",
+        "import": "scroll_context.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position_with_single_context.dart",
+        "import": "scroll_notification.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position_with_single_context.dart",
+        "import": "scroll_physics.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_position_with_single_context.dart",
+        "import": "scroll_position.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "dart:math",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "package:flutter/gestures.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "package:flutter/rendering.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "basic.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "debug.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "focus_manager.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "focus_scope.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "framework.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "media_query.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "notification_listener.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "primary_scroll_controller.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "scroll_configuration.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "scroll_controller.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "scroll_delegate.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "scroll_notification.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "scroll_physics.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "scrollable.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "scrollable_helpers.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "sliver.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "sliver_prototype_extent_list.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scroll_view.dart",
+        "import": "viewport.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "dart:async",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "dart:math",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "package:flutter/foundation.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "package:flutter/gestures.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "package:flutter/rendering.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "basic.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "binding.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "framework.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "gesture_detector.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "media_query.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "notification_listener.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "primary_scroll_controller.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "scroll_configuration.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "scroll_controller.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "scroll_metrics.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "scroll_notification.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "scroll_position.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "scrollable.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "scrollable_helpers.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/scrollbar.dart",
+        "import": "ticker_provider.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/viewport.dart",
+        "import": "dart:math",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/viewport.dart",
+        "import": "package:flutter/animation.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/viewport.dart",
+        "import": "package:flutter/foundation.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/viewport.dart",
+        "import": "package:flutter/semantics.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/viewport.dart",
+        "import": "box.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/viewport.dart",
+        "import": "debug.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/viewport.dart",
+        "import": "layer.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/viewport.dart",
+        "import": "object.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/viewport.dart",
+        "import": "sliver.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/viewport.dart",
+        "import": "viewport_offset.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/sliver.dart",
+        "import": "dart:math",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/sliver.dart",
+        "import": "package:flutter/foundation.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/sliver.dart",
+        "import": "package:flutter/gestures.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/sliver.dart",
+        "import": "box.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/sliver.dart",
+        "import": "debug.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/sliver.dart",
+        "import": "object.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/sliver.dart",
+        "import": "viewport.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/rendering/sliver.dart",
+        "import": "viewport_offset.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/viewport.dart",
+        "import": "package:flutter/rendering.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/viewport.dart",
+        "import": "basic.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/viewport.dart",
+        "import": "debug.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/viewport.dart",
+        "import": "framework.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/viewport.dart",
+        "import": "scroll_notification.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/sliver.dart",
+        "import": "dart:collection",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/sliver.dart",
+        "import": "dart:math",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/sliver.dart",
+        "import": "package:flutter/foundation.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/sliver.dart",
+        "import": "package:flutter/rendering.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/sliver.dart",
+        "import": "automatic_keep_alive.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/sliver.dart",
+        "import": "basic.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/sliver.dart",
+        "import": "framework.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/sliver.dart",
+        "import": "scroll_delegate.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/gestures/resampler.dart",
+        "import": "dart:collection",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/gestures/resampler.dart",
+        "import": "events.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/semantics/semantics.dart",
+        "import": "dart:core",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/semantics/semantics.dart",
+        "import": "dart:math",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/semantics/semantics.dart",
+        "import": "dart:ui",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/semantics/semantics.dart",
+        "import": "dart:ui",
+        "owner": "Dart SDK",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/semantics/semantics.dart",
+        "import": "package:collection/collection.dart",
+        "owner": "Flutter package dependency: package:collection",
+        "disposition": "notVerified",
+        "resolved": false
+      },
+      {
+        "source": "packages/flutter/lib/src/semantics/semantics.dart",
+        "import": "package:flutter/foundation.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/semantics/semantics.dart",
+        "import": "package:flutter/painting.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/semantics/semantics.dart",
+        "import": "package:flutter/services.dart",
+        "owner": "Flutter framework package",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/semantics/semantics.dart",
+        "import": "package:vector_math/vector_math_64.dart",
+        "owner": "Flutter package dependency: package:vector_math",
+        "disposition": "notVerified",
+        "resolved": false
+      },
+      {
+        "source": "packages/flutter/lib/src/semantics/semantics.dart",
+        "import": "binding.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      },
+      {
+        "source": "packages/flutter/lib/src/semantics/semantics.dart",
+        "import": "semantics_event.dart",
+        "owner": "Flutter relative source dependency",
+        "disposition": "implemented",
+        "resolved": true
+      }
+    ],
+    "assetReferenceCount": 2,
+    "assetReferences": [
+      {
+        "source": "packages/flutter/lib/src/material/ink_sparkle.dart",
+        "key": "shaders/ink_sparkle.frag",
+        "contractId": "asset:ink-sparkle-shader",
+        "owner": "Doroti.Framework.Material",
+        "disposition": "adapted"
+      },
+      {
+        "source": "packages/flutter/lib/src/widgets/stretch_effect.dart",
+        "key": "shaders/stretch_effect.frag",
+        "contractId": "asset:stretch-effect-shader",
+        "owner": "Doroti.Framework.Widgets",
+        "disposition": "adapted"
+      }
+    ],
+    "dependencyContractCount": 12,
+    "packageManifestComparison": {
+      "status": "pass",
+      "missingContracts": [],
+      "sourceHashDrift": [],
+      "ownerlessDependencies": []
+    },
+    "patternFindings": [
+      {
+        "id": "dynamic-arithmetic",
+        "owner": "FCR-2 typed semantic lowering",
+        "disposition": "notVerified",
+        "candidateCount": 50,
+        "candidateLocations": [
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 334
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 335
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 341
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 609
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 699
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 699
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Rendering/layer.cs",
+            "sourceOwner": "Doroti.Framework.Rendering",
+            "line": 346
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Rendering/layer.cs",
+            "sourceOwner": "Doroti.Framework.Rendering",
+            "line": 346
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 176
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 176
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 185
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 185
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 186
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 333
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 335
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 361
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 370
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 398
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 565
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 679
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 681
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 681
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 681
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 682
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 682
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 685
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 699
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 699
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 700
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 701
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 713
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 715
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 716
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 813
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 821
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 823
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 825
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 829
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 833
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 1013
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 1018
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 1026
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 1210
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 1891
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 1987
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scroll_activity.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 143
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scroll_activity.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 275
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scroll_activity.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 290
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scroll_activity.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 297
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scroll_activity.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 304
+          }
+        ],
+        "ownerlessCandidateCount": 0,
+        "reachability": "notProvenByStaticScan",
+        "evidence": "Doroti/validation/runtime-async-contract/Program.cs"
+      },
+      {
+        "id": "unobserved-future",
+        "owner": "FCR-2 async completion/error policy",
+        "disposition": "notVerified",
+        "candidateCount": 18,
+        "candidateLocations": [
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_sparkle.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 139
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 385
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 724
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 754
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 124
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 374
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 402
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 1331
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 1413
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 1422
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 1895
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollbar.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 880
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollbar.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 900
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/scrollbar.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 1177
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/viewport.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 113
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/viewport.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 331
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/sliver.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 605
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/sliver.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 643
+          }
+        ],
+        "ownerlessCandidateCount": 0,
+        "reachability": "notProvenByStaticScan",
+        "evidence": "Doroti/validation/runtime-async-contract/Program.cs"
+      },
+      {
+        "id": "debug-release-sensitive",
+        "owner": "FCR-2 Debug/Release semantics",
+        "disposition": "notVerified",
+        "candidateCount": 50,
+        "candidateLocations": [
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_sparkle.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 49
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_sparkle.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 66
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_sparkle.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 95
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_sparkle.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 256
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 218
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 219
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 516
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 566
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 619
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 693
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 698
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 795
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 853
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/ink_well.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 881
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/theme_data.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 177
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/theme_data.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 178
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/theme_data.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 179
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/theme_data.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 180
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/theme_data.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 398
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/theme_data.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 649
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/theme_data.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 740
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/theme_data.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 745
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/theme_data.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 775
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/theme_data.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 776
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/theme_data.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 777
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/theme_data.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 778
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/theme_data.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 815
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Material/theme_data.cs",
+            "sourceOwner": "Doroti.Framework.Material",
+            "line": 847
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/stretch_effect.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 28
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Widgets/stretch_effect.cs",
+            "sourceOwner": "Doroti.Framework.Widgets",
+            "line": 88
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 24
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 115
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 116
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 176
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 179
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 184
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 208
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 295
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 296
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 332
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 363
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 370
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 386
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 400
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 414
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 436
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 526
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 545
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 578
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Scheduler/binding.cs",
+            "sourceOwner": "Doroti.Framework.Scheduler",
+            "line": 582
+          }
+        ],
+        "ownerlessCandidateCount": 0,
+        "reachability": "notProvenByStaticScan",
+        "evidence": "Doroti/eng/validate.ps1"
+      },
+      {
+        "id": "reachable-stub-candidate",
+        "owner": "FCR-0 reachability review and FCR-4 capability diagnostics",
+        "disposition": "notVerified",
+        "candidateCount": 6,
+        "candidateLocations": [
+          {
+            "path": "Doroti/src/Doroti.Framework.Rendering/object.cs",
+            "sourceOwner": "Doroti.Framework.Rendering",
+            "line": 1058
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Rendering/object.cs",
+            "sourceOwner": "Doroti.Framework.Rendering",
+            "line": 1648
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Rendering/layer.cs",
+            "sourceOwner": "Doroti.Framework.Rendering",
+            "line": 842
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Rendering/sliver.cs",
+            "sourceOwner": "Doroti.Framework.Rendering",
+            "line": 466
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Semantics/semantics.cs",
+            "sourceOwner": "Doroti.Framework.Semantics",
+            "line": 2034
+          },
+          {
+            "path": "Doroti/src/Doroti.Framework.Semantics/semantics.cs",
+            "sourceOwner": "Doroti.Framework.Semantics",
+            "line": 2388
+          }
+        ],
+        "ownerlessCandidateCount": 0,
+        "reachability": "notProvenByStaticScan",
+        "evidence": "Doroti/eng/validate.ps1"
+      }
+    ],
+    "patternPolicy": "Static candidates are classified with an owner and remain notVerified until semantic reachability/differential gates run."
+  },
+  "targets": {
+    "windowsLive": {
+      "status": "partial",
+      "scenario": "DorotiDemoApp launch, idle repaint, wheel/drag scroll, Ink/FAB and frame survival",
+      "sourceEvidence": "Doroti/validation/evidence/app-targets-evidence.json",
+      "sourceEvidenceCapturedAtUtc": "2026-08-18T00:45:39.7203228+09:00",
+      "metrics": {
+        "frameTimeMs": {
+          "status": "notVerified",
+          "value": null,
+          "reason": "FCR-0 trace does not yet emit build/layout/paint/raster phase durations."
+        },
+        "invalidationsRequested": {
+          "status": "observed",
+          "value": 110,
+          "source": "app-targets-evidence.json"
+        },
+        "invalidationsCoalesced": {
+          "status": "observed",
+          "value": 55,
+          "source": "app-targets-evidence.json"
+        },
+        "dirtyRenderCount": {
+          "status": "notVerified",
+          "value": null,
+          "reason": "Dirty RenderObject count is not emitted by the current host trace."
+        },
+        "dirtyLayerCount": {
+          "status": "notVerified",
+          "value": null,
+          "reason": "Dirty layer count is not emitted by the current host trace."
+        },
+        "sceneCommandCount": {
+          "status": "notVerified",
+          "value": null,
+          "reason": "Scene command count is not emitted by the current host trace."
+        },
+        "allocationsAndGc": {
+          "status": "notVerified",
+          "value": null,
+          "reason": "Allocation and GC counters require the FCR-0 benchmark trace."
+        },
+        "inputToPresentMs": {
+          "status": "notVerified",
+          "value": null,
+          "reason": "Input sequence to present timestamps require the FCR-3 trace."
+        },
+        "submittedFrames": {
+          "status": "observed",
+          "value": 54,
+          "source": "app-targets-evidence.json"
+        },
+        "presentedFrames": {
+          "status": "observed",
+          "value": 54,
+          "source": "app-targets-evidence.json"
+        },
+        "failedFrames": {
+          "status": "observed",
+          "value": 0,
+          "source": "app-targets-evidence.json"
+        },
+        "nativePointerEvents": {
+          "status": "observed",
+          "value": 0,
+          "source": "app-targets-evidence.json"
+        },
+        "semanticsWork": {
+          "status": "observed",
+          "updatesReceived": 1,
+          "updatesApplied": 1,
+          "updatesCoalesced": 0,
+          "activeElements": 25
+        }
+      }
+    },
+    "androidPhysical": {
+      "status": "partial",
+      "scenario": "DorotiDemoApp launch, automated scroll, Ink/FAB and persistent display",
+      "sourceEvidence": "Doroti/validation/evidence/app-targets-evidence.json",
+      "sourceEvidenceCapturedAtUtc": "2026-08-18T00:45:39.7203228+09:00",
+      "metrics": {
+        "frameTimeMs": {
+          "status": "notVerified",
+          "value": null,
+          "reason": "FCR-0 trace does not yet emit build/layout/paint/raster phase durations."
+        },
+        "invalidationsRequested": {
+          "status": "observed",
+          "value": 6151,
+          "source": "app-targets-evidence.json"
+        },
+        "invalidationsCoalesced": {
+          "status": "observed",
+          "value": 2757,
+          "source": "app-targets-evidence.json"
+        },
+        "dirtyRenderCount": {
+          "status": "notVerified",
+          "value": null,
+          "reason": "Dirty RenderObject count is not emitted by the current host trace."
+        },
+        "dirtyLayerCount": {
+          "status": "notVerified",
+          "value": null,
+          "reason": "Dirty layer count is not emitted by the current host trace."
+        },
+        "sceneCommandCount": {
+          "status": "notVerified",
+          "value": null,
+          "reason": "Scene command count is not emitted by the current host trace."
+        },
+        "allocationsAndGc": {
+          "status": "notVerified",
+          "value": null,
+          "reason": "Allocation and GC counters require the FCR-0 benchmark trace."
+        },
+        "inputToPresentMs": {
+          "status": "notVerified",
+          "value": null,
+          "reason": "Input sequence to present timestamps require the FCR-3 trace."
+        },
+        "submittedFrames": {
+          "status": "observed",
+          "value": 3074,
+          "source": "app-targets-evidence.json"
+        },
+        "presentedFrames": {
+          "status": "observed",
+          "value": 3074,
+          "source": "app-targets-evidence.json"
+        },
+        "failedFrames": {
+          "status": "observed",
+          "value": 0,
+          "source": "app-targets-evidence.json"
+        },
+        "nativePointerEvents": {
+          "status": "observed",
+          "value": 1422,
+          "source": "app-targets-evidence.json"
+        },
+        "semanticsWork": {
+          "status": "observed",
+          "updatesReceived": 576,
+          "updatesApplied": 175,
+          "updatesCoalesced": 422,
+          "activeElements": 34
+        }
+      }
+    },
+    "macCatalystNative": {
+      "status": "notVerified",
+      "reason": "Apple Silicon native presentation was not run by FCR-0."
+    },
+    "webBrowser": {
+      "status": "notVerified",
+      "reason": "Browser live conformance was not run by FCR-0."
+    }
+  },
+  "acceptance": {
+    "status": "notVerified",
+    "performancePass": false,
+    "reason": "FCR-0 records the baseline shape and existing counters; timing, allocation, input-to-present and 60-second acceptance traces are not yet available.",
+    "notRun": [
+      "frame phase timings",
+      "dirty RenderObject/layer counts",
+      "scene command count",
+      "allocation/GC trace",
+      "input-to-present trace",
+      "same-scenario Windows and Android release benchmark"
+    ]
+  },
+  "boundaries": {
+    "sourceContract": "pass",
+    "assetClosure": "pass",
+    "sourceHashPin": "pass",
+    "runtimePatternOwnership": "pass-classified-notVerified",
+    "windowsNativePresentation": "partial-existing-evidence",
+    "androidPhysicalPresentation": "partial-existing-evidence",
+    "macCatalystNative": "notVerified",
+    "webBrowser": "notVerified",
+    "performance": "notVerified"
+  }
+}
