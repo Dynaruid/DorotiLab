@@ -3,7 +3,7 @@
 - 기록일: 2026-08-19
 - 상태: **구조 개편 및 현재 Windows 호스트의 자동 검증 완료, native live/physical/Apple/Qt 실행은 부분 미검증**
 - 원본: 삭제한 루트 `work.md`의 완료 상태를 압축한 역사 기록
-- 후속 계획: [`work2.md`](../../work2.md)
+- 후속 결과: [`native-bridge-workspace-summary.md`](native-bridge-workspace-summary.md)
 
 ## 1. 문서 성격
 
@@ -124,7 +124,7 @@ Doroti .NET runner
 - binding은 matching platform runner만 참조하고 root app에는 노출하지 않는다.
 - Kotlin/Swift application이 .NET runtime을 역방향으로 직접 시작하는 모델은 구현하지 않았다.
 
-이 opt-in 정책을 기본 native bridge workspace로 바꾸는 후속 작업은 루트 [`work2.md`](../../work2.md)에 별도 계획으로 남겼다.
+이 opt-in 정책을 기본 native bridge workspace로 바꾼 후속 작업은 [`native-bridge-workspace-summary.md`](native-bridge-workspace-summary.md)에 완료 기록으로 남겼다.
 
 ## 5. 현재 호스트에서 확인한 자동 결과
 
@@ -225,10 +225,10 @@ Windows cross-build PASS는 Apple native PASS가 아니다.
 - generated bootstrap은 runner `obj/Doroti.Generated`에만 둔다.
 - Windows/Web 결과를 Android, Apple, Linux evidence로 재사용하지 않는다.
 - build 성공을 input, IME, accessibility, GPU, signing, archive 또는 store acceptance로 승격하지 않는다.
-- 후속 native bridge 기본화 작업은 [`work2.md`](../../work2.md)의 N0부터 순서대로 진행한다.
+- 후속 native bridge 기본화 작업의 완료 상태와 남은 검증 경계는 [`native-bridge-workspace-summary.md`](native-bridge-workspace-summary.md)에서 확인한다.
 
 ## 10. 종료 판단
 
 플랫폼 중립 앱과 6개 fixed-target runner로의 구조 전환, SDK/CLI/template/validator cutover와 현재 호스트의 대표 자동 build는 완료했다. 반면 Android 실기기, Apple native, Linux Qt native와 일부 Windows/Web live 검증은 남아 있으므로 전체 플랫폼 runtime 완료로 기록하지 않는다.
 
-> 문서 성격: 삭제한 루트 `work.md`의 구조 개편 완료 요약과 evidence 경계. 현재 후속 계획은 `work2.md`다.
+> 문서 성격: 삭제한 루트 `work.md`의 구조 개편 완료 요약과 evidence 경계. 후속 native bridge 전환 기록은 `native-bridge-workspace-summary.md`다.
