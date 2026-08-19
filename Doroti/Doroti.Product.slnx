@@ -46,6 +46,9 @@
     <Project Path="validation/app-runner/synthetic-app/SyntheticApp.csproj" />
     <Project Path="validation/app-runner/synthetic-runner/SyntheticRunner.csproj" />
   </Folder>
+  <Folder Name="/validation/linux-qt/">
+    <Project Path="validation/linux-qt-contract/Doroti.Validation.LinuxQtContract.csproj" />
+  </Folder>
   <Folder Name="/templates/">
     <Project Path="templates/Doroti.Templates/Doroti.Templates.csproj" />
   </Folder>

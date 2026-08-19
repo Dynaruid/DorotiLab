@@ -72,15 +72,17 @@ Qt native events/services
 
 목표: 현재 managed-owned 구조에서 Skia가 Qt의 FBO에 직접 그릴 수 있음을 가장 먼저 증명한다.
 
-- [ ] `doroti_qt_callbacks_v1`을 소리 없이 변경하지 말고 `doroti.qt-host/v2` ABI를 새로 정의한다.
-- [ ] 양방향 table에 `abi_version`, `struct_size`, `feature_bits`, opaque view/context handle을 둔다.
-- [ ] C ABI의 bool/enum/size를 `uint32_t`, `int32_t`, `int64_t`, `double`처럼 고정 폭으로 정의한다.
-- [ ] 모든 UTF-8 값은 null 종료 가정 대신 pointer + byte length로 전달한다.
-- [ ] native `static_assert`와 managed `Marshal.SizeOf`/`Marshal.OffsetOf` 테스트로 layout을 잠근다.
-- [ ] 필수 callback, ABI version/size, 지원하지 않는 feature를 native 진입 전에 검증하고 결정적인 오류 코드를 반환한다.
-- [ ] callback exception이 ABI 경계를 넘지 않게 한다. managed callback은 예외를 잡아 fatal state를 저장하고 Qt close를 요청하며, C++ 진입점도 예외를 오류 코드로 변환한다.
-- [ ] 각 callback/function의 허용 thread를 계약에 기록한다. Qt 객체 접근은 GUI thread로 queue한다.
-- [ ] `paintGL()` callback에 다음 surface descriptor를 전달한다.
+> 2026-08-20 실행 결과: **failed, 이후 milestone 중단**. ABI v2/layout/build는 통과했지만 현재 WSLg가 `Mesa llvmpipe`만 제공했다. software renderer를 거부하기 전 SkiaSharp `4.151.1`의 `GrGLExtensions::init`에서 `SIGSEGV`가 재현됐고 고정 frame 픽셀은 확인되지 않았다. 분석과 재개 조건은 `Doroti/docs/adr/ADR-022-linux-qt-fbo-spike.md`에 기록했다. LNX-QT-1~9는 이 계획의 중단 조건에 따라 시작하지 않았으며 플랫폼 gate는 `notVerified`다.
+
+- [x] `doroti_qt_callbacks_v1`을 소리 없이 변경하지 말고 `doroti.qt-host/v2` ABI를 새로 정의한다.
+- [x] 양방향 table에 `abi_version`, `struct_size`, `feature_bits`, opaque view/context handle을 둔다.
+- [x] C ABI의 bool/enum/size를 `uint32_t`, `int32_t`, `int64_t`, `double`처럼 고정 폭으로 정의한다.
+- [x] 모든 UTF-8 값은 null 종료 가정 대신 pointer + byte length로 전달한다.
+- [x] native `static_assert`와 managed `Marshal.SizeOf`/`Marshal.OffsetOf` 테스트로 layout을 잠근다.
+- [x] 필수 callback, ABI version/size, 지원하지 않는 feature를 native 진입 전에 검증하고 결정적인 오류 코드를 반환한다.
+- [x] callback exception이 ABI 경계를 넘지 않게 한다. managed callback은 예외를 잡아 fatal state를 저장하고 Qt close를 요청하며, C++ 진입점도 예외를 오류 코드로 변환한다.
+- [x] 각 callback/function의 허용 thread를 계약에 기록한다. Qt 객체 접근은 GUI thread로 queue한다.
+- [x] `paintGL()` callback에 다음 surface descriptor를 전달한다.
   - surface/context generation과 context identity token
   - Qt default FBO id
   - physical pixel width/height와 DPR
@@ -88,12 +90,12 @@ Qt native events/services
   - desktop GL/OpenGL ES 구분과 profile/version
   - Qt monotonic timestamp
 - [ ] 관리 spike에서 현재 GL context로 `GRGlInterface`, `GRContext`, `GRBackendRenderTarget`, `SKSurface`를 만든다.
-- [ ] Qt가 bind한 FBO를 보존하고 FBO 0을 기본 framebuffer로 가정하지 않는다.
+- [x] Qt가 bind한 FBO를 보존하고 FBO 0을 기본 framebuffer로 가정하지 않는다.
 - [ ] 데모 전체가 아니라 고정 색 배경 + 두 도형 + 텍스트를 Skia로 직접 그려 실제 픽셀을 확인한다.
-- [ ] Skia flush 뒤 Qt가 swap을 소유하게 하고 `frameSwapped()`에서만 terminal present callback을 보낸다.
+- [x] Skia flush 뒤 Qt가 swap을 소유하게 하고 `frameSwapped()`에서만 terminal present callback을 보낸다.
 - [ ] resize 전후 FBO id가 달라져도 새 generation으로 surface를 다시 만들고 stale surface를 사용하지 않는다.
 - [ ] `QOpenGLContext::aboutToBeDestroyed`와 widget destructor 양쪽에서 현재 context를 확보한 뒤 Skia GPU resource를 해제한다.
-- [ ] GL vendor/renderer/version, QPA platform, FBO/sample/stencil 정보를 진단 산출물에 남긴다.
+- [x] GL vendor/renderer/version, QPA platform, FBO/sample/stencil 정보를 진단 산출물에 남긴다.
 
 LNX-QT-0 종료 조건:
 
