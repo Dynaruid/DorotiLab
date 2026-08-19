@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\src\Doroti.Runner.Sdk\Sdk\Sdk.props" />
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SyntheticRunner</RootNamespace>
+    <AssemblyName>SyntheticRunner</AssemblyName>
+    <DorotiAppProject>..\synthetic-app\SyntheticApp.csproj</DorotiAppProject>
+    <DorotiTarget>Linux</DorotiTarget>
+    <DorotiHostKind>Qt</DorotiHostKind>
+    <DorotiNativeEntryKind>Synthetic</DorotiNativeEntryKind>
+  </PropertyGroup>
+  <ItemGroup>
+    <DorotiTargetDescriptor Include="Linux" HostKind="Qt" NativeEntryKind="Synthetic" RuntimeIdentifier="linux-x64" TargetFramework="net10.0" TargetPackage="Doroti.Target.Linux.Qt.linux-x64" />
+  </ItemGroup>
+  <Import Project="..\..\..\src\Doroti.Runner.Sdk\Sdk\Sdk.targets" />
+</Project>

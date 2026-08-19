@@ -32,10 +32,13 @@ function Write-Summary {
         boundaries = [ordered]@{
             source = 'namespace and product-source ownership'
             build = 'Release product compilation'
-            targets = 'single-project target graph and package build'
+            targets = 'platform-neutral app plus fixed-target runner graph and package build'
             interaction = 'source-contract coverage for pointer, keyboard, IME, lifecycle and semantics; live proof is separate'
-            release = 'Windows GPU presentation plus Web package-only publish'
-            physical = 'notVerified'
+            release = 'extended cross-build, native interop, package-only template, and Web static publish; live gates retain their own status'
+            androidPhysical = 'notVerified'
+            iosPhysical = 'notVerified'
+            linuxX11 = 'notVerified'
+            linuxWayland = 'notVerified'
             macCatalystNative = 'notVerified unless run on Apple Silicon macOS'
         }
     }
@@ -87,14 +90,21 @@ function Invoke-SourceGate {
     $demoDartPackage = Join-Path $repositoryRoot 'DorotiDemoApp/dart'
     Assert-True (-not (Test-Path -LiteralPath $demoDartPackage)) 'C#-only DorotiDemoApp Dart package absence'
     $templateRoot = Join-Path $dorotiRoot 'templates/Doroti.Templates/content/doroti-app'
-    Assert-True (@(Get-ChildItem -LiteralPath $templateRoot -Recurse -File -Filter '*.csproj').Count -eq 1) 'template project count'
-    $templateXaml = @(Get-ChildItem -LiteralPath $templateRoot -Recurse -File -Filter '*.xaml')
-    Assert-True ($templateXaml.Count -eq 1 -and $templateXaml[0].FullName.EndsWith('Platforms\Windows\App.xaml')) 'template bootstrap XAML boundary'
+    $templateProjects = @(Get-ChildItem -LiteralPath $templateRoot -Recurse -File -Filter '*.csproj' |
+        Where-Object { $_.FullName -notmatch '[\\/](bin|obj)[\\/]' })
+    Assert-True ($templateProjects.Count -eq 10) 'template app plus six runner and three native binding projects'
+    $templateXaml = @(Get-ChildItem -LiteralPath $templateRoot -Recurse -File -Filter '*.xaml' |
+        Where-Object { $_.FullName -notmatch '[\\/](bin|obj)[\\/]' })
+    Assert-True ($templateXaml.Count -eq 1 -and $templateXaml[0].FullName.EndsWith('windows\App.xaml')) 'template bootstrap XAML boundary'
+    $templateLegacyFiles = if (Test-Path -LiteralPath (Join-Path $templateRoot 'Platforms')) {
+        @(Get-ChildItem -LiteralPath (Join-Path $templateRoot 'Platforms') -Recurse -File)
+    } else { @() }
+    Assert-True ($templateLegacyFiles.Count -eq 0) 'template legacy Platforms source absence'
     $completed.Add('source')
 }
 
 function Invoke-BuildGate {
-    Invoke-Checked { dotnet restore $productSolution --force-evaluate --nologo } 'Release product restore failed'
+    Invoke-Checked { dotnet restore $productSolution --force-evaluate --nologo -m:1 } 'Release product restore failed'
     foreach ($targetFramework in @(
         'net10.0-windows10.0.19041.0',
         'net10.0-maccatalyst',
@@ -104,7 +114,7 @@ function Invoke-BuildGate {
             dotnet restore $mauiHostProject --no-dependencies --force-evaluate -p:TargetFramework=$targetFramework --nologo
         } "MAUI host restore failed for $targetFramework"
     }
-    Invoke-Checked { dotnet build $productSolution -c Release --no-restore --nologo } 'Release product build failed'
+    Invoke-Checked { dotnet build $productSolution -c Release --no-restore --nologo -m:1 } 'Release product build failed'
     $completed.Add('build')
 }
 
@@ -162,9 +172,12 @@ function Invoke-Fcr8DeveloperGate {
 }
 
 function Invoke-ReleaseGate {
+    & (Join-Path $PSScriptRoot 'validate-app-targets.ps1') -Shard Package
+    & (Join-Path $PSScriptRoot 'validate-app-targets.ps1') -Shard Template
+    & (Join-Path $PSScriptRoot 'validate-app-targets.ps1') -Shard NativeInterop
     & (Join-Path $PSScriptRoot 'validate-app-targets.ps1') -Shard Live
     & (Join-Path $PSScriptRoot 'validate-app-targets.ps1') -Shard Evidence
-    foreach ($shard in @('Toolchain', 'Hosting', 'Graph', 'Template', 'Compile', 'Publish')) {
+    foreach ($shard in @('Toolchain', 'Hosting', 'Publish')) {
         & (Join-Path $PSScriptRoot 'validate-web-product.ps1') -Shard $shard
     }
     $completed.Add('release')

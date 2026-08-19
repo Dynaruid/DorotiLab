@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-android</TargetFramework>
+    <SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
+    <AssemblyName>DorotiDemoApp.Android.Native</AssemblyName>
+    <RootNamespace>DorotiDemoApp.Android.Native</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsBindingProject>true</IsBindingProject>
+    <IsPackable>false</IsPackable>
+    <IsTrimmable>true</IsTrimmable>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <DorotiNativeBindingTarget>Android</DorotiNativeBindingTarget>
+    <DorotiNativeToolchainVersion>gradle-8.10.2;agp-8.6.1;java-17;compileSdk-34;minSdk-21</DorotiNativeToolchainVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <AndroidLibrary>
+      <Visible>false</Visible>
+    </AndroidLibrary>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <AndroidGradleProject Include="..\native\build.gradle.kts"
+                          ModuleName="bridge"
+                          Configuration="$(Configuration)"
+                          OutputPath="$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '$(BaseIntermediateOutputPath)', 'native', 'android', '$(Configuration)'))"
+                          Bind="true"
+                          Pack="true"
+                          Visible="false" />
+    <TransformFile Include="Transforms\Metadata.xml" />
+  </ItemGroup>
+  <Target Name="GetDorotiNativeBindingContract" Returns="@(_DorotiNativeBindingContract)">
+    <ItemGroup>
+      <_DorotiNativeBindingContract Include="$(MSBuildProjectFullPath)">
+        <NativeTarget>$(DorotiNativeBindingTarget)</NativeTarget>
+        <TargetFramework>$(TargetFramework)</TargetFramework>
+        <AssemblyName>$(AssemblyName)</AssemblyName>
+        <NativeBuildItem>AndroidGradleProject</NativeBuildItem>
+        <NativeProject>%(AndroidGradleProject.FullPath)</NativeProject>
+        <Configuration>%(AndroidGradleProject.Configuration)</Configuration>
+        <ModuleName>%(AndroidGradleProject.ModuleName)</ModuleName>
+        <ToolchainVersion>$(DorotiNativeToolchainVersion)</ToolchainVersion>
+      </_DorotiNativeBindingContract>
+    </ItemGroup>
+  </Target>
+</Project>

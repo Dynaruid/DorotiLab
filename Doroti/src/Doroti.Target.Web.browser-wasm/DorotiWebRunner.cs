@@ -10,6 +10,7 @@ namespace Doroti.Target.Web;
 public static class DorotiWebRunner
 {
     public static async Task RunAsync<TStartup>(
+        System.Reflection.Assembly manifestAssembly,
         string[] args,
         IEnumerable<DorotiApplicationPluginRegistration>? plugins = null)
         where TStartup : IDorotiApplicationStartup, new()
@@ -17,7 +18,8 @@ public static class DorotiWebRunner
         var builder = WebAssemblyHostBuilder.CreateDefault(args);
         var descriptor = DorotiApplicationFactory.Create<TStartup>(
             DorotiLaunchContext.Create("Web", "browser-wasm", args, new(builder.HostEnvironment.BaseAddress)),
-            plugins);
+            plugins,
+            manifestAssembly);
         builder.RootComponents.Add<DorotiRoot>("#app");
         builder.RootComponents.Add<HeadOutlet>("head::after");
         builder.Services.AddSingleton<IDorotiBrowserTarget, BrowserWasmTarget>();

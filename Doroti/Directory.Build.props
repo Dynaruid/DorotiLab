@@ -28,7 +28,7 @@
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>Product-owned Doroti framework sources with MAUI Windows, Mac Catalyst, Android, Web, and shared SkSL runtime effects.</PackageReleaseNotes>
+    <PackageReleaseNotes>Product-owned Doroti framework sources with fixed runners for MAUI Windows, Android, iOS, Mac Catalyst, Web, and Linux Qt.</PackageReleaseNotes>
   </PropertyGroup>
   <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'win-x64' or '$(TargetFramework)' == 'net10.0-windows10.0.19041.0')">
     <BaseIntermediateOutputPath>obj\windows\</BaseIntermediateOutputPath>

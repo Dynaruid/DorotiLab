@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>Doroti.Host.Qt</AssemblyName>
+    <RootNamespace>Doroti.Host.Qt</RootNamespace>
+    <PackageId>Doroti.Host.Qt</PackageId>
+    <Description>Doroti managed-owned Linux process bridge for a Qt 6 C ABI surface.</Description>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
+  </ItemGroup>
+</Project>

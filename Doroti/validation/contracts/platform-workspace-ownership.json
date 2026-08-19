@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "doroti.platform-workspace-ownership/v1",
+  "application": {
+    "owns": ["Program.cs", "src/**/*.cs", "assets/**/*"],
+    "forbids": ["Platforms/**", "native entry points", "package manifests", "platform SDK references", "generated bootstrap"]
+  },
+  "platforms": {
+    "android": {
+      "canonicalTarget": "Android",
+      "flutterReference": ["android/settings.gradle.kts", "android/app/build.gradle.kts", "android/app/src/main/AndroidManifest.xml", "android/app/src/main/kotlin/**", "android/app/src/main/res/**"],
+      "dorotiOwner": ["android/*.csproj", "android/MainActivity.cs", "android/MainApplication.cs", "android/AndroidManifest.xml", "android/Resources/**", "android/application-manifest*.json", "android/native/**", "android/binding/**"]
+    },
+    "ios": {
+      "canonicalTarget": "iOS",
+      "flutterReference": ["ios/Runner.xcodeproj/**", "ios/Runner/AppDelegate.swift", "ios/Runner/SceneDelegate.swift", "ios/Runner/Info.plist", "ios/Runner/Assets.xcassets/**"],
+      "dorotiOwner": ["ios/*.csproj", "ios/Program.cs", "ios/AppDelegate.cs", "ios/Info.plist", "ios/Entitlements.plist", "ios/Resources/**", "ios/application-manifest.json", "ios/native/**", "ios/binding/**"]
+    },
+    "linux": {
+      "canonicalTarget": "Linux",
+      "flutterReference": ["linux/CMakeLists.txt", "linux/runner/**", "linux/flutter/generated_plugin_registrant.*"],
+      "dorotiOwner": ["linux/*.csproj", "linux/Program.cs", "linux/application-manifest.json", "linux/native/CMakeLists.txt", "linux/native/src/**", "linux/native/resources/**"]
+    },
+    "macos": {
+      "canonicalTarget": "MacCatalyst",
+      "flutterReference": ["macos/Runner.xcodeproj/**", "macos/Runner/AppDelegate.swift", "macos/Runner/MainFlutterWindow.swift", "macos/Runner/Info.plist", "macos/Runner/*.entitlements", "macos/Runner/Assets.xcassets/**"],
+      "dorotiOwner": ["macos/*.csproj", "macos/Program.cs", "macos/AppDelegate.cs", "macos/Info.plist", "macos/Entitlements.plist", "macos/Resources/**", "macos/application-manifest.json", "macos/native/**", "macos/binding/**"],
+      "identityNote": "The current product is Mac Catalyst, not AppKit macOS."
+    },
+    "web": {
+      "canonicalTarget": "Web",
+      "flutterReference": ["web/index.html", "web/manifest.json", "web/icons/**"],
+      "dorotiOwner": ["web/*.csproj", "web/application-manifest.json", "web/tsconfig.json", "web/src/**", "web/wwwroot/**"]
+    },
+    "windows": {
+      "canonicalTarget": "Windows",
+      "flutterReference": ["windows/CMakeLists.txt", "windows/runner/**", "windows/flutter/generated_plugin_registrant.*"],
+      "dorotiOwner": ["windows/*.csproj", "windows/App.xaml", "windows/App.xaml.cs", "windows/Package.appxmanifest", "windows/app.manifest", "windows/Resources/**", "windows/application-manifest.json"]
+    }
+  }
+}

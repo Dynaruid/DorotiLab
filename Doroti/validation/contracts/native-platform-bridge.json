@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "doroti.native-platform-bridge/v1",
+  "bridgeVersion": "1.0.0",
+  "plugin": {
+    "id": "doroti.native.platform",
+    "channel": "doroti/native-platform",
+    "codec": "json",
+    "abiVersion": "doroti.native-platform-bridge/v1"
+  },
+  "methods": ["platformInfo", "echo", "echoOnUiThread"],
+  "platforms": {
+    "android": {
+      "target": "Android",
+      "targetFramework": "net10.0-android",
+      "buildItem": "AndroidGradleProject",
+      "module": "bridge",
+      "toolchain": "gradle-8.10.2;agp-8.6.1;java-17;compileSdk-34;minSdk-21",
+      "wrapperSha256": "e996d452d2645e70c01c11143ca2d3742734a28da2bf61f25c82bdc288c9e637"
+    },
+    "ios": {
+      "target": "iOS",
+      "targetFramework": "net10.0-ios",
+      "buildItem": "XcodeProject",
+      "scheme": "DorotiDemoAppNative-iOS",
+      "toolchain": "xcode-16;swift-5;ios-15"
+    },
+    "macos": {
+      "target": "MacCatalyst",
+      "targetFramework": "net10.0-maccatalyst",
+      "buildItem": "XcodeProject",
+      "scheme": "DorotiDemoAppNative-MacCatalyst",
+      "toolchain": "xcode-16;swift-5;maccatalyst-15",
+      "trueAppKitMacOS": "outOfScope"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://doroti.dev/schemas/doroti-workspace-v1.json",
+  "title": "Doroti platform workspace",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "applicationProject", "platforms"],
+  "properties": {
+    "schemaVersion": { "const": "doroti.workspace/v1" },
+    "applicationProject": { "type": "string", "minLength": 1 },
+    "platforms": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["android", "ios", "linux", "macos", "web", "windows"],
+      "properties": {
+        "android": { "type": "string", "minLength": 1 },
+        "ios": { "type": "string", "minLength": 1 },
+        "linux": { "type": "string", "minLength": 1 },
+        "macos": { "type": "string", "minLength": 1 },
+        "web": { "type": "string", "minLength": 1 },
+        "windows": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

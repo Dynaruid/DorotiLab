@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework></TargetFramework>
-    <TargetFrameworks Condition="'$(RuntimeIdentifier)' == ''">net10.0-windows10.0.19041.0;net10.0-maccatalyst;net10.0-android</TargetFrameworks>
+    <TargetFrameworks Condition="'$(RuntimeIdentifier)' == ''">net10.0-windows10.0.19041.0;net10.0-maccatalyst;net10.0-ios;net10.0-android</TargetFrameworks>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'win-x64'">net10.0-windows10.0.19041.0</TargetFrameworks>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'maccatalyst-arm64'">net10.0-maccatalyst</TargetFrameworks>
+    <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'ios-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-x64'">net10.0-ios</TargetFrameworks>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'android-arm64'">net10.0-android</TargetFrameworks>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'android-x64'">net10.0-android</TargetFrameworks>
     <AssemblyName>Doroti.Host.Maui</AssemblyName>
@@ -17,6 +18,7 @@
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</TargetPlatformMinVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
   </PropertyGroup>
   <ItemGroup>

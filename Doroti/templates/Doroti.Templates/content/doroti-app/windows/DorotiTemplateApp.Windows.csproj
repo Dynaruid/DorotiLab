@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Sdk Name="Doroti.Runner.Sdk" Version="0.2.0-beta" />
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <AssemblyName>DorotiTemplateApp.Windows</AssemblyName>
+    <RootNamespace>DorotiTemplateApp.WinUI</RootNamespace>
+    <DorotiAppProject>..\DorotiTemplateApp.csproj</DorotiAppProject>
+    <DorotiTarget>Windows</DorotiTarget>
+    <DorotiHostKind>Maui</DorotiHostKind>
+    <DorotiNativeEntryKind>WinUI-Xaml</DorotiNativeEntryKind>
+    <UseMaui>true</UseMaui>
+    <DefineConstants>$(DefineConstants);WINDOWS;DOROTI_MAUI</DefineConstants>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <WindowsPackageType>None</WindowsPackageType>
+  </PropertyGroup>
+  <ItemGroup>
+    <DorotiTargetDescriptor Include="Windows" HostKind="Maui" NativeEntryKind="WinUI-Xaml" RuntimeIdentifier="win-x64" TargetFramework="net10.0-windows10.0.19041.0" TargetPackage="Doroti.Target.Windows.Maui.win-x64" />
+    <PackageReference Include="Doroti.Target.Windows.Maui.win-x64" Version="0.2.0-beta" />
+  </ItemGroup>
+</Project>

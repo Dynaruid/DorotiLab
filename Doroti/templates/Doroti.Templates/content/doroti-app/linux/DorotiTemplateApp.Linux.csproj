@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Sdk Name="Doroti.Runner.Sdk" Version="0.2.0-beta" />
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>DorotiTemplateApp.Linux</AssemblyName>
+    <RootNamespace>DorotiTemplateApp.Linux</RootNamespace>
+    <DorotiAppProject>..\DorotiTemplateApp.csproj</DorotiAppProject>
+    <DorotiTarget>Linux</DorotiTarget>
+    <DorotiHostKind>Qt</DorotiHostKind>
+    <DorotiNativeEntryKind>Qt-Main</DorotiNativeEntryKind>
+    <SelfContained>false</SelfContained>
+    <DorotiBuildQtNative Condition="'$(DorotiBuildQtNative)' == '' and $([MSBuild]::IsOSPlatform('Linux'))">true</DorotiBuildQtNative>
+    <DorotiQtNativeBuildDirectory>$(BaseIntermediateOutputPath)qt-native</DorotiQtNativeBuildDirectory>
+  </PropertyGroup>
+  <ItemGroup>
+    <DorotiTargetDescriptor Include="Linux" HostKind="Qt" NativeEntryKind="Qt-Main" RuntimeIdentifier="linux-x64" TargetFramework="net10.0" TargetPackage="Doroti.Target.Linux.Qt.linux-x64" />
+    <PackageReference Include="Doroti.Target.Linux.Qt.linux-x64" Version="0.2.0-beta" />
+  </ItemGroup>
+  <Target Name="BuildDorotiQtNative" BeforeTargets="Build" Condition="'$(DorotiBuildQtNative)' == 'true'">
+    <MakeDir Directories="$(DorotiQtNativeBuildDirectory)" />
+    <Exec Command="cmake -S &quot;$(MSBuildProjectDirectory)/native&quot; -B &quot;$(DorotiQtNativeBuildDirectory)&quot; -DCMAKE_BUILD_TYPE=$(Configuration)" />
+    <Exec Command="cmake --build &quot;$(DorotiQtNativeBuildDirectory)&quot; --config $(Configuration)" />
+  </Target>
+  <Target Name="CopyDorotiQtNative" AfterTargets="Build;Publish" Condition="Exists('$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so')">
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="true" Condition="'$(PublishDir)' != ''" />
+  </Target>
+</Project>

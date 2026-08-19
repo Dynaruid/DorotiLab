@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "doroti.target-package/v1",
+  "packageId": "Doroti.Target.Linux.Qt.linux-x64",
+  "packageVersion": "0.2.0-beta",
+  "rid": "linux-x64",
+  "host": "qt6-c-abi",
+  "graphicsBackend": "qt-rhi-skia-surface",
+  "processOwner": "managed",
+  "nativeAbi": "doroti.qt-host/v1",
+  "requiredCapabilities": [
+    "window.lifecycle",
+    "view.lifecycle-metrics",
+    "view.frame-dispatch",
+    "input.events",
+    "text.input",
+    "platform.services",
+    "graphics.scene",
+    "accessibility.semantics"
+  ],
+  "verificationStatus": "notVerified"
+}

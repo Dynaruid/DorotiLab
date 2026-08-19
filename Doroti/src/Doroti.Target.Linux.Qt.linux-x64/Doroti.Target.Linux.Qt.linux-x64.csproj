@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    <AssemblyName>Doroti.Target.Linux.Qt</AssemblyName>
+    <RootNamespace>Doroti.Target.Linux.Qt</RootNamespace>
+    <PackageId>Doroti.Target.Linux.Qt.linux-x64</PackageId>
+    <Description>Doroti Qt 6 composition and deployment contract for Linux x64.</Description>
+    <IsDorotiProduct>true</IsDorotiProduct>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Doroti.Host.Qt\Doroti.Host.Qt.csproj" />
+    <EmbeddedResource Include="doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" />
+    <None Include="doroti-target-manifest.json" Pack="true" PackagePath="doroti\" />
+    <None Include="buildTransitive\Doroti.Target.Linux.Qt.linux-x64.targets" Pack="true" PackagePath="buildTransitive\Doroti.Target.Linux.Qt.linux-x64.targets" />
+  </ItemGroup>
+</Project>

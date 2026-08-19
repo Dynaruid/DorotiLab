@@ -1,0 +1,11 @@
+<Project>
+  <Import Project="..\Directory.Build.props" />
+  <PropertyGroup>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">iossimulator-x64</RuntimeIdentifier>
+    <BaseIntermediateOutputPath>obj\$(RuntimeIdentifier)\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+    <BaseOutputPath>bin\$(RuntimeIdentifier)\</BaseOutputPath>
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj\**;bin\**</DefaultItemExcludes>
+    <NuGetLockFilePath>packages.$(RuntimeIdentifier).lock.json</NuGetLockFilePath>
+  </PropertyGroup>
+</Project>

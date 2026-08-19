@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+  <Sdk Name="Doroti.Runner.Sdk" Version="0.2.0-beta" />
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
+    <AssemblyName>DorotiTemplateApp.Web</AssemblyName>
+    <RootNamespace>DorotiTemplateApp.Web</RootNamespace>
+    <DorotiAppProject>..\DorotiTemplateApp.csproj</DorotiAppProject>
+    <DorotiTarget>Web</DorotiTarget>
+    <DorotiHostKind>BlazorWebAssembly</DorotiHostKind>
+    <DorotiNativeEntryKind>Managed-Main</DorotiNativeEntryKind>
+    <DefineConstants>$(DefineConstants);DOROTI_BROWSER</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <DorotiTargetDescriptor Include="Web" HostKind="BlazorWebAssembly" NativeEntryKind="Managed-Main" RuntimeIdentifier="browser-wasm" TargetFramework="net10.0" TargetPackage="Doroti.Target.Web.browser-wasm" />
+    <PackageReference Include="Doroti.Target.Web.browser-wasm" Version="0.2.0-beta" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.11" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="7.0.0" PrivateAssets="all" />
+    <DorotiJavaScriptPlugin Include="echo" Channel="doroti.example/echo" ExportName="invoke" ModuleUrl="./plugins/echo.js" />
+  </ItemGroup>
+</Project>

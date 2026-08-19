@@ -1,8 +1,8 @@
 {
   "schemaVersion": "doroti.flutter-conformance-baseline/v1",
   "milestone": "FCR-0",
-  "capturedAtUtc": "2026-08-18T07:22:38.5459931Z",
-  "repositoryRevision": "5204b022d85bbf05a149e8b4d65644a763be1537",
+  "capturedAtUtc": "2026-08-19T13:27:18.1461393Z",
+  "repositoryRevision": "ec002e3937b7492e9aba29e2f656326da739c9f9",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "matrix": "Doroti/validation/evidence/flutter-conformance/framework-parity-matrix.json",
   "inventory": {
@@ -3093,37 +3093,37 @@
           {
             "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
             "sourceOwner": "Doroti.Framework.Widgets",
-            "line": 1331
+            "line": 1332
           },
           {
             "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
             "sourceOwner": "Doroti.Framework.Widgets",
-            "line": 1413
+            "line": 1415
           },
           {
             "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
             "sourceOwner": "Doroti.Framework.Widgets",
-            "line": 1422
+            "line": 1424
           },
           {
             "path": "Doroti/src/Doroti.Framework.Widgets/scrollable.cs",
             "sourceOwner": "Doroti.Framework.Widgets",
-            "line": 1895
+            "line": 1897
           },
           {
             "path": "Doroti/src/Doroti.Framework.Widgets/scrollbar.cs",
             "sourceOwner": "Doroti.Framework.Widgets",
-            "line": 880
+            "line": 881
           },
           {
             "path": "Doroti/src/Doroti.Framework.Widgets/scrollbar.cs",
             "sourceOwner": "Doroti.Framework.Widgets",
-            "line": 900
+            "line": 901
           },
           {
             "path": "Doroti/src/Doroti.Framework.Widgets/scrollbar.cs",
             "sourceOwner": "Doroti.Framework.Widgets",
-            "line": 1177
+            "line": 1178
           },
           {
             "path": "Doroti/src/Doroti.Framework.Widgets/viewport.cs",
@@ -3420,17 +3420,17 @@
           {
             "path": "Doroti/src/Doroti.Framework.Rendering/object.cs",
             "sourceOwner": "Doroti.Framework.Rendering",
-            "line": 1058
+            "line": 1068
           },
           {
             "path": "Doroti/src/Doroti.Framework.Rendering/object.cs",
             "sourceOwner": "Doroti.Framework.Rendering",
-            "line": 1648
+            "line": 1658
           },
           {
             "path": "Doroti/src/Doroti.Framework.Rendering/layer.cs",
             "sourceOwner": "Doroti.Framework.Rendering",
-            "line": 863
+            "line": 868
           },
           {
             "path": "Doroti/src/Doroti.Framework.Rendering/sliver.cs",
@@ -3457,10 +3457,10 @@
   },
   "targets": {
     "windowsLive": {
-      "status": "partial",
+      "status": "notVerified",
       "scenario": "DorotiDemoApp launch, idle repaint, wheel/drag scroll, Ink/FAB and frame survival",
-      "sourceEvidence": "Doroti/validation/evidence/app-targets-evidence.json",
-      "sourceEvidenceCapturedAtUtc": "2026-08-18T15:22:38.8847905+09:00",
+      "sourceEvidence": null,
+      "sourceEvidenceCapturedAtUtc": null,
       "metrics": {
         "frameTimeMs": {
           "status": "notVerified",
@@ -3468,14 +3468,14 @@
           "reason": "FCR-0 trace does not yet emit build/layout/paint/raster phase durations."
         },
         "invalidationsRequested": {
-          "status": "observed",
-          "value": 243,
-          "source": "app-targets-evidence.json"
+          "status": "notVerified",
+          "value": null,
+          "reason": "No current target evidence."
         },
         "invalidationsCoalesced": {
-          "status": "observed",
-          "value": 117,
-          "source": "app-targets-evidence.json"
+          "status": "notVerified",
+          "value": null,
+          "reason": "No current target evidence."
         },
         "dirtyRenderCount": {
           "status": "notVerified",
@@ -3503,39 +3503,36 @@
           "reason": "Input sequence to present timestamps require the FCR-3 trace."
         },
         "submittedFrames": {
-          "status": "observed",
-          "value": 119,
-          "source": "app-targets-evidence.json"
+          "status": "notVerified",
+          "value": null,
+          "reason": "No current frame evidence."
         },
         "presentedFrames": {
-          "status": "observed",
-          "value": 119,
-          "source": "app-targets-evidence.json"
+          "status": "notVerified",
+          "value": null,
+          "reason": "No current frame evidence."
         },
         "failedFrames": {
-          "status": "observed",
-          "value": 0,
-          "source": "app-targets-evidence.json"
+          "status": "notVerified",
+          "value": null,
+          "reason": "No current frame evidence."
         },
         "nativePointerEvents": {
-          "status": "observed",
-          "value": 8,
-          "source": "app-targets-evidence.json"
+          "status": "notVerified",
+          "value": null,
+          "reason": "No current target evidence."
         },
         "semanticsWork": {
-          "status": "observed",
-          "updatesReceived": 6,
-          "updatesApplied": 6,
-          "updatesCoalesced": 0,
-          "activeElements": 29
+          "status": "notVerified",
+          "reason": "Semantics workload is not present in current target evidence."
         }
       }
     },
     "androidPhysical": {
-      "status": "partial",
+      "status": "notVerified",
       "scenario": "DorotiDemoApp launch, automated scroll, Ink/FAB and persistent display",
-      "sourceEvidence": "Doroti/validation/evidence/app-targets-evidence.json",
-      "sourceEvidenceCapturedAtUtc": "2026-08-18T15:22:38.8847905+09:00",
+      "sourceEvidence": null,
+      "sourceEvidenceCapturedAtUtc": null,
       "metrics": {
         "frameTimeMs": {
           "status": "notVerified",
@@ -3543,14 +3540,14 @@
           "reason": "FCR-0 trace does not yet emit build/layout/paint/raster phase durations."
         },
         "invalidationsRequested": {
-          "status": "observed",
-          "value": 6151,
-          "source": "app-targets-evidence.json"
+          "status": "notVerified",
+          "value": null,
+          "reason": "No current target evidence."
         },
         "invalidationsCoalesced": {
-          "status": "observed",
-          "value": 2757,
-          "source": "app-targets-evidence.json"
+          "status": "notVerified",
+          "value": null,
+          "reason": "No current target evidence."
         },
         "dirtyRenderCount": {
           "status": "notVerified",
@@ -3578,31 +3575,28 @@
           "reason": "Input sequence to present timestamps require the FCR-3 trace."
         },
         "submittedFrames": {
-          "status": "observed",
-          "value": 3074,
-          "source": "app-targets-evidence.json"
+          "status": "notVerified",
+          "value": null,
+          "reason": "No current frame evidence."
         },
         "presentedFrames": {
-          "status": "observed",
-          "value": 3074,
-          "source": "app-targets-evidence.json"
+          "status": "notVerified",
+          "value": null,
+          "reason": "No current frame evidence."
         },
         "failedFrames": {
-          "status": "observed",
-          "value": 0,
-          "source": "app-targets-evidence.json"
+          "status": "notVerified",
+          "value": null,
+          "reason": "No current frame evidence."
         },
         "nativePointerEvents": {
-          "status": "observed",
-          "value": 1422,
-          "source": "app-targets-evidence.json"
+          "status": "notVerified",
+          "value": null,
+          "reason": "No current target evidence."
         },
         "semanticsWork": {
-          "status": "observed",
-          "updatesReceived": 576,
-          "updatesApplied": 175,
-          "updatesCoalesced": 422,
-          "activeElements": 34
+          "status": "notVerified",
+          "reason": "Semantics workload is not present in current target evidence."
         }
       }
     },
@@ -3633,8 +3627,8 @@
     "assetClosure": "pass",
     "sourceHashPin": "pass",
     "runtimePatternOwnership": "pass-classified-notVerified",
-    "windowsNativePresentation": "partial-existing-evidence",
-    "androidPhysicalPresentation": "partial-existing-evidence",
+    "windowsNativePresentation": "notVerified",
+    "androidPhysicalPresentation": "notVerified",
     "macCatalystNative": "notVerified",
     "webBrowser": "notVerified",
     "performance": "notVerified"

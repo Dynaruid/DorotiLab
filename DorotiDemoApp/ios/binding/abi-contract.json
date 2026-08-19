@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "doroti.native-binding-abi/v1",
+  "platform": "iOS",
+  "module": "DorotiDemoAppNative",
+  "scheme": "DorotiDemoAppNative-iOS",
+  "bridgeVersion": "1.0.0",
+  "exports": ["platformInfo", "echo:", "echoOnMainThreadWithValue:completion:"]
+}

@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.props" />
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>DorotiDemoApp.Linux</AssemblyName>
+    <RootNamespace>DorotiDemoApp.Linux</RootNamespace>
+    <DorotiAppProject>..\DorotiDemoApp.csproj</DorotiAppProject>
+    <DorotiTarget>Linux</DorotiTarget>
+    <DorotiHostKind>Qt</DorotiHostKind>
+    <DorotiNativeEntryKind>Qt-Main</DorotiNativeEntryKind>
+    <SelfContained>false</SelfContained>
+    <DorotiBuildQtNative Condition="'$(DorotiBuildQtNative)' == '' and $([MSBuild]::IsOSPlatform('Linux'))">true</DorotiBuildQtNative>
+    <DorotiQtNativeBuildDirectory>$(BaseIntermediateOutputPath)qt-native</DorotiQtNativeBuildDirectory>
+  </PropertyGroup>
+  <ItemGroup>
+    <DorotiTargetDescriptor Include="Linux" HostKind="Qt" NativeEntryKind="Qt-Main"
+        RuntimeIdentifier="linux-x64" TargetFramework="net10.0"
+        TargetPackage="Doroti.Target.Linux.Qt.linux-x64" />
+    <ProjectReference Include="..\..\Doroti\src\Doroti.Target.Linux.Qt.linux-x64\Doroti.Target.Linux.Qt.linux-x64.csproj" />
+  </ItemGroup>
+  <Target Name="BuildDorotiQtNative" BeforeTargets="Build" Condition="'$(DorotiBuildQtNative)' == 'true'">
+    <MakeDir Directories="$(DorotiQtNativeBuildDirectory)" />
+    <Exec Command="cmake -S &quot;$(MSBuildProjectDirectory)/native&quot; -B &quot;$(DorotiQtNativeBuildDirectory)&quot; -DCMAKE_BUILD_TYPE=$(Configuration)" />
+    <Exec Command="cmake --build &quot;$(DorotiQtNativeBuildDirectory)&quot; --config $(Configuration)" />
+  </Target>
+  <Target Name="CopyDorotiQtNative" AfterTargets="Build;Publish" Condition="Exists('$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so')">
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="true" Condition="'$(PublishDir)' != ''" />
+  </Target>
+  <Import Project="..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.targets" />
+</Project>

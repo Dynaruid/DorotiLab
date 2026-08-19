@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-maccatalyst</TargetFramework>
+    <AssemblyName>DorotiDemoApp.MacCatalyst.Native</AssemblyName>
+    <RootNamespace>DorotiDemoApp.MacCatalyst.Native</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsBindingProject>true</IsBindingProject>
+    <IsPackable>false</IsPackable>
+    <IsTrimmable>true</IsTrimmable>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <DorotiNativeBindingTarget>MacCatalyst</DorotiNativeBindingTarget>
+    <DorotiNativeToolchainVersion>xcode-16;swift-5;maccatalyst-15</DorotiNativeToolchainVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ObjcBindingApiDefinition Include="ApiDefinition.cs" />
+    <ObjcBindingCoreSource Include="StructsAndEnums.cs" />
+    <XcodeProject Include="..\native\DorotiDemoAppNative.xcodeproj"
+                  SchemeName="DorotiDemoAppNative-MacCatalyst"
+                  Configuration="$(Configuration)"
+                  Kind="Framework"
+                  SmartLink="true"
+                  OutputPath="$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '$(BaseIntermediateOutputPath)', 'native', 'xcode', '$(Configuration)'))" />
+    <None Include="abi-contract.json" />
+  </ItemGroup>
+  <Target Name="GetDorotiNativeBindingContract" Returns="@(_DorotiNativeBindingContract)">
+    <ItemGroup>
+      <_DorotiNativeBindingContract Include="$(MSBuildProjectFullPath)">
+        <NativeTarget>$(DorotiNativeBindingTarget)</NativeTarget>
+        <TargetFramework>$(TargetFramework)</TargetFramework>
+        <AssemblyName>$(AssemblyName)</AssemblyName>
+        <NativeBuildItem>XcodeProject</NativeBuildItem>
+        <NativeProject>%(XcodeProject.FullPath)</NativeProject>
+        <Configuration>%(XcodeProject.Configuration)</Configuration>
+        <SchemeName>%(XcodeProject.SchemeName)</SchemeName>
+        <ToolchainVersion>$(DorotiNativeToolchainVersion)</ToolchainVersion>
+      </_DorotiNativeBindingContract>
+    </ItemGroup>
+  </Target>
+</Project>

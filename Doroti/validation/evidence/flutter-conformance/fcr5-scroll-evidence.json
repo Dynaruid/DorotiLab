@@ -1,8 +1,8 @@
 {
   "schemaVersion": "doroti.flutter-conformance-fcr5-evidence/v1",
   "status": "partial",
-  "capturedAt": "2026-08-18T12:21:43.4007838Z",
-  "repositoryRevision": "e255141b47dc72b144f1e9c6659eea26e3a512a6",
+  "capturedAt": "2026-08-19T13:29:33.8160554Z",
+  "repositoryRevision": "ec002e3937b7492e9aba29e2f656326da739c9f9",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "fixtureManifest": "Doroti/validation/fcr5-scroll/fixture-manifest.json",
   "beforeFix": {
@@ -55,7 +55,7 @@
       "Windows drives framework animations from WinUI compositor vsync and marshals compositor subscriptions to the UI thread",
       "Android keeps Choreographer pre-armed during native drag and advances delayed paints to the newest display pulse",
       "Windows records present after the native swap-chain flush and keeps evidence serialization off the paint callback",
-      "Windows live gate measures input-to-offset, offset-to-present, complete input-to-present, and scroll-animation cadence including maxima"
+      "Windows live scroll acceptance is a separate fixed-runner shard and remains notVerified until a current native capture is collected"
     ]
   },
   "acceptance": {

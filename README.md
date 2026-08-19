@@ -7,7 +7,7 @@
 > [!WARNING]
 > Doroti is currently experimental. Its APIs, architecture, behavior, and project structure may change significantly at any time without backward-compatibility guarantees.
 
-Doroti brings a shared C# widget, layout, painting, semantics, and rendering pipeline to Windows, Mac Catalyst, and the Web. Flutter remains the behavior reference for familiar Material and Cupertino APIs, while the maintained product implementation lives in `Doroti.Framework.*`.
+Doroti brings a shared C# widget, layout, painting, semantics, and rendering pipeline to Windows, Android, iOS, Mac Catalyst, Web, and an early Linux/Qt host boundary. Flutter remains the behavior reference for familiar Material and Cupertino APIs, while the maintained product implementation lives in `Doroti.Framework.*`.
 
 Doroti does not embed Flutter in a WebView and does not compose its UI from a platform control tree. Platform hosts provide the native window/view, GPU surface, input, text, clipboard, and accessibility capabilities; Doroti owns the widget and render trees.
 
@@ -17,18 +17,18 @@ The project began by translating large Flutter source slices through a semantic 
 
 Today `Doroti/src/Doroti.Framework.*` is product-owned C# source with matching `Doroti.Framework.*` namespaces, assemblies, and packages. Features and fixes are developed directly in the owning framework/runtime/renderer/host contract. The Dart-to-C# compiler and pinned Flutter checkout remain optional import and reference-differential tools; they never overwrite product source. `DorotiDemoApp` and generated `doroti-app` projects are C#-only, and active validation never creates a Dart package inside them.
 
-See [ADR-019](Doroti/docs/adr/ADR-019-product-framework-source-ownership.md) and the active [work list](work.md).
+See [ADR-019](Doroti/docs/adr/ADR-019-product-framework-source-ownership.md) and [ADR-022](Doroti/docs/adr/ADR-022-default-native-platform-bridge.md).
 
 ## What works today
 
 - Shared Material/Cupertino widget, element, layout, paint, semantics, and state infrastructure
-- A single C# application project targeting MAUI Windows x64, MAUI Mac Catalyst arm64, or Blazor WebAssembly
-- One public target-neutral `Program` startup, host-owned native initialization, and SDK-generated `obj/<target>/Doroti.Generated` bootstrap code
+- A platform-neutral C# application library plus fixed-target runner projects under `android/ios/linux/macos/web/windows`
+- One public target-neutral `Program` startup, host-owned native initialization, and runner-local generated bootstrap code
 - Strict Skia GPU rendering through WinUI 3 `MauiSKSwapChainPanel` on Windows and WebGL2 on the Web
-- Windows Release build/publish and actual GPU-frame evidence
-- Web external template/package compile/publish evidence and a current Chromium WebGL2 canvas/basic-FAB-pointer smoke on .NET 10.0.11
+- Automated fixed-runner builds for Windows, Web, Android arm64/x64, Mac Catalyst, iOS device/simulator cross-builds, and the managed Linux runner
+- Package-only six-platform template creation with default Android Gradle, iOS Xcode, and Mac Catalyst Xcode bindings (ten projects total)
 
-Native hover/wheel/keyboard/IME/UIA, Mac Catalyst native execution, Web keyboard/IME/clipboard/resize/interactive ARIA, physical acceptance, and cross-target parity remain independent `notVerified` gates. Historical Win32/WGL and AppKit/NSOpenGL evidence is predecessor evidence only.
+Fresh native launch, GPU presentation, browser interaction, physical acceptance, accessibility, signing/store, Linux X11/Wayland, and cross-target parity remain independent `notVerified` gates for the workspace-cutover source fingerprint. Historical live evidence is predecessor evidence only.
 
 ## Architecture
 
@@ -52,7 +52,7 @@ Requires .NET SDK 10.0.400, matching 10.0.11 runtimes/workloads, and PowerShell 
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 build
 pwsh -File ./Doroti/eng/doroti.ps1 validate
-dotnet run --project ./DorotiDemoApp/DorotiDemoApp.csproj -p:DorotiTarget=Windows
+pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
 ```
 
 Run the integrated Windows GPU and Web package/publish scenario before a release claim:
@@ -66,7 +66,7 @@ pwsh -File ./Doroti/eng/doroti.ps1 validate -ValidationSuite Release
 | Path | Description |
 | --- | --- |
 | [`Doroti/src/`](Doroti/src/) | Product framework, runtime, rendering, hosts, target packages, and SDK |
-| [`DorotiDemoApp/`](DorotiDemoApp/) | Single-project Material dogfood application |
+| [`DorotiDemoApp/`](DorotiDemoApp/) | Platform-workspace Material dogfood application |
 | [`Doroti/templates/`](Doroti/templates/) | `dotnet new doroti-app` template |
 | [`Doroti/eng/`](Doroti/eng/) | Compact build, validation, release, and optional reference workflows |
 | [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | Optional Dart/Flutter import and migration compiler |

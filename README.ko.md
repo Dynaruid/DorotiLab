@@ -17,18 +17,18 @@ Doroti는 Flutter를 WebView에 넣지 않으며 플랫폼 UI control tree로 UI
 
 현재 `Doroti/src/Doroti.Framework.*`는 제품이 직접 소유하는 C# source이며 namespace, assembly, package는 `Doroti.Framework.*`로 일치합니다. 기능과 수정은 소유 framework/runtime/renderer/host 계약에서 직접 개발합니다. Dart-to-C# compiler와 고정 Flutter checkout은 선택적인 import·reference differential 도구로 남고 제품 source를 덮어쓰지 않습니다. `DorotiDemoApp`과 생성된 `doroti-app` project는 C# 전용이며 활성 validation은 그 내부에 Dart package를 만들지 않습니다.
 
-자세한 결정은 [ADR-019](Doroti/docs/adr/ADR-019-product-framework-source-ownership.md), 현재 우선순위는 [작업 목록](work.md)을 참고하세요.
+자세한 source 소유권은 [ADR-019](Doroti/docs/adr/ADR-019-product-framework-source-ownership.md), 기본 native bridge graph는 [ADR-022](Doroti/docs/adr/ADR-022-default-native-platform-bridge.md)를 참고하세요.
 
 ## 현재 동작 범위
 
 - 공용 Material/Cupertino widget, element, layout, paint, semantics, state 기반
-- MAUI Windows x64, MAUI Mac Catalyst arm64 또는 Blazor WebAssembly를 선택하는 하나의 C# application project
-- 하나의 public target-neutral `Program` startup, host 소유 native 초기화, SDK 생성 `obj/<target>/Doroti.Generated` bootstrap code
+- 플랫폼 중립 C# 앱 library와 `android/ios/linux/macos/web/windows`의 고정 target runner project
+- 하나의 public target-neutral `Program` startup, host 소유 native 초기화, runner-local generated bootstrap code
 - Windows WinUI 3 `MauiSKSwapChainPanel`과 Web WebGL2를 통한 strict Skia GPU rendering
-- Windows Release build/publish와 실제 GPU frame evidence
-- 저장소 밖 Web template/package compile/publish evidence와 .NET 10.0.11의 현재 Chromium WebGL2 canvas/기본 FAB pointer smoke
+- Windows, Web, Android arm64/x64, Mac Catalyst, iOS device/simulator 교차 빌드와 Linux managed runner 자동 빌드
+- 여섯 플랫폼 package-only template과 기본 Android Gradle/iOS Xcode/Mac Catalyst Xcode binding(총 10개 project)
 
-Native hover/wheel/keyboard/IME/UIA, Mac Catalyst native 실행, Web keyboard/IME/clipboard/resize/interactive ARIA, physical acceptance와 cross-target parity는 각각 독립적인 `notVerified` gate입니다. 과거 Win32/WGL과 AppKit/NSOpenGL 결과는 predecessor evidence로만 유지합니다.
+workspace cutover source fingerprint의 새 native launch, GPU presentation, browser interaction, physical acceptance, accessibility, signing/store, Linux X11/Wayland와 cross-target parity는 각각 독립적인 `notVerified` gate입니다. 이전 live 결과는 predecessor evidence로만 유지합니다.
 
 ## 구조
 
@@ -52,7 +52,7 @@ Flutter source는 fidelity 작업에서 동작 reference가 필요할 때 사용
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 build
 pwsh -File ./Doroti/eng/doroti.ps1 validate
-dotnet run --project ./DorotiDemoApp/DorotiDemoApp.csproj -p:DorotiTarget=Windows
+pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
 ```
 
 Release 주장 전에는 Windows GPU와 Web package/publish 통합 시나리오를 실행합니다.
@@ -66,7 +66,7 @@ pwsh -File ./Doroti/eng/doroti.ps1 validate -ValidationSuite Release
 | 경로 | 설명 |
 | --- | --- |
 | [`Doroti/src/`](Doroti/src/) | 제품 framework, runtime, rendering, host, target package와 SDK |
-| [`DorotiDemoApp/`](DorotiDemoApp/) | Single-project Material dogfood 앱 |
+| [`DorotiDemoApp/`](DorotiDemoApp/) | 플랫폼 중립 앱, 6 runner, 3 native binding을 dogfood하는 앱 |
 | [`Doroti/templates/`](Doroti/templates/) | `dotnet new doroti-app` template |
 | [`Doroti/eng/`](Doroti/eng/) | 간소화한 build, validation, release, 선택적 reference workflow |
 | [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | 선택적 Dart/Flutter import·migration compiler |

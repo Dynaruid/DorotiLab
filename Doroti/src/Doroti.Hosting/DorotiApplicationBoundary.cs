@@ -69,12 +69,20 @@ public sealed class DorotiApplicationBoundary : IDisposable
     public static DorotiApplicationBoundary Load(
         Assembly applicationAssembly,
         string targetRid,
+        IEnumerable<IDorotiNativePluginHandler>? handlers = null) =>
+        Load(applicationAssembly, applicationAssembly, targetRid, handlers);
+
+    public static DorotiApplicationBoundary Load(
+        Assembly manifestAssembly,
+        Assembly applicationAssembly,
+        string targetRid,
         IEnumerable<IDorotiNativePluginHandler>? handlers = null)
     {
+        ArgumentNullException.ThrowIfNull(manifestAssembly);
         ArgumentNullException.ThrowIfNull(applicationAssembly);
         ArgumentException.ThrowIfNullOrWhiteSpace(targetRid);
-        using var stream = applicationAssembly.GetManifestResourceStream("Doroti.Application.Manifest")
-            ?? throw new InvalidDataException("Generated application assembly is missing Doroti.Application.Manifest.");
+        using var stream = manifestAssembly.GetManifestResourceStream("Doroti.Application.Manifest")
+            ?? throw new InvalidDataException("Doroti runner assembly is missing Doroti.Application.Manifest.");
         var manifest = JsonSerializer.Deserialize<DorotiApplicationManifest>(stream, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,

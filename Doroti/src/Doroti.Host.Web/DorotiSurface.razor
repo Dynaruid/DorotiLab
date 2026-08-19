@@ -43,7 +43,7 @@
         _session.Start(deferFrameworkBootstrap: true);
         var plugins = Application.PluginRegistrations.Select(item => new BrowserJavaScriptPluginDescriptor(
             item.Id, item.Channel, item.Adapter, item.Module, item.ExportName));
-        _boundary = _target.LoadApplicationBoundary(Application.ApplicationAssembly, plugins);
+        _boundary = _target.LoadApplicationBoundary(Application.ManifestAssembly, Application.ApplicationAssembly, plugins);
         _view = _target.CreateView(_session, ViewId, CanvasId, Application.ViewConfiguration, _boundary);
         _target.AttachSkiaSurface(ViewId, () => _ = InvokeAsync(() => _skiaView?.Invalidate()));
         _view.Show();

@@ -1,0 +1,33 @@
+<Project>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <LangVersion>14.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Deterministic>true</Deterministic>
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj\**;bin\**;binding\**;native\**</DefaultItemExcludes>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+    <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
+    <EnableDefaultXamlItems>false</EnableDefaultXamlItems>
+    <SingleProject Condition="'$(UseMaui)' == 'true'">true</SingleProject>
+    <MauiEnablePlatformUsings Condition="'$(UseMaui)' == 'true'">true</MauiEnablePlatformUsings>
+    <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
+    <MauiVersion Condition="'$(MauiVersion)' == ''">10.0.90</MauiVersion>
+    <DorotiVersion Condition="'$(DorotiVersion)' == ''">0.2.0-beta</DorotiVersion>
+    <SkiaSharpVersion Condition="'$(SkiaSharpVersion)' == ''">4.151.1</SkiaSharpVersion>
+    <DorotiMarkupVersion Condition="'$(DorotiMarkupVersion)' == ''">8.0.0</DorotiMarkupVersion>
+    <DorotiTypeScriptVersion Condition="'$(DorotiTypeScriptVersion)' == ''">7.0.0</DorotiTypeScriptVersion>
+    <DorotiWebRuntimeVersion Condition="'$(DorotiWebRuntimeVersion)' == ''">10.0.11</DorotiWebRuntimeVersion>
+    <_DorotiGeneratedDirectory>$(BaseIntermediateOutputPath)Doroti.Generated/</_DorotiGeneratedDirectory>
+    <_DorotiBootstrapFile>$(_DorotiGeneratedDirectory)DorotiBootstrap.g.cs</_DorotiBootstrapFile>
+    <_DorotiPluginRegistrationFile>$(_DorotiGeneratedDirectory)DorotiPluginRegistration.g.cs</_DorotiPluginRegistrationFile>
+    <_DorotiNativePluginRegistrationFile>$(_DorotiGeneratedDirectory)DorotiNativePluginRegistration.g.cs</_DorotiNativePluginRegistrationFile>
+    <_DorotiRunnerWorkspaceDirectory>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)'))</_DorotiRunnerWorkspaceDirectory>
+  </PropertyGroup>
+</Project>

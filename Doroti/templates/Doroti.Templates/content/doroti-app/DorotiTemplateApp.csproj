@@ -2,16 +2,11 @@
   <PropertyGroup>
     <AssemblyName>DorotiTemplateApp</AssemblyName>
     <RootNamespace>DorotiTemplateApp</RootNamespace>
-    <ApplicationTitle>DorotiTemplateApp</ApplicationTitle>
-    <ApplicationId>dev.doroti.dorotiapp</ApplicationId>
-    <ApplicationDisplayVersion>0.2.0</ApplicationDisplayVersion>
-    <ApplicationVersion>2</ApplicationVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Doroti.Hosting" Version="0.2.0-beta" />
     <PackageReference Include="Doroti.Ui" Version="0.2.0-beta" />
     <PackageReference Include="Doroti.Framework.Widgets" Version="0.2.0-beta" />
     <PackageReference Include="Doroti.Framework.Material" Version="0.2.0-beta" />
-    <DorotiJavaScriptPlugin Include="echo" Channel="doroti.example/echo" ExportName="invoke" ModuleUrl="./plugins/echo.js" Condition="'$(DorotiTarget)' == 'Web'" />
   </ItemGroup>
 </Project>

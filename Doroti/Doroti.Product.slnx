@@ -17,16 +17,34 @@
     <Project Path="src/Doroti.Framework.Material/Doroti.Framework.Material.csproj" />
     <Project Path="src/Doroti.Host.Web/Doroti.Host.Web.csproj" />
     <Project Path="src/Doroti.Host.Maui/Doroti.Host.Maui.csproj" />
+    <Project Path="src/Doroti.Host.Qt/Doroti.Host.Qt.csproj" />
+    <Project Path="src/Doroti.Runner.Sdk/Doroti.Runner.Sdk.csproj" />
     <Project Path="src/Doroti.Skia.RuntimeEffects/Doroti.Skia.RuntimeEffects.csproj" />
     <Project Path="src/Doroti.Target.Windows.Maui.win-x64/Doroti.Target.Windows.Maui.win-x64.csproj" />
     <Project Path="src/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.csproj" />
+    <Project Path="src/Doroti.Target.iOS.Maui.ios-arm64/Doroti.Target.iOS.Maui.ios-arm64.csproj" />
+    <Project Path="src/Doroti.Target.iOS.Maui.iossimulator-x64/Doroti.Target.iOS.Maui.iossimulator-x64.csproj" />
     <Project Path="src/Doroti.Target.Android.Maui.android-arm64/Doroti.Target.Android.Maui.android-arm64.csproj" />
     <Project Path="src/Doroti.Target.Android.Maui.android-x64/Doroti.Target.Android.Maui.android-x64.csproj" />
     <Project Path="src/Doroti.Target.Web.browser-wasm/Doroti.Target.Web.browser-wasm.csproj" />
+    <Project Path="src/Doroti.Target.Linux.Qt.linux-x64/Doroti.Target.Linux.Qt.linux-x64.csproj" />
   </Folder>
   <Project Path="src/Doroti.App.Sdk/Doroti.App.Sdk.csproj" />
   <Folder Name="/samples/">
     <Project Path="../DorotiDemoApp/DorotiDemoApp.csproj" />
+    <Project Path="../DorotiDemoApp/windows/DorotiDemoApp.Windows.csproj" />
+    <Project Path="../DorotiDemoApp/web/DorotiDemoApp.Web.csproj" />
+    <Project Path="../DorotiDemoApp/android/DorotiDemoApp.Android.csproj" />
+    <Project Path="../DorotiDemoApp/android/binding/DorotiDemoApp.Android.Native.csproj" />
+    <Project Path="../DorotiDemoApp/macos/DorotiDemoApp.MacCatalyst.csproj" />
+    <Project Path="../DorotiDemoApp/macos/binding/DorotiDemoApp.MacCatalyst.Native.csproj" />
+    <Project Path="../DorotiDemoApp/ios/DorotiDemoApp.iOS.csproj" />
+    <Project Path="../DorotiDemoApp/ios/binding/DorotiDemoApp.iOS.Native.csproj" />
+    <Project Path="../DorotiDemoApp/linux/DorotiDemoApp.Linux.csproj" />
+  </Folder>
+  <Folder Name="/validation/app-runner/">
+    <Project Path="validation/app-runner/synthetic-app/SyntheticApp.csproj" />
+    <Project Path="validation/app-runner/synthetic-runner/SyntheticRunner.csproj" />
   </Folder>
   <Folder Name="/templates/">
     <Project Path="templates/Doroti.Templates/Doroti.Templates.csproj" />

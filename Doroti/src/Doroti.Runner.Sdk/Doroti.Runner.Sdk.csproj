@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <PackageId>Doroti.Runner.Sdk</PackageId>
+    <Description>Fixed-target runner SDK for Doroti platform workspaces.</Description>
+    <IsDorotiProduct>false</IsDorotiProduct>
+    <IsPackable>true</IsPackable>
+    <Version>0.2.0-beta</Version>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <IncludeSymbols>false</IncludeSymbols>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="Sdk\Sdk.props" Pack="true" PackagePath="Sdk\Sdk.props" />
+    <None Include="Sdk\Sdk.targets" Pack="true" PackagePath="Sdk\Sdk.targets" />
+    <None Include="..\Doroti.App.Sdk\Sdk\Doroti.TypeScript.targets" Pack="true" PackagePath="Sdk\Doroti.TypeScript.targets" Link="Sdk\Doroti.TypeScript.targets" />
+    <None Include="..\Doroti.Host.Web\Web\types\doroti-loader\index.d.ts" Pack="true" PackagePath="Sdk\types\doroti-loader\index.d.ts" Link="Sdk\types\doroti-loader\index.d.ts" />
+  </ItemGroup>
+</Project>

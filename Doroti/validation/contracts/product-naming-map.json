@@ -1,6 +1,21 @@
 {
   "schemaVersion": "doroti.product-naming-contract/v1",
   "status": "pass",
+  "currentPlatformProducts": [
+    "Doroti.App.Sdk",
+    "Doroti.Runner.Sdk",
+    "Doroti.Host.Maui",
+    "Doroti.Host.Web",
+    "Doroti.Host.Qt",
+    "Doroti.Target.Windows.Maui.win-x64",
+    "Doroti.Target.Android.Maui.android-arm64",
+    "Doroti.Target.Android.Maui.android-x64",
+    "Doroti.Target.iOS.Maui.ios-arm64",
+    "Doroti.Target.iOS.Maui.iossimulator-x64",
+    "Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64",
+    "Doroti.Target.Web.browser-wasm",
+    "Doroti.Target.Linux.Qt.linux-x64"
+  ],
   "projectMappings": [
     { "old": "Doroti.Flutter.Runtime", "new": "Doroti.Runtime" },
     { "old": "Doroti.Flutter.Ui", "new": "Doroti.Ui" },

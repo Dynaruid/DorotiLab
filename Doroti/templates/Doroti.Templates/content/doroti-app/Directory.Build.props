@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <ApplicationTitle>DorotiTemplateApp</ApplicationTitle>
+    <ApplicationId>__DOROTI_APPLICATION_ID__</ApplicationId>
+    <ApplicationDisplayVersion>__DOROTI_DISPLAY_VERSION__</ApplicationDisplayVersion>
+    <ApplicationVersion>__DOROTI_APPLICATION_VERSION__</ApplicationVersion>
+  </PropertyGroup>
+</Project>

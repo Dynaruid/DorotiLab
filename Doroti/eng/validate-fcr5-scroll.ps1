@@ -228,11 +228,10 @@ Assert-True ($mauiRaster.Contains('#if !WINDOWS', [StringComparison]::Ordinal) -
 $imageFilterRenderer = Read-Text (Join-Path $dorotiRoot 'src/Doroti.Skia.RuntimeEffects/DorotiSkiaImageFilterRenderer.cs')
 Assert-True ($imageFilterRenderer.Contains('cached.Generation != generation', [StringComparison]::Ordinal)) 'image filter output cache rejects stale subtree generations'
 $appTargetGate = Read-Text (Join-Path $dorotiRoot 'eng/validate-app-targets.ps1')
-foreach ($measurement in @('inputToOffsetMilliseconds', 'offsetToPresentMilliseconds', 'inputToPresentMilliseconds', 'animationPresentGaps')) {
-    Assert-True ($appTargetGate.Contains($measurement, [StringComparison]::Ordinal)) "Windows live scroll measurement: $measurement"
+foreach ($anchor in @("'WindowsLive'", "windowsNativeLive = 'notVerified'", 'Write-LiveNotVerified')) {
+    Assert-True ($appTargetGate.Contains($anchor, [StringComparison]::Ordinal)) "Windows live evidence boundary: $anchor"
 }
-Assert-True ($appTargetGate.Contains('offset-to-present max 60 Hz budget', [StringComparison]::Ordinal)) 'Windows live gate rejects a single visible scroll hitch'
-Assert-True ($appTargetGate.Contains('input-to-present excellent-frame budget', [StringComparison]::Ordinal)) 'Windows live gate enforces the complete 16.6 ms visible interaction budget'
+Assert-True ($appTargetGate.Contains('Automated build results are not native-live', [StringComparison]::Ordinal)) 'automated target builds cannot stand in for scroll live evidence'
 
 Invoke-LowererFixture 'Debug'
 Invoke-LowererFixture 'Release'
@@ -259,7 +258,7 @@ $evidence = [ordered]@{
     }
     ownershipContract = [ordered]@{
         status = 'pass'
-        checks = @('ScrollView applies PrimaryScrollController.shouldInherit', 'RawScrollbar uses explicit controller or the inherited primary controller', 'scroll viewport, semantics, scrollbar, overscroll, nested-scroll, and ticker paths use stable listener identities', 'ScrollbarPainter observes and removes its fade animation listener symmetrically', 'PictureLayer forwards bounds and change hints to a bounded retained raster cache', 'ImageFilterLayer uses a stable cache identity with subtree generation invalidation', 'Windows drives framework animations from WinUI compositor vsync and marshals compositor subscriptions to the UI thread', 'Android keeps Choreographer pre-armed during native drag and advances delayed paints to the newest display pulse', 'Windows records present after the native swap-chain flush and keeps evidence serialization off the paint callback', 'Windows live gate measures input-to-offset, offset-to-present, complete input-to-present, and scroll-animation cadence including maxima')
+        checks = @('ScrollView applies PrimaryScrollController.shouldInherit', 'RawScrollbar uses explicit controller or the inherited primary controller', 'scroll viewport, semantics, scrollbar, overscroll, nested-scroll, and ticker paths use stable listener identities', 'ScrollbarPainter observes and removes its fade animation listener symmetrically', 'PictureLayer forwards bounds and change hints to a bounded retained raster cache', 'ImageFilterLayer uses a stable cache identity with subtree generation invalidation', 'Windows drives framework animations from WinUI compositor vsync and marshals compositor subscriptions to the UI thread', 'Android keeps Choreographer pre-armed during native drag and advances delayed paints to the newest display pulse', 'Windows records present after the native swap-chain flush and keeps evidence serialization off the paint callback', 'Windows live scroll acceptance is a separate fixed-runner shard and remains notVerified until a current native capture is collected')
     }
     acceptance = [ordered]@{
         status = 'notVerified'

@@ -74,13 +74,15 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     public MauiHostDiagnostics? Diagnostics => _host?.CaptureDiagnostics(
         _viewId, "src/App.cs",
 #if WINDOWS
-        "Platforms/Windows/App.xaml.cs"
+        "windows/App.xaml.cs"
 #elif MACCATALYST
-        "obj/maccatalyst/Doroti.Generated/DorotiBootstrap.g.cs -> Platforms/MacCatalyst/AppDelegate.cs"
+        "obj/Doroti.Generated/DorotiBootstrap.g.cs -> macos/AppDelegate.cs"
+#elif IOS
+        "obj/Doroti.Generated/DorotiBootstrap.g.cs -> ios/AppDelegate.cs"
 #elif ANDROID
         RuntimeInformation.ProcessArchitecture == Architecture.X64
-            ? "obj/android-x64/Doroti.Generated/DorotiBootstrap.g.cs -> Platforms/Android/MainApplication.cs"
-            : "obj/android/Doroti.Generated/DorotiBootstrap.g.cs -> Platforms/Android/MainApplication.cs"
+            ? "obj/android-x64/Doroti.Generated/DorotiBootstrap.g.cs -> android/MainApplication.cs"
+            : "obj/android-arm64/Doroti.Generated/DorotiBootstrap.g.cs -> android/MainApplication.cs"
 #else
 #error Doroti.Host.Maui requires an explicit bootstrap source.
 #endif
@@ -97,8 +99,10 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
             _host = new();
             _session.Start(deferFrameworkBootstrap: true);
             _boundary = DorotiApplicationBoundary.Load(
+                _application.ManifestAssembly,
                 _application.ApplicationAssembly,
-                _application.LaunchContext.RuntimeIdentifier);
+                _application.LaunchContext.RuntimeIdentifier,
+                _application.NativePluginHandlers);
             _host.CreateView(_session, _viewId, _skiaView, _application.ViewConfiguration,
                 new MauiSemanticsBridge(_semanticsLayer), _boundary, _textInput);
             using (var dispatcherScope = _session.dispatcher.EnterScope())

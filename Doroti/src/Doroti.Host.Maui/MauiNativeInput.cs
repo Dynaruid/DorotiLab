@@ -234,7 +234,7 @@ internal static class MauiNativeInput
                 new Windows.UI.Core.CoreCursor(cursorType, 0)));
         }
     }
-#elif MACCATALYST
+#elif IOS || MACCATALYST
     private sealed class NativeKeyboardSubscription : IDisposable
     {
         private readonly SKGLView _view;

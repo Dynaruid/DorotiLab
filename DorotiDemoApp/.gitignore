@@ -1,8 +1,5 @@
 # DorotiDemoApp ignore rules
-# Doroti.App.Sdk writes target-keyed output:
-#   bin/<windows|maccatalyst|web>/<Configuration>/
-#   obj/<windows|maccatalyst|web>/
-# Keep packages.<target>.lock.json tracked for RestorePackagesWithLockFile.
+# Every platform runner owns its local output and lock file.
 
 [Bb]in/
 [Oo]bj/
@@ -20,7 +17,16 @@
 *.appinstaller
 
 # In-place Blazor/_framework dumps under source wwwroot
-Platforms/Web/wwwroot/_framework/
+web/wwwroot/_framework/
+
+# Native workspace output and per-user Apple state
+**/.gradle/
+**/native/**/[Bb]uild/
+**/DerivedData/
+**/xcuserdata/
+**/.xcode.env.local
+**/native/**/*.aar
+**/native/**/*.xcframework/
 
 # MSBuild / IDE user state
 *.user

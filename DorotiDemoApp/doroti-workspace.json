@@ -1,0 +1,13 @@
+{
+  "$schema": "../Doroti/validation/contracts/doroti-workspace.schema.json",
+  "schemaVersion": "doroti.workspace/v1",
+  "applicationProject": "DorotiDemoApp.csproj",
+  "platforms": {
+    "android": "android/DorotiDemoApp.Android.csproj",
+    "ios": "ios/DorotiDemoApp.iOS.csproj",
+    "linux": "linux/DorotiDemoApp.Linux.csproj",
+    "macos": "macos/DorotiDemoApp.MacCatalyst.csproj",
+    "web": "web/DorotiDemoApp.Web.csproj",
+    "windows": "windows/DorotiDemoApp.Windows.csproj"
+  }
+}

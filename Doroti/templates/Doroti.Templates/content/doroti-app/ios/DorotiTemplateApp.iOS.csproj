@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Sdk Name="Doroti.Runner.Sdk" Version="0.2.0-beta" />
+  <PropertyGroup>
+    <TargetFramework>net10.0-ios</TargetFramework>
+    <AssemblyName>DorotiTemplateApp.iOS</AssemblyName>
+    <RootNamespace>DorotiTemplateApp.iOS</RootNamespace>
+    <DorotiAppProject>..\DorotiTemplateApp.csproj</DorotiAppProject>
+    <DorotiTarget>iOS</DorotiTarget>
+    <DorotiHostKind>Maui</DorotiHostKind>
+    <DorotiNativeEntryKind>UIKit-Main</DorotiNativeEntryKind>
+    <UseMaui>true</UseMaui>
+    <DefineConstants>$(DefineConstants);IOS;DOROTI_MAUI</DefineConstants>
+    <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+  </PropertyGroup>
+  <ItemGroup>
+    <DorotiNativeBindingProject Include="binding\DorotiTemplateApp.iOS.Native.csproj" />
+    <DorotiTargetDescriptor Include="iOS" HostKind="Maui" NativeEntryKind="UIKit-Main" RuntimeIdentifier="iossimulator-x64" TargetFramework="net10.0-ios" TargetPackage="Doroti.Target.iOS.Maui.iossimulator-x64" Condition="'$(RuntimeIdentifier)' == 'iossimulator-x64'" />
+    <DorotiTargetDescriptor Include="iOS" HostKind="Maui" NativeEntryKind="UIKit-Main" RuntimeIdentifier="ios-arm64" TargetFramework="net10.0-ios" TargetPackage="Doroti.Target.iOS.Maui.ios-arm64" Condition="'$(RuntimeIdentifier)' == 'ios-arm64'" />
+    <PackageReference Include="Doroti.Target.iOS.Maui.iossimulator-x64" Version="0.2.0-beta" Condition="'$(RuntimeIdentifier)' == 'iossimulator-x64'" />
+    <PackageReference Include="Doroti.Target.iOS.Maui.ios-arm64" Version="0.2.0-beta" Condition="'$(RuntimeIdentifier)' == 'ios-arm64'" />
+  </ItemGroup>
+</Project>

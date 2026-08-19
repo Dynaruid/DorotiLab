@@ -1,200 +1,50 @@
 <Project>
-  <PropertyGroup>
-    <DorotiApplicationType Condition="'$(DorotiApplicationType)' == ''">$(RootNamespace).Program</DorotiApplicationType>
-    <_DorotiGeneratedDirectory>$(BaseIntermediateOutputPath)Doroti.Generated/</_DorotiGeneratedDirectory>
-    <_DorotiBootstrapFile>$(_DorotiGeneratedDirectory)DorotiBootstrap.g.cs</_DorotiBootstrapFile>
-    <_DorotiPluginRegistrationFile>$(_DorotiGeneratedDirectory)DorotiPluginRegistration.g.cs</_DorotiPluginRegistrationFile>
-    <_DorotiWebRuntimeStampFile>$(_DorotiGeneratedDirectory)web-runtime-version.txt</_DorotiWebRuntimeStampFile>
-    <_DorotiWebRuntimeClosure>$(RuntimeFrameworkVersion)|$(SkiaSharpVersion)</_DorotiWebRuntimeClosure>
-    <DorotiTypeScriptConfig Condition="'$(DorotiWebTypeScript)' == 'true'">$(MSBuildProjectDirectory)/Platforms/Web/tsconfig.json</DorotiTypeScriptConfig>
-    <DorotiTypeScriptSourceRoot Condition="'$(DorotiWebTypeScript)' == 'true'">$(MSBuildProjectDirectory)/Platforms/Web/src</DorotiTypeScriptSourceRoot>
-    <DorotiTypeScriptOutputRoot Condition="'$(DorotiWebTypeScript)' == 'true'">$(BaseIntermediateOutputPath)$(Configuration)/$(TargetFramework)/Doroti.Generated/wwwroot</DorotiTypeScriptOutputRoot>
-    <DorotiTypeScriptExpectedOutput Condition="'$(DorotiWebTypeScript)' == 'true'">$(DorotiTypeScriptOutputRoot)/doroti_bootstrap.js</DorotiTypeScriptExpectedOutput>
-    <DorotiTypeScriptTypeRoots Condition="'$(DorotiWebTypeScript)' == 'true' and Exists('$(MSBuildThisFileDirectory)types/doroti-loader/index.d.ts')">$(MSBuildThisFileDirectory)types</DorotiTypeScriptTypeRoots>
-    <DorotiTypeScriptTypeRoots Condition="'$(DorotiWebTypeScript)' == 'true' and '$(DorotiTypeScriptTypeRoots)' == ''">$(MSBuildThisFileDirectory)../../Doroti.Host.Web/Web/types</DorotiTypeScriptTypeRoots>
-    <DorotiTypeScriptStaticBasePath Condition="'$(DorotiWebTypeScript)' == 'true'">wwwroot</DorotiTypeScriptStaticBasePath>
-  </PropertyGroup>
-
-  <!-- Restore-time mirrors; target packages publish the same descriptors through buildTransitive assets. -->
-  <ItemGroup>
-    <DorotiTargetDescriptor Include="Windows" HostKind="Maui" NativeEntryKind="WinUI-Xaml" RuntimeIdentifier="win-x64" TargetFramework="net10.0-windows10.0.19041.0" TargetPackage="Doroti.Target.Windows.Maui.win-x64" Condition="'$(DorotiTarget)' == 'Windows'" />
-    <DorotiTargetDescriptor Include="MacCatalyst" HostKind="Maui" NativeEntryKind="UIKit-Main" RuntimeIdentifier="maccatalyst-arm64" TargetFramework="net10.0-maccatalyst" TargetPackage="Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64" Condition="'$(DorotiTarget)' == 'MacCatalyst'" />
-    <DorotiTargetDescriptor Include="Android" HostKind="Maui" NativeEntryKind="Android-Application" RuntimeIdentifier="android-arm64" TargetFramework="net10.0-android" TargetPackage="Doroti.Target.Android.Maui.android-arm64" Condition="'$(DorotiTarget)' == 'Android' and '$(RuntimeIdentifier)' == 'android-arm64'" />
-    <DorotiTargetDescriptor Include="Android" HostKind="Maui" NativeEntryKind="Android-Application" RuntimeIdentifier="android-x64" TargetFramework="net10.0-android" TargetPackage="Doroti.Target.Android.Maui.android-x64" Condition="'$(DorotiTarget)' == 'Android' and '$(RuntimeIdentifier)' == 'android-x64'" />
-    <DorotiTargetDescriptor Include="Web" HostKind="BlazorWebAssembly" NativeEntryKind="Managed-Main" RuntimeIdentifier="browser-wasm" TargetFramework="net10.0" TargetPackage="Doroti.Target.Web.browser-wasm" Condition="'$(DorotiTarget)' == 'Web'" />
-  </ItemGroup>
-
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="src/**/*.cs" />
-    <Compile Include="Platforms/$(DorotiTarget)/**/*.cs" />
-    <Compile Include="$(_DorotiBootstrapFile)" AutoGen="true" DesignTime="true" Visible="false" />
-    <Compile Include="$(_DorotiPluginRegistrationFile)" AutoGen="true" DesignTime="true" Visible="false" />
-    <ApplicationDefinition Include="Platforms/$(DorotiTarget)/App.xaml" Generator="MSBuild:Compile" Condition="Exists('Platforms/$(DorotiTarget)/App.xaml')" />
-    <Content Include="Platforms/$(DorotiTarget)/wwwroot/**" Link="wwwroot/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Condition="'$(DorotiTarget)' != 'Web' and Exists('Platforms/$(DorotiTarget)/wwwroot')" />
-    <EmbeddedResource Include="Platforms/$(DorotiTarget)/application-manifest.$(RuntimeIdentifier).json" LogicalName="Doroti.Application.Manifest" Condition="Exists('Platforms/$(DorotiTarget)/application-manifest.$(RuntimeIdentifier).json')" />
-    <EmbeddedResource Include="Platforms/$(DorotiTarget)/application-manifest.json" LogicalName="Doroti.Application.Manifest" Condition="!Exists('Platforms/$(DorotiTarget)/application-manifest.$(RuntimeIdentifier).json') and Exists('Platforms/$(DorotiTarget)/application-manifest.json')" />
-    <EmbeddedResource Include="Resources/Shaders/**/*.sksl" LogicalName="Doroti.Shaders.%(RecursiveDir)%(Filename)%(Extension)" Condition="Exists('Resources/Shaders')" />
-    <AndroidResource Include="Platforms/Android/Resources/**/*" Condition="'$(DorotiTarget)' == 'Android' and Exists('Platforms/Android/Resources')" />
-    <MauiIcon Include="Resources/AppIcon/appicon.svg" ForegroundFile="Resources/AppIcon/appiconfg.svg" Color="#6750A4" Condition="'$(UseMaui)' == 'true' and Exists('Resources/AppIcon/appicon.svg')" />
-    <MauiSplashScreen Include="Resources/Splash/splash.svg" Color="#FFFBFE" BaseSize="128,128" Condition="'$(UseMaui)' == 'true' and Exists('Resources/Splash/splash.svg')" />
+    <EmbeddedResource Include="assets/shaders/**/*.sksl"
+                      LogicalName="Doroti.Shaders.%(RecursiveDir)%(Filename)%(Extension)"
+                      Condition="Exists('assets/shaders')" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(UseMaui)' == 'true'">
-    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-    <PackageReference Include="CommunityToolkit.Maui.Markup" Version="$(DorotiMarkupVersion)" />
-    <PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="$(SkiaSharpVersion)" />
-    <PackageReference Include="Doroti.Host.Maui" Version="$(DorotiVersion)" Condition="'$(DorotiUseRepositoryProjects)' != 'true'" />
-    <PackageReference Include="Doroti.Target.$(DorotiTarget).Maui.$(RuntimeIdentifier)" Version="$(DorotiVersion)" Condition="'$(DorotiUseRepositoryProjects)' != 'true'" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(DorotiTarget)' == 'Web'">
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(DorotiWebRuntimeVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="$(DorotiWebRuntimeVersion)" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="$(DorotiTypeScriptVersion)" PrivateAssets="all" Condition="'$(DorotiWebTypeScript)' == 'true'" />
-    <PackageReference Include="Doroti.Target.Web.browser-wasm" Version="$(DorotiVersion)" Condition="'$(DorotiUseRepositoryProjects)' != 'true'" />
-  </ItemGroup>
-
-  <Target Name="ValidateDorotiAppTarget" BeforeTargets="PrepareForBuild;Restore">
-    <PropertyGroup>
-      <_DorotiTargetDescriptorCount>@(DorotiTargetDescriptor->Count())</_DorotiTargetDescriptorCount>
-      <_DorotiSelectedTarget>@(DorotiTargetDescriptor->'%(Identity)')</_DorotiSelectedTarget>
-      <_DorotiSelectedTfm>@(DorotiTargetDescriptor->'%(TargetFramework)')</_DorotiSelectedTfm>
-      <_DorotiSelectedRid>@(DorotiTargetDescriptor->'%(RuntimeIdentifier)')</_DorotiSelectedRid>
-    </PropertyGroup>
+  <Target Name="ValidateDorotiPlatformNeutralApplication" BeforeTargets="PrepareForBuild;Restore">
     <ItemGroup>
-      <_DorotiForbiddenSource Include="Platforms/Maui/**/*" />
-      <_DorotiForbiddenSource Include="Platforms/**/PlatformBootstrap.cs" />
-      <_DorotiUnexpectedPlatformCompile Include="@(Compile)" Condition="$([System.String]::Copy('%(Compile.Identity)').Replace('%5C', '/').Contains('Platforms/')) and !$([System.String]::Copy('%(Compile.Identity)').Replace('%5C', '/').Contains('Platforms/$(DorotiTarget)/'))" />
-      <_DorotiDisallowedXaml Include="@(MauiXaml)" />
-      <_DorotiDisallowedXaml Include="@(ApplicationDefinition)" Condition="$([System.String]::Copy('%(ApplicationDefinition.Identity)').Replace('%5C', '/')) != 'Platforms/$(DorotiTarget)/App.xaml'" />
+      <_DorotiForbiddenApplicationSource Include="@(Compile)"
+          Condition="$([System.String]::Copy('%(Compile.Identity)').Replace('%5C', '/').Contains('Platforms/'))" />
+      <_DorotiForbiddenApplicationReference Include="@(ProjectReference)"
+          Condition="$([System.String]::Copy('%(ProjectReference.Filename)').Contains('Doroti.Host.Maui')) or
+                     $([System.String]::Copy('%(ProjectReference.Filename)').Contains('Doroti.Host.Web')) or
+                     $([System.String]::Copy('%(ProjectReference.Filename)').Contains('Doroti.Host.Qt')) or
+                     $([System.String]::Copy('%(ProjectReference.Filename)').Contains('Doroti.Target.')) or
+                     $([System.String]::Copy('%(ProjectReference.Filename)').EndsWith('.Android.Native')) or
+                     $([System.String]::Copy('%(ProjectReference.Filename)').EndsWith('.iOS.Native')) or
+                     $([System.String]::Copy('%(ProjectReference.Filename)').EndsWith('.MacCatalyst.Native'))" />
+      <_DorotiForbiddenApplicationPackage Include="@(PackageReference)"
+          Condition="$([System.String]::Copy('%(PackageReference.Identity)').StartsWith('Microsoft.Maui')) or
+                     $([System.String]::Copy('%(PackageReference.Identity)').StartsWith('Microsoft.AspNetCore.Components.WebAssembly')) or
+                     $([System.String]::Copy('%(PackageReference.Identity)').StartsWith('Doroti.Host.')) or
+                     $([System.String]::Copy('%(PackageReference.Identity)').StartsWith('Doroti.Target.'))" />
     </ItemGroup>
-    <Error Code="DOROTIAPP004" Condition="'$(DorotiTarget)' == 'Android' and '$(RuntimeIdentifier)' != 'android-arm64' and '$(RuntimeIdentifier)' != 'android-x64'" Text="DorotiTarget Android requires RuntimeIdentifier 'android-arm64' or 'android-x64'; found '$(RuntimeIdentifier)'." />
-    <Error Code="DOROTIAPP001" Condition="'$(_DorotiTargetDescriptorCount)' != '1'" Text="A Doroti build requires exactly one DorotiTargetDescriptor; found '$(_DorotiTargetDescriptorCount)' for '$(DorotiTarget)'." />
-    <Error Code="DOROTIAPP002" Condition="'$(_DorotiSelectedTarget)' != '$(DorotiTarget)'" Text="DorotiTargetDescriptor '$(_DorotiSelectedTarget)' does not match DorotiTarget '$(DorotiTarget)'." />
-    <Error Code="DOROTIAPP003" Condition="'$(_DorotiSelectedTfm)' != '$(TargetFramework)'" Text="DorotiTarget $(DorotiTarget) requires TargetFramework '$(_DorotiSelectedTfm)'; found '$(TargetFramework)'." />
-    <Error Code="DOROTIAPP004" Condition="'$(_DorotiSelectedRid)' != '$(RuntimeIdentifier)'" Text="DorotiTarget $(DorotiTarget) requires RuntimeIdentifier '$(_DorotiSelectedRid)'; found '$(RuntimeIdentifier)'." />
-    <Error Code="DOROTIAPP005" Condition="'@(_DorotiDisallowedXaml)' != ''" Text="Only the selected target ApplicationDefinition is allowed: @(_DorotiDisallowedXaml)." />
-    <Error Code="DOROTIAPP006" Condition="'@(_DorotiUnexpectedPlatformCompile)' != ''" Text="The selected Doroti target contains source from another platform: @(_DorotiUnexpectedPlatformCompile)." />
-    <Error Code="DOROTIAPP007" Condition="'@(_DorotiForbiddenSource)' != ''" Text="Legacy app-owned Doroti bootstrap source is forbidden: @(_DorotiForbiddenSource)." />
-    <Error Code="DOROTIAPP008" Condition="'$(DorotiApplicationType)' == ''" Text="DorotiApplicationType must name one public startup type." />
-    <Error Code="DOROTIAPP009" Condition="'@(DorotiJavaScriptPlugin)' != '' and '%(DorotiJavaScriptPlugin.Channel)' == ''" Text="DorotiJavaScriptPlugin '%(DorotiJavaScriptPlugin.Identity)' must declare Channel metadata." />
-    <Error Code="DOROTIAPP010" Condition="'@(DorotiJavaScriptPlugin)' != '' and '%(DorotiJavaScriptPlugin.ExportName)' == ''" Text="DorotiJavaScriptPlugin '%(DorotiJavaScriptPlugin.Identity)' must declare ExportName metadata." />
+    <Error Code="DOROTIAPP101" Condition="'$(TargetFramework)' != 'net10.0'"
+           Text="A Doroti application project is platform-neutral and requires TargetFramework 'net10.0'; found '$(TargetFramework)'." />
+    <Error Code="DOROTIAPP102" Condition="'$(UseMaui)' == 'true' or '$(UsingMicrosoftNETSdkBlazorWebAssembly)' == 'true'"
+           Text="A Doroti application project cannot enable MAUI or the Blazor WebAssembly SDK. Move the platform host to a runner project." />
+    <Error Code="DOROTIAPP103" Condition="'@(_DorotiForbiddenApplicationSource)' != ''"
+           Text="Platform source is forbidden in a Doroti application project: @(_DorotiForbiddenApplicationSource)." />
+    <Error Code="DOROTIAPP104" Condition="'@(_DorotiForbiddenApplicationReference)' != '' or '@(_DorotiForbiddenApplicationPackage)' != ''"
+           Text="Platform host/target references are forbidden in a Doroti application project: @(_DorotiForbiddenApplicationReference) @(_DorotiForbiddenApplicationPackage)." />
+    <Error Code="DOROTIAPP100" Condition="'$(DorotiTarget)' != ''"
+           Text="The single-project DorotiTarget command has been removed. Use 'Doroti/eng/doroti.ps1 build --app &lt;path&gt; --platform &lt;name&gt;' or build the platform runner project directly." />
   </Target>
 
-  <Target Name="InvalidateDorotiWebRuntimeCache" BeforeTargets="PrepareForBuild" Condition="'$(DorotiTarget)' == 'Web'">
-    <ReadLinesFromFile File="$(_DorotiWebRuntimeStampFile)" Condition="Exists('$(_DorotiWebRuntimeStampFile)')">
-      <Output TaskParameter="Lines" PropertyName="_DorotiPreviousWebRuntimeClosure" />
-    </ReadLinesFromFile>
-    <RemoveDir Directories="$(IntermediateOutputPath)webcil" Condition="'$(_DorotiPreviousWebRuntimeClosure)' != '$(_DorotiWebRuntimeClosure)' and Exists('$(IntermediateOutputPath)webcil')" />
-    <MakeDir Directories="$(_DorotiGeneratedDirectory)" />
-    <WriteLinesToFile File="$(_DorotiWebRuntimeStampFile)" Overwrite="true" WriteOnlyWhenDifferent="true" Lines="$(_DorotiWebRuntimeClosure)" />
-  </Target>
-
-  <Target Name="GenerateDorotiBootstrap" DependsOnTargets="ValidateDorotiAppTarget" BeforeTargets="PrepareForBuild;CoreCompile">
-    <MakeDir Directories="$(_DorotiGeneratedDirectory)" />
+  <Target Name="GetDorotiApplicationContract" Returns="@(_DorotiApplicationContract)">
     <ItemGroup>
-      <_DorotiPluginLines Include="// &lt;auto-generated /&gt;" />
-      <_DorotiPluginLines Include="namespace Doroti.Generated%3B" />
-      <_DorotiPluginLines Include="internal static class DorotiPluginRegistration" />
-      <_DorotiPluginLines Include="{" />
-      <_DorotiPluginLines Include="    internal static readonly global::Doroti.Hosting.DorotiApplicationPluginRegistration[] Items =" />
-      <_DorotiPluginLines Include="    [" />
-      <_DorotiPluginLines Include="@(DorotiJavaScriptPlugin->'        new global::Doroti.Hosting.DorotiApplicationPluginRegistration(&quot;%(Identity)&quot;, &quot;%(Channel)&quot;, &quot;doroti.browser-js-plugin/v1&quot;, &quot;%(ModuleUrl)&quot;, &quot;%(ExportName)&quot;),')" />
-      <_DorotiPluginLines Include="    ]%3B" />
-      <_DorotiPluginLines Include="}" />
-      <_DorotiBootstrapLines Include="// &lt;auto-generated /&gt;" />
-      <_DorotiBootstrapLines Include="namespace Doroti.Generated%3B" />
-      <_DorotiBootstrapLines Include="internal static class DorotiBootstrap" />
-      <_DorotiBootstrapLines Include="{" />
-      <_DorotiBootstrapLines Include="    internal static global::Doroti.Hosting.DorotiApplicationDescriptor Create(string[] args) =&gt;" />
-      <_DorotiBootstrapLines Include="        global::Doroti.Hosting.DorotiApplicationFactory.Create&lt;global::$(DorotiApplicationType)&gt;(" />
-      <_DorotiBootstrapLines Include="            global::Doroti.Hosting.DorotiLaunchContext.Create(&quot;$(DorotiTarget)&quot;, &quot;$(RuntimeIdentifier)&quot;, args), DorotiPluginRegistration.Items)%3B" />
-      <_DorotiBootstrapLines Include="    [global::System.Runtime.Versioning.SupportedOSPlatform(&quot;browser&quot;)]" Condition="'@(DorotiTargetDescriptor->'%(NativeEntryKind)')' == 'Managed-Main'" />
-      <_DorotiBootstrapLines Include="    public static global::System.Threading.Tasks.Task Main(string[] args) =&gt;" Condition="'@(DorotiTargetDescriptor->'%(NativeEntryKind)')' == 'Managed-Main'" />
-      <_DorotiBootstrapLines Include="        global::Doroti.Target.Web.DorotiWebRunner.RunAsync&lt;global::$(DorotiApplicationType)&gt;(args, DorotiPluginRegistration.Items)%3B" Condition="'@(DorotiTargetDescriptor->'%(NativeEntryKind)')' == 'Managed-Main'" />
-      <_DorotiBootstrapLines Include="    public static void Main(string[] args) =&gt;" Condition="'@(DorotiTargetDescriptor->'%(NativeEntryKind)')' == 'UIKit-Main'" />
-      <_DorotiBootstrapLines Include="        global::UIKit.UIApplication.Main(args, null, typeof(global::$(RootNamespace).Platforms.MacCatalyst.AppDelegate))%3B" Condition="'@(DorotiTargetDescriptor->'%(NativeEntryKind)')' == 'UIKit-Main'" />
-      <_DorotiBootstrapLines Include="}" />
-    </ItemGroup>
-    <WriteLinesToFile File="$(_DorotiPluginRegistrationFile)" Overwrite="true" WriteOnlyWhenDifferent="true" Lines="@(_DorotiPluginLines)" />
-    <WriteLinesToFile File="$(_DorotiBootstrapFile)" Overwrite="true" WriteOnlyWhenDifferent="true" Lines="@(_DorotiBootstrapLines)" />
-    <ItemGroup>
-      <FileWrites Include="$(_DorotiBootstrapFile);$(_DorotiPluginRegistrationFile)" />
+      <_DorotiApplicationContract Include="$(MSBuildProjectFullPath)" Kind="Application"
+          TargetFramework="$(TargetFramework)" StartupType="$(DorotiApplicationType)" AssemblyName="$(AssemblyName)" />
+      <_DorotiApplicationContract Include="@(EmbeddedResource)" Kind="Asset"
+          LogicalName="%(EmbeddedResource.LogicalName)" />
     </ItemGroup>
   </Target>
 
-  <Target Name="WriteDorotiTargetGraph" DependsOnTargets="GenerateDorotiBootstrap">
-    <PropertyGroup Condition="'$(DorotiWebTypeScript)' == 'true'">
-      <_DorotiTypeScriptSourceCount>@(DorotiTypeScriptSource->Count())</_DorotiTypeScriptSourceCount>
-    </PropertyGroup>
-    <ItemGroup>
-      <_DorotiGraphLine Include="target=$(DorotiTarget)" />
-      <_DorotiGraphLine Include="tfm=$(TargetFramework)" />
-      <_DorotiGraphLine Include="rid=$(RuntimeIdentifier)" />
-      <_DorotiGraphLine Include="startup=$(DorotiApplicationType)" />
-      <_DorotiGraphLine Include="descriptor=%(DorotiTargetDescriptor.Identity)|%(DorotiTargetDescriptor.HostKind)|%(DorotiTargetDescriptor.NativeEntryKind)|%(DorotiTargetDescriptor.TargetPackage)" />
-      <_DorotiGraphLine Include="compile=%(Compile.Identity)" />
-      <_DorotiGraphLine Include="generatedBootstrap=$(_DorotiBootstrapFile)" />
-      <_DorotiGraphLine Include="generatedPluginRegistration=$(_DorotiPluginRegistrationFile)" />
-      <_DorotiGraphLine Include="typescriptVersion=$(DorotiTypeScriptVersion)" Condition="'$(DorotiWebTypeScript)' == 'true'" />
-      <_DorotiGraphLine Include="typescriptConfig=$(DorotiTypeScriptConfig)" Condition="'$(DorotiWebTypeScript)' == 'true'" />
-      <_DorotiGraphLine Include="typescriptSourceCount=$(_DorotiTypeScriptSourceCount)" Condition="'$(DorotiWebTypeScript)' == 'true'" />
-      <_DorotiGraphLine Include="typescriptOutputRoot=$(DorotiTypeScriptOutputRoot)" Condition="'$(DorotiWebTypeScript)' == 'true'" />
-      <_DorotiGraphLine Include="applicationDefinition=%(ApplicationDefinition.Identity)" />
-      <_DorotiGraphLine Include="mauiXaml=%(MauiXaml.Identity)" />
-    </ItemGroup>
-    <WriteLinesToFile File="$(BaseIntermediateOutputPath)doroti-target-graph.txt" Overwrite="true" Lines="@(_DorotiGraphLine)" />
-  </Target>
-
-  <!--
-    Blazor maps Content Link=wwwroot/** onto $(MSBuildProjectDirectory)\wwwroot. Doroti keeps
-    handwritten web files under Platforms/Web/wwwroot, so development hosting must register
-    that folder as the static-web-asset content root or the printed URL 404s every file.
-  -->
-  <Target Name="DorotiRegisterWebWwwrootStaticAssets"
-          Condition="'$(DorotiTarget)' == 'Web' and Exists('$(MSBuildProjectDirectory)\Platforms\Web\wwwroot')"
-          DependsOnTargets="ResolveStaticWebAssetsConfiguration"
-          BeforeTargets="ResolveProjectStaticWebAssets;ResolveCurrentProjectStaticWebAssetsInputs">
-    <PropertyGroup>
-      <_DorotiWebWwwrootDirectory>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)\Platforms\Web\wwwroot'))</_DorotiWebWwwrootDirectory>
-    </PropertyGroup>
-    <ItemGroup>
-      <_DorotiWebWwwroot Include="Platforms\Web\wwwroot\**\*" />
-      <_DorotiWebWwwroot Update="@(_DorotiWebWwwroot)">
-        <RelativePath>%(RecursiveDir)%(Filename)%(Extension)</RelativePath>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </_DorotiWebWwwroot>
-      <Content Remove="@(_DorotiWebWwwroot)" />
-    </ItemGroup>
-    <DefineStaticWebAssets
-        CandidateAssets="@(_DorotiWebWwwroot)"
-        FingerprintCandidates="$(StaticWebAssetsFingerprintContent)"
-        FingerprintPatterns="@(StaticWebAssetFingerprintPattern)"
-        SourceId="$(PackageId)"
-        SourceType="Discovered"
-        ContentRoot="$(_DorotiWebWwwrootDirectory)"
-        BasePath="$(StaticWebAssetBasePath)">
-      <Output TaskParameter="Assets" ItemName="StaticWebAsset" />
-      <Output TaskParameter="Assets" ItemName="_DorotiWebWwwrootStaticWebAsset" />
-    </DefineStaticWebAssets>
-    <DefineStaticWebAssetEndpoints
-        CandidateAssets="@(_DorotiWebWwwrootStaticWebAsset)"
-        ContentTypeMappings="@(StaticWebAssetContentTypeMapping)">
-      <Output TaskParameter="Endpoints" ItemName="StaticWebAssetEndpoint" />
-    </DefineStaticWebAssetEndpoints>
-    <ItemGroup>
-      <StaticWebAssetDiscoveryPattern Include="$(PackageId)\wwwroot">
-        <Source>$(PackageId)</Source>
-        <BasePath>$(StaticWebAssetBasePath)</BasePath>
-        <ContentRoot>$(_DorotiWebWwwrootDirectory)</ContentRoot>
-        <Pattern>**</Pattern>
-      </StaticWebAssetDiscoveryPattern>
-    </ItemGroup>
-  </Target>
-
-  <Import Project="$(MSBuildThisFileDirectory)Doroti.TypeScript.targets" Condition="'$(DorotiWebTypeScript)' == 'true'" />
-
-  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk.BlazorWebAssembly" Condition="'$(DorotiTarget)' == 'Web'" />
-  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" Condition="'$(DorotiTarget)' != 'Web'" />
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 </Project>

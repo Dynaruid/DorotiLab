@@ -112,6 +112,8 @@ internal sealed class MauiHostAdapter :
         HostOperatingSystem.windows
 #elif MACCATALYST
         HostOperatingSystem.macOS
+#elif IOS
+        HostOperatingSystem.iOS
 #elif ANDROID
         HostOperatingSystem.android
 #else

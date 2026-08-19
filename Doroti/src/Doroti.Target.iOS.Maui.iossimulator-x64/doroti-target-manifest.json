@@ -1,0 +1,9 @@
+{
+  "schema": "doroti-target/v2",
+  "packageId": "Doroti.Target.iOS.Maui.iossimulator-x64",
+  "targetFramework": "net10.0-ios",
+  "rid": "iossimulator-x64",
+  "nativeViewType": "SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKMetalView",
+  "graphicsBackend": "UIKit-iOS-Simulator/SKMetalView/Metal-Skia",
+  "softwareFallback": false
+}

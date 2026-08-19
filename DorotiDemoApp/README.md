@@ -2,134 +2,62 @@
 
 **English** | [한국어](README.ko.md)
 
-DorotiDemoApp dogfoods Doroti's product-owned framework and single-project application contract. One `DorotiDemoApp.csproj`, root `Program.cs`, and shared `src/App.cs` target MAUI Windows, MAUI Mac Catalyst, MAUI Android, or Blazor WebAssembly.
-
-The application is C#-only. Its build and validation flows do not generate or consume a `DorotiDemoApp/dart` package.
+DorotiDemoApp dogfoods the platform-workspace contract. The root `DorotiDemoApp.csproj` is a platform-neutral `net10.0` library; each lower-case platform directory owns an independently buildable and runnable application project.
 
 ## Layout
 
-- `Program.cs`: the public, target-neutral `IDorotiApplicationStartup` used by every target
-- `src/App.cs`: the target-neutral Material widget/state tree and view configuration selected by `Program`
-- `Platforms/Windows`: thin WinUI shell, optional platform hook, and manifests
-- `Platforms/MacCatalyst`: thin UIKit delegate, optional platform hook, plist, and entitlements
-- `Platforms/Android`: thin `MainApplication`/`MainActivity` shell and Android manifest
-- `Platforms/Web/src`: user-owned TypeScript bootstrap policy and browser plugins
-- `Platforms/Web/wwwroot`: handwritten HTML, CSS-adjacent resources, locale/assets, and manifest files; generated JavaScript is forbidden here
-- `obj/web/<configuration>/net10.0/Doroti.Generated/wwwroot`: compiled application bootstrap/plugin JavaScript
-- `obj/<target>/Doroti.Generated`: SDK-owned C# bootstrap and plugin registration; never edit these files
+- `Program.cs`, `src/`, `assets/`: shared startup, widget tree, and application assets
+- `doroti-workspace.json`: `android`, `ios`, `linux`, `macos`, `web`, and `windows` aliases to runner projects
+- `windows/`: WinUI/MAUI runner and package identity
+- `web/`: Blazor WebAssembly runner, TypeScript source, and `wwwroot`
+- `android/`: .NET Android/MAUI runner plus the default Gradle AAR and .NET binding
+- `ios/`: .NET iOS/MAUI runner plus an independent Xcode framework and binding
+- `macos/`: Mac Catalyst runner plus an independent Xcode framework and binding; this is not true AppKit macOS
+- `linux/`: managed runner plus the app-owned CMake/Qt 6 C ABI shim
 
-`doroti_bootstrap.ts` configures loading/error UI and typed Blazor startup hooks through Doroti's loader. Only `doroti.loader.ts` calls `Blazor.start()`. Release publish exposes `doroti_bootstrap.js`, `plugins/echo.js`, `_content/Doroti.Host.Web/doroti.loader.js`, and `_content/Doroti.Host.Web/doroti.web.js`; it does not expose TypeScript source, `tsconfig.json`, or compiler assets.
+Generated bootstrap and plugin registration stay below each runner's `obj/<rid>/Doroti.Generated`. Platform icons, splash assets, manifests, entitlements, native source, outputs, and lock files remain in their owning platform directory.
 
-## System dark mode and color palettes
+## Commands
 
-The Demo and new `doroti-app` template use Flutter's `MaterialApp` contract. The MAUI host forwards Windows, Mac Catalyst, and Android system-theme changes, while the Web host forwards `prefers-color-scheme` changes, to `MediaQuery.platformBrightnessOf(context)`. `ThemeMode.system` then selects `theme` or `darkTheme` at runtime.
-
-Light and dark palettes can share a seed while overriding individual color roles:
-
-```csharp
-var lightPalette = Material.ColorScheme.CreateFromSeed(
-    seedColor: new UiColor(0xff6750a4L),
-    brightness: Brightness.light,
-    surface: new UiColor(0xfffffbfeL));
-var darkPalette = Material.ColorScheme.CreateFromSeed(
-    seedColor: new UiColor(0xff6750a4L),
-    brightness: Brightness.dark,
-    surface: new UiColor(0xff141218L));
-
-return new Material.MaterialApp(
-    theme: Material.ThemeData.Create(colorScheme: lightPalette, useMaterial3: true),
-    darkTheme: Material.ThemeData.Create(colorScheme: darkPalette, useMaterial3: true),
-    themeMode: Material.ThemeMode.system,
-    home: new CounterPage());
-```
-
-Inside widgets, use roles such as `primary`, `onPrimary`, `surfaceContainer`, and `onSurface` from `Material.Theme.of(context).colorScheme` instead of fixed colors. Set `themeMode` to `ThemeMode.light` or `ThemeMode.dark` to force a mode. See `DemoTheme` in [`src/App.cs`](src/App.cs) for the complete configuration.
-
-## Nested scrolling and Android scrollbar policy
-
-The Material gallery is a vertical nested-scroll regression surface: a `ListView.builder` lives inside a separate `SingleChildScrollView`. The two scrollables use `_outerScrollController` and `_innerScrollController`, and their scrollbars are identified by the `fcr5-outer-scrollbar` and `fcr5-inner-scrollbar` keys. The inner list has 24 × 30 logical-pixel rows in a 170 logical-pixel viewport, so its viewport, content extent, and offset are numerically distinct from the outer scrollable. Inner notifications continue to bubble, while the default `notification.depth == 0` predicate keeps each scrollbar bound to its nearest scrollable.
-
-The demo leaves `thumbVisibility` unset, so Android uses the transient Flutter policy. The resolved idle peak alpha is 255, remains visible for 600 ms after scrolling ends, and then fades to alpha 0 over 300 ms. `thumbVisibility: true` disables that fade and keeps the peak visible, so the demo does not use it. Products that require a semitransparent peak should declare state-specific alpha through the public `ScrollbarThemeData.thumbColor` contract instead of changing the framework Android default.
-
-## Run
-
-Commands are from the repository root. Each target restores against its own lock file (`packages.windows.lock.json`, `packages.maccatalyst.lock.json`, `packages.android.lock.json`, `packages.android-x64.lock.json`, `packages.web.lock.json`). SDK 10.0.400 and the `maui` / `wasm-tools` workloads are required.
-
-### Windows
-
-Host: Windows. RID `win-x64`. GPU surface is `MauiSKSwapChainPanel`.
+Run from the repository root. The workspace CLI resolves the runner path from `doroti-workspace.json`:
 
 ```powershell
-dotnet restore ./DorotiDemoApp/DorotiDemoApp.csproj -p:DorotiTarget=Windows --locked-mode
-dotnet run --project ./DorotiDemoApp/DorotiDemoApp.csproj --no-restore -p:DorotiTarget=Windows
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 doctor -App ./DorotiDemoApp -Platform all
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./DorotiDemoApp -Platform windows
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 publish -App ./DorotiDemoApp -Platform web
 ```
 
-### Mac Catalyst
-
-Host: Apple Silicon macOS. RID `maccatalyst-arm64`. GPU surface is `MauiSKMetalView`.
-
-```bash
-dotnet restore ./DorotiDemoApp/DorotiDemoApp.csproj -p:DorotiTarget=MacCatalyst --locked-mode
-dotnet run --project ./DorotiDemoApp/DorotiDemoApp.csproj --no-restore -p:DorotiTarget=MacCatalyst
-```
-
-### Android
-
-Connect one device or emulator (`adb devices`) before `dotnet run`. Default RID is `android-arm64`.
-
-Physical arm64 device:
-
-```bash
-dotnet restore ./DorotiDemoApp/DorotiDemoApp.csproj -p:DorotiTarget=Android -p:RuntimeIdentifier=android-arm64 --locked-mode
-dotnet run --project ./DorotiDemoApp/DorotiDemoApp.csproj --no-restore -p:DorotiTarget=Android -p:RuntimeIdentifier=android-arm64
-```
-
-x86_64 emulator:
-
-```bash
-dotnet restore ./DorotiDemoApp/DorotiDemoApp.csproj -p:DorotiTarget=Android -p:RuntimeIdentifier=android-x64 --locked-mode
-dotnet run --project ./DorotiDemoApp/DorotiDemoApp.csproj --no-restore -p:DorotiTarget=Android -p:RuntimeIdentifier=android-x64
-```
-
-If several devices are attached, add `-p:AdbTarget=-s:<serial>`.
-
-### Web
-
-Host: any OS with the WebAssembly workload. RID `browser-wasm`. `dotnet run` starts the Blazor development server.
-
-```bash
-dotnet restore ./DorotiDemoApp/DorotiDemoApp.csproj -p:DorotiTarget=Web --locked-mode
-dotnet run --project ./DorotiDemoApp/DorotiDemoApp.csproj --no-restore -p:DorotiTarget=Web
-```
-
-Static publish:
-
-```bash
-dotnet publish ./DorotiDemoApp/DorotiDemoApp.csproj -c Release -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm -o ./publish/doroti-demo-web
-```
-
-## Build and validation
+Runner projects also support direct .NET commands:
 
 ```powershell
-dotnet build ./DorotiDemoApp/DorotiDemoApp.csproj -c Release -p:DorotiTarget=Windows -p:RuntimeIdentifier=win-x64
-dotnet build ./DorotiDemoApp/DorotiDemoApp.csproj -c Release -p:DorotiTarget=Android -p:RuntimeIdentifier=android-arm64
-dotnet publish ./DorotiDemoApp/DorotiDemoApp.csproj -c Release -p:DorotiTarget=Web -p:RuntimeIdentifier=browser-wasm -o ./publish/doroti-demo-web
-dotnet publish ./DorotiDemoApp/DorotiDemoApp.csproj -c Release -p:DorotiTarget=MacCatalyst -p:RuntimeIdentifier=maccatalyst-arm64
-
-pwsh -File ./Doroti/eng/doroti.ps1 validate
-pwsh -File ./Doroti/eng/doroti.ps1 validate -ValidationSuite Fcr8
-pwsh -File ./Doroti/eng/doroti.ps1 validate -ValidationSuite Release
-pwsh -File ./Doroti/eng/validate-fcr8-stability.ps1 -Shard WindowsLive
-pwsh -File ./Doroti/eng/validate-fcr8-stability.ps1 -Shard AndroidPhysical -AndroidSerial <adb-serial>
-pwsh -File ./Doroti/eng/validate-fcr8-stability.ps1 -Shard Soak -SoakSeconds 300
+dotnet build ./DorotiDemoApp/DorotiDemoApp.csproj -c Release
+dotnet run --project ./DorotiDemoApp/windows/DorotiDemoApp.Windows.csproj
+dotnet run --project ./DorotiDemoApp/web/DorotiDemoApp.Web.csproj
+dotnet build ./DorotiDemoApp/android/DorotiDemoApp.Android.csproj -c Release -r android-x64
+dotnet build ./DorotiDemoApp/ios/DorotiDemoApp.iOS.csproj -c Release -r iossimulator-x64
+dotnet build ./DorotiDemoApp/macos/DorotiDemoApp.MacCatalyst.csproj -c Release
+dotnet publish ./DorotiDemoApp/linux/DorotiDemoApp.Linux.csproj -c Release -r linux-x64
 ```
 
-The developer suite checks the shared descriptor, generated bootstrap, custom shader contract, synthetic fourth-host extension point, all four target graphs/builds, and the FCR-8 `Inventory`/`Contracts`/`Differential`/`Evidence` representative gates. Actual Windows, Android, and soak acceptance remain explicit shards. Android physical acceptance requires the .NET Android workload, Android SDK/JDK, and an arm64 physical device. The release suite adds an actual Windows `MauiSKSwapChainPanel` GPU frame and an external Web template/package publish scenario. The repository pins SDK 10.0.400 and the Web runtime to 10.0.11; a runtime-version stamp invalidates stale WebCIL publish caches after patch changes.
+The old `dotnet run --project DorotiDemoApp.csproj -p:DorotiTarget=...` path fails with `DOROTIAPP100` and points to the platform runner.
 
-Custom shaders use SkiaSharp 4.151.1 and SkSL on every current target. Use `FragmentProgram.fromSource(...)` or register a `Resources/Shaders/*.sksl` asset in each application manifest and load it with `await FragmentProgram.fromAsset(...)`; set float/image-sampler uniforms on its `FragmentShader`, then use it from `Paint.shader`, `ShaderMask.shaderCallback`, or `ImageFilter.shader`. `ImageFilter.shader` captures its bounded child into an offscreen texture on the same GPU context, writes the texture size into the first `float2` uniform, and binds the filtered child to the first shader sampler as its implicit input. Flutter's Android stretch now uses an embedded SkSL program through that path. GPU-surface creation, compilation, and binding fail closed rather than selecting a software renderer.
+## Default native bridge
 
-Mac Catalyst cross-build is verified from Windows; native publish/run still requires Apple Silicon macOS. The current Chromium live run verifies the visible GPU surface, checkbox/radio/switch/slider/button/FAB pointer transitions, wheel scrolling, and a keyboard semantics action with zero console errors on Web runtime 10.0.11. Windows live verifies eight native wheel/drag events, two resize transitions, swap-chain replay, shader frames, and zero failed or software-fallback frames. Android physical, paired Flutter raster differential, soak/resource plateau, and IME/TalkBack/stylus/mouse acceptance remain `notVerified` until run.
+Every new app already contains Android, iOS, and Mac Catalyst native library plus binding projects. The native library does not replace the final application runner. Diagnose, build, or locate one workspace with:
 
-Current evidence is written to [FCR-8 stability evidence](../Doroti/validation/evidence/flutter-conformance/fcr8-stability-evidence.json), [app target evidence](../Doroti/validation/evidence/app-targets-evidence.json), [Web product evidence](../Doroti/validation/evidence/web/web-product-evidence.json), and [manual browser evidence](../Doroti/validation/evidence/web/web-browser-live-manual.json). Historical Win32/AppKit and G4-G7 evidence remains predecessor-only.
+```powershell
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native doctor -App ./DorotiDemoApp -Platform android
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native build -App ./DorotiDemoApp -Platform android -Rid android-arm64
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native open -App ./DorotiDemoApp -Platform ios
+```
 
-See the [Doroti runtime README](../Doroti/README.md) for source ownership and command details.
+`native open` prints the Android Studio/Xcode project path; add `-Launch` only when the IDE should actually open. The bridge ABI provides `platformInfo`, `echo`, and UI-thread callback operations.
+
+## Support and evidence status
+
+Automated Release builds are available for the neutral app, Windows, Web, Android arm64/x64, Mac Catalyst cross-build, iOS device/simulator cross-build, and the managed Linux runner. Android Gradle and iOS Xcode binding scaffolds also compile in the available cross-build environment.
+
+Those results do not prove native launch, GPU presentation, browser interaction, physical device behavior, accessibility, signing/store acceptance, or Linux X11/Wayland behavior. The current platform-workspace evidence keeps those unrun gates `notVerified`; Mac Catalyst evidence is never reported as true AppKit macOS evidence.
+
+See [ADR-021](../Doroti/docs/adr/ADR-021-platform-runner-workspaces.md) and the [workspace evidence](../Doroti/validation/evidence/app-targets-evidence.json).

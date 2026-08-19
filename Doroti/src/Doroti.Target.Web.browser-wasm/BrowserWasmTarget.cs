@@ -95,11 +95,13 @@ public sealed class BrowserWasmTarget : IDorotiBrowserTarget
     }
 
     public DorotiApplicationBoundary LoadApplicationBoundary(
+        Assembly manifestAssembly,
         Assembly applicationAssembly,
         IEnumerable<BrowserJavaScriptPluginDescriptor>? plugins = null)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         return DorotiApplicationBoundary.Load(
+            manifestAssembly,
             applicationAssembly,
             Rid,
             (plugins ?? []).Select(descriptor => new BrowserJavaScriptPluginHandler(descriptor)));

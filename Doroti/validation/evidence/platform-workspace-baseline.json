@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "doroti.platform-workspace-evidence/v1",
+  "capturedAt": "2026-08-19",
+  "sourceState": "pre-cutover",
+  "host": {
+    "os": "Windows 10.0.26200",
+    "dotnetSdk": "10.0.400",
+    "dotnetRuntime": "10.0.11",
+    "cmake": "4.3.2",
+    "qt": "notInstalled",
+    "xcode": "notAvailable"
+  },
+  "baseline": {
+    "descriptorContract": "pass",
+    "runtimeAsyncContract": "pass",
+    "runtimeShaderContract": "pass",
+    "targetGraph": "pass",
+    "windowsNativeLive": "historicalEvidenceOnly",
+    "webBrowserLive": "historicalEvidenceOnly",
+    "androidNativeLive": "historicalEvidenceOnly",
+    "macCatalystNativeLive": "notVerified"
+  },
+  "nativeLibraryInterop": {
+    "upstreamRevision": "07df778f1f85c2ad06cb74d3c8faa6ee9011191c",
+    "android": {
+      "targetFramework": "net10.0-android",
+      "buildItem": "AndroidGradleProject",
+      "managedBindingBuild": "pass",
+      "gradleNativeLibraryBuild": "pass",
+      "runnerInvocation": "notVerified"
+    },
+    "ios": {
+      "targetFramework": "net10.0-ios",
+      "buildItem": "XcodeProject",
+      "windowsCrossBuild": "pass",
+      "xcodeFrameworkBuild": "notVerified",
+      "abiGeneration": "notVerified",
+      "simulatorDeviceSigningArchive": "notVerified"
+    }
+  },
+  "acceptance": {
+    "macosWorkspaceProduct": "MacCatalyst",
+    "trueAppKitMacOS": "outOfScope",
+    "linuxOwnership": "managed-process-plus-Qt-C-ABI-shim",
+    "linuxX11": "notVerified",
+    "linuxWayland": "notVerified",
+    "physicalDevices": "notVerified"
+  }
+}

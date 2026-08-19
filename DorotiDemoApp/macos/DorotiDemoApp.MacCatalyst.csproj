@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.props" />
+  <PropertyGroup>
+    <TargetFramework>net10.0-maccatalyst</TargetFramework>
+    <RuntimeIdentifier>maccatalyst-arm64</RuntimeIdentifier>
+    <AssemblyName>DorotiDemoApp.MacCatalyst</AssemblyName>
+    <RootNamespace>DorotiDemoApp.MacCatalyst</RootNamespace>
+    <DorotiAppProject>..\DorotiDemoApp.csproj</DorotiAppProject>
+    <DorotiTarget>MacCatalyst</DorotiTarget>
+    <DorotiHostKind>Maui</DorotiHostKind>
+    <DorotiNativeEntryKind>UIKit-Main</DorotiNativeEntryKind>
+    <UseMaui>true</UseMaui>
+    <DefineConstants>$(DefineConstants);MACCATALYST;DOROTI_MAUI</DefineConstants>
+    <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+  </PropertyGroup>
+  <ItemGroup>
+    <DorotiNativeBindingProject Include="binding\DorotiDemoApp.MacCatalyst.Native.csproj" />
+    <DorotiTargetDescriptor Include="MacCatalyst" HostKind="Maui" NativeEntryKind="UIKit-Main"
+        RuntimeIdentifier="maccatalyst-arm64" TargetFramework="net10.0-maccatalyst"
+        TargetPackage="Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64" />
+    <ProjectReference Include="..\..\Doroti\src\Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64\Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.csproj" />
+  </ItemGroup>
+  <Import Project="..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.targets" />
+</Project>

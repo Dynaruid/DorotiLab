@@ -18,6 +18,8 @@ public sealed class MauiFrameworkHost : IDisposable
         "win-x64/winui3/SKSwapChainPanel/ANGLE-DirectX-Skia";
 #elif MACCATALYST
         "maccatalyst-arm64/UIKit-MacCatalyst/SKMetalView/Metal-Skia";
+#elif IOS
+        "ios/UIKit-iOS/SKMetalView/Metal-Skia";
 #elif ANDROID
         $"{AndroidRuntimeIdentifier}/Android/MauiSKGLTextureView/OpenGL-ES-Skia";
 #else
@@ -138,6 +140,8 @@ public sealed class MauiFrameworkHost : IDisposable
             ".NETCoreApp,Version=v10.0/Windows,Version=10.0.19041.0",
 #elif MACCATALYST
             ".NETCoreApp,Version=v10.0/MacCatalyst,Version=15.0",
+#elif IOS
+            ".NETCoreApp,Version=v10.0/iOS,Version=15.0",
 #elif ANDROID
             ".NETCoreApp,Version=v10.0/Android,Version=21.0",
 #else
@@ -147,6 +151,8 @@ public sealed class MauiFrameworkHost : IDisposable
             "win-x64",
 #elif MACCATALYST
             "maccatalyst-arm64",
+#elif IOS
+            RuntimeInformation.ProcessArchitecture == Architecture.Arm64 ? "ios-arm64" : "iossimulator-x64",
 #elif ANDROID
             AndroidRuntimeIdentifier,
 #else

@@ -22,7 +22,32 @@ catch (InvalidOperationException)
 }
 if (!duplicateFailed) throw new InvalidOperationException("Duplicate plugin registration did not fail closed.");
 
+var nativeBridge = new ContractNativeBridge();
+var nativeDescriptor = DorotiApplicationFactory.Create<ContractStartup>(launch, nativePluginHandlers: [nativeBridge]);
+if (nativeDescriptor.NativePluginHandlers.Single() != nativeBridge ||
+    nativeBridge.PlatformInfo().BridgeVersion != DorotiNativePlatformBridgeContract.BridgeVersion ||
+    nativeBridge.Echo("native") != "native" ||
+    await nativeBridge.EchoOnUiThreadAsync("ui") != "ui")
+    throw new InvalidOperationException("The default native platform bridge contract lost startup or echo data.");
+
+var request = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(new { method = "echo", value = "channel" });
+var response = await nativeBridge.HandleAsync(DorotiNativePlatformBridgeContract.Channel, "json", request);
+if (response is null || System.Text.Json.JsonSerializer.Deserialize<string>(response.Value.Span) != "channel")
+    throw new InvalidOperationException("The native platform channel did not round-trip its payload.");
+
+await AssertThrowsAsync<MissingMethodException>(() =>
+    nativeBridge.HandleAsync(DorotiNativePlatformBridgeContract.Channel, "json",
+        System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(new { method = "missing" })).AsTask());
+await AssertThrowsAsync<InvalidOperationException>(() => nativeBridge.EchoOnUiThreadAsync("throw").AsTask());
+
 Console.WriteLine("Doroti application descriptor contract: PASS");
+
+static async Task AssertThrowsAsync<T>(Func<Task> action) where T : Exception
+{
+    try { await action(); }
+    catch (T) { return; }
+    throw new InvalidOperationException($"Expected {typeof(T).Name} was not propagated.");
+}
 
 public sealed class ContractStartup : IDorotiApplicationStartup
 {
@@ -37,4 +62,19 @@ public sealed class ContractEntrypoint : IDorotiViewEntrypoint
     public void Shutdown() { }
     public void AttachView(DorotiView view) => _ = view;
     public void DetachView(DorotiView view) => _ = view;
+}
+
+public sealed class ContractNativeBridge : DorotiNativePlatformBridgeBase
+{
+    public override DorotiNativePlatformInfo PlatformInfo() =>
+        DorotiNativePlatformInfo.Parse("{\"platform\":\"Contract\",\"osVersion\":\"1\",\"bridgeVersion\":\"1.0.0\"}");
+
+    public override string Echo(string value) => value;
+
+    public override ValueTask<string> EchoOnUiThreadAsync(string value, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        if (value == "throw") throw new InvalidOperationException("contract exception");
+        return ValueTask.FromResult(value);
+    }
 }

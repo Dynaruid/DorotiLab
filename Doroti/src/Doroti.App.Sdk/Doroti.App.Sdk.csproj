@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <PackageId>Doroti.App.Sdk</PackageId>
-    <Description>Target-selecting MSBuild SDK for single-project Doroti applications.</Description>
+    <Description>Platform-neutral MSBuild SDK for Doroti application assemblies.</Description>
     <IsDorotiProduct>false</IsDorotiProduct>
     <IsPackable>true</IsPackable>
     <Version>0.2.0-beta</Version>

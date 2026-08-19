@@ -13,7 +13,7 @@
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>MAUI and Web product hosts with product-owned C# framework packages.</PackageReleaseNotes>
+    <PackageReleaseNotes>Platform-neutral applications with fixed MAUI, Web, and Linux Qt runners.</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup Condition="'$(IsDorotiProduct)' == 'true'">
     <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="/" Link="README.md" />

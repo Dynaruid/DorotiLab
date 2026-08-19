@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Sdk Name="Doroti.Runner.Sdk" Version="0.2.0-beta" />
+  <PropertyGroup>
+    <TargetFramework>net10.0-android</TargetFramework>
+    <AssemblyName>DorotiTemplateApp.Android</AssemblyName>
+    <RootNamespace>DorotiTemplateApp.Android</RootNamespace>
+    <DorotiAppProject>..\DorotiTemplateApp.csproj</DorotiAppProject>
+    <DorotiTarget>Android</DorotiTarget>
+    <DorotiHostKind>Maui</DorotiHostKind>
+    <DorotiNativeEntryKind>Android-Application</DorotiNativeEntryKind>
+    <UseMaui>true</UseMaui>
+    <DefineConstants>$(DefineConstants);ANDROID;DOROTI_MAUI</DefineConstants>
+    <SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <DorotiNativeBindingProject Include="binding\DorotiTemplateApp.Android.Native.csproj" />
+    <DorotiTargetDescriptor Include="Android" HostKind="Maui" NativeEntryKind="Android-Application" RuntimeIdentifier="android-arm64" TargetFramework="net10.0-android" TargetPackage="Doroti.Target.Android.Maui.android-arm64" Condition="'$(RuntimeIdentifier)' == 'android-arm64'" />
+    <DorotiTargetDescriptor Include="Android" HostKind="Maui" NativeEntryKind="Android-Application" RuntimeIdentifier="android-x64" TargetFramework="net10.0-android" TargetPackage="Doroti.Target.Android.Maui.android-x64" Condition="'$(RuntimeIdentifier)' == 'android-x64'" />
+    <PackageReference Include="Doroti.Target.Android.Maui.android-arm64" Version="0.2.0-beta" Condition="'$(RuntimeIdentifier)' == 'android-arm64'" />
+    <PackageReference Include="Doroti.Target.Android.Maui.android-x64" Version="0.2.0-beta" Condition="'$(RuntimeIdentifier)' == 'android-x64'" />
+  </ItemGroup>
+</Project>

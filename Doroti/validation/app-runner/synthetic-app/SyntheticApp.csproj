@@ -1,0 +1,11 @@
+<Project>
+  <Import Project="..\..\..\src\Doroti.App.Sdk\Sdk\Sdk.props" />
+  <PropertyGroup>
+    <AssemblyName>SyntheticApp</AssemblyName>
+    <RootNamespace>SyntheticApp</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Doroti.Hosting\Doroti.Hosting.csproj" />
+  </ItemGroup>
+  <Import Project="..\..\..\src\Doroti.App.Sdk\Sdk\Sdk.targets" />
+</Project>

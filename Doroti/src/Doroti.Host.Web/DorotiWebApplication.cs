@@ -19,6 +19,7 @@ public sealed record BrowserFrameDiagnostics(
 public interface IDorotiBrowserTarget : IDisposable
 {
     DorotiApplicationBoundary LoadApplicationBoundary(
+        Assembly manifestAssembly,
         Assembly applicationAssembly,
         IEnumerable<BrowserJavaScriptPluginDescriptor>? plugins = null);
 

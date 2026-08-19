@@ -1,0 +1,14 @@
+[Bb]in/
+[Oo]bj/
+[Pp]ublish/
+[Aa]pp[Pp]ackages/
+**/.gradle/
+**/native/**/[Bb]uild/
+**/DerivedData/
+**/xcuserdata/
+**/.xcode.env.local
+**/native/**/*.aar
+**/native/**/*.xcframework/
+web/wwwroot/_framework/
+*.user
+*.suo

@@ -14,6 +14,7 @@
 **/[Bb]in/[Ww]eb/
 **/[Bb]in/[Aa]ndroid/
 **/[Bb]in/[Aa]ndroid-x64/
+**/[Bb]in/
 **/[Oo]bj/
 **/[Tt]est[Rr]esults/
 **/[Bb]enchmark[Dd]ot[Nn]et.[Aa]rtifacts/
@@ -88,6 +89,13 @@ _ReSharper*/
 **/cmake_install.cmake
 **/compile_commands.json
 **/Testing/Temporary/
+**/.gradle/
+**/native/**/[Bb]uild/
+**/DerivedData/
+**/xcuserdata/
+**/.xcode.env.local
+**/native/**/*.aar
+**/native/**/*.xcframework/
 *.ilk
 *.exp
 

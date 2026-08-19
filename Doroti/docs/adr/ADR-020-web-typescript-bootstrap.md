@@ -8,9 +8,9 @@ Accepted.
 
 Doroti Web application policy, the Doroti loader, browser interop, and JavaScript plugin examples use TypeScript as product source. Browser-executed JavaScript is a build/publish artifact only.
 
-- Applications edit `Platforms/Web/src/**/*.ts` and handwritten files under `Platforms/Web/wwwroot`.
+- Applications edit runner-owned `web/src/**/*.ts` and handwritten files under `web/wwwroot`.
 - Doroti edits `Doroti.Host.Web/Web/*.ts` and owns the loader declaration package.
-- `Microsoft.TypeScript.MSBuild` 7.0.0 is restored only when `DorotiTarget=Web` and `Platforms/Web/tsconfig.json` exists.
+- `Microsoft.TypeScript.MSBuild` 7.0.0 is restored only by a Web runner with `web/tsconfig.json`.
 - The compiler writes under target/configuration-specific `obj`; Release publish excludes maps, TypeScript source, config, and compiler/tool assets.
 - Node, npm, Bun, and bundlers are not required.
 - `doroti.loader.ts` is the only owner of `Blazor.start()`. Repeated `startDoroti()` calls share one promise.

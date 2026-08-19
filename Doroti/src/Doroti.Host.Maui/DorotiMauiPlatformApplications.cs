@@ -28,9 +28,8 @@ public abstract class DorotiMauiWinUIApplication : MauiWinUIApplication
         DorotiMauiSurface.WriteFailure(exception);
     }
 }
-#elif MACCATALYST
-public abstract class DorotiMauiUIApplicationDelegate<TStartup> : MauiUIApplicationDelegate
-    where TStartup : IDorotiApplicationStartup, new()
+#elif IOS || MACCATALYST
+public abstract class DorotiMauiUIApplicationDelegate : MauiUIApplicationDelegate
 {
     protected DorotiMauiUIApplicationDelegate()
     {
@@ -43,9 +42,10 @@ public abstract class DorotiMauiUIApplicationDelegate<TStartup> : MauiUIApplicat
     {
         var builder = MauiApp.CreateBuilder();
         ConfigurePlatform(builder);
-        return builder.UseDorotiApplication<TStartup>(DorotiLaunchContext.Create(
-            "MacCatalyst", "maccatalyst-arm64", Environment.GetCommandLineArgs().Skip(1))).Build();
+        return builder.UseDorotiApplication(CreateApplicationDescriptor()).Build();
     }
+
+    protected abstract DorotiApplicationDescriptor CreateApplicationDescriptor();
 
     protected virtual void ConfigurePlatform(MauiAppBuilder builder) => _ = builder;
 }

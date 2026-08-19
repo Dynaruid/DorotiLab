@@ -1,14 +1,67 @@
 {
   "$schema": "http://json.schemastore.org/template",
   "author": "Doroti contributors",
-  "classifications": ["Doroti", "MAUI", "Android", "Blazor", "WebAssembly"],
+  "classifications": ["Doroti", "Multi-platform", "MAUI", "Qt", "Blazor", "WebAssembly"],
   "identity": "Doroti.Templates.CSharpApp",
-  "name": "Doroti single-project C# application",
+  "name": "Doroti platform workspace C# application",
   "shortName": "doroti-app",
   "sourceName": "DorotiTemplateApp",
   "preferNameDirectory": true,
+  "sources": [
+    {
+      "source": "./",
+      "target": "./",
+      "modifiers": [
+        {
+          "condition": "(nativeAndroidLanguage == \"java\")",
+          "exclude": ["android/native/bridge/src/main/kotlin/**", "android/native/bridge/src/test/kotlin/**", "android/native/bridge/build.gradle.kotlin.kts"]
+        },
+        {
+          "condition": "(nativeAndroidLanguage == \"kotlin\")",
+          "exclude": ["android/native/bridge/src/main/java/**", "android/native/bridge/src/test/java/**", "android/native/bridge/build.gradle.kts"],
+          "rename": { "android/native/bridge/build.gradle.kotlin.kts": "android/native/bridge/build.gradle.kts" }
+        }
+      ]
+    }
+  ],
   "tags": {
     "language": "C#",
     "type": "project"
+  },
+  "symbols": {
+    "applicationId": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "dev.doroti.app",
+      "replaces": "__DOROTI_APPLICATION_ID__"
+    },
+    "displayVersion": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "0.2.0",
+      "replaces": "__DOROTI_DISPLAY_VERSION__"
+    },
+    "applicationVersion": {
+      "type": "parameter",
+      "datatype": "integer",
+      "defaultValue": "2",
+      "replaces": "__DOROTI_APPLICATION_VERSION__"
+    },
+    "nativeAndroidLanguage": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "java",
+      "choices": [
+        { "choice": "java", "description": "Generate the default Java native bridge." },
+        { "choice": "kotlin", "description": "Generate the Kotlin native bridge." }
+      ]
+    },
+    "nativeModule": {
+      "type": "derived",
+      "valueSource": "name",
+      "valueTransform": "safe_name",
+      "replaces": "__DOROTI_NATIVE_MODULE__",
+      "fileRename": "__DOROTI_NATIVE_MODULE__"
+    }
   }
 }
