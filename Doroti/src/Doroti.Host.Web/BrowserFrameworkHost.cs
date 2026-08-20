@@ -28,7 +28,8 @@ public sealed class BrowserFrameworkHost : IDisposable
             throw new InvalidOperationException("The Doroti host session must be running before a browser view is created.");
 
         var host = new BrowserHostAdapter(viewId, canvasId, configuration.logicalSize);
-        var graphics = new BrowserSkiaCapabilities(viewId, host);
+        var graphics = new BrowserSkiaCapabilities(viewId, host,
+            configuration.backgroundColor, configuration.darkBackgroundColor);
         var messages = new BrowserPlatformMessageCapability();
         var capabilities = new DorotiViewCapabilities(_targetIdentity)
             .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)

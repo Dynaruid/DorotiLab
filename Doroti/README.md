@@ -21,6 +21,8 @@ See [ADR-019](docs/adr/ADR-019-product-framework-source-ownership.md) for source
 - `Doroti.Skia.RuntimeEffects`: shared fail-closed SkSL compiler and uniform/image-sampler binder used by native and Web hosts
 - `Doroti.Host.Maui`: host-owned MAUI application/page lifecycle and `SKGLView` GPU-surface integration
 - `Doroti.Host.Web`: host-owned Blazor composition, WebGL2 canvas, input, accessibility, and resource bridge
+- `Doroti.Host.Qt`: managed-owned Linux runner with a Qt 6 `QOpenGLWindow`, versioned C ABI, GPU surface, input, IME, and desktop services
+- `Doroti.Skia.Rendering`: host-neutral Skia scene, paragraph, image, runtime-effect, semantics, cache, and terminal-ACK renderer shared by native GPU hosts
 - `Doroti.Host.Qt`: managed-owned Linux process and Qt 6 C ABI boundary; native rendering and X11/Wayland acceptance remain `notVerified`
 
 Web execution source is TypeScript-owned. Applications edit `web/src/**/*.ts`; Doroti owns `src/Doroti.Host.Web/Web/*.ts`. `Microsoft.TypeScript.MSBuild` 7.0.0 compiles both into runner-local `obj` directories, and publish contains only the resulting JavaScript. Node, npm, Bun, and a bundler are not application requirements. See [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md).
@@ -62,7 +64,7 @@ The active command surface is intentionally small:
 | `release` | Run the integrated release suite, audit, pack, and package inspection |
 | `clean` | Remove Doroti build output, artifacts, and temporary local state |
 
-Direct suite entry points are [validate.ps1](eng/validate.ps1), [validate-app-targets.ps1](eng/validate-app-targets.ps1), and [validate-web-product.ps1](eng/validate-web-product.ps1). Historical G4-G7 validators are no longer active; their results remain under `history/` at the repository root.
+Direct suite entry points are [validate.ps1](eng/validate.ps1), [validate-app-targets.ps1](eng/validate-app-targets.ps1), [validate-web-product.ps1](eng/validate-web-product.ps1), and the Kubuntu-native [validate-linux-qt.sh](eng/validate-linux-qt.sh). Historical G4-G7 validators are no longer active; their results remain under `history/` at the repository root.
 
 ## Source and artifact policy
 

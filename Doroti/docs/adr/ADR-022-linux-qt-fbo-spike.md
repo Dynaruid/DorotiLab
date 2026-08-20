@@ -1,16 +1,18 @@
 # ADR-022: Pause the Linux Qt backend after the direct-FBO spike
 
-- Status: accepted (2026-08-20)
+- Status: superseded by ADR-023 (2026-08-20)
 - Scope: LNX-QT-0 only
 - Supersedes: none; ADR-021 managed runtime ownership remains in force
 
 ## Decision
 
-Keep the managed-owned process, Qt Widgets, and the new `doroti.qt-host/v2` ABI, but do not start LNX-QT-1 or later milestones until the direct-FBO spike passes on a hardware OpenGL renderer.
+This ADR records the failed `QOpenGLWidget` branch. ADR-023 resumes the backend with the successful `QOpenGLWindow` branch while retaining managed process ownership and `doroti.qt-host/v2`.
 
 The current WSLg environment exposes a Qt `QOpenGLWidget` context and non-zero Qt-owned FBO, but identifies the renderer as `llvmpipe`. The Linux backend rejects that software renderer instead of treating it as GPU evidence. Before the guard was added, SkiaSharp `4.151.1` entered `GrGLExtensions::init` while assembling the supplied Qt GL procedure table and terminated with `SIGSEGV`. Direct managed calls through the same `glGetString`, `glGetIntegerv`, and `glGetStringi` addresses succeeded, so the failure is before `GRContext`, `GRBackendRenderTarget`, or `SKSurface` creation and does not establish that Qt's FBO is invalid.
 
-This is a measured LNX-QT-0 failure, not `notVerified`. The fixed-frame pixel, resize/recreate, and swap-ACK acceptance gates remain unpassed. Native code now reports an actionable unsupported-feature error for `llvmpipe`, `softpipe`, and `SwiftShader` before entering Skia.
+A 2026-08-20 Kubuntu 26.04 VMware retest uses the intended Mesa `svga`/kernel `vmwgfx` direct-rendering path. Qt Wayland exposed `SVGA3D; build: RELEASE; LLVM;`, `LIBGL_DEBUG=verbose` reported `using driver vmwgfx`, `Using DRI3`, and `direct rendering: Yes`, and `vmwgfx` reports version `2.21.0.0`. Mesa documents this renderer as the VMware guest driver that provides access to the host GPU; the `LLVM` suffix is not LLVMpipe. The `GLX_MESA_query_renderer` field `Accelerated: no` is therefore recorded but is not used alone to classify this renderer as a software fallback. The fixed spike frame rendered visibly to Qt FBO 1 at DPR 1.5. A subsequent experimental full Doroti scene crashed inside Mesa Gallium's indexed draw path during `GrGLOpsRenderPass::onDrawIndexed`, so the next action is the documented `QOpenGLWindow` comparison rather than a software-renderer rejection.
+
+This was a measured `QOpenGLWidget` failure, not `notVerified`. It does not classify the later `QOpenGLWindow` result. Native code reports an actionable unsupported-feature error for `llvmpipe`, `softpipe`, and `SwiftShader` before entering Skia.
 
 ## Evidence
 
@@ -21,6 +23,11 @@ This is a measured LNX-QT-0 failure, not `notVerified`. The fixed-frame pixel, r
 - WSLg/xcb diagnostics: QPA `xcb`, GL vendor `Mesa`, renderer `llvmpipe (LLVM 21.1.8, 256 bits)`, OpenGL `4.5 Compatibility Profile`.
 - gdb top frames: `GrGLExtensions::init` -> `GrGLMakeAssembledGLInterface` -> `gr_glinterface_assemble_gl_interface` in app-local `libSkiaSharp.so` `4.151.1`.
 - No visible Doroti fixed-frame pixels were accepted as evidence.
+- Kubuntu 26.04 VMware/Wayland native and managed Debug build: pass with .NET SDK `10.0.400`, Qt `6.10.2`, CMake `4.2.3`, and zero warnings/errors.
+- Kubuntu fixed-frame screenshot: visible direct-FBO Skia background, text, circle, and rectangle; Qt FBO `1`, DPR `1.500`.
+- Kubuntu renderer qualification: Mesa `svga`/`vmwgfx` direct-rendering path confirmed; `Accelerated: no` retained as a diagnostic field, not a fallback verdict.
+- Kubuntu full-scene gdb frames: Mesa `libgallium` -> `GrGLOpsRenderPass::onDrawIndexed` -> `GrDrawingManager::flush` -> `gr_direct_context_flush_and_submit`.
+- The later `QOpenGLWindow` comparison and resumed milestones are recorded in ADR-023 and the current Linux Qt evidence.
 
 ## Alternatives considered
 
@@ -32,4 +39,4 @@ This is a measured LNX-QT-0 failure, not `notVerified`. The fixed-frame pixel, r
 
 ## Resume criteria
 
-Resume LNX-QT-0 on WSLg or physical Linux only after diagnostics show a non-software renderer. Re-run the v2 fixed-frame path under gdb, then require visible pixels, 20 resizes, one window/context recreation, and exactly one swap-based terminal ACK for every frame request. If the same `GrGLExtensions::init` crash occurs with hardware GL, compare `QOpenGLWindow` first and record the result in a new ADR before changing process ownership or moving to Qt Quick.
+Resume LNX-QT-0 when diagnostics show a real GPU driver path rather than `llvmpipe`, `softpipe`, or SwiftShader. For VMware, the documented `SVGA3D` renderer with `vmwgfx`, DRI3, and direct rendering qualifies even if `GLX_MESA_query_renderer` reports `Accelerated: no`. Compare `QOpenGLWindow` against `QOpenGLWidget`, then require visible pixels, 20 resizes, one window/context recreation, and exactly one swap-based terminal ACK for every frame request. If the Gallium indexed-draw crash occurs on both Qt surface types, record the result in a new ADR before changing process ownership or moving to Qt Quick.

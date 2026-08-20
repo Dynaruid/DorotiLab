@@ -9,6 +9,7 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Doroti.Host.Maui" />
     <InternalsVisibleTo Include="Doroti.Host.Web" />
+    <InternalsVisibleTo Include="Doroti.Skia.Rendering" />
     <InternalsVisibleTo Include="Doroti.Validation.RuntimeShaderContract" />
     <PackageReference Include="SkiaSharp" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />

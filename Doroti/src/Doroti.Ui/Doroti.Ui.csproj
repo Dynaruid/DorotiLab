@@ -7,6 +7,8 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Doroti.Host.Web" />
     <InternalsVisibleTo Include="Doroti.Host.Maui" />
+    <InternalsVisibleTo Include="Doroti.Host.Qt" />
+    <InternalsVisibleTo Include="Doroti.Skia.Rendering" />
     <InternalsVisibleTo Include="Doroti.Skia.RuntimeEffects" />
     <InternalsVisibleTo Include="Doroti.Validation.RuntimeShaderContract" />
     <ProjectReference Include="..\Doroti.Runtime\Doroti.Runtime.csproj" />

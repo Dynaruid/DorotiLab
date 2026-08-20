@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "doroti.linux-qt-spike-evidence/v1",
+  "capturedAt": "2026-08-20",
+  "milestone": "LNX-QT-0",
+  "status": "partialPass",
+  "host": {
+    "distribution": "Kubuntu 26.04",
+    "kernel": "7.0.0-30-generic",
+    "virtualization": "VMware Virtual Platform",
+    "session": "wayland",
+    "architecture": "linux-x64",
+    "dotnetSdk": "10.0.400",
+    "qt": "6.10.2",
+    "cmake": "4.2.3"
+  },
+  "graphics": {
+    "vendor": "VMware, Inc.",
+    "renderer": "SVGA3D; build: RELEASE; LLVM;",
+    "version": "4.3 (Compatibility Profile) Mesa 26.0.8-1ubuntu0.3",
+    "glxMesaAccelerated": false,
+    "qpa": "wayland",
+    "qtFramebufferObject": 0,
+    "devicePixelRatio": 1.5,
+    "sampleCount": 0,
+    "stencilBits": 0
+  },
+  "results": {
+    "managedDebugBuild": "pass",
+    "nativeDebugBuild": "pass",
+    "warnings": 0,
+    "errors": 0,
+    "fixedFramePixels": "pass",
+    "hardwareRendererQualification": "passViaMesaSvgaVmwgfxDirectRendering",
+    "qOpenGLWidgetFullDorotiScene": "failedMesaGalliumIndexedDraw",
+    "qOpenGLWindowFullDorotiScene": "pass",
+    "resizeCycles": 20,
+    "rasterFramesDuringResizeRun": 56,
+    "resizeRunExitCode": 0,
+    "terminalAckCoverage": "pass",
+    "windowContextRecreation": "notVerified",
+    "managedInputImeServicesContract": "implementedBuildVerified",
+    "semanticsTransport": "pass43Nodes",
+    "qtAccessibleTreeDump": "passRootWithVirtualChildren",
+    "atSpiOrcaInteraction": "notVerified",
+    "x11XWaylandQpaXcb": "pass",
+    "x11XWaylandInjectedInputSmoke": {
+      "status": "pass",
+      "inputCallbacks": 4,
+      "resizeCycles": 30,
+      "rasterizedFrames": 73,
+      "presentedFrames": 59,
+      "replayedFrames": 14,
+      "failedFrames": 0,
+      "exitCode": 0
+    },
+    "physicalX11Session": "notVerified",
+    "physicalLinux": "notVerified",
+    "physicalImeAccessibilityPackaging": "notVerified"
+  },
+  "failure": {
+    "signal": "SIGSEGV",
+    "topNativePath": [
+      "libgallium memcpy",
+      "GrGLOpsRenderPass::onDrawIndexed",
+      "GrDrawingManager::flush",
+      "gr_direct_context_flush_and_submit"
+    ],
+    "classification": "qOpenGLWidgetSpecificMesaSvgaIndexedDrawCrash",
+    "productAction": "adopt QOpenGLWindow per ADR-023"
+  },
+  "resumeCriteria": [
+    "renderer is not llvmpipe, softpipe, or SwiftShader",
+    "VMware reports SVGA3D with vmwgfx, DRI3, and direct rendering",
+    "fixed frame survives 20 resizes and one context recreation",
+    "every frame receives exactly one swap-based terminal ACK"
+  ]
+}

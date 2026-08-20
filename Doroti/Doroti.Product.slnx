@@ -20,6 +20,7 @@
     <Project Path="src/Doroti.Host.Qt/Doroti.Host.Qt.csproj" />
     <Project Path="src/Doroti.Runner.Sdk/Doroti.Runner.Sdk.csproj" />
     <Project Path="src/Doroti.Skia.RuntimeEffects/Doroti.Skia.RuntimeEffects.csproj" />
+    <Project Path="src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />
     <Project Path="src/Doroti.Target.Windows.Maui.win-x64/Doroti.Target.Windows.Maui.win-x64.csproj" />
     <Project Path="src/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.csproj" />
     <Project Path="src/Doroti.Target.iOS.Maui.ios-arm64/Doroti.Target.iOS.Maui.ios-arm64.csproj" />

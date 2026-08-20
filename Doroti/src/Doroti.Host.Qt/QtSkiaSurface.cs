@@ -15,30 +15,17 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
     private uint _framebufferObject;
     private int _pixelWidth;
     private int _pixelHeight;
+    private bool _usePlatformGlResolver;
     private bool _disposed;
 
-    internal void Render(in QtNativeV2.Surface descriptor)
+    internal void Render(in QtNativeV2.Surface descriptor, Action<SKSurface> render)
     {
+        ArgumentNullException.ThrowIfNull(render);
         ObjectDisposedException.ThrowIf(_disposed, this);
         Validate(descriptor);
         if (RequiresRecreate(descriptor)) CreateSurface(descriptor);
-
-        var canvas = _surface!.Canvas;
-        canvas.Clear(new SKColor(0xff, 0xfb, 0xfe));
-        using var primary = new SKPaint { Color = new SKColor(0x67, 0x50, 0xa4), IsAntialias = true };
-        using var accent = new SKPaint { Color = new SKColor(0xb3, 0x26, 0x1e), IsAntialias = true };
-        using var textPaint = new SKPaint { Color = new SKColor(0x1c, 0x1b, 0x1f), IsAntialias = true };
-        using var typeface = SKTypeface.FromFamilyName("sans-serif", SKFontStyle.Bold);
-        using var font = new SKFont(typeface, Math.Max(18, Math.Min(_pixelWidth, _pixelHeight) / 18f));
-        var margin = Math.Max(20, Math.Min(_pixelWidth, _pixelHeight) / 12f);
-        canvas.DrawRoundRect(new SKRect(margin, margin, _pixelWidth - margin, _pixelHeight - margin), 28, 28, primary);
-        canvas.DrawCircle(_pixelWidth * 0.28f, _pixelHeight * 0.56f,
-            Math.Max(24, Math.Min(_pixelWidth, _pixelHeight) * 0.13f), accent);
-        canvas.DrawRect(new SKRect(_pixelWidth * 0.52f, _pixelHeight * 0.40f,
-            _pixelWidth * 0.82f, _pixelHeight * 0.70f), accent);
-        canvas.DrawText("Doroti Qt + Skia GPU", margin * 1.5f, margin * 2.2f,
-            SKTextAlign.Left, font, textPaint);
-        canvas.Flush();
+        render(_surface!);
+        _surface!.Canvas.Flush();
         _context!.Flush(_surface);
         _context.Submit(false);
     }
@@ -49,6 +36,9 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
         if (_surfaceGeneration != surfaceGeneration || _contextIdentity != contextIdentity) return;
         ReleaseGpuResources();
     }
+
+    internal void SetQpaPlatform(string platform) =>
+        _usePlatformGlResolver = string.Equals(platform, "xcb", StringComparison.OrdinalIgnoreCase);
 
     public void Dispose()
     {
@@ -65,12 +55,25 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
 
     private void CreateSurface(in QtNativeV2.Surface descriptor)
     {
-        ReleaseGpuResources();
-        _interface = GRGlInterface.Create(_getProcedureAddress);
-        if (_interface is null || !_interface.Validate())
-            throw new InvalidOperationException("SkiaSharp could not create a valid interface for the current Qt OpenGL context.");
-        _context = GRContext.CreateGl(_interface)
-            ?? throw new InvalidOperationException("SkiaSharp could not create a GPU context for the current Qt OpenGL context.");
+        var contextChanged = _context is null || _contextIdentity != descriptor.ContextIdentity;
+        if (contextChanged)
+        {
+            ReleaseGpuResources();
+            // Qt's GLX resolver returns thunk addresses that SkiaSharp 4.151.1 cannot
+            // safely assemble on this Mesa/xcb path. libGL's current-context resolver
+            // is correct for GLX; Wayland/EGL continues to use Qt's resolver.
+            _interface = _usePlatformGlResolver
+                ? GRGlInterface.Create()
+                : GRGlInterface.Create(_getProcedureAddress);
+            if (_interface is null || !_interface.Validate())
+                throw new InvalidOperationException("SkiaSharp could not create a valid interface for the current Qt OpenGL context.");
+            _context = GRContext.CreateGl(_interface)
+                ?? throw new InvalidOperationException("SkiaSharp could not create a GPU context for the current Qt OpenGL context.");
+        }
+        else
+        {
+            ReleaseRenderTarget();
+        }
         var framebuffer = new GRGlFramebufferInfo(descriptor.FramebufferObject, descriptor.ColorFormat);
         _target = new GRBackendRenderTarget(descriptor.PixelWidth, descriptor.PixelHeight,
             Math.Max(0, descriptor.SampleCount), Math.Max(0, descriptor.StencilBits), framebuffer);
@@ -85,16 +88,21 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
 
     private void ReleaseGpuResources()
     {
-        _surface?.Dispose();
-        _surface = null;
-        _target?.Dispose();
-        _target = null;
+        ReleaseRenderTarget();
         _context?.Dispose();
         _context = null;
         _interface?.Dispose();
         _interface = null;
-        _surfaceGeneration = 0;
         _contextIdentity = 0;
+    }
+
+    private void ReleaseRenderTarget()
+    {
+        _surface?.Dispose();
+        _surface = null;
+        _target?.Dispose();
+        _target = null;
+        _surfaceGeneration = 0;
         _framebufferObject = 0;
         _pixelWidth = 0;
         _pixelHeight = 0;

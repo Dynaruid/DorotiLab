@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Skia.Rendering</AssemblyName>
+    <RootNamespace>Doroti.Skia.Rendering</RootNamespace>
+    <PackageId>Doroti.Skia.Rendering</PackageId>
+    <Description>Host-neutral retained Doroti scene rasterization for Skia surfaces.</Description>
+    <IsDorotiProduct>true</IsDorotiProduct>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" />
+    <ProjectReference Include="..\Doroti.Skia.RuntimeEffects\Doroti.Skia.RuntimeEffects.csproj" />
+    <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
+  </ItemGroup>
+</Project>

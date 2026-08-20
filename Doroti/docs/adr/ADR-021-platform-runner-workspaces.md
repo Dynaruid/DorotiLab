@@ -34,7 +34,7 @@ The alternative Linux model, a C++ executable using `hostfxr`/`nethost`, was rej
 
 - Existing application descriptor, runtime async, shader, and target graph gates passed on Windows with .NET SDK 10.0.400.
 - Native Library Interop upstream revision `07df778f1f85c2ad06cb74d3c8faa6ee9011191c` built its Android binding as `net10.0-android` on this host. Its iOS binding produced a Windows cross-build assembly as `net10.0-ios`; Xcode framework build, ABI generation, simulator launch, device signing, and archive remain `notVerified` because no Mac/Xcode host was used.
-- CMake 4.3.2 is installed. Qt (`qmake`/`qtpaths`) is absent, so Linux native build, X11, Wayland, input-to-present, and retained-scene recovery remain `notVerified` on this host.
+- The 2026-08-20 Kubuntu follow-up uses .NET 10.0.400, CMake 4.2.3, Qt 6.10.2, and Mesa SVGA3D/vmwgfx. The `QOpenGLWindow` full scene, swap ACK, 20-resize Wayland run, separate XWayland/xcb run, accessibility tree dump, and both publish modes pass. Physical X11, real IBus/Fcitx IME, Orca/AT-SPI interaction, device input, context replacement, and soak/performance gates remain `notVerified`; see ADR-023 and `validation/evidence/linux-qt`.
 
 ## Evidence rules
 
