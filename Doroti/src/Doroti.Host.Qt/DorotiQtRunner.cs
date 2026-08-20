@@ -54,7 +54,7 @@ public static unsafe partial class DorotiQtRunner
                     return exitCode;
                 state.ThrowIfFatal();
                 state.ValidateTerminalCoverage();
-                state.WriteDiagnostics();
+                if (ShouldWriteSummary()) state.WriteDiagnostics();
                 return exitCode;
             }
         }
@@ -62,6 +62,18 @@ public static unsafe partial class DorotiQtRunner
         {
             stateHandle.Free();
         }
+    }
+
+    private static bool ShouldWriteSummary()
+    {
+#if DEBUG
+        return true;
+#else
+        return string.Equals(
+            Environment.GetEnvironmentVariable("DOROTI_QT_DIAGNOSTICS"),
+            "1",
+            StringComparison.Ordinal);
+#endif
     }
 
     internal sealed class QtManagedState : IDisposable

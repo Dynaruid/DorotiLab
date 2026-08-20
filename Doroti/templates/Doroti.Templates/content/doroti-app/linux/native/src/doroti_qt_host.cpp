@@ -397,6 +397,7 @@ class DorotiSurface final : public QOpenGLWindow {
   void initializeGL() override {
     ++surface_generation_;
     surface_released_ = false;
+    surface_diagnostics_reported_ = false;
     auto* current = QOpenGLContext::currentContext();
     context_identity_ = reinterpret_cast<std::uintptr_t>(current);
     if (current != nullptr) {
@@ -445,14 +446,25 @@ class DorotiSurface final : public QOpenGLWindow {
         format.minorVersion(),
         Micros(),
     };
-    const auto fbo = QByteArray::number(descriptor.framebuffer_object);
-    const auto samples = QByteArray::number(descriptor.sample_count);
-    const auto stencil = QByteArray::number(descriptor.stencil_bits);
-    const auto dpr = QByteArray::number(descriptor.device_pixel_ratio, 'f', 3);
-    Diagnostic("surface.fbo", fbo.constData());
-    Diagnostic("surface.samples", samples.constData());
-    Diagnostic("surface.stencil", stencil.constData());
-    Diagnostic("surface.dpr", dpr.constData());
+    if (!surface_diagnostics_reported_ ||
+        reported_framebuffer_object_ != descriptor.framebuffer_object ||
+        reported_sample_count_ != descriptor.sample_count ||
+        reported_stencil_bits_ != descriptor.stencil_bits ||
+        reported_device_pixel_ratio_ != descriptor.device_pixel_ratio) {
+      const auto fbo = QByteArray::number(descriptor.framebuffer_object);
+      const auto samples = QByteArray::number(descriptor.sample_count);
+      const auto stencil = QByteArray::number(descriptor.stencil_bits);
+      const auto dpr = QByteArray::number(descriptor.device_pixel_ratio, 'f', 3);
+      Diagnostic("surface.fbo", fbo.constData());
+      Diagnostic("surface.samples", samples.constData());
+      Diagnostic("surface.stencil", stencil.constData());
+      Diagnostic("surface.dpr", dpr.constData());
+      reported_framebuffer_object_ = descriptor.framebuffer_object;
+      reported_sample_count_ = descriptor.sample_count;
+      reported_stencil_bits_ = descriptor.stencil_bits;
+      reported_device_pixel_ratio_ = descriptor.device_pixel_ratio;
+      surface_diagnostics_reported_ = true;
+    }
     if (software_renderer_) {
       fatal_ = true;
       Terminal(token, DOROTI_QT_TERMINAL_FAILED, surface_generation_);
@@ -488,7 +500,13 @@ class DorotiSurface final : public QOpenGLWindow {
 
   void resizeGL(int, int) override {
     if (next_automatic_frame_token_ == 0) next_automatic_frame_token_ = 1;
-    RequestFrame(this, next_automatic_frame_token_++);
+    // QOpenGLWindow calls resizeGL immediately before paintGL. Posting through
+    // RequestFrame here defers the token until the next event-loop turn, so the
+    // current paintGL returns without drawing and Qt swaps an empty resized
+    // back buffer. Install a reserved low-range replay token synchronously;
+    // keep any already-pending framework token, which is the newer work.
+    if (pending_frame_token_ == 0)
+      pending_frame_token_ = next_automatic_frame_token_++;
   }
 
   bool event(QEvent* event) override {
@@ -969,6 +987,11 @@ class DorotiSurface final : public QOpenGLWindow {
   std::uint64_t rasterized_generation_ = 0;
   std::uint64_t next_automatic_frame_token_ = 1;
   bool surface_released_ = true;
+  bool surface_diagnostics_reported_ = false;
+  std::uint32_t reported_framebuffer_object_ = 0;
+  int reported_sample_count_ = 0;
+  int reported_stencil_bits_ = 0;
+  double reported_device_pixel_ratio_ = 0.0;
   std::uint32_t backdrop_mode_ = DOROTI_QT_BACKDROP_SYSTEM;
   std::uint32_t backdrop_fallback_ = DOROTI_QT_BACKDROP_FALLBACK_TRANSPARENT;
   wl_display* wayland_display_ = nullptr;
