@@ -1,0 +1,5 @@
+<Project>
+  <ItemGroup Condition="'$(DorotiTarget)' == 'macOS' and '@(DorotiTargetDescriptor)' == ''">
+    <DorotiTargetDescriptor Include="macOS" HostKind="Maui" NativeEntryKind="AppKit-Main" RuntimeIdentifier="osx-arm64" TargetFramework="net10.0-macos" TargetPackage="Doroti.Target.MacOS.Maui.osx-arm64" />
+  </ItemGroup>
+</Project>

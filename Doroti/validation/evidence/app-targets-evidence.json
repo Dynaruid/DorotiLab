@@ -1,44 +1,48 @@
 {
   "schemaVersion": "doroti.platform-workspace-evidence/v1",
-  "capturedAt": "2026-08-19T13:46:27.7428654+00:00",
-  "sourceFingerprint": "06860e9e7655e2ef534cf4775afbf04b70d38ad90939790227d74050c7183207",
+  "capturedAt": "2026-08-20T15:09:38.6500460+00:00",
+  "sourceFingerprint": "aec45d32142d4fdfd98aa9e7e51beee933ca4d9c343fc554969715d36cac601f",
   "applicationProject": "DorotiDemoApp/DorotiDemoApp.csproj",
   "workspaceManifest": "DorotiDemoApp/doroti-workspace.json",
   "automated": {
     "graph": "pass",
-    "rootApp": "pass",
-    "windowsBuild": "pass",
-    "webBuild": "pass",
-    "androidArm64Build": "pass",
-    "androidX64Build": "pass",
-    "macCatalystCrossBuild": "pass",
-    "iosSimulatorCrossBuild": "pass",
-    "iosArm64CrossBuild": "pass",
-    "linuxManagedCrossBuild": "pass",
-    "androidInteropBinding": "pass",
-    "iosInteropCrossBuild": "pass",
-    "macCatalystInteropCrossBuild": "pass",
+    "rootApp": "notVerified",
+    "windowsBuild": "notVerified",
+    "webBuild": "notVerified",
+    "androidArm64Build": "notVerified",
+    "androidX64Build": "notVerified",
+    "appKitMacOSBuild": "notVerified",
+    "macCatalystCrossBuild": "notVerified",
+    "iosSimulatorCrossBuild": "notVerified",
+    "iosArm64CrossBuild": "notVerified",
+    "linuxManagedCrossBuild": "notVerified",
+    "androidInteropBinding": "notVerified",
+    "iosInteropCrossBuild": "notVerified",
+    "macCatalystInteropCrossBuild": "notVerified",
     "packageOnlyTemplate": "pass",
-    "androidGradleUnitTest": "pass",
-    "androidAar": "pass",
-    "androidRunnerBridgeArtifact": "pass",
+    "androidGradleUnitTest": "notVerified",
+    "androidAar": "notVerified",
+    "androidRunnerBridgeArtifact": "notVerified",
     "iosXcodeFramework": "notVerified",
+    "appKitMacOSXcodeFramework": "notVerified",
     "macCatalystXcodeFramework": "notVerified"
   },
   "nativeBridge": {
     "abiVersion": "doroti.native-platform-bridge/v1",
     "bridgeVersion": "1.0.0",
-    "projectCount": 10,
+    "projectCount": 12,
     "androidStudioSync": "notVerified",
     "androidEmulator": "notVerified",
     "androidPhysical": "notVerified",
     "iosXcodeBuild": "notVerified",
     "iosSimulator": "notVerified",
     "iosDeviceSigningArchive": "notVerified",
+    "macOSXcodeBuild": "notVerified",
+    "macOSLaunch": "pass",
+    "macOSSigningArchive": "notVerified",
     "macCatalystXcodeBuild": "notVerified",
     "macCatalystLaunch": "notVerified",
-    "macCatalystSigningArchive": "notVerified",
-    "trueAppKitMacOS": "outOfScope"
+    "macCatalystSigningArchive": "notVerified"
   },
   "targets": [
     {
@@ -47,7 +51,7 @@
       "targetFramework": "net10.0-windows10.0.19041.0",
       "rid": "win-x64",
       "host": "Maui",
-      "automated": "pass",
+      "automated": "notVerified",
       "nativeLive": "notVerified"
     },
     {
@@ -56,7 +60,7 @@
       "targetFramework": "net10.0",
       "rid": "browser-wasm",
       "host": "BlazorWebAssembly",
-      "automated": "pass",
+      "automated": "notVerified",
       "browserLive": "notVerified"
     },
     {
@@ -65,7 +69,7 @@
       "targetFramework": "net10.0-android",
       "rid": "android-arm64",
       "host": "Maui",
-      "automated": "pass",
+      "automated": "notVerified",
       "nativeLive": "notVerified",
       "physical": "notVerified"
     },
@@ -75,18 +79,30 @@
       "targetFramework": "net10.0-android",
       "rid": "android-x64",
       "host": "Maui",
-      "automated": "pass",
+      "automated": "notVerified",
       "nativeLive": "notVerified"
     },
     {
       "alias": "macos",
+      "runner": "DorotiDemoApp/macos/DorotiDemoApp.MacOS.csproj",
+      "targetFramework": "net10.0-macos",
+      "rid": "osx-arm64",
+      "host": "Maui",
+      "entry": "AppKit-Main",
+      "backend": "AppKit/MTKView/Metal-Skia",
+      "automated": "notVerified",
+      "nativeLive": "pass",
+      "liveEvidence": "Doroti/validation/evidence/appkit-macos/product-live.json"
+    },
+    {
+      "alias": "maccatalyst",
       "runner": "DorotiDemoApp/macos/DorotiDemoApp.MacCatalyst.csproj",
       "targetFramework": "net10.0-maccatalyst",
       "rid": "maccatalyst-arm64",
       "host": "Maui",
-      "automated": "pass",
-      "nativeLive": "notVerified",
-      "identity": "Mac Catalyst, not AppKit"
+      "entry": "UIKit-Main",
+      "automated": "notVerified",
+      "nativeLive": "notVerified"
     },
     {
       "alias": "ios",
@@ -94,7 +110,7 @@
       "targetFramework": "net10.0-ios",
       "rid": "iossimulator-x64",
       "host": "Maui",
-      "automated": "pass",
+      "automated": "notVerified",
       "nativeLive": "notVerified"
     },
     {
@@ -103,7 +119,7 @@
       "targetFramework": "net10.0-ios",
       "rid": "ios-arm64",
       "host": "Maui",
-      "automated": "pass",
+      "automated": "notVerified",
       "nativeLive": "notVerified",
       "physical": "notVerified",
       "signing": "notVerified"
@@ -114,7 +130,7 @@
       "targetFramework": "net10.0",
       "rid": "linux-x64",
       "host": "Qt",
-      "automated": "pass",
+      "automated": "notVerified",
       "nativeBuild": "notVerified",
       "x11": "notVerified",
       "wayland": "notVerified"
@@ -125,16 +141,16 @@
     "webBrowserLive": "notVerified",
     "androidEmulator": "notVerified",
     "androidPhysical": "notVerified",
+    "appKitMacOSNative": "pass",
     "macCatalystNative": "notVerified",
     "iosSimulatorNative": "notVerified",
     "iosPhysicalSigningVoiceOver": "notVerified",
     "linuxX11": "notVerified",
-    "linuxWayland": "notVerified",
-    "trueAppKitMacOS": "outOfScope"
+    "linuxWayland": "notVerified"
   },
   "toolchain": {
     "dotnetSdk": "10.0.400",
-    "hostOS": "Microsoft Windows 10.0.26200",
+    "hostOS": "macOS 26.5.2",
     "qt": "notInstalled",
     "xcode": "notAvailableOnWindows",
     "gradle": "8.10.2",

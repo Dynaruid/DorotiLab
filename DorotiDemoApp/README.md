@@ -2,17 +2,17 @@
 
 **English** | [한국어](README.ko.md)
 
-DorotiDemoApp dogfoods the platform-workspace contract. The root `DorotiDemoApp.csproj` is a platform-neutral `net10.0` library; each lower-case platform directory owns an independently buildable and runnable application project.
+DorotiDemoApp dogfoods the platform-workspace contract. The root project is target-neutral. Seven runner aliases are available; `macos` and `maccatalyst` are separate permanent products.
 
 ## Layout
 
 - `Program.cs`, `src/`, `assets/`: shared startup, widget tree, and application assets
-- `doroti-workspace.json`: `android`, `ios`, `linux`, `macos`, `web`, and `windows` aliases to runner projects
+- `doroti-workspace.json`: includes distinct `macos` (AppKit) and `maccatalyst` (UIKit) aliases
 - `windows/`: WinUI/MAUI runner and package identity
 - `web/`: Blazor WebAssembly runner, TypeScript source, and `wwwroot`
 - `android/`: .NET Android/MAUI runner plus the default Gradle AAR and .NET binding
 - `ios/`: .NET iOS/MAUI runner plus an independent Xcode framework and binding
-- `macos/`: Mac Catalyst runner plus an independent Xcode framework and binding; this is not true AppKit macOS
+- `macos/`: native AppKit/osx-arm64 and Mac Catalyst/maccatalyst-arm64 runners, bindings, manifests, and lock files
 - `linux/`: managed runner plus the app-owned CMake/Qt 6 C ABI shim
 
 Generated bootstrap and plugin registration stay below each runner's `obj/<rid>/Doroti.Generated`. Platform icons, splash assets, manifests, entitlements, native source, outputs, and lock files remain in their owning platform directory.
@@ -45,8 +45,11 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform
 # iOS x64 simulator (macOS + Xcode)
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform ios -Rid iossimulator-x64
 
-# Mac Catalyst arm64 (Apple Silicon macOS + Xcode)
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform macos -Rid maccatalyst-arm64
+# Native AppKit arm64 (experimental backend, macOS 14+, Apple Silicon)
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform macos -Rid osx-arm64
+
+# Mac Catalyst arm64
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform maccatalyst -Rid maccatalyst-arm64
 
 # Linux x64 (Qt 6 + CMake)
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform linux -Rid linux-x64
@@ -67,7 +70,8 @@ dotnet run --project ./DorotiDemoApp/windows/DorotiDemoApp.Windows.csproj
 dotnet run --project ./DorotiDemoApp/web/DorotiDemoApp.Web.csproj
 dotnet build ./DorotiDemoApp/android/DorotiDemoApp.Android.csproj -c Release -r android-x64
 dotnet build ./DorotiDemoApp/ios/DorotiDemoApp.iOS.csproj -c Release -r iossimulator-x64
-dotnet build ./DorotiDemoApp/macos/DorotiDemoApp.MacCatalyst.csproj -c Release
+dotnet build ./DorotiDemoApp/macos/DorotiDemoApp.MacOS.csproj -c Release -r osx-arm64
+dotnet build ./DorotiDemoApp/macos/DorotiDemoApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64
 dotnet publish ./DorotiDemoApp/linux/DorotiDemoApp.Linux.csproj -c Release -r linux-x64
 ```
 
@@ -75,7 +79,7 @@ The old `dotnet run --project DorotiDemoApp.csproj -p:DorotiTarget=...` path fai
 
 ## Default native bridge
 
-Every new app already contains Android, iOS, and Mac Catalyst native library plus binding projects. The native library does not replace the final application runner. Diagnose, build, or locate one workspace with:
+Every new app contains Android, iOS, native AppKit macOS, and Mac Catalyst native library/binding contracts. The native library does not replace the final application runner. Diagnose, build, or locate one workspace with:
 
 ```powershell
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native doctor -App ./DorotiDemoApp -Platform android
@@ -87,8 +91,8 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native open -App ./DorotiDemoApp -
 
 ## Support and evidence status
 
-Automated Release builds are available for the neutral app, Windows, Web, Android arm64/x64, Mac Catalyst cross-build, iOS device/simulator cross-build, and the managed Linux runner. Android Gradle and iOS Xcode binding scaffolds also compile in the available cross-build environment.
+Automated builds include native AppKit and Mac Catalyst independently. The AppKit backend is experimental and not Microsoft-supported; its minimum OS is macOS 14 and its first RID is `osx-arm64`.
 
-Those results do not prove native launch, GPU presentation, browser interaction, physical device behavior, accessibility, signing/store acceptance, or Linux X11/Wayland behavior. The current platform-workspace evidence keeps those unrun gates `notVerified`; Mac Catalyst evidence is never reported as true AppKit macOS evidence.
+The AppKit product live record proves native launch, the visible Material gallery, Metal completion-based presentation, zero CPU readback/full-frame copies, a clean AppKit-only bundle, and all three native bridge operations. Pointer/keyboard/IME, accessibility, resize/fullscreen/scale migration, Release live behavior, and signing/notarization/store acceptance remain `notVerified`. Mac Catalyst evidence is never reported as true AppKit macOS evidence.
 
-See [ADR-021](../Doroti/docs/adr/ADR-021-platform-runner-workspaces.md) and the [workspace evidence](../Doroti/validation/evidence/app-targets-evidence.json).
+See [ADR-021](../Doroti/docs/adr/ADR-021-platform-runner-workspaces.md), the [workspace evidence](../Doroti/validation/evidence/app-targets-evidence.json), and the [AppKit product live record](../Doroti/validation/evidence/appkit-macos/product-live.json).

@@ -7,7 +7,7 @@
 > [!WARNING]
 > Doroti is currently experimental. Its APIs, architecture, behavior, and project structure may change significantly at any time without backward-compatibility guarantees.
 
-Doroti brings a shared C# widget, layout, painting, semantics, and rendering pipeline to Windows, Android, iOS, Mac Catalyst, Web, and an early Linux/Qt host boundary. Flutter remains the behavior reference for familiar Material and Cupertino APIs, while the maintained product implementation lives in `Doroti.Framework.*`.
+Doroti brings a shared C# widget, layout, painting, semantics, and rendering pipeline to Windows, Android, iOS, native AppKit macOS, Mac Catalyst, Web, and an early Linux/Qt host boundary. Flutter remains the behavior reference for familiar Material and Cupertino APIs, while the maintained product implementation lives in `Doroti.Framework.*`.
 
 Doroti does not embed Flutter in a WebView and does not compose its UI from a platform control tree. Platform hosts provide the native window/view, GPU surface, input, text, clipboard, and accessibility capabilities; Doroti owns the widget and render trees.
 
@@ -22,11 +22,11 @@ See [ADR-019](Doroti/docs/adr/ADR-019-product-framework-source-ownership.md) and
 ## What works today
 
 - Shared Material/Cupertino widget, element, layout, paint, semantics, and state infrastructure
-- A platform-neutral C# application library plus fixed-target runner projects under `android/ios/linux/macos/web/windows`
+- A platform-neutral C# application library plus fixed-target runners; `macos` selects native AppKit and `maccatalyst` selects UIKit Mac Catalyst
 - One public target-neutral `Program` startup, host-owned native initialization, and runner-local generated bootstrap code
 - Strict Skia GPU rendering through WinUI 3 `MauiSKSwapChainPanel` on Windows and WebGL2 on the Web
-- Automated fixed-runner builds for Windows, Web, Android arm64/x64, Mac Catalyst, iOS device/simulator cross-builds, and the managed Linux runner
-- Package-only six-platform template creation with default Android Gradle, iOS Xcode, and Mac Catalyst Xcode bindings (ten projects total)
+- Automated fixed-runner builds include native AppKit macOS/osx-arm64 and the independently retained Mac Catalyst product
+- Package-only template creation includes both Apple desktop runners and their native bindings (twelve projects total)
 
 Fresh native launch, GPU presentation, browser interaction, physical acceptance, accessibility, signing/store, Linux X11/Wayland, and cross-target parity remain independent `notVerified` gates for the workspace-cutover source fingerprint. Historical live evidence is predecessor evidence only.
 
@@ -40,7 +40,7 @@ product-owned Doroti.Framework.* source
                  │
                  ▼
         target host + GPU surface
-  Windows MAUI · Mac Catalyst · WebGL2
+  Windows MAUI · AppKit · Mac Catalyst · WebGL2
 ```
 
 Flutter source is consulted when fidelity work needs a behavioral reference. Compiler output is an isolated candidate, not the product source of truth.

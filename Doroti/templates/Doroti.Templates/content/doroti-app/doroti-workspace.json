@@ -5,7 +5,8 @@
     "android": "android/DorotiTemplateApp.Android.csproj",
     "ios": "ios/DorotiTemplateApp.iOS.csproj",
     "linux": "linux/DorotiTemplateApp.Linux.csproj",
-    "macos": "macos/DorotiTemplateApp.MacCatalyst.csproj",
+    "macos": "macos/DorotiTemplateApp.MacOS.csproj",
+    "maccatalyst": "macos/DorotiTemplateApp.MacCatalyst.csproj",
     "web": "web/DorotiTemplateApp.Web.csproj",
     "windows": "windows/DorotiTemplateApp.Windows.csproj"
   }

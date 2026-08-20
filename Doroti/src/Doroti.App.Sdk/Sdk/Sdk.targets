@@ -18,7 +18,8 @@
                      $([System.String]::Copy('%(ProjectReference.Filename)').Contains('Doroti.Target.')) or
                      $([System.String]::Copy('%(ProjectReference.Filename)').EndsWith('.Android.Native')) or
                      $([System.String]::Copy('%(ProjectReference.Filename)').EndsWith('.iOS.Native')) or
-                     $([System.String]::Copy('%(ProjectReference.Filename)').EndsWith('.MacCatalyst.Native'))" />
+                     $([System.String]::Copy('%(ProjectReference.Filename)').EndsWith('.MacCatalyst.Native')) or
+                     $([System.String]::Copy('%(ProjectReference.Filename)').EndsWith('.MacOS.Native'))" />
       <_DorotiForbiddenApplicationPackage Include="@(PackageReference)"
           Condition="$([System.String]::Copy('%(PackageReference.Identity)').StartsWith('Microsoft.Maui')) or
                      $([System.String]::Copy('%(PackageReference.Identity)').StartsWith('Microsoft.AspNetCore.Components.WebAssembly')) or

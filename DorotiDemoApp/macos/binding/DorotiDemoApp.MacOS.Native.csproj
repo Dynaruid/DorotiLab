@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-macos</TargetFramework>
+    <AssemblyName>DorotiDemoApp.MacOS.Native</AssemblyName>
+    <RootNamespace>DorotiDemoApp.MacOS.Native</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsBindingProject>true</IsBindingProject>
+    <IsPackable>false</IsPackable>
+    <IsTrimmable>true</IsTrimmable>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <DorotiNativeBindingTarget>macOS</DorotiNativeBindingTarget>
+    <DorotiNativeToolchainVersion>xcode-26;swift-5;macos-14</DorotiNativeToolchainVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="ApiDefinition.cs;StructsAndEnums.cs;macos\**\*.cs" />
+    <ObjcBindingApiDefinition Include="macos\ApiDefinition.cs" />
+    <ObjcBindingCoreSource Include="macos\StructsAndEnums.cs" />
+    <XcodeProject Include="..\native\DorotiDemoAppNative.xcodeproj"
+                  SchemeName="DorotiDemoAppNative-macOS"
+                  Configuration="$(Configuration)"
+                  Kind="Framework"
+                  SmartLink="true"
+                  OutputPath="$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '$(BaseIntermediateOutputPath)', 'native', 'xcode', '$(Configuration)'))" />
+    <None Include="macos\abi-contract.json" />
+  </ItemGroup>
+  <Target Name="GetDorotiNativeBindingContract" Returns="@(_DorotiNativeBindingContract)">
+    <ItemGroup>
+      <_DorotiNativeBindingContract Include="$(MSBuildProjectFullPath)">
+        <NativeTarget>$(DorotiNativeBindingTarget)</NativeTarget>
+        <TargetFramework>$(TargetFramework)</TargetFramework>
+        <AssemblyName>$(AssemblyName)</AssemblyName>
+        <NativeBuildItem>XcodeProject</NativeBuildItem>
+        <NativeProject>%(XcodeProject.FullPath)</NativeProject>
+        <Configuration>%(XcodeProject.Configuration)</Configuration>
+        <ModuleName>DorotiDemoAppNativeMacOS</ModuleName>
+        <SchemeName>%(XcodeProject.SchemeName)</SchemeName>
+        <ToolchainVersion>$(DorotiNativeToolchainVersion)</ToolchainVersion>
+      </_DorotiNativeBindingContract>
+    </ItemGroup>
+  </Target>
+</Project>

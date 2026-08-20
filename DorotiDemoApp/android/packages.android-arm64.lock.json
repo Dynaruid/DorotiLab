@@ -1431,6 +1431,7 @@
         "dependencies": {
           "CommunityToolkit.Maui.Markup": "[8.0.0, )",
           "Doroti.Hosting": "[0.2.0-beta, )",
+          "Doroti.Skia.Rendering": "[0.2.0-beta, )",
           "Doroti.Skia.RuntimeEffects": "[0.2.0-beta, )",
           "Doroti.Ui": "[0.2.0-beta, )",
           "Microsoft.Maui.Controls": "[10.0.90, )",
@@ -1448,6 +1449,14 @@
         "type": "Project",
         "dependencies": {
           "MaterialColorUtilities": "[0.3.0, )"
+        }
+      },
+      "doroti.skia.rendering": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Skia.RuntimeEffects": "[0.2.0-beta, )",
+          "Doroti.Ui": "[0.2.0-beta, )",
+          "SkiaSharp": "[4.151.1, )"
         }
       },
       "doroti.skia.runtimeeffects": {

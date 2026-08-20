@@ -1,3 +1,4 @@
+#if MACCATALYST
 using Doroti.Host.Maui;
 using Foundation;
 
@@ -11,3 +12,4 @@ public sealed class AppDelegate : DorotiMauiUIApplicationDelegate
 
     protected override void ConfigurePlatform(MauiAppBuilder builder) => _ = builder;
 }
+#endif

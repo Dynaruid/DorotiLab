@@ -19,7 +19,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="content\doroti-app\**\*"
-             Exclude="content\doroti-app\**\bin\**;content\doroti-app\**\obj\**;content\doroti-app\android\native\gradlew"
+             Exclude="content\doroti-app\**\bin\**;content\doroti-app\**\obj\**;content\doroti-app\**\.gradle\**;content\doroti-app\**\.project;content\doroti-app\android\native\gradlew"
              Pack="true"
              PackagePath="content\doroti-app\%(RecursiveDir)%(Filename)%(Extension)" />
     <Content Include="content\doroti-app\android\native\gradlew"

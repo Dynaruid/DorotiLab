@@ -7,7 +7,7 @@
 > [!WARNING]
 > Doroti는 현재 실험 단계입니다. API, architecture, 동작 및 project 구조는 하위 호환성 보장 없이 언제든 크게 변경될 수 있습니다.
 
-Doroti는 공용 C# widget, layout, painting, semantics, rendering pipeline을 Windows, Mac Catalyst와 Web에 제공합니다. 익숙한 Material/Cupertino API의 동작 reference는 Flutter이지만, 유지보수하는 제품 구현은 `Doroti.Framework.*`에 있습니다.
+Doroti는 공용 C# widget, layout, painting, semantics, rendering pipeline을 Windows, native AppKit macOS, Mac Catalyst와 Web에 제공합니다. 익숙한 Material/Cupertino API의 동작 reference는 Flutter이지만, 유지보수하는 제품 구현은 `Doroti.Framework.*`에 있습니다.
 
 Doroti는 Flutter를 WebView에 넣지 않으며 플랫폼 UI control tree로 UI를 구성하지 않습니다. Platform host는 native window/view, GPU surface, input, text, clipboard, accessibility capability를 제공하고 Doroti가 widget/render tree를 소유합니다.
 
@@ -22,11 +22,11 @@ Doroti는 Flutter를 WebView에 넣지 않으며 플랫폼 UI control tree로 UI
 ## 현재 동작 범위
 
 - 공용 Material/Cupertino widget, element, layout, paint, semantics, state 기반
-- 플랫폼 중립 C# 앱 library와 `android/ios/linux/macos/web/windows`의 고정 target runner project
+- 플랫폼 중립 C# 앱 library와 `macos`(AppKit), `maccatalyst`(UIKit)를 분리한 고정 target runner project
 - 하나의 public target-neutral `Program` startup, host 소유 native 초기화, runner-local generated bootstrap code
 - Windows WinUI 3 `MauiSKSwapChainPanel`과 Web WebGL2를 통한 strict Skia GPU rendering
-- Windows, Web, Android arm64/x64, Mac Catalyst, iOS device/simulator 교차 빌드와 Linux managed runner 자동 빌드
-- 여섯 플랫폼 package-only template과 기본 Android Gradle/iOS Xcode/Mac Catalyst Xcode binding(총 10개 project)
+- native AppKit macOS/osx-arm64와 별도로 유지되는 Mac Catalyst를 포함한 고정 runner 빌드
+- 두 Apple desktop runner/binding을 포함하는 package-only template(총 12개 project)
 
 workspace cutover source fingerprint의 새 native launch, GPU presentation, browser interaction, physical acceptance, accessibility, signing/store, Linux X11/Wayland와 cross-target parity는 각각 독립적인 `notVerified` gate입니다. 이전 live 결과는 predecessor evidence로만 유지합니다.
 
@@ -40,7 +40,7 @@ workspace cutover source fingerprint의 새 native launch, GPU presentation, bro
                  │
                  ▼
          target host + GPU surface
-   Windows MAUI · Mac Catalyst · WebGL2
+   Windows MAUI · AppKit · Mac Catalyst · WebGL2
 ```
 
 Flutter source는 fidelity 작업에서 동작 reference가 필요할 때 사용합니다. Compiler output은 격리된 candidate이며 제품 source of truth가 아닙니다.
@@ -66,7 +66,7 @@ pwsh -File ./Doroti/eng/doroti.ps1 validate -ValidationSuite Release
 | 경로 | 설명 |
 | --- | --- |
 | [`Doroti/src/`](Doroti/src/) | 제품 framework, runtime, rendering, host, target package와 SDK |
-| [`DorotiDemoApp/`](DorotiDemoApp/) | 플랫폼 중립 앱, 6 runner, 3 native binding을 dogfood하는 앱 |
+| [`DorotiDemoApp/`](DorotiDemoApp/) | 플랫폼 중립 앱, 7 runner, 4 native binding을 dogfood하는 앱 |
 | [`Doroti/templates/`](Doroti/templates/) | `dotnet new doroti-app` template |
 | [`Doroti/eng/`](Doroti/eng/) | 간소화한 build, validation, release, 선택적 reference workflow |
 | [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | 선택적 Dart/Flutter import·migration compiler |

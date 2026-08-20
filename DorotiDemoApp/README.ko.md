@@ -2,17 +2,17 @@
 
 [English](README.md) | **한국어**
 
-DorotiDemoApp은 플랫폼 workspace 계약을 직접 사용하는 dogfood 앱입니다. 루트 `DorotiDemoApp.csproj`는 플랫폼 중립 `net10.0` 라이브러리이고, 여섯 소문자 플랫폼 폴더가 각각 독립적으로 build/run 가능한 runner 프로젝트를 소유합니다.
+DorotiDemoApp은 플랫폼 workspace 계약을 직접 사용하는 dogfood 앱입니다. 루트 project는 플랫폼 중립이며, `macos`와 `maccatalyst`를 별도 정식 제품으로 둔 7개 runner alias가 있습니다.
 
 ## 구조
 
 - `Program.cs`, `src/`, `assets/`: 공용 startup, widget tree, 앱 asset
-- `doroti-workspace.json`: `android`, `ios`, `linux`, `macos`, `web`, `windows` alias와 runner 경로
+- `doroti-workspace.json`: `macos`(AppKit)와 `maccatalyst`(UIKit)를 구분하는 runner 경로
 - `windows/`: WinUI/MAUI runner와 package identity
 - `web/`: Blazor WebAssembly runner, TypeScript source, `wwwroot`
 - `android/`: .NET Android/MAUI runner와 기본 Gradle AAR/.NET binding
 - `ios/`: .NET iOS/MAUI runner와 독립 Xcode framework/binding
-- `macos/`: Mac Catalyst runner와 독립 Xcode framework/binding이며 AppKit macOS를 뜻하지 않음
+- `macos/`: native AppKit/osx-arm64와 Mac Catalyst/maccatalyst-arm64 runner, binding, manifest, lock file
 - `linux/`: managed runner와 앱 소유 CMake/Qt 6 C ABI shim
 
 생성 bootstrap과 plugin registration은 각 runner의 `obj/<rid>/Doroti.Generated` 아래에만 만들어집니다. 플랫폼 icon, splash, manifest, entitlement, native source, output, lock file은 해당 플랫폼 폴더가 소유합니다.
@@ -45,8 +45,11 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform
 # iOS x64 시뮬레이터 (macOS + Xcode)
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform ios -Rid iossimulator-x64
 
-# Mac Catalyst arm64 (Apple Silicon macOS + Xcode)
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform macos -Rid maccatalyst-arm64
+# Native AppKit arm64 (실험 backend, macOS 14+, Apple Silicon)
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform macos -Rid osx-arm64
+
+# Mac Catalyst arm64
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform maccatalyst -Rid maccatalyst-arm64
 
 # Linux x64 (Qt 6 + CMake)
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform linux -Rid linux-x64
@@ -67,7 +70,8 @@ dotnet run --project ./DorotiDemoApp/windows/DorotiDemoApp.Windows.csproj
 dotnet run --project ./DorotiDemoApp/web/DorotiDemoApp.Web.csproj
 dotnet build ./DorotiDemoApp/android/DorotiDemoApp.Android.csproj -c Release -r android-x64
 dotnet build ./DorotiDemoApp/ios/DorotiDemoApp.iOS.csproj -c Release -r iossimulator-x64
-dotnet build ./DorotiDemoApp/macos/DorotiDemoApp.MacCatalyst.csproj -c Release
+dotnet build ./DorotiDemoApp/macos/DorotiDemoApp.MacOS.csproj -c Release -r osx-arm64
+dotnet build ./DorotiDemoApp/macos/DorotiDemoApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64
 dotnet publish ./DorotiDemoApp/linux/DorotiDemoApp.Linux.csproj -c Release -r linux-x64
 ```
 
@@ -75,7 +79,7 @@ dotnet publish ./DorotiDemoApp/linux/DorotiDemoApp.Linux.csproj -c Release -r li
 
 ## 기본 native bridge
 
-새 앱에는 Android, iOS, Mac Catalyst native library와 binding project가 기본으로 포함됩니다. Native library는 최종 앱 runner를 대체하지 않습니다.
+새 앱에는 Android, iOS, native AppKit macOS, Mac Catalyst native library와 binding project가 기본으로 포함됩니다. Native library는 최종 앱 runner를 대체하지 않습니다.
 
 ```powershell
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native doctor -App ./DorotiDemoApp -Platform android
@@ -87,8 +91,8 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native open -App ./DorotiDemoApp -
 
 ## 지원과 evidence 상태
 
-플랫폼 중립 앱, Windows, Web, Android arm64/x64, Mac Catalyst 교차 빌드, iOS device/simulator 교차 빌드, Linux managed runner의 자동 Release 빌드를 검증합니다. Android Gradle 및 iOS Xcode binding scaffold도 현재 교차 빌드 환경에서 컴파일합니다.
+native AppKit과 Mac Catalyst를 서로 독립적으로 포함한 자동 build를 검증합니다. AppKit backend는 실험적이며 Microsoft 지원 대상이 아니고 최소 macOS 14, 첫 RID는 `osx-arm64`입니다.
 
-이 결과는 native launch, GPU 표시, browser interaction, physical device, accessibility, signing/store, Linux X11/Wayland 동작을 증명하지 않습니다. 실행하지 않은 gate는 workspace evidence에서 `notVerified`로 유지하며, Mac Catalyst 결과를 native AppKit macOS 결과로 바꾸지 않습니다.
+AppKit product live record는 native launch, 화면에 표시된 Material gallery, Metal completion 기반 present, CPU readback/full-frame copy 0건, AppKit-only bundle, native bridge 3개 operation을 증명합니다. Pointer/keyboard/IME, accessibility, resize/fullscreen/scale 이동, Release live, signing/notarization/store gate는 계속 `notVerified`입니다. Mac Catalyst 결과를 native AppKit macOS 결과로 바꾸지 않습니다.
 
-[ADR-021](../Doroti/docs/adr/ADR-021-platform-runner-workspaces.md)과 [workspace evidence](../Doroti/validation/evidence/app-targets-evidence.json)를 참고하세요.
+[ADR-021](../Doroti/docs/adr/ADR-021-platform-runner-workspaces.md), [workspace evidence](../Doroti/validation/evidence/app-targets-evidence.json), [AppKit product live record](../Doroti/validation/evidence/appkit-macos/product-live.json)를 참고하세요.

@@ -1,0 +1,35 @@
+{
+  "schema": "doroti-appkit-dependency-baseline/v1",
+  "capturedOn": "2026-08-20",
+  "host": {
+    "architecture": "arm64",
+    "macOS": "26.5.2",
+    "dotnetSdk": "10.0.400",
+    "workloadSet": "10.0.400.1",
+    "macosWorkload": "26.5.10315/10.0.100",
+    "xcode": "26.6 (17F113)",
+    "developerDirectory": "/Applications/Xcode.app/Contents/Developer",
+    "macOSSdk": "26.5"
+  },
+  "dependencies": {
+    "Microsoft.Maui.Platforms.MacOS": "0.1.0-preview.12.26368.2",
+    "Microsoft.Maui.Platforms.MacOS.Essentials": "0.1.0-preview.12.26368.2",
+    "backendSourceCommit": "229f764fd688754497fe5822213e7b13b4e9caa3",
+    "backendNupkgSha256": "3fd3266dd835e2c7d51c3b897360d19c3ace4c2ea236d961facbe56e27b60c5d",
+    "Microsoft.Maui.Controls": "10.0.90",
+    "CommunityToolkit.Maui.Markup": "8.0.0",
+    "SkiaSharp": "4.151.1",
+    "SkiaSharp.Views": "4.151.1",
+    "lockFileSha256": "bdb99fbbc3000cf9990d0baf01aeb2d4ee282fd87ad232852c7a843894e32e33"
+  },
+  "verification": {
+    "restore": "pass",
+    "debugBuild": "pass",
+    "releaseBuild": "pass",
+    "releaseLive": "pass",
+    "communityToolkitRuntimeRegistration": "pass",
+    "selectedCompileOrRuntimeMacCatalystAssets": 0,
+    "frameworkDependentPublish": "blocked: .NET macOS requires PublishTrimmed=true while ILLink rejects trimming a framework-dependent publish (NETSDK1102)",
+    "signingAndNotarization": "notVerified"
+  }
+}

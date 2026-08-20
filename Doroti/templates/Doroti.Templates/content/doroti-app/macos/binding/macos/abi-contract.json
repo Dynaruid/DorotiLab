@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "doroti.native-binding-abi/v1",
+  "platform": "macOS",
+  "module": "__DOROTI_NATIVE_MODULE__MacOS",
+  "scheme": "__DOROTI_NATIVE_MODULE__-macOS",
+  "bridgeVersion": "1.0.0",
+  "exports": ["platformInfo", "echo:", "echoOnMainThreadWithValue:completion:"]
+}

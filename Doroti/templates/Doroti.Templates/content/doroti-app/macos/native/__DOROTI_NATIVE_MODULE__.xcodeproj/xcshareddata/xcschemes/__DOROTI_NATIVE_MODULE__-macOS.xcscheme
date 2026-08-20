@@ -3,7 +3,7 @@
   <BuildAction parallelizeBuildables="YES" buildImplicitDependencies="YES">
     <BuildActionEntries>
       <BuildActionEntry buildForTesting="YES" buildForRunning="YES" buildForProfiling="YES" buildForArchiving="YES" buildForAnalyzing="YES">
-        <BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="83E34F522C21CB2B008AA950" BuildableName="__DOROTI_NATIVE_MODULE__.framework" BlueprintName="__DOROTI_NATIVE_MODULE__-MacCatalyst" ReferencedContainer="container:__DOROTI_NATIVE_MODULE__.xcodeproj" />
+        <BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="A10000082C21CB2B008AA950" BuildableName="__DOROTI_NATIVE_MODULE__-macOS.framework" BlueprintName="__DOROTI_NATIVE_MODULE__-macOS" ReferencedContainer="container:__DOROTI_NATIVE_MODULE__.xcodeproj" />
       </BuildActionEntry>
     </BuildActionEntries>
   </BuildAction>

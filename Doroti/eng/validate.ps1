@@ -92,10 +92,10 @@ function Invoke-SourceGate {
     $templateRoot = Join-Path $dorotiRoot 'templates/Doroti.Templates/content/doroti-app'
     $templateProjects = @(Get-ChildItem -LiteralPath $templateRoot -Recurse -File -Filter '*.csproj' |
         Where-Object { $_.FullName -notmatch '[\\/](bin|obj)[\\/]' })
-    Assert-True ($templateProjects.Count -eq 10) 'template app plus six runner and three native binding projects'
+    Assert-True ($templateProjects.Count -eq 12) 'template app plus seven runner and four native binding projects'
     $templateXaml = @(Get-ChildItem -LiteralPath $templateRoot -Recurse -File -Filter '*.xaml' |
         Where-Object { $_.FullName -notmatch '[\\/](bin|obj)[\\/]' })
-    Assert-True ($templateXaml.Count -eq 1 -and $templateXaml[0].FullName.EndsWith('windows\App.xaml')) 'template bootstrap XAML boundary'
+    Assert-True ($templateXaml.Count -eq 1 -and $templateXaml[0].Name -ceq 'App.xaml' -and $templateXaml[0].Directory.Name -ceq 'windows') 'template bootstrap XAML boundary'
     $templateLegacyFiles = if (Test-Path -LiteralPath (Join-Path $templateRoot 'Platforms')) {
         @(Get-ChildItem -LiteralPath (Join-Path $templateRoot 'Platforms') -Recurse -File)
     } else { @() }
@@ -108,6 +108,7 @@ function Invoke-BuildGate {
     foreach ($targetFramework in @(
         'net10.0-windows10.0.19041.0',
         'net10.0-maccatalyst',
+        'net10.0-macos',
         'net10.0-android'
     )) {
         Invoke-Checked {

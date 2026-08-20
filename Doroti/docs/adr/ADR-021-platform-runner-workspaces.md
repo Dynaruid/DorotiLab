@@ -7,7 +7,7 @@
 
 Doroti applications are split into a target-neutral application assembly and one fixed-target runner project per platform workspace. The application owns `Program : IDorotiApplicationStartup`, shared widget source, and shared logical assets. A runner owns its native entry point, package manifest, platform resources, target framework, runtime identifier, host package, and generated bootstrap.
 
-The workspace aliases are `android`, `ios`, `linux`, `macos`, `web`, and `windows`. Their canonical targets are `Android`, `iOS`, `Linux`, `MacCatalyst`, `Web`, and `Windows`. The `macos` alias intentionally names the workspace while its first product remains Mac Catalyst; true AppKit macOS is outside this cutover.
+The workspace aliases are `android`, `ios`, `linux`, `macos`, `maccatalyst`, `web`, and `windows`. Their canonical targets are `Android`, `iOS`, `Linux`, `macOS`, `MacCatalyst`, `Web`, and `Windows`. Per ADR-024, `macos` selects only native AppKit (`net10.0-macos/osx-arm64`) and `maccatalyst` selects only UIKit Mac Catalyst; neither may fall back to the other.
 
 `doroti-workspace.json` is only a path index. Runner project files and their single `DorotiTargetDescriptor` remain the source of truth for TFM, RID, host, native entry kind, and target package.
 
@@ -23,7 +23,7 @@ It is not an application runner and does not start the .NET runtime from Kotlin 
 
 ## Runtime ownership
 
-- Windows, Android, iOS, and Mac Catalyst runners own native lifecycle entry points and initialize the shared MAUI host/surface.
+- Windows, Android, iOS, native AppKit macOS, and Mac Catalyst runners own native lifecycle entry points and initialize the shared renderer through platform-specific surface adapters.
 - The Web runner owns Blazor startup and exactly one loader-owned `Blazor.start()` call.
 - Linux uses a managed-owned process with a Qt C ABI shim. Managed code owns startup and Doroti lifetime; Qt owns the native event loop, window, display backend, and native input/IME/clipboard/accessibility integration.
 - Framework host code stays in `Doroti.Host.*`; app platform folders contain only runner entry points, manifests, resources, and explicit customization hooks.

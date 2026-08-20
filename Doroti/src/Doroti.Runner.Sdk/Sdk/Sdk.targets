@@ -3,12 +3,13 @@
     <DorotiAppProject>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(DorotiAppProject)'))</DorotiAppProject>
     <DorotiApplicationProjectName>$([System.IO.Path]::GetFileNameWithoutExtension('$(DorotiAppProject)'))</DorotiApplicationProjectName>
     <DorotiApplicationType Condition="'$(DorotiApplicationType)' == ''">$(DorotiApplicationProjectName).Program</DorotiApplicationType>
-    <StartupObject Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main' or '$(DorotiNativeEntryKind)' == 'UIKit-Main' or '$(DorotiNativeEntryKind)' == 'Qt-Main'">Doroti.Generated.DorotiBootstrap</StartupObject>
+    <StartupObject Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main' or '$(DorotiNativeEntryKind)' == 'UIKit-Main' or '$(DorotiNativeEntryKind)' == 'AppKit-Main' or '$(DorotiNativeEntryKind)' == 'Qt-Main'">Doroti.Generated.DorotiBootstrap</StartupObject>
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'Android'">net10.0-android</_DorotiExpectedNativeBindingTfm>
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'iOS'">net10.0-ios</_DorotiExpectedNativeBindingTfm>
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'MacCatalyst'">net10.0-maccatalyst</_DorotiExpectedNativeBindingTfm>
+    <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'macOS'">net10.0-macos</_DorotiExpectedNativeBindingTfm>
     <_DorotiExpectedNativeBuildItem Condition="'$(DorotiTarget)' == 'Android'">AndroidGradleProject</_DorotiExpectedNativeBuildItem>
-    <_DorotiExpectedNativeBuildItem Condition="'$(DorotiTarget)' == 'iOS' or '$(DorotiTarget)' == 'MacCatalyst'">XcodeProject</_DorotiExpectedNativeBuildItem>
+    <_DorotiExpectedNativeBuildItem Condition="'$(DorotiTarget)' == 'iOS' or '$(DorotiTarget)' == 'MacCatalyst' or '$(DorotiTarget)' == 'macOS'">XcodeProject</_DorotiExpectedNativeBuildItem>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,7 +24,7 @@
       <DorotiNativeBinding>true</DorotiNativeBinding>
       <GlobalPropertiesToRemove>DorotiTarget;DorotiHostKind;DorotiNativeEntryKind</GlobalPropertiesToRemove>
     </ProjectReference>
-    <Compile Include="*.cs" />
+    <Compile Include="*.cs" Exclude="$(DorotiCompileExclude)" />
     <Compile Include="src/**/*.cs" />
     <Compile Include="$(_DorotiBootstrapFile)" AutoGen="true" DesignTime="true" Visible="false" />
     <Compile Include="$(_DorotiPluginRegistrationFile)" AutoGen="true" DesignTime="true" Visible="false" />
@@ -38,7 +39,7 @@
     <MauiIcon Include="Resources/AppIcon/appicon.svg" ForegroundFile="Resources/AppIcon/appiconfg.svg" Color="#6750A4"
               Condition="'$(UseMaui)' == 'true' and Exists('Resources/AppIcon/appicon.svg')" />
     <MauiSplashScreen Include="Resources/Splash/splash.svg" Color="#FFFBFE" BaseSize="128,128"
-                      Condition="'$(UseMaui)' == 'true' and Exists('Resources/Splash/splash.svg')" />
+                      Condition="'$(UseMaui)' == 'true' and '$(DorotiTarget)' != 'macOS' and Exists('Resources/Splash/splash.svg')" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(DorotiTarget)' == 'Android'">
@@ -191,6 +192,12 @@
       <_DorotiBootstrapLines Include="        global::Doroti.Target.Web.DorotiWebRunner.RunAsync&lt;global::$(DorotiApplicationType)&gt;(typeof(DorotiBootstrap).Assembly, args, DorotiPluginRegistration.Items)%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
       <_DorotiBootstrapLines Include="    public static void Main(string[] args) =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'UIKit-Main'" />
       <_DorotiBootstrapLines Include="        global::UIKit.UIApplication.Main(args, null, typeof(global::$(RootNamespace).AppDelegate))%3B" Condition="'$(DorotiNativeEntryKind)' == 'UIKit-Main'" />
+      <_DorotiBootstrapLines Include="    public static void Main(string[] args)" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
+      <_DorotiBootstrapLines Include="    {" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
+      <_DorotiBootstrapLines Include="        global::AppKit.NSApplication.Init()%3B" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
+      <_DorotiBootstrapLines Include="        global::AppKit.NSApplication.SharedApplication.Delegate = new global::$(RootNamespace).AppKitDelegate()%3B" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
+      <_DorotiBootstrapLines Include="        global::AppKit.NSApplication.Main(args)%3B" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
+      <_DorotiBootstrapLines Include="    }" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
       <_DorotiBootstrapLines Include="    public static int Main(string[] args) =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Qt-Main'" />
       <_DorotiBootstrapLines Include="        global::Doroti.Host.Qt.DorotiQtRunner.Run(Create(args))%3B" Condition="'$(DorotiNativeEntryKind)' == 'Qt-Main'" />
       <_DorotiBootstrapLines Include="}" />

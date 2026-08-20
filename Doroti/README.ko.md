@@ -2,7 +2,7 @@
 
 [English](README.md) | **한국어**
 
-Doroti는 MAUI Windows, Android, iOS, Mac Catalyst, Blazor WebAssembly와 초기 Linux/Qt host 경계에서 공용 widget, layout, painting, semantics, rendering pipeline을 사용하는 C#/.NET UI framework입니다.
+Doroti는 MAUI Windows, Android, iOS, native AppKit macOS, Mac Catalyst, Blazor WebAssembly와 초기 Linux/Qt host 경계에서 공용 widget, layout, painting, semantics, rendering pipeline을 사용하는 C#/.NET UI framework입니다.
 
 ## 개발 방식
 
@@ -19,14 +19,14 @@ Source 소유권은 [ADR-019](docs/adr/ADR-019-product-framework-source-ownershi
 - `Doroti.App.Sdk`: 플랫폼 중립 `net10.0` 앱 assembly와 공용 asset 계약
 - `Doroti.Runner.Sdk`: 고정 target runner 검증과 runner-local native/Web bootstrap/plugin registration
 - `Doroti.Skia.RuntimeEffects`: native/Web host가 공유하는 fail-closed SkSL compiler와 uniform/image-sampler binder
-- `Doroti.Host.Maui`: host 소유 MAUI application/page lifecycle과 `SKGLView` GPU surface 통합
+- `Doroti.Host.Maui`: 공용 MAUI lifecycle과 독립 SKGLView/AppKit MTKView Metal surface adapter
 - `Doroti.Host.Web`: host 소유 Blazor composition, WebGL2 canvas, input, accessibility, resource bridge
 
 Web 실행 source는 TypeScript가 소유합니다. 앱은 `web/src/**/*.ts`, Doroti는 `src/Doroti.Host.Web/Web/*.ts`를 편집합니다. `Microsoft.TypeScript.MSBuild` 7.0.0이 runner-local `obj`에 JavaScript를 만들며 publish에는 그 결과만 포함됩니다. 앱 도구로 Node, npm, Bun, bundler를 요구하지 않습니다. 자세한 결정은 [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md)에 있습니다.
 
 Material 앱은 `MaterialApp(theme:, darkTheme:, themeMode: ThemeMode.system)`으로 시스템 다크 모드를 따릅니다. `ColorScheme.CreateFromSeed`에 `Brightness.light`/`Brightness.dark`와 `surface`, `primary`, `outline` 같은 role override를 전달해 두 팔레트를 구성하고, widget은 `Theme.of(context).colorScheme`에서 현재 팔레트를 읽습니다. MAUI와 Web의 시스템 변경 전달 및 전체 예시는 [DorotiDemoApp 다크 모드 문서](../DorotiDemoApp/README.ko.md#시스템-다크-모드와-색-팔레트)를 참고하세요.
 
-Android, iOS, Mac Catalyst runner는 각각 앱 소유 기본 native binding을 참조합니다. Android는 `AndroidGradleProject`로 AAR을 만들고 iOS와 Mac Catalyst는 서로 분리된 `XcodeProject` framework를 사용합니다. 최종 앱 소유자는 계속 .NET runner입니다. Managed/Windows 교차 빌드는 Android Studio/Xcode 실행, native launch, device, signing, archive 증거가 아니며 실행 전까지 `notVerified`입니다.
+Android, iOS, native AppKit macOS, Mac Catalyst runner는 각각 앱 소유 기본 native binding을 참조합니다. Android는 `AndroidGradleProject`, Apple 제품은 명시적인 `XcodeProject` binding 계약을 사용합니다. 최종 앱 소유자는 계속 .NET runner이며 build 결과는 native launch, accessibility, signing, archive 증거를 대신하지 않습니다.
 
 ## 요구 사항
 
@@ -54,7 +54,7 @@ pwsh -File ./Doroti/eng/doroti.ps1 validate
 | `doctor` | 필수 .NET/PowerShell 도구를 확인하고 선택적인 reference checkout 상태 보고 |
 | `build` | `Doroti.Product.slnx` build |
 | `build/run/publish -App <path> -Platform <alias>` | `doroti-workspace.json`에서 runner를 찾아 실행 |
-| `native doctor\|build\|open\|add -App <path> -Platform android\|ios\|macos` | 기본 native bridge workspace 진단, 빌드, 위치 출력, 확장 |
+| `native doctor\|build\|open\|add -App <path> -Platform android\|ios\|macos\|maccatalyst` | 기본 native bridge workspace 진단, 빌드, 위치 출력, 확장 |
 | `validate` | Source 소유권, Release build, application target graph/build 검증 |
 | `validate -ValidationSuite Release` | Windows GPU live와 외부 Web template/package publish 시나리오 추가 |
 | `audit` | Repository-local storage와 현재 source 소유권 검사 |
@@ -78,7 +78,7 @@ pwsh -File ./Doroti/eng/doroti.ps1 validate
 | 경로 | 내용 |
 | --- | --- |
 | [`src/`](src/) | 제품 framework, runtime, renderer, host, target, SDK, analyzer |
-| [`templates/`](templates/) | 6 runner와 3 binding을 포함하는 `doroti-app` template |
+| [`templates/`](templates/) | 7 runner와 4 binding을 포함하는 `doroti-app` template |
 | [`eng/`](eng/) | 간소화한 build, validation, release, storage, 선택적 reference workflow |
 | [`tools/`](tools/) | 선택적 Dart/Flutter compiler와 shared tooling |
 | [`validation/`](validation/) | 활성 validation contract, fixture와 evidence |

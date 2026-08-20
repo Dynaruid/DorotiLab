@@ -14,7 +14,10 @@
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.11" />
     <PackageVersion Include="Microsoft.TypeScript.MSBuild" Version="7.0.0" />
     <PackageVersion Include="Microsoft.Maui.Controls" Version="10.0.90" />
+    <PackageVersion Include="Microsoft.Maui.Platforms.MacOS" Version="[0.1.0-preview.12.26368.2]" />
+    <PackageVersion Include="Microsoft.Maui.Platforms.MacOS.Essentials" Version="[0.1.0-preview.12.26368.2]" />
     <PackageVersion Include="CommunityToolkit.Maui.Markup" Version="8.0.0" />
+    <PackageVersion Include="SkiaSharp.Views" Version="4.151.1" />
     <PackageVersion Include="SkiaSharp.Views.Maui.Controls" Version="4.151.1" />
   </ItemGroup>
 </Project>

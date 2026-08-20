@@ -11,12 +11,13 @@
     "platforms": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["android", "ios", "linux", "macos", "web", "windows"],
+      "required": ["android", "ios", "linux", "macos", "maccatalyst", "web", "windows"],
       "properties": {
         "android": { "type": "string", "minLength": 1 },
         "ios": { "type": "string", "minLength": 1 },
         "linux": { "type": "string", "minLength": 1 },
         "macos": { "type": "string", "minLength": 1 },
+        "maccatalyst": { "type": "string", "minLength": 1 },
         "web": { "type": "string", "minLength": 1 },
         "windows": { "type": "string", "minLength": 1 }
       }

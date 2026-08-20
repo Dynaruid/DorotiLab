@@ -3,8 +3,6 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using Doroti.Hosting;
 using Doroti.Ui;
-using SkiaSharp.Views.Maui;
-using SkiaSharp.Views.Maui.Controls;
 
 namespace Doroti.Host.Maui;
 
@@ -22,7 +20,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     private DorotiApplicationBoundary? _boundary;
     private DorotiHostSession? _session;
     private MauiFrameworkHost? _host;
-    private readonly SKGLView _skiaView;
+    private readonly IMauiSkiaSurface _renderSurface;
     private readonly Entry _singleLineInput;
     private readonly Editor _multilineInput;
     private readonly MauiTextInputBridge _textInput;
@@ -44,11 +42,6 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         var startupColor = ResolveBackgroundColor(Application.Current?.RequestedTheme ?? AppTheme.Unspecified);
         BackgroundColor = new Microsoft.Maui.Graphics.Color(
             (float)startupColor.r, (float)startupColor.g, (float)startupColor.b, (float)startupColor.a);
-        _skiaView = new SKGLView
-        {
-            HasRenderLoop = false,
-            EnableTouchEvents = true,
-        };
         _singleLineInput = CreateHiddenInput<Entry>();
         _multilineInput = CreateHiddenInput<Editor>();
         _semanticsLayer = new AbsoluteLayout { InputTransparent = true, CascadeInputTransparent = false };
@@ -57,13 +50,20 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 #else
         _textInput = new(_singleLineInput, _multilineInput);
 #endif
-        Children.Add(_skiaView);
+#if MACOS
+        _renderSurface = new DorotiMacOSMetalSurface(_viewId);
+#else
+        _renderSurface = new MauiSkglSurface(_textInput, _viewId);
+#endif
+        Children.Add(_renderSurface.Element);
 #if !WINDOWS
         Children.Add(_singleLineInput);
         Children.Add(_multilineInput);
 #endif
         Children.Add(_semanticsLayer);
-        _skiaView.PaintSurface += PaintGpuSurface;
+        _renderSurface.Paint += PaintGpuSurface;
+        _renderSurface.PresentCompleted += CompleteNativePaint;
+        _renderSurface.PaintFailed += HandlePaintFailure;
         HandlerChanged += HandleHandlerChanged;
         Loaded += HandleLoaded;
         Unloaded += HandleUnloaded;
@@ -83,6 +83,8 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         RuntimeInformation.ProcessArchitecture == Architecture.X64
             ? "obj/android-x64/Doroti.Generated/DorotiBootstrap.g.cs -> android/MainApplication.cs"
             : "obj/android-arm64/Doroti.Generated/DorotiBootstrap.g.cs -> android/MainApplication.cs"
+#elif MACOS
+        "obj/Doroti.Generated/DorotiBootstrap.g.cs -> macos/AppKitDelegate.cs"
 #else
 #error Doroti.Host.Maui requires an explicit bootstrap source.
 #endif
@@ -103,7 +105,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 _application.ApplicationAssembly,
                 _application.LaunchContext.RuntimeIdentifier,
                 _application.NativePluginHandlers);
-            _host.CreateView(_session, _viewId, _skiaView, _application.ViewConfiguration,
+            _host.CreateView(_session, _viewId, _renderSurface, _application.ViewConfiguration,
                 new MauiSemanticsBridge(_semanticsLayer), _boundary, _textInput);
             using (var dispatcherScope = _session.dispatcher.EnterScope())
                 _session.dispatcher.setSemanticsTreeEnabled(true);
@@ -116,36 +118,20 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         }
     }
 
-    private void PaintGpuSurface(object? sender, SKPaintGLSurfaceEventArgs args)
+    private void PaintGpuSurface(MauiSkiaPaintContext paint)
     {
-        _ = sender;
         if (!_attached || _host is null) return;
         try
         {
-            if (args.Surface is null || _skiaView.GRContext is null)
-                throw new InvalidOperationException("Strict Doroti MAUI mode requires a GPU-backed SKSurface and GRContext.");
-            var nativeType = _skiaView.Handler?.PlatformView?.GetType().FullName ?? "unknown";
-            MauiPaintCompletion? completion = null;
             try
             {
-                _host.BeginPaint(_viewId, args, _skiaView.GRContext, nativeType);
-                completion = _host.PaintSkiaSurface(
-                    _viewId, args.Surface, args.BackendRenderTarget.Width, args.BackendRenderTarget.Height);
+                _host.BeginPaint(_viewId, paint);
+                paint.Completion = _host.PaintSkiaSurface(
+                    _viewId, paint.Surface, paint.PixelWidth, paint.PixelHeight);
             }
             finally
             {
                 _host.EndPaint(_viewId);
-            }
-            if (completion is { } completed)
-            {
-#if WINDOWS
-                // SKSwapChainPanel flushes its canvas and GRContext only after this
-                // PaintSurface callback returns. Queue completion so `present` and
-                // evidence describe the native submission rather than pre-flush work.
-                Dispatcher.DispatchDelayed(TimeSpan.Zero, () => CompleteNativePaint(completed));
-#else
-                CompleteNativePaint(completed);
-#endif
             }
         }
         catch (Exception exception)
@@ -155,10 +141,25 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         }
     }
 
-    private void CompleteNativePaint(MauiPaintCompletion completion)
+    private void CompleteNativePaint(MauiPaintCompletion completion, bool stale)
     {
         if (_disposed || _host is null) return;
+        if (stale)
+        {
+            _host.FailPaint(_viewId, completion,
+                "Metal completion belongs to a stale AppKit surface generation.");
+            ScheduleEvidenceWrite();
+            return;
+        }
         _host.CompletePaint(_viewId, completion);
+        ScheduleEvidenceWrite();
+    }
+
+    private void HandlePaintFailure(MauiPaintCompletion? completion, Exception exception)
+    {
+        if (completion is { } value && _host is not null)
+            _host.FailPaint(_viewId, value, exception.Message);
+        WriteFailure(exception);
         ScheduleEvidenceWrite();
     }
 
@@ -220,13 +221,28 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
             TryWriteText(path, json);
             Interlocked.Exchange(ref _lastEvidenceWriteTimestamp, timestamp);
             Interlocked.Exchange(ref _lastEvidenceReplayed, diagnostics.Frame.Replayed);
+#if MACOS
+            if (firstReplay) TryExitAfterEvidence();
+#endif
         }
 
         if (shouldRequestReplay)
         {
-            Dispatcher.Dispatch(_skiaView.InvalidateSurface);
+            _renderSurface.Dispatcher.Dispatch(_renderSurface.InvalidateSurface);
         }
     }
+
+#if MACOS
+    private static void TryExitAfterEvidence()
+    {
+        var bridgePath = Environment.GetEnvironmentVariable("DOROTI_NATIVE_BRIDGE_EVIDENCE");
+        if (string.Equals(Environment.GetEnvironmentVariable("DOROTI_EXIT_AFTER_EVIDENCE"), "1", StringComparison.Ordinal) &&
+            !string.IsNullOrWhiteSpace(bridgePath) && File.Exists(bridgePath))
+        {
+            Environment.Exit(0);
+        }
+    }
+#endif
 
     internal static void WriteFailure(Exception exception)
     {
@@ -277,13 +293,16 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     {
         if (_disposed) return;
         _disposed = true;
-        _skiaView.PaintSurface -= PaintGpuSurface;
+        _renderSurface.Paint -= PaintGpuSurface;
+        _renderSurface.PresentCompleted -= CompleteNativePaint;
+        _renderSurface.PaintFailed -= HandlePaintFailure;
         HandlerChanged -= HandleHandlerChanged;
         Loaded -= HandleLoaded;
         Unloaded -= HandleUnloaded;
         if (Application.Current is { } currentApplication)
             currentApplication.RequestedThemeChanged -= HandleRequestedThemeChanged;
         DetachWindow();
+        if (_host is null) _renderSurface.Dispose();
         _host?.Dispose();
         _session?.Dispose();
         _boundary?.Dispose();

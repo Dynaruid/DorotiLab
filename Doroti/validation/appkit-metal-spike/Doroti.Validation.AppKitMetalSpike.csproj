@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-macos</TargetFramework>
+    <RuntimeIdentifier>osx-arm64</RuntimeIdentifier>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Doroti.Validation.AppKitMetalSpike</AssemblyName>
+    <RootNamespace>Doroti.Validation.AppKitMetalSpike</RootNamespace>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+    <SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
+    <ApplicationTitle>Doroti AppKit Metal Spike</ApplicationTitle>
+    <ApplicationId>dev.doroti.validation.appkit-metal-spike</ApplicationId>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Maui.Markup" />
+    <PackageReference Include="Microsoft.Maui.Controls" />
+    <PackageReference Include="Microsoft.Maui.Platforms.MacOS" />
+    <PackageReference Include="Microsoft.Maui.Platforms.MacOS.Essentials" />
+    <PackageReference Include="SkiaSharp" />
+    <PackageReference Include="SkiaSharp.Views" />
+    <ProjectReference Include="..\..\src\Doroti.Skia.Rendering\Doroti.Skia.Rendering.csproj" />
+  </ItemGroup>
+</Project>

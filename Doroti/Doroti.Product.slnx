@@ -23,6 +23,7 @@
     <Project Path="src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />
     <Project Path="src/Doroti.Target.Windows.Maui.win-x64/Doroti.Target.Windows.Maui.win-x64.csproj" />
     <Project Path="src/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.csproj" />
+    <Project Path="src/Doroti.Target.MacOS.Maui.osx-arm64/Doroti.Target.MacOS.Maui.osx-arm64.csproj" />
     <Project Path="src/Doroti.Target.iOS.Maui.ios-arm64/Doroti.Target.iOS.Maui.ios-arm64.csproj" />
     <Project Path="src/Doroti.Target.iOS.Maui.iossimulator-x64/Doroti.Target.iOS.Maui.iossimulator-x64.csproj" />
     <Project Path="src/Doroti.Target.Android.Maui.android-arm64/Doroti.Target.Android.Maui.android-arm64.csproj" />
@@ -39,6 +40,8 @@
     <Project Path="../DorotiDemoApp/android/binding/DorotiDemoApp.Android.Native.csproj" />
     <Project Path="../DorotiDemoApp/macos/DorotiDemoApp.MacCatalyst.csproj" />
     <Project Path="../DorotiDemoApp/macos/binding/DorotiDemoApp.MacCatalyst.Native.csproj" />
+    <Project Path="../DorotiDemoApp/macos/DorotiDemoApp.MacOS.csproj" />
+    <Project Path="../DorotiDemoApp/macos/binding/DorotiDemoApp.MacOS.Native.csproj" />
     <Project Path="../DorotiDemoApp/ios/DorotiDemoApp.iOS.csproj" />
     <Project Path="../DorotiDemoApp/ios/binding/DorotiDemoApp.iOS.Native.csproj" />
     <Project Path="../DorotiDemoApp/linux/DorotiDemoApp.Linux.csproj" />

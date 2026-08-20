@@ -44,6 +44,7 @@
 
 # Visual Studio and MSBuild user state
 **/.vs/
+**/.mono/
 *.suo
 *.user
 *.userosscache

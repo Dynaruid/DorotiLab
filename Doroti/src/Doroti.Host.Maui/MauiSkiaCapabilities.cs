@@ -18,17 +18,23 @@ internal sealed class MauiSkiaCapabilities :
     internal MauiSkiaCapabilities(
         ulong viewId,
         MauiHostAdapter host,
-        Color? backgroundColor,
-        Color? darkBackgroundColor)
+        Doroti.Ui.Color? backgroundColor,
+        Doroti.Ui.Color? darkBackgroundColor)
     {
         _renderer = new(
             viewId,
             new HostBridge(host),
             backgroundColor,
             darkBackgroundColor,
+#if MACOS
+            "macos/mtkview",
+            DorotiSkiaRuntimeEffects.AppKitMetalBackend,
+            "AppKit/MTKView/Metal-Skia");
+#else
             "maui/skglview",
             DorotiSkiaRuntimeEffects.MauiGpuBackend,
             "skiasharp-maui-skglview-gpu");
+#endif
     }
 
     public event Action<SemanticsActionEvent>? Action
@@ -76,6 +82,11 @@ internal sealed class MauiSkiaCapabilities :
         _renderer.CompletePaint(new(
             completion.InputSequence, completion.SceneSequence,
             completion.SurfaceGeneration, completion.IsNewFrame));
+
+    internal void FailPaint(MauiPaintCompletion completion, string reason) =>
+        _renderer.FailPaint(new(
+            completion.InputSequence, completion.SceneSequence,
+            completion.SurfaceGeneration, completion.IsNewFrame), reason);
 
     public Paragraph Layout(ParagraphRequest request, DartUiInvocation invocation) =>
         _renderer.Layout(request, invocation);

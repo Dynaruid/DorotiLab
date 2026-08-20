@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-macos</TargetFramework>
+    <RuntimeIdentifier>osx-arm64</RuntimeIdentifier>
+    <AssemblyName>Doroti.Target.MacOS.Maui</AssemblyName>
+    <RootNamespace>Doroti.Target.MacOS.Maui</RootNamespace>
+    <PackageId>Doroti.Target.MacOS.Maui.osx-arm64</PackageId>
+    <Description>Doroti native AppKit MTKView Metal/Skia MAUI composition root for Apple Silicon.</Description>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+    <SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Doroti.Host.Maui\Doroti.Host.Maui.csproj" />
+    <EmbeddedResource Include="doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" />
+    <None Include="doroti-target-manifest.json" Pack="true" PackagePath="doroti\" />
+    <None Include="buildTransitive\Doroti.Target.MacOS.Maui.osx-arm64.targets" Pack="true" PackagePath="buildTransitive\Doroti.Target.MacOS.Maui.osx-arm64.targets" />
+  </ItemGroup>
+</Project>

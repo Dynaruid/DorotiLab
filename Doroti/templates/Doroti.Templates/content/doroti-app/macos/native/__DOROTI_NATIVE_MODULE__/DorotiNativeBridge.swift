@@ -1,13 +1,24 @@
 import Foundation
+#if targetEnvironment(macCatalyst)
 import UIKit
+#else
+import AppKit
+#endif
 
 @objc(DorotiNativeInterop)
 public final class DorotiNativeInterop: NSObject {
     @objc(platformInfo)
     public static func platformInfo() -> String {
+#if targetEnvironment(macCatalyst)
+        let platform = "MacCatalyst"
+        let osVersion = UIDevice.current.systemVersion
+#else
+        let platform = "macOS"
+        let osVersion = ProcessInfo.processInfo.operatingSystemVersionString
+#endif
         let payload: [String: String] = [
-            "platform": "MacCatalyst",
-            "osVersion": UIDevice.current.systemVersion,
+            "platform": platform,
+            "osVersion": osVersion,
             "bridgeVersion": "1.0.0"
         ]
         let data = try! JSONSerialization.data(withJSONObject: payload, options: [.sortedKeys])

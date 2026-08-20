@@ -14,6 +14,7 @@
     "Doroti.Target.iOS.Maui.ios-arm64",
     "Doroti.Target.iOS.Maui.iossimulator-x64",
     "Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64",
+    "Doroti.Target.MacOS.Maui.osx-arm64",
     "Doroti.Target.Web.browser-wasm",
     "Doroti.Target.Linux.Qt.linux-x64"
   ],

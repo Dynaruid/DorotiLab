@@ -13,6 +13,9 @@
     <DefineConstants>$(DefineConstants);MACCATALYST;DOROTI_MAUI</DefineConstants>
     <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <ApplicationTitle>DorotiTemplateApp</ApplicationTitle>
+    <ApplicationId>__DOROTI_APPLICATION_ID__</ApplicationId>
+    <DorotiCompileExclude>AppKitDelegate.cs;DorotiNativePlatformBridge.MacOS.cs</DorotiCompileExclude>
   </PropertyGroup>
   <ItemGroup>
     <DorotiNativeBindingProject Include="binding\DorotiTemplateApp.MacCatalyst.Native.csproj" />

@@ -1,3 +1,4 @@
+#if !MACOS
 using Doroti.Ui;
 using SkiaSharp.Views.Maui.Controls;
 
@@ -490,3 +491,4 @@ internal static class MauiNativeInput
 #error Doroti.Host.Maui requires an explicit native input implementation.
 #endif
 }
+#endif

@@ -39,6 +39,7 @@ public sealed class SkiaSceneRenderer :
     private readonly Dictionary<Picture, int> _pictureRasterWarmups =
         new(ReferenceEqualityComparer.Instance);
     private readonly Dictionary<ImageFilterSnapshot, SKImageFilter> _imageFilterResources = [];
+    private readonly HashSet<long> _terminalSceneSequences = [];
     private SceneFrame? _pendingFrame;
     private SceneFrame? _presentedFrame;
     private Action? _invalidate;
@@ -255,6 +256,7 @@ public sealed class SkiaSceneRenderer :
         {
             if (completion.IsNewFrame)
             {
+                if (!_terminalSceneSequences.Add(completion.SceneSequence)) return;
                 _presented++;
                 _lastPresentedInputSequence = completion.InputSequence;
                 _frameTrace.Record(DorotiFramePhase.present, _viewId, DorotiFrameClock.Now,
@@ -268,6 +270,19 @@ public sealed class SkiaSceneRenderer :
                     completion.InputSequence, completion.SceneSequence, completion.SurfaceGeneration,
                     "fresh native back buffer submitted");
             }
+        }
+    }
+
+    public void FailPaint(SkiaPaintCompletion completion, string reason)
+    {
+        if (_disposed) return;
+        lock (_gate)
+        {
+            if (!completion.IsNewFrame || !_terminalSceneSequences.Add(completion.SceneSequence)) return;
+            _failed++;
+            _frameTrace.Record(DorotiFramePhase.failed, _viewId, DorotiFrameClock.Now,
+                completion.InputSequence, completion.SceneSequence, completion.SurfaceGeneration,
+                reason);
         }
     }
 

@@ -1,4 +1,7 @@
 using Doroti.Hosting;
+#if MACOS
+using Microsoft.Maui.Platforms.MacOS.Platform;
+#endif
 
 namespace Doroti.Host.Maui;
 
@@ -53,6 +56,27 @@ public abstract class DorotiMauiUIApplicationDelegate : MauiUIApplicationDelegat
 public abstract class DorotiMauiAndroidApplication(IntPtr handle, Android.Runtime.JniHandleOwnership ownership)
     : MauiApplication(handle, ownership)
 {
+    protected sealed override MauiApp CreateMauiApp()
+    {
+        var builder = MauiApp.CreateBuilder();
+        ConfigurePlatform(builder);
+        return builder.UseDorotiApplication(CreateApplicationDescriptor()).Build();
+    }
+
+    protected abstract DorotiApplicationDescriptor CreateApplicationDescriptor();
+
+    protected virtual void ConfigurePlatform(MauiAppBuilder builder) => _ = builder;
+}
+#elif MACOS
+public abstract class DorotiMacOSMauiApplication : MacOSMauiApplication
+{
+    protected DorotiMacOSMauiApplication()
+    {
+        AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+            DorotiMauiSurface.WriteFailure(args.ExceptionObject as Exception ??
+                new InvalidOperationException(args.ExceptionObject.ToString()));
+    }
+
     protected sealed override MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();

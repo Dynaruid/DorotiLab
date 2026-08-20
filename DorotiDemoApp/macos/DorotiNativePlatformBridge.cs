@@ -1,3 +1,4 @@
+#if MACCATALYST
 using Doroti.Hosting;
 
 namespace DorotiDemoApp.MacCatalyst;
@@ -19,3 +20,4 @@ internal sealed class DorotiNativePlatformBridge : DorotiNativePlatformBridgeBas
         return await completion.Task.WaitAsync(cancellationToken).ConfigureAwait(false);
     }
 }
+#endif

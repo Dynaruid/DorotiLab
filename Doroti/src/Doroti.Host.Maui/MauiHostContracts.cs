@@ -16,7 +16,17 @@ public sealed record MauiSurfaceSnapshot(
     long ContextGeneration,
     long SurfaceGeneration,
     string NativeViewType,
-    string GraphicsBackend);
+    string GraphicsBackend,
+    string? MetalDevice = null,
+    string? PixelFormat = null,
+    long CommandBuffersCommitted = 0,
+    long CommandBuffersCompleted = 0,
+    long CommandBuffersErrored = 0,
+    long StaleCompletions = 0,
+    long CpuReadbacks = 0,
+    long FullFrameCopies = 0,
+    double LogicalWidth = 0,
+    double LogicalHeight = 0);
 
 public sealed record MauiFrameDiagnostics(
     long Submitted,

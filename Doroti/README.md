@@ -2,7 +2,7 @@
 
 **English** | [한국어](README.ko.md)
 
-Doroti is a C#/.NET UI framework with a shared widget, layout, painting, semantics, and rendering pipeline for MAUI Windows, Mac Catalyst, Android, iOS, Blazor WebAssembly, and an early Linux/Qt host boundary.
+Doroti is a C#/.NET UI framework with a shared widget, layout, painting, semantics, and rendering pipeline for MAUI Windows, native AppKit macOS, Mac Catalyst, Android, iOS, Blazor WebAssembly, and an early Linux/Qt host boundary.
 
 ## Development model
 
@@ -19,7 +19,7 @@ See [ADR-019](docs/adr/ADR-019-product-framework-source-ownership.md) for source
 - `Doroti.App.Sdk`: platform-neutral `net10.0` application assembly and shared asset contract
 - `Doroti.Runner.Sdk`: fixed-target runner validation plus runner-local native/Web bootstrap and plugin registration
 - `Doroti.Skia.RuntimeEffects`: shared fail-closed SkSL compiler and uniform/image-sampler binder used by native and Web hosts
-- `Doroti.Host.Maui`: host-owned MAUI application/page lifecycle and `SKGLView` GPU-surface integration
+- `Doroti.Host.Maui`: shared MAUI lifecycle plus independent SKGLView and AppKit-owned MTKView/Metal surface adapters
 - `Doroti.Host.Web`: host-owned Blazor composition, WebGL2 canvas, input, accessibility, and resource bridge
 - `Doroti.Host.Qt`: managed-owned Linux runner with a Qt 6 `QOpenGLWindow`, versioned C ABI, GPU surface, input, IME, and desktop services
 - `Doroti.Skia.Rendering`: host-neutral Skia scene, paragraph, image, runtime-effect, semantics, cache, and terminal-ACK renderer shared by native GPU hosts
@@ -29,7 +29,7 @@ Web execution source is TypeScript-owned. Applications edit `web/src/**/*.ts`; D
 
 Material applications follow system dark mode with `MaterialApp(theme:, darkTheme:, themeMode: ThemeMode.system)`. Build both palettes with `ColorScheme.CreateFromSeed`, `Brightness.light`/`Brightness.dark`, and optional role overrides such as `surface`, `primary`, or `outline`; widgets read the active roles from `Theme.of(context).colorScheme`. See the [DorotiDemoApp dark-mode guide](../DorotiDemoApp/README.md#system-dark-mode-and-color-palettes) for the MAUI/Web change flow and a complete example.
 
-Android, iOS, and Mac Catalyst runners each reference a default app-owned native binding. Android uses `AndroidGradleProject` to build an AAR; iOS and Mac Catalyst use separate `XcodeProject` frameworks. The .NET runner still owns the final app. Managed and Windows cross-build results do not prove Android Studio/Xcode execution, native launch, device behavior, signing, or archive; those gates remain `notVerified` until run on the required host.
+Android, iOS, native AppKit macOS, and Mac Catalyst runners each reference a default app-owned native binding. Android uses `AndroidGradleProject`; each Apple product has an explicit `XcodeProject` binding contract. The .NET runner still owns the final app. Build results do not prove native launch, device behavior, accessibility, signing, or archive; those gates remain `notVerified` until run.
 
 ## Requirements
 
@@ -57,7 +57,7 @@ The active command surface is intentionally small:
 | `doctor` | Check required .NET/PowerShell tools and report optional reference checkouts |
 | `build` | Build `Doroti.Product.slnx` |
 | `build/run/publish -App <path> -Platform <alias>` | Resolve and execute one runner from `doroti-workspace.json` |
-| `native doctor\|build\|open\|add -App <path> -Platform android\|ios\|macos` | Inspect, build, locate, or extend the default native bridge workspace |
+| `native doctor\|build\|open\|add -App <path> -Platform android\|ios\|macos\|maccatalyst` | Inspect, build, locate, or extend the default native bridge workspace |
 | `validate` | Run source ownership, Release build, and application target graph/build checks |
 | `validate -ValidationSuite Release` | Add Windows GPU live and external Web template/package publish scenarios |
 | `audit` | Check repository-local storage and current source ownership |
@@ -81,7 +81,7 @@ Direct suite entry points are [validate.ps1](eng/validate.ps1), [validate-app-ta
 | Path | Contents |
 | --- | --- |
 | [`src/`](src/) | Product framework, runtime, renderer, hosts, targets, SDK, and analyzers |
-| [`templates/`](templates/) | The six-runner plus three-binding `doroti-app` platform workspace template |
+| [`templates/`](templates/) | The seven-runner plus four-binding `doroti-app` platform workspace template |
 | [`eng/`](eng/) | Compact build, validation, release, storage, and optional reference workflows |
 | [`tools/`](tools/) | Optional Dart/Flutter compiler and shared tooling |
 | [`validation/`](validation/) | Active validation contracts, fixtures, and committed evidence |

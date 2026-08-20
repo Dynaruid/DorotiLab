@@ -7,6 +7,7 @@ The default bridge is application source, not a checked-in native binary. Genera
 | Android | `android/native/build.gradle.kts` | Gradle 8.10.2, AGP 8.6.1, Java 17, compile SDK 34, min SDK 21 | Google/Maven Central repositories declared by the app-owned Gradle project; no third-party runtime dependency in the default bridge |
 | iOS | `ios/native/*.xcodeproj` | Xcode 16 contract, Swift 5, deployment target 15 | Foundation/UIKit from the selected Apple SDK; app-added SPM packages belong to the Xcode project and must add license/provenance here |
 | Mac Catalyst | `macos/native/*.xcodeproj` | Xcode 16 contract, Swift 5, deployment target 15 | Foundation/UIKit for Mac Catalyst; not AppKit macOS |
+| native macOS | `macos/native/*.xcodeproj` | Xcode 26 baseline, Swift 5, deployment target 14 | Foundation/AppKit; `net10.0-macos`, `osx-arm64`, and `platformInfo.platform == "macOS"` |
 
 The Android wrapper JAR SHA-256 is `e996d452d2645e70c01c11143ca2d3742734a28da2bf61f25c82bdc288c9e637`. The machine-readable ABI/toolchain record is `validation/contracts/native-platform-bridge.json`.
 

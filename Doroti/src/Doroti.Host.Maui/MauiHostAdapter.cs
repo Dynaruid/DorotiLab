@@ -3,8 +3,6 @@ using Doroti.Ui;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Controls;
-using SkiaSharp.Views.Maui;
-using SkiaSharp.Views.Maui.Controls;
 #if WINDOWS
 using Microsoft.UI.Xaml.Media;
 #endif
@@ -30,7 +28,7 @@ internal sealed class MauiHostAdapter :
     private static readonly TimeSpan MinimumCompositionFrameInterval = TimeSpan.FromMilliseconds(10);
 #endif
     private readonly ulong _viewId;
-    private readonly SKGLView _view;
+    private readonly IMauiSkiaSurface _surface;
     private readonly object _gate = new();
     private Action<TimeSpan>? _pendingFrameCallback;
     private readonly IMauiSemanticsBridge _semantics;
@@ -65,11 +63,11 @@ internal sealed class MauiHostAdapter :
 #endif
     private bool _disposed;
 
-    internal MauiHostAdapter(ulong viewId, SKGLView view, MauiTextInputBridge textInput,
+    internal MauiHostAdapter(ulong viewId, IMauiSkiaSurface surface, MauiTextInputBridge textInput,
         Size logicalSize, IMauiSemanticsBridge? semantics = null)
     {
         _viewId = viewId;
-        _view = view ?? throw new ArgumentNullException(nameof(view));
+        _surface = surface ?? throw new ArgumentNullException(nameof(surface));
         _textInput = textInput ?? throw new ArgumentNullException(nameof(textInput));
         _logicalSize = logicalSize ?? throw new ArgumentNullException(nameof(logicalSize));
         _density = Math.Max(1, DeviceDisplay.Current.MainDisplayInfo.Density);
@@ -77,22 +75,21 @@ internal sealed class MauiHostAdapter :
 #if ANDROID
         _androidFrameCallback = new AndroidFrameCallback(HandleAndroidFrame);
 #endif
-        _view.HasRenderLoop = false;
-        _view.EnableTouchEvents = true;
-        _view.Touch += HandleTouch;
-        _view.SizeChanged += HandleSizeChanged;
-        _view.Focused += HandleFocused;
-        _view.Unfocused += HandleUnfocused;
+        _surface.Pointer += HandlePointer;
+        _surface.Key += HandleKey;
+        _surface.SizeChanged += HandleSizeChanged;
+        _surface.FocusChanged += HandleFocusChanged;
         _textInput.EditingStateChanged += HandleEditingStateChanged;
         _textInput.ActionPerformed += HandleActionPerformed;
         _textInput.FocusChanged += HandleTextFocusChanged;
         if (Application.Current is { } application)
             application.RequestedThemeChanged += HandleRequestedThemeChanged;
-        _nativeInput = MauiNativeInput.Attach(_view, _textInput, _viewId, data => KeyData?.Invoke(data));
+        _nativeInput = _surface;
     }
 
-    internal MauiSurfaceSnapshot Snapshot { get; private set; } = new(
+    private MauiSurfaceSnapshot _snapshot = new(
         0, 0, 1, 1, 0, 0, "not-attached", "not-attached");
+    internal MauiSurfaceSnapshot Snapshot => _surface.CaptureSnapshot(_snapshot);
 
     internal long InvalidationsRequested => Interlocked.Read(ref _invalidationsRequested);
     internal long InvalidationsCoalesced => Interlocked.Read(ref _invalidationsCoalesced);
@@ -116,6 +113,8 @@ internal sealed class MauiHostAdapter :
         HostOperatingSystem.iOS
 #elif ANDROID
         HostOperatingSystem.android
+#elif MACOS
+        HostOperatingSystem.macOS
 #else
 #error Doroti.Host.Maui requires an explicit operating-system mapping.
 #endif
@@ -186,7 +185,7 @@ internal sealed class MauiHostAdapter :
 #endif
     }
 
-    internal void BeginPaint(SKPaintGLSurfaceEventArgs args, object? context, string nativeViewType, string backend)
+    internal void BeginPaint(MauiSkiaPaintContext paint)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         lock (_gate)
@@ -195,23 +194,26 @@ internal sealed class MauiHostAdapter :
             _isPainting = true;
         }
         var previous = Snapshot;
-        if (context is not null && !ReferenceEquals(context, _lastContext))
+        if (paint.ContextIdentity is not null && !ReferenceEquals(paint.ContextIdentity, _lastContext))
         {
-            _lastContext = context;
+            _lastContext = paint.ContextIdentity;
             _contextGeneration++;
             _surfaceGeneration++;
         }
-        var pixelSizeChanged = previous.PixelWidth != args.BackendRenderTarget.Width ||
-                               previous.PixelHeight != args.BackendRenderTarget.Height;
-        if (pixelSizeChanged)
+        var pixelSizeChanged = previous.PixelWidth != paint.PixelWidth ||
+                               previous.PixelHeight != paint.PixelHeight;
+        if (paint.SurfaceGeneration > 0)
+            _surfaceGeneration = paint.SurfaceGeneration;
+        else if (pixelSizeChanged)
             _surfaceGeneration++;
-        var density = Math.Max(1, DeviceDisplay.Current.MainDisplayInfo.Density);
+        var density = Math.Max(1, paint.Density);
         var densityChanged = Math.Abs(_density - density) > double.Epsilon;
         _density = density;
         if (pixelSizeChanged || densityChanged)
             _metricsGeneration++;
-        Snapshot = new(args.BackendRenderTarget.Width, args.BackendRenderTarget.Height, _density,
-            _metricsGeneration, _contextGeneration, _surfaceGeneration, nativeViewType, backend);
+        _snapshot = new(paint.PixelWidth, paint.PixelHeight, _density,
+            _metricsGeneration, _contextGeneration, _surfaceGeneration,
+            paint.NativeViewType, paint.GraphicsBackend);
         if (pixelSizeChanged || densityChanged)
             MetricsChanged?.Invoke(Metrics);
         Action<TimeSpan>? callback;
@@ -264,7 +266,7 @@ internal sealed class MauiHostAdapter :
 #if WINDOWS
         if (unsubscribeVsync) UnsubscribeFromCompositionVsync();
 #endif
-        if (dispatch) _view.Dispatcher.Dispatch(_view.InvalidateSurface);
+        if (dispatch) _surface.Dispatcher.Dispatch(_surface.InvalidateSurface);
     }
 
     private object? _lastContext;
@@ -299,7 +301,7 @@ internal sealed class MauiHostAdapter :
             }
             _invalidatePending = true;
         }
-        _view.Dispatcher.Dispatch(_view.InvalidateSurface);
+        _surface.Dispatcher.Dispatch(_surface.InvalidateSurface);
     }
 
 #if ANDROID
@@ -310,7 +312,7 @@ internal sealed class MauiHostAdapter :
             if (_disposed || _androidFrameCallbackPosted) return;
             _androidFrameCallbackPosted = true;
         }
-        _view.Dispatcher.Dispatch(PostAndroidFrameCallback);
+        _surface.Dispatcher.Dispatch(PostAndroidFrameCallback);
     }
 
     private void PostAndroidFrameCallback()
@@ -368,7 +370,7 @@ internal sealed class MauiHostAdapter :
         if (repost) RequestAndroidVsync();
         if (!invalidate) return;
         Interlocked.Increment(ref _invalidationsRequested);
-        _view.InvalidateSurface();
+        _surface.InvalidateSurface();
     }
 
     private TimeSpan MapAndroidFrameTimestamp(long frameTimeNanos)
@@ -389,7 +391,7 @@ internal sealed class MauiHostAdapter :
             _androidFrameCallbackPosted = false;
             _androidActiveTouchPointers.Clear();
         }
-        _view.Dispatcher.Dispatch(() =>
+        _surface.Dispatcher.Dispatch(() =>
             Android.Views.Choreographer.Instance!.RemoveFrameCallback(_androidFrameCallback));
     }
 
@@ -423,7 +425,7 @@ internal sealed class MauiHostAdapter :
     }
 
     private void DispatchCompositionVsyncUpdate() =>
-        _view.Dispatcher.Dispatch(UpdateCompositionVsyncSubscription);
+        _surface.Dispatcher.Dispatch(UpdateCompositionVsyncSubscription);
 
     private void UpdateCompositionVsyncSubscription()
     {
@@ -474,15 +476,14 @@ internal sealed class MauiHostAdapter :
             _lastCompositionInvalidateTimestamp = timestamp;
         }
         Interlocked.Increment(ref _invalidationsRequested);
-        _view.InvalidateSurface();
+        _surface.InvalidateSurface();
     }
 #endif
 
     public void RequestFocus(ViewFocusState state, ViewFocusDirection direction)
     {
         _ = direction;
-        if (state == ViewFocusState.focused) _view.Focus();
-        else _view.Unfocus();
+        _surface.RequestFocus(state == ViewFocusState.focused);
     }
 
     public async ValueTask<string?> GetClipboardTextAsync(CancellationToken cancellationToken = default)
@@ -497,7 +498,7 @@ internal sealed class MauiHostAdapter :
         await Clipboard.Default.SetTextAsync(text ?? string.Empty);
     }
 
-    public void SetCursor(DorotiMouseCursorKind cursor) => MauiNativeInput.SetCursor(_view, cursor);
+    public void SetCursor(DorotiMouseCursorKind cursor) => _surface.SetCursor(cursor);
     public void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState initialState) =>
         _textInput.SetClient(configuration, initialState);
     public void UpdateState(DorotiTextEditingState state) => _textInput.UpdateState(state);
@@ -524,10 +525,10 @@ internal sealed class MauiHostAdapter :
 #elif ANDROID
         CancelAndroidVsync();
 #endif
-        _view.Touch -= HandleTouch;
-        _view.SizeChanged -= HandleSizeChanged;
-        _view.Focused -= HandleFocused;
-        _view.Unfocused -= HandleUnfocused;
+        _surface.Pointer -= HandlePointer;
+        _surface.Key -= HandleKey;
+        _surface.SizeChanged -= HandleSizeChanged;
+        _surface.FocusChanged -= HandleFocusChanged;
         _textInput.EditingStateChanged -= HandleEditingStateChanged;
         _textInput.ActionPerformed -= HandleActionPerformed;
         _textInput.FocusChanged -= HandleTextFocusChanged;
@@ -550,35 +551,23 @@ internal sealed class MauiHostAdapter :
         GC.KeepAlive(ActionPerformed);
     }
 
-    private void HandleSizeChanged(object? sender, EventArgs args)
+    private void HandleSizeChanged()
     {
-        _ = sender;
-        _ = args;
-        if (_view.Width <= 0 || _view.Height <= 0) return;
-        _logicalSize = new(_view.Width, _view.Height);
+        if (_surface.Width <= 0 || _surface.Height <= 0) return;
+        _logicalSize = new(_surface.Width, _surface.Height);
         _metricsGeneration++;
         MetricsChanged?.Invoke(Metrics);
         RequestInvalidate();
     }
 
-    private void HandleTouch(object? sender, SKTouchEventArgs args)
+    private void HandlePointer(MauiSurfacePointerData args)
     {
-        _ = sender;
         Interlocked.Increment(ref _nativePointerEvents);
         var inputSequence = Interlocked.Increment(ref _inputSequence);
-        var timestamp = DorotiFrameClock.Now;
+        var timestamp = args.Timestamp;
         InputReceived?.Invoke(inputSequence, timestamp);
-        var change = args.ActionType switch
-        {
-            SKTouchAction.Pressed => PointerChange.down,
-            SKTouchAction.Released => PointerChange.up,
-            SKTouchAction.Cancelled => PointerChange.cancel,
-            SKTouchAction.Entered => PointerChange.add,
-            SKTouchAction.Exited => PointerChange.remove,
-            SKTouchAction.WheelChanged => PointerChange.hover,
-            _ => PointerChange.move,
-        };
-        var pointer = checked((ulong)Math.Max(0, args.Id));
+        var change = args.Change;
+        var pointer = args.Pointer;
 #if ANDROID
         var keepAndroidVsyncArmed = false;
         lock (_gate)
@@ -592,36 +581,22 @@ internal sealed class MauiHostAdapter :
         if (keepAndroidVsyncArmed) RequestAndroidVsync();
 #endif
         var hasPrevious = _pointerPositions.TryGetValue(pointer, out var previous);
-        var x = args.Location.X;
-        var y = args.Location.Y;
-        var buttons = args.InContact ? args.MouseButton switch
-        {
-            SKMouseButton.Right => 2,
-            SKMouseButton.Middle => 4,
-            _ => 1,
-        } : 0;
-        var kind = args.DeviceType switch
-        {
-            SKTouchDeviceType.Mouse => PointerDeviceKind.mouse,
-            SKTouchDeviceType.Pen => PointerDeviceKind.stylus,
-            _ => PointerDeviceKind.touch,
-        };
+        var x = args.X;
+        var y = args.Y;
         PointerData?.Invoke(new([new(_viewId, timestamp, change,
-            kind, pointer, x, y,
-            hasPrevious ? x - previous.X : 0, hasPrevious ? y - previous.Y : 0, buttons,
-            scrollDeltaX: 0, scrollDeltaY: args.ActionType == SKTouchAction.WheelChanged ? -args.WheelDelta : 0,
-            signalKind: args.ActionType == SKTouchAction.WheelChanged ? PointerSignalKind.scroll : PointerSignalKind.none,
+            args.Kind, pointer, x, y,
+            hasPrevious ? x - previous.X : 0, hasPrevious ? y - previous.Y : 0, args.Buttons,
+            scrollDeltaX: args.ScrollDeltaX, scrollDeltaY: args.ScrollDeltaY,
+            signalKind: args.SignalKind,
             pointerIdentifier: pointer, pressure: args.Pressure, pressureMin: 0, pressureMax: 1) ]));
         if (change is PointerChange.remove or PointerChange.cancel) _pointerPositions.Remove(pointer);
         else _pointerPositions[pointer] = (x, y);
-        args.Handled = true;
     }
 
-    private void HandleFocused(object? sender, FocusEventArgs args) =>
-        FocusData?.Invoke(new(_viewId, true, DorotiFrameClock.Now));
+    private void HandleKey(KeyData data) => KeyData?.Invoke(data);
 
-    private void HandleUnfocused(object? sender, FocusEventArgs args) =>
-        FocusData?.Invoke(new(_viewId, false, DorotiFrameClock.Now));
+    private void HandleFocusChanged(bool focused) =>
+        FocusData?.Invoke(new(_viewId, focused, DorotiFrameClock.Now));
 
     private void HandleTextFocusChanged(bool focused) =>
         FocusData?.Invoke(new(_viewId, focused, DorotiFrameClock.Now));

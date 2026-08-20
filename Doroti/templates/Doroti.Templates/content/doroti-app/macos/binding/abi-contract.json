@@ -2,7 +2,7 @@
   "schemaVersion": "doroti.native-binding-abi/v1",
   "platform": "MacCatalyst",
   "module": "__DOROTI_NATIVE_MODULE__",
-  "scheme": "__DOROTI_NATIVE_MODULE__-MacCatalyst",
+  "scheme": "__DOROTI_NATIVE_MODULE__",
   "bridgeVersion": "1.0.0",
   "exports": ["platformInfo", "echo:", "echoOnMainThreadWithValue:completion:"]
 }

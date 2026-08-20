@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.props" />
+  <PropertyGroup>
+    <TargetFramework>net10.0-macos</TargetFramework>
+    <RuntimeIdentifier>osx-arm64</RuntimeIdentifier>
+    <AssemblyName>DorotiDemoApp.MacOS</AssemblyName>
+    <RootNamespace>DorotiDemoApp.MacOS</RootNamespace>
+    <DorotiAppProject>..\DorotiDemoApp.csproj</DorotiAppProject>
+    <DorotiTarget>macOS</DorotiTarget>
+    <DorotiHostKind>Maui</DorotiHostKind>
+    <DorotiNativeEntryKind>AppKit-Main</DorotiNativeEntryKind>
+    <UseMaui>true</UseMaui>
+    <DefineConstants>$(DefineConstants);MACOS;DOROTI_MAUI</DefineConstants>
+    <SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
+    <ApplicationManifest>Info.MacOS.plist</ApplicationManifest>
+    <AppManifest>Info.MacOS.plist</AppManifest>
+    <AppBundleManifest>Info.MacOS.plist</AppBundleManifest>
+    <ApplicationTitle>Doroti Demo (AppKit)</ApplicationTitle>
+    <ApplicationId>dev.doroti.demo.macos</ApplicationId>
+    <NuGetLockFilePath>packages.macos.lock.json</NuGetLockFilePath>
+    <DorotiCompileExclude>AppDelegate.cs;DorotiNativePlatformBridge.cs</DorotiCompileExclude>
+  </PropertyGroup>
+  <ItemGroup>
+    <DorotiNativeBindingProject Include="binding\DorotiDemoApp.MacOS.Native.csproj" />
+    <DorotiTargetDescriptor Include="macOS" HostKind="Maui" NativeEntryKind="AppKit-Main"
+        RuntimeIdentifier="osx-arm64" TargetFramework="net10.0-macos"
+        TargetPackage="Doroti.Target.MacOS.Maui.osx-arm64" />
+    <ProjectReference Include="..\..\Doroti\src\Doroti.Target.MacOS.Maui.osx-arm64\Doroti.Target.MacOS.Maui.osx-arm64.csproj" />
+  </ItemGroup>
+  <Import Project="..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.targets" />
+</Project>

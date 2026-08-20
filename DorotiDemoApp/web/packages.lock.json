@@ -12,7 +12,7 @@
         "type": "Direct",
         "requested": "[10.0.11, )",
         "resolved": "10.0.11",
-        "contentHash": "vI5/681Ld3dnYch2wCH+8cDc3PXIgfaJhjCHTUmCtm2tu92T71iY3shZHM3BeLPDFv9G7Nq/gS5hrlghPG+MXg=="
+        "contentHash": "qTQsflEOjG1xG8FCfQJZbVd7DErJdKqKoW4gxH1HlgGQ5IBBloehLvXhMhzYqogYyajU7YEUKZvJ4n/vA7sAmQ=="
       },
       "Microsoft.TypeScript.MSBuild": {
         "type": "Direct",
@@ -445,6 +445,7 @@
         "type": "Project",
         "dependencies": {
           "Doroti.Hosting": "[0.2.0-beta, )",
+          "Doroti.Skia.Rendering": "[0.2.0-beta, )",
           "Doroti.Skia.RuntimeEffects": "[0.2.0-beta, )",
           "Doroti.Ui": "[0.2.0-beta, )",
           "SkiaSharp.NativeAssets.WebAssembly": "[4.151.1, )",
@@ -462,6 +463,14 @@
         "type": "Project",
         "dependencies": {
           "MaterialColorUtilities": "[0.3.0, )"
+        }
+      },
+      "doroti.skia.rendering": {
+        "type": "Project",
+        "dependencies": {
+          "Doroti.Skia.RuntimeEffects": "[0.2.0-beta, )",
+          "Doroti.Ui": "[0.2.0-beta, )",
+          "SkiaSharp": "[4.151.1, )"
         }
       },
       "doroti.skia.runtimeeffects": {

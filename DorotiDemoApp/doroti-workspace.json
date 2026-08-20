@@ -6,7 +6,8 @@
     "android": "android/DorotiDemoApp.Android.csproj",
     "ios": "ios/DorotiDemoApp.iOS.csproj",
     "linux": "linux/DorotiDemoApp.Linux.csproj",
-    "macos": "macos/DorotiDemoApp.MacCatalyst.csproj",
+    "macos": "macos/DorotiDemoApp.MacOS.csproj",
+    "maccatalyst": "macos/DorotiDemoApp.MacCatalyst.csproj",
     "web": "web/DorotiDemoApp.Web.csproj",
     "windows": "windows/DorotiDemoApp.Windows.csproj"
   }

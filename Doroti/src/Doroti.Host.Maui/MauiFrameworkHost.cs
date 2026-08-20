@@ -2,7 +2,9 @@ using System.Runtime.InteropServices;
 using Doroti.Hosting;
 using Doroti.Ui;
 using Microsoft.Maui.Controls;
+#if !MACOS
 using SkiaSharp.Views.Maui.Controls;
+#endif
 
 namespace Doroti.Host.Maui;
 
@@ -22,10 +24,13 @@ public sealed class MauiFrameworkHost : IDisposable
         "ios/UIKit-iOS/SKMetalView/Metal-Skia";
 #elif ANDROID
         $"{AndroidRuntimeIdentifier}/Android/MauiSKGLTextureView/OpenGL-ES-Skia";
+#elif MACOS
+        "osx-arm64/AppKit/MTKView/Metal-Skia";
 #else
 #error Doroti.Host.Maui requires an explicit platform identity.
 #endif
 
+#if !MACOS
     public DorotiView CreateView(
         DorotiHostSession session,
         ulong viewId,
@@ -37,13 +42,30 @@ public sealed class MauiFrameworkHost : IDisposable
     {
         ArgumentNullException.ThrowIfNull(session);
         ArgumentNullException.ThrowIfNull(nativeView);
+        textInput ??= new(new Entry(), new Editor());
+        return CreateView(session, viewId, new MauiSkglSurface(textInput, viewId),
+            configuration, semantics, application, textInput);
+    }
+#endif
+
+    internal DorotiView CreateView(
+        DorotiHostSession session,
+        ulong viewId,
+        IMauiSkiaSurface surface,
+        DorotiViewConfiguration configuration,
+        IMauiSemanticsBridge? semantics = null,
+        DorotiApplicationBoundary? application = null,
+        MauiTextInputBridge? textInput = null)
+    {
+        ArgumentNullException.ThrowIfNull(session);
+        ArgumentNullException.ThrowIfNull(surface);
         ArgumentNullException.ThrowIfNull(configuration);
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (session.state != DorotiHostSessionState.running)
             throw new InvalidOperationException("The Doroti host session must be running before a MAUI view is created.");
 
         textInput ??= new(new Entry(), new Editor());
-        var host = new MauiHostAdapter(viewId, nativeView, textInput, configuration.logicalSize, semantics);
+        var host = new MauiHostAdapter(viewId, surface, textInput, configuration.logicalSize, semantics);
         var graphics = new MauiSkiaCapabilities(
             viewId, host, configuration.backgroundColor, configuration.darkBackgroundColor);
         var messages = new MauiPlatformMessageCapability();
@@ -85,12 +107,11 @@ public sealed class MauiFrameworkHost : IDisposable
         }
     }
 
-    internal void BeginPaint(ulong viewId, SkiaSharp.Views.Maui.SKPaintGLSurfaceEventArgs args,
-        object? context, string nativeViewType)
+    internal void BeginPaint(ulong viewId, MauiSkiaPaintContext paint)
     {
         if (!_views.TryGetValue(viewId, out var value))
             throw new KeyNotFoundException($"MAUI Doroti view {viewId} is not registered.");
-        value.Host.BeginPaint(args, context, nativeViewType, _targetIdentity);
+        value.Host.BeginPaint(paint);
     }
 
     internal void EndPaint(ulong viewId)
@@ -114,6 +135,11 @@ public sealed class MauiFrameworkHost : IDisposable
     internal void CompletePaint(ulong viewId, MauiPaintCompletion completion)
     {
         if (_views.TryGetValue(viewId, out var value)) value.Graphics.CompletePaint(completion);
+    }
+
+    internal void FailPaint(ulong viewId, MauiPaintCompletion completion, string reason)
+    {
+        if (_views.TryGetValue(viewId, out var value)) value.Graphics.FailPaint(completion, reason);
     }
 
     internal void NotifyLifecycle(ulong viewId, AppLifecycleState state)
@@ -144,6 +170,8 @@ public sealed class MauiFrameworkHost : IDisposable
             ".NETCoreApp,Version=v10.0/iOS,Version=15.0",
 #elif ANDROID
             ".NETCoreApp,Version=v10.0/Android,Version=21.0",
+#elif MACOS
+            ".NETCoreApp,Version=v10.0/macOS,Version=14.0",
 #else
 #error Doroti.Host.Maui requires an explicit target framework identity.
 #endif
@@ -155,6 +183,8 @@ public sealed class MauiFrameworkHost : IDisposable
             RuntimeInformation.ProcessArchitecture == Architecture.Arm64 ? "ios-arm64" : "iossimulator-x64",
 #elif ANDROID
             AndroidRuntimeIdentifier,
+#elif MACOS
+            "osx-arm64",
 #else
 #error Doroti.Host.Maui requires an explicit runtime identifier.
 #endif

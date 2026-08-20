@@ -13,10 +13,11 @@
     <DorotiNativeToolchainVersion>xcode-16;swift-5;maccatalyst-15</DorotiNativeToolchainVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="macos\**\*.cs" />
     <ObjcBindingApiDefinition Include="ApiDefinition.cs" />
     <ObjcBindingCoreSource Include="StructsAndEnums.cs" />
     <XcodeProject Include="..\native\DorotiDemoAppNative.xcodeproj"
-                  SchemeName="DorotiDemoAppNative-MacCatalyst"
+                  SchemeName="DorotiDemoAppNative"
                   Configuration="$(Configuration)"
                   Kind="Framework"
                   SmartLink="true"

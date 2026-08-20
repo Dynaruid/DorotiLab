@@ -1,0 +1,9 @@
+{
+  "schema": "doroti-target/v2",
+  "packageId": "Doroti.Target.MacOS.Maui.osx-arm64",
+  "targetFramework": "net10.0-macos",
+  "rid": "osx-arm64",
+  "nativeViewType": "Doroti.Host.Maui.DorotiMacOSMetalView",
+  "graphicsBackend": "AppKit/MTKView/Metal-Skia",
+  "softwareFallback": false
+}

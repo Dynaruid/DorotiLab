@@ -4,6 +4,7 @@
 - [ADR-022: Default native platform bridge](ADR-022-default-native-platform-bridge.md)
 - [ADR-022: Linux Qt QOpenGLWidget spike](ADR-022-linux-qt-fbo-spike.md)
 - [ADR-023: Linux Qt QOpenGLWindow surface](ADR-023-linux-qt-qopenglwindow.md)
+- [ADR-024: AppKit-owned Metal surface and permanent dual macOS backend](ADR-024-appkit-metal-surface-spike.md)
 
 R3–R8 accept ADR-001 through ADR-015 as the contract baseline for subsequent implementation. A later decision may supersede an ADR, but must not silently edit its ownership or lifecycle rules.
 
@@ -29,7 +30,8 @@ R3–R8 accept ADR-001 through ADR-015 as the contract baseline for subsequent i
 | [ADR-018](ADR-018-flutter-avalonia-boundary.md) | Flutter framework and Avalonia source-port ownership boundary |
 | [ADR-019](ADR-019-product-framework-source-ownership.md) | Product-owned framework source and ordinary development workflow |
 | [ADR-020](ADR-020-web-typescript-bootstrap.md) | TypeScript-owned Web bootstrap, loader, and browser interop |
-| [ADR-021](ADR-021-platform-runner-workspaces.md) | Platform-neutral app and six fixed-target runner workspaces |
+| [ADR-021](ADR-021-platform-runner-workspaces.md) | Platform-neutral app and seven fixed-target runner aliases, including separate AppKit and Catalyst products |
 | [ADR-022](ADR-022-default-native-platform-bridge.md) | Default Android/iOS/Mac Catalyst native library and binding graph |
 | [ADR-022 Linux](ADR-022-linux-qt-fbo-spike.md) | Failed QOpenGLWidget full-scene spike retained as superseded evidence |
 | [ADR-023](ADR-023-linux-qt-qopenglwindow.md) | QOpenGLWindow Linux Qt GPU surface and QPA-specific GL resolution |
+| [ADR-024](ADR-024-appkit-metal-surface-spike.md) | AppKit-owned MTKView, Metal completion ACK, exact preview dependency, and permanent dual macOS backend boundary |

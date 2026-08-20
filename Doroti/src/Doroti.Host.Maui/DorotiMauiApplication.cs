@@ -1,7 +1,12 @@
 using CommunityToolkit.Maui.Markup;
 using Doroti.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+#if MACOS
+using Microsoft.Maui.Platforms.MacOS.Essentials;
+using Microsoft.Maui.Platforms.MacOS.Hosting;
+#else
 using SkiaSharp.Views.Maui.Controls.Hosting;
+#endif
 
 namespace Doroti.Host.Maui;
 
@@ -25,9 +30,17 @@ public static class DorotiMauiApplicationBuilderExtensions
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(descriptor);
         builder
+#if MACOS
+            .UseMauiAppMacOS<DorotiMauiApplication>()
+            .AddMacOSEssentials()
+            .UseMauiCommunityToolkitMarkup()
+            .ConfigureMauiHandlers(handlers =>
+                handlers.AddHandler<DorotiMacOSMetalSurface, DorotiMacOSMetalSurfaceHandler>());
+#else
             .UseMauiApp<DorotiMauiApplication>()
             .UseMauiCommunityToolkitMarkup()
             .UseSkiaSharp();
+#endif
         builder.Services.AddSingleton(descriptor);
         return builder;
     }

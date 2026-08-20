@@ -1,0 +1,38 @@
+{
+  "schema": "doroti-appkit-metal-spike/v1",
+  "timestampUtc": "2026-08-20T13:24:02.84313+00:00",
+  "identity": "macOS | net10.0-macos | osx-arm64 | AppKit-Main",
+  "backend": "AppKit/MTKView/Metal-Skia",
+  "backendPackage": "Microsoft.Maui.Platforms.MacOS/0.1.0-preview.12.26368.2",
+  "backendSourceCommit": "229f764fd688754497fe5822213e7b13b4e9caa3",
+  "mauiVersion": "10.0.90",
+  "skiaSharpVersion": "4.151.1",
+  "native": {
+    "nativeViewType": "Doroti.Validation.AppKitMetalSpike.DorotiMetalView",
+    "metalDevice": "Apple M1",
+    "pixelFormat": "BGRA8Unorm",
+    "sampleCount": 1,
+    "stencil": "Depth32Float_Stencil8",
+    "logicalSize": { "width": 736, "height": 474 },
+    "pixelSize": { "width": 1472, "height": 948 },
+    "dpr": 2,
+    "metricsGeneration": 22,
+    "contextGeneration": 1,
+    "surfaceGeneration": 22,
+    "commandBuffersCommitted": 39,
+    "commandBuffersCompleted": 39,
+    "commandBuffersErrored": 0,
+    "staleCompletions": 0
+  },
+  "frame": {
+    "submitted": 1,
+    "presented": 1,
+    "replayed": 38,
+    "superseded": 0,
+    "failed": 0,
+    "dropped": 0
+  },
+  "softwareFallbackFrames": 0,
+  "cpuReadbacks": 0,
+  "fullFrameCopies": 0
+}
