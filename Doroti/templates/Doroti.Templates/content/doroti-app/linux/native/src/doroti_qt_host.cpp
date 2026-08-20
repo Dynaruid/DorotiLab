@@ -60,6 +60,11 @@ QT_END_NAMESPACE
 
 namespace {
 constexpr std::uint32_t kAbiVersion = 2;
+// Acrylic covers the complete client surface. Wayland compositors clip effect
+// regions to the current surface bounds, so keep one deliberately oversized
+// region instead of replacing it after every resize. This also avoids the KDE
+// blur protocol retaining its first committed bounds across Qt surface resizes.
+constexpr int kFullSurfaceBackdropExtent = 1 << 20;
 constexpr std::uint64_t kSupportedFeatures =
     DOROTI_QT_FEATURE_OPENGL_FBO | DOROTI_QT_FEATURE_SWAP_ACK |
     DOROTI_QT_FEATURE_CONTEXT_LIFETIME |
@@ -500,12 +505,6 @@ class DorotiSurface final : public QOpenGLWindow {
         SendMetrics();
         break;
       case QEvent::Resize:
-        // Background-effect regions are wl_surface double-buffered state. Queue
-        // the new logical bounds before QOpenGLWindow handles the resize so Qt's
-        // corresponding surface commit applies the buffer size and blur region
-        // atomically. resizeGL runs later in the GL paint path and can otherwise
-        // leave the compositor using the previous window bounds.
-        UpdateBackdropRegion();
         SendMetrics();
         break;
       case QEvent::WindowActivate:
@@ -855,7 +854,7 @@ class DorotiSurface final : public QOpenGLWindow {
       if (ext_effect_ == nullptr)
         ext_effect_ = ext_background_effect_manager_v1_get_background_effect(
             ext_manager_, wayland_surface_);
-      UpdateBackdropRegion();
+      ApplyFullSurfaceBackdropRegion();
       ReportBackdrop("acrylic", "ext-background-effect-v1", true);
       return;
     }
@@ -863,7 +862,7 @@ class DorotiSurface final : public QOpenGLWindow {
       DestroyExtBackdrop();
       if (kde_effect_ == nullptr)
         kde_effect_ = org_kde_kwin_blur_manager_create(kde_manager_, wayland_surface_);
-      UpdateBackdropRegion();
+      ApplyFullSurfaceBackdropRegion();
       ReportBackdrop("acrylic", "kde-blur-v1", true);
       return;
     }
@@ -890,12 +889,13 @@ class DorotiSurface final : public QOpenGLWindow {
     ReportBackdrop(BackdropFallbackName(backdrop_fallback_), "none", false);
   }
 
-  void UpdateBackdropRegion() {
+  void ApplyFullSurfaceBackdropRegion() {
     if (wayland_compositor_ == nullptr || wayland_surface_ == nullptr ||
         (ext_effect_ == nullptr && kde_effect_ == nullptr)) return;
     auto* region = wl_compositor_create_region(wayland_compositor_);
     if (region == nullptr) return;
-    wl_region_add(region, 0, 0, std::max(1, width()), std::max(1, height()));
+    wl_region_add(region, 0, 0, kFullSurfaceBackdropExtent,
+                  kFullSurfaceBackdropExtent);
     if (ext_effect_ != nullptr)
       ext_background_effect_surface_v1_set_blur_region(ext_effect_, region);
     if (kde_effect_ != nullptr) {
