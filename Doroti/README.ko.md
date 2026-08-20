@@ -2,7 +2,7 @@
 
 [English](README.md) | **한국어**
 
-Doroti는 MAUI Windows, Android, iOS, native AppKit macOS, Mac Catalyst, Blazor WebAssembly와 초기 Linux/Qt host 경계에서 공용 widget, layout, painting, semantics, rendering pipeline을 사용하는 C#/.NET UI framework입니다.
+Doroti는 MAUI Windows, Android, iOS, native AppKit macOS, Mac Catalyst, Blazor WebAssembly와 Linux/Qt에서 공용 widget, layout, painting, semantics, rendering pipeline을 사용하는 C#/.NET UI framework입니다.
 
 ## 개발 방식
 
@@ -19,8 +19,10 @@ Source 소유권은 [ADR-019](docs/adr/ADR-019-product-framework-source-ownershi
 - `Doroti.App.Sdk`: 플랫폼 중립 `net10.0` 앱 assembly와 공용 asset 계약
 - `Doroti.Runner.Sdk`: 고정 target runner 검증과 runner-local native/Web bootstrap/plugin registration
 - `Doroti.Skia.RuntimeEffects`: native/Web host가 공유하는 fail-closed SkSL compiler와 uniform/image-sampler binder
+- `Doroti.Skia.Rendering`: native GPU host가 공유하는 host-neutral scene, paragraph, image, runtime-effect, semantics, cache, terminal-ACK renderer
 - `Doroti.Host.Maui`: 공용 MAUI lifecycle과 독립 SKGLView/AppKit MTKView Metal surface adapter
 - `Doroti.Host.Web`: host 소유 Blazor composition, WebGL2 canvas, input, accessibility, resource bridge
+- `Doroti.Host.Qt`: managed-owned Linux process, Qt 6 `QOpenGLWindow`, versioned C ABI v2, GPU surface, input, IME, desktop service와 accessibility adapter
 
 Web 실행 source는 TypeScript가 소유합니다. 앱은 `web/src/**/*.ts`, Doroti는 `src/Doroti.Host.Web/Web/*.ts`를 편집합니다. `Microsoft.TypeScript.MSBuild` 7.0.0이 runner-local `obj`에 JavaScript를 만들며 publish에는 그 결과만 포함됩니다. 앱 도구로 Node, npm, Bun, bundler를 요구하지 않습니다. 자세한 결정은 [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md)에 있습니다.
 
@@ -34,6 +36,8 @@ Android, iOS, native AppKit macOS, Mac Catalyst runner는 각각 앱 소유 기�
 - PowerShell 7
 - 10.0.11의 .NET/ASP.NET/WindowsDesktop 및 browser-wasm runtime pack과 선택 target에 맞는 MAUI/WebAssembly workload
 - `web/tsconfig.json`이 있는 Web runner에서만 restore하는 `Microsoft.TypeScript.MSBuild` 7.0.0
+
+Linux runner는 Linux x64 호스트에서 Qt 6.5 이상 Core/Gui/Widgets/OpenGL, CMake, C++ compiler, `pkg-config`, Wayland client 개발 파일, `wayland-scanner`, 실행할 QPA plugin(`wayland` 또는 `xcb`)을 system dependency로 사용합니다.
 
 `reference/flutter-master` checkout은 명시적인 Flutter reference 비교에만 필요합니다. 필요하면 `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`로 준비합니다.
 
@@ -61,7 +65,13 @@ pwsh -File ./Doroti/eng/doroti.ps1 validate
 | `release` | 통합 release suite, audit, pack, package 검사 |
 | `clean` | Doroti build output, artifact, 임시 local state 제거 |
 
-직접 suite 진입점은 [validate.ps1](eng/validate.ps1), [validate-app-targets.ps1](eng/validate-app-targets.ps1), [validate-web-product.ps1](eng/validate-web-product.ps1)입니다. 과거 G4-G7 validator는 더 이상 활성 명령이 아니며 결과는 repository root의 `history/`에 보존합니다.
+직접 suite 진입점은 [validate.ps1](eng/validate.ps1), [validate-app-targets.ps1](eng/validate-app-targets.ps1), [validate-web-product.ps1](eng/validate-web-product.ps1), Kubuntu native용 [validate-linux-qt.sh](eng/validate-linux-qt.sh)입니다. 과거 G4-G7 validator는 더 이상 활성 명령이 아니며 결과는 repository root의 `history/`에 보존합니다.
+
+## 플랫폼 evidence 경계
+
+Linux Qt의 공용 renderer, 실제 Material gallery, swap 기반 terminal ACK, 기본 input callback, semantics tree, framework-dependent/self-contained publish는 Kubuntu 26.04 VMware의 Wayland/XWayland에서 확인했습니다. 물리 Linux, 실제 X11 session, 한글 IME/Orca, context 강제 재생성, 장기 soak와 성능은 `notVerified`입니다. 자세한 값은 [Linux Qt live evidence](validation/evidence/linux-qt/kubuntu-vmware-spike.json)와 [packaging evidence](validation/evidence/linux-qt/kubuntu-packaging.json)를 참고하세요.
+
+AppKit의 현재 live 범위와 남은 gate는 [AppKit product live record](validation/evidence/appkit-macos/product-live.json)에 따로 기록합니다. Build, native live, browser live, physical/device, accessibility 결과는 서로 대신하지 않습니다.
 
 ## Source와 artifact 원칙
 

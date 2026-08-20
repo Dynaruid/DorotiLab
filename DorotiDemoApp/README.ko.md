@@ -30,7 +30,7 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 publish -App ./DorotiDemoApp -Plat
 
 ### 플랫폼별 실행
 
-아래 명령은 모두 저장소 루트에서 실행합니다.
+아래 명령은 모두 저장소 루트에서 실행합니다. Linux runner 명령은 native shim을 함께 빌드하므로 Linux x64 호스트에서 실행해야 합니다.
 
 ```powershell
 # Windows (Windows 호스트)
@@ -55,12 +55,13 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform linux -Rid linux-x64
 ```
 
-Linux 데모는 `WindowBackdropMode.acrylic`을 요청합니다. Wayland compositor가
-`ext-background-effect-v1` 또는 구형 KDE blur 프로토콜을 제공하면 native blur를
-사용하고, 제공하지 않으면 투명 배경으로 폴백합니다. `backgroundColor`와
-`darkBackgroundColor`의 alpha가 아크릴 tint 강도를 결정합니다.
-
 Web runner가 시작되면 브라우저에서 `http://127.0.0.1:5088`을 엽니다. Android와 iOS는 각각 실행 중인 에뮬레이터 또는 시뮬레이터가 필요합니다. Android arm64 기기와 iOS arm64 기기에서 실행하려면 각각 `-Rid android-arm64`, `-Rid ios-arm64`로 바꾸며, iOS 실제 기기는 별도의 코드 서명 설정이 필요합니다.
+
+Linux에는 .NET SDK와 PowerShell 7 외에 Qt 6.5 이상 Core/Gui/Widgets/OpenGL, CMake, C++ compiler, `pkg-config`, Wayland client 개발 파일, `wayland-scanner`, `wayland` 또는 `xcb` QPA plugin이 필요합니다. Linux 전용 contract/build/publish 검증은 다음과 같이 실행합니다.
+
+```bash
+bash ./Doroti/eng/validate-linux-qt.sh Release
+```
 
 runner를 직접 지정해도 됩니다.
 
@@ -89,10 +90,18 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native open -App ./DorotiDemoApp -
 
 `native open`은 Android Studio/Xcode project 경로만 출력하며 실제 IDE 실행은 `-Launch`를 명시했을 때만 합니다. 기본 ABI는 `platformInfo`, `echo`, UI-thread callback을 제공합니다.
 
+## 시스템 다크 모드와 색 팔레트
+
+데모는 `MaterialApp`에 light/dark `ThemeData`와 `ThemeMode.system`을 전달합니다. 두 palette는 `ColorScheme.CreateFromSeed`로 만들며 현재 widget은 `Theme.of(context).colorScheme`의 role을 사용합니다. Window configuration의 `backgroundColor`와 `darkBackgroundColor`도 같은 light/dark 전환을 따릅니다.
+
+Linux 데모는 `WindowBackdropMode.acrylic`과 `WindowBackdropFallback.transparent`를 요청합니다. Wayland compositor가 `ext-background-effect-v1` 또는 구형 KDE blur protocol을 제공하면 전체 client surface에 native blur를 요청하고, 제공하지 않으면 설정한 transparent fallback을 사용합니다. 두 background color의 alpha는 acrylic tint 강도를 결정합니다. 이 protocol 경로는 구현되어 있지만 실제 compositor blur의 시각 acceptance는 아직 `notVerified`입니다.
+
 ## 지원과 evidence 상태
 
 native AppKit과 Mac Catalyst를 서로 독립적으로 포함한 자동 build를 검증합니다. AppKit backend는 실험적이며 Microsoft 지원 대상이 아니고 최소 macOS 14, 첫 RID는 `osx-arm64`입니다.
 
 AppKit product live record는 native launch, 화면에 표시된 Material gallery, Metal completion 기반 present, CPU readback/full-frame copy 0건, AppKit-only bundle, native bridge 3개 operation을 증명합니다. Pointer/keyboard/IME, accessibility, resize/fullscreen/scale 이동, Release live, signing/notarization/store gate는 계속 `notVerified`입니다. Mac Catalyst 결과를 native AppKit macOS 결과로 바꾸지 않습니다.
 
-[ADR-021](../Doroti/docs/adr/ADR-021-platform-runner-workspaces.md), [workspace evidence](../Doroti/validation/evidence/app-targets-evidence.json), [AppKit product live record](../Doroti/validation/evidence/appkit-macos/product-live.json)를 참고하세요.
+Linux Qt는 Kubuntu 26.04 VMware에서 실제 Material gallery의 Wayland rendering, XWayland/xcb input smoke, swap terminal ACK, 20/30회 resize, semantics tree, framework-dependent/self-contained publish를 확인했습니다. 물리 Linux, 실제 X11 session, 한글 IME/Orca, context 강제 재생성, acrylic blur 시각 acceptance와 장기 성능은 `notVerified`입니다.
+
+[ADR-021](../Doroti/docs/adr/ADR-021-platform-runner-workspaces.md), [workspace evidence](../Doroti/validation/evidence/app-targets-evidence.json), [AppKit product live record](../Doroti/validation/evidence/appkit-macos/product-live.json), [Linux Qt live evidence](../Doroti/validation/evidence/linux-qt/kubuntu-vmware-spike.json), [Linux Qt packaging evidence](../Doroti/validation/evidence/linux-qt/kubuntu-packaging.json)를 참고하세요.

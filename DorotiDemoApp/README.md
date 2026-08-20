@@ -30,7 +30,7 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 publish -App ./DorotiDemoApp -Plat
 
 ### Run by platform
 
-Run every command below from the repository root.
+Run every command below from the repository root. Run the Linux command on a Linux x64 host because that runner also builds its native shim.
 
 ```powershell
 # Windows (Windows host)
@@ -55,12 +55,13 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform linux -Rid linux-x64
 ```
 
-The Linux demo requests `WindowBackdropMode.acrylic`. On Wayland it uses
-`ext-background-effect-v1` or the legacy KDE blur protocol when advertised and falls
-back to a transparent background otherwise. The alpha in `backgroundColor` and
-`darkBackgroundColor` controls the acrylic tint strength.
-
 After starting the Web runner, open `http://127.0.0.1:5088` in a browser. Android and iOS require a running emulator or simulator, respectively. To run on an Android arm64 device or an iOS arm64 device, change the RID to `-Rid android-arm64` or `-Rid ios-arm64`; a physical iOS device also requires code-signing configuration.
+
+In addition to the .NET SDK and PowerShell 7, Linux requires Qt 6.5 or newer Core/Gui/Widgets/OpenGL, CMake, a C++ compiler, `pkg-config`, Wayland client development files, `wayland-scanner`, and the `wayland` or `xcb` QPA plugin. Run the Linux-native contract/build/publish validation with:
+
+```bash
+bash ./Doroti/eng/validate-linux-qt.sh Release
+```
 
 Runner projects also support direct .NET commands:
 
@@ -89,10 +90,18 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native open -App ./DorotiDemoApp -
 
 `native open` prints the Android Studio/Xcode project path; add `-Launch` only when the IDE should actually open. The bridge ABI provides `platformInfo`, `echo`, and UI-thread callback operations.
 
+## System dark mode and color palettes
+
+The demo passes light and dark `ThemeData` values plus `ThemeMode.system` to `MaterialApp`. Both palettes come from `ColorScheme.CreateFromSeed`, and widgets consume the active roles through `Theme.of(context).colorScheme`. The window configuration's `backgroundColor` and `darkBackgroundColor` follow the same light/dark transition.
+
+On Linux the demo requests `WindowBackdropMode.acrylic` with `WindowBackdropFallback.transparent`. A Wayland compositor that advertises `ext-background-effect-v1` or the legacy KDE blur protocol receives a full-client-surface native blur request; otherwise, the configured transparent fallback is used. The alpha of the two background colors controls the acrylic tint strength. This protocol path is implemented, but visual acceptance of compositor blur remains `notVerified`.
+
 ## Support and evidence status
 
 Automated builds include native AppKit and Mac Catalyst independently. The AppKit backend is experimental and not Microsoft-supported; its minimum OS is macOS 14 and its first RID is `osx-arm64`.
 
 The AppKit product live record proves native launch, the visible Material gallery, Metal completion-based presentation, zero CPU readback/full-frame copies, a clean AppKit-only bundle, and all three native bridge operations. Pointer/keyboard/IME, accessibility, resize/fullscreen/scale migration, Release live behavior, and signing/notarization/store acceptance remain `notVerified`. Mac Catalyst evidence is never reported as true AppKit macOS evidence.
 
-See [ADR-021](../Doroti/docs/adr/ADR-021-platform-runner-workspaces.md), the [workspace evidence](../Doroti/validation/evidence/app-targets-evidence.json), and the [AppKit product live record](../Doroti/validation/evidence/appkit-macos/product-live.json).
+Linux Qt evidence covers the real Material gallery under Wayland, an XWayland/xcb input smoke, swap terminal ACK, 20/30 resize cycles, the semantics tree, and framework-dependent/self-contained publish on a Kubuntu 26.04 VMware guest. Physical Linux, a real X11 session, Korean IME/Orca, forced context recreation, visual acrylic-blur acceptance, and long-running performance remain `notVerified`.
+
+See [ADR-021](../Doroti/docs/adr/ADR-021-platform-runner-workspaces.md), the [workspace evidence](../Doroti/validation/evidence/app-targets-evidence.json), the [AppKit product live record](../Doroti/validation/evidence/appkit-macos/product-live.json), the [Linux Qt live evidence](../Doroti/validation/evidence/linux-qt/kubuntu-vmware-spike.json), and the [Linux Qt packaging evidence](../Doroti/validation/evidence/linux-qt/kubuntu-packaging.json).

@@ -7,7 +7,7 @@
 > [!WARNING]
 > Doroti는 현재 실험 단계입니다. API, architecture, 동작 및 project 구조는 하위 호환성 보장 없이 언제든 크게 변경될 수 있습니다.
 
-Doroti는 공용 C# widget, layout, painting, semantics, rendering pipeline을 Windows, native AppKit macOS, Mac Catalyst와 Web에 제공합니다. 익숙한 Material/Cupertino API의 동작 reference는 Flutter이지만, 유지보수하는 제품 구현은 `Doroti.Framework.*`에 있습니다.
+Doroti는 공용 C# widget, layout, painting, semantics, rendering pipeline을 Windows, Android, iOS, native AppKit macOS, Mac Catalyst, Web, Linux/Qt에 제공합니다. 익숙한 Material/Cupertino API의 동작 reference는 Flutter이지만, 유지보수하는 제품 구현은 `Doroti.Framework.*`에 있습니다.
 
 Doroti는 Flutter를 WebView에 넣지 않으며 플랫폼 UI control tree로 UI를 구성하지 않습니다. Platform host는 native window/view, GPU surface, input, text, clipboard, accessibility capability를 제공하고 Doroti가 widget/render tree를 소유합니다.
 
@@ -26,9 +26,10 @@ Doroti는 Flutter를 WebView에 넣지 않으며 플랫폼 UI control tree로 UI
 - 하나의 public target-neutral `Program` startup, host 소유 native 초기화, runner-local generated bootstrap code
 - Windows WinUI 3 `MauiSKSwapChainPanel`과 Web WebGL2를 통한 strict Skia GPU rendering
 - native AppKit macOS/osx-arm64와 별도로 유지되는 Mac Catalyst를 포함한 고정 runner 빌드
+- Linux x64의 Qt 6 `QOpenGLWindow`, versioned C ABI v2, Qt framebuffer 직접 Skia rendering
 - 두 Apple desktop runner/binding을 포함하는 package-only template(총 12개 project)
 
-workspace cutover source fingerprint의 새 native launch, GPU presentation, browser interaction, physical acceptance, accessibility, signing/store, Linux X11/Wayland와 cross-target parity는 각각 독립적인 `notVerified` gate입니다. 이전 live 결과는 predecessor evidence로만 유지합니다.
+현재 evidence에는 AppKit native launch/Metal presentation과 Kubuntu VMware의 Wayland 및 XWayland Qt live 실행이 포함됩니다. 물리 Linux와 실제 X11 session, Linux 한글 IME/Orca, context 재생성, 장기 성능, 미실행 target의 native/browser/physical/accessibility/signing/store 및 cross-target parity는 각각 독립적인 `notVerified` gate입니다.
 
 ## 구조
 
@@ -40,7 +41,7 @@ workspace cutover source fingerprint의 새 native launch, GPU presentation, bro
                  │
                  ▼
          target host + GPU surface
-   Windows MAUI · AppKit · Mac Catalyst · WebGL2
+   Windows MAUI · AppKit · Mac Catalyst · WebGL2 · Linux Qt/Skia GL
 ```
 
 Flutter source는 fidelity 작업에서 동작 reference가 필요할 때 사용합니다. Compiler output은 격리된 candidate이며 제품 source of truth가 아닙니다.

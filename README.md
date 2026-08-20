@@ -26,9 +26,10 @@ See [ADR-019](Doroti/docs/adr/ADR-019-product-framework-source-ownership.md) and
 - One public target-neutral `Program` startup, host-owned native initialization, and runner-local generated bootstrap code
 - Strict Skia GPU rendering through WinUI 3 `MauiSKSwapChainPanel` on Windows and WebGL2 on the Web
 - Automated fixed-runner builds include native AppKit macOS/osx-arm64 and the independently retained Mac Catalyst product
+- Linux x64 uses a Qt 6 `QOpenGLWindow`, a versioned C ABI v2, and direct Skia rendering into the Qt framebuffer
 - Package-only template creation includes both Apple desktop runners and their native bindings (twelve projects total)
 
-Fresh native launch, GPU presentation, browser interaction, physical acceptance, accessibility, signing/store, Linux X11/Wayland, and cross-target parity remain independent `notVerified` gates for the workspace-cutover source fingerprint. Historical live evidence is predecessor evidence only.
+Current evidence includes AppKit native launch/Metal presentation and Qt live runs under Wayland and XWayland on a Kubuntu VMware guest. Physical Linux and a real X11 session, Linux Korean IME/Orca, context recreation, long-running performance, unrun target-specific native/browser/physical/accessibility/signing/store acceptance, and cross-target parity remain independent `notVerified` gates.
 
 ## Architecture
 
@@ -40,7 +41,7 @@ product-owned Doroti.Framework.* source
                  │
                  ▼
         target host + GPU surface
-  Windows MAUI · AppKit · Mac Catalyst · WebGL2
+  Windows MAUI · AppKit · Mac Catalyst · WebGL2 · Linux Qt/Skia GL
 ```
 
 Flutter source is consulted when fidelity work needs a behavioral reference. Compiler output is an isolated candidate, not the product source of truth.

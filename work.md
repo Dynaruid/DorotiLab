@@ -2,10 +2,11 @@
 
 
 - 작성일: 2026-08-20
+- 문서 갱신일: 2026-08-21
 - 대상: `DorotiDemoApp/linux`, `Doroti/src/Doroti.Host.Qt`, 공용 Skia 렌더링 계층, 템플릿/검증/문서
 - 첫 제품 범위: `net10.0`, `linux-x64`, Qt 6.5 이상, Qt Widgets + OpenGL, 단일 `DorotiView`
 - 상태 표기: 미실행 플랫폼 게이트는 실패가 아니라 `notVerified`로 남긴다.
-- 현재 결과: 구현 및 Kubuntu/VMware에서 자동화 가능한 build/publish/Wayland/XWayland live 게이트는 완료했다. 물리 장치, 실제 X11 세션, 한글 IME/Orca, context 강제 재생성, 장기 soak/성능 측정은 `notVerified`다.
+- 현재 결과: 구현 및 Kubuntu/VMware에서 자동화 가능한 build/publish/Wayland/XWayland live 게이트는 완료했다. 이후 Wayland `ext-background-effect-v1`/KDE blur 기반 acrylic 요청과 transparent/solid fallback 계약을 Demo/template에 동기화했다. 물리 장치, 실제 X11 세션, 한글 IME/Orca, context 강제 재생성, 실제 compositor blur 시각 acceptance, 장기 soak/성능 측정은 `notVerified`다.
 
 ## 0. 작업 시작 시 상태와 문제 정의
 
@@ -239,10 +240,11 @@ LNX-QT-5 종료 조건:
 - [x] Doroti cursor 종류를 Qt cursor shape로 매핑하고 지원하지 않는 cursor는 Arrow로 fallback한다.
 - [x] Qt locale time format으로 24-hour 값을 계산하고 text scale/spell-check는 공용 기본값을 유지한다.
 - [x] UI-thread affinity가 필요한 service 호출은 queued request/response로 처리하며 동기 cross-thread wait를 사용하지 않는다.
+- [x] 후속 window 계약으로 `WindowBackdropMode.acrylic`을 Wayland `ext-background-effect-v1` 우선, KDE blur fallback 순서로 연결하고 미지원 compositor에서는 설정한 transparent/solid fallback을 사용한다.
 
 LNX-QT-6 종료 조건:
 
-- [ ] clipboard copy/paste, cursor 변화, locale/theme/DPR 전환, minimize/restore, close veto가 live test에서 동작한다.
+- [ ] clipboard copy/paste, cursor 변화, locale/theme/DPR 전환, minimize/restore, close veto와 실제 compositor acrylic blur가 live test에서 동작한다.
 - [ ] service 실패가 crash나 deadlock이 아니라 명시적 실패 결과와 진단으로 반환된다.
 
 ### LNX-QT-7. semantics와 Linux accessibility
@@ -273,7 +275,7 @@ LNX-QT-7 종료 조건:
 - [x] `LibraryImport("doroti_qt_host")`의 app-local 배치를 live 실행으로 확인한다.
 - [x] `ldd`, `readelf -d`로 native dependency와 RPATH/RUNPATH를 검사하고 절대 build RUNPATH를 제거했다.
 - [x] framework-dependent와 self-contained publish를 각각 검증한다.
-- [x] Qt 6.5+ Core/Gui/Widgets/OpenGL 및 QPA plugin을 system dependency로 두는 정책을 문서화한다.
+- [x] Qt 6.5+ Core/Gui/Widgets/OpenGL, QPA plugin, Wayland client 개발 파일, `pkg-config`, `wayland-scanner`를 system dependency로 두는 정책을 문서화한다.
 - [ ] Qt bundle을 선택할 경우 Qt platform plugin(`wayland`, `xcb`), plugin search path/`qt.conf`, `$ORIGIN` RUNPATH, license/third-party notice를 함께 다룬다.
 - [ ] system Qt 최소 6.5는 CMake가 검증한다. runtime module/plugin 진단 메시지는 보강해야 한다.
 - [x] `DorotiDemoApp/linux/native`와 `Doroti/templates/.../linux`의 CMake/source/header를 같은 v2 계약으로 동기화한다.

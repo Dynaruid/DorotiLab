@@ -2,7 +2,7 @@
 
 **English** | [한국어](README.ko.md)
 
-Doroti is a C#/.NET UI framework with a shared widget, layout, painting, semantics, and rendering pipeline for MAUI Windows, native AppKit macOS, Mac Catalyst, Android, iOS, Blazor WebAssembly, and an early Linux/Qt host boundary.
+Doroti is a C#/.NET UI framework with a shared widget, layout, painting, semantics, and rendering pipeline for MAUI Windows, native AppKit macOS, Mac Catalyst, Android, iOS, Blazor WebAssembly, and Linux/Qt.
 
 ## Development model
 
@@ -19,11 +19,10 @@ See [ADR-019](docs/adr/ADR-019-product-framework-source-ownership.md) for source
 - `Doroti.App.Sdk`: platform-neutral `net10.0` application assembly and shared asset contract
 - `Doroti.Runner.Sdk`: fixed-target runner validation plus runner-local native/Web bootstrap and plugin registration
 - `Doroti.Skia.RuntimeEffects`: shared fail-closed SkSL compiler and uniform/image-sampler binder used by native and Web hosts
+- `Doroti.Skia.Rendering`: host-neutral scene, paragraph, image, runtime-effect, semantics, cache, and terminal-ACK renderer shared by native GPU hosts
 - `Doroti.Host.Maui`: shared MAUI lifecycle plus independent SKGLView and AppKit-owned MTKView/Metal surface adapters
 - `Doroti.Host.Web`: host-owned Blazor composition, WebGL2 canvas, input, accessibility, and resource bridge
-- `Doroti.Host.Qt`: managed-owned Linux runner with a Qt 6 `QOpenGLWindow`, versioned C ABI, GPU surface, input, IME, and desktop services
-- `Doroti.Skia.Rendering`: host-neutral Skia scene, paragraph, image, runtime-effect, semantics, cache, and terminal-ACK renderer shared by native GPU hosts
-- `Doroti.Host.Qt`: managed-owned Linux process and Qt 6 C ABI boundary; native rendering and X11/Wayland acceptance remain `notVerified`
+- `Doroti.Host.Qt`: managed-owned Linux process with a Qt 6 `QOpenGLWindow`, versioned C ABI v2, GPU surface, input, IME, desktop services, and an accessibility adapter
 
 Web execution source is TypeScript-owned. Applications edit `web/src/**/*.ts`; Doroti owns `src/Doroti.Host.Web/Web/*.ts`. `Microsoft.TypeScript.MSBuild` 7.0.0 compiles both into runner-local `obj` directories, and publish contains only the resulting JavaScript. Node, npm, Bun, and a bundler are not application requirements. See [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md).
 
@@ -37,6 +36,8 @@ Android, iOS, native AppKit macOS, and Mac Catalyst runners each reference a def
 - PowerShell 7
 - .NET/ASP.NET/WindowsDesktop and browser-wasm runtime packs at 10.0.11, with matching MAUI/WebAssembly workloads
 - `Microsoft.TypeScript.MSBuild` 7.0.0 restored only by a Web runner that contains `web/tsconfig.json`
+
+The Linux runner uses system dependencies on a Linux x64 host: Qt 6.5 or newer Core/Gui/Widgets/OpenGL, CMake, a C++ compiler, `pkg-config`, Wayland client development files, `wayland-scanner`, and the QPA plugin used at runtime (`wayland` or `xcb`).
 
 The `reference/flutter-master` checkout is needed only for explicit Flutter reference comparison. Prepare Flutter for that work with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`.
 
@@ -65,6 +66,12 @@ The active command surface is intentionally small:
 | `clean` | Remove Doroti build output, artifacts, and temporary local state |
 
 Direct suite entry points are [validate.ps1](eng/validate.ps1), [validate-app-targets.ps1](eng/validate-app-targets.ps1), [validate-web-product.ps1](eng/validate-web-product.ps1), and the Kubuntu-native [validate-linux-qt.sh](eng/validate-linux-qt.sh). Historical G4-G7 validators are no longer active; their results remain under `history/` at the repository root.
+
+## Platform evidence boundaries
+
+The shared renderer, real Material gallery, swap-based terminal ACK, basic input callbacks, semantics tree, and framework-dependent/self-contained publish paths were exercised for Linux Qt under Wayland and XWayland on a Kubuntu 26.04 VMware guest. Physical Linux, a real X11 session, Korean IME/Orca, forced context recreation, long soaks, and performance remain `notVerified`. See the [Linux Qt live evidence](validation/evidence/linux-qt/kubuntu-vmware-spike.json) and [packaging evidence](validation/evidence/linux-qt/kubuntu-packaging.json).
+
+AppKit live coverage and its remaining gates are recorded separately in the [AppKit product live record](validation/evidence/appkit-macos/product-live.json). Build, native-live, browser-live, physical/device, and accessibility evidence do not substitute for one another.
 
 ## Source and artifact policy
 
