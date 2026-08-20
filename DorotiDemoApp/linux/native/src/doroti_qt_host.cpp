@@ -482,8 +482,6 @@ class DorotiSurface final : public QOpenGLWindow {
   }
 
   void resizeGL(int, int) override {
-    UpdateBackdropRegion();
-    SendMetrics();
     if (next_automatic_frame_token_ == 0) next_automatic_frame_token_ = 1;
     RequestFrame(this, next_automatic_frame_token_++);
   }
@@ -499,6 +497,15 @@ class DorotiSurface final : public QOpenGLWindow {
       case QEvent::Hide:
         lifecycle_state_ = 3;
         callbacks_.lifecycle_changed(callback_context_, this, lifecycle_state_, Micros());
+        SendMetrics();
+        break;
+      case QEvent::Resize:
+        // Background-effect regions are wl_surface double-buffered state. Queue
+        // the new logical bounds before QOpenGLWindow handles the resize so Qt's
+        // corresponding surface commit applies the buffer size and blur region
+        // atomically. resizeGL runs later in the GL paint path and can otherwise
+        // leave the compositor using the previous window bounds.
+        UpdateBackdropRegion();
         SendMetrics();
         break;
       case QEvent::WindowActivate:
