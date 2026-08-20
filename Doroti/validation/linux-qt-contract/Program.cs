@@ -5,6 +5,8 @@ QtNativeV2.ValidateLayout();
 
 if (QtNativeV2.AbiVersion != 2 || QtNativeV2.RequiredFeatures != 0x3ff)
     throw new InvalidOperationException("doroti.qt-host/v2 feature identity drifted.");
+if (Marshal.SizeOf<QtNativeV2.Configuration>() != 48)
+    throw new InvalidOperationException("doroti.qt-host/v2 configuration layout drifted.");
 if (Marshal.SizeOf<QtNativeV2.HostApi>() != 120)
     throw new InvalidOperationException("doroti.qt-host/v2 host API layout drifted.");
 if (Marshal.SizeOf<QtNativeV2.Callbacks>() != 176)

@@ -8,6 +8,7 @@
 #include <QElapsedTimer>
 #include <QEvent>
 #include <QGuiApplication>
+#include <QtGui/qguiapplication_platform.h>
 #include <QInputMethod>
 #include <QInputMethodEvent>
 #include <QJsonArray>
@@ -29,12 +30,33 @@
 #include <QTimer>
 #include <QTouchEvent>
 #include <QWheelEvent>
+#include <QWindow>
+#include <QtCore/qglobal.h>
 #include <algorithm>
 #include <cmath>
+#include <cstring>
 #include <exception>
 #include <limits>
 #include <string>
 #include <utility>
+#include <wayland-client.h>
+
+#include "ext-background-effect-v1-client-protocol.h"
+#include "kde-blur-client-protocol.h"
+
+// Qt deliberately keeps the per-window native resource accessor in its QPA
+// compatibility surface. Keep the small ABI prefix used here isolated; the
+// public QWaylandApplication interface supplies the display and compositor.
+QT_BEGIN_NAMESPACE
+class QPlatformNativeInterface : public QObject {
+ public:
+  virtual void* nativeResourceForIntegration(const QByteArray& resource);
+  virtual void* nativeResourceForContext(const QByteArray& resource,
+                                         QOpenGLContext* context);
+  virtual void* nativeResourceForScreen(const QByteArray& resource, QScreen* screen);
+  virtual void* nativeResourceForWindow(const QByteArray& resource, QWindow* window);
+};
+QT_END_NAMESPACE
 
 namespace {
 constexpr std::uint32_t kAbiVersion = 2;
@@ -92,8 +114,19 @@ QString String(doroti_qt_utf8_v2 value) {
 
 class DorotiSurface final : public QOpenGLWindow {
  public:
-  DorotiSurface(void* callback_context, const doroti_qt_callbacks_v2& callbacks)
-      : callback_context_(callback_context), callbacks_(callbacks) {
+  DorotiSurface(void* callback_context, const doroti_qt_callbacks_v2& callbacks,
+                std::uint32_t backdrop_mode, std::uint32_t backdrop_fallback)
+      : QOpenGLWindow(QOpenGLWindow::NoPartialUpdate),
+        callback_context_(callback_context), callbacks_(callbacks),
+        backdrop_mode_(backdrop_mode), backdrop_fallback_(backdrop_fallback) {
+    // Wayland compositors can only preserve intentional transparent pixels when
+    // the wl_buffer has an alpha channel. Request it before the native surface is
+    // created, while retaining full-frame repaint semantics for every swapchain
+    // image.
+    auto surface_format = format();
+    surface_format.setAlphaBufferSize(8);
+    surface_format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+    setFormat(surface_format);
     clock_.start();
     connect(this, &QOpenGLWindow::frameSwapped, this, [this] { FrameSwapped(); });
     connect(this, &QWindow::screenChanged, this, [this](QScreen*) { SendMetrics(); });
@@ -103,6 +136,7 @@ class DorotiSurface final : public QOpenGLWindow {
 
   ~DorotiSurface() override {
     ClearSemanticsTree();
+    ReleaseBackdrop();
     ReleaseSurface();
     callbacks_.lifecycle_changed(callback_context_, this, 0, Micros());
     callbacks_.closed(callback_context_, this);
@@ -115,6 +149,59 @@ class DorotiSurface final : public QOpenGLWindow {
   QAccessibleInterface* Accessible(std::int64_t id) const;
   void ApplySemantics(const QByteArray& json);
   void ClearSemanticsTree();
+  void InitializeBackdrop() {
+    Diagnostic("backdrop.requested", BackdropModeName(backdrop_mode_));
+    Diagnostic("backdrop.fallback", BackdropFallbackName(backdrop_fallback_));
+    if (backdrop_mode_ != DOROTI_QT_BACKDROP_ACRYLIC) {
+      ReportBackdrop(backdrop_mode_ == DOROTI_QT_BACKDROP_TRANSPARENT
+                         ? "transparent"
+                         : "solid",
+                     "none", false);
+      return;
+    }
+    if (QGuiApplication::platformName().compare("wayland", Qt::CaseInsensitive) != 0) {
+      ApplyBackdropFallback();
+      return;
+    }
+    auto* application = qobject_cast<QGuiApplication*>(QCoreApplication::instance());
+    auto* wayland = application == nullptr
+                        ? nullptr
+                        : application->nativeInterface<QNativeInterface::QWaylandApplication>();
+    auto* native = QGuiApplication::platformNativeInterface();
+    if (wayland == nullptr || native == nullptr) {
+      ApplyBackdropFallback();
+      return;
+    }
+    wayland_display_ = wayland->display();
+    wayland_compositor_ = wayland->compositor();
+    wayland_surface_ = static_cast<wl_surface*>(
+        native->nativeResourceForWindow(QByteArrayLiteral("surface"), this));
+    if (wayland_display_ == nullptr || wayland_compositor_ == nullptr ||
+        wayland_surface_ == nullptr) {
+      ApplyBackdropFallback();
+      return;
+    }
+    wayland_registry_ = wl_display_get_registry(wayland_display_);
+    backdrop_event_queue_ = wl_display_create_queue(wayland_display_);
+    if (wayland_registry_ == nullptr || backdrop_event_queue_ == nullptr) {
+      ReleaseBackdrop();
+      ApplyBackdropFallback();
+      return;
+    }
+    wl_proxy_set_queue(reinterpret_cast<wl_proxy*>(wayland_registry_),
+                       backdrop_event_queue_);
+    if (wl_registry_add_listener(wayland_registry_, &kRegistryListener, this) != 0) {
+      ReleaseBackdrop();
+      ApplyBackdropFallback();
+      return;
+    }
+    ApplyBackdropFallback();
+    backdrop_event_timer_ = new QTimer(this);
+    connect(backdrop_event_timer_, &QTimer::timeout, this,
+            [this] { PumpBackdropEvents(); });
+    backdrop_event_timer_->start(16);
+    wl_display_flush(wayland_display_);
+  }
   void DispatchSemanticsAction(std::int64_t id, std::int64_t action) {
     callbacks_.semantics_action(callback_context_, this, id, action, Utf8("null"));
   }
@@ -324,6 +411,9 @@ class DorotiSurface final : public QOpenGLWindow {
       const auto normalized = QByteArray(renderer == nullptr ? "" : renderer).toLower();
       software_renderer_ = normalized.contains("llvmpipe") || normalized.contains("softpipe") ||
                            normalized.contains("swiftshader");
+      const auto alpha_bits = QByteArray::number(current->format().alphaBufferSize());
+      Diagnostic("surface.alphaBits", alpha_bits.constData());
+      Diagnostic("surface.repaint", "full-transparent-clear");
     }
   }
 
@@ -367,6 +457,17 @@ class DorotiSurface final : public QOpenGLWindow {
       RequestClose(this);
       return;
     }
+    // A Wayland/EGL swapchain does not promise that a newly acquired buffer is
+    // zeroed. Clear the complete native target before handing it to Skia so a
+    // transparent framework background means transparent *this frame*, rather
+    // than blending with pixels left in an older swapchain image. Reset the GL
+    // write state explicitly because paintGL may follow arbitrary Skia state.
+    auto* functions = context()->functions();
+    functions->glBindFramebuffer(GL_FRAMEBUFFER, descriptor.framebuffer_object);
+    functions->glDisable(GL_SCISSOR_TEST);
+    functions->glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    functions->glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    functions->glClear(GL_COLOR_BUFFER_BIT);
     const auto result = callbacks_.render(callback_context_, this, &descriptor, token);
     if (result != DOROTI_QT_OK) {
       fatal_ = true;
@@ -381,6 +482,7 @@ class DorotiSurface final : public QOpenGLWindow {
   }
 
   void resizeGL(int, int) override {
+    UpdateBackdropRegion();
     SendMetrics();
     if (next_automatic_frame_token_ == 0) next_automatic_frame_token_ = 1;
     RequestFrame(this, next_automatic_frame_token_++);
@@ -677,6 +779,175 @@ class DorotiSurface final : public QOpenGLWindow {
     context_identity_ = 0;
   }
 
+  static const char* BackdropModeName(std::uint32_t mode) {
+    switch (mode) {
+      case DOROTI_QT_BACKDROP_SOLID: return "solid";
+      case DOROTI_QT_BACKDROP_TRANSPARENT: return "transparent";
+      case DOROTI_QT_BACKDROP_ACRYLIC: return "acrylic";
+      default: return "system";
+    }
+  }
+
+  static const char* BackdropFallbackName(std::uint32_t fallback) {
+    return fallback == DOROTI_QT_BACKDROP_FALLBACK_SOLID ? "solid" : "transparent";
+  }
+
+  static void RegistryGlobal(void* data, wl_registry* registry, std::uint32_t name,
+                             const char* interface, std::uint32_t version) {
+    auto* surface = static_cast<DorotiSurface*>(data);
+    if (std::strcmp(interface, ext_background_effect_manager_v1_interface.name) == 0) {
+      surface->ext_manager_name_ = name;
+      surface->ext_manager_ = static_cast<ext_background_effect_manager_v1*>(
+          wl_registry_bind(registry, name, &ext_background_effect_manager_v1_interface,
+                           std::min(version, 1u)));
+      if (surface->ext_manager_ != nullptr)
+        ext_background_effect_manager_v1_add_listener(
+            surface->ext_manager_, &kExtManagerListener, surface);
+    } else if (std::strcmp(interface, org_kde_kwin_blur_manager_interface.name) == 0) {
+      surface->kde_manager_name_ = name;
+      surface->kde_manager_ = static_cast<org_kde_kwin_blur_manager*>(
+          wl_registry_bind(registry, name, &org_kde_kwin_blur_manager_interface,
+                           std::min(version, 1u)));
+      surface->ApplyBackdrop();
+    }
+  }
+
+  static void RegistryGlobalRemove(void* data, wl_registry*, std::uint32_t name) {
+    auto* surface = static_cast<DorotiSurface*>(data);
+    if (name == surface->ext_manager_name_) {
+      surface->DestroyExtBackdrop();
+      if (surface->ext_manager_ != nullptr)
+        ext_background_effect_manager_v1_destroy(surface->ext_manager_);
+      surface->ext_manager_ = nullptr;
+      surface->ext_manager_name_ = 0;
+      surface->ext_blur_available_ = false;
+      surface->ApplyBackdrop();
+    }
+    if (name == surface->kde_manager_name_) {
+      surface->DestroyKdeBackdrop();
+      if (surface->kde_manager_ != nullptr)
+        wl_proxy_destroy(reinterpret_cast<wl_proxy*>(surface->kde_manager_));
+      surface->kde_manager_ = nullptr;
+      surface->kde_manager_name_ = 0;
+      surface->ApplyBackdrop();
+    }
+  }
+
+  static void ExtCapabilities(void* data, ext_background_effect_manager_v1*,
+                              std::uint32_t flags) {
+    auto* surface = static_cast<DorotiSurface*>(data);
+    surface->ext_blur_available_ =
+        (flags & EXT_BACKGROUND_EFFECT_MANAGER_V1_CAPABILITY_BLUR) != 0;
+    surface->ApplyBackdrop();
+  }
+
+  void ApplyBackdrop() {
+    if (backdrop_mode_ != DOROTI_QT_BACKDROP_ACRYLIC || wayland_surface_ == nullptr) return;
+    if (ext_manager_ != nullptr && ext_blur_available_) {
+      DestroyKdeBackdrop();
+      if (ext_effect_ == nullptr)
+        ext_effect_ = ext_background_effect_manager_v1_get_background_effect(
+            ext_manager_, wayland_surface_);
+      UpdateBackdropRegion();
+      ReportBackdrop("acrylic", "ext-background-effect-v1", true);
+      return;
+    }
+    if (kde_manager_ != nullptr) {
+      DestroyExtBackdrop();
+      if (kde_effect_ == nullptr)
+        kde_effect_ = org_kde_kwin_blur_manager_create(kde_manager_, wayland_surface_);
+      UpdateBackdropRegion();
+      ReportBackdrop("acrylic", "kde-blur-v1", true);
+      return;
+    }
+    DestroyExtBackdrop();
+    DestroyKdeBackdrop();
+    ApplyBackdropFallback();
+  }
+
+  void PumpBackdropEvents() {
+    if (wayland_display_ == nullptr) return;
+    // Qt owns reads from the shared display socket. Our proxies use an isolated
+    // queue, so dispatching their already-pending events is non-blocking and
+    // cannot consume Qt's own Wayland events.
+    if (backdrop_event_queue_ == nullptr ||
+        wl_display_dispatch_queue_pending(wayland_display_, backdrop_event_queue_) < 0) {
+      backdrop_event_timer_->stop();
+      ApplyBackdropFallback();
+      return;
+    }
+    wl_display_flush(wayland_display_);
+  }
+
+  void ApplyBackdropFallback() {
+    ReportBackdrop(BackdropFallbackName(backdrop_fallback_), "none", false);
+  }
+
+  void UpdateBackdropRegion() {
+    if (wayland_compositor_ == nullptr || wayland_surface_ == nullptr ||
+        (ext_effect_ == nullptr && kde_effect_ == nullptr)) return;
+    auto* region = wl_compositor_create_region(wayland_compositor_);
+    if (region == nullptr) return;
+    wl_region_add(region, 0, 0, std::max(1, width()), std::max(1, height()));
+    if (ext_effect_ != nullptr)
+      ext_background_effect_surface_v1_set_blur_region(ext_effect_, region);
+    if (kde_effect_ != nullptr) {
+      org_kde_kwin_blur_set_region(kde_effect_, region);
+      org_kde_kwin_blur_commit(kde_effect_);
+    }
+    wl_region_destroy(region);
+    update();
+  }
+
+  void DestroyExtBackdrop() {
+    if (ext_effect_ == nullptr) return;
+    ext_background_effect_surface_v1_destroy(ext_effect_);
+    ext_effect_ = nullptr;
+  }
+
+  void DestroyKdeBackdrop() {
+    if (kde_effect_ == nullptr) return;
+    // The platform window may already have destroyed its wl_surface during
+    // close(). Releasing the blur object is sufficient and never references a
+    // potentially stale surface proxy.
+    org_kde_kwin_blur_release(kde_effect_);
+    kde_effect_ = nullptr;
+  }
+
+  void ReleaseBackdrop() {
+    if (backdrop_event_timer_ != nullptr) backdrop_event_timer_->stop();
+    DestroyExtBackdrop();
+    DestroyKdeBackdrop();
+    if (ext_manager_ != nullptr) ext_background_effect_manager_v1_destroy(ext_manager_);
+    if (kde_manager_ != nullptr)
+      wl_proxy_destroy(reinterpret_cast<wl_proxy*>(kde_manager_));
+    if (wayland_registry_ != nullptr) wl_registry_destroy(wayland_registry_);
+    if (backdrop_event_queue_ != nullptr) wl_event_queue_destroy(backdrop_event_queue_);
+    ext_manager_ = nullptr;
+    kde_manager_ = nullptr;
+    wayland_registry_ = nullptr;
+    backdrop_event_queue_ = nullptr;
+    wayland_surface_ = nullptr;
+    wayland_compositor_ = nullptr;
+    wayland_display_ = nullptr;
+  }
+
+  void ReportBackdrop(const char* effective, const char* provider, bool supported) {
+    const QByteArray next_effective(effective);
+    const QByteArray next_provider(provider);
+    if (next_effective == backdrop_effective_ && next_provider == backdrop_provider_) return;
+    backdrop_effective_ = next_effective;
+    backdrop_provider_ = next_provider;
+    Diagnostic("backdrop.effective", backdrop_effective_.constData());
+    Diagnostic("backdrop.provider", backdrop_provider_.constData());
+    Diagnostic("backdrop.compositorBlur", supported ? "true" : "false");
+  }
+
+  inline static const wl_registry_listener kRegistryListener{
+      &DorotiSurface::RegistryGlobal, &DorotiSurface::RegistryGlobalRemove};
+  inline static const ext_background_effect_manager_v1_listener kExtManagerListener{
+      &DorotiSurface::ExtCapabilities};
+
   void Diagnostic(const char* key, const char* value) {
     callbacks_.diagnostic(callback_context_, Utf8(key), Utf8(value == nullptr ? "unknown" : value));
   }
@@ -691,6 +962,23 @@ class DorotiSurface final : public QOpenGLWindow {
   std::uint64_t rasterized_generation_ = 0;
   std::uint64_t next_automatic_frame_token_ = 1;
   bool surface_released_ = true;
+  std::uint32_t backdrop_mode_ = DOROTI_QT_BACKDROP_SYSTEM;
+  std::uint32_t backdrop_fallback_ = DOROTI_QT_BACKDROP_FALLBACK_TRANSPARENT;
+  wl_display* wayland_display_ = nullptr;
+  wl_compositor* wayland_compositor_ = nullptr;
+  wl_surface* wayland_surface_ = nullptr;
+  wl_registry* wayland_registry_ = nullptr;
+  wl_event_queue* backdrop_event_queue_ = nullptr;
+  ext_background_effect_manager_v1* ext_manager_ = nullptr;
+  ext_background_effect_surface_v1* ext_effect_ = nullptr;
+  org_kde_kwin_blur_manager* kde_manager_ = nullptr;
+  org_kde_kwin_blur* kde_effect_ = nullptr;
+  std::uint32_t ext_manager_name_ = 0;
+  std::uint32_t kde_manager_name_ = 0;
+  bool ext_blur_available_ = false;
+  QByteArray backdrop_effective_;
+  QByteArray backdrop_provider_;
+  QTimer* backdrop_event_timer_ = nullptr;
   bool software_renderer_ = false;
   bool fatal_ = false;
   bool closing_ = false;
@@ -968,6 +1256,9 @@ std::int32_t Validate(const doroti_qt_configuration_v2* configuration,
   if (configuration->title.data == nullptr || configuration->title.length == 0 ||
       configuration->logical_width <= 0 || configuration->logical_height <= 0)
     return DOROTI_QT_ERROR_INVALID_ARGUMENT;
+  if (configuration->backdrop_mode > DOROTI_QT_BACKDROP_ACRYLIC ||
+      configuration->backdrop_fallback > DOROTI_QT_BACKDROP_FALLBACK_SOLID)
+    return DOROTI_QT_ERROR_INVALID_ARGUMENT;
   return DOROTI_QT_OK;
 }
 }  // namespace
@@ -987,13 +1278,16 @@ extern "C" DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
     const auto title = QString::fromUtf8(
         reinterpret_cast<const char*>(configuration->title.data),
         static_cast<qsizetype>(configuration->title.length));
-    auto* surface = new DorotiSurface(callbacks->callback_context, *callbacks);
+    auto* surface = new DorotiSurface(callbacks->callback_context, *callbacks,
+                                      configuration->backdrop_mode,
+                                      configuration->backdrop_fallback);
     surface->setTitle(title);
     const auto created = callbacks->view_created(
         callbacks->callback_context, surface, &kHostApi);
     if (created != DOROTI_QT_OK) return created;
     surface->resize(configuration->logical_width, configuration->logical_height);
     surface->show();
+    surface->InitializeBackdrop();
     bool stress_ok = false;
     const auto stress_cycles = qEnvironmentVariableIntValue(
         "DOROTI_QT_VALIDATION_RESIZE_CYCLES", &stress_ok);

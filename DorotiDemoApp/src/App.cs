@@ -25,7 +25,7 @@ internal static class DemoTheme
         var palette = Material.ColorScheme.CreateFromSeed(
             seedColor: Seed,
             brightness: brightness,
-            surface: new UiColor(isDark ? 0xff141218L : 0xfffffbfeL),
+            surface: new UiColor(isDark ? 0xcc141218L : 0xccfffbfeL),
             surfaceContainer: new UiColor(isDark ? 0xff211f26L : 0xfff3edf7L),
             surfaceContainerHigh: new UiColor(isDark ? 0xff2b2930L : 0xffece6f0L),
             outline: new UiColor(isDark ? 0xff938f99L : 0xff79747eL));
@@ -523,5 +523,7 @@ internal static class App
 
     internal static DorotiViewConfiguration ViewConfiguration { get; } =
         new("Doroti Material Demo", new Size(720, 640),
-            new UiColor(0xfffffbfeL), new UiColor(0xff141218L));
+            new UiColor(0xccfffbfeL), new UiColor(0xcc141218L),
+            new WindowBackdropOptions(WindowBackdropMode.acrylic,
+                WindowBackdropFallback.transparent));
 }

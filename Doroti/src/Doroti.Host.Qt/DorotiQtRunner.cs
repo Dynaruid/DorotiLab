@@ -45,7 +45,9 @@ public static unsafe partial class DorotiQtRunner
                 var configuration = new QtNativeV2.Configuration(
                     new QtNativeV2.Utf8(title, checked((ulong)titleBytes.Length)),
                     checked((int)descriptor.ViewConfiguration.logicalSize.width),
-                    checked((int)descriptor.ViewConfiguration.logicalSize.height));
+                    checked((int)descriptor.ViewConfiguration.logicalSize.height),
+                    (uint)(descriptor.ViewConfiguration.backdrop?.mode ?? WindowBackdropMode.system),
+                    (uint)(descriptor.ViewConfiguration.backdrop?.fallback ?? WindowBackdropFallback.transparent));
                 var callbacks = new QtNativeV2.Callbacks(GCHandle.ToIntPtr(stateHandle));
                 var exitCode = NativeMethods.Run(in configuration, in callbacks);
                 if (exitCode is >= 64 and <= 70)

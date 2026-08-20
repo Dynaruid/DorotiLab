@@ -42,6 +42,18 @@ enum doroti_qt_terminal_state_v2 : std::uint32_t {
   DOROTI_QT_TERMINAL_FAILED = 4,
 };
 
+enum doroti_qt_backdrop_mode_v2 : std::uint32_t {
+  DOROTI_QT_BACKDROP_SYSTEM = 0,
+  DOROTI_QT_BACKDROP_SOLID = 1,
+  DOROTI_QT_BACKDROP_TRANSPARENT = 2,
+  DOROTI_QT_BACKDROP_ACRYLIC = 3,
+};
+
+enum doroti_qt_backdrop_fallback_v2 : std::uint32_t {
+  DOROTI_QT_BACKDROP_FALLBACK_TRANSPARENT = 0,
+  DOROTI_QT_BACKDROP_FALLBACK_SOLID = 1,
+};
+
 struct doroti_qt_utf8_v2 {
   const std::uint8_t* data;
   std::uint64_t length;
@@ -54,6 +66,8 @@ struct doroti_qt_configuration_v2 {
   doroti_qt_utf8_v2 title;
   std::int32_t logical_width;
   std::int32_t logical_height;
+  std::uint32_t backdrop_mode;
+  std::uint32_t backdrop_fallback;
 };
 
 struct doroti_qt_surface_v2 {
@@ -223,6 +237,7 @@ DOROTI_QT_EXPORT std::int32_t doroti_qt_run_v2(
 }  // extern "C"
 
 static_assert(sizeof(doroti_qt_utf8_v2) == 16);
+static_assert(sizeof(doroti_qt_configuration_v2) == 48);
 static_assert(offsetof(doroti_qt_surface_v2, surface_generation) == 8);
 static_assert(offsetof(doroti_qt_surface_v2, framebuffer_object) == 24);
 static_assert(offsetof(doroti_qt_surface_v2, device_pixel_ratio) == 40);

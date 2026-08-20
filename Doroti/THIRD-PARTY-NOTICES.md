@@ -17,4 +17,16 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 - Use: GPU surface implementation behind the MAUI and Web hosts
 - License: MIT; package license metadata is preserved by NuGet restore and distribution packaging
 
+## Wayland background-effect protocol
+
+- Upstream: https://gitlab.freedesktop.org/wayland/wayland-protocols
+- Use: vendored `ext-background-effect-v1.xml` client protocol description for compositor blur negotiation
+- License: MIT; the copyright and permission notice are preserved in each vendored XML file
+
+## KDE Plasma Wayland blur protocol
+
+- Upstream: https://invent.kde.org/libraries/plasma-wayland-protocols
+- Use: vendored legacy `blur.xml` client protocol description for older KWin compositors
+- License: LGPL-2.1-or-later; SPDX notices are preserved in each vendored XML file
+
 The license files named above are inputs to `eng/doroti.ps1 audit`. Distribution packaging must reproduce the applicable notice and license text for every promoted third-party source.

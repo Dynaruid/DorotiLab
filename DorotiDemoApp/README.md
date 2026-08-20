@@ -52,6 +52,11 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform linux -Rid linux-x64
 ```
 
+The Linux demo requests `WindowBackdropMode.acrylic`. On Wayland it uses
+`ext-background-effect-v1` or the legacy KDE blur protocol when advertised and falls
+back to a transparent background otherwise. The alpha in `backgroundColor` and
+`darkBackgroundColor` controls the acrylic tint strength.
+
 After starting the Web runner, open `http://127.0.0.1:5088` in a browser. Android and iOS require a running emulator or simulator, respectively. To run on an Android arm64 device or an iOS arm64 device, change the RID to `-Rid android-arm64` or `-Rid ios-arm64`; a physical iOS device also requires code-signing configuration.
 
 Runner projects also support direct .NET commands:

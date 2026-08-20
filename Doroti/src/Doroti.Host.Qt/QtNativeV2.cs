@@ -31,7 +31,9 @@ internal static unsafe class QtNativeV2
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal readonly struct Configuration(Utf8 title, int logicalWidth, int logicalHeight)
+    internal readonly struct Configuration(
+        Utf8 title, int logicalWidth, int logicalHeight,
+        uint backdropMode, uint backdropFallback)
     {
         internal readonly uint AbiVersion = QtNativeV2.AbiVersion;
         internal readonly uint StructSize = checked((uint)sizeof(Configuration));
@@ -39,6 +41,8 @@ internal static unsafe class QtNativeV2
         internal readonly Utf8 Title = title;
         internal readonly int LogicalWidth = logicalWidth;
         internal readonly int LogicalHeight = logicalHeight;
+        internal readonly uint BackdropMode = backdropMode;
+        internal readonly uint BackdropFallback = backdropFallback;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -222,7 +226,7 @@ internal static unsafe class QtNativeV2
     internal static void ValidateLayout()
     {
         RequireSize<Utf8>(16);
-        RequireSize<Configuration>(40);
+        RequireSize<Configuration>(48);
         RequireSize<Surface>(88);
         RequireSize<Metrics>(56);
         RequireSize<Pointer>(120);

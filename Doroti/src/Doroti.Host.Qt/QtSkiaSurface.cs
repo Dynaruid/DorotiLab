@@ -24,6 +24,10 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
         ObjectDisposedException.ThrowIf(_disposed, this);
         Validate(descriptor);
         if (RequiresRecreate(descriptor)) CreateSurface(descriptor);
+        // The native host clears the Qt-bound FBO before this callback. Forget
+        // Skia's cached GL state so it cannot assume state left by the previous
+        // frame (notably scissor and color-write masks).
+        _context!.ResetContext();
         render(_surface!);
         _surface!.Canvas.Flush();
         _context!.Flush(_surface);

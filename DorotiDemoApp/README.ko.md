@@ -52,6 +52,11 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform linux -Rid linux-x64
 ```
 
+Linux 데모는 `WindowBackdropMode.acrylic`을 요청합니다. Wayland compositor가
+`ext-background-effect-v1` 또는 구형 KDE blur 프로토콜을 제공하면 native blur를
+사용하고, 제공하지 않으면 투명 배경으로 폴백합니다. `backgroundColor`와
+`darkBackgroundColor`의 alpha가 아크릴 tint 강도를 결정합니다.
+
 Web runner가 시작되면 브라우저에서 `http://127.0.0.1:5088`을 엽니다. Android와 iOS는 각각 실행 중인 에뮬레이터 또는 시뮬레이터가 필요합니다. Android arm64 기기와 iOS arm64 기기에서 실행하려면 각각 `-Rid android-arm64`, `-Rid ios-arm64`로 바꾸며, iOS 실제 기기는 별도의 코드 서명 설정이 필요합니다.
 
 runner를 직접 지정해도 됩니다.
