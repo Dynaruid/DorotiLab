@@ -2,7 +2,7 @@
 
 ## 0. 문서 상태와 범위
 
-- 상태: **계획만 작성됨. 구현, 빌드, 브라우저 실행, 영상 판정은 모두 `notVerified`.**
+- 상태: **retained front/staging FBO 구현과 contract 검증 완료. Chrome 수동 관찰은 정상이며, 600-sample 자동 live 판정과 최종 사용자 visible acceptance는 `notVerified`.**
 - 사용자 관찰: Windows 빠른 resize는 현재 만족스럽지만 Web에서는 창 크기를 바꿀 때 화면이 깜빡인다.
 - 목표: Web에서 interactive resize 중 마지막 정상 화면이 끊기지 않고 유지되다가 최신 exact-size frame으로 교체되게 한다.
 - 이번 작업은 `Doroti.Host.Web`의 canvas/WebGL presenter와 Web live evidence에 한정한다.
@@ -70,16 +70,16 @@
 
 - [ ] 현재 Release Web runner를 실행하고 Chrome/Edge에서 빠른 window-border resize를 동일하게 재현한다.
 - [ ] DPR, browser zoom, viewport 시작/종료 크기, GPU renderer, refresh rate를 evidence에 기록한다.
-- [ ] `doroti.web.ts` trace에 아래 phase와 generation/request ID를 추가한다.
+- [x] `doroti.web.ts` trace에 아래 phase와 generation/request ID를 추가한다.
   - `target-observed`
   - `backing-reset-start` / `backing-reset-end`
   - `retained-restore-start` / `retained-restore-end`
   - `managed-raster-start` / `managed-raster-end`
   - `front-commit`
   - `browser-present-observed` 또는 정확히 그 수준을 증명할 수 없다는 표식
-- [ ] `backing reset → exact front commit` 공백 시간, reset 뒤 raster 없이 supersede된 횟수, queue depth, terminal coverage를 집계한다.
+- [x] `backing reset → exact front commit` 공백 시간, reset 뒤 raster 없이 supersede된 횟수, queue depth, terminal coverage를 집계한다.
 - [ ] Chrome DevTools performance trace와 외부 screen recording 또는 CDP screencast로 실제 flash frame을 보존한다.
-- [ ] 진단 전용으로 reset 뒤 managed call에 인위적 지연을 넣어 flash 길이가 같이 늘어나는지 확인하고 즉시 제거한다.
+- [x] 진단 전용으로 reset 뒤 managed call에 인위적 지연을 넣어 flash 길이가 같이 늘어나는지 확인하고 즉시 제거한다.
 
 실패 게이트:
 
@@ -88,11 +88,11 @@
 
 ### WEB-FLK-1 — app-owned FBO 공유 spike
 
-- [ ] 단일 Emscripten WebGL2 context에서 app-owned framebuffer, color texture, depth/stencil attachment를 생성한다.
-- [ ] 해당 framebuffer의 native/Emscripten ID를 SkiaSharp `GRBackendRenderTarget`이 안정적으로 wrap할 수 있는지 작은 spike로 증명한다.
+- [x] 단일 Emscripten WebGL2 context에서 app-owned framebuffer, color texture, depth/stencil attachment를 생성한다.
+- [x] 해당 framebuffer의 native/Emscripten ID를 SkiaSharp `GRBackendRenderTarget`이 안정적으로 wrap할 수 있는지 작은 spike로 증명한다.
 - [ ] FBO size 변경, dispose, context loss/restore 후 ID와 resource ownership이 유효한지 확인한다.
-- [ ] default framebuffer와 app-owned FBO 사이 `blitFramebuffer`가 GPU 경로로 동작하고 CPU readback이 0인지 기록한다.
-- [ ] spike resource가 현재 `presenterGlInfo()`와 `DorotiWebGlSurface.EnsureSurface()` 경계에서 어느 쪽 소유인지 문서화한다.
+- [x] default framebuffer와 app-owned FBO 사이 `blitFramebuffer`가 GPU 경로로 동작하고 CPU readback이 0인지 기록한다.
+- [x] spike resource가 현재 `presenterGlInfo()`와 `DorotiWebGlSurface.EnsureSurface()` 경계에서 어느 쪽 소유인지 문서화한다.
 
 실패 게이트:
 
@@ -102,19 +102,19 @@
 
 ### WEB-FLK-2 — retained front + staging surface 구현
 
-- [ ] `CanvasPresenter`를 다음 상태로 명시한다.
+- [x] `CanvasPresenter`를 다음 상태로 명시한다.
   - `front`: 마지막으로 commit된 정상 generation과 GPU texture/FBO
   - `staging`: 현재 exact target을 raster하는 GPU texture/FBO
   - `latest`: 다음 target descriptor 하나
   - `current`: staging에서 처리 중인 descriptor 하나
-- [ ] 새 target rAF에서 canvas backing size가 바뀌면 managed await 전에 `front`를 새 default framebuffer에 즉시 stretch/blit한다.
-- [ ] retained blit와 backing reset은 같은 JS task 안에서 끝내며, reset만 된 상태로 browser에 제어를 돌려주지 않는다.
-- [ ] managed Skia는 default framebuffer가 아니라 exact-size `staging` FBO를 raster한다.
-- [ ] managed callback은 단순 `Task` 완료가 아니라 `exact-rendered`, `superseded`, `failed`를 구분할 수 있는 결과를 반환한다.
-- [ ] callback 완료 뒤 host의 최신 resize generation과 descriptor가 일치할 때만 staging을 default framebuffer로 blit하고 front/staging을 swap한다.
-- [ ] raster 중 target이 바뀌면 staging은 commit하지 않고 기존 front를 유지한 채 latest만 다음 rAF로 넘긴다.
-- [ ] front 교체, staging 재사용/폐기, backing-store mutation마다 `SurfaceGeneration`의 의미를 명확히 유지한다.
-- [ ] 한 generation의 terminal은 `submitted/superseded/failed` 중 정확히 하나만 기록한다.
+- [x] 새 target rAF에서 canvas backing size가 바뀌면 managed await 전에 `front`를 새 default framebuffer에 즉시 stretch/blit한다.
+- [x] retained blit와 backing reset은 같은 JS task 안에서 끝내며, reset만 된 상태로 browser에 제어를 돌려주지 않는다.
+- [x] managed Skia는 default framebuffer가 아니라 exact-size `staging` FBO를 raster한다.
+- [x] managed callback은 단순 `Task` 완료가 아니라 `exact-rendered`, `superseded`, `failed`를 구분할 수 있는 결과를 반환한다.
+- [x] callback 완료 뒤 host의 최신 resize generation과 descriptor가 일치할 때만 staging을 default framebuffer로 blit하고 front/staging을 swap한다.
+- [x] raster 중 target이 바뀌면 staging은 commit하지 않고 기존 front를 유지한 채 latest만 다음 rAF로 넘긴다.
+- [x] front 교체, staging 재사용/폐기, backing-store mutation마다 `SurfaceGeneration`의 의미를 명확히 유지한다.
+- [x] 한 generation의 terminal은 `submitted/superseded/failed` 중 정확히 하나만 기록한다.
 
 불변식:
 
@@ -126,20 +126,20 @@
 
 ### WEB-FLK-3 — managed surface와 renderer 계약 정리
 
-- [ ] `DorotiWebGlSurface.RenderFrame()`의 generation mismatch 조기 반환이 blank backing store를 남길 수 없게 JS commit 순서와 결과 계약을 바꾼다.
-- [ ] `EnsureSurface()`가 staging FBO/size/context identity별로 wrapper를 재생성하고, front resource ownership과 섞이지 않게 한다.
-- [ ] `BrowserSkiaCapabilities.Paint()`가 exact/replay/superseded 결과를 JS presenter terminal과 중복 집계하지 않게 한다.
-- [ ] resize target과 exact scene이 아직 없을 때는 기존 front만 표시하고 빈 scene을 생성하거나 background clear를 commit하지 않는다.
-- [ ] initial startup에는 front가 없으므로 app-owned opaque background를 한 번 명시적으로 표시하고 첫 exact frame으로 교체한다.
+- [x] `DorotiWebGlSurface.RenderFrame()`의 generation mismatch 조기 반환이 blank backing store를 남길 수 없게 JS commit 순서와 결과 계약을 바꾼다.
+- [x] `EnsureSurface()`가 staging FBO/size/context identity별로 wrapper를 재생성하고, front resource ownership과 섞이지 않게 한다.
+- [x] `BrowserSkiaCapabilities.Paint()`가 exact/replay/superseded 결과를 JS presenter terminal과 중복 집계하지 않게 한다.
+- [x] resize target과 exact scene이 아직 없을 때는 기존 front만 표시하고 빈 scene을 생성하거나 background clear를 commit하지 않는다.
+- [x] initial startup에는 front가 없으므로 app-owned opaque background를 한 번 명시적으로 표시하고 첫 exact frame으로 교체한다.
 - [ ] context loss 때만 front/staging을 모두 폐기하고, restore 뒤 마지막 immutable scene 또는 최신 exact scene으로 다시 구성한다.
 - [ ] DPR-only 변경과 browser zoom에서도 logical/physical size 및 Skia 좌표 배율이 정확한지 확인한다.
 
 ### WEB-FLK-4 — 자동 live validator 작성
 
-- [ ] `Doroti/eng/validate-web-resize-continuity-live.ps1`를 추가하고 Release publish/serve/browser drive/evidence 수집을 한 명령으로 묶는다.
-- [ ] 각 subprocess와 browser 자동화는 20분 timeout을 가진다.
-- [ ] viewport를 일정 속도 triangle wave로 변경하고 최소 600개의 resize sample을 발생시킨다.
-- [ ] 최소 다음을 summary에 기록한다.
+- [x] `Doroti/eng/validate-web-resize-continuity-live.ps1`를 추가하고 Release publish/serve/browser drive/evidence 수집을 한 명령으로 묶는다.
+- [x] 각 subprocess와 browser 자동화는 20분 timeout을 가진다.
+- [x] viewport를 일정 속도 triangle wave로 변경하고 최소 600개의 resize sample을 발생시킨다.
+- [x] 최소 다음을 summary에 기록한다.
   - target 수와 generation 범위
   - backing reset 수
   - retained restore 수와 restore latency
@@ -150,8 +150,8 @@
   - submitted/superseded/failed/unterminated terminal 수
   - context/surface generation
   - console/page/managed exception
-- [ ] browser screenshot API를 제품 렌더 경로와 분리된 검증 수단으로만 사용한다.
-- [ ] current-source fingerprint와 raw trace, summary, recording 경로를 evidence에 남긴다.
+- [x] browser screenshot API를 제품 렌더 경로와 분리된 검증 수단으로만 사용한다.
+- [x] current-source fingerprint와 raw trace, summary, recording 경로를 evidence에 남긴다.
 
 자동 PASS 기준:
 
@@ -166,7 +166,7 @@
 
 ### WEB-FLK-5 — 회귀 검증
 
-- [ ] `validate-resize-continuity.ps1 -Shard Contract`
+- [x] `validate-resize-continuity.ps1 -Shard Contract`
 - [ ] `validate-web-product.ps1 -Shard Build`
 - [ ] `validate-web-product.ps1 -Shard Publish`
 - [ ] Chrome과 Edge에서 빠른 실제 window-border drag를 직접 확인한다.
@@ -174,7 +174,7 @@
 - [ ] DPR 1.0/1.25/1.5/2.0, browser zoom 80/100/125/150%, maximize/restore를 확인한다.
 - [ ] DevTools CPU slowdown과 background/foreground 전환 후 resize를 확인한다.
 - [ ] WebGL context loss/restore에서 마지막 scene 또는 최신 exact scene이 복구되는지 확인한다.
-- [ ] Windows Host Release build와 공통 resize contract를 다시 실행하되 Web 수정이 Windows visible acceptance를 대신한다고 주장하지 않는다.
+- [x] Windows Host Release build와 공통 resize contract를 다시 실행하되 Web 수정이 Windows visible acceptance를 대신한다고 주장하지 않는다.
 
 ## 5. 수정 예상 파일
 
@@ -207,6 +207,17 @@
 - build/publish 성공을 visible flicker PASS로 간주하는 것
 
 ## 7. 종료 판정
+
+### 2026-08-22 작업 중단점
+
+- H1 기준선은 Chrome에서 확인했다. 진단용 2초 지연 시 `backing-reset`부터 `front-commit`까지 약 2,020,500 us의 공백과 blank 화면이 함께 나타났고, 진단 코드는 즉시 제거했다.
+- app-owned front/staging FBO 경로를 구현했다. Chrome에서 `blitFramebuffer`의 source/destination status는 `36053`(`FRAMEBUFFER_COMPLETE`), GL error는 `0`이었고 CPU full-frame readback은 넣지 않았다.
+- 820x500에서 1260x700으로 바꾼 수동 관찰에서는 backing reset 직후 retained restore가 약 600 us에 완료되고 이후 exact frame으로 교체되었다. 화면은 blank로 보이지 않았다. 다만 이는 Chrome 한 환경의 수동 관찰이며 browser compositor scan-out 자체를 증명하지 못하므로 `browser-present-unverified` 경계는 유지한다.
+- `validate-resize-continuity.ps1 -Shard Contract`는 PASS했다. deterministic state machine은 `maxQueueDepth=2`, `stalePresents=0`, `terminalFrames=10/10`이었고 Web/Windows Host Release build도 이 shard 안에서 성공했다.
+- `validate-web-resize-continuity-live.ps1`는 600-sample triangle-wave와 sample별 PNG 판정을 수행하도록 작성했지만, 전체 PNG 캡처가 예상보다 오래 걸려 사용자 요청으로 실행을 중단했다. 따라서 `blankExposureCount == 0`을 포함한 자동 PASS 기준 전체는 **`notVerified`**다.
+- `web-resize-chrome-20260822-001935.*`와 `web-resize-chrome-20260822-002201.*`는 제품 continuity 결과가 아니라 validator bootstrap 실패를 기록한 진단 artifact다. 자동 PASS evidence로 사용하지 않는다.
+- Edge, Firefox, DPR/zoom matrix, maximize/restore, CPU slowdown, background/foreground, WebGL context loss/restore, 별도 Build/Publish shard, 실제 window-border drag 및 최종 사용자 visible acceptance는 모두 **`notVerified`**다.
+- 중단된 validator 전용 Chrome/Python 프로세스는 종료했다. `.doroti/tmp/web-flk-*` 임시 디렉터리는 실행 환경의 삭제 정책으로 자동 제거하지 못했으며 제품 산출물이나 evidence로 간주하지 않는다.
 
 - 자동 contract/build/publish만 통과하면 상태는 `implemented, browser-visible notVerified`다.
 - 자동 live trace와 browser recording에서 blank/stale commit 0을 확인하면 `automated continuity PASS`다.

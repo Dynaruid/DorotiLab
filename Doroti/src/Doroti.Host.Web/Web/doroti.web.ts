@@ -78,6 +78,7 @@ interface ResizeTraceEntry {
   surfaceHeight: number;
   terminal: string | null;
   detail: string | null;
+  queueDepth: number;
 }
 
 interface PresentDescriptor extends ResizeEpoch {
@@ -92,7 +93,18 @@ interface EmscriptenGlRuntime {
   createContext(canvas: HTMLCanvasElement, attributes: Record<string, number>): number;
   makeContextCurrent(context: number): void;
   deleteContext?(context: number): void;
+  getNewId<T>(table: Array<T | null>): number;
+  framebuffers: Array<(WebGLFramebuffer & { name?: number }) | null>;
   currentContext?: { GLctx: WebGL2RenderingContext };
+}
+
+interface GpuSurface {
+  framebuffer: WebGLFramebuffer & { name?: number };
+  framebufferId: number;
+  color: WebGLTexture;
+  depthStencil: WebGLRenderbuffer;
+  width: number;
+  height: number;
 }
 
 interface CanvasPresenter {
@@ -104,7 +116,16 @@ interface CanvasPresenter {
   raf: number;
   nextRequestId: number;
   contextLost: boolean;
+  front: GpuSurface | null;
+  frontGeneration: number;
+  staging: GpuSurface | null;
   listeners: ListenerRegistration[];
+}
+
+interface ResizeDiagnostics {
+  capture(hostId: number): string;
+  snapshot(hostId: number): string;
+  presenter(canvasId: string): string;
 }
 
 interface SemanticsFlags {
@@ -166,6 +187,27 @@ const hosts = new Map<number, BrowserHost>();
 const canvasPresenters = new Map<string, CanvasPresenter>();
 let managed: ManagedCallbacks | null = null;
 
+const resizeDiagnostics: ResizeDiagnostics = {
+  capture: (hostId) => captureResizeTrace(hostId),
+  snapshot: (hostId) => snapshot(requireHost(hostId)),
+  presenter: (canvasId) => {
+    const presenter = canvasPresenters.get(canvasId);
+    if (!presenter) throw new Error(`Canvas presenter '${canvasId}' is not initialized.`);
+    return JSON.stringify({
+      context: presenter.context,
+      currentRequestId: presenter.current?.requestId ?? null,
+      latestRequestId: presenter.latest?.requestId ?? null,
+      queueDepth: Number(presenter.current !== null) + Number(presenter.latest !== null),
+      contextLost: presenter.contextLost,
+      frontGeneration: presenter.frontGeneration || null,
+      frontFramebufferId: presenter.front?.framebufferId ?? null,
+      stagingFramebufferId: presenter.staging?.framebufferId ?? null,
+    });
+  },
+};
+(globalThis as typeof globalThis & { __dorotiResizeDiagnostics?: ResizeDiagnostics })
+  .__dorotiResizeDiagnostics = resizeDiagnostics;
+
 function snapshot(host: BrowserHost): string {
   const ratio = Math.max(1, globalThis.devicePixelRatio || 1);
   return JSON.stringify({
@@ -207,8 +249,27 @@ function recordResize(
     surfaceHeight: options.surfaceHeight ?? 0,
     terminal: options.terminal ?? null,
     detail: options.detail ?? null,
+    queueDepth: (() => {
+      const presenter = canvasPresenters.get(host.canvas.id);
+      return presenter ? Number(presenter.current !== null) + Number(presenter.latest !== null) : 0;
+    })(),
   });
-  if (host.resizeTrace.length > 4096) host.resizeTrace.splice(0, host.resizeTrace.length - 4096);
+  if (host.resizeTrace.length > 16384) host.resizeTrace.splice(0, host.resizeTrace.length - 16384);
+  publishResizeDiagnostics(host);
+}
+
+function publishResizeDiagnostics(host: BrowserHost): void {
+  if (new URLSearchParams(globalThis.location.search).get("dorotiResizeDiagnostics") !== "1") return;
+  const json = JSON.stringify({ snapshot: JSON.parse(snapshot(host)), trace: host.resizeTrace });
+  host.root.setAttribute("data-doroti-resize-diagnostics", json);
+  let output = document.getElementById("doroti-resize-diagnostics");
+  if (!output) {
+    output = document.createElement("script");
+    output.id = "doroti-resize-diagnostics";
+    output.setAttribute("type", "application/json");
+    document.body.appendChild(output);
+  }
+  output.textContent = json;
 }
 
 function updateResizeEpoch(
@@ -240,7 +301,7 @@ function updateResizeEpoch(
     devicePixelRatio: ratio,
     timestampMicroseconds: Math.round(performance.now() * 1000),
   };
-  recordResize(host, "target", source);
+  recordResize(host, "target-observed", source);
   return true;
 }
 
@@ -303,6 +364,113 @@ function presenterGlInfo(presenter: CanvasPresenter): {
   };
 }
 
+function presenterGl(presenter: CanvasPresenter): WebGL2RenderingContext {
+  const runtime = emscriptenGl();
+  runtime.makeContextCurrent(presenter.context);
+  return runtime.currentContext?.GLctx ??
+    (() => { throw new Error("Doroti WebGL2 context is not current."); })();
+}
+
+function createGpuSurface(presenter: CanvasPresenter, width: number, height: number): GpuSurface {
+  const runtime = emscriptenGl();
+  const gl = presenterGl(presenter);
+  const framebuffer = gl.createFramebuffer() as (WebGLFramebuffer & { name?: number }) | null;
+  const color = gl.createTexture();
+  const depthStencil = gl.createRenderbuffer();
+  if (!framebuffer || !color || !depthStencil)
+    throw new Error("Doroti could not allocate the retained WebGL framebuffer resources.");
+  const framebufferId = runtime.getNewId(runtime.framebuffers);
+  framebuffer.name = framebufferId;
+  runtime.framebuffers[framebufferId] = framebuffer;
+  try {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+    gl.bindTexture(gl.TEXTURE_2D, color);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, color, 0);
+    gl.bindRenderbuffer(gl.RENDERBUFFER, depthStencil);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH24_STENCIL8, width, height);
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER, depthStencil);
+    const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+    if (status !== gl.FRAMEBUFFER_COMPLETE)
+      throw new Error(`Doroti retained framebuffer is incomplete (0x${status.toString(16)}).`);
+    return { framebuffer, framebufferId, color, depthStencil, width, height };
+  } catch (error) {
+    runtime.framebuffers[framebufferId] = null;
+    framebuffer.name = 0;
+    gl.deleteFramebuffer(framebuffer);
+    gl.deleteTexture(color);
+    gl.deleteRenderbuffer(depthStencil);
+    throw error;
+  } finally {
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  }
+}
+
+function releaseGpuSurface(presenter: CanvasPresenter, surface: GpuSurface | null, deleteObjects = true): void {
+  if (!surface) return;
+  const runtime = emscriptenGl();
+  runtime.framebuffers[surface.framebufferId] = null;
+  surface.framebuffer.name = 0;
+  if (!deleteObjects || presenter.contextLost) return;
+  const gl = presenterGl(presenter);
+  gl.deleteFramebuffer(surface.framebuffer);
+  gl.deleteTexture(surface.color);
+  gl.deleteRenderbuffer(surface.depthStencil);
+}
+
+function ensureStaging(presenter: CanvasPresenter, width: number, height: number): GpuSurface {
+  if (presenter.staging &&
+      (presenter.staging.width !== width || presenter.staging.height !== height)) {
+    releaseGpuSurface(presenter, presenter.staging);
+    presenter.staging = null;
+  }
+  return presenter.staging ??= createGpuSurface(presenter, width, height);
+}
+
+function blitToDefault(
+  presenter: CanvasPresenter,
+  source: GpuSurface,
+  destinationWidth: number,
+  destinationHeight: number): {
+    sourceStatus: number; destinationStatus: number; priorErrors: number[]; error: number;
+  } {
+  const gl = presenterGl(presenter);
+  const priorErrors: number[] = [];
+  for (let value = gl.getError(); value !== gl.NO_ERROR; value = gl.getError()) priorErrors.push(value);
+  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, source.framebuffer);
+  gl.readBuffer(gl.COLOR_ATTACHMENT0);
+  const sourceStatus = gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER);
+  gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+  gl.drawBuffers([gl.BACK]);
+  const destinationStatus = gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER);
+  gl.blitFramebuffer(
+    0, 0, source.width, source.height,
+    0, 0, destinationWidth, destinationHeight,
+    gl.COLOR_BUFFER_BIT, gl.NEAREST);
+  const error = gl.getError();
+  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+  gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+  gl.flush();
+  return { sourceStatus, destinationStatus, priorErrors, error };
+}
+
+function clearDefaultFramebuffer(presenter: CanvasPresenter): void {
+  const gl = presenterGl(presenter);
+  const dark = globalThis.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  gl.disable(gl.SCISSOR_TEST);
+  gl.viewport(0, 0, presenter.canvas.width, presenter.canvas.height);
+  gl.clearColor(...(dark ? [20 / 255, 18 / 255, 24 / 255, 1] as const : [1, 251 / 255, 254 / 255, 1] as const));
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+  gl.flush();
+}
+
 export function initializeCanvasPresenter(
   canvasId: string,
   callback: ManagedCanvasPresenter): ReturnType<typeof presenterGlInfo> {
@@ -311,7 +479,7 @@ export function initializeCanvasPresenter(
   if (!(canvas instanceof HTMLCanvasElement)) throw new Error(`Canvas '#${canvasId}' was not found.`);
   const runtime = emscriptenGl();
   const context = runtime.createContext(canvas, {
-    alpha: 1, depth: 1, stencil: 8, antialias: 1, premultipliedAlpha: 1,
+    alpha: 1, depth: 1, stencil: 8, antialias: 0, premultipliedAlpha: 1,
     preserveDrawingBuffer: 0, preferLowPowerToHighPerformance: 0,
     failIfMajorPerformanceCaveat: 1, majorVersion: 2, minorVersion: 0,
     enableExtensionsByDefault: 1, explicitSwapControl: 0, renderViaOffscreenBackBuffer: 0,
@@ -319,7 +487,8 @@ export function initializeCanvasPresenter(
   if (!context) throw new Error("Doroti requires a hardware WebGL2 context; creation failed.");
   const presenter: CanvasPresenter = {
     canvas, callback, context, current: null, latest: null, raf: 0,
-    nextRequestId: 0, contextLost: false, listeners: [],
+    nextRequestId: 0, contextLost: false, front: null, frontGeneration: 0,
+    staging: null, listeners: [],
   };
   const listen = (name: string, handler: EventListener): void => {
     canvas.addEventListener(name, handler);
@@ -328,6 +497,11 @@ export function initializeCanvasPresenter(
   listen("webglcontextlost", (event) => {
     event.preventDefault();
     presenter.contextLost = true;
+    releaseGpuSurface(presenter, presenter.front, false);
+    releaseGpuSurface(presenter, presenter.staging, false);
+    presenter.front = null;
+    presenter.staging = null;
+    presenter.frontGeneration = 0;
     if (presenter.current) recordPresenterTerminal(presenter, presenter.current, "failed", "context lost");
     presenter.current = null;
     const host = hostForCanvas(canvas);
@@ -366,6 +540,11 @@ export function requestPresent(
     requestId: ++presenter.nextRequestId, generation, logicalWidth, logicalHeight,
     physicalWidth, physicalHeight, devicePixelRatio, timestampMicroseconds,
   };
+  const host = hostForCanvas(presenter.canvas);
+  if (host) recordResize(host, "present-requested", "doroti-presenter", {
+    rafId: descriptor.requestId,
+    surfaceWidth: descriptor.physicalWidth, surfaceHeight: descriptor.physicalHeight,
+  });
   if (presenter.latest) recordPresenterTerminal(presenter, presenter.latest, "superseded", "latest replaced");
   presenter.latest = descriptor;
   schedulePresenter(presenter);
@@ -395,33 +574,88 @@ async function runPresenter(presenter: CanvasPresenter): Promise<void> {
   const backingStoreChanged = presenter.canvas.width !== descriptor.physicalWidth ||
     presenter.canvas.height !== descriptor.physicalHeight;
   if (backingStoreChanged) {
+    if (host) {
+      recordResize(host, "backing-reset-start", "doroti-presenter", {
+        rafId: descriptor.requestId,
+        detail: `queueDepth=${Number(presenter.current !== null) + Number(presenter.latest !== null)}`,
+      });
+    }
     presenter.canvas.width = descriptor.physicalWidth;
     presenter.canvas.height = descriptor.physicalHeight;
+    if (host) {
+      host.surfaceGeneration++;
+      recordResize(host, "backing-reset-end", "doroti-presenter", {
+        rafId: descriptor.requestId, backingWidth: presenter.canvas.width,
+        backingHeight: presenter.canvas.height,
+      });
+    }
+    if (presenter.front) {
+      const restoreStarted = performance.now();
+      if (host) recordResize(host, "retained-restore-start", "doroti-presenter", {
+        rafId: descriptor.requestId, surfaceWidth: presenter.front.width,
+        surfaceHeight: presenter.front.height,
+      });
+      const restoreStatus = blitToDefault(
+        presenter, presenter.front, descriptor.physicalWidth, descriptor.physicalHeight);
+      if (host) recordResize(host, "retained-restore-end", "doroti-presenter", {
+        durationMicroseconds: Math.round((performance.now() - restoreStarted) * 1000),
+        rafId: descriptor.requestId, surfaceWidth: presenter.front.width,
+        surfaceHeight: presenter.front.height,
+        detail: JSON.stringify(restoreStatus),
+      });
+    } else {
+      clearDefaultFramebuffer(presenter);
+      if (host) recordResize(host, "startup-background-commit", "doroti-presenter", {
+        rafId: descriptor.requestId,
+        detail: "no retained front exists; committed app-owned opaque background",
+      });
+    }
   }
-  const glInfo = presenterGlInfo(presenter);
-  if (host && backingStoreChanged) {
-    host.surfaceGeneration++;
-    recordResize(host, "backing-store", "doroti-presenter", {
-      rafId: descriptor.requestId, backingWidth: presenter.canvas.width,
-      backingHeight: presenter.canvas.height,
-    });
-  }
+  const staging = ensureStaging(presenter, descriptor.physicalWidth, descriptor.physicalHeight);
+  const gl = presenterGl(presenter);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, staging.framebuffer);
+  gl.viewport(0, 0, staging.width, staging.height);
   try {
-    await presenter.callback.invokeMethodAsync("RenderFrame",
+    const renderResult = String(await presenter.callback.invokeMethodAsync("RenderFrame",
       descriptor.generation, descriptor.logicalWidth, descriptor.logicalHeight,
       descriptor.physicalWidth, descriptor.physicalHeight, descriptor.devicePixelRatio,
-      descriptor.timestampMicroseconds, glInfo.fboId, glInfo.stencilBits, glInfo.sampleCount);
+      descriptor.timestampMicroseconds, staging.framebufferId, 8, 0));
     const latestHost = hostForCanvas(presenter.canvas);
-    if (!latestHost || latestHost.resizeEpoch.generation === descriptor.generation) {
-      recordPresenterTerminal(presenter, descriptor, "submitted",
-        "browser rAF callback completed; not a display scan-out acknowledgement",
-        Math.round((performance.now() - started) * 1000));
-    } else {
+    const exactRendered = renderResult === "exact-rendered" || renderResult === "replay-rendered";
+    if (!latestHost || latestHost.resizeEpoch.generation !== descriptor.generation) {
+      await presenter.callback.invokeMethodAsync("CompleteFrame", descriptor.generation, false,
+        "target changed during staging raster");
       recordPresenterTerminal(presenter, descriptor, "superseded", "target changed during raster");
+    } else if (!exactRendered) {
+      await presenter.callback.invokeMethodAsync("CompleteFrame", descriptor.generation, false,
+        `managed raster result=${renderResult}`);
+      recordPresenterTerminal(presenter, descriptor, "superseded", `managed raster result=${renderResult}`);
+    } else {
+      const commitStatus = blitToDefault(presenter, staging, descriptor.physicalWidth, descriptor.physicalHeight);
+      const previousFront = presenter.front;
+      presenter.front = staging;
+      presenter.frontGeneration = descriptor.generation;
+      presenter.staging = previousFront;
+      await presenter.callback.invokeMethodAsync("CompleteFrame", descriptor.generation, true, "front commit");
+      recordResize(latestHost, "front-commit", "doroti-presenter", {
+        rafId: descriptor.requestId,
+        backingWidth: presenter.canvas.width, backingHeight: presenter.canvas.height,
+        surfaceWidth: descriptor.physicalWidth, surfaceHeight: descriptor.physicalHeight,
+        detail: JSON.stringify(commitStatus),
+      });
+      recordResize(latestHost, "browser-present-unverified", "browser-compositor", {
+        rafId: descriptor.requestId,
+        detail: "GPU blit and rAF completion are not a display scan-out acknowledgement",
+      });
+      recordPresenterTerminal(presenter, descriptor, "submitted",
+        "exact staging GPU surface committed to the default framebuffer",
+        Math.round((performance.now() - started) * 1000));
     }
   } catch (error) {
+    try {
+      await presenter.callback.invokeMethodAsync("CompleteFrame", descriptor.generation, false, String(error));
+    } catch { }
     recordPresenterTerminal(presenter, descriptor, "failed", String(error));
-    throw error;
   } finally {
     presenter.current = null;
     schedulePresenter(presenter);
@@ -450,6 +684,8 @@ export function disposeCanvasPresenter(canvasId: string): void {
   if (presenter.raf !== 0) cancelAnimationFrame(presenter.raf);
   for (const listener of presenter.listeners)
     listener.target.removeEventListener(listener.name, listener.handler);
+  releaseGpuSurface(presenter, presenter.front);
+  releaseGpuSurface(presenter, presenter.staging);
   emscriptenGl().deleteContext?.(presenter.context);
   canvasPresenters.delete(canvasId);
 }
@@ -557,7 +793,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     composing: false, compositionStart: -1, viewFocused: false, pressedKeys: new Map(),
     inputAction: 2, multiline: false,
   };
-  recordResize(host, "target", "host-initial");
+  recordResize(host, "target-observed", "host-initial");
   const observe = (target: EventTarget, name: string, handler: EventListener): void => {
     target.addEventListener(name, handler);
     host.listeners.push({ target, name, handler });

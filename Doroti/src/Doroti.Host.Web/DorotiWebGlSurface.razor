@@ -17,6 +17,7 @@
     private GRBackendRenderTarget? _renderTarget;
     private SKSurface? _surface;
     private SKSizeI _surfaceSize;
+    private int _framebuffer;
     private DorotiResizeEpoch? _latestTarget;
     private bool _ready;
     private bool _disposed;
@@ -25,7 +26,10 @@
     public required string CanvasId { get; set; }
 
     [Parameter]
-    public Action<SKSurface, int, int, DorotiResizeEpoch>? Paint { get; set; }
+    public Func<SKSurface, int, int, DorotiResizeEpoch, string>? Paint { get; set; }
+
+    [Parameter]
+    public Action<long, bool, string>? CompletePaint { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -51,7 +55,7 @@
     }
 
     [JSInvokable]
-    public Task RenderFrame(
+    public Task<string> RenderFrame(
         long generation,
         double logicalWidth,
         double logicalHeight,
@@ -63,15 +67,23 @@
         int stencilBits,
         int sampleCount)
     {
-        if (_disposed) return Task.CompletedTask;
+        if (_disposed) return Task.FromResult("superseded");
         var target = new DorotiResizeEpoch(generation, logicalWidth, logicalHeight,
             physicalWidth, physicalHeight, devicePixelRatio, timestampMicroseconds);
-        if (_latestTarget?.Generation != generation) return Task.CompletedTask;
+        if (_latestTarget?.Generation != generation) return Task.FromResult("superseded");
         EnsureSurface(physicalWidth, physicalHeight, framebuffer, stencilBits, sampleCount);
+        string result;
         using (new SKAutoCanvasRestore(_surface!.Canvas, true))
-            Paint?.Invoke(_surface, physicalWidth, physicalHeight, target);
+            result = Paint?.Invoke(_surface, physicalWidth, physicalHeight, target) ?? "empty";
         _surface.Canvas.Flush();
         _context!.Flush();
+        return Task.FromResult(result);
+    }
+
+    [JSInvokable]
+    public Task CompleteFrame(long generation, bool committed, string reason)
+    {
+        if (!_disposed) CompletePaint?.Invoke(generation, committed, reason);
         return Task.CompletedTask;
     }
 
@@ -98,7 +110,7 @@
             _context.SetResourceCacheLimit(ResourceCacheBytes);
         }
         var size = new SKSizeI(width, height);
-        if (_renderTarget is null || _surfaceSize != size || !_renderTarget.IsValid)
+        if (_renderTarget is null || _surfaceSize != size || _framebuffer != framebuffer || !_renderTarget.IsValid)
         {
             _surface?.Dispose();
             _surface = null;
@@ -107,6 +119,7 @@
             _renderTarget = new GRBackendRenderTarget(width, height, Math.Max(0, sampleCount),
                 Math.Max(0, stencilBits), glInfo);
             _surfaceSize = size;
+            _framebuffer = framebuffer;
         }
         _surface ??= SKSurface.Create(_context, _renderTarget,
             GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888)
@@ -125,6 +138,7 @@
         _glInterface?.Dispose();
         _glInterface = null;
         _surfaceSize = SKSizeI.Empty;
+        _framebuffer = 0;
     }
 
     public async ValueTask DisposeAsync()

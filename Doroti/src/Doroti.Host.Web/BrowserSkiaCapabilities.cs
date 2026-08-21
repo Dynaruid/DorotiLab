@@ -15,6 +15,8 @@ internal sealed class BrowserSkiaCapabilities :
     private readonly HostBridge _bridge;
     private readonly BrowserHostAdapter _host;
     private readonly SkiaSceneRenderer _renderer;
+    private readonly object _paintGate = new();
+    private readonly Dictionary<long, SkiaPaintCompletion> _pendingPaints = [];
 
     internal BrowserSkiaCapabilities(ulong viewId, BrowserHostAdapter host,
         Color? backgroundColor, Color? darkBackgroundColor)
@@ -51,25 +53,53 @@ internal sealed class BrowserSkiaCapabilities :
     public void Submit(ulong viewId, Scene scene, DartUiInvocation invocation) =>
         _renderer.Submit(viewId, scene, invocation);
 
-    internal void Paint(
+    internal string Paint(
         SKSurface surface,
         int pixelWidth,
         int pixelHeight,
         DorotiResizeEpoch target)
     {
         var started = DorotiFrameClock.Now;
-        _host.RecordRaster("raster-start", pixelWidth, pixelHeight);
+        _host.RecordRaster("managed-raster-start", pixelWidth, pixelHeight);
         try
         {
             var result = _renderer.Paint(surface, pixelWidth, pixelHeight, target);
             if (result.ShouldPresent && result.Completion is { } completion)
-                _renderer.CompletePaint(completion, DorotiFrameTerminal.submitted);
+            {
+                lock (_paintGate)
+                {
+                    foreach (var stale in _pendingPaints.Values)
+                        _renderer.SupersedePaint(stale, "new browser staging raster replaced pending completion");
+                    _pendingPaints.Clear();
+                    _pendingPaints[target.Generation] = completion;
+                }
+            }
+            return result.Disposition switch
+            {
+                SkiaPaintDisposition.exact => "exact-rendered",
+                SkiaPaintDisposition.replay => "replay-rendered",
+                SkiaPaintDisposition.superseded => "superseded",
+                _ => "empty",
+            };
         }
         finally
         {
-            _host.RecordRaster("raster-end", pixelWidth, pixelHeight,
+            _host.RecordRaster("managed-raster-end", pixelWidth, pixelHeight,
                 DorotiFrameClock.Now - started);
         }
+    }
+
+    internal void CompletePaint(long generation, bool committed, string reason)
+    {
+        SkiaPaintCompletion completion;
+        lock (_paintGate)
+        {
+            if (!_pendingPaints.Remove(generation, out completion)) return;
+        }
+        if (committed)
+            _renderer.CompletePaint(completion, DorotiFrameTerminal.submitted);
+        else
+            _renderer.SupersedePaint(completion, reason);
     }
 
     public Paragraph Layout(ParagraphRequest request, DartUiInvocation invocation) =>
@@ -87,6 +117,12 @@ internal sealed class BrowserSkiaCapabilities :
 
     public void Dispose()
     {
+        lock (_paintGate)
+        {
+            foreach (var pending in _pendingPaints.Values)
+                _renderer.SupersedePaint(pending, "browser graphics capability disposed");
+            _pendingPaints.Clear();
+        }
         _renderer.Dispose();
         _bridge.Dispose();
     }

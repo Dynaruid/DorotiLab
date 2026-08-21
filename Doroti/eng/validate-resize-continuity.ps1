@@ -106,7 +106,22 @@ if ($Shard -eq 'Contract') {
         $webHost.Contains('presenter.latest = descriptor;', [StringComparison]::Ordinal) -and
         $browserHost.Contains('Action<TimeSpan>? _pendingFrame;', [StringComparison]::Ordinal)) 'Web single-rAF and latest-only queues'
     Assert-True ($webHost.Contains('const backingStoreChanged = presenter.canvas.width !== descriptor.physicalWidth', [StringComparison]::Ordinal) -and
-        $webHost.Contains('if (host && backingStoreChanged)', [StringComparison]::Ordinal)) 'Web backing store changes only for a new physical size'
+        $webHost.Contains('if (backingStoreChanged)', [StringComparison]::Ordinal) -and
+        $webHost.Contains('"retained-restore-start"', [StringComparison]::Ordinal) -and
+        $webHost.Contains('"retained-restore-end"', [StringComparison]::Ordinal)) 'Web backing reset restores the retained GPU front in the same task'
+    Assert-True ($webHost.Contains('runtime.framebuffers[framebufferId] = framebuffer;', [StringComparison]::Ordinal) -and
+        $webHost.Contains('new URLSearchParams', [StringComparison]::Ordinal) -and
+        $webHost.Contains('gl.blitFramebuffer(', [StringComparison]::Ordinal) -and
+        $webHost.Contains('antialias: 0', [StringComparison]::Ordinal) -and
+        $webSurface.Contains('_framebuffer != framebuffer', [StringComparison]::Ordinal)) 'Web app-owned single-sample FBO and framebuffer-identity wrapper contract'
+    Assert-True ($webHost.Contains('presenter.front = staging;', [StringComparison]::Ordinal) -and
+        $webHost.Contains('presenter.staging = previousFront;', [StringComparison]::Ordinal) -and
+        $webHost.Contains('"CompleteFrame"', [StringComparison]::Ordinal) -and
+        $renderer.Contains('public void SupersedePaint(', [StringComparison]::Ordinal)) 'Web retained front/staging swap and managed terminal handoff'
+    Assert-True (-not $webHost.Contains('readPixels', [StringComparison]::Ordinal) -and
+        -not $webHost.Contains('toDataURL', [StringComparison]::Ordinal) -and
+        -not $webHost.Contains('getImageData', [StringComparison]::Ordinal) -and
+        -not $webHost.Contains('preserveDrawingBuffer: 1', [StringComparison]::Ordinal)) 'Web product presenter has no CPU full-frame readback or preserved default buffer'
     Assert-True ($webSurface.Contains('[DllImport("libSkiaSharp", EntryPoint = "DorotiInterceptBrowserObjects")]', [StringComparison]::Ordinal) -and
         -not $webHost.Contains('installCanvasResizeContinuity', [StringComparison]::Ordinal) -and
         -not $webHost.Contains('SKHtmlCanvas.requestAnimationFrame', [StringComparison]::Ordinal) -and

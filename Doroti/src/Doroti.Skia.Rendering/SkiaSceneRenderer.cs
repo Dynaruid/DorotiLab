@@ -325,6 +325,17 @@ public sealed class SkiaSceneRenderer :
         }
     }
 
+    public void SupersedePaint(SkiaPaintCompletion completion, string reason)
+    {
+        if (_disposed) return;
+        lock (_gate)
+        {
+            if (!completion.IsNewFrame ||
+                !_rasterizedFrames.Remove(completion.SceneSequence, out var frame)) return;
+            MarkTerminal(frame, DorotiFrameTerminal.superseded, reason, completion.SurfaceGeneration);
+        }
+    }
+
     public Paragraph Layout(ParagraphRequest request, DartUiInvocation invocation)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);

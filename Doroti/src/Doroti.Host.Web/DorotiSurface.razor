@@ -4,7 +4,8 @@
 @inject IDorotiBrowserTarget BrowserTarget
 
 <main class="doroti-root" data-doroti-host="canvas-only">
-    <DorotiWebGlSurface @ref="_skiaSurface" CanvasId="@CanvasId" Paint="PaintSurface" />
+    <DorotiWebGlSurface @ref="_skiaSurface" CanvasId="@CanvasId" Paint="PaintSurface"
+        CompletePaint="CompleteSurfacePaint" />
     <textarea id="@TextInputId" class="doroti-ime" aria-hidden="true" tabindex="-1"></textarea>
     <div id="@SemanticsId" class="doroti-semantics" role="application" aria-label="@Application.ViewConfiguration.title"></div>
 </main>
@@ -53,11 +54,14 @@
         return Task.CompletedTask;
     }
 
-    private void PaintSurface(SKSurface surface, int pixelWidth, int pixelHeight, DorotiResizeEpoch target)
+    private string PaintSurface(SKSurface surface, int pixelWidth, int pixelHeight, DorotiResizeEpoch target)
     {
-        if (_target is null) return;
-        _target.PaintSkiaSurface(ViewId, surface, pixelWidth, pixelHeight, target);
+        if (_target is null) return "superseded";
+        return _target.PaintSkiaSurface(ViewId, surface, pixelWidth, pixelHeight, target);
     }
+
+    private void CompleteSurfacePaint(long generation, bool committed, string reason) =>
+        _target?.CompleteSkiaSurfacePaint(ViewId, generation, committed, reason);
 
     public ValueTask DisposeAsync()
     {
