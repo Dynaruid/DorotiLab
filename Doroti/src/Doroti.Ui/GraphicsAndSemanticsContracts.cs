@@ -320,7 +320,7 @@ public sealed record SceneCommand(string Operation, object? Payload)
 
 internal sealed record ScenePicturePayload(
     Offset Offset,
-    Picture Picture,
+    IReadOnlyList<PathCommand> Commands,
     Rect? CanvasBounds,
     bool IsComplexHint,
     bool WillChangeHint);
@@ -557,11 +557,19 @@ public sealed class SceneBuilder
         Picture picture,
         Rect? canvasBounds,
         bool isComplexHint,
-        bool willChangeHint) =>
-        _commands.Add(new SceneCommand("picture", new { offset, picture = picture.Commands, isComplexHint, willChangeHint })
+        bool willChangeHint)
+    {
+        ArgumentNullException.ThrowIfNull(picture);
+        ObjectDisposedException.ThrowIf(picture.debugDisposed, picture);
+        var commands = picture.Commands;
+        _commands.Add(new SceneCommand("picture", new { offset, picture = commands, isComplexHint, willChangeHint })
         {
-            HostPayload = new ScenePicturePayload(offset, picture, canvasBounds, isComplexHint, willChangeHint),
+            // Picture is a Dart-side handle whose dispose may run as soon as a
+            // replacement layer is built. The scene owns the immutable command
+            // snapshot so raster/replay never observes that handle's lifetime.
+            HostPayload = new ScenePicturePayload(offset, commands, canvasBounds, isComplexHint, willChangeHint),
         });
+    }
 
     public OffsetEngineLayer pushOffset(
         double dx,

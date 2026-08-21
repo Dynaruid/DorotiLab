@@ -44,7 +44,8 @@ if ($Shard -eq 'Contract') {
         'src/Doroti.Host.Web/DorotiWebGlSurface.razor',
         'src/Doroti.Host.Web/Web/doroti.web.ts',
         'validation/resize-contract/Program.cs',
-        '../DorotiDemoApp/web/DorotiDemoApp.Web.csproj'
+        '../DorotiDemoApp/web/DorotiDemoApp.Web.csproj',
+        'src/Doroti.Host.Maui/DorotiMauiSurface.cs'
     )
     $resizeContract = Read-Source $sources[0]
     $renderer = Read-Source $sources[1]
@@ -55,13 +56,18 @@ if ($Shard -eq 'Contract') {
     $webHost = Read-Source $sources[6]
     $validation = Read-Source $sources[7]
     $webRunner = Read-Source $sources[8]
+    $mauiSurface = Read-Source $sources[9]
 
     Assert-True ($resizeContract.Contains('public sealed record DorotiFrameDescriptor(', [StringComparison]::Ordinal) -and
         $resizeContract.Contains('public sealed class DorotiLatestFrameMailbox<T>', [StringComparison]::Ordinal) -and
         $resizeContract.Contains('public sealed class DorotiFrameTerminalLedger', [StringComparison]::Ordinal)) 'common descriptor, bounded mailbox, and terminal ledger'
+    Assert-True ($resizeContract.Contains('private const int Capacity = 16384;', [StringComparison]::Ordinal) -and
+        $resizeContract.Contains('System.Diagnostics.Stopwatch.GetTimestamp()', [StringComparison]::Ordinal)) 'resize evidence retains a full live window and cross-process QPC timestamps'
     Assert-True ($renderer.Contains('frame.Descriptor.IsExactFor(desiredTarget)', [StringComparison]::Ordinal) -and
         $renderer.Contains('DorotiFrameTerminal.superseded', [StringComparison]::Ordinal) -and
         $renderer.Contains('_presentedFrame = frame;', [StringComparison]::Ordinal)) 'renderer exact-size reject and retained-scene contract'
+    Assert-True ($renderer.Contains('var commands = payload.Commands;', [StringComparison]::Ordinal) -and
+        -not $renderer.Contains('ObjectDisposedException.ThrowIf(picture.debugDisposed, picture);', [StringComparison]::Ordinal)) 'raster owns immutable picture commands beyond Dart handle disposal'
     Assert-True ($validation.Contains('maxQueueDepth <= 2', [StringComparison]::Ordinal) -and
         $validation.Contains('stale generation presents remain zero', [StringComparison]::Ordinal) -and
         $validation.Contains('surface/context recreation', [StringComparison]::Ordinal)) 'deterministic state-machine assertions'
@@ -72,8 +78,20 @@ if ($Shard -eq 'Contract') {
         $windowsSurface.Contains('swapChain2.MatrixTransform = Matrix3x2.CreateScale', [StringComparison]::Ordinal)) 'Windows owned DXGI presenter and DPI mapping'
     Assert-True ($windowsSurface.Contains('_latestTarget?.Generation != target.Generation', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('terminal: "superseded"', [StringComparison]::Ordinal)) 'Windows latest target pre-present gate'
+    Assert-True ($windowsSurface.Contains('pre-raster latest target gate', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('paint.SkipRaster', [StringComparison]::Ordinal) -and
+        $mauiSurface.Contains('if (!paint.SkipRaster)', [StringComparison]::Ordinal)) 'Windows stale prepared target releases host paint backpressure without Skia raster'
+    Assert-True ($windowsSurface.Contains('pre-flush latest target gate', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('Record("paint-end"', [StringComparison]::Ordinal)) 'Windows rejects a target superseded during Skia paint before GPU flush'
+    Assert-True ($windowsSurface.Contains('Prepare the exact-size back buffer in parallel', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('serial == processedSerial', [StringComparison]::Ordinal) -and
+        -not [regex]::IsMatch($windowsSurface, '_latestTarget = target;\s*_requestSerial\+\+;')) 'Windows prepares resize in parallel without painting before an exact scene'
     Assert-True (-not $mauiHost.Contains('DwmFlush', [StringComparison]::Ordinal) -and
         -not $mauiHost.Contains('UpdateLayout()', [StringComparison]::Ordinal)) 'Windows UI host has no synchronous render wait'
+    Assert-True (-not $mauiHost.Contains('MinimumCompositionFrameInterval', [StringComparison]::Ordinal) -and
+        $mauiHost.Contains('CompositionTarget already paces callbacks to the active display.', [StringComparison]::Ordinal)) 'Windows DXGI frame requests use native display cadence'
+    Assert-True ($mauiHost.Contains('DispatchWindowsResizeFrame();', [StringComparison]::Ordinal) -and
+        $mauiHost.Contains('while the raster thread prepares ResizeBuffers.', [StringComparison]::Ordinal)) 'Windows overlaps resize metrics frame build with back-buffer preparation'
     foreach ($legacy in @(
         'src/Doroti.Host.Maui/DorotiWindowsSkiaViewHandler.cs',
         'src/Doroti.Host.Maui/WindowsEglInterop.cs',

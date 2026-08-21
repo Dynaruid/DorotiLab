@@ -168,6 +168,7 @@ function Invoke-WorkspaceDotNet {
     $workspace = Resolve-DorotiWorkspace $App
     $runner = $workspace.Runners[$Platform]
     $arguments = if ($Verb -ceq 'run') { @('run', '--project', $runner) } else { @($Verb, $runner) }
+    $arguments += @('--configuration', $Configuration)
     if (-not [string]::IsNullOrWhiteSpace($Rid)) { $arguments += "-p:RuntimeIdentifier=$Rid" }
     if (-not [string]::IsNullOrWhiteSpace($Device)) { $arguments += "-p:DorotiDevice=$Device" }
     $arguments += '--nologo'

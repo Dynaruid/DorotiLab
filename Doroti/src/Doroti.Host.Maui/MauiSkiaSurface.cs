@@ -27,6 +27,7 @@ internal sealed class MauiSkiaPaintContext(
     internal long SurfaceGeneration { get; } = surfaceGeneration;
     internal string NativeViewType { get; } = nativeViewType;
     internal string GraphicsBackend { get; } = graphicsBackend;
+    internal bool SkipRaster { get; set; }
     internal MauiPaintCompletion? Completion { get; set; }
 }
 

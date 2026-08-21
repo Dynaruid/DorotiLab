@@ -20,6 +20,7 @@ DorotiDemoApp은 플랫폼 workspace 계약을 직접 사용하는 dogfood 앱�
 ## 명령
 
 저장소 루트에서 실행합니다. workspace CLI는 `doroti-workspace.json`에서 runner를 선택합니다.
+`build`, `run`, `publish`는 기본적으로 Release 구성을 사용하며, 디버깅이 필요할 때만 `-Configuration Debug`를 명시합니다.
 
 ```powershell
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 doctor -App ./DorotiDemoApp -Platform all

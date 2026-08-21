@@ -34,9 +34,9 @@ public sealed class SkiaSceneRenderer :
     private readonly object _paintGate = new();
     private readonly Dictionary<TextRenderKey, TextRenderResources> _textRenderResources = [];
     private readonly Dictionary<int, SemanticsNodeUpdate> _semantics = [];
-    private readonly Dictionary<Picture, PictureRasterCacheEntry> _pictureRasterCache =
+    private readonly Dictionary<object, PictureRasterCacheEntry> _pictureRasterCache =
         new(ReferenceEqualityComparer.Instance);
-    private readonly Dictionary<Picture, int> _pictureRasterWarmups =
+    private readonly Dictionary<object, int> _pictureRasterWarmups =
         new(ReferenceEqualityComparer.Instance);
     private readonly Dictionary<ImageFilterSnapshot, SKImageFilter> _imageFilterResources = [];
     private readonly DorotiFrameTerminalLedger _terminalLedger = new();
@@ -662,10 +662,9 @@ public sealed class SkiaSceneRenderer :
         "transform" or "opacity" or "colorFilter" or "shaderMask" or "imageFilter" or
         "backdropFilter";
 
-    private void DrawPicture(SKCanvas canvas, Picture picture)
+    private void DrawPicture(SKCanvas canvas, IReadOnlyList<PathCommand> commands)
     {
-        ObjectDisposedException.ThrowIf(picture.debugDisposed, picture);
-        foreach (var command in picture.Commands)
+        foreach (var command in commands)
         {
             switch (command.Operation)
             {
@@ -725,28 +724,28 @@ public sealed class SkiaSceneRenderer :
 
     private void DrawPictureLayer(SKCanvas canvas, ScenePicturePayload payload)
     {
-        var picture = payload.Picture;
-        ObjectDisposedException.ThrowIf(picture.debugDisposed, picture);
+        var commands = payload.Commands;
+        var cacheKey = (object)commands;
         if (payload.WillChangeHint || payload.CanvasBounds is not { } canvasBounds ||
             !canvasBounds.IsFinite || canvasBounds.isEmpty ||
-            (!payload.IsComplexHint && picture.Commands.Count < PictureRasterComplexityThreshold) ||
+            (!payload.IsComplexHint && commands.Count < PictureRasterComplexityThreshold) ||
             canvas.Context is not { } context)
         {
-            DrawPicture(canvas, picture);
+            DrawPicture(canvas, commands);
             return;
         }
 
         var mappedBounds = canvas.TotalMatrix.MapRect(ToRect(canvasBounds));
         if (!IsFinite(mappedBounds) || mappedBounds.Width <= 0 || mappedBounds.Height <= 0)
         {
-            DrawPicture(canvas, picture);
+            DrawPicture(canvas, commands);
             return;
         }
 
         if (mappedBounds.Width > MaxCacheablePicturePixels ||
             mappedBounds.Height > MaxCacheablePicturePixels)
         {
-            DrawPicture(canvas, picture);
+            DrawPicture(canvas, commands);
             return;
         }
 
@@ -755,12 +754,12 @@ public sealed class SkiaSceneRenderer :
         var pixels = (long)width * height;
         if (pixels <= 0 || pixels > MaxCacheablePicturePixels)
         {
-            DrawPicture(canvas, picture);
+            DrawPicture(canvas, commands);
             return;
         }
 
         var signature = PictureRasterTransform.From(canvas.TotalMatrix);
-        if (_pictureRasterCache.TryGetValue(picture, out var cached))
+        if (_pictureRasterCache.TryGetValue(cacheKey, out var cached))
         {
             if (cached.Width == width && cached.Height == height && cached.Transform == signature)
             {
@@ -769,14 +768,14 @@ public sealed class SkiaSceneRenderer :
                 Interlocked.Increment(ref _pictureRasterCacheHits);
                 return;
             }
-            RemovePictureRaster(picture, cached);
+            RemovePictureRaster(cacheKey, cached);
         }
 
-        var warmups = _pictureRasterWarmups.GetValueOrDefault(picture) + 1;
-        _pictureRasterWarmups[picture] = warmups;
+        var warmups = _pictureRasterWarmups.GetValueOrDefault(cacheKey) + 1;
+        _pictureRasterWarmups[cacheKey] = warmups;
         if (warmups < PictureRasterWarmupFrames)
         {
-            DrawPicture(canvas, picture);
+            DrawPicture(canvas, commands);
             return;
         }
 
@@ -790,16 +789,16 @@ public sealed class SkiaSceneRenderer :
         rasterCanvas.Translate(-mappedBounds.Left, -mappedBounds.Top);
         var matrix = canvas.TotalMatrix;
         rasterCanvas.Concat(in matrix);
-        DrawPicture(rasterCanvas, picture);
+        DrawPicture(rasterCanvas, commands);
         rasterCanvas.Restore();
         rasterCanvas.Flush();
         var image = surface.Snapshot()
             ?? throw new InvalidOperationException("Doroti picture raster cache could not snapshot its GPU surface.");
         cached = new(image, width, height, signature, _pictureRasterFrame);
-        _pictureRasterCache.Add(picture, cached);
+        _pictureRasterCache.Add(cacheKey, cached);
         Interlocked.Increment(ref _pictureRasterCacheEntries);
         _pictureRasterPixels += cached.Pixels;
-        _pictureRasterWarmups.Remove(picture);
+        _pictureRasterWarmups.Remove(cacheKey);
         TrimPictureRasterCache();
         DrawRasterImage(canvas, image, mappedBounds.Left, mappedBounds.Top);
         Interlocked.Increment(ref _pictureRasterCacheMisses);
@@ -824,9 +823,9 @@ public sealed class SkiaSceneRenderer :
         }
     }
 
-    private void RemovePictureRaster(Picture picture, PictureRasterCacheEntry cached)
+    private void RemovePictureRaster(object cacheKey, PictureRasterCacheEntry cached)
     {
-        _pictureRasterCache.Remove(picture);
+        _pictureRasterCache.Remove(cacheKey);
         Interlocked.Decrement(ref _pictureRasterCacheEntries);
         _pictureRasterPixels -= cached.Pixels;
         cached.Image.Dispose();

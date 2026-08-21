@@ -21,12 +21,6 @@ internal sealed class MauiHostAdapter :
     IPlatformServicesHostCapability,
     ITextInputHostCapability
 {
-#if WINDOWS
-    // Keep high-refresh compositor callbacks from outrunning the ANGLE swap
-    // chain. Common 120/144/165 Hz displays then issue one Doroti frame every
-    // two callbacks, while 60/90 Hz displays remain native-rate.
-    private static readonly TimeSpan MinimumCompositionFrameInterval = TimeSpan.FromMilliseconds(10);
-#endif
     private readonly ulong _viewId;
     private readonly IMauiSkiaSurface _surface;
     private readonly object _gate = new();
@@ -52,7 +46,6 @@ internal sealed class MauiHostAdapter :
 #if WINDOWS
     private bool _compositionVsyncRequested;
     private bool _compositionVsyncAttached;
-    private TimeSpan _lastCompositionInvalidateTimestamp = TimeSpan.MinValue;
 #elif ANDROID
     private readonly AndroidFrameCallback _androidFrameCallback;
     private readonly HashSet<ulong> _androidActiveTouchPointers = [];
@@ -448,7 +441,6 @@ internal sealed class MauiHostAdapter :
         // must cross the MAUI dispatcher before touching the compositor.
         if (shouldAttach)
         {
-            lock (_gate) _lastCompositionInvalidateTimestamp = TimeSpan.MinValue;
             CompositionTarget.Rendering += HandleCompositionRendering;
             lock (_gate) _compositionVsyncAttached = true;
         }
@@ -468,18 +460,16 @@ internal sealed class MauiHostAdapter :
         lock (_gate)
         {
             if (_pendingFrameCallback is null || _invalidatePending) return;
-            // Flutter-style backpressure: retain the newest framework request,
-            // but do not feed ANGLE more swap-chain work than it can present.
-            // The first request after idle is always immediate.
-            if (_lastCompositionInvalidateTimestamp != TimeSpan.MinValue &&
-                timestamp - _lastCompositionInvalidateTimestamp < MinimumCompositionFrameInterval) return;
+            // CompositionTarget already paces callbacks to the active display.
+            // The Windows surface owns a latest-only DXGI/D3D12 pipeline, so an
+            // additional fixed interval would halve 120/144/165 Hz resize
+            // updates and make the content visibly trail the window border.
             if (_isPainting)
             {
                 _invalidateAfterPaint = true;
                 return;
             }
             _invalidatePending = true;
-            _lastCompositionInvalidateTimestamp = timestamp;
         }
         DispatchPendingFrame(timestamp);
         Interlocked.Increment(ref _invalidationsRequested);
@@ -500,6 +490,21 @@ internal sealed class MauiHostAdapter :
         _lastVsyncTimestamp = now;
         callback(now);
     }
+
+#if WINDOWS
+    private void DispatchWindowsResizeFrame()
+    {
+        lock (_gate)
+        {
+            if (_disposed || _pendingFrameCallback is null) return;
+        }
+
+        // SizeChanged is already a native, UI-thread-paced resize pulse. Build
+        // its metrics frame now while the raster thread prepares ResizeBuffers.
+        DispatchPendingFrame(DorotiFrameClock.Now);
+        UnsubscribeFromCompositionVsync();
+    }
+#endif
 
     public void RequestFocus(ViewFocusState state, ViewFocusDirection direction)
     {
@@ -583,7 +588,11 @@ internal sealed class MauiHostAdapter :
         _density = density;
         _metricsGeneration++;
         MetricsChanged?.Invoke(Metrics);
+#if WINDOWS
+        DispatchWindowsResizeFrame();
+#else
         RequestInvalidate();
+#endif
     }
 
     private void HandlePointer(MauiSurfacePointerData args)

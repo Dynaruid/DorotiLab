@@ -78,6 +78,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
         {
             IsBackground = true,
             Name = "Doroti Windows DXGI raster",
+            Priority = ThreadPriority.AboveNormal,
         };
         _rasterThread.SetApartmentState(ApartmentState.MTA);
         _rasterThread.Start();
@@ -222,12 +223,22 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
         {
             if (_latestTarget?.Generation == target.Generation) return;
             _latestTarget = target;
-            _requestSerial++;
         }
         Interlocked.Increment(ref _activations);
         Record("target", target, source);
-        SizeChanged?.Invoke();
+        // Prepare the exact-size back buffer in parallel with the framework
+        // scene build. RasterMain does not paint or present until the matching
+        // scene invalidation advances requestSerial, so a target-only wake
+        // cannot publish an empty frame.
+        if (Interlocked.Read(ref _presented) == 0)
+        {
+            SizeChanged?.Invoke();
+            lock (_gate) _requestSerial++;
+            _wake.Set();
+            return;
+        }
         _wake.Set();
+        SizeChanged?.Invoke();
     }
 
     private void RasterMain()
@@ -247,13 +258,14 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
                 panel = _panel;
                 serial = _requestSerial;
             }
-            if (!_loaded || panel is null || target is null || !target.HasDrawableSize || serial == processedSerial)
+            if (!_loaded || panel is null || target is null || !target.HasDrawableSize)
                 continue;
 
             EventSource.SetCurrentThreadActivityId(Guid.NewGuid(), out var previousActivityId);
             _activeCompletion = null;
             try
             {
+                var surfacePrepareStarted = DorotiFrameClock.Now;
                 presenter.EnsureTarget(
                     panel,
                     target.PhysicalWidth,
@@ -261,9 +273,11 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
                     target.DevicePixelRatio,
                     InvokeOnUiThread);
                 if (presenter.SurfaceChanged) Interlocked.Increment(ref _surfaceGeneration);
-                var rasterStarted = DorotiFrameClock.Now;
-                Record("raster-start", target, "D3D12 raster thread",
-                    surfaceWidth: presenter.Width, surfaceHeight: presenter.Height);
+                Record("surface-ready", target, "DXGI ResizeBuffers",
+                    DorotiFrameClock.Now - surfacePrepareStarted,
+                    surfaceWidth: presenter.Width, surfaceHeight: presenter.Height,
+                    detail: $"resized={presenter.SurfaceChanged}");
+                if (serial == processedSerial) continue;
                 var paint = new MauiSkiaPaintContext(
                     presenter.Surface,
                     presenter.Context,
@@ -273,6 +287,21 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
                     Interlocked.Read(ref _surfaceGeneration),
                     typeof(SwapChainPanel).FullName!,
                     "WinUI3/Doroti-owned-SwapChainPanel/DXGI-D3D12-Skia");
+                lock (_gate) paint.SkipRaster = _latestTarget?.Generation != target.Generation;
+                if (paint.SkipRaster)
+                {
+                    // Still cross BeginPaint/EndPaint so MauiHostAdapter releases
+                    // _invalidatePending. Skipping the callback entirely would
+                    // stall all later CompositionTarget frame requests.
+                    Paint?.Invoke(paint);
+                    Interlocked.Increment(ref _superseded);
+                    Record("ack", target, "pre-raster latest target gate", terminal: "superseded");
+                    processedSerial = serial;
+                    continue;
+                }
+                var rasterStarted = DorotiFrameClock.Now;
+                Record("raster-start", target, "D3D12 raster thread",
+                    surfaceWidth: presenter.Width, surfaceHeight: presenter.Height);
                 Paint?.Invoke(paint);
                 _activeCompletion = paint.Completion;
                 if (paint.Completion is not { } completion || !completion.Descriptor.IsExactFor(target))
@@ -283,6 +312,19 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
                     if (paint.Completion is { } rejected) PresentCompleted?.Invoke(rejected, true);
                     processedSerial = serial;
                     continue;
+                }
+                Record("paint-end", target, "D3D12 raster thread", DorotiFrameClock.Now - rasterStarted,
+                    surfaceWidth: presenter.Width, surfaceHeight: presenter.Height);
+                lock (_gate)
+                {
+                    if (_latestTarget?.Generation != target.Generation || _requestSerial != serial)
+                    {
+                        Interlocked.Increment(ref _superseded);
+                        Record("ack", target, "pre-flush latest target gate", terminal: "superseded");
+                        PresentCompleted?.Invoke(completion, true);
+                        processedSerial = serial;
+                        continue;
+                    }
                 }
                 presenter.Flush();
                 Record("raster-end", target, "D3D12 raster thread", DorotiFrameClock.Now - rasterStarted,

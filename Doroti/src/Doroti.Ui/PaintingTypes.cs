@@ -279,7 +279,8 @@ public class Shadow(Color color, Offset offset, double blurRadius)
 public sealed class Picture : IDisposable
 {
     private int _disposed;
-    public Picture(IReadOnlyList<PathCommand>? commands = null) => Commands = commands ?? [];
+    public Picture(IReadOnlyList<PathCommand>? commands = null) =>
+        Commands = Array.AsReadOnly((commands ?? []).ToArray());
     public IReadOnlyList<PathCommand> Commands { get; }
     public bool debugDisposed => Volatile.Read(ref _disposed) != 0;
     public void Dispose() => Interlocked.Exchange(ref _disposed, 1);

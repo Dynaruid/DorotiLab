@@ -227,6 +227,7 @@ public sealed record DorotiResizeTraceEntry(
     DorotiResizeEpoch Epoch,
     int ThreadId,
     string Source,
+    long PerformanceCounter,
     long DurationMicroseconds = 0,
     int RafId = 0,
     int BackingWidth = 0,
@@ -242,7 +243,10 @@ public sealed record DorotiResizeTraceEntry(
 /// </summary>
 public sealed class DorotiResizeTrace
 {
-    private const int Capacity = 4096;
+    // Ten seconds of high-refresh resize evidence can exceed 4,096 phase
+    // entries. Keep the complete diagnostic window so target counts and
+    // cross-process QPC correlation are not biased toward the trace tail.
+    private const int Capacity = 16384;
     private readonly object _gate = new();
     private readonly Queue<DorotiResizeTraceEntry> _entries = new();
     private long _nextSequence;
@@ -275,6 +279,7 @@ public sealed class DorotiResizeTrace
                 epoch,
                 Environment.CurrentManagedThreadId,
                 source,
+                System.Diagnostics.Stopwatch.GetTimestamp(),
                 Math.Max(0, duration?.Ticks / 10 ?? 0),
                 rafId,
                 backingWidth,
