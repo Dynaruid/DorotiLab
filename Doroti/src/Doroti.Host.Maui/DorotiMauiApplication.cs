@@ -6,9 +6,6 @@ using Microsoft.Maui.Platforms.MacOS.Essentials;
 using Microsoft.Maui.Platforms.MacOS.Hosting;
 #else
 using SkiaSharp.Views.Maui.Controls.Hosting;
-#if WINDOWS
-using SkiaSharp.Views.Maui.Controls;
-#endif
 #endif
 
 namespace Doroti.Host.Maui;
@@ -42,10 +39,12 @@ public static class DorotiMauiApplicationBuilderExtensions
 #else
             .UseMauiApp<DorotiMauiApplication>()
             .UseMauiCommunityToolkitMarkup()
-            .UseSkiaSharp();
+            .UseSkiaSharp()
 #if WINDOWS
-        builder.ConfigureMauiHandlers(handlers =>
-            handlers.AddHandler<SKGLView, DorotiWindowsSkiaViewHandler>());
+            .ConfigureMauiHandlers(handlers =>
+                handlers.AddHandler<DorotiWindowsDxgiElement, DorotiWindowsDxgiElementHandler>());
+#else
+            ;
 #endif
 #endif
         builder.Services.AddSingleton(descriptor);

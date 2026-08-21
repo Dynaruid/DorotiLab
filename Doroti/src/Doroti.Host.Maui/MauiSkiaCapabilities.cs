@@ -74,19 +74,19 @@ internal sealed class MauiSkiaCapabilities :
         var value = _renderer.Paint(surface, pixelWidth, pixelHeight);
         return value is { } completion
             ? new(completion.InputSequence, completion.SceneSequence,
-                completion.SurfaceGeneration, completion.IsNewFrame)
+                completion.SurfaceGeneration, completion.IsNewFrame, completion.Descriptor)
             : null;
     }
 
     internal void CompletePaint(MauiPaintCompletion completion) =>
         _renderer.CompletePaint(new(
             completion.InputSequence, completion.SceneSequence,
-            completion.SurfaceGeneration, completion.IsNewFrame));
+            completion.SurfaceGeneration, completion.IsNewFrame, completion.Descriptor));
 
     internal void FailPaint(MauiPaintCompletion completion, string reason) =>
         _renderer.FailPaint(new(
             completion.InputSequence, completion.SceneSequence,
-            completion.SurfaceGeneration, completion.IsNewFrame), reason);
+            completion.SurfaceGeneration, completion.IsNewFrame, completion.Descriptor), reason);
 
     public Paragraph Layout(ParagraphRequest request, DartUiInvocation invocation) =>
         _renderer.Layout(request, invocation);
@@ -111,6 +111,9 @@ internal sealed class MauiSkiaCapabilities :
 
         public long InputSequence => _host.InputSequence;
         public long SurfaceGeneration => _host.Snapshot.SurfaceGeneration;
+        public long MetricsGeneration => _host.Metrics.generation;
+        public DorotiResizeEpoch ResizeTarget
+            => _host.ResizeTarget;
         public PlatformConfiguration Configuration => _host.Configuration;
 
         public event Action<int, SemanticsAction, object?>? SemanticsAction

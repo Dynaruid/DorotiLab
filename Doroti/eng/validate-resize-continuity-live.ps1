@@ -43,6 +43,9 @@ public static class DorotiResizeLiveNative
     public const int HTBOTTOMRIGHT = 17;
     public const uint MOUSEEVENTF_LEFTDOWN = 0x0002;
     public const uint MOUSEEVENTF_LEFTUP = 0x0004;
+    public const uint SPI_GETWORKAREA = 0x0030;
+    public const uint SWP_SHOWWINDOW = 0x0040;
+    public static readonly IntPtr DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = new IntPtr(-4);
 
     [StructLayout(LayoutKind.Sequential)]
     public struct RECT
@@ -56,6 +59,21 @@ public static class DorotiResizeLiveNative
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool GetWindowRect(IntPtr hwnd, out RECT rect);
+
+    [DllImport("user32.dll")]
+    public static extern IntPtr SetThreadDpiAwarenessContext(IntPtr dpiContext);
+
+    [DllImport("user32.dll")]
+    public static extern uint GetDpiForWindow(IntPtr hwnd);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool SystemParametersInfo(uint action, uint parameter, ref RECT value, uint flags);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool SetWindowPos(
+        IntPtr hwnd, IntPtr insertAfter, int x, int y, int width, int height, uint flags);
 
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
@@ -103,6 +121,12 @@ $startInfo.UseShellExecute = $false
 $startInfo.Environment['DOROTI_MAUI_EVIDENCE'] = $rawEvidence
 $startInfo.Environment['DOROTI_WINDOWS_EGL_SWAP_INTERVAL'] = $SwapInterval
 
+$previousDpiAwareness = [DorotiResizeLiveNative]::SetThreadDpiAwarenessContext(
+    [DorotiResizeLiveNative]::DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)
+if ($previousDpiAwareness -eq [IntPtr]::Zero) {
+    throw 'Unable to make the validation thread per-monitor DPI aware.'
+}
+
 $process = [Diagnostics.Process]::Start($startInfo)
 if ($null -eq $process) { throw 'Failed to start the Windows Demo process.' }
 $closeWithinFiveSeconds = $false
@@ -110,6 +134,30 @@ $dragStartedAt = [DateTimeOffset]::UtcNow
 try {
     $hwnd = Wait-ForWindow $process ([TimeSpan]::FromSeconds(30))
     Start-Sleep -Seconds 2
+    $windowDpi = [DorotiResizeLiveNative]::GetDpiForWindow($hwnd)
+    $dpiScale = [Math]::Max(1, $windowDpi / 96.0)
+    $workArea = [DorotiResizeLiveNative+RECT]::new()
+    if (-not [DorotiResizeLiveNative]::SystemParametersInfo(
+        [DorotiResizeLiveNative]::SPI_GETWORKAREA, 0, [ref] $workArea, 0)) {
+        throw 'Unable to query the DPI-aware desktop work area.'
+    }
+    $validationWidth = [Math]::Min(
+        [Math]::Round(640 * $dpiScale),
+        ($workArea.Right - $workArea.Left) - 80)
+    $validationHeight = [Math]::Min(
+        [Math]::Round(360 * $dpiScale),
+        ($workArea.Bottom - $workArea.Top) - 80)
+    if (-not [DorotiResizeLiveNative]::SetWindowPos(
+        $hwnd,
+        [IntPtr]::Zero,
+        $workArea.Left + 20,
+        $workArea.Top + 20,
+        $validationWidth,
+        $validationHeight,
+        [DorotiResizeLiveNative]::SWP_SHOWWINDOW)) {
+        throw 'Unable to place the Windows Demo inside the DPI-aware work area.'
+    }
+    Start-Sleep -Seconds 1
     $rect = [DorotiResizeLiveNative+RECT]::new()
     if (-not [DorotiResizeLiveNative]::GetWindowRect($hwnd, [ref] $rect)) {
         throw 'GetWindowRect failed for the Windows Demo.'
@@ -211,6 +259,14 @@ try {
         durationSeconds = $DurationSeconds
         inputMethod = 'Win32 WM_NCLBUTTONDOWN HTBOTTOMRIGHT interactive resize plus cursor movement'
         screenRecording = 'notVerified'
+        coordinateSampling = [ordered]@{
+            dpiAwareness = 'per-monitor-v2'
+            windowDpi = $windowDpi
+        }
+        visualCapture = [ordered]@{
+            status = 'notVerified'
+            reason = 'GDI screen capture omits the DXGI composition swap chain; use Windows Graphics Capture, external recording, or direct observation.'
+        }
         processId = $process.Id
         initialWindow = [ordered]@{ width = $initialWidth; height = $initialHeight }
         rangeIsolation = 'window never intentionally smaller than initial size'
@@ -283,6 +339,7 @@ finally {
     } else {
         $closeWithinFiveSeconds = $true
     }
+    [DorotiResizeLiveNative]::SetThreadDpiAwarenessContext($previousDpiAwareness) | Out-Null
 }
 
 $summary = Get-Content -LiteralPath $summaryEvidence -Raw | ConvertFrom-Json

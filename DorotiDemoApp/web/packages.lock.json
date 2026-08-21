@@ -283,16 +283,6 @@
         "resolved": "4.151.1",
         "contentHash": "G+nln30ZX2ZuhH+ungf6x/QMXCje38KTS0VTfQeMyeY8uyMBmsZwFz2D30ZxUjZqsVbEIcaC2bsYF65876s4Yg=="
       },
-      "SkiaSharp.Views.Blazor": {
-        "type": "Transitive",
-        "resolved": "4.151.1",
-        "contentHash": "cWoz6IHsjori/ne2rXqiV1QxvDdbhup4imvcF/ybZWl/5VTuz1G1cLjGscTRLcr6tCvhiijKMoVHqi6BbOYrqQ==",
-        "dependencies": {
-          "Microsoft.AspNetCore.Components.Web": "10.0.0",
-          "SkiaSharp": "4.151.1",
-          "SkiaSharp.NativeAssets.WebAssembly": "4.151.1"
-        }
-      },
       "doroti.framework.animation": {
         "type": "Project",
         "dependencies": {
@@ -449,8 +439,9 @@
           "Doroti.Skia.Rendering": "[0.2.0-beta, )",
           "Doroti.Skia.RuntimeEffects": "[0.2.0-beta, )",
           "Doroti.Ui": "[0.2.0-beta, )",
-          "SkiaSharp.NativeAssets.WebAssembly": "[4.151.1, )",
-          "SkiaSharp.Views.Blazor": "[4.151.1, )"
+          "Microsoft.AspNetCore.Components.WebAssembly": "[10.0.11, )",
+          "SkiaSharp": "[4.151.1, )",
+          "SkiaSharp.NativeAssets.WebAssembly": "[4.151.1, )"
         }
       },
       "doroti.hosting": {

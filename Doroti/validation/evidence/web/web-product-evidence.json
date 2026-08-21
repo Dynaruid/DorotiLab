@@ -1,6 +1,6 @@
 {
   "schemaVersion": "doroti.web-product-evidence/v2",
-  "capturedAt": "2026-08-21T01:19:40.9611203+00:00",
+  "capturedAt": "2026-08-21T13:19:28.7176942+00:00",
   "status": "pass-build-publish",
   "runnerProject": "DorotiDemoApp/web/DorotiDemoApp.Web.csproj",
   "targetFramework": "net10.0",

@@ -9,7 +9,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.TypeScript.MSBuild" PrivateAssets="all" />
-    <PackageReference Include="SkiaSharp.Views.Blazor" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+    <PackageReference Include="SkiaSharp" />
     <PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />

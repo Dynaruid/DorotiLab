@@ -6,7 +6,8 @@ internal readonly record struct MauiPaintCompletion(
     long InputSequence,
     long SceneSequence,
     long SurfaceGeneration,
-    bool IsNewFrame);
+    bool IsNewFrame,
+    DorotiFrameDescriptor Descriptor);
 
 public sealed record MauiSurfaceSnapshot(
     int PixelWidth,

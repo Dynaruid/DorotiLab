@@ -32,7 +32,10 @@ public interface IDorotiBrowserTarget : IDisposable
 
     void AttachSkiaSurface(ulong viewId, Action invalidate);
 
-    void PaintSkiaSurface(ulong viewId, SKSurface surface, int pixelWidth, int pixelHeight);
+    void PaintSkiaSurface(
+        ulong viewId, SKSurface surface, int pixelWidth, int pixelHeight, DorotiResizeEpoch target);
+
+    BrowserHostSnapshot CaptureSnapshot(ulong viewId);
 
     BrowserFrameDiagnostics CaptureFrameDiagnostics(ulong viewId);
 }

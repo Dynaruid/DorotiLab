@@ -42,6 +42,15 @@ internal sealed unsafe class QtHostAdapter :
     public PlatformConfiguration Configuration { get; private set; }
     public long InputSequence => Volatile.Read(ref _inputSequence);
     public long SurfaceGeneration => Metrics.surfaceGeneration;
+    public long MetricsGeneration => Metrics.generation;
+    public DorotiResizeEpoch ResizeTarget => new(
+        Metrics.generation,
+        Metrics.logicalSize.width,
+        Metrics.logicalSize.height,
+        Math.Max(0, checked((int)Math.Round(Metrics.physicalSize.width))),
+        Math.Max(0, checked((int)Math.Round(Metrics.physicalSize.height))),
+        Metrics.devicePixelRatio,
+        DorotiFrameClock.Now.Ticks / 10);
 
     public event Action<ViewMetrics>? MetricsChanged;
     public event Action<AppLifecycleState>? LifecycleChanged;

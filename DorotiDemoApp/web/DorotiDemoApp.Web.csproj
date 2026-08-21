@@ -9,7 +9,9 @@
     <DorotiTarget>Web</DorotiTarget>
     <DorotiHostKind>BlazorWebAssembly</DorotiHostKind>
     <DorotiNativeEntryKind>Managed-Main</DorotiNativeEntryKind>
+    <WasmBuildNative>true</WasmBuildNative>
     <DefineConstants>$(DefineConstants);DOROTI_BROWSER</DefineConstants>
+    <EmccExtraLDFlags>$(EmccExtraLDFlags) --js-library="$(MSBuildThisFileDirectory)..\..\Doroti\src\Doroti.Target.Web.browser-wasm\build\DorotiSkiaInterop.js"</EmccExtraLDFlags>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.11" />

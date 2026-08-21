@@ -53,7 +53,6 @@ internal sealed class MauiHostAdapter :
     private bool _compositionVsyncRequested;
     private bool _compositionVsyncAttached;
     private TimeSpan _lastCompositionInvalidateTimestamp = TimeSpan.MinValue;
-    private readonly IMauiSynchronousResizeSurface? _synchronousResizeSurface;
 #elif ANDROID
     private readonly AndroidFrameCallback _androidFrameCallback;
     private readonly HashSet<ulong> _androidActiveTouchPointers = [];
@@ -79,11 +78,6 @@ internal sealed class MauiHostAdapter :
         _surface.Pointer += HandlePointer;
         _surface.Key += HandleKey;
         _surface.SizeChanged += HandleSizeChanged;
-#if WINDOWS
-        _synchronousResizeSurface = surface as IMauiSynchronousResizeSurface;
-        if (_synchronousResizeSurface is not null)
-            _synchronousResizeSurface.SynchronousResize += HandleSynchronousResize;
-#endif
         _surface.FocusChanged += HandleFocusChanged;
         _textInput.EditingStateChanged += HandleEditingStateChanged;
         _textInput.ActionPerformed += HandleActionPerformed;
@@ -102,6 +96,14 @@ internal sealed class MauiHostAdapter :
     internal long NativePointerEvents => Interlocked.Read(ref _nativePointerEvents);
     internal long InputSequence => Interlocked.Read(ref _inputSequence);
     internal long FrameRequestsCoalesced => Interlocked.Read(ref _frameRequestsCoalesced);
+    internal DorotiResizeEpoch ResizeTarget => _surface.ResizeTarget ?? new(
+        _metricsGeneration,
+        _logicalSize.width,
+        _logicalSize.height,
+        Math.Max(0, checked((int)Math.Round(_logicalSize.width * _density))),
+        Math.Max(0, checked((int)Math.Round(_logicalSize.height * _density))),
+        _density,
+        DorotiFrameClock.Now.Ticks / 10);
     internal MauiSemanticsDiagnostics SemanticsDiagnostics => _semantics.Diagnostics;
     public ViewMetrics Metrics => new(
         new Size(_logicalSize.width * _density, _logicalSize.height * _density), _density,
@@ -213,21 +215,18 @@ internal sealed class MauiHostAdapter :
         else if (pixelSizeChanged)
             _surfaceGeneration++;
         var density = Math.Max(1, paint.Density);
-        var densityChanged = Math.Abs(_density - density) > double.Epsilon;
-        var paintLogicalSize = new Size(paint.PixelWidth / density, paint.PixelHeight / density);
-        var logicalSizeChanged = !_logicalSize.Equals(paintLogicalSize);
-        _logicalSize = paintLogicalSize;
-        _density = density;
-        if (pixelSizeChanged || densityChanged || logicalSizeChanged)
-            _metricsGeneration++;
+        var expectedWidth = Math.Max(0, checked((int)Math.Round(_logicalSize.width * _density)));
+        var expectedHeight = Math.Max(0, checked((int)Math.Round(_logicalSize.height * _density)));
         _snapshot = new(paint.PixelWidth, paint.PixelHeight, _density,
             _metricsGeneration, _contextGeneration, _surfaceGeneration,
             paint.NativeViewType, paint.GraphicsBackend,
             LogicalWidth: _logicalSize.width,
             LogicalHeight: _logicalSize.height);
-        if (pixelSizeChanged || densityChanged || logicalSizeChanged)
-            MetricsChanged?.Invoke(Metrics);
+        _ = density;
+        _ = expectedWidth == paint.PixelWidth && expectedHeight == paint.PixelHeight;
+#if !WINDOWS
         TimeSpan? nativeVsyncTimestamp = null;
+#endif
 #if ANDROID
         lock (_gate)
         {
@@ -235,7 +234,9 @@ internal sealed class MauiHostAdapter :
             _androidVsyncTimestamp = null;
         }
 #endif
+#if !WINDOWS
         DispatchPendingFrame(nativeVsyncTimestamp ?? DorotiFrameClock.Now);
+#endif
     }
 
     internal void EndPaint()
@@ -409,34 +410,6 @@ internal sealed class MauiHostAdapter :
 #endif
 
 #if WINDOWS
-    private void HandleSynchronousResize(MauiSynchronousResize resize)
-    {
-        if (_disposed || resize.LogicalWidth <= 0 || resize.LogicalHeight <= 0) return;
-        var metricsStarted = DorotiFrameClock.Now;
-        var logicalSize = new Size(resize.LogicalWidth, resize.LogicalHeight);
-        var density = Math.Max(1, resize.Density);
-        var metricsChanged = !_logicalSize.Equals(logicalSize) ||
-                             Math.Abs(_density - density) > double.Epsilon;
-        if (metricsChanged)
-        {
-            _logicalSize = logicalSize;
-            _density = density;
-            _metricsGeneration++;
-            MetricsChanged?.Invoke(Metrics);
-        }
-        _synchronousResizeSurface?.RecordResizePhase(
-            "metrics-dispatch", resize.Epoch, DorotiFrameClock.Now - metricsStarted,
-            detail: metricsChanged ? "changed" : "unchanged");
-
-        // Metrics handlers schedule the framework frame. Consume it now so
-        // the scene is ready before the HWND subclass asks ANGLE to present.
-        var buildStarted = DorotiFrameClock.Now;
-        _synchronousResizeSurface?.RecordResizePhase("build-start", resize.Epoch);
-        DispatchPendingFrame(DorotiFrameClock.Now);
-        _synchronousResizeSurface?.RecordResizePhase(
-            "build-end", resize.Epoch, DorotiFrameClock.Now - buildStarted);
-    }
-
     private void SubscribeToCompositionVsync()
     {
         lock (_gate)
@@ -508,6 +481,7 @@ internal sealed class MauiHostAdapter :
             _invalidatePending = true;
             _lastCompositionInvalidateTimestamp = timestamp;
         }
+        DispatchPendingFrame(timestamp);
         Interlocked.Increment(ref _invalidationsRequested);
         _surface.InvalidateSurface();
     }
@@ -575,10 +549,6 @@ internal sealed class MauiHostAdapter :
         _surface.Pointer -= HandlePointer;
         _surface.Key -= HandleKey;
         _surface.SizeChanged -= HandleSizeChanged;
-#if WINDOWS
-        if (_synchronousResizeSurface is not null)
-            _synchronousResizeSurface.SynchronousResize -= HandleSynchronousResize;
-#endif
         _surface.FocusChanged -= HandleFocusChanged;
         _textInput.EditingStateChanged -= HandleEditingStateChanged;
         _textInput.ActionPerformed -= HandleActionPerformed;
@@ -606,8 +576,11 @@ internal sealed class MauiHostAdapter :
     {
         if (_surface.Width <= 0 || _surface.Height <= 0) return;
         var logicalSize = new Size(_surface.Width, _surface.Height);
-        if (_logicalSize.Equals(logicalSize)) return;
+        var surface = _surface.CaptureSnapshot(_snapshot);
+        var density = Math.Max(1, surface.DevicePixelRatio);
+        if (_logicalSize.Equals(logicalSize) && Math.Abs(_density - density) <= double.Epsilon) return;
         _logicalSize = logicalSize;
+        _density = density;
         _metricsGeneration++;
         MetricsChanged?.Invoke(Metrics);
         RequestInvalidate();

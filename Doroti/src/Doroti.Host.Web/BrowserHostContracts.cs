@@ -52,12 +52,6 @@ internal static partial class BrowserInterop
     [return: JSMarshalAs<JSType.Promise<JSType.String>>]
     internal static partial Task<string> InitializeManagedCallbacksAsync();
 
-    [JSImport("installCanvasResizeContinuity", Module)]
-    internal static partial void InstallCanvasResizeContinuity(string canvasId);
-
-    [JSImport("uninstallCanvasResizeContinuity", Module)]
-    internal static partial void UninstallCanvasResizeContinuity(string canvasId);
-
     [System.Runtime.InteropServices.JavaScript.JSImport("showHost", Module)]
     internal static partial string ShowHost(int hostId);
 
@@ -215,7 +209,8 @@ public sealed class BrowserHostAdapter :
     private static int _nextHostId;
 
     private readonly object _gate = new();
-    private readonly Dictionary<int, Action<TimeSpan>> _pendingFrames = [];
+    private Action<TimeSpan>? _pendingFrame;
+    private int _pendingFrameId;
     private readonly Dictionary<ulong, (double X, double Y)> _pointerPositions = [];
     private readonly ulong _viewId;
     private int _nextCallbackId;
@@ -359,7 +354,8 @@ public sealed class BrowserHostAdapter :
         lock (_gate)
         {
             callbackId = checked(++_nextCallbackId);
-            _pendingFrames.Add(callbackId, callback);
+            _pendingFrame = callback;
+            _pendingFrameId = callbackId;
         }
         BrowserInterop.RequestFrame(HostId, callbackId);
     }
@@ -376,7 +372,11 @@ public sealed class BrowserHostAdapter :
         if (_disposed) return;
         _disposed = true;
         lock (RegistryGate) Registry.Remove(HostId);
-        lock (_gate) _pendingFrames.Clear();
+        lock (_gate)
+        {
+            _pendingFrame = null;
+            _pendingFrameId = 0;
+        }
         BrowserInterop.CloseHost(HostId);
         Closed?.Invoke();
     }
@@ -387,9 +387,12 @@ public sealed class BrowserHostAdapter :
         Action<TimeSpan>? callback;
         lock (host._gate)
         {
-            if (!host._pendingFrames.Remove(callbackId, out callback)) return;
+            if (host._pendingFrameId != callbackId) return;
+            callback = host._pendingFrame;
+            host._pendingFrame = null;
+            host._pendingFrameId = 0;
         }
-        callback(TimeSpan.FromMilliseconds(timestampMilliseconds));
+        callback?.Invoke(TimeSpan.FromMilliseconds(timestampMilliseconds));
     }
 
     internal static void DispatchSnapshot(int hostId, string json)

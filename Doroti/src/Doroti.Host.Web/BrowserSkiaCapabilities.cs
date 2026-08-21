@@ -23,7 +23,7 @@ internal sealed class BrowserSkiaCapabilities :
         _bridge = new(host);
         _renderer = new(viewId, _bridge, backgroundColor, darkBackgroundColor,
             "browser-wasm/document-canvas-webgl2", DorotiSkiaRuntimeEffects.WebGpuBackend,
-            "skiasharp-skglview-webgl2-gpu");
+            "doroti-owned-canvas-webgl2-skia-gpu");
     }
 
     public event Action<SemanticsActionEvent>? Action
@@ -51,14 +51,19 @@ internal sealed class BrowserSkiaCapabilities :
     public void Submit(ulong viewId, Scene scene, DartUiInvocation invocation) =>
         _renderer.Submit(viewId, scene, invocation);
 
-    internal void Paint(SKSurface surface, int pixelWidth, int pixelHeight)
+    internal void Paint(
+        SKSurface surface,
+        int pixelWidth,
+        int pixelHeight,
+        DorotiResizeEpoch target)
     {
         var started = DorotiFrameClock.Now;
         _host.RecordRaster("raster-start", pixelWidth, pixelHeight);
         try
         {
-            if (_renderer.Paint(surface, pixelWidth, pixelHeight) is { } completion)
-                _renderer.CompletePaint(completion);
+            var result = _renderer.Paint(surface, pixelWidth, pixelHeight, target);
+            if (result.ShouldPresent && result.Completion is { } completion)
+                _renderer.CompletePaint(completion, DorotiFrameTerminal.submitted);
         }
         finally
         {
@@ -95,11 +100,14 @@ internal sealed class BrowserSkiaCapabilities :
         {
             _host = host;
             _host.SemanticsAction += HandleSemanticsAction;
+            _host.MetricsChanged += HandleMetricsChanged;
         }
 
         internal Action? Invalidate { get; set; }
         public long InputSequence => 0;
         public long SurfaceGeneration => _host.Snapshot.SurfaceGeneration;
+        public long MetricsGeneration => _host.Snapshot.Generation;
+        public DorotiResizeEpoch ResizeTarget => _host.Snapshot.ResizeEpoch;
         public PlatformConfiguration Configuration => _host.Configuration;
         public event Action<int, SemanticsAction, object?>? SemanticsAction;
         public event Action<long, TimeSpan>? InputReceived { add { } remove { } }
@@ -151,9 +159,12 @@ internal sealed class BrowserSkiaCapabilities :
         public void Dispose()
         {
             _host.SemanticsAction -= HandleSemanticsAction;
+            _host.MetricsChanged -= HandleMetricsChanged;
             Invalidate = null;
             _semantics.Clear();
         }
+
+        private void HandleMetricsChanged(ViewMetrics _) => Invalidate?.Invoke();
 
         private void HandleSemanticsAction(long nodeId, long action, string argumentsJson)
         {

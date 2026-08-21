@@ -87,11 +87,16 @@ public sealed class BrowserFrameworkHost : IDisposable
         value.Graphics.AttachSurface(invalidate);
     }
 
-    public void PaintSkiaSurface(ulong viewId, SkiaSharp.SKSurface surface, int pixelWidth, int pixelHeight)
+    public void PaintSkiaSurface(
+        ulong viewId,
+        SkiaSharp.SKSurface surface,
+        int pixelWidth,
+        int pixelHeight,
+        DorotiResizeEpoch target)
     {
         if (!_views.TryGetValue(viewId, out var value))
             throw new KeyNotFoundException($"Browser Doroti view {viewId} is not registered.");
-        value.Graphics.Paint(surface, pixelWidth, pixelHeight);
+        value.Graphics.Paint(surface, pixelWidth, pixelHeight, target);
     }
 
     public string ResolveResourceUrl(ulong viewId, string relativeUrl) =>

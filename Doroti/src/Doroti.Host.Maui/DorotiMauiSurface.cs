@@ -52,6 +52,8 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
 #endif
 #if MACOS
         _renderSurface = new DorotiMacOSMetalSurface(_viewId);
+#elif WINDOWS
+        _renderSurface = new DorotiWindowsDxgiSurface();
 #else
         _renderSurface = new MauiSkglSurface(_textInput, _viewId);
 #endif

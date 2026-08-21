@@ -7,12 +7,13 @@
   "graphicsBackend": "webgl2-browser-gpu-required",
   "blazorWebAssemblyVersion": "10.0.11",
   "skiaSharpVersion": "4.151.1",
-  "skiaSharpViewsPackage": "SkiaSharp.Views.Blazor",
+  "skiaSharpManagedPackage": "SkiaSharp",
   "skiaSharpNativePackage": "SkiaSharp.NativeAssets.WebAssembly",
   "bootLoader": "_framework/blazor.webassembly.js",
   "hostComponents": [
     "Doroti.Host.Web.DorotiRoot",
-    "Doroti.Host.Web.DorotiSurface"
+    "Doroti.Host.Web.DorotiSurface",
+    "Doroti.Host.Web.DorotiWebGlSurface"
   ],
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "managedCallbackAbi": "doroti.browser-managed-callbacks/v1",

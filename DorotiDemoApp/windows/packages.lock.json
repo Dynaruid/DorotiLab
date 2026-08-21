@@ -327,12 +327,34 @@
           "Microsoft.WindowsAppSDK.InteractiveExperiences": "1.8.260430001"
         }
       },
+      "SharpGen.Runtime": {
+        "type": "Transitive",
+        "resolved": "2.4.2-beta",
+        "contentHash": "niTtWAUov1F7wZGAlVeEvW+Tnqvg5yTmhI7rxmYu2Utoyu2TbC9tWWpUpMs0PQg5lu5svoYpCAztNjxCqMFP/w=="
+      },
+      "SharpGen.Runtime.COM": {
+        "type": "Transitive",
+        "resolved": "2.4.2-beta",
+        "contentHash": "9lxDFMiepqo3lJQzMSjECCIONeCc2f3Drokgj6HtrTLZcJSftNgcLbD6/iXYj2iphkwgrZb1oLsDOZxoFZkawQ==",
+        "dependencies": {
+          "SharpGen.Runtime": "2.4.2-beta"
+        }
+      },
       "SkiaSharp": {
         "type": "Transitive",
         "resolved": "4.151.1",
         "contentHash": "FNlVsGZ9to3o9pObVqhIZanHjUGOoPb/Zxk5svCSLMJnKwxPKV7sIJrjs9BpB/jF3j9OdsaMOb4cfwSJbjueSw==",
         "dependencies": {
           "SkiaSharp.NativeAssets.Win32": "4.151.1"
+        }
+      },
+      "SkiaSharp.Direct3D.Vortice": {
+        "type": "Transitive",
+        "resolved": "4.151.1",
+        "contentHash": "+mH+B1uiVv6ECC3i6QgnXjnhrUStLohmCJcaS20Ah3tQGMwforUKb4FozI/zjIqbZF5m/pss8fjvI4ai9iNjHQ==",
+        "dependencies": {
+          "SkiaSharp": "4.151.1",
+          "Vortice.Direct3D12": "3.5.0"
         }
       },
       "SkiaSharp.NativeAssets.Win32": {
@@ -389,6 +411,39 @@
         "type": "Transitive",
         "resolved": "9.0.0",
         "contentHash": "hyJB4UlpAi19Xr9AXzu2NuagKC4lPfHObNMEAA0HmqFz2rX7wKgzeYzO/jM/eBHDhnUGFFEjk5cOoJaxqg5J4A=="
+      },
+      "Vortice.Direct3D12": {
+        "type": "Transitive",
+        "resolved": "3.8.3",
+        "contentHash": "y3CCGGjIO26jNwNe+DXHnt8MePCDUPLRJz/+LSei2fN+0Tg7yEJE/jz2hxu9hpgyZNQbOYdl3bAwq1NHtsm4RQ==",
+        "dependencies": {
+          "SharpGen.Runtime": "2.4.2-beta",
+          "Vortice.DXGI": "3.8.3"
+        }
+      },
+      "Vortice.DirectX": {
+        "type": "Transitive",
+        "resolved": "3.8.3",
+        "contentHash": "nKwSavv0w5rDF7prSefqAVPDcTyqrfZxKFMVfttiXPfm62VdA/1d+b3PhCZpW4xO7jXczXDwjQdWgD1zGsvM8w==",
+        "dependencies": {
+          "SharpGen.Runtime": "2.4.2-beta",
+          "SharpGen.Runtime.COM": "2.4.2-beta",
+          "Vortice.Mathematics": "2.1.0"
+        }
+      },
+      "Vortice.DXGI": {
+        "type": "Transitive",
+        "resolved": "3.8.3",
+        "contentHash": "MbAUnTeQ6WD99ctAdrj5CQO2I7oaax0Kt2eVdWSUj0bYP9Ed0726+s7dIHe4+tqhpmINW/dcPt0mNtc72o+E0w==",
+        "dependencies": {
+          "SharpGen.Runtime": "2.4.2-beta",
+          "Vortice.DirectX": "3.8.3"
+        }
+      },
+      "Vortice.Mathematics": {
+        "type": "Transitive",
+        "resolved": "2.1.0",
+        "contentHash": "KK+SjNSuKdP+zbavekubi+vaeb1Jo4k87ZF6CMkVWjr6RjJwc8peVtmgzXXDIMy4ZC3ZISyk3llY3q65ISOkBQ=="
       },
       "doroti.framework.animation": {
         "type": "Project",
@@ -548,7 +603,10 @@
           "Doroti.Skia.RuntimeEffects": "[0.2.0-beta, )",
           "Doroti.Ui": "[0.2.0-beta, )",
           "Microsoft.Maui.Controls": "[10.0.90, )",
-          "SkiaSharp.Views.Maui.Controls": "[4.151.1, )"
+          "SkiaSharp.Direct3D.Vortice": "[4.151.1, )",
+          "SkiaSharp.Views.Maui.Controls": "[4.151.1, )",
+          "Vortice.DXGI": "[3.8.3, )",
+          "Vortice.Direct3D12": "[3.8.3, )"
         }
       },
       "doroti.hosting": {

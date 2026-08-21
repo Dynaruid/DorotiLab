@@ -82,10 +82,15 @@ public sealed class BrowserWasmTarget : IDorotiBrowserTarget
         _host.AttachSkiaSurface(viewId, invalidate);
     }
 
-    public void PaintSkiaSurface(ulong viewId, SkiaSharp.SKSurface surface, int pixelWidth, int pixelHeight)
+    public void PaintSkiaSurface(
+        ulong viewId,
+        SkiaSharp.SKSurface surface,
+        int pixelWidth,
+        int pixelHeight,
+        DorotiResizeEpoch target)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        _host.PaintSkiaSurface(viewId, surface, pixelWidth, pixelHeight);
+        _host.PaintSkiaSurface(viewId, surface, pixelWidth, pixelHeight, target);
     }
 
     public string ResolveResourceUrl(ulong viewId, string relativeUrl)

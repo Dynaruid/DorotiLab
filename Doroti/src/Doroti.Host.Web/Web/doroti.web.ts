@@ -38,7 +38,10 @@ interface BrowserHost {
   resizeEpoch: ResizeEpoch;
   resizeTrace: ResizeTraceEntry[];
   resizeTraceSequence: number;
-  dprCheckRaf: number;
+  sampleRaf: number;
+  dprQuery: MediaQueryList | null;
+  frameRaf: number;
+  latestFrameCallback: number;
   gpu: GpuIdentity;
   observers: ResizeObserver[];
   listeners: ListenerRegistration[];
@@ -77,17 +80,32 @@ interface ResizeTraceEntry {
   detail: string | null;
 }
 
-interface SkiaSharpCanvasRuntime {
-  requestAnimationFrame(renderLoop?: boolean, width?: number, height?: number): void;
-  renderFrameCallback: (() => void) | { invokeMethod(name: string): void };
-  dorotiResizeContinuity?: {
-    requestAnimationFrame: SkiaSharpCanvasRuntime["requestAnimationFrame"];
-    renderFrameCallback: SkiaSharpCanvasRuntime["renderFrameCallback"];
-    nextRafId: number;
-  };
+interface PresentDescriptor extends ResizeEpoch {
+  requestId: number;
 }
 
-type SkiaSharpCanvasElement = HTMLCanvasElement & { SKHtmlCanvas?: SkiaSharpCanvasRuntime };
+interface ManagedCanvasPresenter {
+  invokeMethodAsync(name: string, ...args: unknown[]): Promise<unknown>;
+}
+
+interface EmscriptenGlRuntime {
+  createContext(canvas: HTMLCanvasElement, attributes: Record<string, number>): number;
+  makeContextCurrent(context: number): void;
+  deleteContext?(context: number): void;
+  currentContext?: { GLctx: WebGL2RenderingContext };
+}
+
+interface CanvasPresenter {
+  canvas: HTMLCanvasElement;
+  callback: ManagedCanvasPresenter;
+  context: number;
+  current: PresentDescriptor | null;
+  latest: PresentDescriptor | null;
+  raf: number;
+  nextRequestId: number;
+  contextLost: boolean;
+  listeners: ListenerRegistration[];
+}
 
 interface SemanticsFlags {
   checked?: string; selected?: boolean; enabled?: boolean; toggled?: boolean;
@@ -145,6 +163,7 @@ interface DorotiAssemblyExports {
 }
 
 const hosts = new Map<number, BrowserHost>();
+const canvasPresenters = new Map<string, CanvasPresenter>();
 let managed: ManagedCallbacks | null = null;
 
 function snapshot(host: BrowserHost): string {
@@ -159,7 +178,7 @@ function snapshot(host: BrowserHost): string {
     languageTag: navigator.language || "en-US",
     brightness: globalThis.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light",
     operatingSystem: browserOperatingSystem(),
-    generation: ++host.generation,
+    generation: host.generation,
     surfaceGeneration: host.surfaceGeneration,
     gpu: host.gpu,
     resizeEpoch: host.resizeEpoch,
@@ -211,7 +230,7 @@ function updateResizeEpoch(
   }
   host.logicalWidth = logicalWidth;
   host.logicalHeight = logicalHeight;
-  host.surfaceGeneration++;
+  host.generation++;
   host.resizeEpoch = {
     generation: ++host.resizeGeneration,
     logicalWidth,
@@ -225,74 +244,214 @@ function updateResizeEpoch(
   return true;
 }
 
+function scheduleHostSample(host: BrowserHost, source: string): void {
+  if (host.sampleRaf !== 0) return;
+  host.sampleRaf = requestAnimationFrame(() => {
+    host.sampleRaf = 0;
+    const rect = host.root.getBoundingClientRect();
+    if (rect.width > 0 && rect.height > 0 &&
+        updateResizeEpoch(host, source, rect.width, rect.height)) emit(host);
+  });
+}
+
+function armDprWatcher(host: BrowserHost): void {
+  if (!globalThis.matchMedia) return;
+  const query = globalThis.matchMedia(`(resolution: ${Math.max(1, globalThis.devicePixelRatio || 1)}dppx)`);
+  host.dprQuery = query;
+  const handler: EventListener = () => {
+    scheduleHostSample(host, "dpr-watcher");
+    armDprWatcher(host);
+  };
+  query.addEventListener("change", handler, { once: true });
+  host.listeners.push({ target: query, name: "change", handler });
+}
+
 function hostForCanvas(canvas: HTMLCanvasElement): BrowserHost | undefined {
   for (const host of hosts.values()) if (host.canvas === canvas) return host;
   return undefined;
 }
 
-export function installCanvasResizeContinuity(canvasId: string): void {
-  const canvas = document.getElementById(canvasId) as SkiaSharpCanvasElement | null;
-  const runtime = canvas?.SKHtmlCanvas;
-  if (!canvas || !runtime) throw new Error(`SkiaSharp canvas runtime '#${canvasId}' is not initialized.`);
-  if (runtime.dorotiResizeContinuity) return;
+// WebGL bootstrap adapted from SkiaSharp 4.151.1 SKHtmlCanvas.js at
+// mono/SkiaSharp commit 279f93f4ffa7f9fe4e9c0bc298bedc3c9e439764 (MIT).
+// Doroti owns the context, rAF queue, backing-store commit and managed callback.
+function emscriptenGl(): EmscriptenGlRuntime {
+  const scope = globalThis as typeof globalThis & {
+    SkiaSharpGL?: EmscriptenGlRuntime;
+    SkiaSharpModule?: { GL?: EmscriptenGlRuntime };
+    Module?: { GL?: EmscriptenGlRuntime };
+    GL?: EmscriptenGlRuntime;
+  };
+  const runtime = scope.SkiaSharpGL ?? scope.SkiaSharpModule?.GL ?? scope.Module?.GL ?? scope.GL;
+  if (!runtime) throw new Error("Doroti could not resolve the SkiaSharp Emscripten GL runtime.");
+  return runtime;
+}
 
-  const originalRequest = runtime.requestAnimationFrame.bind(runtime);
-  const originalCallback = runtime.renderFrameCallback;
-  let pendingWidth = 0;
-  let pendingHeight = 0;
-  runtime.dorotiResizeContinuity = {
-    requestAnimationFrame: originalRequest,
-    renderFrameCallback: originalCallback,
-    nextRafId: 0,
-  };
-  runtime.requestAnimationFrame = (renderLoop?: boolean, width?: number, height?: number): void => {
-    const host = hostForCanvas(canvas);
-    const rafId = ++runtime.dorotiResizeContinuity!.nextRafId;
-    if (width && height) {
-      pendingWidth = width;
-      pendingHeight = height;
-      if (host) recordResize(host, "size-signal", "skia-watcher", {
-        rafId, backingWidth: canvas.width, backingHeight: canvas.height,
-        surfaceWidth: width, surfaceHeight: height,
-      });
-    }
-    // SkiaSharp normally changes canvas.width/height here, which clears the
-    // WebGL backing store before the requested animation frame can repaint it.
-    originalRequest(renderLoop);
-  };
-  runtime.renderFrameCallback = (): void => {
-    const started = performance.now();
-    const host = hostForCanvas(canvas);
-    const rafId = runtime.dorotiResizeContinuity?.nextRafId ?? 0;
-    if (pendingWidth > 0 && pendingHeight > 0) {
-      if (canvas.width !== pendingWidth) canvas.width = pendingWidth;
-      if (canvas.height !== pendingHeight) canvas.height = pendingHeight;
-      pendingWidth = 0;
-      pendingHeight = 0;
-      if (host) recordResize(host, "backing-store", "backing-store", {
-        rafId, backingWidth: canvas.width, backingHeight: canvas.height,
-      });
-    }
-    if (typeof originalCallback === "function") originalCallback.call(runtime);
-    else originalCallback.invokeMethod("Invoke");
-    if (host) {
-      recordResize(host, "submitted", "browser-rAF", {
-        durationMicroseconds: Math.round((performance.now() - started) * 1000),
-        rafId, backingWidth: canvas.width, backingHeight: canvas.height,
-        terminal: "submitted",
-        detail: "browser callback return; not a display scan-out acknowledgement",
-      });
-    }
+function presenterGlInfo(presenter: CanvasPresenter): {
+  context: number; fboId: number; stencilBits: number; sampleCount: number; depthBits: number;
+} {
+  const runtime = emscriptenGl();
+  runtime.makeContextCurrent(presenter.context);
+  const context = runtime.currentContext?.GLctx;
+  if (!context) throw new Error("Doroti WebGL2 context is not current.");
+  const framebuffer = context.getParameter(context.FRAMEBUFFER_BINDING) as WebGLFramebuffer & { id?: number } | null;
+  return {
+    context: presenter.context,
+    fboId: framebuffer?.id ?? 0,
+    stencilBits: context.getParameter(context.STENCIL_BITS) as number,
+    sampleCount: 0,
+    depthBits: context.getParameter(context.DEPTH_BITS) as number,
   };
 }
 
-export function uninstallCanvasResizeContinuity(canvasId: string): void {
-  const runtime = (document.getElementById(canvasId) as SkiaSharpCanvasElement | null)?.SKHtmlCanvas;
-  const registration = runtime?.dorotiResizeContinuity;
-  if (!runtime || !registration) return;
-  runtime.requestAnimationFrame = registration.requestAnimationFrame;
-  runtime.renderFrameCallback = registration.renderFrameCallback;
-  delete runtime.dorotiResizeContinuity;
+export function initializeCanvasPresenter(
+  canvasId: string,
+  callback: ManagedCanvasPresenter): ReturnType<typeof presenterGlInfo> {
+  if (canvasPresenters.has(canvasId)) throw new Error(`Canvas presenter '${canvasId}' already exists.`);
+  const canvas = document.getElementById(canvasId);
+  if (!(canvas instanceof HTMLCanvasElement)) throw new Error(`Canvas '#${canvasId}' was not found.`);
+  const runtime = emscriptenGl();
+  const context = runtime.createContext(canvas, {
+    alpha: 1, depth: 1, stencil: 8, antialias: 1, premultipliedAlpha: 1,
+    preserveDrawingBuffer: 0, preferLowPowerToHighPerformance: 0,
+    failIfMajorPerformanceCaveat: 1, majorVersion: 2, minorVersion: 0,
+    enableExtensionsByDefault: 1, explicitSwapControl: 0, renderViaOffscreenBackBuffer: 0,
+  });
+  if (!context) throw new Error("Doroti requires a hardware WebGL2 context; creation failed.");
+  const presenter: CanvasPresenter = {
+    canvas, callback, context, current: null, latest: null, raf: 0,
+    nextRequestId: 0, contextLost: false, listeners: [],
+  };
+  const listen = (name: string, handler: EventListener): void => {
+    canvas.addEventListener(name, handler);
+    presenter.listeners.push({ target: canvas, name, handler });
+  };
+  listen("webglcontextlost", (event) => {
+    event.preventDefault();
+    presenter.contextLost = true;
+    if (presenter.current) recordPresenterTerminal(presenter, presenter.current, "failed", "context lost");
+    presenter.current = null;
+    const host = hostForCanvas(canvas);
+    if (host) {
+      updateResizeEpoch(host, "webgl-context-lost", host.logicalWidth, host.logicalHeight, true);
+      recordResize(host, "context-lost", "doroti-presenter", { terminal: "failed" });
+      emit(host);
+    }
+    void callback.invokeMethodAsync("ContextLost");
+  });
+  listen("webglcontextrestored", () => {
+    presenter.contextLost = false;
+    const host = hostForCanvas(canvas);
+    if (host) {
+      updateResizeEpoch(host, "webgl-context-restored", host.logicalWidth, host.logicalHeight, true);
+      host.surfaceGeneration++;
+      host.gpu = gpuIdentity(canvas);
+      recordResize(host, "context-restored", "doroti-presenter", {
+        backingWidth: canvas.width, backingHeight: canvas.height,
+      });
+      emit(host);
+    }
+    void callback.invokeMethodAsync("ContextRestored").finally(() => schedulePresenter(presenter));
+  });
+  canvasPresenters.set(canvasId, presenter);
+  return presenterGlInfo(presenter);
+}
+
+export function requestPresent(
+  canvasId: string, generation: number, logicalWidth: number, logicalHeight: number,
+  physicalWidth: number, physicalHeight: number, devicePixelRatio: number,
+  timestampMicroseconds: number): void {
+  const presenter = canvasPresenters.get(canvasId);
+  if (!presenter) throw new Error(`Canvas presenter '${canvasId}' is not initialized.`);
+  const descriptor: PresentDescriptor = {
+    requestId: ++presenter.nextRequestId, generation, logicalWidth, logicalHeight,
+    physicalWidth, physicalHeight, devicePixelRatio, timestampMicroseconds,
+  };
+  if (presenter.latest) recordPresenterTerminal(presenter, presenter.latest, "superseded", "latest replaced");
+  presenter.latest = descriptor;
+  schedulePresenter(presenter);
+}
+
+function schedulePresenter(presenter: CanvasPresenter): void {
+  if (presenter.raf !== 0 || presenter.current || presenter.contextLost || !presenter.latest) return;
+  presenter.raf = requestAnimationFrame(() => {
+    presenter.raf = 0;
+    void runPresenter(presenter);
+  });
+}
+
+async function runPresenter(presenter: CanvasPresenter): Promise<void> {
+  const descriptor = presenter.latest;
+  presenter.latest = null;
+  if (!descriptor || presenter.contextLost) return;
+  presenter.current = descriptor;
+  const host = hostForCanvas(presenter.canvas);
+  if (host && host.resizeEpoch.generation !== descriptor.generation) {
+    recordPresenterTerminal(presenter, descriptor, "superseded", "target changed before rAF");
+    presenter.current = null;
+    schedulePresenter(presenter);
+    return;
+  }
+  const started = performance.now();
+  const backingStoreChanged = presenter.canvas.width !== descriptor.physicalWidth ||
+    presenter.canvas.height !== descriptor.physicalHeight;
+  if (backingStoreChanged) {
+    presenter.canvas.width = descriptor.physicalWidth;
+    presenter.canvas.height = descriptor.physicalHeight;
+  }
+  const glInfo = presenterGlInfo(presenter);
+  if (host && backingStoreChanged) {
+    host.surfaceGeneration++;
+    recordResize(host, "backing-store", "doroti-presenter", {
+      rafId: descriptor.requestId, backingWidth: presenter.canvas.width,
+      backingHeight: presenter.canvas.height,
+    });
+  }
+  try {
+    await presenter.callback.invokeMethodAsync("RenderFrame",
+      descriptor.generation, descriptor.logicalWidth, descriptor.logicalHeight,
+      descriptor.physicalWidth, descriptor.physicalHeight, descriptor.devicePixelRatio,
+      descriptor.timestampMicroseconds, glInfo.fboId, glInfo.stencilBits, glInfo.sampleCount);
+    const latestHost = hostForCanvas(presenter.canvas);
+    if (!latestHost || latestHost.resizeEpoch.generation === descriptor.generation) {
+      recordPresenterTerminal(presenter, descriptor, "submitted",
+        "browser rAF callback completed; not a display scan-out acknowledgement",
+        Math.round((performance.now() - started) * 1000));
+    } else {
+      recordPresenterTerminal(presenter, descriptor, "superseded", "target changed during raster");
+    }
+  } catch (error) {
+    recordPresenterTerminal(presenter, descriptor, "failed", String(error));
+    throw error;
+  } finally {
+    presenter.current = null;
+    schedulePresenter(presenter);
+  }
+}
+
+function recordPresenterTerminal(
+  presenter: CanvasPresenter,
+  descriptor: PresentDescriptor,
+  terminal: string,
+  detail: string,
+  durationMicroseconds = 0): void {
+  const host = hostForCanvas(presenter.canvas);
+  if (!host) return;
+  recordResize(host, terminal === "submitted" ? "submitted" : "ack", "doroti-presenter", {
+    durationMicroseconds, rafId: descriptor.requestId,
+    backingWidth: presenter.canvas.width, backingHeight: presenter.canvas.height,
+    surfaceWidth: descriptor.physicalWidth, surfaceHeight: descriptor.physicalHeight,
+    terminal, detail,
+  });
+}
+
+export function disposeCanvasPresenter(canvasId: string): void {
+  const presenter = canvasPresenters.get(canvasId);
+  if (!presenter) return;
+  if (presenter.raf !== 0) cancelAnimationFrame(presenter.raf);
+  for (const listener of presenter.listeners)
+    listener.target.removeEventListener(listener.name, listener.handler);
+  emscriptenGl().deleteContext?.(presenter.context);
+  canvasPresenters.delete(canvasId);
 }
 
 function browserOperatingSystem(): string {
@@ -311,13 +470,21 @@ function emit(host: BrowserHost): void {
 }
 
 function gpuIdentity(canvas: HTMLCanvasElement): GpuIdentity {
-  const gl = canvas.getContext("webgl2", {
-    alpha: true,
-    antialias: true,
-    depth: true,
-    failIfMajorPerformanceCaveat: true,
-    premultipliedAlpha: true,
-  });
+  const presenter = canvasPresenters.get(canvas.id);
+  let gl: WebGL2RenderingContext | null = null;
+  if (presenter) {
+    const runtime = emscriptenGl();
+    runtime.makeContextCurrent(presenter.context);
+    gl = runtime.currentContext?.GLctx ?? null;
+  } else {
+    gl = canvas.getContext("webgl2", {
+      alpha: true,
+      antialias: true,
+      depth: true,
+      failIfMajorPerformanceCaveat: true,
+      premultipliedAlpha: true,
+    });
+  }
   if (!gl) throw new Error("Doroti requires a hardware WebGL2 canvas; CPU/2D fallback is forbidden.");
   const debug = gl.getExtension("WEBGL_debug_renderer_info");
   const vendor = debug ? gl.getParameter(debug.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR);
@@ -383,8 +550,9 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   };
   const host: BrowserHost = {
     id: hostId, root, canvas, input, semantics, logicalWidth, logicalHeight,
-    generation: 0, surfaceGeneration: 1, resizeGeneration: 1, resizeEpoch: initialEpoch,
-    resizeTrace: [], resizeTraceSequence: 0, dprCheckRaf: 0,
+    generation: 1, surfaceGeneration: 0, resizeGeneration: 1, resizeEpoch: initialEpoch,
+    resizeTrace: [], resizeTraceSequence: 0, sampleRaf: 0, dprQuery: null,
+    frameRaf: 0, latestFrameCallback: 0,
     gpu: gpuIdentity(canvas), observers: [], listeners: [],
     composing: false, compositionStart: -1, viewFocused: false, pressedKeys: new Map(),
     inputAction: 2, multiline: false,
@@ -397,14 +565,6 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   observe(document, "visibilitychange", () => emit(host));
   observe(globalThis, "focus", () => emit(host));
   observe(globalThis, "blur", () => { releasePressedKeys(host); setViewFocus(host, false, performance.now()); emit(host); });
-  observe(globalThis, "resize", () => {
-    if (host.dprCheckRaf !== 0) return;
-    host.dprCheckRaf = requestAnimationFrame(() => {
-      host.dprCheckRaf = 0;
-      const rect = host.root.getBoundingClientRect();
-      if (updateResizeEpoch(host, "window-resize-dpr-signal", rect.width, rect.height)) emit(host);
-    });
-  });
   observe(globalThis, "languagechange", () => emit(host));
   const colorScheme = globalThis.matchMedia?.("(prefers-color-scheme: dark)");
   if (colorScheme) observe(colorScheme, "change", () => emit(host));
@@ -476,27 +636,12 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
       requireManaged().dispatchTextAction(host.id, host.inputAction);
     }
   });
-  observe(canvas, "webglcontextlost", (event) => {
-    event.preventDefault();
-    updateResizeEpoch(host, "webgl-context-lost", host.logicalWidth, host.logicalHeight, true);
-    recordResize(host, "context-lost", "webgl-context-lost", { terminal: "failed" });
-    emit(host);
-  });
-  observe(canvas, "webglcontextrestored", () => {
-    updateResizeEpoch(host, "webgl-context-restored", host.logicalWidth, host.logicalHeight, true);
-    host.gpu = gpuIdentity(canvas);
-    recordResize(host, "context-restored", "webgl-context-restored");
-    emit(host);
-  });
   if (globalThis.ResizeObserver) {
-    const observer = new ResizeObserver((entries) => {
-      const rect = entries[0]?.contentRect;
-      if (rect && rect.width > 0 && rect.height > 0 &&
-          updateResizeEpoch(host, "host-observer", rect.width, rect.height)) emit(host);
-    });
+    const observer = new ResizeObserver(() => scheduleHostSample(host, "host-observer"));
     observer.observe(root);
     host.observers.push(observer);
   }
+  armDprWatcher(host);
   hosts.set(hostId, host);
   return snapshot(host);
 }
@@ -519,14 +664,18 @@ export function resizeHost(hostId: number, logicalWidth: number, logicalHeight: 
   const host = requireHost(hostId);
   host.root.style.width = `${logicalWidth}px`;
   host.root.style.height = `${logicalHeight}px`;
-  updateResizeEpoch(host, "inline-style", logicalWidth, logicalHeight);
   return snapshot(host);
 }
 
 export function requestFrame(hostId: number, callbackId: number): void {
-  requireHost(hostId);
-  requestAnimationFrame((timestamp) => {
-    if (hosts.has(hostId)) managed?.dispatchAnimationFrame(hostId, callbackId, timestamp);
+  const host = requireHost(hostId);
+  host.latestFrameCallback = callbackId;
+  if (host.frameRaf !== 0) return;
+  host.frameRaf = requestAnimationFrame((timestamp) => {
+    host.frameRaf = 0;
+    const latest = host.latestFrameCallback;
+    host.latestFrameCallback = 0;
+    if (hosts.has(hostId) && latest !== 0) managed?.dispatchAnimationFrame(hostId, latest, timestamp);
   });
 }
 
@@ -554,7 +703,8 @@ export function closeHost(hostId: number): void {
   const host = hosts.get(hostId);
   if (!host) return;
   releasePressedKeys(host);
-  if (host.dprCheckRaf !== 0) cancelAnimationFrame(host.dprCheckRaf);
+  if (host.sampleRaf !== 0) cancelAnimationFrame(host.sampleRaf);
+  if (host.frameRaf !== 0) cancelAnimationFrame(host.frameRaf);
   for (const observer of host.observers) observer.disconnect();
   for (const listener of host.listeners) listener.target.removeEventListener(listener.name, listener.handler);
   hosts.delete(hostId);

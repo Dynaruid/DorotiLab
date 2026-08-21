@@ -36,6 +36,7 @@ public enum DorotiFramePhase
     present,
     replay,
     superseded,
+    dropped,
     failed,
     lifecycle,
     metrics,

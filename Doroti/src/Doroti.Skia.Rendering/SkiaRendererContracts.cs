@@ -6,6 +6,8 @@ public interface ISkiaSceneRendererHost
 {
     long InputSequence { get; }
     long SurfaceGeneration { get; }
+    long MetricsGeneration { get; }
+    DorotiResizeEpoch ResizeTarget { get; }
     PlatformConfiguration Configuration { get; }
     event Action<int, SemanticsAction, object?>? SemanticsAction;
     event Action<long, TimeSpan>? InputReceived;
@@ -19,7 +21,24 @@ public readonly record struct SkiaPaintCompletion(
     long InputSequence,
     long SceneSequence,
     long SurfaceGeneration,
-    bool IsNewFrame);
+    bool IsNewFrame,
+    DorotiFrameDescriptor Descriptor);
+
+public enum SkiaPaintDisposition
+{
+    empty,
+    exact,
+    replay,
+    superseded,
+}
+
+public readonly record struct SkiaPaintResult(
+    SkiaPaintDisposition Disposition,
+    SkiaPaintCompletion? Completion,
+    DorotiFrameDescriptor? Descriptor)
+{
+    public bool ShouldPresent => Disposition is SkiaPaintDisposition.exact or SkiaPaintDisposition.replay;
+}
 
 public sealed record SkiaFrameDiagnostics(
     long Submitted,

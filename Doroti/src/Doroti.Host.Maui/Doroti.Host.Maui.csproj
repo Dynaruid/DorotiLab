@@ -33,6 +33,9 @@
     <PackageReference Include="Microsoft.Maui.Platforms.MacOS" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'" />
     <PackageReference Include="Microsoft.Maui.Platforms.MacOS.Essentials" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'" />
     <PackageReference Include="SkiaSharp.Views" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'" />
+    <PackageReference Include="SkiaSharp.Direct3D.Vortice" Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))" />
+    <PackageReference Include="Vortice.DXGI" Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))" />
+    <PackageReference Include="Vortice.Direct3D12" Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
     <ProjectReference Include="..\Doroti.Skia.RuntimeEffects\Doroti.Skia.RuntimeEffects.csproj" />

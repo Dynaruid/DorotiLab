@@ -17,6 +17,7 @@
     <EmbeddedResource Include="doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" />
     <None Include="doroti-target-manifest.json" Pack="true" PackagePath="doroti/" />
     <None Include="build\Doroti.Target.Web.browser-wasm.props" Pack="true" PackagePath="build\Doroti.Target.Web.browser-wasm.props" />
+    <None Include="build\DorotiSkiaInterop.js" Pack="true" PackagePath="build\DorotiSkiaInterop.js" />
     <None Include="buildTransitive\Doroti.Target.Web.browser-wasm.targets" Pack="true" PackagePath="buildTransitive\Doroti.Target.Web.browser-wasm.targets" />
   </ItemGroup>
 </Project>

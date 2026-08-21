@@ -17,7 +17,7 @@ public sealed class MauiFrameworkHost : IDisposable
 
     public MauiFrameworkHost(string? targetIdentity = null) => _targetIdentity = targetIdentity ??
 #if WINDOWS
-        "win-x64/winui3/SKSwapChainPanel/ANGLE-DirectX-Skia";
+        "win-x64/winui3/SwapChainPanel/Doroti-owned-D3D12-Skia";
 #elif MACCATALYST
         "maccatalyst-arm64/UIKit-MacCatalyst/SKMetalView/Metal-Skia";
 #elif IOS
@@ -30,7 +30,7 @@ public sealed class MauiFrameworkHost : IDisposable
 #error Doroti.Host.Maui requires an explicit platform identity.
 #endif
 
-#if !MACOS
+#if !MACOS && !WINDOWS
     public DorotiView CreateView(
         DorotiHostSession session,
         ulong viewId,

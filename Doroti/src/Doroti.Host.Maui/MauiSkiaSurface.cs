@@ -43,21 +43,6 @@ internal readonly record struct MauiSurfacePointerData(
     PointerSignalKind SignalKind,
     double Pressure);
 
-#if WINDOWS
-internal readonly record struct MauiSynchronousResize(
-    double LogicalWidth,
-    double LogicalHeight,
-    double Density,
-    DorotiResizeEpoch Epoch);
-
-internal interface IMauiSynchronousResizeSurface
-{
-    event Action<MauiSynchronousResize>? SynchronousResize;
-    void RecordResizePhase(string phase, DorotiResizeEpoch epoch, TimeSpan? duration = null,
-        string? terminal = null, string? detail = null);
-}
-#endif
-
 /// <summary>
 /// Small platform surface boundary shared by the SKGLView and AppKit Metal paths.
 /// Native view and command-buffer ownership stay behind this contract.
@@ -68,6 +53,7 @@ internal interface IMauiSkiaSurface : IDisposable
     IDispatcher Dispatcher { get; }
     double Width { get; }
     double Height { get; }
+    DorotiResizeEpoch? ResizeTarget => null;
     event Action<MauiSkiaPaintContext>? Paint;
     event Action<MauiPaintCompletion, bool>? PresentCompleted;
     event Action<MauiPaintCompletion?, Exception>? PaintFailed;
@@ -81,7 +67,7 @@ internal interface IMauiSkiaSurface : IDisposable
     MauiSurfaceSnapshot CaptureSnapshot(MauiSurfaceSnapshot current);
 }
 
-#if !MACOS
+#if !MACOS && !WINDOWS
 internal sealed class MauiSkglSurface : IMauiSkiaSurface
 #if WINDOWS
     , IMauiSynchronousResizeSurface
