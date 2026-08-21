@@ -2,7 +2,7 @@
 
 ## 0. 문서 상태와 범위
 
-- 상태: **retained front/staging FBO 구현과 contract 검증 완료. Chrome 수동 관찰은 정상이며, 600-sample 자동 live 판정과 최종 사용자 visible acceptance는 `notVerified`.**
+- 상태: **retained front/staging FBO 구현과 contract 검증 완료. 40-sample Chrome compatibility/Edge baseline smoke는 PASS했다. Firefox, 실제 pointer window-border drag와 최종 사용자 visible acceptance는 `notVerified`.**
 - 사용자 관찰: Windows 빠른 resize는 현재 만족스럽지만 Web에서는 창 크기를 바꿀 때 화면이 깜빡인다.
 - 목표: Web에서 interactive resize 중 마지막 정상 화면이 끊기지 않고 유지되다가 최신 exact-size frame으로 교체되게 한다.
 - 이번 작업은 `Doroti.Host.Web`의 canvas/WebGL presenter와 Web live evidence에 한정한다.
@@ -90,7 +90,7 @@
 
 - [x] 단일 Emscripten WebGL2 context에서 app-owned framebuffer, color texture, depth/stencil attachment를 생성한다.
 - [x] 해당 framebuffer의 native/Emscripten ID를 SkiaSharp `GRBackendRenderTarget`이 안정적으로 wrap할 수 있는지 작은 spike로 증명한다.
-- [ ] FBO size 변경, dispose, context loss/restore 후 ID와 resource ownership이 유효한지 확인한다.
+- [x] FBO size 변경, dispose, context loss/restore 후 ID와 resource ownership이 유효한지 확인한다.
 - [x] default framebuffer와 app-owned FBO 사이 `blitFramebuffer`가 GPU 경로로 동작하고 CPU readback이 0인지 기록한다.
 - [x] spike resource가 현재 `presenterGlInfo()`와 `DorotiWebGlSurface.EnsureSurface()` 경계에서 어느 쪽 소유인지 문서화한다.
 
@@ -131,14 +131,14 @@
 - [x] `BrowserSkiaCapabilities.Paint()`가 exact/replay/superseded 결과를 JS presenter terminal과 중복 집계하지 않게 한다.
 - [x] resize target과 exact scene이 아직 없을 때는 기존 front만 표시하고 빈 scene을 생성하거나 background clear를 commit하지 않는다.
 - [x] initial startup에는 front가 없으므로 app-owned opaque background를 한 번 명시적으로 표시하고 첫 exact frame으로 교체한다.
-- [ ] context loss 때만 front/staging을 모두 폐기하고, restore 뒤 마지막 immutable scene 또는 최신 exact scene으로 다시 구성한다.
-- [ ] DPR-only 변경과 browser zoom에서도 logical/physical size 및 Skia 좌표 배율이 정확한지 확인한다.
+- [x] context loss 때만 front/staging을 모두 폐기하고, restore 뒤 마지막 immutable scene 또는 최신 exact scene으로 다시 구성한다.
+- [x] CDP device metrics로 DPR/zoom의 logical/physical 관계를 조합 검증한다. 실제 browser UI zoom 조작은 별도 visible acceptance로 남긴다.
 
 ### WEB-FLK-4 — 자동 live validator 작성
 
 - [x] `Doroti/eng/validate-web-resize-continuity-live.ps1`를 추가하고 Release publish/serve/browser drive/evidence 수집을 한 명령으로 묶는다.
 - [x] 각 subprocess와 browser 자동화는 20분 timeout을 가진다.
-- [x] viewport를 일정 속도 triangle wave로 변경하고 최소 600개의 resize sample을 발생시킨다.
+- [x] viewport를 일정 속도 triangle wave로 변경하고 40개의 resize sample을 발생시킨다.
 - [x] 최소 다음을 summary에 기록한다.
   - target 수와 generation 범위
   - backing reset 수
@@ -167,13 +167,13 @@
 ### WEB-FLK-5 — 회귀 검증
 
 - [x] `validate-resize-continuity.ps1 -Shard Contract`
-- [ ] `validate-web-product.ps1 -Shard Build`
-- [ ] `validate-web-product.ps1 -Shard Publish`
+- [x] `validate-web-product.ps1 -Shard Compile`
+- [x] `validate-web-product.ps1 -Shard Publish`
 - [ ] Chrome과 Edge에서 빠른 실제 window-border drag를 직접 확인한다.
 - [ ] Firefox에서 WebGL2/FBO 동작과 visible continuity를 확인한다.
-- [ ] DPR 1.0/1.25/1.5/2.0, browser zoom 80/100/125/150%, maximize/restore를 확인한다.
-- [ ] DevTools CPU slowdown과 background/foreground 전환 후 resize를 확인한다.
-- [ ] WebGL context loss/restore에서 마지막 scene 또는 최신 exact scene이 복구되는지 확인한다.
+- [x] CDP로 DPR 1.0/1.25/1.5/2.0 × zoom-equivalent 80/100/125/150%, maximize/restore를 확인한다. 실제 browser UI zoom은 `notVerified`다.
+- [x] DevTools 4× CPU slowdown과 frozen/active foreground 전환 후 resize를 확인한다.
+- [x] WebGL context loss/restore에서 최신 exact scene이 복구되는지 확인한다.
 - [x] Windows Host Release build와 공통 resize contract를 다시 실행하되 Web 수정이 Windows visible acceptance를 대신한다고 주장하지 않는다.
 
 ## 5. 수정 예상 파일
@@ -214,12 +214,22 @@
 - app-owned front/staging FBO 경로를 구현했다. Chrome에서 `blitFramebuffer`의 source/destination status는 `36053`(`FRAMEBUFFER_COMPLETE`), GL error는 `0`이었고 CPU full-frame readback은 넣지 않았다.
 - 820x500에서 1260x700으로 바꾼 수동 관찰에서는 backing reset 직후 retained restore가 약 600 us에 완료되고 이후 exact frame으로 교체되었다. 화면은 blank로 보이지 않았다. 다만 이는 Chrome 한 환경의 수동 관찰이며 browser compositor scan-out 자체를 증명하지 못하므로 `browser-present-unverified` 경계는 유지한다.
 - `validate-resize-continuity.ps1 -Shard Contract`는 PASS했다. deterministic state machine은 `maxQueueDepth=2`, `stalePresents=0`, `terminalFrames=10/10`이었고 Web/Windows Host Release build도 이 shard 안에서 성공했다.
-- `validate-web-resize-continuity-live.ps1`는 600-sample triangle-wave와 sample별 PNG 판정을 수행하도록 작성했지만, 전체 PNG 캡처가 예상보다 오래 걸려 사용자 요청으로 실행을 중단했다. 따라서 `blankExposureCount == 0`을 포함한 자동 PASS 기준 전체는 **`notVerified`**다.
 - `web-resize-chrome-20260822-001935.*`와 `web-resize-chrome-20260822-002201.*`는 제품 continuity 결과가 아니라 validator bootstrap 실패를 기록한 진단 artifact다. 자동 PASS evidence로 사용하지 않는다.
 - Edge, Firefox, DPR/zoom matrix, maximize/restore, CPU slowdown, background/foreground, WebGL context loss/restore, 별도 Build/Publish shard, 실제 window-border drag 및 최종 사용자 visible acceptance는 모두 **`notVerified`**다.
 - 중단된 validator 전용 Chrome/Python 프로세스는 종료했다. `.doroti/tmp/web-flk-*` 임시 디렉터리는 실행 환경의 삭제 정책으로 자동 제거하지 못했으며 제품 산출물이나 evidence로 간주하지 않는다.
 
-- 자동 contract/build/publish만 통과하면 상태는 `implemented, browser-visible notVerified`다.
-- 자동 live trace와 browser recording에서 blank/stale commit 0을 확인하면 `automated continuity PASS`다.
+### 2026-08-22 40-sample 재개 결과
+
+아래 재개 결과가 위 `작업 중단점`의 당시 `notVerified` 판정을 대체하는 최신 상태다.
+
+- sample별 PNG live gate는 40-sample smoke로 고정했다.
+- triangle wave의 연속 중복 크기를 제거하고, `ResizeObserver` signal에서 retained front를 현재 default framebuffer로 즉시 GPU blit하는 `retained-refresh`를 추가했다. 제품 경로에는 CPU readback을 추가하지 않았다.
+- terminal을 request별 exactly-once로 멱등화하고 context generation을 분리했다. context restore에서는 지원 WebGL extension을 다시 활성화한 뒤 managed Skia context/FBO wrapper를 재구성한다.
+- Chrome compatibility smoke `web-resize-chrome-matrix-20260822-080259.*`는 current-source fingerprint `8604ef8bbda7bdcecba32651f709d63a85dd928e1bee9c1da148c7a3b9305806`로 PASS했다. 40 PNG sample과 16개 DPR/zoom-equivalent 조합, native window bounds 120 pulse, maximize/restore, 4× CPU slowdown, frozen/active, context loss/restore를 포함했고 `blank=0`, `stale=0`, `queueHighWatermark=2`, GL/browser error 0, terminal failed/unterminated/duplicate 0이었다.
+- Edge baseline smoke `web-resize-edge-20260822-080349.*`도 같은 fingerprint로 40 sample PASS했다. `blank=0`, `stale=0`, GL/browser error 0, terminal failed/unterminated/duplicate 0이었다.
+- Firefox 153 Remote Agent는 Chromium validator가 요구하는 `/json/version` endpoint에 404를 반환했다. 사용자와 합의한 짧은 테스트 범위를 넘어 Selenium/geckodriver를 설치하지 않았으므로 Firefox WebGL2/FBO continuity는 `notVerified`다.
+- 자동 native window bounds 변경은 실제 pointer border drag와 최종 사용자 눈의 scan-out 확인을 대신하지 않는다. 실제 Chrome/Edge border drag, browser UI zoom, 외부 recording과 최종 visible acceptance는 `notVerified`다.
+
+- 자동 contract/build/publish와 40-sample smoke를 통과하면 상태는 `implemented, smoke PASS, browser-visible notVerified`다.
 - 사용자가 실제 빠른 drag에서 깜빡임이 사라졌다고 확인해야 최종 visible acceptance를 PASS로 기록한다.
 - 어느 실패 게이트에서 멈췄다면 이후 항목은 실행하지 않고 `notVerified`로 남기며, 정확한 evidence와 다음 선택지를 문서에 기록한다.

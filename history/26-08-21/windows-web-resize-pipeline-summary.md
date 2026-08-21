@@ -74,7 +74,7 @@ swap interval이나 debounce만 바꾸는 것으로는 이 소유권 문제를 �
 | --- | --- | --- | --- |
 | `COMMON-CONTRACT` | **PASS** | 8개 순열 PASS, generated 10/terminal 10, unterminated 0, max queue depth 2, stale present 0, surface generation 9. Web host와 Windows MAUI host Release build warning/error 0 | native 창/브라우저의 가시적 동작을 대신하지 않음 |
 | `WINDOWS-LIVE` | **notVerified** | 사용자가 실제 창 resize를 “굉장히 부드러운 수준”으로 확인. 200% DPI corner drag에서 target 388, presented ACK 419, regression/mismatch 0, target→ACK p95 30.498 ms, final swap p95 0.638 ms, framework exception 0. maximize/restore 20회와 minimize/restore, pointer/key 절차도 regression/mismatch/exception 0, 5초 내 종료 | 100/125/150%와 monitor 이동, IME/semantics/focus 개별 acceptance, Windows Graphics Capture 녹화 미실행 |
-| `WEB-LIVE` | **notVerified** | native-linked Chrome publish가 렌더됨. 기본 CSS 1280×609/backing 2560×1218/DPR 2 일치. 40회 resize 뒤 CSS/backing/document 1024×700 일치, blank와 이전 크기 복귀가 보이지 않음. 버튼 Pressed 0→1과 ArrowDown dispatch 확인 | 실제 창 테두리 drag, throttling, 실제 zoom, `WEBGL_lose_context` 복구 미실행 |
+| `WEB-LIVE` | **smoke PASS / visible notVerified** | Chrome 40-sample compatibility와 Edge 40-sample baseline PASS. blank/stale/GL error/browser exception 0, queue high-watermark 2. Chrome은 DPR/zoom-equivalent, native bounds, maximize/restore, 4× slowdown, frozen/active, `WEBGL_lose_context` 복구 포함 | 실제 pointer 창 테두리 drag, browser UI zoom, 외부 recording, Firefox와 최종 사용자 visible acceptance |
 | `CROSS-SMOKE` | **failed** | Android x64, iOS simulator x64, Linux managed Qt runner Release build warning/error 0 | macOS는 managed/AppKit compile 뒤 Windows에 `sips`가 없어 app icon 단계가 MSB3073 code 9009로 실패. 각 플랫폼 native/live도 별도 경계 |
 
 `WINDOWS-LIVE`와 `WEB-LIVE`는 핵심 현상 개선을 관찰했지만 계획에 적은 모든 환경과 조작을 수행하지 않았으므로 전체 PASS로 승격하지 않는다. `CROSS-SMOKE` 실패는 resize source compile 오류가 아니라 Windows 환경에 macOS 도구가 없는 packaging 경계다.
@@ -140,3 +140,11 @@ pwsh -NoProfile -File ./Doroti/eng/validate-web-product.ps1 -Shard Publish
 - Skia draw 전에 target이 바뀐 경우 host `BeginPaint/EndPaint`만 통과해 `_invalidatePending`을 해제하고 raster를 생략하는 gate를 추가했다. 또한 Paint 직후·GPU flush 전에 latest generation을 다시 검사해 뒤처진 command를 submit하지 않는다. `Context.Submit(true)` 중복 제거 실험은 `DXGI_ERROR_INVALID_CALL`을 발생시켜 즉시 철회했으며 최종 코드에는 남아 있지 않다.
 - 최종 자동 trace는 target 599, presented ACK 940, target→ACK p50 16.641 ms/p95 23.123 ms/p99 30.108 ms, generation regression 0, exact-size mismatch 0, framework exception 없음이었다. resized surface 준비는 p50 8.060 ms/p95 9.699 ms, Skia Paint는 p50 1.519 ms/p95 2.684 ms, GPU flush는 p50 1.371 ms/p95 2.904 ms였다. pre-flush에서 2건, submit 이후 pre-swap gate에서 155건을 supersede했다. ACK 기록 시점에 1세대 뒤였던 1건은 pre-swap 검사와 `Present()` 사이 수백 us 동안 새 target이 들어온 취소 불가능 race로 별도 관측한다.
 - evidence: `Doroti/validation/evidence/resize/rsz0b-default-20260821-234320.summary.json` 및 대응 raw trace. live validator는 이제 framework exception과 correctness regression을 실패 처리한다. 실제 화면에서 내부 layout이 한 frame 덜 뒤따르는지는 사용자의 빠른 drag 확인 전까지 `notVerified`다.
+
+## 12. Web retained front와 40-sample continuity smoke
+
+- viewport 변경 직후 다음 presenter rAF 전에도 default framebuffer가 비는 Chrome 구간을 sample별 PNG로 확인했다. `ResizeObserver` signal에서 app-owned retained front를 현재 default framebuffer로 즉시 GPU blit하고, 이후 exact-size staging commit을 이어가도록 보강했다.
+- request terminal은 exactly-once guard를 사용하며, WebGL context loss는 진행 중 request를 `superseded`로 끝낸다. restore는 front/staging을 새로 만들고 지원 WebGL extension 및 managed Skia context/FBO wrapper를 재구성한다.
+- sample별 PNG live gate는 40회 smoke로 확정했다.
+- Chrome current-source compatibility smoke(`web-resize-chrome-matrix-20260822-080259.summary.json`)는 40 sample, DPR/zoom-equivalent 16조합, native bounds, maximize/restore, 4× CPU slowdown, frozen/active, context loss/restore를 포함해 PASS했다. Edge 40-sample baseline(`web-resize-edge-20260822-080349.summary.json`)도 PASS했다. 두 결과 모두 blank/stale/GL error/browser exception/failed/unterminated/duplicate가 0이고 queue high-watermark는 2였다.
+- Firefox 153은 같은 CDP endpoint를 제공하지 않아 추가 WebDriver 설치 없이 중단했다. 실제 pointer window-border drag, browser UI zoom, 외부 recording, Firefox와 최종 사용자 visible acceptance는 `notVerified`다.

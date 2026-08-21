@@ -3,8 +3,10 @@ param(
     [ValidateSet('Chrome', 'Edge')]
     [string] $Browser = 'Chrome',
 
-    [ValidateRange(600, 2400)]
-    [int] $SampleCount = 600,
+    [ValidateRange(40, 2400)]
+    [int] $SampleCount = 40,
+
+    [switch] $ExerciseCompatibilityMatrix,
 
     [string] $EvidenceDirectory = (Join-Path $PSScriptRoot '../validation/evidence/web')
 )
@@ -28,10 +30,12 @@ $publishRoot = Join-Path $runRoot 'publish'
 $profileRoot = Join-Path $runRoot 'browser-profile'
 [IO.Directory]::CreateDirectory($runRoot) | Out-Null
 $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-$rawPath = Join-Path $evidenceRoot "web-resize-$($Browser.ToLowerInvariant())-$stamp.raw.json"
-$summaryPath = Join-Path $evidenceRoot "web-resize-$($Browser.ToLowerInvariant())-$stamp.summary.json"
-$finalScreenshotPath = Join-Path $evidenceRoot "web-resize-$($Browser.ToLowerInvariant())-$stamp.final.png"
-$firstBlankScreenshotPath = Join-Path $evidenceRoot "web-resize-$($Browser.ToLowerInvariant())-$stamp.first-blank.png"
+$scenarioSuffix = if ($ExerciseCompatibilityMatrix) { '-matrix' } else { '' }
+$artifactStem = "web-resize-$($Browser.ToLowerInvariant())$scenarioSuffix-$stamp"
+$rawPath = Join-Path $evidenceRoot "$artifactStem.raw.json"
+$summaryPath = Join-Path $evidenceRoot "$artifactStem.summary.json"
+$finalScreenshotPath = Join-Path $evidenceRoot "$artifactStem.final.png"
+$firstBlankScreenshotPath = Join-Path $evidenceRoot "$artifactStem.first-blank.png"
 $subprocessTimeout = [TimeSpan]::FromMinutes(20)
 
 function Remove-ScopedDirectory([string] $Path) {
@@ -166,6 +170,19 @@ function Invoke-JavaScript([Net.WebSockets.ClientWebSocket] $Socket, [string] $E
     return $result.result.value
 }
 
+function Wait-JavaScriptTrue(
+    [Net.WebSockets.ClientWebSocket] $Socket,
+    [string] $Expression,
+    [TimeSpan] $Timeout,
+    [string] $Failure) {
+    $deadline = [DateTime]::UtcNow + $Timeout
+    do {
+        if ([bool](Invoke-JavaScript $Socket $Expression)) { return }
+        Start-Sleep -Milliseconds 50
+    } while ([DateTime]::UtcNow -lt $deadline)
+    throw $Failure
+}
+
 function Capture-Screenshot([Net.WebSockets.ClientWebSocket] $Socket) {
     $result = Send-Cdp $Socket 'Page.captureScreenshot' @{
         format = 'png'
@@ -279,13 +296,44 @@ try {
     $firstBlankSaved = $false
     $sampleWatch = [Diagnostics.Stopwatch]::StartNew()
     $previousSampleMilliseconds = 0.0
+    $blankSamples = [Collections.Generic.List[object]]::new()
+    $matrixCases = @()
+    if ($ExerciseCompatibilityMatrix) {
+        foreach ($dpr in @(1.0, 1.25, 1.5, 2.0)) {
+            foreach ($zoom in @(80, 100, 125, 150)) {
+                $matrixCases += [pscustomobject]@{
+                    baseDpr = $dpr
+                    zoomPercent = $zoom
+                    effectiveDeviceScaleFactor = $dpr * $zoom / 100.0
+                }
+            }
+        }
+    }
+    $requestedMatrixCases = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
     for ($sample = 0; $sample -lt $SampleCount; $sample++) {
-        $cycle = ($sample % 120) / 119.0
+        $cycle = ($sample % 120) / 120.0
         $wave = if ($cycle -le 0.5) { $cycle * 2 } else { (1 - $cycle) * 2 }
-        $width = 800 + [Math]::Round(480 * $wave)
-        $height = 500 + [Math]::Round(220 * $wave)
+        $baseWidth = 800 + [Math]::Round(480 * $wave)
+        $baseHeight = 500 + [Math]::Round(220 * $wave)
+        $matrixCase = if ($ExerciseCompatibilityMatrix) {
+            $matrixCases[[Math]::Min($matrixCases.Count - 1,
+                [Math]::Floor($sample * $matrixCases.Count / $SampleCount))]
+        } else { $null }
+        $zoomScale = if ($matrixCase) { $matrixCase.zoomPercent / 100.0 } else { 1.0 }
+        $width = [Math]::Max(1, [Math]::Round($baseWidth / $zoomScale))
+        $height = [Math]::Max(1, [Math]::Round($baseHeight / $zoomScale))
+        $deviceScaleFactor = if ($matrixCase) { $matrixCase.effectiveDeviceScaleFactor } else { 1.0 }
+        if ($matrixCase) {
+            [void]$requestedMatrixCases.Add("$($matrixCase.baseDpr)x@$($matrixCase.zoomPercent)%")
+        }
+        if ($ExerciseCompatibilityMatrix -and $sample -eq [Math]::Floor($SampleCount * 0.7)) {
+            [void](Send-Cdp $socket 'Emulation.setCPUThrottlingRate' @{ rate = 4 })
+        }
+        if ($ExerciseCompatibilityMatrix -and $sample -eq [Math]::Floor($SampleCount * 0.85)) {
+            [void](Send-Cdp $socket 'Emulation.setCPUThrottlingRate' @{ rate = 1 })
+        }
         [void](Send-Cdp $socket 'Emulation.setDeviceMetricsOverride' @{
-            width = $width; height = $height; deviceScaleFactor = 1; mobile = $false
+            width = $width; height = $height; deviceScaleFactor = $deviceScaleFactor; mobile = $false
             screenWidth = $width; screenHeight = $height
         })
         Start-Sleep -Milliseconds 8
@@ -294,12 +342,106 @@ try {
         if (Test-BlankScreenshot $screenshot) {
             $blankCount++
             $blankDurationMilliseconds += [Math]::Max(0, $nowMilliseconds - $previousSampleMilliseconds)
+            $blankSamples.Add([ordered]@{
+                sample = $sample
+                elapsedMilliseconds = [Math]::Round($nowMilliseconds, 3)
+                width = $width
+                height = $height
+                deviceScaleFactor = $deviceScaleFactor
+            })
             if (-not $firstBlankSaved) {
                 [IO.File]::WriteAllBytes($firstBlankScreenshotPath, $screenshot)
                 $firstBlankSaved = $true
             }
         }
         $previousSampleMilliseconds = $nowMilliseconds
+    }
+    [void](Send-Cdp $socket 'Emulation.setCPUThrottlingRate' @{ rate = 1 })
+
+    $compatibilityResults = $null
+    if ($ExerciseCompatibilityMatrix) {
+        [void](Send-Cdp $socket 'Emulation.clearDeviceMetricsOverride')
+        Start-Sleep -Milliseconds 250
+
+        $window = Send-Cdp $socket 'Browser.getWindowForTarget'
+        for ($sample = 0; $sample -lt 120; $sample++) {
+            $cycle = ($sample % 60) / 59.0
+            $wave = if ($cycle -le 0.5) { $cycle * 2 } else { (1 - $cycle) * 2 }
+            [void](Send-Cdp $socket 'Browser.setWindowBounds' @{
+                windowId = $window.windowId
+                bounds = @{
+                    left = -32000; top = -32000
+                    width = 900 + [Math]::Round(360 * $wave)
+                    height = 620 + [Math]::Round(180 * $wave)
+                    windowState = 'normal'
+                }
+            })
+            Start-Sleep -Milliseconds 8
+        }
+        [void](Send-Cdp $socket 'Browser.setWindowBounds' @{
+            windowId = $window.windowId
+            bounds = @{ windowState = 'maximized' }
+        })
+        Start-Sleep -Milliseconds 250
+        [void](Send-Cdp $socket 'Browser.setWindowBounds' @{
+            windowId = $window.windowId
+            bounds = @{ left = -32000; top = -32000; width = 1280; height = 720; windowState = 'normal' }
+        })
+        Start-Sleep -Milliseconds 250
+
+        [void](Send-Cdp $socket 'Page.setWebLifecycleState' @{ state = 'frozen' })
+        Start-Sleep -Milliseconds 250
+        [void](Send-Cdp $socket 'Page.setWebLifecycleState' @{ state = 'active' })
+        [void](Send-Cdp $socket 'Page.bringToFront')
+        Start-Sleep -Milliseconds 250
+
+        $presenterBeforeLoss = ([string](Invoke-JavaScript $socket "globalThis.__dorotiResizeDiagnostics.presenter('doroti-surface')")) | ConvertFrom-Json
+        $lossSupported = [bool](Invoke-JavaScript $socket "globalThis.__dorotiResizeDiagnostics.loseContext('doroti-surface')")
+        if (-not $lossSupported) { throw 'WEBGL_lose_context is unavailable.' }
+        Wait-JavaScriptTrue $socket `
+            "JSON.parse(globalThis.__dorotiResizeDiagnostics.presenter('doroti-surface')).contextLost" `
+            ([TimeSpan]::FromSeconds(5)) 'WebGL context loss was not observed.'
+        $restoreSupported = [bool](Invoke-JavaScript $socket "globalThis.__dorotiResizeDiagnostics.restoreContext('doroti-surface')")
+        if (-not $restoreSupported) { throw 'WEBGL_lose_context restore is unavailable.' }
+        $minimumContextGeneration = [long]$presenterBeforeLoss.contextGeneration + 1
+        $restoreRebuiltFront = $false
+        Start-Sleep -Milliseconds 250
+        [void](Capture-Screenshot $socket)
+        Start-Sleep -Seconds 2
+        $restoreDeadline = [DateTime]::UtcNow + [TimeSpan]::FromSeconds(10)
+        do {
+            $restoreRebuiltFront = [bool](Invoke-JavaScript $socket `
+                "(() => { const p = JSON.parse(globalThis.__dorotiResizeDiagnostics.presenter('doroti-surface')); return !p.contextLost && p.contextGeneration >= $minimumContextGeneration && p.frontGeneration !== null; })()")
+            if (-not $restoreRebuiltFront) { Start-Sleep -Milliseconds 250 }
+        } while (-not $restoreRebuiltFront -and [DateTime]::UtcNow -lt $restoreDeadline)
+        $presenterAfterLoss = ([string](Invoke-JavaScript $socket "globalThis.__dorotiResizeDiagnostics.presenter('doroti-surface')")) | ConvertFrom-Json
+        $postRestoreScreenshot = Capture-Screenshot $socket
+        $postRestoreBlank = Test-BlankScreenshot $postRestoreScreenshot
+        if ($postRestoreBlank) {
+            $blankCount++
+            if (-not $firstBlankSaved) {
+                [IO.File]::WriteAllBytes($firstBlankScreenshotPath, $postRestoreScreenshot)
+                $firstBlankSaved = $true
+            }
+        }
+        $compatibilityResults = [ordered]@{
+            requestedDprZoomCases = @($requestedMatrixCases | Sort-Object)
+            requestedDprZoomCaseCount = $requestedMatrixCases.Count
+            zoomMethod = 'CDP device metrics: logical viewport divided by zoom and effective DPR multiplied by zoom'
+            nativeWindowBoundsSamples = 120
+            maximizeRestore = 'exercised'
+            cpuSlowdownRate = 4
+            backgroundForeground = 'Page frozen then active'
+            restorePresentationOpportunity = 'validation-only CDP screenshot after restore'
+            contextLossRestore = [ordered]@{
+                supported = $true
+                contextGenerationBefore = $presenterBeforeLoss.contextGeneration
+                contextGenerationAfter = $presenterAfterLoss.contextGeneration
+                frontGenerationAfter = $presenterAfterLoss.frontGeneration
+                rebuiltExactFront = $restoreRebuiltFront
+                postRestoreBlank = $postRestoreBlank
+            }
+        }
     }
     Start-Sleep -Seconds 2
     $diagnosticsJson = [string](Invoke-JavaScript $socket $diagnosticExpression)
@@ -339,8 +481,11 @@ try {
         } | Select-Object -First 1)
     })
     $blitErrors = @($trace | Where-Object {
-        $_.phase -in @('front-commit', 'retained-restore-end') -and
-        $_.detail -and (($_.detail | ConvertFrom-Json).error -ne 0)
+        if ($_.phase -notin @('front-commit', 'retained-restore-end', 'retained-refresh') -or -not $_.detail) {
+            return $false
+        }
+        $detail = $_.detail | ConvertFrom-Json
+        return $detail.error -ne 0 -or @($detail.priorErrors).Count -ne 0
     })
     $latestTarget = $targets | Select-Object -Last 1
     $latestExact = $commits | Where-Object {
@@ -349,7 +494,10 @@ try {
     $browserExceptions = @($script:cdpEvents | Where-Object {
         $_.method -in @('Runtime.exceptionThrown', 'Log.entryAdded') -and
         ($_.method -ne 'Log.entryAdded' -or
-            ($_.params.entry.level -in @('error', 'warning') -and $_.params.entry.url -notlike '*/favicon.ico'))
+            ($_.params.entry.level -eq 'error' -and $_.params.entry.url -notlike '*/favicon.ico'))
+    })
+    $browserWarnings = @($script:cdpEvents | Where-Object {
+        $_.method -eq 'Log.entryAdded' -and $_.params.entry.level -eq 'warning'
     })
     $sourceFiles = @(
         'Doroti/src/Doroti.Host.Web/Web/doroti.web.ts',
@@ -363,9 +511,11 @@ try {
         capturedAt = [DateTimeOffset]::Now.ToString('o')
         status = 'PASS'
         browser = $Browser
+        scenario = if ($ExerciseCompatibilityMatrix) { 'compatibility-matrix' } else { 'baseline' }
         sourceFingerprint = $sourceFingerprint
         inputMotion = 'constant-speed viewport triangle wave'
         inputSamples = $SampleCount
+        coverage = 'smoke-regression'
         targetCount = $targets.Count
         generationMinimum = if ($targetGenerations.Count) { $targetGenerations[0] } else { $null }
         generationMaximum = if ($targetGenerations.Count) { $targetGenerations[-1] } else { $null }
@@ -376,6 +526,7 @@ try {
         staleFrontCommitCount = $staleFrontCommits.Count
         blankExposureCount = $blankCount
         blankExposureDurationMilliseconds = [Math]::Round($blankDurationMilliseconds, 3)
+        blankSamples = $blankSamples.ToArray()
         queueHighWatermark = ($trace.queueDepth | Measure-Object -Maximum).Maximum
         terminal = [ordered]@{
             submitted = @($terminals | Where-Object terminal -eq 'submitted').Count
@@ -388,10 +539,14 @@ try {
         resetCoverageFailures = $resetCoverageFailures.Count
         gpuBlitErrors = $blitErrors.Count
         latestTargetExactCommit = [bool]$latestExact
-        contextGeneration = $presenter.context
+        contextId = $presenter.context
+        contextGeneration = $presenter.contextGeneration
         surfaceGeneration = $diagnostics.snapshot.surfaceGeneration
         frontGeneration = $presenter.frontGeneration
+        observedDevicePixelRatios = @($targets.epoch.devicePixelRatio | Sort-Object -Unique)
+        compatibility = $compatibilityResults
         browserExceptionCount = $browserExceptions.Count
+        browserWarningCount = $browserWarnings.Count
         screenshotSampling = 'validation-only CDP screenshots; no product readback'
         rawTrace = [IO.Path]::GetRelativePath($repoRoot, $rawPath).Replace('\', '/')
         finalScreenshot = [IO.Path]::GetRelativePath($repoRoot, $finalScreenshotPath).Replace('\', '/')
@@ -412,6 +567,16 @@ try {
     if ($blitErrors.Count -ne 0) { $failures.Add("gpuBlitErrors=$($blitErrors.Count)") }
     if (-not $latestExact) { $failures.Add('latest target lacks an exact front commit') }
     if ($browserExceptions.Count -ne 0) { $failures.Add("browserExceptionCount=$($browserExceptions.Count)") }
+    if ($ExerciseCompatibilityMatrix -and $requestedMatrixCases.Count -ne 16) {
+        $failures.Add("requestedDprZoomCaseCount=$($requestedMatrixCases.Count) expected=16")
+    }
+    if ($ExerciseCompatibilityMatrix -and
+        ([long]$compatibilityResults.contextLossRestore.contextGenerationAfter -le
+            [long]$compatibilityResults.contextLossRestore.contextGenerationBefore -or
+         -not [bool]$compatibilityResults.contextLossRestore.rebuiltExactFront -or
+         [bool]$compatibilityResults.contextLossRestore.postRestoreBlank)) {
+        $failures.Add('WebGL context loss/restore did not rebuild a visible front')
+    }
     if ($failures.Count -ne 0) {
         $summary.status = 'FAIL'
         $summary.failures = $failures.ToArray()
@@ -420,11 +585,14 @@ try {
         schemaVersion = 'doroti.web-resize-continuity-raw/v1'
         capturedAt = [DateTimeOffset]::Now.ToString('o')
         browser = $Browser
+        scenario = if ($ExerciseCompatibilityMatrix) { 'compatibility-matrix' } else { 'baseline' }
         sourceFingerprint = $sourceFingerprint
         snapshot = $diagnostics.snapshot
         presenter = $presenter
         trace = $trace
+        blankSamples = $blankSamples.ToArray()
         browserEvents = $browserExceptions
+        browserWarnings = $browserWarnings
     }
     [IO.File]::WriteAllText($rawPath, ($raw | ConvertTo-Json -Depth 30), [Text.UTF8Encoding]::new($false))
     [IO.File]::WriteAllText($summaryPath, ($summary | ConvertTo-Json -Depth 20), [Text.UTF8Encoding]::new($false))

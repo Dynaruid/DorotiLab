@@ -88,8 +88,10 @@
     }
 
     [JSInvokable]
-    public Task ContextLost()
+    public Task ContextLost(long interruptedGeneration)
     {
+        if (interruptedGeneration > 0)
+            CompletePaint?.Invoke(interruptedGeneration, false, "WebGL context lost");
         ReleaseGpu();
         return Task.CompletedTask;
     }

@@ -107,6 +107,7 @@ if ($Shard -eq 'Contract') {
         $browserHost.Contains('Action<TimeSpan>? _pendingFrame;', [StringComparison]::Ordinal)) 'Web single-rAF and latest-only queues'
     Assert-True ($webHost.Contains('const backingStoreChanged = presenter.canvas.width !== descriptor.physicalWidth', [StringComparison]::Ordinal) -and
         $webHost.Contains('if (backingStoreChanged)', [StringComparison]::Ordinal) -and
+        $webHost.Contains('refreshRetainedDefaultFramebuffer(host, source);', [StringComparison]::Ordinal) -and
         $webHost.Contains('"retained-restore-start"', [StringComparison]::Ordinal) -and
         $webHost.Contains('"retained-restore-end"', [StringComparison]::Ordinal)) 'Web backing reset restores the retained GPU front in the same task'
     Assert-True ($webHost.Contains('runtime.framebuffers[framebufferId] = framebuffer;', [StringComparison]::Ordinal) -and
@@ -118,6 +119,9 @@ if ($Shard -eq 'Contract') {
         $webHost.Contains('presenter.staging = previousFront;', [StringComparison]::Ordinal) -and
         $webHost.Contains('"CompleteFrame"', [StringComparison]::Ordinal) -and
         $renderer.Contains('public void SupersedePaint(', [StringComparison]::Ordinal)) 'Web retained front/staging swap and managed terminal handoff'
+    Assert-True ($webHost.Contains('terminalRecorded: boolean;', [StringComparison]::Ordinal) -and
+        $webHost.Contains('if (descriptor.terminalRecorded) return;', [StringComparison]::Ordinal) -and
+        $webHost.Contains('presenter.contextGeneration++;', [StringComparison]::Ordinal)) 'Web context recreation and exactly-once presenter terminal guard'
     Assert-True (-not $webHost.Contains('readPixels', [StringComparison]::Ordinal) -and
         -not $webHost.Contains('toDataURL', [StringComparison]::Ordinal) -and
         -not $webHost.Contains('getImageData', [StringComparison]::Ordinal) -and

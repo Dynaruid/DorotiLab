@@ -83,6 +83,7 @@ interface ResizeTraceEntry {
 
 interface PresentDescriptor extends ResizeEpoch {
   requestId: number;
+  terminalRecorded: boolean;
 }
 
 interface ManagedCanvasPresenter {
@@ -111,6 +112,8 @@ interface CanvasPresenter {
   canvas: HTMLCanvasElement;
   callback: ManagedCanvasPresenter;
   context: number;
+  contextGeneration: number;
+  contextLossExtension: WEBGL_lose_context | null;
   current: PresentDescriptor | null;
   latest: PresentDescriptor | null;
   raf: number;
@@ -126,6 +129,8 @@ interface ResizeDiagnostics {
   capture(hostId: number): string;
   snapshot(hostId: number): string;
   presenter(canvasId: string): string;
+  loseContext(canvasId: string): boolean;
+  restoreContext(canvasId: string): boolean;
 }
 
 interface SemanticsFlags {
@@ -195,6 +200,7 @@ const resizeDiagnostics: ResizeDiagnostics = {
     if (!presenter) throw new Error(`Canvas presenter '${canvasId}' is not initialized.`);
     return JSON.stringify({
       context: presenter.context,
+      contextGeneration: presenter.contextGeneration,
       currentRequestId: presenter.current?.requestId ?? null,
       latestRequestId: presenter.latest?.requestId ?? null,
       queueDepth: Number(presenter.current !== null) + Number(presenter.latest !== null),
@@ -204,6 +210,8 @@ const resizeDiagnostics: ResizeDiagnostics = {
       stagingFramebufferId: presenter.staging?.framebufferId ?? null,
     });
   },
+  loseContext: (canvasId) => changeDiagnosticContextState(canvasId, true),
+  restoreContext: (canvasId) => changeDiagnosticContextState(canvasId, false),
 };
 (globalThis as typeof globalThis & { __dorotiResizeDiagnostics?: ResizeDiagnostics })
   .__dorotiResizeDiagnostics = resizeDiagnostics;
@@ -306,12 +314,27 @@ function updateResizeEpoch(
 }
 
 function scheduleHostSample(host: BrowserHost, source: string): void {
+  refreshRetainedDefaultFramebuffer(host, source);
   if (host.sampleRaf !== 0) return;
   host.sampleRaf = requestAnimationFrame(() => {
     host.sampleRaf = 0;
     const rect = host.root.getBoundingClientRect();
     if (rect.width > 0 && rect.height > 0 &&
         updateResizeEpoch(host, source, rect.width, rect.height)) emit(host);
+  });
+}
+
+function refreshRetainedDefaultFramebuffer(host: BrowserHost, source: string): void {
+  const presenter = canvasPresenters.get(host.canvas.id);
+  if (!presenter || presenter.contextLost || !presenter.front) return;
+  const started = performance.now();
+  const status = blitToDefault(
+    presenter, presenter.front, presenter.canvas.width, presenter.canvas.height);
+  recordResize(host, "retained-refresh", "doroti-presenter", {
+    durationMicroseconds: Math.round((performance.now() - started) * 1000),
+    surfaceWidth: presenter.front.width,
+    surfaceHeight: presenter.front.height,
+    detail: JSON.stringify({ trigger: source, ...status }),
   });
 }
 
@@ -330,6 +353,16 @@ function armDprWatcher(host: BrowserHost): void {
 function hostForCanvas(canvas: HTMLCanvasElement): BrowserHost | undefined {
   for (const host of hosts.values()) if (host.canvas === canvas) return host;
   return undefined;
+}
+
+function changeDiagnosticContextState(canvasId: string, lose: boolean): boolean {
+  const presenter = canvasPresenters.get(canvasId);
+  if (!presenter) throw new Error(`Canvas presenter '${canvasId}' is not initialized.`);
+  const extension = presenter.contextLossExtension;
+  if (!extension) return false;
+  if (lose) extension.loseContext();
+  else extension.restoreContext();
+  return true;
 }
 
 // WebGL bootstrap adapted from SkiaSharp 4.151.1 SKHtmlCanvas.js at
@@ -486,10 +519,12 @@ export function initializeCanvasPresenter(
   });
   if (!context) throw new Error("Doroti requires a hardware WebGL2 context; creation failed.");
   const presenter: CanvasPresenter = {
-    canvas, callback, context, current: null, latest: null, raf: 0,
+    canvas, callback, context, contextGeneration: 1, contextLossExtension: null,
+    current: null, latest: null, raf: 0,
     nextRequestId: 0, contextLost: false, front: null, frontGeneration: 0,
     staging: null, listeners: [],
   };
+  presenter.contextLossExtension = presenterGl(presenter).getExtension("WEBGL_lose_context");
   const listen = (name: string, handler: EventListener): void => {
     canvas.addEventListener(name, handler);
     presenter.listeners.push({ target: canvas, name, handler });
@@ -502,18 +537,25 @@ export function initializeCanvasPresenter(
     presenter.front = null;
     presenter.staging = null;
     presenter.frontGeneration = 0;
-    if (presenter.current) recordPresenterTerminal(presenter, presenter.current, "failed", "context lost");
+    const interruptedGeneration = presenter.current?.generation ?? 0;
+    if (presenter.current) recordPresenterTerminal(presenter, presenter.current, "superseded", "context lost");
     presenter.current = null;
     const host = hostForCanvas(canvas);
     if (host) {
       updateResizeEpoch(host, "webgl-context-lost", host.logicalWidth, host.logicalHeight, true);
-      recordResize(host, "context-lost", "doroti-presenter", { terminal: "failed" });
+      recordResize(host, "context-lost", "doroti-presenter", {
+        detail: `interruptedGeneration=${interruptedGeneration}`,
+      });
       emit(host);
     }
-    void callback.invokeMethodAsync("ContextLost");
+    void callback.invokeMethodAsync("ContextLost", interruptedGeneration);
   });
   listen("webglcontextrestored", () => {
     presenter.contextLost = false;
+    presenter.contextGeneration++;
+    const restoredGl = presenterGl(presenter);
+    for (const extensionName of restoredGl.getSupportedExtensions() ?? [])
+      restoredGl.getExtension(extensionName);
     const host = hostForCanvas(canvas);
     if (host) {
       updateResizeEpoch(host, "webgl-context-restored", host.logicalWidth, host.logicalHeight, true);
@@ -539,6 +581,7 @@ export function requestPresent(
   const descriptor: PresentDescriptor = {
     requestId: ++presenter.nextRequestId, generation, logicalWidth, logicalHeight,
     physicalWidth, physicalHeight, devicePixelRatio, timestampMicroseconds,
+    terminalRecorded: false,
   };
   const host = hostForCanvas(presenter.canvas);
   if (host) recordResize(host, "present-requested", "doroti-presenter", {
@@ -668,6 +711,8 @@ function recordPresenterTerminal(
   terminal: string,
   detail: string,
   durationMicroseconds = 0): void {
+  if (descriptor.terminalRecorded) return;
+  descriptor.terminalRecorded = true;
   const host = hostForCanvas(presenter.canvas);
   if (!host) return;
   recordResize(host, terminal === "submitted" ? "submitted" : "ack", "doroti-presenter", {
@@ -682,6 +727,12 @@ export function disposeCanvasPresenter(canvasId: string): void {
   const presenter = canvasPresenters.get(canvasId);
   if (!presenter) return;
   if (presenter.raf !== 0) cancelAnimationFrame(presenter.raf);
+  if (presenter.current)
+    recordPresenterTerminal(presenter, presenter.current, "superseded", "presenter disposed");
+  if (presenter.latest)
+    recordPresenterTerminal(presenter, presenter.latest, "superseded", "presenter disposed");
+  presenter.current = null;
+  presenter.latest = null;
   for (const listener of presenter.listeners)
     listener.target.removeEventListener(listener.name, listener.handler);
   releaseGpuSurface(presenter, presenter.front);
