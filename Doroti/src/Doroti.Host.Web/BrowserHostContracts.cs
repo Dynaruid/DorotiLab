@@ -25,7 +25,8 @@ public sealed record BrowserHostSnapshot(
     string OperatingSystem,
     long Generation,
     long SurfaceGeneration,
-    BrowserGpuIdentity Gpu);
+    BrowserGpuIdentity Gpu,
+    DorotiResizeEpoch ResizeEpoch);
 
 public sealed record BrowserJavaScriptPluginDescriptor(
     string Id,
@@ -65,6 +66,13 @@ internal static partial class BrowserInterop
 
     [System.Runtime.InteropServices.JavaScript.JSImport("requestFrame", Module)]
     internal static partial void RequestFrame(int hostId, int callbackId);
+
+    [JSImport("recordManagedRaster", Module)]
+    internal static partial void RecordManagedRaster(
+        int hostId, string phase, int surfaceWidth, int surfaceHeight, double durationMicroseconds);
+
+    [JSImport("captureResizeTrace", Module)]
+    internal static partial string CaptureResizeTrace(int hostId);
 
     [System.Runtime.InteropServices.JavaScript.JSImport("closeHost", Module)]
     internal static partial void CloseHost(int hostId);
@@ -160,6 +168,12 @@ internal static partial class BrowserInterop
         {
             PropertyNameCaseInsensitive = true,
         }) ?? throw new InvalidDataException("The browser host returned an empty snapshot.");
+
+    internal static IReadOnlyList<DorotiResizeTraceEntry> ParseResizeTrace(string json) =>
+        JsonSerializer.Deserialize<DorotiResizeTraceEntry[]>(json, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+        }) ?? throw new InvalidDataException("The browser host returned an empty resize trace.");
 }
 
 [SupportedOSPlatform("browser")]
@@ -238,6 +252,11 @@ public sealed class BrowserHostAdapter :
     public int HostId { get; }
     public BrowserGpuIdentity Gpu => _snapshot.Gpu;
     public BrowserHostSnapshot Snapshot => _snapshot;
+    public IReadOnlyList<DorotiResizeTraceEntry> CaptureResizeTrace()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return BrowserInterop.ParseResizeTrace(BrowserInterop.CaptureResizeTrace(HostId));
+    }
     public ViewMetrics Metrics => ToMetrics(_snapshot);
     public PlatformConfiguration Configuration => _configuration;
 
@@ -264,6 +283,10 @@ public sealed class BrowserHostAdapter :
         ObjectDisposedException.ThrowIf(_disposed, this);
         BrowserInterop.UpdateSemantics(HostId, json);
     }
+
+    internal void RecordRaster(string phase, int width, int height, TimeSpan? duration = null) =>
+        BrowserInterop.RecordManagedRaster(
+            HostId, phase, width, height, duration?.Ticks / 10.0 ?? 0);
 
     internal event Action<long, long, string>? SemanticsAction;
 

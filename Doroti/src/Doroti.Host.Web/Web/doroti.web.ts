@@ -26,6 +26,7 @@ interface ListenerRegistration {
 
 interface BrowserHost {
   id: number;
+  root: HTMLElement;
   canvas: HTMLCanvasElement;
   input: HTMLTextAreaElement;
   semantics: HTMLElement;
@@ -33,6 +34,11 @@ interface BrowserHost {
   logicalHeight: number;
   generation: number;
   surfaceGeneration: number;
+  resizeGeneration: number;
+  resizeEpoch: ResizeEpoch;
+  resizeTrace: ResizeTraceEntry[];
+  resizeTraceSequence: number;
+  dprCheckRaf: number;
   gpu: GpuIdentity;
   observers: ResizeObserver[];
   listeners: ListenerRegistration[];
@@ -44,12 +50,40 @@ interface BrowserHost {
   multiline: boolean;
 }
 
+interface ResizeEpoch {
+  generation: number;
+  logicalWidth: number;
+  logicalHeight: number;
+  physicalWidth: number;
+  physicalHeight: number;
+  devicePixelRatio: number;
+  timestampMicroseconds: number;
+}
+
+interface ResizeTraceEntry {
+  sequence: number;
+  timestampMicroseconds: number;
+  phase: string;
+  epoch: ResizeEpoch;
+  threadId: number;
+  source: string;
+  durationMicroseconds: number;
+  rafId: number;
+  backingWidth: number;
+  backingHeight: number;
+  surfaceWidth: number;
+  surfaceHeight: number;
+  terminal: string | null;
+  detail: string | null;
+}
+
 interface SkiaSharpCanvasRuntime {
   requestAnimationFrame(renderLoop?: boolean, width?: number, height?: number): void;
   renderFrameCallback: (() => void) | { invokeMethod(name: string): void };
   dorotiResizeContinuity?: {
     requestAnimationFrame: SkiaSharpCanvasRuntime["requestAnimationFrame"];
     renderFrameCallback: SkiaSharpCanvasRuntime["renderFrameCallback"];
+    nextRafId: number;
   };
 }
 
@@ -128,7 +162,72 @@ function snapshot(host: BrowserHost): string {
     generation: ++host.generation,
     surfaceGeneration: host.surfaceGeneration,
     gpu: host.gpu,
+    resizeEpoch: host.resizeEpoch,
   });
+}
+
+function recordResize(
+  host: BrowserHost,
+  phase: string,
+  source: string,
+  options: Partial<Pick<ResizeTraceEntry,
+    "durationMicroseconds" | "rafId" | "backingWidth" | "backingHeight" |
+    "surfaceWidth" | "surfaceHeight" | "terminal" | "detail">> = {}): void {
+  host.resizeTrace.push({
+    sequence: ++host.resizeTraceSequence,
+    timestampMicroseconds: Math.round(performance.now() * 1000),
+    phase,
+    epoch: host.resizeEpoch,
+    threadId: 0,
+    source,
+    durationMicroseconds: options.durationMicroseconds ?? 0,
+    rafId: options.rafId ?? 0,
+    backingWidth: options.backingWidth ?? host.canvas.width,
+    backingHeight: options.backingHeight ?? host.canvas.height,
+    surfaceWidth: options.surfaceWidth ?? 0,
+    surfaceHeight: options.surfaceHeight ?? 0,
+    terminal: options.terminal ?? null,
+    detail: options.detail ?? null,
+  });
+  if (host.resizeTrace.length > 4096) host.resizeTrace.splice(0, host.resizeTrace.length - 4096);
+}
+
+function updateResizeEpoch(
+  host: BrowserHost,
+  source: string,
+  logicalWidth: number,
+  logicalHeight: number,
+  forceGeneration = false): boolean {
+  const ratio = Math.max(1, globalThis.devicePixelRatio || 1);
+  const physicalWidth = Math.max(1, Math.round(logicalWidth * ratio));
+  const physicalHeight = Math.max(1, Math.round(logicalHeight * ratio));
+  const previous = host.resizeEpoch;
+  const changed = forceGeneration || logicalWidth !== previous.logicalWidth ||
+    logicalHeight !== previous.logicalHeight || ratio !== previous.devicePixelRatio ||
+    physicalWidth !== previous.physicalWidth || physicalHeight !== previous.physicalHeight;
+  if (!changed) {
+    recordResize(host, "size-signal", source, { detail: "unchanged" });
+    return false;
+  }
+  host.logicalWidth = logicalWidth;
+  host.logicalHeight = logicalHeight;
+  host.surfaceGeneration++;
+  host.resizeEpoch = {
+    generation: ++host.resizeGeneration,
+    logicalWidth,
+    logicalHeight,
+    physicalWidth,
+    physicalHeight,
+    devicePixelRatio: ratio,
+    timestampMicroseconds: Math.round(performance.now() * 1000),
+  };
+  recordResize(host, "target", source);
+  return true;
+}
+
+function hostForCanvas(canvas: HTMLCanvasElement): BrowserHost | undefined {
+  for (const host of hosts.values()) if (host.canvas === canvas) return host;
+  return undefined;
 }
 
 export function installCanvasResizeContinuity(canvasId: string): void {
@@ -144,25 +243,46 @@ export function installCanvasResizeContinuity(canvasId: string): void {
   runtime.dorotiResizeContinuity = {
     requestAnimationFrame: originalRequest,
     renderFrameCallback: originalCallback,
+    nextRafId: 0,
   };
   runtime.requestAnimationFrame = (renderLoop?: boolean, width?: number, height?: number): void => {
+    const host = hostForCanvas(canvas);
+    const rafId = ++runtime.dorotiResizeContinuity!.nextRafId;
     if (width && height) {
       pendingWidth = width;
       pendingHeight = height;
+      if (host) recordResize(host, "size-signal", "skia-watcher", {
+        rafId, backingWidth: canvas.width, backingHeight: canvas.height,
+        surfaceWidth: width, surfaceHeight: height,
+      });
     }
     // SkiaSharp normally changes canvas.width/height here, which clears the
     // WebGL backing store before the requested animation frame can repaint it.
     originalRequest(renderLoop);
   };
   runtime.renderFrameCallback = (): void => {
+    const started = performance.now();
+    const host = hostForCanvas(canvas);
+    const rafId = runtime.dorotiResizeContinuity?.nextRafId ?? 0;
     if (pendingWidth > 0 && pendingHeight > 0) {
       if (canvas.width !== pendingWidth) canvas.width = pendingWidth;
       if (canvas.height !== pendingHeight) canvas.height = pendingHeight;
       pendingWidth = 0;
       pendingHeight = 0;
+      if (host) recordResize(host, "backing-store", "backing-store", {
+        rafId, backingWidth: canvas.width, backingHeight: canvas.height,
+      });
     }
     if (typeof originalCallback === "function") originalCallback.call(runtime);
     else originalCallback.invokeMethod("Invoke");
+    if (host) {
+      recordResize(host, "submitted", "browser-rAF", {
+        durationMicroseconds: Math.round((performance.now() - started) * 1000),
+        rafId, backingWidth: canvas.width, backingHeight: canvas.height,
+        terminal: "submitted",
+        detail: "browser callback return; not a display scan-out acknowledgement",
+      });
+    }
   };
 }
 
@@ -243,18 +363,33 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   if (!managed) throw new Error("Doroti browser managed callbacks must be configured before host creation.");
   if (hosts.has(hostId)) throw new Error(`Doroti browser host ${hostId} already exists.`);
   const canvas = document.getElementById(canvasId);
+  const root = canvas?.closest(".doroti-root");
   const input = document.getElementById("doroti-ime");
   const semantics = document.getElementById("doroti-semantics");
   if (!(canvas instanceof HTMLCanvasElement)) throw new Error(`Canvas '#${canvasId}' was not found.`);
+  if (!(root instanceof HTMLElement)) throw new Error("Doroti root host was not found.");
   if (!(input instanceof HTMLTextAreaElement)) throw new Error("Doroti hidden text input was not found.");
   if (!(semantics instanceof HTMLElement)) throw new Error("Doroti semantics host was not found.");
 
+  const initialRect = root.getBoundingClientRect();
+  logicalWidth = initialRect.width > 0 ? initialRect.width : logicalWidth;
+  logicalHeight = initialRect.height > 0 ? initialRect.height : logicalHeight;
+  const ratio = Math.max(1, globalThis.devicePixelRatio || 1);
+  const initialEpoch: ResizeEpoch = {
+    generation: 1, logicalWidth, logicalHeight,
+    physicalWidth: Math.max(1, Math.round(logicalWidth * ratio)),
+    physicalHeight: Math.max(1, Math.round(logicalHeight * ratio)),
+    devicePixelRatio: ratio, timestampMicroseconds: Math.round(performance.now() * 1000),
+  };
   const host: BrowserHost = {
-    id: hostId, canvas, input, semantics, logicalWidth, logicalHeight,
-    generation: 0, surfaceGeneration: 1, gpu: gpuIdentity(canvas), observers: [], listeners: [],
+    id: hostId, root, canvas, input, semantics, logicalWidth, logicalHeight,
+    generation: 0, surfaceGeneration: 1, resizeGeneration: 1, resizeEpoch: initialEpoch,
+    resizeTrace: [], resizeTraceSequence: 0, dprCheckRaf: 0,
+    gpu: gpuIdentity(canvas), observers: [], listeners: [],
     composing: false, compositionStart: -1, viewFocused: false, pressedKeys: new Map(),
     inputAction: 2, multiline: false,
   };
+  recordResize(host, "target", "host-initial");
   const observe = (target: EventTarget, name: string, handler: EventListener): void => {
     target.addEventListener(name, handler);
     host.listeners.push({ target, name, handler });
@@ -262,7 +397,14 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   observe(document, "visibilitychange", () => emit(host));
   observe(globalThis, "focus", () => emit(host));
   observe(globalThis, "blur", () => { releasePressedKeys(host); setViewFocus(host, false, performance.now()); emit(host); });
-  observe(globalThis, "resize", () => { host.surfaceGeneration++; emit(host); });
+  observe(globalThis, "resize", () => {
+    if (host.dprCheckRaf !== 0) return;
+    host.dprCheckRaf = requestAnimationFrame(() => {
+      host.dprCheckRaf = 0;
+      const rect = host.root.getBoundingClientRect();
+      if (updateResizeEpoch(host, "window-resize-dpr-signal", rect.width, rect.height)) emit(host);
+    });
+  });
   observe(globalThis, "languagechange", () => emit(host));
   const colorScheme = globalThis.matchMedia?.("(prefers-color-scheme: dark)");
   if (colorScheme) observe(colorScheme, "change", () => emit(host));
@@ -334,20 +476,25 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
       requireManaged().dispatchTextAction(host.id, host.inputAction);
     }
   });
-  observe(canvas, "webglcontextlost", (event) => { event.preventDefault(); host.surfaceGeneration++; emit(host); });
-  observe(canvas, "webglcontextrestored", () => { host.surfaceGeneration++; host.gpu = gpuIdentity(canvas); emit(host); });
+  observe(canvas, "webglcontextlost", (event) => {
+    event.preventDefault();
+    updateResizeEpoch(host, "webgl-context-lost", host.logicalWidth, host.logicalHeight, true);
+    recordResize(host, "context-lost", "webgl-context-lost", { terminal: "failed" });
+    emit(host);
+  });
+  observe(canvas, "webglcontextrestored", () => {
+    updateResizeEpoch(host, "webgl-context-restored", host.logicalWidth, host.logicalHeight, true);
+    host.gpu = gpuIdentity(canvas);
+    recordResize(host, "context-restored", "webgl-context-restored");
+    emit(host);
+  });
   if (globalThis.ResizeObserver) {
     const observer = new ResizeObserver((entries) => {
       const rect = entries[0]?.contentRect;
       if (rect && rect.width > 0 && rect.height > 0 &&
-          (rect.width !== host.logicalWidth || rect.height !== host.logicalHeight)) {
-        host.logicalWidth = rect.width;
-        host.logicalHeight = rect.height;
-        host.surfaceGeneration++;
-        emit(host);
-      }
+          updateResizeEpoch(host, "host-observer", rect.width, rect.height)) emit(host);
     });
-    observer.observe(canvas);
+    observer.observe(root);
     host.observers.push(observer);
   }
   hosts.set(hostId, host);
@@ -370,11 +517,9 @@ export function requestFocus(hostId: number, focused: boolean): string {
 
 export function resizeHost(hostId: number, logicalWidth: number, logicalHeight: number): string {
   const host = requireHost(hostId);
-  host.logicalWidth = logicalWidth;
-  host.logicalHeight = logicalHeight;
-  host.canvas.style.width = `${logicalWidth}px`;
-  host.canvas.style.height = `${logicalHeight}px`;
-  host.surfaceGeneration++;
+  host.root.style.width = `${logicalWidth}px`;
+  host.root.style.height = `${logicalHeight}px`;
+  updateResizeEpoch(host, "inline-style", logicalWidth, logicalHeight);
   return snapshot(host);
 }
 
@@ -385,10 +530,31 @@ export function requestFrame(hostId: number, callbackId: number): void {
   });
 }
 
+export function recordManagedRaster(
+  hostId: number,
+  phase: string,
+  surfaceWidth: number,
+  surfaceHeight: number,
+  durationMicroseconds: number): void {
+  const host = requireHost(hostId);
+  recordResize(host, phase, "managed-skia", {
+    durationMicroseconds,
+    backingWidth: host.canvas.width,
+    backingHeight: host.canvas.height,
+    surfaceWidth,
+    surfaceHeight,
+  });
+}
+
+export function captureResizeTrace(hostId: number): string {
+  return JSON.stringify(requireHost(hostId).resizeTrace);
+}
+
 export function closeHost(hostId: number): void {
   const host = hosts.get(hostId);
   if (!host) return;
   releasePressedKeys(host);
+  if (host.dprCheckRaf !== 0) cancelAnimationFrame(host.dprCheckRaf);
   for (const observer of host.observers) observer.disconnect();
   for (const listener of host.listeners) listener.target.removeEventListener(listener.name, listener.handler);
   hosts.delete(hostId);

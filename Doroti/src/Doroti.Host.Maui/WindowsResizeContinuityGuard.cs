@@ -1,6 +1,7 @@
 #if WINDOWS
 using System.Runtime.InteropServices;
 using Microsoft.UI.Xaml;
+using Doroti.Ui;
 using SkiaSharp.Views.Maui.Controls;
 
 namespace Doroti.Host.Maui;
@@ -24,6 +25,7 @@ internal sealed class WindowsResizeContinuityGuard : IDisposable
     private readonly Action<MauiPaintCompletion> _presentCompleted;
     private readonly SubclassProc _subclassProc;
     private readonly nuint _subclassId;
+    private readonly DorotiResizeTrace _trace = new();
     private nint _hwnd;
     private MauiPaintCompletion? _synchronousCompletion;
     private long _activations;
@@ -34,6 +36,10 @@ internal sealed class WindowsResizeContinuityGuard : IDisposable
     private bool _insideResize;
     private bool _active;
     private bool _disposed;
+    private long _resizeGeneration;
+    private DorotiResizeEpoch? _currentEpoch;
+    private (double Width, double Height, double Density) _lastTarget;
+    private bool _dwmCompositionEnabled;
 
     internal WindowsResizeContinuityGuard(
         SKGLView view,
@@ -58,7 +64,38 @@ internal sealed class WindowsResizeContinuityGuard : IDisposable
         ResizeContinuityActive = Volatile.Read(ref _active),
         ResizeSynchronousPresents = Interlocked.Read(ref _synchronousPresents),
         ResizeSynchronousMisses = Interlocked.Read(ref _synchronousMisses),
+        DwmCompositionEnabled = _dwmCompositionEnabled,
+        EglSwapIntervalPolicy = "unknown-default-public-SKGLView",
+        ExactSwapTimingAvailable = false,
+        ResizeTrace = _trace.Snapshot(),
     };
+
+    internal void Record(
+        string phase,
+        DorotiResizeEpoch epoch,
+        string source,
+        TimeSpan? duration = null,
+        int surfaceWidth = 0,
+        int surfaceHeight = 0,
+        string? terminal = null,
+        string? detail = null) =>
+        _trace.Record(phase, epoch, source, duration,
+            surfaceWidth: surfaceWidth, surfaceHeight: surfaceHeight,
+            terminal: terminal, detail: detail);
+
+    internal void RecordRasterStart(int width, int height)
+    {
+        if (_currentEpoch is { } epoch)
+            Record("raster-start", epoch, "SKGLView.PaintSurface",
+                surfaceWidth: width, surfaceHeight: height);
+    }
+
+    internal void RecordRasterEnd(int width, int height, TimeSpan duration)
+    {
+        if (_currentEpoch is { } epoch)
+            Record("raster-end", epoch, "SKGLView.PaintSurface", duration,
+                surfaceWidth: width, surfaceHeight: height);
+    }
 
     /// <summary>
     /// Called from SKGLView.PaintSurface immediately before SKSwapChainPanel
@@ -123,7 +160,12 @@ internal sealed class WindowsResizeContinuityGuard : IDisposable
         try
         {
             var result = DefSubclassProc(hwnd, message, wParam, lParam);
-            SynchronizeResize();
+            SynchronizeResize(message switch
+            {
+                WmSize => "WM_SIZE",
+                WmDpiChanged => "WM_DPICHANGED",
+                _ => "WM_EXITSIZEMOVE",
+            });
             return result;
         }
         finally
@@ -132,7 +174,7 @@ internal sealed class WindowsResizeContinuityGuard : IDisposable
         }
     }
 
-    private void SynchronizeResize()
+    private void SynchronizeResize(string source)
     {
         if (_disposed || !_view.IsLoaded ||
             _view.Handler?.PlatformView is not FrameworkElement native ||
@@ -144,7 +186,25 @@ internal sealed class WindowsResizeContinuityGuard : IDisposable
         {
             native.UpdateLayout();
             var density = Math.Max(1, native.XamlRoot?.RasterizationScale ?? 1);
-            _prepareFrame(new(native.ActualWidth, native.ActualHeight, density));
+            var target = (native.ActualWidth, native.ActualHeight, density);
+            if (target != _lastTarget)
+            {
+                _lastTarget = target;
+                _resizeGeneration++;
+            }
+            var epoch = new DorotiResizeEpoch(
+                _resizeGeneration,
+                native.ActualWidth,
+                native.ActualHeight,
+                Math.Max(1, checked((int)Math.Round(native.ActualWidth * density))),
+                Math.Max(1, checked((int)Math.Round(native.ActualHeight * density))),
+                density,
+                DorotiFrameClock.Now.Ticks / 10);
+            _currentEpoch = epoch;
+            Record("target", epoch, source);
+            var prepareStarted = DorotiFrameClock.Now;
+            _prepareFrame(new(native.ActualWidth, native.ActualHeight, density, epoch));
+            Record("framework-ready", epoch, "synchronous-resize", DorotiFrameClock.Now - prepareStarted);
 
             _synchronousCompletion = null;
             _synchronousPaint = true;
@@ -152,27 +212,45 @@ internal sealed class WindowsResizeContinuityGuard : IDisposable
             {
                 // The Windows handler renders synchronously with HasRenderLoop
                 // disabled. Returning means eglSwapBuffers completed.
+                var swapBoundaryStarted = DorotiFrameClock.Now;
+                Record("swap-boundary-start", epoch, "SKGLView.InvalidateSurface",
+                    detail: "aggregate paint plus ANGLE swap; exact eglSwapBuffers timing unavailable");
                 _view.InvalidateSurface();
+                Record("swap-boundary-end", epoch, "SKGLView.InvalidateSurface",
+                    DorotiFrameClock.Now - swapBoundaryStarted,
+                    detail: "aggregate paint plus ANGLE swap; exact eglSwapBuffers timing unavailable");
             }
             finally
             {
                 _synchronousPaint = false;
             }
 
-            _ = DwmFlush();
+            _dwmCompositionEnabled = DwmIsCompositionEnabled(out var compositionEnabled) == 0 && compositionEnabled;
+            var dwmStarted = DorotiFrameClock.Now;
+            Record("dwm-flush-start", epoch, "DwmFlush",
+                detail: $"composition={_dwmCompositionEnabled}");
+            var dwmResult = DwmFlush();
+            Record("dwm-flush-end", epoch, "DwmFlush", DorotiFrameClock.Now - dwmStarted,
+                detail: $"hresult={dwmResult}; composition={_dwmCompositionEnabled}");
             if (_synchronousCompletion is { } completion)
             {
                 Interlocked.Increment(ref _synchronousPresents);
+                Record("ack", epoch, "SKGLView return plus DwmFlush",
+                    terminal: "presented",
+                    detail: $"scene={completion.SceneSequence}; surface={completion.SurfaceGeneration}");
                 _presentCompleted(completion);
             }
             else
             {
                 Interlocked.Increment(ref _synchronousMisses);
+                Record("ack", epoch, "SKGLView return plus DwmFlush",
+                    terminal: "dropped", detail: "PaintSurface produced no scene completion");
             }
         }
         finally
         {
             _synchronousCompletion = null;
+            _currentEpoch = null;
             _active = false;
             Interlocked.Increment(ref _deactivations);
         }
@@ -225,5 +303,8 @@ internal sealed class WindowsResizeContinuityGuard : IDisposable
 
     [DllImport("dwmapi.dll", PreserveSig = true)]
     private static extern int DwmFlush();
+
+    [DllImport("dwmapi.dll", PreserveSig = true)]
+    private static extern int DwmIsCompositionEnabled([MarshalAs(UnmanagedType.Bool)] out bool enabled);
 }
 #endif

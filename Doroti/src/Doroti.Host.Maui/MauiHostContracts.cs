@@ -31,7 +31,11 @@ public sealed record MauiSurfaceSnapshot(
     long ResizeContinuityDeactivations = 0,
     bool ResizeContinuityActive = false,
     long ResizeSynchronousPresents = 0,
-    long ResizeSynchronousMisses = 0);
+    long ResizeSynchronousMisses = 0,
+    bool DwmCompositionEnabled = false,
+    string EglSwapIntervalPolicy = "not-applicable",
+    bool ExactSwapTimingAvailable = false,
+    IReadOnlyList<DorotiResizeTraceEntry>? ResizeTrace = null);
 
 public sealed record MauiFrameDiagnostics(
     long Submitted,

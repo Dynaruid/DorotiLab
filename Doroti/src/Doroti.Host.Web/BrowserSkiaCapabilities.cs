@@ -13,11 +13,13 @@ internal sealed class BrowserSkiaCapabilities :
     ISemanticsHostCapability, IDisposable
 {
     private readonly HostBridge _bridge;
+    private readonly BrowserHostAdapter _host;
     private readonly SkiaSceneRenderer _renderer;
 
     internal BrowserSkiaCapabilities(ulong viewId, BrowserHostAdapter host,
         Color? backgroundColor, Color? darkBackgroundColor)
     {
+        _host = host;
         _bridge = new(host);
         _renderer = new(viewId, _bridge, backgroundColor, darkBackgroundColor,
             "browser-wasm/document-canvas-webgl2", DorotiSkiaRuntimeEffects.WebGpuBackend,
@@ -51,8 +53,18 @@ internal sealed class BrowserSkiaCapabilities :
 
     internal void Paint(SKSurface surface, int pixelWidth, int pixelHeight)
     {
-        if (_renderer.Paint(surface, pixelWidth, pixelHeight) is { } completion)
-            _renderer.CompletePaint(completion);
+        var started = DorotiFrameClock.Now;
+        _host.RecordRaster("raster-start", pixelWidth, pixelHeight);
+        try
+        {
+            if (_renderer.Paint(surface, pixelWidth, pixelHeight) is { } completion)
+                _renderer.CompletePaint(completion);
+        }
+        finally
+        {
+            _host.RecordRaster("raster-end", pixelWidth, pixelHeight,
+                DorotiFrameClock.Now - started);
+        }
     }
 
     public Paragraph Layout(ParagraphRequest request, DartUiInvocation invocation) =>

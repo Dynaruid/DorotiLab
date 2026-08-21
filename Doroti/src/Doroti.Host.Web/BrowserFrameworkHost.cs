@@ -70,6 +70,11 @@ public sealed class BrowserFrameworkHost : IDisposable
             ? value.Host.Snapshot
             : throw new KeyNotFoundException($"Browser Doroti view {viewId} is not registered.");
 
+    public IReadOnlyList<DorotiResizeTraceEntry> CaptureResizeTrace(ulong viewId) =>
+        _views.TryGetValue(viewId, out var value)
+            ? value.Host.CaptureResizeTrace()
+            : throw new KeyNotFoundException($"Browser Doroti view {viewId} is not registered.");
+
     public BrowserFrameDiagnostics CaptureFrameDiagnostics(ulong viewId) =>
         _views.TryGetValue(viewId, out var value)
             ? value.Graphics.Diagnostics

@@ -47,11 +47,14 @@ internal readonly record struct MauiSurfacePointerData(
 internal readonly record struct MauiSynchronousResize(
     double LogicalWidth,
     double LogicalHeight,
-    double Density);
+    double Density,
+    DorotiResizeEpoch Epoch);
 
 internal interface IMauiSynchronousResizeSurface
 {
     event Action<MauiSynchronousResize>? SynchronousResize;
+    void RecordResizePhase(string phase, DorotiResizeEpoch epoch, TimeSpan? duration = null,
+        string? terminal = null, string? detail = null);
 }
 #endif
 
@@ -162,7 +165,17 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
                 "Android/MauiSKGLTextureView/OpenGL-ES-Skia"
 #endif
             );
+            var rasterStarted = DorotiFrameClock.Now;
+#if WINDOWS
+            _resizeContinuity.RecordRasterStart(
+                args.BackendRenderTarget.Width, args.BackendRenderTarget.Height);
+#endif
             Paint?.Invoke(context);
+#if WINDOWS
+            _resizeContinuity.RecordRasterEnd(
+                args.BackendRenderTarget.Width, args.BackendRenderTarget.Height,
+                DorotiFrameClock.Now - rasterStarted);
+#endif
             if (context.Completion is not { } completion) return;
 #if WINDOWS
             if (!_resizeContinuity.CaptureSynchronousCompletion(completion))
@@ -220,6 +233,11 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
 
     private void CompleteSynchronousPresent(MauiPaintCompletion completion) =>
         PresentCompleted?.Invoke(completion, false);
+
+    public void RecordResizePhase(string phase, DorotiResizeEpoch epoch, TimeSpan? duration = null,
+        string? terminal = null, string? detail = null) =>
+        _resizeContinuity.Record(phase, epoch, "maui-host-adapter", duration,
+            terminal: terminal, detail: detail);
 #endif
 
     public void Dispose()

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "doroti.resize-continuity-evidence/v1",
+  "capturedAt": "2026-08-21T16:41:15+09:00",
+  "status": "failed-rsz0-stop",
+  "build": {
+    "ui": "pass",
+    "windowsHost": "pass",
+    "webHostAndTypeScript": "pass"
+  },
+  "windowsAutomatedSupplement": {
+    "interactiveMouseDrag": "notVerified",
+    "screenRecording": "notVerified",
+    "resizeOperations": 227,
+    "traceEntries": 2724,
+    "resizeContinuityActivations": 227,
+    "synchronousPresents": 227,
+    "synchronousMisses": 0,
+    "generationMinimum": 1,
+    "generationMaximum": 227,
+    "generationRegressions": 0,
+    "aggregatePaintAndSwapMicroseconds": {
+      "p50": 1181,
+      "p95": 3222,
+      "p99": 3492
+    },
+    "dwmFlushMicroseconds": {
+      "p50": 5054,
+      "p95": 7324,
+      "p99": 7617
+    },
+    "dwmCompositionEnabled": true,
+    "eglSwapIntervalPolicy": "unknown-default-public-SKGLView",
+    "exactEglSwapTimingAvailable": false,
+    "closeWithinFiveSeconds": "pass",
+    "runnerResult": "failed",
+    "runnerFailure": "Doroti.Runtime.AssertionError from RenderFlex overflow during automated small-window resizing",
+    "rawTraceRetained": false
+  },
+  "webLive": "notVerified",
+  "gate": {
+    "result": "failed",
+    "reason": "SkiaSharp Views 4.151.1 public SKGLView exposes only an aggregate InvalidateSurface boundary; eglSwapBuffers wait cannot be timed separately and the active EGL swap interval cannot be read or controlled safely.",
+    "requiredNextStep": "Add an exact post-swap and EGL policy hook in a pinned minimal SkiaSharp Views fork or replace the Windows surface with a Doroti-owned ANGLE surface, then repeat RSZ-0 interactive evidence."
+  },
+  "downstream": {
+    "WIN-RSZ-1": "notVerified",
+    "WIN-RSZ-2": "notVerified",
+    "WIN-RSZ-3": "notVerified",
+    "WEB-RSZ-1": "notVerified",
+    "WEB-RSZ-2": "notVerified",
+    "WEB-RSZ-3": "notVerified",
+    "CROSS-RSZ": "notVerified"
+  }
+}

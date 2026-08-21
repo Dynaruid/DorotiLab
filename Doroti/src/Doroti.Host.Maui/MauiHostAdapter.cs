@@ -412,6 +412,7 @@ internal sealed class MauiHostAdapter :
     private void HandleSynchronousResize(MauiSynchronousResize resize)
     {
         if (_disposed || resize.LogicalWidth <= 0 || resize.LogicalHeight <= 0) return;
+        var metricsStarted = DorotiFrameClock.Now;
         var logicalSize = new Size(resize.LogicalWidth, resize.LogicalHeight);
         var density = Math.Max(1, resize.Density);
         var metricsChanged = !_logicalSize.Equals(logicalSize) ||
@@ -423,10 +424,17 @@ internal sealed class MauiHostAdapter :
             _metricsGeneration++;
             MetricsChanged?.Invoke(Metrics);
         }
+        _synchronousResizeSurface?.RecordResizePhase(
+            "metrics-dispatch", resize.Epoch, DorotiFrameClock.Now - metricsStarted,
+            detail: metricsChanged ? "changed" : "unchanged");
 
         // Metrics handlers schedule the framework frame. Consume it now so
         // the scene is ready before the HWND subclass asks ANGLE to present.
+        var buildStarted = DorotiFrameClock.Now;
+        _synchronousResizeSurface?.RecordResizePhase("build-start", resize.Epoch);
         DispatchPendingFrame(DorotiFrameClock.Now);
+        _synchronousResizeSurface?.RecordResizePhase(
+            "build-end", resize.Epoch, DorotiFrameClock.Now - buildStarted);
     }
 
     private void SubscribeToCompositionVsync()
