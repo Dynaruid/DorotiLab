@@ -1,4 +1,7 @@
 using Doroti.Hosting;
+#if WINDOWS
+using Microsoft.Maui.LifecycleEvents;
+#endif
 #if MACOS
 using Microsoft.Maui.Platforms.MacOS.Platform;
 #endif
@@ -18,8 +21,24 @@ public abstract class DorotiMauiWinUIApplication : MauiWinUIApplication
     protected sealed override MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
+        builder.ConfigureLifecycleEvents(events =>
+            events.AddWindows(windows => windows.OnWindowCreated(window =>
+                window.Closed += HandlePlatformWindowClosed)));
         ConfigurePlatform(builder);
         return builder.UseDorotiApplication(CreateApplicationDescriptor()).Build();
+    }
+
+    private static void HandlePlatformWindowClosed(
+        object sender,
+        Microsoft.UI.Xaml.WindowEventArgs args)
+    {
+        _ = sender;
+        _ = args;
+        // The Doroti Windows runner owns one window. Angle's render worker can
+        // still be waiting on the dispatcher after that window closes, so the
+        // normal WinUI exit request alone may not let `dotnet run` return.
+        Microsoft.UI.Xaml.Application.Current.Exit();
+        Environment.Exit(0);
     }
 
     protected abstract DorotiApplicationDescriptor CreateApplicationDescriptor();

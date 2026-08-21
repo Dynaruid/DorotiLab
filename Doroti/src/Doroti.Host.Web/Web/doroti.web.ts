@@ -44,6 +44,17 @@ interface BrowserHost {
   multiline: boolean;
 }
 
+interface SkiaSharpCanvasRuntime {
+  requestAnimationFrame(renderLoop?: boolean, width?: number, height?: number): void;
+  renderFrameCallback: (() => void) | { invokeMethod(name: string): void };
+  dorotiResizeContinuity?: {
+    requestAnimationFrame: SkiaSharpCanvasRuntime["requestAnimationFrame"];
+    renderFrameCallback: SkiaSharpCanvasRuntime["renderFrameCallback"];
+  };
+}
+
+type SkiaSharpCanvasElement = HTMLCanvasElement & { SKHtmlCanvas?: SkiaSharpCanvasRuntime };
+
 interface SemanticsFlags {
   checked?: string; selected?: boolean; enabled?: boolean; toggled?: boolean;
   expanded?: boolean; required?: boolean; focused?: boolean; button?: boolean;
@@ -104,10 +115,6 @@ let managed: ManagedCallbacks | null = null;
 
 function snapshot(host: BrowserHost): string {
   const ratio = Math.max(1, globalThis.devicePixelRatio || 1);
-  const pixelWidth = Math.max(1, Math.round(host.logicalWidth * ratio));
-  const pixelHeight = Math.max(1, Math.round(host.logicalHeight * ratio));
-  if (host.canvas.width !== pixelWidth) host.canvas.width = pixelWidth;
-  if (host.canvas.height !== pixelHeight) host.canvas.height = pixelHeight;
   return JSON.stringify({
     canvasId: host.canvas.id,
     logicalWidth: host.logicalWidth,
@@ -122,6 +129,50 @@ function snapshot(host: BrowserHost): string {
     surfaceGeneration: host.surfaceGeneration,
     gpu: host.gpu,
   });
+}
+
+export function installCanvasResizeContinuity(canvasId: string): void {
+  const canvas = document.getElementById(canvasId) as SkiaSharpCanvasElement | null;
+  const runtime = canvas?.SKHtmlCanvas;
+  if (!canvas || !runtime) throw new Error(`SkiaSharp canvas runtime '#${canvasId}' is not initialized.`);
+  if (runtime.dorotiResizeContinuity) return;
+
+  const originalRequest = runtime.requestAnimationFrame.bind(runtime);
+  const originalCallback = runtime.renderFrameCallback;
+  let pendingWidth = 0;
+  let pendingHeight = 0;
+  runtime.dorotiResizeContinuity = {
+    requestAnimationFrame: originalRequest,
+    renderFrameCallback: originalCallback,
+  };
+  runtime.requestAnimationFrame = (renderLoop?: boolean, width?: number, height?: number): void => {
+    if (width && height) {
+      pendingWidth = width;
+      pendingHeight = height;
+    }
+    // SkiaSharp normally changes canvas.width/height here, which clears the
+    // WebGL backing store before the requested animation frame can repaint it.
+    originalRequest(renderLoop);
+  };
+  runtime.renderFrameCallback = (): void => {
+    if (pendingWidth > 0 && pendingHeight > 0) {
+      if (canvas.width !== pendingWidth) canvas.width = pendingWidth;
+      if (canvas.height !== pendingHeight) canvas.height = pendingHeight;
+      pendingWidth = 0;
+      pendingHeight = 0;
+    }
+    if (typeof originalCallback === "function") originalCallback.call(runtime);
+    else originalCallback.invokeMethod("Invoke");
+  };
+}
+
+export function uninstallCanvasResizeContinuity(canvasId: string): void {
+  const runtime = (document.getElementById(canvasId) as SkiaSharpCanvasElement | null)?.SKHtmlCanvas;
+  const registration = runtime?.dorotiResizeContinuity;
+  if (!runtime || !registration) return;
+  runtime.requestAnimationFrame = registration.requestAnimationFrame;
+  runtime.renderFrameCallback = registration.renderFrameCallback;
+  delete runtime.dorotiResizeContinuity;
 }
 
 function browserOperatingSystem(): string {

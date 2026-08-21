@@ -37,6 +37,7 @@
         if (!firstRender || _started) return;
         _started = true;
         await BrowserHostRuntime.EnsureInitializedAsync();
+        BrowserInterop.InstallCanvasResizeContinuity(CanvasId);
         _target = BrowserTarget;
         _session = new DorotiHostSession(Application.EntrypointFactory());
         using var dispatcherScope = _session.dispatcher.EnterScope();
@@ -60,6 +61,7 @@
     public ValueTask DisposeAsync()
     {
         using var dispatcherScope = _session?.dispatcher.EnterScope();
+        BrowserInterop.UninstallCanvasResizeContinuity(CanvasId);
         _view?.Dispose();
         _boundary?.Dispose();
         _target?.Dispose();

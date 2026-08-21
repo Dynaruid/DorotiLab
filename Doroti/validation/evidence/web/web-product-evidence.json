@@ -1,6 +1,6 @@
 {
   "schemaVersion": "doroti.web-product-evidence/v2",
-  "capturedAt": "2026-08-19T02:52:36.5365493+00:00",
+  "capturedAt": "2026-08-21T01:19:40.9611203+00:00",
   "status": "pass-build-publish",
   "runnerProject": "DorotiDemoApp/web/DorotiDemoApp.Web.csproj",
   "targetFramework": "net10.0",
@@ -8,6 +8,7 @@
   "host": "BlazorWebAssembly",
   "publish": {
     "index": "pass",
+    "blazorBootLoader": "pass",
     "bootstrap": "pass",
     "plugin": "pass",
     "typeScriptSourceFiles": 0

@@ -12,6 +12,7 @@
     <DefineConstants>$(DefineConstants);DOROTI_BROWSER</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.11" />
     <DorotiTargetDescriptor Include="Web" HostKind="BlazorWebAssembly" NativeEntryKind="Managed-Main"
         RuntimeIdentifier="browser-wasm" TargetFramework="net10.0" TargetPackage="Doroti.Target.Web.browser-wasm" />
     <ProjectReference Include="..\..\Doroti\src\Doroti.Target.Web.browser-wasm\Doroti.Target.Web.browser-wasm.csproj" />

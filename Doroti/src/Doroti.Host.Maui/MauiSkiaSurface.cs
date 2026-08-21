@@ -43,6 +43,18 @@ internal readonly record struct MauiSurfacePointerData(
     PointerSignalKind SignalKind,
     double Pressure);
 
+#if WINDOWS
+internal readonly record struct MauiSynchronousResize(
+    double LogicalWidth,
+    double LogicalHeight,
+    double Density);
+
+internal interface IMauiSynchronousResizeSurface
+{
+    event Action<MauiSynchronousResize>? SynchronousResize;
+}
+#endif
+
 /// <summary>
 /// Small platform surface boundary shared by the SKGLView and AppKit Metal paths.
 /// Native view and command-buffer ownership stay behind this contract.
@@ -68,15 +80,24 @@ internal interface IMauiSkiaSurface : IDisposable
 
 #if !MACOS
 internal sealed class MauiSkglSurface : IMauiSkiaSurface
+#if WINDOWS
+    , IMauiSynchronousResizeSurface
+#endif
 {
     private readonly SKGLView _view;
     private readonly IDisposable _nativeInput;
+#if WINDOWS
+    private readonly WindowsResizeContinuityGuard _resizeContinuity;
+#endif
     private bool _disposed;
 
     internal MauiSkglSurface(MauiTextInputBridge textInput, ulong viewId)
     {
         _view = new SKGLView { HasRenderLoop = false, EnableTouchEvents = true };
         _nativeInput = MauiNativeInput.Attach(_view, textInput, viewId, data => Key?.Invoke(data));
+#if WINDOWS
+        _resizeContinuity = new(_view, PrepareSynchronousResize, CompleteSynchronousPresent);
+#endif
         _view.PaintSurface += HandlePaintSurface;
         _view.Touch += HandleTouch;
         _view.SizeChanged += HandleSizeChanged;
@@ -95,6 +116,9 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
     public event Action<KeyData>? Key;
     public event Action<bool>? FocusChanged;
     public event Action? SizeChanged;
+#if WINDOWS
+    public event Action<MauiSynchronousResize>? SynchronousResize;
+#endif
 
     public void InvalidateSurface() => _view.InvalidateSurface();
     public void RequestFocus(bool focused)
@@ -103,7 +127,14 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
         else _view.Unfocus();
     }
     public void SetCursor(DorotiMouseCursorKind cursor) => MauiNativeInput.SetCursor(_view, cursor);
-    public MauiSurfaceSnapshot CaptureSnapshot(MauiSurfaceSnapshot current) => current;
+    public MauiSurfaceSnapshot CaptureSnapshot(MauiSurfaceSnapshot current)
+    {
+#if WINDOWS
+        return _resizeContinuity.CaptureSnapshot(current);
+#else
+        return current;
+#endif
+    }
 
     private void HandlePaintSurface(object? sender, SKPaintGLSurfaceEventArgs args)
     {
@@ -134,7 +165,8 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
             Paint?.Invoke(context);
             if (context.Completion is not { } completion) return;
 #if WINDOWS
-            Dispatcher.DispatchDelayed(TimeSpan.Zero, () => PresentCompleted?.Invoke(completion, false));
+            if (!_resizeContinuity.CaptureSynchronousCompletion(completion))
+                Dispatcher.DispatchDelayed(TimeSpan.Zero, () => PresentCompleted?.Invoke(completion, false));
 #else
             PresentCompleted?.Invoke(completion, false);
 #endif
@@ -182,6 +214,14 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
     private void HandleFocused(object? sender, FocusEventArgs args) => FocusChanged?.Invoke(true);
     private void HandleUnfocused(object? sender, FocusEventArgs args) => FocusChanged?.Invoke(false);
 
+#if WINDOWS
+    private void PrepareSynchronousResize(MauiSynchronousResize resize) =>
+        SynchronousResize?.Invoke(resize);
+
+    private void CompleteSynchronousPresent(MauiPaintCompletion completion) =>
+        PresentCompleted?.Invoke(completion, false);
+#endif
+
     public void Dispose()
     {
         if (_disposed) return;
@@ -191,6 +231,9 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
         _view.SizeChanged -= HandleSizeChanged;
         _view.Focused -= HandleFocused;
         _view.Unfocused -= HandleUnfocused;
+#if WINDOWS
+        _resizeContinuity.Dispose();
+#endif
         _nativeInput.Dispose();
     }
 }

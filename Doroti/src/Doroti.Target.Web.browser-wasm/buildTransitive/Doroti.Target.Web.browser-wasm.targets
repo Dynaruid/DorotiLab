@@ -31,8 +31,8 @@
       <_DorotiPublishRoot>$([System.IO.Path]::Combine('$(PublishDir)', 'wwwroot'))</_DorotiPublishRoot>
     </PropertyGroup>
     <Error Code="DOROTIWEB008"
-           Condition="!Exists('$(_DorotiPublishRoot)\index.html') or !Exists('$(_DorotiPublishRoot)\_framework\dotnet.js')"
-           Text="Doroti Web publish is missing the standard Blazor WebAssembly boot contract (index.html and _framework/dotnet.js)." />
+           Condition="!Exists('$(_DorotiPublishRoot)\index.html') or !Exists('$(_DorotiPublishRoot)\_framework\blazor.webassembly.js') or !Exists('$(_DorotiPublishRoot)\_framework\dotnet.js')"
+           Text="Doroti Web publish is missing the standard Blazor WebAssembly boot contract (index.html, _framework/blazor.webassembly.js, and _framework/dotnet.js)." />
     <Error Code="DOROTIWEB009" Condition="!Exists('$(_DorotiPublishRoot)\_content\Doroti.Host.Web\doroti.web.js')"
            Text="Doroti Web publish is missing the Doroti browser capability module." />
     <Error Code="DOROTIWEB018" Condition="!Exists('$(_DorotiPublishRoot)\_content\Doroti.Host.Web\doroti.loader.js')"

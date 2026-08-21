@@ -392,6 +392,11 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     {
         _host?.NotifyCloseRequested(_viewId);
         _host?.NotifyLifecycle(_viewId, AppLifecycleState.detached);
+#if WINDOWS
+        // Release Doroti's timers and render workers before the WinUI Closed
+        // lifecycle handler ends the desktop application message loop.
+        Dispose();
+#endif
     }
 
     private void DetachWindow()

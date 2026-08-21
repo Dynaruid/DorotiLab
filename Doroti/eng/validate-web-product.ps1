@@ -42,6 +42,7 @@ switch ($Shard) {
         Invoke-Checked { dotnet publish $webProject -c Release -o $publishRoot --nologo } 'DemoApp Web publish failed'
         $wwwroot = Join-Path $publishRoot 'wwwroot'
         Assert-True (Test-Path -LiteralPath (Join-Path $wwwroot 'index.html') -PathType Leaf) 'published Web index'
+        Assert-True (Test-Path -LiteralPath (Join-Path $wwwroot '_framework/blazor.webassembly.js') -PathType Leaf) 'published Blazor WebAssembly boot loader'
         Assert-True (Test-Path -LiteralPath (Join-Path $wwwroot 'doroti_bootstrap.js') -PathType Leaf) 'published TypeScript bootstrap'
         Assert-True (Test-Path -LiteralPath (Join-Path $wwwroot 'plugins/echo.js') -PathType Leaf) 'published TypeScript plugin'
         Assert-True (@(Get-ChildItem -LiteralPath $wwwroot -Recurse -File -Include '*.ts','tsconfig.json').Count -eq 0) 'published TypeScript source absence'
@@ -53,7 +54,7 @@ switch ($Shard) {
             targetFramework = 'net10.0'
             runtimeIdentifier = 'browser-wasm'
             host = 'BlazorWebAssembly'
-            publish = [ordered]@{ index = 'pass'; bootstrap = 'pass'; plugin = 'pass'; typeScriptSourceFiles = 0 }
+            publish = [ordered]@{ index = 'pass'; blazorBootLoader = 'pass'; bootstrap = 'pass'; plugin = 'pass'; typeScriptSourceFiles = 0 }
             browserLive = 'notVerified'
             note = 'Build and static publish do not prove browser interaction, GPU presentation, accessibility, or clipboard/IME behavior.'
         }

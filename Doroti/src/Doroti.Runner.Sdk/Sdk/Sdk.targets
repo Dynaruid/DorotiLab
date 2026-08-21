@@ -164,6 +164,9 @@
            Text="Only the runner-owned App.xaml ApplicationDefinition is allowed: @(_DorotiDisallowedXaml)." />
     <Error Code="DOROTIAPP210" Condition="'@(_DorotiManifest->Count())' != '1'"
            Text="A runner requires exactly one Doroti.Application.Manifest resource; found '@(_DorotiManifest->Count())'." />
+    <Error Code="DOROTIWEB023"
+           Condition="'$(DorotiTarget)' == 'Web' and !Exists('$(BlazorWebAssemblyJSPath)')"
+           Text="Doroti Web requires a direct Microsoft.AspNetCore.Components.WebAssembly package reference so the standard _framework/blazor.webassembly.js boot asset is registered." />
     <Error Code="DOROTIRUNNER310" Condition="'@(_DorotiManualNativeBindingReference)' != ''"
            Text="Declare a native binding only with DorotiNativeBindingProject; remove the duplicate ProjectReference: @(_DorotiManualNativeBindingReference)." />
   </Target>

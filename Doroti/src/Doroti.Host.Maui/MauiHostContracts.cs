@@ -26,7 +26,12 @@ public sealed record MauiSurfaceSnapshot(
     long CpuReadbacks = 0,
     long FullFrameCopies = 0,
     double LogicalWidth = 0,
-    double LogicalHeight = 0);
+    double LogicalHeight = 0,
+    long ResizeContinuityActivations = 0,
+    long ResizeContinuityDeactivations = 0,
+    bool ResizeContinuityActive = false,
+    long ResizeSynchronousPresents = 0,
+    long ResizeSynchronousMisses = 0);
 
 public sealed record MauiFrameDiagnostics(
     long Submitted,

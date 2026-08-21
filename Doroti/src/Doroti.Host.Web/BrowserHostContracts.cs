@@ -51,6 +51,12 @@ internal static partial class BrowserInterop
     [return: JSMarshalAs<JSType.Promise<JSType.String>>]
     internal static partial Task<string> InitializeManagedCallbacksAsync();
 
+    [JSImport("installCanvasResizeContinuity", Module)]
+    internal static partial void InstallCanvasResizeContinuity(string canvasId);
+
+    [JSImport("uninstallCanvasResizeContinuity", Module)]
+    internal static partial void UninstallCanvasResizeContinuity(string canvasId);
+
     [System.Runtime.InteropServices.JavaScript.JSImport("showHost", Module)]
     internal static partial string ShowHost(int hostId);
 
