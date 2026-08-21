@@ -42,6 +42,9 @@
 **/*.coverage
 **/*.coveragexml
 
+# Local resize traces and measurement evidence
+/Doroti/validation/evidence/resize/
+
 # Visual Studio and MSBuild user state
 **/.vs/
 **/.mono/

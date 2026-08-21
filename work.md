@@ -4,7 +4,7 @@
 
 ## 0. 2026-08-21 실행 결과
 
-- `RSZ-0`: **failed (중단 게이트 적용)**
+- `RSZ-0A`: **failed (기존 중단 게이트 유지)**
   - 공통 `ResizeEpoch`/bounded trace 스키마와 Windows/Web 계측 코드는 구현했다.
   - Release 정적 빌드는 Windows host와 Web host/TypeScript 모두 PASS다.
   - Windows 자동 보조 resize 227회에서 target/build/raster/aggregate swap boundary/`DwmFlush`/ACK를
@@ -13,14 +13,64 @@
     분리하지 못했고, EGL swap interval도 요청하지 않았다. 따라서 아래 RSZ-0 중단 조건에 따라
     최적화 단계로 진행하지 않았다.
   - 자동 resize 중 작은 창에서 `RenderFlex` overflow assertion이 발생했으므로 이 실행 자체도 live PASS가 아니다.
-- 후속 API/고정 소스 재검토에서 Windows `PaintSurface`가 current EGL context 안에서 호출되고,
-  public `SKSwapChainPanel`/`SKGLViewHandler` 확장점과 패키지의 `libEGL.dll` export를 이용하면
-  SkiaSharp 포크 없이 swap interval 요청과 마지막 swap 구간 계측이 가능함을 확인했다.
-  이 결과는 아직 비교 실행하지 않았으므로 기존 `RSZ-0 failed`를 PASS로 바꾸지 않고 `RSZ-0B`로 보강한다.
-- `RSZ-0B`, `WIN-RSZ-1` ~ `WIN-RSZ-3`, `WEB-RSZ-1` ~ `WEB-RSZ-3`, `CROSS-RSZ`: **notVerified**
-- 실제 10초 마우스 드래그/화면 녹화, browser-live, 120/144 Hz, 다른 플랫폼 실기기 항목: **notVerified**
+- `RSZ-0B`: **PASS (계측 게이트)**
+  - `WindowsEglInterop`, public `SKGLViewHandler`/`SKSwapChainPanel` subclass, custom handler 등록을 구현했다.
+    SkiaSharp source/binary fork, private reflection, 직접 `eglSwapBuffers` 호출은 추가하지 않았다.
+  - `PaintSurface`의 current EGL display/draw surface를 확인하고 `default`, interval `0`, interval `1` 정책을
+    context/surface generation당 한 번 적용하도록 했다. DWM composition, 요청값, 호출 성공/EGL error를 trace에 기록한다.
+  - custom panel의 `base.OnRenderFrame()` 반환 직후 `pre-swap`, 동기 `InvalidateSurface()` 반환 직후
+    `post-swap`을 기록해 마지막 swap 구간을 분리했다. `DrawInBackground=false`, `HasRenderLoop=false` 계약도 고정했다.
+  - resize contract, Web/Windows host Release build, Windows Demo Release build는 모두 **PASS**다.
+  - visible 창 우하단을 Win32 실제 마우스 입력으로 각각 10초 드래그한 동일 환경 비교에서 default/0/1 모두
+    273개 generation의 target/pre-swap/post-swap/presented ACK가 연결됐고 generation 역행과 target/swap size mismatch는 0회였다.
+    작은 창 overflow는 초기 창보다 작아지지 않는 재현 범위로 분리했고 세 실행의 framework exception은 0회였다.
+  - default/0/1 순서의 마지막 swap p95는 0.487/0.476/0.469 ms, aggregate `InvalidateSurface` p95는
+    3.714/3.565/3.546 ms, `DwmFlush` p95는 8.660/8.699/8.693 ms였다. interval 0/1 요청은 성공했지만
+    ACK interval p95는 49.611/49.197/49.451 ms로 Windows 완료 게이트 20 ms를 통과하지 못했다.
+  - 관리자 권한 self-elevation 수집기와 `Doroti-Windows-Resize` ETW marker provider를 추가해 GPU/marker ETL을
+    하나로 병합했다. 유실 buffer/event는 0이고 SHA-256은
+    `90A5EC1F3F43C2F5BD9085A9F01A0AD5A9834FC3F0D0E005C2650CC137D9A6A5`다.
+  - activity id로 generation 6~278의 273개 resize를 모두 연결했다. primary swap chain Present 1,630회는
+    전부 `SyncInterval=1`이었고 `SyncInterval=0`은 0회였다. generation과 상관된 684회 중 `pre-swap` 전
+    선행 Present는 411회, `pre-swap`~`post-swap` 사이 final Present는 정확히 generation당 1회(273회)였으며
+    `post-swap` 이후 Present, final 누락/중복은 0회였다.
+  - 화면 녹화, 사람의 직접 육안 판정, 120/144 Hz: **notVerified**.
+- `WIN-RSZ-1`: **failed**
+  - public handler/panel 1B와 context/surface generation별 interval 요청은 구현·검증했다.
+  - interval 0 호출은 EGL 성공을 반환했지만 실제 primary DXGI Present 1,630회는 모두 `SyncInterval=1`이었다.
+    비-ETW 동일 비교의 ACK interval p95도 default/0/1이 49.611/49.197/49.451 ms로 20 ms 게이트를 모두 실패했다.
+  - 따라서 1A/1B 최소 수정으로 실제 표시 정책이나 성능이 개선됐다고 판정할 수 없어 분기 조건에 따라
+    `WIN-RSZ-2`를 시도했다.
+- `WIN-RSZ-2`: **failed, 구현 중단 및 안전 경로 복원**
+  - public WinUI/ANGLE/Skia API만 사용하는 owned-surface spike를 만들었으나 `eglCreateWindowSurface`의
+    `EGL_BAD_PARAMETER(0x300d)`, raster thread의 WinUI `0x80070580` wrong-thread 예외가 발생했다.
+  - 후속 실행은 resize generation이 2개에서 멈췄고 사용자가 실제 창이 resize 초반에 사라지는 것을 확인했다.
+    이는 Windows의 “사라짐/깜빡임 0회” 게이트 실패로 취급한다.
+  - 불안정한 owned-surface 코드는 제거하고 마지막 안정 상태인 public `SKGLViewHandler`/`SKSwapChainPanel` 1B로
+    복원했다. 복원 후 10초 resize는 249 generation 모두 target/pre/post/ACK가 연결되고 framework exception,
+    generation 역행, size mismatch 없이 종료됐지만 ACK interval p95 84.761 ms로 성능 게이트는 여전히 실패다.
+  - 문서의 포크 정책대로 private reflection/runtime patch/source fork로 우회하지 않고 별도 설계 승인 지점에서 멈춘다.
+- `WIN-RSZ-3`, `WEB-RSZ-1` ~ `WEB-RSZ-3`, `CROSS-RSZ`: **notVerified (WIN-RSZ-2 중단 게이트)**
+- browser-live와 다른 플랫폼 실기기 항목: **notVerified**
 - 증거: `Doroti/validation/evidence/resize/rsz0-gate-2026-08-21.json`
+- RSZ-0B 증거:
+  - `Doroti/validation/evidence/resize/rsz0b-default-20260821-171221.summary.json`
+  - `Doroti/validation/evidence/resize/rsz0b-0-20260821-171120.summary.json`
+  - `Doroti/validation/evidence/resize/rsz0b-1-20260821-171149.summary.json`
+  - `Doroti/validation/evidence/resize/rsz0b-0-gpu-20260821-191736.result.json`
+  - `Doroti/validation/evidence/resize/rsz0b-0-gpu-20260821-191736.analysis.json`
+  - `Doroti/validation/evidence/resize/rsz0b-0-20260821-193009.summary.json`
+  - `Doroti/validation/evidence/resize/rsz0b-0-gpu-20260821-193007.result.json`
+  - `Doroti/validation/evidence/resize/rsz0b-0-gpu-20260821-193007.analysis.json`
+  - `Doroti/validation/evidence/resize/rsz0b-0-20260821-194639.raw.json.exception.txt`
+  - `Doroti/validation/evidence/resize/rsz0b-0-20260821-194723.raw.json.exception.txt`
+  - `Doroti/validation/evidence/resize/rsz0b-0-20260821-195725.summary.json`
 - 재실행: `pwsh -NoProfile -File ./Doroti/eng/validate-resize-continuity.ps1 -Shard Contract`
+- native 재실행: `pwsh -NoProfile -File ./Doroti/eng/validate-resize-continuity-live.ps1 -SwapInterval default|0|1`
+- GPU ETW 재실행(UAC 자동 요청):
+  `pwsh -NoProfile -File ./Doroti/eng/collect-resize-continuity-etw.ps1 -SwapInterval 0 -DurationSeconds 10`
+- GPU ETW 분석:
+  `pwsh -NoProfile -File ./Doroti/eng/analyze-resize-continuity-etw.ps1 -EtlPath <etl> -LiveSummaryPath <summary>`
 
 ## 1. 목표와 현재 판정
 
@@ -32,8 +82,10 @@
 이번 문서는 현재 코드, SkiaSharp 4.151.1(package source commit
 `279f93f4ffa7f9fe4e9c0bc298bedc3c9e439764`)의 플랫폼 View 동작, 로컬 Flutter 기준 revision
 `56b8e1a851a594b1a154f8ea93270807dab22b9a`의 Windows/Web resize 경로를 비교해 만든 구현 계획이다.
-RSZ-0A의 정적/자동 계측만 실행됐고 실패 판정은 유지한다. 이번 API 재검토로 추가한 RSZ-0B 이후 단계와
-실기기/실브라우저 성능 게이트는 모두 `notVerified`이다.
+RSZ-0A의 실패 판정은 유지한다. RSZ-0B는 정적 계약, Windows native 비교, activity-correlated GPU ETW까지
+통과했다. WIN-RSZ-1의 최소 변경은 실제 DXGI interval과 성능을 개선하지 못했고, WIN-RSZ-2 public
+owned-surface spike는 native-live에서 창이 사라져 실패했다. 불안정 코드는 1B로 복원했으며 WIN-RSZ-3 이후와
+실브라우저 성능 게이트는 중단 규칙에 따라 모두 `notVerified`이다.
 
 결론부터 말하면 **SkiaSharp 코어와 Views를 포크하지 않고 진행한다.** 현재 사용 중인
 `SkiaSharp.Views.Maui.Controls`와 `SkiaSharp.Views.Blazor`가 Doroti에 필요한 resize generation과
@@ -167,17 +219,20 @@ Target(epoch) -> Build(epoch) -> Raster(epoch) -> Swap/Submit(epoch) -> Ack(epoc
 
 ### RSZ-0B. 포크 없는 EGL/API 계측 보강
 
-- [ ] Windows 전용 `WindowsEglInterop`에 `eglGetCurrentDisplay`, `eglGetCurrentSurface(EGL_DRAW)`,
+- [x] Windows 전용 `WindowsEglInterop`에 `eglGetCurrentDisplay`, `eglGetCurrentSurface(EGL_DRAW)`,
   `eglSwapInterval`, `eglGetError`의 최소 P/Invoke를 둔다. `eglSwapBuffers`는 직접 호출하지 않는다.
-- [ ] `PaintSurface` 또는 custom panel의 `OnRenderFrame`에서 current display/surface가 유효함을 확인한다.
-- [ ] 현재 DWM composition 상태, 요청 interval(0/1), API 성공/오류, context/surface generation을 기록한다.
-- [ ] `DorotiWindowsSwapChainPanel : SKSwapChainPanel`에서 `base.OnRenderFrame()` 반환 직후 `pre-swap`을 기록하고,
+- [x] `PaintSurface` 또는 custom panel의 `OnRenderFrame`에서 current display/surface가 유효함을 확인한다.
+- [x] 현재 DWM composition 상태, 요청 interval(0/1), API 성공/오류, context/surface generation을 기록한다.
+- [x] `DorotiWindowsSwapChainPanel : SKSwapChainPanel`에서 `base.OnRenderFrame()` 반환 직후 `pre-swap`을 기록하고,
   동기 `InvalidateSurface()` 반환 직후 `post-swap`을 기록해 마지막 swap 구간을 분리한다.
-- [ ] 위 반환 경계가 유효하도록 `DrawInBackground=false`, `HasRenderLoop=false`를 contract로 고정한다.
-- [ ] resize frame의 선행 swap 존재는 소스 계약과 ETW/PresentMon 보조 증거로 별도 표기한다. public callback이
+- [x] 위 반환 경계가 유효하도록 `DrawInBackground=false`, `HasRenderLoop=false`를 contract로 고정한다.
+- [x] resize frame의 선행 swap 존재는 소스 계약과 ETW/PresentMon 보조 증거로 별도 표기한다. public callback이
   없는 선행 swap을 마지막 frame의 swap으로 오인하지 않는다.
-- [ ] 기존 interval 정책과 0/1 요청 빌드의 10초 실제 resize trace를 같은 환경에서 비교한다.
-- [ ] 작은 창의 `RenderFlex` overflow를 제거하거나 재현 범위에서 분리하기 전에는 live PASS로 승격하지 않는다.
+  - custom ETW marker의 `ResizeEpoch` activity id로 273 generation을 모두 상관시켰다. 선행 Present 411회와
+    generation당 정확히 한 번의 final Present 273회를 분리했고 누락/중복/`post-swap` 이후 Present는 0회였다.
+- [x] 기존 interval 정책과 0/1 요청 빌드의 10초 실제 resize trace를 같은 환경에서 비교한다.
+- [x] 작은 창의 `RenderFlex` overflow를 제거하거나 재현 범위에서 분리하기 전에는 live PASS로 승격하지 않는다.
+  - 이번 비교는 초기 창보다 작아지지 않는 범위로 분리했다. 작은 창 자체의 overflow 수정은 `notVerified`다.
 
 중단 조건:
 
@@ -188,19 +243,20 @@ Target(epoch) -> Build(epoch) -> Raster(epoch) -> Swap/Submit(epoch) -> Ack(epoc
 
 ### WIN-RSZ-1. EGL/DWM 이중 대기 가설 검증과 최소 수정
 
-- [ ] 1A: 기존 `SKGLView.PaintSurface`의 current EGL context에서 swap interval만 요청하는 최소 비교 빌드를 만든다.
-- [ ] context/device loss 또는 surface generation 변경 시 정책을 다시 적용하고, 같은 generation에서 불필요하게
+- 상태: **failed**. 아래 계측/비교는 완료했지만 실제 primary DXGI interval과 20 ms 성능 게이트가 바뀌지 않았다.
+- [x] 1A: 기존 `SKGLView.PaintSurface`의 current EGL context에서 swap interval만 요청하는 최소 비교 빌드를 만든다.
+- [x] context/device loss 또는 surface generation 변경 시 정책을 다시 적용하고, 같은 generation에서 불필요하게
   매 draw마다 재호출하지 않는다.
-- [ ] 1B: `DorotiWindowsSkiaViewHandler : SKGLViewHandler`가
+- [x] 1B: `DorotiWindowsSkiaViewHandler : SKGLViewHandler`가
   `DorotiWindowsSwapChainPanel : SKSwapChainPanel`을 생성하게 하고 MAUI handler로 등록한다.
-- [ ] custom panel은 `base.OnRenderFrame()`을 그대로 호출해 기존 Skia surface/flush 동작을 유지하고,
+- [x] custom panel은 `base.OnRenderFrame()`을 그대로 호출해 기존 Skia surface/flush 동작을 유지하고,
   그 반환 이후만 마지막 `eglSwapBuffers` 직전 경계로 계측한다.
-- [ ] `IgnorePixelScaling`, touch, `CanvasSize`, `GRContext`, context destroy/recreate가 기존 handler와 동일하게
+- [x] `IgnorePixelScaling`, touch, `CanvasSize`, `GRContext`, context destroy/recreate가 기존 handler와 동일하게
   연결되는지 contract test로 고정한다. private `MauiSKSwapChainPanel` cast에 의존하는 mapper는 Doroti handler가 소유한다.
 - [ ] DWM composition이 켜져 있으면 Flutter와 같이 `eglSwapInterval(display, 0)`, 꺼져 있으면 1을 사용한다.
 - [ ] `DwmFlush`는 동기 `InvalidateSurface()`가 반환한 뒤 one-in-flight worker 한 곳에서만 수행하고 UI thread
   paint/build 경로에서는 제거한다. worker ACK가 다른 generation의 제출과 섞이지 않게 mailbox 규칙을 적용한다.
-- [ ] before/after trace로 `eglSwapBuffers`와 `DwmFlush` 각각의 대기 분포를 비교한다.
+- [x] before/after trace로 `eglSwapBuffers`와 `DwmFlush` 각각의 대기 분포를 비교한다.
 - [ ] resize 외 일반 animation/scroll의 pacing과 tearing 회귀를 함께 확인한다.
 
 분기 조건:
@@ -214,6 +270,8 @@ Target(epoch) -> Build(epoch) -> Raster(epoch) -> Swap/Submit(epoch) -> Ack(epoc
 
 ### WIN-RSZ-2. Doroti-owned Windows ANGLE surface와 raster thread
 
+- 상태: **failed / 중단**. public API spike가 native-live 중 창 소실과 thread/surface 오류를 일으켜 제거했다.
+  아래 제품 구현 항목은 완료로 승격하지 않으며, 포크 또는 private lifecycle 우회는 별도 승인 전까지 진행하지 않는다.
 - [ ] WinUI/MAUI에는 입력과 layout을 받는 얇은 host만 남기고, ANGLE EGL context/surface와 Skia `GRContext`,
   render target, `SKSurface`는 전용 raster thread가 생성/사용/폐기한다.
 - [ ] `WM_SIZE`는 최신 `ResizeEpoch`와 framework metrics만 게시하고 paint/swap/`DwmFlush`를 직접 실행하지 않는다.

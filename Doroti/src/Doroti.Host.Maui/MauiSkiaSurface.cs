@@ -152,6 +152,10 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
         {
             var nativeType = _view.Handler?.PlatformView?.GetType().FullName ?? "unknown";
             var density = Math.Max(1, Microsoft.Maui.Devices.DeviceDisplay.Current.MainDisplayInfo.Density);
+#if WINDOWS
+            _resizeContinuity.ObserveCurrentEgl(
+                args.BackendRenderTarget.Width, args.BackendRenderTarget.Height);
+#endif
             var context = new MauiSkiaPaintContext(args.Surface, _view.GRContext,
                 args.BackendRenderTarget.Width, args.BackendRenderTarget.Height, density, 0,
                 nativeType,

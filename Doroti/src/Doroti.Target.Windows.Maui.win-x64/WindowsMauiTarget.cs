@@ -4,7 +4,7 @@ public static class WindowsMauiTarget
 {
     public const string Rid = "win-x64";
     public const string TargetFramework = "net10.0-windows10.0.19041.0";
-    public const string NativeViewType = "SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKSwapChainPanel";
+    public const string NativeViewType = "Doroti.Host.Maui.DorotiWindowsSwapChainPanel";
     public const string GraphicsBackend = "winui3/SKSwapChainPanel/ANGLE-DirectX-Skia";
 
     public static void EnsureSupported()

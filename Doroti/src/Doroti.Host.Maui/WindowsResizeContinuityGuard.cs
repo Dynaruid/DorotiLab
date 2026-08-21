@@ -1,7 +1,8 @@
 #if WINDOWS
+using System.Diagnostics.Tracing;
 using System.Runtime.InteropServices;
-using Microsoft.UI.Xaml;
 using Doroti.Ui;
+using Microsoft.UI.Xaml;
 using SkiaSharp.Views.Maui.Controls;
 
 namespace Doroti.Host.Maui;
@@ -26,7 +27,14 @@ internal sealed class WindowsResizeContinuityGuard : IDisposable
     private readonly SubclassProc _subclassProc;
     private readonly nuint _subclassId;
     private readonly DorotiResizeTrace _trace = new();
+    private DorotiWindowsSwapChainPanel? _swapChainPanel;
     private nint _hwnd;
+    private nint _eglDisplay;
+    private nint _eglDrawSurface;
+    private long _eglSurfaceGeneration;
+    private long _eglPolicySurfaceGeneration = -1;
+    private string _eglSwapIntervalPolicy = "unknown-default-public-SKGLView";
+    private DorotiWindowsPreSwap? _preSwap;
     private MauiPaintCompletion? _synchronousCompletion;
     private long _activations;
     private long _deactivations;
@@ -36,6 +44,7 @@ internal sealed class WindowsResizeContinuityGuard : IDisposable
     private bool _insideResize;
     private bool _active;
     private bool _disposed;
+    private bool _exactSwapTimingAvailable;
     private long _resizeGeneration;
     private DorotiResizeEpoch? _currentEpoch;
     private (double Width, double Height, double Density) _lastTarget;
@@ -65,8 +74,8 @@ internal sealed class WindowsResizeContinuityGuard : IDisposable
         ResizeSynchronousPresents = Interlocked.Read(ref _synchronousPresents),
         ResizeSynchronousMisses = Interlocked.Read(ref _synchronousMisses),
         DwmCompositionEnabled = _dwmCompositionEnabled,
-        EglSwapIntervalPolicy = "unknown-default-public-SKGLView",
-        ExactSwapTimingAvailable = false,
+        EglSwapIntervalPolicy = _eglSwapIntervalPolicy,
+        ExactSwapTimingAvailable = _exactSwapTimingAvailable,
         ResizeTrace = _trace.Snapshot(),
     };
 
@@ -78,10 +87,57 @@ internal sealed class WindowsResizeContinuityGuard : IDisposable
         int surfaceWidth = 0,
         int surfaceHeight = 0,
         string? terminal = null,
-        string? detail = null) =>
+        string? detail = null)
+    {
         _trace.Record(phase, epoch, source, duration,
             surfaceWidth: surfaceWidth, surfaceHeight: surfaceHeight,
             terminal: terminal, detail: detail);
+        WindowsResizeEtw.Log.Marker(phase, epoch, surfaceWidth, surfaceHeight, source);
+    }
+
+    internal void ObserveCurrentEgl(int surfaceWidth, int surfaceHeight)
+    {
+        var display = WindowsEglInterop.eglGetCurrentDisplay();
+        var drawSurface = WindowsEglInterop.eglGetCurrentSurface(WindowsEglInterop.EglDraw);
+        if (display == 0 || drawSurface == 0) return;
+
+        if (display != _eglDisplay || drawSurface != _eglDrawSurface)
+        {
+            _eglDisplay = display;
+            _eglDrawSurface = drawSurface;
+            _eglSurfaceGeneration++;
+        }
+
+        var requested = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_EGL_SWAP_INTERVAL");
+        var requestedInterval = requested is "0" or "1" ? int.Parse(requested) : (int?)null;
+        var callState = "not-called";
+        var eglError = WindowsEglInterop.EglSuccess;
+        if (requestedInterval is { } interval && _eglPolicySurfaceGeneration != _eglSurfaceGeneration)
+        {
+            var succeeded = WindowsEglInterop.eglSwapInterval(display, interval) != 0;
+            eglError = WindowsEglInterop.eglGetError();
+            callState = succeeded && eglError == WindowsEglInterop.EglSuccess ? "true" : "false";
+            _eglPolicySurfaceGeneration = _eglSurfaceGeneration;
+            _eglSwapIntervalPolicy = succeeded && eglError == WindowsEglInterop.EglSuccess
+                ? $"requested-{interval}-retained-generation-{_eglSurfaceGeneration}"
+                : $"requested-{interval}-failed-0x{eglError:x4}-generation-{_eglSurfaceGeneration}";
+        }
+        else if (requestedInterval is null)
+        {
+            _eglSwapIntervalPolicy = $"default-retained-generation-{_eglSurfaceGeneration}";
+        }
+
+        _dwmCompositionEnabled = DwmIsCompositionEnabled(out var enabled) == 0 && enabled;
+        if (_currentEpoch is { } epoch)
+        {
+            Record("egl-state", epoch, "WindowsEglInterop",
+                surfaceWidth: surfaceWidth, surfaceHeight: surfaceHeight,
+                detail: $"display=0x{display:x}; drawSurface=0x{drawSurface:x}; " +
+                        $"surfaceGeneration={_eglSurfaceGeneration}; composition={_dwmCompositionEnabled}; " +
+                        $"requestedInterval={requestedInterval?.ToString() ?? "default"}; " +
+                        $"callSuccess={callState}; eglError=0x{eglError:x4}");
+        }
+    }
 
     internal void RecordRasterStart(int width, int height)
     {
@@ -97,11 +153,6 @@ internal sealed class WindowsResizeContinuityGuard : IDisposable
                 surfaceWidth: width, surfaceHeight: height);
     }
 
-    /// <summary>
-    /// Called from SKGLView.PaintSurface immediately before SKSwapChainPanel
-    /// performs eglSwapBuffers. A synchronous resize owns this completion and
-    /// publishes it only after InvalidateSurface has returned from that swap.
-    /// </summary>
     internal bool CaptureSynchronousCompletion(MauiPaintCompletion completion)
     {
         if (!_synchronousPaint) return false;
@@ -126,15 +177,41 @@ internal sealed class WindowsResizeContinuityGuard : IDisposable
     private void TryAttach()
     {
         if (_disposed) return;
+        if (_view.Handler?.PlatformView is DorotiWindowsSwapChainPanel panel &&
+            !ReferenceEquals(panel, _swapChainPanel))
+        {
+            DetachPanel();
+            _swapChainPanel = panel;
+            _swapChainPanel.BeforeFinalSwap += HandleBeforeFinalSwap;
+            _swapChainPanel.ContextDestroying += HandleContextDestroying;
+            _exactSwapTimingAvailable = true;
+        }
+
         var platformWindow = _view.Window?.Handler?.PlatformView;
         if (platformWindow is null) return;
         var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(platformWindow);
         if (hwnd == 0 || hwnd == _hwnd) return;
-        Detach();
+        DetachWindow();
         if (!SetWindowSubclass(hwnd, _subclassProc, _subclassId, 0))
             throw new InvalidOperationException(
                 $"Unable to install the Doroti resize-continuity HWND subclass (error {Marshal.GetLastWin32Error()}).");
         _hwnd = hwnd;
+    }
+
+    private void HandleBeforeFinalSwap(DorotiWindowsPreSwap boundary)
+    {
+        if (!_synchronousPaint || _currentEpoch is not { } epoch) return;
+        _preSwap = boundary;
+        Record("pre-swap", epoch, "DorotiWindowsSwapChainPanel",
+            surfaceWidth: boundary.SurfaceWidth, surfaceHeight: boundary.SurfaceHeight,
+            detail: "base.OnRenderFrame returned; final eglSwapBuffers has not started");
+    }
+
+    private void HandleContextDestroying()
+    {
+        _eglDisplay = 0;
+        _eglDrawSurface = 0;
+        _eglPolicySurfaceGeneration = -1;
     }
 
     private nint WindowSubclass(
@@ -153,9 +230,6 @@ internal sealed class WindowsResizeContinuityGuard : IDisposable
             (message == WmSize && wParam == SizeMinimized))
             return DefSubclassProc(hwnd, message, wParam, lParam);
 
-        // DefSubclassProc may synchronously cause nested layout/size messages.
-        // Coalesce those into this outer transaction and paint only once after
-        // WinUI and AngleSwapChainPanel have consumed the final native size.
         _insideResize = true;
         try
         {
@@ -180,6 +254,8 @@ internal sealed class WindowsResizeContinuityGuard : IDisposable
             _view.Handler?.PlatformView is not FrameworkElement native ||
             native.ActualWidth <= 0 || native.ActualHeight <= 0) return;
 
+        var activityId = Guid.NewGuid();
+        EventSource.SetCurrentThreadActivityId(activityId, out var previousActivityId);
         _active = true;
         Interlocked.Increment(ref _activations);
         try
@@ -206,19 +282,25 @@ internal sealed class WindowsResizeContinuityGuard : IDisposable
             _prepareFrame(new(native.ActualWidth, native.ActualHeight, density, epoch));
             Record("framework-ready", epoch, "synchronous-resize", DorotiFrameClock.Now - prepareStarted);
 
+            _preSwap = null;
             _synchronousCompletion = null;
             _synchronousPaint = true;
             try
             {
-                // The Windows handler renders synchronously with HasRenderLoop
-                // disabled. Returning means eglSwapBuffers completed.
                 var swapBoundaryStarted = DorotiFrameClock.Now;
                 Record("swap-boundary-start", epoch, "SKGLView.InvalidateSurface",
-                    detail: "aggregate paint plus ANGLE swap; exact eglSwapBuffers timing unavailable");
+                    detail: "aggregate private leading resize swap, paint, and final ANGLE swap boundary");
                 _view.InvalidateSurface();
+                if (_preSwap is { } preSwap)
+                {
+                    Record("post-swap", epoch, "DorotiWindowsSwapChainPanel",
+                        DorotiFrameClock.Now - preSwap.Timestamp,
+                        preSwap.SurfaceWidth, preSwap.SurfaceHeight,
+                        detail: "synchronous InvalidateSurface returned after final eglSwapBuffers");
+                }
                 Record("swap-boundary-end", epoch, "SKGLView.InvalidateSurface",
                     DorotiFrameClock.Now - swapBoundaryStarted,
-                    detail: "aggregate paint plus ANGLE swap; exact eglSwapBuffers timing unavailable");
+                    detail: "aggregate boundary; pre-swap/post-swap isolates only the final ANGLE swap");
             }
             finally
             {
@@ -249,18 +331,35 @@ internal sealed class WindowsResizeContinuityGuard : IDisposable
         }
         finally
         {
+            _preSwap = null;
             _synchronousCompletion = null;
             _currentEpoch = null;
             _active = false;
             Interlocked.Increment(ref _deactivations);
+            EventSource.SetCurrentThreadActivityId(previousActivityId);
         }
     }
 
-    private void Detach()
+    private void DetachPanel()
+    {
+        if (_swapChainPanel is null) return;
+        _swapChainPanel.BeforeFinalSwap -= HandleBeforeFinalSwap;
+        _swapChainPanel.ContextDestroying -= HandleContextDestroying;
+        _swapChainPanel = null;
+        _exactSwapTimingAvailable = false;
+    }
+
+    private void DetachWindow()
     {
         var hwnd = _hwnd;
         _hwnd = 0;
         if (hwnd != 0) _ = RemoveWindowSubclass(hwnd, _subclassProc, _subclassId);
+    }
+
+    private void Detach()
+    {
+        DetachWindow();
+        DetachPanel();
     }
 
     public void Dispose()
