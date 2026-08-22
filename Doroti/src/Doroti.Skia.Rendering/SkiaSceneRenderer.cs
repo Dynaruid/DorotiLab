@@ -576,10 +576,26 @@ public sealed class SkiaSceneRenderer :
                     case "colorFilter" when command.HostPayload is SceneColorFilterPayload:
                         canvas.SaveLayer(); restoreCounts.Push(1); break;
                     case "shaderMask" when command.HostPayload is SceneShaderMaskPayload mask:
-                        using (var shader = ToShader(mask.Shader))
-                        using (var paint = new SKPaint { Shader = shader, BlendMode = ToBlend(mask.BlendMode) })
-                            canvas.SaveLayer(ToRect(mask.MaskRect), paint);
-                        restoreCounts.Push(1); break;
+                        {
+                            // A shader mask is a source drawn into the alpha of its already-rendered
+                            // child. Supplying the shader paint to SaveLayer instead applies srcIn
+                            // against the scene behind the child and can fill the entire mask bounds.
+                            var matchingPop = FindMatchingPop(source, commandIndex, sourceEnd);
+                            var bounds = ToRect(mask.MaskRect);
+                            canvas.SaveLayer(bounds, null);
+                            DrawCommands(source, commandIndex + 1, matchingPop);
+                            using (var shader = ToShader(mask.Shader))
+                            using (var paint = new SKPaint
+                            {
+                                Shader = shader,
+                                BlendMode = ToBlend(mask.BlendMode),
+                                IsAntialias = true,
+                            })
+                                canvas.DrawRect(bounds, paint);
+                            canvas.Restore();
+                            commandIndex = matchingPop;
+                            break;
+                        }
                     case "imageFilter" when command.HostPayload is SceneImageFilterPayload image &&
                                                   image.Filter.Shader is FragmentShaderSnapshot fragment:
                         {
