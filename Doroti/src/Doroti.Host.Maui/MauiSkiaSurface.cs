@@ -61,7 +61,7 @@ internal interface IMauiSkiaSurface : IDisposable
     event Action<MauiSurfacePointerData>? Pointer;
     event Action<KeyData>? Key;
     event Action<bool>? FocusChanged;
-    event Action? SizeChanged;
+    event Action<DorotiResizeEpoch?>? SizeChanged;
     void InvalidateSurface();
     void RequestFocus(bool focused);
     void SetCursor(DorotiMouseCursorKind cursor);
@@ -105,7 +105,7 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
     public event Action<MauiSurfacePointerData>? Pointer;
     public event Action<KeyData>? Key;
     public event Action<bool>? FocusChanged;
-    public event Action? SizeChanged;
+    public event Action<DorotiResizeEpoch?>? SizeChanged;
 #if WINDOWS
     public event Action<MauiSynchronousResize>? SynchronousResize;
 #endif
@@ -214,7 +214,7 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
         args.Handled = true;
     }
 
-    private void HandleSizeChanged(object? sender, EventArgs args) => SizeChanged?.Invoke();
+    private void HandleSizeChanged(object? sender, EventArgs args) => SizeChanged?.Invoke(null);
     private void HandleFocused(object? sender, FocusEventArgs args) => FocusChanged?.Invoke(true);
     private void HandleUnfocused(object? sender, FocusEventArgs args) => FocusChanged?.Invoke(false);
 

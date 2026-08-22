@@ -6,7 +6,7 @@ public interface ISkiaSceneRendererHost
 {
     long InputSequence { get; }
     long SurfaceGeneration { get; }
-    long MetricsGeneration { get; }
+    DorotiViewEpoch ViewEpoch { get; }
     DorotiResizeEpoch ResizeTarget { get; }
     PlatformConfiguration Configuration { get; }
     event Action<int, SemanticsAction, object?>? SemanticsAction;
@@ -35,7 +35,8 @@ public enum SkiaPaintDisposition
 public readonly record struct SkiaPaintResult(
     SkiaPaintDisposition Disposition,
     SkiaPaintCompletion? Completion,
-    DorotiFrameDescriptor? Descriptor)
+    DorotiFrameDescriptor? Descriptor,
+    DorotiFrameMatchResult? MatchResult = null)
 {
     public bool ShouldPresent => Disposition is SkiaPaintDisposition.exact or SkiaPaintDisposition.replay;
 }

@@ -513,6 +513,8 @@ public interface IViewHostCapability : IDisposable
 {
     ViewMetrics Metrics { get; }
 
+    DorotiViewEpoch ViewEpoch { get; }
+
     event Action<ViewMetrics>? MetricsChanged;
 
     event Action<AppLifecycleState>? LifecycleChanged;

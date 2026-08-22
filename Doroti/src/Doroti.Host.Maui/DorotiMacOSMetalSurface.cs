@@ -45,7 +45,7 @@ public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
         add => FocusChanged += value;
         remove => FocusChanged -= value;
     }
-    event Action? IMauiSkiaSurface.SizeChanged
+    event Action<DorotiResizeEpoch?>? IMauiSkiaSurface.SizeChanged
     {
         add => SurfaceSizeChanged += value;
         remove => SurfaceSizeChanged -= value;
@@ -57,7 +57,7 @@ public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
     private event Action<MauiSurfacePointerData>? Pointer;
     private event Action<KeyData>? Key;
     private event Action<bool>? FocusChanged;
-    private event Action? SurfaceSizeChanged;
+    private event Action<DorotiResizeEpoch?>? SurfaceSizeChanged;
 
     internal ulong ViewId => _viewId;
 
@@ -109,7 +109,7 @@ public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
 
     internal void RaiseSizeChanged()
     {
-        if (!_disposed) SurfaceSizeChanged?.Invoke();
+        if (!_disposed) SurfaceSizeChanged?.Invoke(null);
     }
 
     void IMauiSkiaSurface.InvalidateSurface() => _nativeView?.RequestFrame();

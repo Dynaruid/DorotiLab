@@ -4,7 +4,15 @@ param(
     [string] $Browser = 'Chrome',
 
     [ValidateRange(40, 2400)]
-    [int] $SampleCount = 40,
+    [int] $SampleCount = 300,
+
+    [ValidateRange(8, 100)]
+    [int] $SampleIntervalMilliseconds = 16,
+
+    [ValidateRange(0, 120)]
+    [int] $PostResizeObservationSeconds = 10,
+
+    [switch] $Visible,
 
     [switch] $ExerciseCompatibilityMatrix,
 
@@ -215,6 +223,125 @@ function Test-BlankScreenshot([byte[]] $Bytes) {
     }
 }
 
+function Get-AppBarLogicalHeight([byte[]] $Bytes, [double] $DeviceScaleFactor) {
+    $stream = [IO.MemoryStream]::new($Bytes, $false)
+    $bitmap = [Drawing.Bitmap]::new($stream)
+    try {
+        $first = -1
+        $last = -1
+        $gaps = 0
+        $maxRow = [Math]::Min($bitmap.Height - 1, [Math]::Ceiling(240 * $DeviceScaleFactor))
+        for ($row = 0; $row -le $maxRow; $row++) {
+            $purple = 0
+            for ($sample = 1; $sample -le 48; $sample++) {
+                $column = [Math]::Min($bitmap.Width - 1, [Math]::Floor($bitmap.Width * $sample / 49.0))
+                $pixel = $bitmap.GetPixel($column, $row)
+                if ($pixel.B - $pixel.R -gt 25 -and $pixel.B - $pixel.G -gt 35 -and
+                    $pixel.R -gt 45 -and $pixel.B -gt 100) { $purple++ }
+            }
+            if ($purple -ge 24) {
+                if ($first -lt 0) { $first = $row }
+                $last = $row
+                $gaps = 0
+            } elseif ($first -ge 0 -and ++$gaps -gt 2) {
+                break
+            }
+        }
+        if ($first -lt 0 -or $last -lt $first) { return $null }
+        return ($last - $first + 1) / [Math]::Max(0.01, $DeviceScaleFactor)
+    }
+    finally {
+        $bitmap.Dispose()
+        $stream.Dispose()
+    }
+}
+
+function Get-CircularControlAspect([byte[]] $Bytes, [double] $DeviceScaleFactor) {
+    $stream = [IO.MemoryStream]::new($Bytes, $false)
+    $bitmap = [Drawing.Bitmap]::new($stream)
+    try {
+        $minimumRun = [Math]::Max(3, [Math]::Floor(4 * $DeviceScaleFactor))
+        $maximumRun = [Math]::Max($minimumRun, [Math]::Ceiling(90 * $DeviceScaleFactor))
+        $firstRow = [Math]::Min($bitmap.Height - 1, [Math]::Floor(80 * $DeviceScaleFactor))
+        $lastRow = [Math]::Min($bitmap.Height - 1, [Math]::Floor($bitmap.Height * 0.78))
+        $lastColumn = [Math]::Min($bitmap.Width - 1, [Math]::Floor($bitmap.Width * 0.48))
+        $runs = [Collections.Generic.List[object]]::new()
+        for ($row = $firstRow; $row -le $lastRow; $row++) {
+            $start = -1
+            for ($column = 0; $column -le $lastColumn + 1; $column++) {
+                $isLavender = $false
+                if ($column -le $lastColumn) {
+                    $pixel = $bitmap.GetPixel($column, $row)
+                    $isLavender = $pixel.B -ge 185 -and $pixel.R -ge 115 -and
+                        $pixel.B - $pixel.R -ge 20 -and $pixel.B - $pixel.G -ge 28
+                }
+                if ($isLavender -and $start -lt 0) {
+                    $start = $column
+                } elseif (-not $isLavender -and $start -ge 0) {
+                    $width = $column - $start
+                    if ($width -ge $minimumRun -and $width -le $maximumRun) {
+                        $runs.Add([pscustomobject]@{
+                            row = $row
+                            left = $start
+                            right = $column - 1
+                            width = $width
+                        })
+                    }
+                    $start = -1
+                }
+            }
+        }
+
+        $components = [Collections.Generic.List[object]]::new()
+        foreach ($run in $runs) {
+            $component = $components | Where-Object {
+                $run.row - $_.lastRow -le 2 -and
+                $run.left -le $_.right + 2 -and $run.right -ge $_.left - 2
+            } | Select-Object -First 1
+            if ($null -eq $component) {
+                $component = [pscustomobject]@{
+                    firstRow = $run.row
+                    lastRow = $run.row
+                    left = $run.left
+                    right = $run.right
+                    pixels = [long]$run.width
+                    maxRun = $run.width
+                }
+                $components.Add($component)
+            } else {
+                $component.lastRow = $run.row
+                $component.left = [Math]::Min($component.left, $run.left)
+                $component.right = [Math]::Max($component.right, $run.right)
+                $component.pixels += $run.width
+                $component.maxRun = [Math]::Max($component.maxRun, $run.width)
+            }
+        }
+
+        $candidates = foreach ($component in $components) {
+            $width = $component.right - $component.left + 1
+            $height = $component.lastRow - $component.firstRow + 1
+            $logicalHeight = $height / [Math]::Max(0.01, $DeviceScaleFactor)
+            $fillRatio = $component.pixels / [double]($width * $height)
+            if ($logicalHeight -ge 18 -and $logicalHeight -le 72 -and
+                $fillRatio -ge 0.55 -and $fillRatio -le 0.90 -and
+                [Math]::Abs(($width / [double]$height) - 1.0) -le 0.15) {
+                [pscustomobject]@{
+                    width = $width
+                    height = $height
+                    aspect = $width / [double]$height
+                    fillRatio = $fillRatio
+                    area = $width * $height
+                }
+            }
+        }
+        return $candidates | Sort-Object area -Descending | Select-Object -First 1
+    }
+    finally {
+        $bitmap.Dispose()
+        $stream.Dispose()
+    }
+}
+
 function Get-SourceFingerprint([string[]] $RelativePaths) {
     $builder = [Text.StringBuilder]::new()
     foreach ($relativePath in ($RelativePaths | Sort-Object)) {
@@ -244,7 +371,7 @@ try {
     Wait-Http "http://127.0.0.1:$httpPort/" ([TimeSpan]::FromSeconds(30))
 
     $browserPath = Find-Browser $Browser
-    $browserProcess = Start-BackgroundProcess $browserPath @(
+    $browserArguments = @(
         "--remote-debugging-port=$debugPort",
         "--user-data-dir=$profileRoot",
         '--no-first-run',
@@ -252,10 +379,15 @@ try {
         '--disable-background-timer-throttling',
         '--disable-renderer-backgrounding',
         '--disable-backgrounding-occluded-windows',
-        '--disable-features=CalculateNativeWinOcclusion',
-        '--window-position=-32000,-32000',
-        '--window-size=1280,720',
-        'about:blank') $repoRoot
+        '--disable-features=CalculateNativeWinOcclusion')
+    if ($Visible) {
+        $browserArguments += '--start-maximized'
+    } else {
+        $browserArguments += '--window-position=-32000,-32000'
+        $browserArguments += '--window-size=1280,720'
+    }
+    $browserArguments += 'about:blank'
+    $browserProcess = Start-BackgroundProcess $browserPath $browserArguments $repoRoot
     Wait-Http "http://127.0.0.1:$debugPort/json/version" ([TimeSpan]::FromSeconds(30))
     $targetUrl = "http://127.0.0.1:$httpPort/?dorotiResizeDiagnostics=1"
     $target = Invoke-RestMethod -Method Put -Uri "http://127.0.0.1:$debugPort/json/new?$([Uri]::EscapeDataString($targetUrl))"
@@ -291,12 +423,28 @@ try {
     Start-Sleep -Seconds 2
 
     Add-Type -AssemblyName System.Drawing
+    $stableScreenshot = Capture-Screenshot $socket
+    $stableDeviceScaleFactor = [double](Invoke-JavaScript $socket 'window.devicePixelRatio')
+    $stableAppBarLogicalHeight = Get-AppBarLogicalHeight $stableScreenshot $stableDeviceScaleFactor
+    if ($null -eq $stableAppBarLogicalHeight) {
+        throw 'The fixed-height AppBar visual oracle could not find the stable app bar.'
+    }
+    $stableCircularControl = Get-CircularControlAspect $stableScreenshot $stableDeviceScaleFactor
+    if ($null -eq $stableCircularControl) {
+        throw 'The circular-control aspect oracle could not find the stable control.'
+    }
     $blankCount = 0
     $blankDurationMilliseconds = 0.0
     $firstBlankSaved = $false
     $sampleWatch = [Diagnostics.Stopwatch]::StartNew()
     $previousSampleMilliseconds = 0.0
     $blankSamples = [Collections.Generic.List[object]]::new()
+    $appBarSamples = [Collections.Generic.List[object]]::new()
+    $appBarGeometryFailures = [Collections.Generic.List[object]]::new()
+    $circularControlSamples = [Collections.Generic.List[object]]::new()
+    $circularControlGeometryFailures = [Collections.Generic.List[object]]::new()
+    $circularControlObservedSamples = 0
+    $circularControlNotObservedSamples = 0
     $matrixCases = @()
     if ($ExerciseCompatibilityMatrix) {
         foreach ($dpr in @(1.0, 1.25, 1.5, 2.0)) {
@@ -310,19 +458,49 @@ try {
         }
     }
     $requestedMatrixCases = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    $nativeWindow = Send-Cdp $socket 'Browser.getWindowForTarget'
+    $availableScreen = ([string](Invoke-JavaScript $socket @"
+JSON.stringify({
+  left: Number(screen.availLeft || 0),
+  top: Number(screen.availTop || 0),
+  width: Number(screen.availWidth),
+  height: Number(screen.availHeight)
+})
+"@)) | ConvertFrom-Json
+    $windowMargin = 20
+    $nativeWindowLeft = if ($Visible) { [int]$availableScreen.left + $windowMargin } else { -32000 }
+    $nativeWindowTop = if ($Visible) { [int]$availableScreen.top + $windowMargin } else { -32000 }
+    $maximumNativeWindowWidth = [Math]::Max(1,
+        [Math]::Min(1200, [int]$availableScreen.width - ($windowMargin * 2)))
+    $maximumNativeWindowHeight = [Math]::Max(1,
+        [Math]::Min(800, [int]$availableScreen.height - ($windowMargin * 2)))
+    $minimumNativeWindowWidth = [Math]::Max([Math]::Min(320, $maximumNativeWindowWidth),
+        $maximumNativeWindowWidth - [Math]::Min(360, [Math]::Floor($maximumNativeWindowWidth * 0.3)))
+    $minimumNativeWindowHeight = [Math]::Max([Math]::Min(320, $maximumNativeWindowHeight),
+        $maximumNativeWindowHeight - [Math]::Min(180, [Math]::Floor($maximumNativeWindowHeight * 0.25)))
     for ($sample = 0; $sample -lt $SampleCount; $sample++) {
         $cycle = ($sample % 120) / 120.0
         $wave = if ($cycle -le 0.5) { $cycle * 2 } else { (1 - $cycle) * 2 }
-        $baseWidth = 800 + [Math]::Round(480 * $wave)
-        $baseHeight = 500 + [Math]::Round(220 * $wave)
         $matrixCase = if ($ExerciseCompatibilityMatrix) {
             $matrixCases[[Math]::Min($matrixCases.Count - 1,
                 [Math]::Floor($sample * $matrixCases.Count / $SampleCount))]
         } else { $null }
+        $baseWidth = if ($matrixCase) {
+            800 + [Math]::Round(480 * $wave)
+        } else {
+            $maximumNativeWindowWidth - [Math]::Round(
+                ($maximumNativeWindowWidth - $minimumNativeWindowWidth) * $wave)
+        }
+        $baseHeight = if ($matrixCase) {
+            500 + [Math]::Round(220 * $wave)
+        } else {
+            $maximumNativeWindowHeight - [Math]::Round(
+                ($maximumNativeWindowHeight - $minimumNativeWindowHeight) * $wave)
+        }
         $zoomScale = if ($matrixCase) { $matrixCase.zoomPercent / 100.0 } else { 1.0 }
         $width = [Math]::Max(1, [Math]::Round($baseWidth / $zoomScale))
         $height = [Math]::Max(1, [Math]::Round($baseHeight / $zoomScale))
-        $deviceScaleFactor = if ($matrixCase) { $matrixCase.effectiveDeviceScaleFactor } else { 1.0 }
+        $deviceScaleFactor = if ($matrixCase) { $matrixCase.effectiveDeviceScaleFactor } else { $stableDeviceScaleFactor }
         if ($matrixCase) {
             [void]$requestedMatrixCases.Add("$($matrixCase.baseDpr)x@$($matrixCase.zoomPercent)%")
         }
@@ -332,12 +510,66 @@ try {
         if ($ExerciseCompatibilityMatrix -and $sample -eq [Math]::Floor($SampleCount * 0.85)) {
             [void](Send-Cdp $socket 'Emulation.setCPUThrottlingRate' @{ rate = 1 })
         }
-        [void](Send-Cdp $socket 'Emulation.setDeviceMetricsOverride' @{
-            width = $width; height = $height; deviceScaleFactor = $deviceScaleFactor; mobile = $false
-            screenWidth = $width; screenHeight = $height
-        })
-        Start-Sleep -Milliseconds 8
+        if ($matrixCase) {
+            [void](Send-Cdp $socket 'Emulation.setDeviceMetricsOverride' @{
+                width = $width; height = $height; deviceScaleFactor = $deviceScaleFactor; mobile = $false
+                screenWidth = $width; screenHeight = $height
+            })
+        } else {
+            [void](Send-Cdp $socket 'Browser.setWindowBounds' @{
+                windowId = $nativeWindow.windowId
+                bounds = @{
+                    left = $nativeWindowLeft; top = $nativeWindowTop
+                    width = $width; height = $height; windowState = 'normal'
+                }
+            })
+        }
+        Start-Sleep -Milliseconds $SampleIntervalMilliseconds
+        $observedScaleFactor = [double](Invoke-JavaScript $socket 'window.devicePixelRatio')
         $screenshot = Capture-Screenshot $socket
+        $appBarLogicalHeight = Get-AppBarLogicalHeight $screenshot $observedScaleFactor
+        $appBarSample = [ordered]@{
+            sample = $sample
+            requestedDeviceScaleFactor = $deviceScaleFactor
+            observedDeviceScaleFactor = $observedScaleFactor
+            logicalHeight = if ($null -eq $appBarLogicalHeight) { $null } else { [Math]::Round($appBarLogicalHeight, 3) }
+            delta = if ($null -eq $appBarLogicalHeight) { $null } else {
+                [Math]::Round([Math]::Abs($appBarLogicalHeight - $stableAppBarLogicalHeight), 3)
+            }
+        }
+        $appBarSamples.Add($appBarSample)
+        if ($null -eq $appBarLogicalHeight -or
+            [Math]::Abs($appBarLogicalHeight - $stableAppBarLogicalHeight) -gt 1.0) {
+            $appBarGeometryFailures.Add($appBarSample)
+        }
+        $circularControl = Get-CircularControlAspect $screenshot $observedScaleFactor
+        $aspectError = if ($null -eq $circularControl) { $null } else {
+            [Math]::Abs(($circularControl.aspect / $stableCircularControl.aspect) - 1.0)
+        }
+        $tolerancePhysicalPixels = [Math]::Max(
+            1, [Math]::Ceiling([Math]::Max(0.01, $observedScaleFactor - 0.001)))
+        $pixelDelta = if ($null -eq $circularControl) { $null } else {
+            [Math]::Abs($circularControl.width - $circularControl.height)
+        }
+        $circularControlSample = [ordered]@{
+            sample = $sample
+            aspect = if ($null -eq $circularControl) { $null } else { [Math]::Round($circularControl.aspect, 5) }
+            stableAspect = [Math]::Round($stableCircularControl.aspect, 5)
+            aspectErrorPercent = if ($null -eq $aspectError) { $null } else { [Math]::Round($aspectError * 100, 3) }
+            widthPhysicalPixels = if ($null -eq $circularControl) { $null } else { $circularControl.width }
+            heightPhysicalPixels = if ($null -eq $circularControl) { $null } else { $circularControl.height }
+            pixelDelta = $pixelDelta
+            tolerancePhysicalPixels = $tolerancePhysicalPixels
+        }
+        $circularControlSamples.Add($circularControlSample)
+        if ($null -eq $circularControl) {
+            $circularControlNotObservedSamples++
+        } else {
+            $circularControlObservedSamples++
+        }
+        if ($null -ne $circularControl -and $pixelDelta -gt $tolerancePhysicalPixels) {
+            $circularControlGeometryFailures.Add($circularControlSample)
+        }
         $nowMilliseconds = $sampleWatch.Elapsed.TotalMilliseconds
         if (Test-BlankScreenshot $screenshot) {
             $blankCount++
@@ -443,7 +675,9 @@ try {
             }
         }
     }
-    Start-Sleep -Seconds 2
+    if ($PostResizeObservationSeconds -gt 0) {
+        Start-Sleep -Seconds $PostResizeObservationSeconds
+    }
     $diagnosticsJson = [string](Invoke-JavaScript $socket $diagnosticExpression)
     $diagnostics = $diagnosticsJson | ConvertFrom-Json -Depth 30
     $presenterJson = [string](Invoke-JavaScript $socket "globalThis.__dorotiResizeDiagnostics.presenter('doroti-surface')")
@@ -455,8 +689,9 @@ try {
     $targets = @($trace | Where-Object phase -eq 'target-observed')
     $requests = @($trace | Where-Object phase -eq 'present-requested')
     $terminals = @($trace | Where-Object { $_.terminal })
-    $resets = @($trace | Where-Object phase -eq 'backing-reset-end')
-    $restores = @($trace | Where-Object phase -eq 'retained-restore-end')
+    $resets = @($trace | Where-Object phase -eq 'backing-reset-start')
+    $resetCommits = @($trace | Where-Object phase -eq 'backing-reset-end')
+    $stableRefreshes = @($trace | Where-Object phase -eq 'stable-front-refresh')
     $commits = @($trace | Where-Object phase -eq 'front-commit')
     $targetGenerations = @($targets | ForEach-Object { [long]$_.epoch.generation })
     $generationRegressions = 0
@@ -476,16 +711,28 @@ try {
     $resetCoverageFailures = @($resets | Where-Object {
         $reset = $_
         -not ($trace | Where-Object {
-            [long]$_.rafId -eq [long]$reset.rafId -and
-            $_.phase -in @('retained-restore-end', 'startup-background-commit')
+            [long]$_.sequence -gt [long]$reset.sequence -and
+            [long]$_.epoch.generation -eq [long]$reset.epoch.generation -and
+            $_.phase -in @('backing-reset-end', 'startup-background-commit')
         } | Select-Object -First 1)
     })
     $blitErrors = @($trace | Where-Object {
-        if ($_.phase -notin @('front-commit', 'retained-restore-end', 'retained-refresh') -or -not $_.detail) {
+        if ($_.phase -notin @('front-commit', 'stable-front-refresh', 'startup-background-commit') -or -not $_.detail) {
             return $false
         }
         $detail = $_.detail | ConvertFrom-Json
         return $detail.error -ne 0 -or @($detail.priorErrors).Count -ne 0
+    })
+    $provisionalGeometryFailures = @($trace | Where-Object {
+        if ($_.phase -ne 'stable-front-refresh' -or -not $_.detail) {
+            return $false
+        }
+        $detail = $_.detail | ConvertFrom-Json
+        return $detail.policy -ne 'target-sized-default-top-left-crop' -or
+            [Math]::Abs([double]$detail.scaleX - 1.0) -gt 0.000001 -or
+            [Math]::Abs([double]$detail.scaleY - 1.0) -gt 0.000001 -or
+            [long]$detail.sourceRect[2] -ne [long]$detail.destinationRect[2] -or
+            [long]$detail.sourceRect[3] -ne [long]$detail.destinationRect[3]
     })
     $latestTarget = $targets | Select-Object -Last 1
     $latestExact = $commits | Where-Object {
@@ -501,32 +748,56 @@ try {
     })
     $sourceFiles = @(
         'Doroti/src/Doroti.Host.Web/Web/doroti.web.ts',
+        'Doroti/src/Doroti.Host.Web/wwwroot/doroti.web.css',
         'Doroti/src/Doroti.Host.Web/DorotiWebGlSurface.razor',
         'Doroti/src/Doroti.Host.Web/BrowserSkiaCapabilities.cs',
         'Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs',
         'Doroti/eng/validate-web-resize-continuity-live.ps1')
     $sourceFingerprint = Get-SourceFingerprint $sourceFiles
     $summary = [ordered]@{
-        schemaVersion = 'doroti.web-resize-continuity-live/v1'
+        schemaVersion = 'doroti.web-resize-continuity-live/v2'
         capturedAt = [DateTimeOffset]::Now.ToString('o')
         status = 'PASS'
         browser = $Browser
         scenario = if ($ExerciseCompatibilityMatrix) { 'compatibility-matrix' } else { 'baseline' }
         sourceFingerprint = $sourceFingerprint
-        inputMotion = 'constant-speed viewport triangle wave'
+        inputMotion = if ($ExerciseCompatibilityMatrix) {
+            'CDP viewport/DPR compatibility triangle wave'
+        } else {
+            'native browser-window bounds triangle wave'
+        }
         inputSamples = $SampleCount
+        sampleIntervalMilliseconds = $SampleIntervalMilliseconds
+        postResizeObservationSeconds = $PostResizeObservationSeconds
+        visibleWindow = [bool]$Visible
         coverage = 'smoke-regression'
         targetCount = $targets.Count
         generationMinimum = if ($targetGenerations.Count) { $targetGenerations[0] } else { $null }
         generationMaximum = if ($targetGenerations.Count) { $targetGenerations[-1] } else { $null }
         backingResetCount = $resets.Count
-        retainedRestoreCount = $restores.Count
-        retainedRestoreLatencyMicroseconds = @($restores.durationMicroseconds)
+        backingResetCommitCount = $resetCommits.Count
+        stableFrontRefreshCount = $stableRefreshes.Count
+        stableFrontRefreshLatencyMicroseconds = @($stableRefreshes.durationMicroseconds)
         exactFrontCommitCount = $commits.Count
         staleFrontCommitCount = $staleFrontCommits.Count
         blankExposureCount = $blankCount
         blankExposureDurationMilliseconds = [Math]::Round($blankDurationMilliseconds, 3)
         blankSamples = $blankSamples.ToArray()
+        appBarGeometry = [ordered]@{
+            stableLogicalHeight = [Math]::Round($stableAppBarLogicalHeight, 3)
+            toleranceLogicalPixels = 1.0
+            failedSamples = $appBarGeometryFailures.Count
+            samples = $appBarSamples.ToArray()
+        }
+        circularControlGeometry = [ordered]@{
+            stableAspect = [Math]::Round($stableCircularControl.aspect, 5)
+            tolerance = 'max(1 physical pixel, ceil(devicePixelRatio))'
+            observedSamples = $circularControlObservedSamples
+            notObservedSamples = $circularControlNotObservedSamples
+            minimumObservedSamples = [Math]::Max(4, [Math]::Ceiling($SampleCount * 0.1))
+            failedSamples = $circularControlGeometryFailures.Count
+            samples = $circularControlSamples.ToArray()
+        }
         queueHighWatermark = ($trace.queueDepth | Measure-Object -Maximum).Maximum
         terminal = [ordered]@{
             submitted = @($terminals | Where-Object terminal -eq 'submitted').Count
@@ -538,6 +809,7 @@ try {
         generationRegressions = $generationRegressions
         resetCoverageFailures = $resetCoverageFailures.Count
         gpuBlitErrors = $blitErrors.Count
+        nonUniformProvisionalScale = $provisionalGeometryFailures.Count
         latestTargetExactCommit = [bool]$latestExact
         contextId = $presenter.context
         contextGeneration = $presenter.contextGeneration
@@ -557,6 +829,15 @@ try {
     $failures = [Collections.Generic.List[string]]::new()
     if ($targets.Count -lt $SampleCount) { $failures.Add("targetCount=$($targets.Count) < $SampleCount") }
     if ($blankCount -ne 0) { $failures.Add("blankExposureCount=$blankCount") }
+    if ($appBarGeometryFailures.Count -ne 0) {
+        $failures.Add("appBarGeometryFailures=$($appBarGeometryFailures.Count)")
+    }
+    if ($circularControlGeometryFailures.Count -ne 0) {
+        $failures.Add("circularControlGeometryFailures=$($circularControlGeometryFailures.Count)")
+    }
+    if ($circularControlObservedSamples -lt $summary.circularControlGeometry.minimumObservedSamples) {
+        $failures.Add("circularControlObservedSamples=$circularControlObservedSamples < $($summary.circularControlGeometry.minimumObservedSamples)")
+    }
     if ($staleFrontCommits.Count -ne 0) { $failures.Add("staleFrontCommitCount=$($staleFrontCommits.Count)") }
     if ($generationRegressions -ne 0) { $failures.Add("generationRegressions=$generationRegressions") }
     if ($summary.queueHighWatermark -gt 2) { $failures.Add("queueHighWatermark=$($summary.queueHighWatermark)") }
@@ -565,6 +846,9 @@ try {
     }
     if ($resetCoverageFailures.Count -ne 0) { $failures.Add("resetCoverageFailures=$($resetCoverageFailures.Count)") }
     if ($blitErrors.Count -ne 0) { $failures.Add("gpuBlitErrors=$($blitErrors.Count)") }
+    if ($provisionalGeometryFailures.Count -ne 0) {
+        $failures.Add("nonUniformProvisionalScale=$($provisionalGeometryFailures.Count)")
+    }
     if (-not $latestExact) { $failures.Add('latest target lacks an exact front commit') }
     if ($browserExceptions.Count -ne 0) { $failures.Add("browserExceptionCount=$($browserExceptions.Count)") }
     if ($ExerciseCompatibilityMatrix -and $requestedMatrixCases.Count -ne 16) {
@@ -591,6 +875,8 @@ try {
         presenter = $presenter
         trace = $trace
         blankSamples = $blankSamples.ToArray()
+        appBarSamples = $appBarSamples.ToArray()
+        circularControlSamples = $circularControlSamples.ToArray()
         browserEvents = $browserExceptions
         browserWarnings = $browserWarnings
     }

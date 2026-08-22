@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Doroti.Ui;
 
 /// <summary>
@@ -11,11 +13,65 @@ public sealed record DorotiResizeEpoch(
     double LogicalHeight,
     int PhysicalWidth,
     int PhysicalHeight,
-    double DevicePixelRatio,
+    double DeviceScaleX,
+    double DeviceScaleY,
     long TimestampMicroseconds)
 {
+    [JsonConstructor]
+    public DorotiResizeEpoch(
+        long generation,
+        double logicalWidth,
+        double logicalHeight,
+        int physicalWidth,
+        int physicalHeight,
+        double devicePixelRatio,
+        long timestampMicroseconds)
+        : this(generation, logicalWidth, logicalHeight, physicalWidth, physicalHeight,
+            devicePixelRatio, devicePixelRatio, timestampMicroseconds) { }
+
+    public double DevicePixelRatio => DeviceScaleX;
+    public bool HasUniformDeviceScale =>
+        Math.Abs(DeviceScaleX - DeviceScaleY) <= double.Epsilon;
+
     public bool HasDrawableSize =>
         LogicalWidth > 0 && LogicalHeight > 0 && PhysicalWidth > 0 && PhysicalHeight > 0;
+}
+
+/// <summary>
+/// One immutable host viewport publication. Framework metrics and the native
+/// resize target must be copied from the same publication instead of sampled
+/// independently while a frame is being built.
+/// </summary>
+public sealed record DorotiViewEpoch(
+    ulong ViewId,
+    long ResizeTargetGeneration,
+    long MetricsGeneration,
+    double LogicalWidth,
+    double LogicalHeight,
+    int PhysicalWidth,
+    int PhysicalHeight,
+    double DeviceScaleX,
+    double DeviceScaleY,
+    long TimestampMicroseconds)
+{
+    public double DevicePixelRatio => DeviceScaleX;
+    public bool HasUniformDeviceScale =>
+        Math.Abs(DeviceScaleX - DeviceScaleY) <= double.Epsilon;
+    public bool HasDrawableSize =>
+        LogicalWidth > 0 && LogicalHeight > 0 && PhysicalWidth > 0 && PhysicalHeight > 0;
+}
+
+/// <summary>Identity captured once at the beginning of a framework frame.</summary>
+public sealed record DorotiSceneBuildToken(
+    DorotiViewEpoch ViewEpoch,
+    long FrameworkFrameNumber,
+    int RootPhysicalWidth,
+    int RootPhysicalHeight)
+{
+    public bool HasRootPhysicalSize => RootPhysicalWidth > 0 && RootPhysicalHeight > 0;
+
+    public DorotiSceneBuildToken WithRootPhysicalSize(int width, int height) =>
+        this with { RootPhysicalWidth = width, RootPhysicalHeight = height };
 }
 
 /// <summary>
@@ -32,17 +88,170 @@ public sealed record DorotiFrameDescriptor(
     double LogicalHeight,
     int PhysicalWidth,
     int PhysicalHeight,
-    double DevicePixelRatio,
+    double DeviceScaleX,
+    double DeviceScaleY,
+    int RootPhysicalWidth,
+    int RootPhysicalHeight,
+    long FrameworkFrameNumber,
     long SceneSequence)
 {
+    public double DevicePixelRatio => DeviceScaleX;
     public bool HasDrawableSize =>
         LogicalWidth > 0 && LogicalHeight > 0 && PhysicalWidth > 0 && PhysicalHeight > 0;
 
-    public bool IsExactFor(DorotiResizeEpoch target) =>
-        ResizeTargetGeneration == target.Generation &&
-        PhysicalWidth == target.PhysicalWidth &&
-        PhysicalHeight == target.PhysicalHeight &&
-        Math.Abs(DevicePixelRatio - target.DevicePixelRatio) <= double.Epsilon;
+    public static DorotiFrameDescriptor FromBuildToken(
+        DorotiSceneBuildToken token,
+        long sceneSequence)
+    {
+        ArgumentNullException.ThrowIfNull(token);
+        var epoch = token.ViewEpoch;
+        return new(
+            epoch.ViewId,
+            epoch.ResizeTargetGeneration,
+            epoch.MetricsGeneration,
+            epoch.LogicalWidth,
+            epoch.LogicalHeight,
+            epoch.PhysicalWidth,
+            epoch.PhysicalHeight,
+            epoch.DeviceScaleX,
+            epoch.DeviceScaleY,
+            token.RootPhysicalWidth,
+            token.RootPhysicalHeight,
+            token.FrameworkFrameNumber,
+            sceneSequence);
+    }
+
+    public int CompareAdmissionTo(DorotiFrameDescriptor other)
+    {
+        ArgumentNullException.ThrowIfNull(other);
+        var target = ResizeTargetGeneration.CompareTo(other.ResizeTargetGeneration);
+        if (target != 0) return target;
+        var metrics = MetricsGeneration.CompareTo(other.MetricsGeneration);
+        if (metrics != 0) return metrics;
+        return SceneSequence.CompareTo(other.SceneSequence);
+    }
+
+    public DorotiFrameMatchResult MatchExact(
+        DorotiViewEpoch current,
+        DorotiResizeEpoch target,
+        int surfaceWidth,
+        int surfaceHeight,
+        double surfaceScaleX,
+        double surfaceScaleY)
+    {
+        ArgumentNullException.ThrowIfNull(current);
+        ArgumentNullException.ThrowIfNull(target);
+
+        if (!current.HasUniformDeviceScale || !target.HasUniformDeviceScale ||
+            Math.Abs(surfaceScaleX - surfaceScaleY) > double.Epsilon)
+            return DorotiFrameMatchResult.Mismatch(
+                DorotiFrameMismatch.nonUniformDeviceScale,
+                $"scene={DeviceScaleX}x{DeviceScaleY}; current={current.DeviceScaleX}x{current.DeviceScaleY}; surface={surfaceScaleX}x{surfaceScaleY}");
+        if (ViewId != current.ViewId)
+            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.viewId,
+                $"scene={ViewId}; current={current.ViewId}");
+        if (ResizeTargetGeneration != current.ResizeTargetGeneration ||
+            ResizeTargetGeneration != target.Generation)
+            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.resizeTargetGeneration,
+                $"scene={ResizeTargetGeneration}; current={current.ResizeTargetGeneration}; target={target.Generation}");
+        if (MetricsGeneration != current.MetricsGeneration)
+            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.metricsGeneration,
+                $"scene={MetricsGeneration}; current={current.MetricsGeneration}");
+        if (LogicalWidth != current.LogicalWidth || LogicalHeight != current.LogicalHeight ||
+            LogicalWidth != target.LogicalWidth || LogicalHeight != target.LogicalHeight)
+            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.logicalSize,
+                $"scene={LogicalWidth}x{LogicalHeight}; current={current.LogicalWidth}x{current.LogicalHeight}; target={target.LogicalWidth}x{target.LogicalHeight}");
+        if (PhysicalWidth != current.PhysicalWidth || PhysicalHeight != current.PhysicalHeight ||
+            PhysicalWidth != target.PhysicalWidth || PhysicalHeight != target.PhysicalHeight)
+            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.physicalSize,
+                $"scene={PhysicalWidth}x{PhysicalHeight}; current={current.PhysicalWidth}x{current.PhysicalHeight}; target={target.PhysicalWidth}x{target.PhysicalHeight}");
+        if (DeviceScaleX != current.DeviceScaleX || DeviceScaleY != current.DeviceScaleY ||
+            DeviceScaleX != target.DeviceScaleX || DeviceScaleY != target.DeviceScaleY)
+            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.deviceScale,
+                $"scene={DeviceScaleX}x{DeviceScaleY}; current={current.DeviceScaleX}x{current.DeviceScaleY}; target={target.DeviceScaleX}x{target.DeviceScaleY}");
+        if (RootPhysicalWidth != current.PhysicalWidth || RootPhysicalHeight != current.PhysicalHeight)
+            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.rootPhysicalSize,
+                $"root={RootPhysicalWidth}x{RootPhysicalHeight}; current={current.PhysicalWidth}x{current.PhysicalHeight}");
+        if (surfaceWidth != target.PhysicalWidth || surfaceHeight != target.PhysicalHeight)
+            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.surfacePhysicalSize,
+                $"surface={surfaceWidth}x{surfaceHeight}; target={target.PhysicalWidth}x{target.PhysicalHeight}");
+        if (surfaceScaleX != target.DeviceScaleX || surfaceScaleY != target.DeviceScaleY)
+            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.surfaceDeviceScale,
+                $"surface={surfaceScaleX}x{surfaceScaleY}; target={target.DeviceScaleX}x{target.DeviceScaleY}");
+        return DorotiFrameMatchResult.Exact;
+    }
+
+    /// <summary>
+    /// Native final gate after the renderer has already matched the framework
+    /// metrics generation. This intentionally does not invent a metrics value
+    /// at the surface boundary.
+    /// </summary>
+    public DorotiFrameMatchResult MatchTargetAndSurface(
+        DorotiResizeEpoch target,
+        int surfaceWidth,
+        int surfaceHeight,
+        double surfaceScaleX,
+        double surfaceScaleY)
+    {
+        ArgumentNullException.ThrowIfNull(target);
+        if (!target.HasUniformDeviceScale ||
+            Math.Abs(surfaceScaleX - surfaceScaleY) > double.Epsilon)
+            return DorotiFrameMatchResult.Mismatch(
+                DorotiFrameMismatch.nonUniformDeviceScale,
+                $"scene={DeviceScaleX}x{DeviceScaleY}; target={target.DeviceScaleX}x{target.DeviceScaleY}; surface={surfaceScaleX}x{surfaceScaleY}");
+        if (ResizeTargetGeneration != target.Generation)
+            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.resizeTargetGeneration,
+                $"scene={ResizeTargetGeneration}; target={target.Generation}");
+        if (LogicalWidth != target.LogicalWidth || LogicalHeight != target.LogicalHeight)
+            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.logicalSize,
+                $"scene={LogicalWidth}x{LogicalHeight}; target={target.LogicalWidth}x{target.LogicalHeight}");
+        if (PhysicalWidth != target.PhysicalWidth || PhysicalHeight != target.PhysicalHeight)
+            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.physicalSize,
+                $"scene={PhysicalWidth}x{PhysicalHeight}; target={target.PhysicalWidth}x{target.PhysicalHeight}");
+        if (DeviceScaleX != target.DeviceScaleX || DeviceScaleY != target.DeviceScaleY)
+            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.deviceScale,
+                $"scene={DeviceScaleX}x{DeviceScaleY}; target={target.DeviceScaleX}x{target.DeviceScaleY}");
+        if (RootPhysicalWidth != target.PhysicalWidth || RootPhysicalHeight != target.PhysicalHeight)
+            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.rootPhysicalSize,
+                $"root={RootPhysicalWidth}x{RootPhysicalHeight}; target={target.PhysicalWidth}x{target.PhysicalHeight}");
+        if (surfaceWidth != target.PhysicalWidth || surfaceHeight != target.PhysicalHeight)
+            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.surfacePhysicalSize,
+                $"surface={surfaceWidth}x{surfaceHeight}; target={target.PhysicalWidth}x{target.PhysicalHeight}");
+        if (surfaceScaleX != target.DeviceScaleX || surfaceScaleY != target.DeviceScaleY)
+            return DorotiFrameMatchResult.Mismatch(DorotiFrameMismatch.surfaceDeviceScale,
+                $"surface={surfaceScaleX}x{surfaceScaleY}; target={target.DeviceScaleX}x{target.DeviceScaleY}");
+        return DorotiFrameMatchResult.Exact;
+    }
+}
+
+public enum DorotiFrameMismatch
+{
+    none,
+    missingBuildToken,
+    viewId,
+    resizeTargetGeneration,
+    metricsGeneration,
+    logicalSize,
+    physicalSize,
+    deviceScale,
+    rootPhysicalSize,
+    surfacePhysicalSize,
+    surfaceDeviceScale,
+    nonUniformDeviceScale,
+}
+
+public sealed record DorotiFrameMatchResult(
+    DorotiFrameMismatch MismatchCode,
+    string? Detail = null)
+{
+    public static DorotiFrameMatchResult Exact { get; } = new(DorotiFrameMismatch.none);
+    public bool IsExact => MismatchCode == DorotiFrameMismatch.none;
+
+    public static DorotiFrameMatchResult Mismatch(DorotiFrameMismatch code, string detail)
+    {
+        if (code == DorotiFrameMismatch.none) throw new ArgumentOutOfRangeException(nameof(code));
+        return new(code, detail);
+    }
 }
 
 public enum DorotiFrameTerminal
@@ -85,16 +294,27 @@ public sealed class DorotiResizeTargetCoordinator
         double logicalHeight,
         double devicePixelRatio,
         long? timestampMicroseconds = null)
+        => Publish(logicalWidth, logicalHeight, devicePixelRatio, devicePixelRatio,
+            timestampMicroseconds);
+
+    public DorotiResizeEpoch Publish(
+        double logicalWidth,
+        double logicalHeight,
+        double deviceScaleX,
+        double deviceScaleY,
+        long? timestampMicroseconds = null)
     {
         if (!double.IsFinite(logicalWidth) || logicalWidth < 0)
             throw new ArgumentOutOfRangeException(nameof(logicalWidth));
         if (!double.IsFinite(logicalHeight) || logicalHeight < 0)
             throw new ArgumentOutOfRangeException(nameof(logicalHeight));
-        if (!double.IsFinite(devicePixelRatio) || devicePixelRatio <= 0)
-            throw new ArgumentOutOfRangeException(nameof(devicePixelRatio));
+        if (!double.IsFinite(deviceScaleX) || deviceScaleX <= 0)
+            throw new ArgumentOutOfRangeException(nameof(deviceScaleX));
+        if (!double.IsFinite(deviceScaleY) || deviceScaleY <= 0)
+            throw new ArgumentOutOfRangeException(nameof(deviceScaleY));
 
-        var physicalWidth = logicalWidth <= 0 ? 0 : checked((int)Math.Round(logicalWidth * devicePixelRatio));
-        var physicalHeight = logicalHeight <= 0 ? 0 : checked((int)Math.Round(logicalHeight * devicePixelRatio));
+        var physicalWidth = logicalWidth <= 0 ? 0 : checked((int)Math.Round(logicalWidth * deviceScaleX));
+        var physicalHeight = logicalHeight <= 0 ? 0 : checked((int)Math.Round(logicalHeight * deviceScaleY));
         lock (_gate)
         {
             if (_latest is { } current &&
@@ -102,7 +322,8 @@ public sealed class DorotiResizeTargetCoordinator
                 current.LogicalHeight == logicalHeight &&
                 current.PhysicalWidth == physicalWidth &&
                 current.PhysicalHeight == physicalHeight &&
-                current.DevicePixelRatio == devicePixelRatio)
+                current.DeviceScaleX == deviceScaleX &&
+                current.DeviceScaleY == deviceScaleY)
                 return current;
 
             _latest = new(
@@ -111,7 +332,8 @@ public sealed class DorotiResizeTargetCoordinator
                 logicalHeight,
                 physicalWidth,
                 physicalHeight,
-                devicePixelRatio,
+                deviceScaleX,
+                deviceScaleY,
                 timestampMicroseconds ?? DorotiFrameClock.Now.Ticks / 10);
             return _latest;
         }

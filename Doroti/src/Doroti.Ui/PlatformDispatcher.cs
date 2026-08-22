@@ -107,8 +107,26 @@ public sealed class PlatformDispatcher : IDisposable
         ArgumentNullException.ThrowIfNull(beginFrame);
         ArgumentNullException.ThrowIfNull(drawFrame);
         ObjectDisposedException.ThrowIf(_disposed, this);
-        beginFrame();
-        drawFrame();
+        var registeredViews = views;
+        if (registeredViews.Count == 0)
+        {
+            beginFrame();
+            drawFrame();
+            return;
+        }
+        var frameNumber = Interlocked.Increment(ref _frameNumber);
+        var buildScopes = registeredViews
+            .Select(view => view.EnterSceneBuildScope(view.CaptureViewEpoch(), frameNumber))
+            .ToArray();
+        try
+        {
+            beginFrame();
+            drawFrame();
+        }
+        finally
+        {
+            foreach (var scope in buildScopes.Reverse()) scope.Dispose();
+        }
     }
 
     public IReadOnlyList<DorotiView> views
@@ -402,7 +420,8 @@ public sealed class PlatformDispatcher : IDisposable
     {
         DispatchWithEnvironment(view, () =>
         {
-            Interlocked.Increment(ref _frameNumber);
+            var frameNumber = Interlocked.Increment(ref _frameNumber);
+            using var buildScope = view.EnterSceneBuildScope(view.CaptureViewEpoch(), frameNumber);
             _frameTrace.Record(DorotiFramePhase.beginFrame, view.viewId, timestamp);
             onBeginFrame?.Invoke(timestamp);
             beginFrame?.Invoke(view, timestamp);
@@ -534,6 +553,7 @@ public sealed class DorotiView : IDisposable
     private readonly IInputHostCapability? _inputHost;
     private readonly IPlatformEnvironmentHostCapability? _environmentHost;
     private readonly ISemanticsHostCapability? _semanticsHost;
+    private readonly AsyncLocal<DorotiSceneBuildToken?> _activeBuildToken = new();
     private bool _disposed;
 
     internal DorotiView(PlatformDispatcher dispatcher, ulong viewId, DorotiViewCapabilities capabilities)
@@ -644,6 +664,23 @@ public sealed class DorotiView : IDisposable
         }
     }
 
+    internal DorotiViewEpoch CaptureViewEpoch()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return _viewHost.ViewEpoch;
+    }
+
+    internal IDisposable EnterSceneBuildScope(DorotiViewEpoch epoch, long frameNumber)
+    {
+        ArgumentNullException.ThrowIfNull(epoch);
+        if (epoch.ViewId != viewId)
+            throw new InvalidOperationException(
+                $"View epoch {epoch.ViewId} cannot build a scene for view {viewId}.");
+        var previous = _activeBuildToken.Value;
+        _activeBuildToken.Value = new(epoch, frameNumber, 0, 0);
+        return new SceneBuildScope(this, previous);
+    }
+
     public PlatformConfiguration platformConfiguration => _environmentHost?.Configuration ??
         throw new DorotiCapabilityException(
             DorotiCapabilityIds.PlatformEnvironment,
@@ -704,6 +741,9 @@ public sealed class DorotiView : IDisposable
     }
 
     public void SubmitScene(Scene scene, DartUiInvocation invocation)
+        => SubmitScene(scene, null, invocation);
+
+    private void SubmitScene(Scene scene, Size? rootPhysicalSize, DartUiInvocation invocation)
     {
         ArgumentNullException.ThrowIfNull(scene);
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -715,8 +755,19 @@ public sealed class DorotiView : IDisposable
                 invocation,
                 scene.debugDisposed ? "the scene is disposed" : $"scene belongs to view {scene.viewId}");
         }
+        var token = _activeBuildToken.Value;
+        if (token is not null)
+        {
+            var width = rootPhysicalSize is null
+                ? token.ViewEpoch.PhysicalWidth
+                : ToPhysicalDimension(rootPhysicalSize.width, nameof(rootPhysicalSize));
+            var height = rootPhysicalSize is null
+                ? token.ViewEpoch.PhysicalHeight
+                : ToPhysicalDimension(rootPhysicalSize.height, nameof(rootPhysicalSize));
+            token = token.WithRootPhysicalSize(width, height);
+        }
         _capabilities.Require<ISceneHostCapability>(viewId, DorotiCapabilityIds.GraphicsScene, invocation)
-            .Submit(viewId, scene, invocation);
+            .Submit(viewId, new(scene, token), invocation);
     }
 
     public void render(Scene scene) => SubmitScene(scene, DartUiInvocation.Managed("dart:ui#DorotiView.render"));
@@ -724,8 +775,15 @@ public sealed class DorotiView : IDisposable
     public void render(Scene scene, Size size)
     {
         ArgumentNullException.ThrowIfNull(scene);
-        _ = size;
-        SubmitScene(scene, DartUiInvocation.Managed("dart:ui#DorotiView.render"));
+        ArgumentNullException.ThrowIfNull(size);
+        SubmitScene(scene, size, DartUiInvocation.Managed("dart:ui#DorotiView.render"));
+    }
+
+    private static int ToPhysicalDimension(double value, string parameterName)
+    {
+        if (!double.IsFinite(value) || value < 0)
+            throw new ArgumentOutOfRangeException(parameterName);
+        return checked((int)Math.Round(value));
     }
 
     public Paragraph LayoutParagraph(ParagraphRequest request, DartUiInvocation invocation) =>
@@ -835,6 +893,20 @@ public sealed class DorotiView : IDisposable
         _dispatcher.DispatchPlatformConfiguration(this, configuration);
 
     private void HandleSemanticsAction(SemanticsActionEvent action) => _dispatcher.DispatchSemanticsAction(this, action);
+
+    private sealed class SceneBuildScope(
+        DorotiView owner,
+        DorotiSceneBuildToken? previous) : IDisposable
+    {
+        private bool _disposed;
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+            owner._activeBuildToken.Value = previous;
+        }
+    }
 }
 
 public sealed class SemanticsBinding

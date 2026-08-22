@@ -66,8 +66,8 @@ internal sealed class MauiSkiaCapabilities :
 
     internal void AttachSurface(Action invalidate) => _renderer.AttachSurface(invalidate);
 
-    public void Submit(ulong viewId, Scene scene, DartUiInvocation invocation) =>
-        _renderer.Submit(viewId, scene, invocation);
+    public void Submit(ulong viewId, DorotiSceneSubmission submission, DartUiInvocation invocation) =>
+        _renderer.Submit(viewId, submission, invocation);
 
     internal MauiPaintCompletion? Paint(SKSurface surface, int pixelWidth, int pixelHeight)
     {
@@ -111,7 +111,7 @@ internal sealed class MauiSkiaCapabilities :
 
         public long InputSequence => _host.InputSequence;
         public long SurfaceGeneration => _host.Snapshot.SurfaceGeneration;
-        public long MetricsGeneration => _host.Metrics.generation;
+        public DorotiViewEpoch ViewEpoch => _host.ViewEpoch;
         public DorotiResizeEpoch ResizeTarget
             => _host.ResizeTarget;
         public PlatformConfiguration Configuration => _host.Configuration;

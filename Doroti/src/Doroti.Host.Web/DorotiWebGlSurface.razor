@@ -55,7 +55,7 @@
     }
 
     [JSInvokable]
-    public Task<string> RenderFrame(
+    public async Task<string> RenderFrame(
         long generation,
         double logicalWidth,
         double logicalHeight,
@@ -67,17 +67,20 @@
         int stencilBits,
         int sampleCount)
     {
-        if (_disposed) return Task.FromResult("superseded");
+        if (_disposed) return "superseded";
         var target = new DorotiResizeEpoch(generation, logicalWidth, logicalHeight,
             physicalWidth, physicalHeight, devicePixelRatio, timestampMicroseconds);
-        if (_latestTarget?.Generation != generation) return Task.FromResult("superseded");
+        if (_latestTarget?.Generation != generation) return "superseded";
+        var glStateDirty = _module is not null &&
+            await _module.InvokeAsync<bool>("consumePresenterGlStateDirty", CanvasId);
         EnsureSurface(physicalWidth, physicalHeight, framebuffer, stencilBits, sampleCount);
+        if (glStateDirty) _context!.ResetContext(GRGlBackendState.All);
         string result;
         using (new SKAutoCanvasRestore(_surface!.Canvas, true))
             result = Paint?.Invoke(_surface, physicalWidth, physicalHeight, target) ?? "empty";
         _surface.Canvas.Flush();
         _context!.Flush();
-        return Task.FromResult(result);
+        return result;
     }
 
     [JSInvokable]

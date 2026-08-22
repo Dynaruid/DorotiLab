@@ -253,6 +253,25 @@ public sealed class BrowserHostAdapter :
         return BrowserInterop.ParseResizeTrace(BrowserInterop.CaptureResizeTrace(HostId));
     }
     public ViewMetrics Metrics => ToMetrics(_snapshot);
+    public DorotiViewEpoch ViewEpoch
+    {
+        get
+        {
+            var snapshot = _snapshot;
+            var epoch = snapshot.ResizeEpoch;
+            return new(
+                _viewId,
+                epoch.Generation,
+                snapshot.Generation,
+                epoch.LogicalWidth,
+                epoch.LogicalHeight,
+                epoch.PhysicalWidth,
+                epoch.PhysicalHeight,
+                epoch.DeviceScaleX,
+                epoch.DeviceScaleY,
+                epoch.TimestampMicroseconds);
+        }
+    }
     public PlatformConfiguration Configuration => _configuration;
 
     public event Action<ViewMetrics>? MetricsChanged;
@@ -540,7 +559,7 @@ public sealed class BrowserHostAdapter :
     }
 
     private static ViewMetrics ToMetrics(BrowserHostSnapshot snapshot) => new(
-        new Size(snapshot.LogicalWidth * snapshot.DevicePixelRatio, snapshot.LogicalHeight * snapshot.DevicePixelRatio),
+        new Size(snapshot.ResizeEpoch.PhysicalWidth, snapshot.ResizeEpoch.PhysicalHeight),
         snapshot.DevicePixelRatio, ViewPadding.zero, ViewPadding.zero, ViewPadding.zero,
         Lifecycle(snapshot), snapshot.Generation, snapshot.SurfaceGeneration);
 

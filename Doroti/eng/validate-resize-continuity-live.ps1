@@ -4,8 +4,16 @@ param(
     [ValidateSet('default', '0', '1')]
     [string] $SwapInterval,
 
-    [ValidateRange(1, 60)]
-    [int] $DurationSeconds = 10,
+    [ValidateRange(10, 300)]
+    [int] $DurationSeconds = 60,
+
+    [ValidateRange(0, 120)]
+    [int] $PostDragObservationSeconds = 15,
+
+    [switch] $KeepWindowOpen,
+
+    [ValidateSet('Left', 'Right', 'Top', 'Bottom', 'TopLeft', 'TopRight', 'BottomLeft', 'BottomRight')]
+    [string] $Edge = 'Left',
 
     [string] $EvidenceDirectory = (Join-Path $PSScriptRoot '../validation/evidence/resize'),
 
@@ -28,8 +36,9 @@ if (-not $evidenceRoot.StartsWith($allowedEvidenceRoot, [StringComparison]::Ordi
 [IO.Directory]::CreateDirectory($evidenceRoot) | Out-Null
 
 $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-$rawEvidence = Join-Path $evidenceRoot "rsz0b-$SwapInterval-$stamp.raw.json"
-$summaryEvidence = Join-Path $evidenceRoot "rsz0b-$SwapInterval-$stamp.summary.json"
+$edgeSlug = $Edge.ToLowerInvariant()
+$rawEvidence = Join-Path $evidenceRoot "rsz0b-$SwapInterval-$edgeSlug-$stamp.raw.json"
+$summaryEvidence = Join-Path $evidenceRoot "rsz0b-$SwapInterval-$edgeSlug-$stamp.summary.json"
 
 if (-not ('DorotiResizeLiveNative' -as [type])) {
     Add-Type -TypeDefinition @'
@@ -40,6 +49,13 @@ public static class DorotiResizeLiveNative
 {
     public const uint WM_CLOSE = 0x0010;
     public const uint WM_NCLBUTTONDOWN = 0x00A1;
+    public const int HTLEFT = 10;
+    public const int HTRIGHT = 11;
+    public const int HTTOP = 12;
+    public const int HTTOPLEFT = 13;
+    public const int HTTOPRIGHT = 14;
+    public const int HTBOTTOM = 15;
+    public const int HTBOTTOMLEFT = 16;
     public const int HTBOTTOMRIGHT = 17;
     public const uint MOUSEEVENTF_LEFTDOWN = 0x0002;
     public const uint MOUSEEVENTF_LEFTUP = 0x0004;
@@ -168,40 +184,87 @@ try {
         throw "Live range isolation requires an initial window of at least 640x480; actual ${initialWidth}x${initialHeight}."
     }
 
+    $hitTest = switch ($Edge) {
+        'Left' { [DorotiResizeLiveNative]::HTLEFT }
+        'Right' { [DorotiResizeLiveNative]::HTRIGHT }
+        'Top' { [DorotiResizeLiveNative]::HTTOP }
+        'Bottom' { [DorotiResizeLiveNative]::HTBOTTOM }
+        'TopLeft' { [DorotiResizeLiveNative]::HTTOPLEFT }
+        'TopRight' { [DorotiResizeLiveNative]::HTTOPRIGHT }
+        'BottomLeft' { [DorotiResizeLiveNative]::HTBOTTOMLEFT }
+        'BottomRight' { [DorotiResizeLiveNative]::HTBOTTOMRIGHT }
+    }
+    $movesLeft = $Edge -in @('Left', 'TopLeft', 'BottomLeft')
+    $movesRight = $Edge -in @('Right', 'TopRight', 'BottomRight')
+    $movesTop = $Edge -in @('Top', 'TopLeft', 'TopRight')
+    $movesBottom = $Edge -in @('Bottom', 'BottomLeft', 'BottomRight')
+
     [DorotiResizeLiveNative]::SetForegroundWindow($hwnd) | Out-Null
-    $resizeStartX = $rect.Right - 4
-    $resizeStartY = $rect.Bottom - 4
+    $resizeStartX = if ($movesLeft) {
+        $rect.Left + 4
+    } elseif ($movesRight) {
+        $rect.Right - 4
+    } else {
+        [Math]::Round(($rect.Left + $rect.Right) / 2.0)
+    }
+    $resizeStartY = if ($movesTop) {
+        $rect.Top + 4
+    } elseif ($movesBottom) {
+        $rect.Bottom - 4
+    } else {
+        [Math]::Round(($rect.Top + $rect.Bottom) / 2.0)
+    }
     [DorotiResizeLiveNative]::SetCursorPos($resizeStartX, $resizeStartY) | Out-Null
     Start-Sleep -Milliseconds 150
     $resizeStarted = [DorotiResizeLiveNative]::PostMessage(
         $hwnd,
         [DorotiResizeLiveNative]::WM_NCLBUTTONDOWN,
-        [IntPtr][DorotiResizeLiveNative]::HTBOTTOMRIGHT,
+        [IntPtr]$hitTest,
         [DorotiResizeLiveNative]::MakeScreenPointLParam($resizeStartX, $resizeStartY))
     if (-not $resizeStarted) { throw 'Unable to start the Win32 interactive sizing loop.' }
     Start-Sleep -Milliseconds 150
     $dragStartedAt = [DateTimeOffset]::UtcNow
-    $steps = [Math]::Max(60, $DurationSeconds * 60)
-    $inputSamples = [Collections.Generic.List[object]]::new($steps)
-    for ($step = 0; $step -lt $steps; $step++) {
-        $phase = $step / [double]($steps - 1)
-        $cycle = ($phase * 4) % 1
+    $estimatedSteps = [Math]::Max(60, $DurationSeconds * 60)
+    $inputSamples = [Collections.Generic.List[object]]::new($estimatedSteps)
+    $dragWatch = [Diagnostics.Stopwatch]::StartNew()
+    while ($dragWatch.Elapsed -lt [TimeSpan]::FromSeconds($DurationSeconds)) {
+        $cycle = ($dragWatch.Elapsed.TotalSeconds % 2.0) / 2.0
         $wave = if ($cycle -lt 0.5) { $cycle * 2 } else { 2 - ($cycle * 2) }
-        $x = $rect.Right - 1 + [Math]::Round(260 * $wave)
-        $y = $rect.Bottom - 1 + [Math]::Round(140 * $wave)
+        $horizontalMotion = if ($movesLeft) {
+            [Math]::Round(260 * $wave)
+        } elseif ($movesRight) {
+            -[Math]::Round(260 * $wave)
+        } else { 0 }
+        $verticalMotion = if ($movesTop) {
+            [Math]::Round(140 * $wave)
+        } elseif ($movesBottom) {
+            -[Math]::Round(140 * $wave)
+        } else { 0 }
+        $x = $resizeStartX + $horizontalMotion
+        $y = $resizeStartY + $verticalMotion
         [DorotiResizeLiveNative]::SetCursorPos($x, $y) | Out-Null
         Start-Sleep -Milliseconds 16
         $sampleRect = [DorotiResizeLiveNative+RECT]::new()
         if ([DorotiResizeLiveNative]::GetWindowRect($hwnd, [ref] $sampleRect)) {
             $inputSamples.Add([pscustomobject]@{
                 performanceCounter = [Diagnostics.Stopwatch]::GetTimestamp()
+                windowLeft = $sampleRect.Left
+                windowTop = $sampleRect.Top
+                windowRight = $sampleRect.Right
+                windowBottom = $sampleRect.Bottom
                 windowWidth = $sampleRect.Right - $sampleRect.Left
                 windowHeight = $sampleRect.Bottom - $sampleRect.Top
             })
         }
     }
     [DorotiResizeLiveNative]::mouse_event([DorotiResizeLiveNative]::MOUSEEVENTF_LEFTUP, 0, 0, 0, [UIntPtr]::Zero)
-    Start-Sleep -Seconds 2
+    if ($PostDragObservationSeconds -gt 0) {
+        Start-Sleep -Seconds $PostDragObservationSeconds
+    }
+    if ($KeepWindowOpen -and -not $process.HasExited) {
+        Write-Host 'Windows resize validation is complete. Close the Demo window after visual inspection to finish evidence collection.'
+        $process.WaitForExit()
+    }
 
     if (-not (Test-Path -LiteralPath $rawEvidence -PathType Leaf)) {
         throw "Windows Demo did not write resize evidence: $rawEvidence"
@@ -212,6 +275,7 @@ try {
     $preSwaps = @($trace | Where-Object phase -eq 'pre-swap')
     $postSwaps = @($trace | Where-Object phase -eq 'post-swap')
     $surfaceReady = @($trace | Where-Object phase -eq 'surface-ready')
+    $stagingResizeEvents = @($surfaceReady | Where-Object { $_.detail -match '^resized=True;' })
     $aggregateSwaps = @($trace | Where-Object phase -eq 'swap-boundary-end')
     $dwmFlushes = @($trace | Where-Object phase -eq 'dwm-flush-end')
     $eglStates = @($trace | Where-Object phase -eq 'egl-state')
@@ -271,6 +335,21 @@ try {
         $_.surfaceWidth -ne $_.epoch.physicalWidth -or
         $_.surfaceHeight -ne $_.epoch.physicalHeight
     })
+    $newerTargetKnownAtPrePresent = @($preSwaps | Where-Object {
+        if ($_.detail -notmatch 'prePresentTargetGeneration=(\d+); presentedGeneration=(\d+); uiCommitTargetGeneration=(\d+)') {
+            return $true
+        }
+        return [long]$Matches[1] -ne [long]$Matches[2] -or
+            [long]$Matches[3] -ne [long]$Matches[2]
+    })
+    $targetAdvancedDuringPresent = @($trace | Where-Object {
+        $_.phase -eq 'target-advanced-during-present' -and
+        $_.source -eq 'targetAdvancedDuringPresent'
+    })
+    $outsideWorkAreaSamples = @($inputSamples | Where-Object {
+        $_.windowLeft -lt $workArea.Left -or $_.windowTop -lt $workArea.Top -or
+        $_.windowRight -gt $workArea.Right -or $_.windowBottom -gt $workArea.Bottom
+    })
     $finalSample = $inputSamples | Select-Object -Last 1
     $borderToTargetCatchUp = @()
     $borderWidthLagPixels = @()
@@ -309,13 +388,16 @@ try {
     }
     $exceptionPath = "$rawEvidence.exception.txt"
     $summary = [ordered]@{
-        schemaVersion = 'doroti.resize-continuity-live/v2'
+        schemaVersion = 'doroti.resize-continuity-live/v3'
         capturedAt = [DateTimeOffset]::Now.ToString('o')
         swapInterval = $SwapInterval
+        edge = $Edge
         durationSeconds = $DurationSeconds
-        inputMethod = 'Win32 WM_NCLBUTTONDOWN HTBOTTOMRIGHT interactive resize plus cursor movement'
-        inputMotion = 'constant-velocity triangle wave (4 cycles)'
-        inputCursorSamples = $steps
+        postDragObservationSeconds = $PostDragObservationSeconds
+        keepWindowOpen = [bool]$KeepWindowOpen
+        inputMethod = "Win32 WM_NCLBUTTONDOWN HT$($Edge.ToUpperInvariant()) interactive resize plus cursor movement"
+        inputMotion = 'constant-velocity two-second triangle wave'
+        inputCursorSamples = $inputSamples.Count
         retainedTraceEntries = $trace.Count
         resizeTargetActivations = $diagnostics.surface.resizeContinuityActivations
         screenRecording = 'notVerified'
@@ -329,7 +411,8 @@ try {
         }
         processId = $process.Id
         initialWindow = [ordered]@{ width = $initialWidth; height = $initialHeight }
-        rangeIsolation = 'window never intentionally smaller than initial size'
+        rangeIsolation = 'window border moves inward and returns; the window stays inside the desktop work area'
+        outsideWorkAreaSamples = $outsideWorkAreaSamples.Count
         nativeViewType = $diagnostics.surface.nativeViewType
         graphicsBackend = $diagnostics.surface.graphicsBackend
         dwmCompositionEnabled = $diagnostics.surface.dwmCompositionEnabled
@@ -368,6 +451,13 @@ try {
             preRaster = @($trace | Where-Object { $_.phase -eq 'ack' -and $_.source -eq 'pre-raster latest target gate' }).Count
             preFlush = @($trace | Where-Object { $_.phase -eq 'ack' -and $_.source -eq 'pre-flush latest target gate' }).Count
             postFlush = @($trace | Where-Object { $_.phase -eq 'ack' -and $_.source -eq 'latest target gate' }).Count
+            scheduler = @($trace | Where-Object { $_.phase -eq 'ack' -and $_.source -like '*scheduler latest-work gate' }).Count
+            prePresentTarget = @($trace | Where-Object { $_.phase -eq 'ack' -and $_.source -eq 'pre-present latest target gate' }).Count
+            uiCommitTarget = @($trace | Where-Object { $_.phase -eq 'ack' -and $_.source -eq 'UI-thread final target gate' }).Count
+        }
+        presentRace = [ordered]@{
+            newerTargetKnownAtPrePresent = $newerTargetKnownAtPrePresent.Count
+            targetAdvancedDuringPresent = $targetAdvancedDuringPresent.Count
         }
         borderToTarget = [ordered]@{
             sampledWindowRects = $inputSamples.Count
@@ -395,7 +485,8 @@ try {
             p50 = Get-Percentile ([long[]]@($surfaceReady.durationMicroseconds)) 0.50
             p95 = Get-Percentile ([long[]]@($surfaceReady.durationMicroseconds)) 0.95
             p99 = Get-Percentile ([long[]]@($surfaceReady.durationMicroseconds)) 0.99
-            resizeBuffersCount = @($surfaceReady | Where-Object detail -eq 'resized=True').Count
+            resizeBuffersCount = $stagingResizeEvents.Count
+            policy = 'detached staging chain; visible chain remains unchanged until atomic attach'
         }
         aggregateInvalidateMicroseconds = [ordered]@{
             p50 = Get-Percentile $aggregateSwapDurations 0.50
@@ -443,8 +534,19 @@ if ($null -ne $summary.frameworkException) {
     throw "Framework exception captured during live resize. See $summaryEvidence"
 }
 if ($summary.generationRegressions -ne 0 -or
-    $summary.exactTargetToSwapSizeMismatches -ne 0) {
+    $summary.presentRace.newerTargetKnownAtPrePresent -ne 0 -or
+    $summary.presentRace.targetAdvancedDuringPresent -ne 0 -or
+    $summary.latestTargetAtPresentedAck.laggedAckCount -ne 0 -or
+    $summary.exactTargetToSwapSizeMismatches -ne 0 -or
+    $summary.supersededWork.scheduler -ne 0) {
     throw "Resize correctness gate failed. See $summaryEvidence"
+}
+if ($summary.outsideWorkAreaSamples -ne 0) {
+    throw "Window range isolation failed: $($summary.outsideWorkAreaSamples) samples left the desktop work area. See $summaryEvidence"
+}
+if ($summary.nativeViewType -ne 'Doroti.Host.Maui.DorotiWindowsDxgiHost' -or
+    $summary.graphicsBackend -ne 'WinUI3/dual-exact-staging-SwapChainPanel/DXGI-D3D12-Skia') {
+    throw "Dual exact staging host gate failed. See $summaryEvidence"
 }
 if (-not $RetainRawTrace -and (Test-Path -LiteralPath $rawEvidence -PathType Leaf)) {
     Remove-Item -LiteralPath $rawEvidence

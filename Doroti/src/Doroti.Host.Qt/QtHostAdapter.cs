@@ -42,7 +42,6 @@ internal sealed unsafe class QtHostAdapter :
     public PlatformConfiguration Configuration { get; private set; }
     public long InputSequence => Volatile.Read(ref _inputSequence);
     public long SurfaceGeneration => Metrics.surfaceGeneration;
-    public long MetricsGeneration => Metrics.generation;
     public DorotiResizeEpoch ResizeTarget => new(
         Metrics.generation,
         Metrics.logicalSize.width,
@@ -51,6 +50,25 @@ internal sealed unsafe class QtHostAdapter :
         Math.Max(0, checked((int)Math.Round(Metrics.physicalSize.height))),
         Metrics.devicePixelRatio,
         DorotiFrameClock.Now.Ticks / 10);
+    public DorotiViewEpoch ViewEpoch
+    {
+        get
+        {
+            var metrics = Metrics;
+            var target = ResizeTarget;
+            return new(
+                1,
+                target.Generation,
+                metrics.generation,
+                target.LogicalWidth,
+                target.LogicalHeight,
+                target.PhysicalWidth,
+                target.PhysicalHeight,
+                target.DeviceScaleX,
+                target.DeviceScaleY,
+                target.TimestampMicroseconds);
+        }
+    }
 
     public event Action<ViewMetrics>? MetricsChanged;
     public event Action<AppLifecycleState>? LifecycleChanged;

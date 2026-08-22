@@ -141,41 +141,50 @@ public sealed class SkiaSceneRenderer :
         if (hasFrame) invalidate();
     }
 
-    public void Submit(ulong viewId, Scene scene, DartUiInvocation invocation)
+    public void Submit(ulong viewId, DorotiSceneSubmission submission, DartUiInvocation invocation)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
+        ArgumentNullException.ThrowIfNull(submission);
+        var scene = submission.Scene;
         ArgumentNullException.ThrowIfNull(scene);
         if (viewId != _viewId || scene.viewId != _viewId)
             throw new DorotiCapabilityException(DorotiCapabilityIds.GraphicsScene, viewId, invocation,
                 "scene/view ownership mismatch", _targetIdentity);
         Action? invalidate;
         var timestamp = DorotiFrameClock.Now;
-        var target = _host.ResizeTarget;
         lock (_gate)
         {
             var sceneSequence = ++_nextSceneSequence;
             _terminalLedger.Register(sceneSequence);
             var inputSequence = _host.InputSequence;
-            if (_pendingFrame is { } pending)
+            _submitted++;
+            _lastSubmittedInputSequence = inputSequence;
+            if (submission.BuildToken is not { } buildToken)
             {
-                MarkTerminal(pending, DorotiFrameTerminal.superseded,
-                    "latest immutable scene replaced before raster");
+                _terminalLedger.TryComplete(sceneSequence, DorotiFrameTerminal.dropped);
+                _dropped++;
+                _frameTrace.Record(DorotiFramePhase.dropped, _viewId, timestamp,
+                    inputSequence, sceneSequence, _host.SurfaceGeneration,
+                    $"{DorotiFrameMismatch.missingBuildToken}: scene submitted outside a framework frame");
+                return;
             }
             // The producer hands raster an immutable command array. It never
             // mutates or disposes a scene currently being consumed by Paint.
-            var descriptor = new DorotiFrameDescriptor(
-                _viewId,
-                target.Generation,
-                _host.MetricsGeneration,
-                target.LogicalWidth,
-                target.LogicalHeight,
-                target.PhysicalWidth,
-                target.PhysicalHeight,
-                target.DevicePixelRatio,
-                sceneSequence);
-            _pendingFrame = new(sceneSequence, inputSequence, timestamp, descriptor, scene.Commands.ToArray());
-            _submitted++;
-            _lastSubmittedInputSequence = inputSequence;
+            var descriptor = DorotiFrameDescriptor.FromBuildToken(buildToken, sceneSequence);
+            var incoming = new SceneFrame(
+                sceneSequence, inputSequence, timestamp, descriptor, scene.Commands.ToArray());
+            if (_pendingFrame is { } pending)
+            {
+                if (descriptor.CompareAdmissionTo(pending.Descriptor) < 0)
+                {
+                    MarkTerminal(incoming, DorotiFrameTerminal.superseded,
+                        "older viewport epoch cannot replace pending scene");
+                    return;
+                }
+                MarkTerminal(pending, DorotiFrameTerminal.superseded,
+                    "latest immutable scene replaced before raster");
+            }
+            _pendingFrame = incoming;
             invalidate = _invalidate;
             _frameTrace.Record(DorotiFramePhase.sceneSubmitted, _viewId, timestamp,
                 inputSequence, sceneSequence, _host.SurfaceGeneration, invocation.ElementId);
@@ -214,18 +223,23 @@ public sealed class SkiaSceneRenderer :
             else frame = _presentedFrame;
         }
 
-        if (frame is not null &&
-            (!frame.Descriptor.IsExactFor(desiredTarget) ||
-             frame.Descriptor.PhysicalWidth != pixelWidth ||
-             frame.Descriptor.PhysicalHeight != pixelHeight))
+        var currentEpoch = _host.ViewEpoch;
+        var match = frame?.Descriptor.MatchExact(
+            currentEpoch,
+            desiredTarget,
+            pixelWidth,
+            pixelHeight,
+            desiredTarget.DeviceScaleX,
+            desiredTarget.DeviceScaleY);
+        if (frame is not null && match is { IsExact: false })
         {
             if (isNewFrame)
             {
                 lock (_gate)
                     MarkTerminal(frame, DorotiFrameTerminal.superseded,
-                        $"target={desiredTarget.Generation}; raster={pixelWidth}x{pixelHeight}");
+                        $"{match.MismatchCode}: {match.Detail}");
             }
-            return new(SkiaPaintDisposition.superseded, null, frame.Descriptor);
+            return new(SkiaPaintDisposition.superseded, null, frame.Descriptor, match);
         }
 
         var canvas = surface.Canvas;
@@ -239,7 +253,7 @@ public sealed class SkiaSceneRenderer :
 #if !WINDOWS
             canvas.Flush();
 #endif
-            return new(SkiaPaintDisposition.empty, null, null);
+            return new(SkiaPaintDisposition.empty, null, null, DorotiFrameMatchResult.Exact);
         }
         try
         {
@@ -275,7 +289,8 @@ public sealed class SkiaSceneRenderer :
             return new(
                 isNewFrame ? SkiaPaintDisposition.exact : SkiaPaintDisposition.replay,
                 completion,
-                frame.Descriptor);
+                frame.Descriptor,
+                match);
         }
         catch
         {

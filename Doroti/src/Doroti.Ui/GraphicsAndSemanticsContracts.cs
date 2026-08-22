@@ -281,8 +281,17 @@ public sealed record PathCommand(string Operation, IReadOnlyList<double> Argumen
 
 public interface ISceneHostCapability
 {
-    void Submit(ulong viewId, Scene scene, DartUiInvocation invocation);
+    void Submit(ulong viewId, DorotiSceneSubmission submission, DartUiInvocation invocation);
 }
+
+/// <summary>
+/// Immutable hand-off from framework composition to a renderer. A null build
+/// token means the scene was submitted outside a dispatcher frame and must not
+/// be accepted as resize-exact by a resize-aware host.
+/// </summary>
+public sealed record DorotiSceneSubmission(
+    Scene Scene,
+    DorotiSceneBuildToken? BuildToken);
 
 public sealed class Scene : IDisposable
 {

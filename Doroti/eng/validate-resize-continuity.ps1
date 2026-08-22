@@ -37,33 +37,47 @@ function Get-SourceFingerprint([string[]] $RelativePaths) {
 if ($Shard -eq 'Contract') {
     $sources = @(
         'src/Doroti.Ui/ResizeLifecycle.cs',
+        'src/Doroti.Ui/PlatformDispatcher.cs',
         'src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs',
         'src/Doroti.Host.Maui/DorotiWindowsDxgiSurface.cs',
         'src/Doroti.Host.Maui/MauiHostAdapter.cs',
         'src/Doroti.Host.Web/BrowserHostContracts.cs',
         'src/Doroti.Host.Web/DorotiWebGlSurface.razor',
         'src/Doroti.Host.Web/Web/doroti.web.ts',
+        'src/Doroti.Host.Web/wwwroot/doroti.web.css',
         'validation/resize-contract/Program.cs',
+        'eng/validate-resize-continuity-live.ps1',
+        'eng/validate-web-resize-continuity-live.ps1',
         '../DorotiDemoApp/web/DorotiDemoApp.Web.csproj',
         'src/Doroti.Host.Maui/DorotiMauiSurface.cs'
     )
     $resizeContract = Read-Source $sources[0]
-    $renderer = Read-Source $sources[1]
-    $windowsSurface = Read-Source $sources[2]
-    $mauiHost = Read-Source $sources[3]
-    $browserHost = Read-Source $sources[4]
-    $webSurface = Read-Source $sources[5]
-    $webHost = Read-Source $sources[6]
-    $validation = Read-Source $sources[7]
-    $webRunner = Read-Source $sources[8]
-    $mauiSurface = Read-Source $sources[9]
+    $dispatcher = Read-Source $sources[1]
+    $renderer = Read-Source $sources[2]
+    $windowsSurface = Read-Source $sources[3]
+    $mauiHost = Read-Source $sources[4]
+    $browserHost = Read-Source $sources[5]
+    $webSurface = Read-Source $sources[6]
+    $webHost = Read-Source $sources[7]
+    $webCss = Read-Source $sources[8]
+    $validation = Read-Source $sources[9]
+    $windowsLiveValidation = Read-Source $sources[10]
+    $webLiveValidation = Read-Source $sources[11]
+    $webRunner = Read-Source $sources[12]
+    $mauiSurface = Read-Source $sources[13]
 
     Assert-True ($resizeContract.Contains('public sealed record DorotiFrameDescriptor(', [StringComparison]::Ordinal) -and
         $resizeContract.Contains('public sealed class DorotiLatestFrameMailbox<T>', [StringComparison]::Ordinal) -and
         $resizeContract.Contains('public sealed class DorotiFrameTerminalLedger', [StringComparison]::Ordinal)) 'common descriptor, bounded mailbox, and terminal ledger'
     Assert-True ($resizeContract.Contains('private const int Capacity = 16384;', [StringComparison]::Ordinal) -and
         $resizeContract.Contains('System.Diagnostics.Stopwatch.GetTimestamp()', [StringComparison]::Ordinal)) 'resize evidence retains a full live window and cross-process QPC timestamps'
-    Assert-True ($renderer.Contains('frame.Descriptor.IsExactFor(desiredTarget)', [StringComparison]::Ordinal) -and
+    Assert-True ($resizeContract.Contains('public sealed record DorotiViewEpoch(', [StringComparison]::Ordinal) -and
+        $resizeContract.Contains('public sealed record DorotiSceneBuildToken(', [StringComparison]::Ordinal) -and
+        $dispatcher.Contains('EnterSceneBuildScope(view.CaptureViewEpoch()', [StringComparison]::Ordinal) -and
+        $dispatcher.Contains('token.WithRootPhysicalSize(width, height)', [StringComparison]::Ordinal)) 'framework frame captures viewport epoch and root physical size'
+    Assert-True ($renderer.Contains('frame?.Descriptor.MatchExact(', [StringComparison]::Ordinal) -and
+        $renderer.Contains('DorotiFrameDescriptor.FromBuildToken(buildToken, sceneSequence)', [StringComparison]::Ordinal) -and
+        -not $renderer.Contains('var target = _host.ResizeTarget;', [StringComparison]::Ordinal) -and
         $renderer.Contains('DorotiFrameTerminal.superseded', [StringComparison]::Ordinal) -and
         $renderer.Contains('_presentedFrame = frame;', [StringComparison]::Ordinal)) 'renderer exact-size reject and retained-scene contract'
     Assert-True ($renderer.Contains('var commands = payload.Commands;', [StringComparison]::Ordinal) -and
@@ -73,9 +87,18 @@ if ($Shard -eq 'Contract') {
         $validation.Contains('surface/context recreation', [StringComparison]::Ordinal)) 'deterministic state-machine assertions'
 
     Assert-True ($windowsSurface.Contains('WindowsD3D12Presenter', [StringComparison]::Ordinal) -and
-        $windowsSurface.Contains('Doroti-owned-SwapChainPanel/DXGI-D3D12-Skia', [StringComparison]::Ordinal) -and
-        $windowsSurface.Contains('presenter.Present();', [StringComparison]::Ordinal) -and
-        $windowsSurface.Contains('swapChain2.MatrixTransform = Matrix3x2.CreateScale', [StringComparison]::Ordinal)) 'Windows owned DXGI presenter and DPI mapping'
+        $windowsSurface.Contains('dual-exact-staging-SwapChainPanel/DXGI-D3D12-Skia', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('TryCommitViewportAndPresent(', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('swapChain2.MatrixTransform = Matrix3x2.CreateScale', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('private IDXGISwapChain3? _renderSwapChain;', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('private IDXGISwapChain3? _presentedSwapChain;', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('AttachSwapChainOnUiThread(panel, next);', [StringComparison]::Ordinal) -and
+        -not $windowsSurface.Contains('SetSourceSize(', [StringComparison]::Ordinal)) 'Windows owned dual exact staging presenter and DPI mapping'
+    Assert-True ($windowsSurface.Contains('SizeChanged?.Invoke(target);', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('panel.CompositionScaleX', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('panel.CompositionScaleY', [StringComparison]::Ordinal) -and
+        $mauiHost.Contains('private void HandleSizeChanged(DorotiResizeEpoch? publishedTarget)', [StringComparison]::Ordinal) -and
+        $mauiHost.Contains('target = publishedTarget;', [StringComparison]::Ordinal)) 'Windows panel payload is the single metrics authority'
     Assert-True ($windowsSurface.Contains('_latestTarget?.Generation != target.Generation', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('terminal: "superseded"', [StringComparison]::Ordinal)) 'Windows latest target pre-present gate'
     Assert-True ($windowsSurface.Contains('pre-raster latest target gate', [StringComparison]::Ordinal) -and
@@ -83,7 +106,23 @@ if ($Shard -eq 'Contract') {
         $mauiSurface.Contains('if (!paint.SkipRaster)', [StringComparison]::Ordinal)) 'Windows stale prepared target releases host paint backpressure without Skia raster'
     Assert-True ($windowsSurface.Contains('pre-flush latest target gate', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('Record("paint-end"', [StringComparison]::Ordinal)) 'Windows rejects a target superseded during Skia paint before GPU flush'
-    Assert-True ($windowsSurface.Contains('Prepare the exact-size back buffer in parallel', [StringComparison]::Ordinal) -and
+    Assert-True ($windowsSurface.Contains('newerTargetKnownAtPrePresent=0', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('UI-thread final target gate', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('uiCommitTargetGeneration', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('previous exact swap chain', [StringComparison]::Ordinal) -and
+        -not $windowsSurface.Contains('scheduler latest-work gate', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('targetAdvancedDuringPresent', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('postPresentObservedGeneration', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('ReleasePresentedBuffer()', [StringComparison]::Ordinal)) 'Windows final present race and buffer release are measured separately'
+    Assert-True ($windowsLiveValidation.Contains("[ValidateSet('Left', 'Right', 'Top', 'Bottom', 'TopLeft', 'TopRight', 'BottomLeft', 'BottomRight')]", [StringComparison]::Ordinal) -and
+        $windowsLiveValidation.Contains('[DorotiResizeLiveNative]::HTLEFT', [StringComparison]::Ordinal) -and
+        $windowsLiveValidation.Contains('[DorotiResizeLiveNative]::HTTOPLEFT', [StringComparison]::Ordinal) -and
+        $windowsLiveValidation.Contains('[int] $DurationSeconds = 60', [StringComparison]::Ordinal) -and
+        $windowsLiveValidation.Contains('[switch] $KeepWindowOpen', [StringComparison]::Ordinal) -and
+        $windowsLiveValidation.Contains('outsideWorkAreaSamples -ne 0', [StringComparison]::Ordinal) -and
+        $windowsLiveValidation.Contains('uiCommitTargetGeneration=', [StringComparison]::Ordinal) -and
+        $windowsLiveValidation.Contains('$summary.latestTargetAtPresentedAck.laggedAckCount -ne 0', [StringComparison]::Ordinal)) 'Windows live validation covers edge directions and final UI commit generation'
+    Assert-True ($windowsSurface.Contains('Prepare the detached exact staging chain in parallel', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('serial == processedSerial', [StringComparison]::Ordinal) -and
         -not [regex]::IsMatch($windowsSurface, '_latestTarget = target;\s*_requestSerial\+\+;')) 'Windows prepares resize in parallel without painting before an exact scene'
     Assert-True (-not $mauiHost.Contains('DwmFlush', [StringComparison]::Ordinal) -and
@@ -91,7 +130,7 @@ if ($Shard -eq 'Contract') {
     Assert-True (-not $mauiHost.Contains('MinimumCompositionFrameInterval', [StringComparison]::Ordinal) -and
         $mauiHost.Contains('CompositionTarget already paces callbacks to the active display.', [StringComparison]::Ordinal)) 'Windows DXGI frame requests use native display cadence'
     Assert-True ($mauiHost.Contains('DispatchWindowsResizeFrame();', [StringComparison]::Ordinal) -and
-        $mauiHost.Contains('while the raster thread prepares ResizeBuffers.', [StringComparison]::Ordinal)) 'Windows overlaps resize metrics frame build with back-buffer preparation'
+        $mauiHost.Contains('while raster prepares a detached exact staging chain.', [StringComparison]::Ordinal)) 'Windows overlaps resize metrics frame build with detached staging preparation'
     foreach ($legacy in @(
         'src/Doroti.Host.Maui/DorotiWindowsSkiaViewHandler.cs',
         'src/Doroti.Host.Maui/WindowsEglInterop.cs',
@@ -99,22 +138,41 @@ if ($Shard -eq 'Contract') {
         Assert-True (-not (Test-Path -LiteralPath (Join-Path $dorotiRoot $legacy))) "legacy Windows path removed: $legacy"
     }
 
-    Assert-True ($webHost.Contains('observer.observe(root)', [StringComparison]::Ordinal) -and
+    Assert-True ($webHost.Contains('observer.observe(root, { box:', [StringComparison]::Ordinal) -and
         -not $webHost.Contains('observer.observe(canvas)', [StringComparison]::Ordinal) -and
         -not $webHost.Contains('addEventListener("resize"', [StringComparison]::Ordinal)) 'Web root-only size authority'
-    Assert-True ($webHost.Contains('presenter.raf !== 0 || presenter.current', [StringComparison]::Ordinal) -and
+    Assert-True ($webHost.Contains('presenter.drainScheduled || presenter.current', [StringComparison]::Ordinal) -and
+        $webHost.Contains('queueMicrotask(() =>', [StringComparison]::Ordinal) -and
         $webHost.Contains('presenter.latest = descriptor;', [StringComparison]::Ordinal) -and
-        $browserHost.Contains('Action<TimeSpan>? _pendingFrame;', [StringComparison]::Ordinal)) 'Web single-rAF and latest-only queues'
-    Assert-True ($webHost.Contains('const backingStoreChanged = presenter.canvas.width !== descriptor.physicalWidth', [StringComparison]::Ordinal) -and
-        $webHost.Contains('if (backingStoreChanged)', [StringComparison]::Ordinal) -and
-        $webHost.Contains('refreshRetainedDefaultFramebuffer(host, source);', [StringComparison]::Ordinal) -and
-        $webHost.Contains('"retained-restore-start"', [StringComparison]::Ordinal) -and
-        $webHost.Contains('"retained-restore-end"', [StringComparison]::Ordinal)) 'Web backing reset restores the retained GPU front in the same task'
+        $browserHost.Contains('Action<TimeSpan>? _pendingFrame;', [StringComparison]::Ordinal)) 'Web framework-rAF plus same-turn latest-only presenter queue'
+    Assert-True ($webHost.Contains('function observeResizeEntry(', [StringComparison]::Ordinal) -and
+        $webHost.Contains('entry.devicePixelContentBoxSize', [StringComparison]::Ordinal) -and
+        $webHost.Contains('function applyProvisionalEpoch(', [StringComparison]::Ordinal) -and
+        $webHost.Contains('function commitCanvasEpoch(', [StringComparison]::Ordinal) -and
+        $webHost.Contains('host.canvas.width = target.physicalWidth;', [StringComparison]::Ordinal) -and
+        $webHost.Contains('policy: "target-sized-default-top-left-crop"', [StringComparison]::Ordinal) -and
+        $webHost.Contains('const copyWidth = Math.min(front.width, target.physicalWidth);', [StringComparison]::Ordinal) -and
+        -not $webHost.Contains('scheduleHostSample', [StringComparison]::Ordinal)) 'Web observer synchronously commits a target-sized non-scaling provisional canvas'
+    Assert-True ($webLiveValidation.Contains('Get-AppBarLogicalHeight', [StringComparison]::Ordinal) -and
+        $webLiveValidation.Contains('Get-CircularControlAspect', [StringComparison]::Ordinal) -and
+        $webLiveValidation.Contains('[int] $SampleCount = 300', [StringComparison]::Ordinal) -and
+        $webLiveValidation.Contains('[int] $PostResizeObservationSeconds = 10', [StringComparison]::Ordinal) -and
+        $webLiveValidation.Contains("Send-Cdp `$socket 'Browser.setWindowBounds'", [StringComparison]::Ordinal) -and
+        $webLiveValidation.Contains('$pixelDelta -gt $tolerancePhysicalPixels', [StringComparison]::Ordinal) -and
+        $webLiveValidation.Contains('circularControlObservedSamples', [StringComparison]::Ordinal)) 'Web live validation covers fixed-height and raster-tolerant circular-control geometry'
+    Assert-True (-not [regex]::IsMatch($webCss, '(?s)\.doroti-root\s*>\s*canvas\s*\{[^}]*\bwidth\s*:\s*100%') -and
+        -not [regex]::IsMatch($webCss, '(?s)\.doroti-root\s*>\s*canvas\s*\{[^}]*\bheight\s*:\s*100%') -and
+        $webHost.Contains('host.canvas.style.width =', [StringComparison]::Ordinal) -and
+        $webHost.Contains('host.canvas.style.height =', [StringComparison]::Ordinal)) 'Web canvas CSS size is owned by the JS epoch'
     Assert-True ($webHost.Contains('runtime.framebuffers[framebufferId] = framebuffer;', [StringComparison]::Ordinal) -and
         $webHost.Contains('new URLSearchParams', [StringComparison]::Ordinal) -and
         $webHost.Contains('gl.blitFramebuffer(', [StringComparison]::Ordinal) -and
         $webHost.Contains('antialias: 0', [StringComparison]::Ordinal) -and
         $webSurface.Contains('_framebuffer != framebuffer', [StringComparison]::Ordinal)) 'Web app-owned single-sample FBO and framebuffer-identity wrapper contract'
+    Assert-True ($webHost.Contains('presenter.glStateDirty = true;', [StringComparison]::Ordinal) -and
+        $webHost.Contains('consumePresenterGlStateDirty', [StringComparison]::Ordinal) -and
+        $webSurface.Contains('ResetContext(GRGlBackendState.All)', [StringComparison]::Ordinal) -and
+        $webHost.Contains('gl.disable(gl.SCISSOR_TEST);', [StringComparison]::Ordinal)) 'Web JS and Skia declare GL state ownership'
     Assert-True ($webHost.Contains('presenter.front = staging;', [StringComparison]::Ordinal) -and
         $webHost.Contains('presenter.staging = previousFront;', [StringComparison]::Ordinal) -and
         $webHost.Contains('"CompleteFrame"', [StringComparison]::Ordinal) -and

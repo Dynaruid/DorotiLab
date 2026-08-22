@@ -35,10 +35,10 @@ interface BrowserHost {
   generation: number;
   surfaceGeneration: number;
   resizeGeneration: number;
+  emittedResizeGeneration: number;
   resizeEpoch: ResizeEpoch;
   resizeTrace: ResizeTraceEntry[];
   resizeTraceSequence: number;
-  sampleRaf: number;
   dprQuery: MediaQueryList | null;
   frameRaf: number;
   latestFrameCallback: number;
@@ -106,6 +106,10 @@ interface GpuSurface {
   depthStencil: WebGLRenderbuffer;
   width: number;
   height: number;
+  logicalWidth: number;
+  logicalHeight: number;
+  devicePixelRatio: number;
+  generation: number;
 }
 
 interface CanvasPresenter {
@@ -116,12 +120,13 @@ interface CanvasPresenter {
   contextLossExtension: WEBGL_lose_context | null;
   current: PresentDescriptor | null;
   latest: PresentDescriptor | null;
-  raf: number;
+  drainScheduled: boolean;
   nextRequestId: number;
   contextLost: boolean;
   front: GpuSurface | null;
   frontGeneration: number;
   staging: GpuSurface | null;
+  glStateDirty: boolean;
   listeners: ListenerRegistration[];
 }
 
@@ -217,7 +222,7 @@ const resizeDiagnostics: ResizeDiagnostics = {
   .__dorotiResizeDiagnostics = resizeDiagnostics;
 
 function snapshot(host: BrowserHost): string {
-  const ratio = Math.max(1, globalThis.devicePixelRatio || 1);
+  const ratio = host.resizeEpoch.devicePixelRatio;
   return JSON.stringify({
     canvasId: host.canvas.id,
     logicalWidth: host.logicalWidth,
@@ -285,10 +290,10 @@ function updateResizeEpoch(
   source: string,
   logicalWidth: number,
   logicalHeight: number,
-  forceGeneration = false): boolean {
-  const ratio = Math.max(1, globalThis.devicePixelRatio || 1);
-  const physicalWidth = Math.max(1, Math.round(logicalWidth * ratio));
-  const physicalHeight = Math.max(1, Math.round(logicalHeight * ratio));
+  forceGeneration = false,
+  physicalWidth = Math.max(1, Math.round(logicalWidth * Math.max(1, globalThis.devicePixelRatio || 1))),
+  physicalHeight = Math.max(1, Math.round(logicalHeight * Math.max(1, globalThis.devicePixelRatio || 1))),
+  ratio = Math.max(1, globalThis.devicePixelRatio || 1)): boolean {
   const previous = host.resizeEpoch;
   const changed = forceGeneration || logicalWidth !== previous.logicalWidth ||
     logicalHeight !== previous.logicalHeight || ratio !== previous.devicePixelRatio ||
@@ -313,29 +318,24 @@ function updateResizeEpoch(
   return true;
 }
 
-function scheduleHostSample(host: BrowserHost, source: string): void {
-  refreshRetainedDefaultFramebuffer(host, source);
-  if (host.sampleRaf !== 0) return;
-  host.sampleRaf = requestAnimationFrame(() => {
-    host.sampleRaf = 0;
-    const rect = host.root.getBoundingClientRect();
-    if (rect.width > 0 && rect.height > 0 &&
-        updateResizeEpoch(host, source, rect.width, rect.height)) emit(host);
-  });
-}
-
-function refreshRetainedDefaultFramebuffer(host: BrowserHost, source: string): void {
-  const presenter = canvasPresenters.get(host.canvas.id);
-  if (!presenter || presenter.contextLost || !presenter.front) return;
-  const started = performance.now();
-  const status = blitToDefault(
-    presenter, presenter.front, presenter.canvas.width, presenter.canvas.height);
-  recordResize(host, "retained-refresh", "doroti-presenter", {
-    durationMicroseconds: Math.round((performance.now() - started) * 1000),
-    surfaceWidth: presenter.front.width,
-    surfaceHeight: presenter.front.height,
-    detail: JSON.stringify({ trigger: source, ...status }),
-  });
+function commitObservedResize(
+  host: BrowserHost,
+  source: string,
+  logicalWidth: number,
+  logicalHeight: number,
+  physicalWidth: number,
+  physicalHeight: number,
+  ratio: number,
+  forceGeneration = false): void {
+  if (logicalWidth <= 0 || logicalHeight <= 0 || physicalWidth <= 0 || physicalHeight <= 0) return;
+  const changed = updateResizeEpoch(
+    host, source, logicalWidth, logicalHeight, forceGeneration,
+    physicalWidth, physicalHeight, ratio);
+  if (!applyProvisionalEpoch(host, host.resizeEpoch, source)) return;
+  if (changed || host.emittedResizeGeneration !== host.resizeEpoch.generation) {
+    host.emittedResizeGeneration = host.resizeEpoch.generation;
+    emit(host);
+  }
 }
 
 function armDprWatcher(host: BrowserHost): void {
@@ -343,11 +343,55 @@ function armDprWatcher(host: BrowserHost): void {
   const query = globalThis.matchMedia(`(resolution: ${Math.max(1, globalThis.devicePixelRatio || 1)}dppx)`);
   host.dprQuery = query;
   const handler: EventListener = () => {
-    scheduleHostSample(host, "dpr-watcher");
+    const rect = host.root.getBoundingClientRect();
+    const ratio = Math.max(1, globalThis.devicePixelRatio || 1);
+    commitObservedResize(
+      host, "dpr-watcher", rect.width, rect.height,
+      Math.max(1, Math.round(rect.width * ratio)),
+      Math.max(1, Math.round(rect.height * ratio)), ratio);
     armDprWatcher(host);
   };
   query.addEventListener("change", handler, { once: true });
   host.listeners.push({ target: query, name: "change", handler });
+}
+
+function observeResizeEntry(host: BrowserHost, entry: ResizeObserverEntry): void {
+  const content = Array.isArray(entry.contentBoxSize)
+    ? entry.contentBoxSize[0]
+    : entry.contentBoxSize;
+  const logicalWidth = content?.inlineSize ?? entry.contentRect.width;
+  const logicalHeight = content?.blockSize ?? entry.contentRect.height;
+  const ratio = Math.max(1, globalThis.devicePixelRatio || 1);
+  const physicalBoxes = entry.devicePixelContentBoxSize;
+  const physical = Array.isArray(physicalBoxes) ? physicalBoxes[0] : physicalBoxes;
+  const declaredPhysicalWidth = Math.max(1, Math.round(logicalWidth * ratio));
+  const declaredPhysicalHeight = Math.max(1, Math.round(logicalHeight * ratio));
+  const observedPhysicalWidth = physical ? Math.max(1, Math.round(physical.inlineSize)) : declaredPhysicalWidth;
+  const observedPhysicalHeight = physical ? Math.max(1, Math.round(physical.blockSize)) : declaredPhysicalHeight;
+  // Chromium can deliver a device-pixel-content-box from the previous native
+  // scale during a DPR/zoom transition. Never combine that stale physical box
+  // with the new window.devicePixelRatio in one viewport epoch: doing so makes
+  // the entire Skia scene uniformly too small or too large. A one-pixel delta
+  // is retained for independent rounding; anything larger falls back to the
+  // declared logical-size/DPR pair until the observer sources converge.
+  const physicalBoxIsCoherent =
+    Math.abs(observedPhysicalWidth - declaredPhysicalWidth) <= 1 &&
+    Math.abs(observedPhysicalHeight - declaredPhysicalHeight) <= 1;
+  const physicalWidth = physicalBoxIsCoherent ? observedPhysicalWidth : declaredPhysicalWidth;
+  const physicalHeight = physicalBoxIsCoherent ? observedPhysicalHeight : declaredPhysicalHeight;
+  if (physical && !physicalBoxIsCoherent) {
+    recordResize(host, "device-pixel-box-fallback", "host-observer", {
+      detail: JSON.stringify({
+        logical: [logicalWidth, logicalHeight],
+        devicePixelRatio: ratio,
+        observedPhysical: [observedPhysicalWidth, observedPhysicalHeight],
+        declaredPhysical: [declaredPhysicalWidth, declaredPhysicalHeight],
+      }),
+    });
+  }
+  commitObservedResize(
+    host, "host-observer", logicalWidth, logicalHeight,
+    physicalWidth, physicalHeight, ratio);
 }
 
 function hostForCanvas(canvas: HTMLCanvasElement): BrowserHost | undefined {
@@ -430,7 +474,10 @@ function createGpuSurface(presenter: CanvasPresenter, width: number, height: num
     const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
     if (status !== gl.FRAMEBUFFER_COMPLETE)
       throw new Error(`Doroti retained framebuffer is incomplete (0x${status.toString(16)}).`);
-    return { framebuffer, framebufferId, color, depthStencil, width, height };
+    return {
+      framebuffer, framebufferId, color, depthStencil, width, height,
+      logicalWidth: 0, logicalHeight: 0, devicePixelRatio: 1, generation: 0,
+    };
   } catch (error) {
     runtime.framebuffers[framebufferId] = null;
     framebuffer.name = 0;
@@ -442,6 +489,7 @@ function createGpuSurface(presenter: CanvasPresenter, width: number, height: num
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.bindRenderbuffer(gl.RENDERBUFFER, null);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    presenter.glStateDirty = true;
   }
 }
 
@@ -455,6 +503,7 @@ function releaseGpuSurface(presenter: CanvasPresenter, surface: GpuSurface | nul
   gl.deleteFramebuffer(surface.framebuffer);
   gl.deleteTexture(surface.color);
   gl.deleteRenderbuffer(surface.depthStencil);
+  presenter.glStateDirty = true;
 }
 
 function ensureStaging(presenter: CanvasPresenter, width: number, height: number): GpuSurface {
@@ -466,42 +515,196 @@ function ensureStaging(presenter: CanvasPresenter, width: number, height: number
   return presenter.staging ??= createGpuSurface(presenter, width, height);
 }
 
-function blitToDefault(
+function blitRectToDefault(
   presenter: CanvasPresenter,
   source: GpuSurface,
+  sourceX0: number,
+  sourceY0: number,
+  sourceX1: number,
+  sourceY1: number,
+  destinationX0: number,
+  destinationY0: number,
+  destinationX1: number,
+  destinationY1: number,
   destinationWidth: number,
-  destinationHeight: number): {
+  destinationHeight: number,
+  filter: number,
+  clearBackground: boolean): {
     sourceStatus: number; destinationStatus: number; priorErrors: number[]; error: number;
   } {
   const gl = presenterGl(presenter);
   const priorErrors: number[] = [];
   for (let value = gl.getError(); value !== gl.NO_ERROR; value = gl.getError()) priorErrors.push(value);
+  gl.disable(gl.SCISSOR_TEST);
+  gl.colorMask(true, true, true, true);
+  gl.depthMask(true);
+  gl.stencilMask(0xff);
+  gl.viewport(0, 0, destinationWidth, destinationHeight);
+  gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+  gl.drawBuffers([gl.BACK]);
+  if (clearBackground) {
+    const dark = globalThis.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
+    gl.clearColor(...(dark ? [20 / 255, 18 / 255, 24 / 255, 1] as const : [1, 251 / 255, 254 / 255, 1] as const));
+    gl.clearDepth(1);
+    gl.clearStencil(0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+  }
   gl.bindFramebuffer(gl.READ_FRAMEBUFFER, source.framebuffer);
   gl.readBuffer(gl.COLOR_ATTACHMENT0);
   const sourceStatus = gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER);
   gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
   gl.drawBuffers([gl.BACK]);
   const destinationStatus = gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER);
-  gl.blitFramebuffer(
-    0, 0, source.width, source.height,
-    0, 0, destinationWidth, destinationHeight,
-    gl.COLOR_BUFFER_BIT, gl.NEAREST);
+  if (sourceX1 > sourceX0 && sourceY1 > sourceY0 &&
+      destinationX1 > destinationX0 && destinationY1 > destinationY0) {
+    gl.blitFramebuffer(
+      sourceX0, sourceY0, sourceX1, sourceY1,
+      destinationX0, destinationY0, destinationX1, destinationY1,
+      gl.COLOR_BUFFER_BIT, filter);
+  }
   const error = gl.getError();
   gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
   gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
   gl.flush();
+  presenter.glStateDirty = true;
   return { sourceStatus, destinationStatus, priorErrors, error };
 }
 
-function clearDefaultFramebuffer(presenter: CanvasPresenter): void {
+function clearDefaultFramebuffer(presenter: CanvasPresenter): {
+  destinationStatus: number; priorErrors: number[]; error: number;
+} {
   const gl = presenterGl(presenter);
+  const priorErrors: number[] = [];
+  for (let value = gl.getError(); value !== gl.NO_ERROR; value = gl.getError()) priorErrors.push(value);
+  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+  gl.readBuffer(gl.BACK);
+  gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+  gl.drawBuffers([gl.BACK]);
   const dark = globalThis.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
-  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   gl.disable(gl.SCISSOR_TEST);
+  gl.colorMask(true, true, true, true);
+  gl.depthMask(true);
+  gl.stencilMask(0xff);
   gl.viewport(0, 0, presenter.canvas.width, presenter.canvas.height);
   gl.clearColor(...(dark ? [20 / 255, 18 / 255, 24 / 255, 1] as const : [1, 251 / 255, 254 / 255, 1] as const));
+  gl.clearDepth(1);
+  gl.clearStencil(0);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+  const destinationStatus = gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER);
+  const error = gl.getError();
   gl.flush();
+  presenter.glStateDirty = true;
+  return { destinationStatus, priorErrors, error };
+}
+
+function applyProvisionalEpoch(host: BrowserHost, target: ResizeEpoch, source: string): boolean {
+  const presenter = canvasPresenters.get(host.canvas.id);
+  if (!presenter || presenter.contextLost) return true;
+  const gl = presenterGl(presenter);
+  const started = performance.now();
+  if (!presenter.front) {
+    if (!commitCanvasEpoch(host, presenter, target, source)) return false;
+    const status = clearDefaultFramebuffer(presenter);
+    recordResize(host, "startup-background-commit",
+      "doroti-presenter", {
+        durationMicroseconds: Math.round((performance.now() - started) * 1000),
+        detail: JSON.stringify({ trigger: source, noRetainedFront: true, ...status }),
+      });
+    return status.destinationStatus === gl.FRAMEBUFFER_COMPLETE &&
+      status.priorErrors.length === 0 && status.error === gl.NO_ERROR;
+  }
+
+  const front = presenter.front;
+  // ResizeObserver runs before browser paint. Commit the target-sized canvas
+  // backing store in this callback, clear it, and copy only the overlap from
+  // the retained exact FBO at 1:1. The browser therefore never receives an old
+  // intrinsic canvas bitmap paired with a new CSS display rectangle to scale.
+  if (!commitCanvasEpoch(host, presenter, target, source)) return false;
+  const copyWidth = Math.min(front.width, target.physicalWidth);
+  const copyHeight = Math.min(front.height, target.physicalHeight);
+  const status = blitRectToDefault(
+    presenter, front,
+    0, 0, copyWidth, copyHeight,
+    0, 0, copyWidth, copyHeight,
+    target.physicalWidth, target.physicalHeight,
+    gl.NEAREST, true);
+  recordResize(host, "stable-front-refresh", "doroti-presenter", {
+      durationMicroseconds: Math.round((performance.now() - started) * 1000),
+      surfaceWidth: target.physicalWidth, surfaceHeight: target.physicalHeight,
+      detail: JSON.stringify({
+        trigger: source,
+        policy: "target-sized-default-top-left-crop",
+        target: [target.physicalWidth, target.physicalHeight],
+        committed: [front.width, front.height],
+        sourceRect: [0, 0, copyWidth, copyHeight],
+        destinationRect: [0, 0, copyWidth, copyHeight],
+        scaleX: 1,
+        scaleY: 1,
+        ...status,
+      }),
+    });
+  return status.sourceStatus === gl.FRAMEBUFFER_COMPLETE &&
+    status.destinationStatus === gl.FRAMEBUFFER_COMPLETE &&
+    status.priorErrors.length === 0 && status.error === gl.NO_ERROR;
+}
+
+function commitCanvasEpoch(
+  host: BrowserHost,
+  presenter: CanvasPresenter,
+  target: ResizeEpoch,
+  source: string): boolean {
+  const changed = host.canvas.width !== target.physicalWidth ||
+    host.canvas.height !== target.physicalHeight;
+  if (changed) {
+    recordResize(host, "backing-reset-start", source, {
+      backingWidth: host.canvas.width,
+      backingHeight: host.canvas.height,
+      detail: `target=${target.physicalWidth}x${target.physicalHeight}`,
+    });
+    host.canvas.width = target.physicalWidth;
+    host.canvas.height = target.physicalHeight;
+    host.surfaceGeneration++;
+    presenter.glStateDirty = true;
+  }
+  host.canvas.style.width = `${target.logicalWidth}px`;
+  host.canvas.style.height = `${target.logicalHeight}px`;
+  const gl = presenterGl(presenter);
+  const supported = gl.drawingBufferWidth === target.physicalWidth &&
+    gl.drawingBufferHeight === target.physicalHeight;
+  if (!supported) {
+    recordResize(host, "ack", source, {
+      terminal: "failed",
+      backingWidth: gl.drawingBufferWidth,
+      backingHeight: gl.drawingBufferHeight,
+      detail: JSON.stringify({ reason: "unsupported-size", requested: target }),
+    });
+  } else if (changed) {
+    recordResize(host, "backing-reset-end", source, {
+      detail: `committed=${target.physicalWidth}x${target.physicalHeight}`,
+    });
+  }
+  return supported;
+}
+
+function blitExactToDefault(
+  presenter: CanvasPresenter,
+  source: GpuSurface,
+  width: number,
+  height: number) {
+  const gl = presenterGl(presenter);
+  return blitRectToDefault(
+    presenter, source,
+    0, 0, width, height,
+    0, 0, width, height,
+    width, height, gl.NEAREST, false);
+}
+
+export function consumePresenterGlStateDirty(canvasId: string): boolean {
+  const presenter = canvasPresenters.get(canvasId);
+  if (!presenter) throw new Error(`Canvas presenter '${canvasId}' is not initialized.`);
+  const dirty = presenter.glStateDirty;
+  presenter.glStateDirty = false;
+  return dirty;
 }
 
 export function initializeCanvasPresenter(
@@ -520,9 +723,9 @@ export function initializeCanvasPresenter(
   if (!context) throw new Error("Doroti requires a hardware WebGL2 context; creation failed.");
   const presenter: CanvasPresenter = {
     canvas, callback, context, contextGeneration: 1, contextLossExtension: null,
-    current: null, latest: null, raf: 0,
+    current: null, latest: null, drainScheduled: false,
     nextRequestId: 0, contextLost: false, front: null, frontGeneration: 0,
-    staging: null, listeners: [],
+    staging: null, glStateDirty: true, listeners: [],
   };
   presenter.contextLossExtension = presenterGl(presenter).getExtension("WEBGL_lose_context");
   const listen = (name: string, handler: EventListener): void => {
@@ -558,13 +761,15 @@ export function initializeCanvasPresenter(
       restoredGl.getExtension(extensionName);
     const host = hostForCanvas(canvas);
     if (host) {
-      updateResizeEpoch(host, "webgl-context-restored", host.logicalWidth, host.logicalHeight, true);
+      const epoch = host.resizeEpoch;
+      commitObservedResize(
+        host, "webgl-context-restored", host.logicalWidth, host.logicalHeight,
+        epoch.physicalWidth, epoch.physicalHeight, epoch.devicePixelRatio, true);
       host.surfaceGeneration++;
       host.gpu = gpuIdentity(canvas);
       recordResize(host, "context-restored", "doroti-presenter", {
         backingWidth: canvas.width, backingHeight: canvas.height,
       });
-      emit(host);
     }
     void callback.invokeMethodAsync("ContextRestored").finally(() => schedulePresenter(presenter));
   });
@@ -594,9 +799,10 @@ export function requestPresent(
 }
 
 function schedulePresenter(presenter: CanvasPresenter): void {
-  if (presenter.raf !== 0 || presenter.current || presenter.contextLost || !presenter.latest) return;
-  presenter.raf = requestAnimationFrame(() => {
-    presenter.raf = 0;
+  if (presenter.drainScheduled || presenter.current || presenter.contextLost || !presenter.latest) return;
+  presenter.drainScheduled = true;
+  queueMicrotask(() => {
+    presenter.drainScheduled = false;
     void runPresenter(presenter);
   });
 }
@@ -608,56 +814,22 @@ async function runPresenter(presenter: CanvasPresenter): Promise<void> {
   presenter.current = descriptor;
   const host = hostForCanvas(presenter.canvas);
   if (host && host.resizeEpoch.generation !== descriptor.generation) {
-    recordPresenterTerminal(presenter, descriptor, "superseded", "target changed before rAF");
+    recordPresenterTerminal(presenter, descriptor, "superseded", "target changed before presenter drain");
     presenter.current = null;
     schedulePresenter(presenter);
     return;
   }
   const started = performance.now();
-  const backingStoreChanged = presenter.canvas.width !== descriptor.physicalWidth ||
-    presenter.canvas.height !== descriptor.physicalHeight;
-  if (backingStoreChanged) {
-    if (host) {
-      recordResize(host, "backing-reset-start", "doroti-presenter", {
-        rafId: descriptor.requestId,
-        detail: `queueDepth=${Number(presenter.current !== null) + Number(presenter.latest !== null)}`,
-      });
-    }
-    presenter.canvas.width = descriptor.physicalWidth;
-    presenter.canvas.height = descriptor.physicalHeight;
-    if (host) {
-      host.surfaceGeneration++;
-      recordResize(host, "backing-reset-end", "doroti-presenter", {
-        rafId: descriptor.requestId, backingWidth: presenter.canvas.width,
-        backingHeight: presenter.canvas.height,
-      });
-    }
-    if (presenter.front) {
-      const restoreStarted = performance.now();
-      if (host) recordResize(host, "retained-restore-start", "doroti-presenter", {
-        rafId: descriptor.requestId, surfaceWidth: presenter.front.width,
-        surfaceHeight: presenter.front.height,
-      });
-      const restoreStatus = blitToDefault(
-        presenter, presenter.front, descriptor.physicalWidth, descriptor.physicalHeight);
-      if (host) recordResize(host, "retained-restore-end", "doroti-presenter", {
-        durationMicroseconds: Math.round((performance.now() - restoreStarted) * 1000),
-        rafId: descriptor.requestId, surfaceWidth: presenter.front.width,
-        surfaceHeight: presenter.front.height,
-        detail: JSON.stringify(restoreStatus),
-      });
-    } else {
-      clearDefaultFramebuffer(presenter);
-      if (host) recordResize(host, "startup-background-commit", "doroti-presenter", {
-        rafId: descriptor.requestId,
-        detail: "no retained front exists; committed app-owned opaque background",
-      });
-    }
-  }
-  const staging = ensureStaging(presenter, descriptor.physicalWidth, descriptor.physicalHeight);
   const gl = presenterGl(presenter);
+  const staging = ensureStaging(presenter, descriptor.physicalWidth, descriptor.physicalHeight);
   gl.bindFramebuffer(gl.FRAMEBUFFER, staging.framebuffer);
+  gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
+  gl.disable(gl.SCISSOR_TEST);
+  gl.colorMask(true, true, true, true);
+  gl.depthMask(true);
+  gl.stencilMask(0xff);
   gl.viewport(0, 0, staging.width, staging.height);
+  presenter.glStateDirty = true;
   try {
     const renderResult = String(await presenter.callback.invokeMethodAsync("RenderFrame",
       descriptor.generation, descriptor.logicalWidth, descriptor.logicalHeight,
@@ -674,8 +846,20 @@ async function runPresenter(presenter: CanvasPresenter): Promise<void> {
         `managed raster result=${renderResult}`);
       recordPresenterTerminal(presenter, descriptor, "superseded", `managed raster result=${renderResult}`);
     } else {
-      const commitStatus = blitToDefault(presenter, staging, descriptor.physicalWidth, descriptor.physicalHeight);
+      if (!commitCanvasEpoch(latestHost, presenter, descriptor, "exact-front-commit"))
+        throw new Error(`Doroti canvas rejected exact size ${descriptor.physicalWidth}x${descriptor.physicalHeight}.`);
+      const commitStatus = blitExactToDefault(
+        presenter, staging, descriptor.physicalWidth, descriptor.physicalHeight);
+      if (commitStatus.sourceStatus !== gl.FRAMEBUFFER_COMPLETE ||
+          commitStatus.destinationStatus !== gl.FRAMEBUFFER_COMPLETE ||
+          commitStatus.priorErrors.length !== 0 || commitStatus.error !== gl.NO_ERROR) {
+        throw new Error(`Doroti exact WebGL commit failed: ${JSON.stringify(commitStatus)}`);
+      }
       const previousFront = presenter.front;
+      staging.logicalWidth = descriptor.logicalWidth;
+      staging.logicalHeight = descriptor.logicalHeight;
+      staging.devicePixelRatio = descriptor.devicePixelRatio;
+      staging.generation = descriptor.generation;
       presenter.front = staging;
       presenter.frontGeneration = descriptor.generation;
       presenter.staging = previousFront;
@@ -726,7 +910,7 @@ function recordPresenterTerminal(
 export function disposeCanvasPresenter(canvasId: string): void {
   const presenter = canvasPresenters.get(canvasId);
   if (!presenter) return;
-  if (presenter.raf !== 0) cancelAnimationFrame(presenter.raf);
+  presenter.drainScheduled = false;
   if (presenter.current)
     recordPresenterTerminal(presenter, presenter.current, "superseded", "presenter disposed");
   if (presenter.latest)
@@ -837,14 +1021,20 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   };
   const host: BrowserHost = {
     id: hostId, root, canvas, input, semantics, logicalWidth, logicalHeight,
-    generation: 1, surfaceGeneration: 0, resizeGeneration: 1, resizeEpoch: initialEpoch,
-    resizeTrace: [], resizeTraceSequence: 0, sampleRaf: 0, dprQuery: null,
+    generation: 1, surfaceGeneration: 0, resizeGeneration: 1,
+    emittedResizeGeneration: 1, resizeEpoch: initialEpoch,
+    resizeTrace: [], resizeTraceSequence: 0, dprQuery: null,
     frameRaf: 0, latestFrameCallback: 0,
     gpu: gpuIdentity(canvas), observers: [], listeners: [],
     composing: false, compositionStart: -1, viewFocused: false, pressedKeys: new Map(),
     inputAction: 2, multiline: false,
   };
+  hosts.set(hostId, host);
   recordResize(host, "target-observed", "host-initial");
+  if (!applyProvisionalEpoch(host, initialEpoch, "host-initial")) {
+    hosts.delete(hostId);
+    throw new Error("Doroti browser drawing buffer does not support the initial viewport size.");
+  }
   const observe = (target: EventTarget, name: string, handler: EventListener): void => {
     target.addEventListener(name, handler);
     host.listeners.push({ target, name, handler });
@@ -861,35 +1051,43 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     const source = event.type === "pointermove" && typeof event.getCoalescedEvents === "function"
       ? event.getCoalescedEvents() : [event];
     const samples: number[] = [];
+    const rect = root.getBoundingClientRect();
     for (const point of source.length ? source : [event]) {
-      samples.push(point.offsetX, point.offsetY, point.pressure || (point.buttons ? 0.5 : 0),
+      samples.push(point.clientX - rect.left, point.clientY - rect.top,
+        point.pressure || (point.buttons ? 0.5 : 0),
         point.tiltX || 0, point.tiltY || 0, point.twist || 0, point.timeStamp);
     }
     return samples;
   };
   const pointer = (phase: number) => (event: PointerEvent): void => {
     event.preventDefault();
-    if (phase === 1) canvas.setPointerCapture(event.pointerId);
+    if (phase === 1) {
+      root.setPointerCapture(event.pointerId);
+      canvas.focus({ preventScroll: true });
+    }
     requireManaged().dispatchPointerBatch(host.id, phase, pointerKind(event.pointerType), event.pointerId,
       event.buttons, modifierMask(event), pointerSamples(event));
-    if ((phase === 2 || phase === 3) && canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+    if ((phase === 2 || phase === 3) && root.hasPointerCapture(event.pointerId)) root.releasePointerCapture(event.pointerId);
   };
-  observe(canvas, "pointerenter", (event) => pointer(5)(event as PointerEvent));
-  observe(canvas, "pointermove", (event) => {
+  observe(root, "pointerenter", (event) => pointer(5)(event as PointerEvent));
+  observe(root, "pointermove", (event) => {
     const pointerEvent = event as PointerEvent;
     pointer(pointerEvent.buttons ? 0 : 4)(pointerEvent);
   });
-  observe(canvas, "pointerdown", (event) => pointer(1)(event as PointerEvent));
-  observe(canvas, "pointerup", (event) => pointer(2)(event as PointerEvent));
-  observe(canvas, "pointercancel", (event) => pointer(3)(event as PointerEvent));
-  observe(canvas, "pointerleave", (event) => pointer(6)(event as PointerEvent));
-  observe(canvas, "wheel", (event) => {
+  observe(root, "pointerdown", (event) => pointer(1)(event as PointerEvent));
+  observe(root, "pointerup", (event) => pointer(2)(event as PointerEvent));
+  observe(root, "pointercancel", (event) => pointer(3)(event as PointerEvent));
+  observe(root, "pointerleave", (event) => pointer(6)(event as PointerEvent));
+  observe(root, "wheel", (event) => {
     const wheel = event as WheelEvent;
     wheel.preventDefault();
-    requireManaged().dispatchWheel(host.id, wheel.offsetX, wheel.offsetY, wheel.deltaX, wheel.deltaY, wheel.timeStamp);
+    const rect = root.getBoundingClientRect();
+    requireManaged().dispatchWheel(host.id, wheel.clientX - rect.left, wheel.clientY - rect.top,
+      wheel.deltaX, wheel.deltaY, wheel.timeStamp);
   });
   const belongsToHost = (target: EventTarget | null): boolean =>
-    target === canvas || target === input || (target instanceof Node && semantics.contains(target));
+    target === root || target === canvas || target === input ||
+    (target instanceof Node && (root.contains(target) || semantics.contains(target)));
   observe(document, "keydown", (event) => {
     const key = event as KeyboardEvent;
     if (!host.viewFocused || !belongsToHost(document.activeElement)) return;
@@ -924,12 +1122,18 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     }
   });
   if (globalThis.ResizeObserver) {
-    const observer = new ResizeObserver(() => scheduleHostSample(host, "host-observer"));
-    observer.observe(root);
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries.find((candidate) => candidate.target === root);
+      if (entry) observeResizeEntry(host, entry);
+    });
+    try {
+      observer.observe(root, { box: "device-pixel-content-box" });
+    } catch {
+      observer.observe(root, { box: "content-box" });
+    }
     host.observers.push(observer);
   }
   armDprWatcher(host);
-  hosts.set(hostId, host);
   return snapshot(host);
 }
 
@@ -990,7 +1194,6 @@ export function closeHost(hostId: number): void {
   const host = hosts.get(hostId);
   if (!host) return;
   releasePressedKeys(host);
-  if (host.sampleRaf !== 0) cancelAnimationFrame(host.sampleRaf);
   if (host.frameRaf !== 0) cancelAnimationFrame(host.frameRaf);
   for (const observer of host.observers) observer.disconnect();
   for (const listener of host.listeners) listener.target.removeEventListener(listener.name, listener.handler);

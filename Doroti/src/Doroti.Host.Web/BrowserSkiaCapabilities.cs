@@ -50,8 +50,8 @@ internal sealed class BrowserSkiaCapabilities :
         _renderer.AttachSurface(invalidate);
     }
 
-    public void Submit(ulong viewId, Scene scene, DartUiInvocation invocation) =>
-        _renderer.Submit(viewId, scene, invocation);
+    public void Submit(ulong viewId, DorotiSceneSubmission submission, DartUiInvocation invocation) =>
+        _renderer.Submit(viewId, submission, invocation);
 
     internal string Paint(
         SKSurface surface,
@@ -142,7 +142,7 @@ internal sealed class BrowserSkiaCapabilities :
         internal Action? Invalidate { get; set; }
         public long InputSequence => 0;
         public long SurfaceGeneration => _host.Snapshot.SurfaceGeneration;
-        public long MetricsGeneration => _host.Snapshot.Generation;
+        public DorotiViewEpoch ViewEpoch => _host.ViewEpoch;
         public DorotiResizeEpoch ResizeTarget => _host.Snapshot.ResizeEpoch;
         public PlatformConfiguration Configuration => _host.Configuration;
         public event Action<int, SemanticsAction, object?>? SemanticsAction;

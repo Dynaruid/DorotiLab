@@ -32,6 +32,7 @@ internal sealed class MauiHostAdapter :
     private Size _logicalSize;
     private double _density;
     private long _metricsGeneration = 1;
+    private DorotiViewEpoch _viewEpoch;
     private long _contextGeneration;
     private long _surfaceGeneration;
     private long _invalidationsRequested;
@@ -64,6 +65,15 @@ internal sealed class MauiHostAdapter :
         _textInput = textInput ?? throw new ArgumentNullException(nameof(textInput));
         _logicalSize = logicalSize ?? throw new ArgumentNullException(nameof(logicalSize));
         _density = Math.Max(1, DeviceDisplay.Current.MainDisplayInfo.Density);
+        var initialTarget = _surface.ResizeTarget ?? new DorotiResizeEpoch(
+            _metricsGeneration,
+            _logicalSize.width,
+            _logicalSize.height,
+            Math.Max(0, checked((int)Math.Round(_logicalSize.width * _density))),
+            Math.Max(0, checked((int)Math.Round(_logicalSize.height * _density))),
+            _density,
+            DorotiFrameClock.Now.Ticks / 10);
+        _viewEpoch = ToViewEpoch(initialTarget, _metricsGeneration);
         _semantics = semantics ?? new NullMauiSemanticsBridge();
 #if ANDROID
         _androidFrameCallback = new AndroidFrameCallback(HandleAndroidFrame);
@@ -89,19 +99,20 @@ internal sealed class MauiHostAdapter :
     internal long NativePointerEvents => Interlocked.Read(ref _nativePointerEvents);
     internal long InputSequence => Interlocked.Read(ref _inputSequence);
     internal long FrameRequestsCoalesced => Interlocked.Read(ref _frameRequestsCoalesced);
-    internal DorotiResizeEpoch ResizeTarget => _surface.ResizeTarget ?? new(
-        _metricsGeneration,
-        _logicalSize.width,
-        _logicalSize.height,
-        Math.Max(0, checked((int)Math.Round(_logicalSize.width * _density))),
-        Math.Max(0, checked((int)Math.Round(_logicalSize.height * _density))),
-        _density,
-        DorotiFrameClock.Now.Ticks / 10);
+    internal DorotiResizeEpoch ResizeTarget => _surface.ResizeTarget ?? ToResizeEpoch(ViewEpoch);
+    public DorotiViewEpoch ViewEpoch => Volatile.Read(ref _viewEpoch);
     internal MauiSemanticsDiagnostics SemanticsDiagnostics => _semantics.Diagnostics;
-    public ViewMetrics Metrics => new(
-        new Size(_logicalSize.width * _density, _logicalSize.height * _density), _density,
-        ViewPadding.zero, ViewPadding.zero, ViewPadding.zero, AppLifecycleState.resumed,
-        _metricsGeneration, _surfaceGeneration);
+    public ViewMetrics Metrics
+    {
+        get
+        {
+            var epoch = ViewEpoch;
+            return new(
+                new Size(epoch.PhysicalWidth, epoch.PhysicalHeight), epoch.DevicePixelRatio,
+                ViewPadding.zero, ViewPadding.zero, ViewPadding.zero, AppLifecycleState.resumed,
+                epoch.MetricsGeneration, Interlocked.Read(ref _surfaceGeneration));
+        }
+    }
     public PlatformConfiguration Configuration => new(
         [ToLocale(CultureInfo.CurrentUICulture)],
         Application.Current?.RequestedTheme == AppTheme.Dark ? Brightness.dark : Brightness.light,
@@ -153,10 +164,29 @@ internal sealed class MauiHostAdapter :
     public void Resize(Size logicalSize)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
+#if WINDOWS
+        // A requested size is not a metrics publication. Let WinUI layout the
+        // panel and publish the resulting panel epoch through SizeChanged.
+        _surface.Dispatcher.Dispatch(() =>
+        {
+            _surface.Element.WidthRequest = logicalSize.width;
+            _surface.Element.HeightRequest = logicalSize.height;
+        });
+#else
         _logicalSize = logicalSize;
         _metricsGeneration++;
+        var target = new DorotiResizeEpoch(
+            _metricsGeneration,
+            logicalSize.width,
+            logicalSize.height,
+            Math.Max(0, checked((int)Math.Round(logicalSize.width * _density))),
+            Math.Max(0, checked((int)Math.Round(logicalSize.height * _density))),
+            _density,
+            DorotiFrameClock.Now.Ticks / 10);
+        Volatile.Write(ref _viewEpoch, ToViewEpoch(target, _metricsGeneration));
         MetricsChanged?.Invoke(Metrics);
         RequestInvalidate();
+#endif
     }
 
     public void ScheduleFrame(Action<TimeSpan> callback)
@@ -500,7 +530,7 @@ internal sealed class MauiHostAdapter :
         }
 
         // SizeChanged is already a native, UI-thread-paced resize pulse. Build
-        // its metrics frame now while the raster thread prepares ResizeBuffers.
+        // its metrics frame now while raster prepares a detached exact staging chain.
         DispatchPendingFrame(DorotiFrameClock.Now);
         UnsubscribeFromCompositionVsync();
     }
@@ -577,16 +607,40 @@ internal sealed class MauiHostAdapter :
         GC.KeepAlive(ActionPerformed);
     }
 
-    private void HandleSizeChanged()
+    private void HandleSizeChanged(DorotiResizeEpoch? publishedTarget)
     {
-        if (_surface.Width <= 0 || _surface.Height <= 0) return;
-        var logicalSize = new Size(_surface.Width, _surface.Height);
-        var surface = _surface.CaptureSnapshot(_snapshot);
-        var density = Math.Max(1, surface.DevicePixelRatio);
-        if (_logicalSize.Equals(logicalSize) && Math.Abs(_density - density) <= double.Epsilon) return;
-        _logicalSize = logicalSize;
-        _density = density;
+        DorotiResizeEpoch target;
+        if (publishedTarget is not null)
+        {
+            target = publishedTarget;
+        }
+        else
+        {
+            if (_surface.Width <= 0 || _surface.Height <= 0) return;
+            var surface = _surface.CaptureSnapshot(_snapshot);
+            var density = Math.Max(1, surface.DevicePixelRatio);
+            target = new(
+                checked(_metricsGeneration + 1),
+                _surface.Width,
+                _surface.Height,
+                Math.Max(0, checked((int)Math.Round(_surface.Width * density))),
+                Math.Max(0, checked((int)Math.Round(_surface.Height * density))),
+                density,
+                DorotiFrameClock.Now.Ticks / 10);
+        }
+        if (!target.HasDrawableSize) return;
+        var current = ViewEpoch;
+        if (current.ResizeTargetGeneration == target.Generation &&
+            current.LogicalWidth == target.LogicalWidth &&
+            current.LogicalHeight == target.LogicalHeight &&
+            current.PhysicalWidth == target.PhysicalWidth &&
+            current.PhysicalHeight == target.PhysicalHeight &&
+            current.DeviceScaleX == target.DeviceScaleX &&
+            current.DeviceScaleY == target.DeviceScaleY) return;
+        _logicalSize = new(target.LogicalWidth, target.LogicalHeight);
+        _density = target.DevicePixelRatio;
         _metricsGeneration++;
+        Volatile.Write(ref _viewEpoch, ToViewEpoch(target, _metricsGeneration));
         MetricsChanged?.Invoke(Metrics);
 #if WINDOWS
         DispatchWindowsResizeFrame();
@@ -594,6 +648,28 @@ internal sealed class MauiHostAdapter :
         RequestInvalidate();
 #endif
     }
+
+    private DorotiViewEpoch ToViewEpoch(DorotiResizeEpoch target, long metricsGeneration) => new(
+        _viewId,
+        target.Generation,
+        metricsGeneration,
+        target.LogicalWidth,
+        target.LogicalHeight,
+        target.PhysicalWidth,
+        target.PhysicalHeight,
+        target.DeviceScaleX,
+        target.DeviceScaleY,
+        target.TimestampMicroseconds);
+
+    private static DorotiResizeEpoch ToResizeEpoch(DorotiViewEpoch epoch) => new(
+        epoch.ResizeTargetGeneration,
+        epoch.LogicalWidth,
+        epoch.LogicalHeight,
+        epoch.PhysicalWidth,
+        epoch.PhysicalHeight,
+        epoch.DeviceScaleX,
+        epoch.DeviceScaleY,
+        epoch.TimestampMicroseconds);
 
     private void HandlePointer(MauiSurfacePointerData args)
     {
