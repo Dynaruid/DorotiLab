@@ -3,20 +3,25 @@
 - 작성일: 2026-08-22
 - 입력: [`problem.md`](problem.md), 현재 Doroti resize/scene/raster/present 코드, 이전 계측·실패 기록
 - 제약: SkiaSharp fork, reflection, private member monkey patch를 사용하지 않는다.
-- 상태: 구현 전 설계 검토. 이 문서를 작성하면서 build/live test는 실행하지 않았다.
+- 상태: 설계와 2026-08-22 구현·자동 검증 결과를 함께 기록한다. 자동 correctness gate는 일부 통과했지만 사용자 가시성, Windows Graphics Capture, 전체 edge/DPI/refresh matrix와 Flutter 대조 성능은 `notVerified`다. 2026-08-22의 이 문서 재검토에서는 build/live test를 추가로 실행하지 않았다.
 
 ## 1. 결론
 
-확인된 epoch 오인과 Web provisional 왜곡은 SkiaSharp를 포크하지 않고 고칠 수 있다. 고쳐야 할 경계는 Skia 내부가 아니라 Doroti가 이미 소유한 세 곳이다. Windows에서 exact present 사이에 남을 수 있는 compositor stretch까지 완전히 제거할 수 있는지는 별도 public-host spike로 검증해야 한다.
+확인된 epoch 오인과 Web provisional 왜곡은 SkiaSharp를 포크하지 않고 고칠 수 있다. 현재 자료는 **SkiaSharp raster가 느려서 resize가 깨진다**는 가설을 지지하지 않는다. 더 정확한 문제는 SkiaSharp가 Flutter Engine처럼 metrics, frame scheduling, surface lifecycle, platform present를 하나의 엔진 셸로 제공하지 않으므로 그 결합을 Doroti의 Windows/Web host가 직접 책임져야 한다는 점이다. 고쳐야 할 경계는 Skia 내부가 아니라 Doroti가 이미 소유한 scene identity, size authority, presenter/frame pump다.
+
+Windows에서는 exact present 사이에 남는 compositor stretch와 불규칙한 present cadence를 분리해서 다뤄야 한다. 현재 dual exact staging 경로는 stale/mismatched app frame을 막는 correctness baseline이지만, 이것만으로 Flutter 수준의 부드러움을 보장하지 않는다. exact app frame 사이의 가시적 동작과 cadence가 기준을 넘지 못하면 `SwapChainPanel` 옵션을 더 조정하는 대신 Flutter가 사용하는 native resize transaction과 동등한 public-host spike를 우선한다.
 
 1. **framework frame이 실제로 사용한 metrics/target epoch를 scene에 보존한다.** `Submit()` 시점의 최신 target으로 이전 scene을 다시 이름 붙이지 않는다.
 2. **Windows는 API가 요구하는 `DXGI_SCALING_STRETCH`를 유지하되, app이 `Present()`하는 모든 buffer를 현재 target과 exact-size로 만든다.** 이 수정은 잘못된 A layout을 B 크기 buffer에 그려 승인하는 직접 원인을 없앤다. panel resize와 다음 exact present 사이에 compositor가 보존된 이전 buffer를 stretch하는 잔여 현상은 따로 계측한다.
 3. **Web은 ResizeObserver와 retained FBO를 하나의 표시 transaction으로 묶는다.** 이전 front를 새 viewport 전체로 stretch하지 않고, 겹치는 논리 영역만 1:1 crop하여 보여 준 뒤 최신 exact staging frame만 commit한다.
-4. Windows의 `IDXGISwapChain2.SetSourceSize` capacity 경로는 바로 채택하지 않는다. 과거 지연은 줄었지만 사용자가 내부 Skia 배율 이상을 확인한 실패 분기이므로, 공통 정확성 수정 뒤 별도 실험 gate에서만 재검토한다.
+4. Windows의 `IDXGISwapChain2.SetSourceSize` capacity 경로는 제품 후보에서 내린다. 과거 지연은 줄었지만 사용자가 내부 Skia 배율 이상을 확인한 실패 분기이므로, Flutter-parity host보다 먼저 재시도하지 않는다.
+5. **부드러움은 exact mismatch 0으로 판정하지 않는다.** 실제 input/target sample rate, inter-present interval, border와 presented content의 phase error, 화면 캡처를 함께 본다.
 
 가장 중요한 사실은 다음과 같다.
 
 > OS border는 framework layout보다 먼저 움직일 수 있다. 아직 계산되지 않은 responsive layout을 어떤 present API도 미리 만들어 줄 수는 없다. Web은 그 사이 **이전 frame의 1:1 crop + background**를 명시적으로 만들 수 있다. 반면 현재 Windows `SwapChainPanel` 경로는 `CreateSwapChainForComposition`이 `DXGI_SCALING_STRETCH`를 요구하므로, app의 mismatched present는 금지할 수 있어도 다음 exact present 전 compositor 동작까지 1:1 clip으로 강제할 수는 없다. 먼저 이 구간을 최소화·계측하고, 잔여 stretch가 허용 불가능하면 SkiaSharp가 아니라 Windows presentation host 경계를 다시 설계해야 한다.
+
+Flutter의 부드러움은 “SkiaSharp보다 Skia/Impeller raster가 빠르다”는 증거가 아니다. 현재 고정한 Flutter source에서는 Windows가 기본적으로 Impeller를 켜지만, resize handshake는 renderer 선택보다 위의 Windows engine/view 계층에 있다. Skia 경로에서도 같은 exact-size admission, surface resize, swap 완료 protocol을 사용한다. 따라서 renderer A/B와 host protocol A/B를 분리해서 비교해야 한다.
 
 따라서 목표는 “모든 중간 frame이 이미 최종 reflow를 가진다”가 아니다. 다음 두 보장을 분리한다.
 
@@ -43,6 +48,47 @@
 실제로 고쳐야 하는 것은 scene의 세대 identity, host의 size authority, retained frame 표시 정책이다. 이것들은 모두 Doroti source 안에 있다.
 
 Web의 `SkiaSharpGL`, Emscripten `GL.framebuffers` handle 등록은 Web 표준 API는 아니다. 그러나 이는 현재 public SkiaSharp GL surface에 app-owned FBO를 연결하는 버전 고정 adapter이며, 이번 geometry bug의 원인은 아니다. 이번 범위에서는 작은 adapter와 ABI contract test로 격리한다. 장기적으로는 이 의존성을 없애는 public hook을 upstream에 제안하거나 native GLES sidecar를 검토할 수 있지만, geometry 수정 자체의 선행 조건은 아니다.
+
+### 2.1 SkiaSharp 한계와 Doroti 책임의 경계
+
+| 질문 | 판정 |
+| --- | --- |
+| Skia/SkiaSharp가 resize된 target을 빠르게 raster할 수 없는가 | 현재 Windows raw trace의 raster+flush p50은 약 1.431 ms이므로 근거 없음 |
+| SkiaSharp public API만으로 exact D3D12/WebGL surface를 만들 수 없는가 | 현재 코드가 public `GRContext`, `GRBackendRenderTarget`, `SKSurface`로 수행하고 있으므로 아님 |
+| SkiaSharp가 Flutter Engine의 resize/vsync/present 셸을 제공하는가 | 제공하지 않음. 이 계층은 Doroti host가 소유해야 함 |
+| Web 외부 FBO 연결이 깔끔한 완전 public contract인가 | 아님. Emscripten handle adapter는 SkiaSharp 통합 표면의 실제 제약이지만 현재 geometry/cadence 원인과 분리해야 함 |
+
+즉 “SkiaSharp의 한계”라는 표현은 raster capability가 아니라 **engine integration surface의 범위**에만 제한해서 사용한다. 이 범위를 혼동하면 renderer fork나 미세한 draw 최적화에 시간을 쓰면서 실제 병목인 resize transaction과 browser/native presentation을 놓치게 된다.
+
+### 2.2 Flutter Windows가 부드럽게 보이는 직접 이유
+
+고정 reference `reference/flutter-master`의 commit `56b8e1a851a594b1a154f8ea93270807dab22b9a`에서 Windows resize는 다음 transaction을 가진다.
+
+1. platform thread의 `OnWindowSizeChanged()`가 resize target을 기록하고 window metrics를 engine에 보낸다.
+2. target이 현재 EGL surface와 다르면 platform event loop가 최대 100 ms 동안 exact resize 완료를 기다린다. 이 동안 engine task runner를 poll해 framework/raster work를 진행시킨다.
+3. raster thread의 `OnFrameGenerated(width, height)`는 frame과 target 크기가 다르면 present를 거부한다.
+4. target과 일치할 때 fixed-size ANGLE/EGL window surface를 destroy/recreate하고 exact frame을 blit/swap한다.
+5. `OnFramePresented()`가 resize를 완료 상태로 바꾸고, 이전 크기 surface가 새 view에 stretch되는 glitch를 줄이기 위해 `DwmFlush()`를 호출한다.
+
+이 방식은 surface 재생성 자체가 싸기 때문에 부드러운 것이 아니다. Flutter source에도 재생성이 비싸다는 TODO가 있다. 차이는 window resize message, metrics, exact framework frame, surface swap을 하나의 handshake로 묶어 오래된 frame이 독립적으로 따라오지 못하게 한다는 점이다.
+
+현재 Doroti Windows는 `SizeChanged → metrics/build`와 detached D3D12 staging 준비를 병렬로 실행하고, 마지막에 UI dispatcher에서 `Present(0) + SetSwapChain`을 수행한다. 이 구조는 UI target을 계속 받아 최신 것만 남기므로 correctness에는 유리하지만, work가 자주 supersede되고 border와 content commit이 같은 native resize transaction이 아니다. 따라서 exact mismatch가 0이어도 inter-present 간격이 불규칙할 수 있다.
+
+### 2.3 Flutter Web이 full-frame stretch를 피하는 방식
+
+Flutter Web은 browser resize에서 physical size를 갱신하고 하나의 rAF `FrameService`로 framework frame을 예약한다. Chrome의 CanvasKit 경로와 skwasm 경로는 OffscreenCanvas-backed surface에서 exact physical size로 raster한 뒤 `ImageBitmap`을 visible `RenderCanvas`에 transfer한다. visible canvas는 exact bitmap을 표시하기 직전에 intrinsic pixel size와 CSS logical size를 함께 갱신한다.
+
+Flutter `RenderCanvas`는 visible canvas가 frame보다 크면 `transferFromImageBitmap()`이 bitmap을 canvas 전체로 확대한다는 이유로 canvas를 frame과 정확히 같은 크기로 유지한다. 이는 Doroti에서 발견한 “이전 front를 새 CSS/backing rectangle 전체로 stretch” 문제와 정확히 같은 위험을 엔진 구조로 차단한 것이다.
+
+Doroti의 현재 retained front/staging FBO + 1:1 provisional crop도 geometry 원칙은 맞다. 차이는 한 exact frame이 `ResizeObserver/JS → .NET metrics → rAF → C# scene → JS presenter → .NET RenderFrame → JS blit` 경계를 통과하고 JS와 Skia가 같은 WebGL context state를 공동 관리한다는 점이다. 이 경계 수가 실제 병목인지는 Web 단계별 trace로 검증해야 하며, 자료 없이 Blazor interop 또는 SkiaSharp를 단정하지 않는다.
+
+### 2.4 비교에서 지켜야 할 통제 조건
+
+- Flutter Windows 기본값은 현재 reference에서 Impeller이므로 Doroti/SkiaSharp와 renderer 이름만으로 비교하지 않는다.
+- 가능한 경우 Flutter Windows를 default와 `--enable-impeller=false` 두 조건으로 실행한다. 둘 다 비슷하게 부드러우면 Windows host protocol의 영향이 더 강한 증거다.
+- 같은 기기, window content, resize edge, cursor trajectory, DPI, refresh rate로 Flutter와 Doroti를 측정한다.
+- input driver가 실제로 낸 sample rate와 OS가 전달한 target rate를 함께 기록한다. 38.5 Hz 입력으로 60 Hz smoothness를 주장하지 않는다.
+- `Present`, rAF callback, GPU blit 완료는 scan-out 증거가 아니다. Windows Graphics Capture 또는 외부 고속 촬영과 browser frame capture를 별도 acceptance로 둔다.
 
 ## 3. 먼저 고정할 공통 불변식
 
@@ -147,7 +193,7 @@ Windows logical size authority는 `SwapChainPanel` 하나로 둔다.
 
 ### 4.2 WIN-2: exact-size correctness baseline
 
-공통 epoch 수정 직후에는 물리 target과 back buffer를 1:1로 유지하는 현재 exact-size 구조를 기준선으로 둔다. `CreateSwapChainForComposition` 공식 계약상 `Scaling`은 `DXGI_SCALING_STRETCH`여야 하므로 이를 `None`으로 바꾸지 않는다. 대신 app이 제출하는 순간에는 buffer/source와 현재 panel physical target이 정확히 같아 실제 stretch가 필요 없는 상태만 허용한다.
+공통 epoch 수정 직후에는 물리 target과 back buffer를 1:1로 유지하는 exact-size 구조를 correctness 기준선으로 둔다. `CreateSwapChainForComposition` 공식 계약상 `Scaling`은 `DXGI_SCALING_STRETCH`여야 하므로 이를 `None`으로 바꾸지 않는다. 대신 app이 제출하는 순간에는 buffer/source와 현재 panel physical target이 정확히 같아 실제 stretch가 필요 없는 상태만 허용한다. 이 절의 초기 single-chain 기준선은 12절에서 visible chain을 보존하는 dual exact staging으로 발전했지만, 두 방식 모두 smoothness를 자동으로 보장하지 않는다.
 
 1. swap chain 생성은 API가 요구하는 `Scaling.Stretch`와 flip-sequential을 유지한다.
 2. `SetMatrixTransform`에는 원본으로 보존한 `1 / CompositionScaleX`, `1 / CompositionScaleY`를 각각 적용하고, 변경은 다음 `Present()`부터 유효하다는 전제로 token과 함께 검증한다.
@@ -166,11 +212,11 @@ target-only wake에서 `ResizeBuffers`를 미리 수행하는 현재 overlap은 
 
 `Present(0)`, swap interval, `DwmFlush`는 이 정확성 문제의 해법이 아니다. 이들은 epoch mismatch나 이전 bitmap의 geometry를 고치지 않는다.
 
-### 4.3 WIN-3: `SetSourceSize` capacity 경로는 실험 gate
+### 4.3 WIN-3: `SetSourceSize` capacity 경로는 실패 보존·후순위 실험
 
-이전 실험에서 `SetSourceSize`는 target→ACK p50을 약 12.811 ms로 낮췄지만 사용자가 내부 Skia 배율 이상을 확인해 철회되었다. 따라서 “Microsoft가 제공한 API이므로 동작할 것”이라고 가정해서는 안 된다.
+이전 실험에서 `SetSourceSize`는 target→ACK p50을 약 12.811 ms로 낮췄지만 사용자가 내부 Skia 배율 이상을 확인해 철회되었다. 12절의 재실험도 같은 이유로 실패했다. 따라서 이 경로는 현재 제품 후보가 아니며, “Microsoft가 제공한 API이므로 동작할 것”이라고 가정해서는 안 된다.
 
-다만 Microsoft는 `SetSourceSize`를 `ResizeBuffers` 없이 source region을 바꾸는 저비용 effective resize API로 정의한다. 공통 correctness와 exact-size `Stretch` baseline이 통과한 뒤 다음처럼 **buffer capacity와 현재 유효 viewport를 분리한 새 설계**로만 재실험할 가치가 있다. 이 API는 source rectangle을 선택할 뿐이며, 그 자체로 1:1 표시를 보장하지 않는다. `SetSourceSize`와 `SetMatrixTransform` 모두 다음 `Present()`에 맞춰 하나의 target token으로 적용하고 실제 결과를 visual gate로 판정해야 한다.
+Microsoft는 `SetSourceSize`를 `ResizeBuffers` 없이 source region을 바꾸는 저비용 effective resize API로 정의한다. 그러나 이 API는 source rectangle을 선택할 뿐이며, 현재 `SwapChainPanel`/matrix/Skia 좌표 조합에서 1:1 표시를 보장하지 않는다. 향후 원인 규명 또는 Windows host가 바뀐 뒤 다시 조사해야 할 명확한 이유가 생길 때만, 제품 코드와 분리된 executable에서 다음 **buffer capacity와 현재 유효 viewport 분리 설계**를 사용할 수 있다. Flutter-parity host와 Windows Graphics Capture gate보다 먼저 성능 목적으로 재도입하지 않는다.
 
 ```text
 Swap-chain resource capacity: Cw × Ch, 비교적 오래 유지
@@ -203,9 +249,19 @@ Composition matrix:           inverse ScaleX / ScaleY
 
 ### 4.4 WIN-4: 잔여 compositor stretch가 남을 때의 구조적 분기
 
-epoch/authority 수정과 exact-frame latency 개선 뒤에도 panel resize와 다음 present 사이의 stretch가 사용자 기준을 넘는다면, 현재 `SwapChainPanel + CreateSwapChainForComposition` 조합 안에서 옵션 하나로 해결할 수 있다고 가정하지 않는다. `CreateSwapChainForComposition`이 `DXGI_SCALING_STRETCH`를 요구하기 때문이다.
+epoch/authority 수정과 exact-frame latency 개선 뒤에도 panel resize와 다음 present 사이의 stretch 또는 inter-present cadence가 사용자 기준을 넘는다면, 현재 `SwapChainPanel + CreateSwapChainForComposition` 조합 안에서 옵션 하나로 해결할 수 있다고 가정하지 않는다. `CreateSwapChainForComposition`이 `DXGI_SCALING_STRETCH`를 요구하고, 현재 비동기 dual-chain 구조는 border와 content commit을 하나의 native resize transaction으로 묶지 않기 때문이다.
 
-그때는 **지원되는 no-scale/clip semantics를 실제로 증명할 수 있는 별도의 공개 Windows presentation host**를 architecture spike로 조사한다. 후보를 정할 때 WinUI embedding, input/semantics/accessibility, DPI, window lifetime과 no-scale 동작을 작은 executable에서 먼저 검증한다. 이는 Doroti의 Windows host를 넓게 바꾸는 일일 수 있지만 SkiaSharp fork는 아니다. 지원 여부를 확인하지 않은 채 현재 composition swap chain에 `Scaling.None`만 넣는 것은 후보가 아니다.
+첫 번째 후보는 **Flutter-parity native child HWND + Doroti-owned ANGLE/EGL fixed-size surface**다. 작은 executable에서 아래 protocol을 먼저 검증한다.
+
+1. native size event에서 exact target을 기록하고 같은 payload로 framework metrics를 보낸다.
+2. platform thread는 target과 일치하는 scene/frame이 준비될 때까지 bounded handshake를 수행한다.
+3. raster thread는 frame 크기가 target과 다르면 present하지 않는다.
+4. exact frame일 때만 EGL surface resize/recreate, blit, `eglSwapBuffers`를 수행한다.
+5. swap 완료 뒤 resize transaction을 완료하고 `DwmFlush` 유무를 별도 계측한다.
+
+현재 Doroti의 UI commit은 UI dispatcher에서 `Present + SetSwapChain`을 수행하므로 UI thread를 그대로 block하면 deadlock할 수 있다. Flutter-parity spike는 기존 구조에 wait 하나만 추가하는 방식이 아니라 surface/present ownership과 task pumping을 함께 설계해야 한다.
+
+이 후보가 WinUI embedding, input/semantics/accessibility, DPI, window lifetime을 만족하지 못하면, 그 다음에 지원되는 no-scale/clip semantics를 실제로 증명할 수 있는 다른 public Windows presentation host를 조사한다. 이는 Doroti의 Windows host를 넓게 바꾸는 일일 수 있지만 SkiaSharp fork는 아니다. 지원 여부를 확인하지 않은 채 현재 composition swap chain에 `Scaling.None`만 넣는 것은 후보가 아니다.
 
 ### 4.5 Windows에서 우선하지 않을 대안
 
@@ -213,7 +269,7 @@ epoch/authority 수정과 exact-frame latency 개선 뒤에도 panel resize와 �
 | --- | --- |
 | frame-latency waitable swap chain | 과거 개선 없음/악화. epoch 수정 뒤 별도 계측 없이는 재도입하지 않음 |
 | `Context.Submit(false)`만 변경 | 과거 `DXGI_ERROR_INVALID_CALL`. D3D12 fence/resource lifetime 설계 없이 금지 |
-| `Present(1)` 또는 `DwmFlush` | build/target mismatch를 해결하지 않음 |
+| `Present(1)` 또는 `DwmFlush` 단독 변경 | build/target mismatch를 해결하지 않음. exact resize handshake와 결합한 `DwmFlush`는 Flutter-parity spike에서 별도 검증 |
 | debounce/timer | 최신 target 도달을 늦추며 correctness transaction을 만들지 못함 |
 | `AppWindow.ClientSize`/`WM_SIZE`를 새 authority로 추가 | panel layout과 다시 두 size authority를 만듦. 계측에만 사용 |
 | 현재 `CreateSwapChainForComposition`에 `Scaling.None` 지정 | API의 명시적 `Scaling.Stretch` 요구와 충돌하므로 제품 경로에서 금지 |
@@ -325,7 +381,8 @@ WebGL context loss 때 FBO는 보존될 수 없으므로 이는 resize continuit
 | `preserveDrawingBuffer:true` | resize clear를 없애지 못하고 일부 GPU 성능 비용. 진단 비교 외 비권장 |
 | default framebuffer에 직접 Skia raster | staging의 atomic/latest gate와 retained continuity를 잃음 |
 | 두 visible canvas/ImageBitmap swap | context/bitmap lifetime과 GPU copy가 늘어남 |
-| OffscreenCanvas/Worker | 전체 managed Skia/Emscripten context를 worker로 옮겨야 의미가 있음. geometry 해결의 선행 조건 아님 |
+| Worker migration | 전체 managed Skia/Emscripten context를 worker로 옮겨야 의미가 있음. geometry 해결의 선행 조건 아님 |
+| OffscreenCanvas + ImageBitmap visible transfer | geometry 해결의 선행 조건은 아니지만 Chrome에서 current presenter cadence가 부족할 때 Flutter-parity performance/atomic-display spike 후보. bitmap transfer 비용과 브라우저별 차이를 먼저 측정 |
 | private `SKHtmlCanvasInterop` patch/fork | 필요 없음 |
 
 ## 6. 파일별 구현 위치
@@ -419,9 +476,18 @@ app-presented geometry가 깨지면 `SetSourceSize`로 넘어가지 않는다. a
 
 WEB-1이 통과한 뒤에만 rAF 수를 줄인다.
 
-### WIN-2 — optional capacity/SetSourceSize spike
+### WIN-HOST — Flutter-parity native Windows host spike
 
-- baseline과 별도 feature flag/실험 executable로 수행
+- current dual exact staging이 correctness PASS여도 WGC visual/cadence gate를 통과하지 못할 때 진행
+- native child HWND + Doroti-owned ANGLE/EGL fixed-size surface를 작은 executable로 먼저 구성
+- native size event→metrics→exact frame admission→surface resize/recreate→swap→resize completion을 하나의 bounded transaction으로 검증
+- current UI-dispatcher commit 구조를 그대로 block하지 않고 task pumping, surface ownership, shutdown/reentrancy를 함께 설계
+- `DwmFlush` 없음/있음을 같은 exact handshake에서 비교하고 leading/trailing swap 및 present interval을 각각 측정
+- WinUI embedding, pointer/IME, semantics/accessibility, DPI, minimize/restore와 device/context loss를 통과해야 제품 host 후보
+
+### WIN-CAPACITY-DIAG — optional capacity/SetSourceSize diagnostic spike
+
+- Flutter-parity host보다 뒤에서, 재조사할 명확한 이유가 있을 때만 별도 실험 executable로 수행
 - 과거 내부 배율 이상을 재현하는 fixed-height/fixed-circle visual oracle 포함
 - 모든 DPI와 left drag를 통과할 때만 제품 경로 후보
 - 실패하면 exact-size baseline으로 즉시 복귀하고 실패 evidence 보존
@@ -430,6 +496,10 @@ WEB-1이 통과한 뒤에만 rAF 수를 줄인다.
 
 - correctness gate를 그대로 둔 상태에서 target→metrics, metrics→build, build→raster, raster→present를 분리 측정
 - Web은 observer→provisional, observer→exact commit을 분리 측정
+- Windows는 input sample→native target, target→exact frame, inter-present interval, border→presented-content phase error를 분리 측정
+- Flutter reference app을 같은 driver/기기에서 측정해 renderer와 host protocol을 분리 비교
+- current Windows host가 cadence/visual gate를 넘지 못하면 `SetSourceSize` 재시도보다 WIN-4 Flutter-parity host spike를 먼저 수행
+- Web은 JS/.NET 경계별 timestamp를 남기고 current FBO 방식과 OffscreenCanvas/ImageBitmap spike를 동일 matrix에서 비교
 - `Present`/rAF completion을 실제 display ACK로 부르지 않음
 
 ## 8. 실제 화면 검증 기준
@@ -444,6 +514,8 @@ WEB-1이 통과한 뒤에만 rAF 수를 줄인다.
 | exact frame 우측 끝 | scene AppBar 끝과 current client 끝이 1 physical px 초과 불일치 |
 | Web provisional frame | stretch 금지. expansion background strip은 generation lag 동안만 허용 |
 | Windows retained interval | app-presented mismatched frame은 0. exact present 전 compositor stretch의 frame 수와 최대 종횡비 오차를 별도 기록 |
+| continuous drag cadence | input/target/present rate와 inter-present p50/p95/p99를 refresh interval 단위로 기록. actual input rate보다 높은 smoothness를 주장하지 않음 |
+| border/content phase | Windows Graphics Capture에서 border와 최신 exact content edge의 시간·pixel 차이를 기록하고 Flutter 동일 조건과 비교 |
 | drag 종료 | latest exact frame이 목표 refresh 수 안에 도달하지 못함 |
 | blank | startup/context loss 외 full-background-only frame 발생 |
 
@@ -455,6 +527,16 @@ WEB-1이 통과한 뒤에만 rAF 수를 줄인다.
 - refresh: 60/120/144/165 Hz에서 가능한 장비
 - stress: Web 4× CPU slowdown, Windows 빠른 방향 전환
 - lifecycle: minimize/restore, context/device loss, 종료 cleanup
+
+자동 input driver도 검증 대상이다. 60 Hz gate에서는 실제 cursor sample과 native target이 충분한 빈도로 발생해야 하며, 120/144/165 Hz는 PowerShell `Start-Sleep` 기반 driver만으로 PASS를 주장하지 않는다. native high-resolution driver 또는 실제 pointer recording/replay를 사용하고, 생성한 sample 수와 OS가 전달한 target 수를 결과에 포함한다.
+
+Windows correctness와 smoothness 판정은 분리한다.
+
+- correctness PASS: exact mismatch, stale present, generation regression, queue/terminal 위반이 0
+- cadence PASS: 동일 refresh/driver에서 inter-present gap과 target loss가 정한 기준 이내
+- visual PASS: Windows Graphics Capture 또는 외부 관찰에서 stretch/overflow/blank와 border-content lag가 허용 기준 이내
+
+correctness PASS만으로 “Flutter처럼 부드럽다” 또는 resize 문제가 해결됐다고 기록하지 않는다.
 
 Windows live validator는 `Left`, `Right`, `Top`, `Bottom`과 네 corner를 선택할 수 있고, 이번 사용자 증상은 `HTLEFT` 자동 drag로 직접 검증한다. Web의 40-sample smoke는 fixed-height와 raster-tolerant aspect oracle을 함께 사용한다.
 
@@ -480,12 +562,13 @@ Web expansion 중 background strip 자체는 correctness 실패가 아니다. �
 1. 공통 build token과 submit-time relabel 제거
 2. Windows panel payload authority + full exact matcher + scheduler/latest pre-present gate
 3. Web ResizeObserver synchronous 1:1 provisional commit + exact staging commit
-4. Windows 필수 `Scaling.Stretch` + exact-size buffer, X·Y matrix, resource lifetime/rebind 검증과 잔여 compositor stretch 계측
-5. Web rAF 직렬화 축소
-6. 그 뒤에도 Windows latency가 부족할 때만 corrected capacity + `SetSourceSize` spike
-7. exact app frame 사이에도 허용 불가능한 Windows stretch가 남을 때만 public presentation host architecture spike
+4. Windows dual exact staging을 correctness baseline으로 유지하고 Windows Graphics Capture, 실제 cadence, Flutter 동일 조건 baseline을 확보
+5. current Windows host가 visual/cadence gate를 넘지 못하면 native child HWND + ANGLE/EGL exact resize handshake를 사용하는 Flutter-parity public-host spike
+6. Web rAF 직렬화와 JS/.NET 경계 latency를 계측·축소
+7. current Web presenter가 cadence gate를 넘지 못할 때만 OffscreenCanvas/ImageBitmap exact visible-transfer spike
+8. corrected capacity + `SetSourceSize`는 과거 visual failure 때문에 Flutter-parity host보다 뒤의 선택적 실험으로 유지
 
-이 순서라면 SkiaSharp fork 없이 현재 두 현상의 직접 원인인 epoch 오인, 이중 size authority, full-frame provisional stretch를 제거할 수 있다. 다만 Windows의 마지막 exact buffer를 panel이 잠시 stretch하는 현상은 현재 composition API 계약의 별도 한계이므로, 실측 결과에 따라 Doroti-owned Windows presentation host를 공개 API로 재구성할 수 있다. Web의 Emscripten handle adapter도 버전 고정 contract test로 격리하되, 장기적으로 public upstream hook을 제안할 여지는 남긴다. 어느 경우도 지금 SkiaSharp fork를 첫 해법으로 선택할 이유는 없다.
+이 순서라면 SkiaSharp fork 없이 현재 두 현상의 직접 원인인 epoch 오인, 이중 size authority, full-frame provisional stretch를 제거하면서 correctness와 smoothness를 혼동하지 않을 수 있다. Windows의 남은 문제는 Skia raster보다 native resize/present transaction일 가능성이 높으므로, current composition host가 실패하면 Flutter와 동등한 공개 host protocol을 먼저 검증한다. Web의 Emscripten handle adapter도 버전 고정 contract test로 격리하되, 장기적으로 public upstream hook을 제안할 여지는 남긴다. 어느 경우도 지금 SkiaSharp fork를 첫 해법으로 선택할 이유는 없다.
 
 ## 10. 공식 문서
 
@@ -511,6 +594,18 @@ Web expansion 중 background strip 자체는 correctness 실패가 아니다. �
 - WHATWG, [`canvas element sizing`](https://html.spec.whatwg.org/multipage/canvas.html#the-canvas-element)
 - Khronos, [`WebGL drawing buffer`](https://registry.khronos.org/webgl/specs/latest/1.0/#2.2)
 - Khronos, [`WebGL2 blitFramebuffer`](https://registry.khronos.org/webgl/specs/latest/2.0/#3.7.4)
+
+### Flutter 비교 기준
+
+- Windows exact resize handshake: [`flutter_windows_view.cc`](reference/flutter-master/engine/src/flutter/shell/platform/windows/flutter_windows_view.cc)
+- Windows fixed-size ANGLE/EGL surface: [`egl/manager.cc`](reference/flutter-master/engine/src/flutter/shell/platform/windows/egl/manager.cc)
+- Windows exact framebuffer blit/swap: [`compositor_opengl.cc`](reference/flutter-master/engine/src/flutter/shell/platform/windows/compositor_opengl.cc)
+- Windows Impeller default selection: [`flutter_windows_engine.cc`](reference/flutter-master/engine/src/flutter/shell/platform/windows/flutter_windows_engine.cc)
+- Web rAF ownership: [`frame_service.dart`](reference/flutter-master/engine/src/flutter/lib/web_ui/lib/src/engine/frame_service.dart)
+- Web resize metrics: [`window.dart`](reference/flutter-master/engine/src/flutter/lib/web_ui/lib/src/engine/window.dart), [`custom_element_dimensions_provider.dart`](reference/flutter-master/engine/src/flutter/lib/web_ui/lib/src/engine/view_embedder/dimensions_provider/custom_element_dimensions_provider.dart)
+- Web offscreen raster/visible transfer: [`offscreen_canvas_rasterizer.dart`](reference/flutter-master/engine/src/flutter/lib/web_ui/lib/src/engine/compositing/offscreen_canvas_rasterizer.dart), [`render_canvas.dart`](reference/flutter-master/engine/src/flutter/lib/web_ui/lib/src/engine/compositing/render_canvas.dart)
+
+Flutter reference는 2026-07-31 commit `56b8e1a851a594b1a154f8ea93270807dab22b9a`에 고정한다. 이후 upstream 변경을 현재 사실처럼 사용하지 않으며 비교 실행 시 commit을 evidence에 기록한다.
 
 ## 11. 2026-08-22 구현 및 재검증 결과
 
@@ -551,4 +646,14 @@ Windows는 다음 이중 exact swap-chain 방식으로 교체했다.
 - Windows 200% DPI `HTLEFT` 10초 + 15초 관찰: dual exact staging backend, 384 targets, 작업영역 이탈 0, exact size mismatch 0, lagged ACK 0, target-advanced-during-present 0. 증거: `rsz0b-default-left-20260822-104758.summary.json`.
 - Chrome 실제 window-bounds 120 samples + 5초 관찰: blank 0, stale front commit 0, AppBar geometry failure 0, provisional scale failure 0. 증거: `web-resize-chrome-20260822-104847.summary.json`.
 
-Windows 내부 UI overflow가 사라졌는지는 자동 trace로 확정하지 않는다. capacity 실험을 실패로 만든 것처럼 사용자의 직접 관찰 또는 DXGI를 포함하는 Windows Graphics Capture가 최종 gate다. dual exact staging 실행은 자동 correctness만 통과한 상태이며 실제 화면 acceptance는 `notVerified`다.
+Windows dual exact staging 결과를 cadence 관점에서 다시 읽으면 다음과 같다.
+
+- 10초 동안 input cursor sample 385, target 384, presented ACK 363이다. 실제 자동 입력은 약 38.5 sample/s이고 present는 약 36.3회/s이므로 60 Hz smoothness 검증이 아니다.
+- inter-ACK interval은 p50 25.791 ms, p95 45.821 ms, p99 92.515 ms다. exact frame의 target→ACK는 p50 13.539 ms여도 frame 사이 간격은 고르지 않다.
+- detached staging surface 준비는 p50 4.705 ms, final swap은 p50 0.699 ms다.
+- raw trace의 `raster-end` duration을 재계산하면 raster+flush p50은 약 1.431 ms, p95는 약 2.000 ms다. 현재 자료에서 Skia raster가 주 병목이라는 근거는 없다.
+- UI-thread final commit에서 최신 target을 발견해 15 frame을 supersede했다. stale present를 막는 올바른 동작이지만, current async host에서 target churn이 cadence 손실로 이어짐을 보여 준다.
+
+따라서 이 결과의 판정은 **correctness PASS / smoothness `notVerified` / visual acceptance `notVerified`**다. Windows 내부 UI overflow가 사라졌는지는 자동 trace로 확정하지 않는다. capacity 실험을 실패로 만든 것처럼 사용자의 직접 관찰 또는 DXGI를 포함하는 Windows Graphics Capture가 최종 gate다.
+
+Web 결과도 blank/stale/geometry counter가 0이라는 correctness 결과이지 Flutter와 같은 frame cadence나 실제 border-drag 가시성을 증명하지 않는다. Web evidence를 보존할 때는 summary만이 아니라 raw trace, Chrome version, renderer, actual window bounds sample timestamps, display refresh rate를 함께 남긴다. evidence 파일이 현재 checkout에 없거나 IDE의 미저장 buffer에만 있을 경우 결과를 재현 가능하다고 기록하지 않는다.
