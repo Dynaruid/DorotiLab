@@ -162,6 +162,9 @@ public sealed class SkiaSceneRenderer :
             if (submission.BuildToken is not { } buildToken)
             {
                 _terminalLedger.TryComplete(sceneSequence, DorotiFrameTerminal.dropped);
+                submission.FrameTransaction?.TryComplete(
+                    DorotiFrameTerminal.dropped,
+                    "scene submitted outside a framework frame");
                 _dropped++;
                 _frameTrace.Record(DorotiFramePhase.dropped, _viewId, timestamp,
                     inputSequence, sceneSequence, _host.SurfaceGeneration,
@@ -171,8 +174,21 @@ public sealed class SkiaSceneRenderer :
             // The producer hands raster an immutable command array. It never
             // mutates or disposes a scene currently being consumed by Paint.
             var descriptor = DorotiFrameDescriptor.FromBuildToken(buildToken, sceneSequence);
+            try
+            {
+                submission.FrameTransaction?.SceneBuilt(buildToken, descriptor);
+            }
+            catch (Exception exception)
+            {
+                _terminalLedger.TryComplete(sceneSequence, DorotiFrameTerminal.failed);
+                submission.FrameTransaction?.TryComplete(
+                    DorotiFrameTerminal.failed,
+                    $"scene transaction admission failed: {exception.Message}");
+                throw;
+            }
             var incoming = new SceneFrame(
-                sceneSequence, inputSequence, timestamp, descriptor, scene.Commands.ToArray());
+                sceneSequence, inputSequence, timestamp, descriptor, scene.Commands.ToArray(),
+                submission.FrameTransaction);
             if (_pendingFrame is { } pending)
             {
                 if (descriptor.CompareAdmissionTo(pending.Descriptor) < 0)
@@ -276,6 +292,15 @@ public sealed class SkiaSceneRenderer :
             canvas.Flush();
 #endif
             var surfaceGeneration = _host.SurfaceGeneration;
+            if (isNewFrame)
+            {
+                frame.FrameTransaction?.BackingStoreReady(
+                    $"{_targetIdentity}/skia-surface/{surfaceGeneration}",
+                    pixelWidth,
+                    pixelHeight,
+                    desiredTarget.DeviceScaleX,
+                    desiredTarget.DeviceScaleY);
+            }
             lock (_gate)
             {
                 if (isNewFrame)
@@ -315,6 +340,17 @@ public sealed class SkiaSceneRenderer :
             if (completion.IsNewFrame)
             {
                 if (!_rasterizedFrames.Remove(completion.SceneSequence, out var frame)) return;
+                try
+                {
+                    frame.FrameTransaction?.VisibleSurfaceCommitted(
+                        frame.FrameTransaction.VisibleTargetIdentity);
+                }
+                catch
+                {
+                    MarkTerminal(frame, DorotiFrameTerminal.failed,
+                        "visible surface transaction commit failed", completion.SurfaceGeneration);
+                    throw;
+                }
                 if (!MarkTerminal(frame, terminal, "native frame submitted",
                     completion.SurfaceGeneration)) return;
                 _presentedFrame = frame;
@@ -474,7 +510,8 @@ public sealed class SkiaSceneRenderer :
         long InputSequence,
         TimeSpan SubmittedAt,
         DorotiFrameDescriptor Descriptor,
-        IReadOnlyList<SceneCommand> Commands);
+        IReadOnlyList<SceneCommand> Commands,
+        DorotiFrameTransaction? FrameTransaction);
 
     private bool MarkTerminal(
         SceneFrame frame,
@@ -483,6 +520,7 @@ public sealed class SkiaSceneRenderer :
         long? surfaceGeneration = null)
     {
         if (!_terminalLedger.TryComplete(frame.SceneSequence, terminal)) return false;
+        frame.FrameTransaction?.TryComplete(terminal, reason);
         var phase = terminal switch
         {
             DorotiFrameTerminal.presented or DorotiFrameTerminal.submitted => DorotiFramePhase.present,

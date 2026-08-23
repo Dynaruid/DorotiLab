@@ -36,7 +36,7 @@ internal sealed class MauiHostAdapter :
     private long _contextGeneration;
     private long _surfaceGeneration;
     private long _invalidationsRequested;
-    private long _invalidationsCoalesced;
+    private long _invalidationsCoalesced = 0;
     private long _nativePointerEvents;
     private long _inputSequence;
     private long _frameRequestsCoalesced;
@@ -313,6 +313,14 @@ internal sealed class MauiHostAdapter :
     internal void RequestInvalidate()
     {
         Interlocked.Increment(ref _invalidationsRequested);
+#if WINDOWS
+        // The HWND presenter owns a serial + AutoResetEvent coalescer and can
+        // accept a wake from any thread. Reusing the TextureView-style
+        // _invalidatePending gate here can lose the exact-scene wake after an
+        // older scene consumed the prior raster pulse during a tight resize.
+        _surface.InvalidateSurface();
+        return;
+#else
         lock (_gate)
         {
             // TextureView can discard an InvalidateSurface issued by its active
@@ -331,6 +339,7 @@ internal sealed class MauiHostAdapter :
             _invalidatePending = true;
         }
         _surface.Dispatcher.Dispatch(_surface.InvalidateSurface);
+#endif
     }
 
 #if ANDROID

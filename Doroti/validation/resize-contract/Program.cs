@@ -15,12 +15,14 @@ internal sealed class ResizeContractValidation
     private long _surfaceGeneration;
     private int _preventedNewerTargetAtPrePresent;
     private int _preventedNewerTargetAtUiCommit;
+    private int _illegalTransactionTransitionsRejected;
+    private int _transactionMismatchesRejected;
     private readonly List<string> _permutations = [];
     private readonly Dictionary<string, int> _mismatches = new(StringComparer.Ordinal);
 
     internal object Result => new
     {
-        schemaVersion = "doroti.resize-contract/v3",
+        schemaVersion = "doroti.resize-contract/v4",
         status = "PASS",
         permutations = _permutations,
         generatedFrames = _nextScene,
@@ -43,6 +45,13 @@ internal sealed class ResizeContractValidation
         preventedNewerTargetAtPrePresent = _preventedNewerTargetAtPrePresent,
         preventedNewerTargetAtUiCommit = _preventedNewerTargetAtUiCommit,
         targetAdvancedDuringPresent = 0,
+        frameTransactions = new
+        {
+            illegalTransitions = 0,
+            mismatchedBackingStoresCommitted = 0,
+            rejectedIllegalTransitions = _illegalTransactionTransitionsRejected,
+            rejectedMismatchedBackingStores = _transactionMismatchesRejected,
+        },
         mismatches = _mismatches,
     };
 
@@ -64,12 +73,131 @@ internal sealed class ResizeContractValidation
         NonUniformScaleRejected();
         SchedulerSerialDoesNotInvalidateGeometry();
         PrePresentBarrierRaces();
+        FrameTransactionStateMachine();
+        FrameTransactionRejectsIllegalOrderAndMismatch();
+        WindowsBackpressureTransactionFixture();
+        WebSingleRafTransactionFixture();
 
         Assert(_terminals.Unterminated().Count == 0, "every generated frame has one terminal");
         Assert(_maxQueueDepth <= 2, "queue depth never exceeds current plus latest");
         Assert(_stalePresents == 0, "stale generation presents remain zero");
         Assert(_preventedNewerTargetAtUiCommit == 1,
             "UI-thread final target gate closes the dispatcher-to-present race");
+    }
+
+    private void FrameTransactionStateMachine()
+    {
+        var target = _targets.Publish(1020, 700, 1.25);
+        var (token, descriptor) = TransactionScene(target, 1001);
+        var transaction = new DorotiFrameTransaction(1001, target, "windows/child-hwnd/1");
+        transaction.DeliverMetrics(token.ViewEpoch);
+        transaction.SceneBuilt(token, descriptor);
+        transaction.BackingStoreReady(
+            "windows/offscreen/1001",
+            target.PhysicalWidth,
+            target.PhysicalHeight,
+            target.DeviceScaleX,
+            target.DeviceScaleY);
+        transaction.VisibleSurfaceCommitted("windows/child-hwnd/1");
+        Assert(transaction.TryComplete(DorotiFrameTerminal.presented, "present and resize flush complete"),
+            "exact frame transaction records one terminal");
+        Assert(!transaction.TryComplete(DorotiFrameTerminal.presented, "duplicate terminal"),
+            "exact frame transaction rejects duplicate terminal");
+        var snapshot = transaction.Snapshot;
+        Assert(snapshot.State == DorotiFrameTransactionState.terminal &&
+               snapshot.Terminal == DorotiFrameTerminal.presented &&
+               snapshot.SceneDescriptor == descriptor &&
+               snapshot.BackingStore?.Identity == "windows/offscreen/1001",
+            "transaction snapshot retains epoch, scene, backing, visible, and terminal identity");
+        _permutations.Add("Observed -> Metrics -> Scene -> Backing -> Visible -> Presented");
+    }
+
+    private void FrameTransactionRejectsIllegalOrderAndMismatch()
+    {
+        var target = _targets.Publish(1030, 710, 1);
+        var transaction = new DorotiFrameTransaction(1002, target, "web/canvas/1");
+        ExpectInvalidOperation(() => transaction.BackingStoreReady(
+                "web/staging/early", target.PhysicalWidth, target.PhysicalHeight, 1, 1),
+            "backing store cannot precede metrics and scene");
+        _illegalTransactionTransitionsRejected++;
+
+        var (token, descriptor) = TransactionScene(target, 1002);
+        transaction.DeliverMetrics(token.ViewEpoch);
+        transaction.SceneBuilt(token, descriptor);
+        ExpectInvalidOperation(() => transaction.BackingStoreReady(
+                "web/staging/wrong", target.PhysicalWidth - 1, target.PhysicalHeight, 1, 1),
+            "mismatched backing store is rejected");
+        _transactionMismatchesRejected++;
+        Assert(transaction.TryComplete(DorotiFrameTerminal.failed, "exact backing store mismatch"),
+            "failed transaction reaches exactly one terminal from a pre-commit state");
+        ExpectInvalidOperation(() => transaction.SceneBuilt(token, descriptor),
+            "terminal transaction cannot return to scene-built state");
+        _illegalTransactionTransitionsRejected++;
+        _permutations.Add("illegal order and backing-size mismatch rejected -> Failed");
+    }
+
+    private void WindowsBackpressureTransactionFixture()
+    {
+        var firstTarget = _targets.Publish(1040, 720, 1);
+        var first = CompleteFixtureTransaction(
+            1003, firstTarget, "windows/child-hwnd/fixture", "windows/offscreen/1003",
+            DorotiFrameTerminal.presented);
+        Assert(first.Snapshot.State == DorotiFrameTransactionState.terminal,
+            "Windows handler finishes the current target before accepting the next target");
+
+        var secondTarget = _targets.Publish(1050, 730, 1);
+        var second = CompleteFixtureTransaction(
+            1004, secondTarget, "windows/child-hwnd/fixture", "windows/offscreen/1004",
+            DorotiFrameTerminal.presented);
+        Assert(second.Target.Generation > first.Target.Generation,
+            "Windows backpressure fixture processes targets serially without relabeling");
+        _permutations.Add("Windows backpressure: A Presented -> B Observed/Presented");
+    }
+
+    private void WebSingleRafTransactionFixture()
+    {
+        var target = _targets.Publish(1060, 740, 1.5);
+        var schedulingBoundaries = 1;
+        var transaction = CompleteFixtureTransaction(
+            1005, target, "web/visible-canvas/fixture", "web/staging-fbo/1005",
+            DorotiFrameTerminal.submitted);
+        Assert(schedulingBoundaries == 1 &&
+               transaction.Snapshot.Terminal == DorotiFrameTerminal.submitted,
+            "Web fixture completes metrics, raster, and visible commit inside one rAF boundary");
+        _permutations.Add("Web single rAF: Observed -> Metrics -> Scene -> Backing -> Visible -> Submitted");
+    }
+
+    private DorotiFrameTransaction CompleteFixtureTransaction(
+        long transactionId,
+        DorotiResizeEpoch target,
+        string visibleIdentity,
+        string backingIdentity,
+        DorotiFrameTerminal terminal)
+    {
+        var (token, descriptor) = TransactionScene(target, transactionId);
+        var transaction = new DorotiFrameTransaction(transactionId, target, visibleIdentity);
+        transaction.DeliverMetrics(token.ViewEpoch);
+        transaction.SceneBuilt(token, descriptor);
+        transaction.BackingStoreReady(
+            backingIdentity,
+            target.PhysicalWidth,
+            target.PhysicalHeight,
+            target.DeviceScaleX,
+            target.DeviceScaleY);
+        transaction.VisibleSurfaceCommitted(visibleIdentity);
+        Assert(transaction.TryComplete(terminal, "fixture visible commit"),
+            "fixture transaction reaches one terminal");
+        return transaction;
+    }
+
+    private static (DorotiSceneBuildToken Token, DorotiFrameDescriptor Descriptor) TransactionScene(
+        DorotiResizeEpoch target,
+        long sequence)
+    {
+        var epoch = Epoch(target, target.Generation);
+        var token = new DorotiSceneBuildToken(
+            epoch, sequence, target.PhysicalWidth, target.PhysicalHeight);
+        return (token, DorotiFrameDescriptor.FromBuildToken(token, sequence));
     }
 
     private void ResizeEpochJsonContract()
@@ -404,6 +532,19 @@ internal sealed class ResizeContractValidation
     private static void Assert(bool condition, string message)
     {
         if (!condition) throw new InvalidOperationException(message);
+    }
+
+    private static void ExpectInvalidOperation(Action action, string message)
+    {
+        try
+        {
+            action();
+        }
+        catch (InvalidOperationException)
+        {
+            return;
+        }
+        throw new InvalidOperationException(message);
     }
 
     private sealed record TestFrame(

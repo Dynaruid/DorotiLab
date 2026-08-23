@@ -57,10 +57,14 @@ public sealed class DorotiMauiApplication(DorotiApplicationDescriptor descriptor
     protected override Window CreateWindow(IActivationState? activationState)
     {
         _ = activationState;
+        var title = descriptor.ViewConfiguration.title;
         return new(new ContentPage
         {
-            Title = descriptor.ViewConfiguration.title,
+            Title = title,
             Content = new DorotiMauiSurface(descriptor),
-        });
+        })
+        {
+            Title = title,
+        };
     }
 }

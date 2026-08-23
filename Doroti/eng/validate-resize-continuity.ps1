@@ -73,8 +73,15 @@ if ($Shard -eq 'Contract') {
         $resizeContract.Contains('System.Diagnostics.Stopwatch.GetTimestamp()', [StringComparison]::Ordinal)) 'resize evidence retains a full live window and cross-process QPC timestamps'
     Assert-True ($resizeContract.Contains('public sealed record DorotiViewEpoch(', [StringComparison]::Ordinal) -and
         $resizeContract.Contains('public sealed record DorotiSceneBuildToken(', [StringComparison]::Ordinal) -and
-        $dispatcher.Contains('EnterSceneBuildScope(view.CaptureViewEpoch()', [StringComparison]::Ordinal) -and
+        $dispatcher.Contains('EnterSceneBuildScope(requestedEpoch, frameNumber, transaction)', [StringComparison]::Ordinal) -and
+        $dispatcher.Contains('public DorotiFrameTransaction RequestExactFrame(', [StringComparison]::Ordinal) -and
         $dispatcher.Contains('token.WithRootPhysicalSize(width, height)', [StringComparison]::Ordinal)) 'framework frame captures viewport epoch and root physical size'
+    Assert-True ($resizeContract.Contains('public sealed class DorotiFrameTransaction', [StringComparison]::Ordinal) -and
+        $resizeContract.Contains('DorotiFrameTransactionState.exactBackingStoreReady', [StringComparison]::Ordinal) -and
+        $resizeContract.Contains('DorotiFrameTransactionState.visibleSurfaceCommitted', [StringComparison]::Ordinal) -and
+        $renderer.Contains('submission.FrameTransaction?.SceneBuilt(', [StringComparison]::Ordinal) -and
+        $renderer.Contains('frame.FrameTransaction?.BackingStoreReady(', [StringComparison]::Ordinal) -and
+        $renderer.Contains('frame.FrameTransaction?.VisibleSurfaceCommitted(', [StringComparison]::Ordinal)) 'common frame transaction preserves ordered metrics, scene, backing, visible, and terminal ownership'
     Assert-True ($renderer.Contains('frame?.Descriptor.MatchExact(', [StringComparison]::Ordinal) -and
         $renderer.Contains('DorotiFrameDescriptor.FromBuildToken(buildToken, sceneSequence)', [StringComparison]::Ordinal) -and
         -not $renderer.Contains('var target = _host.ResizeTarget;', [StringComparison]::Ordinal) -and
@@ -84,21 +91,29 @@ if ($Shard -eq 'Contract') {
         -not $renderer.Contains('ObjectDisposedException.ThrowIf(picture.debugDisposed, picture);', [StringComparison]::Ordinal)) 'raster owns immutable picture commands beyond Dart handle disposal'
     Assert-True ($validation.Contains('maxQueueDepth <= 2', [StringComparison]::Ordinal) -and
         $validation.Contains('stale generation presents remain zero', [StringComparison]::Ordinal) -and
-        $validation.Contains('surface/context recreation', [StringComparison]::Ordinal)) 'deterministic state-machine assertions'
+        $validation.Contains('surface/context recreation', [StringComparison]::Ordinal) -and
+        $validation.Contains('FrameTransactionRejectsIllegalOrderAndMismatch();', [StringComparison]::Ordinal) -and
+        $validation.Contains('WindowsBackpressureTransactionFixture();', [StringComparison]::Ordinal) -and
+        $validation.Contains('WebSingleRafTransactionFixture();', [StringComparison]::Ordinal)) 'deterministic state-machine assertions'
 
-    Assert-True ($windowsSurface.Contains('WindowsD3D12Presenter', [StringComparison]::Ordinal) -and
-        $windowsSurface.Contains('dual-exact-staging-SwapChainPanel/DXGI-D3D12-Skia', [StringComparison]::Ordinal) -and
-        $windowsSurface.Contains('TryCommitViewportAndPresent(', [StringComparison]::Ordinal) -and
-        $windowsSurface.Contains('swapChain2.MatrixTransform = Matrix3x2.CreateScale', [StringComparison]::Ordinal) -and
-        $windowsSurface.Contains('private IDXGISwapChain3? _renderSwapChain;', [StringComparison]::Ordinal) -and
-        $windowsSurface.Contains('private IDXGISwapChain3? _presentedSwapChain;', [StringComparison]::Ordinal) -and
-        $windowsSurface.Contains('AttachSwapChainOnUiThread(panel, next);', [StringComparison]::Ordinal) -and
-        -not $windowsSurface.Contains('SetSourceSize(', [StringComparison]::Ordinal)) 'Windows owned dual exact staging presenter and DPI mapping'
+    Assert-True ($windowsSurface.Contains('WindowsHwndD3D12Presenter', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('Win32/child-HWND/offscreen-copy/DXGI-D3D12-Skia', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('WindowsD3D12BackingStore', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('CreateSwapChainForHwnd(', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('Scaling.None', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('SwapChainFlags.FrameLatencyWaitableObject', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('MaximumFrameLatency = 1', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('CopyResource(buffer, backingStore.Resource)', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('swapChain.Present(0, PresentFlags.None)', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('WindowsClientResizeSource', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('SetWindowSubclass(', [StringComparison]::Ordinal) -and
+        -not $windowsSurface.Contains('SetSourceSize(', [StringComparison]::Ordinal) -and
+        -not $windowsSurface.Contains('readPixels', [StringComparison]::Ordinal)) 'Windows owned native HWND presenter and GPU-only offscreen copy transaction'
     Assert-True ($windowsSurface.Contains('SizeChanged?.Invoke(target);', [StringComparison]::Ordinal) -and
-        $windowsSurface.Contains('panel.CompositionScaleX', [StringComparison]::Ordinal) -and
-        $windowsSurface.Contains('panel.CompositionScaleY', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('GetDpiForWindow(_renderWindowHandle)', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('GetClientRect(_renderWindowHandle', [StringComparison]::Ordinal) -and
         $mauiHost.Contains('private void HandleSizeChanged(DorotiResizeEpoch? publishedTarget)', [StringComparison]::Ordinal) -and
-        $mauiHost.Contains('target = publishedTarget;', [StringComparison]::Ordinal)) 'Windows panel payload is the single metrics authority'
+        $mauiHost.Contains('target = publishedTarget;', [StringComparison]::Ordinal)) 'Windows child HWND client rect and DPI are the metrics authority'
     Assert-True ($windowsSurface.Contains('_latestTarget?.Generation != target.Generation', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('terminal: "superseded"', [StringComparison]::Ordinal)) 'Windows latest target pre-present gate'
     Assert-True ($windowsSurface.Contains('pre-raster latest target gate', [StringComparison]::Ordinal) -and
@@ -107,11 +122,9 @@ if ($Shard -eq 'Contract') {
     Assert-True ($windowsSurface.Contains('pre-flush latest target gate', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('Record("paint-end"', [StringComparison]::Ordinal)) 'Windows rejects a target superseded during Skia paint before GPU flush'
     Assert-True ($windowsSurface.Contains('newerTargetKnownAtPrePresent=0', [StringComparison]::Ordinal) -and
-        $windowsSurface.Contains('UI-thread final target gate', [StringComparison]::Ordinal) -and
-        $windowsSurface.Contains('uiCommitTargetGeneration', [StringComparison]::Ordinal) -and
-        $windowsSurface.Contains('previous exact swap chain', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('native final target gate', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('nativeCommitTargetGeneration', [StringComparison]::Ordinal) -and
         -not $windowsSurface.Contains('scheduler latest-work gate', [StringComparison]::Ordinal) -and
-        $windowsSurface.Contains('targetAdvancedDuringPresent', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('postPresentObservedGeneration', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('ReleasePresentedBuffer()', [StringComparison]::Ordinal)) 'Windows final present race and buffer release are measured separately'
     Assert-True ($windowsLiveValidation.Contains("[ValidateSet('Left', 'Right', 'Top', 'Bottom', 'TopLeft', 'TopRight', 'BottomLeft', 'BottomRight')]", [StringComparison]::Ordinal) -and
@@ -120,17 +133,33 @@ if ($Shard -eq 'Contract') {
         $windowsLiveValidation.Contains('[int] $DurationSeconds = 60', [StringComparison]::Ordinal) -and
         $windowsLiveValidation.Contains('[switch] $KeepWindowOpen', [StringComparison]::Ordinal) -and
         $windowsLiveValidation.Contains('outsideWorkAreaSamples -ne 0', [StringComparison]::Ordinal) -and
-        $windowsLiveValidation.Contains('uiCommitTargetGeneration=', [StringComparison]::Ordinal) -and
+        $windowsLiveValidation.Contains('nativeCommitTargetGeneration=', [StringComparison]::Ordinal) -and
         $windowsLiveValidation.Contains('$summary.latestTargetAtPresentedAck.laggedAckCount -ne 0', [StringComparison]::Ordinal)) 'Windows live validation covers edge directions and final UI commit generation'
-    Assert-True ($windowsSurface.Contains('Prepare the detached exact staging chain in parallel', [StringComparison]::Ordinal) -and
+    Assert-True ($windowsSurface.Contains('private void MetricsMain()', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('_metricsWake.Set();', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('serial == processedSerial', [StringComparison]::Ordinal) -and
-        -not [regex]::IsMatch($windowsSurface, '_latestTarget = target;\s*_requestSerial\+\+;')) 'Windows prepares resize in parallel without painting before an exact scene'
+        -not [regex]::IsMatch($windowsSurface, '_latestTarget = target;\s*_requestSerial\+\+;')) 'Windows latest-only framework admission avoids painting before an exact scene'
+    Assert-True ($windowsSurface.Contains('WindowsResizeCoordinator', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('WindowsPlatformTaskRunner', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('Volatile.Read(ref _hasPresented) != 0', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('nativeSource.CompletePresented(target.Generation);', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('if (!signaled)', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('_coordinator.DiscardCompletion(generation);', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('_taskRunner.PollOnce(generation, TimeSpan.FromMilliseconds(100))', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('matching exact present did not complete within 100ms', [StringComparison]::Ordinal)) 'Windows cold startup is asynchronous, then child WM_SIZE waits only on its bounded matching transaction'
     Assert-True (-not $mauiHost.Contains('DwmFlush', [StringComparison]::Ordinal) -and
         -not $mauiHost.Contains('UpdateLayout()', [StringComparison]::Ordinal)) 'Windows UI host has no synchronous render wait'
     Assert-True (-not $mauiHost.Contains('MinimumCompositionFrameInterval', [StringComparison]::Ordinal) -and
         $mauiHost.Contains('CompositionTarget already paces callbacks to the active display.', [StringComparison]::Ordinal)) 'Windows DXGI frame requests use native display cadence'
     Assert-True ($mauiHost.Contains('DispatchWindowsResizeFrame();', [StringComparison]::Ordinal) -and
-        $mauiHost.Contains('while raster prepares a detached exact staging chain.', [StringComparison]::Ordinal)) 'Windows overlaps resize metrics frame build with detached staging preparation'
+        $mauiHost.Contains('_surface.InvalidateSurface();', [StringComparison]::Ordinal) -and
+        $mauiHost.Contains('The HWND presenter owns a serial + AutoResetEvent coalescer', [StringComparison]::Ordinal) -and
+        $mauiHost.Contains('accept a wake from any thread.', [StringComparison]::Ordinal)) 'Windows resize framework and raster wake do not re-enter the WinUI queue'
+    Assert-True ($windowsSurface.Contains('using var completion = new EventWaitHandle(false, EventResetMode.AutoReset);', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('_lastConfirmedFence = target;', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('if (_hasPresented) WaitForFrameLatency();', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('!nativeSource.IsRetired(target.Generation)', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('_retiredGeneration = Math.Max(_retiredGeneration, generation);', [StringComparison]::Ordinal)) 'Windows fence, frame-latency token, and retired resize transaction ownership'
     foreach ($legacy in @(
         'src/Doroti.Host.Maui/DorotiWindowsSkiaViewHandler.cs',
         'src/Doroti.Host.Maui/WindowsEglInterop.cs',
@@ -155,7 +184,7 @@ if ($Shard -eq 'Contract') {
         -not $webHost.Contains('scheduleHostSample', [StringComparison]::Ordinal)) 'Web observer synchronously commits a target-sized non-scaling provisional canvas'
     Assert-True ($webLiveValidation.Contains('Get-AppBarLogicalHeight', [StringComparison]::Ordinal) -and
         $webLiveValidation.Contains('Get-CircularControlAspect', [StringComparison]::Ordinal) -and
-        $webLiveValidation.Contains('[int] $SampleCount = 300', [StringComparison]::Ordinal) -and
+        $webLiveValidation.Contains('[int] $SampleCount = 40', [StringComparison]::Ordinal) -and
         $webLiveValidation.Contains('[int] $PostResizeObservationSeconds = 10', [StringComparison]::Ordinal) -and
         $webLiveValidation.Contains("Send-Cdp `$socket 'Browser.setWindowBounds'", [StringComparison]::Ordinal) -and
         $webLiveValidation.Contains('$pixelDelta -gt $tolerancePhysicalPixels', [StringComparison]::Ordinal) -and
@@ -205,7 +234,7 @@ if ($Shard -eq 'Contract') {
     } 'Windows resize contract build failed'
 
     $result = [ordered]@{
-        schemaVersion = 'doroti.resize-continuity-contract/v3'
+        schemaVersion = 'doroti.resize-continuity-contract/v4'
         status = 'PASS'
         shard = $Shard
         sourceFingerprint = Get-SourceFingerprint $sources

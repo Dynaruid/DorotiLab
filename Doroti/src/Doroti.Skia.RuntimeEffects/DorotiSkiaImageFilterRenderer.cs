@@ -280,8 +280,13 @@ internal static class DorotiSkiaImageFilterRenderer
 
             while (pool.Surfaces.Count <= slot) pool.Surfaces.Add(null);
             var surface = pool.Surfaces[slot];
-            if (surface is null || surface.Canvas.DeviceClipBounds.Width < width ||
-                surface.Canvas.DeviceClipBounds.Height < height)
+            // GPU snapshots are the implicit texture passed to the runtime
+            // effect. Keep that texture exact-sized: reusing a larger pooled
+            // surface after a shrink asks the backend for a subset snapshot,
+            // which is not reliable for the D3D12 render target path and can
+            // return null during rapid small-window layout changes.
+            if (surface is null || surface.Canvas.DeviceClipBounds.Width != width ||
+                surface.Canvas.DeviceClipBounds.Height != height)
             {
                 surface?.Dispose();
                 surface = CreateSurface(context, width, height);

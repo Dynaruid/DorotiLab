@@ -3,16 +3,16 @@
 - 작성일: 2026-08-22
 - 입력: [`problem.md`](problem.md), 현재 Doroti resize/scene/raster/present 코드, 이전 계측·실패 기록
 - 제약: SkiaSharp fork, reflection, private member monkey patch를 사용하지 않는다.
-- 상태: 설계와 2026-08-22 구현·자동 검증 결과를 함께 기록한다. 자동 correctness gate는 일부 통과했지만 사용자 가시성, Windows Graphics Capture, 전체 edge/DPI/refresh matrix와 Flutter 대조 성능은 `notVerified`다. 2026-08-22의 이 문서 재검토에서는 build/live test를 추가로 실행하지 않았다.
+- 상태: 2026-08-23 `work.md`의 W0 fallback까지 실행한 결과를 반영했다. M0/G0와 Windows D3D12 runtime correctness는 PASS지만, D3D12 pre-present ordering과 ANGLE visible ownership이 모두 FAIL했고 G1 WGC visual/cadence도 FAIL이다. Ordered gate에 따라 W1 이후와 Web B0~B2는 미실행이다.
 
 ## 1. 결론
 
 확인된 epoch 오인과 Web provisional 왜곡은 SkiaSharp를 포크하지 않고 고칠 수 있다. 현재 자료는 **SkiaSharp raster가 느려서 resize가 깨진다**는 가설을 지지하지 않는다. 더 정확한 문제는 SkiaSharp가 Flutter Engine처럼 metrics, frame scheduling, surface lifecycle, platform present를 하나의 엔진 셸로 제공하지 않으므로 그 결합을 Doroti의 Windows/Web host가 직접 책임져야 한다는 점이다. 고쳐야 할 경계는 Skia 내부가 아니라 Doroti가 이미 소유한 scene identity, size authority, presenter/frame pump다.
 
-Windows에서는 exact present 사이에 남는 compositor stretch와 불규칙한 present cadence를 분리해서 다뤄야 한다. 현재 dual exact staging 경로는 stale/mismatched app frame을 막는 correctness baseline이지만, 이것만으로 Flutter 수준의 부드러움을 보장하지 않는다. exact app frame 사이의 가시적 동작과 cadence가 기준을 넘지 못하면 `SwapChainPanel` 옵션을 더 조정하는 대신 Flutter가 사용하는 native resize transaction과 동등한 public-host spike를 우선한다.
+Windows의 과거 dual exact `SwapChainPanel` 경로는 실패한 correctness baseline일 뿐 현재 권장 구조가 아니다. 2026-08-23에는 native child HWND + exact offscreen D3D12 backing + 단일 HWND swap chain + GPU-only copy + bounded native transaction을 실제로 실행했다. Exactness는 통과했지만 WGC visual/cadence가 실패했으므로 제품 완료로 승격하지 않는다.
 
 1. **framework frame이 실제로 사용한 metrics/target epoch를 scene에 보존한다.** `Submit()` 시점의 최신 target으로 이전 scene을 다시 이름 붙이지 않는다.
-2. **Windows는 API가 요구하는 `DXGI_SCALING_STRETCH`를 유지하되, app이 `Present()`하는 모든 buffer를 현재 target과 exact-size로 만든다.** 이 수정은 잘못된 A layout을 B 크기 buffer에 그려 승인하는 직접 원인을 없앤다. panel resize와 다음 exact present 사이에 compositor가 보존된 이전 buffer를 stretch하는 잔여 현상은 따로 계측한다.
+2. **과거 `SwapChainPanel` 경로는 API가 요구하는 `DXGI_SCALING_STRETCH`를 지키고, 현재 native HWND 경로는 `Scaling.None` + exact buffer를 사용한다. 어느 경로도 잘못된 A layout을 B 크기 frame으로 승인하지 않는다.** exact present 전 compositor/child 영역 전환은 별도 가시 구간으로 계측한다.
 3. **Web은 ResizeObserver와 retained FBO를 하나의 표시 transaction으로 묶는다.** 이전 front를 새 viewport 전체로 stretch하지 않고, 겹치는 논리 영역만 1:1 crop하여 보여 준 뒤 최신 exact staging frame만 commit한다.
 4. Windows의 `IDXGISwapChain2.SetSourceSize` capacity 경로는 제품 후보에서 내린다. 과거 지연은 줄었지만 사용자가 내부 Skia 배율 이상을 확인한 실패 분기이므로, Flutter-parity host보다 먼저 재시도하지 않는다.
 5. **부드러움은 exact mismatch 0으로 판정하지 않는다.** 실제 input/target sample rate, inter-present interval, border와 presented content의 phase error, 화면 캡처를 함께 본다.
@@ -22,6 +22,20 @@ Windows에서는 exact present 사이에 남는 compositor stretch와 불규칙�
 > OS border는 framework layout보다 먼저 움직일 수 있다. 아직 계산되지 않은 responsive layout을 어떤 present API도 미리 만들어 줄 수는 없다. Web은 그 사이 **이전 frame의 1:1 crop + background**를 명시적으로 만들 수 있다. 반면 현재 Windows `SwapChainPanel` 경로는 `CreateSwapChainForComposition`이 `DXGI_SCALING_STRETCH`를 요구하므로, app의 mismatched present는 금지할 수 있어도 다음 exact present 전 compositor 동작까지 1:1 clip으로 강제할 수는 없다. 먼저 이 구간을 최소화·계측하고, 잔여 stretch가 허용 불가능하면 SkiaSharp가 아니라 Windows presentation host 경계를 다시 설계해야 한다.
 
 Flutter의 부드러움은 “SkiaSharp보다 Skia/Impeller raster가 빠르다”는 증거가 아니다. 현재 고정한 Flutter source에서는 Windows가 기본적으로 Impeller를 켜지만, resize handshake는 renderer 선택보다 위의 Windows engine/view 계층에 있다. Skia 경로에서도 같은 exact-size admission, surface resize, swap 완료 protocol을 사용한다. 따라서 renderer A/B와 host protocol A/B를 분리해서 비교해야 한다.
+
+### 1.1 2026-08-23 현재 구현과 evidence
+
+- 공통 `FrameTransaction`은 `ObservedTarget → MetricsDelivered → SceneBuiltForSameEpoch → ExactBackingStoreReady → VisibleSurfaceCommitted → terminal`을 강제한다. 요청 시 캡처한 epoch로 build scope를 열고 renderer가 scene/backing/visible/terminal을 분리해 기록한다.
+- Windows W0는 `CreateSwapChainForHwnd`, `Scaling.None`, flip sequential, buffer count 2, frame-latency waitable object/maximum latency 1, exact offscreen D3D12 resource, 같은 queue fence, `CopyResource`, `Present(0)`, resize-only `DwmFlush`를 사용한다. CPU readback은 없다.
+- 현재 기본 크기 strict collection `win-rsz-default-left-20260823-112035-f9415586`의 correctness는 exact mismatch 0, latest lag 0, known-newer-at-present 0, target-advanced-during-present 0, framework exception 0이다.
+- 같은 run의 visual은 **FAIL**이다. blank 0, circle aspect failure 0, title non-uniform failure 0이지만 content-edge gap frame 343, 우측 gap 최대 25px/381.816ms였다. 작은/큰 창 결과와 체감 차이는 13절에 분리했다.
+- cadence도 **FAIL**이다. 165Hz에서 input 165.1Hz, delivered native target 32.2Hz, app present 32.1Hz, inter-present p50/p95/p99 5.107/6.299/8.059 refresh, final target-to-commit 3.068 refresh였다.
+- exact offscreen prepare p50/p95는 1.621/2.771ms지만 final swap p50/p95는 8.307/10.027ms, resize-only `DwmFlush` p50/p95는 7.152/9.972ms였고 border/content transaction은 strict 기준을 넘었다. 이 수치는 원인 후보이지 `DwmFlush` 단독 제거의 근거가 아니다.
+- DPI 보정 뒤 Flutter reference `flutter-rsz-default-20260823-112152-4dd6a255`는 같은 1280×720 left run에서 우측 gap 최대 8px/96.966ms, geometry failure 0이었다. p95 input-to-visible 5.824 refresh라 strict cadence는 FAIL이지만 Doroti보다 유효한 상대 visual baseline이다.
+- G0 compile은 Windows/Web/Linux-Qt/Android/macOS target 모두 경고 0/오류 0이다. macOS demo 전체 packaging은 Windows에 `sips`가 없어 실패했으며 제품 실행 증거가 아니다.
+- W1 제품 승격, W2 input/IME/semantics/lifecycle, W3 구 경로 삭제, Web B0~B2, G2~G4는 `notVerified`/`notStarted`다.
+
+이 아래의 dual exact `SwapChainPanel`, retained Web multi-queue, capacity/`SetSourceSize` 내용은 실패 원인과 의사결정 근거를 보존한 **역사적 분석**이다. 현재 구현/다음 작업의 권위 있는 기준은 위 결과와 `work.md`의 중단 경계다.
 
 따라서 목표는 “모든 중간 frame이 이미 최종 reflow를 가진다”가 아니다. 다음 두 보장을 분리한다.
 
@@ -38,8 +52,8 @@ Flutter의 부드러움은 “SkiaSharp보다 Skia/Impeller raster가 빠르다�
 | --- | --- | --- |
 | Windows GPU context | `GRContext.CreateDirect3D` | SkiaSharp public API |
 | D3D12 back buffer wrapping | `GRBackendRenderTarget`, `SKSurface.Create` | SkiaSharp public API |
-| Windows composition surface | `SwapChainPanel`, `CreateSwapChainForComposition` | WinUI/DXGI public API |
-| Windows 현재 swap-chain scaling | `DXGI_SCALING_STRETCH` | `CreateSwapChainForComposition`이 요구하는 DXGI public API 계약 |
+| Windows 현재 visible surface | native child HWND, `CreateSwapChainForHwnd`, `Scaling.None` | Win32/DXGI public API; W0 검증 경로이며 G1 실패로 제품 승인 전 |
+| Windows 현재 raster/transfer | exact offscreen D3D12 resource + Skia surface, same-queue fence, `CopyResource` | SkiaSharp/Vortice public API |
 | Windows source viewport 실험 | `IDXGISwapChain2.SetSourceSize`, `SetMatrixTransform` | DXGI public API. 단독으로 1:1 표시를 보장하지 않음 |
 | Web exact raster target | WebGL2 FBO + `GRBackendRenderTarget`, `SKSurface.Create` | WebGL2/SkiaSharp public API |
 | Web 크기 관찰 | `ResizeObserverEntry.contentBoxSize`, `devicePixelContentBoxSize` | Web platform API |
@@ -72,7 +86,7 @@ Web의 `SkiaSharpGL`, Emscripten `GL.framebuffers` handle 등록은 Web 표준 A
 
 이 방식은 surface 재생성 자체가 싸기 때문에 부드러운 것이 아니다. Flutter source에도 재생성이 비싸다는 TODO가 있다. 차이는 window resize message, metrics, exact framework frame, surface swap을 하나의 handshake로 묶어 오래된 frame이 독립적으로 따라오지 못하게 한다는 점이다.
 
-현재 Doroti Windows는 `SizeChanged → metrics/build`와 detached D3D12 staging 준비를 병렬로 실행하고, 마지막에 UI dispatcher에서 `Present(0) + SetSwapChain`을 수행한다. 이 구조는 UI target을 계속 받아 최신 것만 남기므로 correctness에는 유리하지만, work가 자주 supersede되고 border와 content commit이 같은 native resize transaction이 아니다. 따라서 exact mismatch가 0이어도 inter-present 간격이 불규칙할 수 있다.
+과거 Doroti Windows는 `SizeChanged → metrics/build`와 detached D3D12 staging 준비를 병렬로 실행하고 마지막에 UI dispatcher에서 `Present(0) + SetSwapChain`을 수행했다. 이 경로는 현재 W0 검증 경로가 아니며, 아래 관련 설명은 실패 역사로만 남긴다.
 
 ### 2.3 Flutter Web이 full-frame stretch를 피하는 방식
 
@@ -113,7 +127,7 @@ DorotiViewEpoch
 
 scale은 `PhysicalWidth / LogicalWidth`처럼 반올림된 dimension에서 역산하지 않는다. Windows의 선언된 `CompositionScaleX/Y` 또는 Web의 관찰 당시 DPR과 physical dimensions를 각각 원본 필드로 보존하고, scale은 선언값끼리, dimension은 dimension끼리 비교한다.
 
-Windows에서는 `SwapChainPanel` target payload 하나로 이 epoch를 만들고, Web에서는 한 `ResizeObserverEntry`로 만든다. `ViewMetrics`, resize target, physical size를 각자 다른 시점에 다시 읽어 조립하지 않는다.
+현재 Windows W0에서는 native child HWND의 client rect와 `GetDpiForWindow`로 epoch를 만들고, Web에서는 한 `ResizeObserverEntry`로 만든다. `ViewMetrics`, resize target, physical size를 각자 다른 시점에 다시 읽어 조립하지 않는다.
 
 ### 3.2 frame 시작에서 build token 캡처
 
@@ -175,9 +189,9 @@ Windows는 현재 final target/serial check lock을 푼 뒤 `Present()`를 호�
 
 `targetAdvancedDuringPresent`가 실제로 관찰되고 strict Doroti-order 선형화가 필요할 때만, target publication과 “final check + DXGI Present 호출만” 공유하는 별도의 좁은 commit arbitration을 feature flag로 실험한다. UI latency, deadlock, reentrancy와 left-drag 화면 gate를 통과해야 하며, callback·trace formatting·resource release는 arbitration 밖에 둔다. 어느 방식도 실제 화면 판정을 대신하지 않는다.
 
-## 4. Windows 권장 구조
+## 4. Windows 역사적 분석과 현재 분기
 
-### 4.1 WIN-1: single size authority
+### 4.1 과거 WIN-1: `SwapChainPanel` single size authority (현재 폐기)
 
 Windows logical size authority는 `SwapChainPanel` 하나로 둔다.
 
@@ -275,7 +289,7 @@ epoch/authority 수정과 exact-frame latency 개선 뒤에도 panel resize와 �
 | 현재 `CreateSwapChainForComposition`에 `Scaling.None` 지정 | API의 명시적 `Scaling.Stretch` 요구와 충돌하므로 제품 경로에서 금지 |
 | SkiaSharp Views handler 복귀 | private scheduler/size authority를 다시 가져오므로 현재 Doroti-owned pipeline보다 제어가 약함 |
 
-## 5. Web 권장 구조
+## 5. Web 과거 retained multi-queue 분석 (현재 B0~B2로 대체, 미실행)
 
 ### 5.1 WEB-1: ResizeObserver callback에서 target과 provisional frame을 함께 commit
 
@@ -638,7 +652,7 @@ Windows는 다음 이중 exact swap-chain 방식으로 교체했다.
 
 - Windows 기본값은 60초 연속 drag + 15초 관찰이며 `-KeepWindowOpen`으로 사용자가 닫을 때까지 유지할 수 있다.
 - 반복 횟수가 아니라 실제 wall-clock으로 종료하고, left/right/top/bottom drag는 작업영역 바깥으로 확장하지 않고 안쪽 축소→원위치로 움직인다. 작업영역 이탈 sample은 correctness failure다.
-- Web baseline은 `Emulation.setDeviceMetricsOverride`만 쓰지 않고 실제 Chrome window bounds를 변경한다. 기본 300 samples, 16ms 요청 간격, 종료 전 10초 관찰을 사용한다.
+- Web baseline은 `Emulation.setDeviceMetricsOverride`만 쓰지 않고 실제 Chrome window bounds를 변경한다. 활성 smoke는 40 samples이며, 실제 border drag와 browser compositor acceptance는 별도다.
 - Web provisional presentation은 target 크기로 default framebuffer를 즉시 만들고 이전 exact front의 교집합만 1:1 crop blit한다. CSS/display 크기가 달라져도 이전 bitmap을 확대하지 않는다.
 
 현재 자동 결과는 다음과 같다.
@@ -657,3 +671,78 @@ Windows dual exact staging 결과를 cadence 관점에서 다시 읽으면 다�
 따라서 이 결과의 판정은 **correctness PASS / smoothness `notVerified` / visual acceptance `notVerified`**다. Windows 내부 UI overflow가 사라졌는지는 자동 trace로 확정하지 않는다. capacity 실험을 실패로 만든 것처럼 사용자의 직접 관찰 또는 DXGI를 포함하는 Windows Graphics Capture가 최종 gate다.
 
 Web 결과도 blank/stale/geometry counter가 0이라는 correctness 결과이지 Flutter와 같은 frame cadence나 실제 border-drag 가시성을 증명하지 않는다. Web evidence를 보존할 때는 summary만이 아니라 raw trace, Chrome version, renderer, actual window bounds sample timestamps, display refresh rate를 함께 남긴다. evidence 파일이 현재 checkout에 없거나 IDE의 미저장 buffer에만 있을 경우 결과를 재현 가능하다고 기록하지 않는다.
+
+## 13. 2026-08-23 작은 창에서 더 크게 보이는 Windows 떨림 재조사
+
+### 13.1 크기별 관찰은 재현된다
+
+사용자는 큰 창에서는 거의 떨리지 않고 작은 창에서 더 떨린다고 관찰했다. 같은 200% DPI, 165Hz 내부 화면, 10초 `HTLEFT` native input과 WGC 조건에서 크기만 바꾼 결과는 다음과 같다.
+
+| 시작 크기 | target / present | max right gap | 시작 폭 대비 | max gap duration | target→ACK p50/p95 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 420×300 logical, 840×600 physical | 266 / 236 | 37px | 4.4% | 296.976ms | 18.930/25.520ms |
+| 640×360 logical, 1280×720 physical | 322 / 321 | 25px | 2.0% | 381.816ms | 20.767/26.385ms |
+| 1000×600 logical, 2000×1200 physical | 231 / 230 | 28px | 1.4% | 721.217ms | 30.579/36.783ms |
+
+증거는 각각 `win-rsz-default-left-20260823-111807-ff16239c`, `win-rsz-default-left-20260823-112035-f9415586`, `win-rsz-default-left-20260823-112113-a2e5af7c`다. 모든 run에서 blank 0, circle aspect failure 0, final left/right gap 0, exact target/surface mismatch 0, presented ACK generation lag 0, target-advanced-during-present 0, framework exception 0이다. visual/cadence gate는 세 run 모두 FAIL이다.
+
+큰 창은 더 빠른 것이 아니다. app present는 작은/기본/큰 창에서 23.6/32.1/23.0Hz이고 큰 창의 gap 지속 시간도 가장 길다. 체감 차이는 약 25–37px의 비슷한 절대 위상차가 작은 창에서는 폭의 4.4%, 큰 창에서는 1.4%를 차지하는 데서 나온다. 따라서 “작은 surface라 GPU raster가 더 느리다”는 가설은 자료와 반대다.
+
+작은 창의 `titleNonUniformScaleFailures=411/431`은 별도 acceptance 근거로 사용하지 않는다. threshold 기반 title bounding box가 좁은 native caption/clip과 글자 antialias 변화에 민감하고, 저장 PNG에서 동일한 실패 비율만큼 실제 글자 비등방 stretch가 보이지 않는다. 반면 content-edge oracle은 AppBar의 보라색 끝과 client 끝을 직접 비교하고 저장 PNG `frame-000300.png`에서도 회색 우측 띠가 보이므로 남은 visual FAIL 판정은 변하지 않는다.
+
+### 13.2 작은 창 stress가 드러낸 숨은 runtime 결함
+
+초기 840×600 run은 우측 gap 최대 139px/1.478초와 연속 100ms timeout을 보였다. 다음 결함을 순서대로 고쳤다.
+
+1. Windows renderer가 TextureView용 `_invalidatePending` gate를 공유해, 이전 raster pulse가 exact scene 전에 소비되면 exact-scene wake를 잃을 수 있었다. Windows는 thread-safe native serial + `AutoResetEvent` coalescer에 직접 invalidate한다.
+2. D3D12 queue fence는 `submitted=41`, `CompletedValue=0`, device-removed reason 0인 상태에서 timeout했다. 같은 auto-reset event를 여러 fence 값과 중복 wait에 재사용하던 경로를 없애고, 제출 값마다 독립 event로 기다리며 CPU confirmed fence를 단조 증가시켰다. reset 때 old submitted/confirmed 상태도 폐기한다. 이전 pulse가 다음 wait를 만족했다는 것은 이 로그와 수정 후 재현 소멸에 기반한 추론이며, device removal은 관측되지 않았다.
+3. `FrameLatencyWaitableObject`를 `EnsureTarget`에서 소비하면 exact scene miss가 `Present` 없이 token을 소비하고 다음 retry가 timeout한다. 실제 commit이 확정된 `Present` 진입에서만 기다리도록 옮겼다. 이는 실제 프레임을 제출할 loop에서 waitable object를 기다리라는 [Microsoft DXGI low-latency 지침](https://learn.microsoft.com/en-us/windows/uwp/gaming/reduce-latency-with-dxgi-1-3-swap-chains)과도 맞는다.
+4. runtime-effect input pool이 shrink 뒤 더 큰 GPU surface를 재사용하고 subset snapshot을 요청하다 `ImageFilter.shader could not snapshot its GPU input surface`를 냈다. implicit child texture는 exact-size surface만 재사용한다.
+5. exact scene이 아직 없는 raster attempt도 `finally`에서 native resize completion을 signal해, 같은 generation의 retry/DwmFlush 도중 다음 child `WM_SIZE`가 들어왔다. exact miss는 같은 bounded transaction 안에서 retry하고, wait가 100ms를 넘겨 retire된 generation은 final gate에서 늦게 present하지 않는다.
+
+수정 후 WGC 없는 작은 창 correctness run `win-rsz-default-left-20260823-111737-d0ab1ce8`은 target 290, exact present 282, mismatch/lag/race/exception 0, final target→commit 21.054ms로 끝났다. WGC run의 최대 gap도 139px/1.478초에서 37px/296.976ms로 줄었다. 이것은 큰 개선이지만 strict visual/cadence PASS는 아니다.
+
+하이브리드 GPU도 분리 확인했다. 장비의 165Hz 내부 monitor는 AMD Radeon 780M output에 연결되어 있지만 기존 `HighPerformance` 선택은 NVIDIA RTX 4060을 골랐다. presenter는 `MonitorFromWindow`의 `HMONITOR`와 `IDXGIAdapter::EnumOutputs`의 output monitor를 맞춰 AMD를 선택한다. [DXGI는 adapter와 monitor output을 별도 객체로 열거한다](https://learn.microsoft.com/en-us/windows/win32/direct3ddxgi/d3d10-graphics-programming-guide-dxgi). 그러나 AMD 선택만 적용한 run에서도 fence timeout이 재현됐으므로 cross-adapter가 이 증상의 단일 근본 원인은 아니다.
+
+### 13.3 남은 가시 결함은 child HWND와 buffer 전환 순서다
+
+WGC frame과 app QPC trace를 맞추면 gap frame에서 exact target의 `pre-swap`은 이미 시작됐지만 `post-swap`은 아직이다. 그 사이 child HWND client는 새 폭으로 커졌고 `Scaling.None` swap-chain의 이전 작은 buffer가 남아, 새 child 영역에 회색 배경이 보인다. 예를 들어 작은 run frame 68은 capture content 폭 665px, app target 667px의 `pre-swap` 도중 이전 content가 37px 짧았다. 이는 app이 잘못된 크기의 frame을 present한 것이 아니라 **child HWND 가시 크기가 matching buffer보다 먼저 바뀐 것**이다.
+
+Microsoft의 [`ResizeBuffers`](https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiswapchain-resizebuffers) 계약은 old back-buffer의 직접·간접 reference를 모두 해제한 뒤 resize하도록 요구하고, D3D12 queue `Signal`은 앞선 queue 작업이 끝난 뒤 fence를 갱신한다. 현재 exact copy 수명은 이 순서로 보호된다. [`DwmFlush`](https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmflush)는 호출 thread의 queued window update가 그려질 때까지 기다리지만, 이미 먼저 노출된 child 영역과 buffer 준비를 하나의 원자적 변경으로 합쳐 주지는 않는다.
+
+올바른 다음 실험은 debounce나 timeout 연장이 아니다.
+
+```text
+parent WM_SIZING의 suggested expansion size
+  -> child HWND를 아직 키우지 않고 explicit target 게시
+  -> exact scene/backing/swap-chain buffer 준비와 present
+  -> 기존 작은 child에서는 새 buffer를 crop 상태로 유지
+  -> matching present/DwmFlush 뒤 child HWND를 새 크기로 확장
+```
+
+shrink는 큰 이전 child/buffer를 parent가 먼저 crop한 뒤 exact 작은 transaction으로 줄이면 된다. child `WM_SIZE` 재진입은 precommitted generation으로 흡수하고 중복 wait를 만들지 않아야 한다. 이 ordering을 단일 child HWND + D3D12 public interop에서 안전하게 만들지 못하거나 WGC가 다시 악화되면 W0 실패 분기대로 coordinator는 유지하고 presenter만 ANGLE/EGL fixed-size surface로 바꾼다.
+
+DPI 보정 뒤 고정 Flutter baseline `flutter-rsz-default-20260823-112152-4dd6a255`는 같은 1280×720/165Hz left drag에서 native transition 876, captured frame 542, 우측 gap 최대 8px/96.966ms, blank/AppBar/circle/title failure 0이었다. input-to-visible p95는 35.294ms(5.824 refresh)라 Flutter도 이 문서의 strict cadence gate는 FAIL하지만, Doroti의 25px/381.816ms보다 border-content phase가 작다. 그러므로 WGC callback 속도만으로 Doroti의 잔여 gap을 설명할 수 없다.
+
+## 14. 2026-08-23 W0 ordering 및 ANGLE fallback 실행 결과
+
+### 14.1 D3D12 pre-present expansion ordering은 악화됐다
+
+13.3절의 suggested target을 parent `WM_SIZING`에서 먼저 게시하고 matching exact present와 resize-only `DwmFlush`가 끝난 뒤 child HWND를 확장하는 후보를 구현했다. 그러나 동일 200% DPI/165Hz `HTLEFT` WGC에서 개선되지 않았다.
+
+| 시작 크기 | evidence | max gap | max gap duration | app present |
+| --- | --- | ---: | ---: | ---: |
+| 420 logical | `win-rsz-default-left-20260823-190914-db2d1754` | 39px | 42.422ms | 21.0Hz |
+| 640 logical | `win-rsz-default-left-20260823-191035-cc5ee44f` | 35px | 557.574ms | 27.7Hz |
+
+기존 420 결과는 37px/296.976ms/23.6Hz였으므로 gap 지속 시간 일부만 줄고 최대 폭과 cadence는 악화됐다. 더 중요한 640 결과는 기존 25px/381.816ms/32.1Hz보다 세 지표가 모두 나빠졌다. 따라서 계획의 hard failure branch에 따라 1000 logical matrix를 더 실행하지 않고 이 후보를 제품 코드에서 철회했다. 이 결과는 `WM_SIZING` handler 안의 bounded wait 자체가 border와 DWM visible commit을 원자화하지 못하고, 오히려 native target 전달률을 낮출 수 있음을 보여 준다.
+
+### 14.2 ANGLE transaction 성공은 visible ownership 성공이 아니었다
+
+첫 번째 SkiaSharp WinUI ANGLE runtime은 raw child HWND `eglCreateWindowSurface`에서 access violation을 일으켜 사용할 수 없었다. 별도 desktop ANGLE runtime에서는 `EGL_FIXED_SIZE_ANGLE` window surface, GLES context, AMD D3D11 renderer, Skia GPU offscreen backing, 1:1 GPU draw와 `eglSwapBuffers`가 정상 반환했다. App trace도 exact size mismatch, ACK generation lag, present race, framework exception이 0이었다.
+
+하지만 WGC에서는 Doroti title과 circle이 한 frame도 관측되지 않았다. direct default framebuffer, GPU offscreen snapshot/draw, raw GL red clear를 각각 시험했고, `STATIC` child를 `CS_OWNDC` custom class로 바꾼 마지막 `win-rsz-default-left-20260823-193141-f4a528b3`도 422 capture frame에서 title/circle 0이었다. 이 run은 target/present 300/270, target→ACK p50/p95 12.432/19.065ms였지만 화면은 어둡고 투명한 상태였다. 즉 `eglSwapBuffers` 성공과 빠른 app ACK는 WinUI/DWM이 그 HWND surface를 실제 visible content로 합성했다는 증거가 아니다.
+
+최종 제품 경로는 검증된 이전 `WindowsHwndD3D12Presenter` W0 상태로 복귀했다. ANGLE 패키지 의존성과 active backend identity는 제거했고, 재현 참고용 presenter source만 `DOROTI_WINDOWS_ANGLE_SPIKE` opt-in symbol 아래 비활성으로 남겼다. Rollback WGC `win-rsz-default-left-20260823-193739-c1a12e10`은 D3D12 backend, title 406/408 frame, circle 39 frame, blank 0, framework exception 0으로 실제 장면 복귀를 확인했다. 그러나 최대 우측 gap 39px/351.503ms와 app present 21.2Hz로 strict gate는 계속 FAIL이다. 결론은 **D3D12 runtime correctness PASS / pre-present ordering FAIL / ANGLE visible ownership FAIL / G1 visual·cadence FAIL**이다. Ordered gate에 따라 W1~W3, Web B0~B2, G2~G4는 `notStarted`/`notVerified`이며, build/trace 성공을 가시 acceptance로 확대하지 않는다.
+
+일반 `doroti.ps1 run`은 WGC validator가 시작 뒤 수행하는 `SetWindowPos`가 없어서 별도 startup blank를 드러냈다. Cold first scene 준비가 100ms를 넘으면 initial child `WM_SIZE` waiter가 generation 1을 timeout-retired했고, 같은 크기의 publish는 generation을 올리지 않으므로 추가 native resize 전까지 present 0으로 남았다. 첫 visible frame이 없을 때는 initial `WM_SIZE`를 비동기로 진행하고 첫 성공 present 이후부터 bounded wait를 적용했다. 또한 coordinator는 signaled wait를 target invalidation으로 취급하지 않고 실제 timeout만 retired 처리한다. 그렇지 않으면 첫 present 후 같은 viewport의 animation frame도 모두 final gate에서 거절된다. 환경변수 없이 사용자 명령을 그대로 실행한 `cli-run-exact-command`의 첫 WGC PNG에서 Material Gallery가 보였고, 전체 146 frame의 title/circle 관측 146/146, blank/circle aspect failure/capture error/drop/final gap 0이었다. 이 결과는 startup visibility만 PASS이며 기존 10초 이상 G1 cadence/phase 판정과는 분리한다.

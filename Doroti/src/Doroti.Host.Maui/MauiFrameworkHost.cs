@@ -17,7 +17,7 @@ public sealed class MauiFrameworkHost : IDisposable
 
     public MauiFrameworkHost(string? targetIdentity = null) => _targetIdentity = targetIdentity ??
 #if WINDOWS
-        "win-x64/winui3/SwapChainPanel/Doroti-owned-D3D12-Skia";
+        "win-x64/win32-child-hwnd/offscreen-copy/Doroti-owned-D3D12-Skia";
 #elif MACCATALYST
         "maccatalyst-arm64/UIKit-MacCatalyst/SKMetalView/Metal-Skia";
 #elif IOS

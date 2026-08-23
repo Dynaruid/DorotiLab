@@ -17,6 +17,7 @@ public sealed class PlatformDispatcher : IDisposable
     private AccessibilityFeatures _accessibilityFeatures =
         new(false, false, false, false, false, false, false);
     private long _frameNumber;
+    private long _frameTransactionNumber;
     private int _dispatchDepth;
     private bool _disposed;
 
@@ -416,12 +417,17 @@ public sealed class PlatformDispatcher : IDisposable
     internal void DispatchSemanticsAction(DorotiView view, SemanticsActionEvent action) =>
         DispatchWithEnvironment(view, () => onSemanticsActionEvent?.Invoke(action));
 
-    internal void DispatchFrame(DorotiView view, TimeSpan timestamp)
+    internal void DispatchFrame(
+        DorotiView view,
+        TimeSpan timestamp,
+        DorotiViewEpoch requestedEpoch,
+        DorotiFrameTransaction? transaction = null)
     {
         DispatchWithEnvironment(view, () =>
         {
+            transaction?.DeliverMetrics(requestedEpoch);
             var frameNumber = Interlocked.Increment(ref _frameNumber);
-            using var buildScope = view.EnterSceneBuildScope(view.CaptureViewEpoch(), frameNumber);
+            using var buildScope = view.EnterSceneBuildScope(requestedEpoch, frameNumber, transaction);
             _frameTrace.Record(DorotiFramePhase.beginFrame, view.viewId, timestamp);
             onBeginFrame?.Invoke(timestamp);
             beginFrame?.Invoke(view, timestamp);
@@ -430,6 +436,9 @@ public sealed class PlatformDispatcher : IDisposable
             _frameTrace.Record(DorotiFramePhase.drawFrame, view.viewId, DorotiFrameClock.Now);
         });
     }
+
+    internal long NextFrameTransactionId() =>
+        Interlocked.Increment(ref _frameTransactionNumber);
 
     private void DispatchWithEnvironment(DorotiView view, Action callback)
     {
@@ -554,6 +563,7 @@ public sealed class DorotiView : IDisposable
     private readonly IPlatformEnvironmentHostCapability? _environmentHost;
     private readonly ISemanticsHostCapability? _semanticsHost;
     private readonly AsyncLocal<DorotiSceneBuildToken?> _activeBuildToken = new();
+    private readonly AsyncLocal<DorotiFrameTransaction?> _activeFrameTransaction = new();
     private bool _disposed;
 
     internal DorotiView(PlatformDispatcher dispatcher, ulong viewId, DorotiViewCapabilities capabilities)
@@ -670,15 +680,20 @@ public sealed class DorotiView : IDisposable
         return _viewHost.ViewEpoch;
     }
 
-    internal IDisposable EnterSceneBuildScope(DorotiViewEpoch epoch, long frameNumber)
+    internal IDisposable EnterSceneBuildScope(
+        DorotiViewEpoch epoch,
+        long frameNumber,
+        DorotiFrameTransaction? transaction = null)
     {
         ArgumentNullException.ThrowIfNull(epoch);
         if (epoch.ViewId != viewId)
             throw new InvalidOperationException(
                 $"View epoch {epoch.ViewId} cannot build a scene for view {viewId}.");
         var previous = _activeBuildToken.Value;
+        var previousTransaction = _activeFrameTransaction.Value;
         _activeBuildToken.Value = new(epoch, frameNumber, 0, 0);
-        return new SceneBuildScope(this, previous);
+        _activeFrameTransaction.Value = transaction;
+        return new SceneBuildScope(this, previous, previousTransaction);
     }
 
     public PlatformConfiguration platformConfiguration => _environmentHost?.Configuration ??
@@ -715,7 +730,58 @@ public sealed class DorotiView : IDisposable
             invocation);
         _dispatcher.frameTrace.Record(DorotiFramePhase.scheduleFrame, viewId, DorotiFrameClock.Now,
             reason: invocation.ElementId);
-        frameHost.ScheduleFrame(timestamp => _dispatcher.DispatchFrame(this, timestamp));
+        var requestedEpoch = CaptureViewEpoch();
+        frameHost.ScheduleFrame(timestamp =>
+            _dispatcher.DispatchFrame(this, timestamp, requestedEpoch));
+    }
+
+    /// <summary>
+    /// Dispatches one opt-in exact frame request using the supplied immutable
+    /// epoch. The caller may wait on the returned transaction while the
+    /// renderer and presenter advance it to a terminal state.
+    /// </summary>
+    public DorotiFrameTransaction RequestExactFrame(
+        DorotiViewEpoch requestedEpoch,
+        string visibleTargetIdentity,
+        TimeSpan? timestamp = null)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ArgumentNullException.ThrowIfNull(requestedEpoch);
+        if (requestedEpoch.ViewId != viewId)
+            throw new InvalidOperationException(
+                $"View epoch {requestedEpoch.ViewId} cannot request a frame for view {viewId}.");
+        var target = new DorotiResizeEpoch(
+            requestedEpoch.ResizeTargetGeneration,
+            requestedEpoch.LogicalWidth,
+            requestedEpoch.LogicalHeight,
+            requestedEpoch.PhysicalWidth,
+            requestedEpoch.PhysicalHeight,
+            requestedEpoch.DeviceScaleX,
+            requestedEpoch.DeviceScaleY,
+            requestedEpoch.TimestampMicroseconds);
+        var transaction = new DorotiFrameTransaction(
+            _dispatcher.NextFrameTransactionId(), target, visibleTargetIdentity);
+        try
+        {
+            _dispatcher.DispatchFrame(this, timestamp ?? DorotiFrameClock.Now, requestedEpoch, transaction);
+        }
+        catch (Exception exception)
+        {
+            transaction.TryComplete(DorotiFrameTerminal.failed,
+                $"exact frame dispatch failed: {exception.Message}");
+            throw;
+        }
+        return transaction;
+    }
+
+    public static Task<DorotiFrameTransactionSnapshot> WaitForExactFrameAsync(
+        DorotiFrameTransaction transaction,
+        TimeSpan timeout,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(transaction);
+        if (timeout <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(timeout));
+        return transaction.Completion.WaitAsync(timeout, cancellationToken);
     }
 
     public async ValueTask<ReadOnlyMemory<byte>?> SendPlatformMessageAsync(
@@ -767,7 +833,7 @@ public sealed class DorotiView : IDisposable
             token = token.WithRootPhysicalSize(width, height);
         }
         _capabilities.Require<ISceneHostCapability>(viewId, DorotiCapabilityIds.GraphicsScene, invocation)
-            .Submit(viewId, new(scene, token), invocation);
+            .Submit(viewId, new(scene, token, _activeFrameTransaction.Value), invocation);
     }
 
     public void render(Scene scene) => SubmitScene(scene, DartUiInvocation.Managed("dart:ui#DorotiView.render"));
@@ -896,7 +962,8 @@ public sealed class DorotiView : IDisposable
 
     private sealed class SceneBuildScope(
         DorotiView owner,
-        DorotiSceneBuildToken? previous) : IDisposable
+        DorotiSceneBuildToken? previous,
+        DorotiFrameTransaction? previousTransaction) : IDisposable
     {
         private bool _disposed;
 
@@ -905,6 +972,7 @@ public sealed class DorotiView : IDisposable
             if (_disposed) return;
             _disposed = true;
             owner._activeBuildToken.Value = previous;
+            owner._activeFrameTransaction.Value = previousTransaction;
         }
     }
 }

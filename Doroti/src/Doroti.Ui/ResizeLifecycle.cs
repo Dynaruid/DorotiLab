@@ -275,6 +275,206 @@ public enum DorotiResizePipelineState
 }
 
 /// <summary>
+/// The monotonic lifecycle of one exact frame request. Platform hosts may opt
+/// into this contract without changing the presentation API used by hosts that
+/// do not coordinate an interactive resize transaction.
+/// </summary>
+public enum DorotiFrameTransactionState
+{
+    observedTarget,
+    metricsDelivered,
+    sceneBuiltForSameEpoch,
+    exactBackingStoreReady,
+    visibleSurfaceCommitted,
+    terminal,
+}
+
+public sealed record DorotiBackingStoreIdentity(
+    string Identity,
+    int PhysicalWidth,
+    int PhysicalHeight,
+    double DeviceScaleX,
+    double DeviceScaleY);
+
+public sealed record DorotiFrameTransactionSnapshot(
+    long TransactionId,
+    DorotiFrameTransactionState State,
+    DorotiResizeEpoch Target,
+    DorotiViewEpoch? MetricsEpoch,
+    DorotiSceneBuildToken? BuildToken,
+    DorotiFrameDescriptor? SceneDescriptor,
+    DorotiBackingStoreIdentity? BackingStore,
+    string VisibleTargetIdentity,
+    DorotiFrameTerminal? Terminal,
+    string? TerminalReason);
+
+/// <summary>
+/// Owns the identity and legal state transitions for one exact frame. The
+/// object contains metadata only; scenes and GPU resources remain owned by the
+/// renderer and platform presenter.
+/// </summary>
+public sealed class DorotiFrameTransaction
+{
+    private readonly object _gate = new();
+    private readonly TaskCompletionSource<DorotiFrameTransactionSnapshot> _completion =
+        new(TaskCreationOptions.RunContinuationsAsynchronously);
+    private DorotiFrameTransactionState _state = DorotiFrameTransactionState.observedTarget;
+    private DorotiViewEpoch? _metricsEpoch;
+    private DorotiSceneBuildToken? _buildToken;
+    private DorotiFrameDescriptor? _sceneDescriptor;
+    private DorotiBackingStoreIdentity? _backingStore;
+    private DorotiFrameTerminal? _terminal;
+    private string? _terminalReason;
+
+    public DorotiFrameTransaction(
+        long transactionId,
+        DorotiResizeEpoch target,
+        string visibleTargetIdentity)
+    {
+        if (transactionId <= 0) throw new ArgumentOutOfRangeException(nameof(transactionId));
+        ArgumentNullException.ThrowIfNull(target);
+        ArgumentException.ThrowIfNullOrWhiteSpace(visibleTargetIdentity);
+        TransactionId = transactionId;
+        Target = target;
+        VisibleTargetIdentity = visibleTargetIdentity;
+    }
+
+    public long TransactionId { get; }
+    public DorotiResizeEpoch Target { get; }
+    public string VisibleTargetIdentity { get; }
+    public Task<DorotiFrameTransactionSnapshot> Completion => _completion.Task;
+
+    public DorotiFrameTransactionSnapshot Snapshot
+    {
+        get { lock (_gate) return SnapshotCore(); }
+    }
+
+    public void DeliverMetrics(DorotiViewEpoch epoch)
+    {
+        ArgumentNullException.ThrowIfNull(epoch);
+        lock (_gate)
+        {
+            RequireState(DorotiFrameTransactionState.observedTarget);
+            RequireEpochMatch(epoch);
+            _metricsEpoch = epoch;
+            _state = DorotiFrameTransactionState.metricsDelivered;
+        }
+    }
+
+    public void SceneBuilt(
+        DorotiSceneBuildToken buildToken,
+        DorotiFrameDescriptor descriptor)
+    {
+        ArgumentNullException.ThrowIfNull(buildToken);
+        ArgumentNullException.ThrowIfNull(descriptor);
+        lock (_gate)
+        {
+            RequireState(DorotiFrameTransactionState.metricsDelivered);
+            if (_metricsEpoch is null || buildToken.ViewEpoch != _metricsEpoch)
+                throw new InvalidOperationException(
+                    $"Transaction {TransactionId} scene build token does not match its delivered metrics epoch.");
+            var expected = DorotiFrameDescriptor.FromBuildToken(buildToken, descriptor.SceneSequence);
+            if (expected != descriptor)
+                throw new InvalidOperationException(
+                    $"Transaction {TransactionId} scene descriptor was relabeled after build.");
+            _buildToken = buildToken;
+            _sceneDescriptor = descriptor;
+            _state = DorotiFrameTransactionState.sceneBuiltForSameEpoch;
+        }
+    }
+
+    public void BackingStoreReady(
+        string identity,
+        int physicalWidth,
+        int physicalHeight,
+        double deviceScaleX,
+        double deviceScaleY)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(identity);
+        lock (_gate)
+        {
+            RequireState(DorotiFrameTransactionState.sceneBuiltForSameEpoch);
+            if (_metricsEpoch is null || _sceneDescriptor is null)
+                throw new InvalidOperationException(
+                    $"Transaction {TransactionId} has no scene identity to match to a backing store.");
+            var match = _sceneDescriptor.MatchExact(
+                _metricsEpoch,
+                Target,
+                physicalWidth,
+                physicalHeight,
+                deviceScaleX,
+                deviceScaleY);
+            if (!match.IsExact)
+                throw new InvalidOperationException(
+                    $"Transaction {TransactionId} rejected backing store {identity}: " +
+                    $"{match.MismatchCode}: {match.Detail}");
+            _backingStore = new(identity, physicalWidth, physicalHeight, deviceScaleX, deviceScaleY);
+            _state = DorotiFrameTransactionState.exactBackingStoreReady;
+        }
+    }
+
+    public void VisibleSurfaceCommitted(string visibleTargetIdentity)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(visibleTargetIdentity);
+        lock (_gate)
+        {
+            RequireState(DorotiFrameTransactionState.exactBackingStoreReady);
+            if (!string.Equals(VisibleTargetIdentity, visibleTargetIdentity, StringComparison.Ordinal))
+                throw new InvalidOperationException(
+                    $"Transaction {TransactionId} targets '{VisibleTargetIdentity}', not '{visibleTargetIdentity}'.");
+            _state = DorotiFrameTransactionState.visibleSurfaceCommitted;
+        }
+    }
+
+    public bool TryComplete(DorotiFrameTerminal terminal, string reason)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(reason);
+        lock (_gate)
+        {
+            if (_state == DorotiFrameTransactionState.terminal) return false;
+            if ((terminal is DorotiFrameTerminal.presented or DorotiFrameTerminal.submitted) &&
+                _state != DorotiFrameTransactionState.visibleSurfaceCommitted)
+                throw new InvalidOperationException(
+                    $"Transaction {TransactionId} cannot complete as {terminal} before visible commit.");
+            _terminal = terminal;
+            _terminalReason = reason;
+            _state = DorotiFrameTransactionState.terminal;
+            _completion.TrySetResult(SnapshotCore());
+            return true;
+        }
+    }
+
+    private void RequireEpochMatch(DorotiViewEpoch epoch)
+    {
+        if (epoch.ResizeTargetGeneration != Target.Generation ||
+            epoch.LogicalWidth != Target.LogicalWidth || epoch.LogicalHeight != Target.LogicalHeight ||
+            epoch.PhysicalWidth != Target.PhysicalWidth || epoch.PhysicalHeight != Target.PhysicalHeight ||
+            epoch.DeviceScaleX != Target.DeviceScaleX || epoch.DeviceScaleY != Target.DeviceScaleY)
+            throw new InvalidOperationException(
+                $"Transaction {TransactionId} metrics do not match observed target {Target.Generation}.");
+    }
+
+    private void RequireState(DorotiFrameTransactionState expected)
+    {
+        if (_state != expected)
+            throw new InvalidOperationException(
+                $"Transaction {TransactionId} cannot advance from {_state}; expected {expected}.");
+    }
+
+    private DorotiFrameTransactionSnapshot SnapshotCore() => new(
+        TransactionId,
+        _state,
+        Target,
+        _metricsEpoch,
+        _buildToken,
+        _sceneDescriptor,
+        _backingStore,
+        VisibleTargetIdentity,
+        _terminal,
+        _terminalReason);
+}
+
+/// <summary>
 /// Platform-neutral target publisher. It owns target generation only; native
 /// surface owners remain solely responsible for surface generation.
 /// </summary>

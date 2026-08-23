@@ -291,7 +291,8 @@ public interface ISceneHostCapability
 /// </summary>
 public sealed record DorotiSceneSubmission(
     Scene Scene,
-    DorotiSceneBuildToken? BuildToken);
+    DorotiSceneBuildToken? BuildToken,
+    DorotiFrameTransaction? FrameTransaction = null);
 
 public sealed class Scene : IDisposable
 {

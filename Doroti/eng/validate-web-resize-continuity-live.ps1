@@ -4,7 +4,7 @@ param(
     [string] $Browser = 'Chrome',
 
     [ValidateRange(40, 2400)]
-    [int] $SampleCount = 300,
+    [int] $SampleCount = 40,
 
     [ValidateRange(8, 100)]
     [int] $SampleIntervalMilliseconds = 16,

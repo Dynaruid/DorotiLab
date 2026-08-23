@@ -43,6 +43,7 @@
 
 # Local resize traces and measurement evidence
 /Doroti/validation/evidence/resize/
+/Doroti/validation/evidence/flutter/
 
 # Visual Studio and MSBuild user state
 **/.vs/

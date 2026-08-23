@@ -3,9 +3,9 @@
 ## 0. 문서 상태와 작업 경계
 
 - 작성일: 2026-08-23
-- 현재 checkout 기준: `ee36df0e`
+- 현재 checkout 기준: `21320c77`
 - Flutter 비교 기준: `reference/flutter-master`의 고정 commit `56b8e1a851a594b1a154f8ea93270807dab22b9a`
-- 상태: **계획만 작성됨**. 이 문서를 작성하면서 제품 코드 수정, build, contract test, live test는 실행하지 않았다. 아래 milestone은 모두 `notStarted`다.
+- 상태: **W0 fallback까지 실행 후 G1 중단, Windows chrome/input 회귀 복구** (2026-08-23). M0/G0와 D3D12 offscreen-copy runtime correctness는 PASS했지만, pre-present expansion ordering과 ANGLE/EGL fallback이 모두 strict visual gate를 넘지 못했다. 이후 발견된 타이틀바 가림과 검증 종료 후 resize 입력 잔류는 복구했지만 G1 visual/cadence는 계속 FAIL이다. Ordered hard gate에 따라 W1 이후와 Web milestone은 진행하지 않았다.
 - 입력 자료: 현재 `problem.md`, `research.md`, Windows/Web host source, 고정 Flutter Windows/Web engine source, Microsoft/WHATWG/CSSWG 공식 API 문서.
 - 범위: Windows와 Web의 viewport metrics → framework frame → GPU backing store → visible present 소유권을 다시 설계한다.
 - 공통 epoch/exact-match/terminal ledger는 보존하되, 그것을 가시 문제의 해결 자체로 간주하지 않는다.
@@ -13,6 +13,58 @@
 - 모든 test command의 timeout은 최대 20분으로 둔다.
 
 이번 작업의 완료 조건은 counter 추가나 trace green이 아니다. 사용자가 보는 resize에서 고정 높이 UI와 원형 control이 찌그러지지 않고, Windows border와 exact content가 Flutter 기준에 가까운 하나의 transaction으로 움직여야 한다.
+
+### 0.1 2026-08-23 실행 결과
+
+- `M0`: **PASS**. `FrameTransaction`의 `Observed → Metrics → Scene → Backing → Visible → Terminal` 단방향 상태, 요청 시점 epoch frame dispatch, renderer의 scene/backing/visible 분리, Windows/Web deterministic fixture를 구현했다.
+- `G0`: **PASS**. resize contract v4는 22/22 terminal, unterminated 0, queue depth 2, stale present 0, illegal transition 0, mismatched backing-store commit 0이다. Windows/Web/Linux-Qt/Android/macOS target Release compile은 경고 0/오류 0이다. macOS demo packaging 전체는 Windows에 `sips`가 없어 별도로 실패했지만 macOS host/target compile은 PASS했다.
+- `W0 runtime correctness`: **PASS**. child HWND 한 개, flip-model HWND swap chain 한 개, exact offscreen D3D12 backing store, GPU-only `CopyResource`, `Present(0)`, resize-only `DwmFlush`, 100ms bounded wait가 실제 실행됐다. 작은 420×300 logical run `win-rsz-default-left-20260823-111737-d0ab1ce8`은 target 290, exact present 282, target/surface mismatch 0, ACK generation lag 0, present race 0, framework exception 0이며 target→ACK p50/p95는 17.155/22.397ms다.
+- 작은 창 stress에서 가려져 있던 runtime 결함도 함께 수정했다. Windows exact-scene wake는 UI dispatcher를 거치지 않고 native serial/event coalescer로 전달한다. D3D12 copy fence는 제출 값마다 독립 event로 기다리고 CPU confirmed value를 단조 증가시키며 reset 때 제출 상태를 폐기한다. frame-latency token은 실제 `Present` 직전에만 소비한다. exact scene이 아직 없는 raster 시도는 WM_SIZE transaction을 조기 완료하지 않고, 100ms 뒤 retire된 generation은 늦게 present하지 않는다. runtime-effect input pool은 shrink 뒤 큰 surface의 subset snapshot을 재사용하지 않고 exact size만 재사용한다. monitor-owning DXGI adapter를 선택하며 이 장비에서는 AMD Radeon 780M이 선택됐다.
+- `G1 visual`: **FAIL**. 크기별 200% DPI `HTLEFT` WGC 결과는 다음과 같다. blank와 circle aspect failure, 종료 잔여 gap은 모든 run에서 0이지만 drag 중 우측 content gap은 남는다.
+
+  | logical / physical 시작 크기 | evidence | max right gap | 창 폭 대비 | max gap duration | app present |
+  | --- | --- | ---: | ---: | ---: | ---: |
+  | 420×300 / 840×600 | `win-rsz-default-left-20260823-111807-ff16239c` | 37px | 4.4% | 296.976ms | 23.6Hz |
+  | 640×360 / 1280×720 | `win-rsz-default-left-20260823-112035-f9415586` | 25px | 2.0% | 381.816ms | 32.1Hz |
+  | 1000×600 / 2000×1200 | `win-rsz-default-left-20260823-112113-a2e5af7c` | 28px | 1.4% | 721.217ms | 23.0Hz |
+
+- 사용자의 “큰 창은 거의 안 떨리고 작은 창은 떨린다”는 관찰은 처리량 차이보다 **고정 픽셀 위상차의 상대 크기**로 설명된다. 큰 창은 cadence와 gap 지속 시간이 오히려 나쁘지만 28px가 전체 폭의 1.4%라 덜 보인다. 작은 창에서는 37px가 4.4%이고, WGC frame에서 child HWND의 새 영역이 exact swap-chain buffer보다 먼저 드러나 회색 띠로 직접 관측된다.
+- `G1 cadence`: **FAIL**. 세 크기 모두 165Hz에서 app present가 23.0–32.1Hz이고 모든 inter-present interval이 2 refresh를 넘었다. surface prepare p50은 1.281–2.361ms, `DwmFlush` p50은 7.152–7.559ms이므로 Skia draw 하나로 환원할 수 없다.
+- DPI 보정을 적용한 Flutter 고정 commit baseline `flutter-rsz-default-20260823-112152-4dd6a255`는 같은 1280×720/165Hz left drag에서 우측 gap 최대 8px/96.966ms, blank/AppBar/circle/title failure 0이었다. cadence strict gate 자체는 FAIL했지만 Doroti의 25px/381.816ms보다 border-content phase가 명확히 작다.
+- 후속 W0 후보였던 pre-present expansion ordering과 ANGLE/EGL `EGL_FIXED_SIZE_ANGLE` fallback은 0.3절과 같이 모두 실행했으나 FAIL했다. 실패한 presenter를 기본 제품 경로에 남기지 않았고 demo는 이전 D3D12 W0 경로로 복귀했다.
+- 중단 경계: W1 제품 승격, W2, W3, B0, B1, B2, G2, G3, G4는 모두 `notVerified`/`notStarted`다. 현재 demo에 연결된 native/offscreen 경로는 W0 검증용 구현이며 완료된 제품 cutover로 간주하지 않는다.
+- 재현 명령: `pwsh -NoProfile -File Doroti/eng/validate-resize-continuity.ps1`, 작은 창은 `pwsh -NoProfile -File Doroti/eng/validate-resize-continuity-live.ps1 -SwapInterval default -DurationSeconds 10 -PostDragObservationSeconds 2 -Edge Left -InitialLogicalWidth 420 -InitialLogicalHeight 300 -RetainRawTrace -WindowsGraphicsCapture -PngStride 10 -AllowCadenceFailure -AllowVisualFailure`, Flutter 비교는 `pwsh -NoProfile -File Doroti/eng/validate-flutter-windows-resize-baseline.ps1 -Renderer Default -DurationSeconds 10 -PngStride 10 -SkipBuild -CollectAcceptanceFailures -Edges Left`다.
+
+### 0.2 2026-08-23 외출 전 종료 인수인계
+
+- 종료 판정: 이번 실행은 `W0 runtime correctness PASS / G1 visual·cadence FAIL`에서 의도적으로 멈췄다. 추가 실험, W1 제품 승격, Web 착수는 하지 않았다.
+- 마지막 회귀 검증: `pwsh -NoProfile -File Doroti/eng/validate-resize-continuity.ps1`가 contract v4 22/22 terminal과 Windows/Web Release build 경고 0/오류 0으로 PASS했다. 종료 문서 반영 후 `git diff --check`도 PASS했다.
+- 유효한 비교 증거: 작은 창 correctness는 `win-rsz-default-left-20260823-111737-d0ab1ce8`, 크기별 WGC visual은 `win-rsz-default-left-20260823-111807-ff16239c`, `win-rsz-default-left-20260823-112035-f9415586`, `win-rsz-default-left-20260823-112113-a2e5af7c`, Flutter 기준은 `flutter-rsz-default-20260823-112152-4dd6a255`다. 도중 포커스를 잃은 두 실행은 acceptance evidence에서 제외했다.
+- 저장 상태: 구현·validator·문서 변경은 현재 작업 트리에 **미커밋** 상태로 보존했다. commit/push는 하지 않았고 관련 파일을 되돌리거나 정리하지 않았다. WGC capture 도구와 Flutter baseline validator도 함께 남겨 두었다.
+- 프로세스 상태: 종료 시 `DorotiDemoApp.Windows`, `Doroti.WindowsResizeCapture`, `flutter_tester` 잔여 프로세스는 없다.
+- 정확한 재개점: 기존 측정을 반복하는 것보다 먼저 다음 W0 후보인 `parent WM_SIZING suggested expansion target 선게시 → 기존 작은 child에서 exact buffer를 crop 상태로 present → DwmFlush 뒤 child HWND 확장` 순서를 격리된 spike로 구현한다. 이후 위 420/640/1000 logical 크기 matrix를 같은 WGC 조건으로 다시 비교한다.
+- 실패 분기: 위 순서가 안전한 단일 HWND/D3D12 ownership으로 성립하지 않거나 WGC gap을 악화하면 더 미세한 timeout/debounce 조정으로 가지 않고 ANGLE/EGL `EGL_FIXED_SIZE_ANGLE` presenter 후보로 전환한다.
+- 계속 미검증: 7방향 drag, 다른 DPI/monitor, minimize/restore, device loss, input/IME/accessibility, W1~W3 제품화, Web B0~B2와 G2~G4는 모두 `notVerified`/`notStarted`다. 현재 native/offscreen 경로는 W0 spike이며 제품 완료 상태가 아니다.
+
+### 0.3 2026-08-23 W0 재개 실행과 최종 중단
+
+- `parent WM_SIZING suggested target 선게시 → exact present/DwmFlush 대기 → child HWND 확장` 후보를 구현하고 동일 200% DPI `HTLEFT` WGC로 확인했다. 420 logical run `win-rsz-default-left-20260823-190914-db2d1754`는 최대 gap이 기존 37px에서 39px로 늘고 app present가 23.6Hz에서 21.0Hz로 낮아졌다. 640 logical run `win-rsz-default-left-20260823-191035-cc5ee44f`는 최대 gap이 25px/381.816ms에서 35px/557.574ms로, app present는 32.1Hz에서 27.7Hz로 악화됐다. 따라서 명시된 hard failure branch를 적용해 1000 logical 재실행 없이 D3D12 ordering 후보를 철회했다.
+- ANGLE fallback의 첫 public runtime 후보였던 SkiaSharp WinUI `libEGL.dll`은 raw child HWND `eglCreateWindowSurface`에서 access violation으로 사용할 수 없었다. 이어 desktop ANGLE runtime으로 `EGL_FIXED_SIZE_ANGLE`, GLES context, Skia GPU offscreen backing, 1:1 draw, `eglSwapBuffers`를 실행했다. swap/transaction trace와 AMD D3D11 renderer 식별은 성공했지만 WGC에서 Doroti title과 circle이 0 frame 관측되어 visible surface는 계속 어둡고 투명했다.
+- `STATIC` child, GPU offscreen draw, raw GL red clear, 마지막으로 `CS_OWNDC` custom child HWND까지 차례로 확인했다. 최종 `win-rsz-default-left-20260823-193141-f4a528b3`은 target/present 300/270, target→ACK p50/p95 12.432/19.065ms, framework exception 0이지만 422 WGC frame에서 title/circle 관측이 모두 0이고 raw red clear도 보이지 않았다. 이는 app trace의 EGL swap 성공이 WinUI/DWM의 visible ownership 성공을 뜻하지 않음을 보여 준다.
+- 최종 판정은 `W0 D3D12 runtime correctness PASS / D3D12 ordering candidate FAIL / ANGLE visible ownership FAIL / G1 visual·cadence FAIL`이다. 실패한 ANGLE 코드는 제품 경로와 패키지 의존성에서 제거했고, 재현 참고용 presenter source만 `DOROTI_WINDOWS_ANGLE_SPIKE` opt-in 전처리 심볼 아래 비활성 상태로 남겼다. 기본 demo/validator identity는 기존 `WindowsHwndD3D12Presenter`다.
+- rollback 확인 `win-rsz-default-left-20260823-193739-c1a12e10`은 backend가 다시 `Win32/child-HWND/offscreen-copy/DXGI-D3D12-Skia`이고 408 WGC frame에서 title 406, circle 39, blank 0, framework exception 0이었다. 따라서 ANGLE의 어두운 surface가 active 경로에 남지 않았다. 다만 최대 우측 gap 39px/351.503ms, app present 21.2Hz로 G1 visual/cadence는 예상대로 계속 FAIL이다.
+- 일반 CLI `pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows`에서는 validator와 달리 시작 직후 추가 `SetWindowPos`가 없어 화면이 계속 비는 startup 결함이 있었다. Cold first scene이 100ms보다 늦게 준비되면 유일한 generation을 timeout-retired했고 새 `WM_SIZE`가 없어 present 0으로 고착됐다. 첫 성공 present 전에는 initial `WM_SIZE`를 비동기로 진행하고, coordinator는 성공 completion과 실제 timeout invalidation을 분리하도록 수정했다. 성공한 generation은 같은 크기의 regular frame에 계속 사용할 수 있다.
+- 환경변수 없이 위 사용자 명령을 그대로 실행한 `cli-run-exact-command` WGC는 첫 입력 전 저장 frame부터 Material Gallery가 보였고, 146/146 frame에서 title과 circle이 관측됐으며 blank/circle aspect failure/capture error/drop/final gap은 모두 0이었다. 이는 startup visibility 회귀의 수정 증거이며 3초 resize run이므로 기존 장시간 G1 visual/cadence FAIL 판정을 바꾸지 않는다.
+- ordered gate에 따라 W1, W2, W3, B0, B1, B2, G2, G3, G4는 실행하지 않았으며 모두 `notStarted`/`notVerified`다. 이 문서의 “전체 작업” 실행은 이 hard gate에서 종료한다. 다음 구조 선택에는 WinUI composition과 raw HWND EGL surface를 결합하는 별도 native host 설계 또는 다른 presenter ownership 결정이 필요하며, 현재 범위에서 timeout/debounce 조정으로 우회하지 않는다.
+
+### 0.4 2026-08-23 Windows chrome/input 회귀 수정
+
+- 사용자 재확인에서 native child HWND가 WinUI client-coordinate title bar까지 `(0, 0)`에서 덮어 제목과 caption button이 보이지 않았고, 부모 subclass가 대화형 resize 중 실제 `WM_SIZE`를 `return 0`으로 삼킨 뒤 `WM_EXITSIZEMOVE`에서 다른 메시지인 가짜 `WM_SIZE`를 `DefSubclassProc`에 넘기고 있었다. child를 `AppWindow.TitleBar.Height` 아래에 배치하고 `Window.ExtendsContentIntoTitleBar=false`를 명시했으며, MAUI 최상위 `Window.Title`을 application title로 설정했다. 부모의 모든 실제 `WM_SIZE`는 WinUI에 그대로 전달한다.
+- WGC frame에서 `Doroti Material Demo` title과 maximize/close caption button, 그 아래 분리된 Doroti content가 실제로 관측됐다. 200% DPI에서 top-level client의 title bar는 32 physical px이고 render `STATIC` child는 그 아래에서 시작한다. GDI `CopyFromScreen`은 별도 composition caption control을 누락했으므로 titlebar acceptance 근거로 사용하지 않았다.
+- `Doroti.WindowsResizeCapture`는 `SendInput LEFTDOWN` 뒤 `GetWindowRect`/capture 예외가 나도 RAII cleanup이 항상 `LEFTUP + WM_CANCELMODE`, thread priority 복구, `timeEndPeriod(1)`을 수행한다. PowerShell live validator의 `finally`도 `LEFTUP + WM_CANCELMODE` 뒤 창을 닫는다. 실제 10초 run 종료 후 `LeftButtonDown=False`, current cursor=`IDC_ARROW`, 잔여 Demo/capture process 0을 확인했다.
+- 첫 회귀 run `win-rsz-default-left-20260823-201303-affacfa1`은 1280×720/200% DPI/165Hz에서 blank/AppBar/circle/title failure 0, final gap 0, capture error/drop 0, framework exception 0이고 최대 우측 gap 13px/521.207ms, app present 31.4Hz였다. 그러나 최종 소스 지문 run `win-rsz-default-left-20260823-201749-69e4186f`은 chrome 복구와 final gap 0, capture error/drop 0, framework exception 0을 유지했어도 transient gap이 94px/2,381.790ms, app present 23.1Hz였다. 따라서 13px 결과를 안정적 개선으로 승격하지 않으며 원래 G1은 계속 FAIL이다.
+- resize transaction에서 frame-latency wait를 생략하고 `DwmFlush`만 남기는 후보도 같은 조건으로 실행했으나 `win-rsz-default-left-20260823-201554-439ef492`에서 20px/3,036.379ms/21.3Hz로 악화되어 즉시 철회했다. 최종 경로는 기존 frame-latency wait + resize-only `DwmFlush`를 유지한다.
+- 이 수정은 W1 제품 승격이나 G1 PASS가 아니다. W1~W3, Web B0~B2, G2~G4 및 7방향/DPI/monitor/input/IME/accessibility 전체 acceptance는 기존대로 `notStarted`/`notVerified`다.
 
 ## 1. 최종 구조 결정
 
@@ -95,7 +147,7 @@ exact frame 전 provisional 정책은 다음 하나로 고정한다.
 
 ## 3. M0 — 구조 계약을 코드로 고정
 
-상태: `notStarted`
+상태: **PASS (2026-08-23)**
 
 ### 작업
 
@@ -127,7 +179,7 @@ exact frame 전 provisional 정책은 다음 하나로 고정한다.
 
 ## 4. W0 — 단일 HWND + offscreen backing store 구조 spike
 
-상태: `notStarted`
+상태: **FAIL — runtime correctness PASS, D3D12 ordering/ANGLE fallback 및 G1 visual/cadence FAIL (2026-08-23)**
 
 이 단계는 계측용 mock이 아니라 이후 제품 host가 그대로 재사용할 최소 구현이다. 먼저 고정 높이 bar, 원, 우측 edge가 있는 작은 native executable에서 presenter transaction을 완성한다.
 
@@ -170,7 +222,7 @@ exact frame 전 provisional 정책은 다음 하나로 고정한다.
 
 ## 5. W1 — native resize transaction을 제품 host에 연결
 
-상태: `notStarted`
+상태: `notStarted` — G1 실패로 제품 승격 중단. W0 검증을 위해 demo에 임시 연결된 코드는 acceptance 완료로 보지 않는다.
 
 ### 작업
 
@@ -205,7 +257,7 @@ exact frame 전 provisional 정책은 다음 하나로 고정한다.
 
 ## 6. W2 — input, IME, semantics, lifecycle 소유권 이관
 
-상태: `notStarted`
+상태: `notVerified` — G1 중단 조건으로 미실행
 
 native child HWND로 presentation만 옮기고 XAML panel에 input/focus가 남으면 새 이중 소유권이 생긴다. 이 단계까지 완료해야 Windows host cutover로 인정한다.
 
@@ -226,7 +278,7 @@ native child HWND로 presentation만 옮기고 XAML panel에 input/focus가 남�
 
 ## 7. W3 — Windows 구 경로 삭제와 제품 전환
 
-상태: `notStarted`
+상태: `notStarted` — G1 중단 조건으로 미실행
 
 ### 작업
 
@@ -242,7 +294,7 @@ native child HWND로 presentation만 옮기고 XAML panel에 input/focus가 남�
 
 ## 8. B0 — Web single-rAF frame pump
 
-상태: `notStarted`
+상태: `notStarted` — ordered G1 gate 실패로 미실행
 
 ### 작업
 
@@ -277,7 +329,7 @@ native child HWND로 presentation만 옮기고 XAML panel에 input/focus가 남�
 
 ## 9. B1 — OffscreenCanvas backing store와 atomic visible transfer
 
-상태: `notStarted`
+상태: `notStarted` — ordered G1 gate 실패로 미실행
 
 ### 작업
 
@@ -306,7 +358,7 @@ OffscreenCanvas 또는 bitmap transfer와 현재 SkiaSharp context 결합이 불
 
 ## 10. B2 — Web 구 presentation 경로 삭제
 
-상태: `notStarted`
+상태: `notStarted` — ordered G1 gate 실패로 미실행
 
 ### 작업
 
@@ -322,7 +374,7 @@ OffscreenCanvas 또는 bitmap transfer와 현재 SkiaSharp context 결합이 불
 
 ## 11. 검증 순서와 실패 관문
 
-상태: `notStarted`
+상태: **G0 PASS / G1 FAIL / G2~G4 notVerified (2026-08-23)**
 
 검증은 구조 변경 뒤 수행하며, green counter를 만들기 위해 구조를 다시 복잡하게 만들지 않는다. 앞 gate가 실패하면 다음 milestone으로 진행하지 않는다.
 
@@ -374,7 +426,7 @@ OffscreenCanvas 또는 bitmap transfer와 현재 SkiaSharp context 결합이 불
 
 ## 12. 완료 후 문서화
 
-상태: `notStarted`
+상태: **완료 (2026-08-23 evidence boundary 반영)**
 
 - `research.md`를 현재 구현과 실제 evidence 기준으로 다시 쓴다.
 - 과거 dual exact `SwapChainPanel`과 multi-queue Web presenter는 실패한 역사로만 남기고 현재 권장 구조처럼 서술하지 않는다.
