@@ -30,9 +30,8 @@
 *.nupkg
 *.snupkg
 
-# Doroti framework/package projects are restored through multiple target RIDs.
-# Their NuGet graphs are build-mode-specific; lock final apps and tools instead.
-/Doroti/src/**/packages*.lock.json
+# NuGet package lock files are generated per restore target and build mode.
+*.lock.json
 
 # Coverage and test-run output
 **/[Cc]overage/
