@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using SharpGen.Runtime;
@@ -20,6 +21,8 @@ internal sealed class Program : IDisposable
     private const uint WmClose = 0x0010;
     private const uint WmSizing = 0x0214;
     private const uint WmDpiChanged = 0x02E0;
+    private const uint WmQualificationControl = 0x8001;
+    private const uint WmQualificationTick = 0x8002;
     private const nuint SizeMinimized = 1;
     private const uint WsOverlappedWindow = 0x00CF0000;
     private const uint WsVisible = 0x10000000;
@@ -32,6 +35,14 @@ internal sealed class Program : IDisposable
     private readonly string? _evidencePath;
     private readonly DirectHwndPresenter? _presenter;
     private readonly WindowProcedure _windowProcedure;
+    private readonly bool _qualification;
+    private readonly int _qualificationRefreshHz;
+    private readonly CancellationTokenSource _qualificationStop = new();
+    private Thread? _qualificationThread;
+    private volatile bool _contentAnimation;
+    private int _contentFrameId;
+    private int _qualificationTickPending;
+    private long _qualificationTickCount;
     private nint _window;
     private long _wmSizingCount;
     private long _wmSizeCount;
@@ -41,11 +52,13 @@ internal sealed class Program : IDisposable
     private Exception? _failure;
     private bool _disposed;
 
-    private Program(string arm, string? evidencePath)
+    private Program(string arm, string? evidencePath, bool qualification, int qualificationRefreshHz)
     {
         _arm = arm;
         _evidencePath = evidencePath;
         _windowProcedure = WindowProc;
+        _qualification = qualification;
+        _qualificationRefreshHz = qualificationRefreshHz;
         if (arm == "A") _presenter = new DirectHwndPresenter();
     }
 
@@ -54,6 +67,10 @@ internal sealed class Program : IDisposable
     {
         var arm = ReadArgument(args, "--arm")?.ToUpperInvariant() ?? "A";
         var evidence = ReadArgument(args, "--evidence");
+        var qualification = args.Contains("--qualification", StringComparer.Ordinal);
+        var qualificationRefreshHz = int.TryParse(ReadArgument(args, "--refresh-hz"), out var parsedRefreshHz)
+            ? Math.Clamp(parsedRefreshHz, 30, 1000)
+            : 165;
         if (arm == "B")
         {
             WriteUnsupportedArmB(evidence);
@@ -68,11 +85,12 @@ internal sealed class Program : IDisposable
         }
 
         SetProcessDpiAwarenessContext(PerMonitorAwareV2);
-        using var application = new Program(arm, evidence);
+        using var application = new Program(arm, evidence, qualification, qualificationRefreshHz);
         _current = application;
         try
         {
             application.CreateWindow();
+            application.StartQualificationClock();
             application.RunMessageLoop();
             application.WriteEvidence(application._failure is null ? "PASS" : "FAIL");
             return application._failure is null ? 0 : 1;
@@ -147,6 +165,24 @@ internal sealed class Program : IDisposable
                 case WmSizing:
                     _wmSizingCount++;
                     return DefWindowProc(window, message, wParam, lParam);
+                case WmQualificationControl:
+                    if (!_qualification) return 0;
+                    _contentAnimation = wParam == 1;
+                    if (wParam == 2)
+                    {
+                        _contentFrameId = unchecked(_contentFrameId + 1);
+                        RenderCurrentClient();
+                    }
+                    return _contentFrameId;
+                case WmQualificationTick:
+                    Interlocked.Exchange(ref _qualificationTickPending, 0);
+                    if (_qualification && _contentAnimation)
+                    {
+                        _contentFrameId = unchecked(_contentFrameId + 1);
+                        _qualificationTickCount++;
+                        RenderCurrentClient();
+                    }
+                    return 0;
                 case WmSize:
                     _wmSizeCount++;
                     if (wParam == SizeMinimized)
@@ -201,8 +237,39 @@ internal sealed class Program : IDisposable
             return;
         }
         var scale = Math.Max(1, GetDpiForWindow(_window)) / 96.0;
-        _presenter!.RenderAndPresent(_window, width, height, scale);
+        _presenter!.RenderAndPresent(_window, width, height, scale, _contentFrameId);
         _presentCount++;
+    }
+
+    private void StartQualificationClock()
+    {
+        if (!_qualification) return;
+        _qualificationThread = new Thread(() =>
+        {
+            var frequency = Stopwatch.Frequency;
+            var interval = Math.Max(1L, frequency / _qualificationRefreshHz);
+            var deadline = Stopwatch.GetTimestamp();
+            while (!_qualificationStop.IsCancellationRequested)
+            {
+                deadline += interval;
+                while (true)
+                {
+                    var remaining = deadline - Stopwatch.GetTimestamp();
+                    if (remaining <= 0) break;
+                    if (remaining > frequency / 500) Thread.Sleep(1);
+                    else Thread.SpinWait(64);
+                }
+                if (_contentAnimation && _window != 0 &&
+                    Interlocked.CompareExchange(ref _qualificationTickPending, 1, 0) == 0 &&
+                    !PostMessage(_window, WmQualificationTick, 0, 0))
+                    Interlocked.Exchange(ref _qualificationTickPending, 0);
+            }
+        })
+        {
+            IsBackground = true,
+            Name = "Doroti N0 qualification clock",
+        };
+        _qualificationThread.Start();
     }
 
     private void WriteEvidence(string status)
@@ -225,6 +292,10 @@ internal sealed class Program : IDisposable
             presentCount = _presentCount,
             zeroSizeCount = _zeroSizeCount,
             dpiChangeCount = _dpiChangeCount,
+            qualification = _qualification,
+            qualificationRefreshHz = _qualificationRefreshHz,
+            qualificationTickCount = _qualificationTickCount,
+            finalContentFrameId = _contentFrameId,
             adapter = _presenter?.AdapterDescription,
             failure = _failure?.ToString(),
         };
@@ -258,6 +329,9 @@ internal sealed class Program : IDisposable
     {
         if (_disposed) return;
         _disposed = true;
+        _qualificationStop.Cancel();
+        if (_qualificationThread is { IsAlive: true }) _qualificationThread.Join(TimeSpan.FromSeconds(2));
+        _qualificationStop.Dispose();
         _presenter?.Dispose();
     }
 
@@ -364,6 +438,10 @@ internal sealed class Program : IDisposable
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool SetWindowPos(
         nint window, nint insertAfter, int x, int y, int width, int height, uint flags);
+
+    [DllImport("user32.dll", EntryPoint = "PostMessageW")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool PostMessage(nint window, uint message, nuint wParam, nint lParam);
 }
 
 internal sealed class DirectHwndPresenter : IDisposable
@@ -386,13 +464,13 @@ internal sealed class DirectHwndPresenter : IDisposable
 
     internal string AdapterDescription { get; private set; } = "uninitialized";
 
-    internal void RenderAndPresent(nint window, int width, int height, double scale)
+    internal void RenderAndPresent(nint window, int width, int height, double scale, int frameId)
     {
         EnsureDevice(window);
         EnsureSwapChain(window, width, height);
         _backing ??= new DirectBackingStore(_device!, _context!);
         _backing.EnsureSize(width, height);
-        DrawOracle(_backing.Surface.Canvas, width, height, scale);
+        DrawOracle(_backing.Surface.Canvas, width, height, scale, frameId);
         _backing.Surface.Canvas.Flush();
         _context!.Flush(_backing.Surface);
         _context.Submit(false);
@@ -422,7 +500,8 @@ internal sealed class DirectHwndPresenter : IDisposable
         }
         _submittedFence = checked(++_nextFence);
         _queue!.Signal(_fence!, _submittedFence).CheckError();
-        WaitForGpu();
+        // The copy and Present use the same D3D12 queue. Queue ordering is the
+        // readiness contract; the next frame waits before reusing the allocator.
         _swapChain!.Present(0, PresentFlags.None).CheckError();
     }
 
@@ -480,7 +559,7 @@ internal sealed class DirectHwndPresenter : IDisposable
         _height = height;
     }
 
-    private static void DrawOracle(SKCanvas canvas, int width, int height, double scale)
+    private static void DrawOracle(SKCanvas canvas, int width, int height, double scale, int frameId)
     {
         canvas.Clear(new SKColor(20, 18, 24, 255));
         var appBarHeight = Math.Min(height, Math.Max(1, (int)Math.Round(56 * scale)));
@@ -515,6 +594,29 @@ internal sealed class DirectHwndPresenter : IDisposable
         paint.Color = new SKColor(238, 232, 246, 255);
         canvas.DrawText("Doroti N0", (float)(12 * scale), (float)(36 * scale),
             SKTextAlign.Left, font, paint);
+
+        var bitSize = Math.Max(4, (int)Math.Round(7 * scale));
+        var bitGap = Math.Max(1, (int)Math.Round(scale));
+        var bitCount = 12;
+        var bitStripWidth = bitCount * bitSize + (bitCount - 1) * bitGap;
+        var bitStartX = Math.Max(0, width - bitStripWidth - Math.Max(4, (int)Math.Round(4 * scale)));
+        var bitTop = Math.Max(1, (int)Math.Round(5 * scale));
+        var gray = frameId ^ (frameId >> 1);
+        paint.IsAntialias = false;
+        for (var bit = 0; bit < bitCount; bit++)
+        {
+            paint.Color = (gray & (1 << bit)) != 0
+                ? new SKColor(255, 255, 255, 255)
+                : new SKColor(16, 8, 24, 255);
+            canvas.DrawRect(bitStartX + bit * (bitSize + bitGap), bitTop, bitSize, bitSize, paint);
+        }
+
+        paint.Color = new SKColor(
+            (byte)(32 + (width & 0x7f)),
+            (byte)(32 + (height & 0x7f)),
+            (byte)(32 + ((width ^ height) & 0x7f)),
+            255);
+        canvas.DrawRect(bitStartX, bitTop + bitSize + bitGap, bitStripWidth, Math.Max(2, bitGap * 2), paint);
 
         paint.IsAntialias = false;
         paint.Color = purple;

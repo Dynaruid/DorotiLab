@@ -37,7 +37,9 @@ param(
 
     [switch] $AllowCadenceFailure,
 
-    [switch] $AllowVisualFailure
+    [switch] $AllowVisualFailure,
+
+    [switch] $ObserverQualified
 )
 
 $ErrorActionPreference = 'Stop'
@@ -90,6 +92,7 @@ public static class DorotiResizeLiveNative
     public const uint MOUSEEVENTF_LEFTUP = 0x0004;
     public const uint SPI_GETWORKAREA = 0x0030;
     public const uint SWP_SHOWWINDOW = 0x0040;
+    public const int DWMWA_EXTENDED_FRAME_BOUNDS = 9;
     public static readonly IntPtr DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = new IntPtr(-4);
 
     [StructLayout(LayoutKind.Sequential)]
@@ -104,6 +107,14 @@ public static class DorotiResizeLiveNative
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool GetWindowRect(IntPtr hwnd, out RECT rect);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool GetClientRect(IntPtr hwnd, out RECT rect);
+
+    [DllImport("dwmapi.dll")]
+    public static extern int DwmGetWindowAttribute(
+        IntPtr hwnd, int attribute, out RECT value, int valueSize);
 
     [DllImport("user32.dll")]
     public static extern IntPtr SetThreadDpiAwarenessContext(IntPtr dpiContext);
@@ -233,12 +244,12 @@ try {
         [DorotiResizeLiveNative]::SPI_GETWORKAREA, 0, [ref] $workArea, 0)) {
         throw 'Unable to query the DPI-aware desktop work area.'
     }
-    $validationWidth = [Math]::Min(
-        [Math]::Round($InitialLogicalWidth * $dpiScale),
-        ($workArea.Right - $workArea.Left) - 80)
-    $validationHeight = [Math]::Min(
-        [Math]::Round($InitialLogicalHeight * $dpiScale),
-        ($workArea.Bottom - $workArea.Top) - 80)
+    $validationWidth = [Math]::Round($InitialLogicalWidth * $dpiScale)
+    $validationHeight = [Math]::Round($InitialLogicalHeight * $dpiScale)
+    if ($validationWidth -gt (($workArea.Right - $workArea.Left) - 40) -or
+        $validationHeight -gt (($workArea.Bottom - $workArea.Top) - 40)) {
+        throw "Requested logical outer size does not fit the active work area: ${InitialLogicalWidth}x${InitialLogicalHeight} logical -> ${validationWidth}x${validationHeight} physical."
+    }
     if (-not [DorotiResizeLiveNative]::SetWindowPos(
         $hwnd,
         [IntPtr]::Zero,
@@ -256,8 +267,25 @@ try {
     }
     $initialWidth = $rect.Right - $rect.Left
     $initialHeight = $rect.Bottom - $rect.Top
-    if ($initialWidth -lt 640 -or $initialHeight -lt 480) {
-        throw "Live range isolation requires an initial window of at least 640x480; actual ${initialWidth}x${initialHeight}."
+    $logicalRoundTripWidth = $initialWidth / $dpiScale
+    $logicalRoundTripHeight = $initialHeight / $dpiScale
+    if ([Math]::Abs($initialWidth - $validationWidth) -gt 1 -or
+        [Math]::Abs($initialHeight - $validationHeight) -gt 1 -or
+        [Math]::Abs($logicalRoundTripWidth - $InitialLogicalWidth) -gt 0.5 -or
+        [Math]::Abs($logicalRoundTripHeight - $InitialLogicalHeight) -gt 0.5) {
+        throw "Requested/actual outer-window size mismatch: requested ${InitialLogicalWidth}x${InitialLogicalHeight} logical, expected ${validationWidth}x${validationHeight} physical, actual ${initialWidth}x${initialHeight} physical."
+    }
+    $clientRect = [DorotiResizeLiveNative+RECT]::new()
+    if (-not [DorotiResizeLiveNative]::GetClientRect($hwnd, [ref] $clientRect)) {
+        throw 'GetClientRect failed for the Windows Demo.'
+    }
+    $extendedFrame = [DorotiResizeLiveNative+RECT]::new()
+    if ([DorotiResizeLiveNative]::DwmGetWindowAttribute(
+        $hwnd,
+        [DorotiResizeLiveNative]::DWMWA_EXTENDED_FRAME_BOUNDS,
+        [ref] $extendedFrame,
+        [Runtime.InteropServices.Marshal]::SizeOf([DorotiResizeLiveNative+RECT]::new())) -ne 0) {
+        throw 'DwmGetWindowAttribute(DWMWA_EXTENDED_FRAME_BOUNDS) failed for the Windows Demo.'
     }
 
     $movesLeft = $Edge -in @('Left', 'TopLeft', 'BottomLeft')
@@ -283,6 +311,8 @@ try {
             '--input-hz', $InputHz.ToString([Globalization.CultureInfo]::InvariantCulture),
             '--png-stride', $PngStride.ToString([Globalization.CultureInfo]::InvariantCulture),
             '--oracle-stride', $PngStride.ToString([Globalization.CultureInfo]::InvariantCulture),
+            '--requested-logical-width', $InitialLogicalWidth.ToString([Globalization.CultureInfo]::InvariantCulture),
+            '--requested-logical-height', $InitialLogicalHeight.ToString([Globalization.CultureInfo]::InvariantCulture),
             '--no-anomaly-png')
         if ($VisualChildClass) {
             $captureArguments += @('--visual-child-class', $VisualChildClass)
@@ -604,8 +634,15 @@ try {
                 capturedFrames = $visualDiagnostics.capturedFrames
                 encodedPngFrames = $visualDiagnostics.encodedPngFrames
                 encoderDroppedFrames = $visualDiagnostics.encoderDroppedFrames
+                captureRingCapacity = $visualDiagnostics.captureRingCapacity
+                captureRingDroppedFrames = $visualDiagnostics.captureRingDroppedFrames
+                framePoolCapacity = $visualDiagnostics.framePoolCapacity
+                framePoolRecreateCount = $visualDiagnostics.framePoolRecreateCount
+                poolCapacityExceededFrames = $visualDiagnostics.poolCapacityExceededFrames
                 captureErrors = $visualDiagnostics.captureErrors
                 captureIntervalMicroseconds = $visualDiagnostics.captureIntervalMicroseconds
+                callbackDurationMicroseconds = $visualDiagnostics.callbackDurationMicroseconds
+                desktopDuplication = $visualDiagnostics.desktopDuplication
                 oracle = $visualDiagnostics.visualOracle
                 rawEvidence = [IO.Path]::GetRelativePath($repoRoot, $visualEvidence).Replace('\', '/')
                 frameSequence = [IO.Path]::GetRelativePath(
@@ -622,8 +659,16 @@ try {
         initialWindow = [ordered]@{
             requestedLogicalWidth = $InitialLogicalWidth
             requestedLogicalHeight = $InitialLogicalHeight
-            width = $initialWidth
-            height = $initialHeight
+            actualLogicalWidth = $logicalRoundTripWidth
+            actualLogicalHeight = $logicalRoundTripHeight
+            physicalOuterWidth = $initialWidth
+            physicalOuterHeight = $initialHeight
+            clientWidth = $clientRect.Right - $clientRect.Left
+            clientHeight = $clientRect.Bottom - $clientRect.Top
+            outerRect = $rect
+            extendedFrameBounds = $extendedFrame
+            physicalTolerancePixels = 1
+            logicalTolerancePixels = 0.5
         }
         rangeIsolation = 'window border moves inward and returns; the window stays inside the desktop work area'
         outsideWorkAreaSamples = $outsideWorkAreaSamples.Count
@@ -826,12 +871,29 @@ if ($WindowsGraphicsCapture) {
         $oracle.finalContentRightGapPixels -lt 0 -or
         $oracle.finalContentLeftGapPixels -gt $edgeTolerance -or
         $oracle.finalContentRightGapPixels -gt $edgeTolerance
-    $summary.visualCapture.status = if ($visualFailure) { 'FAIL' } else { 'PASS' }
+    $m0Failure = $summary.visualCapture.captureErrors -ne 0 -or
+        $summary.visualCapture.encoderDroppedFrames -ne 0 -or
+        $summary.visualCapture.captureRingDroppedFrames -ne 0 -or
+        $summary.visualCapture.framePoolRecreateCount -ne 0 -or
+        $summary.visualCapture.poolCapacityExceededFrames -ne 0 -or
+        $summary.visualCapture.desktopDuplication.status -ne 'captured'
+    $summary.visualCapture.status = if ($m0Failure) {
+        'invalid'
+    } elseif (-not $ObserverQualified) {
+        'diagnosticOnly'
+    } elseif ($visualFailure) {
+        'FAIL'
+    } else {
+        'PASS'
+    }
     $summary | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath $summaryEvidence -Encoding utf8
-    if ($visualFailure -and -not $AllowVisualFailure) {
+    if ($m0Failure) {
+        throw "M0 observer integrity gate failed. See $summaryEvidence"
+    }
+    if ($ObserverQualified -and $visualFailure -and -not $AllowVisualFailure) {
         throw "Windows Graphics Capture visual correctness gate failed. See $summaryEvidence"
     }
-    if ($summary.cadence.status -ne 'PASS' -and -not $AllowCadenceFailure) {
+    if ($ObserverQualified -and $summary.cadence.status -ne 'PASS' -and -not $AllowCadenceFailure) {
         throw "Refresh-normalized cadence gate failed: p95=$($summary.cadence.interPresentRefreshIntervals.p95) refresh, p99=$($summary.cadence.interPresentRefreshIntervals.p99) refresh, final=$($summary.cadence.lastTargetToExactCommitRefreshIntervals) refresh. See $summaryEvidence"
     }
 }

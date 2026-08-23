@@ -5,7 +5,7 @@
 - 전면 재검토일: 2026-08-23
 - 대상: Windows interactive resize의 border/content phase, present cadence, visible continuity
 - 입력: 현재 repository source, 기존 `work2.md` 실행 기록, `idea.md`, 저장된 app/WGC evidence
-- 문서 성격: **후속 구현 계획**이다. 이번 문서 수정 자체는 구현, build, runtime 또는 visible acceptance를 의미하지 않는다.
+- 문서 성격: **ordered 구현 계획 겸 실행 기록**이다. 각 PASS/FAIL은 아래에 연결한 source/build/runtime evidence 범위만 의미하며 visible/scan-out acceptance로 확대하지 않는다.
 - Flutter는 고정 source-only protocol reference로만 유지한다. 새 Flutter runtime build/capture/renderer A/B는 수행하지 않는다.
 - Web은 Windows의 size/present ownership 결론과 제품 G2가 확정되기 전까지 재개하지 않는다. 재개할 때 active smoke는 합의된 40-sample 절차만 사용한다.
 
@@ -34,6 +34,8 @@
 - `n0-arm-a-420`이 실제 420×300 logical gate였다
 
 새 계획은 먼저 관측기를 교정하고, 그다음 direct top-level control에서 **geometry commit 전 준비와 drag 중 stable surface**를 검증한다. Composition/MAUI 제품 경로는 이 인과 실험에서 유효한 protocol이 나온 뒤에만 다시 연다.
+
+2026-08-23 실행은 M0를 PASS했지만 M1 observer qualification이 3회 연속 valid FAIL했다. 따라서 이 문서의 ordered gate에 따라 H0 이후 architecture/product/Web 작업은 시작하지 않았다.
 
 ## 1. 기존 실행 결과 재분류
 
@@ -218,7 +220,17 @@ D0: 기존 evidence 재분류와 provenance 동결
 
 ## 6. M0 — 관측기와 DPI 계약 교정
 
-상태: `notStarted`
+상태: `PASS` — 2026-08-23 구현/실행 완료
+
+실행 결과:
+
+- `windows-resize-capture`의 WGC `FrameArrived`는 고정 monitor-capacity frame pool과 12-slot preallocated D3D11 readback ring에 copy/query만 게시한다. callback 안의 `Map`, pixel oracle, PNG encoding, `GetWindowRect`, frame-pool `Recreate`는 0이다.
+- analyzer worker가 query 완료 뒤 `ContentSize` 범위만 `Map`/scan/encode하고, 같은 run의 별도 Desktop Duplication worker가 monitor output과 screen-coordinate window crop을 기록한다.
+- validator/capture/direct-control은 PMv2이고, requested 420×300 logical outer가 200% DPI에서 실제 840×600 physical / 420×300 logical로 3회 모두 일치했다.
+- QPC frequency/start/end calibration, WGC `SystemRelativeTime`, callback entry/exit, input/window QPC, Desktop Duplication acquire/last-present QPC를 분리해 저장한다.
+- 정식 M1 run 3회에서 WGC callback p95는 21.8~25.8µs, p99는 54.5~71.7µs였고 `captureRingDroppedFrames=0`, `framePoolRecreateCount=0`, capacity overflow/capture/encoder/Desktop Duplication error는 모두 0이었다.
+- run 종료 후 capture/direct-control process 잔존 0, mouse/cancel/close cleanup PASS.
+- evidence summary: `Doroti/validation/evidence/resize/win-observer-m1-summary-20260823-234440.json`
 
 M0의 목표는 app을 고치는 것이 아니라 `실제로 어느 owner가 먼저/늦게 바뀌는지`를 refresh 단위로 판정할 수 있는 observer를 만드는 것이다.
 
@@ -315,7 +327,27 @@ M0 FAIL이면 presenter/ownership 실험으로 진행하지 않는다.
 
 ## 7. M1 — observer qualification
 
-상태: `notStarted`
+상태: `FAIL` — 2026-08-23 valid 3회 연속 qualification에서 동일 판정
+
+실행 결과:
+
+- qualification scene은 GPU-rendered 12-bit Gray-code frame ID, 1px/right-edge marker, AppBar/checker/circle, size-generation patch를 사용했다.
+- 각 run은 static 5초, content-only 5초, geometry-only step, content↔geometry 0/1/2/4-refresh 양방향 주입, 정확한 420×300 logical outer left-edge triangle drag 10초를 수행했다.
+- static false blank/gap/non-uniform failure는 세 run 모두 0이고 callback/ring/capture integrity gate는 PASS했다.
+- 165Hz의 2-refresh 한계는 약 12.121ms다. WGC content-only interval p95는 18.1839~18.1849ms여서 세 run 모두 strict judge에서 `diagnosticOnly`로 강등됐다.
+- Desktop Duplication last-present interval p95도 19.3545~19.4041ms로 2-refresh sampling gate를 넘었고 세 run 모두 output-level strict judge `FAIL`이었다.
+- 알려진 8개 phase 주입 중 실패는 run별 6/8, 6/8, 7/8이었다. one-frame marker와 geometry transition을 요구한 방향/크기 오차 1-refresh 이내로 안정적으로 복원하지 못했다.
+- 세 run의 전체 verdict는 모두 `FAIL`이고 summary의 `consistentVerdict=true`다.
+- raw run IDs:
+  - `win-observer-m1-q1-20260823-234322-a4977e1c`
+  - `win-observer-m1-q2-20260823-234348-a0e14b18`
+  - `win-observer-m1-q3-20260823-234415-354f298f`
+
+판정:
+
+- 현재 WGC와 Desktop Duplication pair로 165Hz/2-refresh strict visible acceptance를 수행하지 않는다.
+- 이 FAIL은 H0-A/H0-B presenter verdict가 아니다. observer/source cadence 분리가 아직 충분하지 않으므로 architecture 판정을 금지한다.
+- M1 FAIL 처리 규칙에 따라 external 240fps 이상 고속 촬영 또는 2-refresh qualification을 통과하는 독립 output observer가 준비될 때까지 H0 이후를 hard stop한다.
 
 M1은 새 observer가 짧은 transition을 놓치거나 만들어내지 않는지 검증한다.
 
@@ -363,7 +395,7 @@ scripted sequence:
 
 ## 8. H0 — direct top-level 인과 분리 실험
 
-상태: `notStarted`
+상태: `notStarted` — M1 observer qualification `FAIL` hard stop
 
 H0는 MAUI/XAML/child HWND를 제외한 하나의 top-level HWND에서 renderer, scene, input, observer를 고정하고 size/present ordering만 바꾼다.
 
@@ -492,7 +524,7 @@ fail-fast는 M1이 PASS한 뒤에만 적용한다. 420×300 absolute gate가 유
 
 ## 9. H1 — Windows visible ownership 결정
 
-상태: `notStarted`
+상태: `notStarted` — M1 observer qualification `FAIL` hard stop
 
 H0 결과로 제품 후보를 다음처럼 제한한다.
 
@@ -528,7 +560,7 @@ H0-B와 H0-C가 모두 valid FAIL이면 다음을 하지 않는다.
 
 ## 10. C2R — MAUI/WinUI Composition 재검증
 
-상태: `notStarted`
+상태: `notStarted` — M1 observer qualification `FAIL`; 실행 조건 미충족
 
 실행 조건:
 
@@ -586,7 +618,7 @@ C2R absolute FAIL을 baseline 대비 상대 개선으로 덮지 않는다.
 
 ## 11. P0 — 제품 경로 통합
 
-상태: `notStarted`
+상태: `notStarted` — M1 observer qualification `FAIL`; 실행 조건 미충족
 
 ### 11.1 MAUI Composition 제품 경로
 
@@ -626,7 +658,7 @@ G2 전까지 default path와 rollback 가능성을 보존한다.
 
 ## 12. Windows G2 product acceptance
 
-상태: `notStarted` / `notVerified`
+상태: `notStarted` / `notVerified` — M1 observer qualification `FAIL`; G2 실행 금지
 
 ### visual/cadence matrix
 
@@ -746,6 +778,16 @@ git diff --check
 
 M0 이후 live validator는 qualified observer가 준비되기 전 기존 strict WGC exit code를 제품 gate로 사용하지 않는다.
 
+2026-08-23 실행 validation:
+
+- `dotnet run --project Doroti/validation/resize-contract/Doroti.Validation.ResizeContract.csproj -c Release`: `PASS`, schema v4, 22/22 terminal, stale/mismatch/illegal/unterminated 0
+- `dotnet build DorotiDemoApp/windows/DorotiDemoApp.Windows.csproj -c Release`: `PASS`, warning/error 0
+- `pwsh -NoProfile -File Doroti/eng/validate-resize-continuity.ps1`: `PASS`, 16 source files, contract fingerprint `524c5a571fe3018ef841f90b3d6f433ac15f48bd587696e97e475ee3381b42ab`
+- `windows-resize-capture` CMake Release build: `PASS`
+- `windows-top-level-presentation` Release build: `PASS`, warning/error 0
+- `pwsh -NoProfile -File Doroti/eng/validate-windows-presentation-observer.ps1 -Runs 3`: M0 integrity `PASS`, M1 qualification consistent `FAIL`
+- Web source/runtime validation: `notRun` — M1 hard stop 이전 범위에서 Web source를 변경하지 않음
+
 ## 16. 중단 조건과 금지 사항
 
 ### 즉시 중단 조건
@@ -791,26 +833,26 @@ M0 이후 live validator는 qualified observer가 준비되기 전 기존 strict
 6. active decision 문서가 실제 evidence 상태와 일치한다.
 7. 미실행 gate는 구체적인 `notStarted`/`notVerified`로 남는다.
 
-2026-08-23 재검토 직후 상태:
+2026-08-23 M0/M1 실행 후 상태:
 
 | 단계 | 상태 |
 | --- | --- |
 | D0 evidence 재분류 | `PASS` — 기존 파일 보존, acceptance 해석 교정 |
-| M0 observer/DPI 교정 | `notStarted` |
-| M1 observer qualification | `notStarted` / `notVerified` |
-| H0-A current control 재측정 | `notStarted` |
-| H0-B stable-capacity/prebuild | `notStarted` |
-| H0-C custom chrome control | `notStarted` |
-| H1 ownership 결정 | `notStarted` |
+| M0 observer/DPI 교정 | `PASS` — exact DPI sizing, non-blocking WGC ring, same-timebase trace, Desktop Duplication 연결 |
+| M1 observer qualification | `FAIL` — 3회 동일 판정; WGC `diagnosticOnly`, output 2-refresh cadence/phase gate 실패 |
+| H0-A current control 재측정 | `notStarted` — M1 hard stop |
+| H0-B stable-capacity/prebuild | `notStarted` — M1 hard stop |
+| H0-C custom chrome control | `notStarted` — M1 hard stop |
+| H1 ownership 결정 | `notStarted` — architecture 판정 금지 |
 | 기존 C0 | `PASS` — device removal `notVerified` |
 | 기존 C1 | `PASS` — minimum smoke only |
 | 기존 C2 | internal cadence `FAIL`; visible verdict `invalidated`/`notVerified` |
 | 기존 N0 Arm A | 구조/correctness `PASS`; strict visible verdict `invalid` |
-| C2R | `notStarted` |
-| P0/G2 | `notStarted` / `notVerified` |
-| Web | `notStarted` / `notVerified` |
+| C2R | `notStarted` — 실행 조건 미충족 |
+| P0/G2 | `notStarted` / `notVerified` — 실행 금지 |
+| Web | `notStarted` / `notVerified` — Windows hard gate 유지 |
 
-현재 정확한 재개점은 **M0 DPI-aware sizing과 non-blocking capture ring 설계/구현**이다. Composition presenter tuning, N1 shell migration, Web 작업부터 재개하지 않는다.
+현재 정확한 재개점은 **M1 output observer qualification 재설계 또는 240fps 이상 독립 외부 촬영 setup**이다. 165Hz에서 2-refresh phase를 실제로 복원하는 observer가 3회 연속 PASS하기 전에는 H0 presenter 실험, Composition presenter tuning, N1 shell migration, Web 작업을 재개하지 않는다.
 
 ## 18. 근거
 
@@ -823,7 +865,7 @@ M0 이후 live validator는 qualified observer가 준비되기 전 기존 strict
 - Composition bridge validation: `Doroti/validation/windows-composition-surface/`
 - common epoch/transaction: `Doroti/src/Doroti.Ui/ResizeLifecycle.cs`, `Doroti/src/Doroti.Ui/PlatformDispatcher.cs`
 - renderer: `Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs`
-- validators: `Doroti/eng/validate-resize-continuity.ps1`, `Doroti/eng/validate-resize-continuity-live.ps1`
+- validators: `Doroti/eng/validate-resize-continuity.ps1`, `Doroti/eng/validate-resize-continuity-live.ps1`, `Doroti/eng/validate-windows-presentation-observer.ps1`
 
 ### local reference
 

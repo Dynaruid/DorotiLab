@@ -49,7 +49,9 @@ if ($Shard -eq 'Contract') {
         'eng/validate-resize-continuity-live.ps1',
         'eng/validate-web-resize-continuity-live.ps1',
         '../DorotiDemoApp/web/DorotiDemoApp.Web.csproj',
-        'src/Doroti.Host.Maui/DorotiMauiSurface.cs'
+        'src/Doroti.Host.Maui/DorotiMauiSurface.cs',
+        'validation/windows-resize-capture/main.cpp',
+        'eng/validate-windows-presentation-observer.ps1'
     )
     $resizeContract = Read-Source $sources[0]
     $dispatcher = Read-Source $sources[1]
@@ -65,6 +67,7 @@ if ($Shard -eq 'Contract') {
     $webLiveValidation = Read-Source $sources[11]
     $webRunner = Read-Source $sources[12]
     $mauiSurface = Read-Source $sources[13]
+    $windowsObserver = Read-Source $sources[14]
 
     Assert-True ($resizeContract.Contains('public sealed record DorotiFrameDescriptor(', [StringComparison]::Ordinal) -and
         $resizeContract.Contains('public sealed class DorotiLatestFrameMailbox<T>', [StringComparison]::Ordinal) -and
@@ -135,6 +138,20 @@ if ($Shard -eq 'Contract') {
         $windowsLiveValidation.Contains('outsideWorkAreaSamples -ne 0', [StringComparison]::Ordinal) -and
         $windowsLiveValidation.Contains('nativeCommitTargetGeneration=', [StringComparison]::Ordinal) -and
         $windowsLiveValidation.Contains('$summary.latestTargetAtPresentedAck.laggedAckCount -ne 0', [StringComparison]::Ordinal)) 'Windows live validation covers edge directions and final UI commit generation'
+    $wgcCallback = [regex]::Match(
+        $windowsObserver,
+        'void OnFrame\([\s\S]*?\n\s*void AnalyzeFrames\(',
+        [Text.RegularExpressions.RegexOptions]::CultureInvariant).Value
+    Assert-True ($windowsObserver.Contains('D3D11_QUERY_EVENT', [StringComparison]::Ordinal) -and
+        $windowsObserver.Contains('captureRingDroppedFrames', [StringComparison]::Ordinal) -and
+        $windowsObserver.Contains('framePoolRecreateCount', [StringComparison]::Ordinal) -and
+        $windowsObserver.Contains('class DesktopDuplicationRunner', [StringComparison]::Ordinal) -and
+        $windowsObserver.Contains('ValidateRequestedGeometry', [StringComparison]::Ordinal) -and
+        $wgcCallback.Length -gt 0 -and
+        -not $wgcCallback.Contains('context_->Map(', [StringComparison]::Ordinal) -and
+        -not $wgcCallback.Contains('GetWindowRect(', [StringComparison]::Ordinal) -and
+        -not $wgcCallback.Contains('.Recreate(', [StringComparison]::Ordinal) -and
+        -not $wgcCallback.Contains('EncodePng(', [StringComparison]::Ordinal)) 'M0 observer callback is non-blocking, fixed-capacity, and output-qualified'
     Assert-True ($windowsSurface.Contains('private void MetricsMain()', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('_metricsWake.Set();', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('serial == processedSerial', [StringComparison]::Ordinal) -and
@@ -142,7 +159,7 @@ if ($Shard -eq 'Contract') {
     Assert-True ($windowsSurface.Contains('WindowsResizeCoordinator', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('WindowsPlatformTaskRunner', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('Volatile.Read(ref _hasPresented) != 0', [StringComparison]::Ordinal) -and
-        $windowsSurface.Contains('nativeSource.CompletePresented(target.Generation);', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('nativeSource!.CompletePresented(target.Generation);', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('if (!signaled)', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('_coordinator.DiscardCompletion(generation);', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('_taskRunner.PollOnce(generation, TimeSpan.FromMilliseconds(100))', [StringComparison]::Ordinal) -and
@@ -158,7 +175,7 @@ if ($Shard -eq 'Contract') {
     Assert-True ($windowsSurface.Contains('using var completion = new EventWaitHandle(false, EventResetMode.AutoReset);', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('_lastConfirmedFence = target;', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('if (_hasPresented) WaitForFrameLatency();', [StringComparison]::Ordinal) -and
-        $windowsSurface.Contains('!nativeSource.IsRetired(target.Generation)', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('!nativeSource!.IsRetired(target.Generation)', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('_retiredGeneration = Math.Max(_retiredGeneration, generation);', [StringComparison]::Ordinal)) 'Windows fence, frame-latency token, and retired resize transaction ownership'
     foreach ($legacy in @(
         'src/Doroti.Host.Maui/DorotiWindowsSkiaViewHandler.cs',
