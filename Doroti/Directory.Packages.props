@@ -21,6 +21,8 @@
     <PackageVersion Include="SkiaSharp.Views" Version="4.151.1" />
     <PackageVersion Include="SkiaSharp.Views.Maui.Controls" Version="4.151.1" />
     <PackageVersion Include="Vortice.DXGI" Version="3.8.3" />
+    <PackageVersion Include="Vortice.Direct3D11" Version="3.8.3" />
     <PackageVersion Include="Vortice.Direct3D12" Version="3.8.3" />
+    <PackageVersion Include="Microsoft.WindowsAppSDK" Version="1.8.260508005" />
   </ItemGroup>
 </Project>

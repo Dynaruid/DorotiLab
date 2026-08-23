@@ -174,7 +174,10 @@ function Get-SourceFingerprint([string[]] $RelativePaths) {
 }
 
 $sourceFingerprint = Get-SourceFingerprint @(
+    'Doroti/Directory.Packages.props',
+    'Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj',
     'Doroti/src/Doroti.Host.Maui/DorotiWindowsDxgiSurface.cs',
+    'Doroti/src/Doroti.Host.Maui/WindowsCompositionSurfacePresenter.cs',
     'Doroti/src/Doroti.Host.Maui/MauiHostAdapter.cs',
     'Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs',
     'Doroti/src/Doroti.Ui/ResizeLifecycle.cs',

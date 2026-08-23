@@ -17,6 +17,7 @@
     <UseMaui>true</UseMaui>
     <SingleProject>true</SingleProject>
     <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefaultItemExcludes>$(DefaultItemExcludes);obj\**;bin\**</DefaultItemExcludes>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</TargetPlatformMinVersion>
@@ -34,6 +35,7 @@
     <PackageReference Include="Microsoft.Maui.Platforms.MacOS.Essentials" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'" />
     <PackageReference Include="SkiaSharp.Views" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'" />
     <PackageReference Include="SkiaSharp.Direct3D.Vortice" Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))" />
+    <PackageReference Include="Vortice.Direct3D11" Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))" />
     <PackageReference Include="Vortice.DXGI" Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))" />
     <PackageReference Include="Vortice.Direct3D12" Condition="$([System.String]::Copy('$(TargetFramework)').Contains('-windows'))" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />

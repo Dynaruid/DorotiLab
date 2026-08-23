@@ -1,495 +1,741 @@
-# Windows Composition surface 기반 interactive resize 후속 작업계획
+# Windows interactive resize 근본 원인 재검증 및 구조 수정 계획
 
-## 0. 문서 상태와 검토 결론
+## 0. 문서 목적과 현재 결론
 
-- 작성일: 2026-08-23
-- 기준 checkout: `753a8df4`
-- 입력 문서: 현재 `idea.md`, `work.md`
-- 검토 범위: 현재 Windows host/source와 package graph, 고정 Flutter source, 로컬 Avalonia source, Microsoft 공식 Composition/D3D11On12 API 문서
-- 상태: **계획 작성만 완료**. 이 문서의 C0~C3, N0~N1 구현, build, runtime, WGC, 제품 acceptance는 모두 `notStarted`/`notVerified`다.
-- 기존 증거는 `work.md`에서 인용하되 재실행한 것으로 쓰지 않는다. `work.md`의 기준 checkout은 `21320c77`, 현재 checkout은 `753a8df4`다.
-- 이 문서는 `work.md`의 실패 기록을 덮어쓰지 않는다. `work.md`의 M0/G0 PASS, W0 runtime correctness PASS, D3D12 ordering/ANGLE 및 G1 visual/cadence FAIL을 선행 사실로 둔다.
+- 전면 재검토일: 2026-08-23
+- 대상: Windows interactive resize의 border/content phase, present cadence, visible continuity
+- 입력: 현재 repository source, 기존 `work2.md` 실행 기록, `idea.md`, 저장된 app/WGC evidence
+- 문서 성격: **후속 구현 계획**이다. 이번 문서 수정 자체는 구현, build, runtime 또는 visible acceptance를 의미하지 않는다.
+- Flutter는 고정 source-only protocol reference로만 유지한다. 새 Flutter runtime build/capture/renderer A/B는 수행하지 않는다.
+- Web은 Windows의 size/present ownership 결론과 제품 G2가 확정되기 전까지 재개하지 않는다. 재개할 때 active smoke는 합의된 40-sample 절차만 사용한다.
 
-`idea.md`의 핵심 방향은 채택한다. 다음 Windows 후보는 raw child HWND의 resize 순서를 더 조정하는 경로가 아니라, **보이는 content를 WinUI composition visual 하나로 모으고 exact staging surface만 교체하는 경로**다. 이 경로가 strict WGC gate를 통과하지 못하면 **순수 Win32 top-level ownership A/B**로 이동한다.
+재검토의 핵심 결론은 다음과 같다.
 
-다만 다음 사항은 `idea.md`보다 엄격하게 수정한다.
+> 공통 근본 원인은 Skia, MAUI, child HWND 또는 Composition 중 하나가 단독으로 느린 것이 아니라, **DWM이 소유한 top-level/non-client geometry와 앱이 소유한 client surface/present가 하나의 원자적 transaction으로 변경되지 않는 것**이다.
 
-| 검토 항목 | 판정 | 작업계획 반영 |
+현재까지 동일하게 보인 `right gap`에는 서로 다른 현상이 섞여 있었다.
+
+1. **실제 앱 pipeline cadence 저하**
+   - MAUI Composition candidate는 10초 동안 target 161, presented ACK 69, app present 약 6.9Hz였다.
+   - 이는 실제 제품 후보의 scheduling/dispatcher/composition 병목이다.
+2. **DXGI target/backbuffer epoch mismatch**
+   - pure top-level N0는 `WM_SIZE` 380회와 present 380회가 일치했는데도 WGC gap이 남았다.
+   - `Scaling.None`에서 작은 새 backbuffer가 아직 큰 presentation target에 놓이면 남는 영역이 background로 보인다.
+3. **WGC 관측기 자체의 size/cadence phase**
+   - N0 WGC는 165Hz 환경에서 약 39Hz만 수집했고 callback backlog p50이 약 30.4ms였다.
+   - callback 안의 synchronous GPU readback과 frame-pool `Recreate` 때문에 현재 수치로 2-refresh acceptance를 판정할 수 없다.
+
+따라서 기존 계획의 다음 가정은 폐기한다.
+
+- `WGC gap = 앱 content가 현재 창보다 늦다`
+- `capture error 0 + encoder drop 0 = WGC frame loss 0`
+- `WGC callback에서 나중에 읽은 GetWindowRect = 해당 frame 시점 geometry`
+- `N0가 pure top-level에서도 strict FAIL했으므로 host ownership 가설이 기각됐다`
+- `n0-arm-a-420`이 실제 420×300 logical gate였다
+
+새 계획은 먼저 관측기를 교정하고, 그다음 direct top-level control에서 **geometry commit 전 준비와 drag 중 stable surface**를 검증한다. Composition/MAUI 제품 경로는 이 인과 실험에서 유효한 protocol이 나온 뒤에만 다시 연다.
+
+## 1. 기존 실행 결과 재분류
+
+기존 evidence는 삭제하거나 수치를 고쳐 쓰지 않는다. 해석과 acceptance 상태만 다음과 같이 재분류한다.
+
+| 단계/증거 | 확인된 사실 | 재검토 상태 |
 | --- | --- | --- |
-| raw child HWND와 `SwapChainPanel`을 후보 visible path에서 제거 | 채택 | C1부터 opt-in 후보 경로에서 제거한다. 기존 경로는 paired baseline/rollback용으로 G1 통과 전까지 보존한다. |
-| `CompositionDrawingSurface` exact staging 후 surface 교체 | 채택 | visible front는 그 surface가 front인 동안 `Resize`/`BeginDraw`하지 않는다. |
-| visual property와 surface 교체의 한 commit | 조건부 채택 | 같은 compositor commit cycle에 넣되, DWM non-client geometry와 WinUI commit까지 원자적이라고 주장하지 않는다. WGC만 border/content phase를 판정한다. |
-| `BeginDraw` texture를 바로 D3D12 resource로 unwrap | 선행 증명 필요 | app이 만든 동일 D3D11On12 device/queue 위 resource인지, 실제 `UnwrapUnderlyingResource`가 성공하는지 C0에서 증명한다. 성공을 문서만으로 가정하지 않는다. |
-| front/staging 즉시 역할 교환 | 수정 | old front가 visual tree에서 detach됐다고 확인하기 전 staging으로 재사용하지 않는다. bounded surface pool과 retirement 신호가 성립하지 않으면 C0 FAIL이다. |
-| `WM_SIZE`가 MAUI content의 exact size authority | 수정 | MAUI 경로의 exact content epoch은 XAML host의 실제 layout size와 rasterization scale로 만든다. `WM_SIZING`/top-level `WM_SIZE`는 edge/provisional intent 관찰용이며 실제 `WM_SIZE`는 WinUI에 항상 전달한다. |
-| `RequestCommitAsync` completion을 화면 표시 ACK로 사용 | 거부 | `CommitRequested`/`CommitActionCompleted` 내부 telemetry로만 기록한다. `VisibleSurfaceCommitted`도 app-side ownership 단계이며 scan-out 증거가 아니다. |
-| `ContentIsland`를 초기 spike에 포함 | 보류 | C0/C1은 `ElementCompositionPreview.SetElementChildVisual`만 사용한다. `ContentIsland`는 C2 통과 뒤 실제 input/accessibility 경계가 필요할 때만 별도 C3 후보로 검토한다. |
-| Flutter runtime baseline 재실행 | 제외 | Flutter는 고정 source와 `work.md`의 과거 evidence만 참고한다. 새 Flutter instrumentation/build/capture/A-B는 수행하지 않는다. |
+| 기존 M0/G0 | epoch/terminal/correctness 계약과 기존 evidence | `PASS` 유지, 이번에 재실행하지 않음 |
+| 기존 W0 native child HWND | contract/build/runtime correctness | `PASS` 유지 |
+| 기존 W0 WGC visual/cadence | WGC texture에서 gap 관측 | `diagnosticOnly`; 실제 scan-out 및 refresh phase는 `notVerified` |
+| R0 provenance | paired backend와 source fingerprint 고정 | `PASS` 유지 |
+| C0 Composition GPU bridge | D3D11On12 GPU-only bridge, 3-slot lifetime, teardown | `PASS` 유지; device removal은 `notVerified` |
+| C1 attached visual | 최소 visual/input/semantics/close smoke | `PASS` 유지; IME/minimize 전체 matrix는 `notVerified` |
+| 기존 C2 candidate run | target 161, presented ACK 69, app present 6.9Hz | **app-internal cadence `FAIL`**; visible/scan-out acceptance는 `invalidated`/`notVerified` |
+| 기존 C2 raw-child pair | 같은 WGC 도구에서 gap/title failure 관측 | `diagnosticOnly`; absolute visible FAIL 판정은 철회 |
+| N0 Arm A 구조 | 하나의 top-level HWND, child/XAML/MAUI/CPU copy 0, WM_SIZE=present 380 | 구조/correctness `PASS` |
+| `n0-arm-a-420-wgc.json` | WGC gap과 size-transition pattern | `diagnosticOnly`; strict gate `invalid` |
+| N0 420×300 크기 | DPI 192에서 실제 initial outer 1680×1200px | 840×600 logical이므로 기존 420×300 판정 `invalid` |
+| N0 Arm B | lifted `Microsoft.UI.Composition` 1.8에 desktop target interop 부재 | 해당 API arm `unavailable` 유지 |
+| C3/N1/G2 | 제품 통합과 전체 acceptance | `notStarted` / `notVerified` |
+| Web B0~B2/G3~G4 | Windows hard gate 뒤 단계 | `notStarted` / `notVerified` |
 
-Ordered hard gate는 다음과 같다.
+### 1.1 N0 frame에서 확인된 방향
 
-```text
-R0: source/evidence/baseline 고정
-  -> C0: Composition surface + GPU bridge feasibility
-      FAIL -> composition branch 중단, 이후 단계 notStarted
-  -> C1: MAUI attached visual 최소 연결
-      API/attachment FAIL -> N0 가능성만 별도 판정
-  -> C2: MAUI composition strict WGC
-      PASS -> C3: MAUI 제품 통합 + Windows G2
-      FAIL -> rollback -> N0: pure Win32 top-level A/B
-  -> N0 PASS -> N1: Win32 shell 제품 통합 + Windows G2
-  -> C3 또는 N1의 Windows G2 PASS 뒤에만 Web 재개
-```
+N0 첫 전환은 다음과 같다.
 
-앞 단계가 FAIL이면 뒤 단계는 실행하지 않고 `notStarted`/`notVerified`로 남긴다.
+| frame | WGC `ContentSize.Width` | app content right gap | 해석 |
+| --- | ---: | ---: | --- |
+| 0 | 1658 | 0 | target/backbuffer 일치 |
+| 1 | 1658 | 8 | app content는 이미 더 작은 크기 |
+| 2 | 1650 | 0 | WGC target size가 다음 frame에 따라옴 |
 
-## 1. 보존할 사실과 폐기할 ownership
+frame 1의 gap 8px은 `1658 - 1650`과 같다. 첫 80 frame에서도 gap이 있는 72개 중 38개가 바로 다음 `ContentSize` 감소량과 정확히 일치했다.
 
-### 1.1 보존할 구현과 계약
-
-- `DorotiResizeEpoch`, build token, exact-size admission, `FrameTransaction`, exactly-once terminal ledger를 유지한다.
-- scene은 build 시작 시 캡처한 logical/physical size, scale, target generation, metrics generation을 끝까지 유지한다.
-- submit/present 직전에 최신 target으로 scene이나 backing-store identity를 재라벨하지 않는다.
-- framework/raster mailbox는 `current + latest` bound를 유지한다.
-- exact D3D12/Skia offscreen backing store와 GPU-only path를 재사용한다. renderer 교체는 이번 후보의 첫 수단이 아니다.
-- startup visibility와 mouse hover/click/capture 회귀 수정은 보존한다. composition 후보에서도 최소 smoke로 재확인한다.
-- `EndDraw`, GPU fence, `RequestCommitAsync`, `Present`, `DwmFlush`를 실제 scan-out ACK라고 부르지 않는다.
-
-### 1.2 후보에서 폐기할 현재 visible ownership
+이는 적어도 N0의 대표 transition에서 `content가 늦었다`가 아니라 다음 순서가 발생했음을 뜻한다.
 
 ```text
-WinUI/MAUI top-level HWND + XAML compositor
-  -> raw STATIC child HWND
-     -> CreateSwapChainForHwnd + D3D12 Present
+new smaller app backbuffer/source
+  -> old larger DWM/WGC presentation target
+  -> DXGI_SCALING_NONE background strip
+  -> next capture target size catches up
 ```
 
-현재 raw child는 `DorotiWindowsDxgiSurface.cs`의 `WindowsClientResizeSource`가 생성하고, parent/child subclass, child geometry, mouse input을 함께 소유한다. `WindowsHwndD3D12Presenter`는 같은 child HWND에 flip-model swap chain을 연결한다.
+이 pattern은 강한 원인 단서지만 실제 monitor scan-out과 동일하다고 아직 주장하지 않는다.
 
-이 구조에서는 다음 사건이 한 transaction이 아니다.
+### 1.2 현재 evidence가 증명하지 못하는 것
 
-1. DWM의 top-level border/client geometry 변경
-2. WinUI의 XAML layout/composition 처리
-3. app의 child HWND 이동/확장
-4. child HWND swap-chain exact buffer present
+- WGC gap이 실제 monitor에 같은 frame/duration으로 표시됐는지
+- WGC에서 계산한 최대 91/183/283 refresh phase가 실제 scan-out phase인지
+- `encoderDroppedFrames=0`이 WGC frame-pool overwrite/discard까지 포함하는지
+- `GetWindowRect`와 WGC `SystemRelativeTime`이 같은 시점을 나타내는지
+- standard non-client chrome에서 public API만으로 geometry와 client present를 원자 commit할 수 있는지
 
-C 후보는 3번과 4번의 별도 HWND boundary를 제거한다. 그러나 1번과 WinUI visual commit까지 하나의 API transaction이 되는 것은 아니다. 따라서 C 후보는 **원자성 보장으로 채택하는 것이 아니라, cross-HWND ownership 제거 가설을 strict WGC로 검증하는 것**이다.
+이 항목들은 아래 M0/M1/H0 gate 전까지 모두 `notVerified`다.
 
-## 2. C 후보 — MAUI/WinUI Composition surface presenter
+## 2. 새 원인 모델과 시간축
 
-### 2.1 visible graph
+모든 trace와 acceptance는 다음 여섯 시간축을 분리한다.
+
+| 축 | owner | authoritative event/data | 의미 |
+| --- | --- | --- | --- |
+| T0 input intent | user/input driver | cursor QPC, `WM_SIZING` proposed RECT | 아직 commit되지 않은 미래 target |
+| T1 window geometry | USER32/DWM | `WM_WINDOWPOSCHANGING/CHANGED`, `WM_SIZE`, sampled rect | OS가 적용한 top-level/client geometry |
+| T2 framework/layout | WinUI/MAUI 또는 direct host | XAML host layout epoch 또는 direct client rect | 앱 content metrics authority |
+| T3 surface | app/DXGI | backing/source/backbuffer size와 generation | 렌더된 pixel extent |
+| T4 present | DXGI/compositor | present ID, submit QPC, frame statistics | 앱 제출 및 compositor queue 상태 |
+| T5 observation/output | WGC/Desktop Duplication/camera | `SystemRelativeTime`, output frame | 외부에서 관측된 composed/display 결과 |
+
+잘못된 결론을 막기 위해 다음 규칙을 적용한다.
+
+- T0의 proposed target을 T1의 committed geometry로 재라벨하지 않는다.
+- T1 이후에 렌더를 시작한 frame을 `geometry와 동시에 준비됨`으로 기록하지 않는다.
+- T3 exact size만으로 T4/T5 표시 완료를 주장하지 않는다.
+- `Present`, `DwmFlush`, `RequestCommitAsync`, commit completion을 scan-out ACK라고 부르지 않는다.
+- WGC callback QPC와 frame `SystemRelativeTime`을 섞지 않는다.
+- 한 frame 뒤에 읽은 window rect로 이전 captured bitmap의 phase를 판정하지 않는다.
+
+### 2.1 공통 structural race
+
+현재 direct N0도 다음 순서다.
 
 ```text
-DWM top-level/non-client geometry
-  -> WinUI XAML layout
-     -> DorotiWindowsDxgiHost UIElement
-        -> attached ContainerVisual
-           -> SpriteVisual
-              -> CompositionSurfaceBrush
-                 -> immutable exact front CompositionDrawingSurface
+WM_SIZING: count only
+  -> OS/DWM geometry change
+  -> WM_SIZE
+  -> ResizeBuffers
+  -> exact render/copy
+  -> GPU fence waits
+  -> Present queue
+  -> DWM consumes the new front
 ```
 
-- `DorotiWindowsDxgiHost`는 layout, pointer/key/focus 연결 지점이다.
-- `SpriteVisual` 하나만 Doroti scene의 visible owner다.
-- `ElementCompositionPreview.SetElementChildVisual(host, visual)`로 연결한다.
-- `SetElementChildVisual`은 visual을 host visual tree의 마지막 child로 올리므로, semantics overlay/hidden text input과의 실제 z-order 및 hit-test를 C1에서 확인한다.
-- C0/C1에서는 `ContentIsland`, `ChildSiteLink`, 별도 accessibility root를 만들지 않는다.
+`WM_SIZE`를 authority로 쓰는 한 앱은 geometry가 적용된 뒤에야 exact frame 준비를 시작한다. 반대로 shrink 중 새 작은 buffer/source를 먼저 제출하면 DWM이 아직 더 큰 target을 소비하는 transition이 생길 수 있다.
 
-### 2.2 size authority와 좌표 계약
+따라서 새 구조의 목표는 `WM_SIZE를 더 빨리 처리`하는 데 그치지 않는다.
 
-MAUI 경로에서는 window intent와 content exact target을 분리한다.
+1. `WM_SIZING`에서 미래 exact target을 미리 계산한다.
+2. visible front와 독립된 backing에 미래 frame을 준비한다.
+3. drag 중 visible swap-chain capacity는 바꾸지 않는다.
+4. committed geometry 시점에는 allocation/raster가 아니라 bounded source switch/copy/present만 남긴다.
+5. standard chrome과 surface 전환이 여전히 분리되면 custom chrome control로 ownership 한계를 판정한다.
 
-- `WM_SIZING`
-  - 현재 drag edge/corner와 suggested top-level rect만 기록한다.
-  - provisional anchor 방향을 정하는 입력이다.
-  - framework scene의 exact metrics로 직접 승격하지 않는다.
-- top-level `WM_SIZE`/`WM_DPICHANGED`
-  - intent/DPI 변경을 알리되 원래 메시지를 삼키지 않고 WinUI에 전달한다.
-  - XAML layout이 아직 반영되지 않은 값을 scene descriptor로 재라벨하지 않는다.
-- `DorotiWindowsDxgiHost` 실제 layout + `XamlRoot` scale
-  - candidate content의 authoritative logical size와 rasterization scale이다.
-  - `physicalWidth/Height = round(logicalWidth/Height * scaleX/Y)`를 한 epoch에 고정한다.
-  - 0×0, unloaded, minimize target은 terminal reason을 남기고 surface를 만들지 않는다.
+### 2.2 cadence 병목
 
-좌표는 다음 세 층을 trace에 별도 기록한다.
+N0는 165Hz input 1651 samples에 `WM_SIZE`/present가 각각 약 380회, 즉 약 38Hz다. current WndProc는 size 변화마다 `ResizeBuffers`, backing 재생성, raster, GPU copy와 fence wait를 직렬 수행한다.
 
-| 층 | 단위 | 필수 필드 |
-| --- | --- | --- |
-| XAML host/visual | logical/effective pixels | logical size, visual size, offset, clip |
-| drawing surface | physical pixels | surface size, BeginDraw update rect/offset, DXGI format |
-| screen/WGC | physical pixels | window/client/content rect, monitor DPI, refresh |
+이 구조는 다음 두 문제를 만든다.
 
-physical surface를 logical visual에 표시하기 위한 DPI transform은 허용한다. 금지하는 것은 **이전 front를 새 logical target 전체에 맞추는 provisional stretch**다. C0에서 brush `Stretch`, scale/transform, pixel rounding을 고정하고 1px border/checkerboard/circle oracle로 1:1 screen mapping을 확인한다.
+- WndProc/input loop가 GPU/resource lifetime을 기다리며 raw input을 coalesce한다.
+- geometry가 적용된 뒤 시작한 work가 다음 geometry input까지 막아 window와 cursor cadence 자체를 떨어뜨린다.
 
-### 2.3 surface state와 bounded lifetime
+새 hot path에서는 WndProc가 GPU fence와 `ResizeBuffers`를 기다리지 않도록 한다. waitable swap-chain object를 사용하더라도 render worker가 frame 시작 전에 기다리며, WndProc에서 present 완료를 기다리는 용도로 사용하지 않는다.
 
-surface slot의 상태는 다음 순서만 허용한다.
+## 3. 보존할 구현 계약
+
+재검토는 기존 correctness work를 되돌리는 것이 아니다. 다음 계약은 그대로 유지한다.
+
+- `DorotiResizeEpoch`, build token, exact matcher, `FrameTransaction`, exactly-once terminal ledger
+- logical/physical/root/surface dimensions와 scale을 하나의 immutable epoch에 고정
+- framework/raster mailbox의 bounded `current + latest`
+- stale target의 pre-raster/pre-flush/pre-present rejection과 명시적 `Superseded`
+- scene/backing identity의 submit-time relabel 금지
+- GPU-only copy; CPU readback/GDI/bitmap round-trip 금지
+- exact front가 visible인 동안 destructive `Resize`/`BeginDraw` 금지
+- Composition path의 최대 3-slot pool, retirement 전 front 재사용 금지
+- device loss/shutdown에서 open draw, checked-out resource, fence/callback의 terminal 정리
+- correctness, app cadence, visible composition, scan-out, input/lifecycle을 별도 상태로 기록
+
+기존 C0/C1 experimental code와 default raw-child rollback path는 새 product gate가 결정될 때까지 보존한다. 기존 evidence와 unrelated worktree 변경을 정리하거나 삭제하지 않는다.
+
+## 4. 새 ordered gate
 
 ```text
-Free
-  -> Drawing(BeginDraw)
-  -> GpuWorkQueued
-  -> DrawEnded(EndDraw)
-  -> PendingVisualCommit
-  -> Front
-  -> Retired
-  -> Free
+D0: 기존 evidence 재분류와 provenance 동결
+  -> M0: DPI/timebase/capture pipeline 교정
+      -> M1: observer qualification
+          FAIL -> architecture 판정 금지, 측정기에서 hard stop
+      -> H0-A: direct top-level current ordering control
+      -> H0-B: WM_SIZING prebuild + stable-capacity/no-ResizeBuffers control
+          PASS -> H1-S: standard chrome protocol candidate
+          FAIL -> H0-C: same-surface custom chrome control
+              PASS -> H1-C: custom chrome/shell candidate
+              FAIL -> ownership 가설 미해결, product/Web hard stop
+      -> C2R: H0에서 PASS한 protocol의 MAUI/Composition 재검증(조건부)
+      -> P0: Windows product owner 선택과 통합
+      -> G2: Windows product acceptance
+      -> Web B0~B2/G3~G4 재개
 ```
 
-필수 조건:
+공통 hard rule:
 
-- 한 `CompositionGraphicsDevice`에서 active `BeginDraw`는 하나만 둔다.
-- `BeginDraw`가 돌려준 pointer는 `EndDraw` 뒤 저장하거나 사용하지 않는다.
-- visible `Front`에는 `Resize`/`BeginDraw`를 호출하지 않는다.
-- `PendingVisualCommit`은 동시에 하나만 허용한다. 그동안 들어온 target은 `latest` 하나로 coalesce한다.
-- old front는 visual이 새 surface로 전환됐다는 **검증된 retirement signal** 전에는 `Free`가 아니다.
-- `RequestCommitAsync` 호출 또는 반환만으로 retirement를 가정하지 않는다. C0에서 resolved SDK의 동작과 API contract를 확인해 안전한 signal을 고정한다.
-- 안전한 bounded retirement를 만들 수 없으면 surface를 generation마다 계속 할당하지 않고 C0 FAIL로 끝낸다.
-- 초기 pool은 최대 3 slots를 상한으로 한다. pool이 모두 front/pending/retired이면 새 allocation 대신 latest target만 보존한다.
-- stale epoch의 `DrawEnded` surface는 brush에 연결하지 않고 `Superseded` terminal로 끝낸다.
-- device loss/shutdown 때 active draw, checked-out D3D11On12 resource, pending fence, commit callback을 모두 terminal 처리한다.
+- M1이 PASS하기 전에는 WGC gap/refresh 수치로 presenter를 PASS/FAIL하지 않는다.
+- H0-B를 H0-A와 동일 renderer/scene/input/observer로 비교한다.
+- H0-C는 제품 결정이 아니라 standard chrome ownership 한계를 판정하는 control이다.
+- H0에서 유효한 protocol을 찾기 전에는 C2R scheduling을 다시 튜닝하지 않는다.
+- 앞 gate가 FAIL이면 뒤 단계는 `notStarted`/`notVerified`로 남긴다.
 
-### 2.4 GPU bridge — C0에서 결정할 두 경로
+## 5. D0 — evidence와 provenance 동결
 
-현재 backing store는 D3D12 `R8G8B8A8_UNorm`, sample count 1이다. Composition destination의 실제 format과 D3D11On12 ownership을 확인하기 전에는 `CopyResource` 가능성을 확정하지 않는다.
+상태: `PASS` — 이 문서에서 재분류 완료
 
-우선순위 A:
+### 보존할 evidence
 
-```text
-CompositionDrawingSurface.BeginDraw(ID3D11Texture2D)
-  -> returned texture가 app의 동일 D3D11On12 device 소유인지 확인
-  -> UnwrapUnderlyingResource(same D3D12 command queue)
-  -> destination COMMON -> COPY_DEST
-  -> backing RENDER_TARGET -> COPY_SOURCE
-  -> exact CopyResource 또는 compatible CopyTextureRegion
-  -> 두 resource를 필요한 최종 state로 복귀
-  -> queue fence signal
-  -> ReturnUnderlyingResource(fence, value)
-  -> EndDraw
-```
+- paired raw-child: `win-rsz-default-left-20260823-230345-7243be9e`
+- Composition candidate: `win-rsz-default-left-20260823-230500-43bd9077`
+- paired source fingerprint: `fca0d7e0e9b34b9e4c39fe9a53d2f315cf91e2f2e654a477f7e83df1ed4bbb53`
+- N0 app: `n0-arm-a-420-app.json`
+- N0 WGC diagnostic: `n0-arm-a-420-wgc.json` 및 frame sequence
+- C0 반복 evidence:
+  - `c0-composition-20260823-225738-b840851dd3804336b`
+  - `c0-composition-20260823-225753-28170a3d574b472f8`
+  - `c0-composition-20260823-225812-53f84fc0557c467d9`
 
-우선순위 B는 A의 destination unwrap이 API/resource ownership상 불가능할 때만 C0 안에서 허용한다.
+### D0 규칙
 
-```text
-existing D3D12 backing을 D3D11On12 wrapped source로 노출
-  -> BeginDraw의 ID3D11Texture2D destination과 같은 D3D11 device/context에서
-     GPU-only CopyResource/CopySubresourceRegion
-  -> wrapped source release/flush와 EndDraw 순서를 명시적으로 완료
-```
+- historical execution source HEAD는 `6557bd79cb870b9699da010e59d55b376485076e`이며, 구현/evidence는 이 HEAD 위 scoped dirty worktree로 보존한다.
+- historical JSON/PNG를 새 schema로 덮어쓰지 않는다.
+- 기존 summary의 `FAIL` 문자열을 수정하지 않고 새 decision record에서 invalidated 이유를 남긴다.
+- source commit, dirty-file fingerprint, binary hash, backend flag, OS/GPU/driver/DPI/refresh를 새 run마다 기록한다.
+- 비교 run은 같은 binary/source fingerprint와 candidate flag만 다르게 한다.
+- `n0-arm-a-420` 이름은 그대로 보존하되 실제 logical size mismatch를 metadata correction으로 기록한다.
 
-공통 hard requirement:
-
-- Composition graphics device, D3D11On12 device, D3D12 device/queue는 같은 adapter/ownership graph를 사용한다.
-- destination texture description, format, size, sample count를 매 draw 검증한다.
-- `R8G8B8A8_UNorm` exact copy가 지원되지 않으면 candidate backing을 `B8G8R8A8_UNorm`/`SKColorType.Bgra8888`로 만들 수 있는지 먼저 검증한다.
-- format conversion이 필요하면 GPU shader/blit 후보를 별도 측정하며, CPU swizzle/readback은 허용하지 않는다.
-- `BeginDraw` offset을 copy destination origin에 반영한다. full update에서도 offset이 0이라고 가정하지 않는다.
-- D3D12 work가 destination을 `COMMON`으로 돌리고 fence를 signal한 뒤 `ReturnUnderlyingResource`한다.
-- checked-out 동안 해당 resource에 D3D11On12 translation-layer work를 섞지 않는다.
-- device removal/error에서 `BeginDraw`가 실패했다면 `EndDraw`를 호출하지 않는다.
-
-A/B가 모두 안전하게 성립하지 않으면 pure Win32 composition도 같은 bridge를 재사용할 수 없으므로 C0에서 중단한다. 이 실패를 CPU copy, GDI, bitmap encode, 다른 ANGLE DLL로 우회하지 않는다.
-
-### 2.5 visible commit
-
-exact staging이 준비된 뒤 compositor dispatcher의 한 turn에서 다음 값을 함께 바꾼다.
-
-- `CompositionSurfaceBrush.Surface`
-- `SpriteVisual.Size`, `Offset`, `Clip`
-- brush DPI mapping transform/scale
-- epoch/transaction을 식별하는 diagnostics state
-
-내부 trace는 최소한 다음 시점을 분리한다.
-
-```text
-ExactBackingStoreReady
-BeginDrawStarted
-GpuCopyQueued
-GpuFenceSignaled
-ResourceReturned
-EndDrawCompleted
-VisualMutationQueued
-CommitRequested
-CommitActionCompleted
-FrontAdopted
-Presented | Superseded | Failed
-```
-
-- `EndDrawCompleted`는 surface pixels가 composition에 사용 가능해진 시점이다.
-- `CommitRequested`/`CommitActionCompleted`는 compositor submission 관찰값이다.
-- `FrontAdopted`/기존 `VisibleSurfaceCommitted`는 app-side visible owner가 바뀐 단계일 뿐 scan-out ACK가 아니다.
-- WGC/PresentMon/ETW 같은 외부 관측만 strict visual/cadence evidence다.
-
-### 2.6 provisional 표시
-
-exact surface가 준비되기 전에는 old front를 새 client 전체로 확대하지 않는다.
-
-| drag edge | old front provisional anchor |
-| --- | --- |
-| left | right 고정, logical `offsetX = newWidth - oldWidth` |
-| right | left 고정, `offsetX = 0` |
-| top | bottom 고정, logical `offsetY = newHeight - oldHeight` |
-| bottom | top 고정, `offsetY = 0` |
-| corner | X/Y 규칙 조합 |
-
-- shrink는 새 host bounds로 crop한다.
-- expansion으로 드러난 영역은 `DorotiMauiSurface` root background만 보인다.
-- old surface pixels는 유지하고 visual offset/clip만 바꾼다.
-- exact commit에서 surface, size, clip, DPI mapping을 교체하고 provisional offset을 0으로 되돌린다.
-- host layout과 edge intent가 일시적으로 불일치하면 stretch하지 않고 더 보수적인 crop/background를 택한다.
-
-### 2.7 scheduling
-
-- MAUI 후보에서는 synchronous `WM_SIZE` 100ms wait를 제거한다.
-- Win32 message handler는 immutable intent/edge를 게시하고 즉시 복귀한다.
-- actual XAML host layout이 authoritative content epoch을 게시한다.
-- framework/raster는 `current + latest`; compositor에는 pending visible commit 하나만 둔다.
-- exact staging이 latest gate를 통과했을 때만 visible commit한다.
-- UI dispatcher가 blocked인 동안 XAML layout/compositor callback이 진행된다고 가정하지 않는다.
-- `DwmFlush`는 C2에서 기본 OFF와 commit 뒤 resize-only ON을 제한적으로 A/B할 수 있다. 한 번의 paired A/B 뒤 strict gate가 좋아지지 않으면 OFF로 고정하고 반복 조정하지 않는다.
-
-## 3. 구현 경계
-
-### 3.1 C0 validation 전용
-
-- 새 `Doroti/validation/windows-composition-surface/`
-  - 작은 WinUI/Win32 executable과 checkerboard/bar/circle/color-patch scene
-  - Composition interop projection, D3D11On12 bridge, surface pool, teardown만 검증
-  - MAUI/framework 제품 연결 금지
-- managed projection이 필요한 native interface를 안전하게 노출하지 못하면 좁은 native bridge를 사용한다.
-- `Vortice.Direct3D11` 추가가 필요하면 central package version과 Windows lock file만 scoped 변경한다. package 추가 자체를 C0 성공으로 간주하지 않는다.
-
-### 3.2 C1/C2 MAUI 후보
-
-- `DorotiWindowsDxgiHost`
-  - 후보 path에서 `SwapChainPanel Presenter`를 제거한다.
-  - attached visual root와 XAML input/focus owner를 제공한다.
-- `WindowsTopLevelResizeSource` 신설 또는 책임 분리
-  - parent `WM_SIZING`/`WM_SIZE`/DPI/edge 관찰만 소유한다.
-  - child HWND 생성, child subclass, native mouse routing을 포함하지 않는다.
-- `WindowsCompositionSurfacePresenter` 신설
-  - compositor, graphics device, surface pool, brush/visual, GPU bridge, commit/retirement를 소유한다.
-- D3D12 device/backing 책임 분리
-  - 현재 `WindowsHwndD3D12Presenter` 안의 adapter/device/queue/Skia context/backing-store 책임을 candidate가 재사용할 수 있는 좁은 owner로 추출한다.
-  - C0 PASS 전에는 대규모 제품 refactor를 하지 않는다.
-- `DorotiWindowsDxgiSurface`
-  - candidate flag 아래에서 raw child를 만들지 않는다.
-  - exact host layout epoch, framework/raster mailbox, composition presenter 연결만 조정한다.
-- `DorotiMauiSurface`
-  - hidden `Entry`/`Editor`, semantics overlay, root background를 유지한다.
-  - candidate visual이 semantics/input z-order를 가리지 않는지 확인한다.
-
-### 3.3 삭제 시점
-
-다음 코드는 C2 PASS가 아니라 C3/G2 PASS 뒤에만 삭제한다.
-
-- raw `STATIC` child HWND와 parent/child dual subclass
-- `WindowsHwndD3D12Presenter` 제품 경로
-- 비활성 `DOROTI_WINDOWS_ANGLE_SPIKE`
-- `SwapChainPanel` dual exact presenter와 사용되지 않는 `WindowsD3D12Presenter`
-- 후보 선택용 feature flag와 baseline-only wiring
-
-삭제 전까지 기본 제품 path를 바꾸지 않는다. 후보 FAIL 시 candidate wiring/package만 제거하고 현재 raw-child baseline으로 복귀한다.
-
-## 4. R0 — provenance와 paired baseline 고정
+## 6. M0 — 관측기와 DPI 계약 교정
 
 상태: `notStarted`
 
-### 작업
+M0의 목표는 app을 고치는 것이 아니라 `실제로 어느 owner가 먼저/늦게 바뀌는지`를 refresh 단위로 판정할 수 있는 observer를 만드는 것이다.
 
-- source HEAD, dirty files, resolved Windows App SDK/D3D package, OS/GPU/driver/DPI/refresh를 기록한다.
-- `work.md`의 기존 evidence ID와 수치를 historical evidence로 고정하고 재작성하지 않는다.
-- candidate와 같은 source/binary의 feature flag로 current raw-child baseline을 실행할 수 있게 한다.
-- C2 직전에 raw-child baseline을 같은 장비/해상도/input driver에서 paired 실행한다.
-- Flutter는 고정 source protocol과 기존 `flutter-rsz-default-20260823-112152-4dd6a255` 기록만 참고한다. 새 Flutter build/capture/instrumentation은 실행하지 않는다.
+### 6.1 DPI-aware window sizing
 
-### gate
+- validator/capture/input process를 모두 Per-Monitor V2 DPI-aware로 시작한다.
+- historical gate의 420×300, 640×360, 1000×600은 **logical outer-window size**로 유지한다. logical 값을 DPI-unaware `SetWindowPos`에 넘기거나 physical outer size를 다시 DPI scaling하지 않는다.
+- DPI-aware `SetWindowPos`, `GetWindowRect`, `DwmGetWindowAttribute`, 실제 `GetClientRect`를 함께 사용해 requested outer와 derived client를 모두 검증한다. client-size 전용 control이 필요할 때만 `AdjustWindowRectExForDpi`로 outer extent를 계산한다.
+- run 시작 전 다음을 evidence에 기록하고 requested/actual mismatch가 있으면 run을 `invalid`로 즉시 종료한다.
+  - requested logical outer-window size
+  - actual logical/physical outer-window size와 client size
+  - outer rect와 DWM extended frame bounds
+  - window/monitor DPI와 raster scale
 
-- baseline/backend identity와 source fingerprint가 trace에 남는다.
-- WGC가 실제 candidate/raw content와 title/caption을 캡처하는지 확인된다.
-- 포커스 상실, input cleanup 실패, capture error/drop run은 acceptance에서 제외한다.
+허용 오차:
 
-## 5. C0 — Composition surface/GPU bridge feasibility
+- physical outer width/height: requested DPI conversion 대비 각 1px 이하
+- logical outer round-trip: 각 0.5 logical px 이하
+- actual client extent는 oracle/surface authority로 별도 기록하며 outer size와 혼용하지 않음
+- mismatch run을 다음 size gate의 evidence로 재사용하지 않는다.
 
-상태: `notStarted` / runtime `notVerified`
+### 6.2 WGC callback hot path
 
-### 작업
+현재 `FrameArrived` 안의 staging texture 생성, synchronous `Map`, full memcpy, pixel oracle, PNG queue, `GetWindowRect`, per-size `Recreate`를 제거하거나 callback 밖으로 이동한다.
 
-1. resolved Windows App SDK 1.8에서 compositor, graphics device, drawing surface, native interop을 생성한다.
-2. 동일 D3D12 device/queue 위 D3D11On12 device를 만들고 우선순위 A/B bridge를 순서대로 검증한다.
-3. odd/even size, 420/640/1000 logical의 200% physical size, repeated resize에서 full-surface copy를 실행한다.
-4. BeginDraw offset, format, color channel, alpha, row/pixel geometry를 checkerboard/color patch로 확인한다.
-5. surface pool을 최대 3 slots로 제한하고 pending commit 동안 latest coalescing을 확인한다.
-6. repeated create/draw/commit/resize/teardown과 forced presenter reset을 실행한다.
-7. device removal/replacement를 자동으로 유발할 수 없으면 `notVerified`로 명시하고, 최소한 checked-out/open-draw cleanup의 deterministic failure injection을 수행한다.
-
-### PASS gate
-
-- Release build 경고 0/오류 0.
-- `BeginDraw`/GPU copy/return/`EndDraw` 반복 성공.
-- CPU readback/GDI/bitmap encode 0.
-- source/destination adapter, format, size, sample count mismatch 0.
-- open `BeginDraw`, checked-out resource, pending fence/callback, leaked slot 0.
-- surface slot 수가 상한을 넘지 않고 front 재사용-before-retirement 0.
-- device/reset failure가 exactly-once terminal로 닫힌다.
-
-### FAIL gate
-
-- A/B GPU-only bridge가 모두 안전하지 않다.
-- app-owned D3D11On12 graph로 BeginDraw texture를 사용할 수 없다.
-- safe bounded front retirement를 정의할 수 없다.
-- full-surface update가 CPU copy 또는 unbounded allocation을 요구한다.
-- format/alpha/color correctness를 GPU-only로 유지할 수 없다.
-
-C0 FAIL이면 C1/C2/N0/N1을 진행하지 않는다.
-
-## 6. C1 — MAUI attached visual 최소 연결
-
-상태: `notStarted` / visual/input `notVerified`
-
-### 작업
-
-- opt-in candidate flag에서 raw child HWND와 `SwapChainPanel` 없이 attached visual을 연결한다.
-- root background, fixed AppBar, circle, right-edge, checkerboard를 composition surface로 표시한다.
-- host layout epoch과 physical surface size/DPI mapping을 trace로 연결한다.
-- left/right/top/bottom/corner provisional anchor를 synthetic size sequence로 검증한다.
-- unload/reload, 0×0, minimize/restore, presenter reset에서 surface state를 terminal 처리한다.
-- XAML host pointer/key/focus와 hidden text input/semantics overlay가 candidate visual 위에서 계속 접근 가능한지 최소 smoke한다.
-
-### PASS gate
-
-- startup 첫 화면 visible, title/caption visible, blank 0.
-- raw render child HWND 0, HWND swap chain 0, `SwapChainPanel` attachment 0.
-- surface/visual/DPI mapping mismatch와 non-uniform stretch 0.
-- mouse hover/click/capture smoke와 resize 뒤 click PASS.
-- candidate OFF 시 current raw-child baseline이 동일 binary에서 동작한다.
-- C0 surface lifetime/terminal 조건을 그대로 유지한다.
-
-### 실패 분기
-
-- GPU bridge/lifetime 문제가 재발하면 C0 FAIL로 되돌아가고 N0로 우회하지 않는다.
-- 실패가 WinUI attached-visual/XAML integration에 한정되고 desktop target에서는 같은 presenter를 사용할 수 있다는 근거가 있으면 C2 없이 N0로 이동할 수 있다.
-- `ContentIsland`를 visual failure를 숨기는 즉시 fallback으로 넣지 않는다.
-
-## 7. C2 — MAUI composition strict WGC
-
-상태: `notStarted` / G1 `notVerified`
-
-### fail-fast 순서
-
-1. 420×300 logical, 200% DPI, 165Hz, left edge 10초
-2. 640×360 logical, 같은 조건
-3. 1000×600 logical, 같은 조건
-
-앞 크기가 absolute gate를 실패하면 다음 크기로 진행하지 않는다. 각 크기는 동일 source fingerprint에서 3회 연속 valid run이 PASS해야 한다. 한 번의 좋은 run만으로 안정적 개선을 주장하지 않는다.
-
-### 기록할 evidence
-
-- actual input samples, `WM_SIZING`, delivered top-level `WM_SIZE`, host layout epochs
-- framework scenes, exact backing ready, BeginDraw/EndDraw, GPU fences
-- visual mutation, commit request/action completion, front adoption, terminal 수
-- WGC window/client/content rect, blank, title/caption, AppBar height, circle aspect, right gap, final gap
-- border-content phase p50/p95/max와 2-refresh 초과 episode 수/지속 시간
-- surface pool high-water mark, supersede 수, device/capture/framework error
-- current raw-child paired baseline은 진단 비교로 기록하되 candidate의 absolute failure를 상대 개선으로 덮지 않는다.
-
-### strict PASS gate
-
-- app-presented geometry mismatch, overflow, blank, non-uniform stretch 0.
-- title/caption/AppBar/circle/capture error/drop/final gap failure 0.
-- provisional background/crop은 허용하지만 border-content phase가 2 refresh intervals를 넘는 episode 0.
-- stored Flutter evidence에 비교 가능한 phase p95가 있으면 한 refresh 이상 나쁘지 않아야 한다. 새 Flutter run은 요구하지 않는다.
-- 3회 연속 run 모두 transaction leak, stale front adoption, checked-out resource, front mutation 0.
-- commit telemetry 성공만이 아니라 WGC-visible content가 같은 epoch/geometry로 확인된다.
-
-### FAIL 처리
-
-- timer, timeout, sample 수, frame-latency wait를 반복 조정하지 않는다.
-- 한 번의 제한된 `DwmFlush` OFF/resize-only ON paired A/B 외에는 cadence knob를 확장하지 않는다.
-- candidate feature flag를 OFF로 되돌리고 default raw-child path가 시작/input 동작을 유지하는지 확인한다.
-- 실패가 DWM/WinUI layout과 visual commit의 phase boundary로 남으면 N0로 이동한다.
-- W1/W2식 제품 통합, 구 경로 삭제, Web milestone은 시작하지 않는다.
-
-## 8. N0 — pure Win32 top-level ownership A/B
-
-상태: `notStarted` / C2 실패 전 실행 금지
-
-C2가 strict gate를 통과하지 못했지만 C0 presenter/bridge 자체는 유효할 때만 실행한다.
+새 callback은 다음만 수행한다.
 
 ```text
-WS_OVERLAPPEDWINDOW top-level HWND
-  -> one WndProc owns client size/DPI/input/lifecycle
-  -> same Doroti epoch/framework/D3D12 backing
-  -> Arm A 또는 Arm B visible owner
+TryGetNextFrame
+  -> frame SystemRelativeTime/ContentSize/capture index 기록
+  -> preallocated GPU readback ring slot으로 CopySubresourceRegion
+  -> ring fence/query 기록
+  -> frame dispose/return
 ```
 
-### 두 control arm
+- D3D11 staging resource는 최대 capture extent에 맞춰 미리 할당한다.
+- single-monitor M1에서는 frame pool도 monitor work-area를 포함하는 고정 최대 physical size로 한 번 만든다.
+- drag 중 `Direct3D11CaptureFramePool.Recreate`를 호출하지 않는다.
+- frame `ContentSize`가 pool capacity를 넘으면 clip을 숨기지 말고 run을 `invalid`로 끝낸다.
+- `Map`, pixel scan, PNG encoding은 capture callback과 분리된 analyzer worker에서 fence/query 완료 뒤 수행한다.
+- ring full이면 별도 `captureRingDroppedFrames`를 증가시키고 해당 run을 acceptance에서 제외한다.
 
-1. **Arm A — top-level HWND direct DXGI**
-   - top-level HWND client에 단 하나의 `CreateSwapChainForHwnd` presenter
-   - raw render child HWND 없음
-   - exact offscreen backing → 1:1 GPU copy → Present
-2. **Arm B — desktop Composition target**
-   - `ICompositorDesktopInterop.CreateDesktopWindowTarget(topLevelHwnd, ...)`
-   - C0의 동일 `WindowsCompositionSurfacePresenter`
-   - top-level client root visual 하나와 exact drawing surface
+### 6.3 same-timebase trace
 
-### 작업 경계
+모든 event는 raw timestamp와 clock identity를 함께 남긴다.
 
-- 고정 bar/circle/right-edge scene와 동일 WGC/input driver만 먼저 연결한다.
-- MAUI/XAML, `ContentIsland`, hidden Entry/Editor, full semantics를 N0 spike에 넣지 않는다.
-- one WndProc가 `WM_SIZE`, `WM_SIZING`, `WM_DPICHANGED`, close/minimize만 소유한다.
-- compositor arm은 current thread DispatcherQueue와 desktop target 수명을 명시적으로 소유한다.
-- Arm A/B는 renderer/backing/evidence 조건을 같게 하고 visible presenter만 바꾼다.
+- input/window/app: QPC counter + frequency
+- WGC: `SystemRelativeTime` 원본 100ns 값
+- callback: callback-entry QPC와 callback-exit QPC
+- present: submit QPC, present ID/count, 가능한 frame statistics
+- Desktop Duplication: acquire QPC와 frame metadata
 
-### gate
+run 시작/종료에서 QPC↔100ns calibration pair를 기록한다. phase 계산은 captured frame의 `SystemRelativeTime`으로 수행하고 callback-entry QPC는 delivery delay 진단에만 사용한다.
 
-- C2와 같은 420 → 640 → 1000 strict WGC fail-fast matrix를 적용한다.
-- 한 arm만 PASS하면 그 arm을 선택한다.
-- 둘 다 PASS하면 더 단순하고 commit/lifetime 단계가 적은 arm을 선택한다.
-- 둘 다 FAIL하면 host ownership 가설만으로 해결되지 않은 것으로 기록하고 N1/Web을 시작하지 않는다.
+`GetWindowRect`는 다음 두 경로로 분리한다.
 
-## 9. C3 또는 N1 — 선택된 Windows 제품 경로 통합
+- input driver가 일정 cadence로 sampling한 T0/T1 window trace
+- app WndProc가 `WM_WINDOWPOS*`, `WM_SIZE`에서 기록한 committed geometry trace
 
-상태: `notStarted` / C2 또는 N0 PASS 전 실행 금지
+WGC callback이 readback을 끝낸 뒤 읽은 rect를 captured frame의 geometry로 사용하지 않는다.
 
-### C3 — MAUI Composition 제품 통합
+### 6.4 실제 output 교차 관측
 
-- `DorotiWindowsDxgiHost`가 XAML layout/input owner, `WindowsCompositionSurfacePresenter`가 visible owner가 되도록 책임을 고정한다.
-- pointer/keyboard/Korean IME/focus/hidden text input/semantics/accessibility를 중복 owner 없이 연결한다.
-- `ContentIsland`는 기존 XAML 경계로 제품 요구를 충족할 수 없다는 구체적 failure가 있을 때만 별도 opt-in으로 검증한다.
-- `ChildSiteLink.ActualSize`, transform, input/accessibility state를 XAML placement와 동기화해야 하므로 단순 visual 교체와 같은 milestone으로 묶지 않는다.
+WGC window capture만으로 strict visible acceptance를 판정하지 않는다.
 
-### N1 — pure Win32 shell migration
+우선순위:
 
-- 새 `Doroti.Host.Win32`
-  - window class/message loop, size/DPI, pointer/touch/pen, keyboard/focus, clipboard, shutdown 소유
-- 새 `Doroti.Target.Windows.Win32.win-x64`
-  - Windows target manifest, runtime assets, package identity 소유
-- common host 추출
-  - `MauiFrameworkHost`의 session/view/render 연결을 toolkit-independent service로 이동
-- native text/accessibility
-  - TSF/IMM32 bridge와 UIA fragment root를 명시적으로 구현
-- template/validator
-  - 실제 `Win32/DXGI` 또는 `Win32/Composition` backend identity와 packaging/startup을 검증
+1. DXGI Desktop Duplication으로 같은 monitor output을 캡처하고 실제 screen coordinate의 window crop을 분석
+2. DXGI present statistics/PresentMon 또는 ETW로 present ID와 displayed/composed timing 연결
+3. WGC `ContentSize`와 window-local pixel oracle를 진단용으로 병행
+4. WGC와 Desktop Duplication이 모순되면 240fps 이상 외부 촬영 또는 육안 high-refresh acceptance로 판정
 
-N1은 presenter 교체가 아니라 Windows shell migration이다. N0 strict PASS 없이 scaffold/package/template부터 만들지 않는다.
+Desktop Duplication도 scan-out의 완전한 하드웨어 ACK라고 과장하지 않는다. 다만 window-target WGC의 frame-pool resize artifact와 전체 desktop composition을 분리하는 필수 control로 사용한다.
 
-### Windows G2 product acceptance
+### M0 PASS gate
+
+- exact logical outer-window size 생성과 DPI round-trip PASS
+- callback 안 synchronous `Map`/pixel analysis/PNG encoding/`GetWindowRect` 0
+- drag 중 frame-pool `Recreate` 0
+- preallocated capture ring이 bounded이고 ring drop 0
+- WGC frame timestamp, callback delay, app/window QPC가 별도 필드로 저장됨
+- analyzer가 `ContentSize` 밖 undefined pixel을 oracle에 포함하지 않음
+- Desktop Duplication 또는 동등한 output-level observer가 동일 run에 연결됨
+- capture/app/driver process와 mouse button/priority/timer cleanup PASS
+
+### M0 FAIL gate
+
+- 165Hz test에서 callback 자체가 readback/analysis에 block됨
+- pool capacity/resize transition 때문에 crop extent를 신뢰할 수 없음
+- DPI-aware requested/actual outer-window size와 derived client extent를 고정할 수 없음
+- app present와 output frame을 같은 timebase로 연결할 수 없음
+
+M0 FAIL이면 presenter/ownership 실험으로 진행하지 않는다.
+
+## 7. M1 — observer qualification
+
+상태: `notStarted`
+
+M1은 새 observer가 짧은 transition을 놓치거나 만들어내지 않는지 검증한다.
+
+### 7.1 qualification scene
+
+direct top-level validation app에서 resize와 독립적으로 다음 marker를 표시한다.
+
+- frame마다 증가하는 GPU-rendered binary/Gray-code frame ID
+- 고정 1px border와 right-edge color marker
+- 고정 높이 AppBar, checkerboard, circle
+- surface/source size generation을 나타내는 color patch
+
+scripted sequence:
+
+1. static size 5초
+2. surface content만 165Hz 또는 가능한 최대 cadence로 5초 변경
+3. window geometry만 단계적으로 변경하고 content는 고정
+4. content/source와 window geometry를 알려진 0/1/2/4 refresh offset으로 변경
+5. 420×300 logical outer-window left-edge triangle drag 10초
+
+### 7.2 observer metrics
+
+- rendered frame ID 대비 WGC/Desktop Duplication observed ID 누락/중복
+- capture delivery interval과 callback duration
+- capture-ring drop, encoder drop, WGC timestamp discontinuity
+- known injected phase 대비 측정 phase 오차
+- static size에서 false gap/blank/title/circle failure
+- window-only 변화에서 WGC `ContentSize`와 Desktop Duplication bounds의 상대 phase
+
+### M1 PASS gate
+
+- callback duration p95 ≤ 1ms, p99 ≤ 2ms
+- capture-ring drop 0, capture error 0
+- known 0/1/2/4-refresh injected phase의 방향을 모두 올바르게 식별
+- phase magnitude 오차 p95 ≤ 1 refresh
+- static false gap/blank/non-uniform stretch 0
+- WGC가 2-refresh gate를 샘플링할 cadence를 제공하지 못하면 WGC를 strict judge에서 자동 제외하고 Desktop Duplication/외부 observer가 그 역할을 담당
+- 3회 연속 qualification이 같은 판정을 냄
+
+### M1 FAIL 처리
+
+- threshold, PNG stride, sample 수를 조정해 PASS로 만들지 않는다.
+- WGC가 구조적으로 충분한 cadence를 제공하지 않으면 `diagnosticOnly`로 강등한다.
+- output-level observer도 qualification을 통과하지 못하면 strict refresh acceptance를 중단하고 외부 고속 촬영 setup이 준비될 때까지 뒤 gate를 `notStarted`로 둔다.
+
+## 8. H0 — direct top-level 인과 분리 실험
+
+상태: `notStarted`
+
+H0는 MAUI/XAML/child HWND를 제외한 하나의 top-level HWND에서 renderer, scene, input, observer를 고정하고 size/present ordering만 바꾼다.
+
+공통 조건:
+
+- 200% DPI, 165Hz 내장 panel 우선
+- 정확한 420×300 logical outer-window부터 시작하고 실제 client extent를 surface authority로 기록
+- left-edge 10초 triangle drag
+- same source fingerprint/binary에서 arm flag만 변경
+- `Scaling.None`, fixed bar/circle/checker/right-edge oracle
+- CPU readback/GDI/bitmap path 0
+- app frame generation과 present ID를 output marker에 인코딩
+
+### 8.1 H0-A — current ordering control
+
+목적: 기존 N0 결과를 올바른 DPI와 observer로 다시 측정한다.
+
+```text
+WM_SIZE
+  -> ResizeBuffers exact
+  -> raster/copy
+  -> fence wait
+  -> Present(0)
+```
+
+필수 기록:
+
+- `WM_SIZING`, `WM_WINDOWPOS*`, `WM_SIZE` rate와 duration
+- WndProc blocked time
+- `ResizeBuffers`, raster, copy, fence wait, Present duration
+- committed client size, backbuffer size, present ID, WGC/desktop frame ID
+- shrink/expansion 방향별 target-minus-source extent
+
+H0-A는 baseline control이며 PASS 후보가 아니다. 여기서 기존 gap pattern이 재현되지 않아도 observer와 DPI 변화 때문에 historical evidence를 삭제하지 않는다.
+
+### 8.2 H0-B — prebuild + stable-capacity source handoff
+
+목적: geometry commit 뒤의 `ResizeBuffers/raster/fence`가 common lag의 주원인인지 검증한다.
+
+#### surface/resource 구조
+
+- monitor/work-area와 product maximum policy 안의 bounded capacity swap chain을 한 번 생성한다.
+- interactive drag 중 `ResizeBuffers`를 호출하지 않는다.
+- exact offscreen backing은 `current + latest` 두 generation만 유지한다.
+- `WM_SIZING` proposed outer rect를 DPI-aware client size로 변환해 future epoch을 게시한다.
+- render worker가 future exact backing을 미리 raster/flush하고 ready fence를 남긴다.
+- current visible source region/front는 committed geometry가 바뀌기 전까지 유지한다.
+
+#### commit hot path
+
+```text
+WM_SIZING proposed target
+  -> future exact backing prebuilt asynchronously
+
+WM_WINDOWPOSCHANGED / WM_SIZE committed target
+  -> committed epoch을 present worker에 게시하고 WndProc는 즉시 복귀
+  -> worker가 matching ready generation lookup
+  -> GPU copy into stable-capacity backbuffer
+  -> SetSourceSize(committed exact client extent)
+  -> Present
+```
+
+- matching future frame이 없으면 old front를 non-uniform stretch하지 않는다.
+- shrink는 committed bounds에서 crop하고 expansion의 uncovered area는 명시적 background로 남긴다.
+- WndProc는 raster, GPU copy, fence wait, `ResizeBuffers`, `Present`를 수행하지 않는다.
+- GPU readiness를 기다려야 하면 최대 1 refresh의 bounded wait arm을 한 번만 비교한다. timeout을 반복 튜닝하지 않는다.
+- `SetSourceSize`는 이 H0 실험에서만 capacity-preserving source handoff의 인과 control로 허용한다.
+- 과거 capacity-buffer overflow 때문에 H0/G2 visible proof 없이 제품 경로로 승격하지 않는다.
+
+#### H0-B가 답해야 할 질문
+
+1. `WM_SIZE` rate가 기존 약 38Hz보다 올라가는가?
+2. WndProc blocked time에서 `ResizeBuffers`/raster/fence가 제거되는가?
+3. committed geometry에 matching prebuilt generation이 몇 % 존재하는가?
+4. standard chrome과 source/present가 실제 output에서 같은 refresh에 전환되는가?
+5. shrink의 `Scaling.None` background strip과 expansion clip이 사라지는가?
+
+### 8.3 H0-C — same-surface custom chrome control
+
+실행 조건: M1 PASS 후 H0-B가 internal cadence/correctness는 PASS하지만 actual output에서 standard border/content phase만 남을 때.
+
+목적: public standard non-client chrome의 별도 DWM ownership이 마지막 원인인지 판정한다.
+
+- borderless top-level window 한 개를 사용한다.
+- resize border/title/caption oracle와 app content를 같은 swapchain/backing에 그린다.
+- custom hit-test로 left/right/top/bottom/corner resize intent를 만든다.
+- OS outer geometry trace는 계속 기록하되 visible border/content는 같은 presented frame ID를 공유한다.
+- full product input/accessibility/IME를 넣지 않고 ownership control만 검증한다.
+
+판정:
+
+| H0-B standard chrome | H0-C custom chrome | 결론 |
+| --- | --- | --- |
+| PASS | 미실행 | standard chrome에서도 stable-surface protocol 가능 |
+| FAIL | PASS | 남은 root는 standard non-client geometry와 app surface의 분리 |
+| FAIL | FAIL | surface/present scheduling 또는 observer 가설이 아직 불완전 |
+
+### 8.4 H0-B/H0-C PASS gate
+
+H0-A는 비교용 control이므로 아래 gate로 product candidate가 되지 않는다. 아래 absolute gate는 H0-B와 조건부 H0-C에 적용한다.
+
+correctness:
+
+- stale/mismatched present, illegal transition, unterminated transaction 0
+- committed client/source/render extent mismatch 0
+- drag 중 `ResizeBuffers` 0(H0-B/C)
+- capacity/source overflow, out-of-bounds copy, non-uniform stretch 0
+- final exact frame과 size mismatch 0
+
+cadence:
+
+- `WM_SIZE`/committed geometry handler p95 ≤ 1 refresh, p99 ≤ 2 refresh
+- matching ready frame의 geometry-commit→Present submit p95 ≤ 1 refresh
+- inter-present interval >2 refresh episode가 연속 2회 이상 발생하지 않음
+- final target→matching present ≤ 2 refresh
+
+visible/output:
+
+- Desktop Duplication/qualified observer에서 blank/title/AppBar/circle/right-edge failure 0
+- newly committed visible border와 content frame ID의 phase >2 refresh episode 0
+- final gap 0
+- WGC와 output observer가 다르면 output observer와 직접 관찰을 우선하고 discrepancy를 별도 기록
+- 정확한 420×300, 640×360, 1000×600 logical outer-window에서 각 3회 연속 PASS
+
+fail-fast는 M1이 PASS한 뒤에만 적용한다. 420×300 absolute gate가 유효하게 FAIL하면 640/1000은 `notStarted`로 남긴다.
+
+## 9. H1 — Windows visible ownership 결정
+
+상태: `notStarted`
+
+H0 결과로 제품 후보를 다음처럼 제한한다.
+
+### H1-S — standard chrome + stable surface
+
+선택 조건: H0-B PASS.
+
+- `WM_SIZING` future epoch prebuild
+- drag 중 stable capacity
+- committed geometry에서 bounded source switch/present
+- standard title/caption 유지
+
+이 경우 direct HWND와 MAUI Composition 중 어느 host에서도 같은 protocol을 재현할 수 있는지 C2R로 비교한다.
+
+### H1-C — custom chrome + single visible surface
+
+선택 조건: H0-B FAIL, H0-C PASS.
+
+- standard non-client chrome과 exact content의 원자 전환을 요구하지 않는다.
+- border/title/content를 하나의 presented surface와 frame generation으로 소유한다.
+- pure Win32 shell migration의 input/IME/UIA/packaging 비용을 별도 product decision으로 승인받기 전 N1 전체 구현을 시작하지 않는다.
+
+### hard stop
+
+H0-B와 H0-C가 모두 valid FAIL이면 다음을 하지 않는다.
+
+- 새 Composition API arm 추가
+- ANGLE DLL/EGL surface 재시도
+- timer/debounce/timeout 반복 조정
+- Web milestone 재개
+
+이 경우 M1 observer와 render/present timebase를 다시 검토하고 원인 미확정으로 기록한다.
+
+## 10. C2R — MAUI/WinUI Composition 재검증
+
+상태: `notStarted`
+
+실행 조건:
+
+- M1 PASS
+- H0-B standard-chrome protocol이 valid PASS
+- MAUI/XAML host를 유지할 제품 가치가 있음
+
+기존 C0/C1은 다시 만들지 않고 보존된 bridge/lifetime을 사용한다. 다만 기존 C2의 visible FAIL 판정은 재사용하지 않는다.
+
+### 10.1 먼저 해결할 app-internal cadence
+
+기존 candidate의 target 161 / presented ACK 69 / app present 6.9Hz는 WGC와 무관한 internal FAIL이다.
+
+- host layout target publication rate와 UI dispatcher queue delay를 분리한다.
+- Composition commit pending 동안 latest 하나만 유지하되 completed front retirement가 다음 frame 전체를 막지 않게 한다.
+- WndProc/XAML layout path에서 synchronous GPU wait와 `DwmFlush`를 제거한다.
+- surface preparation, UI mutation, commit request/action, front adoption을 별도 duration으로 기록한다.
+- `DwmFlush`는 atomicity 해법으로 사용하지 않는다. 필요하면 H0 protocol PASS 후 단 한 번의 OFF/resize-only ON diagnostic pair만 허용한다.
+
+internal cadence gate:
+
+- authoritative host layout target rate가 committed geometry rate의 90% 이상
+- presented ACK rate가 admitted target rate의 90% 이상 또는 coalesced target마다 정확한 latest terminal 존재
+- inter-present p95 ≤ 2 refresh
+- pending surface/commit 때문에 2-refresh 초과 연속 stall 0
+- transaction/surface leak 0
+
+이 gate가 FAIL하면 strict visible capture를 실행하지 않고 C2R FAIL로 끝낸다.
+
+### 10.2 H0 protocol 이식
+
+H1-S가 선택된 경우:
+
+- top-level `WM_SIZING` proposed rect로 future composition surface를 prebuild한다.
+- actual XAML host layout은 committed content epoch authority로 유지한다.
+- visible front는 host commit 전 destructive resize하지 않는다.
+- committed host size와 matching prepared surface가 있을 때 surface/visual size/clip을 같은 compositor mutation turn에 교체한다.
+
+H1-C가 선택된 경우:
+
+- standard MAUI chrome/XAML composition으로 같은 ownership을 재현할 수 없다고 본다.
+- C2R을 건너뛰고 pure Win32/custom chrome product decision으로 이동한다.
+
+### C2R PASS gate
+
+- H0와 동일한 qualified observer와 exact logical size matrix 사용
+- candidate OFF direct/raw control과 같은 source fingerprint pair
+- raw render child HWND, HWND swap chain, `SwapChainPanel` attachment 0
+- app-internal cadence gate PASS
+- output visible gate와 final gap PASS
+- pointer/key/focus/hidden text input/semantics minimum smoke PASS
+- minimize/restore, IME, full accessibility는 G2 전까지 `notVerified`로 명시
+
+C2R absolute FAIL을 baseline 대비 상대 개선으로 덮지 않는다.
+
+## 11. P0 — 제품 경로 통합
+
+상태: `notStarted`
+
+### 11.1 MAUI Composition 제품 경로
+
+선택 조건: C2R PASS.
+
+- `DorotiWindowsDxgiHost`: XAML layout/input/focus owner
+- `WindowsCompositionSurfacePresenter`: visible surface/pool/commit owner
+- common resize protocol: proposed target prebuild, committed host layout admission, latest-only present
+- hidden `Entry`/`Editor`, semantics overlay, pointer/capture를 중복 owner 없이 유지
+- `ContentIsland`는 concrete input/accessibility failure가 있을 때만 별도 gate로 검토
+
+### 11.2 pure Win32/custom chrome 제품 경로
+
+선택 조건: H0-C PASS이고 standard chrome path가 valid FAIL.
+
+- 새 `Doroti.Host.Win32`: window/message/input/DPI/lifecycle/custom chrome owner
+- 새 Windows target package identity
+- framework session/view/render common host 추출
+- TSF/IMM32 Korean IME bridge
+- UIA fragment root와 semantics bridge
+- clipboard, cursor, pointer/touch/pen, focus, shutdown
+- packaging/startup/title/caption replacement acceptance
+
+N1은 presenter 교체가 아니라 shell migration이다. H0-C control PASS와 명시적 product decision 없이 scaffold/package/template부터 만들지 않는다.
+
+### 11.3 삭제와 cutover
+
+다음은 P0 구현 PASS가 아니라 G2 PASS 뒤에만 삭제한다.
+
+- raw `STATIC` child HWND와 parent/child dual subclass
+- `WindowsHwndD3D12Presenter` legacy product path
+- 비활성 ANGLE spike
+- `SwapChainPanel` dual exact presenter와 unused presenter
+- experimental Composition/N0 feature flags와 rollback wiring
+
+G2 전까지 default path와 rollback 가능성을 보존한다.
+
+## 12. Windows G2 product acceptance
+
+상태: `notStarted` / `notVerified`
+
+### visual/cadence matrix
 
 - left/right/top/bottom/네 corner 각 10초
+- 420×300, 640×360, 1000×600 logical outer-window
 - 100/125/150/200% DPI와 monitor 이동
 - 가능한 장비에서 60/120/144/165Hz
-- minimize/restore, maximize/restore, 빠른 방향 전환, occlusion, device loss/recovery
-- pointer/mouse capture, touch/pen, keyboard, Korean IME, focus, cursor, semantics/accessibility
-- cold/warm startup, close/reopen, title/caption, installer/packaged launch relevant path
-- correctness, visual, cadence, input/accessibility, lifecycle을 별도 PASS/FAIL로 기록
+- 느린 drag, 빠른 drag, 방향 반전, edge/corner 전환
 
-위 범주 중 하나라도 실패하면 Windows 완료로 표시하지 않는다. Web B0~B2/G3~G4는 Windows G2 PASS 전까지 `notStarted`/`notVerified`다.
+### lifecycle/device matrix
 
-## 10. 공통 validation과 실행 규칙
+- minimize/restore, maximize/restore, occlusion/unocclusion
+- DPI change 중 drag와 monitor crossing
+- device loss/recovery와 presenter reset
+- unload/reload, close/reopen, cold/warm startup
+- packaged/installer relevant launch path
 
-- 모든 test/build/runtime 명령에는 repository 지침에 따라 최대 20분 timeout을 적용한다.
-- C0 이후 각 stage에서 최소 다음 gate를 실행한다.
+### input/accessibility matrix
+
+- mouse hover/click/capture, cursor
+- touch/pen
+- keyboard/focus/tab traversal
+- Korean IME composition/candidate/commit
+- hidden text input lifetime
+- semantics/UIA screen-reader path
+
+### G2 완료 규칙
+
+- correctness, cadence, visible output, input/accessibility, lifecycle을 각각 PASS/FAIL로 기록한다.
+- 한 범주의 build/smoke PASS로 다른 범주를 대신하지 않는다.
+- 직접 visible acceptance 또는 qualified output observer가 없는 장비 범주는 `notVerified`다.
+- 모든 required product 범주가 PASS하기 전 Windows 완료로 표시하지 않는다.
+
+## 13. Web 재개 조건
+
+Web B0~B2/G3~G4는 다음 조건을 모두 만족한 뒤에만 재개한다.
+
+1. Windows H0에서 size authority/surface/present ownership의 인과 결론 확정
+2. 선택된 Windows 제품 경로 G2 PASS
+3. common epoch/transaction 변경이 Web contract를 깨뜨리지 않음
+
+Web에서는 기존 방향을 유지한다.
+
+- retained GPU front + exact staging FBO
+- root `ResizeObserver` + DPR watcher + one sampling rAF
+- `current + latest`, stale rejection, exactly-once terminal
+- CPU readback, `preserveDrawingBuffer`, CSS masking, FIFO replay, full-frame provisional stretch 금지
+- active browser smoke는 40 samples
+- CDP screenshot/geometry PASS를 browser compositor scan-out proof로 확대하지 않음
+
+## 14. 공통 evidence schema
+
+새 Windows run은 최소 다음 필드를 가진다.
+
+### provenance
+
+- run ID, source commit, dirty fingerprint, binary hash
+- backend/arm flags
+- OS build, GPU/driver, monitor, DPI, refresh
+- requested/actual logical/physical outer-window와 derived client rect
+
+### T0/T1 geometry
+
+- input QPC/cursor/intended rect
+- `WM_SIZING` proposed rect와 edge
+- `WM_WINDOWPOSCHANGING/CHANGED`, `WM_SIZE`, client rect
+- handler enter/exit와 blocked duration
+
+### T2/T3 app/surface
+
+- framework/host layout epoch
+- render generation, backing/source/backbuffer size
+- prebuild ready QPC와 fence
+- `ResizeBuffers`/`SetSourceSize` count와 duration
+- admitted/superseded/failed terminal reason
+
+### T4 present
+
+- present ID/count, submit/return QPC
+- present flags/sync interval/scaling mode
+- present queue/frame statistics when available
+- app-presented ACK를 scan-out ACK와 구분
+
+### T5 observation
+
+- WGC `SystemRelativeTime`, `ContentSize`, callback entry/exit
+- WGC pool capacity, recreate count, ring/encoder drop
+- Desktop Duplication frame metadata/QPC
+- observed frame/generation marker
+- gap/blank/AppBar/circle/title/right-edge oracle
+- WGC/output observer discrepancy
+
+### acceptance status
+
+- `valid`, `invalid`, `PASS`, `FAIL`, `notStarted`, `notVerified`, `diagnosticOnly`
+- invalid reason은 DPI mismatch, capture drop, input cleanup, focus loss, process failure 등으로 구체화
+- raw evidence path와 summary fingerprint
+
+## 15. validation과 실행 규칙
+
+- 모든 test/build/runtime 명령은 repository 지침에 따라 최대 20분 timeout을 사용한다.
+- 각 구현 stage는 관련 Release build와 contract를 실행하지만, build PASS를 visible PASS로 기록하지 않는다.
+- documentation-only 단계에서는 문서 diff/link/status 검증만 수행한다.
+- Web source를 변경하지 않는 M0~C2R에서는 Web runtime validation을 실행하지 않는다.
+- process를 시작하기 전 기존 동일 binary/validator process와 command line을 확인한다.
+- 실패/예외에서도 mouse up, `WM_CANCELMODE`, timer resolution, process priority, capture session, frame pool, GPU ring, child process를 정리한다.
+- unrelated worktree 변경을 stage/commit/delete하지 않는다.
+
+기본 source validation:
 
 ```powershell
 dotnet run --project Doroti/validation/resize-contract/Doroti.Validation.ResizeContract.csproj -c Release
@@ -498,96 +744,106 @@ pwsh -NoProfile -File Doroti/eng/validate-resize-continuity.ps1
 git diff --check
 ```
 
-- common contract/package 변화가 다른 target에 영향을 주면 해당 Qt/macOS/Android compile gate를 추가한다.
-- Web source를 변경하지 않는 C0~C2에서는 Web runtime validation을 실행하지 않는다.
-- evidence마다 source commit/fingerprint, candidate flag/backend, OS/GPU/driver, DPI/refresh, input rate, raw trace, WGC를 기록한다.
-- build/contract PASS, API call 성공, commit callback, app trace를 visible/cadence PASS로 확대 해석하지 않는다.
-- WGC가 composition visual을 실제 포함하는지 color/checkerboard marker로 먼저 확인한다.
-- validator가 실패/예외로 끝나도 mouse up, `WM_CANCELMODE`, timer/priority 복구, 관련 process 종료를 보장한다.
+M0 이후 live validator는 qualified observer가 준비되기 전 기존 strict WGC exit code를 제품 gate로 사용하지 않는다.
 
-## 11. 중단 조건과 금지 사항
+## 16. 중단 조건과 금지 사항
 
-다음 중 하나가 발생하면 해당 후보를 FAIL로 기록하고 ordered branch만 따른다.
+### 즉시 중단 조건
 
-- UI dispatcher를 기다리는 synchronous `WM_SIZE`로 deadlock/reentrancy가 생긴다.
-- exact staging 준비 전에 visible front를 resize/mutate해야만 API가 동작한다.
-- D3D11On12 resource를 안전하게 return할 수 없거나 fence/state ownership이 불명확하다.
-- old front retirement 전에 재사용하거나 surface pool이 unbounded로 증가한다.
-- composition commit telemetry는 성공하지만 WGC에서 surface/epoch/geometry가 일치하지 않는다.
-- small-window phase 또는 2-refresh 초과 episode가 strict gate를 반복 실패한다.
-- XAML과 ContentIsland/native HWND가 input/IME/accessibility를 동시에 소유해야만 동작한다.
-- candidate rollback 뒤 startup/input/title/caption baseline이 복구되지 않는다.
+- requested/actual DPI/client size mismatch
+- WGC/Desktop observer qualification FAIL
+- capture ring/drop/timebase 오류
+- WndProc에서 unbounded GPU/resource wait
+- drag 중 stable-surface arm에서 `ResizeBuffers` 발생
+- exact source extent 밖 copy 또는 overflow
+- stale/mismatched generation present
+- front retirement 전 reuse 또는 unbounded allocation
+- product candidate rollback 뒤 startup/input/title/caption 미복구
 
-명시적으로 하지 않을 것:
+### 하지 않을 것
 
-- raw `STATIC`/`CS_OWNDC` child HWND ANGLE 재실험
-- `WM_SIZING` pre-present ordering 재조정
-- timeout/debounce/sample 수로 failure 숨기기
-- capacity buffer + `SetSourceSize` 복귀
-- visible front의 선행 `Resize`/`ResizeBuffers`/`BeginDraw`
-- old front의 full-client stretch나 non-uniform scale
-- `SwapChainPanel.SetSwapChain` per-frame 교체
-- CPU readback, GDI copy, PNG/bitmap round-trip
-- `RequestCommitAsync`, `Present`, `DwmFlush`, commit completion을 scan-out ACK로 기록
-- C2/N0 strict PASS 전 제품 cutover, C3/N1 G2 PASS 전 구 경로 삭제
-- 새 Flutter runtime build/capture/renderer A/B
+- 현재 WGC gap count만으로 app lag 방향 판정
+- callback QPC/current `GetWindowRect`를 이전 WGC frame timestamp로 사용
+- `encoderDroppedFrames=0`을 WGC frame loss 0으로 해석
+- invalid `n0-arm-a-420` evidence를 420×300 gate로 재사용
+- M1 전 2-refresh strict gate 실행
+- timer/debounce/sample 수/PNG stride로 failure 숨기기
+- `DwmFlush`를 geometry+surface atomic transaction으로 취급
+- `Present`, commit completion, app ACK를 scan-out ACK로 기록
+- visible current front의 destructive resize
+- old front full-client/non-uniform stretch
+- CPU readback/GDI/bitmap round-trip 제품 경로
+- H0 evidence 없이 capacity buffer + `SetSourceSize` 제품 복귀
+- H0 PASS 전 새 shell/product scaffolding
+- G2 PASS 전 legacy path 삭제
+- 새 Flutter runtime instrumentation
 - Windows G2 전 Web milestone 승격
 
-## 12. 완료 정의와 상태 표기
+## 17. 완료 정의와 현재 상태
 
 이 계획은 다음 조건을 모두 만족해야 완료다.
 
-1. C0에서 GPU bridge, surface lifetime, bounded retirement가 PASS한다.
-2. C2 또는 N0 중 하나가 strict WGC absolute gate를 안정적으로 PASS한다.
-3. 선택된 C3 또는 N1 제품 경로가 Windows G2를 PASS한다.
-4. 실패/구 presenter와 opt-in wiring을 삭제하고 package/lock/template/validator identity를 정리한다.
-5. `research.md`와 active work 문서를 현재 구조와 실제 evidence 기준으로 갱신한다.
-6. 모든 미실행 gate는 구체적으로 `notStarted`/`notVerified`로 남긴다.
+1. M0/M1에서 observer와 DPI/timebase가 qualification PASS한다.
+2. H0-B 또는 H0-C가 valid visible/cadence absolute gate를 PASS한다.
+3. H1에서 standard/custom chrome ownership 결론이 확정된다.
+4. 선택된 MAUI Composition 또는 pure Win32 제품 경로가 G2를 PASS한다.
+5. legacy/experimental path와 package/template/validator identity가 정리된다.
+6. active decision 문서가 실제 evidence 상태와 일치한다.
+7. 미실행 gate는 구체적인 `notStarted`/`notVerified`로 남는다.
 
-계획 작성 시점 상태:
+2026-08-23 재검토 직후 상태:
 
 | 단계 | 상태 |
 | --- | --- |
-| 기존 M0/G0 | `PASS` — `work.md`의 기존 evidence 인용, 이번에 재실행하지 않음 |
-| 기존 W0 D3D12 runtime correctness | `PASS` — 기존 evidence 인용 |
-| 기존 W0 ordering/ANGLE, G1 visual/cadence | `FAIL` — 기존 evidence 인용 |
-| R0 | `notStarted` |
-| C0 | `notStarted` / build/runtime `notVerified` |
-| C1 | `notStarted` / visual/input `notVerified` |
-| C2 | `notStarted` / strict WGC `notVerified` |
-| N0 | `notStarted` / strict WGC `notVerified` |
-| C3/N1, Windows G2 | `notStarted` / `notVerified` |
-| Web B0~B2/G3~G4 | `notStarted` / `notVerified` |
+| D0 evidence 재분류 | `PASS` — 기존 파일 보존, acceptance 해석 교정 |
+| M0 observer/DPI 교정 | `notStarted` |
+| M1 observer qualification | `notStarted` / `notVerified` |
+| H0-A current control 재측정 | `notStarted` |
+| H0-B stable-capacity/prebuild | `notStarted` |
+| H0-C custom chrome control | `notStarted` |
+| H1 ownership 결정 | `notStarted` |
+| 기존 C0 | `PASS` — device removal `notVerified` |
+| 기존 C1 | `PASS` — minimum smoke only |
+| 기존 C2 | internal cadence `FAIL`; visible verdict `invalidated`/`notVerified` |
+| 기존 N0 Arm A | 구조/correctness `PASS`; strict visible verdict `invalid` |
+| C2R | `notStarted` |
+| P0/G2 | `notStarted` / `notVerified` |
+| Web | `notStarted` / `notVerified` |
 
-## 13. 근거
+현재 정확한 재개점은 **M0 DPI-aware sizing과 non-blocking capture ring 설계/구현**이다. Composition presenter tuning, N1 shell migration, Web 작업부터 재개하지 않는다.
+
+## 18. 근거
 
 ### 현재 repository
 
 - Windows host/presenters: `Doroti/src/Doroti.Host.Maui/DorotiWindowsDxgiSurface.cs`
-- MAUI surface/input/semantics: `Doroti/src/Doroti.Host.Maui/DorotiMauiSurface.cs`
+- Composition candidate: `Doroti/src/Doroti.Host.Maui/WindowsCompositionSurfacePresenter.cs`
+- direct top-level control: `Doroti/validation/windows-top-level-presentation/Program.cs`
+- WGC observer: `Doroti/validation/windows-resize-capture/main.cpp`
+- Composition bridge validation: `Doroti/validation/windows-composition-surface/`
 - common epoch/transaction: `Doroti/src/Doroti.Ui/ResizeLifecycle.cs`, `Doroti/src/Doroti.Ui/PlatformDispatcher.cs`
 - renderer: `Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs`
-- Windows package lock: `DorotiDemoApp/windows/packages.lock.json`
-- current validation: `Doroti/eng/validate-resize-continuity.ps1`, `Doroti/eng/validate-resize-continuity-live.ps1`
+- validators: `Doroti/eng/validate-resize-continuity.ps1`, `Doroti/eng/validate-resize-continuity-live.ps1`
 
 ### local reference
 
 - Flutter resize protocol: `reference/flutter-master/engine/src/flutter/shell/platform/windows/flutter_windows_view.cc`
 - Flutter native window ownership: `reference/flutter-master/engine/src/flutter/shell/platform/windows/flutter_window.cc`
-- Avalonia desktop composition target: `reference/Avalonia-main/src/Windows/Avalonia.Win32/WinRT/Composition/WinUiCompositedWindow.cs`
-- Avalonia drawing surface BeginDraw/EndDraw: `reference/Avalonia-main/src/Windows/Avalonia.Win32/WinRT/Composition/WinUiCompositedWindowSurface.cs`
-- Avalonia DirectComposition fallback: `reference/Avalonia-main/src/Windows/Avalonia.Win32/DComposition/DirectCompositedWindow.cs`
+- Avalonia Composition target/surface: `reference/Avalonia-main/src/Windows/Avalonia.Win32/WinRT/Composition/`
+- Avalonia DirectComposition fallback: `reference/Avalonia-main/src/Windows/Avalonia.Win32/DComposition/`
 
 ### Microsoft 공식 문서
 
-- [Composition native interoperation with DirectX and Direct2D](https://learn.microsoft.com/en-us/windows/apps/develop/composition/composition-native-interop)
-- [CompositionGraphicsDevice.CreateDrawingSurface2](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.composition.compositiongraphicsdevice.createdrawingsurface2?view=windows-app-sdk-1.8)
-- [ICompositionDrawingSurfaceInterop.BeginDraw](https://learn.microsoft.com/en-us/windows/win32/api/windows.ui.composition.interop/nf-windows-ui-composition-interop-icompositiondrawingsurfaceinterop-begindraw)
-- [ElementCompositionPreview.SetElementChildVisual](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.hosting.elementcompositionpreview.setelementchildvisual?view=windows-app-sdk-1.8)
-- [CompositionSurfaceBrush.Stretch](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.composition.compositionsurfacebrush.stretch?view=windows-app-sdk-1.8)
-- [Compositor.RequestCommitAsync](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.composition.compositor.requestcommitasync?view=windows-app-sdk-1.8)
-- [ContentIsland](https://learn.microsoft.com/en-us/windows/apps/develop/composition/content-island)
-- [ID3D11On12Device2.UnwrapUnderlyingResource](https://learn.microsoft.com/en-us/windows/win32/api/d3d11on12/nf-d3d11on12-id3d11on12device2-unwrapunderlyingresource)
-- [ID3D11On12Device2.ReturnUnderlyingResource](https://learn.microsoft.com/en-us/windows/win32/api/d3d11on12/nf-d3d11on12-id3d11on12device2-returnunderlyingresource)
-- [CreateSwapChainForHwnd](https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/nf-dxgi1_2-idxgifactory2-createswapchainforhwnd)
+- [WM_SIZE](https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-size)
+- [WM_SIZING](https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-sizing)
+- [Window Features — size and position messages](https://learn.microsoft.com/en-us/windows/win32/winmsg/window-features)
+- [DXGI_SCALING](https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_2/ne-dxgi1_2-dxgi_scaling)
+- [IDXGISwapChain::Present](https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiswapchain-present)
+- [IDXGISwapChain2::SetSourceSize](https://learn.microsoft.com/en-us/windows/win32/api/dxgi1_3/nf-dxgi1_3-idxgiswapchain2-setsourcesize)
+- [Reduce latency with DXGI 1.3 swap chains](https://learn.microsoft.com/en-us/windows/uwp/gaming/reduce-latency-with-dxgi-1-3-swap-chains)
 - [DwmFlush](https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmflush)
+- [Windows Graphics Capture](https://learn.microsoft.com/en-us/windows/apps/develop/media-authoring-processing/screen-capture)
+- [Desktop Duplication API](https://learn.microsoft.com/en-us/windows/win32/direct3ddxgi/desktop-dup-api)
+- [Composition native interoperation with DirectX and Direct2D](https://learn.microsoft.com/en-us/windows/apps/develop/composition/composition-native-interop)
+- [ICompositionDrawingSurfaceInterop.BeginDraw](https://learn.microsoft.com/en-us/windows/win32/api/windows.ui.composition.interop/nf-windows-ui-composition-interop-icompositiondrawingsurfaceinterop-begindraw)
+- [Compositor.RequestCommitAsync](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.composition.compositor.requestcommitasync?view=windows-app-sdk-1.8)
