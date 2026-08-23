@@ -434,6 +434,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
             ]));
 
         var scaffold = new Material.Scaffold(
+            backgroundColor: palette.surface,
             appBar: new Material.AppBar(
                 title: new Text("Doroti Material Gallery"),
                 backgroundColor: palette.primaryContainer,
