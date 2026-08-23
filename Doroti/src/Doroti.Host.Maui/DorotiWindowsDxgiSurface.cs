@@ -21,6 +21,17 @@ using static Vortice.DXGI.DXGI;
 
 namespace Doroti.Host.Maui;
 
+internal static class WindowsStableCapacityFeature
+{
+    internal const string EnvironmentVariable = "DOROTI_WINDOWS_STABLE_CAPACITY";
+
+    // The validated single-front protocol is the default product path. Keep a
+    // one-process rollback while the wider DPI/monitor matrix is completed.
+    internal static bool Enabled =>
+        !string.Equals(Environment.GetEnvironmentVariable(EnvironmentVariable), "0",
+            StringComparison.Ordinal);
+}
+
 public sealed class DorotiWindowsDxgiElement : View
 {
     internal DorotiWindowsDxgiElement(DorotiWindowsDxgiSurface owner) => Owner = owner;
@@ -116,6 +127,10 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
     private long _activations;
     private long _deactivations;
     private MauiPaintCompletion? _activeCompletion;
+    private MauiPaintCompletion? _preparedNativeCompletion;
+    private long _nativePrepareRequestedGeneration;
+    private long _nativePreparedGeneration;
+    private long _nativePresentRequestedGeneration;
     private DorotiMouseCursorKind _currentCursor = DorotiMouseCursorKind.basic;
     private bool _loaded;
     private bool _disposed;
@@ -286,7 +301,9 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
                 : "Win32 child HWND hosted by DorotiWindowsDxgiHost",
             GraphicsBackend = compositionCandidate
                 ? "WinUI/CompositionDrawingSurface/D3D11On12-D3D12-Skia"
-                : "Win32/child-HWND/offscreen-copy/DXGI-D3D12-Skia",
+                : WindowsStableCapacityFeature.Enabled
+                    ? "Win32/child-HWND/grow-only-capacity/exact-content/DXGI-D3D12-Skia"
+                    : "Win32/child-HWND/offscreen-copy/DXGI-D3D12-Skia",
             LogicalWidth = target?.LogicalWidth ?? current.LogicalWidth,
             LogicalHeight = target?.LogicalHeight ?? current.LogicalHeight,
             ResizeContinuityActivations = Interlocked.Read(ref _activations),
@@ -332,7 +349,9 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
         if (_disposed || _nativeResizeSource is not null) return;
         var source = WindowsClientResizeSource.TryCreate(
             _view,
+            HandleNativeProposedResize,
             HandleNativeResize,
+            HandleNativePreparedPresent,
             HandleNativeResizeTimeout,
             HandleNativePointer);
         if (source is null) return;
@@ -358,6 +377,25 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
 
     private long HandleNativeResize() =>
         PublishTarget("child-HWND.WM_SIZE")?.Generation ?? 0;
+
+    private long HandleNativeProposedResize(int physicalWidth, int physicalHeight) =>
+        PublishTarget(
+            "top-level.WM_WINDOWPOSCHANGING",
+            physicalWidth,
+            physicalHeight,
+            prepareOnly: true)?.Generation ?? 0;
+
+    private void HandleNativePreparedPresent(long generation)
+    {
+        lock (_gate)
+        {
+            if (_disposed || _latestTarget?.Generation != generation ||
+                _nativePrepareRequestedGeneration != generation) return;
+            _nativePresentRequestedGeneration = generation;
+            _requestSerial++;
+        }
+        _wake.Set();
+    }
 
     private long HandleTopLevelResize(string source)
     {
@@ -415,7 +453,11 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
         PublishTarget(source);
     }
 
-    private DorotiResizeEpoch? PublishTarget(string source)
+    private DorotiResizeEpoch? PublishTarget(
+        string source,
+        int? proposedPhysicalWidth = null,
+        int? proposedPhysicalHeight = null,
+        bool prepareOnly = false)
     {
         var host = _host;
         var panel = _panel;
@@ -441,14 +483,23 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
         // top-level observer is intentionally provisional: promoting its
         // client rect before WinUI layout would recreate the border-before-
         // content phase as an app-owned size-authority mismatch.
-        var hasNativeSize = !compositionCandidate && nativeSource is not null &&
-                            nativeSource.TryGetClientSize(out physicalWidth, out physicalHeight);
+        var hasProposedNativeSize = !compositionCandidate &&
+                                    proposedPhysicalWidth is > 0 && proposedPhysicalHeight is > 0;
+        var hasNativeSize = hasProposedNativeSize ||
+                            (!compositionCandidate && nativeSource is not null &&
+                             nativeSource.TryGetClientSize(out physicalWidth, out physicalHeight));
+        if (hasProposedNativeSize)
+        {
+            physicalWidth = proposedPhysicalWidth!.Value;
+            physicalHeight = proposedPhysicalHeight!.Value;
+        }
         var logicalWidth = hasNativeSize ? physicalWidth / scaleX : Math.Max(0, host.ActualWidth);
         var logicalHeight = hasNativeSize ? physicalHeight / scaleY : Math.Max(0, host.ActualHeight);
         DorotiResizeEpoch target;
         lock (_gate)
         {
             target = _targets.Publish(logicalWidth, logicalHeight, scaleX, scaleY);
+            if (prepareOnly) _nativePrepareRequestedGeneration = target.Generation;
             if (_latestTarget?.Generation == target.Generation) return target;
             _latestTarget = target;
         }
@@ -506,6 +557,9 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
             WindowsClientResizeSource? nativeSource;
             DorotiWindowsDxgiHost? host;
             Microsoft.UI.Composition.Compositor? compositor;
+            MauiPaintCompletion? preparedCompletion;
+            long preparedGeneration;
+            long presentRequestedGeneration;
             long serial;
             lock (_gate)
             {
@@ -514,6 +568,9 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
                 nativeSource = _nativeResizeSource;
                 host = _host;
                 compositor = _compositionCompositor;
+                preparedCompletion = _preparedNativeCompletion;
+                preparedGeneration = _nativePreparedGeneration;
+                presentRequestedGeneration = _nativePresentRequestedGeneration;
                 serial = _requestSerial;
             }
             if (!_loaded || target is null || !target.HasDrawableSize ||
@@ -521,12 +578,74 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
                     ? host is null || compositor is null
                     : nativeSource is null))
                 continue;
+            if (!compositionCandidate && nativeSource is not null &&
+                preparedCompletion is { } prepared &&
+                preparedGeneration == target.Generation &&
+                presentRequestedGeneration == target.Generation)
+            {
+                var preparedPresentStarted = DorotiFrameClock.Now;
+                var committed = false;
+                lock (_gate)
+                {
+                    if (_latestTarget?.Generation == target.Generation &&
+                        ReferenceEquals(_nativeResizeSource, nativeSource) &&
+                        !nativeSource.IsRetired(target.Generation) &&
+                        _nativePreparedGeneration == target.Generation &&
+                        _nativePresentRequestedGeneration == target.Generation)
+                    {
+                        Record("pre-swap", target, "prepared Doroti child HWND DXGI",
+                            surfaceWidth: presenter.Width,
+                            surfaceHeight: presenter.Height,
+                            detail: $"preparedGeneration={preparedGeneration}; schedulerSerial={serial}; capacity={presenter.CapacityWidth}x{presenter.CapacityHeight}");
+                        presenter.Present();
+                        _preparedNativeCompletion = null;
+                        _nativePreparedGeneration = 0;
+                        _nativePrepareRequestedGeneration = 0;
+                        _nativePresentRequestedGeneration = 0;
+                        committed = true;
+                    }
+                }
+                if (!committed)
+                {
+                    PresentCompleted?.Invoke(prepared, true);
+                    nativeSource.Complete(target.Generation);
+                    processedSerial = serial;
+                    continue;
+                }
+                Record("post-swap", target, "prepared Doroti child HWND DXGI",
+                    DorotiFrameClock.Now - preparedPresentStarted,
+                    surfaceWidth: presenter.Width,
+                    surfaceHeight: presenter.Height,
+                    detail: $"preparedGeneration={preparedGeneration}; capacity={presenter.CapacityWidth}x{presenter.CapacityHeight}; swapChainResized={presenter.LastCommitResized}");
+                presenter.ReleasePresentedBuffer();
+                Interlocked.Increment(ref _presented);
+                Record("ack", target, "prepared D3D12 raster", terminal: "presented");
+                PresentCompleted?.Invoke(prepared, false);
+                nativeSource.CompletePresented(target.Generation);
+                Record("native-resize-complete", target, "prepared matching Present platform unblock",
+                    DorotiFrameClock.Now - preparedPresentStarted,
+                    surfaceWidth: presenter.Width,
+                    surfaceHeight: presenter.Height);
+                if (presenter.LastContentExtentChanged)
+                {
+                    var dwmFlushSucceeded = presenter.FlushDwmAfterResize();
+                    Record(dwmFlushSucceeded ? "dwm-flush-end" : "dwm-flush-failed",
+                        target,
+                        "prepared post-ACK resize-only DwmFlush",
+                        presenter.LastDwmFlushDuration,
+                        surfaceWidth: presenter.Width,
+                        surfaceHeight: presenter.Height);
+                }
+                processedSerial = serial;
+                continue;
+            }
             if (serial == processedSerial) continue;
 
             EventSource.SetCurrentThreadActivityId(Guid.NewGuid(), out var previousActivityId);
             _activeCompletion = null;
             var nativeResizeCompleted = false;
             var nativeResizeFailed = false;
+            var nativeResizePrepared = false;
             try
             {
                 var surfacePrepareStarted = DorotiFrameClock.Now;
@@ -563,7 +682,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
                     surfaceWidth: surfaceWidth, surfaceHeight: surfaceHeight,
                     detail: compositionCandidate
                         ? $"backend=composition-surface; backingStoreResized={surfaceChanged}; rawRenderChildHwnd=0; hwndSwapChain=0; swapChainPanelAttachment=0; surface={surfaceWidth}x{surfaceHeight}; logical={target.LogicalWidth}x{target.LogicalHeight}; scale={target.DeviceScaleX}; adapter={adapterDescription}"
-                        : $"backend=raw-child-hwnd; backingStoreResized={surfaceChanged}; hwnd={nativeSource!.RenderWindowHandle}; surface={surfaceWidth}x{surfaceHeight}; adapter={adapterDescription}");
+                        : $"backend=raw-child-hwnd; stableCapacity={WindowsStableCapacityFeature.Enabled}; backingStoreResized={surfaceChanged}; hwnd={nativeSource!.RenderWindowHandle}; exactContent={surfaceWidth}x{surfaceHeight}; capacity={presenter.CapacityWidth}x{presenter.CapacityHeight}; adapter={adapterDescription}");
                 var paint = new MauiSkiaPaintContext(
                     compositionCandidate ? compositionPresenter!.Surface : presenter.Surface,
                     compositionCandidate ? compositionPresenter!.Context : presenter.Context,
@@ -574,7 +693,9 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
                     compositionCandidate ? "WinUI attached Composition visual" : "Win32 child HWND",
                     compositionCandidate
                         ? "WinUI/CompositionDrawingSurface/D3D11On12-D3D12-Skia"
-                        : "Win32/child-HWND/offscreen-copy/DXGI-D3D12-Skia");
+                        : WindowsStableCapacityFeature.Enabled
+                            ? "Win32/child-HWND/grow-only-capacity/exact-content/DXGI-D3D12-Skia"
+                            : "Win32/child-HWND/offscreen-copy/DXGI-D3D12-Skia");
                 lock (_gate) paint.SkipRaster = _latestTarget?.Generation != target.Generation;
                 if (paint.SkipRaster)
                 {
@@ -644,6 +765,38 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
                     PresentCompleted?.Invoke(completion, true);
                     processedSerial = serial;
                     continue;
+                }
+                var prepareOnly = false;
+                if (!compositionCandidate)
+                {
+                    MauiPaintCompletion? displacedCompletion = null;
+                    lock (_gate)
+                    {
+                        prepareOnly = _nativePrepareRequestedGeneration == target.Generation &&
+                                      _nativePresentRequestedGeneration != target.Generation;
+                        if (prepareOnly)
+                        {
+                            if (_preparedNativeCompletion is not null &&
+                                _nativePreparedGeneration != target.Generation)
+                                displacedCompletion = _preparedNativeCompletion;
+                            _preparedNativeCompletion = completion;
+                            _nativePreparedGeneration = target.Generation;
+                        }
+                    }
+                    if (displacedCompletion is { } displaced)
+                        PresentCompleted?.Invoke(displaced, true);
+                    if (prepareOnly)
+                    {
+                        nativeSource!.CompletePrepared(target.Generation);
+                        nativeResizePrepared = true;
+                        Record("frame-prepared", target,
+                            "exact-content D3D12 backing; visible front retained",
+                            surfaceWidth: presenter.Width,
+                            surfaceHeight: presenter.Height,
+                            detail: $"capacity={presenter.CapacityWidth}x{presenter.CapacityHeight}; presentDeferredUntilChildWM_SIZE=1");
+                        processedSerial = serial;
+                        continue;
+                    }
                 }
                 long prePresentGeneration;
                 long prePresentSerial;
@@ -736,19 +889,6 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
                     Record("buffer-release", target, "Doroti-owned D3D12/DXGI",
                         DorotiFrameClock.Now - releaseStarted);
                 }
-                // W0's visible transaction is Present -> DwmFlush -> completion.
-                // In particular, do not reveal a pre-grown child through a larger
-                // parent client rect until DWM has consumed the matching buffer.
-                if (!compositionCandidate && presenter.LastCommitResized)
-                {
-                    var dwmFlushSucceeded = presenter.FlushDwmAfterResize();
-                    Record(dwmFlushSucceeded ? "dwm-flush-end" : "dwm-flush-failed",
-                        target,
-                        "post-completion resize-only DwmFlush",
-                        presenter.LastDwmFlushDuration,
-                        surfaceWidth: presenter.Width,
-                        surfaceHeight: presenter.Height);
-                }
                 Interlocked.Increment(ref _presented);
                 Record("ack", target, "D3D12 raster thread", terminal: "presented");
                 PresentCompleted?.Invoke(completion, false);
@@ -756,8 +896,21 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
                 {
                     nativeSource!.CompletePresented(target.Generation);
                     nativeResizeCompleted = true;
-                    Record("native-resize-complete", target, "post-DwmFlush platform unblock",
+                    Record("native-resize-complete", target, "matching Present platform unblock",
                         DorotiFrameClock.Now - presentStarted,
+                        surfaceWidth: presenter.Width,
+                        surfaceHeight: presenter.Height);
+                }
+                // Flutter ordering: release the matching platform resize wait
+                // after Present, then let the raster owner confirm the DWM
+                // composition without holding the window thread for a refresh.
+                if (!compositionCandidate && presenter.LastContentExtentChanged)
+                {
+                    var dwmFlushSucceeded = presenter.FlushDwmAfterResize();
+                    Record(dwmFlushSucceeded ? "dwm-flush-end" : "dwm-flush-failed",
+                        target,
+                        "post-ACK resize-only DwmFlush",
+                        presenter.LastDwmFlushDuration,
                         surfaceWidth: presenter.Width,
                         surfaceHeight: presenter.Height);
                 }
@@ -780,7 +933,8 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
                 // that retry during Present -> DwmFlush. Only a failed, retired,
                 // or genuinely superseded transaction may unblock without a
                 // matching present.
-                if (!compositionCandidate && nativeSource is not null && !nativeResizeCompleted &&
+                if (!compositionCandidate && nativeSource is not null &&
+                    !nativeResizeCompleted && !nativeResizePrepared &&
                     (nativeResizeFailed || latestGeneration != target.Generation ||
                      nativeSource.IsRetired(target.Generation)))
                     nativeSource.Complete(target.Generation);
@@ -1094,6 +1248,7 @@ internal sealed class WindowsTopLevelResizeSource : IDisposable
 internal sealed class WindowsClientResizeSource : IDisposable
 {
     private const uint WmSize = 0x0005;
+    private const uint WmSizing = 0x0214;
     private const uint WmCancelMode = 0x001F;
     private const uint WmSetCursor = 0x0020;
     private const uint WmEraseBackground = 0x0014;
@@ -1132,6 +1287,7 @@ internal sealed class WindowsClientResizeSource : IDisposable
     private const uint WsExNoActivate = 0x08000000;
     private const uint SwpNoActivate = 0x0010;
     private const uint SwpShowWindow = 0x0040;
+    private const uint SwpNoSize = 0x0001;
     private static long _nextSubclassId;
     private readonly Microsoft.UI.Xaml.Window _platformWindow;
     private readonly nint _parentWindowHandle;
@@ -1140,11 +1296,15 @@ internal sealed class WindowsClientResizeSource : IDisposable
     private readonly nuint _childSubclassId;
     private readonly SubclassProcedure _parentProcedure;
     private readonly SubclassProcedure _childProcedure;
+    private readonly Func<int, int, long> _sizeChanging;
     private readonly Func<long> _sizeChanged;
+    private readonly Action<long> _presentPrepared;
     private readonly Action<long> _timedOut;
     private readonly Action<MauiSurfacePointerData> _pointer;
-    private readonly WindowsResizeCoordinator _coordinator = new();
-    private readonly WindowsPlatformTaskRunner _taskRunner;
+    private readonly WindowsResizeCoordinator _preparedCoordinator = new();
+    private readonly WindowsResizeCoordinator _presentedCoordinator = new();
+    private readonly WindowsPlatformTaskRunner _preparedTaskRunner;
+    private readonly WindowsPlatformTaskRunner _presentedTaskRunner;
     private bool _parentAttached;
     private bool _childAttached;
     private bool _started;
@@ -1153,6 +1313,11 @@ internal sealed class WindowsClientResizeSource : IDisposable
     private bool _pointerAdded;
     private bool _releasingCapture;
     private int _hasPresented;
+    private long _preparedGeneration;
+    private int _preparedWidth;
+    private int _preparedHeight;
+    private int _committedWidth;
+    private int _committedHeight;
     private nint _clientCursor;
     private int _lastPointerX;
     private int _lastPointerY;
@@ -1161,16 +1326,21 @@ internal sealed class WindowsClientResizeSource : IDisposable
     private WindowsClientResizeSource(
         Microsoft.UI.Xaml.Window platformWindow,
         nint parentWindowHandle,
+        Func<int, int, long> sizeChanging,
         Func<long> sizeChanged,
+        Action<long> presentPrepared,
         Action<long> timedOut,
         Action<MauiSurfacePointerData> pointer)
     {
         _platformWindow = platformWindow;
         _parentWindowHandle = parentWindowHandle;
+        _sizeChanging = sizeChanging;
         _sizeChanged = sizeChanged;
+        _presentPrepared = presentPrepared;
         _timedOut = timedOut;
         _pointer = pointer;
-        _taskRunner = new(_coordinator);
+        _preparedTaskRunner = new(_preparedCoordinator);
+        _presentedTaskRunner = new(_presentedCoordinator);
         _clientCursor = LoadCursor(0, (nint)IdcArrow);
         _parentSubclassId = checked((nuint)Interlocked.Increment(ref _nextSubclassId));
         _childSubclassId = checked((nuint)Interlocked.Increment(ref _nextSubclassId));
@@ -1203,12 +1373,16 @@ internal sealed class WindowsClientResizeSource : IDisposable
 
     internal static WindowsClientResizeSource? TryCreate(
         DorotiWindowsDxgiElement view,
+        Func<int, int, long> sizeChanging,
         Func<long> sizeChanged,
+        Action<long> presentPrepared,
         Action<long> timedOut,
         Action<MauiSurfacePointerData> pointer)
     {
         ArgumentNullException.ThrowIfNull(view);
+        ArgumentNullException.ThrowIfNull(sizeChanging);
         ArgumentNullException.ThrowIfNull(sizeChanged);
+        ArgumentNullException.ThrowIfNull(presentPrepared);
         ArgumentNullException.ThrowIfNull(timedOut);
         ArgumentNullException.ThrowIfNull(pointer);
         if (view.Window?.Handler?.PlatformView is not Microsoft.UI.Xaml.Window platformWindow)
@@ -1230,7 +1404,8 @@ internal sealed class WindowsClientResizeSource : IDisposable
         var windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(platformWindow);
         if (windowHandle == 0) return null;
         var source = new WindowsClientResizeSource(
-            platformWindow, windowHandle, sizeChanged, timedOut, pointer);
+            platformWindow, windowHandle, sizeChanging, sizeChanged,
+            presentPrepared, timedOut, pointer);
         if (source._parentAttached && source._childAttached) return source;
         source.Dispose();
         return null;
@@ -1241,6 +1416,7 @@ internal sealed class WindowsClientResizeSource : IDisposable
         if (_started) return;
         _started = true;
         ResizeChildToParent();
+        CommitParentSize();
     }
 
     internal bool TryGetClientSize(out int width, out int height)
@@ -1262,20 +1438,25 @@ internal sealed class WindowsClientResizeSource : IDisposable
     internal void Complete(long generation)
     {
         if (Volatile.Read(ref _hasPresented) == 0)
-            _coordinator.DiscardCompletion(generation);
+            _presentedCoordinator.DiscardCompletion(generation);
         else
-            _coordinator.Complete(generation);
+            _presentedCoordinator.Complete(generation);
     }
+
+    internal void CompletePrepared(long generation) =>
+        _preparedCoordinator.Complete(generation);
 
     internal void CompletePresented(long generation)
     {
         if (Interlocked.Exchange(ref _hasPresented, 1) == 0)
-            _coordinator.DiscardCompletion(generation);
+            _presentedCoordinator.DiscardCompletion(generation);
         else
-            _coordinator.Complete(generation);
+            _presentedCoordinator.Complete(generation);
     }
 
-    internal bool IsRetired(long generation) => _coordinator.IsRetired(generation);
+    internal bool IsRetired(long generation) =>
+        _preparedCoordinator.IsRetired(generation) ||
+        _presentedCoordinator.IsRetired(generation);
 
     public void Dispose()
     {
@@ -1293,8 +1474,10 @@ internal sealed class WindowsClientResizeSource : IDisposable
             _childAttached = false;
         }
         if (_renderWindowHandle != 0) DestroyWindow(_renderWindowHandle);
-        _taskRunner.Dispose();
-        _coordinator.Dispose();
+        _preparedTaskRunner.Dispose();
+        _presentedTaskRunner.Dispose();
+        _preparedCoordinator.Dispose();
+        _presentedCoordinator.Dispose();
     }
 
     private nint HandleParentWindowMessage(
@@ -1313,8 +1496,20 @@ internal sealed class WindowsClientResizeSource : IDisposable
             SetNativeCursor(_clientCursor);
             return 1;
         }
+        if (message == WmSizing && _started)
+        {
+            PublishSuggestedChildSize(lParam);
+            return DefSubclassProc(windowHandle, message, wParam, lParam);
+        }
         if (message == WmSize && _started)
+        {
+            // GetClientRect already exposes the committed dimensions while
+            // this subclass runs. Position and commit the raw child first so
+            // WinUI cannot insert a second visible child-layout step.
             ResizeChildToParent();
+            CommitParentSize();
+            return DefSubclassProc(windowHandle, message, wParam, lParam);
+        }
         if (message == WmNcDestroy) _parentAttached = false;
         // The parent remains a WinUI top-level window. Its real WM_SIZE must
         // reach WinUI during the sizing loop so the system title bar, content
@@ -1388,22 +1583,10 @@ internal sealed class WindowsClientResizeSource : IDisposable
             _buttons = 0;
             _pointerAdded = false;
         }
-        if (message == WmSize && _started)
-        {
-            var generation = _sizeChanged();
-            // Cold startup can spend longer than the 100ms interactive budget
-            // compiling/rasterizing its first framework scene. No older visible
-            // frame exists at that point, so blocking and retiring the only
-            // target leaves a normal CLI launch permanently blank. Let startup
-            // finish asynchronously; after the first successful present every
-            // later WM_SIZE uses the bounded matching transaction wait.
-            if (generation > 0 && Volatile.Read(ref _hasPresented) != 0 &&
-                TryGetClientSize(out var width, out var height) &&
-                width > 0 && height > 0 &&
-                !_taskRunner.PollOnce(generation, TimeSpan.FromMilliseconds(100)))
-                _timedOut(generation);
-            return 0;
-        }
+        // The parent owns child geometry and the platform wait. A child WM_SIZE
+        // is only an implementation detail of SetWindowPos and must not publish
+        // a second epoch or present before the parent geometry commits.
+        if (message == WmSize && _started) return 0;
         if (message == WmEraseBackground) return 1;
         if (message == WmNcHitTest) return HtClient;
         if (message == WmNcDestroy) _childAttached = false;
@@ -1546,6 +1729,78 @@ internal sealed class WindowsClientResizeSource : IDisposable
             top,
             width,
             height,
+            SwpNoActivate | SwpShowWindow);
+    }
+
+    private void CommitParentSize()
+    {
+        if (!TryGetClientSize(out var width, out var height) || width <= 0 || height <= 0) return;
+        var preparedGeneration = Volatile.Read(ref _preparedGeneration);
+        var prepared = preparedGeneration > 0 &&
+                       width == Volatile.Read(ref _preparedWidth) &&
+                       height == Volatile.Read(ref _preparedHeight);
+        // WinUI can emit redundant WM_SIZE messages throughout the modal
+        // sizing loop even when the RECT was held. Re-presenting and DwmFlush
+        // for an unchanged child produces a visible one-pixel cadence wobble.
+        if (!prepared && width == _committedWidth && height == _committedHeight) return;
+        var generation = _sizeChanged();
+        prepared &= generation == preparedGeneration;
+        if (prepared) _presentPrepared(generation);
+        // Cold startup can spend longer than the 100ms interactive budget
+        // compiling/rasterizing its first framework scene. No older visible
+        // frame exists at that point, so blocking and retiring the only target
+        // leaves a normal CLI launch permanently blank.
+        if (generation > 0 && Volatile.Read(ref _hasPresented) != 0 &&
+            !_presentedTaskRunner.PollOnce(generation, TimeSpan.FromMilliseconds(100)))
+            _timedOut(generation);
+        _committedWidth = width;
+        _committedHeight = height;
+        if (!prepared) return;
+        Volatile.Write(ref _preparedGeneration, 0);
+        Volatile.Write(ref _preparedWidth, 0);
+        Volatile.Write(ref _preparedHeight, 0);
+    }
+
+    private void PublishSuggestedChildSize(nint suggestedRectPointer)
+    {
+        if (suggestedRectPointer == 0 || Volatile.Read(ref _hasPresented) == 0 ||
+            !GetWindowRect(_parentWindowHandle, out var currentOuter) ||
+            !GetClientRect(_parentWindowHandle, out var currentClient) ||
+            !TryGetClientSize(out var childWidth, out var childHeight)) return;
+        var suggested = Marshal.PtrToStructure<NativeRect>(suggestedRectPointer);
+        var nonClientWidth = Math.Max(0,
+            (currentOuter.Right - currentOuter.Left) -
+            (currentClient.Right - currentClient.Left));
+        var nonClientHeight = Math.Max(0,
+            (currentOuter.Bottom - currentOuter.Top) -
+            (currentClient.Bottom - currentClient.Top));
+        var width = Math.Max(1,
+            suggested.Right - suggested.Left - nonClientWidth);
+        var height = Math.Max(1,
+            suggested.Bottom - suggested.Top - nonClientHeight - GetTitleBarInset());
+        if (width == _committedWidth && height == _committedHeight) return;
+
+        // This is a non-blocking look-ahead. The framework and D3D12 raster
+        // owners can prepare the next exact extent while the system continues
+        // delivering pointer-driven WM_SIZING messages.
+        var generation = _sizeChanging(width, height);
+        if (generation <= 0) return;
+        Volatile.Write(ref _preparedGeneration, generation);
+        Volatile.Write(ref _preparedWidth, width);
+        Volatile.Write(ref _preparedHeight, height);
+
+        // Pre-cover expansion with the existing stable-capacity front. Never
+        // shrink ahead of the parent: that would uncover the WinUI background.
+        var coverWidth = Math.Max(width, Math.Max(childWidth, _committedWidth));
+        var coverHeight = Math.Max(height, Math.Max(childHeight, _committedHeight));
+        if (coverWidth == childWidth && coverHeight == childHeight) return;
+        SetWindowPos(
+            _renderWindowHandle,
+            0,
+            0,
+            GetTitleBarInset(),
+            coverWidth,
+            coverHeight,
             SwpNoActivate | SwpShowWindow);
     }
 
@@ -2159,8 +2414,11 @@ internal sealed class WindowsHwndD3D12Presenter : IDisposable
 
     internal int Width { get; private set; }
     internal int Height { get; private set; }
+    internal int CapacityWidth => _swapChainWidth;
+    internal int CapacityHeight => _swapChainHeight;
     internal bool SurfaceChanged { get; private set; }
     internal bool LastCommitResized { get; private set; }
+    internal bool LastContentExtentChanged { get; private set; }
     internal TimeSpan LastDwmFlushDuration { get; private set; }
     internal string AdapterDescription => _adapterDescription;
     internal GRContext Context => _context ??
@@ -2174,6 +2432,7 @@ internal sealed class WindowsHwndD3D12Presenter : IDisposable
         if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
         if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
         SurfaceChanged = false;
+        LastContentExtentChanged = Width != width || Height != height;
         EnsureDevice(windowHandle);
         if (_windowHandle != windowHandle)
         {
@@ -2182,9 +2441,12 @@ internal sealed class WindowsHwndD3D12Presenter : IDisposable
         }
         if (_swapChain is null)
         {
+            var capacity = WindowsStableCapacityFeature.Enabled
+                ? GetInitialCapacity(windowHandle, width, height)
+                : (Width: width, Height: height);
             var description = new SwapChainDescription1(
-                (uint)width,
-                (uint)height,
+                (uint)capacity.Width,
+                (uint)capacity.Height,
                 Format.R8G8B8A8_UNorm,
                 false,
                 Usage.RenderTargetOutput,
@@ -2201,13 +2463,33 @@ internal sealed class WindowsHwndD3D12Presenter : IDisposable
             _frameLatencyWaitableObject = swapChain2.FrameLatencyWaitableObject;
             if (_frameLatencyWaitableObject == 0)
                 throw new InvalidOperationException("DXGI did not expose a frame-latency waitable object.");
-            _swapChainWidth = width;
-            _swapChainHeight = height;
+            _swapChainWidth = capacity.Width;
+            _swapChainHeight = capacity.Height;
+            SurfaceChanged = true;
+        }
+        else if (WindowsStableCapacityFeature.Enabled &&
+                 (width > _swapChainWidth || height > _swapChainHeight))
+        {
+            var capacityWidth = Math.Max(width, _swapChainWidth);
+            var capacityHeight = Math.Max(height, _swapChainHeight);
+            WaitForPreviousCopy();
+            _backingStore?.Dispose();
+            _backingStore = null;
+            _swapChain.ResizeBuffers(
+                2,
+                (uint)capacityWidth,
+                (uint)capacityHeight,
+                Format.R8G8B8A8_UNorm,
+                SwapChainFlags.FrameLatencyWaitableObject).CheckError();
+            _swapChainWidth = capacityWidth;
+            _swapChainHeight = capacityHeight;
             SurfaceChanged = true;
         }
         WaitForPreviousCopy();
         _backingStore ??= new(_device!, Context);
-        SurfaceChanged |= _backingStore.EnsureSize(width, height);
+        SurfaceChanged |= _backingStore.EnsureSize(
+            WindowsStableCapacityFeature.Enabled ? _swapChainWidth : width,
+            WindowsStableCapacityFeature.Enabled ? _swapChainHeight : height);
         Width = width;
         Height = height;
     }
@@ -2229,11 +2511,11 @@ internal sealed class WindowsHwndD3D12Presenter : IDisposable
         // Present. An exact-scene miss may return after EnsureTarget; waiting
         // there consumes the available token without enqueueing the present
         // that would signal the next one.
-        if (_hasPresented) WaitForFrameLatency();
+        if (_hasPresented && !LastContentExtentChanged) WaitForFrameLatency();
         var resized = _swapChainWidth != Width || _swapChainHeight != Height;
-        LastCommitResized = resized;
+        LastCommitResized = SurfaceChanged;
         LastDwmFlushDuration = TimeSpan.Zero;
-        if (resized)
+        if (resized && !WindowsStableCapacityFeature.Enabled)
         {
             // No back-buffer wrapper survives a commit. The fence covers the
             // previous GPU copy before ResizeBuffers invalidates old buffers.
@@ -2293,7 +2575,7 @@ internal sealed class WindowsHwndD3D12Presenter : IDisposable
 
     internal bool FlushDwmAfterResize()
     {
-        if (!LastCommitResized) return true;
+        if (!LastContentExtentChanged) return true;
         var started = DorotiFrameClock.Now;
         var result = DwmFlush();
         LastDwmFlushDuration = DorotiFrameClock.Now - started;
@@ -2360,6 +2642,23 @@ internal sealed class WindowsHwndD3D12Presenter : IDisposable
         return null;
     }
 
+    private static (int Width, int Height) GetInitialCapacity(
+        nint windowHandle,
+        int minimumWidth,
+        int minimumHeight)
+    {
+        var monitor = MonitorFromWindow(windowHandle, 2);
+        var info = new NativeMonitorInfo
+        {
+            Size = checked((uint)Marshal.SizeOf<NativeMonitorInfo>()),
+        };
+        if (monitor == 0 || !GetMonitorInfo(monitor, ref info))
+            return (minimumWidth, minimumHeight);
+        return (
+            Math.Max(minimumWidth, info.Work.Right - info.Work.Left),
+            Math.Max(minimumHeight, info.Work.Bottom - info.Work.Top));
+    }
+
     private void WaitForFrameLatency()
     {
         var result = WaitForSingleObject(_frameLatencyWaitableObject, 100);
@@ -2409,6 +2708,8 @@ internal sealed class WindowsHwndD3D12Presenter : IDisposable
         _hasPresented = false;
         _windowHandle = 0;
         Width = Height = 0;
+        LastContentExtentChanged = false;
+        LastCommitResized = false;
         _swapChainWidth = _swapChainHeight = 0;
     }
 
@@ -2450,8 +2751,30 @@ internal sealed class WindowsHwndD3D12Presenter : IDisposable
     [DllImport("user32.dll", ExactSpelling = true)]
     private static extern nint MonitorFromWindow(nint windowHandle, uint flags);
 
+    [DllImport("user32.dll", EntryPoint = "GetMonitorInfoW", ExactSpelling = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GetMonitorInfo(nint monitor, ref NativeMonitorInfo info);
+
     [DllImport("dwmapi.dll", ExactSpelling = true)]
     private static extern int DwmFlush();
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct NativeMonitorInfo
+    {
+        internal uint Size;
+        internal NativeMonitorRect Monitor;
+        internal NativeMonitorRect Work;
+        internal uint Flags;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct NativeMonitorRect
+    {
+        internal int Left;
+        internal int Top;
+        internal int Right;
+        internal int Bottom;
+    }
 }
 
 internal sealed class WindowsD3D12BackingStore : IDisposable

@@ -114,7 +114,7 @@ function Get-SourceFingerprint {
     ).ToLowerInvariant()
 }
 
-function Measure-Qualification([object] $Evidence) {
+function Measure-Qualification([object] $Evidence, [object] $AppEvidence) {
     $frequency = [double]$Evidence.clockCalibration.qpcFrequency
     $refreshHz = [double]$Evidence.displayRefreshHz
     $refreshTicks = $frequency / $refreshHz
@@ -209,6 +209,11 @@ function Measure-Qualification([object] $Evidence) {
         $wgcIntervalP95Microseconds -le (2 * $refreshMicroseconds)
     $desktopStrictEligible = $null -ne $desktopIntervalP95Microseconds -and
         $desktopIntervalP95Microseconds -le (2 * $refreshMicroseconds)
+    $sourceCadenceMinimum = $refreshHz * 0.90
+    $sourceCadenceMaximum = $refreshHz * 1.10
+    $sourceCadence = [double]$AppEvidence.qualificationPresentedFramesPerSecond
+    $sourceCadencePass = $AppEvidence.qualificationRenderBackend -like 'D3D12*' -and
+        $sourceCadence -ge $sourceCadenceMinimum -and $sourceCadence -le $sourceCadenceMaximum
     $integrityPass = [int]$Evidence.captureErrors -eq 0 -and
         [int]$Evidence.captureRingDroppedFrames -eq 0 -and
         [int]$Evidence.encoderDroppedFrames -eq 0 -and
@@ -219,10 +224,15 @@ function Measure-Qualification([object] $Evidence) {
     $callbackPass = [double]$Evidence.callbackDurationMicroseconds.p95 -le 1000 -and
         [double]$Evidence.callbackDurationMicroseconds.p99 -le 2000
     $phasePass = $phaseResults.Count -eq 8 -and @($phaseResults | Where-Object { -not $_.pass }).Count -eq 0
-    $status = if ($integrityPass -and $callbackPass -and $desktopStrictEligible -and
+    $status = if ($sourceCadencePass -and $integrityPass -and $callbackPass -and $desktopStrictEligible -and
         $staticFailures.Count -eq 0 -and $phasePass) { 'PASS' } else { 'FAIL' }
     return [ordered]@{
         status = $status
+        sourceCadencePass = $sourceCadencePass
+        sourceBackend = $AppEvidence.qualificationRenderBackend
+        sourcePresentedFramesPerSecond = $sourceCadence
+        sourceCadenceMinimumFramesPerSecond = $sourceCadenceMinimum
+        sourceCadenceMaximumFramesPerSecond = $sourceCadenceMaximum
         integrityPass = $integrityPass
         callbackPass = $callbackPass
         callbackDurationMicroseconds = $Evidence.callbackDurationMicroseconds
@@ -309,7 +319,11 @@ try {
                 throw "Observer qualification capture failed (exit $($captureProcess.ExitCode)).`n$captureOutput`n$captureError"
             }
             $evidence = Get-Content -LiteralPath $rawEvidence -Raw | ConvertFrom-Json -Depth 60
-            $measurement = Measure-Qualification $evidence
+            if (-not (Test-Path -LiteralPath $appEvidence -PathType Leaf)) {
+                throw "Qualification app did not publish live D3D12 source evidence: $appEvidence"
+            }
+            $appReport = Get-Content -LiteralPath $appEvidence -Raw | ConvertFrom-Json -Depth 20
+            $measurement = Measure-Qualification $evidence $appReport
             $results.Add([ordered]@{
                 runNumber = $runNumber
                 runId = $runId
@@ -322,10 +336,11 @@ try {
                 requestedLogicalOuter = $evidence.requestedLogicalOuter
                 initialGeometry = $evidence.initialGeometry
                 measurement = $measurement
+                appMeasurement = $appReport
                 rawEvidence = [IO.Path]::GetRelativePath($repoRoot, $rawEvidence).Replace('\', '/')
                 appEvidence = [IO.Path]::GetRelativePath($repoRoot, $appEvidence).Replace('\', '/')
             })
-            Write-Output "RUN=$runNumber STATUS=$($measurement.status) CALLBACK_P95_US=$($measurement.callbackDurationMicroseconds.p95) DESKTOP_P95_US=$($measurement.desktopIntervalP95Microseconds) PHASE=$($measurement.phasePass)"
+            Write-Output "RUN=$runNumber STATUS=$($measurement.status) SOURCE_FPS=$($measurement.sourcePresentedFramesPerSecond) CALLBACK_P95_US=$($measurement.callbackDurationMicroseconds.p95) DESKTOP_P95_US=$($measurement.desktopIntervalP95Microseconds) PHASE=$($measurement.phasePass)"
         } finally {
             if ($hwnd -ne [IntPtr]::Zero) {
                 [DorotiObserverNative]::PostMessage($hwnd, [DorotiObserverNative]::WM_CANCELMODE, [IntPtr]::Zero, [IntPtr]::Zero) | Out-Null

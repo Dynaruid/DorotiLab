@@ -174,9 +174,19 @@ if ($Shard -eq 'Contract') {
         $mauiHost.Contains('accept a wake from any thread.', [StringComparison]::Ordinal)) 'Windows resize framework and raster wake do not re-enter the WinUI queue'
     Assert-True ($windowsSurface.Contains('using var completion = new EventWaitHandle(false, EventResetMode.AutoReset);', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('_lastConfirmedFence = target;', [StringComparison]::Ordinal) -and
-        $windowsSurface.Contains('if (_hasPresented) WaitForFrameLatency();', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('if (_hasPresented && !LastContentExtentChanged) WaitForFrameLatency();', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('!nativeSource!.IsRetired(target.Generation)', [StringComparison]::Ordinal) -and
         $windowsSurface.Contains('_retiredGeneration = Math.Max(_retiredGeneration, generation);', [StringComparison]::Ordinal)) 'Windows fence, frame-latency token, and retired resize transaction ownership'
+    Assert-True ($windowsSurface.Contains('internal static class WindowsStableCapacityFeature', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('DOROTI_WINDOWS_STABLE_CAPACITY', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('GetInitialCapacity(windowHandle, width, height)', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('var capacityWidth = Math.Max(width, _swapChainWidth);', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('WindowsStableCapacityFeature.Enabled ? _swapChainWidth : width', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('if (resized && !WindowsStableCapacityFeature.Enabled)', [StringComparison]::Ordinal) -and
+        -not $windowsSurface.Contains('SetSourceSize(', [StringComparison]::Ordinal)) 'Windows product uses one 1:1 grow-only capacity front with exact content extent and no source scaling'
+    Assert-True ($windowsSurface.IndexOf('nativeSource!.CompletePresented(target.Generation);', [StringComparison]::Ordinal) -lt
+        $windowsSurface.IndexOf('var dwmFlushSucceeded = presenter.FlushDwmAfterResize();', [StringComparison]::Ordinal) -and
+        $windowsSurface.Contains('post-ACK resize-only DwmFlush', [StringComparison]::Ordinal)) 'Windows matching Present releases the platform resize wait before raster-owned DwmFlush'
     foreach ($legacy in @(
         'src/Doroti.Host.Maui/DorotiWindowsSkiaViewHandler.cs',
         'src/Doroti.Host.Maui/WindowsEglInterop.cs',
