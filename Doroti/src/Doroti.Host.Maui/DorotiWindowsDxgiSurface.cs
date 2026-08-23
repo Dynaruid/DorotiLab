@@ -90,6 +90,7 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
     private long _activations;
     private long _deactivations;
     private MauiPaintCompletion? _activeCompletion;
+    private DorotiMouseCursorKind _currentCursor = DorotiMouseCursorKind.basic;
     private bool _loaded;
     private bool _disposed;
 
@@ -208,9 +209,13 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
 
     public void SetCursor(DorotiMouseCursorKind cursor)
     {
+        lock (_gate) _currentCursor = cursor;
         void Apply()
         {
             var panel = _panel;
+            WindowsClientResizeSource? nativeSource;
+            lock (_gate) nativeSource = _nativeResizeSource;
+            nativeSource?.SetCursor(cursor);
             if (panel is null) return;
             var type = cursor switch
             {
@@ -269,9 +274,11 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
         var source = WindowsClientResizeSource.TryCreate(
             _view,
             HandleNativeResize,
-            HandleNativeResizeTimeout);
+            HandleNativeResizeTimeout,
+            HandleNativePointer);
         if (source is null) return;
         var attached = false;
+        var cursor = DorotiMouseCursorKind.basic;
         lock (_gate)
         {
             if (_disposed || _nativeResizeSource is not null)
@@ -280,13 +287,25 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
                 return;
             }
             _nativeResizeSource = source;
+            cursor = _currentCursor;
             attached = true;
         }
-        if (attached) source.Start();
+        if (attached)
+        {
+            source.SetCursor(cursor);
+            source.Start();
+        }
     }
 
     private long HandleNativeResize() =>
         PublishTarget("child-HWND.WM_SIZE")?.Generation ?? 0;
+
+    private void HandleNativePointer(MauiSurfacePointerData pointer)
+    {
+        if (pointer.Change == PointerChange.down && _panel is { } panel)
+            _ = panel.Focus(FocusState.Pointer);
+        Pointer?.Invoke(pointer);
+    }
 
     private void HandleNativeResizeTimeout(long generation)
     {
@@ -715,10 +734,38 @@ internal sealed class DorotiWindowsDxgiSurface : IMauiSkiaSurface
 internal sealed class WindowsClientResizeSource : IDisposable
 {
     private const uint WmSize = 0x0005;
+    private const uint WmCancelMode = 0x001F;
+    private const uint WmSetCursor = 0x0020;
     private const uint WmEraseBackground = 0x0014;
     private const uint WmNcDestroy = 0x0082;
     private const uint WmNcHitTest = 0x0084;
-    private const int HtTransparent = -1;
+    private const uint WmCaptureChanged = 0x0215;
+    private const uint WmMouseMove = 0x0200;
+    private const uint WmLeftButtonDown = 0x0201;
+    private const uint WmLeftButtonUp = 0x0202;
+    private const uint WmRightButtonDown = 0x0204;
+    private const uint WmRightButtonUp = 0x0205;
+    private const uint WmMiddleButtonDown = 0x0207;
+    private const uint WmMiddleButtonUp = 0x0208;
+    private const uint WmMouseWheel = 0x020A;
+    private const uint WmMouseHorizontalWheel = 0x020E;
+    private const uint WmMouseLeave = 0x02A3;
+    private const int HtClient = 1;
+    private const uint TrackMouseEventLeave = 0x00000002;
+    private const int MouseWheelDelta = 120;
+    private const int IdcArrow = 32512;
+    private const int IdcIBeam = 32513;
+    private const int IdcWait = 32514;
+    private const int IdcCross = 32515;
+    private const int IdcSizeNwSe = 32642;
+    private const int IdcSizeNeSw = 32643;
+    private const int IdcSizeWe = 32644;
+    private const int IdcSizeNs = 32645;
+    private const int IdcSizeAll = 32646;
+    private const int IdcNo = 32648;
+    private const int IdcHand = 32649;
+    private const int IdcAppStarting = 32650;
+    private const int IdcHelp = 32651;
     private const uint WsChild = 0x40000000;
     private const uint WsVisible = 0x10000000;
     private const uint WsClipSiblings = 0x04000000;
@@ -735,25 +782,36 @@ internal sealed class WindowsClientResizeSource : IDisposable
     private readonly SubclassProcedure _childProcedure;
     private readonly Func<long> _sizeChanged;
     private readonly Action<long> _timedOut;
+    private readonly Action<MauiSurfacePointerData> _pointer;
     private readonly WindowsResizeCoordinator _coordinator = new();
     private readonly WindowsPlatformTaskRunner _taskRunner;
     private bool _parentAttached;
     private bool _childAttached;
     private bool _started;
     private bool _disposed;
+    private bool _trackingMouseLeave;
+    private bool _pointerAdded;
+    private bool _releasingCapture;
     private int _hasPresented;
+    private nint _clientCursor;
+    private int _lastPointerX;
+    private int _lastPointerY;
+    private int _buttons;
 
     private WindowsClientResizeSource(
         Microsoft.UI.Xaml.Window platformWindow,
         nint parentWindowHandle,
         Func<long> sizeChanged,
-        Action<long> timedOut)
+        Action<long> timedOut,
+        Action<MauiSurfacePointerData> pointer)
     {
         _platformWindow = platformWindow;
         _parentWindowHandle = parentWindowHandle;
         _sizeChanged = sizeChanged;
         _timedOut = timedOut;
+        _pointer = pointer;
         _taskRunner = new(_coordinator);
+        _clientCursor = LoadCursor(0, (nint)IdcArrow);
         _parentSubclassId = checked((nuint)Interlocked.Increment(ref _nextSubclassId));
         _childSubclassId = checked((nuint)Interlocked.Increment(ref _nextSubclassId));
         _parentProcedure = HandleParentWindowMessage;
@@ -780,14 +838,19 @@ internal sealed class WindowsClientResizeSource : IDisposable
 
     internal nint RenderWindowHandle => _renderWindowHandle;
 
+    internal void SetCursor(DorotiMouseCursorKind cursor) =>
+        _clientCursor = ResolveCursor(cursor);
+
     internal static WindowsClientResizeSource? TryCreate(
         DorotiWindowsDxgiElement view,
         Func<long> sizeChanged,
-        Action<long> timedOut)
+        Action<long> timedOut,
+        Action<MauiSurfacePointerData> pointer)
     {
         ArgumentNullException.ThrowIfNull(view);
         ArgumentNullException.ThrowIfNull(sizeChanged);
         ArgumentNullException.ThrowIfNull(timedOut);
+        ArgumentNullException.ThrowIfNull(pointer);
         if (view.Window?.Handler?.PlatformView is not Microsoft.UI.Xaml.Window platformWindow)
             return null;
         // MAUI/WinUI renders its default title bar inside the top-level HWND's
@@ -807,7 +870,7 @@ internal sealed class WindowsClientResizeSource : IDisposable
         var windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(platformWindow);
         if (windowHandle == 0) return null;
         var source = new WindowsClientResizeSource(
-            platformWindow, windowHandle, sizeChanged, timedOut);
+            platformWindow, windowHandle, sizeChanged, timedOut, pointer);
         if (source._parentAttached && source._childAttached) return source;
         source.Dispose();
         return null;
@@ -882,6 +945,14 @@ internal sealed class WindowsClientResizeSource : IDisposable
         nuint subclassId,
         nuint referenceData)
     {
+        if (message == WmSetCursor && GetHitTest(lParam) == HtClient)
+        {
+            // Keep client cursor ownership separate from the system-owned
+            // non-client resize cursor. This also restores the Doroti cursor
+            // immediately after the pointer crosses a sizing border.
+            SetNativeCursor(_clientCursor);
+            return 1;
+        }
         if (message == WmSize && _started)
             ResizeChildToParent();
         if (message == WmNcDestroy) _parentAttached = false;
@@ -889,6 +960,35 @@ internal sealed class WindowsClientResizeSource : IDisposable
         // reach WinUI during the sizing loop so the system title bar, content
         // island, pointer capture, and WM_EXITSIZEMOVE lifecycle stay intact.
         return DefSubclassProc(windowHandle, message, wParam, lParam);
+    }
+
+    private static int GetHitTest(nint lParam) => unchecked((short)(long)lParam);
+
+    private static nint ResolveCursor(DorotiMouseCursorKind cursor)
+    {
+        var resource = cursor switch
+        {
+            DorotiMouseCursorKind.click or DorotiMouseCursorKind.grab or
+                DorotiMouseCursorKind.grabbing => IdcHand,
+            DorotiMouseCursorKind.forbidden or DorotiMouseCursorKind.noDrop => IdcNo,
+            DorotiMouseCursorKind.wait => IdcWait,
+            DorotiMouseCursorKind.progress => IdcAppStarting,
+            DorotiMouseCursorKind.help => IdcHelp,
+            DorotiMouseCursorKind.text or DorotiMouseCursorKind.verticalText => IdcIBeam,
+            DorotiMouseCursorKind.cell or DorotiMouseCursorKind.precise => IdcCross,
+            DorotiMouseCursorKind.move or DorotiMouseCursorKind.allScroll => IdcSizeAll,
+            DorotiMouseCursorKind.resizeLeftRight or DorotiMouseCursorKind.resizeLeft or
+                DorotiMouseCursorKind.resizeRight or DorotiMouseCursorKind.resizeColumn => IdcSizeWe,
+            DorotiMouseCursorKind.resizeUpDown or DorotiMouseCursorKind.resizeUp or
+                DorotiMouseCursorKind.resizeDown or DorotiMouseCursorKind.resizeRow => IdcSizeNs,
+            DorotiMouseCursorKind.resizeUpLeftDownRight or DorotiMouseCursorKind.resizeUpLeft or
+                DorotiMouseCursorKind.resizeDownRight => IdcSizeNwSe,
+            DorotiMouseCursorKind.resizeUpRightDownLeft or DorotiMouseCursorKind.resizeUpRight or
+                DorotiMouseCursorKind.resizeDownLeft => IdcSizeNeSw,
+            DorotiMouseCursorKind.none => 0,
+            _ => IdcArrow,
+        };
+        return resource == 0 ? 0 : LoadCursor(0, (nint)resource);
     }
 
     private nint HandleChildWindowMessage(
@@ -899,6 +999,35 @@ internal sealed class WindowsClientResizeSource : IDisposable
         nuint subclassId,
         nuint referenceData)
     {
+        if (message is WmMouseMove or WmLeftButtonDown or WmLeftButtonUp or
+            WmRightButtonDown or WmRightButtonUp or WmMiddleButtonDown or
+            WmMiddleButtonUp or WmMouseWheel or WmMouseHorizontalWheel)
+        {
+            HandleMouseMessage(windowHandle, message, wParam, lParam);
+            return 0;
+        }
+        if (message == WmMouseLeave)
+        {
+            _trackingMouseLeave = false;
+            // Mouse capture must keep the active pointer alive while a drag is
+            // outside the child. The release/cancel path closes the sequence.
+            if (_pointerAdded && _buttons == 0)
+            {
+                DispatchPointer(PointerChange.remove, _lastPointerX, _lastPointerY,
+                    0, 0, 0, PointerSignalKind.none);
+                _pointerAdded = false;
+            }
+            return 0;
+        }
+        if (message == WmCancelMode ||
+            (message == WmCaptureChanged && !_releasingCapture && _buttons != 0))
+        {
+            if (_pointerAdded && _buttons != 0)
+                DispatchPointer(PointerChange.cancel, _lastPointerX, _lastPointerY,
+                    0, 0, 0, PointerSignalKind.none);
+            _buttons = 0;
+            _pointerAdded = false;
+        }
         if (message == WmSize && _started)
         {
             var generation = _sizeChanged();
@@ -916,10 +1045,130 @@ internal sealed class WindowsClientResizeSource : IDisposable
             return 0;
         }
         if (message == WmEraseBackground) return 1;
-        if (message == WmNcHitTest) return HtTransparent;
+        if (message == WmNcHitTest) return HtClient;
         if (message == WmNcDestroy) _childAttached = false;
         return DefSubclassProc(windowHandle, message, wParam, lParam);
     }
+
+    private void HandleMouseMessage(nint windowHandle, uint message, nuint wParam, nint lParam)
+    {
+        var point = message is WmMouseWheel or WmMouseHorizontalWheel
+            ? ScreenPointToClient(lParam)
+            : ClientPoint(lParam);
+        _lastPointerX = point.X;
+        _lastPointerY = point.Y;
+        var previousButtons = _buttons;
+        _buttons = ButtonsFromWParam(wParam);
+        if (message == WmLeftButtonDown) _buttons |= 1;
+        if (message == WmRightButtonDown) _buttons |= 2;
+        if (message == WmMiddleButtonDown) _buttons |= 4;
+
+        if (!_pointerAdded)
+        {
+            DispatchPointer(PointerChange.add, point.X, point.Y,
+                0, 0, 0, PointerSignalKind.none);
+            _pointerAdded = true;
+        }
+
+        if (!_trackingMouseLeave && message == WmMouseMove && _buttons == 0)
+        {
+            var tracking = new NativeTrackMouseEvent
+            {
+                Size = checked((uint)Marshal.SizeOf<NativeTrackMouseEvent>()),
+                Flags = TrackMouseEventLeave,
+                WindowHandle = windowHandle,
+            };
+            _trackingMouseLeave = TrackMouseEvent(ref tracking);
+        }
+
+        var change = message switch
+        {
+            WmLeftButtonDown or WmRightButtonDown or WmMiddleButtonDown
+                when previousButtons == 0 => PointerChange.down,
+            WmLeftButtonUp or WmRightButtonUp or WmMiddleButtonUp
+                when _buttons == 0 => PointerChange.up,
+            WmMouseMove when _buttons == 0 => PointerChange.hover,
+            _ => PointerChange.move,
+        };
+        var verticalScroll = message == WmMouseWheel
+            ? -GetWheelDelta(wParam) / (double)MouseWheelDelta * MouseWheelDelta
+            : 0;
+        var horizontalScroll = message == WmMouseHorizontalWheel
+            ? GetWheelDelta(wParam) / (double)MouseWheelDelta * MouseWheelDelta
+            : 0;
+        DispatchPointer(change, point.X, point.Y, _buttons,
+            horizontalScroll, verticalScroll,
+            message is WmMouseWheel or WmMouseHorizontalWheel
+                ? PointerSignalKind.scroll
+                : PointerSignalKind.none);
+
+        if (change == PointerChange.down)
+        {
+            SetCapture(windowHandle);
+        }
+        else if (change == PointerChange.up && _buttons == 0 && GetCapture() == windowHandle)
+        {
+            _releasingCapture = true;
+            try { ReleaseCapture(); }
+            finally { _releasingCapture = false; }
+            if (_pointerAdded && !IsInsideClient(windowHandle, point))
+            {
+                DispatchPointer(PointerChange.remove, point.X, point.Y,
+                    0, 0, 0, PointerSignalKind.none);
+                _pointerAdded = false;
+            }
+        }
+    }
+
+    private static bool IsInsideClient(nint windowHandle, NativePoint point) =>
+        GetClientRect(windowHandle, out var rect) &&
+        point.X >= rect.Left && point.X < rect.Right &&
+        point.Y >= rect.Top && point.Y < rect.Bottom;
+
+    private void DispatchPointer(
+        PointerChange change,
+        int x,
+        int y,
+        int buttons,
+        double scrollDeltaX,
+        double scrollDeltaY,
+        PointerSignalKind signalKind) =>
+        _pointer(new(
+            DorotiFrameClock.Now,
+            change,
+            PointerDeviceKind.mouse,
+            1,
+            x,
+            y,
+            buttons,
+            scrollDeltaX,
+            scrollDeltaY,
+            signalKind,
+            buttons == 0 ? 0 : 1));
+
+    private static NativePoint ClientPoint(nint lParam) => new()
+    {
+        X = unchecked((short)(long)lParam),
+        Y = unchecked((short)((long)lParam >> 16)),
+    };
+
+    private NativePoint ScreenPointToClient(nint lParam)
+    {
+        var point = ClientPoint(lParam);
+        ScreenToClient(_renderWindowHandle, ref point);
+        return point;
+    }
+
+    private static int ButtonsFromWParam(nuint wParam)
+    {
+        var keys = unchecked((ushort)wParam);
+        return ((keys & 0x0001) != 0 ? 1 : 0) |
+               ((keys & 0x0002) != 0 ? 2 : 0) |
+               ((keys & 0x0010) != 0 ? 4 : 0);
+    }
+
+    private static int GetWheelDelta(nuint wParam) =>
+        unchecked((short)((ulong)wParam >> 16));
 
     private void ResizeChildToParent()
     {
@@ -975,6 +1224,15 @@ internal sealed class WindowsClientResizeSource : IDisposable
     {
         internal int X;
         internal int Y;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct NativeTrackMouseEvent
+    {
+        internal uint Size;
+        internal uint Flags;
+        internal nint WindowHandle;
+        internal uint HoverTime;
     }
 
     private delegate nint SubclassProcedure(
@@ -1052,6 +1310,26 @@ internal sealed class WindowsClientResizeSource : IDisposable
 
     [DllImport("user32.dll", ExactSpelling = true)]
     private static extern uint GetDpiForWindow(nint windowHandle);
+
+    [DllImport("user32.dll", EntryPoint = "LoadCursorW", ExactSpelling = true)]
+    private static extern nint LoadCursor(nint instance, nint cursorName);
+
+    [DllImport("user32.dll", EntryPoint = "SetCursor", ExactSpelling = true)]
+    private static extern nint SetNativeCursor(nint cursor);
+
+    [DllImport("user32.dll", EntryPoint = "TrackMouseEvent", ExactSpelling = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool TrackMouseEvent(ref NativeTrackMouseEvent tracking);
+
+    [DllImport("user32.dll", ExactSpelling = true)]
+    private static extern nint SetCapture(nint windowHandle);
+
+    [DllImport("user32.dll", ExactSpelling = true)]
+    private static extern nint GetCapture();
+
+    [DllImport("user32.dll", ExactSpelling = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool ReleaseCapture();
 
     [DllImport("kernel32.dll", EntryPoint = "GetModuleHandleW", ExactSpelling = true,
         CharSet = CharSet.Unicode)]

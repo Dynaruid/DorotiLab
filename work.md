@@ -5,7 +5,7 @@
 - 작성일: 2026-08-23
 - 현재 checkout 기준: `21320c77`
 - Flutter 비교 기준: `reference/flutter-master`의 고정 commit `56b8e1a851a594b1a154f8ea93270807dab22b9a`
-- 상태: **W0 fallback까지 실행 후 G1 중단, Windows chrome/input 회귀 복구** (2026-08-23). M0/G0와 D3D12 offscreen-copy runtime correctness는 PASS했지만, pre-present expansion ordering과 ANGLE/EGL fallback이 모두 strict visual gate를 넘지 못했다. 이후 발견된 타이틀바 가림과 검증 종료 후 resize 입력 잔류는 복구했지만 G1 visual/cadence는 계속 FAIL이다. Ordered hard gate에 따라 W1 이후와 Web milestone은 진행하지 않았다.
+- 상태: **W0 fallback까지 실행 후 G1 중단, Windows chrome/mouse-input 회귀 복구** (2026-08-23). M0/G0와 D3D12 offscreen-copy runtime correctness는 PASS했지만, pre-present expansion ordering과 ANGLE/EGL fallback이 모두 strict visual gate를 넘지 못했다. 이후 발견된 타이틀바 가림, 검증 종료 후 resize 입력 잔류, raw child HWND의 mouse pointer 단절은 복구했지만 G1 visual/cadence는 계속 FAIL이다. Ordered hard gate에 따라 W1 이후와 Web milestone은 진행하지 않았다.
 - 입력 자료: 현재 `problem.md`, `research.md`, Windows/Web host source, 고정 Flutter Windows/Web engine source, Microsoft/WHATWG/CSSWG 공식 API 문서.
 - 범위: Windows와 Web의 viewport metrics → framework frame → GPU backing store → visible present 소유권을 다시 설계한다.
 - 공통 epoch/exact-match/terminal ledger는 보존하되, 그것을 가시 문제의 해결 자체로 간주하지 않는다.
@@ -65,6 +65,14 @@
 - 첫 회귀 run `win-rsz-default-left-20260823-201303-affacfa1`은 1280×720/200% DPI/165Hz에서 blank/AppBar/circle/title failure 0, final gap 0, capture error/drop 0, framework exception 0이고 최대 우측 gap 13px/521.207ms, app present 31.4Hz였다. 그러나 최종 소스 지문 run `win-rsz-default-left-20260823-201749-69e4186f`은 chrome 복구와 final gap 0, capture error/drop 0, framework exception 0을 유지했어도 transient gap이 94px/2,381.790ms, app present 23.1Hz였다. 따라서 13px 결과를 안정적 개선으로 승격하지 않으며 원래 G1은 계속 FAIL이다.
 - resize transaction에서 frame-latency wait를 생략하고 `DwmFlush`만 남기는 후보도 같은 조건으로 실행했으나 `win-rsz-default-left-20260823-201554-439ef492`에서 20px/3,036.379ms/21.3Hz로 악화되어 즉시 철회했다. 최종 경로는 기존 frame-latency wait + resize-only `DwmFlush`를 유지한다.
 - 이 수정은 W1 제품 승격이나 G1 PASS가 아니다. W1~W3, Web B0~B2, G2~G4 및 7방향/DPI/monitor/input/IME/accessibility 전체 acceptance는 기존대로 `notStarted`/`notVerified`다.
+
+### 0.5 2026-08-23 Windows mouse interaction 회귀 수정
+
+- 화면 전체를 덮는 raw render child HWND가 mouse hit-test의 실제 대상인데 기존 XAML `_host.Pointer*` handler만 Doroti pointer packet을 만들고 있었다. child를 `HTTRANSPARENT`로 두어도 별도 WinUI content island까지 안정적으로 재전달되지 않으므로 화면은 보이지만 내부 button이 되었다가 안 되는 상태가 발생했다. render child를 `HTCLIENT` input owner로 두고 `WM_MOUSEMOVE`, 좌/우/중 button down/up, wheel, capture/cancel/leave를 `MauiSurfacePointerData`로 직접 연결했다. keyboard/IME focus 경로는 기존 XAML panel에 남겼다.
+- mouse protocol도 Win32 message를 단순히 모두 `move`로 바꾸지 않는다. 첫 진입은 `add`, button 없는 이동은 `hover`, 첫 button 접촉은 `down`, capture 중 이동은 `move`, 마지막 button 해제는 `up`, 정상 이탈은 `remove`, capture loss는 `cancel`로 보낸다. drag capture 중 child 밖으로 나간 `WM_MOUSELEAVE`는 active pointer를 제거하지 않는다.
+- cursor owner는 top-level `WM_SETCURSOR`에서 hit-test가 `HTCLIENT`일 때만 Doroti client cursor를 적용하고, `HTLEFT` 등 non-client edge/corner는 `DefWindowProc`에 맡긴다. 200% DPI에서 left border와 interior를 세 번 왕복한 결과가 매번 `HTLEFT + IDC_SIZEWE → HTCLIENT + IDC_ARROW`였고 마지막 `LeftButtonDown=False`를 확인했다.
+- 새 Release 실행본을 1280×720 physical로 두고 실제 OS mouse 입력을 사용했다. 창 밖으로 이동했다가 button으로 다시 들어오는 수명주기를 매회 포함한 6회 연속 click에서 `nativePointerEvents 0 → 43`, 화면 상태 `Pressed 0 → Pressed 6`을 확인했다. 이어 left border를 40px 실제 drag-resize한 뒤 같은 button을 다시 click해 `nativePointerEvents 53 → 58`, `Pressed 7`을 확인했다. 최종 소스에서는 button을 누른 채 child 밖으로 drag-release한 뒤 다시 들어와 click하는 capture 경로도 `nativePointerEvents=18`, `Pressed 1`, process responding으로 통과했다. 증거 화면은 `.doroti/tmp/native-input-sm-after-six-clicks.png`, `.doroti/tmp/native-input-after-resize-click.png`, `.doroti/tmp/native-input-final-drag-out-click.png`이고 Release build는 경고 0/오류 0이다.
+- 이 확인은 Windows mouse hover/click/capture와 resize 뒤 click에 한정한다. keyboard/IME, touch/pen, accessibility, 다른 DPI/monitor와 W2 전체 acceptance는 계속 `notVerified`이며 G1 visual/cadence FAIL 판정도 바꾸지 않는다.
 
 ## 1. 최종 구조 결정
 
