@@ -5,7 +5,7 @@
 - 작성일: 2026-08-24
 - 대상: `Doroti.Host.Web`의 브라우저 창/컨테이너 resize, DPR/zoom 전환, WebGL context 복구
 - 문서 성격: **검토 결과와 ordered 구현계획**이다. 이 문서 작성만으로 구현·브라우저 실행·visible acceptance를 수행한 것으로 간주하지 않는다.
-- 이번 단계에서는 `work3.md`만 작성한다. 기존 `Program.cs`, `work2.md`, validator의 미커밋 변경은 보존한다.
+- 최초 계획 작성 단계에서는 `work3.md`만 작성했고 구현은 시작하지 않았다. 이후 관련 상태 문서 갱신에서도 기존 `Program.cs`와 validator의 미커밋 변경은 보존한다.
 - Flutter는 새 runtime build/capture 대상이 아니라 **resize protocol의 source-only reference**로 사용한다.
 - active automated smoke는 기존 합의대로 **40 samples**만 사용한다.
 - `work2.md`의 Web hard stop은 당시 Windows gate 상태를 기록한 것이다. 2026-08-24 사용자의 명시적 요청은 Web **검토와 계획 작성**을 재개한 것이며, 아직 Web 구현이나 milestone PASS를 승인·증명한 것은 아니다.
@@ -23,7 +23,7 @@
 
 | Windows에서 유효했던 원칙 | Web에 적용하는 형태 | 그대로 복사하지 않는 것 |
 | --- | --- | --- |
-| visible surface는 하나만 둔다 | DOM visible canvas 하나와 default framebuffer 하나만 유지 | 두 visible canvas 교대, CSS opacity/z-index front 교체 |
+| 동시에 보이는 visible surface는 하나만 둔다 | DOM visible canvas 하나와 default framebuffer 하나만 유지하되 hidden prepared slot은 허용 | 두 visible canvas를 동시에 표시하거나 CSS opacity/z-index로 독립 교대 |
 | buffer capacity와 exact-content extent를 분리한다 | offscreen front/staging FBO는 grow-only capacity, 각 slot은 별도 exact content extent 보유 | canvas intrinsic backing을 큰 capacity로 고정해 CSS로 축소 표시 |
 | 확대 전에 기존 raster가 새 영역을 덮을 cover를 준비한다 | `ResizeObserver` callback에서 target-sized default framebuffer를 만들고 이전 front overlap을 1:1 blit, 나머지는 theme background | 이전 전체 frame stretch, `SetSourceSize` 유사 CSS scale |
 | 축소 target raster를 미리 준비하고 exact commit만 visible하게 한다 | rAF staging raster가 끝난 뒤 generation이 여전히 latest일 때만 exact rect를 default framebuffer에 blit | main thread를 100ms 동기 block, GPU 완료를 scan-out ACK로 해석 |
@@ -55,7 +55,20 @@ Web에서 canvas의 CSS display size와 intrinsic drawing-buffer size가 다르�
 - 실제 mouse border drag, Firefox, 고주사율 visible acceptance는 `notVerified`다.
 - 이번 `work3.md` 작성에서는 위 결과를 재실행하지 않았으므로 현재 상태도 `notVerified`/과거 evidence 유지다.
 
-### 2.3 우선 검증할 결함 후보
+### 2.3 2026-08-24 Windows Arm N 후속 evidence의 Web 의미
+
+Windows Arm N은 hidden composition front에 latest exact frame을 먼저 latch한 뒤, visible child 교체와 offset/clip을 같은 DirectComposition commit으로 제출하도록 수정됐다. 2ms cadence transaction smoke 3회가 PASS했고, 사용자는 수정된 final binary의 고속 좌측·상단 확대에서 기존 front/border와 창 경계 어긋남 및 떨림이 사라졌음을 직접 확인했다. 이 결과는 해당 Windows 회귀에 대한 **scoped manual PASS**이며 Windows 전체 G2나 Web visible PASS는 아니다.
+
+Web에 옮길 원칙은 다음과 같다.
+
+- “visible surface 하나”는 동시에 표시되는 front가 하나라는 뜻이다. hidden staging/prepared slot은 허용한다.
+- visible canvas extent나 front metadata를 먼저 확장하지 않는다.
+- latest exact staging의 generation/context/DPR/extent를 final gate에서 확인한 뒤, exact blit과 visible front metadata 채택을 하나의 browser paint transaction에서 수행한다.
+- 준비 중 superseded된 hidden slot은 visible commit 없이 폐기한다.
+
+이 문서의 Web 구현·브라우저 runtime 상태는 여전히 `notRun`/`notVerified`이며, Windows manual PASS로 자동 승격하지 않는다.
+
+### 2.4 우선 검증할 결함 후보
 
 1. **exact-size staging 재할당 churn**
    - 현재 `ensureStaging()`은 width/height가 달라지면 기존 staging GPU objects를 삭제하고 새로 만든다.

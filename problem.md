@@ -4,7 +4,7 @@
 
 대상: `Doroti/validation/windows-top-level-presentation`의 standard-chrome raw top-level HWND + D3D12/DXGI control
 
-상태: **Arm S/C diagnostic과 custom non-client Arm N 구현 완료, Arm C 필수 3회 observer qualification FAIL, Arm N transaction smoke PASS, 실제 mouse visible acceptance notVerified/기존 M1 FAIL 유지**
+상태: **Arm S/C diagnostic과 custom non-client Arm N 구현 완료, Arm C 필수 3회 observer qualification FAIL, Arm N dual-front transaction/input-region smoke PASS, 고속 좌측·상단 drag 회귀 사용자 직접 확인 PASS(범위 한정), 기존 M1 FAIL/G2 notVerified 유지**
 
 ## 1. 현재 증상
 
@@ -476,3 +476,97 @@ Arm N은 transaction ownership을 검증하는 diagnostic이며 현재 standard 
 - 100/150/200% DPI와 60/120Hz 이상 visible matrix
 
 따라서 Arm N smoke PASS로 `work2.md` M1이나 G2를 승격하지 않는다. 현재 M1은 계속 **FAIL — hard stop**, G2는 `notVerified`다. 정확한 다음 단계는 Arm N final binary를 실제 mouse로 먼저 확인하는 것이며, visible PASS 뒤에만 custom chrome의 Windows 기능 계약을 제품 migration 계획에 포함한다.
+
+## 14. 2026-08-24 Arm N의 다른 창 입력 차단 수정
+
+### 14.1 원인
+
+초기 Arm N은 monitor work area 전체 크기의 투명한 envelope HWND를 유지하고, visual 바깥 `WM_NCHITTEST`에서 `HTTRANSPARENT`를 반환했다. 그러나 `HTTRANSPARENT`는 같은 UI thread의 아래 window를 찾는 계약이며 다른 프로세스의 창까지 일반적인 click-through를 보장하지 않는다. 그 결과 보이지 않는 envelope 영역이 다른 창의 mouse 상호작용을 막았다.
+
+### 14.2 수정
+
+- 평상시 `SetWindowRgn`으로 top-level HWND의 실제 input/paint region을 app-owned visible rect와 정확히 일치시킨다.
+- resize 또는 title move를 시작할 때만 region을 제거해 monitor envelope를 연다.
+- drag 중에는 이미 mouse capture를 소유하므로 envelope 확대가 다른 상호작용을 추가로 제한하지 않는다.
+- mouse up 또는 capture loss에서는 해당 시점의 latest visual epoch가 commit될 때까지 background gate가 기다린다.
+- latest commit 뒤 UI thread message로 final visible rect region을 다시 적용한다.
+- 그 사이 새 drag가 시작되면 region generation이 이전 constraint를 무효화한다.
+- commit wait가 5초를 넘더라도 region은 반드시 다시 제한하고 timeout counter를 남긴다.
+
+이 변경은 border/chrome/content의 DirectComposition transaction 소유권을 유지하면서 idle 상태의 full-monitor input interception만 제거한다.
+
+### 14.3 검증
+
+- Release build: **PASS**, warnings 0, errors 0
+- `git diff --check`: **PASS**
+- Arm N region + transaction smoke 3회: **PASS/PASS/PASS**, exit code 모두 0
+- visible rect 중심의 window region 포함: 3회 모두 **PASS**
+- envelope 바깥 지점의 window region 제외: 3회 모두 **PASS**
+- latest/committed visual epoch: 3회 모두 `120/120`
+- composition drain timeout: 3회 모두 0
+- region commit wait timeout: 3회 모두 0
+- process failure: 3회 모두 0
+
+`GetWindowRgn/PtInRegion` 검증은 cross-process mouse click의 실제 사용자 체감을 대신하지 않는다. 사용자는 final binary에서 Arm N 바깥의 다른 창을 클릭할 수 있는지와 resize 종료 직후 입력이 정상 복구되는지를 직접 확인해야 한다.
+
+## 15. 2026-08-24 고속 좌측·상단 drag의 front/clip 분리 수정
+
+### 15.1 첨부 이미지로 확인한 원인
+
+사용자가 Arm N의 좌측 또는 상단을 매우 빠르게 확대했을 때 밝은 border는 이전 크기에 남고 checkerboard content와 투명 window boundary만 더 크게 확장되는 장면을 확인했다. 이는 hit-test rect나 custom border 산술 오류가 아니다.
+
+초기 Arm N은 같은 composition swap chain에 다음 두 작업을 연달아 제출했다.
+
+```text
+exact backing copy + swap-chain Present
+  -> 같은 visual의 새 offset/clip DirectComposition Commit
+```
+
+D3D12 queue ordering은 copy와 `Present`의 제출 순서만 보장한다. DirectComposition property commit이 해당 present front와 같은 output frame에 latch된다는 계약은 없다. 빠른 drag에서는 새 clip이 먼저 visible이 되고 swap chain에는 이전 content extent로 그린 border가 한 프레임 더 남아, 첨부 이미지처럼 stale border 바깥의 valid overscan checkerboard가 노출됐다.
+
+즉 Arm C에서 제거하려던 `geometry-before-front` 문제가 custom HWND geometry가 아니라 **single swap-chain front latch와 visual clip commit 사이에서 다시 발생한 것**이다.
+
+### 15.2 dual composition front로 수정
+
+Arm N presentation을 다음 구조로 변경했다.
+
+- 동일한 monitor-sized capacity를 가진 composition swap chain 두 개를 front slot 0/1로 유지한다.
+- 현재 visible slot은 그대로 두고 반대 slot에 latest exact backing을 copy/`Present(0)`한다.
+- 해당 slot의 frame-latency waitable object가 signal될 때까지 기다려 hidden front가 DWM에 latch됐음을 확인한다.
+- 기다리는 동안 더 최신 visual epoch가 오면 준비한 hidden front를 visible로 전환하지 않는다.
+- exact front epoch와 staged content width/height가 일치하는지 final gate에서 다시 확인한다.
+- 준비가 끝난 slot의 offset/clip 설정과 root child visual 교체를 하나의 DirectComposition commit으로 제출한다.
+- `WaitForCommitCompletion()`은 render worker가 composition lock 밖에서 수행해 UI thread의 다음 pointer sample 게시를 막지 않는다.
+- commit completion 뒤에만 `ownedVisibleFrontEpoch`와 `ownedCommittedEpoch`를 갱신한다.
+- 이전 visible visual은 같은 child-tree commit에서 제거되므로 새 clip이 stale front에 적용되는 상태가 존재하지 않는다.
+
+`IDCompositionVisual3.SetVisible()`은 현재 OS/device가 base visual에서 해당 interface를 제공하지 않아 `E_NOINTERFACE`로 실패했다. 최종 구현은 더 낮은 공통 계약인 root visual의 `RemoveAllVisuals()` + `AddVisual()`을 같은 commit에 묶어 front를 교체한다.
+
+### 15.3 현재 검증 결과
+
+검증 시작 시 사용자가 기존 Arm N Release 프로세스(PID 16420)를 열어 두어 일반 Release apphost overwrite build가 file lock으로 한 번 실패했다. 실행 중인 사용자 창은 임의로 종료하지 않고 같은 Release configuration을 별도 output으로 먼저 검증했다. 이후 사용자가 창을 닫아 lock이 해제된 뒤 일반 Release 경로도 다시 빌드하고 최종 binary를 실행했다.
+
+- alternate Release build: **PASS**, warnings 0, errors 0
+- final normal Release build: **PASS**, warnings 0, errors 0
+- `git diff --check`: **PASS**
+- 강화된 smoke: 2ms input cadence, 240 epoch
+- 이동 폭: 좌측 260px, 상단 140px, 좌상단 결합
+- final normal Release 3회 verdict: **PASS/PASS/PASS**, exit code 모두 0
+- target input/publish: 각 run 239/239
+- hidden front prepare / visible switch / abandoned: `238/238/0`, `238/238/0`, `239/238/1`
+- abandoned prepared front는 hidden 상태에서만 폐기됐고 visible switch되지 않음
+- front/geometry mismatch: 세 run 모두 0
+- latest/visible-front/visual commit epoch: 세 run 모두 `240/240/240`
+- region wait/composition drain timeout: 세 run 모두 `0/0`
+- process failure: 세 run 모두 0
+
+기존 PID 16420은 종료됐으며 Release 실행 파일은 수정본으로 교체됐다.
+
+### 15.4 사용자 직접 확인
+
+사용자는 수정된 final binary에서 앞서 재현한 고속 좌측·상단 확대를 다시 수행한 뒤 정상 동작하며 문제가 해결됐다고 확인했다. 따라서 다음 정확한 회귀 범위는 **PASS (scoped manual)**다.
+
+- 좌측 또는 상단을 매우 빠르게 확대할 때 front/border와 창 경계가 서로 어긋나는 현상
+- 같은 경로에서 관찰되던 떨림
+
+이 확인은 자동 smoke와 별개의 실제 visible evidence이며, 첨부 이미지로 보고된 실패가 dual-front latch + single composition commit 변경으로 제거됐다는 판정을 지지한다. 다만 우측·하단·네 corner와 확대/축소 전체 조합, 다른 DPI/refresh/monitor, pointer/input isolation, Snap Layouts, system menu, maximize/restore, keyboard/touch sizing, accessibility는 실행 확인되지 않았으므로 `notVerified`다. Arm C의 M1 observer qualification도 소급 변경하지 않는다. 따라서 **M1은 FAIL — hard stop**, G2는 `notVerified`로 유지한다.

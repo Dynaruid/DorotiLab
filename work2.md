@@ -50,8 +50,10 @@ Windows 제품 경로에서는 MAUI/WinUI `Window`, XAML layout, `SwapChainPanel
 | M0 observer/DPI/capture pipeline 정리 | PASS | 관측기 자체 계약과 provenance를 정리했다. |
 | M1 output observer qualification | **FAIL** | 3회 연속 qualification 실패. 현재 hard stop이다. |
 | 2026-08-24 Arm S/C control | diagnosticOnly | S/C 구현과 최신 2배 drag 단일 PASS는 확보했지만 필수 C 3회가 PASS/FAIL/FAIL이다. 전체 matrix는 `notVerified`이다. |
+| 2026-08-24 Arm N custom non-client control | **PASS** | dual composition front smoke 3회 PASS 뒤 사용자가 수정본에서 고속 좌측·상단 확대를 재현해 front/border와 창 경계의 어긋남 및 떨림이 사라졌음을 확인했다. 이 PASS는 해당 수동 회귀 범위에 한정되며 전체 방향·DPI·monitor·표준 창 기능 matrix는 `notVerified`이다. |
 | A0 목표 아키텍처 결정 | PASS | `Doroti.Host.WindowsAppSdk` + raw HWND + ContentIsland/SiteBridge + WinAppSDK `2.4.0`으로 확정했다. 구현 PASS가 아니다. |
-| A0-V 2.4 dependency/API preflight | notStarted | M1 PASS 뒤 가장 먼저 수행한다. |
+| A0-R non-client ownership 재결정 | notVerified | standard chrome baseline을 유지할지 Arm N custom non-client를 제품 후보로 채택할지 전체 matrix와 Windows 기능 계약 뒤 결정한다. |
+| A0-V 2.4 dependency/API preflight | notStarted | M1과 A0-R PASS 뒤 수행한다. |
 | A1 공용 direct presenter 추출 | notStarted | M1 hard stop 때문에 시작하지 않는다. |
 | A2 raw HWND 제품 shell | notStarted | 선행 gate 미통과. |
 | A3 exact resize transaction | notStarted | 선행 gate 미통과. |
@@ -59,9 +61,10 @@ Windows 제품 경로에서는 MAUI/WinUI `Window`, XAML layout, `SwapChainPanel
 | A5~A9 framework/input/IME/UIA/lifecycle | notStarted | 선행 gate 미통과. |
 | P0 Windows target cutover | notStarted | 제품 G2 전에는 기존 Windows target을 제거하지 않는다. |
 | G2 Windows 제품 acceptance | notVerified | 제품 후보가 아직 없다. |
-| Web 재개 | notStarted | Windows G2 전에는 재개하지 않는다. |
+| Web 계획 재개 | PASS | 별도 사용자 요청으로 `work3.md`의 검토·ordered plan을 작성했다. 구현 PASS가 아니다. |
+| Web 구현 | notStarted | Windows 결과가 Web 구현·browser milestone PASS를 대신하지 않는다. `work3.md`의 독립 gate를 따른다. |
 
-현재 정확한 재개점은 **M1 output observer를 strict 판정에 쓸 수 있게 고치거나, 240fps 이상 외부 카메라를 qualification oracle로 확보하는 것**이다. M1에서 3회 연속 qualified PASS가 나오기 전에는 A0-V 이후 제품 구현, 기존 shell migration, Web 작업을 시작하지 않는다.
+현재 자동 gate의 정확한 재개점은 **M1 output observer를 strict 판정에 쓸 수 있게 고치거나, 240fps 이상 외부 카메라를 qualification oracle로 확보하는 것**이다. Arm N의 다음 제품 판단은 scoped manual PASS를 전체 방향·DPI·monitor matrix로 확대하고 custom chrome의 Windows 기능 계약을 검증하는 것이다. M1에서 3회 연속 qualified PASS가 나오기 전에는 A0-V 이후 제품 구현이나 기존 shell migration을 시작하지 않는다. Web은 별도 사용자 요청으로 계획만 재개됐으며 구현 및 milestone 상태는 `work3.md`에 따라 독립적으로 판정한다.
 
 ## 3. 보존해야 할 기존 증거
 
@@ -79,7 +82,7 @@ Windows 제품 경로에서는 MAUI/WinUI `Window`, XAML layout, `SwapChainPanel
 
 - monitor 크기 capacity + `SetSourceSize`: raster scaling 이상과 edge line 때문에 폐기
 - drag 중 destructive `ResizeBuffers`를 쓰는 single child: 확대/축소 때 검은·흰 uncovered 영역 때문에 폐기
-- 두 visible front를 교대하는 방식: 흰 띠와 flicker 때문에 폐기
+- 서로 독립된 두 visible surface를 동시에 두고 z-order/geometry로 교대하는 방식: 흰 띠와 flicker 때문에 폐기
 
 현재 가장 좋은 control은 다음 구조다.
 
@@ -130,7 +133,27 @@ Windows 제품 경로에서는 MAUI/WinUI `Window`, XAML layout, `SwapChainPanel
 
 따라서 M1은 계속 **FAIL — hard stop**이다. isolated observer PASS나 build PASS로 A0-V/H0-V/A1을 시작하지 않는다. 정확한 재개점은 Arm C의 content-before-geometry offset 0/1 phase 변동을 DirectComposition commit epoch와 Desktop Duplication timestamp에서 좁힌 뒤 3회 연속 qualified PASS를 다시 확보하는 것이다.
 
-### 3.4 과거 경로의 재분류
+### 3.4 2026-08-24 Arm N dual-front transaction과 scoped manual PASS
+
+Arm C의 standard non-client geometry와 composition visual이 서로 다른 output frame에 노출되는 한계를 제거하기 위해 custom non-client Arm N을 diagnostic control로 구현했다.
+
+- monitor work-area 크기의 고정 `WS_POPUP + WS_EX_NOREDIRECTIONBITMAP` envelope 안에서 app-owned visible rect만 변경한다.
+- idle 시 window region을 visible rect로 제한하고 resize capture 중에만 envelope를 연다.
+- monitor-sized composition swap chain 두 slot 중 현재 보이지 않는 slot에 latest exact frame을 copy/`Present(0)`한다.
+- hidden front의 frame-latency signal과 epoch/extent final gate를 통과한 뒤 root child visual 교체와 offset/clip을 하나의 DirectComposition commit으로 제출한다.
+- 이전 front와 새 front를 동시에 표시하지 않으며, superseded hidden front는 visible switch 없이 폐기한다.
+
+현재 evidence:
+
+- Release build: PASS, warnings 0, errors 0
+- 2ms cadence, 239-target Arm N transaction/input-region smoke 3회: PASS/PASS/PASS
+- front/geometry mismatch, region wait timeout, composition drain timeout, process failure: 모두 0
+- latest/visible-front/visual commit epoch: 각 run `240/240/240`
+- 사용자 직접 확인: 수정된 final binary에서 고속 좌측·상단 확대 시 첨부 이미지와 같은 front/border와 창 경계 어긋남 및 떨림이 사라짐 — **PASS (scoped manual)**
+
+이 manual PASS는 사용자가 보고한 정확한 회귀의 해결 증거다. 그러나 우측·하단·네 corner, 확대/축소 전체 조합, 100/150/200% DPI, 60/120Hz 이상, multi-monitor, Snap Layouts, system menu, maximize/restore, keyboard/touch sizing, accessibility는 아직 `notVerified`다. Arm N은 여전히 diagnostic product candidate이며, 기존 M1 observer qualification은 **FAIL — hard stop**, G2는 `notVerified`로 유지한다.
+
+### 3.5 과거 경로의 재분류
 
 | 경로 | 보존 상태 | 새 계획에서의 위치 |
 |---|---|---|
@@ -144,6 +167,8 @@ Windows 제품 경로에서는 MAUI/WinUI `Window`, XAML layout, `SwapChainPanel
 | C3/N1/G2 | notStarted/notVerified | 새 A0-V~P0 단계로 대체한다. |
 
 ## 4. 목표 아키텍처
+
+raw HWND + ContentIsland/SiteBridge라는 상위 ownership 결정은 유지한다. 아래 4.1~4.2의 standard chrome + direct child HWND는 현재 제품 baseline이다. Arm N의 scoped manual PASS로 custom non-client + dual hidden/visible composition slot이 유효한 대안이 됐지만, A0-R에서 전체 visible matrix와 Windows 기능 계약을 통과해 명시적으로 선택하기 전에는 baseline을 자동 교체하지 않는다.
 
 ### 4.1 창과 presentation 소유권
 
@@ -166,7 +191,7 @@ Doroti raster의 visible owner는 top-level의 client에 붙은 하나의 `WS_CH
 - swap-chain capacity는 drag 중 단조 증가시킬 수 있지만 visible content extent는 항상 committed epoch의 exact size다.
 - XAML layout이나 ContentIsland layout 결과로 swap chain을 resize하지 않는다.
 - drag 중 `ResizeBuffers`, `SetSourceSize`, CPU readback, full-frame provisional stretch를 사용하지 않는다.
-- 동일 window에 동시에 보이는 두 front를 두지 않는다.
+- 동일 window에 두 front를 동시에 표시하지 않는다. 다음 exact frame을 준비하는 hidden slot은 허용하지만 visible front와 geometry/clip은 같은 commit에서 교체한다.
 - stale epoch frame은 visible present 전에 폐기한다.
 
 ### 4.3 ContentIsland/SiteBridge 역할
@@ -389,9 +414,23 @@ FAIL/stop 조건:
 - 세 번 중 한 번이라도 observer validity가 깨지면 M1은 PASS가 아니다.
 - M1 PASS 전 A0-V 이후를 시작하지 않는다.
 
+### A0-R — non-client ownership 재결정
+
+상태: **notVerified**
+
+선행 조건: M1 PASS와 Arm N 전체 visible/function matrix 확보
+
+판정 대상:
+
+- standard chrome + direct child HWND baseline을 유지할지 결정
+- custom non-client + dual composition front Arm N 구조를 제품 ownership으로 채택할지 결정
+- Arm N 선택 시 Snap Layouts, system menu, maximize/restore, keyboard/touch sizing, UIA/caption semantics, DPI/monitor migration의 구현 책임과 acceptance를 A2~A9에 명시
+
+사용자가 확인한 고속 좌측·상단 회귀 PASS만으로 이 단계를 PASS하지 않는다. 선택 결과는 4.1~4.2와 H0-V/A2/A3의 단일 제품 구조로 반영하며 두 구조를 모호하게 혼합하지 않는다.
+
 ### A0-V — Windows App SDK 2.4 dependency/API preflight
 
-선행 조건: M1 PASS
+선행 조건: M1 PASS와 A0-R PASS
 
 목적: 현 `1.8.260508005`에서 최신 stable `2.4.0`으로 major upgrade할 때 raw HWND/ContentIsland 경계가 실제로 성립하는지 제품 코드 전에 확인한다.
 
@@ -668,7 +707,7 @@ epoch JSONL event:
 - `IDXGISwapChain::SetSourceSize` 금지
 - visible continuity를 위한 CPU readback 금지
 - full-frame provisional stretch 금지
-- two visible fronts 금지
+- 동시에 두 front를 표시하거나 독립된 z-order/geometry로 교대하는 구성 금지. hidden prepared slot과 single-commit child 교체는 허용
 - resize transaction 중 arbitrary nested message pump 금지
 - stale epoch present 금지
 - floating/pre-release Windows App SDK package version 금지
@@ -692,7 +731,7 @@ epoch JSONL event:
 - A4에서 island 추가 후 회귀하면 SiteBridge rect/z-order/input ownership을 수정한다. render path를 XAML-owned path로 되돌리지 않는다.
 - IME/UIA 때문에 full-client XAML root가 필요해 보이면 A7/A8을 FAIL로 기록하고 별도 최소 spike로 원인을 분리한다.
 - P0/G2 전에는 기존 Windows MAUI target을 삭제하거나 기본 target을 영구 전환하지 않는다.
-- Web은 G2 PASS 전 재개하지 않는다.
+- Web 제품 구현은 별도 승인과 `work3.md` gate 없이 Windows 결과만으로 자동 재개하지 않는다.
 
 rollback 단위:
 
@@ -706,11 +745,13 @@ rollback 단위:
 
 1. M1 observer qualification 실패 원인을 수정한다.
 2. 같은 환경에서 3회 연속 qualified PASS를 확보한다.
-3. A0-V에서 Windows App SDK `2.4.0` API/deployment preflight를 통과한다.
-4. H0-V에서 2026-08-24 best control을 전체 방향 matrix로 재검증한다.
-5. 그 뒤에만 A1 shared presenter core를 추출한다.
-6. A2에서 `Doroti.Host.WindowsAppSdk` raw HWND shell을 만든다.
-7. A3 direct presenter, A4 ContentIsland/SiteBridge 순으로 결합한다.
+3. Arm N scoped manual PASS를 전체 방향·DPI·monitor matrix로 확대하고 custom chrome의 제품 기능 계약을 검증한다.
+4. standard-chrome baseline과 Arm N custom non-client 중 제품 ownership 구조를 명시적으로 결정한다.
+5. A0-V에서 Windows App SDK `2.4.0` API/deployment preflight를 통과한다.
+6. H0-V에서 선택한 2026-08-24 control을 전체 방향 matrix로 재검증한다.
+7. 그 뒤에만 A1 shared presenter core를 추출한다.
+8. A2에서 `Doroti.Host.WindowsAppSdk` raw HWND shell을 만든다.
+9. A3 direct presenter, A4 ContentIsland/SiteBridge 순으로 결합한다.
 
 현재 상태를 다음처럼 오해하면 안 된다.
 

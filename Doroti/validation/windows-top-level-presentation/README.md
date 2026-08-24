@@ -18,7 +18,7 @@ Arm N을 실행한다.
 & .\Doroti\validation\windows-top-level-presentation\bin\Release\net10.0-windows10.0.19041.0\win-x64\Doroti.Validation.WindowsTopLevelPresentation.exe --arm N
 ```
 
-`Doroti resize Arm N` surface가 열리면 밝은 보라색 안쪽 border를 실제 mouse로 잡고 다음을 확인한다. Arm N의 top-level HWND는 모니터 작업영역을 덮는 투명 envelope이며, 보이는 border/chrome/content만 hit-test와 resize 대상이다. 종료는 `Alt+F4`를 사용한다.
+`Doroti resize Arm N` surface가 열리면 밝은 보라색 안쪽 border를 실제 mouse로 잡고 다음을 확인한다. Arm N의 top-level HWND capacity는 모니터 작업영역을 덮지만, 평상시 Win32 window region은 보이는 border/chrome/content로 제한되어 바깥의 다른 창을 클릭할 수 있다. resize capture 중에만 envelope를 열고 latest composition commit 뒤 다시 제한한다. 종료는 `Alt+F4`를 사용한다.
 
 1. 좌측 border를 빠르게 왼쪽으로 당겨 확대한다.
 2. 같은 border를 빠르게 오른쪽으로 밀어 축소한다.
@@ -27,7 +27,7 @@ Arm N을 실행한다.
 5. content가 좌우로 왕복하거나 우측에 흰색/검은색/암색 gap이 나타나는지 확인한다.
 6. 우측, 상단, 하단과 네 corner도 같은 방식으로 비교한다.
 
-검사가 끝나면 창의 닫기 버튼으로 프로세스를 종료한다.
+검사가 끝나면 `Alt+F4`로 프로세스를 종료한다.
 
 ## `dotnet run`으로 실행
 
@@ -44,7 +44,7 @@ dotnet run --project Doroti/validation/windows-top-level-presentation/Doroti.Val
 | `A` | direct-HWND swap chain + `DXGI_SCALING_NONE` | 기존 baseline |
 | `S` | direct-HWND swap chain + transient `DXGI_SCALING_STRETCH` | gap 우선, 일시적인 stretch 허용 비교군 |
 | `C` | composition swap chain + DirectComposition visual | edge-aware provisional anchor와 geometry-admission gate 검증 |
-| `N` | fixed monitor envelope HWND + app-owned composition surface | border/chrome/content를 같은 visual transaction으로 resize하는 custom non-client 비교군 |
+| `N` | fixed monitor envelope HWND + dual composition fronts | hidden exact front를 준비한 뒤 border/chrome/content geometry와 함께 교체하는 custom non-client 비교군 |
 
 Arm A와 S는 다음처럼 실행한다.
 
@@ -59,7 +59,7 @@ Arm N은 standard non-client를 사용하지 않으므로 현재 diagnostic에�
 
 ## Arm N transaction smoke
 
-실제 pointer를 주입하지 않고 UI message loop에서 좌측, 상단, 좌상단 resize target을 순서대로 게시해 latest-only render/commit 계약을 확인할 수 있다. 실행 후 자동으로 종료된다.
+실제 pointer를 주입하지 않고 UI message loop에서 좌측, 상단, 좌상단 resize target을 2ms cadence로 게시해 latest-only dual-front 계약을 확인할 수 있다. 실행 후 자동으로 종료된다.
 
 ```powershell
 $evidence = Join-Path (Get-Location) '.doroti/arm-n-smoke.json'
@@ -67,7 +67,7 @@ $evidence = Join-Path (Get-Location) '.doroti/arm-n-smoke.json'
 Get-Content -LiteralPath $evidence
 ```
 
-`ownedLatestEpoch == ownedCommittedEpoch`, `ownedSmokeDrainTimeoutCount == 0`인지 먼저 확인한다. `ownedCompositionCommitCount`는 coalescing/stale reject에 따라 input 수보다 작을 수 있다. 이 smoke는 실제 mouse visible acceptance를 대신하지 않는다.
+`ownedLatestEpoch == ownedVisibleFrontEpoch == ownedCommittedEpoch`, `ownedFrontGeometryMismatchCount == 0`, `ownedSmokeDrainTimeoutCount == 0`인지 먼저 확인한다. `ownedPreparedFrontCount == ownedFrontSwitchCount + ownedAbandonedPreparedFrontCount`여야 하며 abandoned front는 hidden 상태에서만 폐기된다. 입력 격리는 `ownedOutsideHitTestPass == true`, `ownedInsideHitTestPass == true`, `ownedRegionCommitWaitTimeoutCount == 0`으로 확인한다. 이 smoke는 실제 mouse visible acceptance를 대신하지 않는다.
 
 ## App evidence 저장
 
@@ -130,6 +130,6 @@ M1 qualification은 동일 source fingerprint에서 세 run이 모두 PASS해야
 
 2026-08-24 후속 수정 기준으로 Arm C에는 exact-before-geometry 차단, pure-move resize epoch 제외, composition/GPU lock 분리가 적용돼 있지만 standard non-client와 visual의 output-frame phase 분리는 남는다. 최종 observer 3회 결과는 `PASS/FAIL/FAIL`이다.
 
-Arm N은 실제 HWND geometry를 interactive resize 중 바꾸지 않고, custom border/chrome/content의 offset, clip, exact front를 같은 DirectComposition owner가 게시한다. Release build와 119-sample owned smoke는 PASS했지만 실제 mouse visible acceptance는 아직 `notVerified`다.
+Arm N은 실제 HWND geometry를 interactive resize 중 바꾸지 않는다. 두 composition front 중 hidden slot에 exact frame을 먼저 latch한 뒤, child visual 교체와 offset/clip을 하나의 DirectComposition commit으로 적용한다. 2ms cadence의 239-target dual-front smoke 3회는 PASS했다. 사용자는 수정된 final binary에서 고속 좌측·상단 확대를 직접 재현해 기존 front/border와 창 경계의 어긋남 및 떨림이 사라졌음을 확인했다. 이 범위의 visible acceptance는 **PASS (scoped manual)**다.
 
-따라서 현재 M1은 계속 **FAIL — hard stop**이다. 자세한 원인, 수정 내용과 evidence boundary는 repository root의 `problem.md`를 참조한다.
+우측·하단·네 corner, 확대/축소 전체 조합, 다른 DPI/refresh/monitor와 standard Windows chrome 기능은 아직 `notVerified`다. Arm C의 observer 3회 실패도 소급 변경되지 않으므로 현재 M1은 계속 **FAIL — hard stop**, G2는 `notVerified`다. 자세한 원인, 수정 내용과 evidence boundary는 repository root의 `problem.md`를 참조한다.
