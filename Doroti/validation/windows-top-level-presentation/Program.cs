@@ -3,8 +3,10 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using SharpGen.Runtime;
 using SkiaSharp;
+using Vortice;
 using Vortice.Direct3D;
 using Vortice.Direct3D12;
+using Vortice.DirectComposition;
 using Vortice.DXGI;
 using static Vortice.Direct3D12.D3D12;
 using static Vortice.DXGI.DXGI;
@@ -69,6 +71,7 @@ internal sealed class Program : IDisposable
     private long _clipOnlyShrinkCount;
     private long _asyncShrinkPublishCount;
     private long _asyncOriginMovingPublishCount;
+    private long _compositionVisualEpoch;
     private Exception? _failure;
     private bool _disposed;
 
@@ -79,11 +82,12 @@ internal sealed class Program : IDisposable
         _windowProcedure = WindowProc;
         _qualification = qualification;
         _qualificationRefreshHz = qualificationRefreshHz;
-        if (arm == "A")
+        if (arm is "A" or "S" or "C")
         {
             for (var index = 0; index < _presenters.Length; index++)
             {
                 _presenters[index] = new DirectHwndPresenter(
+                    arm,
                     drawRightEdgeOracle: qualification);
                 var renderIndex = index;
                 _renderWorkers[index] = new D3D12RenderWorker(
@@ -108,12 +112,12 @@ internal sealed class Program : IDisposable
         {
             WriteUnsupportedArmB(evidence);
             Console.Error.WriteLine(
-                "Arm B is unavailable: lifted Microsoft.UI.Composition 1.8 exposes no ICompositorDesktopInterop desktop target.");
+                "Legacy Arm B is retired; use Arm C for the native DirectComposition comparison. The Windows App SDK 2.4 product migration remains a separate gate.");
             return 2;
         }
-        if (arm != "A")
+        if (arm is not ("A" or "S" or "C"))
         {
-            Console.Error.WriteLine($"Unknown arm '{arm}'. Use A or B.");
+            Console.Error.WriteLine($"Unknown arm '{arm}'. Use A, S, or C (legacy B remains unavailable).");
             return 2;
         }
 
@@ -160,7 +164,7 @@ internal sealed class Program : IDisposable
         _window = CreateWindowEx(
             0,
             className,
-            "Doroti N0 top-level direct DXGI",
+            $"Doroti resize Arm {_arm}",
             WsOverlappedWindow,
             CwUseDefault,
             CwUseDefault,
@@ -371,16 +375,37 @@ internal sealed class Program : IDisposable
         var currentHeight = _renderCapacityHeight;
         var visibleWidth = Math.Max(1, currentClient.Right - currentClient.Left);
         var visibleHeight = Math.Max(1, currentClient.Bottom - currentClient.Top);
-        if (!target.RequiresSynchronousPrepresent)
+        var requiresSynchronousPrepresent = _arm == "A" && target.RequiresSynchronousPrepresent;
+        if (!requiresSynchronousPrepresent)
         {
-            // Origin-moving edges must track the pointer without waiting for
-            // Present/DwmFlush. The owned DXGI/GDI background covers expansion
-            // until the latest GPU frame arrives; shrink clips the larger
-            // existing front. Fixed-origin expansion retains pre-presentation.
+            // Arm A keeps the prior asynchronous origin-moving/shrink policy.
+            // Arm S lets DXGI stretch the last exact source rect until the next
+            // exact frame. Arm C first commits an edge-aware DirectComposition
+            // translate/clip, then admits geometry without a DwmFlush wait.
+            if (_arm == "C")
+            {
+                var visualEpoch = Interlocked.Increment(ref _compositionVisualEpoch);
+                target = target with { VisualEpoch = visualEpoch };
+                _presenters[0].ApplyProvisionalVisual(
+                    visualEpoch,
+                    targetOuter.Right == currentOuter.Right
+                        ? currentOuter.Left - targetOuter.Left
+                        : 0,
+                    targetOuter.Bottom == currentOuter.Bottom
+                        ? currentOuter.Top - targetOuter.Top
+                        : 0,
+                    visibleWidth,
+                    visibleHeight,
+                    target.ContentWidth,
+                    target.ContentHeight);
+            }
             _preparedResize = target;
             if (target.RequiresExpandedCoverage)
             {
-                QueueLatestRenderWindow(target.ContentWidth, target.ContentHeight);
+                QueueLatestRenderWindow(
+                    target.ContentWidth,
+                    target.ContentHeight,
+                    target.VisualEpoch);
                 Interlocked.Increment(ref _asyncOriginMovingPublishCount);
             }
             else
@@ -486,10 +511,11 @@ internal sealed class Program : IDisposable
             Interlocked.Increment(ref _preparedOuterMismatchCount);
         if (prepared)
         {
-            if (!preparedTarget!.Value.RequiresSynchronousPrepresent)
+            var preparedValue = preparedTarget!.Value;
+            if (_arm != "A" || !preparedValue.RequiresSynchronousPrepresent)
             {
-                QueueLatestRenderWindow(width, height);
-                if (!preparedTarget.Value.RequiresExpandedCoverage)
+                QueueLatestRenderWindow(width, height, preparedValue.VisualEpoch);
+                if (!preparedValue.RequiresExpandedCoverage)
                     Interlocked.Increment(ref _asyncShrinkPublishCount);
             }
             // Fixed-origin expansion was presented before geometry admission.
@@ -499,14 +525,14 @@ internal sealed class Program : IDisposable
         {
             // A one-pixel non-client rounding difference must not fall back to
             // a synchronous origin-moving present during a shrink.
-            QueueLatestRenderWindow(width, height);
+            QueueLatestRenderWindow(width, height, CurrentCompositionVisualEpoch());
             Interlocked.Increment(ref _asyncShrinkPublishCount);
         }
         else if (originMoved)
         {
             // Preserve pointer/edge coupling even if a suggested outer rect
             // differs from WM_SIZE by non-client rounding.
-            QueueLatestRenderWindow(width, height);
+            QueueLatestRenderWindow(width, height, CurrentCompositionVisualEpoch());
             Interlocked.Increment(ref _asyncOriginMovingPublishCount);
         }
         else if (!CommitRenderWindow(
@@ -524,7 +550,13 @@ internal sealed class Program : IDisposable
         _hasCommittedOuter = true;
     }
 
-    private void QueueLatestRenderWindow(int contentWidth, int contentHeight)
+    private long CurrentCompositionVisualEpoch() =>
+        _arm == "C" ? Volatile.Read(ref _compositionVisualEpoch) : 0;
+
+    private void QueueLatestRenderWindow(
+        int contentWidth,
+        int contentHeight,
+        long visualEpoch = 0)
     {
         var renderWindow = _renderWindows[0];
         if (renderWindow == 0) return;
@@ -536,7 +568,8 @@ internal sealed class Program : IDisposable
             Math.Max(_renderCapacityHeight, contentHeight),
             contentWidth,
             contentHeight,
-            scale);
+            scale,
+            visualEpoch);
     }
 
     private void EnsureRenderCapacity(int requiredWidth, int requiredHeight)
@@ -584,7 +617,8 @@ internal sealed class Program : IDisposable
             renderWindow, width, height,
             contentWidth ?? width, contentHeight ?? height,
             scale, timeout, flushBeforeAck, present,
-            Volatile.Read(ref _contentFrameId));
+            Volatile.Read(ref _contentFrameId),
+            CurrentCompositionVisualEpoch());
         var elapsed = Stopwatch.GetTimestamp() - started;
         if (recordResizeHandshake)
         {
@@ -635,7 +669,13 @@ internal sealed class Program : IDisposable
             schemaVersion = "doroti.windows-top-level-presentation/v1",
             status,
             arm = _arm,
-            visibleOwner = _arm == "A" ? "single standard-chrome top-level HWND owning geometry and a 1:1 monotonic-capacity D3D12/DXGI front" : "unavailable",
+            visibleOwner = _arm switch
+            {
+                "A" => "single standard-chrome top-level HWND + Scaling.None baseline",
+                "S" => "single standard-chrome top-level HWND + transient DXGI Scaling.Stretch source rect",
+                "C" => "standard-chrome top-level HWND + DirectComposition edge-aware visual transaction",
+                _ => "unavailable",
+            },
             rawRenderChildHwndCount = 0,
             renderCapacityWidth = _renderCapacityWidth,
             renderCapacityHeight = _renderCapacityHeight,
@@ -662,12 +702,22 @@ internal sealed class Program : IDisposable
             asyncOriginMovingPublishCount = Volatile.Read(ref _asyncOriginMovingPublishCount),
             supersededResizeFrameCount = _renderWorkers.Sum(
                 worker => worker?.SupersededResizeFrameCount ?? 0),
+            stretchSourceSizeCommitCount = _presenters.Sum(
+                presenter => presenter?.StretchSourceSizeCommitCount ?? 0),
+            compositionProvisionalCommitCount = _presenters.Sum(
+                presenter => presenter?.CompositionProvisionalCommitCount ?? 0),
+            compositionExactCommitCount = _presenters.Sum(
+                presenter => presenter?.CompositionExactCommitCount ?? 0),
+            compositionStaleExactRejectCount = _presenters.Sum(
+                presenter => presenter?.CompositionStaleExactRejectCount ?? 0),
             qualification = _qualification,
             qualificationRefreshHz = _qualificationRefreshHz,
             qualificationTickCount = qualificationFrames,
             qualificationAnimationSeconds = animationSeconds,
             qualificationPresentedFramesPerSecond = animationSeconds > 0 ? qualificationFrames / animationSeconds : 0,
-            qualificationRenderBackend = "D3D12 dedicated render worker + DXGI Present(1) visible cadence; Present(0) resize commits",
+            qualificationRenderBackend = _arm == "C"
+                ? "D3D12 dedicated render worker + composition frame-latency waitable cadence; Present(0) resize commits"
+                : "D3D12 dedicated render worker + DXGI Present(1) visible cadence; Present(0) resize commits",
             finalContentFrameId = Volatile.Read(ref _contentFrameId),
             adapters = _presenters.Select(presenter => presenter?.AdapterDescription).ToArray(),
             failure = _failure?.ToString(),
@@ -694,7 +744,7 @@ internal sealed class Program : IDisposable
             schemaVersion = "doroti.windows-top-level-presentation/v1",
             status = "FAIL",
             arm = "B",
-            reason = "Microsoft.UI.Composition 1.8 has no lifted ICompositorDesktopInterop/CreateDesktopWindowTarget API; system Windows.UI.Composition would not reuse the validated C0 lifted presenter.",
+            reason = "Legacy lifted Microsoft.UI.Composition Arm B is retired. Arm C owns the native DirectComposition comparison while the exact Windows App SDK 2.4 product migration remains a separate gate.",
         }, new JsonSerializerOptions { WriteIndented = true }));
     }
 
@@ -766,7 +816,8 @@ internal sealed class Program : IDisposable
         int OuterWidth,
         int OuterHeight,
         bool OriginMoves,
-        bool RequiresExpandedCoverage)
+        bool RequiresExpandedCoverage,
+        long VisualEpoch = 0)
     {
         internal bool RequiresSynchronousPrepresent =>
             RequiresExpandedCoverage && !OriginMoves;
@@ -907,6 +958,7 @@ internal sealed class D3D12RenderWorker : IDisposable
     private int _contentWidth;
     private int _contentHeight;
     private double _scale = 1;
+    private long _visualEpoch;
     private long _targetVersion;
     private long _renderedTargetVersion;
     private bool _animate;
@@ -939,7 +991,8 @@ internal sealed class D3D12RenderWorker : IDisposable
         int height,
         int contentWidth,
         int contentHeight,
-        double scale)
+        double scale,
+        long visualEpoch)
     {
         lock (_gate)
         {
@@ -948,13 +1001,15 @@ internal sealed class D3D12RenderWorker : IDisposable
                 _height == height &&
                 _contentWidth == contentWidth &&
                 _contentHeight == contentHeight &&
-                _scale.Equals(scale)) return;
+                _scale.Equals(scale) &&
+                _visualEpoch == visualEpoch) return;
             _window = window;
             _width = width;
             _height = height;
             _contentWidth = contentWidth;
             _contentHeight = contentHeight;
             _scale = scale;
+            _visualEpoch = visualEpoch;
             _targetVersion++;
         }
         _wake.Set();
@@ -970,7 +1025,8 @@ internal sealed class D3D12RenderWorker : IDisposable
         TimeSpan timeout,
         bool flushBeforeAck,
         bool present,
-        int frameId)
+        int frameId,
+        long visualEpoch = 0)
     {
         CommitRequest request;
         lock (_gate)
@@ -982,10 +1038,11 @@ internal sealed class D3D12RenderWorker : IDisposable
             _contentWidth = contentWidth;
             _contentHeight = contentHeight;
             _scale = scale;
+            _visualEpoch = visualEpoch;
             var version = ++_targetVersion;
             request = new CommitRequest(
                 window, width, height, contentWidth, contentHeight,
-                scale, version, flushBeforeAck, present, frameId);
+                scale, version, flushBeforeAck, present, frameId, visualEpoch);
             _commits.Enqueue(request);
         }
         _wake.Set();
@@ -1048,6 +1105,7 @@ internal sealed class D3D12RenderWorker : IDisposable
                 int contentWidth;
                 int contentHeight;
                 double scale;
+                long visualEpoch;
                 long targetVersion;
                 bool animate;
                 bool targetChanged;
@@ -1063,6 +1121,7 @@ internal sealed class D3D12RenderWorker : IDisposable
                     contentWidth = _contentWidth;
                     contentHeight = _contentHeight;
                     scale = _scale;
+                    visualEpoch = _visualEpoch;
                     targetVersion = _targetVersion;
                     animate = _animate;
                     targetChanged = targetVersion != _renderedTargetVersion;
@@ -1099,6 +1158,7 @@ internal sealed class D3D12RenderWorker : IDisposable
                     contentWidth = commit.ContentWidth;
                     contentHeight = commit.ContentHeight;
                     scale = commit.Scale;
+                    visualEpoch = commit.VisualEpoch;
                     targetVersion = commit.Version;
                     _frameId = commit.FrameId;
                     targetChanged = true;
@@ -1122,7 +1182,7 @@ internal sealed class D3D12RenderWorker : IDisposable
                     // visible animation is refresh synchronized.
                     _presenter.RenderFrame(
                         window, width, height, contentWidth, contentHeight,
-                        scale, _frameId,
+                        scale, _frameId, visualEpoch,
                         present: commit?.Present ?? !coalescedResizeFrame,
                         synchronizeToRefresh: animatedFrame || singleFrame is not null);
                     var superseded = false;
@@ -1142,8 +1202,9 @@ internal sealed class D3D12RenderWorker : IDisposable
                         {
                             // Publish only the newest origin-moving target and
                             // do not add a refresh wait after the HWND moved.
-                            _presenter.PresentPrepared(synchronizeToRefresh: false);
-                            presented = true;
+                            presented = _presenter.PresentPrepared(
+                                synchronizeToRefresh: false,
+                                expectedVisualEpoch: visualEpoch);
                         }
                     }
                     if (presented) _presented(animatedFrame, _frameId);
@@ -1225,7 +1286,8 @@ internal sealed class D3D12RenderWorker : IDisposable
         long Version,
         bool FlushBeforeAck,
         bool Present,
-        int FrameId)
+        int FrameId,
+        long VisualEpoch)
     {
         internal TaskCompletionSource<bool> Completion { get; } =
             new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -1240,7 +1302,9 @@ internal sealed class D3D12RenderWorker : IDisposable
 
 internal sealed class DirectHwndPresenter : IDisposable
 {
+    private readonly string _arm;
     private readonly bool _drawRightEdgeOracle;
+    private readonly object _presentGate = new();
     private IDXGIFactory2? _factory;
     private IDXGIAdapter1? _adapter;
     private ID3D12Device2? _device;
@@ -1253,17 +1317,63 @@ internal sealed class DirectHwndPresenter : IDisposable
     private GRVorticeD3DBackendContext? _backend;
     private GRContext? _context;
     private DirectBackingStore? _backing;
+    private DirectCompositionVisualBridge? _composition;
     private ulong _nextFence;
     private ulong _submittedFence;
     private int _width;
     private int _height;
+    private int _preparedContentWidth;
+    private int _preparedContentHeight;
+    private long _preparedVisualEpoch;
+    private uint _sourceWidth;
+    private uint _sourceHeight;
     private nint _frameLatencyWaitableObject;
+    private long _stretchSourceSizeCommitCount;
+    private long _compositionStaleExactRejectCount;
 
     internal string AdapterDescription { get; private set; } = "uninitialized";
 
-    internal DirectHwndPresenter(bool drawRightEdgeOracle)
+    internal long StretchSourceSizeCommitCount =>
+        Volatile.Read(ref _stretchSourceSizeCommitCount);
+
+    internal long CompositionStaleExactRejectCount =>
+        Volatile.Read(ref _compositionStaleExactRejectCount);
+
+    internal long CompositionProvisionalCommitCount =>
+        _composition?.ProvisionalCommitCount ?? 0;
+
+    internal long CompositionExactCommitCount =>
+        _composition?.ExactCommitCount ?? 0;
+
+    internal DirectHwndPresenter(string arm, bool drawRightEdgeOracle)
     {
+        _arm = arm;
         _drawRightEdgeOracle = drawRightEdgeOracle;
+    }
+
+    internal void ApplyProvisionalVisual(
+        long visualEpoch,
+        int offsetX,
+        int offsetY,
+        int previousContentWidth,
+        int previousContentHeight,
+        int targetContentWidth,
+        int targetContentHeight)
+    {
+        if (_arm != "C") return;
+        lock (_presentGate)
+        {
+            (_composition ?? throw new InvalidOperationException(
+                "Arm C DirectComposition visual was not initialized."))
+                .ApplyProvisional(
+                    visualEpoch,
+                    offsetX,
+                    offsetY,
+                    previousContentWidth,
+                    previousContentHeight,
+                    targetContentWidth,
+                    targetContentHeight);
+        }
     }
 
     internal void RenderFrame(
@@ -1274,6 +1384,7 @@ internal sealed class DirectHwndPresenter : IDisposable
         int contentHeight,
         double scale,
         int frameId,
+        long visualEpoch,
         bool present,
         bool synchronizeToRefresh)
     {
@@ -1297,43 +1408,81 @@ internal sealed class DirectHwndPresenter : IDisposable
         _backing.Surface.Canvas.Flush();
         _context!.Flush(_backing.Surface);
         _context.Submit(false);
+        _preparedContentWidth = Math.Clamp(contentWidth, 1, _width);
+        _preparedContentHeight = Math.Clamp(contentHeight, 1, _height);
+        _preparedVisualEpoch = visualEpoch;
         if (present) PresentPrepared(synchronizeToRefresh);
     }
 
-    internal void PresentPrepared(bool synchronizeToRefresh)
+    internal bool PresentPrepared(
+        bool synchronizeToRefresh,
+        long? expectedVisualEpoch = null)
     {
-        if (_backing is null || _swapChain is null)
-            throw new InvalidOperationException("No prepared D3D12 frame is available.");
-        WaitForGpu();
-        _allocator!.Reset();
-        _commands!.Reset(_allocator);
-        using (var buffer = _swapChain!.GetBuffer<ID3D12Resource>(_swapChain.CurrentBackBufferIndex))
+        lock (_presentGate)
         {
-            _commands.ResourceBarrier(
-            [
-                ResourceBarrier.BarrierTransition(
-                    _backing.Resource, ResourceStates.RenderTarget, ResourceStates.CopySource),
-                ResourceBarrier.BarrierTransition(
-                    buffer, ResourceStates.Present, ResourceStates.CopyDest),
-            ]);
-            _commands.CopyResource(buffer, _backing.Resource);
-            _commands.ResourceBarrier(
-            [
-                ResourceBarrier.BarrierTransition(
-                    _backing.Resource, ResourceStates.CopySource, ResourceStates.RenderTarget),
-                ResourceBarrier.BarrierTransition(
-                    buffer, ResourceStates.CopyDest, ResourceStates.Present),
-            ]);
-            _commands.Close();
-            _queue!.ExecuteCommandList(_commands);
+            if (_backing is null || _swapChain is null)
+                throw new InvalidOperationException("No prepared D3D12 frame is available.");
+            var visualEpoch = _arm == "C"
+                ? expectedVisualEpoch ?? _composition!.LatestEpoch
+                : expectedVisualEpoch ?? _preparedVisualEpoch;
+            if (_arm == "C" && expectedVisualEpoch is not null &&
+                !_composition!.IsLatest(visualEpoch))
+            {
+                Interlocked.Increment(ref _compositionStaleExactRejectCount);
+                return false;
+            }
+            if (_arm == "C" && synchronizeToRefresh)
+                WaitForCompositionFrameLatencySlot();
+            WaitForGpu();
+            _allocator!.Reset();
+            _commands!.Reset(_allocator);
+            using (var buffer = _swapChain!.GetBuffer<ID3D12Resource>(_swapChain.CurrentBackBufferIndex))
+            {
+                _commands.ResourceBarrier(
+                [
+                    ResourceBarrier.BarrierTransition(
+                        _backing.Resource, ResourceStates.RenderTarget, ResourceStates.CopySource),
+                    ResourceBarrier.BarrierTransition(
+                        buffer, ResourceStates.Present, ResourceStates.CopyDest),
+                ]);
+                _commands.CopyResource(buffer, _backing.Resource);
+                _commands.ResourceBarrier(
+                [
+                    ResourceBarrier.BarrierTransition(
+                        _backing.Resource, ResourceStates.CopySource, ResourceStates.RenderTarget),
+                    ResourceBarrier.BarrierTransition(
+                        buffer, ResourceStates.CopyDest, ResourceStates.Present),
+                ]);
+                _commands.Close();
+                _queue!.ExecuteCommandList(_commands);
+            }
+            _submittedFence = checked(++_nextFence);
+            _queue!.Signal(_fence!, _submittedFence).CheckError();
+            if (_arm == "S")
+            {
+                var sourceWidth = checked((uint)_preparedContentWidth);
+                var sourceHeight = checked((uint)_preparedContentHeight);
+                if (_sourceWidth != sourceWidth || _sourceHeight != sourceHeight)
+                {
+                    using var swapChain2 = _swapChain.QueryInterface<IDXGISwapChain2>();
+                    swapChain2.SetSourceSize(sourceWidth, sourceHeight);
+                    _sourceWidth = sourceWidth;
+                    _sourceHeight = sourceHeight;
+                    Interlocked.Increment(ref _stretchSourceSizeCommitCount);
+                }
+            }
+            // The copy and Present use the same D3D12 queue. Queue ordering is the
+            // readiness contract; the next frame waits before reusing the allocator.
+            _swapChain.Present(synchronizeToRefresh ? 1u : 0u, PresentFlags.None).CheckError();
+            if (_arm == "C")
+            {
+                _composition!.CommitExact(
+                    visualEpoch,
+                    _preparedContentWidth,
+                    _preparedContentHeight);
+            }
+            return true;
         }
-        _submittedFence = checked(++_nextFence);
-        _queue!.Signal(_fence!, _submittedFence).CheckError();
-        // The copy and Present use the same D3D12 queue. Queue ordering is the
-        // readiness contract; the next frame waits before reusing the allocator.
-        // Resize preparation must not wait for scan-out. Visible animation has
-        // exactly one refresh clock: the Present(1) interval itself.
-        _swapChain!.Present(synchronizeToRefresh ? 1u : 0u, PresentFlags.None).CheckError();
     }
 
     internal void FlushDwm()
@@ -1378,9 +1527,14 @@ internal sealed class DirectHwndPresenter : IDisposable
         {
             var description = new SwapChainDescription1(
                 checked((uint)width), checked((uint)height), Format.R8G8B8A8_UNorm,
-                false, Usage.RenderTargetOutput, 2, Scaling.None,
-                SwapEffect.FlipSequential, AlphaMode.Ignore, SwapChainFlags.FrameLatencyWaitableObject);
-            using var created = _factory!.CreateSwapChainForHwnd(_queue!, window, description);
+                false, Usage.RenderTargetOutput, 2,
+                _arm == "A" ? Scaling.None : Scaling.Stretch,
+                SwapEffect.FlipSequential,
+                _arm == "C" ? AlphaMode.Premultiplied : AlphaMode.Ignore,
+                SwapChainFlags.FrameLatencyWaitableObject);
+            using var created = _arm == "C"
+                ? _factory!.CreateSwapChainForComposition(_queue!, description, null)
+                : _factory!.CreateSwapChainForHwnd(_queue!, window, description);
             // DXGI_SCALING_NONE can expose swap-chain background outside the
             // current back-buffer content while the HWND target changes. Own
             // that fallback explicitly instead of accepting DXGI's white
@@ -1391,6 +1545,12 @@ internal sealed class DirectHwndPresenter : IDisposable
                 24.0f / 255.0f,
                 1.0f);
             _swapChain = created.QueryInterface<IDXGISwapChain3>();
+            if (_arm == "C")
+                _composition = new DirectCompositionVisualBridge(
+                    window,
+                    _swapChain,
+                    width,
+                    height);
             using var swapChain2 = _swapChain.QueryInterface<IDXGISwapChain2>();
             swapChain2.MaximumFrameLatency = 1;
             _frameLatencyWaitableObject = swapChain2.FrameLatencyWaitableObject;
@@ -1506,6 +1666,17 @@ internal sealed class DirectHwndPresenter : IDisposable
             throw new TimeoutException($"N0 D3D12 fence {_submittedFence} timed out.");
     }
 
+    private void WaitForCompositionFrameLatencySlot()
+    {
+        if (_frameLatencyWaitableObject == 0)
+            throw new InvalidOperationException("Composition swap chain has no frame-latency handle.");
+        const uint waitObject0 = 0;
+        var result = WaitForSingleObject(_frameLatencyWaitableObject, 5000);
+        if (result != waitObject0)
+            throw new TimeoutException(
+                $"Composition frame-latency wait failed or timed out (0x{result:X8}).");
+    }
+
     private static IDXGIAdapter1? FindAdapterForWindow(IDXGIFactory2 factory, nint window)
     {
         var monitor = MonitorFromWindow(window, 2);
@@ -1536,6 +1707,7 @@ internal sealed class DirectHwndPresenter : IDisposable
     {
         WaitForGpu();
         _backing?.Dispose();
+        _composition?.Dispose();
         _swapChain?.Dispose();
         _frameLatencyWaitableObject = 0;
         _fenceEvent?.Dispose();
@@ -1555,6 +1727,125 @@ internal sealed class DirectHwndPresenter : IDisposable
 
     [DllImport("dwmapi.dll")]
     private static extern int DwmFlush();
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern uint WaitForSingleObject(nint handle, uint milliseconds);
+}
+
+internal sealed class DirectCompositionVisualBridge : IDisposable
+{
+    private IDCompositionDevice? _device;
+    private IDCompositionTarget? _target;
+    private IDCompositionVisual? _visual;
+    private long _latestEpoch;
+    private long _provisionalCommitCount;
+    private long _exactCommitCount;
+    private bool _provisionalActive;
+    private bool _disposed;
+
+    internal long ProvisionalCommitCount =>
+        Volatile.Read(ref _provisionalCommitCount);
+
+    internal long ExactCommitCount =>
+        Volatile.Read(ref _exactCommitCount);
+
+    internal long LatestEpoch => Volatile.Read(ref _latestEpoch);
+
+    internal DirectCompositionVisualBridge(
+        nint window,
+        IDXGISwapChain3 swapChain,
+        int initialWidth,
+        int initialHeight)
+    {
+        try
+        {
+            _device = DComp.DCompositionCreateDevice<IDCompositionDevice>(null!);
+            _device.CreateTargetForHwnd(window, true, out _target).CheckError();
+            _device.CreateVisual(out _visual).CheckError();
+            _visual.SetContent(swapChain).CheckError();
+            SetVisualState(0, 0, 0, initialWidth, initialHeight);
+            _target.SetRoot(_visual).CheckError();
+            _device.Commit().CheckError();
+        }
+        catch
+        {
+            Dispose();
+            throw;
+        }
+    }
+
+    internal bool IsLatest(long epoch) => epoch == Volatile.Read(ref _latestEpoch);
+
+    internal void ApplyProvisional(
+        long epoch,
+        int offsetX,
+        int offsetY,
+        int previousContentWidth,
+        int previousContentHeight,
+        int targetContentWidth,
+        int targetContentHeight)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        Volatile.Write(ref _latestEpoch, epoch);
+
+        // Clip is expressed in bitmap coordinates and then follows the visual
+        // offset. Intersect the retained source with the new client bounds so
+        // a left/top shrink crops while a left/top expansion right-anchors it.
+        var clipLeft = Math.Clamp(-offsetX, 0, previousContentWidth);
+        var clipTop = Math.Clamp(-offsetY, 0, previousContentHeight);
+        var clipRight = Math.Clamp(targetContentWidth - offsetX, clipLeft, previousContentWidth);
+        var clipBottom = Math.Clamp(targetContentHeight - offsetY, clipTop, previousContentHeight);
+        SetVisualState(offsetX, offsetY, clipLeft, clipTop, clipRight, clipBottom);
+        _device!.Commit().CheckError();
+        _provisionalActive = true;
+        Interlocked.Increment(ref _provisionalCommitCount);
+    }
+
+    internal void CommitExact(long epoch, int contentWidth, int contentHeight)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (epoch != Volatile.Read(ref _latestEpoch)) return;
+        if (!_provisionalActive) return;
+        SetVisualState(0, 0, 0, contentWidth, contentHeight);
+        _device!.Commit().CheckError();
+        _provisionalActive = false;
+        Interlocked.Increment(ref _exactCommitCount);
+    }
+
+    private void SetVisualState(
+        float offsetX,
+        float offsetY,
+        float clipLeft,
+        float clipTop,
+        float clipRight,
+        float clipBottom)
+    {
+        _visual!.SetOffsetX(offsetX).CheckError();
+        _visual.SetOffsetY(offsetY).CheckError();
+        _visual.SetClip(new RawRectF(clipLeft, clipTop, clipRight, clipBottom)).CheckError();
+    }
+
+    private void SetVisualState(
+        float offsetX,
+        float offsetY,
+        float clipLeft,
+        float clipRight,
+        float clipBottom) =>
+        SetVisualState(offsetX, offsetY, clipLeft, 0, clipRight, clipBottom);
+
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+        if (_target is not null) _target.SetRoot(null).CheckError();
+        if (_device is not null) _device.Commit().CheckError();
+        _visual?.Dispose();
+        _visual = null;
+        _target?.Dispose();
+        _target = null;
+        _device?.Dispose();
+        _device = null;
+    }
 }
 
 internal sealed class DirectBackingStore(ID3D12Device device, GRContext context) : IDisposable

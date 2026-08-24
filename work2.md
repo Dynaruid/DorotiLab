@@ -49,7 +49,7 @@ Windows 제품 경로에서는 MAUI/WinUI `Window`, XAML layout, `SwapChainPanel
 | D0 기존 evidence 재분류 | PASS | correctness, cadence, visible acceptance를 분리했다. |
 | M0 observer/DPI/capture pipeline 정리 | PASS | 관측기 자체 계약과 provenance를 정리했다. |
 | M1 output observer qualification | **FAIL** | 3회 연속 qualification 실패. 현재 hard stop이다. |
-| 2026-08-24 direct D3D12 control | diagnosticOnly | 사용자 관찰에서 검은/흰 uncovered 영역은 제거되고 거의 완벽한 수준까지 접근했다. 전체 matrix는 `notVerified`이다. |
+| 2026-08-24 Arm S/C control | diagnosticOnly | S/C 구현과 최신 2배 drag 단일 PASS는 확보했지만 필수 C 3회가 PASS/FAIL/FAIL이다. 전체 matrix는 `notVerified`이다. |
 | A0 목표 아키텍처 결정 | PASS | `Doroti.Host.WindowsAppSdk` + raw HWND + ContentIsland/SiteBridge + WinAppSDK `2.4.0`으로 확정했다. 구현 PASS가 아니다. |
 | A0-V 2.4 dependency/API preflight | notStarted | M1 PASS 뒤 가장 먼저 수행한다. |
 | A1 공용 direct presenter 추출 | notStarted | M1 hard stop 때문에 시작하지 않는다. |
@@ -106,7 +106,31 @@ Windows 제품 경로에서는 MAUI/WinUI `Window`, XAML layout, `SwapChainPanel
 - Desktop Duplication interval p95: 7.5653ms
 - 결론: 수치가 개선되어도 M1 전체 판정은 **FAIL**이며 H0/A1/P0 PASS로 승격하지 않는다.
 
-### 3.3 과거 경로의 재분류
+### 3.3 2026-08-24 Arm S/C transaction spike
+
+`problem.md`의 권고대로 diagnostic control에 두 arm을 구현했다.
+
+- Arm S: direct-HWND `Scaling.Stretch` + exact `SetSourceSize`; transient distortion 허용 비교군
+- Arm C: `CreateSwapChainForComposition` + DirectComposition edge-aware offset/clip + exact visual commit
+- Arm C는 capacity backing을 1:1로 사용하며 `SetSourceSize`를 금지한다. composition chain에서 사용했을 때 capacity 전체 uniform scale이 재현됐다.
+- Vortice DirectComposition은 다른 Vortice package와 동일한 `3.8.3` exact pin이다.
+- Windows App SDK 제품 baseline은 사용자 결정대로 최신 stable `2.4.0` exact pin이며 이 native diagnostic spike와 별도다.
+- interactive drag triangle wave는 2초에서 1초 왕복으로 바뀌어 기존보다 정확히 2배 빠르다.
+
+현재 evidence:
+
+- Arm S 1회 `FAIL`, phase 7/8
+- Arm C isolated 1회 `PASS`, source 165.011fps, phase 8/8
+- Arm C required 3회 `PASS/FAIL/FAIL`
+- 2배 drag 적용 뒤 Arm C 1회 `FAIL`, source 165.060fps, phase 6/8
+- 최종 source fingerprint와 일치하는 2배 drag 단일 회귀 `PASS`, source 164.954fps, phase 8/8
+- Arm C provisional/exact smoke 4/4, stale reject 0
+- Release build와 native capture build는 PASS
+- 실제 mouse visible matrix는 `notVerified`
+
+따라서 M1은 계속 **FAIL — hard stop**이다. isolated observer PASS나 build PASS로 A0-V/H0-V/A1을 시작하지 않는다. 정확한 재개점은 Arm C의 content-before-geometry offset 0/1 phase 변동을 DirectComposition commit epoch와 Desktop Duplication timestamp에서 좁힌 뒤 3회 연속 qualified PASS를 다시 확보하는 것이다.
+
+### 3.4 과거 경로의 재분류
 
 | 경로 | 보존 상태 | 새 계획에서의 위치 |
 |---|---|---|

@@ -387,8 +387,9 @@ try {
         $estimatedSteps = [Math]::Max(60, $DurationSeconds * 60)
         $inputSamples = [Collections.Generic.List[object]]::new($estimatedSteps)
         $dragWatch = [Diagnostics.Stopwatch]::StartNew()
+        $dragCycleSeconds = 1.0
         while ($dragWatch.Elapsed -lt [TimeSpan]::FromSeconds($DurationSeconds)) {
-            $cycle = ($dragWatch.Elapsed.TotalSeconds % 2.0) / 2.0
+            $cycle = ($dragWatch.Elapsed.TotalSeconds % $dragCycleSeconds) / $dragCycleSeconds
             $wave = if ($cycle -lt 0.5) { $cycle * 2 } else { 2 - ($cycle * 2) }
             $horizontalMotion = if ($movesLeft) {
                 [Math]::Round(260 * $wave)
@@ -615,7 +616,7 @@ try {
         } else {
             "Win32 WM_NCLBUTTONDOWN HT$($Edge.ToUpperInvariant()) interactive resize plus cursor movement"
         }
-        inputMotion = 'constant-velocity two-second triangle wave'
+        inputMotion = 'constant-velocity one-second triangle wave (2x prior drag speed)'
         inputHzRequested = if ($WindowsGraphicsCapture) { $visualDiagnostics.inputHzRequested } else { $null }
         inputIntervalMicroseconds = if ($WindowsGraphicsCapture) { $visualDiagnostics.inputIntervalMicroseconds } else { $null }
         inputCursorSamples = $inputSamples.Count

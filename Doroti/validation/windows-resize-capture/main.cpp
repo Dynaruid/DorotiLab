@@ -1327,7 +1327,8 @@ std::vector<WindowSample> DriveResize(Options const& options) {
         }
         long long const now = PerformanceCounter();
         double const elapsed = (now - start) / static_cast<double>(frequency);
-        double const cycle = std::fmod(elapsed, 2.0) / 2.0;
+        constexpr double dragCycleSeconds = 1.0;
+        double const cycle = std::fmod(elapsed, dragCycleSeconds) / dragCycleSeconds;
         double const wave = cycle < 0.5 ? cycle * 2.0 : 2.0 - cycle * 2.0;
         int const horizontal = motion.left ? static_cast<int>(std::lround(260 * wave)) :
             motion.right ? -static_cast<int>(std::lround(260 * wave)) : 0;

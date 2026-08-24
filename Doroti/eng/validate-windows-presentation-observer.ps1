@@ -1,5 +1,8 @@
 #Requires -Version 7.0
 param(
+    [ValidateSet('A', 'S', 'C')]
+    [string] $Arm = 'A',
+
     [ValidateRange(1, 10)]
     [int] $Runs = 3,
 
@@ -99,8 +102,10 @@ function Get-Intervals([object[]] $Records, [string] $Property) {
 
 function Get-SourceFingerprint {
     $relativePaths = @(
+        'Doroti/Directory.Packages.props',
         'Doroti/validation/windows-resize-capture/main.cpp',
         'Doroti/validation/windows-resize-capture/CMakeLists.txt',
+        'Doroti/validation/windows-top-level-presentation/Doroti.Validation.WindowsTopLevelPresentation.csproj',
         'Doroti/validation/windows-top-level-presentation/Program.cs',
         'Doroti/eng/validate-windows-presentation-observer.ps1')
     $builder = [Text.StringBuilder]::new()
@@ -270,12 +275,12 @@ $gitCommit = (& git -C $repoRoot rev-parse HEAD).Trim()
 try {
     for ($runNumber = 1; $runNumber -le $Runs; $runNumber++) {
         $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-        $runId = "win-observer-m1-q$runNumber-$stamp-$([Guid]::NewGuid().ToString('N').Substring(0, 8))"
+        $runId = "win-observer-m1-arm-$($Arm.ToLowerInvariant())-q$runNumber-$stamp-$([Guid]::NewGuid().ToString('N').Substring(0, 8))"
         $rawEvidence = Join-Path $evidenceRoot "$runId.observer.json"
         $appEvidence = Join-Path $evidenceRoot "$runId.app.json"
         $appStart = [Diagnostics.ProcessStartInfo]::new($app)
         $appStart.UseShellExecute = $false
-        foreach ($argument in @('--arm', 'A', '--qualification', '--refresh-hz', '165', '--evidence', $appEvidence)) {
+        foreach ($argument in @('--arm', $Arm, '--qualification', '--refresh-hz', '165', '--evidence', $appEvidence)) {
             [void]$appStart.ArgumentList.Add($argument)
         }
         $appProcess = [Diagnostics.Process]::Start($appStart)
@@ -374,10 +379,11 @@ $m1Status = if ($results.Count -eq $Runs -and $consistent -and @($results | Wher
 } else {
     'FAIL'
 }
-$summaryPath = Join-Path $evidenceRoot "win-observer-m1-summary-$(Get-Date -Format 'yyyyMMdd-HHmmss').json"
+$summaryPath = Join-Path $evidenceRoot "win-observer-m1-arm-$($Arm.ToLowerInvariant())-summary-$(Get-Date -Format 'yyyyMMdd-HHmmss').json"
 $summary = [ordered]@{
     schemaVersion = 'doroti.windows-presentation-observer-qualification/v1'
     status = $m1Status
+    arm = $Arm
     qualificationRunsRequired = $Runs
     consistentVerdict = $consistent
     sourceCommit = $gitCommit

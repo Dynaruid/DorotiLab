@@ -4,7 +4,7 @@
 
 대상: `Doroti/validation/windows-top-level-presentation`의 standard-chrome raw top-level HWND + D3D12/DXGI control
 
-상태: **원인 판정 완료, 구조적 해결은 미구현, visible acceptance FAIL**
+상태: **Arm S/C diagnostic 구현 완료, 필수 3회 observer qualification FAIL, 최신 2배 drag 단일 회귀 PASS, visible acceptance notVerified/기존 FAIL 유지**
 
 ## 1. 현재 증상
 
@@ -255,3 +255,86 @@ Arm C가 strict 1:1 visual gate를 통과하면 목표 구조로 채택한다. �
 - 세 번 연속 valid observer + 사용자 visible acceptance
 
 현재 `work2.md`의 M1/G2 상태는 그대로 유지한다. 이 문서는 원인 판정이며 제품 구현 PASS나 migration 승인을 의미하지 않는다.
+
+## 11. 2026-08-24 구현 결과와 정확한 재개점
+
+### 11.1 구현한 두 arm
+
+`Doroti/validation/windows-top-level-presentation`에 기존 Arm A 기준선을 보존하고 다음 두 경로를 추가했다.
+
+- `--arm S`
+  - direct-HWND swap chain을 `DXGI_SCALING_STRETCH`로 만든다.
+  - monitor-sized backing capacity는 유지하고 exact content rect를 `IDXGISwapChain2.SetSourceSize()`로 게시한다.
+  - geometry는 `Present`/`DwmFlush`를 기다리지 않으며 다음 exact source가 오기 전 이전 source의 transient stretch를 명시적으로 허용한다.
+- `--arm C`
+  - `CreateSwapChainForComposition` + native DirectComposition target/visual을 사용한다.
+  - origin-moving left/top edge는 반대편 screen edge가 실제로 고정된 경우에만 이전 front를 translate한다. 단순 window move와 임의 `SetWindowPos`는 edge anchor로 오인하지 않는다.
+  - 이전 content와 새 client의 교집합만 1:1 clip하고, exact frame 뒤 offset/clip을 초기화하는 DirectComposition batch를 commit한다.
+  - composition swap chain에는 `SetSourceSize()`를 사용하지 않는다. capacity 전체로의 uniform scale이 재현되었기 때문에 monotonic backing을 자연 크기 1:1로 유지하고 visual clip만 사용한다.
+  - provisional/exact commit은 visual epoch로 결합하며 stale exact commit은 visible present 전에 거부한다.
+  - composition swap chain의 `Present(1)`이 caller를 cadence에 맞춰 block하지 않으므로 frame-latency waitable object를 explicit pacing owner로 사용한다.
+
+interop은 repository의 기존 Vortice 계열과 같은 `3.8.3`으로 `Vortice.DirectComposition`을 정확히 pin했다. 이는 Windows App SDK 제품 migration을 대신하지 않는다. 제품 host의 Windows App SDK 기준은 사용자의 결정대로 최신 stable `2.4.0` exact pin이며, 현재 diagnostic control은 SDK version과 독립된 transaction 검증용이다.
+
+`validate-windows-presentation-observer.ps1`은 `-Arm A|S|C`를 받고 arm별 evidence/summary를 분리한다.
+
+### 11.2 drag 속도 변경
+
+사용자 요청에 따라 native capture와 PowerShell live validator의 triangle-wave 주기를 모두 2초에서 1초로 줄였다.
+
+- 이동 폭: horizontal 260px, vertical 140px 유지
+- input cadence: active display refresh 기준 유지
+- 방향 전환: 약 0.5초마다
+- 전체 확대→축소 왕복: 약 1.0초
+- 결과: 이전보다 pointer 이동 속도 정확히 2배
+
+최신 Arm C raw evidence는 10초 interactive-left-drag에서 165Hz, 1651 drag samples, 19 direction reversals를 기록했고 최초 전환들은 0.51s, 1.01s, 1.51s, 2.01s였다.
+
+### 11.3 현재 evidence
+
+구조/build:
+
+- `dotnet build ...windows-top-level-presentation... -c Release --no-restore`: **PASS**, 0 warnings, 0 errors
+- native `windows-resize-capture` Release build: **PASS**
+- A/S/C startup + repeated `SetWindowPos` resize smoke: **PASS**, process failure 0
+- Arm C smoke: provisional 4, exact 4, stale exact reject 0
+
+observer:
+
+- Arm S 1회: **FAIL**
+  - source 165.179fps, static false failure 0, Desktop Duplication qualified
+  - phase 7/8 PASS, zero-offset content-before-geometry 1건 실패
+  - summary: `win-observer-m1-arm-s-summary-20260824-173953.json`
+- Arm C isolated 1회: **PASS**
+  - source 165.011fps, static false failure 0, phase 8/8
+  - provisional/exact 1/1, stale reject 0
+  - summary: `win-observer-m1-arm-c-summary-20260824-174448.json`
+- Arm C required 3회: **FAIL** (`PASS`, `FAIL`, `FAIL`)
+  - run 2: phase 7/8, zero-offset content-before-geometry 실패
+  - run 3: phase 7/8 + static failure 58, provisional/exact 391/381, stale reject 1
+  - summary: `win-observer-m1-arm-c-summary-20260824-174645.json`
+- 2배 drag 적용 후 Arm C 1회: **FAIL**
+  - source 165.060fps, static false failure 0, Desktop Duplication qualified
+  - phase 6/8, provisional/exact 1/1, stale reject 0
+  - summary: `win-observer-m1-arm-c-summary-20260824-174844.json`
+- 최종 source fingerprint와 일치하는 2배 drag Arm C 단일 회귀: **PASS**
+  - source 164.954fps, static false failure 0, Desktop Duplication qualified
+  - phase 8/8, provisional/exact 1/1, stale reject 0
+  - summary: `win-observer-m1-arm-c-summary-20260824-175318.json`
+
+WGC strict judge는 계속 `diagnosticOnly`이고 Desktop Duplication만 해당 run에서 `qualified`였다. isolated PASS 하나는 3회 연속 조건이나 visible acceptance를 대체하지 않는다.
+
+### 11.4 판정과 재개점
+
+- Arm S는 transient distortion을 허용하는 정책 비교군으로 구현됐지만 자동 phase gate부터 FAIL했다.
+- Arm C는 구조적으로 실행되고 isolated PASS도 만들었으나 3회 observer 결과가 재현 가능하지 않다.
+- 최종 2배 속도 단일 회귀에서 process crash, stale exact visible commit, cadence 이탈은 관측되지 않았지만 실제 사용자 visible acceptance는 아직 수행하지 않았다.
+- 이 단일 PASS는 앞서 실패한 필수 3회 연속 qualification을 대체하지 않는다.
+- 따라서 M1은 **FAIL — hard stop**, G2는 `notVerified`, 제품 migration 승인은 하지 않는다.
+
+정확한 재개점은 다음 두 가지다.
+
+1. Arm C에서 content-before-geometry offset 0/1 phase가 run마다 반대로 관측되는 원인을 raw Desktop Duplication timestamp와 DirectComposition commit epoch로 좁힌다.
+2. 수정 뒤 같은 환경 3회 연속 qualified PASS를 확보하고, 1초 triangle wave로 실제 mouse left/right/top/bottom/corner visible matrix를 사용자가 확인한다.
+
+그 전에는 custom non-client Arm으로 확대하거나 A0-V 이후 제품 구현을 시작하지 않는다.
