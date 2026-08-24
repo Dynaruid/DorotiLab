@@ -1,0 +1,163 @@
+{
+  "schemaVersion": "doroti.flutter-windows-host-protocol/v1",
+  "reference": {
+    "root": "reference/flutter-master",
+    "commit": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+    "requireCleanTrackedTree": true,
+    "files": [
+      {
+        "path": "engine/src/flutter/shell/platform/windows/host_window.cc",
+        "sha256": "5b472f769d43ea40a440877504031b2eddc327e6030d59496f8e88f0ced75c5b"
+      },
+      {
+        "path": "engine/src/flutter/shell/platform/windows/flutter_window.cc",
+        "sha256": "5d52eecfc2fea50e4986d503d3ef5eadf98386c31020ceb12dc726471835068d"
+      },
+      {
+        "path": "engine/src/flutter/shell/platform/windows/flutter_windows_view.cc",
+        "sha256": "412e9e98c5f63238fe049f36d16aab5af82d5f925827c0616ac8696f809a10af"
+      },
+      {
+        "path": "engine/src/flutter/shell/platform/windows/flutter_windows_view.h",
+        "sha256": "3cad8cc1d89af63dd5fde2175bfabfd9da52949ce9c735fafafc78d1cba16571"
+      },
+      {
+        "path": "engine/src/flutter/shell/platform/windows/egl/window_surface.cc",
+        "sha256": "a531343bf37958aa0267c289fd16fa903ae3d8819ea88ce81b8088e69d2d3270"
+      },
+      {
+        "path": "engine/src/flutter/shell/platform/windows/egl/manager.cc",
+        "sha256": "888b771b589f62eff43cb9d1af1e7a1ed87d077bcebafe7757a53f92bc08bb58"
+      },
+      {
+        "path": "engine/src/flutter/shell/platform/windows/task_runner.cc",
+        "sha256": "ed0d1cda8c30907e34ad06c0a7d81da99ec1e19b0dbd647ded67fbea59b94708"
+      },
+      {
+        "path": "engine/src/flutter/shell/platform/windows/text_input_manager.cc",
+        "sha256": "2a78e1646e7a9615b4c9ec97142887b88adbfd809772580ef7aab0d1e293e78e"
+      },
+      {
+        "path": "engine/src/flutter/shell/platform/windows/accessibility_bridge_windows.cc",
+        "sha256": "add23adba5e9a0e0f5fd095d999cec0e32b288171e24d1103175442b48d0f6ca"
+      },
+      {
+        "path": "engine/src/flutter/shell/platform/windows/display_manager.cc",
+        "sha256": "9d66ea7cbf26bf5bd764f884a373a9e4036bfcf8042168f1ea6dfe6efc7b6c71"
+      }
+    ]
+  },
+  "anchors": [
+    {
+      "id": "host.set-child-content",
+      "path": "engine/src/flutter/shell/platform/windows/host_window.cc",
+      "literal": "void SetChildContent(HWND content, HWND window)",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "host.initialize-view",
+      "path": "engine/src/flutter/shell/platform/windows/host_window.cc",
+      "literal": "void HostWindow::InitializeFlutterView(",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "host.resize-child",
+      "path": "engine/src/flutter/shell/platform/windows/host_window.cc",
+      "literal": "case WM_SIZE:",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "view.initialize-child",
+      "path": "engine/src/flutter/shell/platform/windows/flutter_window.cc",
+      "literal": "void FlutterWindow::InitializeChild(",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "view.window-size",
+      "path": "engine/src/flutter/shell/platform/windows/flutter_window.cc",
+      "literal": "case WM_SIZE:",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "resize.window-size-changed",
+      "path": "engine/src/flutter/shell/platform/windows/flutter_windows_view.cc",
+      "literal": "bool FlutterWindowsView::OnWindowSizeChanged(",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "resize.frame-generated",
+      "path": "engine/src/flutter/shell/platform/windows/flutter_windows_view.cc",
+      "literal": "bool FlutterWindowsView::OnFrameGenerated(",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "resize.empty-frame-generated",
+      "path": "engine/src/flutter/shell/platform/windows/flutter_windows_view.cc",
+      "literal": "bool FlutterWindowsView::OnEmptyFrameGenerated(",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "resize.render-surface",
+      "path": "engine/src/flutter/shell/platform/windows/flutter_windows_view.cc",
+      "literal": "bool FlutterWindowsView::ResizeRenderSurface(",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "resize.frame-presented",
+      "path": "engine/src/flutter/shell/platform/windows/flutter_windows_view.cc",
+      "literal": "void FlutterWindowsView::OnFramePresented(",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "resize.dwm-ordering",
+      "path": "engine/src/flutter/shell/platform/windows/flutter_windows_view.cc",
+      "literal": "windows_proc_table_->DwmFlush();",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "egl.window-surface",
+      "path": "engine/src/flutter/shell/platform/windows/egl/manager.cc",
+      "literal": "eglCreateWindowSurface",
+      "expectedOccurrences": 1
+    }
+  ],
+  "protocolMappings": [
+    {
+      "id": "native-window-tree",
+      "referenceAnchors": [
+        "host.initialize-view",
+        "host.set-child-content",
+        "host.resize-child",
+        "view.initialize-child",
+        "view.window-size"
+      ],
+      "dorotiRequirement": "One standard top-level HWND owns non-client behavior; one WS_CHILD view HWND fills its client rect and is the native interaction/render boundary."
+    },
+    {
+      "id": "physical-metrics-and-resize",
+      "referenceAnchors": [
+        "resize.window-size-changed",
+        "resize.frame-generated",
+        "resize.empty-frame-generated",
+        "resize.render-surface"
+      ],
+      "dorotiRequirement": "Child WM_SIZE physical pixels start an immutable resize generation; only an exact-generation, exact-extent raster frame may recreate the window surface."
+    },
+    {
+      "id": "presented-ack-and-first-frame",
+      "referenceAnchors": [
+        "resize.frame-presented",
+        "resize.dwm-ordering"
+      ],
+      "dorotiRequirement": "Successful present is the resize terminal and first-frame show boundary; the raster owner performs the post-present DwmFlush ordering point."
+    },
+    {
+      "id": "angle-window-surface",
+      "referenceAnchors": [
+        "egl.window-surface"
+      ],
+      "dorotiRequirement": "The Win32 host uses an exact child-HWND ANGLE/EGL window surface, owned and recreated only by the raster thread."
+    }
+  ],
+  "scopeBoundary": "This contract validates a source-only reference. It neither builds nor instruments Flutter, and it does not establish Doroti product, output, or visible acceptance."
+}
