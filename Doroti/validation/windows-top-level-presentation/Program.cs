@@ -26,20 +26,17 @@ internal sealed class Program : IDisposable
     private const nuint SizeMinimized = 1;
     private const uint WsOverlappedWindow = 0x00CF0000;
     private const uint WsVisible = 0x10000000;
-    private const uint WsChild = 0x40000000;
-    private const uint WsClipSiblings = 0x04000000;
-    private const uint WsClipChildren = 0x02000000;
     private const int CwUseDefault = unchecked((int)0x80000000);
     private const int SwShow = 5;
     private const uint SwpNoActivate = 0x0010;
     private static readonly nint PerMonitorAwareV2 = new(-4);
+    private const uint WindowBackgroundColorRef = 0x00181214; // RGB(20, 18, 24)
     private static Program? _current;
     private readonly string _arm;
     private readonly string? _evidencePath;
     private readonly DirectHwndPresenter[] _presenters = new DirectHwndPresenter[1];
     private readonly D3D12RenderWorker[] _renderWorkers = new D3D12RenderWorker[1];
     private readonly WindowProcedure _windowProcedure;
-    private readonly WindowProcedure _renderWindowProcedure;
     private readonly bool _qualification;
     private readonly int _qualificationRefreshHz;
     private int _contentFrameId;
@@ -47,9 +44,13 @@ internal sealed class Program : IDisposable
     private long _qualificationAnimationStarted;
     private long _qualificationAnimationElapsed;
     private nint _window;
+    private nint _windowBackgroundBrush;
     private readonly nint[] _renderWindows = new nint[1];
-    private int _preparedContentWidth;
-    private int _preparedContentHeight;
+    private int _renderCapacityWidth;
+    private int _renderCapacityHeight;
+    private PreparedResizeTarget? _preparedResize;
+    private NativeRect _committedOuter;
+    private bool _hasCommittedOuter;
     private int _qualificationAnimationEnabled;
     private long _wmSizingCount;
     private long _wmSizeCount;
@@ -61,6 +62,13 @@ internal sealed class Program : IDisposable
     private long _resizeHandshakeMaximumTicks;
     private long _precommitSizingCount;
     private long _precommitGeometryHoldCount;
+    private long _fixedOriginPreparedPresentCount;
+    private long _preparedOuterMismatchCount;
+    private long _wmSizingPreparedCount;
+    private long _windowPosPreparationFallbackCount;
+    private long _clipOnlyShrinkCount;
+    private long _asyncShrinkPublishCount;
+    private long _asyncOriginMovingPublishCount;
     private Exception? _failure;
     private bool _disposed;
 
@@ -69,7 +77,6 @@ internal sealed class Program : IDisposable
         _arm = arm;
         _evidencePath = evidencePath;
         _windowProcedure = WindowProc;
-        _renderWindowProcedure = RenderWindowProc;
         _qualification = qualification;
         _qualificationRefreshHz = qualificationRefreshHz;
         if (arm == "A")
@@ -136,12 +143,16 @@ internal sealed class Program : IDisposable
     private void CreateWindow()
     {
         var className = $"DorotiN0TopLevel-{Environment.ProcessId}";
+        _windowBackgroundBrush = CreateSolidBrush(WindowBackgroundColorRef);
+        if (_windowBackgroundBrush == 0)
+            throw new InvalidOperationException($"CreateSolidBrush failed: {Marshal.GetLastWin32Error()}.");
         var windowClass = new WindowClassEx
         {
             Size = checked((uint)Marshal.SizeOf<WindowClassEx>()),
             Procedure = Marshal.GetFunctionPointerForDelegate(_windowProcedure),
             Instance = GetModuleHandle(null),
             Cursor = LoadCursor(0, (nint)32512),
+            Background = _windowBackgroundBrush,
             ClassName = className,
         };
         if (RegisterClassEx(ref windowClass) == 0)
@@ -150,7 +161,7 @@ internal sealed class Program : IDisposable
             0,
             className,
             "Doroti N0 top-level direct DXGI",
-            WsOverlappedWindow | WsVisible | WsClipChildren,
+            WsOverlappedWindow,
             CwUseDefault,
             CwUseDefault,
             840,
@@ -161,50 +172,45 @@ internal sealed class Program : IDisposable
             0);
         if (_window == 0)
             throw new InvalidOperationException($"CreateWindowEx failed: {Marshal.GetLastWin32Error()}.");
+        if (!GetWindowRect(_window, out _committedOuter))
+            throw new InvalidOperationException($"GetWindowRect failed: {Marshal.GetLastWin32Error()}.");
+        _hasCommittedOuter = true;
         if (!GetClientRect(_window, out var client))
             throw new InvalidOperationException($"GetClientRect failed: {Marshal.GetLastWin32Error()}.");
-        var renderClassName = $"DorotiD3D12RenderChild-{Environment.ProcessId}";
-        var renderWindowClass = new WindowClassEx
+        var initialClientWidth = Math.Max(1, client.Right - client.Left);
+        var initialClientHeight = Math.Max(1, client.Bottom - client.Top);
+        // One top-level HWND owns both standard chrome geometry and the DXGI
+        // presentation surface. Its monitor-sized capacity stays out of the
+        // ordinary interactive-resize hot path and is clipped by that same
+        // HWND's client rect, eliminating cross-HWND composition ordering.
+        var monitor = MonitorFromWindow(_window, 2); // MONITOR_DEFAULTTONEAREST
+        var monitorInfo = new NativeMonitorInfo
         {
-            Size = checked((uint)Marshal.SizeOf<WindowClassEx>()),
-            Procedure = Marshal.GetFunctionPointerForDelegate(_renderWindowProcedure),
-            Instance = windowClass.Instance,
-            Cursor = windowClass.Cursor,
-            ClassName = renderClassName,
+            Size = checked((uint)Marshal.SizeOf<NativeMonitorInfo>()),
         };
-        if (RegisterClassEx(ref renderWindowClass) == 0)
-            throw new InvalidOperationException($"Render child RegisterClassEx failed: {Marshal.GetLastWin32Error()}.");
+        var hasMonitorInfo = monitor != 0 && GetMonitorInfo(monitor, ref monitorInfo);
+        _renderCapacityWidth = Math.Max(
+            initialClientWidth,
+            hasMonitorInfo ? monitorInfo.Work.Right - monitorInfo.Work.Left : initialClientWidth);
+        _renderCapacityHeight = Math.Max(
+            initialClientHeight,
+            hasMonitorInfo ? monitorInfo.Work.Bottom - monitorInfo.Work.Top : initialClientHeight);
+        for (var index = 0; index < _renderWindows.Length; index++)
+            _renderWindows[index] = _window;
         for (var index = 0; index < _renderWindows.Length; index++)
         {
-            _renderWindows[index] = CreateWindowEx(
-                0,
-                renderClassName,
-                $"Doroti D3D12 render child {index}",
-                WsChild | WsVisible | WsClipSiblings,
-                0,
-                0,
-                Math.Max(1, client.Right - client.Left),
-                Math.Max(1, client.Bottom - client.Top),
-                _window,
-                0,
-                renderWindowClass.Instance,
-                0);
-            if (_renderWindows[index] == 0)
-                throw new InvalidOperationException(
-                    $"Render child {index} CreateWindowEx failed: {Marshal.GetLastWin32Error()}.");
+            if (!CommitRenderWindow(
+                index,
+                _renderCapacityWidth,
+                _renderCapacityHeight,
+                TimeSpan.FromSeconds(5),
+                recordResizeHandshake: false,
+                contentWidth: initialClientWidth,
+                contentHeight: initialClientHeight))
+                throw new TimeoutException($"Initial top-level D3D12 present {index} exceeded five seconds.");
         }
         ShowWindow(_window, SwShow);
         UpdateWindow(_window);
-        for (var index = 0; index < _renderWindows.Length; index++)
-        {
-            if (!CommitRenderWindow(index, TimeSpan.FromSeconds(5), recordResizeHandshake: false))
-                throw new TimeoutException($"Initial D3D12 render-child {index} present exceeded five seconds.");
-        }
-        if (!SetWindowPos(
-            _renderWindows[0], 0, 0, 0,
-            Math.Max(1, client.Right - client.Left), Math.Max(1, client.Bottom - client.Top),
-            SwpNoActivate | 0x0040))
-            throw new InvalidOperationException($"Initial render-child z-order failed: {Marshal.GetLastWin32Error()}.");
     }
 
     private void RunMessageLoop()
@@ -230,7 +236,12 @@ internal sealed class Program : IDisposable
                     return 0;
                 case WmSizing:
                     _wmSizingCount++;
-                    return DefWindowProc(window, message, wParam, lParam);
+                    PrepublishSizingTarget(lParam);
+                    // WM_SIZING hands us the authoritative screen-space drag
+                    // rectangle. We consume it directly and must return TRUE;
+                    // returning DefWindowProc's result reports it unhandled
+                    // and can defer origin-moving edge admission.
+                    return 1;
                 case WmWindowPosChanging:
                     var positionResult = DefWindowProc(window, message, wParam, lParam);
                     PrecommitExpandedCoverForWindowPosition(lParam);
@@ -280,7 +291,10 @@ internal sealed class Program : IDisposable
                         SwpNoActivate);
                     return 0;
                 case WmEraseBackground:
-                    return 1;
+                    if (_windowBackgroundBrush != 0 &&
+                        GetClientRect(window, out var eraseRect) &&
+                        FillRect((nint)wParam, ref eraseRect, _windowBackgroundBrush) != 0) return 1;
+                    return 0;
                 case WmPaint:
                     ValidateRect(window, 0);
                     return 0;
@@ -303,57 +317,80 @@ internal sealed class Program : IDisposable
         return DefWindowProc(window, message, wParam, lParam);
     }
 
-    private nint RenderWindowProc(nint window, uint message, nuint wParam, nint lParam)
-    {
-        try
-        {
-            switch (message)
-            {
-                case WmCreate:
-                    return 0;
-                case WmSize:
-                    // Staging is rendered explicitly after SetWindowPos returns.
-                    // Never destructively resize the currently visible front.
-                    return 0;
-                case WmEraseBackground:
-                    return 1;
-                case WmPaint:
-                    ValidateRect(window, 0);
-                    return 0;
-                case WmDestroy:
-                    return 0;
-            }
-        }
-        catch (Exception exception)
-        {
-            _failure ??= exception;
-            if (_window != 0) PostMessage(_window, WmClose, 0, 0);
-            return 0;
-        }
-        return DefWindowProc(window, message, wParam, lParam);
-    }
-
     private void PrecommitExpandedCoverForWindowPosition(nint windowPositionPointer)
     {
         if (_window == 0 || _renderWindows[0] == 0 ||
             windowPositionPointer == 0 ||
             !GetWindowRect(_window, out var currentOuter) ||
-            !GetClientRect(_window, out var currentClient) ||
-            !GetClientRect(_renderWindows[0], out var renderClient)) return;
+            !GetClientRect(_window, out var currentClient)) return;
         var position = Marshal.PtrToStructure<NativeWindowPosition>(windowPositionPointer);
         if ((position.Flags & 0x0001) != 0) return; // SWP_NOSIZE
-        var nonClientWidth = Math.Max(0,
-            (currentOuter.Right - currentOuter.Left) - (currentClient.Right - currentClient.Left));
-        var nonClientHeight = Math.Max(0,
-            (currentOuter.Bottom - currentOuter.Top) - (currentClient.Bottom - currentClient.Top));
-        var requestedWidth = Math.Max(1, position.Width - nonClientWidth);
-        var requestedHeight = Math.Max(1, position.Height - nonClientHeight);
-        var currentWidth = Math.Max(1, renderClient.Right - renderClient.Left);
-        var currentHeight = Math.Max(1, renderClient.Bottom - renderClient.Top);
+        var targetOuterLeft = (position.Flags & 0x0002) != 0 ? currentOuter.Left : position.X; // SWP_NOMOVE
+        var targetOuterTop = (position.Flags & 0x0002) != 0 ? currentOuter.Top : position.Y;
+        var targetOuter = new NativeRect
+        {
+            Left = targetOuterLeft,
+            Top = targetOuterTop,
+            Right = targetOuterLeft + position.Width,
+            Bottom = targetOuterTop + position.Height,
+        };
+        var target = CreatePreparedResizeTarget(currentOuter, currentClient, targetOuter);
+        if (_preparedResize is { } prepared &&
+            prepared.Matches(targetOuter, target.ContentWidth, target.ContentHeight)) return;
+        Interlocked.Increment(ref _windowPosPreparationFallbackCount);
+        if (TryPrepareResizeTarget(currentOuter, currentClient, targetOuter)) return;
+        HoldCurrentWindowPosition(ref position, currentOuter, windowPositionPointer);
+    }
+
+    private void PrepublishSizingTarget(nint sizingRectPointer)
+    {
+        if (_window == 0 || _renderWindows[0] == 0 ||
+            sizingRectPointer == 0 ||
+            !GetWindowRect(_window, out var currentOuter) ||
+            !GetClientRect(_window, out var currentClient)) return;
+        var targetOuter = Marshal.PtrToStructure<NativeRect>(sizingRectPointer);
+        if (TryPrepareResizeTarget(currentOuter, currentClient, targetOuter))
+        {
+            Interlocked.Increment(ref _wmSizingPreparedCount);
+            return;
+        }
+        Marshal.StructureToPtr(currentOuter, sizingRectPointer, false);
+        Interlocked.Increment(ref _precommitGeometryHoldCount);
+    }
+
+    private bool TryPrepareResizeTarget(
+        NativeRect currentOuter,
+        NativeRect currentClient,
+        NativeRect targetOuter)
+    {
+        var target = CreatePreparedResizeTarget(currentOuter, currentClient, targetOuter);
+        if (_preparedResize is { } prepared &&
+            prepared.Matches(targetOuter, target.ContentWidth, target.ContentHeight)) return true;
+        _preparedResize = null;
+        var currentWidth = _renderCapacityWidth;
+        var currentHeight = _renderCapacityHeight;
         var visibleWidth = Math.Max(1, currentClient.Right - currentClient.Left);
         var visibleHeight = Math.Max(1, currentClient.Bottom - currentClient.Top);
-        var coverWidth = Math.Max(currentWidth, requestedWidth);
-        var coverHeight = Math.Max(currentHeight, requestedHeight);
+        if (!target.RequiresSynchronousPrepresent)
+        {
+            // Origin-moving edges must track the pointer without waiting for
+            // Present/DwmFlush. The owned DXGI/GDI background covers expansion
+            // until the latest GPU frame arrives; shrink clips the larger
+            // existing front. Fixed-origin expansion retains pre-presentation.
+            _preparedResize = target;
+            if (target.RequiresExpandedCoverage)
+            {
+                QueueLatestRenderWindow(target.ContentWidth, target.ContentHeight);
+                Interlocked.Increment(ref _asyncOriginMovingPublishCount);
+            }
+            else
+            {
+                Interlocked.Increment(ref _clipOnlyShrinkCount);
+            }
+            return true;
+        }
+        var coverWidth = Math.Max(currentWidth, target.ContentWidth);
+        var coverHeight = Math.Max(currentHeight, target.ContentHeight);
         if (coverWidth != currentWidth || coverHeight != currentHeight)
         {
             if (!CommitRenderWindow(
@@ -362,33 +399,49 @@ internal sealed class Program : IDisposable
                 recordResizeHandshake: true,
                 flushBeforeAck: true,
                 contentWidth: visibleWidth,
-                contentHeight: visibleHeight))
-            {
-                HoldCurrentWindowPosition(ref position, currentOuter, windowPositionPointer);
-                return;
-            }
-            if (!SetWindowPos(
-                _renderWindows[0], 0, 0, 0, coverWidth, coverHeight,
-                SwpNoActivate | 0x0040))
-                throw new InvalidOperationException(
-                    $"SetWindowPos(expanded render cover) failed: {Marshal.GetLastWin32Error()}.");
+                contentHeight: visibleHeight)) return false;
+            _renderCapacityWidth = coverWidth;
+            _renderCapacityHeight = coverHeight;
             Interlocked.Increment(ref _precommitSizingCount);
         }
 
-        if (CommitRenderWindow(
+        if (!CommitRenderWindow(
             0, coverWidth, coverHeight,
             TimeSpan.FromMilliseconds(100),
             recordResizeHandshake: true,
-            contentWidth: requestedWidth,
-            contentHeight: requestedHeight,
-            present: false))
-        {
-            _preparedContentWidth = requestedWidth;
-            _preparedContentHeight = requestedHeight;
-            return;
-        }
+            flushBeforeAck: true,
+            contentWidth: target.ContentWidth,
+            contentHeight: target.ContentHeight,
+            present: true)) return false;
+        // The exact frame is already composed while the old geometry is still
+        // admitted. Only after this ordering point may WINDOWPOS consume the
+        // matching outer rect, so DWM cannot expose geometry-first pixels.
+        _preparedResize = target;
+        Interlocked.Increment(ref _fixedOriginPreparedPresentCount);
+        return true;
+    }
 
-        HoldCurrentWindowPosition(ref position, currentOuter, windowPositionPointer);
+    private static PreparedResizeTarget CreatePreparedResizeTarget(
+        NativeRect currentOuter,
+        NativeRect currentClient,
+        NativeRect targetOuter)
+    {
+        var nonClientWidth = Math.Max(0,
+            (currentOuter.Right - currentOuter.Left) - (currentClient.Right - currentClient.Left));
+        var nonClientHeight = Math.Max(0,
+            (currentOuter.Bottom - currentOuter.Top) - (currentClient.Bottom - currentClient.Top));
+        var contentWidth = Math.Max(1, targetOuter.Right - targetOuter.Left - nonClientWidth);
+        var contentHeight = Math.Max(1, targetOuter.Bottom - targetOuter.Top - nonClientHeight);
+        return new PreparedResizeTarget(
+            contentWidth,
+            contentHeight,
+            targetOuter.Left,
+            targetOuter.Top,
+            targetOuter.Right - targetOuter.Left,
+            targetOuter.Bottom - targetOuter.Top,
+            targetOuter.Left != currentOuter.Left || targetOuter.Top != currentOuter.Top,
+            contentWidth > Math.Max(1, currentClient.Right - currentClient.Left) ||
+            contentHeight > Math.Max(1, currentClient.Bottom - currentClient.Top));
     }
 
     private void HoldCurrentWindowPosition(
@@ -408,7 +461,9 @@ internal sealed class Program : IDisposable
 
     private void CommitExactRenderChild()
     {
-        if (_window == 0 || !GetClientRect(_window, out var client)) return;
+        if (_window == 0 ||
+            !GetClientRect(_window, out var client) ||
+            !GetWindowRect(_window, out var outer)) return;
         var width = Math.Max(0, client.Right - client.Left);
         var height = Math.Max(0, client.Bottom - client.Top);
         if (width == 0 || height == 0)
@@ -416,33 +471,78 @@ internal sealed class Program : IDisposable
             _zeroSizeCount++;
             return;
         }
-        var prepared = _preparedContentWidth == width && _preparedContentHeight == height;
+        var preparedTarget = _preparedResize;
+        var prepared = preparedTarget is { } target && target.Matches(outer, width, height);
+        var committedOuterWidth = _committedOuter.Right - _committedOuter.Left;
+        var committedOuterHeight = _committedOuter.Bottom - _committedOuter.Top;
+        var clipsCommittedFrame = _hasCommittedOuter &&
+            outer.Right - outer.Left <= committedOuterWidth &&
+            outer.Bottom - outer.Top <= committedOuterHeight;
+        var originMoved = prepared
+            ? preparedTarget!.Value.OriginMoves
+            : _hasCommittedOuter &&
+              (outer.Left != _committedOuter.Left || outer.Top != _committedOuter.Top);
+        if (preparedTarget is not null && !prepared)
+            Interlocked.Increment(ref _preparedOuterMismatchCount);
         if (prepared)
         {
-            var started = Stopwatch.GetTimestamp();
-            var completed = _renderWorkers[0].PresentPreparedAndWait(
-                TimeSpan.FromMilliseconds(100), flushBeforeAck: false);
-            var elapsed = Stopwatch.GetTimestamp() - started;
-            Interlocked.Increment(ref _resizeHandshakeCount);
-            UpdateMaximum(ref _resizeHandshakeMaximumTicks, elapsed);
-            if (!completed)
+            if (!preparedTarget!.Value.RequiresSynchronousPrepresent)
             {
-                Interlocked.Increment(ref _resizeHandshakeTimeoutCount);
-                return;
+                QueueLatestRenderWindow(width, height);
+                if (!preparedTarget.Value.RequiresExpandedCoverage)
+                    Interlocked.Increment(ref _asyncShrinkPublishCount);
             }
+            // Fixed-origin expansion was presented before geometry admission.
+            // Origin-moving resize is never held behind GPU/compositor work.
+        }
+        else if (clipsCommittedFrame)
+        {
+            // A one-pixel non-client rounding difference must not fall back to
+            // a synchronous origin-moving present during a shrink.
+            QueueLatestRenderWindow(width, height);
+            Interlocked.Increment(ref _asyncShrinkPublishCount);
+        }
+        else if (originMoved)
+        {
+            // Preserve pointer/edge coupling even if a suggested outer rect
+            // differs from WM_SIZE by non-client rounding.
+            QueueLatestRenderWindow(width, height);
+            Interlocked.Increment(ref _asyncOriginMovingPublishCount);
         }
         else if (!CommitRenderWindow(
-            0, width, height,
+            0,
+            Math.Max(_renderCapacityWidth, width),
+            Math.Max(_renderCapacityHeight, height),
             TimeSpan.FromMilliseconds(100),
             recordResizeHandshake: true,
-            flushBeforeAck: false)) return;
-        if (!SetWindowPos(
-            _renderWindows[0], 0, 0, 0, width, height,
-            SwpNoActivate | 0x0040))
-            throw new InvalidOperationException(
-                $"SetWindowPos(exact render child) failed: {Marshal.GetLastWin32Error()}.");
-        _preparedContentWidth = 0;
-        _preparedContentHeight = 0;
+            flushBeforeAck: originMoved,
+            contentWidth: width,
+            contentHeight: height)) return;
+        EnsureRenderCapacity(width, height);
+        _preparedResize = null;
+        _committedOuter = outer;
+        _hasCommittedOuter = true;
+    }
+
+    private void QueueLatestRenderWindow(int contentWidth, int contentHeight)
+    {
+        var renderWindow = _renderWindows[0];
+        if (renderWindow == 0) return;
+        var scaleOwner = _window != 0 ? _window : renderWindow;
+        var scale = Math.Max(1, GetDpiForWindow(scaleOwner)) / 96.0;
+        _renderWorkers[0].UpdateTarget(
+            renderWindow,
+            Math.Max(_renderCapacityWidth, contentWidth),
+            Math.Max(_renderCapacityHeight, contentHeight),
+            contentWidth,
+            contentHeight,
+            scale);
+    }
+
+    private void EnsureRenderCapacity(int requiredWidth, int requiredHeight)
+    {
+        _renderCapacityWidth = Math.Max(_renderCapacityWidth, requiredWidth);
+        _renderCapacityHeight = Math.Max(_renderCapacityHeight, requiredHeight);
     }
 
     private bool CommitRenderWindow(
@@ -535,8 +635,10 @@ internal sealed class Program : IDisposable
             schemaVersion = "doroti.windows-top-level-presentation/v1",
             status,
             arm = _arm,
-            visibleOwner = _arm == "A" ? "top-level chrome HWND + single D3D12 render child with 1:1 monotonic-capacity front and prepared exact-content raster" : "unavailable",
-            rawRenderChildHwndCount = 1,
+            visibleOwner = _arm == "A" ? "single standard-chrome top-level HWND owning geometry and a 1:1 monotonic-capacity D3D12/DXGI front" : "unavailable",
+            rawRenderChildHwndCount = 0,
+            renderCapacityWidth = _renderCapacityWidth,
+            renderCapacityHeight = _renderCapacityHeight,
             swapChainPanelAttachmentCount = 0,
             cpuReadbackCount = 0,
             gdiCopyCount = 0,
@@ -551,6 +653,15 @@ internal sealed class Program : IDisposable
             resizeHandshakeTimeoutMilliseconds = 100,
             precommitSizingCount = Volatile.Read(ref _precommitSizingCount),
             precommitGeometryHoldCount = Volatile.Read(ref _precommitGeometryHoldCount),
+            fixedOriginPreparedPresentCount = Volatile.Read(ref _fixedOriginPreparedPresentCount),
+            preparedOuterMismatchCount = Volatile.Read(ref _preparedOuterMismatchCount),
+            wmSizingPreparedCount = Volatile.Read(ref _wmSizingPreparedCount),
+            windowPosPreparationFallbackCount = Volatile.Read(ref _windowPosPreparationFallbackCount),
+            clipOnlyShrinkCount = Volatile.Read(ref _clipOnlyShrinkCount),
+            asyncShrinkPublishCount = Volatile.Read(ref _asyncShrinkPublishCount),
+            asyncOriginMovingPublishCount = Volatile.Read(ref _asyncOriginMovingPublishCount),
+            supersededResizeFrameCount = _renderWorkers.Sum(
+                worker => worker?.SupersededResizeFrameCount ?? 0),
             qualification = _qualification,
             qualificationRefreshHz = _qualificationRefreshHz,
             qualificationTickCount = qualificationFrames,
@@ -593,6 +704,11 @@ internal sealed class Program : IDisposable
         _disposed = true;
         foreach (var worker in _renderWorkers) worker?.Dispose();
         foreach (var presenter in _presenters) presenter?.Dispose();
+        if (_windowBackgroundBrush != 0)
+        {
+            DeleteObject(_windowBackgroundBrush);
+            _windowBackgroundBrush = 0;
+        }
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -631,6 +747,37 @@ internal sealed class Program : IDisposable
         internal int Width;
         internal int Height;
         internal uint Flags;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct NativeMonitorInfo
+    {
+        internal uint Size;
+        internal NativeRect Monitor;
+        internal NativeRect Work;
+        internal uint Flags;
+    }
+
+    private readonly record struct PreparedResizeTarget(
+        int ContentWidth,
+        int ContentHeight,
+        int OuterLeft,
+        int OuterTop,
+        int OuterWidth,
+        int OuterHeight,
+        bool OriginMoves,
+        bool RequiresExpandedCoverage)
+    {
+        internal bool RequiresSynchronousPrepresent =>
+            RequiresExpandedCoverage && !OriginMoves;
+
+        internal bool Matches(NativeRect outer, int contentWidth, int contentHeight) =>
+            ContentWidth == contentWidth &&
+            ContentHeight == contentHeight &&
+            OuterLeft == outer.Left &&
+            OuterTop == outer.Top &&
+            OuterWidth == outer.Right - outer.Left &&
+            OuterHeight == outer.Bottom - outer.Top;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -704,11 +851,28 @@ internal sealed class Program : IDisposable
     private static extern uint GetDpiForWindow(nint window);
 
     [DllImport("user32.dll")]
+    private static extern nint MonitorFromWindow(nint window, uint flags);
+
+    [DllImport("user32.dll", EntryPoint = "GetMonitorInfoW", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GetMonitorInfo(nint monitor, ref NativeMonitorInfo info);
+
+    [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool ValidateRect(nint window, nint rect);
 
     [DllImport("user32.dll")]
     private static extern nint LoadCursor(nint instance, nint cursorName);
+
+    [DllImport("gdi32.dll", SetLastError = true)]
+    private static extern nint CreateSolidBrush(uint colorRef);
+
+    [DllImport("gdi32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool DeleteObject(nint value);
+
+    [DllImport("user32.dll")]
+    private static extern int FillRect(nint deviceContext, ref NativeRect rect, nint brush);
 
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
@@ -748,6 +912,10 @@ internal sealed class D3D12RenderWorker : IDisposable
     private bool _animate;
     private bool _stopping;
     private int _frameId;
+    private long _supersededResizeFrameCount;
+
+    internal long SupersededResizeFrameCount =>
+        Volatile.Read(ref _supersededResizeFrameCount);
 
     internal D3D12RenderWorker(
         DirectHwndPresenter presenter,
@@ -765,13 +933,27 @@ internal sealed class D3D12RenderWorker : IDisposable
         _thread.Start();
     }
 
-    internal void UpdateTarget(nint window, int width, int height, double scale)
+    internal void UpdateTarget(
+        nint window,
+        int width,
+        int height,
+        int contentWidth,
+        int contentHeight,
+        double scale)
     {
         lock (_gate)
         {
+            if (_window == window &&
+                _width == width &&
+                _height == height &&
+                _contentWidth == contentWidth &&
+                _contentHeight == contentHeight &&
+                _scale.Equals(scale)) return;
             _window = window;
             _width = width;
             _height = height;
+            _contentWidth = contentWidth;
+            _contentHeight = contentHeight;
             _scale = scale;
             _targetVersion++;
         }
@@ -930,6 +1112,8 @@ internal sealed class D3D12RenderWorker : IDisposable
                 }
 
                 var animatedFrame = animate && commit is null && singleFrame is null;
+                var coalescedResizeFrame = targetChanged &&
+                    commit is null && !animate && singleFrame is null;
                 if (animatedFrame || singleFrame is not null) _frameId = unchecked(_frameId + 1);
                 try
                 {
@@ -939,13 +1123,30 @@ internal sealed class D3D12RenderWorker : IDisposable
                     _presenter.RenderFrame(
                         window, width, height, contentWidth, contentHeight,
                         scale, _frameId,
-                        present: commit?.Present ?? true,
-                        synchronizeToRefresh: commit is null);
+                        present: commit?.Present ?? !coalescedResizeFrame,
+                        synchronizeToRefresh: animatedFrame || singleFrame is not null);
+                    var superseded = false;
                     lock (_gate)
                     {
+                        superseded = coalescedResizeFrame && targetVersion != _targetVersion;
                         if (targetVersion > _renderedTargetVersion) _renderedTargetVersion = targetVersion;
                     }
-                    if (commit?.Present ?? true) _presented(animatedFrame, _frameId);
+                    var presented = commit?.Present ?? !coalescedResizeFrame;
+                    if (coalescedResizeFrame)
+                    {
+                        if (superseded)
+                        {
+                            Interlocked.Increment(ref _supersededResizeFrameCount);
+                        }
+                        else
+                        {
+                            // Publish only the newest origin-moving target and
+                            // do not add a refresh wait after the HWND moved.
+                            _presenter.PresentPrepared(synchronizeToRefresh: false);
+                            presented = true;
+                        }
+                    }
+                    if (presented) _presented(animatedFrame, _frameId);
                     if (commit is not null)
                     {
                         // A WM_SIZING expansion must finish composition before
@@ -1086,6 +1287,8 @@ internal sealed class DirectHwndPresenter : IDisposable
         _backing.EnsureSize(_width, _height);
         DrawOracle(
             _backing.Surface.Canvas,
+            _width,
+            _height,
             Math.Clamp(contentWidth, 1, _width),
             Math.Clamp(contentHeight, 1, _height),
             scale,
@@ -1178,6 +1381,15 @@ internal sealed class DirectHwndPresenter : IDisposable
                 false, Usage.RenderTargetOutput, 2, Scaling.None,
                 SwapEffect.FlipSequential, AlphaMode.Ignore, SwapChainFlags.FrameLatencyWaitableObject);
             using var created = _factory!.CreateSwapChainForHwnd(_queue!, window, description);
+            // DXGI_SCALING_NONE can expose swap-chain background outside the
+            // current back-buffer content while the HWND target changes. Own
+            // that fallback explicitly instead of accepting DXGI's white
+            // default, and match the Win32 class/WM_ERASEBKGND brush.
+            created.BackgroundColor = new Vortice.Mathematics.Color4(
+                20.0f / 255.0f,
+                18.0f / 255.0f,
+                24.0f / 255.0f,
+                1.0f);
             _swapChain = created.QueryInterface<IDXGISwapChain3>();
             using var swapChain2 = _swapChain.QueryInterface<IDXGISwapChain2>();
             swapChain2.MaximumFrameLatency = 1;
@@ -1203,38 +1415,47 @@ internal sealed class DirectHwndPresenter : IDisposable
 
     private static void DrawOracle(
         SKCanvas canvas,
-        int width,
-        int height,
+        int surfaceWidth,
+        int surfaceHeight,
+        int contentWidth,
+        int contentHeight,
         double scale,
         int frameId,
         bool drawRightEdgeOracle)
     {
         canvas.Clear(new SKColor(20, 18, 24, 255));
-        var appBarHeight = Math.Min(height, Math.Max(1, (int)Math.Round(56 * scale)));
+        var appBarHeight = Math.Min(contentHeight, Math.Max(1, (int)Math.Round(56 * scale)));
         var purple = new SKColor(103, 58, 183, 255);
         var lavender = new SKColor(179, 157, 219, 255);
         using var paint = new SKPaint { IsAntialias = false, Color = purple };
-        canvas.DrawRect(0, 0, width, appBarHeight, paint);
+        // Keep the entire retained front valid, not only the last logical
+        // viewport. During a left/top expansion DXGI_SCALING_NONE reanchors
+        // the surface before the exact scene can arrive; valid overscan keeps
+        // that transient region from becoming a solid fallback band.
+        canvas.DrawRect(0, 0, surfaceWidth, appBarHeight, paint);
 
         var tile = Math.Max(8, (int)Math.Round(16 * scale));
-        for (var y = appBarHeight; y < height; y += tile)
+        for (var y = appBarHeight; y < surfaceHeight; y += tile)
         {
-            for (var x = 0; x < width; x += tile)
+            for (var x = 0; x < surfaceWidth; x += tile)
             {
                 paint.Color = ((x / tile) + (y / tile)) % 2 == 0
                     ? new SKColor(35, 31, 43, 255)
                     : new SKColor(24, 21, 31, 255);
-                canvas.DrawRect(x, y, Math.Min(tile, width - x), Math.Min(tile, height - y), paint);
+                canvas.DrawRect(
+                    x, y,
+                    Math.Min(tile, surfaceWidth - x),
+                    Math.Min(tile, surfaceHeight - y), paint);
             }
         }
 
         paint.IsAntialias = true;
         paint.Color = lavender;
         var radius = Math.Max(18, (float)(24 * scale));
-        var centerX = Math.Max(radius + 4, width * 0.55f);
-        var centerY = Math.Max(appBarHeight + radius + 4, height * 0.55f);
-        centerX = Math.Min(width - radius - 4, centerX);
-        centerY = Math.Min(height - radius - 4, centerY);
+        var centerX = Math.Max(radius + 4, contentWidth * 0.55f);
+        var centerY = Math.Max(appBarHeight + radius + 4, contentHeight * 0.55f);
+        centerX = Math.Min(contentWidth - radius - 4, centerX);
+        centerY = Math.Min(contentHeight - radius - 4, centerY);
         if (centerX > radius && centerY > appBarHeight + radius)
             canvas.DrawCircle(centerX, centerY, radius, paint);
 
@@ -1247,7 +1468,7 @@ internal sealed class DirectHwndPresenter : IDisposable
         var bitGap = Math.Max(1, (int)Math.Round(scale));
         var bitCount = 12;
         var bitStripWidth = bitCount * bitSize + (bitCount - 1) * bitGap;
-        var bitStartX = Math.Max(0, width - bitStripWidth - Math.Max(4, (int)Math.Round(4 * scale)));
+        var bitStartX = Math.Max(0, contentWidth - bitStripWidth - Math.Max(4, (int)Math.Round(4 * scale)));
         var bitTop = Math.Max(1, (int)Math.Round(5 * scale));
         var gray = frameId ^ (frameId >> 1);
         paint.IsAntialias = false;
@@ -1260,9 +1481,9 @@ internal sealed class DirectHwndPresenter : IDisposable
         }
 
         paint.Color = new SKColor(
-            (byte)(32 + (width & 0x7f)),
-            (byte)(32 + (height & 0x7f)),
-            (byte)(32 + ((width ^ height) & 0x7f)),
+            (byte)(32 + (contentWidth & 0x7f)),
+            (byte)(32 + (contentHeight & 0x7f)),
+            (byte)(32 + ((contentWidth ^ contentHeight) & 0x7f)),
             255);
         canvas.DrawRect(bitStartX, bitTop + bitSize + bitGap, bitStripWidth, Math.Max(2, bitGap * 2), paint);
 
@@ -1272,8 +1493,8 @@ internal sealed class DirectHwndPresenter : IDisposable
             paint.Color = purple;
             var edgeWidth = Math.Max(2, (int)Math.Ceiling(scale));
             canvas.DrawRect(
-                width - edgeWidth, appBarHeight,
-                edgeWidth, height - appBarHeight, paint);
+                contentWidth - edgeWidth, appBarHeight,
+                edgeWidth, contentHeight - appBarHeight, paint);
         }
     }
 

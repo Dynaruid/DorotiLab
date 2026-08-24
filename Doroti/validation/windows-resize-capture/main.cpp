@@ -137,7 +137,9 @@ struct QualificationEvent {
     std::string direction;
     int offsetRefreshes{};
     long long contentIssueCounter{};
+    long long contentCompleteCounter{};
     long long geometryIssueCounter{};
+    long long geometryCompleteCounter{};
     int contentFrameId{};
     RECT beforeWindow{};
     RECT afterWindow{};
@@ -1442,6 +1444,7 @@ std::vector<WindowSample> RunQualification(
                 auto issueContent = [&] {
                     event.contentIssueCounter = PerformanceCounter();
                     event.contentFrameId = sendControl(2);
+                    event.contentCompleteCounter = PerformanceCounter();
                 };
                 auto issueGeometry = [&] {
                     event.geometryIssueCounter = PerformanceCounter();
@@ -1450,6 +1453,7 @@ std::vector<WindowSample> RunQualification(
                         SWP_NOACTIVATE | SWP_NOZORDER)) {
                         Fail("Qualification phase SetWindowPos failed.");
                     }
+                    event.geometryCompleteCounter = PerformanceCounter();
                 };
                 if (event.direction == "content-before-geometry") {
                     issueContent();
@@ -1705,7 +1709,9 @@ void WriteEvidence(
         output << "    {\"direction\":\"" << EscapeJson(event.direction)
             << "\",\"offsetRefreshes\":" << event.offsetRefreshes
             << ",\"contentIssueCounter\":" << event.contentIssueCounter
+            << ",\"contentCompleteCounter\":" << event.contentCompleteCounter
             << ",\"geometryIssueCounter\":" << event.geometryIssueCounter
+            << ",\"geometryCompleteCounter\":" << event.geometryCompleteCounter
             << ",\"contentFrameId\":" << event.contentFrameId
             << ",\"beforeWindow\":"; WriteRect(output, event.beforeWindow);
         output << ",\"afterWindow\":"; WriteRect(output, event.afterWindow);

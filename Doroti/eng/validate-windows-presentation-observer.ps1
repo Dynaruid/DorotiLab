@@ -162,22 +162,34 @@ function Measure-Qualification([object] $Evidence, [object] $AppEvidence) {
             } |
             Sort-Object acquireEntryCounter |
             Select-Object -First 1
-        $expected = if ($event.direction -eq 'content-before-geometry') {
-            [double]$event.offsetRefreshes
-        } else {
-            -[double]$event.offsetRefreshes
-        }
+        # SendMessageTimeout and SetWindowPos are synchronous. The visible change can occur at
+        # any point between each call's issue and completion counters, so use that measured
+        # interval instead of pretending the nominal DwmFlush count is the complete phase.
+        $expectedMinimum = ([long]$event.geometryIssueCounter - [long]$event.contentCompleteCounter) / $refreshTicks
+        $expectedMaximum = ([long]$event.geometryCompleteCounter - [long]$event.contentIssueCounter) / $refreshTicks
         $measured = if ($null -ne $contentFrame -and $null -ne $geometryFrame) {
             ([long]$geometryFrame.acquireEntryCounter - [long]$contentFrame.acquireEntryCounter) / $refreshTicks
         } else { $null }
         $directionCorrect = $null -ne $measured -and (
-            ([int]$event.offsetRefreshes -eq 0 -and [Math]::Abs($measured) -le 1.0) -or
-            ([int]$event.offsetRefreshes -gt 0 -and [Math]::Sign($measured) -eq [Math]::Sign($expected)))
-        $magnitudeError = if ($null -ne $measured) { [Math]::Abs($measured - $expected) } else { $null }
+            [int]$event.offsetRefreshes -eq 0 -or
+            ($event.direction -eq 'content-before-geometry' -and $expectedMinimum -gt 0 -and $measured -gt 0) -or
+            ($event.direction -eq 'geometry-before-content' -and $expectedMaximum -lt 0 -and $measured -lt 0))
+        $magnitudeError = if ($null -eq $measured) {
+            $null
+        } elseif ($measured -lt $expectedMinimum) {
+            $expectedMinimum - $measured
+        } elseif ($measured -gt $expectedMaximum) {
+            $measured - $expectedMaximum
+        } else {
+            0.0
+        }
         $phaseResults.Add([ordered]@{
             direction = $event.direction
             offsetRefreshes = [int]$event.offsetRefreshes
-            expectedGeometryMinusContentRefreshes = $expected
+            expectedGeometryMinusContentRefreshes = [ordered]@{
+                minimum = $expectedMinimum
+                maximum = $expectedMaximum
+            }
             measuredGeometryMinusContentRefreshes = $measured
             magnitudeErrorRefreshes = $magnitudeError
             directionCorrect = $directionCorrect
