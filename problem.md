@@ -4,7 +4,7 @@
 
 대상: `Doroti/validation/windows-top-level-presentation`의 standard-chrome raw top-level HWND + D3D12/DXGI control
 
-상태: **Arm S/C diagnostic 구현 완료, 필수 3회 observer qualification FAIL, 최신 2배 drag 단일 회귀 PASS, visible acceptance notVerified/기존 FAIL 유지**
+상태: **Arm S/C diagnostic과 custom non-client Arm N 구현 완료, Arm C 필수 3회 observer qualification FAIL, Arm N transaction smoke PASS, 실제 mouse visible acceptance notVerified/기존 M1 FAIL 유지**
 
 ## 1. 현재 증상
 
@@ -338,3 +338,141 @@ WGC strict judge는 계속 `diagnosticOnly`이고 Desktop Duplication만 해당 
 2. 수정 뒤 같은 환경 3회 연속 qualified PASS를 확보하고, 1초 triangle wave로 실제 mouse left/right/top/bottom/corner visible matrix를 사용자가 확인한다.
 
 그 전에는 custom non-client Arm으로 확대하거나 A0-V 이후 제품 구현을 시작하지 않는다.
+
+## 12. 2026-08-24 좌측 떨림 후속 수정
+
+### 12.1 확인한 구현 결함
+
+Arm C의 visual epoch가 latest인지 확인하는 것만으로는 충분하지 않았다. `WM_SIZING`에서 exact raster를 미리 queue한 뒤 render worker가 HWND geometry 적용 전에 `PresentPrepared(epoch)`를 실행할 수 있었고, 이때 provisional right-anchor offset/clip이 0으로 초기화됐다. 즉 같은 epoch 안에서도 다음 순서가 허용됐다.
+
+```text
+provisional visual commit
+  -> exact raster ready
+  -> exact Present + offset reset
+  -> matching HWND geometry admission
+```
+
+좌측 edge에서는 exact reset 전후로 content screen origin이 바뀌므로 사용자가 본 좌우 떨림을 직접 만들 수 있다. 기존 stale check는 다른 epoch의 exact commit만 막았고 **같은 epoch의 geometry-before-admission commit**은 막지 못했다.
+
+추가로 다음 두 결함을 확인했다.
+
+- `SetWindowPos`가 `SWP_NOSIZE`를 명시하지 않았다는 이유만으로 실제 width/height가 같은 pure move까지 resize visual epoch로 만들었다. pure move에는 matching `WM_SIZE`가 없으므로 admission이 닫힌 채 남을 수 있었다.
+- platform thread의 `ApplyProvisionalVisual()`이 render worker의 GPU wait/copy/present 전체와 같은 `_presentGate`를 사용했다. left drag의 `WM_SIZING`이 GPU resource wait 뒤에 막힐 수 있는 구조였다.
+
+### 12.2 수정한 transaction
+
+`Doroti/validation/windows-top-level-presentation/Program.cs`를 다음처럼 수정했다.
+
+1. Arm C visual epoch에 `geometryAdmittedEpoch`를 추가했다.
+2. matching outer/client rect를 확인한 `WM_SIZE`만 해당 epoch를 admit한다.
+3. early exact raster는 허용하지만 admission 전 `Present`와 provisional offset reset은 거부한다.
+4. `WM_SIZE` admission 뒤 target version을 강제로 다시 게시해, admission 전에 준비가 끝난 frame도 최신 geometry에서 visible publish를 재시도한다.
+5. pure move는 outer width/height 비교로 resize preparation에서 제외한다.
+6. DirectComposition state 전용 `_compositionGate`를 두고 GPU wait/copy와 분리했다. final visible boundary에서 epoch/admission을 다시 확인한 뒤 `Present + CommitExact`만 짧게 직렬화한다.
+7. admission 때문에 보류된 animation frame은 presented cadence로 세지 않고 bounded wait한다.
+8. evidence에 provisional/exact 외에 pre-admission reject, geometry admission, admission reject counter를 추가했다.
+
+이제 허용되는 순서는 다음과 같다.
+
+```text
+WM_SIZING provisional commit + exact raster prepare
+  -> matching WM_SIZE geometry admission
+  -> latest/admitted epoch 재확인
+  -> exact Present + provisional offset reset
+```
+
+### 12.3 현재 검증 결과
+
+구조/build:
+
+- Release `dotnet build --no-restore`: **PASS**, 0 warnings, 0 errors
+- `git diff --check`: **PASS**
+- final source에서 pure move가 orphan visual epoch를 만들지 않음
+
+최종 3회 observer:
+
+- summary: `win-observer-m1-arm-c-summary-20260824-181313.json`
+- verdict: **FAIL** (`PASS`, `FAIL`, `FAIL`)
+- source cadence: 세 run 모두 약 165fps
+- prepared outer mismatch: 세 run 모두 0
+- geometry admission reject: 세 run 모두 0
+- interactive left drag blank frame: 세 run 모두 0
+- Desktop Duplication right gap diagnostic maximum: 세 run 모두 8px
+- run 2/3 실패: synthetic `content-before-geometry` 0/1-refresh phase oracle 변동
+
+앱 counter는 admission 계약이 동작했음을 보였지만 observer 3회 연속 조건은 통과하지 못했다. 또한 자동 triangle wave는 실제 mouse에서 사용자가 느낀 떨림 제거를 대신 증명하지 않는다.
+
+따라서 현재 판정은 다음과 같다.
+
+- 같은 epoch의 **exact-before-geometry** 경쟁과 pure-move orphan epoch는 코드에서 수정됨
+- Release build와 transaction counter는 PASS
+- 필수 3회 observer는 FAIL
+- 실제 mouse 좌측 edge visible acceptance는 `notVerified`
+- M1은 계속 **FAIL — hard stop**, G2는 `notVerified`
+
+정확한 다음 확인은 final binary Arm C에서 실제 mouse로 좌측 확대/축소를 빠르게 왕복해 떨림이 사라졌는지 사용자가 확인하는 것이다. 떨림이 남으면 admission 이후의 exact reset이 아니라 `WM_SIZING` provisional commit 자체와 standard non-client geometry 사이의 output-frame phase가 원인이므로, 현재 raw top-level standard-chrome Arm C를 더 조정하지 않고 custom non-client owner 판단으로 넘어간다.
+
+## 13. 2026-08-24 좌측·상단 떨림 재현 후 custom non-client Arm N
+
+### 13.1 추가 관찰과 판정
+
+사용자가 final Arm C에서도 좌측 떨림을 재현했고, 상단을 위로 키울 때도 같은 떨림을 확인했다. 좌측과 상단은 모두 outer origin이 움직이는 경로이며 `ApplyProvisionalVisual()`이 exact frame 전에 각각 X/Y offset을 commit한다. 따라서 이 관찰은 좌측 산술이나 right-edge oracle 문제가 아니라 다음 공통 순서가 output frame 사이에 노출된다는 판정과 일치한다.
+
+```text
+WM_SIZING: provisional visual offset/clip commit
+  -> 별도 USER32 standard non-client geometry admission
+  -> WM_SIZE: exact visual reset
+```
+
+Arm C의 geometry admission gate는 exact reset이 geometry보다 앞서는 경쟁은 막지만, 첫 provisional DirectComposition commit과 standard HWND geometry를 하나의 compositor transaction으로 만들 수는 없다. 상단 재현으로 Y축에서도 같은 한계가 확인됐으므로 Arm C의 offset/flush/timer를 더 조정하지 않았다.
+
+### 13.2 구현한 ownership 변경
+
+`Doroti/validation/windows-top-level-presentation`에 `--arm N`을 추가했다.
+
+- 실제 top-level HWND는 현재 monitor work area 크기의 투명한 `WS_POPUP + WS_EX_NOREDIRECTIONBITMAP` envelope로 고정한다.
+- 사용자가 보는 border, title 영역과 content만 하나의 DirectComposition visual에 둔다.
+- envelope 바깥과 visual 바깥은 `HTTRANSPARENT`이고, 보이는 surface의 8-DIP 안쪽 border만 앱이 hit-test/capture한다.
+- 좌측·상단·우측·하단과 corner drag는 실제 HWND rect를 바꾸지 않고 app-owned rect만 갱신한다.
+- render worker는 latest exact raster를 준비하고, visible boundary에서 swap-chain `Present`와 visual offset/clip을 같은 composition owner 아래 commit한다.
+- intermediate target은 latest-only로 supersede하며 stale visual epoch는 visible commit하지 않는다.
+- surface 전체 border도 content와 같은 Skia front에 그리므로 border와 content가 서로 다른 owner에서 이동하지 않는다.
+- top title band drag는 같은 visual rect를 이동하고 `Alt+F4`로 종료한다.
+
+이 구조에서는 좌측/상단 drag 중 USER32 standard border geometry가 존재하지 않는다. 따라서 Arm C에서 떨림을 만든 `standard HWND origin change ↔ provisional visual offset`의 두-owner phase 자체가 제거된다.
+
+### 13.3 현재 검증 결과
+
+구조/build:
+
+- Release `dotnet build --no-restore`: **PASS**, 0 warnings, 0 errors
+- `git diff --check`: **PASS**
+- Arm N startup/automatic close: **PASS**, exit code 0
+
+Arm N opt-in transaction smoke (`--owned-smoke`) 3회:
+
+- 좌측 expansion/shrink → 상단 expansion/shrink → 좌상단 corner expansion/shrink
+- target input: 119
+- render publish: 119
+- composition-owned visible commit: 세 run 모두 118
+- superseded intermediate frame: 각 run 1
+- stale epoch reject: 0~1, stale frame visible commit 0
+- latest epoch/committed epoch: 세 run 모두 120/120
+- drain timeout: 세 run 모두 0
+- process failure: 세 run 모두 0
+- verdict: **PASS/PASS/PASS**
+
+외부 pointer 주입은 실행 환경 정책에서 허용되지 않아 자동 smoke는 실제 mouse input을 대체하지 않는다. 실제 mouse로 좌/우/상/하와 네 corner를 빠르게 왕복하는 visible acceptance는 `notVerified`다.
+
+### 13.4 제품 승격 전 남은 경계
+
+Arm N은 transaction ownership을 검증하는 diagnostic이며 현재 standard Windows chrome 기능을 완성한 제품 host가 아니다. 다음 항목은 아직 구현·검증하지 않았다.
+
+- Snap Layouts, system menu, maximize/restore, keyboard sizing
+- accessibility와 standard caption/button semantics
+- DPI/monitor 전환과 multi-monitor envelope migration
+- touch resize, taskbar/foreground/z-order 정책
+- 실제 mouse에서 pointer lag, 역방향 jitter, blank/gap 0 확인
+- 100/150/200% DPI와 60/120Hz 이상 visible matrix
+
+따라서 Arm N smoke PASS로 `work2.md` M1이나 G2를 승격하지 않는다. 현재 M1은 계속 **FAIL — hard stop**, G2는 `notVerified`다. 정확한 다음 단계는 Arm N final binary를 실제 mouse로 먼저 확인하는 것이며, visible PASS 뒤에만 custom chrome의 Windows 기능 계약을 제품 migration 계획에 포함한다.

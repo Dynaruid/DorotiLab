@@ -18,16 +18,28 @@ internal sealed class Program : IDisposable
     private const uint WmCreate = 0x0001;
     private const uint WmDestroy = 0x0002;
     private const uint WmSize = 0x0005;
+    private const uint WmSetCursor = 0x0020;
     private const uint WmWindowPosChanging = 0x0046;
+    private const uint WmNcHitTest = 0x0084;
     private const uint WmPaint = 0x000F;
     private const uint WmEraseBackground = 0x0014;
     private const uint WmClose = 0x0010;
     private const uint WmSizing = 0x0214;
+    private const uint WmCaptureChanged = 0x0215;
+    private const uint WmMouseMove = 0x0200;
+    private const uint WmLeftButtonDown = 0x0201;
+    private const uint WmLeftButtonUp = 0x0202;
     private const uint WmDpiChanged = 0x02E0;
     private const uint WmQualificationControl = 0x8001;
+    private const uint WmOwnedSmoke = 0x8002;
     private const nuint SizeMinimized = 1;
     private const uint WsOverlappedWindow = 0x00CF0000;
+    private const uint WsPopup = 0x80000000;
     private const uint WsVisible = 0x10000000;
+    private const uint WsExNoRedirectionBitmap = 0x00200000;
+    private const nuint MouseKeyLeftButton = 0x0001;
+    private const int HitTestTransparent = -1;
+    private const int HitTestClient = 1;
     private const int CwUseDefault = unchecked((int)0x80000000);
     private const int SwShow = 5;
     private const uint SwpNoActivate = 0x0010;
@@ -41,6 +53,8 @@ internal sealed class Program : IDisposable
     private readonly WindowProcedure _windowProcedure;
     private readonly bool _qualification;
     private readonly int _qualificationRefreshHz;
+    private readonly bool _ownedSmoke;
+    private readonly ManualResetEventSlim _ownedSmokeInputDrained = new(false);
     private int _contentFrameId;
     private long _qualificationTickCount;
     private long _qualificationAnimationStarted;
@@ -72,17 +86,31 @@ internal sealed class Program : IDisposable
     private long _asyncShrinkPublishCount;
     private long _asyncOriginMovingPublishCount;
     private long _compositionVisualEpoch;
+    private NativeRect _ownedHostRect;
+    private NativeRect _ownedWindowRect;
+    private NativeRect _ownedDragStartRect;
+    private NativePoint _ownedDragStartPointer;
+    private OwnedDragMode _ownedDragMode;
+    private long _ownedResizeInputCount;
+    private long _ownedResizePublishCount;
+    private long _ownedSmokeDrainTimeoutCount;
     private Exception? _failure;
     private bool _disposed;
 
-    private Program(string arm, string? evidencePath, bool qualification, int qualificationRefreshHz)
+    private Program(
+        string arm,
+        string? evidencePath,
+        bool qualification,
+        int qualificationRefreshHz,
+        bool ownedSmoke)
     {
         _arm = arm;
         _evidencePath = evidencePath;
         _windowProcedure = WindowProc;
         _qualification = qualification;
         _qualificationRefreshHz = qualificationRefreshHz;
-        if (arm is "A" or "S" or "C")
+        _ownedSmoke = ownedSmoke;
+        if (arm is "A" or "S" or "C" or "N")
         {
             for (var index = 0; index < _presenters.Length; index++)
             {
@@ -105,6 +133,7 @@ internal sealed class Program : IDisposable
         var arm = ReadArgument(args, "--arm")?.ToUpperInvariant() ?? "A";
         var evidence = ReadArgument(args, "--evidence");
         var qualification = args.Contains("--qualification", StringComparer.Ordinal);
+        var ownedSmoke = args.Contains("--owned-smoke", StringComparer.Ordinal);
         var qualificationRefreshHz = int.TryParse(ReadArgument(args, "--refresh-hz"), out var parsedRefreshHz)
             ? Math.Clamp(parsedRefreshHz, 30, 1000)
             : 165;
@@ -115,14 +144,29 @@ internal sealed class Program : IDisposable
                 "Legacy Arm B is retired; use Arm C for the native DirectComposition comparison. The Windows App SDK 2.4 product migration remains a separate gate.");
             return 2;
         }
-        if (arm is not ("A" or "S" or "C"))
+        if (arm is not ("A" or "S" or "C" or "N"))
         {
-            Console.Error.WriteLine($"Unknown arm '{arm}'. Use A, S, or C (legacy B remains unavailable).");
+            Console.Error.WriteLine($"Unknown arm '{arm}'. Use A, S, C, or N (legacy B remains unavailable).");
+            return 2;
+        }
+        if (arm == "N" && qualification)
+        {
+            Console.Error.WriteLine("Arm N owns a custom composition resize surface and is not compatible with the standard-HWND qualification driver.");
+            return 2;
+        }
+        if (ownedSmoke && arm != "N")
+        {
+            Console.Error.WriteLine("--owned-smoke is available only for Arm N.");
             return 2;
         }
 
         SetProcessDpiAwarenessContext(PerMonitorAwareV2);
-        using var application = new Program(arm, evidence, qualification, qualificationRefreshHz);
+        using var application = new Program(
+            arm,
+            evidence,
+            qualification,
+            qualificationRefreshHz,
+            ownedSmoke);
         _current = application;
         try
         {
@@ -147,9 +191,12 @@ internal sealed class Program : IDisposable
     private void CreateWindow()
     {
         var className = $"DorotiN0TopLevel-{Environment.ProcessId}";
-        _windowBackgroundBrush = CreateSolidBrush(WindowBackgroundColorRef);
-        if (_windowBackgroundBrush == 0)
-            throw new InvalidOperationException($"CreateSolidBrush failed: {Marshal.GetLastWin32Error()}.");
+        if (_arm != "N")
+        {
+            _windowBackgroundBrush = CreateSolidBrush(WindowBackgroundColorRef);
+            if (_windowBackgroundBrush == 0)
+                throw new InvalidOperationException($"CreateSolidBrush failed: {Marshal.GetLastWin32Error()}.");
+        }
         var windowClass = new WindowClassEx
         {
             Size = checked((uint)Marshal.SizeOf<WindowClassEx>()),
@@ -162,10 +209,10 @@ internal sealed class Program : IDisposable
         if (RegisterClassEx(ref windowClass) == 0)
             throw new InvalidOperationException($"RegisterClassEx failed: {Marshal.GetLastWin32Error()}.");
         _window = CreateWindowEx(
-            0,
+            _arm == "N" ? WsExNoRedirectionBitmap : 0,
             className,
             $"Doroti resize Arm {_arm}",
-            WsOverlappedWindow,
+            _arm == "N" ? WsPopup : WsOverlappedWindow,
             CwUseDefault,
             CwUseDefault,
             840,
@@ -193,6 +240,43 @@ internal sealed class Program : IDisposable
             Size = checked((uint)Marshal.SizeOf<NativeMonitorInfo>()),
         };
         var hasMonitorInfo = monitor != 0 && GetMonitorInfo(monitor, ref monitorInfo);
+        if (_arm == "N")
+        {
+            var work = hasMonitorInfo ? monitorInfo.Work : _committedOuter;
+            var workWidth = Math.Max(1, work.Right - work.Left);
+            var workHeight = Math.Max(1, work.Bottom - work.Top);
+            var ownedWidth = Math.Min(840, Math.Max(320, workWidth - 80));
+            var ownedHeight = Math.Min(600, Math.Max(240, workHeight - 80));
+            _ownedHostRect = work;
+            _ownedWindowRect = new NativeRect
+            {
+                Left = work.Left + Math.Max(0, (workWidth - ownedWidth) / 2),
+                Top = work.Top + Math.Max(0, (workHeight - ownedHeight) / 2),
+                Right = work.Left + Math.Max(0, (workWidth - ownedWidth) / 2) + ownedWidth,
+                Bottom = work.Top + Math.Max(0, (workHeight - ownedHeight) / 2) + ownedHeight,
+            };
+            if (!SetWindowPos(
+                _window,
+                0,
+                work.Left,
+                work.Top,
+                workWidth,
+                workHeight,
+                SwpNoActivate))
+                throw new InvalidOperationException($"SetWindowPos for the Arm N composition host failed: {Marshal.GetLastWin32Error()}.");
+            if (!GetClientRect(_window, out client))
+                throw new InvalidOperationException($"GetClientRect for the Arm N composition host failed: {Marshal.GetLastWin32Error()}.");
+            initialClientWidth = Math.Max(1, client.Right - client.Left);
+            initialClientHeight = Math.Max(1, client.Bottom - client.Top);
+            _committedOuter = _ownedWindowRect;
+            var visualEpoch = Interlocked.Increment(ref _compositionVisualEpoch);
+            _presenters[0].StageOwnedVisual(
+                visualEpoch,
+                _ownedWindowRect.Left - _ownedHostRect.Left,
+                _ownedWindowRect.Top - _ownedHostRect.Top,
+                _ownedWindowRect.Right - _ownedWindowRect.Left,
+                _ownedWindowRect.Bottom - _ownedWindowRect.Top);
+        }
         _renderCapacityWidth = Math.Max(
             initialClientWidth,
             hasMonitorInfo ? monitorInfo.Work.Right - monitorInfo.Work.Left : initialClientWidth);
@@ -209,12 +293,17 @@ internal sealed class Program : IDisposable
                 _renderCapacityHeight,
                 TimeSpan.FromSeconds(5),
                 recordResizeHandshake: false,
-                contentWidth: initialClientWidth,
-                contentHeight: initialClientHeight))
+                contentWidth: _arm == "N"
+                    ? _ownedWindowRect.Right - _ownedWindowRect.Left
+                    : initialClientWidth,
+                contentHeight: _arm == "N"
+                    ? _ownedWindowRect.Bottom - _ownedWindowRect.Top
+                    : initialClientHeight))
                 throw new TimeoutException($"Initial top-level D3D12 present {index} exceeded five seconds.");
         }
         ShowWindow(_window, SwShow);
         UpdateWindow(_window);
+        if (_ownedSmoke) StartOwnedSmoke();
     }
 
     private void RunMessageLoop()
@@ -239,6 +328,7 @@ internal sealed class Program : IDisposable
                 case WmCreate:
                     return 0;
                 case WmSizing:
+                    if (_arm == "N") return 1;
                     _wmSizingCount++;
                     PrepublishSizingTarget(lParam);
                     // WM_SIZING hands us the authoritative screen-space drag
@@ -247,6 +337,7 @@ internal sealed class Program : IDisposable
                     // and can defer origin-moving edge admission.
                     return 1;
                 case WmWindowPosChanging:
+                    if (_arm == "N") return DefWindowProc(window, message, wParam, lParam);
                     var positionResult = DefWindowProc(window, message, wParam, lParam);
                     PrecommitExpandedCoverForWindowPosition(lParam);
                     return positionResult;
@@ -273,6 +364,16 @@ internal sealed class Program : IDisposable
                         return _renderWorkers[0].PresentSingleFrame();
                     }
                     return Volatile.Read(ref _contentFrameId);
+                case WmOwnedSmoke:
+                    if (_arm == "N")
+                    {
+                        if (wParam == 120)
+                            _ownedSmokeInputDrained.Set();
+                        else
+                            ApplyOwnedSmokeStep(checked((int)wParam));
+                        return 0;
+                    }
+                    break;
                 case WmSize:
                     _wmSizeCount++;
                     if (wParam == SizeMinimized)
@@ -280,10 +381,12 @@ internal sealed class Program : IDisposable
                         _zeroSizeCount++;
                         return 0;
                     }
+                    if (_arm == "N") return 0;
                     CommitExactRenderChild();
                     return 0;
                 case WmDpiChanged:
                     _dpiChangeCount++;
+                    if (_arm == "N") return 0;
                     var suggested = Marshal.PtrToStructure<NativeRect>(lParam);
                     SetWindowPos(
                         window,
@@ -295,6 +398,7 @@ internal sealed class Program : IDisposable
                         SwpNoActivate);
                     return 0;
                 case WmEraseBackground:
+                    if (_arm == "N") return 1;
                     if (_windowBackgroundBrush != 0 &&
                         GetClientRect(window, out var eraseRect) &&
                         FillRect((nint)wParam, ref eraseRect, _windowBackgroundBrush) != 0) return 1;
@@ -302,6 +406,47 @@ internal sealed class Program : IDisposable
                 case WmPaint:
                     ValidateRect(window, 0);
                     return 0;
+                case WmNcHitTest:
+                    if (_arm == "N") return OwnedHitTest() == OwnedDragMode.None
+                        ? HitTestTransparent
+                        : HitTestClient;
+                    break;
+                case WmSetCursor:
+                    if (_arm == "N")
+                    {
+                        SetOwnedCursor(OwnedHitTest());
+                        return 1;
+                    }
+                    break;
+                case WmLeftButtonDown:
+                    if (_arm == "N")
+                    {
+                        BeginOwnedDrag();
+                        return 0;
+                    }
+                    break;
+                case WmMouseMove:
+                    if (_arm == "N" && _ownedDragMode != OwnedDragMode.None)
+                    {
+                        if ((wParam & MouseKeyLeftButton) != 0) UpdateOwnedDrag();
+                        else EndOwnedDrag();
+                        return 0;
+                    }
+                    break;
+                case WmLeftButtonUp:
+                    if (_arm == "N")
+                    {
+                        EndOwnedDrag();
+                        return 0;
+                    }
+                    break;
+                case WmCaptureChanged:
+                    if (_arm == "N")
+                    {
+                        _ownedDragMode = OwnedDragMode.None;
+                        return 0;
+                    }
+                    break;
                 case WmClose:
                     foreach (var worker in _renderWorkers) worker?.SetAnimation(false);
                     DestroyWindow(window);
@@ -321,6 +466,195 @@ internal sealed class Program : IDisposable
         return DefWindowProc(window, message, wParam, lParam);
     }
 
+    private OwnedDragMode OwnedHitTest()
+    {
+        if (!GetCursorPos(out var pointer)) return OwnedDragMode.None;
+        var rect = _ownedWindowRect;
+        if (pointer.X < rect.Left || pointer.X >= rect.Right ||
+            pointer.Y < rect.Top || pointer.Y >= rect.Bottom) return OwnedDragMode.None;
+        var dpi = _window == 0 ? 96u : Math.Max(96u, GetDpiForWindow(_window));
+        var resizeBand = Math.Max(6, checked((int)Math.Round(8 * dpi / 96.0)));
+        var mode = OwnedDragMode.None;
+        if (pointer.X < rect.Left + resizeBand) mode |= OwnedDragMode.Left;
+        else if (pointer.X >= rect.Right - resizeBand) mode |= OwnedDragMode.Right;
+        if (pointer.Y < rect.Top + resizeBand) mode |= OwnedDragMode.Top;
+        else if (pointer.Y >= rect.Bottom - resizeBand) mode |= OwnedDragMode.Bottom;
+        if (mode != OwnedDragMode.None) return mode;
+        var titleBand = Math.Max(resizeBand + 1, checked((int)Math.Round(56 * dpi / 96.0)));
+        return pointer.Y < rect.Top + titleBand ? OwnedDragMode.Move : OwnedDragMode.Client;
+    }
+
+    private void SetOwnedCursor(OwnedDragMode mode)
+    {
+        var cursorId = mode switch
+        {
+            OwnedDragMode.Left or OwnedDragMode.Right => 32644, // IDC_SIZEWE
+            OwnedDragMode.Top or OwnedDragMode.Bottom => 32645, // IDC_SIZENS
+            OwnedDragMode.Left | OwnedDragMode.Top or
+            OwnedDragMode.Right | OwnedDragMode.Bottom => 32642, // IDC_SIZENWSE
+            OwnedDragMode.Right | OwnedDragMode.Top or
+            OwnedDragMode.Left | OwnedDragMode.Bottom => 32643, // IDC_SIZENESW
+            OwnedDragMode.Move => 32646, // IDC_SIZEALL
+            _ => 32512, // IDC_ARROW
+        };
+        SetCursor(LoadCursor(0, (nint)cursorId));
+    }
+
+    private void BeginOwnedDrag()
+    {
+        var mode = OwnedHitTest();
+        if (mode is OwnedDragMode.None or OwnedDragMode.Client) return;
+        if (!GetCursorPos(out _ownedDragStartPointer)) return;
+        _ownedDragStartRect = _ownedWindowRect;
+        _ownedDragMode = mode;
+        SetCapture(_window);
+    }
+
+    private void UpdateOwnedDrag()
+    {
+        if (!GetCursorPos(out var pointer)) return;
+        var deltaX = pointer.X - _ownedDragStartPointer.X;
+        var deltaY = pointer.Y - _ownedDragStartPointer.Y;
+        var target = _ownedDragStartRect;
+        if ((_ownedDragMode & OwnedDragMode.Move) != 0)
+        {
+            target.Left += deltaX;
+            target.Right += deltaX;
+            target.Top += deltaY;
+            target.Bottom += deltaY;
+        }
+        else
+        {
+            if ((_ownedDragMode & OwnedDragMode.Left) != 0) target.Left += deltaX;
+            if ((_ownedDragMode & OwnedDragMode.Right) != 0) target.Right += deltaX;
+            if ((_ownedDragMode & OwnedDragMode.Top) != 0) target.Top += deltaY;
+            if ((_ownedDragMode & OwnedDragMode.Bottom) != 0) target.Bottom += deltaY;
+        }
+        NormalizeOwnedRect(ref target);
+        PublishOwnedRect(target);
+    }
+
+    private void PublishOwnedRect(NativeRect target)
+    {
+        if (RectsEqual(target, _ownedWindowRect)) return;
+        _ownedWindowRect = target;
+        Interlocked.Increment(ref _ownedResizeInputCount);
+        var visualEpoch = Interlocked.Increment(ref _compositionVisualEpoch);
+        var width = target.Right - target.Left;
+        var height = target.Bottom - target.Top;
+        _presenters[0].StageOwnedVisual(
+            visualEpoch,
+            target.Left - _ownedHostRect.Left,
+            target.Top - _ownedHostRect.Top,
+            width,
+            height);
+        QueueLatestRenderWindow(width, height, visualEpoch, force: true);
+        Interlocked.Increment(ref _ownedResizePublishCount);
+    }
+
+    private void StartOwnedSmoke()
+    {
+        var smokeThread = new Thread(() =>
+        {
+            const int stepCount = 120;
+            for (var step = 0; step < stepCount; step++)
+            {
+                if (_window == 0) return;
+                PostMessage(_window, WmOwnedSmoke, checked((nuint)step), 0);
+                Thread.Sleep(TimeSpan.FromMilliseconds(8));
+            }
+            if (_window != 0) PostMessage(_window, WmOwnedSmoke, stepCount, 0);
+            if (!_ownedSmokeInputDrained.Wait(TimeSpan.FromSeconds(5)))
+            {
+                Interlocked.Increment(ref _ownedSmokeDrainTimeoutCount);
+                _failure ??= new TimeoutException(
+                    "Arm N smoke UI message queue did not drain within five seconds.");
+            }
+            var expectedEpoch = Volatile.Read(ref _compositionVisualEpoch);
+            var drainDeadline = Stopwatch.GetTimestamp() + 5 * Stopwatch.Frequency;
+            while (_window != 0 &&
+                   _presenters[0].OwnedCommittedEpoch != expectedEpoch &&
+                   Stopwatch.GetTimestamp() < drainDeadline)
+                Thread.Sleep(TimeSpan.FromMilliseconds(10));
+            if (_window != 0 && _presenters[0].OwnedCommittedEpoch != expectedEpoch)
+            {
+                Interlocked.Increment(ref _ownedSmokeDrainTimeoutCount);
+                _failure ??= new TimeoutException(
+                    $"Arm N smoke did not commit latest visual epoch {expectedEpoch} within five seconds.");
+            }
+            if (_window != 0) PostMessage(_window, WmClose, 0, 0);
+        })
+        {
+            IsBackground = true,
+            Name = "Doroti Arm N owned resize smoke",
+        };
+        smokeThread.Start();
+    }
+
+    private void ApplyOwnedSmokeStep(int step)
+    {
+        const int phaseLength = 20;
+        var initial = _committedOuter;
+        var phase = Math.Clamp(step / phaseLength, 0, 5);
+        var phaseStep = step % phaseLength;
+        var direction = phase % 2 == 0 ? phaseStep : phaseLength - phaseStep;
+        var amountX = checked((int)Math.Round(120 * direction / (double)phaseLength));
+        var amountY = checked((int)Math.Round(80 * direction / (double)phaseLength));
+        var target = initial;
+        switch (phase / 2)
+        {
+            case 0:
+                target.Left -= amountX;
+                break;
+            case 1:
+                target.Top -= amountY;
+                break;
+            default:
+                target.Left -= amountX;
+                target.Top -= amountY;
+                break;
+        }
+        target.Left = Math.Max(_ownedHostRect.Left, target.Left);
+        target.Top = Math.Max(_ownedHostRect.Top, target.Top);
+        PublishOwnedRect(target);
+    }
+
+    private void NormalizeOwnedRect(ref NativeRect rect)
+    {
+        const int minimumWidth = 320;
+        const int minimumHeight = 240;
+        var host = _ownedHostRect;
+        if ((_ownedDragMode & OwnedDragMode.Move) != 0)
+        {
+            var width = rect.Right - rect.Left;
+            var height = rect.Bottom - rect.Top;
+            rect.Left = Math.Clamp(rect.Left, host.Left, Math.Max(host.Left, host.Right - width));
+            rect.Top = Math.Clamp(rect.Top, host.Top, Math.Max(host.Top, host.Bottom - height));
+            rect.Right = rect.Left + width;
+            rect.Bottom = rect.Top + height;
+            return;
+        }
+        if ((_ownedDragMode & OwnedDragMode.Left) != 0)
+            rect.Left = Math.Clamp(rect.Left, host.Left, rect.Right - minimumWidth);
+        if ((_ownedDragMode & OwnedDragMode.Right) != 0)
+            rect.Right = Math.Clamp(rect.Right, rect.Left + minimumWidth, host.Right);
+        if ((_ownedDragMode & OwnedDragMode.Top) != 0)
+            rect.Top = Math.Clamp(rect.Top, host.Top, rect.Bottom - minimumHeight);
+        if ((_ownedDragMode & OwnedDragMode.Bottom) != 0)
+            rect.Bottom = Math.Clamp(rect.Bottom, rect.Top + minimumHeight, host.Bottom);
+    }
+
+    private void EndOwnedDrag()
+    {
+        if (_ownedDragMode == OwnedDragMode.None) return;
+        _ownedDragMode = OwnedDragMode.None;
+        if (GetCapture() == _window) ReleaseCapture();
+    }
+
+    private static bool RectsEqual(NativeRect left, NativeRect right) =>
+        left.Left == right.Left && left.Top == right.Top &&
+        left.Right == right.Right && left.Bottom == right.Bottom;
+
     private void PrecommitExpandedCoverForWindowPosition(nint windowPositionPointer)
     {
         if (_window == 0 || _renderWindows[0] == 0 ||
@@ -338,6 +672,15 @@ internal sealed class Program : IDisposable
             Right = targetOuterLeft + position.Width,
             Bottom = targetOuterTop + position.Height,
         };
+        if (targetOuter.Right - targetOuter.Left == currentOuter.Right - currentOuter.Left &&
+            targetOuter.Bottom - targetOuter.Top == currentOuter.Bottom - currentOuter.Top)
+        {
+            // SetWindowPos can omit SWP_NOSIZE even when it is only moving a
+            // window. A pure move has no matching WM_SIZE, so creating an Arm
+            // C visual epoch here would leave geometry admission closed and
+            // incorrectly treat translation as an edge resize.
+            return;
+        }
         var target = CreatePreparedResizeTarget(currentOuter, currentClient, targetOuter);
         if (_preparedResize is { } prepared &&
             prepared.Matches(targetOuter, target.ContentWidth, target.ContentHeight)) return;
@@ -514,7 +857,19 @@ internal sealed class Program : IDisposable
             var preparedValue = preparedTarget!.Value;
             if (_arm != "A" || !preparedValue.RequiresSynchronousPrepresent)
             {
-                QueueLatestRenderWindow(width, height, preparedValue.VisualEpoch);
+                if (_arm == "C")
+                {
+                    // The worker may have finished the exact raster that was
+                    // requested from WM_SIZING, but it must not make that
+                    // frame visible (and reset the provisional anchor) until
+                    // this matching WM_SIZE proves HWND geometry admission.
+                    _presenters[0].AdmitCompositionGeometry(preparedValue.VisualEpoch);
+                }
+                QueueLatestRenderWindow(
+                    width,
+                    height,
+                    preparedValue.VisualEpoch,
+                    force: _arm == "C");
                 if (!preparedValue.RequiresExpandedCoverage)
                     Interlocked.Increment(ref _asyncShrinkPublishCount);
             }
@@ -551,12 +906,13 @@ internal sealed class Program : IDisposable
     }
 
     private long CurrentCompositionVisualEpoch() =>
-        _arm == "C" ? Volatile.Read(ref _compositionVisualEpoch) : 0;
+        _arm is "C" or "N" ? Volatile.Read(ref _compositionVisualEpoch) : 0;
 
     private void QueueLatestRenderWindow(
         int contentWidth,
         int contentHeight,
-        long visualEpoch = 0)
+        long visualEpoch = 0,
+        bool force = false)
     {
         var renderWindow = _renderWindows[0];
         if (renderWindow == 0) return;
@@ -569,7 +925,8 @@ internal sealed class Program : IDisposable
             contentWidth,
             contentHeight,
             scale,
-            visualEpoch);
+            visualEpoch,
+            force);
     }
 
     private void EnsureRenderCapacity(int requiredWidth, int requiredHeight)
@@ -674,6 +1031,7 @@ internal sealed class Program : IDisposable
                 "A" => "single standard-chrome top-level HWND + Scaling.None baseline",
                 "S" => "single standard-chrome top-level HWND + transient DXGI Scaling.Stretch source rect",
                 "C" => "standard-chrome top-level HWND + DirectComposition edge-aware visual transaction",
+                "N" => "monitor envelope HWND + app-owned chrome/content DirectComposition transaction",
                 _ => "unavailable",
             },
             rawRenderChildHwndCount = 0,
@@ -710,12 +1068,41 @@ internal sealed class Program : IDisposable
                 presenter => presenter?.CompositionExactCommitCount ?? 0),
             compositionStaleExactRejectCount = _presenters.Sum(
                 presenter => presenter?.CompositionStaleExactRejectCount ?? 0),
+            compositionPreAdmissionExactRejectCount = _presenters.Sum(
+                presenter => presenter?.CompositionPreAdmissionExactRejectCount ?? 0),
+            compositionGeometryAdmissionCount = _presenters.Sum(
+                presenter => presenter?.CompositionGeometryAdmissionCount ?? 0),
+            compositionGeometryAdmissionRejectCount = _presenters.Sum(
+                presenter => presenter?.CompositionGeometryAdmissionRejectCount ?? 0),
+            ownedResizeInputCount = Volatile.Read(ref _ownedResizeInputCount),
+            ownedResizePublishCount = Volatile.Read(ref _ownedResizePublishCount),
+            ownedCompositionCommitCount = _presenters.Sum(
+                presenter => presenter?.OwnedCompositionCommitCount ?? 0),
+            ownedCommittedEpoch = _presenters.Max(
+                presenter => presenter?.OwnedCommittedEpoch ?? 0),
+            ownedLatestEpoch = Volatile.Read(ref _compositionVisualEpoch),
+            ownedSmokeDrainTimeoutCount = Volatile.Read(ref _ownedSmokeDrainTimeoutCount),
+            ownedSmoke = _ownedSmoke,
+            ownedHostRect = new
+            {
+                left = _ownedHostRect.Left,
+                top = _ownedHostRect.Top,
+                right = _ownedHostRect.Right,
+                bottom = _ownedHostRect.Bottom,
+            },
+            ownedFinalRect = new
+            {
+                left = _ownedWindowRect.Left,
+                top = _ownedWindowRect.Top,
+                right = _ownedWindowRect.Right,
+                bottom = _ownedWindowRect.Bottom,
+            },
             qualification = _qualification,
             qualificationRefreshHz = _qualificationRefreshHz,
             qualificationTickCount = qualificationFrames,
             qualificationAnimationSeconds = animationSeconds,
             qualificationPresentedFramesPerSecond = animationSeconds > 0 ? qualificationFrames / animationSeconds : 0,
-            qualificationRenderBackend = _arm == "C"
+            qualificationRenderBackend = _arm is "C" or "N"
                 ? "D3D12 dedicated render worker + composition frame-latency waitable cadence; Present(0) resize commits"
                 : "D3D12 dedicated render worker + DXGI Present(1) visible cadence; Present(0) resize commits",
             finalContentFrameId = Volatile.Read(ref _contentFrameId),
@@ -754,6 +1141,7 @@ internal sealed class Program : IDisposable
         _disposed = true;
         foreach (var worker in _renderWorkers) worker?.Dispose();
         foreach (var presenter in _presenters) presenter?.Dispose();
+        _ownedSmokeInputDrained.Dispose();
         if (_windowBackgroundBrush != 0)
         {
             DeleteObject(_windowBackgroundBrush);
@@ -776,6 +1164,25 @@ internal sealed class Program : IDisposable
         [MarshalAs(UnmanagedType.LPWStr)] internal string? MenuName;
         [MarshalAs(UnmanagedType.LPWStr)] internal string ClassName;
         internal nint SmallIcon;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct NativePoint
+    {
+        internal int X;
+        internal int Y;
+    }
+
+    [Flags]
+    private enum OwnedDragMode
+    {
+        None = 0,
+        Client = 1,
+        Move = 2,
+        Left = 4,
+        Top = 8,
+        Right = 16,
+        Bottom = 32,
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -915,6 +1322,23 @@ internal sealed class Program : IDisposable
     [DllImport("user32.dll")]
     private static extern nint LoadCursor(nint instance, nint cursorName);
 
+    [DllImport("user32.dll")]
+    private static extern nint SetCursor(nint cursor);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GetCursorPos(out NativePoint point);
+
+    [DllImport("user32.dll")]
+    private static extern nint SetCapture(nint window);
+
+    [DllImport("user32.dll")]
+    private static extern nint GetCapture();
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool ReleaseCapture();
+
     [DllImport("gdi32.dll", SetLastError = true)]
     private static extern nint CreateSolidBrush(uint colorRef);
 
@@ -992,11 +1416,13 @@ internal sealed class D3D12RenderWorker : IDisposable
         int contentWidth,
         int contentHeight,
         double scale,
-        long visualEpoch)
+        long visualEpoch,
+        bool force = false)
     {
         lock (_gate)
         {
-            if (_window == window &&
+            if (!force &&
+                _window == window &&
                 _width == width &&
                 _height == height &&
                 _contentWidth == contentWidth &&
@@ -1180,7 +1606,7 @@ internal sealed class D3D12RenderWorker : IDisposable
                     // Resize commits are ordered explicitly by the platform
                     // thread and must not wait for scan-out. Only continuous
                     // visible animation is refresh synchronized.
-                    _presenter.RenderFrame(
+                    var renderedAndPresented = _presenter.RenderFrame(
                         window, width, height, contentWidth, contentHeight,
                         scale, _frameId, visualEpoch,
                         present: commit?.Present ?? !coalescedResizeFrame,
@@ -1191,7 +1617,7 @@ internal sealed class D3D12RenderWorker : IDisposable
                         superseded = coalescedResizeFrame && targetVersion != _targetVersion;
                         if (targetVersion > _renderedTargetVersion) _renderedTargetVersion = targetVersion;
                     }
-                    var presented = commit?.Present ?? !coalescedResizeFrame;
+                    var presented = renderedAndPresented;
                     if (coalescedResizeFrame)
                     {
                         if (superseded)
@@ -1208,6 +1634,13 @@ internal sealed class D3D12RenderWorker : IDisposable
                         }
                     }
                     if (presented) _presented(animatedFrame, _frameId);
+                    else if (animatedFrame)
+                    {
+                        // A provisional Arm C epoch can briefly wait for the
+                        // matching WM_SIZE. Do not busy-spin or count those
+                        // deferred frames as visible cadence.
+                        _wake.WaitOne(TimeSpan.FromMilliseconds(10));
+                    }
                     if (commit is not null)
                     {
                         // A WM_SIZING expansion must finish composition before
@@ -1305,6 +1738,7 @@ internal sealed class DirectHwndPresenter : IDisposable
     private readonly string _arm;
     private readonly bool _drawRightEdgeOracle;
     private readonly object _presentGate = new();
+    private readonly object _compositionGate = new();
     private IDXGIFactory2? _factory;
     private IDXGIAdapter1? _adapter;
     private ID3D12Device2? _device;
@@ -1330,6 +1764,12 @@ internal sealed class DirectHwndPresenter : IDisposable
     private nint _frameLatencyWaitableObject;
     private long _stretchSourceSizeCommitCount;
     private long _compositionStaleExactRejectCount;
+    private long _compositionPreAdmissionExactRejectCount;
+    private long _ownedPendingEpoch;
+    private int _ownedPendingOffsetX;
+    private int _ownedPendingOffsetY;
+    private int _ownedPendingWidth;
+    private int _ownedPendingHeight;
 
     internal string AdapterDescription { get; private set; } = "uninitialized";
 
@@ -1339,11 +1779,26 @@ internal sealed class DirectHwndPresenter : IDisposable
     internal long CompositionStaleExactRejectCount =>
         Volatile.Read(ref _compositionStaleExactRejectCount);
 
+    internal long CompositionPreAdmissionExactRejectCount =>
+        Volatile.Read(ref _compositionPreAdmissionExactRejectCount);
+
+    internal long CompositionGeometryAdmissionCount =>
+        _composition?.GeometryAdmissionCount ?? 0;
+
+    internal long CompositionGeometryAdmissionRejectCount =>
+        _composition?.GeometryAdmissionRejectCount ?? 0;
+
     internal long CompositionProvisionalCommitCount =>
         _composition?.ProvisionalCommitCount ?? 0;
 
     internal long CompositionExactCommitCount =>
         _composition?.ExactCommitCount ?? 0;
+
+    internal long OwnedCompositionCommitCount =>
+        _composition?.OwnedCommitCount ?? 0;
+
+    internal long OwnedCommittedEpoch =>
+        _composition?.OwnedCommittedEpoch ?? 0;
 
     internal DirectHwndPresenter(string arm, bool drawRightEdgeOracle)
     {
@@ -1361,7 +1816,7 @@ internal sealed class DirectHwndPresenter : IDisposable
         int targetContentHeight)
     {
         if (_arm != "C") return;
-        lock (_presentGate)
+        lock (_compositionGate)
         {
             (_composition ?? throw new InvalidOperationException(
                 "Arm C DirectComposition visual was not initialized."))
@@ -1376,7 +1831,42 @@ internal sealed class DirectHwndPresenter : IDisposable
         }
     }
 
-    internal void RenderFrame(
+    internal void AdmitCompositionGeometry(long visualEpoch)
+    {
+        if (_arm != "C") return;
+        lock (_compositionGate)
+        {
+            (_composition ?? throw new InvalidOperationException(
+                "Arm C DirectComposition visual was not initialized."))
+                .AdmitGeometry(visualEpoch);
+        }
+    }
+
+    internal void StageOwnedVisual(
+        long visualEpoch,
+        int offsetX,
+        int offsetY,
+        int contentWidth,
+        int contentHeight)
+    {
+        if (_arm != "N") return;
+        lock (_compositionGate)
+        {
+            _ownedPendingEpoch = visualEpoch;
+            _ownedPendingOffsetX = offsetX;
+            _ownedPendingOffsetY = offsetY;
+            _ownedPendingWidth = contentWidth;
+            _ownedPendingHeight = contentHeight;
+            _composition?.StageOwned(
+                visualEpoch,
+                offsetX,
+                offsetY,
+                contentWidth,
+                contentHeight);
+        }
+    }
+
+    internal bool RenderFrame(
         nint window,
         int width,
         int height,
@@ -1404,14 +1894,15 @@ internal sealed class DirectHwndPresenter : IDisposable
             Math.Clamp(contentHeight, 1, _height),
             scale,
             frameId,
-            _drawRightEdgeOracle);
+            _drawRightEdgeOracle,
+            drawOwnedFrame: _arm == "N");
         _backing.Surface.Canvas.Flush();
         _context!.Flush(_backing.Surface);
         _context.Submit(false);
         _preparedContentWidth = Math.Clamp(contentWidth, 1, _width);
         _preparedContentHeight = Math.Clamp(contentHeight, 1, _height);
         _preparedVisualEpoch = visualEpoch;
-        if (present) PresentPrepared(synchronizeToRefresh);
+        return present && PresentPrepared(synchronizeToRefresh);
     }
 
     internal bool PresentPrepared(
@@ -1422,16 +1913,17 @@ internal sealed class DirectHwndPresenter : IDisposable
         {
             if (_backing is null || _swapChain is null)
                 throw new InvalidOperationException("No prepared D3D12 frame is available.");
-            var visualEpoch = _arm == "C"
+            var visualEpoch = _arm is "C" or "N"
                 ? expectedVisualEpoch ?? _composition!.LatestEpoch
                 : expectedVisualEpoch ?? _preparedVisualEpoch;
-            if (_arm == "C" && expectedVisualEpoch is not null &&
-                !_composition!.IsLatest(visualEpoch))
+            if (_arm is "C" or "N")
             {
-                Interlocked.Increment(ref _compositionStaleExactRejectCount);
-                return false;
+                lock (_compositionGate)
+                {
+                    if (!CanPublishCompositionExact(visualEpoch)) return false;
+                }
             }
-            if (_arm == "C" && synchronizeToRefresh)
+            if (_arm is "C" or "N" && synchronizeToRefresh)
                 WaitForCompositionFrameLatencySlot();
             WaitForGpu();
             _allocator!.Reset();
@@ -1473,16 +1965,57 @@ internal sealed class DirectHwndPresenter : IDisposable
             }
             // The copy and Present use the same D3D12 queue. Queue ordering is the
             // readiness contract; the next frame waits before reusing the allocator.
-            _swapChain.Present(synchronizeToRefresh ? 1u : 0u, PresentFlags.None).CheckError();
-            if (_arm == "C")
+            if (_arm is "C" or "N")
             {
-                _composition!.CommitExact(
-                    visualEpoch,
-                    _preparedContentWidth,
-                    _preparedContentHeight);
+                // Do not hold the composition gate while waiting for/reusing
+                // GPU resources. WM_SIZING must remain free to update the
+                // provisional anchor. Recheck the epoch only at the visible
+                // Present+exact-visual transaction boundary.
+                lock (_compositionGate)
+                {
+                    if (!CanPublishCompositionExact(visualEpoch)) return false;
+                    _swapChain.Present(
+                        synchronizeToRefresh ? 1u : 0u,
+                        PresentFlags.None).CheckError();
+                    if (_arm == "C")
+                    {
+                        _composition!.CommitExact(
+                            visualEpoch,
+                            _preparedContentWidth,
+                            _preparedContentHeight);
+                    }
+                    else
+                    {
+                        _composition!.CommitOwned(visualEpoch);
+                    }
+                }
+            }
+            else
+            {
+                _swapChain.Present(
+                    synchronizeToRefresh ? 1u : 0u,
+                    PresentFlags.None).CheckError();
             }
             return true;
         }
+    }
+
+    private bool CanPublishCompositionExact(long visualEpoch)
+    {
+        if (!_composition!.IsLatest(visualEpoch))
+        {
+            Interlocked.Increment(ref _compositionStaleExactRejectCount);
+            return false;
+        }
+        if (_arm == "N") return true;
+        if (!_composition.IsGeometryAdmitted(visualEpoch))
+        {
+            // WM_SIZING is allowed to prepare the exact backing early, but
+            // only matching WM_SIZE geometry admission may publish it.
+            Interlocked.Increment(ref _compositionPreAdmissionExactRejectCount);
+            return false;
+        }
+        return true;
     }
 
     internal void FlushDwm()
@@ -1530,9 +2063,9 @@ internal sealed class DirectHwndPresenter : IDisposable
                 false, Usage.RenderTargetOutput, 2,
                 _arm == "A" ? Scaling.None : Scaling.Stretch,
                 SwapEffect.FlipSequential,
-                _arm == "C" ? AlphaMode.Premultiplied : AlphaMode.Ignore,
+                _arm is "C" or "N" ? AlphaMode.Premultiplied : AlphaMode.Ignore,
                 SwapChainFlags.FrameLatencyWaitableObject);
-            using var created = _arm == "C"
+            using var created = _arm is "C" or "N"
                 ? _factory!.CreateSwapChainForComposition(_queue!, description, null)
                 : _factory!.CreateSwapChainForHwnd(_queue!, window, description);
             // DXGI_SCALING_NONE can expose swap-chain background outside the
@@ -1545,12 +2078,21 @@ internal sealed class DirectHwndPresenter : IDisposable
                 24.0f / 255.0f,
                 1.0f);
             _swapChain = created.QueryInterface<IDXGISwapChain3>();
-            if (_arm == "C")
+            if (_arm is "C" or "N")
+            {
                 _composition = new DirectCompositionVisualBridge(
                     window,
                     _swapChain,
                     width,
                     height);
+                if (_arm == "N" && _ownedPendingEpoch != 0)
+                    _composition.StageOwned(
+                        _ownedPendingEpoch,
+                        _ownedPendingOffsetX,
+                        _ownedPendingOffsetY,
+                        _ownedPendingWidth,
+                        _ownedPendingHeight);
+            }
             using var swapChain2 = _swapChain.QueryInterface<IDXGISwapChain2>();
             swapChain2.MaximumFrameLatency = 1;
             _frameLatencyWaitableObject = swapChain2.FrameLatencyWaitableObject;
@@ -1581,7 +2123,8 @@ internal sealed class DirectHwndPresenter : IDisposable
         int contentHeight,
         double scale,
         int frameId,
-        bool drawRightEdgeOracle)
+        bool drawRightEdgeOracle,
+        bool drawOwnedFrame)
     {
         canvas.Clear(new SKColor(20, 18, 24, 255));
         var appBarHeight = Math.Min(contentHeight, Math.Max(1, (int)Math.Round(56 * scale)));
@@ -1655,6 +2198,22 @@ internal sealed class DirectHwndPresenter : IDisposable
             canvas.DrawRect(
                 contentWidth - edgeWidth, appBarHeight,
                 edgeWidth, contentHeight - appBarHeight, paint);
+        }
+
+        if (drawOwnedFrame)
+        {
+            paint.IsAntialias = false;
+            paint.Style = SKPaintStyle.Stroke;
+            paint.StrokeWidth = Math.Max(2, (float)Math.Round(3 * scale));
+            paint.Color = new SKColor(179, 157, 219, 255);
+            var inset = paint.StrokeWidth / 2;
+            canvas.DrawRect(
+                inset,
+                inset,
+                Math.Max(1, contentWidth - paint.StrokeWidth),
+                Math.Max(1, contentHeight - paint.StrokeWidth),
+                paint);
+            paint.Style = SKPaintStyle.Fill;
         }
     }
 
@@ -1740,6 +2299,15 @@ internal sealed class DirectCompositionVisualBridge : IDisposable
     private long _latestEpoch;
     private long _provisionalCommitCount;
     private long _exactCommitCount;
+    private long _geometryAdmissionCount;
+    private long _geometryAdmissionRejectCount;
+    private long _geometryAdmittedEpoch;
+    private long _ownedCommitCount;
+    private long _ownedCommittedEpoch;
+    private int _ownedOffsetX;
+    private int _ownedOffsetY;
+    private int _ownedContentWidth;
+    private int _ownedContentHeight;
     private bool _provisionalActive;
     private bool _disposed;
 
@@ -1748,6 +2316,18 @@ internal sealed class DirectCompositionVisualBridge : IDisposable
 
     internal long ExactCommitCount =>
         Volatile.Read(ref _exactCommitCount);
+
+    internal long OwnedCommitCount =>
+        Volatile.Read(ref _ownedCommitCount);
+
+    internal long OwnedCommittedEpoch =>
+        Volatile.Read(ref _ownedCommittedEpoch);
+
+    internal long GeometryAdmissionCount =>
+        Volatile.Read(ref _geometryAdmissionCount);
+
+    internal long GeometryAdmissionRejectCount =>
+        Volatile.Read(ref _geometryAdmissionRejectCount);
 
     internal long LatestEpoch => Volatile.Read(ref _latestEpoch);
 
@@ -1776,6 +2356,22 @@ internal sealed class DirectCompositionVisualBridge : IDisposable
 
     internal bool IsLatest(long epoch) => epoch == Volatile.Read(ref _latestEpoch);
 
+    internal bool IsGeometryAdmitted(long epoch) =>
+        epoch == Volatile.Read(ref _latestEpoch) &&
+        epoch == Volatile.Read(ref _geometryAdmittedEpoch);
+
+    internal void AdmitGeometry(long epoch)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (epoch != Volatile.Read(ref _latestEpoch))
+        {
+            Interlocked.Increment(ref _geometryAdmissionRejectCount);
+            return;
+        }
+        Volatile.Write(ref _geometryAdmittedEpoch, epoch);
+        Interlocked.Increment(ref _geometryAdmissionCount);
+    }
+
     internal void ApplyProvisional(
         long epoch,
         int offsetX,
@@ -1799,6 +2395,37 @@ internal sealed class DirectCompositionVisualBridge : IDisposable
         _device!.Commit().CheckError();
         _provisionalActive = true;
         Interlocked.Increment(ref _provisionalCommitCount);
+    }
+
+    internal void StageOwned(
+        long epoch,
+        int offsetX,
+        int offsetY,
+        int contentWidth,
+        int contentHeight)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        _ownedOffsetX = offsetX;
+        _ownedOffsetY = offsetY;
+        _ownedContentWidth = contentWidth;
+        _ownedContentHeight = contentHeight;
+        Volatile.Write(ref _latestEpoch, epoch);
+    }
+
+    internal void CommitOwned(long epoch)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (epoch != Volatile.Read(ref _latestEpoch)) return;
+        SetVisualState(
+            _ownedOffsetX,
+            _ownedOffsetY,
+            0,
+            0,
+            _ownedContentWidth,
+            _ownedContentHeight);
+        _device!.Commit().CheckError();
+        Volatile.Write(ref _ownedCommittedEpoch, epoch);
+        Interlocked.Increment(ref _ownedCommitCount);
     }
 
     internal void CommitExact(long epoch, int contentWidth, int contentHeight)
