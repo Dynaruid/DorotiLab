@@ -1,0 +1,9 @@
+{
+  "schema": "doroti-target/v2",
+  "packageId": "Doroti.Target.Windows.WindowsAppSdk.win-x64",
+  "targetFramework": "net10.0-windows10.0.19041.0",
+  "rid": "win-x64",
+  "nativeViewType": "Win32.HWND+Microsoft.UI.Content.DesktopAttachedSiteBridge",
+  "graphicsBackend": "windowsappsdk-2.4/raw-hwnd/Arm-N-dual-front/Doroti-owned-D3D12-Skia",
+  "softwareFallback": false
+}

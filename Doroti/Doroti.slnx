@@ -16,7 +16,9 @@
     <Project Path="src/Doroti.Framework.Rendering/Doroti.Framework.Rendering.csproj" />
     <Project Path="src/Doroti.Host.Web/Doroti.Host.Web.csproj" />
     <Project Path="src/Doroti.Host.Maui/Doroti.Host.Maui.csproj" />
+    <Project Path="src/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj" />
     <Project Path="src/Doroti.Target.Windows.Maui.win-x64/Doroti.Target.Windows.Maui.win-x64.csproj" />
+    <Project Path="src/Doroti.Target.Windows.WindowsAppSdk.win-x64/Doroti.Target.Windows.WindowsAppSdk.win-x64.csproj" />
     <Project Path="src/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.csproj" />
     <Project Path="src/Doroti.Target.MacOS.Maui.osx-arm64/Doroti.Target.MacOS.Maui.osx-arm64.csproj" />
     <Project Path="src/Doroti.Target.Web.browser-wasm/Doroti.Target.Web.browser-wasm.csproj" />

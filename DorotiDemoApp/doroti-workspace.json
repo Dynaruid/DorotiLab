@@ -9,6 +9,6 @@
     "macos": "macos/DorotiDemoApp.MacOS.csproj",
     "maccatalyst": "macos/DorotiDemoApp.MacCatalyst.csproj",
     "web": "web/DorotiDemoApp.Web.csproj",
-    "windows": "windows/DorotiDemoApp.Windows.csproj"
+    "windows": "windowsappsdk/DorotiDemoApp.WindowsAppSdk.csproj"
   }
 }

@@ -17,11 +17,13 @@
     <Project Path="src/Doroti.Framework.Material/Doroti.Framework.Material.csproj" />
     <Project Path="src/Doroti.Host.Web/Doroti.Host.Web.csproj" />
     <Project Path="src/Doroti.Host.Maui/Doroti.Host.Maui.csproj" />
+    <Project Path="src/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj" />
     <Project Path="src/Doroti.Host.Qt/Doroti.Host.Qt.csproj" />
     <Project Path="src/Doroti.Runner.Sdk/Doroti.Runner.Sdk.csproj" />
     <Project Path="src/Doroti.Skia.RuntimeEffects/Doroti.Skia.RuntimeEffects.csproj" />
     <Project Path="src/Doroti.Skia.Rendering/Doroti.Skia.Rendering.csproj" />
     <Project Path="src/Doroti.Target.Windows.Maui.win-x64/Doroti.Target.Windows.Maui.win-x64.csproj" />
+    <Project Path="src/Doroti.Target.Windows.WindowsAppSdk.win-x64/Doroti.Target.Windows.WindowsAppSdk.win-x64.csproj" />
     <Project Path="src/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64/Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64.csproj" />
     <Project Path="src/Doroti.Target.MacOS.Maui.osx-arm64/Doroti.Target.MacOS.Maui.osx-arm64.csproj" />
     <Project Path="src/Doroti.Target.iOS.Maui.ios-arm64/Doroti.Target.iOS.Maui.ios-arm64.csproj" />
@@ -35,6 +37,7 @@
   <Folder Name="/samples/">
     <Project Path="../DorotiDemoApp/DorotiDemoApp.csproj" />
     <Project Path="../DorotiDemoApp/windows/DorotiDemoApp.Windows.csproj" />
+    <Project Path="../DorotiDemoApp/windowsappsdk/DorotiDemoApp.WindowsAppSdk.csproj" />
     <Project Path="../DorotiDemoApp/web/DorotiDemoApp.Web.csproj" />
     <Project Path="../DorotiDemoApp/android/DorotiDemoApp.Android.csproj" />
     <Project Path="../DorotiDemoApp/android/binding/DorotiDemoApp.Android.Native.csproj" />
@@ -52,6 +55,9 @@
   </Folder>
   <Folder Name="/validation/linux-qt/">
     <Project Path="validation/linux-qt-contract/Doroti.Validation.LinuxQtContract.csproj" />
+  </Folder>
+  <Folder Name="/validation/windows-app-sdk/">
+    <Project Path="validation/windowsappsdk-24-preflight/Doroti.Validation.WindowsAppSdk24Preflight.csproj" />
   </Folder>
   <Folder Name="/templates/">
     <Project Path="templates/Doroti.Templates/Doroti.Templates.csproj" />

@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup Condition="'$(DorotiTarget)' == 'Windows'">
+    <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(DorotiTarget)' == 'Windows' and '@(DorotiTargetDescriptor)' == ''">
+    <DorotiTargetDescriptor Include="Windows" HostKind="WindowsAppSdk" NativeEntryKind="Win32-WinMain"
+        RuntimeIdentifier="win-x64" TargetFramework="net10.0-windows10.0.19041.0"
+        TargetPackage="Doroti.Target.Windows.WindowsAppSdk.win-x64" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <AssemblyName>Doroti.Target.Windows.WindowsAppSdk</AssemblyName>
+    <RootNamespace>Doroti.Target.Windows.WindowsAppSdk</RootNamespace>
+    <PackageId>Doroti.Target.Windows.WindowsAppSdk.win-x64</PackageId>
+    <Description>Doroti Windows App SDK 2.4 raw HWND ContentIsland host with the Arm N D3D12 presenter.</Description>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Doroti.Host.WindowsAppSdk\Doroti.Host.WindowsAppSdk.csproj" />
+    <EmbeddedResource Include="doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" />
+    <None Include="doroti-target-manifest.json" Pack="true" PackagePath="doroti\" />
+    <None Include="buildTransitive\Doroti.Target.Windows.WindowsAppSdk.win-x64.targets"
+          Pack="true" PackagePath="buildTransitive\Doroti.Target.Windows.WindowsAppSdk.win-x64.targets" />
+  </ItemGroup>
+</Project>

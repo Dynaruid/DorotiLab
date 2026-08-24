@@ -3,7 +3,7 @@
     <DorotiAppProject>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(DorotiAppProject)'))</DorotiAppProject>
     <DorotiApplicationProjectName>$([System.IO.Path]::GetFileNameWithoutExtension('$(DorotiAppProject)'))</DorotiApplicationProjectName>
     <DorotiApplicationType Condition="'$(DorotiApplicationType)' == ''">$(DorotiApplicationProjectName).Program</DorotiApplicationType>
-    <StartupObject Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main' or '$(DorotiNativeEntryKind)' == 'UIKit-Main' or '$(DorotiNativeEntryKind)' == 'AppKit-Main' or '$(DorotiNativeEntryKind)' == 'Qt-Main'">Doroti.Generated.DorotiBootstrap</StartupObject>
+    <StartupObject Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main' or '$(DorotiNativeEntryKind)' == 'UIKit-Main' or '$(DorotiNativeEntryKind)' == 'AppKit-Main' or '$(DorotiNativeEntryKind)' == 'Qt-Main' or '$(DorotiNativeEntryKind)' == 'Win32-WinMain'">Doroti.Generated.DorotiBootstrap</StartupObject>
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'Android'">net10.0-android</_DorotiExpectedNativeBindingTfm>
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'iOS'">net10.0-ios</_DorotiExpectedNativeBindingTfm>
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'MacCatalyst'">net10.0-maccatalyst</_DorotiExpectedNativeBindingTfm>
@@ -203,6 +203,9 @@
       <_DorotiBootstrapLines Include="    }" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />
       <_DorotiBootstrapLines Include="    public static int Main(string[] args) =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Qt-Main'" />
       <_DorotiBootstrapLines Include="        global::Doroti.Host.Qt.DorotiQtRunner.Run(Create(args))%3B" Condition="'$(DorotiNativeEntryKind)' == 'Qt-Main'" />
+      <_DorotiBootstrapLines Include="    [global::System.STAThread]" Condition="'$(DorotiNativeEntryKind)' == 'Win32-WinMain'" />
+      <_DorotiBootstrapLines Include="    public static int Main(string[] args) =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Win32-WinMain'" />
+      <_DorotiBootstrapLines Include="        global::Doroti.Host.WindowsAppSdk.DorotiWindowsAppSdkRunner.Run(Create(args))%3B" Condition="'$(DorotiNativeEntryKind)' == 'Win32-WinMain'" />
       <_DorotiBootstrapLines Include="}" />
       <_DorotiNativePluginLines Include="// &lt;auto-generated /&gt;" />
       <_DorotiNativePluginLines Include="namespace Doroti.Generated%3B" />
