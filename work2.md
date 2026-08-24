@@ -1,817 +1,705 @@
-# Doroti WindowsAppSdk raw HWND + ContentIsland/SiteBridge 전환 계획
+# Doroti Windows Flutter-style embedder 전환 계획
 
 ## 0. 문서 목적과 최종 결정
 
 - 전면 개편일: 2026-08-24
-- 대상: Doroti Windows 제품 호스트, interactive resize, D3D12 presentation, 입력·IME·접근성·lifecycle
-- 목표 제품 호스트: `Doroti.Host.WindowsAppSdk`
-- 목표 창 구조: **raw Win32 top-level HWND + Windows App SDK `ContentIsland`/SiteBridge**
-- 그래픽 경로: Doroti가 직접 소유하는 D3D12/DXGI visible surface
-- Windows App SDK 기준: **최신 stable `2.4.0`을 정확히 고정**
-- 문서 성격: ordered 구현 계획, 현재 구현 결과, 기존 증거의 재분류 기록
+- 대상: Doroti Windows 제품 호스트, interactive resize, GPU surface, 입력·IME·접근성·lifecycle·배포
+- Flutter 기준 source: repository의 `reference/flutter-master` commit `56b8e1a851a594b1a154f8ea93270807dab22b9a`
+- 목표 제품 호스트: `Doroti.Host.Win32`
+- 목표 Windows target: `Doroti.Target.Windows.Win32.win-x64`
+- 목표 창 구조: **표준 Win32 top-level HWND + client 전체를 채우는 child render HWND**
+- 목표 그래픽 기준선: **ANGLE/EGL window surface + Skia GPU**, exact client physical size
+- 문서 성격: ordered 구현 계획. 이번 개편은 계획만 바꾸며 구현·build·runtime acceptance를 의미하지 않는다.
 
-이 문서의 최종 구조 결정은 다음과 같다.
+Windows 제품 경로를 기존 `WindowsAppSdk + ContentIsland + fixed work-area envelope + custom non-client + Arm N dual-front` 구조에서 **Flutter Windows embedder 방식**으로 전환한다.
 
-> Windows 제품 창의 크기·DPI·non-client·lifecycle 권한은 raw top-level HWND 하나가 가진다. Doroti 프레임은 같은 resize epoch의 geometry와 결합해 준비한 뒤 visible surface에 커밋한다. Windows App SDK는 `ContentIsland`/SiteBridge를 통해 입력, focus, 접근성, WinRT content 환경을 제공하지만 Doroti raster 크기와 presentation timing의 권한을 갖지 않는다.
+여기서 “Flutter 방식”은 이름이나 API를 흉내 내는 것이 아니라 다음 ownership과 lifecycle을 채택한다는 뜻이다.
 
-Windows 제품 경로에서는 MAUI/WinUI `Window`, XAML layout, `SwapChainPanel.SizeChanged`를 크기 권한으로 사용하지 않는다. MAUI는 Android, iOS, macOS 등 기존 비-Windows target을 위해 유지한다. Windows에서 XAML control이 실제로 필요한 경우에도 `DesktopWindowXamlSource`는 한정된 보조 island로만 허용하며 제품 presentation root가 될 수 없다.
+1. Windows가 표준 top-level 창의 non-client, move, resize, Snap, system menu, maximize/minimize를 소유한다.
+2. 하나의 child HWND가 top-level client rect를 그대로 채우며 rendering, pointer, keyboard, text, accessibility의 native view 경계가 된다.
+3. child `WM_SIZE`의 physical pixel 크기와 현재 DPI/display ID를 framework metrics의 authority로 사용한다.
+4. resize target을 framework에 전달한 뒤 raster thread가 같은 크기의 frame과 window surface를 준비한다.
+5. 그 frame의 buffer swap/present가 끝날 때까지 platform thread가 제한 시간 동안 engine task만 처리하며 resize handshake를 수행한다.
+6. 첫 frame 전에는 top-level 창을 표시하지 않는다.
+7. monitor work-area는 initial placement, restore, popup constraint에만 사용한다. swap-chain/EGL capacity나 평상시 HWND envelope 크기로 사용하지 않는다.
 
-2026-08-24 기준 Microsoft 공식 stable 최신판은 `2.4.0`이고, repository의 현 pin `1.8.260508005`는 maintenance line이며 2026-09-09 servicing 종료 예정이다. 따라서 새 host는 `2.4.0`으로 시작한다. 다만 “항상 최신” floating reference를 쓰지는 않는다. 각 qualification run은 하나의 정확한 package/runtime version으로 재현 가능해야 하며, 이후 stable patch 승격은 별도 dependency gate를 통과해야 한다.
+새 제품 기준선에서는 다음을 사용하지 않는다.
 
-이 결정은 목표 아키텍처를 확정한 것이지 runtime acceptance를 통과했다는 뜻은 아니다. M1은 계속 FAIL이지만, 2026-08-24 사용자가 현재 정상인 Arm N을 제품 후보로 명시적으로 선택하고 WindowsAppSdk 전환 구현을 요청했다. 따라서 아래 제품 후보 구현은 M1을 소급 PASS하지 않는 **명시적 사용자 override branch**로 진행했으며, visible/G2 acceptance는 계속 별도다.
+- monitor work-area 크기의 고정 top-level envelope
+- app-owned window region으로 실제 창 모양을 제한하는 방식
+- custom caption/border를 resize transaction에 포함하는 방식
+- monitor-sized backing 또는 swap-chain capacity
+- dual hidden/visible composition front
+- `ContentIsland`/SiteBridge를 전체 client 입력·접근성 root로 사용하는 방식
+- resize hot path의 `SetSourceSize`, provisional full-frame stretch, edge별 translate/clip
 
-## 1. 완료 정의와 증거 해석 원칙
+기존 `Doroti.Host.WindowsAppSdk`, Arm N, MAUI Windows host는 새 경로가 최종 acceptance를 통과할 때까지 rollback/diagnostic으로 보존한다. 새 Win32 host 안에 기존 Arm N 구조를 fallback으로 섞지 않는다.
 
-이 전환의 완료는 단순 build 성공이 아니다. 아래 축을 각각 독립적으로 판정한다.
+## 1. 현재 상태와 완료 경계
 
-1. `correctness`: 같은 resize epoch의 metrics, scene, backing store, geometry, present가 일치한다.
-2. `visible continuity`: 확대·축소·방향 전환 때 검은 영역, 흰 영역, 색 띠, stale edge, 전체 프레임 stretch가 보이지 않는다.
-3. `cadence`: drag 중 frame/present cadence가 목표 refresh와 합의된 허용 범위를 만족한다.
-4. `input`: pointer, keyboard, focus, capture, cursor, drag가 render HWND와 island 사이에서 일관된다.
-5. `text`: 한국어 IME 조합, 후보창, caret 위치, clipboard가 정상이다.
-6. `accessibility`: UIA tree, hit test, focus, bounds가 committed geometry와 일치한다.
-7. `lifecycle`: minimize/restore, maximize, snap, DPI/monitor 이동, device removal 복구가 정상이다.
-8. `deployment`: packaged/unpackaged 실행과 Windows App Runtime 선택이 재현 가능하다.
-
-판정값은 `PASS`, `FAIL`, `notVerified`, `diagnosticOnly`만 사용한다.
-
-- source/contract/build PASS는 visible PASS가 아니다.
-- WGC/observer 수치 PASS는 실제 화면 또는 scan-out PASS가 아니다.
-- `DwmFlush` 반환은 scan-out ACK나 geometry+frame atomic commit 증거가 아니다.
-- 자동화되지 않은 사용자 관찰은 중요한 diagnostic evidence이지만 전체 matrix PASS로 승격하지 않는다.
-- 실패한 observer로 얻은 시각 결과는 qualification 판정에 사용하지 않는다.
-- 최신 package로 restore/build가 성공해도 1.8→2.4 runtime behavior가 호환된다는 뜻은 아니다.
-
-## 2. 현재 상태와 hard stop
-
-| 단계 | 상태 | 현재 증거와 의미 |
+| 단계 | 상태 | 현재 의미 |
 |---|---|---|
-| D0 기존 evidence 재분류 | PASS | correctness, cadence, visible acceptance를 분리했다. |
-| M0 observer/DPI/capture pipeline 정리 | PASS | 관측기 자체 계약과 provenance를 정리했다. |
-| M1 output observer qualification | **FAIL** | 3회 연속 qualification 실패. 자동 승격 gate는 계속 닫혀 있다. |
-| 2026-08-24 Arm S/C control | diagnosticOnly | S/C 구현과 최신 2배 drag 단일 PASS는 확보했지만 필수 C 3회가 PASS/FAIL/FAIL이다. 전체 matrix는 `notVerified`이다. |
-| 2026-08-24 Arm N custom non-client control | **PASS** | dual composition front smoke 3회 PASS 뒤 사용자가 수정본에서 고속 좌측·상단 확대를 재현해 front/border와 창 경계의 어긋남 및 떨림이 사라졌음을 확인했다. 이 PASS는 해당 수동 회귀 범위에 한정되며 전체 방향·DPI·monitor·표준 창 기능 matrix는 `notVerified`이다. |
-| A0 목표 아키텍처 결정 | PASS | `Doroti.Host.WindowsAppSdk` + raw HWND + ContentIsland/SiteBridge + WinAppSDK `2.4.0`으로 확정했다. 구현 PASS가 아니다. |
-| A0-R non-client ownership 재결정 | PASS | 사용자 지시로 Arm N custom non-client + dual-front를 제품 후보 ownership으로 선택했다. 선택 PASS이며 Windows 기능 matrix PASS는 아니다. |
-| A0-V 2.4 dependency/API preflight | PASS | scoped exact `2.4.0`, self-contained unpackaged raw HWND, DispatcherQueue, attached SiteBridge create/connect/close가 PASS했다. root 중앙 pin은 rollback host 때문에 `1.8`로 유지한다. |
-| A1 Arm N 제품 presenter 추출 | diagnosticOnly | `ArmNDualFrontPresenter`로 제품 소유 presenter를 분리했다. validation과 동일 binary를 공유하는 원래 A1 조건 및 H0-V는 미충족이다. |
-| A2 raw HWND 제품 shell | diagnosticOnly | STA entry, fixed work-area raw HWND envelope, app-owned region, first exact frame before show와 content와 분리된 custom titlebar/caption button 픽셀 캡처가 PASS했다. DPI/startup 100회 matrix는 `notVerified`다. |
-| A3 exact resize transaction | diagnosticOnly | custom chrome 이후 좌측 8ms smoke에서 geometry/commit `146/146`, submitted/presented/superseded/failed/dropped `146/133/13/0/0`. visible continuity는 `notVerified`다. |
-| A4 ContentIsland/SiteBridge 통합 | diagnosticOnly | root `ContentIsland`/`DesktopAttachedSiteBridge` 연결과 raw pointer ownership은 runtime PASS. 2.4에서 site keyboard processing 비활성화는 지원되지 않는다. |
-| A5 framework integration | diagnosticOnly | Doroti session/dispatcher/Skia renderer와 새 host가 정적·좌측 resize smoke에서 프레임을 terminal 처리했다. wheel animation은 DWM-vsync latest-only callback으로 유한 종료했다. 다중 DPI/cadence matrix는 `notVerified`다. |
-| A6 input/focus/cursor | diagnosticOnly | 실제 USER32 입력 smoke에서 caption move `3`, edge resize `3`, wheel `1`, resize cursor PASS, pointer add/remove `1/1`, geometry/commit `7/7`, failed/superseded/dropped `0/0/0`. touch/pen/drag-drop/monitor matrix는 미실행이다. |
-| A7 IME/text/clipboard | notVerified | IMM32 composition/result/caret와 Win32 clipboard 경로는 구현. SiteBridge keyboard processing과 raw WndProc translation 중 최종 단일 owner가 아직 검증되지 않았고 한국어 후보창 실사용도 미실행이다. |
-| A8 semantics/UIA | notVerified | Doroti semantics 수신 경계만 존재하며 HWND UIA provider/pattern은 아직 구현되지 않았다. |
-| A9 lifecycle/DPI/device recovery | diagnosticOnly | custom caption의 minimize, maximize/restore, close를 실제 USER32 click으로 확인했다. Snap/system menu/mixed-DPI/device-loss는 미구현 또는 미실행이다. |
-| P0 Windows target cutover | diagnosticOnly | Demo/workspace/template 기본 Windows 경로와 target/runner/package를 전환했고 기존 MAUI runner는 rollback으로 보존·빌드 PASS. CI/install/packaged identity는 미검증이다. |
-| G2 Windows 제품 acceptance | notVerified | 제품 후보는 생겼지만 전체 visible/input/text/UIA/lifecycle/deployment matrix를 실행하지 않았다. |
-| Web 계획 재개 | PASS | 별도 사용자 요청으로 `work3.md`의 검토·ordered plan을 작성했다. 구현 PASS가 아니다. |
-| Web 구현 | notStarted | Windows 결과가 Web 구현·browser milestone PASS를 대신하지 않는다. `work3.md`의 독립 gate를 따른다. |
+| F0-A Flutter source protocol audit | **PASS** | pinned source에서 parent/child HWND, `WM_SIZE`, metrics, raster-thread surface resize, presented ACK, first-frame show 계약을 확인했다. 문서·source audit PASS이며 제품 구현 PASS는 아니다. |
+| F0-V source pin/anchor validator | notStarted | commit과 핵심 symbol/file hash를 자동 검증하는 gate는 아직 만들지 않았다. |
+| F1 Win32/ANGLE bootstrap preflight | notStarted | 새 host/target, native dependency, DPI/COM/task-runner 경계를 아직 만들지 않았다. |
+| F2 표준 top-level + child view | notStarted | Flutter식 window tree를 아직 구현하지 않았다. |
+| F3 metrics/display contract | notStarted | child client physical pixels 기반 metrics를 아직 연결하지 않았다. |
+| F4 raster-thread EGL surface lifecycle | notStarted | exact-size EGL window surface create/destroy/recreate/swap을 아직 구현하지 않았다. |
+| F5 bounded resize handshake | notStarted | `ResizeStarted → FrameGenerated → Done` 동기화를 아직 구현하지 않았다. |
+| F6 scheduler/vsync/present integration | notStarted | ordinary frame과 resize frame의 통합 cadence를 아직 구현하지 않았다. |
+| F7 input/IME/accessibility | notStarted | child HWND 중심의 전체 native contract를 아직 구현하지 않았다. |
+| F8 DPI/display/lifecycle/recovery | notStarted | mixed-DPI, monitor, fullscreen, device/context loss를 아직 구현하지 않았다. |
+| F9 target/runner/package integration | notStarted | qualification용 target/runner/package를 아직 추가하지 않았다. |
+| FG Windows 제품 acceptance | notVerified | 새 제품 binary와 visible/input/text/UIA/lifecycle/deployment matrix가 존재하지 않는다. |
+| F10 default cutover | notStarted | FG PASS 뒤에만 수행할 기본 Windows target 전환 단계다. |
 
-현재 자동 acceptance의 정확한 재개점은 **M1 output observer를 strict 판정에 쓸 수 있게 고치거나, 240fps 이상 외부 카메라를 qualification oracle로 확보하는 것**이다. 구현 branch의 다음 경계는 Arm N 제품 후보를 실제 화면에서 우측·하단·네 corner, DPI/monitor, 표준 창 기능까지 확대하고 A6~A9를 완성하는 것이다. 사용자 override는 구현 시작 권한일 뿐 M1/H0-V/G2 PASS 증거가 아니다. Web은 `work3.md`에 따라 독립 판정한다.
+기존 증거는 다음처럼 재분류한다.
 
-### 2.1 2026-08-24 WindowsAppSdk 제품 후보 구현 evidence
+- Arm N의 고속 좌측·상단 manual PASS는 **기존 구조의 scoped regression PASS**로 보존한다.
+- 기존 M1 observer FAIL과 G2 `notVerified`는 과거 구조의 판정으로 보존한다.
+- 새 Flutter-style 경로는 F1부터 독립적으로 구현·판정한다.
+- 기존 observer는 diagnostic으로 재사용할 수 있지만, 불안정한 observer 한 종류를 F1~F8 구현 시작의 hard stop으로 두지 않는다.
+- FG visible PASS에는 qualified output evidence와 사용자의 실제 mouse drag 확인이 모두 필요하다.
+- Flutter runtime capture/A-B instrumentation은 범위 밖이다. pinned Flutter source를 protocol reference로만 사용한다.
 
-- `Microsoft.WindowsAppSDK`는 새 host/preflight/runner에만 exact `2.4.0`으로 고정했다. 기존 MAUI Windows target의 중앙 `1.8.260508005` pin은 rollback을 위해 바꾸지 않았다.
-- preflight: `ContentIsland.CreateForSystemVisual` + `DesktopAttachedSiteBridge.CreateFromWindowId`가 `connected=True`, pointer owner `raw-hwnd`, keyboard owner `island`, exit 0으로 종료했다.
-- 2.4 constraint: `ProcessesKeyboardInput=false`는 connect 전 `Microsoft.UI.Input.dll` fail-fast `0xC0000602`, connect 후 `0x80131509` 예외로 거부된다. 따라서 이를 우회하거나 숨기지 않고 root island를 keyboard owner로 고정했다.
-- product static smoke: `islandWasConnected=True`, Arm N adapter `AMD Radeon 780M Graphics`, geometry/commit `1/1`, presented `2`, failed `0`, exit 0.
-- product left-resize smoke: 8ms request, geometry/commit `306/306`, submitted `307`, presented `303`, replayed `1`, superseded `4`, failed/dropped `0`, exit 0.
-- custom chrome capture: 200% DPI의 physical desktop capture에서 title, minimize/maximize/close button, 분리된 72px physical titlebar와 1440×1280 content가 한 Arm N front 안에 표시됐다.
-- actual USER32 interaction smoke: caption move `3`, left-edge resize `3`, wheel signal `1`, pointer add/remove `1/1`, geometry/commit `7/7`, submitted/presented `10/10`, failed/superseded/dropped `0/0/0`, exit 0.
-- caption function smoke: left-right resize cursor가 `IDC_SIZEWE`와 일치했고 maximize region `0,0,2560,1504`, restore region `560,76,2000,1428`, minimize `IsIconic=True`, close exit `0`을 확인했다.
-- wheel terminal smoke: notch 1회 전후 physical crop에서 sampled pixels `45,586/109,800`이 변경됐다. frame request/vsync callback/submitted/presented/superseded `106/105/105/91/14`, failed/dropped `0/0`으로 유한 종료했다. 즉 이전 즉시 재귀 scheduling의 `6,506` submitted/`6,363` superseded 폭주는 제거됐다.
-- runner graph: `Windows | WindowsAppSdk | Win32-WinMain | win-x64 | Doroti.Target.Windows.WindowsAppSdk.win-x64`.
-- `doroti.ps1 build --platform windows`, new unpackaged publish/launch, legacy `DorotiDemoApp/windows` rollback build, host/target/template pack가 모두 PASS했다.
-- 이 evidence는 composition/transaction/runtime contract다. 사람이 본 제품 resize, scan-out continuity, UIA, 한국어 IME, mixed-DPI, Snap/maximize는 `notVerified`다.
+## 2. pinned Flutter Windows source에서 채택하는 계약
 
-## 3. 보존해야 할 기존 증거
+### 2.1 native window tree
 
-### 3.1 2026-08-23 observer evidence
+Flutter Windows host는 표준 top-level HWND를 만들고, 별도의 `WS_CHILD | WS_VISIBLE` view HWND를 parent에 붙여 client rect 전체로 `MoveWindow`한다.
 
-- M0는 PASS했다.
-- M1은 3회 연속 valid FAIL이었다.
-- WGC는 callback backlog와 frame-pool resize phase 때문에 strict visual judge로 사용할 수 없어 `diagnosticOnly`이다.
-- Desktop Duplication strict output judge도 M1을 통과하지 못했다.
-- 따라서 당시 H0 이후 architecture/product/Web 단계는 시작하지 않았다.
+참조 지점:
 
-### 3.2 2026-08-24 D3D12/Flutter-handshake diagnostic spike
+- `reference/flutter-master/engine/src/flutter/shell/platform/windows/host_window.cc`
+  - `SetChildContent`: `SetParent` 후 parent client rect로 child를 배치
+  - `HostWindow::InitializeFlutterView`: view 생성, 표준 top-level 생성, child 연결
+  - top-level `WM_SIZE`: 현재 client rect로 child resize/reposition
+- `reference/flutter-master/engine/src/flutter/shell/platform/windows/flutter_window.cc`
+  - `FlutterWindow::InitializeChild`: `WS_CHILD | WS_VISIBLE` view HWND 생성
+  - child `WM_SIZE`: physical width/height를 view delegate에 전달
 
-다음 실험은 폐기한다.
-
-- monitor 크기 capacity + `SetSourceSize`: raster scaling 이상과 edge line 때문에 폐기
-- drag 중 destructive `ResizeBuffers`를 쓰는 single child: 확대/축소 때 검은·흰 uncovered 영역 때문에 폐기
-- 서로 독립된 두 visible surface를 동시에 두고 z-order/geometry로 교대하는 방식: 흰 띠와 flicker 때문에 폐기
-
-현재 가장 좋은 control은 다음 구조다.
-
-- standard-chrome top-level HWND 1개
-- D3D12 direct-present용 `WS_CHILD` render HWND 1개
-- monotonic swap-chain capacity
-- `SetSourceSize` 미사용
-- exact-content backing store
-- 확대는 geometry 노출 전 cover 준비
-- 축소는 geometry 축소 전 exact raster 준비
-- platform ACK 후 raster 측 `DwmFlush`
-
-사용자 관찰 결과 검은 영역은 제거되었고, 흰 영역도 제거되었으며, 축소 떨림은 거의 사라졌다. 마지막 오른쪽 보라색 띠는 qualification oracle로 취급했다. 하지만 방향·DPI·monitor·refresh 전체 matrix를 실행하지 않았으므로 visible 상태는 `diagnosticOnly/notVerified`이다.
-
-보존할 observer 실행 기록:
-
-- summary: `win-observer-m1-summary-20260824-005217.json`
-- child window count: 1
-- handshake count: 356
-- timeout count: 1
-- maximum timeout: 108.1093ms
-- source cadence: 163.391fps
-- device failure: 0
-- Desktop Duplication interval p95: 7.5653ms
-- 결론: 수치가 개선되어도 M1 전체 판정은 **FAIL**이며 H0/A1/P0 PASS로 승격하지 않는다.
-
-### 3.3 2026-08-24 Arm S/C transaction spike
-
-`problem.md`의 권고대로 diagnostic control에 두 arm을 구현했다.
-
-- Arm S: direct-HWND `Scaling.Stretch` + exact `SetSourceSize`; transient distortion 허용 비교군
-- Arm C: `CreateSwapChainForComposition` + DirectComposition edge-aware offset/clip + exact visual commit
-- Arm C는 capacity backing을 1:1로 사용하며 `SetSourceSize`를 금지한다. composition chain에서 사용했을 때 capacity 전체 uniform scale이 재현됐다.
-- Vortice DirectComposition은 다른 Vortice package와 동일한 `3.8.3` exact pin이다.
-- Windows App SDK 제품 baseline은 사용자 결정대로 최신 stable `2.4.0` exact pin이며 이 native diagnostic spike와 별도다.
-- interactive drag triangle wave는 2초에서 1초 왕복으로 바뀌어 기존보다 정확히 2배 빠르다.
-
-현재 evidence:
-
-- Arm S 1회 `FAIL`, phase 7/8
-- Arm C isolated 1회 `PASS`, source 165.011fps, phase 8/8
-- Arm C required 3회 `PASS/FAIL/FAIL`
-- 2배 drag 적용 뒤 Arm C 1회 `FAIL`, source 165.060fps, phase 6/8
-- 최종 source fingerprint와 일치하는 2배 drag 단일 회귀 `PASS`, source 164.954fps, phase 8/8
-- Arm C provisional/exact smoke 4/4, stale reject 0
-- Release build와 native capture build는 PASS
-- 실제 mouse visible matrix는 `notVerified`
-
-따라서 M1은 계속 **FAIL — 자동 승격 hard stop**이다. 당시 isolated observer PASS나 build PASS만으로 A0-V/H0-V/A1을 시작하지 않았다. 이후 제품 후보 구현은 2.1에 기록한 사용자 override이며 M1 판정을 바꾸지 않는다.
-
-### 3.4 2026-08-24 Arm N dual-front transaction과 scoped manual PASS
-
-Arm C의 standard non-client geometry와 composition visual이 서로 다른 output frame에 노출되는 한계를 제거하기 위해 custom non-client Arm N을 diagnostic control로 구현했다.
-
-- monitor work-area 크기의 고정 `WS_POPUP + WS_EX_NOREDIRECTIONBITMAP` envelope 안에서 app-owned visible rect만 변경한다.
-- idle 시 window region을 visible rect로 제한하고 resize capture 중에만 envelope를 연다.
-- monitor-sized composition swap chain 두 slot 중 현재 보이지 않는 slot에 latest exact frame을 copy/`Present(0)`한다.
-- hidden front의 frame-latency signal과 epoch/extent final gate를 통과한 뒤 root child visual 교체와 offset/clip을 하나의 DirectComposition commit으로 제출한다.
-- 이전 front와 새 front를 동시에 표시하지 않으며, superseded hidden front는 visible switch 없이 폐기한다.
-
-현재 evidence:
-
-- Release build: PASS, warnings 0, errors 0
-- 2ms cadence, 239-target Arm N transaction/input-region smoke 3회: PASS/PASS/PASS
-- front/geometry mismatch, region wait timeout, composition drain timeout, process failure: 모두 0
-- latest/visible-front/visual commit epoch: 각 run `240/240/240`
-- 사용자 직접 확인: 수정된 final binary에서 고속 좌측·상단 확대 시 첨부 이미지와 같은 front/border와 창 경계 어긋남 및 떨림이 사라짐 — **PASS (scoped manual)**
-
-이 manual PASS는 사용자가 보고한 정확한 회귀의 해결 증거다. 그러나 우측·하단·네 corner, 확대/축소 전체 조합, 100/150/200% DPI, 60/120Hz 이상, multi-monitor, Snap Layouts, system menu, maximize/restore, keyboard/touch sizing, accessibility는 아직 `notVerified`다. Arm N 제품 후보의 visible 판정은 여전히 scoped diagnostic이며, 기존 M1 observer qualification은 **FAIL**, G2는 `notVerified`로 유지한다.
-
-### 3.5 과거 경로의 재분류
-
-| 경로 | 보존 상태 | 새 계획에서의 위치 |
-|---|---|---|
-| W0 contract/build | PASS | transaction 계약 참고. visible acceptance는 아님. |
-| W0 WGC visual | diagnosticOnly | observer qualification 전 strict 근거로 사용 금지. |
-| C0 Composition bridge | PASS | bridge construction evidence만 보존. device removal은 `notVerified`. |
-| C1 minimum smoke | PASS | 최소 실행 evidence. IME/minimize 전체 matrix는 `notVerified`. |
-| C2 internal cadence | FAIL | 기존 MAUI/Composition 제품 경로를 선택하지 않는 근거. visible은 무효 또는 `notVerified`. |
-| N0 Arm A pure top-level | 구조/correctness PASS | raw HWND 방향의 참고 evidence. strict visual은 observer 문제로 무효. |
-| N0 Arm B desktop target interop | unavailable | 재사용하지 않는다. |
-| C3/N1/G2 | notStarted/notVerified | 새 A0-V~P0 단계로 대체한다. |
-
-## 4. 목표 아키텍처
-
-raw HWND + ContentIsland/SiteBridge라는 상위 ownership 결정은 유지한다. 2026-08-24 사용자 선택으로 제품 후보는 **Arm N custom non-client + fixed work-area HWND envelope + app-owned region + dual hidden/visible composition slot**으로 확정했다. standard chrome + direct child HWND는 제품 baseline이 아니라 기존 비교/rollback 경로다. 이 선택은 Snap, system menu, maximize/restore, keyboard/touch sizing, caption UIA를 Doroti가 구현해야 한다는 뜻이며, 해당 기능은 아직 `notVerified`다.
-
-### 4.1 창과 presentation 소유권
-
-raw top-level HWND가 다음 항목의 유일한 authority다.
-
-- custom non-client 영역과 app-owned hit-test region
-- fixed work-area HWND envelope 내부의 committed geometry epoch
-- committed content pixel size와 screen/client coordinate 변환
-- `WM_DPICHANGED`와 suggested rect 적용
-- minimize, maximize, restore, snap, monitor 이동
-- close/destroy와 thread-affine USER32 lifecycle
-
-`AppWindow`는 raw HWND에서 `WindowId`를 얻고 DispatcherQueue를 연결하는 얇은 wrapper로만 사용한다. 현재 Arm N geometry는 실제 HWND outer rect를 drag마다 바꾸지 않고 fixed envelope 안에서 움직인다. custom caption의 move/minimize/maximize/restore/close는 scoped smoke를 통과했지만 표준 DWM caption, Snap Layouts, system menu 계약은 현재 구현 증거에 포함되지 않는다.
-
-### 4.2 Doroti visible surface
-
-Doroti raster의 visible owner는 raw top-level HWND에 붙은 하나의 DirectComposition target이다.
-
-- 두 composition swap-chain slot은 work-area capacity로 고정하고 한 slot만 visible front가 된다.
-- 다음 slot을 hidden 상태에서 Present하고 frame-latency latch를 기다린 뒤, visible visual/offset/clip을 하나의 DirectComposition commit으로 교체한다.
-- XAML layout이나 ContentIsland layout 결과로 swap chain을 resize하지 않는다.
-- drag 중 `ResizeBuffers`, `SetSourceSize`, CPU readback, full-frame provisional stretch를 사용하지 않는다.
-- 동일 window에 두 front를 동시에 표시하지 않는다. visible front와 geometry/clip은 같은 commit에서 교체한다.
-- stale epoch frame은 visible present 전에 폐기한다.
-
-### 4.3 ContentIsland/SiteBridge 역할
-
-Windows App SDK content 계층은 graphics size authority가 아니라 platform integration 계층이다.
-
-- `DesktopAttachedSiteBridge`: top-level HWND에 root `ContentIsland`를 연결한다.
-- root island: site keyboard processing, focus/navigation, coordinate environment, accessibility 연결점 제공
-- `DesktopChildSiteBridge`: IME helper, popup, overlay처럼 명시적으로 제한된 보조 island에만 사용
-- root island는 fixed HWND envelope 크기를 유지하며 Doroti visible geometry를 역으로 변경하지 않는다.
-- `ResizePolicy`가 Doroti client size를 역으로 결정하게 하지 않는다.
-- full-client 투명 island가 pointer hit test를 가로채지 않도록 region과 z-order를 명시한다.
-- raw HWND가 pointer owner다. Windows App SDK 2.4가 attached bridge의 keyboard processing 비활성화를 거부하므로 site processing은 enabled로 유지한다. raw WndProc keyboard/IME translation과의 최종 단일 ownership은 A7에서 확정해야 한다.
-
-XAML control이 불가피할 때만 `DesktopWindowXamlSource`를 제한적으로 허용한다. 이 경우에도 XAML island는 보조 child이며 top-level, render HWND, Doroti frame scheduling을 소유하지 않는다.
-
-### 4.4 thread 모델
-
-| thread | apartment | 책임 |
-|---|---|---|
-| platform/window thread | STA | WinMain, raw HWND, USER32 message pump, DispatcherQueue, SiteBridge/ContentIsland, region admission |
-| framework thread | 기존 Doroti 계약 | UI state, layout 요청, exact frame scheduling |
-| raster thread | MTA/graphics thread | D3D12 recording, backing store 준비, hidden Present, DirectComposition geometry/front commit |
-| observer process/thread | 독립 | capture, geometry sampling, cadence/visual 판정 |
-
-platform thread는 `DispatcherQueueController.CreateOnCurrentThread()`로 Windows App SDK dispatch 환경을 만들고 USER32 pump와 함께 운용한다. resize handshake를 기다리는 동안 임의 message pumping이나 framework callback 재진입을 허용하지 않는다. bounded wait가 끝나면 timeout terminal state를 기록하고 현재 front를 유지한다.
-
-### 4.5 process startup과 shutdown
-
-startup 순서:
-
-1. Windows App SDK 2.4 bootstrap/package identity와 실제 runtime version 확인
-2. `[STAThread]` entry와 COM apartment 초기화
-3. platform `DispatcherQueueController` 생성
-4. raw top-level HWND class 등록 및 `CreateWindowExW`
-5. HWND에서 `WindowId`, 필요 시 `AppWindow` 획득
-6. root `ContentIsland`와 `DesktopAttachedSiteBridge` 연결
-7. Doroti engine/framework/raster thread 시작과 Arm N presenter lazy 생성
-8. hidden slot의 first exact frame과 DirectComposition commit 완료
-9. app-owned region을 적용한 뒤 raw HWND 표시
-
-shutdown은 반대 방향으로 수행한다.
-
-1. 새 input/frame/resize epoch 수락 중지
-2. outstanding transaction을 terminal `cancelled`로 종료
-3. auxiliary child bridge와 island 닫기
-4. presenter/GPU queue drain 및 resource 해제
-5. root SiteBridge와 ContentIsland 닫기
-6. top-level HWND destroy
-7. DispatcherQueue shutdown 완료
-8. COM/Windows App SDK bootstrap 해제
-
-## 5. exact resize transaction 계약
-
-### 5.1 epoch 상태
-
-각 interactive resize target은 immutable epoch를 가진다.
+Doroti도 같은 두 HWND 경계를 사용한다.
 
 ```text
-observedTarget
-  -> metricsDelivered
-  -> sceneBuiltForSameEpoch
-  -> exactBackingStoreReady
-  -> geometryAdmitted
-  -> visibleSurfaceCommitted
-  -> presented | timedOut | superseded | cancelled
+standard top-level HWND
+└─ Doroti child view HWND
+   ├─ native input / focus / IME / UIA boundary
+   └─ exact-size ANGLE/EGL window surface
 ```
 
-필수 값:
+top-level 창에는 일반 Windows style과 `DefWindowProc` 동작을 유지한다. child view는 client `(0,0,width,height)`를 채운다. 제품 기본 경로에서 custom non-client나 fixed envelope를 만들지 않는다.
 
-- `windowId`, `resizeEpoch`, `direction`, `dpiEpoch`
-- target outer rect와 target client pixel size
-- exact content pixel size와 swap-chain capacity
-- scene generation, raster generation, prepared fence value
-- geometry admission, visible commit, present/terminal timestamp
+### 2.2 resize handshake
 
-같은 epoch가 아닌 scene, backing store, geometry, present를 결합하지 않는다. current+latest queue를 사용하며 중간 epoch FIFO replay는 하지 않는다.
+Flutter의 OpenGL Windows path는 다음 순서를 사용한다.
 
-### 5.2 확대 transaction
+```text
+child WM_SIZE
+→ ResizeStarted(target physical width/height)
+→ engine window metrics 전송
+→ framework가 target size frame 생성
+→ raster thread가 exact-size window surface 재생성
+→ buffer swap/present
+→ FrameGenerated → Done
+→ platform thread unblock
+→ raster thread DwmFlush ordering point
+```
 
-1. `WM_SIZING` target을 새 epoch로 관찰한다.
-2. 현재 visible content를 새 target을 덮을 수 있는 capacity/cover에 준비하고 present한다.
-3. cover present 뒤 platform-side `DwmFlush`를 사용해 geometry admission 전 ordering point를 둔다.
-4. parent의 현재 clip 안에서 render child cover를 확장한다.
-5. framework/raster가 미래 target의 exact scene과 backing store를 준비하되 아직 visible commit하지 않는다.
-6. prepared fence와 epoch가 일치하면 top-level geometry를 admit한다.
-7. 해당 `WM_SIZE`에서 `PresentPrepared(epoch)`를 실행한다.
-8. platform이 visible commit ACK를 기록한다.
-9. raster 측 ordering point 이후 child rect를 exact client rect로 정리한다.
+핵심 규칙:
 
-### 5.3 축소 transaction
+- platform thread가 `WM_SIZE`를 받는다.
+- framework metrics는 physical `width`, `height`, `pixel_ratio`, `display_id`, constraints를 함께 가진다.
+- raster thread의 frame 크기가 pending resize target과 다르면 surface를 변경하거나 present하지 않는다.
+- surface resize는 raster thread에서만 수행한다.
+- 현재 Flutter source는 크기가 바뀌면 기존 EGL window surface를 destroy하고 exact 크기로 다시 만든다.
+- present 완료가 resize transaction의 완료 신호다.
+- platform thread는 무제한 대기가 아니라 현재 source 기준 100ms 동안 engine task runner를 polling한다.
+- arbitrary Win32 nested message pump를 열지 않는다.
+- 완료 신호 뒤 raster thread가 `DwmFlush`를 호출해 이전 크기 surface stretch glitch를 줄인다.
 
-1. `WM_SIZING` target을 새 epoch로 관찰한다.
-2. 기존 capacity 안에 작은 target의 exact scene/backing store를 준비한다.
-3. prepared fence와 epoch가 일치할 때 parent geometry 축소를 admit한다.
-4. 해당 `WM_SIZE`에서 `PresentPrepared(epoch)`를 실행한다.
-5. platform ACK와 raster ordering point 후 render child를 exact client rect로 축소한다.
+Doroti는 이 상태 전이를 그대로 기준선으로 삼되, 모든 target에 monotonic `resizeGeneration`을 추가해 timeout이나 재진입 시 stale frame을 거부한다.
 
-축소 시 큰 이전 frame을 매 tick 비율 변경해 보여주지 않는다. exact 새 content가 준비되지 않으면 current geometry/front를 유지하거나 사전에 정의한 safe cover를 유지한다.
+### 2.3 first frame, DPI, monitor
 
-### 5.4 timeout과 방향 전환
+Flutter host는 view별 first-frame callback 뒤 top-level을 표시한다. Doroti도 `ShowWindow` 전에 첫 exact metrics frame의 surface swap을 요구한다.
 
-- wait는 bounded이며 timeout 값과 이유를 evidence에 남긴다.
-- timeout 시 target geometry를 무조건 admit하지 않는다.
-- current visible front와 current geometry를 유지하고 가장 최신 pointer target으로 재시도한다.
-- 이미 geometry가 OS에 의해 강제로 적용된 경우 safe cover만 허용하며 stale exact frame을 stretch하지 않는다.
-- drag 방향이 바뀌면 이전 epoch를 `superseded`로 닫고 current+latest 기준으로 새 transaction을 시작한다.
-- timeout/supersede 뒤 늦게 끝난 GPU work는 present하지 않는다.
+Flutter host의 monitor/work-area 사용도 구분해 따른다.
 
-### 5.5 atomicity의 정확한 표현
+- DPI 변경: `WM_DPICHANGED` suggested rect 적용
+- normal window restore/placement: 현재 monitor `rcWork`에 맞춤
+- fullscreen: 현재 monitor `rcMonitor` 사용
+- render surface: child client physical pixels 사용
 
-Win32, DXGI, DWM 사이에 앱이 사용할 수 있는 단일 진짜 atomic API가 있다는 주장을 하지 않는다. 이 계획의 “한 번에 커밋”은 다음을 뜻한다.
+따라서 work-area는 window placement 정보이지 rendering capacity가 아니다.
 
-- 앱 내부에서는 한 epoch의 exact frame과 geometry만 함께 admission한다.
-- geometry가 먼저 노출되는 시간을 cover와 ordering으로 최소화한다.
-- user-visible mismatch window를 observer와 고속 촬영으로 검증한다.
-- `DwmFlush`는 ordering 보조 수단이며 scan-out ACK로 기록하지 않는다.
+## 3. 목표 아키텍처
 
-## 6. 프로젝트와 파일 구성 계획
+### 3.1 프로젝트와 dependency 경계
 
-### 6.1 새 host project
+새 제품 경로를 별도 프로젝트로 만든다.
 
-새 project:
+- `Doroti/src/Doroti.Host.Win32`
+- `Doroti/src/Doroti.Target.Windows.Win32.win-x64`
+- `DorotiDemoApp/windows-win32` (qualification runner)
 
-`Doroti/src/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj`
+`Doroti.Host.Win32`는 다음만 소유한다.
 
-예정 파일:
+- Win32 top-level/child HWND와 WndProc
+- platform task runner와 thread-affine lifecycle
+- ANGLE/EGL display/context/window surface
+- Skia GPU surface 연결과 swap/present ACK
+- Windows input/text/UIA/display integration
 
-- `DorotiWindowsAppSdkApplication.cs`: public host entry와 engine lifecycle
-- `WindowsAppSdkWindowHost.cs`: raw HWND class, WndProc, AppWindow wrapper
-- `WindowsAppSdkHostAdapter.cs`: Doroti platform contract adapter
-- `WindowsAppSdkFrameworkHost.cs`: framework thread와 exact-frame 요청 연결
-- `WindowsAppSdkD3D12Presenter.cs`: render HWND, swap chain, prepared present
-- `WindowsAppSdkResizeCoordinator.cs`: epoch state machine과 geometry admission
-- `WindowsAppSdkContentIslandHost.cs`: ContentIsland/SiteBridge 생성·배치·shutdown
-- `WindowsAppSdkInputBridge.cs`: pointer/keyboard/focus/capture/cursor
-- `WindowsAppSdkTextInputBridge.cs`: TSF/IME/caret/clipboard
-- `WindowsAppSdkSemanticsBridge.cs`: UIA provider와 island accessibility 연결
-- `WindowsAppSdkDiagnostics.cs`: ETW/JSONL/provenance/terminal evidence
+새 host는 MAUI와 Windows App SDK에 의존하지 않는다. Windows App SDK `2.4.0`은 기존 rollback host에만 남으며 새 Win32 target의 transitive dependency가 되어서는 안 된다.
 
-### 6.2 shared presenter core
+ANGLE/EGL/native DLL은 exact version과 hash를 고정하고 publish 결과에 명시적으로 포함한다. 시스템 PATH나 개발 PC에 우연히 설치된 DLL로 fallback하지 않는다.
 
-현재 `Doroti/validation/windows-top-level-presentation/Program.cs`의 성공한 control protocol을 제품 host에 복사하지 않는다. 다음을 framework-independent shared core로 추출한다.
+### 3.2 size와 coordinate authority
 
-- immutable resize epoch
-- monotonic capacity policy
-- exact backing store preparation
-- expand/shrink admission protocol
-- prepared fence/ACK/timeout state
-- D3D12 device-loss boundary
-- structured diagnostics
+authority는 다음처럼 한 번만 나눈다.
 
-validation app과 제품 host가 동일한 core를 참조해야 한다. test 전용 branch와 product branch의 timing logic이 갈라지면 해당 gate를 FAIL 처리한다.
+| 정보 | 유일한 authority |
+|---|---|
+| outer window geometry/non-client | top-level HWND와 Windows |
+| client physical width/height | child HWND `GetClientRect`/`WM_SIZE` |
+| device pixel ratio | child HWND의 per-monitor-v2 DPI |
+| display identity/refresh | child HWND가 속한 `HMONITOR`/display manager |
+| logical constraints/layout | Doroti framework |
+| EGL surface size/thread binding | raster thread |
+| presented resize completion | exact-size frame의 successful swap/present |
+| initial/restore placement | current monitor `rcWork` |
+| fullscreen bounds | current monitor `rcMonitor` |
 
-### 6.3 새 Windows target
+logical size를 다시 physical size의 authority로 쓰지 않는다. `physical = logical × DPR` 계산은 framework metrics 해석에만 사용하며, 최종 surface 크기는 실제 child client pixels와 일치해야 한다.
 
-새 target project:
+### 3.3 thread ownership
 
-`Doroti/src/Doroti.Target.Windows.WindowsAppSdk.win-x64`
+- platform thread
+  - top-level/child WndProc
+  - resize state 시작과 metrics 게시
+  - engine task polling
+  - focus, lifecycle, display events
+- framework/UI thread
+  - metrics 적용, layout, scene 생성
+  - resize generation을 보존한 frame request
+- raster thread
+  - EGL context와 window surface의 유일한 owner
+  - exact-size Skia target 생성
+  - raster, flush, swap/present
+  - presented/failed terminal 보고
 
-target descriptor의 의도:
+WndProc가 직접 Skia draw, GPU fence wait, surface destroy를 수행하지 않는다. platform thread의 bounded wait 중에는 engine task만 진행하며 일반 Win32 message를 재진입시키지 않는다.
 
-- `HostKind=WindowsAppSdk`
-- `NativeEntryKind=Win32-WinMain`
-- `UseMaui=false`
-- `Microsoft.WindowsAppSDK=2.4.0` central exact pin
-- D3D12/DXGI/direct HWND swap-chain dependency 명시
-- packaged/unpackaged startup 조건과 runtime selection 기록
+### 3.4 render surface lifecycle
 
-Demo/template entry는 `[STAThread] static int Main(...)` 또는 동등한 native entry를 사용한다. 기존 `Doroti.Target.Windows.Maui.win-x64`, `App.xaml`, MAUI Windows package는 G2 PASS 전까지 제거하지 않는다.
+Flutter-equivalent 기준선은 ANGLE/EGL을 사용한다.
 
-### 6.4 기존 코드의 처리 원칙
+1. child HWND 생성 후 raster thread에서 EGL display/config/context를 준비한다.
+2. child physical pixels로 EGL window surface를 만든다.
+3. resize target frame이 exact 크기로 생성되면 raster thread에서 이전 window surface를 destroy한다.
+4. 같은 child HWND와 target physical size로 새 window surface를 만든다.
+5. context/current 상태와 `eglSwapInterval`을 복원한다.
+6. exact frame을 raster한 뒤 `eglSwapBuffers` 성공을 presented terminal로 보고한다.
+7. device/context loss는 current resize transaction을 `Failed`로 닫고 전체 EGL/Skia context generation을 재생성한다.
 
-- `DorotiWindowsDxgiSurface.cs`의 재사용 가능한 graphics code는 A1에서 ownership-neutral core로 이동한다.
-- MAUI/WinUI-specific window/layout callbacks는 새 host에 복사하지 않는다.
-- 기존 Windows MAUI target은 비교와 rollback을 위해 P0 완료 전까지 보존한다.
-- 비-Windows MAUI path는 변경하지 않는다.
-- runner SDK, product solution, template, packaging 기본값 변경은 P0에서만 수행한다.
+resource cache, decoded image, shader 자산은 window surface와 분리한다. surface 재생성 때문에 framework scene이나 장기 GPU resource identity가 임의로 초기화되지 않게 한다.
 
-## 7. ordered 실행 단계
+Direct D3D12 presenter는 새 기준선에 포함하지 않는다. 향후 필요하면 FG PASS 뒤 같은 host/view/resize contract 아래 별도 backend로 제안하며, Flutter-equivalent 기준선을 대체하려면 독립 acceptance를 다시 통과해야 한다.
 
-### D0 — 기존 evidence 재분류
+### 3.5 resize state machine
 
-상태: **PASS**
+Doroti 상태는 Flutter 계약을 다음처럼 명시화한다.
 
-- build/contract/runtime/visible/scan-out evidence를 분리했다.
-- 과거 WGC visual 결과를 observer qualification 이전 strict PASS/FAIL로 사용하지 않는다.
-- 기존 C0/C1/W0/N0 결과의 의미를 이 문서 3장처럼 제한한다.
+```text
+Idle
+  → ResizeStarted(generation, widthPx, heightPx, dpr, displayId)
+  → FrameGenerated(same generation, exact extent)
+  → SurfaceReady(same generation, exact extent)
+  → Presented
+  → Done
 
-### M0 — observer 기반 정리
+ResizeStarted → TimedOut
+ResizeStarted/FrameGenerated/SurfaceReady → Failed
+older generation → Superseded
+zero-sized/minimized target → Suspended
+```
 
-상태: **PASS**
+규칙:
 
-- capture source, output, monitor, DPI, geometry timestamps를 evidence에 기록한다.
-- dropped frame, callback backlog, pool recreation을 측정한다.
-- app telemetry와 observer telemetry를 별도 clock/provenance로 유지한다.
+- 모든 started generation은 정확히 하나의 terminal을 가진다.
+- frame 크기나 generation이 target과 다르면 surface/present 단계에 들어가지 않는다.
+- ordinary animation frame이 resize generation으로 relabel되지 않는다.
+- resize 중 새 `WM_SIZE`가 이전 transaction 완료 뒤 도착하면 새 generation으로 시작한다.
+- timeout은 성공으로 간주하지 않는다. native resize 진행을 반환하되 최신 실제 client size를 다시 관측하고 redraw를 요청한다.
+- 초기 timeout 기준은 Flutter source와 같은 100ms다. 수치를 늘리기 전에 framework/raster/surface 구간별 원인을 증명해야 한다.
 
-### M1 — output observer qualification
+### 3.6 input, text, accessibility
 
-상태: **FAIL — hard stop**
+child HWND를 Flutter view와 같은 native interaction root로 사용한다.
+
+- pointer/mouse/touch/pen/wheel: child client 좌표로 변환
+- capture: child가 down부터 up/cancel까지 소유
+- keyboard/focus: child HWND가 입력 focus owner
+- cursor: content 영역은 Doroti cursor, top-level non-client는 `DefWindowProc`
+- IME: child HWND에 연결된 TSF 또는 IMM32 경로 하나만 owner로 선택
+- caret/candidate bounds: committed child screen coordinates 사용
+- accessibility: child HWND root provider 아래 Doroti semantics tree 연결
+- top-level caption/system menu/Snap UIA: Windows 기본 provider 사용
+
+full-client transparent island, hidden XAML input control, custom caption UIA를 새 기본 구조에 도입하지 않는다. 특정 native control/plugin view가 필요하면 child hierarchy의 제한된 descendant HWND로 추가하고 z-order/focus/semantics 계약을 별도 검증한다.
+
+## 4. source/contract 불변식과 금지 조건
+
+새 host에는 다음 contract를 정적·동적 검사한다.
+
+- product top-level HWND: 정확히 1개
+- Doroti child view HWND: view당 정확히 1개
+- child rect: 항상 top-level client rect와 일치
+- render surface extent: committed child physical pixels와 일치
+- platform metrics: width/height/DPR/display ID/constraints를 한 snapshot으로 게시
+- EGL window surface create/destroy/recreate: raster thread에서만 수행
+- first visible show: first exact frame swap 이후
+- resize transaction: exactly-once terminal
+- stale generation present: 0
+- minimized `0×0`: surface recreate 금지, suspended 처리
+- timeout 중 arbitrary nested Win32 message dispatch 금지
+- work-area/monitor-size backing allocation 금지
+- custom non-client/fixed envelope/window region 금지
+- dual visible front 또는 hidden-front swap protocol 금지
+- resize hot path의 `ResizeBuffers`, `SetSourceSize`, full-frame stretch 금지
+- Windows App SDK/MAUI/XAML size event를 새 host의 authority로 사용 금지
+- floating/pre-release ANGLE, SkiaSharp, Windows native dependency 금지
+
+## 5. ordered 구현 계획
+
+각 단계는 앞 단계 PASS 뒤에만 시작한다. 실패하면 해당 단계에서 중단하고 원인과 exact resume point를 이 문서에 기록한다.
+
+### F0 — Flutter source protocol lock
+
+상태: **F0-A PASS — manual source audit only / F0-V notStarted**
 
 작업:
 
-1. callback에서 synchronous GPU readback을 제거한다.
-2. capture callback과 analysis queue를 분리한다.
-3. frame-pool recreate 구간을 qualification sample에서 명시적으로 제외하거나 continuity를 증명한다.
-4. capture frame 시점의 geometry를 별도 timeline으로 결합한다.
-5. Desktop Duplication의 monitor/output crop과 client edge mapping을 검증한다.
-6. 가능하면 240fps 이상 외부 카메라를 독립 oracle로 사용한다.
+F0-A 완료 내용:
+
+1. `reference/flutter-master`가 `56b8e1a851a594b1a154f8ea93270807dab22b9a`인지 확인한다.
+2. 아래 symbol을 직접 대조해 이 문서의 protocol을 확정한다.
+   - `HostWindow::InitializeFlutterView`
+   - `SetChildContent`
+   - top-level/child `WM_SIZE`
+   - `FlutterWindowsView::OnWindowSizeChanged`
+   - `OnFrameGenerated`/`OnEmptyFrameGenerated`
+   - `ResizeRenderSurface`
+   - `OnFramePresented`
+
+F0-V 남은 작업:
+
+1. commit pin과 위 symbol/file hash를 자동 검사하는 validator를 만든다.
+2. source가 바뀌면 protocol diff 없이 자동 승격하지 않는 fail-fast contract를 둔다.
 
 PASS 조건:
 
-- 동일 환경에서 3회 연속 qualified PASS
-- observer 자체 backlog/drop/recreate가 합의된 한계 안에 있음
-- synthetic edge oracle의 위치와 색을 방향별로 정확히 검출
-- app telemetry 없이도 black/white/color band와 stale edge를 판정 가능
+- pin/hash와 symbol anchor validator PASS
+- 이 문서의 window/resize/surface 순서가 pinned source와 일치함
+- Flutter runtime 계측 없이 source-only reference 경계가 명확함
 
-FAIL/stop 조건:
+### F1 — Win32/ANGLE bootstrap preflight
 
-- 세 번 중 한 번이라도 observer validity가 깨지면 M1은 PASS가 아니다.
-- M1 PASS 전 자동 승격으로 A0-V 이후를 시작하지 않는다. 명시적 사용자 override는 별도 branch/evidence로 기록하고 M1을 소급 PASS하지 않는다.
+상태: notStarted
 
-### A0-R — non-client ownership 재결정
-
-상태: **PASS — ownership 선택에 한정**
-
-원래 선행 조건: M1 PASS와 Arm N 전체 visible/function matrix 확보. 2026-08-24 사용자가 현재 정상인 Arm N 기반 전환을 명시적으로 요청해 선택 gate만 override했다.
-
-판정 대상:
-
-- standard chrome + direct child HWND baseline을 유지할지 결정
-- custom non-client + dual composition front Arm N 구조를 제품 ownership으로 채택할지 결정
-- Arm N 선택 시 Snap Layouts, system menu, maximize/restore, keyboard/touch sizing, UIA/caption semantics, DPI/monitor migration의 구현 책임과 acceptance를 A2~A9에 명시
-
-선택 결과는 4.1~4.2와 제품 host에 단일 Arm N 구조로 반영했다. 다만 이 PASS는 제품 후보를 고르는 의사결정이며, Snap/system menu/maximize/DPI/monitor/UIA를 포함한 기능 acceptance는 A6~A9/G2에서 계속 `notVerified`다.
-
-### A0-V — Windows App SDK 2.4 dependency/API preflight
-
-상태: **PASS — exact 2.4 self-contained unpackaged/attached-root scope**
-
-선행 조건: A0-R 선택 PASS. M1은 사용자 override로 건너뛰었으며 소급 PASS하지 않는다.
-
-목적: 현 `1.8.260508005`에서 최신 stable `2.4.0`으로 major upgrade할 때 raw HWND/ContentIsland 경계가 실제로 성립하는지 제품 코드 전에 확인한다.
+선행 조건: F0-V PASS
 
 작업:
 
-1. 새 host/preflight/runner에서 `Microsoft.WindowsAppSDK`를 정확히 `2.4.0`으로 pin한다. 기존 MAUI rollback target 때문에 root 중앙 pin은 바꾸지 않는다.
-2. transitive WinUI, Windows SDK BuildTools, bootstrap/runtime package graph를 lock-file로 비교한다.
-3. `ContentIsland`, `DesktopAttachedSiteBridge`, `DesktopChildSiteBridge`, `DispatcherQueueController`, `Win32Interop`, `AppWindow` API surface를 2.4 metadata와 공식 sample로 확인한다.
-4. C#에서 custom `[STAThread] Main`과 generated XAML main 비활성화 여부를 검증한다.
-5. 이번 지원 mode인 self-contained unpackaged raw-HWND smoke와 publish launch를 만든다. package identity install은 P0/G2에 남긴다.
-6. 설치된 runtime이 아닌 실제 선택된 Windows App Runtime version을 로그에 남긴다.
-7. 1.8과 2.4를 같은 process에 혼합하거나 runtime fallback하지 않도록 contract를 둔다.
+1. `Doroti.Host.Win32` 최소 프로젝트와 STA entry를 만든다.
+2. per-monitor-v2 DPI awareness를 window 생성 전에 설정한다.
+3. COM/OLE 초기화와 platform task runner의 생성·종료 순서를 고정한다.
+4. ANGLE EGL/GLES native artifact version, architecture, hash, publish copy를 고정한다.
+5. raster thread에서 display/config/context를 만들고 offscreen smoke를 수행한다.
+6. Skia `GRContext`를 ANGLE GLES context와 연결한다.
+7. self-contained unpackaged x64 publish에서 PATH fallback 없이 native DLL을 load한다.
 
 PASS 조건:
 
-- restore/build가 exact `2.4.0` dependency graph로 재현됨
-- raw HWND + DispatcherQueue + attached/child SiteBridge 최소 create/close smoke PASS
-- packaged/unpackaged 중 지원할 deployment mode별 startup/shutdown PASS
-- API 또는 generated-entry breaking change가 문서화되고 대응 방법 확정
-- M1 observer와 validation toolchain이 dependency 변경 때문에 회귀하지 않음
+- clean restore/build/publish PASS
+- EGL display/context + Skia GPU context create/destroy 100회 crash/leak 0
+- selected adapter/backend/native DLL provenance가 로그에 존재
+- Windows App SDK와 MAUI transitive dependency 0
+- WARP/software fallback 여부가 명시되고 hardware run과 구분됨
 
-승격 정책:
+중단 조건:
 
-- 구현 기간 중 `2.4.x` 이상 새 stable이 나와도 자동 승격하지 않는다.
-- 새 version은 release notes, API diff, restore/build, bridge lifecycle, H0-V 축소 smoke를 별도 실행한 뒤 pin을 변경한다.
-- preview/experimental package와 Limited Access Feature는 제품 baseline에서 금지한다.
+- exact native dependency를 재현 가능하게 배포할 수 없음
+- SkiaSharp와 ANGLE context ABI가 안정적으로 연결되지 않음
+- context teardown이 thread-affine하게 완료되지 않음
 
-### H0-V — shared direct protocol 재검증
+### F2 — 표준 top-level HWND + child view HWND
 
-선행 조건: A0-V PASS
+상태: notStarted
 
-대상: `Doroti/validation/windows-top-level-presentation`
+선행 조건: F1 PASS
 
 작업:
 
-- 현재 best control을 shared-core 후보로 정리한다.
-- expand/shrink/reverse/corner transaction 로그를 epoch 단위로 남긴다.
-- right-edge 보라색 oracle을 포함해 모든 edge oracle을 대칭화한다.
-- timeout, supersede, device removal을 fault injection한다.
+1. 일반 overlapped top-level HWND를 만들고 standard non-client를 유지한다.
+2. `WS_CHILD | WS_VISIBLE` Doroti view HWND를 만든다.
+3. child를 top-level에 붙이고 현재 client rect 전체로 배치한다.
+4. top-level `WM_SIZE`에서 `GetClientRect` 후 child를 `MoveWindow`한다.
+5. framework constraints를 `WM_GETMINMAXINFO` physical track size로 변환한다.
+6. first-frame callback 전 top-level을 숨기고 exact first swap 뒤 표시한다.
+7. close/destroy 순서를 `view surface → child → engine → top-level/task runner`로 검증한다.
 
 PASS 조건:
 
-- 8방향 × 10초 drag에서 visible artifact 0
-- 빠른 확대/축소/즉시 방향 전환에서 stale epoch present 0
-- timeout이 발생해도 uncovered region 0
-- 내부 transaction invariant violation 0
-- qualified observer 3회 연속 PASS
+- top-level 1개, child view 1개
+- standard caption resize/move/system menu/Snap/maximize/minimize 기본 동작
+- child rect와 client rect mismatch 0
+- first show blank/white frame 0
+- startup/shutdown 100회 crash/leak 0
 
-### A1 — presentation core 추출
+### F3 — physical metrics와 display contract
 
-선행 조건: H0-V PASS
+상태: notStarted
 
-- validation `Program.cs`에서 WinMain/sample UI와 presenter protocol을 분리한다.
-- 공용 core가 USER32, D3D12, epoch state를 명확한 interface로 노출하게 한다.
-- validation과 product가 같은 binary/source core를 참조하게 한다.
-- old experimental code를 삭제하지 않고 comparison fixture로 남긴다.
+선행 조건: F2 PASS
 
-PASS 조건:
+작업:
 
-- validation app이 추출 전과 동일한 evidence contract를 유지한다.
-- shared-core contract test와 Release x64 build PASS
-- H0-V의 축소 smoke 재실행 PASS
-
-### A2 — `Doroti.Host.WindowsAppSdk` raw shell
-
-선행 조건: A1 PASS
-
-- Windows App SDK 2.4 bootstrap, STA entry, DispatcherQueue를 구성한다.
-- raw top-level HWND와 standard chrome을 만든다.
-- HWND→WindowId→AppWindow wrapper를 연결한다.
-- `ShowWindow` 전 first exact frame gate를 둔다.
-- minimize/restore/close ordering의 기본 telemetry를 추가한다.
+1. child `WM_SIZE`를 physical width/height의 authority로 사용한다.
+2. 같은 snapshot에 DPR, display ID, min/max constraints, view ID를 포함한다.
+3. `WM_DPICHANGED`와 monitor 전환 시 child 기준 DPI/display를 다시 읽는다.
+4. framework에 immutable `WindowsViewMetrics`와 `resizeGeneration`을 전달한다.
+5. metrics 적용 뒤 생성된 scene/frame이 generation과 exact physical extent를 보존하게 한다.
+6. minimize `0×0`, restore, repeated identical size를 별도 상태로 처리한다.
 
 PASS 조건:
 
-- `Microsoft.UI.Xaml.Window`/MAUI 없이 top-level 실행
-- top-level HWND가 유일한 client-size authority임을 contract test로 확인
-- 100/125/150/200% DPI에서 initial client pixels 일치
-- clean startup/shutdown 100회에서 leak/crash 0
+- actual client pixels = metrics pixels = frame pixels
+- logical size × DPR 반올림 규칙이 한 지점에만 존재
+- repeated identical size에서 불필요한 surface recreation 0
+- stale/mismatched metrics-frame admission 0
+- 100/125/150/200% deterministic contract matrix PASS
 
-### A3 — 제품 exact resize transaction
+### F4 — raster-thread EGL window surface lifecycle
 
-선행 조건: A2 PASS
+상태: notStarted
 
-- render child HWND와 D3D12 presenter를 제품 shell에 연결한다.
-- `WM_SIZING` target, prepared fence, geometry admission, `WM_SIZE` commit을 하나의 epoch로 연결한다.
-- `PlatformDispatcher.RequestExactFrame`과 prepared-frame API를 연결한다.
-- timeout/current+latest/supersede/device-loss 정책을 구현한다.
+선행 조건: F3 PASS
 
-PASS 조건:
+작업:
 
-- framework metrics와 raster scene이 같은 epoch임을 로그로 증명
-- drag 중 `ResizeBuffers`, `SetSourceSize`, full-frame stretch 0
-- stale epoch present 0
-- H0-V와 동일한 qualified visual test 3회 연속 PASS
-
-### A4 — ContentIsland/SiteBridge 통합
-
-선행 조건: A3 PASS
-
-- root ContentIsland와 `DesktopAttachedSiteBridge`를 raw HWND에 연결한다.
-- 필요한 보조 surface만 `DesktopChildSiteBridge`로 만든다.
-- island rect update를 committed epoch 이후로 제한한다.
-- render HWND와 island의 z-order, hit-test region, focus transfer를 명시한다.
-- SiteBridge close와 DispatcherQueue shutdown ordering을 fault test한다.
+1. child HWND용 exact-size EGL window surface를 raster thread에서 만든다.
+2. 크기 변경 시 기존 surface를 destroy하고 target 크기로 재생성한다.
+3. EGL current/context/swap interval 상태를 복원한다.
+4. Skia render target을 새 surface framebuffer와 연결한다.
+5. raster → Skia flush/submit → `eglSwapBuffers`의 성공/실패를 terminal로 기록한다.
+6. shared context/resource cache와 window surface lifetime을 분리한다.
+7. context/device loss injection과 재생성 경로를 만든다.
 
 PASS 조건:
 
-- island 생성 전후 resize visual/cadence가 회귀하지 않는다.
-- island가 render extent를 변경하거나 resize feedback loop를 만들지 않는다.
-- render 영역 pointer가 투명 island에 가로채이지 않는다.
-- root/child bridge 반복 생성·종료에서 crash/leak 0
+- create/recreate/swap이 raster thread 외에서 호출된 횟수 0
+- exact surface extent mismatch 0
+- resize 1,000회에서 EGL/Skia resource leak 0
+- context loss injection 뒤 valid frame으로 복구
+- software/WARP run은 hardware visible PASS로 승격하지 않음
 
-### A5 — Doroti framework integration
+### F5 — Flutter-style bounded resize handshake
 
-선행 조건: A4 PASS
+상태: notStarted
 
-- engine startup, platform dispatcher, vsync/frame scheduling을 새 host에 연결한다.
-- logical size, device pixel ratio, physical pixels의 단일 변환 지점을 둔다.
-- exact-frame request와 ordinary frame request의 우선순위/병합 규칙을 고정한다.
-- framework work가 WndProc를 block하지 않도록 queue ownership을 검증한다.
+선행 조건: F4 PASS
 
-PASS 조건:
+작업:
 
-- sample scene의 layout/raster pixel size가 모든 DPI에서 일치
-- resize epoch와 ordinary animation frame 간 starvation 없음
-- frame queue가 무한 증가하지 않음
-- app present cadence와 observer cadence가 합의된 범위 안에서 일치
-
-### A6 — input/focus/cursor
-
-선행 조건: A5 PASS
-
-- pointer/mouse/touch/pen, wheel, keyboard, modifier를 Doroti events로 변환한다.
-- raw HWND, render HWND, island 사이 focus path를 명시한다.
-- pointer capture, leave tracking, cursor update, drag-and-drop 경계를 구현한다.
-- resize border hit test와 content hit test를 분리한다.
+1. `ResizeStarted → FrameGenerated → SurfaceReady → Presented → Done` 상태를 구현한다.
+2. platform thread가 metrics를 보낸 뒤 최대 100ms 동안 engine task runner만 polling한다.
+3. raster thread는 exact generation/extent frame에서만 surface를 재생성한다.
+4. successful swap/present 후 `Done`을 게시해 platform thread를 깨운다.
+5. unblock 후 raster thread에서 `DwmFlush` ordering point를 실행한다.
+6. timeout/failed/superseded/suspended를 exactly once terminal로 닫는다.
+7. timeout 뒤 실제 child rect를 재관측하고 latest redraw를 요청한다.
 
 PASS 조건:
 
-- resize 중 pointer capture loss/중복 event 0
-- Alt+Tab, child island focus, render focus 왕복 정상
-- click/scroll 좌표가 committed DPI/geometry와 일치
-- 100/125/150/200% DPI와 monitor 이동 후 hit test 정상
+- exact generation/extent가 아닌 resize present 0
+- transaction terminal 누락/중복 0
+- normal drag의 resize timeout 0
+- fault injection timeout에서 UI deadlock/무한 wait 0
+- platform thread가 arbitrary nested Win32 message를 dispatch한 횟수 0
+- left/right/top/bottom/corner에서 동일 protocol 사용
 
-### A7 — 한국어 IME, text, clipboard
+중단 조건:
 
-선행 조건: A6 PASS
+- timeout을 늘려야만 정상 drag가 진행됨
+- WndProc가 GPU fence나 raster lock을 직접 기다림
+- 방향별 special-case anchor/clip/front가 다시 필요해짐
 
-- TSF 또는 Windows App SDK content input 경로의 실제 owner를 하나로 정한다.
-- composition start/update/commit/cancel을 Doroti text model에 연결한다.
-- caret/selection rect를 committed screen coordinate로 제공한다.
-- IME candidate window, clipboard, dead key, surrogate pair를 검증한다.
+### F6 — scheduler, vsync, ordinary frame 통합
 
-PASS 조건:
+상태: notStarted
 
-- 한국어 두벌식 연속 조합, backspace, selection replacement 정상
-- resize/DPI 이동 중 후보창과 caret 위치 정상
-- focus island↔render 왕복 후 조합 유실/중복 0
-- clipboard text round-trip 정상
+선행 조건: F5 PASS
 
-### A8 — semantics/UI Automation
+작업:
 
-선행 조건: A7 PASS
-
-- Doroti semantics tree를 HWND/UIA provider와 연결한다.
-- root island accessibility와 Doroti provider의 parent/child boundary를 고정한다.
-- focus, bounds, hit test, Invoke/Value/Scroll pattern을 구현한다.
-- bounds는 committed epoch만 게시한다.
+1. display refresh와 ANGLE swap interval을 기준으로 Windows vsync source를 구성한다.
+2. resize frame과 ordinary animation frame의 우선순위/병합 규칙을 고정한다.
+3. pending resize generation이 있을 때 wrong-size ordinary frame을 present하지 않는다.
+4. frame callback, raster, swap, presented timing을 causal ID로 연결한다.
+5. hidden/minimized 상태에서는 scheduling을 멈추고 restore 때 latest metrics로 재개한다.
+6. multi-window 확장을 고려해 view별 state/surface/callback을 분리한다.
 
 PASS 조건:
 
-- Accessibility Insights에서 중복 root/끊긴 tree 없음
-- Narrator focus와 keyboard focus 일치
-- resize/DPI 변경 뒤 UIA bounds와 화면 pixels 일치
-- 보조 island control과 Doroti node 사이 탐색 정상
+- animation/resize starvation 0
+- frame queue 무한 증가 0
+- stale/wrong-size present 0
+- 60/120/144/165Hz 사용 가능 환경에서 cadence 목표 충족
+- resize 종료 후 ordinary animation이 유한 시간 안에 정상 cadence로 복귀
 
-### A9 — lifecycle, DPI, monitor, device recovery
+### F7 — input, focus, IME, clipboard, accessibility
 
-선행 조건: A8 PASS
+상태: notStarted
 
-- minimize/restore, maximize, snap, fullscreen, display change를 검증한다.
-- per-monitor-v2 DPI와 suggested rect 적용 순서를 고정한다.
-- swap-chain/device removal 때 current transaction을 terminal로 닫고 resource를 재생성한다.
-- sleep/resume, RDP attach/detach, monitor disconnect를 가능한 범위에서 검증한다.
+선행 조건: F6 PASS
 
-PASS 조건:
+작업:
 
-- lifecycle 전환 뒤 stale size/frame/input 없음
-- DPI 변경 시 logical/physical size가 한 epoch에서 일치
-- device removal injection 후 black/white uncovered 없이 복구
-- shutdown 중 outstanding GPU/bridge callback으로 인한 crash 0
-
-### P0 — Windows target/runner/package cutover
-
-선행 조건: A9 PASS와 제품 후보 G2 preflight PASS
-
-- `Doroti.Target.Windows.WindowsAppSdk.win-x64`를 product solution에 추가한다.
-- runner SDK와 target discovery에 `HostKind=WindowsAppSdk`를 추가한다.
-- DemoApp/template/package manifest가 새 native entry를 생성하게 한다.
-- CI Release build, publish, packaged/unpackaged launch를 추가한다.
-- rollback flag로 기존 MAUI Windows target을 선택할 수 있게 한다.
+1. child HWND WndProc에서 mouse/pointer/touch/pen/wheel을 Doroti event로 변환한다.
+2. add/hover/down/move/up/remove/cancel과 capture lifecycle을 보존한다.
+3. key down/up, modifier, dead key, surrogate pair를 단일 keyboard manager로 직렬화한다.
+4. TSF 또는 IMM32 중 하나를 child text input owner로 확정한다.
+5. 한국어 composition/candidate/caret/selection/clipboard를 Doroti text model에 연결한다.
+6. child HWND UIA root provider 아래 semantics tree와 Invoke/Value/Scroll pattern을 구현한다.
+7. standard top-level non-client focus/cursor/accessibility는 Windows 기본 동작을 보존한다.
 
 PASS 조건:
 
-- clean checkout에서 restore/build/publish/install/launch PASS
-- Windows App SDK `2.4.0` package/runtime provenance 일치
-- package identity가 있는 실행과 없는 실행의 지원 범위 문서화
-- 기존 non-Windows target 회귀 0
-- rollback 절차 검증
+- content와 resize border cursor ownership 충돌 0
+- capture 중 child 밖 이동 후 up/cancel 정상
+- Alt+Tab, minimize/restore, popup 왕복 뒤 focus 정상
+- 한국어 두벌식 조합/후보창/caret/selection/clipboard 정상
+- Narrator/Accessibility Insights에서 중복 root나 끊긴 tree 0
+- resize/DPI 변경 뒤 input/UIA bounds가 화면 pixels와 일치
 
-기존 Windows MAUI target 삭제는 P0 PASS만으로 하지 않는다. G2 전체 PASS와 사용자 제품 수용 이후 별도 cleanup 변경으로 수행한다.
+### F8 — DPI, monitor, fullscreen, lifecycle, recovery
 
-### G2 — Windows 제품 acceptance
+상태: notStarted
 
-선행 조건: P0 PASS
+선행 조건: F7 PASS
+
+작업:
+
+1. `WM_DPICHANGED` suggested top-level rect를 적용하고 child metrics를 새 epoch로 게시한다.
+2. current `HMONITOR`, display ID, refresh, DPI 변경을 display manager에 반영한다.
+3. initial/restore placement만 current monitor `rcWork`에 맞춘다.
+4. fullscreen은 `rcMonitor`와 standard style 전환으로 구현하고 원래 rect/DPI/monitor/work-area를 보존한다.
+5. monitor disconnect/rearrange 뒤 restore rect를 새 `rcWork`에 맞춘다.
+6. sleep/resume, RDP attach/detach, display change, device/context loss를 검증한다.
+7. shutdown 중 pending resize/frame/surface callback을 모두 terminal 처리한다.
+
+PASS 조건:
+
+- mixed-DPI monitor 이동 중 logical/physical/display identity 불일치 0
+- maximize/Snap/fullscreen/restore 뒤 stale surface/input 0
+- monitor disconnect 뒤 offscreen window 0
+- sleep/RDP/display change 뒤 valid frame 복구
+- device/context loss 뒤 black/white stuck surface 없이 복구
+- shutdown callback/UAF/crash 0
+
+### F9 — Windows target/runner/package integration
+
+상태: notStarted
+
+선행 조건: F8 PASS
+
+작업:
+
+1. `Doroti.Target.Windows.Win32.win-x64`를 product solution과 runner graph에 추가한다.
+2. qualification runner `DorotiDemoApp/windows-win32`를 추가한다.
+3. clean CI restore/build/test/publish/launch를 추가한다.
+4. ANGLE/EGL/GLES/Skia native artifact provenance와 architecture check를 package에 포함한다.
+5. runtime flag로 Win32, WindowsAppSdk rollback, MAUI rollback을 선택 가능하게 한다.
+6. 이 단계에서는 `DorotiDemoApp/windows`와 app template의 기본값을 바꾸지 않는다.
+
+PASS 조건:
+
+- clean checkout x64 restore/build/test/publish/launch PASS
+- 설치된 SDK/PATH에 의존하지 않는 unpackaged launch PASS
+- required native DLL 누락/잘못된 architecture를 startup에서 명확히 fail-fast
+- non-Windows target 회귀 0
+- rollback launch 절차 PASS
+
+## 6. FG — Flutter-style Windows 제품 acceptance
+
+상태: notVerified
+
+선행 조건: F9 PASS
 
 테스트 matrix:
 
-- outer size: 420×300, 640×360, 1000×600
+- client size: 420×300, 640×360, 1000×600, monitor work-area 근접 크기
 - DPI: 100%, 125%, 150%, 200%
-- refresh: 60, 120, 144, 165Hz에서 사용 가능한 조합
-- drag: slow, fast, expand, shrink, immediate reverse, four corners, four edges
-- display: same-monitor, cross-monitor, mixed-DPI 이동
-- lifecycle: minimize/restore, maximize, snap, fullscreen, device removal
-- input: mouse, touch/pen 가능 환경, keyboard, focus, capture
-- text: 한국어 IME 조합/후보창/caret/clipboard
-- accessibility: Narrator/Accessibility Insights
-- deployment: packaged/unpackaged 및 runtime 부재/업데이트 경로
+- refresh: 사용 가능한 60, 120, 144, 165Hz
+- drag: slow/fast, expand/shrink, immediate reverse, 네 edge와 네 corner
+- display: same-monitor, cross-monitor, mixed-DPI, monitor disconnect/rearrange
+- lifecycle: minimize/restore, maximize, Snap, fullscreen, sleep/resume, RDP
+- input: mouse, touch/pen 가능 환경, wheel, keyboard, focus, capture
+- text: 한국어 IME 조합/후보창/caret/selection/clipboard
+- accessibility: Narrator와 Accessibility Insights
+- recovery: EGL context/device loss와 failed surface recreation
+- deployment: clean publish, native DLL missing/wrong-arch, rollback host
 
 PASS 조건:
 
-- correctness, visible continuity, cadence, input, text, accessibility, lifecycle, deployment가 각각 PASS
-- 각 qualified visual run 10초 이상, 방향별 3회 연속 PASS
-- 검은 영역, 흰 영역, 색 띠, edge line, raster jitter, full-frame stretch 0
-- stale/mismatched epoch present 0
-- device failure 0 또는 검증된 recovery
-- 사용자가 실제 빠른 drag에서 visible acceptance 확인
+- correctness, visible continuity, cadence, input, text, accessibility, lifecycle, recovery, deployment가 각각 PASS
+- 방향별 실제 mouse drag 10초 이상, 3회 연속 valid run
+- 검은/흰 영역, 색 띠, stale edge, full-frame stretch, raster flicker 0
+- pointer-border 역방향 jitter 또는 장시간 freeze 0
+- stale/wrong-size generation present 0
+- resize transaction timeout/failed/terminal 누락 0
+- surface/context failure가 없거나 fault injection에서 검증된 recovery
+- qualified output evidence와 사용자 실제 화면 확인 모두 PASS
 
-하나라도 미실행이면 해당 축은 `notVerified`이며 G2 전체 PASS로 쓰지 않는다.
+한 축이라도 미실행이면 해당 축과 FG 전체는 `notVerified`다. build, contract counter, `eglSwapBuffers` 성공, `DwmFlush` 반환만으로 visible PASS를 선언하지 않는다.
 
-## 8. 자동화와 evidence 규격
+### F10 — 기본 Windows target 전환
 
-모든 run은 최소한 다음 provenance를 남긴다.
+상태: notStarted
+
+선행 조건: FG 전체 PASS와 사용자 제품 수용
+
+작업:
+
+1. `DorotiDemoApp/windows`와 app template의 기본 Windows host를 Win32로 전환한다.
+2. `doroti.ps1 build --platform windows`, target discovery, runner SDK의 기본 graph를 Win32 target으로 전환한다.
+3. release/package 문서와 CI 기본 job을 새 host에 맞춘다.
+4. WindowsAppSdk와 MAUI Windows rollback launch를 최소 한 release 동안 보존한다.
+5. 기존 host 삭제는 별도 cleanup 승인과 rollback 사용 현황 확인 뒤 수행한다.
+
+PASS 조건:
+
+- clean checkout 기본 Windows build/publish/launch가 Win32 host를 선택
+- template에서 생성한 새 app의 Windows launch PASS
+- explicit rollback host build/launch PASS
+- non-Windows target 회귀 0
+- release artifact provenance가 새 기본 host를 정확히 표시
+
+## 7. 자동화와 evidence 규격
+
+각 run은 최소한 다음 provenance를 남긴다.
 
 - git commit/dirty status
-- build configuration와 RID
+- Flutter source pin/hash
+- build configuration, RID, target/host kind
 - Windows version/build
-- Windows App SDK NuGet version과 실제 Windows App Runtime version
-- package identity/bootstrap mode
-- GPU/driver와 adapter LUID
-- monitor/output, refresh rate, DPI
-- window HWND, render HWND, WindowId
-- observer 종류와 version
-- run ID, start/end timestamp, input trace 또는 drag mode
+- ANGLE/EGL/GLES/SkiaSharp version과 native DLL hash/path
+- adapter, backend, driver, LUID
+- monitor/display ID, refresh, DPI, work-area와 monitor rect
+- top-level/child HWND, client physical pixels
+- run ID, timestamp, input trace, drag direction/speed
+- hardware/WARP/software 구분
 
-epoch JSONL event:
+resize event JSONL:
 
-- `resizeObserved`, `metricsDelivered`, `sceneBuilt`, `backingReady`
-- `coverPresented`, `geometryAdmitted`, `wmSizeObserved`
-- `preparedPresented`, `platformAck`, `dwmOrderingPoint`
-- `transactionTerminal`, `deviceLost`, `deviceRecovered`
+- `windowSizeObserved`
+- `resizeStarted`
+- `metricsDelivered`
+- `sceneBuilt`
+- `frameGenerated`
+- `surfaceDestroyStarted`/`surfaceDestroyed`
+- `surfaceCreated`/`surfaceReady`
+- `swapStarted`/`swapCompleted`
+- `resizeDone`
+- `timedOut`/`superseded`/`failed`/`suspended`
+- `dwmOrderingPoint`
+- `contextLost`/`contextRecovered`
 
-요약에는 count뿐 아니라 p50/p95/p99/max와 worst epoch ID를 기록한다. app, observer, camera evidence는 별도 원본을 보존하고 합성 summary가 원본 provenance를 잃지 않게 한다.
+모든 event는 `viewId`, `resizeGeneration`, target extent, actual child extent, thread ID, monotonic timestamp를 포함한다. summary는 count뿐 아니라 p50/p95/p99/max, worst generation, timeout/failed/terminal imbalance를 기록한다.
 
-## 9. source/contract 검증 항목
+app counter, observer/camera, 사용자의 visible 판정은 서로 다른 원본 evidence로 보존한다. 한 종류의 성공을 다른 종류의 PASS로 승격하지 않는다.
 
-구현 전에 다음 금지 조건을 정적 검사에 추가한다.
+## 8. 실패 시 중단·rollback 규칙
 
-- 새 Windows product host에서 `Microsoft.UI.Xaml.Window` 생성 금지
-- 새 Windows target에서 MAUI startup 사용 금지
-- render size authority로 XAML `SizeChanged` 사용 금지
-- drag hot path의 `ResizeBuffers` 금지
-- `IDXGISwapChain::SetSourceSize` 금지
-- visible continuity를 위한 CPU readback 금지
-- full-frame provisional stretch 금지
-- 동시에 두 front를 표시하거나 독립된 z-order/geometry로 교대하는 구성 금지. hidden prepared slot과 single-commit child 교체는 허용
-- resize transaction 중 arbitrary nested message pump 금지
-- stale epoch present 금지
-- floating/pre-release Windows App SDK package version 금지
+- F1에서 ANGLE/Skia ABI 또는 배포가 성립하지 않으면 D3D12로 조용히 대체하지 않는다. 원인과 대안 결정을 기록하고 중단한다.
+- F2에서 standard window 기능이 깨지면 custom non-client를 추가하지 않고 top-level/child ownership을 수정한다.
+- F4에서 surface recreation이 느리면 monitor-sized capacity, `SetSourceSize`, dual-front를 새 host에 넣지 않는다. context/resource lifetime과 surface creation 비용을 먼저 분리한다.
+- F5 timeout이 반복되면 100ms를 늘리지 않고 metrics→layout→raster→surface→swap의 worst generation을 고친다.
+- F5에서 visible artifact가 남으면 timer/debounce/background/edge별 좌표 보정을 추가하지 않고 handshake와 actual child/surface extent를 다시 검증한다.
+- F6 cadence가 부족하면 resize correctness와 cadence를 분리해 원인을 찾되 wrong-size frame을 허용하지 않는다.
+- F7 IME/UIA 때문에 full-client XAML/ContentIsland가 필요해 보이면 F7을 FAIL로 기록하고 최소 spike로 원인을 분리한다.
+- F8 monitor 이동 시 fixed primary work-area로 clamp하지 않는다. 현재 child가 속한 monitor/DPI/display를 다시 관측한다.
+- F10과 별도 cleanup 승인 전에는 기존 WindowsAppSdk/MAUI host를 삭제하거나 rollback을 제거하지 않는다.
+- rollback은 runtime host 선택으로 수행하고, 새 Win32 host 내부에서 Arm N과 EGL path를 혼합하지 않는다.
 
-추가 contract:
+## 9. 예상 repository 변경 범위
 
-- top-level HWND는 정확히 1개
-- direct render child HWND는 정확히 1개
-- root attached SiteBridge는 정확히 1개
-- auxiliary child SiteBridge는 등록된 purpose/rect가 있을 때만 존재
-- client geometry authority는 `WindowsAppSdkWindowHost` 하나
-- presenter와 framework는 geometry를 요청할 수 있지만 직접 변경하지 못함
-- build-time package version과 runtime-selected version이 evidence에 함께 존재
+새로 추가할 영역:
 
-## 10. 실패 시 중단·rollback 규칙
+- `Doroti/src/Doroti.Host.Win32/`
+- `Doroti/src/Doroti.Target.Windows.Win32.win-x64/`
+- `DorotiDemoApp/windows-win32/`
+- Win32/ANGLE contract 및 live validation
+- runner/template/package graph의 Win32 target
 
-- M1 FAIL이면 자동으로 A0-V 이후를 시작하지 않는다. 이번 사용자 override처럼 명시적으로 시작한 경우에도 M1/H0-V/G2 상태를 올리지 않는다.
-- A0-V에서 2.4 API/deployment 문제가 나면 1.8 제품 구현으로 우회하지 않고 원인과 최소 지원 OS/deployment 결정을 기록한다.
-- H0-V에서 artifact가 재현되면 timer/debounce tuning으로 제품 단계에 진입하지 않고 transaction/observer 문제로 돌아간다.
-- A3가 H0-V보다 cadence 또는 visible continuity가 나쁘면 shell integration을 원인 분리할 때까지 A4로 가지 않는다.
-- A4에서 island 추가 후 회귀하면 SiteBridge rect/z-order/input ownership을 수정한다. render path를 XAML-owned path로 되돌리지 않는다.
-- IME/UIA 때문에 full-client XAML root가 필요해 보이면 A7/A8을 FAIL로 기록하고 별도 최소 spike로 원인을 분리한다.
-- P0/G2 전에는 기존 Windows MAUI target을 삭제하거나 기본 target을 영구 전환하지 않는다.
-- Web 제품 구현은 별도 승인과 `work3.md` gate 없이 Windows 결과만으로 자동 재개하지 않는다.
+연결할 기존 영역:
 
-rollback 단위:
+- `Doroti/src/Doroti.Ui/PlatformDispatcher.cs`
+- `Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs`
+- engine/view metrics, pointer, keyboard, text, semantics contract
+- `DorotiDemoApp/windows`
 
-1. runtime flag로 WindowsAppSdk host와 기존 MAUI Windows host를 선택
-2. shared presentation core의 last accepted version 고정
-3. package/template 기본값은 마지막에 전환
-4. Windows App SDK pin upgrade는 dependency commit 단위로 되돌릴 수 있게 분리
-5. rollback이 source revert 없이 가능함을 release candidate에서 확인
+보존할 rollback/diagnostic 영역:
 
-## 11. 이번 문서 개편 이후의 정확한 다음 작업
+- `Doroti/src/Doroti.Host.WindowsAppSdk`
+- `Doroti/src/Doroti.Target.Windows.WindowsAppSdk.win-x64`
+- `Doroti/src/Doroti.Host.Maui`
+- `Doroti/src/Doroti.Target.Windows.Maui.win-x64`
+- `Doroti/validation/windows-top-level-presentation`
 
-1. 새 product runner를 사용자가 실제 화면에서 좌측·상단·우측·하단·네 corner로 확인한다.
-2. M1 observer qualification을 수정하거나 외부 고속 카메라 oracle을 확보해 visible continuity를 정식 판정한다.
-3. 100/125/150/200% DPI와 mixed-monitor 이동에 맞춰 fixed envelope/region/metrics를 per-monitor authority로 확장한다.
-4. Arm N custom chrome에 남은 system menu, Snap Layouts, keyboard/touch sizing과 caption UIA를 구현한다.
-5. island keyboard owner와 Doroti text model을 연결해 한국어 IME 후보창/caret/selection/clipboard를 실사용 검증한다.
-6. HWND UIA provider와 Doroti semantics tree를 연결하고 Accessibility Insights/Narrator matrix를 실행한다.
-7. device loss, sleep/RDP/display change, repeated bridge shutdown fault matrix를 실행한다.
-8. clean checkout CI, package identity가 있는 설치, runtime 부재/업데이트, rollback launch를 검증한다.
-9. 위 항목 뒤에만 P0/G2를 PASS로 승격하고 기존 MAUI Windows target 제거 여부를 별도 결정한다.
+새 Flutter-style path가 FG 전체 PASS를 얻기 전에는 기존 영역을 삭제하거나 과거 evidence를 새 경로의 성공으로 재해석하지 않는다.
+
+## 10. 정확한 다음 작업
+
+1. F0-V source anchor/hash validator와 Flutter→Doroti protocol mapping evidence를 만든다.
+2. F1 `Doroti.Host.Win32` + exact ANGLE/EGL/Skia offscreen bootstrap을 구현한다.
+3. F2 표준 top-level/child HWND와 first-frame show gate를 구현한다.
+4. F3 physical metrics/display snapshot을 engine에 연결한다.
+5. F4 child HWND exact-size EGL window surface lifecycle을 raster thread에 구현한다.
+6. F5 100ms bounded resize handshake와 exactly-once terminal ledger를 구현한다.
+7. F2~F5 최소 live gate에서 실제 네 edge/네 corner visible 동작을 확인한다.
+8. 그 gate가 PASS한 뒤에만 F6 scheduler, F7 input/text/UIA, F8 lifecycle, F9 integration으로 진행한다.
+9. FG 전체 PASS와 사용자 제품 수용 뒤에만 F10 기본 target 전환을 수행한다.
 
 현재 상태를 다음처럼 오해하면 안 된다.
 
-- repository 전체 중앙 package가 이미 `2.4.0`이다: **아님** — 새 WindowsAppSdk 경로만 scoped exact `2.4.0`이다.
-- `Doroti.Host.WindowsAppSdk` 제품 후보가 존재한다: **맞음**
-- raw HWND 제품 shell이 acceptance를 통과했다: **아님**
-- ContentIsland/SiteBridge create/connect/close와 Arm N frame commit이 scoped runtime smoke를 통과했다: **맞음**
-- 2026-08-24 validation control이 제품 G2를 통과했다: **아님**
-- 기존 MAUI Windows target을 지금 제거해도 된다: **아님**
+- Flutter-style host가 이미 구현됐다: **아님**
+- 기존 Arm N을 조금 수정하는 계획이다: **아님** — 새 Win32/child/EGL 제품 경로다.
+- monitor work-area를 render envelope/capacity로 계속 사용한다: **아님**
+- work-area를 전혀 사용하지 않는다: **아님** — initial/restore/popup placement에만 사용한다.
+- Windows App SDK 2.4가 새 host에 필요하다: **아님**
+- pinned Flutter runtime을 같이 빌드·계측한다: **아님** — source-only protocol reference다.
+- 기존 WindowsAppSdk/MAUI 경로를 지금 삭제한다: **아님**
+- 이번 문서 개편이 runtime resize 문제 해결을 증명한다: **아님**
 
-## 12. 공식 기준 source
+## 11. 기준 source
 
-Windows App SDK 공식 문서를 구현 시 기준으로 사용한다.
+Flutter source pin:
 
-- 최신 stable 다운로드: <https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/downloads>
-- release channel과 servicing: <https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/release-channels>
-- Windows App SDK 2.0/2.4 release notes: <https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/release-notes/windows-app-sdk-2-0?pivots=stable>
-- HWND interop: <https://learn.microsoft.com/en-us/windows/apps/develop/ui/retrieve-hwnd>
-- `Win32Interop.GetWindowIdFromWindow`: <https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/win32/microsoft.ui.interop/nf-microsoft-ui-interop-getwindowidfromwindow>
-- `AppWindow.GetFromWindowId`: <https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.windowing.appwindow.getfromwindowid>
-- Content namespace: <https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.content>
-- ContentIsland overview: <https://learn.microsoft.com/en-us/windows/apps/develop/composition/content-island>
-- `DesktopAttachedSiteBridge`: <https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.content.desktopattachedsitebridge>
-- `DesktopChildSiteBridge`: <https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.content.desktopchildsitebridge>
-- `DispatcherQueueController.CreateOnCurrentThread`: <https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.dispatching.dispatcherqueuecontroller.createoncurrentthread>
-- `DesktopWindowXamlSource` fallback boundary: <https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.hosting.desktopwindowxamlsource>
-- Windows App SDK Islands sample: <https://github.com/microsoft/WindowsAppSDK-Samples/blob/main/Samples/Islands/README.md>
+- `reference/flutter-master`: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
 
-repository 기준점:
+핵심 reference:
 
-- 기존 MAUI Windows App SDK pin: `Doroti/Directory.Packages.props`
-- 새 scoped 2.4 host: `Doroti/src/Doroti.Host.WindowsAppSdk`
-- 새 Windows target: `Doroti/src/Doroti.Target.Windows.WindowsAppSdk.win-x64`
-- 새 API/runtime preflight: `Doroti/validation/windowsappsdk-24-preflight`
-- 새 Demo runner: `DorotiDemoApp/windowsappsdk`
-- 현 Windows MAUI host: `Doroti/src/Doroti.Host.Maui`
-- 현 Windows MAUI target: `Doroti/src/Doroti.Target.Windows.Maui.win-x64`
-- exact-frame API: `Doroti/src/Doroti.Ui/PlatformDispatcher.cs`
-- direct top-level control: `Doroti/validation/windows-top-level-presentation/Program.cs`
-- 현 D3D12 Windows surface experiment: `Doroti/src/Doroti.Host.Maui/DorotiWindowsDxgiSurface.cs`
+- `reference/flutter-master/engine/src/flutter/shell/platform/windows/host_window.cc`
+- `reference/flutter-master/engine/src/flutter/shell/platform/windows/flutter_window.cc`
+- `reference/flutter-master/engine/src/flutter/shell/platform/windows/flutter_windows_view.cc`
+- `reference/flutter-master/engine/src/flutter/shell/platform/windows/flutter_windows_view.h`
+- `reference/flutter-master/engine/src/flutter/shell/platform/windows/egl/window_surface.cc`
+- `reference/flutter-master/engine/src/flutter/shell/platform/windows/egl/manager.cc`
+- `reference/flutter-master/engine/src/flutter/shell/platform/windows/task_runner.cc`
+- `reference/flutter-master/engine/src/flutter/shell/platform/windows/text_input_manager.cc`
+- `reference/flutter-master/engine/src/flutter/shell/platform/windows/accessibility_bridge_windows.cc`
+- `reference/flutter-master/engine/src/flutter/shell/platform/windows/display_manager.cc`
 
-이 문서의 gate와 상태가 active 기준이다. 구현 중 새 evidence가 생기면 해당 단계의 `PASS/FAIL/notVerified`와 exact resume point를 함께 갱신한다.
+이 문서의 단계와 상태가 새 Windows 제품 경로의 active 기준이다. 구현 중 새 evidence가 생기면 해당 단계의 `PASS/FAIL/notVerified`와 exact resume point를 함께 갱신한다.
