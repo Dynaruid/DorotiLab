@@ -22,7 +22,7 @@
   - 이 oracle은 새 prototype에서도 재사용하지만, 자동 grid PASS를 visible smoothness로 승격하지 않는다.
 - **R1 factorial: FAIL — owner not isolated**
   - evidence: `Doroti/artifacts/windows-resize-r1-factorial/r1-20260825-190055-64b6aa6c53824cdc901d97bf89382a1f/r1-validation-reanalyzed.json`
-  - 5 variant × trace off/on × 4 edge × 10회, 총 400 episode의 drive contract failure와 observer overhead failure는 0이었다.
+  - 과거 실행은 5 variant × trace off/on × 4 edge × 10회, 총 400 episode였고 drive contract failure와 observer overhead failure는 0이었다. 이 횟수는 보존 evidence일 뿐 앞으로 반복할 acceptance 요구사항이 아니다.
   - trace-off lag p95 median은 모든 variant가 `26~29px`에 모였고, 인접 단계가 `4px` 또는 `1ms` 이상 악화되는 owner를 찾지 못했다.
   - GPU fence wait는 supplemental에서 전 variant 0이었다. renderer/GPU wait만 줄이는 작업은 현재 공통 떨림의 근본 수정 근거가 없다.
 
@@ -117,6 +117,13 @@ P0 physical native-control truth gate
 - O5 사용자 visible PASS 전에는 GPU/content 최적화나 대규모 matrix로 확대하지 않는다.
 - FG 전체 PASS 전에는 Arm N, MAUI, current standard-shell path와 rollback selector를 삭제하지 않는다.
 
+### 반복 횟수 정책
+
+- interactive resize의 physical/synthetic scenario는 각 조건을 **기본 2회**만 실행한다.
+- 첫 실행에서 명백한 visible FAIL, crash, hang 또는 contract violation이 나오면 즉시 FAIL로 기록하고 불필요한 대량 반복을 하지 않는다.
+- 두 결과가 서로 충돌하거나 비결정적 failure를 재현해야 할 때만 원인을 적고 필요한 조건에 한해 추가 실행한다.
+- 수백 회 factorial/episode 반복은 acceptance 기본 절차로 사용하지 않는다. build, unit test와 구조적 contract test의 내부 case 수는 이 scenario 반복 제한과 별개다.
+
 ## 4. P0 — Physical native-control truth gate
 
 ### 목표
@@ -132,7 +139,7 @@ P0 physical native-control truth gate
 ### 방법
 
 - 같은 monitor, DPI, refresh, initial rect를 사용한다.
-- 사용자가 실제 mouse로 Left/Top/Right/Bottom fast와 slow drag를 각각 3회 수행한다.
+- 사용자가 실제 mouse로 Left/Top/Right/Bottom fast와 slow drag를 각각 2회 수행한다.
 - synthetic `600px/150ms`는 반복 가능한 보조 측정으로만 남긴다.
 - 1kHz cursor/window sampler, raw capture, 가능하면 240fps 이상 external video를 별도 provenance로 저장한다.
 - border 자체 떨림, cursor-edge 추종, opposite edge, content continuity를 각각 판정한다.
@@ -143,7 +150,7 @@ P0 physical native-control truth gate
 - bare standard shell도 physical mouse에서 떨리면 같은 장비/refresh의 platform floor로 기록한다.
 - platform floor는 Doroti product PASS 면제가 아니다. O1이 동일 조건에서 더 부드러운 visible geometry를 제공해야 다음 단계로 간다.
 - physical mouse는 smooth한데 injected run만 떨리면 `SendInput` absolute-coordinate mapping과 integer time distribution을 고친 뒤 자동 threshold를 다시 정의한다.
-- 결과가 애매하면 slow-motion frame과 사용자 판정을 우선하며 추가 400-run factorial로 대체하지 않는다.
+- 결과가 애매하면 slow-motion frame과 사용자 판정을 우선하며 대량 factorial 반복으로 대체하지 않는다.
 
 ## 5. O1 — Independent Owned Geometry Envelope visual spike
 
@@ -276,7 +283,7 @@ O4를 통과한 동일한 candidate binary 하나만 사용한다.
 - Left, Top, Right, Bottom, four corners
 - expand, shrink, immediate reverse
 - `600px/150ms`, `600px/300ms`, slow/fine drag
-- 각 조건 physical mouse 3회 이상
+- 각 조건 physical mouse 2회
 - initial logical size 420×300, 640×360, 1000×600
 - 가능한 DPI 100%, 125%, 150%, 200%
 - 가능한 refresh 60, 120, 144, 165Hz
