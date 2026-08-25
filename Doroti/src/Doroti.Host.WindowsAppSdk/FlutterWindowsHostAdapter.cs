@@ -57,6 +57,7 @@ internal sealed class FlutterWindowsHostAdapter :
     private readonly FlutterWindowsInputHost _input;
     private readonly FlutterWindowsUiaBridge _uia;
     private readonly FlutterWindowsLifecycleManager _lifecycle;
+    private readonly FlutterWindowsResizeTrace _resizeTrace;
     private readonly ConcurrentQueue<Action> _engineTasks = new();
     private readonly AutoResetEvent _engineTaskSignal = new(false);
     private readonly AutoResetEvent _frameSignal = new(false);
@@ -75,6 +76,11 @@ internal sealed class FlutterWindowsHostAdapter :
     private long _engineTasksPosted;
     private long _engineTasksRun;
     private long _frameworkMetricsGeneration;
+    private WindowsViewMetrics? _latestFrameworkMetricsRequest;
+    private long _frameworkResizeInFlightGeneration;
+    private int _frameworkMetricsDrainPosted;
+    private FlutterWindowsProvisionalResize? _provisionalResizeState;
+    private NativeWindowPos? _latestInteractiveWindowPos;
     private long _repaintDeferredForMetrics;
     private long _resizePlatformDispatchCount;
     private long _resizePlatformDispatchTotalMicroseconds;
@@ -139,6 +145,7 @@ internal sealed class FlutterWindowsHostAdapter :
             _host.ViewHwnd,
             _metrics.Current));
         Volatile.Write(ref _surfaceGeneration, _surface.Snapshot.SurfaceGeneration);
+        _resizeTrace = new FlutterWindowsResizeTrace(viewId, _host.TopLevelHwnd, _host.ViewHwnd);
 
         _input = new FlutterWindowsInputHost(_host, viewId, () => _metrics.Current);
         _uia = FlutterWindowsUiaBridge.AttachToHostWindow(
@@ -226,7 +233,8 @@ internal sealed class FlutterWindowsHostAdapter :
                 _scheduler,
                 _surface,
                 renderer,
-                _rasterRunner);
+                _rasterRunner,
+                _resizeTrace);
             _scheduledRaster.CausalTraceCompleted += HandleCausalTraceCompleted;
         }
         renderer.AttachSurface(RequestInvalidate);
@@ -501,12 +509,24 @@ internal sealed class FlutterWindowsHostAdapter :
         _input.EditingStateChanged -= HandleEditingStateChanged;
         _input.ActionPerformed -= HandleActionPerformed;
         _lifecycle.BeginShutdown();
+        var schedulerSummary = _scheduler.Snapshot;
+        var rasterSummary = _scheduledRaster?.Snapshot;
+        _resizeTrace.Record(
+            "shutdown",
+            _metrics.Current,
+            detail: $"traceDropped={_resizeTrace.DroppedEventCount};" +
+                    $"queueMax={schedulerSummary.MaxObservedQueueDepth};" +
+                    $"stalePresent={schedulerSummary.StaleOrWrongSizePresentCount};" +
+                    $"failed={rasterSummary?.FailureCount ?? 0};" +
+                    $"causalGap={schedulerSummary.CausalGapCount};" +
+                    $"receiptMismatch={rasterSummary?.CausalReceiptMismatchCount ?? 0}");
         _uia.Dispose();
         _input.Dispose();
         _lifecycle.Dispose();
         _scheduler.Dispose();
         _metrics.Dispose();
         _host.Dispose();
+        _resizeTrace.Dispose();
         _rasterRunner.Dispose();
         _engineTaskSignal.Dispose();
         _frameSignal.Dispose();
@@ -529,6 +549,31 @@ internal sealed class FlutterWindowsHostAdapter :
 
     private void HandleCausalTraceCompleted(FlutterWindowsScheduledRasterCausalTrace trace)
     {
+        var inFlightBefore = Volatile.Read(ref _frameworkResizeInFlightGeneration);
+        var released = false;
+        while (inFlightBefore != 0 && trace.ResizeGeneration >= inFlightBefore)
+        {
+            var observed = Interlocked.CompareExchange(
+                ref _frameworkResizeInFlightGeneration,
+                0,
+                inFlightBefore);
+            if (observed == inFlightBefore)
+            {
+                released = true;
+                break;
+            }
+            inFlightBefore = observed;
+        }
+        _resizeTrace.Record(
+            "frameworkFrameTerminal",
+            causalFrameId: trace.CausalFrameId,
+            detail: $"viewId={trace.ViewId};generation={trace.ResizeGeneration};" +
+                    $"size={trace.PhysicalWidth}x{trace.PhysicalHeight};presented={trace.Presented};" +
+                    $"inFlightBefore={inFlightBefore};released={released}");
+        if (released)
+        {
+            TryPostFrameworkMetricsDrain();
+        }
         if (trace.Presented)
         {
             // This callback is raised by the dedicated raster owner. Reading
@@ -578,12 +623,16 @@ internal sealed class FlutterWindowsHostAdapter :
             case WmEnterSizeMove:
                 Volatile.Write(ref _interactiveSizeMove, 1);
                 Volatile.Write(ref _provisionalPreparationSuppressed, 0);
+                _resizeTrace.Record("resizeStarted", _metrics.Current);
                 return FlutterWindowsChildMessageResult.Unhandled;
             case WmExitSizeMove:
                 Volatile.Write(ref _interactiveSizeMove, 0);
                 Volatile.Write(ref _provisionalPreparationSuppressed, 0);
+                Interlocked.Exchange(ref _frameworkResizeInFlightGeneration, 0);
                 CancelUnadmittedProvisionalResize();
+                ApplyLatestInteractiveWindowPos();
                 PostFinalResizeRecovery();
+                _resizeTrace.Record("resizeDone", _metrics.Current);
                 return FlutterWindowsChildMessageResult.Unhandled;
             case WmClose:
                 if (!_closing)
@@ -602,6 +651,7 @@ internal sealed class FlutterWindowsHostAdapter :
     private void HandleMetricsPublished(WindowsViewMetrics metrics)
     {
         var started = Stopwatch.GetTimestamp();
+        _resizeTrace.Record("windowSizeObserved", metrics);
         Volatile.Write(ref _pendingResizeGeneration, metrics.ResizeGeneration);
         if (_renderer is null || _scheduledRaster is null || !metrics.HasDrawableSize)
         {
@@ -616,6 +666,8 @@ internal sealed class FlutterWindowsHostAdapter :
             if (admittedPreparedFrame)
             {
                 _ = _surface.AdmitProvisionalResize(metrics, out var preparedBeforeAdmission);
+                _resizeTrace.Record("provisionalAdmitted", metrics, detail:
+                    $"preparedBeforeAdmission={preparedBeforeAdmission}");
                 if (Volatile.Read(ref _interactiveSizeMove) != 0)
                 {
                     Interlocked.Increment(ref _leadingEdgeAdmissionCount);
@@ -624,8 +676,12 @@ internal sealed class FlutterWindowsHostAdapter :
                 }
             }
             else
+            {
                 _surface.CancelProvisionalResize(provisional);
+                _resizeTrace.Record("provisionalCancelled", provisional);
+            }
             _ = Interlocked.CompareExchange(ref _provisionalMetrics, null, provisional);
+            Volatile.Write(ref _provisionalResizeState, null);
         }
 
         // Child WM_SIZE runs on the platform thread inside Windows' modal
@@ -638,7 +694,10 @@ internal sealed class FlutterWindowsHostAdapter :
         // signal; it simply no longer blocks native message dispatch.
         if (!admittedPreparedFrame)
             PostFrameworkMetricsChanged(metrics);
-        RecordResizePlatformDispatch(Stopwatch.GetElapsedTime(started));
+        var dispatchElapsed = Stopwatch.GetElapsedTime(started);
+        RecordResizePlatformDispatch(dispatchElapsed);
+        _resizeTrace.Record("windowSizeHandled", metrics, detail:
+            $"dispatchMicroseconds={Math.Max(0L, dispatchElapsed.Ticks / 10L)}");
     }
 
     private void HandleLatestMetricsFrameRequested(WindowsViewMetrics metrics)
@@ -660,18 +719,13 @@ internal sealed class FlutterWindowsHostAdapter :
         var windowPos = Marshal.PtrToStructure<NativeWindowPos>(lParam);
         if ((windowPos.Flags & SwpNoSize) != 0 || windowPos.Width <= 0 || windowPos.Height <= 0)
             return;
+        _resizeTrace.Record("windowPosProposed", _metrics.Current, detail:
+            $"x={windowPos.X};y={windowPos.Y};width={windowPos.Width};height={windowPos.Height};flags={windowPos.Flags}");
         if (!NativeMethods.GetWindowRect(TopLevelHwnd, out var outer) ||
             !NativeMethods.GetClientRect(TopLevelHwnd, out var client))
             return;
         var interactive = Volatile.Read(ref _interactiveSizeMove) != 0;
-        var movesOrigin = (windowPos.Flags & SwpNoMove) == 0;
-        var movesLeadingEdge = movesOrigin &&
-            (windowPos.X != outer.Left || windowPos.Y != outer.Top);
-        // Right/bottom drags already keep the content origin fixed. Predictive
-        // preparation is needed only when Windows moves the top-level origin
-        // together with its size, which is the asymmetric left/top path.
-        if (interactive && !movesLeadingEdge)
-            return;
+        if (interactive) _latestInteractiveWindowPos = windowPos;
         var proposedWidth = windowPos.Width - Math.Max(0, outer.Width - client.Width);
         var proposedHeight = windowPos.Height - Math.Max(0, outer.Height - client.Height);
         var current = _metrics.Current;
@@ -679,28 +733,45 @@ internal sealed class FlutterWindowsHostAdapter :
             proposedWidth == current.PhysicalWidth && proposedHeight == current.PhysicalHeight)
             return;
 
+        var pendingMetrics = Volatile.Read(ref _provisionalMetrics);
+        var pendingResize = Volatile.Read(ref _provisionalResizeState);
+        if (interactive && pendingMetrics is not null && pendingResize is not null)
+        {
+            // Windows may propose geometry much faster than the display can
+            // present it. Keep one immutable future extent until its scene is
+            // fully painted. While it is still preparing, leave the admitted
+            // native geometry unchanged; once prepared, admit that exact
+            // extent on the next proposal. This makes the edge advance once
+            // per ready front instead of exposing transparent capacity while
+            // a just-invalidated frame is repeatedly discarded.
+            RewriteWindowPosForMetrics(
+                lParam,
+                windowPos,
+                outer,
+                client,
+                pendingResize.IsPrepared ? pendingMetrics : current);
+            return;
+        }
+
         var metrics = _metrics.PrepareProposedChildMetrics(proposedWidth, proposedHeight);
         if (ReferenceEquals(metrics, current)) return;
         var provisional = _surface.BeginProvisionalResize(metrics);
+        _resizeTrace.Record("provisionalPrepared", metrics);
         Volatile.Write(ref _provisionalMetrics, metrics);
+        Volatile.Write(ref _provisionalResizeState, provisional);
         Volatile.Write(ref _pendingResizeGeneration, metrics.ResizeGeneration);
-        _scheduler.PublishMetrics(metrics);
+        _scheduler.PublishProposedMetrics(metrics);
         PostFrameworkMetricsChanged(metrics);
 
         if (interactive)
         {
-            // Start from the WINDOWPOS proposal and allow only a tiny backing
-            // preparation budget. This is not a present/GPU-fence wait: raster
-            // marks the non-visible exact frame prepared, then waits for the
-            // matching child WM_SIZE admission. A missed budget immediately
-            // yields to native geometry, so mouse-up/WM_EXITSIZEMOVE cannot be
-            // trapped behind the former 100 ms product wait.
+            // Every edge/corner uses the same proposal mailbox. Framework and
+            // raster work starts against the future extent, while the current
+            // admitted frame remains eligible until matching child WM_SIZE.
+            // No layout, raster, GPU, present, or composition work blocks this
+            // native proposal path.
             Interlocked.Increment(ref _leadingEdgePreparationCount);
-            if (PollProvisionalPreparationUntilBoundedDeadline(
-                    provisional,
-                    TimeSpan.FromMilliseconds(8)))
-                return;
-            Interlocked.Increment(ref _provisionalPreparationLateCount);
+            RewriteWindowPosForMetrics(lParam, windowPos, outer, client, current);
             return;
         }
 
@@ -729,6 +800,46 @@ internal sealed class FlutterWindowsHostAdapter :
         if (metrics is null || ReferenceEquals(_metrics.Current, metrics)) return;
         _surface.CancelProvisionalResize(metrics);
         _ = Interlocked.CompareExchange(ref _provisionalMetrics, null, metrics);
+        Volatile.Write(ref _provisionalResizeState, null);
+    }
+
+    private static void RewriteWindowPosForMetrics(
+        nint lParam,
+        NativeWindowPos proposed,
+        NativeRect currentOuter,
+        NativeRect currentClient,
+        WindowsViewMetrics targetMetrics)
+    {
+        var frameWidth = Math.Max(0, currentOuter.Width - currentClient.Width);
+        var frameHeight = Math.Max(0, currentOuter.Height - currentClient.Height);
+        var targetOuterWidth = checked(targetMetrics.PhysicalWidth + frameWidth);
+        var targetOuterHeight = checked(targetMetrics.PhysicalHeight + frameHeight);
+        var movesLeft = proposed.X != currentOuter.Left;
+        var movesTop = proposed.Y != currentOuter.Top;
+        if (movesLeft) proposed.X = checked(proposed.X + proposed.Width - targetOuterWidth);
+        if (movesTop) proposed.Y = checked(proposed.Y + proposed.Height - targetOuterHeight);
+        proposed.Width = targetOuterWidth;
+        proposed.Height = targetOuterHeight;
+        Marshal.StructureToPtr(proposed, lParam, false);
+    }
+
+    private void ApplyLatestInteractiveWindowPos()
+    {
+        var final = _latestInteractiveWindowPos;
+        _latestInteractiveWindowPos = null;
+        if (final is not { Width: > 0, Height: > 0 }) return;
+        if (!NativeMethods.SetWindowPos(
+                TopLevelHwnd,
+                0,
+                final.Value.X,
+                final.Value.Y,
+                final.Value.Width,
+                final.Value.Height,
+                SwpNoActivate))
+        {
+            Console.Error.WriteLine(
+                $"doroti.windowsappsdk.flutter.resize-final=failed;win32={Marshal.GetLastWin32Error()}");
+        }
     }
 
     private bool PollProvisionalPreparationUntilBoundedDeadline(
@@ -791,7 +902,38 @@ internal sealed class FlutterWindowsHostAdapter :
 
     private void PostFrameworkMetricsChanged(WindowsViewMetrics requestedMetrics)
     {
-        PostEngineTask(() => ApplyFrameworkMetrics(requestedMetrics));
+        Volatile.Write(ref _latestFrameworkMetricsRequest, requestedMetrics);
+        TryPostFrameworkMetricsDrain();
+    }
+
+    private void TryPostFrameworkMetricsDrain()
+    {
+        if (_disposed ||
+            (Volatile.Read(ref _interactiveSizeMove) != 0 &&
+             Volatile.Read(ref _frameworkResizeInFlightGeneration) != 0))
+            return;
+        if (Interlocked.Exchange(ref _frameworkMetricsDrainPosted, 1) != 0) return;
+        PostEngineTask(DrainLatestFrameworkMetrics);
+    }
+
+    private void DrainLatestFrameworkMetrics()
+    {
+        var requested = Interlocked.Exchange(ref _latestFrameworkMetricsRequest, null);
+        if (requested is not null)
+        {
+            var appliedMetrics = CurrentFrameworkMetrics;
+            if (appliedMetrics.ResizeGeneration < requested.ResizeGeneration)
+                appliedMetrics = requested;
+            if (Volatile.Read(ref _interactiveSizeMove) != 0 &&
+                Volatile.Read(ref _frameworkMetricsGeneration) < appliedMetrics.ResizeGeneration)
+            {
+                Volatile.Write(ref _frameworkResizeInFlightGeneration, appliedMetrics.ResizeGeneration);
+            }
+            ApplyFrameworkMetrics(appliedMetrics);
+        }
+        Interlocked.Exchange(ref _frameworkMetricsDrainPosted, 0);
+        if (Volatile.Read(ref _latestFrameworkMetricsRequest) is not null)
+            TryPostFrameworkMetricsDrain();
     }
 
     private void PostFinalResizeRecovery()
@@ -819,6 +961,7 @@ internal sealed class FlutterWindowsHostAdapter :
             return;
         MetricsChanged?.Invoke(appliedMetrics.ToViewMetrics(SurfaceGeneration));
         Volatile.Write(ref _frameworkMetricsGeneration, appliedMetrics.ResizeGeneration);
+        _resizeTrace.Record("metricsDelivered", appliedMetrics);
     }
 
     private void RequestGraphicsRecovery()
@@ -842,7 +985,8 @@ internal sealed class FlutterWindowsHostAdapter :
                 // A hidden first-frame-gated top-level may not yet participate
                 // in DWM composition. Do not wait on DwmFlush until one exact
                 // swap has made the window eligible for presentation.
-                if (_host.Snapshot.FirstFrameSwapped)
+                if (_host.Snapshot.FirstFrameSwapped &&
+                    Volatile.Read(ref _interactiveSizeMove) == 0)
                 {
                     var result = NativeMethods.DwmFlush();
                     if (result < 0) Marshal.ThrowExceptionForHR(result);
@@ -963,6 +1107,8 @@ internal sealed class FlutterWindowsHostAdapter :
         try
         {
             callback(vsync.Timestamp, ticket.ExpectedEpoch);
+            _resizeTrace.Record("sceneBuilt", ticket.Metrics, ticket.CausalFrameId,
+                $"kind={ticket.Kind}");
             QueueRaster(ticket, vsync);
         }
         catch (Exception exception)

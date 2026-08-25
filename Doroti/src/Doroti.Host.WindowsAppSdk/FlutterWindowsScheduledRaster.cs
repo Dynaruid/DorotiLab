@@ -191,6 +191,9 @@ internal sealed class FlutterWindowsDedicatedRasterTaskRunner : IFlutterWindowsR
 internal sealed record FlutterWindowsScheduledRasterCausalTrace(
     long CausalFrameId,
     ulong ViewId,
+    long ResizeGeneration,
+    int PhysicalWidth,
+    int PhysicalHeight,
     TimeSpan CallbackTimestamp,
     TimeSpan RasterTimestamp,
     TimeSpan? SwapTimestamp,
@@ -232,7 +235,8 @@ internal interface IFlutterWindowsScheduledSurface : IDisposable
 
     FlutterWindowsAngleEglPresentResult RenderAndSwap(
         WindowsViewMetrics targetMetrics,
-        Action<SKSurface> paint);
+        Action<SKSurface> paint,
+        Action? beforeSwap = null);
 }
 
 /// <summary>
@@ -248,6 +252,7 @@ internal sealed class FlutterWindowsScheduledRaster : IDisposable
     private readonly IFlutterWindowsScheduledSurface _windowSurface;
     private readonly SkiaSceneRenderer _renderer;
     private readonly IFlutterWindowsRasterTaskRunner _rasterTaskRunner;
+    private readonly FlutterWindowsResizeTrace? _resizeTrace;
     private readonly ConcurrentDictionary<long, CausalRasterState> _causalStates = [];
     private long _queuedRasterCount;
     private long _rasterCount;
@@ -264,12 +269,14 @@ internal sealed class FlutterWindowsScheduledRaster : IDisposable
         FlutterWindowsFrameScheduler scheduler,
         IFlutterWindowsScheduledSurface windowSurface,
         SkiaSceneRenderer renderer,
-        IFlutterWindowsRasterTaskRunner rasterTaskRunner)
+        IFlutterWindowsRasterTaskRunner rasterTaskRunner,
+        FlutterWindowsResizeTrace? resizeTrace = null)
     {
         _scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
         _windowSurface = windowSurface ?? throw new ArgumentNullException(nameof(windowSurface));
         _renderer = renderer ?? throw new ArgumentNullException(nameof(renderer));
         _rasterTaskRunner = rasterTaskRunner ?? throw new ArgumentNullException(nameof(rasterTaskRunner));
+        _resizeTrace = resizeTrace;
         _renderer.FrameReceipt += HandleFrameReceipt;
     }
 
@@ -347,9 +354,12 @@ internal sealed class FlutterWindowsScheduledRaster : IDisposable
         var causalState = new CausalRasterState(
             ticket.CausalFrameId,
             ticket.ViewId,
+            ticket.Metrics,
             callbackTimestamp,
             DorotiFrameClock.Now);
         _causalStates[ticket.CausalFrameId] = causalState;
+        _resizeTrace?.Record("rasterStarted", ticket.Metrics, ticket.CausalFrameId,
+            $"kind={ticket.Kind}");
         if (!_scheduler.TryAdmitRaster(ticket, out var admissionFailure))
         {
             Interlocked.Increment(ref _rejectedRasterCount);
@@ -376,9 +386,12 @@ internal sealed class FlutterWindowsScheduledRaster : IDisposable
                     ticket.CausalFrameId);
                 if (!paint.Value.ShouldPresent || paint.Value.Completion is not { })
                     throw new RasterAdmissionException(FlutterWindowsRasterAdmissionFailure.StaleMetrics);
-            });
+                _resizeTrace?.Record("rasterPrepared", ticket.Metrics, ticket.CausalFrameId);
+            }, () => _resizeTrace?.Record("swapStarted", ticket.Metrics, ticket.CausalFrameId));
 
             causalState.SwapTimestamp = DorotiFrameClock.Now;
+            _resizeTrace?.Record("swapCompleted", ticket.Metrics, ticket.CausalFrameId,
+                $"surfaceGeneration={present.SurfaceGeneration}");
             if (!_scheduler.ReportSwap(ticket, present, causalState.SwapTimestamp.Value))
             {
                 Interlocked.Increment(ref _rejectedRasterCount);
@@ -458,6 +471,9 @@ internal sealed class FlutterWindowsScheduledRaster : IDisposable
         var trace = new FlutterWindowsScheduledRasterCausalTrace(
             state.CausalFrameId,
             state.ViewId,
+            state.Metrics.ResizeGeneration,
+            state.Metrics.PhysicalWidth,
+            state.Metrics.PhysicalHeight,
             state.CallbackTimestamp,
             state.RasterTimestamp,
             state.SwapTimestamp,
@@ -466,6 +482,11 @@ internal sealed class FlutterWindowsScheduledRaster : IDisposable
             presented);
         _ = _causalStates.TryRemove(state.CausalFrameId, out _);
         Volatile.Write(ref _lastCausalTrace, trace);
+        _resizeTrace?.Record(
+            presented ? "presented" : "frameTerminal",
+            state.Metrics,
+            state.CausalFrameId,
+            $"exact={exactMetrics};presented={presented}");
         CausalTraceCompleted?.Invoke(trace);
         return trace;
     }
@@ -483,11 +504,13 @@ internal sealed class FlutterWindowsScheduledRaster : IDisposable
     private sealed class CausalRasterState(
         long causalFrameId,
         ulong viewId,
+        WindowsViewMetrics metrics,
         TimeSpan callbackTimestamp,
         TimeSpan rasterTimestamp)
     {
         internal long CausalFrameId { get; } = causalFrameId;
         internal ulong ViewId { get; } = viewId;
+        internal WindowsViewMetrics Metrics { get; } = metrics;
         internal TimeSpan CallbackTimestamp { get; } = callbackTimestamp;
         internal TimeSpan RasterTimestamp { get; } = rasterTimestamp;
         internal TimeSpan? SwapTimestamp { get; set; }

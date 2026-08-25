@@ -6,6 +6,8 @@
 - 구현 우선 방식 전환일: 2026-08-25
 - F8~F10 제품 연결 완료일: 2026-08-25
 - 검증 스크립트 정리일: 2026-08-25
+- F6-R 자동 capture·causal baseline 구현일: 2026-08-25
+- F6-R 구조 재검토일: 2026-08-25
 - 대상: Doroti Windows 제품 호스트, interactive resize, GPU surface, 입력·IME·접근성·lifecycle·배포
 - Flutter 기준 source: repository의 `reference/flutter-master` commit `56b8e1a851a594b1a154f8ea93270807dab22b9a`
 - 목표 제품 호스트: `Doroti.Host.WindowsAppSdk`
@@ -15,7 +17,7 @@
 - Windows App SDK 기준선: **exact `2.4.0`, self-contained unpackaged, raw HWND + AppWindow + DispatcherQueue**
 - 문서 성격: **구현 우선, 후속 통합 검증·안정화 계획**. 계획의 변경이나 구현 완료는 build/runtime/visible acceptance를 자동으로 의미하지 않는다.
 
-`Doroti/eng`의 검증 스크립트는 정리되어 현재 실행 진입점으로 제공되지 않는다. 아래 gate의 script 기반 PASS와 fingerprint는 삭제 전 실행한 historical evidence이며 현재 checkout에서 재실행 가능한 명령을 뜻하지 않는다.
+기존 F0~F10 검증 스크립트는 정리되어 현재 실행 진입점으로 제공되지 않는다. 아래 기존 gate의 script 기반 PASS와 fingerprint는 삭제 전 실행한 historical evidence다. 다만 F6-R은 이번 작업에서 `validate-windowsappsdk-flutter-resize-trace.ps1`과 `analyze-windowsappsdk-flutter-resize-trace.ps1`을 새 current-checkout 진입점으로 추가했다.
 
 기존 `Doroti.Host.WindowsAppSdk`의 `fixed work-area envelope + custom non-client + Arm N dual-front` 구현을 **Windows App SDK 기반 Flutter Windows embedder 방식**으로 전환한다. Windows App SDK 제품/target/runner 경계는 유지하되, 그 안의 window tree와 resize/surface lifecycle을 Flutter 방식으로 교체한다.
 
@@ -24,8 +26,8 @@
 1. Windows가 표준 top-level 창의 non-client, move, resize, Snap, system menu, maximize/minimize를 소유한다.
 2. 하나의 child HWND가 top-level client rect를 그대로 채우며 rendering, pointer, keyboard, text, accessibility의 native view 경계가 된다.
 3. child `WM_SIZE`의 physical pixel 크기와 현재 DPI/display ID를 framework metrics의 authority로 사용한다.
-4. resize target을 framework에 전달한 뒤 raster thread가 같은 크기의 frame과 window surface를 준비한다.
-5. Flutter source의 별도 UI/raster 구조에서는 platform thread가 제한 시간 동안 present를 기다린다. 현재 Doroti 제품은 framework callback이 platform STA에 co-located이므로 scene dispatch 뒤 즉시 `WM_SIZE`를 반환하고, exact swap/present terminal과 `DwmFlush`는 raster thread에서 비동기로 완료한다.
+4. native top-level/child geometry는 Windows의 interactive sizing 결과를 즉시 따른다. framework/raster가 아직 새 크기를 준비하지 못했다는 이유로 `WM_WINDOWPOSCHANGING`의 제안 rect를 이전 크기로 되쓰거나 mouse-up 때 별도 `SetWindowPos`로 따라잡지 않는다.
+5. child `WM_SIZE`는 최신 metrics를 framework mailbox에 게시하고 즉시 반환한다. framework/raster가 exact frame을 만드는 동안에는 마지막 성공 front의 일시적 compositor 보존·scale/clip을 허용하되, 이를 exact frame으로 기록하지 않는다. exact swap/present terminal과 후속 `DwmFlush`는 raster/presenter owner가 비동기로 완료한다.
 6. 첫 frame 전에는 top-level 창을 표시하지 않는다.
 7. monitor work-area는 initial placement, restore, popup constraint에만 사용한다. swap-chain/EGL capacity나 평상시 HWND envelope 크기로 사용하지 않는다.
 8. Windows App SDK `AppWindow`와 `DispatcherQueue`는 raw HWND lifecycle/deployment 기반을 제공하지만 child render size나 present timing의 authority가 되지 않는다.
@@ -38,7 +40,10 @@
 - monitor-sized backing 또는 swap-chain capacity
 - dual hidden/visible composition front
 - `ContentIsland`/SiteBridge를 전체 client render-size/presentation root로 사용하는 방식
-- resize hot path의 `SetSourceSize`, provisional full-frame stretch, edge별 translate/clip
+- native geometry를 prepared frame에 묶는 `WINDOWPOS` rewrite, mouse-up geometry replay, raster-side admission wait
+- exact frame으로 가장한 wrong-size present, dual visible front, monitor-sized permanent backing
+
+interactive resize 동안 한 visible front를 일시적으로 보존·scale/clip하는 것은 native geometry 추종과 exact layout 생성을 분리하기 위한 **명시적 transient presentation**으로만 허용한다. 이 경로는 별도 상태·trace를 가지며, 새 exact generation이 present되거나 `WM_EXITSIZEMOVE`가 끝나면 즉시 해제해야 한다. 과거 Arm N의 dual-front나 telemetry 없는 full-frame stretch를 재도입하는 뜻이 아니다.
 
 기존 Arm N adapter와 MAUI Windows host는 새 경로가 최종 acceptance를 통과할 때까지 rollback/diagnostic으로 보존한다. 같은 `Doroti.Host.WindowsAppSdk` package 안에서도 Flutter-style adapter와 Arm N adapter의 surface/resize state를 섞지 않고 startup host 선택으로만 전환한다.
 
@@ -52,14 +57,14 @@
 | F2 표준 top-level + child view | **PASS** | raw top-level 하나와 child view 하나의 same-STA 100-cycle structural gate를 확인했다. |
 | F3 metrics/display contract | **PASS** | child-client physical authority, immutable metrics/frame generation, 4-DPI matrix를 확인했다. |
 | F4 raster-thread EGL surface lifecycle | **PASS** | child HWND EGL surface의 dedicated-raster 1,000 recreate/1,001 swap과 context-loss recovery를 확인했다. |
-| F5 bounded resize handshake | **fixture PASS / 제품 wait 제거** | Flutter의 100ms poll contract 자체는 fixture에서 PASS했다. 그러나 현재 Doroti 제품은 framework callback이 platform STA에 함께 있어 이 wait가 `WM_SIZE` 반환을 막는 visible regression을 만들었으므로, 제품 WndProc는 scene dispatch 뒤 즉시 반환하고 exact present terminal과 post-return raster `DwmFlush`를 비동기로 유지한다. |
+| F5 bounded resize handshake | **fixture PASS / 제품 geometry wait 금지** | Flutter의 100ms poll contract 자체는 fixture에서 PASS했다. 현재 제품은 platform STA, framework MTA, raster MTA가 분리되어 있지만 framework scene과 present terminal의 20~35ms 지연을 native geometry에 전파하면 visible regression이 된다. 제품 WndProc는 metrics 게시 뒤 즉시 반환하고 exact terminal과 post-return `DwmFlush`를 비동기로 유지한다. |
 | F6 scheduler/vsync/present integration | **기본 계약 PASS / 고속 회귀 재개** | single pending slot, latest-metrics pre-dispatch replacement, active-resize ordinary continuation, native DWM timing, causal present를 확인했다. 좌·상 저속 미세 떨림 보강 뒤에도 사용자가 네 방향 고속 drag에서 창 위치·크기와 content가 포인터를 따라오지 못하는 현상을 확인했으므로 기존 F6 PASS를 고속 visible/cadence 완료로 확대하지 않는다. |
-| F6-R high-speed interactive resize | **계획 확정 / 자동 capture·log notVerified** | 재현 기준은 한 edge를 `600 physical px / 150ms`로 이동하는 약 4,000px/s drag다. drag 전·중·후의 전체화면 frame과 cursor/native/framework/raster/present 로그를 같은 시간축으로 수집해 최초 지연 경계를 찾고, 그 owner를 수정한 뒤 같은 입력으로 반복 검증한다. |
+| F6-R high-speed interactive resize | **구조 재설계 필요 / 자동 FAIL** | harness 자체는 구현됐지만 현재 prepared-front admission이 native edge를 scene 준비 속도에 묶는다. `600px/150ms`에서 cursor-edge lag p95 `64~148px`, max `64~160px`가 기록됐고 final 0px만 검사한 기존 판정은 체감 추종을 놓쳤다. exact-present 최대 `24.6~35.2ms`와 WGC active-frame 약 55Hz는 후속 증상이며 먼저 geometry authority를 복구해야 한다. |
 | F7 input/IME/accessibility | **PASS** | actual child HWND automated input/IMM32/UIA gate, 수동-gate fail-safe, keyboard control-character regressions가 PASS했다. 2026-08-25 사용자가 pointer/capture/cursor, focus/popup, Korean IME/clipboard, Narrator, Accessibility Insights, resize/DPI bounds 전 항목을 직접 확인해 PASS로 수용했다. |
 | F8 DPI/display/lifecycle/recovery | **구현 완료 / 자동 fixture·제품 smoke PASS / 물리 검증 deferred** | lifecycle manager를 FlutterEmbedder 제품 host에 연결했고 shutdown 시 pending frame/resize를 terminal 처리한다. 물리 mixed-DPI/monitor/sleep/RDP 및 visible recovery는 `notVerified`다. |
 | F9 target/runner/package integration | **구현 완료 / build·publish·launch PASS** | WindowsAppSdk target/runner/package, native artifact provenance, `FlutterEmbedder`/`ArmNLegacy`/MAUI rollback 선택을 연결했다. MAUI는 별도 entrypoint build만 확인했고 live launch는 `notVerified`다. |
 | F10 default adapter cutover | **구현 완료 / 자동 product smoke PASS** | CLI, Demo, target, template의 Windows 기본을 WindowsAppSdk/FlutterEmbedder로 전환하고 rollback을 보존했다. release 확정과 기존 host 삭제는 FG 뒤다. |
-| FG Windows 제품 acceptance | **자동 범위 partial PASS / 고속 all-edge resize 선행 차단** | 2026-08-25 사용자가 네 방향의 빠른 drag에서 창 위치·크기와 content 추종이 끊기는 현상을 확인했다. F6-R의 `600px/150ms` 전체화면 capture+causal log gate가 PASS하기 전에는 FG visible resize matrix를 시작하거나 기존 결과를 최종 수용으로 해석하지 않는다. |
+| FG Windows 제품 acceptance | **notVerified / F6-R FAIL로 선행 차단** | F6-R의 `600px/150ms` 전체화면 capture+causal log gate가 FAIL이므로 FG visible/physical matrix와 final 사용자 수용을 시작하지 않았다. 기존 결과를 최종 수용으로 해석하지 않는다. |
 
 기존 증거는 다음처럼 재분류한다.
 
@@ -73,7 +78,7 @@
 
 ### 1.1 구현 우선 실행 원칙
 
-**F8 구현 마무리 → F9 제품 통합 → F10 기본 경로 wiring → 통합 build/smoke** 순서는 완료했다. 현재 exact 실행 순서는 **F6-R 고속 resize 안정화 → focused build/contract 회귀 → FG 물리·visible acceptance**다.
+**F8 구현 마무리 → F9 제품 통합 → F10 기본 경로 wiring → 통합 build/smoke** 순서는 완료했다. F6-R harness와 네 edge paired baseline 및 focused 회귀도 실행했다. 현재 exact 실행 순서는 **prepared-front geometry gate 제거 → product surface 기준선 일치 → framework/raster latest-only 정리 → baseline 재실행 → primary stress → FG 물리·visible acceptance**다.
 
 - 단계별 `PASS 조건`은 다음 구현 단계의 시작을 막는 hard gate가 아니라 **후속 검증 백로그**다.
 - 선행 단계의 API·ownership·artifact가 다음 단계 구현에 필요할 만큼 존재하면 다음 구현을 시작한다.
@@ -137,7 +142,7 @@ child WM_SIZE
 - arbitrary Win32 nested message pump를 열지 않는다.
 - 완료 신호 뒤 raster thread가 `DwmFlush`를 호출해 이전 크기 surface stretch glitch를 줄인다.
 
-Doroti는 이 상태 전이와 exact-present terminal을 기준선으로 삼고 모든 target에 monotonic `resizeGeneration`을 추가한다. 다만 현재 제품은 framework/UI callback이 별도 Flutter UI thread가 아니라 platform STA에서 실행된다. 이 구조에서 present까지 기다리면 WndProc와 연속 `WM_SIZE` 자체가 직렬로 막히므로, 2026-08-25 visible regression 수정 이후 제품 경로는 framework scene dispatch까지만 동기 수행하고 즉시 반환한다. 아직 시작하지 않은 pending callback은 새 causal ticket의 latest metrics request로 교체하며, raster는 exact generation/extent만 recreate/swap하고 platform 반환 뒤 `DwmFlush`한다. Flutter의 100ms poll은 별도-thread fixture/source reference로 보존하며 현재 제품 hot path에는 적용하지 않는다.
+Doroti는 이 상태 전이와 exact-present terminal을 기준선으로 삼고 모든 target에 monotonic `resizeGeneration`을 추가한다. 현재 제품에는 platform STA와 별도의 framework callback MTA, raster MTA, frame-clock MTA가 이미 존재한다. 문제는 thread 부재가 아니라 `WM_WINDOWPOSCHANGING`에서 native rect를 prepared generation으로 되쓰고, `_frameworkResizeInFlightGeneration`으로 한 scene/present terminal 전까지 다음 metrics drain을 막고, provisional raster가 matching admission을 기다리는 방식으로 네 owner를 다시 직렬화한 것이다. 제품 경로는 `WM_SIZE` metrics 게시 뒤 즉시 반환하고, native geometry와 비동기 content readiness를 분리한다. Flutter의 100ms poll은 source/fixture reference로만 보존하며 제품 interactive geometry gate로 적용하지 않는다.
 
 ### 2.3 first frame, DPI, monitor
 
@@ -211,9 +216,9 @@ logical size를 다시 physical size의 authority로 쓰지 않는다. `physical
   - top-level/child WndProc
   - Windows App SDK `DispatcherQueue`와 `AppWindow`
   - resize state 시작과 metrics 게시
-  - fixture handshake의 engine task polling; co-located 제품 resize hot path에서는 present poll 없음
+  - fixture handshake의 engine task polling; 제품 interactive resize hot path에서는 geometry/present poll 없음
   - focus, lifecycle, display events
-- framework/UI owner (현재 제품은 platform STA에 co-located)
+- framework/UI owner: dedicated framework callback MTA
   - metrics 적용, layout, scene 생성
   - resize generation을 보존한 frame request
 - raster thread
@@ -222,7 +227,7 @@ logical size를 다시 physical size의 authority로 쓰지 않는다. `physical
   - raster, flush, swap/present
   - presented/failed terminal 보고
 
-WndProc가 직접 Skia raster, GPU fence wait, EGL surface destroy, swap/present 완료 대기를 수행하지 않는다. 현재 co-located framework callback은 metrics 적용/layout/scene 제출까지만 수행하며 raster terminal을 기다리지 않고 반환한다. 별도 framework/UI thread를 도입하기 전에는 Flutter의 bounded present poll을 제품 WndProc에 다시 넣지 않는다. 일반 Win32 message나 Windows App SDK `DispatcherQueue` event loop를 중첩 실행하지 않으며, 바깥 message loop 종료 뒤 `AppWindow`/island를 먼저 닫고 `DispatcherQueueController.ShutdownQueue()`로 thread-affine rundown을 완료한다.
+WndProc가 직접 framework callback, Skia raster, GPU fence wait, EGL surface destroy, swap/present 완료 또는 provisional preparation을 기다리지 않는다. platform owner는 actual child metrics를 latest mailbox에 게시하는 데서 끝난다. framework owner는 한 callback을 실행하는 동안 도착한 metrics를 latest-only로 병합하고 callback 종료 즉시 최신 generation을 다시 예약하되, raster/present terminal을 다음 metrics drain의 조건으로 삼지 않는다. 일반 Win32 message나 Windows App SDK `DispatcherQueue` event loop를 중첩 실행하지 않으며, 바깥 message loop 종료 뒤 `AppWindow`/island를 먼저 닫고 `DispatcherQueueController.ShutdownQueue()`로 thread-affine rundown을 완료한다.
 
 ### 3.4 render surface lifecycle
 
@@ -238,7 +243,7 @@ Flutter-equivalent 기준선은 ANGLE/EGL을 사용한다.
 
 resource cache, decoded image, shader 자산은 window surface와 분리한다. surface 재생성 때문에 framework scene이나 장기 GPU resource identity가 임의로 초기화되지 않게 한다.
 
-Direct D3D12 presenter는 새 기준선에 포함하지 않는다. 향후 필요하면 FG PASS 뒤 같은 host/view/resize contract 아래 별도 backend로 제안하며, Flutter-equivalent 기준선을 대체하려면 독립 acceptance를 다시 통과해야 한다.
+현재 제품은 이 문서의 ANGLE/EGL 기준선과 달리 `FlutterWindowsCompositionSurface`의 D3D12/DirectComposition을 primary로 생성한다. F6-R 수정은 이 divergence를 그대로 둔 채 scheduler만 미세 조정하지 않는다. 우선 실제 ANGLE/EGL child window-surface 제품 경로를 연결해 Flutter-equivalent 기준선을 검증한다. ANGLE 경로가 제품 ABI/visible gate를 통과하지 못해 DComp를 유지하려면 한 visible front, native geometry 비차단, transient/exact 상태 분리, virtual-desktop permanent capacity 제거를 별도 backend 계약으로 문서화하고 F4/F6-R/FG를 다시 통과해야 한다.
 
 ### 3.5 resize state machine
 
@@ -265,7 +270,7 @@ zero-sized/minimized target → Suspended
 - 이미 framework work가 시작된 ordinary animation frame은 resize generation으로 relabel되지 않는다. 아직 dispatch되지 않은 단일 continuation은 기존 ticket을 폐기하고 새 causal ID의 latest exact resize ticket으로 교체할 수 있다.
 - resize 중 새 `WM_SIZE`가 이전 transaction 완료 뒤 도착하면 새 generation으로 시작한다.
 - timeout은 성공으로 간주하지 않는다. native resize 진행을 반환하되 최신 실제 client size를 다시 관측하고 redraw를 요청한다.
-- 별도-thread handshake fixture의 timeout 기준은 Flutter source와 같은 100ms다. co-located 제품 WndProc에는 이 timeout wait 자체를 두지 않으며, 향후 별도 UI thread를 도입하더라도 수치를 늘리기 전에 framework/raster/surface 구간별 원인을 증명해야 한다.
+- 별도-thread handshake fixture의 timeout 기준은 Flutter source와 같은 100ms다. 제품 WndProc에는 이 timeout wait 자체를 두지 않으며, 이미 존재하는 별도 framework thread의 callback이 느리더라도 native geometry를 기다리게 하지 않는다.
 
 ### 3.6 input, text, accessibility
 
@@ -303,7 +308,8 @@ full-client transparent island, hidden XAML input control, custom caption UIA를
 - work-area/monitor-size backing allocation 금지
 - custom non-client/fixed envelope/window region 금지
 - dual visible front 또는 hidden-front swap protocol 금지
-- resize hot path의 `ResizeBuffers`, `SetSourceSize`, full-frame stretch 금지
+- resize hot path에서 native rect를 renderer 준비 상태로 rewrite/replay하는 것 금지
+- transient presentation을 exact present로 계상하거나 terminal 없이 지속하는 것 금지
 - `AppWindow`/ContentIsland/XAML size event를 primary render-size authority로 사용 금지
 - full-client `DesktopAttachedSiteBridge`를 primary render/input view와 중첩 금지
 - auxiliary `DesktopChildSiteBridge`가 primary present timing을 변경하는 것 금지
@@ -493,7 +499,7 @@ PASS 조건:
 
 ### F5 — Flutter-style bounded resize handshake
 
-상태: **fixture PASS / 현재 제품 hot path의 synchronous present wait는 visible regression으로 제거**
+상태: **fixture PASS / 제품 native-geometry wait 금지**
 
 선행 조건: F4 PASS
 
@@ -503,12 +509,12 @@ PASS 조건:
 2. `FlutterWindowsResizeRasterPresenter`는 F4 raster owner에서만 exact frame을 surface recreate/swap에 넘긴다. successful swap이 `Done`을 게시한 뒤 platform poll이 unblock되고, 같은 raster thread의 `DwmFlush`가 ordering point로 실행된다.
 3. source fingerprint `5bc89c5739147494fc80bbf7a053c410f32cbe4ffdfe54672d4f079330865715`에 결속된 restricted-PATH self-contained live gate는 여덟 edge/corner 각각 3회, 총 24 exact present를 PASS했다. normal timeout, exact mismatch, terminal missing/duplicate, nested dispatch, Done 전 `DwmFlush`는 모두 0이고 post-unblock `DwmFlush`는 24회였다.
 4. deterministic timeout fault는 child rect 재관측/latest redraw를 기록하고 UI deadlock/infinite wait 없이 `TimedOut` terminal 1회로 닫혔다. `TimedOut`/`Failed`/`Superseded`/`Suspended` matrix도 각각 정확히 1회 terminal을 확인했고 EGL/Skia leak 0, GDI/USER bounded를 기록했다. AMD hardware ANGLE renderer는 관측했지만 visible/hardware-visible PASS claim은 false이며 F6~FG는 **notVerified**다.
-5. 제품 연결 검토에서 Doroti framework callback이 platform STA에 co-located인데도 fixture의 present wait를 그대로 적용한 것이 발견됐다. child `WM_SIZE`가 framework build/layout/scene 뒤 EGL recreate/swap까지 기다려 다음 native resize 전달을 늦췄다. 제품은 synchronous present wait를 0회로 만들고 exact terminal/DwmFlush를 raster completion에 남겼다. 별도 UI thread 없는 현재 구조에서 fixture와 제품의 wait 정책은 의도적으로 다르다.
+5. 제품에는 별도 framework/raster thread가 존재하지만, 현재 prepared-front admission은 `WM_WINDOWPOSCHANGING` rect와 다음 metrics drain을 scene/present 완료에 간접 종속시켜 fixture와 같은 직렬화를 다시 만들었다. 제품의 wait 0 조건은 WndProc 내부 대기뿐 아니라 native geometry rewrite, mouse-up replay, raster admission wait까지 포함한다.
 
 작업:
 
 1. `ResizeStarted → FrameGenerated → SurfaceReady → Presented → Done` 상태를 구현한다.
-2. 별도-thread handshake fixture는 platform thread가 metrics를 보낸 뒤 최대 100ms 동안 engine task runner만 polling한다. co-located 제품 hot path는 scene dispatch 뒤 즉시 반환한다.
+2. 별도-thread handshake fixture는 platform thread가 metrics를 보낸 뒤 최대 100ms 동안 engine task runner만 polling한다. 제품 hot path는 actual metrics 게시 뒤 즉시 반환하고 native geometry를 present terminal에 묶지 않는다.
 3. raster thread는 exact generation/extent frame에서만 surface를 재생성한다.
 4. successful swap/present 후 `Done`을 게시해 platform thread를 깨운다.
 5. unblock 후 raster thread에서 `DwmFlush` ordering point를 실행한다.
@@ -545,7 +551,7 @@ PASS 조건:
 5. deterministic 60/120/144/165Hz matrix는 각 row의 target cadence, ordinary resume, bounded queue, stale/wrong-size present 0을 PASS했다. 이는 scheduler timing contract이며 physical scan-out cadence, blank/white frame absence, compositor-visible acceptance는 FG까지 **notVerified**다.
 6. 2026-08-25 회귀 수정은 아직 시작하지 않은 callback만 latest metrics의 새 ticket으로 교체하고, active resize 중 framework가 요청한 ordinary continuation 한 개를 보존한다. 이 규칙이 없으면 framework의 `_hasScheduledFrame`은 true인데 host queue에는 callback이 없는 상태가 되어 resize frame이 끊겼다. deterministic regression과 기존 F6 validator는 warning/error 0으로 PASS했다.
 7. 누적 현재 폭을 계속 줄여 최소 폭에 고정되던 기존 rapid smoke도 initial base 폭 기준 왕복 패턴으로 수정했다. corrected 8초 제품 run은 exit 0, `resizeCallbacks=518`, `resizeMerged=13`, `presented=358`, `resizeDone=352`, `resizeDwmFlush=352`, `queueMax=1`, `stalePresent=0`, `resizePlatformWaits=0`을 기록했다. platform metrics/scene dispatch는 총 2,334,876µs/518회, 최대 28,541µs였다. 이는 runtime contract 증거이며 visible continuity PASS는 아니다.
-8. 좌·상 미세 떨림은 DPR 산식이 아니라 top-level 원점과 크기가 함께 바뀌는 leading-edge geometry가 exact backing paint보다 먼저 admission되던 순서 문제로 확인했다. `WM_WINDOWPOSCHANGING` proposal은 좌·상 interactive 경로에서만 immutable metrics/frame을 선준비하고, visible present가 아니라 비가시 backing 준비만 최대 8ms 기다린다. 고정-capacity backing의 clear/copy도 가상 데스크톱 전체가 아닌 exact child client rect로 제한했다. 수정 후 좌측+상단 실제 border-drag 자동 입력은 `leadingEdgePrepared=477`, `leadingEdgeAdmitted=477`, `leadingEdgeAdmissionBeforePreparation=10`, `presented=717`, `stalePresent=0`, `failed=0`, exit 0을 기록했다. F6/top-level/EGL focused validator와 Windows Release build도 PASS했지만 직접 visible 판정은 아니다.
+8. 좌·상 미세 떨림 대응으로 도입한 `WM_WINDOWPOSCHANGING` 선준비와 prepared admission은 자동 counter상 exactness를 높였지만, 이후 네 edge 고속 drag에서 native geometry를 renderer cadence에 묶는 더 큰 회귀를 만들었다. `leadingEdgePrepared`, `stalePresent=0`, build PASS는 이 구조를 보존할 근거가 아니며 F6-R에서 제거 대상으로 분류한다.
 9. 사용자는 그 뒤 네 edge 모두에서 빠른 drag가 창 위치·크기를 따라오지 못하는 것처럼 보인다고 보고했다. 사람이 테두리를 잡을 시간을 둔 actual mouse-input probe의 최종 stress 기준은 `600 physical px / 150ms`다. 측정된 이동 시간은 좌/우/상/하 `160.4/150.1/150.1/150.1ms`였고, `stalePresent=0`, `failed=0`, platform callback 최대 `267µs`였지만 `submitted/scenePresented/superseded`는 각각 `17/11/6`, `17/6/11`, `30/15/15`, `22/11/11`이었다. 이 값에는 ordinary frame이 섞여 있어 resize 표시율로 직접 환산하지 않지만, native callback block보다 최신 크기에 밀려 폐기되는 causal work가 큰 병목 후보임을 보여 준다. 자동 counter는 사용자의 visible FAIL을 뒤집지 않는다.
 
 작업:
@@ -567,64 +573,65 @@ PASS 조건:
 
 ### F6-R — high-speed interactive resize 추종 안정화
 
-상태: **계획 확정 / 구현 notStarted / 자동 전체화면 capture·log notVerified**
+상태: **구조 재설계 필요 / 기존 baseline 자동 FAIL / FG blocked**
 
-선행 조건: F6의 exact generation, single pending slot, stale/wrong-size present 0 계약을 보존한다.
+현재 구현·evidence(2026-08-25):
 
-문제 정의:
+1. `windows-resize-capture --f6r`와 제품 JSONL trace는 actual input, `WINDOWPOS`, HWND/child rect, metrics, scene, raster, swap/present를 같은 QPC 축에 기록할 수 있다. 이 harness와 raw artifact는 재사용한다.
+2. four-edge paired baseline `f6r-20260825-155130-a3ec8278daa24e0bbac4e6cbefb02b4d`에서 cursor-edge lag p95/max는 좌 `128/144px`, 우 `136/156px`, 상 `148/160px`, 하 `128/143px`였고 capture run도 p95 `64~100px`였다. final lag 0px와 reverse 0만으로는 active drag 추종을 판정할 수 없다.
+3. 원인은 `PrepareProvisionalResize`가 `WM_WINDOWPOSCHANGING`의 제안 rect를 current/prepared extent로 되쓰고, `_frameworkResizeInFlightGeneration`이 present terminal 전 다음 metrics drain을 막고, raster가 `WaitForAdmission(100ms)`으로 native admission을 기다리는 prepared-front protocol이다. 20~35ms의 scene/present 시간이 native border의 64~160px lag로 증폭된다.
+4. 대표 generation의 metrics→scene 약 20.99ms는 content latency 최적화 대상이지만 최초 구조 수정 대상은 아니다. native geometry를 exact scene 준비에 묶어 둔 채 이 수치만 165Hz의 6.06ms 아래로 낮추는 계획은 일반 layout 비용에서 지속 가능하지 않다.
+5. WGC 약 55Hz도 현재 창이 prepared cadence로 실제 변경된 결과가 섞여 있다. change-driven WGC에 165Hz duplicate frame 생성을 요구하거나 duplicate를 dropped 0 증거로 만들지 않는다. geometry authority 복구 후 WGC active-change cadence를 다시 측정하고, native refresh 자체가 필요하면 Desktop Duplication/ETW/DWM timing을 별도 provenance로 사용한다.
+6. 현재 product surface는 D3D12/DirectComposition인데 F4는 ANGLE/EGL fixture다. backend divergence를 해소하기 전 F4 PASS를 product surface PASS로 승격하지 않는다.
+7. corner, shrink/reverse 3회, 300ms/slow, size/DPI/refresh primary matrix와 FG physical/visible acceptance는 `notVerified`다.
 
-1. 최종 primary stress는 한 edge를 `600 physical px / 150ms`에 이동하는 약 4,000px/s actual mouse drag다. 자동 입력은 창 표시 후 warmup, edge hover, mouse-down hold를 거쳐 실제 resize hit-test가 성립한 뒤에만 이동을 시작한다.
-2. 좌·상은 `WM_WINDOWPOSCHANGING` proposal에서 선준비하지만 우·하는 actual child `WM_SIZE` 뒤에 framework/raster work를 시작한다. 300ms와 150ms run 모두 우·하에서 useful exact scene보다 superseded work가 크게 늘었다.
-3. 현재 platform resize callback 최대치는 267µs이고 stale/wrong-size present와 failure는 0이다. 따라서 좌표/DPR 산식을 먼저 바꾸지 않는다. native moving edge 자체의 추종과 child content의 exact-present cadence를 별도 timestamp로 분리해 어느 경계에서 늦는지 확정한다.
-4. 기존 좌·상 저속 보강과 client-only GPU copy는 보존하되, 그 자동 counter를 고속 all-edge visible PASS로 승격하지 않는다.
-5. 사용자의 눈으로 매 수정본을 반복 계측하지 않는다. 전체화면 capture에서 보이는 cursor·window border·client pixels와 내부 causal log를 동기화해 최초 불일치 frame과 generation을 찾는 것을 구현 반복의 판정 기준으로 삼는다.
+수정 원칙:
 
-구현 작업:
+1. **native geometry 우선**: Windows가 제안한 top-level rect와 child client rect는 renderer 상태와 무관하게 즉시 적용한다. `WM_WINDOWPOSCHANGING`은 관측만 하고 rect를 rewrite하지 않는다.
+2. **content 비동기 추종**: framework는 actual child metrics의 latest-only mailbox를 소비한다. 한 callback이 실행 중이면 새 metrics 하나만 최신값으로 보존하고 callback 종료 즉시 다시 dispatch하며, raster/present terminal을 metrics drain의 lock으로 사용하지 않는다.
+3. **transient와 exact 분리**: framework가 따라오는 동안 마지막 성공 front를 한 visible surface에서 일시적으로 보존·scale/clip할 수 있다. transient frame은 exact generation/present로 세지 않고, white/black band를 만들지 않으며, 새 exact present 또는 resize 종료 때 반드시 해제한다.
+4. **backend를 먼저 일치**: 우선 `FlutterWindowsAngleEglWindowSurface`를 실제 product child HWND에 연결해 native HWND resize + retained DWM front + raster-thread exact surface recreate를 검증한다. 실패할 때만 DComp를 별도 backend로 승인하며, 그 경우 virtual-desktop permanent swap-chain/backing, per-frame full-capacity GPU wait/copy, prepared admission을 제거한다.
+5. **한 visible owner**: dual visible front, top-level/child의 독립 visible surface, Arm N state 혼합은 금지한다. preparation resource가 있더라도 compositor에 노출되는 root/front는 하나다.
 
-1. stress probe가 고속 drag 시작 250ms 전부터 mouse-up 500ms 뒤까지 앱 client crop이 아닌 **대상 monitor 전체 physical frame**을 native refresh cadence로 수집하게 한다. 다중 monitor에서는 앱이 있는 monitor 전체를 캡처하고 monitor rect·virtual-screen origin을 provenance에 남긴다.
-2. capture는 drag 중 PNG encoding이나 disk write를 하지 않고 bounded in-memory/GPU ring에 원본 frame과 QPC timestamp를 보관한 뒤 mouse-up 후 artifact로 기록한다. capture backend, resolution, requested/observed cadence, dropped/duplicated frame 수를 남긴다.
-3. raw 전체화면 frame을 보존한다. capture backend가 hardware cursor를 포함하지 않으면 동일 QPC의 `GetCursorPos`를 별도 기록하고 분석용 사본에만 cursor marker를 합성한다. 원본 capture를 marker가 들어간 파생 이미지로 대체하지 않는다.
-4. 같은 monotonic timeline에 입력 target/actual cursor, `WM_WINDOWPOSCHANGING`, top-level `GetWindowRect`, child `GetClientRect`, metrics 적용, framework callback, raster 시작/준비, exact admission, swap/present, `WM_EXITSIZEMOVE`와 resize/ordinary 구분을 JSONL로 기록한다.
-5. 각 run은 raw full-screen frames, timestamp index, causal JSONL, summary, first-bad-frame 전후 contact sheet를 한 artifact bundle로 남긴다. frame별 cursor↔moving-edge 거리, border↔child extent, pixels↔presented generation을 계산해 최초 지연 구간과 worst generation을 표시한다.
-6. capture 자체가 원인이 되지 않도록 동일 입력의 log-only run과 capture+log run을 짝지어 actual drag duration, native message latency, present cadence를 비교한다. capture 때문에 input duration이 10% 넘게 변하거나 frame drop이 생기면 그 run은 원인 판정에 쓰지 않는다.
-7. 최초 불일치 경계에 따라 owner를 고친다. cursor보다 top-level edge가 먼저 늦으면 platform hot path의 polling/wait/message work를 줄이고, native/child geometry는 맞지만 pixels만 늦으면 framework mailbox·scheduler·raster admission/present를 고치며, exact swap 뒤 desktop frame만 늦으면 DirectComposition commit/DWM ordering을 고친다.
-8. pixels 경계가 원인일 때의 우선 후보는 좌·상 전용 proposal path의 all-edge/corner 일반화와 아직 시작하지 않은 framework/raster work의 latest-only 병합이다. 이는 capture+log가 해당 경계를 지목한 뒤 적용하며, proposal은 matching child `WM_SIZE` 전 visible authority가 될 수 없다.
-9. matching `WM_SIZE`는 같은 immutable proposal generation을 admit한다. proposal과 actual child extent가 다르면 proposal을 cancel하고 actual metrics로 새 generation 하나만 요청한다. queue depth 1과 exact generation/extent를 유지한다.
-10. `WM_EXITSIZEMOVE`에서 unadmitted proposal을 정리하고 actual child rect의 final exact frame을 반드시 요청한다. mouse-up, close, minimize, DPI/display transition이 proposal wait나 GPU fence 뒤에 막히지 않게 한다.
-11. 한 번의 가설 수정마다 동일 seed·방향·시작 rect의 capture+log bundle을 다시 생성해 first-bad-frame, p95/max gap, superseded work가 실제로 개선됐는지 비교한다. 개선이 없으면 변경을 완료로 간주하지 않고 다음 causal 경계를 조사한다.
+구현 순서:
+
+1. F6-R analyzer에 active-drag cursor↔moving-edge p50/p95/max와 native edge update interval을 hard gate로 추가한다. final 0px만 보는 기존 gate는 폐기한다.
+2. `FlutterWindowsHostAdapter`에서 interactive `WINDOWPOS` rewrite, `_latestInteractiveWindowPos` mouse-up replay, provisional preparation/admission 대기를 제거한다. top-level `WM_SIZE → child MoveWindow → child WM_SIZE metrics publish → return`만 native hot path에 남긴다.
+3. framework mailbox를 `idle/running + latest pending`으로 단순화한다. 아직 시작하지 않은 metrics는 교체하고, 실행 중 callback은 끝내되 completion 직후 최신 actual generation을 예약한다. present terminal은 mailbox release 조건이 아니다.
+4. raster queue도 `running + latest pending`으로 제한한다. stale scene은 GPU 작업 전에 폐기하되 continuous resize가 영구 starvation되지 않도록 마지막 committed front를 transient로 유지하고 mouse-up actual metrics의 exact frame은 최우선으로 보장한다.
+5. ANGLE/EGL product path를 먼저 연결해 같은 binary에서 F4 surface lifecycle과 F6-R을 실행한다. DComp를 유지해야 하면 별도 결정 기록과 focused validator를 추가한 뒤 한 visible front의 transient transform/clip과 exact replacement를 검증한다.
+6. geometry가 독립된 뒤 metrics→scene, scene→raster, raster→swap의 p50/p95/max와 CPU/GPU wait를 다시 측정한다. framework 20.99ms, `WaitForGpu`, full-capacity backing/copy, `Present(0)+Commit` 중 실제 남은 content bottleneck만 단계별로 수정한다.
+7. WGC raw active frames와 native/app timeline을 재검증한다. WGC가 change-driven이면 observed active-change cadence로 판정하고, display refresh 연속 timeline은 별도 native observer로 수집해 provenance를 섞지 않는다.
 
 금지 조건:
 
-- matching child `WM_SIZE` 전 provisional frame의 visible present
-- resize generation/extent가 actual child와 다른 stale present
-- `ResizeBuffers`, `SetSourceSize`, full-frame stretch, dual visible front 재도입
-- WndProc의 GPU fence, swap/present, composition commit 완료 대기
-- 600px/150ms 입력을 debounce해 마지막 크기만 늦게 표시하는 방식
-- 좌/우/상/하마다 별도 좌표 산식 또는 anchor 보정 추가
+- scene/raster 준비 전까지 `WINDOWPOS`를 이전 크기로 고정하거나 mouse-up에 한 번에 따라잡는 방식
+- framework/raster/present terminal을 다음 native rect 또는 metrics delivery의 admission 조건으로 사용
+- WndProc의 framework callback, GPU fence, surface recreate, swap/present, composition commit 대기
+- transient front를 exact frame으로 계상하거나 resize 종료 뒤 남기는 방식
+- dual visible front, monitor/virtual-desktop permanent capacity, per-edge anchor 보정 재도입
+- `600px/150ms` 입력을 debounce해 final frame만 맞추는 방식
 
 검증 순서:
 
-1. baseline: 네 edge 각각 `600px/150ms` expand를 log-only와 full-screen capture+log로 한 쌍씩 실행해 observer overhead와 최초 지연 경계를 확정한다. 측정 actual duration이 180ms를 넘으면 invalid run으로 재실행한다.
-2. 수정 반복: first-bad-frame 직전·직후 전체화면 pixels와 동일 timestamp의 causal events를 비교해 owner를 하나씩 수정하고, 같은 seed/start rect/input trace로 before/after bundle을 생성한다.
-3. primary stress: 원인 수정 뒤 네 edge와 네 corner 각각 expand, shrink, immediate reverse를 `600px/150ms`로 3회 실행한다. 모든 valid run에 raw frames, contact sheet, causal log와 summary가 있어야 한다.
-4. cadence comparison: 같은 경로를 `600px/300ms`와 slow/fine drag로 반복해 고속 수정이 저속 좌·상 미세 떨림을 되돌리지 않았는지 full-screen frame sequence로 확인한다.
-5. size/DPI/refresh: 420×300, 640×360, 1000×600, work-area 근접 크기와 가능한 100/125/150/200%, 60/120/144/165Hz에서 실행한다.
-6. focused regression: F2 top-level, F4 surface, F6 scheduler validator와 Windows Release build를 20분 제한으로 실행한다.
-7. F6-R 수정 과정에서는 사용자에게 매 run 확인을 요청하지 않는다. 자동 capture+log가 모두 PASS한 final binary만 FG의 1회 사용자 제품 수용 대상으로 넘긴다.
+1. geometry-only control: renderer를 의도적으로 50ms 지연시켜도 네 edge/corner의 native rect가 cursor를 계속 따라오는지 확인한다. 이 control이 실패하면 content 최적화로 넘어가지 않는다.
+2. backend control: 같은 input trace로 ANGLE/EGL product path와 승인 후보 DComp path를 비교한다. 한 backend만 선택하고 이후 primary matrix는 선택된 product backend로만 실행한다.
+3. baseline: 네 edge `600px/150ms` expand의 log-only/capture paired run으로 active cursor-edge lag, native interval, transient duration, exact-present interval, observer overhead를 측정한다.
+4. primary stress: 네 edge/corner 각각 expand, shrink, immediate reverse를 `600px/150ms`로 3회 실행하고 `600px/300ms`, slow/fine drag를 회귀한다.
+5. size/DPI/refresh: 420×300, 640×360, 1000×600, work-area 근접 크기와 가능한 100/125/150/200%, 60/120/144/165Hz를 실행한다.
+6. focused regression: F2 top-level, 선택된 product surface용 F4, F6 scheduler validator와 Windows Release build를 각각 20분 제한으로 실행한다.
+7. 자동 evidence가 모두 PASS한 final binary만 FG의 1회 사용자 제품 수용 대상으로 넘긴다.
 
 PASS 조건:
 
-- actual moving edge가 cursor 진행 방향을 거슬러 되돌아가거나 멈춰 누적 지연되지 않음
-- mouse-up 뒤 최종 edge/client extent가 1 refresh interval 안에 target의 1 physical px 이내로 수렴
-- full-screen frame sequence에서 moving border와 client pixels가 3 capture frame 이상 정지했다가 건너뛰거나 역방향으로 보이는 구간 0
-- active drag 중 exact resize-present 간격 p95가 2 refresh interval 이하이고 max가 3 refresh interval 이하
-- `queueMax <= 1`, stale/wrong-size present 0, failed 0, terminal 누락/중복 0
-- platform hot path의 GPU/present wait 0; message dispatch p99 1ms 이하, max 4ms 이하
-- final current metrics, framework metrics, surface metrics, child client extent가 같은 generation/extent로 종료
-- 네 edge/corner의 expand/shrink/reverse 3회에서 visible freeze, pointer-border 역방향 jitter, white/black band, stale edge, raster flicker 0
-- capture requested/observed cadence 일치, dropped capture frame 0, log-only 대비 capture run의 actual drag duration·native latency 변화 10% 이하
-- raw full-screen frames와 causal log가 같은 first-bad-frame/root owner를 지목하고, 수정 후 해당 불일치가 모든 primary stress run에서 0
-- 위 자동 capture+log 조건이 모두 PASS할 때 F6-R을 닫고, 사용자 확인은 FG final binary의 1회 제품 수용으로만 수행
+- `600px/150ms`에서 active cursor-edge lag p95가 1 display refresh 동안의 이동량 이하, max가 2 refresh 이동량 이하이며 final lag는 1 physical px 이하
+- renderer 50ms fault injection에서도 native edge update가 2 refresh 이상 멈추거나 mouse-up 때 점프하지 않음
+- platform resize hot path p99 1ms 이하, max 4ms 이하, framework/GPU/present wait 0
+- framework/raster queue는 owner별 running 1 + latest pending 1 이하이고 unbounded backlog/terminal 누락 0
+- transient presentation은 한 visible front에서만 발생하고 exact frame과 trace상 구분되며 white/black band, stale edge, flicker, 역방향 content 0
+- resize 종료 후 100ms 이내 actual child, framework, selected surface가 같은 final generation/extent의 exact present로 수렴
+- capture run의 input duration/native latency 변화가 log-only 대비 10% 이하이고 raw active frame drop 0; display-refresh observer와 WGC provenance를 혼합하지 않음
+- 네 edge/corner expand/shrink/reverse 3회와 slow/fine 회귀가 모두 PASS한 뒤에만 F6-R을 닫음
 
 ### F7 — input, focus, IME, clipboard, accessibility
 
@@ -814,7 +821,9 @@ resize event JSONL:
 - `sceneBuilt`
 - `frameGenerated`
 - `rasterStarted`/`rasterPrepared`
-- `provisionalAdmitted`/`provisionalCancelled`
+- `nativeGeometryPublished`
+- `frameworkMetricsReplaced`/`frameworkMetricsDispatched`
+- `transientFrontStarted`/`transientFrontUpdated`/`transientFrontEnded`
 - `surfaceDestroyStarted`/`surfaceDestroyed`
 - `surfaceCreated`/`surfaceReady`
 - `swapStarted`/`swapCompleted`
@@ -833,10 +842,10 @@ app counter/log, raw full-screen capture, derived contact sheet, 사용자의 �
 
 - F1에서 Windows App SDK runtime/AppWindow/DispatcherQueue 또는 ANGLE/Skia ABI·배포가 성립하지 않으면 D3D12/Arm N으로 조용히 대체하지 않는다. 원인과 대안 결정을 기록하고 중단한다.
 - F2에서 standard window 기능이 깨지면 custom non-client를 추가하지 않고 top-level/child ownership을 수정한다.
-- F4에서 surface recreation이 느리면 monitor-sized capacity, `SetSourceSize`, dual-front를 새 adapter에 넣지 않는다. context/resource lifetime과 surface creation 비용을 먼저 분리한다.
+- F4에서 surface recreation이 느리면 native geometry를 멈추지 않는다. 마지막 committed front의 명시적 transient presentation을 유지하면서 context/resource lifetime과 surface creation 비용을 분리하고, monitor-sized capacity나 dual visible front로 우회하지 않는다.
 - F5 timeout이 반복되면 100ms를 늘리지 않고 metrics→layout→raster→surface→swap의 worst generation을 고친다.
 - F5에서 visible artifact가 남으면 timer/debounce/background/edge별 좌표 보정을 추가하지 않고 handshake와 actual child/surface extent를 다시 검증한다.
-- F6 cadence가 부족하면 resize correctness와 cadence를 분리해 원인을 찾되 wrong-size frame을 허용하지 않는다.
+- F6 cadence가 부족하면 native geometry cadence, transient presentation, exact content cadence를 별도 gate로 판정한다. transient를 wrong-size exact frame으로 기록하지 않고 native geometry를 content readiness에 종속시키지 않는다.
 - F7 IME/UIA 때문에 full-client XAML/ContentIsland가 필요해 보이면 F7을 FAIL로 기록하고 bounded `DesktopChildSiteBridge` 최소 spike로 원인을 분리한다.
 - F8 monitor 이동 시 fixed primary work-area로 clamp하지 않는다. 현재 child가 속한 monitor/DPI/display를 다시 관측한다.
 - FG 전체 PASS, 사용자 제품 수용, 별도 cleanup 승인 전에는 Arm N/MAUI rollback을 삭제하지 않는다.
@@ -871,19 +880,21 @@ app counter/log, raw full-screen capture, derived contact sheet, 사용자의 �
 
 ## 10. 정확한 다음 작업
 
-1. F8~F10 구현과 제품 연결은 완료됐다. platform synchronous present wait, pending-frame continuation, rapid smoke 패턴과 좌·상 leading-edge 선준비/client-only GPU copy 수정은 기존 evidence로 보존하되 고속 all-edge 완료 증거로 해석하지 않는다.
-2. 다음 exact resume point는 F6-R full-screen capture+causal log harness다. `600px/150ms` drag의 250ms 전부터 mouse-up 500ms 뒤까지 대상 monitor 전체 frame을 수집하고 cursor, top-level/child geometry, framework metrics, raster preparation, exact admission, swap/present를 같은 QPC timeline으로 기록한다.
-3. 먼저 네 edge의 log-only/capture+log paired baseline을 만들어 capture observer overhead를 배제한다. 각 run의 raw frame sequence와 first-bad-frame contact sheet를 로그에 join해 native geometry, child geometry, framework/raster, composition/DWM 중 최초 지연 owner를 확정한다.
-4. 확인된 owner만 수정한다. pixels 경계가 원인이면 all-edge/corner proposal 선준비와 latest-only framework/raster mailbox를 우선 검토하되, matching `WM_SIZE` 전 visible present 금지, actual child exactness, queue depth 1, platform GPU/present wait 0은 유지한다.
-5. 동일 seed/start rect/input trace로 before/after capture bundle을 비교하고 개선되지 않은 가설은 완료 처리하지 않는다. 원인이 없어질 때까지 capture+log → first-bad-frame 분석 → scoped 수정 → 동일 run 재검증을 반복하며 사용자에게 중간 확인을 요청하지 않는다.
-6. 네 edge/corner의 expand/shrink/reverse를 `600px/150ms`로 3회, `600px/300ms`와 slow/fine drag로 회귀 실행한다. F2/F4/F6 validator와 Windows Release build도 20분 제한으로 재실행한다.
-7. F6-R 자동 capture+log gate가 모두 PASS한 final binary만 사용자가 같은 `dotnet run --project ./DorotiDemoApp/windowsappsdk/DorotiDemoApp.WindowsAppSdk.csproj` 명령으로 한 번 확인한다. 이후 FG의 4개 client size, 가능한 DPI/refresh, mixed-DPI/lifecycle/input/recovery matrix로 이동한다.
-8. clean generated-template launch, MAUI rollback live launch, Windows App Runtime absence/update, native DLL missing/wrong-arch와 DispatcherQueue shutdown fault를 별도 deployment evidence로 남긴다.
-9. 한 축이라도 미실행이면 FG 전체는 `notVerified`로 유지한다. FG 전체 PASS와 사용자 제품 수용 뒤에만 release 확정과 기존 host cleanup을 수행한다.
+1. F8~F10 구현과 제품 연결, F6-R full-screen capture/QPC harness, 네 edge paired baseline, F2/F4/F6 focused validator와 Windows Release build는 완료했다. harness와 회귀 build PASS를 고속 cadence 완료로 해석하지 않는다.
+2. 다음 exact resume point는 **prepared-front geometry gate 제거**다. `WM_WINDOWPOSCHANGING` rect rewrite, `_latestInteractiveWindowPos` replay, provisional raster admission wait와 present-terminal 기반 framework drain lock을 제거하고 actual child `WM_SIZE`를 유일한 metrics authority로 복구한다.
+3. analyzer에 active cursor-edge lag와 native edge interval gate를 먼저 추가한다. 기존 evidence의 final lag 0px는 PASS 근거에서 제외하고 `600px/150ms`의 p95 `64~148px`, max `64~160px`를 before baseline으로 사용한다.
+4. renderer 50ms fault-injection geometry-only control을 실행한다. native border가 계속 cursor를 따라오지 않으면 framework 20.99ms 최적화나 surface cadence 작업을 시작하지 않는다.
+5. 실제 product surface를 목표 ANGLE/EGL child window surface와 일치시켜 backend control을 실행한다. DComp를 유지해야 할 때만 별도 backend 결정·validator를 만들고 virtual-desktop capacity/prepared admission을 제거한다.
+6. geometry control PASS 뒤 framework/raster를 각각 `running 1 + latest pending 1` mailbox로 정리하고, metrics→scene 약 20.99ms, GPU wait/copy, swap/commit을 순서대로 다시 계측·최적화한다.
+7. WGC 55Hz는 geometry 복구 뒤 재측정한다. change-driven active frames와 display-refresh native timeline을 별도 provenance로 유지하며 인위적 duplicate를 PASS 증거로 만들지 않는다.
+8. 동일 seed/start rect/input의 네 edge paired baseline이 active lag, native interval, transient/exact 상태, observer overhead를 모두 통과한 뒤에만 corner/shrink/reverse 3회와 `600px/300ms`, slow/fine, size/DPI/refresh matrix로 이동한다.
+9. F2, 선택 product backend의 F4, F6 validator와 Windows Release build를 20분 제한으로 다시 실행한다. 자동 gate가 모두 PASS한 final binary만 사용자가 같은 `dotnet run --project ./DorotiDemoApp/windowsappsdk/DorotiDemoApp.WindowsAppSdk.csproj` 명령으로 한 번 확인한다.
+10. clean generated-template launch, MAUI rollback live launch, Windows App Runtime absence/update, native DLL missing/wrong-arch와 DispatcherQueue shutdown fault를 별도 deployment evidence로 남긴다.
+11. 현재 F6-R과 FG는 FAIL/notVerified다. FG 전체 PASS와 사용자 제품 수용 뒤에만 release 확정과 기존 host cleanup을 수행한다.
 
 현재 상태를 다음처럼 오해하면 안 된다.
 
-- Flutter-style host의 F1~F10 제품 경로가 구현됐다: **맞음**. 자동 build/publish/launch와 기존 rapid-resize/rollback smoke도 PASS했다. 다만 F6-R 고속 all-edge와 FG 물리·visible 전체 acceptance는 아직 `notVerified`다.
+- Flutter-style host의 F1~F10 제품 경로가 구현됐다: **맞음**. 자동 build/publish/launch와 기존 rapid-resize/rollback smoke도 PASS했다. 다만 F6-R 네 edge baseline은 cadence FAIL이고 primary matrix는 `notVerified`이며 FG도 `notVerified`다.
 - 기존 Arm N을 조금 수정하는 계획이다: **아님** — 같은 WindowsAppSdk host package 안의 별도 child/EGL adapter다.
 - monitor work-area를 render envelope/capacity로 계속 사용한다: **아님**
 - work-area를 전혀 사용하지 않는다: **아님** — initial/restore/popup placement에만 사용한다.

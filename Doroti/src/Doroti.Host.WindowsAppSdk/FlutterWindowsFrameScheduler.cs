@@ -182,6 +182,7 @@ internal sealed class FlutterWindowsFrameScheduler :
     private readonly IFlutterWindowsVsyncSource _vsyncSource;
     private FlutterWindowsViewMetricsCoordinator? _metricsCoordinator;
     private WindowsViewMetrics _currentMetrics;
+    private WindowsViewMetrics? _proposedMetrics;
     private ScheduledFrame? _pendingResize;
     private ScheduledFrame? _pendingOrdinary;
     private ScheduledFrame? _activeResize;
@@ -384,7 +385,8 @@ internal sealed class FlutterWindowsFrameScheduler :
                 _pendingResizeOrdinaryRejectedCount++;
             }
             if (_activeResize is { } active &&
-                expectedMetrics.ResizeGeneration > active.Ticket.Metrics.ResizeGeneration)
+                expectedMetrics.ResizeGeneration > active.Ticket.Metrics.ResizeGeneration &&
+                !ReferenceEquals(active.Ticket.Metrics, _currentMetrics))
             {
                 // A newer immutable resize revokes admission for the older
                 // raster attempt.  It does not block the platform thread.
@@ -444,7 +446,7 @@ internal sealed class FlutterWindowsFrameScheduler :
             }
 
             UpdateQueueDepthNoLock();
-            if (!HasExactCurrentMetricsNoLock(scheduled.Ticket))
+            if (!HasExactRasterMetricsNoLock(scheduled.Ticket))
             {
                 ClearActiveNoLock(scheduled.Ticket);
                 _droppedStaleCallbackCount++;
@@ -541,7 +543,7 @@ internal sealed class FlutterWindowsFrameScheduler :
                 failure = FlutterWindowsRasterAdmissionFailure.PendingResize;
                 return false;
             }
-            if (!HasExactCurrentMetricsNoLock(ticket))
+            if (!HasExactRasterMetricsNoLock(ticket))
             {
                 _rejectedStaleOrWrongSizeRasterCount++;
                 failure = FlutterWindowsRasterAdmissionFailure.StaleMetrics;
@@ -692,6 +694,7 @@ internal sealed class FlutterWindowsFrameScheduler :
             var wasStopped = IsSchedulingStoppedNoLock();
             var wasMetricsSuspended = _metricsSuspended;
             _currentMetrics = metrics;
+            _proposedMetrics = null;
             _metricsSuspended = !metrics.HasDrawableSize;
             if (_metricsSuspended && !wasMetricsSuspended) _suspendedStopCount++;
             ReplacePendingWithLatestMetricsNoLock(metrics);
@@ -701,6 +704,36 @@ internal sealed class FlutterWindowsFrameScheduler :
                 : null;
         }
         if (latestRequest is not null) LatestMetricsFrameRequested?.Invoke(latestRequest);
+    }
+
+    /// <summary>
+    /// Publishes a future WINDOWPOS child extent for non-visible raster
+    /// preparation. It can replace pending proposal work, but it does not
+    /// revoke an active frame for the still-current admitted child extent.
+    /// ReportSwap continues to require <see cref="_currentMetrics"/> exactly.
+    /// </summary>
+    internal void PublishProposedMetrics(WindowsViewMetrics metrics)
+    {
+        ArgumentNullException.ThrowIfNull(metrics);
+        lock (_gate)
+        {
+            ThrowIfDisposed();
+            if (metrics.ViewId != _currentMetrics.ViewId)
+            {
+                _crossViewLeakCount++;
+                throw new InvalidOperationException(
+                    "A Flutter Windows frame scheduler cannot prepare metrics for another view.");
+            }
+            _proposedMetrics = metrics;
+            ReplacePendingWithLatestMetricsNoLock(metrics);
+            if (_activeResize is { } active &&
+                !ReferenceEquals(active.Ticket.Metrics, _currentMetrics) &&
+                !ReferenceEquals(active.Ticket.Metrics, metrics))
+            {
+                ClearActiveNoLock(active.Ticket);
+                _droppedStaleCallbackCount++;
+            }
+        }
     }
 
     public void SetHidden(bool hidden)
@@ -839,6 +872,14 @@ internal sealed class FlutterWindowsFrameScheduler :
         ReferenceEquals(ticket.Metrics, _currentMetrics) &&
         ticket.ExpectedEpoch == _currentMetrics.ToViewEpoch() &&
         ticket.Metrics.HasDrawableSize;
+
+    private bool HasExactRasterMetricsNoLock(FlutterWindowsFrameTicket ticket) =>
+        HasExactCurrentMetricsNoLock(ticket) ||
+        (_proposedMetrics is { } proposed &&
+         ticket.ViewId == proposed.ViewId &&
+         ReferenceEquals(ticket.Metrics, proposed) &&
+         ticket.ExpectedEpoch == proposed.ToViewEpoch() &&
+         ticket.Metrics.HasDrawableSize);
 
     private bool IsActiveNoLock(FlutterWindowsFrameTicket ticket) =>
         (_activeResize?.Ticket.CausalFrameId == ticket.CausalFrameId &&

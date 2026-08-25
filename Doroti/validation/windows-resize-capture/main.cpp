@@ -25,6 +25,7 @@
 #include <deque>
 #include <filesystem>
 #include <fstream>
+#include <functional>
 #include <iomanip>
 #include <iostream>
 #include <memory>
@@ -65,6 +66,11 @@ struct Options {
     bool anomalyPngs{true};
     bool desktopDuplication{true};
     bool qualification{};
+    bool f6r{};
+    bool logOnly{};
+    int dragPixels{600};
+    int dragMilliseconds{150};
+    std::string motion{"expand"};
 };
 
 struct WindowSample {
@@ -93,6 +99,8 @@ struct FrameRecord {
     int contentLeftGap{-1};
     int contentRightGap{-1};
     std::optional<int> frameId;
+    RECT window{};
+    POINT cursor{};
     std::string png;
 };
 
@@ -115,6 +123,15 @@ struct OutputFrameRecord {
     int contentLeftGap{-1};
     int contentRightGap{-1};
     std::optional<int> frameId;
+    POINT cursor{};
+    std::string png;
+};
+
+struct ResizeDriveTiming {
+    long long hoverCounter{};
+    long long mouseDownCounter{};
+    long long dragStartCounter{};
+    long long mouseUpCounter{};
 };
 
 struct WindowGeometry {
@@ -239,6 +256,11 @@ Options ParseOptions(int argc, wchar_t** argv) {
         else if (key == L"--no-anomaly-png") options.anomalyPngs = false;
         else if (key == L"--no-desktop-duplication") options.desktopDuplication = false;
         else if (key == L"--qualification") options.qualification = true;
+        else if (key == L"--f6r") options.f6r = true;
+        else if (key == L"--log-only") options.logOnly = true;
+        else if (key == L"--drag-pixels") options.dragPixels = std::stoi(next());
+        else if (key == L"--drag-ms") options.dragMilliseconds = std::stoi(next());
+        else if (key == L"--motion") options.motion = NarrowWide(next());
         else Fail("Unknown command-line option.");
     }
     if (!IsWindow(options.hwnd)) Fail("--hwnd must identify a live top-level window.");
@@ -256,6 +278,13 @@ Options ParseOptions(int argc, wchar_t** argv) {
     if ((options.requestedLogicalWidth == 0) != (options.requestedLogicalHeight == 0)) {
         Fail("--requested-logical-width and --requested-logical-height must be supplied together.");
     }
+    if (options.dragPixels < 1 || options.dragPixels > 4000)
+        Fail("--drag-pixels must be between 1 and 4000.");
+    if (options.dragMilliseconds < 20 || options.dragMilliseconds > 10'000)
+        Fail("--drag-ms must be between 20 and 10000.");
+    if (options.motion != "expand" && options.motion != "shrink" && options.motion != "reverse")
+        Fail("--motion must be expand, shrink, or reverse.");
+    if (options.logOnly) options.desktopDuplication = false;
     return options;
 }
 
@@ -354,6 +383,17 @@ GraphicsCaptureItem CreateCaptureItem(HWND hwnd) {
     GraphicsCaptureItem item{nullptr};
     check_hresult(interop->CreateForWindow(
         hwnd,
+        guid_of<ABI::Windows::Graphics::Capture::IGraphicsCaptureItem>(),
+        reinterpret_cast<void**>(put_abi(item))));
+    return item;
+}
+
+GraphicsCaptureItem CreateCaptureItem(HMONITOR monitor) {
+    auto factory = get_activation_factory<GraphicsCaptureItem>();
+    auto interop = factory.as<IGraphicsCaptureItemInterop>();
+    GraphicsCaptureItem item{nullptr};
+    check_hresult(interop->CreateForMonitor(
+        monitor,
         guid_of<ABI::Windows::Graphics::Capture::IGraphicsCaptureItem>(),
         reinterpret_cast<void**>(put_abi(item))));
     return item;
@@ -472,6 +512,16 @@ private:
 bool IsPurple(std::uint8_t const* pixel) {
     int const b = pixel[0], g = pixel[1], r = pixel[2];
     return b - r > 25 && b - g > 35 && r > 45 && b > 100;
+}
+
+bool IsAppBarFill(std::uint8_t const* pixel) {
+    int const b = pixel[0], g = pixel[1], r = pixel[2];
+    return r > 175 && g > 165 && b > 205 && b - g > 8 && b - r > 4;
+}
+
+bool IsNativeTitleBarFill(std::uint8_t const* pixel) {
+    int const b = pixel[0], g = pixel[1], r = pixel[2];
+    return r > 220 && g > 232 && b > 232 && std::abs(g - b) < 18;
 }
 
 bool IsLavender(std::uint8_t const* pixel) {
@@ -648,7 +698,9 @@ public:
         : options_(options), framesDirectory_(options.output.parent_path() / (options.runId + ".frames")) {
         std::filesystem::create_directories(framesDirectory_);
         device_ = CreateWinRtDevice(d3dDevice_, context_);
-        item_ = CreateCaptureItem(options_.captureHwnd);
+        item_ = options_.f6r
+            ? CreateCaptureItem(MonitorFromWindow(options_.captureHwnd, MONITOR_DEFAULTTONEAREST))
+            : CreateCaptureItem(options_.captureHwnd);
         MONITORINFO monitor{};
         monitor.cbSize = sizeof(monitor);
         if (!GetMonitorInfoW(MonitorFromWindow(options_.captureHwnd, MONITOR_DEFAULTTONEAREST), &monitor)) {
@@ -711,6 +763,10 @@ public:
         for (int wait = 0; wait < 5000 && activeCallbacks_.load() != 0; ++wait) Sleep(1);
         ringCondition_.notify_all();
         if (analyzer_.joinable()) analyzer_.join();
+        if (options_.f6r) {
+            for (auto& frame : deferredFrames_) encoder_.Enqueue(std::move(frame));
+            deferredFrames_.clear();
+        }
         encoder_.Stop();
     }
 
@@ -738,6 +794,9 @@ private:
         bool encodeStrideFrame{};
         bool analyzeFrame{};
         bool analyzeShapeFrame{};
+        RECT window{};
+        RECT clientScreen{};
+        POINT cursor{};
     };
 
     void OnFrame(
@@ -758,7 +817,7 @@ private:
             }
             int const frameIndex = frameCount_.fetch_add(1);
             bool const encodeStrideFrame = frameIndex % options_.pngStride == 0;
-            bool const analyzeFrame = options_.visualOracles;
+            bool const analyzeFrame = options_.f6r || options_.visualOracles;
             bool const analyzeShapeFrame = analyzeFrame && frameIndex % options_.oracleStride == 0;
             std::size_t slotIndex = ring_.size();
             {
@@ -796,6 +855,15 @@ private:
                 slot.encodeStrideFrame = encodeStrideFrame;
                 slot.analyzeFrame = analyzeFrame;
                 slot.analyzeShapeFrame = analyzeShapeFrame;
+                GetWindowRect(options_.captureHwnd, &slot.window);
+                RECT client{};
+                GetClientRect(options_.visualHwnd, &client);
+                POINT topLeft{client.left, client.top};
+                POINT bottomRight{client.right, client.bottom};
+                ClientToScreen(options_.visualHwnd, &topLeft);
+                ClientToScreen(options_.visualHwnd, &bottomRight);
+                slot.clientScreen = {topLeft.x, topLeft.y, bottomRight.x, bottomRight.y};
+                GetCursorPos(&slot.cursor);
                 {
                     std::lock_guard lock(ringMutex_);
                     readySlots_.push_back(slotIndex);
@@ -850,11 +918,23 @@ private:
                     }
                     context_->Unmap(slot.staging.get(), 0);
                 }
-                RECT const client{
-                    std::clamp(clientInsets_.left, 0L, static_cast<LONG>(slot.width)),
-                    std::clamp(clientInsets_.top, 0L, static_cast<LONG>(slot.height)),
-                    std::clamp(static_cast<LONG>(slot.width) - clientInsets_.right, 0L, static_cast<LONG>(slot.width)),
-                    std::clamp(static_cast<LONG>(slot.height) - clientInsets_.bottom, 0L, static_cast<LONG>(slot.height))};
+                RECT client{};
+                if (options_.f6r) {
+                    MONITORINFO monitor{};
+                    monitor.cbSize = sizeof(monitor);
+                    GetMonitorInfoW(MonitorFromWindow(options_.captureHwnd, MONITOR_DEFAULTTONEAREST), &monitor);
+                    client = {
+                        std::clamp(slot.clientScreen.left - monitor.rcMonitor.left, 0L, static_cast<LONG>(slot.width)),
+                        std::clamp(slot.clientScreen.top - monitor.rcMonitor.top, 0L, static_cast<LONG>(slot.height)),
+                        std::clamp(slot.clientScreen.right - monitor.rcMonitor.left, 0L, static_cast<LONG>(slot.width)),
+                        std::clamp(slot.clientScreen.bottom - monitor.rcMonitor.top, 0L, static_cast<LONG>(slot.height))};
+                } else {
+                    client = {
+                        std::clamp(clientInsets_.left, 0L, static_cast<LONG>(slot.width)),
+                        std::clamp(clientInsets_.top, 0L, static_cast<LONG>(slot.height)),
+                        std::clamp(static_cast<LONG>(slot.width) - clientInsets_.right, 0L, static_cast<LONG>(slot.width)),
+                        std::clamp(static_cast<LONG>(slot.height) - clientInsets_.bottom, 0L, static_cast<LONG>(slot.height))};
+                }
             UINT const dpi = GetDpiForWindow(options_.visualHwnd);
             double const scale = std::max(1.0, dpi / 96.0);
             std::optional<std::pair<int, int>> appBar;
@@ -875,14 +955,45 @@ private:
                     double const yScale = title->second / static_cast<double>(baselineTitle_->second);
                     titleScale = xScale / std::max(0.001, yScale);
                 }
-                int const middle = (appBar->first + appBar->second) / 2;
+                // The demo also contains a purple shader sample. Deriving the
+                // horizontal fill oracle from AppBarRows could therefore
+                // select that shorter interior rectangle on wide frames and
+                // report a false transparent edge gap. The Material app bar
+                // begins at the child-client top and is 48 logical pixels
+                // high, so sample its stable vertical midpoint directly.
+                int const middle = std::clamp(
+                    client.top + static_cast<int>(std::llround(24.0 * scale)),
+                    client.top,
+                    std::max(client.top, client.bottom - 1));
+                int appLeft = -1, appRight = -1;
                 for (int x = client.left; x < client.right; ++x) {
-                        if (IsPurple(Pixel(pixels, slot.width, x, middle))) { leftGap = x - client.left; break; }
+                        if (IsAppBarFill(Pixel(pixels, slot.width, x, middle))) { appLeft = x; break; }
                 }
                 for (int x = client.right - 1; x >= client.left; --x) {
-                        if (IsPurple(Pixel(pixels, slot.width, x, middle))) { rightGap = client.right - 1 - x; break; }
+                        if (IsAppBarFill(Pixel(pixels, slot.width, x, middle))) { appRight = x; break; }
                 }
-            }
+                // Callback-time HWND geometry may be newer than the WGC
+                // compositor frame. Recover the native visual extent from the
+                // light title bar in the same raw pixels, then compare that
+                // extent with the Material app-bar fill. This distinguishes a
+                // real transparent band from an otherwise exact older DWM
+                // frame without relabeling the capture with future geometry.
+                int const titleY = std::clamp(
+                    static_cast<int>(client.top) - static_cast<int>(std::llround(15.0 * scale)),
+                    0,
+                    std::max(0, slot.height - 1));
+                int titleLeft = -1, titleRight = -1;
+                for (int x = client.left; x < client.right; ++x) {
+                    if (IsNativeTitleBarFill(Pixel(pixels, slot.width, x, titleY))) { titleLeft = x; break; }
+                }
+                for (int x = client.right - 1; x >= client.left; --x) {
+                    if (IsNativeTitleBarFill(Pixel(pixels, slot.width, x, titleY))) { titleRight = x; break; }
+                }
+                if (appLeft >= 0 && titleLeft >= 0) leftGap = std::max(0, appLeft - titleLeft);
+                if (appRight >= 0 && titleRight >= 0) rightGap = std::max(0, titleRight - appRight);
+                if (appLeft >= 0 && titleLeft < 0) leftGap = appLeft - client.left;
+                if (appRight >= 0 && titleRight < 0) rightGap = client.right - 1 - appRight;
+                }
 
             FrameRecord record;
                 record.captureIndex = slot.captureIndex;
@@ -899,7 +1010,10 @@ private:
             record.titleScaleRatio = titleScale;
             record.contentLeftGap = leftGap;
             record.contentRightGap = rightGap;
-                record.frameId = DecodeFrameId(pixels, slot.width, slot.height, client, scale);
+                if (!options_.f6r)
+                    record.frameId = DecodeFrameId(pixels, slot.width, slot.height, client, scale);
+                record.window = slot.window;
+                record.cursor = slot.cursor;
 
             if (record.appBarLogicalHeight && !baselineAppBarHeight_) {
                 baselineAppBarHeight_ = record.appBarLogicalHeight;
@@ -915,7 +1029,10 @@ private:
                     filename << "frame-" << std::setw(6) << std::setfill('0') << slot.captureIndex << ".png";
                 auto const path = framesDirectory_ / filename.str();
                 record.png = Narrow(std::filesystem::relative(path, options_.output.parent_path()));
-                    encoder_.Enqueue({path, slot.width, slot.height, std::move(pixels)});
+                    if (options_.f6r)
+                        deferredFrames_.push_back({path, slot.width, slot.height, std::move(pixels)});
+                    else
+                        encoder_.Enqueue({path, slot.width, slot.height, std::move(pixels)});
             }
             {
                 std::lock_guard lock(mutex_);
@@ -959,11 +1076,14 @@ private:
     std::optional<double> baselineAppBarHeight_;
     std::optional<std::pair<int, int>> baselineTitle_;
     EncoderQueue encoder_;
+    std::vector<EncodedFrame> deferredFrames_;
 };
 
 class DesktopDuplicationRunner {
 public:
-    explicit DesktopDuplicationRunner(Options const& options) : options_(options) {
+    explicit DesktopDuplicationRunner(Options const& options)
+        : options_(options), framesDirectory_(options.output.parent_path() / (options.runId + ".monitor-frames")) {
+        if (options_.f6r) std::filesystem::create_directories(framesDirectory_);
         monitor_ = MonitorFromWindow(options_.captureHwnd, MONITOR_DEFAULTTONEAREST);
         com_ptr<IDXGIFactory1> factory;
         check_hresult(CreateDXGIFactory1(IID_PPV_ARGS(factory.put())));
@@ -1012,6 +1132,11 @@ public:
     void Stop() {
         if (stopped_.exchange(true)) return;
         if (worker_.joinable()) worker_.join();
+        if (options_.f6r) {
+            for (auto& frame : deferredFrames_) encoder_.Enqueue(std::move(frame));
+            deferredFrames_.clear();
+        }
+        encoder_.Stop();
     }
 
     std::vector<OutputFrameRecord> Frames() const {
@@ -1021,6 +1146,10 @@ public:
 
     int Errors() const { return errors_.load(); }
     DXGI_MODE_ROTATION Rotation() const { return outputDescription_.Rotation; }
+    int Encoded() const { return encoder_.Encoded(); }
+    int EncoderDropped() const { return encoder_.Dropped(); }
+    std::string EncoderError() const { return encoder_.Error(); }
+    RECT MonitorRect() const { return outputDescription_.DesktopCoordinates; }
 
 private:
     void Run() {
@@ -1053,7 +1182,7 @@ private:
                     Fail("Desktop observer ClientToScreen failed.");
                 }
                 RECT const desktop = outputDescription_.DesktopCoordinates;
-                RECT const clipped{
+                RECT const clipped = options_.f6r ? desktop : RECT{
                     std::clamp(extended.left, desktop.left, desktop.right),
                     std::clamp(extended.top, desktop.top, desktop.bottom),
                     std::clamp(extended.right, desktop.left, desktop.right),
@@ -1089,7 +1218,7 @@ private:
                 std::optional<double> titleScaleRatio;
                 int leftGap = -1;
                 int rightGap = -1;
-                if (localClient.right > localClient.left && localClient.bottom > localClient.top) {
+                if (!options_.f6r && localClient.right > localClient.left && localClient.bottom > localClient.top) {
                     blank = IsBlank(pixels, width, localClient);
                     UINT const dpi = GetDpiForWindow(options_.visualHwnd);
                     double const scale = std::max(1.0, dpi / 96.0);
@@ -1106,12 +1235,15 @@ private:
                                 titleScaleRatio = xScale / std::max(0.001, yScale);
                             }
                         }
-                        int const middle = (appBar->first + appBar->second) / 2;
+                    int const middle = std::clamp(
+                        localClient.top + static_cast<int>(std::llround(24.0 * scale)),
+                        localClient.top,
+                        std::max(localClient.top, localClient.bottom - 1));
                         for (int x = localClient.left; x < localClient.right; ++x) {
-                            if (IsPurple(Pixel(pixels, width, x, middle))) { leftGap = x - localClient.left; break; }
+                            if (IsAppBarFill(Pixel(pixels, width, x, middle))) { leftGap = x - localClient.left; break; }
                         }
                         for (int x = localClient.right - 1; x >= localClient.left; --x) {
-                            if (IsPurple(Pixel(pixels, width, x, middle))) { rightGap = localClient.right - 1 - x; break; }
+                            if (IsAppBarFill(Pixel(pixels, width, x, middle))) { rightGap = localClient.right - 1 - x; break; }
                         }
                     }
                 }
@@ -1133,8 +1265,19 @@ private:
                 record.titleScaleRatio = titleScaleRatio;
                 record.contentLeftGap = leftGap;
                 record.contentRightGap = rightGap;
-                record.frameId = DecodeFrameId(
-                    pixels, width, height, localClient, std::max(1.0, GetDpiForWindow(options_.visualHwnd) / 96.0));
+                if (!options_.f6r) {
+                    record.frameId = DecodeFrameId(
+                        pixels, width, height, localClient,
+                        std::max(1.0, GetDpiForWindow(options_.visualHwnd) / 96.0));
+                }
+                GetCursorPos(&record.cursor);
+                if (options_.f6r) {
+                    std::ostringstream filename;
+                    filename << "monitor-" << std::setw(6) << std::setfill('0') << frameIndex << ".png";
+                    auto const path = framesDirectory_ / filename.str();
+                    record.png = Narrow(std::filesystem::relative(path, options_.output.parent_path()));
+                    deferredFrames_.push_back({path, width, height, std::move(pixels)});
+                }
                 {
                     std::lock_guard lock(mutex_);
                     frames_.push_back(record);
@@ -1149,6 +1292,7 @@ private:
     }
 
     Options options_;
+    std::filesystem::path framesDirectory_;
     HMONITOR monitor_{};
     com_ptr<IDXGIAdapter1> adapter_;
     com_ptr<IDXGIOutput1> output_;
@@ -1166,6 +1310,8 @@ private:
     mutable std::mutex mutex_;
     std::vector<OutputFrameRecord> frames_;
     std::optional<std::pair<int, int>> baselineTitle_;
+    std::vector<EncodedFrame> deferredFrames_;
+    EncoderQueue encoder_;
 };
 
 struct MotionDefinition {
@@ -1207,17 +1353,21 @@ public:
     }
 
     ~ResizeInputGuard() {
-        INPUT input{};
-        input.type = INPUT_MOUSE;
-        input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
-        SendInput(1, &input, sizeof(input));
-        // A capture/GetWindowRect failure must not strand the target inside its
-        // modal non-client sizing loop. LEFTUP handles native SendInput drag;
-        // WM_CANCELMODE also terminates the WM_NCLBUTTONDOWN fallback.
-        if (hwnd_) PostMessageW(hwnd_, WM_CANCELMODE, 0, 0);
+        if (!completed_) {
+            INPUT input{};
+            input.type = INPUT_MOUSE;
+            input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+            SendInput(1, &input, sizeof(input));
+            // A capture/GetWindowRect failure must not strand the target inside its
+            // modal non-client sizing loop. LEFTUP handles native SendInput drag;
+            // WM_CANCELMODE also terminates the WM_NCLBUTTONDOWN fallback.
+            if (hwnd_) PostMessageW(hwnd_, WM_CANCELMODE, 0, 0);
+        }
         SetThreadPriority(GetCurrentThread(), previousThreadPriority_);
         timeEndPeriod(1);
     }
+
+    void Complete() { completed_ = true; }
 
     ResizeInputGuard(ResizeInputGuard const&) = delete;
     ResizeInputGuard& operator=(ResizeInputGuard const&) = delete;
@@ -1225,9 +1375,48 @@ public:
 private:
     HWND hwnd_{};
     int previousThreadPriority_{THREAD_PRIORITY_NORMAL};
+    bool completed_{};
 };
 
-std::vector<WindowSample> DriveResize(Options const& options) {
+void PrepareF6RWindow(Options const& options) {
+    if (!options.f6r) return;
+    auto const motion = MotionForEdge(options.edge);
+    MONITORINFO monitor{};
+    monitor.cbSize = sizeof(monitor);
+    if (!GetMonitorInfoW(MonitorFromWindow(options.hwnd, MONITOR_DEFAULTTONEAREST), &monitor))
+        Fail("Could not resolve the F6-R start monitor.");
+    RECT const work = monitor.rcWork;
+    bool const expandsFirst = options.motion != "shrink";
+    int width = motion.left || motion.right
+        ? (expandsFirst ? 520 : options.dragPixels + 520)
+        : 800;
+    int height = motion.top || motion.bottom
+        ? (expandsFirst ? 300 : options.dragPixels + 300)
+        : 600;
+    int const workWidth = static_cast<int>(work.right - work.left);
+    int const workHeight = static_cast<int>(work.bottom - work.top);
+    width = std::min(width, std::max(360, workWidth - 100));
+    height = std::min(height, std::max(280, workHeight - 100));
+    int x = work.left + 50;
+    int y = work.top + 50;
+    if (expandsFirst && motion.left) x = work.left + options.dragPixels + 50;
+    if (expandsFirst && motion.top) y = work.top + options.dragPixels + 50;
+    x = std::clamp(x, static_cast<int>(work.left),
+        std::max(static_cast<int>(work.left), static_cast<int>(work.right) - width));
+    y = std::clamp(y, static_cast<int>(work.top),
+        std::max(static_cast<int>(work.top), static_cast<int>(work.bottom) - height));
+    if (!SetWindowPos(options.hwnd, nullptr, x, y, width, height,
+        SWP_NOACTIVATE | SWP_NOZORDER)) {
+        Fail("Could not set the deterministic F6-R start rect.");
+    }
+    check_hresult(DwmFlush());
+    Sleep(250);
+}
+
+std::vector<WindowSample> DriveResize(
+    Options const& options,
+    ResizeDriveTiming* timing = nullptr,
+    std::function<void()> beginCapture = {}) {
     ResizeInputGuard inputGuard(options.hwnd);
     auto const motion = MotionForEdge(options.edge);
     RECT rect{};
@@ -1276,6 +1465,7 @@ std::vector<WindowSample> DriveResize(Options const& options) {
     }
     if (hitTest != expectedHitTest) Fail("Could not locate the requested native resize hit-test zone.");
     MovePointer(startX, startY);
+    if (timing) timing->hoverCounter = PerformanceCounter();
     Sleep(150);
     POINT cursor{startX, startY};
     HWND cursorWindow = GetAncestor(WindowFromPoint(cursor), GA_ROOT);
@@ -1284,6 +1474,7 @@ std::vector<WindowSample> DriveResize(Options const& options) {
     down.type = INPUT_MOUSE;
     down.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
     if (SendInput(1, &down, sizeof(down)) != 1) Fail("Could not press the native pointer button.");
+    if (timing) timing->mouseDownCounter = PerformanceCounter();
     Sleep(150);
 
     int const probeX = startX + (motion.left ? 8 : motion.right ? -8 : 0);
@@ -1307,13 +1498,22 @@ std::vector<WindowSample> DriveResize(Options const& options) {
         Sleep(150);
     } else {
         MovePointer(startX, startY);
-        Sleep(100);
+        if (!options.f6r) Sleep(100);
+    }
+
+    if (options.f6r) {
+        if (beginCapture) beginCapture();
+        Sleep(250);
     }
 
     long long const frequency = PerformanceFrequency();
     long long const interval = std::max(1LL, frequency / options.inputHz);
     long long const start = PerformanceCounter();
-    long long const end = start + frequency * options.durationSeconds;
+    if (timing) timing->dragStartCounter = start;
+    long long const durationTicks = options.f6r
+        ? std::max(1LL, frequency * options.dragMilliseconds / 1000)
+        : frequency * options.durationSeconds;
+    long long const end = start + durationTicks;
     long long deadline = start;
     std::vector<WindowSample> samples;
     samples.reserve(static_cast<std::size_t>(options.durationSeconds * options.inputHz + 8));
@@ -1327,13 +1527,28 @@ std::vector<WindowSample> DriveResize(Options const& options) {
         }
         long long const now = PerformanceCounter();
         double const elapsed = (now - start) / static_cast<double>(frequency);
-        constexpr double dragCycleSeconds = 1.0;
-        double const cycle = std::fmod(elapsed, dragCycleSeconds) / dragCycleSeconds;
-        double const wave = cycle < 0.5 ? cycle * 2.0 : 2.0 - cycle * 2.0;
-        int const horizontal = motion.left ? static_cast<int>(std::lround(260 * wave)) :
-            motion.right ? -static_cast<int>(std::lround(260 * wave)) : 0;
-        int const vertical = motion.top ? static_cast<int>(std::lround(140 * wave)) :
-            motion.bottom ? -static_cast<int>(std::lround(140 * wave)) : 0;
+        double wave{};
+        int distance{};
+        if (options.f6r) {
+            double const progress = std::clamp((now - start) / static_cast<double>(durationTicks), 0.0, 1.0);
+            wave = options.motion == "reverse"
+                ? (progress < 0.5 ? progress * 2.0 : 2.0 - progress * 2.0)
+                : progress;
+            distance = static_cast<int>(std::lround(options.dragPixels * wave));
+        } else {
+            constexpr double dragCycleSeconds = 1.0;
+            double const cycle = std::fmod(elapsed, dragCycleSeconds) / dragCycleSeconds;
+            wave = cycle < 0.5 ? cycle * 2.0 : 2.0 - cycle * 2.0;
+        }
+        int const expandMultiplier = options.motion == "shrink" ? -1 : 1;
+        int const horizontal = options.f6r
+            ? (motion.left ? -distance * expandMultiplier : motion.right ? distance * expandMultiplier : 0)
+            : (motion.left ? static_cast<int>(std::lround(260 * wave)) :
+                motion.right ? -static_cast<int>(std::lround(260 * wave)) : 0);
+        int const vertical = options.f6r
+            ? (motion.top ? -distance * expandMultiplier : motion.bottom ? distance * expandMultiplier : 0)
+            : (motion.top ? static_cast<int>(std::lround(140 * wave)) :
+                motion.bottom ? -static_cast<int>(std::lround(140 * wave)) : 0);
         int const cursorX = startX + horizontal;
         int const cursorY = startY + vertical;
         MovePointer(cursorX, cursorY);
@@ -1356,6 +1571,16 @@ std::vector<WindowSample> DriveResize(Options const& options) {
         }
     }
     if (!resized) Fail("Native pointer input did not resize the target window.");
+    if (options.f6r) {
+        INPUT release{};
+        release.type = INPUT_MOUSE;
+        release.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+        if (SendInput(1, &release, sizeof(release)) != 1)
+            Fail("Could not release the F6-R native pointer button.");
+        if (timing) timing->mouseUpCounter = PerformanceCounter();
+        check_hresult(DwmFlush());
+        inputGuard.Complete();
+    }
     return samples;
 }
 
@@ -1519,14 +1744,14 @@ void WriteEvidence(
     Options const& options,
     std::vector<WindowSample> const& samples,
     std::vector<FrameRecord> const& frames,
-    CaptureRunner const& capture,
+    CaptureRunner const* capture,
     WindowGeometry const& initialGeometry,
     WindowGeometry const& finalGeometry,
     std::vector<OutputFrameRecord> const& outputFrames,
-    int outputErrors,
-    DXGI_MODE_ROTATION outputRotation,
+    DesktopDuplicationRunner const* desktop,
     long long calibrationStartQpc,
     long long calibrationEndQpc,
+    ResizeDriveTiming const& driveTiming,
     std::vector<QualificationStage> const& qualificationStages,
     std::vector<QualificationEvent> const& qualificationEvents) {
     std::ofstream output(options.output, std::ios::binary);
@@ -1541,6 +1766,10 @@ void WriteEvidence(
     std::vector<long long> callbackBacklogs;
     std::vector<long long> callbackDurations;
     long long const frequency = PerformanceFrequency();
+    int const outputErrors = desktop ? desktop->Errors() : 0;
+    DXGI_MODE_ROTATION const outputRotation = desktop
+        ? desktop->Rotation()
+        : DXGI_MODE_ROTATION_UNSPECIFIED;
     for (std::size_t index = 1; index < frames.size(); ++index) {
         long long const currentTimestamp = static_cast<long long>(std::llround(
             static_cast<double>(frames[index].systemRelative100ns) * frequency / 10'000'000.0));
@@ -1616,8 +1845,10 @@ void WriteEvidence(
     }
     output << "{\n  \"schemaVersion\": \"doroti.windows-presentation-observer/v2\",\n";
     output << "  \"runId\": \"" << EscapeJson(options.runId) << "\",\n";
-    output << "  \"captureApi\": \"Windows.Graphics.Capture/CreateForWindow + Direct3D11CaptureFramePool.CreateFreeThreaded\",\n";
-    output << "  \"captureTarget\": \"top-level-window\",\n";
+    output << "  \"captureApi\": \"Windows.Graphics.Capture/"
+        << (options.f6r ? "CreateForMonitor" : "CreateForWindow")
+        << " + Direct3D11CaptureFramePool.CreateFreeThreaded\",\n";
+    output << "  \"captureTarget\": \"" << (options.f6r ? "target-monitor-full-physical" : "top-level-window") << "\",\n";
     output << "  \"visualRegion\": \"" <<
         (options.visualChildClass.empty() ? "top-level-client" : "largest-visible-child-class:") <<
         EscapeJson(NarrowWide(options.visualChildClass)) << "\",\n";
@@ -1626,6 +1857,20 @@ void WriteEvidence(
     output << "  \"anomalyPngsEnabled\": " << (options.anomalyPngs ? "true" : "false") << ",\n";
     output << "  \"edge\": \"" << EscapeJson(options.edge) << "\",\n";
     output << "  \"durationSeconds\": " << options.durationSeconds << ",\n";
+    output << "  \"f6r\": " << (options.f6r ? "true" : "false") << ",\n";
+    output << "  \"logOnly\": " << (options.logOnly ? "true" : "false") << ",\n";
+    output << "  \"motion\": \"" << EscapeJson(options.motion) << "\",\n";
+    output << "  \"dragPixels\": " << options.dragPixels << ",\n";
+    output << "  \"dragMillisecondsRequested\": " << options.dragMilliseconds << ",\n";
+    output << "  \"dragTiming\": {\"hoverCounter\":" << driveTiming.hoverCounter
+        << ",\"mouseDownCounter\":" << driveTiming.mouseDownCounter
+        << ",\"dragStartCounter\":" << driveTiming.dragStartCounter
+        << ",\"mouseUpCounter\":" << driveTiming.mouseUpCounter
+        << ",\"actualDurationMicroseconds\":"
+        << (driveTiming.mouseUpCounter > driveTiming.dragStartCounter
+            ? static_cast<long long>(std::llround(
+                (driveTiming.mouseUpCounter - driveTiming.dragStartCounter) * 1'000'000.0 / frequency))
+            : 0) << "},\n";
     output << "  \"qualification\": " << (options.qualification ? "true" : "false") << ",\n";
     output << "  \"clockCalibration\": {\"qpcFrequency\":" << frequency
         << ",\"start\":{\"qpc\":" << calibrationStartQpc
@@ -1636,6 +1881,10 @@ void WriteEvidence(
         << ",\"height\":" << options.requestedLogicalHeight << "},\n";
     output << "  \"initialGeometry\": "; WriteGeometry(output, initialGeometry); output << ",\n";
     output << "  \"finalGeometry\": "; WriteGeometry(output, finalGeometry); output << ",\n";
+    MONITORINFO evidenceMonitor{};
+    evidenceMonitor.cbSize = sizeof(evidenceMonitor);
+    GetMonitorInfoW(MonitorFromWindow(options.hwnd, MONITOR_DEFAULTTONEAREST), &evidenceMonitor);
+    output << "  \"monitorRect\": "; WriteRect(output, evidenceMonitor.rcMonitor); output << ",\n";
     output << "  \"displayRefreshHz\": " << DisplayRefreshRate(options.hwnd) << ",\n";
     output << "  \"inputHzRequested\": " << options.inputHz << ",\n";
     bool const nonClientFallback = !samples.empty() && samples.front().nonClientFallback;
@@ -1646,21 +1895,31 @@ void WriteEvidence(
     output << "  \"windowDpi\": " << dpi << ",\n";
     output << "  \"inputSamples\": " << samples.size() << ",\n";
     output << "  \"capturedFrames\": " << frames.size() << ",\n";
-    output << "  \"framePoolCapacity\": {\"width\":" << capture.Capacity().Width
-        << ",\"height\":" << capture.Capacity().Height << "},\n";
-    output << "  \"framePoolRecreateCount\": " << capture.RecreateCount() << ",\n";
+    auto const captureCapacity = capture ? capture->Capacity() : SizeInt32{};
+    output << "  \"framePoolCapacity\": {\"width\":" << captureCapacity.Width
+        << ",\"height\":" << captureCapacity.Height << "},\n";
+    output << "  \"framePoolRecreateCount\": " << (capture ? capture->RecreateCount() : 0) << ",\n";
     output << "  \"captureRingCapacity\": " << options.captureRingSize << ",\n";
-    output << "  \"captureRingDroppedFrames\": " << capture.RingDropped() << ",\n";
-    output << "  \"poolCapacityExceededFrames\": " << capture.CapacityExceeded() << ",\n";
-    output << "  \"encodedPngFrames\": " << capture.Encoded() << ",\n";
-    output << "  \"encoderDroppedFrames\": " << capture.EncoderDropped() << ",\n";
-    output << "  \"captureErrors\": " << capture.CaptureErrors() << ",\n";
-    output << "  \"encoderError\": " << (capture.EncoderError().empty() ? "null" : "\"" + EscapeJson(capture.EncoderError()) + "\"") << ",\n";
+    output << "  \"captureRingDroppedFrames\": " << (capture ? capture->RingDropped() : 0) << ",\n";
+    output << "  \"poolCapacityExceededFrames\": " << (capture ? capture->CapacityExceeded() : 0) << ",\n";
+    output << "  \"encodedPngFrames\": " << (capture ? capture->Encoded() : 0) << ",\n";
+    output << "  \"encoderDroppedFrames\": " << (capture ? capture->EncoderDropped() : 0) << ",\n";
+    output << "  \"captureErrors\": " << (capture ? capture->CaptureErrors() : 0) << ",\n";
+    auto const captureEncoderError = capture ? capture->EncoderError() : std::string{};
+    output << "  \"encoderError\": " << (captureEncoderError.empty() ? "null" : "\"" + EscapeJson(captureEncoderError) + "\"") << ",\n";
     output << "  \"desktopDuplication\": {\"enabled\":" << (options.desktopDuplication ? "true" : "false")
         << ",\"status\":\"" << (!options.desktopDuplication ? "notRequested" : outputErrors == 0 && !outputFrames.empty() ? "captured" : "invalid")
         << "\",\"capturedFrames\":" << outputFrames.size()
         << ",\"errors\":" << outputErrors
-        << ",\"rotation\":" << static_cast<int>(outputRotation) << "},\n";
+        << ",\"rotation\":" << static_cast<int>(outputRotation)
+        << ",\"encodedRawFrames\":" << (desktop ? desktop->Encoded() : 0)
+        << ",\"encoderDroppedFrames\":" << (desktop ? desktop->EncoderDropped() : 0)
+        << ",\"encoderError\":";
+    auto const desktopEncoderError = desktop ? desktop->EncoderError() : std::string{};
+    output << (desktopEncoderError.empty() ? "null" : "\"" + EscapeJson(desktopEncoderError) + "\"");
+    output << ",\"monitorRect\":";
+    WriteRect(output, desktop ? desktop->MonitorRect() : RECT{});
+    output << "},\n";
     output << "  \"inputIntervalMicroseconds\": {\"p50\":"; WriteOptional(output, toMicroseconds(Percentile(inputIntervals, .50)));
     output << ",\"p95\":"; WriteOptional(output, toMicroseconds(Percentile(inputIntervals, .95)));
     output << ",\"p99\":"; WriteOptional(output, toMicroseconds(Percentile(inputIntervals, .99))); output << "},\n";
@@ -1739,7 +1998,8 @@ void WriteEvidence(
             << ",\"contentRightGap\":" << frame.contentRightGap
             << ",\"frameId\":";
         if (frame.frameId) output << *frame.frameId; else output << "null";
-        output
+        output << ",\"cursor\":{\"x\":" << frame.cursor.x << ",\"y\":" << frame.cursor.y << "}"
+            << ",\"png\":" << (frame.png.empty() ? "null" : "\"" + EscapeJson(frame.png) + "\"")
             << "}" << (index + 1 == outputFrames.size() ? "\n" : ",\n");
     }
     output << "  ],\n  \"windowSamples\": [\n";
@@ -1772,6 +2032,8 @@ void WriteEvidence(
             << ",\"contentRightGap\":" << frame.contentRightGap
             << ",\"frameId\":";
         if (frame.frameId) output << *frame.frameId; else output << "null";
+        output << ",\"window\":"; WriteRect(output, frame.window);
+        output << ",\"cursor\":{\"x\":" << frame.cursor.x << ",\"y\":" << frame.cursor.y << "}";
         output << ",\"png\":" << (frame.png.empty() ? "null" : "\"" + EscapeJson(frame.png) + "\"")
             << "}" << (index + 1 == frames.size() ? "\n" : ",\n");
     }
@@ -1788,45 +2050,48 @@ int wmain(int argc, wchar_t** argv) {
         }
         init_apartment(apartment_type::multi_threaded);
         Options options = ParseOptions(argc, argv);
+        if (options.f6r) options.desktopDuplication = false;
         options.captureHwnd = options.hwnd;
         options.visualHwnd = ResolveVisualWindow(options);
         if (options.inputHz == 0) options.inputHz = DisplayRefreshRate(options.hwnd);
         std::filesystem::create_directories(options.output.parent_path());
+        PrepareF6RWindow(options);
         WindowGeometry const initialGeometry = CaptureWindowGeometry(options.hwnd);
         ValidateRequestedGeometry(options, initialGeometry);
         long long const calibrationStartQpc = PerformanceCounter();
-        CaptureRunner capture(options);
+        std::unique_ptr<CaptureRunner> capture;
+        if (!options.logOnly) capture = std::make_unique<CaptureRunner>(options);
         std::unique_ptr<DesktopDuplicationRunner> desktop;
         if (options.desktopDuplication) desktop = std::make_unique<DesktopDuplicationRunner>(options);
         if (desktop) desktop->Start();
-        capture.Start();
-        Sleep(750);
+        if (capture && !options.f6r) capture->Start();
+        if (!options.f6r) Sleep(750);
         std::vector<QualificationStage> qualificationStages;
         std::vector<QualificationEvent> qualificationEvents;
+        ResizeDriveTiming driveTiming;
         auto samples = options.qualification
             ? RunQualification(options, qualificationStages, qualificationEvents)
-            : DriveResize(options);
-        Sleep(750);
-        capture.Stop();
+            : DriveResize(options, &driveTiming, [&] { if (capture) capture->Start(); });
+        Sleep(options.f6r ? 500 : 750);
+        if (capture) capture->Stop();
         if (desktop) desktop->Stop();
         long long const calibrationEndQpc = PerformanceCounter();
-        auto frames = capture.Frames();
+        auto frames = capture ? capture->Frames() : std::vector<FrameRecord>{};
         auto outputFrames = desktop ? desktop->Frames() : std::vector<OutputFrameRecord>{};
         WindowGeometry const finalGeometry = CaptureWindowGeometry(options.hwnd);
         WriteEvidence(
-            options, samples, frames, capture, initialGeometry, finalGeometry, outputFrames,
-            desktop ? desktop->Errors() : 0,
-            desktop ? desktop->Rotation() : DXGI_MODE_ROTATION_UNSPECIFIED,
-            calibrationStartQpc, calibrationEndQpc,
+            options, samples, frames, capture.get(), initialGeometry, finalGeometry, outputFrames,
+            desktop.get(), calibrationStartQpc, calibrationEndQpc, driveTiming,
             qualificationStages, qualificationEvents);
         std::cout << "EVIDENCE=" << Narrow(options.output) << "\n";
         std::cout << "INPUT_SAMPLES=" << samples.size() << "\n";
         std::cout << "CAPTURED_FRAMES=" << frames.size() << "\n";
-        std::cout << "ENCODED_FRAMES=" << capture.Encoded() << "\n";
-        int const exitCode = capture.CaptureErrors() != 0 || capture.EncoderDropped() != 0 ||
-            capture.RingDropped() != 0 || capture.CapacityExceeded() != 0 ||
+        std::cout << "ENCODED_FRAMES=" << (capture ? capture->Encoded() : desktop ? desktop->Encoded() : 0) << "\n";
+        int const exitCode = (capture && (capture->CaptureErrors() != 0 || capture->EncoderDropped() != 0 ||
+            capture->RingDropped() != 0 || capture->CapacityExceeded() != 0 ||
+            !capture->EncoderError().empty())) ||
             (desktop && (desktop->Errors() != 0 || outputFrames.empty())) ||
-            !capture.EncoderError().empty() ? 2 : 0;
+            (desktop && (desktop->EncoderDropped() != 0 || !desktop->EncoderError().empty())) ? 2 : 0;
         std::cout.flush();
         std::cerr.flush();
         std::_Exit(exitCode);

@@ -184,7 +184,8 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
 
     public FlutterWindowsAngleEglPresentResult RenderAndSwap(
         WindowsViewMetrics targetMetrics,
-        Action<SKSurface> paint)
+        Action<SKSurface> paint,
+        Action? beforeSwap = null)
     {
         ArgumentNullException.ThrowIfNull(targetMetrics);
         ArgumentNullException.ThrowIfNull(paint);
@@ -278,6 +279,7 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
         }
         _submittedFence = checked(++_nextFence);
         _queue!.Signal(_fence!, _submittedFence).CheckError();
+        beforeSwap?.Invoke();
         Interlocked.Increment(ref _presentAttemptCount);
         _swapChain.Present(0, PresentFlags.None).CheckError();
         _compositionDevice!.Commit().CheckError();

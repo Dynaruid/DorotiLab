@@ -499,7 +499,8 @@ internal sealed class FlutterWindowsAngleEglWindowSurface : IFlutterWindowsSched
     /// </summary>
     public FlutterWindowsAngleEglPresentResult RenderAndSwap(
         WindowsViewMetrics targetMetrics,
-        Action<SKSurface> paint)
+        Action<SKSurface> paint,
+        Action? beforeSwap = null)
     {
         ArgumentNullException.ThrowIfNull(targetMetrics);
         ArgumentNullException.ThrowIfNull(paint);
@@ -530,6 +531,7 @@ internal sealed class FlutterWindowsAngleEglWindowSurface : IFlutterWindowsSched
             surface.Canvas.Flush();
             context.Flush(surface);
             context.Submit(false);
+            beforeSwap?.Invoke();
             Interlocked.Increment(ref _swapAttemptCount);
             if (FlutterWindowsAngleEglNative.EglSwapBuffers(_sharedContext.Display, _eglWindowSurface) != EglFalse)
             {
