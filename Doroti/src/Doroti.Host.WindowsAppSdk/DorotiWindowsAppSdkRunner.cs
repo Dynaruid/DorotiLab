@@ -121,11 +121,11 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             _session = session;
             _application = application;
             _configuration = configuration;
-            Presenter = new(enableDebugLayer: ShouldWriteDiagnostics());
+            Presenter = CreatePresenter(ShouldWriteDiagnostics());
         }
 
         internal WindowsManagedProductHost? Host { get; private set; }
-        internal WindowsManagedHwndPresenter Presenter { get; }
+        internal WindowsManagedHwndPresenterBase Presenter { get; }
         internal SkiaSceneRenderer? Renderer { get; private set; }
         internal DorotiView? View { get; private set; }
 
@@ -134,11 +134,12 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             var host = new WindowsManagedProductHost(in native,
                 checked((int)_configuration.logicalSize.width),
                 checked((int)_configuration.logicalSize.height));
-            var target = "win-x64/windowsappsdk-2.4/cpp-child-hwnd/managed-d3d12-skia";
+            var presenterSlug = Presenter.BackendName.ToLowerInvariant().Replace('/', '-');
+            var target = $"win-x64/windowsappsdk-2.4/cpp-child-hwnd/managed-{presenterSlug}-skia";
             var renderer = new SkiaSceneRenderer(
                 1, host, _configuration.backgroundColor, _configuration.darkBackgroundColor,
-                target, DorotiSkiaRuntimeEffects.WindowsHwndD3D12Backend,
-                "windowsappsdk-2.4-hwnd-d3d12-skia-managed");
+                target, Presenter.RuntimeEffectsBackend,
+                $"windowsappsdk-2.4-hwnd-{presenterSlug}-skia-managed");
             var messages = new WindowsAppSdkPlatformMessageCapability();
             var capabilities = new DorotiViewCapabilities(target)
                 .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
@@ -199,7 +200,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             Presenter.CaptureOperationalDebugMessages();
             if (Presenter.OperationalDebugErrorCount != 0)
                 throw new InvalidOperationException(
-                    $"Managed product presentation emitted {Presenter.OperationalDebugErrorCount} operational D3D12 errors.");
+                    $"Managed {Presenter.BackendName} presentation emitted " +
+                    $"{Presenter.OperationalDebugErrorCount} operational GPU errors.");
             Interlocked.Increment(ref _renderCallbacks);
             if (!result.ShouldPresent) return (uint)WindowsNativeV1.FrameTerminalKind.Superseded;
             if (result.Completion is { } completion)
@@ -274,12 +276,13 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             var resize = Host?.ResizeSnapshot ?? throw new InvalidOperationException("Product host diagnostics are unavailable.");
             var renderer = Renderer?.Diagnostics ?? throw new InvalidOperationException("Product renderer diagnostics are unavailable.");
             return new(
+                Presenter.BackendName, Presenter.DiagnosticCoverage, Presenter.AdapterDescription,
                 _renderCallbacks, _presented, _superseded, _failed,
                 _visibleAfterExactPresent,
                 resize.AcceptedCount, resize.PresentedCount, resize.SupersededCount,
                 resize.FailedCount, resize.UnterminatedCount, resize.DuplicateTerminalCount,
                 Presenter.DeviceGeneration, Presenter.ResizeBuffersCount, Presenter.PresentCount,
-                Presenter.ManagedSubmitFenceCount, Presenter.CopyFenceCount,
+                Presenter.GpuSubmitCount, Presenter.GpuCopyCount,
                 Presenter.InitializationDebugErrorCount, Presenter.OperationalDebugErrorCount,
                 renderer.Submitted, renderer.Presented, renderer.Replayed);
         }
@@ -290,7 +293,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             return new
             {
                 schemaVersion = "doroti.windows.hwnd-exact-cpp-product/v1",
-                ownership = new { cpp = "HWND/task-pump", managed = "D3D12/Skia/swap-chain/present", abiGpuPointerCount = 0 },
+                ownership = new { cpp = "HWND/task-pump", managed = $"{Presenter.BackendName}/Skia/surface/present", abiGpuPointerCount = 0 },
                 frames = diagnostics,
                 resize = Host?.ResizeSnapshot,
                 renderer = Renderer?.Diagnostics,
@@ -315,6 +318,18 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             _capabilities?.Dispose();
             _capabilities = null;
         }
+
+        private static WindowsManagedHwndPresenterBase CreatePresenter(bool diagnosticsEnabled) =>
+            Environment.GetEnvironmentVariable("DOROTI_WINDOWS_PRESENTER")?.Trim() switch
+            {
+                null or "" => new WindowsManagedAngleEglPresenter(diagnosticsEnabled),
+                var value when value.Equals("AngleD3D11", StringComparison.OrdinalIgnoreCase) =>
+                    new WindowsManagedAngleEglPresenter(diagnosticsEnabled),
+                var value when value.Equals("D3D12", StringComparison.OrdinalIgnoreCase) =>
+                    new WindowsManagedHwndPresenter(diagnosticsEnabled),
+                var value => throw new InvalidOperationException(
+                    $"Unsupported managed Windows presenter '{value}'. Expected D3D12 or AngleD3D11."),
+            };
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
@@ -447,6 +462,9 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
 }
 
 internal sealed record WindowsProductRunDiagnostics(
+    string PresenterBackend,
+    string PresenterDiagnosticCoverage,
+    string AdapterDescription,
     long RenderCallbacks,
     long PresentedTerminals,
     long SupersededTerminals,
@@ -461,8 +479,8 @@ internal sealed record WindowsProductRunDiagnostics(
     ulong DeviceGenerations,
     ulong ResizeBuffers,
     ulong Presents,
-    ulong SubmitFences,
-    ulong CopyFences,
+    ulong GpuSubmits,
+    ulong GpuCopies,
     ulong InitializationDebugErrors,
     ulong OperationalDebugErrors,
     long RendererSubmitted,

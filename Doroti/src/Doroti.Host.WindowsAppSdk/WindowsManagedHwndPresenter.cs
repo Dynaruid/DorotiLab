@@ -10,7 +10,7 @@ using static Vortice.DXGI.DXGI;
 
 namespace Doroti.Host.WindowsAppSdk;
 
-internal sealed class WindowsManagedHwndPresenter : IDisposable
+internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterBase
 {
     private IDXGIFactory6? _factory;
     private IDXGIAdapter1? _adapter;
@@ -36,22 +36,35 @@ internal sealed class WindowsManagedHwndPresenter : IDisposable
     }
 
     internal bool DebugLayerEnabled { get; }
-    internal int Width { get; private set; }
-    internal int Height { get; private set; }
-    internal ulong DeviceGeneration { get; private set; }
-    internal ulong ResizeBuffersCount { get; private set; }
-    internal ulong ResizeInvalidCallCount { get; private set; }
-    internal ulong PresentCount { get; private set; }
+    internal override string BackendName => "D3D12";
+    internal override string RuntimeEffectsBackend => Doroti.Skia.RuntimeEffects.DorotiSkiaRuntimeEffects.WindowsHwndD3D12Backend;
+    internal override string DiagnosticCoverage => DebugLayerEnabled ? "D3D12 debug layer" : "explicit HRESULT checks";
+    internal override int Width { get; set; }
+    internal override int Height { get; set; }
+    internal override ulong DeviceGeneration { get; set; }
+    internal override ulong ResizeBuffersCount { get; set; }
+    internal override ulong ResizeInvalidCallCount { get; set; }
+    internal override ulong PresentCount { get; set; }
+    internal override ulong GpuSubmitCount
+    {
+        get => ManagedSubmitFenceCount;
+        set => ManagedSubmitFenceCount = value;
+    }
+    internal override ulong GpuCopyCount
+    {
+        get => CopyFenceCount;
+        set => CopyFenceCount = value;
+    }
     internal ulong ManagedSubmitFenceCount { get; private set; }
     internal ulong CopyFenceCount { get; private set; }
-    internal ulong InitializationDebugMessageCount { get; private set; }
-    internal ulong InitializationDebugErrorCount { get; private set; }
-    internal ulong OperationalDebugMessageCount { get; private set; }
-    internal ulong OperationalDebugErrorCount { get; private set; }
-    internal ulong OperationalDebugWarningCount { get; private set; }
-    internal string AdapterDescription { get; private set; } = "uninitialized";
+    internal override ulong InitializationDebugMessageCount { get; set; }
+    internal override ulong InitializationDebugErrorCount { get; set; }
+    internal override ulong OperationalDebugMessageCount { get; set; }
+    internal override ulong OperationalDebugErrorCount { get; set; }
+    internal override ulong OperationalDebugWarningCount { get; set; }
+    internal override string AdapterDescription { get; set; } = "uninitialized";
 
-    internal void EnsureTarget(nint childWindow, int width, int height)
+    internal override void EnsureTarget(nint childWindow, int width, int height)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (childWindow == 0) throw new ArgumentOutOfRangeException(nameof(childWindow));
@@ -96,7 +109,7 @@ internal sealed class WindowsManagedHwndPresenter : IDisposable
         Height = height;
     }
 
-    internal void SealInitializationDebugBaseline()
+    internal override void SealInitializationDebugBaseline()
     {
         if (!DebugLayerEnabled || _infoQueue is null || _debugBaselineSealed)
             return;
@@ -106,7 +119,7 @@ internal sealed class WindowsManagedHwndPresenter : IDisposable
         _debugBaselineSealed = true;
     }
 
-    internal void CaptureOperationalDebugMessages()
+    internal override void CaptureOperationalDebugMessages()
     {
         if (!DebugLayerEnabled || _infoQueue is null || !_debugBaselineSealed) return;
         var snapshot = CaptureAndClearDebugMessages("operation");
@@ -127,7 +140,7 @@ internal sealed class WindowsManagedHwndPresenter : IDisposable
             static value => value);
     }
 
-    internal T RenderAndPresent<T>(Func<SKSurface, T> paint, Predicate<T> shouldPresent)
+    internal override T RenderAndPresent<T>(Func<SKSurface, T> paint, Predicate<T> shouldPresent)
     {
         ArgumentNullException.ThrowIfNull(paint);
         ArgumentNullException.ThrowIfNull(shouldPresent);
@@ -169,7 +182,7 @@ internal sealed class WindowsManagedHwndPresenter : IDisposable
         return result;
     }
 
-    internal void ResetDevice()
+    internal override void ResetDevice()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         ReleaseDevice();
@@ -310,7 +323,7 @@ internal sealed class WindowsManagedHwndPresenter : IDisposable
         return (total, errors, warnings);
     }
 
-    public void Dispose()
+    public override void Dispose()
     {
         if (_disposed) return;
         ReleaseDevice();

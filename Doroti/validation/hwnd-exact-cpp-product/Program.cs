@@ -13,6 +13,7 @@ internal static class Program
     {
         var reportPath = ResolveReportPath(args);
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_ADAPTER", "HwndExactCpp");
+        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_PRESENTER", "AngleD3D11");
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_SMOKE_MS", "1500");
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_DIAGNOSTICS", "1");
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_INPUT_SMOKE", "1");
@@ -34,9 +35,15 @@ internal static class Program
             Require(diagnostics.AcceptedResizeGenerations >= 1 && diagnostics.UnterminatedResizeGenerations == 0 &&
                     diagnostics.DuplicateResizeTerminals == 0, "Product resize generation did not drain exactly once.");
             Require(diagnostics.DeviceGenerations == 1 && diagnostics.Presents >= 1 &&
-                    diagnostics.Presents == diagnostics.SubmitFences && diagnostics.Presents == diagnostics.CopyFences,
+                    diagnostics.Presents == diagnostics.GpuSubmits && diagnostics.Presents == diagnostics.GpuCopies,
                 "Managed presenter ordering differs in the product path.");
-            Require(diagnostics.OperationalDebugErrors == 0, "Product presentation emitted operational D3D12 errors.");
+            Require(diagnostics.PresenterBackend == "ANGLE/EGL-D3D11",
+                "Product validation did not select the managed ANGLE/EGL-D3D11 presenter.");
+            Require(diagnostics.AdapterDescription.Contains("ANGLE", StringComparison.OrdinalIgnoreCase) &&
+                    (diagnostics.AdapterDescription.Contains("D3D11", StringComparison.OrdinalIgnoreCase) ||
+                     diagnostics.AdapterDescription.Contains("Direct3D11", StringComparison.OrdinalIgnoreCase)),
+                "Product validation did not bind ANGLE to D3D11.");
+            Require(diagnostics.OperationalDebugErrors == 0, "Product presentation emitted operational EGL/GLES errors.");
             var layout = WindowsNativeV1.ValidateLayout();
             Require(layout.GpuPointerCount == 0, "Product ABI exposes a GPU pointer.");
             Require(ProductEntrypoint.PointerChanges.Take(5).SequenceEqual([
@@ -54,7 +61,7 @@ internal static class Program
             var report = new
             {
                 schemaVersion = "doroti.windows.hwnd-exact-cpp-product-validation/v1",
-                gate = "C5",
+                gate = "C5-A",
                 status = "PASS",
                 exitCode,
                 framework = new
@@ -66,7 +73,7 @@ internal static class Program
                 },
                 diagnostics,
                 abiGpuPointerCount = layout.GpuPointerCount,
-                scopeBoundary = "Automated product bootstrap, framework scene, exact managed presentation, and clean close. Visible resize behavior remains notVerified.",
+                scopeBoundary = "Automated product bootstrap, framework scene, managed ANGLE/EGL-D3D11 exact presentation, and clean close. Visible resize behavior remains notVerified.",
             };
             Write(reportPath, report);
             var c6ReportPath = IoPath.GetFullPath(IoPath.Combine(".doroti", "evidence", "hwnd-exact-cpp-c6-input.json"));
@@ -92,7 +99,7 @@ internal static class Program
             Write(reportPath, new
             {
                 schemaVersion = "doroti.windows.hwnd-exact-cpp-product-validation/v1",
-                gate = "C5",
+                gate = "C5-A",
                 status = "FAIL",
                 exception = exception.ToString(),
             });
@@ -112,7 +119,7 @@ internal static class Program
     {
         var index = Array.IndexOf(args, "--report");
         if (index >= 0 && index + 1 < args.Length) return IoPath.GetFullPath(args[index + 1]);
-        return IoPath.GetFullPath(IoPath.Combine(".doroti", "evidence", "hwnd-exact-cpp-c5-product.json"));
+        return IoPath.GetFullPath(IoPath.Combine(".doroti", "evidence", "hwnd-exact-cpp-c5-angle-product.json"));
     }
 
     private static void Require(bool condition, string message)
@@ -131,7 +138,7 @@ public sealed class ProductStartup : IDorotiApplicationStartup
 {
     public void Configure(DorotiApplicationBuilder builder) => builder
         .UseEntrypoint(() => new ProductEntrypoint())
-        .UseView(new DorotiViewConfiguration("Doroti C5 managed presenter", new Size(640, 480)));
+        .UseView(new DorotiViewConfiguration("Doroti C5-A managed ANGLE presenter", new Size(640, 480)));
 }
 
 public sealed class ProductEntrypoint : IDorotiViewEntrypoint
