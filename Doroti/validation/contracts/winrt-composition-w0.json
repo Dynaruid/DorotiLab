@@ -1,0 +1,77 @@
+{
+  "schema": "doroti.winrt-composition-w0/v1",
+  "status": "required",
+  "packagePolicy": {
+    "centralMicrosoftWindowsAppSdk": "1.8.260508005",
+    "windowsAppSdkHostVersionOverride": "2.4.0",
+    "validationPackage": "2.4.0",
+    "upgradeOrDowngradeAllowed": false,
+    "deployment": "self-contained unpackaged"
+  },
+  "boundary": {
+    "name": "attached HWND shim + ContentIsland",
+    "pureWinRt": false,
+    "contentAppWindowBridgeRequired": false,
+    "contentAppWindowBridgeExpectedAvailable": false,
+    "childRenderHwndAllowed": false,
+    "productBackendImplementationAllowed": false
+  },
+  "requiredProjectedApis": [
+    "Microsoft.UI.Content.ContentIsland.CreateForSystemVisual",
+    "Microsoft.UI.Content.DesktopAttachedSiteBridge.CreateFromWindowId",
+    "Microsoft.UI.Content.ContentSiteView.ClientSize",
+    "Microsoft.UI.Content.ContentSiteView.ActualSize",
+    "Microsoft.UI.Content.ContentSiteView.RasterizationScale",
+    "Microsoft.UI.Input.InputPointerSource.GetForIsland",
+    "Microsoft.UI.Input.InputKeyboardSource.GetForIsland",
+    "Microsoft.UI.Input.InputFocusController.GetForIsland",
+    "Microsoft.UI.Content.ContentIsland.AutationProviderRequested"
+  ],
+  "nativeInteropAllowlist": [
+    "combase.dll!RoInitialize",
+    "combase.dll!RoUninitialize",
+    "user32.dll!CreateWindowExW",
+    "user32.dll!DestroyWindow",
+    "user32.dll!GetClientRect",
+    "user32.dll!SetWindowPos",
+    "user32.dll!DefWindowProcW",
+    "user32.dll!DispatchMessageW",
+    "user32.dll!GetMessageW",
+    "user32.dll!PostMessageW",
+    "user32.dll!RegisterClassExW",
+    "user32.dll!TranslateMessage",
+    "d3d11.dll!D3D11CreateDevice",
+    "dxgi.dll!CreateDXGIFactory2",
+    "Windows.UI.Composition!ICompositorInterop.CreateCompositionSurfaceForSwapChain"
+  ],
+  "officialSampleComparison": {
+    "repository": "https://github.com/microsoft/WindowsAppSDK-Samples",
+    "path": "Samples/Islands/UXFrameworksOnIslands",
+    "referenceBranch": "main",
+    "referenceCommit": "18431c6d0111d6a4bd8d46b9c8a82add47ccb013",
+    "sharedStructure": [
+      "one UI-thread Microsoft.UI.Dispatching.DispatcherQueueController",
+      "one dedicated Windows.System.DispatcherQueueController for the system compositor",
+      "DesktopAttachedSiteBridge attached to a top-level WindowId",
+      "system ContentIsland connected to the desktop bridge",
+      "ContentSiteView-driven resize and display-scale handling",
+      "explicit input focus and accessibility boundaries across nested island frames"
+    ],
+    "observedDesktopAttachmentInput": [
+      "the official TopLevelWindow disables bridge keyboard and pointer processing so input goes to the HWND",
+      "the local 2.4 runtime connects successfully with ProcessesPointerInput=false",
+      "enabling DesktopAttachedSiteBridge pointer processing did not produce a supported local activation path"
+    ],
+    "dorotiDifferences": [
+      "XAML and mixed UX frameworks are excluded",
+      "the target is a Direct3D-backed composition surface",
+      "the Windows App SDK package is exact 2.4.0 and self-contained",
+      "local projected APIs and runtime activation are authoritative"
+    ]
+  },
+  "baselines": [
+    "Doroti/validation/windows-resize-capture",
+    "Doroti/validation/windowsappsdk-24-preflight",
+    "Doroti/src/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs"
+  ]
+}
