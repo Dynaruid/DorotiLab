@@ -80,7 +80,8 @@ internal sealed class WindowsManagedResizeCoordinator : IDisposable
         int widthPx,
         int heightPx,
         double scale,
-        ulong causalFrameId)
+        ulong causalFrameId,
+        long? externalGeneration = null)
     {
         if (viewId == 0) throw new ArgumentOutOfRangeException(nameof(viewId));
         if (widthPx < 0 || heightPx < 0) throw new ArgumentOutOfRangeException(nameof(widthPx));
@@ -88,8 +89,13 @@ internal sealed class WindowsManagedResizeCoordinator : IDisposable
         lock (_gate)
         {
             if (_closed) throw new InvalidOperationException("The resize coordinator is closed.");
+            var generation = externalGeneration ?? checked(_generation + 1);
+            if (generation <= _generation)
+                throw new InvalidOperationException(
+                    $"Resize generation {generation} is not newer than {_generation}.");
+            _generation = generation;
             var target = new WindowsResizeTarget(
-                viewId, checked(++_generation), widthPx, heightPx, scale,
+                viewId, generation, widthPx, heightPx, scale,
                 causalFrameId, Stopwatch.GetTimestamp());
             var entry = new Entry(target);
             _entries.Add(target.Generation, entry);
@@ -120,6 +126,12 @@ internal sealed class WindowsManagedResizeCoordinator : IDisposable
         lock (_gate) return LatestGenerationCore() == generation;
     }
 
+    internal bool IsComplete(long generation)
+    {
+        lock (_gate)
+            return _entries.TryGetValue(generation, out var entry) && entry.Receipt is not null;
+    }
+
     internal bool ValidateExact(long generation, int widthPx, int heightPx)
     {
         lock (_gate)
@@ -134,7 +146,11 @@ internal sealed class WindowsManagedResizeCoordinator : IDisposable
         }
     }
 
-    internal bool TryComplete(long generation, WindowsResizeTerminal terminal, string detail)
+    internal bool TryComplete(
+        long generation,
+        WindowsResizeTerminal terminal,
+        string detail,
+        bool enforceLatest = true)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(detail);
         lock (_gate)
@@ -146,7 +162,7 @@ internal sealed class WindowsManagedResizeCoordinator : IDisposable
                 _duplicateTerminalCount++;
                 return false;
             }
-            if (terminal == WindowsResizeTerminal.Presented && LatestGenerationCore() != generation)
+            if (enforceLatest && terminal == WindowsResizeTerminal.Presented && LatestGenerationCore() != generation)
             {
                 terminal = WindowsResizeTerminal.Superseded;
                 detail = $"stale present prevented: {detail}";

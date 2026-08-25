@@ -155,6 +155,7 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
         context.Submit(true);
         SignalAndWait();
         ManagedSubmitFenceCount++;
+        if (!shouldPresent(result)) return result;
 
         _copyAllocator!.Reset();
         _copyCommandList!.Reset(_copyAllocator);
@@ -175,6 +176,7 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
             _queue!.ExecuteCommandList(_copyCommandList);
         }
         SignalAndWait();
+        if (!shouldPresent(result)) return result;
         CopyFenceCount++;
         swapChain.Present(0, PresentFlags.None).CheckError();
         PresentCount++;

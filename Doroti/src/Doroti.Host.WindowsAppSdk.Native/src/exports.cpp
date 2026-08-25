@@ -11,13 +11,18 @@
 
 #include <algorithm>
 #include <atomic>
+#include <condition_variable>
 #include <cstddef>
 #include <cstdlib>
 #include <cstring>
+#include <deque>
 #include <iterator>
 #include <limits>
+#include <mutex>
 #include <new>
+#include <optional>
 #include <string>
+#include <thread>
 #include <type_traits>
 
 namespace {
@@ -29,6 +34,7 @@ constexpr UINT kRequestFrame = WM_APP + 0x401;
 constexpr UINT kRequestResize = WM_APP + 0x402;
 constexpr UINT kRequestClose = WM_APP + 0x403;
 constexpr UINT kRequestShow = WM_APP + 0x404;
+constexpr UINT kRenderCompleted = WM_APP + 0x405;
 constexpr UINT_PTR kSmokeTimer = 1;
 
 template <typename T>
@@ -66,6 +72,12 @@ struct ResizeCommand {
   uint32_t height;
 };
 
+struct RenderWork {
+  doroti_windows_metrics_v1 metrics;
+  doroti_windows_frame_request_v1 request;
+  int64_t accepted_qpc;
+};
+
 class ProductHost;
 LRESULT CALLBACK TopProcedure(HWND window, UINT message, WPARAM wparam, LPARAM lparam);
 LRESULT CALLBACK ChildProcedure(HWND window, UINT message, WPARAM wparam, LPARAM lparam);
@@ -100,9 +112,10 @@ class ProductHost final {
         &RequestClipboard,
     };
     callbacks_.host_ready(callbacks_.callback_context, &host);
+    StartRenderWorker();
     PublishMetrics();
     RunInputSmoke();
-    PostMessageW(task_, kRequestFrame, 0, 0);
+    QueueRender();
     ConfigureSmokeTimer();
 
     MSG message{};
@@ -110,6 +123,7 @@ class ProductHost final {
       TranslateMessage(&message);
       DispatchMessageW(&message);
     }
+    StopRenderWorker();
     return fatal_ ? DOROTI_WINDOWS_STATUS_NATIVE_FAILURE_V1
                   : DOROTI_WINDOWS_STATUS_OK_V1;
   }
@@ -129,13 +143,13 @@ class ProductHost final {
               fatal_ = true;
               PostMessageW(top_, WM_CLOSE, 0, 0);
             } else {
-              PublishMetrics();
-              PostMessageW(task_, kRequestFrame, 0, 0);
+              if (PublishMetrics()) QueueRender();
             }
           }
         }
         return 0;
       case WM_CLOSE:
+        StopRenderWorker();
         DestroyWindow(top_);
         return 0;
       case WM_DESTROY:
@@ -158,7 +172,10 @@ class ProductHost final {
   LRESULT HandleTask(HWND window, UINT message, WPARAM wparam, LPARAM lparam) {
     switch (message) {
       case kRequestFrame:
-        Render();
+        QueueRender();
+        return 0;
+      case kRenderCompleted:
+        DrainRenderCompletions();
         return 0;
       case kRequestResize: {
         auto* command = reinterpret_cast<ResizeCommand*>(lparam);
@@ -185,8 +202,11 @@ class ProductHost final {
       case WM_ERASEBKGND:
         return 1;
       case WM_SETCURSOR:
-        ::SetCursor(ResolveCursor());
-        return TRUE;
+        if (LOWORD(lparam) == HTCLIENT) {
+          ::SetCursor(ResolveCursor());
+          return TRUE;
+        }
+        break;
       case WM_SETFOCUS:
       case WM_KILLFOCUS:
         if (callbacks_.focus != nullptr)
@@ -212,14 +232,26 @@ class ProductHost final {
       case WM_MBUTTONDOWN:
         SetFocus(window);
         SetCapture(window);
+        pointer_down_ = true;
         EmitPointer(4, wparam, lparam);
         return 0;
       case WM_LBUTTONUP:
       case WM_RBUTTONUP:
       case WM_MBUTTONUP:
         EmitPointer(6, wparam, lparam);
-        if ((wparam & (MK_LBUTTON | MK_RBUTTON | MK_MBUTTON)) == 0)
+        if ((wparam & (MK_LBUTTON | MK_RBUTTON | MK_MBUTTON)) == 0) {
+          pointer_down_ = false;
           ReleaseCapture();
+        }
+        return 0;
+      case WM_CANCELMODE:
+        if (GetCapture() == window) ReleaseCapture();
+        return 0;
+      case WM_CAPTURECHANGED:
+        if (pointer_down_) {
+          pointer_down_ = false;
+          EmitPointer(0, 0, last_pointer_lparam_);
+        }
         return 0;
       case WM_MOUSEWHEEL:
       case WM_MOUSEHWHEEL: {
@@ -244,6 +276,7 @@ class ProductHost final {
       default:
         return DefWindowProcW(window, message, wparam, lparam);
     }
+    return DefWindowProcW(window, message, wparam, lparam);
   }
 
  private:
@@ -420,75 +453,145 @@ class ProductHost final {
     if (!app_window_) throw std::bad_alloc();
   }
 
-  void PublishMetrics() {
-    if (child_ == nullptr || callbacks_.metrics == nullptr) return;
+  bool PublishMetrics() {
+    if (child_ == nullptr || callbacks_.metrics == nullptr) return false;
     RECT client{};
-    if (!GetClientRect(child_, &client)) return;
+    if (!GetClientRect(child_, &client)) return false;
     const auto width = static_cast<uint32_t>(std::max(0L, client.right - client.left));
     const auto height = static_cast<uint32_t>(std::max(0L, client.bottom - client.top));
-    if (width == 0 || height == 0) return;
+    if (width == 0 || height == 0) return false;
     const auto scale = static_cast<double>(GetDpiForWindow(top_)) / 96.0;
+    return UpdateMetrics(width, height, scale);
+  }
+
+  bool UpdateMetrics(uint32_t width, uint32_t height, double scale) {
     if (current_generation_ != 0 && current_width_ == width &&
         current_height_ == height && current_scale_ == scale)
-      return;
+      return false;
     current_width_ = width;
     current_height_ = height;
     current_scale_ = scale;
     current_generation_++;
-    doroti_windows_metrics_v1 metrics{
-        DOROTI_WINDOWS_ABI_VERSION_V1,
-        sizeof(doroti_windows_metrics_v1),
-        1,
-        current_generation_,
-        width,
-        height,
-        scale,
-        static_cast<double>(width) / scale,
-        static_cast<double>(height) / scale,
-        1,
-        QpcNow(),
-    };
-    callbacks_.metrics(callbacks_.callback_context, &metrics);
+    current_metrics_qpc_ = QpcNow();
+    return true;
   }
 
-  void Render() {
+  void QueueRender() {
     if (current_generation_ == 0 || current_width_ == 0 || current_height_ == 0)
       return;
     const auto causal = ++causal_frame_id_;
     const auto accepted = QpcNow();
-    doroti_windows_frame_request_v1 request{
-        DOROTI_WINDOWS_ABI_VERSION_V1,
-        sizeof(doroti_windows_frame_request_v1),
-        1,
-        current_generation_,
-        current_width_,
-        current_height_,
-        causal,
-        accepted,
-    };
-    auto terminal = callbacks_.render(callbacks_.callback_context, &request);
-    if (terminal != DOROTI_WINDOWS_FRAME_PRESENTED_V1 &&
-        terminal != DOROTI_WINDOWS_FRAME_SUPERSEDED_V1 &&
-        terminal != DOROTI_WINDOWS_FRAME_FAILED_V1)
-      terminal = DOROTI_WINDOWS_FRAME_FAILED_V1;
-    doroti_windows_frame_terminal_v1 receipt{
+    RenderWork work{{
+                         DOROTI_WINDOWS_ABI_VERSION_V1,
+                         sizeof(doroti_windows_metrics_v1),
+                         1,
+                         current_generation_,
+                         current_width_,
+                         current_height_,
+                         current_scale_,
+                         static_cast<double>(current_width_) / current_scale_,
+                         static_cast<double>(current_height_) / current_scale_,
+                         1,
+                         current_metrics_qpc_,
+                     },
+                    {
+                         DOROTI_WINDOWS_ABI_VERSION_V1,
+                         sizeof(doroti_windows_frame_request_v1),
+                         1,
+                         current_generation_,
+                         current_width_,
+                         current_height_,
+                         causal,
+                         accepted,
+                     },
+                    accepted};
+    {
+      std::lock_guard lock(render_mutex_);
+      if (render_stopping_) return;
+      render_pending_ = work;
+    }
+    render_condition_.notify_one();
+  }
+
+  static doroti_windows_frame_terminal_v1 MakeTerminal(
+      const RenderWork& work, uint32_t terminal, uint32_t error_category) {
+    return {
         DOROTI_WINDOWS_ABI_VERSION_V1,
         sizeof(doroti_windows_frame_terminal_v1),
         1,
-        current_generation_,
-        causal,
+        work.request.generation,
+        work.request.causal_frame_id,
         terminal,
-        terminal == DOROTI_WINDOWS_FRAME_FAILED_V1 ? 1u : 0u,
-        accepted,
+        error_category,
+        work.accepted_qpc,
         QpcNow(),
         0,
         0,
     };
-    if (terminal == DOROTI_WINDOWS_FRAME_PRESENTED_V1 && !first_exact_present_) {
-      first_exact_present_ = true;
-      if (show_requested_) ShowWindow(top_, ResolveShowCommand());
+  }
+
+  void StartRenderWorker() {
+    render_thread_ = std::thread([this] { RenderWorkerMain(); });
+  }
+
+  void RenderWorkerMain() {
+    while (true) {
+      RenderWork work{};
+      {
+        std::unique_lock lock(render_mutex_);
+        render_condition_.wait(lock, [this] {
+          return render_stopping_ || render_pending_.has_value();
+        });
+        if (render_stopping_ && !render_pending_.has_value()) break;
+        work = *render_pending_;
+        render_pending_.reset();
+      }
+
+      if (work.metrics.generation != delivered_metrics_generation_) {
+        callbacks_.metrics(callbacks_.callback_context, &work.metrics);
+        delivered_metrics_generation_ = work.metrics.generation;
+      }
+      auto terminal = callbacks_.render(callbacks_.callback_context, &work.request);
+      if (terminal != DOROTI_WINDOWS_FRAME_PRESENTED_V1 &&
+          terminal != DOROTI_WINDOWS_FRAME_SUPERSEDED_V1 &&
+          terminal != DOROTI_WINDOWS_FRAME_FAILED_V1)
+        terminal = DOROTI_WINDOWS_FRAME_FAILED_V1;
+      const auto error =
+          terminal == DOROTI_WINDOWS_FRAME_FAILED_V1 ? 1u : 0u;
+      {
+        std::lock_guard lock(render_mutex_);
+        render_completions_.push_back(MakeTerminal(work, terminal, error));
+      }
+      PostMessageW(task_, kRenderCompleted, 0, 0);
     }
-    callbacks_.frame_terminal(callbacks_.callback_context, &receipt);
+  }
+
+  void DrainRenderCompletions() {
+    std::deque<doroti_windows_frame_terminal_v1> completions;
+    {
+      std::lock_guard lock(render_mutex_);
+      completions.swap(render_completions_);
+    }
+    for (const auto& receipt : completions) {
+      if (receipt.terminal_kind == DOROTI_WINDOWS_FRAME_PRESENTED_V1 &&
+          !first_exact_present_) {
+        first_exact_present_ = true;
+        if (show_requested_) ShowWindow(top_, ResolveShowCommand());
+      }
+      callbacks_.frame_terminal(callbacks_.callback_context, &receipt);
+    }
+  }
+
+  void StopRenderWorker() noexcept {
+    {
+      std::lock_guard lock(render_mutex_);
+      if (!render_thread_.joinable()) return;
+      render_stopping_ = true;
+      render_pending_.reset();
+    }
+    render_condition_.notify_one();
+    render_thread_.join();
+    DrainRenderCompletions();
   }
 
   void ResizeTop(uint32_t width, uint32_t height) {
@@ -618,6 +721,7 @@ class ProductHost final {
   }
 
   void Destroy() noexcept {
+    StopRenderWorker();
     if (task_ != nullptr) DestroyWindow(task_);
     if (child_ != nullptr) DestroyWindow(child_);
     if (top_ != nullptr) DestroyWindow(top_);
@@ -637,13 +741,22 @@ class ProductHost final {
   uint32_t current_width_{};
   uint32_t current_height_{};
   double current_scale_{};
+  int64_t current_metrics_qpc_{};
+  uint64_t delivered_metrics_generation_{};
   bool show_requested_{};
   bool first_exact_present_{};
   bool fatal_{};
   bool mouse_inside_{};
+  bool pointer_down_{};
   LPARAM last_pointer_lparam_{};
   uint64_t pointer_sequence_{};
   std::atomic<uint32_t> cursor_kind_{};
+  std::mutex render_mutex_;
+  std::condition_variable render_condition_;
+  std::optional<RenderWork> render_pending_;
+  std::deque<doroti_windows_frame_terminal_v1> render_completions_;
+  std::thread render_thread_;
+  bool render_stopping_{};
 };
 
 ProductHost* GetHost(HWND window, UINT message, LPARAM lparam) {

@@ -20,6 +20,7 @@ internal sealed unsafe class WindowsManagedProductHost :
     private readonly WindowsManagedResizeCoordinator _coordinator = new(TimeSpan.FromMilliseconds(100));
     private readonly HashSet<long> _resizeTerminalGenerations = [];
     private readonly Dictionary<ulong, TaskCompletionSource<string?>> _clipboardRequests = [];
+    private readonly Queue<Action> _pendingInput = [];
     private Action<TimeSpan, DorotiViewEpoch>? _pendingFrame;
     private bool _disposed;
     private long _inputSequence;
@@ -45,6 +46,8 @@ internal sealed unsafe class WindowsManagedProductHost :
     internal nint ChildHwnd => _native.ChildHwnd;
     internal nint TopLevelHwnd => _native.TopLevelHwnd;
     internal WindowsResizeCoordinatorSnapshot ResizeSnapshot => _coordinator.Snapshot();
+    internal bool IsLatestResizeGeneration(ulong generation) =>
+        generation <= long.MaxValue && _coordinator.IsLatest((long)generation);
     public ViewMetrics Metrics { get; private set; }
     public PlatformConfiguration Configuration { get; private set; }
     public long InputSequence => Volatile.Read(ref _inputSequence);
@@ -90,7 +93,7 @@ internal sealed unsafe class WindowsManagedProductHost :
             !double.IsFinite(metrics.Scale) || metrics.Scale <= 0)
             throw new InvalidDataException("Native product metrics are invalid.");
         var target = _coordinator.Publish(1, checked((int)metrics.WidthPx), checked((int)metrics.HeightPx),
-            metrics.Scale, 0);
+            metrics.Scale, 0, checked((long)metrics.Generation));
         if (target.Generation != checked((long)metrics.Generation))
             throw new InvalidDataException("Native and managed resize generations diverged.");
         var next = new ViewMetrics(new Size(metrics.WidthPx, metrics.HeightPx), metrics.Scale,
@@ -109,11 +112,15 @@ internal sealed unsafe class WindowsManagedProductHost :
                 checked((int)request.WidthPx), checked((int)request.HeightPx)))
             throw new InvalidDataException("Native frame request failed exact admission.");
         Action<TimeSpan, DorotiViewEpoch>? callback;
+        Action[] input;
         lock (_gate)
         {
+            input = [.. _pendingInput];
+            _pendingInput.Clear();
             callback = _pendingFrame;
             _pendingFrame = null;
         }
+        foreach (var dispatch in input) dispatch();
         callback?.Invoke(DorotiFrameClock.Now, ViewEpoch);
     }
 
@@ -134,7 +141,9 @@ internal sealed unsafe class WindowsManagedProductHost :
         {
             if (!_resizeTerminalGenerations.Add(generation)) return;
         }
-        if (!_coordinator.TryComplete(generation, kind, $"native causal frame {terminal.CausalFrameId}"))
+        if (_coordinator.IsComplete(generation)) return;
+        if (!_coordinator.TryComplete(
+                generation, kind, $"native causal frame {terminal.CausalFrameId}", enforceLatest: false))
             throw new InvalidDataException($"Resize generation {terminal.Generation} received an invalid terminal.");
     }
 
@@ -147,15 +156,19 @@ internal sealed unsafe class WindowsManagedProductHost :
             throw new InvalidDataException("Native pointer packet is invalid.");
         var sequence = Interlocked.Increment(ref _inputSequence);
         var timestamp = MapTimestamp(value.TimestampQpc);
-        PointerData?.Invoke(new([
+        var packet = new PointerDataPacket([
             new(1, timestamp, (PointerChange)value.Change, (PointerDeviceKind)value.Kind,
                 checked((ulong)value.Device), value.PhysicalX, value.PhysicalY,
                 value.PhysicalDeltaX, value.PhysicalDeltaY, value.Buttons,
                 value.ScrollDeltaX, value.ScrollDeltaY, (PointerSignalKind)value.SignalKind,
                 value.PointerIdentifier, pressure: value.Pressure, tilt: value.Tilt,
                 platformData: value.PlatformData)
-        ]));
-        InputReceived?.Invoke(sequence, timestamp);
+        ]);
+        EnqueueInput(() =>
+        {
+            PointerData?.Invoke(packet);
+            InputReceived?.Invoke(sequence, timestamp);
+        });
     }
 
     internal void ApplyKey(in WindowsNativeV1.Key value, string character)
@@ -165,14 +178,21 @@ internal sealed unsafe class WindowsManagedProductHost :
             throw new InvalidDataException("Native key packet is invalid.");
         var sequence = Interlocked.Increment(ref _inputSequence);
         var timestamp = MapTimestamp(value.TimestampQpc);
-        KeyData?.Invoke(new(1, timestamp, (KeyEventType)value.Type,
+        var key = new KeyData(1, timestamp, (KeyEventType)value.Type,
             value.Physical, value.Logical, false,
-            value.Type == (uint)KeyEventType.up || string.IsNullOrEmpty(character) ? null : character));
-        InputReceived?.Invoke(sequence, timestamp);
+            value.Type == (uint)KeyEventType.up || string.IsNullOrEmpty(character) ? null : character);
+        EnqueueInput(() =>
+        {
+            KeyData?.Invoke(key);
+            InputReceived?.Invoke(sequence, timestamp);
+        });
     }
 
-    internal void ApplyFocus(bool focused, long timestampQpc) =>
-        FocusData?.Invoke(new(1, focused, MapTimestamp(timestampQpc)));
+    internal void ApplyFocus(bool focused, long timestampQpc)
+    {
+        var data = new RawFocusData(1, focused, MapTimestamp(timestampQpc));
+        EnqueueInput(() => FocusData?.Invoke(data));
+    }
 
     internal void CompleteClipboard(ulong requestId, string text)
     {
@@ -293,6 +313,7 @@ internal sealed unsafe class WindowsManagedProductHost :
         lock (_gate) _pendingFrame = null;
         lock (_gate)
         {
+            _pendingInput.Clear();
             foreach (var request in _clipboardRequests.Values) request.TrySetCanceled();
             _clipboardRequests.Clear();
         }
@@ -314,6 +335,12 @@ internal sealed unsafe class WindowsManagedProductHost :
         var function = (delegate* unmanaged[Cdecl]<nint, uint>)callback;
         var status = function(_native.HostContext);
         if (status != 0) throw new InvalidOperationException($"Native host task request failed: {status}.");
+    }
+
+    private void EnqueueInput(Action dispatch)
+    {
+        lock (_gate) _pendingInput.Enqueue(dispatch);
+        RequestInvalidate();
     }
 
     private static IReadOnlyList<Locale> ResolveLocales()

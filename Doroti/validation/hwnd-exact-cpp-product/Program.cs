@@ -14,7 +14,7 @@ internal static class Program
         var reportPath = ResolveReportPath(args);
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_ADAPTER", "HwndExactCpp");
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_PRESENTER", "AngleD3D11");
-        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_SMOKE_MS", "1500");
+        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_SMOKE_MS", "5000");
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_DIAGNOSTICS", "1");
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_INPUT_SMOKE", "1");
         try
@@ -31,11 +31,19 @@ internal static class Program
                 "Framework session/view lifecycle did not complete exactly once.");
             Require(diagnostics.RenderCallbacks >= 1 && diagnostics.PresentedTerminals >= 1 &&
                     diagnostics.FailedTerminals == 0, "Product frame terminal coverage failed.");
+            Require(diagnostics.PlatformThreadId != 0 && diagnostics.RasterThreadId != 0 &&
+                    diagnostics.InputThreadId == diagnostics.PlatformThreadId &&
+                    diagnostics.RasterThreadId != diagnostics.PlatformThreadId,
+                "C6 platform/input pump was not isolated from managed raster presentation.");
             Require(diagnostics.VisibleAfterExactPresent, "The native window was not shown after an exact frame.");
             Require(diagnostics.AcceptedResizeGenerations >= 1 && diagnostics.UnterminatedResizeGenerations == 0 &&
                     diagnostics.DuplicateResizeTerminals == 0, "Product resize generation did not drain exactly once.");
+            Require(diagnostics.AcceptedResizeGenerations >= 2 &&
+                    diagnostics.AcceptedResizeGenerations < 20 &&
+                    diagnostics.PresentedResizeGenerations == diagnostics.AcceptedResizeGenerations,
+                "The C5-A resize burst did not coalesce to exact raster admissions.");
             Require(diagnostics.DeviceGenerations == 1 && diagnostics.Presents >= 1 &&
-                    diagnostics.Presents == diagnostics.GpuSubmits && diagnostics.Presents == diagnostics.GpuCopies,
+                    diagnostics.Presents == diagnostics.GpuSubmits && diagnostics.GpuCopies == 0,
                 "Managed presenter ordering differs in the product path.");
             Require(diagnostics.PresenterBackend == "ANGLE/EGL-D3D11",
                 "Product validation did not select the managed ANGLE/EGL-D3D11 presenter.");
@@ -55,6 +63,9 @@ internal static class Program
             Require(ProductEntrypoint.FocusStates.Count >= 2 &&
                     ProductEntrypoint.FocusStates.First() && !ProductEntrypoint.FocusStates.Last(),
                 "Synthetic focus lifecycle differs.");
+            Require(ProductEntrypoint.InputDispatchThreadIds.Count == 1 &&
+                    ProductEntrypoint.DrawThreadIds.SetEquals(ProductEntrypoint.InputDispatchThreadIds),
+                "Doroti input dispatch did not run on the managed framework/raster worker.");
             Require(ProductEntrypoint.ClipboardRoundTrip == "Doroti C6 한글 clipboard",
                 "UTF-8/Unicode clipboard round-trip differs.");
 
@@ -72,6 +83,7 @@ internal static class Program
                     ProductEntrypoint.ShutdownCount,
                 },
                 diagnostics,
+                resizeRequests = 20,
                 abiGpuPointerCount = layout.GpuPointerCount,
                 scopeBoundary = "Automated product bootstrap, framework scene, managed ANGLE/EGL-D3D11 exact presentation, and clean close. Visible resize behavior remains notVerified.",
             };
@@ -88,6 +100,14 @@ internal static class Program
                 ProductEntrypoint.ClipboardRoundTrip,
                 cursorRequest = "PASS",
                 packetAbi = new { layout.PointerPacketSize, layout.KeySize },
+                threadOwnership = new
+                {
+                    diagnostics.PlatformThreadId,
+                    diagnostics.InputThreadId,
+                    diagnostics.RasterThreadId,
+                    managedInputDispatchThreadIds = ProductEntrypoint.InputDispatchThreadIds,
+                    managedDrawThreadIds = ProductEntrypoint.DrawThreadIds,
+                },
                 scopeBoundary = "Automated WndProc packet, coordinates, capture sequence, cursor request, focus, key, and clipboard contract. Physical mouse/cursor/focus checks remain notVerified.",
             });
             Console.WriteLine(JsonSerializer.Serialize(report, JsonOptions));
@@ -152,6 +172,8 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
     public static List<PointerChange> PointerChanges { get; } = [];
     public static List<KeyEventType> KeyTypes { get; } = [];
     public static List<bool> FocusStates { get; } = [];
+    public static HashSet<int> InputDispatchThreadIds { get; } = [];
+    public static HashSet<int> DrawThreadIds { get; } = [];
     public static string? ClipboardRoundTrip;
     private IPlatformServicesHostCapability? _services;
 
@@ -159,8 +181,11 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
     {
         _dispatcher = dispatcher;
         dispatcher.onDrawFrame = Draw;
+        dispatcher.onMetricsChanged = view =>
+            view.ScheduleFrame(DartUiInvocation.Managed("c5-product#metrics"));
         dispatcher.onPointerDataPacket = (_, packet) =>
         {
+            InputDispatchThreadIds.Add(Environment.CurrentManagedThreadId);
             foreach (var pointer in packet.data)
             {
                 if (pointer.physicalX < 0 || pointer.physicalY < 0)
@@ -170,10 +195,15 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
         };
         dispatcher.onKeyData = key =>
         {
+            InputDispatchThreadIds.Add(Environment.CurrentManagedThreadId);
             KeyTypes.Add(key.type);
             return true;
         };
-        dispatcher.onFocusData = (_, focus) => FocusStates.Add(focus.isFocused);
+        dispatcher.onFocusData = (_, focus) =>
+        {
+            InputDispatchThreadIds.Add(Environment.CurrentManagedThreadId);
+            FocusStates.Add(focus.isFocused);
+        };
     }
 
     public void AttachView(DorotiView view)
@@ -185,11 +215,17 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
         _services = services;
         services.SetCursor(DorotiMouseCursorKind.click);
         services.SetClipboardTextAsync("Doroti C6 한글 clipboard").AsTask().GetAwaiter().GetResult();
+        for (var index = 0; index < 20; index++)
+        {
+            var direction = index < 10 ? index : 19 - index;
+            view.Resize(new Size(640 + direction * 37, 480 + direction * 23));
+        }
         view.ScheduleFrame(DartUiInvocation.Managed("c5-product#AttachView"));
     }
 
     private void Draw()
     {
+        DrawThreadIds.Add(Environment.CurrentManagedThreadId);
         var view = _view ?? throw new InvalidOperationException("C5 view is unavailable.");
         ClipboardRoundTrip ??= (_services ?? throw new InvalidOperationException("C6 services are unavailable."))
             .GetClipboardTextAsync().AsTask().GetAwaiter().GetResult();
@@ -210,6 +246,7 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
         if (_dispatcher is not null) _dispatcher.onDrawFrame = null;
         if (_dispatcher is not null)
         {
+            _dispatcher.onMetricsChanged = null;
             _dispatcher.onPointerDataPacket = null;
             _dispatcher.onKeyData = null;
             _dispatcher.onFocusData = null;

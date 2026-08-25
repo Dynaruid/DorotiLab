@@ -47,7 +47,6 @@ internal sealed class WindowsManagedAngleEglPresenter : WindowsManagedHwndPresen
     private GRContext? _context;
     private GRBackendRenderTarget? _windowTarget;
     private SKSurface? _windowSurface;
-    private SKSurface? _backingSurface;
     private bool _debugBaselineSealed;
     private bool _disposed;
 
@@ -58,7 +57,9 @@ internal sealed class WindowsManagedAngleEglPresenter : WindowsManagedHwndPresen
 
     internal override string BackendName => "ANGLE/EGL-D3D11";
     internal override string RuntimeEffectsBackend => DorotiSkiaRuntimeEffects.WindowsAngleEglBackend;
-    internal override string DiagnosticCoverage => "explicit EGL return codes and GLES glGetError";
+    internal override string DiagnosticCoverage =>
+        "direct exact default-framebuffer raster, swap interval 0, optional DwmFlush, " +
+        "explicit EGL return codes, and GLES glGetError";
     internal override int Width { get; set; }
     internal override int Height { get; set; }
     internal override ulong DeviceGeneration { get; set; }
@@ -117,11 +118,6 @@ internal sealed class WindowsManagedAngleEglPresenter : WindowsManagedHwndPresen
         _windowSurface = SKSurface.Create(
             _context, _windowTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888)
             ?? throw new InvalidOperationException("Skia could not wrap the ANGLE default framebuffer.");
-        _backingSurface = SKSurface.Create(
-            _context, true,
-            new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul),
-            0, GRSurfaceOrigin.TopLeft)
-            ?? throw new InvalidOperationException("Skia could not create the exact ANGLE offscreen backing surface.");
         if (resized) ResizeBuffersCount++;
     }
 
@@ -146,30 +142,22 @@ internal sealed class WindowsManagedAngleEglPresenter : WindowsManagedHwndPresen
         ObjectDisposedException.ThrowIf(_disposed, this);
         MakeCurrent();
         var context = _context ?? throw new InvalidOperationException("The managed ANGLE Skia context is unavailable.");
-        var backing = _backingSurface ?? throw new InvalidOperationException("The exact ANGLE backing surface is unavailable.");
         var windowSurface = _windowSurface ?? throw new InvalidOperationException("The ANGLE window surface is unavailable.");
-        var result = paint(backing);
+        var result = paint(windowSurface);
         if (!shouldPresent(result)) return result;
 
-        backing.Canvas.Flush();
-        context.Flush(backing);
+        windowSurface.Canvas.Flush();
+        context.Flush(windowSurface);
         context.Submit(false);
         GpuSubmitCount++;
-
-        using (var image = backing.Snapshot())
-        using (var copyPaint = new SKPaint { BlendMode = SKBlendMode.Src })
-        {
-            windowSurface.Canvas.DrawImage(image, 0, 0, SKSamplingOptions.Default, copyPaint);
-            windowSurface.Canvas.Flush();
-            context.Flush(windowSurface);
-            context.Submit(false);
-        }
-        ThrowIfGlErrors("managed Skia submit/copy");
-        GpuCopyCount++;
+        if (!shouldPresent(result)) return result;
+        ThrowIfGlErrors("managed Skia direct submit");
+        if (!shouldPresent(result)) return result;
         if (EglSwapBuffers(_display, _eglSurface) == EglFalse)
             ThrowEgl("eglSwapBuffers");
         PresentCount++;
-        Marshal.ThrowExceptionForHR(DwmFlush());
+        if (Environment.GetEnvironmentVariable("DOROTI_WINDOWS_DWM_FLUSH") == "1")
+            Marshal.ThrowExceptionForHR(DwmFlush());
         return result;
     }
 
@@ -242,7 +230,7 @@ internal sealed class WindowsManagedAngleEglPresenter : WindowsManagedHwndPresen
 
     private void ApplyRequestedSwapInterval()
     {
-        var requested = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_EGL_SWAP_INTERVAL");
+        var requested = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_EGL_SWAP_INTERVAL") ?? "0";
         if (requested is not ("0" or "1")) return;
         if (EglSwapInterval(_display, requested == "0" ? 0 : 1) == EglFalse)
             ThrowEgl($"eglSwapInterval({requested})");
@@ -308,8 +296,6 @@ internal sealed class WindowsManagedAngleEglPresenter : WindowsManagedHwndPresen
     {
         if (_display != 0 && _eglSurface != 0 && _eglContext != 0)
             EglMakeCurrent(_display, _eglSurface, _eglSurface, _eglContext);
-        _backingSurface?.Dispose();
-        _backingSurface = null;
         _windowSurface?.Dispose();
         _windowSurface = null;
         _windowTarget?.Dispose();
@@ -328,8 +314,6 @@ internal sealed class WindowsManagedAngleEglPresenter : WindowsManagedHwndPresen
         if (_display == 0) return;
         if (_eglSurface != 0 && _eglContext != 0)
             EglMakeCurrent(_display, _eglSurface, _eglSurface, _eglContext);
-        _backingSurface?.Dispose();
-        _backingSurface = null;
         _windowSurface?.Dispose();
         _windowSurface = null;
         _windowTarget?.Dispose();

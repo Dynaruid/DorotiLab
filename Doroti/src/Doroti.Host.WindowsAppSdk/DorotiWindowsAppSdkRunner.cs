@@ -110,6 +110,9 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         private long _presented;
         private long _superseded;
         private long _failed;
+        private uint _platformThreadId;
+        private uint _rasterThreadId;
+        private uint _inputThreadId;
         private bool _visibleAfterExactPresent;
         private bool _disposed;
 
@@ -131,6 +134,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
 
         internal void SetHost(in WindowsNativeV1.Host native)
         {
+            RecordThread(ref _platformThreadId, "platform");
             var host = new WindowsManagedProductHost(in native,
                 checked((int)_configuration.logicalSize.width),
                 checked((int)_configuration.logicalSize.height));
@@ -186,24 +190,27 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
 
         internal uint Render(in WindowsNativeV1.FrameRequest request)
         {
+            RecordThread(ref _rasterThreadId, "raster");
             var host = Host ?? throw new InvalidOperationException("Render arrived before host-ready.");
             var renderer = Renderer ?? throw new InvalidOperationException("Renderer is unavailable.");
             host.BeginFrame(in request);
             var width = checked((int)request.WidthPx);
             var height = checked((int)request.HeightPx);
             var causalFrameId = checked((long)request.CausalFrameId);
+            var resizeGeneration = request.Generation;
             Presenter.EnsureTarget(host.ChildHwnd, width, height);
             Presenter.SealInitializationDebugBaseline();
+            var presented = false;
             var result = Presenter.RenderAndPresent(
                 surface => renderer.Paint(surface, width, height, host.ResizeTarget, causalFrameId),
-                static value => value.ShouldPresent);
+                value => presented = value.ShouldPresent && host.IsLatestResizeGeneration(resizeGeneration));
             Presenter.CaptureOperationalDebugMessages();
             if (Presenter.OperationalDebugErrorCount != 0)
                 throw new InvalidOperationException(
                     $"Managed {Presenter.BackendName} presentation emitted " +
                     $"{Presenter.OperationalDebugErrorCount} operational GPU errors.");
             Interlocked.Increment(ref _renderCallbacks);
-            if (!result.ShouldPresent) return (uint)WindowsNativeV1.FrameTerminalKind.Superseded;
+            if (!presented) return (uint)WindowsNativeV1.FrameTerminalKind.Superseded;
             if (result.Completion is { } completion)
             {
                 lock (_gate) _paintCompletions.Add(request.CausalFrameId, completion);
@@ -238,6 +245,27 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             }
         }
 
+        internal void ApplyPointer(in WindowsNativeV1.Pointer pointer)
+        {
+            RecordThread(ref _inputThreadId, "input");
+            (Host ?? throw new InvalidOperationException("Pointer arrived before host-ready."))
+                .ApplyPointer(in pointer);
+        }
+
+        internal void ApplyKey(in WindowsNativeV1.Key key, string character)
+        {
+            RecordThread(ref _inputThreadId, "input");
+            (Host ?? throw new InvalidOperationException("Key arrived before host-ready."))
+                .ApplyKey(in key, character);
+        }
+
+        internal void ApplyFocus(bool focused, long timestampQpc)
+        {
+            RecordThread(ref _inputThreadId, "input");
+            (Host ?? throw new InvalidOperationException("Focus arrived before host-ready."))
+                .ApplyFocus(focused, timestampQpc);
+        }
+
         internal void CaptureFatal(Exception exception)
         {
             lock (_gate) _fatal ??= exception;
@@ -257,13 +285,15 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         {
             var rendered = Interlocked.Read(ref _renderCallbacks);
             var terminals = Interlocked.Read(ref _presented) + Interlocked.Read(ref _superseded) + Interlocked.Read(ref _failed);
-            if (rendered == 0 || rendered != terminals)
+            LastRunDiagnostics = CreateDiagnostics();
+            if (rendered == 0 || terminals < rendered)
                 throw new InvalidOperationException($"Product terminal coverage differs: render={rendered}, terminal={terminals}.");
             if (Host?.ResizeSnapshot is not { UnterminatedCount: 0, DuplicateTerminalCount: 0 })
                 throw new InvalidOperationException("Product resize coordinator did not drain exactly once.");
             if (!_visibleAfterExactPresent)
-                throw new InvalidOperationException("The product HWND was not visible after an exact managed present.");
-            LastRunDiagnostics = CreateDiagnostics();
+                throw new InvalidOperationException(
+                    $"The product HWND was not visible after an exact managed present: " +
+                    $"presented={_presented}, superseded={_superseded}, failed={_failed}.");
         }
 
         internal void WriteDiagnostics()
@@ -277,6 +307,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             var renderer = Renderer?.Diagnostics ?? throw new InvalidOperationException("Product renderer diagnostics are unavailable.");
             return new(
                 Presenter.BackendName, Presenter.DiagnosticCoverage, Presenter.AdapterDescription,
+                _platformThreadId, _rasterThreadId, _inputThreadId,
                 _renderCallbacks, _presented, _superseded, _failed,
                 _visibleAfterExactPresent,
                 resize.AcceptedCount, resize.PresentedCount, resize.SupersededCount,
@@ -285,6 +316,20 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 Presenter.GpuSubmitCount, Presenter.GpuCopyCount,
                 Presenter.InitializationDebugErrorCount, Presenter.OperationalDebugErrorCount,
                 renderer.Submitted, renderer.Presented, renderer.Replayed);
+        }
+
+        private static void RecordThread(ref uint owner, string role)
+        {
+            var current = GetCurrentThreadId();
+            var existing = Volatile.Read(ref owner);
+            if (existing == 0)
+            {
+                existing = Interlocked.CompareExchange(ref owner, current, 0);
+                if (existing == 0) return;
+            }
+            if (existing != current)
+                throw new InvalidOperationException(
+                    $"The managed {role} callback moved from thread {existing} to {current}.");
         }
 
         internal object DiagnosticDocument()
@@ -380,8 +425,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         GuardVoid(context, state =>
         {
             if (pointer is null) throw new InvalidDataException("Native pointer supplied null.");
-            (state.Host ?? throw new InvalidOperationException("Pointer arrived before host-ready."))
-                .ApplyPointer(in *pointer);
+            state.ApplyPointer(in *pointer);
         });
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
@@ -389,8 +433,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         GuardVoid(context, state =>
         {
             if (key is null) throw new InvalidDataException("Native key supplied null.");
-            (state.Host ?? throw new InvalidOperationException("Key arrived before host-ready."))
-                .ApplyKey(in *key, Decode(key->Character));
+            state.ApplyKey(in *key, Decode(key->Character));
         });
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
@@ -398,8 +441,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         GuardVoid(context, state =>
         {
             if (viewId != 1) throw new InvalidDataException("Native focus view id differs.");
-            (state.Host ?? throw new InvalidOperationException("Focus arrived before host-ready."))
-                .ApplyFocus(focused != 0, timestampQpc);
+            state.ApplyFocus(focused != 0, timestampQpc);
         });
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
@@ -459,12 +501,18 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
     [LibraryImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool IsWindowVisible(nint window);
+
+    [LibraryImport("kernel32.dll")]
+    private static partial uint GetCurrentThreadId();
 }
 
 internal sealed record WindowsProductRunDiagnostics(
     string PresenterBackend,
     string PresenterDiagnosticCoverage,
     string AdapterDescription,
+    uint PlatformThreadId,
+    uint RasterThreadId,
+    uint InputThreadId,
     long RenderCallbacks,
     long PresentedTerminals,
     long SupersededTerminals,

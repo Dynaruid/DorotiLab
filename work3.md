@@ -9,7 +9,7 @@
 - Windows App SDK 기준: repository에서 이 host에 고정한 exact `2.4.0`, self-contained unpackaged, 우선 `win-x64`
 - Flutter source 기준: local checkout `56b8e1a851a594b1a154f8ea93270807dab22b9a`
 - test timeout: 각 build/test/validation command 최대 20분
-- 문서 상태: **C0-C4 PASS / C5-D3D12 FAIL(이력 보존) / C5-A managed ANGLE PASS / C6-C11 notVerified / visibleNotVerified**
+- 문서 상태: **C0-C4 PASS / C5-D3D12 FAIL(이력 보존) / C5-A managed ANGLE PASS / C6 automated PASS·physical notVerified / high-speed resize PARTIAL(엄격 capture FAIL) / C7-C11 notVerified**
 
 이 문서는 기존 `WinRtComposition`/ContentIsland presentation 계획을 대체하는 새 작업계획이다. 현재 worktree의 WinRT/ContentIsland spike와 validator 수정은 이 계획의 구현 또는 PASS 증거로 간주하지 않으며, 후속 작업에서도 사용자 소유 변경으로 보존한다.
 
@@ -17,7 +17,7 @@
 
 - top-level HWND, AppWindow 연결, child render HWND, message-only task HWND, WndProc와 message loop는 C++가 소유한다.
 - resize state machine과 100 ms bounded wait는 C++가 소유한다.
-- 선택된 GPU presenter의 device/context, exact offscreen resource, window surface, submit/copy/present는 managed presenter가 단독 소유한다. 현재 product 대체 분기는 ANGLE/EGL-D3D11이고 기존 D3D12 presenter는 진단·비교 경로로 보존한다.
+- 선택된 GPU presenter의 device/context, exact render target, window surface, submit/present는 managed presenter가 단독 소유한다. 현재 product ANGLE/EGL-D3D11 분기는 fixed-size EGL default framebuffer에 직접 raster하고, 기존 D3D12 offscreen/copy presenter는 진단·비교 경로로 보존한다.
 - C#은 process bootstrap, Doroti application/framework, scene build, `SkiaSceneRenderer`, managed presenter, input/semantics adapter와 versioned C ABI 호출을 소유한다.
 - C++는 top-level/child/task HWND와 AppWindow, WndProc, message loop, metrics/input ingress만 소유하며 GPU COM pointer를 생성하거나 ABI로 전달하지 않는다.
 - Doroti framework 전체나 공용 UI API를 C++로 재작성하는 것은 범위 밖이다.
@@ -438,7 +438,13 @@ observation flag: PlatformWaitTimedOut = true | false
 
 C5-A managed-owner resize probe는 context generation 2, fixed-size surface resize 10, invalid call 0, present/submit/copy 10/10/10, initialization/operational EGL/GLES error 0으로 PASS했다. Product validator도 AMD Radeon 780M의 `Direct3D11` ANGLE renderer를 확인했고 present/submit/copy 4/4/4, terminal 4/4, duplicate/unterminated 0으로 PASS했다. 실제 `DorotiDemoApp.WindowsAppSdk`는 10회 제한 반복에서 매회 exit 0, present/submit/copy 6/6/6, operational GPU error 0이었다. Demo의 기존 `RenderFlex._reportOverflow` assertion은 10회 모두 stderr에 기록되었으므로 presenter PASS와 분리하고 UI/layout 문제로 남긴다.
 
-**C5-A 경계:** automated product bootstrap과 실제 Demo presenter runtime은 PASS지만 사용자가 직접 본 resize 품질, border drag cadence, pixel capture는 `notVerified`다. 따라서 C6-C11은 이번 요청에서 실행하거나 승격하지 않는다.
+2026-08-26의 C5-A/C6 후속에서는 native task HWND가 managed layout/raster/`eglSwapBuffers`/`DwmFlush`를 동기 실행하여 `WM_SIZE`와 input ingress를 막던 구조를 제거했다. C++ platform/message thread는 child HWND geometry와 input packet을 즉시 처리하고, raster worker는 실행 중 1개와 최신 pending 1개만 받아 metrics/frame을 직렬 처리한다. managed input callback도 ingress에서 복사·enqueue한 뒤 같은 raster worker의 frame 시작에서 dispatch한다. ANGLE은 exact fixed-size EGL default framebuffer에 직접 raster하고 swap interval 0을 사용하며, `DwmFlush`는 비교 진단용 명시 opt-in(`DOROTI_WINDOWS_DWM_FLUSH=1`)으로만 남긴다. offscreen snapshot/copy는 product ANGLE 경로에서 제거했다.
+
+자동 C6/product validator는 platform/raster OS thread가 서로 다르고 input ingress는 platform thread, Doroti input dispatch와 draw는 raster worker임을 확인했다. 동기 resize 요청 20건은 exact generation 2건으로 coalesce되어 2건 모두 presented됐고 duplicate/unterminated/failed 0, ANGLE present/submit/copy 2/2/0, operational EGL/GLES error 0이었다. 이 결과는 automated thread/queue/input contract만 PASS시키며 실제 마우스 capture, resize cursor, Alt+Tab/focus는 대체하지 않는다.
+
+고속 우측 확장 WGC gate(600 px/600 ms, 165 Hz)는 변경 전 `gapFrame=29`, 최대 연속 gap `551.524 ms`, Demo present 8에서 worker/latest-only/direct-raster/swap-0/no-default-`DwmFlush` 적용 후 최종 기본 경로 `gapFrame=7`, 최대 연속 gap `60.604 ms`, capture frame 44로 개선됐다. blank frame 0, final gap 0, capture/encoder error 0이지만 순간 최대 gap 32 px가 남으므로 엄격 visible resize gate는 **PARTIAL/FAIL**이며 C5-A visible PASS로 승격하지 않는다. 근거는 `.doroti/evidence/c5a-c6-f6r-right.json`과 `.doroti/evidence/c5a-c6-f6r-right-default-final-2.json`이다.
+
+**C5-A 경계:** product/runtime과 C6 automated contract는 PASS다. 사용자가 보고한 message-pump blocking 원인은 수정했지만 strict high-speed expansion capture에는 잔여 gap이 있으므로 resize 완료나 visible PASS를 주장하지 않는다. C6 physical/manual과 C7-C11도 `notVerified`다.
 
 ### C6 — pointer, keyboard, focus, cursor, clipboard
 
@@ -565,11 +571,11 @@ C0-C10이 모두 통과한 뒤에만 수행한다.
 | C3-A ANGLE owner | PASS        | C++ top/child/task HWND 각 1, ABI GPU pointer 0, ANGLE context generation 2, fixed-size surface resize/present/submit/copy 각 10, invalid call 0, EGL/GLES initialization·operational error 0, terminal `Presented/Superseded/Failed = 10/1/2`, duplicate 0                                                                                          | hardware `ANGLE (... Direct3D11 ...)` 확인. automated ownership/resize/runtimeDiagnostic만 PASS; visible/physical은 `notVerified`                                                                                |
 | C4               | PASS        | native filtered wait success/timeout 1/1, task completion dispatch 1, top/child recursive dispatch 0, max native wait 109 ms; managed current+latest queue max 2, accepted/terminal 34/34, mismatch/duplicate/unterminated 0, stale present prevented 3, timeout 2                                                                                   | automated coordinator contract만 PASS. visible resize/cadence/physical은 `notVerified`                                                                                                                           |
 | C5-D3D12         | FAIL        | synthetic product fixture는 application/session/view attach/detach/shutdown 1/1/1, new scene/replay 1/3, managed present/fence/copy 4/4/4, ABI GPU pointer 0으로 PASS했으나 실제 self-contained Demo scene에서 operational D3D12 error ID 1422가 6건 발생하고 보강된 runner가 exit code 1로 fail-closed                                              | 실패 이력을 보존한다. debug filter, CPU fallback 또는 SkiaSharp source patch로 숨기지 않음                                                                                                                       |
-| C5-A ANGLE       | PASS        | product validator: hardware `ANGLE (... Direct3D11 ..., D3D11-32.0.13031.3015)`, terminal/present/submit/copy 4/4/4/4, EGL/GLES error 0. 실제 Demo 10회: 전부 exit 0, 각 present/submit/copy 6/6/6, operational GPU error 0                                                                                                                          | automated/runtimeDiagnostic presenter PASS. 매회 기록된 기존 `RenderFlex` overflow assertion과 visible resize/capture/physical은 별도 `notVerified`                                                              |
-| C6               | notVerified | validation-only synthetic WndProc packet에서 pointer `add/hover/down/move/up/remove`, key down/up, focus, cursor request, Unicode clipboard round-trip을 관측                                                                                                                                                                                        | 이번 ANGLE presenter 요청에서는 승격하지 않음. 실제 border drag/cursor/Alt+Tab/focus는 `notVerified`                                                                                                             |
+| C5-A ANGLE       | PASS        | 기존 product/Demo 반복 PASS 이력에 더해 direct fixed-size EGL default framebuffer product validator에서 resize request 20→accepted/presented 2/2, present/submit/copy 2/2/0, duplicate/unterminated/failed 0, EGL/GLES error 0                                                                                                                       | automated/runtime presenter PASS. WGC 고속 우측 확장은 baseline gap 29 frames/551.524 ms→7 frames/60.604 ms로 개선됐지만 최대 32 px가 남아 strict visible gate는 `FAIL`; physical은 `notVerified`              |
+| C6               | PASS        | pointer lifecycle/capture cancel, key down/up, focus, client-only cursor ownership, Unicode clipboard round-trip에 더해 platform/raster thread 분리, input ingress=platform, framework input dispatch=raster, resize current+latest coalescing을 automated product validator에서 확인                                                                 | automated contract만 PASS. 실제 border drag/capture/re-entry/resize cursor/Alt+Tab/focus는 `notVerified`                                                                                                      |
 | C7-C11           | notVerified | 이번 요청에서 실행하지 않음                                                                                                                                                                                                                                                                                                                          | IME/UIA/lifecycle matrix/capture/physical acceptance는 후속 gate                                                                                                                                                 |
 
-현재 전체 상태는 `C5_ANGLE_PRODUCT_PASS_C6_PLUS_NOT_VERIFIED`다. D3D12 product branch의 실패는 보존되며, ANGLE 분기가 이를 자동 fallback으로 숨기지 않는다. C6-C11은 별도 실행과 근거 없이 PASS로 올리지 않는다.
+현재 전체 상태는 `C5_ANGLE_PRODUCT_PASS_C6_AUTOMATED_PASS_RESIZE_CAPTURE_PARTIAL`이다. D3D12 product branch의 실패는 보존되며 ANGLE 분기가 이를 자동 fallback으로 숨기지 않는다. C6 physical/manual과 C7-C11은 별도 실행 근거 없이 PASS로 올리지 않는다.
 
 ## 10. 금지 사항
 
@@ -586,7 +592,7 @@ C0-C10이 모두 통과한 뒤에만 수행한다.
 
 ## 11. 정확한 시작점과 완료 정의
 
-구현은 **C0 source/contract → C1 versioned ABI/toolchain → C2 standalone native control → C3/C4 managed ownership·coordinator → C5-A ANGLE product**까지 진행됐다. 다음 정확한 재개점은 C6 실제 input/focus 수동 gate이며, visible resize 개선을 먼저 주장하지 않는다.
+구현은 **C0 source/contract → C1 versioned ABI/toolchain → C2 standalone native control → C3/C4 managed ownership·coordinator → C5-A ANGLE product → C6 automated thread/input contract**까지 진행됐다. 다음 정확한 재개점은 고속 expansion capture의 잔여 최대 32 px를 없애는 visible-front 전략 결정이다. 현재 금지된 full-frame stretch/edge repetition/dual visible owner를 몰래 사용하지 않는다. 그 automated gate가 통과한 뒤 C6 실제 capture/re-entry/cursor/Alt+Tab/focus 수동 gate로 진행한다.
 
 이 계획의 완료는 다음을 모두 만족한 상태다.
 
