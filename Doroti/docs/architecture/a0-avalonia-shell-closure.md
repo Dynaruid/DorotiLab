@@ -15,7 +15,7 @@ dotnet run --project tools/Doroti.AvaloniaPort -- stage --output artifacts/avalo
 dotnet run --project tools/Doroti.AvaloniaPort -- rebase --previous-source <old> --current-source <new> --output artifacts/avalonia-rebase.json
 ```
 
-`update` is a review action because it changes selected hashes and the dependency graph. `audit` is read-only and runs through both `eng/doroti.ps1 audit` and the `shell-source-audit` suite. `stage` writes only to the caller-selected review directory, applies configured namespace rewrites and exact text patches, copies the license, and emits source/adapted hashes. `rebase` classifies selected files as `clean`, `added`, `removed`, or `manual-review`; it never overwrites product source.
+`update` is a review action because it changes selected hashes and the dependency graph. The historical `audit` action was read-only and also ran through the `shell-source-audit` suite. `stage` writes only to the caller-selected review directory, applies configured namespace rewrites and exact text patches, copies the license, and emits source/adapted hashes. `rebase` classifies selected files as `clean`, `added`, `removed`, or `manual-review`; it never overwrites product source.
 
 A0 does not claim that A1/A2 or X0 runtime work is complete. No new source-ported product project is added at this milestone, and the comparison-only `Doroti.Host.Avalonia` package path remains until its A1 removal gate.
 

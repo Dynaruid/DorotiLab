@@ -8,7 +8,8 @@ DorotiDemoApp dogfoods the platform-workspace contract. The root project is targ
 
 - `Program.cs`, `src/`, `assets/`: shared startup, widget tree, and application assets
 - `doroti-workspace.json`: includes distinct `macos` (AppKit) and `maccatalyst` (UIKit) aliases
-- `windows/`: WinUI/MAUI runner and package identity
+- `windowsappsdk/`: default Windows App SDK 2.4 FlutterEmbedder runner
+- `windows/`: retained WinUI/MAUI rollback runner and package identity
 - `web/`: Blazor WebAssembly runner, TypeScript source, and `wwwroot`
 - `android/`: .NET Android/MAUI runner plus the default Gradle AAR and .NET binding
 - `ios/`: .NET iOS/MAUI runner plus an independent Xcode framework and binding
@@ -36,6 +37,10 @@ Run every command below from the repository root. Run the Linux command on a Lin
 # Windows (Windows host)
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
 
+# Windows rollback adapters
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -WindowsAdapter ArmNLegacy
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -WindowsAdapter MauiRollback
+
 # Web
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform web
 
@@ -57,17 +62,14 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform
 
 After starting the Web runner, open `http://127.0.0.1:5088` in a browser. Android and iOS require a running emulator or simulator, respectively. To run on an Android arm64 device or an iOS arm64 device, change the RID to `-Rid android-arm64` or `-Rid ios-arm64`; a physical iOS device also requires code-signing configuration.
 
-In addition to the .NET SDK and PowerShell 7, Linux requires Qt 6.5 or newer Core/Gui/Widgets/OpenGL, CMake, a C++ compiler, `pkg-config`, Wayland client development files, `wayland-scanner`, and the `wayland` or `xcb` QPA plugin. Run the Linux-native contract/build/publish validation with:
-
-```bash
-bash ./Doroti/eng/validate-linux-qt.sh Release
-```
+In addition to the .NET SDK and PowerShell 7, Linux requires Qt 6.5 or newer Core/Gui/Widgets/OpenGL, CMake, a C++ compiler, `pkg-config`, Wayland client development files, `wayland-scanner`, and the `wayland` or `xcb` QPA plugin.
 
 Runner projects also support direct .NET commands:
 
 ```powershell
 dotnet build ./DorotiDemoApp/DorotiDemoApp.csproj -c Release
-dotnet run --project ./DorotiDemoApp/windows/DorotiDemoApp.Windows.csproj
+dotnet run --project ./DorotiDemoApp/windowsappsdk/DorotiDemoApp.WindowsAppSdk.csproj
+dotnet run --project ./DorotiDemoApp/windows/DorotiDemoApp.Windows.csproj # MAUI rollback
 dotnet run --project ./DorotiDemoApp/web/DorotiDemoApp.Web.csproj
 dotnet build ./DorotiDemoApp/android/DorotiDemoApp.Android.csproj -c Release -r android-x64
 dotnet build ./DorotiDemoApp/ios/DorotiDemoApp.iOS.csproj -c Release -r iossimulator-x64

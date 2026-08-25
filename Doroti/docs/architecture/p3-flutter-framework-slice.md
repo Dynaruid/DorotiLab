@@ -33,4 +33,4 @@ The generated base remains buildable before customization. The effective port re
 2. the manual effective project,
 3. the adopted `Doroti.FlutterCompat` product implementation.
 
-All three results must equal the committed Flutter reference. The same regression verifies the original source hash, selected imports, symbol closure, ownership partition, generated-base hash, non-mutating adoption bundle and provenance origin. `eng/doroti.ps1 audit` separately rejects source, license, selection, port, manual, adopted-product or fixture hash drift.
+All three results must equal the committed Flutter reference. The same regression verifies the original source hash, selected imports, symbol closure, ownership partition, generated-base hash, non-mutating adoption bundle and provenance origin. The historical audit separately rejected source, license, selection, port, manual, adopted-product or fixture hash drift.

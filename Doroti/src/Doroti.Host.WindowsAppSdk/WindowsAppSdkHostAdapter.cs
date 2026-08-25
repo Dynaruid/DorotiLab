@@ -11,6 +11,7 @@ using Size = Doroti.Ui.Size;
 namespace Doroti.Host.WindowsAppSdk;
 
 internal sealed class WindowsAppSdkHostAdapter :
+    IWindowsAppSdkProductHost,
     IViewHostCapability,
     IFrameHostCapability,
     IInputHostCapability,
@@ -271,7 +272,7 @@ internal sealed class WindowsAppSdkHostAdapter :
     }
     public event Action<long, TimeSpan>? InputReceived;
 
-    internal void AttachRenderer(SkiaSceneRenderer renderer)
+    public void AttachRenderer(SkiaSceneRenderer renderer)
     {
         ArgumentNullException.ThrowIfNull(renderer);
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -281,7 +282,7 @@ internal sealed class WindowsAppSdkHostAdapter :
         RequestInvalidate();
     }
 
-    internal int RunMessageLoop()
+    public int RunMessageLoop()
     {
         NativeMethods.NativeMessage message;
         while (NativeMethods.GetMessageW(out message, 0, 0, 0) > 0)
@@ -292,7 +293,7 @@ internal sealed class WindowsAppSdkHostAdapter :
         return checked((int)message.WParam);
     }
 
-    internal void WriteDiagnostics(SkiaFrameDiagnostics diagnostics)
+    public void WriteDiagnostics(SkiaFrameDiagnostics diagnostics)
     {
         var geometry = SnapshotGeometry();
         Console.Error.WriteLine(
@@ -312,7 +313,7 @@ internal sealed class WindowsAppSdkHostAdapter :
             $"superseded={diagnostics.Superseded};dropped={diagnostics.Dropped}");
     }
 
-    internal void ApplyLeftResizeSmokeStep(int step)
+    public void ApplyLeftResizeSmokeStep(int step)
     {
         if (_disposed) return;
         lock (_smokeGate)

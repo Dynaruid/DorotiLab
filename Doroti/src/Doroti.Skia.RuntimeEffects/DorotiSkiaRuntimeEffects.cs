@@ -17,6 +17,7 @@ public static partial class DorotiSkiaRuntimeEffects
 {
     public const string ValidationBackend = "runtime-shader-contract";
     public const string MauiGpuBackend = "skiasharp-maui-skglview-gpu";
+    public const string WindowsAngleEglBackend = "skiasharp-windows-angle-egl-gpu";
     public const string AppKitMetalBackend = "skiasharp-appkit-metal-gpu";
     public const string WebGpuBackend = "skiasharp-skglview-webgl2-gpu";
     public const string QtGpuBackend = "skiasharp-qt-opengl-gpu";
@@ -26,6 +27,7 @@ public static partial class DorotiSkiaRuntimeEffects
         {
             ValidationBackend,
             MauiGpuBackend,
+            WindowsAngleEglBackend,
             AppKitMetalBackend,
             WebGpuBackend,
             QtGpuBackend,
@@ -236,6 +238,7 @@ public static partial class DorotiSkiaRuntimeEffects
     {
         if (SupportedBackends.Contains(backend) ||
             backend.StartsWith(MauiGpuBackend + "/", StringComparison.Ordinal) ||
+            backend.StartsWith(WindowsAngleEglBackend + "/", StringComparison.Ordinal) ||
             backend.StartsWith(AppKitMetalBackend + "/", StringComparison.Ordinal) ||
             backend.StartsWith(WebGpuBackend + "/", StringComparison.Ordinal) ||
             backend.StartsWith(QtGpuBackend + "/", StringComparison.Ordinal))

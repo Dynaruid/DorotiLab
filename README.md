@@ -52,14 +52,7 @@ Requires .NET SDK 10.0.400, matching 10.0.11 runtimes/workloads, and PowerShell 
 
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 build
-pwsh -File ./Doroti/eng/doroti.ps1 validate
 pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
-```
-
-Run the integrated Windows GPU and Web package/publish scenario before a release claim:
-
-```powershell
-pwsh -File ./Doroti/eng/doroti.ps1 validate -ValidationSuite Release
 ```
 
 ## Repository layout
@@ -69,7 +62,7 @@ pwsh -File ./Doroti/eng/doroti.ps1 validate -ValidationSuite Release
 | [`Doroti/src/`](Doroti/src/) | Product framework, runtime, rendering, hosts, target packages, and SDK |
 | [`DorotiDemoApp/`](DorotiDemoApp/) | Platform-workspace Material dogfood application |
 | [`Doroti/templates/`](Doroti/templates/) | `dotnet new doroti-app` template |
-| [`Doroti/eng/`](Doroti/eng/) | Compact build, validation, release, and optional reference workflows |
+| [`Doroti/eng/`](Doroti/eng/) | Build, SDK preparation, local-state, and optional diagnostic tools |
 | [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | Optional Dart/Flutter import and migration compiler |
 | [`history/`](history/) | Archived milestone plans, commands, and evidence summaries |
 

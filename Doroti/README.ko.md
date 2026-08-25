@@ -48,7 +48,6 @@ Repository root에서 실행합니다.
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 doctor
 pwsh -File ./Doroti/eng/doroti.ps1 build
-pwsh -File ./Doroti/eng/doroti.ps1 validate
 ```
 
 활성 명령은 다음과 같이 단순화했습니다.
@@ -59,13 +58,9 @@ pwsh -File ./Doroti/eng/doroti.ps1 validate
 | `build` | `Doroti.Product.slnx` build |
 | `build/run/publish -App <path> -Platform <alias>` | `doroti-workspace.json`에서 runner를 찾아 실행 |
 | `native doctor\|build\|open\|add -App <path> -Platform android\|ios\|macos\|maccatalyst` | 기본 native bridge workspace 진단, 빌드, 위치 출력, 확장 |
-| `validate` | Source 소유권, Release build, application target graph/build 검증 |
-| `validate -ValidationSuite Release` | Windows GPU live와 외부 Web template/package publish 시나리오 추가 |
-| `audit` | Repository-local storage와 현재 source 소유권 검사 |
-| `release` | 통합 release suite, audit, pack, package 검사 |
 | `clean` | Doroti build output, artifact, 임시 local state 제거 |
 
-직접 suite 진입점은 [validate.ps1](eng/validate.ps1), [validate-app-targets.ps1](eng/validate-app-targets.ps1), [validate-web-product.ps1](eng/validate-web-product.ps1), Kubuntu native용 [validate-linux-qt.sh](eng/validate-linux-qt.sh)입니다. 과거 G4-G7 validator는 더 이상 활성 명령이 아니며 결과는 repository root의 `history/`에 보존합니다.
+`eng`에는 별도 검증 suite 진입점을 제공하지 않습니다. 기존 검증 계약과 evidence는 [validation](validation/README.md)에, 과거 실행 결과는 repository root의 `history/`에 보존합니다.
 
 ## 플랫폼 evidence 경계
 

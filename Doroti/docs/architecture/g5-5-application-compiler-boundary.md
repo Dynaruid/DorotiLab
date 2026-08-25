@@ -31,21 +31,15 @@ The Dart-facing API and codec stay in framework application code. The native sid
 
 An application plugin without a native package for the selected RID produces `DOTAPP005` and fails compilation. A missing handler, mismatched ABI, or unregistered channel also throws a typed capability failure at runtime; none of these cases can silently succeed.
 
-## Automated completion evidence
+## Retained automated completion evidence
 
-`validate-g5-5.ps1` validates two Material applications, one Cupertino application, and one base Widgets application. For every application it performs clean and incremental generation, byte-identity comparison, direct-reference audit, and generated-project build. It additionally:
+The retired G5-5 milestone gate validated two Material applications, one Cupertino application, and one base Widgets application. For every application it performed clean and incremental generation, byte-identity comparison, direct-reference audit, and generated-project build. It additionally:
 
 - changes one conditional-import implementation and proves regeneration is limited to that library and its dependent SCCs;
 - restores and runs a consumer from an isolated local NuGet feed, including asset, font, localization, and `MethodChannel` plugin checks;
 - packages a `win-x64` native plugin and verifies its embedded capability manifest;
 - requires the unsupported-plugin fixture to fail with exactly one `DOTAPP005` diagnostic;
 - rejects repository-private restore fallbacks and platform/vendor concrete references.
-
-Run the complete gate from the repository root:
-
-```powershell
-& Doroti/eng/validate-g5-5.ps1
-```
 
 The aggregate result is `migration/flutter-framework/g5-5-evidence.json` using `doroti.g5-5-evidence/v1`.
 

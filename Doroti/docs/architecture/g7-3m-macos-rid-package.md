@@ -1,6 +1,6 @@
 # G7-3M macOS `osx-arm64` source-port and RID package
 
-> Historical bootstrap record. The milestone validator named below has been retired; use `eng/doroti.ps1 validate` and ADR-019 for the current product workflow.
+> Historical bootstrap record. The milestone validator has been retired; ADR-019 defines the current product ownership boundary.
 
 Status: implemented and verified on Apple Silicon macOS on 2026-08-15.
 
@@ -48,16 +48,7 @@ The UI thread owns AppKit lifecycle and event delivery. GPU work uses the raster
 
 The target package also includes its target manifest and G7-3M provenance record. The package validator restores an external consumer outside the repository with an isolated NuGet package cache, preventing a same-version prerelease package from being satisfied by stale global cache content. The published native asset hash must match the build-shard hash.
 
-## Verification
-
-Run each shard independently on Apple Silicon macOS:
-
-```powershell
-pwsh -File ./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Source
-pwsh -File ./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Build
-pwsh -File ./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Live
-pwsh -File ./Doroti/eng/validate-g7-macos-shell.ps1 -Shard Package
-```
+## Retained verification evidence
 
 The committed aggregate is `migration/macos/g7-macos-shell-evidence.json`. The passing closure requires zero Avalonia UI/Control/Composition binary dependencies, repository-private fallbacks, CPU full-frame fallbacks, and unhandled exceptions. Live evidence records a non-empty Apple M1 strict-GPU frame, terminal ACKs for every submitted generated-app frame, target-causal input/text/clipboard/accessibility traces, focus and lifecycle transitions, and balanced window/OpenGL resources after shutdown.
 

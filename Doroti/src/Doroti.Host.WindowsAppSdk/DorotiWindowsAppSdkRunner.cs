@@ -8,9 +8,6 @@ namespace Doroti.Host.WindowsAppSdk;
 
 public static partial class DorotiWindowsAppSdkRunner
 {
-    private const string TargetIdentity =
-        "win-x64/windowsappsdk-2.4/raw-hwnd/arm-n-dual-front/d3d12-skia";
-
     public static int Run(DorotiApplicationDescriptor descriptor)
     {
         ArgumentNullException.ThrowIfNull(descriptor);
@@ -40,17 +37,37 @@ public static partial class DorotiWindowsAppSdkRunner
         using var session = new DorotiHostSession(descriptor.EntrypointFactory());
         session.Start(deferFrameworkBootstrap: true);
 
-        var host = new WindowsAppSdkHostAdapter(1, descriptor.ViewConfiguration);
+        var adapter = WindowsAppSdkAdapterSelection.Resolve();
+        IWindowsAppSdkProductHost host = adapter switch
+        {
+            WindowsAppSdkAdapterKind.FlutterEmbedder =>
+                new FlutterWindowsHostAdapter(1, descriptor.ViewConfiguration),
+            WindowsAppSdkAdapterKind.ArmNLegacy =>
+                new WindowsAppSdkHostAdapter(1, descriptor.ViewConfiguration),
+            _ => throw new ArgumentOutOfRangeException(nameof(adapter)),
+        };
+        var targetIdentity = adapter switch
+        {
+            WindowsAppSdkAdapterKind.FlutterEmbedder =>
+                "win-x64/windowsappsdk-2.4/raw-child-hwnd/flutter-embedder/angle-egl-skia",
+            WindowsAppSdkAdapterKind.ArmNLegacy =>
+                "win-x64/windowsappsdk-2.4/raw-hwnd/arm-n-dual-front/d3d12-skia",
+            _ => throw new ArgumentOutOfRangeException(nameof(adapter)),
+        };
         var renderer = new SkiaSceneRenderer(
             1,
             host,
             descriptor.ViewConfiguration.backgroundColor,
             descriptor.ViewConfiguration.darkBackgroundColor,
-            TargetIdentity,
-            DorotiSkiaRuntimeEffects.MauiGpuBackend,
-            "windowsappsdk-2.4-arm-n-d3d12-skia");
+            targetIdentity,
+            adapter == WindowsAppSdkAdapterKind.FlutterEmbedder
+                ? DorotiSkiaRuntimeEffects.WindowsAngleEglBackend
+                : DorotiSkiaRuntimeEffects.MauiGpuBackend,
+            adapter == WindowsAppSdkAdapterKind.FlutterEmbedder
+                ? "windowsappsdk-2.4-flutter-angle-egl-skia"
+                : "windowsappsdk-2.4-arm-n-d3d12-skia");
         var messages = new WindowsAppSdkPlatformMessageCapability();
-        var capabilities = new DorotiViewCapabilities(TargetIdentity)
+        var capabilities = new DorotiViewCapabilities(targetIdentity)
             .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
             .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
             .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, host)

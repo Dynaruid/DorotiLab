@@ -18,7 +18,7 @@ The Dart-to-C# compiler remains an optional import and reference-differential to
 - Compiler-owned `.g.cs` files are not compiled from `src/Doroti.Framework.*`.
 - The pinned Flutter checkout is optional for ordinary build and feature development, but remains required when a task explicitly performs source comparison or import.
 - Historical source selections and evidence are preserved only in the repository history archive; they do not make the current product source generated or immutable.
-- The active validation surface is capability-based: source ownership, product build, application targets, and one integrated release run. Historical milestone validators are not active entry points.
+- Validation remains capability-based, but the former repository-wide script entry points have been removed. Source ownership, product build, application targets, native live, browser live, and physical acceptance must be recorded independently.
 - Native live, browser live, physical, and cross-target claims remain independent; an unrun gate is `notVerified`.
 
 ## Change workflow
@@ -26,6 +26,6 @@ The Dart-to-C# compiler remains an optional import and reference-differential to
 1. Find the product owner in `Doroti.Framework.*`, `Doroti.Runtime`, rendering, or the target host.
 2. Change the shared contract and all affected consumers directly.
 3. Add focused tests or assertions near that contract.
-4. Run `eng/doroti.ps1 validate` for the developer gate.
-5. Run `eng/doroti.ps1 validate -ValidationSuite Release` before a release claim.
+4. Run `eng/doroti.ps1 build` and the focused project tests or assertions owned by the changed contract.
+5. Before a release claim, run and record the applicable target build, package, native-live, browser-live, physical, and accessibility checks independently.
 6. Use the optional Dart-to-C# compiler only for an explicit reference or import task; ordinary product validation does not depend on compiler output.

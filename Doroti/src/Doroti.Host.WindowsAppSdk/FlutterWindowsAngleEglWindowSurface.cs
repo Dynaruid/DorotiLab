@@ -561,6 +561,21 @@ internal sealed class FlutterWindowsAngleEglWindowSurface : IDisposable
         Interlocked.Increment(ref _contextLossInjectionCount);
     }
 
+    /// <summary>
+    /// Requests the same bounded context/device rebuild used by the validated
+    /// loss path, but records it as a product lifecycle recovery rather than a
+    /// test injection. The rebuild occurs immediately before the next exact
+    /// present so the current child metrics remain the sole surface authority.
+    /// </summary>
+    internal void RequestLifecycleRecovery()
+    {
+        EnsureRasterThread(RasterOperation.Recreate);
+        ThrowIfDisposed();
+        if (_eglWindowSurface == 0 || _targetMetrics is null || !_targetMetrics.HasDrawableSize)
+            return;
+        _contextLossInjectionPending = true;
+    }
+
     internal FlutterWindowsAngleEglWindowSurfaceSnapshot Snapshot => new(
         _childHwnd,
         _targetMetrics,

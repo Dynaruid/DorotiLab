@@ -1,6 +1,6 @@
 # ADR-018: Flutter framework / Avalonia source-port boundary
 
-> The boundary remains relevant, but the milestone validator named below is historical. ADR-019 defines current source ownership and validation commands.
+> The boundary remains relevant, but its milestone validator has been retired. ADR-019 defines current source ownership.
 
 - Status: Accepted for G4-0
 - Date: 2026-08-07
@@ -72,12 +72,6 @@ Foundation batch 2 and all later promotion reviews must use the new dispositions
 
 The manifests state ownership and validation responsibility but do not claim that G4-1 or later bridge implementations exist. `source-ported-awaiting-*`, `planned-*`, and `not-verified` statuses are deliberately non-success states.
 
-## Validation
+## Retained validation evidence
 
-Run:
-
-```bash
-Doroti/eng/validate-g4-boundary.sh
-```
-
-The gate reproduces the full Flutter boundary manifest byte-for-byte, validates all three manifests, and requires the forbidden dependency fixture to fail with `DOTARCH009`.
+The retired gate reproduced the full Flutter boundary manifest byte-for-byte, validated all three manifests, and required the forbidden dependency fixture to fail with `DOTARCH009`.

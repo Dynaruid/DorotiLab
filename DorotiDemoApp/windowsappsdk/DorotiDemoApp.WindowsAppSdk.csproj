@@ -10,6 +10,7 @@
     <DorotiTarget>Windows</DorotiTarget>
     <DorotiHostKind>WindowsAppSdk</DorotiHostKind>
     <DorotiNativeEntryKind>Win32-WinMain</DorotiNativeEntryKind>
+    <DorotiWindowsAdapterDefault>FlutterEmbedder</DorotiWindowsAdapterDefault>
     <UseMaui>false</UseMaui>
     <DefineConstants>$(DefineConstants);WINDOWS;DOROTI_WINDOWS_APPSDK</DefineConstants>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
@@ -24,7 +25,10 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" VersionOverride="2.4.0" />
     <DorotiTargetDescriptor Include="Windows" HostKind="WindowsAppSdk" NativeEntryKind="Win32-WinMain"
         RuntimeIdentifier="win-x64" TargetFramework="net10.0-windows10.0.19041.0"
-        TargetPackage="Doroti.Target.Windows.WindowsAppSdk.win-x64" />
+        TargetPackage="Doroti.Target.Windows.WindowsAppSdk.win-x64"
+        AdapterDefault="$(DorotiWindowsAdapterDefault)"
+        AdapterCapabilities="FlutterEmbedder;ArmNLegacy"
+        SeparateHostRollback="Doroti.Target.Windows.Maui.win-x64" />
     <ProjectReference Include="..\..\Doroti\src\Doroti.Target.Windows.WindowsAppSdk.win-x64\Doroti.Target.Windows.WindowsAppSdk.win-x64.csproj" />
   </ItemGroup>
   <Import Project="..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.targets" />

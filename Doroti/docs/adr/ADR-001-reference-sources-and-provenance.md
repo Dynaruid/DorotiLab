@@ -11,4 +11,4 @@ Avalonia is a selectively vendored platform-engine seed, and the pinned Flutter 
 
 ## Consequences
 
-Unproven legacy code stays in migration tests. A source with missing license, revision, hash, dependency closure or provenance fails `eng/doroti.ps1 audit` and cannot be promoted.
+Unproven legacy code stays in migration tests. A source with missing license, revision, hash, dependency closure or provenance cannot be promoted.

@@ -90,7 +90,7 @@ $evidence = Join-Path (Get-Location) 'Doroti/validation/evidence/resize/manual-a
 
 JSON의 `status: PASS`는 프로세스가 예외 없이 종료됐다는 뜻이다. 실제 border drag가 부드럽다는 visible PASS를 의미하지 않는다.
 
-## 3회 observer qualification
+## 보존된 observer qualification 기록
 
 Observer는 native capture binary가 필요하다. 아직 없다면 Visual Studio C++ toolchain과 CMake 환경에서 먼저 빌드한다.
 
@@ -99,20 +99,13 @@ cmake -S Doroti/validation/windows-resize-capture -B .doroti/build/windows-resiz
 cmake --build .doroti/build/windows-resize-capture-vs --config Release
 ```
 
-그다음 Arm C qualification을 3회 실행한다.
-
-```powershell
-dotnet build Doroti/validation/windows-top-level-presentation/Doroti.Validation.WindowsTopLevelPresentation.csproj -c Release --no-restore
-pwsh -NoProfile -File Doroti/eng/validate-windows-presentation-observer.ps1 -Arm C -Runs 3
-```
-
-Summary는 다음 경로에 생성된다.
+이전에 수행한 Arm C 3회 qualification summary는 다음 경로에 보존한다.
 
 ```text
 Doroti/validation/evidence/resize/win-observer-m1-arm-c-summary-*.json
 ```
 
-M1 qualification은 동일 source fingerprint에서 세 run이 모두 PASS해야 한다. WGC/desktop timing, build, app counter 또는 isolated PASS 하나만으로 실제 visible acceptance를 대신하지 않는다.
+저장소는 더 이상 qualification wrapper script를 제공하지 않는다. 보존된 M1 qualification은 동일 source fingerprint에서 세 run이 모두 PASS해야 하며, WGC/desktop timing, build, app counter 또는 isolated PASS 하나만으로 실제 visible acceptance를 대신하지 않는다.
 
 ## CLI options
 

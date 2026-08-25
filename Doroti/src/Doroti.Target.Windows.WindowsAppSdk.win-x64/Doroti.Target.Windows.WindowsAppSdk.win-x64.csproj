@@ -5,7 +5,7 @@
     <AssemblyName>Doroti.Target.Windows.WindowsAppSdk</AssemblyName>
     <RootNamespace>Doroti.Target.Windows.WindowsAppSdk</RootNamespace>
     <PackageId>Doroti.Target.Windows.WindowsAppSdk.win-x64</PackageId>
-    <Description>Doroti Windows App SDK 2.4 raw HWND ContentIsland host with the Arm N D3D12 presenter.</Description>
+    <Description>Doroti Windows App SDK 2.4 Flutter-style raw child HWND host with bundled ANGLE/EGL/Skia and retained Arm N rollback.</Description>
     <IsDorotiProduct>true</IsDorotiProduct>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>

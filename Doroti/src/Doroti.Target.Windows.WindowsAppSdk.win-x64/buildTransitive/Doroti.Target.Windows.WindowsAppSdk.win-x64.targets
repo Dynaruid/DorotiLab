@@ -2,10 +2,15 @@
   <PropertyGroup Condition="'$(DorotiTarget)' == 'Windows'">
     <WindowsPackageType>None</WindowsPackageType>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <SelfContained>true</SelfContained>
+    <DorotiWindowsAdapterDefault Condition="'$(DorotiWindowsAdapterDefault)' == ''">FlutterEmbedder</DorotiWindowsAdapterDefault>
   </PropertyGroup>
   <ItemGroup Condition="'$(DorotiTarget)' == 'Windows' and '@(DorotiTargetDescriptor)' == ''">
     <DorotiTargetDescriptor Include="Windows" HostKind="WindowsAppSdk" NativeEntryKind="Win32-WinMain"
         RuntimeIdentifier="win-x64" TargetFramework="net10.0-windows10.0.19041.0"
-        TargetPackage="Doroti.Target.Windows.WindowsAppSdk.win-x64" />
+        TargetPackage="Doroti.Target.Windows.WindowsAppSdk.win-x64"
+        AdapterDefault="$(DorotiWindowsAdapterDefault)"
+        AdapterCapabilities="FlutterEmbedder;ArmNLegacy"
+        SeparateHostRollback="Doroti.Target.Windows.Maui.win-x64" />
   </ItemGroup>
 </Project>

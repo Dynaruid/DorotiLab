@@ -52,14 +52,7 @@ Flutter source는 fidelity 작업에서 동작 reference가 필요할 때 사용
 
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 build
-pwsh -File ./Doroti/eng/doroti.ps1 validate
 pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
-```
-
-Release 주장 전에는 Windows GPU와 Web package/publish 통합 시나리오를 실행합니다.
-
-```powershell
-pwsh -File ./Doroti/eng/doroti.ps1 validate -ValidationSuite Release
 ```
 
 ## Repository 구성
@@ -69,7 +62,7 @@ pwsh -File ./Doroti/eng/doroti.ps1 validate -ValidationSuite Release
 | [`Doroti/src/`](Doroti/src/) | 제품 framework, runtime, rendering, host, target package와 SDK |
 | [`DorotiDemoApp/`](DorotiDemoApp/) | 플랫폼 중립 앱, 7 runner, 4 native binding을 dogfood하는 앱 |
 | [`Doroti/templates/`](Doroti/templates/) | `dotnet new doroti-app` template |
-| [`Doroti/eng/`](Doroti/eng/) | 간소화한 build, validation, release, 선택적 reference workflow |
+| [`Doroti/eng/`](Doroti/eng/) | build, SDK 준비, 로컬 상태와 선택적 진단 도구 |
 | [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | 선택적 Dart/Flutter import·migration compiler |
 | [`history/`](history/) | Archive한 milestone 계획, 명령과 evidence 요약 |
 

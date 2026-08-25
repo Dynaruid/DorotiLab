@@ -48,7 +48,6 @@ Run from the repository root:
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 doctor
 pwsh -File ./Doroti/eng/doroti.ps1 build
-pwsh -File ./Doroti/eng/doroti.ps1 validate
 ```
 
 The active command surface is intentionally small:
@@ -59,13 +58,9 @@ The active command surface is intentionally small:
 | `build` | Build `Doroti.Product.slnx` |
 | `build/run/publish -App <path> -Platform <alias>` | Resolve and execute one runner from `doroti-workspace.json` |
 | `native doctor\|build\|open\|add -App <path> -Platform android\|ios\|macos\|maccatalyst` | Inspect, build, locate, or extend the default native bridge workspace |
-| `validate` | Run source ownership, Release build, and application target graph/build checks |
-| `validate -ValidationSuite Release` | Add Windows GPU live and external Web template/package publish scenarios |
-| `audit` | Check repository-local storage and current source ownership |
-| `release` | Run the integrated release suite, audit, pack, and package inspection |
 | `clean` | Remove Doroti build output, artifacts, and temporary local state |
 
-Direct suite entry points are [validate.ps1](eng/validate.ps1), [validate-app-targets.ps1](eng/validate-app-targets.ps1), [validate-web-product.ps1](eng/validate-web-product.ps1), and the Kubuntu-native [validate-linux-qt.sh](eng/validate-linux-qt.sh). Historical G4-G7 validators are no longer active; their results remain under `history/` at the repository root.
+`eng` no longer provides standalone validation-suite entry points. Retained validation contracts and evidence are described under [validation](validation/README.md), while previous run results remain under `history/` at the repository root.
 
 ## Platform evidence boundaries
 

@@ -8,7 +8,8 @@ DorotiDemoApp은 플랫폼 workspace 계약을 직접 사용하는 dogfood 앱�
 
 - `Program.cs`, `src/`, `assets/`: 공용 startup, widget tree, 앱 asset
 - `doroti-workspace.json`: `macos`(AppKit)와 `maccatalyst`(UIKit)를 구분하는 runner 경로
-- `windows/`: WinUI/MAUI runner와 package identity
+- `windowsappsdk/`: 기본 Windows App SDK 2.4 FlutterEmbedder runner
+- `windows/`: 보존된 WinUI/MAUI rollback runner와 package identity
 - `web/`: Blazor WebAssembly runner, TypeScript source, `wwwroot`
 - `android/`: .NET Android/MAUI runner와 기본 Gradle AAR/.NET binding
 - `ios/`: .NET iOS/MAUI runner와 독립 Xcode framework/binding
@@ -37,6 +38,10 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 publish -App ./DorotiDemoApp -Plat
 # Windows (Windows 호스트)
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
 
+# Windows rollback adapter
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -WindowsAdapter ArmNLegacy
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -WindowsAdapter MauiRollback
+
 # Web
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform web
 
@@ -58,17 +63,14 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform
 
 Web runner가 시작되면 브라우저에서 `http://127.0.0.1:5088`을 엽니다. Android와 iOS는 각각 실행 중인 에뮬레이터 또는 시뮬레이터가 필요합니다. Android arm64 기기와 iOS arm64 기기에서 실행하려면 각각 `-Rid android-arm64`, `-Rid ios-arm64`로 바꾸며, iOS 실제 기기는 별도의 코드 서명 설정이 필요합니다.
 
-Linux에는 .NET SDK와 PowerShell 7 외에 Qt 6.5 이상 Core/Gui/Widgets/OpenGL, CMake, C++ compiler, `pkg-config`, Wayland client 개발 파일, `wayland-scanner`, `wayland` 또는 `xcb` QPA plugin이 필요합니다. Linux 전용 contract/build/publish 검증은 다음과 같이 실행합니다.
-
-```bash
-bash ./Doroti/eng/validate-linux-qt.sh Release
-```
+Linux에는 .NET SDK와 PowerShell 7 외에 Qt 6.5 이상 Core/Gui/Widgets/OpenGL, CMake, C++ compiler, `pkg-config`, Wayland client 개발 파일, `wayland-scanner`, `wayland` 또는 `xcb` QPA plugin이 필요합니다.
 
 runner를 직접 지정해도 됩니다.
 
 ```powershell
 dotnet build ./DorotiDemoApp/DorotiDemoApp.csproj -c Release
-dotnet run --project ./DorotiDemoApp/windows/DorotiDemoApp.Windows.csproj
+dotnet run --project ./DorotiDemoApp/windowsappsdk/DorotiDemoApp.WindowsAppSdk.csproj
+dotnet run --project ./DorotiDemoApp/windows/DorotiDemoApp.Windows.csproj # MAUI rollback
 dotnet run --project ./DorotiDemoApp/web/DorotiDemoApp.Web.csproj
 dotnet build ./DorotiDemoApp/android/DorotiDemoApp.Android.csproj -c Release -r android-x64
 dotnet build ./DorotiDemoApp/ios/DorotiDemoApp.iOS.csproj -c Release -r iossimulator-x64

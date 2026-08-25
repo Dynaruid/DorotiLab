@@ -44,13 +44,7 @@ The four dimensions must all produce `G5-4-GALLERY-DIFFERENTIAL-PASS`.
 
 The reviewed projects and gallery harness are audited for Avalonia Controls, Avalonia themes, Avalonia XAML loading, `x:Class`, and `.xaml` files. Every count must remain zero. G5-4 does not add a parallel Avalonia control tree or theme implementation.
 
-## Reproduction and evidence
-
-Run the complete automated gate from the repository root:
-
-```powershell
-& Doroti/eng/validate-g5-4.ps1
-```
+## Retained evidence
 
 The aggregate result is `migration/flutter-framework/g5-4-evidence.json`. It links the closure, batch index, Material/Cupertino API manifests, gallery differential result, and reviewed build log.
 

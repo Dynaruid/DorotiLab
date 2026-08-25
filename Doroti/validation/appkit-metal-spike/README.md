@@ -21,9 +21,3 @@ DOROTI_APPKIT_SPIKE_AUTOMATE=1 \
 DOROTI_APPKIT_SPIKE_EVIDENCE=/tmp/doroti-appkit-metal-spike.json \
 dotnet run --project validation/appkit-metal-spike/Doroti.Validation.AppKitMetalSpike.csproj
 ```
-
-From the `Doroti` directory, the repeatable validation entrypoint is:
-
-```sh
-pwsh eng/validate-appkit-metal-spike.ps1
-```

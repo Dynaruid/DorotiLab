@@ -12,4 +12,4 @@ Reviewed `Doroti.Framework.Gestures` source owns arena winner selection, tap/ver
 
 The Win32 source-port accepts mouse messages and `WM_POINTER` touch/pen packets. Touch capability is reported from the current digitizer state; pen is supported by the packet converter and neither device is silently reclassified as mouse. Capture loss updates the retained packet before releasing Win32 capture so re-entrant `WM_CAPTURECHANGED` cannot emit a second cancel.
 
-`eng/validate-g5-1.ps1` keeps automated native-window evidence separate from physical-device evidence. Its target controller posts packets through an actual HWND and proves timestamp, logical-coordinate, wheel and cancel exactly-once behavior, but this injected source is not labeled as a physical mouse, trackpad or touch run.
+The retained G5-1 automated native-window evidence remains separate from physical-device evidence. Its target controller posted packets through an actual HWND and proved timestamp, logical-coordinate, wheel and cancel exactly-once behavior, but this injected source is not labeled as a physical mouse, trackpad or touch run.

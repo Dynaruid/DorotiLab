@@ -16,7 +16,7 @@ The compiler validation checks all of the following in one run:
 - absence of the removed source directory, namespace, project, and references from active source/build/compiler files;
 - a real analyzer/compiler negative selection that must fail with typed `DOTF0001`, a non-empty source span, symbol, and required action.
 
-The historical compiler validation wrote `artifacts/validation/g3-t0-bootstrap.json`. `./eng/doroti.ps1 audit` still runs source and vendor provenance audits.
+The historical compiler validation wrote `artifacts/validation/g3-t0-bootstrap.json`. The source and vendor provenance audit was part of that milestone and is not a current script entry point.
 
 ## Completion evidence
 
@@ -24,7 +24,7 @@ On 2026-08-04, the following gates passed:
 
 - `dotnet build Doroti.Product.slnx --nologo`: 0 warnings, 0 errors;
 - `dotnet build Doroti.slnx --nologo`: 0 warnings, 0 errors;
-- `./eng/doroti.ps1 validate -ValidationSuite compiler`: PASS, 13 roots, 640 exports, 695 Dart files, `DOTF0001` negative diagnostic;
-- `./eng/doroti.ps1 audit`: PASS, source/vendor findings 0 and G3-T0 validation PASS.
+- compiler validation suite: PASS, 13 roots, 640 exports, 695 Dart files, `DOTF0001` negative diagnostic;
+- source/vendor audit: PASS, findings 0 and G3-T0 validation PASS.
 
 This milestone does not claim framework generation, API parity, target runtime, or package completion. Those remain owned by the subsequent Goal3 milestones.

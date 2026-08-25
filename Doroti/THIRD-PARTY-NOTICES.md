@@ -29,4 +29,4 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 - Use: vendored legacy `blur.xml` client protocol description for older KWin compositors
 - License: LGPL-2.1-or-later; SPDX notices are preserved in each vendored XML file
 
-The license files named above are inputs to `eng/doroti.ps1 audit`. Distribution packaging must reproduce the applicable notice and license text for every promoted third-party source.
+Distribution packaging must reproduce the applicable notice and license text for every promoted third-party source.

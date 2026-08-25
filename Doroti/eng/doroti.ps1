@@ -16,6 +16,9 @@ param(
     [ValidateSet('android', 'ios', 'linux', 'macos', 'maccatalyst', 'web', 'windows', 'all')]
     [string] $Platform,
 
+    [ValidateSet('FlutterEmbedder', 'ArmNLegacy', 'MauiRollback')]
+    [string] $WindowsAdapter = 'FlutterEmbedder',
+
     [string] $Rid,
 
     [string] $Device,
@@ -167,12 +170,32 @@ function Invoke-WorkspaceDotNet {
     if ([string]::IsNullOrWhiteSpace($Platform) -or $Platform -ceq 'all') { throw "$Verb requires one --platform <name>." }
     $workspace = Resolve-DorotiWorkspace $App
     $runner = $workspace.Runners[$Platform]
+    if ($Platform -ceq 'windows' -and $WindowsAdapter -ceq 'MauiRollback') {
+        $mauiRollback = @(Get-ChildItem -LiteralPath (Join-Path $workspace.Root 'windows') -Filter '*.csproj' -File |
+            Where-Object { (Get-Content -LiteralPath $_.FullName -Raw) -match '<DorotiHostKind>Maui</DorotiHostKind>' } |
+            Select-Object -ExpandProperty FullName)
+        if ($mauiRollback.Count -ne 1) {
+            throw "The workspace must provide exactly one MAUI rollback runner under windows; found $($mauiRollback.Count)."
+        }
+        $runner = [IO.Path]::GetFullPath($mauiRollback[0])
+    }
     $arguments = if ($Verb -ceq 'run') { @('run', '--project', $runner) } else { @($Verb, $runner) }
     $arguments += @('--configuration', $Configuration)
     if (-not [string]::IsNullOrWhiteSpace($Rid)) { $arguments += "-p:RuntimeIdentifier=$Rid" }
     if (-not [string]::IsNullOrWhiteSpace($Device)) { $arguments += "-p:DorotiDevice=$Device" }
     $arguments += '--nologo'
-    Invoke-Checked 'dotnet' $arguments $workspace.Root
+    $hadAdapter = Test-Path Env:DOROTI_WINDOWS_ADAPTER
+    $previousAdapter = $env:DOROTI_WINDOWS_ADAPTER
+    try {
+        if ($Platform -ceq 'windows' -and $WindowsAdapter -cne 'MauiRollback') {
+            $env:DOROTI_WINDOWS_ADAPTER = $WindowsAdapter
+        }
+        Invoke-Checked 'dotnet' $arguments $workspace.Root
+    }
+    finally {
+        if ($hadAdapter) { $env:DOROTI_WINDOWS_ADAPTER = $previousAdapter }
+        else { Remove-Item Env:DOROTI_WINDOWS_ADAPTER -ErrorAction SilentlyContinue }
+    }
 }
 
 function Resolve-DorotiNativeWorkspace {

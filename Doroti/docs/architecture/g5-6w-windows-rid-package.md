@@ -1,6 +1,6 @@
 # G5-6W Windows RID package boundary
 
-> Historical bootstrap record. The milestone validator named below has been retired; use `eng/doroti.ps1 validate` and ADR-019 for the current product workflow.
+> Historical bootstrap record. The milestone validator has been retired; ADR-019 defines the current product ownership boundary.
 
 G5-6W fixes the already validated G5-3B Windows source-port closure as the `Doroti.Target.Windows.win-x64` NuGet package. It does not move Flutter framework policy into the target. A selected framework package still talks only to `Doroti.Hosting` and the typed `dart:ui` capability surface; the RID package composes that host with the Win32/WGL implementation.
 
@@ -27,15 +27,9 @@ The package graph contains no official `Avalonia` binary package. `Doroti.Vendor
 
 The registered capability IDs are read from the actual attached Flutter view, not duplicated in the RID package. The shared required list is `DorotiCapabilityIds.RequiredDesktop`.
 
-## Validation
+## Retained validation evidence
 
-Run from `Doroti`:
-
-```powershell
-./eng/validate-g5-6w.ps1
-```
-
-The validator reruns the G5-3B Windows predecessor, audits the selected Avalonia source port, builds and packs the product graph, validates packaged release-input hashes, and repacks the RID host without changing the Widgets framework package bytes. It then copies a package-only consumer outside the repository graph, restores into an isolated NuGet cache, builds, publishes for `win-x64`, and executes the published EXE against an actual HWND and strict WGL/OpenGL context.
+The retired milestone gate reran the G5-3B Windows predecessor, audited the selected Avalonia source port, built and packed the product graph, validated packaged release-input hashes, and repacked the RID host without changing the Widgets framework package bytes. It then copied a package-only consumer outside the repository graph, restored into an isolated NuGet cache, built, published for `win-x64`, and executed the published EXE against an actual HWND and strict WGL/OpenGL context.
 
 The synthetic smoke verifies the 12 capability IDs, native message-queue pointer/key delivery, `WM_GETOBJECT`, semantics diagnostics, one injected GPU recovery, terminal ACK accounting, mailbox high-watermark, target identity and resource hooks. The publish graph and `project.assets.json` must contain zero official Avalonia binaries and zero repository-private fallback.
 
