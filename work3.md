@@ -9,7 +9,7 @@
 - Windows App SDK 기준: repository에서 이 host에 고정한 exact `2.4.0`, self-contained unpackaged, 우선 `win-x64`
 - Flutter source 기준: local checkout `56b8e1a851a594b1a154f8ea93270807dab22b9a`
 - test timeout: 각 build/test/validation command 최대 20분
-- 문서 상태: **C0-C4 PASS / C5-D3D12 FAIL(이력 보존) / C5-A managed ANGLE PASS / C6 automated PASS·physical notVerified / high-speed resize PARTIAL(엄격 capture FAIL) / C7-C11 notVerified**
+- 문서 상태: **C0-C4 PASS / C5-D3D12 FAIL(이력 보존) / C5-A managed ANGLE PASS / C6 automated PASS·physical notVerified / bounded-wait resize 상·하·좌·우 physical PASS·엄격 synthetic capture FAIL / C7-C11 notVerified**
 
 이 문서는 기존 `WinRtComposition`/ContentIsland presentation 계획을 대체하는 새 작업계획이다. 현재 worktree의 WinRT/ContentIsland spike와 validator 수정은 이 계획의 구현 또는 PASS 증거로 간주하지 않으며, 후속 작업에서도 사용자 소유 변경으로 보존한다.
 
@@ -444,7 +444,9 @@ C5-A managed-owner resize probe는 context generation 2, fixed-size surface resi
 
 고속 우측 확장 WGC gate(600 px/600 ms, 165 Hz)는 변경 전 `gapFrame=29`, 최대 연속 gap `551.524 ms`, Demo present 8에서 worker/latest-only/direct-raster/swap-0/no-default-`DwmFlush` 적용 후 최종 기본 경로 `gapFrame=7`, 최대 연속 gap `60.604 ms`, capture frame 44로 개선됐다. blank frame 0, final gap 0, capture/encoder error 0이지만 순간 최대 gap 32 px가 남으므로 엄격 visible resize gate는 **PARTIAL/FAIL**이며 C5-A visible PASS로 승격하지 않는다. 근거는 `.doroti/evidence/c5a-c6-f6r-right.json`과 `.doroti/evidence/c5a-c6-f6r-right-default-final-2.json`이다.
 
-**C5-A 경계:** product/runtime과 C6 automated contract는 PASS다. 사용자가 보고한 message-pump blocking 원인은 수정했지만 strict high-speed expansion capture에는 잔여 gap이 있으므로 resize 완료나 visible PASS를 주장하지 않는다. C6 physical/manual과 C7-C11도 `notVerified`다.
+2026-08-26 후속에서 app background brush로 노출 영역을 칠하는 완화책은 사용자가 문제를 숨길 수 있다고 판정하여 제품 코드에서 제거했다. 대신 현재 제품 경로는 Flutter와 같이 child `WM_SIZE` 안에서 raster worker의 exact-size surface recreation/present를 최대 100 ms만 기다리고, resize present 뒤 `DwmFlush`를 수행한다. 일반 draw/raster는 별도 worker에 남고 wait 중 일반 window message를 dispatch하지 않는다. product validator는 accepted/presented resize generation `18/18`, failed/unterminated/duplicate `0/0/0`, ANGLE present/submit `18/18`, operational error 0으로 PASS했다. 사용자는 실제 Demo에서 상·하·좌·우 border drag를 확인하여 실시간 추종성과 떨림·래스터 왜곡이 모두 훌륭한 수준이라고 판정했다. 따라서 이 범위의 **physical resize는 PASS**다. 다만 600 px/600 ms reverse 자동 입력은 요청한 edge excursion과 시작 rect 복귀를 완료하지 못했으므로 strict synthetic high-speed gate의 **FAIL**은 별도로 보존한다. 사용하지 않은 `AsyncTransient` 실험 분기는 제품 코드에서 제거했다. 근거는 `.doroti/evidence/hwnd-exact-cpp-c5-angle-product-bounded-resize.json`과 사용자 물리 판정이다.
+
+**C5-A 경계:** product/runtime과 C6 automated contract는 PASS이며 상·하·좌·우 실제 border resize의 물리 체감도 PASS다. 이 scoped physical 결과가 strict synthetic 600 px/600 ms gate의 FAIL이나 C6 input/focus manual, C7-C11을 대체하지는 않는다.
 
 ### C6 — pointer, keyboard, focus, cursor, clipboard
 
@@ -571,11 +573,11 @@ C0-C10이 모두 통과한 뒤에만 수행한다.
 | C3-A ANGLE owner | PASS        | C++ top/child/task HWND 각 1, ABI GPU pointer 0, ANGLE context generation 2, fixed-size surface resize/present/submit/copy 각 10, invalid call 0, EGL/GLES initialization·operational error 0, terminal `Presented/Superseded/Failed = 10/1/2`, duplicate 0                                                                                          | hardware `ANGLE (... Direct3D11 ...)` 확인. automated ownership/resize/runtimeDiagnostic만 PASS; visible/physical은 `notVerified`                                                                                |
 | C4               | PASS        | native filtered wait success/timeout 1/1, task completion dispatch 1, top/child recursive dispatch 0, max native wait 109 ms; managed current+latest queue max 2, accepted/terminal 34/34, mismatch/duplicate/unterminated 0, stale present prevented 3, timeout 2                                                                                   | automated coordinator contract만 PASS. visible resize/cadence/physical은 `notVerified`                                                                                                                           |
 | C5-D3D12         | FAIL        | synthetic product fixture는 application/session/view attach/detach/shutdown 1/1/1, new scene/replay 1/3, managed present/fence/copy 4/4/4, ABI GPU pointer 0으로 PASS했으나 실제 self-contained Demo scene에서 operational D3D12 error ID 1422가 6건 발생하고 보강된 runner가 exit code 1로 fail-closed                                              | 실패 이력을 보존한다. debug filter, CPU fallback 또는 SkiaSharp source patch로 숨기지 않음                                                                                                                       |
-| C5-A ANGLE       | PASS        | 기존 product/Demo 반복 PASS 이력에 더해 direct fixed-size EGL default framebuffer product validator에서 resize request 20→accepted/presented 2/2, present/submit/copy 2/2/0, duplicate/unterminated/failed 0, EGL/GLES error 0                                                                                                                       | automated/runtime presenter PASS. WGC 고속 우측 확장은 baseline gap 29 frames/551.524 ms→7 frames/60.604 ms로 개선됐지만 최대 32 px가 남아 strict visible gate는 `FAIL`; physical은 `notVerified`              |
+| C5-A ANGLE       | PASS        | 기존 product/Demo 반복 PASS 이력에 더해 bounded-wait product validator에서 resize request 20→accepted/presented 18/18, present/submit/copy 18/18/0, duplicate/unterminated/failed 0, EGL/GLES error 0. app background brush 완화는 제거함                                                                 | automated/runtime presenter PASS. 사용자 Demo 상·하·좌·우 border resize 체감 PASS. 600 px/600 ms synthetic reverse의 excursion/복귀 실패는 별도 strict gate `FAIL`로 보존                    |
 | C6               | PASS        | pointer lifecycle/capture cancel, key down/up, focus, client-only cursor ownership, Unicode clipboard round-trip에 더해 platform/raster thread 분리, input ingress=platform, framework input dispatch=raster, resize current+latest coalescing을 automated product validator에서 확인                                                                 | automated contract만 PASS. 실제 border drag/capture/re-entry/resize cursor/Alt+Tab/focus는 `notVerified`                                                                                                      |
 | C7-C11           | notVerified | 이번 요청에서 실행하지 않음                                                                                                                                                                                                                                                                                                                          | IME/UIA/lifecycle matrix/capture/physical acceptance는 후속 gate                                                                                                                                                 |
 
-현재 전체 상태는 `C5_ANGLE_PRODUCT_PASS_C6_AUTOMATED_PASS_RESIZE_CAPTURE_PARTIAL`이다. D3D12 product branch의 실패는 보존되며 ANGLE 분기가 이를 자동 fallback으로 숨기지 않는다. C6 physical/manual과 C7-C11은 별도 실행 근거 없이 PASS로 올리지 않는다.
+현재 전체 상태는 `C5_ANGLE_PRODUCT_PASS_C6_AUTOMATED_PASS_FOUR_EDGE_RESIZE_PHYSICAL_PASS_SYNTHETIC_CAPTURE_FAIL`이다. D3D12 product branch의 실패는 보존되며 ANGLE 분기가 이를 자동 fallback으로 숨기지 않는다. C6 input/focus physical/manual과 C7-C11은 별도 실행 근거 없이 PASS로 올리지 않는다.
 
 ## 10. 금지 사항
 
@@ -592,7 +594,7 @@ C0-C10이 모두 통과한 뒤에만 수행한다.
 
 ## 11. 정확한 시작점과 완료 정의
 
-구현은 **C0 source/contract → C1 versioned ABI/toolchain → C2 standalone native control → C3/C4 managed ownership·coordinator → C5-A ANGLE product → C6 automated thread/input contract**까지 진행됐다. 다음 정확한 재개점은 고속 expansion capture의 잔여 최대 32 px를 없애는 visible-front 전략 결정이다. 현재 금지된 full-frame stretch/edge repetition/dual visible owner를 몰래 사용하지 않는다. 그 automated gate가 통과한 뒤 C6 실제 capture/re-entry/cursor/Alt+Tab/focus 수동 gate로 진행한다.
+구현은 **C0 source/contract → C1 versioned ABI/toolchain → C2 standalone native control → C3/C4 managed ownership·coordinator → C5-A ANGLE product → C6 automated thread/input contract → bounded-wait 상·하·좌·우 physical resize PASS**까지 진행됐다. 다음 정확한 재개점은 C6 실제 capture/re-entry/resize cursor/Alt+Tab/focus 수동 gate다. strict synthetic 600 px/600 ms 실패는 숨기지 않고 별도 개선 항목으로 남긴다. 현재 금지된 full-frame stretch/edge repetition/dual visible owner를 exact frame으로 인정하지 않는다.
 
 이 계획의 완료는 다음을 모두 만족한 상태다.
 

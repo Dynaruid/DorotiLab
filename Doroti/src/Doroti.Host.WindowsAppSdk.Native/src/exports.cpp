@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <atomic>
+#include <chrono>
 #include <condition_variable>
 #include <cstddef>
 #include <cstdlib>
@@ -24,6 +25,7 @@
 #include <string>
 #include <thread>
 #include <type_traits>
+#include <unordered_set>
 
 namespace {
 
@@ -142,8 +144,6 @@ class ProductHost final {
                               SWP_NOZORDER | SWP_NOACTIVATE)) {
               fatal_ = true;
               PostMessageW(top_, WM_CLOSE, 0, 0);
-            } else {
-              if (PublishMetrics()) QueueRender();
             }
           }
         }
@@ -181,6 +181,7 @@ class ProductHost final {
         auto* command = reinterpret_cast<ResizeCommand*>(lparam);
         if (command != nullptr) {
           ResizeTop(command->width, command->height);
+          DrainRenderCompletions();
           delete command;
         }
         return 0;
@@ -201,6 +202,16 @@ class ProductHost final {
     switch (message) {
       case WM_ERASEBKGND:
         return 1;
+      case WM_SIZE: {
+        if (!render_worker_started_ || wparam == SIZE_MINIMIZED)
+          return 0;
+        if (PublishMetrics()) {
+          const auto generation = current_generation_;
+          const auto causal = QueueRender();
+          WaitForExactResize(generation, causal);
+        }
+        return 0;
+      }
       case WM_SETCURSOR:
         if (LOWORD(lparam) == HTCLIENT) {
           ::SetCursor(ResolveCursor());
@@ -476,9 +487,9 @@ class ProductHost final {
     return true;
   }
 
-  void QueueRender() {
+  uint64_t QueueRender() {
     if (current_generation_ == 0 || current_width_ == 0 || current_height_ == 0)
-      return;
+      return 0;
     const auto causal = ++causal_frame_id_;
     const auto accepted = QpcNow();
     RenderWork work{{
@@ -507,10 +518,11 @@ class ProductHost final {
                     accepted};
     {
       std::lock_guard lock(render_mutex_);
-      if (render_stopping_) return;
+      if (render_stopping_) return 0;
       render_pending_ = work;
     }
     render_condition_.notify_one();
+    return causal;
   }
 
   static doroti_windows_frame_terminal_v1 MakeTerminal(
@@ -531,6 +543,7 @@ class ProductHost final {
   }
 
   void StartRenderWorker() {
+    render_worker_started_ = true;
     render_thread_ = std::thread([this] { RenderWorkerMain(); });
   }
 
@@ -560,10 +573,50 @@ class ProductHost final {
           terminal == DOROTI_WINDOWS_FRAME_FAILED_V1 ? 1u : 0u;
       {
         std::lock_guard lock(render_mutex_);
-        render_completions_.push_back(MakeTerminal(work, terminal, error));
+        auto receipt = MakeTerminal(work, terminal, error);
+        if (resize_wait_timeouts_.erase(work.request.generation) != 0)
+          receipt.platform_wait_timed_out = 1;
+        render_completions_.push_back(receipt);
+        last_render_terminal_generation_ = work.request.generation;
+        last_render_terminal_causal_frame_id_ = work.request.causal_frame_id;
+        last_render_terminal_kind_ = terminal;
       }
+      resize_condition_.notify_all();
       PostMessageW(task_, kRenderCompleted, 0, 0);
     }
+  }
+
+  bool WaitForExactResize(uint64_t generation, uint64_t causal_frame_id) {
+    constexpr auto timeout = std::chrono::milliseconds(100);
+    const auto deadline = std::chrono::steady_clock::now() + timeout;
+    while (causal_frame_id != 0) {
+      std::unique_lock lock(render_mutex_);
+      const auto completed = resize_condition_.wait_until(
+          lock, deadline, [this, causal_frame_id] {
+            return render_stopping_ ||
+                   last_render_terminal_causal_frame_id_ >= causal_frame_id;
+          });
+      if (!completed) {
+        resize_wait_timeouts_.insert(generation);
+        return false;
+      }
+      if (render_stopping_) return false;
+      if (last_render_terminal_causal_frame_id_ == causal_frame_id &&
+          last_render_terminal_generation_ == generation) {
+        if (last_render_terminal_kind_ == DOROTI_WINDOWS_FRAME_PRESENTED_V1)
+          return true;
+        if (last_render_terminal_kind_ == DOROTI_WINDOWS_FRAME_FAILED_V1)
+          return false;
+      }
+      lock.unlock();
+      if (std::chrono::steady_clock::now() >= deadline) {
+        std::lock_guard timeout_lock(render_mutex_);
+        resize_wait_timeouts_.insert(generation);
+        return false;
+      }
+      causal_frame_id = QueueRender();
+    }
+    return false;
   }
 
   void DrainRenderCompletions() {
@@ -590,7 +643,9 @@ class ProductHost final {
       render_pending_.reset();
     }
     render_condition_.notify_one();
+    resize_condition_.notify_all();
     render_thread_.join();
+    render_worker_started_ = false;
     DrainRenderCompletions();
   }
 
@@ -753,9 +808,15 @@ class ProductHost final {
   std::atomic<uint32_t> cursor_kind_{};
   std::mutex render_mutex_;
   std::condition_variable render_condition_;
+  std::condition_variable resize_condition_;
   std::optional<RenderWork> render_pending_;
   std::deque<doroti_windows_frame_terminal_v1> render_completions_;
+  std::unordered_set<uint64_t> resize_wait_timeouts_;
   std::thread render_thread_;
+  uint64_t last_render_terminal_generation_{};
+  uint64_t last_render_terminal_causal_frame_id_{};
+  uint32_t last_render_terminal_kind_{};
+  bool render_worker_started_{};
   bool render_stopping_{};
 };
 

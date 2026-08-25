@@ -344,6 +344,26 @@ HWND ResolveVisualWindow(Options const& options) {
     return search.best;
 }
 
+RECT ClientRectScreen(HWND hwnd) {
+    RECT client{};
+    if (!GetClientRect(hwnd, &client)) Fail("Could not resolve client bounds.");
+    POINT topLeft{client.left, client.top};
+    POINT bottomRight{client.right, client.bottom};
+    if (!ClientToScreen(hwnd, &topLeft) || !ClientToScreen(hwnd, &bottomRight)) {
+        Fail("Could not map client bounds to screen coordinates.");
+    }
+    return {topLeft.x, topLeft.y, bottomRight.x, bottomRight.y};
+}
+
+RECT VisibleVisualClientRectScreen(Options const& options) {
+    RECT visual = ClientRectScreen(options.visualHwnd);
+    if (options.visualHwnd == options.hwnd) return visual;
+    RECT viewport = ClientRectScreen(options.hwnd);
+    RECT clipped{};
+    if (!IntersectRect(&clipped, &visual, &viewport)) return {};
+    return clipped;
+}
+
 int DisplayRefreshRate(HWND hwnd) {
     HMONITOR monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
     MONITORINFOEX info{};
@@ -737,19 +757,12 @@ public:
             &frameBounds, sizeof(frameBounds)))) {
             if (!GetWindowRect(options_.captureHwnd, &frameBounds)) Fail("Could not resolve initial capture bounds.");
         }
-        RECT client{};
-        if (!GetClientRect(options_.visualHwnd, &client)) Fail("Could not resolve initial client bounds.");
-        POINT clientTopLeft{client.left, client.top};
-        POINT clientBottomRight{client.right, client.bottom};
-        if (!ClientToScreen(options_.visualHwnd, &clientTopLeft) ||
-            !ClientToScreen(options_.visualHwnd, &clientBottomRight)) {
-            Fail("Could not map initial client bounds to screen coordinates.");
-        }
+        RECT const clientScreen = VisibleVisualClientRectScreen(options_);
         clientInsets_ = RECT{
-            std::max(0L, clientTopLeft.x - frameBounds.left),
-            std::max(0L, clientTopLeft.y - frameBounds.top),
-            std::max(0L, frameBounds.right - clientBottomRight.x),
-            std::max(0L, frameBounds.bottom - clientBottomRight.y)};
+            std::max(0L, clientScreen.left - frameBounds.left),
+            std::max(0L, clientScreen.top - frameBounds.top),
+            std::max(0L, frameBounds.right - clientScreen.right),
+            std::max(0L, frameBounds.bottom - clientScreen.bottom)};
         D3D11_TEXTURE2D_DESC stagingDescription{};
         stagingDescription.Width = static_cast<UINT>(capacity_.Width);
         stagingDescription.Height = static_cast<UINT>(capacity_.Height);
@@ -879,13 +892,7 @@ private:
                 slot.analyzeFrame = analyzeFrame;
                 slot.analyzeShapeFrame = analyzeShapeFrame;
                 GetWindowRect(options_.captureHwnd, &slot.window);
-                RECT client{};
-                GetClientRect(options_.visualHwnd, &client);
-                POINT topLeft{client.left, client.top};
-                POINT bottomRight{client.right, client.bottom};
-                ClientToScreen(options_.visualHwnd, &topLeft);
-                ClientToScreen(options_.visualHwnd, &bottomRight);
-                slot.clientScreen = {topLeft.x, topLeft.y, bottomRight.x, bottomRight.y};
+                slot.clientScreen = VisibleVisualClientRectScreen(options_);
                 GetCursorPos(&slot.cursor);
                 {
                     std::lock_guard lock(ringMutex_);
@@ -1223,17 +1230,12 @@ private:
                 auto source = resource.as<ID3D11Texture2D>();
                 RECT window{};
                 RECT extended{};
-                RECT client{};
                 if (!GetWindowRect(options_.captureHwnd, &window)) Fail("Desktop observer GetWindowRect failed.");
                 if (FAILED(DwmGetWindowAttribute(options_.captureHwnd, DWMWA_EXTENDED_FRAME_BOUNDS,
                     &extended, sizeof(extended)))) extended = window;
-                if (!GetClientRect(options_.visualHwnd, &client)) Fail("Desktop observer GetClientRect failed.");
-                POINT clientTopLeft{client.left, client.top};
-                POINT clientBottomRight{client.right, client.bottom};
-                if (!ClientToScreen(options_.visualHwnd, &clientTopLeft) ||
-                    !ClientToScreen(options_.visualHwnd, &clientBottomRight)) {
-                    Fail("Desktop observer ClientToScreen failed.");
-                }
+                RECT const clientScreen = VisibleVisualClientRectScreen(options_);
+                POINT clientTopLeft{clientScreen.left, clientScreen.top};
+                POINT clientBottomRight{clientScreen.right, clientScreen.bottom};
                 RECT const desktop = outputDescription_.DesktopCoordinates;
                 RECT const clipped = options_.f6r ? desktop : RECT{
                     std::clamp(extended.left, desktop.left, desktop.right),

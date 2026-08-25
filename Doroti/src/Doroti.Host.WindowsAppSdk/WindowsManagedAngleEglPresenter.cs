@@ -47,6 +47,7 @@ internal sealed class WindowsManagedAngleEglPresenter : WindowsManagedHwndPresen
     private GRContext? _context;
     private GRBackendRenderTarget? _windowTarget;
     private SKSurface? _windowSurface;
+    private bool _flushAfterResizePresent;
     private bool _debugBaselineSealed;
     private bool _disposed;
 
@@ -58,7 +59,7 @@ internal sealed class WindowsManagedAngleEglPresenter : WindowsManagedHwndPresen
     internal override string BackendName => "ANGLE/EGL-D3D11";
     internal override string RuntimeEffectsBackend => DorotiSkiaRuntimeEffects.WindowsAngleEglBackend;
     internal override string DiagnosticCoverage =>
-        "direct exact default-framebuffer raster, swap interval 0, optional DwmFlush, " +
+        "direct exact default-framebuffer raster, swap interval 0, resize DwmFlush, " +
         "explicit EGL return codes, and GLES glGetError";
     internal override int Width { get; set; }
     internal override int Height { get; set; }
@@ -118,7 +119,11 @@ internal sealed class WindowsManagedAngleEglPresenter : WindowsManagedHwndPresen
         _windowSurface = SKSurface.Create(
             _context, _windowTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888)
             ?? throw new InvalidOperationException("Skia could not wrap the ANGLE default framebuffer.");
-        if (resized) ResizeBuffersCount++;
+        if (resized)
+        {
+            ResizeBuffersCount++;
+            _flushAfterResizePresent = true;
+        }
     }
 
     internal override void SealInitializationDebugBaseline()
@@ -156,8 +161,12 @@ internal sealed class WindowsManagedAngleEglPresenter : WindowsManagedHwndPresen
         if (EglSwapBuffers(_display, _eglSurface) == EglFalse)
             ThrowEgl("eglSwapBuffers");
         PresentCount++;
-        if (Environment.GetEnvironmentVariable("DOROTI_WINDOWS_DWM_FLUSH") == "1")
+        if (_flushAfterResizePresent ||
+            Environment.GetEnvironmentVariable("DOROTI_WINDOWS_DWM_FLUSH") == "1")
+        {
             Marshal.ThrowExceptionForHR(DwmFlush());
+            _flushAfterResizePresent = false;
+        }
         return result;
     }
 
@@ -328,6 +337,7 @@ internal sealed class WindowsManagedAngleEglPresenter : WindowsManagedHwndPresen
         if (_eglContext != 0) EglDestroyContext(_display, _eglContext);
         EglTerminate(_display);
         _display = _config = _eglContext = _eglSurface = _window = 0;
+        _flushAfterResizePresent = false;
         Width = Height = 0;
         AdapterDescription = "uninitialized";
     }
