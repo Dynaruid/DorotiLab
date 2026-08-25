@@ -731,8 +731,16 @@ public sealed class DorotiView : IDisposable
         _dispatcher.frameTrace.Record(DorotiFramePhase.scheduleFrame, viewId, DorotiFrameClock.Now,
             reason: invocation.ElementId);
         var requestedEpoch = CaptureViewEpoch();
-        frameHost.ScheduleFrame(timestamp =>
-            _dispatcher.DispatchFrame(this, timestamp, requestedEpoch));
+        Action<TimeSpan> dispatch = timestamp =>
+            _dispatcher.DispatchFrame(this, timestamp, requestedEpoch);
+        if (frameHost is IExactFrameHostCapability exactFrameHost)
+        {
+            exactFrameHost.ScheduleFrame(requestedEpoch, dispatch);
+        }
+        else
+        {
+            frameHost.ScheduleFrame(dispatch);
+        }
     }
 
     /// <summary>

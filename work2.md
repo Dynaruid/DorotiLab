@@ -3,6 +3,7 @@
 ## 0. 문서 목적과 최종 결정
 
 - 전면 개편일: 2026-08-24
+- 구현 우선 방식 전환일: 2026-08-25
 - 대상: Doroti Windows 제품 호스트, interactive resize, GPU surface, 입력·IME·접근성·lifecycle·배포
 - Flutter 기준 source: repository의 `reference/flutter-master` commit `56b8e1a851a594b1a154f8ea93270807dab22b9a`
 - 목표 제품 호스트: `Doroti.Host.WindowsAppSdk`
@@ -10,7 +11,7 @@
 - 목표 창 구조: **표준 Win32 top-level HWND + client 전체를 채우는 child render HWND**
 - 목표 그래픽 기준선: **ANGLE/EGL window surface + Skia GPU**, exact client physical size
 - Windows App SDK 기준선: **exact `2.4.0`, self-contained unpackaged, raw HWND + AppWindow + DispatcherQueue**
-- 문서 성격: ordered 구현 계획. 이번 개편은 계획만 바꾸며 구현·build·runtime acceptance를 의미하지 않는다.
+- 문서 성격: **구현 우선, 후속 통합 검증·안정화 계획**. 계획의 변경이나 구현 완료는 build/runtime/visible acceptance를 자동으로 의미하지 않는다.
 
 기존 `Doroti.Host.WindowsAppSdk`의 `fixed work-area envelope + custom non-client + Arm N dual-front` 구현을 **Windows App SDK 기반 Flutter Windows embedder 방식**으로 전환한다. Windows App SDK 제품/target/runner 경계는 유지하되, 그 안의 window tree와 resize/surface lifecycle을 Flutter 방식으로 교체한다.
 
@@ -42,18 +43,18 @@
 | 단계 | 상태 | 현재 의미 |
 |---|---|---|
 | F0-A Flutter source protocol audit | **PASS** | pinned source에서 parent/child HWND, `WM_SIZE`, metrics, raster-thread surface resize, presented ACK, first-frame show 계약을 확인했다. 문서·source audit PASS이며 제품 구현 PASS는 아니다. |
-| F0-V source pin/anchor validator | diagnosticOnly | 현재 untracked validator/contract가 source-only PASS(`10 files/12 anchors/4 mappings`)했다. repository 채택과 clean-checkout 재실행 전에는 정식 PASS가 아니다. |
-| F1 Windows App SDK/ANGLE bootstrap preflight | notStarted | 기존 host에서 exact 2.4 AppWindow/DispatcherQueue와 ANGLE native dependency 경계를 아직 결합하지 않았다. |
-| F2 표준 top-level + child view | notStarted | Flutter식 window tree를 아직 구현하지 않았다. |
-| F3 metrics/display contract | notStarted | child client physical pixels 기반 metrics를 아직 연결하지 않았다. |
-| F4 raster-thread EGL surface lifecycle | notStarted | exact-size EGL window surface create/destroy/recreate/swap을 아직 구현하지 않았다. |
-| F5 bounded resize handshake | notStarted | `ResizeStarted → FrameGenerated → Done` 동기화를 아직 구현하지 않았다. |
-| F6 scheduler/vsync/present integration | notStarted | ordinary frame과 resize frame의 통합 cadence를 아직 구현하지 않았다. |
-| F7 input/IME/accessibility | notStarted | child HWND 중심의 전체 native contract를 아직 구현하지 않았다. |
-| F8 DPI/display/lifecycle/recovery | notStarted | mixed-DPI, monitor, fullscreen, device/context loss를 아직 구현하지 않았다. |
-| F9 target/runner/package integration | notStarted | 기존 WindowsAppSdk target/runner/package에 Flutter-style adapter와 native artifact graph를 아직 통합하지 않았다. |
-| FG Windows 제품 acceptance | notVerified | 새 제품 binary와 visible/input/text/UIA/lifecycle/deployment matrix가 존재하지 않는다. |
-| F10 default adapter cutover | notStarted | FG PASS 뒤 기존 WindowsAppSdk host의 기본 adapter를 Flutter-style로 전환하는 단계다. |
+| F0-V source pin/anchor validator | **PASS** | validator/contract는 `fd405070`에서 tracked로 채택됐고, clean current worktree의 20분 제한 source-only run이 PASS(`10 files/12 anchors/4 mappings`)했다. FCR-0와 CI fail-fast wiring도 추가했다. |
+| F1 Windows App SDK/ANGLE bootstrap preflight | **PASS** | exact Windows App SDK 2.4 self-contained bootstrap, same-STA platform/100-cycle raster preflight를 확인했다. |
+| F2 표준 top-level + child view | **PASS** | raw top-level 하나와 child view 하나의 same-STA 100-cycle structural gate를 확인했다. |
+| F3 metrics/display contract | **PASS** | child-client physical authority, immutable metrics/frame generation, 4-DPI matrix를 확인했다. |
+| F4 raster-thread EGL surface lifecycle | **PASS** | child HWND EGL surface의 dedicated-raster 1,000 recreate/1,001 swap과 context-loss recovery를 확인했다. |
+| F5 bounded resize handshake | **PASS** | bounded engine-only poll, exact generation/extent ledger, exactly-once terminal, and post-unblock raster `DwmFlush` contract을 self-contained live gate로 확인했다. |
+| F6 scheduler/vsync/present integration | **PASS** | per-view bounded scheduler, native DWM timing, causal callback-to-present chain, and ordinary-frame resume contract을 self-contained live gate로 확인했다. |
+| F7 input/IME/accessibility | **PASS** | actual child HWND automated input/IMM32/UIA gate, 수동-gate fail-safe, keyboard control-character regressions가 PASS했다. 2026-08-25 사용자가 pointer/capture/cursor, focus/popup, Korean IME/clipboard, Narrator, Accessibility Insights, resize/DPI bounds 전 항목을 직접 확인해 PASS로 수용했다. |
+| F8 DPI/display/lifecycle/recovery | **구현 inProgress / 검증 deferred** | top-level lifecycle manager, DPI suggested rect, fullscreen/restore, display·power·session/shutdown recovery와 자동 fixture를 구현했다. 물리 mixed-DPI/monitor/sleep/RDP 및 visible recovery 검증은 후속 백로그다. |
+| F9 target/runner/package integration | **구현 notStarted / 검증 deferred** | 기존 WindowsAppSdk target/runner/package에 Flutter-style adapter와 native artifact graph를 아직 통합하지 않았다. |
+| F10 default adapter cutover | **구현 notStarted / 검증 deferred** | F9 통합 뒤 rollback 선택을 보존한 채 기본 adapter와 build/template graph를 구현한다. 실제 release 확정과 기존 host 삭제는 후속 FG 뒤다. |
+| FG Windows 제품 acceptance | **deferred / notVerified** | F8~F10 구현이 연결된 제품 binary를 대상으로 마지막에 visible/input/text/UIA/lifecycle/deployment matrix를 실행한다. |
 
 기존 증거는 다음처럼 재분류한다.
 
@@ -63,6 +64,17 @@
 - 기존 observer는 diagnostic으로 재사용할 수 있지만, 불안정한 observer 한 종류를 F1~F8 구현 시작의 hard stop으로 두지 않는다.
 - FG visible PASS에는 qualified output evidence와 사용자의 실제 mouse drag 확인이 모두 필요하다.
 - Flutter runtime capture/A-B instrumentation은 범위 밖이다. pinned Flutter source를 protocol reference로만 사용한다.
+
+### 1.1 구현 우선 실행 원칙
+
+앞으로 남은 작업은 **F8 구현 마무리 → F9 제품 통합 → F10 기본 경로 wiring → 통합 build/smoke → FG/회귀 안정화** 순서로 진행한다.
+
+- 단계별 `PASS 조건`은 다음 구현 단계의 시작을 막는 hard gate가 아니라 **후속 검증 백로그**다.
+- 선행 단계의 API·ownership·artifact가 다음 단계 구현에 필요할 만큼 존재하면 다음 구현을 시작한다.
+- 자동·수동·물리 검증은 구현 흐름을 매번 끊지 않고, F8~F10 end-to-end 경로가 연결된 뒤 묶어서 실행한다.
+- 구현 중 발견한 compile error, 명백한 crash, 데이터 손상, ABI 불일치, 무한 대기, rollback 불능은 즉시 고친다. 그 밖의 동작 문제는 재현 조건과 영향 범위를 백로그에 기록하고 구현을 계속한 뒤 안정화 단계에서 수정한다.
+- 미실행 검증은 `deferred` 또는 `notVerified`로 남긴다. 넘긴 검증을 `PASS`로 간주하거나 기존 fixture PASS를 제품 visible PASS로 승격하지 않는다.
+- F10 wiring은 rollback adapter를 유지한 채 구현할 수 있지만, release 확정·rollback 삭제·구형 host cleanup은 FG와 사용자 제품 수용 뒤에만 한다.
 
 ## 2. pinned Flutter Windows source에서 채택하는 계약
 
@@ -291,13 +303,13 @@ full-client transparent island, hidden XAML input control, custom caption UIA를
 - auxiliary `DesktopChildSiteBridge`가 primary present timing을 변경하는 것 금지
 - floating/pre-release ANGLE, SkiaSharp, Windows native dependency 금지
 
-## 5. ordered 구현 계획
+## 5. 구현 우선 작업 계획
 
-각 단계는 앞 단계 PASS 뒤에만 시작한다. 실패하면 해당 단계에서 중단하고 원인과 exact resume point를 이 문서에 기록한다.
+F0~F7의 확보된 PASS evidence는 그대로 보존한다. 남은 F8~F10은 단계별 검증 완료를 기다리지 않고 interface와 artifact 의존성 순서로 구현한다. 각 단계의 `PASS 조건`은 삭제하지 않고 후속 안정화 체크리스트로 사용하며, 구현 중 발견한 문제는 즉시 수정이 필요한 치명 항목이 아니면 재현 조건과 exact resume point를 기록한 뒤 다음 구현을 계속한다.
 
 ### F0 — Flutter source protocol lock
 
-상태: **F0-A PASS — manual source audit / F0-V diagnosticOnly — current untracked worktree PASS**
+상태: **F0-A PASS — manual source audit / F0-V PASS — tracked contract, clean-checkout source-only run, FCR-0/CI fail-fast wiring**
 
 작업:
 
@@ -315,28 +327,37 @@ F0-A 완료 내용:
 
 F0-V 현재 evidence:
 
-1. `Doroti/eng/validate-flutter-windows-host-protocol.ps1`과 `Doroti/validation/contracts/flutter-windows-host-protocol.json`이 현재 untracked 상태로 존재한다.
-2. 20분 timeout을 둔 현재 worktree 실행이 PASS했다.
+1. `Doroti/eng/validate-flutter-windows-host-protocol.ps1`과 `Doroti/validation/contracts/flutter-windows-host-protocol.json`은 `fd405070`에서 tracked로 채택됐다.
+2. root와 `reference/flutter-master`의 tracked worktree가 clean인 상태에서, 20분 timeout을 둔 현재 checkout 실행이 PASS했다.
 3. Flutter commit `56b8e1a851a594b1a154f8ea93270807dab22b9a`, source fingerprint `b79424311e4d2675283c3a676343a63fcc82a20b0711c14b0eebbde47ed37ecf`, files/anchors/mappings `10/12/4`를 확인했다.
-4. scope는 source-only reference이며 Doroti build/runtime/visible acceptance가 아니다.
+4. `validate.ps1` FCR-0 entry point와 `.github/workflows/flutter-windows-host-protocol.yml`은 validator를 실행하도록 연결했다. workflow는 contract에서 exact Flutter revision을 읽고, fresh checkout에서 20분 job timeout을 사용한다.
+5. scope는 source-only reference이며 Doroti build/runtime/visible acceptance가 아니다.
 
-F0-V 남은 작업:
+F0-V 유지 작업:
 
-1. 기존 untracked validator/contract를 검토해 scoped implementation 변경으로 채택한다.
-2. clean checkout에서 같은 command와 fingerprint를 재실행한다.
-3. source가 바뀌면 protocol diff 없이 자동 승격하지 않는 fail-fast contract를 CI에 연결한다.
+1. 이후 source 변경마다 FCR-0 및 `flutter-windows-host-protocol` workflow가 protocol diff 없는 자동 승격을 fail-fast로 거부하게 유지한다.
+2. 다음 CI run에서는 clean checkout의 command/fingerprint가 현재 source-only run과 일치하는지 evidence로 남긴다. 이는 F0 source-only PASS를 제품/runtime/visible acceptance로 승격하지 않는다.
 
 PASS 조건:
 
 - pin/hash와 symbol anchor validator PASS
 - 이 문서의 window/resize/surface 순서가 pinned source와 일치함
+- tracked F0 wiring이 source drift를 fail-fast로 검증함
 - Flutter runtime 계측 없이 source-only reference 경계가 명확함
 
 ### F1 — Windows App SDK/ANGLE bootstrap preflight
 
-상태: notStarted
+상태: **PASS — static contract v2, self-contained fixture/product publish, and live 100-cycle platform/raster preflight**
 
 선행 조건: F0-V PASS
+
+현재 evidence:
+
+1. `FlutterWindowsAppSdkBootstrap`은 legacy Arm N/ContentIsland 경로와 분리되어 STA, PMv2 DPI, COM/OLE/WinRT, 하나의 `DispatcherQueueController`, raw HWND `WindowId`/`AppWindow` association을 같은 platform thread에서 소유한다.
+2. `FlutterWindowsAngleEglContext`는 `Avalonia.Angle.Windows.Natives` `2.1.27548.20260419`의 `av_libglesv2.dll`과 `SkiaSharp.NativeAssets.Win32` `4.151.1`의 `libSkiaSharp.dll`을 app-directory absolute path/hash로 검증·load하고, pbuffer-only ANGLE/EGL/Skia smoke와 checked teardown을 수행한다.
+3. `Doroti/eng/validate-windowsappsdk-flutter-bootstrap.ps1` static contract v2 및 `validate-windowsappsdk-flutter-bootstrap-live.ps1`가 현재 source fingerprint `60eedfc4add90840104a038b0a5b6169a9d23139cbb819da776e7aae9adac5f7`에 결속된 evidence, fresh restore/publish, fixture와 product runner의 self-contained unpackaged x64 publish, DLL hash/path, package contract `Microsoft.WindowsAppSDK` `2.4.0`을 검증했다.
+4. live run은 same-STA thread에서 raw HWND/`WindowId`/`AppWindow`/DispatcherQueue setup-shutdown 100회와 MTA raster thread에서 ANGLE/EGL/Skia pbuffer create/destroy 100회를 PASS했다. teardown failure, MAUI/XAML loaded startup assembly, PATH fallback은 모두 0/false였다.
+5. observed hardware run은 `ANGLE (AMD Radeon 780M Graphics, Direct3D11)`이고 `softwareFallback=false`였다. 이는 F1 ABI/deployment evidence일 뿐 F2 이후 window-surface resize나 visible product acceptance가 아니다.
 
 작업:
 
@@ -369,9 +390,17 @@ PASS 조건:
 
 ### F2 — 표준 top-level HWND + child view HWND
 
-상태: notStarted
+상태: **PASS — static contract and restricted-PATH self-contained same-STA 100-cycle structural gate**
 
 선행 조건: F1 PASS
+
+현재 evidence:
+
+1. `FlutterWindowsHostWindow`은 legacy Arm N/ContentIsland와 분리되어 hidden `WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN` top-level 하나와 `WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS` child view 하나만 소유한다. raw HWND `WindowId`/`AppWindow`/DispatcherQueue association은 F1 bootstrap으로 1:1 유지한다.
+2. top-level `WM_SIZE`는 `GetClientRect` 뒤 child를 `MoveWindow`하고, `WM_GETMINMAXINFO`는 현재 top-level DPI에서 physical client constraint를 `AdjustWindowRectExForDpi`로 outer track size로 변환한다. custom non-client, `WS_POPUP`, full-client island, Arm N presenter는 새 경로에서 사용하지 않는다.
+3. source fingerprint `5cd998e62126450da2043f290dc466730ac1b0968d0cda6b073a516a667f44ca`에 결속된 F2 static/live contract는 self-contained unpackaged x64 fixture publish, selected Windows App SDK `2.4.0`/ANGLE/Skia artifact hash, 제한 PATH launch를 재검증했다.
+4. live gate는 dedicated same-STA thread에서 warmup 뒤 startup/shutdown 100회(실패 0)를 PASS했다: top-level 1, child 1, association 1, resize 뒤 client-child mismatch 0/layout 6, exact min/max `338×287`~`978×767`, first callback 전 hidden/후 정확히 한 번 show, ordered teardown, GDI `2→2`, USER `5→5`, MAUI/XAML startup assembly 0이다.
+5. 이 gate의 `NotifyFirstFrameSwapped`는 first-show state ordering만 검증하는 synthetic completion이다. 실제 child HWND EGL window-surface create/swap, blank/white-frame 0, compositor-visible acceptance는 F4/FG까지 **notVerified**로 유지한다.
 
 작업:
 
@@ -395,9 +424,17 @@ PASS 조건:
 
 ### F3 — physical metrics와 display contract
 
-상태: notStarted
+상태: **PASS — child-client physical authority, immutable metrics/frame generation, and self-contained 4-DPI 100-cycle matrix**
 
 선행 조건: F2 PASS
+
+현재 evidence:
+
+1. `WindowsViewMetrics`/`FlutterWindowsViewMetricsCoordinator`는 child HWND `GetClientRect`만 physical width/height authority로 읽고, 같은 immutable snapshot에 view ID, `resizeGeneration`, DPR, monitor display ID, physical min/max constraints와 suspended state를 보관한다. logical→physical rounding은 `WindowsViewMetrics.LogicalToPhysical` 한 지점으로만 제한한다.
+2. F2 host는 child `WM_SIZE` 뒤 `ChildClientRectChanged`를, `WM_DPICHANGED`/`WM_DISPLAYCHANGE` 뒤 `ChildDpiOrDisplayChanged`를 발행한다. coordinator는 매 callback에서 child DPI와 monitor identity를 다시 읽고, identical observation은 generation/surface recreate 없이 유지하며 `0×0`는 surface request 없는 suspended publication으로 닫는다.
+3. framework mapping은 `ViewMetrics`, `DorotiViewEpoch`, `DorotiResizeEpoch`, `DorotiFrameDescriptor`를 동일 snapshot에서 만들고 current view/generation/physical extent와 정확히 일치하지 않는 stale 또는 mismatched frame을 admission 전에 거부한다.
+4. source fingerprint `ca200b4ba7fa260d9ac366637b06be60a08275782d423b786e63839244ab4f3c`의 restricted-PATH self-contained live gate는 same-STA lifecycle 100회(실패 0), 100/125/150/200% 각 100회(총 400 PASS)를 기록했다. 각 row에서 actual child client = metrics = frame physical pixels 및 generation equality이고 stale/mismatch/repeated-size/zero-size recreate admission은 모두 0, suspension/restore는 각 100회다.
+5. F3는 actual child DPI/display observation과 deterministic contract matrix를 증명하지만 EGL child-window surface create/recreate/swap, present, compositor/visible acceptance는 F4/FG까지 **notVerified**다.
 
 작업:
 
@@ -418,9 +455,17 @@ PASS 조건:
 
 ### F4 — raster-thread EGL window surface lifecycle
 
-상태: notStarted
+상태: **PASS — dedicated raster-thread child-HWND EGL surface, 1,000 recreate / 1,001 real swap, and context-loss recovery**
 
 선행 조건: F3 PASS
+
+현재 evidence:
+
+1. `FlutterWindowsAngleEglSharedContext`는 F1이 absolute path/hash로 load한 ANGLE/Skia artifact 위에서 raster-thread-only EGL display/context/parking pbuffer/Skia cache를 소유한다. `FlutterWindowsAngleEglWindowSurface`만 child HWND `EGL_CreateWindowSurface`와 default-framebuffer `GRBackendRenderTarget`/`SKSurface` lifetime을 소유하므로 normal resize는 shared context/cache를 폐기하지 않는다.
+2. `UpdateForMetrics`는 F3 `WindowsViewMetrics`의 drawable physical extent와 실제 child `GetClientRect`, `eglQuerySurface` extent가 모두 정확히 일치할 때만 window surface를 만들거나 교체한다. `0×0` publication은 surface create 없이 destroy/suspend로 처리하고, `eglMakeCurrent`/`eglSwapInterval(1)` 상태를 recreate마다 복원한다.
+3. raster thread는 Skia clear/flush/submit 뒤 실제 `eglSwapBuffers` 성공을 terminal result로 돌려주며, first successful swap 후에만 platform thread가 F2 show gate를 연다. fixed-size ANGLE, `SetSourceSize`, `ResizeBuffers`, dual front, Arm N/ContentIsland 경로는 contract로 금지했다.
+4. source fingerprint `637349ef9c27e01b3f105d5deeb0c086d2ecfacbbac4d1c548f73ff5325a395e`의 restricted-PATH self-contained live gate는 dedicated MTA raster thread에서 child window surface recreate 1,000회, create/destroy `1002/1002`, recreate `1001`, 실제 swap attempt/success `1001/1001`, exact mismatch/zero-size create/terminal failure/thread-affinity violation 모두 0을 기록했다.
+5. deterministic context/device-loss injection은 1회 detect/recover 뒤 valid real swap을 PASS했고 per-window EGL/Skia leak, GDI/USER growth는 0/bounded였다. observed ANGLE AMD hardware renderer는 기록했지만 visible/hardware-visible PASS claim은 모두 false이며 F5/FG까지 **notVerified**다.
 
 작업:
 
@@ -442,9 +487,16 @@ PASS 조건:
 
 ### F5 — Flutter-style bounded resize handshake
 
-상태: notStarted
+상태: **PASS — static contract and restricted-PATH self-contained same-STA/dedicated-MTA live transaction gate**
 
 선행 조건: F4 PASS
+
+현재 evidence:
+
+1. `FlutterWindowsResizeHandshake`은 `ResizeStarted → FrameGenerated → SurfaceReady → Presented → Done`의 immutable generation/extent ledger를 소유한다. platform thread는 최대 100ms 동안 engine task runner만 polling하며 arbitrary nested Win32 dispatch를 열지 않는다. timeout/failed/superseded/suspended는 각각 exactly-once terminal로 닫히고 timeout은 실제 child rect 재관측 뒤 latest redraw를 요청한다.
+2. `FlutterWindowsResizeRasterPresenter`는 F4 raster owner에서만 exact frame을 surface recreate/swap에 넘긴다. successful swap이 `Done`을 게시한 뒤 platform poll이 unblock되고, 같은 raster thread의 `DwmFlush`가 ordering point로 실행된다.
+3. source fingerprint `5bc89c5739147494fc80bbf7a053c410f32cbe4ffdfe54672d4f079330865715`에 결속된 restricted-PATH self-contained live gate는 여덟 edge/corner 각각 3회, 총 24 exact present를 PASS했다. normal timeout, exact mismatch, terminal missing/duplicate, nested dispatch, Done 전 `DwmFlush`는 모두 0이고 post-unblock `DwmFlush`는 24회였다.
+4. deterministic timeout fault는 child rect 재관측/latest redraw를 기록하고 UI deadlock/infinite wait 없이 `TimedOut` terminal 1회로 닫혔다. `TimedOut`/`Failed`/`Superseded`/`Suspended` matrix도 각각 정확히 1회 terminal을 확인했고 EGL/Skia leak 0, GDI/USER bounded를 기록했다. AMD hardware ANGLE renderer는 관측했지만 visible/hardware-visible PASS claim은 false이며 F6~FG는 **notVerified**다.
 
 작업:
 
@@ -473,9 +525,17 @@ PASS 조건:
 
 ### F6 — scheduler, vsync, ordinary frame 통합
 
-상태: notStarted
+상태: **PASS — native DWM timing, dedicated raster causal chain, and deterministic 60/120/144/165Hz scheduler matrix**
 
 선행 조건: F5 PASS
+
+현재 evidence:
+
+1. `FlutterWindowsFrameScheduler`은 view별 single pending slot을 소유한다. pending/in-flight resize는 ordinary frame을 evict/reject하고, stale epoch/extent는 raster admission과 present 전에 거부한다. hidden/minimized/suspended 동안 scheduling을 멈추고 restore 때 현재 F3 metrics로 framework frame을 다시 요청한다.
+2. `FlutterWindowsDwmVsyncSource`는 bound child HWND를 provenance로 보존하되 Windows 8.1+ 규칙에 맞춰 `DwmGetCompositionTimingInfo(NULL, ...)` desktop-composition timing을 사용한다. native `DWM_TIMING_INFO`의 pack/size와 HRESULT를 검증하고 F4의 raster-thread `eglSwapInterval(1)` policy를 변경하지 않는다.
+3. `FlutterWindowsScheduledRaster`는 platform callback에서 dedicated MTA raster owner로만 post한다. callback/raster/F4 swap/Skia receipt에는 causal ID와 monotonic timestamp가 연결되어, real swap과 receipt가 모두 exact metrics를 유지할 때만 presented로 센다.
+4. source fingerprint `c54e8e07973726206345198bf771636b35f230a98c5758c5ab25d710f5eca600`의 restricted-PATH self-contained live gate는 native DWM timing 26회, fallback 0, NULL timing call/HRESULT 0을 기록했다. 두 independent view에서 callback=raster=swap=presented 26회, queue max 1, starvation/stale/causal gap/EGL·Skia leak 0을 PASS했다.
+5. deterministic 60/120/144/165Hz matrix는 각 row의 target cadence, ordinary resume, bounded queue, stale/wrong-size present 0을 PASS했다. 이는 scheduler timing contract이며 physical scan-out cadence, blank/white frame absence, compositor-visible acceptance는 FG까지 **notVerified**다.
 
 작업:
 
@@ -496,9 +556,20 @@ PASS 조건:
 
 ### F7 — input, focus, IME, clipboard, accessibility
 
-상태: notStarted
+상태: **PASS — automated raw-child-HWND contract + user physical/manual acceptance**
 
 선행 조건: F6 PASS
+
+현재 automated evidence:
+
+1. `FlutterWindowsHostWindow`의 typed child-message hook 뒤에 child-only router, `FlutterWindowsInputHost`, single `FlutterWindowsKeyboardManager`, IMM32 text owner, child-only `FlutterWindowsUiaBridge`를 연결했다. top-level WndProc/non-client cursor/accessibility는 intercept하지 않는다.
+2. keyboard manager는 modifier/dead key/UTF-16 surrogate pair를 한 stream으로 직렬화하고 system key/char는 DefWindowProc으로 넘긴다. 기존 자동 gate가 놓친 `Ctrl+A/C/V/X` C0 `WM_CHAR`, handled Enter 뒤 `\r`, Backspace 제어문자 literal commit을 억제하고 각각 독립 counter/regression으로 고정했다. IMM32는 child client/screen pixel caret 및 candidate rect를 F3 metrics에서 계산하며 `ImmNotifyIME` exact export를 사용한다.
+3. UIA bridge는 `WM_GETOBJECT`의 child root만 반환하고 immutable semantics snapshot의 Invoke/Value/Scroll action을 `IFlutterWindowsEngineTaskRunner`로 enqueue한다. child당 root provider는 하나이며 stale fragment는 disconnect한다. semantics scroll position/extents도 framework contract에서 보존한다.
+4. `Doroti/eng/validate-windowsappsdk-flutter-input.ps1`와 `validate-windowsappsdk-flutter-input-live.ps1`의 static/self-contained restricted-PATH gate가 source fingerprint `274297c68673341c5489effe6f53faee990f872a1075b92b4c8322963e11c742`에서 PASS했다. fresh fixture build는 warning/error 0이었다.
+5. latest live evidence `Doroti/artifacts/windowsappsdk-flutter-input/f7-live-20260825-024636-99c63e210a864335bc62ad9551384477/f7-live-evidence.json`는 actual child HWND/typed WndProc/UIA `WM_GETOBJECT`, outside-up/cancel/capture, child focus/cursor, IMM32 candidate/caret, UIA root/fragments/actions, engine action `Invoke/Value/Scroll`, GDI/USER boundedness을 재확인했다. 새 keyboard regressions는 shortcut/action/non-text control suppression을 각각 `1/1/1`, editing-state 오염 0으로 PASS했다.
+6. visible `Doroti/eng/validate-windowsappsdk-flutter-input-manual.ps1`를 추가했다. 실제 observer가 여섯 항목을 본 뒤 F1~F6으로 개별 확인하고 F8로 명시 완료한 경우에만 current source fingerprint에 결속된 manual PASS를 기록하며, Esc/close/timeout/incomplete는 `notVerified`로 실패한다. selection/copy/cut/paste용 최소 framework-side editor와 right-click popup도 포함한다.
+7. 2026-08-25 incomplete manual run `Doroti/artifacts/windowsappsdk-flutter-input-manual/f7-manual-20260825-024653-641938da97ec4e359f2dea569bfa7f99/f7-manual-evidence.json`은 F-key/F8 completion을 기록하지 못했다. 사용자는 이후 같은 기능을 직접 확인하고 “전부 통과”로 수용했으며, 별도 user-attestation `Doroti/artifacts/windowsappsdk-flutter-input-manual/f7-user-attestation-20260825-024902.json`에 여섯 physical 항목 PASS와 source fingerprint를 기록했다. incomplete fixture telemetry 자체는 수정하지 않고 두 provenance를 분리 보존한다.
+8. fixture는 auxiliary island를 만들지 않았으며 primary metrics/surface/present cadence를 변경하지 않았다. auxiliary island와 visible FG는 계속 `notVerified`이고 F7 PASS 범위에 포함하지 않는다.
 
 작업:
 
@@ -524,9 +595,17 @@ PASS 조건:
 
 ### F8 — DPI, monitor, fullscreen, lifecycle, recovery
 
-상태: notStarted
+상태: **구현 inProgress / 자동 fixture PASS / 물리·제품 검증 deferred**
 
-선행 조건: F7 PASS
+구현 의존성: F7 child HWND/input owner가 존재함. F7의 추가 검증 실행 여부는 F8 구현을 막지 않는다.
+
+현재 구현:
+
+1. `FlutterWindowsHostWindow`가 top-level message를 typed event로 전달하고 `WM_DPICHANGED` suggested rect를 실제 top-level HWND에 적용한다.
+2. `FlutterWindowsLifecycleManager`가 DPI/display/fullscreen/restore, minimize, power/session suspend-resume, shutdown terminalization과 graphics recovery callback을 소유한다.
+3. deterministic lifecycle fixture와 static/live validator를 추가했고 source fingerprint `9b6bd3f4bac3ac93a74d4acffca5b8b363d1024d86aab3b9014d0a162566e913`에서 자동 run이 PASS했다.
+4. latest evidence는 `Doroti/artifacts/windowsappsdk-flutter-lifecycle/f8-live-20260825-025518-6f5f0fcde0ec4084b4fea339b2c1e7c5/f8-live-evidence.json`이다.
+5. mixed-DPI cross-monitor, 실제 monitor disconnect/rearrange, sleep/resume, RDP attach/detach, visible black/white stuck recovery는 실행을 미루고 후속 검증 백로그로 보존한다.
 
 작업:
 
@@ -535,11 +614,11 @@ PASS 조건:
 3. initial/restore placement만 current monitor `rcWork`에 맞춘다.
 4. fullscreen은 `rcMonitor`와 standard style 전환으로 구현하고 원래 rect/DPI/monitor/work-area를 보존한다.
 5. monitor disconnect/rearrange 뒤 restore rect를 새 `rcWork`에 맞춘다.
-6. sleep/resume, RDP attach/detach, display change, device/context loss를 검증한다.
-7. Windows App SDK runtime update/absence와 DispatcherQueue shutdown을 lifecycle matrix에 포함한다.
+6. sleep/resume, RDP attach/detach, display change, device/context loss 신호를 recovery path에 연결한다. 실제 물리 전환 검증은 후속 백로그로 둔다.
+7. Windows App SDK runtime update/absence와 DispatcherQueue shutdown의 오류·복구 경로를 구현한다. 전체 lifecycle matrix 실행은 후속 백로그로 둔다.
 8. shutdown 중 pending resize/frame/surface/island callback을 모두 terminal 처리한다.
 
-PASS 조건:
+후속 검증 항목(현재 구현을 막지 않음):
 
 - mixed-DPI monitor 이동 중 logical/physical/display identity 불일치 0
 - maximize/Snap/fullscreen/restore 뒤 stale surface/input 0
@@ -550,20 +629,20 @@ PASS 조건:
 
 ### F9 — Windows target/runner/package integration
 
-상태: notStarted
+상태: **구현 notStarted / 검증 deferred**
 
-선행 조건: F8 PASS
+구현 의존성: F8 lifecycle API와 Flutter-style host artifact가 build 가능한 상태. F8 물리 검증 완료는 선행 조건이 아니다.
 
 작업:
 
 1. 기존 `Doroti.Target.Windows.WindowsAppSdk.win-x64` manifest/description에 Flutter-style adapter capability를 추가한다.
 2. 기존 `DorotiDemoApp/windowsappsdk`에 `FlutterEmbedder`와 `ArmNLegacy` startup 선택을 추가하고 qualification 기본은 명시적 flag로만 선택한다.
-3. clean CI restore/build/test/publish/launch를 추가한다.
+3. clean CI restore/build/test/publish/launch entrypoint와 job wiring을 추가하되 실제 전체 matrix 실행은 통합 안정화 단계로 미룬다.
 4. Windows App SDK package/runtime와 ANGLE/EGL/GLES/Skia native artifact provenance/architecture check를 package에 포함한다.
 5. runtime flag로 `FlutterEmbedder`, `ArmNLegacy`, MAUI rollback을 선택 가능하게 한다.
 6. 이 단계에서는 기존 WindowsAppSdk host의 production default adapter와 app template 기본값을 바꾸지 않는다.
 
-PASS 조건:
+후속 검증 항목(현재 구현을 막지 않음):
 
 - clean checkout x64 restore/build/test/publish/launch PASS
 - selected Windows App Runtime과 PATH 외 native DLL이 정확히 고정된 self-contained unpackaged launch PASS
@@ -571,11 +650,35 @@ PASS 조건:
 - non-Windows target 회귀 0
 - `ArmNLegacy`와 MAUI rollback launch 절차 PASS
 
-## 6. FG — Flutter-style Windows 제품 acceptance
+## 6. F10 구현과 FG 통합 안정화
 
-상태: notVerified
+### F10 — WindowsAppSdk 기본 adapter 전환
 
-선행 조건: F9 PASS
+상태: **구현 notStarted / 검증 deferred**
+
+구현 의존성: F9 target/runner/package graph가 연결되고 `ArmNLegacy`/MAUI rollback 선택이 동작 가능한 구조. FG 완료 전에도 기본 선택 wiring을 구현할 수 있다.
+
+작업:
+
+1. `Doroti.Host.WindowsAppSdk`의 production default를 `FlutterEmbedder` adapter로 전환한다.
+2. `DorotiDemoApp/windows`, app template, `doroti.ps1 build --platform windows`, target discovery, runner SDK의 기본 graph가 WindowsAppSdk/FlutterEmbedder를 선택하게 한다.
+3. release/package 문서와 CI 기본 job을 새 adapter에 맞춘다.
+4. `ArmNLegacy`와 MAUI Windows rollback launch를 최소 한 release 동안 보존한다.
+5. 기존 host 삭제는 FG 전체 PASS, 사용자 제품 수용, 별도 cleanup 승인과 rollback 사용 현황 확인 뒤 수행한다.
+
+후속 검증 항목(구현 뒤 FG와 함께 실행):
+
+- clean checkout 기본 Windows build/publish/launch가 WindowsAppSdk/FlutterEmbedder를 선택
+- template에서 생성한 새 app의 Windows launch PASS
+- explicit rollback host build/launch PASS
+- non-Windows target 회귀 0
+- release artifact provenance가 새 기본 host를 정확히 표시
+
+### FG — Flutter-style Windows 제품 acceptance
+
+상태: **deferred / notVerified**
+
+실행 시점: F8~F10 구현과 제품 binary wiring이 끝난 뒤 통합 안정화 단계에서 실행한다. 개별 미실행 항목은 앞 단계 구현을 막지 않지만 release 확정과 rollback 삭제는 막는다.
 
 테스트 matrix:
 
@@ -604,28 +707,6 @@ PASS 조건:
 - qualified output evidence와 사용자 실제 화면 확인 모두 PASS
 
 한 축이라도 미실행이면 해당 축과 FG 전체는 `notVerified`다. build, contract counter, `eglSwapBuffers` 성공, `DwmFlush` 반환만으로 visible PASS를 선언하지 않는다.
-
-### F10 — WindowsAppSdk 기본 adapter 전환
-
-상태: notStarted
-
-선행 조건: FG 전체 PASS와 사용자 제품 수용
-
-작업:
-
-1. `Doroti.Host.WindowsAppSdk`의 production default를 `FlutterEmbedder` adapter로 전환한다.
-2. `DorotiDemoApp/windows`, app template, `doroti.ps1 build --platform windows`, target discovery, runner SDK의 기본 graph가 WindowsAppSdk/FlutterEmbedder를 선택하게 한다.
-3. release/package 문서와 CI 기본 job을 새 adapter에 맞춘다.
-4. `ArmNLegacy`와 MAUI Windows rollback launch를 최소 한 release 동안 보존한다.
-5. 기존 host 삭제는 별도 cleanup 승인과 rollback 사용 현황 확인 뒤 수행한다.
-
-PASS 조건:
-
-- clean checkout 기본 Windows build/publish/launch가 WindowsAppSdk/FlutterEmbedder를 선택
-- template에서 생성한 새 app의 Windows launch PASS
-- explicit rollback host build/launch PASS
-- non-Windows target 회귀 0
-- release artifact provenance가 새 기본 host를 정확히 표시
 
 ## 7. 자동화와 evidence 규격
 
@@ -661,7 +742,9 @@ resize event JSONL:
 
 app counter, observer/camera, 사용자의 visible 판정은 서로 다른 원본 evidence로 보존한다. 한 종류의 성공을 다른 종류의 PASS로 승격하지 않는다.
 
-## 8. 실패 시 중단·rollback 규칙
+## 8. 후속 문제 대응·rollback 규칙
+
+아래 항목은 다음 구현 단계로 넘어가지 못하게 하는 일반 hard gate가 아니다. 구현 중 치명 오류는 즉시 고치고, 그 밖의 실패는 재현 조건·영향 범위·관련 generation/evidence를 검증 백로그에 남긴 뒤 end-to-end 경로 구현을 계속한다. 안정화 단계에서는 아래 원칙으로 원인을 고치며 단순 timeout 증가나 우회 렌더링으로 숨기지 않는다.
 
 - F1에서 Windows App SDK runtime/AppWindow/DispatcherQueue 또는 ANGLE/Skia ABI·배포가 성립하지 않으면 D3D12/Arm N으로 조용히 대체하지 않는다. 원인과 대안 결정을 기록하고 중단한다.
 - F2에서 standard window 기능이 깨지면 custom non-client를 추가하지 않고 top-level/child ownership을 수정한다.
@@ -671,7 +754,7 @@ app counter, observer/camera, 사용자의 visible 판정은 서로 다른 원�
 - F6 cadence가 부족하면 resize correctness와 cadence를 분리해 원인을 찾되 wrong-size frame을 허용하지 않는다.
 - F7 IME/UIA 때문에 full-client XAML/ContentIsland가 필요해 보이면 F7을 FAIL로 기록하고 bounded `DesktopChildSiteBridge` 최소 spike로 원인을 분리한다.
 - F8 monitor 이동 시 fixed primary work-area로 clamp하지 않는다. 현재 child가 속한 monitor/DPI/display를 다시 관측한다.
-- F10과 별도 cleanup 승인 전에는 Arm N/MAUI rollback을 삭제하지 않는다.
+- FG 전체 PASS, 사용자 제품 수용, 별도 cleanup 승인 전에는 Arm N/MAUI rollback을 삭제하지 않는다.
 - rollback은 startup adapter/host 선택으로 수행하고, 한 process/view 안에서 Arm N D3D12 state와 Flutter-style EGL state를 혼합하지 않는다.
 
 ## 9. 예상 repository 변경 범위
@@ -699,23 +782,21 @@ app counter, observer/camera, 사용자의 visible 판정은 서로 다른 원�
 - `Doroti/src/Doroti.Target.Windows.Maui.win-x64`
 - `Doroti/validation/windows-top-level-presentation`
 
-새 Flutter-style path가 FG 전체 PASS를 얻기 전에는 기존 영역을 삭제하거나 과거 evidence를 새 경로의 성공으로 재해석하지 않는다.
+새 Flutter-style path는 FG 전에도 F10 기본 선택 wiring까지 구현할 수 있다. 다만 FG 전체 PASS 전에는 기존 영역을 삭제·release 확정하거나 과거 evidence를 새 경로의 성공으로 재해석하지 않는다.
 
 ## 10. 정확한 다음 작업
 
-1. F0-V의 기존 untracked source validator/contract를 검토·채택하고 clean checkout에서 재실행해 정식 PASS로 승격한다.
-2. F1 기존 `Doroti.Host.WindowsAppSdk`에 분리된 Flutter-style adapter와 exact 2.4/AppWindow/DispatcherQueue/ANGLE bootstrap을 구현한다.
-3. F2 WindowsAppSdk raw standard top-level + child HWND와 first-frame show gate를 구현한다.
-4. F3 physical metrics/display snapshot을 engine에 연결한다.
-5. F4 child HWND exact-size EGL window surface lifecycle을 raster thread에 구현한다.
-6. F5 100ms bounded resize handshake와 exactly-once terminal ledger를 구현한다.
-7. F2~F5 최소 live gate에서 실제 네 edge/네 corner visible 동작을 확인한다.
-8. 그 gate가 PASS한 뒤에만 F6 scheduler, F7 input/text/UIA, F8 lifecycle, F9 integration으로 진행한다.
-9. FG 전체 PASS와 사용자 제품 수용 뒤에만 F10 WindowsAppSdk 기본 adapter 전환을 수행한다.
+1. F7은 automated evidence와 2026-08-25 user physical acceptance로 PASS했다. incomplete fixture telemetry와 user attestation provenance는 분리 보존한다.
+2. F8의 구현된 lifecycle/recovery 경계를 제품 host에서 사용할 수 있게 정리하고, 남은 물리 검증은 백로그에 둔다.
+3. F8 검증 완료를 기다리지 않고 F9 Windows target/runner/package integration과 product-binary wiring을 구현한다.
+4. F9 graph가 연결되면 rollback 선택을 보존한 채 F10 WindowsAppSdk 기본 adapter/build/template wiring을 구현한다.
+5. F8~F10 end-to-end 구현 뒤 clean build/publish/launch smoke를 먼저 수행하고, 실패가 있으면 원인을 수정한다.
+6. 마지막 안정화 단계에서 미뤄 둔 mixed-DPI/monitor/sleep/RDP, visible resize, input/IME/UIA, recovery/deployment matrix와 전체 회귀를 실행한다.
+7. FG 전체 PASS와 사용자 제품 수용 뒤에만 release 확정과 기존 host cleanup을 수행한다.
 
 현재 상태를 다음처럼 오해하면 안 된다.
 
-- Flutter-style host가 이미 구현됐다: **아님**
+- Flutter-style host의 F1~F7 fixture 경로가 구현됐다: **맞음**. F7 physical acceptance도 사용자 수용으로 기록됐다. F8 core lifecycle은 구현 중이며 F9/F10 제품 통합과 FG는 아직이다.
 - 기존 Arm N을 조금 수정하는 계획이다: **아님** — 같은 WindowsAppSdk host package 안의 별도 child/EGL adapter다.
 - monitor work-area를 render envelope/capacity로 계속 사용한다: **아님**
 - work-area를 전혀 사용하지 않는다: **아님** — initial/restore/popup placement에만 사용한다.
@@ -724,7 +805,7 @@ app counter, observer/camera, 사용자의 visible 판정은 서로 다른 원�
 - full-client ContentIsland가 필수다: **아님** — bounded auxiliary content에만 허용한다.
 - pinned Flutter runtime을 같이 빌드·계측한다: **아님** — source-only protocol reference다.
 - 기존 Arm N/MAUI rollback을 지금 삭제한다: **아님**
-- 이번 문서 개편이 runtime resize 문제 해결을 증명한다: **아님**
+- 이번 문서 개편이나 검증 연기가 runtime resize 문제 해결을 증명한다: **아님**
 
 ## 11. 기준 source
 
@@ -752,4 +833,4 @@ Windows App SDK 공식 reference:
 - `DesktopChildSiteBridge`: <https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.content.desktopchildsitebridge>
 - `ContentIsland`: <https://learn.microsoft.com/en-us/windows/apps/develop/composition/content-island>
 
-이 문서의 단계와 상태가 새 Windows 제품 경로의 active 기준이다. 구현 중 새 evidence가 생기면 해당 단계의 `PASS/FAIL/notVerified`와 exact resume point를 함께 갱신한다.
+이 문서의 단계와 상태가 새 Windows 제품 경로의 active 기준이다. 구현 상태(`notStarted/inProgress/implemented`)와 검증 상태(`deferred/notVerified/PASS/FAIL`)를 분리해 갱신하고, 새 evidence나 후속 문제에는 exact resume point를 함께 기록한다.

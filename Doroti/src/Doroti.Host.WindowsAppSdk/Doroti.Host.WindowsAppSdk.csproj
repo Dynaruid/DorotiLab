@@ -5,7 +5,7 @@
     <AssemblyName>Doroti.Host.WindowsAppSdk</AssemblyName>
     <RootNamespace>Doroti.Host.WindowsAppSdk</RootNamespace>
     <PackageId>Doroti.Host.WindowsAppSdk</PackageId>
-    <Description>Doroti raw Win32 HWND host with an Arm N dual-front D3D12 presenter and Windows App SDK ContentIsland integration.</Description>
+    <Description>Doroti Windows App SDK host with an isolated Flutter-style ANGLE/EGL bootstrap and retained Arm N rollback adapter.</Description>
     <IsDorotiProduct>true</IsDorotiProduct>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
@@ -14,6 +14,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK" VersionOverride="2.4.0" />
     <PackageReference Include="SkiaSharp" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Win32" />
+    <PackageReference Include="Avalonia.Angle.Windows.Natives" />
     <PackageReference Include="SkiaSharp.Direct3D.Vortice" />
     <PackageReference Include="Vortice.Direct3D12" />
     <PackageReference Include="Vortice.DirectComposition" />

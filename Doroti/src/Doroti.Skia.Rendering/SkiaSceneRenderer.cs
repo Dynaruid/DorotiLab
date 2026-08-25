@@ -91,6 +91,13 @@ public sealed class SkiaSceneRenderer :
     private Action<SemanticsActionEvent>? _action;
     public event Action<SemanticsActionEvent>? Action { add => _action += value; remove => _action -= value; }
 
+    /// <summary>
+    /// Observes terminal native paint submissions.  It is intentionally a
+    /// receipt rather than a scheduling callback: the scene descriptor keeps
+    /// the immutable identity captured when the framework built it.
+    /// </summary>
+    public event Action<SkiaFrameReceipt>? FrameReceipt;
+
     public SkiaFrameDiagnostics Diagnostics
     {
         get
@@ -209,25 +216,40 @@ public sealed class SkiaSceneRenderer :
     }
 
     public SkiaPaintCompletion? Paint(SKSurface surface, int pixelWidth, int pixelHeight)
-        => Paint(surface, pixelWidth, pixelHeight, _host.ResizeTarget).Completion;
+        => Paint(surface, pixelWidth, pixelHeight, _host.ResizeTarget, causalFrameId: 0).Completion;
 
     public SkiaPaintResult Paint(
         SKSurface surface,
         int pixelWidth,
         int pixelHeight,
         DorotiResizeEpoch desiredTarget)
+        => Paint(surface, pixelWidth, pixelHeight, desiredTarget, causalFrameId: 0);
+
+    /// <summary>
+    /// Rasters an exact immutable target under a host-generated causal frame
+    /// identifier.  A non-positive identifier is reserved for pre-F6 callers
+    /// that only use the legacy paint overload.
+    /// </summary>
+    public SkiaPaintResult Paint(
+        SKSurface surface,
+        int pixelWidth,
+        int pixelHeight,
+        DorotiResizeEpoch desiredTarget,
+        long causalFrameId)
     {
         ArgumentNullException.ThrowIfNull(surface);
         ArgumentNullException.ThrowIfNull(desiredTarget);
+        if (causalFrameId < 0) throw new ArgumentOutOfRangeException(nameof(causalFrameId));
         ObjectDisposedException.ThrowIf(_disposed, this);
-        lock (_paintGate) return PaintCore(surface, pixelWidth, pixelHeight, desiredTarget);
+        lock (_paintGate) return PaintCore(surface, pixelWidth, pixelHeight, desiredTarget, causalFrameId);
     }
 
     private SkiaPaintResult PaintCore(
         SKSurface surface,
         int pixelWidth,
         int pixelHeight,
-        DorotiResizeEpoch desiredTarget)
+        DorotiResizeEpoch desiredTarget,
+        long causalFrameId)
     {
         SceneFrame? frame;
         bool isNewFrame;
@@ -310,7 +332,7 @@ public sealed class SkiaSceneRenderer :
             }
             var completion = new SkiaPaintCompletion(
                 frame.InputSequence, frame.SceneSequence, surfaceGeneration, isNewFrame,
-                frame.Descriptor);
+                frame.Descriptor, causalFrameId);
             return new(
                 isNewFrame ? SkiaPaintDisposition.exact : SkiaPaintDisposition.replay,
                 completion,
@@ -335,6 +357,7 @@ public sealed class SkiaSceneRenderer :
         if (terminal is not DorotiFrameTerminal.presented and not DorotiFrameTerminal.submitted)
             throw new ArgumentOutOfRangeException(nameof(terminal));
         if (_disposed) return;
+        SkiaFrameReceipt? receipt = null;
         lock (_gate)
         {
             if (completion.IsNewFrame)
@@ -354,6 +377,7 @@ public sealed class SkiaSceneRenderer :
                 if (!MarkTerminal(frame, terminal, "native frame submitted",
                     completion.SurfaceGeneration)) return;
                 _presentedFrame = frame;
+                receipt = CreateFrameReceipt(completion, terminal);
             }
             else
             {
@@ -361,30 +385,38 @@ public sealed class SkiaSceneRenderer :
                 _frameTrace.Record(DorotiFramePhase.replay, _viewId, DorotiFrameClock.Now,
                     completion.InputSequence, completion.SceneSequence, completion.SurfaceGeneration,
                     "fresh native back buffer submitted");
+                receipt = CreateFrameReceipt(completion, terminal);
             }
         }
+        PublishFrameReceipt(receipt);
     }
 
     public void FailPaint(SkiaPaintCompletion completion, string reason)
     {
         if (_disposed) return;
+        SkiaFrameReceipt? receipt = null;
         lock (_gate)
         {
             if (!completion.IsNewFrame ||
                 !_rasterizedFrames.Remove(completion.SceneSequence, out var frame)) return;
-            MarkTerminal(frame, DorotiFrameTerminal.failed, reason, completion.SurfaceGeneration);
+            if (MarkTerminal(frame, DorotiFrameTerminal.failed, reason, completion.SurfaceGeneration))
+                receipt = CreateFrameReceipt(completion, DorotiFrameTerminal.failed);
         }
+        PublishFrameReceipt(receipt);
     }
 
     public void SupersedePaint(SkiaPaintCompletion completion, string reason)
     {
         if (_disposed) return;
+        SkiaFrameReceipt? receipt = null;
         lock (_gate)
         {
             if (!completion.IsNewFrame ||
                 !_rasterizedFrames.Remove(completion.SceneSequence, out var frame)) return;
-            MarkTerminal(frame, DorotiFrameTerminal.superseded, reason, completion.SurfaceGeneration);
+            if (MarkTerminal(frame, DorotiFrameTerminal.superseded, reason, completion.SurfaceGeneration))
+                receipt = CreateFrameReceipt(completion, DorotiFrameTerminal.superseded);
         }
+        PublishFrameReceipt(receipt);
     }
 
     public Paragraph Layout(ParagraphRequest request, DartUiInvocation invocation)
@@ -512,6 +544,23 @@ public sealed class SkiaSceneRenderer :
         DorotiFrameDescriptor Descriptor,
         IReadOnlyList<SceneCommand> Commands,
         DorotiFrameTransaction? FrameTransaction);
+
+    private static SkiaFrameReceipt CreateFrameReceipt(
+        SkiaPaintCompletion completion,
+        DorotiFrameTerminal terminal) => new(
+        completion.CausalFrameId,
+        completion.InputSequence,
+        completion.SceneSequence,
+        completion.SurfaceGeneration,
+        completion.Descriptor,
+        terminal,
+        DorotiFrameClock.Now);
+
+    private void PublishFrameReceipt(SkiaFrameReceipt? receipt)
+    {
+        if (receipt is not { } value) return;
+        FrameReceipt?.Invoke(value);
+    }
 
     private bool MarkTerminal(
         SceneFrame frame,

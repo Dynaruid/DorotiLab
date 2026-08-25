@@ -22,7 +22,26 @@ public readonly record struct SkiaPaintCompletion(
     long SceneSequence,
     long SurfaceGeneration,
     bool IsNewFrame,
-    DorotiFrameDescriptor Descriptor);
+    DorotiFrameDescriptor Descriptor,
+    long CausalFrameId = 0);
+
+/// <summary>
+/// Immutable receipt emitted only after a Skia paint completion has crossed
+/// the native submission boundary.  Hosts can join their callback, raster,
+/// swap, and present timestamps with <see cref="CausalFrameId"/> without
+/// relabelling a scene descriptor.
+/// </summary>
+public readonly record struct SkiaFrameReceipt(
+    long CausalFrameId,
+    long InputSequence,
+    long SceneSequence,
+    long SurfaceGeneration,
+    DorotiFrameDescriptor Descriptor,
+    DorotiFrameTerminal Terminal,
+    TimeSpan Timestamp)
+{
+    public bool HasCausalFrameId => CausalFrameId > 0;
+}
 
 public enum SkiaPaintDisposition
 {

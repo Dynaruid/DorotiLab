@@ -432,7 +432,8 @@ public readonly record struct KeyData(
     long physical,
     long logical,
     bool synthesized,
-    string? character = null)
+    string? character = null,
+    long modifiers = 0)
 {
     public KeyEventDeviceType deviceType => KeyEventDeviceType.keyboard;
 }
@@ -547,6 +548,18 @@ public interface IViewFocusRequestCapability
 public interface IFrameHostCapability
 {
     void ScheduleFrame(Action<TimeSpan> callback);
+}
+
+/// <summary>
+/// Optional exact-epoch extension for a frame host.  A host that implements
+/// this capability receives the immutable viewport identity captured before
+/// framework work is queued and must not dispatch the callback after that
+/// identity has gone stale.  <see cref="IFrameHostCapability"/> remains the
+/// compatibility contract for hosts that do not own an exact native surface.
+/// </summary>
+public interface IExactFrameHostCapability
+{
+    void ScheduleFrame(DorotiViewEpoch expectedEpoch, Action<TimeSpan> callback);
 }
 
 public interface IPlatformEnvironmentHostCapability

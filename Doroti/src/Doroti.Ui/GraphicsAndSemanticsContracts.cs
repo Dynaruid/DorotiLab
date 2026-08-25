@@ -1310,7 +1310,10 @@ public sealed record SemanticsNodeUpdate(
     int? traversalParent = null,
     int? indexInParent = null,
     long textSelectionBase = -1,
-    long textSelectionExtent = -1);
+    long textSelectionExtent = -1,
+    double? scrollPosition = null,
+    double? scrollExtentMax = null,
+    double? scrollExtentMin = null);
 
 public enum SemanticsUpdateUrgency
 {
@@ -1340,6 +1343,13 @@ public enum SemanticsNodeProperty
     children = 1 << 6,
     traversal = 1 << 7,
     selection = 1 << 8,
+    /// <summary>
+    /// The current logical scroll offset and its framework-provided extents.
+    /// This remains distinct from node bounds: native accessibility providers
+    /// use it to expose an accurate Scroll pattern without inventing a second
+    /// scroll authority.
+    /// </summary>
+    scroll = 1 << 9,
 }
 
 public sealed record SemanticsNodeDelta(
@@ -1348,7 +1358,9 @@ public sealed record SemanticsNodeDelta(
     int previousContentHash,
     int contentHash)
 {
-    public bool IsGeometryOnly => changedProperties == SemanticsNodeProperty.bounds;
+    public bool IsGeometryOnly =>
+        (changedProperties & ~(SemanticsNodeProperty.bounds | SemanticsNodeProperty.scroll)) ==
+        SemanticsNodeProperty.none;
 }
 
 public sealed record SemanticsUpdateDelta(
@@ -1421,6 +1433,9 @@ public static class SemanticsUpdateDiffer
         hash.Add(node.indexInParent);
         hash.Add(node.textSelectionBase);
         hash.Add(node.textSelectionExtent);
+        hash.Add(node.scrollPosition);
+        hash.Add(node.scrollExtentMax);
+        hash.Add(node.scrollExtentMin);
         foreach (var child in node.children) hash.Add(child);
         return hash.ToHashCode();
     }
@@ -1434,7 +1449,8 @@ public static class SemanticsUpdateDiffer
         SemanticsNodeProperty.role |
         SemanticsNodeProperty.children |
         SemanticsNodeProperty.traversal |
-        SemanticsNodeProperty.selection;
+        SemanticsNodeProperty.selection |
+        SemanticsNodeProperty.scroll;
 
     private static SemanticsNodeProperty ChangedProperties(SemanticsNodeUpdate previous, SemanticsNodeUpdate current)
     {
@@ -1450,6 +1466,12 @@ public static class SemanticsUpdateDiffer
             result |= SemanticsNodeProperty.traversal;
         if (previous.textSelectionBase != current.textSelectionBase || previous.textSelectionExtent != current.textSelectionExtent)
             result |= SemanticsNodeProperty.selection;
+        if (previous.scrollPosition != current.scrollPosition ||
+            previous.scrollExtentMax != current.scrollExtentMax ||
+            previous.scrollExtentMin != current.scrollExtentMin)
+        {
+            result |= SemanticsNodeProperty.scroll;
+        }
         return result;
     }
 }
@@ -1525,7 +1547,10 @@ public sealed class SemanticsUpdateBuilder
             traversalParent >= 0 ? checked((int)traversalParent) : null,
             null,
             textSelectionBase,
-            textSelectionExtent));
+            textSelectionExtent,
+            NormalizeOptionalDouble(scrollPosition),
+            NormalizeOptionalDouble(scrollExtentMax),
+            NormalizeOptionalDouble(scrollExtentMin)));
     }
 
     private static Rect TransformRect(Rect rect, object transform)
@@ -1547,6 +1572,12 @@ public sealed class SemanticsUpdateBuilder
             corners.Max(point => point.x),
             corners.Max(point => point.y));
     }
+
+    // The generated framework ABI represents an absent scroll metric as NaN.
+    // Host-neutral semantics use null instead, so consumers cannot mistake an
+    // absent axis for a usable UIA Scroll range.
+    private static double? NormalizeOptionalDouble(double value) =>
+        double.IsFinite(value) ? value : null;
 
     public void updateCustomAction(long id, string? label = null, string? hint = null, long overrideId = -1)
     {

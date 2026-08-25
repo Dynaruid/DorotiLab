@@ -126,7 +126,9 @@ function Invoke-TargetGate {
 }
 
 function Invoke-Fcr0Gate {
+    Invoke-Checked { & (Join-Path $PSScriptRoot 'validate-flutter-windows-host-protocol.ps1') } 'Flutter Windows host protocol source validation failed'
     Invoke-Checked { & (Join-Path $PSScriptRoot 'validate-flutter-conformance.ps1') } 'Flutter conformance FCR-0 validation failed'
+    $completed.Add('flutter-windows-host-protocol')
     $completed.Add('fcr-0-conformance')
 }
 

@@ -1,0 +1,304 @@
+{
+  "schemaVersion": "doroti.windowsappsdk-flutter-resize-handshake-contract/v1",
+  "scopeBoundary": "F5 locks the Flutter-style bounded resize transaction between the platform, engine-task, and raster threads. A live PASS proves the same protocol at all edges/corners, exact generation-and-extent presentation, exactly-once terminals, timeout recovery, and the post-unblock DwmFlush ordering point. It does not prove steady-state scheduler cadence, input, lifecycle integration, product-runner selection, or output-level visible blank/white-frame acceptance.",
+  "projects": [
+    {
+      "id": "windowsappsdk-flutter-resize-handshake-fixture",
+      "path": "Doroti/validation/windowsappsdk-flutter-resize-handshake/Doroti.Validation.WindowsAppSdkFlutterResizeHandshake.csproj",
+      "requiredLiterals": [
+        "<TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>",
+        "<RuntimeIdentifier>win-x64</RuntimeIdentifier>",
+        "<WindowsPackageType>None</WindowsPackageType>",
+        "<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>",
+        "<SelfContained>true</SelfContained>",
+        "<PublishSingleFile>false</PublishSingleFile>",
+        "<PackageReference Include=\"Microsoft.WindowsAppSDK\" VersionOverride=\"2.4.0\" />",
+        "Avalonia.Angle.Windows.Natives",
+        "SkiaSharp.NativeAssets.Win32",
+        "Doroti.Host.WindowsAppSdk"
+      ],
+      "forbiddenLiterals": [
+        "Microsoft.Maui",
+        "Microsoft.UI.Xaml"
+      ]
+    },
+    {
+      "id": "windowsappsdk-flutter-resize-handshake-friend-boundary",
+      "path": "Doroti/src/Doroti.Host.WindowsAppSdk/Properties/AssemblyInfo.cs",
+      "requiredLiterals": [
+        "Doroti.Validation.WindowsAppSdkFlutterResizeHandshake"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "flutter-windows-resize-handshake-owner",
+      "path": "Doroti/src/Doroti.Host.WindowsAppSdk/FlutterWindowsResizeHandshake.cs",
+      "requiredLiterals": [
+        "FlutterWindowsResizeHandshake",
+        "IFlutterWindowsEngineTaskRunner",
+        "IFlutterWindowsResizeRaster",
+        "WindowsViewMetrics",
+        "BeginResizeAndPoll",
+        "TryRunOneTask",
+        "RenderExactAsync",
+        "ResizeStarted",
+        "FrameGenerated",
+        "SurfaceReady",
+        "Presented",
+        "Done",
+        "TimedOut",
+        "Failed",
+        "Superseded",
+        "Suspended",
+        "DwmFlush",
+        "ObserveChildMetrics",
+        "RequestLatestRedraw",
+        "exact generation",
+        "extent"
+      ],
+      "orderedLiterals": [
+        "ResizeStarted",
+        "FrameGenerated",
+        "SurfaceReady",
+        "Presented",
+        "Done"
+      ],
+      "forbiddenLiterals": [
+        "DispatchMessage",
+        "GetMessage",
+        "PeekMessage",
+        "SendMessage",
+        "ContentIsland",
+        "DesktopAttachedSiteBridge",
+        "DesktopChildSiteBridge",
+        "EglFixedSizeAngle",
+        "EGL_FIXED_SIZE_ANGLE",
+        "SetSourceSize",
+        "ResizeBuffers",
+        "WindowsHwndAngleEglPresenter",
+        "ArmNDualFrontPresenter",
+        "Monitor.Wait",
+        "WaitOne",
+        "AbandonContext",
+        "Microsoft.UI.Xaml",
+        "Microsoft.Maui"
+      ]
+    },
+    {
+      "id": "flutter-windows-f4-raster-boundary",
+      "path": "Doroti/src/Doroti.Host.WindowsAppSdk/FlutterWindowsAngleEglWindowSurface.cs",
+      "requiredLiterals": [
+        "FlutterWindowsAngleEglWindowSurface",
+        "UpdateForMetrics",
+        "RenderAndSwap",
+        "ExactExtentMismatchCount",
+        "EnsureRasterThread"
+      ],
+      "forbiddenLiterals": [
+        "EglFixedSizeAngle",
+        "EGL_FIXED_SIZE_ANGLE",
+        "SetSourceSize",
+        "ResizeBuffers",
+        "WindowsHwndAngleEglPresenter",
+        "ArmNDualFrontPresenter",
+        "ContentIsland"
+      ]
+    },
+    {
+      "id": "windowsappsdk-flutter-resize-handshake-fixture-program",
+      "path": "Doroti/validation/windowsappsdk-flutter-resize-handshake/Program.cs",
+      "requiredLiterals": [
+        "RequiredDirectionalCycles",
+        "RunOnDedicatedPlatformStaThread",
+        "DedicatedRasterThread",
+        "FlutterWindowsResizeHandshake",
+        "BeginResizeAndPoll",
+        "TryRunOneTask",
+        "RenderExactAsync",
+        "DwmFlush",
+        "TimedOut",
+        "Failed",
+        "Superseded",
+        "Suspended",
+        "GetGuiResources",
+        "--source-fingerprint",
+        "--published-executable-sha256"
+      ],
+      "forbiddenLiterals": [
+        "Microsoft.Maui",
+        "new Microsoft.UI.Xaml.Window",
+        "ContentIsland",
+        "SetChildClientSize"
+      ]
+    },
+    {
+      "id": "windowsappsdk-flutter-resize-handshake-live-gate",
+      "path": "Doroti/eng/validate-windowsappsdk-flutter-resize-handshake-live.ps1",
+      "requiredLiterals": [
+        "FromMinutes(20)",
+        "--self-contained",
+        "Microsoft.WindowsAppSDK",
+        "Avalonia.Angle.Windows.Natives",
+        "SkiaSharp.NativeAssets.Win32",
+        "--source-fingerprint",
+        "GetGuiResources"
+      ],
+      "forbiddenLiterals": [
+        "Remove-Item",
+        "Start-Process"
+      ]
+    }
+  ],
+  "evidence": {
+    "schemaVersion": "doroti.windowsappsdk-flutter-resize-handshake-evidence/v1",
+    "sourceFingerprintPath": "validation.sourceFingerprint",
+    "executablePath": "validation.executablePath",
+    "executableHashPath": "validation.executableSha256",
+    "requiredStringPaths": [
+      "runId",
+      "adapter",
+      "runtime.packageContractVersion",
+      "runtime.deployment",
+      "platformThread.apartment",
+      "platformThread.executionMode",
+      "rasterThread.apartment",
+      "rasterThread.executionMode",
+      "renderer.name",
+      "renderer.classification",
+      "validation.sourceFingerprint",
+      "validation.executablePath",
+      "validation.executableSha256"
+    ],
+    "requiredBooleanPaths": [
+      "platformThread.engineTaskRunnerPollOnly",
+      "transactions.allTerminalsExactlyOnce",
+      "faultTimeout.noUiDeadlock",
+      "faultTimeout.noInfiniteWait",
+      "faultTimeout.terminalExactlyOnce",
+      "faultTimeout.childRectReobserved",
+      "faultTimeout.latestRedrawRequested",
+      "rasterThread.donePublishedBeforeDwmFlush",
+      "resources.boundedAfterWarmup",
+      "renderer.softwareFallback",
+      "renderer.visibleAcceptanceClaim",
+      "renderer.hardwareVisiblePassClaim",
+      "startup.noMauiOrXamlWindowStartup"
+    ],
+    "requiredNonNegativeIntegerPaths": [
+      "platformThread.maxPollMilliseconds",
+      "platformThread.arbitraryNestedWin32MessageDispatchCount",
+      "rasterThread.exactGenerationExtentMismatchPresentCount",
+      "rasterThread.dwmFlushAfterUnblockCount",
+      "rasterThread.dwmFlushBeforeDoneCount",
+      "transactions.normalDragCount",
+      "transactions.normalDragTimeoutCount",
+      "transactions.terminalMissingCount",
+      "transactions.terminalDuplicateCount",
+      "faultTimeout.injectionCount",
+      "faultTimeout.timeoutTerminalCount",
+      "resources.eglSurfaceLeakCount",
+      "resources.skiaResourceLeakCount",
+      "resources.gdiBefore",
+      "resources.gdiAfter",
+      "resources.userBefore",
+      "resources.userAfter",
+      "startup.mauiOrXamlAssemblyCount",
+      "validation.requiredDirectionalCycles"
+    ],
+    "minimumIntegerValues": [
+      { "path": "rasterThread.dwmFlushAfterUnblockCount", "value": 1 },
+      { "path": "transactions.normalDragCount", "value": 8 },
+      { "path": "faultTimeout.injectionCount", "value": 1 },
+      { "path": "faultTimeout.timeoutTerminalCount", "value": 1 }
+    ],
+    "maximumIntegerValues": [
+      { "path": "platformThread.maxPollMilliseconds", "value": 100 }
+    ],
+    "expectedValues": [
+      { "path": "adapter", "value": "FlutterEmbedder" },
+      { "path": "runtime.packageContractVersion", "value": "2.4.0" },
+      { "path": "runtime.deployment", "value": "self-contained-unpackaged" },
+      { "path": "platformThread.apartment", "value": "STA" },
+      { "path": "platformThread.executionMode", "value": "same-sta-thread" },
+      { "path": "rasterThread.apartment", "value": "MTA" },
+      { "path": "rasterThread.executionMode", "value": "dedicated-raster-thread" },
+      { "path": "platformThread.engineTaskRunnerPollOnly", "value": true },
+      { "path": "platformThread.arbitraryNestedWin32MessageDispatchCount", "value": 0 },
+      { "path": "rasterThread.exactGenerationExtentMismatchPresentCount", "value": 0 },
+      { "path": "rasterThread.dwmFlushBeforeDoneCount", "value": 0 },
+      { "path": "transactions.normalDragTimeoutCount", "value": 0 },
+      { "path": "transactions.terminalMissingCount", "value": 0 },
+      { "path": "transactions.terminalDuplicateCount", "value": 0 },
+      { "path": "transactions.allTerminalsExactlyOnce", "value": true },
+      { "path": "faultTimeout.injectionCount", "value": 1 },
+      { "path": "faultTimeout.timeoutTerminalCount", "value": 1 },
+      { "path": "faultTimeout.noUiDeadlock", "value": true },
+      { "path": "faultTimeout.noInfiniteWait", "value": true },
+      { "path": "faultTimeout.terminalExactlyOnce", "value": true },
+      { "path": "faultTimeout.childRectReobserved", "value": true },
+      { "path": "faultTimeout.latestRedrawRequested", "value": true },
+      { "path": "rasterThread.donePublishedBeforeDwmFlush", "value": true },
+      { "path": "resources.eglSurfaceLeakCount", "value": 0 },
+      { "path": "resources.skiaResourceLeakCount", "value": 0 },
+      { "path": "resources.boundedAfterWarmup", "value": true },
+      { "path": "renderer.visibleAcceptanceClaim", "value": false },
+      { "path": "renderer.hardwareVisiblePassClaim", "value": false },
+      { "path": "startup.noMauiOrXamlWindowStartup", "value": true },
+      { "path": "startup.mauiOrXamlAssemblyCount", "value": 0 }
+    ],
+    "rendererClassification": {
+      "classificationPath": "renderer.classification",
+      "softwareFallbackPath": "renderer.softwareFallback",
+      "allowedValues": [ "hardware", "software" ],
+      "visibleClaimPaths": [
+        "renderer.visibleAcceptanceClaim",
+        "renderer.hardwareVisiblePassClaim"
+      ]
+    },
+    "directions": {
+      "path": "directions",
+      "expectedNames": [
+        "left",
+        "right",
+        "top",
+        "bottom",
+        "top-left",
+        "top-right",
+        "bottom-left",
+        "bottom-right"
+      ],
+      "requiredBooleanPaths": [ "protocolIdentical", "stateOrderExact" ],
+      "requiredNonNegativeIntegerPaths": [
+        "transactionCount",
+        "exactPresentCount",
+        "timeoutCount",
+        "terminalMissingCount",
+        "terminalDuplicateCount"
+      ],
+      "minimumIntegerValues": [
+        { "path": "transactionCount", "value": 1 },
+        { "path": "exactPresentCount", "value": 1 }
+      ],
+      "expectedValues": [
+        { "path": "protocolIdentical", "value": true },
+        { "path": "stateOrderExact", "value": true },
+        { "path": "timeoutCount", "value": 0 },
+        { "path": "terminalMissingCount", "value": 0 },
+        { "path": "terminalDuplicateCount", "value": 0 }
+      ]
+    },
+    "terminalCases": {
+      "path": "terminalCases",
+      "expectedNames": [ "TimedOut", "Failed", "Superseded", "Suspended" ],
+      "requiredBooleanPaths": [ "exactlyOnce" ],
+      "requiredNonNegativeIntegerPaths": [ "terminalCount", "terminalMissingCount", "terminalDuplicateCount" ],
+      "expectedValues": [
+        { "path": "exactlyOnce", "value": true },
+        { "path": "terminalCount", "value": 1 },
+        { "path": "terminalMissingCount", "value": 0 },
+        { "path": "terminalDuplicateCount", "value": 0 }
+      ]
+    }
+  }
+}

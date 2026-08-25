@@ -1,0 +1,207 @@
+{
+  "schemaVersion": "doroti.windowsappsdk-flutter-top-level-contract/v1",
+  "scopeBoundary": "F2 locks the Flutter-style standard top-level HWND plus one child view HWND and its Windows App SDK association. A live PASS proves structural first-show ordering only; it does not prove a real EGL child-window swap, compositor continuity, resize protocol, input, or visible blank/white-frame acceptance.",
+  "projects": [
+    {
+      "id": "windowsappsdk-flutter-top-level-fixture",
+      "path": "Doroti/validation/windowsappsdk-flutter-top-level/Doroti.Validation.WindowsAppSdkFlutterTopLevel.csproj",
+      "requiredLiterals": [
+        "<TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>",
+        "<RuntimeIdentifier>win-x64</RuntimeIdentifier>",
+        "<WindowsPackageType>None</WindowsPackageType>",
+        "<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>",
+        "<SelfContained>true</SelfContained>",
+        "<PublishSingleFile>false</PublishSingleFile>",
+        "<PackageReference Include=\"Microsoft.WindowsAppSDK\" VersionOverride=\"2.4.0\" />",
+        "Doroti.Host.WindowsAppSdk"
+      ],
+      "forbiddenLiterals": [
+        "Microsoft.Maui",
+        "Microsoft.UI.Xaml"
+      ]
+    },
+    {
+      "id": "windowsappsdk-flutter-top-level-friend-boundary",
+      "path": "Doroti/src/Doroti.Host.WindowsAppSdk/Properties/AssemblyInfo.cs",
+      "requiredLiterals": [
+        "Doroti.Validation.WindowsAppSdkFlutterTopLevel"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "flutter-windows-standard-hwnd-owner",
+      "path": "Doroti/src/Doroti.Host.WindowsAppSdk/FlutterWindowsHostWindow.cs",
+      "requiredLiterals": [
+        "FlutterWindowsHostWindow",
+        "FlutterWindowsAppSdkBootstrap",
+        "WsOverlappedWindow",
+        "WsChild",
+        "WsVisible",
+        "GetClientRect",
+        "MoveWindow",
+        "WmSize",
+        "WmGetMinMaxInfo",
+        "GetDpiForWindow",
+        "AdjustWindowRectExForDpi",
+        "AssociateRawWindow",
+        "NotifyFirstFrameSwapped",
+        "ShowWindow",
+        "auxiliary-islands",
+        "view-surface",
+        "appwindow-top-level",
+        "dispatcher-queue"
+      ],
+      "orderedLiterals": [
+        "bootstrap.InitializeOnCurrentThread",
+        "bootstrap.AssociateRawWindow",
+        "WsChild | WsVisible",
+        "UpdateChildToClientRect",
+        "NotifyFirstFrameSwapped"
+      ],
+      "forbiddenLiterals": [
+        "WsPopup",
+        "WsExNoRedirectionBitmap",
+        "SetWindowRgn",
+        "ContentIsland",
+        "DesktopAttachedSiteBridge",
+        "DesktopChildSiteBridge",
+        "WindowsAppSdkIslandBridge",
+        "ArmNDualFrontPresenter",
+        "WM_NCCALCSIZE",
+        "WM_NCHITTEST",
+        "WM_SETCURSOR",
+        "Microsoft.UI.Xaml"
+      ]
+    },
+    {
+      "id": "windowsappsdk-flutter-top-level-fixture-program",
+      "path": "Doroti/validation/windowsappsdk-flutter-top-level/Program.cs",
+      "requiredLiterals": [
+        "RequiredCycles = 100",
+        "RunOnDedicatedStaThread",
+        "FlutterWindowsHostWindow.CreateOnCurrentThread",
+        "WmGetMinMaxInfo",
+        "AssertClientEqualsChild",
+        "NotifyFirstFrameSwapped",
+        "exactOrder",
+        "--source-fingerprint",
+        "--published-executable-sha256"
+      ],
+      "orderedLiterals": [
+        "AssertWindowTreeBeforeSwap",
+        "DriveStandardResizes",
+        "RequestAndAssertMinMax",
+        "NotifyFirstFrameSwapped",
+        "host.Dispose"
+      ],
+      "forbiddenLiterals": [
+        "Microsoft.Maui",
+        "new Microsoft.UI.Xaml.Window",
+        "ContentIsland"
+      ]
+    },
+    {
+      "id": "windowsappsdk-flutter-top-level-live-gate",
+      "path": "Doroti/eng/validate-windowsappsdk-flutter-top-level-live.ps1",
+      "requiredLiterals": [
+        "FromMinutes(20)",
+        "--self-contained",
+        "Microsoft.WindowsAppSDK",
+        "--source-fingerprint",
+        "GetGuiResources"
+      ],
+      "forbiddenLiterals": [
+        "Remove-Item",
+        "Start-Process"
+      ]
+    }
+  ],
+  "evidence": {
+    "schemaVersion": "doroti.windowsappsdk-flutter-top-level-evidence/v1",
+    "sourceFingerprintPath": "validation.sourceFingerprint",
+    "executablePath": "validation.executablePath",
+    "executableHashPath": "validation.executableSha256",
+    "requiredStringPaths": [
+      "runId",
+      "adapter",
+      "runtime.packageContractVersion",
+      "runtime.deployment",
+      "platformThread.apartment",
+      "platformThread.executionMode",
+      "validation.sourceFingerprint",
+      "validation.executablePath",
+      "validation.executableSha256"
+    ],
+    "requiredBooleanPaths": [
+      "hwndTree.standardNonClient",
+      "hwndTree.topLevelVisibleBeforeFirstSwap",
+      "hwndTree.visibleAfterFirstSwap",
+      "constraints.exactMinMaxConversion",
+      "shutdown.exactOrder",
+      "resources.boundedAfterWarmup",
+      "startup.noMauiOrXamlWindowStartup"
+    ],
+    "requiredNonNegativeIntegerPaths": [
+      "platformThread.startupShutdownCycles",
+      "platformThread.failureCount",
+      "hwndTree.topLevelCount",
+      "hwndTree.childViewCount",
+      "hwndTree.rawWindowDispatcherQueueAssociationCount",
+      "hwndTree.firstFrameShowCount",
+      "hwndTree.childRectMismatchCount",
+      "hwndTree.childLayoutCount",
+      "hwndTree.topLevelEraseBeforeFirstSwap",
+      "hwndTree.viewEraseBeforeFirstSwap",
+      "constraints.minTrackWidth",
+      "constraints.minTrackHeight",
+      "constraints.maxTrackWidth",
+      "constraints.maxTrackHeight",
+      "startup.mauiOrXamlAssemblyCount"
+    ],
+    "minimumIntegerValues": [
+      { "path": "hwndTree.childLayoutCount", "value": 5 },
+      { "path": "constraints.minTrackWidth", "value": 1 },
+      { "path": "constraints.minTrackHeight", "value": 1 },
+      { "path": "constraints.maxTrackWidth", "value": 1 },
+      { "path": "constraints.maxTrackHeight", "value": 1 }
+    ],
+    "expectedValues": [
+      { "path": "adapter", "value": "FlutterEmbedder" },
+      { "path": "runtime.packageContractVersion", "value": "2.4.0" },
+      { "path": "runtime.deployment", "value": "self-contained-unpackaged" },
+      { "path": "platformThread.apartment", "value": "STA" },
+      { "path": "platformThread.executionMode", "value": "same-sta-thread" },
+      { "path": "platformThread.startupShutdownCycles", "value": 100 },
+      { "path": "platformThread.failureCount", "value": 0 },
+      { "path": "hwndTree.topLevelCount", "value": 1 },
+      { "path": "hwndTree.childViewCount", "value": 1 },
+      { "path": "hwndTree.rawWindowDispatcherQueueAssociationCount", "value": 1 },
+      { "path": "hwndTree.standardNonClient", "value": true },
+      { "path": "hwndTree.topLevelVisibleBeforeFirstSwap", "value": false },
+      { "path": "hwndTree.firstFrameShowCount", "value": 1 },
+      { "path": "hwndTree.visibleAfterFirstSwap", "value": true },
+      { "path": "hwndTree.childRectMismatchCount", "value": 0 },
+      { "path": "hwndTree.topLevelEraseBeforeFirstSwap", "value": 0 },
+      { "path": "hwndTree.viewEraseBeforeFirstSwap", "value": 0 },
+      { "path": "constraints.exactMinMaxConversion", "value": true },
+      { "path": "shutdown.exactOrder", "value": true },
+      { "path": "resources.boundedAfterWarmup", "value": true },
+      { "path": "startup.noMauiOrXamlWindowStartup", "value": true },
+      { "path": "startup.mauiOrXamlAssemblyCount", "value": 0 }
+    ],
+    "expectedArrayValues": [
+      {
+        "path": "shutdown.ordered",
+        "value": [
+          "auxiliary-islands",
+          "view-surface",
+          "child",
+          "engine",
+          "appwindow-top-level",
+          "dispatcher-queue"
+        ]
+      }
+    ]
+  }
+}
