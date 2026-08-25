@@ -1,0 +1,225 @@
+#pragma once
+
+#include <stddef.h>
+#include <stdint.h>
+
+#if defined(_WIN32)
+#define DOROTI_WINDOWS_API __declspec(dllexport)
+#define DOROTI_WINDOWS_CALL __cdecl
+#else
+#define DOROTI_WINDOWS_API
+#define DOROTI_WINDOWS_CALL
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+enum { DOROTI_WINDOWS_ABI_VERSION_V1 = 1 };
+
+typedef enum doroti_windows_status_v1 {
+  DOROTI_WINDOWS_STATUS_OK_V1 = 0,
+  DOROTI_WINDOWS_STATUS_INVALID_ARGUMENT_V1 = 1,
+  DOROTI_WINDOWS_STATUS_ABI_MISMATCH_V1 = 2,
+  DOROTI_WINDOWS_STATUS_NOT_IMPLEMENTED_V1 = 3,
+  DOROTI_WINDOWS_STATUS_NATIVE_FAILURE_V1 = 4
+} doroti_windows_status_v1;
+
+typedef enum doroti_windows_frame_terminal_kind_v1 {
+  DOROTI_WINDOWS_FRAME_PRESENTED_V1 = 1,
+  DOROTI_WINDOWS_FRAME_SUPERSEDED_V1 = 2,
+  DOROTI_WINDOWS_FRAME_FAILED_V1 = 3
+} doroti_windows_frame_terminal_kind_v1;
+
+#pragma pack(push, 8)
+
+typedef struct doroti_windows_utf8_v1 {
+  uint32_t abi_version;
+  uint32_t struct_size;
+  const uint8_t* data;
+  uint64_t byte_length;
+} doroti_windows_utf8_v1;
+
+typedef struct doroti_windows_metrics_v1 {
+  uint32_t abi_version;
+  uint32_t struct_size;
+  uint64_t view_id;
+  uint64_t generation;
+  uint32_t width_px;
+  uint32_t height_px;
+  double scale;
+  double logical_width;
+  double logical_height;
+  uint64_t display_id;
+  int64_t timestamp_qpc;
+} doroti_windows_metrics_v1;
+
+typedef struct doroti_windows_frame_request_v1 {
+  uint32_t abi_version;
+  uint32_t struct_size;
+  uint64_t view_id;
+  uint64_t generation;
+  uint32_t width_px;
+  uint32_t height_px;
+  uint64_t causal_frame_id;
+  int64_t timestamp_qpc;
+} doroti_windows_frame_request_v1;
+
+typedef struct doroti_windows_frame_terminal_v1 {
+  uint32_t abi_version;
+  uint32_t struct_size;
+  uint64_t view_id;
+  uint64_t generation;
+  uint64_t causal_frame_id;
+  uint32_t terminal_kind;
+  uint32_t error_category;
+  int64_t accepted_qpc;
+  int64_t terminal_qpc;
+  uint32_t platform_wait_timed_out;
+  uint32_t reserved;
+} doroti_windows_frame_terminal_v1;
+
+typedef struct doroti_windows_pointer_v1 {
+  uint32_t abi_version;
+  uint32_t struct_size;
+  uint64_t view_id;
+  int64_t timestamp_qpc;
+  uint32_t change;
+  uint32_t kind;
+  int64_t device;
+  double physical_x;
+  double physical_y;
+  double physical_delta_x;
+  double physical_delta_y;
+  int64_t buttons;
+  double scroll_delta_x;
+  double scroll_delta_y;
+  uint32_t signal_kind;
+  uint32_t pointer_identifier;
+  double pressure;
+  double tilt;
+  int64_t platform_data;
+} doroti_windows_pointer_v1;
+
+typedef struct doroti_windows_key_v1 {
+  uint32_t abi_version;
+  uint32_t struct_size;
+  uint64_t view_id;
+  int64_t timestamp_qpc;
+  uint32_t type;
+  uint32_t repeat;
+  int64_t physical;
+  int64_t logical;
+  doroti_windows_utf8_v1 character;
+} doroti_windows_key_v1;
+
+typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_request_frame_v1)(void* host_context);
+typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_request_resize_v1)(
+    void* host_context, uint32_t width_px, uint32_t height_px);
+typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_request_close_v1)(void* host_context);
+typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_request_show_v1)(void* host_context);
+typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_set_cursor_v1)(
+    void* host_context, uint32_t cursor);
+typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_set_clipboard_v1)(
+    void* host_context, doroti_windows_utf8_v1 text);
+typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_request_clipboard_v1)(
+    void* host_context, uint64_t request_id);
+
+typedef struct doroti_windows_host_v1 {
+  uint32_t abi_version;
+  uint32_t struct_size;
+  void* host_context;
+  void* top_level_hwnd;
+  void* child_hwnd;
+  void* task_hwnd;
+  doroti_windows_request_frame_v1 request_frame;
+  doroti_windows_request_resize_v1 request_resize;
+  doroti_windows_request_close_v1 request_close;
+  doroti_windows_request_show_v1 request_show;
+  doroti_windows_set_cursor_v1 set_cursor;
+  doroti_windows_set_clipboard_v1 set_clipboard;
+  doroti_windows_request_clipboard_v1 request_clipboard;
+} doroti_windows_host_v1;
+
+typedef void(DOROTI_WINDOWS_CALL* doroti_windows_host_ready_callback_v1)(
+    void* callback_context, const doroti_windows_host_v1* host);
+typedef void(DOROTI_WINDOWS_CALL* doroti_windows_metrics_callback_v1)(
+    void* callback_context, const doroti_windows_metrics_v1* metrics);
+typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_render_callback_v1)(
+    void* callback_context, const doroti_windows_frame_request_v1* request);
+typedef void(DOROTI_WINDOWS_CALL* doroti_windows_frame_terminal_callback_v1)(
+    void* callback_context, const doroti_windows_frame_terminal_v1* terminal);
+typedef void(DOROTI_WINDOWS_CALL* doroti_windows_log_callback_v1)(
+    void* callback_context, uint32_t level, doroti_windows_utf8_v1 message);
+typedef void(DOROTI_WINDOWS_CALL* doroti_windows_pointer_callback_v1)(
+    void* callback_context, const doroti_windows_pointer_v1* pointer);
+typedef void(DOROTI_WINDOWS_CALL* doroti_windows_key_callback_v1)(
+    void* callback_context, const doroti_windows_key_v1* key);
+typedef void(DOROTI_WINDOWS_CALL* doroti_windows_focus_callback_v1)(
+    void* callback_context, uint64_t view_id, uint32_t focused,
+    int64_t timestamp_qpc);
+typedef void(DOROTI_WINDOWS_CALL* doroti_windows_clipboard_callback_v1)(
+    void* callback_context, uint64_t request_id, doroti_windows_utf8_v1 text);
+
+typedef struct doroti_windows_configuration_v1 {
+  uint32_t abi_version;
+  uint32_t struct_size;
+  uint64_t required_features;
+  doroti_windows_utf8_v1 application_id;
+  doroti_windows_utf8_v1 title;
+  uint32_t initial_width_px;
+  uint32_t initial_height_px;
+  uint32_t n_cmd_show;
+  uint32_t reserved;
+} doroti_windows_configuration_v1;
+
+typedef struct doroti_windows_callbacks_v1 {
+  uint32_t abi_version;
+  uint32_t struct_size;
+  void* callback_context;
+  doroti_windows_host_ready_callback_v1 host_ready;
+  doroti_windows_metrics_callback_v1 metrics;
+  doroti_windows_render_callback_v1 render;
+  doroti_windows_frame_terminal_callback_v1 frame_terminal;
+  doroti_windows_log_callback_v1 log;
+  doroti_windows_pointer_callback_v1 pointer;
+  doroti_windows_key_callback_v1 key;
+  doroti_windows_focus_callback_v1 focus;
+  doroti_windows_clipboard_callback_v1 clipboard;
+} doroti_windows_callbacks_v1;
+
+typedef struct doroti_windows_abi_layout_v1 {
+  uint32_t abi_version;
+  uint32_t struct_size;
+  uint32_t pointer_packet_size;
+  uint32_t packing;
+  uint32_t utf8_size;
+  uint32_t metrics_size;
+  uint32_t frame_request_size;
+  uint32_t host_size;
+  uint32_t frame_terminal_size;
+  uint32_t configuration_size;
+  uint32_t callbacks_size;
+  uint32_t metrics_generation_offset;
+  uint32_t host_child_hwnd_offset;
+  uint32_t terminal_kind_offset;
+  uint32_t callbacks_render_offset;
+  uint32_t gpu_pointer_count;
+  uint32_t pointer_size;
+  uint32_t key_size;
+  uint32_t callbacks_pointer_offset;
+  uint32_t host_set_cursor_offset;
+} doroti_windows_abi_layout_v1;
+
+#pragma pack(pop)
+
+DOROTI_WINDOWS_API uint32_t DOROTI_WINDOWS_CALL doroti_windows_get_abi_version_v1(void);
+DOROTI_WINDOWS_API doroti_windows_status_v1 DOROTI_WINDOWS_CALL
+doroti_windows_get_abi_layout_v1(doroti_windows_abi_layout_v1* layout);
+DOROTI_WINDOWS_API doroti_windows_status_v1 DOROTI_WINDOWS_CALL
+doroti_windows_run_v1(const doroti_windows_configuration_v1* configuration,
+                      const doroti_windows_callbacks_v1* callbacks);
+
+#ifdef __cplusplus
+}
+#endif

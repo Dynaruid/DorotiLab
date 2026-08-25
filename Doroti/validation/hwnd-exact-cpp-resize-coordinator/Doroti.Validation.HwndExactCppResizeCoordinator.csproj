@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <AssemblyName>Doroti.Validation.HwndExactCppResizeCoordinator</AssemblyName>
+    <RootNamespace>Doroti.Validation.HwndExactCppResizeCoordinator</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Doroti.Host.WindowsAppSdk\Doroti.Host.WindowsAppSdk.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\hwnd-exact-cpp-managed-presenter\bin\Release\x64\Doroti.HwndExactCpp.ManagedPresenterProbe.dll"
+          Link="Doroti.HwndExactCpp.ManagedPresenterProbe.dll"
+          CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

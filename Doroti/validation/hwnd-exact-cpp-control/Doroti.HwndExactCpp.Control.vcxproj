@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{3A39493C-C723-4317-AD00-1C2C811EC878}</ProjectGuid>
+    <RootNamespace>DorotiHwndExactCppControl</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v145</PlatformToolset>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup>
+    <TargetName>Doroti.HwndExactCpp.Control</TargetName>
+    <OutDir>$(MSBuildProjectDirectory)\bin\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(MSBuildProjectDirectory)\obj\$(Configuration)\$(Platform)\</IntDir>
+    <GeneratedHeaders>$(IntDir)generated</GeneratedHeaders>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NOMINMAX;UNICODE;_UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(GeneratedHeaders);$(GeneratedHeaders)\winrt;$(InteractiveExperiencesInclude);$(FoundationInclude);$(RuntimeInclude);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/Brepro %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(FoundationLib);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Microsoft.WindowsAppRuntime.Bootstrap.lib;windowsapp.lib;runtimeobject.lib;ole32.lib;d3d12.lib;dxgi.lib;dxguid.lib;dwmapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/Brepro %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="D3D12Presenter.h" />
+    <ClCompile Include="D3D12Presenter.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <Target Name="GenerateWindowsAppSdkCppWinRT" BeforeTargets="ClCompile"
+          Inputs="$(MicrosoftUiWinmd);$(MicrosoftFoundationWinmd);$(MicrosoftGraphicsWinmd)"
+          Outputs="$(GeneratedHeaders)\winrt\Microsoft.UI.Windowing.h">
+    <Error Condition="!Exists('$(CppWinRTExe)')" Text="cppwinrt.exe is missing: $(CppWinRTExe)" />
+    <Error Condition="!Exists('$(MicrosoftUiWinmd)')" Text="Microsoft.UI.winmd is missing: $(MicrosoftUiWinmd)" />
+    <MakeDir Directories="$(GeneratedHeaders)" />
+    <Exec Command="&quot;$(CppWinRTExe)&quot; -input &quot;$(MicrosoftUiWinmd)&quot; -reference &quot;$(MicrosoftFoundationWinmd)&quot; -reference &quot;$(MicrosoftGraphicsWinmd)&quot; -reference sdk -output &quot;$(GeneratedHeaders)&quot; -overwrite" />
+  </Target>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

@@ -1,0 +1,100 @@
+using System.Reflection.PortableExecutable;
+using System.Runtime.InteropServices;
+using System.Text.Json;
+using Doroti.Host.WindowsAppSdk;
+
+if (!OperatingSystem.IsWindows())
+    throw new PlatformNotSupportedException("The native ABI fixture is Windows-only.");
+if (args.Length != 1)
+    throw new ArgumentException("Expected the app-directory native DLL path.");
+
+var expectedPath = Path.GetFullPath(args[0]);
+if (!File.Exists(expectedPath))
+    throw new FileNotFoundException("Native ABI fixture DLL is missing.", expectedPath);
+if (!string.Equals(Path.GetDirectoryName(expectedPath), AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar), StringComparison.OrdinalIgnoreCase))
+    throw new InvalidOperationException("The native ABI fixture must load its DLL from the application directory.");
+
+Environment.SetEnvironmentVariable("PATH", string.Empty);
+var handle = NativeLibrary.Load("doroti_windows_appsdk_host_v1.dll", typeof(WindowsNativeV1).Assembly, null);
+try
+{
+    var actualPath = GetModulePath(handle);
+    if (!string.Equals(expectedPath, actualPath, StringComparison.OrdinalIgnoreCase))
+        throw new InvalidOperationException($"Native DLL search escaped the application directory: {actualPath}");
+
+    var exports = new[]
+    {
+        "doroti_windows_get_abi_version_v1",
+        "doroti_windows_get_abi_layout_v1",
+        "doroti_windows_run_v1",
+    };
+    foreach (var export in exports)
+    {
+        if (!NativeLibrary.TryGetExport(handle, export, out _))
+            throw new EntryPointNotFoundException(export);
+    }
+
+    using var stream = File.OpenRead(expectedPath);
+    using var pe = new PEReader(stream);
+    if (pe.PEHeaders.CoffHeader.Machine != Machine.Amd64)
+        throw new BadImageFormatException($"Expected AMD64 DLL, found {pe.PEHeaders.CoffHeader.Machine}.");
+
+    var layout = WindowsNativeV1.ValidateLayout();
+    var configuration = new WindowsNativeV1.Configuration
+    {
+        AbiVersion = WindowsNativeV1.AbiVersion,
+        StructSize = checked((uint)Marshal.SizeOf<WindowsNativeV1.Configuration>()),
+    };
+    var callbacks = new WindowsNativeV1.Callbacks
+    {
+        AbiVersion = WindowsNativeV1.AbiVersion,
+        StructSize = checked((uint)Marshal.SizeOf<WindowsNativeV1.Callbacks>()),
+    };
+    if (WindowsNativeV1.Run(in configuration, in callbacks) != WindowsNativeV1.Status.InvalidArgument)
+        throw new InvalidOperationException("The native product ABI accepted missing callbacks.");
+    configuration.StructSize--;
+    if (WindowsNativeV1.Run(in configuration, in callbacks) != WindowsNativeV1.Status.AbiMismatch)
+        throw new InvalidOperationException("The native ABI accepted a truncated managed configuration.");
+
+    Console.WriteLine(JsonSerializer.Serialize(new
+    {
+        schemaVersion = "doroti.windows.native-abi-validation/v1",
+        gate = "C1",
+        status = "PASS",
+        abiVersion = WindowsNativeV1.AbiVersion,
+        architecture = pe.PEHeaders.CoffHeader.Machine.ToString(),
+        modulePath = actualPath,
+        pathWasEmpty = string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PATH")),
+        managedToNativeValidation = "PASS",
+        exports,
+        sizes = new
+        {
+            layout.Utf8Size,
+            layout.MetricsSize,
+            layout.FrameRequestSize,
+            layout.HostSize,
+            layout.FrameTerminalSize,
+            layout.ConfigurationSize,
+            layout.CallbacksSize,
+            layout.GpuPointerCount,
+            layout.PointerPacketSize,
+            layout.KeySize,
+        },
+    }, new JsonSerializerOptions { WriteIndented = true }));
+}
+finally
+{
+    NativeLibrary.Free(handle);
+}
+
+static string GetModulePath(nint module)
+{
+    var buffer = new char[32768];
+    var length = GetModuleFileName(module, buffer, checked((uint)buffer.Length));
+    if (length == 0 || length == buffer.Length)
+        throw new InvalidOperationException($"GetModuleFileNameW failed: {Marshal.GetLastPInvokeError()}.");
+    return Path.GetFullPath(new string(buffer, 0, checked((int)length)));
+}
+
+[DllImport("kernel32.dll", EntryPoint = "GetModuleFileNameW", SetLastError = true, CharSet = CharSet.Unicode)]
+static extern uint GetModuleFileName(nint module, [Out] char[] fileName, uint size);

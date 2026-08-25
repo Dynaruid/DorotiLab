@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <AssemblyName>Doroti.Validation.WindowsAppSdkNativeAbi</AssemblyName>
+    <RootNamespace>Doroti.Validation.WindowsAppSdkNativeAbi</RootNamespace>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Doroti.Host.WindowsAppSdk\Doroti.Host.WindowsAppSdk.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\Doroti.Host.WindowsAppSdk.Native\bin\Release\x64\doroti_windows_appsdk_host_v1.dll"
+          Link="doroti_windows_appsdk_host_v1.dll"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\src\Doroti.Host.WindowsAppSdk.Native\bin\Release\x64\Microsoft.WindowsAppRuntime.Bootstrap.dll"
+          Link="Microsoft.WindowsAppRuntime.Bootstrap.dll"
+          CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

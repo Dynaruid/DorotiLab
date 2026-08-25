@@ -1,0 +1,190 @@
+{
+  "schemaVersion": "doroti.windows.hwnd-exact-cpp-c0/v1",
+  "reference": {
+    "root": "reference/flutter-master",
+    "commit": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+    "requireCleanTrackedTree": true,
+    "files": [
+      {
+        "path": "engine/src/flutter/shell/platform/windows/host_window.cc",
+        "sha256": "5b472f769d43ea40a440877504031b2eddc327e6030d59496f8e88f0ced75c5b"
+      },
+      {
+        "path": "engine/src/flutter/shell/platform/windows/flutter_window.cc",
+        "sha256": "5d52eecfc2fea50e4986d503d3ef5eadf98386c31020ceb12dc726471835068d"
+      },
+      {
+        "path": "engine/src/flutter/shell/platform/windows/flutter_windows_view.cc",
+        "sha256": "412e9e98c5f63238fe049f36d16aab5af82d5f925827c0616ac8696f809a10af"
+      },
+      {
+        "path": "engine/src/flutter/shell/platform/windows/flutter_windows_view.h",
+        "sha256": "3cad8cc1d89af63dd5fde2175bfabfd9da52949ce9c735fafafc78d1cba16571"
+      },
+      {
+        "path": "engine/src/flutter/shell/platform/windows/flutter_windows_view_unittests.cc",
+        "sha256": "888efbe7ede2c3762274ce721fb7dba7998927f1e912947d6205315c0067d635"
+      }
+    ]
+  },
+  "anchors": [
+    {
+      "id": "host.child-parent-and-client-extent",
+      "path": "engine/src/flutter/shell/platform/windows/host_window.cc",
+      "literal": "void SetChildContent(HWND content, HWND window)",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "host.first-frame-show",
+      "path": "engine/src/flutter/shell/platform/windows/host_window.cc",
+      "literal": "view_controller_->view()->SetFirstFrameCallback(",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "host.parent-wm-size",
+      "path": "engine/src/flutter/shell/platform/windows/host_window.cc",
+      "literal": "case WM_SIZE:",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "view.ws-child-visible",
+      "path": "engine/src/flutter/shell/platform/windows/flutter_window.cc",
+      "literal": "WS_CHILD | WS_VISIBLE",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "view.child-wm-size",
+      "path": "engine/src/flutter/shell/platform/windows/flutter_window.cc",
+      "literal": "binding_handler_delegate_->OnWindowSizeChanged(width, height);",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "resize.timeout-100ms",
+      "path": "engine/src/flutter/shell/platform/windows/flutter_windows_view.cc",
+      "literal": "constexpr std::chrono::milliseconds kWindowResizeTimeout{100};",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "resize.filtered-task-poll",
+      "path": "engine/src/flutter/shell/platform/windows/flutter_windows_view.cc",
+      "literal": "engine_->task_runner()->PollOnce(kWindowResizeTimeout);",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "resize.exact-frame-admission",
+      "path": "engine/src/flutter/shell/platform/windows/flutter_windows_view.cc",
+      "literal": "if (resize_target_width_ != width || resize_target_height_ != height)",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "resize.surface-recreation",
+      "path": "engine/src/flutter/shell/platform/windows/flutter_windows_view.cc",
+      "literal": "bool FlutterWindowsView::ResizeRenderSurface(size_t width, size_t height)",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "resize.present-completion-wake",
+      "path": "engine/src/flutter/shell/platform/windows/flutter_windows_view.cc",
+      "literal": "engine_->task_runner()->PostTask([this] {});",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "resize.raster-dwm-flush",
+      "path": "engine/src/flutter/shell/platform/windows/flutter_windows_view.cc",
+      "literal": "windows_proc_table_->DwmFlush();",
+      "expectedOccurrences": 1
+    },
+    {
+      "id": "resize-race-fixture",
+      "path": "engine/src/flutter/shell/platform/windows/flutter_windows_view_unittests.cc",
+      "literal": "TEST(FlutterWindowsViewTest, WindowResizeRace)",
+      "expectedOccurrences": 1
+    }
+  ],
+  "protocolMappings": [
+    {
+      "id": "native-window-tree",
+      "referenceAnchors": [
+        "host.child-parent-and-client-extent",
+        "host.parent-wm-size",
+        "view.ws-child-visible",
+        "view.child-wm-size"
+      ],
+      "dorotiRequirement": "One standard top-level HWND owns non-client behavior; one app-owned WS_CHILD view HWND fills its physical client extent and is the render/input authority."
+    },
+    {
+      "id": "bounded-exact-resize",
+      "referenceAnchors": [
+        "resize.timeout-100ms",
+        "resize.filtered-task-poll",
+        "resize.exact-frame-admission",
+        "resize.surface-recreation",
+        "resize-race-fixture"
+      ],
+      "dorotiRequirement": "Child physical metrics create an immutable generation; the platform wait is bounded to 100 ms and pumps only the task completion path; only an exact current frame may mutate presentation resources."
+    },
+    {
+      "id": "successful-present-terminal",
+      "referenceAnchors": [
+        "host.first-frame-show",
+        "resize.present-completion-wake",
+        "resize.raster-dwm-flush"
+      ],
+      "dorotiRequirement": "Only successful exact presentation wakes the platform wait and permits first show; DwmFlush remains a raster/presentation-thread post-present ordering point."
+    }
+  ],
+  "dorotiTopology": {
+    "adapter": "HwndExactCpp",
+    "platformOwner": "native-cpp20-sta",
+    "frameworkOwner": "managed-dotnet",
+    "presentationOwner": "native-cpp20-raster",
+    "windows": [
+      "standard-overlapped-top-level-hwnd",
+      "single-visible-child-render-hwnd",
+      "single-message-only-task-hwnd"
+    ],
+    "renderPath": [
+      "exact-native-d3d12-offscreen",
+      "create-swap-chain-for-hwnd",
+      "dxgi-scaling-none",
+      "copy",
+      "present",
+      "dwm-flush"
+    ],
+    "queue": "running-one-latest-pending-one",
+    "terminals": [
+      "presented",
+      "superseded",
+      "failed"
+    ]
+  },
+  "forbidden": [
+    "content-island-primary-renderer",
+    "composition-swap-chain-primary-renderer",
+    "two-visible-front-owners",
+    "managed-swap-chain-ownership",
+    "private-skiasharp-reflection",
+    "unbounded-raw-pointer-lifetime",
+    "capacity-backing",
+    "clip-only-resize",
+    "set-source-size",
+    "full-frame-stretch",
+    "resize-debounce-primary-fix",
+    "stale-scene-relabel"
+  ],
+  "repositoryBoundary": {
+    "windowsAppSdkVersionOverride": "2.4.0",
+    "hostProject": "Doroti/src/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj",
+    "runner": "Doroti/src/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs",
+    "targetProject": "Doroti/src/Doroti.Target.Windows.WindowsAppSdk.win-x64/Doroti.Target.Windows.WindowsAppSdk.win-x64.csproj",
+    "targetManifest": "Doroti/src/Doroti.Target.Windows.WindowsAppSdk.win-x64/doroti-target-manifest.json",
+    "targetBuildTransitive": "Doroti/src/Doroti.Target.Windows.WindowsAppSdk.win-x64/buildTransitive/Doroti.Target.Windows.WindowsAppSdk.win-x64.targets",
+    "preC5FailFastAdapter": "WinRtComposition",
+    "diagnosticHistory": [
+      "Doroti/validation/winrt-content-island-spike",
+      "Doroti/validation/winrt-content-island-native-bridge",
+      "Doroti/validation/winrt-owned-envelope-spike"
+    ]
+  },
+  "scopeBoundary": "Source-contract evidence only. It is not a native build, ABI, runtime, product, capture, visible, IME, accessibility, or physical PASS."
+}

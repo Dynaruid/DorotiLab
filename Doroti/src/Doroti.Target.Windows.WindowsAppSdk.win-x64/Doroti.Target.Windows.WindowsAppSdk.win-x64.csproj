@@ -5,7 +5,7 @@
     <AssemblyName>Doroti.Target.Windows.WindowsAppSdk</AssemblyName>
     <RootNamespace>Doroti.Target.Windows.WindowsAppSdk</RootNamespace>
     <PackageId>Doroti.Target.Windows.WindowsAppSdk.win-x64</PackageId>
-    <Description>Doroti Windows App SDK 2.4 WinRT-first ContentIsland target; implementation is pending.</Description>
+    <Description>Doroti Windows App SDK 2.4 child-HWND native target; product integration is pending.</Description>
     <IsDorotiProduct>true</IsDorotiProduct>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
@@ -16,5 +16,20 @@
     <None Include="doroti-target-manifest.json" Pack="true" PackagePath="doroti\" />
     <None Include="buildTransitive\Doroti.Target.Windows.WindowsAppSdk.win-x64.targets"
           Pack="true" PackagePath="buildTransitive\Doroti.Target.Windows.WindowsAppSdk.win-x64.targets" />
+    <Content Include="..\Doroti.Host.WindowsAppSdk.Native\bin\Release\x64\doroti_windows_appsdk_host_v1.dll"
+             Link="doroti_windows_appsdk_host_v1.dll"
+             CopyToOutputDirectory="PreserveNewest"
+             CopyToPublishDirectory="PreserveNewest"
+             Pack="true"
+             PackagePath="runtimes\win-x64\native\doroti_windows_appsdk_host_v1.dll" />
+    <Content Include="..\Doroti.Host.WindowsAppSdk.Native\bin\Release\x64\Microsoft.WindowsAppRuntime.Bootstrap.dll"
+             Link="Microsoft.WindowsAppRuntime.Bootstrap.dll"
+             CopyToOutputDirectory="PreserveNewest"
+             CopyToPublishDirectory="PreserveNewest"
+             Pack="true"
+             PackagePath="runtimes\win-x64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" />
   </ItemGroup>
+  <Target Name="BuildDorotiWindowsAppSdkNative" BeforeTargets="PrepareForBuild">
+    <Exec Command="pwsh -NoProfile -File &quot;$(MSBuildProjectDirectory)\..\..\eng\build-hwnd-exact-cpp-native.ps1&quot;" />
+  </Target>
 </Project>

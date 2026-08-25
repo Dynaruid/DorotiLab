@@ -19,6 +19,7 @@ public static partial class DorotiSkiaRuntimeEffects
     public const string MauiGpuBackend = "skiasharp-maui-skglview-gpu";
     public const string WindowsAngleEglBackend = "skiasharp-windows-angle-egl-gpu";
     public const string WindowsCompositionD3D12Backend = "skiasharp-windows-dcomp-d3d12-gpu";
+    public const string WindowsHwndD3D12Backend = "skiasharp-windows-hwnd-d3d12-gpu";
     public const string AppKitMetalBackend = "skiasharp-appkit-metal-gpu";
     public const string WebGpuBackend = "skiasharp-skglview-webgl2-gpu";
     public const string QtGpuBackend = "skiasharp-qt-opengl-gpu";
@@ -30,6 +31,7 @@ public static partial class DorotiSkiaRuntimeEffects
             MauiGpuBackend,
             WindowsAngleEglBackend,
             WindowsCompositionD3D12Backend,
+            WindowsHwndD3D12Backend,
             AppKitMetalBackend,
             WebGpuBackend,
             QtGpuBackend,
@@ -242,6 +244,7 @@ public static partial class DorotiSkiaRuntimeEffects
             backend.StartsWith(MauiGpuBackend + "/", StringComparison.Ordinal) ||
             backend.StartsWith(WindowsAngleEglBackend + "/", StringComparison.Ordinal) ||
             backend.StartsWith(WindowsCompositionD3D12Backend + "/", StringComparison.Ordinal) ||
+            backend.StartsWith(WindowsHwndD3D12Backend + "/", StringComparison.Ordinal) ||
             backend.StartsWith(AppKitMetalBackend + "/", StringComparison.Ordinal) ||
             backend.StartsWith(WebGpuBackend + "/", StringComparison.Ordinal) ||
             backend.StartsWith(QtGpuBackend + "/", StringComparison.Ordinal))

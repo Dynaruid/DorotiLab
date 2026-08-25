@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "doroti.application-capabilities/v1",
+  "applicationId": "doroti.validation.hwnd-exact-cpp-product",
+  "targetRid": "win-x64",
+  "resources": [],
+  "plugins": []
+}
