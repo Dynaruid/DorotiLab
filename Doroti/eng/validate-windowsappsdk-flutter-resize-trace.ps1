@@ -10,6 +10,8 @@ param(
     [ValidateRange(30,1000)] [int] $InputHz = 1000,
     [switch] $CaptureOnly,
     [switch] $LogOnly,
+    [switch] $GeometryOnly,
+    [ValidateRange(0,1000)] [int] $RendererDelayMilliseconds = 0,
     [switch] $SkipBuild,
     [string] $ArtifactRoot
 )
@@ -36,7 +38,7 @@ function Invoke-Checked([scriptblock] $Operation, [string] $Description) {
 if (-not $SkipBuild) {
     Push-Location $repo
     try {
-        Invoke-Checked { pwsh -NoProfile -File .\Doroti\eng\doroti.ps1 build --app .\DorotiDemoApp --platform windows } 'Windows Release build'
+        Invoke-Checked { pwsh -NoProfile -File .\Doroti\eng\doroti.ps1 build -App .\DorotiDemoApp -Platform windows } 'Windows Release build'
         Invoke-Checked { cmake -S .\Doroti\validation\windows-resize-capture -B $observerBuild -G 'Visual Studio 18 2026' -A x64 } 'F6-R observer configure'
         Invoke-Checked { cmake --build $observerBuild --config Release } 'F6-R observer build'
     } finally { Pop-Location }
@@ -44,7 +46,8 @@ if (-not $SkipBuild) {
 if (-not (Test-Path -LiteralPath $app)) { throw "Product executable is missing: $app" }
 if (-not (Test-Path -LiteralPath $observer)) { throw "F6-R observer is missing: $observer" }
 
-$modes = if ($CaptureOnly) { @('capture') } elseif ($LogOnly) { @('log-only') } else { @('log-only','capture') }
+$modes = if ($GeometryOnly -or $LogOnly) { @('log-only') } elseif ($CaptureOnly) { @('capture') } else { @('log-only','capture') }
+$effectiveRendererDelay = if ($GeometryOnly -and $RendererDelayMilliseconds -eq 0) { 50 } else { $RendererDelayMilliseconds }
 $results = [Collections.Generic.List[object]]::new()
 $gitCommit = (& git -C $repo rev-parse HEAD).Trim()
 $gitDirty = [bool](& git -C $repo status --porcelain)
@@ -66,9 +69,11 @@ foreach ($motionName in $Motion) {
                 $priorTrace = $env:DOROTI_WINDOWS_RESIZE_TRACE
                 $priorRunId = $env:DOROTI_WINDOWS_RESIZE_TRACE_RUN_ID
                 $priorAdapter = $env:DOROTI_WINDOWS_ADAPTER
+                $priorRendererDelay = $env:DOROTI_WINDOWS_RESIZE_RENDERER_DELAY_MS
                 $env:DOROTI_WINDOWS_RESIZE_TRACE = $trace
                 $env:DOROTI_WINDOWS_RESIZE_TRACE_RUN_ID = $runId
                 $env:DOROTI_WINDOWS_ADAPTER = 'FlutterEmbedder'
+                $env:DOROTI_WINDOWS_RESIZE_RENDERER_DELAY_MS = $effectiveRendererDelay.ToString()
                 try {
                     $process = Start-Process -FilePath $app -WorkingDirectory (Split-Path $app) -PassThru `
                         -RedirectStandardOutput $hostOut -RedirectStandardError $hostLog
@@ -76,6 +81,7 @@ foreach ($motionName in $Motion) {
                     $env:DOROTI_WINDOWS_RESIZE_TRACE = $priorTrace
                     $env:DOROTI_WINDOWS_RESIZE_TRACE_RUN_ID = $priorRunId
                     $env:DOROTI_WINDOWS_ADAPTER = $priorAdapter
+                    $env:DOROTI_WINDOWS_RESIZE_RENDERER_DELAY_MS = $priorRendererDelay
                 }
 
                 try {
@@ -105,6 +111,7 @@ foreach ($motionName in $Motion) {
                         '--drag-ms', $DragMilliseconds.ToString()
                     )
                     if ($mode -eq 'log-only') { $arguments += '--log-only' }
+                    $observerAttempts = 1
                     $observerProcess = Start-Process -FilePath $observer -ArgumentList $arguments -PassThru `
                         -RedirectStandardOutput $observerOut -RedirectStandardError $observerLog
                     if (-not $observerProcess.WaitForExit(20 * 60 * 1000)) {
@@ -123,7 +130,10 @@ foreach ($motionName in $Motion) {
                 }
 
                 $summaryPath = Join-Path $runDirectory 'f6r-summary.json'
-                & pwsh -NoProfile -File $analyzer -Evidence $evidence -CausalTrace $trace -HostLog $hostLog -Output $summaryPath |
+                $analyzerArguments = @('-NoProfile','-File',$analyzer,'-Evidence',$evidence,'-CausalTrace',$trace,
+                    '-HostLog',$hostLog,'-Output',$summaryPath)
+                if ($GeometryOnly) { $analyzerArguments += '-GeometryOnly' }
+                & pwsh @analyzerArguments |
                     Tee-Object -FilePath (Join-Path $runDirectory 'analysis.log')
                 $analysisExit = $LASTEXITCODE
                 $summary = Get-Content -Raw -LiteralPath $summaryPath | ConvertFrom-Json
@@ -133,6 +143,7 @@ foreach ($motionName in $Motion) {
                     motion = $motionName
                     iteration = $iteration
                     mode = $mode
+                    observerAttempts = $observerAttempts
                     status = $summary.status
                     analysisExitCode = $analysisExit
                     actualDragDurationMicroseconds = $summary.actualDragDurationMicroseconds
@@ -140,8 +151,13 @@ foreach ($motionName in $Motion) {
                     platformDispatchMaxMicroseconds = $summary.platformDispatchMicroseconds.max
                     presentP95Microseconds = $summary.presentIntervalMicroseconds.p95
                     presentMaxMicroseconds = $summary.presentIntervalMicroseconds.max
+                    visibleFrontP95Microseconds = $summary.visibleFrontIntervalMicroseconds.p95
+                    visibleFrontMaxMicroseconds = $summary.visibleFrontIntervalMicroseconds.max
+                    finalExactPresentLatencyMicroseconds = $summary.finalExactPresentLatencyMicroseconds
                     cursorEdgeLagP95Pixels = $summary.cursorEdgeLagPixels.p95
                     cursorEdgeLagMaxPixels = $summary.cursorEdgeLagPixels.max
+                    nativeEdgeUpdateP95Microseconds = $summary.nativeEdgeUpdateIntervalMicroseconds.p95
+                    nativeEdgeUpdateMaxMicroseconds = $summary.nativeEdgeUpdateIntervalMicroseconds.max
                     captureFrames = $summary.captureFrames
                     observedCaptureHz = $summary.observedCaptureHz
                     failedChecks = @($summary.failedChecks)
@@ -161,14 +177,14 @@ foreach ($group in ($results | Group-Object edge,motion,iteration)) {
         [Math]::Abs($captured.actualDragDurationMicroseconds - $log.actualDragDurationMicroseconds) /
             [double]$log.actualDragDurationMicroseconds * 100
     } else { $null }
-    $latencyChange = if ($log.platformDispatchP99Microseconds) {
-        [Math]::Max(0, $captured.platformDispatchP99Microseconds - $log.platformDispatchP99Microseconds) /
-            [double]$log.platformDispatchP99Microseconds * 100
+    $latencyChange = if ($log.cursorEdgeLagP95Pixels) {
+        [Math]::Max(0, $captured.cursorEdgeLagP95Pixels - $log.cursorEdgeLagP95Pixels) /
+            [double]$log.cursorEdgeLagP95Pixels * 100
     } else { $null }
     $overhead.Add([pscustomobject]@{
         key = $group.Name
         durationChangePercent = $durationChange
-        platformP99ChangePercent = $latencyChange
+        activeCursorEdgeLagP95ChangePercent = $latencyChange
         pass = $null -ne $durationChange -and $durationChange -le 10 -and
             $null -ne $latencyChange -and $latencyChange -le 10
     })
@@ -185,6 +201,8 @@ $aggregate = [ordered]@{
     configuration = 'Release'
     rid = 'win-x64'
     adapter = 'FlutterEmbedder'
+    geometryOnly = [bool]$GeometryOnly
+    rendererDelayMilliseconds = $effectiveRendererDelay
     windowsVersion = [Environment]::OSVersion.VersionString
     observer = $observer
     product = $app

@@ -486,7 +486,8 @@ internal sealed class FlutterWindowsScheduledRaster : IDisposable
             presented ? "presented" : "frameTerminal",
             state.Metrics,
             state.CausalFrameId,
-            $"exact={exactMetrics};presented={presented}");
+            $"exact={exactMetrics};presented={presented}",
+            captureGeometry: presented);
         CausalTraceCompleted?.Invoke(trace);
         return trace;
     }

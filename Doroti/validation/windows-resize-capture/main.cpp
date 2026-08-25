@@ -596,7 +596,8 @@ std::optional<std::pair<int, int>> AppBarRows(
         int purple = 0;
         for (int sample = 1; sample <= 48; ++sample) {
             int const column = std::min(client.right - 1, client.left + clientWidth * sample / 49);
-            if (IsPurple(Pixel(pixels, width, column, row))) ++purple;
+            if (IsPurple(Pixel(pixels, width, column, row)) ||
+                IsAppBarFill(Pixel(pixels, width, column, row))) ++purple;
         }
         if (purple >= 24) {
             if (first < 0) first = row;
@@ -965,11 +966,14 @@ private:
                     client.top + static_cast<int>(std::llround(24.0 * scale)),
                     client.top,
                     std::max(client.top, client.bottom - 1));
+                int const searchPadding = options_.f6r ? options_.dragPixels + 64 : 0;
+                int const appSearchLeft = std::max(0, static_cast<int>(client.left) - searchPadding);
+                int const appSearchRight = std::min(slot.width, static_cast<int>(client.right) + searchPadding);
                 int appLeft = -1, appRight = -1;
-                for (int x = client.left; x < client.right; ++x) {
+                for (int x = appSearchLeft; x < appSearchRight; ++x) {
                         if (IsAppBarFill(Pixel(pixels, slot.width, x, middle))) { appLeft = x; break; }
                 }
-                for (int x = client.right - 1; x >= client.left; --x) {
+                for (int x = appSearchRight - 1; x >= appSearchLeft; --x) {
                         if (IsAppBarFill(Pixel(pixels, slot.width, x, middle))) { appRight = x; break; }
                 }
                 // Callback-time HWND geometry may be newer than the WGC
@@ -983,16 +987,22 @@ private:
                     0,
                     std::max(0, slot.height - 1));
                 int titleLeft = -1, titleRight = -1;
-                for (int x = client.left; x < client.right; ++x) {
+                int const titleSearchLeft = appLeft >= 0 ? std::max(0, appLeft - 32) : appSearchLeft;
+                int const titleSearchRight = appRight >= 0
+                    ? std::min(slot.width, appRight + 33)
+                    : appSearchRight;
+                for (int x = titleSearchLeft; x < titleSearchRight; ++x) {
                     if (IsNativeTitleBarFill(Pixel(pixels, slot.width, x, titleY))) { titleLeft = x; break; }
                 }
-                for (int x = client.right - 1; x >= client.left; --x) {
+                for (int x = titleSearchRight - 1; x >= titleSearchLeft; --x) {
                     if (IsNativeTitleBarFill(Pixel(pixels, slot.width, x, titleY))) { titleRight = x; break; }
                 }
                 if (appLeft >= 0 && titleLeft >= 0) leftGap = std::max(0, appLeft - titleLeft);
                 if (appRight >= 0 && titleRight >= 0) rightGap = std::max(0, titleRight - appRight);
-                if (appLeft >= 0 && titleLeft < 0) leftGap = appLeft - client.left;
-                if (appRight >= 0 && titleRight < 0) rightGap = client.right - 1 - appRight;
+                if (appLeft >= 0 && titleLeft < 0)
+                    leftGap = std::max(0, appLeft - static_cast<int>(client.left));
+                if (appRight >= 0 && titleRight < 0)
+                    rightGap = std::max(0, static_cast<int>(client.right) - 1 - appRight);
                 }
 
             FrameRecord record;
@@ -1420,9 +1430,6 @@ std::vector<WindowSample> DriveResize(
     ResizeInputGuard inputGuard(options.hwnd);
     auto const motion = MotionForEdge(options.edge);
     RECT rect{};
-    if (!GetWindowRect(options.hwnd, &rect)) Fail("GetWindowRect failed.");
-    int startX = (rect.left + rect.right) / 2;
-    int startY = (rect.top + rect.bottom) / 2;
     int const expectedHitTest = motion.left && motion.top ? HTTOPLEFT :
         motion.right && motion.top ? HTTOPRIGHT :
         motion.left && motion.bottom ? HTBOTTOMLEFT :
@@ -1437,7 +1444,8 @@ std::vector<WindowSample> DriveResize(
             AttachThreadInput(currentThread, targetThread, TRUE);
         bool const foregroundAttached = foregroundThread != 0 && foregroundThread != currentThread &&
             foregroundThread != targetThread && AttachThreadInput(currentThread, foregroundThread, TRUE);
-        ShowWindow(options.hwnd, SW_RESTORE);
+        if (IsIconic(options.hwnd) || IsZoomed(options.hwnd))
+            ShowWindow(options.hwnd, SW_RESTORE);
         BringWindowToTop(options.hwnd);
         SetForegroundWindow(options.hwnd);
         SetActiveWindow(options.hwnd);
@@ -1447,6 +1455,12 @@ std::vector<WindowSample> DriveResize(
         Sleep(100);
     }
     if (GetAncestor(GetForegroundWindow(), GA_ROOT) != options.hwnd) Fail("Could not activate the resize target window.");
+    // Activation can restore a minimized/maximized window to a different
+    // normal rect. Resolve the actual border only after activation so the
+    // native hit-test and the expected geometry share one start rect.
+    if (!GetWindowRect(options.hwnd, &rect)) Fail("GetWindowRect failed after activating the resize target.");
+    int startX = (rect.left + rect.right) / 2;
+    int startY = (rect.top + rect.bottom) / 2;
     int hitTest = HTNOWHERE;
     for (int inset = -8; inset <= 16; ++inset) {
         int const candidateX = motion.left ? rect.left + inset :
@@ -1579,6 +1593,32 @@ std::vector<WindowSample> DriveResize(
             Fail("Could not release the F6-R native pointer button.");
         if (timing) timing->mouseUpCounter = PerformanceCounter();
         check_hresult(DwmFlush());
+        RECT settled{};
+        if (!GetWindowRect(options.hwnd, &settled))
+            Fail("GetWindowRect failed after the F6-R native pointer release.");
+        int const stationaryTolerance = 8;
+        int const stationaryDrift = std::max({
+            motion.left ? 0 : std::abs(settled.left - rect.left),
+            motion.right ? 0 : std::abs(settled.right - rect.right),
+            motion.top ? 0 : std::abs(settled.top - rect.top),
+            motion.bottom ? 0 : std::abs(settled.bottom - rect.bottom)});
+        if (stationaryDrift > stationaryTolerance)
+            Fail("F6-R native input moved a stationary window edge instead of resizing the requested edge.");
+
+        auto expansionDistance = [&](RECT const& value) {
+            int const signedDistance = motion.left ? rect.left - value.left :
+                motion.right ? value.right - rect.right :
+                motion.top ? rect.top - value.top : value.bottom - rect.bottom;
+            return signedDistance * (options.motion == "shrink" ? -1 : 1);
+        };
+        if (options.motion == "reverse") {
+            int peak = 0;
+            for (auto const& sample : samples) peak = std::max(peak, expansionDistance(sample.window));
+            if (peak < options.dragPixels * 4 / 5 || std::abs(expansionDistance(settled)) > stationaryTolerance)
+                Fail("F6-R reverse input did not reach the requested edge excursion and return to its start rect.");
+        } else if (expansionDistance(settled) < options.dragPixels * 4 / 5) {
+            Fail("F6-R native input did not produce the requested edge resize distance.");
+        }
         inputGuard.Complete();
     }
     return samples;

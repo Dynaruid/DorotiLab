@@ -17,18 +17,16 @@ namespace Doroti.Host.WindowsAppSdk;
 /// Product presentation surface for the Flutter-style host. A single
 /// premultiplied-alpha DirectComposition front is attached to the child HWND,
 /// which is also the input and exact-metrics authority. The backing/front
-/// capacity covers the virtual desktop, so WM_SIZE never destroys the visible
-/// native surface.
+/// starts at the exact client extent plus a bounded transient reservoir; it is
+/// not sized from the monitor or virtual desktop.
 /// </summary>
 internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsScheduledSurface
 {
-    private const int SmCxVirtualScreen = 78;
-    private const int SmCyVirtualScreen = 79;
+    private const int TransientReservePixels = 768;
+    private const int CapacityQuantumPixels = 256;
     private const uint WaitObject0 = 0;
-    private static readonly TimeSpan ProvisionalAdmissionTimeout = TimeSpan.FromMilliseconds(100);
     private readonly nint _compositionHwnd;
     private readonly nint _childHwnd;
-    private readonly object _provisionalGate = new();
     private readonly int _rasterManagedThreadId;
     private readonly uint _rasterNativeThreadId;
     private IDXGIFactory2? _factory;
@@ -55,12 +53,16 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
     private long _surfaceGeneration;
     private long _presentAttemptCount;
     private long _successfulPresentCount;
+    private long _transientPresentCount;
     private long _capacityGrowthCount;
     private long _exactExtentMismatchCount;
     private bool _firstCommitCompleted;
+    private int _committedWidth;
+    private int _committedHeight;
+    private int _transientWidth;
+    private int _transientHeight;
     private bool _recoveryPending;
     private bool _disposed;
-    private FlutterWindowsProvisionalResize? _provisionalResize;
 
     private FlutterWindowsCompositionSurface(nint compositionHwnd, nint childHwnd)
     {
@@ -103,6 +105,7 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
         _capacityHeight,
         Interlocked.Read(ref _presentAttemptCount),
         Interlocked.Read(ref _successfulPresentCount),
+        Interlocked.Read(ref _transientPresentCount),
         Interlocked.Read(ref _capacityGrowthCount),
         Interlocked.Read(ref _exactExtentMismatchCount),
         AdapterDescription,
@@ -117,51 +120,6 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
         AdapterDescription.Contains("software", StringComparison.OrdinalIgnoreCase) ||
         AdapterDescription.Contains("basic render driver", StringComparison.OrdinalIgnoreCase);
 
-    internal FlutterWindowsProvisionalResize BeginProvisionalResize(WindowsViewMetrics targetMetrics)
-    {
-        ArgumentNullException.ThrowIfNull(targetMetrics);
-        ThrowIfDisposed();
-        lock (_provisionalGate)
-        {
-            _provisionalResize?.Cancel();
-            var state = new FlutterWindowsProvisionalResize(targetMetrics);
-            _provisionalResize = state;
-            return state;
-        }
-    }
-
-    internal bool AdmitProvisionalResize(
-        WindowsViewMetrics admittedMetrics,
-        out bool preparedBeforeAdmission)
-    {
-        ArgumentNullException.ThrowIfNull(admittedMetrics);
-        lock (_provisionalGate)
-        {
-            if (_provisionalResize is not { } state ||
-                !ReferenceEquals(state.TargetMetrics, admittedMetrics))
-            {
-                preparedBeforeAdmission = false;
-                return false;
-            }
-            preparedBeforeAdmission = state.IsPrepared;
-            state.Admit();
-            return true;
-        }
-    }
-
-    internal void CancelProvisionalResize(WindowsViewMetrics targetMetrics)
-    {
-        ArgumentNullException.ThrowIfNull(targetMetrics);
-        lock (_provisionalGate)
-        {
-            if (_provisionalResize is not { } state ||
-                !ReferenceEquals(state.TargetMetrics, targetMetrics))
-                return;
-            state.Cancel();
-            _provisionalResize = null;
-        }
-    }
-
     public FlutterWindowsAngleEglSurfaceUpdateResult UpdateForMetrics(
         WindowsViewMetrics targetMetrics)
     {
@@ -174,8 +132,7 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
             return new(false, false, false, _surfaceGeneration, 0, 0);
         }
 
-        var provisional = GetProvisionalResize(targetMetrics);
-        if (provisional is null) ValidateExactChildTarget(targetMetrics);
+        ValidateExactChildTarget(targetMetrics);
         var grew = EnsureCapacity(targetMetrics.PhysicalWidth, targetMetrics.PhysicalHeight);
         _targetMetrics = targetMetrics;
         return new(false, grew, false, _surfaceGeneration,
@@ -194,8 +151,7 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
         if (_targetMetrics != targetMetrics || !targetMetrics.HasDrawableSize)
             throw new InvalidOperationException(
                 "The composition front can present only its exact admitted WindowsViewMetrics target.");
-        var provisional = GetProvisionalResize(targetMetrics);
-        if (provisional is null) ValidateExactChildTarget(targetMetrics);
+        ValidateExactChildTarget(targetMetrics);
         if (_recoveryPending)
         {
             _recoveryPending = false;
@@ -206,12 +162,9 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
         WaitForGpu();
         var surface = _backing?.Surface ?? throw new ObjectDisposedException(nameof(FlutterWindowsCompositionSurface));
         var canvas = surface.Canvas;
-        // The backing store covers the virtual desktop so the native front is
-        // never recreated in the resize hot path. Clear only the exact client
-        // viewport, however. Clearing the full capacity made a normal-size
-        // window pay the fill cost of every monitor on every resize frame.
-        // A later expansion has a larger exact clip and therefore clears every
-        // newly exposed pixel before the scene is painted.
+        // Clear only the exact client viewport. A later expansion has a larger
+        // exact clip and therefore clears every newly exposed pixel before the
+        // scene is painted.
         var saveCount = canvas.Save();
         try
         {
@@ -230,72 +183,105 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
         _context!.Flush(surface);
         _context.Submit(false);
 
-        if (provisional is not null)
-        {
-            provisional.MarkPrepared();
-            if (!provisional.WaitForAdmission(ProvisionalAdmissionTimeout))
-                throw new InvalidOperationException(
-                    "The provisional composition frame was not admitted by matching child HWND geometry.");
-            ValidateExactChildTarget(targetMetrics);
-        }
-
-        _allocator!.Reset();
-        _commands!.Reset(_allocator);
-        using (var buffer = _swapChain!.GetBuffer<ID3D12Resource>(_swapChain.CurrentBackBufferIndex))
-        {
-            _commands.ResourceBarrier(
-            [
-                ResourceBarrier.BarrierTransition(
-                    _backing!.Resource, ResourceStates.RenderTarget, ResourceStates.CopySource),
-                ResourceBarrier.BarrierTransition(
-                    buffer, ResourceStates.Present, ResourceStates.CopyDest),
-            ]);
-            // Copy only pixels that the child HWND can expose. CopyResource
-            // moved the entire virtual-desktop capacity for every frame and
-            // needlessly reduced resize cadence, especially while DWM also
-            // had to move the window origin for a left/top drag.
-            _commands.CopyTextureRegion(
-                new TextureCopyLocation(buffer, 0),
-                0,
-                0,
-                0,
-                new TextureCopyLocation(_backing.Resource, 0),
-                new Box(
-                    0,
-                    0,
-                    0,
-                    targetMetrics.PhysicalWidth,
-                    targetMetrics.PhysicalHeight,
-                    1));
-            _commands.ResourceBarrier(
-            [
-                ResourceBarrier.BarrierTransition(
-                    _backing.Resource, ResourceStates.CopySource, ResourceStates.RenderTarget),
-                ResourceBarrier.BarrierTransition(
-                    buffer, ResourceStates.CopyDest, ResourceStates.Present),
-            ]);
-            _commands.Close();
-            _queue!.ExecuteCommandList(_commands);
-        }
-        _submittedFence = checked(++_nextFence);
-        _queue!.Signal(_fence!, _submittedFence).CheckError();
         beforeSwap?.Invoke();
-        Interlocked.Increment(ref _presentAttemptCount);
-        _swapChain.Present(0, PresentFlags.None).CheckError();
-        _compositionDevice!.Commit().CheckError();
-        if (!_firstCommitCompleted)
-        {
-            _compositionDevice.WaitForCommitCompletion().CheckError();
-            _firstCommitCompleted = true;
-        }
+        CopyAndPresent(targetMetrics.PhysicalWidth, targetMetrics.PhysicalHeight);
+        _committedWidth = targetMetrics.PhysicalWidth;
+        _committedHeight = targetMetrics.PhysicalHeight;
+        _transientWidth = _committedWidth;
+        _transientHeight = _committedHeight;
         Interlocked.Increment(ref _successfulPresentCount);
-        if (provisional is not null) CompleteProvisionalResize(provisional);
         return new(
             targetMetrics.PhysicalWidth,
             targetMetrics.PhysicalHeight,
             _surfaceGeneration,
             RecoveredFromContextLoss: false,
             SuccessfulSwap: true);
+    }
+
+    /// <summary>
+    /// Presents the last exact scene at 1:1 scale while native geometry is
+    /// ahead of framework layout. Newly exposed pixels repeat a known-safe
+    /// background row/column; the scene body is never scaled in X or Y.
+    /// This is a transient compositor front and does not change exact metrics.
+    /// </summary>
+    internal bool PresentTransient(WindowsViewMetrics targetMetrics)
+    {
+        ArgumentNullException.ThrowIfNull(targetMetrics);
+        if (!targetMetrics.HasDrawableSize) return false;
+        ValidateExactChildTarget(targetMetrics);
+        return PresentTransient(targetMetrics.PhysicalWidth, targetMetrics.PhysicalHeight);
+    }
+
+    /// <summary>
+    /// Prepares a proposed native extent before Windows exposes it. The child
+    /// HWND still clips the larger front until geometry advances, so this does
+    /// not admit, rewrite, or wait on native geometry.
+    /// </summary>
+    internal bool PresentTransient(int physicalWidth, int physicalHeight)
+    {
+        EnsureRasterThread();
+        ThrowIfDisposed();
+        if (physicalWidth <= 0 || physicalHeight <= 0 ||
+            _committedWidth <= 0 || _committedHeight <= 0)
+            return false;
+        const int transientRefillThresholdPixels = 128;
+        var expandsWidth = physicalWidth > _committedWidth;
+        var expandsHeight = physicalHeight > _committedHeight;
+        if (!expandsWidth && !expandsHeight)
+            return false;
+        if ((!expandsWidth || _transientWidth - physicalWidth >= transientRefillThresholdPixels) &&
+            (!expandsHeight || _transientHeight - physicalHeight >= transientRefillThresholdPixels))
+            return false;
+        if (expandsWidth) physicalWidth = checked(physicalWidth + TransientReservePixels);
+        if (expandsHeight) physicalHeight = checked(physicalHeight + TransientReservePixels);
+        _ = EnsureCapacity(physicalWidth, physicalHeight);
+        if (expandsWidth) physicalWidth = Math.Min(_capacityWidth, RoundUp(physicalWidth, CapacityQuantumPixels));
+        if (expandsHeight) physicalHeight = Math.Min(_capacityHeight, RoundUp(physicalHeight, CapacityQuantumPixels));
+        if (_transientWidth >= physicalWidth && _transientHeight >= physicalHeight)
+            return false;
+
+        WaitForGpu();
+        var surface = _backing?.Surface ?? throw new ObjectDisposedException(nameof(FlutterWindowsCompositionSurface));
+        using var committed = surface.Snapshot(new SKRectI(0, 0, _committedWidth, _committedHeight));
+        var canvas = surface.Canvas;
+        var oldWidth = Math.Min(_committedWidth, physicalWidth);
+        var oldHeight = Math.Min(_committedHeight, physicalHeight);
+        var safeBackgroundX = Math.Min(8, _committedWidth - 1);
+        var safeBackgroundY = Math.Max(0, _committedHeight - 9);
+        if (physicalWidth > _committedWidth && oldHeight > 0)
+        {
+            canvas.DrawImage(
+                committed,
+                new SKRect(safeBackgroundX, 0, safeBackgroundX + 1, oldHeight),
+                new SKRect(_committedWidth, 0, physicalWidth, oldHeight),
+                new SKSamplingOptions(SKFilterMode.Nearest));
+        }
+        if (physicalHeight > _committedHeight && oldWidth > 0)
+        {
+            canvas.DrawImage(
+                committed,
+                new SKRect(0, safeBackgroundY, oldWidth, safeBackgroundY + 1),
+                new SKRect(0, _committedHeight, oldWidth, physicalHeight),
+                new SKSamplingOptions(SKFilterMode.Nearest));
+        }
+        if (physicalWidth > _committedWidth && physicalHeight > _committedHeight)
+        {
+            canvas.DrawImage(
+                committed,
+                new SKRect(safeBackgroundX, safeBackgroundY,
+                    safeBackgroundX + 1, safeBackgroundY + 1),
+                new SKRect(_committedWidth, _committedHeight,
+                    physicalWidth, physicalHeight),
+                new SKSamplingOptions(SKFilterMode.Nearest));
+        }
+        canvas.Flush();
+        _context!.Flush(surface);
+        _context.Submit(false);
+        CopyAndPresent(physicalWidth, physicalHeight);
+        _transientWidth = physicalWidth;
+        _transientHeight = physicalHeight;
+        Interlocked.Increment(ref _transientPresentCount);
+        return true;
     }
 
     internal void RequestLifecycleRecovery()
@@ -334,10 +320,12 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
         _context = GRContext.CreateDirect3D(_backend) ??
             throw new InvalidOperationException("Skia could not create the Windows composition D3D12 context.");
 
-        var virtualWidth = Math.Max(1, GetSystemMetrics(SmCxVirtualScreen));
-        var virtualHeight = Math.Max(1, GetSystemMetrics(SmCyVirtualScreen));
-        _capacityWidth = Math.Max(initialWidth, virtualWidth);
-        _capacityHeight = Math.Max(initialHeight, virtualHeight);
+        _capacityWidth = RoundUp(
+            checked(Math.Max(1, initialWidth) + TransientReservePixels),
+            CapacityQuantumPixels);
+        _capacityHeight = RoundUp(
+            checked(Math.Max(1, initialHeight) + TransientReservePixels),
+            CapacityQuantumPixels);
         CreateCapacityResources();
     }
 
@@ -375,7 +363,7 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
         _compositionDevice.CreateVisual(out _rootVisual).CheckError();
         _compositionDevice.CreateVisual(out _contentVisual).CheckError();
         _contentVisual.SetContent(_swapChain).CheckError();
-        // The child HWND clips the full-capacity DirectComposition target. The
+        // The child HWND clips the bounded-reservoir DirectComposition target. The
         // unused portion is cleared transparent on every frame; it must never
         // retain a scene from an older layout generation.
         _rootVisual.AddVisual(_contentVisual, false, null!).CheckError();
@@ -417,25 +405,6 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
             $"{targetMetrics.PhysicalWidth}x{targetMetrics.PhysicalHeight}.");
     }
 
-    private FlutterWindowsProvisionalResize? GetProvisionalResize(WindowsViewMetrics targetMetrics)
-    {
-        lock (_provisionalGate)
-        {
-            return _provisionalResize is { } state &&
-                ReferenceEquals(state.TargetMetrics, targetMetrics)
-                ? state
-                : null;
-        }
-    }
-
-    private void CompleteProvisionalResize(FlutterWindowsProvisionalResize state)
-    {
-        lock (_provisionalGate)
-        {
-            if (ReferenceEquals(_provisionalResize, state)) _provisionalResize = null;
-        }
-    }
-
     private void WaitForGpu()
     {
         if (_submittedFence == 0 || _fence!.CompletedValue >= _submittedFence) return;
@@ -444,6 +413,51 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
         if (result != WaitObject0)
             throw new TimeoutException($"Windows composition D3D12 fence {_submittedFence} timed out.");
     }
+
+    private void CopyAndPresent(int width, int height)
+    {
+        _allocator!.Reset();
+        _commands!.Reset(_allocator);
+        using (var buffer = _swapChain!.GetBuffer<ID3D12Resource>(_swapChain.CurrentBackBufferIndex))
+        {
+            _commands.ResourceBarrier(
+            [
+                ResourceBarrier.BarrierTransition(
+                    _backing!.Resource, ResourceStates.RenderTarget, ResourceStates.CopySource),
+                ResourceBarrier.BarrierTransition(
+                    buffer, ResourceStates.Present, ResourceStates.CopyDest),
+            ]);
+            _commands.CopyTextureRegion(
+                new TextureCopyLocation(buffer, 0),
+                0,
+                0,
+                0,
+                new TextureCopyLocation(_backing.Resource, 0),
+                new Box(0, 0, 0, width, height, 1));
+            _commands.ResourceBarrier(
+            [
+                ResourceBarrier.BarrierTransition(
+                    _backing.Resource, ResourceStates.CopySource, ResourceStates.RenderTarget),
+                ResourceBarrier.BarrierTransition(
+                    buffer, ResourceStates.CopyDest, ResourceStates.Present),
+            ]);
+            _commands.Close();
+            _queue!.ExecuteCommandList(_commands);
+        }
+        _submittedFence = checked(++_nextFence);
+        _queue!.Signal(_fence!, _submittedFence).CheckError();
+        Interlocked.Increment(ref _presentAttemptCount);
+        _swapChain.Present(0, PresentFlags.None).CheckError();
+        _compositionDevice!.Commit().CheckError();
+        if (!_firstCommitCompleted)
+        {
+            _compositionDevice.WaitForCommitCompletion().CheckError();
+            _firstCommitCompleted = true;
+        }
+    }
+
+    private static int RoundUp(int value, int quantum) =>
+        checked(((value + quantum - 1) / quantum) * quantum);
 
     private void EnsureRasterThread()
     {
@@ -481,11 +495,6 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
         if (_disposed) return;
         EnsureRasterThread();
         _disposed = true;
-        lock (_provisionalGate)
-        {
-            _provisionalResize?.Cancel();
-            _provisionalResize = null;
-        }
         WaitForGpu();
         DisposeCapacityResources();
         _context?.Dispose();
@@ -586,46 +595,11 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
     [DllImport("user32.dll")]
     private static extern nint MonitorFromWindow(nint window, uint flags);
 
-    [DllImport("user32.dll")]
-    private static extern int GetSystemMetrics(int index);
-
     [DllImport("kernel32.dll")]
     private static extern uint GetCurrentThreadId();
 
     [DllImport("kernel32.dll", SetLastError = true)]
     private static extern uint WaitForSingleObject(nint handle, uint milliseconds);
-}
-
-internal sealed class FlutterWindowsProvisionalResize
-{
-    private readonly TaskCompletionSource<bool> _prepared = new(
-        TaskCreationOptions.RunContinuationsAsynchronously);
-    private readonly TaskCompletionSource<bool> _admitted = new(
-        TaskCreationOptions.RunContinuationsAsynchronously);
-
-    internal FlutterWindowsProvisionalResize(WindowsViewMetrics targetMetrics) =>
-        TargetMetrics = targetMetrics ?? throw new ArgumentNullException(nameof(targetMetrics));
-
-    internal WindowsViewMetrics TargetMetrics { get; }
-
-    internal bool IsPrepared =>
-        _prepared.Task.IsCompletedSuccessfully && _prepared.Task.Result;
-
-    internal bool WaitForPreparation(TimeSpan timeout) =>
-        _prepared.Task.Wait(timeout) && _prepared.Task.GetAwaiter().GetResult();
-
-    internal bool WaitForAdmission(TimeSpan timeout) =>
-        _admitted.Task.Wait(timeout) && _admitted.Task.GetAwaiter().GetResult();
-
-    internal void MarkPrepared() => _prepared.TrySetResult(true);
-
-    internal void Admit() => _admitted.TrySetResult(true);
-
-    internal void Cancel()
-    {
-        _prepared.TrySetResult(false);
-        _admitted.TrySetResult(false);
-    }
 }
 
 internal sealed record FlutterWindowsCompositionSurfaceSnapshot(
@@ -637,6 +611,7 @@ internal sealed record FlutterWindowsCompositionSurfaceSnapshot(
     int CapacityHeight,
     long PresentAttemptCount,
     long SuccessfulPresentCount,
+    long TransientPresentCount,
     long CapacityGrowthCount,
     long ExactExtentMismatchCount,
     string AdapterDescription,

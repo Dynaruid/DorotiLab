@@ -441,15 +441,18 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                 foregroundColor: palette.onPrimaryContainer,
                 iconTheme: new IconThemeData(color: palette.onPrimaryContainer, size: 24),
                 actionsIconTheme: new IconThemeData(color: palette.onPrimaryContainer, size: 24)),
-            body: new Material.Scrollbar(
-                key: _outerScrollbarKey,
-                controller: _outerScrollController,
-                child: new SingleChildScrollView(
+            body: new Stack(children:
+            [
+                new Positioned(left: 0, top: 0, right: 0, bottom: 0,
+                    child: new Material.Scrollbar(
+                    key: _outerScrollbarKey,
                     controller: _outerScrollController,
-                    primary: false,
-                    child: new Container(
-                    padding: EdgeInsets.CreateAll(16),
-                    child: new Column(
+                    child: new SingleChildScrollView(
+                        controller: _outerScrollController,
+                        primary: false,
+                        child: new Container(
+                        padding: EdgeInsets.CreateAll(16),
+                        child: new Column(
                         crossAxisAlignment: Doroti.Framework.Rendering.CrossAxisAlignment.start,
                         spacing: 10,
                         children:
@@ -503,7 +506,14 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                             new Text("Nested scroll regression · outer/inner controllers · transient Android scrollbar"),
                             new Text("Lazy ListView.builder + clipped backdrop panel"),
                             effectPanel,
-                        ])))),
+                        ]))))),
+                new Positioned(left: 0, top: 0, right: 0, bottom: 0,
+                    child: new IgnorePointer(child: new GridPaper(
+                        color: new UiColor(0x8000bcd4L),
+                        interval: 32,
+                        divisions: 1,
+                        subdivisions: 1))),
+            ]),
             floatingActionButton: ActionSemantics(InteractiveLabels[5], new Material.FloatingActionButton(
                 tooltip: "Material action",
                 backgroundColor: palette.primaryContainer,

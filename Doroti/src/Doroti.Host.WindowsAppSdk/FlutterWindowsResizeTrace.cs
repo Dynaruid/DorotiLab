@@ -56,7 +56,8 @@ internal sealed class FlutterWindowsResizeTrace : IDisposable
         string eventName,
         WindowsViewMetrics? metrics = null,
         long? causalFrameId = null,
-        string? detail = null)
+        string? detail = null,
+        bool captureGeometry = false)
     {
         if (_writer is null || Volatile.Read(ref _disposed) != 0) return;
         ArgumentException.ThrowIfNullOrWhiteSpace(eventName);
@@ -67,9 +68,10 @@ internal sealed class FlutterWindowsResizeTrace : IDisposable
             return;
         }
 
-        var topLevel = GetWindowRect(_topLevelHwnd);
-        var child = GetClientScreenRect(_childHwnd);
-        _ = NativeMethods.GetCursorPos(out var cursor);
+        var topLevel = captureGeometry ? GetWindowRect(_topLevelHwnd) : default;
+        var child = captureGeometry ? GetClientScreenRect(_childHwnd) : default;
+        var cursor = default(NativePoint);
+        if (captureGeometry) _ = NativeMethods.GetCursorPos(out cursor);
         var builder = new StringBuilder(512);
         builder.Append('{');
         AppendString(builder, "schemaVersion", "doroti.windowsappsdk.f6r-causal/v1");

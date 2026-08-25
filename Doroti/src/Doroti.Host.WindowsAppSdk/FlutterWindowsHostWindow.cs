@@ -175,10 +175,10 @@ internal sealed class FlutterWindowsHostWindow : IDisposable
                 options.InitialClientWidth,
                 options.InitialClientHeight,
                 WsOverlappedWindow | WsClipChildren,
-                WsExAppWindow | WsExNoRedirectionBitmap,
+                WsExAppWindow,
                 dpi);
             topLevel = NativeMethods.CreateWindowExW(
-                WsExAppWindow | WsExNoRedirectionBitmap,
+                WsExAppWindow,
                 TopLevelClassName,
                 options.Title,
                 WsOverlappedWindow | WsClipChildren,
@@ -205,7 +205,7 @@ internal sealed class FlutterWindowsHostWindow : IDisposable
             }
 
             view = NativeMethods.CreateWindowExW(
-                WsExNoRedirectionBitmap,
+                options.UseNoRedirectionBitmap ? WsExNoRedirectionBitmap : 0,
                 ViewClassName,
                 string.Empty,
                 WsChild | WsVisible | WsClipSiblings,
@@ -510,13 +510,13 @@ internal sealed class FlutterWindowsHostWindow : IDisposable
             _options.MinimumClientWidth,
             _options.MinimumClientHeight,
             WsOverlappedWindow | WsClipChildren,
-            WsExAppWindow | WsExNoRedirectionBitmap,
+            WsExAppWindow,
             dpi);
         var maximum = ClientToWindowRect(
             _options.MaximumClientWidth,
             _options.MaximumClientHeight,
             WsOverlappedWindow | WsClipChildren,
-            WsExAppWindow | WsExNoRedirectionBitmap,
+            WsExAppWindow,
             dpi);
         info.MinimumTrackSize = new NativeMethods.NativePoint
         {
@@ -813,7 +813,8 @@ internal sealed record FlutterWindowsHostWindowOptions(
     int MaximumClientWidth,
     int MaximumClientHeight,
     int InitialX = 96,
-    int InitialY = 96)
+    int InitialY = 96,
+    bool UseNoRedirectionBitmap = false)
 {
     internal void Validate()
     {

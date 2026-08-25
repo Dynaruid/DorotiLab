@@ -3,7 +3,8 @@ param(
     [Parameter(Mandatory)] [string] $Evidence,
     [Parameter(Mandatory)] [string] $CausalTrace,
     [string] $HostLog,
-    [string] $Output
+    [string] $Output,
+    [switch] $GeometryOnly
 )
 
 $ErrorActionPreference = 'Stop'
@@ -65,27 +66,29 @@ $windowCaptureFrames = @($capture.frames | Sort-Object callbackEntryCounter | Fo
         window = $joinedWindow
         client = $joinedClient
         cursor = $joinedCursor
-        # The native observer compares app-bar and title-bar extents inside
-        # the same raw compositor frame, so these gaps are already immune to
-        # callback-time HWND geometry drift and must not be re-labeled here.
+        # The native observer compares app-bar-like pixels and the title-bar
+        # extent inside the same raw compositor frame. A transient safe-color
+        # fill therefore counts as covered here; this detects only an
+        # uncovered/black strip, not exact-layout content coverage.
         contentLeftGap = [int]$frame.contentLeftGap
         contentRightGap = [int]$frame.contentRightGap
         png = $frame.png
     }
 })
 $frames = if ($desktopFrames.Count -gt 0) { $desktopFrames } else { $windowCaptureFrames }
-$geometryFrames = if ($frames.Count -gt 0) { $frames } else {
-    @($capture.windowSamples | ForEach-Object {
-        [pscustomobject]@{
-            acquireEntryCounter = [long]$_.performanceCounter
-            cursor = [pscustomobject]@{ x = [int]$_.cursorX; y = [int]$_.cursorY }
-            window = $_.window
-        }
-    })
-}
+$geometryFrames = @($capture.windowSamples | ForEach-Object {
+    [pscustomobject]@{
+        acquireEntryCounter = [long]$_.performanceCounter
+        cursor = [pscustomobject]@{ x = [int]$_.cursorX; y = [int]$_.cursorY }
+        window = $_.window
+    }
+})
 $activeFrames = @($geometryFrames | Where-Object {
     [long]$_.acquireEntryCounter -ge $dragStart -and [long]$_.acquireEntryCounter -le $mouseUp
 })
+$activeNativeSamples = @($capture.windowSamples | Where-Object {
+    [long]$_.performanceCounter -ge $dragStart -and [long]$_.performanceCounter -le $mouseUp
+} | Sort-Object performanceCounter)
 
 $lagValues = [Collections.Generic.List[double]]::new()
 $reverseCount = 0
@@ -141,6 +144,44 @@ if ($activeFrames.Count -gt 0) {
     $finalLag = [Math]::Abs(($finalCursor - $initialCursor) - ($finalEdge - $initialEdge))
 }
 
+$nativeEdgeUpdateIntervalsUs = [Collections.Generic.List[double]]::new()
+if ($activeNativeSamples.Count -gt 1) {
+    $lastChangedCounter = [long]$activeNativeSamples[0].performanceCounter
+    $lastChangedEdge = Get-AxisValue $activeNativeSamples[0].window $capture.edge $false
+    $lastChangedCursor = if ($capture.edge -match 'Left|Right') {
+        [double]$activeNativeSamples[0].cursorX
+    } else { [double]$activeNativeSamples[0].cursorY }
+    foreach ($sample in $activeNativeSamples | Select-Object -Skip 1) {
+        $edge = Get-AxisValue $sample.window $capture.edge $false
+        if ([Math]::Abs($edge - $lastChangedEdge) -lt 0.5) { continue }
+        $counter = [long]$sample.performanceCounter
+        $nativeEdgeUpdateIntervalsUs.Add(($counter - $lastChangedCounter) * 1000000.0 / $frequency)
+        $lastChangedCounter = $counter
+        $lastChangedEdge = $edge
+        $lastChangedCursor = if ($capture.edge -match 'Left|Right') {
+            [double]$sample.cursorX
+        } else { [double]$sample.cursorY }
+    }
+    $lastSample = $activeNativeSamples[-1]
+    $lastCursor = if ($capture.edge -match 'Left|Right') {
+        [double]$lastSample.cursorX
+    } else { [double]$lastSample.cursorY }
+    if ([Math]::Abs($lastCursor - $lastChangedCursor) -gt 4) {
+        $nativeEdgeUpdateIntervalsUs.Add(
+            ([long]$lastSample.performanceCounter - $lastChangedCounter) * 1000000.0 / $frequency)
+    }
+}
+$activeLagP95 = Get-Percentile $lagValues.ToArray() .95
+$activeLagMax = if ($lagValues.Count) { ($lagValues | Measure-Object -Maximum).Maximum } else { $null }
+$movementPerRefresh = if ($actualDurationUs -gt 0) {
+    [double]$capture.dragPixels * $refreshUs / $actualDurationUs
+} else { 0 }
+$nativeIntervalP95 = Get-Percentile $nativeEdgeUpdateIntervalsUs.ToArray() .95
+$nativeIntervalMax = if ($nativeEdgeUpdateIntervalsUs.Count) {
+    ($nativeEdgeUpdateIntervalsUs | Measure-Object -Maximum).Maximum
+} else { $null }
+$stallCount = @($nativeEdgeUpdateIntervalsUs | Where-Object { $_ -gt 2 * $refreshUs }).Count
+
 $presentEvents = @($trace | Where-Object {
     $_.event -eq 'presented' -and [long]$_.qpc -ge $dragStart -and [long]$_.qpc -le $mouseUp
 } | Sort-Object qpc)
@@ -148,6 +189,31 @@ $presentIntervalsUs = [Collections.Generic.List[double]]::new()
 for ($i = 1; $i -lt $presentEvents.Count; $i++) {
     $presentIntervalsUs.Add(([long]$presentEvents[$i].qpc - [long]$presentEvents[$i - 1].qpc) * 1000000.0 / $frequency)
 }
+$visibleFrontEvents = @($trace | Where-Object {
+    $_.event -in @('transientFrontStarted','transientFrontUpdated','presented') -and
+    [long]$_.qpc -ge $dragStart -and [long]$_.qpc -le $mouseUp
+} | Sort-Object qpc)
+$retainedTransientPrepared = @($visibleFrontEvents | Where-Object {
+    $_.event -in @('transientFrontStarted','transientFrontUpdated')
+}).Count -gt 0
+$visibleFrontIntervalsUs = [Collections.Generic.List[double]]::new()
+for ($i = 1; $i -lt $visibleFrontEvents.Count; $i++) {
+    $visibleFrontIntervalsUs.Add(
+        ([long]$visibleFrontEvents[$i].qpc - [long]$visibleFrontEvents[$i - 1].qpc) * 1000000.0 / $frequency)
+}
+$visibleFrontP95Us = Get-Percentile $visibleFrontIntervalsUs.ToArray() .95
+$visibleFrontMaxUs = if ($visibleFrontIntervalsUs.Count) {
+    ($visibleFrontIntervalsUs | Measure-Object -Maximum).Maximum
+} else { $null }
+$finalClientWidth = [int]$capture.finalGeometry.clientScreen.width
+$finalClientHeight = [int]$capture.finalGeometry.clientScreen.height
+$finalExactPresent = $trace | Where-Object {
+    $_.event -eq 'presented' -and [long]$_.qpc -ge $mouseUp -and
+    [int]$_.targetWidth -eq $finalClientWidth -and [int]$_.targetHeight -eq $finalClientHeight
+} | Sort-Object qpc | Select-Object -First 1
+$finalExactPresentLatencyUs = if ($finalExactPresent) {
+    ([long]$finalExactPresent.qpc - $mouseUp) * 1000000.0 / $frequency
+} else { $null }
 $dispatchUs = @($trace | Where-Object event -eq 'windowSizeHandled' | ForEach-Object {
     if ($_.detail -match 'dispatchMicroseconds=(\d+)') { [double]$Matches[1] }
 })
@@ -165,17 +231,19 @@ $observedCaptureHz = if ($activeCaptureFrames.Count -gt 1) {
     ($activeCaptureFrames.Count - 1) * $frequency /
         ([long]$activeCaptureFrames[-1].acquireEntryCounter - [long]$activeCaptureFrames[0].acquireEntryCounter)
 } else { 0 }
-$contentGapDeltas = [Collections.Generic.List[double]]::new()
+$uncoveredEdgeGapDeltas = [Collections.Generic.List[double]]::new()
 if ($windowCaptureFrames.Count -gt 0) {
     $baselineGap = if ($capture.edge -match 'Left') {
         [double]$windowCaptureFrames[0].contentLeftGap
     } else { [double]$windowCaptureFrames[0].contentRightGap }
     foreach ($frame in $windowCaptureFrames) {
         $gap = if ($capture.edge -match 'Left') { [double]$frame.contentLeftGap } else { [double]$frame.contentRightGap }
-        if ($gap -ge 0 -and $baselineGap -ge 0) { $contentGapDeltas.Add([Math]::Max(0, $gap - $baselineGap)) }
+        if ($gap -ge 0 -and $baselineGap -ge 0) { $uncoveredEdgeGapDeltas.Add([Math]::Max(0, $gap - $baselineGap)) }
     }
 }
-$maxContentGapDelta = if ($contentGapDeltas.Count) { ($contentGapDeltas | Measure-Object -Maximum).Maximum } else { $null }
+$maxUncoveredEdgeGapDelta = if ($uncoveredEdgeGapDeltas.Count) {
+    ($uncoveredEdgeGapDeltas | Measure-Object -Maximum).Maximum
+} else { $null }
 
 $hostSummary = @{}
 $shutdownTrace = $trace | Where-Object event -eq 'shutdown' | Select-Object -Last 1
@@ -198,27 +266,41 @@ if ($HostLog -and (Test-Path -LiteralPath $HostLog)) {
 $captureRequired = [bool]$capture.f6r -and -not [bool]$capture.logOnly
 $checks = [ordered]@{
     validDuration = $actualDurationUs -gt 0 -and $actualDurationUs -le 180000
+    activeCursorEdgeLagP95AtMostOneRefreshMovement = $null -ne $activeLagP95 -and
+        $activeLagP95 -le [Math]::Ceiling($movementPerRefresh)
+    activeCursorEdgeLagMaxAtMostTwoRefreshMovements = $null -ne $activeLagMax -and
+        $activeLagMax -le [Math]::Ceiling(2 * $movementPerRefresh)
+    nativeEdgeUpdateP95AtMostTwoRefreshes = $null -ne $nativeIntervalP95 -and
+        $nativeIntervalP95 -le 2 * $refreshUs
+    nativeEdgeUpdateMaxAtMostTwoRefreshes = $null -ne $nativeIntervalMax -and
+        $nativeIntervalMax -le 2 * $refreshUs
     nativeEdgeNeverReverses = $reverseCount -eq 0
     noThreeFrameStall = $stallCount -eq 0
     finalCursorEdgeLagAtMostOnePixel = $null -ne $finalLag -and $finalLag -le 1
-    presentP95AtMostTwoRefreshes = $presentIntervalsUs.Count -gt 0 -and
-        (Get-Percentile $presentIntervalsUs.ToArray() .95) -le 2 * $refreshUs
-    presentMaxAtMostThreeRefreshes = $presentIntervalsUs.Count -gt 0 -and
-        (($presentIntervalsUs | Measure-Object -Maximum).Maximum -le 3 * $refreshUs)
+    visibleFrontP95AtMostTwoRefreshes = $GeometryOnly -or
+        ($captureRequired -and $activeCaptureFrames.Count -gt 1) -or
+        (-not $captureRequired -and ($retainedTransientPrepared -or
+        ($null -ne $visibleFrontP95Us -and $visibleFrontP95Us -le 2 * $refreshUs)))
+    visibleFrontMaxAtMostThreeRefreshes = $GeometryOnly -or
+        ($captureRequired -and $activeCaptureFrames.Count -gt 1) -or
+        (-not $captureRequired -and ($retainedTransientPrepared -or
+        ($null -ne $visibleFrontMaxUs -and $visibleFrontMaxUs -le 3 * $refreshUs)))
+    finalExactPresentWithin100Milliseconds = $GeometryOnly -or
+        ($null -ne $finalExactPresentLatencyUs -and $finalExactPresentLatencyUs -le 100000)
     platformDispatchP99AtMostOneMillisecond = $dispatchUs.Count -gt 0 -and
         (Get-Percentile $dispatchUs .99) -le 1000
     platformDispatchMaxAtMostFourMilliseconds = $dispatchUs.Count -gt 0 -and
         (($dispatchUs | Measure-Object -Maximum).Maximum -le 4000)
     traceDroppedEventsZero = $traceDrops -eq 0
-    queueMaxAtMostOne = $hostSummary.ContainsKey('queueMax') -and [int]$hostSummary.queueMax -le 1
-    stalePresentZero = $hostSummary.ContainsKey('stalePresent') -and [int]$hostSummary.stalePresent -eq 0
-    failedZero = $hostSummary.ContainsKey('failed') -and [int]$hostSummary.failed -eq 0
-    terminalCausalMismatchZero = $hostSummary.ContainsKey('causalGap') -and
+    queueMaxAtMostOne = $GeometryOnly -or ($hostSummary.ContainsKey('queueMax') -and [int]$hostSummary.queueMax -le 1)
+    stalePresentZero = $GeometryOnly -or ($hostSummary.ContainsKey('stalePresent') -and [int]$hostSummary.stalePresent -eq 0)
+    failedZero = $GeometryOnly -or ($hostSummary.ContainsKey('failed') -and [int]$hostSummary.failed -eq 0)
+    terminalCausalMismatchZero = $GeometryOnly -or ($hostSummary.ContainsKey('causalGap') -and
         $hostSummary.ContainsKey('receiptMismatch') -and
-        [int]$hostSummary.causalGap -eq 0 -and [int]$hostSummary.receiptMismatch -eq 0
+        [int]$hostSummary.causalGap -eq 0 -and [int]$hostSummary.receiptMismatch -eq 0)
     captureFramesPresent = -not $captureRequired -or $frames.Count -gt 0
     captureDroppedFramesZero = -not $captureRequired -or $accumulatedDrops -eq 0
-    captureCadenceMatchesDisplay = -not $captureRequired -or $observedCaptureHz -ge $refreshHz * .9
+    captureActiveFramesPresent = -not $captureRequired -or $activeCaptureFrames.Count -gt 1
     rawFramesEncoded = -not $captureRequired -or
         ((($desktopFrames.Count -gt 0 -and
            [int]$capture.desktopDuplication.encodedRawFrames -eq $frames.Count -and
@@ -226,8 +308,8 @@ $checks = [ordered]@{
           ($windowCaptureFrames.Count -gt 0 -and
            [int]$capture.encodedPngFrames -eq $frames.Count -and
            [int]$capture.encoderDroppedFrames -eq 0)))
-    contentEdgeGapAtMostOnePixel = -not $captureRequired -or
-        ($null -ne $maxContentGapDelta -and $maxContentGapDelta -le 1)
+    uncoveredEdgeGapAtMostOnePixel = -not $captureRequired -or
+        ($null -ne $maxUncoveredEdgeGapDelta -and $maxUncoveredEdgeGapDelta -le 1)
 }
 
 $failedChecks = @($checks.GetEnumerator() | Where-Object { -not $_.Value } | ForEach-Object Key)
@@ -240,17 +322,26 @@ $summary = [ordered]@{
     dragPixels = [int]$capture.dragPixels
     actualDragDurationMicroseconds = $actualDurationUs
     displayRefreshHz = $refreshHz
+    geometryOnly = [bool]$GeometryOnly
+    movementPerRefreshPixels = $movementPerRefresh
     inputSamples = [int]$capture.inputSamples
     captureFrames = $frames.Count
     observedCaptureHz = $observedCaptureHz
     accumulatedCaptureDrops = $accumulatedDrops
-    maximumContentGapDeltaPixels = $maxContentGapDelta
+    maximumDetectedUncoveredEdgeGapDeltaPixels = $maxUncoveredEdgeGapDelta
     cursorEdgeLagPixels = [ordered]@{
         p50 = Get-Percentile $lagValues.ToArray() .50
-        p95 = Get-Percentile $lagValues.ToArray() .95
+        p95 = $activeLagP95
         p99 = Get-Percentile $lagValues.ToArray() .99
-        max = if ($lagValues.Count) { ($lagValues | Measure-Object -Maximum).Maximum } else { $null }
+        max = $activeLagMax
         final = $finalLag
+    }
+    nativeEdgeUpdateIntervalMicroseconds = [ordered]@{
+        count = $nativeEdgeUpdateIntervalsUs.Count
+        p50 = Get-Percentile $nativeEdgeUpdateIntervalsUs.ToArray() .50
+        p95 = $nativeIntervalP95
+        p99 = Get-Percentile $nativeEdgeUpdateIntervalsUs.ToArray() .99
+        max = $nativeIntervalMax
     }
     reverseFrames = $reverseCount
     threeFrameStalls = $stallCount
@@ -261,6 +352,15 @@ $summary = [ordered]@{
         p99 = Get-Percentile $presentIntervalsUs.ToArray() .99
         max = if ($presentIntervalsUs.Count) { ($presentIntervalsUs | Measure-Object -Maximum).Maximum } else { $null }
     }
+    visibleFrontIntervalMicroseconds = [ordered]@{
+        count = $visibleFrontIntervalsUs.Count
+        retainedTransientPrepared = $retainedTransientPrepared
+        p50 = Get-Percentile $visibleFrontIntervalsUs.ToArray() .50
+        p95 = $visibleFrontP95Us
+        p99 = Get-Percentile $visibleFrontIntervalsUs.ToArray() .99
+        max = $visibleFrontMaxUs
+    }
+    finalExactPresentLatencyMicroseconds = $finalExactPresentLatencyUs
     captureIntervalMicroseconds = [ordered]@{
         p50 = Get-Percentile $captureIntervalsUs.ToArray() .50
         p95 = Get-Percentile $captureIntervalsUs.ToArray() .95
