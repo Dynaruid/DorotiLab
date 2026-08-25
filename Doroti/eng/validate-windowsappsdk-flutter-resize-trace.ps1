@@ -112,7 +112,7 @@ foreach ($motionName in $Motion) {
                     )
                     if ($mode -eq 'log-only') { $arguments += '--log-only' }
                     $observerAttempts = 1
-                    $observerProcess = Start-Process -FilePath $observer -ArgumentList $arguments -PassThru `
+                    $observerProcess = Start-Process -FilePath $observer -ArgumentList $arguments -PassThru -NoNewWindow `
                         -RedirectStandardOutput $observerOut -RedirectStandardError $observerLog
                     if (-not $observerProcess.WaitForExit(20 * 60 * 1000)) {
                         Stop-Process -Id $observerProcess.Id -Force
