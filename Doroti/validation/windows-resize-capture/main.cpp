@@ -7,6 +7,8 @@
 #include <windows.graphics.capture.interop.h>
 #include <windows.graphics.directx.direct3d11.interop.h>
 
+#include "grid_oracle.h"
+
 #include <winrt/base.h>
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Graphics.h>
@@ -96,8 +98,18 @@ struct FrameRecord {
     std::optional<double> appBarLogicalHeight;
     std::optional<double> circleAspect;
     std::optional<double> titleScaleRatio;
-    int contentLeftGap{-1};
-    int contentRightGap{-1};
+    int detectedUncoveredLeftGap{-1};
+    int detectedUncoveredRightGap{-1};
+    std::optional<int> gridRightTail;
+    std::optional<int> gridBottomTail;
+    std::optional<double> gridSpacingX;
+    std::optional<double> gridSpacingY;
+    std::optional<double> gridNonUniformScaleRatio;
+    std::optional<int> gridOriginOffsetX;
+    std::optional<int> gridOriginOffsetY;
+    bool gridRightEdgeMarkerDetected{};
+    bool gridBottomEdgeMarkerDetected{};
+    bool gridParsed{};
     std::optional<int> frameId;
     RECT window{};
     POINT cursor{};
@@ -120,8 +132,18 @@ struct OutputFrameRecord {
     std::optional<double> appBarLogicalHeight;
     std::optional<double> circleAspect;
     std::optional<double> titleScaleRatio;
-    int contentLeftGap{-1};
-    int contentRightGap{-1};
+    int detectedUncoveredLeftGap{-1};
+    int detectedUncoveredRightGap{-1};
+    std::optional<int> gridRightTail;
+    std::optional<int> gridBottomTail;
+    std::optional<double> gridSpacingX;
+    std::optional<double> gridSpacingY;
+    std::optional<double> gridNonUniformScaleRatio;
+    std::optional<int> gridOriginOffsetX;
+    std::optional<int> gridOriginOffsetY;
+    bool gridRightEdgeMarkerDetected{};
+    bool gridBottomEdgeMarkerDetected{};
+    bool gridParsed{};
     std::optional<int> frameId;
     POINT cursor{};
     std::string png;
@@ -942,8 +964,16 @@ private:
             std::optional<double> circle;
             std::optional<double> titleScale;
             int leftGap = -1, rightGap = -1;
+                doroti::resize_oracle::GridMetrics grid;
                 if (slot.analyzeFrame) {
                     appBar = AppBarRows(pixels, slot.width, slot.height, client, scale);
+                    if (options_.f6r) {
+                        grid = doroti::resize_oracle::AnalyzeDiagnosticGrid(
+                            pixels, slot.width, slot.height,
+                            {static_cast<int>(client.left), static_cast<int>(client.top),
+                             static_cast<int>(client.right), static_cast<int>(client.bottom)},
+                            scale);
+                    }
             }
                 if (slot.analyzeShapeFrame) {
                     circle = CircleAspect(pixels, slot.width, client, scale);
@@ -1018,8 +1048,18 @@ private:
             if (appBar) record.appBarLogicalHeight = (appBar->second - appBar->first + 1) / scale;
             record.circleAspect = circle;
             record.titleScaleRatio = titleScale;
-            record.contentLeftGap = leftGap;
-            record.contentRightGap = rightGap;
+            record.detectedUncoveredLeftGap = leftGap;
+            record.detectedUncoveredRightGap = rightGap;
+            record.gridRightTail = grid.rightTail;
+            record.gridBottomTail = grid.bottomTail;
+            record.gridSpacingX = grid.spacingX;
+            record.gridSpacingY = grid.spacingY;
+            record.gridNonUniformScaleRatio = grid.nonUniformScaleRatio;
+            record.gridOriginOffsetX = grid.originOffsetX;
+            record.gridOriginOffsetY = grid.originOffsetY;
+            record.gridRightEdgeMarkerDetected = grid.rightEdgeMarkerDetected;
+            record.gridBottomEdgeMarkerDetected = grid.bottomEdgeMarkerDetected;
+            record.gridParsed = grid.parsed;
                 if (!options_.f6r)
                     record.frameId = DecodeFrameId(pixels, slot.width, slot.height, client, scale);
                 record.window = slot.window;
@@ -1033,6 +1073,9 @@ private:
                     std::abs(*record.appBarLogicalHeight - *baselineAppBarHeight_) > 1.1) ||
                 (record.circleAspect && std::abs(*record.circleAspect - 1.0) > std::max(1.0, std::ceil(scale)) / 18.0) ||
                 (record.titleScaleRatio && std::abs(*record.titleScaleRatio - 1.0) > 0.04) ||
+                (options_.f6r && (!record.gridParsed ||
+                    (record.gridNonUniformScaleRatio &&
+                        std::abs(*record.gridNonUniformScaleRatio - 1.0) > 0.02))) ||
                 leftGap > static_cast<int>(std::ceil(scale)) || rightGap > static_cast<int>(std::ceil(scale)));
                 if (slot.encodeStrideFrame || (oracleFailure && options_.anomalyPngs)) {
                 std::ostringstream filename;
@@ -1273,8 +1316,8 @@ private:
                 record.appBarLogicalHeight = appBarHeight;
                 record.circleAspect = circleAspect;
                 record.titleScaleRatio = titleScaleRatio;
-                record.contentLeftGap = leftGap;
-                record.contentRightGap = rightGap;
+                record.detectedUncoveredLeftGap = leftGap;
+                record.detectedUncoveredRightGap = rightGap;
                 if (!options_.f6r) {
                     record.frameId = DecodeFrameId(
                         pixels, width, height, localClient,
@@ -1760,6 +1803,11 @@ void WriteOptional(std::ostream& stream, std::optional<double> value) {
     else stream << "null";
 }
 
+void WriteOptional(std::ostream& stream, std::optional<int> value) {
+    if (value) stream << *value;
+    else stream << "null";
+}
+
 void WriteRect(std::ostream& stream, RECT const& value) {
     stream << "{\"left\":" << value.left << ",\"top\":" << value.top
         << ",\"right\":" << value.right << ",\"bottom\":" << value.bottom
@@ -1848,8 +1896,8 @@ void WriteEvidence(
         ++visualAnalyzedFrames;
         if (!baselineAppBar && frame.appBarLogicalHeight) {
             baselineAppBar = frame.appBarLogicalHeight;
-            baselineLeftGap = frame.contentLeftGap;
-            baselineRightGap = frame.contentRightGap;
+            baselineLeftGap = frame.detectedUncoveredLeftGap;
+            baselineRightGap = frame.detectedUncoveredRightGap;
             activeVisualInterval = true;
         }
         if (!activeVisualInterval) continue;
@@ -1864,15 +1912,19 @@ void WriteEvidence(
             ++titleObserved;
             if (std::abs(*frame.titleScaleRatio - 1.0) > 0.04) ++titleFailure;
         }
-        int const leftGapDelta = baselineLeftGap ? std::max(0, frame.contentLeftGap - *baselineLeftGap) : frame.contentLeftGap;
-        int const rightGapDelta = baselineRightGap ? std::max(0, frame.contentRightGap - *baselineRightGap) : frame.contentRightGap;
+        int const leftGapDelta = baselineLeftGap
+            ? std::max(0, frame.detectedUncoveredLeftGap - *baselineLeftGap)
+            : frame.detectedUncoveredLeftGap;
+        int const rightGapDelta = baselineRightGap
+            ? std::max(0, frame.detectedUncoveredRightGap - *baselineRightGap)
+            : frame.detectedUncoveredRightGap;
         maximumLeftGap = std::max(maximumLeftGap, leftGapDelta);
         maximumRightGap = std::max(maximumRightGap, rightGapDelta);
         finalLeftGap = leftGapDelta;
         finalRightGap = rightGapDelta;
         bool const hasContentGap = leftGapDelta > static_cast<int>(std::ceil(scale)) ||
             rightGapDelta > static_cast<int>(std::ceil(scale)) ||
-            frame.contentLeftGap < 0 || frame.contentRightGap < 0;
+            frame.detectedUncoveredLeftGap < 0 || frame.detectedUncoveredRightGap < 0;
         if (hasContentGap) {
             ++edgeGapFrames;
             if (currentGapFrames++ == 0) currentGapStart = frameTimestamp;
@@ -1883,7 +1935,7 @@ void WriteEvidence(
             currentGapStart = 0;
         }
     }
-    output << "{\n  \"schemaVersion\": \"doroti.windows-presentation-observer/v2\",\n";
+    output << "{\n  \"schemaVersion\": \"doroti.windows-presentation-observer/v3\",\n";
     output << "  \"runId\": \"" << EscapeJson(options.runId) << "\",\n";
     output << "  \"captureApi\": \"Windows.Graphics.Capture/"
         << (options.f6r ? "CreateForMonitor" : "CreateForWindow")
@@ -1894,6 +1946,13 @@ void WriteEvidence(
         EscapeJson(NarrowWide(options.visualChildClass)) << "\",\n";
     output << "  \"visualOraclesEnabled\": " << (options.visualOracles ? "true" : "false") << ",\n";
     output << "  \"visualOracleStride\": " << options.oracleStride << ",\n";
+    double const gridScale = std::max(1.0, GetDpiForWindow(options.visualHwnd) / 96.0);
+    output << "  \"gridOracle\": {\"schemaVersion\":\"doroti.windows.resize-grid/v1\""
+        << ",\"expectedLogicalInterval\":32"
+        << ",\"expectedPhysicalInterval\":" << std::fixed << std::setprecision(6) << 32.0 * gridScale
+        << ",\"expectedClientOriginX\":0"
+        << ",\"expectedClientOriginY\":" << 56.0 * gridScale
+        << ",\"source\":\"raw-capture-periodic-consensus\"},\n";
     output << "  \"anomalyPngsEnabled\": " << (options.anomalyPngs ? "true" : "false") << ",\n";
     output << "  \"edge\": \"" << EscapeJson(options.edge) << "\",\n";
     output << "  \"durationSeconds\": " << options.durationSeconds << ",\n";
@@ -1986,14 +2045,14 @@ void WriteEvidence(
         << ",\"circleAspectFailures\":" << circleFailure
         << ",\"titleObservedFrames\":" << titleObserved
         << ",\"titleNonUniformScaleFailures\":" << titleFailure
-        << ",\"contentEdgeGapFrames\":" << edgeGapFrames
-        << ",\"maximumContentLeftGapPixels\":" << maximumLeftGap
-        << ",\"maximumContentRightGapPixels\":" << maximumRightGap
-        << ",\"maximumConsecutiveContentGapFrames\":" << maximumConsecutiveGapFrames
-        << ",\"maximumContentGapDurationMicroseconds\":"
+        << ",\"uncoveredEdgeGapFrames\":" << edgeGapFrames
+        << ",\"maximumDetectedUncoveredLeftGapPixels\":" << maximumLeftGap
+        << ",\"maximumDetectedUncoveredRightGapPixels\":" << maximumRightGap
+        << ",\"maximumConsecutiveUncoveredGapFrames\":" << maximumConsecutiveGapFrames
+        << ",\"maximumUncoveredGapDurationMicroseconds\":"
         << static_cast<long long>(std::llround(maximumGapDurationTicks * 1'000'000.0 / frequency))
-        << ",\"finalContentLeftGapPixels\":" << finalLeftGap
-        << ",\"finalContentRightGapPixels\":" << finalRightGap
+        << ",\"finalDetectedUncoveredLeftGapPixels\":" << finalLeftGap
+        << ",\"finalDetectedUncoveredRightGapPixels\":" << finalRightGap
         << "},\n";
     output << "  \"qualificationStages\": [\n";
     for (std::size_t index = 0; index < qualificationStages.size(); ++index) {
@@ -2034,8 +2093,18 @@ void WriteEvidence(
             << ",\"appBarLogicalHeight\":"; WriteOptional(output, frame.appBarLogicalHeight);
         output << ",\"circleAspect\":"; WriteOptional(output, frame.circleAspect);
         output << ",\"titleScaleRatio\":"; WriteOptional(output, frame.titleScaleRatio);
-        output << ",\"contentLeftGap\":" << frame.contentLeftGap
-            << ",\"contentRightGap\":" << frame.contentRightGap
+        output << ",\"detectedUncoveredLeftGap\":" << frame.detectedUncoveredLeftGap
+            << ",\"detectedUncoveredRightGap\":" << frame.detectedUncoveredRightGap
+            << ",\"gridRightTail\":"; WriteOptional(output, frame.gridRightTail);
+        output << ",\"gridBottomTail\":"; WriteOptional(output, frame.gridBottomTail);
+        output << ",\"gridSpacingX\":"; WriteOptional(output, frame.gridSpacingX);
+        output << ",\"gridSpacingY\":"; WriteOptional(output, frame.gridSpacingY);
+        output << ",\"gridNonUniformScaleRatio\":"; WriteOptional(output, frame.gridNonUniformScaleRatio);
+        output << ",\"gridOriginOffsetX\":"; WriteOptional(output, frame.gridOriginOffsetX);
+        output << ",\"gridOriginOffsetY\":"; WriteOptional(output, frame.gridOriginOffsetY);
+        output << ",\"gridRightEdgeMarkerDetected\":" << (frame.gridRightEdgeMarkerDetected ? "true" : "false")
+            << ",\"gridBottomEdgeMarkerDetected\":" << (frame.gridBottomEdgeMarkerDetected ? "true" : "false")
+            << ",\"gridParsed\":" << (frame.gridParsed ? "true" : "false")
             << ",\"frameId\":";
         if (frame.frameId) output << *frame.frameId; else output << "null";
         output << ",\"cursor\":{\"x\":" << frame.cursor.x << ",\"y\":" << frame.cursor.y << "}"
@@ -2068,8 +2137,18 @@ void WriteEvidence(
             << ",\"appBarLogicalHeight\":"; WriteOptional(output, frame.appBarLogicalHeight);
         output << ",\"circleAspect\":"; WriteOptional(output, frame.circleAspect);
         output << ",\"titleScaleRatio\":"; WriteOptional(output, frame.titleScaleRatio);
-        output << ",\"contentLeftGap\":" << frame.contentLeftGap
-            << ",\"contentRightGap\":" << frame.contentRightGap
+        output << ",\"detectedUncoveredLeftGap\":" << frame.detectedUncoveredLeftGap
+            << ",\"detectedUncoveredRightGap\":" << frame.detectedUncoveredRightGap
+            << ",\"gridRightTail\":"; WriteOptional(output, frame.gridRightTail);
+        output << ",\"gridBottomTail\":"; WriteOptional(output, frame.gridBottomTail);
+        output << ",\"gridSpacingX\":"; WriteOptional(output, frame.gridSpacingX);
+        output << ",\"gridSpacingY\":"; WriteOptional(output, frame.gridSpacingY);
+        output << ",\"gridNonUniformScaleRatio\":"; WriteOptional(output, frame.gridNonUniformScaleRatio);
+        output << ",\"gridOriginOffsetX\":"; WriteOptional(output, frame.gridOriginOffsetX);
+        output << ",\"gridOriginOffsetY\":"; WriteOptional(output, frame.gridOriginOffsetY);
+        output << ",\"gridRightEdgeMarkerDetected\":" << (frame.gridRightEdgeMarkerDetected ? "true" : "false")
+            << ",\"gridBottomEdgeMarkerDetected\":" << (frame.gridBottomEdgeMarkerDetected ? "true" : "false")
+            << ",\"gridParsed\":" << (frame.gridParsed ? "true" : "false")
             << ",\"frameId\":";
         if (frame.frameId) output << *frame.frameId; else output << "null";
         output << ",\"window\":"; WriteRect(output, frame.window);

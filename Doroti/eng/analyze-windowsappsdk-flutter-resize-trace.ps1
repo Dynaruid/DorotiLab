@@ -15,6 +15,9 @@ $outputPath = [IO.Path]::GetFullPath($Output)
 $bundle = Split-Path $evidencePath
 $capture = Get-Content -Raw -LiteralPath $evidencePath | ConvertFrom-Json
 $trace = @(Get-Content -LiteralPath $tracePath | Where-Object { $_.Trim() } | ForEach-Object { $_ | ConvertFrom-Json })
+$hasGridSchema = [string]$capture.schemaVersion -eq 'doroti.windows-presentation-observer/v3' -and
+    $null -ne $capture.gridOracle -and
+    [string]$capture.gridOracle.schemaVersion -eq 'doroti.windows.resize-grid/v1'
 
 function Get-Percentile([double[]] $Values, [double] $P) {
     if (-not $Values -or $Values.Count -eq 0) { return $null }
@@ -70,8 +73,22 @@ $windowCaptureFrames = @($capture.frames | Sort-Object callbackEntryCounter | Fo
         # extent inside the same raw compositor frame. A transient safe-color
         # fill therefore counts as covered here; this detects only an
         # uncovered/black strip, not exact-layout content coverage.
-        contentLeftGap = [int]$frame.contentLeftGap
-        contentRightGap = [int]$frame.contentRightGap
+        detectedUncoveredLeftGap = if ($null -ne $frame.detectedUncoveredLeftGap) {
+            [int]$frame.detectedUncoveredLeftGap
+        } else { -1 }
+        detectedUncoveredRightGap = if ($null -ne $frame.detectedUncoveredRightGap) {
+            [int]$frame.detectedUncoveredRightGap
+        } else { -1 }
+        gridRightTail = $frame.gridRightTail
+        gridBottomTail = $frame.gridBottomTail
+        gridSpacingX = $frame.gridSpacingX
+        gridSpacingY = $frame.gridSpacingY
+        gridNonUniformScaleRatio = $frame.gridNonUniformScaleRatio
+        gridOriginOffsetX = $frame.gridOriginOffsetX
+        gridOriginOffsetY = $frame.gridOriginOffsetY
+        gridRightEdgeMarkerDetected = [bool]$frame.gridRightEdgeMarkerDetected
+        gridBottomEdgeMarkerDetected = [bool]$frame.gridBottomEdgeMarkerDetected
+        gridParsed = [bool]$frame.gridParsed
         png = $frame.png
     }
 })
@@ -234,16 +251,67 @@ $observedCaptureHz = if ($activeCaptureFrames.Count -gt 1) {
 $uncoveredEdgeGapDeltas = [Collections.Generic.List[double]]::new()
 if ($windowCaptureFrames.Count -gt 0) {
     $baselineGap = if ($capture.edge -match 'Left') {
-        [double]$windowCaptureFrames[0].contentLeftGap
-    } else { [double]$windowCaptureFrames[0].contentRightGap }
+        [double]$windowCaptureFrames[0].detectedUncoveredLeftGap
+    } else { [double]$windowCaptureFrames[0].detectedUncoveredRightGap }
     foreach ($frame in $windowCaptureFrames) {
-        $gap = if ($capture.edge -match 'Left') { [double]$frame.contentLeftGap } else { [double]$frame.contentRightGap }
+        $gap = if ($capture.edge -match 'Left') {
+            [double]$frame.detectedUncoveredLeftGap
+        } else { [double]$frame.detectedUncoveredRightGap }
         if ($gap -ge 0 -and $baselineGap -ge 0) { $uncoveredEdgeGapDeltas.Add([Math]::Max(0, $gap - $baselineGap)) }
     }
 }
 $maxUncoveredEdgeGapDelta = if ($uncoveredEdgeGapDeltas.Count) {
     ($uncoveredEdgeGapDeltas | Measure-Object -Maximum).Maximum
 } else { $null }
+
+$gridFrames = @($windowCaptureFrames | Where-Object gridParsed)
+$gridParseFailures = if ($hasGridSchema) {
+    @($windowCaptureFrames | Where-Object { -not $_.gridParsed }).Count
+} else { $windowCaptureFrames.Count }
+$gridTailValues = [Collections.Generic.List[double]]::new()
+$gridSpacingDeviations = [Collections.Generic.List[double]]::new()
+$gridScaleDeviations = [Collections.Generic.List[double]]::new()
+$gridOriginX = [Collections.Generic.List[double]]::new()
+$gridOriginY = [Collections.Generic.List[double]]::new()
+$expectedGridInterval = if ($hasGridSchema) { [double]$capture.gridOracle.expectedPhysicalInterval } else { $null }
+foreach ($frame in $gridFrames) {
+    $tail = if ($capture.edge -match 'Left|Right') { $frame.gridRightTail } else { $frame.gridBottomTail }
+    if ($null -ne $tail) { $gridTailValues.Add([double]$tail) }
+    if ($null -ne $expectedGridInterval -and $null -ne $frame.gridSpacingX) {
+        $gridSpacingDeviations.Add([Math]::Abs([double]$frame.gridSpacingX - $expectedGridInterval))
+    }
+    if ($null -ne $expectedGridInterval -and $null -ne $frame.gridSpacingY) {
+        $gridSpacingDeviations.Add([Math]::Abs([double]$frame.gridSpacingY - $expectedGridInterval))
+    }
+    if ($null -ne $frame.gridNonUniformScaleRatio) {
+        $gridScaleDeviations.Add([Math]::Abs([double]$frame.gridNonUniformScaleRatio - 1.0))
+    }
+    # Safe-fill/transient frames intentionally may not carry the current edge
+    # markers. Origin phase is a static exact-frame gate, so do not mix those
+    # frames with initial/final origin evidence.
+    if ($frame.gridRightEdgeMarkerDetected -and $frame.gridBottomEdgeMarkerDetected) {
+        if ($null -ne $frame.gridOriginOffsetX) { $gridOriginX.Add([double]$frame.gridOriginOffsetX) }
+        if ($null -ne $frame.gridOriginOffsetY) { $gridOriginY.Add([double]$frame.gridOriginOffsetY) }
+    }
+}
+$gridTailP95 = Get-Percentile $gridTailValues.ToArray() .95
+$gridTailMax = if ($gridTailValues.Count) { ($gridTailValues | Measure-Object -Maximum).Maximum } else { $null }
+$gridSpacingDeviationMax = if ($gridSpacingDeviations.Count) {
+    ($gridSpacingDeviations | Measure-Object -Maximum).Maximum
+} else { $null }
+$gridScaleDeviationMax = if ($gridScaleDeviations.Count) {
+    ($gridScaleDeviations | Measure-Object -Maximum).Maximum
+} else { $null }
+$gridOriginDrift = if ($gridOriginX.Count -and $gridOriginY.Count) {
+    [Math]::Max(
+        ($gridOriginX | Measure-Object -Maximum).Maximum - ($gridOriginX | Measure-Object -Minimum).Minimum,
+        ($gridOriginY | Measure-Object -Maximum).Maximum - ($gridOriginY | Measure-Object -Minimum).Minimum)
+} else { $null }
+$initialGridFrame = $gridFrames | Select-Object -First 1
+$finalGridFrame = $gridFrames | Select-Object -Last 1
+$staticEdgeMarkersDetected = $null -ne $initialGridFrame -and $null -ne $finalGridFrame -and
+    [bool]$initialGridFrame.gridRightEdgeMarkerDetected -and [bool]$initialGridFrame.gridBottomEdgeMarkerDetected -and
+    [bool]$finalGridFrame.gridRightEdgeMarkerDetected -and [bool]$finalGridFrame.gridBottomEdgeMarkerDetected
 
 $hostSummary = @{}
 $shutdownTrace = $trace | Where-Object event -eq 'shutdown' | Select-Object -Last 1
@@ -310,6 +378,15 @@ $checks = [ordered]@{
            [int]$capture.encoderDroppedFrames -eq 0)))
     uncoveredEdgeGapAtMostOnePixel = -not $captureRequired -or
         ($null -ne $maxUncoveredEdgeGapDelta -and $maxUncoveredEdgeGapDelta -le 1)
+    gridSchemaPresent = -not $captureRequired -or $hasGridSchema
+    gridParseFailuresZero = -not $captureRequired -or ($hasGridSchema -and $gridParseFailures -eq 0)
+    gridSpacingDeviationAtMostOnePixel = -not $captureRequired -or
+        ($null -ne $gridSpacingDeviationMax -and $gridSpacingDeviationMax -le 1)
+    gridNonUniformScaleAtMostTwoPercent = -not $captureRequired -or
+        ($null -ne $gridScaleDeviationMax -and $gridScaleDeviationMax -le 0.02)
+    gridOriginDriftAtMostOnePixel = -not $captureRequired -or
+        ($null -ne $gridOriginDrift -and $gridOriginDrift -le 1)
+    initialFinalGridEdgeMarkersDetected = -not $captureRequired -or $staticEdgeMarkersDetected
 }
 
 $failedChecks = @($checks.GetEnumerator() | Where-Object { -not $_.Value } | ForEach-Object Key)
@@ -329,6 +406,17 @@ $summary = [ordered]@{
     observedCaptureHz = $observedCaptureHz
     accumulatedCaptureDrops = $accumulatedDrops
     maximumDetectedUncoveredEdgeGapDeltaPixels = $maxUncoveredEdgeGapDelta
+    gridOracleStatus = if (-not $captureRequired) { 'notRequested' } elseif ($hasGridSchema) { 'measured' } else { 'notVerified' }
+    gridTailPixels = [ordered]@{
+        axis = if ($capture.edge -match 'Left|Right') { 'right' } else { 'bottom' }
+        p95 = $gridTailP95
+        max = $gridTailMax
+    }
+    gridSpacingDeviationPixels = $gridSpacingDeviationMax
+    gridNonUniformScaleDeviation = $gridScaleDeviationMax
+    gridOriginDriftPixels = $gridOriginDrift
+    gridParseFailures = $gridParseFailures
+    initialFinalEdgeMarkersDetected = $staticEdgeMarkersDetected
     cursorEdgeLagPixels = [ordered]@{
         p50 = Get-Percentile $lagValues.ToArray() .50
         p95 = $activeLagP95

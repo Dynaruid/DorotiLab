@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using SharpGen.Runtime;
 using SkiaSharp;
@@ -56,6 +57,10 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
     private long _transientPresentCount;
     private long _capacityGrowthCount;
     private long _exactExtentMismatchCount;
+    private long _gpuFenceWaitCount;
+    private long _gpuFenceWaitTotalMicroseconds;
+    private long _presentCommitCount;
+    private long _presentCommitTotalMicroseconds;
     private bool _firstCommitCompleted;
     private int _committedWidth;
     private int _committedHeight;
@@ -108,6 +113,10 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
         Interlocked.Read(ref _transientPresentCount),
         Interlocked.Read(ref _capacityGrowthCount),
         Interlocked.Read(ref _exactExtentMismatchCount),
+        Interlocked.Read(ref _gpuFenceWaitCount),
+        Interlocked.Read(ref _gpuFenceWaitTotalMicroseconds),
+        Interlocked.Read(ref _presentCommitCount),
+        Interlocked.Read(ref _presentCommitTotalMicroseconds),
         AdapterDescription,
         SoftwareFallback,
         _rasterManagedThreadId,
@@ -210,6 +219,21 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
         if (!targetMetrics.HasDrawableSize) return false;
         ValidateExactChildTarget(targetMetrics);
         return PresentTransient(targetMetrics.PhysicalWidth, targetMetrics.PhysicalHeight);
+    }
+
+    /// <summary>
+    /// R1 native-control variant only: remove the compositor root before the
+    /// measured sizing episode so USER32/DWM geometry can be timed without a
+    /// visible product surface. Resources remain owned by the raster thread
+    /// and are released normally at shutdown.
+    /// </summary>
+    internal void DetachVisibleRootForDiagnostic()
+    {
+        EnsureRasterThread();
+        ThrowIfDisposed();
+        _compositionTarget!.SetRoot(null).CheckError();
+        _compositionDevice!.Commit().CheckError();
+        _compositionDevice.WaitForCommitCompletion().CheckError();
     }
 
     /// <summary>
@@ -408,14 +432,19 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
     private void WaitForGpu()
     {
         if (_submittedFence == 0 || _fence!.CompletedValue >= _submittedFence) return;
+        var started = Stopwatch.GetTimestamp();
         _fence.SetEventOnCompletion(_submittedFence, _fenceEvent!).CheckError();
         var result = WaitForSingleObject(_fenceEvent!.SafeWaitHandle.DangerousGetHandle(), 5000);
+        var elapsed = Stopwatch.GetElapsedTime(started);
+        Interlocked.Increment(ref _gpuFenceWaitCount);
+        Interlocked.Add(ref _gpuFenceWaitTotalMicroseconds, Math.Max(0L, elapsed.Ticks / 10L));
         if (result != WaitObject0)
             throw new TimeoutException($"Windows composition D3D12 fence {_submittedFence} timed out.");
     }
 
     private void CopyAndPresent(int width, int height)
     {
+        var started = Stopwatch.GetTimestamp();
         _allocator!.Reset();
         _commands!.Reset(_allocator);
         using (var buffer = _swapChain!.GetBuffer<ID3D12Resource>(_swapChain.CurrentBackBufferIndex))
@@ -449,6 +478,9 @@ internal sealed class FlutterWindowsCompositionSurface : IFlutterWindowsSchedule
         Interlocked.Increment(ref _presentAttemptCount);
         _swapChain.Present(0, PresentFlags.None).CheckError();
         _compositionDevice!.Commit().CheckError();
+        var elapsed = Stopwatch.GetElapsedTime(started);
+        Interlocked.Increment(ref _presentCommitCount);
+        Interlocked.Add(ref _presentCommitTotalMicroseconds, Math.Max(0L, elapsed.Ticks / 10L));
         if (!_firstCommitCompleted)
         {
             _compositionDevice.WaitForCommitCompletion().CheckError();
@@ -614,6 +646,10 @@ internal sealed record FlutterWindowsCompositionSurfaceSnapshot(
     long TransientPresentCount,
     long CapacityGrowthCount,
     long ExactExtentMismatchCount,
+    long GpuFenceWaitCount,
+    long GpuFenceWaitTotalMicroseconds,
+    long PresentCommitCount,
+    long PresentCommitTotalMicroseconds,
     string AdapterDescription,
     bool SoftwareFallback,
     int RasterManagedThreadId,

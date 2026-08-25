@@ -508,11 +508,33 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                             effectPanel,
                         ]))))),
                 new Positioned(left: 0, top: 0, right: 0, bottom: 0,
-                    child: new IgnorePointer(child: new GridPaper(
-                        color: new UiColor(0x8000bcd4L),
-                        interval: 32,
-                        divisions: 1,
-                        subdivisions: 1))),
+                    child: new IgnorePointer(child: new Stack(children:
+                    [
+                        // R0 resize oracle: keep the 32-logical-pixel grid in the
+                        // foreground so retained content, safe fill, and X/Y
+                        // scaling remain distinguishable in raw captures.
+                        new Positioned(left: 0, top: 0, right: 0, bottom: 0,
+                            child: new GridPaper(
+                                color: new UiColor(0xff00e5ffL),
+                                interval: 32,
+                                divisions: 1,
+                                subdivisions: 1)),
+                        // The magenta markers deliberately avoid the presenter's
+                        // safe-background samples (x=8 and bottom-9). Their
+                        // asymmetric shapes distinguish child-local origin from
+                        // the moving screen origin and verify the right/bottom
+                        // edge phase independently from the periodic grid.
+                        new Positioned(left: 2, top: 3, width: 22, height: 3,
+                            child: new Container(color: new UiColor(0xffff1744L))),
+                        new Positioned(left: 2, top: 3, width: 3, height: 15,
+                            child: new Container(color: new UiColor(0xffff1744L))),
+                        new Positioned(right: 1, top: 7, width: 3, height: 19,
+                            child: new Container(color: new UiColor(0xffff1744L))),
+                        new Positioned(right: 1, bottom: 1, width: 27, height: 3,
+                            child: new Container(color: new UiColor(0xffff1744L))),
+                        new Positioned(right: 1, bottom: 1, width: 3, height: 13,
+                            child: new Container(color: new UiColor(0xffff1744L))),
+                    ]))),
             ]),
             floatingActionButton: ActionSemantics(InteractiveLabels[5], new Material.FloatingActionButton(
                 tooltip: "Material action",

@@ -61,6 +61,7 @@ internal sealed class FlutterWindowsHostAdapter :
     private readonly AutoResetEvent _engineTaskSignal = new(false);
     private readonly AutoResetEvent _frameSignal = new(false);
     private readonly int _rendererDelayMilliseconds = ResolveRendererDelayMilliseconds();
+    private readonly int _r1DiagnosticVariant = ResolveR1DiagnosticVariant();
     private readonly Thread _engineThread;
     private readonly Thread _frameThread;
     private readonly object _gate = new();
@@ -95,6 +96,7 @@ internal sealed class FlutterWindowsHostAdapter :
     private int _smokeMoveTop;
     private int _smokeAppliedStep;
     private int _interactiveSizeMove;
+    private int _r1RootDetached;
     private long _smokeVersion;
     private bool _shown;
     private bool _closing;
@@ -257,7 +259,10 @@ internal sealed class FlutterWindowsHostAdapter :
             $"adapter=FlutterEmbedder;topLevel=0x{TopLevelHwnd:x};child=0x{ViewHwnd:x};" +
             $"surfaceGeneration={surface.SurfaceGeneration};presents={surface.SuccessfulPresentCount};" +
             $"presenter=single-dcomp-safe-background-reservoir;capacity={surface.CapacityWidth}x{surface.CapacityHeight};" +
+            $"r1Variant={_r1DiagnosticVariant};" +
             $"capacityGrowth={surface.CapacityGrowthCount};transientPresents={surface.TransientPresentCount};" +
+            $"gpuFenceWaits={surface.GpuFenceWaitCount};gpuFenceWaitUs={surface.GpuFenceWaitTotalMicroseconds};" +
+            $"presentCommits={surface.PresentCommitCount};presentCommitUs={surface.PresentCommitTotalMicroseconds};" +
             $"preparedGeometryGate=false;" +
             $"renderer={surface.AdapterDescription};softwareFallback={surface.SoftwareFallback};" +
             $"queueDepth={scheduler.QueueDepth};queueMax={scheduler.MaxObservedQueueDepth};" +
@@ -393,6 +398,8 @@ internal sealed class FlutterWindowsHostAdapter :
     public void RequestInvalidate()
     {
         if (_disposed || _renderer is null || _scheduledRaster is null) return;
+        if (Volatile.Read(ref _interactiveSizeMove) != 0 && _r1DiagnosticVariant is >= 1 and <= 3)
+            return;
         var metrics = _metrics.Current;
         // WM_PAINT for the resized child can arrive before the independent
         // framework thread has applied that metrics generation to RenderView.
@@ -574,11 +581,19 @@ internal sealed class FlutterWindowsHostAdapter :
                 return FlutterWindowsChildMessageResult.Unhandled;
             case WmEnterSizeMove:
                 Volatile.Write(ref _interactiveSizeMove, 1);
+                if (_r1DiagnosticVariant == 1 && Interlocked.Exchange(ref _r1RootDetached, 1) == 0)
+                {
+                    RunRaster(() =>
+                    {
+                        _surface.DetachVisibleRootForDiagnostic();
+                        return true;
+                    });
+                }
                 _resizeTrace.Record("resizeStarted", _metrics.Current);
                 return FlutterWindowsChildMessageResult.Unhandled;
             case WmExitSizeMove:
                 Volatile.Write(ref _interactiveSizeMove, 0);
-                PostFinalResizeRecovery();
+                if (_r1DiagnosticVariant != 1) PostFinalResizeRecovery();
                 _resizeTrace.Record("resizeDone", _metrics.Current);
                 return FlutterWindowsChildMessageResult.Unhandled;
             case WmClose:
@@ -600,6 +615,14 @@ internal sealed class FlutterWindowsHostAdapter :
         var started = Stopwatch.GetTimestamp();
         _resizeTrace.Record("windowSizeObserved", metrics);
         Volatile.Write(ref _pendingResizeGeneration, metrics.ResizeGeneration);
+        if (Volatile.Read(ref _interactiveSizeMove) != 0 && _r1DiagnosticVariant is >= 1 and <= 3)
+        {
+            var controlElapsed = Stopwatch.GetElapsedTime(started);
+            RecordResizePlatformDispatch(controlElapsed);
+            _resizeTrace.Record("windowSizeHandled", metrics, detail:
+                $"dispatchMicroseconds={Math.Max(0L, controlElapsed.Ticks / 10L)};r1Variant={_r1DiagnosticVariant};frameworkSuppressed=true");
+            return;
+        }
         if (_renderer is null || _scheduledRaster is null || !metrics.HasDrawableSize)
         {
             PostFrameworkMetricsChanged(metrics);
@@ -623,6 +646,8 @@ internal sealed class FlutterWindowsHostAdapter :
 
     private void HandleLatestMetricsFrameRequested(WindowsViewMetrics metrics)
     {
+        if (Volatile.Read(ref _interactiveSizeMove) != 0 && _r1DiagnosticVariant is >= 1 and <= 3)
+            return;
         Volatile.Write(ref _pendingResizeGeneration, metrics.ResizeGeneration);
         PostFrameworkMetricsChanged(metrics);
         _frameSignal.Set();
@@ -675,7 +700,8 @@ internal sealed class FlutterWindowsHostAdapter :
             return;
         _resizeTrace.Record("windowPosProposed", _metrics.Current, detail:
             $"x={windowPos.X};y={windowPos.Y};width={windowPos.Width};height={windowPos.Height};flags={windowPos.Flags}");
-        if (Volatile.Read(ref _interactiveSizeMove) != 0 &&
+        var transientEnabled = _r1DiagnosticVariant is 0 or 3 or 5;
+        if (transientEnabled && Volatile.Read(ref _interactiveSizeMove) != 0 &&
             NativeMethods.GetWindowRect(TopLevelHwnd, out var outer) &&
             NativeMethods.GetClientRect(TopLevelHwnd, out var client))
         {
@@ -804,8 +830,12 @@ internal sealed class FlutterWindowsHostAdapter :
                     // independent frame-clock thread. Skipping DwmFlush while
                     // sizing lets framework/raster work run flat out and
                     // measurably stalls the native sizing loop.
+                    var flushStarted = Stopwatch.GetTimestamp();
                     var result = NativeMethods.DwmFlush();
                     if (result < 0) Marshal.ThrowExceptionForHR(result);
+                    var flushElapsed = Stopwatch.GetElapsedTime(flushStarted);
+                    _resizeTrace.Record("dwmFlushCompleted", _metrics.Current, detail:
+                        $"microseconds={Math.Max(0L, flushElapsed.Ticks / 10L)}");
                 }
                 _ = NativeMethods.PostMessageW(TopLevelHwnd, WmAppFrame, 0, 0);
             }
@@ -1015,6 +1045,15 @@ internal sealed class FlutterWindowsHostAdapter :
         return int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var milliseconds) &&
                milliseconds is >= 0 and <= 1_000
             ? milliseconds
+            : 0;
+    }
+
+    private static int ResolveR1DiagnosticVariant()
+    {
+        var value = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_RESIZE_R1_VARIANT");
+        return int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var variant) &&
+               variant is >= 1 and <= 5
+            ? variant
             : 0;
     }
 
