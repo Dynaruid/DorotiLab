@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{D1B9161C-837B-4A25-B12E-25E747230723}</ProjectGuid>
+    <RootNamespace>DorotiWinRtContentIslandNativeBridge</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v145</PlatformToolset>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup>
+    <TargetName>Doroti.WinRtContentIsland.NativeBridge</TargetName>
+    <OutDir>$(MSBuildProjectDirectory)\bin\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(MSBuildProjectDirectory)\obj\$(Configuration)\$(Platform)\</IntDir>
+    <GeneratedHeaders>$(IntDir)generated</GeneratedHeaders>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NOMINMAX;UNICODE;_UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(GeneratedHeaders);$(InteractiveExperiencesInclude);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/Brepro %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>windowsapp.lib;runtimeobject.lib;ole32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/Brepro %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="WinRtContentIslandNativeBridge.cpp" />
+  </ItemGroup>
+  <Target Name="GenerateWindowsAppSdkCppWinRT" BeforeTargets="ClCompile"
+          Inputs="$(MicrosoftUiWinmd);$(MicrosoftFoundationWinmd);$(MicrosoftGraphicsWinmd)"
+          Outputs="$(GeneratedHeaders)\winrt\Microsoft.UI.Content.h">
+    <Error Condition="!Exists('$(CppWinRTExe)')" Text="cppwinrt.exe is missing: $(CppWinRTExe)" />
+    <Error Condition="!Exists('$(MicrosoftUiWinmd)')" Text="Microsoft.UI.winmd is missing: $(MicrosoftUiWinmd)" />
+    <MakeDir Directories="$(GeneratedHeaders)" />
+    <Exec Command="&quot;$(CppWinRTExe)&quot; -input &quot;$(MicrosoftUiWinmd)&quot; -reference &quot;$(MicrosoftFoundationWinmd)&quot; -reference &quot;$(MicrosoftGraphicsWinmd)&quot; -reference sdk -output &quot;$(GeneratedHeaders)&quot; -overwrite" />
+  </Target>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

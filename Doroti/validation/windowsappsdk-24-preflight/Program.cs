@@ -97,6 +97,20 @@ internal static partial class Program
                 dispatcher.DispatcherQueue, windowId);
             siteBridge.ProcessesPointerInput = false;
             siteBridge.Connect(island);
+            var keyboardDisableAttempt = "notAttempted";
+            string? keyboardDisableFailure = null;
+            try
+            {
+                siteBridge.ProcessesKeyboardInput = false;
+                keyboardDisableAttempt = siteBridge.ProcessesKeyboardInput ? "ineffective" : "disabled";
+            }
+            catch (Exception exception)
+            {
+                keyboardDisableAttempt = "rejected";
+                keyboardDisableFailure = exception is COMException comException
+                    ? $"{exception.GetType().FullName} (0x{comException.HResult:X8}): {exception.Message}"
+                    : $"{exception.GetType().FullName}: {exception.Message}";
+            }
             Console.Error.WriteLine("preflight-stage=site-connected");
             Console.Error.Flush();
 
@@ -111,10 +125,12 @@ internal static partial class Program
             var contentAppWindowBridge = projectionAssembly.GetType(
                 "Microsoft.UI.Content.ContentAppWindowBridge", throwOnError: false);
             var requiredApis = ProbeRequiredApis();
+            var requiredAbsentApis = ProbeRequiredAbsentApis();
             var report = new
             {
-                schema = "doroti.winrt-composition-w0-runtime/v1",
+                schema = "doroti.winrt-composition-w0-runtime/v3",
                 status = requiredApis.All(api => api.Available) &&
+                    requiredAbsentApis.All(api => !api.Available) &&
                     nativeEntrypoints.All(entrypoint => entrypoint.Available) &&
                     contentAppWindowBridge is null && island.IsConnected && !siteBridge.IsClosed
                         ? "PASS"
@@ -146,11 +162,23 @@ internal static partial class Program
                     siteBridgeClosed = siteBridge.IsClosed,
                     pointerOwner = siteBridge.ProcessesPointerInput ? "ContentIsland" : "raw-hwnd",
                     keyboardOwner = siteBridge.ProcessesKeyboardInput ? "ContentIsland" : "raw-hwnd",
+                    keyboardDisableAttempt,
+                    keyboardDisableFailure,
                     pointerSource = pointerSource.GetType().FullName,
                     keyboardSource = keyboardSource.GetType().FullName,
                     focusController = focusController.GetType().FullName,
                     automationProviderEventSubscribed = true,
                     automationRequestCount,
+                },
+                systemIslandInputOwnership = new
+                {
+                    bridgeProcessesPointerInput = siteBridge.ProcessesPointerInput,
+                    bridgeProcessesKeyboardInput = siteBridge.ProcessesKeyboardInput,
+                    rootIslandInputSourceRegistrationAllowed = false,
+                    keyboardRuntimeFloor = "bridge-processing-enabled-without-root-input-source-registration",
+                    inputActivationListenerRole = "observation-only",
+                    packetOwner = "sole-top-level-hwnd-native-ingress",
+                    nativeIngressCallsite = "WinRtTopLevelNativeIngress",
                 },
                 metrics = new
                 {
@@ -159,6 +187,7 @@ internal static partial class Program
                     siteView.RasterizationScale,
                 },
                 requiredApis,
+                requiredAbsentApis,
                 nativeEntrypoints,
             };
             WriteReport(reportPath, report);
@@ -198,13 +227,31 @@ internal static partial class Program
             (typeof(ContentSiteView), nameof(ContentSiteView.RasterizationScale), MemberTypes.Property),
             (typeof(InputPointerSource), nameof(InputPointerSource.GetForIsland), MemberTypes.Method),
             (typeof(InputKeyboardSource), nameof(InputKeyboardSource.GetForIsland), MemberTypes.Method),
+            (typeof(InputPreTranslateKeyboardSource), nameof(InputPreTranslateKeyboardSource.GetForIsland), MemberTypes.Method),
             (typeof(InputFocusController), nameof(InputFocusController.GetForIsland), MemberTypes.Method),
+            (typeof(InputActivationListener), nameof(InputActivationListener.GetForWindowId), MemberTypes.Method),
             (typeof(ContentIsland), nameof(ContentIsland.AutomationProviderRequested), MemberTypes.Event),
         };
         return specs.Select(spec => new ApiProbe(
                 $"{spec.Type.FullName}.{spec.Member}",
                 spec.Type.GetMember(spec.Member, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)
                     .Any(member => member.MemberType == spec.Kind)))
+            .ToArray();
+    }
+
+    private static ApiProbe[] ProbeRequiredAbsentApis()
+    {
+        var specs = new (Type Type, string Member)[]
+        {
+            (typeof(InputPointerSource), "GetForWindowId"),
+            (typeof(InputKeyboardSource), "GetForWindowId"),
+            (typeof(InputPreTranslateKeyboardSource), "GetForWindowId"),
+            (typeof(InputFocusController), "GetForWindowId"),
+        };
+        return specs.Select(spec => new ApiProbe(
+                $"{spec.Type.FullName}.{spec.Member}",
+                spec.Type.GetMember(spec.Member, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)
+                    .Any(member => member.MemberType == MemberTypes.Method)))
             .ToArray();
     }
 
@@ -216,6 +263,19 @@ internal static partial class Program
             new NativeSpec("user32.dll", "DestroyWindow"),
             new NativeSpec("user32.dll", "GetClientRect"),
             new NativeSpec("user32.dll", "SetWindowPos"),
+            new NativeSpec("user32.dll", "EnableMouseInPointer"),
+            new NativeSpec("user32.dll", "GetPointerInfo"),
+            new NativeSpec("user32.dll", "GetPointerInfoHistory"),
+            new NativeSpec("user32.dll", "SetCapture"),
+            new NativeSpec("user32.dll", "ReleaseCapture"),
+            new NativeSpec("user32.dll", "GetCapture"),
+            new NativeSpec("user32.dll", "ScreenToClient"),
+            new NativeSpec("user32.dll", "GetKeyState"),
+            new NativeSpec("user32.dll", "LoadCursorW"),
+            new NativeSpec("user32.dll", "SetCursor"),
+            new NativeSpec("imm32.dll", "ImmGetContext"),
+            new NativeSpec("imm32.dll", "ImmReleaseContext"),
+            new NativeSpec("UIAutomationCore.dll", "UiaReturnRawElementProvider"),
             new NativeSpec("combase.dll", "RoInitialize"),
             new NativeSpec("combase.dll", "RoUninitialize"),
             new NativeSpec("d3d11.dll", "D3D11CreateDevice"),
@@ -270,7 +330,7 @@ internal static partial class Program
         Console.Error.WriteLine($"windows-app-sdk-preflight FAIL: {message}");
         WriteReport(reportPath, new
         {
-            schema = "doroti.winrt-composition-w0-runtime/v1",
+            schema = "doroti.winrt-composition-w0-runtime/v3",
             status = "FAIL",
             exception = message,
         });

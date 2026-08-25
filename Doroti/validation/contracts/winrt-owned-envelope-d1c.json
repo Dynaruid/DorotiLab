@@ -1,0 +1,37 @@
+{
+  "schema": "doroti.winrt-owned-envelope-d1c-contract/v1",
+  "status": "required",
+  "productImplementationAllowed": false,
+  "topology": {
+    "fixedEnvelope": "work-area-sized WS_POPUP HWND/AppWindow",
+    "applicationCreatedChildHwndCount": 0,
+    "platformInternalChildHwndCount": 1,
+    "platformInternalChildWindowClass": "InputSiteWindowClass",
+    "childRenderHwndCount": 0,
+    "contentIslandCount": 1,
+    "siteBridgeCount": 1,
+    "preparedSurfaceCount": 2,
+    "simultaneouslyVisibleSurfaceCount": 1
+  },
+  "presentation": {
+    "hiddenExactFrontRequired": true,
+    "rootChildSwitch": "RemoveAll plus InsertAtTop in one UI-thread transaction",
+    "outerHwndResizeDuringOwnedDragAllowed": false,
+    "duplicateVisibleFrontAllowed": false,
+    "geometryMismatchAllowed": false
+  },
+  "inputRegion": {
+    "idle": "SetWindowRgn constrained to visible owned rect",
+    "drag": "full envelope opened only while captured",
+    "postDrag": "constrain only after final exact front is visible",
+    "insideHitRequired": true,
+    "outsideHitRequired": false
+  },
+  "shellRisk": {
+    "snapLayouts": "notVerified",
+    "taskbarPreview": "notVerified",
+    "maximizeRestore": "notVerified",
+    "uiaBounds": "notVerified",
+    "physicalKoreanIme": "notVerified"
+  }
+}

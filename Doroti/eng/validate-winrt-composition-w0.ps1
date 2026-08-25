@@ -81,6 +81,25 @@ if ($runtimeExitCode -ne 0) {
     throw "W0 runtime activation failed with exit code $runtimeExitCode."
 }
 $runtimeReport = Get-Content -LiteralPath $runtimeReportPath -Raw | ConvertFrom-Json -Depth 100
+$requiredApiNames = @($runtimeReport.requiredApis | ForEach-Object api)
+$requiredAbsentApiNames = @($runtimeReport.requiredAbsentApis | ForEach-Object api)
+$missingContractRequiredApis = @($contract.requiredProjectedApis | Where-Object { $_ -notin $requiredApiNames })
+$missingContractAbsentApis = @($contract.requiredAbsentProjectedApis | Where-Object { $_ -notin $requiredAbsentApiNames })
+$inputOwnershipMatches =
+    $runtimeReport.systemIslandInputOwnership.bridgeProcessesPointerInput -eq
+        $contract.systemIslandInputOwnership.desktopAttachedSiteBridgeProcessesPointerInput -and
+    $runtimeReport.systemIslandInputOwnership.bridgeProcessesKeyboardInput -eq
+        $contract.systemIslandInputOwnership.desktopAttachedSiteBridgeProcessesKeyboardInput -and
+    $runtimeReport.systemIslandInputOwnership.rootIslandInputSourceRegistrationAllowed -eq
+        $contract.systemIslandInputOwnership.rootIslandInputSourceRegistrationAllowed -and
+    $runtimeReport.systemIslandInputOwnership.keyboardRuntimeFloor -eq
+        $contract.systemIslandInputOwnership.keyboardRuntimeFloor -and
+    $runtimeReport.systemIslandInputOwnership.inputActivationListenerRole -eq
+        $contract.systemIslandInputOwnership.inputActivationListenerRole -and
+    $runtimeReport.systemIslandInputOwnership.packetOwner -eq
+        $contract.systemIslandInputOwnership.packetOwner -and
+    $runtimeReport.systemIslandInputOwnership.nativeIngressCallsite -eq
+        $contract.systemIslandInputOwnership.nativeIngressCallsite
 
 $assets = Get-Content -LiteralPath $assetsPath -Raw | ConvertFrom-Json -Depth 100
 $targetName = @($assets.targets.PSObject.Properties.Name |
@@ -133,6 +152,7 @@ $assemblies = @($assemblyNames | ForEach-Object {
 $baselinePaths = @(
     (Join-Path $dorotiRoot 'validation\windows-resize-capture'),
     (Join-Path $dorotiRoot 'validation\windowsappsdk-24-preflight'),
+    (Join-Path $dorotiRoot 'validation\winrt-content-island-native-bridge'),
     (Join-Path $dorotiRoot 'src\Doroti.Host.WindowsAppSdk\DorotiWindowsAppSdkRunner.cs')
 )
 $baselineFiles = @($baselinePaths | ForEach-Object {
@@ -176,17 +196,22 @@ $productDiff = @(& git -C $repoRoot diff --name-only -- `
 
 $sourceRevision = (& git -C $repoRoot rev-parse HEAD).Trim()
 $dirtyFiles = @(& git -C $repoRoot status --short)
-$pass = $runtimeReport.status -eq 'PASS' -and
+$w0Pass = $runtimeReport.status -eq 'PASS' -and
     -not $runtimeReport.boundary.contentAppWindowBridgeAvailable -and
     @($runtimeReport.requiredApis | Where-Object { -not $_.available }).Count -eq 0 -and
+    @($runtimeReport.requiredAbsentApis | Where-Object available).Count -eq 0 -and
+    $missingContractRequiredApis.Count -eq 0 -and
+    $missingContractAbsentApis.Count -eq 0 -and
     @($runtimeReport.nativeEntrypoints | Where-Object { -not $_.available }).Count -eq 0 -and
     $prohibitedMatches.Count -eq 0 -and
     $productDiff.Count -eq 0
+$d0Pass = $inputOwnershipMatches -and
+    $runtimeReport.activation.keyboardDisableAttempt -eq 'rejected'
 
 $manifest = [ordered]@{
     schema = 'doroti.winrt-composition-w0-manifest/v1'
     runId = $runId
-    status = if ($pass) { 'PASS' } else { 'FAIL' }
+    status = if ($w0Pass) { 'PASS' } else { 'FAIL' }
     generatedAt = (Get-Date).ToUniversalTime().ToString('o')
     source = [ordered]@{
         revision = $sourceRevision
@@ -201,6 +226,14 @@ $manifest = [ordered]@{
     }
     assemblies = $assemblies
     runtimeProbe = $runtimeReport
+    d0InputOwnership = [ordered]@{
+        status = if ($d0Pass -and
+            $missingContractRequiredApis.Count -eq 0 -and
+            $missingContractAbsentApis.Count -eq 0) { 'PASS' } else { 'FAIL' }
+        contract = $contract.systemIslandInputOwnership
+        requiredProjectedApisMissingFromProbe = $missingContractRequiredApis
+        requiredAbsentProjectedApisMissingFromProbe = $missingContractAbsentApis
+    }
     officialSample = $contract.officialSampleComparison
     baselines = $baselineFiles
     productBoundary = [ordered]@{
@@ -218,6 +251,7 @@ $manifest = [ordered]@{
     }
 }
 $manifest | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $manifestPath -Encoding utf8
-Write-Host "W0 status=$($manifest.status) packages=$($packageGraph.Count) assemblies=$($assemblies.Count)"
+Write-Host "W0 status=$($manifest.status) D0-R=$($manifest.d0InputOwnership.status) packages=$($packageGraph.Count) assemblies=$($assemblies.Count)"
 Write-Host "manifest=$manifestPath"
-if (-not $pass) { exit 1 }
+if (-not $w0Pass) { exit 1 }
+if (-not $d0Pass) { exit 2 }

@@ -1,5 +1,5 @@
 {
-  "schema": "doroti.winrt-composition-w0/v1",
+  "schema": "doroti.winrt-composition-w0/v3",
   "status": "required",
   "packagePolicy": {
     "centralMicrosoftWindowsAppSdk": "1.8.260508005",
@@ -24,9 +24,29 @@
     "Microsoft.UI.Content.ContentSiteView.RasterizationScale",
     "Microsoft.UI.Input.InputPointerSource.GetForIsland",
     "Microsoft.UI.Input.InputKeyboardSource.GetForIsland",
+    "Microsoft.UI.Input.InputPreTranslateKeyboardSource.GetForIsland",
     "Microsoft.UI.Input.InputFocusController.GetForIsland",
-    "Microsoft.UI.Content.ContentIsland.AutationProviderRequested"
+    "Microsoft.UI.Input.InputActivationListener.GetForWindowId",
+    "Microsoft.UI.Content.ContentIsland.AutomationProviderRequested"
   ],
+  "requiredAbsentProjectedApis": [
+    "Microsoft.UI.Input.InputPointerSource.GetForWindowId",
+    "Microsoft.UI.Input.InputKeyboardSource.GetForWindowId",
+    "Microsoft.UI.Input.InputPreTranslateKeyboardSource.GetForWindowId",
+    "Microsoft.UI.Input.InputFocusController.GetForWindowId"
+  ],
+  "systemIslandInputOwnership": {
+    "desktopAttachedSiteBridgeProcessesPointerInput": false,
+    "desktopAttachedSiteBridgeProcessesKeyboardInput": true,
+    "rootIslandInputSourceRegistrationAllowed": false,
+    "keyboardRuntimeFloor": "bridge-processing-enabled-without-root-input-source-registration",
+    "inputActivationListenerRole": "observation-only",
+    "packetOwner": "sole-top-level-hwnd-native-ingress",
+    "nativeIngressCallsite": "WinRtTopLevelNativeIngress",
+    "nativeConfigurationBridge": "bounded-cpp-winrt-diagnostic-only",
+    "nativeIngressRule": "normalize-and-enqueue-without-framework-gpu-present-or-commit-wait",
+    "keyboardPacketRule": "top-level-wndproc-only-despite-bridge-runtime-floor"
+  },
   "nativeInteropAllowlist": [
     "combase.dll!RoInitialize",
     "combase.dll!RoUninitialize",
@@ -40,6 +60,20 @@
     "user32.dll!PostMessageW",
     "user32.dll!RegisterClassExW",
     "user32.dll!TranslateMessage",
+    "user32.dll!EnableMouseInPointer",
+    "user32.dll!GetPointerInfo",
+    "user32.dll!GetPointerInfoHistory",
+    "user32.dll!SetCapture",
+    "user32.dll!ReleaseCapture",
+    "user32.dll!GetCapture",
+    "user32.dll!ScreenToClient",
+    "user32.dll!GetKeyState",
+    "user32.dll!LoadCursorW",
+    "user32.dll!SetCursor",
+    "Doroti.WinRtContentIsland.NativeBridge.dll!DorotiWinRtConfigureDesktopAttachedSiteBridge",
+    "imm32.dll!ImmGetContext",
+    "imm32.dll!ImmReleaseContext",
+    "UIAutomationCore.dll!UiaReturnRawElementProvider",
     "d3d11.dll!D3D11CreateDevice",
     "dxgi.dll!CreateDXGIFactory2",
     "Windows.UI.Composition!ICompositorInterop.CreateCompositionSurfaceForSwapChain"
@@ -72,6 +106,7 @@
   "baselines": [
     "Doroti/validation/windows-resize-capture",
     "Doroti/validation/windowsappsdk-24-preflight",
+    "Doroti/validation/winrt-content-island-native-bridge",
     "Doroti/src/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs"
   ]
 }
