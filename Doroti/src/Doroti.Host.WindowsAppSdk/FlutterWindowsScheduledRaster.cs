@@ -222,6 +222,20 @@ internal sealed record FlutterWindowsScheduledRasterSnapshot(
     bool Disposed);
 
 /// <summary>
+/// Presentation boundary shared by the exact ANGLE fixture and the product
+/// compositor front. The scheduler owns metrics/causal admission; the
+/// implementation owns its raster-thread-affine native surface and present.
+/// </summary>
+internal interface IFlutterWindowsScheduledSurface : IDisposable
+{
+    FlutterWindowsAngleEglSurfaceUpdateResult UpdateForMetrics(WindowsViewMetrics targetMetrics);
+
+    FlutterWindowsAngleEglPresentResult RenderAndSwap(
+        WindowsViewMetrics targetMetrics,
+        Action<SKSurface> paint);
+}
+
+/// <summary>
 /// Joins F6 scheduler tickets to the F4 exact surface.  Its callback is safe
 /// to run from the platform scheduler because it only posts to the dedicated
 /// raster runner.  The raster thread rechecks immutable metrics before it
@@ -231,7 +245,7 @@ internal sealed record FlutterWindowsScheduledRasterSnapshot(
 internal sealed class FlutterWindowsScheduledRaster : IDisposable
 {
     private readonly FlutterWindowsFrameScheduler _scheduler;
-    private readonly FlutterWindowsAngleEglWindowSurface _windowSurface;
+    private readonly IFlutterWindowsScheduledSurface _windowSurface;
     private readonly SkiaSceneRenderer _renderer;
     private readonly IFlutterWindowsRasterTaskRunner _rasterTaskRunner;
     private readonly ConcurrentDictionary<long, CausalRasterState> _causalStates = [];
@@ -248,7 +262,7 @@ internal sealed class FlutterWindowsScheduledRaster : IDisposable
 
     internal FlutterWindowsScheduledRaster(
         FlutterWindowsFrameScheduler scheduler,
-        FlutterWindowsAngleEglWindowSurface windowSurface,
+        IFlutterWindowsScheduledSurface windowSurface,
         SkiaSceneRenderer renderer,
         IFlutterWindowsRasterTaskRunner rasterTaskRunner)
     {

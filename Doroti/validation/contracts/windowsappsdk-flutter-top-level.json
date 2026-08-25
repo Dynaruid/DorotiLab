@@ -61,7 +61,6 @@
       ],
       "forbiddenLiterals": [
         "WsPopup",
-        "WsExNoRedirectionBitmap",
         "SetWindowRgn",
         "ContentIsland",
         "DesktopAttachedSiteBridge",

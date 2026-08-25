@@ -491,6 +491,8 @@ internal static partial class Program
 
     private static IReadOnlyList<CadenceRow> RunCadenceMatrix()
     {
+        AssertPendingLatestMetricsReplacement();
+        AssertActiveResizeRetainsFrameworkContinuation();
         var rows = new List<CadenceRow>();
         foreach (var refreshHz in new[] { 60, 120, 144, 165 })
         {
@@ -555,6 +557,80 @@ internal static partial class Program
                 OrdinaryResumedAfterResize: snapshot.OrdinaryCallbackCount > RequiredCadenceSamples));
         }
         return rows;
+    }
+
+    private static void AssertPendingLatestMetricsReplacement()
+    {
+        const ulong viewId = 79_999;
+        var initial = CreateDeterministicMetrics(viewId, 1, 640, 360, 60);
+        using var scheduler = new FlutterWindowsFrameScheduler(
+            initial,
+            new FlutterWindowsDeterministicVsyncSource(60));
+        FlutterWindowsFrameTicket? callbackTicket = null;
+        var pending = scheduler.ScheduleOrdinary(
+            initial.ToViewEpoch(),
+            (ticket, _) => callbackTicket = ticket,
+            canReplaceBeforeDispatch: true);
+        Assert(pending.Accepted, "F6 could not queue a replaceable pre-dispatch frame.");
+
+        var latest = initial with
+        {
+            ResizeGeneration = 2,
+            PhysicalWidth = 812,
+            PhysicalHeight = 476,
+            TimestampMicroseconds = initial.TimestampMicroseconds + 1,
+        };
+        scheduler.PublishMetrics(latest);
+        var run = scheduler.TryRunOneFrame();
+        Assert(run.Dispatched && callbackTicket is not null,
+            "F6 latest-metrics replacement did not dispatch the pending callback.");
+        var admittedTicket = callbackTicket ?? throw new InvalidOperationException(
+            "F6 latest-metrics replacement callback ticket was null after dispatch.");
+        Assert(admittedTicket.Kind == FlutterWindowsFrameKind.Resize &&
+            ReferenceEquals(admittedTicket.Metrics, latest) &&
+            admittedTicket.ExpectedEpoch == latest.ToViewEpoch(),
+            "F6 changed native metrics without replacing the not-yet-started callback ticket exactly.");
+        Assert(scheduler.Snapshot.MaxObservedQueueDepth <= 1 &&
+            scheduler.Snapshot.DroppedStaleCallbackCount == 0,
+            "F6 latest-metrics replacement overflowed the bounded queue or dispatched stale work.");
+    }
+
+    private static void AssertActiveResizeRetainsFrameworkContinuation()
+    {
+        const ulong viewId = 79_998;
+        var initial = CreateDeterministicMetrics(viewId, 1, 640, 360, 60);
+        using var scheduler = new FlutterWindowsFrameScheduler(
+            initial,
+            new FlutterWindowsDeterministicVsyncSource(60));
+        var active = scheduler.ScheduleResize(initial, (_, _) => { });
+        Assert(active.Accepted && scheduler.TryRunOneFrame().Dispatched,
+            "F6 could not start the resize used by the continuation regression.");
+
+        FlutterWindowsFrameTicket? callbackTicket = null;
+        var continuation = scheduler.ScheduleOrdinary(
+            initial.ToViewEpoch(),
+            (ticket, _) => callbackTicket = ticket,
+            canReplaceBeforeDispatch: true);
+        Assert(continuation.Accepted && scheduler.Snapshot.HasPendingOrdinary,
+            "F6 dropped the framework continuation requested while resize raster was active.");
+
+        var latest = initial with
+        {
+            ResizeGeneration = 2,
+            PhysicalWidth = 824,
+            PhysicalHeight = 488,
+            TimestampMicroseconds = initial.TimestampMicroseconds + 1,
+        };
+        scheduler.PublishMetrics(latest);
+        var run = scheduler.TryRunOneFrame();
+        var admittedTicket = callbackTicket ?? throw new InvalidOperationException(
+            "F6 active-resize continuation callback was not dispatched.");
+        Assert(run.Dispatched && admittedTicket.Kind == FlutterWindowsFrameKind.Resize &&
+            ReferenceEquals(admittedTicket.Metrics, latest) &&
+            admittedTicket.ExpectedEpoch == latest.ToViewEpoch(),
+            "F6 did not promote the retained continuation to the latest exact resize before dispatch.");
+        Assert(scheduler.Snapshot.MaxObservedQueueDepth <= 1,
+            "F6 active-resize continuation exceeded the single pending slot.");
     }
 
     private static FlutterWindowsScheduledFrameCallback CreateSyntheticRasterCallback(

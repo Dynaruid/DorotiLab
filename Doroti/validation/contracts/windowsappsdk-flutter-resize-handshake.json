@@ -92,12 +92,11 @@
         "FlutterWindowsAngleEglWindowSurface",
         "UpdateForMetrics",
         "RenderAndSwap",
+        "EglFixedSizeAngle",
         "ExactExtentMismatchCount",
         "EnsureRasterThread"
       ],
       "forbiddenLiterals": [
-        "EglFixedSizeAngle",
-        "EGL_FIXED_SIZE_ANGLE",
         "SetSourceSize",
         "ResizeBuffers",
         "WindowsHwndAngleEglPresenter",

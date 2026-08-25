@@ -49,7 +49,7 @@ public static partial class DorotiWindowsAppSdkRunner
         var targetIdentity = adapter switch
         {
             WindowsAppSdkAdapterKind.FlutterEmbedder =>
-                "win-x64/windowsappsdk-2.4/raw-child-hwnd/flutter-embedder/angle-egl-skia",
+                "win-x64/windowsappsdk-2.4/raw-child-hwnd/flutter-lifecycle/dcomp-d3d12-skia",
             WindowsAppSdkAdapterKind.ArmNLegacy =>
                 "win-x64/windowsappsdk-2.4/raw-hwnd/arm-n-dual-front/d3d12-skia",
             _ => throw new ArgumentOutOfRangeException(nameof(adapter)),
@@ -61,10 +61,10 @@ public static partial class DorotiWindowsAppSdkRunner
             descriptor.ViewConfiguration.darkBackgroundColor,
             targetIdentity,
             adapter == WindowsAppSdkAdapterKind.FlutterEmbedder
-                ? DorotiSkiaRuntimeEffects.WindowsAngleEglBackend
+                ? DorotiSkiaRuntimeEffects.WindowsCompositionD3D12Backend
                 : DorotiSkiaRuntimeEffects.MauiGpuBackend,
             adapter == WindowsAppSdkAdapterKind.FlutterEmbedder
-                ? "windowsappsdk-2.4-flutter-angle-egl-skia"
+                ? "windowsappsdk-2.4-flutter-dcomp-d3d12-skia"
                 : "windowsappsdk-2.4-arm-n-d3d12-skia");
         var messages = new WindowsAppSdkPlatformMessageCapability();
         var capabilities = new DorotiViewCapabilities(targetIdentity)
@@ -98,17 +98,24 @@ public static partial class DorotiWindowsAppSdkRunner
 
             if (TryGetSmokeDuration(out var smokeDuration))
             {
-                if (string.Equals(
-                    Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_RESIZE_SMOKE"),
-                    "left",
-                    StringComparison.OrdinalIgnoreCase))
+                var resizeSmoke = Environment.GetEnvironmentVariable(
+                    "DOROTI_WINDOWS_APPSDK_RESIZE_SMOKE");
+                if (resizeSmoke is not null &&
+                    (resizeSmoke.Equals("left", StringComparison.OrdinalIgnoreCase) ||
+                     resizeSmoke.Equals("top-left", StringComparison.OrdinalIgnoreCase)))
                 {
                     var smokeClock = System.Diagnostics.Stopwatch.StartNew();
                     var resizeStep = 0;
                     resizeSmokeTimer = new(_ =>
                     {
                         if (smokeClock.Elapsed < smokeDuration - TimeSpan.FromSeconds(1))
-                            host.ApplyLeftResizeSmokeStep(Interlocked.Increment(ref resizeStep));
+                        {
+                            var step = Interlocked.Increment(ref resizeStep);
+                            if (resizeSmoke.Equals("top-left", StringComparison.OrdinalIgnoreCase))
+                                host.ApplyTopLeftResizeSmokeStep(step);
+                            else
+                                host.ApplyLeftResizeSmokeStep(step);
+                        }
                     }, null, TimeSpan.FromMilliseconds(250), TimeSpan.FromMilliseconds(8));
                 }
                 smokeTimer = new(_ => host.Close(), null, smokeDuration, Timeout.InfiniteTimeSpan);

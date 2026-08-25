@@ -47,6 +47,7 @@ internal sealed class FlutterWindowsHostWindow : IDisposable
     private const uint WmGetMinMaxInfo = 0x0024;
     private const uint WmDpiChanged = 0x02E0;
     private const uint WmDisplayChange = 0x007E;
+    private const uint WmPaint = 0x000F;
     private const uint WmEraseBackground = 0x0014;
     private const uint WmNcDestroy = 0x0082;
     private const uint WsOverlappedWindow = 0x00CF0000;
@@ -55,6 +56,7 @@ internal sealed class FlutterWindowsHostWindow : IDisposable
     private const uint WsVisible = 0x10000000;
     private const uint WsClipSiblings = 0x04000000;
     private const uint WsExAppWindow = 0x00040000;
+    private const uint WsExNoRedirectionBitmap = 0x00200000;
     private const int GwlStyle = -16;
     private const int SwHide = 0;
     private const int SwShowNoActivate = 4;
@@ -131,6 +133,13 @@ internal sealed class FlutterWindowsHostWindow : IDisposable
     internal event Action? ChildDpiOrDisplayChanged;
 
     /// <summary>
+    /// A child invalidation requests a retained-scene redraw. DefWindowProc
+    /// still validates the native paint region; this event only mirrors
+    /// FlutterWindow::OnPaint -> ForceRedraw.
+    /// </summary>
+    internal event Action? ChildRepaintRequested;
+
+    /// <summary>
     /// Optional child-only WndProc extension point. It is invoked after this
     /// host has performed its F2 child bookkeeping and before the child falls
     /// through to DefWindowProc. Subscribers run in registration order; the
@@ -166,10 +175,10 @@ internal sealed class FlutterWindowsHostWindow : IDisposable
                 options.InitialClientWidth,
                 options.InitialClientHeight,
                 WsOverlappedWindow | WsClipChildren,
-                WsExAppWindow,
+                WsExAppWindow | WsExNoRedirectionBitmap,
                 dpi);
             topLevel = NativeMethods.CreateWindowExW(
-                WsExAppWindow,
+                WsExAppWindow | WsExNoRedirectionBitmap,
                 TopLevelClassName,
                 options.Title,
                 WsOverlappedWindow | WsClipChildren,
@@ -196,7 +205,7 @@ internal sealed class FlutterWindowsHostWindow : IDisposable
             }
 
             view = NativeMethods.CreateWindowExW(
-                0,
+                WsExNoRedirectionBitmap,
                 ViewClassName,
                 string.Empty,
                 WsChild | WsVisible | WsClipSiblings,
@@ -310,6 +319,7 @@ internal sealed class FlutterWindowsHostWindow : IDisposable
         if (_disposed) return;
         EnsurePlatformThread();
         _disposed = true;
+        ChildRepaintRequested = null;
         ChildMessageReceived = null;
         TopLevelMessageReceived = null;
         var failures = new List<Exception>();
@@ -417,6 +427,7 @@ internal sealed class FlutterWindowsHostWindow : IDisposable
         nint lParam)
     {
         if (message == WmSize && !_disposed) CaptureChildRect();
+        if (message == WmPaint && !_disposed) ChildRepaintRequested?.Invoke();
         var handledByHost = false;
         var hostResult = nint.Zero;
         if (message == WmEraseBackground)
@@ -464,7 +475,7 @@ internal sealed class FlutterWindowsHostWindow : IDisposable
             _clientHeight = clientRect.Height;
         }
         if (!NativeMethods.MoveWindow(
-                _viewHwnd, 0, 0, clientRect.Width, clientRect.Height, repaint: true))
+                _viewHwnd, 0, 0, clientRect.Width, clientRect.Height, repaint: false))
         {
             throw new Win32Exception(Marshal.GetLastWin32Error(),
                 "MoveWindow during Flutter child layout failed.");
@@ -499,13 +510,13 @@ internal sealed class FlutterWindowsHostWindow : IDisposable
             _options.MinimumClientWidth,
             _options.MinimumClientHeight,
             WsOverlappedWindow | WsClipChildren,
-            WsExAppWindow,
+            WsExAppWindow | WsExNoRedirectionBitmap,
             dpi);
         var maximum = ClientToWindowRect(
             _options.MaximumClientWidth,
             _options.MaximumClientHeight,
             WsOverlappedWindow | WsClipChildren,
-            WsExAppWindow,
+            WsExAppWindow | WsExNoRedirectionBitmap,
             dpi);
         info.MinimumTrackSize = new NativeMethods.NativePoint
         {

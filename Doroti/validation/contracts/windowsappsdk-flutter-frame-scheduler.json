@@ -131,11 +131,10 @@
         "UpdateForMetrics",
         "RenderAndSwap",
         "EnsureRasterThread",
+        "EglFixedSizeAngle",
         "ExactExtentMismatchCount"
       ],
       "forbiddenLiterals": [
-        "EglFixedSizeAngle",
-        "EGL_FIXED_SIZE_ANGLE",
         "SetSourceSize",
         "ResizeBuffers",
         "WindowsHwndAngleEglPresenter",

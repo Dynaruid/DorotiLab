@@ -562,6 +562,19 @@ public interface IExactFrameHostCapability
     void ScheduleFrame(DorotiViewEpoch expectedEpoch, Action<TimeSpan> callback);
 }
 
+/// <summary>
+/// Optional exact-frame extension for hosts that can replace work which has
+/// not begun with a newer native metrics target. The host reports the epoch it
+/// actually admitted when it dispatches the callback; an epoch is immutable
+/// once framework work starts.
+/// </summary>
+public interface ILatestMetricsFrameHostCapability : IExactFrameHostCapability
+{
+    void ScheduleFrame(
+        DorotiViewEpoch expectedEpoch,
+        Action<TimeSpan, DorotiViewEpoch> callback);
+}
+
 public interface IPlatformEnvironmentHostCapability
 {
     PlatformConfiguration Configuration { get; }

@@ -237,6 +237,7 @@ internal sealed class FlutterWindowsViewMetricsCoordinator : IDisposable
     private readonly uint _platformNativeThreadId;
     private readonly FlutterWindowsHostWindow? _hostWindow;
     private WindowsViewMetrics? _current;
+    private WindowsViewMetrics? _proposed;
     private long _nextResizeGeneration;
     private long _observationCount;
     private long _dpiAndDisplayRequeryCount;
@@ -299,6 +300,35 @@ internal sealed class FlutterWindowsViewMetricsCoordinator : IDisposable
         throw new InvalidOperationException("The Windows child view has not published metrics yet.");
 
     /// <summary>
+    /// Reserves one immutable metrics epoch from a top-level WINDOWPOS proposal
+    /// without admitting it as the current child geometry. The framework may
+    /// prepare this epoch into a non-visible backing store; only a later exact
+    /// GetClientRect observation publishes it to native consumers.
+    /// </summary>
+    internal WindowsViewMetrics PrepareProposedChildMetrics(int physicalWidth, int physicalHeight)
+    {
+        EnsurePlatformThread();
+        ThrowIfDisposed();
+        if (physicalWidth <= 0 || physicalHeight <= 0)
+            throw new ArgumentOutOfRangeException(nameof(physicalWidth));
+        var displayObservation = _displayObservationSource.Observe(_childHwnd);
+        displayObservation.Validate();
+        var current = Current;
+        if (SameObservation(current, physicalWidth, physicalHeight, displayObservation, _constraints))
+            return current;
+        var proposed = WindowsViewMetrics.FromPhysicalPixels(
+            _viewId,
+            checked(++_nextResizeGeneration),
+            physicalWidth,
+            physicalHeight,
+            displayObservation,
+            _constraints,
+            DorotiFrameClock.Now.Ticks / 10);
+        _proposed = proposed;
+        return proposed;
+    }
+
+    /// <summary>
     /// Reads the child HWND afresh for every native size, DPI, and display
     /// invalidation.  The physical dimensions come only from GetClientRect.
     /// </summary>
@@ -317,6 +347,20 @@ internal sealed class FlutterWindowsViewMetricsCoordinator : IDisposable
         Interlocked.Increment(ref _observationCount);
         Interlocked.Increment(ref _dpiAndDisplayRequeryCount);
         var current = _current;
+        var proposed = _proposed;
+        if (proposed is not null && SameObservation(
+                proposed, clientRect.Width, clientRect.Height, displayObservation, _constraints))
+        {
+            _proposed = null;
+            _current = proposed;
+            if (proposed.State == WindowsViewMetricsState.Suspended)
+                Interlocked.Increment(ref _suspensionCount);
+            else if (current?.State == WindowsViewMetricsState.Suspended)
+                Interlocked.Increment(ref _restoreCount);
+            MetricsPublished?.Invoke(proposed);
+            return proposed;
+        }
+        _proposed = null;
         if (current is not null && SameObservation(
                 current, clientRect.Width, clientRect.Height, displayObservation, _constraints))
         {

@@ -340,6 +340,8 @@ internal sealed class WindowsAppSdkHostAdapter :
         }
     }
 
+    public void ApplyTopLeftResizeSmokeStep(int step) => ApplyLeftResizeSmokeStep(step);
+
     public void Show()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);

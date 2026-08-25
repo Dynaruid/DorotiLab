@@ -238,8 +238,18 @@ internal sealed class FlutterWindowsAngleEglSharedContext : IDisposable
 
     private void SetSwapInterval()
     {
-        if (FlutterWindowsAngleEglNative.EglSwapInterval(_display, interval: 1) == EglFalse)
-            ThrowEgl("eglSwapInterval(1)");
+        // Flutter lets DWM own vblank pacing while desktop composition is
+        // enabled. Waiting in both eglSwapBuffers and the post-present
+        // DwmFlush serializes two compositor waits and makes interactive
+        // resize visibly step at a fraction of the display cadence.
+        var interval = 1;
+        if (FlutterWindowsAngleEglNative.DwmIsCompositionEnabled(out var compositionEnabled) >= 0 &&
+            compositionEnabled)
+        {
+            interval = 0;
+        }
+        if (FlutterWindowsAngleEglNative.EglSwapInterval(_display, interval) == EglFalse)
+            ThrowEgl($"eglSwapInterval({interval})");
     }
 
     private void DisposeAfterFailedInitialization()
@@ -349,12 +359,14 @@ internal sealed class FlutterWindowsAngleEglSharedContext : IDisposable
 /// surface and default-framebuffer Skia target; it never owns the shared
 /// ANGLE context or Skia cache.
 /// </summary>
-internal sealed class FlutterWindowsAngleEglWindowSurface : IDisposable
+internal sealed class FlutterWindowsAngleEglWindowSurface : IFlutterWindowsScheduledSurface
 {
     private const int EglFalse = 0;
+    private const int EglTrue = 1;
     private const int EglNone = 0x3038;
     private const int EglWidth = 0x3057;
     private const int EglHeight = 0x3056;
+    private const int EglFixedSizeAngle = 0x3201;
     private const int EglContextLost = 0x300E;
     private const uint GlRgba8 = 0x8058;
 
@@ -421,7 +433,7 @@ internal sealed class FlutterWindowsAngleEglWindowSurface : IDisposable
     /// not recreate it; every changed drawable publication is exact-pixel
     /// verified before the new EGL window surface becomes current.
     /// </summary>
-    internal FlutterWindowsAngleEglSurfaceUpdateResult UpdateForMetrics(WindowsViewMetrics targetMetrics)
+    public FlutterWindowsAngleEglSurfaceUpdateResult UpdateForMetrics(WindowsViewMetrics targetMetrics)
     {
         ArgumentNullException.ThrowIfNull(targetMetrics);
         EnsureRasterThread(RasterOperation.Recreate);
@@ -485,7 +497,7 @@ internal sealed class FlutterWindowsAngleEglWindowSurface : IDisposable
     /// has rebound the matching child-HWND surface; it must paint the supplied
     /// Skia surface and must not retain it beyond the callback.
     /// </summary>
-    internal FlutterWindowsAngleEglPresentResult RenderAndSwap(
+    public FlutterWindowsAngleEglPresentResult RenderAndSwap(
         WindowsViewMetrics targetMetrics,
         Action<SKSurface> paint)
     {
@@ -625,7 +637,12 @@ internal sealed class FlutterWindowsAngleEglWindowSurface : IDisposable
                 _sharedContext.Display,
                 _sharedContext.Config,
                 _childHwnd,
-                [EglNone]);
+                [
+                    EglFixedSizeAngle, EglTrue,
+                    EglWidth, targetMetrics.PhysicalWidth,
+                    EglHeight, targetMetrics.PhysicalHeight,
+                    EglNone,
+                ]);
             if (nativeSurface == 0)
                 _sharedContext.ThrowEgl("eglCreateWindowSurface(child HWND)");
 
@@ -1011,6 +1028,10 @@ internal static class FlutterWindowsAngleEglNative
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool GetClientRect(nint hwnd, out NativeRect rect);
+
+    [DllImport("dwmapi.dll")]
+    internal static extern int DwmIsCompositionEnabled(
+        [MarshalAs(UnmanagedType.Bool)] out bool enabled);
 
     [StructLayout(LayoutKind.Sequential)]
     internal struct NativeRect

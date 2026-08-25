@@ -281,10 +281,9 @@ public sealed class SkiaSceneRenderer :
         }
 
         var canvas = surface.Canvas;
-        // The native GL surface exists before the first framework scene. Clear
-        // every fresh back buffer to the app-owned opaque color so neither that
-        // startup gap nor an uncovered scene region exposes Android's black
-        // TextureView/window background.
+        // Clear every fresh back buffer to the app-owned background color.
+        // Its alpha is intentionally preserved: premultiplied composition
+        // targets can later reveal a Windows backdrop through this scene.
         canvas.Clear(_backgroundColor);
         if (frame is null)
         {

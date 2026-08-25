@@ -48,4 +48,5 @@ internal interface IWindowsAppSdkProductHost :
     int RunMessageLoop();
     void WriteDiagnostics(SkiaFrameDiagnostics diagnostics);
     void ApplyLeftResizeSmokeStep(int step);
+    void ApplyTopLeftResizeSmokeStep(int step);
 }

@@ -288,7 +288,13 @@ internal sealed class FlutterWindowsFrameScheduler :
 
     public FlutterWindowsFrameScheduleResult ScheduleOrdinary(
         DorotiViewEpoch expectedEpoch,
-        FlutterWindowsScheduledFrameCallback callback)
+        FlutterWindowsScheduledFrameCallback callback) =>
+        ScheduleOrdinary(expectedEpoch, callback, canReplaceBeforeDispatch: false);
+
+    internal FlutterWindowsFrameScheduleResult ScheduleOrdinary(
+        DorotiViewEpoch expectedEpoch,
+        FlutterWindowsScheduledFrameCallback callback,
+        bool canReplaceBeforeDispatch)
     {
         ArgumentNullException.ThrowIfNull(expectedEpoch);
         ArgumentNullException.ThrowIfNull(callback);
@@ -301,7 +307,7 @@ internal sealed class FlutterWindowsFrameScheduler :
                 _crossViewLeakCount++;
                 return new(ticket, Accepted: false, ReplacedLatest: false, RejectedAsStale: true);
             }
-            if (_pendingResize is not null || _activeResize is not null)
+            if (_pendingResize is not null)
             {
                 // The single pending slot belongs to the exact resize.  The
                 // framework will request the next ordinary animation callback
@@ -311,9 +317,14 @@ internal sealed class FlutterWindowsFrameScheduler :
                 return new(ticket, Accepted: false, ReplacedLatest: false, RejectedAsStale: false);
             }
 
+            // An active resize is no longer in the pending queue. Retain one
+            // latest ordinary continuation so a framework scheduler that has
+            // already marked its request as pending is guaranteed a callback.
+            // A newer metrics publication may replace this not-yet-started
+            // continuation with an exact resize ticket.
             var replaced = _pendingOrdinary is not null;
             if (replaced) _ordinaryMergedCount++;
-            _pendingOrdinary = new ScheduledFrame(ticket, callback);
+            _pendingOrdinary = new ScheduledFrame(ticket, callback, canReplaceBeforeDispatch);
             UpdateQueueDepthNoLock();
             return new(ticket, Accepted: true, ReplacedLatest: replaced, RejectedAsStale: false);
         }
@@ -321,7 +332,13 @@ internal sealed class FlutterWindowsFrameScheduler :
 
     public FlutterWindowsFrameScheduleResult ScheduleResize(
         WindowsViewMetrics expectedMetrics,
-        FlutterWindowsScheduledFrameCallback callback)
+        FlutterWindowsScheduledFrameCallback callback) =>
+        ScheduleResize(expectedMetrics, callback, canReplaceBeforeDispatch: false);
+
+    internal FlutterWindowsFrameScheduleResult ScheduleResize(
+        WindowsViewMetrics expectedMetrics,
+        FlutterWindowsScheduledFrameCallback callback,
+        bool canReplaceBeforeDispatch)
     {
         ArgumentNullException.ThrowIfNull(expectedMetrics);
         ArgumentNullException.ThrowIfNull(callback);
@@ -374,7 +391,7 @@ internal sealed class FlutterWindowsFrameScheduler :
                 ClearActiveNoLock(active.Ticket);
                 _resizeMergedCount++;
             }
-            _pendingResize = new ScheduledFrame(ticket, callback);
+            _pendingResize = new ScheduledFrame(ticket, callback, canReplaceBeforeDispatch);
             UpdateQueueDepthNoLock();
             return new(ticket, Accepted: true, ReplacedLatest: replaced, RejectedAsStale: false);
         }
@@ -677,6 +694,7 @@ internal sealed class FlutterWindowsFrameScheduler :
             _currentMetrics = metrics;
             _metricsSuspended = !metrics.HasDrawableSize;
             if (_metricsSuspended && !wasMetricsSuspended) _suspendedStopCount++;
+            ReplacePendingWithLatestMetricsNoLock(metrics);
             DropActiveForNewerMetricsNoLock(metrics);
             latestRequest = !IsSchedulingStoppedNoLock() && wasStopped
                 ? RequestLatestMetricsNoLock(restored: true)
@@ -870,6 +888,46 @@ internal sealed class FlutterWindowsFrameScheduler :
         }
     }
 
+    /// <summary>
+    /// A framework callback that has not started does not own an immutable
+    /// scene yet. Product hosts may therefore replace that pending request with
+    /// the latest resize target while preserving a queue depth of one. Once a
+    /// callback becomes active, the ordinary stale-admission rules apply.
+    /// </summary>
+    private void ReplacePendingWithLatestMetricsNoLock(WindowsViewMetrics metrics)
+    {
+        if (!metrics.HasDrawableSize) return;
+
+        if (_pendingResize is { CanReplaceBeforeDispatch: true } pendingResize &&
+            !ReferenceEquals(pendingResize.Ticket.Metrics, metrics))
+        {
+            _pendingResize = pendingResize with
+            {
+                Ticket = CreateTicketNoLock(
+                    FlutterWindowsFrameKind.Resize,
+                    metrics,
+                    metrics.ToViewEpoch()),
+            };
+            _resizeMergedCount++;
+        }
+
+        if (_pendingOrdinary is { CanReplaceBeforeDispatch: true } pendingOrdinary &&
+            !ReferenceEquals(pendingOrdinary.Ticket.Metrics, metrics))
+        {
+            _pendingOrdinary = null;
+            _pendingResize = new ScheduledFrame(
+                CreateTicketNoLock(
+                    FlutterWindowsFrameKind.Resize,
+                    metrics,
+                    metrics.ToViewEpoch()),
+                pendingOrdinary.Callback,
+                CanReplaceBeforeDispatch: true);
+            _ordinaryMergedCount++;
+            _resizeMergedCount++;
+        }
+        UpdateQueueDepthNoLock();
+    }
+
     private WindowsViewMetrics? RequestLatestMetricsNoLock(bool restored)
     {
         if (IsSchedulingStoppedNoLock()) return null;
@@ -895,5 +953,6 @@ internal sealed class FlutterWindowsFrameScheduler :
 
     private sealed record ScheduledFrame(
         FlutterWindowsFrameTicket Ticket,
-        FlutterWindowsScheduledFrameCallback Callback);
+        FlutterWindowsScheduledFrameCallback Callback,
+        bool CanReplaceBeforeDispatch);
 }
