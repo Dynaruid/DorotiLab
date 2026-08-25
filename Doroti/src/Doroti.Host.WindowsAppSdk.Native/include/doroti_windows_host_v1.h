@@ -113,6 +113,25 @@ typedef struct doroti_windows_key_v1 {
   doroti_windows_utf8_v1 character;
 } doroti_windows_key_v1;
 
+typedef struct doroti_windows_text_configuration_v1 {
+  uint32_t abi_version;
+  uint32_t struct_size;
+  uint32_t input_type;
+  uint32_t input_action;
+  uint32_t capitalization;
+  uint32_t flags;
+} doroti_windows_text_configuration_v1;
+
+typedef struct doroti_windows_text_state_v1 {
+  uint32_t abi_version;
+  uint32_t struct_size;
+  doroti_windows_utf8_v1 text;
+  int32_t selection_base;
+  int32_t selection_extent;
+  int32_t composing_base;
+  int32_t composing_extent;
+} doroti_windows_text_state_v1;
+
 typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_request_frame_v1)(void* host_context);
 typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_request_resize_v1)(
     void* host_context, uint32_t width_px, uint32_t height_px);
@@ -124,6 +143,19 @@ typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_set_clipboard_v1)(
     void* host_context, doroti_windows_utf8_v1 text);
 typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_request_clipboard_v1)(
     void* host_context, uint64_t request_id);
+typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_set_text_client_v1)(
+    void* host_context, const doroti_windows_text_configuration_v1* configuration,
+    const doroti_windows_text_state_v1* state);
+typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_update_text_state_v1)(
+    void* host_context, const doroti_windows_text_state_v1* state);
+typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_set_caret_rect_v1)(
+    void* host_context, double left, double top, double width, double height);
+typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_clear_text_client_v1)(
+    void* host_context);
+typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_update_semantics_v1)(
+    void* host_context, doroti_windows_utf8_v1 json);
+typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_clear_semantics_v1)(
+    void* host_context);
 
 typedef struct doroti_windows_host_v1 {
   uint32_t abi_version;
@@ -139,6 +171,12 @@ typedef struct doroti_windows_host_v1 {
   doroti_windows_set_cursor_v1 set_cursor;
   doroti_windows_set_clipboard_v1 set_clipboard;
   doroti_windows_request_clipboard_v1 request_clipboard;
+  doroti_windows_set_text_client_v1 set_text_client;
+  doroti_windows_update_text_state_v1 update_text_state;
+  doroti_windows_set_caret_rect_v1 set_caret_rect;
+  doroti_windows_clear_text_client_v1 clear_text_client;
+  doroti_windows_update_semantics_v1 update_semantics;
+  doroti_windows_clear_semantics_v1 clear_semantics;
 } doroti_windows_host_v1;
 
 typedef void(DOROTI_WINDOWS_CALL* doroti_windows_host_ready_callback_v1)(
@@ -160,6 +198,16 @@ typedef void(DOROTI_WINDOWS_CALL* doroti_windows_focus_callback_v1)(
     int64_t timestamp_qpc);
 typedef void(DOROTI_WINDOWS_CALL* doroti_windows_clipboard_callback_v1)(
     void* callback_context, uint64_t request_id, doroti_windows_utf8_v1 text);
+typedef void(DOROTI_WINDOWS_CALL* doroti_windows_text_editing_callback_v1)(
+    void* callback_context, const doroti_windows_text_state_v1* state);
+typedef void(DOROTI_WINDOWS_CALL* doroti_windows_text_action_callback_v1)(
+    void* callback_context, uint32_t action);
+typedef void(DOROTI_WINDOWS_CALL* doroti_windows_semantics_action_callback_v1)(
+    void* callback_context, int64_t node_id, int64_t action,
+    doroti_windows_utf8_v1 arguments_json);
+typedef void(DOROTI_WINDOWS_CALL* doroti_windows_lifecycle_callback_v1)(
+    void* callback_context, uint64_t view_id, uint32_t state,
+    int64_t timestamp_qpc);
 
 typedef struct doroti_windows_configuration_v1 {
   uint32_t abi_version;
@@ -186,6 +234,10 @@ typedef struct doroti_windows_callbacks_v1 {
   doroti_windows_key_callback_v1 key;
   doroti_windows_focus_callback_v1 focus;
   doroti_windows_clipboard_callback_v1 clipboard;
+  doroti_windows_text_editing_callback_v1 text_editing;
+  doroti_windows_text_action_callback_v1 text_action;
+  doroti_windows_semantics_action_callback_v1 semantics_action;
+  doroti_windows_lifecycle_callback_v1 lifecycle;
 } doroti_windows_callbacks_v1;
 
 typedef struct doroti_windows_abi_layout_v1 {
@@ -209,6 +261,11 @@ typedef struct doroti_windows_abi_layout_v1 {
   uint32_t key_size;
   uint32_t callbacks_pointer_offset;
   uint32_t host_set_cursor_offset;
+  uint32_t text_configuration_size;
+  uint32_t text_state_size;
+  uint32_t host_set_text_client_offset;
+  uint32_t callbacks_text_editing_offset;
+  uint32_t callbacks_lifecycle_offset;
 } doroti_windows_abi_layout_v1;
 
 #pragma pack(pop)

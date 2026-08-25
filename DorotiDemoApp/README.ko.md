@@ -8,7 +8,7 @@ DorotiDemoApp은 플랫폼 workspace 계약을 직접 사용하는 dogfood 앱�
 
 - `Program.cs`, `src/`, `assets/`: 공용 startup, widget tree, 앱 asset
 - `doroti-workspace.json`: `macos`(AppKit)와 `maccatalyst`(UIKit)를 구분하는 runner 경로
-- `windowsappsdk/`: WinRT-first `ContentIsland` runner 경계. `WinRtComposition` 구현 전까지 실행 시 명시적으로 실패합니다.
+- `windowsappsdk/`: Windows App SDK 2.4 `HwndExactCpp` child-HWND runner와 managed ANGLE/EGL-D3D11 Skia presentation 경로입니다.
 - `windows/`: 정식 MAUI backend runner와 package identity
 - `web/`: Blazor WebAssembly runner, TypeScript source, `wwwroot`
 - `android/`: .NET Android/MAUI runner와 기본 Gradle AAR/.NET binding
@@ -35,11 +35,11 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 publish -App ./DorotiDemoApp -Plat
 아래 명령은 모두 저장소 루트에서 실행합니다. Linux runner 명령은 native shim을 함께 빌드하므로 Linux x64 호스트에서 실행해야 합니다.
 
 ```powershell
-# Windows MAUI backend (현재 기본값, 실행 가능)
+# Windows App SDK HwndExactCpp backend (현재 기본값)
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
 
-# Windows App SDK backend (현재 contract build만 가능)
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./DorotiDemoApp -Platform windows -WindowsBackend WindowsAppSdk
+# 독립 Windows MAUI backend
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -WindowsBackend Maui
 
 # Web
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform web
@@ -68,7 +68,7 @@ runner를 직접 지정해도 됩니다.
 
 ```powershell
 dotnet build ./DorotiDemoApp/DorotiDemoApp.csproj -c Release
-dotnet build ./DorotiDemoApp/windowsappsdk/DorotiDemoApp.WindowsAppSdk.csproj -c Release # WinRT runner contract only
+dotnet run --project ./DorotiDemoApp/windowsappsdk/DorotiDemoApp.WindowsAppSdk.csproj -c Release
 dotnet run --project ./DorotiDemoApp/windows/DorotiDemoApp.Windows.csproj # MAUI backend
 dotnet run --project ./DorotiDemoApp/web/DorotiDemoApp.Web.csproj
 dotnet build ./DorotiDemoApp/android/DorotiDemoApp.Android.csproj -c Release -r android-x64

@@ -1,5 +1,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Reflection;
+using System.Security.Cryptography;
 
 namespace Doroti.Host.WindowsAppSdk;
 
@@ -7,6 +9,12 @@ internal static partial class WindowsNativeV1
 {
     internal const uint AbiVersion = 1;
     internal const string LibraryName = "doroti_windows_appsdk_host_v1";
+    private const uint LoadLibrarySearchDllLoadDir = 0x00000100;
+    private const uint LoadLibrarySearchApplicationDir = 0x00000200;
+    private const uint LoadLibrarySearchUserDirs = 0x00000400;
+    private const uint LoadLibrarySearchSystem32 = 0x00000800;
+    private static int _resolverConfigured;
+    private static string? _nativeHostPath;
 
     internal enum Status : uint
     {
@@ -117,6 +125,29 @@ internal static partial class WindowsNativeV1
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
+    internal struct TextConfiguration
+    {
+        internal uint AbiVersion;
+        internal uint StructSize;
+        internal uint InputType;
+        internal uint InputAction;
+        internal uint Capitalization;
+        internal uint Flags;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 8)]
+    internal struct TextState
+    {
+        internal uint AbiVersion;
+        internal uint StructSize;
+        internal Utf8 Text;
+        internal int SelectionBase;
+        internal int SelectionExtent;
+        internal int ComposingBase;
+        internal int ComposingExtent;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 8)]
     internal struct Host
     {
         internal uint AbiVersion;
@@ -132,6 +163,12 @@ internal static partial class WindowsNativeV1
         internal nint SetCursor;
         internal nint SetClipboard;
         internal nint RequestClipboard;
+        internal nint SetTextClient;
+        internal nint UpdateTextState;
+        internal nint SetCaretRect;
+        internal nint ClearTextClient;
+        internal nint UpdateSemantics;
+        internal nint ClearSemantics;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -163,6 +200,10 @@ internal static partial class WindowsNativeV1
         internal nint Key;
         internal nint Focus;
         internal nint Clipboard;
+        internal nint TextEditing;
+        internal nint TextAction;
+        internal nint SemanticsAction;
+        internal nint Lifecycle;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -188,6 +229,11 @@ internal static partial class WindowsNativeV1
         internal uint KeySize;
         internal uint CallbacksPointerOffset;
         internal uint HostSetCursorOffset;
+        internal uint TextConfigurationSize;
+        internal uint TextStateSize;
+        internal uint HostSetTextClientOffset;
+        internal uint CallbacksTextEditingOffset;
+        internal uint CallbacksLifecycleOffset;
     }
 
     [LibraryImport(LibraryName, EntryPoint = "doroti_windows_get_abi_version_v1")]
@@ -201,6 +247,82 @@ internal static partial class WindowsNativeV1
     [LibraryImport(LibraryName, EntryPoint = "doroti_windows_run_v1")]
     [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     internal static partial Status Run(in Configuration configuration, in Callbacks callbacks);
+
+    [LibraryImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool SetDefaultDllDirectories(uint directoryFlags);
+
+    [LibraryImport("kernel32.dll", EntryPoint = "LoadLibraryExW", StringMarshalling = StringMarshalling.Utf16,
+        SetLastError = true)]
+    private static partial nint LoadLibraryEx(string fileName, nint file, uint flags);
+
+    internal static NativeHostProvenance ConfigureAppDirectoryLoading()
+    {
+        var baseDirectory = Path.GetFullPath(AppContext.BaseDirectory);
+        var hostPath = Path.Combine(baseDirectory, $"{LibraryName}.dll");
+        var bootstrapPath = Path.Combine(baseDirectory, "Microsoft.WindowsAppRuntime.Bootstrap.dll");
+        var anglePath = Path.Combine(baseDirectory, "av_libglesv2.dll");
+        RequireNativeFile(hostPath, "native HwndExactCpp host");
+        RequireNativeFile(bootstrapPath, "Windows App Runtime bootstrap");
+        RequireNativeFile(anglePath, "ANGLE EGL/GLES runtime");
+        ValidateX64Pe(hostPath, "native HwndExactCpp host");
+        ValidateX64Pe(bootstrapPath, "Windows App Runtime bootstrap");
+        ValidateX64Pe(anglePath, "ANGLE EGL/GLES runtime");
+        if (Interlocked.Exchange(ref _resolverConfigured, 1) == 0)
+        {
+            var directories = LoadLibrarySearchApplicationDir | LoadLibrarySearchUserDirs |
+                              LoadLibrarySearchSystem32;
+            if (!SetDefaultDllDirectories(directories))
+                throw new InvalidOperationException(
+                    $"Failed to restrict native DLL search directories (Win32={Marshal.GetLastPInvokeError()}).");
+            _nativeHostPath = hostPath;
+            NativeLibrary.SetDllImportResolver(typeof(WindowsNativeV1).Assembly, ResolveNativeLibrary);
+        }
+        return new(baseDirectory, hostPath, Sha256(hostPath),
+            bootstrapPath, Sha256(bootstrapPath), anglePath, Sha256(anglePath),
+            "app-directory + DLL-load-directory + System32 + registered user directories; PATH/current-directory excluded");
+    }
+
+    private static nint ResolveNativeLibrary(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
+    {
+        _ = assembly;
+        _ = searchPath;
+        if (!libraryName.Equals(LibraryName, StringComparison.Ordinal)) return 0;
+        var path = _nativeHostPath ?? throw new DllNotFoundException("The app-directory native host path was not initialized.");
+        var handle = LoadLibraryEx(path, 0, LoadLibrarySearchDllLoadDir | LoadLibrarySearchSystem32);
+        if (handle != 0) return handle;
+        var error = Marshal.GetLastPInvokeError();
+        if (error == 193)
+            throw new BadImageFormatException($"The native HwndExactCpp host is not a win-x64 PE image: {path}");
+        throw new DllNotFoundException(
+            $"The native HwndExactCpp host or one of its app-directory dependencies failed to load: {path} (Win32={error}).");
+    }
+
+    private static void RequireNativeFile(string path, string identity)
+    {
+        if (!File.Exists(path))
+            throw new DllNotFoundException($"Required {identity} is missing from the application directory: {path}");
+    }
+
+    internal static void ValidateX64Pe(string path, string identity)
+    {
+        using var stream = File.OpenRead(path);
+        Span<byte> header = stackalloc byte[64];
+        if (stream.Read(header) != header.Length || header[0] != (byte)'M' || header[1] != (byte)'Z')
+            throw new BadImageFormatException($"The {identity} is not a PE image: {path}");
+        var peOffset = BitConverter.ToInt32(header[0x3c..]);
+        if (peOffset < 0 || peOffset > stream.Length - 6)
+            throw new BadImageFormatException($"The {identity} has an invalid PE header: {path}");
+        stream.Position = peOffset;
+        Span<byte> signature = stackalloc byte[6];
+        if (stream.Read(signature) != signature.Length ||
+            signature[0] != (byte)'P' || signature[1] != (byte)'E' ||
+            signature[2] != 0 || signature[3] != 0 || BitConverter.ToUInt16(signature[4..]) != 0x8664)
+            throw new BadImageFormatException($"The {identity} is not a win-x64 PE image: {path}");
+    }
+
+    private static string Sha256(string path) =>
+        Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path))).ToLowerInvariant();
 
     internal static AbiLayout ValidateLayout()
     {
@@ -233,6 +355,11 @@ internal static partial class WindowsNativeV1
         AssertEqual("key packet size", SizeOf<Key>(), layout.KeySize);
         AssertEqual("callbacks pointer offset", OffsetOf<Callbacks>(nameof(Callbacks.Pointer)), layout.CallbacksPointerOffset);
         AssertEqual("host set-cursor offset", OffsetOf<Host>(nameof(Host.SetCursor)), layout.HostSetCursorOffset);
+        AssertEqual("text configuration size", SizeOf<TextConfiguration>(), layout.TextConfigurationSize);
+        AssertEqual("text state size", SizeOf<TextState>(), layout.TextStateSize);
+        AssertEqual("host set-text-client offset", OffsetOf<Host>(nameof(Host.SetTextClient)), layout.HostSetTextClientOffset);
+        AssertEqual("callbacks text-editing offset", OffsetOf<Callbacks>(nameof(Callbacks.TextEditing)), layout.CallbacksTextEditingOffset);
+        AssertEqual("callbacks lifecycle offset", OffsetOf<Callbacks>(nameof(Callbacks.Lifecycle)), layout.CallbacksLifecycleOffset);
         return layout;
     }
 
@@ -246,3 +373,13 @@ internal static partial class WindowsNativeV1
             throw new InvalidOperationException($"Native ABI {name} mismatch: managed={expected}, native={actual}.");
     }
 }
+
+internal sealed record NativeHostProvenance(
+    string ApplicationDirectory,
+    string NativeHostPath,
+    string NativeHostSha256,
+    string BootstrapPath,
+    string BootstrapSha256,
+    string AnglePath,
+    string AngleSha256,
+    string SearchPolicy);

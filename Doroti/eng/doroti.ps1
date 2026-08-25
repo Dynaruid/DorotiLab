@@ -17,7 +17,7 @@ param(
     [string] $Platform,
 
     [ValidateSet('WindowsAppSdk', 'Maui')]
-    [string] $WindowsBackend = 'Maui',
+    [string] $WindowsBackend = 'WindowsAppSdk',
 
     [string] $Rid,
 
@@ -188,7 +188,7 @@ function Invoke-WorkspaceDotNet {
     $previousAdapter = $env:DOROTI_WINDOWS_ADAPTER
     try {
         if ($Platform -ceq 'windows' -and $WindowsBackend -ceq 'WindowsAppSdk') {
-            $env:DOROTI_WINDOWS_ADAPTER = 'WinRtComposition'
+            $env:DOROTI_WINDOWS_ADAPTER = 'HwndExactCpp'
         }
         Invoke-Checked 'dotnet' $arguments $workspace.Root
     }

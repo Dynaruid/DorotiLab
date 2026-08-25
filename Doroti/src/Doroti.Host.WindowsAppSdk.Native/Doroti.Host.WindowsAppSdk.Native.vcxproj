@@ -41,13 +41,15 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(FoundationLib);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Microsoft.WindowsAppRuntime.Bootstrap.lib;windowsapp.lib;runtimeobject.lib;ole32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Microsoft.WindowsAppRuntime.Bootstrap.lib;windowsapp.lib;runtimeobject.lib;ole32.lib;oleaut32.lib;uiautomationcore.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/Brepro %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\doroti_windows_host_v1.h" />
+    <ClInclude Include="src\accessibility_bridge.h" />
     <ClCompile Include="src\exports.cpp" />
+    <ClCompile Include="src\accessibility_bridge.cpp" />
   </ItemGroup>
   <Target Name="GenerateWindowsAppSdkCppWinRT" BeforeTargets="ClCompile"
           Inputs="$(MicrosoftUiWinmd);$(MicrosoftFoundationWinmd);$(MicrosoftGraphicsWinmd)"

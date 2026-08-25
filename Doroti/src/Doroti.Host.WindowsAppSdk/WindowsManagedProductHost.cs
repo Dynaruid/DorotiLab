@@ -1,5 +1,7 @@
 using System.Globalization;
 using System.Diagnostics;
+using System.Text;
+using System.Text.Json;
 using Doroti.Skia.Rendering;
 using Doroti.Ui;
 
@@ -13,6 +15,7 @@ internal sealed unsafe class WindowsManagedProductHost :
     IViewFocusRequestCapability,
     IPlatformServicesHostCapability,
     IPlatformEnvironmentHostCapability,
+    ITextInputHostCapability,
     ISkiaSceneRendererHost
 {
     private readonly object _gate = new();
@@ -35,7 +38,9 @@ internal sealed unsafe class WindowsManagedProductHost :
             native.StructSize < sizeof(WindowsNativeV1.Host) ||
             native.HostContext == 0 || native.TopLevelHwnd == 0 || native.ChildHwnd == 0 || native.TaskHwnd == 0 ||
             native.RequestFrame == 0 || native.RequestResize == 0 || native.RequestClose == 0 || native.RequestShow == 0 ||
-            native.SetCursor == 0 || native.SetClipboard == 0 || native.RequestClipboard == 0)
+            native.SetCursor == 0 || native.SetClipboard == 0 || native.RequestClipboard == 0 ||
+            native.SetTextClient == 0 || native.UpdateTextState == 0 || native.SetCaretRect == 0 ||
+            native.ClearTextClient == 0 || native.UpdateSemantics == 0 || native.ClearSemantics == 0)
             throw new InvalidDataException("The native product host table is invalid.");
         _native = native;
         Metrics = new(new Size(logicalWidth, logicalHeight), 1, ViewPadding.zero,
@@ -81,6 +86,8 @@ internal sealed unsafe class WindowsManagedProductHost :
     public event Action<PointerDataPacket>? PointerData;
     public event Action<KeyData>? KeyData;
     public event Action<RawFocusData>? FocusData;
+    public event Action<DorotiTextEditingState>? EditingStateChanged;
+    public event Action<DorotiTextInputAction>? ActionPerformed;
     public event Action<int, SemanticsAction, object?>? SemanticsAction;
     public event Action<long, TimeSpan>? InputReceived;
 
@@ -194,11 +201,54 @@ internal sealed unsafe class WindowsManagedProductHost :
         EnqueueInput(() => FocusData?.Invoke(data));
     }
 
+    internal void ApplyLifecycle(uint value)
+    {
+        if (!Enum.IsDefined((AppLifecycleState)value))
+            throw new InvalidDataException($"Native lifecycle state {value} is invalid.");
+        var lifecycle = (AppLifecycleState)value;
+        if (Metrics.lifecycleState == lifecycle) return;
+        Metrics = Metrics with { lifecycleState = lifecycle };
+        LifecycleChanged?.Invoke(lifecycle);
+    }
+
     internal void CompleteClipboard(ulong requestId, string text)
     {
         TaskCompletionSource<string?>? completion;
         lock (_gate) _clipboardRequests.Remove(requestId, out completion);
         completion?.TrySetResult(text);
+    }
+
+    internal void ApplyTextEditing(string text, int selectionBase, int selectionExtent,
+        int composingBase, int composingExtent)
+    {
+        if (selectionBase < 0 || selectionBase > text.Length || selectionExtent < 0 || selectionExtent > text.Length ||
+            !((composingBase == -1 && composingExtent == -1) ||
+              (composingBase >= 0 && composingBase <= text.Length && composingExtent >= 0 && composingExtent <= text.Length)))
+            throw new InvalidDataException("Native text editing ranges are invalid.");
+        DorotiTextSelection? composing = composingBase >= 0 ? new(composingBase, composingExtent) : null;
+        EnqueueInput(() => EditingStateChanged?.Invoke(
+            new(text, new(selectionBase, selectionExtent), composing)));
+    }
+
+    internal void ApplyTextAction(uint action)
+    {
+        if (!Enum.IsDefined((DorotiTextInputAction)action))
+            throw new InvalidDataException($"Native text action {action} is invalid.");
+        EnqueueInput(() => ActionPerformed?.Invoke((DorotiTextInputAction)action));
+    }
+
+    internal void ApplySemanticsAction(long nodeId, long action, string argumentsJson)
+    {
+        if (nodeId is < int.MinValue or > int.MaxValue || action == 0)
+            throw new InvalidDataException("Native semantics action is invalid.");
+        object? arguments = null;
+        if (!string.IsNullOrWhiteSpace(argumentsJson) && argumentsJson != "null")
+        {
+            using var document = JsonDocument.Parse(argumentsJson);
+            arguments = document.RootElement.Clone();
+        }
+        var node = checked((int)nodeId);
+        EnqueueInput(() => SemanticsAction?.Invoke(node, (SemanticsAction)action, arguments));
     }
 
     public void Show() => Invoke(_native.RequestShow);
@@ -300,10 +350,83 @@ internal sealed unsafe class WindowsManagedProductHost :
         return new(completion.Task);
     }
 
+    public void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState initialState)
+    {
+        ValidateTextState(initialState);
+        var native = new WindowsNativeV1.TextConfiguration
+        {
+            AbiVersion = WindowsNativeV1.AbiVersion,
+            StructSize = checked((uint)sizeof(WindowsNativeV1.TextConfiguration)),
+            InputType = (uint)configuration.inputType,
+            InputAction = (uint)configuration.inputAction,
+            Capitalization = (uint)configuration.textCapitalization,
+            Flags = (configuration.readOnly ? 1u : 0u) |
+                    (configuration.obscureText ? 2u : 0u) |
+                    (configuration.autocorrect ? 4u : 0u) |
+                    (configuration.enableSuggestions ? 8u : 0u),
+        };
+        var bytes = Encoding.UTF8.GetBytes(initialState.text);
+        fixed (byte* data = bytes)
+        {
+            var state = CreateTextState(initialState, data, bytes.Length);
+            var function = (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.TextConfiguration*, WindowsNativeV1.TextState*, uint>)_native.SetTextClient;
+            var status = function(_native.HostContext, &native, &state);
+            if (status != 0) throw new InvalidOperationException($"Native text set-client failed: {status}.");
+        }
+    }
+
+    public void UpdateState(DorotiTextEditingState state) =>
+        InvokeTextState(state, (WindowsNativeV1.TextState* native) =>
+        {
+            var function = (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.TextState*, uint>)_native.UpdateTextState;
+            return function(_native.HostContext, native);
+        }, "update-state");
+
+    public void SetCaretRect(Rect logicalRect)
+    {
+        if (!logicalRect.IsFinite) throw new ArgumentOutOfRangeException(nameof(logicalRect));
+        var function = (delegate* unmanaged[Cdecl]<nint, double, double, double, double, uint>)_native.SetCaretRect;
+        var status = function(_native.HostContext, logicalRect.left, logicalRect.top,
+            logicalRect.width, logicalRect.height);
+        if (status != 0) throw new InvalidOperationException($"Native text caret request failed: {status}.");
+    }
+
+    public void ClearClient()
+    {
+        if (!_disposed && _nativeActive) Invoke(_native.ClearTextClient);
+    }
+
     internal void MarkNativeStopped() => _nativeActive = false;
 
-    public void UpdateSemantics(SemanticsUpdate update) => _ = update;
-    public void ClearSemantics() { }
+    public void UpdateSemantics(SemanticsUpdate update)
+    {
+        ArgumentNullException.ThrowIfNull(update);
+        var nodes = update.nodes.Select(node => new
+        {
+            node.id, node.label, node.value, role = node.role.ToString(),
+            actions = (long)node.actions, children = node.children,
+            flags = node.flags is null ? null : new
+            {
+                enabled = node.flags.isEnabled.toBoolOrNull() ?? true,
+                focused = node.flags.isFocused.toBoolOrNull() ?? false,
+                button = node.flags.isButton,
+                textField = node.flags.isTextField,
+                hidden = node.flags.isHidden,
+                slider = node.flags.isSlider,
+                readOnly = node.flags.isReadOnly,
+            },
+            node.textSelectionBase, node.textSelectionExtent,
+            rect = new[] { node.rect.left, node.rect.top, node.rect.right, node.rect.bottom },
+        });
+        InvokeUtf8(_native.UpdateSemantics,
+            JsonSerializer.Serialize(new { generation = update.generation, nodes }),
+            "semantics-update");
+    }
+
+    public void ClearSemantics()
+    {
+        if (!_disposed && _nativeActive) Invoke(_native.ClearSemantics);
+    }
 
     public void Dispose()
     {
@@ -325,6 +448,8 @@ internal sealed unsafe class WindowsManagedProductHost :
         GC.KeepAlive(PointerData);
         GC.KeepAlive(KeyData);
         GC.KeepAlive(FocusData);
+        GC.KeepAlive(EditingStateChanged);
+        GC.KeepAlive(ActionPerformed);
         GC.KeepAlive(SemanticsAction);
         GC.KeepAlive(InputReceived);
         _coordinator.Dispose();
@@ -335,6 +460,71 @@ internal sealed unsafe class WindowsManagedProductHost :
         var function = (delegate* unmanaged[Cdecl]<nint, uint>)callback;
         var status = function(_native.HostContext);
         if (status != 0) throw new InvalidOperationException($"Native host task request failed: {status}.");
+    }
+
+    private delegate uint TextStateCall(WindowsNativeV1.TextState* state);
+
+    private static void InvokeTextState(DorotiTextEditingState state, TextStateCall call, string operation)
+    {
+        ValidateTextState(state);
+        var bytes = Encoding.UTF8.GetBytes(state.text);
+        fixed (byte* data = bytes)
+        {
+            var native = CreateTextState(state, data, bytes.Length);
+            var status = call(&native);
+            if (status != 0) throw new InvalidOperationException($"Native text {operation} failed: {status}.");
+        }
+    }
+
+    private static WindowsNativeV1.TextState CreateTextState(
+        DorotiTextEditingState state, byte* data, int byteLength) => new()
+    {
+        AbiVersion = WindowsNativeV1.AbiVersion,
+        StructSize = checked((uint)sizeof(WindowsNativeV1.TextState)),
+        Text = new WindowsNativeV1.Utf8
+        {
+            AbiVersion = WindowsNativeV1.AbiVersion,
+            StructSize = checked((uint)sizeof(WindowsNativeV1.Utf8)),
+            Data = (nint)data,
+            ByteLength = checked((ulong)byteLength),
+        },
+        SelectionBase = state.selection.baseOffset,
+        SelectionExtent = state.selection.extentOffset,
+        ComposingBase = state.composingRange?.baseOffset ?? -1,
+        ComposingExtent = state.composingRange?.extentOffset ?? -1,
+    };
+
+    private static void ValidateTextState(DorotiTextEditingState state)
+    {
+        ArgumentNullException.ThrowIfNull(state.text);
+        ValidateRange(state.selection.baseOffset, state.text.Length, nameof(state.selection));
+        ValidateRange(state.selection.extentOffset, state.text.Length, nameof(state.selection));
+        if (state.composingRange is not { } composing) return;
+        ValidateRange(composing.baseOffset, state.text.Length, nameof(state.composingRange));
+        ValidateRange(composing.extentOffset, state.text.Length, nameof(state.composingRange));
+    }
+
+    private void InvokeUtf8(nint callback, string text, string operation)
+    {
+        var bytes = Encoding.UTF8.GetBytes(text);
+        fixed (byte* data = bytes)
+        {
+            var value = new WindowsNativeV1.Utf8
+            {
+                AbiVersion = WindowsNativeV1.AbiVersion,
+                StructSize = checked((uint)sizeof(WindowsNativeV1.Utf8)),
+                Data = (nint)data,
+                ByteLength = checked((ulong)bytes.Length),
+            };
+            var function = (delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.Utf8, uint>)callback;
+            var status = function(_native.HostContext, value);
+            if (status != 0) throw new InvalidOperationException($"Native {operation} failed: {status}.");
+        }
+    }
+
+    private static void ValidateRange(int offset, int length, string name)
+    {
+        if (offset < 0 || offset > length) throw new ArgumentOutOfRangeException(name);
     }
 
     private void EnqueueInput(Action dispatch)

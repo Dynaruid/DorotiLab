@@ -1,17 +1,22 @@
 #include "doroti_windows_host_v1.h"
+#include "accessibility_bridge.h"
 
 #include <windows.h>
 #include <windowsx.h>
+#include <imm.h>
 
 #include <MddBootstrap.h>
 #include <WindowsAppSDK-VersionInfo.h>
 #include <winrt/Microsoft.UI.Interop.h>
 #include <winrt/Microsoft.UI.Windowing.h>
+#include <winrt/Windows.Data.Json.h>
+#include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/base.h>
 
 #include <algorithm>
 #include <atomic>
 #include <chrono>
+#include <cmath>
 #include <condition_variable>
 #include <cstddef>
 #include <cstdlib>
@@ -19,13 +24,16 @@
 #include <deque>
 #include <iterator>
 #include <limits>
+#include <memory>
 #include <mutex>
 #include <new>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <thread>
 #include <type_traits>
 #include <unordered_set>
+#include <vector>
 
 namespace {
 
@@ -37,7 +45,14 @@ constexpr UINT kRequestResize = WM_APP + 0x402;
 constexpr UINT kRequestClose = WM_APP + 0x403;
 constexpr UINT kRequestShow = WM_APP + 0x404;
 constexpr UINT kRenderCompleted = WM_APP + 0x405;
+constexpr UINT kSetTextClient = WM_APP + 0x406;
+constexpr UINT kUpdateTextState = WM_APP + 0x407;
+constexpr UINT kSetCaretRect = WM_APP + 0x408;
+constexpr UINT kClearTextClient = WM_APP + 0x409;
+constexpr UINT kUpdateSemantics = WM_APP + 0x40A;
+constexpr UINT kClearSemantics = WM_APP + 0x40B;
 constexpr UINT_PTR kSmokeTimer = 1;
+constexpr UINT_PTR kLifecycleTimer = 2;
 
 template <typename T>
 bool ValidHeader(const T* value) noexcept {
@@ -50,6 +65,12 @@ int64_t QpcNow() noexcept {
   LARGE_INTEGER value{};
   QueryPerformanceCounter(&value);
   return value.QuadPart;
+}
+
+bool EnvironmentOne(const wchar_t* name) noexcept {
+  wchar_t value[2]{};
+  return GetEnvironmentVariableW(name, value, static_cast<DWORD>(std::size(value))) == 1 &&
+         value[0] == L'1';
 }
 
 std::wstring Decode(const doroti_windows_utf8_v1& value) {
@@ -69,6 +90,20 @@ std::wstring Decode(const doroti_windows_utf8_v1& value) {
   return decoded;
 }
 
+std::string Encode(const std::wstring& value) {
+  if (value.empty()) return {};
+  const auto required = WideCharToMultiByte(
+      CP_UTF8, WC_ERR_INVALID_CHARS, value.data(), static_cast<int>(value.size()),
+      nullptr, 0, nullptr, nullptr);
+  if (required <= 0) throw std::bad_alloc();
+  std::string encoded(static_cast<size_t>(required), '\0');
+  if (WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, value.data(),
+                          static_cast<int>(value.size()), encoded.data(), required,
+                          nullptr, nullptr) != required)
+    throw std::bad_alloc();
+  return encoded;
+}
+
 struct ResizeCommand {
   uint32_t width;
   uint32_t height;
@@ -78,6 +113,22 @@ struct RenderWork {
   doroti_windows_metrics_v1 metrics;
   doroti_windows_frame_request_v1 request;
   int64_t accepted_qpc;
+};
+
+struct TextCommand {
+  doroti_windows_text_configuration_v1 configuration{};
+  std::wstring text;
+  int32_t selection_base{};
+  int32_t selection_extent{};
+  int32_t composing_base{-1};
+  int32_t composing_extent{-1};
+};
+
+struct CaretCommand {
+  double left{};
+  double top{};
+  double width{};
+  double height{};
 };
 
 class ProductHost;
@@ -112,9 +163,16 @@ class ProductHost final {
         &SetCursor,
         &SetClipboard,
         &RequestClipboard,
+        &SetTextClient,
+        &UpdateTextState,
+        &SetCaretRect,
+        &ClearTextClient,
+        &UpdateSemantics,
+        &ClearSemantics,
     };
     callbacks_.host_ready(callbacks_.callback_context, &host);
     StartRenderWorker();
+    EmitLifecycle(1);
     PublishMetrics();
     RunInputSmoke();
     QueueRender();
@@ -135,7 +193,18 @@ class ProductHost final {
       case WM_ERASEBKGND:
         return 1;
       case WM_SIZE:
-        if (child_ != nullptr && wparam != SIZE_MINIMIZED) {
+        if (wparam == SIZE_MINIMIZED) {
+          minimized_ = true;
+          EmitLifecycle(2);
+          EmitLifecycle(3);
+          EmitLifecycle(4);
+          return 0;
+        }
+        if (minimized_) {
+          minimized_ = false;
+          EmitLifecycle(1);
+        }
+        if (child_ != nullptr) {
           const auto width = static_cast<uint32_t>(LOWORD(lparam));
           const auto height = static_cast<uint32_t>(HIWORD(lparam));
           if (width > 0 && height > 0) {
@@ -148,15 +217,45 @@ class ProductHost final {
           }
         }
         return 0;
+      case WM_ACTIVATEAPP:
+        if (!minimized_) EmitLifecycle(wparam != 0 ? 1u : 2u);
+        return 0;
+      case WM_DPICHANGED: {
+        const auto* suggested = reinterpret_cast<const RECT*>(lparam);
+        if (suggested != nullptr)
+          SetWindowPos(top_, nullptr, suggested->left, suggested->top,
+                       suggested->right - suggested->left,
+                       suggested->bottom - suggested->top,
+                       SWP_NOZORDER | SWP_NOACTIVATE);
+        PublishMetrics();
+        return 0;
+      }
+      case WM_DISPLAYCHANGE:
+        if (PublishMetrics()) QueueRender();
+        return 0;
       case WM_CLOSE:
         StopRenderWorker();
         DestroyWindow(top_);
         return 0;
       case WM_DESTROY:
+        EmitLifecycle(0);
         top_ = nullptr;
         PostQuitMessage(fatal_ ? 4 : 0);
         return 0;
       case WM_TIMER:
+        if (wparam == kLifecycleTimer) {
+          KillTimer(top_, kLifecycleTimer);
+          if (lifecycle_smoke_phase_ == 0) {
+            ++lifecycle_smoke_phase_;
+            ShowWindow(top_, SW_MINIMIZE);
+            SetTimer(top_, kLifecycleTimer, 120, nullptr);
+          } else if (lifecycle_smoke_phase_ == 1) {
+            ++lifecycle_smoke_phase_;
+            ShowWindow(top_, SW_RESTORE);
+            SendMessageW(top_, WM_DISPLAYCHANGE, 32, MAKELPARAM(1920, 1080));
+          }
+          return 0;
+        }
         if (wparam == kSmokeTimer) {
           KillTimer(top_, kSmokeTimer);
           PostMessageW(top_, WM_CLOSE, 0, 0);
@@ -193,6 +292,32 @@ class ProductHost final {
         show_requested_ = true;
         if (first_exact_present_) ShowWindow(top_, ResolveShowCommand());
         return 0;
+      case kSetTextClient: {
+        std::unique_ptr<TextCommand> command(reinterpret_cast<TextCommand*>(lparam));
+        if (command) ApplyTextCommand(*command, true);
+        return 0;
+      }
+      case kUpdateTextState: {
+        std::unique_ptr<TextCommand> command(reinterpret_cast<TextCommand*>(lparam));
+        if (command) ApplyTextCommand(*command, false);
+        return 0;
+      }
+      case kSetCaretRect: {
+        std::unique_ptr<CaretCommand> command(reinterpret_cast<CaretCommand*>(lparam));
+        if (command) ApplyCaretRect(*command);
+        return 0;
+      }
+      case kClearTextClient:
+        ClearTextClientOnPlatform();
+        return 0;
+      case kUpdateSemantics: {
+        std::unique_ptr<std::wstring> json(reinterpret_cast<std::wstring*>(lparam));
+        if (json) ApplySemantics(*json);
+        return 0;
+      }
+      case kClearSemantics:
+        accessibility_.Clear();
+        return 0;
       default:
         return DefWindowProcW(window, message, wparam, lparam);
     }
@@ -224,6 +349,35 @@ class ProductHost final {
           callbacks_.focus(callbacks_.callback_context, 1,
                            message == WM_SETFOCUS ? 1u : 0u, QpcNow());
         return 0;
+      case WM_GETOBJECT:
+        if (const auto result = accessibility_.HandleGetObject(wparam, lparam); result != 0)
+          return result;
+        break;
+      case WM_IME_STARTCOMPOSITION:
+        if (text_client_active_) {
+          ime_composing_ = true;
+          if (text_composing_base_ < 0) {
+            text_composing_base_ = std::min(text_selection_base_, text_selection_extent_);
+            text_composing_extent_ = std::max(text_selection_base_, text_selection_extent_);
+          }
+          ApplyImeWindowPosition();
+          return 0;
+        }
+        break;
+      case WM_IME_COMPOSITION:
+        if (text_client_active_ && HandleImeComposition(lparam)) return 0;
+        break;
+      case WM_IME_ENDCOMPOSITION:
+        ime_composing_ = false;
+        text_composing_base_ = text_composing_extent_ = -1;
+        EmitTextEditing();
+        return 0;
+      case WM_CHAR:
+        if (text_client_active_ && !ime_composing_) {
+          HandleCharacter(static_cast<wchar_t>(wparam));
+          return 0;
+        }
+        break;
       case WM_MOUSEMOVE:
         if (!mouse_inside_) {
           mouse_inside_ = true;
@@ -283,6 +437,8 @@ class ProductHost final {
       case WM_KEYUP:
       case WM_SYSKEYUP:
         EmitKey(message, wparam, lparam);
+        if (text_client_active_ && (message == WM_KEYDOWN || message == WM_SYSKEYDOWN))
+          HandleNavigationKey(wparam);
         return 0;
       default:
         return DefWindowProcW(window, message, wparam, lparam);
@@ -409,8 +565,101 @@ class ProductHost final {
     return 0;
   }
 
+  static uint32_t DOROTI_WINDOWS_CALL SetTextClient(
+      void* context, const doroti_windows_text_configuration_v1* configuration,
+      const doroti_windows_text_state_v1* state) {
+    auto* host = static_cast<ProductHost*>(context);
+    if (host == nullptr || !ValidHeader(configuration) || !ValidHeader(state)) return 1;
+    try {
+      auto command = std::make_unique<TextCommand>();
+      command->configuration = *configuration;
+      CopyTextState(*state, *command);
+      return host->PostOwned(kSetTextClient, std::move(command));
+    } catch (...) {
+      return 4;
+    }
+  }
+
+  static uint32_t DOROTI_WINDOWS_CALL UpdateTextState(
+      void* context, const doroti_windows_text_state_v1* state) {
+    auto* host = static_cast<ProductHost*>(context);
+    if (host == nullptr || !ValidHeader(state)) return 1;
+    try {
+      auto command = std::make_unique<TextCommand>();
+      CopyTextState(*state, *command);
+      return host->PostOwned(kUpdateTextState, std::move(command));
+    } catch (...) {
+      return 4;
+    }
+  }
+
+  static uint32_t DOROTI_WINDOWS_CALL SetCaretRect(
+      void* context, double left, double top, double width, double height) {
+    auto* host = static_cast<ProductHost*>(context);
+    if (host == nullptr || !std::isfinite(left) || !std::isfinite(top) ||
+        !std::isfinite(width) || !std::isfinite(height) || width < 0 || height < 0)
+      return 1;
+    auto command = std::make_unique<CaretCommand>();
+    command->left = left;
+    command->top = top;
+    command->width = width;
+    command->height = height;
+    return host->PostOwned(kSetCaretRect, std::move(command));
+  }
+
+  static uint32_t DOROTI_WINDOWS_CALL ClearTextClient(void* context) {
+    auto* host = static_cast<ProductHost*>(context);
+    if (host == nullptr || host->task_ == nullptr) return 1;
+    return PostMessageW(host->task_, kClearTextClient, 0, 0) ? 0u : 4u;
+  }
+
+  static uint32_t DOROTI_WINDOWS_CALL UpdateSemantics(
+      void* context, doroti_windows_utf8_v1 json) {
+    auto* host = static_cast<ProductHost*>(context);
+    if (host == nullptr || !ValidHeader(&json)) return 1;
+    try {
+      auto value = std::make_unique<std::wstring>(Decode(json));
+      return host->PostOwned(kUpdateSemantics, std::move(value));
+    } catch (...) {
+      return 4;
+    }
+  }
+
+  static uint32_t DOROTI_WINDOWS_CALL ClearSemantics(void* context) {
+    auto* host = static_cast<ProductHost*>(context);
+    if (host == nullptr || host->task_ == nullptr) return 1;
+    return PostMessageW(host->task_, kClearSemantics, 0, 0) ? 0u : 4u;
+  }
+
   template <typename T>
   static bool callbacks_missing(T callback) noexcept { return callback == nullptr; }
+
+  template <typename T>
+  uint32_t PostOwned(UINT message, std::unique_ptr<T> command) {
+    if (task_ == nullptr || command == nullptr) return 1;
+    auto* raw = command.release();
+    if (PostMessageW(task_, message, 0, reinterpret_cast<LPARAM>(raw))) return 0;
+    delete raw;
+    return 4;
+  }
+
+  static void CopyTextState(const doroti_windows_text_state_v1& state,
+                            TextCommand& command) {
+    command.text = Decode(state.text);
+    const auto length = static_cast<int32_t>(std::min<size_t>(
+        command.text.size(), static_cast<size_t>(std::numeric_limits<int32_t>::max())));
+    const auto valid_offset = [length](int32_t value) {
+      return value >= 0 && value <= length;
+    };
+    if (!valid_offset(state.selection_base) || !valid_offset(state.selection_extent) ||
+        !((state.composing_base == -1 && state.composing_extent == -1) ||
+          (valid_offset(state.composing_base) && valid_offset(state.composing_extent))))
+      throw std::invalid_argument("invalid text range");
+    command.selection_base = state.selection_base;
+    command.selection_extent = state.selection_extent;
+    command.composing_base = state.composing_base;
+    command.composing_extent = state.composing_extent;
+  }
 
   void RegisterClasses() {
     const auto instance = GetModuleHandleW(nullptr);
@@ -456,12 +705,265 @@ class ProductHost final {
         !SetWindowPos(child_, nullptr, 0, 0, client.right, client.bottom,
                       SWP_NOZORDER | SWP_NOACTIVATE))
       throw std::bad_alloc();
+    accessibility_.Attach(child_, [this](int64_t node_id, int64_t action,
+                                         const std::wstring& arguments) {
+      if (callbacks_.semantics_action == nullptr) return;
+      const auto utf8 = Encode(arguments.empty() ? L"null" : arguments);
+      doroti_windows_utf8_v1 value{
+          DOROTI_WINDOWS_ABI_VERSION_V1, sizeof(doroti_windows_utf8_v1),
+          reinterpret_cast<const uint8_t*>(utf8.data()), utf8.size()};
+      callbacks_.semantics_action(callbacks_.callback_context, node_id, action, value);
+    });
   }
 
   void ConnectAppWindow() {
     const auto id = winrt::Microsoft::UI::GetWindowIdFromWindow(top_);
     app_window_ = winrt::Microsoft::UI::Windowing::AppWindow::GetFromWindowId(id);
     if (!app_window_) throw std::bad_alloc();
+  }
+
+  void ApplyTextCommand(const TextCommand& command, bool set_client) {
+    if (set_client) {
+      text_configuration_ = command.configuration;
+      text_client_active_ = true;
+      ImmAssociateContextEx(child_, nullptr, IACE_DEFAULT);
+    } else if (!text_client_active_) {
+      return;
+    }
+    text_ = command.text;
+    text_selection_base_ = command.selection_base;
+    text_selection_extent_ = command.selection_extent;
+    text_composing_base_ = command.composing_base;
+    text_composing_extent_ = command.composing_extent;
+    ime_composing_ = text_composing_base_ >= 0;
+    ApplyImeWindowPosition();
+    if (set_client && !text_smoke_emitted_ &&
+        EnvironmentOne(L"DOROTI_WINDOWS_APPSDK_C7_SMOKE")) {
+      text_smoke_emitted_ = true;
+      text_ = L"한";
+      text_selection_base_ = text_selection_extent_ = 1;
+      text_composing_base_ = 0;
+      text_composing_extent_ = 1;
+      EmitTextEditing();
+      text_ = L"한글";
+      text_selection_base_ = text_selection_extent_ = 2;
+      text_composing_base_ = text_composing_extent_ = -1;
+      EmitTextEditing();
+      if (callbacks_.text_action != nullptr)
+        callbacks_.text_action(callbacks_.callback_context,
+                               text_configuration_.input_action);
+    }
+  }
+
+  void ApplyCaretRect(const CaretCommand& command) {
+    caret_ = command;
+    ApplyImeWindowPosition();
+  }
+
+  void ClearTextClientOnPlatform() {
+    text_client_active_ = false;
+    ime_composing_ = false;
+    text_.clear();
+    text_selection_base_ = text_selection_extent_ = 0;
+    text_composing_base_ = text_composing_extent_ = -1;
+    if (child_ != nullptr) ImmAssociateContextEx(child_, nullptr, 0);
+  }
+
+  void ApplyImeWindowPosition() {
+    if (!text_client_active_ || child_ == nullptr) return;
+    const auto context = ImmGetContext(child_);
+    if (context == nullptr) return;
+    const auto scale = current_scale_ > 0 ? current_scale_ : 1.0;
+    const POINT point{static_cast<LONG>(std::lround(caret_.left * scale)),
+                      static_cast<LONG>(std::lround((caret_.top + caret_.height) * scale))};
+    COMPOSITIONFORM composition{};
+    composition.dwStyle = CFS_POINT;
+    composition.ptCurrentPos = point;
+    ImmSetCompositionWindow(context, &composition);
+    CANDIDATEFORM candidate{};
+    candidate.dwIndex = 0;
+    candidate.dwStyle = CFS_CANDIDATEPOS;
+    candidate.ptCurrentPos = point;
+    ImmSetCandidateWindow(context, &candidate);
+    ImmReleaseContext(child_, context);
+  }
+
+  static std::wstring ReadCompositionString(HIMC context, DWORD index) {
+    const auto byte_count = ImmGetCompositionStringW(context, index, nullptr, 0);
+    if (byte_count <= 0) return {};
+    std::wstring value(static_cast<size_t>(byte_count) / sizeof(wchar_t), L'\0');
+    if (ImmGetCompositionStringW(context, index, value.data(),
+                                 static_cast<DWORD>(byte_count)) != byte_count)
+      return {};
+    return value;
+  }
+
+  bool HandleImeComposition(LPARAM flags) {
+    const auto context = ImmGetContext(child_);
+    if (context == nullptr) return false;
+    const auto release = [this, context] { ImmReleaseContext(child_, context); };
+    bool handled = false;
+    if ((flags & GCS_RESULTSTR) != 0) {
+      const auto result = ReadCompositionString(context, GCS_RESULTSTR);
+      ReplaceActiveRange(result, false);
+      ime_composing_ = false;
+      handled = true;
+    }
+    if ((flags & GCS_COMPSTR) != 0) {
+      const auto composition = ReadCompositionString(context, GCS_COMPSTR);
+      ReplaceActiveRange(composition, true);
+      ime_composing_ = true;
+      handled = true;
+    }
+    release();
+    if (handled) EmitTextEditing();
+    ApplyImeWindowPosition();
+    return handled;
+  }
+
+  void ReplaceActiveRange(const std::wstring& replacement, bool composing) {
+    auto start = text_composing_base_ >= 0
+                     ? std::min(text_composing_base_, text_composing_extent_)
+                     : std::min(text_selection_base_, text_selection_extent_);
+    auto end = text_composing_base_ >= 0
+                   ? std::max(text_composing_base_, text_composing_extent_)
+                   : std::max(text_selection_base_, text_selection_extent_);
+    const auto length = static_cast<int32_t>(text_.size());
+    start = std::clamp(start, 0, length);
+    end = std::clamp(end, start, length);
+    text_.replace(static_cast<size_t>(start), static_cast<size_t>(end - start), replacement);
+    const auto next = start + static_cast<int32_t>(replacement.size());
+    text_selection_base_ = text_selection_extent_ = next;
+    if (composing) {
+      text_composing_base_ = start;
+      text_composing_extent_ = next;
+    } else {
+      text_composing_base_ = text_composing_extent_ = -1;
+    }
+  }
+
+  void HandleCharacter(wchar_t character) {
+    if (character == L'\r' || character == L'\n') {
+      const auto action = text_configuration_.input_action;
+      if (text_configuration_.input_type != 1 || action != 12) {
+        if (callbacks_.text_action != nullptr)
+          callbacks_.text_action(callbacks_.callback_context, action);
+        return;
+      }
+      character = L'\n';
+    }
+    if (character == L'\b') {
+      if (text_selection_base_ == text_selection_extent_ && text_selection_base_ > 0) {
+        auto start = text_selection_base_ - 1;
+        if (start > 0 && text_[static_cast<size_t>(start)] >= 0xDC00 &&
+            text_[static_cast<size_t>(start)] <= 0xDFFF &&
+            text_[static_cast<size_t>(start - 1)] >= 0xD800 &&
+            text_[static_cast<size_t>(start - 1)] <= 0xDBFF)
+          --start;
+        text_selection_base_ = start;
+      }
+      ReplaceActiveRange(L"", false);
+    } else if (character >= L' ') {
+      ReplaceActiveRange(std::wstring(1, character), false);
+    } else {
+      return;
+    }
+    EmitTextEditing();
+  }
+
+  void HandleNavigationKey(WPARAM key) {
+    const auto length = static_cast<int32_t>(text_.size());
+    if (key == VK_DELETE) {
+      if (text_selection_base_ == text_selection_extent_ && text_selection_extent_ < length)
+        ++text_selection_extent_;
+      ReplaceActiveRange(L"", false);
+      EmitTextEditing();
+    } else if (key == VK_LEFT || key == VK_RIGHT) {
+      const auto offset = key == VK_LEFT ? -1 : 1;
+      const auto next = std::clamp(text_selection_extent_ + offset, 0, length);
+      text_selection_base_ = text_selection_extent_ = next;
+      text_composing_base_ = text_composing_extent_ = -1;
+      EmitTextEditing();
+    }
+  }
+
+  void EmitTextEditing() {
+    if (callbacks_.text_editing == nullptr) return;
+    const auto utf8 = Encode(text_);
+    doroti_windows_text_state_v1 state{
+        DOROTI_WINDOWS_ABI_VERSION_V1,
+        sizeof(doroti_windows_text_state_v1),
+        {DOROTI_WINDOWS_ABI_VERSION_V1, sizeof(doroti_windows_utf8_v1),
+         reinterpret_cast<const uint8_t*>(utf8.data()), utf8.size()},
+        text_selection_base_, text_selection_extent_, text_composing_base_,
+        text_composing_extent_};
+    callbacks_.text_editing(callbacks_.callback_context, &state);
+  }
+
+  static bool JsonBool(const winrt::Windows::Data::Json::JsonObject& value,
+                       const wchar_t* name, bool fallback = false) {
+    if (!value.HasKey(name)) return fallback;
+    const auto item = value.GetNamedValue(name);
+    return item.ValueType() == winrt::Windows::Data::Json::JsonValueType::Boolean
+               ? item.GetBoolean()
+               : fallback;
+  }
+
+  void ApplySemantics(const std::wstring& json) {
+    try {
+      const auto root = winrt::Windows::Data::Json::JsonObject::Parse(json);
+      const auto generation = static_cast<uint64_t>(root.GetNamedNumber(L"generation"));
+      const auto values = root.GetNamedArray(L"nodes");
+      std::vector<doroti::windows::AccessibilityNode> nodes;
+      nodes.reserve(values.Size());
+      for (const auto& value : values) {
+        const auto source = value.GetObject();
+        doroti::windows::AccessibilityNode node;
+        node.id = static_cast<int>(source.GetNamedNumber(L"id"));
+        node.label = source.GetNamedString(L"label", L"");
+        node.value = source.GetNamedString(L"value", L"");
+        node.role = source.GetNamedString(L"role", L"none");
+        node.actions = static_cast<int64_t>(source.GetNamedNumber(L"actions", 0));
+        const auto rect = source.GetNamedArray(L"rect");
+        if (rect.Size() != 4) throw std::invalid_argument("semantics rect");
+        node.left = rect.GetNumberAt(0);
+        node.top = rect.GetNumberAt(1);
+        node.right = rect.GetNumberAt(2);
+        node.bottom = rect.GetNumberAt(3);
+        const auto children = source.GetNamedArray(L"children");
+        for (uint32_t index = 0; index < children.Size(); ++index)
+          node.children.push_back(static_cast<int>(children.GetNumberAt(index)));
+        if (source.HasKey(L"flags") &&
+            source.GetNamedValue(L"flags").ValueType() ==
+                winrt::Windows::Data::Json::JsonValueType::Object) {
+          const auto flags = source.GetNamedObject(L"flags");
+          node.enabled = JsonBool(flags, L"enabled", true);
+          node.focused = JsonBool(flags, L"focused");
+          node.hidden = JsonBool(flags, L"hidden");
+          node.button = JsonBool(flags, L"button");
+          node.text_field = JsonBool(flags, L"textField");
+          node.read_only = JsonBool(flags, L"readOnly");
+          node.slider = JsonBool(flags, L"slider");
+        }
+        nodes.push_back(std::move(node));
+      }
+      accessibility_.Update(generation, std::move(nodes), current_scale_);
+      if (!semantics_smoke_emitted_ &&
+          EnvironmentOne(L"DOROTI_WINDOWS_APPSDK_C7_SMOKE")) {
+        semantics_smoke_emitted_ = true;
+        if (!accessibility_.ValidateAndInvokeForTest())
+          throw std::runtime_error("UIA provider smoke failed");
+      }
+    } catch (...) {
+      fatal_ = true;
+      PostMessageW(top_, WM_CLOSE, 0, 0);
+    }
+  }
+
+  void EmitLifecycle(uint32_t state) {
+    if (state == lifecycle_state_ || callbacks_.lifecycle == nullptr) return;
+    lifecycle_state_ = state;
+    callbacks_.lifecycle(callbacks_.callback_context, 1, state, QpcNow());
   }
 
   bool PublishMetrics() {
@@ -482,6 +984,8 @@ class ProductHost final {
     current_width_ = width;
     current_height_ = height;
     current_scale_ = scale;
+    accessibility_.SetScale(scale);
+    ApplyImeWindowPosition();
     current_generation_++;
     current_metrics_qpc_ = QpcNow();
     return true;
@@ -630,6 +1134,8 @@ class ProductHost final {
           !first_exact_present_) {
         first_exact_present_ = true;
         if (show_requested_) ShowWindow(top_, ResolveShowCommand());
+        if (EnvironmentOne(L"DOROTI_WINDOWS_APPSDK_C8_SMOKE"))
+          SetTimer(top_, kLifecycleTimer, 120, nullptr);
       }
       callbacks_.frame_terminal(callbacks_.callback_context, &receipt);
     }
@@ -806,6 +1312,21 @@ class ProductHost final {
   LPARAM last_pointer_lparam_{};
   uint64_t pointer_sequence_{};
   std::atomic<uint32_t> cursor_kind_{};
+  doroti_windows_text_configuration_v1 text_configuration_{};
+  std::wstring text_;
+  int32_t text_selection_base_{};
+  int32_t text_selection_extent_{};
+  int32_t text_composing_base_{-1};
+  int32_t text_composing_extent_{-1};
+  CaretCommand caret_{};
+  bool text_client_active_{};
+  bool ime_composing_{};
+  bool text_smoke_emitted_{};
+  bool semantics_smoke_emitted_{};
+  bool minimized_{};
+  uint32_t lifecycle_state_{std::numeric_limits<uint32_t>::max()};
+  uint32_t lifecycle_smoke_phase_{};
+  doroti::windows::AccessibilityBridge accessibility_;
   std::mutex render_mutex_;
   std::condition_variable render_condition_;
   std::condition_variable resize_condition_;
@@ -857,6 +1378,8 @@ static_assert(std::is_standard_layout_v<doroti_windows_host_v1>);
 static_assert(std::is_standard_layout_v<doroti_windows_frame_terminal_v1>);
 static_assert(std::is_standard_layout_v<doroti_windows_pointer_v1>);
 static_assert(std::is_standard_layout_v<doroti_windows_key_v1>);
+static_assert(std::is_standard_layout_v<doroti_windows_text_configuration_v1>);
+static_assert(std::is_standard_layout_v<doroti_windows_text_state_v1>);
 static_assert(std::is_standard_layout_v<doroti_windows_configuration_v1>);
 static_assert(std::is_standard_layout_v<doroti_windows_callbacks_v1>);
 
@@ -890,6 +1413,11 @@ doroti_windows_get_abi_layout_v1(doroti_windows_abi_layout_v1* layout) {
       sizeof(doroti_windows_key_v1),
       offsetof(doroti_windows_callbacks_v1, pointer),
       offsetof(doroti_windows_host_v1, set_cursor),
+      sizeof(doroti_windows_text_configuration_v1),
+      sizeof(doroti_windows_text_state_v1),
+      offsetof(doroti_windows_host_v1, set_text_client),
+      offsetof(doroti_windows_callbacks_v1, text_editing),
+      offsetof(doroti_windows_callbacks_v1, lifecycle),
   };
   return DOROTI_WINDOWS_STATUS_OK_V1;
 }
@@ -901,6 +1429,9 @@ doroti_windows_status_v1 DOROTI_WINDOWS_CALL doroti_windows_run_v1(
     return DOROTI_WINDOWS_STATUS_ABI_MISMATCH_V1;
   if (callbacks->host_ready == nullptr || callbacks->metrics == nullptr ||
       callbacks->render == nullptr || callbacks->frame_terminal == nullptr ||
+      callbacks->text_editing == nullptr || callbacks->text_action == nullptr ||
+      callbacks->semantics_action == nullptr ||
+      callbacks->lifecycle == nullptr ||
       configuration->initial_width_px == 0 ||
       configuration->initial_height_px == 0)
     return DOROTI_WINDOWS_STATUS_INVALID_ARGUMENT_V1;

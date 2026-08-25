@@ -10,7 +10,7 @@
     <DorotiTarget>Windows</DorotiTarget>
     <DorotiHostKind>WindowsAppSdk</DorotiHostKind>
     <DorotiNativeEntryKind>Win32-WinMain</DorotiNativeEntryKind>
-    <DorotiWindowsAdapterDefault>WinRtComposition</DorotiWindowsAdapterDefault>
+    <DorotiWindowsAdapterDefault>HwndExactCpp</DorotiWindowsAdapterDefault>
     <UseMaui>false</UseMaui>
     <DefineConstants>$(DefineConstants);WINDOWS;DOROTI_WINDOWS_APPSDK</DefineConstants>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
@@ -27,7 +27,7 @@
         RuntimeIdentifier="win-x64" TargetFramework="net10.0-windows10.0.19041.0"
         TargetPackage="Doroti.Target.Windows.WindowsAppSdk.win-x64"
         AdapterDefault="$(DorotiWindowsAdapterDefault)"
-        AdapterCapabilities="WinRtComposition" />
+        AdapterCapabilities="HwndExactCpp" />
     <ProjectReference Include="..\..\Doroti\src\Doroti.Target.Windows.WindowsAppSdk.win-x64\Doroti.Target.Windows.WindowsAppSdk.win-x64.csproj" />
   </ItemGroup>
   <Import Project="..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.targets" />

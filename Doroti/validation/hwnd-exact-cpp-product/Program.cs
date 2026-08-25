@@ -17,6 +17,8 @@ internal static class Program
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_SMOKE_MS", "5000");
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_DIAGNOSTICS", "1");
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_INPUT_SMOKE", "1");
+        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_C7_SMOKE", "1");
+        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_C8_SMOKE", "1");
         try
         {
             var descriptor = DorotiApplicationFactory.Create<ProductStartup>(
@@ -42,9 +44,9 @@ internal static class Program
                     diagnostics.AcceptedResizeGenerations < 20 &&
                     diagnostics.PresentedResizeGenerations == diagnostics.AcceptedResizeGenerations,
                 "The C5-A resize burst did not coalesce to exact raster admissions.");
-            Require(diagnostics.DeviceGenerations == 1 && diagnostics.Presents >= 1 &&
+            Require(diagnostics.DeviceGenerations == 2 && diagnostics.Presents >= 1 &&
                     diagnostics.Presents == diagnostics.GpuSubmits && diagnostics.GpuCopies == 0,
-                "Managed presenter ordering differs in the product path.");
+                "Managed presenter ordering or injected ANGLE context recreation differs in the product path.");
             Require(diagnostics.PresenterBackend == "ANGLE/EGL-D3D11",
                 "Product validation did not select the managed ANGLE/EGL-D3D11 presenter.");
             Require(diagnostics.AdapterDescription.Contains("ANGLE", StringComparison.OrdinalIgnoreCase) &&
@@ -68,6 +70,29 @@ internal static class Program
                 "Doroti input dispatch did not run on the managed framework/raster worker.");
             Require(ProductEntrypoint.ClipboardRoundTrip == "Doroti C6 한글 clipboard",
                 "UTF-8/Unicode clipboard round-trip differs.");
+            Require(ProductEntrypoint.TextEditingStates.Any(state =>
+                        state.text == "한" && state.composingRange == new DorotiTextSelection(0, 1)) &&
+                    ProductEntrypoint.TextEditingStates.Any(state =>
+                        state.text == "한글" && state.composingRange is null &&
+                        state.selection == new DorotiTextSelection(2, 2)),
+                "C7 IMM32 composition/editing transport differs.");
+            Require(ProductEntrypoint.TextActions.Contains(DorotiTextInputAction.done),
+                "C7 IME action transport differs.");
+            Require(ProductEntrypoint.SemanticsActions.Any(action =>
+                        action.nodeId == 0 && action.action == SemanticsAction.tap),
+                "C7 UIA fragment invoke did not reach Doroti semantics dispatch.");
+            Require(new[] { AppLifecycleState.inactive, AppLifecycleState.hidden,
+                            AppLifecycleState.paused, AppLifecycleState.resumed,
+                            AppLifecycleState.detached }
+                    .All(ProductEntrypoint.LifecycleStates.Contains),
+                "C8 minimize/restore/detach lifecycle sequence differs.");
+            var provenance = diagnostics.NativeProvenance;
+            Require(IoPath.GetDirectoryName(provenance.NativeHostPath) ==
+                        provenance.ApplicationDirectory.TrimEnd(IoPath.DirectorySeparatorChar) &&
+                    provenance.NativeHostSha256.Length == 64 &&
+                    provenance.BootstrapSha256.Length == 64 && provenance.AngleSha256.Length == 64 &&
+                    provenance.SearchPolicy.Contains("PATH/current-directory excluded", StringComparison.Ordinal),
+                "C9 app-directory native provenance or restricted search policy differs.");
 
             var report = new
             {
@@ -109,6 +134,56 @@ internal static class Program
                     managedDrawThreadIds = ProductEntrypoint.DrawThreadIds,
                 },
                 scopeBoundary = "Automated WndProc packet, coordinates, capture sequence, cursor request, focus, key, and clipboard contract. Physical mouse/cursor/focus checks remain notVerified.",
+            });
+            var c7ReportPath = IoPath.GetFullPath(IoPath.Combine(".doroti", "evidence", "hwnd-exact-cpp-c7-ime-uia.json"));
+            Write(c7ReportPath, new
+            {
+                schemaVersion = "doroti.windows.hwnd-exact-cpp-ime-uia-validation/v1",
+                gate = "C7-automated",
+                status = "PASS",
+                ime = new
+                {
+                    states = ProductEntrypoint.TextEditingStates,
+                    actions = ProductEntrypoint.TextActions,
+                    transport = "IMM32 composition/result state through versioned native ABI",
+                },
+                uia = new
+                {
+                    root = "IRawElementProviderFragmentRoot",
+                    fragment = "IRawElementProviderFragment",
+                    patterns = new[] { "Invoke", "Value" },
+                    actions = ProductEntrypoint.SemanticsActions,
+                    boundsAuthority = "current child HWND screen origin plus current metrics scale",
+                },
+                scopeBoundary = "Automated ABI, composition-state, UIA provider tree/bounds/pattern, and action dispatch contract. Physical Korean two-beolsik candidate UI, Narrator, and Accessibility Insights remain notVerified.",
+            });
+            var c8ReportPath = IoPath.GetFullPath(IoPath.Combine(".doroti", "evidence", "hwnd-exact-cpp-c8-lifecycle-device.json"));
+            Write(c8ReportPath, new
+            {
+                schemaVersion = "doroti.windows.hwnd-exact-cpp-lifecycle-validation/v1",
+                gate = "C8-automated-partial",
+                status = "PASS",
+                lifecycle = ProductEntrypoint.LifecycleStates,
+                deviceGenerations = diagnostics.DeviceGenerations,
+                diagnostics.AcceptedResizeGenerations,
+                diagnostics.PresentedResizeGenerations,
+                diagnostics.UnterminatedResizeGenerations,
+                diagnostics.DuplicateResizeTerminals,
+                scopeBoundary = "Automated minimize/restore/display-change/detach, ANGLE context recreation, and terminal drain only. DPI matrix, mixed-monitor, Snap/system-menu/keyboard sizing, injected hardware removal, visible first-frame/restore, and shutdown-at-each-wait-point remain notVerified.",
+            });
+            var c9ReportPath = IoPath.GetFullPath(IoPath.Combine(".doroti", "evidence", "hwnd-exact-cpp-c9-provenance.json"));
+            Write(c9ReportPath, new
+            {
+                schemaVersion = "doroti.windows.hwnd-exact-cpp-provenance-validation/v1",
+                gate = "C9-runtime-provenance",
+                status = "PASS",
+                adapter = "HwndExactCpp",
+                nativeViewType = "Win32.ChildHwnd",
+                graphicsBackend = diagnostics.PresenterBackend,
+                diagnostics.AdapterDescription,
+                provenance,
+                abiGpuPointerCount = layout.GpuPointerCount,
+                scopeBoundary = "Actual app-directory backend launch and restricted native search provenance. Clean publish and negative missing/wrong-architecture/wrong-version launch probes are recorded by the C9 publish gate.",
             });
             Console.WriteLine(JsonSerializer.Serialize(report, JsonOptions));
             Console.WriteLine($"report={reportPath}");
@@ -175,7 +250,12 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
     public static HashSet<int> InputDispatchThreadIds { get; } = [];
     public static HashSet<int> DrawThreadIds { get; } = [];
     public static string? ClipboardRoundTrip;
+    public static List<DorotiTextEditingState> TextEditingStates { get; } = [];
+    public static List<DorotiTextInputAction> TextActions { get; } = [];
+    public static List<SemanticsActionEvent> SemanticsActions { get; } = [];
+    public static List<AppLifecycleState> LifecycleStates { get; } = [];
     private IPlatformServicesHostCapability? _services;
+    private ITextInputHostCapability? _textInput;
 
     public void Bootstrap(PlatformDispatcher dispatcher)
     {
@@ -204,6 +284,12 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
             InputDispatchThreadIds.Add(Environment.CurrentManagedThreadId);
             FocusStates.Add(focus.isFocused);
         };
+        dispatcher.onSemanticsActionEvent = action =>
+        {
+            InputDispatchThreadIds.Add(Environment.CurrentManagedThreadId);
+            SemanticsActions.Add(action);
+        };
+        dispatcher.onAppLifecycleStateChanged = (_, state) => LifecycleStates.Add(state);
     }
 
     public void AttachView(DorotiView view)
@@ -213,6 +299,23 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
         var services = view.RequireCapability<IPlatformServicesHostCapability>(
             DorotiCapabilityIds.PlatformServices, DartUiInvocation.Managed("c6-product#services"));
         _services = services;
+        var textInput = view.RequireCapability<ITextInputHostCapability>(
+            DorotiCapabilityIds.TextInput, DartUiInvocation.Managed("c7-product#text-input"));
+        _textInput = textInput;
+        textInput.EditingStateChanged += HandleEditingState;
+        textInput.ActionPerformed += HandleTextAction;
+        textInput.SetClient(new(DorotiTextInputType.text, DorotiTextInputAction.done,
+            DorotiTextCapitalization.none, false, false, true, true),
+            new("", new(0, 0), null));
+        textInput.SetCaretRect(Rect.fromLTWH(24, 36, 2, 20));
+        (_dispatcher ?? throw new InvalidOperationException("C7 dispatcher is unavailable."))
+            .setSemanticsTreeEnabled(true);
+        view.updateSemantics(new SemanticsUpdate(1,
+        [
+            new SemanticsNodeUpdate(0, Rect.fromLTWH(20, 30, 180, 48),
+                "Doroti C7 action", "ready", SemanticsAction.tap | SemanticsAction.focus,
+                [], new SemanticsFlags(isButton: true, isFocused: Tristate.isTrue)),
+        ], SemanticsUpdateUrgency.immediate));
         services.SetCursor(DorotiMouseCursorKind.click);
         services.SetClipboardTextAsync("Doroti C6 한글 clipboard").AsTask().GetAwaiter().GetResult();
         for (var index = 0; index < 20; index++)
@@ -237,6 +340,13 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
     public void DetachView(DorotiView view)
     {
         _ = view;
+        if (_textInput is { } textInput)
+        {
+            textInput.EditingStateChanged -= HandleEditingState;
+            textInput.ActionPerformed -= HandleTextAction;
+            textInput.ClearClient();
+            _textInput = null;
+        }
         _view = null;
         Interlocked.Increment(ref DetachCount);
     }
@@ -250,7 +360,21 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
             _dispatcher.onPointerDataPacket = null;
             _dispatcher.onKeyData = null;
             _dispatcher.onFocusData = null;
+            _dispatcher.onSemanticsActionEvent = null;
+            _dispatcher.onAppLifecycleStateChanged = null;
         }
         Interlocked.Increment(ref ShutdownCount);
+    }
+
+    private static void HandleEditingState(DorotiTextEditingState state)
+    {
+        InputDispatchThreadIds.Add(Environment.CurrentManagedThreadId);
+        TextEditingStates.Add(state);
+    }
+
+    private static void HandleTextAction(DorotiTextInputAction action)
+    {
+        InputDispatchThreadIds.Add(Environment.CurrentManagedThreadId);
+        TextActions.Add(action);
     }
 }

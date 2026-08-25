@@ -12,6 +12,7 @@ namespace Doroti.Host.WindowsAppSdk;
 public static unsafe partial class DorotiWindowsAppSdkRunner
 {
     internal static WindowsProductRunDiagnostics? LastRunDiagnostics { get; private set; }
+    internal static NativeHostProvenance? LastNativeProvenance { get; private set; }
 
     public static int Run(DorotiApplicationDescriptor descriptor)
     {
@@ -24,6 +25,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             throw new InvalidOperationException(
                 $"Unsupported Windows App SDK adapter '{adapter}'. Expected HwndExactCpp.");
 
+        LastNativeProvenance = WindowsNativeV1.ConfigureAppDirectoryLoading();
         WindowsNativeV1.ValidateLayout();
         var initializeResult = RoInitialize(0);
         if (initializeResult < 0) Marshal.ThrowExceptionForHR(initializeResult);
@@ -80,6 +82,10 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     Key = (nint)(delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.Key*, void>)&OnKey,
                     Focus = (nint)(delegate* unmanaged[Cdecl]<nint, ulong, uint, long, void>)&OnFocus,
                     Clipboard = (nint)(delegate* unmanaged[Cdecl]<nint, ulong, WindowsNativeV1.Utf8, void>)&OnClipboard,
+                    TextEditing = (nint)(delegate* unmanaged[Cdecl]<nint, WindowsNativeV1.TextState*, void>)&OnTextEditing,
+                    TextAction = (nint)(delegate* unmanaged[Cdecl]<nint, uint, void>)&OnTextAction,
+                    SemanticsAction = (nint)(delegate* unmanaged[Cdecl]<nint, long, long, WindowsNativeV1.Utf8, void>)&OnSemanticsAction,
+                    Lifecycle = (nint)(delegate* unmanaged[Cdecl]<nint, ulong, uint, long, void>)&OnLifecycle,
                 };
                 var status = WindowsNativeV1.Run(in configuration, in callbacks);
                 state.MarkNativeStopped();
@@ -114,6 +120,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         private uint _rasterThreadId;
         private uint _inputThreadId;
         private bool _visibleAfterExactPresent;
+        private bool _deviceResetInjected;
         private bool _disposed;
 
         internal WindowsManagedState(
@@ -150,11 +157,13 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
                 .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, host)
                 .Register<IInputHostCapability>(DorotiCapabilityIds.InputEvents, host)
+                .Register<ITextInputHostCapability>(DorotiCapabilityIds.TextInput, host)
                 .Register<IPlatformServicesHostCapability>(DorotiCapabilityIds.PlatformServices, host)
                 .Register<IPlatformEnvironmentHostCapability>(DorotiCapabilityIds.PlatformEnvironment, host)
                 .Register<ISceneHostCapability>(DorotiCapabilityIds.GraphicsScene, renderer)
                 .Register<IParagraphHostCapability>(DorotiCapabilityIds.GraphicsText, renderer)
                 .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, renderer);
+            capabilities.Register<ISemanticsHostCapability>(DorotiCapabilityIds.AccessibilitySemantics, renderer);
             _application.Configure(capabilities, messages);
             DorotiView? view = null;
             try
@@ -198,6 +207,12 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             var height = checked((int)request.HeightPx);
             var causalFrameId = checked((long)request.CausalFrameId);
             var resizeGeneration = request.Generation;
+            if (!_deviceResetInjected && Interlocked.Read(ref _renderCallbacks) >= 1 &&
+                Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_C8_SMOKE") == "1")
+            {
+                Presenter.ResetDevice();
+                _deviceResetInjected = true;
+            }
             Presenter.EnsureTarget(host.ChildHwnd, width, height);
             Presenter.SealInitializationDebugBaseline();
             var presented = false;
@@ -315,7 +330,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 Presenter.DeviceGeneration, Presenter.ResizeBuffersCount, Presenter.PresentCount,
                 Presenter.GpuSubmitCount, Presenter.GpuCopyCount,
                 Presenter.InitializationDebugErrorCount, Presenter.OperationalDebugErrorCount,
-                renderer.Submitted, renderer.Presented, renderer.Replayed);
+                renderer.Submitted, renderer.Presented, renderer.Replayed,
+                LastNativeProvenance ?? throw new InvalidOperationException("Native provenance is unavailable."));
         }
 
         private static void RecordThread(ref uint owner, string role)
@@ -450,6 +466,43 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             (state.Host ?? throw new InvalidOperationException("Clipboard arrived before host-ready."))
                 .CompleteClipboard(requestId, Decode(text)));
 
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    private static void OnTextEditing(nint context, WindowsNativeV1.TextState* state) =>
+        GuardVoid(context, managed =>
+        {
+            if (state is null || state->AbiVersion != WindowsNativeV1.AbiVersion ||
+                state->StructSize < sizeof(WindowsNativeV1.TextState))
+                throw new InvalidDataException("Native text editing supplied an invalid state.");
+            (managed.Host ?? throw new InvalidOperationException("Text editing arrived before host-ready."))
+                .ApplyTextEditing(Decode(state->Text), state->SelectionBase, state->SelectionExtent,
+                    state->ComposingBase, state->ComposingExtent);
+        });
+
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    private static void OnTextAction(nint context, uint action) =>
+        GuardVoid(context, managed =>
+            (managed.Host ?? throw new InvalidOperationException("Text action arrived before host-ready."))
+                .ApplyTextAction(action));
+
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    private static void OnSemanticsAction(nint context, long nodeId, long action,
+        WindowsNativeV1.Utf8 arguments) =>
+        GuardVoid(context, managed =>
+        {
+            (managed.Host ?? throw new InvalidOperationException("Semantics action arrived before host-ready."))
+                .ApplySemanticsAction(nodeId, action, Decode(arguments));
+        });
+
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    private static void OnLifecycle(nint context, ulong viewId, uint state, long timestampQpc) =>
+        GuardVoid(context, managed =>
+        {
+            _ = timestampQpc;
+            if (viewId != 1) throw new InvalidDataException("Native lifecycle view id differs.");
+            (managed.Host ?? throw new InvalidOperationException("Lifecycle arrived before host-ready."))
+                .ApplyLifecycle(state);
+        });
+
     private static void GuardVoid(nint context, Action<WindowsManagedState> callback)
     {
         try { callback(GetState(context)); }
@@ -533,4 +586,5 @@ internal sealed record WindowsProductRunDiagnostics(
     ulong OperationalDebugErrors,
     long RendererSubmitted,
     long RendererPresented,
-    long RendererReplayed);
+    long RendererReplayed,
+    NativeHostProvenance NativeProvenance);

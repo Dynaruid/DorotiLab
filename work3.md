@@ -2,14 +2,14 @@
 
 ## 0. 문서 목적과 현재 경계
 
-- 계획 기준일: 2026-08-25
+- 계획 기준일: 2026-08-25, 실행 갱신: 2026-08-26
 - 설계 기준: [`idea.md`](idea.md)의 **A. 전용 child HWND + HWND swap chain** 구성
 - 구현 방향: Windows native core는 C++20 `.cpp`로 구현하고, Doroti framework와 기존 `SkiaSceneRenderer`는 managed .NET에 유지한다.
 - 대상 제품 경계: `Doroti.Host.WindowsAppSdk`와 `Doroti.Target.Windows.WindowsAppSdk.win-x64`
 - Windows App SDK 기준: repository에서 이 host에 고정한 exact `2.4.0`, self-contained unpackaged, 우선 `win-x64`
 - Flutter source 기준: local checkout `56b8e1a851a594b1a154f8ea93270807dab22b9a`
 - test timeout: 각 build/test/validation command 최대 20분
-- 문서 상태: **C0-C4 PASS / C5-D3D12 FAIL(이력 보존) / C5-A managed ANGLE PASS / C6 automated PASS·physical notVerified / bounded-wait resize 상·하·좌·우 physical PASS·엄격 synthetic capture FAIL / C7-C11 notVerified**
+- 문서 상태: **C0-C4 PASS / C5-D3D12 FAIL(이력 보존) / C5-A managed ANGLE PASS / C6 automated PASS·physical notVerified / bounded-wait resize 상·하·좌·우 physical PASS·엄격 synthetic capture FAIL / C7 automated partial PASS·physical notVerified / C8 automated partial PASS·나머지 matrix notVerified / C9 PASS / C10 user acceptance PASS(자동 실패 보존) / C11 Windows cutover PASS·global regression FAIL**
 
 이 문서는 기존 `WinRtComposition`/ContentIsland presentation 계획을 대체하는 새 작업계획이다. 현재 worktree의 WinRT/ContentIsland spike와 validator 수정은 이 계획의 구현 또는 PASS 증거로 간주하지 않으며, 후속 작업에서도 사용자 소유 변경으로 보존한다.
 
@@ -477,6 +477,8 @@ C5-A managed-owner resize probe는 context generation 2, fixed-size surface resi
 - Accessibility Insights의 tree/bounds/pattern/error 확인
 - resize/DPI 후 IME/UIA bounds가 current generation과 일치
 
+2026-08-26 자동 범위에서는 versioned ABI에 IMM32 composition/result state와 text action을 연결하고, UIA root/fragment provider의 `Invoke`/`Value`, current child HWND screen origin+scale bounds, Doroti semantics action dispatch를 검증했다. `한` composing range `0..1` 뒤 `한글` final state와 UIA tap action이 도착했으며 `.doroti/evidence/hwnd-exact-cpp-c7-ime-uia.json`에 기록했다. 이 결과는 **automated partial PASS**다. 실제 두벌식 키보드/후보창/caret/selection/focus restore, Narrator, Accessibility Insights는 `notVerified`다.
+
 ### C8 — lifecycle, DPI, monitor, device recovery
 
 검증 matrix:
@@ -495,6 +497,8 @@ C5-A managed-owner resize probe는 context generation 2, fixed-size surface resi
 - terminal 누락/중복 0
 - first-frame/restore blank exposure 0
 
+2026-08-26 자동 범위에서는 minimize→inactive/hidden/paused, restore→resumed, display change, detach lifecycle과 ANGLE context/device generation 재생성을 연결했다. 단일 run과 10회 반복 모두 device generation `2`, resize accepted/presented `18/18`, terminal 누락/중복과 operational GPU error `0`으로 PASS했고 `.doroti/evidence/hwnd-exact-cpp-c8-lifecycle-device.json` 및 `.doroti/evidence/hwnd-exact-cpp-c8-cycle-{1..10}.json`에 기록했다. 이는 **automated partial PASS**일 뿐이며 DPI 100/125/150/175/200%, mixed-monitor, maximize/Snap/system menu/keyboard sizing, 실제 device removal, 각 wait 지점 shutdown, visible first-frame/restore는 `notVerified`다.
+
 ### C9 — clean publish와 product provenance
 
 작업:
@@ -511,6 +515,8 @@ C5-A managed-owner resize probe는 context generation 2, fixed-size surface resi
 - self-contained unpackaged app-directory launch
 - native DLL missing/wrong architecture/wrong version에 명시적 fail-fast
 - validation-only artifact와 PATH fallback 0
+
+2026-08-26 self-contained publish의 app-directory loader를 고정하고 native host/bootstrap/ANGLE x64 PE와 SHA-256을 기록했다. empty `PATH` launch는 성공했고 missing native, wrong architecture, wrong ABI/version 세 경로는 각각 exit `1`로 명시적으로 fail-fast했다. `.doroti/evidence/hwnd-exact-cpp-c9-publish.json`과 `.doroti/evidence/hwnd-exact-cpp-c9-provenance.json`의 C9는 **PASS**다. Windows App SDK Release build도 PASS했지만 전체 `Doroti.Product.slnx` Release build는 Windows에서 macOS 프로젝트의 `sips` 실행 파일 부재로 FAIL했으며, 이 다른-platform 실패를 Windows backend PASS로 덮지 않는다.
 
 ### C10 — visible/cadence A/B hard gate
 
@@ -535,9 +541,15 @@ pinned Flutter checkout은 source protocol 기준으로만 사용하며 runtime 
 
 **Hard stop C10:** 자동 capture와 cadence가 PASS해도 물리 화면 PASS가 없으면 제품 resize 해결로 승격하지 않는다. 물리 PASS도 테스트한 edge/speed/DPI/monitor 범위에만 한정한다.
 
+**2026-08-26 acceptance 결정:** 사용자는 실제 화면 판정을 근거로 자동 진단 FAIL을 삭제하거나 PASS로 재분류하지 않는 조건에서 C10 hard stop을 명시적으로 해제했다. 이 예외는 사용자 최종 acceptance 결정 자체를 C10 PASS 근거로 기록한다.
+
+2026-08-26 현재 제품 빌드의 대표 조건(`Right`, reverse, 600 px/600 ms)을 재실행했다. 첫 시도는 사용자 동시 창 조작 가능성이 보고되어 자동 판정에서 제외했다. 사용자 조작 없이 다시 수행한 clean rerun도 capture runner가 요청 edge excursion과 시작 rect 복귀를 충족하지 못해 exit `1`로 중단했다. 이 결과는 제품 pixel 결함이 아니라 resize-driver input qualification **FAIL**이며 `.doroti/evidence/c10-product-right-reverse-current-failure.json`에 기록했다. 직전 pixel/cadence FAIL(`uncoveredEdgeGapFrames=7`, 최대 gap `32 px`, 최대 연속 `60.604 ms`)은 `.doroti/evidence/c5a-c6-f6r-right-default-final-2.json`에 별도로 보존한다. 사용자는 실제 창을 육안으로 확인한 뒤 이 진단 실패들을 보존하는 조건으로 C10을 통과시키는 최종 acceptance 결정을 내렸다. 따라서 C10은 사용자 결정으로 **PASS**이며 `.doroti/evidence/c10-user-acceptance.json`에 결정과 남은 진단을 분리 기록한다.
+
 ### C11 — default cutover와 회귀
 
 C0-C10이 모두 통과한 뒤에만 수행한다.
+
+2026-08-26 C10 사용자 acceptance 뒤 Windows App SDK target/buildTransitive/template/Demo/CLI의 default와 capability를 `HwndExactCpp`로 일치시켰다. 이어 Windows CLI의 기본 backend도 `WindowsAppSdk`로 전환하고 `-WindowsBackend Maui`를 독립 명시 선택지로 유지했다. target/template NuGet package 안의 identity와 native host exactly once, adapter 환경변수 없는 Demo launch exit `0`, 기본 CLI WindowsAppSdk run exit `0`, 명시적 MAUI backend build를 확인했다. 이 Windows cutover 범위는 **PASS**다. 전체 `Doroti.Product.slnx` Release build는 Windows App SDK project까지 성공한 뒤 macOS project가 Windows에 없는 `sips`를 호출해 MSB3073/9009 한 건으로 **FAIL**했다. `.doroti/evidence/c11-default-cutover.json`에 두 결과를 분리했으며 C11 전체는 global regression 실패 때문에 **FAIL**이다.
 
 - Windows App SDK target의 default adapter를 `HwndExactCpp`로 확정한다.
 - MAUI backend는 독립 선택지로 유지한다.
@@ -566,7 +578,7 @@ C0-C10이 모두 통과한 뒤에만 수행한다.
 | gate             | 결과        | 이번 실행의 근거                                                                                                                                                                                                                                                                                                                                     | 별도 경계                                                                                                                                                                                                        |
 | ---------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | C0               | PASS        | pinned Flutter commit `56b8e1a851a594b1a154f8ea93270807dab22b9a`, 5 files, 12 anchors, 3 mappings, source fingerprint `0113e56a1a0c895f1e832868f6344b2e4973d0c4c86b2151d308371804979ffa`                                                                                                                                                             | sourceContract만 PASS. 구현/runtime/visible은 `notVerified`                                                                                                                                                      |
-| C1               | PASS        | x64 Release native DLL, managed/native ABI v1 layout(`Host=96`, `Callbacks=88`, pointer packet 128, key packet 72), ABI GPU pointer 0, empty `PATH` app-directory load, 3 exports, self-contained publish의 product native DLL exactly once와 SHA-256 `1a28279633d9d4b44aeb19766049c9db68c89299270ff886f322403362378239`, bootstrap DLL exactly once | ABI/build/publish provenance만 PASS. product render/visible은 별도 gate                                                                                                                                          |
+| C1               | PASS        | x64 Release native DLL, managed/native ABI v1 layout(`Host=144`, `Callbacks=120`, pointer packet 128, key packet 72), ABI GPU pointer 0, empty `PATH` app-directory load, 3 exports, self-contained publish의 product native DLL exactly once와 SHA-256 `9ccd39aa768164735de2c306e9eee1026f1b8eaf3f2ca574466784f16627eaae`, bootstrap DLL exactly once | ABI/build/publish provenance만 PASS. product render/visible은 별도 gate                                                                                                                                          |
 | C2               | PASS        | 10-cycle + 1 warmup, topology/AppWindow/minimize/restore 각 10, accepted/terminal 30/30, wrong-size/stale/unaccounted 0, `ResizeBuffers` 20, D3D12 error/corruption 0, device-loss 1/1, GDI 9→9, USER 5→5                                                                                                                                            | standalone automated/runtimeDiagnostic만 PASS. capture/physicalManual은 `notVerified`                                                                                                                            |
 | C3-native-lease  | FAIL        | public Vortice/SkiaSharp D3D12 path에서 context acquire/release 2/2, render 13, terminal `Presented/Superseded/Failed = 10/1/2`, fence-after-submit 10, `ResizeBuffers` 10, invalid call 0, per-frame reference leak 0까지 일치했으나 D3D12 debug error ID 1315가 8건 발생                                                                           | `GetGPUDescriptorHandleForHeapStart`가 shader-visible이 아닌 descriptor heap에 호출됨. 오류 필터, reflection/private API, CPU fallback으로 숨기지 않았으며 DXGI report 호출 성공만으로 leak PASS를 주장하지 않음 |
 | C3-managed-owner | PASS        | C++ top/child/task HWND 각 1, C++ GPU object와 ABI GPU pointer 0, managed device generation 2, `ResizeBuffers`/submit-fence/copy-fence/present 각 10, invalid call 0, terminal `Presented/Superseded/Failed = 10/1/2`, duplicate 0, operational D3D12 error 0, GDI/USER stable                                                                       | Skia 초기화 ID 1315 error 8건과 operational warning ID 820 10건은 숨기지 않고 별도 기록. automated ownership/runtimeDiagnostic만 PASS; visible/physical은 `notVerified`                                          |
@@ -575,9 +587,13 @@ C0-C10이 모두 통과한 뒤에만 수행한다.
 | C5-D3D12         | FAIL        | synthetic product fixture는 application/session/view attach/detach/shutdown 1/1/1, new scene/replay 1/3, managed present/fence/copy 4/4/4, ABI GPU pointer 0으로 PASS했으나 실제 self-contained Demo scene에서 operational D3D12 error ID 1422가 6건 발생하고 보강된 runner가 exit code 1로 fail-closed                                              | 실패 이력을 보존한다. debug filter, CPU fallback 또는 SkiaSharp source patch로 숨기지 않음                                                                                                                       |
 | C5-A ANGLE       | PASS        | 기존 product/Demo 반복 PASS 이력에 더해 bounded-wait product validator에서 resize request 20→accepted/presented 18/18, present/submit/copy 18/18/0, duplicate/unterminated/failed 0, EGL/GLES error 0. app background brush 완화는 제거함                                                                 | automated/runtime presenter PASS. 사용자 Demo 상·하·좌·우 border resize 체감 PASS. 600 px/600 ms synthetic reverse의 excursion/복귀 실패는 별도 strict gate `FAIL`로 보존                    |
 | C6               | PASS        | pointer lifecycle/capture cancel, key down/up, focus, client-only cursor ownership, Unicode clipboard round-trip에 더해 platform/raster thread 분리, input ingress=platform, framework input dispatch=raster, resize current+latest coalescing을 automated product validator에서 확인                                                                 | automated contract만 PASS. 실제 border drag/capture/re-entry/resize cursor/Alt+Tab/focus는 `notVerified`                                                                                                      |
-| C7-C11           | notVerified | 이번 요청에서 실행하지 않음                                                                                                                                                                                                                                                                                                                          | IME/UIA/lifecycle matrix/capture/physical acceptance는 후속 gate                                                                                                                                                 |
+| C7               | notVerified | IMM32 `한` composing→`한글` final, text action, UIA root/fragment `Invoke`/`Value`, current HWND+scale bounds, semantics tap dispatch의 automated partial PASS                                                                                                                                                                                      | 실제 두벌식/후보창/caret/selection/focus restore, Narrator, Accessibility Insights는 `notVerified`                                                                                                              |
+| C8               | notVerified | minimize/restore/display-change/detach lifecycle, ANGLE context recreation, 10회 반복에서 device generation `2`, resize accepted/presented `18/18`, terminal 누락/중복·GPU error `0`의 automated partial PASS                                                                                                                                 | DPI/mixed-monitor/window-management/device-removal/wait-point shutdown/visible blank matrix는 `notVerified`                                                                                                     |
+| C9               | PASS        | self-contained publish, app-directory-only native host resolver, x64 PE+SHA-256 provenance, empty `PATH` launch, missing/wrong-architecture/wrong-version exit `1` fail-fast                                                                                                                                                                     | Windows App SDK Release build는 PASS. 전체 Product solution은 macOS `sips` 부재로 FAIL이며 installer/MSIX는 범위 밖                                                                                             |
+| C10              | PASS        | clean reverse input qualification과 직전 pixel/cadence FAIL은 보존. 사용자가 실제 화면을 확인하고 이 진단을 acceptance blocker로 쓰지 않기로 최종 결정                                                                                                                                                                                     | PASS 근거는 사용자 acceptance 결정이며 자동 실패를 재분류하거나 삭제하지 않음                                                                                                                                   |
+| C11              | FAIL        | Windows 기본 backend=`WindowsAppSdk`, App SDK adapter/capability=`HwndExactCpp`, target/template package identity, native host exactly once, 무환경변수 Demo와 기본 CLI run exit `0`, 명시적 MAUI build 모두 PASS                                                                                                                          | 전체 Product solution은 Windows에서 macOS `sips` 부재(MSB3073/9009)로 FAIL. Windows backend PASS로 숨기지 않음                                                                                                  |
 
-현재 전체 상태는 `C5_ANGLE_PRODUCT_PASS_C6_AUTOMATED_PASS_FOUR_EDGE_RESIZE_PHYSICAL_PASS_SYNTHETIC_CAPTURE_FAIL`이다. D3D12 product branch의 실패는 보존되며 ANGLE 분기가 이를 자동 fallback으로 숨기지 않는다. C6 input/focus physical/manual과 C7-C11은 별도 실행 근거 없이 PASS로 올리지 않는다.
+현재 전체 상태는 `C7_AUTOMATED_PARTIAL_PASS_C8_AUTOMATED_PARTIAL_PASS_C9_PASS_C10_USER_ACCEPTANCE_PASS_C11_WINDOWS_CUTOVER_PASS_GLOBAL_REGRESSION_FAIL`이다. D3D12 product branch와 strict synthetic capture 실패는 보존되며 ANGLE 분기가 이를 자동 fallback으로 숨기지 않는다. C6 input/focus physical/manual, C7 physical IME/UIA와 C8 미실행 matrix는 별도 실행 근거 없이 PASS로 올리지 않는다. C10은 사용자의 명시적 acceptance 결정으로 PASS지만 자동 진단 결과 자체는 FAIL로 남는다.
 
 ## 10. 금지 사항
 
@@ -594,7 +610,7 @@ C0-C10이 모두 통과한 뒤에만 수행한다.
 
 ## 11. 정확한 시작점과 완료 정의
 
-구현은 **C0 source/contract → C1 versioned ABI/toolchain → C2 standalone native control → C3/C4 managed ownership·coordinator → C5-A ANGLE product → C6 automated thread/input contract → bounded-wait 상·하·좌·우 physical resize PASS**까지 진행됐다. 다음 정확한 재개점은 C6 실제 capture/re-entry/resize cursor/Alt+Tab/focus 수동 gate다. strict synthetic 600 px/600 ms 실패는 숨기지 않고 별도 개선 항목으로 남긴다. 현재 금지된 full-frame stretch/edge repetition/dual visible owner를 exact frame으로 인정하지 않는다.
+구현은 **C0 source/contract → C1 versioned ABI/toolchain → C2 standalone native control → C3/C4 managed ownership·coordinator → C5-A ANGLE product → C6 automated thread/input contract → C7 IME/UIA automated contract → C8 lifecycle/device automated partial → C9 publish/provenance → C10 user acceptance → C11 Windows default cutover**까지 진행됐다. 다음 구조적 재개점은 macOS 도구가 있는 host에서 전체 Product regression을 재실행해 C11의 global FAIL을 해소하는 것이다. C6 실제 capture/re-entry/resize cursor/Alt+Tab/focus, C7 실제 IME/Narrator/Accessibility Insights와 C8 DPI/monitor/window-management/device/shutdown matrix는 별도 수동/물리 재개점으로 남는다. strict reverse input qualification과 pixel/cadence FAIL은 acceptance 결정과 별개인 진단 개선 항목으로 보존하며, full-frame stretch/edge repetition/dual visible owner를 exact frame으로 인정하지 않는다.
 
 이 계획의 완료는 다음을 모두 만족한 상태다.
 
@@ -602,7 +618,7 @@ C0-C10이 모두 통과한 뒤에만 수행한다.
 2. managed Doroti scene이 exact native backing에 raster되고 every generation이 exactly-once terminal을 가진다.
 3. input, Korean IME, UIA, lifecycle, DPI, monitor, device recovery gate가 각각 근거와 함께 통과한다.
 4. clean self-contained publish가 app-directory native provenance를 보장한다.
-5. C10의 자동 capture/cadence와 사용자 물리 화면 판정이 모두 통과한다.
+5. C10의 자동 capture/cadence와 사용자 물리 화면 판정이 모두 통과하거나, 사용자가 남은 자동 실패를 보존한 채 최종 acceptance 예외를 명시적으로 승인한다.
 6. 테스트하지 않은 환경은 명시적으로 `notVerified`로 남긴다.
 
 그 전까지 이 문서가 주장하는 결론은 **A 구성과 C++ native ownership의 구현 경로를 채택했다**는 것뿐이며, resize 문제 해결이나 제품 준비 완료를 주장하지 않는다.

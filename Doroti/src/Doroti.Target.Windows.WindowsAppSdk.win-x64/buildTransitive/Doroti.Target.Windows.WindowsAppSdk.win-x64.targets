@@ -3,13 +3,13 @@
     <WindowsPackageType>None</WindowsPackageType>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <SelfContained>true</SelfContained>
-    <DorotiWindowsAdapterDefault Condition="'$(DorotiWindowsAdapterDefault)' == ''">WinRtComposition</DorotiWindowsAdapterDefault>
+    <DorotiWindowsAdapterDefault Condition="'$(DorotiWindowsAdapterDefault)' == ''">HwndExactCpp</DorotiWindowsAdapterDefault>
   </PropertyGroup>
   <ItemGroup Condition="'$(DorotiTarget)' == 'Windows' and '@(DorotiTargetDescriptor)' == ''">
     <DorotiTargetDescriptor Include="Windows" HostKind="WindowsAppSdk" NativeEntryKind="Win32-WinMain"
         RuntimeIdentifier="win-x64" TargetFramework="net10.0-windows10.0.19041.0"
         TargetPackage="Doroti.Target.Windows.WindowsAppSdk.win-x64"
         AdapterDefault="$(DorotiWindowsAdapterDefault)"
-        AdapterCapabilities="WinRtComposition" />
+        AdapterCapabilities="HwndExactCpp" />
   </ItemGroup>
 </Project>
