@@ -5,23 +5,14 @@
     <AssemblyName>Doroti.Host.WindowsAppSdk</AssemblyName>
     <RootNamespace>Doroti.Host.WindowsAppSdk</RootNamespace>
     <PackageId>Doroti.Host.WindowsAppSdk</PackageId>
-    <Description>Doroti Windows App SDK host with an isolated Flutter-style ANGLE/EGL bootstrap and retained Arm N rollback adapter.</Description>
+    <Description>Doroti WinRT-first ContentIsland host boundary; the WinRtComposition backend is not implemented yet.</Description>
     <IsDorotiProduct>true</IsDorotiProduct>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK" VersionOverride="2.4.0" />
-    <PackageReference Include="SkiaSharp" />
-    <PackageReference Include="SkiaSharp.NativeAssets.Win32" />
-    <PackageReference Include="Avalonia.Angle.Windows.Natives" />
-    <PackageReference Include="SkiaSharp.Direct3D.Vortice" />
-    <PackageReference Include="Vortice.Direct3D12" />
-    <PackageReference Include="Vortice.DirectComposition" />
-    <PackageReference Include="Vortice.DXGI" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
-    <ProjectReference Include="..\Doroti.Skia.Rendering\Doroti.Skia.Rendering.csproj" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
   </ItemGroup>
 </Project>

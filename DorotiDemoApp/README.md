@@ -8,8 +8,8 @@ DorotiDemoApp dogfoods the platform-workspace contract. The root project is targ
 
 - `Program.cs`, `src/`, `assets/`: shared startup, widget tree, and application assets
 - `doroti-workspace.json`: includes distinct `macos` (AppKit) and `maccatalyst` (UIKit) aliases
-- `windowsappsdk/`: default Windows App SDK 2.4 FlutterEmbedder runner
-- `windows/`: retained WinUI/MAUI rollback runner and package identity
+- `windowsappsdk/`: WinRT-first `ContentIsland` runner boundary. It fails explicitly at launch until `WinRtComposition` is implemented.
+- `windows/`: first-class MAUI backend runner and package identity
 - `web/`: Blazor WebAssembly runner, TypeScript source, and `wwwroot`
 - `android/`: .NET Android/MAUI runner plus the default Gradle AAR and .NET binding
 - `ios/`: .NET iOS/MAUI runner plus an independent Xcode framework and binding
@@ -34,12 +34,11 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 publish -App ./DorotiDemoApp -Plat
 Run every command below from the repository root. Run the Linux command on a Linux x64 host because that runner also builds its native shim.
 
 ```powershell
-# Windows (Windows host)
+# Windows MAUI backend (current default, runnable)
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
 
-# Windows rollback adapters
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -WindowsAdapter ArmNLegacy
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -WindowsAdapter MauiRollback
+# Windows App SDK backend (contract build only for now)
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./DorotiDemoApp -Platform windows -WindowsBackend WindowsAppSdk
 
 # Web
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform web
@@ -68,8 +67,8 @@ Runner projects also support direct .NET commands:
 
 ```powershell
 dotnet build ./DorotiDemoApp/DorotiDemoApp.csproj -c Release
-dotnet run --project ./DorotiDemoApp/windowsappsdk/DorotiDemoApp.WindowsAppSdk.csproj
-dotnet run --project ./DorotiDemoApp/windows/DorotiDemoApp.Windows.csproj # MAUI rollback
+dotnet build ./DorotiDemoApp/windowsappsdk/DorotiDemoApp.WindowsAppSdk.csproj -c Release # WinRT runner contract only
+dotnet run --project ./DorotiDemoApp/windows/DorotiDemoApp.Windows.csproj # MAUI backend
 dotnet run --project ./DorotiDemoApp/web/DorotiDemoApp.Web.csproj
 dotnet build ./DorotiDemoApp/android/DorotiDemoApp.Android.csproj -c Release -r android-x64
 dotnet build ./DorotiDemoApp/ios/DorotiDemoApp.iOS.csproj -c Release -r iossimulator-x64

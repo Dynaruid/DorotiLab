@@ -16,8 +16,8 @@ param(
     [ValidateSet('android', 'ios', 'linux', 'macos', 'maccatalyst', 'web', 'windows', 'all')]
     [string] $Platform,
 
-    [ValidateSet('FlutterEmbedder', 'ArmNLegacy', 'MauiRollback')]
-    [string] $WindowsAdapter = 'FlutterEmbedder',
+    [ValidateSet('WindowsAppSdk', 'Maui')]
+    [string] $WindowsBackend = 'Maui',
 
     [string] $Rid,
 
@@ -170,14 +170,14 @@ function Invoke-WorkspaceDotNet {
     if ([string]::IsNullOrWhiteSpace($Platform) -or $Platform -ceq 'all') { throw "$Verb requires one --platform <name>." }
     $workspace = Resolve-DorotiWorkspace $App
     $runner = $workspace.Runners[$Platform]
-    if ($Platform -ceq 'windows' -and $WindowsAdapter -ceq 'MauiRollback') {
-        $mauiRollback = @(Get-ChildItem -LiteralPath (Join-Path $workspace.Root 'windows') -Filter '*.csproj' -File |
+    if ($Platform -ceq 'windows' -and $WindowsBackend -ceq 'Maui') {
+        $mauiBackend = @(Get-ChildItem -LiteralPath (Join-Path $workspace.Root 'windows') -Filter '*.csproj' -File |
             Where-Object { (Get-Content -LiteralPath $_.FullName -Raw) -match '<DorotiHostKind>Maui</DorotiHostKind>' } |
             Select-Object -ExpandProperty FullName)
-        if ($mauiRollback.Count -ne 1) {
-            throw "The workspace must provide exactly one MAUI rollback runner under windows; found $($mauiRollback.Count)."
+        if ($mauiBackend.Count -ne 1) {
+            throw "The workspace must provide exactly one MAUI backend runner under windows; found $($mauiBackend.Count)."
         }
-        $runner = [IO.Path]::GetFullPath($mauiRollback[0])
+        $runner = [IO.Path]::GetFullPath($mauiBackend[0])
     }
     $arguments = if ($Verb -ceq 'run') { @('run', '--project', $runner) } else { @($Verb, $runner) }
     $arguments += @('--configuration', $Configuration)
@@ -187,8 +187,8 @@ function Invoke-WorkspaceDotNet {
     $hadAdapter = Test-Path Env:DOROTI_WINDOWS_ADAPTER
     $previousAdapter = $env:DOROTI_WINDOWS_ADAPTER
     try {
-        if ($Platform -ceq 'windows' -and $WindowsAdapter -cne 'MauiRollback') {
-            $env:DOROTI_WINDOWS_ADAPTER = $WindowsAdapter
+        if ($Platform -ceq 'windows' -and $WindowsBackend -ceq 'WindowsAppSdk') {
+            $env:DOROTI_WINDOWS_ADAPTER = 'WinRtComposition'
         }
         Invoke-Checked 'dotnet' $arguments $workspace.Root
     }

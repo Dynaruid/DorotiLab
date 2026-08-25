@@ -3,14 +3,12 @@
   "packageId": "Doroti.Target.Windows.WindowsAppSdk.win-x64",
   "targetFramework": "net10.0-windows10.0.19041.0",
   "rid": "win-x64",
-  "nativeViewType": "Win32.TopLevelHWND+Win32.WS_CHILD",
-  "graphicsBackend": "windowsappsdk-2.4/raw-child-hwnd/ANGLE-EGL/Skia-GPU",
-  "defaultAdapter": "FlutterEmbedder",
+  "nativeViewType": "WinRT.ContentIsland",
+  "graphicsBackend": "windowsappsdk-2.4/winrt-content-island/composition/D3D12-Skia",
+  "defaultAdapter": "WinRtComposition",
   "adapterCapabilities": [
-    "FlutterEmbedder",
-    "ArmNLegacy"
+    "WinRtComposition"
   ],
-  "separateHostRollback": "Doroti.Target.Windows.Maui.win-x64",
   "nativeArtifactPolicy": "app-directory/exact-version/sha256/win-x64/no-PATH-fallback",
   "softwareFallback": false
 }

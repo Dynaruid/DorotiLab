@@ -69,7 +69,8 @@ internal static class Program
         var current = new DirectoryInfo(Environment.CurrentDirectory);
         while (current is not null)
         {
-            if (File.Exists(Path.Combine(current.FullName, "work2.md"))) return current.FullName;
+            if (File.Exists(Path.Combine(current.FullName, "Doroti", "Doroti.slnx")))
+                return current.FullName;
             current = current.Parent;
         }
         throw new DirectoryNotFoundException("Unable to locate the DorotiLab repository root.");
@@ -639,7 +640,8 @@ internal sealed class CompositionSurfaceValidation : IDisposable
         var directory = new DirectoryInfo(Environment.CurrentDirectory);
         while (directory is not null)
         {
-            if (File.Exists(Path.Combine(directory.FullName, "work2.md"))) return directory.FullName;
+            if (File.Exists(Path.Combine(directory.FullName, "Doroti", "Doroti.slnx")))
+                return directory.FullName;
             directory = directory.Parent;
         }
         throw new DirectoryNotFoundException("Unable to locate repository root.");
