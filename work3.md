@@ -55,22 +55,22 @@ native-owned device/queue/resource를 managed Vortice/SkiaSharp에 frame lease�
 
 ### 1.3 채택·제외 결정
 
-| 항목 | 결정 | 이유 |
-|---|---|---|
-| existing `Doroti.Host.WindowsAppSdk`/target package | 유지 | runner와 publish boundary를 재사용한다. |
-| adapter working name | `HwndExactCpp` | 더 이상 composition backend가 아니므로 `WinRtComposition` 이름을 재사용하지 않는다. |
-| C++20 native DLL | 채택 | HWND, AppWindow, task pump, resize protocol의 단일 owner다. |
-| C++/WinRT | AppWindow 연결에만 사용 | XAML/ContentIsland renderer를 들이지 않는다. |
-| managed `SkiaSceneRenderer` | 유지 | Doroti scene semantics와 기존 renderer를 별도 포팅하지 않는다. |
-| managed-owned D3D12 presenter | 진단 경로로 유지 | GPU object가 ABI를 넘지 않는 ownership은 옳지만 실제 Demo scene에서 D3D12 ID 1422가 재현되어 product 기본 경로로 승격하지 않는다. |
-| native-owned D3D12 frame lease | 제외 | 최초 C3에서 D3D12 debug error ID 1315가 8건 발생했다. diagnostic history로만 보존한다. |
-| `CreateSwapChainForHwnd` + `DXGI_SCALING_NONE` | D3D12 비교 경로에 유지 | A topology의 기존 D3D12 진단을 보존한다. |
-| exact offscreen backing | 채택 | resize 전에 exact scene을 준비하고 back buffer 수명과 분리한다. |
-| ContentIsland/composition swap chain | primary에서 제외 | Flutter child HWND topology와 독립 변수를 흐린다. |
-| WinUI XAML, `SwapChainPanel`, MAUI code reuse | 제외 | 별도 UI/layout/presentation owner를 만들지 않는다. MAUI backend는 독립 유지한다. |
-| managed ANGLE/EGL-D3D11 | 채택 | 2026-08-26 사용자 승인으로 기존 제외 결정을 대체했다. `eglGetPlatformDisplayEXT`에 D3D11 hardware를 명시하며 software renderer를 fail-closed한다. SkiaSharp source는 수정하지 않는다. |
-| large permanent backing, stretch, clip-only resize | 제외 | Flutter exact-surface protocol을 복제하지 못한다. |
-| Flutter runtime build/instrumentation | 제외 | pinned source contract만 사용한다. 과거 중단된 비교 실행 경로를 재개하지 않는다. |
+| 항목                                                | 결정                    | 이유                                                                                                                                                                                  |
+| --------------------------------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| existing `Doroti.Host.WindowsAppSdk`/target package | 유지                    | runner와 publish boundary를 재사용한다.                                                                                                                                               |
+| adapter working name                                | `HwndExactCpp`          | 더 이상 composition backend가 아니므로 `WinRtComposition` 이름을 재사용하지 않는다.                                                                                                   |
+| C++20 native DLL                                    | 채택                    | HWND, AppWindow, task pump, resize protocol의 단일 owner다.                                                                                                                           |
+| C++/WinRT                                           | AppWindow 연결에만 사용 | XAML/ContentIsland renderer를 들이지 않는다.                                                                                                                                          |
+| managed `SkiaSceneRenderer`                         | 유지                    | Doroti scene semantics와 기존 renderer를 별도 포팅하지 않는다.                                                                                                                        |
+| managed-owned D3D12 presenter                       | 진단 경로로 유지        | GPU object가 ABI를 넘지 않는 ownership은 옳지만 실제 Demo scene에서 D3D12 ID 1422가 재현되어 product 기본 경로로 승격하지 않는다.                                                     |
+| native-owned D3D12 frame lease                      | 제외                    | 최초 C3에서 D3D12 debug error ID 1315가 8건 발생했다. diagnostic history로만 보존한다.                                                                                                |
+| `CreateSwapChainForHwnd` + `DXGI_SCALING_NONE`      | D3D12 비교 경로에 유지  | A topology의 기존 D3D12 진단을 보존한다.                                                                                                                                              |
+| exact offscreen backing                             | 채택                    | resize 전에 exact scene을 준비하고 back buffer 수명과 분리한다.                                                                                                                       |
+| ContentIsland/composition swap chain                | primary에서 제외        | Flutter child HWND topology와 독립 변수를 흐린다.                                                                                                                                     |
+| WinUI XAML, `SwapChainPanel`, MAUI code reuse       | 제외                    | 별도 UI/layout/presentation owner를 만들지 않는다. MAUI backend는 독립 유지한다.                                                                                                      |
+| managed ANGLE/EGL-D3D11                             | 채택                    | 2026-08-26 사용자 승인으로 기존 제외 결정을 대체했다. `eglGetPlatformDisplayEXT`에 D3D11 hardware를 명시하며 software renderer를 fail-closed한다. SkiaSharp source는 수정하지 않는다. |
+| large permanent backing, stretch, clip-only resize  | 제외                    | Flutter exact-surface protocol을 복제하지 못한다.                                                                                                                                     |
+| Flutter runtime build/instrumentation               | 제외                    | pinned source contract만 사용한다. 과거 중단된 비교 실행 경로를 재개하지 않는다.                                                                                                      |
 
 ## 2. 목표 architecture
 
@@ -102,11 +102,11 @@ generated .NET WinMain / DorotiWindowsAppSdkRunner
 
 ### 2.1 thread ownership
 
-| owner | 소유 객체 | 금지 사항 |
-|---|---|---|
-| native platform STA | top-level/child/task HWND, AppWindow, WndProc, resize wait state, input ingress | framework layout, Skia raster, GPU fence wait, arbitrary top-level message re-entry |
-| managed framework thread | Doroti view/layout/build, immutable scene와 metrics mailbox | HWND/AppWindow/GPU presenter 접근 |
-| managed raster/presentation thread | ANGLE/EGL-D3D11 object, exact backing, fixed-size window surface, `GRContext`, copy, present, device-loss state | AppWindow/child geometry 직접 변경, framework scene mutation |
+| owner                              | 소유 객체                                                                                                       | 금지 사항                                                                           |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| native platform STA                | top-level/child/task HWND, AppWindow, WndProc, resize wait state, input ingress                                 | framework layout, Skia raster, GPU fence wait, arbitrary top-level message re-entry |
+| managed framework thread           | Doroti view/layout/build, immutable scene와 metrics mailbox                                                     | HWND/AppWindow/GPU presenter 접근                                                   |
+| managed raster/presentation thread | ANGLE/EGL-D3D11 object, exact backing, fixed-size window surface, `GRContext`, copy, present, device-loss state | AppWindow/child geometry 직접 변경, framework scene mutation                        |
 
 managed presentation thread는 C++ platform STA를 재진입하지 않는다. resize/close 요청은 task HWND packet으로 전달하고 bounded completion만 기다린다.
 
@@ -469,8 +469,6 @@ C5-A managed-owner resize probe는 context generation 2, fixed-size surface resi
 - Accessibility Insights의 tree/bounds/pattern/error 확인
 - resize/DPI 후 IME/UIA bounds가 current generation과 일치
 
-**Hard stop C7:** physical Korean IME와 accessibility를 자동 smoke만으로 PASS 처리하지 않는다.
-
 ### C8 — lifecycle, DPI, monitor, device recovery
 
 검증 matrix:
@@ -542,14 +540,14 @@ C0-C10이 모두 통과한 뒤에만 수행한다.
 
 각 gate는 다음 증거를 분리한다.
 
-| evidence | 의미 | 의미하지 않는 것 |
-|---|---|---|
-| sourceContract | pinned source와 계획 mapping 확인 | binary/runtime 동작 |
-| build | compile/link/publish 성공 | window launch, GPU context, visible 화면 |
-| automatedContract | state/ABI/terminal/exactness 확인 | DWM scan-out, 물리 화면, 실제 IME/UIA |
-| runtimeDiagnostic | process, topology, device, callback 실행 확인 | 사용자-visible 품질 |
-| capture | 특정 capture 경로의 pixel/cadence 관측 | 실제 monitor scan-out과 완전 동일 |
-| physicalManual | 지정한 환경/동작의 사용자-visible 판정 | 다른 edge/DPI/monitor의 일반화 |
+| evidence          | 의미                                          | 의미하지 않는 것                         |
+| ----------------- | --------------------------------------------- | ---------------------------------------- |
+| sourceContract    | pinned source와 계획 mapping 확인             | binary/runtime 동작                      |
+| build             | compile/link/publish 성공                     | window launch, GPU context, visible 화면 |
+| automatedContract | state/ABI/terminal/exactness 확인             | DWM scan-out, 물리 화면, 실제 IME/UIA    |
+| runtimeDiagnostic | process, topology, device, callback 실행 확인 | 사용자-visible 품질                      |
+| capture           | 특정 capture 경로의 pixel/cadence 관측        | 실제 monitor scan-out과 완전 동일        |
+| physicalManual    | 지정한 환경/동작의 사용자-visible 판정        | 다른 edge/DPI/monitor의 일반화           |
 
 각 gate 결과는 `PASS | FAIL | BLOCKED | notVerified` 중 하나로 기록한다. 실행하지 않은 항목을 성공으로 추론하지 않는다.
 
@@ -557,19 +555,19 @@ C0-C10이 모두 통과한 뒤에만 수행한다.
 
 사용자 요청에 따라 100회 이상으로 계획된 반복 검증은 약 10회 수준으로 축소했다. 시간 기반 `100 ms` 계약과 `100/125/150/175/200%` DPI matrix는 반복 횟수가 아니므로 유지한다.
 
-| gate | 결과 | 이번 실행의 근거 | 별도 경계 |
-|---|---|---|---|
-| C0 | PASS | pinned Flutter commit `56b8e1a851a594b1a154f8ea93270807dab22b9a`, 5 files, 12 anchors, 3 mappings, source fingerprint `0113e56a1a0c895f1e832868f6344b2e4973d0c4c86b2151d308371804979ffa` | sourceContract만 PASS. 구현/runtime/visible은 `notVerified` |
-| C1 | PASS | x64 Release native DLL, managed/native ABI v1 layout(`Host=96`, `Callbacks=88`, pointer packet 128, key packet 72), ABI GPU pointer 0, empty `PATH` app-directory load, 3 exports, self-contained publish의 product native DLL exactly once와 SHA-256 `1a28279633d9d4b44aeb19766049c9db68c89299270ff886f322403362378239`, bootstrap DLL exactly once | ABI/build/publish provenance만 PASS. product render/visible은 별도 gate |
-| C2 | PASS | 10-cycle + 1 warmup, topology/AppWindow/minimize/restore 각 10, accepted/terminal 30/30, wrong-size/stale/unaccounted 0, `ResizeBuffers` 20, D3D12 error/corruption 0, device-loss 1/1, GDI 9→9, USER 5→5 | standalone automated/runtimeDiagnostic만 PASS. capture/physicalManual은 `notVerified` |
-| C3-native-lease | FAIL | public Vortice/SkiaSharp D3D12 path에서 context acquire/release 2/2, render 13, terminal `Presented/Superseded/Failed = 10/1/2`, fence-after-submit 10, `ResizeBuffers` 10, invalid call 0, per-frame reference leak 0까지 일치했으나 D3D12 debug error ID 1315가 8건 발생 | `GetGPUDescriptorHandleForHeapStart`가 shader-visible이 아닌 descriptor heap에 호출됨. 오류 필터, reflection/private API, CPU fallback으로 숨기지 않았으며 DXGI report 호출 성공만으로 leak PASS를 주장하지 않음 |
-| C3-managed-owner | PASS | C++ top/child/task HWND 각 1, C++ GPU object와 ABI GPU pointer 0, managed device generation 2, `ResizeBuffers`/submit-fence/copy-fence/present 각 10, invalid call 0, terminal `Presented/Superseded/Failed = 10/1/2`, duplicate 0, operational D3D12 error 0, GDI/USER stable | Skia 초기화 ID 1315 error 8건과 operational warning ID 820 10건은 숨기지 않고 별도 기록. automated ownership/runtimeDiagnostic만 PASS; visible/physical은 `notVerified` |
-| C3-A ANGLE owner | PASS | C++ top/child/task HWND 각 1, ABI GPU pointer 0, ANGLE context generation 2, fixed-size surface resize/present/submit/copy 각 10, invalid call 0, EGL/GLES initialization·operational error 0, terminal `Presented/Superseded/Failed = 10/1/2`, duplicate 0 | hardware `ANGLE (... Direct3D11 ...)` 확인. automated ownership/resize/runtimeDiagnostic만 PASS; visible/physical은 `notVerified` |
-| C4 | PASS | native filtered wait success/timeout 1/1, task completion dispatch 1, top/child recursive dispatch 0, max native wait 109 ms; managed current+latest queue max 2, accepted/terminal 34/34, mismatch/duplicate/unterminated 0, stale present prevented 3, timeout 2 | automated coordinator contract만 PASS. visible resize/cadence/physical은 `notVerified` |
-| C5-D3D12 | FAIL | synthetic product fixture는 application/session/view attach/detach/shutdown 1/1/1, new scene/replay 1/3, managed present/fence/copy 4/4/4, ABI GPU pointer 0으로 PASS했으나 실제 self-contained Demo scene에서 operational D3D12 error ID 1422가 6건 발생하고 보강된 runner가 exit code 1로 fail-closed | 실패 이력을 보존한다. debug filter, CPU fallback 또는 SkiaSharp source patch로 숨기지 않음 |
-| C5-A ANGLE | PASS | product validator: hardware `ANGLE (... Direct3D11 ..., D3D11-32.0.13031.3015)`, terminal/present/submit/copy 4/4/4/4, EGL/GLES error 0. 실제 Demo 10회: 전부 exit 0, 각 present/submit/copy 6/6/6, operational GPU error 0 | automated/runtimeDiagnostic presenter PASS. 매회 기록된 기존 `RenderFlex` overflow assertion과 visible resize/capture/physical은 별도 `notVerified` |
-| C6 | notVerified | validation-only synthetic WndProc packet에서 pointer `add/hover/down/move/up/remove`, key down/up, focus, cursor request, Unicode clipboard round-trip을 관측 | 이번 ANGLE presenter 요청에서는 승격하지 않음. 실제 border drag/cursor/Alt+Tab/focus는 `notVerified` |
-| C7-C11 | notVerified | 이번 요청에서 실행하지 않음 | IME/UIA/lifecycle matrix/capture/physical acceptance는 후속 gate |
+| gate             | 결과        | 이번 실행의 근거                                                                                                                                                                                                                                                                                                                                     | 별도 경계                                                                                                                                                                                                        |
+| ---------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| C0               | PASS        | pinned Flutter commit `56b8e1a851a594b1a154f8ea93270807dab22b9a`, 5 files, 12 anchors, 3 mappings, source fingerprint `0113e56a1a0c895f1e832868f6344b2e4973d0c4c86b2151d308371804979ffa`                                                                                                                                                             | sourceContract만 PASS. 구현/runtime/visible은 `notVerified`                                                                                                                                                      |
+| C1               | PASS        | x64 Release native DLL, managed/native ABI v1 layout(`Host=96`, `Callbacks=88`, pointer packet 128, key packet 72), ABI GPU pointer 0, empty `PATH` app-directory load, 3 exports, self-contained publish의 product native DLL exactly once와 SHA-256 `1a28279633d9d4b44aeb19766049c9db68c89299270ff886f322403362378239`, bootstrap DLL exactly once | ABI/build/publish provenance만 PASS. product render/visible은 별도 gate                                                                                                                                          |
+| C2               | PASS        | 10-cycle + 1 warmup, topology/AppWindow/minimize/restore 각 10, accepted/terminal 30/30, wrong-size/stale/unaccounted 0, `ResizeBuffers` 20, D3D12 error/corruption 0, device-loss 1/1, GDI 9→9, USER 5→5                                                                                                                                            | standalone automated/runtimeDiagnostic만 PASS. capture/physicalManual은 `notVerified`                                                                                                                            |
+| C3-native-lease  | FAIL        | public Vortice/SkiaSharp D3D12 path에서 context acquire/release 2/2, render 13, terminal `Presented/Superseded/Failed = 10/1/2`, fence-after-submit 10, `ResizeBuffers` 10, invalid call 0, per-frame reference leak 0까지 일치했으나 D3D12 debug error ID 1315가 8건 발생                                                                           | `GetGPUDescriptorHandleForHeapStart`가 shader-visible이 아닌 descriptor heap에 호출됨. 오류 필터, reflection/private API, CPU fallback으로 숨기지 않았으며 DXGI report 호출 성공만으로 leak PASS를 주장하지 않음 |
+| C3-managed-owner | PASS        | C++ top/child/task HWND 각 1, C++ GPU object와 ABI GPU pointer 0, managed device generation 2, `ResizeBuffers`/submit-fence/copy-fence/present 각 10, invalid call 0, terminal `Presented/Superseded/Failed = 10/1/2`, duplicate 0, operational D3D12 error 0, GDI/USER stable                                                                       | Skia 초기화 ID 1315 error 8건과 operational warning ID 820 10건은 숨기지 않고 별도 기록. automated ownership/runtimeDiagnostic만 PASS; visible/physical은 `notVerified`                                          |
+| C3-A ANGLE owner | PASS        | C++ top/child/task HWND 각 1, ABI GPU pointer 0, ANGLE context generation 2, fixed-size surface resize/present/submit/copy 각 10, invalid call 0, EGL/GLES initialization·operational error 0, terminal `Presented/Superseded/Failed = 10/1/2`, duplicate 0                                                                                          | hardware `ANGLE (... Direct3D11 ...)` 확인. automated ownership/resize/runtimeDiagnostic만 PASS; visible/physical은 `notVerified`                                                                                |
+| C4               | PASS        | native filtered wait success/timeout 1/1, task completion dispatch 1, top/child recursive dispatch 0, max native wait 109 ms; managed current+latest queue max 2, accepted/terminal 34/34, mismatch/duplicate/unterminated 0, stale present prevented 3, timeout 2                                                                                   | automated coordinator contract만 PASS. visible resize/cadence/physical은 `notVerified`                                                                                                                           |
+| C5-D3D12         | FAIL        | synthetic product fixture는 application/session/view attach/detach/shutdown 1/1/1, new scene/replay 1/3, managed present/fence/copy 4/4/4, ABI GPU pointer 0으로 PASS했으나 실제 self-contained Demo scene에서 operational D3D12 error ID 1422가 6건 발생하고 보강된 runner가 exit code 1로 fail-closed                                              | 실패 이력을 보존한다. debug filter, CPU fallback 또는 SkiaSharp source patch로 숨기지 않음                                                                                                                       |
+| C5-A ANGLE       | PASS        | product validator: hardware `ANGLE (... Direct3D11 ..., D3D11-32.0.13031.3015)`, terminal/present/submit/copy 4/4/4/4, EGL/GLES error 0. 실제 Demo 10회: 전부 exit 0, 각 present/submit/copy 6/6/6, operational GPU error 0                                                                                                                          | automated/runtimeDiagnostic presenter PASS. 매회 기록된 기존 `RenderFlex` overflow assertion과 visible resize/capture/physical은 별도 `notVerified`                                                              |
+| C6               | notVerified | validation-only synthetic WndProc packet에서 pointer `add/hover/down/move/up/remove`, key down/up, focus, cursor request, Unicode clipboard round-trip을 관측                                                                                                                                                                                        | 이번 ANGLE presenter 요청에서는 승격하지 않음. 실제 border drag/cursor/Alt+Tab/focus는 `notVerified`                                                                                                             |
+| C7-C11           | notVerified | 이번 요청에서 실행하지 않음                                                                                                                                                                                                                                                                                                                          | IME/UIA/lifecycle matrix/capture/physical acceptance는 후속 gate                                                                                                                                                 |
 
 현재 전체 상태는 `C5_ANGLE_PRODUCT_PASS_C6_PLUS_NOT_VERIFIED`다. D3D12 product branch의 실패는 보존되며, ANGLE 분기가 이를 자동 fallback으로 숨기지 않는다. C6-C11은 별도 실행과 근거 없이 PASS로 올리지 않는다.
 
