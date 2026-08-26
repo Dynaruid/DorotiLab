@@ -247,8 +247,7 @@ internal sealed class WindowsManagedResizeCoordinator : IDisposable
         }
     }
 
-    private long LatestGenerationCore() =>
-        _latest?.Target.Generation ?? _current?.Target.Generation ?? 0;
+    private long LatestGenerationCore() => _generation;
 
     private int QueueDepthCore() =>
         (_current is null ? 0 : 1) + (_latest is null ? 0 : 1);

@@ -52,7 +52,10 @@ internal static partial class Program
             var nativeWaitStatus = RunFilteredWaitProbe(ref nativeWait);
             ValidateNativeWait(nativeWaitStatus, nativeWait);
 
-            Present(coordinator, Publish(coordinator, 640, 480, 1, "normal"));
+            var normal = Publish(coordinator, 640, 480, 1, "normal");
+            Present(coordinator, normal);
+            Require(coordinator.IsLatest(normal.Generation),
+                "The latest accepted generation was forgotten after its terminal.");
             var same1 = Publish(coordinator, 640, 480, 2, "same-size-1");
             Present(coordinator, same1);
             Present(coordinator, Publish(coordinator, 640, 480, 3, "same-size-2"));

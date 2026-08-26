@@ -58,14 +58,15 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             fixed (byte* applicationIdData = applicationId)
             fixed (byte* titleData = title)
             {
+                var initialScale = GetDpiForSystem() / 96d;
                 var configuration = new WindowsNativeV1.Configuration
                 {
                     AbiVersion = WindowsNativeV1.AbiVersion,
                     StructSize = checked((uint)sizeof(WindowsNativeV1.Configuration)),
                     ApplicationId = Utf8(applicationIdData, applicationId.Length),
                     Title = Utf8(titleData, title.Length),
-                    InitialWidthPx = ToDimension(descriptor.ViewConfiguration.logicalSize.width),
-                    InitialHeightPx = ToDimension(descriptor.ViewConfiguration.logicalSize.height),
+                    InitialWidthPx = ToDimension(descriptor.ViewConfiguration.logicalSize.width * initialScale),
+                    InitialHeightPx = ToDimension(descriptor.ViewConfiguration.logicalSize.height * initialScale),
                     NCmdShow = 1,
                 };
                 var callbacks = new WindowsNativeV1.Callbacks
@@ -592,6 +593,9 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
     [LibraryImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool IsWindowVisible(nint window);
+
+    [LibraryImport("user32.dll")]
+    private static partial uint GetDpiForSystem();
 
     [LibraryImport("kernel32.dll")]
     private static partial uint GetCurrentThreadId();
