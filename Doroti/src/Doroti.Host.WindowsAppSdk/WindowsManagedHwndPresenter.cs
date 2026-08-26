@@ -55,6 +55,7 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
         get => CopyFenceCount;
         set => CopyFenceCount = value;
     }
+    internal override bool LastPresentSucceeded { get; set; }
     internal ulong ManagedSubmitFenceCount { get; private set; }
     internal ulong CopyFenceCount { get; private set; }
     internal override ulong InitializationDebugMessageCount { get; set; }
@@ -64,7 +65,7 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
     internal override ulong OperationalDebugWarningCount { get; set; }
     internal override string AdapterDescription { get; set; } = "uninitialized";
 
-    internal override void EnsureTarget(nint childWindow, int width, int height)
+    internal override bool EnsureTarget(nint childWindow, int width, int height)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (childWindow == 0) throw new ArgumentOutOfRangeException(nameof(childWindow));
@@ -107,6 +108,7 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
         _backing.EnsureSize(width, height);
         Width = width;
         Height = height;
+        return true;
     }
 
     internal override void SealInitializationDebugBaseline()
@@ -145,6 +147,7 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
         ArgumentNullException.ThrowIfNull(paint);
         ArgumentNullException.ThrowIfNull(shouldPresent);
         ObjectDisposedException.ThrowIf(_disposed, this);
+        LastPresentSucceeded = false;
         var context = _context ?? throw new InvalidOperationException("The managed D3D12 context is unavailable.");
         var backing = _backing ?? throw new InvalidOperationException("The exact backing store is unavailable.");
         var swapChain = _swapChain ?? throw new InvalidOperationException("The HWND swap chain is unavailable.");
@@ -180,6 +183,7 @@ internal sealed class WindowsManagedHwndPresenter : WindowsManagedHwndPresenterB
         CopyFenceCount++;
         swapChain.Present(0, PresentFlags.None).CheckError();
         PresentCount++;
+        LastPresentSucceeded = true;
         Marshal.ThrowExceptionForHR(DwmFlush());
         return result;
     }

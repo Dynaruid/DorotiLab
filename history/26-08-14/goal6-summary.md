@@ -6,7 +6,6 @@
 > 후속 기록: [`goal7-summary.md`](../26-08-16/goal7-summary.md) — 제품 정확성 closure, Web build와 multi-target release
 > 기준 Doroti revision: `21ebdbbe36691d8e30d66114f39e8a00aa339c43` + 문서 이관 작업 트리
 > Flutter source pin: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
-> Avalonia source pin: `f159423f691946e713f454447a780d4677d8a0d2`
 
 ## 종료 결정
 
@@ -19,7 +18,6 @@ Goal6는 Goal5의 compile/API/synthetic 성공을 실제 framework runtime 성�
 - 아래 “완료로 보존” 항목만 해당 절의 자동화 범위에서 PASS로 유지한다.
 - partial 결과는 구현 자산과 현재 증거를 보존하되 milestone 완료로 승격하지 않는다.
 - callback 직접 호출은 native pointer interaction 증거가 아니다.
-- Windows automated 결과를 physical Windows, Avalonia backend, Linux/macOS 또는 Web 결과로 확대하지 않는다.
 - 실행하지 않은 reference differential, browser, physical device, IME/accessibility와 cross-target 항목은 `notVerified`다.
 - 남은 작업은 Goal7의 새 dependency graph와 evidence gate로 이관했으며, 종료 상태는 [`goal7-summary.md`](../26-08-16/goal7-summary.md)에 보존한다.
 
@@ -91,7 +89,6 @@ Goal6는 Goal5의 compile/API/synthetic 성공을 실제 framework runtime 성�
 
 - 나머지 interactive family의 실제 좌표 기반 input
 - 실제 border drag resize와 pinned Flutter desktop differential
-- Avalonia/Linux/macOS cursor backend와 physical input matrix
 
 ### G6-5R-C — scene/compositing/paint effect
 

@@ -1,12 +1,10 @@
 # G5-3 Widgets product cutover
 
-G5-3 closes the base Flutter Widgets vertical path on the pinned Flutter and Avalonia source revisions. Flutter framework code owns Widget, Element, State, focus, navigation, scrolling, image, and editable-text semantics. The selected Avalonia source port owns only the native Windows window, dispatcher, input, text-input, clipboard/cursor, GPU surface, and accessibility capabilities.
 
 ## Product boundary
 
 - `Doroti.Framework.Widgets` is the reviewed product package for the full G5-3 Widgets selection.
 - Generated application projects bind to reviewed framework packages through the framework project graph. They do not compile repository-private framework candidates into the application assembly.
-- The product graph contains no official Avalonia package and no Avalonia Controls, Visual, Layout, Styling, or XAML mirror tree.
 - Each attached Flutter view receives typed capabilities. Missing capabilities fail with capability ID, view ID, target identity, and the calling Flutter symbol.
 - The Windows host owns one native window, one Flutter surface, one frame request owner, and one terminal frame acknowledgement path.
 

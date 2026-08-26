@@ -15,6 +15,7 @@ internal abstract class WindowsManagedHwndPresenterBase : IDisposable
     internal abstract ulong PresentCount { get; set; }
     internal abstract ulong GpuSubmitCount { get; set; }
     internal abstract ulong GpuCopyCount { get; set; }
+    internal abstract bool LastPresentSucceeded { get; set; }
     internal abstract ulong InitializationDebugMessageCount { get; set; }
     internal abstract ulong InitializationDebugErrorCount { get; set; }
     internal abstract ulong OperationalDebugMessageCount { get; set; }
@@ -22,7 +23,7 @@ internal abstract class WindowsManagedHwndPresenterBase : IDisposable
     internal abstract ulong OperationalDebugWarningCount { get; set; }
     internal abstract string AdapterDescription { get; set; }
 
-    internal abstract void EnsureTarget(nint childWindow, int width, int height);
+    internal abstract bool EnsureTarget(nint childWindow, int width, int height);
     internal abstract void SealInitializationDebugBaseline();
     internal abstract void CaptureOperationalDebugMessages();
     internal abstract T RenderAndPresent<T>(Func<SKSurface, T> paint, Predicate<T> shouldPresent);

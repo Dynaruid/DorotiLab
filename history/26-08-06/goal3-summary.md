@@ -103,7 +103,6 @@ Foundation batch 2의 다음 8개 library는 semantic generation과 candidate co
 - `bitfield`
 - `_bitfield_io`
 
-이 candidate는 review/promotion, behavior parity와 product consumer 확장이 완료되지 않았다. 후속 계획은 이 결과를 폐기하지 않지만 새 Flutter/Avalonia ownership boundary로 다시 검토한다.
 
 근거:
 
@@ -135,9 +134,6 @@ Goal3는 Flutter framework와 저수준 실행 계층 사이의 source ownership
 
 - Flutter에서는 `packages/flutter/lib`의 framework 의미를 가져온다.
 - Flutter Engine/embedder/native platform 구현은 가져오지 않는다.
-- window, shell, dispatcher, frame clock, input, IME, clipboard, accessibility, DPI와 graphics surface의 concrete 구현은 Avalonia source-port가 소유한다.
-- Flutter framework의 저수준 호출은 managed `dart:ui` 호환 계약과 typed bridge를 통해 Avalonia source-port에 연결한다.
-- Avalonia Controls/Layout/Styling은 Flutter Widget/Rendering/Material/Cupertino의 대체 UI framework가 아니다.
 
 이 경계 변경은 남은 milestone의 순서, package graph, runtime binding disposition과 validation source of truth에 영향을 주므로 Goal3 원문을 부분 수정하지 않고 폐기했다.
 
@@ -160,6 +156,5 @@ Goal3는 Flutter framework와 저수준 실행 계층 사이의 source ownership
 - `Doroti.Platform` 안의 Flutter-derived behavior
 - handwritten `Doroti.Rendering`/`Doroti.Widgets` owner
 - broad `runtime-binding` disposition
-- Flutter Scheduler/Services/Rendering과 Avalonia source-ported shell/GPU의 실제 연결
 
 이 역사 문서는 Goal3의 작업 지시서가 아니다. Goal4까지의 이력은 [`goal4-summary.md`](../26-08-10/goal4-summary.md), Goal5의 종료 기록은 [`goal5-summary.md`](../26-08-12/goal5-summary.md), Goal6의 종료 기록은 [`goal6-summary.md`](../26-08-14/goal6-summary.md), Goal7의 종료 기록은 [`goal7-summary.md`](../26-08-16/goal7-summary.md)에 보존한다.

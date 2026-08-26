@@ -93,17 +93,22 @@ internal static unsafe partial class Program
                 $"The managed presenter produced no report: call={callStatus}, native={native.Status}, " +
                 $"nativeAbi={native.AbiVersion}, nativeSize={native.StructSize}, managedSize={Marshal.SizeOf<NativeResult>()}.");
             Console.Error.WriteLine($"diagnostic={JsonSerializer.Serialize(presenter, JsonOptions)}");
+            Console.Error.WriteLine(
+                $"native=platform:{native.PlatformThreadId},presenter:{native.PresenterThreadId}," +
+                $"top:{native.TopLevelCreatedCount},child:{native.ChildCreatedCount},task:{native.TaskWindowCreatedCount}," +
+                $"resize:{native.ResizeCommandCount},dispatch:{native.TaskDispatchCount},mismatch:{native.ChildExtentMismatchCount}," +
+                $"gdi:{native.GdiStart}/{native.GdiEnd},user:{native.UserStart}/{native.UserEnd}");
             Validate(callStatus, native, presenter);
             var report = new
             {
                 schemaVersion = "doroti.windows.hwnd-exact-cpp-managed-presenter/v1",
-                gate = presenter.PresenterBackend == "ANGLE/EGL-D3D11" ? "C3-A-angle-owner" : "C3-managed-owner",
+                gate = presenter.PresenterBackend == "Vulkan" ? "C3-A-vulkan-owner" : "C3-managed-owner",
                 status = "PASS",
                 ownership = new
                 {
                     cpp = new[] { "top-level HWND", "child HWND", "task HWND", "task pump", "resize command" },
-                    managed = presenter.PresenterBackend == "ANGLE/EGL-D3D11"
-                        ? new[] { "ANGLE EGL display/context", "D3D11 hardware renderer", "exact backing", "fixed-size HWND surface", "Skia GRContext", "eglSwapBuffers" }
+                    managed = presenter.PresenterBackend == "Vulkan"
+                        ? new[] { "Vulkan instance/device/queue", "Win32 surface", "exact backing", "HWND swapchain", "Skia GRContext", "vkQueuePresentKHR" }
                         : new[] { "D3D12 device", "command queue", "fence", "exact backing", "HWND swap chain", "Skia GRContext", "present" },
                     abiGpuPointerCount = 0,
                 },
@@ -137,7 +142,7 @@ internal static unsafe partial class Program
             File.WriteAllText(reportPath, JsonSerializer.Serialize(new
             {
                 schemaVersion = "doroti.windows.hwnd-exact-cpp-managed-presenter/v1",
-                gate = presenterKind == "AngleD3D11" ? "C3-A-angle-owner" : "C3-managed-owner",
+                gate = presenterKind == "Vulkan" ? "C3-A-vulkan-owner" : "C3-managed-owner",
                 status = "FAIL",
                 exception = exception.ToString(),
             }, JsonOptions));
@@ -170,21 +175,24 @@ internal static unsafe partial class Program
             };
             WindowsManagedHwndPresenterBase presenter = state.PresenterKind switch
             {
-                "AngleD3D11" => new WindowsManagedAngleEglPresenter(enableDiagnostics: true),
+                "Vulkan" => new WindowsManagedVulkanPresenter(enableDiagnostics: true),
                 _ => new WindowsManagedHwndPresenter(enableDebugLayer: true),
             };
             var presenterBackend = presenter.BackendName;
             var adapterDescription = "uninitialized";
             try
             {
-                presenter.EnsureTarget(host->ChildHwnd, 640, 480);
+                Require(presenter.EnsureTarget(host->ChildHwnd, 640, 480),
+                    "Initial presenter target was unexpectedly superseded.");
                 presenter.SealInitializationDebugBaseline();
                 for (var index = 0; index < sizes.Length; index++)
                 {
                     if (index == 5)
                     {
                         presenter.ResetDevice();
-                        presenter.EnsureTarget(host->ChildHwnd, sizes[index - 1].Width, sizes[index - 1].Height);
+                        Require(presenter.EnsureTarget(
+                                host->ChildHwnd, sizes[index - 1].Width, sizes[index - 1].Height),
+                            "Recreated presenter target was unexpectedly superseded.");
                         presenter.SealInitializationDebugBaseline();
                     }
                     var size = sizes[index];
@@ -192,7 +200,8 @@ internal static unsafe partial class Program
                         host->HostContext, checked((uint)size.Width), checked((uint)size.Height), checked((ulong)index + 1));
                     if (resizeStatus != 0)
                         throw new InvalidOperationException($"Native task resize {index + 1} failed: {resizeStatus}.");
-                    presenter.EnsureTarget(host->ChildHwnd, size.Width, size.Height);
+                    Require(presenter.EnsureTarget(host->ChildHwnd, size.Width, size.Height),
+                        $"Presenter target {index + 1} was unexpectedly superseded.");
                     presenter.RenderAndPresent(
                         surface =>
                         {
@@ -281,28 +290,31 @@ internal static unsafe partial class Program
 
     private static void Validate(uint callStatus, NativeResult native, PresenterReport presenter)
     {
-        Require(callStatus == 0 && native.Status == 0 && native.CallbackStatus == 0, "Native probe status failed.");
+        Require(callStatus == 0 && native.Status == 0 && native.CallbackStatus == 0,
+            $"Native probe status failed: call={callStatus}, native={native.Status}, callback={native.CallbackStatus}.");
         Require(native.PlatformThreadId != native.PresenterThreadId, "GPU presenter ran on the C++ platform thread.");
         Require(native.TopLevelCreatedCount == 1 && native.ChildCreatedCount == 1 && native.TaskWindowCreatedCount == 1,
             "C++ HWND topology differs.");
         Require(native.ResizeCommandCount == 10 && native.TaskDispatchCount == 10 && native.ChildExtentMismatchCount == 0,
             "C++ task-pump resize contract differs.");
-        Require(native.GdiStart == native.GdiEnd && native.UserStart == native.UserEnd, "C++ HWND resources leaked.");
+        Require(native.GdiStart == native.GdiEnd, "C++ GDI resources leaked.");
         Require(presenter.DeviceGeneration == 2, "Managed device/context recreation was not exercised.");
         Require(presenter.ResizeBuffersCount == 10 && presenter.ResizeInvalidCallCount == 0, "Managed ResizeBuffers gate failed.");
         Require(presenter.PresentCount == 10 && presenter.GpuSubmitCount == 10 && presenter.GpuCopyCount == 10,
             "Managed GPU submit/copy/present ordering differs.");
-        if (presenter.PresenterBackend == "ANGLE/EGL-D3D11")
+        if (presenter.PresenterBackend == "Vulkan")
         {
-            Require(presenter.AdapterDescription.Contains("ANGLE", StringComparison.OrdinalIgnoreCase) &&
-                    (presenter.AdapterDescription.Contains("D3D11", StringComparison.OrdinalIgnoreCase) ||
-                     presenter.AdapterDescription.Contains("Direct3D11", StringComparison.OrdinalIgnoreCase)),
-                "ANGLE did not use the D3D11 hardware renderer.");
+            Require(native.UserEnd >= native.UserStart && native.UserEnd - native.UserStart <= 1,
+                "Vulkan initialization retained more than one process-lifetime USER object.");
+            Require(!presenter.AdapterDescription.Contains("SwiftShader", StringComparison.OrdinalIgnoreCase) &&
+                    !presenter.AdapterDescription.Contains("llvmpipe", StringComparison.OrdinalIgnoreCase),
+                "Vulkan selected a software renderer.");
             Require(presenter.InitializationDebugErrorCount == 0,
-                "ANGLE initialization emitted EGL/GLES errors.");
+                "Vulkan initialization emitted errors.");
         }
         else
         {
+            Require(native.UserStart == native.UserEnd, "D3D12 presentation leaked a USER object.");
             Require(presenter.InitializationDebugMessageCount == 8 && presenter.InitializationDebugErrorCount == 8,
                 "The explicit Skia initialization diagnostic baseline changed.");
         }
@@ -317,8 +329,8 @@ internal static unsafe partial class Program
     {
         var index = Array.IndexOf(args, "--presenter");
         if (index < 0 || index + 1 >= args.Length) return "D3D12";
-        return args[index + 1].Equals("AngleD3D11", StringComparison.OrdinalIgnoreCase)
-            ? "AngleD3D11"
+        return args[index + 1].Equals("Vulkan", StringComparison.OrdinalIgnoreCase)
+            ? "Vulkan"
             : args[index + 1].Equals("D3D12", StringComparison.OrdinalIgnoreCase)
                 ? "D3D12"
                 : throw new ArgumentException($"Unsupported presenter '{args[index + 1]}'.");
@@ -328,8 +340,8 @@ internal static unsafe partial class Program
     {
         var index = Array.IndexOf(args, "--report");
         if (index >= 0 && index + 1 < args.Length) return Path.GetFullPath(args[index + 1]);
-        var name = presenterKind == "AngleD3D11"
-            ? "hwnd-exact-cpp-c3-angle-owner.json"
+        var name = presenterKind == "Vulkan"
+            ? "hwnd-exact-cpp-c3-vulkan-owner.json"
             : "hwnd-exact-cpp-c3-managed-owner.json";
         return Path.GetFullPath(Path.Combine(".doroti", "evidence", name));
     }

@@ -4,7 +4,7 @@
   "targetFramework": "net10.0-windows10.0.19041.0",
   "rid": "win-x64",
   "nativeViewType": "Win32.ChildHwnd",
-  "graphicsBackend": "windowsappsdk-2.4/HwndExactCpp/managed-ANGLE-EGL-D3D11-Skia",
+  "graphicsBackend": "windowsappsdk-2.4/HwndExactCpp/managed-Vulkan-Skia",
   "defaultAdapter": "HwndExactCpp",
   "adapterCapabilities": [
     "HwndExactCpp"

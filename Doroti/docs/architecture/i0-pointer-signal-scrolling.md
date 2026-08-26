@@ -3,8 +3,7 @@
 I0 makes `RawPointerEvent.ScrollDelta` a logical-pixel value whose positive main-axis direction
 moves content toward the trailing scroll extent. Platform hosts own conversion before the event
 reaches `InputDispatcher`: Windows applies `WHEEL_DELTA` and the current system lines-per-scroll
-setting, X11/Wayland follows Flutter's 53-pixel convention while preserving fractional values,
-and macOS supports both Flutter discrete/precise input and Avalonia.Native's precise-delta scale.
+setting, while X11/Wayland follows Flutter's 53-pixel convention and preserves fractional values.
 No widget applies a wheel multiplier. F2 removes the unused `wheelScrollExtent`
 constructor/property shape, so the platform-normalized logical-pixel delta is the only input value.
 

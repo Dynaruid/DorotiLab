@@ -3,13 +3,11 @@
 > 역사 기준일: 2026-08-01  
 > 요약 대상: 당시 루트에 있던 `roadmap1.md`, `roadmap2.md`, `roadmap3.md`의 통합 기록. 세 원본 문서는 이 요약 작성 후 제거됐다.  
 > 문서 성격: 당시 독립 플랫폼 엔진 전략으로 진행한 R1–R11의 결정, 구현 결과와 미완료 게이트를 보존하는 역사 기록  
-> 현재 방향: 루트 [`goal.md`](../../goal.md)의 Avalonia Host-first 구성이 이후 작업의 기준이다.
 
 ## 1. 당시의 목표와 전략
 
 Doroti는 고정 Flutter revision의 공개 API와 관찰 가능한 동작을 C#/.NET에서 재현하고, Dart package를 결정적으로 C# package로 변환하는 독립 UI runtime을 목표로 했다. Flutter는 API·lifecycle·behavior의 읽기 전용 기준으로 사용했다.
 
-플랫폼 계층은 Avalonia 전체를 사용하지 않고 Win32, framebuffer, WGL/OpenGL과 Skia 구현의 일부만 `copy`, `adapt`, `rewrite`, `exclude`로 분류해 내부 vendor assembly에 이관했다. Doroti가 Widget/Element/RenderObject, scheduler, DisplayList, compositor와 공개 API의 수명을 소유하고, Avalonia UI/property/layout/compositor와 Flutter engine/Dart VM은 제품 의존성에서 제외하는 전략이었다.
 
 핵심 실행 경로는 다음과 같았다.
 
@@ -32,7 +30,6 @@ Dart package
 |---|---|
 | R1 | `eng/doroti.ps1` 공통 진입점, SourceTools, analyzer, Dart→C# 초안 변환기, SceneLab과 versioned artifact 기반 구축 |
 | R3 | .NET 10 solution, warnings-as-errors, deterministic build와 Core/Rendering/Widgets/Platform/Backend/Vendor 경계 구축 |
-| R4 | Avalonia의 선택된 Win32/Skia 소스를 내부 vendor slice로 개조하고 naked Win32 window, DPI, surface와 GPU/software fallback 구현 |
 | R5 | immutable DisplayList/LayerTreeSnapshot, bounded mailbox, raster-thread ownership, surface generation, resource lease와 exactly-once ACK 구현 |
 
 고정한 불변 규칙은 다음과 같다.
@@ -111,8 +108,6 @@ R9에 남은 실제 종료 조건:
 
 한계:
 
-- Avalonia의 플랫폼 셸을 사용하지 않고 일부 내부 코드를 이관했기 때문에 Window, dispatcher, IME, accessibility, clipboard, packaging과 OS lifecycle을 Doroti가 계속 직접 확장해야 했다.
-- Avalonia `WindowImpl` 수준의 코드는 Controls, Input, Threading, Composition 등의 큰 dependency closure를 가지므로 선택적 source 이관만으로 완전한 플랫폼 셸을 빠르게 확보하기 어렵다.
 - 실사용 UI와 Material/Cupertino보다 플랫폼 기반을 직접 구현·검증하는 작업 비중이 커졌다.
 
 ## 7. 이후 방향으로의 인계
@@ -123,5 +118,3 @@ R9에 남은 실제 종료 조건:
 - DisplayList, frame/resource ACK, behavior fixture와 deterministic artifact
 - 현재 native Win32 backend의 conformance·fallback 가치
 - vendor selection/provenance와 실제 runtime 검증 체계
-
-대신 플랫폼 셸의 기본 구현은 Avalonia package를 사용하는 `Doroti.Host.Avalonia`로 전환한다. 기존 로드맵의 “Avalonia package/Base/Controls 의존성 0건” 규칙은 역사적 결정이며, 현재 기준은 [`goal.md`](../../goal.md)의 “Avalonia 의존성은 Host project에만 허용하고 Doroti 공개·공통 계층에는 누출하지 않는다”는 규칙으로 대체한다.

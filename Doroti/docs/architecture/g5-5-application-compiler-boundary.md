@@ -17,8 +17,6 @@ Generation is graph-driven rather than fixture-name-driven. The resolver compute
 - the selected reviewed `Doroti.Framework.*` package or project;
 - `Doroti.Hosting`, which is the application bootstrap and host-capability seam.
 
-Generated application source is audited for concrete platform, host, Avalonia, Skia, and vendor references. Target implementation remains behind capabilities rather than entering generated Dart application code.
-
 ## Resources and localization
 
 The compiler converts the application resource manifest into an embedded `doroti-application-capabilities.json` manifest and embeds declared asset, font, and localization files with stable logical names. `DorotiApplicationBoundary` loads that manifest from the generated assembly and verifies every resource's declared byte length and SHA-256 digest before exposing it through `IApplicationResourceHostCapability`.

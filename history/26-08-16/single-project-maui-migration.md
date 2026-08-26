@@ -201,7 +201,6 @@ dotnet publish .\SampleApp.csproj -c Release -p:DorotiTarget=Web
 - `Doroti.Target.Windows.Maui.win-x64`와 `Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64` package를 추가한다.
 - 기존 Win32/AppKit target과 한시적으로 differential run을 수행해 visual/input/compositing/resource 결과를 비교한다.
 - MAUI target이 acceptance gate를 통과하면 template/default target을 전환한다.
-- 전환 뒤 `Doroti.Vendor.Avalonia.Win32`, `Doroti.Vendor.Avalonia.Native`, old target package와 source-port 전용 경로를 제거한다.
 - predecessor evidence는 history로 보존하고 현재 product manifest/evidence는 새 backend/RID로 다시 생성한다.
 
 ### M5. doroti-app template 이관
@@ -233,7 +232,6 @@ dotnet publish .\SampleApp.csproj -c Release -p:DorotiTarget=Web
 - M1 `PARTIAL`: `Doroti.App.Sdk/0.2.0-beta`가 명시 target/RID와 host default를 Windows `net10.0-windows10.0.19041.0/win-x64`, Mac Catalyst `net10.0-maccatalyst/maccatalyst-arm64`, Web `net10.0/browser-wasm`으로 매핑한다. app과 MAUI host의 target별 `obj/bin/publish/lock` 및 source/XAML graph를 분리했고 Windows -> Web -> Mac Catalyst Windows-host cross-build -> Windows `--no-restore` 반복 build와 `DOROTIAPP004` fail-closed를 통과했다. Mac runner locked restore/native 실행은 `notVerified`다.
 - M2 `PARTIAL`: `Doroti.Host.Maui`가 externally owned `SKSurface`에 Doroti scene을 raster하고 session/view/frame lifecycle, invalidate coalescing, context/surface generation, strict GPU diagnostics를 제공한다. Windows live는 submitted/presented 3/3, failed 0, software fallback 0이다. resize/DPI/context-recreate와 Mac Metal live는 `notVerified`다.
 - M3 `PARTIAL`: 공용 touch press/move/release, focus request, clipboard와 text capability adapter를 연결했다. Windows/Mac native hover/wheel/capture/key/IME와 UIA/UIAccessibility tree/action은 구현·검증되지 않았으므로 `notVerified`다.
-- M4 `PARTIAL`: `Doroti.Target.Windows.Maui.win-x64`와 `Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64`를 추가하고 single-project/template default를 전환했다. Native differential acceptance가 끝나지 않아 기존 Win32/AppKit/Avalonia source-port package는 제거하지 않았으며 predecessor evidence로만 유지한다.
 - M5 `PARTIAL`: template을 `.csproj` 1개, root `Program.cs`, `src/App.cs`, `Platforms/*`, Windows bootstrap XAML 1개와 다른 XAML 0개 구조로 이관했다. 저장소 밖 local package feed에서 create/restore/Web native-link compile/publish를 통과했다. Windows package-only와 Mac Catalyst package-only/native gate는 `notVerified`다.
 - M6 `PARTIAL`: `DorotiDemoApp.Web.csproj`와 `WebHost/`를 제거하고 `DorotiDemoApp.csproj` 하나로 통합했다. Material app은 `src/App.cs`, root bootstrap은 얇은 `Program.cs`로 분리했다. 기존 Demo 전용 Win32/AppKit smoke adapter는 새 native capability gate가 완성되지 않아 이관하지 않았다.
 - M7 `PARTIAL`: `validate-g7-web-build.ps1`의 Graph/Template/Compile/Publish와 새 `validate-g7-maui-single-project.ps1`의 Windows/Mac Catalyst/Web Graph, target 순환 Build, Windows Live, Evidence를 통과했고 English/Korean root/runtime/Demo README와 solution graph를 갱신했다. G6 predecessor validator의 native input/IME/accessibility 가정은 M3 후속 작업으로 남긴다.

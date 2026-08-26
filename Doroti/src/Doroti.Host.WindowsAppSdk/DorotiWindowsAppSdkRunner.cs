@@ -207,18 +207,28 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             var height = checked((int)request.HeightPx);
             var causalFrameId = checked((long)request.CausalFrameId);
             var resizeGeneration = request.Generation;
+            if (!host.IsLatestResizeGeneration(resizeGeneration))
+            {
+                Interlocked.Increment(ref _renderCallbacks);
+                return (uint)WindowsNativeV1.FrameTerminalKind.Superseded;
+            }
             if (!_deviceResetInjected && Interlocked.Read(ref _renderCallbacks) >= 1 &&
                 Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_C8_SMOKE") == "1")
             {
                 Presenter.ResetDevice();
                 _deviceResetInjected = true;
             }
-            Presenter.EnsureTarget(host.ChildHwnd, width, height);
+            if (!Presenter.EnsureTarget(host.ChildHwnd, width, height))
+            {
+                Interlocked.Increment(ref _renderCallbacks);
+                return (uint)WindowsNativeV1.FrameTerminalKind.Superseded;
+            }
             Presenter.SealInitializationDebugBaseline();
             var presented = false;
             var result = Presenter.RenderAndPresent(
                 surface => renderer.Paint(surface, width, height, host.ResizeTarget, causalFrameId),
                 value => presented = value.ShouldPresent && host.IsLatestResizeGeneration(resizeGeneration));
+            presented &= Presenter.LastPresentSucceeded;
             Presenter.CaptureOperationalDebugMessages();
             if (Presenter.OperationalDebugErrorCount != 0)
                 throw new InvalidOperationException(
@@ -383,13 +393,13 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         private static WindowsManagedHwndPresenterBase CreatePresenter(bool diagnosticsEnabled) =>
             Environment.GetEnvironmentVariable("DOROTI_WINDOWS_PRESENTER")?.Trim() switch
             {
-                null or "" => new WindowsManagedAngleEglPresenter(diagnosticsEnabled),
-                var value when value.Equals("AngleD3D11", StringComparison.OrdinalIgnoreCase) =>
-                    new WindowsManagedAngleEglPresenter(diagnosticsEnabled),
+                null or "" => new WindowsManagedVulkanPresenter(diagnosticsEnabled),
+                var value when value.Equals("Vulkan", StringComparison.OrdinalIgnoreCase) =>
+                    new WindowsManagedVulkanPresenter(diagnosticsEnabled),
                 var value when value.Equals("D3D12", StringComparison.OrdinalIgnoreCase) =>
                     new WindowsManagedHwndPresenter(diagnosticsEnabled),
                 var value => throw new InvalidOperationException(
-                    $"Unsupported managed Windows presenter '{value}'. Expected D3D12 or AngleD3D11."),
+                    $"Unsupported managed Windows presenter '{value}'. Expected D3D12 or Vulkan."),
             };
     }
 

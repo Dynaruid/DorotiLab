@@ -9,7 +9,7 @@
 - Windows App SDK 기준: repository에서 이 host에 고정한 exact `2.4.0`, self-contained unpackaged, 우선 `win-x64`
 - Flutter source 기준: local checkout `56b8e1a851a594b1a154f8ea93270807dab22b9a`
 - test timeout: 각 build/test/validation command 최대 20분
-- 문서 상태: **C0-C4 PASS / C5-D3D12 FAIL(이력 보존) / C5-A managed ANGLE PASS / C6 automated PASS·physical notVerified / bounded-wait resize 상·하·좌·우 physical PASS·엄격 synthetic capture FAIL / C7 automated partial PASS·physical notVerified / C8 automated partial PASS·나머지 matrix notVerified / C9 PASS / C10 user acceptance PASS(자동 실패 보존) / C11 Windows cutover PASS·global regression FAIL**
+- 문서 상태: **C0-C4 PASS / C5-D3D12 FAIL(이력 보존) / C5-A managed ANGLE PASS(과거 이력) / C5-Vulkan automated PASS(2회)·physical notVerified / C6 automated PASS·physical notVerified / C7 automated partial PASS·physical notVerified / C8 automated partial PASS·나머지 matrix notVerified / C9 Vulkan publish PASS / 이전 ANGLE C10 user acceptance는 이력 보존·Vulkan visible acceptance notVerified / C11 WindowsAppSdk default 유지·global regression FAIL**
 
 이 문서는 기존 `WinRtComposition`/ContentIsland presentation 계획을 대체하는 새 작업계획이다. 현재 worktree의 WinRT/ContentIsland spike와 validator 수정은 이 계획의 구현 또는 PASS 증거로 간주하지 않으며, 후속 작업에서도 사용자 소유 변경으로 보존한다.
 
@@ -17,7 +17,7 @@
 
 - top-level HWND, AppWindow 연결, child render HWND, message-only task HWND, WndProc와 message loop는 C++가 소유한다.
 - resize state machine과 100 ms bounded wait는 C++가 소유한다.
-- 선택된 GPU presenter의 device/context, exact render target, window surface, submit/present는 managed presenter가 단독 소유한다. 현재 product ANGLE/EGL-D3D11 분기는 fixed-size EGL default framebuffer에 직접 raster하고, 기존 D3D12 offscreen/copy presenter는 진단·비교 경로로 보존한다.
+- 선택된 GPU presenter의 device/context, exact render target, window surface, submit/present는 managed presenter가 단독 소유한다. 현재 product 기본 분기는 ANGLE/EGL 없이 `Silk.NET.Vulkan`으로 Vulkan instance/device/queue, Win32 surface와 swapchain을 직접 소유하고 Skia Vulkan backing을 GPU copy/present한다. 기존 D3D12 offscreen/copy presenter는 진단·비교 경로로 보존한다.
 - C#은 process bootstrap, Doroti application/framework, scene build, `SkiaSceneRenderer`, managed presenter, input/semantics adapter와 versioned C ABI 호출을 소유한다.
 - C++는 top-level/child/task HWND와 AppWindow, WndProc, message loop, metrics/input ingress만 소유하며 GPU COM pointer를 생성하거나 ABI로 전달하지 않는다.
 - Doroti framework 전체나 공용 UI API를 C++로 재작성하는 것은 범위 밖이다.
@@ -31,9 +31,9 @@
 - top-level: standard `WS_OVERLAPPEDWINDOW` HWND + Windows App SDK `AppWindow`
 - render target: 앱이 직접 만든 `WS_CHILD | WS_VISIBLE` child HWND 1개
 - renderer input: current generation과 크기가 정확히 일치하는 Doroti scene
-- raster target: managed presenter가 만든 exact-size ANGLE/GLES offscreen surface
-- presenter: child HWND에 연결한 `EGL_FIXED_SIZE_ANGLE` window surface와 hardware D3D11 ANGLE display
-- resize handshake: child `WM_SIZE → metrics → exact scene → exact backing → fixed-size surface recreation → copy → eglSwapBuffers → wake → DwmFlush`
+- raster target: managed presenter가 만든 exact-size Vulkan device-local image와 Skia Vulkan surface
+- presenter: child HWND에 연결한 `VK_KHR_win32_surface`/`VK_KHR_swapchain` hardware Vulkan 경로
+- resize handshake: child `WM_SIZE → metrics → exact scene → exact backing/swapchain recreation → Vulkan image copy → vkQueuePresentKHR → wake → DwmFlush`
 - input/IME/UIA: render topology를 바꾸지 않는 별도 adapter
 
 ContentIsland와 composition swap chain은 A 경로의 renderer나 size authority로 사용하지 않는다. 필요성이 나중에 입증되면 입력·접근성 또는 popup 같은 bounded integration boundary로만 별도 검토한다.
@@ -68,7 +68,8 @@ native-owned device/queue/resource를 managed Vortice/SkiaSharp에 frame lease�
 | exact offscreen backing                             | 채택                    | resize 전에 exact scene을 준비하고 back buffer 수명과 분리한다.                                                                                                                       |
 | ContentIsland/composition swap chain                | primary에서 제외        | Flutter child HWND topology와 독립 변수를 흐린다.                                                                                                                                     |
 | WinUI XAML, `SwapChainPanel`, MAUI code reuse       | 제외                    | 별도 UI/layout/presentation owner를 만들지 않는다. MAUI backend는 독립 유지한다.                                                                                                      |
-| managed ANGLE/EGL-D3D11                             | 채택                    | 2026-08-26 사용자 승인으로 기존 제외 결정을 대체했다. `eglGetPlatformDisplayEXT`에 D3D11 hardware를 명시하며 software renderer를 fail-closed한다. SkiaSharp source는 수정하지 않는다. |
+| managed ANGLE/EGL-D3D11                             | 과거 이력으로 보존      | 2026-08-26 C5-A/C10 근거를 보존하지만 현재 product dependency/default에서는 제거했다.                                                                                               |
+| managed direct Vulkan                               | 채택                    | `Silk.NET.Vulkan` 바인딩과 system32 Vulkan loader를 사용한다. managed가 instance/device/queue/Win32 surface/swapchain/backing/fence를 소유하고 software renderer를 fail-closed한다. |
 | large permanent backing, stretch, clip-only resize  | 제외                    | Flutter exact-surface protocol을 복제하지 못한다.                                                                                                                                     |
 | Flutter runtime build/instrumentation               | 제외                    | pinned source contract만 사용한다. 과거 중단된 비교 실행 경로를 재개하지 않는다.                                                                                                      |
 
@@ -92,11 +93,11 @@ generated .NET WinMain / DorotiWindowsAppSdkRunner
       |     +-- exact Doroti scene publication
       |
       +-- managed raster/presentation thread
-            +-- ANGLE EGL display/context (hardware D3D11) + Skia GRContext
-            +-- exact offscreen surface
-            +-- EGL_FIXED_SIZE_ANGLE child-HWND surface
+            +-- Vulkan instance/device/graphics-present queue + Skia GRContext
+            +-- exact device-local Vulkan backing image
+            +-- VK_KHR_win32_surface child-HWND swapchain
             +-- SkiaSceneRenderer.Paint -> Flush/Submit
-            +-- copy -> eglSwapBuffers -> DwmFlush
+            +-- image barrier/copy -> vkQueuePresentKHR -> DwmFlush
             +-- C ABI terminal -> native task-HWND completion wake
 ```
 
@@ -106,7 +107,7 @@ generated .NET WinMain / DorotiWindowsAppSdkRunner
 | ---------------------------------- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | native platform STA                | top-level/child/task HWND, AppWindow, WndProc, resize wait state, input ingress                                 | framework layout, Skia raster, GPU fence wait, arbitrary top-level message re-entry |
 | managed framework thread           | Doroti view/layout/build, immutable scene와 metrics mailbox                                                     | HWND/AppWindow/GPU presenter 접근                                                   |
-| managed raster/presentation thread | ANGLE/EGL-D3D11 object, exact backing, fixed-size window surface, `GRContext`, copy, present, device-loss state | AppWindow/child geometry 직접 변경, framework scene mutation                        |
+| managed raster/presentation thread | Vulkan instance/device/queue, exact backing, Win32 swapchain, `GRContext`, fence/copy/present, device-loss state | AppWindow/child geometry 직접 변경, framework scene mutation                        |
 
 managed presentation thread는 C++ platform STA를 재진입하지 않는다. resize/close 요청은 task HWND packet으로 전달하고 bounded completion만 기다린다.
 
@@ -141,7 +142,7 @@ src/
 - `WindowsManagedState`: callback lifetime, fatal error, terminal ledger, ordered shutdown
 - `WindowsHostAdapter`: Doroti view/frame/input/platform capability
 - `WindowsManagedHwndPresenterBase`: managed GPU owner 공통 contract
-- `WindowsManagedAngleEglPresenter`: ANGLE/EGL-D3D11 exact backing과 fixed-size HWND surface의 product GPU owner
+- `WindowsManagedVulkanPresenter`: direct Vulkan exact backing과 Win32 HWND swapchain의 product GPU owner
 - `WindowsManagedHwndPresenter`: 기존 D3D12/Skia 비교·진단 presenter
 - `WindowsInputMapper`, `WindowsTextInputAdapter`, `WindowsSemanticsBridge`: native packet과 Doroti contract 변환
 
@@ -448,6 +449,22 @@ C5-A managed-owner resize probe는 context generation 2, fixed-size surface resi
 
 **C5-A 경계:** product/runtime과 C6 automated contract는 PASS이며 상·하·좌·우 실제 border resize의 물리 체감도 PASS다. 이 scoped physical 결과가 strict synthetic 600 px/600 ms gate의 FAIL이나 C6 input/focus manual, C7-C11을 대체하지는 않는다.
 
+### C5-Vulkan — ANGLE 제거와 direct Vulkan cutover
+
+2026-08-26 현재 product 기본 presenter를 `ANGLE/EGL-D3D11`에서 direct Vulkan으로 교체했다. `Silk.NET.OpenGLES.ANGLE.Native 2025.9.12`는 NuGet의 `win-x64` native DLL이 실제 PE machine `0x014c`여서 win-x64 실행 시 `BadImageFormatException`이 발생했다. 최종 경로는 `Silk.NET.Vulkan 2.23.0`과 `Silk.NET.Vulkan.Extensions.KHR 2.23.0`을 바인딩으로만 사용하며, loader는 restricted search policy 아래 `%SystemRoot%\System32\vulkan-1.dll`을 절대 경로로 연다. ANGLE/EGL DLL과 자동 fallback은 product package에서 제거했다.
+
+managed presenter가 Vulkan 1.1 instance, hardware physical device, graphics+present queue, `VK_KHR_win32_surface`, swapchain, exact device-local backing image, command buffer와 fence를 단독 소유한다. Skia는 `GRContext.CreateVulkan`으로 exact backing에 raster하고, explicit image barrier/copy 뒤 `vkQueuePresentKHR`를 호출한다. acquire, Skia submit과 copy는 5초 bounded fence로 확인하며 모든 `VkResult`를 call site에서 검사한다. HWND의 실제 WSI extent와 오래된 frame extent가 다르거나 acquire/present가 out-of-date가 되면 성공한 present로 기록하지 않고 해당 terminal을 `Superseded`로 정산한다.
+
+managed owner probe를 독립 process로 2회 실행했고 두 번 모두 NVIDIA GeForce RTX 4060 Laptop GPU에서 device generation `2`, resize/present/submit/copy `10/10/10/10`, invalid call `0`, initialization/operational Vulkan error `0`, duplicate terminal `0`으로 PASS했다. NVIDIA WSI는 최초 초기화 때 process-lifetime USER object 1개를 유지했으며 같은 run의 device recreation에서 추가 증가하지 않았다. validator는 Vulkan에만 USER delta `0..1`을 기록·허용하고 D3D12 비교 경로는 기존 delta `0`을 계속 강제한다.
+
+product validator도 최신 코드로 2회 PASS했다. run 1은 accepted/presented/superseded resize `2/2/0`, present/submit/copy `2/2/2`; run 2는 `9/6/3`, `6/7/7`이었고 두 run 모두 failed/unterminated/duplicate terminal `0/0/0`, operational Vulkan error `0`, visible-after-exact-present `true`, device generation `2`였다. superseded 3건은 WSI actual extent와 일치하지 않는 오래된 generation 또는 out-of-date present를 성공으로 위장하지 않고 폐기한 결과다. 근거는 `.doroti/evidence/hwnd-exact-cpp-c3-vulkan-owner-run{1,2}.json`과 `.doroti/evidence/hwnd-exact-cpp-c5-vulkan-product-run{1,2}.json`이다.
+
+환경변수로 presenter를 지정하지 않은 실제 `DorotiDemoApp.WindowsAppSdk` smoke도 기본 `Vulkan`/RTX 4060을 선택해 present/submit/copy `1/1/1`, operational error `0`, visible-after-exact-present `true`로 종료했다. 기존 Demo layout의 `RenderFlex._reportOverflow` assertion은 stderr에 그대로 기록되었으며 Vulkan presenter PASS로 덮지 않고 별도 UI/layout 문제로 보존한다.
+
+self-contained Release publish와 empty `PATH` launch, missing native/wrong architecture/wrong version fail-fast도 `.doroti/evidence/hwnd-exact-cpp-c9-vulkan-publish.json`에서 PASS했다. app directory의 native host/bootstrap과 system32 Vulkan loader 경로·SHA-256을 별도로 기록한다.
+
+**경계:** 위 결과는 build/runtime/automated exact-terminal gate다. 이전 ANGLE 경로에서 사용자가 승인한 상·하·좌·우 physical resize와 C10 acceptance는 역사적 근거로 보존하지만 Vulkan backend의 visible/physical acceptance로 이전하지 않는다. Vulkan Demo의 실제 border drag, strict capture/cadence, IME/UIA와 전체 C8 matrix는 `notVerified`다.
+
 ### C6 — pointer, keyboard, focus, cursor, clipboard
 
 작업:
@@ -503,7 +520,7 @@ C5-A managed-owner resize probe는 context generation 2, fixed-size surface resi
 
 작업:
 
-- target manifest를 `HwndExactCpp`, `Win32.ChildHwnd`, managed ANGLE/EGL-D3D11/Skia backend identity로 갱신한다.
+- target manifest를 `HwndExactCpp`, `Win32.ChildHwnd`, managed Vulkan/Skia backend identity로 갱신한다.
 - runner fail-fast를 실제 backend launch로 교체한다.
 - clean checkout restore/build/test/publish/install-like launch를 수행한다.
 - native runtime dependency, SHA-256, adapter/device/backend identity를 evidence에 기록한다.
@@ -516,7 +533,7 @@ C5-A managed-owner resize probe는 context generation 2, fixed-size surface resi
 - native DLL missing/wrong architecture/wrong version에 명시적 fail-fast
 - validation-only artifact와 PATH fallback 0
 
-2026-08-26 self-contained publish의 app-directory loader를 고정하고 native host/bootstrap/ANGLE x64 PE와 SHA-256을 기록했다. empty `PATH` launch는 성공했고 missing native, wrong architecture, wrong ABI/version 세 경로는 각각 exit `1`로 명시적으로 fail-fast했다. `.doroti/evidence/hwnd-exact-cpp-c9-publish.json`과 `.doroti/evidence/hwnd-exact-cpp-c9-provenance.json`의 C9는 **PASS**다. Windows App SDK Release build도 PASS했지만 전체 `Doroti.Product.slnx` Release build는 Windows에서 macOS 프로젝트의 `sips` 실행 파일 부재로 FAIL했으며, 이 다른-platform 실패를 Windows backend PASS로 덮지 않는다.
+2026-08-26 direct Vulkan cutover 뒤 self-contained publish의 app-directory loader를 다시 검증했다. native host/bootstrap x64 PE와 SHA-256, system32 Vulkan loader의 절대 경로와 SHA-256을 기록했다. empty `PATH` launch는 성공했고 missing native, wrong architecture, wrong ABI/version 세 경로는 각각 exit `1`로 명시적으로 fail-fast했다. `.doroti/evidence/hwnd-exact-cpp-c9-vulkan-publish.json`의 C9는 **PASS**다. 이전 전체 `Doroti.Product.slnx` Release build는 Windows에서 macOS 프로젝트의 `sips` 실행 파일 부재로 FAIL했으며, direct Vulkan 변경 뒤 global regression은 재실행하지 않았으므로 이 FAIL을 해소된 것으로 보지 않는다.
 
 ### C10 — visible/cadence A/B hard gate
 
@@ -541,7 +558,7 @@ pinned Flutter checkout은 source protocol 기준으로만 사용하며 runtime 
 
 **Hard stop C10:** 자동 capture와 cadence가 PASS해도 물리 화면 PASS가 없으면 제품 resize 해결로 승격하지 않는다. 물리 PASS도 테스트한 edge/speed/DPI/monitor 범위에만 한정한다.
 
-**2026-08-26 acceptance 결정:** 사용자는 실제 화면 판정을 근거로 자동 진단 FAIL을 삭제하거나 PASS로 재분류하지 않는 조건에서 C10 hard stop을 명시적으로 해제했다. 이 예외는 사용자 최종 acceptance 결정 자체를 C10 PASS 근거로 기록한다.
+**2026-08-26 acceptance 결정(ANGLE 이력):** 사용자는 당시 ANGLE 실제 화면 판정을 근거로 자동 진단 FAIL을 삭제하거나 PASS로 재분류하지 않는 조건에서 C10 hard stop을 명시적으로 해제했다. 이 예외는 ANGLE backend의 최종 acceptance 근거로 보존하며 direct Vulkan backend에는 이전하지 않는다.
 
 2026-08-26 현재 제품 빌드의 대표 조건(`Right`, reverse, 600 px/600 ms)을 재실행했다. 첫 시도는 사용자 동시 창 조작 가능성이 보고되어 자동 판정에서 제외했다. 사용자 조작 없이 다시 수행한 clean rerun도 capture runner가 요청 edge excursion과 시작 rect 복귀를 충족하지 못해 exit `1`로 중단했다. 이 결과는 제품 pixel 결함이 아니라 resize-driver input qualification **FAIL**이며 `.doroti/evidence/c10-product-right-reverse-current-failure.json`에 기록했다. 직전 pixel/cadence FAIL(`uncoveredEdgeGapFrames=7`, 최대 gap `32 px`, 최대 연속 `60.604 ms`)은 `.doroti/evidence/c5a-c6-f6r-right-default-final-2.json`에 별도로 보존한다. 사용자는 실제 창을 육안으로 확인한 뒤 이 진단 실패들을 보존하는 조건으로 C10을 통과시키는 최종 acceptance 결정을 내렸다. 따라서 C10은 사용자 결정으로 **PASS**이며 `.doroti/evidence/c10-user-acceptance.json`에 결정과 남은 진단을 분리 기록한다.
 
@@ -583,17 +600,19 @@ C0-C10이 모두 통과한 뒤에만 수행한다.
 | C3-native-lease  | FAIL        | public Vortice/SkiaSharp D3D12 path에서 context acquire/release 2/2, render 13, terminal `Presented/Superseded/Failed = 10/1/2`, fence-after-submit 10, `ResizeBuffers` 10, invalid call 0, per-frame reference leak 0까지 일치했으나 D3D12 debug error ID 1315가 8건 발생                                                                           | `GetGPUDescriptorHandleForHeapStart`가 shader-visible이 아닌 descriptor heap에 호출됨. 오류 필터, reflection/private API, CPU fallback으로 숨기지 않았으며 DXGI report 호출 성공만으로 leak PASS를 주장하지 않음 |
 | C3-managed-owner | PASS        | C++ top/child/task HWND 각 1, C++ GPU object와 ABI GPU pointer 0, managed device generation 2, `ResizeBuffers`/submit-fence/copy-fence/present 각 10, invalid call 0, terminal `Presented/Superseded/Failed = 10/1/2`, duplicate 0, operational D3D12 error 0, GDI/USER stable                                                                       | Skia 초기화 ID 1315 error 8건과 operational warning ID 820 10건은 숨기지 않고 별도 기록. automated ownership/runtimeDiagnostic만 PASS; visible/physical은 `notVerified`                                          |
 | C3-A ANGLE owner | PASS        | C++ top/child/task HWND 각 1, ABI GPU pointer 0, ANGLE context generation 2, fixed-size surface resize/present/submit/copy 각 10, invalid call 0, EGL/GLES initialization·operational error 0, terminal `Presented/Superseded/Failed = 10/1/2`, duplicate 0                                                                                          | hardware `ANGLE (... Direct3D11 ...)` 확인. automated ownership/resize/runtimeDiagnostic만 PASS; visible/physical은 `notVerified`                                                                                |
+| C3-Vulkan owner | PASS        | 최신 코드 독립 실행 2회 모두 C++ top/child/task HWND 각 1, ABI GPU pointer 0, hardware Vulkan device generation 2, resize/present/submit/copy `10/10/10/10`, invalid call·Vulkan error·duplicate 0                                                                                          | NVIDIA process-lifetime USER object delta `+1`을 기록. automated ownership/resize/runtimeDiagnostic만 PASS; visible/physical은 `notVerified`                                                                     |
 | C4               | PASS        | native filtered wait success/timeout 1/1, task completion dispatch 1, top/child recursive dispatch 0, max native wait 109 ms; managed current+latest queue max 2, accepted/terminal 34/34, mismatch/duplicate/unterminated 0, stale present prevented 3, timeout 2                                                                                   | automated coordinator contract만 PASS. visible resize/cadence/physical은 `notVerified`                                                                                                                           |
 | C5-D3D12         | FAIL        | synthetic product fixture는 application/session/view attach/detach/shutdown 1/1/1, new scene/replay 1/3, managed present/fence/copy 4/4/4, ABI GPU pointer 0으로 PASS했으나 실제 self-contained Demo scene에서 operational D3D12 error ID 1422가 6건 발생하고 보강된 runner가 exit code 1로 fail-closed                                              | 실패 이력을 보존한다. debug filter, CPU fallback 또는 SkiaSharp source patch로 숨기지 않음                                                                                                                       |
 | C5-A ANGLE       | PASS        | 기존 product/Demo 반복 PASS 이력에 더해 bounded-wait product validator에서 resize request 20→accepted/presented 18/18, present/submit/copy 18/18/0, duplicate/unterminated/failed 0, EGL/GLES error 0. app background brush 완화는 제거함                                                                 | automated/runtime presenter PASS. 사용자 Demo 상·하·좌·우 border resize 체감 PASS. 600 px/600 ms synthetic reverse의 excursion/복귀 실패는 별도 strict gate `FAIL`로 보존                    |
+| C5-Vulkan        | PASS        | 최신 product validator 2회: resize accepted/presented/superseded `2/2/0`, `9/6/3`; present/submit/copy `2/2/2`, `6/7/7`; failed/unterminated/duplicate와 operational Vulkan error는 모두 0, device generation 2, visible-after-exact-present true | automated/runtime presenter만 PASS. WSI extent mismatch/out-of-date frame은 `Superseded`; Vulkan 실제 border resize와 capture/cadence는 `notVerified`                                                            |
 | C6               | PASS        | pointer lifecycle/capture cancel, key down/up, focus, client-only cursor ownership, Unicode clipboard round-trip에 더해 platform/raster thread 분리, input ingress=platform, framework input dispatch=raster, resize current+latest coalescing을 automated product validator에서 확인                                                                 | automated contract만 PASS. 실제 border drag/capture/re-entry/resize cursor/Alt+Tab/focus는 `notVerified`                                                                                                      |
 | C7               | notVerified | IMM32 `한` composing→`한글` final, text action, UIA root/fragment `Invoke`/`Value`, current HWND+scale bounds, semantics tap dispatch의 automated partial PASS                                                                                                                                                                                      | 실제 두벌식/후보창/caret/selection/focus restore, Narrator, Accessibility Insights는 `notVerified`                                                                                                              |
 | C8               | notVerified | minimize/restore/display-change/detach lifecycle, ANGLE context recreation, 10회 반복에서 device generation `2`, resize accepted/presented `18/18`, terminal 누락/중복·GPU error `0`의 automated partial PASS                                                                                                                                 | DPI/mixed-monitor/window-management/device-removal/wait-point shutdown/visible blank matrix는 `notVerified`                                                                                                     |
-| C9               | PASS        | self-contained publish, app-directory-only native host resolver, x64 PE+SHA-256 provenance, empty `PATH` launch, missing/wrong-architecture/wrong-version exit `1` fail-fast                                                                                                                                                                     | Windows App SDK Release build는 PASS. 전체 Product solution은 macOS `sips` 부재로 FAIL이며 installer/MSIX는 범위 밖                                                                                             |
-| C10              | PASS        | clean reverse input qualification과 직전 pixel/cadence FAIL은 보존. 사용자가 실제 화면을 확인하고 이 진단을 acceptance blocker로 쓰지 않기로 최종 결정                                                                                                                                                                                     | PASS 근거는 사용자 acceptance 결정이며 자동 실패를 재분류하거나 삭제하지 않음                                                                                                                                   |
+| C9               | PASS        | direct Vulkan self-contained Release publish, app-directory native host resolver, system32 Vulkan loader 절대 경로+SHA-256, empty `PATH` launch, missing/wrong-architecture/wrong-version exit `1` fail-fast                                                                                                                                      | installer/MSIX는 범위 밖. 전체 Product solution의 기존 macOS `sips` FAIL은 direct Vulkan 변경 뒤 재실행하지 않음                                                                                                |
+| C10              | notVerified | ANGLE 당시 clean reverse input qualification과 pixel/cadence FAIL, 사용자 acceptance PASS는 역사적 근거로 보존                                                                                                                                                                                                                              | direct Vulkan visible/capture/physical 판정은 실행하지 않았으므로 이전 ANGLE acceptance를 전이하지 않음                                                                                                         |
 | C11              | FAIL        | Windows 기본 backend=`WindowsAppSdk`, App SDK adapter/capability=`HwndExactCpp`, target/template package identity, native host exactly once, 무환경변수 Demo와 기본 CLI run exit `0`, 명시적 MAUI build 모두 PASS                                                                                                                          | 전체 Product solution은 Windows에서 macOS `sips` 부재(MSB3073/9009)로 FAIL. Windows backend PASS로 숨기지 않음                                                                                                  |
 
-현재 전체 상태는 `C7_AUTOMATED_PARTIAL_PASS_C8_AUTOMATED_PARTIAL_PASS_C9_PASS_C10_USER_ACCEPTANCE_PASS_C11_WINDOWS_CUTOVER_PASS_GLOBAL_REGRESSION_FAIL`이다. D3D12 product branch와 strict synthetic capture 실패는 보존되며 ANGLE 분기가 이를 자동 fallback으로 숨기지 않는다. C6 input/focus physical/manual, C7 physical IME/UIA와 C8 미실행 matrix는 별도 실행 근거 없이 PASS로 올리지 않는다. C10은 사용자의 명시적 acceptance 결정으로 PASS지만 자동 진단 결과 자체는 FAIL로 남는다.
+현재 전체 상태는 `C5_VULKAN_AUTOMATED_PASS_C7_AUTOMATED_PARTIAL_PASS_C8_AUTOMATED_PARTIAL_PASS_C9_VULKAN_PASS_C10_VULKAN_NOT_VERIFIED_C11_WINDOWS_CUTOVER_PASS_GLOBAL_REGRESSION_FAIL`이다. D3D12 product 실패와 ANGLE physical/C10 이력, strict synthetic capture 실패를 모두 보존하며 direct Vulkan은 어느 경로로도 자동 fallback하지 않는다. C6 input/focus physical/manual, C7 physical IME/UIA, C8 미실행 matrix와 Vulkan visible/physical은 별도 실행 근거 없이 PASS로 올리지 않는다.
 
 ## 10. 금지 사항
 
@@ -610,7 +629,7 @@ C0-C10이 모두 통과한 뒤에만 수행한다.
 
 ## 11. 정확한 시작점과 완료 정의
 
-구현은 **C0 source/contract → C1 versioned ABI/toolchain → C2 standalone native control → C3/C4 managed ownership·coordinator → C5-A ANGLE product → C6 automated thread/input contract → C7 IME/UIA automated contract → C8 lifecycle/device automated partial → C9 publish/provenance → C10 user acceptance → C11 Windows default cutover**까지 진행됐다. 다음 구조적 재개점은 macOS 도구가 있는 host에서 전체 Product regression을 재실행해 C11의 global FAIL을 해소하는 것이다. C6 실제 capture/re-entry/resize cursor/Alt+Tab/focus, C7 실제 IME/Narrator/Accessibility Insights와 C8 DPI/monitor/window-management/device/shutdown matrix는 별도 수동/물리 재개점으로 남는다. strict reverse input qualification과 pixel/cadence FAIL은 acceptance 결정과 별개인 진단 개선 항목으로 보존하며, full-frame stretch/edge repetition/dual visible owner를 exact frame으로 인정하지 않는다.
+구현은 기존 **C0-C11 WindowsAppSdk/HwndExactCpp** 경계 위에서 product presenter를 **C5-Vulkan direct Vulkan**으로 교체하고 C3/C5/C9 automated gate를 다시 통과한 상태다. 가장 가까운 재개점은 실제 Demo의 상·하·좌·우 border drag와 capture/cadence를 direct Vulkan으로 2회씩 판정해 C10의 새 backend 범위를 결정하는 것이다. 그 다음 macOS 도구가 있는 host에서 전체 Product regression을 재실행해 C11의 global FAIL을 재평가한다. C6 실제 capture/re-entry/resize cursor/Alt+Tab/focus, C7 실제 IME/Narrator/Accessibility Insights와 C8 DPI/monitor/window-management/device/shutdown matrix도 별도 수동/물리 재개점으로 남는다.
 
 이 계획의 완료는 다음을 모두 만족한 상태다.
 

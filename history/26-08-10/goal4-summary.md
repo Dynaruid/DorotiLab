@@ -4,7 +4,6 @@
 > 정리일: 2026-08-10
 > 후속 기록: [`goal5-summary.md`](../26-08-12/goal5-summary.md). Goal7 종료 기록은 [`goal7-summary.md`](../26-08-16/goal7-summary.md)
 > Flutter source pin: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
-> Avalonia source pin: `f159423f691946e713f454447a780d4677d8a0d2`
 
 이 문서는 삭제한 `goal4.md`에 누적되어 있던 결정, 구현 결과, 실패와 미검증 항목을 보존한다. 과거 시점의 PASS와 현재 작업 트리에서 다시 확인한 PASS를 구분한다. 최신 실행 결과가 기존 evidence와 충돌하면 최신 실행 결과를 다음 계획의 진입 기준으로 사용한다.
 
@@ -16,17 +15,13 @@ Goal4의 핵심 결정은 Flutter 전체 stack을 복제하지 않고 두 source
 Dart application
   -> reviewed Flutter framework C#
   -> managed dart:ui-compatible contract
-  -> Flutter-Avalonia host bridge
-  -> Avalonia source-ported native/platform implementation
   -> operating system
 ```
 
 - Flutter `packages/flutter/lib`가 framework API와 Scheduler, Services, Gestures, Painting, Rendering, Semantics, Widgets 동작을 소유한다.
-- Avalonia source-port가 window, dispatcher, frame clock, native input, IME, clipboard, accessibility, DPI와 GPU surface를 소유한다.
 - `Doroti.Flutter.Runtime`은 Dart 언어/runtime 의미만 소유한다.
 - `Doroti.Flutter.Ui`는 managed `dart:ui` API와 host-neutral capability contract를 소유한다.
 - bridge/glue는 DTO 변환, marshalling, 좌표 변환과 lifetime handoff만 수행한다. framework 알고리즘이나 OS별 native 정책의 두 번째 owner가 될 수 없다.
-- Flutter Engine/embedder/native platform source와 Avalonia Controls/Layout/Styling/XAML은 제품 Flutter UI 경로에 포함하지 않는다.
 
 ## 2. 완료한 기반
 
@@ -36,17 +31,11 @@ Dart application
 
 - Flutter public root 13개, export directive 640개, Dart file 695개의 census를 고정했다.
 - external/native boundary 1,608개를 분류하고 unclassified 0을 만들었다.
-- 260개 `avalonia-binding` occurrence를 13개 capability에 연결했다.
 - source boundary, capability map, current owner audit와 forbidden-edge 검증을 도입했다.
 
 주요 근거:
 
-- `Doroti/migration/flutter-avalonia/source-boundary.json`
-- `Doroti/migration/flutter-avalonia/capability-map.json`
-- `Doroti/migration/flutter-avalonia/current-owner-audit.json`
-- `Doroti/docs/adr/ADR-018-flutter-avalonia-boundary.md`
 
-### G4-1 — Managed dart:ui contract와 Avalonia binding ABI
 
 2026-08-07에 완료로 기록했다.
 
@@ -92,7 +81,6 @@ Dart application
 끝내 닫지 못한 항목:
 
 - `Doroti.Widgets`의 `TapGestureRecognizer`/`VerticalDragGestureRecognizer` compatibility symbol과 lifecycle adapter가 남았다.
-- 실제 Avalonia 창의 mouse/touch/trackpad capture loss, native timestamp와 logical coordinate 정밀도 evidence를 수집하지 않았다.
 - native input, sustained frame, GPU/DPI 항목은 `notVerified` 상태였다.
 
 현재 재검증 상태:
@@ -111,7 +99,6 @@ Dart application
 - unclassified AST, silent omission과 generated syntax error를 0으로 유지했다.
 - 초기 Painting aggregate 111 errors에서 lowering/runtime 계약을 반복 보강했다.
 - 중간 `final-30` 기록에서는 Painting/Semantics가 clean이고 Rendering에 57 errors가 남았다.
-- promotion, handwritten Rendering owner cutover, Avalonia.Skia/Automation bridge는 시작 전 상태로 유지했다.
 
 현재 재검증 상태:
 

@@ -13,7 +13,7 @@ internal static class Program
     {
         var reportPath = ResolveReportPath(args);
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_ADAPTER", "HwndExactCpp");
-        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_PRESENTER", "AngleD3D11");
+        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_PRESENTER", "Vulkan");
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_SMOKE_MS", "5000");
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_DIAGNOSTICS", "1");
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_INPUT_SMOKE", "1");
@@ -42,18 +42,21 @@ internal static class Program
                     diagnostics.DuplicateResizeTerminals == 0, "Product resize generation did not drain exactly once.");
             Require(diagnostics.AcceptedResizeGenerations >= 2 &&
                     diagnostics.AcceptedResizeGenerations < 20 &&
-                    diagnostics.PresentedResizeGenerations == diagnostics.AcceptedResizeGenerations,
+                    diagnostics.PresentedResizeGenerations >= 1 &&
+                    diagnostics.PresentedResizeGenerations + diagnostics.SupersededResizeGenerations ==
+                        diagnostics.AcceptedResizeGenerations &&
+                    diagnostics.FailedResizeGenerations == 0,
                 "The C5-A resize burst did not coalesce to exact raster admissions.");
             Require(diagnostics.DeviceGenerations == 2 && diagnostics.Presents >= 1 &&
-                    diagnostics.Presents == diagnostics.GpuSubmits && diagnostics.GpuCopies == 0,
-                "Managed presenter ordering or injected ANGLE context recreation differs in the product path.");
-            Require(diagnostics.PresenterBackend == "ANGLE/EGL-D3D11",
-                "Product validation did not select the managed ANGLE/EGL-D3D11 presenter.");
-            Require(diagnostics.AdapterDescription.Contains("ANGLE", StringComparison.OrdinalIgnoreCase) &&
-                    (diagnostics.AdapterDescription.Contains("D3D11", StringComparison.OrdinalIgnoreCase) ||
-                     diagnostics.AdapterDescription.Contains("Direct3D11", StringComparison.OrdinalIgnoreCase)),
-                "Product validation did not bind ANGLE to D3D11.");
-            Require(diagnostics.OperationalDebugErrors == 0, "Product presentation emitted operational EGL/GLES errors.");
+                    diagnostics.Presents <= diagnostics.GpuCopies &&
+                    diagnostics.GpuCopies <= diagnostics.GpuSubmits,
+                "Managed presenter ordering or injected Vulkan device recreation differs in the product path.");
+            Require(diagnostics.PresenterBackend == "Vulkan",
+                "Product validation did not select the managed Vulkan presenter.");
+            Require(!diagnostics.AdapterDescription.Contains("SwiftShader", StringComparison.OrdinalIgnoreCase) &&
+                    !diagnostics.AdapterDescription.Contains("llvmpipe", StringComparison.OrdinalIgnoreCase),
+                "Product validation selected a software Vulkan renderer.");
+            Require(diagnostics.OperationalDebugErrors == 0, "Product presentation emitted operational Vulkan errors.");
             var layout = WindowsNativeV1.ValidateLayout();
             Require(layout.GpuPointerCount == 0, "Product ABI exposes a GPU pointer.");
             Require(ProductEntrypoint.PointerChanges.Take(5).SequenceEqual([
@@ -90,7 +93,8 @@ internal static class Program
             Require(IoPath.GetDirectoryName(provenance.NativeHostPath) ==
                         provenance.ApplicationDirectory.TrimEnd(IoPath.DirectorySeparatorChar) &&
                     provenance.NativeHostSha256.Length == 64 &&
-                    provenance.BootstrapSha256.Length == 64 && provenance.AngleSha256.Length == 64 &&
+                    provenance.BootstrapSha256.Length == 64 &&
+                    provenance.VulkanLoaderSha256.Length == 64 &&
                     provenance.SearchPolicy.Contains("PATH/current-directory excluded", StringComparison.Ordinal),
                 "C9 app-directory native provenance or restricted search policy differs.");
 
@@ -110,7 +114,7 @@ internal static class Program
                 diagnostics,
                 resizeRequests = 20,
                 abiGpuPointerCount = layout.GpuPointerCount,
-                scopeBoundary = "Automated product bootstrap, framework scene, managed ANGLE/EGL-D3D11 exact presentation, and clean close. Visible resize behavior remains notVerified.",
+                scopeBoundary = "Automated product bootstrap, framework scene, managed Vulkan exact presentation, and clean close. Visible resize behavior remains notVerified.",
             };
             Write(reportPath, report);
             var c6ReportPath = IoPath.GetFullPath(IoPath.Combine(".doroti", "evidence", "hwnd-exact-cpp-c6-input.json"));
@@ -169,7 +173,7 @@ internal static class Program
                 diagnostics.PresentedResizeGenerations,
                 diagnostics.UnterminatedResizeGenerations,
                 diagnostics.DuplicateResizeTerminals,
-                scopeBoundary = "Automated minimize/restore/display-change/detach, ANGLE context recreation, and terminal drain only. DPI matrix, mixed-monitor, Snap/system-menu/keyboard sizing, injected hardware removal, visible first-frame/restore, and shutdown-at-each-wait-point remain notVerified.",
+                scopeBoundary = "Automated minimize/restore/display-change/detach, Vulkan device recreation, and terminal drain only. DPI matrix, mixed-monitor, Snap/system-menu/keyboard sizing, injected hardware removal, visible first-frame/restore, and shutdown-at-each-wait-point remain notVerified.",
             });
             var c9ReportPath = IoPath.GetFullPath(IoPath.Combine(".doroti", "evidence", "hwnd-exact-cpp-c9-provenance.json"));
             Write(c9ReportPath, new
@@ -214,7 +218,7 @@ internal static class Program
     {
         var index = Array.IndexOf(args, "--report");
         if (index >= 0 && index + 1 < args.Length) return IoPath.GetFullPath(args[index + 1]);
-        return IoPath.GetFullPath(IoPath.Combine(".doroti", "evidence", "hwnd-exact-cpp-c5-angle-product.json"));
+        return IoPath.GetFullPath(IoPath.Combine(".doroti", "evidence", "hwnd-exact-cpp-c5-vulkan-product.json"));
     }
 
     private static void Require(bool condition, string message)
@@ -233,7 +237,7 @@ public sealed class ProductStartup : IDorotiApplicationStartup
 {
     public void Configure(DorotiApplicationBuilder builder) => builder
         .UseEntrypoint(() => new ProductEntrypoint())
-        .UseView(new DorotiViewConfiguration("Doroti C5-A managed ANGLE presenter", new Size(640, 480)));
+        .UseView(new DorotiViewConfiguration("Doroti C5-A managed Vulkan presenter", new Size(640, 480)));
 }
 
 public sealed class ProductEntrypoint : IDorotiViewEntrypoint

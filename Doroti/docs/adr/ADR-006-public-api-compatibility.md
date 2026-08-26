@@ -5,8 +5,6 @@
 
 ## Decision
 
-Doroti native APIs use Doroti-owned types and normal .NET naming. `Doroti.FlutterCompat` is a separately versioned facade whose Flutter-shaped names are intentional. Backend, vendor, Skia, Avalonia, native pointer, converter and migration types are never public through the facade or upper assemblies.
-
 During v0.x, source-breaking native API changes require a changelog entry and explicit migration note. A Flutter compatibility claim is tied to one exact baseline revision and per-symbol support state; assembly version similarity is not a compatibility claim.
 
 ## Consequences

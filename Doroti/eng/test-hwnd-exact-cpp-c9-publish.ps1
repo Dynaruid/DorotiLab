@@ -87,7 +87,7 @@ $architecture = Invoke-Probe 'wrong-architecture' $architectureDirectory
 $versionDirectory = New-Probe 'wrong-version'
 $versionTarget = Join-Path $versionDirectory 'doroti_windows_appsdk_host_v1.dll'
 Assert-WithinRunRoot $versionTarget
-Copy-Item -LiteralPath (Join-Path $versionDirectory 'av_libglesv2.dll') -Destination $versionTarget -Force
+Copy-Item -LiteralPath (Join-Path $versionDirectory 'Microsoft.WindowsAppRuntime.Bootstrap.dll') -Destination $versionTarget -Force
 $version = Invoke-Probe 'wrong-version' $versionDirectory
 
 if ($success.exitCode -ne 0) { throw 'C9 app-directory success launch failed.' }
@@ -103,8 +103,7 @@ if ($version.exitCode -eq 0 -or $version.stderr -notmatch 'EntryPointNotFound|en
 
 $nativeFiles = @(
     'doroti_windows_appsdk_host_v1.dll',
-    'Microsoft.WindowsAppRuntime.Bootstrap.dll',
-    'av_libglesv2.dll'
+    'Microsoft.WindowsAppRuntime.Bootstrap.dll'
 ) | ForEach-Object {
     $path = Join-Path $publishDirectory $_
     [pscustomobject]@{

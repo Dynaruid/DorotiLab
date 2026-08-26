@@ -7,7 +7,6 @@
 > 후속 기록: [`goal6-summary.md`](../26-08-14/goal6-summary.md) — live framework bring-up과 component runtime coverage
 > 기준 Doroti revision: `b94daa9e255536de7c8c774c97b31ac963ba0132` + 현재 compiler 작업 트리
 > Flutter source pin: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
-> Avalonia source pin: `f159423f691946e713f454447a780d4677d8a0d2`
 
 ## 종료 결정
 
@@ -26,7 +25,6 @@ Goal5는 2026-08-12 기준으로 더 진행하지 않는다. G5-0~G5-6W에서 �
 > 이전 역사 기록: [`goal4-summary.md`](../26-08-10/goal4-summary.md)
 > 문서 성격: 종료된 roadmap과 당시 산출물의 역사 기록. Goal7 종료 기록은 [`goal7-summary.md`](../26-08-16/goal7-summary.md)
 
-Goal5는 Goal4에서 만든 Flutter/Avalonia 경계를 제품 전체에 끝까지 적용한다. 목표는 compiler가 많은 파일을 생성하는 것이 아니라, reviewed Flutter framework가 UI 의미의 유일한 owner가 되고 Avalonia source-port가 native/platform 실행의 유일한 owner가 되는 배포 가능한 제품 경로다.
 
 ## 0. 완료 작업 요약
 
@@ -41,7 +39,6 @@ Goal5는 Goal4에서 만든 Flutter/Avalonia 경계를 제품 전체에 끝까�
 - compatibility recognizer를 제거하고 reviewed Gestures가 recognizer/animation policy의 유일한 owner가 됐다. host adapter에는 raw packet 변환과 lifetime handoff만 남겼다.
 - Win32 `WM_POINTER`, capture-loss exactly-once cancel, arena/ticker/reference parity, actual HWND synthetic input과 180-frame pacing을 검증했다.
 - public API, owner audit, package-only consumer와 `eng/validate-g4-4.ps1`이 PASS다. physical mouse/trackpad/touch recording은 완료 범위에 포함하지 않으며 최종 G5-8까지 `notVerified`로 유지한다.
-- evidence: `Doroti/migration/flutter-avalonia/bridge-validation/g5-1.json`, `Doroti/artifacts/g5-1/`
 
 ### ✅ G5-2 — Painting·Rendering·Semantics Windows automated current-machine closure (2026-08-10)
 
@@ -49,12 +46,9 @@ Goal5는 Goal4에서 만든 Flutter/Avalonia 경계를 제품 전체에 끝까�
 - typed Canvas/Scene, HarfBuzz, image/resource lifetime, one-in-flight/one-latest mailbox와 terminal ACK를 실제 HWND/WGL strict-GPU 경로에서 검증했다. 241 submitted, 181 presented, queue high-watermark 2, recovery 1이며 visual MAE는 `0.0002607421875 <= 2.0`이다.
 - 실제 `WM_GETOBJECT/UIAutomationCore` entrypoint와 외부 UI Automation client를 통해 semantics tree 및 focus/invoke/toggle/setText/scroll round trip을 검증했다.
 - 11개 dependency package와 repository 밖 consumer, `eng/validate-g4-4.ps1`, 전체 Release solution build가 PASS다. physical cross-monitor DPI와 Linux/macOS 실기기 실행은 최종 G5-8 범위다.
-- evidence: `Doroti/migration/flutter-avalonia/bridge-validation/g5-2.json`
 
-### ✅ G5-3 — Avalonia 실행 기반과 Widgets/Dart application vertical cutover (2026-08-12)
 
 - `g5-3-current68` 185 files / 1,428 diagnostics / 211 errors 기준선과 6-category taxonomy를 동결했고 분류율 100%, unclassified 0을 기록했다. G4-3 fresh Scheduler/Services compile/API/promotion/package/regression도 0 warning / 0 error로 복구했다.
-- actual HWND에서 bootstrap → attach → request frame → WGL GPU present → terminal ACK → detach/shutdown을 동일 view identity로 검증했다. 12개 typed capability, Flutter surface 1, frame clock owner 1, official Avalonia binary 및 mirror control tree 0이다.
 - W0–W7 누적 dependency slice를 각각 clean/incremental byte identity와 0 warning / 0 error로 빌드했다. root/stateless/stateful/key/focus/action/overlay/route/scroll/image/editable-text product behavior gate가 모두 PASS다.
 - full 186-library / 1,715-declaration candidate를 185개 파일로 clean regenerate해 0 warning / 0 error로 닫고 `Doroti.Flutter.Framework.Widgets`에 승격했다. `widgets.dart` exported library 169개, public declaration occurrence 952개, API missing/extra 0, disposition 1,715개, unowned 0, handwritten Widget/Element product owner 0이다.
 - navigation, route, `EditableText`를 포함한 실제 Dart application을 1개 generated C# file로 변환·빌드했다. 12개 NuGet package를 repository 밖 isolated consumer에서 restore/build/run했으며 repository-private fallback은 0이다.
@@ -64,18 +58,13 @@ Goal5는 Goal4에서 만든 Flutter/Avalonia 경계를 제품 전체에 끝까�
 
 ## 1. Roadmap
 
-### ✅ 1.1 G5-3 — Avalonia 실행 기반과 Widgets/Dart application vertical cutover
 
 진입 조건: G5-2 완료.
 
-G5-3의 중심은 `211 errors -> 0` 반복이 아니라 Flutter Widgets 의미를 실행 가능한 dependency slice로 살리는 framework bring-up이다. Avalonia source-port는 Widget/Element/State 의미를 구현하지 않으며, Flutter 코드가 OS와 만나는 지점의 window, dispatcher, frame, input, IME, clipboard, cursor, surface/GPU와 accessibility capability만 제공한다.
 
 공통 경계:
 
-- `Doroti.Flutter.Framework.Widgets`에는 Avalonia type/reference와 Avalonia Control/Visual/Layout/Styling/XAML owner를 넣지 않는다.
 - WidgetsBinding과 framework source는 concrete host를 찾지 않고 per-view typed capability만 요구한다.
-- Avalonia source 추가는 `migration/avalonia-shell/port-selection.json`의 pinned revision에서 필요한 symbol/dependency closure만 선택한다. `import`/`adapt`/`Doroti-port`/`exclude-with-owner` disposition, license, source hash와 local adaptation owner를 모두 기록한다.
-- 기존 G5-1/G5-2 Windows source-port 기능을 재작성하거나 다시 성공으로 포장하지 않는다. vertical slice에서 드러난 platform gap만 보강하고, official Avalonia binary 및 전체 Controls tree를 우회책으로 추가하지 않는다.
 - generated `.g.cs`와 Migration IR 직접 수정, slice 전용 product shim, unsupported capability의 silent no-op를 금지한다.
 
 #### G5-3A — 기준선 동결과 predecessor closure 복구
@@ -83,7 +72,6 @@ G5-3의 중심은 `211 errors -> 0` 반복이 아니라 Flutter Widgets 의미�
 작업:
 
 - `g5-3-current68`의 compiler identity, selection hash, candidate digest, 185 files / 1,428 diagnostics / 211 unique C# errors를 재현 가능한 기준선으로 동결한다. 이후 candidate 이름 증가는 진척 증거로 사용하지 않는다.
-- 211개 오류를 `compiler-lowering`, `dart-runtime`, `dart-ui-contract`, `predecessor-framework`, `dart-model-representation`, `host-capability/avalonia-port`로 전수 분류한다. 각 항목에 Dart source symbol, generated C# location, 최초 필요 slice, 실제 수정 owner와 재현 test를 연결한다.
 - G4-3 Scheduler/Services를 현재 compiler와 의도된 제품 계약에서 fresh regenerate한다. Services compile error를 0으로 만들고 product API `missing 6 / extra 6` drift를 review된 promotion baseline으로 해소한다.
 - historical candidate를 현재 제품에 억지로 맞추지 않고 current product contract, fresh candidate와 package consumer를 함께 다시 고정한다.
 
@@ -94,23 +82,16 @@ G5-3의 중심은 `211 errors -> 0` 반복이 아니라 Flutter Widgets 의미�
 - Scheduler/Services behavior, promotion, package-only consumer와 G4-0/1/2 regression PASS
 - predecessor evidence와 G5-3 Widgets evidence가 별도 상태로 기록됨
 
-#### G5-3B — selected Avalonia Windows application foundation
 
 작업:
 
-- 기존 `Doroti.Vendor.Avalonia.Base/Skia/Win32`와 `Doroti.Host.Desktop(.Flutter)`를 시작점으로, generated Dart entrypoint가 reviewed framework binding, per-view host, 단일 native window와 단일 Flutter surface까지 부팅되는 Windows application path를 만든다.
-- pinned Avalonia source에서 다음 platform closure를 dependency-driven으로 재감사한다: dispatcher/render timer, window/view lifecycle, logical/physical size와 DPI, focus/capture/raw input, IME/text-input caret, clipboard/cursor, screen/monitor, WGL/OpenGL surface·present·device-loss, UI Automation provider.
-- 기존 local port가 계약을 만족하면 재사용하고, 누락 symbol만 `Doroti.AvaloniaPort`의 selection/graph/stage/review 흐름으로 추가한다. upstream source와 local adaptation의 normalized hash, owner와 제외 사유를 갱신한다.
 - framework scheduler와 native dispatcher 사이 frame request owner를 하나로 만들고, beginFrame/drawFrame, mailbox terminal ACK와 shutdown/dispose 순서를 한 lifecycle trace로 잇는다.
 - capability registry는 view별로 구성하고 missing/unsupported capability를 capability ID, target identity와 호출 Flutter symbol을 포함한 명시적 진단으로 실패시킨다.
 
 완료 gate:
 
-- selected Avalonia closure `unclassified=0`, source/license/hash/provenance audit PASS
-- product graph의 official Avalonia binary와 Avalonia Controls/Visual/Layout/Styling/XAML dependency 0
 - actual HWND에서 bootstrap -> attach root -> request frame -> GPU present -> terminal ACK -> shutdown automated smoke PASS
 - resize/DPI, pointer/key/focus, text-input, clipboard/cursor, accessibility capability가 동일 view identity로 왕복하고 trace 누락/중복 0
-- native shell의 Flutter surface 1, Avalonia mirror control tree 0, frame clock/request owner 1
 - physical input/IME/cross-monitor DPI/sustained GPU는 실행하지 않고 G5-8까지 `notVerified`
 
 #### G5-3C — Widgets diagnostic vertical slices
@@ -161,7 +142,6 @@ G5-3 최종 완료 gate:
 - full 186-library / 1,715-declaration aggregate 0 warnings / 0 errors, `widgets.dart` public export/API 100%
 - W0-W7 key reconciliation, rebuild, focus, route/overlay, text editing, image와 long-list differential PASS
 - handwritten C# Widget/Element lifecycle owner 0
-- Avalonia Control mirror tree 0, native shell에는 단일 Flutter surface만 존재
 - actual Windows native-host resize/pointer/keyboard/text-input/accessibility/GPU automated scenario PASS
 - repository 밖 generated Dart app consumer automated run PASS
 - G5-8 `DorotiDemoApp`이 사용할 capability/diagnostic hook 준비 완료
@@ -170,7 +150,6 @@ G5-3 최종 완료 gate:
 완료 결과 (2026-08-12):
 
 1. `g5-3-current68`과 211-error taxonomy 동결, G4-3 Services fresh predecessor closure 복구 PASS.
-2. selected Avalonia source-port 기반 W0 actual HWND/frame/application foundation PASS.
 3. W0–W7 clean/incremental identity, compile, review/promotion과 product behavior 누적 gate PASS.
 4. full Widgets aggregate/API/disposition/owner audit와 external generated Dart app package-only gate PASS.
 5. physical Windows IME/accessibility/sustained GPU/cross-monitor DPI는 G5-8까지 `notVerified`.
@@ -195,7 +174,6 @@ G5-3 최종 완료 gate:
 - Material/Cupertino public API manifest diff 0
 - gallery behavior/visual/input/semantics differential PASS
 - 같은 source-ported shell에서 Material과 Cupertino app 모두 실행
-- Avalonia Controls/theme/XAML dependency 0
 
 완료 결과 (2026-08-12):
 
@@ -203,7 +181,6 @@ G5-3 최종 완료 gate:
 2. 9개 Material/Cupertino/Widget Previews batch, 252 product libraries/2,091 declarations를 compiler error·unclassified AST·silent omission 0으로 생성하고 249-file reviewed aggregate를 warning/error 0으로 빌드했다.
 3. `material.dart` 181 exported libraries/521 public declarations와 `cupertino.dart` 52/121 public declarations의 API manifest diff 0을 확인했다.
 4. 동일 source-ported gallery shell에서 `MaterialApp`과 `CupertinoApp`의 behavior/visual/input/semantics differential이 PASS했다.
-5. reviewed framework와 gallery의 Avalonia Controls/theme/XAML reference 및 XAML file count는 모두 0이다.
 6. physical Windows IME/accessibility/sustained GPU/cross-monitor DPI는 정책대로 G5-8까지 `notVerified`다.
 
 상세 상태는 `migration/flutter-framework/g5-4-evidence.json`과 `docs/architecture/g5-4-material-cupertino-full-framework.md`에 기록한다.
@@ -257,31 +234,23 @@ G5-3B가 Windows에서 Flutter application을 실행하기 위한 selected sourc
 완료 결과 (2026-08-12):
 
 1. `Doroti.Target.Windows.win-x64/0.2.0-beta` RID package를 추가하고 Win32 lifecycle/input/IME/clipboard/UIA와 strict WGL/OpenGL/Skia/recovery closure를 고정했다.
-2. package 내부에 target manifest, reviewed `port-selection.json`, A1/A2/vendor provenance aggregate와 third-party notice를 포함하고 각 SHA-256 및 Avalonia pin을 검증했다.
 3. 실제 attached Flutter view의 12개 capability ID와 `doroti.target-identity/v1`, `doroti.desktop-flutter-target-diagnostics/v1`을 고정했다. frame/input/automation/resource hook는 published consumer에서 수집됐다.
 4. repository 밖 package-only consumer를 isolated NuGet cache로 restore/build/publish하고 actual HWND synthetic pointer/key, `WM_GETOBJECT`, strict GPU, terminal ACK와 injected recovery smoke를 통과했다.
-5. publish/product graph의 official Avalonia binary와 repository-private fallback은 0이며, RID host 재pack 전후 Widgets framework package SHA-256은 동일했다.
 6. physical mouse/precision touchpad/touch/Korean IME/cross-monitor DPI/external accessibility/sustained GPU는 성공으로 사용하지 않았고 G5-8까지 `notVerified`다.
 
-상세 상태는 `migration/flutter-avalonia/bridge-validation/g5-6w.json`, `migration/flutter-avalonia/target-capabilities/win-x64.json`과 `docs/architecture/g5-6w-windows-rid-package.md`에 기록한다.
 
-#### G5-6L — Linux Avalonia source-port 준비 (미착수, Goal6 이관)
 
-- pinned Avalonia의 X11/Wayland/FreeDesktop/Skia closure를 stage/review한다.
 - Windows와 같은 capability ID를 Linux implementation에 등록한다.
 - Linux RID package와 `DorotiDemoApp` target build/publish 경로를 구성한다.
 - X11/Wayland physical run은 수행하지 않고 G5-8까지 각각 `notVerified`로 남긴다.
 
-#### G5-6M — macOS Avalonia source-port 준비 (미착수, Goal6 이관)
 
-- managed macOS bridge와 필요한 Avalonia.Native closure를 재현 가능한 native build로 구성한다.
 - source revision, flags, architecture, signing/notarization input과 license를 기록한다.
 - macOS RID package와 `DorotiDemoApp` target build/publish 경로를 구성한다.
 - physical macOS run은 수행하지 않고 G5-8까지 `notVerified`로 남긴다.
 
 공통 완료 gate:
 
-- target product graph의 official Avalonia binary dependency 0
 - framework package 재생성 없이 host/RID package를 교체할 수 있음
 - Windows/Linux/macOS target package와 `DorotiDemoApp` build/publish 진입점 존재
 - capability/diagnostic contract와 target identity schema가 RID 간 일치
@@ -297,17 +266,13 @@ G5-3B가 Windows에서 Flutter application을 실행하기 위한 selected sourc
 - isolated NuGet cache와 repository 밖 consumer에서 restore/build/publish 및 자동화 smoke를 수행한다.
 - trimming, single-file, ReadyToRun, native asset probing과 source/crash mapping을 검증한다.
 - capability matrix와 `notVerified` ledger를 release artifact에 포함한다.
-- Flutter/Avalonia license, revision, selected source와 local adaptation provenance를 포함한다.
-- Flutter revision만 변경한 framework rebase와 Avalonia revision만 변경한 platform rebase를 분리 실행한다.
 - API/capability 변경은 명시적 bridge compatibility review 없이는 product에 반영하지 않는다.
 
 완료 gate:
 
 - framework-only package의 vendor/native/private compiler binary 0
-- RID host package의 official Avalonia binary 0
 - native asset 누락과 암묵적 software fallback 0
 - Windows와 Linux/macOS 중 최소 한 개 non-Windows RID external consumer restore/build/publish PASS
-- Flutter-only/Avalonia-only rebase report와 conflict가 독립적으로 재현됨
 - 승인 없는 source/API/capability 변경의 product 유입 0
 
 ### 1.6 G5-8 — `DorotiDemoApp` 기반 최종 실기기 검증 (미착수, Goal6 이관)
@@ -344,7 +309,6 @@ DorotiDemoApp --verify-g5-8 --duration-minutes 30 --artifact-root <target-artifa
 - release package만 사용하는 fresh `DorotiDemoApp` install/run/uninstall 또는 동등한 배포 lifecycle PASS
 - frame latency, dropped/replaced frame, terminal ACK, resource/handle count와 peak memory가 tolerance와 함께 기록됨
 - physical action과 native accessibility action이 Flutter behavior/state update로 왕복
-- 모든 artifact가 `Doroti/artifacts/g5-8-doroti-demo-app/<rid>/`에 있고 종합 evidence가 `migration/flutter-avalonia/bridge-validation/g5-8.json`에 기록됨
 - 실행하지 않은 target/backend/device를 성공으로 기록한 항목 0
 
 ## 2. 공통 진행 기준
@@ -358,13 +322,9 @@ Dart application
   -> Doroti.Flutter.Hosting
   -> Doroti.Host.Desktop.Flutter composition bridge
   -> Doroti shell/graphics neutral contracts
-  -> Doroti.Vendor.Avalonia.* source-port
   -> native OS + GPU
 ```
 
-- Flutter `packages/flutter/lib`가 framework 동작을, Avalonia source-port가 native/platform 실행을 소유한다.
-- Flutter Engine/embedder/native platform source와 official Avalonia binary package를 제품 compile/dependency graph에 넣지 않는다.
-- Avalonia Controls, Visual/Layout tree, Styling, XAML과 theme를 Flutter UI tree의 대체 owner로 사용하지 않는다.
 - `Doroti.Flutter.Runtime`은 Dart language/runtime 의미만 소유한다.
 - bridge는 변환, marshalling, capability registration과 lifetime handoff만 수행하며 gesture/layout/native event/GPU 정책의 owner가 될 수 없다.
 - Windows 성공을 Linux/macOS 성공으로 확대하지 않는다.
@@ -377,7 +337,6 @@ generated `.g.cs`와 Migration IR을 직접 고쳐 오류를 숨기지 않는다
 
 ```text
 G5-3A baseline taxonomy + predecessor closure
-  -> G5-3B selected Avalonia Windows application foundation
   -> G5-3C W0-W7 Widgets vertical slices
   -> G5-3D full Widgets aggregate + Dart application cutover
   -> G5-4 Material·Cupertino·Widget Previews full framework
@@ -429,8 +388,6 @@ Push-Location Doroti
 # G5-3A: current68 freeze/taxonomy + G4-3 fresh promotion closure
 ./eng/validate-g5-3-predecessor.ps1
 
-# G5-3B: pinned Avalonia selection/audit + actual HWND application bootstrap
-dotnet run --project tools/Doroti.AvaloniaPort/Doroti.AvaloniaPort.csproj -- audit
 ./eng/validate-g5-3-platform-foundation.ps1
 
 # G5-3C: W0-W7 individually; each run includes all completed predecessor slices
@@ -446,10 +403,6 @@ Pop-Location
 
 기존 artifact를 유지하되 schema를 현재 truth model에 맞춘다.
 
-- `Doroti/migration/flutter-avalonia/source-boundary.json`
-- `Doroti/migration/flutter-avalonia/capability-map.json`
-- `Doroti/migration/flutter-avalonia/current-owner-audit.json`
-- `Doroti/migration/flutter-avalonia/bridge-validation/<milestone>.json`
 - `Doroti/migration/flutter-framework/<milestone>-evidence.json`
 - `Doroti/migration/flutter-framework/<milestone>-api-manifest.json`
 - `Doroti/migration/flutter-framework/<milestone>-disposition.json`
@@ -457,8 +410,6 @@ Pop-Location
 - `Doroti/migration/flutter-framework/g5-3-slices.json`
 - `Doroti/migration/flutter-framework/g5-3-slices/<slice>-selection.json`
 - `Doroti/migration/flutter-framework/g5-3-slices/<slice>-evidence.json`
-- `Doroti/migration/flutter-avalonia/bridge-validation/g5-3-platform-foundation.json`
-- `Doroti/migration/flutter-avalonia/bridge-validation/g5-3-slices/<slice>.json`
 - `Doroti/artifacts/validation/dart-to-csharp-performance.json`
 - `Doroti/artifacts/validation/target-capabilities/<rid>.json`
 - `Doroti/artifacts/validation/native-input/<rid>/`
@@ -466,9 +417,7 @@ Pop-Location
 - `Doroti/artifacts/validation/automation/<rid>/`
 - `Doroti/artifacts/release/<version>/`
 - `Doroti/artifacts/g5-8-doroti-demo-app/<rid>/`
-- `Doroti/migration/flutter-avalonia/bridge-validation/g5-8.json`
 
-각 evidence에는 최소한 compiler identity, Flutter/Avalonia revision, selection hash, candidate digest, product digest, validation command, target identity, status, blocker와 `notVerified` 목록을 포함한다. G5-3 slice evidence는 추가로 dependency closure, public API diff, taxonomy 항목, promotion disposition, reference/product behavior trace digest, capability ID와 `candidate`/`promotion`/`behavior`/`automatedNative`/`physical` 독립 status를 기록한다.
 
 ## 5. Goal5 원래 최종 완료 정의 (미충족)
 
@@ -476,15 +425,10 @@ Goal5는 다음이 모두 사실일 때만 완료할 예정이었으나, 종료 
 
 - 목표 Flutter framework closure가 reviewed C# packages로 존재하고 public API diff가 0이다.
 - Scheduler, Services, Gestures, Painting, Rendering, Semantics, Widgets, Material과 Cupertino가 같은 Dart application에서 연결된다.
-- Flutter framework assembly는 host/vendor/native type을 모르고 Avalonia vendor assembly는 Flutter framework type을 모른다.
-- Flutter framework behavior의 handwritten 중복 owner와 Avalonia Control/Layout mirror tree가 없다.
 - 모든 low-level call은 typed UI/service capability를 통과하며 unsupported capability의 silent success가 없다.
 - G5-7 release package를 사용하는 `DorotiDemoApp`이 Windows와 최소 한 개 physical non-Windows target에서 strict GPU, input/IME, accessibility와 배포 lifecycle gate를 통과한다.
 - frame mailbox terminal ACK, resize/DPI/device-loss와 sustained-runtime evidence가 수치로 존재한다.
 - external automation client action이 native provider를 거쳐 Flutter semantics로 왕복한다.
 - full compiler performance matrix가 elapsed budget을 통과한다. memory는 별도 관찰 지표로 기록한다.
-- Flutter/Avalonia provenance, license, target matrix, `notVerified` ledger와 독립 rebase report가 release artifact에 포함된다.
 - G5-8보다 앞선 milestone에서 실기기 gate를 완료 조건으로 요구하거나 성공으로 기록한 항목이 없다.
 - 실행하지 않은 OS, backend, device, IME, GPU 또는 accessibility gate를 성공으로 기록한 항목이 없다.
-
-성공 기준은 많은 facade나 candidate가 존재하는 것이 아니다. reviewed Flutter source가 UI framework 의미를 소유하고, reviewed Avalonia source-port가 native 실행을 소유하며, 두 영역 사이의 모든 호출이 typed boundary와 최종 `DorotiDemoApp` 실기기 evidence로 검증된 배포 제품이어야 한다.

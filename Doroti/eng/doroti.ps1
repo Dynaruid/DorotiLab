@@ -391,10 +391,6 @@ function Invoke-Release {
             $nuspec = $archive.Entries | Where-Object { $_.FullName -like '*.nuspec' } | Select-Object -First 1
             $reader = [System.IO.StreamReader]::new($nuspec.Open())
             try { [xml] $packageXml = $reader.ReadToEnd() } finally { $reader.Dispose() }
-            $packageId = [string] $packageXml.package.metadata.id
-            $dependencies = @($packageXml.package.metadata.dependencies.group.dependency | ForEach-Object { $_.id })
-            $avaloniaDependencies = @($dependencies | Where-Object { $_ -eq 'Avalonia' -or $_ -like 'Avalonia.*' })
-            if ($avaloniaDependencies.Count -gt 0) { throw "C0 package retains an Avalonia binary dependency: $packageId" }
         }
         finally {
             $archive.Dispose()

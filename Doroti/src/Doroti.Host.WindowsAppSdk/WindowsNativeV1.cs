@@ -261,13 +261,14 @@ internal static partial class WindowsNativeV1
         var baseDirectory = Path.GetFullPath(AppContext.BaseDirectory);
         var hostPath = Path.Combine(baseDirectory, $"{LibraryName}.dll");
         var bootstrapPath = Path.Combine(baseDirectory, "Microsoft.WindowsAppRuntime.Bootstrap.dll");
-        var anglePath = Path.Combine(baseDirectory, "av_libglesv2.dll");
+        var vulkanLoaderPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.System), "vulkan-1.dll");
         RequireNativeFile(hostPath, "native HwndExactCpp host");
         RequireNativeFile(bootstrapPath, "Windows App Runtime bootstrap");
-        RequireNativeFile(anglePath, "ANGLE EGL/GLES runtime");
+        RequireNativeFile(vulkanLoaderPath, "system Vulkan loader");
         ValidateX64Pe(hostPath, "native HwndExactCpp host");
         ValidateX64Pe(bootstrapPath, "Windows App Runtime bootstrap");
-        ValidateX64Pe(anglePath, "ANGLE EGL/GLES runtime");
+        ValidateX64Pe(vulkanLoaderPath, "system Vulkan loader");
         if (Interlocked.Exchange(ref _resolverConfigured, 1) == 0)
         {
             var directories = LoadLibrarySearchApplicationDir | LoadLibrarySearchUserDirs |
@@ -279,7 +280,8 @@ internal static partial class WindowsNativeV1
             NativeLibrary.SetDllImportResolver(typeof(WindowsNativeV1).Assembly, ResolveNativeLibrary);
         }
         return new(baseDirectory, hostPath, Sha256(hostPath),
-            bootstrapPath, Sha256(bootstrapPath), anglePath, Sha256(anglePath),
+            bootstrapPath, Sha256(bootstrapPath),
+            vulkanLoaderPath, Sha256(vulkanLoaderPath),
             "app-directory + DLL-load-directory + System32 + registered user directories; PATH/current-directory excluded");
     }
 
@@ -380,6 +382,6 @@ internal sealed record NativeHostProvenance(
     string NativeHostSha256,
     string BootstrapPath,
     string BootstrapSha256,
-    string AnglePath,
-    string AngleSha256,
+    string VulkanLoaderPath,
+    string VulkanLoaderSha256,
     string SearchPolicy);

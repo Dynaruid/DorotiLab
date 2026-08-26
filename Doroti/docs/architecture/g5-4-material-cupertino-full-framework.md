@@ -40,10 +40,6 @@ The gallery gate uses one source-ported shell factory with Material and Cupertin
 
 The four dimensions must all produce `G5-4-GALLERY-DIFFERENTIAL-PASS`.
 
-## Platform dependency boundary
-
-The reviewed projects and gallery harness are audited for Avalonia Controls, Avalonia themes, Avalonia XAML loading, `x:Class`, and `.xaml` files. Every count must remain zero. G5-4 does not add a parallel Avalonia control tree or theme implementation.
-
 ## Retained evidence
 
 The aggregate result is `migration/flutter-framework/g5-4-evidence.json`. It links the closure, batch index, Material/Cupertino API manifests, gallery differential result, and reviewed build log.
