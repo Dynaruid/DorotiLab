@@ -67,6 +67,8 @@ internal static class Program
                         PointerChange.add, PointerChange.hover, PointerChange.down,
                         PointerChange.move, PointerChange.up]),
                 "Synthetic pointer lifecycle or re-entry coordinates differ.");
+            Require(ProductEntrypoint.WheelSignals == 1,
+                "Synthetic mouse wheel did not cross the PointerSignalKind.scroll path exactly once.");
             Require(ProductEntrypoint.KeyTypes.SequenceEqual([KeyEventType.down, KeyEventType.up]),
                 "Synthetic keyboard lifecycle differs.");
             Require(ProductEntrypoint.FocusStates.Count >= 2 &&
@@ -253,6 +255,7 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
     public static int DrawCount;
     public static int ShutdownCount;
     public static List<PointerChange> PointerChanges { get; } = [];
+    public static int WheelSignals;
     public static List<KeyEventType> KeyTypes { get; } = [];
     public static List<bool> FocusStates { get; } = [];
     public static HashSet<int> InputDispatchThreadIds { get; } = [];
@@ -279,6 +282,12 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
                 if (pointer.physicalX < 0 || pointer.physicalY < 0)
                     throw new InvalidOperationException("Pointer coordinates escaped the child client.");
                 PointerChanges.Add(pointer.change);
+                if (pointer.signalKind == PointerSignalKind.scroll)
+                {
+                    Interlocked.Increment(ref WheelSignals);
+                    (_view ?? throw new InvalidOperationException("C6 view is unavailable."))
+                        .ScheduleFrame(DartUiInvocation.Managed("c6-product#wheel"));
+                }
             }
         };
         dispatcher.onKeyData = key =>

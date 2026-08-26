@@ -117,6 +117,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         private long _presented;
         private long _superseded;
         private long _failed;
+        private long _staleInputPresentPrevented;
         private uint _platformThreadId;
         private uint _rasterThreadId;
         private uint _inputThreadId;
@@ -247,11 +248,29 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             _presenterResizeGeneration = resizeGeneration;
             Presenter.SealInitializationDebugBaseline();
             var presented = false;
+            var staleInputPrevented = false;
             var result = Presenter.RenderAndPresent(
                 surface => renderer.Paint(surface, width, height, host.ResizeTarget, causalFrameId),
-                value => presented = value.ShouldPresent &&
-                    host.IsLatestResizeGeneration(resizeGeneration));
+                value =>
+                {
+                    if (!value.ShouldPresent || value.Completion is not { } candidate)
+                        return presented = false;
+                    if (!host.IsInputSequenceCurrent(candidate.InputSequence))
+                    {
+                        staleInputPrevented = true;
+                        return presented = false;
+                    }
+                    return presented = host.IsLatestResizeGeneration(resizeGeneration);
+                });
             presented &= Presenter.LastPresentSucceeded;
+            if (staleInputPrevented) Interlocked.Increment(ref _staleInputPresentPrevented);
+            if (!presented && result.Completion is { IsNewFrame: true } stale)
+            {
+                var reason = host.IsInputSequenceCurrent(stale.InputSequence)
+                    ? "native presentation was superseded before swap"
+                    : $"input sequence {stale.InputSequence} is older than current {host.InputSequence}";
+                renderer.SupersedePaint(stale, reason);
+            }
             Presenter.CaptureOperationalDebugMessages();
             if (Presenter.OperationalDebugErrorCount != 0)
                 throw new InvalidOperationException(
@@ -370,6 +389,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 Presenter.GpuSubmitCount, Presenter.GpuCopyCount,
                 Presenter.InitializationDebugErrorCount, Presenter.OperationalDebugErrorCount,
                 renderer.Submitted, renderer.Presented, renderer.Replayed,
+                _staleInputPresentPrevented,
                 LastNativeProvenance ?? throw new InvalidOperationException("Native provenance is unavailable."));
         }
 
@@ -629,4 +649,5 @@ internal sealed record WindowsProductRunDiagnostics(
     long RendererSubmitted,
     long RendererPresented,
     long RendererReplayed,
+    long StaleInputPresentsPrevented,
     NativeHostProvenance NativeProvenance);

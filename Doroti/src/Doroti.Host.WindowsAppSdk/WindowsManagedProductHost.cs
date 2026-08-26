@@ -53,6 +53,7 @@ internal sealed unsafe class WindowsManagedProductHost :
     internal WindowsResizeCoordinatorSnapshot ResizeSnapshot => _coordinator.Snapshot();
     internal bool IsLatestResizeGeneration(ulong generation) =>
         generation <= long.MaxValue && _coordinator.IsLatest((long)generation);
+    internal bool IsInputSequenceCurrent(long inputSequence) => inputSequence >= InputSequence;
     public ViewMetrics Metrics { get; private set; }
     public PlatformConfiguration Configuration { get; private set; }
     public long InputSequence => Volatile.Read(ref _inputSequence);
@@ -119,15 +120,27 @@ internal sealed unsafe class WindowsManagedProductHost :
                 checked((int)request.WidthPx), checked((int)request.HeightPx)))
             throw new InvalidDataException("Native frame request failed exact admission.");
         Action<TimeSpan, DorotiViewEpoch>? callback;
-        Action[] input;
-        lock (_gate)
+        while (true)
         {
-            input = [.. _pendingInput];
-            _pendingInput.Clear();
-            callback = _pendingFrame;
-            _pendingFrame = null;
+            Action[] input;
+            lock (_gate)
+            {
+                input = [.. _pendingInput];
+                _pendingInput.Clear();
+                if (input.Length == 0)
+                {
+                    // Input dispatch can schedule the scene needed by this
+                    // native render request. Take the callback only after all
+                    // input already queued ahead of it has been applied; taking
+                    // it before dispatch would present the retained pre-input
+                    // scene once, which is visible as a wheel-scroll flash.
+                    callback = _pendingFrame;
+                    _pendingFrame = null;
+                    break;
+                }
+            }
+            foreach (var dispatch in input) dispatch();
         }
-        foreach (var dispatch in input) dispatch();
         callback?.Invoke(DorotiFrameClock.Now, ViewEpoch);
     }
 

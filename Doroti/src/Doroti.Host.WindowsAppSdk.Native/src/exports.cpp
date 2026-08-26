@@ -1293,6 +1293,16 @@ class ProductHost final {
     SendMessageW(child_, WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM(10, 20));
     SendMessageW(child_, WM_MOUSEMOVE, MK_LBUTTON, MAKELPARAM(18, 25));
     SendMessageW(child_, WM_LBUTTONUP, 0, MAKELPARAM(18, 25));
+    RECT client{};
+    if (GetClientRect(child_, &client)) {
+      POINT wheel_point{(client.right - client.left) / 2,
+                        (client.bottom - client.top) / 2};
+      if (ClientToScreen(child_, &wheel_point)) {
+        SendMessageW(child_, WM_MOUSEWHEEL,
+                     MAKEWPARAM(0, static_cast<WORD>(-WHEEL_DELTA)),
+                     MAKELPARAM(wheel_point.x, wheel_point.y));
+      }
+    }
     SendMessageW(child_, WM_KEYDOWN, 'A', 1 | (0x1Eu << 16));
     SendMessageW(child_, WM_KEYUP, 'A', 1 | (0x1Eu << 16) | (1u << 30) | (1u << 31));
     SendMessageW(child_, WM_KILLFOCUS, 0, 0);
