@@ -119,6 +119,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         private uint _platformThreadId;
         private uint _rasterThreadId;
         private uint _inputThreadId;
+        private double _presenterScale;
+        private ulong _presenterResizeGeneration;
         private bool _visibleAfterExactPresent;
         private bool _deviceResetInjected;
         private bool _disposed;
@@ -207,27 +209,47 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             var height = checked((int)request.HeightPx);
             var causalFrameId = checked((long)request.CausalFrameId);
             var resizeGeneration = request.Generation;
-            if (!host.IsLatestResizeGeneration(resizeGeneration))
-            {
-                Interlocked.Increment(ref _renderCallbacks);
-                return (uint)WindowsNativeV1.FrameTerminalKind.Superseded;
-            }
             if (!_deviceResetInjected && Interlocked.Read(ref _renderCallbacks) >= 1 &&
                 Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_C8_SMOKE") == "1")
             {
+                renderer.InvalidateGpuContextResources();
                 Presenter.ResetDevice();
                 _deviceResetInjected = true;
             }
+            var scale = host.ResizeTarget.DeviceScaleX;
+            var dpiContextChanged = _presenterScale > 0 && _presenterScale != scale;
+            if (dpiContextChanged)
+            {
+                // A cross-DPI transition invalidates ANGLE, Skia, and pooled
+                // GPU state together. The move-end generation below performs
+                // one final surface-only refresh after shell geometry settles.
+                renderer.InvalidateGpuContextResources();
+                Presenter.ResetDevice();
+            }
+            var stableMoveRefresh = _presenterResizeGeneration > 0 &&
+                _presenterResizeGeneration != resizeGeneration &&
+                _presenterScale == scale && Presenter.Width == width && Presenter.Height == height;
+            if (stableMoveRefresh && Presenter is WindowsManagedAngleEglPresenter movePresenter)
+            {
+                renderer.InvalidateWindowSurfaceResources();
+                movePresenter.ResetWindowSurfaceAfterInteractiveMove();
+            }
+            var windowSurfaceChanged = Presenter.Width != width || Presenter.Height != height;
+            if (windowSurfaceChanged && !stableMoveRefresh)
+                renderer.InvalidateWindowSurfaceResources();
             if (!Presenter.EnsureTarget(host.ChildHwnd, width, height))
             {
                 Interlocked.Increment(ref _renderCallbacks);
                 return (uint)WindowsNativeV1.FrameTerminalKind.Superseded;
             }
+            _presenterScale = scale;
+            _presenterResizeGeneration = resizeGeneration;
             Presenter.SealInitializationDebugBaseline();
             var presented = false;
             var result = Presenter.RenderAndPresent(
                 surface => renderer.Paint(surface, width, height, host.ResizeTarget, causalFrameId),
-                value => presented = value.ShouldPresent && host.IsLatestResizeGeneration(resizeGeneration));
+                value => presented = value.ShouldPresent &&
+                    host.IsLatestResizeGeneration(resizeGeneration));
             presented &= Presenter.LastPresentSucceeded;
             Presenter.CaptureOperationalDebugMessages();
             if (Presenter.OperationalDebugErrorCount != 0)
@@ -235,12 +257,13 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     $"Managed {Presenter.BackendName} presentation emitted " +
                     $"{Presenter.OperationalDebugErrorCount} operational GPU errors.");
             Interlocked.Increment(ref _renderCallbacks);
-            if (!presented) return (uint)WindowsNativeV1.FrameTerminalKind.Superseded;
-            if (result.Completion is { } completion)
+            if (presented && result.Completion is { } completion)
             {
                 lock (_gate) _paintCompletions.Add(request.CausalFrameId, completion);
             }
-            return (uint)WindowsNativeV1.FrameTerminalKind.Presented;
+            return presented
+                ? (uint)WindowsNativeV1.FrameTerminalKind.Presented
+                : (uint)WindowsNativeV1.FrameTerminalKind.Superseded;
         }
 
         internal void CompleteTerminal(in WindowsNativeV1.FrameTerminal terminal)
@@ -313,8 +336,13 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             LastRunDiagnostics = CreateDiagnostics();
             if (rendered == 0 || terminals < rendered)
                 throw new InvalidOperationException($"Product terminal coverage differs: render={rendered}, terminal={terminals}.");
-            if (Host?.ResizeSnapshot is not { UnterminatedCount: 0, DuplicateTerminalCount: 0 })
-                throw new InvalidOperationException("Product resize coordinator did not drain exactly once.");
+            var resize = Host?.ResizeSnapshot;
+            if (resize is null || resize.UnterminatedCount != 0 || resize.DuplicateTerminalCount != 0)
+                throw new InvalidOperationException(
+                    $"Product resize coordinator did not drain exactly once: " +
+                    $"accepted={resize?.AcceptedCount}, presented={resize?.PresentedCount}, " +
+                    $"superseded={resize?.SupersededCount}, failed={resize?.FailedCount}, " +
+                    $"unterminated={resize?.UnterminatedCount}, duplicate={resize?.DuplicateTerminalCount}.");
             if (!_visibleAfterExactPresent)
                 throw new InvalidOperationException(
                     $"The product HWND was not visible after an exact managed present: " +
@@ -393,13 +421,13 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         private static WindowsManagedHwndPresenterBase CreatePresenter(bool diagnosticsEnabled) =>
             Environment.GetEnvironmentVariable("DOROTI_WINDOWS_PRESENTER")?.Trim() switch
             {
-                null or "" => new WindowsManagedVulkanPresenter(diagnosticsEnabled),
-                var value when value.Equals("Vulkan", StringComparison.OrdinalIgnoreCase) =>
-                    new WindowsManagedVulkanPresenter(diagnosticsEnabled),
+                null or "" => new WindowsManagedAngleEglPresenter(diagnosticsEnabled),
+                var value when value.Equals("AngleD3D11", StringComparison.OrdinalIgnoreCase) =>
+                    new WindowsManagedAngleEglPresenter(diagnosticsEnabled),
                 var value when value.Equals("D3D12", StringComparison.OrdinalIgnoreCase) =>
                     new WindowsManagedHwndPresenter(diagnosticsEnabled),
                 var value => throw new InvalidOperationException(
-                    $"Unsupported managed Windows presenter '{value}'. Expected D3D12 or Vulkan."),
+                    $"Unsupported managed Windows presenter '{value}'. Expected AngleD3D11 or D3D12."),
             };
     }
 

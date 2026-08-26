@@ -78,6 +78,12 @@ Assert-WithinRunRoot $missingTarget
 Remove-Item -LiteralPath $missingTarget -Force
 $missing = Invoke-Probe 'missing-native' $missingDirectory
 
+$missingAngleDirectory = New-Probe 'missing-angle-runtime'
+$missingAngleTarget = Join-Path $missingAngleDirectory 'av_libglesv2.dll'
+Assert-WithinRunRoot $missingAngleTarget
+Remove-Item -LiteralPath $missingAngleTarget -Force
+$missingAngle = Invoke-Probe 'missing-angle-runtime' $missingAngleDirectory
+
 $architectureDirectory = New-Probe 'wrong-architecture'
 $architectureTarget = Join-Path $architectureDirectory 'doroti_windows_appsdk_host_v1.dll'
 Assert-WithinRunRoot $architectureTarget
@@ -94,6 +100,9 @@ if ($success.exitCode -ne 0) { throw 'C9 app-directory success launch failed.' }
 if ($missing.exitCode -eq 0 -or $missing.stderr -notmatch 'missing from the application directory') {
     throw 'C9 missing-native launch did not fail fast with the expected identity.'
 }
+if ($missingAngle.exitCode -eq 0 -or $missingAngle.stderr -notmatch 'ANGLE EGL/GLES runtime is missing') {
+    throw 'C9 missing ANGLE runtime launch did not fail fast with the expected identity.'
+}
 if ($architecture.exitCode -eq 0 -or $architecture.stderr -notmatch 'not a win-x64 PE image') {
     throw 'C9 wrong-architecture launch did not fail fast with the expected identity.'
 }
@@ -103,7 +112,8 @@ if ($version.exitCode -eq 0 -or $version.stderr -notmatch 'EntryPointNotFound|en
 
 $nativeFiles = @(
     'doroti_windows_appsdk_host_v1.dll',
-    'Microsoft.WindowsAppRuntime.Bootstrap.dll'
+    'Microsoft.WindowsAppRuntime.Bootstrap.dll',
+    'av_libglesv2.dll'
 ) | ForEach-Object {
     $path = Join-Path $publishDirectory $_
     [pscustomobject]@{
@@ -111,6 +121,12 @@ $nativeFiles = @(
         sha256 = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()
         length = (Get-Item -LiteralPath $path).Length
     }
+}
+
+$unexpectedAngleFiles = @(@('libEGL.dll', 'libGLESv2.dll') |
+    Where-Object { Test-Path (Join-Path $publishDirectory $_) })
+if ($unexpectedAngleFiles.Count -ne 0) {
+    throw "C9 publish contains unexpected split ANGLE native files: $($unexpectedAngleFiles -join ', ')."
 }
 
 $report = [ordered]@{
@@ -121,7 +137,7 @@ $report = [ordered]@{
     publishDirectory = $publishDirectory
     searchPolicy = 'PATH empty in all probes; app-directory native resolver excludes PATH/current-directory'
     nativeFiles = $nativeFiles
-    probes = @($success, $missing, $architecture, $version) | ForEach-Object {
+    probes = @($success, $missing, $missingAngle, $architecture, $version) | ForEach-Object {
         [ordered]@{
             name = $_.name
             exitCode = $_.exitCode

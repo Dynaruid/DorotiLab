@@ -148,6 +148,47 @@ public sealed class SkiaSceneRenderer :
         if (hasFrame) invalidate();
     }
 
+    /// <summary>
+    /// Releases GPU images and temporary render targets that were recorded
+    /// against the current native window surface before that surface is
+    /// destroyed and recreated. The Skia/GL context itself remains current.
+    /// </summary>
+    public void InvalidateWindowSurfaceResources()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        lock (_paintGate)
+        {
+            DorotiSkiaImageFilterRenderer.InvalidateSurface(
+                RuntimeEffectBackend, _contextGeneration);
+            ClearPictureRasterCache();
+        }
+    }
+
+    /// <summary>
+    /// Advances the renderer context identity and releases every cached GPU
+    /// resource before the host destroys and recreates its native GL context.
+    /// </summary>
+    public void InvalidateGpuContextResources()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        long contextGeneration;
+        lock (_gate)
+        {
+            _contextGeneration++;
+            contextGeneration = _contextGeneration;
+        }
+        DorotiSkiaRuntimeEffects.InvalidateContext(
+            RuntimeEffectBackend, contextGeneration);
+        DorotiSkiaImageFilterRenderer.InvalidateContext(
+            RuntimeEffectBackend, contextGeneration);
+        lock (_paintGate)
+        {
+            foreach (var filter in _imageFilterResources.Values) filter.Dispose();
+            _imageFilterResources.Clear();
+            ClearPictureRasterCache();
+        }
+    }
+
     public void Submit(ulong viewId, DorotiSceneSubmission submission, DartUiInvocation invocation)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);

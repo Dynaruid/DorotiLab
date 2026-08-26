@@ -298,9 +298,6 @@ doroti_run_managed_presenter_probe_v1(
   }
   result->gdi_end = GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS);
   result->user_end = GetGuiResources(GetCurrentProcess(), GR_USEROBJECTS);
-  // Some Vulkan WSI drivers retain one hidden USER object for the process after
-  // their first Win32 surface. Managed validation keeps D3D12 at delta 0 and
-  // allows this bounded 0..1 process-lifetime delta only for the Vulkan case.
   const bool passed = result->status == 0 &&
                       result->platform_thread_id != 0 &&
                       result->presenter_thread_id != 0 &&
@@ -312,8 +309,7 @@ doroti_run_managed_presenter_probe_v1(
                       result->task_dispatch_count == 10 &&
                       result->child_extent_mismatch_count == 0 &&
                       result->gdi_start == result->gdi_end &&
-                      result->user_end >= result->user_start &&
-                      result->user_end - result->user_start <= 1;
+                      result->user_start == result->user_end;
   result->status = passed ? 0u : 4u;
   return result->status;
 }

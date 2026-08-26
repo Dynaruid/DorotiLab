@@ -5,7 +5,7 @@
     <AssemblyName>Doroti.Target.Windows.WindowsAppSdk</AssemblyName>
     <RootNamespace>Doroti.Target.Windows.WindowsAppSdk</RootNamespace>
     <PackageId>Doroti.Target.Windows.WindowsAppSdk.win-x64</PackageId>
-    <Description>Doroti Windows App SDK 2.4 HwndExactCpp child-HWND target with default managed Vulkan Skia presentation.</Description>
+    <Description>Doroti Windows App SDK 2.4 HwndExactCpp child-HWND target with default managed ANGLE/EGL-D3D11 Skia presentation.</Description>
     <IsDorotiProduct>true</IsDorotiProduct>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>

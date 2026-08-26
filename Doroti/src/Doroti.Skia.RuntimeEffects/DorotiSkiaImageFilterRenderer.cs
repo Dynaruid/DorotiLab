@@ -58,6 +58,16 @@ internal static class DorotiSkiaImageFilterRenderer
         }
     }
 
+    internal static void InvalidateSurface(string backend, long contextGeneration)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(backend);
+        lock (PoolGate)
+        {
+            if (!SurfacePools.Remove((backend, contextGeneration), out var pool)) return;
+            pool.Dispose();
+        }
+    }
+
     internal static bool Draw(
         SKCanvas target,
         int pixelWidth,

@@ -61,7 +61,6 @@ internal static unsafe partial class Program
 
     private sealed class State
     {
-        internal string PresenterKind { get; init; } = "D3D12";
         internal PresenterReport? Report { get; set; }
         internal Exception? Error { get; set; }
     }
@@ -69,9 +68,8 @@ internal static unsafe partial class Program
     [STAThread]
     private static int Main(string[] args)
     {
-        var presenterKind = ResolvePresenterKind(args);
-        var reportPath = ResolveReportPath(args, presenterKind);
-        var state = new State { PresenterKind = presenterKind };
+        var reportPath = ResolveReportPath(args);
+        var state = new State();
         var handle = GCHandle.Alloc(state);
         try
         {
@@ -102,14 +100,12 @@ internal static unsafe partial class Program
             var report = new
             {
                 schemaVersion = "doroti.windows.hwnd-exact-cpp-managed-presenter/v1",
-                gate = presenter.PresenterBackend == "Vulkan" ? "C3-A-vulkan-owner" : "C3-managed-owner",
+                gate = "C3-managed-owner",
                 status = "PASS",
                 ownership = new
                 {
                     cpp = new[] { "top-level HWND", "child HWND", "task HWND", "task pump", "resize command" },
-                    managed = presenter.PresenterBackend == "Vulkan"
-                        ? new[] { "Vulkan instance/device/queue", "Win32 surface", "exact backing", "HWND swapchain", "Skia GRContext", "vkQueuePresentKHR" }
-                        : new[] { "D3D12 device", "command queue", "fence", "exact backing", "HWND swap chain", "Skia GRContext", "present" },
+                    managed = new[] { "D3D12 device", "command queue", "fence", "exact backing", "HWND swap chain", "Skia GRContext", "present" },
                     abiGpuPointerCount = 0,
                 },
                 native = new
@@ -142,7 +138,7 @@ internal static unsafe partial class Program
             File.WriteAllText(reportPath, JsonSerializer.Serialize(new
             {
                 schemaVersion = "doroti.windows.hwnd-exact-cpp-managed-presenter/v1",
-                gate = presenterKind == "Vulkan" ? "C3-A-vulkan-owner" : "C3-managed-owner",
+                gate = "C3-managed-owner",
                 status = "FAIL",
                 exception = exception.ToString(),
             }, JsonOptions));
@@ -173,11 +169,8 @@ internal static unsafe partial class Program
                 (641, 481), (720, 500), (680, 520), (800, 540), (700, 490),
                 (760, 560), (660, 510), (820, 580), (690, 530), (740, 550),
             };
-            WindowsManagedHwndPresenterBase presenter = state.PresenterKind switch
-            {
-                "Vulkan" => new WindowsManagedVulkanPresenter(enableDiagnostics: true),
-                _ => new WindowsManagedHwndPresenter(enableDebugLayer: true),
-            };
+            WindowsManagedHwndPresenterBase presenter =
+                new WindowsManagedHwndPresenter(enableDebugLayer: true);
             var presenterBackend = presenter.BackendName;
             var adapterDescription = "uninitialized";
             try
@@ -302,22 +295,9 @@ internal static unsafe partial class Program
         Require(presenter.ResizeBuffersCount == 10 && presenter.ResizeInvalidCallCount == 0, "Managed ResizeBuffers gate failed.");
         Require(presenter.PresentCount == 10 && presenter.GpuSubmitCount == 10 && presenter.GpuCopyCount == 10,
             "Managed GPU submit/copy/present ordering differs.");
-        if (presenter.PresenterBackend == "Vulkan")
-        {
-            Require(native.UserEnd >= native.UserStart && native.UserEnd - native.UserStart <= 1,
-                "Vulkan initialization retained more than one process-lifetime USER object.");
-            Require(!presenter.AdapterDescription.Contains("SwiftShader", StringComparison.OrdinalIgnoreCase) &&
-                    !presenter.AdapterDescription.Contains("llvmpipe", StringComparison.OrdinalIgnoreCase),
-                "Vulkan selected a software renderer.");
-            Require(presenter.InitializationDebugErrorCount == 0,
-                "Vulkan initialization emitted errors.");
-        }
-        else
-        {
-            Require(native.UserStart == native.UserEnd, "D3D12 presentation leaked a USER object.");
-            Require(presenter.InitializationDebugMessageCount == 8 && presenter.InitializationDebugErrorCount == 8,
-                "The explicit Skia initialization diagnostic baseline changed.");
-        }
+        Require(native.UserStart == native.UserEnd, "D3D12 presentation leaked a USER object.");
+        Require(presenter.InitializationDebugMessageCount == 8 && presenter.InitializationDebugErrorCount == 8,
+            "The explicit Skia initialization diagnostic baseline changed.");
         Require(presenter.OperationalDebugErrorCount == 0,
             "Managed resize/copy/present/shutdown emitted operational GPU errors.");
         Require(presenter.PresentedTerminals == 10 && presenter.SupersededTerminals == 1 &&
@@ -325,25 +305,11 @@ internal static unsafe partial class Program
             "Managed terminal ledger differs.");
     }
 
-    private static string ResolvePresenterKind(string[] args)
-    {
-        var index = Array.IndexOf(args, "--presenter");
-        if (index < 0 || index + 1 >= args.Length) return "D3D12";
-        return args[index + 1].Equals("Vulkan", StringComparison.OrdinalIgnoreCase)
-            ? "Vulkan"
-            : args[index + 1].Equals("D3D12", StringComparison.OrdinalIgnoreCase)
-                ? "D3D12"
-                : throw new ArgumentException($"Unsupported presenter '{args[index + 1]}'.");
-    }
-
-    private static string ResolveReportPath(string[] args, string presenterKind)
+    private static string ResolveReportPath(string[] args)
     {
         var index = Array.IndexOf(args, "--report");
         if (index >= 0 && index + 1 < args.Length) return Path.GetFullPath(args[index + 1]);
-        var name = presenterKind == "Vulkan"
-            ? "hwnd-exact-cpp-c3-vulkan-owner.json"
-            : "hwnd-exact-cpp-c3-managed-owner.json";
-        return Path.GetFullPath(Path.Combine(".doroti", "evidence", name));
+        return Path.GetFullPath(Path.Combine(".doroti", "evidence", "hwnd-exact-cpp-c3-managed-owner.json"));
     }
 
     private static void Require(bool condition, string message)

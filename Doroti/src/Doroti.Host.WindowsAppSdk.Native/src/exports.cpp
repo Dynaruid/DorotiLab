@@ -53,6 +53,8 @@ constexpr UINT kUpdateSemantics = WM_APP + 0x40A;
 constexpr UINT kClearSemantics = WM_APP + 0x40B;
 constexpr UINT_PTR kSmokeTimer = 1;
 constexpr UINT_PTR kLifecycleTimer = 2;
+constexpr UINT_PTR kInteractiveMoveTimer = 3;
+constexpr UINT kInteractiveMoveIntervalMs = 8;
 
 template <typename T>
 bool ValidHeader(const T* value) noexcept {
@@ -208,6 +210,9 @@ class ProductHost final {
           const auto width = static_cast<uint32_t>(LOWORD(lparam));
           const auto height = static_cast<uint32_t>(HIWORD(lparam));
           if (width > 0 && height > 0) {
+            // Match Flutter's host_window.cc contract: the one visible child
+            // is always exactly the top-level physical client extent. The
+            // child's WM_SIZE owns metrics and the bounded render transaction.
             if (!SetWindowPos(child_, nullptr, 0, 0, static_cast<int>(width),
                               static_cast<int>(height),
                               SWP_NOZORDER | SWP_NOACTIVATE)) {
@@ -219,6 +224,32 @@ class ProductHost final {
         return 0;
       case WM_ACTIVATEAPP:
         if (!minimized_) EmitLifecycle(wparam != 0 ? 1u : 2u);
+        return 0;
+      case WM_ENTERSIZEMOVE:
+        interactive_move_ = true;
+        interactive_move_dirty_ = true;
+        SetTimer(window, kInteractiveMoveTimer, kInteractiveMoveIntervalMs,
+                 nullptr);
+        return 0;
+      case WM_WINDOWPOSCHANGED:
+        if (interactive_move_) interactive_move_dirty_ = true;
+        // WM_DPICHANGED can arrive while the shell window still straddles two
+        // monitors. Wait until the committed window rectangle is wholly on a
+        // different monitor before rebuilding the fixed-size EGL surface.
+        if (interactive_move_ && EnteredDifferentMonitor() &&
+            RepublishCurrentMetrics())
+          QueueRender();
+        break;
+      case WM_EXITSIZEMOVE:
+        interactive_move_ = false;
+        interactive_move_dirty_ = false;
+        KillTimer(window, kInteractiveMoveTimer);
+        EnteredDifferentMonitor();
+        // A fixed-size ANGLE window surface can retain damaged tiles after a
+        // cross-DPI shell move even though the final client extent is
+        // unchanged. Publish a fresh generation so managed presentation can
+        // rebuild that surface once against stable HWND geometry.
+        if (RepublishCurrentMetrics()) QueueRender();
         return 0;
       case WM_DPICHANGED: {
         const auto* suggested = reinterpret_cast<const RECT*>(lparam);
@@ -243,6 +274,20 @@ class ProductHost final {
         PostQuitMessage(fatal_ ? 4 : 0);
         return 0;
       case WM_TIMER:
+        if (wparam == kInteractiveMoveTimer) {
+          // Coalesce geometry changes while one surface frame is in flight.
+          // Each accepted tick publishes a same-size generation, which makes
+          // managed ANGLE rebuild the EGL window surface before presenting.
+          if (interactive_move_ && interactive_move_dirty_) {
+            if (!WindowStraddlesMonitors()) {
+              interactive_move_dirty_ = false;
+            } else if (CanQueueInteractiveSurfaceRefresh()) {
+              interactive_move_dirty_ = false;
+              if (RepublishCurrentMetrics()) QueueRender();
+            }
+          }
+          return 0;
+        }
         if (wparam == kLifecycleTimer) {
           KillTimer(top_, kLifecycleTimer);
           if (lifecycle_smoke_phase_ == 0) {
@@ -695,6 +740,7 @@ class ProductHost final {
                            CW_USEDEFAULT, CW_USEDEFAULT, bounds.right - bounds.left,
                            bounds.bottom - bounds.top, nullptr, nullptr, instance, this);
     if (top_ == nullptr) throw std::bad_alloc();
+    stable_monitor_ = MonitorFromWindow(top_, MONITOR_DEFAULTTONEAREST);
     child_ = CreateWindowExW(0, kChildClass, L"", WS_CHILD | WS_VISIBLE,
                              0, 0, 1, 1, top_, nullptr, instance, this);
     task_ = CreateWindowExW(0, kTaskClass, L"", 0, 0, 0, 0, 0, HWND_MESSAGE,
@@ -702,7 +748,8 @@ class ProductHost final {
     if (child_ == nullptr || task_ == nullptr) throw std::bad_alloc();
     RECT client{};
     if (!GetClientRect(top_, &client) ||
-        !SetWindowPos(child_, nullptr, 0, 0, client.right, client.bottom,
+        !SetWindowPos(child_, nullptr, 0, 0, client.right - client.left,
+                      client.bottom - client.top,
                       SWP_NOZORDER | SWP_NOACTIVATE))
       throw std::bad_alloc();
     accessibility_.Attach(child_, [this](int64_t node_id, int64_t action,
@@ -989,6 +1036,55 @@ class ProductHost final {
     current_generation_++;
     current_metrics_qpc_ = QpcNow();
     return true;
+  }
+
+  bool RepublishCurrentMetrics() {
+    if (current_generation_ == 0 || current_width_ == 0 ||
+        current_height_ == 0 || current_scale_ <= 0)
+      return false;
+    current_generation_++;
+    current_metrics_qpc_ = QpcNow();
+    return true;
+  }
+
+  bool EnteredDifferentMonitor() {
+    if (top_ == nullptr) return false;
+    RECT window_rect{};
+    if (!GetWindowRect(top_, &window_rect)) return false;
+    const auto monitor = MonitorFromRect(&window_rect, MONITOR_DEFAULTTONEAREST);
+    if (monitor == nullptr || monitor == stable_monitor_) return false;
+    MONITORINFO info{};
+    info.cbSize = sizeof(info);
+    if (!GetMonitorInfoW(monitor, &info)) return false;
+    const auto& bounds = info.rcMonitor;
+    if (window_rect.left < bounds.left || window_rect.top < bounds.top ||
+        window_rect.right > bounds.right || window_rect.bottom > bounds.bottom)
+      return false;
+    stable_monitor_ = monitor;
+    return true;
+  }
+
+  static BOOL CALLBACK CountIntersectingMonitors(HMONITOR, HDC, LPRECT,
+                                                   LPARAM context) {
+    auto* count = reinterpret_cast<uint32_t*>(context);
+    ++(*count);
+    return *count < 2;
+  }
+
+  bool WindowStraddlesMonitors() {
+    if (top_ == nullptr) return false;
+    RECT window_rect{};
+    if (!GetWindowRect(top_, &window_rect)) return false;
+    uint32_t count = 0;
+    EnumDisplayMonitors(nullptr, &window_rect, &CountIntersectingMonitors,
+                        reinterpret_cast<LPARAM>(&count));
+    return count >= 2;
+  }
+
+  bool CanQueueInteractiveSurfaceRefresh() {
+    std::lock_guard lock(render_mutex_);
+    return !render_pending_.has_value() &&
+           last_render_terminal_generation_ >= current_generation_;
   }
 
   uint64_t QueueRender() {
@@ -1295,6 +1391,7 @@ class ProductHost final {
   HWND top_{};
   HWND child_{};
   HWND task_{};
+  HMONITOR stable_monitor_{};
   winrt::Microsoft::UI::Windowing::AppWindow app_window_{nullptr};
   DWORD platform_thread_id_{};
   uint64_t current_generation_{};
@@ -1324,6 +1421,8 @@ class ProductHost final {
   bool text_smoke_emitted_{};
   bool semantics_smoke_emitted_{};
   bool minimized_{};
+  bool interactive_move_{};
+  bool interactive_move_dirty_{};
   uint32_t lifecycle_state_{std::numeric_limits<uint32_t>::max()};
   uint32_t lifecycle_smoke_phase_{};
   doroti::windows::AccessibilityBridge accessibility_;
