@@ -522,15 +522,6 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                 new Positioned(left: 0, top: 0, right: 0, bottom: 0,
                     child: new IgnorePointer(child: new Stack(children:
                     [
-                        // R0 resize oracle: keep the 32-logical-pixel grid in the
-                        // foreground so retained content, safe fill, and X/Y
-                        // scaling remain distinguishable in raw captures.
-                        new Positioned(left: 0, top: 0, right: 0, bottom: 0,
-                            child: new GridPaper(
-                                color: new UiColor(0xff00e5ffL),
-                                interval: 32,
-                                divisions: 1,
-                                subdivisions: 1)),
                         // The magenta markers deliberately avoid the presenter's
                         // safe-background samples (x=8 and bottom-9). Their
                         // asymmetric shapes distinguish child-local origin from
@@ -555,7 +546,19 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                 onPressed: () => Mutate(() => _fabCount++),
                 child: new Text("+")), () => _fabCount++, _fabCount.ToString()));
         widget.ScaffoldBuilt(scaffold);
-        return scaffold;
+        return new Stack(children:
+        [
+            // R0 resize oracle: keep the 32-logical-pixel grid behind the
+            // translucent Scaffold so it remains visible without covering the
+            // gallery, app bar, controls, or floating action button.
+            new Positioned(left: 0, top: 0, right: 0, bottom: 0,
+                child: new IgnorePointer(child: new GridPaper(
+                    color: new UiColor(0xff00e5ffL),
+                    interval: 32,
+                    divisions: 1,
+                    subdivisions: 1))),
+            new Positioned(left: 0, top: 0, right: 0, bottom: 0, child: scaffold),
+        ]);
     }
 }
 
